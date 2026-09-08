@@ -8,7 +8,7 @@ relatedArticles: ["unix-time-explained", "iso-8601-and-rfc-3339"]
 category: encoding
 order: 5
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-08"
 ---
 
 É tentador ler "segundos desde 1970" como uma contagem precisa dos segundos físicos que se passaram. Não é, e a razão são os segundos bissextos.
@@ -30,3 +30,37 @@ Contar segundos bissextos faria todo timestamp Unix depender de uma tabela de in
 ## Um alvo móvel, em breve congelado
 
 Os segundos bissextos sempre foram um incômodo para a computação, e o mundo decidiu parar: uma resolução de 2022 vai aposentar o segundo bissexto até **2035**, deixando o UTC e o tempo atômico se distanciarem lentamente em vez de sacudir os relógios. Até lá, a lição prática permanece — trate um timestamp Unix como tempo civil, exato ao segundo para propósitos cotidianos, mas não como a leitura de um cronômetro desde 1970.
+
+## 30 de junho de 2012: a noite em que de fato quebrou
+
+A teoria acima é elegante. O que aconteceu na prática, na última vez em que um segundo bissexto chegou sem a indústria estar pronta, é a parte de que um operador precisa.
+
+No fim de 30 de junho de 2012 o segundo bissexto foi inserido, e máquinas com Linux começaram a consumir os processadores sem razão visível. O Reddit saiu do ar. Os sistemas de reservas da Qantas falharam e voos atrasaram. Aplicações Java prenderam um núcleo cada. As falhas não estavam nas aplicações: estavam numa linha faltando no núcleo.
+
+O commit que corrigiu aquilo, de John Stultz, enuncia a falha com precisão. O código de temporização deixava de atualizar o subsistema de temporizadores de alta resolução depois de um segundo bissexto, de modo que temporizadores baseados no relógio de tempo real expiravam um segundo antes ou depois — e, decisivamente, **a discrepância ficava para sempre** a menos que outra coisa por acaso atualizasse aquelas estruturas. Um software que arma um temporizador, vê-o disparar de imediato e o arma de novo faz isso num laço muito apertado.
+
+O contorno descoberto pelos operadores naquela noite é o detalhe que vale guardar, porque parece um absurdo e não é:
+
+```bash
+date -s "$(date)"
+```
+
+Ajuste o relógio para a hora que ele já marca. O valor não muda; o *ato de ajustar* chama a rotina que atualiza as estruturas de temporizador, e o laço para. Uma operação nula com efeito colateral, que é exatamente o tipo de conserto que só faz sentido depois de se saber o que está quebrado por baixo.
+
+## Suavização: a resposta que ficou
+
+O problema mais fundo é que o Unix e o Linux nunca implementaram um sexagésimo primeiro segundo, então o segundo 59 simplesmente roda duas vezes. Software não espera que um instante ocorra duas vezes, e o que ele faz quando isso acontece é indefinido pela aplicação, não pela norma.
+
+A resposta do Google, publicada em 2011 e adotada amplamente desde então, foi recusar a descontinuidade por completo: em vez de repetir um segundo, **espalhar o segundo extra por muitas horas**, fazendo os relógios andarem fracionalmente devagar. Nenhum instante se repete, nenhum relógio anda para trás, e nenhuma aplicação vê um valor impossível. O custo é que, durante a janela de suavização, a hora da máquina discorda deliberadamente do UTC em até meio segundo — o que é aceitável para quase tudo, e inaceitável para as aplicações que precisam de UTC verdadeiro ao milissegundo.
+
+Os grandes provedores de nuvem hoje suavizam por padrão e publicam a janela que usam. Isso cria o risco prático para quem opera rede: **dois equipamentos suavizando em horários diferentes, ou um suavizando e outro saltando, discordam entre si por horas.** As fontes de tempo devem ser consistentes num parque, o que significa conferir o que os servidores de cima fazem em vez de supor.
+
+Com os segundos bissextos a caminho da aposentadoria até 2035, este problema tem fim marcado. Até lá, a resposta correta para "o que nossos sistemas farão no próximo segundo bissexto" não é uma opinião; é um teste.
+
+## Fontes
+
+- [O commit do núcleo Linux que corrigiu, de John Stultz: o código de temporização deixa de atualizar o subsistema hrtimer depois de um segundo bissexto, então temporizadores baseados no CLOCK_REALTIME expiram um segundo antes ou depois, e a discrepância fica para sempre a menos que a atualização aconteça por outro meio; o contorno relatado provoca uma chamada a clock_was_set(), que atualiza as estruturas do hrtimer](https://lkml.iu.edu/hypermail/linux/kernel/1207.1/01408.html)
+- [CBC, junho de 2015: o segundo bissexto de 30 de junho de 2012 fez falhar os sistemas de reserva de voos da Qantas, atrasando voos, e tirou o Reddit do ar quando seus servidores Linux não deram conta; outros sites foram afetados de forma semelhante](https://www.cbc.ca/news/science/leap-second-on-june-30-is-no-y2k-bug-says-expert-1.3127715)
+- [Nota de suporte da IBM: Linux e Unix não implementaram um sexagésimo segundo, então o segundo 59 é executado duas vezes, e como os processos não esperam que um instante ocorra duas vezes, comportamento imprevisível pode ocorrer; alta utilização de CPU pode ser vista quando o segundo bissexto acontece](https://www.ibm.com/support/pages/node/690499)
+- [Lista NANOG, janeiro de 2015: o Java teve problemas de 100% de uso de CPU quando o NTP estava rodando durante o segundo adicional em 2012, e o Google fez algo diferente para inserir o segundo extra, descrito em seu texto de 2011 sobre tempo, tecnologia e segundos bissextos](https://diswww.mit.edu/charon/nanog/177492)
+- [AWS, maio de 2015: um segundo extra foi injetado no fim de 30 de junho de 2015, de modo que o último minuto do dia teve 61 segundos, marcando 23:59:60 em relógios sincronizados com o tempo civil padrão; relógios em sistemas de TI nem sempre seguem esse padrão e podem se comportar de muitas maneiras diferentes](https://aws.amazon.com/blogs/aws/look-before-you-leap-the-coming-leap-second-and-aws)

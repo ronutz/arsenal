@@ -1,0 +1,66 @@
+---
+slug: wireguard-the-small-tunnel
+title: "WireGuard: o argumento de que um túnel deveria ser pequeno o bastante para ser lido"
+summary: "Cerca de quatro mil linhas de código, uma única suíte de cifras sem negociação, nenhuma identidade de usuário, e nenhum jeito de pedir uma opção mais fraca. Foi incorporado ao núcleo do Linux em 2020 com um endosso público de Torvalds, e é o padrão dentro da maioria dos produtos hoje vendidos como acesso zero trust. Também não consegue fazer várias coisas de que uma empresa precisa, e saber quais é o ponto deste artigo."
+concepts: ["wireguard", "vpn", "ipsec", "openvpn", "chacha20-poly1305", "curve25519", "cryptokey routing", "tailscale"]
+relatedTools: []
+relatedArticles: ["ipsec-and-ike-fundamentals", "vpn-fundamentals", "the-ssl-vpn-is-being-dismantled", "the-named-tls-attacks", "there-is-no-perfect-code"]
+category: security
+order: 117
+status: reviewed
+updated: "2026-09-08"
+---
+
+## Uma premissa diferente
+
+Todo outro túnel da [família de VPNs](/learn/vpn-fundamentals) deste site cresceu por acumulação. O IPsec acumulou modos, intercâmbios e opções ao longo de duas décadas porque um processo de normas precisa acomodar todos que aparecem. O OpenVPN acumulou superfície de configuração porque portabilidade para toda plataforma exige isso. Os dois são grandes, os dois são flexíveis, e os dois são difíceis de configurar corretamente - o que é uma propriedade de segurança, e não mero incômodo.
+
+A premissa de Jason Donenfeld foi a oposta: construir algo pequeno o bastante para uma pessoa ler inteiro numa tarde, e tirar as escolhas. O WireGuard tem cerca de quatro mil linhas de código. As comparações com as alternativas aparecem em números muito diferentes - setenta mil, quatrocentas mil, seiscentas mil - conforme a contagem inclua ou não bibliotecas criptográficas e conforme a implementação considerada, então a afirmação honesta é a ordem de grandeza e não um número: é uma a duas ordens menor do que aquilo que substitui, e essa distância é o argumento de projeto inteiro.
+
+Foi publicado pela primeira vez em 2015 e incorporado ao núcleo do Linux na versão 5.6, em março de 2020. O endosso que viajou mais longe veio de Linus Torvalds na lista do núcleo, em 2018, e vale citar exatamente pelo que ele não afirma: *talvez o código não seja perfeito, mas eu o li por alto e, comparado aos horrores que são o OpenVPN e o IPsec, é uma obra de arte.* Não que seja impecável - que seja legível.
+
+## Sem negociação, que é o ponto inteiro
+
+O WireGuard tem uma suíte de cifras e nenhum jeito de mudá-la: ChaCha20 para cifragem, autenticado com Poly1305, Curve25519 para acordo de chaves, BLAKE2s para resumo criptográfico. Não há aperto de mão em que as duas pontas discutam o que suportam. Não há opção de configuração para uma escolha mais fraca.
+
+Quem leu os [ataques nomeados ao TLS](/learn/the-named-tls-attacks) reconhece o que isso remove. FREAK, Logjam, POODLE e DROWN eram, no fundo, ataques de rebaixamento - um adversário no meio conduzindo duas pontas capazes a uma opção mais fraca que uma delas ainda suportava por compatibilidade. O TLS levou doze anos e quatorze ataques nomeados para chegar à conclusão de que as opções negociáveis eram o problema, e o TLS 1.3 é em boa medida a lista do que foi removido. O WireGuard partiu dessa conclusão. O raciocínio declarado de Donenfeld é a versão prática dela: dê aos administradores uma escolha de combinações de cifras e uma parcela significativa dos sistemas implantados ficará mal configurada.
+
+O custo é real e deve ser dito. Quando uma dessas primitivas enfraquecer, não haverá mudança de configuração - a versão do protocolo avança e todos atualizam. É uma troca deliberada de flexibilidade pela eliminação de uma classe de ataque, e engenheiros razoáveis não gostam dela.
+
+## Roteamento por chave
+
+A segunda ideia é uma simplificação do que um túnel *é*. No WireGuard não há sessões a estabelecer, nem fases, nem túnel a levantar. Cada par tem uma chave pública, e a configuração diz quais endereços de origem aquela chave pode usar. Um pacote que chega é decifrado com a chave que casa, e então checado: essa chave é dona desse endereço de origem? Se não, o pacote é descartado.
+
+Essa única tabela substitui autenticação, autorização e roteamento de uma vez, e explica os comportamentos do WireGuard que surpreendem quem vem do IPsec. Não há estado de túnel para monitorar, porque um par que não está enviando simplesmente não produz nada. Roda sobre UDP e não responde a pacotes não autenticados, então um scanner vê uma porta fechada. O roaming funciona sem extensão de mobilidade porque o endereço de um par é simplesmente atualizado quando um pacote corretamente autenticado chega de outro lugar.
+
+## O que ele não consegue fazer
+
+Esta é a parte de que um profissional precisa, e que a maior parte da cobertura omite.
+
+**Não há identidade de usuário.** O WireGuard autentica chaves, não pessoas. Não há integração com diretório, nem solicitação de segundo fator, nem SAML, nem política por usuário, nem jeito de dizer que um usuário de um grupo pode alcançar uma sub-rede. Tudo dessa categoria tem de ser construído por cima.
+
+**Não há atribuição de endereços.** Os endereços são escritos na configuração dos dois lados. Não existe equivalente ao lote que um concentrador de acesso remoto distribui, então integrar mil notebooks significa gerar e distribuir mil configurações.
+
+**Não há revogação além de editar a configuração.** Remover um par significa remover sua chave do arquivo do servidor e recarregar. Em escala isso é um problema de automação, não um recurso do protocolo.
+
+**E o endereço da ponta é retido.** Para um túnel corporativo isso é banal; para os produtos de privacidade de consumo que adotaram o protocolo gerou um debate real, e as implementações que se importam com isso acrescentaram rotação de endereços por conta própria.
+
+Essas quatro lacunas são exatamente a razão de existirem os produtos construídos sobre WireGuard. Tailscale, Netbird, Firezone e outros fornecem justamente o que o protocolo recusa: identidade, política, distribuição de chaves e revogação, com o WireGuard como plano de dados por baixo. Essa estratificação é o jeito honesto de descrever o mercado atual - o túnel é uma mercadoria resolvida, e o produto é o plano de controle em volta dele.
+
+## Onde ele entra no argumento que este site não para de fazer
+
+O [artigo sobre a SSL-VPN](/learn/the-ssl-vpn-is-being-dismantled) argumenta que uma superfície pré-autenticação menor é uma aposta melhor que uma maior, e toma o cuidado de dizer que é aposta e não promessa. O WireGuard é a versão mais extrema disponível dessa aposta: sem interpretador HTTP, sem portal web, sem negociação, sem resposta a tráfego não autenticado, e uma base de código que um único revisor consegue segurar na cabeça.
+
+Mas ele não é exceção ao [argumento sobre código perfeito](/learn/there-is-no-perfect-code), e ninguém envolvido afirma que seja. Quatro mil linhas são quatro mil linhas em que um defeito pode morar, código de núcleo roda com o maior privilégio que existe, e as implementações para outras plataformas são bases de código separadas com histórias próprias. O que uma implementação pequena, inconfigurável e amplamente lida compra é uma proporção melhor - menos lugares para um defeito, mais olhos por linha, e nenhum erro de configuração disponível ao administrador. Não compra imunidade, e o relógio que começa a correr quando algo é achado corre exatamente igual.
+
+Para um profissional as conclusões práticas são estreitas e úteis. É excelente escolha para enlaces ponto a ponto, para redes de nuvem e de contêineres, e para um laboratório ou uma equipe pequena. É o plano de dados certo para acesso remoto corporativo e a resposta completa errada, porque tudo sobre quem é o usuário e o que ele pode alcançar precisa vir da camada de cima. E sua decisão de projeto - remover as opções em vez de documentá-las - é a mesma conclusão a que o TLS chegou pelo caminho difícil, alcançada pela direção oposta.
+
+## Fontes
+
+- [Wikipedia, WireGuard: autor original Jason A. Donenfeld, lançado em 2015, implementado em C como módulos de núcleo para Linux, FreeBSD, NetBSD, OpenBSD e Windows, com implementação em Go em espaço de usuário; versão estável 1.0.20260223, de 23 de fevereiro de 2026](https://en.wikipedia.org/wiki/WireGuard)
+- [BleepingComputer, sobre a incorporação ao Linux 5.6: o WireGuard tem cerca de 4.000 linhas de código contra mais de 100.000 do OpenVPN, sem contar o OpenSSL exigido; as primitivas fixas são ChaCha20 com Poly1305 na construção de cifragem autenticada da RFC 7539, Curve25519 para acordo de chaves e BLAKE2s para resumo, conforme a RFC 7693; o comentário de Torvalds em 2018 de que "talvez o código não seja perfeito, mas eu o li por alto e, comparado aos horrores que são o OpenVPN e o IPsec, é uma obra de arte"](https://www.bleepingcomputer.com/news/security/linux-kernel-56-source-tree-includes-wireguard-vpn/)
+- [CSO Online: Donenfeld quis evitar as decisões de projeto que transformaram outras tecnologias de tunelamento em projetos grandes com incontáveis botões e chaves; o código é feito para ser auditável e, na descrição dele, legível numa tarde; a incorporação exigiu mudanças tanto na API criptográfica do núcleo quanto na sua pilha de rede](https://www.csoonline.com/article/567703/what-is-wireguard-secure-simple-vpn-still-in-development.html)
+- [Private Internet Access, sobre o mecanismo: o WireGuard usa roteamento por chave, em que todo endereço IP permitido no túnel tem uma chave pública associada; oferece sigilo futuro; a base de código menor significa que ele não vem com recursos como negociação de cifras, o que é escolha de projeto e não omissão](https://www.privateinternetaccess.com/blog/wireguide-all-about-the-wireguard-vpn-protocol/)
+- [Sobre o raciocínio da suíte fixa e a adoção: o argumento de Donenfeld de que dar aos administradores uma escolha de combinações de cifras garante que uma parcela significativa dos sistemas implantados ficará mal configurada; o WireGuard foi incorporado ao núcleo 5.6 em março de 2020 e é o protocolo padrão de Tailscale, Netbird, Firezone e outros produtos](https://tech-insider.org/wireguard-vs-openvpn-2026/)
+- [Referência comparativa: o WireGuard foi incorporado ao núcleo 5.6 do Linux em 29 de março de 2020; os números de base de código são citados como cerca de 4.000 linhas contra as ~70.000 do OpenVPN e as ~400.000 do IKEv2/IPsec, o que ilustra o quanto os números de comparação variam entre fontes](https://curevpn.com/ikev2-vs-wireguard/)
+- [arXiv, sobre o WireGuard em dispositivos restritos: rodar no núcleo mantém o espaço de usuário fora do caminho intensivo em recursos, o que serve a equipamentos alimentados por bateria; a base de código pequena é facilmente auditável, o que torna falhas mais fáceis de achar e reduz a superfície de ataque](https://arxiv.org/pdf/2402.02093)

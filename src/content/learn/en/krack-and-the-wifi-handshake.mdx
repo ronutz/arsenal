@@ -1,0 +1,76 @@
+---
+slug: krack-and-the-wifi-handshake
+title: "KRACK and Dragonblood: what happened after WEP, and why a proven-secure handshake still broke"
+summary: "WPA2's four-way handshake had been formally analysed and declared secure. In 2017 a researcher at KU Leuven broke it anyway, by making a client reinstall a key it was already using. Its replacement, WPA3, shipped in 2018 and was broken by the same researcher in 2019. Neither failure was in the cipher, and that is the whole lesson."
+concepts: ["krack", "wpa2", "wpa3", "four-way handshake", "sae", "dragonfly", "dragonblood", "nonce reuse"]
+relatedTools: []
+relatedArticles: ["wireless-family-history", "the-named-tls-attacks", "there-is-no-perfect-code", "wireless-networking-from-802-11-to-wifi-7"]
+category: security
+order: 120
+status: reviewed
+updated: "2026-09-08"
+---
+
+## Where this picks up
+
+The [wireless family history](/learn/wireless-family-history) covers WEP and the lesson it taught, which was that the failure was not in the cipher but in how the protocol used it. This article is what happened next, because the same sentence turns out to describe everything that followed.
+
+WPA2 replaced WEP in 2004 and held the line for thirteen years. Its four-way handshake - the exchange in which a client and an access point, both already holding the key derived from the network passphrase, agree a fresh session key - had been examined by cryptographers and had formal security proofs behind it. One vendor's statement during the 2017 disclosure put it plainly: the handshake was mathematically proven secure by the scientific community.
+
+It was. And it broke.
+
+## What the handshake does, and what KRACK did to it
+
+Four messages. The access point sends a random number; the client sends its own random number and a proof it knows the shared key; the access point confirms and, in message three, tells the client to install the session key it has now derived; the client acknowledges in message four.
+
+The flaw is in what happens when message four goes missing. Radio is unreliable, so the access point retransmits message three, and the client - correctly, by the specification - accepts it and installs the key again. That is the whole attack. Mathy Vanhoef, of the imec-DistriNet group at KU Leuven, showed that an attacker within radio range and positioned between the two could block message four deliberately, force the retransmission, and make the client **reinstall a key it was already using**.
+
+Reinstalling resets the associated counters - the transmit packet number, which is the nonce, and the receive replay counter - to their initial values. And nonce reuse under the same key is the one thing the encryption underneath must never do. Reuse it and the keystream can be recovered.
+
+The impact depended on which cipher was in use, and the distinction matters operationally. Against AES-CCMP an attacker could replay and decrypt packets, but not forge them - enough to hijack a TCP stream and inject into it. Against WPA-TKIP and GCMP, in the researchers' own word, the impact was catastrophic: packets could be replayed, decrypted **and** forged. The same technique also broke the group key handshake, the PeerKey handshake and the fast transition handshake of 802.11r, and it was assigned ten separate CVE identifiers.
+
+Then there was the implementation finding, which was worse than the protocol one. Android and Linux clients using certain versions of `wpa_supplicant` did not reinstall the real key when tricked - they installed an **all-zero key**. Against those devices the attacker did not need to recover a keystream at all.
+
+## Why a proof did not prevent it
+
+This is the part worth carrying into any conversation about formal verification, and it is the Wi-Fi version of the argument the [no-perfect-code article](/learn/there-is-no-perfect-code) makes with Juniper's ScreenOS.
+
+The proofs of the four-way handshake were proofs about the handshake: that an attacker who observes the exchange cannot derive the session key, and that both parties end up agreeing on the same one. All of that remained true. What the proofs did not model was the state machine around the handshake - what an implementation should do when a message arrives twice. The specification did not forbid reinstalling a key, because nobody had asked the question, and a proof answers only the question it was given.
+
+The correct conclusion is not that formal analysis is useless. It is that a proof has a scope, that the scope is usually the protocol rather than the implementation's behaviour over time, and that the gap between those two is where the industry keeps finding things.
+
+## The disclosure, which went well
+
+The paper was submitted for review on 19 May 2017. CERT/CC notified vendors on 28 August. The research went public on 16 October, and the paper was presented at the ACM conference in Dallas at the beginning of November. By the time it was public, patches existed for the major operating systems, router firmwares and chipsets, and they were released more or less simultaneously.
+
+Two details are worth keeping. Vanhoef himself noted that by publication the findings were already several months old, and that he had since found easier techniques than the ones in the paper - the published version was, deliberately, not the sharpest available. And the fix was backwards-compatible: clients were patched to refuse to reinstall a key already in use, which meant a patched client is safe on an unpatched access point. That property is why the response worked, and it is not always available.
+
+## WPA3, and the year it lasted
+
+The Wi-Fi Alliance announced WPA3 in 2018. Its central improvement was replacing the pre-shared key handshake with Simultaneous Authentication of Equals, known as Dragonfly - a password-authenticated key exchange, designed so that an attacker who captures a handshake cannot take it away and run a dictionary attack against it offline. That was a real and important fix for a real and important weakness.
+
+In April 2019 Vanhoef, now at NYU Abu Dhabi, published again with Eyal Ronen of Tel Aviv University and KU Leuven. Their paper, Dragonblood, found several classes of problem: downgrade attacks against WPA3 in transition mode, where a network accepting both WPA2 and WPA3 clients can be pushed back to the older handshake; a downgrade against SAE itself; denial of service against the access point; authentication bypasses in every implementation of the related EAP-pwd they tested; and, as the main result, timing and cache side channels in the password encoding method that leak enough to enable exactly the offline dictionary attack the design existed to prevent.
+
+Two details are almost too neat. The denial-of-service overhead they exploited was caused by the defences against known timing side channels - a countermeasure creating a new problem. And their assessment of the process, quoted in the reporting, was that a more open design process would have prevented or clarified the possibility of the downgrade attacks. The fixes were adopted into the standard.
+
+## What a practitioner should take from it
+
+**Three generations, three failures, none of them in the cipher.** WEP's failure was in how it used a stream cipher. KRACK was a state machine accepting a retransmission. Dragonblood was a password encoding leaking through timing. The cryptography was never the weak part, which is a good reason to be suspicious of any security discussion that spends its time on key lengths.
+
+**The transition mode is where the attack lives.** WPA3 in transition mode - accepting WPA2 clients so nothing breaks - is downgradeable, exactly as the [named TLS attacks](/learn/the-named-tls-attacks) show for every protocol that kept a weaker option for compatibility. If the estate genuinely has no WPA2-only devices, WPA3-only is the configuration; if it does, the honest position is that the network is protected at WPA2's level and should be planned accordingly.
+
+**Client patching is the control that mattered.** KRACK was primarily a client-side fix. In an enterprise, the population that never got patched is the one to inventory: handheld scanners, medical devices, building controls, printers, anything whose vendor stopped shipping firmware. This is the same population the [worm era](/learn/the-worm-era) keeps identifying.
+
+**And the process worked, slowly and in public.** A researcher found it, disclosed it through a coordinating body, vendors patched before publication, the fixes went into the standard, and the same researcher then did it again to the replacement. That is not a failure of the system. It is the system, and the alternative - flaws found by people who do not publish - is what the rest of this catalogue is about.
+
+## Sources
+
+- [krackattacks.com, Mathy Vanhoef's own site: the paper "Key Reinstallation Attacks: Forcing Nonce Reuse in WPA2" was submitted for review on 19 May 2017 and presented at the Computer and Communications Security conference on 1 November 2017; easier techniques were found after submission, making attacks against implementations that only accept encrypted retransmissions of message 3 trivial; Linux's wpa_supplicant v2.6 is also vulnerable to installation of an all-zero encryption key](https://www.krackattacks.com/)
+- [CERT/CC vulnerability note VU#228519: the weaknesses constitute a new class of attack on the four-way handshake used in all flavours of WPA and WPA2, named KRACK; this presents an industry-wide issue as all products implementing Wi-Fi are theoretically vulnerable; vendors were notified on 28 August 2017; a vendor statement in the note records that the four-way handshake protocol was mathematically proven secure by the scientific community; none of the attacks retrieves the WPA passphrase](https://www.kb.cert.org/vuls/id/228519)
+- [Vanhoef and Piessens, the CCS 2017 paper: the four-way handshake also transports the group temporal key to the supplicant; an unmodified wpa_supplicant will reinstall the key when receiving a retransmitted message 3](https://papers.mathyvanhoef.com/ccs2017.pdf)
+- [Bruce Schneier, quoting the paper's abstract: the adversary tricks a victim into reinstalling an already-in-use key by manipulating and replaying handshake messages, resetting the incremental transmit packet number and receive replay counter to their initial values; the attack also breaks the PeerKey, group key and Fast BSS Transition handshakes; against AES-CCMP an adversary can replay and decrypt but not forge packets, while against WPA-TKIP and GCMP the impact is catastrophic and packets can also be forged](https://www.schneier.com/blog/archives/2017/10/new_krack_attac.html)
+- [NowSecure: the attack involves intercepting and replaying the third message of the four-way handshake; Vanhoef identified ten separate CVE identifiers, CVE-2017-13077 through CVE-2017-13088](https://www.nowsecure.com/blog/2017/10/17/new-mobile-risk-cracking-wi-fi-encryption-key-reinstallation-attacks-krack/)
+- [Vanhoef and Ronen, Dragonblood, Cryptology ePrint Archive 2019/383 and IEEE Symposium on Security and Privacy 2020: a systematic analysis of WPA3 and EAP-pwd finding denial-of-service and downgrade attacks, severe vulnerabilities in all implementations, side channels enabling offline dictionary attacks, and design fixes which are being officially adopted; the main results are side-channel attacks against Dragonfly's password encoding method](https://eprint.iacr.org/2019/383)
+- [wpa3.mathyvanhoef.com: the design flaws divide into downgrade attacks against WPA3-capable devices and weaknesses in the Dragonfly handshake itself; auditing revealed authentication bypasses against all EAP-pwd implementations and against one SAE client; the tools released are not designed to attack a neighbour's network](https://wpa3.mathyvanhoef.com/)
+- [The Dragonblood paper: the cause of SAE's high overhead, exploited for denial of service, is the defences against known timing side-channels; a downgrade and dictionary attack works against WPA3 in transition mode, and implementation-specific attacks work even on WPA3-only networks](https://papers.mathyvanhoef.com/dragonblood.pdf)
+- [BleepingComputer, April 2019: Vanhoef of NYU Abu Dhabi and Ronen of Tel Aviv University and KU Leuven describe attacks that resemble dictionary attacks and recover the password by abusing timing or cache-based side-channel leaks targeting the protocol's password encoding method; a more open process would have prevented or clarified the possibility of downgrade attacks against WPA3 transition mode](https://www.bleepingcomputer.com/news/security/wpa3-wi-fi-standard-affected-by-new-dragonblood-vulnerabilities/)

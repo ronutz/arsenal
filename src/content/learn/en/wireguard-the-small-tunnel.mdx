@@ -1,0 +1,66 @@
+---
+slug: wireguard-the-small-tunnel
+title: "WireGuard: the argument that a tunnel should be small enough to read"
+summary: "About four thousand lines of code, one cipher suite with no negotiation, no user identity, and no way to ask for a weaker option. It was merged into the Linux kernel in 2020 with a public endorsement from Torvalds, and it is the default inside most of the products now sold as zero-trust access. It also cannot do several things an enterprise needs, and knowing which is the point of this article."
+concepts: ["wireguard", "vpn", "ipsec", "openvpn", "chacha20-poly1305", "curve25519", "cryptokey routing", "tailscale"]
+relatedTools: []
+relatedArticles: ["ipsec-and-ike-fundamentals", "vpn-fundamentals", "the-ssl-vpn-is-being-dismantled", "the-named-tls-attacks", "there-is-no-perfect-code"]
+category: security
+order: 117
+status: reviewed
+updated: "2026-09-08"
+---
+
+## A different premise
+
+Every other tunnel in the [virtual private network family](/learn/vpn-fundamentals) grew by accretion. IPsec accumulated modes, exchanges and options over two decades because a standards process must accommodate everyone who turns up. OpenVPN accumulated configuration surface because portability across every platform demands it. Both are large, both are flexible, and both are difficult to configure correctly - which is a security property, not merely an inconvenience.
+
+Jason Donenfeld's premise was the opposite: build something small enough that one person can read all of it in an afternoon, and take away the choices. WireGuard is roughly four thousand lines of code. Comparisons with the alternatives are cited at wildly different figures - seventy thousand, four hundred thousand, six hundred thousand - depending on whether the counter includes cryptographic libraries and which implementation they mean, so the honest statement is the order of magnitude rather than a number: it is one to two orders smaller than what it replaces, and that gap is the entire design argument.
+
+It was first published in 2015 and merged into the Linux kernel in version 5.6 in March 2020. The endorsement that travelled furthest came from Linus Torvalds on the kernel mailing list in 2018, and it is worth quoting exactly because of what it does not claim: *maybe the code isn't perfect, but I've skimmed it, and compared to the horrors that are OpenVPN and IPSec, it's a work of art.* Not that it is flawless - that it is legible.
+
+## No negotiation, which is the whole point
+
+WireGuard has one cipher suite and no way to change it: ChaCha20 for encryption authenticated with Poly1305, Curve25519 for key agreement, BLAKE2s for hashing. There is no handshake in which the two ends discuss what they support. There is no configuration option for a weaker choice.
+
+Readers of the [named TLS attacks](/learn/the-named-tls-attacks) will recognise what that removes. FREAK, Logjam, POODLE and DROWN were all, at bottom, downgrade attacks - an adversary in the middle steering two capable endpoints into a weaker option that one of them still supported for compatibility. TLS took twelve years and fourteen named attacks to arrive at the conclusion that the negotiable options were the problem, and TLS 1.3 is largely the list of what was removed. WireGuard started from that conclusion. Donenfeld's stated reasoning is the practitioner's version of it: give administrators a choice of cipher combinations and a meaningful percentage of deployed systems will be configured badly.
+
+The cost is real and should be stated. When one of those primitives eventually weakens, there is no configuration change - the protocol version increments and everyone upgrades. That is a deliberate trade of flexibility for the elimination of a class of attack, and reasonable engineers dislike it.
+
+## Cryptokey routing
+
+The second idea is a simplification of what a tunnel *is*. In WireGuard there are no sessions to establish, no phases, no tunnel to bring up. Each peer has a public key, and the configuration says which source addresses that key is allowed to use. A packet arriving is decrypted with the key that matches, and then checked: does this key own this source address? If not, the packet is dropped.
+
+That single table replaces authentication, authorisation and routing at once, and it explains WireGuard's behaviour that surprises people coming from IPsec. There is no tunnel state to monitor because a peer that is not sending simply produces nothing. It runs over UDP and does not reply to unauthenticated packets at all, so a scanner sees a closed port. Roaming works without a mobility extension because a peer's endpoint address is simply updated when a correctly authenticated packet arrives from somewhere new.
+
+## What it cannot do
+
+This is the part a practitioner needs, and most coverage omits it.
+
+**There is no user identity.** WireGuard authenticates keys, not people. There is no directory integration, no multi-factor prompt, no SAML, no per-user policy, and no way to say that a user in one group may reach one subnet. Everything in that category has to be built on top.
+
+**There is no address assignment.** Addresses are written into configuration on both sides. There is no equivalent of the pool a remote-access concentrator hands out, so onboarding a thousand laptops means generating and distributing a thousand configurations.
+
+**There is no revocation beyond editing configuration.** Removing a peer means removing its key from the server's file and reloading. At scale that is an automation problem, not a protocol feature.
+
+**And the endpoint address is retained.** For a corporate tunnel this is unremarkable; for the consumer privacy products that adopted the protocol it produced a genuine debate, and the implementations that care about it added address rotation themselves.
+
+Those four gaps are precisely why the products built on WireGuard exist. Tailscale, Netbird, Firezone and several others supply exactly what the protocol refuses to: identity, policy, key distribution and revocation, with WireGuard as the data plane underneath. That layering is the honest way to describe the current market - the tunnel is a solved commodity, and the product is the control plane around it.
+
+## Where it fits in the argument this site keeps making
+
+The [SSL-VPN article](/learn/the-ssl-vpn-is-being-dismantled) argues that a smaller pre-authentication attack surface is a better bet than a larger one, and is careful to say that this is a bet rather than a promise. WireGuard is the most extreme available version of that bet: no HTTP parser, no web portal, no negotiation, no reply to unauthenticated traffic, and a codebase a single reviewer can hold in their head.
+
+But it is not an exception to the [argument about perfect code](/learn/there-is-no-perfect-code), and nobody involved claims it is. Four thousand lines is four thousand lines in which a defect can live, kernel code runs with the highest privilege there is, and the implementations for other platforms are separate codebases with their own histories. What a small, unconfigurable, widely read implementation buys is a better ratio - fewer places for a defect, more eyes per line, and no configuration mistake available to the administrator. It does not buy immunity, and the clock that starts when something is found runs exactly the same way.
+
+For a practitioner the practical conclusions are narrow and useful. It is an excellent choice for site-to-site links, for cloud and container networking, and for a laboratory or a small team. It is the right data plane for enterprise remote access and the wrong complete answer, because everything about who the user is and what they may reach has to come from the layer above. And its design decision - remove the options rather than document them - is the same conclusion TLS reached the hard way, arrived at from the other direction.
+
+## Sources
+
+- [Wikipedia, WireGuard: original author Jason A. Donenfeld, released 2015, implemented in C as kernel modules for Linux, FreeBSD, NetBSD, OpenBSD and Windows with a Go userspace implementation; stable release 1.0.20260223 of 23 February 2026](https://en.wikipedia.org/wiki/WireGuard)
+- [BleepingComputer, on the Linux 5.6 merge: WireGuard has about 4,000 lines of code against more than 100,000 for OpenVPN excluding the required OpenSSL; the fixed primitives are ChaCha20 with Poly1305 in the RFC 7539 authenticated-encryption construction, Curve25519 for key agreement and BLAKE2s for hashing as described in RFC 7693; Torvalds' 2018 comment that "maybe the code isn't perfect, but I've skimmed it, and compared to the horrors that are OpenVPN and IPSec, it's a work of art"](https://www.bleepingcomputer.com/news/security/linux-kernel-56-source-tree-includes-wireguard-vpn/)
+- [CSO Online: Donenfeld set out to avoid the design decisions that turned other tunnelling technologies into large projects with countless knobs and switches; the code is intended to be auditable and, in his description, readable in an afternoon; merging required changes to both the kernel's cryptographic API and its networking stack](https://www.csoonline.com/article/567703/what-is-wireguard-secure-simple-vpn-still-in-development.html)
+- [Private Internet Access, on the mechanism: WireGuard uses cryptokey routing, in which every IP address allowed on the tunnel has an associated public key; it provides forward secrecy; the smaller codebase means it does not come with features such as cipher negotiation, which is a design choice rather than an omission](https://www.privateinternetaccess.com/blog/wireguide-all-about-the-wireguard-vpn-protocol/)
+- [On the fixed-suite reasoning and adoption: Donenfeld's argument that giving administrators a choice of cipher combinations guarantees a meaningful percentage of deployed systems will be configured suboptimally; WireGuard was merged into kernel 5.6 in March 2020 and is the default protocol for Tailscale, Netbird, Firezone and other products](https://tech-insider.org/wireguard-vs-openvpn-2026/)
+- [Comparative reference: WireGuard merged into Linux kernel 5.6 on 29 March 2020; codebase figures cited as roughly 4,000 lines against OpenVPN's ~70,000 and IKEv2/IPsec's ~400,000, illustrating how widely the comparison figures vary between sources](https://curevpn.com/ikev2-vs-wireguard/)
+- [arXiv, on WireGuard for constrained devices: running in the kernel keeps userspace out of the resource-intensive path, which suits battery-powered equipment; the small codebase is easily auditable, making flaws easier to find and reducing the attack surface](https://arxiv.org/pdf/2402.02093)

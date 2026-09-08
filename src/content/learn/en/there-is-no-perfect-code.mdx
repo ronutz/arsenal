@@ -1,0 +1,99 @@
+---
+slug: there-is-no-perfect-code
+title: "There is no perfect code: why security is a clock, not a codebase"
+summary: "Every vendor of consequence has shipped a flaw that facilitated a breach, and every one of them will again. What separates organisations is not defect density - it is the time between compromise and detection, detection and containment, containment and a definitive fix, and the honesty of what gets said in between. This is the argument, with the evidence, and an open question about what AI does to both sides of the clock."
+concepts: ["incident response", "disclosure", "detection", "containment", "patch management", "playbook", "vulnerability", "secure by design"]
+relatedTools: []
+relatedArticles: ["the-worm-era", "eternalblue-wannacry-notpetya", "rsa-and-diginotar-2011", "the-named-tls-attacks", "memory-safety"]
+category: security
+order: 115
+status: reviewed
+updated: "2026-09-08"
+---
+
+## The premise nobody states in a product briefing
+
+Read enough vendor material and an implicit promise emerges: buy this and the problem is handled. It is never said outright, because nobody who builds software believes it. What the engineering record shows, consistently and across every vendor large enough to have one, is that defects ship, that some of those defects are security-relevant, and that a fraction of those are found by someone who does not intend to report them.
+
+This is not cynicism and it is not an accusation. It is the observable state of an industry that writes tens of millions of lines of code against adversaries who need to be right once. The useful question is therefore not *which vendor has no vulnerabilities* - none does - but **what happens in the hours and days after one is found**. That interval is measurable, it varies enormously between organisations, and it is where nearly all of the damage in this catalogue was actually decided.
+
+## The evidence, briefly
+
+A sample, all from published advisories and public investigations.
+
+**F5** shipped a TLS (Transport Layer Security) stack vulnerable to a nineteen-year-old attack technique, catalogued as CVE-2017-6168 and documented in the company's own knowledge base article K21905460, alongside eight other major vendors in the same research - the [named TLS attacks](/learn/the-named-tls-attacks) article has the detail. **Fortinet's** SSL-VPN (a virtual private network reached through a browser or agent over TLS) carried a chain of exploited flaws from CVE-2018-13379 through CVE-2024-21762. **Palo Alto Networks** shipped an unauthenticated root remote-code-execution flaw in GlobalProtect, CVE-2024-3400, exploited as a zero-day. **Cisco's** ASA line was compromised through chained flaws by a state actor. **Check Point**, **Citrix**, **Ivanti** and **SonicWall** each shipped a remote-access flaw exploited before or around disclosure. **Microsoft** lost a signing key it still cannot fully account for, and the review board called the result a cascade of avoidable errors. **Amazon's** largest storage outage began with a typo in a runbook command, and a customer's misconfiguration exposed a hundred million records. **Google** was breached by a state actor in [Operation Aurora](/learn/moonlight-maze-titan-rain-aurora). **Juniper** found unauthorized code in ScreenOS that had been there for three years.
+
+The vendors named here are the ones with published advisories, public timelines and researchers willing to write them up, which is a mark of maturity rather than of weakness. The list is not a ranking and it is not complete; a comparable paragraph could be written about Extreme Networks, HPE, Aruba and every other manufacturer whose equipment is worth attacking. Every vendor of consequence has shipped a flaw that facilitated a breach, and on the evidence of thirty years, every one of them will again.
+
+If that is true - and it is - then the question of which vendor to trust has to be answered differently.
+
+## The clock
+
+What differs between organisations, and between vendors, is a sequence of intervals. Each one is measurable. Each has evidence in this catalogue.
+
+### Detection: how long until anyone knows
+
+This is the interval that decides the size of everything after it, and the record is not encouraging. [Moonlight Maze](/learn/moonlight-maze-titan-rain-aurora) ran for two years and was found by accident. [DigiNotar](/learn/rsa-and-diginotar-2011) was found by a member of the public asking a question on a web forum. [RSA](/learn/rsa-and-diginotar-2011) learned the scope of its own breach when a customer's defences caught the follow-on attack. Juniper's unauthorized ScreenOS code had been in shipping firmware since August 2012 and was announced in December 2015.
+
+The Juniper case carries the hardest version of the argument, and anyone who believes in testing their way to safety should sit with it. The attacker changed one constant in the device's random number generator. A team from Illinois, Pennsylvania, Wisconsin and California later established that the modified versions produced output that was **cryptographically indistinguishable from the output of previous versions** - meaning no test, no measurement and no amount of quality assurance could have detected the change by observing the product's behaviour. The defect was invisible by construction. Detection had to come from reading the code, and it took three years.
+
+### Containment: how long until it stops spreading
+
+[NotPetya](/learn/eternalblue-wannacry-notpetya) reached every machine in Maersk's estate in under two hours because the network was flat and administrative credentials were reused. The company survived because a power cut in Ghana had left one domain controller offline. That is not a containment strategy; it is luck, and the entire cost of the incident was set in that first hour.
+
+### Neutralisation: patching is not eviction
+
+The most under-appreciated interval, and the one this catalogue keeps proving. In April 2025 Fortinet disclosed that attackers who had exploited earlier flaws had left a symbolic link between the SSL-VPN user filesystem and the device's root filesystem, and retained read-only access to configuration files - including credentials - **after the vulnerability was patched**. The company said plainly that organisations which patched promptly could still be affected if the device had been compromised beforehand. Ivanti's customers found the same shape in a worse form: a web shell that persisted across a factory reset.
+
+The operational rule that follows is unglamorous and rarely followed. Applying a patch closes the door. It does not remove whoever came through it, and it does not rotate the credentials they read on the way. A patch is the beginning of the response, not the end of it.
+
+### Definitive fix: how long until the class of problem is gone
+
+The [worm era](/learn/the-worm-era) is the demonstration. Nine years of outbreaks, each with a patch available first - a month for Code Red, six months for Slammer, four weeks and an explicit written warning for Conficker. What ended the era was not faster patching. It was three structural changes: a firewall on by default, automatic updates as the default rather than an option, and macros that ask before running. Each removed a class of exposure rather than an instance of it, and each was boring.
+
+### Communication: what gets said, and when
+
+This is the interval practitioners systematically undervalue, and it is the one that determines how much of the damage lands on everybody else. Steven Bellovin's complaint during the RSA breach is still the clearest statement of it: customers could not tell whether to replace tokens, change PINs or firewall their administrative servers, because they had not been told what was taken. DigiNotar began revoking certificates on 19 July 2011 and said nothing publicly for more than a month, while the fraudulent certificates were used against some 300,000 people. Microsoft left an incorrect post-mortem published for six months. Fujitsu held, for a decade, the evidence that would have cleared people who were prosecuted.
+
+Against those, the counter-example: Juniper announced unauthorized code in its own firmware, published the affected versions, and shipped fixes - and was widely praised in the industry for doing so, even though the disclosure was as damaging a thing as a network vendor can say about itself. Within six hours of the patch being public, researchers had extracted the backdoor password by comparing binaries. That is the trade every vendor faces: disclosure hands the attacker a map, and withholding it hands the attacker time. The record in this catalogue is that time is worth more.
+
+## What this means for choosing a vendor
+
+If every vendor ships flaws, the procurement question changes from *has this product had vulnerabilities* to a set of questions with checkable answers:
+
+- **How fast do they publish, and how specific is the advisory?** Affected versions, indicators of compromise, and what to do if you were already exploited - or a paragraph of reassurance?
+- **Do they tell you how to check whether you were hit before the patch?** Fortinet did, on the symlink. Most do not.
+- **What is their record on the second advisory** - the one that corrects the first? Ivanti's follow-on CVEs suggested the attack surface was not fully understood by the vendor either, which is more useful to know than the count of CVEs.
+- **Is the security function reachable?** A named contact, a coordinated disclosure policy, a bug bounty that pays.
+
+And symmetrically, the same questions about your own organisation. Most cannot state their mean time to detect. Almost none have rehearsed the containment step. Very few have a written rule for who says what, to whom, within how many hours - which is the thing that will be improvised, badly, at three in the morning, unless it was written down in daylight.
+
+## The playbook is the product
+
+The reason to write incident procedures down is not compliance. It is that the intervals above are compressed by decisions that have already been made. Who can disconnect a production segment without waiting for approval. Which credentials are rotated automatically when a device is suspected. Who calls the customer, and what they are permitted to say before the investigation is complete. Where the offline copy of the configuration lives. Whether anyone has tested restoring it.
+
+None of that is code, and none of it can be bought. It is the difference between the organisation that loses a weekend and the one that loses a quarter.
+
+## The open question: what artificial intelligence does to the clock
+
+Everything above was written from thirty years of evidence. The honest position is that the next few years may not resemble them, and it is worth being explicit about which parts are uncertain.
+
+The attacker's side of the clock is getting faster in ways that are already visible: the interval between a patch shipping and a working exploit existing has been shrinking for years, and automated analysis of a patch difference - exactly the technique Fox-IT used on Juniper in six hours - is the kind of work machines do well. If time-to-exploit approaches zero, then a defence built on patching windows has no window.
+
+The defender's side may improve as much or more. Anomaly detection, log correlation, and reading a large codebase for the class of defect a human reviewer misses are all the same kind of problem. It is entirely possible that the detection interval - historically measured in months - is the thing that improves most.
+
+Which of those moves faster is not knowable now, and anyone who tells you otherwise is selling something. But the structural conclusion survives either outcome, and that is the point of this article. If exploitation accelerates, response time matters more. If detection improves, response time is what converts the improvement into an outcome. In neither future does anybody ship perfect code. The investment that pays under every scenario is the same one that has paid for thirty years: knowing sooner, containing faster, evicting properly, fixing the class rather than the instance, and telling the truth early enough for other people to act on it.
+
+## Sources
+
+- [F5 knowledge base article K21905460 and CVE-2017-6168, as catalogued: BIG-IP versions with a Client SSL profile vulnerable to the adaptive chosen-ciphertext attack](https://www.tenable.com/plugins/nessus/104687)
+- [USENIX Security 2018, the ROBOT research: the vulnerability was found in almost a third of the top 100 domains and in products from nine vendors including F5, Citrix, Radware, Palo Alto Networks, IBM and Cisco](https://www.usenix.org/conference/usenixsecurity18/presentation/bock)
+- [Fortinet, April 2025: threat actors who exploited earlier vulnerabilities created a symbolic link between the user filesystem and the root filesystem in a folder used to serve language files for SSL-VPN, retaining read-only access to device configuration files including credentials; organisations that patched promptly could still be affected if the device had been compromised before remediation](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity)
+- [Wikipedia, ScreenOS: in December 2015 Juniper announced unauthorized code that had been present since August 2012, creating two backdoors allowing control of unpatched NetScreen firewalls and decryption of network traffic; many in the security industry praised Juniper for being transparent about the breach](https://en.wikipedia.org/wiki/ScreenOS)
+- [SecurityWeek, December 2015: the unauthorized code introduced CVE-2015-7755, remote administrative access via telnet or SSH through a default password disguised as a debug string, and CVE-2015-7756, allowing an attacker monitoring VPN traffic to decrypt it; Fox-IT researchers found the password in six hours](https://www.securityweek.com/attackers-attempt-exploit-juniper-backdoor/)
+- [Checkoway et al., "A Systematic Analysis of the Juniper Dual EC Incident": the versions of ScreenOS containing an attacker-supplied parameter appear to have produced output cryptographically indistinguishable from the output of previous versions, preventing any testing or measurement from discovering the issue; the 2012 change took advantage of Juniper's 2008 overhaul of ScreenOS randomness which introduced the Dual EC generator](https://hovav.net/ucsd/dist/juniper.pdf)
+- [Matthew Green, on the Juniper backdoor: the authentication flaw was a hardcoded password in SSH and Telnet; the second vulnerability, independent of the first, allowed a knowledgeable attacker monitoring VPN traffic to decrypt it, and the patch simply restored the original Q parameter](https://blog.cryptographyengineering.com/2015/12/22/on-juniper-backdoor/)
+- [Steven Bellovin, May 2011: organisations relying on SecurID could not tell whether to get new tokens, change PINs or firewall administrative servers, because they had not been told what had been taken, and that is the real problem](https://www.cs.columbia.edu/%7Esmb/blog/2011-05/2011-05-28.html)
+- [ENISA, Operation Black Tulip: DigiNotar did not immediately report the attack to customers or government authorities, which put the security and privacy of millions of citizens at risk; immediate reporting and a swift response would have limited the impact considerably](https://www.enisa.europa.eu/sites/default/files/all_files/Operation_Black_Tulip_v2.pdf)
+- [Help Net Security, a Microsoft responder on Conficker ten years later: once a patch is released it becomes possible for many more attackers to reverse engineer it and work out the vulnerability; patching hygiene remains poor, particularly in public bodies using old machines, and WannaCry and NotPetya were effective only because organisations had not applied a patch known for one and two months respectively](https://www.helpnetsecurity.com/2018/11/21/conficker/)
+- [Wired, on NotPetya at Maersk: 4,000 servers, 45,000 PCs and 2,500 applications lost, with Active Directory recovered only from a domain controller left offline by a power cut in Ghana](https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/)

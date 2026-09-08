@@ -1,0 +1,67 @@
+---
+slug: y2k-and-the-prevention-paradox
+title: "Y2K: o que custa estar certo sobre um desastre que então não acontece"
+summary: "Gastou-se algo entre duzentos e seiscentos bilhões de dólares, a meia-noite passou, quase nada quebrou, e quem fez o trabalho vem sendo chamado de charlatão desde então. O relato honesto é mais interessante que a versão de qualquer um dos lados: parte do medo era fundamentada, parte comprovadamente não era, e uma comparação nunca foi respondida de forma satisfatória."
+concepts: ["y2k", "prevention paradox", "remediation", "cobol", "embedded systems", "risk", "technical debt"]
+relatedTools: []
+relatedArticles: ["the-year-2038-problem", "there-is-no-perfect-code", "the-worm-era", "unix-time-explained"]
+category: security
+order: 124
+status: reviewed
+updated: "2026-09-08"
+---
+
+## O defeito
+
+Começou como uma economia sensata. Armazenamento e memória eram caros, e um ano podia ser escrito em dois dígitos em vez de quatro. Um programador em 1970 que escrevesse `74` em vez de `1974` poupava bytes em cada registro, em máquinas onde bytes eram a restrição que importava, e tinha toda razão de supor que o programa seria substituído muito antes de aquilo importar.
+
+Os programas não foram substituídos. Aritmética de datas está em toda parte no software de negócios - juros, vencimento de contrato, elegibilidade de aposentadoria, validade de estoque, ciclos de faturamento - e tudo isso é subtração. Subtraia `99` de `00` e você obtém menos noventa e nove anos. Um empréstimo vence no passado. Uma pessoa de noventa anos tem menos dez. Um item perecível venceu há um século ou nunca vencerá.
+
+Isso não é contestado por ninguém, e vale enunciar antes de a discussão começar, porque a discussão não é sobre se o defeito existia.
+
+## Quanto se gastou
+
+As estimativas variam muito, e é mais honesto dar a faixa do que escolher um número. Peter de Jager, que fez mais que ninguém para dar o alarme, estimou em 1993 que consertar aquilo no mundo custaria de cinquenta a setenta e cinco bilhões de dólares. Ficou muito abaixo. Só os Estados Unidos são estimados em cerca de cem bilhões, incluindo oito bilhões e meio do governo federal, pela contabilidade do Departamento de Comércio. Os totais mundiais na literatura vão de trezentos bilhões a seiscentos bilhões de dólares, conforme quem contou o quê.
+
+Então a meia-noite chegou, e quase nada aconteceu. Um homem em Nova York recebeu uma multa de atraso de locadora de noventa e um mil dólares. Falhas menores foram corrigidas. A infraestrutura sobre a qual todos tinham sido avisados continuou funcionando.
+
+## A tese cética, no seu ponto mais forte
+
+É fácil caricaturar os céticos como gente que não entende como se parece um desastre evitado. É mais útil, e mais honesto, enunciar seus melhores argumentos direito, porque dois deles são fortes.
+
+**O medo dos sistemas embarcados estava substancialmente errado.** Com algo entre sete e quarenta bilhões de microcontroladores no mundo - as próprias estimativas variavam enormemente - as projeções iniciais sugeriam que dois a três por cento poderiam falhar na virada. No fim de 1999 esse risco fora revisto para cerca de um milésimo de um por cento, e mesmo isso provavelmente era alto demais. Uma revisão de aeronaves comerciais não achou nenhum sistema essencial sensível a data. Foi essa a parte do pânico que levou gente a comprar geradores e estocar comida, e ela não sobreviveu ao contato com os testes.
+
+**E então há a Itália.** A Itália tinha muitos computadores e um esforço de remediação visivelmente atrasado em relação ao americano, e seus problemas em 1º de janeiro de 2000 não foram piores que os de ninguém. A refutação usual - que países menos preparados simplesmente tinham menos computadores - não se aplica à Itália, e esse é o fato mais duro contra a tese de que o gasto era necessário na escala em que aconteceu. Cerca de um terço das pequenas empresas americanas não fez preparação nenhuma, e também ficou quase tudo bem.
+
+## A tese a favor do trabalho, também no seu ponto mais forte
+
+**O defeito era real e demonstrável.** Não era um risco teórico sendo modelado; era código que se podia rodar num ambiente de teste com o relógio adiantado, produzindo respostas erradas sob demanda. As organizações acharam as falhas antes de a data chegar porque foram olhar. É uma posição epistêmica materialmente diferente da da maioria das previsões de desastre.
+
+**As falhas que ocorreram se concentraram em sistemas que ninguém tinha consertado.** É o padrão que se esperaria se a remediação tivesse funcionado, e é a razão de os profissionais insistirem depois que o silêncio era o resultado e não a refutação.
+
+**E as maiores instituições eram também as mais expostas.** Bancos, seguradoras, concessionárias e governos rodavam o código de aritmética de datas mais antigo na maior escala, e foram os que mais gastaram. Se os últimos cem bilhões eram necessários é discutível; se um sistema bancário global rodando COBOL dos anos 1970 sem exame pela virada ficaria bem é uma aposta que ninguém quis fazer.
+
+## O que não se resolve, e por que é esse o ponto
+
+Não há experimento. O mundo em que o dinheiro não foi gasto não existe para comparação, e a Itália é um país, não um grupo de controle. Quem lhe disser que a resposta está resolvida - em qualquer direção - está lhe falando das próprias premissas.
+
+Essa incerteza irredutível é o verdadeiro assunto deste artigo, porque é a condição diária do trabalho de segurança e de operações. **Uma prevenção bem-sucedida não produz evidência de si mesma.** A recompensa pela correção que impediu o surto, pela segmentação que conteve a intrusão, pelo backup que nunca foi preciso, é uma linha de orçamento que no ano seguinte parece injustificada. A [era dos worms](/learn/the-worm-era) mostra a outra metade da mesma moeda: nove anos de surtos cujos consertos existiam e não foram aplicados, porque aplicá-los custava algo e não aplicá-los parecia, até a manhã em que deixou de parecer, não custar nada.
+
+O Y2K é a maior instância já registrada de uma indústria ser convidada a gastar com base numa previsão, gastar, e então ser perguntada por que se incomodou.
+
+## O que um profissional deve tirar disso
+
+**Torne a falha demonstrável, não teórica.** A única força genuína da tese do Y2K era que dava para mostrar. Um sistema de teste com o relógio adiantado produzia o número errado na frente do diretor financeiro. Quem argumenta por um orçamento de segurança deveria procurar o equivalente: não um relatório de ameaças, mas este sistema, neste laboratório, fazendo esta coisa errada.
+
+**Ajuste o medo à evidência.** O pânico dos sistemas embarcados fez enorme dano à credibilidade de quem estava certo sobre os mainframes, e fez isso porque as alegações passaram do que os testes sustentavam. Estar certo sobre a parte importante não protege de estar ruidosamente errado sobre uma parte adjacente, e o público lembra da segunda.
+
+**Não espere crédito, e diga isso de antemão.** O jeito honesto de pedir dinheiro de prevenção é declarar desde o início que o sucesso será indistinguível de o problema nunca ter existido, e acordar de antemão que evidência contaria. Essa conversa é desconfortável e é muito melhor tê-la antes do gasto do que depois.
+
+**E repare no que o dinheiro de fato comprou.** Boa parte do gasto do Y2K foi em sistemas que já estavam atrasados para substituição, e as organizações saíram dele com um inventário documentado do próprio software - em muitos casos o primeiro que já tiveram. O [problema de 2038](/learn/the-year-2038-problem) é a mesma classe de defeito chegando com décadas de aviso, e está sendo tratado em silêncio, com antecedência, por gente que também não vai receber crédito.
+
+## Fontes
+
+- [Britannica: estimados 300 bilhões de dólares foram gastos, quase metade nos Estados Unidos, para atualizar computadores e aplicações à conformidade com o Y2K; quando ficou claro que os sistemas estavam intactos, o alívio foi seguido de acusações de que a incidência provável de falha fora muito exagerada, enquanto quem fizera o trabalho de conformidade sustentava que a ameaça era real e que a viabilidade continuada dos sistemas era prova de que o esforço dera certo](https://www.britannica.com/technology/Y2K-bug)
+- [Verbete de pesquisa da EBSCO: de Jager estimou em 1993 que tratar o problema custaria de 50 a 75 bilhões de dólares no mundo e foi conservador demais; só os Estados Unidos gastaram 100 bilhões, incluindo 8,5 bilhões do governo federal segundo o Departamento de Comércio, com a conta mundial estimada entre 500 e 600 bilhões; com entre 32 e 40 bilhões de chips em uso o potencial de problema era enorme; cerca de um terço das pequenas empresas americanas não fez preparação nenhuma; os críticos acusaram os especialistas de exagerar o perigo para assustar empresas a gastar sem necessidade](https://www.ebsco.com/research-starters/computer-science/y2k-crisis)
+- [The Straight Dope, sobre a tese cética e seus limites: a remediação é estimada entre 100 e 600 bilhões de dólares; o argumento de que países menos desenvolvidos usavam menos computadores não é crível para a Itália, que tinha muitos computadores e um esforço atrasado e não se saiu pior; dos 7 a 25 bilhões de chips embarcados no mundo, as estimativas iniciais sugeriam falha de 2 a 3 por cento, mas no fim de 1999 o risco fora reduzido a 0,001 por cento e mesmo isso provavelmente era alto; uma revisão de aeronaves comerciais não achou sistemas essenciais sensíveis a data; boa parte do gasto pode ter sido defesa contra litígio, e muito do software já estava para ser revisto](https://www.straightdope.com/21343978/was-all-that-money-spent-on-y2k-wasted)
+- [Slate, janeiro de 2000: governos e empresas gastaram entre 200 e 500 bilhões de dólares em cinco anos; os céticos apontam falhas menores como uma multa de locadora de 91 mil dólares, e países como Itália e Paraguai que gastaram pouco e parecem ter se saído tão bem quanto os Estados Unidos, que gastaram 100 bilhões; o consenso emergente entre especialistas era de que o gasto valera a pena, a começar pelo argumento de que a falta de preparação teria custado mais](https://slate.com/news-and-politics/2000/01/were-the-y2k-preparations-in-vain.html)

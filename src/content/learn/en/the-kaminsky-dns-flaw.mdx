@@ -1,0 +1,69 @@
+---
+slug: the-kaminsky-dns-flaw
+title: "The Kaminsky flaw: the summer eighty vendors patched the same bug on the same day"
+summary: "In 2008 a researcher realised that a known weakness in DNS was far worse than anyone had calculated - not a way to poison one record, but a way to take a whole domain in seconds, repeatably. What followed was the largest coordinated patch the internet had ever attempted, a fix that bought entropy rather than certainty, and a reminder that publishing a patch also publishes the vulnerability."
+concepts: ["dns cache poisoning", "kaminsky", "transaction id", "source port randomisation", "dnssec", "coordinated disclosure", "bailiwick"]
+relatedTools: []
+relatedArticles: ["dns-family-history", "dnssec-records-in-dig", "there-is-no-perfect-code", "the-worm-era"]
+category: security
+order: 121
+status: reviewed
+updated: "2026-09-08"
+---
+
+## What was already known, and what was not
+
+Cache poisoning was not a new idea in 2008. Everyone who worked on DNS (Domain Name System) understood the shape of it: a resolver asks an authoritative server a question and accepts the first answer that matches, and matching meant one thing - a sixteen-bit transaction identifier, sixty-five thousand five hundred and thirty-six possibilities. An attacker who could guess it and reply faster than the real server won. Papers had been written about it. It was regarded as difficult, slow, and largely theoretical.
+
+Two things made it worse than the arithmetic suggested and nobody had put them together. Many implementations sent their queries from a **fixed source port**, so the only unknown really was the transaction identifier. And a failed attempt was expensive: guess wrong, the real answer arrives, the record is cached, and the attacker must wait for the time-to-live to expire before trying again - possibly a day.
+
+Dan Kaminsky, then director of penetration testing at IOActive, found the way around the waiting.
+
+## The trick
+
+Instead of attacking `www.example.com`, ask the resolver for `aaaa1.example.com` - a name that does not exist and therefore cannot be in the cache. The resolver has no choice but to go and ask. Now race it. And crucially, put in the forged reply not just an answer for that meaningless name, but a **delegation**: authority records naming the attacker's server as the nameserver for the whole domain, with the glue records to reach it.
+
+Lose the race and it costs nothing, because the name was junk. Try again immediately with `aaaa2`, `aaaa3`, as fast as the link allows. Win once and the resolver caches not one record but the attacker's server as the authority for the entire zone - every name under it, for as long as the delegation lives.
+
+That is the whole discovery, and it converts a slow, chancy attack into one that succeeds in seconds. Everything the internet does rests on names resolving correctly: web traffic, mail routing, software updates, and the password reset email that authenticates most accounts. Kaminsky took it to Paul Vixie, whose reported assessment was that everything in the digital universe was going to have to get patched.
+
+## 8 July 2008
+
+What happened next had no precedent. Kaminsky went to the Department of Homeland Security and to executives at Cisco and Microsoft. A secret meeting was convened. Vendors who competed with each other, and whose implementations shared nothing but the protocol, were briefed on a flaw none of them could fix alone - because a patched resolver talking to unpatched infrastructure is still exposed, and the whole point of DNS is that everyone's resolvers talk to everyone's servers.
+
+On 8 July 2008 more than eighty vendors released patches simultaneously. The advisory carried CVE-2008-1447 and CERT vulnerability note VU#800113. The Internet Systems Consortium's own bulletin for BIND listed every affected version - which was, effectively, all of them - and said something worth quoting for its bluntness: DNSSEC is the only full solution, and the new versions provide increased resilience to the attack.
+
+**Resilience, not immunity.** That word choice is the honest part of the whole episode.
+
+## What the fix actually bought
+
+The patch was source port randomisation. Instead of asking from a predictable port, a resolver picks a random one for each query, and the attacker must now guess both the transaction identifier and the port - roughly thirty-two bits instead of sixteen. That does not make forgery impossible. It makes it about sixty-five thousand times harder, which converts an attack that takes seconds into one that takes long enough to notice.
+
+This is worth being precise about, because it is a pattern practitioners meet constantly and often misread. The fix did not repair the protocol. DNS still authenticates a response by whether its fields match a question, which is not authentication in any cryptographic sense. What the fix did was raise the cost. The actual repair is DNSSEC, which signs the records so that a forged answer fails validation regardless of how well it guesses - and DNSSEC's adoption remains partial nearly two decades later, which is why the [DNSSEC article](/learn/dnssec-records-in-dig) on this site describes checking rather than assuming.
+
+## The embargo, and the thing embargoes cannot solve
+
+The plan was that the patch would ship on 8 July and Kaminsky would explain the mechanism at Black Hat on 7 August, giving the internet a month to update before anyone knew what they were updating against. The talk happened; the room was full to the floor.
+
+But the month did not stay quiet, and the reason is structural rather than anyone's fault. **A patch is a description of the vulnerability.** Anyone competent can compare the new code with the old and work backwards to what it prevents. The [Conficker retrospective](/learn/the-worm-era) makes the same point from Microsoft's side, and the [Juniper backdoor](/learn/there-is-no-perfect-code) is its sharpest illustration - researchers extracted the hardcoded password within six hours of the patch being public. An embargo protects the interval before the fix exists. Once the fix ships, the clock the defender is racing is set by whoever reads diffs fastest.
+
+## What a practitioner should take from it
+
+**Randomisation is a cost, not a boundary.** Any control described in bits of entropy is buying time. That is often the right trade and it should be understood as one, especially when the number of bits was chosen decades ago for a network of a different size.
+
+**The resolver you run is the one that matters.** The flaw was in resolvers, not authoritative servers, and the exposure belonged to whoever operated the recursive service - which is why the [choosing a public resolver](/learn/choosing-a-public-dns-resolver) question is a security question and not just a latency one.
+
+**Coordination at that scale is possible and is rare.** Eighty vendors patching one protocol flaw on one day happened because someone spent months organising it in private, and because the alternative was visibly catastrophic. It is the model the industry cites, and it has not often been repeated at that scale.
+
+**And the person mattered.** Kaminsky found it, chose to coordinate rather than publish, and spent the years afterwards on the fix rather than the finding - ICANN named him one of the trusted community representatives for the DNSSEC root in 2010. He died in April 2021, aged forty-two. The New York Times had called him a digital Paul Revere, which is florid and, on the record of that summer, not wrong.
+
+## Sources
+
+- [Internet Systems Consortium advisory, 8 July 2008: a weakness in the DNS protocol may enable the poisoning of caching recursive resolvers with spoofed data; DNSSEC is the only full solution and new versions of BIND provide increased resilience; CVE-2008-1447, VU#800113; affected versions include BIND 8 (all), 9.0 through 9.4.2 and 9.5.0 betas; full details to be explained by Kaminsky at Black Hat on 7 August](https://kb.isc.org/docs/aa-00924)
+- [Dark Reading, 6 August 2008: on Tuesday 8 July, Kaminsky and more than 80 technology vendors launched an unprecedented campaign to fix a flaw in widely distributed DNS software; at Black Hat attendees occupied every available seat and most of the floor space](https://www.darkreading.com/vulnerabilities-threats/dan-kaminsky-reveals-dns-flaw-at-black-hat)
+- [United States Naval Academy course notes: in 2008 Kaminsky discovered a fundamental flaw in DNS allowing easy cache poisoning on most nameservers, making website impersonation, email interception and authentication bypass via password-reset features feasible; he contacted Paul Vixie, who described the severity as meaning everything in the digital universe was going to have to get patched, then alerted the Department of Homeland Security and executives at Cisco and Microsoft; before the attack was announced most DNS implementations used a fixed source port](https://www.usna.edu/Users/cs/choi/it432/lec/l07/lec.html)
+- [On the mechanism: the attacker issues a flurry of queries for different random names under the target domain, evading the resolver's cache and triggering outstanding outgoing queries, then generates replies guessing the source port and transaction ID, each containing spoofed NS and glue records as delegation information; the resolver caches these and uses them as authoritative for subsequent resolutions](https://arxiv.org/pdf/1605.01394)
+- [On the arithmetic: the DNS transaction ID field is 16 bits, so a correctly implemented random ID requires on average 32,768 attempts; some implementations used fewer bits or generated IDs with known randomness defects](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/7930428)
+- [On the coordinated response: vendors collaborated with Kaminsky and other industry experts on a plan to patch the flaw and simultaneously released the patch on 8 July 2008](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10834066)
+- [On the fix and its limits: resolvers were patched to support the best practices of RFC 5452 - randomising fields including source port and transaction ID, validating them in responses, and applying bailiwick checks - which made DNS resilient to off-path cache poisoning; later work developed new attacks using side channels and fragmentation](https://arxiv.org/pdf/2205.05439)
+- [Wikipedia, Dan Kaminsky: 7 February 1979 to 23 April 2021; director of penetration testing at IOActive; known for the 2008 DNS cache poisoning vulnerability and for showing the Sony rootkit had infected at least 568,000 computers; named by ICANN in June 2010 as one of the Trusted Community Representatives for the DNSSEC root; the New York Times labelled him an internet security savior and a digital Paul Revere](https://en.wikipedia.org/wiki/Dan_Kaminsky)

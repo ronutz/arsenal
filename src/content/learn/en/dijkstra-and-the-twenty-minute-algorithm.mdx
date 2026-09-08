@@ -1,0 +1,70 @@
+---
+slug: dijkstra-and-the-twenty-minute-algorithm
+title: "Dijkstra: the twenty-minute algorithm your routers run every day"
+summary: "In 1956 a 26-year-old physicist sat on a café terrace in Amsterdam with his fiancée, had no pen and no paper, and in about twenty minutes worked out the shortest-path algorithm. He did it because he needed a demonstration that people who knew nothing about computers could follow. Seventy years later it runs inside every OSPF (Open Shortest Path First) and IS-IS router on earth."
+concepts: ["dijkstra", "shortest path", "spf", "ospf", "is-is", "graph", "structured programming", "armac"]
+relatedTools: []
+relatedArticles: ["ospf-primer", "isis-primer", "the-rfc-series", "reflections-on-trusting-trust"]
+category: security
+order: 128
+status: reviewed
+updated: "2026-09-08"
+---
+
+## Why a networking site owes him an article
+
+Open the routing table on almost any enterprise network and something in the path was decided by an algorithm published in 1959, in a two-page paper, by a Dutchman who had not yet finished his doctorate.
+
+Link-state routing protocols work by giving every router the same map: each one floods a description of its own links, everybody assembles an identical picture of the network, and then each router independently computes the best path from itself to everywhere else. That last step - the computation - is Dijkstra's shortest-path algorithm, which is why the process is called SPF, shortest path first - the name survives in OSPF, Open Shortest Path First - and why the [OSPF primer](/learn/ospf-primer) and the [IS-IS primer](/learn/isis-primer) both use his name in passing. This article is the part they leave out.
+
+## The café
+
+Edsger Wybe Dijkstra was born in Rotterdam in 1930 and read theoretical physics at Leiden, graduating in 1956. He was working at the Mathematical Centre in Amsterdam, which had just finished building a new computer called the ARMAC and wanted to demonstrate it publicly.
+
+That is the origin of the algorithm, and it deserves emphasis because it inverts the usual story about difficult mathematics. Dijkstra was not solving a routing problem. **He needed a demonstration that non-specialists could follow.** In his own words, for a demonstration for non-computing people you have to have a problem statement that non-mathematicians can understand - and they have to be able to understand the answer too. So he chose the shortest route between two Dutch cities, on a reduced map with sixty-four of them, sixty-four having been picked because six bits are enough to identify one.
+
+The solving happened elsewhere. His account, given in an interview decades later, is one of the most quoted passages in computing:
+
+> One morning I was shopping in Amsterdam with my young fiancée, and tired, we sat down on the café terrace to drink a cup of coffee and I was just thinking about whether I could do this, and I then designed the algorithm for the shortest path. As I said, it was a twenty-minute invention.
+
+No pen. No paper. He remarked afterwards that designing without them had an advantage, in what the absence forced on him.
+
+The story is usually told as a man ignoring his fiancée to think about mathematics, which is both unfair and less interesting than the truth. Ria Debets was a programmer. She was one of about a dozen women who had left school with exceptional marks in mathematics and had been hired into the Mathematical Centre's new computing department - and Dijkstra had taught her and her colleagues to program. They married about a year later and were together until his death in 2002.
+
+He did not bother publishing for three years, and only then because somebody told him he should. *A Note on Two Problems in Connexion with Graphs* appeared in **Numerische Mathematik** in 1959 and runs to a couple of pages. The shortest path is in the second half; the first half is a separate and equally durable algorithm for the minimum spanning tree. He learned the thing had a name when he saw it in a German management-science book in 1960, as *Das Dijkstra'sche Verfahren*.
+
+## What the algorithm actually does
+
+It is worth stating plainly, because it is simpler than its reputation.
+
+You want the cheapest route from where you are to everywhere else, on a map where each road has a cost. Keep a running best-known cost to each place, starting at zero for where you are and unknown for everything else. Then repeat one step: **take the unvisited place with the lowest known cost, mark it visited, and for each of its neighbours check whether going via this place is cheaper than the best you had.** If it is, write down the better number. Stop when there is nothing left to visit.
+
+That is all. The insight - the part that took twenty minutes and is not obvious - is that once you take the cheapest unvisited place, its cost is *final*. Nothing you discover later can improve it, because any other route to it would have to pass through somewhere more expensive first. That single guarantee is why the procedure terminates with correct answers rather than needing to reconsider everything, and it is the reason a router can compute a full topology in milliseconds instead of trying every possible path.
+
+It also explains a practical constraint that catches people: **the guarantee depends on costs never being negative.** A link cannot have a negative metric, and this is not an arbitrary vendor restriction.
+
+## The other Dijkstra
+
+The algorithm is his most-used contribution and probably not his most important one. He spent the rest of a long career - Eindhoven from 1963, a research fellowship at Burroughs, then the University of Texas at Austin until 2000 - arguing, at length and with enormous stylistic confidence, that programming should be a mathematical discipline rather than a craft of trial and error.
+
+He gave the field structured programming. He gave it semaphores and the vocabulary for concurrent processes. And he gave it the habit, largely lost, of reasoning about whether a program is correct instead of running it to see. His most quoted line on the subject belongs in any discussion of testing: **program testing can be used to show the presence of bugs, but never to show their absence.** That is not a rhetorical flourish; it is a statement about what evidence a test provides, and the [no-perfect-code argument](/learn/there-is-no-perfect-code) on this site is a fifty-year-later restatement of it.
+
+He wrote over a thousand numbered manuscripts - the EWD series - by hand, in fountain pen, and circulated photocopies to colleagues who circulated them further. It was a private samizdat of technical opinion, and it made him the most quoted and most argued-with person in his field.
+
+## What a practitioner should take from it
+
+**The most-used algorithm in networking was designed as a teaching aid.** It exists because someone needed to explain a machine to people who did not understand machines, and decided the way to do that was to pick a problem and an answer they could both understand. Anyone who teaches technical subjects should sit with that for a moment. The constraint of having to be understandable did not weaken the result; it produced it.
+
+**Constraints on thinking can be productive.** No pen, no paper, twenty minutes, and the result was small enough to be correct and to still be running seventy years later. Dijkstra himself thought the absence of writing materials was part of why it came out clean.
+
+**And the algorithm has a shape you can hold in your head.** Take the nearest unvisited thing; its cost is now final; update its neighbours; repeat. When an OSPF adjacency comes up and the topology recomputes, that is what is happening - and a practitioner who knows it can reason about why a metric change had the effect it did, rather than treating the routing table as an oracle.
+
+## Sources
+
+- [Britannica: Edsger Dijkstra, born 11 May 1930 in Rotterdam, died 6 August 2002 in Nuenen, developed the paradigm of structured programming; PhD from the University of Amsterdam in 1959 while at Amsterdam's Mathematical Center (1952-62); taught at the Technical University of Eindhoven 1963-73, was a research fellow at Burroughs 1973-84 and professor at the University of Texas at Austin 1984-2000; he devised the shortest-path solution in 20 minutes in a café with his fiancée Maria Debets, and the algorithm is still used in the routing of communication networks and in flight planning](https://www.britannica.com/biography/Edsger-Dijkstra)
+- [CWI, the institution's own history page: it was a twenty-minute invention conceived over coffee on a café terrace with his fiancée Ria, whom he had met at the Mathematisch Centrum; he used it in 1956 to showcase the potential of the new ARMAC computer, understanding that a demonstration for laypeople had to have a problem and an answer they could understand, so he designed an algorithm to find the shortest route between two cities in the Netherlands on a simplified map; it was not published until 1959](https://www.cwi.nl/en/about/history/e-w-dijkstra-brilliant-colourful-and-opinionated/)
+- [MacTutor, University of St Andrews: for a demonstration for non-computing people you have to have a problem statement that non-mathematicians can understand, and they have to understand the answer; he used a reduced roadmap of the Netherlands with 64 cities selected so that 6 bits would suffice to identify a city; the shortest distance algorithm and his algorithm for the shortest spanning tree were published together in the two-page paper "A Note on Two Problems in Connexion with Graphs" (1959)](https://mathshistory.st-andrews.ac.uk/Biographies/Dijkstra/)
+- [Wikipedia, Dijkstra's algorithm, quoting his interview: "One morning I was shopping in Amsterdam with my young fiancée, and tired, we sat down on the café terrace to drink a cup of coffee and I was just thinking about whether I could do this, and I then designed the algorithm for the shortest path. As I said, it was a twenty-minute invention. In fact, it was published in '59, three years later. The publication is still readable... One of the reasons that it is so nice was that I designed it without pencil and paper"](https://en.wikipedia.org/wiki/Dijkstra's_algorithm)
+- [David Gries, Cornell: he developed it in his head in twenty minutes, with no paper and pencil; he did not bother publishing it until someone told him he should, two to three years later; his fiancée Ria Debets was herself a programmer, one of about a dozen women who had completed school with exceptionally high grades in mathematics and were hired into the new computing department at the Mathematical Center, and Dijkstra had taught Ria and the other women to program; they married about a year later and were close companions until he died in 2002](https://www.cs.cornell.edu/courses/JavaAndDS/shortestPath/01shortestPathHistory.pdf)
+- [Cornell CS2110 lecture notes, citing the CACM interview and the publication: E.W. Dijkstra, "A note on two problems in connexion with graphs", Numerische Mathematik 1, 269-271 (1959); the invention took place in 1956, when he was 26](https://www.cs.cornell.edu/courses/cs2110/2018sp/L19-GraphsIII/cs2110ShortestPathPresentation.pdf)
+- [On the ARMAC demonstration and the naming: using the technique, ARMAC could find the shortest path between 64 cities in the Netherlands; the procedure was published after three years in a three-page paper with the shortest path in the second half; in 1960 Dijkstra found it in a German management-science book named after him, "Das Dijkstra'sche Verfahren"](https://medium.com/@balajeraam/dijkstra-the-person-algorithm-5016ebe9468)

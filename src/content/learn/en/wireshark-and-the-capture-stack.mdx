@@ -1,0 +1,62 @@
+---
+slug: wireshark-and-the-capture-stack
+title: "Wireshark: the tool that made packets legible, and the stack underneath it"
+summary: "In July 1998 a network engineer at a small Kansas City provider announced a program he had written because the commercial analysers cost fifteen hundred dollars and did not run on his platforms. Within days strangers were sending patches. It lost its own name to a trademark in 2006, outlived three corporate sponsors, and is now the reason a practitioner can read a protocol they have never met."
+concepts: ["wireshark", "ethereal", "tcpdump", "libpcap", "bpf", "packet capture", "dissector", "gerald combs"]
+relatedTools: []
+relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture"]
+category: security
+order: 119
+status: reviewed
+updated: "2026-09-08"
+---
+
+## The announcement
+
+On the evening of 14 July 1998 Gerald Combs sent a message to a mailing list for GTK developers. It is four sentences long and it survives, because he republished it himself twenty-five years later:
+
+Ethereal is a network analyzer that lets you capture and interactively browse the contents of Ethernet frames. Packet data can be read from a file, or live from a local network interface. Comments and patches are welcome.
+
+He was a computer science graduate of the University of Missouri-Kansas City working for a small internet provider called Network Integration Services. The commercial protocol analysers of the day cost around fifteen hundred dollars and did not run on Solaris or Linux, which were what his employer used - so, needing the tool and wanting to learn how networks actually behaved, he wrote one. He has said he was nervous about the reaction.
+
+Within days, patches, bug reports and encouragement began arriving from people he had never met. Gilbert Ramirez contributed a low-level dissector. In October, Guy Harris - looking for something better than the tool he had - started sending patches and dissectors of his own. And in late 1998 Richard Sharpe, who taught TCP/IP courses, looked at it to see whether it supported the protocols his students needed. It did not, but new protocols turned out to be easy to add, and that single property is why the project still exists.
+
+## Why the architecture mattered more than the program
+
+A protocol analyser has to know how to interpret bytes. The commercial products of the 1990s shipped with the protocols their vendor had implemented, and if you needed a protocol they had not, you waited or you paid. Ethereal's dissectors were separate, self-contained and contributable, so the people who needed a protocol decoded could add it themselves - and the people who needed it most were the people implementing it.
+
+That is the same organisational property the [RFC series](/learn/the-rfc-series) has: anyone may contribute, nothing needs permission, and the artefact grows towards whatever its users actually do. Wireshark now dissects thousands of protocols, including proprietary and vendor-specific ones, and that includes the [BIG-IP capture trailer](/learn/reading-a-bigip-capture) this site has an article about - a vendor's internal diagnostic fields, readable in a general-purpose open-source tool, because someone wrote the dissector.
+
+## The stack underneath
+
+Wireshark is the visible layer of four things, and a practitioner should know which is which, because when something fails it is usually not the part with the user interface.
+
+**BPF**, the Berkeley Packet Filter, is the kernel mechanism that decides which packets are copied to a listening program, evaluating a small filter program per packet so that the ones you did not ask for are discarded before they cost anything. **libpcap** is the portable library that gives programs access to that mechanism and hides the differences between operating systems. **tcpdump** is the command-line capture tool built on libpcap, and the reason the same filter syntax works everywhere. **Wireshark** is the analyser: it can capture, but its real work is interpreting a file that something else produced.
+
+That division is why the practical workflow on a production device is almost always to capture with tcpdump where the traffic is and analyse in Wireshark where you are. It is also why the [capture-points article](/learn/capture-points-before-packets) argues about position before it argues about tooling: the filter you write in the kernel determines what exists, and no amount of analysis recovers a packet that was never copied.
+
+## Losing the name
+
+In May 2006 Combs left Network Integration Services for CACE Technologies, joining Loris Degioanni - who as a student in Italy had written WinPcap, the capture library that let Ethereal run on Windows in the first place. Combs held copyright on most of the source and the rest was redistributable under the GPL, so the code came with him. The trademark did not: Ethereal belonged to his former employer, and no agreement could be reached. So the project was renamed.
+
+What he said about it is the part worth keeping, because it is not how such stories usually go: there was no fight, he was deeply disappointed about the trademarks but understood the decision, and he still held everyone there in high regard. He also said he would register the new name himself so the situation could not recur. Wireshark 1.0 arrived in 2008, ten years after the first release, alongside the first SharkFest.
+
+The sponsorship then moved three times - Riverbed bought CACE in 2010, Combs moved to Sysdig, and in 2023 the project moved to the Wireshark Foundation, a nonprofit. Degioanni's own account of that lineage names what was actually built: not a program, but a packet capture stack - Wireshark, tcpdump, libpcap and BPF - on which a great deal of later work, his own included, was founded.
+
+## What it means for a practitioner
+
+**A capture is evidence, and it is also a disclosure.** A packet capture from a production network contains credentials in whatever protocols still send them, personal data, and the contents of business documents. It should be handled like the sensitive artefact it is: taken with a filter that limits it, stored deliberately, and deleted. This is the same observation the [interception tools article](/learn/the-interception-tools) makes about proxies, and it applies more sharply here because a capture file outlives the session.
+
+**Encryption changed what capture answers, and did not make it useless.** TLS means the payload is not readable, but timing, sizes, addresses, the handshake and the certificate remain - which is enough to answer most questions about whether a connection was established, what was negotiated, where it failed and how long it took. When the payload genuinely is needed, the honest routes are a key log file from a browser you control, or decryption at a device that terminates the session, and both leave a record of a deliberate decision.
+
+**And the tool is free because one person needed it and gave it away.** The commercial analysers Combs could not afford in 1997 are long gone. What replaced them is the thing he wrote to learn with, maintained by a foundation, and taught in every networking course including, very likely, the one you sat in.
+
+## Sources
+
+- [Gerald Combs, "Wireshark is 25", the official Wireshark blog, July 2023: the original announcement of Ethereal 0.2.0 sent on 14 July 1998, reproduced in full, and his recollection of being nervous and excited about the reaction after spending months building a protocol analyser he needed at work](https://blog.wireshark.org/2023/07/wireshark-is-25/)
+- [Wireshark User's Guide, A Brief History of Wireshark: in late 1997 Combs needed a tool for tracking down network problems and wanted to learn more about networking; Ethereal was released in July 1998 as version 0.2.0 and within days patches, bug reports and words of encouragement arrived; Gilbert Ramirez contributed a low-level dissector, Guy Harris began contributing in October 1998, and Richard Sharpe, who was giving TCP/IP courses, found that new protocols could be easily added; the project was renamed in 2006, reached 1.0 in 2008 alongside the first SharkFest, and moved to the Wireshark Foundation in 2023](https://www.wireshark.org/docs/wsug_html_chunked/ChIntroHistory.html)
+- [Wikipedia, Wireshark: Combs, a computer science graduate of the University of Missouri-Kansas City, was working for a small internet service provider; commercial protocol analysis products cost around 1,500 dollars and did not run on Solaris and Linux; the Ethereal trademark is owned by Network Integration Services, so when he joined CACE Technologies in 2006 he used the Ethereal repository as the basis for Wireshark under a new name; Riverbed purchased CACE in 2010](https://en.wikipedia.org/wiki/Wireshark)
+- [On Combs' own statement about the trademark: there was no fight, he was deeply disappointed about the trademarks but understood the decision and still held everyone at his former employer in high regard, and he intended to register the new name himself to prevent a recurrence](https://en-academic.com/dic.nsf/enwiki/2888498/)
+- [Loris Degioanni, on joining forces: WinPcap, which he developed as a university student in Italy, was used to port Ethereal to Windows; Combs joined his company CACE Technologies in 2006, where they renamed Ethereal as Wireshark; his later work was heavily inspired by the packet capture stack - Wireshark, tcpdump, libpcap, BPF - that they helped define](https://www.sysdig.com/blog/wireshark-creator-joins-sysdig)
+- [SDxCentral, 2023: the project began in 1998 as Ethereal and was rebranded in 2006, following corporate sponsorship as Combs changed jobs - CACE until its acquisition by Riverbed in 2010, then Sysdig - before moving to the nonprofit Wireshark Foundation](https://www.sdxcentral.com/news/open-source-wireshark-network-protocol-analyzer-finally-gets-its-own-foundation/)
+- [DPI Consortium: in 2006 Combs contacted the authors of the WinPcap capture driver, Loris Degioanni and Gianluca Varenni, about improving wireless capture on Windows; the conversations led to him joining CACE Technologies, to the AirPcap wireless adapter, and to the renaming of the project](https://dpiconsortium.org/history/ethereal/)

@@ -1,0 +1,71 @@
+---
+slug: moonlight-maze-titan-rain-aurora
+title: "Moonlight Maze, Titan Rain, Aurora: the three campaigns that taught the industry a new word"
+summary: "Between 1996 and 2010 three intrusion campaigns moved the target from government networks, to the contractors that serve them, to the technology companies everyone uses. One was found by accident, one by a man working nights who lost his job over it, and one was announced by the victim on its own blog - a decision that changed how breaches are disclosed and produced the architecture now sold as zero trust."
+concepts: ["moonlight maze", "titan rain", "operation aurora", "apt", "advanced persistent threat", "cyber espionage", "turla", "beyondcorp"]
+relatedTools: []
+relatedArticles: ["stuxnet-and-the-first-cyberweapon", "rsa-and-diginotar-2011", "zero-trust-ztna-and-sase-without-the-marketing", "eternalblue-wannacry-notpetya"]
+category: security
+order: 113
+status: reviewed
+updated: "2026-09-07"
+---
+
+## Why these three
+
+A practitioner today uses the phrase advanced persistent threat without thinking about it. The phrase exists because of a specific problem defenders had in the 2000s: the intrusions they were seeing were not defined by their technique - the techniques were often unremarkable - but by the attacker's patience, funding and willingness to stay for years. The word for that did not exist, so one was made.
+
+These are the three campaigns that made it necessary. They are worth reading together because the target moves in each one, and the movement is the lesson.
+
+## Moonlight Maze, 1996-1999: the government
+
+From around October 1996, someone was systematically reading American military, government and research networks. The list of victims is long and specific: the Pentagon, NASA, Department of Energy laboratories, the Army Research Laboratory, Wright-Patterson and Kelly Air Force Bases, the Naval Sea Systems Command, universities. Over 1,600 addresses. Victims were also found in the United Kingdom, Canada, Germany and Brazil.
+
+The methods were not exotic. The intruders used publicly known flaws - the CGI-bin PHF bug among them - and a publicly available backdoor called LOKI2 that tunnelled its command channel inside ICMP, the protocol behind ping. They proxied through university networks and small businesses, which is the same reasoning any operator would use: those networks have good connectivity and their traffic looks ordinary. They worked methodically on Unix systems, and logs recovered from compromised servers in London showed operator names and a working day aligned to a time zone three hours ahead of Greenwich.
+
+It was found by accident, in 1998, when investigators noticed abnormal activity on restricted networks - two years after it started. The FBI opened its investigation in July 1998, and by late 1999 there was a task force of some forty specialists from law enforcement, the military and government. Investigators claimed that a printout of what had been taken would stand three times the height of the Washington Monument. The Pentagon ordered 200 million dollars of new cryptographic equipment.
+
+Attribution pointed to Russian internet providers by mid-1998, and the director of the FBI's infrastructure protection centre said the intrusions appeared to originate in Russia while describing the evidence as circumstantial at best. That caution was appropriate then and the correction arrived nineteen years later: in 2016 and 2017, Thomas Rid of King's College London and researchers at Kaspersky, working from recovered logs and samples, connected the LOKI2 toolkit used in the 1990s to Penquin Turla, a Linux backdoor used by the Turla group into the 2010s. The oldest publicly acknowledged state actor and one of the most capable modern ones appear to be the same lineage. The code name was retired and replaced more than once along the way, which is itself the point: the campaign did not end, it was renamed.
+
+## Titan Rain, 2003-2005: the contractors
+
+The second campaign went after the companies that build things for the government rather than the government itself: a break-in at Lockheed Martin in September 2003, a strikingly similar one at Sandia National Laboratories - where much of the American nuclear arsenal is designed - then Redstone Arsenal and NASA. American and British defence and intelligence bodies were both hit. Reporting has attributed the campaign to a Chinese military unit, and that attribution should be read as reported rather than established.
+
+The part worth teaching is how it was found. Shawn Carpenter, a network security analyst at Sandia, investigated the Lockheed break-in, compared notes with a counterpart in Army intelligence, and recognised the pattern. He was struck by how fast the intruders worked - a network sometimes emptied in under thirty minutes - and he began, on his own time, tracking them across the world at night from his house, passing what he found to the Army and later the FBI. Time magazine put the story on its cover in September 2005, a few days after the Washington Post first reported the campaign from anonymous officials.
+
+His employer's position was that his only concern should be Sandia's own network, and he lost his job over what he had done. Both halves of that belong in the record. An organisation's incident responder discovers that the intrusion in front of him is part of something much larger; the information is useful to people outside his employer and to nobody inside it; and the structures for sharing it did not exist. Much of the threat-intelligence sharing apparatus that does exist today - the sector information-sharing centres, the coordinated advisories - was built because of cases like this one.
+
+## Operation Aurora, 2009-2010: everyone else
+
+The third campaign changed target again, and this time the victims were technology companies. From mid-2009 into December, operators used a zero-day in Internet Explorer, later catalogued as CVE-2010-0249, to reach inside some thirty-four companies, Google and Adobe among them. Researchers at McAfee named it after a folder called Aurora found in the attackers' binaries.
+
+Two things were being taken. One was intellectual property - specifically source code repositories, which matter more than they sound: possession of source lets an attacker find flaws without guessing, and in principle lets them change code that later ships. The other was the Gmail accounts of Chinese human rights activists.
+
+What made Aurora a turning point was not the intrusion. It was that on 12 January 2010 Google published a post called "A New Approach to China" saying it had been attacked, naming the country it believed responsible, and describing the activist targeting. Before that, large companies did not do this. Breaches were handled quietly, described in the passive voice or not at all - the [RSA and DigiNotar](/learn/rsa-and-diginotar-2011) entries a year later show how much of the old norm survived. A victim naming an attacking state on its own blog forced every other company in the industry to decide what it would do in the same position, and it is the origin of a disclosure practice that is now ordinary.
+
+The second consequence was architectural. Aurora's operators moved freely once inside because the corporate network was trusted by default - a person on the internal network was assumed to belong there. Google's response, developed from 2014, was to stop making that assumption, authenticating every request by user and device regardless of where it came from. That is BeyondCorp, and it is where the model the industry now sells as zero trust actually came from; the [zero trust article](/learn/zero-trust-ztna-and-sase-without-the-marketing) covers what it does and does not mean.
+
+## What the sequence teaches
+
+**The target moved outward, and it kept moving.** Government networks, then their suppliers, then the platforms everyone uses. The [supply chain taxonomy](/glossary/supply-chain-attack) is the continuation of this line: if the ministry is hard, take the contractor; if the contractor is hard, take the software they both run.
+
+**The techniques were mostly ordinary.** A known CGI flaw, a public backdoor, a browser zero-day, credential reuse. What distinguished these campaigns was duration and organisation, not brilliance - which is why the word invented for them describes the adversary rather than the attack.
+
+**Detection was the failure, every time.** Two years for Moonlight Maze, and it was found by chance. Titan Rain was found because one analyst worked nights. Aurora was found by Google's own investigation, which is the exception and the reason it reads differently from the other two.
+
+**And attribution ages.** The Moonlight Maze evidence was called circumstantial in 1999 and was substantially strengthened in 2017 by researchers working on twenty-year-old logs that someone had kept. Attribution is a claim with a confidence level and a date, not a fact, and the useful discipline for a practitioner is to record what the evidence supports at the time and stay willing to revise it. The record here holds both the caution of 1999 and the finding of 2017, because both were correct when made.
+
+## Sources
+
+- [Kaspersky and Thomas Rid, "Penquin's Moonlit Maze": intrusions began as early as 1996 against US military and government networks including Wright-Patterson and Kelly Air Force Bases, the Army Research Lab, the Naval Sea Systems Command, NASA and Department of Energy labs; by mid-1998 the FBI and Department of Defense had forensic evidence pointing to Russian internet providers; the code name was later replaced](https://media.kasperskycontenthub.com/wp-content/uploads/sites/43/2018/03/07180251/Penquins_Moonlit_Maze_PDF_eng.pdf)
+- [Securelist, on the same research: Rid's claim at SAS 2016 that the actor had evolved into the modern Turla; the attacks depended on a Solaris and Unix toolkit rather than Windows, which pointed the researchers to Penquin Turla, the Linux backdoor Kaspersky announced in 2014](https://securelist.com/penquins-moonlit-maze/77883/)
+- [SecurityWeek: Kaspersky and King's College London identified a link between Turla and Moonlight Maze; the group began spying around 1996 on the Pentagon, the Department of Energy and NASA, and the activities were first made public in 1999](https://www.securityweek.com/turla-linked-one-earliest-cyberespionage-operations/)
+- [Wikipedia, Moonlight Maze: a breach of classified US government information lasting from 1996 to 1998, one of the first widely known cyber espionage campaigns; investigators claimed a printout of the stolen material would stand three times the height of the Washington Monument; by the end of 1999 the task force comprised forty specialists](https://en.wikipedia.org/wiki/Moonlight_Maze)
+- [Control Engineering: the attack started in 1996 and was not discovered until spring 1998 when investigators found abnormal activity on restricted networks; FBI infrastructure protection director Michael Vatis said the intrusions appeared to originate in Russia although the evidence was circumstantial at best; the Pentagon ordered 200 million dollars of new cryptographic equipment](https://www.controleng.com/throwback-attack-russia-launches-its-first-cyberattack-on-the-u-s-with-moonlight-maze/)
+- [Chris Doman: the investigation widened as the attackers compromised the Army, Los Alamos and Sandia laboratories; victims spanned the United States, United Kingdom, Canada, Brazil and Germany; the attackers proxied through university networks and small businesses, whose fast links and legitimate-looking traffic made them good relays](https://medium.com/@chris_doman/the-first-sophistiated-cyber-attacks-how-operation-moonlight-maze-made-history-2adb12cc43f7)
+- [Time magazine, 5 September 2005, "The Invasion of the Chinese Cyberspies": Shawn Carpenter, 36, an analyst at Sandia National Laboratories where much of the US nuclear arsenal is designed, worked nights tracking the group; the ring first caught his attention when he helped investigate a break-in at Lockheed Martin in September 2003, and a strikingly similar attack hit Sandia months later; the Washington Post first reported the campaign on 25 August 2005](https://courses.cs.washington.edu/courses/csep590/05au/readings/titan.rain.htm)
+- [Wikipedia, Shawn Carpenter: a cyber security analyst and whistleblower previously employed by Sandia, who tracked the ring code-named Titan Rain; he was struck by the meticulous and swift manner of the intruders, sometimes completing an intrusion in under thirty minutes; after informing his supervisors he was told his only concern should be Sandia](https://en.wikipedia.org/wiki/Shawn_Carpenter)
+- [Wikipedia, Titan Rain: defence contractor networks targeted for sensitive information, including Lockheed Martin, Sandia National Laboratories, Redstone Arsenal and NASA; the attacks are reported to be the result of actions by a People's Liberation Army unit, and hit both the US Defense Intelligence Agency and the UK Ministry of Defence](https://en.wikipedia.org/wiki/Titan_Rain)
+- [Threatpedia, Operation Aurora: CVE-2010-0249 in Internet Explorer gave operators code execution; the campaign pursued source code and other high-value data; it was in motion by mid-2009; Google's "A new approach to China" post brought it into public view and connected it to both intellectual property theft and activist-account targeting](https://threatpedia.wiki/incidents/operation-aurora-espionage-2009/?q=operation-aurora)
+- [On the naming and scope: Google's post of 12 January 2010 revealed an attack that began in mid-2009 and continued into December, targeting corporate infrastructure and the Gmail accounts of Chinese human rights activists; researchers named the campaign after a folder called Aurora found in the attackers' malware binaries](https://news-nest.com/2026/04/05/the-day-china-hacked-google-operation-aurora/)
+- [On the source code theft: possession of source code lets attackers know where to look for vulnerabilities and, in principle, quietly change code that reaches production](https://jerrymadamsjr.wordpress.com/2018/12/28/apt1-operation-aurora/)

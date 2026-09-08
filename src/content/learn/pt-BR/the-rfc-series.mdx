@@ -1,0 +1,68 @@
+---
+slug: the-rfc-series
+title: "A série RFC: como a internet se escreve"
+summary: "Em abril de 1969 um pós-graduando anotou umas observações sobre software de host e, com receio de parecer presunçoso, chamou aquilo de Request for Comments - pedido de comentários. Nove mil documentos depois, essa ressalva ainda é o nome do processo pelo qual todo protocolo que você opera foi acordado. O que é uma RFC, o que o status dela realmente significa, e por que a numeração tem uma tradição de primeiro de abril."
+concepts: ["rfc", "ietf", "internet draft", "std", "bcp", "rfc 1149", "the evil bit", "rough consensus"]
+relatedTools: []
+relatedArticles: ["iso-8601-and-rfc-3339", "the-named-tls-attacks", "electronic-frontier-foundation", "osi-model-in-practice"]
+category: security
+order: 109
+status: reviewed
+updated: "2026-09-07"
+---
+
+## Toda página deste site as cita
+
+Olhe qualquer documentação de ferramenta daqui, ou qualquer artigo de protocolo, e você vai encontrar um número de quatro dígitos depois das letras RFC. RFC 2616 para o HTTP (Hypertext Transfer Protocol), RFC 8446 para o TLS (Transport Layer Security) 1.3, RFC 1918 para as faixas de endereço privadas que você atribui toda semana. Profissionais citam esses números o tempo todo e quase ninguém aprende o que a série é, quem decide o que entra nela, ou por que um documento que define o protocolo que carrega a maior parte do comércio mundial se chama pedido de comentários.
+
+## Abril de 1969: a ressalva que virou tradição
+
+Em 1969 a ARPANET ainda não funcionava. Um punhado de pós-graduandos em quatro universidades escrevia o software que faria quatro computadores conversarem, e os professores que poderiam ter imposto um projeto não o faziam. Steve Crocker, então na UCLA, redigiu as anotações do grupo sobre software de host e enfrentou um problema de legitimidade: era um estudante sem autoridade para dizer nada a ninguém. A solução dele foi o título. Chamou aquilo de Request for Comments para não parecer presunçoso nem autoritativo, e publicou em 7 de abril de 1969 como RFC 1. Disse depois que, embora boa parte do desenvolvimento seguisse um grande plano, a criação das RFCs foi em larga medida acidental.
+
+A cultura se fixou em semanas, nos próprios documentos. A RFC 3, de abril de 1969, se chama Documentation Conventions e diz, em parte: o Network Working Group "parece consistir em" - e então nomeia cinco pessoas - "a participação não está fechada". Notas podem ser produzidas em qualquer sítio, por qualquer pessoa, e incluídas nesta série. O conteúdo pode ser qualquer pensamento ou sugestão relacionada ao software de host. E a linha que vale memorizar: as notas são encorajadas a ser oportunas em vez de polidas. Posições filosóficas sem exemplos, sugestões específicas sem contexto e perguntas explícitas sem nenhuma resposta tentada são declaradas aceitáveis.
+
+Isso é um modelo de governança disfarçado de guia de estilo. Qualquer um pode escrever; nada precisa estar pronto; perguntar conta como contribuir. Na RFC 53, de junho de 1970, Crocker já descrevia como um protocolo oficial de host a host seria estabelecido e alterado - propostas circuladas como RFCs, uma data de corte, comentários de qualquer interessado - que é, em miniatura, o processo que a Internet Engineering Task Force (IETF) ainda opera. A série começou antes de o correio eletrônico existir; as primeiras foram datilografadas, duplicadas e enviadas pelo correio.
+
+## O que os números realmente significam
+
+Quatro coisas confundem quem cita RFCs todo dia.
+
+**Uma RFC não é necessariamente uma norma.** A série carrega normas propostas, documentos informativos, protocolos experimentais, melhores práticas correntes e piadas declaradas, e o número não diz qual é qual. O status é metadado, impresso no documento e no índice. Muitas das RFCs mais citadas no trabalho operacional - a RFC 1918, sobre endereços privados, é uma - são melhor prática corrente, não norma.
+
+**RFCs nunca são revisadas.** Uma RFC publicada é imutável. Quando a especificação muda, publica-se uma nova RFC que torna a antiga obsoleta, e a antiga fica onde está, marcada. É por isso que o HTTP/1.1 é a RFC 2616 na documentação antiga e as RFCs 7230 a 7235, depois a 9110 em diante, na nova: o protocolo não mudou de nome, os documentos foram substituídos. Quem cita um comportamento específico de versão deveria checar se a RFC citada foi tornada obsoleta, porque o próprio arquivo da internet serve com prazer um documento que deixou de ser verdade em 2014.
+
+**Um draft não é uma RFC.** O trabalho acontece em Internet-Drafts, que expiram em seis meses e explicitamente não podem ser citados como nada. Um protocolo pode estar amplamente implantado ainda como draft - o QUIC esteve - e quem lê documentação de fabricante deveria notar qual dos dois está sendo citado.
+
+**O número é cronológico, não hierárquico.** A RFC 9293 não é mais importante que a RFC 793; é o mesmo protocolo, o TCP (Transmission Control Protocol), respecificado cinquenta anos depois.
+
+## Sem reis
+
+A IETF foi formada em 1986, a partir da tradição de grupos de trabalho que as RFCs tinham criado. Seu espírito ganhou a formulação definitiva de David Clark, do MIT, numa apresentação de 1992, num slide citado em toda discussão posterior sobre governança da internet: rejeitamos reis, presidentes e votação; acreditamos em consenso aproximado e código que roda.
+
+As duas metades importam e a segunda é a que os operadores sentem. **Consenso aproximado** não é unanimidade nem maioria; é o julgamento de quem preside o grupo de trabalho de que as objeções foram ouvidas e tratadas, o que faz da padronização uma questão de argumento e não de contagem. **Código que roda** significa que se espera que uma especificação tenha sido implementada por alguém antes de ser abençoada, e é por isso que protocolos de internet tendem a ser coisas que já funcionam em vez de coisas que deveriam. As [guerras de protocolo](/learn/osi-model-in-practice) entre o TCP/IP e a pilha OSI, formalmente correta, foram decididas exatamente por essa diferença: uma tinha um comitê e um documento, a outra tinha código rodando e uma base instalada.
+
+A consequência prática para quem lê uma especificação: uma RFC descreve o que os implementadores concordaram em fazer, não o que um órgão de normas decretou. Quando implementações divergem, muitas vezes a RFC é ambígua, em vez de uma implementação estar errada, e as brigas sobre essa ambiguidade estão nos arquivos públicos das listas de discussão, que qualquer um pode ler.
+
+## O primeiro de abril
+
+A série publica uma RFC de primeiro de abril quase todo ano desde 1978, e vale conhecê-las porque são o modo como a comunidade faz argumentos técnicos por meio da comédia.
+
+A **RFC 1149**, de 1º de abril de 1990, especifica a transmissão de datagramas IP por portadores aviários: os datagramas são impressos em rolos de papel e enrolados na perna de um pombo. Ela tem um ponto real - é uma demonstração válida, ainda que absurda, de que o IP é indiferente à sua camada de enlace, que é o argumento inteiro em favor do empilhamento - e em 28 de abril de 2001 o Bergen Linux User Group de fato a implementou, imprimindo cada pacote de ping em hexadecimal, prendendo-o a um pombo e digitalizando-o na outra ponta, a uns cinco quilômetros. O relato do próprio grupo registra o resultado: nove pacotes enviados, quatro respostas, tempos de ida e volta de 3.211 a 6.389 segundos - e uma demora de cerca de uma hora quando os pombos preferiram voar com o bando do vizinho antes. A RFC 2549 depois acrescentou qualidade de serviço; a RFC 6214 atualizou o protocolo para IPv6.
+
+A **RFC 3514**, de 2003, propõe o bit de segurança no cabeçalho IPv4: um único bit que os atacantes marcam para declarar seus pacotes maliciosos, de modo que os firewalls precisem testar só um bit. A piada é um argumento sério sobre a diferença entre descrever uma intenção e impor uma política, e é citada sempre que um produto alega detectar intenção a partir de um campo de cabeçalho. Os profissionais o chamam de bit do mal, e ele virou a abreviação padrão para um controle que pressupõe a cooperação do atacante.
+
+## Por que a ressalva se sustentou
+
+O nome sobreviveu a nove mil documentos e cinquenta e sete anos, e ainda diz algo verdadeiro sobre como a internet é especificada: ninguém envolvido tem autoridade para mandar, então a concordância precisa ser produzida em público, por escrito, por pessoas que mostram como chegaram lá. O [artigo da EFF](/learn/electronic-frontier-foundation) registra um processo que estabeleceu que código-fonte é discurso; esta série é a versão mais velha e mais silenciosa da mesma ideia. A especificação da rede é um documento público que qualquer um pode ler, citar, criticar ou implementar, e é assim desde a primeira, escrita por um estudante que não achava que estava no comando.
+
+## Fontes
+
+- [RFC 3, Documentation Conventions, Steve Crocker, UCLA, abril de 1969: o Network Working Group "parece consistir em" cinco pessoas nomeadas, "a participação não está fechada"; notas podem ser produzidas em qualquer sítio por qualquer pessoa; "as notas são encorajadas a ser oportunas em vez de polidas"; posições filosóficas sem exemplos e perguntas explícitas sem respostas são aceitáveis](https://datatracker.ietf.org/doc/rfc3/)
+- [RFC 84, lista das NWG/RFCs 1-80, dezembro de 1970: RFC 1, "HOST Software", S. Crocker (UCLA), 7 de abril de 1969](https://www.ietf.org/rfc/rfc84)
+- [RFC 53, An Official Protocol Mechanism, Crocker, junho de 1970: propostas para o protocolo oficial de host a host e todas as mudanças subsequentes seriam distribuídas como RFCs, com data de corte, convidando aprovação ou crítica de qualquer interessado](https://www.ietf.org/rfc/rfc53)
+- [Bergen Linux User Group, o relato informal do evento da RFC 1149, 28 de abril de 2001: os pombos primeiro se juntaram ao bando do vizinho e levaram cerca de uma hora; seis voltaram, quatro traziam pacotes, e os tempos de ping variaram de 3.211 a 6.389 segundos](https://blug.linux.no/rfc1149/writeup/)
+- [Wikipedia, Request for Comments: a IETF adota algumas RFCs como Normas da Internet, mas muitas são informativas ou experimentais e não são normas; o sistema foi inventado por Crocker em 1969 para registrar anotações não oficiais sobre o desenvolvimento da ARPANET](https://en.wikipedia.org/wiki/Request_for_Comments)
+- [Stephen Crocker, "How the Internet Got Its Rules", The New York Times, 7 de abril de 2009: no 40º aniversário, que esses documentos humildes moldam o funcionamento interno da internet; quando as RFCs nasceram não havia World Wide Web e, no fim de 1969, havia uma rede rudimentar de quatro computadores](https://lifebeforetwitter.com/How%20the%20Internet%20Got%20Its%20Rules.pdf)
+- [ICANNWiki, Steve Crocker: ele rotulou o primeiro memorando como Request for Comments porque não queria parecer presunçoso nem autoritativo, mas facilitar a discussão; a série começou antes de a rede funcionar e antes de o e-mail ser possível](https://icannwiki.org/Steve_Crocker)
+- [Wikipedia, Steve Crocker: criou o ARPA Network Working Group e a série RFC em 1969; "embora boa parte do desenvolvimento seguisse um grande plano, o projeto dos protocolos e a criação das RFCs foram em larga medida acidentais"; as RFCs deram o contexto em que a IETF foi criada em 1986](https://en.wikipedia.org/wiki/Steve_Crocker)
+- [Entrevista com Steve Crocker: a linguagem "consideravelmente menos que autoritativa" da RFC 3, e que o próprio título não dizia "é assim e pronto"; o "sem reis, consenso aproximado e código que roda" de David Clark como a frase que permeou a tecnologia](https://assortedmaterials.com/2013/07/04/interview-with-internet-pioneer-steve-crocker/)

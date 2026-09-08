@@ -1,0 +1,70 @@
+---
+slug: therac-25-and-defence-in-depth
+title: "Therac-25: the machine whose predecessor had the same bugs and hurt nobody"
+summary: "Between 1985 and 1987 a radiation therapy machine delivered massive overdoses to at least six patients. The software defect was serious. The finding that made it the most-taught case in software engineering is different and worse: the previous model ran comparable faulty code for years without injuring anyone, because it had hardware that would not let it."
+concepts: ["therac-25", "safety-critical", "defence in depth", "race condition", "interlock", "leveson", "verification", "regulation"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "dijkstra-and-the-twenty-minute-algorithm", "memory-safety", "krack-and-the-wifi-handshake"]
+category: security
+order: 129
+status: reviewed
+updated: "2026-09-08"
+---
+
+## What happened
+
+The Therac-25 was a computer-controlled linear accelerator built by Atomic Energy of Canada Limited with the French firm CGR, and it was the most sophisticated radiation therapy machine of its time. Eleven were sold in the United States and Canada from 1982. It treated cancer patients in two modes: a low-current electron beam applied directly, and a high-current beam fired into a metal target to produce X-rays. The raw high-current beam, without the target in the way, is enormously destructive to tissue.
+
+Between June 1985 and January 1987 at least six patients received massive overdoses - each several times the intended therapeutic dose - resulting in severe injuries and deaths. Leveson and Turner, whose 1993 investigation in *IEEE Computer* is the definitive account, record them as among the worst series of radiation accidents in the thirty-five-year history of medical accelerators. Accounts vary on the number of fatalities; the number of accidents does not.
+
+The immediate technical cause was a concurrency defect. If the operator entered a prescription, noticed a mistake and edited it quickly - within roughly eight seconds - a race in the shared control code could leave the machine in a state where the high-current beam fired without the target and collimator in position. The operator's console said the treatment had been delivered normally, or gave a cryptic error and an option to proceed. The machine reported success while doing the opposite.
+
+## The finding that matters
+
+If the article stopped there it would be a story about a bad race condition, and it would teach very little, because everyone already agrees that race conditions are bad.
+
+The important finding is in the predecessor. The **Therac-20** ran software of the same lineage, and Leveson's investigation established that **related defects were present in it too**. It never injured anyone. The reason is that the Therac-20 had independent protective circuits and mechanical interlocks: physical mechanisms that would not permit the beam to fire with the turntable in the wrong position, whatever the computer believed. When the software went wrong on a Therac-20, a fuse blew or a switch refused, and a technician was inconvenienced.
+
+Those interlocks were removed from the Therac-25. The design relied on the controlling computer alone for safety, on the reasoning that the software would prevent unsafe states - and the Therac-20's own defects were not even recognised until investigators went looking after the Therac-25 accidents.
+
+So the two machines ran comparable faulty code. One of them killed people. The difference was not the quality of the software. **The difference was whether anything existed that could contradict it.**
+
+Leveson's own summary names it precisely: overconfidence in the ability of software to ensure safety was an important factor leading to the accidents.
+
+## Why this belongs in a security catalogue
+
+Because the entire argument of this site keeps arriving at the same conclusion from different directions, and Therac-25 is where it was established at the cost of lives.
+
+[Dijkstra's line](/learn/dijkstra-and-the-twenty-minute-algorithm) that testing shows the presence of bugs but never their absence is the theoretical version. Therac-25 is the empirical one: the software was tested, it worked in the overwhelming majority of treatments, and the failure needed an operator typing fast enough to hit an eight-second window. No realistic test programme finds that. The [no-perfect-code argument](/learn/there-is-no-perfect-code) is the same claim generalised: defects ship, and the question is what happens next.
+
+The [Juniper backdoor](/learn/there-is-no-perfect-code) makes the point from cryptography - output that was mathematically indistinguishable from correct output, so no measurement could find it. [KRACK](/learn/krack-and-the-wifi-handshake) makes it from formal methods - a handshake with security proofs, broken by a state machine question the proofs did not model. Therac-25 makes it from physics, twenty years before either: **when correctness cannot be established, the design must not depend on it.**
+
+## The other failures, which are institutional
+
+The technical story is the smaller half. The investigation records a sequence that any incident responder will recognise, and none of it is about code.
+
+The first accident, in Georgia in 1985, was never carefully investigated. The patient said she had been injured during treatment. She had obvious and severe radiation burns. The physicist involved was suspicious. There was no admission that the machine had caused it until long afterwards.
+
+The manufacturer's response to early reports was to conclude that an overdose was not possible, and to keep concluding it. Machines stayed in service. Users were told the problem had been fixed when it had not. Related bugs found in the Therac-20 were not connected to the Therac-25 reports. And the software itself had been written by one person, in assembly language, over several years, having evolved from code begun in 1972 - with the manufacturer claiming proprietary rights over the design, which limited who could examine it.
+
+Read against the [there-is-no-perfect-code](/learn/there-is-no-perfect-code) clock, every interval failed: detection came from patients rather than the manufacturer, containment did not happen because machines kept running, the fix was announced before it existed, and communication actively obstructed the people who could have acted. The machine was recalled in 1987 and redesigned, with hardware safeguards against software errors added back.
+
+## What a practitioner should take from it
+
+**Ask what contradicts the software.** For any system where a wrong output has consequences, the useful question is not "is the code correct" but "what happens if it is not, and is there anything in the path that does not depend on the same code being right?" A hardware interlock, a separate approval, a rate limit enforced elsewhere, a second system that must agree. In networking the equivalents are ordinary and often skipped: a firewall rule that does not depend on the application authenticating correctly, a quota that holds even if the logic fails, an out-of-band path that survives the failure of the in-band one.
+
+**Removing a redundancy is a design decision that needs stating.** Nobody set out to build an unsafe machine. Somebody removed hardware interlocks because software could do the job more cheaply and flexibly, and that decision was reasonable in isolation and catastrophic in aggregate. The modern equivalents - collapsing two controls into one platform, removing a manual step because automation covers it, consolidating onto a single provider - deserve to be recorded as decisions rather than absorbed as efficiencies.
+
+**Believe the report you cannot explain.** The strongest signal in the whole sequence was a patient insisting she had been burned by a machine that could not, according to its manufacturer, burn anyone. Every intervening month cost someone. An incident report that contradicts your model of the system is the most valuable thing you will receive that year, and the instinct to explain it away is the failure mode being described.
+
+**And it changed the rules.** The case reshaped how medical device software is regulated and is taught in software engineering courses precisely because the lessons transfer. The industry did not learn this from an argument. It learned it from six accidents that were, on the evidence, entirely preventable.
+
+## Sources
+
+- [Nancy G. Leveson and Clark S. Turner, "An Investigation of the Therac-25 Accidents", IEEE Computer vol. 26 no. 7, July 1993, pp. 18-41: between June 1985 and January 1987 six known accidents involved massive overdoses with resultant deaths and serious injuries, described as the worst series of radiation accidents in the 35-year history of medical accelerators; the software was developed by a single person in PDP-11 assembly language over several years, evolving from Therac-6 software begun in 1972, and AECL claimed proprietary rights to its software design](https://www.cs.columbia.edu/~junfeng/08fa-e6998/sched/readings/therac25.pdf)
+- [The same paper, on the predecessor and the recall: the machine was recalled in 1987 for extensive design changes including hardware safeguards against software errors; related problems were found in the Therac-20 software, and these were not recognised until after the Therac-25 accidents because the Therac-20 included hardware safety interlocks and thus no injuries resulted; details of the 1985 Georgia accident are sketchy since it was never carefully investigated, and there was no admission that the injury was caused by the machine until long after, despite the patient's claims, obvious and severe radiation burns, and the suspicions of the radiation physicist involved](http://users.csc.calpoly.edu/~csturner/courses/508/Therac-25.pdf)
+- [Leveson and Turner, abstract: overdoses occurred primarily because of errors in the Therac-25's software and because the manufacturer did not follow proper software engineering practices; overconfidence in the ability of software to ensure the safety of the Therac-25 was an important factor which led to the accidents; the Therac-20 employed independent protective circuits and mechanical interlocks to protect against overdose](https://onlineethics.virginia.edu/cases/therac-25/investigation-therac-25-accidents-abstract)
+- [Ethics Unwrapped, University of Texas: the Therac-25 was a linear accelerator developed by Atomic Energy Canada Limited with the French company CGR; eleven machines were sold in the United States and Canada beginning in 1982; six accidents involving significant overdoses occurred between 1985 and 1987](https://ethicsunwrapped.utexas.edu/case-study/therac-25)
+- [On the concurrency defect: the root cause was a race condition in the shared PDP-11 control code, in which an operator editing the treatment prescription within about eight seconds could allow the electron beam to fire in high-energy X-ray mode without the target and collimator in place](https://bluegoatcyber.com/blog/the-therac-25-incident-a-critical-analysis-of-medical-device-failures)
+- [Hackaday, on the design decision: the root cause was twofold - the controlling software contained bugs that proved fatal, and the design of the machine relied on the controlling computer alone for safety, with no hardware interlocks or supervisory circuits to ensure that software bugs could not result in catastrophic failures](https://hackaday.com/2015/10/26/killed-by-a-machine-the-therac-25/)
+- [A later review citing the case: the failure highlights the importance of careful, independent verification and validation of software that performs critical functions; after extensive testing, a physicist and one of the operators were able to reproduce the conditions that led to the fault; there were a very large number of causative factors including generally poor software design and development practices and institutional complacency](https://arxiv.org/pdf/2205.09788)
