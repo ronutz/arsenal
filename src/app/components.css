@@ -1133,10 +1133,73 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding: 1.25rem;
+  /* Right padding widened to 4.5rem so the value text never runs under the
+     mark. The other three sides keep the original 1.25rem. (PRIME 2026-09-09) */
+  padding: 1.25rem 4.5rem 1.25rem 1.25rem;
   background: var(--surface-base);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
+  /* Positioning context for .about-fact-mark, which is absolutely placed. */
+  position: relative;
+  overflow: hidden;
+}
+
+/* --- FACT CARD MARKS (PRIME 2026-09-09) ---
+   A schematic line drawing per card, taken from that card's own content. See
+   FACT_MARKS in src/app/[locale]/about/page.tsx for what each one depicts and
+   why.
+
+   Drawn in currentColor at low opacity rather than in an accent colour, so the
+   marks follow every curated theme and both colour schemes instead of being
+   invisible on the light ones. They sit behind the text in the stacking order
+   and are aria-hidden in the markup, because the card already states the fact
+   in words in sixteen locales. */
+.about-fact-mark {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 3.25rem;
+  height: 3.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--text-tertiary);
+  opacity: 0.35;
+  pointer-events: none;
+  transition:
+    opacity 200ms ease,
+    color 200ms ease;
+}
+
+/* The mark answers to the card, not to itself: hovering anywhere on the card
+   brings it forward. Keyboard users reach the same state via :focus-within on
+   any interactive descendant a future card might carry. */
+.about-fact:hover .about-fact-mark,
+.about-fact:focus-within .about-fact-mark {
+  color: var(--accent-primary);
+  opacity: 0.75;
+}
+
+/* The marks carry no information, so on a reduced-motion preference they simply
+   stop animating rather than being removed. */
+@media (prefers-reduced-motion: reduce) {
+  .about-fact-mark {
+    transition: none;
+  }
+}
+
+/* Narrow screens: the cards are full width and one per row, so there is room,
+   but the mark is scaled back a little so it does not dominate a short value. */
+@media (max-width: 30rem) {
+  .about-fact {
+    padding-right: 3.75rem;
+  }
+  .about-fact-mark {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
 }
 .about-fact-label {
   font-size: 0.75rem;

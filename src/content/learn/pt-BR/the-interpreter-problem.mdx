@@ -69,6 +69,8 @@ A conclusão desconfortável é que **as falhas mais danosas frequentemente não
 
 ## O que um profissional deve tirar disso
 
+Os formatos em que duas implementações podem discordar sobre os mesmos bytes estão reunidos em **[os formatos do meio](/learn/the-formats-in-between)**.
+
 **Saiba o que interpreta.** Para qualquer componente que trate entrada externa, pergunte o que ele faz com o *conteúdo*, e não com o tamanho. Um registrador de logs, um motor de modelos, um nome de arquivo, um interpretador de configuração e uma consulta de busca são todos interpretadores, e cada um é candidato a essa falha.
 
 **Trate o log como superfície de ataque.** É o caminho de dados menos suspeitado da maioria dos sistemas e toca os dados menos confiáveis. Qualquer coisa que expanda, resolva ou renderize um valor registrado é risco, e o log estruturado, que armazena valores em vez de interpolá-los, remove a maior parte do perigo.

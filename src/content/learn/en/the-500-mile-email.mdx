@@ -1,0 +1,70 @@
+---
+slug: the-500-mile-email
+title: "The 500-mile email: the best debugging story in the profession"
+summary: "A statistics department reported that it could not send email more than about 520 miles. The sysadmin's first reaction was that email does not work that way. The department had a map. The cause was a configuration file, an upgrade, a timeout set to zero, and the speed of light - and every element of it can still happen to you this afternoon."
+concepts: ["debugging", "sendmail", "timeout", "latency", "speed of light", "configuration", "upgrade", "diagnosis"]
+relatedTools: []
+relatedArticles: ["therac-25-and-defence-in-depth", "knight-capital-and-the-rollback-that-made-it-worse", "capture-points-before-packets", "ariane-5-and-the-assumption-that-expired"]
+category: security
+order: 135
+status: reviewed
+updated: "2026-09-09"
+---
+
+## The call
+
+Trey Harris ran the central campus email system - it was called Isis - at the University of North Carolina at Chapel Hill, and also wrote the sendmail configuration files used by most of the departmental mail servers on campus. Around 2002 the chairman of the statistics department telephoned him.
+
+They were having a problem sending email out of the department. Specifically: they could not send mail farther than 500 miles. A little more, actually. Call it 520 miles. But no farther.
+
+Harris's reply is the one anybody would give: email really does not work that way.
+
+Then came the detail that turns an implausible ticket into a genuine report. They had waited to call because they had not yet collected enough data to be sure. They had asked one of the geostatisticians to look into it. She had produced **a map** showing the radius within which mail could be sent, slightly over 500 miles. Inside the radius there were destinations they could not reach, or reached only sometimes. Outside it, nothing ever went.
+
+It was the statistics department. They had done the analysis.
+
+## The cause
+
+Harris tested it himself, and it was true.
+
+Some time earlier a consultant had "patched the server". In doing so he had upgraded the operating system, and with it sendmail - from version 5 to version 8 - while leaving the old version 5 configuration file in place. Sendmail 8 read a configuration written for a different generation of itself. It parsed what it recognised. For the settings it did not recognise, the binary had no compiled-in defaults, so they came out as **zero**.
+
+One of the settings that came out as zero was the timeout for connecting to a remote mail server.
+
+A zero timeout does not mean "wait forever" and it does not mean "fail immediately". On that particular machine, under its typical load, it meant that a connect call was aborted after slightly over **three milliseconds**.
+
+And then the campus network mattered. It was entirely switched, so an outgoing packet incurred no router delay until it left the campus point of presence and met a router on the far side. For a lightly loaded host on a nearby network, the time to establish a connection was therefore governed less by queuing and processing than by **the distance the light had to travel**.
+
+Harris's own account records what he typed next, and it is the moment the whole thing resolves:
+
+```text
+$ units
+You have: 3 millilightseconds
+You want: miles
+        * 558.84719
+```
+
+Five hundred miles, or a little bit more.
+
+Harris is careful about the telling, and so should anyone repeating it be. His own note says the story was slightly altered to protect the guilty, to skip irrelevant detail, and to make it more entertaining. Asked later whether it happened, his answer was: yes, it happened.
+
+## Why it is not just a good anecdote
+
+**Believe the report you cannot explain.** The chairman was describing something that could not be true, and it was true. The [Therac-25](/learn/therac-25-and-defence-in-depth) article makes the same point at far greater cost: the strongest signal in that whole sequence was a patient insisting she had been burned by a machine that, according to its manufacturer, could not burn anyone. A report that contradicts your model of the system is data about your model. The instinct to explain it away is the failure mode.
+
+**An upgrade silently rewrote a configuration.** Nobody set the timeout to zero. A newer program read an older file, did not understand parts of it, and filled the gaps with nothing - and nothing, in that context, meant three milliseconds. This is the [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse) failure in miniature and the [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired) failure in miniature: a component behaving correctly on inputs that were written for a different version of the world. It is also entirely current. A container image whose defaults changed between tags, a device that accepts an old configuration and silently drops the directives it no longer supports, an infrastructure module whose unset variable is not "unset" but zero - the mechanism has not aged at all.
+
+**The symptom was in a layer nobody was looking at.** The complaint was about email. The fault was in a timeout. The visible pattern was geography. Nothing about "we cannot send mail to Seattle" points at a connect timeout, and no amount of reading mail logs at the application layer would have produced the answer - which is the argument the [capture-points article](/learn/capture-points-before-packets) makes about position: the layer where a problem is *reported* is rarely the layer where it *lives*.
+
+**And latency is distance.** This is the part practitioners forget until it bites, and it bites constantly: in replication that works between two sites and not a third, in a database timeout that only fails for the branch office, in a voice service that is fine within a country and unusable across an ocean. Light in fibre travels about two-thirds of the speed of light in vacuum, and no amount of bandwidth changes it. When a fault correlates with a map rather than with a configuration, the map is telling you something.
+
+**Set your timeouts.** The final, unglamorous instruction. Every timeout that is not explicitly configured is set by something - a default you have not read, an inherited file, or a zero. Knowing the value is the difference between a system that degrades and a system that behaves like physics.
+
+## Sources
+
+- [Trey Harris, "The case of the 500-mile email", the original account: the sendmail binary had no defaults compiled in for most settings, so finding no suitable values in the configuration file they were set to zero; one of these was the timeout to connect to the remote SMTP server, and experimentation established that on that machine under typical load a zero timeout aborted a connect call in slightly over three milliseconds; the campus network was 100% switched, so an outgoing packet incurred no router delay until reaching the point of presence, and the time to connect to a lightly loaded nearby host was largely governed by the speed-of-light distance rather than by incidental router delays; three millilightseconds converts to 558.84719 miles](https://www.ibiblio.org/harris/500milemail.html)
+- [Trey Harris, the FAQ: yes, it happened; at the time he was running the centralised campus email system, Isis, at the University of North Carolina at Chapel Hill, and wrote the sendmail configuration files used in most of the mail servers on campus; the initial contact and the resolution were both by telephone](https://www.ibiblio.org/harris/500milemail-faq.html)
+- [The story as told, with the author's caveat: "We can't send mail farther than 500 miles from here... A little bit more, actually. Call it 520 miles. But no farther"; the author notes the story is slightly altered in order to protect the guilty, elide over irrelevant and boring details, and generally make the whole thing more entertaining; the consultant who had "patched the server" had upgraded the version of SunOS and with it sendmail](https://beza1e1.tuxen.de/lore/500mile_email.html)
+- [FlowingData, quoting the exchange: the department had not called sooner because they had not collected enough data to be sure of what was going on; a geostatistician produced a map showing the radius within which they could send email to be slightly more than 500 miles, with a number of destinations inside the radius unreachable or reachable only sporadically, but nothing ever reachable farther](https://flowingdata.com/2019/03/15/case-of-the-500-mile-email/)
+- [Kottke, on why the story is unusual: a common trope in support and system administration features someone convinced they have found a bug when it is in fact user error, and this story does not go there](https://kottke.org/19/03/the-case-of-the-500-mile-email)
+- [An unverified account in a discussion thread, offered as context rather than fact: a commenter claiming local knowledge said the Solaris machines in question were not being regularly patched and had been compromised, with sendmail the most likely entry point as the most notorious vulnerability of the period, and that wiping and reloading was rejected as too much downtime and too many billable hours - so updating sendmail was the obvious remedy](https://news.ycombinator.com/item?id=23775404)

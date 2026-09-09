@@ -1,0 +1,66 @@
+---
+slug: the-stj-ransomware-attack
+title: "The STJ attack, 2020: the fortnight Brazil's second-highest court stopped"
+summary: "On 3 November 2020 ransomware encrypted the case files of the Superior Court of Justice. Hearings were cancelled, procedural deadlines were suspended by resolution, and the systems came back fifteen days later. It was part of a wave against the Brazilian judiciary, and the accounts of what happened to the backups have never been reconciled."
+concepts: ["stj", "ransomexx", "ransomware", "backup", "judiciary", "brazil", "incident response", "disclosure"]
+relatedTools: []
+relatedArticles: ["eternalblue-wannacry-notpetya", "there-is-no-perfect-code", "brazilian-cybercrime-from-boleto-to-pix", "the-target-breach"]
+category: security
+order: 130
+status: reviewed
+updated: "2026-09-08"
+---
+
+## What stopped
+
+The Superior Tribunal de Justiça is Brazil's highest court for non-constitutional matters - the last instance for most of the civil and criminal law that affects ordinary life. On Tuesday 3 November 2020 it identified a cyberattack on its network. The website went down the same day. Case files and the court's email were inaccessible.
+
+The court's response was to take everything offline to preserve its integrity, and then to do something that has no equivalent in most breach stories: **the president of the court issued a resolution suspending judicial sessions and procedural deadlines.** Only urgent matters - habeas corpus, injunctions - would be heard. In a legal system, deadlines are not administrative conveniences; they are the mechanism by which rights are preserved or lost. An attack on a file server had stopped the clock for an entire jurisdiction.
+
+The suspension ran to 9 November and the website returned on the 10th. The court announced that its technology secretariat had completed the restoration of the system on **18 November** - fifteen days after the attack was identified. All of this happened while the judiciary was working remotely because of the pandemic, which is part of why it mattered so much and part of why it was possible.
+
+## What hit it
+
+The malware was identified in security reporting as **RansomEXX**, a repackaged strain that had become known in June 2020 after an attack on the Texas Department of Transportation. Journalists reported a ransom note left in a text file on at least one server, named in a form matching what researchers had recorded in other RansomEXX incidents. Reporting also put the scale at more than 1,200 virtual machines encrypted.
+
+It was widely described in Brazil as the most serious security incident ever suffered by a public body in the country.
+
+## The contradiction, which is the interesting part
+
+Here the record does not agree with itself, and the disagreement is more instructive than a clean story would be.
+
+**The court's account:** the system backup was not affected by the attack, which is what allowed the files to be restored.
+
+**Security reporting's account:** the attackers encrypted the virtual machines *and destroyed the backups*.
+
+Both statements are on the public record. They cannot both be complete. And a third thread runs alongside them: the court never confirmed that a ransom had been demanded, which led at least one legal analysis to note that, strictly, it could not be stated with certainty that this was ransomware at all - the classification rested on reporting rather than on anything the institution said.
+
+There is no way, from outside, to resolve this, and pretending otherwise would be dishonest. What can be said is what the disagreement demonstrates. An institution recovering from an attack is answering to several audiences at once - litigants who need to know their case still exists, a legislature, the press, and an adversary who is still reading. Its statements are shaped by all of them. Security reporting, working from artefacts and from people who saw the machines, answers to a different audience and is often more specific and less accountable. **A practitioner reading a public incident account should assume it is true, incomplete, and shaped - and should notice which questions were not answered rather than only reading the ones that were.**
+
+The [RSA and DigiNotar](/learn/rsa-and-diginotar-2011) article makes the same observation about 2011 from the other side of the world.
+
+## It was not one attack
+
+The STJ is remembered because it was the biggest, but the sequence around it is the part a practitioner should take away.
+
+The Tribunal de Justiça de Pernambuco reportedly suffered a similar intrusion on **27 October**, a week before. On **5 November**, two days after the STJ, the databases of the Federal District's economy secretariat and of the National Council of Justice were attacked; the health ministry reported an attempted intrusion. The Federal Police, which opened an inquiry at the justice ministry's direction, examined whether the STJ attack was connected to the intrusions at federal district and federal bodies. Army intelligence assisted the response.
+
+Read as a set rather than as one event, this is a campaign against a sector - courts and the federal administration - within a fortnight, in a country whose judiciary had just moved its work online. That is the same shape as the managed-file-transfer campaigns the [Progress entry](/industry/progress-software) records: an attacker who has learned that one category of victim shares software, suppliers and habits, and works the category rather than the target.
+
+This case sits at the end of a sequence: **[the Brazil thread](/learn/the-brazil-thread)** reads it together with the market reserve, the governance model, the payment-fraud industry and the data protection law, in the order in which they caused each other.
+
+## Why this belongs on a Brazilian practitioner's reading list
+
+**Because the consequence class is different.** Most breach stories end in money or data. This one ended in suspended legal deadlines and cancelled hearings, which is to say in delayed justice for people who had no connection to information technology at all. When you argue for a segmentation project or a backup test, this is the example where the harm is legible to a non-technical audience.
+
+**Because recovery took fifteen days, with the state's resources.** The court had the Federal Police, army intelligence and unlimited political attention. Fifteen days. Any organisation estimating its own recovery time against a smaller budget and less help should use that number as a floor rather than a ceiling.
+
+**And because the backup question is the whole ballgame.** Whichever account is correct, the case turns on it. If backups survived, they were the reason the court came back; if they were destroyed and something else was used, then the recovery happened in spite of the backup strategy. Either way the practical instruction is identical and is the one the [NotPetya](/learn/eternalblue-wannacry-notpetya) article draws from Maersk's accidental offline domain controller: **a backup that is reachable from the network that is being encrypted is not a backup.** Offline or immutable copies, tested restores, and a documented recovery time are the three things that decide the length of the outage, and none of them can be arranged after the event.
+
+## Sources
+
+- [Wikipedia (Portuguese), the cyberattack on the Superior Tribunal de Justiça: in November 2020 the STJ was the target of a ransomware attack using RansomExx; the court's entire case archive was encrypted, preventing access without payment of the ransom demanded; according to the STJ the system backup was not affected, which allowed the later restoration of the files; the attack was identified on 3 November, the site was unavailable the same day, the court suspended procedural deadlines, hearings and judgment sessions until the 9th, and the site returned on the 10th; the STJ referred the matter to the Minister of Justice and Public Security, who directed the Federal Police to open an inquiry, with the Brazilian Army's intelligence sector also assisting in the investigation and data recovery](https://pt.wikipedia.org/wiki/Ataque_cibern%C3%A9tico_ao_Superior_Tribunal_de_Justi%C3%A7a)
+- [TechTudo, November 2020: the STJ's systems were down from Tuesday the 3rd, when the attack blocked the court's case files and email; according to BleepingComputer the malware was RansomEXX, a repackaged version of the ransomware that became known in June 2020 after the intrusion at the Texas Department of Transportation; all judgment sessions and procedural deadlines were suspended and the body operated on duty roster only until Monday the 9th; the Tribunal de Justiça de Pernambuco had reportedly suffered a similar intrusion on 27 October](https://www.techtudo.com.br/listas/2020/11/ataque-hacker-ao-stj-seis-coisas-que-voce-precisa-saber-sobre-o-caso.ghtml)
+- [Migalhas, December 2020, a legal analysis: the STJ identified the attack on 3 November and only on 18 November announced that its technology and communication secretariat had completed the restoration of the system; all systems were taken offline to preserve their integrity; the STJ did not confirm whether a ransom had been demanded, so it could not be stated with certainty that this was ransomware; some newspapers reported a text-file message left in one of the STJ's folders demanding a ransom, without confirmation from the court; the context was the pandemic, with the judiciary working remotely](https://www.migalhas.com.br/coluna/migalhas-de-protecao-de-dados/337701/39-dias-apos-o-ataque-cibernetico-ao-stj--reflexoes-e-desafios)
+- [Gazeta do Povo, November 2020: the court's president issued a resolution suspending activities until the 9th, with only urgent matters such as habeas corpus and injunctions to be examined; court staff were advised to remove mobile applications and remote access platforms; the Federal District's economy secretariat was also breached and took its servers offline; the Federal Police investigated a possible link between the STJ attack and intrusions at Federal District and federal bodies; on the 5th the databases of the Federal District economy secretariat and of the National Council of Justice were attacked and the health ministry reported an attempted intrusion](https://www.gazetadopovo.com.br/republica/hacker-stj-tribunal-ataque-pf-investiga/)
+- [Baguete, citing CISO Advisor: the attackers are reported to have encrypted more than 1,200 virtual machines and destroyed their backups with RansomEXX; one indicator was the ransom note left on at least one server, a text file whose name resembles filenames recorded by researchers in other incidents; described as possibly the most serious security incident ever to occur in a Brazilian public body](https://www.baguete.com.br/noticias/estrago-dos-hackers-no-stj-foi-grande)

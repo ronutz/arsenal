@@ -69,6 +69,8 @@ The uncomfortable conclusion is that **the most damaging failures are frequently
 
 ## What a practitioner should take from it
 
+The formats where two implementations can disagree about the same bytes are collected in **[the formats in between](/learn/the-formats-in-between)**.
+
 **Know what interprets.** For any component handling external input, ask what it does with the *content* rather than the size. A logger, a templating engine, a filename, a configuration parser and a search query are all interpreters, and each is a candidate for this failure.
 
 **Treat logging as an attack surface.** It is the least suspected data path in most systems and it touches the most untrusted data. Anything that expands, resolves or renders a logged value is a risk, and structured logging that stores values rather than interpolating them removes most of the danger.

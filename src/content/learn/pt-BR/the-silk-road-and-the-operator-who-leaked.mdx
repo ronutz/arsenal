@@ -1,0 +1,67 @@
+---
+slug: the-silk-road-and-the-operator-who-leaked
+title: "A Silk Road: a rede de anonimato aguentou, o operador não"
+summary: "O Tor nunca foi quebrado. O fundador do site foi identificado porque em 2011 anunciara o mercado em fóruns públicos sob um apelido, e uma dessas postagens trazia o e-mail real dele. Como os investigadores acharam o servidor é outra pergunta, e uma que um tribunal se recusou a responder - porque respondê-la exigiria que o réu admitisse que o servidor era dele."
+concepts: ["silk road", "tor", "hidden service", "opsec", "captcha", "attribution", "standing", "digital forensics"]
+relatedTools: []
+relatedArticles: ["tor-and-onion-routing", "the-interception-tools", "there-is-no-perfect-code", "moonlight-maze-titan-rain-aurora"]
+category: security
+order: 136
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Duas perguntas separadas
+
+A Silk Road era um mercado on-line, alcançável apenas como serviço oculto do Tor, em que drogas e outros bens ilegais eram vendidos por Bitcoin entre mais ou menos janeiro de 2011 e setembro de 2013. O agente do FBI que escreveu a denúncia o chamou de o mercado criminoso mais sofisticado e extenso da internet à época. Seu operador usava o nome Dread Pirate Roberts.
+
+Para um profissional o caso vale a leitura porque contém duas perguntas que costumam ser confundidas, e elas têm respostas muito diferentes.
+
+**Como a pessoa foi identificada?** Por um buscador, essencialmente. Essa parte não é contestada.
+
+**Como o servidor foi achado?** Essa parte é contestada, nunca foi resolvida, e a razão de não ter sido resolvida é mais interessante que qualquer um dos dois relatos.
+
+## A pessoa: texto simples de 2011
+
+A identificação não veio de quebrar o Tor. Veio de um agente especial da Receita americana, Gary Alford, fazendo o que um investigador faz com registro público.
+
+No começo de 2011, quando o mercado era novo e precisava de usuários, alguém postara sobre ele em fóruns públicos sob o nome **altoid** - promovendo um novo mercado anônimo. Uma dessas postagens, num fórum de Bitcoin, pedia ajuda técnica, e quem postava incluíra um endereço de e-mail para que pudessem contatá-lo. O endereço era o próprio nome dele no Gmail. Havia também uma pergunta sobre Tor postada num site de programação.
+
+É essa a cadeia inteira. Uma pessoa anunciando algo em 2011 usou um apelido, e dois anos depois alguém buscou o apelido e achou uma mensagem com um nome real dentro. Nenhuma criptografia foi derrotada. O sistema de anonimato fez exatamente o que foi projetado para fazer, e ele não protege contra o operador escrever o próprio endereço num lugar público.
+
+É a lição do [artigo das ferramentas de interceptação](/learn/the-interception-tools) pela direção oposta: a propriedade técnica e a prática operacional são coisas diferentes, e a segunda é onde os casos se constroem.
+
+## O servidor: um relato, uma refutação, e um tribunal que se recusou
+
+A explicação do governo está registrada numa declaração do ex-agente do FBI Christopher Tarbell. Os agentes digitaram dados diversos na página de login da Silk Road e examinaram os pacotes de volta. Os cabeçalhos de alguns refletiam um endereço IP não associado a nenhum nó Tor conhecido - o único endereço de origem não-Tor no tráfego examinado. Um serviço oculto corretamente configurado deveria mostrar o endereço de um nó Tor, nunca o próprio. Digitar aquele endereço num navegador comum produziu parte da tela de login da Silk Road, especificamente o CAPTCHA. Concluíram que era o servidor real, vazando por uma configuração equivocada, e o rastrearam a um data center na Islândia; as autoridades islandesas copiaram o servidor e forneceram a imagem.
+
+O perito técnico da defesa, Joshua Horowitz, apresentou uma análise contestando isso de várias formas específicas. Argumentou que o FBI não poderia ter alcançado o back end como descrito, porque ele ficava atrás de uma configuração cuja regra final negava toda conexão exceto a do endereço do servidor de front end. Observou que a própria carta do governo às autoridades islandesas, de junho de 2013, sugeria outro método. Observou que o relato de Tarbell carecia da evidência documental e forense que a prática ordinária teria produzido. E apontou que vários arquivos críticos entregues na fase probatória traziam datas de modificação *anteriores* à data em que as autoridades islandesas teriam copiado o servidor.
+
+A resposta do governo incluiu o argumento de que, mesmo se o FBI tivesse invadido o servidor, isso teria sido lícito dado o que o site fazia.
+
+E então o tribunal não decidiu. Em outubro de 2014 a juíza rejeitou o pedido de supressão da prova por **legitimidade**: Ulbricht não estabelecera interesse pessoal de privacidade no servidor islandês, porque não afirmara que o servidor era dele. Ele não podia contestar a busca sem admitir a propriedade da coisa buscada, e admitir a propriedade era o caso contra ele.
+
+Assim a pergunta de como um governo achou um serviço oculto foi encerrada por uma regra processual e não por um achado de fato, e continua aberta no registro técnico. Parte da comunidade de segurança lê a lacuna como compatível com uma capacidade que ninguém quis descrever num processo; outra parte lê como um agente dando um relato vago de trabalho comum. As duas leituras estão disponíveis, e este catálogo não escolhe uma.
+
+Essa estrutura - um relato oficial, uma refutação técnica, e nenhuma adjudicação - é do mesmo formato da [questão do backup no STJ](/learn/the-stj-ransomware-attack), e pede a mesma disciplina: registrar os dois, notar que não podem ser os dois completos, e dizer com todas as letras que está sem solução.
+
+## O que um profissional deve tirar disso
+
+**Sistemas de anonimato protegem tráfego, não comportamento.** O Tor esconde o caminho na rede. Não esconde um nome de usuário reutilizado entre sites, um e-mail numa postagem de fórum, um estilo de escrita, um fuso horário visível nos horários de postagem, ou um pagamento que toca uma conta identificada. Numa avaliação, a pergunta nunca é só "o canal é anônimo?", e sim "o que identifica esta pessoa fora do canal?" - e essa lista quase sempre é mais longa.
+
+**Um único componente mal configurado derruba o projeto inteiro.** Seja o relato do CAPTCHA exato ou não, o mecanismo que ele descreve é real e comum: um elemento da página servido fora do túnel, um recurso carregado de um endereço público, um endpoint de depuração, uma mensagem de erro que traz um nome de host. Um serviço oculto, uma cadeia de proxies e uma rede mesh compartilham essa propriedade - **a proteção vale o que vale o componente menos cuidadoso**, e em geral não é o que você configurou de propósito.
+
+**A atribuição repousa em trabalho comum.** A [trilogia de APT](/learn/moonlight-maze-titan-rain-aurora) faz o ponto sobre campanhas estatais: as técnicas são frequentemente banais, e os casos são construídos por alguém paciente lendo registros. Aqui foi um investigador da Receita com um buscador achando uma postagem de dois anos antes. É isso que a atribuição de fato costuma ser.
+
+**E o passado não é apagável.** As postagens que o identificaram foram feitas quando o mercado era pequeno, incerto e precisava de divulgação - um momento em que cautela parecia cara e desnecessária. Dois anos depois continuavam lá, indexadas. Tudo o que é publicado é permanente na prática, e as decisões de segurança operacional que importam são as tomadas antes de haver algo a proteger.
+
+## Fontes
+
+- [TechCrunch, citando o processo judicial do governo: o vazamento de endereço IP veio da interface de login de usuário da Silk Road; ao examinar os pacotes devolvidos pelo site, os cabeçalhos de alguns refletiam um endereço não associado a nenhum nó Tor conhecido como origem, e esse era o único endereço de origem não-Tor no tráfego examinado; se um serviço oculto está corretamente configurado, o endereço de origem do seu tráfego deve aparecer como o de um nó Tor e não o verdadeiro, que o Tor é feito para ocultar; digitar o endereço num navegador comum produziu parte da tela de login da Silk Road, o CAPTCHA](https://techcrunch.com/2014/09/06/the-feds-found-the-silk-roads-ross-ulbricht-thanks-to-a-leaky-captcha)
+- [Arquivo do Gawker citando o relato da Wired sobre a declaração de Tarbell: os agentes descobriram o endereço em junho de 2013 digitando dados diversos na página de login e constatando que o CAPTCHA carregava de um endereço não ligado a nenhum nó Tor, uma configuração equivocada que fazia os dados virem diretamente de um data center na Islândia, a verdadeira localização do servidor](https://blackballedwithrolliequaid.wordpress.com/2018/07/19/gawker-ross-ulbricht-silk-road-archive/)
+- [TechCrunch, sobre a peça do perito da defesa: Horowitz argumentou que a declaração de Tarbell difere em pontos importantes da carta do governo às autoridades islandesas de 12 de junho de 2013, que sugere método alternativo; que a explicação é vaga e carece da evidência documental e forense que deveria existir; que vários arquivos críticos entregues na fase probatória trazem datas de modificação anteriores à primeira data em que Tarbell afirma que as autoridades islandesas copiaram o servidor; e que o back end estava separado do front end por uma configuração cuja linha "deny all" recusava conexões de qualquer endereço sem exceção específica, sendo o endereço do servidor de front end a exceção](https://techcrunch.com/2014/10/02/expert-witness-for-silk-road-suggests-fbi-lied-about-how-they-accessed-back-end-servers)
+- [Digesto do Harvard Journal of Law and Technology: a declaração do governo afirmava que Ulbricht configurara indevidamente a página inicial, de modo que ela vazava o endereço do servidor, e o agente então fez a polícia islandesa copiar o servidor, cujo conteúdo foi usado para obter mandados sobre as contas pessoais de Ulbricht; múltiplos peritos técnicos e os advogados de Ulbricht contestaram essa sequência como tecnicamente implausível; a acusação respondeu que, mesmo se o FBI tivesse invadido o servidor, seria legal já que o site facilitava atividade flagrantemente ilegal](https://jolt.law.harvard.edu/digest/silk-road-founder-loses-argument-that-the-fbi-illegally-hacked-servers-to-find-evidence-against-him)
+- [Cronologia do arquivo Antilop: em 5 de setembro de 2014 o ex-agente Tarbell descreveu como ele e outro agente localizaram o servidor em junho de 2013; em 1º de outubro de 2014 a defesa divulgou uma análise forense refutando a teoria do CAPTCHA vazante; em 10 de outubro de 2014 a juíza Katherine Forrest rejeitou o pedido de supressão, com base em que Ulbricht não apresentara nada que estabelecesse interesse pessoal de privacidade no servidor islandês nem nos demais itens copiados ou apreendidos - de modo que, não tendo reivindicado a propriedade dos servidores, não podia alegar violação de privacidade mesmo se o FBI os tivesse invadido](https://antilop.cc/sr/)
+- [Sobre a identificação: o agente especial da Receita Gary Alford ligou a postagem de Ulbricht num fórum sob o nome "altoid" a uma conta registrada com o próprio nome dele no Gmail; Ulbricht também postara num fórum de Bitcoin pedindo ajuda técnica e incluíra seu e-mail para que outros o contatassem, e postara uma pergunta sobre Tor num site de programação; separadamente, o FBI obteve um endereço vazado ao mirar a aplicação de CAPTCHA, o que levou a um servidor na Islândia, apreendido e analisado](https://medium.com/@Akali27/the-silk-road-aftermath-bb77d60af449)
+- [The Register, outubro de 2013, citando a denúncia: o agente do FBI Christopher Tarbell escreveu que a Silk Road emergira como o mercado criminoso mais sofisticado e extenso da internet, operando de cerca de janeiro de 2011 a cerca de setembro de 2013; a peça não continha detalhe sobre como o FBI obteve acesso ao servidor Tor em que o site se apoiava, omissão notada à época pela comunidade de segurança](https://www.theregister.com/2013/10/02/silk_road_shutdown/)
+- [Estudo de caso do Forensics Colleges, sobre a imagem apreendida: o endereço foi rastreado até a Islândia, as autoridades islandesas cooperaram e enviaram o conteúdo clonado do servidor, e as pastas cifradas foram abertas; os investigadores acharam nomes de funcionários e dados contábeis, e registros de conversa que caracterizaram como mostrando o operador concordando em pagar por uma execução](https://www.forensicscolleges.com/blog/forensics-casefile/silk-road)

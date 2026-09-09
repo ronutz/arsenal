@@ -1,0 +1,72 @@
+---
+slug: knight-capital-and-the-rollback-that-made-it-worse
+title: "Knight Capital: forty-five minutes, and a rollback that spread the fault"
+summary: "A trading firm handling a tenth of American equity volume deployed new code to seven of its eight servers. The eighth still held a feature that had been dead since 2005, wired to a flag the new code had reused. Ninety-seven warning emails went out before the market opened. And when engineers understood what was happening, they rolled back - putting the defective code on all eight."
+concepts: ["knight capital", "deployment", "dead code", "feature flag", "rollback", "change management", "alerting", "smars"]
+relatedTools: []
+relatedArticles: ["ariane-5-and-the-assumption-that-expired", "the-target-breach", "there-is-no-perfect-code", "therac-25-and-defence-in-depth"]
+category: security
+order: 133
+status: reviewed
+updated: "2026-09-09"
+---
+
+## The setup
+
+Knight Capital Group was, in mid-2012, responsible for roughly one tenth of all trading in United States equities. Its order router, SMARS, took a customer's order and broke it into child orders sent to the market.
+
+Inside that router sat a function called Power Peg. According to the Securities and Exchange Commission's order, Knight had moved a section of code in 2005 to an earlier point in the sequence, which **rendered the function defective** - it could no longer recognise when orders had been filled, and would therefore keep sending. The function was not meant to be used. Knight left it in the router anyway, and it was not retested after the move to see whether the application would still work if it were ever invoked.
+
+It sat there for seven years, unused and broken, behind a flag that switched it on.
+
+## The deployment
+
+In late July 2012 Knight prepared to participate in a new NYSE facility, the Retail Liquidity Program. The new code was written to replace the unused Power Peg logic - and it **reused the same flag**. The reasoning is easy to reconstruct and was entirely ordinary: Power Peg is dead, so the switch is free.
+
+The rollout began on 27 July. It was manual and staged, a technician copying the updated code to each of the eight SMARS servers in turn.
+
+One server was missed.
+
+No second technician reviewed the deployment. Knight had no written procedure requiring that anyone should. So nobody noticed that on the eighth server the new code was absent and the old, defective Power Peg code was still present - now reachable through a flag that the rest of the estate was about to start setting for an entirely different purpose.
+
+## The morning
+
+At about 8:01 on the morning of 1 August, an hour and a half before the market opened, Knight's own systems began sending automated warnings. **Ninety-seven emails**, referencing SMARS, reporting an error described as "Power Peg disabled".
+
+The system said the name of the thing that was about to destroy the company, ninety-seven times, before anyone had lost a cent. The messages were not routed to anyone who acted on them.
+
+At 9:30 the market opened. Seven servers processed the new program correctly. The eighth received orders eligible for the new facility, set the reused flag, and invoked a function that had been broken since 2005 - one that could not tell when an order had been filled, and so kept filling it.
+
+In forty-five minutes, attempting to satisfy **212** customer orders, the router sent more than four million orders into the market, producing over four million executions across 154 stocks and more than 397 million shares. Knight ended holding roughly $3.5 billion of unwanted long positions in 80 stocks and about $3.15 billion short in 74. The loss exceeded **$460 million**. The firm had about $365 million in cash.
+
+It survived the weekend on a $400 million emergency investment, and was acquired within months.
+
+## The rollback
+
+This is the part that makes the case worth its own article, and it is the part most retellings skip.
+
+When the engineers worked out that one of the eight servers had not received the new code, they did what every instinct and every runbook says to do: they restored consistency by reverting all of the servers to the previous version.
+
+The previous version contained Power Peg, wired to the flag that the market was now setting.
+
+**The rollback took a fault that existed on one server and put it on all eight.** The single most reasonable action available, taken under time pressure by competent people with the correct diagnosis, amplified the damage - because the "known-good state" they were returning to was the state that contained the defect.
+
+## What a practitioner should take from it
+
+**A rollback is a deployment.** It carries the same risk as any other change, it deserves the same scrutiny, and it should be reasoned about rather than reflexed. The instinct to restore a known-good state assumes the old state is good, and in every case where the fault predates the change - dead code, a latent configuration, an expired certificate, a dependency that has since moved - that assumption is exactly wrong. The question before pulling the lever is narrow: *what am I going back to, and does it contain the thing that is hurting me?*
+
+**Dead code is not inert.** The [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired) inquiry made the same finding about a routine that served a purpose only before lift-off and kept running anyway. Knight's function had been broken for seven years and cost nothing for seven years, which is precisely why nobody removed it. The cost of unused code is zero until the day it is not.
+
+**Never reuse an identifier that still means something somewhere.** Flags, ports, virtual local area network identifiers, community strings, route tags, group names - the reasoning "that is obsolete, so the name is free" is only safe if the obsolete thing has actually been *removed* rather than merely disabled. Deprecate by deletion, or do not reuse.
+
+**Partial deployment is a state nobody designs for.** Seven of eight is not "mostly deployed"; it is a configuration that was never tested, never intended and never documented. Automation removes this failure mode not by being clever but by being uniform, and a verification step that answers "is every node running the version I think it is" would have caught it in seconds.
+
+**And an alert nobody reads is worse than no alert.** Ninety-seven messages, ninety minutes early, naming the component. The [Target breach](/learn/the-target-breach) is the same failure with a different consequence: detection is not the control, *response* is the control, and the interval between them is where the loss accumulates. This is the [clock argument](/learn/there-is-no-perfect-code) at its starkest, because here the clock was running before the market even opened.
+
+## Sources
+
+- [United States Securities and Exchange Commission, press release on the charges: Knight Capital moved a section of computer code in 2005 to an earlier point in the code sequence in an automated equity router, rendering a function of the router defective; although this function was not meant to be used, Knight left it in the router; in late July 2012, preparing for the NYSE's new Retail Liquidity Program, Knight incorrectly deployed new code in the same router, so certain eligible orders triggered the defective function, which was unable to recognise when orders had been filled; in the first 45 minutes after the market opened on 1 August the router sent more than 4 million orders while attempting to fill just 212 customer orders, trading more than 397 million shares, acquiring several billion dollars in unwanted positions and suffering a loss of more than 460 million dollars](https://www.sec.gov/newsroom/press-releases/2013-222)
+- [Doug Seven, quoting the SEC order, Release No. 70694 of 16 October 2013: during the deployment of the new code one of Knight's technicians did not copy the new code to one of the eight SMARS servers; Knight did not have a second technician review this deployment and no one realised that the Power Peg code had not been removed from the eighth server, nor the new RLP code added; Knight had no written procedures requiring such a review; in the first 45 minutes the Power Peg code received and processed 212 parent orders, resulting in 4 million transactions against 154 stocks for more than 397 million shares, approximately 3.5 billion dollars net long in 80 stocks and 3.15 billion short in 74; Knight had 365 million in cash and equivalents and raised 400 million within 48 hours, and was acquired by Getco in December 2012](https://dougseven.com/2014/04/17/knightmare-a-devops-cautionary-tale/)
+- [On the flag reuse and the alerts: the new RLP code repurposed a flag previously used to activate the old Power Peg functionality; during the deployment beginning 27 July 2012 a technician failed to copy the new code to one of the eight servers, and the company lacked written deployment procedures or peer review requirements; on the morning of 1 August, from approximately 8:01 a.m. Eastern - before the market opened at 9:30 - Knight's internal system generated 97 automated email messages referencing SMARS and identifying an error described as "Power Peg disabled"](https://soundofdevelopment.substack.com/p/the-knight-capital-disaster-how-a)
+- [Profound, summarising the SEC cease-and-desist proceedings: the Power Peg code was not retested after being moved to see whether the application would still work properly if utilised; during installation the new RLP code was deployed to only seven of the eight servers; the proceedings emphasised that a second technician did not review the change and that there were no established procedures requiring such a review; over 45 minutes SMARS produced over 4 million executions in 154 stocks representing over 397 million shares](https://www.profound-deming.com/blog-1/a-devops-automated-governance-story-knight-capital)
+- [On the rollback: the deprecated code had lived behind a feature flag on production servers since 2003, and engineers preparing NYSE Retail Liquidity Program support repurposed the same flag on the assumption that Power Peg was dead and the flag was available; the rollout was manual and staged with individual technicians copying code to each server, and one was accidentally skipped with no second person verifying; after engineers realised one server had not been updated they tried to revert all servers to the old version to regain consistency, but the old version still had the Power Peg logic wired to the reused flag, so instead of isolating the issue to one server the revert propagated the defective behaviour to all of them](https://www.ankur.blog/2025/05/the-460-million-mistake-that-crashed.html)

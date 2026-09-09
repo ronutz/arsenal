@@ -1,0 +1,64 @@
+---
+slug: how-systems-fail
+title: "Como os sistemas falham: um mapa de leitura para os casos deste catálogo"
+summary: "Nove falhas, ordenadas não por setor ou década, mas por onde a falha de fato morava - numa salvaguarda que alguém removeu, numa premissa que venceu, num rollback, numa fronteira entre duas organizações, numa decisão sobre o que dizer. Lidas como conjunto, deixam de ser anedotas e viram uma lista dos lugares onde procurar."
+concepts: ["failure analysis", "root cause", "defence in depth", "assumptions", "boundaries", "alerting", "index"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "therac-25-and-defence-in-depth", "ariane-5-and-the-assumption-that-expired", "the-worm-era"]
+category: security
+order: 139
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Por que ordenar assim
+
+Histórias de falha costumam ser arquivadas por setor - medicina, aeroespacial, finanças, redes - que é o arranjo menos útil, porque sugere que as lições ficam no setor delas. Não ficam. Uma máquina de radioterapia de 1985 e uma corretora de 2012 falharam por razões que se transferem diretamente a um parque de rede, e quem quer *usar* estes casos precisa deles ordenados por **onde a falha de fato morava**.
+
+É o que esta página faz. Cada entrada nomeia o lugar, e então o caso que o demonstra.
+
+## A falha estava numa salvaguarda que alguém removeu
+
+A máquina anterior rodava software comparavelmente defeituoso e não feriu ninguém, porque tinha travas mecânicas que não permitiam um estado inseguro, acreditasse o computador no que acreditasse. Essas travas foram removidas da sucessora, no raciocínio de que o software daria conta. O **[Therac-25](/learn/therac-25-and-defence-in-depth)** é o caso, e a pergunta que ele deixa é a que se leva a qualquer revisão de projeto: o que, neste sistema, é capaz de contradizer o software?
+
+## A falha estava numa premissa que venceu
+
+O código estava correto. Voara com sucesso por anos no veículo anterior, onde o valor calculado sempre ficava na faixa. No veículo novo não ficou, e uma conversão que ninguém protegera estourou. O **[Ariane 5](/learn/ariane-5-and-the-assumption-that-expired)** é o caso. A pergunta transferível para qualquer coisa herdada - um modelo, um conjunto de regras, um script - não é *isto funciona*, e sim *o que era verdade quando isto foi escrito, e continua sendo?*
+
+## A falha estava numa fronteira entre duas organizações
+
+Um programa produzia valores de impulso numa unidade; o que os consumia esperava outra. Os dois estavam internamente corretos, uma especificação de interface nomeava a convenção certa, e nada comparava a especificação com o tráfego. O **[Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary)** é o caso, e sua lição é que um documento enunciando a convenção correta não a faz cumprir. Toda passagem de bastão carrega significado que não está nos dados - bits ou bytes, local ou UTC, prefixo ou máscara, carga ou quadro.
+
+## A falha estava na restauração, não na mudança
+
+Sete de oito servidores receberam o código novo. Quando os engenheiros diagnosticaram corretamente o oitavo, reverteram tudo para a versão anterior para recuperar consistência - e a versão anterior era onde o defeito morava. O **[Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse)** é o caso, e ele produz uma regra que vale escrever num runbook: um rollback é uma implantação. Para o que estou voltando, e isso contém a coisa que me machuca?
+
+## A falha estava no que foi dito, e quando
+
+Um defeito aritmético menor virou o recall mais famoso da computação porque o fabricante o achou, decidiu que não qualificava como errata, o consertou em silêncio, e então pediu aos clientes afetados que provassem estar afetados. O **[defeito FDIV do Pentium](/learn/the-pentium-fdiv-bug)** é o caso. Seu companheiro é **[RSA e DigiNotar](/learn/rsa-and-diginotar-2011)**, em que uma empresa deixou os clientes sem saber o que fazer e a outra revogou certificados em silêncio por um mês enquanto os fraudulentos eram usados.
+
+## A falha foi ninguém agir sobre o alerta
+
+O produto de detecção funcionou e disparou alarmes durante a intrusão. A **[Target](/learn/the-target-breach)** é o caso em que a tecnologia fez o seu trabalho e a organização não - e o [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse) é a mesma falha em miniatura, com noventa e sete avisos automáticos nomeando o componente noventa minutos antes da abertura do mercado. Uma ferramenta de detecção sem resposta para *e aí o que acontece* é um sistema de registro com orçamento de marketing.
+
+## A falha foi a correção existir e não ser aplicada
+
+Nove anos de surtos, cada um com correção publicada antes - um mês, seis meses, quatro semanas, e num caso um aviso escrito explícito do fabricante de que a falha era propagável. A **[era dos worms](/learn/the-worm-era)** é o caso, e o **[EternalBlue, WannaCry e NotPetya](/learn/eternalblue-wannacry-notpetya)** é sua sequência, com a mesma aritmética e números maiores.
+
+## A falha foi não haver nada a consertar
+
+Nenhuma vulnerabilidade, nenhuma correção, nada quebrado. Aparelhos funcionando exatamente como projetados, alcançáveis pela internet com as credenciais impressas nos manuais. O **[Mirai](/learn/mirai-and-the-default-password)** é o caso, e é a externalidade mais clara do catálogo: quem podia consertar não era quem pagava, e é por isso que o remédio acabou sendo uma lei, e não uma correção.
+
+## A falha estava numa funcionalidade funcionando corretamente
+
+Um componente recebeu uma cadeia de caracteres e a interpretou exatamente como documentado, e a interpretação era execução de código. **[Shellshock e Log4Shell](/learn/the-interpreter-problem)** é o caso, e é a classe a que o teste automatizado é estruturalmente cego, porque nada trava: o software se comporta corretamente, e o comportamento correto é o exploit.
+
+## O que o conjunto diz junto
+
+Lidas isoladamente, são histórias. Lidas como conjunto, fazem um argumento, e é o que o artigo de que [não existe código perfeito](/learn/there-is-no-perfect-code) enuncia diretamente: **defeitos não são a variável interessante.** Todas as organizações aqui os tinham. O que diferiu foi se algo podia contradizer o software, se uma premissa foi alguma vez reconferida, se uma fronteira foi verificada, se o caminho de volta foi raciocinado, se um alerta chegou a alguém, e o que foi dito.
+
+Nada disso é questão de engenharia no sentido estrito. Tudo isso são decisões que podem ser tomadas antes do incidente, e nenhuma delas pode ser tomada durante.
+
+Dois destes casos têm peça companheira sobre a outra metade do problema - não como a falha aconteceu, mas o que se passou entre achá-la e contar a alguém. É o assunto do **[registro da divulgação](/learn/the-disclosure-record)**.
+
+E as práticas que este conjunto inteiro defende, cada uma emparelhada com o caso que demonstra sua ausência, estão reunidas em **[decidido de antemão](/learn/decided-in-advance)**.

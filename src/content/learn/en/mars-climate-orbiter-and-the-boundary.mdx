@@ -1,0 +1,69 @@
+---
+slug: mars-climate-orbiter-and-the-boundary
+title: "Mars Climate Orbiter: both sides were correct, and the spacecraft was lost"
+summary: "One program produced impulse figures in pound-force-seconds. The program that consumed them expected newton-seconds. Neither was wrong internally, the specification said which was required, and nothing checked. The famous version of this story is a unit conversion; the useful version is what happens at a boundary between two organisations, and what the team did with four months of warning."
+concepts: ["mars climate orbiter", "interface specification", "units", "verification", "handoff", "end-to-end testing", "escalation", "nasa"]
+relatedTools: []
+relatedArticles: ["ariane-5-and-the-assumption-that-expired", "knight-capital-and-the-rollback-that-made-it-worse", "the-target-breach", "there-is-no-perfect-code"]
+category: security
+order: 138
+status: reviewed
+updated: "2026-09-09"
+---
+
+## What was lost
+
+The Mars Climate Orbiter launched on 11 December 1998, intended to be the first interplanetary weather satellite and a communications relay for a lander arriving later that year. It flew for 286 days. On 23 September 1999 the orbit insertion burn began on schedule; five minutes in, about forty-nine seconds earlier than expected, the spacecraft passed behind Mars. Nothing was heard from it again. The mission was worth $327.6 million.
+
+NASA's Mishap Investigation Board found the root cause to be the failure to use metric units in the coding of a ground software file, "Small Forces", used in trajectory models.
+
+## The mechanism
+
+The spacecraft periodically fired thrusters to shed accumulated angular momentum. After each of these events a ground program called SM_FORCES processed the telemetry and produced a file for the navigation team, recording how much impulse each firing had delivered.
+
+The interface specification between the two systems said that the impulse figures in that file were to be in **newton-seconds**. The program supplied them in **pound-force-seconds**.
+
+One pound-force-second is about 4.45 newton-seconds. The navigation software, trusting the specification, read the numbers as metric - and therefore modelled the effect of every thruster firing as roughly twenty-two per cent of its real value. Over 286 days of small, frequent corrections, the accumulated error moved the predicted approach path away from the actual one.
+
+Estimates made afterwards, using corrected figures, put the spacecraft's closest approach at about **57 kilometres**. The altitude judged survivable was 80.
+
+## Why the famous version is the least useful one
+
+"NASA forgot to convert to metric" is accurate and explains almost nothing, because it makes the failure sound like carelessness that better people would have avoided.
+
+Neither unit was wrong. A pound-force-second and a newton-second both measure impulse; both are legitimate; each program was internally consistent and correct in its own terms. **The danger was that the same bare number meant two different physical quantities on opposite sides of a boundary** - a boundary that was both a software interface and an organisational one, between the contractor who built the spacecraft and the laboratory that navigated it.
+
+And there was a specification. It said newton-seconds. The specification was right and the spacecraft was lost anyway, which is the part worth sitting with: **a document stating the correct convention does not enforce it.** Something has to check. The board's own recommendation was to conduct a software audit for specification compliance on all data transferred between the two organisations - which is a way of saying that nobody had been comparing what the interface promised with what crossed it.
+
+The board's chairman put the wider finding plainly: the review had identified other significant factors that allowed the error to be born, and then let it linger and propagate to the point where it produced a major error in the understanding of the spacecraft's path. The contributing causes it listed were inadequate consideration of the mission as a total system, inconsistent communications and training within the project, and the absence of complete end-to-end verification of the navigation software and its models.
+
+## The four months
+
+This is the element that moves the case out of the units bundle and into the company of [Target](/learn/the-target-breach) and [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse).
+
+The error was not invisible. Through the spring and summer of 1999, working-level staff raised concerns about discrepancies between where the navigation solution said the spacecraft was and where other methods suggested it was. A trajectory correction was proposed and discussed as the encounter approached. It was not executed - and the investigation recorded the reason: the team was **unprepared for this off-nominal scenario**.
+
+That is not incompetence. It is the ordinary shape of an organisation meeting a situation it has no rehearsed response for. Somebody noticed. The concern travelled, in the informal register that concerns travel in. There was no procedure that turned "several people are uneasy about the navigation solution" into a decision with a deadline, and so the default - continue as planned - won by not being chosen.
+
+Read against the [clock](/learn/there-is-no-perfect-code), every stage after detection failed, over a period of months rather than the forty-five minutes Knight Capital had.
+
+## What a practitioner should take from it
+
+**Every boundary carries assumptions that are not in the data.** A number crossing an interface is accompanied by a meaning that lives somewhere else - in a document, in a convention, in somebody's head. Units are the vivid example; the mundane ones are everywhere in networking. Is that rate in bits or bytes? Is that timestamp local or UTC? Is that a prefix length or a mask? Is the MTU the payload or the frame? Is that counter cumulative or per-interval? Each of these has caused a real outage somewhere, for exactly the reason the orbiter was lost: both sides were internally correct.
+
+The formats that carry those assumptions across a boundary - JSON, YAML, XML, timestamps, text encodings, base64 - are collected in **[the formats in between](/learn/the-formats-in-between)**, which is this failure generalised.
+
+**Specify, then verify separately.** The interface document was correct. What was missing was anything that compared the document with the traffic - an audit, a sanity check on magnitude, an assertion that the values fall in a plausible range. A value 4.45 times too small is not detectable by a program that has no opinion about what the value should be, and giving it an opinion is cheap.
+
+**Test the path, not the components.** The board's finding was the absence of complete end-to-end verification. Each program worked. Integration testing across the organisational boundary was where the failure lived, and that is the test most often skipped, because it requires two teams and belongs to neither.
+
+**And build the route for an uneasy engineer.** The most transferable lesson here is not about units at all. Somebody was worried, for months, and there was no mechanism that converted worry into a decision. If your organisation has no defined way for a working-level concern to force an explicit answer - even the answer "we have considered it and we are proceeding" - then the default will always be to continue, and the default will be chosen by nobody.
+
+## Sources
+
+- [NASA Lessons Learned entry on the Mars Climate Orbiter Mishap Investigation Board: the mission objective was to orbit Mars as the first interplanetary weather satellite and provide a communications relay for the Mars Polar Lander; MCO was launched on 11 December 1998 and lost following entry into Mars occultation during the orbit insertion manoeuvre, the carrier signal last seen at approximately 09:04:52 UTC on 23 September 1999; the board determined the root cause to be the failure to use metric units in the coding of a ground software file, "Small Forces", used in trajectory models, with thruster performance data in English units used in the software application titled SM_FORCES; the board recognised that mistakes occur on spacecraft projects but that sufficient processes are usually in place to catch them, and recommended conducting a software audit for specification compliance on all data transferred between JPL and Lockheed Martin Astronautics](https://llis.nasa.gov/lesson/641)
+- [NASA press release of 10 November 1999, quoting board chairman Arthur Stephenson: the root cause was the failed translation of English units into metric units in a segment of ground-based navigation-related mission software; the failure review board identified other significant factors that allowed this error to be born, and then let it linger and propagate to the point where it resulted in a major error in the understanding of the spacecraft's path as it approached Mars; contributing causes include inadequate consideration of the entire mission and its post-launch operation as a total system, inconsistent communications and training within the project, and lack of complete end-to-end verification of navigation software and related computer models](https://nssdc.gsfc.nasa.gov/planetary/text/mco_pr_19991110.txt)
+- [NASA Technical Reports Server, JPL special review board: the orbit insertion burn, a 16-minute manoeuvre, began on schedule; five minutes into the manoeuvre and approximately 49 seconds before the anticipated time for loss of communication the spacecraft was occulted by Mars, and thereafter no contact could be established](https://ntrs.nasa.gov/citations/20060043364)
+- [On the mechanism and the numbers: after each angular momentum desaturation event the SM_FORCES ground software processed spacecraft data and generated an AMD file; the software interface specification required the impulse-bit data in that file to be in newton-seconds, and the ground software instead reported it in pound-force-seconds; because one pound-force equals approximately 4.45 newtons, downstream navigation processing underestimated the effect of the thruster firings by a factor of 4.45; the failure was an interface-control and verification failure in which a valid-looking number carried the wrong unit; post-loss estimates using corrected values placed the initial periapsis at about 57 km, judged too low for survival](https://peimpact.com/mars-climate-orbiter-failure-may-2026/)
+- [Space Daily, on why the compressed version misleads: a pound-force-second and a newton-second both measure impulse, but one pound-force-second equals about 4.45 newton-seconds, and the receiving navigation algorithm trusted that the file followed its specification, reading the numbers as metric and modelling the effect of each firing as only about 22 per cent of its real value; the number crossed a boundary between contractor software and the JPL navigation system with one meaning and was consumed with another; pound-force-seconds were not a foolish unit and newton-seconds were not magically safer - the danger was that the same bare number meant different physical quantities on opposite sides of a software and organisational boundary](https://spacedaily.com/t-mars-climate-orbiter-pound-force-newton-seconds/)
+- [On the months of warning: the vehicle's survivable threshold was 80 kilometres; a correction burn was proposed, engineers discussed it, and the team decided not to execute it because, as the subsequent investigation report documented, they were "unprepared for this off-nominal scenario"; 286 days of flight and a mission worth 327.6 million dollars ended after a navigation anomaly that had been visible for months](https://www.thewave.engineer/articles.html/productivity/case-study-the-mars-climate-orbiter-accident-was-more-than-a-units-error-r1003/)

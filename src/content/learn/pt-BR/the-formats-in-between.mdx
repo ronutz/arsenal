@@ -1,0 +1,69 @@
+---
+slug: the-formats-in-between
+title: "Os formatos do meio: por que todo defeito de intercâmbio é o mesmo defeito"
+summary: "JSON, YAML, XML, carimbos de tempo, codificações de texto, base64, URLs, diffs. Parecem assuntos separados com páginas de referência separadas. São um assunto só: cada um é uma convenção para pôr significado numa cadeia de caracteres de modo que outra coisa consiga tirá-lo de volta, e quase todo defeito do conjunto é as duas pontas discordando sobre o que saiu."
+concepts: ["json", "yaml", "xml", "encoding", "timestamps", "base64", "uri", "diff", "interoperability", "index"]
+relatedTools: []
+relatedArticles: ["mars-climate-orbiter-and-the-boundary", "the-interpreter-problem", "json-grammar", "character-encoding"]
+category: encoding
+order: 143
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Um assunto, não oito
+
+Um profissional encontra isto como tarefas avulsas. Alguém lhe passa um arquivo de configuração e é YAML. Uma linha de log tem um carimbo de tempo num formato que você nunca viu. Uma API devolve base64 e você precisa dos bytes de volta. Um conflito de mesclagem precisa ser lido. Cada um é consultado quando aparece e esquecido depois, que é por que nunca se acumulam em competência.
+
+São todos a mesma coisa. **Cada um é uma convenção para pôr significado numa sequência de caracteres de modo que outra coisa consiga tirar o significado de volta**, e as falhas interessantes em todos eles não são erros de interpretação. São as duas pontas discordando sobre o que saiu - que é precisamente a falha que perdeu o [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary), em que o mesmo número nu significava duas grandezas físicas diferentes em lados opostos de uma fronteira e os dois programas estavam internamente corretos.
+
+Ordenados assim, os artigos de referência deixam de ser tarefas e viram uma única habilidade.
+
+## Estrutura: o que conta como valor
+
+A **[gramática do JSON](/learn/json-grammar)** é a especificação mais curta que vale saber de cor, e a razão de sabê-la é o que ela *não* diz. Os casos interessantes estão todos nas lacunas: **[chaves duplicadas](/learn/json-duplicate-keys)**, em que o padrão não diz qual vence e os interpretadores portanto discordam; **[comentários e vírgulas finais](/learn/json-comments-and-trailing-commas)**, que não estão na gramática e que metade das ferramentas aceita assim mesmo; e **[escapes de string](/learn/json-string-escapes)**, em que a codificação do texto dentro do texto é um problema próprio.
+
+Dois interpretadores aceitarem o mesmo documento e produzirem objetos diferentes é uma propriedade de segurança, não uma curiosidade. É como um filtro e a coisa atrás do filtro passam a discordar.
+
+O **[YAML](/learn/json-vs-yaml)** compra legibilidade com uma superfície muito maior. **[Âncoras e apelidos](/learn/yaml-anchors-and-aliases)** deixam um documento se referir às próprias partes, o que é conveniente e é também expansão - o mesmo formato do **[billion laughs](/learn/billion-laughs-and-entity-expansion)** em XML, em que um documento pequeno vira enorme no caminho de entrada. **[Escalares de bloco](/learn/yaml-block-scalars)** são onde o espaço em branco vira semântico, e onde um certificado colado num manifesto ou sobrevive ou não.
+
+O **XML** é a família mais antiga e mais explícita: **[ler a estrutura](/learn/reading-xml-structure)**, **[espaços de nomes](/learn/xml-namespaces-explained)**, que existem para que dois vocabulários compartilhem um documento sem colidir, e **[CDATA, comentários e instruções de processamento](/learn/cdata-comments-and-processing-instructions)** - as partes que estão no arquivo e não são o dado.
+
+**[Formatos de configuração na prática](/learn/config-formats-in-practice)** é a comparação entre os três, para o momento em que alguém pergunta qual usar.
+
+## Caracteres: o que os bytes eram
+
+Debaixo de todo formato acima há um acordo mais básico. A **[codificação de caracteres](/learn/character-encoding)** é a questão de quais bytes significam quais caracteres, e as **[codificações de texto comparadas](/learn/text-encodings-compared)** é a versão prática da mesma questão.
+
+Esta camada é invisível até deixar de ser, e quando falha, falha de um jeito característico: nada dá erro, e o texto simplesmente está errado - um nome num certificado, uma cidade acentuada num log, um nome de host que não casa. A lição do [Mars](/learn/mars-climate-orbiter-and-the-boundary) se aplica ao pé da letra, porque lá também os dois lados estavam internamente corretos.
+
+O **[base64](/learn/base64-in-practice)** e o **[base32](/learn/base32)** são a habilidade adjacente: não é cifragem, não é compressão, é um jeito de mover bytes arbitrários por um canal que só tolera texto. Reconhecê-los de vista, e saber que reconhecer não é o mesmo que ler, poupa muito tempo numa captura ou num log.
+
+## Tempo: o número que significa várias coisas
+
+Carimbos de tempo merecem grupo próprio porque são a falha de intercâmbio mais comum em operações e aquela sobre a qual as pessoas têm mais confiança.
+
+O **[tempo Unix explicado](/learn/unix-time-explained)** é a convenção base. O **[tempo Unix e os segundos bissextos](/learn/unix-time-and-leap-seconds)** é onde ele deixa de ser uma contagem verdadeira de segundos decorridos, e onde o defeito de núcleo de 2012 derrubou sites grandes por um valor que estava correto em cada sistema individual e errado entre eles. As **[unidades de época](/learn/epoch-units-seconds-to-nanoseconds)** são a questão de segundos contra milissegundos contra nanossegundos, que produz carimbos em 1970 ou no ano 56000. **[ISO 8601 e RFC 3339](/learn/iso-8601-and-rfc-3339)** é qual forma escrita, e qual perfil dela. E a **[aritmética de tempo e fusos horários](/learn/time-arithmetic-and-time-zones)** é a parte que ninguém acerta de primeira.
+
+Se uma linha do tempo de incidente vinda de três sistemas não bate, o defeito quase sempre está neste grupo, e não na memória de alguém sobre os eventos.
+
+## Identificadores: para o que a cadeia aponta
+
+**[URI, URL e URN](/learn/uri-url-urn-whats-the-difference)** distingue nomear de localizar, o que soa acadêmico até decidir se uma coisa pode ser buscada. Sua consequência de segurança tem artigo próprio: as **[URLs enganosas](/learn/deceptive-urls)**, em que a cadeia que um humano lê e o destino que um interpretador deriva não são o mesmo - a falha de intercâmbio com um adversário anexado.
+
+## Mudança: o que está diferente
+
+**[Ler um diff](/learn/reading-a-diff)** é o formato que um engenheiro vê mais que qualquer outro e que menos lhe é ensinado. As **[edições mínimas](/learn/diff-minimal-edits)** explicam por que um diff às vezes atribui uma mudança a uma linha que ninguém tocou; o **[nível de palavra e de caractere](/learn/diff-word-and-character-level)** é como enxergar através disso; e os **[diffs de três vias e conflitos de mesclagem](/learn/diff-three-way-and-merge-conflicts)** são a versão que aparece quando duas pessoas mudaram a mesma coisa.
+
+Um diff é um formato de intercâmbio como os demais: uma afirmação sobre a diferença entre dois estados, codificada para que uma pessoa ou uma ferramenta a reconstrua.
+
+## Por que este conjunto é assunto de segurança
+
+Todo artigo acima descreve um lugar em que duas implementações podem discordar sobre o significado dos mesmos bytes, e o [problema do interpretador](/learn/the-interpreter-problem) é o que essa discordância vira quando uma das pontas é um atacante: um componente recebe uma cadeia, a interpreta exatamente como documentado, e a interpretação é execução de código.
+
+As perguntas transferíveis são curtas, e são as mesmas para todos eles:
+
+- **O que o remetente quis dizer, e isso está escrito em algum lugar?** O [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary) tinha isso escrito e se perdeu assim mesmo, porque nada comparava o documento com o tráfego.
+- **Uma segunda implementação concordaria?** Chaves duplicadas, precisão de carimbo, espaço em branco num escalar de bloco, uma URL normalizada - se dois interpretadores podem divergir, um filtro e seu alvo podem divergir.
+- **O que expande?** Âncoras, entidades, inclusões, escapes. Qualquer coisa que torne um documento maior no caminho de entrada é uma questão de recursos antes de ser uma questão de correção.
+- **E o que está no arquivo e não é o dado?** Comentários, instruções de processamento, marcas de ordem de byte, espaço em branco no fim. Cada um já foi a totalidade da parada de alguém.

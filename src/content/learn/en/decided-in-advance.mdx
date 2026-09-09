@@ -1,0 +1,75 @@
+---
+slug: decided-in-advance
+title: "Decided in advance: the five practices the failures argue for"
+summary: "Two companion pages collect what broke and what got said. This one is the third question: what has to be decided before anything happens, because it cannot be decided during. Five practices, each paired with the case that demonstrates the cost of not having it - a baseline, a blast radius, a change window, a restorable backup, and a boundary."
+concepts: ["operations", "baselines", "blast radius", "change management", "backups", "segmentation", "incident response", "index"]
+relatedTools: []
+relatedArticles: ["how-systems-fail", "the-disclosure-record", "there-is-no-perfect-code", "change-windows-that-do-not-become-incidents"]
+category: operations
+order: 142
+status: reviewed
+updated: "2026-09-09"
+---
+
+## The premise
+
+[How systems fail](/learn/how-systems-fail) sorts the incidents by where the fault lived. [The disclosure record](/learn/the-disclosure-record) collects what happened between knowing and saying. Both are retrospective, and both keep arriving at the same observation: the deciding factor was almost never the defect. It was whether something had already been decided.
+
+That is what this page is for. Five practices, none of them novel and none of them expensive, each paired with the case that shows what its absence costs. The pairing is the point - a practice with a story attached is arguable to a budget holder, and a practice without one is a preference.
+
+## 1. A baseline, captured before you need it
+
+**The practice:** [baselines before you need them](/learn/baselines-before-you-need-them). Capture the normal state - counters, timings, versions, config - while nothing is wrong, because every comparison is only as honest as its weaker side.
+
+**The case:** the [500-mile email](/learn/the-500-mile-email). A department could not send mail beyond about 520 miles, and the fault was a timeout silently set to zero by an upgrade. The reason it took months to characterise is that nobody could say what the connect time had been *before*. The statistics department eventually produced the baseline themselves, in the form of a map.
+
+**And the harder version:** [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary), where the interface specification was correct and nothing ever compared the specification with the traffic. A baseline is not only a performance artefact. It is any recorded expectation that a later observation can be checked against.
+
+## 2. A blast radius, worked out before the change
+
+**The practice:** [blast-radius thinking](/learn/blast-radius-thinking-before-you-change-anything). Before a change, ask not only whether it will work but how far the damage reaches if it does not.
+
+**The case:** [NotPetya at Maersk](/learn/eternalblue-wannacry-notpetya). The malware reached every machine in the estate in under two hours because the network was flat and administrative credentials were reused. The company recovered because a power cut in Ghana had left one domain controller offline. That is not a blast radius; that is luck, and the entire cost of the incident was fixed in the first hour.
+
+**And the design version:** [Therac-25](/learn/therac-25-and-defence-in-depth), where the predecessor machine ran comparable faulty software and injured nobody because hardware interlocks could contradict it. Blast radius is a question about what a wrong answer is allowed to reach.
+
+## 3. A change window with a way back that actually works
+
+**The practice:** [change windows that do not become incidents](/learn/change-windows-that-do-not-become-incidents). Most self-inflicted outages are changes that went wrong with no clean way back.
+
+**The case:** [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse), which is the sharpest available argument that a *documented* way back is not the same as a *working* one. The engineers diagnosed the problem correctly and reverted to the previous version - and the previous version contained the defect, so the fault went from one server to eight. A rollback is a deployment: what am I going back to, and does it contain the thing that is hurting me?
+
+**And the companion:** [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired), where reused code carried an assumption that had expired and a routine kept running that served no purpose after lift-off. Dead code is not inert, and a change window is where it should be removed.
+
+## 4. A backup that is not reachable from what is attacking you
+
+**The practice:** [backups and ransomware recovery](/learn/backups-and-ransomware-recovery). Ransomware turned backups from an availability concern into the last line of defence, and the attackers adapted accordingly.
+
+**The case:** the [STJ attack](/learn/the-stj-ransomware-attack), where the court's account says the backup survived and security reporting says the backups were destroyed. Whichever is right, the case turns on it - and the number to keep is that recovery took **fifteen days with the resources of a state**: the federal police, army intelligence, and unlimited political attention. Any organisation estimating its own recovery time against a smaller budget should use that as a floor.
+
+The instruction is the one [NotPetya](/learn/eternalblue-wannacry-notpetya) supplies from the other direction: a backup reachable from the network being encrypted is not a backup. Offline or immutable copies, tested restores, and a documented recovery time are the three things that decide the length of the outage, and none can be arranged afterwards.
+
+## 5. A boundary that does not depend on the other side behaving
+
+**The practice:** [segmentation, from VLANs to microsegmentation](/learn/network-segmentation-from-vlans-to-microsegmentation). It began as a performance fix and became a security control, and the security version asks a different question: what can this credential reach?
+
+**The case:** [Target](/learn/the-target-breach). A heating and refrigeration contractor's billing portal login reached the systems that processed payment cards. The useful question after that case is not *do we trust this vendor* but the narrower and answerable one: **what can this vendor's credentials reach, and who checked?** Most organisations can list their suppliers. Far fewer can produce, per supplier, the set of systems its access actually touches.
+
+## The sixth thing, which is not a practice
+
+Every case in both companion pages contains a moment where somebody knew and nothing followed. Ninety-seven emails naming the component ninety minutes before the market opened. Alerts raised during a malware installation. Working-level staff uneasy about a navigation solution for four months. A patient insisting she had been burned.
+
+There is no product for this. What there is instead is a written answer to four questions, agreed while nothing is happening:
+
+- Who may disconnect a production segment without waiting for approval?
+- Who do they call, and at what hour is that person expected to answer?
+- What is said to customers before the investigation is complete, and by whom?
+- What would have to be true for us to stop trading, stop shipping, or take the service down?
+
+An organisation that has answered those has an incident. One that has not has an improvisation, and the [disclosure record](/learn/the-disclosure-record) is largely a catalogue of improvisations.
+
+## Why the pairing matters
+
+None of the five practices is unknown. They appear in every framework, and they lose budget arguments constantly, because a control that prevents something produces no evidence of itself - which is the [Y2K](/learn/y2k-and-the-prevention-paradox) problem exactly.
+
+The case is the evidence. *We need tested restores* is a preference. *A supreme court with the federal police helping took fifteen days* is an argument. Anyone who has to fund this work should take the pairing rather than the practice.

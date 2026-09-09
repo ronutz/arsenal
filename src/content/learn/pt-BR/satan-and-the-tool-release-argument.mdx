@@ -1,0 +1,65 @@
+---
+slug: satan-and-the-tool-release-argument
+title: "SATAN, 1995: o scanner que fez seu autor ser demitido"
+summary: "Dois pesquisadores construíram um programa que achava falhas de segurança numa rede, explicava cada uma em linguagem clara e dizia como consertar. Antes do lançamento a imprensa previu desastre, um laboratório nacional se preparou para uma invasão, e a Silicon Graphics demitiu um dos autores. A indústria então passou trinta anos concordando com ele, e a discussão acaba de recomeçar."
+concepts: ["satan", "vulnerability scanner", "dan farmer", "wietse venema", "full disclosure", "cops", "nessus", "tool ethics"]
+relatedTools: []
+relatedArticles: ["the-interception-tools", "there-is-no-perfect-code", "the-worm-era", "the-kaminsky-dns-flaw"]
+category: security
+order: 131
+status: reviewed
+updated: "2026-09-08"
+---
+
+## O que era
+
+Dan Farmer tinha histórico. Estudante de ciência da computação em Purdue em 1989, trabalhando com seu professor Gene Spafford, escrevera o COPS - Computer Oracle and Password System - um conjunto de pequenos verificadores que checava uma máquina Unix em busca de fraquezas conhecidas. Funcionava, era útil, e examinava só o host em que rodava.
+
+Em 1995 ele e Wietse Venema, físico e programador holandês em Eindhoven que já escrevera o TCP Wrapper, produziram a versão que olha por uma rede. O SATAN - Security Administrator Tool for Analyzing Networks - foi escrito majoritariamente em Perl, varria hosts Unix remotos em busca de vulnerabilidades conhecidas e reportava o que achava.
+
+Duas decisões de projeto o tornaram diferente de tudo o que viera antes, e vale reparar nas duas porque todo scanner desde então as copiou.
+
+**Tinha interface web.** Em 1995. Formulários para digitar alvos, tabelas de resultados, tudo num navegador, numa época em que ferramenta de segurança significava terminal e manual. Só isso já o punha ao alcance de administradores que não eram especialistas.
+
+**E ele se explicava.** Para cada tipo de problema achado, o SATAN oferecia um tutorial: o que era o problema, qual podia ser o impacto, e o que fazer a respeito - corrigir um erro num arquivo de configuração, instalar uma correção do fabricante, restringir o acesso por outros meios, ou simplesmente desligar o serviço. Ele reportava as fraquezas sem explorá-las. Essa combinação - achar, explicar, orientar, não quebrar - é o modelo de todo relatório de vulnerabilidade decente escrito desde então, e um bom número de ferramentas modernas ainda o faz pior.
+
+O humor era parte disso. Um comando chamado `repent` rearranjava o acrônimo de SATAN para SANTA para quem se ofendesse com o nome, e Neil Gaiman desenhou a arte da documentação.
+
+## O pânico
+
+Os autores anunciaram o lançamento com antecedência. O que veio depois, nas semanas anteriores a 5 de abril de 1995, foi um alarme público que hoje soa estranho e na época soava razoável.
+
+Os jornais publicaram a manchete óbvia. Um laboratório nacional e outras instituições de pesquisa foram relatados correndo para se proteger diante de uma onda esperada de invasores armados com a ferramenta nova. O Departamento de Justiça estava entre os que faziam ruídos ameaçadores. A expectativa, amplamente enunciada, era que publicar um programa que achava falhas de segurança faria com que muitos computadores fossem invadidos.
+
+**E a Silicon Graphics demitiu Farmer por tê-lo lançado.**
+
+A posição dele era a que a indústria hoje sustenta sem discussão: os buracos já estavam lá, quem queria explorá-los já tinha ferramentas, e publicar uma boa forçaria as organizações a levar a segurança a sério em vez de seguir contando com o fato de que ninguém tinha olhado. Ele e Venema escreveram o contra-argumento na própria documentação, e não o fingiram inexistente - descreveram o SATAN como uma faca de dois gumes que, como muitas ferramentas, podia ser usada para o bem e para o mal.
+
+Seu antigo empregador, a Sun, ficou impressionado e o recontratou.
+
+## Como aquilo se resolveu
+
+Não aconteceu grande coisa em 5 de abril. Não houve onda. O que aconteceu, em vez disso, levou uma década, e resolveu a discussão inteiramente a favor de Farmer - não porque alguém venceu um debate, mas porque a indústria inteira adotou a posição dele como modelo de negócio.
+
+O próprio SATAN nunca foi atualizado e foi superado pelo Nessus e pelo SAINT. Esses foram superados por sua vez, e hoje todo fabricante deste catálogo vende ou embarca um scanner: a avaliação de vulnerabilidades embutida num firewall, a checagem de postura num agente de endpoint, a varredura de conformidade num console de nuvem. O teste de invasão virou profissão, com certificações, exigências de seguro e contrato padrão. As ferramentas pelas quais Farmer foi demitido são hoje uma linha no orçamento de toda organização que demitiu alguém por publicá-las.
+
+O [artigo das ferramentas de interceptação](/learn/the-interception-tools) faz a mesma observação sobre proxies, e o formato é idêntico: *não há propriedade técnica que separe o auditor do atacante; o que os separa é consentimento e transparência.* O SATAN é onde a profissão aprendeu isso do jeito difícil, em público, com alguém perdendo o emprego.
+
+## O que o caso de fato ensina
+
+**A ferramenta não é a exposição.** Todo host que o SATAN achou era vulnerável antes de o SATAN existir. Um scanner muda quem sabe, não o que é verdade. É o mesmo argumento em que gira a [divulgação de Kaminsky](/learn/the-kaminsky-dns-flaw) e o mesmo por trás da observação de que uma correção é uma descrição da vulnerabilidade - a informação circula, e a única pergunta é se ela chega antes aos defensores.
+
+**Explicar é o produto.** A parte do SATAN que sobreviveu não é a varredura; varredura de portas não era novidade. É o tutorial anexado a cada achado. Uma lista de achados cria trabalho; uma explicação cria capacidade, e a diferença é se quem lê o relatório consegue agir sem escalar. Quem escreve relatórios de segurança para viver, ou ensina gente a lê-los, trabalha numa tradição que começa aqui.
+
+**E a discussão não está resolvida em definitivo, só para este caso.** Ela reabre toda vez que a capacidade dá um salto: com o Metasploit, com a exploração automatizada, e agora com sistemas que *descobrem* vulnerabilidades em vez de apenas checar as conhecidas. O Pessimists Archive traçou o paralelo explicitamente em 2026, pondo a reação ao SATAN ao lado da reação ao Mythos, da Anthropic - uma linha de modelos capaz de achar falhas de segurança em software, liberada a um número pequeno de organizações e não a todos, com um modelo irmão carregando restrições adicionais em segurança cibernética, entre outras áreas. Trinta e um anos de distância, e a mesma frase aparece nas duas discussões: isto vai ajudar mais os atacantes que os defensores. As objeções de 1995 não eram burras - eram sobre quem recebe a capacidade primeiro e com que rapidez os defensores conseguem absorvê-la, e essas são exatamente as perguntas certas a fazer sobre qualquer classe nova de ferramenta. O que o caso SATAN sugere não é que as objeções estejam sempre erradas, mas que **reter uma capacidade que outros podem construir de qualquer jeito nunca protegeu ninguém até hoje.**
+
+## Fontes
+
+- [Wikipedia, Security Administrator Tool for Analyzing Networks: um verificador de vulnerabilidades livre para analisar computadores em rede, que capturou uma ampla plateia técnica e atraiu ameaças do Departamento de Justiça dos Estados Unidos; tinha interface web com formulários para digitar alvos, tabelas para exibir resultados e tutoriais sensíveis ao contexto que apareciam quando uma vulnerabilidade era achada; para quem se ofendia com o nome, continha um comando chamado repent, que rearranjava o acrônimo de SATAN para SANTA; Neil Gaiman desenhou a arte da documentação; foi projetado para ajudar administradores a automatizar o teste de seus sistemas em busca de vulnerabilidades conhecidas exploráveis pela rede e, como a maioria das ferramentas de segurança, era útil para fins bons ou maliciosos](https://en.wikipedia.org/wiki/Security_Administrator_Tool_for_Analyzing_Networks)
+- [Wikipedia, Dan Farmer: nascido em 5 de abril de 1962, pesquisador americano de segurança e pioneiro no desenvolvimento de verificadores de vulnerabilidade para sistemas e redes Unix; desenvolveu o COPS, Computer Oracle and Password System, como estudante em Purdue em 1989 com a ajuda do professor Gene Spafford, composto de vários pequenos verificadores especializados para uma parte de um sistema Unix; em 1995 ele e Wietse Venema desenvolveram o SATAN](https://en.wikipedia.org/wiki/Dan_Farmer)
+- [Wikipedia, Wietse Venema: nascido em 1951 em Jacarta, programador e físico holandês mais conhecido pelo sistema de correio Postfix, que também escreveu o TCP Wrapper e colaborou com Farmer no SATAN e no The Coroner's Toolkit](https://en.wikipedia.org/wiki/Wietse_Venema)
+- [Smarter, publicação para provedores de serviços gerenciados: Farmer procurou Venema, e juntos desenvolveram o SATAN, que detalhava como invadir computadores junto com as defesas que se podia usar para se proteger; ele varria um host Unix numa rede e emitia um relatório sobre vulnerabilidades conhecidas e possíveis correções; em 5 de abril de 1995 o tornaram disponível publicamente; sua acessibilidade deixou gente nervosa, inclusive os chefes de Farmer na Silicon Graphics, que o demitiram; os autores escreveram que sabiam que o SATAN era uma faca de dois gumes que, como muitas ferramentas, podia ser usada para o bem e para o mal; seus antigos chefes na Sun ficaram impressionados e o recontrataram](https://smartermsp.com/tech-time-warp-dan-farmer-and-wietse-venema-unleash-satan-on-the-world/)
+- [Arquivo da revista Time, "SATAN raises hell on the net": lançado em meio a temores generalizados de que pudesse ajudar invasores a fazer o oposto do seu propósito declarado; o Lawrence Livermore National Laboratory e outras instituições de pesquisa e empresas corriam para se proteger contra uma onda esperada de invasores armados com a ferramenta nova; Farmer foi demitido pela Silicon Graphics ao decidir lançá-la, e sustentava que lançar o software forçaria as organizações a tomar melhores precauções de segurança](https://time.com/archive/6923806/satan-raises-hell-on-the-net/)
+- [Cobertura da época sobre o projeto: o programa reconhece vários problemas comuns de segurança de rede e os reporta sem de fato explorá-los; para cada tipo de problema achado, o SATAN oferece um tutorial que explica o problema e qual pode ser seu impacto, e o que se pode fazer a respeito - corrigir um erro num arquivo de configuração, instalar uma correção do fabricante, usar outros meios para restringir o acesso, ou simplesmente desabilitar o serviço](https://www.infohighway.co.uk/infohighway/2-4/24devil.html)
+- [Day in Tech History: lançado em 5 de abril de 1995, escrito em Perl por Farmer e Venema para ajudar administradores de rede a achar vulnerabilidades em sistemas remotos; houve considerável controvérsia sobre a ferramenta e seu lançamento, por ser a primeira ferramenta amigável do gênero; o SATAN nunca foi atualizado e foi substituído pelo Nessus e pelo SAINT](https://dayintechhistory.com/dith/april-5-1995-security-administration-tool-satan-released-2/)
+- [Pessimists Archive, junho de 2026, sobre o paralelo histórico: quando Farmer e Venema anunciaram, em março de 1995, o lançamento público iminente de um programa que detectava automaticamente vulnerabilidades de segurança numa internet então nascente, o pânico se instalou - um paralelo traçado explicitamente com software atual que acha vulnerabilidades de segurança de forma automática](https://newsletter.pessimistsarchive.org/p/before-mythos-satan-a-1990s-software)
