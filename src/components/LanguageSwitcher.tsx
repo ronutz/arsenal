@@ -35,7 +35,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/locales";
+import { LOCALES, LIVE_LOCALES, DEFAULT_LOCALE, getLocale, type LocaleMeta } from "@/i18n/locales";
 import { LOCALE_COVERAGE } from "@/i18n/locale-coverage";
 
 // A locale's display status for the switcher cue:
@@ -71,7 +71,26 @@ function statusBand(l: LocaleMeta): number {
   return 1;                              // machine-draft: amber + yellow, one band
 }
 
-const ORDERED_LOCALES: readonly LocaleMeta[] = [...LOCALES].sort((a, b) => {
+// PRIME, 2026-09-10: STUBS ARE NOT OFFERED. The switcher previously listed every
+// registered locale (42) banded by status, with a red dot and a "not translated
+// yet, showing English" notice for the 26 stubs. That was a deliberate design
+// and it worked - the Worker 301s a stub path to English, so nothing broke.
+//
+// Two reasons it changed. The product one is PRIME's: which stubs will actually
+// ship is undecided, and offering a language that is not there invites a click
+// that ends in English.
+//
+// The technical one is sharper and is why this is not merely cosmetic. The
+// Worker's stub gate answers with a **301 Permanent Redirect** to /en/. Browsers
+// cache a 301 aggressively and for a long time. Every click on a stub today
+// therefore burns a permanent redirect into that visitor's browser - and if the
+// locale is later promoted to live, those visitors keep landing on English and
+// never see the translation that was made for them. Not offering the stub keeps
+// that door open.
+//
+// The stub gate in worker/index.ts STAYS: existing links and bookmarks to a stub
+// path must keep working. This changes what is advertised, not what resolves.
+const ORDERED_LOCALES: readonly LocaleMeta[] = [...LIVE_LOCALES].sort((a, b) => {
   const band = statusBand(a) - statusBand(b);
   if (band !== 0) return band;
   // Alphabetical by the ENDONYM (the native name actually shown in the row),
