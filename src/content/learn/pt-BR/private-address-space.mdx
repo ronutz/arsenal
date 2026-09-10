@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
+Como um host numa dessas faixas de fato obtém seu endereço, e por quanto tempo, está em **[o ciclo de vida da concessão DHCP](/learn/dhcp-lease-lifecycle)**.
+
 ## Endereços que você pode reutilizar
 
 Existem apenas cerca de 4,3 bilhões de endereços IPv4, poucos demais para que cada dispositivo tenha um único endereço público. A resposta (RFC 1918) é reservar três faixas que qualquer um pode usar dentro da própria rede, sem registro. Como todos reutilizam as mesmas faixas privadas, elas não podem ser únicas na Internet pública, então **não são roteáveis** ali. Alcançar o exterior exige tradução de endereços de rede (NAT), que troca um endereço de origem privado por um endereço público compartilhado na borda da rede.

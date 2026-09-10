@@ -1,0 +1,76 @@
+---
+slug: f5-distributed-cloud-one-request-end-to-end
+title: "F5 Distributed Cloud: one request, end to end"
+summary: "Fifteen articles on F5 Distributed Cloud, read in the order a request meets them: how a site joins the fabric, where the request lands, which route it takes, where it is sent, how it is encrypted, whether it is allowed, how much of it is tolerated, what it may call, what it leaves behind, and what is silently wrong with the configuration that handled it."
+concepts: ["f5 distributed cloud", "xc", "load balancing", "service policy", "waf", "api protection", "rate limiting", "index"]
+relatedTools: []
+relatedArticles: ["f5xc-domain-matching-and-listener-logic", "xc-service-policy-predicates-and-logic", "f5xc-config-hazards", "xc-service-policy-vs-irules"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Why this order
+
+The platform's documentation is organised by object: load balancers, origin pools, service policies, WAF, API protection. That is the right way to build a reference and the wrong way to learn the thing, because a practitioner does not meet the objects one at a time. They meet a request, and the request meets the objects in a fixed sequence.
+
+So this page follows one request from the moment a site joins the fabric to the moment a security event is written about it. Each step is one article. Read straight through, it is the platform; read as a lookup, each step is where to go when that stage misbehaves.
+
+## 1. How a site joins the fabric
+
+**[CE registration and egress](/learn/f5xc-ce-registration-and-egress)** - before any request can be served from a site, the Customer Edge has to register: a token call-home, two Regional Edges chosen by geography, certificates issued, and tunnels that prefer IPsec and fall back to SSL. Most connectivity problems on the platform are problems at this step, and they present as everything downstream being broken.
+
+## 2. Where the request lands
+
+**[Domain matching and listener logic](/learn/f5xc-domain-matching-and-listener-logic)** - the advertise policy narrows a request to an address and port, and within that the platform picks the most specific domain match, exact beating wildcard. The hostname comes from SNI or the Host header depending on the protocol, which is the detail that explains a great many "wrong load balancer answered" tickets.
+
+## 3. Which route it takes
+
+**[HTTP load balancer route evaluation](/learn/f5xc-http-lb-route-evaluation)** - routes are an ordered list evaluated first-match. Four route types, three kinds of path match, and the ordering rules that decide why a request went to the route below the one you expected.
+
+## 4. Where it is sent
+
+**[Origin pool anatomy](/learn/f5xc-origin-pool-anatomy)** - what a pool holds, the five ways an origin can be named, and why one origin can appear healthy from one site and not another.
+
+**[Load-balancing algorithms and persistence](/learn/f5xc-lb-algorithms-and-persistence)** - the point where practitioners arriving from BIG-IP need to unlearn something: there, method and persistence are two knobs; here they are one, and the consistent-hashing algorithms are what persistence *is*.
+
+## 5. How it is encrypted
+
+**[TLS security levels](/learn/f5xc-tls-security-levels-explained)** - the three predefined levels plus Custom, why Default is the High level and what minimum protocol version that implies, why the cipher lists are cumulative, and why a scanner sometimes reports protocol versions the configuration does not appear to allow.
+
+## 6. Whether it is allowed
+
+The service policy is the platform's access control, and it is the part most worth reading in sequence because each article is a precondition for the next.
+
+**[Predicates and logic](/learn/xc-service-policy-predicates-and-logic)** - inside one rule every predicate is combined with AND and an unset predicate is implicitly true; inside one matcher, multiple values are combined with OR. Get this wrong and rules match everything or nothing.
+
+**[Actions and default deny](/learn/xc-service-policy-actions-and-default-deny)** - ALLOW, DENY, or NEXT_POLICY, the modifiers a rule can attach on a match, and what happens to a request that matches no rule at all.
+
+**[Rule combining algorithms](/learn/xc-rule-combining-algorithms)** - when a policy holds several rules, the algorithm decides the order they are evaluated in. First-match walks top to bottom and stops; the others do not, and the difference is the whole behaviour.
+
+**[Matcher case sensitivity and transformers](/learn/xc-matcher-case-sensitivity-and-transformers)** - header names are case-insensitive, header values and query keys and cookie names are not, and exact matches compare byte for byte unless a transformer says otherwise. This is the article to open when a rule that obviously should match does not.
+
+**[Service policy versus iRules](/learn/xc-service-policy-vs-irules)** - for anyone carrying BIG-IP habits: an iRule is procedural code running at events; a service policy is a declarative list. What translates, what does not, and how to think about the ones that do not.
+
+## 7. How much of it is tolerated
+
+**[Rate limiting explained](/learn/f5xc-rate-limiting-explained)** - why two differently written limits are the same limit, how the leaky bucket and the burst multiplier actually behave, and the trap where a mitigation set to Disabled is not the same as off.
+
+## 8. What it may call
+
+**[OpenAPI and API inventory](/learn/f5xc-openapi-and-api-inventory)** - API protection is a positive security model built from an OpenAPI specification: the spec's paths and methods become the inventory, and the inventory drives validation. A request to an endpoint the spec does not describe is the case this article exists for.
+
+## 9. What it leaves behind
+
+**[Security events anatomy](/learn/f5xc-security-events-anatomy)** - the WAF (web application firewall), bot defence, service policies and API protection all write to one stream. One field tells you which source wrote the event, and the difference between the action taken and the action recommended is the difference between blocking mode and monitoring mode, read after the fact.
+
+## 10. What is silently wrong
+
+**[Configuration hazards](/learn/f5xc-config-hazards)** - the platform accepts settings that are valid and operationally wrong: an origin pool that skips certificate verification, cleartext where there should not be, and the rest of the list a single-object linter can flag. Read this last, because every hazard in it is a step above done slightly wrong.
+
+## The two habits this sequence teaches
+
+**The request is the unit of reasoning.** When something misbehaves, find the step. A wrong backend is step three or four. A rule that should match is step six, and almost always the matcher article. A scanner complaint about protocol versions is step five. Working the sequence is faster than working the console.
+
+**And the console accepts things it should not.** Step ten is a list of configurations the platform will happily save and happily run, each of which is a decision a reviewer should catch. The [failure canon](/learn/how-systems-fail) on this site is full of systems that did exactly what they were configured to do; a platform that validates syntax and not intent is asking the operator to be the second check.

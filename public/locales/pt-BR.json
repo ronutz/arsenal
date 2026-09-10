@@ -148,7 +148,10 @@
       "dev": "Ferramentas dev",
       "devLede": "O curioso, o experimental e o divertido.",
       "contribute": "Contribuir",
-      "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete."
+      "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete.",
+      "stories": "Histórias",
+      "storiesLede": "Os artigos que ligam outros artigos: o que os casos de falha têm em comum, o que uma requisição de fato atravessa, por que o mesmo defeito se repete.",
+      "storiesBadge": "{count} fios"
     }
   },
   "tools": {
@@ -7302,7 +7305,7 @@
       "subtitle": "Duas décadas dentro da indústria de redes e segurança, construindo, quebrando e consertando os sistemas - e, desde 1997, ensinando-os em cada um daqueles cargos.",
       "intro": "Este é o longo meio da história, e a razão de o treinamento que veio depois ter peso. Por cerca de duas décadas, o trabalho foi implementação: projetar redes, colocá-las no ar, resolver seus problemas sob pressão, e ser a pessoa que recebe a ligação quando algo crítico quebrava. A jornada passou por alguns dos nomes que definiram as redes, em dois continentes.",
       "s1Title": "Cabletron e Enterasys, 1996 a 2000",
-      "s1Body": "A carreira formal começou em 1996 na Cabletron Systems, à época uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire. Ao longo de quatro anos e meio, o cargo abrangeu engenharia de campo e suporte pós-venda, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O assunto era a LAN e a WAN corporativa da época: switches, roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e firewalls de inspeção de estado. Em 2000, a Cabletron se reorganizou em quatro empresas, e a parte que tocou esta carreira virou Enterasys Networks.",
+      "s1Body": "A carreira formal começou em 1996 na Cabletron Systems, à época uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire, como estagiário de engenharia de redes de campo - e a primeira tarefa foi ler de capa a capa o guia de redes locais que a empresa publicara em 1992. O estágio virou um cargo efetivo de quatro anos. Ao longo de quatro anos e meio no total, o cargo abrangeu engenharia de campo e suporte pós-venda, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O assunto era a LAN e a WAN corporativa da época: switches, roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e firewalls de inspeção de estado. Em 2000, a Cabletron se reorganizou em quatro empresas, e a parte que tocou esta carreira virou Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 a 2002",
       "s2Body": "O capítulo seguinte foi na Califórnia. A Riverstone Networks, um spin-off da Cabletron que fabricava equipamentos de rede metropolitana, trouxe uma mudança para Santa Clara com um visto de trabalho H1-B1. O cargo foi engenheiro de suporte a produto de nível III e coordenador de gestão do conhecimento: escalonamento técnico de terceiro nível, reprodução de cenários de cliente em laboratório, testes de regressão e verificação de bugs, e a construção da base de conhecimento na qual o restante do suporte se apoiava. As tecnologias eram a espinha dorsal do mundo de operadoras e metro do início dos anos 2000: Gigabit Ethernet, MPLS, switching e roteamento metropolitanos, e BGP. Esse período também rendeu um marco formal: como parte do processo de visto, uma avaliação nos Estados Unidos em 2001 reconheceu uma formação equivalente a um bacharelado em ciência da computação e um bacharelado em administração de empresas.",
       "s3Title": "Cisco Systems, Brasília, 2003 a 2004",
@@ -7317,7 +7320,7 @@
       "years": "2020 – atual",
       "title": "O instrutor",
       "subtitle": "O ensino deixa de dividir a semana com qualquer outra coisa: tempo integral, oficial, ministrado para o mundo todo, expandindo plataforma a plataforma.",
-      "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada ministrada para profissionais e equipes no mundo todo. O que distingue esta época não é só o foco, mas a expansão deliberada e datada pelas plataformas, cada uma somada sobre uma profunda experiência de campo, e não em seu lugar.",
+      "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada entregue a profissionais e equipes no mundo todo. O primeiro ano deu o tom. Habilitar-se a ministrar um curso oficial exige assistir a ele como aluno, ter a certificação correspondente e então passar pela qualificação de instrutor; naquele ano isso foi feito seis vezes, cobrindo nove cursos, seguidas de treze turmas em trinta e três dias, 264 horas diante de 51 alunos. O que distingue esta era não é só o foco, mas a expansão deliberada e datada entre plataformas, cada uma somada sobre experiência profunda de campo, e não no lugar dela.",
       "s1Title": "Tempo integral, por vocação",
       "s1Body": "Desde 2020, o trabalho tem sido ministrar treinamento oficial conduzido por instrutor, remoto e presencial, em português e inglês, para audiências do mundo todo. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil. As cidadanias brasileira e alemã, somadas à autorização de viagem para os Estados Unidos e o Reino Unido, tornam esse alcance global prático: elegibilidade irrestrita para trabalhar na União Europeia e no Mercosul, e a liberdade de ir até onde a sala de aula estiver.",
       "s2Title": "F5, desde o início",
@@ -7450,7 +7453,7 @@
       "tagline": "A empresa de application delivery, e a plataforma mais ensinada neste site.",
       "intro": "A F5 é o capítulo mais profundo de todo o registro: uma década que vai da primeira certificação de administrador, passando pela escada completa de especialista, até a cadeira de instrutor, três anos de MVP no DevCentral e o hub principal deste site.",
       "s1Title": "A escada de certificações",
-      "s1Body": "O capítulo abre em 2015 com o F5 Certified Administrator, obtido enquanto distribuía a plataforma comercialmente. Veio então a escada de especialista: Certified Technology Specialist em LTM, DNS, ASM e APM, e depois os dois picos de solution expert, F5-CSE Cloud (2021) e F5-CSE Security (2022). Subir cada módulo do BIG-IP um exame por vez é exatamente a preparação de que um instrutor em tempo integral precisa, e foi aonde isso levou.",
+      "s1Body": "O capítulo abre em 2013, dois anos antes da primeira prova: um F5 Accredited Sales Professional obtido numa revenda, com as credenciais técnica e de segurança vindo em 2014. A escada de certificação propriamente dita começou em 2015 com o F5 Certified Administrator, obtido enquanto distribuía a plataforma comercialmente, e o especialista em DNS em 2017. O resto veio depois da virada para o ensino, porque um instrutor carrega a certificação do curso que ministra: ASM em 2020, LTM e F5-CSE Cloud em 2021, APM e F5-CSE Security em 2022. Nove anos, a credencial comercial primeiro e os picos de especialista por último, que é a ordem em que o trabalho aconteceu, e não a ordem que uma ementa sugeriria.",
       "s2Title": "A cadeira de instrutor e o DevCentral",
       "s2Body": "F5 Authorized Instructor desde 2020, ministrando doze cursos oficiais de BIG-IP e TMOS, dos fundamentos de administração a LTM, DNS, ASM/AWAF, APM, iRules e troubleshooting. A comunidade DevCentral da F5 me nomeou MVP por três anos consecutivos, de 2022 a 2024. Neste site, a F5 é o carro-chefe: o maior hub de fornecedor, com calculadoras, decodificadores e explicadores construídos para os mesmos engenheiros que sentam nessas aulas.",
       "certs": "F5 Authorized Instructor (desde 2020). Certificações atuais: F5-CSE Security, F5-CSE Cloud, F5-CTS LTM / DNS / ASM / APM, F5-CA. DevCentral MVP 2022, 2023, 2024. Detalhes completos na página de credenciais."
@@ -17346,7 +17349,8 @@
     "filterCount": "{shown} de {total}",
     "filterCountryLabel": "País",
     "worksPill": "Trabalha dentro",
-    "worksWithPill": "Trabalha com"
+    "worksWithPill": "Trabalha com",
+    "markEra": "marca em uso {era}"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -20539,5 +20543,26 @@
     "schoolsNote": "Instituições que concedem diplomas ou conduzem programas, em vez de vender cursos.",
     "restTitle": "Também marcados como treinamento",
     "restNote": "Verbetes com a tag de treinamento que as seções acima não nomeiam."
+  },
+  "stories": {
+    "title": "Histórias que os dados deste site contam",
+    "navLabel": "Histórias",
+    "lede": "A maioria dos artigos daqui responde a uma pergunta. Alguns fazem outra coisa: põem outros artigos numa ordem que defende algo que nenhum deles diz sozinho. Uma lista por categoria ordena por assunto, e estes estão ordenados por argumento, então esta é a única página em que aparecem juntos.",
+    "count": "São {count}, agrupados pelo que defendem.",
+    "closer": "Cada um é um artigo comum e pode ser lido sozinho. O que o torna uma história é ter sido escrito para ser lido depois das peças que ele aponta, ou no lugar de sair caçando por elas.",
+    "group": {
+      "failure": {
+        "title": "Como as coisas quebram, e o que decidir antes",
+        "lede": "Os casos de falha ordenados por onde a falha de fato morava, o intervalo entre alguém saber e todo mundo saber, e as cinco práticas que esses casos defendem. Os dois primeiros reúnem a evidência; o terceiro é o que fazer com ela."
+      },
+      "endToEnd": {
+        "title": "Uma coisa, seguida de ponta a ponta",
+        "lede": "Uma requisição, um serviço, uma resposta e um formato, cada um traçado por artigos escritos para se sustentarem sozinhos. Lidos em sequência, descrevem um caminho e não um tópico."
+      },
+      "people": {
+        "title": "A indústria e o país",
+        "lede": "Onde o assunto não é a tecnologia, e sim o negócio em torno dela e o lugar em que ela foi aprendida."
+      }
+    }
   }
 }

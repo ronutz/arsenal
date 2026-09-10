@@ -13,6 +13,8 @@ updated: "2026-07-21"
 
 Um endereço Internet Protocol (IP) leva um pacote através de redes; um endereço Media Access Control (MAC) leva um quadro através da sala. O Address Resolution Protocol (ARP) é o mecanismo pequeno e antigo que conecta os dois, e a prova aposentada de fundamentos da F5 mantinha três habilidades sobre ele: dizer que serviço o ARP fornece, verificar pela saída que a resolução funcionou, e explicar o MAC masquerading. As três continuam pagando o próprio salário diariamente.
 
+A primeira metade de todo endereço de hardware é um prefixo registrado; **[o que é um OUI](/learn/what-is-an-oui)** explica quem o atribui e o que ele diz sobre um dispositivo que você nunca viu.
+
 ## O serviço que o ARP fornece
 
 Quando um host precisa enviar para um IP na própria sub-rede, ele difunde uma pergunta - quem tem este IP - e o dono responde com seu endereço MAC. Quem perguntou guarda a resposta na tabela ARP: um mapeamento um-para-um de IP para MAC, envelhecido com o tempo e renovado sob demanda. Para destinos fora da sub-rede, o host não faz ARP para o destino; faz ARP para o [gateway padrão](/learn/routing-tables-and-default-gateway) e entrega o pacote ali - por isso um gateway errado aparece como entrada ARP para o roteador errado, não como mensagem de erro de roteamento.

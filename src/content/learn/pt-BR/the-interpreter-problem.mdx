@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+As ferramentas construídas para achar esta classe antes de ela sair - análise estática do código, teste dinâmico do sistema em execução - têm história própria na **[linhagem de SAST e DAST](/learn/sast-dast-family-history)**, inclusive por que nenhuma delas pega a junção com confiança.
+
 ## O formato
 
 A maior parte das vulnerabilidades deste catálogo são erros: um estouro de buffer, uma verificação que falta, uma máquina de estados que aceita uma mensagem duas vezes. Este artigo é sobre uma classe diferente e mais desconfortável, em que nada está quebrado. Um componente recebe uma cadeia de caracteres, a interpreta como foi projetado para interpretar, e a interpretação é execução de código - porque a cadeia veio de alguém que o projetista nunca imaginou.

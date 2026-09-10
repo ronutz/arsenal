@@ -125,6 +125,29 @@ const PRE_LABEL = "unverified:before-classifier";
 /** The people-only filter every human panel uses. */
 const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 
+// ----------------------------------------------------------------------------
+// REFERRER SOURCE FLOOR (defined 2026-09-09; the routes had used it since
+// 2026-09-06 without it ever being declared).
+//
+// The referrer rows carry the classified source (search:google, ai:perplexity,
+// social:linkedin, ...) in blob2 only from the day that classification went
+// live, 2026-09-06 - rows written before it have blob2 and blob3 empty (see
+// worker/analytics.ts, "REFERRER SOURCE + SEARCH TERM"). The `sources` and
+// `referrers` routes floor their window here so the source column is never a
+// wall of blanks from the old rows.
+//
+// Until today this identifier was referenced but never defined, so both routes
+// threw ReferenceError at runtime, which the catch below reported as 502
+// upstream_unavailable - i.e. as Cloudflare's fault, when it was ours. That is
+// also why the catch now distinguishes the two cases.
+//
+// The exact go-live time on 2026-09-06 is not recorded in the repository;
+// midnight UTC is used. Any rows from earlier that day with an empty source
+// are already excluded from `sources` by its `blob2 != ''` predicate.
+// ----------------------------------------------------------------------------
+const REFERRER_SOURCE_LIVE = "2026-09-06 00:00:00"; // UTC
+const REFERRER_SINCE = `timestamp >= toDateTime('${REFERRER_SOURCE_LIVE}')`;
+
 export async function handleStats(
   url: URL,
   env: StatsEnv
@@ -363,8 +386,22 @@ export async function handleStats(
           404
         );
     }
-  } catch {
-    // Never leak the upstream error: it can carry the account ID.
-    return json({ error: "upstream_unavailable" }, 502);
+  } catch (err) {
+    // Never leak an error body or message: the upstream one can carry the
+    // account ID. Two cases are told apart, because on 2026-09-09 they were not
+    // and a ReferenceError in THIS file spent days reported as Cloudflare's
+    // fault:
+    //   - query() throws exactly `sql <status>` when the Analytics Engine SQL
+    //     API answers with a non-2xx. That is a 502, and the upstream HTTP
+    //     status is reported because it carries nothing sensitive and is the
+    //     one number an operator needs: 401/403 the token, 400 the query, 429
+    //     rate limiting, 5xx Cloudflare's side.
+    //   - anything else is an exception in this handler. That is a 500 and is
+    //     ours, and it must not be dressed up as an upstream problem.
+    const m = err instanceof Error ? /^sql (\d{3})$/.exec(err.message) : null;
+    if (m) {
+      return json({ error: "upstream_unavailable", upstream_status: Number(m[1]) }, 502);
+    }
+    return json({ error: "handler_error" }, 500);
   }
 }

@@ -45,6 +45,15 @@ export interface PostFrontmatter {
   updated: string;
   /** Optional Learn article slugs for further (evergreen) reading. */
   relatedArticles?: string[];
+  /**
+   * Optional single illustration, shaped exactly like a glossary entry's so
+   * the two surfaces stay consistent. SITE POLICY, unchanged: original art or
+   * the author's own photographs of objects he owns - never a third party's
+   * image. `alt` is required by the type because an image with no alt text is
+   * a defect, not a style choice; `caption` is optional because not every
+   * photograph needs explaining.
+   */
+  image?: { src: string; alt: string; caption?: string };
 }
 
 /** A loaded post: frontmatter plus the raw MDX body. */

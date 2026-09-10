@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+O lado de captura da mesma disciplina - BPF, libpcap, tcpdump e o programa que quase todos conhecem - está em **[Wireshark e a pilha de captura](/learn/wireshark-and-the-capture-stack)**; as requisições que estas ferramentas interceptam podem ser reproduzidas à mão, como mostra **[requisições HTTP cruas e como reproduzi-las](/learn/raw-http-requests-and-how-to-replay-them)**.
+
 ## Uma operação, três posições
 
 Toda ferramenta deste artigo faz a mesma coisa. Coloca-se entre duas partes que acreditam estar falando uma com a outra, termina a conexão de cada lado e lê o que passa. É só isso. Um desenvolvedor investigando por que uma aplicação manda o cabeçalho errado, um testador de invasão sondando uma falha de autorização, um empregador aplicando uma política de dados e um atacante roubando um cookie de sessão executam uma operação tecnicamente idêntica, e nenhuma propriedade do tráfego os distingue.

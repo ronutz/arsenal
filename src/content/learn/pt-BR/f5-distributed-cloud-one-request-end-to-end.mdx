@@ -1,0 +1,76 @@
+---
+slug: f5-distributed-cloud-one-request-end-to-end
+title: "F5 Distributed Cloud: uma requisição, de ponta a ponta"
+summary: "Quinze artigos sobre o F5 Distributed Cloud, lidos na ordem em que uma requisição os encontra: como um site entra na malha, onde a requisição pousa, qual rota toma, para onde é enviada, como é cifrada, se é permitida, quanto dela é tolerado, o que pode chamar, o que deixa para trás, e o que está silenciosamente errado na configuração que a tratou."
+concepts: ["f5 distributed cloud", "xc", "load balancing", "service policy", "waf", "api protection", "rate limiting", "index"]
+relatedTools: []
+relatedArticles: ["f5xc-domain-matching-and-listener-logic", "xc-service-policy-predicates-and-logic", "f5xc-config-hazards", "xc-service-policy-vs-irules"]
+category: networking
+order: 144
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Por que esta ordem
+
+A documentação da plataforma é organizada por objeto: balanceadores, pools de origem, políticas de serviço, WAF, proteção de API. É o jeito certo de construir uma referência e o jeito errado de aprender a coisa, porque um profissional não encontra os objetos um de cada vez. Ele encontra uma requisição, e a requisição encontra os objetos numa sequência fixa.
+
+Então esta página segue uma requisição do momento em que um site entra na malha até o momento em que um evento de segurança é escrito sobre ela. Cada passo é um artigo. Lida direto, é a plataforma; lida como consulta, cada passo é aonde ir quando aquela etapa se comporta mal.
+
+## 1. Como um site entra na malha
+
+**[Registro do CE e saída](/learn/f5xc-ce-registration-and-egress)** - antes de qualquer requisição poder ser servida de um site, o Customer Edge precisa se registrar: uma chamada com token, duas Regional Edges escolhidas por geografia, certificados emitidos, e túneis que preferem IPsec e recuam para SSL. A maioria dos problemas de conectividade na plataforma é problema neste passo, e se apresenta como tudo rio abaixo quebrado.
+
+## 2. Onde a requisição pousa
+
+**[Casamento de domínio e lógica do listener](/learn/f5xc-domain-matching-and-listener-logic)** - a política de anúncio estreita uma requisição a um endereço e uma porta, e dentro disso a plataforma escolhe o casamento de domínio mais específico, exato vencendo curinga. O nome de host vem do SNI ou do cabeçalho Host conforme o protocolo, que é o detalhe que explica muitos chamados de "o balanceador errado respondeu".
+
+## 3. Qual rota toma
+
+**[Avaliação de rotas do balanceador HTTP](/learn/f5xc-http-lb-route-evaluation)** - rotas são uma lista ordenada avaliada por primeiro casamento. Quatro tipos de rota, três tipos de casamento de caminho, e as regras de ordem que decidem por que uma requisição foi para a rota abaixo da que você esperava.
+
+## 4. Para onde é enviada
+
+**[Anatomia do pool de origem](/learn/f5xc-origin-pool-anatomy)** - o que um pool guarda, os cinco jeitos de nomear uma origem, e por que uma origem pode parecer saudável de um site e não de outro.
+
+**[Algoritmos de balanceamento e persistência](/learn/f5xc-lb-algorithms-and-persistence)** - o ponto em que quem vem do BIG-IP precisa desaprender algo: lá, método e persistência são dois botões; aqui são um, e os algoritmos de hash consistente são o que a persistência *é*.
+
+## 5. Como é cifrada
+
+**[Níveis de segurança TLS](/learn/f5xc-tls-security-levels-explained)** - os três níveis predefinidos mais o Custom, por que o Default é o nível High e que versão mínima de protocolo isso implica, por que as listas de cifras são cumulativas, e por que um scanner às vezes reporta versões de protocolo que a configuração não parece permitir.
+
+## 6. Se é permitida
+
+A política de serviço é o controle de acesso da plataforma, e é a parte que mais vale ler em sequência porque cada artigo é pré-condição do seguinte.
+
+**[Predicados e lógica](/learn/xc-service-policy-predicates-and-logic)** - dentro de uma regra todo predicado é combinado com E, e um predicado não definido é implicitamente verdadeiro; dentro de um matcher, múltiplos valores são combinados com OU. Erre isso e as regras casam com tudo ou com nada.
+
+**[Ações e negação padrão](/learn/xc-service-policy-actions-and-default-deny)** - ALLOW, DENY ou NEXT_POLICY, os modificadores que uma regra pode anexar num casamento, e o que acontece com uma requisição que não casa com regra nenhuma.
+
+**[Algoritmos de combinação de regras](/learn/xc-rule-combining-algorithms)** - quando uma política tem várias regras, o algoritmo decide a ordem de avaliação. Primeiro casamento anda de cima para baixo e para; os outros não, e a diferença é o comportamento inteiro.
+
+**[Sensibilidade a maiúsculas e transformadores](/learn/xc-matcher-case-sensitivity-and-transformers)** - nomes de cabeçalho não diferenciam maiúsculas, valores de cabeçalho, chaves de consulta e nomes de cookie diferenciam, e casamentos exatos comparam byte a byte a menos que um transformador diga o contrário. É o artigo a abrir quando uma regra que obviamente deveria casar não casa.
+
+**[Política de serviço contra iRules](/learn/xc-service-policy-vs-irules)** - para quem carrega hábitos de BIG-IP: uma iRule é código procedural rodando em eventos; uma política de serviço é uma lista declarativa. O que se traduz, o que não, e como pensar nos que não.
+
+## 7. Quanto dela é tolerado
+
+**[Limitação de taxa explicada](/learn/f5xc-rate-limiting-explained)** - por que dois limites escritos de forma diferente são o mesmo limite, como o balde furado e o multiplicador de rajada de fato se comportam, e a armadilha em que uma mitigação em Disabled não é o mesmo que desligada.
+
+## 8. O que pode chamar
+
+**[OpenAPI e inventário de API](/learn/f5xc-openapi-and-api-inventory)** - a proteção de API é um modelo de segurança positivo construído a partir de uma especificação OpenAPI: os caminhos e métodos da especificação viram o inventário, e o inventário conduz a validação. Uma requisição a um endpoint que a especificação não descreve é o caso para o qual este artigo existe.
+
+## 9. O que deixa para trás
+
+**[Anatomia dos eventos de segurança](/learn/f5xc-security-events-anatomy)** - o WAF (web application firewall), defesa contra bots, políticas de serviço e proteção de API escrevem todos num único fluxo. Um campo diz qual fonte escreveu o evento, e a diferença entre a ação tomada e a ação recomendada é a diferença entre modo de bloqueio e modo de monitoramento, lida depois do fato.
+
+## 10. O que está silenciosamente errado
+
+**[Riscos de configuração](/learn/f5xc-config-hazards)** - a plataforma aceita ajustes válidos e operacionalmente errados: um pool de origem que pula a verificação de certificado, texto claro onde não deveria haver, e o resto da lista que um verificador de objeto único consegue sinalizar. Leia por último, porque cada risco dele é um passo acima feito ligeiramente errado.
+
+## Os dois hábitos que esta sequência ensina
+
+**A requisição é a unidade de raciocínio.** Quando algo se comporta mal, ache o passo. Um backend errado é o passo três ou quatro. Uma regra que deveria casar é o passo seis, e quase sempre o artigo do matcher. Uma queixa de scanner sobre versões de protocolo é o passo cinco. Percorrer a sequência é mais rápido que percorrer o console.
+
+**E o console aceita coisas que não deveria.** O passo dez é uma lista de configurações que a plataforma salva com prazer e roda com prazer, cada uma das quais é uma decisão que um revisor deveria pegar. O [cânone das falhas](/learn/how-systems-fail) deste site está cheio de sistemas que fizeram exatamente o que foram configurados para fazer; uma plataforma que valida sintaxe e não intenção está pedindo ao operador que seja a segunda verificação.

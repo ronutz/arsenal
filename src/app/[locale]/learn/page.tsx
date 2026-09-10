@@ -12,6 +12,7 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { STORY_SLUGS } from "@/content/learn/stories";
 import { ogImages } from "@/lib/og";
 import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
@@ -53,6 +54,7 @@ export default async function LearnIndexPage({
 
   const tNav = await getTranslations("nav");
   const t = await getTranslations("learn");
+  const tStories = await getTranslations("stories");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
@@ -117,6 +119,23 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalArticleCount", { count: articleCount })}</span>
                 </p>
               </a>
+              {/* PRIME 2026-09-09: the stitchers. Articles that connect other
+                  articles are invisible in a category list, because a category
+                  sorts by subject and these sort by argument. */}
+              <Link
+                href="/stories"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#10038;</span>
+                <p className="learn-portal-title">
+                  {tStories("navLabel")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{tStories("lede")}</p>
+                <p className="learn-portal-badges">
+                  <span className="learn-portal-badge">{tStories("count", { count: STORY_SLUGS.length })}</span>
+                </p>
+              </Link>
               <Link
                 href="/vendor-hubs"
                 className="learn-portal-card"

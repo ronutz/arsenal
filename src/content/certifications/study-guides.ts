@@ -2277,7 +2277,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CAB1.01",
             text: "Securing BIG-IP",
-            relatedArticles: ["bigip-packet-filters", "bigip-syn-flood-protection", "bigip-management-access-port-lockdown"],
+            relatedArticles: ["f5-ca-vs-retired-101-201", "bigip-packet-filters", "bigip-syn-flood-protection", "bigip-management-access-port-lockdown"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -8753,7 +8753,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM1.01",
             text: "Determine whether or not an application can be deployed with only the LTM module provisioned",
-            relatedArticles: ["bigip-profiles-on-a-virtual-server", "ltm-virtual-server-types"],
+            relatedArticles: ["f5-cts-ltm-vs-retired-301a-301b", "bigip-profiles-on-a-virtual-server", "ltm-virtual-server-types"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [

@@ -102,6 +102,26 @@ export default async function BlogPostPage({
             </p>
             <p className="article-summary">{post.summary}</p>
 
+            {/* Optional illustration. Site policy: original art, or the
+                author's own photograph of an object he owns. Rendered above the
+                body because on this blog the picture is evidence for the piece
+                rather than decoration after it. */}
+            {post.image && (
+              <figure className="gloss-figure">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="gloss-figure-img"
+                  src={post.image.src}
+                  alt={post.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {post.image.caption && (
+                  <figcaption className="gloss-figure-caption">{post.image.caption}</figcaption>
+                )}
+              </figure>
+            )}
+
             <div className="article-body">
               <MDXRemote
                 source={post.body}

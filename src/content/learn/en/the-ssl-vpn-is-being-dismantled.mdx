@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+What replaced the full-tunnel appliance in the small case - and what it deliberately does not do - is in **[WireGuard, the small tunnel](/learn/wireguard-the-small-tunnel)**.
+
 ## The fact, first
 
 Fortinet's own release notes are unambiguous. **FortiOS 7.6.3 removes SSL VPN (a virtual private network carried over TLS) tunnel mode entirely** - not on entry-level models, not by licence tier, but from every FortiGate, in the graphical interface and the command line. Existing tunnel-mode configuration is **not migrated** when the firmware is upgraded, which means an unplanned upgrade disconnects every remote worker at once and there is no rollback of the settings. Web mode survives under a new name, **Agentless VPN**, and is itself unsupported on several current model families. The phase-out began earlier on 2 GB memory models, and the G-series never shipped with it at all.

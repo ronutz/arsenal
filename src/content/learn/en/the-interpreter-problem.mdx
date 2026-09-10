@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+The tooling built to find this class before it ships - static analysis of the code, dynamic testing of the running system - has its own history in the **[SAST and DAST lineage](/learn/sast-dast-family-history)**, including why neither reliably catches the join.
+
 ## The shape
 
 Most of the vulnerabilities in this catalogue are mistakes: a buffer overrun, a missing check, a state machine that accepts a message twice. This article is about a different and more uncomfortable class, where nothing is broken. A component receives a string, interprets it as it was designed to, and the interpretation is code execution - because the string came from someone the designer never imagined.

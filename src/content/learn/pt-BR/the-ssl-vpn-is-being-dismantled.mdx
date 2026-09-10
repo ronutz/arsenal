@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+O que substituiu o equipamento de túnel completo no caso pequeno - e o que ele deliberadamente não faz - está em **[WireGuard, o túnel pequeno](/learn/wireguard-the-small-tunnel)**.
+
 ## O fato, primeiro
 
 As notas de versão da própria Fortinet são inequívocas. **O FortiOS 7.6.3 remove por completo o modo túnel da SSL VPN (uma rede privada virtual carregada sobre TLS)** - não em modelos de entrada, não por camada de licença, mas de todo FortiGate, na interface gráfica e na linha de comando. A configuração existente de modo túnel **não é migrada** quando o firmware é atualizado, o que significa que uma atualização não planejada desconecta todo trabalhador remoto de uma vez e não há reversão das configurações. O modo web sobrevive sob novo nome, **Agentless VPN**, e ele próprio não é suportado em várias famílias de modelos atuais. A retirada começou antes nos modelos de 2 GB de memória, e a série G nunca o trouxe.

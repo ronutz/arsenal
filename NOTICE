@@ -64,3 +64,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+TRADEMARKS
+----------------------------------------------------------------------------
+
+The vendor wordmarks in public/img/marks/ are the property of their respective
+owners and are used nominatively - to identify the companies this site writes
+about, and to show the mark that was official during the period a given page
+covers. Their presence does not imply any endorsement of, or affiliation with,
+this site or its author beyond the authorizations stated in words on
+https://ronutz.com/en/about/credentials/ .
+
+Marks held include those of Cabletron Systems, Enterasys Networks, Riverstone
+Networks, NetScreen Technologies, Ixia, McAfee, Cisco, Juniper Networks, F5,
+Extreme Networks, Fortinet and Palo Alto Networks. Several are the RETIRED
+marks of companies that no longer exist independently, or earlier marks of
+companies that do; the registry in src/content/vendors/marks.ts records the
+period each one was in official use.
+
+No mark is recoloured, redrawn or restyled, and trademark symbols present in
+the supplied artwork are retained. Where a supplied file carried empty canvas
+around the artwork, the SVG viewBox has been trimmed to the artwork's bounding
+box so that marks of differing proportions render at comparable size; the clear
+space around each mark is then provided by layout. Geometry, colour and
+proportion are untouched.
+----------------------------------------------------------------------------

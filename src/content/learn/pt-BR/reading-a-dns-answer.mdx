@@ -1,0 +1,74 @@
+---
+slug: reading-a-dns-answer
+title: "Lendo uma resposta de DNS: a linha que você pulou é o diagnóstico"
+summary: "Quatorze artigos sobre dig e nslookup, organizados como uma única resposta lida de cima: quem de fato respondeu, se era autoritativo ou repetia um cache, o que as flags admitem, o que a linha OPT está fazendo ali, o que os registros dizem, o que um código de falha significa, e como percorrer a delegação por conta própria quando a resposta do resolvedor não merece confiança. A maioria dos diagnósticos errados de DNS não é incompreensão do DNS. É uma linha que não foi lida."
+concepts: ["dns", "dig", "nslookup", "authoritative", "delegation", "edns", "dnssec", "troubleshooting", "index"]
+relatedTools: []
+relatedArticles: ["reading-dig-output", "authoritative-vs-non-authoritative-answers", "dig-trace-and-delegation", "the-kaminsky-dns-flaw"]
+category: networking
+order: 146
+status: reviewed
+updated: "2026-09-09"
+---
+
+Quando o resolvedor sendo lido é um firewall e não um servidor, **[modos de servidor DNS e filtragem no FortiGate](/learn/fortigate-dns-server-modes-and-filtering)** cobre o que ele responde e o que não.
+
+## A afirmação
+
+DNS não é difícil de entender. É difícil de *ler*, porque as duas ferramentas que o consultam imprimem uma resposta que é majoritariamente metadado, e o metadado é onde o diagnóstico mora. O nome resolveu - ótimo, mas quem disse? Para qual servidor a pergunta de fato foi? A resposta veio da zona ou de um cache que pode estar horas defasado? O resolvedor truncou, recusou, ou não conseguiu alcançar ninguém? Cada uma dessas coisas está na tela, e cada uma é pulada por quem só está procurando um endereço.
+
+Então esta página organiza os artigos de ferramenta como uma única resposta, lida da primeira linha à última, na ordem em que as perguntas surgem.
+
+## Linha um: quem respondeu
+
+**[Lendo a saída do nslookup](/learn/reading-nslookup-output)** - o nslookup imprime um cabeçalho *Server* e *Address* antes de qualquer coisa. É o resolvedor que ele consultou, que quase nunca é o servidor que guarda a zona. Boa parte dos relatos de "o DNS está errado" são relatos sobre a opinião daquele resolvedor, e a primeira coisa a estabelecer é de quem é a opinião que você está olhando.
+
+**[Lendo a saída do dig](/learn/reading-dig-output)** - a mesma resposta no formato fixo do dig: linha de versão, cabeçalho, flags, a pseudosseção OPT, as quatro seções, e as estatísticas de consulta no fim que dizem qual servidor respondeu e em quanto tempo.
+
+## Linha dois: se eram autoritativos
+
+**[Respostas autoritativas contra não autoritativas](/learn/authoritative-vs-non-authoritative-answers)** - o marcador que o nslookup imprime e a flag que o dig mostra significam que a resposta veio do cache de um resolvedor e não de um servidor que guarda a zona. Ela pode estar correta e defasada ao mesmo tempo. Quando uma mudança "não propagou", esta é a linha a olhar primeiro, e o artigo explica por que o conserto em geral é perguntar diretamente à autoridade em vez de esperar.
+
+A [falha de Kaminsky](/learn/the-kaminsky-dns-flaw) é o que acontece quando uma resposta em cache e não autoritativa é a *errada* e nada no resolvedor consegue perceber; a linha que diz "não autoritativa" é a razão de a distinção ter valido uma correção de emergência em toda a indústria.
+
+## O cabeçalho e as flags
+
+**[O cabeçalho da mensagem DNS e as flags](/learn/dns-message-header-and-flags)** - que tipo de consulta foi esta, se teve sucesso, e as sete flags de um bit: recursão desejada e disponível, autoritativa, truncada, e as demais. A truncagem em particular explica uma família inteira de relatos de "funciona com uma ferramenta e não com a outra", porque é onde uma resposta que não coube em UDP é cortada e espera-se que o cliente tente de novo por TCP.
+
+## A linha que não é um registro
+
+**[EDNS e a pseudosseção OPT](/learn/edns-and-the-opt-pseudosection)** - perto do topo de uma resposta do dig há uma linha que não é registro e não é algo que você pediu. É metadado EDNS(0): o tamanho de buffer que o cliente ofereceu, o bit DNSSEC-OK, às vezes um código de erro estendido. Quem não sabe o que é ou ignora ou se preocupa; o artigo diz o que ela carrega e quando importa.
+
+## Os registros em si
+
+**[Tipos de registro nas respostas do dig](/learn/dns-record-types-in-answers)** - todo registro tem cinco colunas: nome, TTL, classe, tipo, dados. A coluna do TTL é a que as pessoas esquecem de ler, e é a que diz por quanto tempo a resposta errada vai persistir.
+
+**[Tipos de registro no nslookup](/learn/nslookup-record-types)** - os mesmos registros rotulados em prosa em vez de colunas: mail exchanger, canonical name, nameserver, e o bloco de várias linhas de um registro de início de autoridade.
+
+## Quando não há resposta
+
+**[Erros do nslookup explicados](/learn/nslookup-errors-explained)** - uma consulta que falha imprime uma única linha com um código, e o código é o diagnóstico inteiro. NXDOMAIN, SERVFAIL, REFUSED e um tempo esgotado são quatro falhas diferentes com quatro donos diferentes, e tratá-las como um único "o DNS caiu" é o jeito mais comum de um problema de resolução ser escalado para a equipe errada.
+
+## Perguntando com precisão
+
+**[Opções de consulta do dig](/learn/dig-query-options)** - escolher o servidor, o tipo de registro, e quanto da resposta imprimir. O hábito que vale construir é o `@servidor`: perguntar a um servidor específico, especialmente o autoritativo, é como o cache de um resolvedor sai do quadro.
+
+**[Modo interativo do nslookup](/learn/nslookup-interactive-mode)** - o mesmo controle a partir do prompt interativo: trocar de resolvedor, mudar o tipo de registro, ligar a saída de depuração.
+
+## Percorrendo a delegação por conta própria
+
+**[dig +trace e delegação](/learn/dig-trace-and-delegation)** - a resposta a "mas qual servidor *deveria* guardar isto?". O trace resolve do jeito que a internet de fato resolve: da raiz, ao domínio de topo, aos servidores da própria zona, mostrando cada encaminhamento. Quando a resposta do resolvedor e a da autoridade discordam, é assim que a discordância se localiza. Para o de que o topo dessa cadeia depende, veja [o que acontece se a raiz do DNS apagar](/learn/what-happens-if-the-dns-root-goes-dark).
+
+## Ao contrário, e assinado
+
+**[Consultas reversas com nslookup](/learn/reverse-dns-lookups-with-nslookup)** - mapear um endereço de volta a um nome pelas árvores reversas. Registros reversos são mantidos por quem detém o bloco de endereços, não por quem detém o nome, e é por isso que tantas vezes faltam ou estão errados e por que sistemas de correio se importam.
+
+**[Registros DNSSEC no dig](/learn/dnssec-records-in-dig)** - acrescente a flag e a resposta ganha uma família de registros: assinaturas, chaves, signatários de delegação, e os registros de negação de existência. Para que serve cada um, e como distinguir uma falha de validação de uma falha comum.
+
+## Duas ferramentas, uma resposta
+
+**[nslookup contra dig](/learn/nslookup-vs-dig)** - os dois consultam a mesma coisa; o nslookup é mais lacônico e esconde as flags e os TTLs que o dig mostra por inteiro. O artigo mapeia uma saída na outra, que é o jeito mais rápido de ficar fluente em qualquer uma que a máquina à sua frente tenha.
+
+## O hábito
+
+Leia a resposta de cima a baixo, uma vez, antes de formar uma teoria. Quem respondeu, se com autoridade, o que as flags dizem, depois os registros, depois os TTLs. O [e-mail de 500 milhas](/learn/the-500-mile-email) foi resolvido por alguém que olhou uma camada sobre a qual ninguém relatava; um problema de DNS costuma ser resolvido por alguém que olha uma *linha* que ninguém estava lendo. Para a história mais longa de como o sistema passou a funcionar assim, veja a [linhagem do DNS](/learn/dns-family-history).

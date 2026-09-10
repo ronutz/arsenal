@@ -1,0 +1,41 @@
+{
+  // ==========================================================================
+  // tsconfig.worker.json - TYPE-CHECKS THE CLOUDFLARE WORKER.
+  //
+  // WHY THIS EXISTS: the root tsconfig.json deliberately EXCLUDES worker/, so
+  // that Next.js's type-check does not see Workers-runtime globals it cannot
+  // resolve. The side effect was that nothing type-checked the Worker at all.
+  // On 2026-09-09 an identifier referenced in worker/stats.ts had never been
+  // declared; `tsc` reported zero errors, the code shipped, two public
+  // endpoints threw ReferenceError at runtime, and a bare catch reported it as
+  // an upstream 502. This config, run by scripts/check-worker-types.mjs, is
+  // the guard that would have caught it at build time.
+  //
+  // Runtime types come from worker/worker-configuration.d.ts, which the guard
+  // regenerates with `wrangler types` from wrangler.jsonc (bindings,
+  // compatibility date) on every run, so they can never go stale. The file
+  // lives INSIDE worker/ on purpose: the root tsconfig excludes worker/, and
+  // when this file sat at the repo root it was swept into the root check's
+  // **/*.ts glob, where workerd's stricter globals (a json() that returns
+  // unknown, among others) broke nine unrelated Next.js components.
+  // ==========================================================================
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    // No @types/node: the Worker runs on workerd, and Node's globals would
+    // both mask real errors and conflict with the runtime's own declarations.
+    "types": [],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
+  },
+  "include": ["worker/**/*.ts"]
+}

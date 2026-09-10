@@ -69,11 +69,11 @@ function toBytes(text: string): Uint8Array {
 function bytesToUtf8(bytes: Uint8Array): { text: string; isUtf8: boolean } {
   let isUtf8 = true;
   try {
-    new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(bytes);
   } catch {
     isUtf8 = false;
   }
-  const text = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+  const text = new TextDecoder("utf-8", { fatal: false, ignoreBOM: false }).decode(bytes);
   return { text, isUtf8 };
 }
 

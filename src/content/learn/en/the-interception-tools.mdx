@@ -11,6 +11,8 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
+The capture side of the same discipline - BPF, libpcap, tcpdump and the program most people know - is in **[Wireshark and the capture stack](/learn/wireshark-and-the-capture-stack)**; the requests these tools intercept can be replayed by hand, as **[raw HTTP requests and how to replay them](/learn/raw-http-requests-and-how-to-replay-them)** shows.
+
 ## One operation, three positions
 
 Every tool in this article does the same thing. It places itself between two parties who believe they are talking to each other, terminates the connection from each side, and reads what passes. That is the whole of it. A developer inspecting why an application sends the wrong header, a penetration tester probing an authorisation flaw, an employer enforcing a data policy, and an attacker stealing a session cookie are performing an identical technical operation, and no property of the traffic distinguishes them.
