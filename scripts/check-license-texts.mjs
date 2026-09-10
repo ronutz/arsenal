@@ -67,7 +67,15 @@ function declaredIdentifiers() {
       }
       if (!/\.(m?[jt]sx?|css|mts)$/.test(name)) continue;
       const head = readFileSync(p, "utf8").slice(0, 2000);
+      // REUSE-IgnoreStart
+      // The literal tag below is a PATTERN, not a declaration. Without these
+      // markers REUSE's own scanner reads it as a licence statement, tries to
+      // parse the regex that follows as an SPDX expression, and fails the
+      // compliance job - which is exactly what happened on 2026-09-10, in the
+      // guard written to prevent REUSE failures. The markers are the mechanism
+      // the specification provides for this case.
       for (const m of head.matchAll(/SPDX-License-Identifier:\s*([A-Za-z0-9.\-+]+)/g)) {
+      // REUSE-IgnoreEnd
         if (!found.has(m[1])) found.set(m[1], path.relative(ROOT, p));
       }
     }

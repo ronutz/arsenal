@@ -127,10 +127,26 @@ console.log(
     `${avgPerLocale.toLocaleString()} per locale + ${shared.toLocaleString()} shared; ` +
     `${ignored.toLocaleString()} index.txt excluded (D-19).`
 );
+// A verification build runs with SKIP_OG=1, so out/og is empty or absent and
+// the Open Graph cards - one of the larger asset families - are missing from
+// the count entirely. The local number is therefore a FLOOR, not a prediction.
+// Measured on 2026-09-10: this script estimated 81,219 in CI against 72,377
+// locally, so a SKIP_OG estimate ran about 11% low. Stated rather than
+// silently corrected, because a fudge factor would go stale and a stated bias
+// does not.
+const ogDir = path.join(OUT, "og");
+const ogCount = existsSync(ogDir) ? readdirSync(ogDir).length : 0;
+
 if (!exact) {
   console.log(
     `  extrapolated from a partial build - CI measures the real number. ` +
       `Headroom to the gate: ${headroomGate.toLocaleString()} (~${pagesLeft.toLocaleString()} more pages).`
+  );
+}
+if (ogCount === 0) {
+  console.log(
+    `  NOTE: no OG cards in out/og (SKIP_OG build), so this is a FLOOR. ` +
+      `The 2026-09-10 CI measurement came in ~11% above the equivalent local estimate.`
   );
 }
 
