@@ -64,6 +64,8 @@ if (!existsSync(OUT)) {
 // of stub status. (First attempt matched the derived name and found zero, which
 // silently produced a meaningless multiplier; hence the assertion below.)
 const localesSrc = readFileSync(path.join(ROOT, "src/i18n/locales.ts"), "utf8");
+const AUTHORED = [...(localesSrc.match(/AUTHORED_CONTENT_LOCALES\s*=\s*\[([^\]]*)\]/)?.[1] ?? "")
+  .matchAll(/"([A-Za-z-]+)"/g)].map((m) => m[1]);
 const localeCodes = [...localesSrc.matchAll(/\{\s*code:\s*"([A-Za-z-]+)"[^}]*?status:\s*"([a-z-]+)"/g)]
   .filter((m) => m[2] !== "stub")
   .map((m) => m[1]);
@@ -106,13 +108,34 @@ const built = [...perLocale.keys()];
 const effectiveNow = total - ignored;
 
 // Average across the locales actually present, then bill for all live ones.
-// The LARGEST built locale, not the mean. A verification build renders one
-// locale fully and can leave a partial directory for another (out/pt-BR gets a
-// handful of files even under VERIFY_LOCALES=en), and averaging a full locale
-// with a stub one halves the estimate and understates the risk. The biggest
-// directory is the best proxy for what a full locale costs.
-const avgPerLocale = built.length ? Math.max(...perLocale.values()) : 0;
-const estimate = avgPerLocale * localeCodes.length + shared;
+// TWO CLASSES OF LOCALE, since 2026-09-10. This script's original model -
+// "largest built locale x number of locales" - assumed every locale costs the
+// same, and its own header warned that the assumption "would NOT be sound on a
+// site where locales carry different page counts". That is now this site: the
+// Learn and glossary detail pages generate only in AUTHORED_CONTENT_LOCALES, so
+// an authored locale is ~3,383 pages and every other live locale is ~1,007.
+// Using the largest for all sixteen would overstate the manifest by roughly
+// 33,000 and make the guard cry wolf.
+//
+// So each class is measured separately, and the estimate is only offered when a
+// build contains at least one of EACH. With authored locales alone there is
+// nothing to measure the cheaper class from, and inventing a ratio would be
+// exactly the confident-wrong-number failure this guard was written after.
+const authored = new Set(AUTHORED);
+const authoredBuilt = [...perLocale].filter(([l]) => authored.has(l)).map(([, n]) => n);
+const otherBuilt = [...perLocale].filter(([l]) => !authored.has(l)).map(([, n]) => n);
+
+const authoredCost = authoredBuilt.length ? Math.max(...authoredBuilt) : 0;
+const otherCost = otherBuilt.length ? Math.max(...otherBuilt) : 0;
+
+const nAuthored = localeCodes.filter((c) => authored.has(c)).length;
+const nOther = localeCodes.length - nAuthored;
+
+// True when both classes are represented and can therefore be priced.
+const canPrice = authoredBuilt.length > 0 && otherBuilt.length > 0;
+const estimate = canPrice
+  ? authoredCost * nAuthored + otherCost * nOther + shared
+  : authoredCost * localeCodes.length + shared; // upper bound: prices every locale as authored
 const exact = built.length === localeCodes.length;
 
 const headroomGate = GATE - estimate;
@@ -124,7 +147,10 @@ console.log(
 );
 console.log(
   `  built ${built.length}/${localeCodes.length} locale(s); ` +
-    `${avgPerLocale.toLocaleString()} per locale + ${shared.toLocaleString()} shared; ` +
+    (canPrice
+      ? `${nAuthored} authored @ ${authoredCost.toLocaleString()} + ${nOther} other @ ${otherCost.toLocaleString()}`
+      : `UPPER BOUND - no non-authored locale built, so every locale is priced as authored @ ${authoredCost.toLocaleString()}`) +
+    ` + ${shared.toLocaleString()} shared; ` +
     `${ignored.toLocaleString()} index.txt excluded (D-19).`
 );
 // A verification build runs with SKIP_OG=1, so out/og is empty or absent and

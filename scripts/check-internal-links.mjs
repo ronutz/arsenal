@@ -37,6 +37,34 @@ const OUT = "out";
 // pinned to "en", so single-locale pt-BR verification builds hit the SKIP branch
 // and shipped with internal links entirely unchecked. Now it prefers en when
 // present and otherwise takes the first built locale, so every build gets read.
+// TWO LOCALES NOW, NOT ONE. The premise stated above - "one locale is enough,
+// the routes are generated per locale" - stopped being true on 2026-09-10, when
+// the Learn and glossary DETAIL pages became authored-locales-only and every
+// other live locale dropped from ~3,383 pages to ~1,007. Reading only "en"
+// would leave a broken link inside a non-authored locale permanently invisible,
+// and those locales are exactly where link targets have just disappeared.
+//
+// So: the preferred locale (en) AND, when one was built, the first
+// non-authored one. Nothing is assumed about which locales a verification build
+// contains; if only en was built this behaves exactly as before.
+const AUTHORED_SET = new Set(
+  [...(fs.readFileSync("src/i18n/locales.ts", "utf8")
+    .match(/AUTHORED_CONTENT_LOCALES\s*=\s*\[([^\]]*)\]/)?.[1] ?? "")
+    .matchAll(/"([A-Za-z-]+)"/g)].map((m) => m[1])
+);
+const BUILT_LOCALES = fs.existsSync(OUT)
+  ? fs.readdirSync(OUT, { withFileTypes: true })
+      .filter(
+        (e) =>
+          e.isDirectory() &&
+          /^[a-z]{2}(-[A-Za-z]{2,4})?$/.test(e.name) &&
+          fs.existsSync(path.join(OUT, e.name, "index.html"))
+      )
+      .map((e) => e.name)
+      .sort()
+  : [];
+const EXTRA_LOCALE = BUILT_LOCALES.find((l) => !AUTHORED_SET.has(l));
+
 const LOCALE = fs.existsSync(path.join(OUT, "en", "index.html"))
   ? "en"
   : (fs.existsSync(OUT)
@@ -56,7 +84,13 @@ if (!BASE || !fs.existsSync(BASE)) {
   console.log("[check-internal-links] SKIP: no build output to read.");
   process.exit(0);
 }
-console.log(`[check-internal-links] reading locale: ${LOCALE}`);
+const LOCALES_TO_READ = [LOCALE, ...(EXTRA_LOCALE && EXTRA_LOCALE !== LOCALE ? [EXTRA_LOCALE] : [])];
+console.log(
+  `[check-internal-links] reading locale(s): ${LOCALES_TO_READ.join(", ")}` +
+    (EXTRA_LOCALE && EXTRA_LOCALE !== LOCALE
+      ? ` (${EXTRA_LOCALE} is non-authored - where the corpus routes no longer exist)`
+      : "")
+);
 
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -67,32 +101,72 @@ function walk(dir, out = []) {
   return out;
 }
 
-const all = walk(BASE);
-const pages = all.filter((f) => f.endsWith("index.html"));
-
-// What exists: route directories, and every non-HTML file that shipped.
-const routes = new Set(pages.map((p) => "/" + path.relative(BASE, path.dirname(p)).split(path.sep).join("/")));
-routes.add("/.");
-routes.add("/");
-const files = new Set(all.filter((f) => !f.endsWith(".html")).map((p) => "/" + path.relative(BASE, p).split(path.sep).join("/")));
-
+// Each locale is resolved against ITS OWN tree: a link in /de/ points at /de/...
+// and must resolve inside /de/. Sharing one route set between locales would let
+// a link to a page that exists only in English pass while it is broken in
+// German - the precise failure this widening exists to catch.
+let pages = [];
 const broken = new Map();
-for (const p of pages) {
-  const from = "/" + path.relative(BASE, path.dirname(p)).split(path.sep).join("/");
-  const html = fs.readFileSync(p, "utf8");
-  for (const m of html.matchAll(new RegExp(`href="/${LOCALE}([^"#?]*)"`, "g"))) {
-    const raw = m[1] || "/";
-    const target = raw.replace(/\/$/, "") || "/";
-    if (routes.has(target) || files.has(raw) || files.has(target)) continue;
-    if (!broken.has(target)) broken.set(target, from);
+
+for (const loc of LOCALES_TO_READ) {
+  const base = path.join(OUT, loc);
+  if (!fs.existsSync(base)) continue;
+  const all = walk(base);
+  const localePages = all.filter((f) => f.endsWith("index.html"));
+  pages = pages.concat(localePages);
+
+  const routes = new Set(
+    localePages.map((f) => "/" + path.relative(base, path.dirname(f)).split(path.sep).join("/"))
+  );
+  routes.add("/.");
+  routes.add("/");
+  const files = new Set(
+    all.filter((f) => !f.endsWith(".html")).map((f) => "/" + path.relative(base, f).split(path.sep).join("/"))
+  );
+
+  for (const f of localePages) {
+    const from = `/${loc}/` + path.relative(base, path.dirname(f)).split(path.sep).join("/");
+    const html = fs.readFileSync(f, "utf8");
+    for (const m of html.matchAll(new RegExp(`href="/${loc}([^"#?]*)"`, "g"))) {
+      const raw = m[1] || "/";
+      const target = raw.replace(/\/$/, "") || "/";
+      if (routes.has(target) || files.has(raw) || files.has(target)) continue;
+      // NOT BROKEN - REDIRECTED. In a locale that does not carry the authored
+      // corpora, a link to a Learn article or a glossary entry is answered by
+      // the Worker with a 302 to the English page (2026-09-10). The target is
+      // deliberately not built, so "must resolve to something that was actually
+      // built" is the wrong test for exactly these two families in exactly
+      // these locales. Kept deliberately narrow: any other missing target in
+      // the same locale still fails, and both families still must exist in the
+      // authored locales, where they are not exempt.
+      if (
+        !AUTHORED_SET.has(loc) &&
+        (target.startsWith("/learn/") || target.startsWith("/glossary/"))
+      ) {
+        continue;
+      }
+      const key = `${loc}:${target}`;
+      if (!broken.has(key)) broken.set(key, from);
+    }
   }
 }
 
+const LEGACY_UNUSED = (
+true);
+
 // Pre-existing, and one of them deliberate — see the header.
+// The baseline counts DISTINCT TARGETS, not occurrences. Since 2026-09-10 this
+// guard reads more than one locale, and the single deliberate exception - the
+// changelog's link to the pre-1996 page's old address, kept because editing a
+// dated record to tidy a report is worse than the broken link - appears once in
+// every locale read. Counting occurrences would make the baseline depend on how
+// many locales a given build happened to include, which is not a property of
+// the site at all.
+const distinctTargets = new Set([...broken.keys()].map((k) => k.split(":").slice(1).join(":")));
 const BASELINE = 1;
 
-if (broken.size > BASELINE) {
-  console.error(`\n[check-internal-links] FAIL: ${broken.size} internal link(s) resolve to nothing, above the baseline of ${BASELINE}.\n`);
+if (distinctTargets.size > BASELINE) {
+  console.error(`\n[check-internal-links] FAIL: ${distinctTargets.size} distinct target(s) resolve to nothing, above the baseline of ${BASELINE}.\n`);
   for (const [target, from] of [...broken].slice(0, 20)) {
     console.error(`      ${target}   (linked from ${from})`);
   }
@@ -102,6 +176,6 @@ if (broken.size > BASELINE) {
 
 console.log(
   `[check-internal-links] OK: ${pages.length} page(s), every internal href resolves;` +
-  ` ${broken.size} known-broken (baseline ${BASELINE}, may only go down).` +
-  (broken.size < BASELINE ? ` LOWER - drop BASELINE to ${broken.size}.` : ""),
+  ` ${distinctTargets.size} known-broken target(s) (baseline ${BASELINE}, may only go down).` +
+  (distinctTargets.size < BASELINE ? ` LOWER - drop BASELINE to ${distinctTargets.size}.` : ""),
 );

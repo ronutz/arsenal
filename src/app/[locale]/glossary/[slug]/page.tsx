@@ -15,6 +15,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
 import {
   getGlossaryEntry,
   getAllGlossarySlugs,
@@ -34,7 +35,10 @@ const TOOL_NAME = new Map(CATALOGUE.map((t) => [t.slug, t.name]));
 /** Pre-generate every entry page for every locale at build time. */
 export function generateStaticParams() {
   const slugs = getAllGlossarySlugs();
-  return routing.locales.flatMap((locale) =>
+  // Only where the content is AUTHORED. Elsewhere the Worker redirects to
+  // English rather than shipping an English page under a non-English URL -
+  // see AUTHORED_CONTENT_LOCALES in src/i18n/locales.ts for the arithmetic.
+  return AUTHORED_CONTENT_LOCALES.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );
 }

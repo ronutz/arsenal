@@ -20,6 +20,7 @@ import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
+import { AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
 import { getArticle, getAllArticleSlugs, getRelatedArticles, getArticleVendors } from "@/lib/learn";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
@@ -32,7 +33,10 @@ import SiteFooter from "@/components/SiteFooter";
 export function generateStaticParams() {
   const slugs = getAllArticleSlugs();
   // One entry per (locale, slug). Articles fall back to English content.
-  return routing.locales.flatMap((locale) =>
+  // Only where the content is AUTHORED. Elsewhere the Worker redirects to
+  // English rather than shipping an English page under a non-English URL -
+  // see AUTHORED_CONTENT_LOCALES in src/i18n/locales.ts for the arithmetic.
+  return AUTHORED_CONTENT_LOCALES.flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug }))
   );
 }
