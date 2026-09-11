@@ -8050,7 +8050,8 @@
     "portalCompanies": "{count} empresas",
     "portalPeople": "Pessoas",
     "portalPeopleLede": "Os indivíduos por trás das ferramentas, das conferências e das redes - inclusive quem construiu as do Brasil.",
-    "portalPeopleCount": "{count} pessoas"
+    "portalPeopleCount": "{count} pessoas",
+    "portalLearningCount": "{count} instituições"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",

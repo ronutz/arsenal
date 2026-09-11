@@ -8050,7 +8050,8 @@
     "portalCompanies": "{count} companies",
     "portalPeople": "People",
     "portalPeopleLede": "The individuals behind the tools, the conferences and the networks — including the ones who built Brazil's.",
-    "portalPeopleCount": "{count} people"
+    "portalPeopleCount": "{count} people",
+    "portalLearningCount": "{count} institutions"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
