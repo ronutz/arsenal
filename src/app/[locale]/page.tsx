@@ -17,7 +17,6 @@
 
 import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { STORY_SLUGS } from "@/content/learn/stories";
 import MessageSlice from "@/components/MessageSlice";
 import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
@@ -246,16 +245,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <div className="container">
             <h2 className="section-title">{t("map.title")}</h2>
             <div className="learn-portal-grid">
-              {/* PRIME 2026-09-09: the stitchers, from the site map too. */}
-              <Link href="/stories" className="learn-portal-card">
-                <p className="learn-portal-title">
-                  {t("map.stories")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("map.storiesLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("map.storiesBadge", { count: STORY_SLUGS.length })}</span>
-                </p>
-              </Link>
 
               <Link href="/vendor-hubs" className="learn-portal-card" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9670;</span>

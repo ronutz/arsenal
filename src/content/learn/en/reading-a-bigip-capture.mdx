@@ -13,8 +13,6 @@ updated: "2026-08-10"
 
 Capturing the packets is half the job; reading them is the other half. A BIG-IP capture taken with a detail suffix (`:n`, `:nn`, or `:nnn`) contains the standard frames plus an F5 Ethernet trailer on each one. This article is about turning that trailer into answers. You build the capture itself with the [BIG-IP tcpdump builder](/tools/f5-bigip-tcpdump-builder).
 
-Captures taken on the device itself carry an extra trailer the platform adds; **[the F5 Ethernet trailer](/learn/f5-ethernet-trailer)** explains what is in it and why it is worth keeping.
-
 ## Open it in Wireshark
 
 Write the capture to a file with `-w` and transfer it off the box, then open it in Wireshark. Modern Wireshark ships with the `f5ethtrailer` dissector, which recognises the trailer's magic marker and decodes it automatically. If you do not see the F5 fields, confirm the dissector is enabled in the protocol preferences.

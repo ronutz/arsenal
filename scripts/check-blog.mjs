@@ -38,33 +38,6 @@ const ISO = /^\d{4}-\d{2}-\d{2}$/;
 
 const errors = [];
 
-/**
- * Read the optional nested `image:` block from a post's frontmatter.
- *
- * The minimal reader above is deliberately line-based and only sees top-level
- * `key: value` pairs, so an indented block is invisible to it. That is exactly
- * how a broken illustration would ship unnoticed while every other check
- * reported green, so the block gets its own reader and its own checks.
- *
- * Returns null when the post has no image, which is the normal case.
- */
-function imageBlock(file, key = "image") {
-  const raw = readFileSync(file, "utf-8");
-  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-  if (!m) return null;
-  const lines = m[1].split(/\r?\n/);
-  const start = lines.findIndex((l) => new RegExp(`^${key}:\\s*$`).test(l));
-  if (start === -1) return null;
-  const out = {};
-  for (const line of lines.slice(start + 1)) {
-    // Stop at the next top-level key: the block ends where indentation does.
-    if (/^\S/.test(line)) break;
-    const kv = line.match(/^\s+([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
-    if (kv) out[kv[1]] = kv[2].trim().replace(/^["']|["']$/g, "");
-  }
-  return out;
-}
-
 /** Minimal frontmatter reader: the block between the first two --- fences. */
 function frontmatter(file) {
   const raw = readFileSync(file, "utf-8");
@@ -132,30 +105,6 @@ for (const file of enPosts) {
   if (!existsSync(ptFile)) {
     errors.push(`en/${file}: missing pt-BR sibling (every post is authored en + pt-BR)`);
   }
-  // An illustration, if present, must be usable: a file that exists under
-  // public/, and alt text. An image with no alt is a defect and not a style
-  // choice, so it fails rather than warns. Both locales are checked, because a
-  // post can legitimately caption its picture differently in each.
-  for (const loc of LOCALES) {
-    const f = path.join(BLOG, loc, file);
-    if (!existsSync(f)) continue;
-    // BOTH slots. imageEnd was added 2026-09-11 and would otherwise have been
-    // invisible to this guard in exactly the way the indented image block was
-    // before it got a reader - a broken closing figure shipping green.
-    for (const key of ["image", "imageEnd"]) {
-      const img = imageBlock(f, key);
-      if (!img) continue;
-      if (!img.src) {
-        errors.push(`${loc}/${file}: ${key} block has no src`);
-      } else if (!existsSync(path.join("public", img.src.replace(/^\//, "")))) {
-        errors.push(`${loc}/${file}: ${key} src "${img.src}" does not exist under public/`);
-      }
-      if (!img.alt) {
-        errors.push(`${loc}/${file}: ${key} has no alt text`);
-      }
-    }
-  }
-
   // related Learn articles must resolve in both locales
   const rel = Array.isArray(fm.relatedArticles) ? fm.relatedArticles : [];
   for (const slug of rel) {

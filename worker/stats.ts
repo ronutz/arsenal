@@ -125,39 +125,6 @@ const PRE_LABEL = "unverified:before-classifier";
 /** The people-only filter every human panel uses. */
 const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 
-// ----------------------------------------------------------------------------
-// REFERRER SOURCE FLOOR (defined 2026-09-09; the routes had used it since
-// 2026-09-06 without it ever being declared).
-//
-// The referrer rows carry the classified source (search:google, ai:perplexity,
-// social:linkedin, ...) in blob2 only from the day that classification went
-// live, 2026-09-06 - rows written before it have blob2 and blob3 empty (see
-// worker/analytics.ts, "REFERRER SOURCE + SEARCH TERM"). The `sources` and
-// `referrers` routes floor their window here so the source column is never a
-// wall of blanks from the old rows.
-//
-// Until today this identifier was referenced but never defined, so both routes
-// threw ReferenceError at runtime, which the catch below reported as 502
-// upstream_unavailable - i.e. as Cloudflare's fault, when it was ours. That is
-// also why the catch now distinguishes the two cases.
-//
-// The exact go-live time on 2026-09-06 is not recorded in the repository;
-// midnight UTC is used. Any rows from earlier that day with an empty source
-// are already excluded from `sources` by its `blob2 != ''` predicate.
-// ----------------------------------------------------------------------------
-// CORRECTED 2026-09-11. This used to floor at 2026-09-06, the day blob2
-// classification began - a different date, for a different reason, and the
-// wrong one for THIS panel.
-//
-// "Where readers arrive from" is a PEOPLE report, so it must obey the people
-// rule stated above: the origin classifier went live at CLASSIFIER_LIVE and
-// rows before it were never vetted. Flooring a day earlier silently readmitted
-// 6 September - the day before the datacenter rule - so a scraper fleet forging
-// google.com referrals reappeared in the panel as ~19,500 requests under "other
-// sites", while the panel's own copy promised that traffic was not shown.
-// PRIME caught it. One floor, one reason.
-const REFERRER_SINCE = `timestamp >= toDateTime('${CLASSIFIER_LIVE}')`;
-
 export async function handleStats(
   url: URL,
   env: StatsEnv
@@ -269,20 +236,11 @@ export async function handleStats(
         return json({
           detail: false,
           note: "Aggregated to the referring host. Full referring URLs are not published.",
-          // The family is DERIVED from the host, not read from blob2. A stored
-          // classification cannot be corrected: it is empty on rows written
-          // before 2026-09-06 and frozen against later additions to the source
-          // table - which is how www.google.com came to sit under "other sites"
-          // beside www.google.com.hk under "search engines". The host is stored
-          // and never goes stale, so grouping by host and classifying here
-          // makes the report self-correcting. (PRIME caught it, 2026-09-11.)
-          rows: (
-            (await query(
-              env,
-              `SELECT index1 AS host, ${VIEWS} FROM ${REFERRERS}
-               WHERE ${since} AND ${REFERRER_SINCE} GROUP BY host ORDER BY views DESC LIMIT 100`
-            )) as Array<{ host: string; views: number }>
-          ).map((r) => ({ ...r, source: classifyReferrer(r.host) })),
+          rows: await query(
+            env,
+            `SELECT index1 AS host, blob2 AS source, ${VIEWS} FROM ${REFERRERS}
+             WHERE ${since} AND ${REFERRER_SINCE} GROUP BY host, source ORDER BY views DESC LIMIT 100`
+          ),
         });
       }
 
@@ -405,23 +363,8 @@ export async function handleStats(
           404
         );
     }
-  } catch (err) {
-    // Never leak an error body or message: the upstream one can carry the
-    // account ID. Two cases are told apart, because on 2026-09-09 they were not
-    // and a ReferenceError in THIS file spent days reported as Cloudflare's
-    // fault:
-    //   - query() throws exactly `sql <status>` when the Analytics Engine SQL
-    //     API answers with a non-2xx. That is a 502, and the upstream HTTP
-    //     status is reported because it carries nothing sensitive and is the
-    //     one number an operator needs: 401/403 the token, 400 the query, 429
-    //     rate limiting, 5xx Cloudflare's side.
-    //   - anything else is an exception in this handler. That is a 500 and is
-    //     ours, and it must not be dressed up as an upstream problem.
-    const m = err instanceof Error ? /^sql (\d{3})$/.exec(err.message) : null;
-    if (m) {
-      return json({ error: "upstream_unavailable", upstream_status: Number(m[1]) }, 502);
-    }
-    return json({ error: "handler_error" }, 500);
+  } catch {
+    // Never leak the upstream error: it can carry the account ID.
+    return json({ error: "upstream_unavailable" }, 502);
   }
 }
-import { classifyReferrer } from "./analytics";

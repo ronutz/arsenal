@@ -148,10 +148,7 @@
       "dev": "Dev tools",
       "devLede": "The odd, the experimental, and the fun.",
       "contribute": "Contribute",
-      "contributeLede": "How to improve a tool, an article, or an entry.",
-      "stories": "Stories",
-      "storiesLede": "The articles that connect other articles: what the failure cases have in common, what a request actually traverses, why the same bug keeps recurring.",
-      "storiesBadge": "{count} threads"
+      "contributeLede": "How to improve a tool, an article, or an entry."
     }
   },
   "tools": {
@@ -7305,7 +7302,7 @@
       "subtitle": "Two decades inside the networking and security industry, building, breaking and fixing the systems - and, from 1997, teaching them at every one of those roles.",
       "intro": "This is the long middle of the story, and the reason the teaching that came later carries weight. For roughly two decades, the work was implementation: designing networks, standing them up, troubleshooting them under pressure, and being the person called when something critical broke. The journey ran through some of the defining names in networking, on two continents.",
       "s1Title": "Cabletron and Enterasys, 1996 to 2000",
-      "s1Body": "The formal career began in 1996 at Cabletron Systems, then a leading networking equipment vendor based in Rochester, New Hampshire, as a field network engineer intern - the first assignment being to read the company's 1992 guide to local area networking cover to cover. The internship became a four-year full-time position. Over four and a half years in total, the role spanned field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The subject matter was the enterprise LAN and WAN of the era: switches, routers, Wi-Fi and WLAN, network management, NAC and UAC, and stateful-inspection firewalls. In 2000, Cabletron reorganized into four companies, and the part this career touched became Enterasys Networks.",
+      "s1Body": "The formal career began in 1996 at Cabletron Systems, then a leading networking equipment vendor based in Rochester, New Hampshire. Over four and a half years, the role spanned field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The subject matter was the enterprise LAN and WAN of the era: switches, routers, Wi-Fi and WLAN, network management, NAC and UAC, and stateful-inspection firewalls. In 2000, Cabletron reorganized into four companies, and the part this career touched became Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 to 2002",
       "s2Body": "The next chapter was in California. Riverstone Networks, a Cabletron spin-off building metropolitan-area network equipment, brought a move to Santa Clara on an H1-B1 work visa. The role was Tier-III product support engineer and knowledge-management coordinator: third-level technical escalation, recreating customer scenarios in the lab, regression testing and bug verification, and building the knowledge base that the rest of support relied on. The technologies were the backbone of the early-2000s carrier and metro world: Gigabit Ethernet, MPLS, metropolitan-area switching and routing, and BGP. This period also produced a formal milestone: as part of the visa process, a United States evaluation in 2001 recognized an educational background equivalent to a bachelor's degree in computer science and a bachelor's degree in business administration.",
       "s3Title": "Cisco Systems, Brasília, 2003 to 2004",
@@ -7320,7 +7317,7 @@
       "years": "2020 – present",
       "title": "The instructor",
       "subtitle": "The teaching stops sharing the week with anything else: full-time, official, delivered globally, expanding platform by platform.",
-      "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. The first year set the pace. Qualifying to teach an official course means attending it as a student, holding its certification, and then passing the instructor qualification; that year it was done six times, covering nine courses, followed by thirteen deliveries in thirty-three days, 264 hours in front of 51 students. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
+      "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
       "s1Title": "Full-time, by vocation",
       "s1Body": "Since 2020, the work has been delivering official instructor-led training, remotely and in person, in Portuguese and English, to audiences around the globe. The delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil. Brazilian and German citizenship, together with travel clearance to the United States and the United Kingdom, make that global reach practical: unrestricted eligibility to work across the European Union and Mercosur, and the freedom to go where the classroom is.",
       "s2Title": "F5, from the start",
@@ -7453,7 +7450,7 @@
       "tagline": "The application delivery company, and the platform taught most on this site.",
       "intro": "F5 is the deepest chapter of the whole record: a decade that runs from a first administrator certification through the full specialist ladder to the instructor's chair, three DevCentral MVP years, and the flagship hub of this site.",
       "s1Title": "The certification ladder",
-      "s1Body": "The chapter opens in 2013, two years before the first exam: an F5 Accredited Sales Professional earned at a reseller, with the technical and security accreditations following in 2014. The certification ladder proper began in 2015 with the F5 Certified Administrator, earned while distributing the platform commercially, and the DNS specialist in 2017. The rest arrived after the move to teaching, because an instructor holds the certification for the course he delivers: ASM in 2020, LTM and F5-CSE Cloud in 2021, APM and F5-CSE Security in 2022. Nine years, commercial accreditation first and the expert peaks last, which is the order the work happened in rather than the order a syllabus would suggest.",
+      "s1Body": "The chapter opens in 2015 with the F5 Certified Administrator, earned while distributing the platform commercially. The specialist ladder followed: Certified Technology Specialist in LTM, DNS, ASM, and APM, then the two solution-expert peaks, F5-CSE Cloud (2021) and F5-CSE Security (2022). Climbing every module of BIG-IP one exam at a time is exactly the preparation a full-time instructor needs, and that is where it led.",
       "s2Title": "The instructor's chair and DevCentral",
       "s2Body": "F5 Authorized Instructor since 2020, delivering twelve official BIG-IP and TMOS courses, from administration fundamentals through LTM, DNS, ASM/AWAF, APM, iRules, and troubleshooting. F5's DevCentral community named me an MVP three consecutive years, 2022 through 2024. On this site, F5 is the flagship: the largest vendor hub, with calculators, decoders, and explainers built for the same engineers who sit in those classes.",
       "certs": "F5 Authorized Instructor (since 2020). Current certifications: F5-CSE Security, F5-CSE Cloud, F5-CTS LTM / DNS / ASM / APM, F5-CA. DevCentral MVP 2022, 2023, 2024. Full detail on the credentials page."
@@ -8050,8 +8047,7 @@
     "portalCompanies": "{count} companies",
     "portalPeople": "People",
     "portalPeopleLede": "The individuals behind the tools, the conferences and the networks — including the ones who built Brazil's.",
-    "portalPeopleCount": "{count} people",
-    "portalLearningCount": "{count} institutions"
+    "portalPeopleCount": "{count} people"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -17016,50 +17012,6 @@
       "marisa-bellisario": {
         "def": "Italian executive who, from 1981, turned the state telecommunications manufacturer Italtel from what the press called a national scandal into a profitable company, and whose planned merger into a group of European scale was cancelled, her foundation records, because a partner would not have a woman as chief executive.",
         "context": "She came up through Olivetti in its electronic years, went to America in 1965, ran Olivetti's American company from 1979 and repaired its balance sheet, and in October 1980 accepted the state holding's offer of the hardest job in Italian industry. Italtel had six plants, twenty-nine thousand employees, very low productivity, high absenteeism and heavy losses; the press called it a nightmare and a national scandal, and she wrote later that it was worse than described. Co-general manager from the start of 1981, sole managing director from that August, she replaced the management, started new projects, and carried the plan through against the unions and part of the press. In three years turnover went from 503 billion lire to 1,300 billion, with a substantial profit, and the share of women among the company's graduates went from five per cent to twenty-seven. The merger with Fiat's Telettra that would have made an Italian equipment group of European scale did not happen; the foundation that bears her name states plainly that Fiat would not give her the chief executive's chair because she was a woman, and that the sector's growth stalled with it. She died in office in August 1988, at fifty-three. The Italtel entry records what became of the company; this is the person who gave it the decade it had."
-      },
-      "ssl-vpn": {
-        "def": "Remote access carried inside a TLS session on port 443, either through a browser portal or an agent, so that it crosses networks that permit little else.",
-        "context": "The appeal was always practical rather than cryptographic: a hotel or airport network that blocks almost everything still allows outbound 443, so a tunnel disguised as web traffic gets through where IPsec does not. The cost is the shape of what has to listen. A concentrator terminates TLS, parses attacker-controlled input through an HTTP stack and often a web application, must be reachable from the whole internet, and usually sits inside the firewall itself - which is why the same class of pre-authentication flaw has recurred across unrelated vendors' products for a decade. Fortinet removed tunnel mode entirely in FortiOS 7.6.3, keeping browser access under the name Agentless VPN, and other vendors have retired product lines or hardware generations. The industry is not abandoning TLS or remote access; it is abandoning the full-tunnel, appliance-terminated form as the default, in favour of brokered per-application access."
-      },
-      "l2tp": {
-        "def": "Layer Two Tunneling Protocol: carries PPP frames across an IP network, providing no encryption of its own, which is why it is almost always paired with IPsec.",
-        "context": "It came from merging two earlier proposals, Cisco's L2F and Microsoft's PPTP, and its job is narrow: take the point-to-point session a dial-up user would have had with an access server and carry it over an IP network instead, so the user appears to terminate where the network wants rather than where the modem was. On its own it authenticates the tunnel and encrypts nothing, which is the detail practitioners most often get wrong. The pairing written as L2TP/IPsec puts the whole L2TP session inside an IPsec transport-mode association, so IPsec supplies confidentiality and integrity and L2TP supplies the PPP semantics - user authentication, address assignment, multiprotocol carriage. It persists mainly because it is built into consumer operating systems and home routers, which makes it the fallback that works without installing anything, and it is a poor choice where a modern option exists."
-      },
-      "ikev2": {
-        "def": "Internet Key Exchange version 2: the negotiation that authenticates both ends of an IPsec tunnel and establishes the keys, replacing a first version whose complexity was its main flaw.",
-        "context": "Version 1 grew several negotiation modes with subtly different security properties, and aggressive mode in particular could expose a hash of the pre-shared key to a passive observer. Version 2 collapsed that into one exchange of four messages, made the request-response pairing explicit so that retransmission and dead-peer detection actually work, and built in the NAT traversal and mobility handling that version 1 had bolted on. For an operator the practical differences are that a version 2 tunnel survives a change of address - a laptop moving from wired to mobile - and that the failure modes are legible, because each exchange has a matching response rather than a state machine to infer. It is the default for any new deployment, and the reason a remote-access migration away from a browser-based tunnel usually lands here."
-      },
-      "split-tunnel": {
-        "def": "Sending only the traffic destined for corporate resources through the tunnel, and letting everything else go straight out to the internet.",
-        "context": "The alternative, full tunnelling, sends everything through the concentrator, which gives the security team one place to inspect and log but makes them the carrier for every video call and software update the workforce generates. Full tunnelling collapsed as a default in 2020, when concentrators sized for a fraction of the workforce met all of it at once and the arithmetic stopped working. The argument against splitting is that traffic which never crosses the tunnel is never inspected, and that a compromised laptop has a foot in both networks at the same time. The argument for it is capacity and user experience, and the honest position is that neither wins on principle: it is a decision about where inspection happens, and moving inspection to the endpoint or to a cloud-delivered service is what makes splitting defensible rather than merely cheaper."
-      },
-      "pptp": {
-        "def": "Point-to-Point Tunneling Protocol: the first widely deployed remote-access VPN, broken repeatedly since 1998 and retained only as a lesson.",
-        "context": "It shipped in Windows in the mid-1990s and made remote access ordinary, which is its real contribution. It was also cryptanalysed almost immediately: Schneier and Mudge published against the original in 1998, and against the revised MS-CHAPv2 authentication in 1999, and by 2012 the remaining protection could be reduced to a single brute-force problem solvable by a rented service in hours. The flaw that matters is structural rather than incidental - the encryption keys were derived from the user's password, so the strength of the tunnel could never exceed the strength of a password. It is disabled or removed in current operating systems. It appears here because it is the clearest example in this catalogue of a protocol that was not repaired but replaced, and because equipment still offers it."
-      },
-      "openvpn": {
-        "def": "An open-source tunnel that runs its own protocol over UDP or TCP using TLS for key exchange, independent of any vendor's appliance.",
-        "context": "It occupies the space between the two families: like an SSL VPN it can hide inside port 443 and traverse restrictive networks, and like IPsec it is a full network tunnel with no web application in front of it. That combination, plus an implementation that runs on everything and is auditable by anyone, made it the default for people who did not want to buy a concentrator - community and commercial VPN services, small offices, and laboratories. The cost is throughput, because the data path runs in user space and each packet crosses the kernel boundary, and configuration surface, because the flexibility that makes it portable also makes it easy to deploy badly. It is the reference point against which WireGuard's argument about size is usually made."
-      },
-      "man-in-the-middle": {
-        "def": "An attacker positioned between two parties who each believe they are talking directly to the other, able to read and alter what passes.",
-        "context": "The formal definition calls it active wiretapping: the attacker does not merely observe but terminates each side and can modify what it forwards. The position can be reached by lying on the local network, by controlling a router or wireless access point, by poisoning name resolution, or simply by being the proxy the user configured. That last case is why the term needs care in professional use - a developer's debugging proxy and a corporate inspection appliance perform the identical operation and are not attacks, because consent was given. Encryption does not prevent the position; it prevents the reading, and only for as long as the certificate presented is not one the client will accept. That is why the defences are all about identity rather than confidentiality: certificate pinning, mutual authentication, and the transparency logs that make a wrongly issued certificate visible. Some organisations now write it as machine-in-the-middle or adversary-in-the-middle to avoid the gendered term."
-      },
-      "arp-poisoning": {
-        "def": "Answering the local network's address resolution requests with a lie, so that traffic for another machine is delivered to you instead.",
-        "context": "Address resolution was specified in 1982 to solve one problem - find the hardware address for a protocol address - and it solved it by asking the whole segment and believing whatever came back. There is no authentication, no state, and no way for the asker to tell a legitimate reply from a crafted one; a machine can also send unsolicited replies that hosts will cache. Everything else follows. Placing yourself between two hosts on the same segment, or between a host and its default gateway, requires only that you answer first and keep answering. Switching never addressed this, because a switch forwards on the basis of the same learned mappings. The mitigations are all switch features and all optional: dynamic ARP inspection validating replies against DHCP bindings, DHCP snooping to build those bindings, port security limiting addresses per port, and 802.1X to authenticate the device before it may speak at all. Forty-four years after the specification the protocol is unchanged, and the defence remains a configuration decision somebody has to make."
-      },
-      "certificate-pinning": {
-        "def": "Requiring that a server present one specific certificate or public key, rather than any certificate a trusted authority will sign.",
-        "context": "Ordinary validation asks whether some authority the device trusts vouches for this name, which means any of hundreds of authorities - or any authority installed on the device - will do. Pinning narrows that to a named key, and so defeats interception even when the intercepting certificate is technically valid. It is standard in mobile applications and in anything talking to a fixed backend. The browser version, HTTP Public Key Pinning, was specified in 2015 and abandoned: a site that pinned a key and then lost it made itself unreachable to returning visitors for the lifetime of the pin, and the failure was unrecoverable, so browsers removed support in favour of certificate transparency. The operational consequence in an enterprise is unavoidable: an application that pins correctly will simply fail behind an inspecting proxy, and the resolution is always an exception list rather than a technical reconciliation."
-      },
-      "ssl-inspection": {
-        "def": "An organisation terminating and re-encrypting its own users' encrypted sessions in order to inspect the contents, using a certificate authority it installs on every managed device.",
-        "context": "Technically it is a man-in-the-middle performed with the organisation's consent rather than the individual user's, and every property of that position applies: the device holds the plaintext of every session it inspects and a private key that every managed device trusts, which makes it the most valuable single object on the network. National security guidance has been explicit that the inspection point becomes a high-value target and that breaking end-to-end protection introduces risks to be weighed against the visibility gained. Three practical frictions recur. Pinned applications fail rather than degrade, so an exception list is unavoidable. Certificate errors that would have warned a user about a genuine attack are now generated and resolved by the appliance, so the user sees nothing either way. And the shift towards encrypting the handshake itself, including the name of the site being visited, is progressively removing the metadata that name-based policy depends on."
-      },
-      "ssl-stripping": {
-        "def": "Keeping a victim on plain HTTP by rewriting the links that would have taken them to HTTPS, while the attacker speaks HTTPS to the real server.",
-        "context": "Presented by Moxie Marlinspike in 2009, the technique exploited the fact that users almost never type the scheme: they arrive at a site over plain HTTP and are redirected, or they follow a link. An attacker in the path rewrites those redirects and links so the victim's side of the conversation is never encrypted at all, while the attacker's side to the server is - so the server sees a normal secure session and the victim sees a page that simply lacks a padlock nobody was looking for. It required no invalid certificate and produced no warning, which is what made it effective. HTTP Strict Transport Security is the direct answer: a site instructs the browser to use HTTPS for that name for a stated period, so there is no plain-text first request to intercept, and preload lists carry the instruction before the first visit. The technique is largely historical for major sites and remains relevant wherever a redirect from plain HTTP is still the entry point."
       }
     },
     "totalCount": "{count} terms",
@@ -17350,8 +17302,7 @@
     "filterCount": "{shown} of {total}",
     "filterCountryLabel": "Country",
     "worksPill": "Works inside",
-    "worksWithPill": "Works with",
-    "markEra": "wordmark in use {era}"
+    "worksWithPill": "Works with"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -20595,26 +20546,5 @@
     "schoolsNote": "Institutions that grant degrees or run programmes rather than sell courses.",
     "restTitle": "Also tagged training",
     "restNote": "Entries carrying the training tag that the sections above do not name."
-  },
-  "stories": {
-    "title": "Stories the data in this site tells",
-    "navLabel": "Stories",
-    "lede": "Most articles here answer a question. A few do something else: they put other articles in an order that argues something none of them says alone. A category list sorts by subject, and these are sorted by argument, so this is the only page where they appear together.",
-    "count": "{count} of them, grouped by what they argue.",
-    "closer": "Each one is an ordinary article and can be read on its own. What makes it a story is that it was written to be read after the pieces it points at, or instead of hunting for them.",
-    "group": {
-      "failure": {
-        "title": "How things break, and what to decide first",
-        "lede": "The failure cases sorted by where the fault actually lived, the interval between someone knowing and everyone knowing, and the five practices those cases argue for. The first two collect the evidence; the third is what to do about it."
-      },
-      "endToEnd": {
-        "title": "One thing, followed end to end",
-        "lede": "A request, a service, an answer and a format, each traced through articles that were written to stand alone. Read in sequence they describe a path rather than a topic."
-      },
-      "people": {
-        "title": "The industry and the country",
-        "lede": "Where the subject is not the technology but the business around it, and the place it was learned in."
-      }
-    }
   }
 }

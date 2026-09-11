@@ -298,10 +298,13 @@ export default async function IndustryHubPage({
                 {tTags("milestonesLink")} <span aria-hidden="true">&#8594;</span>
               </Link>
             </p>
-            {/* The learning-institutions link moved to /learn as a portal card
-                (PRIME 2026-09-11). /industry/learning still exists and is still
-                reachable; it is simply advertised from the page about learning
-                rather than from the page about vendors. */}
+            {/* The learning institutions have their own index (2026-09-07):
+                they were lost among three hundred vendors in the timeline. */}
+            <p className="industry-antecedent">
+              <Link className="page-jump-link" href="/industry/learning">
+                {tTags("learningLink")} <span aria-hidden="true">&#8594;</span>
+              </Link>
+            </p>
 
             <div className="vendor-divider">
               <h2 className="vendor-divider-title">{tp("timelineSectionTitle")}</h2>

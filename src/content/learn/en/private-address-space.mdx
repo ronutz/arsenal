@@ -11,8 +11,6 @@ status: reviewed
 updated: "2026-06-27"
 ---
 
-How a host on one of these ranges actually obtains its address, and for how long, is in **[the DHCP lease lifecycle](/learn/dhcp-lease-lifecycle)**.
-
 ## Addresses you can reuse
 
 There are only about 4.3 billion IPv4 addresses, far too few for every device to have a unique public one. The answer (RFC 1918) is to set aside three ranges that anyone may use inside their own network, with no registration. Because everyone reuses the same private ranges, they cannot be unique on the public Internet, so they are **not routable** there. Reaching the outside requires Network Address Translation (NAT), which swaps a private source address for a shared public one at the network edge.

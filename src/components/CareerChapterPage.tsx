@@ -35,7 +35,6 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CAREER_VENDORS, AUTHORIZED_INSTRUCTOR_VENDORS, REDU_CAREER_PARTNERS } from "@/content/vendors/career";
-import VendorMark from "@/components/VendorMark";
 import VendorTags from "@/components/VendorTags";
 
 export interface CareerChapterPageProps {
@@ -67,11 +66,6 @@ export default async function CareerChapterPage({
 
   const entry = CAREER_VENDORS.find((v) => v.slug === slug);
   const years = t(`${vendorKey}.years`);
-  // The chapter's opening year, taken from the localised years string
-  // ("1996 - 2007", "2015 - present"). The FIRST four-digit number is the start
-  // of the working relationship, which is the year whose mark belongs here.
-  // Falls back to 0 when no year can be read, which resolves to no mark.
-  const startYear = Number(/\b(19|20)\d{2}\b/.exec(years)?.[0] ?? 0);
 
   // Only render a section when it actually has a body in the message pack.
   const bodies: { title: string; body: string }[] = [];
@@ -111,16 +105,6 @@ export default async function CareerChapterPage({
               {/* On a career page the years ARE the subject, so they lead -
                   unlike the company pages, where the eyebrow says what the
                   page is because the dates belong to the company. */}
-              {/* The mark that was official when the work began. Nominative
-                  use: it identifies the company this chapter is about and
-                  states its period, which on a dated career page is evidence
-                  rather than decoration. Renders nothing when the registry
-                  holds no mark for that vendor and year. */}
-              <VendorMark
-                vendor={vendorKey}
-                year={startYear}
-                eraLabel={(era) => tp("markEra", { era })}
-              />
               <p className="vendor-years mono">{years}</p>
               <h1 className="vendor-name">{t(`${vendorKey}.name`)}</h1>
               <p className="vendor-tagline">{t(`${vendorKey}.tagline`)}</p>

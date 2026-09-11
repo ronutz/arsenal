@@ -148,10 +148,7 @@
       "dev": "Ferramentas dev",
       "devLede": "O curioso, o experimental e o divertido.",
       "contribute": "Contribuir",
-      "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete.",
-      "stories": "Histórias",
-      "storiesLede": "Os artigos que ligam outros artigos: o que os casos de falha têm em comum, o que uma requisição de fato atravessa, por que o mesmo defeito se repete.",
-      "storiesBadge": "{count} fios"
+      "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete."
     }
   },
   "tools": {
@@ -7305,7 +7302,7 @@
       "subtitle": "Duas décadas dentro da indústria de redes e segurança, construindo, quebrando e consertando os sistemas - e, desde 1997, ensinando-os em cada um daqueles cargos.",
       "intro": "Este é o longo meio da história, e a razão de o treinamento que veio depois ter peso. Por cerca de duas décadas, o trabalho foi implementação: projetar redes, colocá-las no ar, resolver seus problemas sob pressão, e ser a pessoa que recebe a ligação quando algo crítico quebrava. A jornada passou por alguns dos nomes que definiram as redes, em dois continentes.",
       "s1Title": "Cabletron e Enterasys, 1996 a 2000",
-      "s1Body": "A carreira formal começou em 1996 na Cabletron Systems, à época uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire, como estagiário de engenharia de redes de campo - e a primeira tarefa foi ler de capa a capa o guia de redes locais que a empresa publicara em 1992. O estágio virou um cargo efetivo de quatro anos. Ao longo de quatro anos e meio no total, o cargo abrangeu engenharia de campo e suporte pós-venda, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O assunto era a LAN e a WAN corporativa da época: switches, roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e firewalls de inspeção de estado. Em 2000, a Cabletron se reorganizou em quatro empresas, e a parte que tocou esta carreira virou Enterasys Networks.",
+      "s1Body": "A carreira formal começou em 1996 na Cabletron Systems, à época uma fabricante líder de equipamentos de rede sediada em Rochester, New Hampshire. Ao longo de quatro anos e meio, o cargo abrangeu engenharia de campo e suporte pós-venda, engenharia de sistemas e pré-vendas, e, a partir de 1997, instrução certificada. O assunto era a LAN e a WAN corporativa da época: switches, roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e firewalls de inspeção de estado. Em 2000, a Cabletron se reorganizou em quatro empresas, e a parte que tocou esta carreira virou Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 a 2002",
       "s2Body": "O capítulo seguinte foi na Califórnia. A Riverstone Networks, um spin-off da Cabletron que fabricava equipamentos de rede metropolitana, trouxe uma mudança para Santa Clara com um visto de trabalho H1-B1. O cargo foi engenheiro de suporte a produto de nível III e coordenador de gestão do conhecimento: escalonamento técnico de terceiro nível, reprodução de cenários de cliente em laboratório, testes de regressão e verificação de bugs, e a construção da base de conhecimento na qual o restante do suporte se apoiava. As tecnologias eram a espinha dorsal do mundo de operadoras e metro do início dos anos 2000: Gigabit Ethernet, MPLS, switching e roteamento metropolitanos, e BGP. Esse período também rendeu um marco formal: como parte do processo de visto, uma avaliação nos Estados Unidos em 2001 reconheceu uma formação equivalente a um bacharelado em ciência da computação e um bacharelado em administração de empresas.",
       "s3Title": "Cisco Systems, Brasília, 2003 a 2004",
@@ -7320,7 +7317,7 @@
       "years": "2020 – atual",
       "title": "O instrutor",
       "subtitle": "O ensino deixa de dividir a semana com qualquer outra coisa: tempo integral, oficial, ministrado para o mundo todo, expandindo plataforma a plataforma.",
-      "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada entregue a profissionais e equipes no mundo todo. O primeiro ano deu o tom. Habilitar-se a ministrar um curso oficial exige assistir a ele como aluno, ter a certificação correspondente e então passar pela qualificação de instrutor; naquele ano isso foi feito seis vezes, cobrindo nove cursos, seguidas de treze turmas em trinta e três dias, 264 horas diante de 51 alunos. O que distingue esta era não é só o foco, mas a expansão deliberada e datada entre plataformas, cada uma somada sobre experiência profunda de campo, e não no lugar dela.",
+      "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada ministrada para profissionais e equipes no mundo todo. O que distingue esta época não é só o foco, mas a expansão deliberada e datada pelas plataformas, cada uma somada sobre uma profunda experiência de campo, e não em seu lugar.",
       "s1Title": "Tempo integral, por vocação",
       "s1Body": "Desde 2020, o trabalho tem sido ministrar treinamento oficial conduzido por instrutor, remoto e presencial, em português e inglês, para audiências do mundo todo. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil. As cidadanias brasileira e alemã, somadas à autorização de viagem para os Estados Unidos e o Reino Unido, tornam esse alcance global prático: elegibilidade irrestrita para trabalhar na União Europeia e no Mercosul, e a liberdade de ir até onde a sala de aula estiver.",
       "s2Title": "F5, desde o início",
@@ -7453,7 +7450,7 @@
       "tagline": "A empresa de application delivery, e a plataforma mais ensinada neste site.",
       "intro": "A F5 é o capítulo mais profundo de todo o registro: uma década que vai da primeira certificação de administrador, passando pela escada completa de especialista, até a cadeira de instrutor, três anos de MVP no DevCentral e o hub principal deste site.",
       "s1Title": "A escada de certificações",
-      "s1Body": "O capítulo abre em 2013, dois anos antes da primeira prova: um F5 Accredited Sales Professional obtido numa revenda, com as credenciais técnica e de segurança vindo em 2014. A escada de certificação propriamente dita começou em 2015 com o F5 Certified Administrator, obtido enquanto distribuía a plataforma comercialmente, e o especialista em DNS em 2017. O resto veio depois da virada para o ensino, porque um instrutor carrega a certificação do curso que ministra: ASM em 2020, LTM e F5-CSE Cloud em 2021, APM e F5-CSE Security em 2022. Nove anos, a credencial comercial primeiro e os picos de especialista por último, que é a ordem em que o trabalho aconteceu, e não a ordem que uma ementa sugeriria.",
+      "s1Body": "O capítulo abre em 2015 com o F5 Certified Administrator, obtido enquanto distribuía a plataforma comercialmente. Veio então a escada de especialista: Certified Technology Specialist em LTM, DNS, ASM e APM, e depois os dois picos de solution expert, F5-CSE Cloud (2021) e F5-CSE Security (2022). Subir cada módulo do BIG-IP um exame por vez é exatamente a preparação de que um instrutor em tempo integral precisa, e foi aonde isso levou.",
       "s2Title": "A cadeira de instrutor e o DevCentral",
       "s2Body": "F5 Authorized Instructor desde 2020, ministrando doze cursos oficiais de BIG-IP e TMOS, dos fundamentos de administração a LTM, DNS, ASM/AWAF, APM, iRules e troubleshooting. A comunidade DevCentral da F5 me nomeou MVP por três anos consecutivos, de 2022 a 2024. Neste site, a F5 é o carro-chefe: o maior hub de fornecedor, com calculadoras, decodificadores e explicadores construídos para os mesmos engenheiros que sentam nessas aulas.",
       "certs": "F5 Authorized Instructor (desde 2020). Certificações atuais: F5-CSE Security, F5-CSE Cloud, F5-CTS LTM / DNS / ASM / APM, F5-CA. DevCentral MVP 2022, 2023, 2024. Detalhes completos na página de credenciais."
@@ -8050,8 +8047,7 @@
     "portalCompanies": "{count} empresas",
     "portalPeople": "Pessoas",
     "portalPeopleLede": "Os indivíduos por trás das ferramentas, das conferências e das redes - inclusive quem construiu as do Brasil.",
-    "portalPeopleCount": "{count} pessoas",
-    "portalLearningCount": "{count} instituições"
+    "portalPeopleCount": "{count} pessoas"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -17016,50 +17012,6 @@
       "marisa-bellisario": {
         "def": "Executiva italiana que, a partir de 1981, transformou a fabricante estatal de telecomunicações Italtel do que a imprensa chamava de escândalo nacional numa empresa lucrativa, e cuja fusão planejada num grupo de escala europeia foi cancelada, registra sua fundação, porque um sócio não aceitaria uma mulher como presidente executiva.",
         "context": "Formou-se na Olivetti dos anos eletrônicos, foi para a América em 1965, dirigiu a empresa americana da Olivetti a partir de 1979 e consertou seu balanço, e em outubro de 1980 aceitou da holding estatal o trabalho mais difícil da indústria italiana. A Italtel tinha seis fábricas, vinte e nove mil funcionários, produtividade baixíssima, absenteísmo alto e prejuízos pesados; a imprensa a chamava de pesadelo e escândalo nacional, e ela escreveu depois que era pior do que se descrevia. Codiretora-geral desde o início de 1981, administradora única a partir daquele agosto, trocou a direção, iniciou projetos novos e levou o plano adiante contra os sindicatos e parte da imprensa. Em três anos o faturamento foi de 503 bilhões de liras para 1.300 bilhões, com lucro substancial, e a parcela de mulheres entre os graduados da empresa foi de cinco por cento para vinte e sete. A fusão com a Telettra da Fiat, que faria um grupo italiano de equipamentos em escala europeia, não aconteceu; a fundação que leva seu nome afirma sem rodeios que a Fiat não lhe daria a cadeira de presidente executiva por ser mulher, e que o crescimento do setor estancou junto. Morreu no cargo em agosto de 1988, aos cinquenta e três anos. O verbete da Italtel registra o que foi feito da empresa; esta é a pessoa que lhe deu a década que teve."
-      },
-      "ssl-vpn": {
-        "def": "Acesso remoto carregado dentro de uma sessão TLS na porta 443, por portal de navegador ou por agente, de modo a atravessar redes que permitem pouca coisa além disso.",
-        "context": "O apelo sempre foi prático, não criptográfico: uma rede de hotel ou aeroporto que bloqueia quase tudo ainda libera a 443 de saída, então um túnel disfarçado de tráfego web passa onde o IPsec não passa. O custo é o formato do que precisa ficar escutando. Um concentrador termina TLS, interpreta entrada controlada pelo atacante por uma pilha HTTP e muitas vezes por uma aplicação web, precisa ser alcançável da internet inteira, e em geral fica dentro do próprio firewall - e é por isso que a mesma classe de falha pré-autenticação se repete há uma década em produtos de fabricantes sem relação entre si. A Fortinet removeu o modo túnel por completo no FortiOS 7.6.3, mantendo o acesso por navegador com o nome Agentless VPN, e outros fabricantes aposentaram linhas de produto ou gerações de hardware. A indústria não abandona o TLS nem o acesso remoto; abandona a forma de túnel completo terminada em aparelho como padrão, em favor de acesso intermediado por aplicação."
-      },
-      "l2tp": {
-        "def": "Layer Two Tunneling Protocol: carrega quadros PPP por uma rede IP, sem cifragem própria, e é por isso que quase sempre aparece emparelhado com IPsec.",
-        "context": "Veio da fusão de duas propostas anteriores, o L2F da Cisco e o PPTP da Microsoft, e sua função é estreita: pegar a sessão ponto a ponto que um usuário discado teria com um servidor de acesso e carregá-la por uma rede IP, de modo que o usuário termine onde a rede quer e não onde estava o modem. Sozinho ele autentica o túnel e não cifra nada, que é o detalhe que os profissionais mais erram. O par escrito como L2TP/IPsec põe a sessão L2TP inteira dentro de uma associação IPsec em modo transporte, de modo que o IPsec fornece confidencialidade e integridade e o L2TP fornece a semântica PPP - autenticação de usuário, atribuição de endereço, transporte multiprotocolo. Persiste sobretudo por vir embutido em sistemas operacionais de consumo e roteadores domésticos, o que faz dele a alternativa que funciona sem instalar nada, e é má escolha onde exista opção moderna."
-      },
-      "ikev2": {
-        "def": "Internet Key Exchange versão 2: a negociação que autentica as duas pontas de um túnel IPsec e estabelece as chaves, substituindo uma primeira versão cuja complexidade era seu principal defeito.",
-        "context": "A versão 1 acumulou vários modos de negociação com propriedades de segurança sutilmente diferentes, e o modo agressivo em particular podia expor a um observador passivo um resumo criptográfico da chave pré-compartilhada. A versão 2 condensou aquilo num único intercâmbio de quatro mensagens, tornou explícito o par requisição-resposta para que retransmissão e detecção de par morto realmente funcionem, e trouxe embutidos a travessia de NAT e o tratamento de mobilidade que a versão 1 tinha aparafusado depois. Para quem opera, as diferenças práticas são que um túnel da versão 2 sobrevive a uma troca de endereço - um notebook saindo do cabo para o celular - e que os modos de falha são legíveis, porque cada intercâmbio tem uma resposta correspondente em vez de uma máquina de estados a inferir. É o padrão para qualquer implantação nova, e a razão de uma migração de acesso remoto que sai de um túnel via navegador em geral aterrissar aqui."
-      },
-      "split-tunnel": {
-        "def": "Enviar pelo túnel apenas o tráfego destinado a recursos corporativos, deixando todo o resto sair direto para a internet.",
-        "context": "A alternativa, o túnel completo, manda tudo pelo concentrador, o que dá à equipe de segurança um único ponto para inspecionar e registrar, mas a torna a operadora de cada videochamada e cada atualização de software que a força de trabalho gera. O túnel completo desabou como padrão em 2020, quando concentradores dimensionados para uma fração dos funcionários encontraram todos eles de uma vez e a conta parou de fechar. O argumento contra dividir é que o tráfego que nunca cruza o túnel nunca é inspecionado, e que um notebook comprometido fica com um pé em cada rede ao mesmo tempo. O argumento a favor é capacidade e experiência de uso, e a posição honesta é que nenhum vence por princípio: é uma decisão sobre onde a inspeção acontece, e mover a inspeção para o endpoint ou para um serviço entregue em nuvem é o que torna a divisão defensável, e não apenas mais barata."
-      },
-      "pptp": {
-        "def": "Point-to-Point Tunneling Protocol: a primeira VPN de acesso remoto amplamente implantada, quebrada repetidamente desde 1998 e mantida apenas como lição.",
-        "context": "Veio no Windows em meados dos anos 1990 e tornou o acesso remoto corriqueiro, que é sua contribuição real. Também foi criptanalisado quase de imediato: Schneier e Mudge publicaram contra o original em 1998 e contra a autenticação MS-CHAPv2 revisada em 1999, e em 2012 a proteção restante podia ser reduzida a um único problema de força bruta resolvível por um serviço alugado em horas. A falha que importa é estrutural, e não acidental - as chaves de cifragem eram derivadas da senha do usuário, então a força do túnel nunca podia exceder a força de uma senha. Está desativado ou removido nos sistemas operacionais atuais. Aparece aqui por ser o exemplo mais claro deste catálogo de um protocolo que não foi consertado, e sim substituído, e porque ainda há equipamento que o oferece."
-      },
-      "openvpn": {
-        "def": "Um túnel de código aberto que roda seu próprio protocolo sobre UDP ou TCP usando TLS para a troca de chaves, independente do aparelho de qualquer fabricante.",
-        "context": "Ocupa o espaço entre as duas famílias: como uma SSL VPN, pode se esconder na porta 443 e atravessar redes restritivas; como o IPsec, é um túnel de rede completo sem aplicação web na frente. Essa combinação, mais uma implementação que roda em tudo e pode ser auditada por qualquer um, fez dele o padrão de quem não queria comprar um concentrador - serviços de VPN comunitários e comerciais, escritórios pequenos e laboratórios. O custo é vazão, porque o caminho de dados roda em espaço de usuário e cada pacote cruza a fronteira do núcleo, e superfície de configuração, porque a flexibilidade que o torna portátil também facilita implantá-lo mal. É o ponto de referência contra o qual o argumento do WireGuard sobre tamanho costuma ser feito."
-      },
-      "man-in-the-middle": {
-        "def": "Um atacante posicionado entre duas partes que acreditam estar falando diretamente uma com a outra, capaz de ler e alterar o que passa.",
-        "context": "A definição formal chama isso de escuta ativa: o atacante não apenas observa, mas termina cada lado e pode modificar o que repassa. A posição pode ser alcançada mentindo na rede local, controlando um roteador ou ponto de acesso sem fio, envenenando a resolução de nomes, ou simplesmente sendo o proxy que o usuário configurou. Esse último caso é o motivo de o termo exigir cuidado no uso profissional - o proxy de depuração de um desenvolvedor e um appliance corporativo de inspeção executam a operação idêntica e não são ataques, porque houve consentimento. A cifragem não impede a posição; impede a leitura, e só enquanto o certificado apresentado não for um que o cliente aceite. É por isso que as defesas são todas sobre identidade e não sobre confidencialidade: fixação de certificado, autenticação mútua, e os registros de transparência que tornam visível um certificado emitido indevidamente. Algumas organizações hoje escrevem machine-in-the-middle ou adversary-in-the-middle para evitar o termo com marca de gênero."
-      },
-      "arp-poisoning": {
-        "def": "Responder às requisições de resolução de endereço da rede local com uma mentira, de modo que o tráfego destinado a outra máquina seja entregue a você.",
-        "context": "A resolução de endereços foi especificada em 1982 para resolver um problema - achar o endereço de hardware correspondente a um endereço de protocolo - e o resolveu perguntando ao segmento inteiro e acreditando no que voltasse. Não há autenticação, não há estado, e não há como quem pergunta distinguir uma resposta legítima de uma forjada; uma máquina também pode mandar respostas não solicitadas que os hosts guardam em cache. Todo o resto decorre disso. Colocar-se entre dois hosts do mesmo segmento, ou entre um host e seu gateway padrão, exige apenas responder primeiro e continuar respondendo. A comutação nunca tratou disso, porque um switch encaminha com base nos mesmos mapeamentos aprendidos. As mitigações são todas recursos de switch e todas opcionais: inspeção dinâmica de ARP validando respostas contra as concessões de DHCP, DHCP snooping para construir essas concessões, segurança de porta limitando endereços por porta, e 802.1X para autenticar o dispositivo antes que ele possa falar. Quarenta e quatro anos depois da especificação o protocolo é o mesmo, e a defesa segue sendo uma decisão de configuração que alguém precisa tomar."
-      },
-      "certificate-pinning": {
-        "def": "Exigir que um servidor apresente um certificado ou chave pública específicos, e não qualquer certificado que uma autoridade confiável assine.",
-        "context": "A validação comum pergunta se alguma autoridade em que o dispositivo confia atesta este nome, o que significa que qualquer uma de centenas de autoridades - ou qualquer autoridade instalada no dispositivo - serve. A fixação estreita isso a uma chave nomeada, e por isso derrota a interceptação mesmo quando o certificado interceptador é tecnicamente válido. É padrão em aplicações móveis e em qualquer coisa que fale com um backend fixo. A versão para navegador, o HTTP Public Key Pinning, foi especificada em 2015 e abandonada: um site que fixasse uma chave e depois a perdesse tornava-se inalcançável para visitantes recorrentes durante toda a vigência da fixação, e a falha era irrecuperável, então os navegadores removeram o suporte em favor da transparência de certificados. A consequência operacional numa empresa é inevitável: uma aplicação que fixa corretamente simplesmente falha atrás de um proxy que inspeciona, e a solução é sempre uma lista de exceções, não uma reconciliação técnica."
-      },
-      "ssl-inspection": {
-        "def": "Uma organização terminando e recifrando as sessões cifradas dos próprios usuários para inspecionar o conteúdo, usando uma autoridade certificadora que ela instala em todo dispositivo gerenciado.",
-        "context": "Tecnicamente é um ataque de intermediário executado com o consentimento da organização e não do usuário individual, e toda propriedade dessa posição se aplica: o equipamento guarda o texto claro de cada sessão que inspeciona e uma chave privada em que todo dispositivo gerenciado confia, o que faz dele o objeto isolado mais valioso da rede. Orientações de segurança nacional foram explícitas em dizer que o ponto de inspeção vira alvo de alto valor e que quebrar a proteção fim a fim introduz riscos a pesar contra a visibilidade obtida. Três atritos práticos se repetem. Aplicações com fixação falham em vez de degradar, então uma lista de exceções é inevitável. Erros de certificado que teriam avisado um usuário sobre um ataque real passam a ser gerados e resolvidos pelo equipamento, então o usuário não vê nada em nenhum dos casos. E a tendência de cifrar o próprio aperto de mão, inclusive o nome do site visitado, vem removendo progressivamente os metadados de que a política por nome depende."
-      },
-      "ssl-stripping": {
-        "def": "Manter a vítima em HTTP simples reescrevendo os links que a levariam a HTTPS, enquanto o atacante fala HTTPS com o servidor real.",
-        "context": "Apresentada por Moxie Marlinspike em 2009, a técnica explorava o fato de que usuários quase nunca digitam o esquema: chegam a um site por HTTP simples e são redirecionados, ou seguem um link. Um atacante no caminho reescreve esses redirecionamentos e links de modo que o lado da vítima na conversa nunca é cifrado, enquanto o lado do atacante com o servidor é - então o servidor vê uma sessão segura normal e a vítima vê uma página que simplesmente não tem um cadeado que ninguém procurava. Não exigia certificado inválido e não produzia aviso, que é o que a tornava eficaz. O HTTP Strict Transport Security é a resposta direta: um site instrui o navegador a usar HTTPS para aquele nome por um período declarado, de modo que não há primeira requisição em texto claro a interceptar, e as listas de pré-carga levam a instrução antes da primeira visita. A técnica é hoje largamente histórica para sites grandes e segue relevante onde um redirecionamento a partir de HTTP simples ainda é a porta de entrada."
       }
     },
     "totalCount": "{count} termos",
@@ -17350,8 +17302,7 @@
     "filterCount": "{shown} de {total}",
     "filterCountryLabel": "País",
     "worksPill": "Trabalha dentro",
-    "worksWithPill": "Trabalha com",
-    "markEra": "marca em uso {era}"
+    "worksWithPill": "Trabalha com"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -20544,26 +20495,5 @@
     "schoolsNote": "Instituições que concedem diplomas ou conduzem programas, em vez de vender cursos.",
     "restTitle": "Também marcados como treinamento",
     "restNote": "Verbetes com a tag de treinamento que as seções acima não nomeiam."
-  },
-  "stories": {
-    "title": "Histórias que os dados deste site contam",
-    "navLabel": "Histórias",
-    "lede": "A maioria dos artigos daqui responde a uma pergunta. Alguns fazem outra coisa: põem outros artigos numa ordem que defende algo que nenhum deles diz sozinho. Uma lista por categoria ordena por assunto, e estes estão ordenados por argumento, então esta é a única página em que aparecem juntos.",
-    "count": "São {count}, agrupados pelo que defendem.",
-    "closer": "Cada um é um artigo comum e pode ser lido sozinho. O que o torna uma história é ter sido escrito para ser lido depois das peças que ele aponta, ou no lugar de sair caçando por elas.",
-    "group": {
-      "failure": {
-        "title": "Como as coisas quebram, e o que decidir antes",
-        "lede": "Os casos de falha ordenados por onde a falha de fato morava, o intervalo entre alguém saber e todo mundo saber, e as cinco práticas que esses casos defendem. Os dois primeiros reúnem a evidência; o terceiro é o que fazer com ela."
-      },
-      "endToEnd": {
-        "title": "Uma coisa, seguida de ponta a ponta",
-        "lede": "Uma requisição, um serviço, uma resposta e um formato, cada um traçado por artigos escritos para se sustentarem sozinhos. Lidos em sequência, descrevem um caminho e não um tópico."
-      },
-      "people": {
-        "title": "A indústria e o país",
-        "lede": "Onde o assunto não é a tecnologia, e sim o negócio em torno dela e o lugar em que ela foi aprendida."
-      }
-    }
   }
 }

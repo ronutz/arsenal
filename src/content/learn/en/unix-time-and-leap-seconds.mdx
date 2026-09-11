@@ -8,7 +8,7 @@ relatedArticles: ["unix-time-explained", "iso-8601-and-rfc-3339"]
 category: encoding
 order: 5
 status: reviewed
-updated: "2026-09-08"
+updated: "2026-06-29"
 ---
 
 It is tempting to read "seconds since 1970" as a precise count of physical seconds that have ticked by. It is not, and the reason is leap seconds.
@@ -30,37 +30,3 @@ Counting leap seconds would make every Unix timestamp depend on a table of histo
 ## A moving target, soon frozen
 
 Leap seconds have always been a nuisance for computing, and the world has decided to stop: a 2022 resolution will retire the leap second by **2035**, letting UTC and atomic time drift apart slowly rather than jolting clocks. Until then, the practical takeaway stands — treat a Unix timestamp as civil time, accurate to the second for everyday purposes, but not as a stopwatch reading since 1970.
-
-## 30 June 2012: the night it actually broke
-
-The theory above is tidy. What happened in practice, the last time a leap second arrived without the industry being ready, is the part an operator needs.
-
-At the end of 30 June 2012 the leap second was inserted, and machines running Linux began consuming their processors for no visible reason. Reddit went offline. Qantas' reservation systems failed and flights were delayed. Java applications pinned a core each. The failures were not in the applications: they were in one missing line in the kernel.
-
-The kernel commit that fixed it, from John Stultz, states the fault precisely. The timekeeping code failed to update the high-resolution timer subsystem after a leap second, so timers based on the real-time clock expired a second early or late — and, crucially, **the discrepancy stayed forever** unless something else happened to update those structures. Software that sets a timer, has it fire immediately, and sets it again, does that in a very tight loop.
-
-The workaround discovered by operators that night is the detail worth remembering, because it looks like nonsense and is not:
-
-```bash
-date -s "$(date)"
-```
-
-Set the clock to the time it already says. The value does not change; the *act of setting it* calls the routine that refreshes the timer structures, and the loop stops. A no-op with a side effect, which is exactly the kind of fix that only makes sense once you know what is broken underneath.
-
-## Smearing: the answer that stuck
-
-The deeper problem is that Unix and Linux never implemented a sixty-first second, so second 59 simply runs twice. Software does not expect a timestamp to occur twice, and what it does when that happens is undefined by the application rather than by the standard.
-
-Google's answer, published in 2011 and adopted widely since, was to refuse the discontinuity entirely: rather than repeat a second, **spread the extra second across many hours** by running the clocks fractionally slow. No timestamp repeats, no clock steps backwards, and no application ever sees an impossible value. The cost is that during the smear window the machine's time deliberately disagrees with UTC by up to half a second — which is acceptable for almost everything, and unacceptable for the applications that need true UTC to the millisecond.
-
-The major cloud providers now smear by default and publish the window they use. That creates the practical hazard for a network operator: **two devices smearing on different schedules, or one smearing and one stepping, disagree with each other for hours.** Time sources should be consistent across an estate, which means checking what the upstream servers do rather than assuming.
-
-With leap seconds due to be retired by 2035, this problem has a scheduled end. Until then, the correct answer to "what will our systems do at the next leap second" is not an opinion; it is a test.
-
-## Sources
-
-- [The Linux kernel commit that fixed it, from John Stultz: the timekeeping code misses an update of the hrtimer subsystem after a leap second, so timers based on CLOCK_REALTIME expire a second early or late, and the discrepancy stays forever unless the update happens by some other means; the reported immediate workaround causes a call to clock_was_set() which updates the hrtimer data structures](https://lkml.iu.edu/hypermail/linux/kernel/1207.1/01408.html)
-- [CBC, June 2015: the leap second added on 30 June 2012 caused flight reservation systems to fail at Qantas, delaying flights, and knocked Reddit offline when its Linux-based servers failed to cope; other websites were similarly affected](https://www.cbc.ca/news/science/leap-second-on-june-30-is-no-y2k-bug-says-expert-1.3127715)
-- [IBM support note: Linux and Unix did not implement a sixtieth second, so second 59 is executed twice, and because processes do not expect a timestamp to occur twice, unpredictable behaviour might be encountered; high CPU utilisation may be seen when the leap second occurs](https://www.ibm.com/support/pages/node/690499)
-- [NANOG list, January 2015: Java had 100% CPU usage issues when NTP was running during the additional second in 2012, and Google did something different to get the extra second in, described in its 2011 post on time, technology and leaping seconds](https://diswww.mit.edu/charon/nanog/177492)
-- [AWS, May 2015: an extra second was injected at the end of 30 June 2015, so the last minute of the day had 61 seconds, showing 23:59:60 on clocks synchronised to standard civil time; clocks in IT systems do not always follow that standard and can behave in many different ways](https://aws.amazon.com/blogs/aws/look-before-you-leap-the-coming-leap-second-and-aws)

@@ -13,8 +13,6 @@ updated: "2026-07-21"
 
 An Internet Protocol (IP) address gets a packet across networks; a Media Access Control (MAC) address gets a frame across the room. The Address Resolution Protocol (ARP) is the small, ancient mechanism that connects the two, and the retired F5 fundamentals exam kept three skills on it: state what service ARP provides, verify from its output that resolution worked, and explain MAC masquerading. All three still earn their keep daily.
 
-The first half of every hardware address is a registered prefix; **[what an OUI is](/learn/what-is-an-oui)** explains who assigns it and what it tells you about a device you have never seen.
-
 ## The service ARP provides
 
 When a host needs to send to an IP address on its own subnet, it broadcasts a question - who has this IP - and the owner answers with its MAC address. The asker caches the answer in its ARP table: a one-to-one mapping of IP to MAC, aged out after a while and refreshed on demand. For destinations outside the subnet, the host does not ARP for the destination at all; it ARPs for the [default gateway](/learn/routing-tables-and-default-gateway) and hands the packet there - which is why a wrong gateway shows up as an ARP entry for the wrong router, not as a routing error message.

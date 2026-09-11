@@ -88,16 +88,6 @@ export interface VendorLineage {
   acquisitions: Acquisition[];
   /** "as of" honesty stamp for the acquisition list. */
   asOf: string;
-  /**
-   * An optional single diagram summarising the lineage visually, shown above
-   * the acquisition timeline: the shape first, the detail after.
-   *
-   * `credit` is not decoration. A freely-licensed diagram by another author has
-   * to name that author and the licence ON THE PAGE, and a caption alone does
-   * not do that. Omit the field entirely for vendors without one - most have
-   * none, and the timeline stands on its own.
-   */
-  diagram?: { src: string; alt: string; caption?: string; credit?: string };
   /** Primary sources, shown as a short provenance list. */
   sources: { label: string; url: string }[];
 }

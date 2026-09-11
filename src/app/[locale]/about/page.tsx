@@ -77,104 +77,6 @@ const ERAS = [
   { slug: "2020-present", key: "era2020present" },
 ] as const;
 
-/* --- FACT MARKS (PRIME 2026-09-09) ---
-   Each of the six fact cards carries a small schematic mark drawn from that
-   card's own content: a coordinate crosshair for where he lives, two stacked
-   documents for two citizenships, a stamp impression for travel permits, a
-   meridian with clock hands for "globally, any time zone", four speech strokes
-   for four languages, and a decision fork for the advisory offer.
-
-   Deliberately line work rather than icon-set glyphs: this is an instructor's
-   site and the visual vernacular is the diagram, not the pictogram.
-
-   They are drawn with `currentColor` and inherit opacity from CSS rather than
-   carrying their own colours, so they follow every curated theme (Obsidian,
-   Daylight, Phosphor, Amber, Synthwave, Onyx HC) instead of hardcoding cyan and
-   disappearing on the light ones.
-
-   Decorative only: the card already states the fact in text, in sixteen
-   locales, so the mark is aria-hidden and adds nothing for a screen reader. */
-const FACT_MARKS: Record<string, React.ReactNode> = {
-  // Based in - a coordinate crosshair over a curved horizon. São Paulo is a
-  // point on a globe, so the mark is the way a point on a globe is written.
-  based: (
-    <>
-      <path d="M4 30a24 24 0 0 1 48 0" />
-      <path d="M28 8v44M6 30h44" />
-      <circle cx="28" cy="30" r="7" />
-    </>
-  ),
-  // Citizenships - two documents, one behind the other. Two, not one, because
-  // the fact is that there are two and they are separate.
-  citizenships: (
-    <>
-      <rect x="8" y="10" width="26" height="36" rx="3" />
-      <rect x="20" y="16" width="26" height="36" rx="3" />
-      <path d="M26 26h14M26 33h14M26 40h9" />
-    </>
-  ),
-  // Travel permits - a stamp impression: the border of the die and the
-  // diagonal band it leaves. The fact is about admissibility, and this is what
-  // admissibility looks like in a passport.
-  permits: (
-    <>
-      <rect x="7" y="13" width="42" height="30" rx="4" />
-      <path d="M12 38 44 18" />
-      <path d="M14 24h12M30 34h12" />
-    </>
-  ),
-  // Teaches - a meridian arc with clock hands at the centre. "Globally, in any
-  // time zone" is two facts and this is both of them in one figure.
-  teaches: (
-    <>
-      <circle cx="28" cy="28" r="20" />
-      <path d="M8 28h40" />
-      <path d="M28 8c7 6 7 34 0 40-7-6-7-34 0-40Z" />
-      <path d="M28 28V17M28 28l9 6" />
-    </>
-  ),
-  // Languages - four speech strokes at four sizes, one per language, ordered
-  // the way the card orders them: native first, then fluent, then the two in
-  // progress. The count is the content.
-  languages: (
-    <>
-      <path d="M6 14h28v18H16l-8 7v-7H6Z" />
-      <path d="M22 22h28v16H36l-7 6v-6h-7" />
-      <path d="M14 44h10M30 48h8" />
-    </>
-  ),
-  // Offers - a decision fork. Advisory work is one situation entering and
-  // several courses of action leaving, with one of them chosen; the marked
-  // branch is the recommendation.
-  offers: (
-    <>
-      <path d="M6 28h14" />
-      <circle cx="24" cy="28" r="4" />
-      <path d="M28 28h8l6-14h10M28 28h8l6 14h10" />
-      <path d="M28 28h22" />
-      <circle cx="52" cy="28" r="3" />
-    </>
-  ),
-};
-
-/**
- * One decorative schematic mark for a fact card.
- *
- * @param name - key into FACT_MARKS; must match one of the six cards.
- */
-function FactMark({ name }: { name: keyof typeof FACT_MARKS }) {
-  return (
-    <svg
-      className="about-fact-mark"
-      viewBox="0 0 56 56"
-      aria-hidden="true"
-      focusable="false"
-    >
-      {FACT_MARKS[name]}
-    </svg>
-  );
-}
-
 export default async function AboutPage({
   params,
 }: {
@@ -237,32 +139,26 @@ export default async function AboutPage({
                 is the practical ability to appear somewhere next month. */}
             <ul className="about-facts">
               <li className="about-fact">
-                <FactMark name="based" />
                 <span className="about-fact-label">{t("now.basedLabel")}</span>
                 <span className="about-fact-value">{t("now.basedValue")}</span>
               </li>
               <li className="about-fact">
-                <FactMark name="citizenships" />
                 <span className="about-fact-label">{t("now.citizenshipsLabel")}</span>
                 <span className="about-fact-value">{t("now.citizenshipsValue")}</span>
               </li>
               <li className="about-fact">
-                <FactMark name="permits" />
                 <span className="about-fact-label">{t("now.permitsLabel")}</span>
                 <span className="about-fact-value">{t("now.permitsValue")}</span>
               </li>
               <li className="about-fact">
-                <FactMark name="teaches" />
                 <span className="about-fact-label">{t("now.teachesLabel")}</span>
                 <span className="about-fact-value">{t("now.teachesValue")}</span>
               </li>
               <li className="about-fact">
-                <FactMark name="languages" />
                 <span className="about-fact-label">{t("now.languagesLabel")}</span>
                 <span className="about-fact-value">{t("now.languagesValue")}</span>
               </li>
               <li className="about-fact">
-                <FactMark name="offers" />
                 <span className="about-fact-label">{t("now.offersLabel")}</span>
                 <span className="about-fact-value">{t("now.offersValue")}</span>
               </li>

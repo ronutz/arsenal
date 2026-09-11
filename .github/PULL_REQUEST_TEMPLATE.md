@@ -9,6 +9,9 @@ SPDX-License-Identifier: Apache-2.0
 
 ## Type of change
 
+<!-- Use a Conventional Commit type in your commit/PR title so release-please
+     picks it up: feat:, fix:, docs:, refactor:, chore:, etc. Use feat!: or a
+     "BREAKING CHANGE:" footer for a breaking change. -->
 
 - [ ] fix (a bug fix)
 - [ ] feat (a new feature or tool)

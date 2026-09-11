@@ -99,16 +99,7 @@ const REFERRER_SOURCES: Array<[string, string]> = [
   ["youtube.com", "social:youtube"], ["mastodon.", "social:mastodon"], ["bsky.app", "social:bluesky"],
 ];
 
-/**
- * Referring host -> source family.
- *
- * Exported since 2026-09-11 so worker/stats.ts can classify at READ time.
- * The value is also stored in blob2 at write time, but a stored classification
- * is frozen: it is empty on rows written before 2026-09-06, and adding a search
- * engine to the table above never reclassifies history. The host itself is
- * stored and never goes stale, so the report derives the family from it.
- */
-export function classifyReferrer(host: string): string {
+function classifyReferrer(host: string): string {
   const h = host.toLowerCase();
   // gemini.google.com must win over google.; check longer patterns first
   const ordered = [...REFERRER_SOURCES].sort((a, b) => b[0].length - a[0].length);

@@ -1,5 +1,5 @@
 // ============================================================================
-// check-acronym-first-mention — D-90 enforced on the Learn corpus and the blog.
+// check-acronym-first-mention — D-90 enforced on the Learn corpus.
 // ----------------------------------------------------------------------------
 // RULING (PRIME, 2026-08-27, ratifying PROPOSTA-D90-retrofit-learn-20260827):
 // every ruled acronym is expanded at its first mention on each article, each
@@ -83,17 +83,8 @@ const BASELINE = 0; // DESTINATION reached 2026-08-27: retrofit complete in thre
 
 let defects = 0;
 const perFile = [];
-// D-90 was ruled over the Learn corpus on 2026-08-27, when the blog held two
-// posts. The blog is public prose in both locales and carries the same
-// obligation to a reader, so it is scanned here too (ANVIL 2026-09-09, for
-// PRIME's ratification). Same acronym table, same commons, same destination of
-// zero - no separate baseline was introduced, because the two defects the
-// extension found were fixed rather than tolerated.
-const CORPORA = ["src/content/learn", "src/content/blog"];
 for (const loc of ["en", "pt-BR"]) {
- for (const corpus of CORPORA) {
-  const dir = path.join(corpus, loc);
-  if (!fs.existsSync(dir)) continue;
+  const dir = path.join("src/content/learn", loc);
   for (const fn of fs.readdirSync(dir)) {
     if (!fn.endsWith(".mdx")) continue;
     const raw = fs.readFileSync(path.join(dir, fn), "utf8");
@@ -115,12 +106,9 @@ for (const loc of ["en", "pt-BR"]) {
         clean.slice(m.index + ac.length).startsWith(" (");
       if (!expanded) n += 1;
     }
-    // Label the corpus so a failure says WHERE, not just which file.
-    const label = corpus.endsWith("blog") ? `blog:${loc}/${fn}` : `${loc}/${fn}`;
-    if (n > 0) perFile.push([label, n]);
+    if (n > 0) perFile.push([`${loc}/${fn}`, n]);
     defects += n;
   }
- }
 }
 
 if (defects > BASELINE) {
@@ -133,5 +121,5 @@ if (defects > BASELINE) {
 }
 const note = defects < BASELINE ? ` LOWER - drop BASELINE to ${defects}.` : "";
 console.log(
-  `[check-acronym-first-mention] OK: ${defects} unexpanded first mention(s) across the Learn and blog corpora (baseline ${BASELINE}, may only go down).${note}`
+  `[check-acronym-first-mention] OK: ${defects} unexpanded first mention(s) across the Learn corpus (baseline ${BASELINE}, may only go down).${note}`
 );

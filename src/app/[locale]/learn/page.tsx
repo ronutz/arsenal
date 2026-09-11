@@ -12,7 +12,6 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { STORY_SLUGS } from "@/content/learn/stories";
 import { ogImages } from "@/lib/og";
 import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
@@ -54,13 +53,6 @@ export default async function LearnIndexPage({
 
   const tNav = await getTranslations("nav");
   const t = await getTranslations("learn");
-  // Computed, never written down - the card and the destination read one source.
-  const trainingPartnerCount = partnerVendors.filter((v) =>
-    (v.tags as readonly string[]).includes("training")
-  ).length;
-  const tStories = await getTranslations("stories");
-  const tLearning = await getTranslations("learning_page");
-  const tIndustryTags = await getTranslations("industryTags");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
   const tHub = await getTranslations("vendorHub"); // hub-strip chrome
@@ -125,23 +117,6 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalArticleCount", { count: articleCount })}</span>
                 </p>
               </a>
-              {/* PRIME 2026-09-09: the stitchers. Articles that connect other
-                  articles are invisible in a category list, because a category
-                  sorts by subject and these sort by argument. */}
-              <Link
-                href="/stories"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#10038;</span>
-                <p className="learn-portal-title">
-                  {tStories("navLabel")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{tStories("lede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{tStories("count", { count: STORY_SLUGS.length })}</span>
-                </p>
-              </Link>
               <Link
                 href="/vendor-hubs"
                 className="learn-portal-card"
@@ -248,28 +223,6 @@ export default async function LearnIndexPage({
                   <span className="learn-portal-badge">{t("portalPaths", { count: READING_PATHS.length })}</span>
                   <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
                   <span className="learn-portal-badge">{t("portalObjectives", { count: totalObjectives })}</span>
-                </p>
-              </Link>
-              {/* PRIME 2026-09-11: moved here from the industry page, where it
-                  sat as a jump-link under the timeline. The companies that TEACH
-                  the industry belong beside the other ways in to learning, not
-                  buried among three hundred vendors. Copy is reused, not
-                  rewritten: the title is the destination page's own, the lede is
-                  the sentence the industry link carried. */}
-              <Link
-                href="/industry/learning"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9650;</span>
-                <p className="learn-portal-title">
-                  {tLearning("title")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{tIndustryTags("learningLink")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalLearningCount", { count: trainingPartnerCount })}
-                  </span>
                 </p>
               </Link>
               <Link

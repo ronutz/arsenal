@@ -1133,73 +1133,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  /* Right padding widened to 4.5rem so the value text never runs under the
-     mark. The other three sides keep the original 1.25rem. (PRIME 2026-09-09) */
-  padding: 1.25rem 4.5rem 1.25rem 1.25rem;
+  padding: 1.25rem;
   background: var(--surface-base);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  /* Positioning context for .about-fact-mark, which is absolutely placed. */
-  position: relative;
-  overflow: hidden;
-}
-
-/* --- FACT CARD MARKS (PRIME 2026-09-09) ---
-   A schematic line drawing per card, taken from that card's own content. See
-   FACT_MARKS in src/app/[locale]/about/page.tsx for what each one depicts and
-   why.
-
-   Drawn in currentColor at low opacity rather than in an accent colour, so the
-   marks follow every curated theme and both colour schemes instead of being
-   invisible on the light ones. They sit behind the text in the stacking order
-   and are aria-hidden in the markup, because the card already states the fact
-   in words in sixteen locales. */
-.about-fact-mark {
-  position: absolute;
-  top: 0.9rem;
-  right: 0.9rem;
-  width: 3.25rem;
-  height: 3.25rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  color: var(--text-tertiary);
-  opacity: 0.35;
-  pointer-events: none;
-  transition:
-    opacity 200ms ease,
-    color 200ms ease;
-}
-
-/* The mark answers to the card, not to itself: hovering anywhere on the card
-   brings it forward. Keyboard users reach the same state via :focus-within on
-   any interactive descendant a future card might carry. */
-.about-fact:hover .about-fact-mark,
-.about-fact:focus-within .about-fact-mark {
-  color: var(--accent-primary);
-  opacity: 0.75;
-}
-
-/* The marks carry no information, so on a reduced-motion preference they simply
-   stop animating rather than being removed. */
-@media (prefers-reduced-motion: reduce) {
-  .about-fact-mark {
-    transition: none;
-  }
-}
-
-/* Narrow screens: the cards are full width and one per row, so there is room,
-   but the mark is scaled back a little so it does not dominate a short value. */
-@media (max-width: 30rem) {
-  .about-fact {
-    padding-right: 3.75rem;
-  }
-  .about-fact-mark {
-    width: 2.5rem;
-    height: 2.5rem;
-  }
 }
 .about-fact-label {
   font-size: 0.75rem;
@@ -1886,49 +1823,6 @@
   color: var(--text-secondary);
   line-height: 1.5;
   max-width: 46ch;
-}
-
-/* --- Era-matched vendor wordmark (see src/components/VendorMark.tsx) -------
-   The plate is a FIXED light surface, not a themed one: the marks are used as
-   their owners publish them, most are dark artwork meant for a light ground,
-   and recolouring or inverting a trademark is precisely what the use rules
-   forbid. So the background adapts to the mark rather than the mark to the
-   theme. On the light themes the plate all but disappears and the border is
-   what keeps it defined. */
-.vendor-mark {
-  margin: 0 0 1.25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.4rem;
-}
-.vendor-mark-plate {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 0.55rem 0.9rem;
-  min-height: 2.75rem;
-}
-.vendor-mark-img {
-  /* Bound BOTH axes. The registry holds marks of very different proportions -
-     a four-to-one wordmark beside a square badge - and constraining height
-     alone would render the wordmark four times wider than the badge. Capping
-     each axis lets wide marks meet the width limit and tall ones the height
-     limit, so they carry comparable visual weight without any being scaled
-     disproportionately. */
-  display: block;
-  width: auto;
-  height: auto;
-  max-height: 2.25rem;
-  max-width: 9.5rem;
-}
-.vendor-mark-era {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  letter-spacing: 0.01em;
 }
 
 /* Special note (e.g. IronPort on Cisco) — set apart with an amber edge */
@@ -16811,47 +16705,3 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .item-views-spark polyline { fill: none; stroke: var(--color-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
 .stats-panel-total { margin: -0.4rem 0 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
-
-/* --- /stories: the stitcher list ------------------------------------------
-   A reading list, not a card grid: these are long-form articles and the
-   summary is the thing that helps a reader choose, so the summary gets room
-   and the title is the affordance. */
-.story-list {
-  list-style: none;
-  margin: 1.25rem 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1.35rem;
-}
-.story-item {
-  border-left: 2px solid var(--border-subtle);
-  padding-left: 1rem;
-}
-.story-link {
-  font-size: 1.1rem;
-  font-weight: 600;
-  line-height: 1.3;
-  color: var(--accent-primary);
-  text-decoration: none;
-}
-.story-link:hover,
-.story-link:focus-visible {
-  text-decoration: underline;
-}
-.story-summary {
-  margin: 0.35rem 0 0;
-  color: var(--text-secondary);
-  line-height: 1.55;
-  max-width: 62ch;
-}
-
-/* Attribution under a figure: smaller and quieter than the caption, because it
-   is a legal requirement rather than something the reader came for - but it
-   must be ON THE PAGE, which is why it is not hidden in repository metadata. */
-.gloss-figure-credit {
-  display: block;
-  margin-top: 0.3rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-}
