@@ -30,7 +30,7 @@
 // written in the registry header and is PRIME's to hold.
 // ============================================================================
 
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -79,6 +79,23 @@ for (const m of VENDOR_MARKS) {
   const abs = path.join(ROOT, "public", m.src.replace(/^\//, ""));
   if (!existsSync(abs)) {
     errors.push(`${m.vendor} (${m.from}): src does not exist -> ${m.src}`);
+  }
+  // INTRINSIC DIMENSIONS. An SVG loaded through <img> with only a viewBox has
+  // no intrinsic size, so CSS `width:auto;height:auto` has no aspect ratio to
+  // work from and the browser falls back to its default replaced-element box.
+  // On 2026-09-11 that shipped: six of fourteen marks lacked width/height - four
+  // because ANVIL stripped them while trimming empty canvas - and the live Palo
+  // Alto chapter rendered an empty white plate. Nothing caught it because
+  // cairosvg, which ANVIL used to preview the marks, honours the viewBox alone.
+  // The preview agreed with the file and disagreed with the browser.
+  if (existsSync(abs) && abs.endsWith(".svg")) {
+    const root = (readFileSync(abs, "utf8").match(/<svg[^>]*>/) ?? [""])[0];
+    if (!/\swidth=/.test(root) || !/\sheight=/.test(root)) {
+      errors.push(
+        `${m.vendor} (${m.from}): ${path.basename(m.src)} has no width/height on <svg>; ` +
+          `an <img> cannot size it. Derive them from the viewBox.`
+      );
+    }
   }
   if (!m.note || !m.note.trim()) {
     errors.push(`${m.vendor} (${m.from}): empty note; provenance must be written down`);
