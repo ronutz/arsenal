@@ -172,6 +172,20 @@ export const extremeLineage: VendorLineage = {
 
   asOf: "July 2026",
 
+  diagram: {
+    src: "/img/diagrams/extreme-network-acquisitions.png",
+    alt:
+      "A chart of company logos joined by arrows, showing acquisitions flowing into " +
+      "Extreme Networks: SynOptics to Bay Networks to Nortel to Avaya; Lucent to Avaya; " +
+      "Foundry to Brocade; Digital to Cabletron Systems to Enterasys; Symbol to Motorola " +
+      "to Zebra; and Aerohive - all converging on Extreme.",
+    caption:
+      "The same story as the timeline below, in one frame: six lineages, most of them " +
+      "older than Extreme itself, arriving under one name.",
+    credit:
+      "Diagram by Stamau, Wikimedia Commons, CC BY-SA 4.0. Reproduced unmodified. " +
+      "Company marks belong to their owners.",
+  },
   sources: [
     {
       label: "Extreme Networks investor release: Brocade data centre networking (29 March 2017)",

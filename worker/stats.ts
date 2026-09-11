@@ -145,8 +145,18 @@ const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 // midnight UTC is used. Any rows from earlier that day with an empty source
 // are already excluded from `sources` by its `blob2 != ''` predicate.
 // ----------------------------------------------------------------------------
-const REFERRER_SOURCE_LIVE = "2026-09-06 00:00:00"; // UTC
-const REFERRER_SINCE = `timestamp >= toDateTime('${REFERRER_SOURCE_LIVE}')`;
+// CORRECTED 2026-09-11. This used to floor at 2026-09-06, the day blob2
+// classification began - a different date, for a different reason, and the
+// wrong one for THIS panel.
+//
+// "Where readers arrive from" is a PEOPLE report, so it must obey the people
+// rule stated above: the origin classifier went live at CLASSIFIER_LIVE and
+// rows before it were never vetted. Flooring a day earlier silently readmitted
+// 6 September - the day before the datacenter rule - so a scraper fleet forging
+// google.com referrals reappeared in the panel as ~19,500 requests under "other
+// sites", while the panel's own copy promised that traffic was not shown.
+// PRIME caught it. One floor, one reason.
+const REFERRER_SINCE = `timestamp >= toDateTime('${CLASSIFIER_LIVE}')`;
 
 export async function handleStats(
   url: URL,
@@ -259,11 +269,20 @@ export async function handleStats(
         return json({
           detail: false,
           note: "Aggregated to the referring host. Full referring URLs are not published.",
-          rows: await query(
-            env,
-            `SELECT index1 AS host, blob2 AS source, ${VIEWS} FROM ${REFERRERS}
-             WHERE ${since} AND ${REFERRER_SINCE} GROUP BY host, source ORDER BY views DESC LIMIT 100`
-          ),
+          // The family is DERIVED from the host, not read from blob2. A stored
+          // classification cannot be corrected: it is empty on rows written
+          // before 2026-09-06 and frozen against later additions to the source
+          // table - which is how www.google.com came to sit under "other sites"
+          // beside www.google.com.hk under "search engines". The host is stored
+          // and never goes stale, so grouping by host and classifying here
+          // makes the report self-correcting. (PRIME caught it, 2026-09-11.)
+          rows: (
+            (await query(
+              env,
+              `SELECT index1 AS host, ${VIEWS} FROM ${REFERRERS}
+               WHERE ${since} AND ${REFERRER_SINCE} GROUP BY host ORDER BY views DESC LIMIT 100`
+            )) as Array<{ host: string; views: number }>
+          ).map((r) => ({ ...r, source: classifyReferrer(r.host) })),
         });
       }
 
@@ -405,3 +424,4 @@ export async function handleStats(
     return json({ error: "handler_error" }, 500);
   }
 }
+import { classifyReferrer } from "./analytics";

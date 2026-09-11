@@ -53,7 +53,20 @@ export interface PostFrontmatter {
    * a defect, not a style choice; `caption` is optional because not every
    * photograph needs explaining.
    */
-  image?: { src: string; alt: string; caption?: string };
+  image?: { src: string; alt: string; caption?: string; credit?: string };
+  /**
+   * An optional SECOND illustration, rendered AFTER the body.
+   *
+   * Not an arbitrary extra slot: some posts open with an artefact and close
+   * with its consequence. The switch-lineage post opens on a 1996 identity
+   * badge and ends on where all those companies went, and those two pictures
+   * do different jobs at different points. A post that needs a third probably
+   * needs prose instead.
+   *
+   * `credit` exists for third-party work: a CC BY-SA diagram must name its
+   * author and licence on the page, which a caption alone does not do.
+   */
+  imageEnd?: { src: string; alt: string; caption?: string; credit?: string };
 }
 
 /** A loaded post: frontmatter plus the raw MDX body. */

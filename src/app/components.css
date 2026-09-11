@@ -16845,3 +16845,13 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   line-height: 1.55;
   max-width: 62ch;
 }
+
+/* Attribution under a figure: smaller and quieter than the caption, because it
+   is a legal requirement rather than something the reader came for - but it
+   must be ON THE PAGE, which is why it is not hidden in repository metadata. */
+.gloss-figure-credit {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}

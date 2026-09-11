@@ -168,10 +168,28 @@ export const VENDOR_MARKS: VendorMark[] = [
   {
     vendor: "extreme",
     label: "Extreme Networks",
-    src: "/img/marks/extreme-networks-current.svg",
+    src: "/img/marks/extreme-networks-swoosh.svg",
     from: 1996,
+    to: 2015,
+    note:
+      "The purple swoosh with the green 'networks'. THIS FILE WAS PREVIOUSLY " +
+      "REGISTERED AS THE CURRENT MARK, dated from the founding year - so the " +
+      "entry was wrong twice and the two errors cancelled, rendering the right " +
+      "logo for the wrong reason. Corrected 2026-09-11.",
+  },
+  {
+    vendor: "extreme",
+    label: "Extreme Networks",
+    src: "/img/marks/extreme-networks-current.png",
+    from: 2016,
     to: null,
-    note: "Authorized-instructor platform; acquired the Enterasys line above.",
+    note:
+      "The purple E with 'Extreme networks'. Dating evidence rather than proof: " +
+      "Wikimedia Commons holds this artwork as 'Extreme Networks logo - new.png' " +
+      "dated December 2015, and Extreme announced a new CEO and a new " +
+      "solutions-based strategy in May 2015. The switchover ran through 2015; " +
+      "the boundary is set at the year end because no source gives the date. " +
+      "Good to a year, not to a day.",
   },
   {
     vendor: "fortinet",
@@ -184,10 +202,27 @@ export const VENDOR_MARKS: VendorMark[] = [
   {
     vendor: "paloalto",
     label: "Palo Alto Networks",
-    src: "/img/marks/palo-alto-networks-current.svg",
+    src: "/img/marks/palo-alto-networks-pre2020.png",
     from: 2005,
+    to: 2019,
+    note:
+      "The boxed waveform in blue and green. Added 2026-09-11 after PRIME caught " +
+      "that this registry held only the current mark and dated it from the " +
+      "company's founding year - which put the 2020 logo on a chapter about 2013.",
+  },
+  {
+    vendor: "paloalto",
+    label: "Palo Alto Networks",
+    src: "/img/marks/palo-alto-networks-current.svg",
+    from: 2020,
     to: null,
-    note: "Held for the implementation years; this site claims no Palo Alto training authorization.",
+    note:
+      "The orange triad. Corrected from 'since 2005' on 2026-09-11. The rebrand " +
+      "is confirmed by the agency that did it - Godfrey Dadich describe the mark " +
+      "evolving 'from its original boxed-in waveform to a harmonious triad of " +
+      "intersecting elements' - but no primary source gives a launch DATE, so " +
+      "2020 is taken from the aggregators and from PRIME, who works with the " +
+      "vendor. Treat the year as good-to-a-year, not to-a-day.",
   },
 ];
 

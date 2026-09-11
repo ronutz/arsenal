@@ -101,3 +101,17 @@ path = "public/img/artefacts/**"
 precedence = "override"
 SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
 SPDX-License-Identifier = "CC-BY-4.0"
+
+# --- Third-party diagrams ----------------------------------------------------
+# public/img/diagrams/ holds freely-licensed diagrams by other authors, used
+# with attribution. These are NOT under this repository's CC-BY-4.0: the
+# Extreme acquisition chart is CC BY-SA 4.0, whose SHARE-ALIKE term applies to
+# adaptations. It is reproduced unmodified beside text as a collection, not
+# adapted, so the surrounding content keeps its own licence - but the file
+# itself carries BY-SA and is marked as such here. The company marks WITHIN the
+# diagram belong to their owners; the licence covers the author's arrangement.
+[[annotations]]
+path = "public/img/diagrams/extreme-network-acquisitions.png"
+precedence = "override"
+SPDX-FileCopyrightText = "Stamau (Wikimedia Commons)"
+SPDX-License-Identifier = "CC-BY-SA-4.0"
