@@ -42,7 +42,24 @@ const locales = fs
   .filter((n) => /^[a-z]{2}(-[A-Za-z]{2,4})?$/.test(n));
 
 const fullSetActive = locales.length >= 2;
-const expected = fullSetActive ? [...locales, "x-default"].sort().join(",") : null;
+// PER-ROUTE, NOT GLOBAL (2026-09-10). This used to compare every page's
+// hreflang set against ALL built locales, which was right while every route
+// existed in every locale. It stopped being right when the Learn and glossary
+// DETAIL pages became authored-locales-only: /en/glossary/<slug> legitimately
+// carries en,pt-BR,x-default because the other fourteen were never generated,
+// and the old check called all 4,746 of them structural bugs.
+//
+// The correct expectation is the one inject-hreflang.mjs already applies when
+// it WRITES the tags: the locales in which THIS route was actually built. The
+// guard now recomputes the same thing and compares like with like, so it still
+// catches a genuine mismatch between what was written and what exists.
+const expectedFor = (rel) => {
+  const present = locales.filter((l) =>
+    fs.existsSync(path.join(OUT, l, rel, "index.html")),
+  );
+  if (present.length < 2) return null; // injector writes nothing below two
+  return [...present, "x-default"].sort().join(",");
+};
 
 const problems = [];
 let pages = 0;
@@ -62,8 +79,13 @@ const walk = (dir) => {
       if (dupAlts.length > 0)
         problems.push(`${p} -> duplicate hreflang: ${[...new Set(dupAlts)].join(", ")}`);
       if (fullSetActive && alts.length > 0) {
+        // Derived from the path, not from the enclosing loop: walk() is declared
+        // at module scope and cannot see the loop's locale binding.
+        const fromOut = path.relative(OUT, path.dirname(p)).split(path.sep);
+        const rel = fromOut.slice(1).join("/");
+        const expected = expectedFor(rel);
         const got = [...new Set(alts)].sort().join(",");
-        if (got !== expected)
+        if (expected && got !== expected)
           problems.push(`${p} -> hreflang set differs from built locales (got ${got})`);
       }
 

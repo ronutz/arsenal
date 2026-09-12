@@ -1,0 +1,74 @@
+---
+slug: the-interception-tools
+title: "Fiddler, Burp, Cain e os demais: as ferramentas que leem uma conversa da qual não faziam parte"
+summary: "Um proxy de depuração, uma suíte de teste de invasão, um programa de recuperação de senhas de um site italiano de uma pessoa só, e um appliance corporativo de inspeção fazem todos a mesma operação - terminar uma conexão que as duas pontas julgam ser delas. O que os separa não é técnica, é consentimento e transparência. Onde cada um se coloca, o que derrota cada um, e por que a ferramenta em que todo mundo aprendeu sumiu da web."
+concepts: ["man-in-the-middle", "proxy", "fiddler", "burp suite", "cain and abel", "arp poisoning", "certificate pinning", "ssl inspection"]
+relatedTools: []
+relatedArticles: ["the-named-tls-attacks", "there-is-no-perfect-code", "certificate-validation", "the-ssl-vpn-is-being-dismantled"]
+category: security
+order: 118
+status: reviewed
+updated: "2026-09-08"
+---
+
+O lado de captura da mesma disciplina - BPF, libpcap, tcpdump e o programa que quase todos conhecem - está em **[Wireshark e a pilha de captura](/learn/wireshark-and-the-capture-stack)**; as requisições que estas ferramentas interceptam podem ser reproduzidas à mão, como mostra **[requisições HTTP cruas e como reproduzi-las](/learn/raw-http-requests-and-how-to-replay-them)**.
+
+## Uma operação, três posições
+
+Toda ferramenta deste artigo faz a mesma coisa. Coloca-se entre duas partes que acreditam estar falando uma com a outra, termina a conexão de cada lado e lê o que passa. É só isso. Um desenvolvedor investigando por que uma aplicação manda o cabeçalho errado, um testador de invasão sondando uma falha de autorização, um empregador aplicando uma política de dados e um atacante roubando um cookie de sessão executam uma operação tecnicamente idêntica, e nenhuma propriedade do tráfego os distingue.
+
+O que os distingue é quem concordou, e quem foi avisado. Essa frase é a razão de este artigo existir, e vale levá-la a qualquer conversa em que alguém insista que uma técnica é inerentemente ofensiva ou inerentemente defensiva. As ferramentas diferem sobretudo em **onde** se colocam.
+
+## No fio, mentindo sobre a rede local
+
+A posição mais antiga é o segmento de rede local, e funciona porque a resolução de endereços da Ethernet não tem autenticação nenhuma. Uma máquina pergunta quem é dono de um endereço; qualquer coisa no segmento pode responder; quem perguntou acredita na resposta. Nada no protocolo impede que uma terceira máquina responda primeiro e se declare o roteador.
+
+O programa que ensinou uma geração a como isso funciona foi o **Cain & Abel**, escrito por Massimiliano Montoro e publicado de um site italiano de uma pessoa só, o oxid.it. O nome não é uma piada sobre traição: são dois programas. O Cain é a ferramenta gráfica que o operador roda; o Abel é um serviço do Windows instalado numa máquina-alvo que dá um console remoto. Começou como utilitário para recuperar senhas de arquivos PWL do Windows 9x e acumulou, ao longo de uma década, farejamento, quebra por dicionário e força bruta com tabelas arco-íris, gravação de chamadas de voz, recuperação de chaves sem fio, extração de credenciais em cache e armazenadas, um ataque de intermediário para sessões de área de trabalho remota vindo de um aviso do próprio Montoro em 2005, e o recurso pelo qual é lembrado, que ele chamou de ARP Poison Routing. Produtos antivírus lançaram assinaturas para ele. A última versão, 4.9.56, é de 7 de abril de 2014.
+
+O site sumiu. A documentação - que era incomumente boa, explicando os mecanismos em vez de só listar botões, e que ensinou muitos profissionais a como redes comutadas de fato se comportam - hoje só existe no Internet Archive. Vale notar pela mesma razão que o [artigo do edX](/learn/edx) nota um anúncio apagado: material que formou uma profissão pode desaparecer porque uma pessoa parou de pagar a hospedagem.
+
+Montoro disse algo numa entrevista de 2009 que pertence ao argumento de que [não existe código perfeito](/learn/there-is-no-perfect-code). Os fabricantes tinham lançado centenas de correções, observou ele, mas mesmo com todas aplicadas sua ferramenta ainda recuperava senhas do Windows e ainda interceptava sessões de área de trabalho remota pela falha de 2005, porque o protocolo de resolução de endereços continuava sem estado e sem autenticação - e ele nunca encontrara uma empresa que tivesse levado em conta a mitigação dos riscos daí decorrentes. Isso foi há dezessete anos, e o protocolo não mudou. As mitigações existem - inspeção dinâmica de ARP, DHCP snooping, segurança de porta, 802.1X - e são recursos de switch que precisam ser ligados de propósito.
+
+A mesma posição é ocupada hoje pelo **ettercap** e por seu sucessor **bettercap**, que fazem o mesmo trabalho com embalagem moderna.
+
+## No cliente, por ter sido convidado
+
+A segunda posição não exige ataque nenhum, e é onde os profissionais passam a vida de trabalho. O usuário configura a própria máquina para mandar o tráfego por um proxy local, e instala a autoridade certificadora desse proxy no próprio repositório de confiança. Dali em diante o proxy emite certificados para o site que for pedido, o navegador os aceita porque foi mandado aceitar, e cada requisição e resposta é legível e editável.
+
+O **Fiddler** é o arquétipo. Eric Lawrence o construiu quando estava na Microsoft, onde passou mais de uma década antes de trabalhar na equipe de segurança do Chrome e depois voltar à Microsoft para o Edge; a ferramenta foi depois adquirida pela Telerik e hoje faz parte da Progress. Seu público sempre foi de desenvolvedores e testadores, não de especialistas em segurança: ver o tráfego, achar o cabeçalho malformado, repetir a requisição, simular a conexão lenta.
+
+O **Burp Suite** veio da direção oposta. Dafydd Stuttard, consultor de segurança em Knutsford, escreveu ferramentas para acelerar as partes rotineiras do próprio trabalho e deu a cada uma um nome arbitrário; a que se chamava Burp - por nenhuma razão específica, e as primeiras versões faziam sons de arroto de verdade - foi lançada em junho de 2003 e virou a suíte que hoje é o padrão para teste de aplicações web. O **OWASP ZAP** ocupa o mesmo espaço como software livre, e o **mitmproxy** faz isso de um terminal, roteirizável em Python, o que o torna a escolha quando a tarefa é automação e não inspeção.
+
+Nenhuma dessas é ferramenta de ataque em sentido técnico algum. Elas interceptam porque o usuário pediu. O aviso de certificado que apareceria é silenciado pela decisão do próprio usuário de confiar no proxy.
+
+## Na rede, por política
+
+A terceira posição é a mesma operação executada por uma organização sobre o próprio tráfego. Um appliance de inspeção ou serviço em nuvem guarda uma autoridade certificadora empurrada para todo dispositivo gerenciado, e dali em diante pode terminar, inspecionar e recifrar sessões de saída - para aplicar regras de prevenção de vazamento, para varrer em busca de malware, para registrar aonde as pessoas vão.
+
+Tecnicamente isso é indistinguível da segunda posição, e jurídica e eticamente não é, porque o consentimento é institucional e não individual e a transparência varia de uma política clara a nada. Também concentra risco de um jeito que vale enunciar: o appliance agora guarda o texto claro de cada sessão que inspeciona e uma chave privada em que todo dispositivo gerenciado confia, o que faz dele o objeto mais valioso da rede. As ferramentas que este site oferece para examinar certificados mostram um certificado de inspeção corporativa pelo que ele é, que é muitas vezes como um funcionário descobre que o arranjo existe.
+
+## O que derrota a interceptação, e o que quebra quando ela é derrotada
+
+**A fixação de certificado** é a resposta direta. Uma aplicação que traz embutido o certificado ou a chave pública esperada do seu servidor recusa qualquer outra coisa, inclusive um certificado emitido por uma autoridade em que o sistema operacional confia. É por isso que muitas vezes uma aplicação móvel não pode ser inspecionada com um proxy enquanto o navegador do mesmo celular pode. E é por isso que fixação e inspeção corporativa vivem em conflito permanente: uma aplicação que fixa corretamente simplesmente falha atrás de um proxy que inspeciona, e a solução é sempre uma exceção, não uma reconciliação técnica.
+
+**O HTTP Strict Transport Security** remove o caminho de rebaixamento que fazia a técnica mais antiga do `sslstrip` funcionar - reescrever links de HTTPS para HTTP antes de o usuário sequer ver - instruindo o navegador a nunca mais usar HTTP simples naquele site.
+
+**O TLS mútuo** derrota pelo outro lado: o servidor exige um certificado de cliente que o proxy não tem.
+
+**E o TLS 1.3 estreitou o que um observador vê sem quebrar nada**, cifrando mais do aperto de mão. O Encrypted Client Hello, onde implantado, remove a última pista em texto claro de qual site está sendo visitado - o que é uma melhoria de privacidade e, ao mesmo tempo, o fim da filtragem por nome de que muitas organizações dependem. Essa tensão não tem solução limpa e vale entender antes de ela chegar como incidente.
+
+## A linha que de fato importa
+
+Não há propriedade técnica que separe o depurador do auditor do atacante. O proxy não sabe por que foi iniciado. O que os separa é que a interceptação do desenvolvedor foi pedida pela pessoa cujo tráfego é aquele, a interceptação corporativa foi divulgada numa política que o funcionário aceitou, o teste de invasão foi autorizado por escrito com escopo definido, e o ataque não foi nada disso.
+
+É um fundamento mais frágil do que a maioria gostaria, e é o real. É por isso que cartas de autorização existem, por que um documento de escopo nomeia endereços e datas, e por que a disciplina profissional em torno dessas ferramentas é processual e não técnica. Quem for claro sobre isso vai explicar melhor do que quem finge que existe uma categoria de ferramenta que não pode ser mal usada - e, sendo claro sobre isso, também vai reconhecer o appliance de inspeção corporativa e a resposta ARP do atacante como a mesma operação, diferindo na resposta a uma pergunta: quem concordou com isto, e foi avisado?
+
+## Fontes
+
+- [Wikipedia, Cain and Abel: ferramenta de recuperação de senhas para Windows de Massimiliano Montoro e Sean Babcock, recuperando senhas por farejamento de rede, dicionário, força bruta e criptanálise, gravando conversas VoIP, revelando senhas em cache e analisando protocolos de roteamento; a última versão, 4.9.56, é de 7 de abril de 2014, e o site oxid.it está disponível pelo Internet Archive](https://en.wikipedia.org/wiki/Cain_and_Abel_(software))
+- [Entrevista com Massimiliano Montoro, 2009: começou a ferramenta para recuperar senhas de arquivos PWL do Windows 9x; o Cain é a interface gráfica e o Abel o serviço do Windows que provê console remoto; mesmo com todas as correções dos fabricantes aplicadas a ferramenta ainda quebrava senhas do Windows e fazia ataques de intermediário em sessões de área de trabalho remota pela vulnerabilidade que ele publicou em 2005, porque o protocolo de resolução de endereços continua sem estado e sem autenticação, e ele nunca encontrou uma empresa que levasse em conta a mitigação desses riscos](https://www.digital-forensics.it/interview-with-massimiliano-montoro-author-of-cain-abel/)
+- [Biografia do próprio Eric Lawrence: criou o Fiddler, passou mais de uma década na Microsoft, passou dois anos na equipe de segurança do Chrome trabalhando para levar HTTPS a toda parte, voltou à Microsoft em 2018 para a rede do Edge, e antes blogava no blog do Fiddler da Telerik](https://github.com/ericlaw1979/ericlaw1979/blob/master/README.md)
+- [História pela própria PortSwigger: Dafydd Stuttard escreve a primeira versão do Burp, com sons de arroto de verdade, e o Burp Suite v1.0 é lançado incluindo Burp Proxy, Spider e Repeater](https://portswigger.net/about)
+- [Dafydd Stuttard, "Burp through the ages", outubro de 2013: Burp v1.0 lançado em junho de 2003, a primeira encarnação da ferramenta Intruder](https://portswigger.net/blog/burp-through-the-ages)
+- [TechCrunch, junho de 2024: Stuttard era consultor de segurança em Knutsford, Cheshire, construindo ferramentas para acelerar partes rotineiras do trabalho e dando a cada uma um nome aleatório; a que se chamou Burp, por nenhuma razão específica, foi compartilhada com outros da comunidade](https://techcrunch.com/2024/06/27/portswigger-the-company-behind-the-burp-suite-of-security-testing-tools-swallows-112m/)
+- [Grokipedia, Burp Suite: originou-se de ferramentas individuais criadas por Stuttard em 2003 para automatizar seus próprios testes de segurança web, com o primeiro lançamento do Burp Intruder e do Burp Proxy naquele ano, unificadas no Burp Suite versão 1.0 em 2005 e acrescentando varredura automatizada em 2008](https://grokipedia.com/page/Burp_Suite)

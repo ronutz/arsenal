@@ -443,7 +443,15 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
 
   const urls: string[] = [];
   for (const route of routes) {
-    const alternates = SITEMAP_LOCALES.map(
+    // Only locales where THIS route was actually generated. Previously every
+    // route claimed all sixteen, which was true only by accident - every route
+    // existed everywhere. It stopped being true on 2026-09-10, when the Learn
+    // and glossary detail pages became authored-locales-only, and a sitemap
+    // advertising a redirecting URL as a translation is a lie to a crawler.
+    // inject-hreflang.mjs has always filtered this way; the two now agree.
+    const alternates = SITEMAP_LOCALES.filter((loc) =>
+      fs.existsSync(path.join(OUT, loc, route, "index.html")),
+    ).map(
       (loc) =>
         `    <xhtml:link rel="alternate" hreflang="${loc}" href="${xmlEscape(localeUrl(loc, route))}" />`,
     );

@@ -1,0 +1,66 @@
+---
+slug: one-product-five-flags-and-the-doorway-problem
+title: "Um produto, cinco bandeiras: o que aconteceu com a caixa que eu demonstrava"
+summary: "O appliance que inventou o SSL VPN sem cliente passou por cinco empresas em vinte anos. Trabalhei com ele em três delas — dentro da Juniper enquanto o Junos Pulse tomava forma, pelo canal, e do lado da distribuição arquitetando-o pelo Brasil. Sob a quinta bandeira ele pertence à categoria que a indústria está desmontando. Isso não é história de fabricante ruim. É história de um formato."
+author: "Rodolfo Nützmann"
+date: "2026-09-09"
+tags: ["security", "vpn", "career"]
+category: security
+status: reviewed
+updated: "2026-09-09"
+relatedArticles: ["the-ssl-vpn-is-being-dismantled", "obsolescence", "zero-trust-ztna-and-sase-without-the-marketing", "the-industry-from-inside"]
+image:
+    src: "/img/artefacts/juniper-f5-lab-stack.jpg"
+    alt: "Pilha de laboratorio com equipamentos de rede desativados: duas unidades F5 BIG-IP 3600, um Juniper SSG 20, dois firewalls Juniper SSG 5, dois gateways SRX210, um roteador J2350, switches EX4200 e EX3200, e um chassi Enterasys N7 embaixo."
+    caption: "Parte do laboratorio: os firewalls Juniper SSG sao a linha ScreenOS da NetScreen sob o nome da Juniper, e os gateways SRX sao o que os substituiu. O appliance de SSL VPN que este post acompanha era outro produto da mesma aquisicao - que e justamente o ponto."
+---
+
+## Cinco bandeiras
+
+A maioria dos produtos morre com a empresa que os fez. Alguns sobrevivem a várias, e esses valem ser acompanhados, porque o que acontece com eles é um registro daquilo sobre o que a indústria mudou de ideia.
+
+O que quero acompanhar começou como Instant Virtual Extranet, feito pela Neoteris, e é o appliance que definiu o SSL VPN sem cliente — uma rede privada virtual alcançada pelo navegador, sem nada para instalar. A NetScreen comprou a Neoteris em 2003. A Juniper comprou a NetScreen em 2004, e a linha virou a série SA e depois o Junos Pulse. A Siris Capital destacou o negócio em 2014 como Pulse Secure. A Ivanti fechou a aquisição em 1º de dezembro de 2020. A [genealogia completa](/industry/chapters/pulse-secure) está na página de carreira; a versão curta são cinco bandeiras em cerca de vinte anos, e o produto continuou funcionando em todas elas.
+
+Encontrei esse produto três vezes, de três cadeiras diferentes.
+
+## Três cadeiras
+
+**Dentro da Juniper, 2009 a 2014.** Contratado pelo Professional Services para o Brasil, defendendo as linhas corporativas recém-lançadas — os gateways de segurança SRX, que nasceram da tecnologia da NetScreen, e os switches EX. Foram os anos em que o Junos Pulse tomou forma. Eu trabalhava a [linhagem NetScreen](/industry/chapters/netscreen-juniper) sem pensar nela como linhagem; de dentro, era simplesmente o roadmap.
+
+**Pelo canal, depois disso.** Desenvolvimento de configuração, prova de conceito e testes de interoperabilidade, implantação e troubleshooting ao vivo em Juniper, NetScreen e F5, num integrador. É a parte da indústria que [o caminho que um produto percorre](/learn/the-path-a-product-takes) descreve: o mesmo objeto parece diferente do fabricante, do integrador e do cliente, e eu já tinha visto dois dos três.
+
+**Da distribuição, 2018 a 2019.** Aí já era Pulse Secure, no portfólio de um distribuidor, e meu trabalho era arquitetar desenhos de acesso remoto em torno do Pulse Connect Secure, rodar demonstrações e provas de conceito, e capacitar parceiros de canal. O Policy Secure trazia a conversa de controle de acesso à rede para a mesma plataforma. O trabalho do distribuidor era fazer os dois fazerem sentido em redes corporativas brasileiras — dimensionamento, pontos de integração e os limites honestos.
+
+Três cadeiras, uma linha de produto, dez anos entre os extremos. E em todas elas o que eu explicava era a mesma coisa: ponha uma caixa na borda, deixe a internet inteira alcançá-la, e deixe sua força de trabalho entrar por ela.
+
+## O formato, não o fabricante
+
+A linha continua hoje como Ivanti Connect Secure, e a categoria a que pertence é a do artigo [o SSL VPN está sendo desmontado](/learn/the-ssl-vpn-is-being-dismantled). Quero ter cuidado aqui, porque a versão fácil deste texto é barata, e também seria errada.
+
+A versão fácil diz: o produto piorou, ou o fabricante ficou descuidado. Não é esse o argumento, e o artigo faz um melhor. Tire a marca e um concentrador SSL VPN é um objeto específico e incômodo — um ouvinte não autenticado na porta TCP 443, que precisa ser alcançável pela internet inteira, que termina TLS, que interpreta entrada controlada pelo atacante através de uma pilha HTTP e frequentemente de uma aplicação web, muitas vezes rodando com privilégio alto, e que fica dentro do dispositivo que também é a fronteira de segurança.
+
+Cada uma dessas propriedades é estrutural, e nenhuma é erro de fabricante. São a definição da categoria. É por isso que o mesmo formato de vulnerabilidade se repete em produtos de fabricantes sem relação entre si, que é a observação que deveria encerrar a discussão sobre quem tem a melhor engenharia.
+
+Três consequências decorrem, e a primeira é a que eu gostaria de ter entendido antes: **alcançabilidade pré-autenticação torna irrelevantes os controles de autenticação.** Uma falha no código que interpreta a requisição antes de as credenciais serem checadas não é ajudada por múltiplo fator, autenticação por certificado ou provedor de identidade. Esses controles protegem a sessão. A falha está na porta.
+
+Passei anos em salas explicando como autenticar bem as pessoas nesses appliances. Aquele trabalho não foi desperdiçado — as sessões ficavam de fato mais protegidas. Mas cada um daqueles controles ficava atrás de uma porta que precisava estar aberta para todos a fim de estar aberta para alguém, e nenhum cuidado com quem atravessa a porta ajuda se o problema é a porta.
+
+## O que a trajetória mostra
+
+O que tiro de ter acompanhado uma linha de produto por duas décadas de três lados.
+
+**Não era um produto ruim.** O Instant Virtual Extranet foi invenção de verdade. Fazer acesso remoto funcionar pelo navegador, sem nada a instalar, resolvia um problema real e caro, e é por isso que a categoria existiu. Toda empresa que comprou a linha comprou porque ela funcionava.
+
+**O contexto se moveu por baixo dela.** Em 2003, "alcançável pela internet" descrevia um punhado de serviços no parque de uma empresa e o modelo de ameaça era uma pessoa escolhendo alvos. Vinte anos depois tudo é alcançável, a varredura é contínua e automatizada, e o intervalo entre uma falha ficar conhecida e ser explorada em escala se mede em horas. O appliance mudou muito menos do que o mundo em que ele fica.
+
+**Obsolescência raramente é o produto piorar.** O [artigo sobre obsolescência](/learn/obsolescence) faz esse ponto em geral e esta linha é um caso específico: um projeto pode estar inteiramente correto para as suas condições e ficar errado quando as condições mudam, sem que uma linha dele tenha sido mal escrita.
+
+**E o substituto não é automaticamente um conserto.** O que sucede esta categoria é em linhas gerais o acesso de confiança zero — intermediado, por aplicação, ciente de identidade — e ele de fato remove a porta sempre aberta. Também move a confiança para dentro de um serviço, em geral de outra pessoa, e a leitura honesta dessa troca está em [confiança zero sem o marketing](/learn/zero-trust-ztna-and-sase-without-the-marketing). Um formato diferente tem modos de falha diferentes, não nenhum.
+
+## Por que estou registrando isto
+
+Em parte porque tenho um ponto de vista peculiar sobre o assunto, e pontos de vista expiram. Não há muita gente que demonstrou esta linha de produto para empresas brasileiras sob dois donos diferentes com uma década de intervalo, e em dez anos não haverá ninguém que lembre o que era a série SA.
+
+Mas principalmente porque o padrão se generaliza, e é o que eu gostaria que um aluno levasse, mais do que qualquer fato sobre um appliance específico. **Quando uma classe de produto insiste em produzir a mesma classe de falha em fabricantes sem relação, o problema é o formato e não a engenharia.** Olhe o que a categoria exige para existir — o que precisa ser alcançável, o que precisa interpretar entrada não confiável, o que precisa rodar privilegiado, o que guarda as chaves — e você prevê onde ela vai falhar antes de alguém achar o bug específico.
+
+Isso é uma habilidade mais útil que conhecer os boletins deste ano, e ela sobrevive ao produto. O que, considerando que este já sobreviveu a quatro dos seus cinco donos, parece a coisa certa a se tirar dele.

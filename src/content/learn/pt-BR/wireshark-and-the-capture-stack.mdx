@@ -1,0 +1,64 @@
+---
+slug: wireshark-and-the-capture-stack
+title: "Wireshark: a ferramenta que tornou os pacotes legíveis, e a pilha por baixo dela"
+summary: "Em julho de 1998 um engenheiro de redes de um provedor pequeno de Kansas City anunciou um programa que escrevera porque os analisadores comerciais custavam mil e quinhentos dólares e não rodavam nas plataformas dele. Em dias, desconhecidos mandavam correções. Perdeu o próprio nome para uma marca registrada em 2006, sobreviveu a três patrocinadores corporativos, e é a razão de um profissional conseguir ler um protocolo que nunca viu."
+concepts: ["wireshark", "ethereal", "tcpdump", "libpcap", "bpf", "packet capture", "dissector", "gerald combs"]
+relatedTools: []
+relatedArticles: ["capture-points-before-packets", "the-interception-tools", "the-rfc-series", "reading-a-bigip-capture"]
+category: security
+order: 119
+status: reviewed
+updated: "2026-09-08"
+---
+
+Os analisadores comerciais que o precederam, e os instrumentos que a profissão usava antes de o software conseguir enxergar o fio, estão na **[linhagem de teste e medição](/learn/test-measurement-family-history)**.
+
+## O anúncio
+
+Na noite de 14 de julho de 1998, Gerald Combs mandou uma mensagem para uma lista de desenvolvedores do GTK. Tem quatro frases e sobrevive, porque ele mesmo a republicou vinte e cinco anos depois:
+
+O Ethereal é um analisador de rede que permite capturar e navegar interativamente pelo conteúdo de quadros Ethernet. Os dados de pacote podem ser lidos de um arquivo ou ao vivo de uma interface de rede local. Comentários e correções são bem-vindos.
+
+Ele era formado em ciência da computação pela Universidade do Missouri em Kansas City e trabalhava num provedor de internet pequeno chamado Network Integration Services. Os analisadores de protocolo comerciais da época custavam uns mil e quinhentos dólares e não rodavam em Solaris nem em Linux, que eram o que o empregador dele usava - então, precisando da ferramenta e querendo aprender como as redes de fato se comportavam, ele escreveu uma. Ele disse depois que estava nervoso quanto à reação.
+
+Em poucos dias começaram a chegar correções, relatos de erro e incentivo de gente que ele nunca vira. Gilbert Ramirez contribuiu com um dissecador de baixo nível. Em outubro, Guy Harris - procurando algo melhor que a ferramenta que tinha - começou a mandar correções e dissecadores próprios. E no fim de 1998 Richard Sharpe, que dava cursos de TCP/IP, olhou o programa para ver se ele suportava os protocolos de que seus alunos precisavam. Não suportava, mas acrescentar protocolos novos era fácil, e essa única propriedade é a razão de o projeto ainda existir.
+
+## Por que a arquitetura importou mais que o programa
+
+Um analisador de protocolos precisa saber como interpretar bytes. Os produtos comerciais dos anos 1990 vinham com os protocolos que seu fabricante tinha implementado, e se você precisasse de um que eles não tinham, esperava ou pagava. Os dissecadores do Ethereal eram separados, autocontidos e passíveis de contribuição, então quem precisava de um protocolo decodificado podia acrescentá-lo - e quem mais precisava disso eram justamente as pessoas que estavam implementando o protocolo.
+
+É a mesma propriedade organizacional que a [série RFC](/learn/the-rfc-series) tem: qualquer um pode contribuir, nada exige permissão, e o artefato cresce na direção do que seus usuários de fato fazem. O Wireshark hoje disseca milhares de protocolos, inclusive proprietários e específicos de fabricante, e isso inclui o [trailer de captura do BIG-IP](/learn/reading-a-bigip-capture) sobre o qual este site tem um artigo - campos internos de diagnóstico de um fabricante, legíveis numa ferramenta aberta de uso geral, porque alguém escreveu o dissecador.
+
+## A pilha por baixo
+
+O Wireshark é a camada visível de quatro coisas, e um profissional deveria saber qual é qual, porque quando algo falha em geral não é a parte que tem interface gráfica.
+
+O **BPF**, o filtro de pacotes de Berkeley, é o mecanismo do núcleo que decide quais pacotes são copiados para um programa que escuta, avaliando um pequeno programa de filtro por pacote, de modo que os que você não pediu são descartados antes de custarem qualquer coisa. A **libpcap** é a biblioteca portátil que dá aos programas acesso a esse mecanismo e esconde as diferenças entre sistemas operacionais. O **tcpdump** é a ferramenta de captura de linha de comando construída sobre a libpcap, e a razão de a mesma sintaxe de filtro funcionar em toda parte. O **Wireshark** é o analisador: ele pode capturar, mas seu trabalho de verdade é interpretar um arquivo que outra coisa produziu.
+
+Essa divisão é a razão de o fluxo prático num equipamento de produção ser quase sempre capturar com tcpdump onde o tráfego está e analisar no Wireshark onde você está. E é também por que o [artigo sobre pontos de captura](/learn/capture-points-before-packets) discute posição antes de discutir ferramenta: o filtro que você escreve no núcleo determina o que existe, e nenhuma análise recupera um pacote que nunca foi copiado.
+
+## Perder o nome
+
+Em maio de 2006 Combs saiu da Network Integration Services para a CACE Technologies, juntando-se a Loris Degioanni - que, estudante na Itália, escrevera a WinPcap, a biblioteca de captura que permitiu ao Ethereal rodar no Windows em primeiro lugar. Combs detinha o direito autoral da maior parte do código e o resto era redistribuível sob a GPL, então o código foi com ele. A marca não: o nome Ethereal pertencia ao ex-empregador, e não se chegou a acordo. Então o projeto foi renomeado.
+
+O que ele disse a respeito é a parte que vale guardar, porque não é assim que essas histórias costumam ser: não houve briga, ele estava profundamente decepcionado com as marcas mas entendia a decisão, e continuava tendo todos lá em alta conta. Disse também que registraria o novo nome em seu próprio nome para que a situação não se repetisse. O Wireshark 1.0 chegou em 2008, dez anos depois do primeiro lançamento, junto com o primeiro SharkFest.
+
+O patrocínio então mudou três vezes - a Riverbed comprou a CACE em 2010, Combs foi para a Sysdig, e em 2023 o projeto passou para a Wireshark Foundation, uma organização sem fins lucrativos. O relato do próprio Degioanni sobre essa linhagem nomeia o que de fato foi construído: não um programa, mas uma pilha de captura de pacotes - Wireshark, tcpdump, libpcap e BPF - sobre a qual muito do trabalho posterior, inclusive o dele, se fundou.
+
+## O que isso significa para um profissional
+
+**Uma captura é evidência, e é também uma exposição.** Uma captura de pacotes de uma rede de produção contém credenciais nos protocolos que ainda as mandam, dados pessoais e o conteúdo de documentos de negócio. Deveria ser tratada como o artefato sensível que é: tomada com um filtro que a limite, guardada deliberadamente e apagada. É a mesma observação que o [artigo das ferramentas de interceptação](/learn/the-interception-tools) faz sobre proxies, e vale ainda mais aqui, porque um arquivo de captura sobrevive à sessão.
+
+**A cifragem mudou o que a captura responde, e não a tornou inútil.** O TLS significa que a carga não é legível, mas tempos, tamanhos, endereços, o aperto de mão e o certificado continuam - o que basta para responder à maioria das perguntas sobre se uma conexão foi estabelecida, o que foi negociado, onde falhou e quanto demorou. Quando a carga é realmente necessária, os caminhos honestos são um arquivo de registro de chaves de um navegador que você controla, ou a decifragem num equipamento que termina a sessão, e os dois deixam registro de uma decisão deliberada.
+
+**E a ferramenta é gratuita porque uma pessoa precisou dela e a deu de presente.** Os analisadores comerciais que Combs não podia pagar em 1997 desapareceram faz tempo. O que os substituiu é a coisa que ele escreveu para aprender, mantida por uma fundação, e ensinada em todo curso de redes, inclusive, muito provavelmente, naquele em que você sentou.
+
+## Fontes
+
+- [Gerald Combs, "Wireshark is 25", blog oficial do Wireshark, julho de 2023: o anúncio original do Ethereal 0.2.0 enviado em 14 de julho de 1998, reproduzido por inteiro, e a lembrança de estar nervoso e animado quanto à reação depois de passar meses construindo um analisador de protocolos de que precisava no trabalho](https://blog.wireshark.org/2023/07/wireshark-is-25/)
+- [Guia do usuário do Wireshark, breve história: no fim de 1997 Combs precisava de uma ferramenta para rastrear problemas de rede e queria aprender mais sobre redes; o Ethereal foi lançado em julho de 1998 como versão 0.2.0 e em dias chegaram correções, relatos de erro e palavras de incentivo; Gilbert Ramirez contribuiu com um dissecador de baixo nível, Guy Harris passou a contribuir em outubro de 1998, e Richard Sharpe, que dava cursos de TCP/IP, verificou que protocolos novos podiam ser acrescentados facilmente; o projeto foi renomeado em 2006, chegou à 1.0 em 2008 junto com o primeiro SharkFest, e passou para a Wireshark Foundation em 2023](https://www.wireshark.org/docs/wsug_html_chunked/ChIntroHistory.html)
+- [Wikipedia, Wireshark: Combs, formado em ciência da computação pela Universidade do Missouri em Kansas City, trabalhava num provedor de internet pequeno; os produtos comerciais de análise de protocolo custavam cerca de 1.500 dólares e não rodavam em Solaris e Linux; a marca Ethereal pertence à Network Integration Services, então, ao entrar na CACE Technologies em 2006, ele usou o repositório do Ethereal como base do Wireshark sob novo nome; a Riverbed comprou a CACE em 2010](https://en.wikipedia.org/wiki/Wireshark)
+- [Sobre a declaração do próprio Combs a respeito da marca: não houve briga, ele estava profundamente decepcionado com as marcas mas entendia a decisão e continuava tendo todos do ex-empregador em alta conta, e pretendia registrar o novo nome em seu próprio nome para evitar repetição](https://en-academic.com/dic.nsf/enwiki/2888498/)
+- [Loris Degioanni, sobre a união: a WinPcap, que ele desenvolveu como estudante universitário na Itália, foi usada para portar o Ethereal para Windows; Combs entrou na CACE Technologies dele em 2006, onde renomearam o Ethereal como Wireshark; o trabalho posterior dele foi fortemente inspirado pela pilha de captura de pacotes - Wireshark, tcpdump, libpcap, BPF - que ajudaram a definir](https://www.sysdig.com/blog/wireshark-creator-joins-sysdig)
+- [SDxCentral, 2023: o projeto começou em 1998 como Ethereal e foi rebatizado em 2006, seguindo o patrocínio corporativo conforme Combs mudava de emprego - a CACE até sua aquisição pela Riverbed em 2010, depois a Sysdig - antes de passar para a Wireshark Foundation sem fins lucrativos](https://www.sdxcentral.com/news/open-source-wireshark-network-protocol-analyzer-finally-gets-its-own-foundation/)
+- [DPI Consortium: em 2006 Combs contatou os autores do driver de captura WinPcap, Loris Degioanni e Gianluca Varenni, sobre melhorar a captura sem fio no Windows; as conversas levaram à entrada dele na CACE Technologies, ao adaptador sem fio AirPcap e à renomeação do projeto](https://dpiconsortium.org/history/ethereal/)

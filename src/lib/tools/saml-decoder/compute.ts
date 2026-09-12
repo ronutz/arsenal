@@ -610,7 +610,7 @@ function base64ToString(b64: string): string | null {
     if (bin.length > MAX_INPUT_BYTES) throw new SamlParseError("too-large");
     const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+    return new TextDecoder("utf-8", { fatal: false, ignoreBOM: false }).decode(bytes);
   } catch (e) {
     if (e instanceof SamlParseError) throw e;
     return null;

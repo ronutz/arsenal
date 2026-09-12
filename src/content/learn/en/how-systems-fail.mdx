@@ -1,0 +1,64 @@
+---
+slug: how-systems-fail
+title: "How systems fail: a reader's map to the cases in this catalogue"
+summary: "Nine failures, sorted not by industry or decade but by where the failure actually lived - in a safeguard someone removed, an assumption that expired, a rollback, a boundary between two organisations, a decision about what to say. Read as a set they stop being anecdotes and start being a checklist of the places to look."
+concepts: ["failure analysis", "root cause", "defence in depth", "assumptions", "boundaries", "alerting", "index"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "therac-25-and-defence-in-depth", "ariane-5-and-the-assumption-that-expired", "the-worm-era"]
+category: security
+order: 139
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Why sort them this way
+
+Failure stories are usually filed by industry - medical, aerospace, finance, networking - which is the least useful arrangement, because it implies the lessons stay in their sector. They do not. A radiation therapy machine from 1985 and a trading firm from 2012 failed for reasons that transfer directly to a network estate, and a reader who wants to *use* these cases needs them sorted by **where the fault actually lived**.
+
+That is what this page does. Each entry names the place, then the case that demonstrates it.
+
+## The failure was in a safeguard somebody removed
+
+The predecessor machine ran comparable faulty software and injured nobody, because it had mechanical interlocks that would not permit an unsafe state whatever the computer believed. Those interlocks were removed from the successor on the reasoning that software could do the job. **[Therac-25](/learn/therac-25-and-defence-in-depth)** is the case, and the question it leaves is the one to carry into any design review: what, in this system, is capable of contradicting the software?
+
+## The failure was in an assumption that expired
+
+The code was correct. It had flown successfully for years on the previous vehicle, where the value it computed always stayed in range. On the new vehicle it did not, and a conversion nobody had guarded overflowed. **[Ariane 5](/learn/ariane-5-and-the-assumption-that-expired)** is the case. The transferable question for anything inherited - a template, a rule set, a script - is not *does it work* but *what was true when this was written, and is it still true?*
+
+## The failure was at a boundary between two organisations
+
+One program produced impulse figures in one unit; the program consuming them expected another. Both were internally correct, an interface specification named the right convention, and nothing compared the specification with the traffic. **[Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary)** is the case, and its lesson is that a document stating the correct convention does not enforce it. Every handoff carries meaning that is not in the data - bits or bytes, local or UTC, prefix or mask, payload or frame.
+
+## The failure was in the restore, not the change
+
+Seven of eight servers received the new code. When engineers correctly diagnosed the eighth, they reverted everything to the previous version to regain consistency - and the previous version was where the defect lived. **[Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse)** is the case, and it produces a rule worth writing on a runbook: a rollback is a deployment. What am I going back to, and does it contain the thing that is hurting me?
+
+## The failure was in what got said, and when
+
+A minor arithmetic defect became the most famous recall in computing because the manufacturer found it, decided it did not qualify as an erratum, fixed it silently, and then asked affected customers to prove they were affected. **[The Pentium FDIV bug](/learn/the-pentium-fdiv-bug)** is the case. Its companion is **[RSA and DigiNotar](/learn/rsa-and-diginotar-2011)**, where one company left customers unable to tell what to do and the other revoked certificates in silence for a month while the fraudulent ones were used.
+
+## The failure was that nobody acted on the alert
+
+The detection product worked and raised alarms during the intrusion. **[Target](/learn/the-target-breach)** is the case where the technology did its job and the organisation did not - and [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse) is the same failure in miniature, with ninety-seven automated warnings naming the component ninety minutes before the market opened. A detection tool with no answer to *and then what happens* is a logging system with a marketing budget.
+
+## The failure was that the fix existed and was not applied
+
+Nine years of outbreaks, each with a patch published first - a month, six months, four weeks, and in one case an explicit written warning from the vendor that the flaw was wormable. **[The worm era](/learn/the-worm-era)** is the case, and **[EternalBlue, WannaCry and NotPetya](/learn/eternalblue-wannacry-notpetya)** is its sequel with the same arithmetic and larger numbers.
+
+## The failure was that there was nothing to fix
+
+No vulnerability, no patch, nothing broken. Devices working exactly as designed, reachable from the internet with the credentials printed in their manuals. **[Mirai](/learn/mirai-and-the-default-password)** is the case, and it is the catalogue's clearest externality: the party who could fix it was not the party who paid, which is why the eventual remedy was a law rather than a patch.
+
+## The failure was in a feature working correctly
+
+A component received a string and interpreted it exactly as documented, and the interpretation was code execution. **[Shellshock and Log4Shell](/learn/the-interpreter-problem)** is the case, and it is the class that automated testing is structurally blind to, because nothing crashes: the software behaves correctly, and correct behaviour is the exploit.
+
+## What the set says together
+
+Read individually these are stories. Read as a set they make an argument, and it is the one the [no-perfect-code](/learn/there-is-no-perfect-code) article states directly: **defects are not the interesting variable.** Every organisation here had them. What differed was whether anything could contradict the software, whether an assumption was ever re-checked, whether a boundary was verified, whether the restore path was reasoned about, whether an alert reached somebody, and what got said.
+
+None of those are engineering questions in the narrow sense. All of them are decisions that can be made before the incident, and none of them can be made during it.
+
+Two of these cases have a companion piece on the other half of the problem - not how the failure happened, but what happened between finding it and telling anyone. That is the subject of **[the disclosure record](/learn/the-disclosure-record)**.
+
+And the practices this whole set argues for, each paired with the case that demonstrates its absence, are collected in **[decided in advance](/learn/decided-in-advance)**.

@@ -20,6 +20,7 @@ import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
+import { AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
 import { getArticle, getAllArticleSlugs, getRelatedArticles, getArticleVendors } from "@/lib/learn";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
@@ -32,7 +33,17 @@ import SiteFooter from "@/components/SiteFooter";
 export function generateStaticParams() {
   const slugs = getAllArticleSlugs();
   // One entry per (locale, slug). Articles fall back to English content.
-  return routing.locales.flatMap((locale) =>
+  // Only where the content is AUTHORED. Elsewhere the Worker redirects to
+  // English rather than shipping an English page under a non-English URL -
+  // see AUTHORED_CONTENT_LOCALES in src/i18n/locales.ts for the arithmetic.
+  // Intersected with what is actually being routed: AUTHORED_CONTENT_LOCALES is
+  // a fact about the CONTENT, routing.locales is the set being BUILT, and the
+  // pages that should exist are the overlap. Without this a single-locale
+  // verification build still emitted the whole pt-BR corpus, and dropping a
+  // locale from LIVE_LOCALES would leave these routes generating for it.
+  return AUTHORED_CONTENT_LOCALES.filter((l) =>
+    (routing.locales as readonly string[]).includes(l)
+  ).flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug }))
   );
 }

@@ -2277,7 +2277,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CAB1.01",
             text: "Securing BIG-IP",
-            relatedArticles: ["bigip-packet-filters", "bigip-syn-flood-protection", "bigip-management-access-port-lockdown"],
+            relatedArticles: ["f5-ca-vs-retired-101-201", "bigip-packet-filters", "bigip-syn-flood-protection", "bigip-management-access-port-lockdown"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -8753,7 +8753,7 @@ export const studyGuides: StudyGuide[] = [
           {
             id: "F5CTSLTM1.01",
             text: "Determine whether or not an application can be deployed with only the LTM module provisioned",
-            relatedArticles: ["bigip-profiles-on-a-virtual-server", "ltm-virtual-server-types"],
+            relatedArticles: ["f5-cts-ltm-vs-retired-301a-301b", "bigip-profiles-on-a-virtual-server", "ltm-virtual-server-types"],
             relatedTools: [],
             manualLinks: [],
             keyPoints: [
@@ -15667,10 +15667,10 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "1.01",
         text: "Train your FortiDDoS to recognize your unique network patterns",
-        relatedArticles: [],
+        relatedArticles: ["fortiddos-detection-modes-and-mitigation", "fortiddos-policies-proxies-and-operations", "baselines-before-you-need-them"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        gap: false,
       },
       {
         id: "1.02",
@@ -16469,10 +16469,10 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "1.01",
         text: "Describe how to identify the attack surface",
-        relatedArticles: [],
+        relatedArticles: ["fortirecon-attack-surface-and-digital-risk", "f5xc-openapi-and-api-inventory"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        gap: false,
       },
       {
         id: "1.02",
@@ -18308,10 +18308,10 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "1.01",
         text: "4G/5G last-option links",
-        relatedArticles: [],
+        relatedArticles: ["fortigate-routing-and-sdwan-selection"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        gap: false,
       },
       {
         id: "1.02",
@@ -18789,10 +18789,10 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "4.01",
         text: "Internet of Things (IoT)",
-        relatedArticles: [],
+        relatedArticles: ["mirai-and-the-default-password"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        gap: false,
       },
       {
         id: "4.02",
@@ -19021,10 +19021,10 @@ export const studyGuides: StudyGuide[] = [
       {
         id: "1.01",
         text: "Archiving",
-        relatedArticles: [],
+        relatedArticles: ["fortimail-content-security-encryption-and-ibe"],
         relatedTools: [],
         manualLinks: [],
-        gap: true,
+        gap: false,
       },
       {
         id: "1.02",

@@ -1,0 +1,65 @@
+---
+slug: ariane-5-and-the-assumption-that-expired
+title: "Ariane 5: o código estava correto, e o mundo tinha mudado"
+summary: "Quarenta segundos depois do primeiro voo o foguete se destruiu. O software que o matou funcionava exatamente como escrito e voara com sucesso muitas vezes no modelo anterior. Ele calculava algo que não era necessário depois da decolagem, a partir de uma rotina que ninguém pensara em desligar, usando uma premissa que fora verdadeira de outro foguete."
+concepts: ["ariane 5", "integer overflow", "code reuse", "redundancy", "exception handling", "dead code", "assumptions", "verification"]
+relatedTools: []
+relatedArticles: ["therac-25-and-defence-in-depth", "the-interpreter-problem", "memory-safety", "there-is-no-perfect-code"]
+category: security
+order: 132
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Trinta e sete segundos
+
+Em 4 de junho de 1996, às 12h34 UTC, o primeiro Ariane 5 decolou de Kourou levando quatro satélites europeus de pesquisa. Cerca de trinta e sete segundos depois, a uns 3.700 metros, os dois sistemas de referência inercial falharam simultaneamente. Os bocais dos propulsores sólidos e depois o do motor principal giraram para posições extremas. O lançador guinou, alcançou um ângulo de ataque acima de vinte graus, e a carga aerodinâmica arrancou os propulsores do estágio central - o que corretamente acionou a autodestruição.
+
+A Agência Espacial Europeia e a agência espacial francesa nomearam uma comissão de inquérito presidida pelo matemático Jacques-Louis Lions. Ela relatou em seis semanas, tendo recuperado as duas unidades e lido sua memória, e estabeleceu a causa além de dúvida razoável.
+
+## A linha de código
+
+Dentro do sistema de referência inercial, um valor chamado viés horizontal - um indicador de precisão de alinhamento - era convertido de um número de ponto flutuante de 64 bits para um inteiro com sinal de 16 bits. Um inteiro com sinal de 16 bits guarda números até 32.767. O valor era maior. A conversão estourou, o software levantou uma exceção, e a unidade fez o que fora especificada para fazer diante de qualquer exceção detectada: parou.
+
+Cada elemento disso merece ser destrinchado, porque cada um é uma lição separada e todas se transferem.
+
+**O valor era maior porque era outro foguete.** A rotina vinha do Ariane 4, onde voara corretamente por anos. A trajetória inicial do Ariane 5 é mais agressiva e produz velocidades horizontais bem maiores, então um número que sempre ficara numa faixa estreita num veículo não ficou no outro. O código não estava errado. A premissa dele tinha vencido.
+
+**A conversão foi deliberadamente deixada sem proteção.** Várias outras conversões do mesmo sistema eram protegidas contra estouro. Esta não, porque os engenheiros tinham raciocinado que o valor jamais poderia ficar grande o bastante - o que era uma análise correta do Ariane 4 e foi levada adiante sem ser reexaminada.
+
+**A rotina nem deveria estar rodando.** A função de alinhamento a que pertencia servia a um propósito apenas *antes* da decolagem. Continuava operante depois, o que era inofensivo no Ariane 4 e fatal aqui. A primeira recomendação da comissão foi direta: desligar a função de alinhamento do sistema de referência inercial imediatamente após a decolagem. Software que não faz nada útil não é de graça; é um componente vivo que ainda pode falhar.
+
+**E a redundância piorou em vez de melhorar.** Duas unidades idênticas rodavam em paralelo, em espera quente, executando o mesmo software. A reserva recebeu a mesma entrada microssegundos depois e falhou do mesmo jeito. Redundância protege contra um componente quebrar; não protege contra nada quando os dois componentes compartilham um defeito de projeto. O [artigo do Therac-25](/learn/therac-25-and-defence-in-depth) faz o ponto inverso - um tipo *diferente* de proteção, em hardware, salvou a máquina anterior.
+
+**E o desligamento foi interpretado como dado.** Quando as unidades pararam, emitiram um padrão de bits de diagnóstico. O computador de voo o recebeu, não conseguiu distingui-lo de dados de voo, e comandou a direção de acordo. Um modo de falha projetado para ser seguro virou o mecanismo da destruição, porque nada rio abaixo fora construído para reconhecer "isto não é uma medição".
+
+## A frase do relatório
+
+A comissão escreveu algo que merece leitura lenta de quem constrói ou compra software, e é a razão de este artigo estar ao lado dos outros deste catálogo:
+
+> A exceção que ocorreu não se deveu a falha aleatória, e sim a um erro de projeto. A exceção foi detectada, mas tratada de forma inadequada porque se adotara a visão de que **o software deve ser considerado correto até que se demonstre estar em falta.**
+
+É o inverso exato da disciplina pela qual [Dijkstra argumentou a carreira inteira](/learn/dijkstra-and-the-twenty-minute-algorithm), e a comissão a nomeou como o tema subjacente: o programa era orientado a mitigar falha *aleatória* - a mentalidade de hardware, em que componentes se desgastam e você guarda um sobressalente - e importara essa premissa para o software, onde as falhas não são aleatórias. Uma segunda unidade idêntica protege contra um chip quebrado. Não protege contra uma linha de código errada para a missão.
+
+A comissão também constatou que as revisões e os testes, por extensos que fossem, não tinham coberto adequadamente o sistema de referência inercial nem o sistema completo de controle de voo, e que a função de alinhamento - a que não servia a propósito nenhum depois da decolagem - não fora incluída nas simulações.
+
+## O que um profissional deve tirar disso
+
+**Código reutilizado carrega suas premissas junto, e as premissas em geral não estão documentadas.** É a lição mais transferível do caso e não é um problema de foguetes. Um modelo de configuração escrito para um site, um conjunto de regras de firewall herdado de uma implantação menor, um script que supõe um número de interfaces, uma faixa de endereços ou uma taxa máxima de sessões - todos codificam um mundo, e o mundo se move. A pergunta a fazer a qualquer coisa herdada não é "isto funciona", e sim **"o que era verdade quando isto foi escrito, e continua sendo?"**
+
+**"Nunca pode ficar tão grande" é uma afirmação sobre o ambiente, não sobre o código.** Todo lugar em que esse raciocínio aparece é uma dependência de circunstâncias que ninguém está monitorando. Se a análise estiver certa, a verificação custa quase nada; se a análise vencer, a verificação é a única coisa ali de pé.
+
+**Redundância idêntica não é redundância.** Dois equipamentos iguais, rodando a mesma versão de firmware, alimentados com a mesma entrada, vão cometer o mesmo erro no mesmo instante. Vale lembrar quando um par de alta disponibilidade é apresentado como medida de resiliência: ele cobre falha de hardware e queda de energia, e não cobre nada de um push de configuração ruim ou de um defeito de firmware, que chegam nas duas unidades.
+
+**E código morto não é inerte.** Qualquer coisa que ainda execute ainda é um componente. A rotina que já não serve, o serviço deixado ligado por causa de uma migração que terminou, a regra mantida porque remover parecia arriscado - cada uma é uma superfície viva, e a pergunta da [era dos worms](/learn/the-worm-era) sobre o que é alcançável vale para lógica tanto quanto para portas.
+
+## Fontes
+
+- [Agência Espacial Europeia, apresentação do relatório da comissão de inquérito: em 4 de junho de 1996 o voo inaugural terminou em falha cerca de 40 segundos após o início da sequência de voo, a uma altitude de cerca de 3.700 m; os dados de voo indicaram comportamento nominal até H0 + 36 segundos, falha simultânea dos dois sistemas de referência inercial, giro dos bocais dos dois propulsores sólidos e depois do motor Vulcain para posições extremas fazendo o lançador guinar abruptamente, e autodestruição corretamente acionada pela ruptura das ligações elétricas; as extensas revisões e testes realizados durante o programa de desenvolvimento não incluíram análise e teste adequados do sistema de referência inercial nem do sistema completo de controle de voo; a função de alinhamento do sistema de referência inercial, que servia a um propósito apenas antes da decolagem mas permanecia operante depois, não foi considerada nas simulações](https://www.esa.int/Newsroom/Press_Releases/Ariane_501_-_Presentation_of_Inquiry_Board_report)
+- [SIAM News, resumindo o relatório Lions: a comissão foi presidida por Jacques-Louis Lions, do Collège de France, e concluiu o trabalho em seis semanas; a exceção interna de software foi causada na execução de uma conversão de um número de ponto flutuante de 64 bits para um inteiro com sinal de 16 bits, sendo o valor de ponto flutuante maior do que se podia representar; o valor de BH era muito mais alto que o esperado porque a parte inicial da trajetória do Ariane 5 difere da do Ariane 4 e resulta em velocidades horizontais bem maiores; as duas unidades foram recuperadas e o contexto da falha determinado com precisão a partir da leitura de memória](https://people.computing.clemson.edu/~steve/Spiro/arianesiam.htm)
+- [Wikipedia, voo V88 do Ariane, citando o relatório oficial: lançamento em 4 de junho de 1996 às 12h34min06s UTC de Kourou ELA-3 levando a constelação Cluster, duração de 37 segundos; um tema subjacente no desenvolvimento do Ariane 5 é o viés para a mitigação de falha aleatória; o fornecedor do sistema de navegação inercial apenas seguia a especificação, que estipulava que, diante de qualquer exceção detectada, o processador deveria ser parado; a exceção que ocorreu não se deveu a falha aleatória, e sim a um erro de projeto, e foi detectada mas tratada de forma inadequada porque se adotara a visão de que o software deve ser considerado correto até que se demonstre estar em falta](https://en.wikipedia.org/wiki/Ariane_flight_V88)
+- [Universidade de Minnesota, sobre a aritmética: a causa foi um erro de software no sistema de referência inercial, especificamente um número de ponto flutuante de 64 bits relativo à velocidade horizontal do foguete em relação à plataforma convertido para um inteiro com sinal de 16 bits; o número era maior que 32.767, o maior inteiro armazenável num inteiro com sinal de 16 bits, e a conversão falhou](https://www-users.cse.umn.edu/~arnold/disasters/ariane.html)
+- [Notas de curso do Grinnell College, citando as recomendações da comissão: as especificações do software eram originalmente do Ariane 4 e não levavam em conta a aceleração do Ariane 5; a recomendação R1 era desligar a função de alinhamento do sistema de referência inercial imediatamente após a decolagem; sistemas redundantes ajudam pouco se os dois podem falhar do mesmo jeito; o sucesso de um sistema numa situação não garante seu sucesso em todas](https://rebelsky.cs.grinnell.edu/Courses/223/97F/Studies/ariane5.html)
+- [Sobre a conversão desprotegida e a redundância: nos voos do Ariane 4 o valor do viés de velocidade horizontal sempre ficava numa faixa estreita e segura, e na subida mais agressiva do Ariane 5 não ficou; ao contrário de várias outras conversões do mesmo sistema, esta não era protegida por tratamento de exceção, porque os engenheiros tinham raciocinado que a proteção era desnecessária já que o valor nunca poderia ficar tão grande; quando o estouro ocorreu a unidade se desligou exatamente como projetada, e a reserva, rodando o mesmo código nas mesmas condições, falhou quase em seguida; o computador de voo então recebeu um padrão de bits de diagnóstico e o interpretou como dados de guiagem válidos](https://mikefisher.substack.com/p/ariane-5s-reused-code-catastrophe)
+- [Sobre a decisão de reúso: o sucesso do Ariane 4 e as pressões de orçamento levaram à reutilização do software do Ariane 4 pela equipe do programa Ariane 5, incluindo seu sistema de navegação e bibliotecas de otimização de trajetória; a comissão usou dados de voo, observações ópticas, inspeção do material recuperado e revisão do código](https://medium.com/@bishr_tabbaa/crash-and-burn-a-short-story-of-ariane-5-flight-501-3a3c50e0e284)
+- [arXiv, sobre o projeto de tolerância a falhas: o sistema de referência inercial adotava um padrão simples de tolerância a falhas em hardware, com duas réplicas idênticas operando em paralelo em espera quente, executando o mesmo sistema de software, e portanto sem diversidade de projeto](https://arxiv.org/pdf/1605.02040)

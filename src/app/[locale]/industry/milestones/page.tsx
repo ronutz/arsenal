@@ -16,7 +16,7 @@
 
 import { setRequestLocale } from "next-intl/server";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";

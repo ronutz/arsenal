@@ -13,6 +13,8 @@ updated: "2026-08-10"
 
 Engineers who know BIG-IP often reach for iRules to express request-time logic, and then look for the same thing in F5XC - F5 Distributed Cloud and do not find it. XC service policies solve a large part of what iRules are used for, but the model is different enough that a direct translation helps.
 
+The full request path through the platform, of which this comparison is one step, is laid out in **[one request, end to end](/learn/f5-distributed-cloud-one-request-end-to-end)**.
+
 ## Procedural versus declarative
 
 An iRule is **procedural**. It hooks an event such as `HTTP_REQUEST`, then runs Tcl: you inspect `[HTTP::path]`, branch with `if`, and call `HTTP::respond` or `drop`. You control the flow.

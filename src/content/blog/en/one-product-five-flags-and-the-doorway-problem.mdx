@@ -1,0 +1,66 @@
+---
+slug: one-product-five-flags-and-the-doorway-problem
+title: "One product, five flags: what happened to the box I used to demonstrate"
+summary: "The appliance that invented clientless SSL VPN passed through five companies in twenty years. I worked with it at three of them — inside Juniper while Junos Pulse was taking shape, through the channel, and from the distribution side architecting it across Brazil. Under its fifth flag it belongs to the category the industry is now dismantling. That is not a story about a bad vendor. It is a story about a shape."
+author: "Rodolfo Nützmann"
+date: "2026-09-09"
+tags: ["security", "vpn", "career"]
+category: security
+status: reviewed
+updated: "2026-09-09"
+relatedArticles: ["the-ssl-vpn-is-being-dismantled", "obsolescence", "zero-trust-ztna-and-sase-without-the-marketing", "the-industry-from-inside"]
+image:
+    src: "/img/artefacts/juniper-f5-lab-stack.jpg"
+    alt: "A home lab stack of decommissioned network appliances: two F5 BIG-IP 3600 units, a Juniper SSG 20, two Juniper SSG 5 firewalls, two SRX210 gateways, a J2350 router, EX4200 and EX3200 switches, and an Enterasys N7 chassis underneath."
+    caption: "Part of the lab: the Juniper SSG firewalls are NetScreen's ScreenOS line under Juniper's name, and the SRX gateways are what replaced them. The SSL VPN appliance this post follows was a different product on the same acquisition - which is the point."
+---
+
+## Five flags
+
+Most products die with the company that made them. A few outlive several, and the ones that do are worth following, because what happens to them is a record of what the industry changed its mind about.
+
+The one I want to follow started as the Instant Virtual Extranet, built by Neoteris, and it is the appliance that defined clientless SSL VPN — a virtual private network reached through a browser, with no client to deploy. NetScreen acquired Neoteris in 2003. Juniper acquired NetScreen in 2004, and the line became the SA series and then Junos Pulse. Siris Capital carved the business out in 2014 as Pulse Secure. Ivanti closed its acquisition on 1 December 2020. The [full genealogy](/industry/chapters/pulse-secure) is on the career page; the short version is five flags over roughly twenty years, and the product kept working through all of them.
+
+I met it three times, from three different seats.
+
+## Three seats
+
+**Inside Juniper, 2009 to 2014.** Contracted through Professional Services for Brazil, advocating the newly introduced enterprise lines — the SRX secure gateways that grew out of NetScreen's technology, and the EX switches. Those were the years in which Junos Pulse took shape. I was working the [NetScreen lineage](/industry/chapters/netscreen-juniper) without thinking of it as a lineage; from inside, it was simply the product roadmap.
+
+**Through the channel, afterwards.** Configuration development, proof-of-concept and interoperability testing, live implementation and troubleshooting across Juniper, NetScreen and F5 at a systems integrator. This is the part of the industry the [path a product takes](/learn/the-path-a-product-takes) describes: the same object looks different from the vendor, the integrator and the customer, and I had now seen two of the three.
+
+**From distribution, 2018 to 2019.** By then it was Pulse Secure, in a distributor's portfolio, and my job was architecting remote-access designs around Pulse Connect Secure, running demonstrations and proof-of-concepts, and enabling channel partners. Policy Secure put the network-access-control conversation on the same platform. The distributor's job was making both make sense in Brazilian enterprise networks — sizing, integration points, and the honest limits.
+
+Three seats, one product line, ten years apart at the extremes. And in every one of them the thing I was explaining was the same thing: put a box at the edge, let the whole internet reach it, and let your workforce in through it.
+
+## The shape, not the vendor
+
+The line continues today as Ivanti Connect Secure, and the category it belongs to is the one the catalogue article [the SSL VPN is being dismantled](/learn/the-ssl-vpn-is-being-dismantled) is about. I want to be careful here, because the easy version of this post is a cheap one, and it would also be wrong.
+
+The easy version says: the product got worse, or the vendor got careless. That is not the argument, and the article makes the better one. Strip away the branding and an SSL-VPN concentrator is a specific and uncomfortable object — an unauthenticated listener on TCP 443, reachable from the entire internet, terminating TLS, parsing attacker-controlled input through an HTTP stack and frequently a web application, often running with high privilege, and sitting inside the device that is also the security boundary.
+
+Every one of those properties is load-bearing, and none of them is a vendor's mistake. They are the product category's definition. That is why the same shape of vulnerability keeps recurring across unrelated vendors' products, which is the observation that ought to end the argument about whose engineering is better.
+
+Three consequences follow, and the first is the one I wish I had understood earlier: **pre-authentication reachability makes authentication controls irrelevant.** A flaw in the code that parses a request before credentials are checked is not helped by multi-factor authentication, certificate authentication or an identity provider. Those controls protect the session. The flaw is in the doorway.
+
+I spent years in rooms explaining how to authenticate people into these appliances well. That work was not wasted — the sessions were genuinely better protected for it. But every one of those controls sat behind a door that had to be open to everyone in order to be open to anyone, and no amount of care about who walks through a door helps if the problem is in the door.
+
+## What the trajectory actually shows
+
+Here is what I take from having watched one product line for two decades from three sides.
+
+**It was not a bad product.** The Instant Virtual Extranet was a genuine invention. Getting remote access working through a browser, with nothing to install, solved a real and expensive problem, and it is why the category existed at all. Every company that bought the line bought it because it worked.
+
+**The context moved underneath it.** In 2003, "reachable from the internet" described a handful of services in a company's estate and the threat model was a person choosing targets. Twenty years later everything is reachable, scanning is continuous and automated, and the interval between a flaw becoming known and being exploited at scale is measured in hours. The appliance did not change nearly as much as the world it sits in.
+
+**Obsolescence is rarely about the product getting worse.** The [obsolescence article](/learn/obsolescence) makes this point in general and this line is a specific case: a design can be entirely correct for its conditions and become wrong when the conditions change, without a single line of it being poorly written.
+
+**And the replacement is not automatically a fix.** What follows this category is broadly zero-trust network access — brokered, per-application, identity-aware — and it does genuinely remove the always-open door. It also moves the trust into a service, usually somebody else's, and the honest reading of that trade is in [zero trust without the marketing](/learn/zero-trust-ztna-and-sase-without-the-marketing). A different shape has different failure modes, not none.
+
+## Why I am writing this down
+
+Partly because I have a peculiar vantage point on it and vantage points expire. There are not many people who demonstrated this product line to Brazilian enterprises under two different owners a decade apart, and in ten years there will be nobody who remembers what the SA series was.
+
+But mostly because the pattern generalises, and it is the thing I would want a student to take away rather than any fact about a particular appliance. **When a class of product keeps producing the same class of failure across unrelated vendors, the problem is the shape and not the engineering.** Look at what the category requires to exist — what has to be reachable, what has to parse untrusted input, what has to run privileged, what holds the keys — and you can predict where it will fail before anyone finds the specific bug.
+
+That is a more useful skill than knowing this year's advisories, and it survives the product. Which, given that this one has outlived four of its five owners, seems like the right thing to take from it.

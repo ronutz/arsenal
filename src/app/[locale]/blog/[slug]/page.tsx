@@ -102,6 +102,31 @@ export default async function BlogPostPage({
             </p>
             <p className="article-summary">{post.summary}</p>
 
+            {/* Optional illustration. Site policy: original art, or the
+                author's own photograph of an object he owns. Rendered above the
+                body because on this blog the picture is evidence for the piece
+                rather than decoration after it. */}
+            {post.image && (
+              <figure className="gloss-figure">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="gloss-figure-img"
+                  src={post.image.src}
+                  alt={post.image.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {(post.image.caption || post.image.credit) && (
+                  <figcaption className="gloss-figure-caption">
+                    {post.image.caption}
+                    {post.image.credit && (
+                      <span className="gloss-figure-credit">{post.image.credit}</span>
+                    )}
+                  </figcaption>
+                )}
+              </figure>
+            )}
+
             <div className="article-body">
               <MDXRemote
                 source={post.body}
@@ -114,6 +139,31 @@ export default async function BlogPostPage({
                 components={{ GlossaryTerm }}
               />
             </div>
+
+            {/* The closing illustration: what the piece leaves you looking at.
+                Carries a credit line because a third-party diagram under a
+                share-alike licence must name its author and licence on the
+                page, not only in the repository's metadata. */}
+            {post.imageEnd && (
+              <figure className="gloss-figure">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="gloss-figure-img"
+                  src={post.imageEnd.src}
+                  alt={post.imageEnd.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {(post.imageEnd.caption || post.imageEnd.credit) && (
+                  <figcaption className="gloss-figure-caption">
+                    {post.imageEnd.caption}
+                    {post.imageEnd.credit && (
+                      <span className="gloss-figure-credit">{post.imageEnd.credit}</span>
+                    )}
+                  </figcaption>
+                )}
+              </figure>
+            )}
 
             <MessageSlice namespaces={["share"]}>
               <div className="article-share">

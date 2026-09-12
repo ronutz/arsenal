@@ -1,0 +1,103 @@
+---
+slug: there-is-no-perfect-code
+title: "Não existe código perfeito: por que segurança é um relógio, não um código-fonte"
+summary: "Todo fornecedor relevante já lançou uma falha que facilitou uma invasão, e todos vão lançar de novo. O que separa as organizações não é a densidade de defeitos - é o tempo entre o comprometimento e a detecção, a detecção e a contenção, a contenção e uma correção definitiva, e a honestidade do que se diz no meio disso. Este é o argumento, com as evidências, e uma pergunta aberta sobre o que a IA faz com os dois lados do relógio."
+concepts: ["incident response", "disclosure", "detection", "containment", "patch management", "playbook", "vulnerability", "secure by design"]
+relatedTools: []
+relatedArticles: ["the-worm-era", "eternalblue-wannacry-notpetya", "rsa-and-diginotar-2011", "the-named-tls-attacks", "memory-safety"]
+category: security
+order: 115
+status: reviewed
+updated: "2026-09-08"
+---
+
+## A premissa que nenhum material de produto enuncia
+
+Leia material de fornecedor suficiente e uma promessa implícita aparece: compre isto e o problema está resolvido. Nunca é dita abertamente, porque ninguém que constrói software acredita nela. O que o registro de engenharia mostra, de forma consistente e em todo fornecedor grande o bastante para ter um, é que defeitos são lançados, que alguns deles são relevantes para segurança, e que uma fração é achada por alguém que não pretende reportar.
+
+Isso não é cinismo nem acusação. É o estado observável de uma indústria que escreve dezenas de milhões de linhas de código contra adversários que precisam acertar uma vez. A pergunta útil, portanto, não é *qual fornecedor não tem vulnerabilidades* - nenhum tem - mas **o que acontece nas horas e nos dias depois de uma ser achada**. Esse intervalo é mensurável, varia enormemente entre organizações, e é onde quase todo o estrago deste catálogo foi de fato decidido.
+
+## As evidências, em resumo
+
+Uma amostra, toda de avisos publicados e investigações públicas.
+
+A **F5** lançou uma pilha TLS (Transport Layer Security) vulnerável a uma técnica de ataque de dezenove anos, catalogada como CVE-2017-6168 e documentada no artigo K21905460 da própria empresa, ao lado de outros oito grandes fornecedores na mesma pesquisa - o artigo dos [ataques nomeados ao TLS](/learn/the-named-tls-attacks) tem o detalhe. A SSL-VPN da **Fortinet** (uma rede privada virtual alcançada por navegador ou agente sobre TLS) carregou uma cadeia de falhas exploradas do CVE-2018-13379 ao CVE-2024-21762. A **Palo Alto Networks** lançou uma falha de execução remota de código como root sem autenticação no GlobalProtect, CVE-2024-3400, explorada como dia zero. A linha ASA da **Cisco** foi comprometida por falhas encadeadas por um ator estatal. **Check Point**, **Citrix**, **Ivanti** e **SonicWall** lançaram, cada uma, uma falha de acesso remoto explorada antes ou em torno da divulgação. A **Microsoft** perdeu uma chave de assinatura que ainda não consegue explicar por inteiro, e o conselho de revisão chamou o resultado de uma cascata de erros evitáveis. A maior interrupção de armazenamento da **Amazon** começou com um erro de digitação num comando de runbook, e uma configuração equivocada de um cliente expôs cem milhões de registros. O **Google** foi invadido por um ator estatal na [Operação Aurora](/learn/moonlight-maze-titan-rain-aurora). A **Juniper** achou código não autorizado no ScreenOS que estava lá havia três anos.
+
+Os fornecedores nomeados aqui são os que têm avisos publicados, cronologias públicas e pesquisadores dispostos a escrever sobre elas, o que é sinal de maturidade e não de fraqueza. A lista não é um ranking e não está completa; um parágrafo comparável poderia ser escrito sobre Extreme Networks, HPE, Aruba e todo outro fabricante cujo equipamento valha a pena atacar. Todo fornecedor relevante já lançou uma falha que facilitou uma invasão, e, pela evidência de trinta anos, todos vão lançar de novo.
+
+Se isso é verdade - e é - então a pergunta sobre em qual fornecedor confiar precisa ser respondida de outro jeito.
+
+## O relógio
+
+O que difere entre organizações, e entre fornecedores, é uma sequência de intervalos. Cada um é mensurável. Cada um tem evidência neste catálogo.
+
+### Detecção: quanto tempo até alguém saber
+
+Este é o intervalo que decide o tamanho de todos os seguintes, e o registro não anima. A [Moonlight Maze](/learn/moonlight-maze-titan-rain-aurora) correu dois anos e foi achada por acaso. A [DigiNotar](/learn/rsa-and-diginotar-2011) foi achada por um cidadão comum fazendo uma pergunta num fórum. A [RSA](/learn/rsa-and-diginotar-2011) soube do alcance da própria invasão quando as defesas de um cliente pegaram o ataque seguinte. O código não autorizado do ScreenOS da Juniper estava no firmware desde agosto de 2012 e foi anunciado em dezembro de 2015.
+
+O caso Juniper carrega a versão mais dura do argumento, e quem acredita em testar até chegar à segurança deveria sentar com ele. O atacante mudou uma constante no gerador de números aleatórios do aparelho. Uma equipe de Illinois, Pensilvânia, Wisconsin e Califórnia estabeleceu depois que as versões modificadas produziam saída **criptograficamente indistinguível da saída das versões anteriores** - ou seja, nenhum teste, nenhuma medição e nenhuma quantidade de garantia de qualidade poderia ter detectado a mudança observando o comportamento do produto. O defeito era invisível por construção. A detecção teve de vir da leitura do código, e levou três anos.
+
+### Contenção: quanto tempo até parar de se espalhar
+
+O [NotPetya](/learn/eternalblue-wannacry-notpetya) alcançou toda máquina do parque da Maersk em menos de duas horas porque a rede era plana e as credenciais administrativas eram reutilizadas. A empresa sobreviveu porque uma queda de energia em Gana deixara um controlador de domínio desligado. Isso não é estratégia de contenção; é sorte, e o custo inteiro do incidente foi fixado naquela primeira hora.
+
+### Neutralização: corrigir não é expulsar
+
+O intervalo mais subestimado, e o que este catálogo não para de provar. Em abril de 2025 a Fortinet divulgou que atacantes que haviam explorado falhas anteriores tinham deixado um link simbólico entre o sistema de arquivos do usuário da SSL-VPN e o sistema de arquivos raiz do aparelho, e mantinham acesso de leitura a arquivos de configuração - inclusive credenciais - **depois de a vulnerabilidade ser corrigida**. A empresa disse com todas as letras que organizações que corrigiram prontamente ainda podiam estar afetadas se o aparelho tivesse sido comprometido antes. Os clientes da Ivanti acharam o mesmo formato numa versão pior: um web shell que sobreviveu a uma restauração de fábrica.
+
+A regra operacional que se segue é sem glamour e raramente seguida. Aplicar uma correção fecha a porta. Não remove quem entrou por ela, e não troca as credenciais que essa pessoa leu no caminho. Uma correção é o começo da resposta, não o fim.
+
+### Correção definitiva: quanto tempo até a classe do problema sumir
+
+A [era dos worms](/learn/the-worm-era) é a demonstração. Nove anos de surtos, cada um com correção disponível antes - um mês para o Code Red, seis meses para o Slammer, quatro semanas e um aviso escrito explícito para o Conficker. O que acabou com a era não foi corrigir mais rápido. Foram três mudanças estruturais: firewall ligado por padrão, atualização automática como padrão em vez de opção, e macros que perguntam antes de rodar. Cada uma removeu uma classe de exposição em vez de uma instância, e cada uma era entediante.
+
+### Comunicação: o que se diz, e quando
+
+Este é o intervalo que os profissionais sistematicamente subvalorizam, e é o que determina quanto do estrago cai sobre todos os outros. A queixa de Steven Bellovin durante a invasão da RSA continua sendo a formulação mais clara: os clientes não sabiam se deviam trocar tokens, mudar PINs ou isolar seus servidores administrativos, porque não lhes disseram o que fora levado. A DigiNotar começou a revogar certificados em 19 de julho de 2011 e nada disse publicamente por mais de um mês, enquanto os certificados fraudulentos eram usados contra umas 300 mil pessoas. A Microsoft deixou um post-mortem incorreto publicado por seis meses. A Fujitsu reteve, por uma década, a evidência que teria inocentado pessoas processadas.
+
+Contra esses, o contraexemplo: a Juniper anunciou código não autorizado no próprio firmware, publicou as versões afetadas e lançou correções - e foi amplamente elogiada na indústria por isso, embora a divulgação fosse a coisa mais danosa que um fabricante de rede pode dizer sobre si mesmo. Em seis horas depois de a correção ser pública, pesquisadores extraíram a senha da porta dos fundos comparando binários. É a troca que todo fornecedor enfrenta: divulgar entrega um mapa ao atacante, e não divulgar entrega tempo a ele. O registro deste catálogo é que o tempo vale mais.
+
+## O que isso significa ao escolher um fornecedor
+
+Se todo fornecedor lança falhas, a pergunta de compra muda de *este produto já teve vulnerabilidades* para um conjunto de perguntas com respostas verificáveis:
+
+- **Com que rapidez publicam, e quão específico é o aviso?** Versões afetadas, indicadores de comprometimento e o que fazer se você já foi explorado - ou um parágrafo de tranquilização?
+- **Dizem como checar se você foi atingido antes da correção?** A Fortinet disse, no caso do link simbólico. A maioria não diz.
+- **Qual é o histórico deles no segundo aviso** - o que corrige o primeiro? Os CVEs subsequentes da Ivanti sugeriram que a superfície de ataque não era plenamente entendida nem pelo fabricante, o que é mais útil saber do que a contagem de CVEs.
+- **A função de segurança é alcançável?** Um contato nomeado, uma política de divulgação coordenada, um programa de recompensas que paga.
+
+E, simetricamente, as mesmas perguntas sobre a sua organização. A maioria não sabe dizer seu tempo médio de detecção. Quase nenhuma ensaiou o passo de contenção. Pouquíssimas têm uma regra escrita de quem diz o quê, a quem, em quantas horas - que é justamente a coisa que será improvisada, mal, às três da manhã, se não tiver sido escrita à luz do dia.
+
+## O playbook é o produto
+
+A razão de escrever procedimentos de incidente não é conformidade. É que os intervalos acima são comprimidos por decisões que já foram tomadas. Quem pode desconectar um segmento de produção sem esperar aprovação. Quais credenciais são trocadas automaticamente quando um aparelho é suspeito. Quem liga para o cliente, e o que essa pessoa pode dizer antes de a investigação terminar. Onde fica a cópia offline da configuração. Se alguém já testou restaurá-la.
+
+Nada disso é código, e nada disso se compra. É a diferença entre a organização que perde um fim de semana e a que perde um trimestre.
+
+## Onde está a evidência disto
+
+As afirmações acima não são asserções; cada uma vem de um caso descrito neste catálogo. Duas páginas companheiras as reúnem para que possam ser lidas como conjunto e não achadas uma a uma: **[como os sistemas falham](/learn/how-systems-fail)** ordena os incidentes por onde a falha de fato morava - uma salvaguarda removida, uma premissa vencida, uma fronteira, um rollback, um alerta não lido - e **[o registro da divulgação](/learn/the-disclosure-record)** reúne os casos em que o intervalo entre saber e dizer decidiu o desfecho.
+
+## A pergunta em aberto: o que a inteligência artificial faz com o relógio
+
+Tudo acima foi escrito a partir de trinta anos de evidência. A posição honesta é que os próximos anos podem não se parecer com eles, e vale ser explícito sobre quais partes são incertas.
+
+O lado do atacante está ficando mais rápido de maneiras já visíveis: o intervalo entre uma correção sair e um exploit funcional existir vem encolhendo há anos, e a análise automatizada da diferença de uma correção - exatamente a técnica que a Fox-IT usou na Juniper em seis horas - é o tipo de trabalho que máquinas fazem bem. Se o tempo até a exploração se aproximar de zero, então uma defesa construída sobre janelas de correção não tem janela.
+
+O lado do defensor pode melhorar tanto quanto ou mais. Detecção de anomalias, correlação de registros e ler uma base de código grande em busca da classe de defeito que um revisor humano deixa passar são todos o mesmo tipo de problema. É perfeitamente possível que o intervalo de detecção - historicamente medido em meses - seja o que mais melhore.
+
+Qual dos dois anda mais rápido não é algo que se possa saber agora, e quem lhe disser o contrário está vendendo alguma coisa. Mas a conclusão estrutural sobrevive aos dois desfechos, e é esse o ponto deste artigo. Se a exploração acelerar, o tempo de resposta importa mais. Se a detecção melhorar, o tempo de resposta é o que converte a melhoria em resultado. Em nenhum dos futuros alguém lança código perfeito. O investimento que se paga em todo cenário é o mesmo que se pagou por trinta anos: saber antes, conter mais rápido, expulsar de verdade, corrigir a classe em vez da instância, e dizer a verdade cedo o bastante para que outras pessoas possam agir sobre ela.
+
+## Fontes
+
+- [Artigo K21905460 da F5 e o CVE-2017-6168, conforme catalogado: versões de BIG-IP com perfil Client SSL vulneráveis ao ataque adaptativo de texto cifrado escolhido](https://www.tenable.com/plugins/nessus/104687)
+- [USENIX Security 2018, a pesquisa ROBOT: a vulnerabilidade foi achada em quase um terço dos cem maiores domínios e em produtos de nove fabricantes, entre eles F5, Citrix, Radware, Palo Alto Networks, IBM e Cisco](https://www.usenix.org/conference/usenixsecurity18/presentation/bock)
+- [Fortinet, abril de 2025: atores que exploraram vulnerabilidades anteriores criaram um link simbólico entre o sistema de arquivos do usuário e o sistema de arquivos raiz numa pasta usada para servir arquivos de idioma da SSL-VPN, mantendo acesso de leitura aos arquivos de configuração, inclusive credenciais; organizações que corrigiram prontamente ainda podiam ser afetadas se o aparelho tivesse sido comprometido antes da remediação](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity)
+- [Wikipedia, ScreenOS: em dezembro de 2015 a Juniper anunciou código não autorizado presente desde agosto de 2012, criando duas portas dos fundos que permitiam controlar firewalls NetScreen sem correção e decifrar tráfego de rede; muitos na indústria de segurança elogiaram a Juniper por ser transparente sobre a invasão](https://en.wikipedia.org/wiki/ScreenOS)
+- [SecurityWeek, dezembro de 2015: o código não autorizado introduziu o CVE-2015-7755, acesso administrativo remoto por telnet ou SSH mediante uma senha padrão disfarçada de string de depuração, e o CVE-2015-7756, permitindo a um atacante que monitorasse tráfego VPN decifrá-lo; pesquisadores da Fox-IT acharam a senha em seis horas](https://www.securityweek.com/attackers-attempt-exploit-juniper-backdoor/)
+- [Checkoway et al., "A Systematic Analysis of the Juniper Dual EC Incident": as versões do ScreenOS contendo um parâmetro fornecido pelo atacante aparentemente produziam saída criptograficamente indistinguível da saída das versões anteriores, impedindo que qualquer teste ou medição descobrisse o problema; a mudança de 2012 se aproveitou da revisão de 2008 da aleatoriedade do ScreenOS, que introduziu o gerador Dual EC](https://hovav.net/ucsd/dist/juniper.pdf)
+- [Matthew Green, sobre a porta dos fundos da Juniper: a falha de autenticação era uma senha embutida em SSH e Telnet; a segunda vulnerabilidade, independente da primeira, permitia a um atacante informado que monitorasse tráfego VPN decifrá-lo, e a correção simplesmente restaurou o parâmetro Q original](https://blog.cryptographyengineering.com/2015/12/22/on-juniper-backdoor/)
+- [Steven Bellovin, maio de 2011: as organizações que dependiam do SecurID não sabiam se deviam trocar tokens, mudar PINs ou isolar servidores administrativos, porque não lhes disseram o que fora levado, e esse é o problema de verdade](https://www.cs.columbia.edu/%7Esmb/blog/2011-05/2011-05-28.html)
+- [ENISA, Operation Black Tulip: a DigiNotar não relatou imediatamente o ataque a clientes nem a autoridades, o que pôs em risco a segurança e a privacidade de milhões de cidadãos; relato imediato e resposta rápida teriam limitado consideravelmente o impacto](https://www.enisa.europa.eu/sites/default/files/all_files/Operation_Black_Tulip_v2.pdf)
+- [Help Net Security, um responsável da Microsoft sobre o Conficker dez anos depois: uma vez lançada a correção, torna-se possível a muito mais atacantes fazer engenharia reversa dela e descobrir a vulnerabilidade; a higiene de correções segue ruim, particularmente em órgãos públicos com máquinas antigas, e o WannaCry e o NotPetya só foram eficazes porque organizações não aplicaram uma correção conhecida havia um e dois meses](https://www.helpnetsecurity.com/2018/11/21/conficker/)
+- [Wired, sobre o NotPetya na Maersk: 4 mil servidores, 45 mil PCs e 2.500 aplicações perdidos, com o Active Directory recuperado apenas de um controlador de domínio deixado offline por uma queda de energia em Gana](https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/)

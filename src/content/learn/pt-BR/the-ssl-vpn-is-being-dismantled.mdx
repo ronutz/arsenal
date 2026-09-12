@@ -1,0 +1,85 @@
+---
+slug: the-ssl-vpn-is-being-dismantled
+title: "Por que a SSL-VPN está sendo desmontada, e o que de fato a substitui"
+summary: "O FortiOS 7.6.3 removeu o modo túnel da SSL VPN de todo FortiGate, e as configurações existentes não são migradas na atualização. Isso é fato verificado, com consequências operacionais reais. A afirmação de que todo fornecedor está abandonando a SSL-VPN é mais complicada, e a maior parte das cronologias em circulação é publicada por empresas que vendem a substituição. Aqui está o que está estabelecido, o que é inferência, e o que um profissional deve realmente fazer."
+concepts: ["ssl-vpn", "ipsec", "ztna", "sase", "remote access", "attack surface", "fortios", "globalprotect"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "ipsec-and-ike-fundamentals", "vpn-fundamentals", "zero-trust-ztna-and-sase-without-the-marketing", "the-named-tls-attacks"]
+category: security
+order: 116
+status: reviewed
+updated: "2026-09-08"
+---
+
+O que substituiu o equipamento de túnel completo no caso pequeno - e o que ele deliberadamente não faz - está em **[WireGuard, o túnel pequeno](/learn/wireguard-the-small-tunnel)**.
+
+## O fato, primeiro
+
+As notas de versão da própria Fortinet são inequívocas. **O FortiOS 7.6.3 remove por completo o modo túnel da SSL VPN (uma rede privada virtual carregada sobre TLS)** - não em modelos de entrada, não por camada de licença, mas de todo FortiGate, na interface gráfica e na linha de comando. A configuração existente de modo túnel **não é migrada** quando o firmware é atualizado, o que significa que uma atualização não planejada desconecta todo trabalhador remoto de uma vez e não há reversão das configurações. O modo web sobrevive sob novo nome, **Agentless VPN**, e ele próprio não é suportado em várias famílias de modelos atuais. A retirada começou antes nos modelos de 2 GB de memória, e a série G nunca o trouxe.
+
+Quem opera acesso remoto num FortiGate precisa desse parágrafo, e precisa dele antes de uma janela de manutenção, não durante. O resto deste artigo é sobre por que aconteceu e qual é o estado honesto do restante da indústria.
+
+## O que a Fortinet diz, e o que o registro diz
+
+As razões declaradas são razoáveis e majoritariamente técnicas: restrições de memória em equipamentos pequenos, aceleração do IPsec no silício da própria Fortinet, padronização numa só pilha de acesso remoto, e melhor integração com autenticação multifator e SAML. A substituição é o IPsec, que pode ser configurado para escutar na porta TCP 443 e assim atravessar as mesmas redes restritivas para as quais a SSL-VPN fora escolhida em primeiro lugar.
+
+A razão que o fabricante não põe numa nota de versão é o histórico de CVEs. A SSL-VPN da Fortinet carregou uma cadeia de falhas exploradas no mundo real: a CVE-2018-13379, uma travessia de diretório que expôs credenciais em texto claro em dezenas de milhares de aparelhos e que segue no catálogo de vulnerabilidades exploradas conhecidas do governo americano anos depois; a CVE-2022-42475, um estouro de heap no daemon da SSL-VPN usado contra aparelhos sem correção; a CVE-2023-27997, um estouro de heap pré-autenticação alcançável em todo aparelho com SSL-VPN, onde a autenticação multifator não era defesa porque a falha era alcançada antes da autenticação; e a CVE-2024-21762, uma escrita fora dos limites que entrou no mesmo catálogo em dias.
+
+E então o detalhe que importa mais que todos eles. Em abril de 2025 a Fortinet divulgou que atacantes que haviam explorado as falhas anteriores tinham deixado um **link simbólico entre o sistema de arquivos do usuário da SSL-VPN e o sistema de arquivos raiz do aparelho**, mantendo acesso de leitura a arquivos de configuração - inclusive credenciais - *depois de a vulnerabilidade ser corrigida*. A empresa afirmou com todas as letras que organizações que corrigiram prontamente ainda podiam estar afetadas se o aparelho tivesse sido comprometido antes. Remover o recurso remove a classe do problema de um jeito que corrigi-lo comprovadamente não removeu, que é o mesmo raciocínio que a [era dos worms](/learn/the-worm-era) registra por trás de ligar o firewall do Windows por padrão.
+
+## Por que esta classe de produto concentra risco
+
+Tire a marca e um concentrador SSL-VPN é um objeto específico e desconfortável: **um escutador sem autenticação na TCP 443, que precisa ser alcançável a partir da internet inteira, que termina TLS, interpreta entrada controlada pelo atacante por uma pilha HTTP e muitas vezes por uma aplicação web, frequentemente roda com privilégio alto, e fica dentro do aparelho que também é a fronteira de segurança.** Cada uma dessas propriedades sustenta peso, e juntas explicam por que o mesmo formato de vulnerabilidade se repete em produtos de fabricantes sem relação entre si.
+
+Três consequências se seguem.
+
+**Alcançabilidade pré-autenticação torna irrelevantes os controles de autenticação.** Uma falha no código que interpreta uma requisição antes de as credenciais serem checadas não é ajudada por autenticação multifator, autenticação por certificado ou um provedor de identidade. Esses controles protegem a sessão; a falha está na porta.
+
+**A camada web é uma superfície de ataque grande e complicada** que um túnel puramente criptográfico não tem. Interpretação de HTTP, cookies de sessão, manipulação de arquivos para pacotes de idioma e personalização de portal, e um portal voltado ao navegador são todos código que precisa estar correto.
+
+**E o concentrador é o lugar errado para falhar.** Ele guarda as credenciais, a configuração e a rota para dentro da rede, que é exatamente o que o caso do link simbólico da Fortinet mostra um atacante levando.
+
+## O IPsec é de fato mais seguro?
+
+Não automaticamente, e qualquer artigo que diga isso está vendendo alguma coisa. Implementações de IKE têm seu próprio histórico de falhas de interpretação e suas próprias vulnerabilidades exploradas, e uma implantação IPsec mal configurada, com chaves pré-compartilhadas e modo agressivo, é pior que uma SSL-VPN bem administrada.
+
+O que muda de verdade é o formato da exposição. Não há interpretador HTTP nem aplicação web no caminho pré-autenticação. O código que processa um pacote não autenticado é menor, mais antigo, mais escrutinado e faz menos coisas. O [artigo de IPsec e IKE](/learn/ipsec-and-ike-fundamentals) cobre a mecânica; o argumento de segurança aqui é estreito e vale enunciar com precisão: **uma superfície pré-autenticação menor é uma aposta melhor que uma maior, e é só isso.** Não é uma promessa.
+
+## Outros fornecedores estão abandonando? A resposta cuidadosa
+
+É aqui que o material disponível precisa ser lido com cuidado, porque boa parte do que circula em 2026 dizendo que "a SSL VPN morreu" é publicada por empresas que vendem plataformas de zero trust ou SASE (secure access service edge, borda de serviço de acesso seguro). O incentivo não torna as afirmações falsas, mas faz a versão forte merecer ceticismo, e um profissional interrogado sobre isso numa reunião deveria saber separar as partes.
+
+**O que está claramente estabelecido.** A Fortinet removeu o modo túnel, por fontes primárias. A série SMA 100 da SonicWall foi desativada no fim de outubro de 2025, em vez de apenas perder suporte, depois de exploração repetida. O Connect Secure da Ivanti - o antigo Pulse Secure, a SSL-VPN arquetípica - foi comprometido por dias zero encadeados cujo web shell sobreviveu a uma restauração de fábrica, e seus avisos seguintes indicaram que a superfície de ataque não era plenamente entendida nem pelo fabricante. A Microsoft descontinuou o DirectAccess e nomeou uma versão final do Windows Server que o inclui.
+
+**O que é ciclo de vida e não veredito.** O AnyConnect 4.x da Cisco chegou ao fim da manutenção de software em 2024 e várias famílias de hardware ASA 5500-X chegaram ou estão chegando ao último dia de suporte. Isso é uma geração de hardware e de cliente terminando num calendário normal; não é a Cisco declarando a tecnologia insegura, ainda que a pilha de acesso remoto do ASA certamente tenha tido suas falhas exploradas, inclusive um par encadeado no mundo real em 2025.
+
+**O que simplesmente não é verdade.** Ninguém parou de vender acesso remoto sobre TLS. A Palo Alto Networks segue desenvolvendo o GlobalProtect. A Fortinet manteve o modo web e o renomeou. Todo produto SASE e ZTNA (zero trust network access, acesso de rede zero trust) do mercado termina TLS vindo de um cliente num endpoint público - o que vale dizer em voz alta, porque um intermediário hospedado em nuvem com um escutador público tem a mesma propriedade arquitetural de um aparelho com um. O que muda é quem o opera, com que rapidez é corrigido, e se o escutador fica na frente da sua rede ou na frente de uma única aplicação.
+
+O resumo exato é mais estreito que a manchete: **a indústria está abandonando a SSL-VPN de túnel completo, terminada em aparelho e de nível de rede, como arquitetura padrão de acesso remoto.** Não está abandonando o TLS, e não está abandonando o acesso remoto.
+
+## O que substitui, e o que isso não resolve
+
+A substituição nomeada é o acesso de rede zero trust, e o [artigo sobre zero trust](/learn/zero-trust-ztna-and-sase-without-the-marketing) cobre o que o termo significa e o que não significa. A única propriedade que importa a este argumento é real: acesso intermediado por aplicação remove o escutador público permanente e deixa de conceder alcance de rede quando a autenticação dá certo. Um atacante que comprometa uma sessão ganha uma aplicação, não uma rota.
+
+Duas ressalvas honestas acompanham. O intermediário agora é o concentrador - um ponto único que autentica todo mundo, operado por outra pessoa, com seu próprio histórico de vulnerabilidades. E a migração não é uma troca: aplicações que presumem estar na rede corporativa, clientes pesados, e qualquer coisa que precise de conexões de entrada até o usuário exigem trabalho que a cronologia de marketing não inclui.
+
+## O que um profissional deve fazer
+
+1. **Descubra qual versão de firmware remove o recurso na sua plataforma, e planeje a migração deliberadamente.** No FortiGate é a 7.6.3, e as configurações não sobrevivem à atualização. Este é o item com data marcada.
+2. **Trate como comprometido, até checar, qualquer concentrador historicamente explorado**, e não como consertado por estar corrigido. Procure os indicadores específicos que o fabricante publicou - o link simbólico da Fortinet é um artefato nomeado e verificável - e troque toda credencial que o aparelho pudesse ler.
+3. **Reduza a alcançabilidade antes de rearquitetar.** Restringir a interface de gerência, geobloqueio e pôr o portal atrás de um proxy ciente de identidade compram tempo, e nenhum exige plataforma nova.
+4. **Mova o alvo de túnel completo para acesso por aplicação** onde as aplicações permitirem, e seja honesto no plano sobre as que não permitem.
+5. **Não trate a substituição como o fim do problema.** O argumento de que [não existe código perfeito](/learn/there-is-no-perfect-code) se aplica ao intermediário exatamente como se aplicava ao aparelho: o que vai importar é a rapidez com que você detecta, contém e expulsa, não o que dizia o folheto do produto.
+
+Os fornecedores nomeados aqui são os que têm avisos publicados, cronologias públicas e pesquisadores dispostos a escrever sobre elas, o que é sinal de maturidade e não de fraqueza. A lista não é um ranking e não está completa; um parágrafo comparável poderia ser escrito sobre todo fabricante cujo equipamento valha a pena atacar. Todo fornecedor relevante já lançou uma falha que facilitou uma invasão, e, pela evidência de trinta anos, todos vão lançar de novo - e é por isso que a discussão que importa não é sobre [código perfeito](/learn/there-is-no-perfect-code), mas sobre o relógio que começa a correr quando a próxima falha é achada.
+
+## Fontes
+
+- [Notas de versão do FortiOS 7.6.3 da Fortinet: o modo túnel da SSL VPN não é mais suportado e foi removido tanto da interface gráfica quanto da linha de comando, e as configurações de modo túnel não são levadas na atualização](https://docs.fortinet.com/document/fortigate/7.6.3/fortios-release-notes/236526/changes-in-behavior)
+- [Documentação da Fortinet sobre a substituição: o modo web da SSL VPN foi renomeado Agentless VPN, e a VPN IPsec pode ser configurada para usar a porta TCP 443](https://docs.fortinet.com/document/fortigate/7.6.4/administration-guide/580249/ipsec-vpn-with-tcp-443)
+- [PSIRT da Fortinet, abril de 2025: atores que exploraram vulnerabilidades anteriores criaram um link simbólico entre o sistema de arquivos do usuário e o raiz numa pasta usada para servir arquivos de idioma da SSL-VPN, mantendo acesso de leitura a arquivos de configuração inclusive credenciais; organizações que corrigiram prontamente ainda podiam estar afetadas se o aparelho tivesse sido comprometido antes da remediação](https://www.fortinet.com/blog/psirt-blogs/analysis-of-threat-actor-activity)
+- [Sobre a cadeia explorada: CVE-2018-13379, CVE-2022-42475, CVE-2023-27997 e CVE-2024-21762 na SSL-VPN da Fortinet, com a CVE-2024-21762 descrita como provavelmente já explorada na divulgação](https://www.channeldive.com/news/ssl-vpn-era-ends-cybersecurity-zero-trust-pcc/821765/)
+- [Sobre o Ivanti Connect Secure: CVE-2023-46805 e CVE-2024-21887 encadeadas para obter acesso de root, com persistência sobrevivendo a restaurações de fábrica](https://www.fusiontek.com/ssl-vpn-is-a-thing-of-the-past/)
+- [Levantamento de cronologias de fornecedores, publicado por um fornecedor de SASE e a ser lido com isso em mente: a Fortinet retirou a SSL VPN do FortiOS 7.6.3 com configurações não migradas; a SonicWall desativou toda a série SMA 100 em 31 de outubro de 2025 após exploração repetida; a Cisco está encerrando o suporte a modelos ASA 5500-X que rodam SSL VPN com prazos até agosto de 2026](https://jimber.io/blog/ssl-vpn-is-deprecated-every-vendors-timeline-and-what-replaces-it/)
+- [O mesmo publicador sobre o ciclo de vida da Cisco: o AnyConnect 4.x chegou ao fim da manutenção de software em 31 de março de 2024, com último dia de suporte em 31 de março de 2027; os ASA 5525-X, 5545-X e 5555-X chegaram ao último dia de suporte em 30 de setembro de 2025 e os 5506-X, 5508-X e 5516-X seguem em 31 de agosto de 2026; as CVE-2025-20333 e CVE-2025-20362 estão sendo encadeadas no mundo real](https://jimber.io/blog/cisco-anyconnect-replacement/)
+- [Sobre a posição da Microsoft e a lista mais ampla, mesmo publicador: o DirectAccess foi formalmente descontinuado em junho de 2024, com o Windows Server 2025 nomeado como a última versão a incluí-lo](https://jimber.io/blog/legacy-vpn-end-of-life-2026/)

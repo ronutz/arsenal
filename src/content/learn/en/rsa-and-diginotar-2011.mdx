@@ -1,0 +1,67 @@
+---
+slug: rsa-and-diginotar-2011
+title: "2011: the year the trust anchors broke"
+summary: "In March a spear-phishing email with an Excel attachment reached the company whose tokens guarded the world's defence contractors. In June a certificate authority trusted by every browser on earth was taken over, and issued 531 fraudulent certificates that were used to read the mail of some 300,000 Iranians. Both were found late, both were disclosed later still, and the second company no longer exists."
+concepts: ["rsa breach", "securid", "diginotar", "operation black tulip", "certificate authority", "pki", "spear phishing", "disclosure"]
+relatedTools: []
+relatedArticles: ["certificate-validation", "certificate-revocation", "the-named-tls-attacks", "the-crypto-wars"]
+category: security
+order: 112
+status: reviewed
+updated: "2026-09-07"
+---
+
+## Two anchors, one year
+
+Every security architecture rests on a small number of things assumed not to fail. Two of the largest are the authenticator that proves a person is who they claim, and the certificate authority that proves a server is what it claims. In 2011 one of each was compromised, four months apart, and the sequence is worth teaching because neither failed the way a practitioner would expect.
+
+Neither was broken cryptographically. One fell to an email; the other to a network with one password.
+
+## March 2011: RSA and SecurID
+
+On 3 March 2011 an employee of EMC, RSA's parent company, received a message reading, in substance, that a file was being forwarded for review. The attachment was a spreadsheet named "2011 Recruitment plan.xls". Opening it triggered a zero-day exploit in Adobe Flash, which installed a remote-access backdoor. The attackers then did what attackers do: took credentials from memory, used them to reach other machines, harvested more credentials including privileged ones, and worked their way to what they had come for - data relating to SecurID, the hardware token then used by some 40 million people at 25,000 client organisations to prove their identity when logging in.
+
+RSA called the intrusion an advanced persistent threat. Critics called it phishing. The most careful assessment came from Mikko Hyppönen of F-Secure, whose team recovered the original email: the message was not advanced and neither was the backdoor, but the exploit was, and because it was a zero-day, RSA could not have prevented it by patching. That distinction is the useful one, and it is uncomfortable in both directions - it refuses the comfort of "they should have patched" and equally the comfort of calling every intrusion sophisticated.
+
+The consequence arrived in May. Lockheed Martin - the largest supplier of information technology to the United States government - detected an attack on its remote access using information derived from the RSA breach. L-3 Communications reported a similar attempt; Northrop Grumman temporarily shut off remote access. On 6 June RSA confirmed what had been suspected for months and offered to replace tokens across its customer base, at a cost put at around 66 million dollars. The real targets had never been RSA or the contractors; they were the programmes the contractors worked on.
+
+The contemporaneous criticism that has aged best was not about the intrusion at all. Steven Bellovin wrote in May, before the confirmation, that the incident revealed the danger of companies not being open about security incidents: customers who depended on SecurID could not tell whether to get new tokens, change PINs or firewall their administrative servers, because they had not been told what had been taken. That, he said, was the real problem. It is the same finding the [Microsoft entry](/industry/microsoft) records about a post-mortem left uncorrected for six months, and the [Fujitsu entry](/industry/fujitsu) about a record withheld for a decade.
+
+## June to September 2011: DigiNotar
+
+DigiNotar was a Dutch certificate authority. Its root was trusted by every mainstream browser, and one of its intermediates issued certificates for PKIoverheid, the Dutch government's public key infrastructure - the certificates behind the country's electronic government services.
+
+Intruders were inside from around the middle of June. From 10 July they used that access to issue certificates: 531 fraudulent certificates for 344 domains, including Google, Skype, Mozilla's add-on site and Microsoft Update. DigiNotar began revoking on 19 July. It did not go public.
+
+It was found by a member of the public. On 27 August an Iranian Gmail user posted on a Google support forum asking whether what he was seeing was a man-in-the-middle attack on the certificate. It was. A rogue wildcard certificate for Google was being used, in Iran, to read mail.
+
+What Fox-IT then found, in a report published on 5 September and filed as an exhibit to a public securities filing, is a catalogue of failures that any auditor should have caught. All of the certificate authority servers sat in a single Windows domain, so one username and password reached all of them - and the password was weak enough to brute-force. The most critical servers carried malware that ordinary anti-virus software would have detected. Separation of critical components was absent or not working. The servers were physically in a secure room and reachable over the network. And the serial number of the rogue Google certificate did not appear in the company's own records, which meant nobody could say how many certificates had been issued: the only way to estimate the damage was to watch the revocation checks browsers make - the Online Certificate Status Protocol (OCSP) queries. Those checks showed about 300,000 unique addresses, ninety-nine per cent of them in Iran, consulting the status of the fraudulent Google certificate - which is to say roughly 300,000 people whose mail was being intercepted, for the best part of two months.
+
+DigiNotar had been audited annually against the European standard for certificate authorities.
+
+Browsers removed the root. Mozilla went further and added explicit distrust, because a removed root can still be honoured if cross-signed, and included the PKIoverheid intermediates that did not chain to DigiNotar's own root. The Dutch government had to take operational control of a private company's certificate business to keep the state's services running, and tell seventeen million citizens that the certificates behind their electronic government could not be trusted. Prosecutors opened an inquiry into whether the delay in disclosure amounted to criminal negligence. On 19 September 2011 DigiNotar filed for bankruptcy. Fingerprints deliberately left in the attack scripts matched those from the breach of Comodo, another certificate authority, in March of the same year.
+
+## What the pair teaches
+
+**The failure was never the cryptography.** RSA's algorithms were fine; SecurID's design was fine. DigiNotar's certificates were mathematically valid - that was the problem. Both were defeated through ordinary information-technology weaknesses: an email, a flat domain, a weak password, absent segmentation. The [named TLS attacks](/learn/the-named-tls-attacks) are about flaws in protocols; this pair is about everything around them, and the second category has produced more damage than the first.
+
+**A trust anchor's compromise is silent by construction.** A fraudulent certificate produces no error. A cloned token produces a successful login. Neither generates an alert, because both are the system working. That is why DigiNotar's own records could not answer the most basic question - how many certificates did you issue - and why the estimate had to be reconstructed from revocation traffic. If the [certificate revocation](/learn/certificate-revocation) machinery had not existed, nobody would have been able to count the victims at all.
+
+**Detection came from outside, in both cases.** RSA's breach became visible when Lockheed's defences caught the follow-on attack. DigiNotar's became visible when a user in Tehran asked a question on a forum. Neither organisation found its own intrusion, and both took a long time to say so once they knew - DigiNotar more than a month after it started revoking.
+
+**Disclosure timing is a security control.** This is the part practitioners under-weight. Both organisations had customers who could have acted - reissued tokens, pinned certificates, watched their own logs - and who could not, because they did not know. The engineering was already lost by then; what remained to be decided was how much the loss would cost everyone downstream, and that was decided by a communications choice.
+
+**And the audits passed.** DigiNotar was periodically assessed against the recognised standard for its industry while its certificate authority servers shared one password. Compliance measured what could be documented, and the thing that mattered - could one credential reach every signing server - was not in the checklist. That gap between a passed audit and a defensible network is the single most useful thing to take from 2011 into any conversation about a compliance regime.
+
+## Sources
+
+- [SecurityWeek, lessons from DigiNotar, Comodo and RSA: RSA described the breach as an advanced persistent threat while critics called it plain old phishing; the attackers used social engineering to research employees and sent spear-phishing email with an Excel file, "2011 Recruitment plan.xls", carrying a zero-day exploit that installed a backdoor through an Adobe Flash vulnerability](https://www.securityweek.com/lessons-learned-diginotar-comodo-and-rsa-breaches/amp/)
+- [NBC News, on F-Secure recovering the original email: sent to an EMC employee's inbox on 3 March 2011; Mikko Hyppönen's assessment that the email was not advanced and the backdoor was not advanced, but the exploit was, and because it was a zero-day RSA could not have protected itself by patching](https://www.nbcnews.com/news/amp/wbna44288954)
+- [NBC News, June 2011: RSA confirmed on 6 June that SecurID had been compromised in the March breach and that the stolen information had been used in an attempted attack on Lockheed Martin; executive chairman Arthur Coviello offered to replace tokens across most of the company's 25,000 client organisations](https://www.nbcnews.com/news/amp/wbna43320710)
+- [Steven Bellovin, 28 May 2011: the incident reveals the dangers of companies not being open about security incidents; organisations relying on SecurID could not tell whether to get new tokens, change PINs or firewall administrative servers, and that is the real problem](https://www.cs.columbia.edu/%7Esmb/blog/2011-05/2011-05-28.html)
+- [Fox-IT interim report, "Operation Black Tulip", 5 September 2011, filed as a public exhibit: the rogue certificate found by Google was issued by DigiNotar Public CA 2025 but its serial number was not in the CA system's records, so it is unknown how many certificates were issued without any record; OCSP responder requests were monitored to identify them](https://www.sec.gov/Archives/edgar/data/1044777/000119312511241796/dex992.htm)
+- [ENISA, Operation Black Tulip: DigiNotar's logs showed 300,000 OCSP requests from addresses in Iran, suggesting around 300,000 Iranian users were victims of man-in-the-middle attacks; the attack began in mid-June and false certificates were used for almost two months; DigiNotar did not immediately report the attack to customers or government authorities; it was audited yearly against the ETSI standard](https://www.enisa.europa.eu/sites/default/files/all_files/Operation_Black_Tulip_v2.pdf)
+- [IEEE Spectrum: 531 fraudulent certificates for 344 domain names; traces of the attack as early as 17 June, meaning it went undetected for over a month; Fox-IT found malware detectable by ordinary anti-virus on the most critical servers, separation of critical components absent, and CA servers reachable over the network despite a secure physical environment; Dutch prosecutors investigated possible criminal negligence over the slow disclosure](https://spectrum.ieee.org/diginotar-certificate-authority-breach-crashes-egovernment-in-the-netherlands)
+- [Journal of Strategic Security: the first indication was a worried Gmail user in Iran posting on a Google forum on 27 August 2011; all CA servers were in a single Windows domain reachable with one username and password, and that password did not resist brute force; DigiNotar filed for bankruptcy on 20 September 2011](https://digitalcommons.usf.edu/cgi/viewcontent.cgi?article=1246&context=jss)
+- [The Register, 6 September 2011: rogue certificates issued between 10 and 20 July for Google, Skype, Mozilla add-ons and Microsoft Update; DigiNotar began revoking on 19 July and waited more than a month to go public; fingerprints deliberately left in one script matched those from the Comodo breach of March 2011; a DigiNotar intermediate issued certificates for the Dutch government's PKIoverheid scheme](https://www.theregister.com/2011/09/06/diginotar_audit_damning_fail/)
+- [Mozilla security advisory 2011-35: explicit distrust added to the DigiNotar root and intermediates, because removing the root alone would leave certificates valid if cross-signed by another authority; the distrusted list includes the PKIoverheid intermediates that did not chain to DigiNotar's root](https://www.mozilla.org/en-US/security/advisories/mfsa2011-35/)

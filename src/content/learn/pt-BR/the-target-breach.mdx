@@ -1,0 +1,73 @@
+---
+slug: the-target-breach
+title: "Target, 2013: os alertas dispararam, e ninguém se moveu"
+summary: "Um empreiteiro de ar-condicionado na Pensilvânia abriu um e-mail de phishing. Seis semanas depois, um malware nos caixas de 1.797 lojas lia cartões de pagamento da memória durante as três semanas mais movimentadas do ano no varejo. A ferramenta de segurança detectou e alarmou enquanto acontecia. É essa a parte que vale ensinar, porque nada nesta invasão foi falha de tecnologia."
+concepts: ["target breach", "third-party access", "segmentation", "ram scraping", "blackpos", "alert fatigue", "pci dss", "supply chain attack"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "rsa-and-diginotar-2011", "eternalblue-wannacry-notpetya", "mirai-and-the-default-password"]
+category: security
+order: 123
+status: reviewed
+updated: "2026-09-08"
+---
+
+## O empreiteiro
+
+A Fazio Mechanical Services é uma empreiteira de aquecimento, ventilação e refrigeração em Sharpsburg, Pensilvânia. Como milhares de fornecedores de grandes varejistas, tinha acesso remoto aos sistemas do cliente - não a nada sensível, mas ao encanamento comum do negócio: faturamento, gestão de projetos, documentos de contrato, por um portal de fornecedores.
+
+Cerca de dois meses antes da invasão, alguém na Fazio abriu um e-mail de phishing. Ele instalou o Citadel, um programa conhecido de roubo de credenciais, e levou o login da empresa no portal. Um detalhe do noticiário merece ser lido devagar por quem administra uma empresa pequena ou assessora uma: a máquina rodava a versão **gratuita** de um antimalware respeitável. A versão gratuita varre quando o usuário manda. A paga varre em tempo real e muito provavelmente teria pegado um programa tão conhecido quanto o Citadel. A diferença entre as duas, neste caso, foram cem milhões de registros.
+
+## Do portal de faturamento aos caixas
+
+Com as credenciais do fornecedor, os atacantes estavam dentro da rede da Target. O que deveria tê-los parado ali é a segmentação - o princípio de que o portal de faturamento de um fornecedor não tem caminho até os sistemas que processam pagamentos. Essa separação não existia, e eles foram de um ao outro.
+
+Então implantaram uma versão sob medida do **BlackPOS**, também chamado de Kaptoxa: malware de raspagem de memória para terminais de ponto de venda. É a parte tecnicamente instrutiva, e explica por que a cifragem que todo mundo supõe existir não ajudou. Os dados de tarja de um cartão são cifrados quando armazenados e cifrados quando transmitidos, mas no instante em que o terminal autoriza a transação ele precisa manter os dados numa forma utilizável - texto claro, na memória, por uma fração de segundo. A raspagem de memória espera ali. Cifragem em repouso e em trânsito protege tudo, exceto o momento do uso, e o momento do uso é onde está o dinheiro.
+
+A coleta começou em 27 de novembro de 2013 - o início do fim de semana de compras de fim de ano nos Estados Unidos, o período de maior volume do ano no varejo - e correu até 15 de dezembro, em 1.797 lojas. Cerca de quarenta milhões de cartões foram levados, junto com os dados pessoais de setenta milhões de clientes. Os dados saíram da rede por transferência de arquivos para servidores de preparação.
+
+## Os alertas
+
+A Target tinha implantado um produto respeitado de detecção de malware. **Ele funcionou.** Durante a instalação do malware o sistema gerou alertas, e o relatório da equipe do Comitê de Comércio do Senado dos Estados Unidos registra que esses avisos não impediram a invasão. As reportagens indicam que os alertas foram vistos e não escalados a ninguém que agisse sobre eles.
+
+E a Target também não achou a invasão sozinha. Soube de fora - pela indústria de pagamentos notando transações suspeitas, e então publicamente quando Brian Krebs publicou em 18 de dezembro que a Target investigava uma invasão, com a empresa confirmando no dia seguinte. A essa altura os atacantes coletavam dados de cartão havia quase três semanas.
+
+As consequências foram institucionais. O custo total foi estimado acima de duzentos milhões de dólares em acordos, despesas diretas e vendas perdidas; o presidente executivo e o diretor de informação saíram.
+
+## Por que este artigo existe
+
+Todo outro incidente deste catálogo envolve algo quebrado. O [EternalBlue](/learn/eternalblue-wannacry-notpetya) era uma falha de protocolo. O [Mirai](/learn/mirai-and-the-default-password) era um padrão de fábrica. A [DigiNotar](/learn/rsa-and-diginotar-2011) era uma rede com uma senha. A Target é o caso em que a tecnologia fez o seu trabalho e a organização não fez o dela.
+
+Isso faz dela a evidência mais limpa do argumento de que [segurança é um relógio, não um código-fonte](/learn/there-is-no-perfect-code). A detecção aconteceu. Todo estágio seguinte falhou:
+
+- **Triagem** - alguém precisava decidir que o alerta importava, e a decisão foi para o lado errado.
+- **Escalonamento** - o achado precisava chegar a uma pessoa com autoridade para parar um sistema de pagamentos na quinzena mais movimentada do ano, e não chegou.
+- **Contenção** - não havia ação ensaiada a tomar, então não havia o que disparar.
+- **A distância entre detectar e saber** - três semanas, durante as quais o mecanismo funcionava e a resposta não.
+
+Uma ferramenta de detecção sem resposta para "e aí o que acontece" é um sistema de registro com orçamento de marketing. É exatamente por isso que o [argumento do playbook](/learn/there-is-no-perfect-code) trata de decisões tomadas de antemão: quem pode desconectar um segmento sem esperar aprovação, e para quem essa pessoa liga às duas da manhã do sábado depois do Dia de Ação de Graças.
+
+## A rota de cadeia de suprimento que isto representa
+
+A [taxonomia de cadeia de suprimento](/glossary/supply-chain-attack) as ordena por rota, e a Target é uma rota distinta que vale nomear com precisão. Nos casos da [3CX](/industry/3cx) e do MOVEit, o atacante comprometeu o **produto** de um fornecedor e ele os levou aos clientes. Aqui comprometeram o **acesso** de um fornecedor - sem produto, sem canal de atualização, sem código. Um empreiteiro com um login, e uma rede que tratava esse login como se pertencesse ao lado de dentro.
+
+A pergunta prática que se segue não é "confiamos neste fornecedor", mas uma mais estreita e respondível: **o que as credenciais deste fornecedor alcançam, e quem conferiu?** A maioria das organizações consegue listar seus fornecedores. Bem menos conseguem produzir, para cada um, o conjunto de sistemas que o acesso dele de fato toca - que é a auditoria que vale rodar depois de ler isto.
+
+## O que um profissional deve tirar disso
+
+**Acesso de terceiros é um problema de projeto de rede, não de compras.** Um questionário de fornecedor não cria uma fronteira. Um segmento separado, um host de salto, credenciais restritas a uma aplicação e um prazo para o acesso, sim.
+
+**Cifragem não cobre o momento do uso.** Qualquer coisa que precise processar dados os mantém em claro, brevemente, e é aí que vive o malware de raspagem de memória. A cifragem ponto a ponto e a tokenização, que tiram o texto claro do terminal do lojista por completo, existem por causa de invasões com este formato.
+
+**Um alerta sem ação é pior que nenhum alerta**, porque cria um registro de que a organização sabia. É um fato jurídico e reputacional tanto quanto técnico, e é a razão de o volume de alertas precisar ser gerido com o mesmo cuidado que a cobertura.
+
+**E passar numa auditoria não é o mesmo que ser defensável.** O [par de 2011](/learn/rsa-and-diginotar-2011) faz o mesmo ponto sobre uma autoridade certificadora auditada anualmente enquanto seus servidores dividiam uma senha. A conformidade mede o que pode ser documentado. Se um alerta chegaria a alguém que agisse sobre ele, às três da manhã em dezembro, não está em lista de verificação nenhuma - e foi isso que decidiu este caso.
+
+## Fontes
+
+- [Red River, resumindo o relatório da equipe do Comitê de Comércio do Senado dos Estados Unidos: os atacantes obtiveram acesso por credenciais da Fazio Mechanical Services, empreiteira de HVAC e refrigeração da Pensilvânia com acesso remoto para faturamento, gestão de projetos e contratos, e então se moveram por múltiplos sistemas internos; instalaram malware de raspagem de memória nos terminais de ponto de venda, capturando dados de pagamento enquanto temporariamente em texto claro na memória; uma versão sob medida do BlackPOS foi identificada; o sistema FireEye da Target gerou alertas durante a instalação do malware, mas esses avisos não impediram a invasão](https://redriver.com/security/target-data-breach)
+- [Dark Reading, fevereiro de 2014, sobre a reportagem de Brian Krebs: os investigadores suspeitam que os atacantes obtiveram acesso usando credenciais da Fazio Mechanical Services por um ataque de phishing ao menos dois meses antes do roubo dos cartões; o roubo começou em 27 de novembro, a Target confirmou a invasão em 15 de dezembro, e só em 18 de dezembro o malware foi totalmente removido e a exfiltração cessou](https://www.darkreading.com/cyberattacks-data-breaches/target-breach-phishing-attack-implicated)
+- [Portnox: os atacantes mandaram um e-mail de phishing a funcionários da Fazio e uma pessoa caiu; o notebook estava protegido pela versão gratuita do Malwarebytes, que varre quando o usuário manda, enquanto a versão paga tem varredura em tempo real que provavelmente teria pegado o Citadel, que era bem conhecido](https://www.portnox.com/blog/cyber-attacks/throwback-to-the-target-hack/)
+- [Estudo de caso no Medium: o e-mail de phishing foi enviado à Fazio cerca de dois meses antes e entregou o Citadel, um bot de roubo de senhas provavelmente embutido num documento; ele obteve as credenciais de login do portal de fornecedores, indicado como o sistema externo de faturamento Ariba da Target; o Comitê de Comércio do Senado concluiu em março de 2014 que a Target perdera oportunidades de impedir a invasão](https://medium.com/thedeephub/complete-case-study-target-data-breach-2-ba4bb365a82e)
+- [Akimbo Core: a história foi revelada por Brian Krebs em 18 de dezembro de 2013 num texto intitulado "Sources: Target investigating Data Breach", seguido do comunicado da própria Target em 19 de dezembro; a confirmação dizia que a invasão durou de 27 de novembro a 15 de dezembro e que cerca de 40 milhões de cartões haviam sido roubados](https://akimbocore.com/article/target-breach-2013/)
+- [Cronologia da Cloudskope: Citadel entregue por phishing ao empreiteiro de HVAC; credenciais do portal de fornecedores roubadas para o sistema Ariba; os atacantes pivotaram do portal para sistemas internos explorando a segmentação inadequada entre sistemas de fornecedor e de ponto de venda; BlackPOS implantado para raspar dados de Trilha 1 e Trilha 2 durante a autorização; alertas relatados como investigados mas não escalados para remediação; 40 milhões de registros de cartão e 70 milhões de registros de clientes exfiltrados](https://www.cloudskope.com/breaches/target-breach-2013)
+- [Breachsense: os atacantes se moveram lateralmente até alcançar os sistemas de ponto de venda de 1.797 lojas e capturaram dados de cartão por quase três semanas; a invasão não foi descoberta pela equipe da Target - um processador de pagamentos externo identificou transações suspeitas em meados de dezembro; o sistema FireEye sinalizou o malware e ninguém investigou; o custo total superou 200 milhões de dólares em acordos, despesas diretas e vendas perdidas, e tanto o presidente executivo quanto o diretor de informação renunciaram](https://www.breachsense.com/blog/target-data-breach/)

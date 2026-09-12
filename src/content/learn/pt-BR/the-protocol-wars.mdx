@@ -1,0 +1,75 @@
+---
+slug: the-protocol-wars
+title: "As guerras de protocolo: como o TCP/IP venceu contra a expectativa de todos"
+summary: "Todo governo, toda companhia telefônica, todo grande fabricante de computadores e o Departamento de Defesa dos Estados Unidos apoiavam o OSI. A especificação era mais completa, mais rigorosa e formalmente acordada pelos órgãos de normas do mundo. Perdeu para um conjunto de protocolos projetado por pós-graduandos e distribuído de graça, e a razão de ter perdido é a lição mais útil deste catálogo para quem escolhe uma tecnologia hoje."
+concepts: ["protocol wars", "osi", "tcp/ip", "gosip", "x.25", "decnet", "appletalk", "sna", "rough consensus"]
+relatedTools: []
+relatedArticles: ["osi-model-in-practice", "the-rfc-series", "bridge-switch-family-history"]
+category: security
+order: 110
+status: reviewed
+updated: "2026-09-07"
+---
+
+## A aposta que quase todo mundo perdeu
+
+Todo diagrama de rede em camadas que se mostra a um estudante começa com sete camadas, e quase toda rede do mundo roda quatro. Essa diferença é o resíduo de uma discussão de vinte anos em que o lado perdedor tinha, no papel, todas as vantagens.
+
+Em meados dos anos 1980 o Open Systems Interconnection (OSI) tinha o apoio da International Organization for Standardization e dos órgãos internacionais de telecomunicações; das operadoras de correios, telégrafos e telefones que então eram donas da maior parte dos fios do mundo; da IBM, da Digital Equipment Corporation, da Honeywell e de suas concorrentes; dos governos da França, da Alemanha Ocidental, do Reino Unido e da Comunidade Econômica Europeia; do Departamento de Comércio dos Estados Unidos; e do Departamento de Defesa dos Estados Unidos, que planejava sair do TCP/IP (Transmission Control Protocol / Internet Protocol) e migrar para ele. Milhares de engenheiros trabalharam nisso. A adoção mundial parecia inevitável.
+
+O outro lado era um conjunto de protocolos escrito em boa parte por pós-graduandos, especificado em documentos chamados [pedidos de comentários](/learn/the-rfc-series), financiado por uma agência de pesquisa e distribuído com o código-fonte.
+
+## O que veio antes dos dois
+
+A discussão não começou como OSI contra internet. Ao longo dos anos 1970 existiam várias respostas ao mesmo tempo. A IBM lançou a Systems Network Architecture em 1974 e a Digital lançou a DECnet, cada uma excelente e cada uma capaz de conectar apenas os equipamentos daquele fabricante - o que era, do ponto de vista do fabricante, uma qualidade. As companhias telefônicas, em colaboração internacional, produziram o X.25 em 1976 e construíram sobre ele redes públicas de dados com cobertura de fato global, na suposição de que rede de dados seria um serviço de operadora, como a telefonia, vendido por minuto e por pacote.
+
+O OSI foi a reação a tudo isso: uma tentativa de produzir uma arquitetura completa, neutra em relação a fabricantes e acordada internacionalmente, para que o equipamento de qualquer fabricante falasse com o de qualquer outro. O motivo era correto, o modelo era cuidadoso, e sua arquitetura de referência em sete camadas ainda é o vocabulário que a indústria ensina - que é a estranha vida após a morte que o [artigo sobre o modelo OSI](/learn/osi-model-in-practice) descreve: o mapa sobreviveu ao território para o qual foi desenhado.
+
+## Os mandatos
+
+Os governos não apenas preferiram o OSI. Eles o ordenaram.
+
+A Central Computer and Telecommunications Agency do Reino Unido publicou um perfil OSI governamental em 1988 e começou a trabalhar com França e Alemanha Ocidental num manual europeu comum de aquisições. Os Estados Unidos publicaram o seu como norma federal de processamento de informação, a FIPS 146, em agosto de 1988, reeditada como 146-1 em abril de 1991: as agências federais que comprassem equipamento de rede eram obrigadas a comprar OSI. Em 1988 o Departamento de Defesa adotou os protocolos OSI de correio e transferência de arquivos como conormas ao lado dos seus, designando-os experimentais "por causa da experiência operacional limitada atualmente disponível com os protocolos OSI".
+
+Essa última frase é a história inteira numa oração subordinada. O mandato existia; a experiência operacional, não.
+
+O que veio depois está documentado nos próprios arquivos da internet e vale citar pela secura. A RFC 1169 foi publicada para explicar o papel do GOSIP, e a explicação, como um participante resumiu numa lista pública, era esta: o GOSIP exigia que os compradores do governo comprassem OSI, mas não exigia que o usassem como meio primário ou único de comunicação. As agências compravam equipamento conforme para satisfazer a regra e rodavam TCP/IP em cima dele para trabalhar. Exceções eram concedidas com facilidade, sob o argumento de que implementações OSI de fabricantes diferentes não interoperavam de forma confiável entre si - que era a única coisa que o OSI existia para garantir.
+
+Em 1994 o mandato americano fora abrandado para permitir os protocolos da internet abertamente, e o perfil foi retirado.
+
+## Por que a especificação melhor perdeu
+
+Quatro razões, e nenhuma delas é que o OSI fosse mal projetado.
+
+**Foi especificado antes de ser implementado.** Os documentos OSI eram produzidos por comitês que buscavam acordo entre delegações nacionais e depois entregues aos fabricantes para construir. O TCP/IP foi construído primeiro e escrito depois; uma especificação que descreve código que funciona não pode conter um requisito que se revela impossível. Isto é o consenso aproximado e o código que roda da [IETF](/learn/the-rfc-series), enunciado como vantagem competitiva e não como lema.
+
+**Os documentos custavam dinheiro e o código não.** As normas ISO eram vendidas. As RFCs eram gratuitas para ler e gratuitas para implementar, e no começo dos anos 1980 uma pilha TCP/IP funcional vinha na distribuição Unix de Berkeley que as universidades já rodavam. Uma geração de engenheiros aprendeu redes na coisa gratuita porque era a coisa que estava na frente dela.
+
+**Sua própria abertura era processual e não prática.** O argumento do historiador Andrew Russell, que virou a leitura padrão, é que a tentativa da ISO de usar mecanismos democráticos formais de padronização internacional pode ter sido sua ruína: consenso entre comitês nacionais é lento, e os delegados que chegavam a esses comitês representavam os incumbentes - operadoras e fabricantes de mainframe, cujos interesses eram servidos por um projeto em que a rede era inteligente, administrada centralmente e faturável. O projeto da internet punha a inteligência nas bordas e supunha a rede burra, o que era pior para quem financiava o OSI e melhor para quem construía aplicações.
+
+**Estava respondendo à pergunta anterior.** O OSI foi arquitetado para um mundo de terminais, mainframes e enlaces fornecidos por operadora. Enquanto os comitês trabalhavam, a Ethernet chegou da Xerox e tornou a rede local barata, estações de trabalho substituíram terminais, e o problema interessante deixou de ser como conectar um terminal a um mainframe e passou a ser como conectar uma rede a outra. O TCP/IP fora projetado exatamente para esse segundo problema, porque fora construído para unir redes que já existiam e não eram iguais.
+
+O epitáfio pertence a Einar Stefferud, defensor da internet no período, que disse enquanto o projeto emperrava: o OSI é um sonho lindo, e o TCP/IP está vivendo esse sonho.
+
+## As pilhas que perderam, e para onde foram
+
+A **DECnet** rodou a computação técnica do mundo por uma década e chegou, na Fase V, a um projeto capaz de carregar tanto os próprios protocolos quanto os do OSI; perdeu seu mercado quando seu fabricante perdeu o dele. O **AppleTalk** fez algo que nenhuma outra pilha conseguiu, que foi funcionar sem nenhuma configuração - os dispositivos se achavam e se nomeavam sozinhos - e foi abandonado em favor do TCP/IP quando todo Mac passou a ter conexão com a internet, embora suas ideias de configuração zero tenham voltado como Bonjour e estejam em toda impressora e caixa de som de rede doméstica hoje. O **X.25** persistiu por décadas em redes bancárias e de ponto de venda e onde o contrato de uma operadora importava mais que a vazão. A **SNA** nunca morreu de fato; foi tunelada.
+
+Nenhuma delas foi derrotada tecnicamente. Cada uma perdeu uma base instalada, e as quatro razões acima são o motivo.
+
+## O que um profissional deve tirar disso
+
+A parte útil não é a história; é o formato da decisão, porque o mesmo formato se repete o tempo todo. Uma especificação mais completa, endossada por mais instituições, com mais fabricantes comprometidos, perdeu para algo mais barato, funcionando e livremente implementável - e o mandato que deveria encerrar a questão foi satisfeito no papel por compradores que faziam o oposto na prática.
+
+Quem já viu uma organização comprar uma plataforma estratégica e continuar rodando discretamente a coisa que funciona viu o mesmo evento em escala menor. Quando a pergunta é sobre qual de duas tecnologias construir, o número de instituições que endossam uma delas é evidência fraca. O que as pessoas já rodam, o que um engenheiro novo consegue aprender sem pedir permissão, e se a especificação descreve algo que existe são evidências fortes. Foi isso que as guerras de protocolo decidiram, e é por isso que a rede de que este site trata é a que venceu.
+
+## Fontes
+
+- [Wikipedia, Protocol Wars: o debate correu dos anos 1970 aos 1990 e culminou na guerra de normas Internet-OSI, vencida pelo TCP/IP em meados dos anos 1990; o X.25 veio em 1976 da colaboração entre operadoras, a SNA da IBM em 1974 e a DECnet da DEC como alternativas proprietárias; França, Alemanha Ocidental, Reino Unido, CEE e o Departamento de Comércio dos EUA exigiram conformidade com o OSI e o Departamento de Defesa planejava abandonar o TCP/IP](https://en.wikipedia.org/wiki/Protocol_Wars)
+- [Andrew Russell, "OSI: The Internet That Wasn't", IEEE Spectrum: milhares de engenheiros e formuladores de política estavam envolvidos e o OSI tinha apoio de empresas de computação, companhias telefônicas, reguladores, governos, órgãos de normas, pesquisadores e do Departamento de Defesa dos EUA; em meados dos anos 1980 a adoção mundial parecia inevitável; o "o OSI é um sonho lindo, e o TCP/IP está vivendo esse sonho" de Einar Stefferud](https://spectrum.ieee.org/computing/networks/osi-the-internet-that-wasnt)
+- [Wikipedia, Government Open Systems Interconnection Profile: a CCTA do Reino Unido publicou o GOSIP em 1988 e começou a trabalhar com França e Alemanha Ocidental num manual europeu de aquisições; a especificação americana exigindo protocolos OSI foi publicada como FIPS 146-1 em 1990](https://en.wikipedia.org/wiki/Government_Open_Systems_Interconnection_Profile)
+- [FIPS PUB 146-1, National Institute of Standards and Technology, 3 de abril de 1991: o Government Open Systems Interconnection Profile, substituindo a edição de agosto de 1988, como norma federal para protocolos de rede](https://nvlpubs.nist.gov/nistpubs/Legacy/FIPS/fipspub146-1.pdf)
+- [RFC 1039, a declaração do Departamento de Defesa: os protocolos OSI de tratamento de mensagens e transferência de arquivos e seus protocolos subjacentes definidos no GOSIP são adotados como conormas experimentais aos protocolos do DoD, designados experimentais por causa da experiência operacional limitada disponível com os protocolos OSI](https://www.ietf.org/rfc/rfc1039.html)
+- [Arquivo com-priv do MIT, sobre a RFC 1169 e o papel do GOSIP: o GOSIP exigia que compradores do governo comprassem OSI, mas não exigia que o usassem como meio único ou primário de comunicação](https://diswww.mit.edu/menelaus/com-priv/246)
+- [Sobre a falha prática do mandato: sistemas compatíveis com a internet recebiam exceções porque computadores conformes ao OSI de fabricantes diferentes não conseguiam se comunicar de forma confiável; o modelo do OSI estava fundado em computação de mainframe e infraestrutura de operadora e não acomodava a Ethernet nem a interligação de redes](https://scytaleprotocol.substack.com/p/net-arpa-didnt-invent-the-internet)
+- [Russell (2014), Open Standards and the Digital Age, conforme resumido na literatura posterior: a tentativa da ISO de usar mecanismos democráticos mais formalizados de padronização internacional pode ter sido sua ruína; a preferência do governo dos EUA pelo IP também afastou os mandatos europeus](https://arxiv.org/pdf/2601.14512)

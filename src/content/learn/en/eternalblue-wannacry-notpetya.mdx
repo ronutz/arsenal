@@ -1,0 +1,65 @@
+---
+slug: eternalblue-wannacry-notpetya
+title: "EternalBlue, WannaCry, NotPetya: the year a stolen exploit went to work for everyone"
+summary: "In April 2017 an anonymous group published a working NSA exploit for a protocol running on every Windows machine in the world. Microsoft had patched it a month earlier. Within eight weeks it powered the two costliest cyber incidents in history - one stopped by a researcher who registered a ten-dollar domain, the other unstoppable because it was never meant to be stopped."
+concepts: ["shadow brokers", "eternalblue", "wannacry", "notpetya", "smb", "ms17-010", "ransomware", "supply chain attack"]
+relatedTools: []
+relatedArticles: ["stuxnet-and-the-first-cyberweapon", "the-named-tls-attacks", "electronic-frontier-foundation"]
+category: security
+order: 108
+status: reviewed
+updated: "2026-09-07"
+---
+
+## The leak
+
+On 13 August 2016 an entity calling itself the Shadow Brokers announced it had stolen the tools of the Equation Group - the offensive unit inside the United States National Security Agency (NSA) - and would auction them. Nobody bid seriously. Over the following months the group published in instalments, taunting in broken English, and on 14 April 2017 released the file that mattered, under the title "Lost in Translation". It contained a working exploit, codenamed EternalBlue, for a flaw in Server Message Block version 1 (SMBv1), the file-sharing protocol that has been enabled by default on Windows since the 1990s.
+
+Who they were has never been established. What matters for the record is the timing. Microsoft had issued the patch, MS17-010, on 14 March 2017 - a month before the exploit was public - and had done so, in its own words, after information was received from a third party. The most credible public reading is that the NSA, knowing its tools were gone, told the vendor. That is the whole shape of the vulnerabilities-equities debate in a single sequence: an agency found a flaw in a protocol running on every Windows machine on earth, kept it for years to use it, and disclosed it only when it had been robbed. The patch existed for fifty-nine days before it mattered. Millions of machines did not have it.
+
+## WannaCry, 12 May 2017
+
+The first thing to use EternalBlue at scale was ransomware with a worm attached. It encrypted files, demanded 300 dollars in Bitcoin, and - unlike ordinary ransomware, which arrives by email and stays where it lands - scanned for other machines with port 445 open and infected them without anyone clicking anything. It reached an estimated 200,000 to 300,000 computers in more than 150 countries in a day. In England, 80 of 236 National Health Service trusts and nearly 600 general practices were disrupted; roughly 19,000 appointments and operations were cancelled; ambulances were diverted. Renault, Nissan, Telefónica, Deutsche Bahn and FedEx were hit.
+
+It stopped for an unusual reason. Marcus Hutchins, a 22-year-old British researcher, reverse-engineered the sample, noticed it queried a long unregistered domain before doing anything, and registered it for about ten dollars, expecting only to sink the traffic for analysis. The lookup was a kill switch: if the domain resolved, the malware exited. He had disabled the campaign by accident, in the sense that he had not known that was what he was doing, and by expertise, in the sense that nobody else had looked. His own reaction, published the next day, was titled "How to Accidentally Stop a Global Cyber Attack."
+
+Two things follow, and they belong together. The United States and the United Kingdom formally attributed WannaCry to North Korea in December 2017. And in August of the same year Hutchins was arrested in Las Vegas over malware he had written years earlier as a teenager; he pleaded guilty in 2019 and was sentenced to time served. The person who stopped the worst worm of the decade and the person prosecuted for writing banking malware were the same person, and both facts are true.
+
+## NotPetya, 27 June 2017
+
+Six weeks later something used EternalBlue again, and this one was not ransomware.
+
+It entered through the update mechanism of M.E.Doc, the accounting software that almost every company filing taxes in Ukraine is required to use, made by a small family firm called Linkos Group. Attackers had been inside that firm's servers for months. When the poisoned update went out, it landed simultaneously inside banks, ministries, the power grid, the airport, the metro, and the radiation monitors at Chernobyl - and inside every multinational with a Ukrainian office. This is route one of the [supply chain taxonomy](/glossary/supply-chain-attack) - own the supplier - executed against a country.
+
+Once inside a network it did not need EternalBlue to keep moving. It also used EternalRomance, and, more effectively, Mimikatz-style credential theft with the ordinary Windows administration tools PsExec and WMIC, which meant that a fully patched machine could be taken by an administrator's stolen credentials. Then it overwrote the master boot record. It displayed a ransom note, but the "installation key" was random data: there was no key, no decryption, and no way to pay for one. It was destruction dressed as extortion.
+
+The costs are what make it the entry it is. Maersk, which moves about a fifth of the world's shipping containers, lost 4,000 servers, 45,000 PCs and 2,500 applications, and rebuilt in ten days only because a power cut in Ghana had left one domain controller offline with the last surviving copy of its Active Directory; the loss was 250 to 300 million dollars. Merck's was about 870 million. FedEx's TNT unit, 400 million. Mondelez, Reckitt Benckiser, Saint-Gobain and Ukraine's own economy took the rest. In February 2018 the White House called it the most destructive and costly cyberattack in history, put the total near 10 billion dollars, and attributed it to the Russian military; the United Kingdom's National Cyber Security Centre said the same, naming the GRU.
+
+Then the insurers refused to pay. Mondelez's and Merck's policies excluded "hostile or warlike action by a government or sovereign power", and the insurers argued that a state-attributed attack was exactly that. Merck won at trial and on appeal in New Jersey in 2023, the court holding that the exclusion had always meant armed conflict and had never been rewritten for cyber operations; Mondelez settled. The war exclusion has since been rewritten across the market, and every cyber-insurance policy sold today is worded the way it is because of one Ukrainian tax program.
+
+## What a practitioner should take from it
+
+**SMBv1 was thirty years old and enabled by default.** Microsoft began disabling it in Windows 10 in 2017 and it is now off by default everywhere, but the reason it survived so long is the reason old things always survive: something, somewhere, still used it. The audit question is not whether SMBv1 is needed; it is which machine still speaks it, and the same question applies to every protocol left enabled for compatibility - which is the argument the [named TLS attacks](/learn/the-named-tls-attacks) make about export ciphers and SSL 2.0.
+
+**Patching is not the same as being patched.** MS17-010 was available for two months before WannaCry and three before NotPetya. The organisations that fell were not unaware; they were unable - because of a change window, an unsupported dependency, an embedded system nobody owned. The NHS was running Windows XP on medical equipment whose manufacturers had not certified anything newer.
+
+**A patched machine can still fall.** NotPetya's most effective propagation was credential theft plus legitimate administration tools. Flat networks and reused local administrator passwords turned one compromised host into a whole estate. Segmentation and unique local credentials would have limited it where patching could not.
+
+**The blast radius of an update channel is the whole customer base.** M.E.Doc is the same shape as the [3CX compromise](/industry/3cx), the [Trend Micro pattern file](/industry/trend-micro) and the XZ backdoor: the mechanism that keeps software current is the mechanism that can distribute anything, instantly, to everyone who trusts it.
+
+**And an exploit does not stay where it was made.** The NSA held EternalBlue for years on the judgement that its offensive value exceeded the risk of the flaw being found by someone else. The flaw was not found by someone else. The exploit was stolen, published, and used within eight weeks against hospitals, ports and power grids - by two different states, for two different purposes, neither of them the one it was written for.
+
+## Sources
+
+- [Wikipedia, EternalBlue: developed by the NSA, leaked by the Shadow Brokers on 14 April 2017 and used in WannaCry on 12 May and NotPetya on 27 June; Microsoft's MS17-010 of 14 March 2017 fixed the SMBv1 flaw, the company having been informed by a third party](https://en.wikipedia.org/wiki/EternalBlue)
+- [Wikipedia, WannaCry: the attack of 12 May 2017 hit more than 300,000 computers in 150 countries; Marcus Hutchins registered a domain found in the code that acted as a kill switch; in December 2017 the United States and United Kingdom formally attributed it to North Korea](https://en.wikipedia.org/wiki/WannaCry_ransomware_attack)
+- [The Guardian, May 2017: the NHS impact - 80 of 236 trusts and nearly 600 GP practices affected, ambulances diverted, operations cancelled](https://www.theguardian.com/society/2017/may/12/hospitals-across-england-hit-by-large-scale-cyber-attack)
+- [MalwareTech, "How to Accidentally Stop a Global Cyber Attack": Hutchins' own account of registering the domain during analysis and discovering it disabled the ransomware](https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html)
+- [Wikipedia, Marcus Hutchins: arrested in Las Vegas in August 2017 over the Kronos banking trojan written years earlier, pleaded guilty in 2019 and sentenced to time served](https://en.wikipedia.org/wiki/Marcus_Hutchins)
+- [Wikipedia, 2017 Petya cyberattack: the initial vector was a backdoored update to M.E.Doc, Ukrainian tax-accounting software; the malware used EternalBlue and EternalRomance and credential theft with PsExec and WMIC; the payment mechanism was fake and files could not be recovered](https://en.wikipedia.org/wiki/2017_Ukraine_ransomware_attacks)
+- [Wired, The Untold Story of NotPetya: Maersk lost 4,000 servers, 45,000 PCs and 2,500 applications and recovered its Active Directory only from a domain controller left offline by a power cut in Ghana; total damages around 10 billion dollars](https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/)
+- [White House statement, 15 February 2018: NotPetya was part of the Kremlin's ongoing effort to destabilise Ukraine, the most destructive and costly cyberattack in history, and will be met with international consequences](https://trumpwhitehouse.archives.gov/briefings-statements/statement-press-secretary-25/)
+- [UK National Cyber Security Centre, February 2018: the government judged the Russian military almost certainly responsible for the NotPetya attack of June 2017](https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack)
+- [Merck v. ACE American, New Jersey Appellate Division, May 2023: the "hostile or warlike action" exclusion did not apply to the NotPetya losses, the court holding that the wording had long been understood to mean armed conflict; Merck's claimed loss was about 1.4 billion dollars](https://law.justia.com/cases/new-jersey/appellate-division-published/2023/a-1879-21.html)
+- [Reuters, on the insurance aftermath: Mondelez settled its claim against Zurich in 2022; the disputes prompted a rewriting of war exclusions across the cyber-insurance market](https://www.reuters.com/legal/mondelez-zurich-insurance-settle-suit-over-notpetya-cyberattack-2022-11-01/)
+- [Microsoft, SMBv1 deprecation: the protocol is disabled by default from Windows 10 Fall Creators Update and Windows Server 2019 onward](https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3)

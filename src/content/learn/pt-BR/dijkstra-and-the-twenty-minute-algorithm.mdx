@@ -1,0 +1,70 @@
+---
+slug: dijkstra-and-the-twenty-minute-algorithm
+title: "Dijkstra: o algoritmo de vinte minutos que seus roteadores rodam todo dia"
+summary: "Em 1956 um físico de 26 anos sentou-se num terraço de café em Amsterdã com a noiva, não tinha caneta nem papel, e em uns vinte minutos resolveu o algoritmo do caminho mais curto. Fez isso porque precisava de uma demonstração que pessoas sem nenhum conhecimento de computadores conseguissem acompanhar. Setenta anos depois ele roda dentro de todo roteador OSPF (Open Shortest Path First) e IS-IS do planeta."
+concepts: ["dijkstra", "shortest path", "spf", "ospf", "is-is", "graph", "structured programming", "armac"]
+relatedTools: []
+relatedArticles: ["ospf-primer", "isis-primer", "the-rfc-series", "reflections-on-trusting-trust"]
+category: security
+order: 128
+status: reviewed
+updated: "2026-09-08"
+---
+
+## Por que um site de redes lhe deve um artigo
+
+Abra a tabela de roteamento de quase qualquer rede corporativa e algo no caminho foi decidido por um algoritmo publicado em 1959, num artigo de duas páginas, por um holandês que ainda não terminara o doutorado.
+
+Protocolos de roteamento por estado de enlace funcionam dando a todo roteador o mesmo mapa: cada um inunda a rede com a descrição dos próprios enlaces, todos montam um retrato idêntico da rede, e então cada roteador calcula de forma independente o melhor caminho de si mesmo até todo o resto. Esse último passo - o cálculo - é o algoritmo do caminho mais curto de Dijkstra, e é por isso que o processo se chama SPF, shortest path first - o nome sobrevive em OSPF, Open Shortest Path First - e por que o [primer de OSPF](/learn/ospf-primer) e o [primer de IS-IS](/learn/isis-primer) citam o nome dele de passagem. Este artigo é a parte que os dois deixam de fora.
+
+## O café
+
+Edsger Wybe Dijkstra nasceu em Roterdã em 1930 e estudou física teórica em Leiden, formando-se em 1956. Trabalhava no Centro Matemático de Amsterdã, que acabara de construir um computador novo chamado ARMAC e queria demonstrá-lo publicamente.
+
+Essa é a origem do algoritmo, e merece ênfase porque inverte a história de sempre sobre matemática difícil. Dijkstra não estava resolvendo um problema de roteamento. **Ele precisava de uma demonstração que não especialistas conseguissem acompanhar.** Nas palavras dele, para uma demonstração a pessoas de fora da computação é preciso ter um enunciado de problema que não matemáticos entendam - e eles têm de conseguir entender a resposta também. Então escolheu o caminho mais curto entre duas cidades holandesas, num mapa reduzido com sessenta e quatro delas, sessenta e quatro porque seis bits bastam para identificar uma.
+
+A resolução aconteceu em outro lugar. O relato dele, dado numa entrevista décadas depois, é uma das passagens mais citadas da computação:
+
+> Numa manhã eu estava fazendo compras em Amsterdã com minha jovem noiva e, cansados, sentamos no terraço de um café para tomar um café, e eu estava justamente pensando se conseguiria fazer isso, e então projetei o algoritmo do caminho mais curto. Como eu disse, foi uma invenção de vinte minutos.
+
+Sem caneta. Sem papel. Ele observou depois que projetar sem eles teve uma vantagem, no que a ausência lhe impôs.
+
+A história costuma ser contada como a de um homem ignorando a noiva para pensar em matemática, o que é injusto e menos interessante que a verdade. Ria Debets era programadora. Era uma de cerca de doze mulheres que tinham saído da escola com notas excepcionais em matemática e foram contratadas para o novo departamento de computação do Centro Matemático - e Dijkstra ensinara a ela e às colegas a programar. Casaram-se cerca de um ano depois e ficaram juntos até a morte dele, em 2002.
+
+Ele não se deu ao trabalho de publicar por três anos, e só o fez porque alguém disse que devia. *A Note on Two Problems in Connexion with Graphs* saiu na **Numerische Mathematik** em 1959 e tem umas duas páginas. O caminho mais curto está na segunda metade; a primeira é outro algoritmo, igualmente duradouro, para a árvore geradora mínima. Ele soube que a coisa tinha nome ao vê-la num livro alemão de ciência da administração em 1960, como *Das Dijkstra'sche Verfahren*.
+
+## O que o algoritmo de fato faz
+
+Vale enunciar sem rodeios, porque é mais simples que a reputação.
+
+Você quer a rota mais barata de onde está até todo o resto, num mapa em que cada estrada tem um custo. Mantenha um melhor custo conhecido até cada lugar, começando em zero para onde você está e desconhecido para todo o resto. Então repita um passo: **pegue o lugar não visitado de menor custo conhecido, marque-o como visitado, e para cada vizinho dele veja se ir por ali sai mais barato que o melhor que você tinha.** Se sair, anote o número melhor. Pare quando não houver mais nada a visitar.
+
+É só isso. A sacada - a parte que levou vinte minutos e não é óbvia - é que, uma vez que você pega o lugar não visitado mais barato, o custo dele é *final*. Nada que você descubra depois pode melhorá-lo, porque qualquer outra rota até ele teria de passar antes por algum lugar mais caro. Essa única garantia é a razão de o procedimento terminar com respostas corretas em vez de precisar reconsiderar tudo, e é por isso que um roteador calcula uma topologia inteira em milissegundos em vez de tentar todos os caminhos possíveis.
+
+Ela também explica uma restrição prática que pega gente desprevenida: **a garantia depende de os custos nunca serem negativos.** Um enlace não pode ter métrica negativa, e isso não é restrição arbitrária de fabricante.
+
+## O outro Dijkstra
+
+O algoritmo é sua contribuição mais usada e provavelmente não a mais importante. Ele passou o resto de uma longa carreira - Eindhoven a partir de 1963, uma bolsa de pesquisa na Burroughs, depois a Universidade do Texas em Austin até 2000 - argumentando, longamente e com enorme segurança de estilo, que programar deveria ser uma disciplina matemática e não um ofício de tentativa e erro.
+
+Ele deu ao campo a programação estruturada. Deu os semáforos e o vocabulário dos processos concorrentes. E deu o hábito, em boa parte perdido, de raciocinar sobre se um programa está correto em vez de rodá-lo para ver. Sua frase mais citada sobre o assunto pertence a qualquer discussão sobre testes: **o teste de programas pode ser usado para mostrar a presença de defeitos, nunca para mostrar sua ausência.** Não é floreio retórico; é uma afirmação sobre que evidência um teste fornece, e o [argumento de que não existe código perfeito](/learn/there-is-no-perfect-code) deste site é uma reformulação dela cinquenta anos depois.
+
+Ele escreveu mais de mil manuscritos numerados - a série EWD - à mão, com caneta-tinteiro, e fazia circular fotocópias entre colegas que as faziam circular mais. Era um samizdat privado de opinião técnica, e fez dele a pessoa mais citada e mais contestada de sua área.
+
+## O que um profissional deve tirar disso
+
+**O algoritmo mais usado em redes foi projetado como material didático.** Existe porque alguém precisava explicar uma máquina a pessoas que não entendiam de máquinas, e decidiu que o jeito era escolher um problema e uma resposta que elas entendessem. Quem ensina assuntos técnicos deveria parar um instante nisso. A obrigação de ser compreensível não enfraqueceu o resultado; ela o produziu.
+
+**Restrições ao pensamento podem ser produtivas.** Sem caneta, sem papel, vinte minutos, e o resultado foi pequeno o bastante para estar correto e continuar rodando setenta anos depois. O próprio Dijkstra achava que a ausência de material de escrita era parte da razão de ele ter saído limpo.
+
+**E o algoritmo tem um formato que cabe na cabeça.** Pegue a coisa não visitada mais próxima; o custo dela agora é final; atualize os vizinhos; repita. Quando uma adjacência OSPF sobe e a topologia é recalculada, é isso que está acontecendo - e quem sabe disso consegue raciocinar sobre por que uma mudança de métrica teve o efeito que teve, em vez de tratar a tabela de roteamento como um oráculo.
+
+## Fontes
+
+- [Britannica: Edsger Dijkstra, nascido em 11 de maio de 1930 em Roterdã, morto em 6 de agosto de 2002 em Nuenen, desenvolveu o paradigma da programação estruturada; doutorado pela Universidade de Amsterdã em 1959 enquanto trabalhava no Centro Matemático de Amsterdã (1952-62); lecionou na Universidade Técnica de Eindhoven de 1963 a 1973, foi pesquisador na Burroughs de 1973 a 1984 e professor na Universidade do Texas em Austin de 1984 a 2000; concebeu a solução do caminho mais curto em 20 minutos num café com a noiva, Maria Debets, e o algoritmo segue em uso no roteamento de redes de comunicação e no planejamento de voos](https://www.britannica.com/biography/Edsger-Dijkstra)
+- [CWI, a página de história da própria instituição: foi uma invenção de vinte minutos concebida tomando café num terraço com a noiva Ria, que conhecera no Mathematisch Centrum; ele a usou em 1956 para mostrar o potencial do novo computador ARMAC, entendendo que uma demonstração para leigos precisava ter um problema e uma resposta que eles entendessem, então projetou um algoritmo para achar a rota mais curta entre duas cidades dos Países Baixos num mapa simplificado; só foi publicado em 1959](https://www.cwi.nl/en/about/history/e-w-dijkstra-brilliant-colourful-and-opinionated/)
+- [MacTutor, Universidade de St Andrews: para uma demonstração a pessoas de fora da computação é preciso um enunciado que não matemáticos entendam, e eles têm de entender a resposta; ele usou um mapa rodoviário reduzido dos Países Baixos com 64 cidades selecionadas para que 6 bits bastassem para identificar uma; o algoritmo de menor distância e o de árvore geradora mínima foram publicados juntos no artigo de duas páginas "A Note on Two Problems in Connexion with Graphs" (1959)](https://mathshistory.st-andrews.ac.uk/Biographies/Dijkstra/)
+- [Wikipedia, algoritmo de Dijkstra, citando a entrevista: "Numa manhã eu estava fazendo compras em Amsterdã com minha jovem noiva e, cansados, sentamos no terraço de um café para tomar um café, e eu estava justamente pensando se conseguiria fazer isso, e então projetei o algoritmo do caminho mais curto. Como eu disse, foi uma invenção de vinte minutos. De fato, foi publicado em 59, três anos depois... Uma das razões de ser tão bom foi eu tê-lo projetado sem lápis e papel"](https://en.wikipedia.org/wiki/Dijkstra's_algorithm)
+- [David Gries, Cornell: ele o desenvolveu de cabeça em vinte minutos, sem papel e lápis; não se deu ao trabalho de publicar até alguém dizer que devia, dois a três anos depois; a noiva Ria Debets era ela própria programadora, uma de cerca de doze mulheres que tinham concluído a escola com notas excepcionalmente altas em matemática e foram contratadas para o novo departamento de computação do Centro Matemático, e Dijkstra ensinara Ria e as outras a programar; casaram-se cerca de um ano depois e foram companheiros próximos até a morte dele em 2002](https://www.cs.cornell.edu/courses/JavaAndDS/shortestPath/01shortestPathHistory.pdf)
+- [Notas de aula de CS2110 em Cornell, citando a entrevista da CACM e a publicação: E.W. Dijkstra, "A note on two problems in connexion with graphs", Numerische Mathematik 1, 269-271 (1959); a invenção ocorreu em 1956, quando ele tinha 26 anos](https://www.cs.cornell.edu/courses/cs2110/2018sp/L19-GraphsIII/cs2110ShortestPathPresentation.pdf)
+- [Sobre a demonstração do ARMAC e o batismo: com a técnica, o ARMAC conseguia achar o caminho mais curto entre 64 cidades dos Países Baixos; o procedimento foi publicado depois de três anos num artigo de três páginas com o caminho mais curto na segunda metade; em 1960 Dijkstra o encontrou num livro alemão de ciência da administração com o nome dele, "Das Dijkstra'sche Verfahren"](https://medium.com/@balajeraam/dijkstra-the-person-algorithm-5016ebe9468)

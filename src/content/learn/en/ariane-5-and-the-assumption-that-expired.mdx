@@ -1,0 +1,65 @@
+---
+slug: ariane-5-and-the-assumption-that-expired
+title: "Ariane 5: the code was correct, and the world had changed"
+summary: "Forty seconds into its first flight the rocket destroyed itself. The software that killed it was working exactly as written and had flown successfully many times on the previous model. It was calculating something that was not needed after lift-off, from a routine nobody had thought to switch off, using an assumption that had been true of a different rocket."
+concepts: ["ariane 5", "integer overflow", "code reuse", "redundancy", "exception handling", "dead code", "assumptions", "verification"]
+relatedTools: []
+relatedArticles: ["therac-25-and-defence-in-depth", "the-interpreter-problem", "memory-safety", "there-is-no-perfect-code"]
+category: security
+order: 132
+status: reviewed
+updated: "2026-09-09"
+---
+
+## Thirty-seven seconds
+
+On 4 June 1996 at 12:34 UTC, the first Ariane 5 lifted off from Kourou carrying four European research satellites. About thirty-seven seconds later, at roughly 3,700 metres, both inertial reference systems failed simultaneously. The nozzles of the solid boosters and then the main engine swivelled to their extreme positions. The launcher veered, reached an angle of attack past twenty degrees, and the aerodynamic load tore the boosters from the core - which correctly triggered the self-destruct.
+
+The European Space Agency and the French space agency appointed an inquiry board chaired by the mathematician Jacques-Louis Lions. It reported within six weeks, having recovered both units and read their memory, and it established the cause beyond reasonable doubt.
+
+## The line of code
+
+Inside the inertial reference system, a value called the horizontal bias - an indicator of alignment precision - was converted from a 64-bit floating-point number to a 16-bit signed integer. A 16-bit signed integer holds numbers up to 32,767. The value was larger. The conversion overflowed, the software raised an exception, and the unit did what it had been specified to do on any detected exception: it stopped.
+
+Every element of that is worth pulling apart, because each one is a separate lesson and they are all transferable.
+
+**The value was larger because it was a different rocket.** The routine came from Ariane 4, where it had flown correctly for years. Ariane 5's early trajectory is more aggressive and produces considerably higher horizontal velocities, so a number that had always stayed within a narrow range on one vehicle did not on another. The code was not wrong. Its assumption had expired.
+
+**The conversion was deliberately left unprotected.** Several other conversions in the same system were guarded against overflow. This one was not, because the engineers had reasoned that the value could never get large enough - which was a correct analysis of Ariane 4 and was carried forward without being re-examined.
+
+**The routine should not have been running at all.** The alignment function it belonged to served a purpose only *before* lift-off. It remained operative afterwards, which was harmless on Ariane 4 and fatal here. The board's first recommendation was blunt: switch off the alignment function of the inertial reference system immediately after lift-off. Software that does nothing useful is not free; it is a live component that can still fail.
+
+**The redundancy made it worse rather than better.** Two identical units ran in parallel, hot standby, executing the same software. The backup met the same input microseconds later and failed the same way. Redundancy protects against a component breaking; it protects against nothing at all when both components share a design fault. The [Therac-25 article](/learn/therac-25-and-defence-in-depth) makes the inverse point - a *different* kind of protection, in hardware, saved the earlier machine.
+
+**And the shutdown was interpreted as data.** When the units stopped, they emitted a diagnostic bit pattern. The flight computer received it, could not distinguish it from flight data, and steered accordingly. A failure mode designed to be safe became the mechanism of destruction, because nothing downstream was built to recognise "this is not a measurement".
+
+## The sentence in the report
+
+The inquiry board wrote something that deserves to be read slowly by anyone who builds or buys software, and it is the reason this article sits beside the others in this catalogue:
+
+> The exception which occurred was not due to random failure but a design error. The exception was detected, but inappropriately handled because the view had been taken that **software should be considered correct until it is shown to be at fault.**
+
+That is the exact inverse of the discipline [Dijkstra spent his career arguing for](/learn/dijkstra-and-the-twenty-minute-algorithm), and the board named it as the underlying theme: the programme was oriented towards mitigating *random* failure - the hardware mindset, where components wear out and you keep a spare - and had imported that assumption into software, where failures are not random at all. A second identical unit protects against a broken chip. It cannot protect against a line of code that is wrong for the mission.
+
+The board also found that the reviews and tests, extensive as they were, had not adequately covered the inertial reference system or the complete flight control system, and that the alignment function - the one that served no purpose after lift-off - had not been included in the simulations at all.
+
+## What a practitioner should take from it
+
+**Reused code carries its assumptions with it, and the assumptions are usually undocumented.** This is the most transferable lesson in the case and it is not a rocketry problem. A configuration template written for one site, a firewall rule set inherited from a smaller deployment, a script that assumes an interface count or an address range or a maximum session rate - all of them encode a world, and the world moves. The question to ask of anything inherited is not "does it work" but **"what was true when this was written, and is it still true?"**
+
+**"It can never get that large" is a claim about the environment, not about the code.** Every place that reasoning appears is a dependency on circumstances that nobody is monitoring. If the analysis is right, the check costs almost nothing; if the analysis expires, the check is the only thing standing there.
+
+**Identical redundancy is not redundancy.** Two of the same appliance, running the same firmware version, fed the same input, will make the same mistake at the same moment. That is worth remembering when a high-availability pair is presented as a resilience measure: it covers hardware failure and power loss, and it covers nothing about a bad configuration push or a firmware defect, both of which arrive on both units.
+
+**And dead code is not inert.** Anything still executing is still a component. The routine that no longer serves a purpose, the service left enabled for a migration that finished, the rule kept because removing it felt risky - each is a live surface, and the [worm era's](/learn/the-worm-era) question about what is reachable applies to logic as much as to ports.
+
+## Sources
+
+- [European Space Agency, presentation of the Inquiry Board report: on 4 June 1996 the maiden flight ended in failure about 40 seconds after initiation of the flight sequence at an altitude of about 3,700 m; the flight data indicated nominal behaviour to H0 + 36 seconds, simultaneous failure of the two inertial reference systems, swivelling of the nozzles of the two solid boosters and then the Vulcain engine into extreme positions causing the launcher to veer abruptly, and self-destruction correctly triggered by rupture of the electrical links; the extensive reviews and tests carried out during the development programme did not include adequate analysis and testing of the inertial reference system or of the complete flight control system; the alignment function of the inertial reference system, which served a purpose only before lift-off but remained operative afterwards, was not taken into account in the simulations](https://www.esa.int/Newsroom/Press_Releases/Ariane_501_-_Presentation_of_Inquiry_Board_report)
+- [SIAM News, summarising the Lions report: the board was chaired by Jacques-Louis Lions of the Collège de France and completed its work within six weeks; the internal software exception was caused during execution of a data conversion from a 64-bit floating-point number to a 16-bit signed integer value, the floating-point value being greater than could be represented; the value of BH was much higher than expected because the early part of the Ariane 5 trajectory differs from that of Ariane 4 and results in considerably higher horizontal velocity values; both units were recovered and the failure context determined precisely from memory readouts](https://people.computing.clemson.edu/~steve/Spiro/arianesiam.htm)
+- [Wikipedia, Ariane flight V88, quoting the official report: launch 4 June 1996 at 12:34:06 UTC from Kourou ELA-3 carrying the Cluster constellation, duration 37 seconds; an underlying theme in the development of Ariane 5 is the bias towards mitigation of random failure; the supplier of the inertial navigation system was only following the specification, which stipulated that in the event of any detected exception the processor was to be stopped; the exception which occurred was not due to random failure but a design error, and was detected but inappropriately handled because the view had been taken that software should be considered correct until it is shown to be at fault](https://en.wikipedia.org/wiki/Ariane_flight_V88)
+- [University of Minnesota, on the arithmetic: the cause was a software error in the inertial reference system, specifically a 64-bit floating point number relating to the horizontal velocity of the rocket with respect to the platform converted to a 16-bit signed integer; the number was larger than 32,767, the largest integer storable in a 16-bit signed integer, and the conversion failed](https://www-users.cse.umn.edu/~arnold/disasters/ariane.html)
+- [Grinnell College course notes, quoting the board's recommendations: the specifications for the software had originally been for Ariane 4 and did not take the acceleration of Ariane 5 into account; recommendation R1 was to switch off the alignment function of the inertial reference system immediately after lift-off; redundant systems are little help if both systems can fail in the same way; the success of a system in one situation does not guarantee its success in all situations](https://rebelsky.cs.grinnell.edu/Courses/223/97F/Studies/ariane5.html)
+- [On the unguarded conversion and the redundancy: in Ariane 4 flights the horizontal velocity bias value always remained within a narrow, safe range, and in Ariane 5's more aggressive ascent it did not; unlike several other conversions in the same system this one was not protected by exception handling, because engineers had reasoned that protection was unnecessary since the value could never get that large; when the overflow occurred the unit shut itself down exactly as designed, and the backup, running the same code under the same conditions, failed almost immediately afterward; the flight computer then received a diagnostic bit pattern and misinterpreted it as valid guidance data](https://mikefisher.substack.com/p/ariane-5s-reused-code-catastrophe)
+- [On the reuse decision: the success of Ariane 4 and budget pressures resulted in the reuse of Ariane 4 software by the Ariane 5 programme team, including its navigation system and flight path optimisation libraries; the board used flight data, optical observations, inspection of recovered material and review of the software code](https://medium.com/@bishr_tabbaa/crash-and-burn-a-short-story-of-ariane-5-flight-501-3a3c50e0e284)
+- [arXiv, on the fault-tolerance design: the inertial reference system adopted a simple hardware fault-tolerance pattern with two identical replicas operating in parallel in hot standby, executing the same software system, and thus lacking design diversity](https://arxiv.org/pdf/1605.02040)

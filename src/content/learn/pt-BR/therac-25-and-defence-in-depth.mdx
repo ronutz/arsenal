@@ -1,0 +1,70 @@
+---
+slug: therac-25-and-defence-in-depth
+title: "Therac-25: a máquina cujo antecessor tinha os mesmos defeitos e não feriu ninguém"
+summary: "Entre 1985 e 1987 uma máquina de radioterapia aplicou doses maciças em excesso a pelo menos seis pacientes. O defeito de software era grave. O achado que fez daquilo o caso mais ensinado da engenharia de software é outro, e pior: o modelo anterior rodou código comparavelmente defeituoso por anos sem ferir ninguém, porque tinha um hardware que não deixava."
+concepts: ["therac-25", "safety-critical", "defence in depth", "race condition", "interlock", "leveson", "verification", "regulation"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "dijkstra-and-the-twenty-minute-algorithm", "memory-safety", "krack-and-the-wifi-handshake"]
+category: security
+order: 129
+status: reviewed
+updated: "2026-09-08"
+---
+
+## O que aconteceu
+
+O Therac-25 era um acelerador linear controlado por computador, construído pela Atomic Energy of Canada Limited com a firma francesa CGR, e era a máquina de radioterapia mais sofisticada de seu tempo. Onze foram vendidas nos Estados Unidos e no Canadá a partir de 1982. Tratava pacientes com câncer em dois modos: um feixe de elétrons de baixa corrente aplicado diretamente, e um feixe de alta corrente disparado contra um alvo metálico para produzir raios X. O feixe bruto de alta corrente, sem o alvo no caminho, é enormemente destrutivo para o tecido.
+
+Entre junho de 1985 e janeiro de 1987, pelo menos seis pacientes receberam doses maciças em excesso - cada uma várias vezes a dose terapêutica pretendida - resultando em lesões graves e mortes. Leveson e Turner, cuja investigação de 1993 na *IEEE Computer* é o relato definitivo, os registram como estando entre a pior série de acidentes de radiação nos trinta e cinco anos de história dos aceleradores médicos. Os relatos variam quanto ao número de mortes; quanto ao número de acidentes, não.
+
+A causa técnica imediata era um defeito de concorrência. Se o operador digitasse uma prescrição, notasse um erro e a editasse rápido - em cerca de oito segundos - uma corrida no código de controle compartilhado podia deixar a máquina num estado em que o feixe de alta corrente disparava sem o alvo e o colimador em posição. O console do operador dizia que o tratamento fora aplicado normalmente, ou dava um erro enigmático e a opção de prosseguir. A máquina relatava sucesso enquanto fazia o oposto.
+
+## O achado que importa
+
+Se o artigo parasse aí, seria uma história sobre uma condição de corrida ruim, e ensinaria muito pouco, porque todo mundo já concorda que condições de corrida são ruins.
+
+O achado importante está no antecessor. O **Therac-20** rodava software da mesma linhagem, e a investigação de Leveson estabeleceu que **defeitos relacionados estavam presentes nele também**. Ele nunca feriu ninguém. A razão é que o Therac-20 tinha circuitos de proteção independentes e travas mecânicas: mecanismos físicos que não permitiam o feixe disparar com a mesa giratória na posição errada, acreditasse o computador no que acreditasse. Quando o software dava errado num Therac-20, um fusível queimava ou uma chave se recusava, e um técnico se incomodava.
+
+Essas travas foram removidas do Therac-25. O projeto passou a depender do computador de controle sozinho para a segurança, no raciocínio de que o software impediria estados inseguros - e os próprios defeitos do Therac-20 sequer foram reconhecidos até que os investigadores foram procurar depois dos acidentes do Therac-25.
+
+Ou seja, as duas máquinas rodavam código comparavelmente defeituoso. Uma delas matou pessoas. A diferença não era a qualidade do software. **A diferença era existir ou não algo capaz de contradizê-lo.**
+
+O resumo da própria Leveson nomeia isso com precisão: a confiança excessiva na capacidade do software de garantir a segurança foi um fator importante que levou aos acidentes.
+
+## Por que isto pertence a um catálogo de segurança
+
+Porque o argumento inteiro deste site chega sempre à mesma conclusão por caminhos diferentes, e o Therac-25 é onde ela foi estabelecida ao custo de vidas.
+
+A [frase de Dijkstra](/learn/dijkstra-and-the-twenty-minute-algorithm) de que o teste mostra a presença de defeitos, nunca a ausência, é a versão teórica. O Therac-25 é a empírica: o software foi testado, funcionava na esmagadora maioria dos tratamentos, e a falha exigia um operador digitando rápido o bastante para acertar uma janela de oito segundos. Nenhum programa realista de testes acha aquilo. O [argumento de que não existe código perfeito](/learn/there-is-no-perfect-code) é a mesma afirmação generalizada: defeitos são lançados, e a pergunta é o que acontece depois.
+
+A [porta dos fundos da Juniper](/learn/there-is-no-perfect-code) faz o ponto pela criptografia - saída matematicamente indistinguível da saída correta, de modo que nenhuma medição a acharia. O [KRACK](/learn/krack-and-the-wifi-handshake) o faz pelos métodos formais - um aperto de mão com provas de segurança, quebrado por uma pergunta de máquina de estados que as provas não modelavam. O Therac-25 o faz pela física, vinte anos antes dos dois: **quando a correção não pode ser estabelecida, o projeto não pode depender dela.**
+
+## As outras falhas, que são institucionais
+
+A história técnica é a metade menor. A investigação registra uma sequência que qualquer respondente de incidentes reconhece, e nada disso é sobre código.
+
+O primeiro acidente, na Geórgia em 1985, nunca foi cuidadosamente investigado. A paciente disse que fora ferida durante o tratamento. Tinha queimaduras de radiação óbvias e graves. O físico envolvido estava desconfiado. Não houve admissão de que a máquina causara aquilo senão muito tempo depois.
+
+A resposta do fabricante aos primeiros relatos foi concluir que uma superdosagem não era possível, e continuar concluindo isso. As máquinas seguiram em serviço. Aos usuários foi dito que o problema fora corrigido quando não fora. Defeitos relacionados achados no Therac-20 não foram ligados aos relatos do Therac-25. E o próprio software fora escrito por uma pessoa, em linguagem de montagem, ao longo de vários anos, tendo evoluído de código começado em 1972 - com o fabricante reivindicando direitos proprietários sobre o projeto, o que limitava quem podia examiná-lo.
+
+Lido contra o relógio do artigo sobre [código perfeito](/learn/there-is-no-perfect-code), todo intervalo falhou: a detecção veio dos pacientes e não do fabricante, a contenção não aconteceu porque as máquinas continuaram rodando, a correção foi anunciada antes de existir, e a comunicação obstruiu ativamente quem poderia ter agido. A máquina foi recolhida em 1987 e reprojetada, com salvaguardas de hardware contra erros de software de volta.
+
+## O que um profissional deve tirar disso
+
+**Pergunte o que contradiz o software.** Para qualquer sistema em que uma saída errada tenha consequências, a pergunta útil não é "o código está correto", e sim "o que acontece se não estiver, e existe no caminho alguma coisa que não dependa do mesmo código estar certo?" Uma trava de hardware, uma aprovação separada, um limite de taxa imposto em outro lugar, um segundo sistema que precise concordar. Em redes os equivalentes são banais e frequentemente pulados: uma regra de firewall que não dependa de a aplicação autenticar corretamente, uma cota que valha mesmo se a lógica falhar, um caminho fora de banda que sobreviva à falha do caminho em banda.
+
+**Remover uma redundância é uma decisão de projeto que precisa ser enunciada.** Ninguém se propôs a construir uma máquina insegura. Alguém removeu travas de hardware porque o software podia fazer o trabalho de forma mais barata e flexível, e essa decisão era razoável isoladamente e catastrófica no conjunto. Os equivalentes modernos - colapsar dois controles numa plataforma, remover um passo manual porque a automação cobre, consolidar num único provedor - merecem ser registrados como decisões, e não absorvidos como eficiências.
+
+**Acredite no relato que você não consegue explicar.** O sinal mais forte da sequência inteira foi uma paciente insistindo que fora queimada por uma máquina que não podia, segundo o fabricante, queimar ninguém. Cada mês transcorrido custou alguém. Um relato de incidente que contradiz seu modelo do sistema é a coisa mais valiosa que você vai receber no ano, e o instinto de explicá-lo para longe é justamente o modo de falha que está sendo descrito.
+
+**E aquilo mudou as regras.** O caso reformulou a regulação de software de dispositivos médicos e é ensinado em cursos de engenharia de software justamente porque as lições se transferem. A indústria não aprendeu isso por um argumento. Aprendeu por seis acidentes que eram, pelas evidências, inteiramente evitáveis.
+
+## Fontes
+
+- [Nancy G. Leveson e Clark S. Turner, "An Investigation of the Therac-25 Accidents", IEEE Computer vol. 26 n. 7, julho de 1993, p. 18-41: entre junho de 1985 e janeiro de 1987, seis acidentes conhecidos envolveram superdosagens maciças com mortes e lesões graves, descritos como a pior série de acidentes de radiação nos 35 anos de história dos aceleradores médicos; o software foi desenvolvido por uma única pessoa em linguagem de montagem do PDP-11 ao longo de vários anos, evoluindo do software do Therac-6 iniciado em 1972, e a AECL reivindicava direitos proprietários sobre o projeto do software](https://www.cs.columbia.edu/~junfeng/08fa-e6998/sched/readings/therac25.pdf)
+- [O mesmo artigo, sobre o antecessor e o recolhimento: a máquina foi recolhida em 1987 para mudanças extensas de projeto, incluindo salvaguardas de hardware contra erros de software; problemas relacionados foram achados no software do Therac-20, e não tinham sido reconhecidos antes dos acidentes do Therac-25 porque o Therac-20 incluía travas de segurança em hardware e portanto não resultaram lesões; os detalhes do acidente da Geórgia em 1985 são escassos porque nunca foi cuidadosamente investigado, e não houve admissão de que a lesão fora causada pela máquina senão muito depois, apesar das alegações da paciente, das queimaduras óbvias e graves e das suspeitas do físico envolvido](http://users.csc.calpoly.edu/~csturner/courses/508/Therac-25.pdf)
+- [Leveson e Turner, resumo: as superdosagens ocorreram principalmente por erros no software do Therac-25 e porque o fabricante não seguiu práticas adequadas de engenharia de software; a confiança excessiva na capacidade do software de garantir a segurança foi um fator importante que levou aos acidentes; o Therac-20 empregava circuitos de proteção independentes e travas mecânicas contra superdosagem](https://onlineethics.virginia.edu/cases/therac-25/investigation-therac-25-accidents-abstract)
+- [Ethics Unwrapped, Universidade do Texas: o Therac-25 era um acelerador linear desenvolvido pela Atomic Energy Canada Limited com a empresa francesa CGR; onze máquinas foram vendidas nos Estados Unidos e no Canadá a partir de 1982; seis acidentes com superdosagens significativas ocorreram entre 1985 e 1987](https://ethicsunwrapped.utexas.edu/case-study/therac-25)
+- [Sobre o defeito de concorrência: a causa raiz era uma condição de corrida no código de controle compartilhado do PDP-11, em que um operador editando a prescrição de tratamento em cerca de oito segundos podia permitir que o feixe de elétrons disparasse em modo de raios X de alta energia sem o alvo e o colimador em posição](https://bluegoatcyber.com/blog/the-therac-25-incident-a-critical-analysis-of-medical-device-failures)
+- [Hackaday, sobre a decisão de projeto: a causa raiz era dupla - o software de controle continha defeitos que se mostraram fatais, e o projeto da máquina dependia do computador de controle sozinho para a segurança, sem travas de hardware ou circuitos supervisores que garantissem que defeitos de software não resultassem em falhas catastróficas](https://hackaday.com/2015/10/26/killed-by-a-machine-the-therac-25/)
+- [Uma revisão posterior citando o caso: a falha destaca a importância de verificação e validação cuidadosas e independentes de software que desempenha funções críticas; depois de testes extensos, um físico e um dos operadores conseguiram reproduzir as condições que levavam ao defeito; havia um número muito grande de fatores causais, incluindo práticas geralmente ruins de projeto e desenvolvimento de software e complacência institucional](https://arxiv.org/pdf/2205.09788)

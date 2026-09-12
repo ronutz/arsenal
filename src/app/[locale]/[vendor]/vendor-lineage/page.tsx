@@ -127,6 +127,34 @@ export default async function VendorLineagePage({
             </div>
           </section>
 
+          {/* The shape first, the detail after: a summary diagram sits above the
+              timeline for the vendors that have one. Most do not, and the
+              timeline stands on its own. */}
+          {lineage.diagram && (
+            <section className="section">
+              <div className="container lineage-container">
+                <figure className="gloss-figure">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="gloss-figure-img"
+                    src={lineage.diagram.src}
+                    alt={lineage.diagram.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {(lineage.diagram.caption || lineage.diagram.credit) && (
+                    <figcaption className="gloss-figure-caption">
+                      {lineage.diagram.caption}
+                      {lineage.diagram.credit && (
+                        <span className="gloss-figure-credit">{lineage.diagram.credit}</span>
+                      )}
+                    </figcaption>
+                  )}
+                </figure>
+              </div>
+            </section>
+          )}
+
           <section className="section" id={vendor}>
             <div className="container lineage-container">
               <AcquisitionTimeline lineage={lineage} labels={labels} />

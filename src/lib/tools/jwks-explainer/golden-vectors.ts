@@ -33,11 +33,15 @@ const WEAK_RSA_JWKS = JSON.stringify({ keys: [{ kty: "RSA", n: "f".repeat(160), 
 
 function b64url(obj: unknown): string {
   const json = JSON.stringify(obj);
-  // browser-safe base64url without Buffer
+  // Runtime-neutral base64url. btoa is a global on every target this module
+  // ships to - browsers, the Cloudflare Worker (workerd), and Node 22 - so no
+  // Node Buffer fallback is needed. One was here until 2026-09-09; it could
+  // never execute, and Buffer is undeclared on the Worker, which the worker
+  // type-check (tsconfig.worker.json) rightly rejected.
   const bytes = new TextEncoder().encode(json);
   let bin = "";
   for (const b of bytes) bin += String.fromCharCode(b);
-  const b64 = (typeof btoa === "function" ? btoa(bin) : Buffer.from(bin, "binary").toString("base64"));
+  const b64 = btoa(bin);
   return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 

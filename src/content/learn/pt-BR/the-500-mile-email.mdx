@@ -1,0 +1,70 @@
+---
+slug: the-500-mile-email
+title: "O e-mail de 500 milhas: a melhor história de depuração da profissão"
+summary: "Um departamento de estatística relatou que não conseguia mandar e-mail a mais de umas 520 milhas. A primeira reação do administrador foi que e-mail não funciona assim. O departamento tinha um mapa. A causa era um arquivo de configuração, uma atualização, um tempo limite igual a zero, e a velocidade da luz - e cada elemento disso ainda pode acontecer com você esta tarde."
+concepts: ["debugging", "sendmail", "timeout", "latency", "speed of light", "configuration", "upgrade", "diagnosis"]
+relatedTools: []
+relatedArticles: ["therac-25-and-defence-in-depth", "knight-capital-and-the-rollback-that-made-it-worse", "capture-points-before-packets", "ariane-5-and-the-assumption-that-expired"]
+category: security
+order: 135
+status: reviewed
+updated: "2026-09-09"
+---
+
+## A ligação
+
+Trey Harris operava o sistema central de e-mail do campus - chamava-se Isis - na Universidade da Carolina do Norte em Chapel Hill, e também escrevia os arquivos de configuração do sendmail usados na maioria dos servidores de correio departamentais. Por volta de 2002 o chefe do departamento de estatística telefonou.
+
+Estavam com um problema para mandar e-mail para fora do departamento. Especificamente: não conseguiam mandar correio a mais de 500 milhas. Um pouco mais, na verdade. Digamos 520 milhas. Mas não além.
+
+A resposta de Harris é a que qualquer um daria: e-mail realmente não funciona assim.
+
+Então veio o detalhe que transforma um chamado implausível num relato genuíno. Tinham esperado para ligar porque ainda não haviam coletado dados suficientes para ter certeza. Tinham pedido a uma geoestatística que investigasse. Ela produzira **um mapa** mostrando o raio dentro do qual o correio saía, pouco mais de 500 milhas. Dentro do raio havia destinos que não alcançavam, ou alcançavam às vezes. Fora dele, nada nunca ia.
+
+Era o departamento de estatística. Tinham feito a análise.
+
+## A causa
+
+Harris testou por conta própria, e era verdade.
+
+Algum tempo antes um consultor "corrigira o servidor". Ao fazê-lo, atualizara o sistema operacional e, com ele, o sendmail - da versão 5 para a 8 - deixando no lugar o arquivo de configuração da versão 5. O sendmail 8 leu uma configuração escrita para outra geração dele mesmo. Interpretou o que reconheceu. Para os ajustes que não reconheceu, o binário não tinha padrões compilados, então saíram como **zero**.
+
+Um dos ajustes que saíram como zero foi o tempo limite para conectar a um servidor de correio remoto.
+
+Um tempo limite zero não significa "espere para sempre" e não significa "falhe imediatamente". Naquela máquina em particular, sob sua carga típica, significava que uma chamada de conexão era abortada depois de pouco mais de **três milissegundos**.
+
+E então a rede do campus passou a importar. Era inteiramente comutada, então um pacote de saída não sofria atraso de roteador até deixar o ponto de presença do campus e encontrar um roteador do outro lado. Para um host pouco carregado numa rede próxima, o tempo de estabelecer conexão era portanto governado menos por enfileiramento e processamento do que pela **distância que a luz tinha de percorrer**.
+
+O relato do próprio Harris registra o que ele digitou em seguida, e é o momento em que tudo se resolve:
+
+```text
+$ units
+You have: 3 millilightseconds
+You want: miles
+        * 558.84719
+```
+
+Quinhentas milhas, ou um pouco mais.
+
+Harris é cuidadoso com a narrativa, e quem a repete deveria ser também. A nota dele diz que a história foi levemente alterada para proteger os culpados, pular detalhes irrelevantes e tornar tudo mais divertido. Perguntado depois se aquilo aconteceu, respondeu: sim, aconteceu.
+
+## Por que não é só uma boa anedota
+
+**Acredite no relato que você não consegue explicar.** O chefe do departamento descrevia algo que não podia ser verdade, e era verdade. O artigo do [Therac-25](/learn/therac-25-and-defence-in-depth) faz o mesmo ponto a um custo muitíssimo maior: o sinal mais forte daquela sequência inteira foi uma paciente insistindo que fora queimada por uma máquina que, segundo o fabricante, não podia queimar ninguém. Um relato que contradiz seu modelo do sistema é dado sobre o seu modelo. O instinto de explicá-lo para longe é o modo de falha.
+
+**Uma atualização reescreveu silenciosamente uma configuração.** Ninguém pôs o tempo limite em zero. Um programa mais novo leu um arquivo mais antigo, não entendeu partes dele, e preencheu as lacunas com nada - e nada, naquele contexto, eram três milissegundos. É a falha do [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse) em miniatura e a do [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired) em miniatura: um componente se comportando corretamente diante de entradas escritas para outra versão do mundo. E é inteiramente atual. Uma imagem de contêiner cujos padrões mudaram entre tags, um equipamento que aceita uma configuração antiga e descarta em silêncio as diretivas que não suporta mais, um módulo de infraestrutura cuja variável não definida não é "não definida" e sim zero - o mecanismo não envelheceu nada.
+
+**O sintoma estava numa camada que ninguém olhava.** A queixa era sobre e-mail. O defeito estava num tempo limite. O padrão visível era geografia. Nada em "não conseguimos mandar correio para Seattle" aponta para um tempo limite de conexão, e nenhuma leitura de logs de correio na camada de aplicação teria produzido a resposta - que é o argumento do [artigo sobre pontos de captura](/learn/capture-points-before-packets) a respeito de posição: a camada em que um problema é *relatado* raramente é a camada em que ele *mora*.
+
+**E latência é distância.** É a parte que os profissionais esquecem até doer, e dói o tempo todo: numa replicação que funciona entre dois sítios e não com um terceiro, num tempo limite de banco que só falha para a filial, num serviço de voz que vai bem dentro de um país e é inutilizável do outro lado de um oceano. A luz na fibra viaja a cerca de dois terços da velocidade da luz no vácuo, e nenhuma quantidade de banda muda isso. Quando uma falha se correlaciona com um mapa em vez de com uma configuração, o mapa está lhe dizendo alguma coisa.
+
+**Defina seus tempos limite.** A instrução final, sem glamour. Todo tempo limite que não é explicitamente configurado é definido por alguma coisa - um padrão que você não leu, um arquivo herdado, ou um zero. Saber o valor é a diferença entre um sistema que degrada e um sistema que se comporta como física.
+
+## Fontes
+
+- [Trey Harris, "The case of the 500-mile email", o relato original: o binário do sendmail não tinha padrões compilados para a maioria dos ajustes, então, não achando valores adequados no arquivo de configuração, eles foram definidos como zero; um deles era o tempo limite para conectar ao servidor SMTP remoto, e a experimentação estabeleceu que naquela máquina, sob carga típica, um tempo limite zero abortava uma chamada de conexão em pouco mais de três milissegundos; a rede do campus era 100% comutada, então um pacote de saída não sofria atraso de roteador até chegar ao ponto de presença, e o tempo de conexão a um host próximo pouco carregado era em larga medida governado pela distância à velocidade da luz e não por atrasos incidentais de roteador; três milissegundos-luz convertem para 558,84719 milhas](https://www.ibiblio.org/harris/500milemail.html)
+- [Trey Harris, o FAQ: sim, aconteceu; na época ele operava o sistema centralizado de e-mail do campus, Isis, na Universidade da Carolina do Norte em Chapel Hill, e escrevia os arquivos de configuração do sendmail usados na maioria dos servidores de correio do campus; o contato inicial e a resolução foram ambos por telefone](https://www.ibiblio.org/harris/500milemail-faq.html)
+- [A história como contada, com a ressalva do autor: "não conseguimos mandar correio a mais de 500 milhas daqui... Um pouco mais, na verdade. Digamos 520 milhas. Mas não além"; o autor observa que a história foi levemente alterada para proteger os culpados, pular detalhes irrelevantes e tediosos e tornar tudo mais divertido; o consultor que "corrigira o servidor" atualizara a versão do SunOS e, com ela, o sendmail](https://beza1e1.tuxen.de/lore/500mile_email.html)
+- [FlowingData, citando o diálogo: o departamento não ligara antes porque não coletara dados suficientes para ter certeza do que acontecia; uma geoestatística produziu um mapa mostrando que o raio dentro do qual conseguiam mandar e-mail era pouco mais de 500 milhas, com vários destinos dentro do raio inalcançáveis ou alcançáveis esporadicamente, mas nada jamais alcançável além](https://flowingdata.com/2019/03/15/case-of-the-500-mile-email/)
+- [Kottke, sobre por que a história é incomum: um clichê comum no suporte e na administração de sistemas apresenta alguém convencido de ter achado um defeito quando na verdade é erro de uso, e esta história não vai por aí](https://kottke.org/19/03/the-case-of-the-500-mile-email)
+- [Um relato não verificado num fórum de discussão, oferecido como contexto e não como fato: um comentarista alegando conhecimento local disse que as máquinas Solaris em questão não vinham sendo corrigidas regularmente e tinham sido comprometidas, com o sendmail como ponto de entrada mais provável por ser a vulnerabilidade mais notória do período, e que apagar e reinstalar fora rejeitado por implicar tempo parado demais e horas faturáveis demais - então atualizar o sendmail era o remédio óbvio](https://news.ycombinator.com/item?id=23775404)

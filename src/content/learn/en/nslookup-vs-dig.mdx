@@ -13,6 +13,8 @@ updated: "2026-08-10"
 
 Both tools ask a DNS server a question and print the answer. The difference is how much they show you.
 
+Both tools print the same answer; how to read that answer from the first line to the last is laid out in **[reading a DNS answer](/learn/reading-a-dns-answer)**.
+
 ## What nslookup shows, and what it hides
 
 nslookup optimises for a quick, readable answer. It prints the resolver, whether the answer is non-authoritative, and the records in a friendly prose format. What it does not show is almost everything dig puts front and centre: the header flags (aa, tc, rd, ra, ad), the exact TTL on each record, the EDNS OPT pseudo-section, and the section structure (answer vs authority vs additional). For a lot of everyday questions ("what does this name resolve to?") that is fine, and nslookup is faster to read.

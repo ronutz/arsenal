@@ -1,0 +1,77 @@
+---
+slug: decided-in-advance
+title: "Decidido de antemão: as cinco práticas que as falhas defendem"
+summary: "Duas páginas companheiras reúnem o que quebrou e o que foi dito. Esta é a terceira pergunta: o que precisa ser decidido antes de qualquer coisa acontecer, porque não pode ser decidido durante. Cinco práticas, cada uma emparelhada com o caso que demonstra o custo de não tê-la - uma linha de base, um raio de dano, uma janela de mudança, um backup restaurável, e uma fronteira."
+concepts: ["operations", "baselines", "blast radius", "change management", "backups", "segmentation", "incident response", "index"]
+relatedTools: []
+relatedArticles: ["how-systems-fail", "the-disclosure-record", "there-is-no-perfect-code", "change-windows-that-do-not-become-incidents"]
+category: operations
+order: 142
+status: reviewed
+updated: "2026-09-09"
+---
+
+## A premissa
+
+[Como os sistemas falham](/learn/how-systems-fail) ordena os incidentes por onde a falha morava. [O registro da divulgação](/learn/the-disclosure-record) reúne o que houve entre saber e dizer. Os dois são retrospectivos, e os dois chegam sempre à mesma observação: o fator decisivo quase nunca foi o defeito. Foi se alguma coisa já tinha sido decidida.
+
+É para isso que serve esta página. Cinco práticas, nenhuma inédita e nenhuma cara, cada uma emparelhada com o caso que mostra quanto custa sua ausência. O emparelhamento é o ponto - uma prática com uma história junto é argumentável diante de quem tem o orçamento, e uma prática sem história é uma preferência.
+
+## 1. Uma linha de base, capturada antes de precisar
+
+**A prática:** [linhas de base antes de você precisar delas](/learn/baselines-before-you-need-them). Capture o estado normal - contadores, tempos, versões, configuração - enquanto nada está errado, porque toda comparação vale o que vale o lado mais fraco.
+
+**O caso:** o [e-mail de 500 milhas](/learn/the-500-mile-email). Um departamento não conseguia mandar correio além de umas 520 milhas, e o defeito era um tempo limite silenciosamente zerado por uma atualização. A razão de ter levado meses para ser caracterizado é que ninguém sabia dizer qual era o tempo de conexão *antes*. O departamento de estatística acabou produzindo a linha de base sozinho, na forma de um mapa.
+
+**E a versão mais dura:** o [Mars Climate Orbiter](/learn/mars-climate-orbiter-and-the-boundary), em que a especificação de interface estava correta e nada jamais comparou a especificação com o tráfego. Uma linha de base não é só artefato de desempenho. É qualquer expectativa registrada contra a qual uma observação posterior possa ser conferida.
+
+## 2. Um raio de dano, calculado antes da mudança
+
+**A prática:** [pensar o raio de dano](/learn/blast-radius-thinking-before-you-change-anything). Antes de uma mudança, perguntar não só se ela vai funcionar, mas até onde o estrago chega se não funcionar.
+
+**O caso:** o [NotPetya na Maersk](/learn/eternalblue-wannacry-notpetya). O malware alcançou toda máquina do parque em menos de duas horas porque a rede era plana e as credenciais administrativas eram reutilizadas. A empresa se recuperou porque uma queda de energia em Gana deixara um controlador de domínio desligado. Isso não é raio de dano; é sorte, e o custo inteiro do incidente foi fixado na primeira hora.
+
+**E a versão de projeto:** o [Therac-25](/learn/therac-25-and-defence-in-depth), em que a máquina anterior rodava software comparavelmente defeituoso e não feriu ninguém porque travas de hardware podiam contradizê-lo. Raio de dano é uma pergunta sobre o que uma resposta errada tem permissão de alcançar.
+
+## 3. Uma janela de mudança com um caminho de volta que de fato funciona
+
+**A prática:** [janelas de mudança que não viram incidente](/learn/change-windows-that-do-not-become-incidents). A maioria das paradas autoinfligidas são mudanças que deram errado sem um caminho limpo de volta.
+
+**O caso:** o [Knight Capital](/learn/knight-capital-and-the-rollback-that-made-it-worse), que é o argumento mais afiado disponível de que um caminho de volta *documentado* não é o mesmo que um *funcional*. Os engenheiros diagnosticaram corretamente e reverteram para a versão anterior - e a versão anterior continha o defeito, então a falha foi de um servidor para oito. Um rollback é uma implantação: para o que estou voltando, e isso contém a coisa que me machuca?
+
+**E o companheiro:** o [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired), em que código reutilizado carregava uma premissa vencida e uma rotina seguia rodando sem servir a propósito nenhum depois da decolagem. Código morto não é inerte, e uma janela de mudança é onde ele deveria ser removido.
+
+## 4. Um backup que não é alcançável pelo que está te atacando
+
+**A prática:** [backups e recuperação de ransomware](/learn/backups-and-ransomware-recovery). O ransomware transformou o backup de preocupação de disponibilidade em última linha de defesa, e os atacantes se adaptaram.
+
+**O caso:** o [ataque ao STJ](/learn/the-stj-ransomware-attack), em que o relato do tribunal diz que o backup sobreviveu e a cobertura de segurança diz que os backups foram destruídos. Seja qual for o certo, o caso gira em torno disso - e o número a guardar é que a recuperação levou **quinze dias com os recursos de um Estado**: polícia federal, inteligência do Exército e atenção política ilimitada. Qualquer organização que estime o próprio tempo de recuperação com orçamento menor deveria usar isso como piso.
+
+A instrução é a que o [NotPetya](/learn/eternalblue-wannacry-notpetya) fornece pela outra direção: um backup alcançável a partir da rede que está sendo cifrada não é backup. Cópias offline ou imutáveis, restaurações testadas e um tempo de recuperação documentado são as três coisas que decidem a duração da parada, e nenhuma se providencia depois.
+
+## 5. Uma fronteira que não depende do outro lado se comportar
+
+**A prática:** [segmentação, de VLANs a microssegmentação](/learn/network-segmentation-from-vlans-to-microsegmentation). Começou como conserto de desempenho e virou controle de segurança, e a versão de segurança faz outra pergunta: o que esta credencial alcança?
+
+**O caso:** a [Target](/learn/the-target-breach). O login do portal de faturamento de uma empreiteira de refrigeração alcançava os sistemas que processavam cartões. A pergunta útil depois desse caso não é *confiamos neste fornecedor*, e sim a mais estreita e respondível: **o que as credenciais deste fornecedor alcançam, e quem conferiu?** A maioria das organizações consegue listar seus fornecedores. Bem menos conseguem produzir, por fornecedor, o conjunto de sistemas que o acesso dele de fato toca.
+
+O complemento das cinco, e o artigo a ler depois de qualquer uma delas, é **[causa raiz é verbo, não substantivo](/learn/root-cause-is-a-verb-not-a-noun)**.
+
+## A sexta coisa, que não é uma prática
+
+Todo caso das duas páginas companheiras contém um momento em que alguém soube e nada se seguiu. Noventa e sete e-mails nomeando o componente noventa minutos antes da abertura. Alertas disparados durante uma instalação de malware. Pessoal de nível operacional inquieto com uma solução de navegação por quatro meses. Uma paciente insistindo que fora queimada.
+
+Não existe produto para isso. O que existe é uma resposta escrita a quatro perguntas, acordada enquanto nada está acontecendo:
+
+- Quem pode desconectar um segmento de produção sem esperar aprovação?
+- Para quem essa pessoa liga, e a que hora se espera que essa outra atenda?
+- O que se diz aos clientes antes de a investigação terminar, e quem diz?
+- O que teria de ser verdade para pararmos de operar, de despachar, ou tirarmos o serviço do ar?
+
+Uma organização que respondeu a essas tem um incidente. Uma que não respondeu tem uma improvisação, e o [registro da divulgação](/learn/the-disclosure-record) é em boa medida um catálogo de improvisações.
+
+## Por que o emparelhamento importa
+
+Nenhuma das cinco práticas é desconhecida. Aparecem em todo arcabouço, e perdem discussões de orçamento o tempo todo, porque um controle que impede algo não produz evidência de si mesmo - que é exatamente o problema do [Y2K](/learn/y2k-and-the-prevention-paradox).
+
+O caso é a evidência. *Precisamos de restaurações testadas* é uma preferência. *Um tribunal superior, com a polícia federal ajudando, levou quinze dias* é um argumento. Quem precisa financiar este trabalho deveria levar o par, e não a prática.

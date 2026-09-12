@@ -40,7 +40,12 @@ import { evaluateGate, type GateContext } from "../src/lib/api-gates";
 // Locale registry is the single source of truth (src/i18n/locales.ts). Imported
 // via a relative path because the Worker is outside src/ and the "@/" alias is
 // not in scope for wrangler's bundler.
-import { LOCALE_CODES, LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "../src/i18n/locales";
+import {
+  LOCALE_CODES,
+  LIVE_LOCALE_CODES,
+  AUTHORED_CONTENT_LOCALES,
+  DEFAULT_LOCALE,
+} from "../src/i18n/locales";
 
 import { record, type AnalyticsEnv } from "./analytics";
 import { handleStats, type StatsEnv } from "./stats";
@@ -325,6 +330,43 @@ export default {
             "Cache-Control": "no-store",
           },
         });
+      }
+    }
+
+    // ---- Unauthored long-form corpora (BEFORE the locale gate) -------------
+    // The Learn articles and the glossary definitions exist only in en and
+    // pt-BR. Rendering them for the other fourteen live locales meant 33,250
+    // pages of English text under non-English URLs - 41% of an asset manifest
+    // that Cloudflare caps at 100,000 per Worker version. They are no longer
+    // generated; this answers them instead.
+    //
+    // *** 302, NOT 301, AND THE DISTINCTION IS THE WHOLE POINT. ***
+    // A permanent redirect is cached by browsers for a long time. If German
+    // Learn articles are authored next year, every visitor who ever hit
+    // /de/learn/<slug> would keep being sent to English and would never see
+    // them. "Not translated YET" is the definition of a temporary redirect, and
+    // using the permanent one here would quietly foreclose the translation it
+    // is waiting for. Same reasoning as hiding the stub locales, 2026-09-10.
+    {
+      const seg0 = url.pathname.split("/")[1] ?? "";
+      const seg1 = url.pathname.split("/")[2] ?? "";
+      const isUnauthored =
+        LIVE_LOCALE_CODES.includes(seg0) &&
+        !(AUTHORED_CONTENT_LOCALES as readonly string[]).includes(seg0);
+      // Only the DETAIL pages move. The index pages (/xx/learn/, /xx/glossary/)
+      // still generate and stay localised: they are one page each, so they cost
+      // nothing worth saving, and redirecting them would break the navigation
+      // that leads a reader here in the first place.
+      const isCorpusDetail =
+        (seg1 === "learn" || seg1 === "glossary") &&
+        url.pathname.split("/").filter(Boolean).length > 2;
+      if (isUnauthored && isCorpusDetail) {
+        const rest = url.pathname.slice(seg0.length + 1) || "/";
+        const dest = `/${DEFAULT_LOCALE}${rest}${rest.endsWith("/") ? "" : "/"}`;
+        return Response.redirect(
+          new URL(`${dest}${url.search}`, url.origin).toString(),
+          302
+        );
       }
     }
 

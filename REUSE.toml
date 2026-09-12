@@ -74,3 +74,44 @@ path = "public/flags/**"
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2013 Panayiotis Lipiridis <https://github.com/lipis/flag-icons>"
 SPDX-License-Identifier = "MIT"
+
+# --- Third-party VENDOR WORDMARKS -------------------------------------------
+# public/img/marks/ holds vendor logos used NOMINATIVELY: to identify the
+# company a page is written about, and - the reason the set exists - to show the
+# mark that was official during the period the text covers, since this site's
+# history spans four decades. Each mark remains the property of its owner and is
+# NOT licensed under this repository's Apache-2.0 or CC-BY-4.0 terms. They are
+# held on the basis that the site author verified each file against the
+# respective vendor's brand guidelines (2026-09-09). See src/content/vendors/
+# marks.ts for the registry, the eras, and the use rules; scripts/check-marks.mjs
+# enforces the machine-checkable ones.
+[[annotations]]
+path = "public/img/marks/**"
+precedence = "override"
+SPDX-FileCopyrightText = "Each mark is the property of its respective owner"
+SPDX-License-Identifier = "LicenseRef-Trademark-NominativeUse"
+
+# --- Photographs of personal artefacts ---------------------------------------
+# public/img/artefacts/ holds photographs taken by the author of objects he
+# owns. The photograph is his; any trademark visible within it remains the
+# property of its owner. The 1996 Cabletron identity badge is published with the
+# identity-document number redacted.
+[[annotations]]
+path = "public/img/artefacts/**"
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Rodolfo Nützmann <https://ronutz.com>"
+SPDX-License-Identifier = "CC-BY-4.0"
+
+# --- Third-party diagrams ----------------------------------------------------
+# public/img/diagrams/ holds freely-licensed diagrams by other authors, used
+# with attribution. These are NOT under this repository's CC-BY-4.0: the
+# Extreme acquisition chart is CC BY-SA 4.0, whose SHARE-ALIKE term applies to
+# adaptations. It is reproduced unmodified beside text as a collection, not
+# adapted, so the surrounding content keeps its own licence - but the file
+# itself carries BY-SA and is marked as such here. The company marks WITHIN the
+# diagram belong to their owners; the licence covers the author's arrangement.
+[[annotations]]
+path = "public/img/diagrams/extreme-network-acquisitions.png"
+precedence = "override"
+SPDX-FileCopyrightText = "Stamau (Wikimedia Commons)"
+SPDX-License-Identifier = "CC-BY-SA-4.0"

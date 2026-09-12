@@ -15,6 +15,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { AUTHORED_CONTENT_LOCALES } from "@/i18n/locales";
 import {
   getGlossaryEntry,
   getAllGlossarySlugs,
@@ -34,7 +35,17 @@ const TOOL_NAME = new Map(CATALOGUE.map((t) => [t.slug, t.name]));
 /** Pre-generate every entry page for every locale at build time. */
 export function generateStaticParams() {
   const slugs = getAllGlossarySlugs();
-  return routing.locales.flatMap((locale) =>
+  // Only where the content is AUTHORED. Elsewhere the Worker redirects to
+  // English rather than shipping an English page under a non-English URL -
+  // see AUTHORED_CONTENT_LOCALES in src/i18n/locales.ts for the arithmetic.
+  // Intersected with what is actually being routed: AUTHORED_CONTENT_LOCALES is
+  // a fact about the CONTENT, routing.locales is the set being BUILT, and the
+  // pages that should exist are the overlap. Without this a single-locale
+  // verification build still emitted the whole pt-BR corpus, and dropping a
+  // locale from LIVE_LOCALES would leave these routes generating for it.
+  return AUTHORED_CONTENT_LOCALES.filter((l) =>
+    (routing.locales as readonly string[]).includes(l)
+  ).flatMap((locale) =>
     slugs.map((slug) => ({ locale, slug })),
   );
 }

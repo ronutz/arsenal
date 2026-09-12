@@ -1,0 +1,93 @@
+---
+slug: reflections-on-trusting-trust
+title: "Reflections on Trusting Trust: the 1984 lecture that predicted every supply chain attack since"
+summary: "Ken Thompson used his Turing Award lecture to explain how he had put a backdoor in the C compiler that would reinsert itself every time the compiler was rebuilt - and then deleted the evidence from the source. Reading the source would never find it. Forty-two years later there is exactly one method that formally defeats it, and the reason XZ Utils and 3CX worked is that almost nobody uses it."
+concepts: ["trusting trust", "ken thompson", "compiler", "supply chain attack", "reproducible builds", "diverse double-compiling", "toolchain", "bootstrapping"]
+relatedTools: []
+relatedArticles: ["there-is-no-perfect-code", "the-rfc-series", "memory-safety", "eternalblue-wannacry-notpetya"]
+category: security
+order: 121
+status: reviewed
+updated: "2026-09-08"
+---
+
+## The most alarming acceptance speech in computing
+
+Ken Thompson and Dennis Ritchie received the 1983 Turing Award for Unix. Turing lecturers usually reflect on a career. Thompson's, published in the Communications of the ACM in August 1984, opens by saying he feels he is receiving the honour for timing and serendipity as much as technical merit - and then describes, in a few pages, a way to compromise every program on a system that no amount of source code review could ever detect.
+
+He built it in three stages, and the third is the one that matters.
+
+**Stage one** is a program that prints its own source code. This is an old programming curiosity and it does nothing harmful; it exists in the lecture to establish that a program can contain a complete description of itself.
+
+**Stage two** is a compiler taught to recognise a particular piece of source code - the `login` program - and, when it sees it, to compile in a backdoor that accepts a password Thompson chose. Anyone reading the source of `login` would find nothing, because there is nothing there. The backdoor is added during compilation.
+
+**Stage three** is the move that makes it permanent. The compiler is also taught to recognise **when it is compiling itself**, and to reinsert both tricks - the `login` backdoor and the self-recognition - into the new compiler binary it produces.
+
+Once that compiler exists as a binary, the malicious source can be deleted. From then on the compiler's source is clean and always will be. Every time somebody rebuilds the compiler from that clean source, using the existing compiler, the new binary is infected again. The bug lives in the binary, is invisible in every source listing, and is passed forward indefinitely.
+
+Thompson's own moral is the sentence everyone quotes: you cannot trust code that you did not totally create yourself. His parenthesis is the one people forget, and it is better - especially code from companies that employ people like me.
+
+## Did he actually do it?
+
+Yes, in the sense that he wrote it; he described it as the cutest program he ever wrote. Whether it ever escaped is a question people kept asking, and in 2011 someone simply emailed him to ask. Thompson's answer was that it never made it out into the wild.
+
+That is his word, which is what the record contains, and it is the appropriate place to leave it. The point of the lecture was never that this particular compiler was out there. It was that the attack is possible, cheap, and undetectable by the method everyone uses to establish trust.
+
+## Why source review cannot save you
+
+This is the part to carry into any argument about open source and auditing, and it needs stating precisely, because it is easy to overclaim in both directions.
+
+Open source means the source can be read. It does not mean the binary you are running corresponds to the source that was read. Between the two sits a compiler, a linker, a build environment, an operating system and a chain of tools each of which was itself compiled by something. Thompson's attack lives in that gap, and the gap exists whether the project is open or closed.
+
+Note also that the same gap defeats the next line of defence. The [no-perfect-code article](/learn/there-is-no-perfect-code) records the Juniper case, in which a changed constant in a random number generator produced output that was *cryptographically indistinguishable* from the original - so testing the product's behaviour would not have found it either. Source review fails against Thompson; behavioural testing fails against Juniper. What remains is provenance: can you establish that this binary came from that source?
+
+## The one method that formally answers it
+
+For twenty years the honest answer was that you could not, and Thompson's regression looked infinite: to trust the compiler you must trust the compiler that built it, and so on backwards forever.
+
+David A. Wheeler broke it. He presented **Diverse Double-Compiling** at the ACSAC conference in 2005 and expanded it into a doctoral dissertation at George Mason University in 2009, titled *Fully Countering Trusting Trust through Diverse Double-Compiling*. Wheeler's own framing of the stakes is blunt: previously known countermeasures had been grossly inadequate, and if the attack could not be countered, attackers could quietly subvert entire classes of computer systems and gain complete control over financial, infrastructure, military and business systems worldwide.
+
+The insight is to use the compiler's determinism against it. Compile the compiler's source with a **second, entirely different** compiler - one that has no reason to share the first one's infection. The result is a functionally equivalent but differently built compiler. Now use *that* to compile the original compiler's source again. If the original compiler is honest, the binary produced matches the one you started with. If it was carrying Thompson's trick, it does not, because the trusted second compiler had no instruction to reinsert anything.
+
+It remains, as far as the literature records, the first and only method that formally closes the regression. Wheeler also points out that Thompson was not the first to raise it: an Air Force evaluation of Multics had made the same observation earlier.
+
+## The modern descendant: reproducible builds
+
+Diverse double-compiling is rigorous and rarely performed. Its practical cousin is now widespread and worth understanding as the operational answer.
+
+A **reproducible build** is one where the same source, built by anyone, at any time, on any conforming machine, produces a **bit-for-bit identical** artefact. That property sounds mundane and is not. If a build is reproducible, then many independent parties can build the same source and compare hashes, and a discrepancy proves that one of them was compromised. It converts the unanswerable question - is my toolchain honest? - into an answerable one: do enough independent builds agree?
+
+Getting there is unglamorous engineering: removing timestamps, sorting file orderings, eliminating build paths and hostnames from the output, pinning every dependency version. Debian, Arch, Tails, Bitcoin Core and an increasing number of projects do it. Most software does not, which is why the next section is possible.
+
+## Why this is the ancestor of the supply chain taxonomy
+
+Read Thompson again and every route in the [supply chain taxonomy](/glossary/supply-chain-attack) is a variation on the same observation: the thing you reviewed is not the thing that ran.
+
+**XZ Utils** is the closest modern relative. The backdoor was not in the git repository that everyone could read - it was in the release tarball, in build scripts, activated only when the package was built for a distribution. Anyone auditing the source on the project's own site would have found nothing wrong, exactly as Thompson specified.
+
+**3CX** is the other half: the source was fine and the *build environment* was compromised, so the output was malicious and correctly signed. The signature attested that the binary came from the pipeline it claimed to come from; the pipeline was the thing that had been taken.
+
+And the **Juniper ScreenOS** case is the cryptographic version, in which even the output was indistinguishable from correct.
+
+## What a practitioner should actually do
+
+Nobody is going to diverse-double-compile their toolchain, and pretending otherwise wastes the reader's time. The transferable practices are smaller and real.
+
+**Know what you build from, and check that it matches what upstream published.** The XZ backdoor was in the tarball and not the repository; comparing the two would have shown a difference. Very few people compare.
+
+**Prefer projects that produce reproducible builds**, and say so in procurement questions. It is a concrete, checkable property, unlike most security claims on a datasheet.
+
+**Treat the build system as production infrastructure**, because it is. It holds signing keys, it has network access, it runs code from dependencies, and a compromise of it is a compromise of everything it has ever shipped. Most organisations protect the production servers and leave the build server to the team that needed it.
+
+**And remember which question a signature answers.** It says a binary came out of a particular pipeline. It says nothing whatever about whether the pipeline was honest - which is the sentence Thompson wrote in 1984, restated in the vocabulary of 2026.
+
+## Sources
+
+- [Ken Thompson, "Reflections on Trusting Trust", Turing Award lecture, Communications of the ACM volume 27 number 8, August 1984: the subtitle asks to what extent one should trust a statement that a program is free of Trojan horses, and suggests it may be more important to trust the people who wrote the software; the lecture opens with his remark about receiving the honour for timing and serendipity as much as technical merit](https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf)
+- [Carnegie Mellon summary of the paper: Thompson decomposes the attack into three stages, the first being a C program able to reproduce itself](https://www.cs.cmu.edu/afs/cs/academic/class/15712-s99/www/summaries/Thompson84.html)
+- [On the mechanism: Thompson created a version of the C compiler that, presented with the source of the login program, would compile in a backdoor; he also added the ability to recognise when it was recompiling itself, so the new compiler would contain both the login backdoor and the code to insert both Trojans into a newly compiled compiler, and the compiler's source would never show that either existed](https://aeb.win.tue.nl/linux/hh/thompson/trust.html)
+- [Center Consulting's summary: the final move is teaching the compiler to recognise when it is compiling itself and reinsert both pieces of trickery; once done, the malicious source can be deleted, the bug lives on in the compiler binary, invisible in every source listing, and is passed forward each time the compiler compiles a new version of itself](https://www.centerconsulting.com/code-library/papers/reflections-on-trusting-trust)
+- [Micah Kepe, quoting a 2011 email exchange in which Ezra Lalonde asked Thompson directly whether the Trojan compiler had actually been built and distributed: according to Thompson, it never made it out into the wild; the paper's moral is that you cannot trust code you did not totally create yourself, "especially code from companies that employ people like me"; Thompson called it the cutest program he ever wrote](https://micahkepe.com/blog/thompson-trojan-horse/)
+- [David A. Wheeler, "Fully Countering Trusting Trust through Diverse Double-Compiling": an Air Force evaluation of Multics and Thompson's Turing lecture showed that compilers can be subverted to insert Trojan horses into critical software including themselves; if the attack goes undetected, even complete analysis of a system's source code will not find the malicious code that is running; previously known countermeasures had been grossly inadequate, and if the attack cannot be countered attackers can quietly subvert entire classes of computer systems](https://www.researchgate.net/publication/245578769_Fully_Countering_Trusting_Trust_through_Diverse_Double-Compiling)
+- [On Wheeler's work: the 2005 ACSAC paper "Countering Trusting Trust through Diverse Double-Compiling" was expanded into his 2009 George Mason University doctoral dissertation, and it remains the first and so far the only method that formally breaks Thompson's infinite regression, turning the compiler's own determinism against it](https://www.sumitchouhan.com/when-the-compiler-lies-lessons-from-reflections-on-trusting-trust-and-the-science-of-verifiable-software)
+- [Academic summary of the attack's significance: the brilliance lies in its ability to self-propagate, since the compromised compiler recognises and reinserts the backdoor into new compiler versions even if the malicious code is removed from the source; Thompson's work highlights that software tools can be compromised in ways that evade traditional inspection and that trust must extend beyond source code to the entire toolchain, laying the groundwork for understanding software supply chain attacks](https://arxiv.org/pdf/2508.12054)

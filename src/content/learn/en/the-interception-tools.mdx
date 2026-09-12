@@ -1,0 +1,74 @@
+---
+slug: the-interception-tools
+title: "Fiddler, Burp, Cain and the rest: the tools that read a conversation they were not part of"
+summary: "A debugging proxy, a penetration tester's suite, a password recovery program from a one-man Italian site, and a corporate inspection appliance all perform the same operation - terminating a connection the two endpoints believe is theirs. What separates them is not technique but consent and disclosure. Where each one sits, what defeats it, and why the tool everyone learned on has vanished from the web."
+concepts: ["man-in-the-middle", "proxy", "fiddler", "burp suite", "cain and abel", "arp poisoning", "certificate pinning", "ssl inspection"]
+relatedTools: []
+relatedArticles: ["the-named-tls-attacks", "there-is-no-perfect-code", "certificate-validation", "the-ssl-vpn-is-being-dismantled"]
+category: security
+order: 118
+status: reviewed
+updated: "2026-09-08"
+---
+
+The capture side of the same discipline - BPF, libpcap, tcpdump and the program most people know - is in **[Wireshark and the capture stack](/learn/wireshark-and-the-capture-stack)**; the requests these tools intercept can be replayed by hand, as **[raw HTTP requests and how to replay them](/learn/raw-http-requests-and-how-to-replay-them)** shows.
+
+## One operation, three positions
+
+Every tool in this article does the same thing. It places itself between two parties who believe they are talking to each other, terminates the connection from each side, and reads what passes. That is the whole of it. A developer inspecting why an application sends the wrong header, a penetration tester probing an authorisation flaw, an employer enforcing a data policy, and an attacker stealing a session cookie are performing an identical technical operation, and no property of the traffic distinguishes them.
+
+What distinguishes them is who agreed, and who was told. That sentence is the reason this article exists, and it is worth carrying into any conversation where someone insists a technique is inherently offensive or inherently defensive. The tools differ mainly in **where** they sit.
+
+## On the wire, by lying about the local network
+
+The oldest position is the local network segment, and it works because Ethernet's address resolution has no authentication at all. A machine asks who owns an address; anything on the segment may answer; the asker believes the answer. Nothing in the protocol prevents a third machine from replying first and claiming to be the router.
+
+The program that taught a generation how this works was **Cain & Abel**, written by Massimiliano Montoro and published from a one-man Italian site, oxid.it. The name is not a joke about betrayal: it is two programs. Cain is the graphical tool the operator runs; Abel is a Windows service installed on a target machine that gives a remote console. It began as a utility to recover passwords from Windows 9x password files and accumulated, over a decade, sniffing, dictionary and brute-force cracking with rainbow tables, voice-call recording, wireless key recovery, extraction of cached and stored credentials, a man-in-the-middle for remote desktop sessions from Montoro's own 2005 advisory, and the feature it is remembered for, which he called ARP Poison Routing. Antivirus products shipped signatures for it. The last release, 4.9.56, is dated 7 April 2014.
+
+The site is gone. The documentation - which was unusually good, explaining the mechanisms rather than just listing buttons, and which taught a large number of practitioners how switched networks actually behave - now exists only in the Internet Archive. That is worth noting for the same reason the [edX article](/learn/edx) notes a deleted announcement: material that formed a profession can disappear because one person stopped paying for hosting.
+
+Montoro said something in a 2009 interview that belongs in the [there-is-no-perfect-code](/learn/there-is-no-perfect-code) argument. Vendors had shipped hundreds of patches, he observed, but even with all of them applied his tool could still recover Windows passwords and still intercept remote desktop sessions through the 2005 flaw, because the address resolution protocol remained stateless and without authentication - and he had never come across a company that had taken into account the mitigation of the risks arising from it. That was seventeen years ago, and the protocol has not changed. The mitigations exist - dynamic ARP inspection, DHCP snooping, port security, 802.1X - and they are switch features that must be deliberately turned on.
+
+The same position is occupied today by **ettercap** and its successor **bettercap**, which do the same work with modern packaging.
+
+## In the client, by being asked
+
+The second position requires no attack at all, and it is where practitioners spend their working lives. The user configures their own machine to send traffic through a local proxy, and installs that proxy's certificate authority into their own trust store. From then on the proxy issues certificates for whatever site is requested, the browser accepts them because it was told to, and every request and response is readable and editable.
+
+**Fiddler** is the archetype. Eric Lawrence built it while at Microsoft, where he spent over a decade before working on Chrome's security team and then returning to Microsoft for Edge; the tool was later acquired by Telerik and is now part of Progress. Its audience was always developers and testers rather than security specialists: watch the traffic, find the malformed header, replay the request, fake the slow connection.
+
+**Burp Suite** came from the other direction. Dafydd Stuttard, a security consultant in Knutsford, wrote tools to speed up the routine parts of his own work and gave them arbitrary names; the one called Burp - for no particular reason, and early versions made actual burping sounds - was released in June 2003 and grew into the suite that is now the default for web application testing. **OWASP ZAP** occupies the same space as free software, and **mitmproxy** does it from a terminal, scriptable in Python, which makes it the choice when the task is automation rather than inspection.
+
+None of these is an attack tool in any technical sense. They intercept because the user asked them to. The certificate warning that would otherwise appear is silenced by the user's own decision to trust the proxy.
+
+## In the network, by policy
+
+The third position is the same operation performed by an organisation on its own traffic. An inspection appliance or cloud service holds a certificate authority that is pushed to every managed device, and from then on it can terminate, inspect and re-encrypt outbound sessions - to enforce data-loss rules, to scan for malware, to log where people go.
+
+Technically this is indistinguishable from the second position, and legally and ethically it is not, because the consent is institutional rather than individual and the disclosure varies from a clear policy to nothing at all. It also concentrates risk in a specific way worth stating: the appliance now holds the plaintext of every session it inspects and a private key trusted by every managed device, which makes it the single most valuable object on the network. The tools this site provides for examining certificates will show a corporate inspection certificate for what it is, which is often how an employee first discovers the arrangement exists.
+
+## What defeats interception, and what breaks when it does
+
+**Certificate pinning** is the direct answer. An application that ships with the expected certificate or public key of its server refuses anything else, including a certificate issued by an authority the operating system trusts. This is why a mobile application often cannot be inspected with a proxy while the browser on the same phone can. It is also why pinning and corporate inspection are in permanent conflict: an application that pins correctly will simply fail behind an inspecting proxy, and the resolution is always an exception rather than a technical reconciliation.
+
+**HTTP Strict Transport Security** removes the downgrade path that made the older `sslstrip` technique work - rewriting links from HTTPS to HTTP before the user ever sees them - by instructing the browser never to use plain HTTP for that site again.
+
+**Mutual TLS** defeats it from the other side: the server demands a client certificate the proxy does not have.
+
+**And TLS 1.3 narrowed what an observer sees without breaking anything**, by encrypting more of the handshake. Encrypted Client Hello, where deployed, removes the last plaintext hint of which site is being visited - which is a privacy improvement and, simultaneously, the end of the name-based filtering many organisations depend on. That tension has no clean resolution and is worth understanding before it arrives as an incident.
+
+## The line that actually matters
+
+There is no technical property that separates the debugger from the auditor from the attacker. The proxy does not know why it was started. What separates them is that the developer interception was requested by the person whose traffic it is, the corporate interception was disclosed in a policy the employee accepted, the penetration test was authorised in writing with a defined scope, and the attack was none of those.
+
+That is a weaker foundation than most people would like, and it is the actual one. It is why authorisation letters exist, why a scope document names addresses and dates, and why the professional discipline around these tools is procedural rather than technical. A practitioner who is clear about that will explain it better than one who pretends there is a category of tool that cannot be misused - and, being clear about it, will also recognise the corporate inspection appliance and the attacker's ARP reply as the same operation, differing in the answer to one question: who agreed to this, and were they told?
+
+## Sources
+
+- [Wikipedia, Cain and Abel: a password recovery tool for Windows by Massimiliano Montoro and Sean Babcock, recovering passwords by network sniffing, dictionary, brute-force and cryptanalysis attacks, recording VoIP conversations, revealing cached passwords and analysing routing protocols; the last version, 4.9.56, dates from 7 April 2014, and the oxid.it site is available through the Internet Archive](https://en.wikipedia.org/wiki/Cain_and_Abel_(software))
+- [Interview with Massimiliano Montoro, 2009: he began the tool to recover passwords from Windows 9x PWL files; Cain is the graphical interface and Abel the Windows service providing a remote console; even with all vendor patches applied the tool could still crack Windows passwords and perform man-in-the-middle attacks on remote desktop sessions using the vulnerability he published in 2005, because the address resolution protocol is still stateless and without authentication, and he had never come across a company that took into account the mitigation of those risks](https://www.digital-forensics.it/interview-with-massimiliano-montoro-author-of-cain-abel/)
+- [Eric Lawrence's own biography: he created Fiddler, spent over a decade at Microsoft, spent two years on the Chrome Security team working to bring HTTPS everywhere, returned to Microsoft in 2018 for Edge networking, and previously blogged on Telerik's Fiddler blog](https://github.com/ericlaw1979/ericlaw1979/blob/master/README.md)
+- [PortSwigger's own history: Dafydd Stuttard writes the first version of Burp, with actual burping sounds, and Burp Suite v1.0 launches including Burp Proxy, Spider and Repeater](https://portswigger.net/about)
+- [Dafydd Stuttard, "Burp through the ages", October 2013: Burp v1.0 released June 2003, the first incarnation of the Intruder tool](https://portswigger.net/blog/burp-through-the-ages)
+- [TechCrunch, June 2024: Stuttard was a security consultant in Knutsford, Cheshire, building tools to speed up routine parts of his work and giving each a random name; the one named Burp, for no specific reason at all, was shared with others in his community](https://techcrunch.com/2024/06/27/portswigger-the-company-behind-the-burp-suite-of-security-testing-tools-swallows-112m/)
+- [Grokipedia, Burp Suite: originated as individual tools created by Stuttard in 2003 to automate his own web security testing, with the first release of Burp Intruder and Burp Proxy that year, unified into Burp Suite version 1.0 in 2005 and adding automated scanning in 2008](https://grokipedia.com/page/Burp_Suite)

@@ -122,6 +122,27 @@ export const LIVE_LOCALE_CODES = LIVE_LOCALES.map((l) => l.code);
 
 /** How many locales carry real translations. Derived from LIVE_LOCALES so the
  *  colophon's language count is always accurate and never hand-edited. */
+/**
+ * Locales that actually CARRY the authored long-form corpora - the Learn
+ * articles and the glossary definitions - rather than falling back to English.
+ *
+ * WHY THIS EXISTS (PRIME, 2026-09-10). Those two families are half the site by
+ * page count: 1,704 glossary pages and 671 Learn articles per locale, out of
+ * 3,383. Learn MDX exists only under src/content/learn/{en,pt-BR}, and only the
+ * en and pt-BR message packs carry glossary definitions - de.json has none. So
+ * rendering them for the other fourteen live locales produced 33,250 pages of
+ * ENGLISH TEXT UNDER NON-ENGLISH URLs, 41% of the whole asset manifest, and the
+ * manifest is capped at 100,000 files per Worker version.
+ *
+ * Those routes are no longer generated outside these locales; worker/index.ts
+ * answers them with a TEMPORARY redirect to the English page. Temporary, not
+ * permanent, deliberately: see the redirect for the reasoning.
+ *
+ * Adding a locale here is the whole promotion step - author the content, add
+ * the code, and the pages generate.
+ */
+export const AUTHORED_CONTENT_LOCALES = ["en", "pt-BR"] as const;
+
 export const TRANSLATED_LOCALE_COUNT = LIVE_LOCALES.length;
 
 /** Look up one locale's metadata by code; undefined if not registered. */

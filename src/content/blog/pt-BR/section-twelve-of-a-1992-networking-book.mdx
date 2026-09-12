@@ -1,0 +1,76 @@
+---
+slug: section-twelve-of-a-1992-networking-book
+title: "Seção 12 de um livro de redes de 1992: 'Gerência de Redes baseada em Inteligência Artificial'"
+summary: "Minha primeira tarefa como estagiário em 1996 foi ler de capa a capa um guia de redes locais da Cabletron. Ele fora publicado em 1992. Seu sumário lista dezenove seções, e a décima segunda é sobre gerenciar redes com inteligência artificial - baseada em regras contra modelagem indutiva. Tenho o livro. Trinta e quatro anos depois passo a semana ensinando os produtos que aquela discussão acabou produzindo, e não tenho certeza de que a discussão andou tanto quanto pensamos."
+author: "Rodolfo Nützmann"
+date: "2026-09-09"
+tags: ["ai", "networking", "history"]
+category: networking
+status: reviewed
+updated: "2026-09-09"
+relatedArticles: ["obsolescence", "the-industry-from-inside", "there-is-no-perfect-code", "bridge-switch-family-history"]
+---
+
+## A primeira tarefa
+
+Em 1996 comecei como estagiário de engenharia de redes de campo na Cabletron Systems no Brasil. O estágio virou um emprego de quatro anos e depois uma carreira, mas no primeiro dia a tarefa era menor que tudo isso: leia este livro, inteiro.
+
+O livro era *The Cabletron Systems Guide to Local Area Networking*, publicado em 1992. É um brochura com um desenho na capa de um homem de camisa e gravata, mangas arregaçadas, carregando uma pasta debaixo de um braço e lendo outra. Ainda o tenho. A capa está branca e riscada e a lombada amoleceu, que é o que acontece com um livro que alguém de fato leu.
+
+A introdução é desarmadamente honesta sobre por que ele existe:
+
+> Hoje todos enfrentamos o mesmo problema, a falta de pessoal qualificado, especificamente na área de Redes Locais. Ontem você tinha acabado de entender a diferença entre uma bridge e um roteador e aparece um brouter. Se eu, que já faço parte da indústria, estou tendo dificuldade, que chance tem seu pessoal novo?
+
+E na margem ao lado desse parágrafo, junto a um desenho de um homem afundado numa poltrona cercado de livros caídos:
+
+> Não há horas suficientes no dia para fazer o trabalho e acompanhar as mudanças tecnológicas.
+
+Era essa a autodescrição da indústria em 1992. Eu não mudaria uma palavra para publicar hoje.
+
+## O sumário
+
+Dezenove seções. Algumas são exatamente a arqueologia que se esperaria: **Seção 4, Introdução ao FDDI**. **Seção 5, CuDDI - a solução FDDI em cobre**, que observa que o padrão "está perto da ratificação" e alerta sobre um grupo não padronizado, o "Green Book". **Seção 14, Rede SNA numa solução multiprotocolo**. **Seção 15**, que afirma que redes SNA respondem por cinquenta por cento das redes instaladas. Esse número é a frase mais 1992 do livro.
+
+Outras não envelheceram nada. **Seção 2, O cabo é a LAN**. **Seção 3, Revisão de Ethernet e Token Ring** - uma dessas duas continua debaixo da mesa dos meus alunos. **Seção 9, LANs sem fio**, que diz que redes sem cabeamento já são possíveis mas a disponibilidade de banda está freando a adoção, e que ainda assim há aplicações para as quais o sem fio é a solução correta. **Seção 10, Gerência de Redes - uma chance de acertar**. **Seção 16, Uma estratégia de rede baseada em fundamentos, não em moda**, que é um título melhor que a maior parte do que li este ano.
+
+E então a **Seção 12**.
+
+## "Gerência de Redes baseada em Inteligência Artificial"
+
+Eis a entrada, na íntegra, do sumário de um livro publicado em 1992:
+
+> Seguindo a Gerência de Redes, há um movimento importante para introduzir Inteligência Artificial na gestão de uma rede. Esta seção discute a opção de IA Baseada em Regras contra IA Baseada em Modelagem Indutiva.
+
+Um movimento importante. Em 1992. Com uma taxonomia já pronta: baseada em regras de um lado, modelagem indutiva - aprender o comportamento da rede a partir dos próprios dados dela em vez de receber as regras de antemão - do outro. Não é nota de rodapé nem posfácio especulativo. É a seção doze de dezenove, entre SNMP e RMON de um lado e tecnologia de hubs do outro, tratada como parte comum do assunto que se esperava que um contratado novo aprendesse.
+
+Li aquilo em 1996 e, para ser honesto, não lembro de nada. Eu tinha vinte anos e as seções de que precisava eram as sobre cabo.
+
+## O que faço com isso agora
+
+Passo minha semana de trabalho ensinando plataformas de segurança e de rede cujo marketing atual repousa inteiramente na segunda metade daquela taxonomia. Análise comportamental. Linhas de base aprendidas. Detecção de anomalia que dispensa uma regra escrita de antemão. Todo fabricante que sou autorizado a ensinar entrega alguma versão disso, e todos apresentam como novidade.
+
+Não é novidade. É a seção doze.
+
+Quero ter cuidado aqui, porque há uma versão barata desta observação e não quero fazê-la. A versão barata diz que nada nunca muda e que todos vendem a mesma coisa em embalagem nova. É falso, e quem já viu um motor comportamental moderno pegar algo que um conjunto de regras teria deixado passar sabe que é falso. Os modelos estão enormemente melhores. Os dados disponíveis a eles estão enormemente melhores. O poder computacional não é comparável. Algo real aconteceu entre 1992 e agora.
+
+A versão honesta é mais estreita e, acho, mais útil: **a discussão não andou.** O livro de 1992 a enquadrou como regras contra modelagem indutiva, e o enquadramento continua esse. Todo profissional que ensino continua escolhendo, na prática, entre um controle que consegue ler e prever e um controle que se sai melhor mas não sabe dizer por quê. O [cânone das falhas](/learn/how-systems-fail) deste site está cheio de sistemas que fizeram exatamente o que foram configurados para fazer, e a razão de um conjunto de regras sobreviver em produção ao lado de um motor mais esperto é que, quando o motor mais esperto erra às três da manhã, alguém precisa conseguir dizer o que acontece se desligá-lo.
+
+Isso não é um problema de 1992 nem de 2026. É o problema, e o livro o nomeou antes de eu saber dirigir.
+
+## Do que o livro é de fato evidência
+
+Duas coisas, e elas puxam em direções opostas.
+
+**A obsolescência é real e é total.** O CuDDI não aconteceu. O FDDI é peça de museu. O grupo "Green Book" não é nem lembrança. O SNA caiu de metade das redes instaladas a uma curiosidade. Quase todo fato técnico específico daquele livro está errado hoje, e escrevi [um artigo neste site](/learn/obsolescence) sobre como esta indústria erra feio ao prever o que vai morrer e o que não vai - declara encerrado o que sobrevive décadas à declaração, e trata como permanente o que some em cinco anos. Este livro é um exemplo completo dos dois erros num volume só.
+
+**E o formato está inteiramente intacto.** Não há horas suficientes no dia. Não há pessoal qualificado suficiente. Um padrão perto da ratificação com uma facção não padronizada. Fundamentos contra moda. Regras contra aprendizado. São as mesmas conversas que tenho com alunos em 2026, e já eram velhas quando aquele livro foi impresso.
+
+É por isso que o guardo, e por isso que a tarefa era boa. Um livro de fatos todos errados acaba sendo um jeito excelente de aprender que partes do ofício são fatos e que partes são o ofício.
+
+## A parte que eu não esperava
+
+Faço isto há trinta anos, e até pouco tempo eu diria que o fio condutor era a tecnologia. Relendo aquele sumário para escrever este texto, não acho que seja. O que o livro de 1992 temia, na introdução, nas margens e no desenho do homem soterrado pela própria leitura, eram **pessoas**: que não houvesse gente suficiente que soubesse aquilo, que quem sabia não conseguisse acompanhar, e que alguém tivesse de ensinar os novos.
+
+A resposta da Cabletron foi escrever um livro e entregá-lo a um estagiário.
+
+Trinta anos depois isso ainda é, mais ou menos, o meu trabalho.

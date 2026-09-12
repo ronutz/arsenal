@@ -93,7 +93,19 @@ const problems = [];
 
 // --- MDX prose -------------------------------------------------------------
 // Same per-string proximity rule, applied to article bodies.
-const mdxDirs = ["src/content/learn/en", "src/content/learn/pt-BR"];
+// Learn AND the blog. The blog was two posts when this guard was written and is
+// now nine, and it is the surface where a claim of this kind would actually be
+// made: the RELATIONSHIP vocabulary above is FIRST PERSON ("i teach", "i am
+// authorized"), which barely occurs in Learn's impersonal reference prose but
+// is the blog's native register. A guard tuned for first-person claims that
+// does not read the first-person corpus is aimed at the wrong surface.
+// (ANVIL 2026-09-09, for PRIME's ratification.)
+const mdxDirs = [
+  "src/content/learn/en",
+  "src/content/learn/pt-BR",
+  "src/content/blog/en",
+  "src/content/blog/pt-BR",
+];
 for (const dir of mdxDirs) {
   if (!fs.existsSync(dir)) continue;
   for (const name of fs.readdirSync(dir)) {

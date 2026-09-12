@@ -1,0 +1,65 @@
+---
+slug: eternalblue-wannacry-notpetya
+title: "EternalBlue, WannaCry, NotPetya: o ano em que um exploit roubado foi trabalhar para todo mundo"
+summary: "Em abril de 2017 um grupo anônimo publicou um exploit funcional da NSA para um protocolo que roda em toda máquina Windows do mundo. A Microsoft o tinha corrigido um mês antes. Em oito semanas ele moveu os dois incidentes cibernéticos mais caros da história - um parado por um pesquisador que registrou um domínio de dez dólares, o outro imparável porque nunca foi feito para ser parado."
+concepts: ["shadow brokers", "eternalblue", "wannacry", "notpetya", "smb", "ms17-010", "ransomware", "supply chain attack"]
+relatedTools: []
+relatedArticles: ["stuxnet-and-the-first-cyberweapon", "the-named-tls-attacks", "electronic-frontier-foundation"]
+category: security
+order: 108
+status: reviewed
+updated: "2026-09-07"
+---
+
+## O vazamento
+
+Em 13 de agosto de 2016 uma entidade que se chamava Shadow Brokers anunciou ter roubado as ferramentas do Equation Group - a unidade ofensiva dentro da National Security Agency (NSA) dos Estados Unidos - e que as leiloaria. Ninguém deu lance sério. Nos meses seguintes o grupo publicou em parcelas, provocando num inglês macarrônico, e em 14 de abril de 2017 soltou o arquivo que importava, sob o título "Lost in Translation". Continha um exploit funcional, de codinome EternalBlue, para uma falha no Server Message Block versão 1 (SMBv1), o protocolo de compartilhamento de arquivos habilitado por padrão no Windows desde os anos 1990.
+
+Quem eles eram nunca foi estabelecido. O que importa ao registro é a cronologia. A Microsoft emitira a correção, MS17-010, em 14 de março de 2017 - um mês antes de o exploit ser público - e o fizera, nas palavras dela, depois de receber informação de um terceiro. A leitura pública mais crível é que a NSA, sabendo que suas ferramentas tinham sumido, avisou o fabricante. É o formato inteiro do debate sobre divulgação de vulnerabilidades numa sequência só: uma agência achou uma falha num protocolo que roda em toda máquina Windows do planeta, guardou-a por anos para usá-la, e a divulgou só quando foi roubada. A correção existiu por cinquenta e nove dias antes de importar. Milhões de máquinas não a tinham.
+
+## WannaCry, 12 de maio de 2017
+
+A primeira coisa a usar o EternalBlue em escala foi um ransomware com um worm acoplado. Ele cifrava arquivos, pedia 300 dólares em Bitcoin e - ao contrário do ransomware comum, que chega por e-mail e fica onde cai - varria em busca de outras máquinas com a porta 445 aberta e as infectava sem que ninguém clicasse em nada. Alcançou entre 200 mil e 300 mil computadores em mais de 150 países num dia. Na Inglaterra, 80 dos 236 trusts do National Health Service e quase 600 clínicas gerais foram afetados; cerca de 19 mil consultas e cirurgias foram canceladas; ambulâncias foram desviadas. Renault, Nissan, Telefónica, Deutsche Bahn e FedEx foram atingidas.
+
+Parou por um motivo incomum. Marcus Hutchins, pesquisador britânico de 22 anos, fez engenharia reversa da amostra, notou que ela consultava um domínio longo e não registrado antes de fazer qualquer coisa, e o registrou por uns dez dólares, esperando só drenar o tráfego para análise. A consulta era um interruptor de emergência: se o domínio resolvesse, o malware saía. Ele desativou a campanha por acidente, no sentido de não saber que era isso que estava fazendo, e por competência, no sentido de que ninguém mais tinha olhado. Sua própria reação, publicada no dia seguinte, se chamava "Como parar acidentalmente um ataque cibernético global".
+
+Duas coisas se seguem, e andam juntas. Os Estados Unidos e o Reino Unido atribuíram formalmente o WannaCry à Coreia do Norte em dezembro de 2017. E em agosto do mesmo ano Hutchins foi preso em Las Vegas por um malware que escrevera anos antes, adolescente; declarou-se culpado em 2019 e foi sentenciado à pena já cumprida. A pessoa que parou o pior worm da década e a pessoa processada por escrever malware bancário eram a mesma pessoa, e os dois fatos são verdadeiros.
+
+## NotPetya, 27 de junho de 2017
+
+Seis semanas depois algo usou o EternalBlue de novo, e esse não era ransomware.
+
+Entrou pelo mecanismo de atualização do M.E.Doc, o software de contabilidade que quase toda empresa que declara impostos na Ucrânia é obrigada a usar, feito por uma pequena empresa familiar chamada Linkos Group. Os atacantes estavam dentro dos servidores dessa empresa havia meses. Quando a atualização envenenada saiu, ela pousou simultaneamente dentro de bancos, ministérios, da rede elétrica, do aeroporto, do metrô e dos monitores de radiação de Chernobyl - e dentro de toda multinacional com escritório ucraniano. Esta é a rota um da [taxonomia de cadeia de suprimento](/glossary/supply-chain-attack) - possuir o fornecedor - executada contra um país.
+
+Uma vez dentro de uma rede, não precisava do EternalBlue para continuar andando. Usava também o EternalRomance e, com mais eficácia, roubo de credenciais no estilo Mimikatz com as ferramentas comuns de administração do Windows, PsExec e WMIC, o que significava que uma máquina totalmente corrigida podia ser tomada pelas credenciais roubadas de um administrador. Depois sobrescrevia o registro mestre de inicialização. Exibia um pedido de resgate, mas a "chave de instalação" era dado aleatório: não havia chave, nem decifragem, nem como pagar por uma. Era destruição vestida de extorsão.
+
+Os custos são o que fazem dele o verbete que é. A Maersk, que move cerca de um quinto dos contêineres do mundo, perdeu 4 mil servidores, 45 mil PCs e 2.500 aplicações, e reconstruiu em dez dias só porque uma queda de energia em Gana deixara um controlador de domínio desligado com a última cópia sobrevivente do seu Active Directory; a perda foi de 250 a 300 milhões de dólares. A da Merck, uns 870 milhões. A da TNT, unidade da FedEx, 400 milhões. Mondelez, Reckitt Benckiser, Saint-Gobain e a própria economia ucraniana levaram o resto. Em fevereiro de 2018 a Casa Branca o chamou de o ataque cibernético mais destrutivo e caro da história, pôs o total perto de 10 bilhões de dólares e o atribuiu aos militares russos; o National Cyber Security Centre do Reino Unido disse o mesmo, nomeando o GRU.
+
+Aí as seguradoras se recusaram a pagar. As apólices da Mondelez e da Merck excluíam "ação hostil ou bélica de um governo ou poder soberano", e as seguradoras argumentaram que um ataque atribuído a um Estado era exatamente isso. A Merck ganhou em primeira instância e na apelação em Nova Jersey em 2023, entendendo o tribunal que a exclusão sempre significara conflito armado e nunca fora reescrita para operações cibernéticas; a Mondelez fez acordo. A exclusão de guerra foi reescrita no mercado inteiro desde então, e toda apólice de seguro cibernético vendida hoje tem a redação que tem por causa de um programa ucraniano de impostos.
+
+## O que um profissional deve tirar disso
+
+**O SMBv1 tinha trinta anos e vinha habilitado por padrão.** A Microsoft começou a desligá-lo no Windows 10 em 2017 e hoje ele vem desligado em todo lugar, mas a razão de ter sobrevivido tanto é a razão pela qual coisas velhas sempre sobrevivem: alguma coisa, em algum lugar, ainda o usava. A pergunta de auditoria não é se o SMBv1 é necessário; é qual máquina ainda o fala, e a mesma pergunta vale para todo protocolo deixado ligado por compatibilidade - que é o argumento que os [ataques nomeados ao TLS](/learn/the-named-tls-attacks) fazem sobre cifras de exportação e SSL 2.0.
+
+**Corrigir não é o mesmo que estar corrigido.** O MS17-010 esteve disponível por dois meses antes do WannaCry e três antes do NotPetya. As organizações que caíram não estavam desavisadas; estavam impedidas - por uma janela de mudança, uma dependência sem suporte, um sistema embarcado sem dono. O NHS rodava Windows XP em equipamento médico cujos fabricantes não tinham homologado nada mais novo.
+
+**Uma máquina corrigida ainda pode cair.** A propagação mais eficaz do NotPetya foi roubo de credenciais mais ferramentas legítimas de administração. Redes planas e senhas de administrador local reutilizadas transformaram um host comprometido num parque inteiro. Segmentação e credenciais locais únicas teriam limitado o que a correção não podia.
+
+**O raio de dano de um canal de atualização é a base inteira de clientes.** O M.E.Doc tem o mesmo formato do [comprometimento da 3CX](/industry/3cx), do [arquivo de padrões da Trend Micro](/industry/trend-micro) e da porta dos fundos do XZ: o mecanismo que mantém o software atual é o mecanismo que pode distribuir qualquer coisa, instantaneamente, a todos que confiam nele.
+
+**E um exploit não fica onde foi feito.** A NSA guardou o EternalBlue por anos, no julgamento de que seu valor ofensivo excedia o risco de a falha ser achada por outra pessoa. A falha não foi achada por outra pessoa. O exploit foi roubado, publicado e usado em oito semanas contra hospitais, portos e redes elétricas - por dois Estados diferentes, para dois propósitos diferentes, nenhum deles aquele para o qual foi escrito.
+
+## Fontes
+
+- [Wikipedia, EternalBlue: desenvolvido pela NSA, vazado pelos Shadow Brokers em 14 de abril de 2017 e usado no WannaCry em 12 de maio e no NotPetya em 27 de junho; o MS17-010 de 14 de março de 2017 corrigiu a falha do SMBv1, tendo a empresa sido informada por um terceiro](https://en.wikipedia.org/wiki/EternalBlue)
+- [Wikipedia, WannaCry: o ataque de 12 de maio de 2017 atingiu mais de 300 mil computadores em 150 países; Marcus Hutchins registrou um domínio achado no código que funcionou como interruptor de emergência; em dezembro de 2017 Estados Unidos e Reino Unido o atribuíram formalmente à Coreia do Norte](https://en.wikipedia.org/wiki/WannaCry_ransomware_attack)
+- [The Guardian, maio de 2017: o impacto no NHS - 80 dos 236 trusts e quase 600 clínicas afetadas, ambulâncias desviadas, cirurgias canceladas](https://www.theguardian.com/society/2017/may/12/hospitals-across-england-hit-by-large-scale-cyber-attack)
+- [MalwareTech, "How to Accidentally Stop a Global Cyber Attack": o relato do próprio Hutchins sobre registrar o domínio durante a análise e descobrir que isso desativava o ransomware](https://www.malwaretech.com/2017/05/how-to-accidentally-stop-a-global-cyber-attacks.html)
+- [Wikipedia, Marcus Hutchins: preso em Las Vegas em agosto de 2017 pelo trojan bancário Kronos escrito anos antes, declarou-se culpado em 2019 e foi sentenciado à pena cumprida](https://en.wikipedia.org/wiki/Marcus_Hutchins)
+- [Wikipedia, ataque Petya de 2017: o vetor inicial foi uma atualização com porta dos fundos do M.E.Doc, software ucraniano de contabilidade fiscal; o malware usou EternalBlue e EternalRomance e roubo de credenciais com PsExec e WMIC; o mecanismo de pagamento era falso e os arquivos não podiam ser recuperados](https://en.wikipedia.org/wiki/2017_Ukraine_ransomware_attacks)
+- [Wired, The Untold Story of NotPetya: a Maersk perdeu 4 mil servidores, 45 mil PCs e 2.500 aplicações e recuperou seu Active Directory só de um controlador de domínio deixado offline por uma queda de energia em Gana; danos totais em torno de 10 bilhões de dólares](https://www.wired.com/story/notpetya-cyberattack-ukraine-russia-code-crashed-the-world/)
+- [Comunicado da Casa Branca, 15 de fevereiro de 2018: o NotPetya foi parte do esforço contínuo do Kremlin de desestabilizar a Ucrânia, o ataque cibernético mais destrutivo e caro da história, e terá consequências internacionais](https://trumpwhitehouse.archives.gov/briefings-statements/statement-press-secretary-25/)
+- [National Cyber Security Centre do Reino Unido, fevereiro de 2018: o governo julgou os militares russos quase certamente responsáveis pelo ataque NotPetya de junho de 2017](https://www.ncsc.gov.uk/news/russian-military-almost-certainly-responsible-destructive-2017-cyber-attack)
+- [Merck v. ACE American, Divisão de Apelações de Nova Jersey, maio de 2023: a exclusão de "ação hostil ou bélica" não se aplicava às perdas do NotPetya, entendendo o tribunal que a redação sempre fora entendida como conflito armado; a perda alegada pela Merck era de cerca de 1,4 bilhão de dólares](https://law.justia.com/cases/new-jersey/appellate-division-published/2023/a-1879-21.html)
+- [Reuters, sobre o desfecho no seguro: a Mondelez fez acordo com a Zurich em 2022; as disputas levaram à reescrita das exclusões de guerra em todo o mercado de seguro cibernético](https://www.reuters.com/legal/mondelez-zurich-insurance-settle-suit-over-notpetya-cyberattack-2022-11-01/)
+- [Microsoft, descontinuação do SMBv1: o protocolo vem desabilitado por padrão a partir do Windows 10 Fall Creators Update e do Windows Server 2019](https://learn.microsoft.com/en-us/windows-server/storage/file-server/troubleshoot/detect-enable-and-disable-smbv1-v2-v3)
