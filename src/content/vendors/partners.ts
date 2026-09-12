@@ -3061,6 +3061,8 @@ export const partnerVendors: PartnerVendor[] = [
     official: {
       url: "https://www.zscaler.com",
       resources: [
+      { label: "Zscaler's own Zenith Ventures page: a stage-agnostic fund making strategic investments in cybersecurity companies that leverage the Zscaler security cloud; names Deep Instinct and P0 Security", url: "https://www.zscaler.com/company/zenithventures" },
+      { label: "Zscaler: Zenith Ventures - a stage-agnostic fund investing in cybersecurity companies that leverage the Zscaler security cloud; names Deep Instinct and P0 Security", url: "https://www.zscaler.com/company/zenithventures" },
         { label: "Zscaler Help Portal", url: "https://help.zscaler.com" },
       ],
     },
@@ -3078,6 +3080,43 @@ export const partnerVendors: PartnerVendor[] = [
       "Zscaler moved the inspection into a distributed set of points of presence, so a user connects to a nearby one, is inspected there, and goes on to wherever the application actually is. That removes the hairpin, and it means capacity is a property of the provider rather than of each office's appliance.",
       "It also changes the economics of scale in a way worth understanding. A shared inspection platform sees traffic from every customer, so a threat identified for one becomes blocked for all - the same structural argument IronPort made about email reputation in 2002 and CrowdStrike made about endpoints in 2013. This timeline shows that argument being rediscovered for each layer of the stack in turn.",
       "The company went public in 2018 and the category it defined became security service edge, in which it competes directly with Netskope, which is also on this site and reached the same place from the visibility problem rather than the routing one.",
+      "Zscaler runs a corporate venture arm, Zenith Ventures, and its terms say " +
+        "plainly what it is for. The fund calls itself stage-agnostic and invests in " +
+        "cybersecurity companies, but the condition attached is strategic rather than " +
+        "financial: it backs entrepreneurs who build while LEVERAGING THE ZSCALER " +
+        "SECURITY CLOUD, and offers integration with the platform as part of the deal. " +
+        "That is a company buying adjacency to its own architecture, not a fund looking " +
+        "for returns.",
+      "Two portfolio companies are named on that page. P0 Security builds unified " +
+        "identity governance and privileged access for cloud resources - human and " +
+        "machine identities in one place - which is the access-governance layer a " +
+        "zero-trust network still needs above it. Deep Instinct does deep-learning " +
+        "malware prevention. The second is the more interesting one: Deep Instinct's " +
+        "chief executive is Lane Bess, who was Zscaler's own first president and chief " +
+        "executive. The venture arm is funding a company run by the man who ran the " +
+        "company.",
+      "A caution for anyone researching this, learned the hard way while writing the " +
+        "entry: most search results for \"Zenith Ventures\" describe ZENITH VENTURE " +
+        "CAPITAL, an unrelated Swedish firm founded in Stockholm in 2015 whose portfolio " +
+        "includes Truecaller and Urb-it. Four of the first seven results were that " +
+        "company. The only reliable source for Zscaler's fund is Zscaler's own page.",
+      "Zscaler also runs a corporate venture arm, Zenith Ventures, which it describes as " +
+        "stage-agnostic - unusual for a CVC, most of which pick a stage and stay there - and " +
+        "which invests in cybersecurity companies on an explicitly strategic basis: the stated " +
+        "expectation is that a portfolio company leverages the Zscaler security cloud and " +
+        "integrates with the platform. That is a different instrument from a financial fund. It " +
+        "buys distribution and integration for the platform as much as it buys equity, and a " +
+        "founder taking the money is accepting a technical direction along with it.",
+      "Two portfolio companies are named on Zscaler's own page. Deep Instinct applies deep " +
+        "learning to malware prevention; P0 Security builds unified identity governance and " +
+        "privileged access for cloud resources, covering machine identities as well as human " +
+        "ones. Both sit alongside rather than inside the Zscaler product - which is the point of " +
+        "a strategic investment as opposed to an acquisition.",
+      "A caution for anyone researching this: the name collides. Searching for \"Zenith " +
+        "Ventures\" or \"Zenith Venture Capital\" surfaces a Stockholm firm founded in 2015, " +
+        "whose portfolio includes Truecaller and Urb-it and which has nothing to do with " +
+        "Zscaler. Several investor-database sites return the Swedish firm for the Zscaler query. " +
+        "The only reliable source for the Zscaler fund is Zscaler's own page.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Zscaler",
     externalLabel: "Zscaler",
@@ -7090,6 +7129,52 @@ export const partnerVendors: PartnerVendor[] = [
     ],
   },
   {
+    slug: "tippingpoint",
+    sources: [
+      { label: "SecurityWeek: 3Com paid $430 million in stock for TippingPoint Technologies; HP acquired 3Com for $2.7 billion in 2010; Trend Micro completed its $300 million purchase from HPE", url: "https://www.securityweek.com/trend-micro-completes-acquisition-hps-tippingpoint/" },
+      { label: "Trend Micro newsroom: close of the TippingPoint agreement, 9 March 2016, including DVLabs and the Zero Day Initiative", url: "https://newsroom.trendmicro.com/2016-03-09-Trend-Micro-Finalizes-Acquisition-of-TippingPoint-Includes-Next-Gen-IPS-and-Award-Winning-Zero-Day-Initiative" },
+      { label: "eWeek: 3Com acquired TippingPoint in December 2004; the deal marked the third owner in just over a decade", url: "https://www.eweek.com/security/hp-sells-tippingpoint-security-division-to-trend-micro-for-300m/" },
+      { label: "Wikipedia: the Zero Day Initiative was started on 25 July 2005 by TippingPoint, then a division of 3Com", url: "https://en.wikipedia.org/wiki/Zero_Day_Initiative" },
+    ],
+    intro:
+      "TippingPoint is a network intrusion prevention line founded in Austin in 1999 and owned in " +
+      "turn by itself, 3Com, Hewlett-Packard and Trend Micro. It is the company that started the " +
+      "Zero Day Initiative, which is why it still matters long after it stopped being a company.",
+    tags: ["vendor"],
+    name: "TippingPoint - four owners, and the bug bounty that outlived them all",
+    tagline:
+      "An Austin IPS company that changed hands three times in eleven years. What survived every " +
+      "sale was not the appliance but the research programme attached to it.",
+    group: "other",
+    founded: 1999,
+    body: [
+      "TippingPoint was founded in Austin, Texas in 1999 and traded on NASDAQ as TPTI before being " +
+        "bought. Its product was an inline intrusion prevention system - a box that sat in the " +
+        "traffic path and dropped attacks rather than reporting them afterwards, which in the early " +
+        "2000s was the argument the whole category was having.",
+      "3Com agreed to buy it in December 2004 and finalised the purchase in 2005, paying around " +
+        "430 million dollars in stock. THE SOURCES DISAGREE ON BOTH HALVES OF THAT SENTENCE: " +
+        "SecurityWeek and eWeek date the deal to December 2004, other accounts to 2005, and the " +
+        "price is reported as both 430 and 442 million. An agreement announced in one year and " +
+        "closed in the next explains the date; the price difference is not explained, and is left " +
+        "as reported rather than averaged into a number no source states.",
+      "Six months into 3Com's ownership, on 25 July 2005, TippingPoint started the Zero Day " +
+        "Initiative: pay independent researchers for vulnerabilities, disclose them to the vendor " +
+        "for patching, and protect the finder from the legal exposure that made reporting risky. " +
+        "It is the programme behind Pwn2Own, and it is still the largest vendor-agnostic bug " +
+        "bounty in the industry.",
+      "Hewlett-Packard acquired 3Com in 2010 for 2.7 billion dollars, and TippingPoint came with " +
+        "it. Five years later HP decided to partner in network security rather than own a business " +
+        "in it, and sold the line to Trend Micro - announced October 2015, closed 9 March 2016, " +
+        "300 million dollars. Trend Micro kept the name, the Digital Vaccine Labs research team " +
+        "and the Zero Day Initiative.",
+      "The pattern is worth naming because it is not the usual one. A product line sold three " +
+        "times normally arrives at the third owner hollowed out. What TippingPoint carried through " +
+        "every sale was a research function, and each owner kept it - which suggests the " +
+        "acquisitions were partly ABOUT the research rather than the appliance.",
+    ],
+  },
+  {
     slug: "trend-micro",
     sources: [{ label: "Wikipedia: Trend Micro was founded on 24 October 1988 in Los Angeles by Steve Chang, his wife Jenny Chang and her sister Eva Chen, with proceeds from Chang's sale of a copy-protection dongle to Rainbow Technologies; the headquarters moved to Taipei and, after the 1992 takeover of a Japanese software firm, to Tokyo; Intel sold its LAN antivirus as LANDesk Virus Protect under a royalty arrangement, and Novell bundled the product with its network operating system from 1993; listed in Tokyo in 1998 and on Nasdaq in 1999; Eva Chen, chief technology officer from 1996, became chief executive in January 2005 with Chang as chairman; TippingPoint was bought from HP for 300 million dollars in 2015", url: "https://en.wikipedia.org/wiki/Trend_Micro" }, { label: "Wikipedia, Zero Day Initiative: started in July 2005 by TippingPoint, then a division of 3Com, and acquired by Trend Micro with TippingPoint in 2015; the programme buys software vulnerabilities from independent researchers and discloses them to the vendors for patching before making them public", url: "https://en.wikipedia.org/wiki/Zero_Day_Initiative" }, { label: "Virus Bulletin, 23 April 2005: Official Pattern Release 2.594.00 caused 100 per cent CPU usage, slowdown and in some cases complete failure on Windows XP SP2 and Windows Server 2003; Trend removed it from the update list 90 minutes later, by which time it had been downloaded an estimated 300,000 to 350,000 times, and support staff received in the region of 370,000 calls; the fault was blamed on insufficient testing in the rush to add detection for the Rbot family; the share price fell 4.7 per cent", url: "https://www.virusbulletin.com/blog/2005/04/2-594-00-not-magic-number" }, { label: "Slashdot, citing the Japan Times, April 2005: the faulty update halted computers at East Japan Railway, and Kyodo News, the Asahi Shimbun and the Yomiuri Shimbun lost LAN access for parts of the morning", url: "https://it.slashdot.org/story/05/04/25/056236/trend-micro-bug-hits-several-important-computers" }, { label: "Trend Micro's own disclosure, November 2019: an employee accessed a consumer support database with clear criminal intent and sold the data - names, email addresses, support ticket numbers and some phone numbers of about 68,000 customers - to an unknown third party, who then made scam calls impersonating Trend Micro support; the company stated this was not an external hack but the work of a malicious insider who bypassed its controls, dismissed the employee and involved law enforcement", url: "https://www.trendmicro.com/en_us/research/19/k/trend-micro-discloses-insider-threat-impacting-some-of-its-consumer-customers.html" }],
     intro: "Trend Micro is a Japanese-American security company founded in Los Angeles in 1988 and headquartered in Tokyo, known for endpoint and cloud security, the Zero Day Initiative and the Pwn2Own contests.",
@@ -7929,6 +8014,8 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "sisco",
     sources: [
+      { label: "Ferje Informatica's own history page: Ferje was founded 15 June 2001 by five former Sisco employees as Sisco was winding down, carrying IT knowledge acquired since 1979", url: "http://www.ferje.com.br/historia.html" },
+      { label: "UFF history department paper on Revista Visao and the Maksoud group: Sisco - Sistemas e Computadores S.A., manufacturer of hardware and software for micro, mini and medium computers, listed among the group's companies alongside Hidroservice and the Maksoud Plaza", url: "https://www.historia.uff.br/estadoepoder/6snepc/GT5/GT5-GERVASIO.pdf" },
       { label: "InfoJobs - SISCO Sistemas e Computadores S.A: Brazilian medium-to-large computer manufacturer with units in other Brazilian states, belonging to Grupo Maksoud; former-employee reviews record tenures of 29 to 37 years", url: "https://www.infojobs.com.br/availacoes-sisco-sistemas-computadores-s-a__-87156.aspx" },
       { label: "Ferje Informatica - company history: Ferje was founded on 15 June 2001 by five former Sisco Sistemas e Computadores employees as Sisco was ending its activities, with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on IT knowledge the team had accumulated since 1979", url: "http://www.ferje.com.br/historia.html" },
       { label: "Mundo Antigo e Companhia - a 1982 SISCO Sistemas e Computadores advertisement, reproduced", url: "https://mundoantigoecia.blogspot.com/2017/05/propaganda-antiga-sisco-sistemas-e.html" },
@@ -7942,6 +8029,8 @@ export const partnerVendors: PartnerVendor[] = [
       "It belongs beside Cobra, Scopus and Itautec on this timeline as one of the manufacturers the market reserve was built to make possible, and its ending is the same one that period produced repeatedly - the company closed around 2001, after the protection was gone and the imported machine was cheaper.",
       "The detail worth keeping is what happened next. On 15 June 2001, as Sisco was winding down, five of its employees founded Ferje Informatica with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on knowledge the team had held since 1979. That is the honest shape of how these companies actually end: the corporate entity dissolves and the working knowledge walks out of the building and incorporates itself somewhere else.",
       "Almost nothing of Sisco survives in a reachable public record - an advertisement from 1982, a court-records index, and the reviews of people who spent their careers there. That is not unusual for a manufacturer of this era, and it is worth stating rather than filling.",
+      "Sisco belonged to the MAKSOUD GROUP - the same holding that owned Hidroservice, then one of the largest engineering firms in Brazil, the news weekly Revista Visao, and the Maksoud Plaza hotel in Sao Paulo. A computer manufacturer sitting inside that particular conglomerate is worth noticing: the reserve protected national firms from foreign competition, and the capital that took up the protection was frequently capital that had made its money somewhere else entirely.",
+      "The company was building hardware and software for micro, mini and medium-sized machines, and was advertising under its own name by 1982. IT WOUND DOWN AROUND 2001: Ferje Informatica was founded on 15 June 2001 by five Sisco employees specifically so that Sisco customers would not be left unsupported, and describes its team's experience as acquired since 1979 - which places Sisco in operation by that year at the latest.",
     ],
   },
   {
@@ -8231,6 +8320,8 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "fast-lane",
     sources: [
+      { label: "CB Insights: Fast Lane was founded in 1996; headquarters Morrisville, North Carolina", url: "https://www.cbinsights.com/company/fast-lane-1" },
+      { label: "Bloomberg company profile: Fast Lane Institute for Knowledge Transfer GmbH was founded in 2003 - the GERMAN entity, not the group", url: "https://www.bloomberg.com/profile/company/6387043Z:GR" },
       { label: "Fast Lane - awards: ranked among the top 20 IT training companies worldwide every year since 2008, with more than 80 awards; Cisco Learning Partner of the Year in numerous regions and years including LATAM 2016, Chile 2018 and Global 2013 and 2016; named a Leader in the 2021 IDC MarketScape for IT Training in the United States", url: "https://www.fastlaneus.com/awards" },
       { label: "Fast Lane - partnerships: authorised Cisco Learning Specialized Partner and Cisco Business Learning Partner covering routing and switching, wireless, security, service provider, collaboration and data centre; Microsoft Gold Learning Partner; Red Hat Alliance Training Partner; delivers authorised IBM training in partnership with Tech Data and with Ingram Micro", url: "https://www.fastlaneus.com/partnerships" },
       { label: "Fast Lane - partners: authorised Aruba Training Center since 2013, and the only global NetApp Learning Partner", url: "https://www.flane.com/partners.html" },
@@ -8241,6 +8332,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     tags: ["training"],
     group: "contemporary",
+    founded: 1996,
     name: "Fast Lane - the independent that teaches the manufacturers\u2019 courses",
     tagline: "Global IT training company delivering authorised curricula for Cisco, Microsoft, Aruba, NetApp and others.",
     intro: "Fast Lane delivers manufacturers\u2019 own training under authorisation - Cisco, Microsoft, Red Hat, Aruba, NetApp - across most of the world, and has been ranked among the twenty largest IT training companies every year since 2008.",
@@ -8251,6 +8343,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The company behind those awards is German, which is worth saying because the training industry this site describes is usually assumed to be American. The Fast Lane Institute for Knowledge Transfer was founded in Hamburg in 1996; its chief executive and chairman, Torsten Poels, had started his first networking-services company in 1990, run several Cisco learning partners, and joined in 2003 to build the group outward - into Russia and the CIS, the Americas from May 2005, Japan, Korea from 2006. It now claims some four thousand professionals, ninety countries, and a position no other training company holds: the only global training partner of all three cloud hyperscalers at once, alongside about thirty other vendors.",
       "Two of the recent awards say something about where the model has gone. VMware's and Red Hat's are the familiar kind - a vendor recognising a partner for delivering the vendor's own curriculum well. Cisco's award for 2025 is different: it is for derivative work, which is the vendor's term for courseware the partner writes itself, built on the vendor's material but not identical to it. A training company that only delivers someone else's course is a channel; one whose own courseware the manufacturer gives prizes to is something closer to a publisher, and the difference is where the margin, and the intellectual property, end up.",
       "A German company that became the largest independent multi-vendor training group is the training industry's version of the story the Italtel and Atos entries tell about equipment: the model was invented in America, and a European firm built the biggest instance of it by being in more countries than any vendor's own education arm could reach. The instructor in the room in Santiago or Seoul works for a company in Hamburg, teaching a course written in San Jose, to a customer who may never learn either fact.",
+      "Fast Lane is a group rather than a single company, which is why two founding dates circulate for it. The group dates to 1996 and is headquartered in Morrisville, North Carolina; Fast Lane Institute for Knowledge Transfer GmbH, the German company whose name is often used for the whole organisation, was incorporated in 2003 and runs from Hamburg. Both are Fast Lane, and a database citing one or the other is describing a different legal entity, not contradicting itself.",
     ],
     externalUrl: "https://www.flane.com/",
     externalLabel: "Fast Lane",

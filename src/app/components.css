@@ -1909,8 +1909,11 @@
   background: #ffffff;
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  padding: 0.55rem 0.9rem;
-  min-height: 2.75rem;
+  /* Tightened 2026-09-11 (PRIME: "lots of white space around the logo"). The
+     plate padding was generous for a single mark and looks like dead space in a
+     row of them. The min-height went entirely: it reserved room for a tall mark
+     that most are not. */
+  padding: 0.4rem 0.6rem;
 }
 .vendor-mark-img {
   /* Bound BOTH axes. The registry holds marks of very different proportions -
@@ -1922,8 +1925,8 @@
   display: block;
   width: auto;
   height: auto;
-  max-height: 2.25rem;
-  max-width: 9.5rem;
+  max-height: 3.25rem;
+  max-width: 11rem;
 }
 .vendor-mark-era {
   font-size: 0.75rem;
@@ -16854,4 +16857,17 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   margin-top: 0.3rem;
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+/* A chapter's marks, side by side. Wraps rather than scrolls: three marks on a
+   phone should stack, not hide. */
+.vendor-marks {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.9rem 1.1rem;
+  margin-bottom: 1.25rem;
+}
+.vendor-marks .vendor-mark {
+  margin-bottom: 0;
 }

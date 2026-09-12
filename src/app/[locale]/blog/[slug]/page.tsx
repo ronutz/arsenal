@@ -20,6 +20,7 @@ import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
 import remarkGfm from "remark-gfm";
 import { routing } from "@/i18n/routing";
+import { BlogPostingSchema } from "@/components/PersonSchema";
 import { getPost, getAllPostSlugs } from "@/lib/blog";
 import { getArticle } from "@/lib/learn";
 import { ogImages } from "@/lib/og";
@@ -106,6 +107,17 @@ export default async function BlogPostPage({
                 author's own photograph of an object he owns. Rendered above the
                 body because on this blog the picture is evidence for the piece
                 rather than decoration after it. */}
+            {/* Machine-readable authorship: the post, and a REFERENCE to the
+                Person carried by /about's layout. Added 2026-09-11. */}
+            <BlogPostingSchema
+              title={post.title}
+              description={post.summary}
+              slug={post.slug}
+              locale={locale}
+              datePublished={post.date}
+              dateModified={post.updated}
+            />
+
             {post.image && (
               <figure className="gloss-figure">
                 {/* eslint-disable-next-line @next/next/no-img-element */}

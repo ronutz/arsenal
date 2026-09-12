@@ -25,16 +25,30 @@ export interface CareerVendor {
   slug: string;
   key: string;
   founded?: number;
+  /**
+   * Which vendors' marks this chapter shows, when it is not simply `key`.
+   *
+   * PRIME, 2026-09-11. Several chapters are about MORE THAN ONE COMPANY -
+   * Cabletron becoming Enterasys, NetScreen becoming Juniper, and the
+   * distribution years spent carrying FireEye, McAfee and Ixia at once - and
+   * `key` can only name one. Worse, the distribution chapter's key is
+   * "distribution", which is not a company at all and resolves to no mark,
+   * which is why that page showed nothing.
+   *
+   * Order is the order they are shown: the reader should meet them in the
+   * order the chapter meets them.
+   */
+  markVendors?: string[];
 }
 
 export const CAREER_VENDORS: CareerVendor[] = [
-  { slug: "cabletron-enterasys", key: "cabletron", founded: 1983 },
+  { slug: "cabletron-enterasys", key: "cabletron", founded: 1983, markVendors: ["cabletron", "enterasys"] },
   { slug: "riverstone", key: "riverstone", founded: 1996 },
   { slug: "cisco", key: "cisco", founded: 1984 },
   { slug: "ironport", key: "ironport", founded: 2000 },
-  { slug: "netscreen-juniper", key: "juniper", founded: 1996 },
+  { slug: "netscreen-juniper", key: "juniper", founded: 1996, markVendors: ["netscreen", "juniper"] },
   { slug: "extreme", key: "extreme", founded: 1996 },
-  { slug: "fireeye-mcafee-ixia", key: "distribution", founded: 1987 },
+  { slug: "fireeye-mcafee-ixia", key: "distribution", founded: 1987, markVendors: ["fireeye", "mcafee", "ixia"] },
   // Pulse Secure: distributed in the ScanSource year (PRIME 2026-07-16) - the
   // Neoteris/NetScreen/Juniper secure-access lineage as its own chapter.
   { slug: "pulse-secure", key: "pulse", founded: 2003 },
@@ -44,7 +58,7 @@ export const CAREER_VENDORS: CareerVendor[] = [
   { slug: "f5", key: "f5", founded: 1996 },                     // certified 2015, instructor 2020
   { slug: "fortinet", key: "fortinet", founded: 2000 },         // NSE ladder 2022, FCT 2024
   { slug: "netskope", key: "netskope", founded: 2012 },         // accreditations 2024, instructor 2025
-  { slug: "ping-identity", key: "ping", founded: 2002 },        // PingFederate Practitioner 2025
+  { slug: "ping-identity", key: "ping", founded: 2002, markVendors: ["ping", "forgerock"] },        // PingFederate Practitioner 2025
   { slug: "zscaler", key: "zscaler", founded: 2007 },           // chapter opening 2026; hub on the roadmap
   { slug: "check-point", key: "checkpoint", founded: 1993 },    // chapter opening 2026
 ] as const;

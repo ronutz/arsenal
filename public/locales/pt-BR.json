@@ -7545,7 +7545,8 @@
     "historyCardTitle": "{name}: a história da empresa",
     "historyCardDesc": "Quem a fundou, o que ela adquiriu, quem a adquiriu, e onde ela fica na linha do tempo do setor.",
     "historyCardCta": "Ler a história",
-    "historyFoundedNote": "A empresa foi fundada em {year}. Esta página cobre apenas os anos de trabalho com ela."
+    "historyFoundedNote": "A empresa foi fundada em {year}. Esta página cobre apenas os anos de trabalho com ela.",
+    "backToChapters": "Capítulos"
   },
   "training": {
     "eyebrow": "Treinamentos que ministro",
@@ -7661,6 +7662,14 @@
       "training": {
         "label": "Treinamento oficial",
         "description": "Reserve um curso pela Red Education"
+      },
+      "credly": {
+        "label": "Credly",
+        "description": "Todas as certificações, verificadas pelo emissor."
+      },
+      "redEducationProfile": {
+        "label": "Red Education",
+        "description": "Perfil de instrutor no parceiro de treinamento."
       }
     },
     "feedbackNote": "Encontrou um bug, um erro ou uma imprecisão no site?",

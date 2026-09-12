@@ -82,6 +82,14 @@ const SETTINGS: ContactSettings = {
     { id: "linkedin", url: "https://www.linkedin.com/in/nutzmann", external: true },
     { id: "youtube", url: "https://www.youtube.com/@ronutz", external: true },
     { id: "instagram", url: "https://www.instagram.com/ronutz/", external: true },
+    // Added 2026-09-11 (PRIME). Both are IDENTITY pages for Rodolfo rather
+    // than artefacts, which is why they also serve as schema.org sameAs:
+    // Credly is third-party verification of the credentials by their own
+    // issuers, and the Red Education team page is his employer confirming
+    // him. Individual badge URLs are deliberately NOT here - sameAs is for
+    // identities, and the badges already appear on /about/credentials.
+    { id: "credly", url: "https://www.credly.com/users/rodolfo-nutzmann/", external: true },
+    { id: "redEducationProfile", url: "https://www.rededucation.com/team/rodolfo-nutzmann/", external: true },
     { id: "training", url: RED_EDUCATION_ALL_VENDORS /* attributed at render (standing rule 2026-07-22); the all-vendor course index rather than the homepage, PRIME 2026-08-16 */, external: true },
   ],
 };

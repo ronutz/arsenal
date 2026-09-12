@@ -58,7 +58,13 @@ if (!fs.existsSync(BASE)) {
 // whose URL is addressable, and the blog index itself. /news/ is client-
 // rendered like the case-study index, so two is all that can honestly be
 // linked, and two is what was added.
-const BASELINE_TOTAL = 99;
+// 99 -> 100 on 2026-09-11, deliberately. PRIME asked for his own instructor
+// profile at rededucation.com/team/rodolfo-nutzmann to be listed on /contact,
+// where every channel URL is attributed at render. So the hundredth attributed
+// link is an IDENTITY page - it also serves as a schema.org sameAs - rather
+// than another route into the course catalogue, which is the creep this
+// baseline exists to resist. The guard still catches a 101st.
+const BASELINE_TOTAL = 100;
 
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {

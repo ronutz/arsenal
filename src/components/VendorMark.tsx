@@ -85,3 +85,59 @@ export default function VendorMark({ vendor, year, eraLabel }: VendorMarkProps) 
     </figure>
   );
 }
+
+// ============================================================================
+// VendorMarks - EVERY mark for a chapter's companies.
+//
+// PRIME, 2026-09-11: chapters that cover more than one company should show more
+// than one mark, and a company that changed its identity during the years
+// covered should show both.
+//
+// WHY ALL OF THEM RATHER THAN THE ERA-MATCHED ONE. `VendorMark` above answers
+// "which mark was current in year N", which is right for a page about a single
+// moment. A career chapter is a SPAN, often across a rename - Cabletron becomes
+// Enterasys, NetScreen becomes Juniper - and the interesting fact is precisely
+// that the name on the equipment changed while the work did not. Showing the
+// sequence, each captioned with its own years, tells that; showing one does not.
+//
+// Ordered by company first (the order the chapter meets them) and by date
+// within a company, so a rename reads left to right.
+// ============================================================================
+
+import { marksForVendor } from "@/content/vendors/marks";
+
+export function VendorMarks({
+  vendors,
+  eraLabel,
+}: {
+  /** Registry keys, in the order the chapter should present them. */
+  vendors: string[];
+  eraLabel: (era: string) => string;
+}) {
+  const marks = vendors.flatMap((v) => marksForVendor(v));
+  if (marks.length === 0) return null;
+
+  return (
+    <div className="vendor-marks">
+      {marks.map((mark) => {
+        const era = mark.to === null ? `since ${mark.from}` : `${mark.from}\u2013${mark.to}`;
+        const caption = eraLabel(era);
+        return (
+          <figure className="vendor-mark" key={mark.src}>
+            <div className="vendor-mark-plate">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={mark.src}
+                alt={`${mark.label}, ${caption}`}
+                className="vendor-mark-img"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption className="vendor-mark-era mono">{caption}</figcaption>
+          </figure>
+        );
+      })}
+    </div>
+  );
+}

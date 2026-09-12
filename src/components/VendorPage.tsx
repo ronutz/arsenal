@@ -76,7 +76,7 @@ export default async function VendorPage({
           <section className="vendor-hero">
             <div className="container vendor-container">
               <Link href="/industry/chapters" className="article-back">
-                ← {t("backToVendors")}
+                ← {t("backToChapters")}
               </Link>
               {/* The eyebrow says what the PAGE is (PRIME 2026-07-28). It used
                   to carry the years of involvement, which made every vendor

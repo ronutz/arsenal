@@ -7545,7 +7545,8 @@
     "historyCardTitle": "{name}: the company history",
     "historyCardDesc": "Who founded it, what it acquired, who acquired it, and where it sits on the industry timeline.",
     "historyCardCta": "Read the history",
-    "historyFoundedNote": "The company was founded in {year}. This page covers only the years worked with it."
+    "historyFoundedNote": "The company was founded in {year}. This page covers only the years worked with it.",
+    "backToChapters": "Chapters"
   },
   "training": {
     "eyebrow": "Training I deliver",
@@ -7661,6 +7662,14 @@
       "training": {
         "label": "Official training",
         "description": "Book a course through Red Education"
+      },
+      "credly": {
+        "label": "Credly",
+        "description": "Every certification, verified by the issuer."
+      },
+      "redEducationProfile": {
+        "label": "Red Education",
+        "description": "Instructor profile at the training partner."
       }
     },
     "feedbackNote": "Found a bug, a mistake, or an inaccuracy on the site?",

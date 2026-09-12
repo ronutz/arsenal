@@ -33,8 +33,27 @@
 //      resolves to a file that exists, eras do not overlap within a vendor,
 //      and every vendor has at most one current mark.
 //
-//   3. NO TRADEMARK SYMBOLS ADDED OR REMOVED. The files are used as supplied.
-//      Where a mark carries (R) or (TM) in its artwork, it stays.
+//   3. NO TRADEMARK SYMBOLS ADDED OR REMOVED. Where a mark carries (R) or (TM)
+//      in its artwork, it stays.
+//
+//   3b. A MARK MAY BE REDRAWN, INCLUDING TRACED TO VECTOR, FOR QUALITY ONLY
+//      (PRIME, 2026-09-12; this reverses the earlier "used as supplied, never
+//      redrawn"). The permitted reason is a limitation of the FILE - a raster
+//      too small for a high-DPI render, a blurry scan, a bad export. The result
+//      must stay FAITHFUL: same geometry, same proportions, same colours, same
+//      trademark symbols.
+//
+//      What that rules out, still: restyling, recolouring, simplifying a
+//      letterform because the tracer found it awkward, or "cleaning up" a mark
+//      that is merely old-fashioned. If the redraw and the original are placed
+//      side by side and a reader can tell which is which by anything other than
+//      sharpness, it has gone too far.
+//
+//      A REDRAWN MARK SAYS SO IN ITS NOTE. Fidelity is a human judgement that
+//      no guard can make, so the honest compensation is that the reader can
+//      always tell a vendor's own file from one of ours. check-marks enforces
+//      that every entry HAS a note; only a person can check that the note is
+//      true.
 //
 //   4. ATTRIBUTION IN THE REPOSITORY, NOT ON THE PAGE. Each mark remains the
 //      property of its owner; see the NOTICE file. These are not licensed
@@ -223,6 +242,126 @@ export const VENDOR_MARKS: VendorMark[] = [
       "intersecting elements' - but no primary source gives a launch DATE, so " +
       "2020 is taken from the aggregators and from PRIME, who works with the " +
       "vendor. Treat the year as good-to-a-year, not to-a-day.",
+  },
+  {
+    vendor: "fireeye",
+    label: "FireEye",
+    src: "/img/marks/fireeye.png",
+    from: 2004,
+    to: 2021,
+    note:
+      "The eye and flame. Added 2026-09-11 because the distribution chapter " +
+      "carried NO mark at all: its career key is \"distribution\", a role rather " +
+      "than a company, which resolves to nothing. Closed at 2021, when the " +
+      "FireEye name and products went to Symphony Technology Group and the " +
+      "remaining company renamed itself Mandiant; the mark is historic.",
+  },
+  {
+    vendor: "tippingpoint",
+    label: "TippingPoint",
+    src: "/img/marks/tippingpoint.jpg",
+    from: 1999,
+    to: 2016,
+    note:
+      "The two-tone wordmark. Closed at 2016, when the line passed from HP to " +
+      "Trend Micro and was folded into their Network Defense branding; the mark " +
+      "is historic. Added 2026-09-11 with the catalogue entry - PRIME asked for " +
+      "TippingPoint after a logo search for \"ping\" matched it, which was itself " +
+      "the near-miss that nearly put this company's mark on the Ping Identity " +
+      "chapter.",
+  },
+  {
+    vendor: "netskope",
+    label: "Netskope",
+    src: "/img/marks/netskope-current.svg",
+    from: 2024,
+    to: null,
+    note:
+      "Vendor-supplied vector, the FULL-COLOUR primary. Netskope also publishes " +
+      "a reversed variant for dark backgrounds; full-colour is correct here " +
+      "because the mark sits on a white plate, not on the page canvas. Dated " +
+      "from the year this site's record of the vendor begins - the adoption " +
+      "date of the mark itself is not established, and is not guessed at.",
+  },
+  {
+    vendor: "zscaler",
+    label: "Zscaler",
+    src: "/img/marks/zscaler-current.svg",
+    from: 2026,
+    to: null,
+    note:
+      "REDRAWN, NOT VENDOR-SUPPLIED - declared here because rule 3b requires it. " +
+      "The supplied file was a 250x54 raster, thin for a high-DPI render. " +
+      "Upscaling was tested first and rejected: at the rendered size the " +
+      "upscaled and original are indistinguishable, because interpolation adds " +
+      "no detail. This is a vector trace of that raster, checked side by side " +
+      "against it - geometry, proportions, colour #0068B5 and the trademark " +
+      "symbol all preserved. A file from Zscaler's own brand kit should replace " +
+      "it if one becomes available. Dated from the year the record begins; the " +
+      "mark's adoption date is not established.",
+  },
+  {
+    vendor: "ping",
+    label: "Ping Identity",
+    src: "/img/marks/ping-identity-current.svg",
+    from: 2025,
+    to: null,
+    note:
+      "True vector. Dated from the year the record begins; adoption date not " +
+      "established. This site claims NO Ping authorization - see " +
+      "scripts/check-authorization-claims.mjs, which enforces that in prose.",
+  },
+  {
+    vendor: "forgerock",
+    label: "ForgeRock",
+    src: "/img/marks/forgerock.png",
+    from: 2010,
+    to: 2023,
+    note:
+      "Historic. ForgeRock was founded in 2010 and acquired by Ping Identity " +
+      "under Thoma Bravo in 2023, after which the brand was folded into Ping's. " +
+      "Those two years are from general knowledge rather than a cited source in " +
+      "this repository; treat them as good to a year and verify before they are " +
+      "used for any claim that depends on the exact date.",
+  },
+  {
+    vendor: "pulse",
+    label: "Pulse Secure",
+    src: "/img/marks/pulse-secure.png",
+    from: 2014,
+    to: 2020,
+    note:
+      "Historic. Pulse Secure existed as a company only between the Siris " +
+      "Capital carve-out from Juniper in 2014 and Ivanti's acquisition, which " +
+      "closed 1 December 2020 - so the mark's era IS the company's lifetime, " +
+      "which is unusually easy to date. The line it carried is older than the " +
+      "name and continues after it; see the pulse-secure chapter.",
+  },
+  {
+    vendor: "checkpoint",
+    label: "Check Point Software Technologies",
+    src: "/img/marks/check-point.png",
+    from: 2026,
+    to: null,
+    note:
+      "CROPPED, not redrawn: the supplied file was a composite - the wordmark " +
+      "above a large illustrated panel - and only the wordmark is the mark. " +
+      "Selecting it changes nothing about the artwork. Dated from the year this " +
+      "site's record begins; Check Point was founded in 1993 and the adoption " +
+      "date of this wordmark is not established, so no earlier claim is made. " +
+      "This site claims NO Check Point authorization.",
+  },
+  {
+    vendor: "ironport",
+    label: "IronPort Systems",
+    src: "/img/marks/ironport.png",
+    from: 2000,
+    to: 2007,
+    note:
+      "Historic. IronPort was founded in 2000 and acquired by Cisco in 2007, " +
+      "after which the appliances were sold under Cisco's name and the mark " +
+      "retired. Dates are from general knowledge rather than a source cited in " +
+      "this repository; good to a year.",
   },
 ];
 

@@ -83,10 +83,18 @@ marks of companies that no longer exist independently, or earlier marks of
 companies that do; the registry in src/content/vendors/marks.ts records the
 period each one was in official use.
 
-No mark is recoloured, redrawn or restyled, and trademark symbols present in
-the supplied artwork are retained. Where a supplied file carried empty canvas
-around the artwork, the SVG viewBox has been trimmed to the artwork's bounding
-box so that marks of differing proportions render at comparable size; the clear
-space around each mark is then provided by layout. Geometry, colour and
-proportion are untouched.
+A mark MAY be redrawn - including traced to vector - for quality, sharpness or
+resolution, provided the result stays faithful to the original (PRIME,
+2026-09-12). Faithful means the geometry, the proportions, the colours and any
+trademark symbol are those of the supplied artwork; a redraw exists to remove a
+limitation of the FILE, never to restyle the MARK. Trademark symbols present in
+the supplied artwork are retained either way.
+
+Where a supplied file carried empty canvas around the artwork, the SVG viewBox
+has been trimmed to the artwork's bounding box so that marks of differing
+proportions render at comparable size; the clear space around each mark is then
+provided by layout.
+
+Any mark that has been redrawn rather than used as supplied says so in its
+registry note, so a reader can tell the vendor's own file from ours.
 ----------------------------------------------------------------------------

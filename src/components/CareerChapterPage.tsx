@@ -35,7 +35,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { CAREER_VENDORS, AUTHORIZED_INSTRUCTOR_VENDORS, REDU_CAREER_PARTNERS } from "@/content/vendors/career";
-import VendorMark from "@/components/VendorMark";
+import VendorMark, { VendorMarks } from "@/components/VendorMark";
 import VendorTags from "@/components/VendorTags";
 
 export interface CareerChapterPageProps {
@@ -106,7 +106,7 @@ export default async function CareerChapterPage({
                 ]}
               />
               <Link href="/industry/chapters" className="article-back">
-                ← {t("backToVendors")}
+                ← {t("backToChapters")}
               </Link>
               {/* On a career page the years ARE the subject, so they lead -
                   unlike the company pages, where the eyebrow says what the
@@ -116,9 +116,8 @@ export default async function CareerChapterPage({
                   states its period, which on a dated career page is evidence
                   rather than decoration. Renders nothing when the registry
                   holds no mark for that vendor and year. */}
-              <VendorMark
-                vendor={vendorKey}
-                year={startYear}
+              <VendorMarks
+                vendors={entry?.markVendors ?? [vendorKey]}
                 eraLabel={(era) => tp("markEra", { era })}
               />
               <p className="vendor-years mono">{years}</p>
