@@ -6600,17 +6600,22 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "qos-training",
     sources: [
+      { label: "Inforchannel, April 2018: Grupo Binario created in 2005 in Sao Paulo, awarded Juniper Americas Services Partner of the Year for 2017; Elite partner level, 150+ staff and five branches", url: "https://inforchannel.com.br/2018/04/26/grupo-binario-e-premiado-parceiro-de-servicos-2017-na-regiao-cala-pela-juniper-networks/" },
+      { label: "SEGS, 2016: QoS had delivered Juniper certification courses since 2006 - 3,208 students across 389 classes - and began offering the exam on the same day as the course", url: "https://www.segs.com.br/2016/info-ti/16355-qos-empresa-do-grupo-binario-oferece-certificacao-juniper-na-mesma-data-do-treinamento" },
       { label: "Portal Information Management, November 2016 - QoS, a Grupo Binario company, offering Juniper certification on the same date and site as the training; teaching the manufacturer's certification courses since 2006, with 3,208 students by then; quotes Bruno Carvalho, senior systems engineer", url: "https://docmanagement.com.br/05/11/2016/qos-empresa-do-grupo-binario-oferece-certificacao-juniper/" },
       { label: "OverBR, November 2013 - QoS as the Grupo Binario services division and the first partner in Latin America to migrate to Juniper Partner Support Services; around 200 Juniper certifications across the group; services span IP routing architecture, multicast, MPLS and VPN, end-to-end network security and assisted operation", url: "https://overbr.com.br/midia-corporativa/qos-e-primeiro-parceiro-da-america-latina-a-migrar-para-o-juniper-partner-support-services" },
     ],
     tags: ["training", "services"],
     group: "contemporary",
+    founded: 2005,
     name: "QoS - a Juniper training centre for Latin America",
     tagline: "Teaching the manufacturer's certification courses since 2006, from inside an integrator.",
     intro: "QoS is the professional-services division of Grupo Binario, and it has operated as a Juniper training centre for Latin America - delivering the manufacturer's certification courses since 2006, with more than three thousand students by 2016.",
     body: [
       "A training centre run from inside an integrator is a specific arrangement with a specific advantage: the instructors are the engineers who implement the networks, so the course material is tested against deployments rather than only against a curriculum. It has a matching risk, which is that teaching capacity competes with billable project work for the same people.",
       "One detail from its 2016 announcement is worth keeping because it describes a real friction in certification: students previously finished a course and then travelled elsewhere to sit the exam, adding cost and delay. Offering the exam at the same place and on the same date removed a gap that had nothing to do with learning and everything to do with logistics - which is the kind of problem that decides how many engineers a country actually certifies.",
+      "QoS is one division of Grupo Binario, which was created in Sao Paulo in 2005 and split its work between Binario for integration and QoS for professional services, with a third mobility division for a period. By 2018 the group had more than 150 staff and five branches, and ran its own warehouse in Miami to shorten the import cycle - a detail that says a good deal about what selling network equipment in Brazil actually involves.",
+      "The Juniper training began in 2006, a year after the group was founded, and by 2016 had put 3,208 students through 389 classes. The group held around 80 Juniper-certified professionals and more than 200 certifications between them, reaching Elite partner level and taking Juniper's Americas Services Partner of the Year award for 2017. In 2016 QoS began running the certification exam on the same day as the course, which removes the gap in which most candidates quietly never sit it.",
     ],
   },
 
@@ -6980,20 +6985,26 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "techdec",
     sources: [
+      { label: "TechDEC's own history page: founded December 1996 in Porto Alegre, starting on Avenida Taquara in the Petropolis district; US branch opened in Florida in 2004; HIMSS Analytics certified and listed among the 100 largest in the Anuario Telecom", url: "https://www.techdec.com.br/site/historia.php" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
     group: "other",
+    founded: 1996,
     name: "TechDEC",
     tagline: "Partner named for both Extreme Networks and Netskope in Brazil.",
     intro: "A Brazilian integrator that appears on the partner side of two vendors at once - Extreme on the networking side and Netskope on the security side. That combination is the ordinary shape of the Brazilian channel: the same house sells the network and the control that inspects it, because the customer buying one is the customer who has to operate the other.",
     body: [
       "Named on two vendor rosters at once: it lists Extreme among its technology partners and has deployed Extreme switching in customer projects, and it also appears as a current Netskope partner. That pairing is the ordinary shape of the Brazilian channel - the same house sells the network and the control that inspects it, because the customer buying one is the customer who has to operate the other.",
+      "TechDEC was founded in December 1996 in Porto Alegre, starting out on Avenida Taquara in the Petropolis district, and its customers are concentrated in the south of the country. Healthcare is the segment it has gone deepest into - it holds a HIMSS Analytics certification and describes its own range as running from patient identification to data centre infrastructure, which is an unusually specific span for a regional integrator.",
+      "In 2004 it opened a branch in Florida, and the reason given is imports: a US arm shortens and cheapens the process of getting equipment into Brazil. That is the THIRD company in this catalogue with the same arrangement - Grupo Binario runs a warehouse in Miami, and the equipment in the Operacao Persona case also moved through Florida. Selling network hardware in Brazil has long meant solving an import problem first, and the lawful version of that solution looks structurally similar to the unlawful one.",
     ],
   },
   {
     slug: "segertech",
     sources: [
+      { label: "Grupo SEGER's own about page: segertech.com.br listed as a group company for more than 15 years, covering unified communications, digital security and wireless and cabled network infrastructure; group headquarters in Florianopolis with bases in Sao Paulo, Parana and Minas Gerais and a US subsidiary", url: "https://seger.com.br/sobre-nos/" },
+      { label: "Segertech's services page: authorised centre in Brazil for the manufacturers it represents, with certified instructors and hands-on lab training, supporting the installed Ruckus base nationally", url: "https://www.segertech.com.br/servicos" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
@@ -7003,6 +7014,9 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "One of the Brazilian houses on the Extreme partner side. Entries like this matter to the record for a reason worth stating: the vendor is visible everywhere and the partner is the one who actually installs, configures and answers the phone, which is where most of a customer's experience of the product is decided.",
     body: [
       "Carries Gold Extreme partner status. The level matters more than it looks from outside: vendor tiers gate discount, lead access and which engineers may be certified, so a partner's grade decides what it can profitably sell before any conversation with a customer begins.",
+      "Segertech is the network arm of Grupo SEGER, a Florianopolis group whose core business is foreign trade - customs, freight and logistics - with bases in Sao Paulo, Parana and Minas Gerais and a subsidiary in the United States. A sister company has imported aircraft and parts since 2012. Segertech itself has been part of the group for more than fifteen years, and covers unified communications, digital security and wireless and cabled infrastructure.",
+      "That ownership is the clearest example in this catalogue of a pattern visible across several entries: in Brazil, selling network equipment has long meant solving an import problem first. TechDEC opened a Florida branch for it in 2004 and Grupo Binario runs a Miami warehouse for it. Segertech goes one step further - the integrator is owned by the freight company, rather than employing one.",
+      "It is an authorised centre in Brazil for the manufacturers it represents, with certified instructors and laboratory training, and supports the installed Ruckus base nationwide - an unusual reach for a firm of its size.",
     ],
   },
   {
@@ -7600,15 +7614,20 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "inorpel",
     sources: [
+      { label: "Econodata: Inorpel Comercio e Servicos Ltda, CNPJ 10.920.030/0001-70, opened 25/06/2009 in Cabedelo PB, principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/10920030000170-INORPEL-COMERCIO-E-SERVICOS-LTDA" },
+      { label: "Serasa Experian: INORPEL INDUSTRIA NORDESTINA DE PRODUTOS ELETRICOS LTDA - EPP, CNPJ 08.720.054/0001-33, founded 26/10/1994, also in Cabedelo PB - the industrial entity behind the name", url: "https://empresas.serasaexperian.com.br/consulta-gratis/INORPEL-INDUSTRIA-NORDESTINA-DE-PRODUTOS-ELETRICOS-LTDA-08720054000133" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
     group: "other",
+    founded: 2009,
     name: "Inorpel",
     tagline: "Expert-level Fortinet partner in Brazil.",
     intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
     body: [
       "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The name is an acronym and it explains the company: INdustria NORdestina de Produtos ELetricos, a north-eastern electrical products manufacturer. There are two registrations in Cabedelo, Paraiba - the industrial one opened in 1994, and Inorpel Comercio e Servicos, opened 25 June 2009, whose registered activity is technical support and IT services. The 2009 date is used here because that is the entity doing this work.",
+      "The company describes itself as more than forty years in technology, which reaches back further than either registration - a reminder that a Brazilian CNPJ dates a legal entity, not a business. It positions itself as the first company in Paraiba specialising in information-security services and consultancy, with cybersecurity as a newer segment alongside the older technology work, and carries Fortinet, Bitdefender, Acronis, Qualys and PRTG among others.",
     ],
   },
   {
@@ -7748,6 +7767,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     tags: ["services", "training"],
     group: "contemporary",
+    founded: 2003,
     name: "Grupo IHC - a consultancy, a school and an integrator",
     tagline: "Brazilian group whose three companies were founded in sequence, each out of the one before.",
     intro: "Grupo IHC is the Brazilian group formed by HighCast, founded in 2003 as a network consultancy; inLearn Educacao, created by HighCast's partners in 2008 as an official training centre for Juniper, F5 Networks and others; and a third company in 2010, the integrator now trading as CYLK.",
@@ -8303,6 +8323,8 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "proteus",
     sources: [
+      { label: "IT Forum: Patria created a cybersecurity-only structure in October 2021, then called CBS CyberSecurity Holding, and opened with the purchase of NeoSecure and Proteus", url: "https://itforum.com.br/noticias/sek-ciberseguranca-patria/" },
+      { label: "Tele.Sintese: SEK created from the merger of Proteus Risk Management (Brazil) and NeoSecure (Chile); Patria invested US$100m integrating them and holds 80% of the share capital", url: "https://telesintese.com.br/de-olho-no-mercado-de-ciberseguranca-patria-investimentos-cria-a-sek/" },
       { label: "IT Forum and TI Inside, March 2023 - Proteus of Brazil was acquired by Patria Investimentos in 2021 alongside NeoSecure of Chile, and the two were combined to create SEK", url: "https://tiinside.com.br/30/03/2023/com-us-250-milhoes-patria-cria-sek-para-competir-ciberseguranca/" },
     ],
     tags: ["services"],
@@ -8314,6 +8336,9 @@ export const partnerVendors: PartnerVendor[] = [
       "It appears here as half of a merger rather than in its own right, and that is the honest shape of what is reachable: the coverage of the transaction is extensive and the coverage of the company before it is thin. A firm can be substantial enough to anchor a two-hundred-and-fifty-million-dollar consolidation strategy and still leave most of its own history unwritten.",
       "The pairing is the point in any case. A Chilean company and a Brazilian one were bought to be combined, which means the buyer was reading the region as a single market before either company was.",
       "Its origin is documented and its founding year is not, which is an unusual combination worth stating plainly. Exame traced the company to 1995, when Joao Mendes Carvalho and Marcelo Weyne Romcy, computer science students at the Universidade Federal do Ceara, built a CD that walked a user through getting online and sold it to a hundred internet providers around the country. They then spent six months studying network security before building the assessment tool the business was made of, took the company from Ceara to Sao Paulo, and later opened in the United States. Whether 1995 is the founding of the company or the beginning of the partnership that produced it, the sources do not say.",
+      "The full registered name was Proteus Risk Management. Patria Investimentos built the vehicle that bought it in October 2021, originally called CBS CyberSecurity Holding, and acquired the Chilean firm NeoSecure in the same move - two companies purchased to be combined rather than run separately.",
+      "The combination was launched as SEK - Security Ecosystem Knowledge - on 30 March 2023, after roughly 100 million dollars spent on integrating the two, against a stated commitment of 250 million to the sector. It opened with 650 clients, 100 million dollars of 2022 revenue and around 750 people, with Patria holding 80 per cent. SEK went on to buy CleanCloud in 2023 and Proof in 2024.",
+      "What happened to the Proteus name is the ordinary fate of a company bought to be merged: it survived about eighteen months as a brand and then became part of someone else's. The engineering and the client base carried on; the name did not.",
     ],
   },
 
@@ -9033,12 +9058,15 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "wztech",
     sources: [
+      { label: "WZTech's own site: a technology startup founded in 2007, beginning with hardware from established manufacturers and moving into software integration and automated platforms", url: "https://www.wztech.com.br/" },
+      { label: "CB Insights company profile, giving 2005 and an Avenida Romeu Strazzi address in Sao Jose do Rio Preto", url: "https://www.cbinsights.com/company/wztech-networks" },
       { label: "WZTECH Networks - company description: a multi-brand integrator operating in the Brazilian market with communication infrastructure solutions for data, voice, image and video applications, plus access and connectivity, security, mobility, high availability and management of network elements; its technical team evaluates, designs, develops and deploys solutions for environments ranging from the small corporate office to the high-criticality backbone of a telecommunications operator; the company describes continuous investment in its technical and commercial team through courses, training, certifications and refresher programmes with manufacturers and suppliers", url: "https://www.wztech.com.br/" },
       { label: "CB Insights - WZTECH Networks serves software houses, enterprises, service providers, carriers, data centres, financial companies and healthcare facilities; headquartered on Avenida Romeu Strazzi in Sao Jose do Rio Preto", url: "https://www.cbinsights.com/company/wztech-networks", sourceNote: "Founding year is not settled: this profile gives 2005 and another business directory gives 2007. Neither is asserted here." },
       { label: "APETI listing - address at Rua Joaquim Rodrigues 1085, Distrito do Parque, Sao Jose do Rio Preto, SP", url: "https://www.apeti.org.br/product/wztech-networks" },
     ],
     tags: ["services", "reseller"],
     group: "contemporary",
+    founded: 2007,
     name: "WZTech Networks - integration from the interior",
     tagline: "Multi-brand Brazilian integrator in Sao Jose do Rio Preto, covering data, voice and video infrastructure.",
     intro: "WZTech Networks is a multi-brand integrator based in Sao Jose do Rio Preto, in the interior of Sao Paulo state, working across communication infrastructure for data, voice, image and video, together with connectivity, security, mobility, high availability and network management.",
@@ -9046,6 +9074,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Its own description of scope is the useful part: environments ranging from the small corporate office to the high-criticality backbone of a telecommunications operator. That range is normal for an integrator in this market and unusual anywhere else, and it explains why the engineers in these companies tend to be broader than their counterparts inside a single vendor.",
       "The location is the other point. This timeline already records Altasnet in Belo Horizonte and CTBC in Uberlandia, and the pattern repeats here: substantial network integration work carried out from cities that accounts of the Brazilian industry, written from the coast, tend not to mention at all.",
       "It also states something worth recording on a site about training. Its own material emphasises continuous investment in its technical team through courses, certifications and refresher programmes with manufacturers - which is the same point the Teltec entry makes from the other direction. In this market the qualification of the engineers is the product, and the companies that survive say so out loud.",
+      "The company dates itself to 2007, describing its own start as implementing and reselling hardware from established manufacturers before moving into software integration and then into automated platforms that orchestrate both. Some company databases carry 2005 instead, and LinkedIn does too; the 2007 date is the one WZTech itself publishes, so it is the one used here.",
     ],
     externalUrl: "https://www.wztech.com.br/",
     externalLabel: "WZTech Networks",
@@ -9075,6 +9104,9 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "mude",
     sources: [
+      { label: "Exame: federal court convicted six businessmen and executives; interposed companies concealed the real importer, Mude Comercio e Servicos Ltda; fraudulent imports exceeded US$370 million across 16 identified operations", url: "https://exame.com/negocios/justica-condena-executivos-de-distribuidora-da-cisco/" },
+      { label: "Senate archive of O Estado de S. Paulo, 19 October 2007: Mude was a Brazilian company with a US branch intermediating Cisco imports; goods left Florida, most destined for Bahia, where state law gives incentives to IT companies", url: "https://www2.senado.leg.br/bdsf/bitstream/handle/id/331628/noticia.htm?sequence=1" },
+      { label: "CARF administrative ruling 3301-012.149: the tax authority treated Mude as the REAL importer and therefore as an industrial establishment for IPI purposes, with joint liability across the group", url: "https://acordaos.economia.gov.br/acordaos2/pdfs/processados/10803000134200802_6751476.pdf" },
       { label: "Ministerio Publico Federal, Procuradoria da Republica em Sao Paulo - official release on Operacao Persona: the transactions ran between the United States manufacturer Cisco Systems Inc and the real importer in Brazil, Mude Comercio e Servicos Ltda, intermediated by a series of front companies controlled through nominees and offshore entities; those firms simulated purchases and resales among themselves to conceal the true recipient and the amount actually paid, and under-invoicing of the sales allowed the Brazilian companies in the scheme to evade the taxes due on the real price; by the tax authority\u2019s calculation the total unpaid amounted to R$1.5 billion. The release also records that in 2011 the Federal Court sentenced two of those involved to more than five years", url: "http://www.mpf.mp.br/sp/sala-de-imprensa/noticias-sp/operacao-persona-dois-envolvidos-em-esquema-bilionario-de-sonegacao-viram-reus-por-lavagem-de-dinheiro" },
       { label: "Exame, February 2011 - the Federal Court convicted six businessmen and executives accused of belonging to a criminal organisation importing Cisco Systems products through interposed companies to conceal the real importer, Mude Comercio e Servicos Ltda; the 152-page sentence put the fraudulent imports above US$370 million and imposed 5 years and 2 months for contrabando or descaminho across 16 identified operations", url: "https://exame.com/negocios/justica-condena-executivos-de-distribuidora-da-cisco/" },
       { label: "Consultor Juridico, October 2007 - preventive detentions ordered in Operacao Persona, which examined the conduct of Cisco do Brasil and Mude in assembling a chain of companies based in the United States and Brazil for foreign-trade frauds", url: "https://www.conjur.com.br/2007-out-26/juiz_decreta_prisoes_acusados_operacao_persona/" },
@@ -9096,6 +9128,9 @@ export const partnerVendors: PartnerVendor[] = [
       "The outcome must be stated precisely, because a case is not a verdict and a first-instance verdict is not the end. In February 2011 a federal judge convicted six directors and executives of the company, imposing five years and two months for contrabando or descaminho and for criminal association, and acquitted them of the charge of using false documents. Six other defendants were acquitted of all charges, among them a former Cisco executive, one of the company\u2019s partners, its lawyer and three employees. The prosecution appealed against the acquittals. A separate money-laundering action followed in 2016.",
       "The reported sums differ between sources and no single figure is asserted here. The tax authority\u2019s calculation of unpaid tax is given as R$1.5 billion in the prosecution service\u2019s own release and as R$3.4 billion including fines in other reporting; the sentence put the fraudulent imports above US$370 million, while police statements at the time referred to US$500 million declared. Court references also vary between the fourth and fifth federal chambers in Sao Paulo.",
       "It is on this timeline for one reason. A great deal of the equipment that built Brazilian networks arrived through importers, and how it arrived was a commercial question with legal consequences that the technical literature never discusses. This is the case where that became a matter of public record.",
+      "The registered name was Mude Comercio e Servicos Ltda, an IT products distributor with a branch in the United States. Equipment left Florida and most of it was routed to Bahia, where state law offered incentives to technology companies - a destination chosen for the tax treatment rather than the customers.",
+      "Operacao Persona was launched on 16 October 2007 by the federal police, the tax authority and the federal prosecution service. It produced 44 arrest warrants across Sao Paulo, Salvador, Campinas, Rio, Ilheus and Santos, of which 40 were executed within a day. The alleged unpaid tax was around 1.5 billion reais; the fraudulent imports were later put at more than 370 million dollars across sixteen identified operations. Three tax auditors were subsequently dismissed over their involvement.",
+      "The mechanism was interposed companies - a chain of intermediaries in Brazil and the United States whose function was to conceal who was really importing. That is what gave the operation its name: a persona is a mask. The tax authority",
     ],
   },
 
