@@ -3496,7 +3496,8 @@
       "panels": {
         "components": "Componentes",
         "query": "Parâmetros de query",
-        "assessment": "Avaliação"
+        "assessment": "Avaliação",
+        "anatomy": "Anatomia"
       },
       "fields": {
         "scheme": "Esquema",
@@ -17073,7 +17074,15 @@
     },
     "totalCount": "{count} termos",
     "azNavLabel": "Ir para a letra",
-    "hintExpand": "Abrir no glossário"
+    "hintExpand": "Abrir no glossário",
+    "domainPageTitle": "Termos de {domain}",
+    "domainPageDescription": "{count} verbetes do glossário marcados como {domain}, em ordem alfabética.",
+    "otherDomains": "Outros domínios",
+    "browseByDomain": "Navegar por domínio",
+    "kindPageTitle": "Glossário: {kind}",
+    "kindPageDescription": "{count} verbetes do tipo {kind}, em ordem alfabética.",
+    "otherKinds": "Outros tipos",
+    "browseByKind": "Navegar por tipo"
   },
   "certGuides": {
     "title": "Guias de estudo para certificação",
@@ -20574,5 +20583,15 @@
         "lede": "Onde o assunto não é a tecnologia, e sim o negócio em torno dela e o lugar em que ela foi aprendida."
       }
     }
+  },
+  "urlAnatomy": {
+    "scheme": "Esquema",
+    "userinfo": "Credenciais",
+    "host": "Host",
+    "port": "Porta",
+    "path": "Caminho",
+    "query": "Consulta",
+    "fragment": "Fragmento",
+    "cannotSegment": "Não foi possível separar esta entrada em partes com segurança, então ela aparece sem marcação em vez de destacada de forma errada."
   }
 }

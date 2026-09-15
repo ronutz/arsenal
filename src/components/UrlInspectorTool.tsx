@@ -20,6 +20,7 @@ import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { run, UrlParseError, type UrlReport } from "@/lib/tools/url-inspector";
 import { usePrefill } from "@/lib/use-prefill";
+import UrlAnatomyStrip from "@/components/UrlAnatomyStrip";
 
 const HOST_TYPE_LABEL: Record<NonNullable<UrlReport["hostType"]>, string> = {
   ipv4: "ipv4",
@@ -120,6 +121,14 @@ export default function UrlInspectorTool() {
 
       {report && (
         <div className="jwt-results saml-results url-results">
+          {/* The picture before the table: the reader sees their own URL cut
+              into coloured, named parts, then the detail beneath. Added
+              2026-09-14 at PRIME's request for a visual explainer. */}
+          <section className="jwt-panel">
+            <h4 className="jwt-panel-title">{t("panels.anatomy")}</h4>
+            <UrlAnatomyStrip input={report.input} report={report} />
+          </section>
+
           {/* Components */}
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">{t("panels.components")}</h4>

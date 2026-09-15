@@ -25,6 +25,7 @@ import { CATALOGUE } from "@/content/catalogue/catalogue";
 import { getArticle } from "@/lib/learn";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
+import { DefinedTermSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
@@ -109,19 +110,38 @@ export default async function GlossaryEntryPage({
               ]}
             />
 
+            {/* Machine-readable definition. 1,703 of these carried no
+                structured data at all until 2026-09-14. */}
+            <DefinedTermSchema
+              locale={locale}
+              slug={slug}
+              headword={entry.headword}
+              definition={t(`entries.${slug}.def`)}
+              expansion={entry.expansion}
+              aliases={entry.aliases}
+            />
+
             {/* Head: headword + kind + domain tags */}
             <div className="gloss-detail-head">
               <h1 className="gloss-detail-headword">{entry.headword}</h1>
-              <span className={`gloss-kind-badge gloss-kind-${entry.kind}`}>
+              {/* The badge and the tags below were inert spans until
+                  2026-09-14. They named the term's kind and domains without
+                  offering any way to see the others - which is the whole point
+                  of classifying something. Now every term is a doorway into
+                  its own neighbourhood. */}
+              <Link
+                href={`/glossary/kind/${entry.kind}`}
+                className={`gloss-kind-badge gloss-kind-${entry.kind}`}
+              >
                 {t(`kinds.${entry.kind}`)}
-              </span>
+              </Link>
             </div>
 
             <p className="gloss-detail-domains">
               {entry.domains.map((d) => (
-                <span key={d} className="gloss-domain-tag">
+                <Link key={d} href={`/glossary/domain/${d}`} className="gloss-domain-tag">
                   {t(`domains.${d}`)}
-                </span>
+                </Link>
               ))}
             </p>
 

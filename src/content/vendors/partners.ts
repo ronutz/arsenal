@@ -7064,15 +7064,21 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "nowcy",
     sources: [
+      { label: "cnpj.biz: CNPJ 45.385.327/0001-67, registered 21/02/2022 in Santa Efigenia, Belo Horizonte, principal activity CNAE 6209-1/00 with secondary codes covering training, IT consultancy and equipment rental", url: "https://cnpj.biz/45385327000167" },
+      { label: "IT Section, February 2023: BHS incorporated Nowcy as the group's fourth company; the article notes Nowcy was created in 2021 and that its partners were experienced in information security and corporate governance", url: "https://itsection.com.br/2023/02/08/bhs-incorpora-a-nowcy/" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
     group: "other",
+    founded: 2022,
     name: "NowCy",
     tagline: "Partner named for Zscaler in Brazil.",
     intro: "One of the Brazilian partners on the Zscaler side. Zscaler's Brazilian channel is small and recent compared with the network vendors, which is what a market looks like while a category is still being established rather than replaced.",
     body: [
       "Describes itself as a recognised Zscaler partner and specialist in Brazil. Zscaler's Brazilian channel is small and recent next to the network vendors, which is what a market looks like while a category is still being established rather than replaced.",
+      "The registration is dated 21 February 2022 in Belo Horizonte, and the trade press reporting the company's sale a year later says it was created in 2021 - the ordinary gap between a business starting and its paperwork catching up. The registry date is used here because it is the documented one, and the 2021 account is recorded alongside it rather than chosen over it.",
+      "That same registration appears under TWO company names depending on when a directory scraped it: Now Treinamento e Locacao, and Nowcy Seguranca da Informacao. The secondary activity codes still carry the older shape - professional training, equipment rental, retail of computing supplies - so the record shows a company that repositioned itself from training and rental into security and did not bother rewriting its back catalogue of CNAE codes.",
+      "In February 2023 it was incorporated into BHS, a Minas Gerais IT services group, as that group's fourth company. It is the third firm in this catalogue to end up inside a larger holding rather than remaining independent - Proteus went to Patria and became part of SEK, and Segertech sits inside a foreign-trade group - which is what the market for Brazilian security specialists has been doing for some years.",
     ],
   },
   {
@@ -7502,6 +7508,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "tld-hub",
     sources: [
+      { label: "TI Bahia, March 2024: TLD TeleData adopted the name TLD Hub de Ciberseguranca e Conectividade, presenting the new positioning in Salvador on 19 March with representatives of Fortinet, described as its largest strategic partner", url: "https://tibahia.com/negocios/com-nova-identidade-corporativa-tld-teledata-agora-e-tld-hub-de-ciberseguranca-e-conectividade/" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
@@ -7511,6 +7518,8 @@ export const partnerVendors: PartnerVendor[] = [
     intro: "A Brazilian house in the Fortinet channel. Names like this are the part of the industry that no vendor timeline records: the companies that carry a product into an actual building, and whose own history is usually shorter than the product's.",
     body: [
       "Expert-level Fortinet integrator and managed security service provider, specialised across cloud, operational technology, SASE, SD-WAN, firewall and LAN, and a Preferred Services partner. Houses like this are the part of the industry no vendor timeline records: the companies that carry a product into an actual building.",
+      "The current name is recent and the company is not. TLD Hub de Ciberseguranca e Conectividade is a 2024 rebrand of TLD TeleData, presented in Salvador on 19 March that year with Fortinet - described as its largest strategic partner - in the room. The older name is the one to search on for anything before 2024, and the rebrand copy leans on tradition and established position rather than novelty, which is not how a young company introduces itself.",
+      "It is based in Bahia, which matters more than it looks: the state has long offered tax incentives to technology companies, and it appears repeatedly in this catalogue as a destination for imported equipment. A cybersecurity and connectivity integrator headquartered there is operating inside that arrangement rather than around it.",
     ],
   },
   {
@@ -7600,15 +7609,19 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "hexait",
     sources: [
+      { label: "Econodata: Hexait Servicos e Tecnologia da Informacao LTDA, CNPJ 14.260.983/0001-00, founded 18/08/2011 in Vila Gomes Cardim, Sao Paulo; principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/14260983000100-hexait-servicos-e-tecnologia-da-informacao-ltda" },
+      { label: "Inforchannel, March 2025: HexaIT, with Fortinet, brought FortiCnapp to the Brazilian market - a unified cloud-security platform covering posture management, workload protection, entitlement management and code security", url: "https://inforchannel.com.br/2025/03/28/hexait-anuncia-forticnapp-plataforma-de-seguranca-unificada-para-a-nuvem/" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
     group: "other",
+    founded: 2011,
     name: "HexaIT",
     tagline: "Expert-level Fortinet partner in Brazil.",
     intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
     body: [
       "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Registered as Hexait Servicos e Tecnologia da Informacao in August 2011, in the Vila Gomes Cardim district of Sao Paulo, with technical support and IT services as its declared activity. In March 2025 it brought Fortinet's FortiCnapp to the Brazilian market - cloud security posture management, workload protection, entitlement management and code security in one platform - which places it among the partners doing launch work for a vendor rather than only reselling what is already established here.",
     ],
   },
   {
@@ -7689,15 +7702,19 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "under-protection",
     sources: [
+      { label: "Under Protection's own history page: founded in 2001, when digital security was barely discussed in Brazil, starting with information-security consulting for companies that had no basic access-control policies", url: "https://underprotection.com.br/nossa-historia/" },
       { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
     ],
     tags: ["reseller", "services"],
     group: "other",
+    founded: 2001,
     name: "Under Protection",
     tagline: "Expert-level Fortinet partner in Brazil.",
     intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
     body: [
       "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Under Protection was founded in 2001, and its own account of why is worth taking at face value: it began doing information-security consulting for Brazilian companies that had no access-control policies at all. That is early. Brazil's general data protection law was still nineteen years away, and most of the compliance pressure that now sustains this kind of consultancy did not exist - so the first customers were buying a judgement about risk rather than a way to satisfy a regulator.",
+      "The work described from the start is risk assessment, compliance and incident prevention against international frameworks - ISO 27001 and 27701, and NIST - rather than product resale, and the company now holds ISO 9001 and 27001 itself. Its stated conclusion after two decades is that the serious failures came less from badly configured tools than from the absence of strategy and process around them.",
     ],
   },
   {

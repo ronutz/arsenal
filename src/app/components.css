@@ -16871,3 +16871,145 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .vendor-marks .vendor-mark {
   margin-bottom: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   URL anatomy strip (2026-09-14, PRIME). The reader's own URL, cut into named
+   parts. Colour is an AID, never the message: every part also carries its name
+   in title and aria-label, and the key beneath spells the colours out, so the
+   strip still works for a colour-blind reader and in a screen reader.
+   --------------------------------------------------------------------------- */
+.url-anatomy {
+  margin: 0.25rem 0 0.5rem;
+}
+.url-anatomy-strip,
+.url-anatomy-raw {
+  margin: 0 0 0.75rem;
+  padding: 0.7rem 0.8rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 2;
+  /* A long URL must wrap ANYWHERE rather than overflow a phone. */
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+.url-anatomy-part {
+  padding: 0.15rem 0.2rem;
+  border-radius: 4px;
+  border-bottom: 2px solid currentColor;
+}
+.url-anatomy-punct {
+  color: var(--text-muted);
+  padding: 0 0.05rem;
+}
+.url-anatomy-fallback {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.url-anatomy-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8rem;
+}
+.url-anatomy-key-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.url-anatomy-swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 3px;
+  background: currentColor;
+  flex: none;
+}
+.url-anatomy-key-label {
+  color: var(--text-secondary);
+}
+
+/* One colour per component. Drawn from the theme's own accents so the strip
+   belongs to the site rather than importing a palette of its own. */
+.url-anatomy-scheme   { color: var(--accent-primary); }
+.url-anatomy-userinfo { color: var(--status-danger, #f87171); }
+.url-anatomy-host     { color: var(--accent-secondary); }
+.url-anatomy-port     { color: var(--status-warning, #fbbf24); }
+.url-anatomy-path     { color: var(--text-primary); }
+.url-anatomy-query    { color: var(--status-success, #4ade80); }
+.url-anatomy-fragment { color: var(--text-muted); }
+
+/* ---------------------------------------------------------------------------
+   Glossary domain pages and the rail that reaches them (2026-09-14, PRIME:
+   "findability needs improvements"). The A-Z index gave a reader nothing
+   unless they already knew the word; these are the conceptual way in.
+   --------------------------------------------------------------------------- */
+.glossary-domain-rail-wrap {
+  margin: 1.1rem 0 1.4rem;
+}
+.glossary-domain-rail-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.glossary-domain-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.glossary-domain-chip {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+.glossary-domain-chip:hover,
+.glossary-domain-chip:focus-visible {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+/* The term list on a domain page. Two columns where there is room, one on a
+   phone; a domain can hold anything from 15 terms to 577. */
+.glossary-domain-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  columns: 2;
+  column-gap: 2rem;
+}
+@media (max-width: 640px) {
+  .glossary-domain-list { columns: 1; }
+}
+.glossary-domain-item {
+  break-inside: avoid;
+  margin-bottom: 0.55rem;
+}
+.glossary-domain-term {
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.glossary-domain-term:hover,
+.glossary-domain-term:focus-visible {
+  border-bottom-color: var(--accent-primary);
+}
+.glossary-domain-expansion {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}

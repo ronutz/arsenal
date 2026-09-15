@@ -3496,7 +3496,8 @@
       "panels": {
         "components": "Components",
         "query": "Query parameters",
-        "assessment": "Assessment"
+        "assessment": "Assessment",
+        "anatomy": "Anatomy"
       },
       "fields": {
         "scheme": "Scheme",
@@ -17073,7 +17074,15 @@
     },
     "totalCount": "{count} terms",
     "azNavLabel": "Jump to letter",
-    "hintExpand": "Expand"
+    "hintExpand": "Expand",
+    "domainPageTitle": "{domain} terms",
+    "domainPageDescription": "{count} glossary entries tagged {domain}, listed alphabetically.",
+    "otherDomains": "Other domains",
+    "browseByDomain": "Browse by domain",
+    "kindPageTitle": "Glossary: {kind}",
+    "kindPageDescription": "{count} entries of kind {kind}, listed alphabetically.",
+    "otherKinds": "Other kinds",
+    "browseByKind": "Browse by kind"
   },
   "certGuides": {
     "title": "Certification study guides",
@@ -20625,5 +20634,15 @@
         "lede": "Where the subject is not the technology but the business around it, and the place it was learned in."
       }
     }
+  },
+  "urlAnatomy": {
+    "scheme": "Scheme",
+    "userinfo": "Credentials",
+    "host": "Host",
+    "port": "Port",
+    "path": "Path",
+    "query": "Query",
+    "fragment": "Fragment",
+    "cannotSegment": "This input could not be cut into parts cleanly, so it is shown unmarked rather than highlighted incorrectly."
   }
 }

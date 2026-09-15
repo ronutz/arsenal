@@ -178,11 +178,40 @@ export const VENDOR_MARKS: VendorMark[] = [
   },
   {
     vendor: "f5",
+    label: "F5 Networks",
+    src: "/img/marks/f5-networks-3d.png",
+    from: 1999,
+    to: 2012,
+    note:
+      "The glossy three-dimensional ball with the NETWORKS wordmark. F5's OWN " +
+      "logo guidelines of December 2024 say only that 'until 201X the logo was " +
+      "rendered as a three-dimensional object' - the placeholder is literal, in " +
+      "the published PDF. The company has not filled in its own transition year, " +
+      "so no primary source for it exists; 2012 as the end here follows the " +
+      "secondary accounts that place the flat redesign in early 2013. The " +
+      "company was F5 Labs until 1999, so 1999 is the earliest this lockup can " +
+      "be correct.",
+  },
+  {
+    vendor: "f5",
     label: "F5",
     src: "/img/marks/f5-current.svg",
-    from: 1996,
+    from: 2013,
     to: null,
-    note: "Authorized-instructor platform; see /about/credentials for the credentials themselves.",
+    note:
+      "The flat red ball. CORRECTED 2026-09-14 from 'from: 1996' - the company's " +
+      "founding year used as a proxy, the same error as Palo Alto and Extreme. " +
+      "F5's December 2024 guidelines describe the flattening but date it only as " +
+      "'201X'; 2013 comes from secondary accounts. Two further oddities in that " +
+      "same official document are worth knowing: it states 'F5's legal name is " +
+      "F5 Networks', which F5's own SEC filing contradicts - the name became F5, " +
+      "Inc. on 12 November 2021 - and it declares that LEGACY versions of the " +
+      "logo are not permitted. This site shows a legacy mark anyway, on the " +
+      "nominative-use basis set out in LICENSES/LicenseRef-Trademark-NominativeUse: " +
+      "identifying a company in a historical record is not brand usage under " +
+      "their guidelines. That position is taken knowingly, not in ignorance of " +
+      "the instruction. All four flat files in the archive are the SAME artwork, " +
+      "so the registry does not distinguish flat generations and does not pretend to.",
   },
   {
     vendor: "extreme",

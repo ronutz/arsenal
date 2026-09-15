@@ -23,6 +23,7 @@ import {
   getGlossaryKinds,
 } from "@/content/glossary/glossary";
 import { Link } from "@/i18n/navigation";
+import { DefinedTermSetSchema } from "@/components/GlossarySchema";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -94,9 +95,48 @@ export default async function GlossaryIndexPage({
       <main id="main">
         <section className="section">
           <div className="container">
+            <DefinedTermSetSchema
+              locale={locale}
+              name={t("title")}
+              description={t("tagline")}
+            />
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede">{t("tagline")}</p>
             <p className="gloss-hero-count">{t("totalCount", { count: entries.length })}</p>
+
+            {/* Addressable domain pages, above the client filter. The filter
+                needs the whole three-megabyte page downloaded before it can
+                narrow anything, and its result has no URL - so it cannot be
+                linked, shared or indexed. These links can. (PRIME 2026-09-14,
+                "findability needs improvements".) */}
+            <nav className="glossary-domain-rail-wrap" aria-label={t("browseByDomain")}>
+              <h2 className="glossary-domain-rail-title">{t("browseByDomain")}</h2>
+              <ul className="glossary-domain-rail">
+                {domains.map((d) => (
+                  <li key={d}>
+                    <Link
+                      href={`/glossary/domain/${d}`}
+                      className="glossary-domain-chip"
+                    >
+                      {t(`domains.${d}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <nav className="glossary-domain-rail-wrap" aria-label={t("browseByKind")}>
+              <h2 className="glossary-domain-rail-title">{t("browseByKind")}</h2>
+              <ul className="glossary-domain-rail">
+                {kinds.map((k) => (
+                  <li key={k}>
+                    <Link href={`/glossary/kind/${k}`} className="glossary-domain-chip">
+                      {t(`kinds.${k}`)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
 
             <GlossaryFilter
               domains={domains.map((d) => ({ key: d, label: t(`domains.${d}`) }))}
