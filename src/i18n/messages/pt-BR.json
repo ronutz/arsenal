@@ -17070,6 +17070,30 @@
       "ssl-stripping": {
         "def": "Manter a vítima em HTTP simples reescrevendo os links que a levariam a HTTPS, enquanto o atacante fala HTTPS com o servidor real.",
         "context": "Apresentada por Moxie Marlinspike em 2009, a técnica explorava o fato de que usuários quase nunca digitam o esquema: chegam a um site por HTTP simples e são redirecionados, ou seguem um link. Um atacante no caminho reescreve esses redirecionamentos e links de modo que o lado da vítima na conversa nunca é cifrado, enquanto o lado do atacante com o servidor é - então o servidor vê uma sessão segura normal e a vítima vê uma página que simplesmente não tem um cadeado que ninguém procurava. Não exigia certificado inválido e não produzia aviso, que é o que a tornava eficaz. O HTTP Strict Transport Security é a resposta direta: um site instrui o navegador a usar HTTPS para aquele nome por um período declarado, de modo que não há primeira requisição em texto claro a interceptar, e as listas de pré-carga levam a instrução antes da primeira visita. A técnica é hoje largamente histórica para sites grandes e segue relevante onde um redirecionamento a partir de HTTP simples ainda é a porta de entrada."
+      },
+      "rfc-2549": {
+        "def": "Uma RFC de primeiro de abril de 1999 que acrescenta qualidade de serviço ao transporte de IP por pombos da RFC 1149.",
+        "context": "A RFC 2549 mantém a seriedade da anterior enquanto acrescenta classes de serviço, gestão de filas e a observação de que os portadores se autorregulam: tráfego de alta prioridade simplesmente viaja em aves mais rápidas. Também nota que o protocolo tem um mecanismo de perda embutido na forma de predadores. A piada funciona porque tudo que ela descreve é uma preocupação real de QoS, dita sem uma única nota falsa."
+      },
+      "rfc-6214": {
+        "def": "Uma RFC de primeiro de abril de 2011 que adapta formalmente o transporte por aves da RFC 1149 para IPv6.",
+        "context": "Publicada em 1º de abril de 2011, a RFC 6214 existe porque documentos de migração para IPv6 estavam sendo escritos para todos os outros transportes e os autores levaram o padrão até o fim. O conteúdo sério por baixo é uma lista do que realmente muda quando um protocolo vai para IPv6 - tamanho de endereço, formato de cabeçalho, descoberta de vizinhos - aplicada a um portador que bate asas. Vinte e um anos separam as duas, o que é bastante tempo para uma piada seguir mantida."
+      },
+      "http-420": {
+        "def": "Um código de status HTTP não padronizado que a API do Twitter usava para limitação de taxa, chamado Enhance Your Calm.",
+        "context": "O 420 nunca foi registrado na IANA e não aparece na RFC 9110. O Twitter o usava para clientes limitados por taxa antes de migrar para o padrão 429 Too Many Requests, e alguns frameworks depois o tomaram emprestado. Encontrá-lo hoje diz mais sobre a idade do serviço do que sobre a requisição: é um fóssil de uma época em que APIs grandes inventavam códigos em vez de esperar o registro."
+      },
+      "ieee-802-11": {
+        "def": "A família de padrões do IEEE que define o funcionamento das redes locais sem fio - o que quase todo mundo quer dizer por Wi-Fi.",
+        "context": "O 802.11 especifica as camadas física e MAC; as letras de emenda que o seguem (a, b, g, n, ac, ax, be) marcam gerações de modulação, largura de canal e comportamento multiusuário. Wi-Fi é a marca de certificação da Wi-Fi Alliance, não o padrão em si, e por isso nomes de marketing como Wi-Fi 6 correspondem a emendas como 802.11ax em vez de substituí-las. Citar a emenda em vez da marca costuma ser o jeito mais rápido de encerrar uma discussão sobre o que um equipamento realmente suporta."
+      },
+      "ieee-802-1d": {
+        "def": "O padrão do IEEE para pontes MAC, que introduziu o Spanning Tree Protocol.",
+        "context": "O 802.1D é o documento que torna sobrevivível uma rede Ethernet com enlaces redundantes: sem ele um laço inunda o segmento até nada mais passar. O comportamento original de convergência era lento o bastante para virar uma classe própria de incidente, e é por isso que existem a reconvergência rápida do 802.1w e, depois, o roteamento por caminho mais curto. A maioria dos engenheiros conhece o 802.1D pelo modo de falha, não pelo texto."
+      },
+      "six-ghz-wifi": {
+        "def": "A faixa de 5,925 a 7,125 GHz liberada para Wi-Fi sem licença, que praticamente triplica o espectro disponível para redes locais sem fio.",
+        "context": "Os reguladores começaram a liberar os 6 GHz em 2020, e a faixa comporta muito mais canais largos sem sobreposição que 2,4 ou 5 GHz - motivo pelo qual é atraente em ambientes densos. O custo é de física, não de protocolo: frequências mais altas atenuam mais rápido e atravessam paredes pior, então a cobertura por ponto de acesso cai enquanto a capacidade sobe. Os dispositivos também precisam suportá-la, que é o que as certificações Wi-Fi 6E e posteriores indicam."
       }
     },
     "totalCount": "{count} termos",

@@ -10,6 +10,7 @@
 // ============================================================================
 
 import { notFound } from "next/navigation";
+import LearnArticleSchema from "@/components/LearnArticleSchema";
 import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -100,6 +101,16 @@ export default async function ArticlePage({
       <main id="main">
         <article className="section">
           <div className="container article-container">
+            {/* Authorship, machine-readable. 670 articles carried none until
+                2026-09-15 while eleven blog posts did. */}
+            <LearnArticleSchema
+              locale={locale}
+              slug={slug}
+              title={article.title}
+              summary={article.summary}
+              updated={article.updated}
+            />
+
             <Breadcrumbs
               ariaLabel={tNav("breadcrumb")}
               items={

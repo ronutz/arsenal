@@ -1,5 +1,5 @@
 // ============================================================================
-// scripts/check-glossary-schema.mjs   (POSTBUILD - reads out/)
+// scripts/check-structured-data.mjs   (POSTBUILD - reads out/)
 // ----------------------------------------------------------------------------
 // Validates the schema.org/DefinedTerm data actually emitted into the built
 // pages, not merely that a component was imported.
@@ -33,7 +33,7 @@ import path from "node:path";
 const root = process.cwd();
 const out = path.join(root, "out");
 if (!fs.existsSync(out)) {
-  console.log("[check-glossary-schema] SKIP: no out/ directory");
+  console.log("[check-structured-data] SKIP: no out/ directory");
   process.exit(0);
 }
 
@@ -128,8 +128,50 @@ for (const slug of sample) {
 
 if (checked === 0) errors.push("no glossary term pages were checked - the sample found nothing");
 
+// ---- Learn articles: TechArticle ------------------------------------------
+// Same failure modes, same postbuild reasoning. The one that matters most here
+// is the AUTHOR REFERENCE: the whole point of this schema is to attach 670
+// articles to the Person carried by /about, so an article that omits it or
+// points somewhere else is the feature silently not happening.
+const learnDir = path.join(out, "en/learn");
+let learnChecked = 0;
+if (fs.existsSync(learnDir)) {
+  const arts = fs
+    .readdirSync(learnDir, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .sort();
+  const lstep = Math.max(1, Math.floor(arts.length / 80));
+  for (const slug of arts.filter((_, i) => i % lstep === 0)) {
+    const p2 = path.join(learnDir, slug, "index.html");
+    if (!fs.existsSync(p2)) continue;
+    const blocks = ldBlocks(fs.readFileSync(p2, "utf8")).filter(
+      (b) => b["@type"] === "TechArticle"
+    );
+    learnChecked++;
+    if (blocks.length !== 1) {
+      errors.push(`learn/${slug}: ${blocks.length} TechArticle block(s); expected exactly 1`);
+      continue;
+    }
+    const a = blocks[0];
+    if (!a.headline) errors.push(`learn/${slug}: TechArticle has no headline`);
+    if (!a.description || String(a.description).trim().length < 20) {
+      errors.push(`learn/${slug}: TechArticle description is missing or a stub`);
+    }
+    if (!a.author?.["@id"]) {
+      errors.push(
+        `learn/${slug}: TechArticle has no author reference - the entire purpose of ` +
+          `this schema is to attach the article to the Person on /about`
+      );
+    }
+    if (a.dateModified && !/^\d{4}-\d{2}-\d{2}/.test(String(a.dateModified))) {
+      errors.push(`learn/${slug}: dateModified "${a.dateModified}" is not an ISO date`);
+    }
+  }
+}
+
 if (errors.length > 0) {
-  console.error("[check-glossary-schema] FAIL:\n");
+  console.error("[check-structured-data] FAIL:\n");
   for (const e of errors.slice(0, 12)) console.error(`  - ${e}`);
   if (errors.length > 12) console.error(`  ... and ${errors.length - 12} more`);
   console.error("\n  See the header of this script for why each rule exists.\n");
@@ -137,7 +179,7 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `[check-glossary-schema] OK: ${checked} term page(s) sampled of ${slugs.length}; ` +
-    `each carries one DefinedTerm with a real definition, all referencing the ` +
-    `DefinedTermSet published on the index.`
+  `[check-structured-data] OK: ${checked} term page(s) sampled of ${slugs.length} ` +
+    `(DefinedTerm, all referencing the set on the index) and ${learnChecked} ` +
+    `Learn article(s) (TechArticle, each with an author reference).`
 );

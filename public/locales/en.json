@@ -17070,6 +17070,30 @@
       "ssl-stripping": {
         "def": "Keeping a victim on plain HTTP by rewriting the links that would have taken them to HTTPS, while the attacker speaks HTTPS to the real server.",
         "context": "Presented by Moxie Marlinspike in 2009, the technique exploited the fact that users almost never type the scheme: they arrive at a site over plain HTTP and are redirected, or they follow a link. An attacker in the path rewrites those redirects and links so the victim's side of the conversation is never encrypted at all, while the attacker's side to the server is - so the server sees a normal secure session and the victim sees a page that simply lacks a padlock nobody was looking for. It required no invalid certificate and produced no warning, which is what made it effective. HTTP Strict Transport Security is the direct answer: a site instructs the browser to use HTTPS for that name for a stated period, so there is no plain-text first request to intercept, and preload lists carry the instruction before the first visit. The technique is largely historical for major sites and remains relevant wherever a redirect from plain HTTP is still the entry point."
+      },
+      "rfc-2549": {
+        "def": "An April Fools' RFC from 1999 that adds quality of service to the pigeon-based IP transport of RFC 1149.",
+        "context": "RFC 2549 keeps the deadpan of its predecessor while layering on class-of-service handling, queue management and the observation that the carriers are self-regulating: high-priority traffic is simply carried by faster birds. It also notes that the protocol has a built-in loss mechanism in the form of predators. The joke works because everything it describes is a real QoS concern stated without a single false note."
+      },
+      "rfc-6214": {
+        "def": "A 2011 April Fools' RFC that formally adapts RFC 1149's avian carrier transport to IPv6.",
+        "context": "Published on 1 April 2011, RFC 6214 exists because IPv6 migration documents were being written for every other transport and the authors followed the pattern to its conclusion. The serious content underneath is a checklist of what actually changes when a protocol moves to IPv6 - address size, header format, neighbour discovery - applied to a carrier that flaps. Twenty-one years separate it from RFC 1149, which is a long time for a joke to stay maintained."
+      },
+      "http-420": {
+        "def": "A non-standard HTTP status code once returned by Twitter's API for rate limiting, named Enhance Your Calm.",
+        "context": "420 has never been registered with IANA and does not appear in RFC 9110. Twitter used it for rate-limited clients before moving to the standard 429 Too Many Requests, and a few frameworks have since borrowed it for their own purposes. Encountering it in the wild tells you something about the service's age rather than about the request: it is a fossil of an era when large APIs invented status codes rather than waiting for the registry."
+      },
+      "ieee-802-11": {
+        "def": "The IEEE standard family that defines wireless LAN operation - what almost everyone means by Wi-Fi.",
+        "context": "802.11 specifies the physical and MAC layers; the amendment letters that follow it (a, b, g, n, ac, ax, be) mark generations of modulation, channel width and multi-user behaviour. Wi-Fi is the certification brand of the Wi-Fi Alliance rather than the standard itself, which is why marketing names such as Wi-Fi 6 map onto amendments like 802.11ax rather than replacing them. Naming the amendment rather than the brand is usually the faster way to end an argument about what a device actually supports."
+      },
+      "ieee-802-1d": {
+        "def": "The IEEE standard for MAC bridges, which introduced the Spanning Tree Protocol.",
+        "context": "802.1D is the document that makes an Ethernet network with redundant links survivable: without it a loop floods the segment until nothing passes. The original convergence behaviour was slow enough that it became its own class of outage, which is why 802.1w rapid reconvergence and later shortest-path bridging exist. Most engineers meet 802.1D through its failure mode rather than through its text."
+      },
+      "six-ghz-wifi": {
+        "def": "The 5.925-7.125 GHz band opened to unlicensed Wi-Fi, roughly tripling the spectrum available to wireless LANs.",
+        "context": "Regulators began releasing 6 GHz in 2020, and it carries far more non-overlapping wide channels than 2.4 or 5 GHz - the reason it is attractive in dense deployments. The trade-off is physics rather than protocol: higher frequencies attenuate faster and pass through walls less well, so coverage per access point falls even as capacity rises. Devices must also support it, which is what Wi-Fi 6E and later certifications indicate."
       }
     },
     "totalCount": "{count} terms",

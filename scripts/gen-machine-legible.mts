@@ -441,7 +441,8 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
   const localeUrl = (loc: string, route: string) =>
     `${ORIGIN}/${loc}${route ? `/${route}` : ""}/`;
 
-  const urls: string[] = [];
+  // Keep each route WITH its lines so the split below can file it by section.
+  const urlBlocks: { route: string; lines: string[] }[] = [];
   for (const route of routes) {
     // Only locales where THIS route was actually generated. Previously every
     // route claimed all sixteen, which was true only by accident - every route
@@ -459,25 +460,79 @@ fs.writeFileSync(path.join(OUT, "llms.txt"), L.join("\n"), "utf8");
     alternates.push(
       `    <xhtml:link rel="alternate" hreflang="x-default" href="${xmlEscape(localeUrl("en", route))}" />`,
     );
-    urls.push(
-      "  <url>",
-      `    <loc>${xmlEscape(localeUrl("en", route))}</loc>`,
-      ...alternates,
-      "  </url>",
-    );
+    urlBlocks.push({
+      route,
+      lines: [
+        "  <url>",
+        `    <loc>${xmlEscape(localeUrl("en", route))}</loc>`,
+        ...alternates,
+        "  </url>",
+      ],
+    });
   }
 
-  const sitemap = [
+  // ---- SPLIT INTO A SITEMAP INDEX (2026-09-15) -----------------------------
+  // It used to be one flat file: 3,404 URLs and 2.9 MB, because every route
+  // carries an hreflang block for sixteen locales. That is legal - Google's
+  // limit is 50,000 URLs or 50 MB - but it is the least digestible shape for a
+  // site this size, and Search Console showed Google had discovered nineteen
+  // pages of the 3,404 on offer.
+  //
+  // A sitemap index with per-section children lets a crawler fetch and schedule
+  // sections independently, and lets Search Console report coverage PER
+  // SECTION - so "the glossary is indexed but Learn is not" becomes a visible
+  // fact rather than a guess.
+  //
+  // /sitemap.xml stays the index at the same address, so a sitemap already
+  // submitted to Search Console keeps working without resubmission.
+  const SECTIONS: { name: string; match: (r: string) => boolean }[] = [
+    { name: "glossary", match: (r) => r.startsWith("glossary/") },
+    { name: "learn", match: (r) => r.startsWith("learn/") },
+    { name: "tools", match: (r) => r.startsWith("tools/") },
+    { name: "industry", match: (r) => r.startsWith("industry/") },
+    { name: "certifications", match: (r) => r.startsWith("certifications/") },
+    { name: "blog", match: (r) => r.startsWith("blog/") },
+    // Everything else - home, about, contact, section indexes, vendor hubs.
+    { name: "pages", match: () => true },
+  ];
+
+  const bySection = new Map<string, string[]>();
+  for (const { name } of SECTIONS) bySection.set(name, []);
+  for (const block of urlBlocks) {
+    const section = SECTIONS.find((sx) => sx.match(block.route))!.name;
+    bySection.get(section)!.push(...block.lines);
+  }
+
+  const written: string[] = [];
+  for (const { name } of SECTIONS) {
+    const lines = bySection.get(name)!;
+    if (lines.length === 0) continue;
+    const doc = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+      ...lines,
+      "</urlset>",
+      "",
+    ].join("\n");
+    fs.writeFileSync(path.join(OUT, `sitemap-${name}.xml`), doc, "utf8");
+    written.push(name);
+  }
+
+  const index = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
-    ...urls,
-    "</urlset>",
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...written.flatMap((name) => [
+      "  <sitemap>",
+      `    <loc>${xmlEscape(`${ORIGIN}/sitemap-${name}.xml`)}</loc>`,
+      "  </sitemap>",
+    ]),
+    "</sitemapindex>",
     "",
   ].join("\n");
-
-  fs.writeFileSync(path.join(OUT, "sitemap.xml"), sitemap, "utf8");
+  fs.writeFileSync(path.join(OUT, "sitemap.xml"), index, "utf8");
   console.log(
-    `[gen-machine-legible] sitemap.xml (${routes.length} routes × ${SITEMAP_LOCALES.length} locales + x-default).`,
+    `[gen-machine-legible] sitemap.xml is now an INDEX of ${written.length} ` +
+      `section sitemap(s): ${written.join(", ")} (${routes.length} routes total)`
   );
 }
 

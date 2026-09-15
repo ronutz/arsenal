@@ -105,6 +105,30 @@ const RENAMED_API_SLUGS = new Map<string, string>([
 // and body survive, and clients must not rewrite the request.
 // Survivor chosen by corpus convention (article-free form; expressions never
 // carry "the-") and by accuracy where the name is a proper one.
+// URLs from the PREVIOUS ronutz.com, which was a Wix site selling training
+// courses. Google crawled these as recently as July 2026 and now reports them
+// as 404s (Search Console, 2026-09-15) - which is a real loss, because these
+// are the only pages on this domain with any crawl history at all. A site with
+// nineteen discovered pages cannot afford to throw away the two that Google
+// already knows.
+//
+// The destination is the nearest honest equivalent, NOT the home page. A
+// redirect to "/" tells a crawler the old page's subject no longer exists here,
+// and tells a reader who wanted an F5 course that they guessed wrong. Both of
+// these were about F5 training, so both land on F5 material in the language the
+// URL was written in - the Portuguese one on the Portuguese side.
+//
+// 308 rather than 301 for the same reason as the tables below: a client may
+// replay a 301 as GET.
+//
+// This list is almost certainly INCOMPLETE. It contains what Search Console has
+// reported so far, not what the old site published; more will surface as Google
+// re-crawls, and each should be added here rather than left to 404.
+const LEGACY_SITE_PATHS = new Map<string, string>([
+  ["/treinamentos-oficiais-f5-bigip", "/pt-BR/f5/"],
+  ["/product-page/04-configuring-big-ip-dns-gtm-2-dias", "/pt-BR/f5/"],
+]);
+
 const MERGED_GLOSSARY_SLUGS = new Map<string, string>([
   ["eating-your-own-dog-food", "dogfooding"],
   ["foobar", "foo-bar"],
@@ -377,6 +401,22 @@ export default {
     // slash tolerated. 308 preserves method and body, matching the API-slug
     // policy above. Runs before the locale gate because that gate would rewrite
     // the path and lose the glossary segment.
+    // Legacy Wix-era URLs. Matched on the WHOLE path with an optional trailing
+    // slash, because these have no locale segment - the old site had no
+    // locales. Runs before the locale gate, which would otherwise rewrite the
+    // path into /en/treinamentos-... and lose the match.
+    {
+      const bare = url.pathname.replace(/\/+$/, "") || "/";
+      const legacy = LEGACY_SITE_PATHS.get(bare);
+      if (legacy) {
+        const to = new URL(`${legacy}${url.search}`, url.origin);
+        return new Response(null, {
+          status: 308,
+          headers: { Location: to.toString(), "Cache-Control": "public, max-age=86400" },
+        });
+      }
+    }
+
     {
       const m = /^\/([A-Za-z-]+)\/glossary\/([a-z0-9-]+)\/?$/.exec(url.pathname);
       const merged = m ? MERGED_GLOSSARY_SLUGS.get(m[2]) : undefined;
