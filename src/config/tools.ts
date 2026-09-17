@@ -64,6 +64,8 @@ export const tools: ToolEntry[] = [
   { id: "csr-decoder", href: "/tools/csr-decoder", category: "pki", available: true },
   { id: "acme-dns01", href: "/tools/acme-dns01", category: "pki", available: true },
   { id: "public-suffix", href: "/tools/public-suffix", category: "networking", available: true },
+  { id: "dhcp-option-43", href: "/tools/dhcp-option-43", category: "networking", vendorNeutral: true, available: true },
+  { id: "panos-policy-evaluation-order", href: "/tools/panos-policy-evaluation-order", category: "security", vendorNeutral: true, available: true },
   { id: "letsencrypt-rate-limits", href: "/tools/letsencrypt-rate-limits", category: "pki", available: true },
   { id: "cipher", href: "/tools/cipher", category: "transport", available: true },
   { id: "ipv6", href: "/tools/ipv6", category: "networking", available: true },

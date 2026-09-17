@@ -6906,6 +6906,89 @@
         "carries-authorization": "Esta requisição carrega um cabeçalho Authorization. Trate o texto colado como credencial.",
         "carries-cookie": "Esta requisição carrega um cabeçalho Cookie, que em geral é uma sessão viva."
       }
+    },
+    "dhcp-option-43": {
+      "blurb": "Monta o valor de option 43 que a controladora sem fio realmente espera. Um número de opção, quatro codificações incompatíveis.",
+      "vendorLabel": "Fabricante do ponto de acesso",
+      "sourceLabel": "Codificação conforme",
+      "inputLabel": "Endereço IP da controladora",
+      "inputLabelMulti": "Endereços IP das controladoras",
+      "placeholder": "192.168.10.5",
+      "placeholderMulti": "192.168.10.5 192.168.10.20",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. O endereço da controladora é topologia interna e nunca sai desta página.",
+      "panels": {
+        "value": "Valor da opção",
+        "vendorClass": "A option 60 também é obrigatória",
+        "watchOut": "O erro que este fabricante provoca",
+        "servers": "Para o seu servidor DHCP"
+      },
+      "servers": {
+        "isc-dhcp": "ISC dhcpd",
+        "cisco-ios": "Cisco IOS",
+        "windows": "Windows Server (hex, sem separadores)",
+        "mikrotik": "MikroTik RouterOS"
+      },
+      "notes": {
+        "string-not-hex": "Este fabricante espera texto puro, não hexadecimal. Colocar um valor hex aqui é uma falha comum e silenciosa: o ponto de acesso lê, não consegue extrair um endereço e simplesmente nunca se registra.",
+        "not-option-43": "Este fabricante não usa a option 43 para descobrir a controladora. Ele lê a option {option}, que carrega o endereço diretamente. A option 43 num FortiGate serve para atender pontos de acesso de outros fabricantes, não os próprios.",
+        "vendor-class-required": "A option 43 sozinha não basta. O ponto de acesso só pede informação específica de fabricante quando a option 60 confere, então o servidor DHCP também precisa enviar a option 60 como: {vci}",
+        "ascii-not-binary": "Este fabricante escreve o endereço como texto, um byte por caractere, pontos incluídos. É o oposto da convenção da Cisco e o erro mais comum aqui: o 10 como byte binário é 0a, mas como texto é 31 30."
+      },
+      "errors": {
+        "empty": "Informe pelo menos um endereço de controladora.",
+        "unknown-vendor": "Esse perfil de fabricante não existe.",
+        "bad-address": "Endereço IPv4 inválido. Verifique octeto faltando, valor acima de 255, ou zero à esquerda, que alguns servidores DHCP leem como octal.",
+        "too-many": "Este fabricante aceita um único endereço de controladora nesta opção.",
+        "value-too-long": "O valor passa dos 255 bytes que uma opção DHCP comporta. Use menos endereços."
+      },
+      "name": "Gerador de DHCP option 43"
+    },
+    "panos-policy-evaluation-order": {
+      "name": "Ordem de avaliação de políticas PAN-OS",
+      "blurb": "Coloque uma base de regras do Panorama na ordem em que o PAN-OS realmente avalia, trace um fluxo até a regra que decide, e encontre as regras que nunca disparam porque algo acima delas já casou.",
+      "rulesLabel": "Base de regras, uma por linha",
+      "rulesPlaceholder": "shared-pre | block-tor | deny | from=any to=any app=tor\nlocal | web-out | allow | from=trust to=untrust app=web-browsing",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda inteiramente no seu navegador. Uma base de regras nomeia suas zonas, sub-redes e usuários, e nada disso sai desta página.",
+      "traceLabel": "Traçar um fluxo específico pela base de regras",
+      "defaultsLabel": "Regras padrão",
+      "noShadowing": "Nenhuma regra está totalmente encoberta por uma regra acima dela.",
+      "shadowedBy": "nunca dispara: {rule}, acima dela, já casa com tudo que ela casaria.",
+      "crossesLayer": "Isto atravessa camadas, de {from} até {to}, então não dá para ver nem corrigir a partir do firewall sozinho.",
+      "actionDiffers": "As duas regras discordam sobre o que fazer, então o resultado não é o que a regra encoberta pretendia.",
+      "traffic": {
+        "fromZone": "Zona de origem",
+        "toZone": "Zona de destino",
+        "source": "Origem",
+        "destination": "Destino",
+        "application": "Aplicação",
+        "service": "Serviço",
+        "user": "Usuário"
+      },
+      "trace": {
+        "matched": "casou, a avaliação para aqui",
+        "failedOn": "não casou em {field}"
+      },
+      "panels": {
+        "order": "Ordem de avaliação",
+        "decision": "O que decide este fluxo",
+        "shadowing": "Regras que nunca disparam"
+      },
+      "notes": {
+        "intrazone-default-allow": "Nada casou, e as zonas de origem e destino são a mesma, então vale a intrazone-default e ela PERMITE. É a assimetria que surpreende: só tráfego entre zonas diferentes é negado por padrão.",
+        "interzone-default-deny": "Nada casou, e as zonas são diferentes, então vale a interzone-default e o tráfego é negado."
+      },
+      "errors": {
+        "empty": "Informe ao menos uma regra.",
+        "bad-rule": "Uma regra precisa no mínimo de camada, nome e ação, separados por barras verticais.",
+        "bad-layer": "A camada precisa ser shared-pre, dg-pre, local, dg-post ou shared-post.",
+        "bad-action": "Essa não é uma ação do PAN-OS. Use allow, deny, drop, reset-client, reset-server ou reset-both.",
+        "no-traffic": "Descreva o fluxo que quer traçar.",
+        "too-many-rules": "São mais regras do que esta ferramenta analisa de uma vez."
+      }
     }
   },
   "privacy_page": {
@@ -8699,7 +8782,9 @@
     "manPageDetail": "Leia a documentação completa desta ferramenta sem sair da página.",
     "manPageLabel": "Abrir o manual",
     "actionGreenRoom": "Sala verde - o índice /dev/other",
-    "actionRedRoom": "Sala vermelha - o índice /dev/out"
+    "actionRedRoom": "Sala vermelha - o índice /dev/out",
+    "actionToolDhcpOption43": "Gerador de DHCP option 43",
+    "actionToolPanosPolicyOrder": "Ordem de avaliação de políticas PAN-OS"
   },
   "settings_page": {
     "eyebrow": "Preferências",
@@ -9102,6 +9187,30 @@
       "compare-two-network-operating-systems": {
         "title": "Entender como dois sistemas operacionais de rede diferem",
         "desc": "Veja linhagem, sobre o que cada um roda, como o estado é compartilhado e onde os planos se dividem - e o que cada um desses eixos prevê sobre o comportamento quando algo falha."
+      },
+      "work-out-why-awaf-blocked-a-request": {
+        "title": "Descobrir por que o AWAF bloqueou uma requisição",
+        "desc": "Comece pela entrada do log de requisições, decida se o bloqueio foi falso positivo, pese quanto confiar na assinatura que disparou e compare a política com a versão que se comportava."
+      },
+      "write-an-irule-that-behaves": {
+        "title": "Escrever uma iRule que se comporta",
+        "desc": "Confira em qual evento sua lógica pertence antes de escrevê-la, confirme que os comandos são válidos naquele contexto, depois passe o linter nos padrões que custam CPU e estime o que a regra vai realmente gastar."
+      },
+      "work-an-incident-to-escalation": {
+        "title": "Conduzir um incidente do primeiro sintoma até a escalação",
+        "desc": "Transforme o sintoma em hipóteses testáveis, raciocine o caminho do tráfego, planeje uma captura que responda à pergunta, monte a linha do tempo enquanto trabalha e entregue ao fabricante um pacote que não volte pedindo mais."
+      },
+      "plan-and-verify-a-change": {
+        "title": "Planejar uma mudança e provar que funcionou",
+        "desc": "Mapeie o alcance da mudança antes de fazê-la, escreva o runbook com o plano de retorno, depois compare a saúde antes e depois. O terceiro passo é o que mais se pula."
+      },
+      "fingerprint-an-unknown-client": {
+        "title": "Identificar um cliente desconhecido por impressão digital",
+        "desc": "Leia o handshake TLS como JA3 e JA4, compare a ordem dos cabeçalhos HTTP com o que o navegador alegado envia, e meça se o user agent é tão comum quanto finge ser."
+      },
+      "get-an-access-point-onto-its-controller": {
+        "title": "Colocar um ponto de acesso na controladora",
+        "desc": "Monte o valor de DHCP option 43 na codificação que o fabricante do seu ponto de acesso realmente espera, e planeje a passagem de cabo que leva energia e dados até onde o AP vai ficar."
       }
     },
     "manualHeading": "Manual",
@@ -9140,7 +9249,8 @@
       }
     },
     "backToTools": "Ver todas as ferramentas",
-    "exploreLearn": "Explorar a biblioteca Learn"
+    "exploreLearn": "Explorar a biblioteca Learn",
+    "appearsIn": "Aparece nestes fluxos"
   },
   "disclaimer_page": {
     "metaTitle": "Aviso legal",
@@ -17094,6 +17204,10 @@
       "six-ghz-wifi": {
         "def": "A faixa de 5,925 a 7,125 GHz liberada para Wi-Fi sem licença, que praticamente triplica o espectro disponível para redes locais sem fio.",
         "context": "Os reguladores começaram a liberar os 6 GHz em 2020, e a faixa comporta muito mais canais largos sem sobreposição que 2,4 ou 5 GHz - motivo pelo qual é atraente em ambientes densos. O custo é de física, não de protocolo: frequências mais altas atenuam mais rápido e atravessam paredes pior, então a cobertura por ponto de acesso cai enquanto a capacidade sobe. Os dispositivos também precisam suportá-la, que é o que as certificações Wi-Fi 6E e posteriores indicam."
+      },
+      "silent-failure": {
+        "def": "Uma falha que não produz erro em lugar nenhum: o sistema conclui o trabalho, informa sucesso, e faz a coisa errada.",
+        "context": "A propriedade que a define não é a falha ser pequena, e sim nada no sistema discordar dela. Um ponto de acesso que recebe um valor de DHCP option 43 na codificação de outro fabricante completa o lease, lê um valor que não consegue interpretar e nunca se registra numa controladora. Uma regra de firewall encoberta por outra mais ampla acima dela está correta, habilitada e nunca é avaliada, e a própria documentação da Palo Alto registra que o Commit and Push não reporta shadowing. Uma assinatura de segurança deixada em staging aparece no log, contribui para o rating da requisição e não bloqueia nada. Em todos os casos o artefato que todo mundo inspeciona parece certo, porque está certo; o que mudou foi quem o lê. O custo diagnóstico é o que faz a categoria valer um nome: uma mensagem de erro aponta para si mesma, então o trabalho é consertar. Uma falha silenciosa não aponta para nada, então o trabalho é primeiro provar qual das coisas que parecem funcionar de fato funciona. Salvaguardas que só reportam problemas são, portanto, mais fracas do que aparentam, e uma verificação que passa com entrada vazia, arquivo ausente ou expressão regular que não casou é ela mesma uma falha silenciosa vestindo um sinal verde."
       }
     },
     "totalCount": "{count} termos",

@@ -88,6 +88,10 @@ import { manifest as oidcManifest } from "@/lib/tools/oidc";
 import BigipCookieTool from "@/components/BigipCookieTool";
 import { manifest as bigipManifest } from "@/lib/tools/f5-bigip-persistence-cookie";
 import UrlInspectorTool from "@/components/UrlInspectorTool";
+import DhcpOption43Tool from "@/components/DhcpOption43Tool";
+import PanosPolicyOrderTool from "@/components/PanosPolicyOrderTool";
+import { manifest as panosManifest } from "@/lib/tools/panos-policy-evaluation-order";
+import { manifest as dhcp43Manifest } from "@/lib/tools/dhcp-option-43";
 import { manifest as urlManifest } from "@/lib/tools/url-inspector";
 import JsonFormatterTool from "@/components/JsonFormatterTool";
 import { manifest as jsonManifest } from "@/lib/tools/json-formatter";
@@ -353,6 +357,7 @@ import SsrfUrlClassifierTool from "@/components/SsrfUrlClassifierTool";
 import { manifest as ssrfManifest } from "@/lib/tools/ssrf-url-classifier";
 
 import { rolesUsingTool } from "@/lib/roles";
+import { recipesForTool } from "@/content/guide/recipes";
 /** A reference link shown under a tool (from its manifest sources). */
 interface ToolSource {
   id: string;
@@ -525,7 +530,13 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: BigipCookieTool,
     sources: bigipManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
-  "url-inspector": {
+  "panos-policy-evaluation-order": {
+    Component: PanosPolicyOrderTool,
+    sources: panosManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },  "dhcp-option-43": {
+    Component: DhcpOption43Tool,
+    sources: dhcp43Manifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },  "url-inspector": {
     Component: UrlInspectorTool,
     sources: urlManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
@@ -1046,6 +1057,7 @@ export default async function ToolDetailPage({
   const hubVendor = entry?.vendors?.find((v) => populated.has(v)) ?? null;
   const tNav = await getTranslations("nav");
   const tTools = await getTranslations("tools");
+  const tGuide = await getTranslations("guide");
   const tHome = await getTranslations("home");
   const Component = page.Component;
   const prov = isEnabled("toolProvenance") ? provenanceFor(slug) : null;
@@ -1237,6 +1249,26 @@ export default async function ToolDetailPage({
                   </ul>
                 </section>
               )
+            )}
+
+            {/* APPEARS IN — the guide's recipes name their tools; until
+                2026-09-16 nothing pointed the other way, so the user guide was
+                invisible from the page people actually land on. Mirrors the
+                roles rail below deliberately: same shape, same component
+                vocabulary, no new pattern to learn. */}
+            {recipesForTool(slug).length > 0 && (
+              <section className="tool-sources" aria-label={tGuide("appearsIn")}>
+                <h2 className="tool-sources-title">{tGuide("appearsIn")}</h2>
+                <ul className="tool-sources-list">
+                  {recipesForTool(slug).map((r) => (
+                    <li key={r.id}>
+                      <Link href="/guide" className="tool-sources-link">
+                        {tGuide(`recipes.${r.id}.title`)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             )}
 
             {/* WHO USES THIS — derived from The Roles, which already names the

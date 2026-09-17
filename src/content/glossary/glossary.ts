@@ -210,6 +210,32 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["postmortem", "root-cause"],
   },
   {
+    slug: "silent-failure",
+    headword: "silent failure",
+    kind: "term",
+    domains: ["ops-culture", "enterprise-networking", "cyber-security"],
+    aliases: [
+      "silent failures",
+      "fails silently",
+      "fails open",
+      "silent breakage",
+      "no error",
+    ],
+    relatedTerms: ["observer-effect", "heisenbug", "bisection", "postmortem", "triage"],
+    sources: [
+      {
+        label:
+          "RFC 2132 s8.4: option 43 is vendor-specific, so a wrongly encoded value is simply not understood rather than rejected",
+        href: "https://www.rfc-editor.org/rfc/rfc2132#section-8.4",
+      },
+      {
+        label:
+          "Palo Alto Networks, Security Policy Rulebase Best Practices: 'Commit and Push doesn't provide shadowing information'",
+        href: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices",
+      },
+    ],
+  },
+  {
     slug: "observer-effect",
     headword: "observer effect",
     kind: "term",

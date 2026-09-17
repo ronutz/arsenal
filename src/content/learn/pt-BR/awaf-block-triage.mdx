@@ -1,0 +1,58 @@
+---
+slug: awaf-block-triage
+title: "Por Que o AWAF Bloqueou, na Ordem Que Responde Mais Rápido"
+summary: "Quatro perguntas, feitas numa sequência específica: o que exatamente foi bloqueado, o bloqueio estava errado, quanta confiança essa assinatura merece, e o que mudou. Fora de ordem, uma triagem de dez minutos vira uma tarde inteira."
+concepts: ["awaf", "asm", "waf", "violation rating", "support id", "assinatura de ataque", "falso positivo", "staging", "enforcement readiness", "política de segurança"]
+relatedTools: ["f5-awaf-request-log-triage", "f5-awaf-false-positive-triage", "f5-awaf-signature-accuracy-risk", "f5-awaf-policy-diff"]
+relatedArticles: ["dhcp-option-43-discovery"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Alguém manda um support ID e diz que a aplicação está quebrada. É quase sempre assim que começa: não com um alerta, mas com uma pessoa que não conseguiu terminar de preencher um formulário.
+
+São quatro perguntas a responder, e a ordem importa mais do que qualquer resposta isolada. Na sequência certa, costumam se resolver em minutos. Na ordem errada, cada uma manda você procurar evidência que ainda não consegue interpretar.
+
+## Primeira: o que exatamente foi bloqueado?
+
+Comece pela entrada do log de requisições, não pela política. O support ID é a única coisa que liga a reclamação do usuário a uma transação específica, e ele é deliberadamente opaco: identifica uma requisição e não diz nada sobre por que ela foi tratada daquele jeito. A função dele é correlação, não explicação.
+
+O que a entrada do log dá de útil é a violação, o estado de enforcement e o violation rating.
+
+O rating é a confiança do próprio Advanced WAF — o web application firewall (WAF) pontuando a própria requisição, numa escala de um a cinco, e vale ler antes de qualquer outra coisa porque ele muda a natureza do problema. Rating quatro ou cinco é provavelmente ataque de verdade, e a resposta correta em geral é manter bloqueado e ir conversar com quem mandou a requisição. Rating no meio é juízo. Um ou dois numa requisição de usuário real, fazendo algo comum, é o formato de um falso positivo.
+
+Esse passo é pulado o tempo todo. A pessoa lê "bloqueado" e vai direto à política procurar a regra para desligar. É assim que uma assinatura que estava corretamente pegando um ataque acaba desativada porque um usuário reclamou.
+
+## Segunda: o bloqueio estava mesmo errado?
+
+Só agora a pergunta do falso positivo faz sentido, porque você precisa da violação e do rating para formulá-la direito.
+
+Duas coisas decidem se aquilo é um falso positivo real. Uma é o rating. A outra é o estado de enforcement, e é aqui que mora o erro de leitura mais comum: **uma violação só bloqueia se estiver enforced.** Uma assinatura em staging aparece no log, contribui para o rating da requisição e não bloqueia nada. Se alguém relata bloqueio e a violação que você está olhando está em staging, aquela violação não é a causa e você está prestes a gastar uma hora na entrada errada.
+
+O staging existe justamente para que uma assinatura nova seja observada contra tráfego real antes de ter permissão de recusar qualquer coisa. Ler uma violação em staging como causa de indisponibilidade inverte a finalidade do mecanismo.
+
+## Terceira: quanta confiança essa assinatura merece?
+
+Suponha que pareça mesmo falso positivo. O instinto é desativar a assinatura. Antes disso, veja o que a própria F5 diz sobre ela.
+
+A F5 publica duas propriedades para cada assinatura de ataque: accuracy e risk. Accuracy é a capacidade da assinatura de identificar o ataque *incluindo sua suscetibilidade a alarmes falso-positivos* — é a declaração da própria F5 sobre o quanto aquela assinatura é ruidosa. Risk é o impacto do ataque que ela detecta.
+
+As duas juntas dizem o que custa desativá-la. Uma assinatura de baixa accuracy e baixo risk disparando em tráfego legítimo é algo razoável de relaxar. Uma de alta accuracy e alto risk disparando no que parece tráfego legítimo é uma conversa bem mais difícil, e normalmente significa que o tráfego merece um segundo olhar, não a assinatura.
+
+É o passo que mais separa triagem bem feita de triagem rápida. A pergunta não é "como faço isso parar" e sim "do que estou abrindo mão".
+
+## Quarta: o que mudou?
+
+Se a aplicação funcionava semana passada e agora não funciona, o objeto interessante não é a requisição bloqueada. É a diferença entre a política que funcionava e a que não funciona.
+
+Comparar duas versões de política responde a algo que os outros três passos não alcançam: se alguém alargou a política, e o quanto. A distinção que importa é o escopo. Acrescentar uma URL permitida ou um parâmetro é um alargamento pontual, de entidade única — trabalho normal de política, o formato comum de tuning. Um relaxamento que vale para a política inteira é outro ato, e é o que silenciosamente tira proteção de tudo de uma vez.
+
+Faça essa comparação mesmo quando os três primeiros passos já deram resposta. Um falso positivo que você acabou de explicar e um relaxamento amplo que alguém fez na terça podem ser ambos verdade, e só um dos dois é o problema real.
+
+## Por que esta ordem
+
+Cada passo entrega o que o próximo precisa. A entrada do log dá a violação e o rating que tornam a pergunta do falso positivo respondível. A resposta do falso positivo diz se vale perguntar sobre a assinatura. As propriedades da assinatura dizem o que custa relaxá-la. E a comparação de políticas pega o caso em que a requisição que te entregaram nunca foi a história de verdade.
+
+Comece pelo meio — pela política, pela lista de assinaturas — e você estará raciocinando sobre um sistema sem saber o que ele de fato fez. Essa é a versão de uma tarde inteira deste trabalho.

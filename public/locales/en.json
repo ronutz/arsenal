@@ -6906,6 +6906,89 @@
         "carries-authorization": "This request carries an Authorization header. Treat the paste as a credential.",
         "carries-cookie": "This request carries a Cookie header, which is usually a live session."
       }
+    },
+    "dhcp-option-43": {
+      "blurb": "Build the vendor-specific option 43 value a wireless controller actually expects. One option number, four incompatible encodings.",
+      "vendorLabel": "Access point vendor",
+      "sourceLabel": "Encoding per",
+      "inputLabel": "Controller IP address",
+      "inputLabelMulti": "Controller IP addresses",
+      "placeholder": "192.168.10.5",
+      "placeholderMulti": "192.168.10.5 192.168.10.20",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser. A controller address is internal topology and never leaves this page.",
+      "panels": {
+        "value": "Option value",
+        "vendorClass": "Option 60 is also required",
+        "watchOut": "The mistake this vendor invites",
+        "servers": "For your DHCP server"
+      },
+      "servers": {
+        "isc-dhcp": "ISC dhcpd",
+        "cisco-ios": "Cisco IOS",
+        "windows": "Windows Server (hex, no separators)",
+        "mikrotik": "MikroTik RouterOS"
+      },
+      "notes": {
+        "string-not-hex": "This vendor expects a plain string, not hex. Entering a hex value here is a common and silent failure: the access point reads it, cannot parse an address out of it, and simply never joins.",
+        "not-option-43": "This vendor does not use option 43 for controller discovery. It reads option {option} instead, which carries the controller address directly. Option 43 on a FortiGate is for serving other vendors' access points, not its own.",
+        "vendor-class-required": "Option 43 alone is not enough. The access point only asks for vendor-specific information when option 60 matches, so the DHCP server must also send option 60 as: {vci}",
+        "ascii-not-binary": "This vendor spells the address out as text, one byte per character, dots included. That is the opposite of the Cisco convention and the single most common error here: 10 as a binary byte is 0a, but as text it is 31 30."
+      },
+      "errors": {
+        "empty": "Enter at least one controller address.",
+        "unknown-vendor": "That vendor profile does not exist.",
+        "bad-address": "That is not a valid IPv4 address. Check for a missing octet, a value above 255, or a leading zero, which some DHCP servers read as octal.",
+        "too-many": "This vendor takes a single controller address in this option.",
+        "value-too-long": "The value exceeds the 255 bytes a single DHCP option can carry. Use fewer controller addresses."
+      },
+      "name": "DHCP option 43 generator"
+    },
+    "panos-policy-evaluation-order": {
+      "name": "PAN-OS policy evaluation order",
+      "blurb": "Put a Panorama rulebase into the order PAN-OS actually evaluates it, trace a flow to the deciding rule, and find the rules that never fire because something above them already matched.",
+      "rulesLabel": "Rulebase, one rule per line",
+      "rulesPlaceholder": "shared-pre | block-tor | deny | from=any to=any app=tor\nlocal | web-out | allow | from=trust to=untrust app=web-browsing",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs entirely in your browser. A rulebase names your zones, subnets and users, and none of it leaves this page.",
+      "traceLabel": "Trace a specific flow through the rulebase",
+      "defaultsLabel": "Default rules",
+      "noShadowing": "No rule is fully shadowed by a rule above it.",
+      "shadowedBy": "never fires: {rule} above it already matches everything it would.",
+      "crossesLayer": "This crosses layers, from {from} down to {to}, so it cannot be seen or fixed from the firewall alone.",
+      "actionDiffers": "The two rules disagree about what to do, so the outcome is not what the shadowed rule intended.",
+      "traffic": {
+        "fromZone": "From zone",
+        "toZone": "To zone",
+        "source": "Source",
+        "destination": "Destination",
+        "application": "Application",
+        "service": "Service",
+        "user": "User"
+      },
+      "trace": {
+        "matched": "matched, evaluation stops here",
+        "failedOn": "no match on {field}"
+      },
+      "panels": {
+        "order": "Evaluation order",
+        "decision": "What decides this flow",
+        "shadowing": "Rules that never fire"
+      },
+      "notes": {
+        "intrazone-default-allow": "Nothing matched, and the source and destination zones are the same, so intrazone-default applies and it ALLOWS. This is the asymmetry that surprises people: only traffic between different zones is denied by default.",
+        "interzone-default-deny": "Nothing matched, and the zones differ, so interzone-default applies and denies the traffic."
+      },
+      "errors": {
+        "empty": "Enter at least one rule.",
+        "bad-rule": "A rule needs at least layer, name and action, separated by pipes.",
+        "bad-layer": "The layer must be one of shared-pre, dg-pre, local, dg-post or shared-post.",
+        "bad-action": "That is not a PAN-OS action. Use allow, deny, drop, reset-client, reset-server or reset-both.",
+        "no-traffic": "Describe the flow you want traced.",
+        "too-many-rules": "That is more rules than this tool will reason about at once."
+      }
     }
   },
   "privacy_page": {
@@ -8699,7 +8782,9 @@
     "manPageDetail": "Read this tool's full documentation without leaving the page.",
     "manPageLabel": "Open the man page",
     "actionGreenRoom": "Green room - the /dev/other index",
-    "actionRedRoom": "Red room - the /dev/out index"
+    "actionRedRoom": "Red room - the /dev/out index",
+    "actionToolDhcpOption43": "DHCP option 43 generator",
+    "actionToolPanosPolicyOrder": "PAN-OS policy evaluation order"
   },
   "settings_page": {
     "eyebrow": "Preferences",
@@ -9102,6 +9187,30 @@
       "compare-two-network-operating-systems": {
         "title": "Understand how two network operating systems differ",
         "desc": "See lineage, what each runs on, how state is shared and where the planes divide - and what each of those predicts about behaviour when something fails."
+      },
+      "work-out-why-awaf-blocked-a-request": {
+        "title": "Work out why AWAF blocked a request",
+        "desc": "Start from the request log entry, decide whether the block was a false positive, weigh how much to trust the signature that fired, then compare the policy against the version that behaved."
+      },
+      "write-an-irule-that-behaves": {
+        "title": "Write an iRule that behaves",
+        "desc": "Check which event your logic belongs in before writing it, confirm the commands are legal in that context, then lint for the patterns that cost CPU and estimate what the rule will actually spend."
+      },
+      "work-an-incident-to-escalation": {
+        "title": "Work an incident from first symptom to escalation",
+        "desc": "Turn a symptom into testable hypotheses, reason the traffic path, plan a capture that will answer the question, build the timeline as you go, and hand the vendor a packet that does not come back asking for more."
+      },
+      "plan-and-verify-a-change": {
+        "title": "Plan a change and prove it worked",
+        "desc": "Map what the change can reach before you make it, write the runbook with its rollback, then compare health before and after. The third step is the one most often skipped."
+      },
+      "fingerprint-an-unknown-client": {
+        "title": "Fingerprint an unknown client",
+        "desc": "Read the TLS handshake as JA3 and JA4, compare the HTTP header order against what the claimed browser sends, and measure whether the user agent string is as common as it pretends to be."
+      },
+      "get-an-access-point-onto-its-controller": {
+        "title": "Get an access point onto its controller",
+        "desc": "Build the DHCP option 43 value in the encoding your access point vendor actually expects, and plan the cable run that gets power and data to where the AP is going."
       }
     },
     "manualHeading": "Manual",
@@ -9140,7 +9249,8 @@
       }
     },
     "backToTools": "Browse all tools",
-    "exploreLearn": "Explore the Learn library"
+    "exploreLearn": "Explore the Learn library",
+    "appearsIn": "Appears in these workflows"
   },
   "disclaimer_page": {
     "metaTitle": "Disclaimer",
@@ -17094,6 +17204,10 @@
       "six-ghz-wifi": {
         "def": "The 5.925-7.125 GHz band opened to unlicensed Wi-Fi, roughly tripling the spectrum available to wireless LANs.",
         "context": "Regulators began releasing 6 GHz in 2020, and it carries far more non-overlapping wide channels than 2.4 or 5 GHz - the reason it is attractive in dense deployments. The trade-off is physics rather than protocol: higher frequencies attenuate faster and pass through walls less well, so coverage per access point falls even as capacity rises. Devices must also support it, which is what Wi-Fi 6E and later certifications indicate."
+      },
+      "silent-failure": {
+        "def": "A fault that produces no error anywhere: the system completes its work, reports success, and does the wrong thing.",
+        "context": "The defining property is not that the failure is small but that nothing in the system disagrees with it. An access point given a DHCP option 43 value in another vendor's encoding completes its lease, reads a value it cannot parse, and never joins a controller. A firewall rule shadowed by a broader rule above it is correct, enabled, and never evaluated, and Palo Alto's own documentation notes that Commit and Push does not report shadowing. A security signature left in staging appears in the log, contributes to a request's rating, and blocks nothing. In each case the artefact everyone inspects looks right, because it is right; what changed is the thing reading it. The diagnostic cost is what makes the category worth naming: an error message points at itself, so the work is repair. A silent failure points at nothing, so the work is first proving which of the things that appear to be working actually is. Guardrails that only report problems are therefore weaker than they look, and a check that passes on an empty input, a missing file or an unparsed regex is itself a silent failure wearing a green tick."
       }
     },
     "totalCount": "{count} terms",

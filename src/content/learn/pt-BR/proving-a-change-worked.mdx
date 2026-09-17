@@ -1,0 +1,48 @@
+---
+slug: proving-a-change-worked
+title: "Planejar uma Mudança, e o Passo que Todo Mundo Pula"
+summary: "Mapeie o alcance, escreva o runbook com o plano de retorno, depois compare a saúde antes e depois. O terceiro passo é o que se abandona, e é o único capaz de dizer que a mudança fez o que você prometeu."
+concepts: ["gestão de mudanças", "blast radius", "runbook", "rollback", "janela de manutenção", "snapshot de saúde", "drift", "validação pós-mudança"]
+relatedTools: ["change-blast-radius-mapper", "change-window-runbook-builder", "health-snapshot-comparator"]
+relatedArticles: ["incident-to-escalation"]
+category: operations
+order: 2
+status: reviewed
+updated: "2026-09-16"
+---
+
+Uma mudança tem três partes e quase todo mundo faz duas. Você descobre o que está tocando, escreve como fazer e como desfazer, e então executa e vai dormir.
+
+A terceira parte que falta é provar que funcionou, e a ausência dela é a razão de tantos incidentes começarem com a frase "não mudou nada".
+
+## Primeira: até onde isto alcança
+
+Blast radius não é a mesma coisa que intenção. A intenção é um virtual server, uma política, uma interface. O alcance é tudo que compartilha aquilo que a mudança de fato toca: o hardware em que o objeto vive, o plano de controle pelo qual ele é configurado, as sessões já estabelecidas atravessando aquilo, as dependências que resolvem por ali.
+
+Mapear é descrever o que você está mudando em termos de categorias, não de nomes. Está em hardware compartilhado? Está no plano de dados ou no de controle? Termina sessões que existem agora? A saída não é uma lista dos seus servidores, porque ferramenta nenhuma conhece sua topologia. É o formato da exposição, que é o que diz se isto é uma mudança de cinco minutos ou uma que precisa de janela.
+
+A surpresa recorrente é o alcance de segunda ordem. Uma mudança numa plataforma compartilhada toca tudo naquela plataforma, e quem executa normalmente está pensando só no único inquilino sobre o qual foi consultado.
+
+## Segunda: escrever o runbook, inclusive o caminho de volta
+
+Um runbook é uma sequência, e a sequência é a parte em que se pensa. A parte em que não se pensa é o rollback, porque escrevê-lo obriga a uma pergunta incômoda: isto pode mesmo ser desfeito?
+
+Algumas mudanças não podem. Uma migração de schema, uma rotação de certificado com sobreposição curta, uma atualização de firmware que reescreve o formato da configuração: para essas, "voltar atrás" é ficção, e descobrir isso às duas da manhã é uma experiência diferente de descobrir durante o planejamento. Quando a reversibilidade é realmente limitada, o runbook honesto diz isso e compensa em outro lugar, com janela maior, restauração testada ou implantação em etapas.
+
+A outra coisa que um runbook deveria carregar é o ponto sem retorno. Saber qual passo é o último do qual ainda se pode recuar muda o comportamento naquele passo.
+
+## Terceira: provar
+
+Aqui está o passo que se abandona, e o motivo é que ele parece burocracia depois que o trabalho de verdade terminou. Não é. É a única parte da sequência que produz evidência.
+
+A disciplina é declarar o estado antes e o estado depois, e ser explícito quanto a **você estar declarando.** Nada é ingerido, nada é varrido, nada compara seus sistemas automaticamente. Você diz como era o saudável, diz como está agora, e o exercício restringe a conclusão que você tem permissão de tirar da comparação.
+
+Essa restrição é o ponto. "Parece bem" não é comparação, é sensação. Uma comparação nomeia o que foi medido, dos dois lados, e admite o que não foi. Se você não registrou a contagem de sessões antes da mudança, então depois dela você não sabe se a contagem está normal, e nenhuma quantidade de olhar para um painel depois conserta isso.
+
+O custo de pular é pago mais tarde e por outra pessoa. Um incidente três semanas após uma mudança, num sistema onde ninguém registrou como era o saudável antes dela, é um incidente que começa com uma discussão sobre se a mudança tem alguma relação.
+
+## Por que esta ordem, e por que o terceiro passo sustenta o resto
+
+O alcance determina o que o runbook precisa cobrir. O runbook determina o que você vai fazer e quando pode parar. E a comparação é o que transforma "eu fiz a mudança" em "a mudança fez o que eu disse que faria", que são afirmações diferentes e só uma delas é evidência.
+
+Os dois primeiros passos protegem a mudança. O terceiro protege todo mundo que encostar no sistema depois.

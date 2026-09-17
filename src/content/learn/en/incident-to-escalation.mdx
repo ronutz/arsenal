@@ -1,0 +1,60 @@
+---
+slug: incident-to-escalation
+title: "From First Symptom to a TAC Case That Does Not Bounce"
+summary: "Five steps that never name a root cause. The discipline is keeping what you observed separate from what you concluded, because an escalation that mixes them is an escalation that comes back asking for the difference."
+concepts: ["incident", "hypothesis", "flow path", "packet capture", "rca", "root cause analysis", "tac", "escalation", "evidence"]
+relatedTools: ["fault-hypothesis-builder", "flow-path-reasoner", "packet-capture-plan-builder", "incident-timeline-rca-builder", "tac-escalation-packet-builder"]
+relatedArticles: ["awaf-block-triage", "writing-irules-that-behave"]
+category: operations
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+The tools in this sequence share a property that looks like a limitation and is actually the design: **not one of them tells you what is wrong.** They structure, sequence, map and gate. They never diagnose.
+
+That is worth saying at the start, because the instinct during an outage is to want an answer, and the most expensive thing you can do in the first ten minutes is accept one that has not been earned. Every hour lost to a long incident is usually an hour spent proving a conclusion that was reached before the evidence existed.
+
+## Step one: turn a symptom into hypotheses
+
+An incident arrives as a sentence. "Checkout is slow." "The branch dropped." "Users in one region cannot log in."
+
+That sentence is not a fault. It is a report of an experience, and it usually contains one or two facts and several assumptions welded together so tightly that separating them is most of the work. "The VPN broke", meaning the virtual private network, may mean the tunnel dropped, or that one application behind it stopped responding while the tunnel stayed perfectly up.
+
+Structuring the symptom means writing down, separately: what is actually observed, how wide it reaches, what changed recently, when it started and whether it is constant, and which layer the clues point at. What comes out is not a diagnosis. It is a set of hypotheses that can each be tested, and crucially it is a record of what you knew at the time, before hindsight edited it.
+
+## Step two: reason the path before you capture anything
+
+You cannot capture usefully until you know where the traffic is supposed to go.
+
+Describing the path means committing to a model: how the name resolves, what sits in the middle, where addresses are translated by NAT (network address translation), where TLS (transport layer security) begins and ends. This is a **proposed model, not discovered topology.** Nothing has scanned anything. It is your belief about the path, written down where it can be checked.
+
+Writing it down is what makes it checkable. Half of all incident time is spent on assumptions nobody stated, and the commonest is a device in the path that everyone forgot: a transparent proxy, a load balancer someone added last year, an address-translation boundary the diagram does not show. The model does not have to be right. It has to be explicit enough to be wrong in a way somebody notices.
+
+## Step three: plan a capture that answers the question
+
+A command builder answers "how do I capture". The harder question is "where, why, and what would the result mean".
+
+That last clause is the one that matters. A capture taken at a point where both possible answers look identical is a capture that costs an outage window and settles nothing. Before starting one, the useful exercise is to say what each outcome would prove: if I see the SYN here and not there, that eliminates this; if I see it at both points, that eliminates that instead.
+
+Captures taken without that step tend to produce a large file and a conversation about what it might mean.
+
+## Step four: build the timeline while it is happening
+
+A root cause analysis is a structured, evidence-first review of how an incident actually happened. It is written by people, from evidence, in a room, and no tool should ever name the cause for them.
+
+What a tool can do is hold the timeline: what was observed at what time, what was changed, what was ruled out and on what basis. Build it during the incident, not afterwards, because memory reorganises events around the conclusion the moment there is one. The sequence you remember a week later is the sequence that supports the answer you found, whether or not that is the sequence that happened.
+
+The most valuable entries are the ones that eliminated something. "At 14:20 we confirmed the tunnel was up" is worth more six hours later than any amount of narrative, and it is the first thing people fail to record.
+
+## Step five: hand the vendor something complete
+
+An escalation that bounces is not usually rejected. It is answered with a request for information you already had, which costs a day of round trip for each missing item.
+
+A complete packet says what was observed, what the severity is in the vendor's own terms, as the TAC (technical assistance centre) grades it, what was already eliminated and how, and what the environment actually is. The part most often missing is the eliminations, and it is the part that saves the most time: without it, support starts at step one and asks you to repeat work you finished yesterday.
+
+## The thread running through all five
+
+None of these steps produces an answer. They produce **a separation between what you observed and what you concluded**, maintained under pressure, when the temptation to collapse them is strongest.
+
+That separation is the whole of good incident work. It is what makes an RCA honest rather than a story, and it is why a tool that refuses to name a root cause is more useful during an outage than one that offers you a confident guess.

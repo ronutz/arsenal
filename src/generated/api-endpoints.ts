@@ -113,6 +113,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_cvss_vector_decoder",
     "tag": "Security & WAF"
   },
+  "dhcp-option-43": {
+    "url": "https://ronutz.com/api/v1/dhcp-option-43",
+    "method": "GET",
+    "op": "run_dhcp_option_43",
+    "tag": "Networking"
+  },
   "diff": {
     "url": "https://ronutz.com/api/v1/diff",
     "method": "GET",
@@ -712,6 +718,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_packet_capture_plan_builder",
     "tag": "Operations & Fieldcraft"
+  },
+  "panos-policy-evaluation-order": {
+    "url": "https://ronutz.com/api/v1/panos-policy-evaluation-order",
+    "method": "GET",
+    "op": "run_panos_policy_evaluation_order",
+    "tag": "Networking"
   },
   "pkce": {
     "url": "https://ronutz.com/api/v1/pkce",

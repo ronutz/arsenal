@@ -1,0 +1,58 @@
+---
+slug: awaf-block-triage
+title: "Why AWAF Blocked It, in the Order That Answers Fastest"
+summary: "Four questions, asked in one particular sequence: what exactly was blocked, was the block wrong, how much does this signature deserve to be trusted, and what changed. Taking them out of order is what turns a ten-minute triage into an afternoon."
+concepts: ["awaf", "asm", "waf", "violation rating", "support id", "attack signature", "false positive", "staging", "enforcement readiness", "security policy"]
+relatedTools: ["f5-awaf-request-log-triage", "f5-awaf-false-positive-triage", "f5-awaf-signature-accuracy-risk", "f5-awaf-policy-diff"]
+relatedArticles: ["dhcp-option-43-discovery"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Someone sends you a support ID and says the application is broken. That is almost always how this starts: not with an alert, but with a person who could not complete a form.
+
+There are four questions to answer, and the order matters more than any individual answer. Asked in sequence they usually resolve in minutes. Asked in the wrong order, each one sends you looking for evidence you cannot yet interpret.
+
+## First: what exactly was blocked?
+
+Start at the request log entry, not at the policy. The support ID is the only thing that ties the user's complaint to a specific transaction, and it is deliberately opaque: it identifies one request and tells you nothing about why that request was treated the way it was. Its job is correlation, not explanation.
+
+What the log entry gives you that matters is the violation, the enforcement state, and the violation rating.
+
+The rating is Advanced WAF's own confidence, the web application firewall (WAF) scoring the request itself,, on a scale of one to five, and it is worth reading before anything else because it changes what kind of problem you have. A rating of four or five is most likely a real attack, and the correct response is usually to leave it blocked and go and speak to whoever sent the request. A rating in the middle is a judgement call. A one or two on a request from a real user, doing something ordinary, is the shape of a false positive.
+
+People skip this step constantly. They read "blocked" and go straight to the policy to find the rule and disable it. That is how a signature that was correctly catching an attack ends up switched off because one user complained.
+
+## Second: was the block actually wrong?
+
+Only now is the false-positive question meaningful, because you need the violation and the rating to ask it properly.
+
+Two things decide whether you are looking at a real false positive. One is that rating. The other is enforcement state, and this is where the most common misreading lives: **a violation is only blocking if it is enforced.** A signature in staging appears in the log, contributes to the request's rating, and blocks nothing. If someone reports being blocked and the violation you are looking at is in staging, that violation is not the cause and you are about to spend an hour on the wrong entry.
+
+Staging exists precisely so that a new signature can be observed against real traffic before it is allowed to refuse anything. Reading a staged violation as the cause of an outage inverts the purpose of the mechanism.
+
+## Third: how much does this signature deserve to be trusted?
+
+Suppose it does look like a false positive. The instinct is to disable the signature. Before that, ask what F5 itself says about it.
+
+F5 publishes two properties for every attack signature: accuracy and risk. Accuracy is the signature's ability to identify the attack *including its susceptibility to false-positive alarms*, which is F5's own statement about how noisy the signature is. Risk is the impact of the attack it detects.
+
+Those two together tell you what disabling it costs. A low-accuracy, low-risk signature firing on legitimate traffic is a reasonable thing to relax. A high-accuracy, high-risk signature firing on what looks like legitimate traffic is a much harder conversation, and usually means the traffic deserves a second look rather than the signature.
+
+This is the step that most distinguishes triage done well from triage done fast. The question is not "can I make this stop" but "what am I giving up if I do".
+
+## Fourth: what changed?
+
+If the application worked last week and does not now, the interesting object is not the blocked request. It is the difference between the policy that worked and the policy that does not.
+
+Comparing two policy versions answers a question the other three steps cannot: whether someone widened the policy, and how widely. The distinction that matters is scope. Adding one allowed URL or one parameter is a scoped, single-entity widening: ordinary policy work, the normal shape of tuning. A policy-wide relaxation is a different act entirely, and it is the one that quietly removes protection from everything at once.
+
+Run this comparison even when the first three steps gave you an answer. A false positive you have just explained and a policy-wide relaxation someone made on Tuesday can both be true, and only one of them is the actual problem.
+
+## Why this order
+
+Each step supplies what the next one needs. The log entry gives you the violation and rating that make the false-positive question answerable. The false-positive answer tells you whether the signature question is worth asking. The signature properties tell you what relaxing it costs. And the policy comparison catches the case where the request you were handed was never the real story.
+
+Start in the middle, at the policy or the signature list, and you are reasoning about a system without knowing what it actually did. That is the afternoon version of this job.

@@ -1,0 +1,48 @@
+---
+slug: proving-a-change-worked
+title: "Planning a Change, and the Step Everyone Skips"
+summary: "Map the reach, write the runbook with its rollback, then compare health before and after. The third step is the one that gets dropped, and it is the only one that can tell you the change did what you said it would."
+concepts: ["change management", "blast radius", "runbook", "rollback", "maintenance window", "health snapshot", "drift", "post-change validation"]
+relatedTools: ["change-blast-radius-mapper", "change-window-runbook-builder", "health-snapshot-comparator"]
+relatedArticles: ["incident-to-escalation"]
+category: operations
+order: 2
+status: reviewed
+updated: "2026-09-16"
+---
+
+A change has three parts and almost everyone does two of them. You work out what you are touching, you write down how to do it and how to undo it, and then you make the change and go to bed.
+
+The missing third part is proving it worked, and its absence is why so many incidents begin with the sentence "nothing changed".
+
+## First: what can this reach
+
+Blast radius is not the same as intent. The intent is one virtual server, one policy, one interface. The reach is everything that shares whatever the change actually touches: the hardware the object sits on, the control plane it is configured through, the sessions already established across it, the dependencies that resolve through it.
+
+Mapping it means describing what you are changing in terms of categories rather than names. Does it sit on shared hardware. Is it in the data path or the control path. Does it terminate sessions that exist right now. The output is not a list of your servers, because no tool knows your topology. It is the shape of the exposure, which is what tells you whether this is a five-minute change or one that needs a window.
+
+The recurring surprise is the second-order reach. A change to a shared platform touches everything on that platform, and the person making it is usually thinking only about the one tenant they were asked about.
+
+## Second: write the runbook, including the way back
+
+A runbook is a sequence, and sequencing is the part that gets thought about. The part that does not is the rollback, because writing it forces an uncomfortable question: can this actually be undone.
+
+Some changes cannot. A schema migration, a certificate rotation with a short overlap, a firmware upgrade that rewrites a configuration format: for these, "roll back" is a fiction, and discovering that at two in the morning is a different experience from discovering it while planning. When reversibility is genuinely limited, the honest runbook says so and compensates elsewhere, with a longer window or a tested restore or a staged rollout.
+
+The other thing a runbook should carry is the point of no return. Knowing which step is the last one you can walk back from changes how you behave at that step.
+
+## Third: prove it
+
+Here is the step that gets dropped, and the reason it gets dropped is that it feels like paperwork after the real work is done. It is not. It is the only part of the sequence that produces evidence.
+
+The discipline is to declare the state before and the state after, and to be explicit that **you are declaring them.** Nothing is ingested, nothing is scanned, nothing diffs your systems automatically. You say what healthy looked like, you say what it looks like now, and the exercise gates the conclusion you are allowed to draw from the comparison.
+
+That gating is the point. "It looks fine" is not a comparison, it is a feeling. A comparison names what was measured, on both sides, and admits what was not. If you did not capture session counts before the change, then after it you do not know whether session counts are normal, and no amount of looking at a dashboard after the fact repairs that.
+
+The cost of skipping this is paid later and by somebody else. An incident three weeks after a change, in a system where nobody recorded what healthy looked like before it, is an incident that starts with an argument about whether the change is even related.
+
+## Why this order, and why the third step is load-bearing
+
+The reach determines what the runbook has to cover. The runbook determines what you will do and when you can stop. And the comparison is what turns "I made the change" into "the change did what I said it would", which are different claims and only one of them is evidence.
+
+The first two steps protect the change. The third one protects everyone who touches the system afterwards.

@@ -104,6 +104,36 @@ if (missing.length > 0 || unavailable.length > 0) {
   process.exit(1);
 }
 
+// ---------------------------------------------------------------------------
+// Added 2026-09-16 with the tool-page "Appears in these workflows" rail. That
+// rail renders a recipe's TITLE on the tool page, so a recipe without a title
+// in either authored locale now breaks a tool page rather than just the guide.
+// A missing title renders the raw key.
+{
+  const recipeIds = [
+    ...recipesSrc.matchAll(/^\s*id:\s*"([a-z0-9-]+)"/gm),
+  ].map((m2) => m2[1]);
+  const missing = [];
+  for (const loc of ["en", "pt-BR"]) {
+    const msgs = JSON.parse(
+      readFileSync(path.join(ROOT, `src/i18n/messages/${loc}.json`), "utf8")
+    );
+    const recipes = msgs?.guide?.recipes ?? {};
+    for (const id of recipeIds) {
+      if (!recipes[id]?.title) missing.push(`${loc}: guide.recipes.${id}.title`);
+      if (!recipes[id]?.desc) missing.push(`${loc}: guide.recipes.${id}.desc`);
+    }
+  }
+  if (missing.length > 0) {
+    console.error("[check-user-guide] FAIL: recipe copy missing:\n");
+    for (const x of missing.slice(0, 12)) console.error(`  - ${x}`);
+    console.error(
+      "\n  A recipe without a title breaks the tool-page rail, not just the guide.\n"
+    );
+    process.exit(1);
+  }
+}
+
 console.log(
   `[check-user-guide] OK: ${referenced.length} recipe tool references across the guide, ` +
     `all live in the registry (${availableIds.size} available tools).`,

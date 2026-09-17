@@ -1103,6 +1103,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /dhcp-option-43:
+    get:
+      tags:
+        - Networking
+      operationId: run_dhcp_option_43
+      summary: DHCP option 43 generator
+      description: >-
+        Build the vendor-specific option 43 value a wireless controller actually expects. One option
+        number, four incompatible encodings. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: RFC 2132 s8.4, Cisco 97066, Ruckus KB
+        000008703, Ubiquiti 204909754, Extreme XIQC DG, Aruba AOS, Fortinet FortiAP. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - 192.168.10.5
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Networking
+      operationId: run_dhcp_option_43_post
+      summary: DHCP option 43 generator (POST)
+      description: >-
+        Build the vendor-specific option 43 value a wireless controller actually expects. One option
+        number, four incompatible encodings. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: RFC 2132 s8.4, Cisco 97066, Ruckus KB
+        000008703, Ubiquiti 204909754, Extreme XIQC DG, Aruba AOS, Fortinet FortiAP. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /diff:
     get:
       tags:
@@ -7713,6 +7781,74 @@ paths:
         body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and
         side-effect-free: the same input always yields the same result, and nothing is stored or
         logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /panos-policy-evaluation-order:
+    get:
+      tags:
+        - Networking
+      operationId: run_panos_policy_evaluation_order
+      summary: PAN-OS policy evaluation order
+      description: >-
+        Put a Panorama rulebase into the order PAN-OS actually evaluates it, trace a flow to the
+        deciding rule, and find the rules that never fire because something above them already
+        matched. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: PAN-OS Device Groups, Security Policy Rulebase Best Practices,
+        Defining Policies on Panorama. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - shared-pre | block-tor | deny | from=any to=any app=tor
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Networking
+      operationId: run_panos_policy_evaluation_order_post
+      summary: PAN-OS policy evaluation order (POST)
+      description: >-
+        Put a Panorama rulebase into the order PAN-OS actually evaluates it, trace a flow to the
+        deciding rule, and find the rules that never fire because something above them already
+        matched. The input is a JSON object: send it as the request body (POST) or as a JSON string
+        (?input=). Standards: PAN-OS Device Groups, Security Policy Rulebase Best Practices,
+        Defining Policies on Panorama. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.

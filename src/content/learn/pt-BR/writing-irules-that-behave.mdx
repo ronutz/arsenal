@@ -1,0 +1,54 @@
+---
+slug: writing-irules-that-behave
+title: "Escrevendo uma iRule: A Ordem em Que as Perguntas Vêm"
+summary: "Evento primeiro, comandos segundo, custo terceiro. Uma iRule no evento errado não se conserta ficando mais rápida, e é por isso que desempenho é a última pergunta, não a primeira."
+concepts: ["irule", "tcl", "bigip", "ltm", "evento", "clientside", "serverside", "ltm policy", "cpu"]
+relatedTools: ["f5-irules-vs-ltm-policy", "f5-irules-event-order", "f5-irules-command-context", "f5-irules-performance-linter", "f5-irules-runtime-calculator"]
+relatedArticles: ["awaf-block-triage"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+A maioria das iRules que se comportam mal não é lenta. Está no lugar errado, e o sintoma parece defeito de lógica: uma variável vazia, um cabeçalho que ainda não existe, uma decisão tomada antes de a informação necessária ter chegado.
+
+Por isso desempenho é a última pergunta aqui e não a primeira. Uma iRule no evento errado não se salva com otimização, e otimizá-la antes de conferir onde ela roda é esforço gasto no objeto errado.
+
+## Pergunta zero: isto precisa mesmo ser uma iRule
+
+Vale perguntar antes de tudo, porque a resposta muitas vezes é não.
+
+Uma LTM policy faz boa parte do que as pessoas recorrem a iRules para fazer, e faz de forma declarativa: casada, avaliada e aplicada pelo sistema em vez de interpretada por conexão. Se o requisito é "quando o caminho começar com isto, mande para aquilo", isso é trabalho de policy. Recorrer a Tcl porque Tcl é familiar é como uma configuração acumula código que ninguém consegue alterar com segurança três anos depois.
+
+Os casos que realmente exigem iRule são os que envolvem inspeção que o motor de policy não expressa, estado que precisa persistir entre eventos, ou manipulação de payload em vez de roteamento. Esses são reais e comuns. Só não são tudo.
+
+## Primeira: qual evento
+
+Uma conexão no BIG-IP percorre uma sequência fixa de eventos, e cada um expõe uma fatia diferente do mundo. No momento em que a conexão do cliente é aceita, não existe requisição HTTP. Quando uma requisição já foi analisada, o payload pode ainda não ter chegado. Do lado servidor, as variáveis do lado cliente continuam acessíveis, mas a conexão que elas descreviam não é mais a que está à sua frente.
+
+Quase toda iRule confusa é uma iRule escrita para um momento que ainda não aconteceu. A informação que você quer não está faltando; ela ainda não é.
+
+Então a primeira pergunta não é "o que eu quero fazer" e sim "em que ponto o sistema já sabe o suficiente para eu fazer isso". Acertar isso normalmente encurta a regra, porque boa parte da checagem defensiva que se escreve existe para contornar estar no evento errado.
+
+## Segunda: estes comandos são legais aqui
+
+Eventos não diferem apenas no que sabem. Diferem no que permitem.
+
+Um comando válido num evento pode estar indisponível em outro, e a falha nem sempre é barulhenta: alguns produzem erro de runtime que aparece no log sob carga e em lugar nenhum durante o teste, que é o pior momento possível para descobrir.
+
+Conferir o contexto do comando antes de escrever é mais rápido do que descobrir depois, e com frequência devolve você à primeira pergunta. Se o comando de que você precisa não está disponível onde planejava rodar, normalmente é a escolha do evento avisando que estava errada.
+
+## Terceira: quanto isto vai custar
+
+Só agora desempenho vira pergunta de verdade, porque só agora a regra está no lugar certo fazendo coisas legais.
+
+Duas preocupações diferentes se escondem sob "desempenho". Uma são padrões caros por natureza: expressão regular onde uma comparação de string bastaria, operações de table por requisição, qualquer coisa que aloque por conexão. Um linter acha essas porque são formas reconhecíveis.
+
+A outra é volume. Uma regra que custa pouco continua sendo problema com conexões por segundo suficientes, e vale fazer a conta explicitamente em vez de estimar. A saída útil não é "isto é rápido" e sim "na sua taxa real de conexões, esta regra vai consumir mais ou menos isto", que é um número para confrontar com a plataforma em que você roda.
+
+## Por que a ordem se sustenta
+
+Cada resposta restringe a seguinte. O evento determina quais comandos existem. Os comandos disponíveis determinam o que a regra consegue fazer. O que ela faz determina quanto custa. Rode a sequência de trás para a frente e você estará ajustando uma regra que está no lugar errado, usando comandos que talvez não sejam legais, para resolver um problema que uma LTM policy teria resolvido sem código nenhum.
+
+Os dez minutos do começo são os que salvam a tarde.

@@ -1,0 +1,56 @@
+---
+slug: dhcp-option-43-discovery
+title: "Como um Ponto de Acesso Encontra Sua Controladora"
+summary: "A DHCP option 43 é um número de opção escondendo quatro codificações incompatíveis, porque a RFC 2132 define o recipiente e deixa o conteúdo a cargo de cada fabricante. A falha é silenciosa: o AP inicia, recebe endereço e nunca se registra."
+concepts: ["dhcp", "option 43", "option 60", "vendor class identifier", "capwap", "lwapp", "controladora sem fio", "tlv", "option 138"]
+relatedTools: ["dhcp-option-43"]
+relatedArticles: ["dhcp-handshake", "tlv-encoding"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Um ponto de acesso recém-tirado da caixa não sabe nada. Não tem configuração, não faz ideia de qual controladora pertence e muitas vezes não tem rota para nada além do próprio segmento. Antes de fazer qualquer coisa para a qual foi comprado, precisa responder a uma pergunta: onde está minha controladora?
+
+Existem várias formas de contar isso a ele. O DNS resolve, se alguém registrar o nome certo. Um endereço estático resolve, se alguém estiver disposto a conectar console em cada unidade de cada forro. Broadcast e multicast resolvem, se a controladora estiver no mesmo segmento, o que em qualquer implantação real ela não está.
+
+A DHCP option 43 é o método que escala, e também é o que mais dá errado.
+
+## Um número de opção, quatro respostas
+
+A RFC 2132, seção 8.4, define a option 43 como *Vendor Specific Information*. Ela especifica o recipiente e depois diz, na prática, que o conteúdo é assunto do fabricante. Essa única decisão é a origem de tudo que há de difícil nesta opção.
+
+As codificações que surgiram não são variações de um mesmo tema. São esquemas genuinamente diferentes que por acaso compartilham um número.
+
+**A Cisco** usa um bloco type-length-value em que o endereço são quatro bytes crus. O tipo é `0xf1`, o comprimento é o número de controladoras vezes quatro, e o valor são os endereços em binário. Duas controladoras em 192.168.10.5 e 192.168.10.20 produzem `f108c0a80a05c0a80a14`.
+
+**A Ruckus** também usa TLV, mas o endereço dentro dele é *texto*. Subopção `03` para ZoneDirector, `06` para SmartZone, depois o comprimento contado em caracteres incluindo os pontos, depois cada caractere como seu byte ASCII. 192.168.0.200 vira `060d3139322e3136382e302e323030`.
+
+Releia os dois exemplos. No valor da Cisco, o número 10 aparece como `0a`. No valor da Ruckus, o número 10 aparece como `31 30`, que é o ASCII do dígito um seguido do dígito zero. A própria base de conhecimento da Ruckus destaca isso, porque é o erro que todo mundo comete.
+
+**A Aruba** não usa hexadecimal de forma alguma. O servidor DHCP envia o endereço da controladora como texto puro. Um valor hex aqui não é outro formato, está errado.
+
+**A Fortinet** não usa a option 43 para isso. Um FortiAP lê o endereço da controladora na option 138, a opção de access controller do CAPWAP, por padrão de fábrica. A option 43 num FortiGate existe para atender pontos de acesso de outros fabricantes.
+
+## A metade do problema que não é a option 43
+
+Um ponto de acesso não recebe informação específica de fabricante só porque o servidor DHCP tem alguma. Ele precisa pedir, e pede enviando a option 60, o vendor class identifier. O servidor compara essa string e só então devolve a option 43 correspondente.
+
+É por isso que uma implantação Aruba com uma option 43 perfeitamente correta e sem a option 60 valendo `ArubaAP` não faz absolutamente nada. O valor está no servidor, formatado corretamente, e ninguém nunca o solicita.
+
+O ExtremeWireless também exige VCI, e a forma depende da geração do AP: modelos mais antigos se identificam como `HiPath` seguido do nome do modelo, os mais novos apenas pelo modelo. Erre a string e o resultado é idêntico a não ter opção nenhuma.
+
+## Por que a falha é silenciosa
+
+Uma option 43 mal configurada não produz erro. A troca DHCP se completa normalmente. O ponto de acesso recebe endereço, gateway, DNS. Ele lê a opção específica de fabricante, não consegue extrair nada que reconheça como endereço de controladora e cai no próximo método de descoberta da lista, que normalmente também não acha nada.
+
+O que se vê é um AP no ar, respondendo a ping, endereçado corretamente e ausente da controladora. A tentação é olhar roteamento, firewall, a própria controladora. A falha de verdade são alguns bytes montados com a convenção de outro fabricante.
+
+É esse o argumento para gerar o valor em vez de digitá-lo: não que a aritmética seja difícil, mas que o resultado de errar se parece exatamente com um problema de rede.
+
+## Lendo um valor de volta
+
+A estrutura é regular o bastante para decodificar a olho. Tome o primeiro byte como subopção, o segundo como comprimento, e confira se os bytes restantes batem com esse comprimento. Depois olhe o valor. Se os bytes estiverem todos nas faixas `30`–`39` e `2e`, você está vendo dígitos e pontos em ASCII, o que indica codificação no estilo Ruckus. Se forem bytes arbitrários e houver exatamente quatro por endereço, é binário, o que indica Cisco ou UniFi.
+
+Essa conferência leva dez segundos e resolve a dúvida de se o valor no seu escopo DHCP foi montado para os pontos de acesso que você realmente tem.

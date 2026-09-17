@@ -1,0 +1,82 @@
+---
+slug: sse-five-vendors-one-decision
+title: "Cinco Fabricantes de SSE, Uma Decisão, Cinco Respostas Diferentes"
+summary: "Todo secure service edge precisa responder à mesma pergunta: este fluxo passa? Zscaler, Netskope, F5 Distributed Cloud, FortiSASE e Prisma Access respondem com maquinários genuinamente diferentes, e é nessas diferenças que as migrações dão errado."
+concepts: ["sse", "sase", "avaliação de política", "primeiro casamento", "ordem de regras", "zscaler", "netskope", "prisma access", "fortisase", "f5 distributed cloud", "dlp", "shadowing"]
+relatedTools: ["panos-policy-evaluation-order", "zscaler-firewall-rule-order-simulator", "netskope-dlp-match-predictor", "f5xc-service-policy-explainer", "fortigate-policy-match-order"]
+relatedArticles: ["incident-to-escalation", "awaf-block-triage"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Todo secure service edge responde à mesma pergunta. Um fluxo chega, e a plataforma decide se ele passa, o que é inspecionado no caminho e o que fica registrado a respeito.
+
+Cinco fabricantes, cinco máquinas para responder. O nome da categoria esconde o quanto elas funcionam de formas diferentes, e a diferença pesa exatamente no momento em que as pessoas assumem que não pesa: durante uma migração, quando uma base de regras é levada de uma plataforma para outra e a nova avalia por regras distintas.
+
+## O que elas de fato compartilham
+
+Duas coisas, e vale nomeá-las porque são as únicas suposições seguras.
+
+**O primeiro casamento vence.** As cinco param na primeira regra cujos critérios o fluxo satisfaz, executam aquela regra e não avaliam mais nada. A Palo Alto afirma isso com todas as letras na orientação sobre base de regras, e é o comportamento da categoria.
+
+**Portanto, ordem é significado.** Uma base de regras não é um conjunto de afirmações sobre o que deveria acontecer. É uma sequência, e mover uma linha muda o que a plataforma faz sem alterar um único campo de regra alguma.
+
+Tudo além desses dois pontos diverge.
+
+## Onde divergem, e qual divergência machuca
+
+### A base de regras pode não ser uma lista
+
+Esta é a maior diferença e a mais frequentemente ignorada.
+
+O Prisma Access, gerenciado por Panorama, não avalia uma lista. Avalia por **camada e por tipo**: pre-rules compartilhadas, pre-rules do device group, então as regras locais, depois post-rules do device group, post-rules compartilhadas e por fim as regras padrão. As regras que um administrador vê e edita localmente ficam no meio de uma estrutura que ele não consegue editar localmente.
+
+A consequência prática é uma classe de falha que não existe numa plataforma de lista única: uma regra correta, habilitada, na posição certa da própria lista, e que nunca roda. Algo duas camadas acima casou primeiro.
+
+O FortiSASE herda o motor de política do FortiOS, então um administrador de FortiGate migrando para ele pisa em terreno conhecido de um jeito que um administrador de Panorama não pisa, porque o modelo é o mesmo sobre o qual ele já raciocina.
+
+### As regras padrão não são o mesmo padrão
+
+A maioria das pessoas carrega a suposição de que tráfego sem casamento é negado. No PAN-OS isso é meia verdade. Duas regras padrão ficam no fim: a **interzone-default nega** tráfego entre zonas, e a **intrazone-default permite** tráfego dentro de uma zona.
+
+Uma migração que assuma um deny implícito único estará errada sobre todo fluxo dentro da mesma zona, e errada no sentido permissivo, que é o sentido que ninguém percebe até uma auditoria.
+
+### "Bloqueado" não é um resultado só
+
+O firewall filtering da Zscaler distingue ações que descartam em silêncio de ações que enviam reset, e a diferença é visível para o cliente como travamento ou como falha imediata. Essa distinção muda o que o usuário relata e, portanto, o que você vai procurar, e não sobrevive à tradução para uma plataforma que expressa bloqueio como uma ação única.
+
+### Algumas plataformas decidem por conteúdo, não só por fluxo
+
+O DLP (data loss prevention, prevenção contra perda de dados) da Netskope não pergunta "esta conexão pode prosseguir". Pergunta se o que está dentro casa com uma regra, e a resposta separa três coisas que se costuma juntar: quantas cadeias têm o **formato** certo, quantas dessas passam no **checksum**, e quantas sobrevivem aos limiares de **proximidade e contagem** que decidem se um casamento vira violação.
+
+Uma conversa de tuning que não separe essas três é uma conversa em que cada um está descrevendo um número diferente.
+
+### A unidade de política pode não ser a regra
+
+O service policy do F5 Distributed Cloud avalia uma estrutura, não uma linha: listas de regras sequenciadas, atreladas a um load balancer, casando sobre propriedades da requisição. Levar uma base de regras plana para dentro dele não é tradução, é redesenho, porque "qual linha vem primeiro" não é a pergunta que a plataforma faz.
+
+## Por que este é o risco de migração
+
+Uma base de regras exportada de uma plataforma e importada em outra é convertida sintaticamente e alterada semanticamente. Os campos sobrevivem. O modelo de avaliação não.
+
+As falhas que vêm depois são silenciosas. Nada dá erro. Tráfego que era inspecionado deixa de ser, ou tráfego que passava é descartado de um jeito que parece defeito de rede. E o artefato que todo mundo olha, a lista de regras, parece correto, porque está correto: o que mudou foi a máquina que o lê.
+
+A abordagem honesta para migrar entre quaisquer duas delas é re-derivar a intenção em vez de converter as regras. O que esta política estava tentando alcançar? Essa pergunta sobrevive à troca de plataforma. A ordem das regras, não.
+
+## O que vale conferir em qualquer uma delas
+
+Três perguntas valem para todo fabricante, e as três têm resposta antes do commit e não depois do incidente:
+
+**Esta base de regras é uma lista ou várias?** Se forem várias, quais delas quem faz a mudança consegue realmente editar?
+
+**O que acontece com o tráfego que não casa com nada?** Não o que você supõe, e sim o que a plataforma documenta, e se a resposta muda por zona ou contexto.
+
+**Quais regras nunca podem disparar?** Uma regra encoberta por outra mais ampla acima dela é configuração morta que se lê como proteção viva. A própria documentação da Palo Alto registra que o Commit and Push não reporta shadowing, o que significa que naquela plataforma a conferência precisa vir de outro lugar.
+
+Cada uma das cinco ferramentas ligadas a este artigo responde a essas perguntas para uma plataforma. O valor de tê-las lado a lado não são as respostas individuais. É enxergar o quanto a mesma pergunta precisa ser feita de formas diferentes.
+
+## Uma nota sobre o que isto é
+
+Análise comparativa de documentação pública dos fabricantes. Este site tem autorização de instrutor para algumas destas plataformas e não para outras, e não declara nenhuma para Zscaler nem para Palo Alto Networks. Nada aqui é material de fabricante nem carrega endosso; as fontes são a documentação pública de cada um, e onde elas discordam entre si, essa discordância é o assunto.

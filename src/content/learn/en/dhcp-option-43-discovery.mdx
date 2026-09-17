@@ -1,0 +1,56 @@
+---
+slug: dhcp-option-43-discovery
+title: "How an Access Point Finds Its Controller"
+summary: "DHCP option 43 is one option number hiding four incompatible encodings, because RFC 2132 defines the container and leaves the contents to each vendor. The failure mode is silent: the AP boots, gets an address, and never joins."
+concepts: ["dhcp", "option 43", "option 60", "vendor class identifier", "capwap", "lwapp", "wireless controller", "tlv", "option 138"]
+relatedTools: ["dhcp-option-43"]
+relatedArticles: ["dhcp-handshake", "tlv-encoding"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+An access point out of the box knows nothing. It has no configuration, no idea which controller it belongs to, and often no route to anything except its local segment. Before it can do any of the work it was bought for, it has to answer one question: where is my controller?
+
+There are several ways to tell it. DNS can, if someone registers the right name. A static address can, if someone is willing to console into every unit on every ceiling. Broadcast and multicast can, if the controller happens to be on the same segment, which in any real deployment it is not.
+
+DHCP option 43 is the method that scales, and it is also the one that goes wrong most often.
+
+## One option number, four answers
+
+RFC 2132 section 8.4 defines option 43 as *Vendor Specific Information*. It specifies the container and then says, in effect, that what goes inside is the vendor's business. That single decision is the source of everything difficult about this option.
+
+The encodings that resulted are not variations on a theme. They are genuinely different schemes that happen to share a number.
+
+**Cisco** uses a type-length-value block where the address is four raw bytes. Type is `0xf1`, length is the number of controllers times four, and the value is the addresses in binary. Two controllers at 192.168.10.5 and 192.168.10.20 produce `f108c0a80a05c0a80a14`.
+
+**Ruckus** uses a TLV too, but the address inside it is *text*. Sub-option `03` for ZoneDirector, `06` for SmartZone, then the length counted in characters including the dots, then each character as its ASCII byte. 192.168.0.200 becomes `060d3139322e3136382e302e323030`.
+
+Read those two examples again. In the Cisco value, the number 10 appears as `0a`. In the Ruckus value, the number 10 appears as `31 30`, which is the ASCII for the digit one followed by the digit zero. Ruckus's own knowledge base calls this out because it is the mistake everyone makes.
+
+**Aruba** does not use hex at all. The DHCP server sends the controller address as a plain string. A hex value here is not a different format, it is wrong.
+
+**Fortinet** does not use option 43 for this at all. A FortiAP reads the controller address from option 138, the CAPWAP access-controller option, by factory default. Option 43 on a FortiGate is there to serve other vendors' access points.
+
+## The half of the problem that is not option 43
+
+An access point does not receive vendor-specific information simply because the DHCP server has some. It has to ask, and it asks by sending option 60, the vendor class identifier. The server matches on that string and only then returns the matching option 43.
+
+This is why an Aruba deployment with a perfectly correct option 43 and no option 60 set to `ArubaAP` does nothing whatsoever. The value is sitting on the server, correctly formatted, and nothing ever requests it.
+
+ExtremeWireless needs a VCI too, and its form depends on the AP generation: older models identify themselves as `HiPath` followed by the model name, newer ones as the bare model. Get the string wrong and the result is identical to having no option at all.
+
+## Why the failure is silent
+
+A misconfigured option 43 does not produce an error. The DHCP exchange completes normally. The access point gets its address, its gateway, its DNS. It reads the vendor-specific option, fails to extract anything it recognises as a controller address, and falls through to whatever discovery method comes next in its list, which usually finds nothing either.
+
+What you see is an AP that is up, pingable, correctly addressed, and absent from the controller. The temptation is to look at routing, at firewalls, at the controller itself. The actual fault is a handful of bytes that were assembled using another vendor's convention.
+
+That is the argument for generating the value rather than typing it: not that the arithmetic is hard, but that the result of getting it wrong looks exactly like a network problem.
+
+## Reading a value back
+
+The structure is regular enough to decode by eye. Take the first byte as the sub-option, the second as the length, and check that the remaining bytes match that length. Then look at the value. If the bytes are all in the ranges `30`–`39` and `2e`, you are looking at ASCII digits and dots, which means a Ruckus-style encoding. If they are arbitrary bytes and there are exactly four of them per address, it is binary, which means Cisco or UniFi.
+
+That check takes ten seconds and settles the question of whether the value in your DHCP scope was built for the access points you actually have.

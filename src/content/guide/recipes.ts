@@ -153,4 +153,89 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     id: "build-and-test-a-regex",
     toolIds: ["regex"],
   },
+
+  // ---- added 2026-09-16 (PRIME) -------------------------------------------
+  // Six tasks, chosen because each one is a SEQUENCE someone actually performs
+  // and whose tools already exist unlinked. They take recipe coverage from 45
+  // tools to roughly 80. Single-step lookups (uuid, epoch, roman-numerals) were
+  // deliberately NOT given recipes: "use the UUID tool to make a UUID" is noise,
+  // and noise is what stops a curated section being read.
+  {
+    // The AWAF cluster was built as a workflow and had no recipe describing it.
+    // Order is the order a practitioner works in: what was blocked, was it a
+    // false positive, how much do I trust the signature, what changed.
+    id: "work-out-why-awaf-blocked-a-request",
+    toolIds: [
+      "f5-awaf-request-log-triage",
+      "f5-awaf-false-positive-triage",
+      "f5-awaf-signature-accuracy-risk",
+      "f5-awaf-policy-diff",
+    ],
+  },
+  {
+    // Event order first: an iRule in the wrong event cannot be fixed by tuning.
+    id: "write-an-irule-that-behaves",
+    toolIds: [
+      // Question zero, added 2026-09-16: should this be an iRule at all? It was
+      // sitting outside the recipe it belongs at the front of.
+      "f5-irules-vs-ltm-policy",
+      "f5-irules-event-order",
+      "f5-irules-command-context",
+      "f5-irules-performance-linter",
+      "f5-irules-runtime-calculator",
+    ],
+  },
+  {
+    // The whole operations family was uncovered, and it is one arc: from "what
+    // is broken" to "here is the packet TAC asked for".
+    id: "work-an-incident-to-escalation",
+    toolIds: [
+      "fault-hypothesis-builder",
+      "flow-path-reasoner",
+      "packet-capture-plan-builder",
+      "incident-timeline-rca-builder",
+      "tac-escalation-packet-builder",
+    ],
+  },
+  {
+    // Plan, run, prove. The third step is the one people skip.
+    id: "plan-and-verify-a-change",
+    toolIds: [
+      "change-blast-radius-mapper",
+      "change-window-runbook-builder",
+      "health-snapshot-comparator",
+    ],
+  },
+  {
+    // One investigative technique split across four tools with nothing joining
+    // them: who is this client, really.
+    id: "fingerprint-an-unknown-client",
+    toolIds: [
+      "ja3-tls-fingerprint",
+      "ja4-fingerprint-decoder",
+      "http-header-order-fingerprint",
+      "user-agent-entropy-analyzer",
+    ],
+  },
+  {
+    // The DHCP option 43 tool shipped the same day with no recipe; the task it
+    // belongs to is getting an access point onto its controller at all.
+    id: "get-an-access-point-onto-its-controller",
+    toolIds: ["dhcp-option-43", "cable-run-planner"],
+  },
 ];
+
+/**
+ * Which recipes contain this tool, in the order they are defined.
+ *
+ * Added 2026-09-16. Until now the reference ran one way only: a recipe named
+ * its tools, and a tool knew nothing about the workflows it belonged to. That
+ * made the user guide invisible from the page people actually land on, which
+ * is a tool page reached from a search result.
+ *
+ * Cheap by construction: the recipe list is small and static, so this is a
+ * filter over an array at build time, not an index to maintain.
+ */
+export function recipesForTool(toolId: string): GuideRecipe[] {
+  return GUIDE_RECIPES.filter((r) => r.toolIds.includes(toolId));
+}

@@ -1,0 +1,60 @@
+---
+slug: incident-to-escalation
+title: "Do Primeiro Sintoma a um Chamado que Não Volta"
+summary: "Cinco passos que nunca nomeiam uma causa raiz. A disciplina é manter separado o que você observou do que você concluiu, porque uma escalação que mistura os dois é uma escalação que volta pedindo a diferença."
+concepts: ["incidente", "hipótese", "caminho de tráfego", "captura de pacotes", "rca", "análise de causa raiz", "tac", "escalação", "evidência"]
+relatedTools: ["fault-hypothesis-builder", "flow-path-reasoner", "packet-capture-plan-builder", "incident-timeline-rca-builder", "tac-escalation-packet-builder"]
+relatedArticles: ["awaf-block-triage", "writing-irules-that-behave"]
+category: operations
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+As ferramentas desta sequência compartilham uma propriedade que parece limitação e na verdade é o projeto: **nenhuma delas diz o que está errado.** Elas estruturam, sequenciam, mapeiam e restringem. Nunca diagnosticam.
+
+Vale dizer isso logo no começo, porque o instinto durante uma indisponibilidade é querer uma resposta, e a coisa mais cara a se fazer nos primeiros dez minutos é aceitar uma que ainda não foi conquistada. Toda hora perdida num incidente longo costuma ser uma hora gasta provando uma conclusão tomada antes de a evidência existir.
+
+## Passo um: transformar um sintoma em hipóteses
+
+Um incidente chega como uma frase. "O checkout está lento." "A filial caiu." "Usuários de uma região não conseguem entrar."
+
+Essa frase não é uma falha. É o relato de uma experiência, e normalmente contém um ou dois fatos e várias suposições soldadas com tanta força que separá-las já é a maior parte do trabalho. "A VPN quebrou", a rede privada virtual, pode significar que o túnel caiu, ou que uma aplicação atrás dele parou de responder enquanto o túnel seguia perfeitamente no ar.
+
+Estruturar o sintoma é anotar, separadamente: o que de fato se observa, qual a abrangência, o que mudou recentemente, quando começou e se é constante, e para qual camada as pistas apontam. O que sai disso não é diagnóstico. É um conjunto de hipóteses que podem ser testadas uma a uma, e principalmente é um registro do que você sabia naquele momento, antes de a retrospectiva editar.
+
+## Passo dois: raciocinar o caminho antes de capturar qualquer coisa
+
+Não dá para capturar com proveito sem saber por onde o tráfego deveria passar.
+
+Descrever o caminho é assumir um modelo: como o nome resolve, o que fica no meio, onde os endereços são traduzidos por NAT (network address translation), onde o TLS (transport layer security) começa e termina. Isto é um **modelo proposto, não topologia descoberta.** Nada varreu nada. É a sua crença sobre o caminho, escrita onde possa ser conferida.
+
+Escrever é o que torna conferível. Metade do tempo de incidente é gasta em suposições que ninguém enunciou, e a mais comum é um equipamento no caminho que todo mundo esqueceu: um proxy transparente, um balanceador que alguém acrescentou ano passado, uma fronteira de tradução de endereços que o diagrama não mostra. O modelo não precisa estar certo. Precisa ser explícito o bastante para estar errado de um jeito que alguém perceba.
+
+## Passo três: planejar uma captura que responda à pergunta
+
+Um construtor de comandos responde "como eu capturo". A pergunta difícil é "onde, por quê, e o que o resultado significaria".
+
+Essa última parte é a que importa. Uma captura feita num ponto onde as duas respostas possíveis parecem idênticas é uma captura que custa uma janela de indisponibilidade e não resolve nada. Antes de iniciar, o exercício útil é dizer o que cada resultado provaria: se eu vir o SYN aqui e não ali, isso elimina aquilo; se eu vir nos dois pontos, elimina o outro.
+
+Capturas feitas sem esse passo tendem a produzir um arquivo grande e uma conversa sobre o que ele talvez signifique.
+
+## Passo quatro: montar a linha do tempo enquanto acontece
+
+Uma análise de causa raiz é uma revisão estruturada, baseada em evidência, de como o incidente realmente aconteceu. É escrita por pessoas, a partir de evidência, numa sala, e nenhuma ferramenta deveria nomear a causa por elas.
+
+O que uma ferramenta pode fazer é sustentar a linha do tempo: o que foi observado em que horário, o que foi alterado, o que foi descartado e com que base. Monte durante o incidente, não depois, porque a memória reorganiza os eventos em torno da conclusão no instante em que existe uma. A sequência que você lembra uma semana depois é a sequência que sustenta a resposta encontrada, tenha sido ela a sequência real ou não.
+
+As entradas mais valiosas são as que eliminaram alguma coisa. "Às 14h20 confirmamos que o túnel estava no ar" vale mais seis horas depois do que qualquer quantidade de narrativa, e é a primeira coisa que as pessoas deixam de registrar.
+
+## Passo cinco: entregar ao fabricante algo completo
+
+Uma escalação que volta normalmente não é recusada. Ela é respondida com um pedido de informação que você já tinha, e isso custa um dia de ida e volta por item faltando.
+
+Um pacote completo diz o que foi observado, qual a severidade nos termos do próprio fabricante, como o TAC (technical assistance centre) classifica, o que já foi eliminado e como, e qual é de fato o ambiente. A parte que mais falta é a das eliminações, e é a que mais economiza tempo: sem ela, o suporte começa do passo um e pede que você repita um trabalho terminado ontem.
+
+## O fio que atravessa os cinco
+
+Nenhum desses passos produz uma resposta. Eles produzem **uma separação entre o que você observou e o que você concluiu**, mantida sob pressão, justamente quando a tentação de juntar as duas coisas é maior.
+
+Essa separação é o essencial de um bom trabalho de incidente. É o que faz uma RCA ser honesta em vez de virar história, e é por isso que uma ferramenta que se recusa a nomear a causa raiz é mais útil durante uma queda do que uma que oferece um palpite confiante.

@@ -1,0 +1,66 @@
+---
+slug: ja3-to-ja4-fingerprinting
+title: "The Fingerprint That Broke, and the One Its Author Wrote to Replace It"
+summary: "Chrome started shuffling its TLS extensions in 2023 and JA3 stopped identifying Chrome. The fix came from the same person who wrote JA3, and the reason it works is one word: sorted."
+concepts: ["ja3", "ja4", "tls fingerprinting", "clienthello", "extension permutation", "grease", "cipher stunting", "alpn", "bot detection", "ossification"]
+relatedTools: ["ja3-tls-fingerprint", "ja4-fingerprint-decoder", "http-header-order-fingerprint", "user-agent-entropy-analyzer"]
+relatedArticles: ["sse-five-vendors-one-decision"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-09-17"
+---
+
+Before a single byte of encrypted traffic moves, a client has already said a great deal about itself. The TLS (transport layer security) ClientHello travels in plaintext, and it lists cipher suites, extensions and curves in whatever way the underlying library happens to arrange them. A browser, a Python script and a Go program are not trying to look different. They link against different implementations with different defaults, and it shows.
+
+JA3, published by Salesforce in 2017, turned that into one string: five fields from the ClientHello, joined and hashed with MD5. Thirty-two characters that said which stack you were.
+
+It worked for about six years.
+
+## What broke it, and why the motive matters
+
+One of the five fields was the **order** the extensions appeared in. That order was never specified by anyone. It was whatever the library did, an arbitrary tiebreak that happened to differ between implementations, and it added separating power by accident.
+
+In 2023 Chrome started permuting it on every connection.
+
+The reason is worth stating precisely, because it is usually told as an anti-fingerprinting move and that is only half of it. The primary motive was **anti-ossification**: stopping servers and middleboxes from hardcoding assumptions about a fixed order, which is how the internet accumulates infrastructure that breaks when anything changes. The TLS 1.3 specification permits any extension order at all, with one exception: `pre_shared_key` must be sent last. Chrome was making the ecosystem exercise a freedom the standard already granted, so that the freedom would keep working.
+
+Fingerprint resistance was a welcome side effect rather than the whole purpose.
+
+The rollout ran through Chrome 108 and 109 and was scheduled for 110. Fastly watched the effect on their network and published the numbers: Chrome's dominant JA3 value, `cd08e31494f9531f560d64c695473da9`, fell away from **20 January 2023**. With roughly fifteen permutable extensions, the space is about fifteen factorial, on the order of a trillion arrangements. Their conclusion was that every connection using the feature would effectively produce a unique JA3.
+
+A fingerprint that is unique per connection is not a fingerprint. It is a random number.
+
+Attackers had already been doing a deliberate version of the same thing, called cipher stunting: randomising cipher order specifically to slip past JA3-based detection. Chrome did it for principled reasons and broke the technique far more thoroughly.
+
+## The fix, from the same author
+
+JA4 arrived in 2023 from FoxIO, led by John Althouse, who had been one of the original JA3 authors. That detail is not trivia. The person best placed to say what JA3 got wrong was the person who built it, and what he changed says exactly where the fragility was.
+
+**The central change is one word: sorted.** Cipher suites and extensions are sorted by their numeric values before hashing. Reordering them no longer changes anything, so Chrome's permutation stops mattering and cipher stunting stops working in the same stroke.
+
+Sorting discards information, and the decision to accept that loss was deliberate. FoxIO's reasoning is that applications and libraries choose a distinctive cipher **list** far more often than a distinctive **ordering** of one, so the set carries nearly all of the identifying power and the order carried mostly noise. The evidence for that is the six years JA3 spent working: it was riding on the set, with order as a bonus that nobody had guaranteed.
+
+Three further choices are worth knowing:
+
+**GREASE values are stripped.** These are reserved dummy code points defined in RFC 8701 that browsers send precisely to keep middleboxes from ossifying against unrecognised fields. They rotate. Removing them before hashing means a Chrome release that refreshes its GREASE selection does not invalidate every stored fingerprint.
+
+**Signature algorithms keep their original order.** Having sorted everything else, JA4 appends the signature algorithm list unsorted. That is where some of the uniqueness lost to sorting is recovered, and it is a considered trade rather than an oversight.
+
+**The result is partly readable.** Where JA3 gives an opaque MD5, a JA4 string opens with fields a human can read directly: the transport and TLS version, whether server name indication is present, how many ciphers and extensions there are, and the first negotiated protocol. An analyst can tell a great deal before consulting any lookup table, which is a different kind of usefulness from a hash that means nothing until matched.
+
+## Why this signal is unlike the others
+
+Everything else in client fingerprinting happens in the page. Canvas readback, font enumeration, timing quirks: all of it runs after a document exists, which means page-level code can intercept, override or lie about it.
+
+The ClientHello is sent by the network stack the moment the socket opens. There is no document yet, no window, no script. By the time any stealth code could run, the handshake has already gone out and, if the server cared, has already been judged.
+
+That is why a mismatch is such a strong signal. A request whose header says Chrome, carrying a handshake that matches Python's requests library, is not ambiguous. Changing a TLS fingerprint means changing or reconfiguring the TLS library itself, which is a different order of effort from setting a user agent string.
+
+## What to take from it operationally
+
+**Check the date on any advice that names a specific JA3 hash.** A blocklist built on exact JA3 values decays, because the legitimate browsers it was derived from no longer produce stable values. Guidance written before 2023 is describing a world that ended in January of that year.
+
+**Do not read one fingerprint alone.** The four tools this article links to exist to be used together: the TLS handshake, the order of the HTTP headers, and how common the claimed user agent actually is. Each is weak alone and they are strong in combination, because a client that is lying has to lie consistently across all of them, and most do not.
+
+**Expect this to move again.** JA3 lasted six years and was undone by a change made for unrelated and entirely legitimate reasons. Nothing about JA4 makes it permanent. It is more durable because it depends on the set rather than the arrangement, and sets change more slowly than orderings, but a technique built on observing what clients happen to do will always be at the mercy of clients deciding to do something else.

@@ -26,6 +26,8 @@
 // ============================================================================
 
 import { run as base64Run } from "./base64";
+import { run as dhcpOption43Run } from "./dhcp-option-43";
+import { run as panosPolicyRun } from "./panos-policy-evaluation-order";
 import { run as bigipPersistenceCookieRun } from "./f5-bigip-persistence-cookie";
 import { run as bigipTcpdumpBuilderRun } from "./f5-bigip-tcpdump-builder";
 import { run as certRenewalPlannerRun } from "./cert-renewal-planner";
@@ -180,6 +182,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-bigip-persistence-cookie", run: bigipPersistenceCookieRun },
   { slug: "f5-bigip-tcpdump-builder", structured: true, run: (input) => bigipTcpdumpBuilderRun(JSON.parse(input)) },
   { slug: "cert-renewal-planner", structured: true, run: (input) => certRenewalPlannerRun(JSON.parse(input)) },
+  // Structured: the answer depends on the VENDOR as much as the address, so a
+  // bare string input would be ambiguous by construction.
+  { slug: "panos-policy-evaluation-order", structured: true, run: (input) => panosPolicyRun(JSON.parse(input)) },
+  { slug: "dhcp-option-43", structured: true, run: (input) => { const b = JSON.parse(input); return dhcpOption43Run(b.vendor, b.addresses); } },
   { slug: "cidr", run: (input) => cidrAnalyze(input) },
   { slug: "cipher", run: cipherRun },
   { slug: "csr-decoder", structured: true, run: (input) => csrDecoderRun(JSON.parse(input)) },

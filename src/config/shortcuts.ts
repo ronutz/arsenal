@@ -72,6 +72,8 @@ export const SHORTCUT_ACTIONS: ShortcutAction[] = [
   { id: "tool-hash", kind: "navigate", path: "/tools/hash", labelKey: "actionToolHash" },
   { id: "tool-uuid", kind: "navigate", path: "/tools/uuid", labelKey: "actionToolUuid" },
   { id: "tool-url-inspector", kind: "navigate", path: "/tools/url-inspector", labelKey: "actionToolUrlInspector" },
+  { id: "tool-dhcp-option-43", kind: "navigate", path: "/tools/dhcp-option-43", labelKey: "actionToolDhcpOption43" },
+  { id: "tool-panos-policy-order", kind: "navigate", path: "/tools/panos-policy-evaluation-order", labelKey: "actionToolPanosPolicyOrder" },
   { id: "tool-x509", kind: "navigate", path: "/tools/x509", labelKey: "actionToolX509" },
   { id: "nav-vendors", kind: "navigate", path: "/vendor-hubs", labelKey: "actionVendors" },
   // Commands — handled inside the shortcut layer

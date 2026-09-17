@@ -52,6 +52,24 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-09-16",
+    time: "12:40",
+    kind: "tool",
+    title: "PAN-OS and Prisma Access policy evaluation order",
+    body:
+      "A Panorama-managed firewall does not evaluate one ordered list. It evaluates by layer and by type, and the local rules an administrator can see and edit sit in the middle of a sandwich they cannot edit from the firewall at all: shared pre-rules, device group pre-rules, local rules, device group post-rules, shared post-rules, then the defaults. That ordering is the most common surprise in a Panorama estate, because a local rule that looks correct never runs when a shared pre-rule two layers above already matched. The tool puts a rulebase into true evaluation order, traces a flow to the deciding rule, and reports shadowing, which Palo Alto's own documentation says Commit and Push does not provide. The defaults are modelled asymmetrically because they are: intrazone-default allows, interzone-default denies.",
+    tools: ["panos-policy-evaluation-order"],
+  },
+  {
+    date: "2026-09-16",
+    time: "01:30",
+    kind: "tool",
+    title: "DHCP option 43 generator",
+    body:
+      "Builds the option 43 value a wireless controller actually expects. RFC 2132 defines the option and leaves the content to each vendor, so one option number hides four incompatible encodings: a binary TLV for Cisco and UniFi, an ASCII TLV for Ruckus where the address is spelled out character by character, a plain string for Aruba and ExtremeWireless where any hex value is simply wrong, and FortiAP, which does not use option 43 at all and reads option 138 instead. The tool answers with the right shape for the vendor, including telling you when the answer is not a hex string. Every profile cites the vendor's own documentation and every golden vector is a worked example published by that vendor.",
+    tools: ["dhcp-option-43"],
+  },
+  {
     date: "2026-08-27",
     time: "08:00",
     kind: "tool",

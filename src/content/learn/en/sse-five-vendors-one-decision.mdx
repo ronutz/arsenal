@@ -1,0 +1,82 @@
+---
+slug: sse-five-vendors-one-decision
+title: "Five SSE Vendors, One Decision, Five Different Answers"
+summary: "Every secure service edge has to answer the same question: does this flow pass. Zscaler, Netskope, F5 Distributed Cloud, FortiSASE and Prisma Access answer it with genuinely different machinery, and the differences are where migrations go wrong."
+concepts: ["sse", "sase", "policy evaluation", "first match", "rule order", "zscaler", "netskope", "prisma access", "fortisase", "f5 distributed cloud", "dlp", "shadowing"]
+relatedTools: ["panos-policy-evaluation-order", "zscaler-firewall-rule-order-simulator", "netskope-dlp-match-predictor", "f5xc-service-policy-explainer", "fortigate-policy-match-order"]
+relatedArticles: ["incident-to-escalation", "awaf-block-triage"]
+category: security
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Every secure service edge answers the same question. A flow arrives, and the platform decides whether it passes, what is inspected on the way, and what is written down about it.
+
+Five vendors, five machines for answering it. The category name hides how differently they work, and the difference matters most at exactly the moment people assume it does not: during a migration, when a rulebase is carried across from one platform to another and the new one evaluates it by different rules.
+
+## What they actually share
+
+Two things, and it is worth naming them because they are the only safe assumptions.
+
+**First match wins.** All five stop at the first rule whose criteria the flow satisfies, execute that rule, and evaluate nothing further. Palo Alto states it plainly in their rulebase guidance, and it is the behaviour across the category.
+
+**Order is therefore meaning.** A rulebase is not a set of statements about what should happen. It is a sequence, and moving one line changes what the platform does without changing a single field in any rule.
+
+Everything past those two points diverges.
+
+## Where they diverge, and which divergence bites
+
+### The rulebase may not be one list
+
+This is the largest difference and the one most often missed.
+
+Prisma Access, managed through Panorama, does not evaluate a list. It evaluates by **layer and by type**: shared pre-rules, device group pre-rules, then the local rules, then device group post-rules, shared post-rules, and finally the defaults. The rules an administrator can see and edit locally sit in the middle of a structure they cannot edit locally at all.
+
+The practical consequence is a class of fault that does not exist on a single-list platform: a rule that is correct, enabled, in the right place in its own list, and never runs. Something two layers above it matched first.
+
+FortiSASE inherits the FortiOS policy engine, so a FortiGate administrator moving to it is on familiar ground in a way a Panorama administrator is not, because the model is the same one they already reason about.
+
+### The defaults are not the same default
+
+Most people carry an assumption that unmatched traffic is denied. On PAN-OS that is only half true. Two default rules sit at the bottom: **interzone-default denies** traffic between zones, and **intrazone-default allows** traffic within a zone.
+
+A migration that assumes a single implicit deny will be wrong about every same-zone flow, and wrong in the permissive direction, which is the direction nobody notices until an audit.
+
+### "Blocked" is not one outcome
+
+Zscaler's firewall filtering distinguishes actions that drop silently from actions that reset, and the difference is visible to the client as a hang versus an immediate failure. That distinction changes what a user reports and therefore what you go looking for, and it does not survive translation to a platform that expresses blocking as a single action.
+
+### Some platforms decide on content, not just on flow
+
+Netskope's data loss prevention does not ask "may this connection proceed". It asks whether what is inside matches a rule, and the answer separates three things people routinely collapse: how many strings have the right **shape**, how many of those pass a **checksum**, and how many survive the **proximity and count thresholds** that decide whether a match becomes a violation.
+
+A tuning conversation that does not separate those three is a conversation where everyone is describing a different number.
+
+### The unit of policy may not be the rule
+
+F5 Distributed Cloud's service policy evaluates a structure rather than a line: sequenced rule lists attached to a load balancer, with matching on properties of the request. Carrying a flat rulebase into it is not a translation but a redesign, because the question "which line is first" is not the question the platform is asking.
+
+## Why this is the migration risk
+
+A rulebase exported from one platform and imported into another is syntactically converted and semantically changed. The fields survive. The evaluation model does not.
+
+The failures that follow are quiet. Nothing errors. Traffic that used to be inspected is not, or traffic that used to pass is dropped in a way that looks like a network fault. And the artefact everyone is looking at, the rule list, appears correct, because it is correct: it is the machine reading it that changed.
+
+The honest approach to a migration between any two of these is to re-derive the intent rather than convert the rules. What was this policy trying to achieve? That question survives a platform change. The rule order does not.
+
+## What is worth checking on any of them
+
+Three questions apply regardless of vendor, and all three are answerable before a commit rather than after an incident:
+
+**Is this rulebase one list or several?** If several, which of them can the person making the change actually edit?
+
+**What happens to traffic that matches nothing?** Not what you assume, what the platform documents, and whether the answer differs by zone or context.
+
+**Which rules can never fire?** A rule shadowed by a broader rule above it is dead configuration that reads as live protection. Palo Alto's own documentation notes that Commit and Push does not report shadowing, which means on that platform the check has to come from somewhere else.
+
+Each of the five tools linked from this article answers those questions for one platform. The value in having them side by side is not the individual answers. It is seeing how differently the same question has to be asked.
+
+## A note on what this is
+
+Comparative analysis of published vendor documentation. This site holds instructor authorization for some of these platforms and not others, and claims none for Zscaler or Palo Alto Networks. Nothing here is vendor material or carries vendor endorsement; the sources are each vendor's own public documentation, and where they disagree with each other, that disagreement is the subject.

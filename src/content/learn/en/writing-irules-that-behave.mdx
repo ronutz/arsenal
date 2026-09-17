@@ -1,0 +1,54 @@
+---
+slug: writing-irules-that-behave
+title: "Writing an iRule: The Order the Questions Come In"
+summary: "Event first, commands second, cost third. An iRule in the wrong event cannot be fixed by making it faster, which is why performance is the last question and not the first."
+concepts: ["irule", "tcl", "bigip", "ltm", "event", "clientside", "serverside", "ltm policy", "cpu"]
+relatedTools: ["f5-irules-vs-ltm-policy", "f5-irules-event-order", "f5-irules-command-context", "f5-irules-performance-linter", "f5-irules-runtime-calculator"]
+relatedArticles: ["awaf-block-triage"]
+category: networking
+order: 1
+status: reviewed
+updated: "2026-09-16"
+---
+
+Most iRules that misbehave are not slow. They are in the wrong place, and the symptom looks like a logic bug: a variable that is empty, a header that is not there yet, a decision made before the information needed to make it has arrived.
+
+That is why performance is the last question here and not the first. An iRule in the wrong event cannot be rescued by optimisation, and optimising one before checking where it runs is work spent on the wrong object.
+
+## Question zero: should this be an iRule at all
+
+Worth asking before anything else, because the answer is often no.
+
+An LTM policy does a large share of what people reach for iRules to do, and it does it declaratively: matched, evaluated and applied by the system rather than interpreted per connection. If the requirement is "when the path starts with this, send it there", that is policy work. Reaching for Tcl because Tcl is familiar is how a configuration accumulates code that nobody can safely change three years later.
+
+The cases that genuinely need an iRule are the ones involving inspection the policy engine cannot express, state that has to persist across events, or manipulation of payload rather than routing. Those are real and common. They are just not everything.
+
+## First: which event
+
+A BIG-IP connection passes through a fixed sequence of events, and each one exposes a different slice of the world. At the point a client connection is accepted, no HTTP request exists. By the time a request has been parsed, the payload may not have arrived. On the server side, the client-side variables are still reachable but the connection they described is no longer the one in front of you.
+
+Almost every confusing iRule is an iRule written for a moment that has not happened yet. The information you want is not missing; it is not yet.
+
+So the first question is not "what do I want to do" but "at what point does the system know enough for me to do it". Getting that right usually shortens the rule, because much of the defensive checking people write exists to work around being in the wrong event.
+
+## Second: are these commands legal here
+
+Events do not merely differ in what they know. They differ in what they permit.
+
+A command that is valid in one event may be unavailable in another, and the failure is not always loud: some produce a runtime error that appears in the log under load and nowhere during testing, which is the worst possible time to discover it.
+
+Checking command context before writing is faster than discovering it afterwards, and it frequently sends you back to the first question. If the command you need is not available where you planned to run it, that is usually the event choice telling you it was wrong.
+
+## Third: what will this cost
+
+Only now does performance become a real question, because only now is the rule in the right place doing legal things.
+
+Two different concerns hide under "performance". One is patterns that are expensive by nature: regular expressions where a string comparison would do, per-request table operations, anything that allocates per connection. A linter finds those because they are recognisable shapes.
+
+The other is volume. A rule that costs a little is still a problem at enough connections per second, and the arithmetic is worth doing explicitly rather than estimating. The useful output is not "this is fast" but "at your actual connection rate, this rule will consume roughly this much", which is a number you can hold against the platform you are running on.
+
+## Why the order holds
+
+Each answer constrains the next. The event determines which commands are available. The available commands determine what the rule can do. What it does determines what it costs. Run the sequence backwards and you tune a rule that is in the wrong place, using commands that may not be legal, to solve a problem an LTM policy would have handled without any code at all.
+
+The ten minutes at the start are the ones that save the afternoon.

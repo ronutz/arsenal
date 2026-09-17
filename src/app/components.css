@@ -17013,3 +17013,188 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   font-size: 0.8rem;
   color: var(--text-muted);
 }
+
+/* ---------------------------------------------------------------------------
+   DHCP option 43 generator (2026-09-16). The vendor picker leads, because the
+   same address means four different things depending on who made the AP.
+   --------------------------------------------------------------------------- */
+.opt43-select {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+.opt43-select:focus-visible {
+  border-color: var(--accent-primary);
+  outline: none;
+}
+.opt43-vendor-source {
+  margin: 0.4rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.opt43-vendor-source a {
+  color: var(--accent-secondary);
+}
+
+/* The value itself: large, monospace, selectable in one go. */
+.opt43-value {
+  margin: 0 0 0.8rem;
+  padding: 0.7rem 0.8rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  color: var(--accent-primary);
+}
+
+/* Byte-by-byte account, so the reader can check the arithmetic rather than
+   trust it. This is the part a plain hex box cannot give. */
+.opt43-breakdown {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+.opt43-breakdown li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.opt43-breakdown li:last-child {
+  border-bottom: none;
+}
+.opt43-bytes {
+  flex: none;
+  min-width: 5.5rem;
+  color: var(--accent-primary);
+  word-break: break-all;
+}
+.opt43-meaning {
+  color: var(--text-secondary);
+}
+
+/* Used where the honest answer is "not what you expected" - a string rather
+   than hex, or a different option number entirely. */
+.opt43-warn {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  border-left: 3px solid var(--status-warning, #fbbf24);
+  background: var(--surface-base);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.9rem;
+}
+
+.opt43-servers {
+  margin: 0;
+}
+.opt43-servers > div {
+  margin-bottom: 0.8rem;
+}
+.opt43-servers dt {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+.opt43-servers dd {
+  margin: 0;
+}
+.opt43-servers code {
+  display: block;
+  padding: 0.55rem 0.7rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ---------------------------------------------------------------------------
+   PAN-OS policy evaluation order (2026-09-16). The layer tag carries the whole
+   insight, so it is coloured per layer and always visible: seeing LOCAL sitting
+   between the pre and post rules is usually the moment the penny drops.
+   --------------------------------------------------------------------------- */
+.panos-rules { font-family: var(--font-mono, monospace); font-size: 0.85rem; }
+.panos-toggle { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.panos-traffic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+.panos-traffic-field { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.78rem; }
+.panos-traffic-field span { color: var(--text-muted); }
+.panos-traffic-field input {
+  padding: 0.35rem 0.5rem;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+.panos-order, .panos-trace, .panos-shadow { margin: 0; padding: 0; list-style: none; }
+.panos-order li, .panos-trace li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.87rem;
+}
+.panos-order li:last-child, .panos-trace li:last-child { border-bottom: none; }
+.panos-layer-tag {
+  flex: none;
+  min-width: 10.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.panos-rule-name { font-family: var(--font-mono, monospace); }
+
+/* Panorama layers versus local. The local band is the one that matters. */
+.panos-layer-shared-pre  .panos-layer-tag,
+.panos-layer-shared-post .panos-layer-tag { color: var(--accent-secondary); }
+.panos-layer-dg-pre  .panos-layer-tag,
+.panos-layer-dg-post .panos-layer-tag { color: var(--accent-primary); }
+.panos-layer-local .panos-layer-tag { color: var(--text-primary); font-weight: 600; }
+.panos-layer-default .panos-layer-tag { color: var(--text-muted); font-style: italic; }
+
+.panos-action {
+  flex: none;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid currentColor;
+}
+.panos-action-allow { color: var(--status-success, #4ade80); }
+.panos-action-deny, .panos-action-drop,
+.panos-action-reset-client, .panos-action-reset-server,
+.panos-action-reset-both { color: var(--status-danger, #f87171); }
+
+.panos-decision { font-size: 1.02rem; margin: 0 0 0.6rem; }
+.panos-trace-why { color: var(--text-muted); font-size: 0.8rem; }
+.panos-hit .panos-rule-name { color: var(--accent-primary); font-weight: 600; }
+.panos-miss { opacity: 0.62; }
+
+.panos-shadow li {
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.88rem;
+}
+.panos-shadow li:last-child { border-bottom: none; }
+.panos-cross { color: var(--status-warning, #fbbf24); }
+.panos-differs { color: var(--status-danger, #f87171); }
