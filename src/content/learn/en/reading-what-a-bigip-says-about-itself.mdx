@@ -1,0 +1,64 @@
+---
+slug: reading-what-a-bigip-says-about-itself
+title: "Reading What a BIG-IP Says About Itself"
+summary: "A BIG-IP describes itself in five languages: a configuration grammar, two API address schemes from two different traditions, a license file, a pair of dates that decide whether it may upgrade, and a release calendar. Six reference tools on this site each read one of them. This is the map of how the six fit together, and the order to read them in when a device lands on your desk."
+concepts: ["f5", "bigip", "tmsh", "icontrol rest", "f5os", "restconf", "license", "service check date", "release cadence", "operations"]
+relatedTools: ["f5-tmsh-config-explainer", "icontrol-rest-path-explainer", "f5os-restconf-path-explainer", "f5-bigip-license-explainer", "f5-service-check-date", "f5-release-cadence-calendar"]
+relatedArticles: ["anatomy-of-bigip-conf", "icontrol-rest-paths", "f5os-restconf-paths", "bigip-license-file-anatomy", "bigip-service-check-date", "f5-monthly-release-cadence"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-09-17"
+---
+
+A BIG-IP that someone else built arrives with no narrator. Nobody is going to walk you through what it does, what it is entitled to do, or whether the upgrade you have been asked to schedule is even possible. The device will tell you all of that, but it tells you in five different languages, and the languages were designed by different teams in different decades for different purposes. None of them was designed to be read by a person in a hurry.
+
+This site carries six reference tools that each translate one of those languages, and each has its own article. What none of the six could say alone is how they relate, or which one to open first. That is what this article is for.
+
+## What it does: the configuration
+
+The first language is the configuration itself. BIG-IP stores it as `tmsh` (Traffic Management Shell) objects in `bigip.conf`, and every object follows one grammar: a module, a component, an optional type, a name, and a brace-delimited body of fields. `ltm virtual`, `ltm pool`, `net vlan`, `sys ntp`: the leading words place the object in the hierarchy, the name identifies it, and the braces hold what it does. The [anatomy of bigip.conf](/learn/anatomy-of-bigip-conf) walks that grammar in detail.
+
+Two things about this language are worth knowing before you read a config you did not write. First, it is regular enough to parse deterministically, which is why the [tmsh config explainer](/tools/f5-tmsh-config-explainer) can turn a wall of text into a tree with each field explained rather than guessed. Second, there is exactly one exception to the grammar: an `ltm rule` body is Tcl, not tmsh. An iRule is a program embedded in a configuration file, and any reader that tries to parse it as objects and fields will mangle it. The explainer captures it verbatim for that reason. When you inherit a device, the iRules are usually where the surprises are, precisely because they are the part of the configuration that is not configuration.
+
+## How it is addressed: two APIs from two traditions
+
+The second and third languages are both API paths, and the important fact about them is that they look nothing alike because they come from different traditions, not different versions.
+
+iControl REST addresses the same object model as `tmsh`. `/mgmt/tm/ltm/pool/~Common~apps~web_pool` is `ltm pool /Common/apps/web_pool` with one substitution: F5's iControl REST user guide states that when a resource name includes a forward slash, you substitute a tilde for it in the path, because the URL already uses the slash for its own structure. Two behaviours of this API produce most of the confusion. A name written without a partition is resolved against a default, which is `Common` unless the caller has changed it, so an identical request can succeed for one administrator and return 404 for another with nothing wrong on either side. And a pool fetched without `expandSubcollections=true` comes back with no members, because the guide defines that parameter as the switch that expands references to sub-collections. The [iControl REST path explainer](/tools/icontrol-rest-path-explainer) decodes a pasted URL into the module, the collection, the tilde path with its `tmsh` equivalent, and each query option; the [iControl REST paths](/learn/icontrol-rest-paths) article explains the scheme.
+
+F5OS, the platform layer beneath tenants on VELOS and rSeries, speaks RESTCONF (RFC 8040) over data modelled in YANG. `/restconf/data/f5-tenants:tenants/tenant=tenant1/config` is a different grammar altogether: `f5-tenants:tenants` names a node in a YANG module, only the first node of a module carries the prefix, and `tenant=tenant1` is a list key selecting one entry rather than a query parameter. F5OS mixes vendor-neutral OpenConfig modules (`openconfig-system`, `openconfig-interfaces`) with F5's own `f5-` modules, and a prefix reappearing part-way down a path means you have crossed into another module. F5's own rSeries and VELOS automation guides document the same API on two front doors: port 8888 under `/restconf`, and the standard HTTPS port under `/api`, so two paths that look different can name the identical resource. Those guides name no version; a [DevCentral codeshare of December 2022](https://community.f5.com/kb/codeshare/f5-velosrseriesf5os-code-for-automating-config-backup-with-the-new-restconf-api-/305521) states that as of F5OS 1.8 the `:8888/restconf` form can be replaced with `:443/api`, and the F5OS-A 1.8.0 release notes carry the matching fix, 1572137-2, for the upload and download API working with both. The [F5OS RESTCONF path explainer](/tools/f5os-restconf-path-explainer) reads one segment at a time and says which module governs each; the [F5OS RESTCONF paths](/learn/f5os-restconf-paths) article is the longer treatment.
+
+If you automate a modern F5 estate you will write both kinds of path in the same week, and the practical rule is simple: `/mgmt/tm/` means the tenant's object model, `/restconf/data/` or `/api/data/` means the platform underneath it.
+
+## What it is allowed to be: the license
+
+The fourth language is `/config/bigip.license`, and it answers a question the configuration cannot: what is this device entitled to be? The [license file anatomy](/learn/bigip-license-file-anatomy) reads it section by section. For the purposes of the map, four lines matter.
+
+The `Registration Key` is the base key, in the 5-5-5-5-7 shape F5 documents in [K7752](https://my.f5.com/manage/s/article/K7752) and [K3782](https://my.f5.com/manage/s/article/K3782). Each `active module` line carries the module name, that module's own key, and its feature list, which is what `tmsh show sys license` renders as a name with a key in parentheses. `Exclusive_version` lines pin the permitted software range on Virtual Edition licenses, which [K42091606](https://my.f5.com/manage/s/article/K42091606) tells you to check before choosing an upgrade target. And two dates sit in the file's compact `yyyymmdd` form: `Licensed date`, which records when the license was produced, and `Service check date`, which is the line with operational consequences and gets the next section to itself.
+
+The [license explainer](/tools/f5-bigip-license-explainer) reads all of this in the browser and never displays key or signature values, because the file also carries the `Dossier` and `Authorization` signatures that bind the license to the platform. Treat it as sensitive.
+
+## What it can become: the service check date
+
+The fifth language is a comparison between two dates, and it is the one that stops upgrades cold.
+
+Every license carries a Service Check Date: per [K7727](https://my.f5.com/manage/s/article/K7727), the earlier of the date the license was last activated and the date its service contract ends. Every BIG-IP version carries a License Check Date, the minimum Service Check Date a license must have for the system to be eligible to run that version. At upgrade time the system compares the two. If the license's date is older than the version's, the upgraded system boots, but its configuration does not load until the license is reactivated: reachable over the interface and `tmsh`, passing no traffic.
+
+Two details make this predictable rather than frightening. The check applies to upgrades, which F5 defines as a change in the first or second version number; a move between maintenance or point releases within the same branch is an update and triggers no check at all. And the table is public. From the K7727 rows as encoded in the tool (last re-checked against a transcription of the table on 17 September 2026): `16.1.x` needs `2021-06-11`, `17.1.x` needs `2023-02-08`, `17.5.x` needs `2025-02-12`, `21.0.x` needs `2025-10-29`, and `21.1.x` needs `2026-04-15`. A license activated in mid-2023 reaches `17.1.x` and nothing newer until it is reactivated.
+
+The [service check date tool](/tools/f5-service-check-date) runs the comparison in either direction, from a version to the date it requires or from a date to the newest branch it reaches, and it works at major.minor granularity for exactly the reason above. It also accepts a whole pasted license file or `tmsh show sys license` output and finds the date line itself. It shares one vendored copy of the K7727 table with the license explainer, so the two tools can never disagree about a verdict. The longer explanation is in [the service check date](/learn/bigip-service-check-date).
+
+## When it changes: the release calendar
+
+The sixth language is time. On 6 July 2026 F5's Chief Product Officer announced a move from quarterly to monthly hardened software releases, shipping on the third Wednesday of every month from 15 July 2026, with the security notification for each release published one month later, the first on 19 August. F5 kept the right to issue security alerts outside the schedule whenever urgent vulnerability information has to reach customers immediately, and to adjust the timing or content of a notification where law, contract, coordinated disclosure, active exploitation or customer protection require it. The announcement is on [F5's company blog](https://www.f5.com/company/blog/release-cadence-security-notifications-frontier-ai), and [the cadence article](/learn/f5-monthly-release-cadence) works through what changed and what stays the same.
+
+The [release cadence calendar](/tools/f5-release-cadence-calendar) turns the rule into dates: from any starting day it lists the upcoming hardened releases and the notifications that follow them. Read it next to the service check date, because the two together are the whole upgrade planning problem: the calendar says when a version arrives, and the service check date says whether your license will let you run it.
+
+## The reading order
+
+When a device lands on your desk, read the languages in this order, because each one constrains the next.
+
+Read the license first. It says what the device is, which modules are active, and which software range it is permitted to run. Then read the service check date, because if the license needs reactivating before any upgrade, that conversation with procurement starts today, not on the change night. Then read the configuration, which says what the device does; this is where the time goes, and it is the part that the license and the dates have now put in context. Then read the API paths, because the automation you will write against the device speaks two grammars and you need to know which layer each script is talking to. Read the calendar last, because it turns everything above into a plan with dates on it.
+
+Six tools, five languages, one device. The device was always going to tell you all of this. The point of the six is that you no longer have to already know how to listen.

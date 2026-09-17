@@ -27,7 +27,7 @@ export const manifest = Object.freeze({
   goldenVectors: GOLDEN_VECTOR_SET_ID,
   dangerousInputHandling: [],
   shareSafetyDefault: "safe",
-  learnLinks: ["learn/f5-monthly-release-cadence"],
+  learnLinks: ["learn/f5-monthly-release-cadence", "learn/reading-what-a-bigip-says-about-itself"],
   sources: [
     {
       id: "f5-cadence-blog",

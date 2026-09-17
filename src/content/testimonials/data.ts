@@ -40,6 +40,22 @@ export interface Testimonial {
 
 export const TESTIMONIALS: Testimonial[] = [
   {
+    "id": "85",
+    "source": "Google review",
+    "author": "Bill",
+    "title": "1 review",
+    "date": "September 2026",
+    "relationship": null,
+    "rating": "5★",
+    "lang": "EN",
+    "text": "I recently completed the F5 AWAF course with Rodolfo from Red Education and had an excellent experience. The pacing was steady, and the trainer was highly responsive to all of our questions. I highly recommend training with them.",
+    "textEnglish": null,
+    "translationStatus": "original",
+    "ownerResponse": null,
+    "note": "Names the F5 Advanced WAF course. Posted and captured on the same day, 17 September 2026.",
+    "provenance": "Google Reviews, Red Education Inc listing; captured by PRIME 2026-09-17"
+  },
+  {
     "id": "83",
     "source": "Google review",
     "author": "Shival Krishna",

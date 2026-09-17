@@ -5542,6 +5542,34 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     sources: [{ label: "The Jargon File" }],
   },
   {
+    // DONGLE (PRIME 2026-09-17). Asked for by name, and the reason it earns a
+    // lore entry rather than a term one is that the WORD has a better story
+    // than the object: a documented 1981 origin, a famous fabricated one that
+    // a vendor printed in an advertisement, and a meaning that drifted from
+    // "the thing that stops you copying my software" to "the thing that stops
+    // my laptop being useless". Marked disputed because the etymology is
+    // genuinely unsettled, not because the sources disagree about the facts.
+    slug: "dongle",
+    headword: "Dongle",
+    kind: "lore",
+    domains: ["it-support", "ops-culture"],
+    aliases: [
+      "dongles",
+      "hardware key",
+      "hardware lock",
+      "copy-protection dongle",
+      "USB dongle",
+      "dongle life",
+    ],
+    relatedTerms: ["winrar-licence", "sneakernet", "kludge"],
+    disputed: true,
+    sources: [
+      { label: "Tedium, 19 October 2022, tracing the word to Wordcraft 80 on Commodore hardware and quoting Mike Lake's 1982 letter to Personal Computer World, in which Graham Heggie of Analog Electronics of Coventry asks \"What are we going to call this dongle thingy?\"; the piece dates the earliest print appearance to Byte, October 1981, in a passage about software piracy in the United Kingdom", href: "https://tedium.co/2022/10/19/will-dongles-ever-go-away/" },
+      { label: "Wikipedia, software protection dongle: records Merriam-Webster's first known use of the word in 1981, and that a 1992 Rainbow Technologies advertisement attributing the name to a person called Don Gall was untrue and gave rise to an urban myth", href: "https://en.wikipedia.org/wiki/Software_protection_dongle" },
+      { label: "Wikipedia, dongle: the modern sense, the unresolved derivation from \"dangle\", and the linguist Ben Zimmer's finding that the Don Gall attribution was a tongue-in-cheek marketing invention", href: "https://en.wikipedia.org/wiki/Dongle" },
+    ],
+  },
+  {
     slug: "wizard",
     headword: "wizard",
     kind: "jargon",

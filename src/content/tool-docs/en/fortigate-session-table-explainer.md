@@ -14,7 +14,7 @@ Its problem is presentation. The output is dense, positional and unmemorable, so
 statistic(bytes/packets/allow_err): org=240/4/0 reply=0/0/0
 ```
 
-Outbound packets, zero reply. The FortiGate forwarded the traffic and **nothing came back**. The session exists, which means a policy permitted it, so this is not the firewall blocking anything — the problem is beyond this device: routing on the return path, the destination host, or a filter further along.
+Outbound packets, zero reply. The FortiGate forwarded the traffic and **nothing came back**. The session exists, which means a policy permitted it, so this is not the firewall blocking anything: the problem is beyond this device: routing on the return path, the destination host, or a filter further along.
 
 This tool leads with that reading rather than reporting two numbers, because misdiagnosing it as a firewall problem is the most common and most expensive mistake made with this output.
 

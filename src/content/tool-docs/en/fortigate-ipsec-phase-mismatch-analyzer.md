@@ -1,6 +1,6 @@
 ## What it does
 
-Describe both ends of an IPsec tunnel and this tool names what they disagree about, and — the part that actually matters — **which phase would fail**. It runs entirely in your browser.
+Describe both ends of an IPsec tunnel and this tool names what they disagree about, and then the part that actually matters: **which phase would fail**. It runs entirely in your browser.
 
 ## Why the phase is the whole diagnosis
 
@@ -38,7 +38,7 @@ The PFS case deserves its own mention: the log message on that failure does not 
 
 It compares what you supply. A field present on one side and absent on the other is treated as *not stated* rather than as a disagreement, because a partial paste is not evidence of a fault.
 
-It also does not diagnose the case that wastes the most time in practice: a tunnel that reports **up and passes no traffic**. That is not an IPsec problem at all — it is a missing route or a missing firewall policy — and the tool says so when it finds no fatal disagreement.
+It also does not diagnose the case that wastes the most time in practice: a tunnel that reports **up and passes no traffic**. That is not an IPsec problem at all: it is a missing route or a missing firewall policy, and the tool says so when it finds no fatal disagreement.
 
 ## Where it fits
 

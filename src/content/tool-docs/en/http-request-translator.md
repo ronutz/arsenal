@@ -1,6 +1,6 @@
 ## What it does
 
-Paste a raw HTTP/1.1 request — the kind a capture, a proxy log or an RFC example gives you — and the tool turns it into the equivalent `curl` command, browser `fetch` call, HTTPie invocation, Python `requests` snippet and PowerShell one-liner. Everything is parsed in your browser; nothing is ever sent, and no request is run.
+Paste a raw HTTP/1.1 request, the kind a capture, a proxy log or an RFC example gives you, and the tool turns it into the equivalent `curl` command, browser `fetch` call, HTTPie invocation, Python `requests` snippet and PowerShell one-liner. Everything is parsed in your browser; nothing is ever sent, and no request is run.
 
 ## The inverse of the curl explainer
 
@@ -8,7 +8,7 @@ The [curl command explainer](/tools/curl-command-explainer) goes one way: a comm
 
 ## How the URL is assembled
 
-An ordinary request line carries only a path — `GET /users HTTP/1.1` — because the connection already knows the host. To produce something you can run anywhere, the tool joins that target to the `Host` header. Absolute-form targets, which proxies use, are already complete and are taken as they are. If `Host` is missing on an origin-form request the tool says so, because the URL would otherwise be a guess.
+An ordinary request line carries only a path, as in `GET /users HTTP/1.1`, because the connection already knows the host. To produce something you can run anywhere, the tool joins that target to the `Host` header. Absolute-form targets, which proxies use, are already complete and are taken as they are. If `Host` is missing on an origin-form request the tool says so, because the URL would otherwise be a guess.
 
 ## Headers it deliberately drops
 

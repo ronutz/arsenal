@@ -112,6 +112,7 @@ export const manifest = Object.freeze({
   // -- Teaching & provenance --
   learnLinks: [
     "learn/bigip-service-check-date",
+    "learn/reading-what-a-bigip-says-about-itself",
     "learn/bigip-upgrade-vs-update",
     "learn/bigip-license-reactivation",
   ],

@@ -13,6 +13,7 @@ export const manifest = Object.freeze({
   learnLinks: [
     "learn/icontrol-rest-paths",
     "learn/f5os-restconf-paths",
+    "learn/reading-what-a-bigip-says-about-itself",
   ],
   sources: Object.freeze([
     Object.freeze({ id: "icontrol-rest", label: "F5 iControl REST API reference", url: "https://clouddocs.f5.com/api/icontrol-rest/" }),

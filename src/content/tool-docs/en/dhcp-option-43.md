@@ -8,13 +8,13 @@ RFC 2132 defines option 43 as *Vendor Specific Information* and then, deliberate
 
 The four families:
 
-**Binary TLV** — Cisco and UniFi. The address goes in as four raw bytes. `192.168.10.5` becomes `c0a80a05`.
+**Binary TLV**: Cisco and UniFi. The address goes in as four raw bytes. `192.168.10.5` becomes `c0a80a05`.
 
-**ASCII TLV** — Ruckus. The address goes in as *text*, one byte per character, dots included. `192.168.0.200` becomes `3139322e3136382e302e323030`. Ruckus's own knowledge base warns about exactly this: converting 10 to hex gives `0a`, but the ASCII for "10" is `31 30`. They are different values and only one of them works.
+**ASCII TLV**: Ruckus. The address goes in as *text*, one byte per character, dots included. `192.168.0.200` becomes `3139322e3136382e302e323030`. Ruckus's own knowledge base warns about exactly this: converting 10 to hex gives `0a`, but the ASCII for "10" is `31 30`. They are different values and only one of them works.
 
-**Plain string** — Aruba and ExtremeWireless. No hex at all. The DHCP server sends the address as text, and a hex value here is wrong no matter how carefully it was built.
+**Plain string**: Aruba and ExtremeWireless. No hex at all. The DHCP server sends the address as text, and a hex value here is wrong no matter how carefully it was built.
 
-**A different option entirely** — FortiAP. It reads the controller address from option 138, the CAPWAP access-controller option, which is its factory default. Option 43 on a FortiGate exists to serve *other* vendors' access points, not Fortinet's own.
+**A different option entirely**: FortiAP. It reads the controller address from option 138, the CAPWAP access-controller option, which is its factory default. Option 43 on a FortiGate exists to serve *other* vendors' access points, not Fortinet's own.
 
 ## Using it
 
@@ -22,7 +22,7 @@ Pick the vendor first. That order is deliberate: the same address produces four 
 
 Enter the controller's management IP. Cisco accepts several, separated by spaces or commas, and encodes them in order; the others take one.
 
-The result shows the value, and for hex vendors a byte-by-byte account of how it was assembled — sub-option, length, then the address — so you can check the arithmetic rather than trust it. Below that are ready-to-paste lines for ISC dhcpd, Cisco IOS, Windows Server and MikroTik.
+The result shows the value, and for hex vendors a byte-by-byte account of how it was assembled (sub-option, length, then the address) so you can check the arithmetic rather than trust it. Below that are ready-to-paste lines for ISC dhcpd, Cisco IOS, Windows Server and MikroTik.
 
 ## What it tells you that a hex box cannot
 
@@ -46,4 +46,4 @@ Every vendor profile is built from that vendor's own documentation, and every go
 
 ## A deliberate omission
 
-Aerohive is not offered. It was acquired by Extreme in 2019 and folded into ExtremeCloud IQ, and no vendor documentation for a standalone Aerohive sub-option could be found — only community claims. The only documented sub-option 226 belongs to Fabric Engine switches talking to ExtremeCloud IQ, which is a different device class answering a different question. A value pasted into production DHCP is the worst possible place to be approximately right, so until a vendor source exists, Aerohive stays out. If you have that documentation, it can be added in an afternoon.
+Aerohive is not offered. It was acquired by Extreme in 2019 and folded into ExtremeCloud IQ, and no vendor documentation for a standalone Aerohive sub-option could be found, only community claims. The only documented sub-option 226 belongs to Fabric Engine switches talking to ExtremeCloud IQ, which is a different device class answering a different question. A value pasted into production DHCP is the worst possible place to be approximately right, so until a vendor source exists, Aerohive stays out. If you have that documentation, it can be added in an afternoon.

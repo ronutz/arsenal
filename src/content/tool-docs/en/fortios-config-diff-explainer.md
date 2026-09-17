@@ -14,7 +14,7 @@ This tool parses both sides into section, object and setting, then compares the 
 
 ## The one place order is not noise
 
-For most sections the order of objects is irrelevant — address objects, service objects, interfaces. Reporting a reordering there would be noise, so it is ignored.
+For most sections the order of objects is irrelevant: address objects, service objects, interfaces. Reporting a reordering there would be noise, so it is ignored.
 
 For **firewall policy** and its relatives, order **is** the behaviour. First match wins, so moving a policy above another changes what the device does without changing a single setting. That is the edit a line diff buries most thoroughly, because nothing on either side of the move differs textually except position.
 
@@ -22,7 +22,7 @@ Those sections are treated as order-sensitive by name, and a reordering in them 
 
 `firewall policy` · `firewall policy6` · `firewall proxy-policy` · `firewall local-in-policy` · `firewall shaping-policy` · `firewall security-policy` · `router policy` · `router policy6` · `system sdwan`
 
-Treating both cases the same way — in either direction — would make the tool wrong, so both behaviours are pinned by golden vectors.
+Treating both cases the same way, in either direction, would make the tool wrong, so both behaviours are pinned by golden vectors.
 
 ## Input
 

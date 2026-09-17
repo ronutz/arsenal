@@ -4,7 +4,7 @@ Paste a FortiGate firewall policy list and a packet, and this tool performs the 
 
 ## Why the trace matters more than the verdict
 
-Knowing that policy 7 matched is a small part of the answer. The useful part is why policies 1 through 6 did not, because that is what tells you whether the list is written as intended. A policy with the right addresses and the wrong outgoing interface silently fails to match, and nothing in the interface says so — the hit counter simply never increments.
+Knowing that policy 7 matched is a small part of the answer. The useful part is why policies 1 through 6 did not, because that is what tells you whether the list is written as intended. A policy with the right addresses and the wrong outgoing interface silently fails to match, and nothing in the interface says so; the hit counter simply never increments.
 
 The trace names one criterion per policy: the first one that failed. FortiOS requires all of them, so a single failure is enough to eliminate a policy, and reporting the first is what keeps the output readable on a long list.
 
@@ -20,9 +20,9 @@ Once a policy matches, later policies that would also have matched fall into two
 
 Two shapes are accepted, because you may have either.
 
-**FortiOS CLI** — the output of `show firewall policy` or a `config firewall policy` block. Members are read from the quoted lists, and a policy with `set status disable` is reported as skipped rather than silently ignored.
+**FortiOS CLI**: the output of `show firewall policy` or a `config firewall policy` block. Members are read from the quoted lists, and a policy with `set status disable` is reported as skipped rather than silently ignored.
 
-**A pipe or tab table** — `id | srcintf | dstintf | srcaddr | dstaddr | service | action`, which is what a copy from the GUI or a hand-written list looks like. Multiple members in a cell are comma separated.
+**A pipe or tab table**: `id | srcintf | dstintf | srcaddr | dstaddr | service | action`, which is what a copy from the GUI or a hand-written list looks like. Multiple members in a cell are comma separated.
 
 The packet goes on its own line in either format:
 

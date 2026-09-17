@@ -14,7 +14,7 @@ O F5OS, a camada de plataforma sob os tenants no VELOS e no rSeries, é operado 
 
 O RESTCONF endereça uma entrada de lista colocando a chave no próprio caminho — `tenant=tenant1` seleciona um tenant da lista `tenants` — em vez de usar um parâmetro de consulta. A ferramenta marca essas entradas separadamente dos contêineres simples.
 
-Ela também explica o arranjo de portas que confunde: o F5OS originalmente expunha o RESTCONF na **porta 8888**, sob `/restconf`, e a partir do **F5OS 1.8** a mesma API é alcançável na porta HTTPS padrão, sob `/api`. Dois caminhos de aparência diferente podem endereçar o mesmo recurso. A autenticação usa o cabeçalho `X-Auth-Token`, e esse token é ele próprio um JWT, portanto expira.
+Ela também explica o arranjo de portas que confunde: o F5OS originalmente expunha o RESTCONF na **porta 8888**, sob `/restconf`, e a partir do **F5OS 1.8** a mesma API é alcançável na porta HTTPS padrão, sob `/api`. Dois caminhos de aparência diferente podem endereçar o mesmo recurso. A versão é a que consta no próprio DevCentral da F5: um codeshare de dezembro de 2022 sobre automação de backup do F5OS registra que, a partir do F5OS 1.8, a forma `:8888/restconf` pode ser substituída por `:443/api`; as notas de versão do F5OS-A 1.8.0 trazem a correção correspondente, 1572137-2, para a API de upload e download funcionar com `/api` e com `/restconf`. Os guias de automação de rSeries e VELOS da F5 documentam as duas portas de entrada sem nomear versão. A autenticação usa o cabeçalho `X-Auth-Token`, e esse token é ele próprio um JWT, portanto expira.
 
 ## O que ela não faz
 

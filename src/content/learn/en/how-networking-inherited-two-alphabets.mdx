@@ -1,0 +1,60 @@
+---
+slug: how-networking-inherited-two-alphabets
+title: "How Networking Inherited Two Alphabets"
+summary: "Every engineer reads Greek letters and Roman numerals without ever being taught them: Ω on a terminator, μs on a latency graph, λ on a wavelength plan, Ethernet II in every packet decoder, a I or a II stamped on a repeater. None of it was chosen for networking. Each symbol arrived from a datable moment, and the dates are the story."
+concepts: ["greek alphabet", "roman numerals", "notation", "history", "ohm", "micro", "erlang", "queueing", "ethernet ii", "fast ethernet"]
+relatedTools: ["greek-alphabet", "roman-numerals"]
+relatedArticles: ["greek-alphabet-the-engineers-second-alphabet", "roman-numerals-how-the-system-works"]
+category: networking
+order: 60
+status: reviewed
+updated: "2026-09-17"
+---
+
+Nobody teaches a network engineer Greek, and yet every one of them reads it. The terminator on a coaxial segment says 50 Ω. The latency graph is labelled in μs. The optical plan lists channels as lambdas. The capacity model has an arrival rate called λ and a service rate called μ. And alongside the Greek there is a second inheritance in Latin: the frame type every packet decoder calls Ethernet II, the I or II inside a circle on an old repeater, the year in a copyright line.
+
+None of these symbols was chosen for networking. Each was borrowed from somewhere else at a moment that can be dated, usually by one person for a reason that had nothing to do with packets. The [Greek alphabet explainer](/tools/greek-alphabet) and the [Roman numerals tool](/tools/roman-numerals) are lookups; this is the story of why there is anything to look up.
+
+## Ω, 1867: a pun in a physics journal
+
+The unit of resistance came before its symbol. The British Association for the Advancement of Science proposed a practical unit of resistance as early as 1861, driven by the needs of telegraphy, which was the networking of its day. The symbol arrived six years later. In 1867 William Henry Preece, writing in the Philosophical Magazine on the B.A. unit for electrical measurements, suggested the Greek capital omega for the ohm, and the reason was the sound: ohm and omega begin alike. [Wikipedia's ohm article](https://en.wikipedia.org/wiki/Ohm) carries the citation to Preece's paper.
+
+So the 50 Ω on a thicknet terminator, the 100 Ω nominal impedance of a twisted pair, and the Ω on every resistor in every lab are a telegraph engineer's pun, a century and a half old, that nobody has found a reason to replace.
+
+## μ, 1873: small, and the letter that looks like a u
+
+Micro and mega arrived together, with the centimetre-gram-second system in 1873, and were confirmed as SI prefixes in 1960; the [micro-](https://en.wikipedia.org/wiki/Micro-) and [mega-](https://en.wikipedia.org/wiki/Mega-) entries record both dates. The prefix comes from the Greek μικρός, small, and its official symbol is the Greek lowercase mu.
+
+Two consequences follow a network engineer around. The first is that a series of standards (ISO 2955 from 1974 until it was withdrawn in 2001, and the German and British equivalents) permitted the letter u as a stand-in when μ could not be typed, which is why so much command-line output prints `us` and `usec` and why a generation of engineers reads them without noticing. The second is a Unicode detail with teeth: the symbol has two code points, the legacy U+00B5 MICRO SIGN and the preferred U+03BC GREEK SMALL LETTER MU. A search for one does not find the other. A log that mixes them will sort, grep and deduplicate wrongly, and nothing will report an error, which makes it a small member of the family the glossary calls a [silent failure](/glossary/silent-failure).
+
+## λ, μ and ρ, 1909: the telephone exchange
+
+The Greek that runs every capacity model came from the telephone network, which is to say from the first packet-free version of the problem this whole field exists to solve.
+
+Agner Krarup Erlang joined the Copenhagen Telephone Company in 1908 and in 1909 published "The Theory of Probabilities and Telephone Conversations", which showed that telephone calls arriving at random follow Poisson's law of distribution. His 1917 paper supplied the formulas for loss and waiting time that telephone traffic engineering still uses. By 1944 the erlang was the Scandinavian unit of telephone traffic, and international recognition followed after the war; [the account at plus.maths.org](https://plus.maths.org/content/agner-krarup-erlang-1878-1929) traces the sequence.
+
+The letters were fixed a generation later. In 1953 D. G. Kendall proposed describing a queue by three factors written A/S/c, where A is the distribution of time between arrivals, S the service time distribution and c the number of service channels, and M stands for Markovian, or memoryless, an exponential distribution. In the M/M/1 queue the inter-arrival time is exponential with parameter λ and the service time exponential with parameter μ, and the ratio of the two is the utilisation that every capacity planner still writes as ρ. Every rate limiter that speaks of λ, every queue-depth graph, every buffer-sizing argument is speaking the dialect of a Copenhagen exchange.
+
+Wavelength is the other λ. Physics had already given the letter to wavelength, and dense wavelength-division multiplexing ([DWDM](/glossary/dwdm)) took it over whole: an optical channel is called a lambda, and an engineer can order one as if it were a cable.
+
+## α and β: the letters on unfinished software
+
+The beta firmware on a switch traces to IBM's product test stages. IBM's own history of its 360 and early 370 systems describes three levels: the A test verified that the product built by the development group met its design objectives, the B test demonstrated that the documentation handed to manufacturing adequately specified the product, and the C test demonstrated that the manufactured hardware performed as specified. The Jargon File records the Greek names as IBM usage: alpha test was the unit, module or component test phase, beta test the initial system test. [A note on the etymology](https://ingbrief.wordpress.com/2015/01/13/etymology-of-alpha-test-beta-test/) collects both citations.
+
+The letters kept their order and lost their meaning. Alpha and beta now name how finished a thing is rather than which department is testing it, but the order survives: whatever comes first is still alpha.
+
+## δ and Δ, 1706: the difference itself
+
+Delta as difference is the oldest of the borrowings. The MacTutor history of mathematical symbols records that Johann Bernoulli used δ in 1706 to denote the difference of functions, and [its calculus symbols page](https://mathshistory.st-andrews.ac.uk/Miller/mathsym/calculus/) calls that probably one of the first uses of delta in the sense. Three centuries on, the word is a noun in the field, and a formal one: delta encoding in HTTP, the scheme for sending only what changed in a resource, is RFC 3229.
+
+## The Latin inheritance: II on the frame, I and II on the hub
+
+Roman numerals survive in networking in exactly the places where a name was fixed before anyone expected it to last.
+
+Ethernet II is the first. Digital, Intel and Xerox published their Ethernet specification, the DIX standard, and version 2 of it in November 1982, as the [Ethernet](https://en.wikipedia.org/wiki/Ethernet) history records. That version's framing, the two-octet EtherType field after the destination and source addresses, is the framing nearly every frame on nearly every network still carries, and packet decoders label it by the version number of a 1982 document: Ethernet II. The IEEE standard that followed a year later differed only in details, and the details are why the name never went away.
+
+Fast Ethernet repeaters are the second, and the numerals were stamped on the metal. The 100BASE-T standard defined two repeater classes: a Class I repeater translates incoming line signals to digital form and back, may have larger timing delays, and only one is allowed in a collision domain at maximum cable lengths; a Class II repeater repeats the incoming signal immediately without translation, is held to smaller delays, and two are allowed. The standard required each repeater to be labelled with the Roman number I or II centred within a circle; [Charles Spurgeon's quick reference](https://www.ethermanage.com/ethernet/100quickref/ch10qr_5.html) has the rule. A whole generation of hubs carried a Roman numeral on the faceplate because the collision-domain arithmetic depended on it.
+
+## Why this matters to anyone
+
+It matters for the same reason the two tools exist. A symbol you inherited without its history is a symbol you cannot check: you do not know whether μ and u are the same thing, whether Ethernet II and 802.3 framing are interchangeable, whether the II on a hub is a model number or a limit. Each of these was decided by someone, on a date, for a reason. Knowing the reason is the difference between reading the notation and merely recognising it.

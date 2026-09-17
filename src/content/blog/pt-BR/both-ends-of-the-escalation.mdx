@@ -1,0 +1,62 @@
+---
+slug: both-ends-of-the-escalation
+title: "As duas pontas do escalonamento"
+summary: "Eu já atendi chamados de suporte e já os abri: de dentro do centro de suporte de um fabricante, como gerente de escalonamento do fabricante para dois clientes muito grandes, e por uma década como o engenheiro que abre chamados em nome de um parceiro. Duas ferramentas deste site saem desses anos. Este é o ponto de vista que elas codificam, dito na primeira pessoa."
+author: "Rodolfo Nützmann"
+date: "2026-09-17"
+tags: ["operations", "incident-response", "career"]
+category: operations
+status: reviewed
+updated: "2026-09-17"
+relatedArticles: ["fault-isolation-first-hour", "tac-cases-that-get-triaged-fast", "incident-to-escalation"]
+---
+
+## Duas cadeiras
+
+Todo escalonamento tem duas cadeiras, e a maioria dos engenheiros só senta numa delas a vida inteira.
+
+Eu sentei na primeira entre 2000 e 2002, no centro de suporte de um fabricante na Califórnia, fazendo suporte de terceiro nível para comutação e roteamento metropolitanos: pegando os chamados que o primeiro e o segundo nível não conseguiam fechar, recriando o problema em laboratório e escrevendo o que encontrávamos na base de conhecimento para que o próximo chamado parecido fosse mais curto. Depois sentei na segunda, de volta ao Brasil, como gerente de escalonamento do fabricante para duas instituições-chave do governo federal, o que significava ser a pessoa para quem o cliente ligava quando o chamado não andava e a pessoa para quem o centro de suporte ligava quando o cliente não mandava o que eles precisavam. Depois vieram dez anos da terceira cadeira, que na verdade é a segunda usando outro crachá: o engenheiro da revenda e do distribuidor, abrindo chamados em nome de parceiros que os tinham aberto em nome dos seus clientes, três organizações de distância de quem de fato viu a falha.
+
+Hoje eu ensino o curso de troubleshooting, e duas das ferramentas deste site, o [construtor de hipóteses de falha](/tools/fault-hypothesis-builder) e o [construtor de pacote de escalonamento](/tools/tac-escalation-packet-builder), são o que esses anos viram quando a gente os escreve como regras. Os artigos sobre [a primeira hora](/learn/fault-isolation-first-hour), sobre [chamados que são triados rápido](/learn/tac-cases-that-get-triaged-fast) e sobre [o arco do sintoma ao chamado](/learn/incident-to-escalation) explicam o método. O que eles não dizem, porque um artigo de método não deve dizer, é por que eu acredito nele. Este texto diz.
+
+## Como o chamado parece visto de dentro
+
+Do centro de suporte, um chamado é uma passagem de bastão de alguém que estava lá para alguém que não estava. Esse é o formato inteiro da coisa. Quem abriu viu a falha, sentiu a indisponibilidade, sabe qual aplicação importa e qual é um laboratório que ninguém usa. Quem recebe conhece o produto a fundo e não conhece mais nada. Tudo o que o chamado não diz tem que ser pedido, e cada pedido custa uma ida e volta, e quando o cliente está em São Paulo e o engenheiro está na Califórnia uma ida e volta é um dia.
+
+Então a primeira coisa que se aprende naquela cadeira é ler um chamado novo pelo que falta, e não pelo que ele diz. Tem pacote de diagnóstico, e ele foi coletado enquanto a falha estava presente ou depois que alguém reiniciou e ela sumiu? Tem um erro exato, ou uma paráfrase de um? Tem uma linha do tempo, ou a palavra "de repente"? Você aprende a pedir tudo isso na primeira resposta, porque pedir uma coisa de cada vez transforma um chamado de dois dias num de duas semanas, e aprende que os chamados que andam são os que chegaram completos. Isso não é reclamação de cliente. É a aritmética dos fusos horários.
+
+A segunda coisa que se aprende é que a recriação é o argumento. Dá para raciocinar sobre uma falha por horas; um laboratório que mostra o mesmo comportamento encerra a discussão em minutos, e um laboratório que se recusa a mostrá-lo está dizendo algo igualmente útil. Suporte de terceiro nível é, na maior parte, a disciplina de transformar uma descrição numa reprodução, e os chamados que não se consegue reproduzir são aqueles em que você volta e lê a descrição de novo, mais devagar, procurando o detalhe que o cliente achou irrelevante.
+
+A terceira coisa é a base de conhecimento. Escrever um chamado depois de fechá-lo parece a tarefa menos urgente da fila e é a de maior valor, porque uma falha que chegou ao terceiro nível vai chegar de novo, em outro cliente, em outro país, e o registro é a diferença entre uma tarde e uma semana na segunda vez. Parte do meu trabalho era essa escrita, e ela mudou como eu li cada chamado dali em diante: como o rascunho de um documento de que outra pessoa ia precisar.
+
+## Como parece visto da outra cadeira
+
+A cadeira do gerente de escalonamento ensina as lições opostas, e elas são igualmente verdadeiras.
+
+Do lado do cliente, severidade é sentida, não graduada. Uma falha que para a folha de pagamento é a coisa mais grave do mundo para quem roda a folha, e é uma Severidade 3 para uma organização de suporte que reserva a Severidade 1 para um sistema de produção fora do ar para todo mundo. Os dois estão certos. O trabalho do gerente de escalonamento é tradução: fazer o cliente descrever o impacto nos termos do fabricante, porque um chamado graduado com honestidade na sua severidade real anda mais rápido do que um gritado um nível acima, e os engenheiros de suporte percebem a diferença num parágrafo.
+
+Do lado do cliente, "nada mudou" é sincero, e quase sempre está errado. Ninguém mexeu no balanceador. Mas um certificado expirou, um lease renovou, uma mudança três times de distância alterou uma rota, uma atualização automática caiu de madrugada. Naquela cadeira eu parei de ouvir "nada mudou" como informação e passei a ouvir como a primeira hipótese a testar, contra o registro de mudanças e os logs, e não contra a memória de ninguém. Essa frase aparece no construtor de hipóteses de falha como um aviso exatamente por isso: ela é marcada como uma afirmação a verificar, nunca aceita como fato.
+
+E do lado do cliente, a pressão para escalar chega antes da evidência. A ponte de crise quer uma causa raiz nos primeiros vinte minutos, e a resposta honesta nos primeiros vinte minutos é uma lista ordenada do que pode ser e do que descartaria cada item. Dar à ponte uma resposta errada com confiança compra dez minutos de calma e custa o resto do dia, porque todo mundo para de procurar. Vi isso acontecer mais vezes do que consigo contar, e quem resistiu raramente foi agradecido na hora.
+
+## No que eu acredito, e o que as ferramentas fazem a respeito
+
+O ponto de vista que as duas ferramentas codificam se reduz a cinco coisas.
+
+A hipótese é a unidade de trabalho. Não uma teoria, não um diagnóstico: uma explicação candidata com duas listas presas a ela, o que a sustentaria e o que a enfraqueceria. Uma candidata contra a qual você não consegue imaginar evidência é uma conclusão a que você já chegou, e ela vai comer a sua primeira hora esteja certa ou não. O construtor de hipóteses de falha se recusa a produzir qualquer coisa além de candidatas, ordenadas, cada uma carregando as duas listas, e diz quais das suas regras dispararam para que você possa discordar dele.
+
+A linha do tempo é construída durante, não depois. Memória é o log menos confiável da rede, e a ordem dos eventos costuma ser o fato que decide entre duas explicações. Carimbos de tempo dos logs, escritos no chamado conforme são encontrados, vencem uma reconstrução na manhã seguinte todas as vezes.
+
+O chamado é escrito para quem lê. Alguém que conhece o produto e não conhece nada sobre você deveria conseguir começar a trabalhar a partir da primeira mensagem. Isso significa um enunciado do problema, o erro exato, as versões, o impacto nos termos de severidade do próprio fabricante e o diagnóstico que o fabricante vai pedir de qualquer jeito, anexado antes de pedirem. O construtor de pacote de escalonamento existe para que "antes de pedirem" seja uma lista de verificação em vez de uma lembrança, e para que tudo o que já foi coletado saia da lista em vez de ser pedido duas vezes.
+
+A severidade é graduada com honestidade. Porque a graduação honesta é a que consegue um engenheiro designado que de fato possa ajudar, e porque uma organização de suporte que foi forçada aos gritos a uma Severidade 1 por uma falha de laboratório se lembra.
+
+E as ferramentas estruturam; nunca diagnosticam. Nenhuma das duas afirma causa raiz, contata coisa alguma nem pede credencial. Elas deixam a primeira hora organizada e a passagem de bastão completa, e tudo depois disso continua sendo julgamento, continua sendo o fabricante, continua sendo o comitê de mudanças. Eu as construí assim porque todo diagnóstico automático que já vi neste setor era confiante, e os confiantes são os que fazem as pessoas pararem de procurar.
+
+## A pessoa na outra ponta
+
+O que eu mais quero que os engenheiros a quem ensino levem de tudo isso não é um procedimento. É uma imagem de quem está na outra ponta do chamado.
+
+Não é um adversário e não é um sistema de tickets. É um engenheiro com uma fila, lendo o seu chamado pelo que falta, torcendo para que tenha chegado completo, prestes a gastar um dia pedindo uma captura se não chegou. É a pessoa que eu era na Califórnia, com um laboratório atrás de mim e um cliente cuja tarde era a minha manhã, querendo nada além de uma descrição precisa o bastante para reproduzir. Escreva o chamado para essa pessoa. Entregue a linha do tempo que você construiu enquanto acontecia, o diagnóstico coletado enquanto a falha estava presente, a severidade como ela a graduaria e as hipóteses que você já enfraqueceu para que ela não precise. Faça isso, e o chamado não volta.
+
+Trinta anos depois, isso continua sendo o todo da coisa.

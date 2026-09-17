@@ -1,0 +1,62 @@
+---
+slug: both-ends-of-the-escalation
+title: "Both ends of the escalation"
+summary: "I have taken support cases and I have opened them: inside a vendor's support centre, as the vendor's escalation manager for two very large customers, and for a decade as the engineer opening cases on a partner's behalf. Two tools on this site come out of those years. This is the point of view they encode, stated in the first person."
+author: "Rodolfo Nützmann"
+date: "2026-09-17"
+tags: ["operations", "incident-response", "career"]
+category: operations
+status: reviewed
+updated: "2026-09-17"
+relatedArticles: ["fault-isolation-first-hour", "tac-cases-that-get-triaged-fast", "incident-to-escalation"]
+---
+
+## Two chairs
+
+There are two chairs in every escalation, and most engineers only ever sit in one of them.
+
+I sat in the first between 2000 and 2002, in a vendor's support centre in California, doing third-line support for metropolitan switching and routing: taking cases that first and second line could not close, recreating the issue in a lab, and writing up what we found for the knowledge base so the next case like it would be shorter. Then I sat in the second, back in Brazil, as the vendor's escalation manager for two of the federal government's key institutions, which meant being the person the customer called when the case was not moving and being the person the support centre called when the customer would not send what they needed. After that came a decade of the third chair, which is really the second one wearing a different badge: the reseller's and the distributor's engineer, opening cases on behalf of partners who had opened them on behalf of their customers, three organisations deep from the person who actually saw the fault.
+
+Now I teach the troubleshooting course, and two of the tools on this site, the [fault hypothesis builder](/tools/fault-hypothesis-builder) and the [escalation packet builder](/tools/tac-escalation-packet-builder), are what those years look like when you write them down as rules. The articles on [the first hour](/learn/fault-isolation-first-hour), on [cases that get triaged fast](/learn/tac-cases-that-get-triaged-fast) and on [the arc from symptom to case](/learn/incident-to-escalation) explain the method. What they do not say, because a method article should not, is why I believe it. This post does.
+
+## What the case looks like from inside
+
+From the support centre, a case is a hand-off from somebody who was there to somebody who was not. That is the whole shape of it. The person who opened it saw the fault, felt the outage, knows which application matters and which one is a lab nobody uses. The person who receives it knows the product deeply and knows nothing else. Everything the case does not say has to be asked for, and every ask costs a round trip, and when the customer is in São Paulo and the engineer is in California a round trip is a day.
+
+So the first thing you learn in that chair is to read a new case for what is missing rather than for what it says. Is there a diagnostic bundle, and was it taken while the fault was present or after someone rebooted and it went away? Is there an exact error, or a paraphrase of one? Is there a timeline, or the word "suddenly"? You learn to ask for all of it in the first reply, because asking for one thing at a time turns a two-day case into a two-week one, and you learn that the cases that move are the ones that arrived complete. That is not a complaint about customers. It is the arithmetic of time zones.
+
+The second thing you learn is that recreation is the argument. You can reason about a fault for hours; a lab that shows the same behaviour ends the discussion in minutes, and a lab that refuses to show it is telling you something equally useful. Third-line support is mostly the discipline of turning a description into a reproduction, and the cases you cannot reproduce are the ones where you go back and read the description again, more slowly, looking for the detail the customer thought was irrelevant.
+
+The third thing is the knowledge base. Writing a case up after closing it feels like the least urgent task in the queue and it is the highest-value one, because a fault that reached third line will reach it again, in another customer, in another country, and the write-up is the difference between an afternoon and a week the second time. Part of my job was that writing, and it changed how I read every case afterwards: as the draft of a document somebody else would need.
+
+## What it looks like from the other chair
+
+The escalation manager's chair teaches the opposite lessons, and they are just as true.
+
+From the customer's side, severity is felt, not graded. A fault that stops the payroll run is the most severe thing in the world to the people running payroll, and it is a Severity 3 to a support organisation that reserves Severity 1 for a production system that is down for everybody. Both are right. The escalation manager's job is translation: to get the customer to describe the impact in the vendor's terms, because a case graded honestly at its real severity moves faster than one shouted up a level, and support engineers can tell the difference within a paragraph.
+
+From the customer's side, "nothing changed" is sincere, and it is almost always wrong. Nobody touched the load balancer. But a certificate expired, a lease rolled, a change three teams away altered a route, an automatic update landed overnight. In that chair I stopped hearing "nothing changed" as information and started hearing it as the first hypothesis to test, against the change record and the logs rather than against anyone's memory. That sentence appears in the fault hypothesis builder as a warning for exactly this reason: it is flagged as a claim to verify, never accepted as a fact.
+
+And from the customer's side, the pressure to escalate arrives before the evidence does. The bridge call wants a root cause in the first twenty minutes, and the honest answer in the first twenty minutes is a ranked list of things it might be and what would rule each one out. Giving the bridge a confident wrong answer buys ten minutes of calm and costs the rest of the day, because everyone stops looking. I have watched that happen more times than I can count, and the person who resisted it was rarely thanked for it in the moment.
+
+## What I believe, and what the tools do about it
+
+The point of view the two tools encode reduces to five things.
+
+A hypothesis is the unit of work. Not a theory, not a diagnosis: a candidate explanation with two lists attached, what would support it and what would weaken it. A candidate you cannot imagine evidence against is a conclusion you have already reached, and it will eat your first hour whether or not it is right. The fault hypothesis builder refuses to produce anything but candidates, ranked, each carrying both lists, and it tells you which of its rules fired so you can disagree with it.
+
+The timeline is built during, not after. Memory is the least reliable log on the network, and the order of events is usually the fact that decides between two explanations. Timestamps from logs, written into the case as they are found, beat a reconstruction the next morning every single time.
+
+The case is written for the reader. Somebody who knows the product and nothing about you should be able to start working from the first message. That means a problem statement, the exact error, the versions, the impact in the vendor's own severity terms, and the diagnostic the vendor is going to ask for anyway, attached before they ask. The escalation packet builder exists so that "before they ask" is a checklist rather than a memory, and so that anything already collected drops off the list instead of being requested twice.
+
+Severity is graded honestly. Because the honest grade is the one that gets an engineer assigned who can actually help, and because a support organisation that has been shouted at into a Severity 1 for a lab fault remembers.
+
+And the tools structure; they never diagnose. Neither one makes a root-cause claim, contacts anything, or asks for a credential. They make the first hour organised and the hand-off complete, and everything after that is still judgment, still the vendor, still the change board. I built them that way because every automatic diagnosis I have ever seen in this industry was confident, and the confident ones are the ones that stop people looking.
+
+## The person at the other end
+
+The thing I most want the engineers I teach to take from all of this is not a procedure. It is a picture of who is on the other end of the case.
+
+It is not an adversary and it is not a ticket system. It is an engineer with a queue, reading your case for what is missing, hoping it arrived complete, about to spend a day asking for a capture if it did not. It is the person I was in California, with a lab behind me and a customer whose afternoon was my morning, wanting nothing more than a description precise enough to reproduce. Write the case for that person. Give them the timeline you built while it was happening, the diagnostic taken while the fault was present, the severity as they would grade it, and the hypotheses you have already weakened so they do not have to. Do that, and the case does not bounce.
+
+Thirty years in, that is still the whole of it.

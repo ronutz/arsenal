@@ -1,6 +1,6 @@
 ## What it does
 
-Describe an FGCP cluster — each unit's monitored-interface failures, age, priority and serial, plus the override setting — and this tool runs the primary election, names the criterion that decided it, and tells you who would be primary if override were toggled. It runs entirely in your browser.
+Describe an FGCP cluster (each unit's monitored-interface failures, age, priority and serial, plus the override setting) and this tool runs the primary election, names the criterion that decided it, and tells you who would be primary if override were toggled. It runs entirely in your browser.
 
 ## The question it answers
 
@@ -29,7 +29,7 @@ Alongside the winner, the tool computes who would be primary with override toggl
 
 That matters because "FGT-B is primary" is a fact, and "with override enabled FGT-A would be primary instead, and that single setting is what decides this cluster" is a decision. The second is what someone actually needs when they are looking at a cluster behaving unexpectedly.
 
-When toggling override would change nothing, it says that too — which rules out a whole line of investigation in one line.
+When toggling override would change nothing, it says that too, which rules out a whole line of investigation in one line.
 
 ## Reading the other outcomes
 

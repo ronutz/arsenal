@@ -94,7 +94,7 @@ export const manifest = Object.freeze({
   shareSafetyDefault: "ephemeral",
 
   // -- Teaching & provenance --
-  learnLinks: ["learn/bigip-license-file-anatomy"],
+  learnLinks: ["learn/bigip-license-file-anatomy", "learn/reading-what-a-bigip-says-about-itself"],
   sources: [
     {
       id: "f5-k000160443",

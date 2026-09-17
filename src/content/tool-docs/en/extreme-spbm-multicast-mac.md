@@ -6,12 +6,12 @@ It works both ways. Give it a node nickname and an I-SID and it builds the group
 
 An SPBM group address is not configured and not learned. It is assembled from two numbers every node already has:
 
-- **first three bytes** — the fixed prefix `0x30000` combined with the 20-bit nickname
-- **last three bytes** — the 24-bit I-SID
+- **first three bytes**: the fixed prefix `0x30000` combined with the 20-bit nickname
+- **last three bytes**: the 24-bit I-SID
 
 So nickname `0.00.10` carrying I-SID 100 gives `03:00:10:00:00:64`. Every node on the shortest path tree computes that same address from the link-state database without being told it, which is exactly why SPBM needs no backbone MAC learning.
 
-The same I-SID rooted on a different node produces a different address — one tree per root.
+The same I-SID rooted on a different node produces a different address: one tree per root.
 
 ## The direction that earns its keep
 
@@ -19,8 +19,8 @@ Reading the multicast FIB. It is a column of hex, and the question is always the
 
 ## One ambiguity, declared rather than hidden
 
-Bits 16 and 17 belong to the fixed prefix. A nickname whose first field sets them produces an address that cannot be decoded back to a single nickname. Every documented example uses a first field of 0. If you enter something else, the tool builds the address and tells you the reverse is unverified — rather than returning a nickname it cannot stand behind.
+Bits 16 and 17 belong to the fixed prefix. A nickname whose first field sets them produces an address that cannot be decoded back to a single nickname. Every documented example uses a first field of 0. If you enter something else, the tool builds the address and tells you the reverse is unverified, rather than returning a nickname it cannot stand behind.
 
 ## Honest limits
 
-This computes the group address only. B-VID selection, the shortest path tree itself, IS-IS adjacency and the unicast backbone MAC are all out of scope — the unicast B-MAC is the chassis address and is not derived from anything. The I-SID is treated as a number; whether a given value is a Layer 2 VSN or a Layer 3 VSN is a configuration question this does not model.
+This computes the group address only. B-VID selection, the shortest path tree itself, IS-IS adjacency and the unicast backbone MAC are all out of scope; the unicast B-MAC is the chassis address and is not derived from anything. The I-SID is treated as a number; whether a given value is a Layer 2 VSN or a Layer 3 VSN is a configuration question this does not model.

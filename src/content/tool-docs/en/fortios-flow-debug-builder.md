@@ -1,6 +1,6 @@
 ## What it does
 
-Fill in what you want to trace — an address, optionally ports, a protocol, a packet count — and the tool assembles the full `diagnose debug flow` sequence for a FortiGate: the clean-state reset, the filter, the display options, the trace and the enable, followed by the cleanup. Every line is explained individually. It generates text and contacts nothing.
+Fill in what you want to trace (an address, optionally ports, a protocol, a packet count) and the tool assembles the full `diagnose debug flow` sequence for a FortiGate: the clean-state reset, the filter, the display options, the trace and the enable, followed by the cleanup. Every line is explained individually. It generates text and contacts nothing.
 
 ## Why a builder rather than a reference
 
@@ -8,7 +8,7 @@ Fill in what you want to trace — an address, optionally ports, a protocol, a p
 
 ## The order it emits, and why
 
-The tool emits **filter first, enable last**. Fortinet's own administration guide shows `diagnose debug enable` first, before the filter, and **both work** — the tool says so in its notes rather than quietly picking one. The reason to prefer filter-first is practical: on a busy firewall, turning output on before the filter is set traces everything until the filter lands.
+The tool emits **filter first, enable last**. Fortinet's own administration guide shows `diagnose debug enable` first, before the filter, and **both work**, so the tool says so in its notes rather than quietly picking one. The reason to prefer filter-first is practical: on a busy firewall, turning output on before the filter is set traces everything until the filter lands.
 
 ## Three things it always tells you
 

@@ -1,0 +1,64 @@
+---
+slug: reading-what-a-bigip-says-about-itself
+title: "Lendo o que um BIG-IP diz sobre si mesmo"
+summary: "Um BIG-IP se descreve em cinco linguagens: uma gramática de configuração, dois esquemas de endereçamento de API vindos de tradições diferentes, um arquivo de licença, um par de datas que decide se ele pode ser atualizado e um calendário de releases. Seis ferramentas de referência deste site leem uma linguagem cada. Este é o mapa de como as seis se encaixam, e a ordem em que lê-las quando um equipamento cai na sua mesa."
+concepts: ["f5", "bigip", "tmsh", "icontrol rest", "f5os", "restconf", "licença", "service check date", "cadência de releases", "operações"]
+relatedTools: ["f5-tmsh-config-explainer", "icontrol-rest-path-explainer", "f5os-restconf-path-explainer", "f5-bigip-license-explainer", "f5-service-check-date", "f5-release-cadence-calendar"]
+relatedArticles: ["anatomy-of-bigip-conf", "icontrol-rest-paths", "f5os-restconf-paths", "bigip-license-file-anatomy", "bigip-service-check-date", "f5-monthly-release-cadence"]
+category: networking
+order: 2
+status: reviewed
+updated: "2026-09-17"
+---
+
+Um BIG-IP que outra pessoa construiu chega sem narrador. Ninguém vai explicar o que ele faz, o que ele tem direito de fazer, nem se a atualização que pediram para você agendar é sequer possível. O equipamento diz tudo isso, mas diz em cinco linguagens diferentes, e essas linguagens foram desenhadas por equipes diferentes, em décadas diferentes, para propósitos diferentes. Nenhuma delas foi desenhada para ser lida por alguém com pressa.
+
+Este site mantém seis ferramentas de referência que traduzem uma dessas linguagens cada, e cada uma tem o seu próprio artigo. O que nenhuma das seis conseguia dizer sozinha é como elas se relacionam, ou qual abrir primeiro. É para isso que este artigo existe.
+
+## O que ele faz: a configuração
+
+A primeira linguagem é a própria configuração. O BIG-IP a guarda como objetos `tmsh` (Traffic Management Shell) no `bigip.conf`, e todo objeto segue uma única gramática: um módulo, um componente, um tipo opcional, um nome e um corpo entre chaves com os campos. `ltm virtual`, `ltm pool`, `net vlan`, `sys ntp`: as palavras iniciais posicionam o objeto na hierarquia, o nome o identifica e as chaves guardam o que ele faz. A [anatomia do bigip.conf](/learn/anatomy-of-bigip-conf) percorre essa gramática em detalhe.
+
+Duas coisas sobre essa linguagem valem ser sabidas antes de ler uma configuração que você não escreveu. Primeiro, ela é regular o bastante para ser interpretada de forma determinística, e é por isso que o [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) consegue transformar um paredão de texto numa árvore com cada campo explicado em vez de adivinhado. Segundo, existe exatamente uma exceção à gramática: o corpo de um `ltm rule` é Tcl, não tmsh. Uma iRule é um programa embutido num arquivo de configuração, e qualquer leitor que tente interpretá-la como objetos e campos vai estragá-la. O explicador a captura literalmente por essa razão. Quando você herda um equipamento, as iRules costumam ser onde estão as surpresas, justamente porque são a parte da configuração que não é configuração.
+
+## Como ele é endereçado: duas APIs de duas tradições
+
+A segunda e a terceira linguagens são ambas caminhos de API, e o fato importante sobre elas é que não se parecem em nada porque vêm de tradições diferentes, não de versões diferentes.
+
+O iControl REST endereça o mesmo modelo de objetos do `tmsh`. `/mgmt/tm/ltm/pool/~Common~apps~web_pool` é `ltm pool /Common/apps/web_pool` com uma substituição: o guia do usuário do iControl REST da F5 diz que, quando o nome de um recurso inclui uma barra, você a substitui por um til no caminho, porque a URL já usa a barra para a sua própria estrutura. Dois comportamentos dessa API produzem a maior parte da confusão. Um nome escrito sem partição é resolvido contra um padrão, que é `Common` a menos que quem chama tenha mudado isso, de modo que uma requisição idêntica pode funcionar para um administrador e devolver 404 para outro sem nada errado de nenhum dos lados. E um pool buscado sem `expandSubcollections=true` volta sem membros, porque o guia define esse parâmetro como a chave que expande referências a subcoleções. O [explicador de caminhos iControl REST](/tools/icontrol-rest-path-explainer) decodifica uma URL colada em módulo, coleção, caminho com til e o equivalente `tmsh`, além de cada opção de consulta; o artigo sobre [caminhos iControl REST](/learn/icontrol-rest-paths) explica o esquema.
+
+O F5OS, a camada de plataforma abaixo dos tenants em VELOS e rSeries, fala RESTCONF (RFC 8040) sobre dados modelados em YANG. `/restconf/data/f5-tenants:tenants/tenant=tenant1/config` é outra gramática por completo: `f5-tenants:tenants` nomeia um nó de um módulo YANG, só o primeiro nó de um módulo carrega o prefixo, e `tenant=tenant1` é uma chave de lista selecionando uma entrada, não um parâmetro de consulta. O F5OS mistura módulos OpenConfig neutros de fabricante (`openconfig-system`, `openconfig-interfaces`) com os módulos `f5-` da própria F5, e um prefixo que reaparece no meio do caminho significa que você cruzou para outro módulo. Os próprios guias de automação de rSeries e VELOS da F5 documentam a mesma API em duas portas de entrada: a porta 8888 sob `/restconf`, e a porta HTTPS padrão sob `/api`, então dois caminhos com aparências diferentes podem nomear o recurso idêntico. Esses guias não nomeiam versão; um [codeshare do DevCentral de dezembro de 2022](https://community.f5.com/kb/codeshare/f5-velosrseriesf5os-code-for-automating-config-backup-with-the-new-restconf-api-/305521) afirma que, a partir do F5OS 1.8, a forma `:8888/restconf` pode ser substituída por `:443/api`, e as notas de versão do F5OS-A 1.8.0 trazem a correção correspondente, 1572137-2, para a API de upload e download funcionar com as duas. O [explicador de caminhos RESTCONF do F5OS](/tools/f5os-restconf-path-explainer) lê um segmento por vez e diz qual módulo governa cada um; o artigo sobre [caminhos RESTCONF do F5OS](/learn/f5os-restconf-paths) é o tratamento mais longo.
+
+Se você automatiza um parque F5 moderno, vai escrever os dois tipos de caminho na mesma semana, e a regra prática é simples: `/mgmt/tm/` significa o modelo de objetos do tenant; `/restconf/data/` ou `/api/data/` significa a plataforma embaixo dele.
+
+## O que ele pode ser: a licença
+
+A quarta linguagem é o `/config/bigip.license`, e ela responde a uma pergunta que a configuração não consegue responder: o que este equipamento tem direito de ser? A [anatomia do arquivo de licença](/learn/bigip-license-file-anatomy) o lê seção por seção. Para o propósito do mapa, quatro linhas importam.
+
+A `Registration Key` é a chave base, no formato 5-5-5-5-7 que a F5 documenta em [K7752](https://my.f5.com/manage/s/article/K7752) e [K3782](https://my.f5.com/manage/s/article/K3782). Cada linha `active module` carrega o nome do módulo, a chave própria daquele módulo e a sua lista de recursos, que é o que `tmsh show sys license` mostra como um nome seguido de uma chave entre parênteses. As linhas `Exclusive_version` fixam a faixa de software permitida nas licenças de Virtual Edition, que o [K42091606](https://my.f5.com/manage/s/article/K42091606) manda verificar antes de escolher o alvo de uma atualização. E duas datas ficam no formato compacto `yyyymmdd` do arquivo: `Licensed date`, que registra quando a licença foi produzida, e `Service check date`, que é a linha com consequências operacionais e ganha a próxima seção só para ela.
+
+O [explicador de licença](/tools/f5-bigip-license-explainer) lê tudo isso no navegador e nunca exibe valores de chave ou de assinatura, porque o arquivo também carrega as assinaturas `Dossier` e `Authorization` que vinculam a licença à plataforma. Trate-o como sensível.
+
+## O que ele pode se tornar: a service check date
+
+A quinta linguagem é uma comparação entre duas datas, e é a que trava atualizações por completo.
+
+Toda licença carrega uma Service Check Date: segundo o [K7727](https://my.f5.com/manage/s/article/K7727), a mais antiga entre a data em que a licença foi ativada pela última vez e a data em que o contrato de serviço termina. Toda versão do BIG-IP carrega uma License Check Date, a Service Check Date mínima que uma licença precisa ter para o sistema poder rodar aquela versão. Na hora da atualização o sistema compara as duas. Se a data da licença for mais antiga que a da versão, o sistema atualizado inicializa, mas a configuração não carrega até a licença ser reativada: acessível pela interface e pelo `tmsh`, sem passar tráfego.
+
+Dois detalhes tornam isso previsível em vez de assustador. A verificação se aplica a upgrades, que a F5 define como uma mudança no primeiro ou no segundo número da versão; mover entre releases de manutenção ou pontuais dentro da mesma ramificação é um update e não dispara verificação nenhuma. E a tabela é pública. Das linhas do K7727 como codificadas na ferramenta (reconferidas contra uma transcrição da tabela em 17 de setembro de 2026): `16.1.x` exige `2021-06-11`, `17.1.x` exige `2023-02-08`, `17.5.x` exige `2025-02-12`, `21.0.x` exige `2025-10-29` e `21.1.x` exige `2026-04-15`. Uma licença ativada em meados de 2023 alcança `17.1.x` e nada mais novo até ser reativada.
+
+A [ferramenta de service check date](/tools/f5-service-check-date) faz a comparação nas duas direções, de uma versão para a data que ela exige ou de uma data para a ramificação mais nova que ela alcança, e trabalha na granularidade major.minor exatamente pela razão acima. Ela também aceita um arquivo de licença inteiro colado, ou a saída de `tmsh show sys license`, e encontra a linha da data sozinha. Ela compartilha uma única cópia embarcada da tabela do K7727 com o explicador de licença, então as duas ferramentas nunca podem discordar sobre um veredito. A explicação mais longa está em [a service check date](/learn/bigip-service-check-date).
+
+## Quando ele muda: o calendário de releases
+
+A sexta linguagem é o tempo. Em 6 de julho de 2026 o Chief Product Officer da F5 anunciou a mudança de releases trimestrais para releases mensais de software endurecido, publicados na terceira quarta-feira de cada mês a partir de 15 de julho de 2026, com a notificação de segurança de cada release publicada um mês depois, a primeira em 19 de agosto. A F5 manteve o direito de emitir alertas de segurança fora do calendário sempre que uma informação urgente de vulnerabilidade precisar chegar aos clientes imediatamente, e de ajustar o momento ou o conteúdo de uma notificação quando lei, contrato, divulgação coordenada, exploração ativa ou proteção do cliente exigirem. O anúncio está no [blog corporativo da F5](https://www.f5.com/company/blog/release-cadence-security-notifications-frontier-ai), e [o artigo sobre a cadência](/learn/f5-monthly-release-cadence) detalha o que mudou e o que continua igual.
+
+O [calendário de cadência de releases](/tools/f5-release-cadence-calendar) transforma a regra em datas: a partir de qualquer dia inicial, ele lista os próximos releases endurecidos e as notificações que os seguem. Leia-o ao lado da service check date, porque os dois juntos são o problema inteiro de planejamento de atualização: o calendário diz quando uma versão chega, e a service check date diz se a sua licença vai deixar você rodá-la.
+
+## A ordem de leitura
+
+Quando um equipamento cai na sua mesa, leia as linguagens nesta ordem, porque cada uma restringe a seguinte.
+
+Leia a licença primeiro. Ela diz o que o equipamento é, quais módulos estão ativos e qual faixa de software ele tem permissão de rodar. Depois leia a service check date, porque se a licença precisa ser reativada antes de qualquer atualização, essa conversa com compras começa hoje, não na noite da mudança. Depois leia a configuração, que diz o que o equipamento faz; é aí que o tempo vai, e é a parte que a licença e as datas acabaram de colocar em contexto. Depois leia os caminhos de API, porque a automação que você vai escrever contra o equipamento fala duas gramáticas e você precisa saber com qual camada cada script está conversando. Leia o calendário por último, porque ele transforma tudo acima num plano com datas.
+
+Seis ferramentas, cinco linguagens, um equipamento. O equipamento sempre ia dizer tudo isso. O sentido das seis é que você não precisa mais saber de antemão como escutar.

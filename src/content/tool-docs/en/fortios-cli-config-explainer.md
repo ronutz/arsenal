@@ -4,9 +4,9 @@ Paste a FortiOS configuration block and the tool returns the structure as a tree
 
 ## The trap it exists to catch
 
-**`set` on a multi-value field replaces the whole list.** `set srcaddr "internal-net"` on a policy that had four source addresses leaves it with one — successfully, silently, with nothing in the output mentioning it. The command that adds is **`append`**.
+**`set` on a multi-value field replaces the whole list.** `set srcaddr "internal-net"` on a policy that had four source addresses leaves it with one, successfully, silently, with nothing in the output mentioning it. The command that adds is **`append`**.
 
-The tool warns on every `set` against a known list field, naming the field and the line. That is the single most expensive habit in FortiOS CLI work and it is invisible in a block read casually — which is exactly when blocks get read.
+The tool warns on every `set` against a known list field, naming the field and the line. That is the single most expensive habit in FortiOS CLI work and it is invisible in a block read casually, which is exactly when blocks get read.
 
 ## Two more it always says
 
@@ -17,6 +17,6 @@ It also reports **unclosed blocks**, because an unclosed block has committed not
 
 ## What it will not do
 
-It does not know your address objects, your policies or your VDOM layout, and it cannot say whether a value is sensible. It answers whether the command shape does what the person typing it probably expected — which is a different and often more useful question.
+It does not know your address objects, your policies or your VDOM layout, and it cannot say whether a value is sensible. It answers whether the command shape does what the person typing it probably expected, which is a different and often more useful question.
 
 It also cannot know what was in a field before. When it warns that a `set` replaces a list, **the question it is asking you to answer is what that list contained.**

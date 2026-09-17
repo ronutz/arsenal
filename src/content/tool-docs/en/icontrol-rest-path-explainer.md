@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an iControl REST URL and the tool decodes it: the TMOS module, the collection, the tilde-encoded partition and folder path together with its `tmsh` equivalent, any sub-collection such as pool members, and the query options. It parses the URL text only — nothing is fetched and nothing leaves the browser.
+Paste an iControl REST URL and the tool decodes it: the TMOS module, the collection, the tilde-encoded partition and folder path together with its `tmsh` equivalent, any sub-collection such as pool members, and the query options. It parses the URL text only: nothing is fetched and nothing leaves the browser.
 
 ## The tilde
 

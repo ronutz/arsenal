@@ -12,7 +12,7 @@ File order decides exactly one of those five steps, which is why reading a confi
 
 A `/images/` prefix block loses to a `~ \.(gif|jpg|png)$` block written below it, because regexes are tried after the prefix round and beat it. The more specific-looking block, written first, is outranked by design.
 
-And `^~` does not mean "higher priority" — it means **stop before the regular expressions**. That is precisely why it fixes the case above.
+And `^~` does not mean "higher priority": it means **stop before the regular expressions**. That is precisely why it fixes the case above.
 
 ## What else it reports
 
@@ -20,4 +20,4 @@ Alongside the walk, the tool inspects the configuration itself: prefix blocks a 
 
 ## Honest limits
 
-One server block: no `server_name` selection and no listen-port matching. The `~` and `~*` patterns compile to JavaScript regular expressions — PCRE and JS agree on the syntax used in ordinary location blocks, but they are different engines, so trust NGINX itself for anything exotic. No `rewrite`, `try_files` or internal redirects: this answers which block is selected, not what the whole request does. The URI is matched as written, because NGINX decodes before matching and doing half of that here would be worse than doing none.
+One server block: no `server_name` selection and no listen-port matching. The `~` and `~*` patterns compile to JavaScript regular expressions; PCRE and JS agree on the syntax used in ordinary location blocks, but they are different engines, so trust NGINX itself for anything exotic. No `rewrite`, `try_files` or internal redirects: this answers which block is selected, not what the whole request does. The URI is matched as written, because NGINX decodes before matching and doing half of that here would be worse than doing none.

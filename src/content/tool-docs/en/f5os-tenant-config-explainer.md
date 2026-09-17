@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an `f5-tenants:tenants` block — the CLI form or the RESTCONF JSON — and the tool reads it back: the lifecycle state and what it means, the image and which platform it belongs to, the blades and VLANs, and each field explained. Local and offline; it parses the text and contacts no platform.
+Paste an `f5-tenants:tenants` block, either the CLI form or the RESTCONF JSON, and the tool reads it back: the lifecycle state and what it means, the image and which platform it belongs to, the blades and VLANs, and each field explained. Local and offline; it parses the text and contacts no platform.
 
 ## The check that makes it more than a glossary
 
@@ -14,7 +14,7 @@ It also warns when a vCPU count appears with no memory value, because **the two 
 
 ## Platform shape
 
-It flags what belongs to which machine. **VELOS** is a chassis — `nodes` names blades within a chassis partition and a tenant can span them. **rSeries** is an appliance with no partitions or blades, and `vcpu-cores-per-node` must be a multiple of four. A valid two-vCPU VELOS tenant **will not commit on an rSeries**, and an image bundle named `ALL-VELOS` will not deploy on one either — which the tool points out from the filename alone.
+It flags what belongs to which machine. **VELOS** is a chassis, where `nodes` names blades within a chassis partition and a tenant can span them. **rSeries** is an appliance with no partitions or blades, and `vcpu-cores-per-node` must be a multiple of four. A valid two-vCPU VELOS tenant **will not commit on an rSeries**, and an image bundle named `ALL-VELOS` will not deploy on one either, which the tool points out from the filename alone.
 
 ## What it will not do
 

@@ -119,7 +119,10 @@ for (const { dir, ext } of TARGETS) {
 // grow.
 //
 // Lower this number when you fix offences. Never raise it.
-const BASELINE = 1432;
+// PAID DOWN 2026-09-17: 1432 -> 1329. src/content/tool-docs/en is now
+// ENTIRELY em-dash-free (was 103 offending lines across 31 files); the
+// remaining debt is all in src/content/learn/en and src/content/blog/en.
+const BASELINE = 1329;
 
 if (offences.length > BASELINE) {
   console.error(

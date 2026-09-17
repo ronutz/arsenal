@@ -1,6 +1,6 @@
 ## What it does
 
-Paste an iControl REST stats response and the tool flattens it into one line per statistic. It unwraps the `entries`, `nestedStats`, `value` and `description` envelopes, reduces the URL keys to the objects they name, and groups the result by object. Pure local transform — nothing is fetched and nothing leaves the browser.
+Paste an iControl REST stats response and the tool flattens it into one line per statistic. It unwraps the `entries`, `nestedStats`, `value` and `description` envelopes, reduces the URL keys to the objects they name, and groups the result by object. Pure local transform: nothing is fetched and nothing leaves the browser.
 
 ## Why the response needs flattening
 
@@ -8,7 +8,7 @@ A BIG-IP stats payload wraps every leaf in `value` or `description`, every level
 
 ## The 64-bit split, which is the part that matters
 
-F5 splits large counters into `.high` and `.low` halves because JSON numbers cannot carry a 64-bit integer safely. `serverside.bitsIn.high = 3` and `serverside.bitsIn.low = 1000000` are **not two statistics** — they are one counter whose value is `(high << 32) + low`, or 12,885,901,888.
+F5 splits large counters into `.high` and `.low` halves because JSON numbers cannot carry a 64-bit integer safely. `serverside.bitsIn.high = 3` and `serverside.bitsIn.low = 1000000` are **not two statistics**: they are one counter whose value is `(high << 32) + low`, or 12,885,901,888.
 
 **The tool combines them and marks the combined values**, so you can check the arithmetic rather than trust it. A flattener that reports the halves separately will quietly under-report your busiest counters.
 

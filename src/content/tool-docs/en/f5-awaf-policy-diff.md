@@ -1,14 +1,14 @@
 ## What it does
 
-Paste two declarative security policies from F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) — a before and an after — and this compares them and classifies every security-relevant change as a relaxation or a tightening. It exists to answer the one question that matters after a tuning session: did this open a hole? It runs entirely in your browser and never contacts a BIG-IP.
+Paste two declarative security policies from F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager), a before and an after, and this compares them and classifies every security-relevant change as a relaxation or a tightening. It exists to answer the one question that matters after a tuning session: did this open a hole? It runs entirely in your browser and never contacts a BIG-IP.
 
 ## The distinction it draws
 
-Not every relaxation is dangerous. Adding one allowed URL or parameter is a scoped, single-entity widening — the normal, correct way to clear a false positive. What deserves scrutiny is a relaxation that widens protection across the whole policy: switching enforcement to Transparent (which stops the entire policy blocking), disabling a violation or an evasion, turning Data Guard off, trusting a client-supplied X-Forwarded-For header, moving signatures to staging, or adding a wildcard entity that matches many URLs at once. The tool separates these policy-wide relaxations from the scoped ones, so a tuning diff does not quietly become a security regression.
+Not every relaxation is dangerous. Adding one allowed URL or parameter is a scoped, single-entity widening: the normal, correct way to clear a false positive. What deserves scrutiny is a relaxation that widens protection across the whole policy: switching enforcement to Transparent (which stops the entire policy blocking), disabling a violation or an evasion, turning Data Guard off, trusting a client-supplied X-Forwarded-For header, moving signatures to staging, or adding a wildcard entity that matches many URLs at once. The tool separates these policy-wide relaxations from the scoped ones, so a tuning diff does not quietly become a security regression.
 
 ## The verdict
 
-If any policy-wide relaxation is present, the verdict is "opened a hole," and those changes are listed first, each with a concern level. If the widenings all stay entity-scoped, the verdict is "scoped changes only" — the safe zone for false-positive tuning. If every change increases protection, it is "tightened." It also lists the tightenings so you can see the full picture of what moved between the two policies.
+If any policy-wide relaxation is present, the verdict is "opened a hole," and those changes are listed first, each with a concern level. If the widenings all stay entity-scoped, the verdict is "scoped changes only", the safe zone for false-positive tuning. If every change increases protection, it is "tightened." It also lists the tightenings so you can see the full picture of what moved between the two policies.
 
 ## What it compares
 

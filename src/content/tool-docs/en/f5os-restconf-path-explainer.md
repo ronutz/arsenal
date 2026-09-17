@@ -8,13 +8,13 @@ F5OS, the platform layer beneath tenants on VELOS and rSeries, is driven by **RE
 
 ## The module prefix and the prefixing convention
 
-`f5-tenants:tenants` is the node `tenants` in the YANG module `f5-tenants`. F5OS uses vendor-neutral **OpenConfig** modules — `openconfig-system`, `openconfig-interfaces`, `openconfig-vlan` — alongside F5's own `f5-` modules. **Only the first node of a module carries the prefix**; nodes beneath it are written bare because they inherit it. A prefix reappearing part-way down a path means the path has crossed into a different module, which is the single most useful thing to notice when reading one.
+`f5-tenants:tenants` is the node `tenants` in the YANG module `f5-tenants`. F5OS uses vendor-neutral **OpenConfig** modules (`openconfig-system`, `openconfig-interfaces`, `openconfig-vlan`) alongside F5's own `f5-` modules. **Only the first node of a module carries the prefix**; nodes beneath it are written bare because they inherit it. A prefix reappearing part-way down a path means the path has crossed into a different module, which is the single most useful thing to notice when reading one.
 
 ## List keys, and the port duality
 
-RESTCONF addresses a list entry by putting its key in the path — `tenant=tenant1` selects one tenant from the `tenants` list — rather than by a query parameter. The tool marks these separately from plain containers.
+RESTCONF addresses a list entry by putting its key in the path, so `tenant=tenant1` selects one tenant from the `tenants` list, rather than by a query parameter. The tool marks these separately from plain containers.
 
-It also explains the port arrangement that catches people: F5OS originally exposed RESTCONF on **port 8888** under `/restconf`, and from **F5OS 1.8** the same API is reachable on the standard HTTPS port under `/api`. Two paths that look different can address the identical resource. Authentication uses an `X-Auth-Token` header, and that token is itself a JWT, so it expires.
+It also explains the port arrangement that catches people: F5OS originally exposed RESTCONF on **port 8888** under `/restconf`, and from **F5OS 1.8** the same API is reachable on the standard HTTPS port under `/api`. Two paths that look different can address the identical resource. The version is the one stated on F5's own DevCentral, where a December 2022 codeshare on automating F5OS backups records that as of F5OS 1.8 the `:8888/restconf` form can be replaced with `:443/api`; the F5OS-A 1.8.0 release notes carry a matching fix, 1572137-2, for the upload and download API working with both `/api` and `/restconf`. F5's rSeries and VELOS automation guides document both front doors without naming a version. Authentication uses an `X-Auth-Token` header, and that token is itself a JWT, so it expires.
 
 ## What it will not do
 

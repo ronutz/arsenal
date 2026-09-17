@@ -18,6 +18,7 @@ export const manifest = Object.freeze({
    *  the explanation. The link is the tool's OWN article, which is guaranteed
    *  to exist (check-tool-articles enforces it) rather than a judgement call. */
   learnLinks: [
+    "learn/how-networking-inherited-two-alphabets",
     "learn/greek-alphabet-the-engineers-second-alphabet",
   ],
   sources: [
