@@ -8,7 +8,7 @@ relatedArticles: ["gre-tunnels-fundamentals", "ipsec-and-ike-fundamentals", "tun
 category: networking
 order: 177
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 [O encaminhamento escolheu o domínio de cobertura](/learn/zia-traffic-forwarding-methods); este artigo o precifica. Três famílias de túnel carregam tráfego ao Zero Trust Exchange, divididas limpo por quem as constrói: o Client Connector constrói Z-Tunnels para um dispositivo, e a borda da localidade constrói GRE ou IPsec para um site. Cada número abaixo é da própria Zscaler, verificado ao vivo em 2026-07-21, e as diferenças entre os três são exatamente os fundamentos que esta série assentou primeiro.
@@ -36,3 +36,9 @@ Cada um destes é um envelope, e [envelopes cobram bytes](/learn/tunnel-overhead
 ## Escolhendo, deterministicamente
 
 A decisão inteira - eliminações, número por túnel, contagens mínimas de primários e backups - é mecânica uma vez nomeadas as restrições, e é por isso que ela é [uma ferramenta deste site](/tools/zscaler-tunnel-chooser): seis respostas entram, a recomendação dimensionada sai, cada passo e fonte exibidos. O resumo em formato de prova que ela codifica: criptografia, IP dinâmico ou dispositivo sem GRE significam IPsec a 400 por IP de origem; caso contrário GRE a 1000 (250 sob NAT dos endpoints internos); primários por divisão com teto; backups espelham os primários em outro data center.
+
+## Fontes
+
+O que cada versão de túnel transporta, e sobre qual transporte, está declarado na própria página da Zscaler sobre o par.
+
+- [About Z-Tunnel 1.0 & Z-Tunnel 2.0 - a 1.0 "forwards traffic to the Zscaler cloud via CONNECT requests, much like a traditional proxy"; a 2.0 "uses DTLS or TLS to send packets" e é "capable of sending all ports and protocols"](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0)

@@ -17,7 +17,7 @@ A FortiGate walks its policy list **top to bottom**, and **the first policy
 whose fields all cover the packet decides the outcome**. Evaluation stops there.
 Nothing below is consulted.
 
-If nothing matches, the packet reaches the **implicit deny** — incoming any,
+If nothing matches, the packet reaches the **implicit deny**: incoming any,
 source any, outgoing any, destination any, action deny. Its one editable setting
 is whether violations are logged, and turning that on is usually the fastest way
 to find out what is actually arriving.
@@ -39,8 +39,8 @@ never match anything**. It sits in the list looking like configuration, and it
 is decoration.
 
 This is the commonest form of "my rule isn't working": the rule is correct, it
-is simply never reached. A tool can find these mechanically — for each policy,
-ask whether any earlier one supersedes it on every field — and it is worth doing
+is simply never reached. A tool can find these mechanically, by asking for each policy
+whether any earlier one supersedes it on every field, and it is worth doing
 periodically rather than only when something breaks.
 
 The practical rule that follows: **the more specific a policy is, the closer to
@@ -59,16 +59,16 @@ and **takes priority over one**. So placing an ordinary deny above a VIP policy
 does not block the source you meant to block.
 
 To do that, the deny policy needs **`match-vip` enabled** and must sit above the
-VIP policy. New deny policies have it on by default — and an **accept** policy
+VIP policy. New deny policies have it on by default, and an **accept** policy
 cannot have it at all.
 
 ## And one thing that quietly changed
 
 From **FortiOS 7.6.5**, `allow-traffic-redirect` is **disabled by default**, and
-the setting stays disabled after an upgrade even if it was enabled before — a
+the setting stays disabled after an upgrade even if it was enabled before, a
 change documented in [Fortinet's firewall policy
 guide](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/656084/firewall-policy),
 which is also where the virtual-IP matching rules above are set out. If
 traffic needs to leave by the interface it arrived on, it now requires a policy
-that matches it — otherwise it falls to the implicit deny, on a device where it
+that matches it; otherwise it falls to the implicit deny, on a device where it
 used to work.

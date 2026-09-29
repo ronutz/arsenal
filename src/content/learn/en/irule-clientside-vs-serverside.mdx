@@ -24,7 +24,7 @@ The crossover happens at load balancing: everything up to and including `HTTP_RE
 
 ## The same command, two answers
 
-This is where it bites. `IP::remote_addr` returns the *peer* of the current connection. In `CLIENT_ACCEPTED` that is the client's address; in `SERVER_CONNECTED` it is the pool member's address. The command did not change — the context did. The same is true for `TCP::remote_port`, SSL details, and more.
+This is where it bites. `IP::remote_addr` returns the *peer* of the current connection. In `CLIENT_ACCEPTED` that is the client's address; in `SERVER_CONNECTED` it is the pool member's address. The command did not change; the context did. The same is true for `TCP::remote_port`, SSL details, and more.
 
 You can also force a context explicitly. The `clientside` and `serverside` commands evaluate an expression against the other connection:
 

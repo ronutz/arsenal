@@ -15,17 +15,17 @@ Almost every regular expression is assembled from two ideas: **what kind of char
 
 ## Character classes: what to match
 
-The shorthand classes cover the cases you reach for constantly. `\d` is any digit, `\w` is any word character (a letter, digit, or underscore), and `\s` is any whitespace. Each has an uppercase negation: `\D` is any non-digit, `\W` any non-word character, `\S` any non-whitespace. A bare dot `.` matches any character at all — except a line break, unless you set the `s` (dotAll) flag.
+The shorthand classes cover the cases you reach for constantly. `\d` is any digit, `\w` is any word character (a letter, digit, or underscore), and `\s` is any whitespace. Each has an uppercase negation: `\D` is any non-digit, `\W` any non-word character, `\S` any non-whitespace. A bare dot `.` matches any character at all, except a line break, unless you set the `s` (dotAll) flag.
 
-When the shorthands are too broad, build your own class with square brackets. `[aeiou]` matches one vowel; `[a-z]` matches one lowercase letter using a range; `[A-Za-z0-9]` combines several ranges. Put a caret first to invert it: `[^0-9]` matches any single character that is *not* a digit. Inside a class most metacharacters lose their special meaning, so `[.+*]` matches a literal dot, plus, or asterisk — no escaping needed.
+When the shorthands are too broad, build your own class with square brackets. `[aeiou]` matches one vowel; `[a-z]` matches one lowercase letter using a range; `[A-Za-z0-9]` combines several ranges. Put a caret first to invert it: `[^0-9]` matches any single character that is *not* a digit. Inside a class most metacharacters lose their special meaning, so `[.+*]` matches a literal dot, plus, or asterisk, with no escaping needed.
 
 A class always matches exactly **one** character. To match more than one, you need a quantifier.
 
 ## Quantifiers: how many
 
-The three short quantifiers do most of the work. `*` means zero or more, `+` means one or more, and `?` means optional — zero or one. So `\d*` matches an empty string or any run of digits, while `\d+` insists on at least one digit.
+The three short quantifiers do most of the work. `*` means zero or more, `+` means one or more, and `?` means optional: zero or one. So `\d*` matches an empty string or any run of digits, while `\d+` insists on at least one digit.
 
-When you need a specific count, use braces. `\d{4}` matches exactly four digits, `\d{2,}` matches two or more, and `\d{2,4}` matches between two and four. A US-style phone fragment might be `\d{3}-\d{4}`, and a simple email shape is `\w+@\w+\.\w+` — note the `\.` there, an escaped dot that matches a literal period rather than "any character".
+When you need a specific count, use braces. `\d{4}` matches exactly four digits, `\d{2,}` matches two or more, and `\d{2,4}` matches between two and four. A US-style phone fragment might be `\d{3}-\d{4}`, and a simple email shape is `\w+@\w+\.\w+`. Note the `\.` there, an escaped dot that matches a literal period rather than "any character".
 
 ## Greedy versus lazy
 
@@ -33,6 +33,6 @@ By default quantifiers are **greedy**: they grab as much as they can and only gi
 
 ## Anchors, briefly
 
-Anchors match a position rather than a character. `^` is the start of the string (or the start of a line with the `m` flag), `$` is the end, and `\b` is a word boundary — the seam between a word character and a non-word character. Wrapping a pattern in `^...$` forces it to match the *entire* input, which is exactly what you want when validating a whole field rather than finding a fragment inside it.
+Anchors match a position rather than a character. `^` is the start of the string (or the start of a line with the `m` flag), `$` is the end, and `\b` is a word boundary: the seam between a word character and a non-word character. Wrapping a pattern in `^...$` forces it to match the *entire* input, which is exactly what you want when validating a whole field rather than finding a fragment inside it.
 
 Paste any of these into the [Regex Toolkit](/tools/regex) to watch the matches light up as you type, then read on about [groups and backreferences](/learn/regex-groups-and-backreferences) to capture and reuse the parts you match.

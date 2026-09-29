@@ -8,7 +8,7 @@ relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-looku
 category: networking
 order: 23
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-09-27"
 ---
 
 ## O fim do copiar e colar
@@ -108,3 +108,11 @@ rule procs {
 ## O que os procs dão a você, e o que custam
 
 O ganho é a manutenibilidade: uma única definição para raciocinar, corrigir e versionar, e uma forma genuinamente modular de compartilhar lógica de iRule, já que uma regra de biblioteca pode ser incluída e chamada sem estar vinculada a um servidor virtual. O custo é uma quantidade modesta de sobrecarga por chamada pelo salto para dentro do procedimento, pequena o bastante para quase nunca dever dissuadi-lo de um proc que torna o código correto e legível. Se quiser saber se um proc específico de fato custa algo que valha a pena considerar na sua plataforma, meça-o com estatísticas de timing através da [calculadora de runtime de iRules](/tools/f5-irules-runtime-calculator) em vez de adivinhar. E mantenha em mente a regra de CMP do [artigo sobre o namespace static::](/learn/irules-cmp-and-static-namespace) dentro de procs também: uma variável global demove o virtual onde quer que apareça, procedimento ou não.
+
+## Fontes
+
+A versão que introduziu procs está declarada na própria referência de iRules da F5, que é onde reconferir caso você trabalhe com um TMOS mais antigo.
+
+- [iRules Procedures (procs) - a própria página da F5: suportados em iRules a partir do 11.4](https://clouddocs.f5.com/api/irules/Procs.html)
+- [proc - a referência do comando de iRules](https://clouddocs.f5.com/api/irules/proc.html)
+- [call - invocando um procedimento a partir de outro iRule](https://clouddocs.f5.com/api/irules/call.html)

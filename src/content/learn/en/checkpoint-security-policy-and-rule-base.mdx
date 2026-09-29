@@ -28,7 +28,7 @@ Two of those deserve more attention than they usually get.
 
 Rules are evaluated **top to bottom, and the first match wins.** Nothing below a matching rule is consulted.
 
-That produces the same shadowing problem every ordered policy has: a broad rule above a specific one makes the specific one unreachable. Check Point's policy verification catches some of these, and reading the rule base as a document — general at the bottom, specific at the top — prevents more.
+That produces the same shadowing problem every ordered policy has: a broad rule above a specific one makes the specific one unreachable. Check Point's policy verification catches some of these, and reading the rule base as a document (general at the bottom, specific at the top) prevents more.
 
 The ordering convention that works is the familiar one: most specific first, exceptions above the rules they except, broad permits low, and an explicit final rule.
 
@@ -36,7 +36,7 @@ The ordering convention that works is the familiar one: most specific first, exc
 
 If traffic matches no rule, it is dropped. That behaviour is built in and **it is not logged**.
 
-This is why deployments add an explicit **cleanup rule** as the last rule: any source, any destination, any service, action Drop, track Log. It changes nothing about what traffic is allowed — the implicit drop would have dropped it anyway — and it changes everything about visibility, because now you can see what is being dropped.
+This is why deployments add an explicit **cleanup rule** as the last rule: any source, any destination, any service, action Drop, track Log. It changes nothing about what traffic is allowed (the implicit drop would have dropped it anyway) and it changes everything about visibility, because now you can see what is being dropped.
 
 A firewall with no cleanup rule is a firewall where "the connection just fails and nothing appears in the logs" is the expected behaviour rather than a fault. That single rule is the difference between a policy you can troubleshoot and one you cannot.
 
@@ -46,7 +46,7 @@ The **stealth rule** blocks traffic addressed to the gateway itself from anywher
 
 The reasoning is that the gateway is a host with addresses, so without a rule about it, general permit rules can allow connections to it. The stealth rule makes the gateway invisible to everyone who has no business connecting to it.
 
-The ordering detail that matters: it goes **below** the rules that legitimately permit management access, and **above** everything else. Put it above the management rules and you have locked yourself out — which is a genuinely common first-day mistake and an instructive one.
+The ordering detail that matters: it goes **below** the rules that legitimately permit management access, and **above** everything else. Put it above the management rules and you have locked yourself out, which is a genuinely common first-day mistake and an instructive one.
 
 ## Implied rules
 
@@ -64,7 +64,7 @@ They are **not logged by default**, which means traffic can be permitted by a ru
 
 Installation compiles the database into a policy and pushes it to the selected gateways.
 
-**Verification** runs first and catches structural problems — conflicting rules, objects that cannot be resolved. It is worth reading rather than clicking through, because it is cheaper than the alternative.
+**Verification** runs first and catches structural problems: conflicting rules, objects that cannot be resolved. It is worth reading rather than clicking through, because it is cheaper than the alternative.
 
 Installation is **atomic per gateway**: it either succeeds and the new policy is enforced, or it fails and the previous policy continues. A gateway does not end up half-configured, which is a genuinely reassuring property during a change window.
 

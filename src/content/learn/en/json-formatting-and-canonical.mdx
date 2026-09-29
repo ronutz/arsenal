@@ -28,6 +28,6 @@ All of that changes the moment JSON is **signed or hashed**. A signature is comp
 
 Two JSON documents can be identical in meaning and different in bytes: key order, whitespace, number formatting, string escapes. **Every one of those differences is invisible to a program reading the parsed value and fatal to anything that hashes or signs the text.**
 
-That is the whole reason canonicalisation exists, and the reason signing JSON is subtler than it appears. **A signature covers bytes; an application compares values.** Re-serialising a document — even by a library that produces perfectly correct JSON — can break a signature that was valid a moment earlier, with no error anywhere until verification fails somewhere else entirely.
+That is the whole reason canonicalisation exists, and the reason signing JSON is subtler than it appears. **A signature covers bytes; an application compares values.** Re-serialising a document, even by a library that produces perfectly correct JSON, can break a signature that was valid a moment earlier, with no error anywhere until verification fails somewhere else entirely.
 
 **Sign the bytes you received, or canonicalise deliberately before signing.** Anything in between is a signature that works until a dependency updates its serialiser.

@@ -30,6 +30,6 @@ Two people can write the same pattern and get different results, because a regex
 
 A case-insensitive flag makes ASCII comparisons behave as expected and does far less than most people assume for anything else. **Turkish dotless `ı`, the German `ß`, and Greek final sigma all break the assumption that lowercasing is reversible and locale-independent.**
 
-Where this matters is a security filter written in one locale and run in another. A pattern that reliably matched a forbidden word in testing can fail against a spelling that is equivalent to a human and different to the matcher — and the request is allowed, correctly, by a rule that is wrong.
+Where this matters is a security filter written in one locale and run in another. A pattern that reliably matched a forbidden word in testing can fail against a spelling that is equivalent to a human and different to the matcher, and the request is allowed, correctly, by a rule that is wrong.
 
 **If a comparison is a security decision, normalise deliberately before matching** rather than delegating it to a flag whose behaviour depends on the runtime, the locale, and the version of the Unicode tables it was compiled against.

@@ -42,7 +42,7 @@ When the capture is finished, stop it, transfer the file off the device for anal
 
 `tcpdump` on a production BIG-IP is not a read-only operation in any sense that matters operationally.
 
-**It writes.** A full-size capture on a busy virtual server fills a filesystem quickly, and a full `/var` on a BIG-IP is not a disk-space inconvenience — it is a device that starts failing in ways unrelated to the problem you were capturing.
+**It writes.** A full-size capture on a busy virtual server fills a filesystem quickly, and a full `/var` on a BIG-IP is not a disk-space inconvenience; it is a device that starts failing in ways unrelated to the problem you were capturing.
 
 **It costs.** Capture processing competes with traffic processing, and the more permissive the filter, the more it competes.
 

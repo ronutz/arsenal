@@ -30,7 +30,7 @@ These get used interchangeably and they are not the same thing, and almost every
 
 **Priority** describes the response: what gets worked first. It is a business judgement and an engineer should not own it alone.
 
-A fault can be low severity and high priority — the printer. It can be high severity and lower priority — the uplink, which will be fixed today but not before the regulator's document is out of the building. When the two are separate fields, both conversations can happen without either side having to be wrong. When there is only one field called "priority", every conversation about it becomes a negotiation about status, and the person who shouts loudest sets the queue.
+A fault can be low severity and high priority - the printer. It can be high severity and lower priority - the uplink, which will be fixed today but not before the regulator's document is out of the building. When the two are separate fields, both conversations can happen without either side having to be wrong. When there is only one field called "priority", every conversation about it becomes a negotiation about status, and the person who shouts loudest sets the queue.
 
 If you inherit a system with one field, the cheapest useful improvement available to you is to add the second one.
 
@@ -40,7 +40,7 @@ Most support arrangements attach a service level agreement, an SLA, to severity.
 
 That has two consequences people discover late.
 
-The first is that **over-classifying costs you something real**. If everything is severity one, the severity-one response — the callout, the bridge, the hourly update — is owed on everything, and a team that owes hourly updates on nine tickets is a team writing updates rather than fixing faults. Inflation is not free; it is paid in the attention of the people who would otherwise be working.
+The first is that **over-classifying costs you something real**. If everything is severity one, the severity-one response - the callout, the bridge, the hourly update - is owed on everything, and a team that owes hourly updates on nine tickets is a team writing updates rather than fixing faults. Inflation is not free; it is paid in the attention of the people who would otherwise be working.
 
 The second is that **under-classifying is the more dangerous error**, because it is invisible. An over-classified ticket announces itself: somebody gets woken up and is annoyed. An under-classified ticket sits in the ordinary queue behaving exactly like every other ticket until the moment it is a disaster, and the timestamps then show a fault that was reported at ten in the morning and touched at four in the afternoon, which is the sentence nobody wants in the review.
 
@@ -54,7 +54,7 @@ Triage is fast when you ask the right things, and the right things are not techn
 
 **Is there a workaround, and is anybody using it?** A workaround nobody has been told about is not a workaround. It is a fact known to you.
 
-**Who is blocked, and from doing what?** Not how many people — what work has stopped. Two hundred users mildly inconvenienced may matter less than one team that cannot close the month.
+**Who is blocked, and from doing what?** Not how many people - what work has stopped. Two hundred users mildly inconvenienced may matter less than one team that cannot close the month.
 
 **Is there a deadline outside your control?** Regulators, markets, flights, broadcasts, payroll. These do not move because your ticket is complicated, and they are the reason a printer can outrank a switch.
 
@@ -74,7 +74,7 @@ Both directions need announcing. Downgrading without saying so is how a customer
 
 Severity is negotiated. It is presented as a measurement, the matrix is printed and pinned up, and in practice the number on the ticket is the output of a conversation between people with different information and different exposure.
 
-That is not corruption, and treating it as corruption is a mistake juniors make and then carry for years. The finance director genuinely knows something you do not: what the document is for and what happens if it is late. Your job is not to defend the matrix against them. It is to make sure the technical facts are in the room — that the switch has no redundancy left, that if it fails there is no printer at all — and then to accept a decision made with both halves present.
+That is not corruption, and treating it as corruption is a mistake juniors make and then carry for years. The finance director genuinely knows something you do not: what the document is for and what happens if it is late. Your job is not to defend the matrix against them. It is to make sure the technical facts are in the room - that the switch has no redundancy left, that if it fails there is no printer at all - and then to accept a decision made with both halves present.
 
 The engineers who are trusted with triage are the ones who can say *"I understand why you need this first, and here is what we are choosing to leave exposed while we do it."* That is not a concession. It is the sentence that makes the next escalation easy, because the person on the other end already knows you will tell them the truth about what it costs.
 

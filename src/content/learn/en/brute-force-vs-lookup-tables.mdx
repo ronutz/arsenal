@@ -36,4 +36,4 @@ Brute force spends **compute per target**. A lookup table spends compute **once*
 
 That difference decides what an attacker does with a stolen database, and it explains why the defences are different in kind rather than in degree. **Salting defeats the table** by making the precomputation worthless. **A slow KDF defeats brute force** by making each guess expensive. Neither substitutes for the other, and a system with one and not the other has a hole shaped exactly like the missing half.
 
-The modern reality is that unsalted fast hashes of common passwords are not attacked at all — **they are looked up**, in tables that already exist, for free.
+The modern reality is that unsalted fast hashes of common passwords are not attacked at all: **they are looked up**, in tables that already exist, for free.

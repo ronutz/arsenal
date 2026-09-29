@@ -26,11 +26,11 @@ The corollary is that **the property is destroyed by carelessness**. A decoy on 
 
 Three distinct things, and conflating them makes the design harder than it needs to be.
 
-A **decoy** is the fake system itself, deployed on your network, running services an attacker would find interesting — SMB shares, RDP, SSH, database ports, industrial protocols.
+A **decoy** is the fake system itself, deployed on your network, running services an attacker would find interesting: SMB shares, RDP, SSH, database ports, industrial protocols.
 
 A **lure** is what makes the decoy discoverable. A decoy nobody finds detects nothing, so lures are the breadcrumbs: a share advertised where scanning would find it, a service on a port that invites a connection.
 
-A **token** is a lure placed on a **real** endpoint — a saved credential, a bookmarked share, an RDP connection entry, a browser-cached login. Its purpose is different and more valuable: it is bait for an attacker who has already compromised a real machine and is looking for where to go next. Using it takes them to a decoy.
+A **token** is a lure placed on a **real** endpoint: a saved credential, a bookmarked share, an RDP connection entry, a browser-cached login. Its purpose is different and more valuable: it is bait for an attacker who has already compromised a real machine and is looking for where to go next. Using it takes them to a decoy.
 
 That tokens sit on real machines is the important part. Decoys detect scanning and lateral movement; tokens detect **credential harvesting and the decision about where to move next**, which is earlier and more actionable.
 
@@ -62,7 +62,7 @@ An alert from a decoy is high confidence and still needs interpretation:
 
 **Was a token used?** A token alert names the real endpoint the token was on, which tells you which machine is compromised. That is often more valuable than the decoy interaction itself.
 
-**What did they do?** On a full-stack decoy, the observed behaviour maps to recognisable techniques, and mapping it to a framework such as the MITRE matrices — including the ICS matrix where operational technology is in scope — makes it comparable with everything else you see.
+**What did they do?** On a full-stack decoy, the observed behaviour maps to recognisable techniques, and mapping it to a framework such as the MITRE matrices (including the ICS matrix where operational technology is in scope) makes it comparable with everything else you see.
 
 ## What an exam candidate should be able to state cold
 

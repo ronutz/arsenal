@@ -127,7 +127,14 @@ for (const slug of slugs) {
   for (const f of PAIR_FIELDS) if (f in pt) authoredPairFields += 1;
 }
 const totalPairFields = slugs.length * PAIR_FIELDS.length;
-const BASELINE_PAIR_FIELDS = 78;
+// 78 -> 86 on 2026-09-27: the corpus is complete. The eight that were missing
+// were all pair fields on the four security roles - security-architect,
+// security-engineer, network-security-engineer and grc-analyst - whose
+// receivesFrom and serves lists existed in src/lib/roles.ts and had never been
+// carried across. Written from that source, not from the English message pack,
+// which does not hold these fields at all. 86 is now the total, so this ratchet
+// has reached its destination and any drop is a regression.
+const BASELINE_PAIR_FIELDS = 86;
 if (authoredPairFields < BASELINE_PAIR_FIELDS) {
   console.error(
     `[check-roles-bilingual] FAIL: pair fields fell to ${authoredPairFields}, below the ratchet of ${BASELINE_PAIR_FIELDS}.`

@@ -16,7 +16,7 @@ A web application firewall is unusual among security devices in that it terminat
 
 ## Deployment modes
 
-**Reverse proxy** is the full-capability mode. FortiWeb terminates the client connection, inspects, and opens its own connection to the server. Because it owns both sides it can rewrite, redirect, offload TLS, load balance and inject cookies. It also means clients connect to FortiWeb rather than to the server, so DNS points at it and the server sees FortiWeb as the client — which matters for logging, and is why the original client address must be forwarded in a header for server logs to remain useful.
+**Reverse proxy** is the full-capability mode. FortiWeb terminates the client connection, inspects, and opens its own connection to the server. Because it owns both sides it can rewrite, redirect, offload TLS, load balance and inject cookies. It also means clients connect to FortiWeb rather than to the server, so DNS points at it and the server sees FortiWeb as the client, which matters for logging, and is why the original client address must be forwarded in a header for server logs to remain useful.
 
 **True transparent proxy** sits inline without addressing changes. It can still inspect and block, and it cannot do the things that require owning the connection.
 

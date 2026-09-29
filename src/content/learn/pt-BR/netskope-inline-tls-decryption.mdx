@@ -9,7 +9,7 @@ relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reve
 category: security
 order: 43
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 O artigo genérico sobre SSL forward proxy descreve a interceptação de TLS de saída realizada por um proxy na borda da rede. O Netskope faz o mesmo trabalho, mas realoca o proxy: em vez de um appliance no data center, a interceptação acontece na nuvem do Netskope, a rede global NewEdge de data planes, e o tráfego é direcionado até lá de onde quer que o usuário esteja. Essa única mudança arquitetural é o que o torna um produto de Secure Service Edge (SSE) em vez de uma caixa, e ela muda como as peças do modelo genérico são arranjadas sem mudar a mecânica da interceptação em si.
@@ -29,3 +29,10 @@ Um forward proxy precisa saber *quem* é o usuário para aplicar política por u
 ## O problema do pinning, e o Bypass + Tunnel
 
 Sendo um forward proxy, o Netskope encontra a mesma parede que o artigo genérico descreve: aplicações com certificate pinning rejeitam o certificado reassinado e quebram. O tratamento do Netskope tem uma reviravolta útil para um proxy em nuvem. Um **Bypass** simples envia o tráfego direto ao seu destino, pulando o Netskope inteiramente. Mas aplicações com pinning também têm a opção de **Bypass Netskope Proxy + Tunnel**: o tráfego ainda é tunelado ao Netskope e sai pela sua data plane (então ainda é direcionado e ainda visível no nível de conexão), mas a descriptografia SSL e a aplicação de política são puladas para ele. Isso preserva o controle de saída e alguma visibilidade para apps com pinning que não toleram interceptação, e o Netskope recomenda o Bypass + Tunnel em vez de um bypass simples exatamente por essa razão. É a expressão de proxy em nuvem da regra do artigo genérico de que uma implantação de interceptação real é inspecionar-por-padrão mais um conjunto mantido de exceções para tráfego com pinning e de outra forma não interceptável.
+
+## Fontes
+
+O caminho de identidade para o proxy explícito, incluindo onde é configurado, é da própria Netskope; o padrão que ele fala é um OASIS Standard com data.
+
+- [Cloud Explicit Proxy, Netskope - autenticação SAML 2.0 pelo SAML Proxy, configurada em Settings > Security Cloud Platform > Forward Proxy > SAML](https://docs.netskope.com/en/explicit-proxy/)
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 de março de 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

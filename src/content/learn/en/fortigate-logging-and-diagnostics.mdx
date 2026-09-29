@@ -38,9 +38,9 @@ The implicit deny at the end of the policy list does not log by default. That is
 
 ## Reading logs
 
-Traffic logs answer where the traffic went and which policy allowed it. Security logs answer what a profile did. Event logs answer what the device itself did — HA transitions, administrator logins, interface state, licence and update activity.
+Traffic logs answer where the traffic went and which policy allowed it. Security logs answer what a profile did. Event logs answer what the device itself did: HA transitions, administrator logins, interface state, licence and update activity.
 
-Event logs are the underused one. A recurring problem that correlates with something in the event log — a nightly HA renegotiation, a failing update — is a problem whose cause is already written down.
+Event logs are the underused one. A recurring problem that correlates with something in the event log (a nightly HA renegotiation, a failing update) is a problem whose cause is already written down.
 
 ## Diagnosing connectivity
 
@@ -60,7 +60,7 @@ Working in that order matters because each step is more expensive than the last,
 
 ## Resource problems
 
-**Conserve mode** is the one to recognise on sight. When memory pressure crosses a threshold, FortiOS enters conserve mode to protect itself, and proxy-based inspection is affected first — new sessions may pass without inspection or be blocked, depending on configuration. The symptom is intermittent inspection behaviour that looks like a policy problem, and the cause is memory.
+**Conserve mode** is the one to recognise on sight. When memory pressure crosses a threshold, FortiOS enters conserve mode to protect itself, and proxy-based inspection is affected first: new sessions may pass without inspection or be blocked, depending on configuration. The symptom is intermittent inspection behaviour that looks like a policy problem, and the cause is memory.
 
 **High CPU** is usually attributable to a specific process, and the per-process view names it. Sustained high CPU on the inspection processes points at inspection load; on the management processes, at logging or an administrative task.
 

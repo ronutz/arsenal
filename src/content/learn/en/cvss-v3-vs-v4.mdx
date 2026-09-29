@@ -35,7 +35,7 @@ A v4.0 vector begins with `CVSS:4.0` and cannot be scored by v3 math. This decod
 
 ## Why a version prefix is not decoration
 
-Every vector begins with its version — `CVSS:3.1/...` — and that prefix is load-bearing. **The same metric letters mean different things across versions**, so a vector read under the wrong version produces a number that looks plausible and is wrong.
+Every vector begins with its version, `CVSS:3.1/...`, and that prefix is load-bearing. **The same metric letters mean different things across versions**, so a vector read under the wrong version produces a number that looks plausible and is wrong.
 
 v4 is the clearest case: it renames the base score to **CVSS-B** and adds Threat and Supplemental groups, precisely because the industry had spent a decade treating a base score as a complete risk statement. A tool that strips or ignores the prefix is not being lenient; it is guessing.
 

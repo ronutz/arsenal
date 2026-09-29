@@ -19,25 +19,25 @@ Before structured cabling, a building's network was whatever each system vendor 
 
 The resulting vocabulary is worth knowing because every drawing and bid uses it:
 
-- **Entrance facility** — where the outside world lands.
-- **Equipment room** — the building's main distribution.
-- **Backbone (riser)** — between floors and buildings.
-- **Telecommunications room** — the floor's distribution point.
-- **Horizontal cabling** — the run from that room to the work area, which is where the 100-metre rule lives.
-- **Work area** — the outlet and the patch cord to the device.
+- **Entrance facility**: where the outside world lands.
+- **Equipment room**: the building's main distribution.
+- **Backbone (riser)**: between floors and buildings.
+- **Telecommunications room**: the floor's distribution point.
+- **Horizontal cabling**: the run from that room to the work area, which is where the 100-metre rule lives.
+- **Work area**: the outlet and the patch cord to the device.
 
-The word that matters is *generic*. Structured cabling is deliberately a **passive plant with a design life measured in decades**, and the electronics on both ends are expected to be replaced several times across it — the same economic argument that makes [passive optical plant](/learn/gpon-how-one-fiber-serves-a-neighborhood) a good investment.
+The word that matters is *generic*. Structured cabling is deliberately a **passive plant with a design life measured in decades**, and the electronics on both ends are expected to be replaced several times across it, the same economic argument that makes [passive optical plant](/learn/gpon-how-one-fiber-serves-a-neighborhood) a good investment.
 
 ## The categories, and what each was solving
 
 Copper grades are not marketing tiers; each was defined against a specific transmission problem:
 
-- **Cat 3** — 16 MHz, the voice and 10 Mbps era.
-- **Cat 5** — 100 MHz, which carried 100 Mbps and, with all four pairs, gigabit.
-- **Cat 5e** — same bandwidth, tightened crosstalk requirements, because gigabit uses all four pairs in both directions at once and *near-end crosstalk* became the limiting defect rather than attenuation.
-- **Cat 6** — 250 MHz, adding a spline in many designs to hold pair separation; 10 Gbps only over shortened runs, typically 37 to 55 metres.
-- **Cat 6A** — 500 MHz, and the grade defined for 10 Gbps across the full 100 metres. Its new enemy is **alien crosstalk**, coupling between adjacent cables rather than between pairs inside one, which is why 6A cable is physically larger and why bundle size and pathway fill became design constraints.
-- **Cat 7, 7A, 8** — shielded designs, with Cat 8 reaching 2 GHz over about 30 metres, aimed at datacentre top-of-rack rather than at the office floor.
+- **Cat 3**: 16 MHz, the voice and 10 Mbps era.
+- **Cat 5**: 100 MHz, which carried 100 Mbps and, with all four pairs, gigabit.
+- **Cat 5e**: same bandwidth, tightened crosstalk requirements, because gigabit uses all four pairs in both directions at once and *near-end crosstalk* became the limiting defect rather than attenuation.
+- **Cat 6**: 250 MHz, adding a spline in many designs to hold pair separation; 10 Gbps only over shortened runs, typically 37 to 55 metres.
+- **Cat 6A**: 500 MHz, and the grade defined for 10 Gbps across the full 100 metres. Its new enemy is **alien crosstalk**, coupling between adjacent cables rather than between pairs inside one, which is why 6A cable is physically larger and why bundle size and pathway fill became design constraints.
+- **Cat 7, 7A, 8**: shielded designs, with Cat 8 reaching 2 GHz over about 30 metres, aimed at datacentre top-of-rack rather than at the office floor.
 
 **Shielded or unshielded** is a system decision, not a product upgrade: shielding only works if it is bonded and grounded continuously, and a shielded system terminated by someone treating it as unshielded performs worse than good unshielded cable, because the shield becomes an antenna.
 
@@ -67,7 +67,7 @@ One dimension of cabling has nothing to do with signal and everything to do with
 
 Power over Ethernet changed what a cabling design has to account for, because current heats copper and heat raises attenuation.
 
-The standards escalate: roughly 15 W at the port for the original, about 30 W for the next grade, and up to roughly 90 W for the four-pair versions. At the top of that range, a tightly packed bundle of unshielded cable can rise enough in temperature to push a marginal run out of specification — which appears as errors on the longest links in the bundle only, under load, in the afternoon.
+The standards escalate: roughly 15 W at the port for the original, about 30 W for the next grade, and up to roughly 90 W for the four-pair versions. At the top of that range, a tightly packed bundle of unshielded cable can rise enough in temperature to push a marginal run out of specification, which appears as errors on the longest links in the bundle only, under load, in the afternoon.
 
 The design responses are boring and effective: limit bundle sizes, prefer larger conductors for long powered runs, keep pathway fill down, and derate length where a bundle carries high-power devices throughout.
 
@@ -82,20 +82,20 @@ The honest trend is that the price gap between multimode and singlemode optics h
 
 Three levels, and the distinction is contractual as much as technical:
 
-- **Verification** — continuity and wire map. It proves the pairs are in the right order and nothing is broken.
-- **Qualification** — whether the link supports a given application, on a tester that answers "will this run gigabit".
-- **Certification** — the full standards suite against the grade: insertion loss, near-end and far-end crosstalk, return loss, delay skew, and for 6A the alien crosstalk case. This is what a warranty is issued against.
+- **Verification**: continuity and wire map. It proves the pairs are in the right order and nothing is broken.
+- **Qualification**: whether the link supports a given application, on a tester that answers "will this run gigabit".
+- **Certification**: the full standards suite against the grade: insertion loss, near-end and far-end crosstalk, return loss, delay skew, and for 6A the alien crosstalk case. This is what a warranty is issued against.
 
-Two link definitions decide whether a result is even meaningful: the **permanent link** — the fixed run from patch panel to outlet — and the **channel**, which includes the patch cords at both ends. Testing the wrong one is the most common way a passing result and a failing network coexist.
+Two link definitions decide whether a result is even meaningful: the **permanent link**, the fixed run from patch panel to outlet, and the **channel**, which includes the patch cords at both ends. Testing the wrong one is the most common way a passing result and a failing network coexist.
 
 **The 100-metre rule** is 90 metres of solid horizontal cable plus 10 metres of stranded patch cord, and the split is not arbitrary: stranded conductors are more flexible and more lossy, so the allowance for them is bounded deliberately.
 
 ## Vendors and the warranty question, by category
 
-- **Cable and connectivity manufacturers** — CommScope, Panduit, Belden, Leviton, Legrand and others. What they actually sell to a building owner is a **system warranty**, typically 20 to 25 years, and it is conditional on components from the same system and installation by a certified contractor.
-- **Test equipment** — Fluke Networks being the reference, with others in the field. Certification results are the deliverable that closes a project, so the tester's reports are contractual documents.
+- **Cable and connectivity manufacturers**: CommScope, Panduit, Belden, Leviton, Legrand and others. What they actually sell to a building owner is a **system warranty**, typically 20 to 25 years, and it is conditional on components from the same system and installation by a certified contractor.
+- **Test equipment**: Fluke Networks being the reference, with others in the field. Certification results are the deliverable that closes a project, so the tester's reports are contractual documents.
 - **Installers and integrators**, whose certification is what makes the manufacturer's warranty valid at all.
-- **Standards bodies** — TIA, ISO/IEC, CENELEC — which define the grades everyone else references.
+- **Standards bodies** (TIA, ISO/IEC, CENELEC) define the grades everyone else references.
 
 The buying question is rarely which cable performs better on a datasheet. It is **what is warranted, by whom, and for how long**, because the plant is meant to outlast the equipment it serves and the paperwork is what survives with it.
 

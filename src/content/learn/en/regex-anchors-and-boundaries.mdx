@@ -34,4 +34,4 @@ Two mistakes recur. First, putting `^` or `$` in the middle of a pattern by acci
 
 The failure is silent because the tests pass: a valid input matches, and the developer moves on. Nobody tests `../../etc/passwd?id=12345` against a pattern meant to accept a numeric id, and that string contains a numeric id.
 
-Two further traps sit beside it. **In multiline mode `$` matches before a newline**, so a trailing `\n` slips past a pattern that looks anchored — `\A` and `\z` are the unambiguous forms. **And a validator should test the whole input, not search it**: many languages offer both, and the safe call is the one whose name means *match entirely*.
+Two further traps sit beside it. **In multiline mode `$` matches before a newline**, so a trailing `\n` slips past a pattern that looks anchored; `\A` and `\z` are the unambiguous forms. **And a validator should test the whole input, not search it**: many languages offer both, and the safe call is the one whose name means *match entirely*.

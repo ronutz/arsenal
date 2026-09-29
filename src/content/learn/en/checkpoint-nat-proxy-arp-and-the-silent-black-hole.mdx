@@ -12,27 +12,27 @@ status: reviewed
 updated: "2026-07-28"
 ---
 
-There is a specific kind of Check Point silence worth recognising on sight. The NAT (network address translation) rule is there. The policy installed without complaint. The server behind it is healthy and answers locally. And the firewall logs show nothing at all — not a drop, not a reject, nothing.
+There is a specific kind of Check Point silence worth recognising on sight. The NAT (network address translation) rule is there. The policy installed without complaint. The server behind it is healthy and answers locally. And the firewall logs show nothing at all: not a drop, not a reject, nothing.
 
 That combination is almost never a policy problem, because a policy problem produces a log entry. Nothing in the logs means nothing arrived.
 
 ## Where it goes
 
-If the translated address sits inside a subnet the gateway is directly connected to, then reaching it is an ARP question before it is a routing question. The upstream router has a connected route for that subnet, so it does not forward the packet anywhere — it broadcasts *who has 203.0.113.50* and waits.
+If the translated address sits inside a subnet the gateway is directly connected to, then reaching it is an ARP question before it is a routing question. The upstream router has a connected route for that subnet, so it does not forward the packet anywhere. It broadcasts *who has 203.0.113.50* and waits.
 
 If nothing answers, the packet is never sent. It does not reach the firewall, so the firewall cannot log it, drop it, or translate it. The rule base is irrelevant because the rule base was never consulted.
 
 ## What answers, and what does not
 
-**Automatic NAT** — the address translation configured on the object itself — adds the proxy ARP entry during policy install. The gateway takes responsibility for the address and replies to that broadcast. This is why automatic NAT usually just works.
+**Automatic NAT**, the address translation configured on the object itself, adds the proxy ARP entry during policy install. The gateway takes responsibility for the address and replies to that broadcast. This is why automatic NAT usually just works.
 
-**Manual NAT** — a rule you write in the NAT rule base — does not. It never has. The rule translates correctly the moment a packet arrives, but nothing has arranged for a packet to arrive.
+**Manual NAT**, a rule you write in the NAT rule base, does not. It never has. The rule translates correctly the moment a packet arrives, but nothing has arranged for a packet to arrive.
 
 That asymmetry is the whole article. Manual NAT gives you control over every field, and in exchange it stops doing the one thing you were not thinking about.
 
 ## The case that catches people who did use automatic NAT
 
-Automatic NAT creates the entry *because a Global Properties setting says to*. If **Automatic ARP configuration** is switched off — and it can be, deliberately, in environments that manage ARP by hand — then automatic rules create nothing either, and the failure is identical.
+Automatic NAT creates the entry *because a Global Properties setting says to*. If **Automatic ARP configuration** is switched off, and it can be, deliberately, in environments that manage ARP by hand, then automatic rules create nothing either, and the failure is identical.
 
 So "use automatic NAT" is not sufficient advice. The accurate version is: automatic NAT creates the entry when the global setting permits it.
 
@@ -40,7 +40,7 @@ And if you maintain entries by hand alongside automatic ones, **Merge manual pro
 
 ## When proxy ARP is the wrong thing to look at
 
-If the translated address is **not** in a connected subnet, none of this applies. Nobody on the segment will ARP for it, because the upstream router does not think the address is local. It will consult its routing table instead — and if there is no route pointing at the gateway, the packet goes somewhere else entirely, or nowhere.
+If the translated address is **not** in a connected subnet, none of this applies. Nobody on the segment will ARP for it, because the upstream router does not think the address is local. It will consult its routing table instead, and if there is no route pointing at the gateway, the packet goes somewhere else entirely, or nowhere.
 
 Same symptom, completely different cause. This is worth checking first, because the subnet arithmetic takes ten seconds and rules out half the possibilities.
 

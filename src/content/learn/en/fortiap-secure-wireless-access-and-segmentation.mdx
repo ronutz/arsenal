@@ -36,7 +36,7 @@ That moves the policy decision to the identity system where it belongs, and it m
 
 Where the placement decision needs to consider more than identity, network access control extends it. The client authenticates; the NAC system evaluates what the device is and whether it is compliant; the resulting VLAN reflects both.
 
-The interesting case is the device that authenticates successfully and is not compliant — a corporate laptop with an out-of-date agent. Identity alone would admit it. Posture-aware placement puts it somewhere it can be remediated, which is the entire argument for the additional complexity.
+The interesting case is the device that authenticates successfully and is not compliant: a corporate laptop with an out-of-date agent. Identity alone would admit it. Posture-aware placement puts it somewhere it can be remediated, which is the entire argument for the additional complexity.
 
 The design rule from wired NAC applies unchanged: a device placed in a remediation segment must be able to reach whatever it needs to become compliant, or it is simply stuck.
 

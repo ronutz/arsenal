@@ -8,16 +8,16 @@ relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrec
 category: transport
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## Origins: encryption and authentication were separate problems
 
-For most of cryptographic practice, confidentiality and integrity were designed independently. A cipher hid the message; a **MAC** — message authentication code — proved it had not been altered. Combining them was left to the protocol designer, and there were three obvious ways to do it:
+For most of cryptographic practice, confidentiality and integrity were designed independently. A cipher hid the message; a **MAC**, or message authentication code, proved it had not been altered. Combining them was left to the protocol designer, and there were three obvious ways to do it:
 
-- **Encrypt-then-MAC** — encrypt, then authenticate the ciphertext. Provably sound.
-- **MAC-then-encrypt** — authenticate the plaintext, then encrypt both. What SSL and TLS chose.
-- **Encrypt-and-MAC** — do both over the plaintext independently. What SSH chose.
+- **Encrypt-then-MAC**: encrypt, then authenticate the ciphertext. Provably sound.
+- **MAC-then-encrypt**: authenticate the plaintext, then encrypt both. What SSL and TLS chose.
+- **Encrypt-and-MAC**: do both over the plaintext independently. What SSH chose.
 
 Only the first is safe in general, and the industry picked the other two. The reason the choice mattered took a decade of attacks to become obvious: in MAC-then-encrypt, **the receiver must decrypt before it can verify**, so it is processing attacker-controlled bytes before it knows whether they are authentic. Every padding-oracle attack lives in that gap.
 
@@ -25,23 +25,23 @@ The record is specific:
 
 - **The 2002 padding-oracle result** showed that leaking whether padding was valid leaks plaintext, one byte at a time.
 - **BEAST (2011)** exploited predictable initialisation vectors in TLS 1.0's CBC chaining.
-- **Lucky 13 (2013)** extracted plaintext from the *timing* difference between valid and invalid padding — so even implementations that returned identical error messages leaked through how long they took to fail.
+- **Lucky 13 (2013)** extracted plaintext from the *timing* difference between valid and invalid padding, so even implementations that returned identical error messages leaked through how long they took to fail.
 - **POODLE (2014)** used SSL 3.0's underspecified padding to force a downgrade and read bytes.
 
-Each fix made the code more delicate: constant-time padding checks are genuinely hard to write, and a single early return reintroduces the leak. The pattern is the real lesson — **a construction that requires every implementer to be careful will eventually meet one who is not.**
+Each fix made the code more delicate: constant-time padding checks are genuinely hard to write, and a single early return reintroduces the leak. The pattern is the real lesson: **a construction that requires every implementer to be careful will eventually meet one who is not.**
 
 ## What AEAD changed
 
-**AEAD** — authenticated encryption with associated data — makes the combination part of the primitive rather than the protocol. One key, one call, one output, and decryption **fails as a unit**: either the tag verifies and you get plaintext, or it does not and you get nothing to process.
+**AEAD**, authenticated encryption with associated data, makes the combination part of the primitive rather than the protocol. One key, one call, one output, and decryption **fails as a unit**: either the tag verifies and you get plaintext, or it does not and you get nothing to process.
 
-The "associated data" half matters and is frequently skipped over: it authenticates headers that must be visible but must not be altered — record type, version, sequence number — binding the encrypted payload to its context. Without it, an attacker can leave the ciphertext intact and change the envelope around it.
+The "associated data" half matters and is frequently skipped over: it authenticates headers that must be visible but must not be altered (record type, version, sequence number) binding the encrypted payload to its context. Without it, an attacker can leave the ciphertext intact and change the envelope around it.
 
 The two dominant constructions:
 
-- **AES-GCM** — counter mode with a Galois-field authenticator. Very fast where processors carry AES and carry-less multiply instructions, which is nearly all server hardware.
-- **ChaCha20-Poly1305** — a stream cipher with a separate authenticator, designed for constant-time software implementation. Faster where AES instructions are absent, which is much of the mobile and embedded world.
+- **AES-GCM**: counter mode with a Galois-field authenticator. Very fast where processors carry AES and carry-less multiply instructions, which is nearly all server hardware.
+- **ChaCha20-Poly1305**: a stream cipher with a separate authenticator, designed for constant-time software implementation. Faster where AES instructions are absent, which is much of the mobile and embedded world.
 
-TLS 1.3 removed every non-AEAD suite from the protocol entirely — not deprecated, removed — which is why its cipher list is five entries rather than hundreds.
+TLS 1.3 removed every non-AEAD suite from the protocol entirely, not deprecated but removed, which is why its cipher list is five entries rather than hundreds.
 
 ## Two ways to encrypt a record
 
@@ -75,14 +75,14 @@ Where that goes wrong in practice:
 
 TLS 1.3 avoids all of it by deriving the nonce from the sequence number rather than transmitting it, so reuse cannot happen without a protocol-level fault. Anyone building their own record layer must solve this deliberately.
 
-**Record size is the other tradeoff.** Each record carries a tag — 16 bytes for both dominant constructions — so many small records cost proportionally more overhead than a few large ones, while large records add latency because nothing can be delivered until the whole record verifies.
+**Record size is the other tradeoff.** Each record carries a tag, 16 bytes for both dominant constructions, so many small records cost proportionally more overhead than a few large ones, while large records add latency because nothing can be delivered until the whole record verifies.
 
 ## Where the choice appears in practice
 
 - **TLS libraries** pick the default suite list, and modern versions have made AEAD the only option worth having.
-- **Disk and volume encryption** frequently uses length-preserving modes rather than AEAD, because a sector cannot grow to hold a tag — a genuine reason to see non-AEAD constructions in current systems.
-- **Application-level encryption** — libsodium, Tink, cloud key-management SDKs — where the honest guidance is to use a library that manages nonces rather than assembling primitives.
-- **Protocols with their own record layers** — QUIC, WireGuard, SSH — all now AEAD-based, all deriving nonces from counters for exactly the reason above.
+- **Disk and volume encryption** frequently uses length-preserving modes rather than AEAD, because a sector cannot grow to hold a tag, a genuine reason to see non-AEAD constructions in current systems.
+- **Application-level encryption** (libsodium, Tink, cloud key-management SDKs) where the honest guidance is to use a library that manages nonces rather than assembling primitives.
+- **Protocols with their own record layers** (QUIC, WireGuard, SSH) are all now AEAD-based, all deriving nonces from counters for exactly the reason above.
 
 The rule that survives every context: **use AEAD, let a library own the nonce, and treat any design where you choose nonces yourself as one that needs review.**
 
@@ -91,3 +91,11 @@ The rule that survives every context: **use AEAD, let a library own the nonce, a
 AEAD is not free of sharp edges; it just moves them. Every AEAD encryption needs a nonce, a number used once, and the security of GCM (Galois/Counter Mode) in particular collapses if the same nonce is ever reused with the same key. TLS manages nonces for you with a per-connection counter, so this is a danger for systems that build their own framing rather than for TLS itself, but it is the reason AEAD designs care so much about nonce construction.
 
 The other tradeoff is the authentication tag length. The standard GCM and Poly1305 suites use a 16-byte tag. The `CCM_8` suites truncate that to 8 bytes to save overhead on constrained links, which measurably weakens integrity. That is why `TLS_AES_128_CCM_8_SHA256` is a real TLS 1.3 AEAD suite that IANA (the Internet Assigned Numbers Authority) still declines to mark recommended: the mode is modern, but the short tag is a compromise the general internet does not need to make.
+
+## Sources
+
+The protocol behaviour described above is normative, and the two attacks that drove it are documented with their CVE numbers. These are where to re-check both.
+
+- [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 - every non-AEAD suite pruned from the protocol](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 5246, TLS 1.2 - where the CBC-with-HMAC suites still live](https://www.rfc-editor.org/rfc/rfc5246.html)
+- [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) and POODLE (CVE-2014-3566) in the IETF's own words](https://www.rfc-editor.org/rfc/rfc7457.html)

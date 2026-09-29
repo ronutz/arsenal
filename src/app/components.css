@@ -7663,6 +7663,90 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
 .dig-counts { margin-top: 0.5rem; border-top: 1px dashed var(--border-subtle); padding-top: 0.4rem; }
 .dig-sec-count { color: var(--text-tertiary); font-weight: 400; text-transform: none; }
 
+/* ============================================================================
+   dig-* RESULT SCAFFOLDING  (authored 2026-09-27)
+
+   Eight names in this family were used by SEVENTEEN tool components and defined
+   nowhere. Two of them, .dig-kv and .dig-notes, are named in the header of
+   scripts/check-css-classes.mjs as part of the founding fault that produced that
+   guard: class names written from memory of another component. The 2026-08-16
+   fix reached the roles pages and never came back for the tools, so every result
+   section in those seventeen rendered as browser defaults, an unstyled h3, a dl
+   with no columns, a bare bulleted ul, while every check reported green. That is
+   236 uses of eight classes with no rule behind them.
+
+   Nothing below is invented. Each rule takes the treatment of the house pattern
+   or the in-family sibling that already does the same job:
+     .dig-result         from .dig-results, the plural defined above
+     .dig-section        from .jwt-panel, the house result panel (184 uses)
+     .dig-section-title  from .jwt-panel-title (247 uses)
+     .dig-notes          from .dig-warning-list, the same ul of short notes
+     .dig-records        list reset only; .dig-record already carries the card
+     .dig-record-type    from .dig-flag-chip, the outlined in-family chip
+     .dig-record-explain from .dig-meaning, the in-family explanation line
+     .dig-kv             from .dig-row / -label / -value, as a dl grid
+   ============================================================================ */
+
+/* Singular of .dig-results. Both spellings are in use across the corpus and
+   both mean the results container, so they get the same treatment rather than
+   a rename across fifteen call sites. */
+.dig-result { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* The result panel. Matches .jwt-panel exactly: the tools that stack
+   .dig-warnings onto .jwt-panel and the tools that use .dig-section standalone
+   must read as the same object, because on several pages they sit side by side. */
+.dig-section { border-top: 1px solid var(--border-subtle); padding-top: 1rem; }
+.dig-section-title {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* A ul of short notes, identical to .dig-warning-list without the warning
+   colour, which .dig-warnings supplies when the list is a warning list. */
+.dig-notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.dig-notes li { font-size: 0.86rem; color: var(--text-secondary); line-height: 1.45; }
+
+/* The ol wrapping .dig-record cards. Reset only: the card already carries its
+   own border, padding and bottom margin, so a gap here would double it. */
+.dig-records { list-style: none; margin: 0; padding: 0; }
+
+/* A level or kind label beside a record. Outlined rather than filled: the
+   filled .dig-type-badge is the DNS record type, and a second filled badge on
+   the same row would compete with it. */
+.dig-record-type {
+  font-family: var(--font-mono, ui-monospace, "SF Mono", Menlo, Consolas, monospace);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  color: var(--text-tertiary);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* The sentence that explains a record. Same job and same treatment as
+   .dig-meaning. */
+.dig-record-explain { margin: 0.5rem 0 0; font-size: 0.82rem; line-height: 1.5; color: var(--text-tertiary); }
+
+/* Key/value pairs as a dl. The colours and size are .dig-row-label and
+   .dig-row-value; the difference is that a dl aligns in two columns instead of
+   pushing the value to the far right, which reads better when several pairs
+   stack and the keys are short. */
+.dig-kv {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.22rem 1rem;
+  margin: 0;
+  font-size: 0.87rem;
+}
+.dig-kv dt { color: var(--text-tertiary); }
+.dig-kv dd { margin: 0; color: var(--text-primary, var(--text-secondary)); word-break: break-word; }
+
 /* ============================================================
    xml-decoder  (structural XML view + security analysis)
    Reuses cidr-/dig-/jwt-/b64- classes; these add the tree +
@@ -14577,6 +14661,24 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   color: var(--accent-primary);
   flex-shrink: 0;
 }
+/* WHO IS CREDITED, on the right of .lineage-deal-top.
+   This slot was written as `type-badge` until 2026-09-26, a name borrowed from
+   .tmsh-type-badge in the tool components and never defined anywhere, so every
+   attribution on this page rendered as unstyled inline text at the same size as
+   the milestone title beside it - two titles competing, which is the opposite of
+   the intent. It is not a chip: .lineage-deal-chip sets white-space: nowrap and
+   `who` carries values like "Apple, and the industry that followed", so it has
+   to be allowed to wrap. Treated as secondary attribution instead, matching
+   .lineage-deal-price, the other thing that sits in this slot. */
+.lineage-deal-who {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  text-align: right;
+  max-width: 22ch;
+  line-height: 1.4;
+}
+
 .lineage-deal-what {
   font-size: 0.86rem;
   color: var(--text-secondary);

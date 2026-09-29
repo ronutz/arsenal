@@ -38,7 +38,7 @@ The antivirus profile scans for malware, and its behaviour follows the engine sp
 
 In **proxy mode** the file is buffered and scanned complete. That is the strongest position: an archive can be expanded and its contents scanned, and a block can be replaced with an explanatory page.
 
-In **flow mode** the file is scanned as it streams. FortiOS still detects the overwhelming majority of malware this way, and the constraints are at the edges — very large files and deeply nested archives are where the difference shows.
+In **flow mode** the file is scanned as it streams. FortiOS still detects the overwhelming majority of malware this way, and the constraints are at the edges: very large files and deeply nested archives are where the difference shows.
 
 Three settings matter more than candidates expect:
 
@@ -52,7 +52,7 @@ The point that ties back to the previous article: **antivirus cannot inspect wha
 
 The intrusion prevention system matches traffic against signatures and takes an action per signature or per filter.
 
-Signatures carry a severity, a target (client or server), a protocol, and an operating system. Rather than enabling thousands individually, an IPS sensor is built from **filters** that select by those attributes — for example, all high and critical severity signatures targeting servers — plus individual overrides where a specific signature needs different treatment.
+Signatures carry a severity, a target (client or server), a protocol, and an operating system. Rather than enabling thousands individually, an IPS sensor is built from **filters** that select by those attributes (for example, all high and critical severity signatures targeting servers), plus individual overrides where a specific signature needs different treatment.
 
 The distinctions worth holding:
 
@@ -64,7 +64,7 @@ The distinctions worth holding:
 
 Application control identifies traffic by application signature rather than by port, which is the whole point: something on port 443 is not necessarily a web browser, and the port tells you almost nothing on a modern network.
 
-It works by inspecting traffic patterns and payload characteristics against Fortinet's application database, then applying an action per application or per category. That yields useful control — allow the collaboration suite, block the file-sharing client, monitor the streaming service — that a port-based rule cannot express.
+It works by inspecting traffic patterns and payload characteristics against Fortinet's application database, then applying an action per application or per category. That yields useful control (allow the collaboration suite, block the file-sharing client, monitor the streaming service) that a port-based rule cannot express.
 
 Its limits follow directly from how it works:
 

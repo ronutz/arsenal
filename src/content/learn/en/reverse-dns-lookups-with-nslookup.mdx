@@ -45,6 +45,6 @@ Forward and reverse are **separate zones controlled by different parties**. The 
 
 A PTR record lives in `in-addr.arpa`, and **that zone is delegated with the address block rather than with the domain.** Whoever holds the addresses controls the reverse record, which is frequently the hosting provider or the ISP rather than the organisation whose name appears in it.
 
-Two consequences follow. **Forward and reverse are not required to agree**, and disagreement is normal rather than suspicious — a host can legitimately have many names and one PTR. And **a reverse lookup proves nothing about ownership**: the party who set it chose the text, and nothing validates it against the forward zone.
+Two consequences follow. **Forward and reverse are not required to agree**, and disagreement is normal rather than suspicious: a host can legitimately have many names and one PTR. And **a reverse lookup proves nothing about ownership**: the party who set it chose the text, and nothing validates it against the forward zone.
 
 **Treat a PTR as a hint about an address's operator, never as authentication.** Systems that grant trust on reverse-DNS matching are trusting whoever was allocated the block.

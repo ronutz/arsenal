@@ -22,7 +22,7 @@ Three limits get confused with each other because they all sound like "slow this
 
 **`limit_rate`** limits bandwidth per connection, in bytes per second. It does not restrict how many requests arrive, only how fast each response is delivered. A client can defeat it by opening more connections, which is exactly why it pairs with `limit_conn`.
 
-All three need a key — usually `$binary_remote_addr` rather than `$remote_addr`, because the binary form is smaller and zone space is finite.
+All three need a key, usually `$binary_remote_addr` rather than `$remote_addr`, because the binary form is smaller and zone space is finite.
 
 ## The request limiter is a leaky bucket
 
@@ -32,7 +32,7 @@ So ten requests fired simultaneously against a `10r/s` limit do not all pass. On
 
 ## What burst actually does
 
-`burst=20` adds a queue of twenty slots. Excess requests are not rejected while there is room in the queue — they **wait**, and are released at the configured rate.
+`burst=20` adds a queue of twenty slots. Excess requests are not rejected while there is room in the queue: they **wait**, and are released at the configured rate.
 
 That is the part the name hides. By default `burst` delays; it does not allow a faster burst. A client sending twenty requests at once against `10r/s burst=20` gets twenty successful responses spread over two seconds, and to that client the server simply looks slow.
 
@@ -46,11 +46,11 @@ The distinction is worth stating plainly. `burst` alone smooths traffic. `burst`
 
 The usual pattern ends with `deny all` after the allows, because without it anything not matched is permitted.
 
-For anything beyond addresses, `auth_basic` covers simple credentials, and `satisfy` decides whether a client must pass every check or just one of them — `satisfy any` is what lets an internal address in without a password while still prompting everyone else.
+For anything beyond addresses, `auth_basic` covers simple credentials, and `satisfy` decides whether a client must pass every check or just one of them, and `satisfy any` is what lets an internal address in without a password while still prompting everyone else.
 
 ## Zone sizing is not a formality
 
-Every one of these limiters stores state in a shared memory zone so all workers see the same counters. When the zone fills, NGINX evicts older entries, and evicted clients are no longer being tracked — the limit stops applying to them.
+Every one of these limiters stores state in a shared memory zone so all workers see the same counters. When the zone fills, NGINX evicts older entries, and evicted clients are no longer being tracked, so the limit stops applying to them.
 
 A zone that is too small does not fail loudly. It quietly stops doing its job for some clients, which is the worst possible failure mode for a control you added on purpose.
 

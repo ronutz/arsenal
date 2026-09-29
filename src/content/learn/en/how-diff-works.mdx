@@ -46,8 +46,8 @@ The dynamic-programming table is proportional to the product of the two token co
 
 ## Why the same change can produce two different diffs
 
-A diff finds *an* alignment, not *the* alignment. When several alignments are equally short, the algorithm picks one, and different tools — or the same tool with different options — may pick differently.
+A diff finds *an* alignment, not *the* alignment. When several alignments are equally short, the algorithm picks one, and different tools (or the same tool with different options) may pick differently.
 
 This is why a diff can look bewildering after a refactor that moved a block: **the tool has no concept of "moved"**. A relocated function is a deletion in one place and an insertion in another, and if the block resembles its neighbours the alignment may cut it in a place no human would.
 
-**A confusing diff is usually a sign the comparison is being asked the wrong question**, not that the change is bad. Diffing at word level, ignoring whitespace, or comparing against a different base often turns unreadable output into an obvious one — the change did not alter, only the alignment did.
+**A confusing diff is usually a sign the comparison is being asked the wrong question**, not that the change is bad. Diffing at word level, ignoring whitespace, or comparing against a different base often turns unreadable output into an obvious one: the change did not alter, only the alignment did.

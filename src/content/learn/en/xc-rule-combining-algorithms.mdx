@@ -42,7 +42,7 @@ For that reason the explainer on this site defaults to explaining top-to-bottom 
 
 Ordering is not only about precedence; it decides **what a misplaced rule costs.**
 
-Under first-match, a broad ALLOW placed above a specific DENY silently disables the DENY — and the configuration still contains both, so a reviewer reading the list sees the protection they expect. The rule is present, correct, and unreachable.
+Under first-match, a broad ALLOW placed above a specific DENY silently disables the DENY, and the configuration still contains both, so a reviewer reading the list sees the protection they expect. The rule is present, correct, and unreachable.
 
 That is why **specific before general** is not style advice. It is the ordering under which an error becomes visible: a specific rule that is wrong stops matching and gets noticed, whereas a general rule placed too early keeps working perfectly while shadowing everything beneath it.
 

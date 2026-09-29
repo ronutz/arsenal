@@ -8,7 +8,7 @@ relatedArticles: ["json-vs-yaml", "config-formats-in-practice", "json-grammar"]
 category: encoding
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## Why an unquoted scalar is dangerous
@@ -26,3 +26,10 @@ Numeric coercion is just as sharp. A software version like `1.0` becomes the num
 ## How a converter stays safe
 
 This is why converting JSON to YAML is not just a matter of changing the punctuation. Every JSON string that, written bare, would be read back as a boolean, a number, a null, or a date has to be emitted in quotes, or the YAML would mean something different from the JSON. A correct converter applies these quoting rules automatically, which is exactly what the [JSON ↔ YAML Converter](/tools/json-yaml-convert) does: a string stays a string. When you read its YAML output and see quotes around something like `"NO"` or `"1.0"`, those quotes are not noise; they are the converter protecting the value from YAML's type guessing.
+
+## Sources
+
+Both schemas are published, and the reason bare yes and no are hazardous is that the older one resolves them as booleans while the newer one does not carry them.
+
+- [YAML 1.1 bool type - the broad resolution: y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF](https://yaml.org/type/bool.html)
+- [YAML version 1.2, revision 1.2.2 (1 October 2021) - the specification whose Core Schema defines what a bare scalar resolves to now](https://yaml.org/spec/1.2.2/)

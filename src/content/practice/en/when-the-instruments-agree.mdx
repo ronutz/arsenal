@@ -1,14 +1,14 @@
 ---
 slug: when-the-instruments-agree
 title: "When the instruments agree"
-thesis: "Agreement between measurements is evidence only if the measurements are independent, and most of them are not — they share a collector, a clock, an averaging window or a definition. A fault in the shared layer produces unanimous, confident, wrong answers, so the investigation's certainty rises at exactly the moment it should fall."
+thesis: "Agreement between measurements is evidence only if the measurements are independent, and most of them are not - they share a collector, a clock, an averaging window or a definition. A fault in the shared layer produces unanimous, confident, wrong answers, so the investigation's certainty rises at exactly the moment it should fall."
 part: yield
 order: 16
 roles: ["second-line", "field", "design", "management"]
 relatedTools: ["incident-timeline-rca-builder", "packet-capture-plan-builder", "flow-path-reasoner"]
 relatedIndustry: []
 relatedPractice: ["when-the-evidence-disagrees", "verifying-without-trusting", "the-assumption-you-cannot-see"]
-artefact: "The independence inventory — which of your measurements can actually corroborate which"
+artefact: "The independence inventory - which of your measurements can actually corroborate which"
 updated: "2026-08-08"
 ---
 
@@ -16,7 +16,7 @@ updated: "2026-08-08"
 
 The application team's graph shows normal latency. The platform team's graph shows normal latency. The synthetic monitor is green and the capacity dashboard has nothing above eighty per cent. Four independent sources, four clean results, and a customer who is still telling you the service is unusable.
 
-At this point the conversation reliably turns to whether the customer is wrong. That turn feels justified — four measurements agree, and one anecdote does not outweigh four measurements.
+At this point the conversation reliably turns to whether the customer is wrong. That turn feels justified - four measurements agree, and one anecdote does not outweigh four measurements.
 
 It would not, if they were four measurements. Often they are one measurement displayed four times.
 
@@ -24,11 +24,11 @@ It would not, if they were four measurements. Often they are one measurement dis
 
 ## The corroboration that is really a shared derivation
 
-[When the evidence disagrees with itself](/practice/when-the-evidence-disagrees) argues that a contradiction is a location — the most precise thing you have, because two sources cannot both be right and the fault lives between them.
+[When the evidence disagrees with itself](/practice/when-the-evidence-disagrees) argues that a contradiction is a location - the most precise thing you have, because two sources cannot both be right and the fault lives between them.
 
 This is the mirror, and it is more dangerous, because a contradiction announces itself and unanimity does not. Four dashboards drawing from the same collector are not four witnesses. They are one witness quoted four times, and the confidence you take from their agreement is manufactured entirely by the layout of your monitoring stack.
 
-The question to ask of any agreement is not *do these sources agree* but **what would have to break for all of them to be wrong at once** — and then whether that thing exists.
+The question to ask of any agreement is not *do these sources agree* but **what would have to break for all of them to be wrong at once** - and then whether that thing exists.
 
 ## Where the shared layer usually is
 
@@ -38,7 +38,7 @@ The question to ask of any agreement is not *do these sources agree* but **what 
 
 **The averaging window.** A five-minute mean cannot represent a ten-second stall. The shape was removed before the graph was drawn, and no amount of staring at the graph will restore it.
 
-**The definition.** What counts as an "error" was decided by somebody, once. If the health check tests that the port accepts a connection, then a backend returning HTTP 500 to every request is, by that definition, healthy — and it will be reported as healthy by every system that consumes the definition.
+**The definition.** What counts as an "error" was decided by somebody, once. If the health check tests that the port accepts a connection, then a backend returning HTTP 500 to every request is, by that definition, healthy - and it will be reported as healthy by every system that consumes the definition.
 
 **The vantage point.** Everything measured from inside the data centre shares the data centre's view. A fault in the path between the customer and you is invisible to all of it, unanimously.
 
@@ -46,7 +46,7 @@ The question to ask of any agreement is not *do these sources agree* but **what 
 
 This deserves its own space because it is not a defect. It is a deliberate, sensible engineering decision, made for storage and for legibility, and it destroys exactly the information an incident is about.
 
-Percentiles help and are not sufficient — a p99 computed over five-minute buckets still hides a two-second freeze that hit forty users. If the complaint is *"it hangs sometimes"* and your instrument's finest resolution is a one-minute mean, **you do not have an instrument for this problem.** Saying so is a finding. Continuing to consult the graph is not.
+Percentiles help and are not sufficient - a p99 computed over five-minute buckets still hides a two-second freeze that hit forty users. If the complaint is *"it hangs sometimes"* and your instrument's finest resolution is a one-minute mean, **you do not have an instrument for this problem.** Saying so is a finding. Continuing to consult the graph is not.
 
 ## Silence is not a measurement
 
@@ -74,7 +74,7 @@ This is also why the [incident timeline builder](/tools/incident-timeline-rca-bu
 
 Sometimes there is no second vantage point, no capture point, and no budget. The answer is not to pretend the measurements are stronger than they are.
 
-**Say what your conclusion depends on.** *"Latency is normal, as measured by the platform collector — every source I have derives from that collector, so if it is misreporting, all of this is wrong together."* That sentence costs nothing, and it is the difference between a finding and an assumption dressed as one. It also tells whoever reads it later exactly which single thing to check first.
+**Say what your conclusion depends on.** *"Latency is normal, as measured by the platform collector - every source I have derives from that collector, so if it is misreporting, all of this is wrong together."* That sentence costs nothing, and it is the difference between a finding and an assumption dressed as one. It also tells whoever reads it later exactly which single thing to check first.
 
 Downgrading your own confidence in writing is uncomfortable in a room that wants an answer. It is considerably less uncomfortable than defending four dashboards for a week.
 
@@ -82,7 +82,7 @@ Downgrading your own confidence in writing is uncomfortable in a room that wants
 
 For each measurement you are relying on:
 
-- What produces it — which agent, which counter, which probe?
+- What produces it - which agent, which counter, which probe?
 - What does it share with the others: collector, clock, window, definition, vantage point?
 - What is its finest resolution, and is that finer than the symptom?
 - Can it distinguish zero from no-data, and can I see which one I am looking at?

@@ -71,10 +71,10 @@ export default function DhcpOption43Tool() {
   const profile = VENDOR_PROFILES.find((v) => v.id === vendorId)!;
 
   return (
-    <div className="jwt-tool">
+    <div className="cidr-tool jwt-tool">
       {/* Vendor first: the same address means four different things. */}
-      <div className="jwt-field">
-        <label className="jwt-label" htmlFor="opt43-vendor">
+      <div className="cidr-input-row">
+        <label className="cidr-label" htmlFor="opt43-vendor">
           {t("vendorLabel")}
         </label>
         <select
@@ -97,12 +97,12 @@ export default function DhcpOption43Tool() {
         </p>
       </div>
 
-      <div className="jwt-field">
-        <div className="jwt-label-row">
-          <label className="jwt-label" htmlFor="opt43-input">
+      <div className="cidr-input-row">
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="opt43-input">
             {profile.multiple ? t("inputLabelMulti") : t("inputLabel")}
           </label>
-          <div className="jwt-label-actions">
+          <div className="dig-input-actions">
             <button type="button" className="b64-copy" onClick={() => onValue(EXAMPLE)}>
               {t("example")}
             </button>
@@ -120,10 +120,10 @@ export default function DhcpOption43Tool() {
           spellCheck={false}
           autoComplete="off"
         />
-        <p className="jwt-hint">{t("runsLocally")}</p>
+        <p className="cidr-privacy">{t("runsLocally")}</p>
       </div>
 
-      {error && <p className="jwt-error">{error}</p>}
+      {error && <p className="cidr-error">{error}</p>}
 
       {report && (
         <div className="jwt-results">

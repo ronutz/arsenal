@@ -33,8 +33,8 @@ Put together, a typical SP-initiated login is: the SP builds an `AuthnRequest` a
 
 ## IdP-initiated SSO removes the request the SP was supposed to check
 
-In SP-initiated flow the service provider creates the request, remembers it, and matches the assertion against something it is expecting. **IdP-initiated flow has no such request** — an unsolicited assertion arrives and the SP must decide whether to trust it on its contents alone.
+In SP-initiated flow the service provider creates the request, remembers it, and matches the assertion against something it is expecting. **IdP-initiated flow has no such request**: an unsolicited assertion arrives and the SP must decide whether to trust it on its contents alone.
 
 That is why the two modes are not a preference. **IdP-initiated SSO is structurally closer to accepting a bearer token from an unauthenticated source**, and defending it takes replay protection, tight clock skew and strict audience checking that SP-initiated flow gets partly for free.
 
-**Prefer SP-initiated where it is possible**, and where a partner requires IdP-initiated, treat the assertion-ID replay cache as mandatory rather than as hardening. **Nothing about the missing check produces an error** — a replayed assertion within its validity window logs a user in exactly as a legitimate one does.
+**Prefer SP-initiated where it is possible**, and where a partner requires IdP-initiated, treat the assertion-ID replay cache as mandatory rather than as hardening. **Nothing about the missing check produces an error**: a replayed assertion within its validity window logs a user in exactly as a legitimate one does.

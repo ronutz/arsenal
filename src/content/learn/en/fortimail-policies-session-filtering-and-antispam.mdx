@@ -18,13 +18,13 @@ FortiMail's policy model has more layers than a firewall's, and they act at diff
 
 **Access control rules** decide whether the session is accepted at all. They match on sender, recipient, source address and authentication status, and their primary job is relay control: mail to a protected domain is inbound and accepted; mail to elsewhere is relay and must be justified by authentication or a trusted source. These act at `RCPT TO`, before any content exists.
 
-**IP policies** match on the source address of the connecting client and select which profiles apply. They are the right place for decisions about *where mail comes from* — a trusted partner gateway, an internal application server, an unknown internet host.
+**IP policies** match on the source address of the connecting client and select which profiles apply. They are the right place for decisions about *where mail comes from*: a trusted partner gateway, an internal application server, an unknown internet host.
 
 **Recipient policies** match on envelope sender and recipient, and select profiles based on *who the mail is between*. Inbound and outbound recipient policies are separate, which matters because the sensible profile differs: aggressive antispam inbound, data protection and encryption outbound.
 
 The interaction worth knowing is that IP policies are consulted first and can bypass recipient policy evaluation entirely. A message from a source matched by a permissive IP policy may never reach the recipient policy you expected to apply, which is the most common cause of a profile that appears to do nothing.
 
-Within each type, evaluation is ordered and the first match wins — the same discipline as firewall policy, with the same shadowing risk.
+Within each type, evaluation is ordered and the first match wins, the same discipline as firewall policy, with the same shadowing risk.
 
 ## Session-based filtering
 
@@ -42,13 +42,13 @@ Session filtering acts during the SMTP conversation, before the message body has
 
 The organising principle is that cheap checks should run first so the expensive ones see less.
 
-- **Connection-level** — reputation, DNSBL, rate limits. No message transferred.
-- **Session-level** — greylisting, sender authentication. Envelope only.
-- **Content-level** — FortiGuard antispam classification, heuristics, banned words, URL analysis, image analysis. Requires the full message.
+- **Connection-level**: reputation, DNSBL, rate limits. No message transferred.
+- **Session-level**: greylisting, sender authentication. Envelope only.
+- **Content-level**: FortiGuard antispam classification, heuristics, banned words, URL analysis, image analysis. Requires the full message.
 
 FortiGuard's classification does most of the work in practice, and the local controls exist for what is specific to your organisation.
 
-**Actions** matter as much as detection. The options — reject, discard, quarantine, tag — differ in who finds out:
+**Actions** matter as much as detection. The options (reject, discard, quarantine, tag) differ in who finds out:
 
 **Reject** tells the sending server, so a legitimate sender learns their message did not arrive. **Discard** tells nobody, which is right for definite spam and wrong for anything uncertain, because it makes lost mail invisible. **Quarantine** holds it for review, and per-recipient quarantine with a digest lets users retrieve their own false positives without a helpdesk ticket. **Tag** delivers with a marker and is the gentlest option.
 

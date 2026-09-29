@@ -28,7 +28,7 @@ Wireless is a shared medium that everyone can see and no one controls. Almost ev
 
 A FortiGate includes a wireless controller. FortiAPs connect to it over **CAPWAP**, which carries both the management channel and, depending on the SSID, the data.
 
-Discovery and authorization follow the same shape as FortiSwitch: the AP finds the controller, appears as unauthorized, and you authorize it. An AP that never appears has a discovery problem — no route to the controller, no DHCP option or DNS record pointing at it, or a firewall in between blocking CAPWAP.
+Discovery and authorization follow the same shape as FortiSwitch: the AP finds the controller, appears as unauthorized, and you authorize it. An AP that never appears has a discovery problem: no route to the controller, no DHCP option or DNS record pointing at it, or a firewall in between blocking CAPWAP.
 
 The important design decision is how each SSID forwards traffic:
 
@@ -41,7 +41,7 @@ Tunnel mode gives the firewall sight of everything at the cost of hairpinning lo
 
 ## AP profiles
 
-An **AP profile** holds the radio configuration — band, channel, width, transmit power, enabled SSIDs — and is applied to many access points. That is the point: fleet-wide change without touching devices individually.
+An **AP profile** holds the radio configuration (band, channel, width, transmit power, enabled SSIDs) and is applied to many access points. That is the point: fleet-wide change without touching devices individually.
 
 Two settings deserve a decision rather than a default:
 
@@ -51,7 +51,7 @@ Two settings deserve a decision rather than a default:
 
 **Band steering** encourages dual-band clients onto 5 GHz, which helps because clients otherwise favour the band with the strongest signal, and that is usually the congested one.
 
-Where a subset of APs needs different settings — an outdoor unit, a high-density room — the answer is another profile rather than per-device overrides, so the fleet stays describable.
+Where a subset of APs needs different settings (an outdoor unit, a high-density room), the answer is another profile rather than per-device overrides, so the fleet stays describable.
 
 ## What an exam candidate should be able to state cold
 

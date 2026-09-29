@@ -50,7 +50,7 @@ The combination tells a story. `qr aa` with an answer is an authoritative server
 
 ## TC is the flag that turns a UDP problem into a TCP problem
 
-When a response will not fit, the server sets **TC** — truncated — and sends what it can. A correct client is expected to notice and retry the whole query over **TCP on port 53**.
+When a response will not fit, the server sets **TC** (truncated) and sends what it can. A correct client is expected to notice and retry the whole query over **TCP on port 53**.
 
 That retry is where estates break. **TCP/53 is blocked far more often than anybody intends**, usually by a firewall rule written when "DNS is UDP" was a reasonable simplification. The result is a resolver that works for ordinary lookups and fails only for large answers, which is the hardest kind of fault to get reported accurately.
 

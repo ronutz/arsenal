@@ -8,7 +8,7 @@ relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overvie
 category: networking
 order: 209
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 Tire de uma mensagem HTTP o corpo e a primeira linha, e o que sobra é o sistema nervoso inteiro do protocolo: **cabeçalhos** - linhas `Nome: valor`, nomes insensíveis a caixa, valores moldados pela gramática de cada cabeçalho. Cabeçalhos são onde cache, autenticação, negociação, roteamento e segurança de fato acontecem; o corpo é só carga. Este artigo entrega a anatomia; [o tradutor de requisições](/tools/curl-command-explainer) deixa você dissecar espécimes reais.
@@ -28,3 +28,11 @@ A web é uma cadeia de intermediários, e cabeçalhos se dividem em duas cidadan
 ## Ordem, cabeçalhos custom e a impressão digital
 
 Duas notas de campo completam a anatomia. Primeira, cabeçalhos custom: a convenção do prefixo `X-` foi oficialmente descontinuada há anos (os experimentos nunca ficam experimentos - `X-Forwarded-For` é infraestrutura estrutural), então cabeçalhos novos levam nomes honestos. Segunda, uma sutileza que este site transformou em ferramenta: a especificação diz que a *ordem* dos cabeçalhos em geral não importa semanticamente - então as implementações nunca combinaram uma, e cada cliente emite sua sequência característica. Navegadores, curl, Python e robôs têm assinaturas reconhecíveis, o que faz da [ordem de cabeçalhos uma impressão digital](/tools/http-header-order-fingerprint) - mais uma instância da lição recorrente: o que a especificação deixa livre, as implementações tornam identificável.
+
+## Fontes
+
+Que o HTTP/1.0 não trazia o campo Host e que o HTTP/1.1 exige um é normativo em três documentos, um por versão do protocolo, e a hospedagem virtual decorre da exigência, não de convenção.
+
+- [RFC 1945, HTTP/1.0 - a linha de requisição traz apenas o caminho absoluto, e Host não está entre seus campos de cabeçalho](https://www.rfc-editor.org/rfc/rfc1945.html)
+- [RFC 9112, HTTP/1.1 - "A client MUST send a Host header field in all HTTP/1.1 request messages"](https://www.rfc-editor.org/rfc/rfc9112.html)
+- [RFC 9110, HTTP Semantics - as definições atuais dos próprios campos de cabeçalho](https://www.rfc-editor.org/rfc/rfc9110.html)

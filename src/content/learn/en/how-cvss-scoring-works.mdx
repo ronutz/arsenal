@@ -8,7 +8,7 @@ relatedArticles: ["cvss-base-metrics-explained", "cvss-vector-string-format", "c
 category: security
 order: 70
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-09-27"
 ---
 
 The Common Vulnerability Scoring System (CVSS) is an open framework, owned by FIRST.org, for describing the severity of a software vulnerability. Its most visible output is a number from 0.0 to 10.0, but that number is derived from a vector string by a fixed formula. Nothing about the score is subjective once the metrics are chosen, so any correct implementation produces the same result for the same vector.
@@ -53,3 +53,10 @@ The formulas are public and reproducible, which makes CVSS look objective in a w
 Two analysts scoring the same flaw honestly can differ by more than a severity band, and **the vector string is the only part of a published score that can be argued with.** A bare number cannot be checked; a vector can be read, disagreed with, and re-scored.
 
 **Publish the vector, always, and treat a score without one as an opinion in numeric clothing.** The equation's precision is real and it is a precision about the inputs, not about the vulnerability.
+
+## Sources
+
+Every formula and metric group above comes from FIRST's own specification, which is the normative definition of the score rather than a description of it.
+
+- [CVSS v3.1 Specification Document - the three metric groups, the 0.0 to 10.0 range, and the rule that zero impact yields a zero Base score](https://www.first.org/cvss/v3.1/specification-document)
+- [CVSS v4.0 Specification Document - where the metric groups were renamed and reorganised](https://www.first.org/cvss/v4-0/specification-document)

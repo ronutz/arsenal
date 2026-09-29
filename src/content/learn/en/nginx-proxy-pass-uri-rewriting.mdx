@@ -16,9 +16,9 @@ Two configurations that differ by one character send completely different paths 
 
 ## The rule
 
-**`proxy_pass http://backend;`** — no URI part, nothing after the host. The **original request URI is passed through unchanged**, location prefix and all.
+**`proxy_pass http://backend;`**: no URI part, nothing after the host. The **original request URI is passed through unchanged**, location prefix and all.
 
-**`proxy_pass http://backend/;`** — a URI part, even if it is only a slash. The part of the request that **matched the location prefix is replaced** by it.
+**`proxy_pass http://backend/;`**: a URI part, even if it is only a slash. The part of the request that **matched the location prefix is replaced** by it.
 
 That is the whole thing. It is a switch with two positions, not a spectrum.
 
@@ -30,21 +30,21 @@ With `location /app/` and a request for `/app/page`:
 
 `proxy_pass http://backend/;` sends **`/page`**. The prefix is gone.
 
-`proxy_pass http://backend/v2/;` sends **`/v2/page`**. The prefix was replaced by something else entirely — which is how one line does what people often reach for `rewrite` to do.
+`proxy_pass http://backend/v2/;` sends **`/v2/page`**. The prefix was replaced by something else entirely, which is how one line does what people often reach for `rewrite` to do.
 
 ## Which one you want
 
 It depends entirely on the backend.
 
-An application that is **mounted at the same path** — it expects `/app/page` because that is how it builds its own links — needs the form **without** the slash.
+An application that is **mounted at the same path**, because it expects `/app/page` from the way it builds its own links, needs the form **without** the slash.
 
-An application that **does not know it is behind a prefix** — a plain service that serves `/page` — needs the form **with** it.
+An application that **does not know it is behind a prefix**, a plain service that serves `/page`, needs the form **with** it.
 
 Get it backwards and the symptom is a 404 from the backend for a request NGINX proxied perfectly. The proxy is working; it is sending a path the backend has never heard of.
 
 ## The doubled slash
 
-If the location does not end in a slash but proxy_pass carries a URI part, the replacement is still literal — and the leftover slash from the request survives.
+If the location does not end in a slash but proxy_pass carries a URI part, the replacement is still literal, and the leftover slash from the request survives.
 
 `location /app` with `proxy_pass http://backend/` and a request for `/app/page` sends **`//page`**. Two slashes, genuinely, upstream.
 
@@ -52,7 +52,7 @@ Some backends normalise that away and some return 404. It is worth knowing this 
 
 ## Two configurations NGINX refuses
 
-A **regular-expression** location with a URI part is rejected outright at startup. There is no literal prefix to replace — the match was computed, not a fixed string — so the substitution is undefined and NGINX will not start.
+A **regular-expression** location with a URI part is rejected outright at startup. There is no literal prefix to replace, since the match was computed rather than a fixed string, so the substitution is undefined and NGINX will not start.
 
 A **named location** (`@fallback`) is refused for the same reason. Both are fine with a bare `proxy_pass http://backend;`, and both need a `rewrite` if you want to change the path.
 
@@ -60,7 +60,7 @@ This is one of the friendlier failures: it happens at startup, with a clear mess
 
 ## The variable exception
 
-Put a variable anywhere in the value — `proxy_pass http://$upstream/;` — and **the prefix substitution stops happening**. The path is used as written.
+Put a variable anywhere in the value, as in `proxy_pass http://$upstream/;`, and **the prefix substitution stops happening**. The path is used as written.
 
 This catches people who add a variable to a working configuration for some unrelated reason and find the paths silently change underneath them.
 

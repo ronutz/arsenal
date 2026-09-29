@@ -18,7 +18,7 @@ Traditional data loss prevention watched the network boundary. That worked when 
 
 **The endpoint agent** sees data at the point of use: a file being copied to a USB drive, pasted into a browser, uploaded to a personal cloud account, or printed. Crucially it sees this before encryption, which is what makes an endpoint agent able to answer questions a network sensor cannot. Traffic to a SaaS application is TLS on the wire; on the endpoint it is a file being attached.
 
-**SaaS integration** connects to the platform's own API and sees what is stored and shared there. That covers the case where data never passes an endpoint you manage — a file shared directly between two cloud accounts, or an external party granted access to a document.
+**SaaS integration** connects to the platform's own API and sees what is stored and shared there. That covers the case where data never passes an endpoint you manage: a file shared directly between two cloud accounts, or an external party granted access to a document.
 
 The two are complementary rather than redundant, and the gap between them is worth naming: an unmanaged device accessing a SaaS platform is visible to the integration but not the agent, and a managed device handling local files is visible to the agent but not the integration. Coverage is the union, and knowing which half is missing for a given path is what makes a deployment honest.
 
@@ -28,9 +28,9 @@ A **tenant** is the top-level container: policies, data, users and administrator
 
 Within a tenant, the objects you work with are:
 
-**Assets** — the endpoints running agents.
-**Nodes** — the components making up the deployment.
-**Users** — the people the activity is attributed to, which is what turns an event from "a file moved" into "someone moved a file".
+**Assets**: the endpoints running agents.
+**Nodes**: the components making up the deployment.
+**Users**: the people the activity is attributed to, which is what turns an event from "a file moved" into "someone moved a file".
 
 ## Deploying agents
 
@@ -54,4 +54,4 @@ That second use is what separates a modern DLP deployment from a rule engine pro
 
 ## What an exam candidate should be able to state cold
 
-The endpoint agent observes data at the point of use, before encryption, which is why it can see what a network sensor cannot. SaaS integration covers data that never touches a managed endpoint, and the two together define coverage — knowing which half is missing for a path is what makes the deployment honest. Tenants are the separation boundary; assets are agent-running endpoints; activity is attributed to users. An installed but unregistered agent has no policy, and agent coverage below full means an unobserved path exists.
+The endpoint agent observes data at the point of use, before encryption, which is why it can see what a network sensor cannot. SaaS integration covers data that never touches a managed endpoint, and the two together define coverage: knowing which half is missing for a path is what makes the deployment honest. Tenants are the separation boundary; assets are agent-running endpoints; activity is attributed to users. An installed but unregistered agent has no policy, and agent coverage below full means an unobserved path exists.

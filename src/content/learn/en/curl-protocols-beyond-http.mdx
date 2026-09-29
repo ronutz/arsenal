@@ -8,7 +8,7 @@ relatedArticles: ["reading-a-curl-command", "curl-security-flags", "curl-headers
 category: networking
 order: 95
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-09-27"
 ---
 
 Ask most engineers what curl does and the answer is "HTTP requests". True, and radically incomplete. The current curl tool speaks 27 URL schemes, and the official list on curl.se reads like a tour of networking history: DICT, FILE, FTP, FTPS, GOPHER, GOPHERS, HTTP, HTTPS, IMAP, IMAPS, LDAP, LDAPS, MQTT, MQTTS, POP3, POP3S, RTSP, SCP, SFTP, SMB, SMBS, SMTP, SMTPS, TELNET, TFTP, WS and WSS. This article walks the map: what each family is for, which schemes start inside TLS, and the curl semantics that surprise people the first time.
@@ -44,3 +44,10 @@ Sort the 27 schemes by TLS posture and a security checklist falls out. Nine star
 ## Try it
 
 The [curl command builder](/tools/curl-command-builder) turns this article into a workbench: pick any of the 27 protocols, get its explainer, fill protocol-aware fields, and copy the exact command with every flag explained. Its inverse, the [HTTP request translator](/tools/curl-command-explainer), reads a pasted command back to you.
+
+## Sources
+
+The scheme list and the HTTP version range are both in curl's own documentation, which is the only source that tracks what a given build actually speaks.
+
+- [curl URL syntax - the supported schemes, dict and gopher among them: "dict, file, ftp, ftps, gopher, gophers, http, https, imap, imaps, ldap, ldaps, mqtt, pop3, pop3s, rtsp, smtp, smtps, telnet, tftp"](https://curl.se/docs/url-syntax.html)
+- [curl manual page - the version switches that bound the HTTP range, from --http0.9 through --http3 and --http3-only](https://curl.se/docs/manpage.html)

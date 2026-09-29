@@ -133,7 +133,7 @@ export default function ZscalerSslBypassPlannerTool() {
             <div className="tmsh-object" key={row.name}>
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{verdictLabel(row.verdict)}</span>
-                <span className="tmsh-name">{row.name}</span>
+                <span className="tmsh-object-name">{row.name}</span>
               </div>
               <ul className="lbm-facts">
                 {row.rationale.map((s, i) => (

@@ -8,7 +8,7 @@ relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
 category: identity
 order: 8
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-09-27"
 ---
 
 ## Autorização não é autenticação
@@ -43,3 +43,10 @@ Dois endpoints completam o quadro: um endpoint **userinfo** retorna claims de pe
 O OIDC é o que a maioria dos botões "Entrar com ..." realmente executa. Manter os dois tokens distintos é a percepção-chave: o **token de ID prova a identidade ao cliente**, o **token de acesso autoriza chamadas de API**, e eles não são intercambiáveis. Combinado com o fluxo de código e o PKCE, é a forma moderna e baseada em padrões de fazer login federado.
 
 A [ferramenta PKCE](/tools/pkce) gera e verifica o `code_verifier` e o `code_challenge` do fluxo, e a [ferramenta JWT](/tools/jwt) decodifica e verifica o token de ID, ambas inteiramente no seu navegador, sem nada enviado.
+
+## Fontes
+
+Os dois padrões citados acima são públicos, e a divisão de trabalho entre eles está declarada nas próprias seções de abertura; não é interpretação.
+
+- [OpenID Connect Core 1.0 - a camada de identidade sobre o OAuth 2.0 e o ID Token que ela acrescenta](https://openid.net/specs/openid-connect-core-1_0.html)
+- [RFC 6749, The OAuth 2.0 Authorization Framework - que responde apenas à pergunta de autorização](https://www.rfc-editor.org/rfc/rfc6749.html)

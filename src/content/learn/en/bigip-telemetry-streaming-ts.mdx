@@ -8,7 +8,7 @@ relatedArticles: ["bigip-declarative-onboarding-do", "as3-declaration-anatomy"]
 category: networking
 order: 7
 status: reviewed
-updated: "2026-07-05"
+updated: "2026-09-27"
 ---
 
 The F5 Automation Toolchain is usually described in terms of its two configuration extensions, and for good reason: AS3 (Application Services 3 Extension) configures the Layer 4-7 application services on a BIG-IP, and DO does the Layer 1-3 onboarding that gets the box onto the network. Telemetry Streaming is the third extension, and it belongs to a different category of work. AS3 and DO change the device's configuration; TS does not touch the configuration at all. It aggregates, normalizes, and forwards statistics and events from the BIG-IP to a consumer application, which makes it the observability half of a toolchain otherwise about configuration. The mechanics are the same declarative model, you POST a single JSON declaration to a REST (representational state transfer) endpoint, but the declaration describes a data pipeline rather than a desired configuration. The [TS explainer](/tools/telemetry-streaming-explainer) reads that pipeline back the way this article describes it.
@@ -30,3 +30,9 @@ The most valuable thing to check in a TS declaration is not any single property 
 ## Maintenance mode, and the limits of a structure checker
 
 One fact belongs in any honest description of TS today: F5 has placed Telemetry Streaming in a phase of ongoing maintenance and support. It continues to receive critical fixes and security updates, and F5 has stated there is no plan to deprecate it, but it is no longer the actively expanding product it once was, and new observability investment tends to point elsewhere. That does not diminish its usefulness on the many BIG-IPs already streaming telemetry through it, but it is worth knowing before you build new pipelines on it. As with the AS3 and DO explainers, [Telemetry Streaming (TS) explainer](/tools/telemetry-streaming-explainer) is a structure explainer and sanity checker rather than the full schema validator, F5 publishes the TS schema for that, and it runs entirely in the browser and never contacts a BIG-IP.
+
+## Sources
+
+The release that inverted the direction of telemetry is stated in the first line of F5's own page for the feature.
+
+- [Pull Consumers - "F5 BIG-IP Telemetry Streaming 1.11 introduced a pull consumer ... using a new class called Telemetry_Pull_Consumer", and the interval=0 poller that goes with it](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/pull-consumers.html)

@@ -1,7 +1,7 @@
 ---
 slug: fortios-cli-grammar
 title: "The FortiOS CLI verb that quietly deletes things"
-summary: "config, edit, set, next, end — a small grammar with three traps. `set` replaces a whole list, `edit` creates what it cannot find, and `end` is the only line that commits."
+summary: "config, edit, set, next, end: a small grammar with three traps. `set` replaces a whole list, `edit` creates what it cannot find, and `end` is the only line that commits."
 concepts: ["fortios", "fortigate", "cli", "configuration", "operations"]
 relatedTools: ["fortios-cli-config-explainer", "fortigate-policy-match-order"]
 relatedArticles: ["fortigate-policy-order"]
@@ -48,7 +48,7 @@ The command that adds is **`append`**:
 append srcaddr "branch-net"
 ```
 
-The distinction is invisible when reading a config block casually — which is
+The distinction is invisible when reading a config block casually, which is
 exactly when config blocks get read, usually from a ticket, usually under time
 pressure. If a block you are about to paste contains `set` on a multi-value
 field, the question is not whether it is valid. It is **what was in that field
@@ -69,7 +69,7 @@ keystroke rather than to a decision, and the only evidence is that it exists.
 
 They are not interchangeable, and the failure mode is specific: a block using
 `end` where `next` was meant **leaves the table early**, and every remaining
-edit lands somewhere else entirely — usually at the top level, where it either
+edit lands somewhere else entirely, usually at the top level, where it either
 fails or configures something unrelated.
 
 A block with no `end` at all has committed nothing. If a change appears not to
@@ -80,7 +80,7 @@ have taken effect, count the `end`s before suspecting the device.
 **`show` displays only what differs from the defaults.** `show
 full-configuration` displays everything.
 
-So a field missing from a config block **is not necessarily unset** — it may
+So a field missing from a config block **is not necessarily unset**: it may
 simply be sitting at its default. Reasoning about what a device is doing from a
 `show` output means reasoning about the differences, not the whole picture, and
 that is a distinction worth making explicit before drawing a conclusion from an

@@ -31,7 +31,7 @@ The configuration wizard exists because getting those supporting services right 
 
 ## Access policies decide the destination
 
-An access policy pairs a **condition** with a **result**. The condition matches on what FortiNAC knows: the endpoint's classification, its registration state, the user's group membership, the location, the time. The result is the network access to grant — typically a VLAN (virtual local area network).
+An access policy pairs a **condition** with a **result**. The condition matches on what FortiNAC knows: the endpoint's classification, its registration state, the user's group membership, the location, the time. The result is the network access to grant: typically a VLAN (virtual local area network).
 
 Policies are evaluated in order and the first match wins, which by now should sound familiar. It carries the same consequence: a broad policy placed above a specific one makes the specific one unreachable, and nothing warns you.
 
@@ -53,7 +53,7 @@ The controls that matter are the ones people forget to set:
 
 FortiNAC can consume information from systems that know things it does not.
 
-**MDM integration** gives FortiNAC the compliance state of a managed mobile device — whether it is enrolled, encrypted, jailbroken, running a required version. That lets an access policy depend on device posture rather than only on identity, which is the practical difference between "this is Ana's phone" and "this is Ana's phone and it is compliant".
+**MDM integration** gives FortiNAC the compliance state of a managed mobile device: whether it is enrolled, encrypted, jailbroken, running a required version. That lets an access policy depend on device posture rather than only on identity, which is the practical difference between "this is Ana's phone" and "this is Ana's phone and it is compliant".
 
 **Syslog and SNMP trap input** let third-party devices tell FortiNAC something happened. A security appliance that detects malicious behaviour can send a syslog message that FortiNAC parses and acts on, which is how products with no native integration still participate in enforcement.
 

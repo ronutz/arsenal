@@ -8,7 +8,7 @@ relatedArticles: ["http-methods-the-verbs", "http-headers-anatomy", "http-versio
 category: networking
 order: 208
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 An HTTP response leads with three digits, and the design's genius is that a client which has never seen the specific code can still behave correctly: **the first digit names the family, and the family names the required behavior**. That forward-compatibility rule - treat an unknown `4xx` as `400`, an unknown `5xx` as `500` - is why the status registry could keep growing for thirty years without breaking a single old client. [The explainer tool](/tools/http-status-code-explainer) decodes any code you paste; this article gives you the map it draws from.
@@ -28,3 +28,12 @@ The 3xx family hides the web's most consequential subtleties. `301` (permanent) 
 ## The 5xx that name your outage
 
 `500` is the server's generic confession. The proxy-era trio matters more in practice, because each points somewhere different in the chain: `502 Bad Gateway` - the intermediary reached the upstream and got garbage or a refusal; `503 Service Unavailable` - the service itself is overloaded or down (the honest maintenance code, also ideally with `Retry-After`); `504 Gateway Timeout` - the intermediary reached out and *nobody answered in time*. On any load-balanced or CDN-fronted architecture, reading 502 vs 503 vs 504 correctly is the first minute of every incident - it tells you whether to look at the backend's health, its capacity, or the path between.
+
+## Sources
+
+The five classes and nearly every code above are defined in one document; the handful that are not each have their own, including the two curiosities.
+
+- [RFC 9110, HTTP Semantics - Section 15 defines the 1xx to 5xx classes and the individual codes](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 6585, Additional HTTP Status Codes - where 428, 429, 431 and 511 are defined](https://www.rfc-editor.org/rfc/rfc6585.html)
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles - 451, whose acknowledgements thank Ray Bradbury](https://www.rfc-editor.org/rfc/rfc7725.html)
+- [RFC 2324, HTCPCP/1.0 - dated 1 April 1998, and the origin of 418 I'm a teapot](https://www.rfc-editor.org/rfc/rfc2324.html)

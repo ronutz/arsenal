@@ -23,7 +23,7 @@ function Node({ n, t }: { n: FilterNode; t: ReturnType<typeof useTranslations> }
   return (
     <div className="tmsh-object">
       <div className="tmsh-object-head">
-        <span className="type-badge">{badge}</span>
+        <span className="tmsh-type-badge">{badge}</span>
         {n.kind === "item" && n.attribute ? <code>{n.attribute}</code> : null}
       </div>
       <p>{n.explanation}</p>
@@ -74,8 +74,8 @@ export default function LdapFilterExplainerTool() {
       {result === null ? (
         <p className="ztc-empty">{t("emptyState")}</p>
       ) : !result.ok ? (
-        <div className="json-error">
-          <p className="json-error-title">{t("errorTitle")}</p>
+        <div className="json-error-box">
+          <p className="json-error-headline">{t("errorTitle")}</p>
           <p>
             {result.error} {t("errorAt")} {result.pos}.
           </p>

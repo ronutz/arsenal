@@ -13,19 +13,19 @@ updated: "2026-07-23"
 
 ## Origins: why the spectrum is administered at all
 
-Radio began unregulated, and the consequence arrived quickly: transmitters interfered with each other, and interference at sea cost lives. The response was international — a treaty framework agreed at conferences beginning in 1906 — which is why spectrum is one of the very few technical domains coordinated by treaty rather than by industry consensus.
+Radio began unregulated, and the consequence arrived quickly: transmitters interfered with each other, and interference at sea cost lives. The response was international, a treaty framework agreed at conferences beginning in 1906, which is why spectrum is one of the very few technical domains coordinated by treaty rather than by industry consensus.
 
-The **ITU** allocates internationally and divides the world into three regions with different allocations; national regulators — Anatel in Brazil, the FCC in the United States, Ofcom in the United Kingdom, and their counterparts — assign within that framework. This is the reason a device legal in one country is not automatically legal in another, and why equipment carries per-region certification.
+The **ITU** allocates internationally and divides the world into three regions with different allocations; national regulators (Anatel in Brazil, the FCC in the United States, Ofcom in the United Kingdom, and their counterparts) assign within that framework. This is the reason a device legal in one country is not automatically legal in another, and why equipment carries per-region certification.
 
-The **ISM bands** are the exception that produced the modern wireless world. Set aside originally for industrial, scientific and medical equipment — the 2.4 GHz allocation exists partly because microwave ovens are noisy there — they became the unlicensed space where anything may transmit under power and behaviour rules. Wi-Fi, Bluetooth, cordless telephony and vast numbers of sensors live there **because nobody has to ask permission**, and the cost of that freedom is that nobody can complain about interference either.
+The **ISM bands** are the exception that produced the modern wireless world. Set aside originally for industrial, scientific and medical equipment (the 2.4 GHz allocation exists partly because microwave ovens are noisy there) they became the unlicensed space where anything may transmit under power and behaviour rules. Wi-Fi, Bluetooth, cordless telephony and vast numbers of sensors live there **because nobody has to ask permission**, and the cost of that freedom is that nobody can complain about interference either.
 
-That trade — licensed exclusivity versus unlicensed freedom — is the single most useful frame for the whole subject. A licensed band costs money and gives legal protection from interference; an unlicensed band is free and gives none.
+That trade, licensed exclusivity versus unlicensed freedom, is the single most useful frame for the whole subject. A licensed band costs money and gives legal protection from interference; an unlicensed band is free and gives none.
 
 ## One trade governs everything
 
 Low frequencies travel far and carry little. High frequencies carry enormous amounts and stop at the first obstacle. Almost every design decision in radio, from submarine communications to 5G, is a position taken on that trade.
 
-The reason is physical. A long wavelength diffracts around hills, buildings, and the curve of the earth; a short one behaves increasingly like light, which is why you can see the shadow cast by a wall and why your Wi-Fi has the same problem. Meanwhile bandwidth — the room available to carry information — scales with frequency, so the high bands are where the capacity lives.
+The reason is physical. A long wavelength diffracts around hills, buildings, and the curve of the earth; a short one behaves increasingly like light, which is why you can see the shadow cast by a wall and why your Wi-Fi has the same problem. Meanwhile bandwidth, the room available to carry information, scales with frequency, so the high bands are where the capacity lives.
 
 ## The three propagation modes
 
@@ -33,7 +33,7 @@ Nearly all the behaviour follows from which of three modes dominates.
 
 **Ground wave** follows the earth's surface, hugging the terrain. It dominates below about 2 MHz. It is why AM broadcast stations cover a region reliably day and night, and why very low frequencies reach submerged submarines.
 
-**Sky wave** is the interesting one. Between roughly 2 and 30 MHz, signals launched upward are refracted by the **ionosphere** and bent back to earth, hundreds or thousands of kilometres away. They can bounce off the ground and go up again — **multi-hop** — and cross oceans. This is not a metaphor: an HF station running 100 watts into a wire antenna can be heard on another continent, which no amount of power at 2.4 GHz will achieve.
+**Sky wave** is the interesting one. Between roughly 2 and 30 MHz, signals launched upward are refracted by the **ionosphere** and bent back to earth, hundreds or thousands of kilometres away. They can bounce off the ground and go up again, in a **multi-hop** path, and cross oceans. This is not a metaphor: an HF station running 100 watts into a wire antenna can be heard on another continent, which no amount of power at 2.4 GHz will achieve.
 
 **Line of sight** takes over above roughly 30 MHz. The signal goes where you can see, limited by the horizon, which is why VHF and UHF antennas are mounted as high as possible and why obstructions matter so much.
 
@@ -41,7 +41,7 @@ The ionosphere is not constant, and that is the whole texture of HF operating. I
 
 ## The bands
 
-**VLF, 3–30 kHz.** Wavelengths of tens of kilometres. Penetrates seawater, so it is used to communicate with submerged submarines, and for some navigation and time signals. Data rates are almost comically low — a few characters per second — but it reaches places nothing else does.
+**VLF, 3–30 kHz.** Wavelengths of tens of kilometres. Penetrates seawater, so it is used to communicate with submerged submarines, and for some navigation and time signals. Data rates are almost comically low, a few characters per second, but it reaches places nothing else does.
 
 **LF, 30–300 kHz.** Long-distance ground wave. Time-signal stations that discipline radio-controlled clocks live here, along with some maritime navigation and, in parts of the world, longwave broadcasting.
 
@@ -49,9 +49,9 @@ The ionosphere is not constant, and that is the whole texture of HF operating. I
 
 **HF, 3–30 MHz.** Shortwave. This is the band of international broadcasting, maritime and aeronautical long-distance communications, and most amateur DX work. Sky wave makes worldwide contact possible with modest equipment, and the drawback is the same as the advantage: conditions vary constantly, and the frequency that worked this morning may be dead this afternoon. Also home to **CB** near 27 MHz at the top of the band.
 
-**VHF, 30–300 MHz.** FM broadcasting, air traffic control, marine radio, older television, and heavy amateur repeater use. Mostly line of sight, generally reliable, and largely immune to the ionospheric drama below it — though at solar maximum the lower VHF frequencies occasionally propagate long distances anyway.
+**VHF, 30–300 MHz.** FM broadcasting, air traffic control, marine radio, older television, and heavy amateur repeater use. Mostly line of sight, generally reliable, and largely immune to the ionospheric drama below it, though at solar maximum the lower VHF frequencies occasionally propagate long distances anyway.
 
-**UHF, 300 MHz–3 GHz.** Where modern life happens: mobile telephony, Wi-Fi at 2.4 GHz, Bluetooth, GPS, most television, and amateur repeaters. Enough bandwidth for real data rates, small antennas, and buildings that block signals convincingly. **Tropospheric ducting** — temperature inversions trapping signals in a refractive layer — occasionally carries UHF far past the horizon.
+**UHF, 300 MHz–3 GHz.** Where modern life happens: mobile telephony, Wi-Fi at 2.4 GHz, Bluetooth, GPS, most television, and amateur repeaters. Enough bandwidth for real data rates, small antennas, and buildings that block signals convincingly. **Tropospheric ducting**, where temperature inversions trap signals in a refractive layer, occasionally carries UHF far past the horizon.
 
 **SHF, 3–30 GHz.** Satellite links, radar, microwave backhaul, Wi-Fi at 5 and 6 GHz. Huge capacity, strictly line of sight, and rain begins to matter as an attenuator.
 
@@ -59,13 +59,13 @@ The ionosphere is not constant, and that is the whole texture of HF operating. I
 
 ## Where the familiar things sit
 
-The **ISM bands** — industrial, scientific, and medical — are the licence-exempt allocations that made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is precisely why that band is congested; the 5 and 6 GHz Wi-Fi bands offer more room and less range, exactly as the trade predicts. **LoRa** takes the opposite bet, using sub-GHz ISM allocations and very low data rates to get kilometres of range and years of battery life from a sensor — a deliberate choice of reach over capacity.
+The **ISM bands**, industrial, scientific, and medical, are the licence-exempt allocations that made consumer wireless possible. Wi-Fi and Bluetooth share 2.4 GHz with microwave ovens and much else, which is precisely why that band is congested; the 5 and 6 GHz Wi-Fi bands offer more room and less range, exactly as the trade predicts. **LoRa** takes the opposite bet, using sub-GHz ISM allocations and very low data rates to get kilometres of range and years of battery life from a sensor, a deliberate choice of reach over capacity.
 
 Cellular spans low bands for coverage and high bands for capacity in the same network, which is the trade managed rather than resolved: the low band reaches the rural edge, the high band serves the dense city block.
 
 ## What the numbers mean in practice
 
-**Bandwidth is where the capacity comes from.** Shannon's result ties achievable rate to bandwidth and signal-to-noise ratio, and the practical reading is that higher frequencies are attractive because there is simply more room up there — a 100 MHz channel at 6 GHz is unremarkable, and impossible at 900 MHz where the entire band is narrower than that.
+**Bandwidth is where the capacity comes from.** Shannon's result ties achievable rate to bandwidth and signal-to-noise ratio, and the practical reading is that higher frequencies are attractive because there is simply more room up there: a 100 MHz channel at 6 GHz is unremarkable, and impossible at 900 MHz where the entire band is narrower than that.
 
 **Attenuation rises with frequency**, and the interaction with obstacles is what decides deployment. Free-space loss increases with frequency, but the sharper effect indoors is material: at 2.4 GHz a plasterboard wall is a modest loss, at 60 GHz it is effectively opaque, and at millimetre wavelengths even foliage and rain matter. This is why coverage planning is a function of building material as much as of distance.
 
@@ -73,19 +73,19 @@ Cellular spans low bands for coverage and high bands for capacity in the same ne
 
 ## Where each band is actually used
 
-- **Sub-1 GHz** — long range, good penetration, small data rates. LoRaWAN, Sigfox, Z-Wave, utility metering, and the reason rural coverage is built on low bands.
-- **2.4 GHz** — the global compromise: available nearly everywhere, crowded by Wi-Fi, Bluetooth, ovens and everything else, with [only three non-overlapping Wi-Fi channels](/learn/wireless-networking-from-802-11-to-wifi-7).
-- **5 GHz** — much more spectrum, shorter reach, and portions shared with radar, which is why devices must detect radar and vacate a channel.
-- **6 GHz** — recently opened for unlicensed use in many jurisdictions and not in all, with no legacy devices in it, which is the whole appeal.
-- **Cellular bands** — licensed and auctioned, with low bands for coverage, mid bands for the balance, and millimetre wave for capacity in dense areas at very short range.
-- **Millimetre wave and above** — enormous bandwidth, line-of-sight behaviour, and rain fade as a design input rather than a footnote.
+- **Sub-1 GHz**: long range, good penetration, small data rates. LoRaWAN, Sigfox, Z-Wave, utility metering, and the reason rural coverage is built on low bands.
+- **2.4 GHz**: the global compromise: available nearly everywhere, crowded by Wi-Fi, Bluetooth, ovens and everything else, with [only three non-overlapping Wi-Fi channels](/learn/wireless-networking-from-802-11-to-wifi-7).
+- **5 GHz**: much more spectrum, shorter reach, and portions shared with radar, which is why devices must detect radar and vacate a channel.
+- **6 GHz**: recently opened for unlicensed use in many jurisdictions and not in all, with no legacy devices in it, which is the whole appeal.
+- **Cellular bands**: licensed and auctioned, with low bands for coverage, mid bands for the balance, and millimetre wave for capacity in dense areas at very short range.
+- **Millimetre wave and above**: enormous bandwidth, line-of-sight behaviour, and rain fade as a design input rather than a footnote.
 
 ## Who operates in it, by category
 
-- **Regulators** — the ITU internationally, and national bodies such as Anatel, the FCC and Ofcom, which decide what may be transmitted where and at what power. In spectrum, the regulator is a more consequential actor than any vendor.
-- **Licensed operators** — mobile carriers and broadcasters, whose licences are assets acquired at auction and whose interference complaints have legal force.
-- **Unlicensed equipment makers** — Wi-Fi, Bluetooth and short-range vendors, competing inside rules they cannot change.
-- **Standards and certification bodies** — IEEE for the radio standards, the Wi-Fi Alliance and Bluetooth SIG for interoperability marks, and national certification regimes that decide whether a device may be sold at all.
+- **Regulators**: the ITU internationally, and national bodies such as Anatel, the FCC and Ofcom, which decide what may be transmitted where and at what power. In spectrum, the regulator is a more consequential actor than any vendor.
+- **Licensed operators**: mobile carriers and broadcasters, whose licences are assets acquired at auction and whose interference complaints have legal force.
+- **Unlicensed equipment makers**: Wi-Fi, Bluetooth and short-range vendors, competing inside rules they cannot change.
+- **Standards and certification bodies**: IEEE for the radio standards, the Wi-Fi Alliance and Bluetooth SIG for interoperability marks, and national certification regimes that decide whether a device may be sold at all.
 
 The practical consequence for anyone designing with radio: **the constraint is usually regulatory, not physical**. The band determines the power, the power determines the range, and the regulator determines the band.
 

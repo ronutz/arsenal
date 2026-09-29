@@ -77,7 +77,7 @@ export default function TimezoneMeetingPlannerTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("resultTitle")}</h3>
+            <h3 className="cidr-section-title">{t("resultTitle")}</h3>
             <p className="mono">{result.data.instantUtc} UTC</p>
             <div className="cidr-table-wrap">
               <table className="cidr-table">

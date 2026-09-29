@@ -9,7 +9,7 @@ relatedArticles: ["nginx-location-matching-order", "nginx-configuration-tree-and
 category: networking
 order: 126
 status: reviewed
-updated: "2026-07-28"
+updated: "2026-09-27"
 ---
 
 Não dá para explicar por que o NGINX existe sem explicar o Apache, porque o NGINX foi escrito contra um problema específico que a arquitetura do Apache tinha, e entender esse problema explica boa parte do que os dois servidores fazem.
@@ -57,3 +57,12 @@ A implantação comum por anos foi ambos: NGINX na frente para concorrência e T
 ## O que quem estuda precisa saber de cor
 
 O Apache começou em fevereiro de 1995 como remendos coordenados ao NCSA httpd parado de Rob McCool, por oito contribuidores incluindo Roy Fielding, que depois coautorou o HTTP/1.1 e definiu o REST; ultrapassou o NCSA em um ano e a Apache Software Foundation foi constituída em 1999. Seu modelo original dá um processo a cada conexão, o que é robusto e flexível e caro em memória — a restrição que virou o problema C10K. O Apache respondeu com módulos de multiprocessamento, e o MPM event é uma máquina bem diferente do prefork. O NGINX respondeu invertendo o modelo: poucos workers, cada um com um laço de eventos sobre muitas conexões. Essa diferença explica as diferenças de configuração, o `.htaccess` acima de tudo, e os dois eram comumente implantados juntos em vez de um substituir o outro.
+
+## Fontes
+
+As datas, os números de versão e os oito fundadores estão na própria página de história da Apache Software Foundation; os modelos de processo e o problema que os remodelou estão documentados por seus autores.
+
+- [About Apache - os patches de fevereiro de 1995 para o NCSA httpd de Rob McCool, os oito contribuidores incluindo Roy Fielding, a versão 0.6.2 em abril de 1995 e a 1.0 em 1 de dezembro de 1995](https://httpd.apache.org/ABOUT_APACHE.html)
+- [Multi-Processing Modules - prefork, worker e event, e por que apenas um pode ser carregado por vez](https://httpd.apache.org/docs/2.4/mpm.html)
+- [Dan Kegel, The C10K problem (1999) - o enunciado original da questão das dez mil conexões](https://www.kegel.com/c10k.html)
+- [nginx - o servidor de Igor Sysoev e a arquitetura de eventos com um mestre e vários workers, nas palavras do próprio projeto](https://nginx.org/en/)

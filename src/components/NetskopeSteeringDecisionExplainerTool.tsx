@@ -105,7 +105,7 @@ export default function NetskopeSteeringDecisionExplainerTool() {
           <div className="tmsh-object">
             <div className="tmsh-object-head">
               <span className="tmsh-type-badge">{result.verdict}</span>
-              <span className="tmsh-name">{t("modeLabel", { mode: result.effectiveMode })}</span>
+              <span className="tmsh-object-name">{t("modeLabel", { mode: result.effectiveMode })}</span>
             </div>
             <ul className="lbm-facts">
               <li>{result.headline}</li>

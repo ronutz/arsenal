@@ -65,7 +65,7 @@ export default function RomanNumeralsTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("resultTitle")}</h3>
+            <h3 className="cidr-section-title">{t("resultTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.4rem" }}>
               {result.data.value} = {result.data.canonical}
             </p>
@@ -74,7 +74,7 @@ export default function RomanNumeralsTool() {
             )}
           </section>
           <section>
-            <h3 className="cidr-h">{t("placesTitle")}</h3>
+            <h3 className="cidr-section-title">{t("placesTitle")}</h3>
             <div className="cidr-table-wrap">
               <table className="cidr-table">
                 <thead>

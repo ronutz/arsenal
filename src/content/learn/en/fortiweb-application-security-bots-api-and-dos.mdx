@@ -20,7 +20,7 @@ Signature-based detection recognises the recognisable: SQL injection, cross-site
 
 Signatures are fast and precise about what they know, and they generate false positives on applications whose legitimate input resembles attack payloads. A content management system where authors write about SQL will trip SQL injection signatures with entirely legitimate content.
 
-That makes **exceptions** part of running a WAF (web application firewall) rather than a sign of failure. The discipline is to scope them narrowly — this signature, on this URL, on this parameter — because a signature disabled globally to fix one page removes protection everywhere.
+That makes **exceptions** part of running a WAF (web application firewall) rather than a sign of failure. The discipline is to scope them narrowly (this signature, on this URL, on this parameter) because a signature disabled globally to fix one page removes protection everywhere.
 
 ## Machine learning
 
@@ -50,7 +50,7 @@ The categorisation that makes this manageable is that bots are not one thing. Se
 
 ## API protection
 
-APIs need separate treatment for a straightforward reason: there is no browser and no user, so every challenge-based control is unavailable. There is also no page to inspect — the payload is structured data.
+APIs need separate treatment for a straightforward reason: there is no browser and no user, so every challenge-based control is unavailable. There is also no page to inspect: the payload is structured data.
 
 **Schema validation** is the strongest control available, and it is the one that makes API protection tractable. An OpenAPI specification describes exactly what each endpoint accepts: which fields, which types, which ranges, which are required. Validating against it rejects anything malformed without knowing anything about attacks, because a request that does not match the contract is invalid by definition.
 

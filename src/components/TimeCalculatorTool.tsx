@@ -101,14 +101,14 @@ export default function TimeCalculatorTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{result.data.kind === "diff" ? t("spanTitle") : t("resultTitle")}</h3>
+            <h3 className="cidr-section-title">{result.data.kind === "diff" ? t("spanTitle") : t("resultTitle")}</h3>
             {result.data.kind === "shift" && (
               <p className="mono" style={{ fontSize: "1.25rem" }}>{result.data.bIso}</p>
             )}
             <p className="mono">{result.data.iso}{result.data.sign < 0 ? ` ${t("backwards")}` : ""}</p>
           </section>
           <section>
-            <h3 className="cidr-h">{t("breakdownTitle")}</h3>
+            <h3 className="cidr-section-title">{t("breakdownTitle")}</h3>
             <div className="cidr-table-wrap">
               <table className="cidr-table">
                 <thead><tr><th>{t("colUnit")}</th><th>{t("colBreakdown")}</th><th>{t("colTotal")}</th></tr></thead>

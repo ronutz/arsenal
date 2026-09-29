@@ -18,7 +18,7 @@ Every troubleshooting session on this platform starts in the same place, and it 
 
 **The rule must track.** Each rule's Track field decides whether a match is recorded at all. A rule set to None handles traffic silently. This is the first thing to check when the logs are empty, ahead of anything more interesting.
 
-**A log server must receive it.** Gateways send logs to a log server — usually the management server itself in a small deployment, or a dedicated log server where volume justifies one. If the gateway cannot reach it, logs queue locally and then age out.
+**A log server must receive it.** Gateways send logs to a log server, usually the management server itself in a small deployment, or a dedicated log server where volume justifies one. If the gateway cannot reach it, logs queue locally and then age out.
 
 The failure worth recognising: a gateway that lost its log server keeps enforcing policy perfectly and stops producing evidence. Nothing about traffic handling changes, so the symptom is silence rather than an alarm.
 

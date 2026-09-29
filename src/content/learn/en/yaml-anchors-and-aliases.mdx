@@ -34,6 +34,6 @@ Because an alias can point at something that itself contains aliases, YAML allow
 
 Anchors and aliases look like a convenience for avoiding repetition, and in a configuration file that is exactly what they are. **The cost only appears when they nest.**
 
-An alias that expands to a structure containing further aliases multiplies rather than adds, which is the same arithmetic as XML entity expansion and has the same consequence: **a small file that expands into an enormous one.** This is a documented denial-of-service class for YAML parsers, and it does not need a malicious author — a deeply factored configuration can reach it by accident.
+An alias that expands to a structure containing further aliases multiplies rather than adds, which is the same arithmetic as XML entity expansion and has the same consequence: **a small file that expands into an enormous one.** This is a documented denial-of-service class for YAML parsers, and it does not need a malicious author: a deeply factored configuration can reach it by accident.
 
 The other surprise is subtler: **merge keys copy at the point of use**, so a value changed in the anchor after the alias was written behaves as the reader expects, while a value overridden locally does not compose the way inheritance in a programming language would.

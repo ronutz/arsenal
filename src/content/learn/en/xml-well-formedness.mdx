@@ -38,6 +38,6 @@ The key relationship is that validity presupposes well-formedness but not the re
 
 Well-formedness says the document is parseable: tags balance, one root, characters escaped. **It says nothing about whether the content means anything**, and a system that accepts any well-formed document is accepting a very large set.
 
-The gap that matters operationally is between **well-formed** and **valid**. Validation against a schema is what rejects a document with the right shape and the wrong contents — an unexpected element, a value outside its range, a required field absent.
+The gap that matters operationally is between **well-formed** and **valid**. Validation against a schema is what rejects a document with the right shape and the wrong contents: an unexpected element, a value outside its range, a required field absent.
 
 **Most XML handling errors in production are documents that parsed perfectly.** They arrived well-formed, were accepted, and failed somewhere downstream where the assumption they violated was never written as a rule.

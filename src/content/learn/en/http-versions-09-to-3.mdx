@@ -41,23 +41,23 @@ The versions read as a single argument about one constraint: **a request costs a
 
 **HTTP/1.0 opened a TCP connection per request** and closed it after the response. A page with forty images paid forty connection setups, each with its own handshake and its own slow start. Browsers worked around it by opening several connections at once, which shifted the cost to the server and to the network rather than removing it.
 
-**HTTP/1.1 added persistent connections and pipelining.** Keep-alive fixed most of the waste. Pipelining — sending several requests without waiting for each answer — was specified and then abandoned in practice, because responses had to come back in order: one slow response blocked everything queued behind it. That is **head-of-line blocking**, and it is the thread running through the next two versions.
+**HTTP/1.1 added persistent connections and pipelining.** Keep-alive fixed most of the waste. Pipelining, sending several requests without waiting for each answer, was specified and then abandoned in practice, because responses had to come back in order: one slow response blocked everything queued behind it. That is **head-of-line blocking**, and it is the thread running through the next two versions.
 
 It also added the pieces that made the modern web possible: the **Host** header, so many sites could share one address, which is what allowed virtual hosting and, later, [shared-address](/learn/cgnat-address-sharing-and-attribution) hosting economics; chunked transfer encoding; cache validators; and byte ranges.
 
-**HTTP/2 removed the blocking at the application layer.** One connection carries many interleaved streams, framed in binary rather than text. Headers stopped being retransmitted in full on every request — **HPACK** compresses them against a shared table, which matters enormously when a page issues hundreds of requests with nearly identical headers. Server push was included and has since been effectively abandoned: it guessed wrong often enough to waste more bandwidth than it saved.
+**HTTP/2 removed the blocking at the application layer.** One connection carries many interleaved streams, framed in binary rather than text. Headers stopped being retransmitted in full on every request: **HPACK** compresses them against a shared table, which matters enormously when a page issues hundreds of requests with nearly identical headers. Server push was included and has since been effectively abandoned: it guessed wrong often enough to waste more bandwidth than it saved.
 
-But the blocking moved rather than vanished. TCP guarantees ordered delivery, so **one lost packet stalls every stream on that connection** while it is retransmitted. On a clean network HTTP/2 is faster; on a lossy one — mobile, congested links — it can be slower than several HTTP/1.1 connections.
+But the blocking moved rather than vanished. TCP guarantees ordered delivery, so **one lost packet stalls every stream on that connection** while it is retransmitted. On a clean network HTTP/2 is faster; on a lossy one (mobile, congested links) it can be slower than several HTTP/1.1 connections.
 
 **HTTP/3 fixes that by changing transport.** [QUIC](/learn/tls12-tls13-dtls-quic) runs over UDP and implements streams itself, so a lost packet stalls only its own stream. The handshake merges with the cryptographic one, and connection identifiers replace the address tuple, so a session survives moving from wireless to mobile.
 
 ## Semantics, syntax, and what the 2022 renumbering did
 
-The 2022 revision separated the specifications into **semantics** — methods, status codes, header fields, caching, conditional requests — from the **wire syntax** of each version. That is not bookkeeping: it means a status code or a method is defined once and applies identically across 1.1, 2 and 3, while only the framing differs.
+The 2022 revision separated the specifications into **semantics** (methods, status codes, header fields, caching, conditional requests) from the **wire syntax** of each version. That is not bookkeeping: it means a status code or a method is defined once and applies identically across 1.1, 2 and 3, while only the framing differs.
 
 The practical consequence is that upgrading versions changes performance and multiplexing, not meaning. A `304 Not Modified` behaves the same way everywhere; what changes is how many round trips it took to ask.
 
-Two things did change on the wire and catch people out. **Header field names are lowercase in HTTP/2 and HTTP/3** — a mixed-case name is a protocol error, which surfaces in code that compared header names literally. And the request line was replaced by **pseudo-headers** (`:method`, `:scheme`, `:authority`, `:path`), so tools that parse a raw request line have nothing to parse.
+Two things did change on the wire and catch people out. **Header field names are lowercase in HTTP/2 and HTTP/3**: a mixed-case name is a protocol error, which surfaces in code that compared header names literally. And the request line was replaced by **pseudo-headers** (`:method`, `:scheme`, `:authority`, `:path`), so tools that parse a raw request line have nothing to parse.
 
 ## The 2022 reorganization: semantics vs wire syntax
 
@@ -65,7 +65,7 @@ The most useful thing to know about today's HTTP specifications is how they are 
 
 ## Operating it, and where each version still belongs
 
-**Version negotiation** is worth knowing precisely because it explains what you see on the wire. HTTP/2 over TLS is chosen with **ALPN** during the handshake, so there is no extra round trip. HTTP/3 cannot be negotiated that way — it is a different transport — so a server advertises it with the **Alt-Svc** header or an **HTTPS DNS record**, and the client switches on a later connection. That is why a browser's first visit is frequently HTTP/2 and the second is HTTP/3.
+**Version negotiation** is worth knowing precisely because it explains what you see on the wire. HTTP/2 over TLS is chosen with **ALPN** during the handshake, so there is no extra round trip. HTTP/3 cannot be negotiated that way, being a different transport, so a server advertises it with the **Alt-Svc** header or an **HTTPS DNS record**, and the client switches on a later connection. That is why a browser's first visit is frequently HTTP/2 and the second is HTTP/3.
 
 **Where each still wins.** HTTP/1.1 remains the right answer for simple internal APIs, health checks and anything where a human debugs with a text client. HTTP/2 is the default for browser traffic to origins on well-behaved networks and for many service-to-service protocols. HTTP/3 pays off most on lossy and mobile networks, and on connections that migrate.
 
@@ -75,8 +75,8 @@ The most useful thing to know about today's HTTP specifications is how they are 
 
 ## Implementations, by category
 
-- **Servers and proxies** — NGINX, Apache, Caddy, HAProxy, Envoy, Traefik. HTTP/2 is universal; HTTP/3 support arrived later and unevenly, and is worth confirming per version rather than per product.
-- **Delivery networks** — Cloudflare, Fastly, Akamai and peers. In practice the largest deployers of HTTP/3, and frequently where a site gets it without changing its origin at all.
-- **Client libraries** — curl, and the language-native stacks. Support for HTTP/3 varies enough that a client's version list is a real compatibility question rather than a footnote.
-- **Browsers** — the reason HTTP/2 and HTTP/3 deployed at all, and the reason server push died: they set the defaults that decide which version is actually used.
+- **Servers and proxies**: NGINX, Apache, Caddy, HAProxy, Envoy, Traefik. HTTP/2 is universal; HTTP/3 support arrived later and unevenly, and is worth confirming per version rather than per product.
+- **Delivery networks**: Cloudflare, Fastly, Akamai and peers. In practice the largest deployers of HTTP/3, and frequently where a site gets it without changing its origin at all.
+- **Client libraries**: curl, and the language-native stacks. Support for HTTP/3 varies enough that a client's version list is a real compatibility question rather than a footnote.
+- **Browsers**: the reason HTTP/2 and HTTP/3 deployed at all, and the reason server push died: they set the defaults that decide which version is actually used.
 

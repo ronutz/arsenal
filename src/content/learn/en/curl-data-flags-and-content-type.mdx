@@ -23,7 +23,7 @@ When you translate a curl command to another language, carry the Content-Type cu
 
 ## The one that corrupts files silently
 
-`-d @payload.json` reads the body from a file, and **strips the newlines while doing it**. For a form field that is harmless. For a JSON file it is usually survivable. For anything where bytes matter — a signed payload, a certificate, an image — it produces a body that is subtly and invisibly wrong.
+`-d @payload.json` reads the body from a file, and **strips the newlines while doing it**. For a form field that is harmless. For a JSON file it is usually survivable. For anything where bytes matter (a signed payload, a certificate, an image), it produces a body that is subtly and invisibly wrong.
 
 `--data-binary @payload.json` sends the file unchanged.
 

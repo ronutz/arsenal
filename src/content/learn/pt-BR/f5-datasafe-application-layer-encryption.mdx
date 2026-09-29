@@ -8,7 +8,7 @@ relatedArticles: ["awaf-client-side-signals-and-challenges", "awaf-content-profi
 category: security
 order: 5
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-09-27"
 ---
 
 A maior parte de uma política de F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) inspeciona a requisição depois que ela chega ao BIG-IP. O DataSafe defende um lugar totalmente diferente: dentro do navegador do usuário, antes de os dados serem enviados. É a resposta da F5 à fraude no lado do cliente, os Trojans, o malware man-in-the-browser e os key loggers que leem os dados no navegador antes que o seu WAF consiga vê-los.
@@ -37,3 +37,10 @@ Estes estão fundamentados no próprio guia de configuração da F5, e são os d
 ## Onde se encaixa
 
 O DataSafe é defesa em profundidade para logins, formulários e páginas de pagamento de alto valor, voltado para a ameaça no navegador que a inspeção de requisições de um WAF não consegue ver. Não é um substituto da política de WAF; roda ao lado dela. Como injeta e executa JavaScript no cliente, implante-o página por página com testes, especialmente onde Remove Event Listeners ou uma ofuscação pesada possam colidir com os próprios scripts da aplicação.
+
+## Fontes
+
+O limite de versão acima pode ser conferido pelos dois lados: a opção de parâmetro com wildcard está documentada no manual da 14.0 e ausente do mesmo capítulo na 13.1.
+
+- [Encrypting Data on the Application Level, BIG-IP DataSafe 14.0 - a opção de nome de parâmetro Wildcard e sua sintaxe estilo shell](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/manuals/product/big-ip-datasafe-configuration-14-0-0/03.html)
+- [O mesmo capítulo no DataSafe 13.1, onde a opção de wildcard não aparece](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/manuals/product/bigip-datasafe-configuration-13-1-0/3.html)

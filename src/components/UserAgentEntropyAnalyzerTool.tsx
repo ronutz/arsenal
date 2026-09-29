@@ -62,13 +62,13 @@ export default function UserAgentEntropyAnalyzerTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("summaryTitle")}</h3>
+            <h3 className="cidr-section-title">{t("summaryTitle")}</h3>
             <p className="mono">{result.data.browser} {result.data.browserVersion} · {result.data.os} {result.data.osVersion} · {result.data.engine}</p>
             {result.data.isReducedUA && <p className="cidr-note">{t("reducedTag")}</p>}
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("componentsTitle")}</h3>
+            <h3 className="cidr-section-title">{t("componentsTitle")}</h3>
             <table className="cidr-table">
               <thead><tr><th>{t("colComponent")}</th><th>{t("colValue")}</th><th>{t("colBits")}</th><th>{t("colNote")}</th></tr></thead>
               <tbody>
@@ -82,12 +82,12 @@ export default function UserAgentEntropyAnalyzerTool() {
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("freezeTitle")}</h3>
+            <h3 className="cidr-section-title">{t("freezeTitle")}</h3>
             <p className="cidr-note">{result.data.freezeNote}</p>
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("chTitle")}</h3>
+            <h3 className="cidr-section-title">{t("chTitle")}</h3>
             <p className="cidr-note">{result.data.clientHintsNote}</p>
           </section>
         </div>

@@ -13,7 +13,7 @@ updated: "2026-06-30"
 
 ## A one-way trend toward shorter certificates
 
-Public TLS certificates have been getting shorter-lived for over a decade. Maximum validity fell from five years to three, then to 825 days, and in September 2020 to 398 days. In April 2025 the CA/Browser Forum approved Ballot SC-081v3 — proposed by Apple and passed with broad consensus among certificate authorities and browser vendors — which continues the trend all the way down to 47 days. It is not a proposal or a recommendation; it is written into the TLS Baseline Requirements that publicly trusted CAs must follow. The planner on this page exists because once certificates live this briefly, working out a renewal rhythm by hand stops being practical.
+Public TLS certificates have been getting shorter-lived for over a decade. Maximum validity fell from five years to three, then to 825 days, and in September 2020 to 398 days. In April 2025 the CA/Browser Forum approved Ballot SC-081v3, proposed by Apple and passed with broad consensus among certificate authorities and browser vendors, which continues the trend all the way down to 47 days. It is not a proposal or a recommendation; it is written into the TLS Baseline Requirements that publicly trusted CAs must follow. The planner on this page exists because once certificates live this briefly, working out a renewal rhythm by hand stops being practical.
 
 ## The schedule, phase by phase
 
@@ -21,15 +21,15 @@ The reduction happens in three steps, each keyed to a certificate's **issuance d
 
 ## Why the number is 47
 
-The figure looks arbitrary but is deliberately chosen. Forty-seven days is roughly a calendar month plus about two weeks, with a day of slack — short enough that manual renewal at scale becomes untenable, but long enough that an automated system can renew comfortably without running on the edge. The designers specifically avoided a number near 30, so that renewal would not be forced to land on the same calendar day every month. The intermediate steps follow the same logic: each is a few maximal months plus a fraction, plus a day of wiggle room.
+The figure looks arbitrary but is deliberately chosen. Forty-seven days is roughly a calendar month plus about two weeks, with a day of slack: short enough that manual renewal at scale becomes untenable, but long enough that an automated system can renew comfortably without running on the edge. The designers specifically avoided a number near 30, so that renewal would not be forced to land on the same calendar day every month. The intermediate steps follow the same logic: each is a few maximal months plus a fraction, plus a day of wiggle room.
 
 ## Why shorten lifetimes at all
 
-A certificate is a standing assertion about a key and a name, and the longer it stands, the longer a problem with it persists. If a private key leaks, a shorter-lived certificate limits how long the leaked key remains usable. Shorter lifetimes also force *crypto-agility*: the whole ecosystem rotates often enough that deprecating a weak algorithm, or responding to a CA distrust event, can actually take effect in weeks rather than years. The looming arrival of quantum computers — and "harvest now, decrypt later" collection of today's traffic — adds urgency to building that agility now, which is part of why the industry chose this moment to push lifetimes down hard.
+A certificate is a standing assertion about a key and a name, and the longer it stands, the longer a problem with it persists. If a private key leaks, a shorter-lived certificate limits how long the leaked key remains usable. Shorter lifetimes also force *crypto-agility*: the whole ecosystem rotates often enough that deprecating a weak algorithm, or responding to a CA distrust event, can actually take effect in weeks rather than years. The looming arrival of quantum computers, and "harvest now, decrypt later" collection of today's traffic, adds urgency to building that agility now, which is part of why the industry chose this moment to push lifetimes down hard.
 
 ## What it does to renewal volume
 
-The operational consequence is the whole point. An organization that renews a certificate roughly once a year today will renew it about eight times a year at 47 days. Industry analysis puts a fleet of 1,000 certificates at roughly 48,000 renewal-hours per year under the 47-day regime — about a twelvefold increase over current volumes. Add that machine identities already outnumber human ones many times over and are still growing, and manual renewal simply does not scale. The planner makes this concrete: for any validity you enter it shows the renewals-per-year that cadence implies, and projects the figure at each future cap so you can see the escalation before it arrives.
+The operational consequence is the whole point. An organization that renews a certificate roughly once a year today will renew it about eight times a year at 47 days. Industry analysis puts a fleet of 1,000 certificates at roughly 48,000 renewal-hours per year under the 47-day regime, about a twelvefold increase over current volumes. Add that machine identities already outnumber human ones many times over and are still growing, and manual renewal simply does not scale. The planner makes this concrete: for any validity you enter it shows the renewals-per-year that cadence implies, and projects the figure at each future cap so you can see the escalation before it arrives.
 
 ## What the planner shows
 

@@ -16,7 +16,7 @@ Searching a SIEM (security information and event management) well is a skill wit
 
 ## From a search result to a query
 
-The productive workflow is rarely to write a query from nothing. It is to search broadly, find an event that looks relevant, and build the query outward from it — adding the fields that make it specific and removing the ones that make it narrow.
+The productive workflow is rarely to write a query from nothing. It is to search broadly, find an event that looks relevant, and build the query outward from it, adding the fields that make it specific and removing the ones that make it narrow.
 
 That matters because the field names in a SIEM are numerous and inconsistently memorable. Starting from a real event means you are working with the fields that actually exist in the data rather than the ones you assume exist, which is the most common reason a carefully written query returns nothing.
 
@@ -26,7 +26,7 @@ A raw search returns events. Aggregation turns them into an answer.
 
 **Group by** collapses events into buckets by one or more fields. Group authentication failures by source address and you get a ranked list of who is failing, which is a different and more useful object than a thousand individual failures.
 
-**Aggregate functions** — count, sum, average, minimum, maximum, distinct count — produce the number for each bucket. Distinct count deserves particular mention because it answers questions the others cannot: not how many connections a host made, but how many different destinations it reached, which is what distinguishes a busy server from a scan.
+**Aggregate functions** (count, sum, average, minimum, maximum, distinct count) produce the number for each bucket. Distinct count deserves particular mention because it answers questions the others cannot: not how many connections a host made, but how many different destinations it reached, which is what distinguishes a busy server from a scan.
 
 The general shape worth internalising is that a security question is almost always an aggregation. "Is anything unusual happening" is not searchable; "which sources produced more than fifty failures in ten minutes" is.
 
@@ -44,7 +44,7 @@ CMDB content is populated by discovery and by import, and it decays. A CMDB that
 
 **Nested queries** use the result of one query as input to another. The pattern that comes up most often is two-stage: find the set of things matching some condition, then find everything those things did. Identify the hosts that contacted a suspicious address, then retrieve all activity from those hosts.
 
-This is how an investigation actually proceeds — a first query establishes the population and a second explores it — and doing it in one nested query rather than by copying results by hand is both faster and repeatable.
+This is how an investigation actually proceeds (a first query establishes the population and a second explores it), and doing it in one nested query rather than by copying results by hand is both faster and repeatable.
 
 ## What an exam candidate should be able to state cold
 

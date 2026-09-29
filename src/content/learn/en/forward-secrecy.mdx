@@ -8,7 +8,7 @@ relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", 
 category: transport
 order: 4
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## The question forward secrecy answers
@@ -44,3 +44,10 @@ TLS 1.3 settled the matter by removing static RSA key transport entirely. Every 
 ## Harvest now, decrypt later
 
 Forward secrecy protects against a key compromise that happens after the fact, but it assumes the underlying Diffie-Hellman math stays hard. The looming concern is a future quantum computer that could break today's elliptic-curve key exchanges, which gives recorded traffic a long shelf life for an attacker willing to wait. This is the harvest-now-decrypt-later threat, and it is driving the move to hybrid post-quantum key exchanges that run a classical and a quantum-resistant exchange together. Forward secrecy remains necessary; it is just no longer assumed to be sufficient forever.
+
+## Sources
+
+That TLS 1.3 made forward secrecy mandatory rather than optional is a protocol change, not a configuration preference, and the specification states it directly.
+
+- [RFC 8446, TLS 1.3 - static RSA and Diffie-Hellman suites removed, every key exchange now forward-secret](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 5246, TLS 1.2 - the last version in which static RSA key transport was still a choice](https://www.rfc-editor.org/rfc/rfc5246.html)

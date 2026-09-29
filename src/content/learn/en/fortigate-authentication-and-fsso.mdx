@@ -30,7 +30,7 @@ The challenge arrives as a **captive portal** for browser traffic, or as a proto
 | SAML | Redirect to an identity provider | Modern SSO, federated identity |
 | FortiToken | Second factor on top of any of the above | Anywhere MFA is required |
 
-Active authentication is precise: the FortiGate knows exactly who authenticated because it asked. Its cost is interruption. The user sees a prompt, and anything that is not a browser session — a background sync, an API client, a device with no user — has no way to answer it.
+Active authentication is precise: the FortiGate knows exactly who authenticated because it asked. Its cost is interruption. The user sees a prompt, and anything that is not a browser session (a background sync, an API client, a device with no user) has no way to answer it.
 
 ## Passive identification: FSSO tells the FortiGate
 
@@ -42,7 +42,7 @@ The pieces:
 - Optional **DC agents** on domain controllers push events to the collector, the alternative being agentless polling of the security event log.
 - The **FortiGate** receives the table from the collector and consults it when matching a user-based policy.
 
-The two deployment shapes differ in a way worth knowing. **Agent mode** installs a DC agent on each domain controller, which pushes events as they happen — lower latency and more load to deploy. **Agentless mode** has the collector poll each controller's event log, which is easier to deploy and adds polling delay, so a user who has just logged in may not be identified for a short window.
+The two deployment shapes differ in a way worth knowing. **Agent mode** installs a DC agent on each domain controller, which pushes events as they happen: lower latency and more load to deploy. **Agentless mode** has the collector poll each controller's event log, which is easier to deploy and adds polling delay, so a user who has just logged in may not be identified for a short window.
 
 ## Where each approach fails
 
@@ -56,7 +56,7 @@ Neither is complete, and the failure modes are what an operator actually deals w
 
 ## Order matters, as always
 
-User-based policies interact with the first-match rule. A user-based policy only matches once the user is identified; if identification has not completed, the traffic falls through to whatever is below. Placing a broad address-based allow above a user-based policy means the user policy never applies — the same shadowing problem, with an extra dimension.
+User-based policies interact with the first-match rule. A user-based policy only matches once the user is identified; if identification has not completed, the traffic falls through to whatever is below. Placing a broad address-based allow above a user-based policy means the user policy never applies: the same shadowing problem, with an extra dimension.
 
 The practical sequence is user-based policies first, address-based fallbacks below them, and an explicit rule for known non-interactive sources so they do not sit waiting for an authentication they cannot perform.
 

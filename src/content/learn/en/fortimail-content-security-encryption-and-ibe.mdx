@@ -20,13 +20,13 @@ Content controls and encryption answer different halves of the same question: wh
 
 **Sandbox integration** addresses that gap by detonating suspicious attachments in an isolated environment and observing behaviour. The trade is time: analysis takes longer than a signature lookup, so the deployment decision is what to do while waiting. Holding the message delays legitimate mail; delivering and retracting on a bad verdict leaves a window where the attachment was available.
 
-**Content disarm** takes a different approach entirely. Rather than deciding whether a document is malicious, it removes the active content — macros, embedded objects, scripts — and delivers a flattened version. It is decisive in a way detection cannot be, because it does not need to recognise the threat, and it costs whatever legitimate functionality the removed content provided.
+**Content disarm** takes a different approach entirely. Rather than deciding whether a document is malicious, it removes the active content (macros, embedded objects, scripts) and delivers a flattened version. It is decisive in a way detection cannot be, because it does not need to recognise the threat, and it costs whatever legitimate functionality the removed content provided.
 
 **URL protection** matters because links are not attachments. A link can be benign at delivery and malicious an hour later, which is why rewriting URLs to check them at click time exists: the check happens when the user acts, not when the message arrives.
 
 ## Content filtering and archiving
 
-**Content filtering** inspects the message against dictionaries and rules — words and patterns, attachment types, size limits, and structured data like card or identity numbers. Outbound is where this earns its place, catching data leaving that should not.
+**Content filtering** inspects the message against dictionaries and rules: words and patterns, attachment types, size limits, and structured data like card or identity numbers. Outbound is where this earns its place, catching data leaving that should not.
 
 Two practical notes. Dictionary matching produces false positives on legitimate discussion of the terms it looks for, so scoring and context beat single-term blocking. And attachment type should be checked by actual content rather than by extension, because renaming a file is not a sophisticated evasion.
 
@@ -46,14 +46,14 @@ IBE closes that gap. The recipient needs no certificate, no key exchange and no 
 
 The flow:
 
-1. Policy determines that a message must be encrypted — by recipient, by content match, or by a marker the sender adds.
+1. Policy determines that a message must be encrypted: by recipient, by content match, or by a marker the sender adds.
 2. FortiMail encrypts it and sends the recipient a **notification** rather than the message.
 3. The recipient follows the notification to a secure portal and authenticates. First-time recipients register at this point.
 4. They read the message, and can reply securely through the same portal.
 
 The reason this matters is that it works with anyone who has a mailbox and a browser, which is the entire population you actually need to send confidential mail to.
 
-The trade-offs are real and worth naming. The recipient must go somewhere to read the message rather than seeing it in their client, which is friction, and friction on a message someone was not expecting produces "is this phishing?" — reasonably, since the pattern is identical. Telling recipients in advance to expect it is not optional if you want it used.
+The trade-offs are real and worth naming. The recipient must go somewhere to read the message rather than seeing it in their client, which is friction, and friction on a message someone was not expecting produces "is this phishing?", reasonably, since the pattern is identical. Telling recipients in advance to expect it is not optional if you want it used.
 
 **Managing IBE users** covers the lifecycle: registration on first receipt, password resets when they forget, inactivity expiry, and the help they will need when they cannot get in. That last one is a real support load, and a deployment that does not plan for it is one where people stop using IBE and send things in the clear instead.
 

@@ -820,7 +820,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "CPqD (own site): current activity across telecommunications, energy and digital government, including testing and certification work", url: "https://www.cpqd.com.br/" },
     
       { label: "CPQD (institutional): created in 1976 as the research and development centre of Telebras, becoming a private-law foundation in 1998 with the privatisation of the sector; today it runs the largest information and communications technology research programme in Latin America", url: "https://www.cpqd.com.br/sobre-o-cpqd/" },
-      { label: "Forum Campinas on Fundacao CPqD: created 31 August 1976 alongside Telebras by the telecommunications ministry, to reproduce in Brazil a telecom research model aiming at national technological autonomy, covering applied research, basic research with universities, and transfer of technology and prototypes to industry", url: "https://www.forumcampinas.org.br/interdependencia/fundacao-cpqd-centro-de-pesquisa-e-desenvolvimento-em-telecomunicacoes/" },
+      { label: "Interdependencia dossier on Fundacao CPqD: created 31 August 1976 alongside Telebras by the telecommunications ministry (Criado em 31 de agosto de 1976 junto a Telebras pelo Ministerio das Telecomunicacoes), to reproduce in Brazil a telecom research model aiming at national technological autonomy, covering applied research, basic research developed with the universities but coordinated and financed by Telebras, and the development and transfer of technology, prototypes and products to industry", url: "https://direcaocultura.com.br/interdependencia/fundacao-cpqd-centro-de-pesquisa-e-desenvolvimento-em-telecomunicacoes/", sourceNote: "Replaces the same dossier at forumcampinas.org.br, which was confirmed dead on 2026-09-27 (host root 200, cited path 404) along with its PDF. The text is the same document at a live host, and the two sentences this entry rests on were read there verbatim." },
+      { label: "CPqD on itself: created in 1976 as the research and development centre of Telebras (Criado em 1976 como Centro de Pesquisa e Desenvolvimento da Telebras), becoming a private-law foundation in 1998 with the privatisation of the sector, and describing its purpose as building Brazilian technology to end dependence on foreign solutions", url: "https://www.cpqd.com.br/sobre-o-cpqd/", sourceNote: "First-party corroboration added alongside the dossier. It confirms 1976 and the 1998 conversion but states neither exact date, so it supports the dossier rather than replacing it." },
       { label: "Conexis, O rumo e o prumo do CPqD: the Telebras board decided to create the centre on 31 August 1976; it worked first from an office in central Campinas, then in Embratel premises, and across five locations before the present campus on land bought in June 1980", url: "https://conexis.org.br/o-rumo-e-o-prumo-do-cpqd-ii/" },
     ],
   },
@@ -850,7 +851,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://pt.wikipedia.org/wiki/Brasil_Telecom",
     externalLabel: "Brasil Telecom",
     sources: [
-      { label: "Correio Braziliense: the 29 July 1998 auction creating three fixed-line holdings, one long-distance carrier and eight mobile holdings from the Telebrás system", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras.shtml" },
+      { label: "Correio Braziliense: the 29 July 1998 auction creating three fixed-line holdings, one long-distance carrier and eight mobile holdings from the Telebrás system", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras-em-1998.shtml" },
       { label: "Museu Capixaba do Computador: the twelve regional companies produced by the split, giving rise to Telemar, Brasil Telecom and Telefônica among others", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
       { label: "Wikipédia (pt) on the Telebrás privatisation: the successor companies and their consolidation into Oi and Vivo", url: "https://pt.wikipedia.org/wiki/Privatiza%C3%A7%C3%A3o_da_Telebr%C3%A1s", sourceNote: "Used for the consolidation chronology. Corporate and financial developments after the merger are not detailed here; check current sources." },
     ],
@@ -890,13 +891,13 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipédia (pt): creation under Law 5.792 of 11 July 1972, installed 9 November 1972; the monopoly from 1972 to 1998; the twelve regional holdings; Embratel's route from MCI WorldCom through the 2002 bankruptcy and the 2004 New York court approval to Telmex, and absorption into Claro in 2015; reactivation in 2010", url: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A." },
       { label: "Telebrás 50th anniversary (own account): installation on 9 November 1972; twenty-seven state operators plus Embratel forming the Sistema Telebrás; CPqD created in 1976 and independent since 1998; the 2010 reactivation for the national broadband plan", url: "https://www.telebras.com.br/50anos/" },
-      { label: "Correio Braziliense: the auction of 29 July 1998 at the Rio de Janeiro exchange; twenty per cent of shares carrying control; three fixed-line holdings, one long-distance and eight mobile; R$22.058B raised at a 63.7% premium; the largest privatisation in the country's history", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras.shtml" },
+      { label: "Correio Braziliense: the auction of 29 July 1998 at the Rio de Janeiro exchange; twenty per cent of shares carrying control; three fixed-line holdings, one long-distance and eight mobile; R$22.058B raised at a 63.7% premium; the largest privatisation in the country's history", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras-em-1998.shtml" },
       { label: "Zambon: more than 900 telecommunications companies operating before the 1972 consolidation; near-total monopoly achieved within three years", url: "https://zambonpericia.com.br/o-que-aconteceu-com-a-telebras/" },
       { label: "Diário Causa Operária: the founding companies (Embratel, CTB, CTMG, CTES, Cotelb); the fall in the cost of installing a line from about US$5,000 in the 1970s to about US$20 by 1998; net profit of around R$2B in 1998", url: "https://causaoperaria.org.br/2019/29-de-julho-de-1998-o-crime-da-privatizacao-da-telebras/", sourceNote: "An openly partisan source - its headline calls the privatisation a crime. Used ONLY for the factual details listed, each of which is consistent with the other sources here. Its judgement of the privatisation is not adopted; the entry deliberately takes no side." },
       { label: "Museu Capixaba do Computador: the subdivision into twelve regional companies at privatisation, and the successor companies Telemar, Brasil Telecom and Telefônica", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
     
       { label: "Museu Capixaba do Computador: Telebras created by Law 5.792 of 11 July 1972, born 9 November 1972, responsible for consolidating and implementing all public telecommunications policy between 1972 and 1998, and holding company for the 27 state telephone operators, Embratel and CPqD", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
-      { label: "Fundacao CPqD dossier: the Telebras privatisation took place by auction on 29 July 1998 at the Rio de Janeiro stock exchange, and on 23 July 1998, under the General Telecommunications Law, CPqD became a foundation", url: "https://www.forumcampinas.org.br/interdependencia/wp-content/uploads/2023/11/Integra-FUNDACAO-CPqD-Centro-de-Pesq-e-Desenv-em-Telecomunicacoes-1.pdf" },
+      { label: "Interdependencia dossier on Fundacao CPqD: the conversion into a foundation on 23 July 1998 (transformacao em Fundacao em 23 de julho de 1998), six days before the Telebras auction", url: "https://direcaocultura.com.br/interdependencia/fundacao-cpqd-centro-de-pesquisa-e-desenvolvimento-em-telecomunicacoes/", sourceNote: "Replaces the dead forumcampinas PDF of the same dossier (host root 200, cited path 404 on 2026-09-27). TWO NARROWINGS, both deliberate. The dead citation was labelled as carrying the 29 July 1998 auction as well; the live dossier does not, and it did not need to - that auction and its Rio de Janeiro venue are sourced in this same entry to Correio Braziliense. And the dossier gives the date of the conversion without naming the General Telecommunications Law as its instrument, so that attribution is now uncited. Per PRIME 2026-09-27 the claim stays in the copy: the citation is what is missing, not the fact." },
     ],
   },
   {
@@ -1156,7 +1157,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     tagline: "Made the codec, then the board, then the gateway, then the software - and kept the same chief executive for thirty-three years.",
     intro:
-      "AudioCodes was founded in Israel in 1993 - sources give both 9 May and 1 July - by Shabtai Adlersberg and Leon Bialik, with some accounts naming additional founders. Both came out of DSP Group, the Israeli semiconductor company Adlersberg had co-founded in 1987. It started by licensing voice compression algorithms and selling signal-processing boards to telecoms manufacturers, listed on NASDAQ in May 1999, and now turns around $242M.",
+      "AudioCodes was founded in Israel in 1993, on a day the record does not agree about: the company's own history states 21 February, while third-party accounts give 9 May and 1 July. The founders were Shabtai Adlersberg and Leon Bialik, with some accounts naming additional founders. Both came out of DSP Group, the Israeli semiconductor company Adlersberg had co-founded in 1987. It started by licensing voice compression algorithms and selling signal-processing boards to telecoms manufacturers, listed on NASDAQ in May 1999, and now turns around $242M.",
     body: [
       "The founding problem was arithmetic. A telephone call digitised the standard way consumes 64 kbps, and a packet network of the early 1990s could not carry many of those. Everything that became voice over IP depended on compressing speech hard enough to fit, without the result sounding like a machine. That is a signal-processing problem before it is a networking problem, which is exactly why the founders were chip people rather than network people.",
       "And their codec work went into an international standard. AudioCodes' speech coding contributed to G.723.1, adopted by the ITU - the low-bit-rate coder that a great deal of early VoIP ran on. A company's own specification becoming the standard everybody implements is the second instance of that pattern in as many entries on this timeline: Anixter's Levels programme became the TIA's Categories, and this became an ITU recommendation.",
@@ -1170,9 +1171,16 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "AudioCodes executive team page: Adlersberg co-founding the company in 1993 and serving as president and chief executive since inception; co-founding DSP Group in 1987, serving as VP of Engineering and then VP of Advanced Technology, and establishing the digital cellular research team spun off in 1992 as DSP Communications", url: "https://www.audiocodes.com/corporate/executive-team" },
       { label: "Wikipedia: Israeli company headquartered in Or Yehuda; products spanning session border controllers, media gateways, IP phones, multi-service business routers and voice network management; revenue of $242.2M in 2024; dual listed on NASDAQ and the Tel Aviv exchange", url: "https://en.wikipedia.org/wiki/AudioCodes" },
-      { label: "Secondary company histories: founding in 1993 with the initial business licensing voice compression algorithms and selling DSP-based boards to telecom manufacturers; early products targeting the G.723.1 and G.729 codecs for voice over IP and ATM; the NASDAQ IPO in May 1999; the later move from components into software and services", url: "https://portersfiveforce.com/blogs/brief-history/audiocodes", sourceNote: "Business-analysis blogs of the kind that proliferate around listed companies. They disagree on the founding date (9 May versus 1 July 1993) and on the founder list (some naming Moshe Zion or Stanley Cohen alongside Adlersberg and Bialik), and both variations are noted in the entry. Used for the product chronology, which is consistent across all of them and with the company's own materials." },
+      { label: "AudioCodes, History and Innovation - the company's own timeline: founded 21 February 1993 in Or-Yehuda, Israel; in 1995 the ITU-T selected AudioCodes' voice compression for the G.723.1 standard; a Voice/Fax IC processor for TDM in 1996; \u201ccompletes initial offering and starts trading on NASDAQ\u201d in 1999", url: "https://www.audiocodes.com/corporate/history-and-innovation", sourceNote: "Replaces a dead content-farm page. This first-party timeline carries the 1993 founding, the G.723.1 selection and the 1999 NASDAQ listing. Its 21 February date is the THIRD on record for the founding, alongside 9 May and 1 July from third-party accounts; all three are stated in the intro and none is preferred, per canon AUDIT-founding-dates-20260912. It does not date the IPO beyond the year; the May 1999 month is now carried by the company's own investor FAQ, cited below. (An earlier version of this note also claimed the entry states the G.729 codec. It does not - the body names G.723.1 and only G.723.1 - and the error is recorded here rather than quietly removed, because a note that invents a claim sends the next reader looking for something to repair.) Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
+      { label: "AudioCodes investor relations FAQ, the company's own account of its listing: \u201cIn May 1999, the Company completed its initial public offering of 4,025,000 (pre-split) ordinary shares, from which AudioCodes received net proceeds of approximately $47 million\u201d", url: "https://www.audiocodes.com/investor-relations/investors-faqs", sourceNote: "Read 2026-09-27 to close the gap the timeline citation above left. It settles MAY 1999 as the month of the offering from the company itself, and adds the share count and net proceeds, neither of which the entry previously had." },
       { label: "Independent analysis of the company's platform cycles: both founders coming out of DSP Group; the progression from VoIP infrastructure through unified communications to conversational AI; the thirty-three-year founder-chief-executive tenure contrasted with peers that cycled through leadership and alternated growth and restructuring mandates", url: "https://olam.business/audiocodes", sourceNote: "An independent analysis rather than a reference work. Its characterisation of competitors' leadership churn is an interpretation, and is attributed here rather than asserted." },
-      { label: "DCFmodeling: the company beginning in Lod before moving to Or Yehuda, and the deliberate shift from component supplier to software and services vendor described as its most transformative move", url: "https://www.dcfmodeling.com/blogs/history/audc-history-mission-ownership" },
+      // CITATION REMOVED 2026-09-27. Was
+      // dcfmodeling.com/blogs/history/audc-history-mission-ownership, now 301 to
+      // dcfanalyst.com and 404 there. Or Yehuda as the company's home is independently
+      // carried by two surviving citations above, including AudioCodes' own timeline.
+      // WHAT IS NOW UNCITED: that the company began in Lod before moving there. It
+      // STAYS in the record per PRIME 2026-09-27 - it is not in the body copy, only in
+      // this citation trail, so it is preserved here rather than deleted.
     ],
   },
   {
@@ -1594,7 +1602,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Then 2014, and the part worth the entry. Thoma Bravo bought Compuware for around $2.4B and carved out the monitoring business as a standalone company. Greifeneder's own recollection is blunt about the culture clash: the new owner specialised in businesses with a good product and ineffective leadership, and was unaccustomed to waiting between investment and output. His startup habits were not what they had bought.",
       "What happened next is the opposite of what private-equity ownership is usually accused of producing. He took three months with his best product people and came back with a recommendation to start again - a separate team, an entirely new platform, written from scratch, on the argument that the disruption of cloud was an opening to leap ahead rather than a problem to survive. They agreed to it. A company under debt-funded ownership, expected to produce returns, rebuilt its product from nothing. It listed on the New York Stock Exchange in August 2019 at $16 a share and rose 49% on debut.",
       "And here it inverts a pattern this timeline records elsewhere. USRobotics won three times with proprietary protocols and lost the advantage each time a standard arrived. Dynatrace held a patent on distributed tracing from 2006 - and then contributed to OpenTelemetry, W3C Trace Context, Keptn and OpenFeature, the open standards that generalise exactly what PurePath did privately. Faced with the same situation, one company defended the moat and the other helped dig the canal. Which is right depends on whether your advantage is the mechanism or the thing you build on top of it.",
-      "Thoma Bravo sold down its holding between 2019 and 2024, leaving a widely held public company reporting around $1.6B of revenue for its 2024 financial year. That is the fifth appearance of Thoma Bravo on this timeline, after Sophos, LANDESK, Ping and CompTIA - a reminder that a handful of firms have shaped more of this industry's ownership than any of the vendors have.",
+      "Thoma Bravo sold down its holding between 2019 and 2024, leaving a widely held public company whose revenue reached $1.70B in the financial year to March 2025, up from $1.43B the year before. That is the fifth appearance of Thoma Bravo on this timeline, after Sophos, LANDESK, Ping and CompTIA - a reminder that a handful of firms have shaped more of this industry's ownership than any of the vendors have.",
       "The headquarters moved to Massachusetts, but engineering stayed in Linz - a university town in upper Austria that is not on anyone's list of places software platforms come from, which is rather the point.",
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Dynatrace",
@@ -1604,7 +1612,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Forbes (August 2019): the 49% climb on market debut; the 2011 Compuware purchase for $256M; Thoma Bravo acquiring Compuware three years later for $2.4B and spinning Dynatrace out; the dinner in Linz and Greifeneder returning after three months with a team of his best product people to recommend building an entirely new platform from scratch", url: "https://www.forbes.com/sites/kenrickcai/2019/08/01/dynatrace-software-ipo-trading-debut/" },
       { label: "Dynatrace Engineering (Medium), translating an Austrian profile: Bain Capital Ventures investing a year after founding and Bay Partners three years later, together holding two-thirds after a second round of about $13M; co-founders Sok-Kheng Taing and Hubert Gerstmayr exiting at the Compuware acquisition while Greifeneder stayed; his characterisation of the new owner as specialising in companies with a good product and ineffective leadership", url: "https://medium.com/dynatrace-engineering/doping-for-the-internet-c170393b35e0", sourceNote: "Published by the company's own engineering blog as a translation of an external profile. Used for the funding sequence and for Greifeneder's characterisation of the ownership change, which is his account of it rather than a neutral one." },
       { label: "Wikipedia: acquired by Compuware in 2011, taken private by Thoma Bravo in 2014 and renamed Dynatrace; contributions to CNCF and related projects including Keptn, W3C Trace Context, OpenTelemetry and OpenFeature", url: "https://en.wikipedia.org/wiki/Dynatrace" },
-      { label: "MatrixBCG: the 2019 IPO priced at $16 per share; Thoma Bravo's gradual sell-down from 2019 to 2024; annual recurring revenue reaching an estimated $1.6B by fiscal 2025", url: "https://matrixbcg.com/blogs/owners/dynatrace" },
+      { label: "Dynatrace, Announces Pricing of Initial Public Offering, 31 July 2019 - 35,609,612 shares priced at $16.00 per share, listing on the New York Stock Exchange under the ticker DT, with closing expected 5 August 2019", url: "https://ir.dynatrace.com/news-events/press-releases/detail/144/dynatrace-announces-pricing-of-initial-public-offering", sourceNote: "First-party replacement for a content-farm page that died when its host rebranded to growthsharematrix.com and dropped its archive (301 to a 404, confirmed 2026-09-27). It upgrades the $16 IPO price from a summary to the company's own release. It does NOT carry Thoma Bravo's sell-down between 2019 and 2024, which stays in the copy and is uncited; it is traceable through Thoma Bravo's Schedule 13D/A filings, not yet read. An earlier version of this note also described the entry as claiming annual recurring revenue of about $1.6B by fiscal 2025. It did not - it claimed REVENUE for fiscal 2024 - and that figure was wrong; see the release cited below." },
+      { label: "Dynatrace, Reports Fourth Quarter and Full Year Fiscal 2025 Financial Results, 14 May 2025 - total revenue of $1,698,683 thousand for the year ended 31 March 2025 against $1,430,530 thousand for fiscal 2024; subscription revenue of $1,622,163 thousand against $1,359,354 thousand; total ARR of $1,734 million, up 15%, or 17% on a constant-currency basis", url: "https://ir.dynatrace.com/news-events/press-releases/detail/379/dynatrace-reports-fourth-quarter-and-full-year-fiscal-2025-financial-results", sourceNote: "CORRECTS THE ENTRY. The body previously read \u201caround $1.6B of revenue for its 2024 financial year\u201d, which matches neither year in the issuer\u2019s own statements: fiscal 2024 was $1.43B and fiscal 2025 $1.70B, and $1.6B is closest to fiscal 2025 SUBSCRIPTION revenue. The figure came from the dead content-farm citation this replaces. Corrected to the filed figures rather than recorded as a discrepancy, because a discrepancy is two sources disagreeing and this was the entry disagreeing with the company about its own revenue." },
       { label: "SWOTTemplate and PortersFiveForce: the founding date given as 2 February 2005 in one account and 1 July 2005 in another, and Alois Reitbauer named among the founders alongside Greifeneder", url: "https://swottemplate.com/blogs/brief-history/dynatrace-brief-history", sourceNote: "Secondary business summaries that disagree with each other on the founding date and the founder list. Cited precisely because they disagree; both readings are stated in the entry rather than one being chosen." },
     ],
   },
@@ -1943,9 +1952,19 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Tech Data founded in Clearwater by Edward C. Raymund in November 1974 marketing data processing supplies for mini and mainframe computers; the 1983 transition to full-line PC distribution led by Steven A. Raymund; Steven succeeding as chief executive in 1986, the year of the NASDAQ listing", url: "https://en.wikipedia.org/wiki/Tech_Data" },
       { label: "Grokipedia: incorporation on 19 November 1974; Edward Raymund selling the business to his son Steven for $10,000 around 1984; at merger, operations in more than 100 countries, around 15,000 employees and revenue exceeding $30B", url: "https://grokipedia.com/page/Tech_Data" },
-      { label: "MatrixBCG: SYNNEX founded 1980 in Fremont as Compac Microelectronics by Robert T. Huang with backing from MiTAC's Matthew Miau; Apollo's 2020 acquisition of Tech Data at $6B; the 2021 merger at $7.2B", url: "https://matrixbcg.com/blogs/brief-history/tdsynnex" },
+      { label: "SYNNEX Form 10-K (SEC, financial year 2006), the company on its own origin: \u201cWe were originally incorporated in the State of California as COMPAC Microelectronics, Inc. in November 1980\u201d, renamed SYNNEX Information Technologies in February 1994 and reincorporated in Delaware as SYNNEX Corporation in October 2003; MiTAC International and its affiliates holding approximately 47% of the common stock as of 30 November 2006, with Matthew Miau chairman of both SYNNEX and MiTAC International", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312507029667/d10k.htm", sourceNote: "Read 2026-09-27 to replace a dead content-farm page. It settles the 1980 founding, the COMPAC Microelectronics name and MiTAC\u2019s controlling position from the company\u2019s own filing, and it is better evidence than what it replaces: the month is November, the original state is California, and Miau is named as chairman of both rather than merely as a backer. STILL UNCITED and still in the copy per PRIME 2026-09-27: Fremont as the founding city, and Robert T. Huang as the founder." },
+      // The citation below was REMOVED 2026-09-27. Was
+      // matrixbcg.com/blogs/brief-history/tdsynnex,
+      // which now 301s to growthsharematrix.com and 404s there. Of what it carried,
+      // the Apollo purchase and the merger value survive in `acquisitions` below with
+      // the SEC merger exhibit behind them, and MiTAC taking majority control in 1992
+      // is in the pestel-analysis citation above. The 1980 founding as COMPAC
+      // Microelectronics and Miau's position are now carried by the SYNNEX 10-K cited
+      // above, which was the replacement this comment pointed at. WHAT REMAINS
+      // UNCITED: Fremont as the founding city, and Robert T. Huang as the founder.
+      // Both STAY in the body per PRIME 2026-09-27.
       { label: "Pestel-analysis: MiTAC International taking majority control of SYNNEX in 1992; the 2003 NYSE listing; post-merger ownership of 55% former SYNNEX shareholders and 45% Apollo; $58.5B revenue for financial year 2024", url: "https://pestel-analysis.com/blogs/owners/tdsynnex" },
-      { label: "PortersFiveForce: the merger completing 1 September 2021; Huang as largest individual shareholder at the 2003 IPO; the 2020 Concentrix spin-off; Apollo's staged exits", url: "https://portersfiveforce.com/blogs/owners/tdsynnex", sourceNote: "Secondary analysis. Used for dates and ownership percentages that are corroborated by the other sources here, not for interpretation." },
+      { label: "SYNNEX and Tech Data merger-completion press release (SEC exhibit, 1 September 2021): \u201cSYNNEX Corporation (NYSE: SNX) and Tech Data Corporation today announced the successful completion of their merger\u201d, the combined company operating as TD SYNNEX with Rich Hume as CEO and Dennis Polk as Executive Chair", url: "https://www.sec.gov/Archives/edgar/data/1177394/000119312521264521/d213822dex991.htm", sourceNote: "Replaces a dead content-farm page. This release carries the merger completion and its date. It does NOT carry the other three claims in this entry - Huang as largest individual shareholder at the 2003 IPO, the 2020 Concentrix spin-off, and Apollo\u2019s staged exits - which remain unsourced. Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
       { label: "BusinessABC: TD SYNNEX across more than 100 countries with 22,000 staff, and SYNNEX's earlier acquisitions including Jack of All Games in 2009 and IBM's worldwide customer care business process outsourcing in 2013", url: "https://businessabc.net/wiki/td-synnex" },
     ],
   },
@@ -2080,8 +2099,16 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Company Histories: formed at the end of 1992 to serve POS and AutoID resellers; the May 1993 purchase of Alpha Data Systems of Marietta, Georgia; Catalyst Telecom and the move into telephony", url: "https://www.company-histories.com/ScanSource-Inc-Company-History.html" },
       { label: "Encyclopedia.com: the AutoID and POS product range, and Ingram Micro and Tech Data moving into the POS arena as broadline competitors", url: "https://www.encyclopedia.com/social-sciences-and-law/economics-business-and-labor/businesses-and-occupations/scansource-inc" },
       { label: "Greenville Business Magazine: Baur as co-founder in 1992, president from inception to 2000 then chief executive, and the company at roughly $3B with 2,100 employees in North America and Brazil", url: "https://www.greenvillebusinessmag.com/stories/mike_baur_biography,24035" },
-      { label: "PortersFiveForce: founding on 18 December 1992 in Greenville by Baur and Owings, the channel-only policy with no direct sales to end customers, and the Imago, POS Portal and intY acquisitions between 2014 and 2019", url: "https://portersfiveforce.com/blogs/brief-history/scansource", sourceNote: "Secondary summary. Used for the specific founding date, the channel-only policy and the acquisition list; the founder count here agrees with the majority account." },
-      { label: "MatrixBCG: an alternative account describing six founders led by Baur, and the value-added distribution model built on technical services, training and financing rather than competing with resellers", url: "https://matrixbcg.com/blogs/brief-history/scansource", sourceNote: "Minority account on the founder count, recorded because it differs from the majority rather than because it is preferred." },
+      { label: "ScanSource Form 10-K (SEC): \u201cincorporated in 1992\u201d in South Carolina, principal offices at 6 Logue Court, Greenville; and the channel model stated plainly, \u201cmanufacturers sell to wholesale distributors, including Scan Source, who sell only to resellers who, in turn, sell directly to end-users\u201d", url: "https://www.sec.gov/Archives/edgar/data/918965/000119312503054725/d10k.htm", sourceNote: "Replaces a dead content-farm page. The 10-K carries the 1992 incorporation, Greenville, and the sell-only-to-resellers policy. It does NOT carry the exact founding date of 18 December 1992, the founders\u2019 names, or the Imago, POS Portal and intY acquisitions of 2014-2019, which remain unsourced. Per PRIME's ruling of 2026-09-27 the claim STAYS IN THE COPY: what is missing is the citation, not the fact, and a fact is not deleted for want of a source. This note records the gap so it can be closed. It is not a licence to remove the claim." },
+      // CITATION REMOVED 2026-09-27. Was matrixbcg.com/blogs/brief-history/scansource,
+      // now 301 to growthsharematrix.com and 404 there. It was the ONLY source for the
+      // minority six-founders account, which is why this removal is worth a note
+      // rather than a line: the entry deliberately records a founder-count discrepancy
+      // (most sources name Baur and Owings, one named six led by Baur), and the
+      // minority half of that discrepancy no longer has a source. The discrepancy
+      // STAYS STATED in the intro and in the entry comment, per PRIME 2026-09-27: a
+      // disagreement in the record is a fact about the record, and dropping it would
+      // silently promote the majority account to certainty.
     ],
   },
   {
@@ -2166,7 +2193,14 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipedia: Jay Adelson - building and operating PAIX at DEC alongside Stephen Stuart and Paul Vixie, leaving DEC in June 1998, the company briefly named Quark Communications, and PAIX arriving at Equinix through the Switch and Data acquisition", url: "https://en.wikipedia.org/wiki/Jay_Adelson" },
       { label: "Wikipedia: PAIX - operating from 1996 under Digital Equipment Corporation, using a DELNI as its early interconnection infrastructure", url: "https://en.wikipedia.org/wiki/PAIX" },
       { label: "Business model history: incorporation on 22 June 1998; early peering points dominated by telcos favouring their own traffic; the $12M Benchmark round with Cisco and Microsoft; the name as Equality, Neutrality and Internet Exchange", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/equinix-brief-history" },
-      { label: "MatrixBCG: the shift from selling colocation floor space to monetising interconnection through paid cross-connects, which proved higher margin and stickier", url: "https://matrixbcg.com/blogs/brief-history/equinix" },
+      // CITATION REMOVED 2026-09-27. Was matrixbcg.com/blogs/brief-history/equinix,
+      // now 301 to growthsharematrix.com and 404 there. It supported an
+      // INTERPRETATION rather than a dated fact - that the business shifted from
+      // selling floor space to monetising interconnection, and that this proved higher
+      // margin and stickier. The reading STAYS in the body per PRIME 2026-09-27 and is
+      // now uncited. Equinix' own 10-K reports interconnection revenue separately,
+      // which is where it would be measured rather than asserted.
+      { label: "Equinix Form 10-K (SEC, financial year 2015): \u201cMore than 1,100 networks and approximately 170,000+ cross connects in Equinix sites\u201d", url: "https://www.sec.gov/Archives/edgar/data/1101239/000162828016011802/equix_20151231x10k.htm", sourceNote: "Read 2026-09-27 after a content-farm citation died. It establishes the SCALE of the interconnection business from the company\u2019s own filing, which is the part that can be filed. The reading that interconnection proved higher-margin and stickier than selling floor space is an INTERPRETATION and stays labelled as one; the filing section fetched does not break out interconnection revenue as a share of the total." },
       { label: "Companies History: the vendor-neutral multitenant model where competing networks could connect, and the i-STT, IXEurope and Switch and Data acquisitions", url: "https://www.companieshistory.com/equinix-incorporated/" },
     ],
   },
@@ -2204,7 +2238,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipédia (pt): the 2001 sale of 20% of Telefutura to Votorantim Novos Negócios, the one-stop-shop idea, and the 2005 merger of Optiglobe and Proceda into TIVIT", url: "https://pt.wikipedia.org/wiki/TIVIT" },
       { label: "Exame: Luiz Mattar's ten years as a professional tennis player, the brewery and nightclub venture, and Telefutura started with four partners and R$150,000", url: "https://exame.com/negocios/qual-e-o-novo-foco-da-bilionaria-brasileira-de-tecnologia-tivit-e-o-que-o-pix-tem-a-ver-com-isso/" },
       { label: "TI INSIDE, 15 August 2005: the merger officialised that day, the one-stop-shop rationale, and the new company's client list including White Martins, Xerox, Petrobras and BankBoston", url: "https://tiinside.com.br/15/08/2005/votorantim-cria-a-tivit-para-disputar-mercado-de-outsourcing/" },
-      { label: "InvestSP: the September 2009 IPO at R$15 after two abandoned attempts, TIVIT as the only IT services company listed on BM&FBovespa, and Apax buying control in 2010 at a 20-30% premium to a ~R$1.47B market capitalisation", url: "https://investsp.org.br/fundo-apax-compra-controle-da-tivit/" },
+      { label: "InfoMoney, 25 September 2009, on the pricing of the offer: shares placed at R$15.00, below the indicated range of R$16.50 to R$20.50; R$574.6M raised on the base offer and up to R$660.8M with the supplementary lot; ticker TVIT3 on Bovespa Novo Mercado, trading from 28 September 2009", url: "https://www.infomoney.com.br/mercados/ipo-da-tivit-tem-precificacao-abaixo-das-estimativas-com-acoes-colocadas-a-r-1500/", sourceNote: "Replaces a dead InvestSP article (host root 200, cited path 404 on 2026-09-27). It reaches the R$15 price, the September 2009 date and the amount raised. It does NOT reach two claims the dead source was cited for: that two earlier attempts had been abandoned, and that TIVIT was then the only IT services company listed on the Brazilian exchange. Both stay in the copy per PRIME 2026-09-27 and are now uncited." },
+      { label: "Exame on the Apax transaction: 54% of the shares acquired at about R$20 each, a premium of around 20% over the two-month average closing price of R$16.50; the selling register given as Grupo Votorantim 41.08%, Patria Investimentos 7.06%, Luiz Mattar 5.7% and 43.54% in free float, with Mattar staying on as president", url: "https://exame.com/negocios/fundo-eua-compra-54-brasileira-tivit-557808/", sourceNote: "DISAGREES WITH THIS ENTRY AND THE DISAGREEMENT IS NOT RESOLVED. The copy states a premium of twenty to thirty per cent over a market capitalisation of about R$1.47B, which came from the dead InvestSP article. This live report states 20% over a two-month average share price of R$16.50, which is a different measurement rather than a different number, and it carries no market-capitalisation figure at all. The copy is left as it stands and the conflict recorded, per canon AUDIT-founding-dates-20260912 on discrepancies and PRIME 2026-09-27 on unsourced facts. The page as served carries a later date stamp than the May 2010 transaction it describes, so no publication date is asserted here." },
       { label: "TIVIT's own timeline: two data centres inaugurated in 2000, the brand created after the Proceda acquisition, the R$660M IPO, Apax's first Latin American investment, Synapsis in 2014 and TIVIT Cloud in 2016", url: "https://tivit.com/en/a-tivit/" },
       { label: "BTW Media: the company's own chronology dating the brand to 2004, the Takoda data centre separation, and the argument that its data centre heritage is what distinguishes it from a smaller hyperscaler", url: "https://btw.media/en/tivit-hosting-services-sells-brazilian-enterprise-trust-not-a-smaller-hyperscaler" },
     ],
@@ -2282,7 +2317,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "HandWiki: formed from the bulk of IBM Global Technology Services; ~4,400 customers including 75% of the Fortune 100; 63 countries and around 400 data centres; the Microsoft partnership in November 2021 and Google Cloud in December", url: "https://handwiki.org/wiki/Company:Kyndryl" },
       { label: "SDxCentral: the name announced April 2021, kyn from kinship and dryl from tendril, following Arvind Krishna's October 2020 announcement", url: "https://www.sdxcentral.com/news/ibms-infrastructure-spinoff-gets-a-name/" },
       { label: "The Register: the business had struggled inside IBM as customers moved to hyperscalers and lost appetite for large multi-year outsourcing; first-day close at $26.38, down 6.7%", url: "https://www.theregister.com/2021/11/04/kyndryl_ibm_spinoff/" },
-      { label: "MatrixBCG: the 80.1% pro-rata distribution to IBM shareholders with 19.9% retained for later sale, and the work of disentangling thousands of contracts while maintaining continuous operations", url: "https://matrixbcg.com/blogs/brief-history/kyndryl" },
+      { label: "IBM investor relations, IBM Announces Kyndryl Form 10 Filing Related to Separation, 28 September 2021 - IBM will distribute at least 80.1% of Kyndryl common stock to IBM shareholders while retaining no more than 19.9%, with the separation expected to complete by the end of 2021 and Kyndryl then reclassified as a discontinued operation", url: "https://www.ibm.com/investor/news/ibm-announces-kyndryl-form-10-filing-related-to-separation", sourceNote: "First-party replacement for a dead content-farm page (301 to a 404 after its host rebranded, confirmed 2026-09-27). ONE PRECISION CORRECTED BY THE FILING RATHER THAN BY ME: the dead citation was labelled as a flat 80.1 / 19.9 split, and IBM's own wording is AT LEAST 80.1% and NO MORE THAN 19.9% - a floor and a ceiling set before the event, not the executed ratio. The release does not describe the contract-disentangling work the dead page was also cited for; that characterisation stays in the copy and is now uncited." },
       { label: "Futurum Research: Schroeter leaving IBM in June 2020 and returning in January 2021, and the business model of serving organisations that do not treat IT delivery as core", url: "https://futurumresearch.com/wp-content/uploads/2021/10/Futurum.The-IBM-Spinoff-of-Kyndryl.pdf" },
     ],
   },
@@ -2406,7 +2441,16 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: HCLTech - founded 11 August 1976, the 1978 indigenous microcomputer, the 1983 networking OS and client-server work, the 12 November 1991 spin-off, and the product list", url: "https://en.wikipedia.org/wiki/HCLTech" },
       { label: "Companies History: the barsaati rooftop origin, roughly 250 computers in India at the time, the 1988 multiprocessor UNIX three years ahead of Sun and HP, and the $1.8B purchase of seven IBM products", url: "https://www.companieshistory.com/hcl-technologies/" },
-      { label: "MatrixBCG: incorporation on 11 August 1976 with ₹1.83 lakh (about $22,000), the founders as DCM engineers, and IBM's exit under FERA creating the opening", url: "https://matrixbcg.com/blogs/brief-history/hcltech" },
+      { label: "Wikipedia: HCL Group - \u201cfounded in 1976 as Hindustan Computers Limited (HCL) by Shiv Nadar along with seven other founders, formerly associated with Delhi Cloth & General Mills (DCM)\u201d", url: "https://en.wikipedia.org/wiki/HCL_Group", sourceNote: "Read 2026-09-27 to cover the DCM origin after a content-farm citation died. It gives the founder count as eight, Nadar plus seven, and describes them as formerly associated with DCM rather than specifically as engineers. It carries NO founding-capital figure." },
+      // CITATION REMOVED 2026-09-27. Was matrixbcg.com/blogs/brief-history/hcltech,
+      // now 301 to growthsharematrix.com and 404 there. This comment originally listed
+      // three claims as newly uncited; two of them were already covered and the list was
+      // wrong. 11 August 1976 is carried by the Wikipedia HCLTech and Infinity Learn
+      // citations, the DCM origin by the HCL Group citation added above, and IBM's exit
+      // under FERA by the entry's other sources. WHAT IS ACTUALLY UNCITED, and stays in
+      // the copy per PRIME 2026-09-27: the founding capital of about Rs 1.83 lakh,
+      // roughly $22,000. The same dead host was also the co-source for the HCL 8C in
+      // profiles/hcl.ts, recorded in that file's manifest.
       { label: "Bharatpedia: the 1 July 2019 completion and the full list of transferred products, plus an alternative founder roster", url: "https://en.bharatpedia.org/wiki/HCL_Technologies" },
       { label: "Business Today: the calculators sold to fund the computer, NIIT founded in 1982, and Roshni Nadar Malhotra as the first woman to chair a listed Indian IT firm - and an eight-founder account", url: "https://www.businesstoday.in/visualstories/corporates/time-travel-with-hcl-tech-heres-how-a-company-founded-by-shiv-nadar-led-group-of-8-engineers-became-one-of-indias-it-giants-check-hcl-tech-share-price-today-47782-09-07-2023" },
       { label: "Infinity Learn: the Microcomp Limited renaming on 11 August 1976, the Actian purchase, and the 2022 rename to HCLTech", url: "https://infinitylearn.com/surge/full-form/hcl-full-form/" },
@@ -2505,7 +2549,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Qualys announcement of Courtot's death - cc:Mail founded 1988 and sold to Lotus in 1991 at ~40% market share, Verity CEO from 1993 with a 1995 IPO, Signio through to the VeriSign acquisition, the Cloud Security Alliance in 2008, the Trustworthy Internet Movement, the CSO Interchange, Internet Society trusteeship, and his death on 5 June 2021 aged 76", url: "https://www.qualys.com/company/newsroom/news-releases/usa/qualys-passing-of-former-ceo-and-industry-visionary-philippe-courtot" },
       { label: "Wikipedia: Philippe Courtot - born 26 August 1944 in France, a five-time chief executive who led two companies to IPO", url: "https://en.wikipedia.org/wiki/Philippe_Courtot" },
       { label: "Company history - Delaware incorporation on 30 December 1999, QualysGuard Vulnerability Management launched 2000, and the SaaS model as unusual for a security vendor at the time", url: "https://swottemplate.com/blogs/brief-history/qualys-brief-history" },
-      { label: "Ownership history - $28.4M raised across two rounds including a $20M Series B in April 2001 with Bessemer Venture Partners, and Courtot stepping down in March 2021 for health reasons", url: "https://matrixbcg.com/blogs/owners/qualys" },
+      { label: "Qualys Form S-1 (SEC, 2012), the IPO prospectus: \u201cWe were incorporated in Delaware on December 30, 1999\u201d", url: "https://www.sec.gov/Archives/edgar/data/1107843/000119312512265366/d355355ds1.htm", sourceNote: "Read 2026-09-27. It corroborates the intro\u2019s \u201cincorporated in Delaware at the end of that December\u201d with the exact date, from the company. It does NOT set out the early financing history the dead content-farm citation was used for - $28.4M across two rounds, a $20M Series B in April 2001, Bessemer Venture Partners as investor - and Bessemer is not named in it at all. Those stay in the copy and remain uncited per PRIME 2026-09-27." },
+      { label: "Qualys, Announces Resignation of CEO Philippe Courtot, 22 March 2021 - Courtot, chairman of the board and chief executive officer, resigned as CEO for health reasons, with Sumedh Thakar continuing as interim chief executive and appointed to the board", url: "https://www.qualys.com/company/newsroom/news-releases/usa/qualys-resignation-of-ceo-philippe-courtot/", sourceNote: "First-party replacement for a dead content-farm page (301 to a 404 after its host rebranded, confirmed 2026-09-27). It carries the departure and the stated reason. It does NOT carry the funding history the dead page was also cited for - $28.4M across two rounds including a $20M Series B in April 2001 with Bessemer Venture Partners - which stays in the copy and is now uncited. Qualys' own S-1 of 2012 is where that would be confirmed; it has not been read." },
     ],
   },
   {
@@ -2770,7 +2815,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Tenable - founded September 2002 by Gula, Huffard and Deraison; Nessus written in April 1998 at 17; Gula's NSA background and the sale of his prior company to Enterasys; Nessus 3 closing the source in October 2005 and the OpenVAS fork", url: "https://en.wikipedia.org/wiki/Tenable,_Inc." },
       { label: "Tenable's own profile of Renaud Deraison - first Nessus release at 17, and the CVE editorial board", url: "https://www.tenable.com/profile/renaud-deraison" },
-      { label: "Company history: incorporation on 16 September 2002, bootstrapped until the $50M Accel Series A in September 2012", url: "https://dcf-model.com/blogs/history/tenb" },
+      { label: "TechCrunch, 5 September 2012 - a $50 million Series A from Accel Partners, described as the company's very first round of institutional funding after being bootstrapped, with the company founded in 2002 and Accel partner Ping Li having followed it for years because its products kept appearing across his portfolio", url: "https://techcrunch.com/2012/09/05/tenable-accel-series-a/", sourceNote: "Replaces a dead content-farm page (dcf-model.com now 301s to dcfanalyst.com, which 404s; confirmed 2026-09-27). It carries the round, the amount, the investor, the bootstrapped history and the founding YEAR. It does NOT carry the exact incorporation date of 16 September 2002, which stays in the copy and is now uncited; Tenable's 2018 Form S-1 is where that would be confirmed." },
+      { label: "Tenable Form S-1 (SEC, 2018), the IPO prospectus: \u201cTenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002\u201d, and the company describing its co-founder as the creator of Nessus", url: "https://www.sec.gov/Archives/edgar/data/1660280/000119312518209705/d548092ds1.htm", sourceNote: "Read 2026-09-27. It settles the YEAR and the state from the company itself and adds Delaware, which the entry did not have, but it gives no day - so it decides neither side of the 16 September against 4 October discrepancy recorded below. Both dates stand." },
       { label: "Alternative date of 4 October 2002 for incorporation, recorded as a discrepancy", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/tenable-brief-history" },
     ],
   },
@@ -2923,7 +2969,10 @@ export const partnerVendors: PartnerVendor[] = [
     externalLabel: "Cloudflare: our story",
     sources: [
       { label: "Cloudflare's own account - Project Honey Pot in 2004, the users asking them to stop the attacks, meeting at HBS, the November 2009 Series A with Venrock and Pelion", url: "https://www.cloudflare.com/our-story/" },
-      { label: "Company history: founded July 2009, the April 2009 HBS competition win, TechCrunch Disrupt launch, 50M to 5B page views in the first year", url: "https://portersfiveforce.com/blogs/brief-history/cloudflare" },
+            { label: "Cloudflare, Our Story - the company's own account of its founding", url: "https://www.cloudflare.com/our-story/" },
+      { label: "Cloudflare blog: winner of the 2009 Harvard Business School Business Plan Competition", url: "https://blog.cloudflare.com/cloudflare-winner-of-the-2009-harvard-busines/" },
+      { label: "Cloudflare press release, 27 September 2010: the launch at TechCrunch Disrupt", url: "https://www.cloudflare.com/press/2010/september-27-disrupt/" },
+      { label: "Cloudflare Form S-1 (SEC, 2019): \u201cwe were incorporated in the state of Delaware in July 2009\u201d", url: "https://www.sec.gov/Archives/edgar/data/1477333/000119312519222176/d735023ds1.htm", sourceNote: "The S-1 carries the incorporation date only. The competition win, the Disrupt launch and the first-year page-view growth are carried by the three Cloudflare sources above, which is why the content-farm page they replaced was split into four rather than swapped one for one." },
     ],
   },
   {
@@ -4117,7 +4166,7 @@ export const partnerVendors: PartnerVendor[] = [
     awards: [...REDU_AWARDS_GENERAL],
     sources: [
       { label: "Red Education - course finder (vendor list)", url: "https://www.rededucation.com/" },
-      { label: "IBM - Red Hat acquisition (2019)", url: "https://newsroom.ibm.com/2019-07-09-IBM-Closes-Landmark-Acquisition-of-Red-Hat-for-34-Billion-Defines-Open-Hybrid-Cloud-Future" },
+      { label: "IBM - Red Hat acquisition (2019)", url: "https://www.ibm.com/investor/news/ibm-completes-acquisition-of-red-hat" },
       ...REDU_SOURCES,
     ],
   },
@@ -4164,7 +4213,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     awards: [...REDU_AWARDS_GENERAL],
     sources: [
-      { label: "Broadcom - Symantec enterprise security (2019)", url: "https://www.broadcom.com/company/news/financial-releases/broadcom-completes-acquisition-of-symantec-enterprise-security-business" },
+      { label: "Broadcom - Symantec enterprise security (2019)", url: "https://www.broadcom.com/company/news/financial-releases/52706" },
       ...REDU_SOURCES,
     ],
   },
@@ -5462,7 +5511,7 @@ export const partnerVendors: PartnerVendor[] = [
     tagline: "A Brazilian security integrator: the practice of making other people's products work together in somebody else's estate.",
     intro: "CYLK was founded in June 2010 as a systems-integration and managed-services company for networks, data centre and security, and belongs to Grupo IHC. It does not make products; it makes them work - today specialising in cybersecurity, governance, risk and compliance, privacy, awareness, penetration testing and assessments for Brazilian enterprises.",
     body: [
-      "It is the third company of Grupo IHC, after HighCast (2003) and inLearn (2008). The group grew by each company creating the next out of demand the previous one had generated, rather than by acquisition.","The integrator's job is the one this site's Practice corpus is largely about: arriving at an estate somebody else designed, with vendors who each assume they are the only one present. CYLK also sits in the same group as InLearn - Grupo IHC, founded 2003, whose third company is HighCast - so the integration business and the training business grew up under one roof."],
+      "It is the third company of Grupo IHC, after HighCast (2003) and inLearn (2008). The group grew by each company creating the next out of demand the previous one had generated, rather than by acquisition.","The integrator's job is the one this site's Practice corpus is largely about: arriving at an estate somebody else designed, with vendors who each assume they are the only one present. CYLK also sits in the same group as InLearn - Grupo IHC, founded 2003, whose first company was HighCast - so the integration business and the training business grew up under one roof."],
     externalUrl: "https://www.cylk.com.br/",
     externalLabel: "CYLK",
   },
@@ -6102,7 +6151,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "SailPoint was founded in 2005 in Austin, Texas, by Mark McClain, Kevin Cunningham and Jackie Gilbert, whose earlier company Waveset Technologies had been sold to Sun Microsystems", url: "https://www.crunchbase.com/organization/sailpoint-technologies" },
       { label: "SailPoint's site: a single platform to secure every identity - human, machine and AI - with a Human Fabric and an Agentic Fabric, the IdentityIQ software product still offered alongside the cloud service, Navigate 2026 in Austin, and the claims that 53 per cent of the Fortune 500 are customers and that the company ranked first by revenue in identity governance and administration in 2024", url: "https://www.sailpoint.com/" },
       { label: "On the second listing: Thoma Bravo took the company private in 2022 for 6.9 billion dollars; the founder chief executive has led it for nearly twenty years; 41 per cent of the workforce is outside the United States; the S-1 for the 2025 return to the market showed 813 million dollars of annual recurring revenue", url: "https://www.mostlymetrics.com/p/sailpoint-ipo-s1-breakdown" },
-      { label: "Company profile: IdentityIQ launched in 2007 as the on-premises governance platform and IdentityNow, the cloud service, in 2014, funded in part by a Thoma Bravo-led round the same year; the 2017 initial public offering was on the New York Stock Exchange; trailing revenue reached 904 million dollars by April 2025; Gartner ranked the company first in identity governance and administration by revenue for 2024", url: "https://portersfiveforce.com/blogs/brief-history/sailpoint" },
+      { label: "SailPoint Form S-1 (SEC, 2017), the IPO prospectus: \u201cIn 2007, we pioneered identity governance through our release of IdentityIQ, our on-premises identity governance solution\u201d; \u201cIn 2013, we introduced the first cloud-based identity governance solution\u201d; Thoma Bravo formed SailPoint Technologies Holdings in August 2014 and completed its acquisition of SailPoint Technologies on 8 September 2014", url: "https://www.sec.gov/Archives/edgar/data/1627857/000119312517315396/d392110ds1.htm", sourceNote: "TWO DISCREPANCIES WITH THIS ENTRY\u2019S TEXT, found when the dead content-farm citation was replaced with the prospectus. (1) The entry dates the cloud product to 2014; the S-1 says the first cloud-based identity governance solution was introduced in 2013. (2) The entry describes \u2018a Thoma Bravo-led round\u2019; the S-1 describes an ACQUISITION completed on 8 September 2014, which is a different transaction from a funding round. The copy was left unchanged and the conflict recorded here: see canon AUDIT-dead-citations-20260927.md." },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -6433,7 +6482,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "cipher",
     sources: [
       { label: "Baguete, 1 July 2020 - notes that in 2018 Prosegur, a private-security company with more than 175,000 staff in 25 countries, signed an agreement to acquire a majority stake in Cipher", url: "https://www.baguete.com.br/noticias/01/07/2020/embraer-compra-controle-da-tempest", sourceNote: "Cipher appears here as reported context inside an article about Tempest, which is how the two Brazilian security acquisitions of that period are usually recorded together." },
-      { label: "Cipher, now Prosegur’s cybersecurity division - an industry directory records the company as founded in 2000, and Cipher’s own about page states more than twenty years of operation with over 200 cybersecurity professionals across five countries and six security operations centres", url: "https://www.cipher.com/about-us", sourceNote: "The 2000 date comes from a directory listing; Cipher’s own site corroborates the period with a statement of more than twenty years but does not print a year. Recorded on the two together rather than on either alone." },
+      { label: "Cipher, now Prosegur’s cybersecurity division - an industry directory records the company as founded in 2000, and Cipher’s own about page states more than twenty years of operation with over 200 cybersecurity professionals across five countries and six security operations centres", url: "https://www.cipher.com/about-us", sourceNote: "The 2000 date is stated in Prosegur’s own release announcing the acquisition (10 December 2018), which also names Eduardo Boucas as founder and CEO. A directory listing and Cipher’s own ‘more than twenty years’ phrasing agree with it." },
     ],
     tags: ["services"],
     relationships: ["worked-with-directly"],
@@ -6551,7 +6600,7 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Nava - company site: formed from the merger of business units, founded originally as Unicom (infrastructure, data centres, connectivity), with FlexVision created for IT platform development and infrastructure operations", url: "https://nava.com.br/en/who-we-are/" },
       { label: "Company listing describing Nava as the result of the merger of FlexVision and Unicom, with sector expertise in payments, telecommunications, financial services and industry", url: "https://programathor.com.br/companies/5632" },
-      { label: "Softdex company directory - NAVA Technology for Business, founded 1996, headquartered in Barueri, Sao Paulo, operating as a group across more than one CNPJ including Nava Software Ltda and Nava Servicos e Outsourcing S.A.", url: "https://softdex.com.br/empresa/nava-technology-for-business", sourceNote: "A single directory listing. Nava publishes a substantial about page that does not state a founding year, so this stands until a first-party statement is found." },
+      { label: "Softdex company directory - NAVA Technology for Business, founded 1996, headquartered in Barueri, Sao Paulo, operating as a group across more than one CNPJ including Nava Software Ltda and Nava Servicos e Outsourcing S.A.", url: "https://softdex.com.br/empresa/nava-technology-for-business", sourceNote: "Now first-party: Nava’s own history page states 1996 as the founding year under the name Unicom, and dates the consolidation under the Nava name to 2018. The directory listing agrees on 1996 and supplies the Barueri headquarters, which the company’s own page does not print." },
     ],
     tags: ["services", "reseller"],
     relationships: ["worked-with-directly"],
@@ -6986,7 +7035,12 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "techdec",
     sources: [
       { label: "TechDEC's own history page: founded December 1996 in Porto Alegre, starting on Avenida Taquara in the Petropolis district; US branch opened in Florida in 2004; HIMSS Analytics certified and listed among the 100 largest in the Anuario Telecom", url: "https://www.techdec.com.br/site/historia.php" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     ],
     tags: ["reseller", "services"],
     group: "other",
@@ -7005,7 +7059,12 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Grupo SEGER's own about page: segertech.com.br listed as a group company for more than 15 years, covering unified communications, digital security and wireless and cabled network infrastructure; group headquarters in Florianopolis with bases in Sao Paulo, Parana and Minas Gerais and a US subsidiary", url: "https://seger.com.br/sobre-nos/" },
       { label: "Segertech's services page: authorised centre in Brazil for the manufacturers it represents, with certified instructors and hands-on lab training, supporting the installed Ruckus base nationally", url: "https://www.segertech.com.br/servicos" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: SEGERTECH COMERCIAL IMPORTADORA E EXPORTADORA S.A., CNPJ 05.699.667/0001-48, opened 10/06/2003 in Florianopolis (SC), the group headquarters city its own about page gives. Identity is fixed by the same root's Sao Paulo branch 05.699.667/0004-90 at Rua Pais Leme 215, Pinheiros, which is the address on Segertech's own contact page", url: "https://publica.cnpj.ws/cnpj/05699667000148" },
     ],
     tags: ["reseller", "services"],
@@ -7024,7 +7083,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "soow-sigma",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     
       { label: "Soow Sigma, July 2025: Sigma completes 40 years, Fortinet Expert Partner and strategic integrator, with 2025 awards for sales in the South region and for specialisation, and nominations in the managed security and operational technology categories", url: "https://www.soow.com.br/sem-categoria/sigma-completa-40-anos-conectandoempresas-ao-futuro-com-tecnologiaconfianca-e-resultados/" },
       { label: "Soow Sigma - company site, including the notice that the change of brand, trading name and corporate name left the CNPJ and every existing contract unchanged", url: "https://www.soow.com.br/" },
@@ -7046,7 +7110,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "security4it",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     
       { label: "Company registry data for Security4IT - Solucoes de Seguranca da Informacao Ltda, CNPJ 09.385.277/0001-54: founded 8 February 2008, Sao Paulo, administrators Cassio David Pereira, Fabio Maeji Amaro and Rodrigo Cavalcante de Souza", url: "https://www.econodata.com.br/consulta-empresa/09385277000154-SECURITY4IT-SOLUCOES-DE-SEGURANCA-DA-INFORMACAO-LTDA" },
     ],
@@ -7068,7 +7137,12 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "cnpj.biz: CNPJ 45.385.327/0001-67, registered 21/02/2022 in Santa Efigenia, Belo Horizonte, principal activity CNAE 6209-1/00 with secondary codes covering training, IT consultancy and equipment rental", url: "https://cnpj.biz/45385327000167" },
       { label: "IT Section, February 2023: BHS incorporated Nowcy as the group's fourth company; the article notes Nowcy was created in 2021 and that its partners were experienced in information security and corporate governance", url: "https://itsection.com.br/2023/02/08/bhs-incorpora-a-nowcy/" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     ],
     tags: ["reseller", "services"],
     group: "other",
@@ -7086,7 +7160,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "blue-eye",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: BLUE EYE SOLUCOES EM TECNOLOGIA LTDA, trade name BLUE EYE TECNOLOGIA, CNPJ 26.025.401/0001-90, opened 24/08/2016 in Brasilia (DF), software development. Location corroborated by FireEye's own partner directory, which lists Blue Eye Tecnologia in Brasilia, Distrito Federal", url: "https://publica.cnpj.ws/cnpj/26025401000190" },
     ],
     tags: ["reseller", "services"],
@@ -7476,7 +7555,12 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "danresa",
     sources: [{ label: "Danresa on LinkedIn: certified and specialised across Fortinet, Sophos, Aruba, NSFocus, Carbon Black, Tenable, Forcepoint and Nozomi; Fortinet Platinum reseller with NSE8 Network Security Expert certification; operating in the enterprise, telco and data centre markets", url: "https://br.linkedin.com/company/danresa" }, { label: "Danresa's own about page: an information security consultancy founded in 1998, providing complete solutions in security, network infrastructure and IT communication, with a team that participates from the conception of the idea to the conclusion of the project - feasibility, strategic consulting, technology choice, management, deployment, training, support, maintenance and warranty", url: "https://www.danresa.com.br/danresa-introducao.html" }, 
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     
       { label: "DANRESA - Security and Network Solutions: Fortinet partner with FortiGate, and partner of Sophos, Aruba, NSFocus, Nozomi, Forcepoint, Tenable and Carbon Black, with 24x7x365 support", url: "https://www.danresa.com.br/" },
     ],
@@ -7498,7 +7582,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "solor",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Solor Tecnologia LTDA, Expert level; Rio De Janeiro, Rio De Janeiro; business model Integrator, MSSP; specialisations Operational Technology, SASE, Secure Networking, Secure Networking LAN, Security Operations", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: SOLOR TECNOLOGIA LTDA, CNPJ 17.866.425/0001-80 as published on the company's own contact page, opened 02/04/2013, CNAE 6209-1/00 (information technology support and services), Niteroi (RJ), matching the Rio de Janeiro office the company lists", url: "https://publica.cnpj.ws/cnpj/17866425000180" },
     ],
     tags: ["reseller", "services"],
@@ -7515,7 +7605,12 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "tld-hub",
     sources: [
       { label: "TI Bahia, March 2024: TLD TeleData adopted the name TLD Hub de Ciberseguranca e Conectividade, presenting the new positioning in Salvador on 19 March with representatives of Fortinet, described as its largest strategic partner", url: "https://tibahia.com/negocios/com-nova-identidade-corporativa-tld-teledata-agora-e-tld-hub-de-ciberseguranca-e-conectividade/" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: TLD HUB DE CIBERSEGURANCA & CONECTIVIDADE LTDA, CNPJ 33.927.849/0001-64, opened 02/03/1990 in Salvador (BA), CNAE 4652-4/00 (wholesale of electronic components and telephony and communication equipment). The registered name is the one adopted in the March 2024 rebrand reported by TI Bahia, and the city matches", url: "https://publica.cnpj.ws/cnpj/33927849000164" },
     ],
     tags: ["reseller", "services"],
@@ -7533,7 +7628,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "world-zone",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: WORLD ZONE TECNOLOGIA LTDA - ME, Expert level; Rio De Janeiro, Rio De Janeiro; business model Integrator, MSSP; specialisations Cloud Security, Operational Technology, SASE, SD-WAN, Secure Networking, Secure Networking LAN, Security Operations", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: WORLD ZONE TECNOLOGIA LTDA, CNPJ 14.769.793/0001-12, opened 12/12/2011, CNAE 6209-1/00 (information technology support and services), Rio de Janeiro (RJ), the city of the Barra da Tijuca address on the company's own about page", url: "https://publica.cnpj.ws/cnpj/14769793000112" },
     ],
     tags: ["reseller", "services"],
@@ -7549,7 +7650,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "ziva",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Ziva Tecnologia E Solucoes Ltda, Expert level; Sao Paulo, São Paulo; business model Integrator, MSSP; specialisations Cloud Security, Operational Technology, SASE, Security Operations", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil", sourceNote: "Fortinet lists Ziva Tecnologia E Solucoes Ltda; the CNPJ record below is ZIVASEC TECNOLOGIA E SOLUCOES LTDA. Same city and the same remainder of the name, so this reads as the directory carrying the shorter trading form rather than a second company, but the difference is recorded rather than smoothed." },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: ZIVASEC TECNOLOGIA E SOLUCOES LTDA, CNPJ 05.816.526/0001-68, opened 20/03/2003, CNAE 6209-1/00 (information technology support and services), Sao Paulo (SP). The registered name carries the post-acquisition ZivaSec form; Inforchannel's December 2022 report of the NTSEC purchase describes more than fifteen years in the market and staff in Sao Paulo, both consistent with 2003", url: "https://publica.cnpj.ws/cnpj/05816526000168" },
     ],
     tags: ["reseller", "services"],
@@ -7565,7 +7672,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "betta",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Betta Telecomunicações E Eletronica LTDA, Expert level; São Paulo, São Paulo; business model Integrator; specialisations SASE, SD-WAN", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil", sourceNote: "IDENTITY NOT SETTLED. Fortinet lists the legal name Betta Telecomunicações E Eletronica LTDA with the site betta.gp; the CNPJ record below is BETTA SOLUCOES DE ATENDIMENTO LTDA. The two share only the word Betta. Both are in São Paulo and betta.gp resolves to Betta Global Partner, whose privacy-policy address is how the CNPJ was matched, so a group holding more than one entity is the likely reading - but it is a reading. The founded year on this entry comes from the CNPJ entity, not from the entity Fortinet lists. betta.gp published nothing identifying either when read on 2026-09-27." },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: BETTA SOLUCOES DE ATENDIMENTO LTDA, CNPJ 64.729.775/0001-85, opened 30/10/1990, CNAE 6202-3/00 (customisable software development and licensing), at Rua Teodoro de Beaurepaire 126, CEP 04279-030, Sao Paulo, which is the headquarters address in Betta Global Partner's own privacy policy. A separate 2020 company of similar name at a different address and in electronic security monitoring is NOT this company", url: "https://publica.cnpj.ws/cnpj/64729775000185" },
     ],
     tags: ["reseller", "services"],
@@ -7573,15 +7686,21 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1990,
     name: "Betta",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Sao Paulo integrator at Expert level with Fortinet in SASE and SD-WAN, and an entry whose own identity is not yet settled.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The directory lists Betta Telecomunicacoes e Eletronica at Expert level in Sao Paulo, as an integrator, with SASE and SD-WAN. The name in the directory and the company this entry was written about do not clearly match, which is recorded in the source notes rather than resolved: a telecommunications and electronics company and an IT channel partner can share a name in Brazil without being the same business, and the founding year this entry carries is affected by which one it is.",
+      "The rule this follows is the same one applied to every CNPJ in this catalogue: a registration is matched on activity code and address, never on name. Until that match is made the two readings both stand.",
     ],
   },
   {
     slug: "by-seven",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
       { label: "by Seven's own site: \"Fundada em outubro de 2011, inicialmente com 3 socios, registrou crescimento constante desde a fundacao\", with the company's address in Joinville (SC). The company's own account of its founding, read 17 September 2026", url: "https://byseven.com.br/" },
     ],
     tags: ["reseller", "services"],
@@ -7589,15 +7708,22 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2011,
     name: "By Seven",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Joinville house, founded in October 2011 by three partners, now at Expert level in Fortinet's Brazilian directory.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Its own site gives the founding: October 2011, initially three partners, with steady growth since. Three people starting a channel business and reaching a vendor's top tier is a specific kind of story, and the mechanism is not mysterious: at that size every partner is also an engineer, so the certifications a tier requires are held by the owners rather than hired for.",
+      "Joinville is the other detail. Santa Catarina is an industrial state with a real manufacturing base and a technology sector that grew to serve it, which is why a partner there can build a business on operational customers without ever selling into Sao Paulo.",
     ],
   },
   {
     slug: "connection-br",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Connection Conectividade E Integracao De Sistemas..., Expert level; Porto Alegre, Rio Grande Do Sul; business model Integrator, MSSP; specialisations SASE, SD-WAN, Secure Networking LAN", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: CONNECTION CONECTIVIDADE E INTEGRACAO DE SISTEMAS LTDA, CNPJ 95.125.332/0001-09, opened 06/05/1993, CNAE 6204-0/00 (information technology consultancy), at Rua General Vitorino 330 conj. 202, CEP 90020-170, Porto Alegre, which is the address on the company's own site", url: "https://publica.cnpj.ws/cnpj/95125332000109" },
     ],
     tags: ["reseller", "services"],
@@ -7605,15 +7731,22 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1993,
     name: "Connection",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Porto Alegre integrator and managed security provider, listed at Expert level with Fortinet across SASE, SD-WAN and campus networking.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Registered as Connection Conectividade e Integracao de Sistemas, it holds three named specialisations rather than one, and the combination is coherent: SASE for the remote user, SD-WAN for the branch, and secure networking on the LAN. That is one partner covering the whole path a packet takes from a person to an application, which is a harder set of exams to staff than any single line of it.",
+      "Rio Grande do Sul carries more of this catalogue than its size suggests, and it is not an accident: Porto Alegre has an old and deep technical university base, and a channel house that can recruit locally does not have to compete with Sao Paulo salaries to hold on to certified engineers.",
     ],
   },
   {
     slug: "focaldata",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Focaldata, Expert level; Barueri, Sao Paulo; business model Integrator, Marketplace, MSSP; specialisations Cloud Security, SD-WAN, Secure Networking, Secure Networking LAN", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: FOCALDATA SOLUCOES E SERVICOS EM TECNOLOGIA DA INFORMACAO LTDA, trade name FOCALDATA, CNPJ 31.997.986/0001-40, opened 12/11/2018 in Alphaville, Barueri (SP), matching the Sao Paulo area code the company publishes. A second group company, Focaldata SP, dates from 2020; the 2018 entity is the one carrying the plain trade name", url: "https://publica.cnpj.ws/cnpj/31997986000140" },
     ],
     tags: ["reseller", "services"],
@@ -7621,9 +7754,10 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2018,
     name: "Focaldata",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Barueri integrator listed at Expert level with Fortinet, and the only partner in this catalogue whose registered business model includes a marketplace.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The directory lists it as integrator, marketplace and managed security provider, with cloud security, SD-WAN and both secure-networking specialisations. The marketplace line is the one that separates it from every other Expert-tier house here, and it describes a different transaction: selling through a cloud provider's own catalogue, where the customer's existing committed spend pays for the software and the partner never issues an invoice at all.",
+      "Barueri is also worth a word. It is where a large share of Sao Paulo's enterprise IT sits, close enough to the city to serve it and far enough out to afford the floor space, and several companies in this catalogue are registered there for exactly that reason.",
     ],
   },
   {
@@ -7631,16 +7765,22 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Econodata: Hexait Servicos e Tecnologia da Informacao LTDA, CNPJ 14.260.983/0001-00, founded 18/08/2011 in Vila Gomes Cardim, Sao Paulo; principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/14260983000100-hexait-servicos-e-tecnologia-da-informacao-ltda" },
       { label: "Inforchannel, March 2025: HexaIT, with Fortinet, brought FortiCnapp to the Brazilian market - a unified cloud-security platform covering posture management, workload protection, entitlement management and code security", url: "https://inforchannel.com.br/2025/03/28/hexait-anuncia-forticnapp-plataforma-de-seguranca-unificada-para-a-nuvem/" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     ],
     tags: ["reseller", "services"],
     group: "other",
     founded: 2011,
     name: "HexaIT",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Sao Paulo integrator, registered in 2011, that in 2025 was the partner Fortinet brought FortiCnapp to the Brazilian market with.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Hexait Servicos e Tecnologia da Informacao was opened on 18 August 2011 in Vila Gomes Cardim, Sao Paulo, under the registered activity of technical support and maintenance. What distinguishes it from the other Expert-tier houses here is a dated launch rather than a directory line: in March 2025 it took FortiCnapp to market in Brazil, a unified cloud-security platform spanning posture management, workload protection, entitlement management and code security.",
+      "Being the partner a vendor launches a product through is a different thing from holding a tier. A tier says how many certified engineers a house employs; a launch says the vendor expects that house to be able to sell and support something nobody in the market has deployed yet, which is a judgement about the people rather than a count of them.",
       "Registered as Hexait Servicos e Tecnologia da Informacao in August 2011, in the Vila Gomes Cardim district of Sao Paulo, with technical support and IT services as its declared activity. In March 2025 it brought Fortinet's FortiCnapp to the Brazilian market - cloud security posture management, workload protection, entitlement management and code security in one platform - which places it among the partners doing launch work for a vendor rather than only reselling what is already established here.",
     ],
   },
@@ -7649,16 +7789,23 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Econodata: Inorpel Comercio e Servicos Ltda, CNPJ 10.920.030/0001-70, opened 25/06/2009 in Cabedelo PB, principal activity CNAE 6209-1/00 - technical support, maintenance and other IT services", url: "https://www.econodata.com.br/consulta-empresa/10920030000170-INORPEL-COMERCIO-E-SERVICOS-LTDA" },
       { label: "Serasa Experian: INORPEL INDUSTRIA NORDESTINA DE PRODUTOS ELETRICOS LTDA - EPP, CNPJ 08.720.054/0001-33, founded 26/10/1994, also in Cabedelo PB - the industrial entity behind the name", url: "https://empresas.serasaexperian.com.br/consulta-gratis/INORPEL-INDUSTRIA-NORDESTINA-DE-PRODUTOS-ELETRICOS-LTDA-08720054000133" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: INORPEL COMÉRCIO E SERVIÇOS LTDA, Expert level; Cabedelo, Paraíba; business model Integrator, MSSP; specialisations SASE, SD-WAN, Security Operations", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
     ],
     tags: ["reseller", "services"],
     group: "other",
     founded: 2009,
     name: "Inorpel",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Expert-level Fortinet partner in Cabedelo, Paraiba, and one of the few entries here whose name belongs to two companies at once.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The registry carries Inorpel Comercio e Servicos, opened on 25 June 2009 in Cabedelo under technical support and maintenance, and separately Inorpel Industria Nordestina de Produtos Eletricos, founded on 26 October 1994 at the same location. An IT services company sharing a name and a town with a fifteen-years-older electrical manufacturer is the ordinary shape of a Brazilian family group extending into a new line, and both registrations are recorded here rather than one being chosen.",
+      "In the vendor directory it is listed as integrator and managed security provider, with SASE, SD-WAN and security operations. A partner running a security operations practice from Paraiba is worth noticing on its own: the Northeast is under-represented in every Brazilian channel list, including this one.",
       "The name is an acronym and it explains the company: INdustria NORdestina de Produtos ELetricos, a north-eastern electrical products manufacturer. There are two registrations in Cabedelo, Paraiba - the industrial one opened in 1994, and Inorpel Comercio e Servicos, opened 25 June 2009, whose registered activity is technical support and IT services. The 2009 date is used here because that is the entity doing this work.",
       "The company describes itself as more than forty years in technology, which reaches back further than either registration - a reminder that a Brazilian CNPJ dates a legal entity, not a business. It positions itself as the first company in Paraiba specialising in information-security services and consultancy, with cybersecurity as a newer segment alongside the older technology work, and carries Fortinet, Bitdefender, Acronis, Qualys and PRTG among others.",
     ],
@@ -7666,7 +7813,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "network-secure",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: NETWORK SECURE SEGURANCA DA INFORMACAO LTDA [FOR], Expert level; Fortaleza, Ceará; business model Integrator, MSSP; specialisations SD-WAN || NETWORK SECURE SEGURANCA DA INFORMACAO LTDA [MT], Expert level; Cuiaba, Mato Grosso; business model Integrator", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: NETWORK SECURE SEGURANCA DA INFORMACAO LTDA, trade name NETWORK SECURE, CNPJ 05.250.796/0001-54, opened 02/08/2002 in Fortaleza (CE). Diario do Nordeste of 17 November 2020 reported the company completing eighteen years and opening a new Fortaleza headquarters, which puts the start in the same year", url: "https://publica.cnpj.ws/cnpj/05250796000154" },
     ],
     tags: ["reseller", "services"],
@@ -7674,15 +7827,22 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2002,
     name: "Network Secure",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Carries TWO separate Expert-level registrations in Fortinet's Brazilian partner directory, one in Fortaleza and one in Cuiaba, which is what a partner looks like when it has built a second regional operation rather than a second office.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The two registrations are not a bookkeeping artefact. The Fortaleza entity is listed as both integrator and managed security provider with SD-WAN as its specialisation; the Cuiaba entity is listed as integrator only, with none. That is a partner in the Northeast that has extended into the Centre-West and is still building the managed side of it, and the directory records the difference rather than averaging it away.",
+      "It is also the clearest illustration of why Fortinet's directory is worth citing at all. Most vendors publish a partner locator that answers where to buy and nothing else. This one publishes tier, city, business model and named specialisations, which means a claim about a partner's standing can be checked by a reader instead of taken on trust. Every Expert-level entry in this catalogue rests on that, and the vendors whose directories are not enumerable are precisely the ones whose partner claims here remain thin.",
     ],
   },
   {
     slug: "rcx",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: RCX NETWORK SERVICOS DE INFORMATICA LTDA. ME, Expert level; Porto Alegre, Rio Grande Do Sul; business model Integrator; specialisations SASE, SD-WAN", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: RCX NETWORK - SERVICOS DE INFORMATICA LTDA, trade name RCXIT NETWORK IT EXPERTS, CNPJ 19.499.210/0001-02, opened 09/01/2014, CNAE 6209-1/00, Porto Alegre (RS), the city SEPRORGS gives. A Porto Alegre company of similar name in physical security, bankrupt and struck off in 2025, is NOT this company", url: "https://publica.cnpj.ws/cnpj/19499210000102" },
     ],
     tags: ["reseller", "services"],
@@ -7690,15 +7850,22 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2014,
     name: "RCX",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Small Porto Alegre integrator holding Expert level with Fortinet in SASE and SD-WAN.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "RCX Network Servicos de Informatica is registered as a micro-enterprise, and the combination of that legal size with an Expert-level grade is the thing worth recording. The tier is earned with certified engineers and held with revenue, so a very small company reaching it has concentrated its certifications rather than spread them: two named specialisations, deep, instead of a wide shallow line card.",
+      "That is a viable strategy in this market and it is the opposite of the distributor strategy described elsewhere in this catalogue. A house of this size does not win on breadth or on credit; it wins because the two things it does are the two things a particular customer needs done properly.",
     ],
   },
   {
     slug: "secureway",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: Secureway Tecnologia Da Informacao, Msp, Servicos..., Expert level; São Paulo, São Paulo; business model Integrator; specialisations SD-WAN, Secure Networking", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: SECUREWAY TECNOLOGIA DA INFORMACAO REPRESENTACOES LTDA, CNPJ 12.950.094/0001-49, opened 05/10/2010, at Alameda Santos 2326, Cerqueira Cesar, CEP 01418-200, Sao Paulo, which is the address on Secureway's own contact page. Two later group companies sit at the same address, from 2020 and 2021; the company's own site claims more than a decade", url: "https://publica.cnpj.ws/cnpj/12950094000149" },
     ],
     tags: ["reseller", "services"],
@@ -7706,15 +7873,22 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 2010,
     name: "Secureway",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Sao Paulo integrator at Expert level with Fortinet in SD-WAN and secure networking.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "Registered as Secureway Tecnologia da Informacao, MSP, Servicos, the legal name itself carries the managed-service claim, which is unusual and mildly useful: it dates the company to a period when calling yourself an MSP was worth writing into the registry rather than only into the marketing.",
+      "Its two specialisations are the wide-area and the campus, which is the pairing a partner builds when its customers are companies with several sites and no network team of their own.",
     ],
   },
   {
     slug: "trtec",
     sources: [
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
+      { label: "Fortinet Partner Program directory, Brazil, read 27 September 2026: TRTEC INFORMATICA LTDA., Expert level; Sao Paulo 01224-011, São Paulo; business model Integrator; specialisations SASE", url: "https://partnerportal.fortinet.com/directory/search?l=Brazil" },
       { label: "Receita Federal CNPJ register via publica.cnpj.ws, read 17 September 2026: TRTEC INFORMATICA LTDA, CNPJ 54.663.836/0001-03, opened 20/01/1986, at Rua Martinico Prado 167, Vila Buarque, Sao Paulo, which is the address on TrTec's own site; that site's claim of more than forty years in the market agrees with 1986", url: "https://publica.cnpj.ws/cnpj/54663836000103" },
     ],
     tags: ["reseller", "services"],
@@ -7722,25 +7896,31 @@ export const partnerVendors: PartnerVendor[] = [
     founded: 1986,
     name: "TRTEC",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Sao Paulo integrator, Expert level with Fortinet, specialised in SASE alone.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "A single named specialisation is worth as much attention as a long list. TRTEC Informatica holds Expert level with SASE and nothing else recorded, which describes a house that went deep on one architecture rather than accumulating badges. SASE is also the hardest of Fortinet's specialisations to staff, because it sits across networking and security and most engineers are trained in one of the two.",
     ],
   },
   {
     slug: "under-protection",
     sources: [
       { label: "Under Protection's own history page: founded in 2001, when digital security was barely discussed in Brazil, starting with information-security consulting for companies that had no basic access-control policies", url: "https://underprotection.com.br/nossa-historia/" },
-      { label: "Shared channel research supplied by PRIME, 11 August 2026: Brazilian distributors and publicly verified partners for F5, Extreme, Netskope, Zscaler, Ping Identity, Check Point and Fortinet, drawn from vendor directories and channel announcements", url: "https://chatgpt.com/share/6a97b306-38c8-83e9-b08b-c6eba4176540" },
+      // Provenance: PRIME's shared channel research, 11 August 2026, on Brazilian
+      // distributors and publicly verified partners for F5, Extreme, Netskope,
+      // Zscaler, Ping Identity, Check Point and Fortinet. It was cited as a ChatGPT
+      // share link, which returned 404 from PRIME's own logged-in account on
+      // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
+      // See canon QUEUE-llm-transcript-as-source-20260927.md.
     ],
     tags: ["reseller", "services"],
     group: "other",
     founded: 2001,
     name: "Under Protection",
     tagline: "Expert-level Fortinet partner in Brazil.",
-    intro: "One of the Expert-tier houses in Fortinet's Brazilian partner directory, which is unusually enumerable because the vendor publishes level and specialisation in crawlable form - unlike the locators of most vendors on this list.",
+    intro: "Expert-level Fortinet partner whose own history dates it to 2001, when it began with information-security consulting for Brazilian companies that had no access control policy at all.",
     body: [
-      "Listed at Expert level in the vendor's current Brazilian partner directory. The tier is worth understanding rather than skipping: vendor levels are earned with certified engineers and maintained with revenue, so the grade encodes how many people in that house have passed the exams - which is the closest thing the channel has to a public measure of capability, and the reason certification programmes carry so much weight in this market.",
+      "The company's account of its start is the useful part, because it dates the market rather than the firm. In 2001 digital security was barely discussed in Brazil, and its first work was consulting for organisations that lacked basic access-control policies. A security practice founded in that year did not begin by selling products; it began by explaining that the problem existed.",
+      "Twenty-five years later the same company sits at Expert level in a vendor programme whose tiers are earned with certified engineers. That is the arc of the Brazilian security channel in one entry: from arguing the case, to being graded on how many people you have who can implement it.",
       "Under Protection was founded in 2001, and its own account of why is worth taking at face value: it began doing information-security consulting for Brazilian companies that had no access-control policies at all. That is early. Brazil's general data protection law was still nineteen years away, and most of the compliance pressure that now sustains this kind of consultancy did not exist - so the first customers were buying a judgement about risk rather than a way to satisfy a regulator.",
       "The work described from the start is risk assessment, compliance and incident prevention against international frameworks - ISO 27001 and 27701, and NIST - rather than product resale, and the company now holds ISO 9001 and 27001 itself. Its stated conclusion after two decades is that the serious failures came less from badly configured tools than from the absence of strategy and process around them.",
     ],
@@ -8011,7 +8191,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "proof",
     sources: [
       { label: "TI Inside and Inforchannel, April 2024 - SEK acquires Proof, a Rio de Janeiro information-security company with more than 15 years of activity, offering managed detection and response and governance, risk and compliance consultancy; the deal brought over 100 clients and more than 120 professionals, took SEK\u2019s consolidated revenue to about US$140 million, and added Proof\u2019s own PaeSi platform", url: "https://inforchannel.com.br/2024/04/19/sek-anuncia-aquisicao-da-proof-e-expande-atuacao-na-america-latina/" },
-      { label: "Valor, via SEK - SEK was created by Patria Investimentos from the union of Proteus and NeoSecure, backed by a US$250 million fund, and had previously acquired CleanCloud; after the Proof deal its Brazilian team reached around 400 people and more than a thousand across Latin America", url: "https://sek.io/investida-do-patria-provedora-de-ciberseguranca-sek-compra-a-brasileira-proof/" },
+      { label: "IT Forum, 18 April 2024 - SEK (Security Ecosystem Knowledge), the cybersecurity arm of Patria Investimentos, announced the acquisition of Proof, a managed detection and response and consulting specialist; combined revenue of about US$140 million; SEK created by Patria in March 2023, and CleanCloud, a Brazilian cloud-vulnerability startup, acquired in April 2023", url: "https://itforum.com.br/noticias/sek-anuncia-aquisicao-da-proof/", sourceNote: "Replaces SEK's own republication of a Valor report, which now answers 404 (it redirects to an /en/ path that does not exist), confirmed by a second client on 2026-09-27." },
+      { label: "TI INSIDE, 17 April 2024 - after the Proof deal, more than 400 professionals in Brazil and more than a thousand across Latin America, on a base of about a thousand clients in the region; CleanCloud described as a Brazilian startup specialising in cloud vulnerability scanning with operations in Latin America and the United States", url: "https://tiinside.com.br/17/04/2024/sek-compra-a-proof-e-agrega-100-clientes/", sourceNote: "Carries the headcount figures the dead sek.io citation was relied on for. Neither of these two reports names Proteus and NeoSecure as the companies SEK was built from, nor the US$250 million commitment; both of those are separately sourced in SEK's own entry in this file, to IT Forum of March 2023 and TI Inside of March 2023, so no claim here is left uncited." },
       { label: "Proof by SEK - the company states that after fifteen years of operation in the Brazilian market it became part of SEK on 17 April 2024, extending its reach to Argentina, Chile, Colombia and Peru", url: "https://tiinside.com.br/17/04/2024/sek-compra-a-proof-e-agrega-100-clientes/", sourceNote: "This year is DERIVED, not stated: fifteen years of operation as of 17 April 2024 places the start in or about 2009. No exact founding date was found, and the figure should be replaced if a registry record or first-party statement of the year turns up." },
     ],
     tags: ["services"],
@@ -8277,7 +8458,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "cpm-braxis",
     sources: [
-      { label: "Estado de S. Paulo via InvesteSP, September 2010 - Capgemini bought control of CPM Braxis for R$517 million (US$295.4 million) after four months of negotiation, taking 55% of the shares; the purchase combined R$230 million paid proportionally to shareholders with a R$287 million capital injection for investment and debt; Bradesco, CPM Braxis\u2019s largest client and largest shareholder, retained 20% after having bought Deutsche Bank\u2019s stake in CPM Holding in May", url: "https://www.investe.sp.gov.br/noticia/capgemini-adquire-controle-da-cpm-braxis/" },
+      { label: "Capgemini's own announcement, 2 September 2010 - Capgemini bought control of CPM Braxis for R$517 million (US$295.4 million) after four months of negotiation, taking 55% of the shares; the purchase combined R$230 million paid proportionally to shareholders with a R$287 million capital injection for investment and debt; Bradesco, CPM Braxis\u2019s largest client and largest shareholder, retained 20% after having bought Deutsche Bank\u2019s stake in CPM Holding in May", url: "https://www.marketscreener.com/quote/stock/CAPGEMINI-SE-4624/news/CAP-GEMINI-Capgemini-acquires-a-55-stake-in-CPM-Braxis-the-leading-Brazilian-IT-services-player-13448423/" },
       { label: "MundoGEO, September 2010 - CPM Braxis described as the leading Brazilian IT services company, expecting record revenue of around R$1 billion in 2010, with a client base concentrated in financial services and telecommunications", url: "https://mundogeo.com/2010/09/10/capgemini-adquire-55-das-acoes-da-cpm-braxis/" },
       { label: "PR Newswire, May 2010 - CPM Braxis ranked 48th on the IAOP Global Outsourcing 100, the highest position achieved by a South American company, serving more than 200 major clients; CEO Jose Luiz Rossi", url: "https://prnewswire.com/news-releases/cpm-braxis-is-top-ranked-south-american-it-services-company-on-iaops-2010-global-outsourcing-100-list-92783554.html" },
       { label: "IT Forum, October 2012 - two years after the acquisition the company dropped the CPM Braxis name for the Capgemini brand alone, in line with its other 39 countries; 30 years of activity in Brazil and more than 6,000 professionals", url: "https://itforum.com.br/noticias/cpm-braxis-capgemini-passa-a-adotar-apenas-a-marca-capgemini-no-brasil/" },
@@ -9154,7 +9335,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Exame: federal court convicted six businessmen and executives; interposed companies concealed the real importer, Mude Comercio e Servicos Ltda; fraudulent imports exceeded US$370 million across 16 identified operations", url: "https://exame.com/negocios/justica-condena-executivos-de-distribuidora-da-cisco/" },
       { label: "Senate archive of O Estado de S. Paulo, 19 October 2007: Mude was a Brazilian company with a US branch intermediating Cisco imports; goods left Florida, most destined for Bahia, where state law gives incentives to IT companies", url: "https://www2.senado.leg.br/bdsf/bitstream/handle/id/331628/noticia.htm?sequence=1" },
       { label: "CARF administrative ruling 3301-012.149: the tax authority treated Mude as the REAL importer and therefore as an industrial establishment for IPI purposes, with joint liability across the group", url: "https://acordaos.economia.gov.br/acordaos2/pdfs/processados/10803000134200802_6751476.pdf" },
-      { label: "Ministerio Publico Federal, Procuradoria da Republica em Sao Paulo - official release on Operacao Persona: the transactions ran between the United States manufacturer Cisco Systems Inc and the real importer in Brazil, Mude Comercio e Servicos Ltda, intermediated by a series of front companies controlled through nominees and offshore entities; those firms simulated purchases and resales among themselves to conceal the true recipient and the amount actually paid, and under-invoicing of the sales allowed the Brazilian companies in the scheme to evade the taxes due on the real price; by the tax authority\u2019s calculation the total unpaid amounted to R$1.5 billion. The release also records that in 2011 the Federal Court sentenced two of those involved to more than five years", url: "http://www.mpf.mp.br/sp/sala-de-imprensa/noticias-sp/operacao-persona-dois-envolvidos-em-esquema-bilionario-de-sonegacao-viram-reus-por-lavagem-de-dinheiro" },
+      { label: "Ministerio Publico Federal, Procuradoria da Republica em Sao Paulo - official release on Operacao Persona: the transactions ran between the United States manufacturer Cisco Systems Inc and the real importer in Brazil, Mude Comercio e Servicos Ltda, intermediated by a series of front companies controlled through nominees and offshore entities; those firms simulated purchases and resales among themselves to conceal the true recipient and the amount actually paid, and under-invoicing of the sales allowed the Brazilian companies in the scheme to evade the taxes due on the real price; by the tax authority\u2019s calculation the total unpaid amounted to R$1.5 billion. The release also records that in 2011 the Federal Court sentenced two of those involved to more than five years", url: "https://mpf.jusbrasil.com.br/noticias/386329570/operacao-persona-dois-envolvidos-em-esquema-bilionario-de-sonegacao-viram-reus-por-lavagem-de-dinheiro", sourceNote: "The release is cited at its Jusbrasil mirror because the MPF's own copy is gone: mpf.mp.br now answers that page with its portal error, \u201cO endereco acessado nao existe ou foi alterado durante a atualizacao do portal\u201d, confirmed by a second client on 2026-09-27. The mirror reproduces the release in full and carries MORE than was previously cited from it: the two defendants named as the businessman Cid Guardia Filho and the retired tax auditor Ernani Bertino Maciel, R$33.5 million concealed in fraudulent operations between 2004 and 2008, the laundering done through simulated service contracts and profit distributions and two properties in Ilheus, Bahia registered to front companies, the prosecutor Rodrigo de Grandis, and case number 0012366-26.2006.403.6181. Note that the 2011 sentence it records, of more than five years for descaminho AND use of false documents, is against these two men and is a different proceeding from the six Mude executives in the citation below, who were acquitted of the false-documents charge." },
       { label: "Exame, February 2011 - the Federal Court convicted six businessmen and executives accused of belonging to a criminal organisation importing Cisco Systems products through interposed companies to conceal the real importer, Mude Comercio e Servicos Ltda; the 152-page sentence put the fraudulent imports above US$370 million and imposed 5 years and 2 months for contrabando or descaminho across 16 identified operations", url: "https://exame.com/negocios/justica-condena-executivos-de-distribuidora-da-cisco/" },
       { label: "Consultor Juridico, October 2007 - preventive detentions ordered in Operacao Persona, which examined the conduct of Cisco do Brasil and Mude in assembling a chain of companies based in the United States and Brazil for foreign-trade frauds", url: "https://www.conjur.com.br/2007-out-26/juiz_decreta_prisoes_acusados_operacao_persona/" },
       { label: "Consultor Juridico, February 2011 - the operation involved 650 agents of the federal prosecution service, federal police and tax authority; the action in Sao Paulo, Rio de Janeiro and Bahia executed 44 arrest orders and 93 search warrants on 16 October 2007; offshore entities in Panama, the Bahamas and the British Virgin Islands were used, with shareholders of low means; six were convicted and six acquitted", url: "https://www.conjur.com.br/2011-fev-25/condenacao-cisco-permite-quebra-sigilo-longe-judiciario2/" },

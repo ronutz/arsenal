@@ -36,7 +36,7 @@ This is the turn that separates people who solve intermittent faults from people
 
 Trying to trigger a fault is a search over a space you cannot see, and every failed attempt teaches you almost nothing, because *it did not happen this time* is consistent with every hypothesis you hold. Trying to catch it is different. You accept that it will happen on its own schedule, and you make sure that when it does, the evidence survives.
 
-Setting a trap looks like this. Continuous capture with a ring buffer, so the last few minutes always exist without filling a disk. Logging raised on the specific components involved and nowhere else, because logging everything produces a volume nobody will read. A trigger, where the platform supports one, that freezes the buffer on the symptom. And crucially, **a way for the user to mark the moment** — a note, a message, anything with a timestamp — because the difference between forty gigabytes of capture and a useful capture is knowing which second to look at.
+Setting a trap looks like this. Continuous capture with a ring buffer, so the last few minutes always exist without filling a disk. Logging raised on the specific components involved and nowhere else, because logging everything produces a volume nobody will read. A trigger, where the platform supports one, that freezes the buffer on the symptom. And crucially, **a way for the user to mark the moment** - a note, a message, anything with a timestamp - because the difference between forty gigabytes of capture and a useful capture is knowing which second to look at.
 
 Then you wait. Waiting feels like not working, which is why people go back to clicking. It is the more productive activity by a wide margin.
 

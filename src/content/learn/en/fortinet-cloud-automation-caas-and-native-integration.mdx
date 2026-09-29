@@ -16,9 +16,9 @@ Cloud architecture rewards working with the platform. A design that treats a clo
 
 ## Protecting IaaS versus CaaS
 
-**IaaS** — virtual machines and virtual networks — maps closely onto familiar practice. A FortiGate VM inspects traffic, and the design work is steering traffic through it using the provider's routing constructs, since there is no cable to insert a device into. Route tables, gateway load balancers and transit constructs are the mechanism, and getting them right is most of the deployment.
+**IaaS**, virtual machines and virtual networks, maps closely onto familiar practice. A FortiGate VM inspects traffic, and the design work is steering traffic through it using the provider's routing constructs, since there is no cable to insert a device into. Route tables, gateway load balancers and transit constructs are the mechanism, and getting them right is most of the deployment.
 
-**CaaS** — containers and Kubernetes — does not map onto that at all, for reasons worth being explicit about:
+**CaaS**, containers and Kubernetes, does not map onto that at all, for reasons worth being explicit about:
 
 **Containers are short-lived.** A workload may exist for minutes. Anything that depends on a stable address or on manual registration will not keep up.
 
@@ -58,13 +58,13 @@ What this buys is not speed. It is:
 
 **Drift detection.** Comparing declared state to actual state finds the manual change someone made at 2am and never mentioned.
 
-The discipline that makes it work is that the code must be the source of truth. An environment where people also make console changes has two sources of truth and no reliable way to tell which is right — the same problem as a FortiManager estate where people edit devices directly, with the same resolution: bring the change back into the declared state or lose it at the next apply.
+The discipline that makes it work is that the code must be the source of truth. An environment where people also make console changes has two sources of truth and no reliable way to tell which is right: the same problem as a FortiManager estate where people edit devices directly, with the same resolution: bring the change back into the declared state or lose it at the next apply.
 
 ## Monitoring cloud workloads
 
 Cloud monitoring has to answer questions that on-premises monitoring does not: whether an autoscaled group has the instances it should, whether a workload is reachable through the provider's own routing, whether an identity is doing something unusual.
 
-Fortinet's monitoring across a cloud estate covers the firewall's own view — sessions, policy hits, inspection — while posture and identity questions belong to a CNAPP, and provider-native metrics cover the infrastructure underneath. All three are needed, and the failure mode is assuming any one of them is complete.
+Fortinet's monitoring across a cloud estate covers the firewall's own view (sessions, policy hits, inspection) while posture and identity questions belong to a CNAPP, and provider-native metrics cover the infrastructure underneath. All three are needed, and the failure mode is assuming any one of them is complete.
 
 ## What an exam candidate should be able to state cold
 

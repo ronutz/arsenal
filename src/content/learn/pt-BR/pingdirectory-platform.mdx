@@ -8,7 +8,7 @@ relatedArticles: ["ldap-fundamentals", "scim-overview", "pingone-platform", "pin
 category: identity
 order: 228
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-09-27"
 ---
 
 Todo sistema de identidade se apoia numa camada de dados, e o **PingDirectory** é a resposta da Ping em escala: não um servidor, mas uma plataforma de quatro peças, cada uma dona de um verbo. Conhecer os verbos - armazenar, agregar, sincronizar, delegar - transforma o diagrama do produto numa frase. ([Fundamentos de LDAP (Lightweight Directory Access Protocol)](/learn/ldap-fundamentals) é o artigo pré-requisito; os fatos aqui seguem a documentação oficial do PingDirectory, verificada no momento da escrita.)
@@ -28,3 +28,11 @@ O **PingDataSync** é o motor de sincronização bidirecional em tempo real da p
 ## Delegar, e onde a plataforma se encaixa
 
 O **Delegated Admin** completa o conjunto: uma aplicação web pela qual helpdesk, RH ou gestores executam as tarefas rotineiras de identidade - resets de senha, atualizações de atributo, mudanças de grupo - dentro de guarda-corpos, sem acesso cru ao diretório. Ao redor das quatro peças, a postura da plataforma é horizontal: adicione máquinas para cargas paralelas, replique para disponibilidade, e estenda o comportamento pelos pontos de plugin do Server SDK (software development kit) sem bifurcar o produto. No mapa Ping mais amplo, o PingDirectory é o armazém de identidade autogerenciado integrado à [plataforma PingOne](/learn/pingone-platform), oferecido na nuvem governamental autorizada FedRAMP High e DoD IL5, e distinto em linhagem do PingDS, o diretório de *herança ForgeRock* - uma distinção de nomes que [o artigo de linhagem](/learn/ping-forgerock-lineage) desembaraça, e que vale ter clara antes do exame Certified Professional PingDirectory, cujo [guia de estudos](/certifications/ping-cp-pingdirectory) acompanha os objetivos oficiais à medida que chegam.
+
+## Fontes
+
+O SCIM 2.0 é um padrão da IETF em dois documentos, e a forma como o PingDirectory o expõe sobre LDAP é a referência de configuração da própria Ping.
+
+- [SCIM 2.0 Components, PingDirectory - tipos de recurso, schemas e os modelos LDAP mapping e pass-through](https://docs.pingidentity.com/pingdirectory/11.0/managing_scim_11_and_20_servlet_extensions/pd_proxy_scim_2_components.html)
+- [RFC 7644, SCIM Protocol - "an application-level HTTP-based protocol for provisioning and managing identity data"](https://www.rfc-editor.org/rfc/rfc7644.html)
+- [RFC 7643, SCIM Core Schema - as definições de recurso, atributo e extensão que o protocolo transporta](https://www.rfc-editor.org/rfc/rfc7643.html)

@@ -32,7 +32,7 @@ This is where deception earns particular value. Isolated networks are frequently
 
 ## Central and top management
 
-Where several appliances are deployed — multiple sites, multiple isolated environments — **central management** aggregates them so incidents are seen in one place and configuration is applied consistently. **Top management** extends the same idea another level, which suits a large estate or a provider managing several organisations.
+Where several appliances are deployed (multiple sites, multiple isolated environments), **central management** aggregates them so incidents are seen in one place and configuration is applied consistently. **Top management** extends the same idea another level, which suits a large estate or a provider managing several organisations.
 
 The operational reason to care is that deception alerts are rare and high value. A rare alert arriving in a console nobody watches is worse than no alert, so the aggregation point should be somewhere already part of a workflow rather than a separate screen.
 
@@ -42,7 +42,7 @@ Deception is most useful when its high-confidence signal drives something.
 
 Sending alerts to **FortiAnalyzer or a SIEM (security information and event management)** puts them beside everything else, so a decoy interaction can be correlated with what the same source did elsewhere. That correlation frequently converts one alert into a timeline.
 
-Integration with **FortiGate or network access control** allows automated containment: an address that touched a decoy can be quarantined or have its access restricted. This is one of the better candidates for automation precisely because of the low false-positive property — the usual caution about automated response is proportional to false positives, and here they are rare.
+Integration with **FortiGate or network access control** allows automated containment: an address that touched a decoy can be quarantined or have its access restricted. This is one of the better candidates for automation precisely because of the low false-positive property: the usual caution about automated response is proportional to false positives, and here they are rare.
 
 The caution that remains is the compromised-shared-address case. Quarantining a source that turns out to be a NAT (network address translation) gateway or a jump host affects everyone behind it, so the automation should account for what sits behind the address it is about to cut off.
 
@@ -50,7 +50,7 @@ The caution that remains is the compromised-shared-address case. Quarantining a 
 
 The order that gets to an answer:
 
-**1. What was touched, and by whom?** The decoy and the source address. The deployment map shows where both sit, which frequently makes the intent obvious — lateral movement across a segment looks different from a single directed connection.
+**1. What was touched, and by whom?** The decoy and the source address. The deployment map shows where both sit, which frequently makes the intent obvious: lateral movement across a segment looks different from a single directed connection.
 
 **2. Was a token involved?** If the interaction followed a token, the endpoint holding that token is compromised. That is the most actionable fact deception produces, and it points at a real machine rather than a fake one.
 

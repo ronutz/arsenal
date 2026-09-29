@@ -458,7 +458,7 @@ paths:
       summary: Certificate renewal planner
       description: >-
         Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule,
-        and the renewal cadence it implies — all offline. The input is a JSON object: send it as the
+        and the renewal cadence it implies - all offline. The input is a JSON object: send it as the
         request body (POST) or as a JSON string (?input=). Standards: CA/Browser Forum SC-081v3, RFC
         5280, RFC 8555. Stateless and side-effect-free: the same input always yields the same
         result, and nothing is stored or logged.
@@ -489,7 +489,7 @@ paths:
       summary: Certificate renewal planner (POST)
       description: >-
         Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule,
-        and the renewal cadence it implies — all offline. The input is a JSON object: send it as the
+        and the renewal cadence it implies - all offline. The input is a JSON object: send it as the
         request body (POST) or as a JSON string (?input=). Standards: CA/Browser Forum SC-081v3, RFC
         5280, RFC 8555. Stateless and side-effect-free: the same input always yields the same
         result, and nothing is stored or logged.
@@ -851,7 +851,7 @@ paths:
       summary: CSR decoder
       description: >-
         Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs
-        and extensions, and attributes — entirely in your browser. The input is a JSON object: send
+        and extensions, and attributes - entirely in your browser. The input is a JSON object: send
         it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986,
         RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
@@ -882,7 +882,7 @@ paths:
       summary: CSR decoder (POST)
       description: >-
         Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs
-        and extensions, and attributes — entirely in your browser. The input is a JSON object: send
+        and extensions, and attributes - entirely in your browser. The input is a JSON object: send
         it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986,
         RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
@@ -1454,8 +1454,8 @@ paths:
       operationId: run_epoch
       summary: Unix time converter
       description: >-
-        Type a Unix timestamp — seconds, milliseconds, microseconds, or nanoseconds, detected
-        automatically — or an ISO-8601 date, and read it back in every common format. All in your
+        Type a Unix timestamp - seconds, milliseconds, microseconds, or nanoseconds, detected
+        automatically - or an ISO-8601 date, and read it back in every common format. All in your
         browser. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
       parameters:
@@ -1484,8 +1484,8 @@ paths:
       operationId: run_epoch_post
       summary: Unix time converter (POST)
       description: >-
-        Type a Unix timestamp — seconds, milliseconds, microseconds, or nanoseconds, detected
-        automatically — or an ISO-8601 date, and read it back in every common format. All in your
+        Type a Unix timestamp - seconds, milliseconds, microseconds, or nanoseconds, detected
+        automatically - or an ISO-8601 date, and read it back in every common format. All in your
         browser. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
       requestBody:
@@ -1582,7 +1582,7 @@ paths:
       operationId: run_extreme_switch_os_mapper
       summary: Extreme Universal switch OS-name mapper
       description: >-
-        ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and
+        ExtremeXOS is Switch Engine and VOSS is Fabric Engine - but only on Universal hardware, and
         the image files and boot menus still use the old names. Give a model series or an OS name
         and see which applies, the version the rename landed at, and the caveats that come with the
         series. It states plainly that changing persona deletes the configuration. Local and
@@ -1614,7 +1614,7 @@ paths:
       operationId: run_extreme_switch_os_mapper_post
       summary: Extreme Universal switch OS-name mapper (POST)
       description: >-
-        ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and
+        ExtremeXOS is Switch Engine and VOSS is Fabric Engine - but only on Universal hardware, and
         the image files and boot menus still use the old names. Give a model series or an OS name
         and see which applies, the version the rename landed at, and the caveats that come with the
         series. It states plainly that changing persona deletes the configuration. Local and
@@ -3031,7 +3031,7 @@ paths:
       operationId: run_f5_irules_event_order
       summary: iRules event-order explainer
       description: >-
-        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
+        Pick the profile stack on a BIG-IP virtual server - client-SSL, HTTP, server-SSL, pool - and
         see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
         timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
         and side-effect-free: the same input always yields the same result, and nothing is stored or
@@ -3062,7 +3062,7 @@ paths:
       operationId: run_f5_irules_event_order_post
       summary: iRules event-order explainer (POST)
       description: >-
-        Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and
+        Pick the profile stack on a BIG-IP virtual server - client-SSL, HTTP, server-SSL, pool - and
         see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a
         timeline and a list. All in your browser. Standards: F5 iRules / TMOS event model. Stateless
         and side-effect-free: the same input always yields the same result, and nothing is stored or
@@ -3762,7 +3762,7 @@ paths:
       summary: F5 SSL profile explainer
       description: >-
         Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and
-        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS — all in your
+        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS - all in your
         browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the
         same input always yields the same result, and nothing is stored or logged.
       parameters:
@@ -3792,7 +3792,7 @@ paths:
       summary: F5 SSL profile explainer (POST)
       description: >-
         Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and
-        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS — all in your
+        a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS - all in your
         browser. Standards: F5 client-ssl / server-ssl profiles. Stateless and side-effect-free: the
         same input always yields the same result, and nothing is stored or logged.
       requestBody:
@@ -7210,8 +7210,8 @@ paths:
       operationId: run_netskope_steering_explainer
       summary: Netskope steering-method explainer
       description: >-
-        Describe the situation — managed device or not, on a site or roaming, whether the
-        certificate bundle can be installed — and see which steering method fits: the endpoint
+        Describe the situation - managed device or not, on a site or roaming, whether the
+        certificate bundle can be installed - and see which steering method fits: the endpoint
         client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run.
         Every method lists what it costs, chosen or not. Deterministic and offline. The input is a
         JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
@@ -7243,8 +7243,8 @@ paths:
       operationId: run_netskope_steering_explainer_post
       summary: Netskope steering-method explainer (POST)
       description: >-
-        Describe the situation — managed device or not, on a site or roaming, whether the
-        certificate bundle can be installed — and see which steering method fits: the endpoint
+        Describe the situation - managed device or not, on a site or roaming, whether the
+        certificate bundle can be installed - and see which steering method fits: the endpoint
         client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run.
         Every method lists what it costs, chosen or not. Deterministic and offline. The input is a
         JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
@@ -7278,8 +7278,8 @@ paths:
       operationId: run_network_os_comparer
       summary: Network operating system comparer
       description: >-
-        Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS,
-        TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how
+        Fourteen network operating systems - IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS,
+        TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia - with lineage, what each runs on, how
         components share state, where the planes divide, and what an upgrade costs. Pick one for a
         full profile or two to see them axis by axis. Every entry lists weaknesses as well as
         strengths. The input is a JSON object: send it as the request body (POST) or as a JSON
@@ -7312,8 +7312,8 @@ paths:
       operationId: run_network_os_comparer_post
       summary: Network operating system comparer (POST)
       description: >-
-        Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS,
-        TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how
+        Fourteen network operating systems - IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS,
+        TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia - with lineage, what each runs on, how
         components share state, where the planes divide, and what an upgrade costs. Pick one for a
         full profile or two to see them axis by axis. Every entry lists weaknesses as well as
         strengths. The input is a JSON object: send it as the request body (POST) or as a JSON
@@ -8681,8 +8681,8 @@ paths:
       operationId: run_terminal_stack_explainer
       summary: Terminal, shell, TTY and console explainer
       description: >-
-        Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or
-        “not a tty” — and see which layer you are actually looking at, what is holding the other
+        Paste what `tty` printed - /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or
+        “not a tty” - and see which layer you are actually looking at, what is holding the other
         end, and what that implies for signals, job control and what happens when the window closes.
         Local and offline. Standards: POSIX termios. Stateless and side-effect-free: the same input
         always yields the same result, and nothing is stored or logged.
@@ -8712,8 +8712,8 @@ paths:
       operationId: run_terminal_stack_explainer_post
       summary: Terminal, shell, TTY and console explainer (POST)
       description: >-
-        Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or
-        “not a tty” — and see which layer you are actually looking at, what is holding the other
+        Paste what `tty` printed - /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or
+        “not a tty” - and see which layer you are actually looking at, what is holding the other
         end, and what that implies for signals, job control and what happens when the window closes.
         Local and offline. Standards: POSIX termios. Stateless and side-effect-free: the same input
         always yields the same result, and nothing is stored or logged.

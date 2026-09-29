@@ -25,9 +25,9 @@ To get a certificate the client submits a **newOrder** listing the **identifiers
 
 Each authorization offers one or more **challenges**, and the client picks one. The three standard types all hang off the same idea, a **key authorization** that binds the challenge to your account key:
 
-- **http-01** — serve a file at `http://<domain>/.well-known/acme-challenge/<token>` whose contents are the key authorization. Simple, but needs inbound port 80 and cannot do wildcards.
-- **dns-01** — publish a TXT record derived from the key authorization (detailed below). Works behind a firewall and is the only type that validates a wildcard name.
-- **tls-alpn-01** (RFC 8737) — answer on port 443 during a TLS handshake using the `acme-tls/1` ALPN protocol, serving a special self-signed certificate. Useful when only 443 is reachable.
+- **http-01**: serve a file at `http://<domain>/.well-known/acme-challenge/<token>` whose contents are the key authorization. Simple, but needs inbound port 80 and cannot do wildcards.
+- **dns-01**: publish a TXT record derived from the key authorization (detailed below). Works behind a firewall and is the only type that validates a wildcard name.
+- **tls-alpn-01** (RFC 8737): answer on port 443 during a TLS handshake using the `acme-tls/1` ALPN protocol, serving a special self-signed certificate. Useful when only 443 is reachable.
 
 The key authorization itself is the same in every case: the challenge **token** joined to a thumbprint of your account public key, as `token || '.' || base64url(thumbprint)`. The thumbprint is the RFC 7638 SHA-256 hash of the key's canonical form. Because it depends on your account key, only your client can produce the right answer, which is what proves control rather than mere reachability.
 

@@ -18,13 +18,13 @@ Once traffic terminates on the controller, protection becomes available in the s
 
 FortiADC can apply web application firewall functions to the traffic it proxies: signature detection for the recognisable injection and scripting attacks, and an **OWASP Top 10** oriented profile covering the categories most applications get wrong.
 
-The trade is familiar from any WAF. Signatures produce false positives where legitimate input resembles attack payloads, and the discipline is to scope exceptions narrowly — this signature, this URL, this parameter — rather than disabling a rule globally to fix one page.
+The trade is familiar from any WAF. Signatures produce false positives where legitimate input resembles attack payloads, and the discipline is to scope exceptions narrowly (this signature, this URL, this parameter) rather than disabling a rule globally to fix one page.
 
 **Adaptive learning** builds a model of the application's normal parameters and flags deviation, which covers what signatures cannot describe. Two conditions govern whether it is useful, and they are the same as anywhere else learning is applied:
 
 The learning window must see **representative traffic**, or a quiet period becomes the baseline and normal volume reads as anomalous. And the application must be reasonably **stable**, because each release that changes parameters invalidates part of what was learned.
 
-**DoS protection** at the application layer matters because exhausting a server does not require volume — a request triggering an expensive query can do it at a rate no bandwidth graph would flag. Connection limits, request rates per source and per URL, and slow-request protection are the layers. Volumetric attacks large enough to saturate the link still have to be handled upstream, because an inline device is inside the problem.
+**DoS protection** at the application layer matters because exhausting a server does not require volume: a request triggering an expensive query can do it at a rate no bandwidth graph would flag. Connection limits, request rates per source and per URL, and slow-request protection are the layers. Volumetric attacks large enough to saturate the link still have to be handled upstream, because an inline device is inside the problem.
 
 ## DNS services and global distribution
 
@@ -46,7 +46,7 @@ The order that resolves most cases, cheapest first:
 
 **1. Is the virtual server receiving traffic?** DNS resolution and routing. If nothing arrives, no configuration below matters.
 
-**2. Are pool members healthy?** A pool with all members failing health checks produces errors that look like a controller fault. Check what the health check actually tests — a shallow check that passes while the application is broken is worse than a failing one.
+**2. Are pool members healthy?** A pool with all members failing health checks produces errors that look like a controller fault. Check what the health check actually tests: a shallow check that passes while the application is broken is worse than a failing one.
 
 **3. Which real server received it?** This distinguishes a backend problem on one server from a controller problem affecting all of them, and it is the fastest way to identify the odd server out.
 
@@ -58,8 +58,8 @@ The order that resolves most cases, cheapest first:
 
 ## Configuration backup
 
-Backing up and restoring configuration deserves a mention because an ADC is a single point through which applications pass. The useful discipline is to back up **before** every change rather than on a schedule, since the restore you will want is the one from immediately before whatever broke — and to verify a restore occasionally, because an untested backup is a belief rather than a capability.
+Backing up and restoring configuration deserves a mention because an ADC is a single point through which applications pass. The useful discipline is to back up **before** every change rather than on a schedule, since the restore you will want is the one from immediately before whatever broke, and to verify a restore occasionally, because an untested backup is a belief rather than a capability.
 
 ## What an exam candidate should be able to state cold
 
-The controller can apply signature-based protection and an OWASP-oriented profile, with exceptions scoped to signature, URL and parameter. Adaptive learning needs a representative learning window and a stable application. Application-layer DoS needs no volume; volumetric must be handled upstream. Global load balancing distributes by DNS answer and its responsiveness is governed by TTL. Troubleshoot in order: traffic arriving, pool health, which real server, security log, persistence, then TLS — and intermittent user-specific failures are persistence until proven otherwise.
+The controller can apply signature-based protection and an OWASP-oriented profile, with exceptions scoped to signature, URL and parameter. Adaptive learning needs a representative learning window and a stable application. Application-layer DoS needs no volume; volumetric must be handled upstream. Global load balancing distributes by DNS answer and its responsiveness is governed by TTL. Troubleshoot in order: traffic arriving, pool health, which real server, security log, persistence, then TLS, and intermittent user-specific failures are persistence until proven otherwise.

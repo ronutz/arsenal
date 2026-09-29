@@ -1,0 +1,124 @@
+# SPDX-FileCopyrightText: 2026 Rodolfo Nützmann <https://ronutz.com>
+# SPDX-License-Identifier: Apache-2.0
+
+# ============================================================================
+# SOURCE LIVENESS — the scheduled sweep that catches citation rot.
+# ----------------------------------------------------------------------------
+# WHY THIS EXISTS AND WHY IT IS NOT PART OF CI.
+#
+# On 2026-09-27 a first liveness sweep of the catalogue found 13 dead citations.
+# A corrected sweep found 12 more that the first had filed as healthy. Among them
+# were twenty-two entries citing a ChatGPT share link that had already returned
+# 404 for an unknown length of time, three hosts that had rebranded and pointed
+# their old paths at a domain without them, and a government newsroom rebuilt
+# without its archive.
+#
+# Nobody noticed any of it, and nothing could have:
+#
+#     `check-sources` counts sources. It has never fetched one.
+#
+# That gap cannot be closed by a build guard. A prebuild step that reaches 2,400
+# third-party hosts fails whenever somebody else has a bad afternoon, and
+# prebuild also gates every deploy - trading a rare, detectable fault for a
+# frequent, undiagnosable one. So the sweep runs on a schedule instead, off the
+# deploy path, and is allowed to be red without stopping anything shipping.
+#
+# WHAT MAKES IT READABLE RATHER THAN IGNORED. The audit carries a declared list
+# of the suspects already chased down, each with the finding that settled it, and
+# `--strict` exits non-zero only on an UNDECLARED suspect or a STALE declaration.
+# A quiet week is a green run with nothing to read. That is the same
+# declared-list pattern the content guards use, and for the same reason: a report
+# that cannot say which items are accounted for cannot flag the next real one.
+#
+# Every run writes its findings into the job summary, so the answer is visible
+# from the run list without downloading anything.
+#
+# D-19: all lines commented.
+# ============================================================================
+
+name: Source liveness
+
+on:
+  schedule:
+    # 07:11 UTC on Mondays, which is 04:11 in Sao Paulo. Off the hour on purpose:
+    # scheduled jobs at :00 queue behind everybody else's cron.
+    - cron: "11 7 * * 1"
+  workflow_dispatch:   # manual run, for after a batch of citation work
+
+# One sweep at a time. A queued second run would only re-ask the same 2,400 hosts.
+concurrency:
+  group: source-liveness
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    name: Sweep every cited URL
+    runs-on: ubuntu-latest
+    # A single URL gets 20s and the whole sweep runs 16 at a time; 30 minutes is
+    # generous for ~2,400 and still bounded if a host hangs on every request.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "npm"
+
+      # `npm ci` only, per the standing lockfile rule: main is authoritative for
+      # package-lock.json and it is never regenerated outside it.
+      - run: npm ci
+
+      # The sweep shells out to curl, which is present on the runner. It writes
+      # .source-liveness.json (gitignored) and prints its buckets.
+      # `tee` keeps the output for the summary step below; the step is allowed to
+      # fail so that the summary and the artifact are produced either way.
+      - name: Run the liveness audit
+        id: audit
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/audit-source-liveness.mjs --concurrency 16 --strict \
+            2>&1 | tee audit-output.txt
+
+      # The buckets and any findings go into the run summary, so a reader sees the
+      # answer in the GitHub UI rather than having to download the report.
+      - name: Write the job summary
+        if: always()
+        run: |
+          {
+            echo "## Source liveness sweep"
+            echo
+            echo '```'
+            # Everything from the summary header onward: the buckets, the declared
+            # suspects with their reasons, and anything undeclared.
+            sed -n '/audit-source-liveness\] summary/,$p' audit-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # Kept for 90 days so a later sweep can be diffed against this one: the
+      # useful question is usually "what changed", not "what is broken today".
+      - name: Upload the full report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-liveness-${{ github.run_number }}
+          path: |
+            .source-liveness.json
+            audit-output.txt
+          retention-days: 90
+
+      # Now fail the run if the audit did. Deliberately the LAST step, so a red
+      # run still carries its summary and its artifact.
+      - name: Fail on an undeclared suspect
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::error title=Citation rot::The sweep found an undeclared suspect or a stale declaration. Read the job summary."
+          echo "A 404 is a CANDIDATE, never a verdict: confirm each with a second client."
+          echo "If it is dead, repair or remove the citation and KEEP the claim in the copy"
+          echo "(PRIME ruling 2026-09-27: a fact is not deleted for want of a source)."
+          echo "If it is alive, add it to DECLARED_SUSPECT with the finding that settled it."
+          exit 1

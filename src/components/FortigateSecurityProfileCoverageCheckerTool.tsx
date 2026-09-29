@@ -68,23 +68,23 @@ export default function FortigateSecurityProfileCoverageCheckerTool() {
       {error && <div className="cidr-error" role="alert">{error}</div>}
 
       {result && result.mode === "reference" && (
-        <div className="cidr-result">
-          <h3 className="cidr-result-title">{t("theChain")}</h3>
-          <ul className="cidr-list">
+        <div className="cidr-results">
+          <h3 className="cidr-section-title">{t("theChain")}</h3>
+          <ul className="dig-notes">
             {result.notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>
         </div>
       )}
 
       {result && result.mode === "check" && (
-        <div className="cidr-result">
+        <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
             </ul>
           )}
 
-          <p className="cidr-result-title">
+          <p className="cidr-section-title">
             {t("policySummary", {
               traffic: result.traffic.toUpperCase(),
               ssl: t(`ssl_${result.ssl}`),
@@ -114,7 +114,7 @@ export default function FortigateSecurityProfileCoverageCheckerTool() {
           )}
 
           {result.notes.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.notes.map((n, i) => <li key={i}>{n}</li>)}
             </ul>
           )}

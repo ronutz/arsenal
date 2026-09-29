@@ -19,13 +19,13 @@ Read carefully, that is not a ban on secrets. It is a claim about **which** secr
 
 **Claude Shannon** later compressed it to the form most people meet: assume the enemy knows the system. Same claim, no gentler.
 
-In 1975, **Saltzer and Schroeder** wrote it into a list of design principles for protection in computer systems, as **open design**: the mechanism should not depend on the ignorance of attackers, and should be open to review. They put it next to fail-safe defaults, least privilege and economy of mechanism, and their argument added something Kerckhoffs did not have — that a public design gets examined, and examination is how flaws are found before deployment rather than after.
+In 1975, **Saltzer and Schroeder** wrote it into a list of design principles for protection in computer systems, as **open design**: the mechanism should not depend on the ignorance of attackers, and should be open to review. They put it next to fail-safe defaults, least privilege and economy of mechanism, and their argument added something Kerckhoffs did not have: that a public design gets examined, and examination is how flaws are found before deployment rather than after.
 
 ## The distinction the slogan loses
 
 Two things are routinely called obscurity, and they behave differently:
 
-**A dependency.** The system is safe *because* an attacker does not know something structural — the algorithm, the protocol, the layout, the fact that a management interface exists. This is what the principle forbids, and the reason is empirical rather than moral: that knowledge always leaks, through disassembly, insiders, procurement documents, or somebody with a screwdriver and time.
+**A dependency.** The system is safe *because* an attacker does not know something structural: the algorithm, the protocol, the layout, the fact that a management interface exists. This is what the principle forbids, and the reason is empirical rather than moral: that knowledge always leaks, through disassembly, insiders, procurement documents, or somebody with a screwdriver and time.
 
 **A layer.** The system is safe for other reasons, and obscurity additionally raises cost for opportunistic attackers. Moving SSH off port 22 removes almost all automated noise from the logs. It defends against nobody who is actually attacking you, and it makes the logs readable, which has genuine operational value.
 
@@ -47,10 +47,10 @@ The pattern is identical every time: the secret held for a while, its disclosure
 The principle is narrower than its reputation, and the following are not violations:
 
 - **Keys, credentials, tokens and certificates.** The whole design assumes these are private. Confusing a key with an obscurity is the most common misreading of the maxim.
-- **Configuration detail an attacker would find useful** — internal addressing, topology, software inventory. Publishing it helps nobody defend, and treating it as sensitive is not a security dependency.
+- **Configuration detail an attacker would find useful**: internal addressing, topology, software inventory. Publishing it helps nobody defend, and treating it as sensitive is not a security dependency.
 - **Version banners and error verbosity.** Suppressing them prevents trivial fingerprinting and rules nothing out; keep the version *patched* rather than merely hidden.
 - **Non-standard ports, port knocking, single-packet authorisation.** Legitimate as cost-raisers and noise-reducers, illegitimate as the reason a service is safe.
-- **Not publishing an unpatched vulnerability while a fix is prepared.** This is coordination, not obscurity — the design is still open, and the delay is bounded and agreed.
+- **Not publishing an unpatched vulnerability while a fix is prepared.** This is coordination, not obscurity: the design is still open, and the delay is bounded and agreed.
 
 ## The disclosure argument is the same argument
 
@@ -64,7 +64,7 @@ The deadline is the load-bearing part, and it exists because of exactly what Ker
 
 **Ask a vendor the same question directly.** "What happens to your security if a competitor obtains this firmware?" is a fair question with a short answer, and the quality of the answer is informative regardless of its content.
 
-**Keep the cheap obscurities and stop defending them as security.** Non-standard ports and quiet banners are worth having for the same reason tidy logs are worth having, which is a maintenance argument rather than a security one — and it is much easier to defend on those terms.
+**Keep the cheap obscurities and stop defending them as security.** Non-standard ports and quiet banners are worth having for the same reason tidy logs are worth having, which is a maintenance argument rather than a security one, and it is much easier to defend on those terms.
 
 ## Sources
 

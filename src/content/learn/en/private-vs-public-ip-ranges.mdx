@@ -34,6 +34,6 @@ An address that falls in none of the reserved blocks is public and routable. Pub
 
 RFC 1918 is the part everybody remembers, and a check that stops there has holes in specific, predictable places.
 
-**Loopback** (`127.0.0.0/8` — the whole /8, not one address) and **link-local** (`169.254.0.0/16`, which is where cloud metadata lives). **Carrier-grade NAT** (`100.64.0.0/10`) is neither private nor safely public. **`0.0.0.0/8`**, which several stacks treat as "this host". And the IPv6 equivalents: `::1`, unique-local `fc00::/7`, link-local `fe80::/10`, plus **IPv4-mapped addresses** like `::ffff:127.0.0.1` that carry a forbidden IPv4 address inside a permitted-looking IPv6 one.
+**Loopback** (`127.0.0.0/8`, the whole /8, not one address) and **link-local** (`169.254.0.0/16`, which is where cloud metadata lives). **Carrier-grade NAT** (`100.64.0.0/10`) is neither private nor safely public. **`0.0.0.0/8`**, which several stacks treat as "this host". And the IPv6 equivalents: `::1`, unique-local `fc00::/7`, link-local `fe80::/10`, plus **IPv4-mapped addresses** like `::ffff:127.0.0.1` that carry a forbidden IPv4 address inside a permitted-looking IPv6 one.
 
-**This is the argument for using the platform's own classification** — `is_private`, `is_loopback`, `is_link_local` — rather than a hand-written list of CIDR blocks. The library maintainers have already met the cases you have not, and their list is updated by people whose job it is.
+**This is the argument for using the platform's own classification** (`is_private`, `is_loopback`, `is_link_local`) rather than a hand-written list of CIDR blocks. The library maintainers have already met the cases you have not, and their list is updated by people whose job it is.

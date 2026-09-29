@@ -15,7 +15,7 @@ A JWKS (JSON Web Key Set) is only useful at the moment you verify a token. The v
 
 ## The sequence
 
-First, read the token's header — its first segment — which is base64url-encoded JSON. The header tells you two things you need: the `alg` the token claims to be signed with, and the `kid` of the key that signed it.
+First, read the token's header, its first segment, which is base64url-encoded JSON. The header tells you two things you need: the `alg` the token claims to be signed with, and the `kid` of the key that signed it.
 
 Second, fetch the provider's JWKS (cached, refreshed on a `kid` miss) and find the key whose `kid` matches the header. If no key matches, stop: there is no key to verify with. If exactly one matches, that is your key.
 

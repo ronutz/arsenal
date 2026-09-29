@@ -8,7 +8,7 @@ relatedArticles: ["pingone-davinci-orchestration", "pingaccess-policy-model", "p
 category: identity
 order: 229
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-09-27"
 ---
 
 "PingOne" é a palavra mais sobrecarregada do catálogo Ping, e a confusão se dissolve quando você enxerga a forma: **PingOne é a plataforma**, e os nomes depois dela são serviços nessa plataforma. Este artigo desenha o mapa - o que a plataforma é, o que cada serviço faz, e como ela se relaciona com o software que você mesmo opera. (Os fatos seguem a documentação oficial de produto da Ping, verificada no momento da escrita.)
@@ -28,3 +28,12 @@ A plataforma não substitui a pilha autogerenciada; ela faz *parceria* com ela, 
 ## Por que o mapa importa
 
 Operacionalmente, o mapa decide onde a configuração mora e de onde uma indisponibilidade pode vir - um disparo errado de política do Protect é questão de serviço da plataforma, uma falha de adapter do PingFederate é questão autogerenciada, e arquiteturas híbridas precisam dos dois runbooks. Comercialmente e em termos de certificação, o mapa é a fronteira do edital: o exame Certified Professional **PingOne** cobre a plataforma e seus serviços, enquanto Advanced Identity Cloud, DaVinci e os produtos autogerenciados carregam cada um sua credencial - todas acompanhadas no [hub de certificações](/certifications) à medida que os objetivos oficiais chegam. Para ambientes regulados, a família da plataforma se estende a uma nuvem governamental com autorizações FedRAMP High e DoD Impact Level 5, os nomes de conformidade que o trabalho de glossário deste site seguirá expandindo.
+
+## Fontes
+
+Que os protocolos padrão são a interface está declarado na própria introdução da Ping, e cada um desses protocolos tem sua própria especificação.
+
+- [Introduction to PingOne - o modelo de organização e environment, e que "connections to external resources use open standards protocols", com as client connections configurando OIDC e OAuth e o portal de aplicações servindo aplicações SAML e OpenID Connect](https://docs.pingidentity.com/pingone/introduction_to_pingone/p1_introduction.html)
+- [RFC 6749, The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html)
+- [OpenID Connect Core 1.0 - a camada de identidade acima dele](https://openid.net/specs/openid-connect-core-1_0.html)
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 de março de 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

@@ -18,6 +18,22 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import LicenseBadges from "@/components/LicenseBadges";
 
+/**
+ * PAGE TITLE (2026-09-26). Shipped with no generateMetadata export, so it
+ * inherited the site-wide default <title> and shared one string with thirteen
+ * other pages. Title only: this slug is not in gen-og's STATIC_PAGES, so
+ * ogImages() would name a card that does not exist and check-og would fail.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "license_page" });
+  return { title: t("title") };
+}
+
 export default async function LicensePage({
   params,
 }: {

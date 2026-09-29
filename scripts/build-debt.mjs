@@ -51,7 +51,32 @@ function indexNow() {
  * anything that changes how pages are produced cannot, because the guards do not
  * execute the render path.
  */
+/**
+ * Repo-hygiene files that CANNOT reach the rendered output: nothing imports
+ * them, no script reads them at build time, and Next never sees them. They are
+ * listed explicitly rather than matched by extension, because a `.md` under
+ * `src/content/` is content and a `.json` at the root may well be config.
+ *
+ * WHY THIS EXISTS (2026-09-17). Amending one sentence in CLAUDE.md produced
+ * "BUILD NOW. This is not a judgement call." for a file that cannot change a
+ * single byte of any page. A signal that cries wolf over a documentation edit
+ * is a signal people learn to scroll past, and a guard nobody reads is the
+ * `silent-failure` entry in this site's own glossary. Keep this list SHORT and
+ * only add a path once it is certain the build never reads it.
+ */
+const REPO_DOCS = new Set([
+  "CLAUDE.md",
+  "README.md",
+  "LICENSE",
+  "CONTRIBUTING.md",
+  "SECURITY.md",
+  "CODE_OF_CONDUCT.md",
+  ".gitattributes",
+  ".gitignore",
+]);
+
 function riskClass(file) {
+  if (REPO_DOCS.has(file)) return "docs";
   if (/^src\/content\/.*\.mdx$/.test(file)) return "content";
   if (/^src\/content\//.test(file)) return "content";
   if (/^src\/i18n\/messages\//.test(file)) return "content";
@@ -90,6 +115,7 @@ for (const file of Object.keys(before)) {
 
 const content = changed.filter((f) => riskClass(f) === "content");
 const code = changed.filter((f) => riskClass(f) === "code");
+const docs = changed.filter((f) => riskClass(f) === "docs");
 
 // Practice/learn articles are counted as ITEMS (en + pt-BR are one article), because
 // "how many things could a failed build be about" is the number that matters.
@@ -148,6 +174,7 @@ console.log(`             content: ${content.length} file(s), ${itemCount} item(
   ` — ${articleSlugs.size} article(s), ${nsChanged === null ? "namespaces unknown (old marker)" : `${nsCount} copy namespace(s)`}`);
 if (nsCount) console.log(`             namespaces: ${[...nsChanged].sort().join(", ")}`);
 console.log(`             code:    ${code.length} file(s)`);
+if (docs.length) console.log(`             docs:    ${docs.length} repo file(s), not build inputs`);
 
 // THRESHOLDS. The governing idea is ATTRIBUTION, not risk tolerance: one
 // unverified item means a failed build points straight at it; eight means
@@ -166,6 +193,13 @@ if (code.length > 0) {
   console.log("");
   console.log(`  >> BUILD SOON. ${itemCount} unverified items; attribution is still good but`);
   console.log("     thinning. A good moment is after the next one or two.");
+} else if (itemCount === 0 && docs.length === changed.length) {
+  // Only repo documentation moved. Nothing the build reads has changed, so the
+  // marker is stale in bookkeeping terms only and a build would prove nothing.
+  console.log("");
+  console.log(`  >> NO BUILD NEEDED. Only ${docs.length} repo documentation file(s) changed;`);
+  console.log("     nothing the render reads is different. The marker is stale on paper only.");
+  for (const f of docs) console.log(`       - ${f}`);
 } else {
   console.log("");
   console.log(`  >> OK to continue. ${itemCount} unverified item(s); a failed build would`);

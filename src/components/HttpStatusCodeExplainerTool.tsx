@@ -102,7 +102,7 @@ export default function HttpStatusCodeExplainerTool() {
             <div className="tmsh-object" key={`fam-${f.family}`}>
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{f.familyName}</span>
-                <span className="tmsh-name">{t("familyLabel")}</span>
+                <span className="tmsh-object-name">{t("familyLabel")}</span>
               </div>
               <ul className="lbm-facts">
                 <li>{f.meaning}</li>
@@ -114,7 +114,7 @@ export default function HttpStatusCodeExplainerTool() {
             <div className="tmsh-object" key={c.code}>
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{c.code}</span>
-                <span className="tmsh-name">{c.name}</span>
+                <span className="tmsh-object-name">{c.name}</span>
                 <span className="certs-badge mono">{c.familyName}</span>
               </div>
               <ul className="lbm-facts">

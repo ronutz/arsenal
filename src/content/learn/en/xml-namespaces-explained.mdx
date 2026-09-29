@@ -38,8 +38,8 @@ The practical habit when reading namespaced XML is to mentally replace each pref
 
 ## The prefix is local and the URI is the identity
 
-A namespace prefix means nothing on its own. `soap:Envelope` and `s:Envelope` are the same element if both prefixes are bound to the same URI, and different elements if they are not — **the prefix is a local abbreviation, and the URI is what actually identifies the name.**
+A namespace prefix means nothing on its own. `soap:Envelope` and `s:Envelope` are the same element if both prefixes are bound to the same URI, and different elements if they are not: **the prefix is a local abbreviation, and the URI is what actually identifies the name.**
 
-This produces a specific class of quiet failure. **An XPath expression matching on a prefix matches text, not identity**, so a document that rebinds prefixes — perfectly legally — slips past a selector that appeared to work in every test. Signature verification and policy matching are where this hurts most, because both decide something important on the basis of "did this select the element I meant".
+This produces a specific class of quiet failure. **An XPath expression matching on a prefix matches text, not identity**, so a document that rebinds prefixes, perfectly legally, slips past a selector that appeared to work in every test. Signature verification and policy matching are where this hurts most, because both decide something important on the basis of "did this select the element I meant".
 
 **Bind prefixes explicitly in the query, and compare URIs rather than prefixes.**

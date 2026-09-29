@@ -34,4 +34,4 @@ An authoritative answer comes from a server holding the zone; a non-authoritativ
 
 An authoritative server can serve a zone that was edited wrongly an hour ago and answer with complete confidence. A cached answer can be perfectly correct and merely old. The words describe **where the data came from**, and correctness is a separate question the protocol does not answer.
 
-The place it matters is timing. **After a change, only the authoritative server can tell you whether the change is live**; every resolver in the path will keep serving what it holds until the TTL expires, and that is not a fault to escalate — it is the design working.
+The place it matters is timing. **After a change, only the authoritative server can tell you whether the change is live**; every resolver in the path will keep serving what it holds until the TTL expires, and that is not a fault to escalate; it is the design working.

@@ -40,7 +40,7 @@ The text above `=======` is one side, the text below is the other, and the label
 
 ## A clean merge is not a correct one
 
-Three-way merge resolves changes that do not touch the same lines, and **"different lines" is not the same as "compatible changes".** One branch renames a function; another adds a call to it somewhere else. No conflict markers appear, the merge succeeds, and the result does not build — or worse, builds and behaves differently.
+Three-way merge resolves changes that do not touch the same lines, and **"different lines" is not the same as "compatible changes".** One branch renames a function; another adds a call to it somewhere else. No conflict markers appear, the merge succeeds, and the result does not build, or worse, builds and behaves differently.
 
 This is the semantic gap the algorithm cannot see. **The merge tool guarantees textual consistency and says nothing about meaning**, which is the whole reason a clean merge still requires review and a test run.
 

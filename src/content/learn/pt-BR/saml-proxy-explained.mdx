@@ -8,7 +8,7 @@ relatedArticles: ["saml-overview", "saml-bindings-and-sso-initiation", "ssl-forw
 category: security
 order: 6
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 Os proxies dos artigos companheiros operam sobre pacotes e conexões: um proxy TCP une fluxos de transporte, um proxy HTTP parseia requisições, um proxy TLS trata da criptografia. Um SAML (Linguagem de Marcação para Asserção de Segurança, do inglês Security Assertion Markup Language) proxy opera sobre algo diferente, a decisão de autenticação, e vale ser preciso sobre o sentido em que ele é um proxy afinal. Ele não move bytes primariamente; ele se insere no handshake de single-sign-on de modo que nenhuma requisição alcance um recurso protegido até que um provedor de identidade tenha atestado o usuário. Entendê-lo requer primeiro os papéis do SAML (o artigo de visão geral os cobre por completo), depois como um proxy se encaixa entre eles.
@@ -79,3 +79,10 @@ O custo é dito no mesmo fôlego: o proxy vira o **ponto único por onde passa t
 ## Por que o modo importa
 
 Como um SAML proxy anda no fluxo de redirecionamento por navegador, ele herda as suposições do SAML, e elas moldam onde ele se encaixa. Ele funciona de forma limpa para acesso baseado em navegador, onde redirecionamentos e POSTs são naturais, e depende de o usuário ter uma sessão de navegador para redirecionar, e é por isso que serve a usuários interativos e tem dificuldade com clientes headless e servidores que não podem seguir um redirecionamento SAML. Sua segurança se apoia inteiramente em validar a asserção corretamente: verificar a assinatura, o emissor, a audiência e as condições, exatamente as verificações que os artigos sobre assinaturas e asserções SAML descrevem, porque um proxy que admite requisições com base numa asserção que deixou de verificar é uma porta aberta. E como hub de confiança ele concentra risco: comprometa o proxy e você compromete o acesso a tudo por trás dele, o análogo na camada de identidade da preocupação com a concentração de texto claro que um SSL forward proxy levanta para o conteúdo.
+
+## Fontes
+
+O ano em que o SAML 2.0 surgiu é uma data de ratificação da OASIS, portanto pode ser conferido no próprio padrão.
+
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 de março de 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)
+- [O conjunto completo do OASIS Standard SAML 2.0, incluindo os bindings e profiles que um proxy precisa satisfazer nos dois lados](https://docs.oasis-open.org/security/saml/v2.0/)

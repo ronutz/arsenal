@@ -41,6 +41,6 @@ The TTL you see from a recursive resolver counts down as the record ages in its 
 
 Ask for an A record on a name that is a CNAME, and a well-behaved server returns **both** the CNAME and the A record it resolves to. The answer section carries the chain.
 
-That chain is where two quiet failures live. **A CNAME pointing at a name with no record of the requested type** returns NOERROR with an incomplete chain — the alias resolved and the target had nothing. And **a CNAME crossing into a zone the server is not authoritative for** may return only the alias, leaving the client to start a second lookup it may not be configured to make.
+That chain is where two quiet failures live. **A CNAME pointing at a name with no record of the requested type** returns NOERROR with an incomplete chain: the alias resolved and the target had nothing. And **a CNAME crossing into a zone the server is not authoritative for** may return only the alias, leaving the client to start a second lookup it may not be configured to make.
 
 **Read the whole answer section, not the last line.** The record you asked for may not be there even when the status says nothing went wrong.

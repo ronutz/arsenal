@@ -8,7 +8,7 @@ relatedArticles: ["dns-blocklists-and-response-policy", "choosing-a-public-dns-r
 category: networking
 order: 257
 status: reviewed
-updated: "2026-08-11"
+updated: "2026-09-27"
 ---
 
 ## Four modes, and they are not variations of one thing
@@ -28,7 +28,7 @@ Fortinet's documentation states it plainly: a DNS filter profile can be applied 
 
 **Non-recursive is not in that list.**
 
-So a FortiGate configured in non-recursive mode with `dnsfilter-profile` set is a device carrying a filtering policy that is not filtering. The configuration is present, the profile exists, the GUI shows it attached — **and no category rating is consulted, because the query never leaves the local database path.**
+So a FortiGate configured in non-recursive mode with `dnsfilter-profile` set is a device carrying a filtering policy that is not filtering. The configuration is present, the profile exists, the GUI shows it attached, **and no category rating is consulted, because the query never leaves the local database path.**
 
 Nothing reports this. There is no error, no log line saying the profile was skipped, and the dashboard has nothing to show because nothing was evaluated. **It is the exact shape of failure the rest of this site keeps finding: a control that is configured, visible in the running config, and inert.**
 
@@ -44,7 +44,7 @@ The cost is that the FortiGate now carries the full recursion job: root hints, t
 
 ## The database, and the two kinds of local zone
 
-The DNS database holds local zones, and it can be **primary** — every record maintained by hand — or **secondary**, taking its content from an outside source.
+The DNS database holds local zones, and it can be **primary** (every record maintained by hand) or **secondary**, taking its content from an outside source.
 
 The primary case is the one that quietly accumulates debt. Records added for a migration or a lab stay after the reason has gone, and a FortiGate answering authoritatively for a name that has moved is a resolution problem visible only from behind that firewall. **The name works everywhere except inside your own network**, which reverses the usual direction of a DNS complaint and sends the investigation outward.
 
@@ -53,3 +53,10 @@ The primary case is the one that quietly accumulates debt. Records added for a m
 Recent FortiOS versions expose **DoH, DoH3 and DoQ** settings on the DNS server, with a certificate taken from the DNS server configuration and falling back to the web proxy's.
 
 That closes a loop worth naming. Encrypted DNS is usually discussed as **the thing that defeats a network's policy** - a client choosing its own resolver over HTTPS. A firewall that offers encrypted DNS itself is offering the privacy without the loss of control: **the transport is protected and the policy still applies, because the resolver is the one the network operates.**
+
+## Sources
+
+The four modes and the release that added the fourth are Fortinet's own, documented in both the new-features list and the administration guide for that version.
+
+- [FortiGate as a recursive DNS resolver - FortiOS 7.6.0 new features, where resolver mode was added to the DNS server interface](https://docs.fortinet.com/document/fortigate/7.6.0/new-features/650959/fortigate-as-a-recursive-dns-resolver)
+- [FortiGate DNS server - FortiOS 7.6.0 Administration Guide](https://docs.fortinet.com/document/fortigate/7.6.0/administration-guide/960561/fortigate-dns-server)

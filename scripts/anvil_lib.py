@@ -370,12 +370,79 @@ def has_profile(slug: str) -> bool:
     return (PROFILES / f"{slug}.ts").exists()
 
 
-def depth_queue(limit: int = 700) -> list[tuple[int, str, int]]:
-    """Entries genuinely needing depth: short body AND no profile file.
-    Returns (body_chars, slug, source_count) ascending."""
+# ---------------------------------------------------------------------------
+# DECLARED THIN - short because the record ends, not because nobody has written
+# it yet. Added 2026-09-27.
+#
+# WHY THIS EXISTS. The queue used to be a bare list of slugs, and a bare list
+# invites the reader to clear it. On 2026-09-27 that produced a real defect:
+# eleven entries were given the same intro and eight the same body, all in one
+# pass, because padding eleven entries looked like progress. Short copy is the
+# correct output when an entry's entire public record is a CNPJ registration and
+# a directory line. This list says which those are, and WHY, so that the entries
+# above it are a genuine queue.
+#
+# The reason is the point. A slug on its own would let the next real gap hide
+# here, which is the same failure a bare ratchet count has.
+DECLARED_THIN: dict[str, str] = {
+    "blue-eye": (
+        "Zscaler publishes no enumerable partner directory, so the tier claim cannot be "
+        "checked the way the Fortinet ones can. The entry's only source is the Receita "
+        "Federal CNPJ register. Nothing further was locatable on 2026-09-27."
+    ),
+    "world-zone": (
+        "Two sources and both are registers: the Fortinet partner directory and the CNPJ "
+        "record. No company site, press coverage or history was found. A profile built on a "
+        "registration and a directory line is padding."
+    ),
+    "ziva": (
+        "Same shape as world-zone: Fortinet directory plus CNPJ. It also carries a name "
+        "variance between the directory (Ziva Tecnologia e Solucoes) and the register "
+        "(ZIVASEC Tecnologia e Solucoes), already recorded in the entry's sourceNote, and "
+        "that is the honest extent of what is known."
+    ),
+    "solor": (
+        "Fortinet directory plus CNPJ, nothing else located. Five named specialisations make "
+        "it the most specialised of this group, and that is stated in the entry; it does not "
+        "amount to a history."
+    ),
+    "trtec": (
+        "Deliberately short as rewritten on 2026-09-27. It holds ONE named specialisation "
+        "(SASE) and the entry says so and says why one is worth as much attention as a list. "
+        "Lengthening it would mean writing about something else."
+    ),
+    "secureway": (
+        "Deliberately short as rewritten on 2026-09-27. Two specialisations, a legal name "
+        "that carries its own MSP claim, and no founding date in any source read. The copy "
+        "is the length of what is known."
+    ),
+}
+
+
+def depth_queue(limit: int = 700, include_declared: bool = False
+                ) -> list[tuple[int, str, int]]:
+    """Entries genuinely needing depth: short body, no profile file, not declared thin.
+
+    Returns (body_chars, slug, source_count) ascending. Pass include_declared=True
+    to see the declared-thin entries as well, which is how you check whether a
+    declaration has gone stale - an entry that has since grown a real record
+    should come OFF the list rather than sit on it.
+    """
     out = [(e.body_chars, e.slug, e.source_count)
-           for e in entries() if 0 < e.body_chars < limit and not has_profile(e.slug)]
+           for e in entries()
+           if 0 < e.body_chars < limit
+           and not has_profile(e.slug)
+           and (include_declared or e.slug not in DECLARED_THIN)]
     return sorted(out)
+
+
+def declared_thin_report() -> list[tuple[str, str]]:
+    """The declared-thin entries with their reasons, for printing beside a queue.
+
+    Kept separate from depth_queue so that a caller has to ask for it, and so that
+    a reason is never silently dropped on the way to a count.
+    """
+    return sorted(DECLARED_THIN.items())
 
 
 if __name__ == "__main__":

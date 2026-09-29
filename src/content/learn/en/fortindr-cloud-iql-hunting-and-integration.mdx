@@ -22,7 +22,7 @@ The queries that come up repeatedly:
 
 - **Everything involving an address**, in either direction, over a window. This is the first query in most investigations.
 - **Connections to a domain or certificate**, which finds every host that reached the same infrastructure.
-- **Aggregation to find outliers** — the host making far more DNS queries than its peers, the connection that recurs at a suspiciously regular interval.
+- **Aggregation to find outliers**: the host making far more DNS queries than its peers, the connection that recurs at a suspiciously regular interval.
 - **Rare values**, since first-time occurrences are frequently more interesting than volume. A user agent seen once in ninety days is worth a look.
 
 The habit worth building is to write a query for the question rather than reading a dashboard and hoping. Dashboards answer the questions someone anticipated; queries answer yours.
@@ -31,7 +31,7 @@ The habit worth building is to write a query for the question rather than readin
 
 The capability that distinguishes retained metadata from live alerting is asking about the past.
 
-When an indicator arrives — from threat intelligence, an industry advisory, another incident — the question is immediately "did we ever see this". With retained metadata that is a query. Without it, it is unanswerable, and the honest answer to a board asking whether you were affected is that you cannot tell.
+When an indicator arrives (from threat intelligence, an industry advisory, another incident), the question is immediately "did we ever see this". With retained metadata that is a query. Without it, it is unanswerable, and the honest answer to a board asking whether you were affected is that you cannot tell.
 
 That is worth stating plainly because it is the argument for retention length. Intrusions are frequently discovered long after they began, and retention shorter than the typical discovery interval means the beginning of the incident is already gone when you go looking.
 
@@ -59,7 +59,7 @@ Findings that stay in one console do not become response. Three integration rout
 
 **Connectors into orchestration**, so a detection can trigger enrichment and response in FortiSOAR without a person copying values between windows.
 
-**Enrichment outward**, where an investigation elsewhere queries network metadata for context — what else did this host talk to — without leaving the incident.
+**Enrichment outward**, where an investigation elsewhere queries network metadata for context (what else did this host talk to) without leaving the incident.
 
 The integration worth building first is the one that gets network detections into the same queue as everything else. A separate console with its own alerts is a second place to look, and second places to look are not looked at during incidents.
 

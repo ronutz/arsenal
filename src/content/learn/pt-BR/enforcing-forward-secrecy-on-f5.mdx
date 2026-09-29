@@ -9,7 +9,7 @@ relatedArticles: ["forward-secrecy", "f5-clientssl-vs-serverssl", "f5-cipher-ord
 category: transport
 order: 45
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 O artigo genérico sobre forward secrecy explica a propriedade: uma sessão tem forward secrecy quando seu segredo foi derivado de uma troca de chaves efêmera (ECDHE ou DHE) em vez de criptografado sob a chave RSA de longo prazo do servidor. No F5 BIG-IP essa propriedade não é um interruptor que você habilita; ela é decidida pela configuração de cifras anexada ao perfil SSL que termina a conexão. Este texto companheiro mostra onde essa configuração vive e como tornar a forward secrecy o resultado garantido, e então nota como o mesmo trabalho é feito na Fortinet e no Netskope.
@@ -31,3 +31,11 @@ A imposição mais limpa é preferir o TLS 1.3 no lado voltado ao cliente. Como 
 ## O mesmo trabalho na Fortinet e no Netskope
 
 O princípio é independente de fornecedor; apenas a superfície de controle difere. Num **FortiGate**, as configurações de inspeção SSL/SSH e as configurações SSL do VIP ou do server-load-balance expõem os conjuntos de cifras permitidos e as versões de TLS, e impor forward secrecy significa permitir conjuntos ECDHE e desabilitar RSA estático e versões de protocolo obsoletas; aqui também, preferir o TLS 1.3 torna isso automático. No **Netskope**, a terminação TLS acontece na data plane da nuvem, então a política de cifras é uma configuração no nível do tenant em vez de um perfil por dispositivo: a plataforma negocia suites modernas e com forward secrecy com clientes e destinos, e a alavanca do administrador é a versão mínima de TLS e a política de descriptografia em vez de uma string de cifras escrita à mão. Em todos os casos a regra subjacente do artigo genérico se mantém inalterada: a forward secrecy está presente exatamente quando a troca de chaves negociada é efêmera, e cada produto simplesmente lhe dá um jeito diferente de garantir esse resultado.
+
+## Fontes
+
+A metade de protocolo disto é normativa e a metade de configuração é da F5, portanto impor sigilo futuro tem uma fonte para o porquê e outra para o onde.
+
+- [RFC 8446, TLS 1.3 - "static RSA and Diffie-Hellman cipher suites have been removed; all public-key based key exchange mechanisms now provide forward secrecy"](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [Configuring a Custom Cipher String for SSL Negotiation - onde a preferência por ECDHE é de fato expressa, por regras e grupos de cifras em vez de uma string digitada à mão](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)
+- [SSL Traffic Management - as configurações de perfil no lado cliente e no lado servidor em que isso precisa ser aplicado, e a observação de que o TLSv1.3 vem desabilitado por padrão em algumas configurações](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)

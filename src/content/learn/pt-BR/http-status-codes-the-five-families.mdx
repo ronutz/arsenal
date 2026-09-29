@@ -8,7 +8,7 @@ relatedArticles: ["http-methods-the-verbs", "http-headers-anatomy", "http-versio
 category: networking
 order: 208
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 Uma resposta HTTP abre com três dígitos, e a genialidade do projeto é que um cliente que nunca viu aquele código específico ainda consegue se comportar corretamente: **o primeiro dígito nomeia a família, e a família nomeia o comportamento exigido**. Essa regra de compatibilidade futura - trate um `4xx` desconhecido como `400`, um `5xx` desconhecido como `500` - é o que deixou o registro de códigos crescer por trinta anos sem quebrar um único cliente antigo. [A ferramenta explicadora](/tools/http-status-code-explainer) decodifica qualquer código que você colar; este artigo entrega o mapa de onde ela desenha.
@@ -28,3 +28,12 @@ A família 3xx esconde as sutilezas mais consequentes da web. `301` (permanente)
 ## Os 5xx que nomeiam o seu incidente
 
 `500` é a confissão genérica do servidor. O trio da era dos proxies importa mais na prática, porque cada um aponta para um lugar diferente da cadeia: `502 Bad Gateway` - o intermediário alcançou o upstream e recebeu lixo ou recusa; `503 Service Unavailable` - o próprio serviço está sobrecarregado ou fora (o código honesto de manutenção, também idealmente com `Retry-After`); `504 Gateway Timeout` - o intermediário chamou e *ninguém respondeu a tempo*. Em qualquer arquitetura com balanceador ou CDN (rede de distribuição de conteúdo) na frente, ler 502 vs 503 vs 504 corretamente é o primeiro minuto de todo incidente - diz se você olha a saúde do backend, a capacidade dele, ou o caminho no meio.
+
+## Fontes
+
+As cinco classes e quase todos os códigos acima estão definidos em um único documento; os poucos que não estão têm cada um o seu, incluindo as duas curiosidades.
+
+- [RFC 9110, HTTP Semantics - a Seção 15 define as classes de 1xx a 5xx e os códigos individuais](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 6585, Additional HTTP Status Codes - onde 428, 429, 431 e 511 são definidos](https://www.rfc-editor.org/rfc/rfc6585.html)
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles - o 451, cujos agradecimentos citam Ray Bradbury](https://www.rfc-editor.org/rfc/rfc7725.html)
+- [RFC 2324, HTCPCP/1.0 - datado de 1 de abril de 1998 e origem do 418 I'm a teapot](https://www.rfc-editor.org/rfc/rfc2324.html)

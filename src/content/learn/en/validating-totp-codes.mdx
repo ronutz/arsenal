@@ -46,7 +46,7 @@ You can see the window logic directly in the TOTP / HOTP tool: its validator acc
 
 Verification answers *"is this the right code for this moment"*, and for the remainder of that time step the answer keeps being yes. **Unless the validator records that a code has been used, the same code works again.**
 
-That is the whole of TOTP replay, and it needs no cryptography to exploit — a code observed over somebody's shoulder, read from a screenshot, or captured in a proxy log is usable until the step rolls over.
+That is the whole of TOTP replay, and it needs no cryptography to exploit: a code observed over somebody's shoulder, read from a screenshot, or captured in a proxy log is usable until the step rolls over.
 
 **Store the last accepted step per user and refuse anything at or below it.** It is a single integer, and it converts a code that is valid for thirty seconds into a code that is valid once.
 

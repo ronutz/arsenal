@@ -118,7 +118,7 @@ export default function ZccForwardingDecisionExplainerTool() {
             <div className="tmsh-object" key={idx}>
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{layerLabel(s.layer)}</span>
-                <span className="tmsh-name">{s.title}</span>
+                <span className="tmsh-object-name">{s.title}</span>
               </div>
               <ul className="lbm-facts">
                 {s.lines.map((l, i) => (

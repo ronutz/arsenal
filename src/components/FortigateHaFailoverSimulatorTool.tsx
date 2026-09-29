@@ -60,25 +60,25 @@ export default function FortigateHaFailoverSimulatorTool() {
       {error && <div className="cidr-error" role="alert">{error}</div>}
 
       {result && result.mode === "reference" && (
-        <div className="cidr-result">
-          <h3 className="cidr-result-title">{t("howItWorks")}</h3>
-          <ul className="cidr-list">
+        <div className="cidr-results">
+          <h3 className="cidr-section-title">{t("howItWorks")}</h3>
+          <ul className="dig-notes">
             {result.findings.map((f, i) => <li key={i}>{f}</li>)}
           </ul>
         </div>
       )}
 
       {result && result.mode === "simulate" && (
-        <div className="cidr-result">
+        <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
             </ul>
           )}
 
           {result.primary && (
             <>
-              <p className="cidr-result-title">
+              <p className="cidr-section-title">
                 {t("primaryIs", { name: result.primary.name })}
                 {result.decidedBy ? ` — ${t("decidedBy", { criterion: t(`crit_${result.decidedBy}`) })}` : ""}
               </p>
@@ -93,7 +93,7 @@ export default function FortigateHaFailoverSimulatorTool() {
               </p>
 
               {result.findings.length > 0 && (
-                <ul className="cidr-list">
+                <ul className="dig-notes">
                   {result.findings.map((f, i) => <li key={i}>{f}</li>)}
                 </ul>
               )}
@@ -127,7 +127,7 @@ export default function FortigateHaFailoverSimulatorTool() {
               </table>
 
               {result.trace.length > 0 && (
-                <ul className="cidr-list">
+                <ul className="dig-notes">
                   {result.trace.map((c, i) => <li key={i}>{c.detail}</li>)}
                 </ul>
               )}

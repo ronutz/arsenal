@@ -30,12 +30,12 @@ The practical consequence for configuration: a policy that appears not to match 
 
 An SMTP conversation proceeds in a fixed sequence, and FortiMail can act at each step:
 
-1. **Connection** — the client connects. Reputation and connection limits apply here, before anything is said.
-2. **HELO/EHLO** — the client identifies itself.
-3. **MAIL FROM** — the envelope sender. Sender-based checks apply.
-4. **RCPT TO** — the envelope recipient. This is where relay control decides whether the message is accepted at all.
-5. **DATA** — the message itself, headers and body.
-6. **End of DATA** — the point at which content scanning has everything.
+1. **Connection**: the client connects. Reputation and connection limits apply here, before anything is said.
+2. **HELO/EHLO**: the client identifies itself.
+3. **MAIL FROM**: the envelope sender. Sender-based checks apply.
+4. **RCPT TO**: the envelope recipient. This is where relay control decides whether the message is accepted at all.
+5. **DATA**: the message itself, headers and body.
+6. **End of DATA**: the point at which content scanning has everything.
 
 Rejecting early is better than rejecting late. A message refused at `RCPT TO` costs almost nothing and the sending server generates the bounce; a message accepted and then discarded makes you responsible for it, and generating a bounce to a forged sender makes you part of someone else's problem. That is the argument for rejecting rather than accepting-then-deleting.
 
@@ -59,7 +59,7 @@ The mode is the deployment decision, and it constrains everything after it.
 
 ## Protected domains
 
-A **protected domain** tells FortiMail which domains are yours. This is not administrative bookkeeping — it is what makes direction meaningful. Inbound means addressed to a protected domain; outbound means from one. Policies, relay rules and antispam behaviour all depend on that distinction.
+A **protected domain** tells FortiMail which domains are yours. This is not administrative bookkeeping; it is what makes direction meaningful. Inbound means addressed to a protected domain; outbound means from one. Policies, relay rules and antispam behaviour all depend on that distinction.
 
 A domain that should be protected and is not produces the recurring symptom of mail being treated as relay traffic and refused, and it looks like a policy problem rather than a missing definition.
 

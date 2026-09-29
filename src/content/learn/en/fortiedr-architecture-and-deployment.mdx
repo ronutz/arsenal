@@ -34,13 +34,13 @@ Collector installation is ordinary software deployment through whatever tooling 
 
 **Collector groups** determine which policies apply. This is the same trap as EMS profiles: a policy that is correct and assigned to a group the endpoint is not in produces an endpoint doing something else entirely.
 
-**Communication path.** Collectors must reach an aggregator. A remote endpoint that cannot is unprotected in the sense that matters — it is running its last known policy with no reporting and no updates.
+**Communication path.** Collectors must reach an aggregator. A remote endpoint that cannot is unprotected in the sense that matters: it is running its last known policy with no reporting and no updates.
 
 **Coexistence with other endpoint software.** Two products both hooking process execution is a recognised source of instability, and the exclusion configuration for each is worth doing deliberately rather than after the first crash.
 
 ## Multi-tenancy
 
-Where one deployment serves multiple organisations — a managed service provider, or a group with genuinely separate business units — multi-tenancy separates them. Each tenant has its own collectors, policies, events and administrators, and cannot see the others.
+Where one deployment serves multiple organisations (a managed service provider, or a group with genuinely separate business units), multi-tenancy separates them. Each tenant has its own collectors, policies, events and administrators, and cannot see the others.
 
 The architectural point is that separation is at the management layer while infrastructure may be shared. That makes tenant assignment a security control rather than an organisational convenience, with the same weight as VLAN (virtual local area network) assignment in a shared switching fabric.
 

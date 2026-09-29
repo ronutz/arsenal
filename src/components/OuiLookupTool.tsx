@@ -101,7 +101,7 @@ export default function OuiLookupTool() {
           autoComplete="off"
           spellCheck={false}
         />
-        <p className="cidr-hint">{t("runsLocally")}</p>
+        <p className="cidr-note">{t("runsLocally")}</p>
       </div>
 
       {loading && <p className="oui-loading">{t("loading")}</p>}

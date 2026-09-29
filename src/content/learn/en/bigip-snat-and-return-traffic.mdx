@@ -30,6 +30,6 @@ SNAT trades away the real client IP: because the member now sees a BIG-IP addres
 
 Turning on SNAT fixes the asymmetry, because the member now replies to the BIG-IP address it was talked to. It also introduces a limit that only appears under load.
 
-Every connection from a SNAT address to a given destination needs its own source port, and there are roughly **64,000** of them per address-destination pair. A busy virtual server fronting a small number of pool members can exhaust that range, and when it does, new connections fail while every member monitor stays green. **It looks like a backend problem and it is an arithmetic problem** — the fix is more SNAT addresses, not more servers.
+Every connection from a SNAT address to a given destination needs its own source port, and there are roughly **64,000** of them per address-destination pair. A busy virtual server fronting a small number of pool members can exhaust that range, and when it does, new connections fail while every member monitor stays green. **It looks like a backend problem and it is an arithmetic problem**: the fix is more SNAT addresses, not more servers.
 
 The other cost is attribution. **The member no longer sees the client's address**, so unless the profile inserts an `X-Forwarded-For` header and the application logs it, the access logs record only the SNAT address. Discovering that during an incident is discovering it too late.

@@ -14,7 +14,7 @@ updated: "2026-08-06"
 
 ## The question is wearing a costume
 
-Service is back. The immediate pressure is off. Now somebody asks whether to fix the underlying problem properly or leave the workaround in place, and the conversation that follows is conducted entirely in technical vocabulary — versions, patches, maintenance windows, regression risk.
+Service is back. The immediate pressure is off. Now somebody asks whether to fix the underlying problem properly or leave the workaround in place, and the conversation that follows is conducted entirely in technical vocabulary - versions, patches, maintenance windows, regression risk.
 
 Almost none of it is a technical question.
 
@@ -28,11 +28,11 @@ A **workaround** restores the function without addressing why it broke. Route ar
 
 A **fix** removes the cause, so the workaround becomes unnecessary and can be withdrawn.
 
-The distinction that matters in practice is not which one is better — it is that **only one of them has an end.** A fix concludes. A workaround continues until somebody actively ends it, and the default behaviour of every organisation under load is not to end things.
+The distinction that matters in practice is not which one is better - it is that **only one of them has an end.** A fix concludes. A workaround continues until somebody actively ends it, and the default behaviour of every organisation under load is not to end things.
 
 ## The four questions
 
-Before keeping a workaround, four things need answers. Not a form to fill in — four things somebody should be able to say out loud.
+Before keeping a workaround, four things need answers. Not a form to fill in - four things somebody should be able to say out loud.
 
 **Who carries it?** Not which team owns the system: who personally has to know this exists. If the answer is "whoever is on shift", the workaround has no owner and will outlive everybody who understands it.
 
@@ -44,13 +44,13 @@ Before keeping a workaround, four things need answers. Not a form to fill in —
 
 ## The interest rate
 
-Every workaround is a debt, and the useful part of that metaphor is not the borrowing — it is that **debts have interest rates, and they differ enormously.**
+Every workaround is a debt, and the useful part of that metaphor is not the borrowing - it is that **debts have interest rates, and they differ enormously.**
 
 Some workarounds are nearly free. A pinned version on a stable component, documented, with an owner, costs almost nothing to carry for years.
 
-Some compound viciously. A workaround that other things get built on top of becomes load-bearing, and the cost of removing it rises every month as more depends on the shape it created. This is how a temporary routing exception becomes something nobody dares touch four years later — not because it got worse, but because the estate grew around it.
+Some compound viciously. A workaround that other things get built on top of becomes load-bearing, and the cost of removing it rises every month as more depends on the shape it created. This is how a temporary routing exception becomes something nobody dares touch four years later - not because it got worse, but because the estate grew around it.
 
-**The question is not "is this technical debt" — nearly everything is. It is whether this particular debt is amortising or compounding**, and that is usually answerable in a minute by asking whether anything new will be built assuming the workaround's behaviour.
+**The question is not "is this technical debt" - nearly everything is. It is whether this particular debt is amortising or compounding**, and that is usually answerable in a minute by asking whether anything new will be built assuming the workaround's behaviour.
 
 ## When the workaround is the right permanent answer
 
@@ -62,7 +62,7 @@ Worth saying plainly, because the engineering instinct treats "fix it properly" 
 
 **When the fix is riskier.** Replacing a working system carries its own failure modes, and a stable workaround on a system you understand can be better than a clean solution on one you do not.
 
-In each case the honest move is to **stop calling it a workaround.** Write it down as a design decision with a reason. The thing that makes a permanent workaround dangerous is not its permanence — it is that everybody keeps describing it as temporary, so nobody ever documents it as architecture.
+In each case the honest move is to **stop calling it a workaround.** Write it down as a design decision with a reason. The thing that makes a permanent workaround dangerous is not its permanence - it is that everybody keeps describing it as temporary, so nobody ever documents it as architecture.
 
 ## What this costs when it goes wrong
 

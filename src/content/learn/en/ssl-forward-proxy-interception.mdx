@@ -31,7 +31,7 @@ Two consequences follow, and both are structural rather than operational.
 
 **The proxy holds plaintext for everything.** Bank sessions, health portals, private mail. The device now sees what nothing else in the network could, which makes it the highest-value target in the estate and the one whose logs carry the most sensitive material.
 
-**The client stops validating the internet and starts validating you.** After interception, the certificate the browser checks is yours. If the proxy validates the upstream certificate weakly — expired, self-signed, bad name, revoked — the client cannot tell, because it never sees it. An interception device that is lax upstream has downgraded every user behind it while showing them a padlock.
+**The client stops validating the internet and starts validating you.** After interception, the certificate the browser checks is yours. If the proxy validates the upstream certificate weakly (expired, self-signed, bad name, revoked) the client cannot tell, because it never sees it. An interception device that is lax upstream has downgraded every user behind it while showing them a padlock.
 
 ## The mechanics: two sessions and a forged certificate
 
@@ -61,7 +61,7 @@ Interception fails against defences that were designed specifically to notice it
 
 **Post-quantum and new key exchanges.** Every interception device must support what the endpoints negotiate. Hybrid key exchange arrived in browsers before it arrived in most middleboxes, and the failure mode is a handshake that simply stops working through the proxy while working directly.
 
-**QUIC.** It is UDP, encrypted end to end, and most interception estates handle it by blocking it and forcing a fallback to TCP — which works until the application has no fallback.
+**QUIC.** It is UDP, encrypted end to end, and most interception estates handle it by blocking it and forcing a fallback to TCP, which works until the application has no fallback.
 
 **Legal and regulatory categories.** Health, financial and legal traffic is excluded in many jurisdictions, and the exclusion is a compliance requirement rather than a preference.
 
@@ -69,16 +69,16 @@ Interception fails against defences that were designed specifically to notice it
 
 - **Publish the practice.** Users and regulators should know that traffic is inspected, which category is excluded, and who can read the logs. This is a governance decision that gets treated as a firewall setting.
 - **Bypass by destination, not by hope.** Maintain the exclusion list as a register with owners and review dates, in the same way as any [policy exception](/learn/network-segmentation-from-vlans-to-microsegmentation).
-- **Protect the issuing key like a root.** Hardware-backed, access-controlled, logged, with a rehearsed revocation and re-enrolment path — because replacing it means touching every managed device.
+- **Protect the issuing key like a root.** Hardware-backed, access-controlled, logged, with a rehearsed revocation and re-enrolment path, because replacing it means touching every managed device.
 - **Validate upstream strictly**, and fail the session rather than passing a weak certificate through. The users behind the proxy have no other defence.
-- **Measure the cost.** Termination and re-encryption are computationally expensive, and interception is the feature that most often makes a security appliance the bottleneck in the path — which is the [availability side of the trade](/learn/security-versus-availability) stated in hardware.
+- **Measure the cost.** Termination and re-encryption are computationally expensive, and interception is the feature that most often makes a security appliance the bottleneck in the path, which is the [availability side of the trade](/learn/security-versus-availability) stated in hardware.
 
 ## The landscape, by category
 
-- **Secure web gateways in the cloud** — Zscaler, Netskope, Cloudflare, Cisco Umbrella. Interception happens in the provider's edge, which moves the plaintext to somebody else's infrastructure and makes their exclusion list part of your policy.
-- **Next-generation firewalls** — Palo Alto, Fortinet, Check Point and others, terminating at the perimeter where the estate still has one.
-- **Dedicated decryption platforms** — F5, A10, Gigamon and similar, which decrypt once and feed several inspection tools from the same plaintext, so the expensive operation happens a single time.
-- **Endpoint agents**, which see the plaintext inside the device before it is encrypted at all and therefore do not need to intercept — the approach that grows as network interception loses ground.
+- **Secure web gateways in the cloud**: Zscaler, Netskope, Cloudflare, Cisco Umbrella. Interception happens in the provider's edge, which moves the plaintext to somebody else's infrastructure and makes their exclusion list part of your policy.
+- **Next-generation firewalls**: Palo Alto, Fortinet, Check Point and others, terminating at the perimeter where the estate still has one.
+- **Dedicated decryption platforms**: F5, A10, Gigamon and similar, which decrypt once and feed several inspection tools from the same plaintext, so the expensive operation happens a single time.
+- **Endpoint agents**, which see the plaintext inside the device before it is encrypted at all and therefore do not need to intercept, the approach that grows as network interception loses ground.
 
 The direction of travel is worth stating: every year, more traffic resists interception at the network, and more inspection moves to the endpoint. A programme built entirely on network decryption is building on a shrinking surface.
 

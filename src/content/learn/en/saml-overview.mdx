@@ -8,7 +8,7 @@ relatedArticles: ["saml-assertions-and-conditions", "saml-signatures", "xxe-and-
 category: security
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## What SAML solves
@@ -40,3 +40,10 @@ This distinction matters when you decode a captured message by hand. A `SAMLResp
 Receiving an assertion is not the same as trusting it. A correct SP verifies the signature against the IdP's known certificate, confirms the assertion is addressed to it through the audience restriction, checks the validity window, confirms the response answers a request it actually sent, and guards against replay. Skipping any of these turns SSO into a hole, because an attacker who can craft or replay an assertion could log in as anyone. The signature is covered in [SAML signatures and XML-DSig](/learn/saml-signatures), and the structural checks in the assertions article.
 
 A decoder helps you see what is inside a message so you can reason about these checks. It does not perform them. Reading the structure is the first step; verifying the signature against a real key, in the SP, is what actually establishes trust.
+
+## Sources
+
+SAML 2.0 is an OASIS Standard with a ratification date, so the version and the year above are checkable against the document itself.
+
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 March 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)
+- [The full SAML 2.0 OASIS Standard set, including bindings, profiles and metadata](https://docs.oasis-open.org/security/saml/v2.0/)

@@ -34,8 +34,8 @@ A salt is not a secret and is not a substitute for a slow password hash. Correct
 
 ## The salt is not a secret, and treating it as one causes real bugs
 
-A salt is stored in plain sight, usually inside the hash string itself, and that is correct. Its job is **uniqueness, not concealment** — it makes one precomputed table useless against many accounts, and it does that whether or not the attacker can read it.
+A salt is stored in plain sight, usually inside the hash string itself, and that is correct. Its job is **uniqueness, not concealment**: it makes one precomputed table useless against many accounts, and it does that whether or not the attacker can read it.
 
-The failure this misunderstanding produces is specific: teams that treat the salt as secret sometimes make it **shared** — one application-wide value, kept in config — reasoning that a hidden salt is stronger than a visible one. **A shared salt is barely a salt at all.** Every user with the same password gets the same hash again, and a table built once against that one salt cracks the whole database.
+The failure this misunderstanding produces is specific: teams that treat the salt as secret sometimes make it **shared** (one application-wide value, kept in config), reasoning that a hidden salt is stronger than a visible one. **A shared salt is barely a salt at all.** Every user with the same password gets the same hash again, and a table built once against that one salt cracks the whole database.
 
 **Per-user, random, stored openly.** The thing that must be secret is the pepper, if you use one, and that is a different mechanism with different handling.

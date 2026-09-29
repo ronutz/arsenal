@@ -38,6 +38,6 @@ A couple of things to keep in mind: +trace does its own iterative resolution, so
 
 `+trace` is the right tool for reading a delegation chain, and the wrong tool for proving that name resolution works, because **it deliberately bypasses your resolver.** It iterates from the root itself, asking each server in turn.
 
-So `+trace` can succeed beautifully while every application on the host still fails, because what is broken is the resolver `+trace` never used — its forwarders, its cache, its access rules, or the path to it.
+So `+trace` can succeed beautifully while every application on the host still fails, because what is broken is the resolver `+trace` never used: its forwarders, its cache, its access rules, or the path to it.
 
 **Use `+trace` to find out where a delegation is wrong. Use an ordinary query to find out whether resolution works.** They answer different questions and the second one is usually the one being asked.

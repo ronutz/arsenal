@@ -1,7 +1,7 @@
 ---
 slug: the-linux-distribution-families
 title: "The Linux distribution families: what actually separates them"
-summary: "Every distribution ships roughly the same kernel and roughly the same GNU tools, so the differences are not where beginners look. They are in the package manager, the release model, the packaging philosophy and — most consequentially — who gets to decide. A field guide to the families, described by what you feel when you administer them."
+summary: "Every distribution ships roughly the same kernel and roughly the same GNU tools, so the differences are not where beginners look. They are in the package manager, the release model, the packaging philosophy and, most consequentially, who gets to decide. A field guide to the families, described by what you feel when you administer them."
 concepts: ["linux", "distributions", "package management", "release engineering", "governance"]
 relatedTools: []
 relatedArticles: ["linux-the-kernel-that-ate-the-world", "open-source-and-the-meaning-of-free", "git"]
@@ -19,7 +19,7 @@ What actually differs is four things, and all four are felt in operations rather
 
 ## Debian and its descendants
 
-**Debian** is the reference for community governance: an elected leader, a written constitution, and a **Social Contract** committing the project to remain entirely free software and to prioritise users. Packages use `dpkg` with `apt` on top. Three tracks run permanently — stable, testing and unstable — and stable means what the word says: software is frozen, patched for security, and left alone for years.
+**Debian** is the reference for community governance: an elected leader, a written constitution, and a **Social Contract** committing the project to remain entirely free software and to prioritise users. Packages use `dpkg` with `apt` on top. Three tracks run permanently (stable, testing and unstable) and stable means what the word says: software is frozen, patched for security, and left alone for years.
 
 Administering it feels conservative in the useful sense. Versions are older than upstream, dependency handling is strict, and the system does not surprise you. The tradeoff is real: if you need current versions of fast-moving software, you will be fighting the design.
 
@@ -29,7 +29,7 @@ Administering it feels conservative in the useful sense. Versions are older than
 
 **Red Hat Enterprise Linux (RHEL)** is the enterprise anchor: `rpm` packages with `dnf`, very long support horizons, and certification by hardware and software vendors. You do not buy the code, which is free; you buy the support relationship and the guarantee that a specific version will be maintained for a decade.
 
-**Fedora** is the upstream where the future is tested — fast-moving, six-month releases, and the place where changes reach the world before they reach RHEL.
+**Fedora** is the upstream where the future is tested: fast-moving, six-month releases, and the place where changes reach the world before they reach RHEL.
 
 And then the episode everyone in this ecosystem remembers. **CentOS** was the free rebuild of RHEL, and in 2020 it was redirected to **CentOS Stream**, positioned *ahead* of RHEL rather than behind it. Organisations that had built on a free, bug-for-bug-compatible enterprise system suddenly did not have one, and **Rocky Linux** and **AlmaLinux** were founded to replace it.
 
@@ -41,13 +41,13 @@ That is the clearest lesson in this whole article: **governance is a technical p
 
 ## The rolling and the hands-on
 
-**Arch Linux** ships continuously — there are no versions, only the current state. `pacman` is fast and simple, the **AUR (Arch User Repository)** carries user-contributed build recipes for nearly everything, and the project deliberately expects you to assemble your own system.
+**Arch Linux** ships continuously: there are no versions, only the current state. `pacman` is fast and simple, the **AUR (Arch User Repository)** carries user-contributed build recipes for nearly everything, and the project deliberately expects you to assemble your own system.
 
 Its most valuable output is not the distribution. The **Arch Wiki** is the best Linux documentation in existence and is used constantly by people running other distributions entirely, which is a rare kind of contribution: the documentation outgrew its own product.
 
 **Gentoo** compiles from source with `portage`, and **USE flags** let you decide which optional features are built into each package. The payoff is a system with exactly what you asked for and nothing else; the price is your time, and the modern honest assessment is that the performance argument has largely evaporated while the control argument has not.
 
-**Slackware** is the oldest surviving distribution and remains deliberately minimal — historically no automatic dependency resolution, on the argument that the administrator should know what is installed. It survives because some people mean that.
+**Slackware** is the oldest surviving distribution and remains deliberately minimal, with historically no automatic dependency resolution, on the argument that the administrator should know what is installed. It survives because some people mean that.
 
 ## The specialists
 
@@ -57,7 +57,7 @@ Its most valuable output is not the distribution. The **Arch Wiki** is the best 
 
 ## Choosing, honestly
 
-Not by taste — by what the machine is for.
+Not by taste, but by what the machine is for.
 
 - **A fleet you must support for years** → RHEL, its rebuilds, or Ubuntu LTS. You are buying the support horizon.
 - **A server you administer yourself and want left alone** → Debian stable.

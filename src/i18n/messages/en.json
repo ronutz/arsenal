@@ -270,7 +270,7 @@
     },
     "cert-renewal-planner": {
       "name": "Certificate renewal planner",
-      "blurb": "Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule, and the renewal cadence it implies — all offline.",
+      "blurb": "Work out a TLS certificate's validity, whether it fits the CA/Browser Forum 47-day schedule, and the renewal cadence it implies - all offline.",
       "notBeforeLabel": "Issued (notBefore)",
       "notAfterLabel": "Expires (notAfter)",
       "runsLocally": "Everything runs in your browser; nothing is uploaded.",
@@ -280,7 +280,7 @@
       "compliantBadge": "Within the cap",
       "overCapBadge": "Over the cap",
       "maxForPhase": "Maximum for its issuance date: {max} days.",
-      "overByText": "{days} days over the {max}-day maximum for its issuance date — a public CA would not issue it.",
+      "overByText": "{days} days over the {max}-day maximum for its issuance date - a public CA would not issue it.",
       "renewalsValue": "About {n} renewals per year at this validity.",
       "remainingHeading": "From your device clock",
       "daysRemaining": "{days} days until it expires.",
@@ -305,7 +305,7 @@
       "projectionIntro": "Renewals per certificate per year, as the caps tighten:",
       "perYearShort": "yr",
       "note_overCap": "This validity exceeds the {max}-day maximum for its issuance date.",
-      "note_future47": "Compliant today, but longer than the eventual 47-day cap — expect more frequent renewals as the schedule advances.",
+      "note_future47": "Compliant today, but longer than the eventual 47-day cap - expect more frequent renewals as the schedule advances.",
       "note_publicOnly": "These caps apply to publicly trusted TLS certificates only. Private or internal PKI is not governed by SC-081v3.",
       "note_automate": "At these cadences, automate issuance and renewal with ACME (RFC 8555) and ARI (RFC 9773); manual renewal does not scale.",
       "err_empty": "Enter both the issue and expiry dates.",
@@ -331,7 +331,7 @@
       "bitsHeading": "Address bits",
       "bitsNetwork": "Network",
       "bitsHost": "Host",
-      "bitsNote": "The highlighted bits identify the network — the rest address hosts within it.",
+      "bitsNote": "The highlighted bits identify the network - the rest address hosts within it.",
       "results": {
         "network": "Network address",
         "broadcast": "Broadcast address",
@@ -540,12 +540,12 @@
     "comingSoon": "Coming soon",
     "csr-decoder": {
       "name": "CSR decoder",
-      "blurb": "Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs and extensions, and attributes — entirely in your browser.",
+      "blurb": "Decode a PKCS#10 certificate signing request to read its subject, public key, requested SANs and extensions, and attributes - entirely in your browser.",
       "inputLabel": "Certificate signing request (PEM, base64, or hex)",
       "inputPlaceholder": "-----BEGIN CERTIFICATE REQUEST-----\n...",
       "exampleLabel": "Load an example CSR",
       "runsLocally": "Everything runs in your browser; the CSR is never uploaded.",
-      "notCertNote": "A CSR is a request, not a certificate. It has no serial number, no issuer, and no validity dates — only what the requester is asking a CA to certify.",
+      "notCertNote": "A CSR is a request, not a certificate. It has no serial number, no issuer, and no validity dates - only what the requester is asking a CA to certify.",
       "subjectHeading": "Subject",
       "colAttr": "Attribute",
       "colValue": "Value",
@@ -1180,7 +1180,7 @@
     },
     "epoch": {
       "name": "Unix time converter",
-      "blurb": "Type a Unix timestamp — seconds, milliseconds, microseconds, or nanoseconds, detected automatically — or an ISO-8601 date, and read it back in every common format. All in your browser.",
+      "blurb": "Type a Unix timestamp - seconds, milliseconds, microseconds, or nanoseconds, detected automatically - or an ISO-8601 date, and read it back in every common format. All in your browser.",
       "inputLabel": "Timestamp or date",
       "inputPlaceholder": "1700000000  or  2023-11-14T22:13:20Z",
       "runsLocally": "Converted in your browser. Nothing is sent anywhere.",
@@ -1371,11 +1371,11 @@
         "http-compliance": "HTTP compliance / RFC check"
       },
       "rating": {
-        "1": "1 — almost certainly legitimate",
-        "2": "2 — likely legitimate",
-        "3": "3 — uncertain",
-        "4": "4 — likely an attack",
-        "5": "5 — certain attack"
+        "1": "1 - almost certainly legitimate",
+        "2": "2 - likely legitimate",
+        "3": "3 - uncertain",
+        "4": "4 - likely an attack",
+        "5": "5 - certain attack"
       },
       "state": {
         "enforced-blocking": "Enforced, policy in Blocking mode",
@@ -1385,7 +1385,7 @@
       "triage": {
         "likely-fp": "Likely a false positive",
         "investigate": "Investigate before deciding",
-        "likely-attack": "Likely a real attack — do not relax"
+        "likely-attack": "Likely a real attack - do not relax"
       },
       "blocksNow": "Blocking traffic now",
       "notBlocking": "Not blocking (logged only)",
@@ -1455,16 +1455,16 @@
         "disabled": "Disabled (no learning)"
       },
       "rating": {
-        "1": "1 — almost certainly legitimate",
-        "2": "2 — likely legitimate",
-        "3": "3 — uncertain",
-        "4": "4 — likely an attack",
-        "5": "5 — certain attack / unlearnable"
+        "1": "1 - almost certainly legitimate",
+        "2": "2 - likely legitimate",
+        "3": "3 - uncertain",
+        "4": "4 - likely an attack",
+        "5": "5 - certain attack / unlearnable"
       },
       "verdict": {
-        "learning-disabled": "Safe: learning is Disabled — the policy never changes itself.",
-        "manual": "Safe: Manual mode — a human must accept every relaxation, so there is no automatic hole to drill.",
-        "unlearnable": "Safe: a rating-5 violation is unlearnable — the Policy Builder never auto-relaxes it, no matter how much traffic arrives.",
+        "learning-disabled": "Safe: learning is Disabled - the policy never changes itself.",
+        "manual": "Safe: Manual mode - a human must accept every relaxation, so there is no automatic hole to drill.",
+        "unlearnable": "Safe: a rating-5 violation is unlearnable - the Policy Builder never auto-relaxes it, no matter how much traffic arrives.",
         "trusted-only-blocked": "Safe: loosening is restricted to trusted traffic, so an untrusted attacker cannot reach the Loosen path.",
         "insufficient-sources": "Out of reach: the attacker does not control enough distinct sources to meet the Loosen threshold.",
         "drillable": "Drillable: this configuration can be relaxed automatically. Minimum attacker effort:"
@@ -1478,22 +1478,22 @@
       "notesHeading": "What the docs say",
       "mitigationsHeading": "How to close it",
       "note": {
-        "autoEnforce": "In Automatic mode, a suggestion that reaches a 100% learning score is accepted and enforced with no human in the loop — including suggestions that disable a violation or widen an entity.",
+        "autoEnforce": "In Automatic mode, a suggestion that reaches a 100% learning score is accepted and enforced with no human in the loop - including suggestions that disable a violation or widen an entity.",
         "unlearnable": "The most severe violations (for example Null in request, unparsable content, bad HTTP version) are unlearnable: no suggestion is ever created and the rating is fixed at 5, so the control cannot be laundered away this way.",
         "ratingCost": "At rating {rating}, F5 slows learning and requires more different sources and sessions before it relaxes. The higher the rating, the more expensive the poisoning.",
         "trustedOneSession": "Trusted clients relax the policy with as little as one session; untrusted traffic needs many more distinct sources over a period. That asymmetry is the anti-poisoning design.",
-        "emptyTrusted": "If the Trusted IP list is empty, the system treats all traffic as untrusted — so an empty list does not make you safe, it makes the untrusted thresholds the only defence.",
-        "attackerTrusted": "These IPs are trusted, so the fast trusted-traffic rules apply — this is why you must never place untrusted-reachable ranges in the Trusted IP list.",
+        "emptyTrusted": "If the Trusted IP list is empty, the system treats all traffic as untrusted - so an empty list does not make you safe, it makes the untrusted thresholds the only defence.",
+        "attackerTrusted": "These IPs are trusted, so the fast trusted-traffic rules apply - this is why you must never place untrusted-reachable ranges in the Trusted IP list.",
         "lowerBound": "This request count is a documented lower bound (one distinct hit per required source/session). A real campaign needs more, because the pattern must recur to raise the score."
       },
       "mit": {
         "manual": "Set Learning Mode to Manual (or Disabled) so no suggestion is applied without a human accepting it. This is the clean default for production.",
         "trustedOnly": "Loosen only from trusted traffic where the option exists (Track Site Changes), and build policies from a known-good Trusted IP range rather than live untrusted traffic.",
         "raiseThresholds": "Raise the untrusted Loosen thresholds (different sources, sessions, time spread) so untrusted traffic effectively never relaxes the policy during the learning period.",
-        "keepOut": "Never put internet-reachable or attacker-reachable ranges in the Trusted IP list — trusted traffic relaxes the policy with a single session.",
+        "keepOut": "Never put internet-reachable or attacker-reachable ranges in the Trusted IP list - trusted traffic relaxes the policy with a single session.",
         "disableAfter": "Once the policy is built and stable, disable automatic policy building (or Track Site Changes) so the policy stops learning from live traffic."
       },
-      "untrustedActiveNote": "This scenario loosens from untrusted traffic in Automatic mode — the exact configuration to avoid on an internet-facing policy."
+      "untrustedActiveNote": "This scenario loosens from untrusted traffic in Automatic mode - the exact configuration to avoid on an internet-facing policy."
     },
     "f5-awaf-learning-suggestion-interpreter": {
       "name": "AWAF learning-suggestion interpreter",
@@ -1525,11 +1525,11 @@
         "specify-attribute": "Make an attribute more specific"
       },
       "rating": {
-        "1": "1 — almost certainly legitimate",
-        "2": "2 — likely legitimate",
-        "3": "3 — uncertain",
-        "4": "4 — likely an attack",
-        "5": "5 — certain attack",
+        "1": "1 - almost certainly legitimate",
+        "2": "2 - likely legitimate",
+        "3": "3 - uncertain",
+        "4": "4 - likely an attack",
+        "5": "5 - certain attack",
         "na": "n/a (not violation-driven)"
       },
       "mode": {
@@ -1589,7 +1589,7 @@
       },
       "summary": "{wide} policy-wide relaxation(s), {scoped} scoped widening(s), {tight} tightening(s).",
       "policyWideHeading": "Policy-wide relaxations (these widen beyond a single entity)",
-      "scopedHeading": "Scoped widenings (single-entity — the normal false-positive fix)",
+      "scopedHeading": "Scoped widenings (single-entity - the normal false-positive fix)",
       "tighteningHeading": "Tightenings",
       "concern": {
         "high": "high",
@@ -1616,7 +1616,7 @@
         "evasionEnabled": "Evasion detection enabled: {name}.",
         "violationBlockOff": "Violation no longer blocks: {name}.",
         "violationBlockOn": "Violation now blocks: {name}.",
-        "wildcardAdded": "Wildcard {type} added: {name} — this matches many, not one entity.",
+        "wildcardAdded": "Wildcard {type} added: {name} - this matches many, not one entity.",
         "wildcardRemoved": "Wildcard {type} removed: {name}.",
         "entityAdded": "Allowed {type} added: {name}.",
         "entityRemoved": "Allowed {type} removed: {name}."
@@ -1704,8 +1704,8 @@
         "high": "High"
       },
       "system": {
-        "in-stack": "Yes — a system my app runs",
-        "not-in-stack": "No — a system my app does not run",
+        "in-stack": "Yes - a system my app runs",
+        "not-in-stack": "No - a system my app does not run",
         "unknown": "Not sure"
       },
       "enforcement": {
@@ -1716,7 +1716,7 @@
       "quadrant": {
         "fp-prone-low-stakes": "False-positive-prone, low stakes",
         "fp-prone-dangerous": "False-positive-prone, but dangerous if real",
-        "reliable-high-stakes": "Reliable and high-stakes — do not relax",
+        "reliable-high-stakes": "Reliable and high-stakes - do not relax",
         "reliable-low-stakes": "Reliable, low stakes"
       },
       "fp": {
@@ -2041,7 +2041,7 @@
     },
     "f5-irules-event-order": {
       "name": "iRules event-order explainer",
-      "blurb": "Pick the profile stack on a BIG-IP virtual server — client-SSL, HTTP, server-SSL, pool — and see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a timeline and a list. All in your browser.",
+      "blurb": "Pick the profile stack on a BIG-IP virtual server - client-SSL, HTTP, server-SSL, pool - and see the order the common iRule events fire, from CLIENT_ACCEPTED to CLIENT_CLOSED, as a timeline and a list. All in your browser.",
       "stackLabel": "Virtual server profile stack",
       "tog_clientssl": "Client-SSL profile",
       "tog_http": "HTTP profile",
@@ -2242,7 +2242,7 @@
     },
     "f5-ssl-profile-explainer": {
       "name": "F5 SSL profile explainer",
-      "blurb": "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS — all in your browser.",
+      "blurb": "Paste a tmsh client-ssl or server-ssl profile and get its role, the TLS protocol matrix, and a security read covering chain, renegotiation, SNI, OCSP, and mutual TLS - all in your browser.",
       "inputLabel": "SSL profile (tmsh)",
       "inputPlaceholder": "ltm profile client-ssl /Common/name ...",
       "runsLocally": "Parsed in your browser. Nothing is sent anywhere.",
@@ -2999,7 +2999,7 @@
       "name": "Regex Toolkit",
       "blurb": "Test, explain, and debug regular expressions with live matches and a backtracking-risk check.",
       "title": "Regex Toolkit",
-      "description": "Compile a JavaScript regular expression, test it against your own text with every match and capture group highlighted, and read a plain-language breakdown of what the pattern does — all in your browser.",
+      "description": "Compile a JavaScript regular expression, test it against your own text with every match and capture group highlighted, and read a plain-language breakdown of what the pattern does - all in your browser.",
       "patternLabel": "Pattern and flags",
       "patternPlaceholder": "\\w+@\\w+\\.\\w+",
       "flagsLabel": "Flags",
@@ -5279,8 +5279,8 @@
         "map": "The modeled path",
         "mapTitle": "Flow path map",
         "mapDesc": "The forward hop chain as modeled from the selections, with transformation and TLS markers on each node.",
-        "mapModel": "Canonical assumed order — a proposed model to verify with the hop owners, not discovered topology.",
-        "unknowns": "Explicitly unknown — establish these first",
+        "mapModel": "Canonical assumed order - a proposed model to verify with the hop owners, not discovered topology.",
+        "unknowns": "Explicitly unknown - establish these first",
         "sideFlows": "Side-flows (outside the primary path)",
         "tls": "TLS segments",
         "transforms": "Address transformations",
@@ -5290,11 +5290,11 @@
         "evidence": "Evidence points to establish",
         "checklist": "Model-verification checklist",
         "whyHeading": "Why this model? (rule trail)",
-        "whyIntro": "Every domain, warning, and checklist line traces to a fired rule below — nothing else influences the model.",
+        "whyIntro": "Every domain, warning, and checklist line traces to a fired rule below - nothing else influences the model.",
         "copyMd": "Copy map (Markdown)",
         "copied": "Copied",
         "downloadMd": "Download .md",
-        "privacy": "Everything runs in your browser. The map describes internal topology — keep it local and share deliberately."
+        "privacy": "Everything runs in your browser. The map describes internal topology - keep it local and share deliberately."
       },
       "name": "Flow Path Reasoner",
       "blurb": "The senior skill is refusing to troubleshoot until the path is understood. Seven selections build a canonical hop map with side-flows, TLS segments, rewrite points, and ranked failure-domain candidates - and unknowns stay visibly unknown.",
@@ -5417,11 +5417,11 @@
         "weakens": "Weakens a conclusion",
         "checklist": "Checklist",
         "whyHeading": "Why this gate? (rule trail)",
-        "whyIntro": "Every reason, warning, and checklist line traces to a fired rule below — nothing else influences the gate.",
+        "whyIntro": "Every reason, warning, and checklist line traces to a fired rule below - nothing else influences the gate.",
         "copyMd": "Copy report (Markdown)",
         "copied": "Copied",
         "downloadMd": "Download .md",
-        "privacy": "Everything runs in your browser. The report describes your change and environment — keep it local and share deliberately."
+        "privacy": "Everything runs in your browser. The report describes your change and environment - keep it local and share deliberately."
       }
     },
     "roman-numerals": {
@@ -5612,8 +5612,8 @@
       "errorTitle": "Cannot simulate",
       "notSimulableTitle": "Not deterministically simulable",
       "notSimulableGeneric": "This method depends on live big3d performance metrics collected from each data center, so its outcome cannot be reproduced offline. The tool states this instead of inventing a distribution.",
-      "poolTierTitle": "Pool tier — which pool answers",
-      "memberTierTitle": "Member tier — which virtual server resolves",
+      "poolTierTitle": "Pool tier - which pool answers",
+      "memberTierTitle": "Member tier - which virtual server resolves",
       "countCol": "Requests",
       "pctCol": "Share",
       "upYes": "yes",
@@ -5684,8 +5684,8 @@
       },
       "stack": {
         "heading": "The stack, layer by layer",
-        "insideMtu": "— inside the MTU (shrinks the inner packet)",
-        "onFrame": "— on the frame (IP MTU untouched)",
+        "insideMtu": "- inside the MTU (shrinks the inner packet)",
+        "onFrame": "- on the frame (IP MTU untouched)",
         "lesson": "Encapsulations spend bytes inside the MTU, so the inner MTU and MSS shrink. L2 shims (VLAN, QinQ, MPLS) ride in the frame header, so the IP MTU does not move; the frame grows instead, which is why switches need frame headroom, not a smaller MTU.",
         "labels": {
           "pppoe": "PPPoE (RFC 2516)",
@@ -5842,13 +5842,13 @@
       "macroReboot": "@reboot runs once when the cron daemon starts. There is no time schedule to read or project.",
       "warningsTitle": "Worth knowing",
       "warnings": {
-        "orRule": "Day-of-month AND day-of-week are both restricted — crontab runs the command when EITHER matches (an OR, not an AND). The most misread rule in crontab(5).",
+        "orRule": "Day-of-month AND day-of-week are both restricted - crontab runs the command when EITHER matches (an OR, not an AND). The most misread rule in crontab(5).",
         "sundaySeven": "7 was used for Sunday; crontab accepts 0 and 7 as the same day. Shown normalized to 0.",
-        "nameStep": "A month or weekday name inside a range with a step — historically unreliable across cron implementations; prefer numbers there.",
+        "nameStep": "A month or weekday name inside a range with a step - historically unreliable across cron implementations; prefer numbers there.",
         "unevenStep": "The step does not divide its span evenly, so the last interval before the wrap is shorter than the step.",
         "localTime": "cron evaluates schedules in the daemon's LOCAL time. These instants are computed on the wall-clock of your reference moment, with no time-zone database applied.",
         "rebootNoSchedule": "@reboot has no schedule; nothing to project.",
-        "nextRunsCapped": "The six-year search window ended before finding all requested occurrences — this schedule fires very rarely (or never)."
+        "nextRunsCapped": "The six-year search window ended before finding all requested occurrences - this schedule fires very rarely (or never)."
       },
       "nextTitle": "Next occurrences"
     },
@@ -5907,7 +5907,7 @@
     },
     "zscaler-ssl-bypass-planner": {
       "name": "ZIA SSL Bypass Planner",
-      "blurb": "Paste an asset list and get a deterministic TLS inspection plan: what inspects, what gets a Do Not Inspect rule, what needs a Client Connector bypass — each with sourced rationale, a blind-spot ledger, and the backstop checklist.",
+      "blurb": "Paste an asset list and get a deterministic TLS inspection plan: what inspects, what gets a Do Not Inspect rule, what needs a Client Connector bypass - each with sourced rationale, a blind-spot ledger, and the backstop checklist.",
       "emptyState": "Paste one asset per line to plan: name | pinned|clean | regulated|general | agent|no-agent.",
       "runsLocally": "Runs entirely in your browser. Your asset names never leave this page.",
       "example": "Example",
@@ -6132,7 +6132,7 @@
       "example": "Example",
       "clear": "Clear",
       "howToRead": "How to read a FortiGate session",
-      "sessionHeading": "Session {n} — {proto}",
+      "sessionHeading": "Session {n} - {proto}",
       "traffic": "Traffic",
       "trafficHint": "Counters in each direction. Outbound traffic with zero reply means the packets left and nothing came back.",
       "timers": "Timers",
@@ -6708,7 +6708,7 @@
     },
     "netskope-steering-explainer": {
       "name": "Netskope steering-method explainer",
-      "blurb": "Describe the situation — managed device or not, on a site or roaming, whether the certificate bundle can be installed — and see which steering method fits: the endpoint client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run. Every method lists what it costs, chosen or not. Deterministic and offline.",
+      "blurb": "Describe the situation - managed device or not, on a site or roaming, whether the certificate bundle can be installed - and see which steering method fits: the endpoint client, an IPsec or GRE tunnel, an explicit proxy, or chaining from a proxy you already run. Every method lists what it costs, chosen or not. Deterministic and offline.",
       "formLabel": "Describe the situation",
       "example": "Example",
       "clear": "Reset",
@@ -6743,14 +6743,14 @@
     },
     "terminal-stack-explainer": {
       "name": "Terminal, shell, TTY and console explainer",
-      "blurb": "Paste what `tty` printed — /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or “not a tty” — and see which layer you are actually looking at, what is holding the other end, and what that implies for signals, job control and what happens when the window closes. Local and offline.",
+      "blurb": "Paste what `tty` printed - /dev/pts/3, /dev/tty2, /dev/ttyS0, /dev/tty, /dev/console, or “not a tty” - and see which layer you are actually looking at, what is holding the other end, and what that implies for signals, job control and what happens when the window closes. Local and offline.",
       "inputLabel": "A terminal device path",
       "inputHint": "Run `tty` in a shell and paste what it prints, or pick one of the examples.",
       "placeholder": "/dev/pts/3",
       "clear": "Clear",
       "words": {
         "title": "The four words, in one line each",
-        "terminal": "A program that draws characters and sends keystrokes — or, once, a machine that did. It has no idea what a command is.",
+        "terminal": "A program that draws characters and sends keystrokes - or, once, a machine that did. It has no idea what a command is.",
         "shell": "A process like any other, reading lines and running programs. The kernel gives it no special status whatsoever.",
         "tty": "The kernel object between the two, doing line editing, echo, and turning Ctrl+C into a signal. This is where the behaviour lives.",
         "console": "A particular terminal: the one attached to the machine itself, and where the kernel prints when nothing else exists yet."
@@ -6769,7 +6769,7 @@
     },
     "extreme-switch-os-mapper": {
       "name": "Extreme Universal switch OS-name mapper",
-      "blurb": "ExtremeXOS is Switch Engine and VOSS is Fabric Engine — but only on Universal hardware, and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats that come with the series. It states plainly that changing persona deletes the configuration. Local and offline.",
+      "blurb": "ExtremeXOS is Switch Engine and VOSS is Fabric Engine - but only on Universal hardware, and the image files and boot menus still use the old names. Give a model series or an OS name and see which applies, the version the rename landed at, and the caveats that come with the series. It states plainly that changing persona deletes the configuration. Local and offline.",
       "inputLabel": "A model series or an OS name",
       "placeholder": "5520",
       "clear": "Clear",
@@ -6850,9 +6850,9 @@
     },
     "network-os-comparer": {
       "name": "Network operating system comparer",
-      "blurb": "Fourteen network operating systems — IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia — with lineage, what each runs on, how components share state, where the planes divide, and what an upgrade costs. Pick one for a full profile or two to see them axis by axis. Every entry lists weaknesses as well as strengths.",
+      "blurb": "Fourteen network operating systems - IOS, IOS XE, IOS XR, NX-OS, Junos, Junos Evolved, EOS, TMOS, F5OS, EXOS, VOSS, FortiOS, PAN-OS and Gaia - with lineage, what each runs on, how components share state, where the planes divide, and what an upgrade costs. Pick one for a full profile or two to see them axis by axis. Every entry lists weaknesses as well as strengths.",
       "pick": "Choose a system, and a second one to compare",
-      "noSecond": "— compare with (optional) —",
+      "noSecond": "- compare with (optional) -",
       "example": "Compare IOS and EOS",
       "clear": "Single profile",
       "axes": {
@@ -7076,7 +7076,7 @@
   "about": {
     "eyebrow": "About me",
     "role": "Senior Technical Instructor",
-    "lede": "Network and security training, delivered by a professional who has spent half of a thirty-year career on the hands-on side — implementation and troubleshooting — and the other half studying, designing, and teaching resilient, secure network communications.",
+    "lede": "Network and security training, delivered by a professional who has spent half of a thirty-year career on the hands-on side - implementation and troubleshooting - and the other half studying, designing, and teaching resilient, secure network communications.",
     "now": {
       "title": "What I do",
       "body": "I deliver official, certified instructor-led training across security and networking platforms. There are hands-on labs on real systems, and for people who already know the fundamentals and came to practice, that is exactly the point: real environments to work in. For groups newer to a technology, the time goes first into building the foundations the topic rests on, so the hands-on work makes sense and people leave understanding why things behave the way they do, not just which buttons to press. Both are equally valuable, and the balance shifts with who is in the room. Teaching and technical enablement have been part of my work since the late 1990s, on a career that began on the implementation side in 1996.",
@@ -7103,7 +7103,7 @@
     },
     "path": {
       "title": "The path here",
-      "intro": "My career began on the vendor and implementation side in 1996 and widened from there into systems audits and design, technical and sales enablement — three decades in enterprise networking, two of them hands-on before I focused fully on training. That depth and range is the reason the training lands: I have built, broken, and fixed these systems in production.",
+      "intro": "My career began on the vendor and implementation side in 1996 and widened from there into systems audits and design, technical and sales enablement - three decades in enterprise networking, two of them hands-on before I focused fully on training. That depth and range is the reason the training lands: I have built, broken, and fixed these systems in production.",
       "present": "present",
       "cabletron": "Network engineer and certified instructor. Non-Ethernet and Ethernet networks, campus networks, IP routing.",
       "riverstone": "Product support engineer and knowledge-base coordinator in California. Gigabit Ethernet, metropolitan area networks, IP routing, BGP. Third-level escalation, customer scenario recreation, and regression testing.",
@@ -7188,20 +7188,20 @@
     "pre1996": {
       "years": "Before 1996",
       "title": "The curiosity",
-      "subtitle": "Ham radio, a cloned Sinclair, bulletin boards, a stolen dial tone, and the first academic internet — the whole apprenticeship, before any of it was a job.",
-      "intro": "Every technical career has a before. Before the vendor badges and the certifications, there was a teenager who needed to know how everything worked — and who chased that need through radio waves, cloned micros, phone lines, and the earliest internet. This is where the instinct that drives all the rest was formed. The techniques on this page belong to a world that no longer exists: the analog phone network, the token payphone, and the single-line bulletin board are gone, which is exactly why the story can be told plainly.",
+      "subtitle": "Ham radio, a cloned Sinclair, bulletin boards, a stolen dial tone, and the first academic internet - the whole apprenticeship, before any of it was a job.",
+      "intro": "Every technical career has a before. Before the vendor badges and the certifications, there was a teenager who needed to know how everything worked - and who chased that need through radio waves, cloned micros, phone lines, and the earliest internet. This is where the instinct that drives all the rest was formed. The techniques on this page belong to a world that no longer exists: the analog phone network, the token payphone, and the single-line bulletin board are gone, which is exactly why the story can be told plainly.",
       "mapTitle": "How it unfolded",
       "mapNote": "Roughly a decade, from the first machine to the first payslip.",
       "tl": [
         {
           "years": "1975",
           "where": "São Paulo, Brazil",
-          "what": "Rodolfo is born to a Brazilian father — a civil engineer, grandson of Portuguese, Italian, and Arab immigrants — and a German-born mother, a Bachelor of Fine Arts who had moved to Brazil with her parents and sister at the age of twelve. His maternal grandmother, especially, taught him to look at the universe and at nature with curiosity and awe; had computers not claimed him, he would probably have gone the scientist's way."
+          "what": "Rodolfo is born to a Brazilian father - a civil engineer, grandson of Portuguese, Italian, and Arab immigrants - and a German-born mother, a Bachelor of Fine Arts who had moved to Brazil with her parents and sister at the age of twelve. His maternal grandmother, especially, taught him to look at the universe and at nature with curiosity and awe; had computers not claimed him, he would probably have gone the scientist's way."
         },
         {
           "years": "1984",
           "where": "First computer · Microdigital TK-82C",
-          "what": "A Brazilian clone of Sinclair's ZX81, first loaded from cassette by his father onto the family TV — and soon programmed in BASIC by Rodolfo himself."
+          "what": "A Brazilian clone of Sinclair's ZX81, first loaded from cassette by his father onto the family TV - and soon programmed in BASIC by Rodolfo himself."
         },
         {
           "years": "late 1980s",
@@ -7226,7 +7226,7 @@
         {
           "years": "1993",
           "where": "The World Wide Web · SLIP/PPP & NCSA Mosaic",
-          "what": "A program compiled on the shell account turned the dial-up session itself into a SLIP/PPP tunnel — and through it, NCSA Mosaic: the first glimpse of the World Wide Web."
+          "what": "A program compiled on the shell account turned the dial-up session itself into a SLIP/PPP tunnel - and through it, NCSA Mosaic: the first glimpse of the World Wide Web."
         },
         {
           "years": "1995",
@@ -7236,7 +7236,7 @@
         {
           "years": "1995–96",
           "where": "Reachable while roaming · Teletrim bip",
-          "what": "First reachability away from any desk: a one-way pager on São Paulo's Teletrim service. Callers dictated their message to a human operator, who typed it into the air toward the bip on the belt — limited, asynchronous, nothing like real time, and revolutionary anyway."
+          "what": "First reachability away from any desk: a one-way pager on São Paulo's Teletrim service. Callers dictated their message to a human operator, who typed it into the air toward the bip on the belt - limited, asynchronous, nothing like real time, and revolutionary anyway."
         }
       ],
       "storyTitle": "The apprenticeship, in seven movements",
@@ -7244,58 +7244,58 @@
         {
           "title": "Curiosity and awe",
           "body": [
-            "Before any machine, there was a teacher. His grandmother — his mother's mother, who had crossed an ocean from Germany to Brazil with her family and started the world over — talked with the boy, from his earliest age, about everything her world contained. The garden of her house, with its small insects and earthworms, its flowers and weeds, its tomatoes, carrots, and strawberries. The night sky full of stars, the vastness of the Universe, and the human consciousness there to behold it. She taught him that all of it answers curiosity with more curiosity, and that awe is not a childish thing to outgrow but a way of paying attention.",
-            "It took. Had computers not claimed him a few years later, he would almost certainly have gone the scientist's way — the pull toward how things work was already there, installed early and installed deep. The machines simply gave that curiosity a keyboard."
+            "Before any machine, there was a teacher. His grandmother - his mother's mother, who had crossed an ocean from Germany to Brazil with her family and started the world over - talked with the boy, from his earliest age, about everything her world contained. The garden of her house, with its small insects and earthworms, its flowers and weeds, its tomatoes, carrots, and strawberries. The night sky full of stars, the vastness of the Universe, and the human consciousness there to behold it. She taught him that all of it answers curiosity with more curiosity, and that awe is not a childish thing to outgrow but a way of paying attention.",
+            "It took. Had computers not claimed him a few years later, he would almost certainly have gone the scientist's way - the pull toward how things work was already there, installed early and installed deep. The machines simply gave that curiosity a keyboard."
           ]
         },
         {
           "title": "Signals in the air",
           "body": [
-            "Before the computers, there was radio — and the radio was his father's. An engineer drawn to every new piece of technology and, just as much, to the people it connected, Rodolfo's father was an avid amateur operator who worked the bands both local and long-distance. Amateur radio — \"ham\" radio — meant a licensed call sign, the clipped discipline of the phonetic alphabet, and the small ceremony of the QSL card: an actual postcard that would arrive in the mail from a stranger on the far side of the world, sent to confirm that yes, on this frequency, at this hour, two people had met on the airwaves.",
-            "The lesson landed early and never left. Someone with the right gear could reach a stranger a continent away, and a real, physical card would come back to prove it — and there was already a whole worldwide fellowship of people who cared, deeply, about how a signal travels from here to there. Curiosity about the medium itself, and a global community reachable from a room in São Paulo — every later chapter is a variation on that first one, and on the man who showed it to him first."
+            "Before the computers, there was radio - and the radio was his father's. An engineer drawn to every new piece of technology and, just as much, to the people it connected, Rodolfo's father was an avid amateur operator who worked the bands both local and long-distance. Amateur radio - \"ham\" radio - meant a licensed call sign, the clipped discipline of the phonetic alphabet, and the small ceremony of the QSL card: an actual postcard that would arrive in the mail from a stranger on the far side of the world, sent to confirm that yes, on this frequency, at this hour, two people had met on the airwaves.",
+            "The lesson landed early and never left. Someone with the right gear could reach a stranger a continent away, and a real, physical card would come back to prove it - and there was already a whole worldwide fellowship of people who cared, deeply, about how a signal travels from here to there. Curiosity about the medium itself, and a global community reachable from a room in São Paulo - every later chapter is a variation on that first one, and on the man who showed it to him first."
           ]
         },
         {
           "title": "The national micros",
           "body": [
-            "The first machine came home the same way the radio had: through his father. A nine-year-old Rodolfo would watch, rapt, as his father fed a program into the computer from an ordinary audio cassette and then made things happen on the screen of the television set — which, in that era, was the monitor every home micro borrowed from the living room. It looked like conjuring, and it was not long before the watching turned into doing.",
-            "The machine itself was a product of its moment. In 1984 Brazil was under the reserva de mercado, a market reserve that banned imported computers to shelter a domestic industry, so the machines were local clones — the first one here a Microdigital TK-82C, a Brazilian clone of Sinclair's ZX81, later joined by the TK90X, a clone of the ZX Spectrum 48K.",
+            "The first machine came home the same way the radio had: through his father. A nine-year-old Rodolfo would watch, rapt, as his father fed a program into the computer from an ordinary audio cassette and then made things happen on the screen of the television set - which, in that era, was the monitor every home micro borrowed from the living room. It looked like conjuring, and it was not long before the watching turned into doing.",
+            "The machine itself was a product of its moment. In 1984 Brazil was under the reserva de mercado, a market reserve that banned imported computers to shelter a domestic industry, so the machines were local clones - the first one here a Microdigital TK-82C, a Brazilian clone of Sinclair's ZX81, later joined by the TK90X, a clone of the ZX Spectrum 48K.",
             "There was no hard drive and no network. Soon Rodolfo was writing his own programs in BASIC, typed by hand from the back pages of magazines and saved to that same screeching cassette; a membrane keyboard under his fingers, the television still standing in for a monitor. He learned BASIC because there was nothing else to do with the thing, and in the process learned the truth the rest of this site is built on: a computer is not magic. It is a machine that does exactly, and only, what you tell it."
           ]
         },
         {
           "title": "The bulletin-board years",
           "body": [
-            "By 1991 the phone line had become the frontier. A bulletin board system — a BBS — was a computer in someone's bedroom with a modem answering a telephone. To visit one you told your own modem to dial its number, then listened to the two machines negotiate a connection in a burst of static that every modem owner could hum from memory.",
-            "One caller at a time. If someone else was already on, you got a busy signal and tried again later. Inside were message boards, libraries of files, screens drawn in colored ANSI text, and door games you played turn by turn against everyone else in town. Running one — the software here was Oblivion/2 — meant being host, moderator, and mechanic all at once.",
-            "And the boards were not islands. FidoNet stitched thousands of them together: in the small hours each board would dial its neighbors and hand off a sack of messages that then hopped, board to board, across the country and the world by morning. It was electronic mail before electronic mail — and it had exactly the shape the QSL cards had taught: a message finding a stranger, confirmed a little later."
+            "By 1991 the phone line had become the frontier. A bulletin board system - a BBS - was a computer in someone's bedroom with a modem answering a telephone. To visit one you told your own modem to dial its number, then listened to the two machines negotiate a connection in a burst of static that every modem owner could hum from memory.",
+            "One caller at a time. If someone else was already on, you got a busy signal and tried again later. Inside were message boards, libraries of files, screens drawn in colored ANSI text, and door games you played turn by turn against everyone else in town. Running one - the software here was Oblivion/2 - meant being host, moderator, and mechanic all at once.",
+            "And the boards were not islands. FidoNet stitched thousands of them together: in the small hours each board would dial its neighbors and hand off a sack of messages that then hopped, board to board, across the country and the world by morning. It was electronic mail before electronic mail - and it had exactly the shape the QSL cards had taught: a message finding a stranger, confirmed a little later."
           ]
         },
         {
           "title": "The young hacker's way",
           "body": [
-            "If a BBS taught how the machines spoke to each other, phreaking asked a bolder question: how does the telephone system itself work — and can it be made to do things it was never meant to?",
-            "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone; it was tried, more than once, and sometimes it worked. But the real doorway was the one the old legends described: a single tone — the famous 2600 Hz — that the long-distance network listened for as its own internal signal, and the blue box built to speak the network's language back to it.",
-            "That doorway got used, and often. A blue box could coax the network into handing over a long-distance trunk as if the call were its own, and the destination that mattered was Europe — the \"scene\" boards, the tight international circuit of crackers, artists, and traders whose bulletin boards were unreachable on any budget a teenager in São Paulo had. War-dialing mapped the quieter half of the network: a modem set loose to sweep whole ranges of numbers overnight and log what answered — a carrier, a fax, or the distinctive tone of a corporate PBX. Some of those PBXs could be talked into handing out an outside line.",
-            "Those were left alone, and the reason was the whole ethic in miniature. Seizing a trunk from the phone company's own signaling put the cost nowhere — no account, no invoice, no one billed. Making a real company's PBX place the call would have landed on that company's bill, and that was the line that stayed uncrossed. The one scheme that was only ever dreamed — a modem spliced straight into a payphone's wiring — stayed a dream. None of the rest was for money; it was the plain intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now, its signaling tones long retired, which is the honest reason it can be set down here as history rather than instruction.",
-            "That one dream kept its own schedule. In the teenager's version it had a shape: a bulky 386DX40, a 14-inch CRT monitor, a modem, and a phone line — which is to say, access to the knowledge of the whole world, as long as the world stayed within reach of the desk. Seventeen years later, holding one of the first iPhones shortly after its launch — jailbroken so it could run the apps a community was building for itself — he felt it at once: the recurring dream of the fourteen-year-old of 1990, made real — and made portable, the whole of it now possible anywhere, in the palm of the hand."
+            "If a BBS taught how the machines spoke to each other, phreaking asked a bolder question: how does the telephone system itself work - and can it be made to do things it was never meant to?",
+            "In Brazil the payphone was the orelhão, the \"big ear,\" and it ran on fichas, little tokens you bought and fed into a slot. Schoolyard folklore held that a splash of water in the coin slot would short something inside and hand you a free dial tone; it was tried, more than once, and sometimes it worked. But the real doorway was the one the old legends described: a single tone - the famous 2600 Hz - that the long-distance network listened for as its own internal signal, and the blue box built to speak the network's language back to it.",
+            "That doorway got used, and often. A blue box could coax the network into handing over a long-distance trunk as if the call were its own, and the destination that mattered was Europe - the \"scene\" boards, the tight international circuit of crackers, artists, and traders whose bulletin boards were unreachable on any budget a teenager in São Paulo had. War-dialing mapped the quieter half of the network: a modem set loose to sweep whole ranges of numbers overnight and log what answered - a carrier, a fax, or the distinctive tone of a corporate PBX. Some of those PBXs could be talked into handing out an outside line.",
+            "Those were left alone, and the reason was the whole ethic in miniature. Seizing a trunk from the phone company's own signaling put the cost nowhere - no account, no invoice, no one billed. Making a real company's PBX place the call would have landed on that company's bill, and that was the line that stayed uncrossed. The one scheme that was only ever dreamed - a modem spliced straight into a payphone's wiring - stayed a dream. None of the rest was for money; it was the plain intoxication of understanding a system well enough to see its seams, and being young enough to lean on them. The analog network all of this lived on is decades gone now, its signaling tones long retired, which is the honest reason it can be set down here as history rather than instruction.",
+            "That one dream kept its own schedule. In the teenager's version it had a shape: a bulky 386DX40, a 14-inch CRT monitor, a modem, and a phone line - which is to say, access to the knowledge of the whole world, as long as the world stayed within reach of the desk. Seventeen years later, holding one of the first iPhones shortly after its launch - jailbroken so it could run the apps a community was building for itself - he felt it at once: the recurring dream of the fourteen-year-old of 1990, made real - and made portable, the whole of it now possible anywhere, in the palm of the hand."
           ]
         },
         {
           "title": "The academic internet",
           "body": [
-            "The BBS world was a town. The internet was the planet. In 1991 it arrived through a university, over a modem, as a plain text prompt on a UNIX machine that was itself in conversation with thousands of others — no center, no owner, no closing time.",
-            "The account was a shell account — no SLIP or PPP carrying real internet traffic down the phone line, just a prompt and a menu of tools with strange names: Gopher, Archie, IRC. It was enough. The first time a command typed in São Paulo reached across and pulled a file off a machine on another continent, the walls of the dial-up garden simply fell away.",
-            "The door had a name, too: aandrade, an account on the UNIX servers of USP — the Universidade de São Paulo — whose access, as was the custom among enthusiasts then, was traded hand to hand like a key quietly copied for friends. Only years later did he learn how many of the people he had met in that era had stepped through the very same account. So, three decades late and with a grin: thank you, aandrade, for unknowingly holding open, for a whole generation of young explorers, one of the first doors to the world.",
-            "Then, in 1993, the shell account became a doorway of its own. On it he compiled a program that, when run, turned the dial-up session itself into a SLIP/PPP tunnel — the terminal line quietly becoming a real internet connection — and through that tunnel he opened NCSA Mosaic for his first glimpse of the World Wide Web. The shape of the next thirty years came into view all at once."
+            "The BBS world was a town. The internet was the planet. In 1991 it arrived through a university, over a modem, as a plain text prompt on a UNIX machine that was itself in conversation with thousands of others - no center, no owner, no closing time.",
+            "The account was a shell account - no SLIP or PPP carrying real internet traffic down the phone line, just a prompt and a menu of tools with strange names: Gopher, Archie, IRC. It was enough. The first time a command typed in São Paulo reached across and pulled a file off a machine on another continent, the walls of the dial-up garden simply fell away.",
+            "The door had a name, too: aandrade, an account on the UNIX servers of USP - the Universidade de São Paulo - whose access, as was the custom among enthusiasts then, was traded hand to hand like a key quietly copied for friends. Only years later did he learn how many of the people he had met in that era had stepped through the very same account. So, three decades late and with a grin: thank you, aandrade, for unknowingly holding open, for a whole generation of young explorers, one of the first doors to the world.",
+            "Then, in 1993, the shell account became a doorway of its own. On it he compiled a program that, when run, turned the dial-up session itself into a SLIP/PPP tunnel - the terminal line quietly becoming a real internet connection - and through that tunnel he opened NCSA Mosaic for his first glimpse of the World Wide Web. The shape of the next thirty years came into view all at once."
           ]
         },
         {
           "title": "From hobby to trade",
           "body": [
-            "Somewhere in those same years the curiosity started to pay. From 1991 the work was hands-on and autonomous: importing components from the United States, assembling custom PCs and selling them, then installing and troubleshooting them for whoever needed help — DOS and CP/M, Turbo Pascal, and the Clipper and dBase databases that quietly ran small businesses then.",
-            "In 1995 it converged into a first formal role at INTELECTA, a company incubated by SEBRAE-SP. The project was an electronic-data-interchange system for trading medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin-board system. A real system solving a real commercial problem — the exact point where the hobby, the trade, and the profession finally became a single thing.",
-            "That same year brought the era's other rite of passage: the bip. From 1995 or 1996 Rodolfo carried a Teletrim pager — first time in his life the world could find him while he moved through it. The protocol was gloriously manual: someone dialed the service, spoke their message to a human operator, and the operator transmitted the text to the destination's bip. Every callback number, every change of plans, every message not quite meant for third ears passed through a stranger's headset first. The operators of São Paulo must have heard so many things — and, one has to assume, kept most of them."
+            "Somewhere in those same years the curiosity started to pay. From 1991 the work was hands-on and autonomous: importing components from the United States, assembling custom PCs and selling them, then installing and troubleshooting them for whoever needed help - DOS and CP/M, Turbo Pascal, and the Clipper and dBase databases that quietly ran small businesses then.",
+            "In 1995 it converged into a first formal role at INTELECTA, a company incubated by SEBRAE-SP. The project was an electronic-data-interchange system for trading medical and hospital supplies, built on Novell NetWare servers and the PCBoard bulletin-board system. A real system solving a real commercial problem - the exact point where the hobby, the trade, and the profession finally became a single thing.",
+            "That same year brought the era's other rite of passage: the bip. From 1995 or 1996 Rodolfo carried a Teletrim pager - first time in his life the world could find him while he moved through it. The protocol was gloriously manual: someone dialed the service, spoke their message to a human operator, and the operator transmitted the text to the destination's bip. Every callback number, every change of plans, every message not quite meant for third ears passed through a stranger's headset first. The operators of São Paulo must have heard so many things - and, one has to assume, kept most of them."
           ]
         }
       ],
@@ -7310,12 +7310,12 @@
         "sysop": {
           "tag": "The board",
           "term": "Sysop",
-          "desc": "System operator — the person who ran a BBS from their own home: host, moderator, librarian, and repair technician for a little world with a phone number instead of an address."
+          "desc": "System operator - the person who ran a BBS from their own home: host, moderator, librarian, and repair technician for a little world with a phone number instead of an address."
         },
         "baud": {
           "tag": "The wire",
           "term": "Baud & the handshake",
-          "desc": "The modem's speed, from 300 baud upward. The screech you heard when connecting was two modems negotiating in real time — a ritual so familiar that owners could tell a good connection from a bad one by ear."
+          "desc": "The modem's speed, from 300 baud upward. The screech you heard when connecting was two modems negotiating in real time - a ritual so familiar that owners could tell a good connection from a bad one by ear."
         },
         "ansi": {
           "tag": "The screen",
@@ -7325,22 +7325,22 @@
         "door": {
           "tag": "The screen",
           "term": "Door game",
-          "desc": "A game that ran on the BBS itself, played turn by turn against the other callers — you took your moves, hung up, and someone else took theirs. The whole town competing on the same board, a day at a time."
+          "desc": "A game that ran on the BBS itself, played turn by turn against the other callers - you took your moves, hung up, and someone else took theirs. The whole town competing on the same board, a day at a time."
         },
         "fidonet": {
           "tag": "The wire",
           "term": "FidoNet",
-          "desc": "A store-and-forward network linking BBSs worldwide. Each board dialed its neighbors overnight to relay messages that hopped board to board across the globe — hobbyist email that moved while everyone slept."
+          "desc": "A store-and-forward network linking BBSs worldwide. Each board dialed its neighbors overnight to relay messages that hopped board to board across the globe - hobbyist email that moved while everyone slept."
         },
         "qsl": {
           "tag": "The air",
           "term": "QSL card",
-          "desc": "A postcard mailed between amateur-radio operators to confirm a contact actually happened. Proof, by post, that two strangers had spoken on a given frequency — the same message-finds-a-stranger shape the BBS world would later repeat."
+          "desc": "A postcard mailed between amateur-radio operators to confirm a contact actually happened. Proof, by post, that two strangers had spoken on a given frequency - the same message-finds-a-stranger shape the BBS world would later repeat."
         },
         "orelhao": {
           "tag": "The phone",
           "term": "Orelhão & fichas",
-          "desc": "Brazil's public payphone — the \"big ear\" — and the tokens (fichas) you fed it to make a call. The everyday hardware the phreaking folklore of the schoolyard tried, endlessly, to outwit."
+          "desc": "Brazil's public payphone - the \"big ear\" - and the tokens (fichas) you fed it to make a call. The everyday hardware the phreaking folklore of the schoolyard tried, endlessly, to outwit."
         },
         "phreaking": {
           "tag": "The phone",
@@ -7351,7 +7351,7 @@
         "bluebox": {
           "tag": "The phone",
           "term": "Blue box",
-          "desc": "A device that generated the control tones the old long-distance network trusted — most famously the 2600 Hz tone — to seize a line and route calls for free. In-band signaling meant the network believed any caller who could make the right sound.",
+          "desc": "A device that generated the control tones the old long-distance network trusted - most famously the 2600 Hz tone - to seize a line and route calls for free. In-band signaling meant the network believed any caller who could make the right sound.",
           "slug": "blue-box"
         },
         "shell": {
@@ -7362,25 +7362,25 @@
         "slipppp": {
           "tag": "The net",
           "term": "SLIP & PPP",
-          "desc": "Serial Line Internet Protocol and Point-to-Point Protocol — the two encapsulations that turn a plain dial-up line into a real internet link, carrying IP packets over the phone wire: the difference between typing on someone else's UNIX machine and your own computer being on the internet. SLIP came first and stayed minimal; PPP succeeded it with negotiation and error detection. The program compiled on the shell account in 1993 spoke exactly this."
+          "desc": "Serial Line Internet Protocol and Point-to-Point Protocol - the two encapsulations that turn a plain dial-up line into a real internet link, carrying IP packets over the phone wire: the difference between typing on someone else's UNIX machine and your own computer being on the internet. SLIP came first and stayed minimal; PPP succeeded it with negotiation and error detection. The program compiled on the shell account in 1993 spoke exactly this."
         },
         "mosaic": {
           "tag": "The net",
           "term": "NCSA Mosaic",
-          "desc": "The browser that made the Web visible: released in 1993 by NCSA — the National Center for Supercomputing Applications at the University of Illinois — it was the first widely used browser to put images inline with the text and to run on the ordinary home systems of the day. One glimpse through it and the text-only internet acquired a face; its young team soon left to build Netscape."
+          "desc": "The browser that made the Web visible: released in 1993 by NCSA - the National Center for Supercomputing Applications at the University of Illinois - it was the first widely used browser to put images inline with the text and to run on the ordinary home systems of the day. One glimpse through it and the text-only internet acquired a face; its young team soon left to build Netscape."
         },
         "wardialing": {
           "tag": "The phone",
           "term": "War-dialing",
-          "desc": "A modem set to dial automatically through whole ranges of phone numbers, logging which ones answered — a carrier, a fax, or a PBX. Named for the 1983 film WarGames, it was the reconnaissance half of phreaking: mapping the network to find what was out there."
+          "desc": "A modem set to dial automatically through whole ranges of phone numbers, logging which ones answered - a carrier, a fax, or a PBX. Named for the 1983 film WarGames, it was the reconnaissance half of phreaking: mapping the network to find what was out there."
         },
         "bip": {
           "tag": "The belt",
           "term": "Bip (pager)",
-          "desc": "A one-way radio receiver on a broadcast network — no transmitter, no uplink, just an identity code and whatever the tower sent. The classic service put a human operator between caller and pocket: your message, read aloud to a stranger, typed into the air. Reachability before real time."
+          "desc": "A one-way radio receiver on a broadcast network - no transmitter, no uplink, just an identity code and whatever the tower sent. The classic service put a human operator between caller and pocket: your message, read aloud to a stranger, typed into the air. Reachability before real time."
         }
       },
-      "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them — taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked. The telephone line itself kept one last appointment with him. In 1999, at that same house, he became one of Telesp's first ADSL subscribers: 256 kbps over the metallic pair the family had always had — but connected full-time, for the first time, without hoarding the phone line. Being online stopped being an event; the copper that had rationed the BBS one caller at a time now carried the internet continuously, and that always-on hum was the definitive beginning of the end of POTS. He still lives in that house. Today it is connected through DOCSIS 3.1 over the cable plant, through fiber to the home, and through a low-earth-orbit constellation — four last miles deep, on the address where one phone line once had to be enough.",
+      "closer": "By the end of 1995 the foundation was set, and it was never really about the tricks. It was about the habit underneath them - taking a thing apart until it is genuinely understood, then explaining it to whoever comes next. The vendor badges, the certifications, the classrooms on four continents: all of it was built on a teenager with a cloned Sinclair, a soldering iron, a stolen dial tone, and an unreasonable need to know how everything worked. The telephone line itself kept one last appointment with him. In 1999, at that same house, he became one of Telesp's first ADSL subscribers: 256 kbps over the metallic pair the family had always had - but connected full-time, for the first time, without hoarding the phone line. Being online stopped being an event; the copper that had rationed the BBS one caller at a time now carried the internet continuously, and that always-on hum was the definitive beginning of the end of POTS. He still lives in that house. Today it is connected through DOCSIS 3.1 over the cable plant, through fiber to the home, and through a low-earth-orbit constellation - four last miles deep, on the address where one phone line once had to be enough.",
       "fieldMore": "In the glossary →"
     },
     "era19962020": {
@@ -8069,7 +8069,7 @@
     "ideaBody": "Every tool here started the same way: someone needed a small, specific thing and could not find it at the worst possible moment, the digital cousin of being one console cable short at 2am with the maintenance window closing. If the one you are reaching for is not here yet, propose it. Worth a scroll through the list first, though, in case that exact adapter is already on my bench half-built.",
     "ideaCta": "Suggest a tool",
     "metaDescription": "The tools planned and under consideration for the ronutz.com toolbox, generated from the live build catalogue.",
-    "ceiling": "Growth here has a measured ceiling, not a vague one. The hosting platform caps how many static files one Worker may carry, and this site's own arithmetic — roughly a hundred files per tool-and-article pack, across sixteen languages — is checked against that cap on every build. Today there is room for hundreds more tools, and the expansion path beyond a single Worker is already designed, so the roadmap below is constrained by judgment, not by hosting.",
+    "ceiling": "Growth here has a measured ceiling, not a vague one. The hosting platform caps how many static files one Worker may carry, and this site's own arithmetic - roughly a hundred files per tool-and-article pack, across sixteen languages - is checked against that cap on every build. Today there is room for hundreds more tools, and the expansion path beyond a single Worker is already designed, so the roadmap below is constrained by judgment, not by hosting.",
     "intentApiLabel": "API access",
     "intentOpenLabel": "Open engine"
   },
@@ -8142,7 +8142,7 @@
     "portalIndustryLede": "Who built the networking and security industry, what happened to them, and which company the one you use today used to be. Written profiles, a lineage timeline, and the acquisitions that renamed everything.",
     "portalCompanies": "{count} companies",
     "portalPeople": "People",
-    "portalPeopleLede": "The individuals behind the tools, the conferences and the networks — including the ones who built Brazil's.",
+    "portalPeopleLede": "The individuals behind the tools, the conferences and the networks - including the ones who built Brazil's.",
     "portalPeopleCount": "{count} people",
     "portalLearningCount": "{count} institutions"
   },
@@ -8720,12 +8720,12 @@
     "motionOnAria": "Turn on motion",
     "fullscreenEnterAria": "Enter full screen",
     "fullscreenExitAria": "Exit full screen",
-    "ogAlt": "Mega Brain Console — FULL POWER 100%",
+    "ogAlt": "Mega Brain Console - FULL POWER 100%",
     "ogDesc": "Fire up the Mega Brain and push the power to 100%. A stress reliever for devs, with a reality check included. 🍺",
-    "ogTitle": "🧠 Mega Brain Console — FULL POWER",
+    "ogTitle": "🧠 Mega Brain Console - FULL POWER",
     "ptBrFlagAria": "Read the console in Brazilian Portuguese",
     "stopLabel": "STOP",
-    "titlebar": " — mega_brain_console.exe",
+    "titlebar": " - mega_brain_console.exe",
     "totalBanner": "FULL POWER MODE ACTIVATED 🧠🤯⚡",
     "totalFine": "Copy Chief engaged in the system. Investigating current market conditions…",
     "totalTerms": "smart terms searched: {count}",
@@ -8789,7 +8789,7 @@
   "settings_page": {
     "eyebrow": "Preferences",
     "title": "Settings",
-    "lede": "Personalize how the site behaves. Everything here is saved on this device only — there are no accounts and no server, so your choices never leave your browser.",
+    "lede": "Personalize how the site behaves. Everything here is saved on this device only - there are no accounts and no server, so your choices never leave your browser.",
     "shortcutsTitle": "Keyboard shortcuts",
     "shortcutsBody": "Rebind any shortcut key to a different action. Pick an action from each menu; the change applies immediately. Some keys may be fixed by the site administrator, in which case they are shown locked. Press ? anywhere on the site to see the current shortcuts at a glance.",
     "colKey": "Key",
@@ -8809,11 +8809,11 @@
     "hintNone": "None"
   },
   "bossScreens": {
-    "metaTitle": "Boss-Key Screens — /dev/fun",
+    "metaTitle": "Boss-Key Screens - /dev/fun",
     "metaDescription": "Browse the vintage work-app screens the boss key can summon, and open any one fullscreen.",
     "title": "Boss-Key Screens",
     "tagline": "The disguises, on display.",
-    "intro": "Press the boss key anywhere (or B) and the page hides behind one of these vintage work apps. Here they all are — click any screen to see it fullscreen, then use the left and right arrows to browse the rest.",
+    "intro": "Press the boss key anywhere (or B) and the page hides behind one of these vintage work apps. Here they all are - click any screen to see it fullscreen, then use the left and right arrows to browse the rest.",
     "open": "Open",
     "backTitle": "Back to /dev/fun",
     "name": {
@@ -9300,7 +9300,7 @@
     "home": "Home"
   },
   "dev": {
-    "metaTitle": "/dev — the developer wing",
+    "metaTitle": "/dev - the developer wing",
     "metaDescription": "The developer wing of ronutz.com: /dev/fun, the not-serious shelf; /dev/other, the green room for shapes the catalogue cannot hold yet; and /dev/out, the red room where tools ask the live internet.",
     "title": "/dev",
     "tagline": "Three rooms off the main floor.",
@@ -15326,14 +15326,14 @@
         "depth": "The control is high-leverage and low-visibility: it applies to every device on a network without an agent, including printers, cameras and visitors' laptops, and it produces almost no evidence of working correctly. Its two failure modes are silent and opposite - a block returned as NXDOMAIN is indistinguishable from a domain that does not exist, so it reads as an outage; and a client using its own resolver is never filtered at all, so the queries that were never seen appear on no report."
       },
       "gambiarra": {
-        "def": "Brazilian Portuguese, feminine noun. An improvised fix built from whatever is to hand — precarious, unorthodox, and working. The word carries admiration and disapproval at the same time, and Brazilians hear both.",
-        "context": "The word started literal. In nineteenth-century theatre a gambiarra was a row of lamps hung above the footlights to light the stage frontally and kill shadows; the dictionary sense is an improvised electrical extension, a long wire with a lamp at the end, carried to wherever light was needed. How that became the modern sense is where the accounts stop agreeing: one has actors tripping over the cabling until the word soured, another has genuinely bad wiring taking the name by association. The etymology is disputed too — the philologist Antenor Nascentes proposed gâmbia, borrowed from the Italian gamba, leg, with the augmentative and sometimes pejorative suffix -arra, and framed even his own reasoning as a question: because the light falls on the actors' legs? It also means an illegal power tap, and, in some registers, an affair.",
-        "depth": "In technology the word arrived intact. A gambiarra is the SSH tunnel that has been up for three years, the crossover made by hand — a cabo bacalhau, a codfish cable — the loop that exists because the vendor's feature does not, the paperclip in the reset hole. Brazilian developers coined POG, programação orientada a gambiarra, gambiarra-oriented programming, which is a joke that everybody has shipped. Related words divide the ground: quebra-galho is a stopgap, remendo a patch, jeitinho the social manoeuvre rather than the physical one, and gato specifically the illegal tap. What no English word carries is the double charge. Kludge and bodge are insults; hack is a compliment; jury-rig is neutral and nautical. Gambiarra is all three at once, and the pride in it is real: the thing works, it cost nothing, and somebody clever did it under constraint. The nearest relatives are elsewhere — jugaad in India, which the University of Oxford's informality researchers place in the same family as the Brazilian jeitinho, système D in France and West Africa, desenrascanço in Portugal, костыль (a crutch) in Russian code review, houtje-touwtje in Dutch, atar con alambre in Argentina. Every one of them keeps part of the meaning and drops another part. That is why the word stays in Portuguese on this site, in every language: translating it would be the first gambiarra."
+        "def": "Brazilian Portuguese, feminine noun. An improvised fix built from whatever is to hand - precarious, unorthodox, and working. The word carries admiration and disapproval at the same time, and Brazilians hear both.",
+        "context": "The word started literal. In nineteenth-century theatre a gambiarra was a row of lamps hung above the footlights to light the stage frontally and kill shadows; the dictionary sense is an improvised electrical extension, a long wire with a lamp at the end, carried to wherever light was needed. How that became the modern sense is where the accounts stop agreeing: one has actors tripping over the cabling until the word soured, another has genuinely bad wiring taking the name by association. The etymology is disputed too - the philologist Antenor Nascentes proposed gâmbia, borrowed from the Italian gamba, leg, with the augmentative and sometimes pejorative suffix -arra, and framed even his own reasoning as a question: because the light falls on the actors' legs? It also means an illegal power tap, and, in some registers, an affair.",
+        "depth": "In technology the word arrived intact. A gambiarra is the SSH tunnel that has been up for three years, the crossover made by hand - a cabo bacalhau, a codfish cable - the loop that exists because the vendor's feature does not, the paperclip in the reset hole. Brazilian developers coined POG, programação orientada a gambiarra, gambiarra-oriented programming, which is a joke that everybody has shipped. Related words divide the ground: quebra-galho is a stopgap, remendo a patch, jeitinho the social manoeuvre rather than the physical one, and gato specifically the illegal tap. What no English word carries is the double charge. Kludge and bodge are insults; hack is a compliment; jury-rig is neutral and nautical. Gambiarra is all three at once, and the pride in it is real: the thing works, it cost nothing, and somebody clever did it under constraint. The nearest relatives are elsewhere - jugaad in India, which the University of Oxford's informality researchers place in the same family as the Brazilian jeitinho, système D in France and West Africa, desenrascanço in Portugal, костыль (a crutch) in Russian code review, houtje-touwtje in Dutch, atar con alambre in Argentina. Every one of them keeps part of the meaning and drops another part. That is why the word stays in Portuguese on this site, in every language: translating it would be the first gambiarra."
       },
       "jeitinho": {
-        "def": "Brazilian Portuguese. The knack of getting something done by going around a rule rather than through it — usually with charm, usually without money changing hands, and usually at a small cost to somebody who is following the rule.",
-        "context": "Where a gambiarra bends a material, a jeitinho bends a procedure. It lives in the gap between the impersonal law and the personal relationship: the queue skipped because you know the doorman, the form accepted after hours because somebody made a call, the deadline that moves because you asked well. Brazilians describe it with pride and with unease in the same breath, and the phrase that carries it — dar um jeitinho, to give it a little way — is a diminutive doing a lot of work: the -inho makes the manoeuvre sound small and forgivable.",
-        "depth": "For anyone working across Brazilian organisations the concept is operationally real. A change that goes in without a window, an access granted on a WhatsApp message, an exception that becomes the practice — each is a jeitinho, and each is the reason a control that exists on paper fails in an audit. That is the honest half. The other half is that it also names a genuine social competence in a system where formal channels are slow and unevenly applied, which is why the same person may condemn it in the abstract and rely on it on a Tuesday. Oxford's informality researchers catalogue it beside jugaad in India, blat in Russia and guanxi in China: different cultures, the same human answer to a rule that does not fit the case. Its technical cousin is gambiarra — the improvised fix in the physical or digital world — and the distinction worth keeping is that one bends a rule and the other bends a wire."
+        "def": "Brazilian Portuguese. The knack of getting something done by going around a rule rather than through it - usually with charm, usually without money changing hands, and usually at a small cost to somebody who is following the rule.",
+        "context": "Where a gambiarra bends a material, a jeitinho bends a procedure. It lives in the gap between the impersonal law and the personal relationship: the queue skipped because you know the doorman, the form accepted after hours because somebody made a call, the deadline that moves because you asked well. Brazilians describe it with pride and with unease in the same breath, and the phrase that carries it - dar um jeitinho, to give it a little way - is a diminutive doing a lot of work: the -inho makes the manoeuvre sound small and forgivable.",
+        "depth": "For anyone working across Brazilian organisations the concept is operationally real. A change that goes in without a window, an access granted on a WhatsApp message, an exception that becomes the practice - each is a jeitinho, and each is the reason a control that exists on paper fails in an audit. That is the honest half. The other half is that it also names a genuine social competence in a system where formal channels are slow and unevenly applied, which is why the same person may condemn it in the abstract and rely on it on a Tuesday. Oxford's informality researchers catalogue it beside jugaad in India, blat in Russia and guanxi in China: different cultures, the same human answer to a rule that does not fit the case. Its technical cousin is gambiarra - the improvised fix in the physical or digital world - and the distinction worth keeping is that one bends a rule and the other bends a wire."
       },
       "open-source": {
         "def": "Software under a license meeting the Open Source Initiative's ten criteria: free redistribution, available source code, permission for derived works, and no discrimination against people or fields of use. The term was coined in 1998 (Christine Peterson) as a business-friendlier name for what the four freedoms already described.",
@@ -17325,7 +17325,7 @@
     "ctaButton": "Visit Red Education",
     "aboutLink": "Training delivery is handled by the leading global training center Red Education",
     "casesTitle": "Two engagements Red Education published",
-    "casesIntro": "Red Education publishes case studies of work delivered for named industries, and I am named in two of them. Summarised here in my own words, with each original linked — useful if you want to see what a large training engagement actually looks like before you commission one.",
+    "casesIntro": "Red Education publishes case studies of work delivered for named industries, and I am named in two of them. Summarised here in my own words, with each original linked - useful if you want to see what a large training engagement actually looks like before you commission one.",
     "case1Title": "Fortinet at scale, for a global IT services firm",
     "case1Body": "A multinational IT services company with more than 200,000 staff across sixty countries had won a large deal and did not have the certified Fortinet engineers to deliver it. Forty-three people went through FCP Fundamentals FortiGate Administrator, in mixed-experience groups. The training was the thing standing between a signed contract and a delivery team, which is a different kind of pressure from a scheduled public course.",
     "case1Quote": "Your expertise, hard work, and commitment played a pivotal role in making this training a success.",
@@ -17343,8 +17343,8 @@
     "benchStat4": "Five regions: Australasia, ASEAN, SAARC, EMEA, Americas",
     "benchStat5": "49% growth in student enrolments",
     "benchAwardsTitle": "Recognition, externally conferred",
-    "benchAward1": "Palo Alto Networks Authorised Training Partner of the Year, JAPAC — eleven consecutive years",
-    "benchAward2": "Palo Alto Networks Global Instructor of the Year — 2021, 2022, 2023, 2024",
+    "benchAward1": "Palo Alto Networks Authorised Training Partner of the Year, JAPAC - eleven consecutive years",
+    "benchAward2": "Palo Alto Networks Global Instructor of the Year - 2021, 2022, 2023, 2024",
     "benchAward3": "Gold Stevie Award, Global Partnership of the Year 2025, for the Check Point partnership",
     "benchAward4": "Gold Stevie Award, Achievement in Certification Programs",
     "benchAward5": "Check Point Platinum Elite ATC and Global ATC Provider of the Year",
@@ -17373,7 +17373,7 @@
       },
       "c3": {
         "term": "Career development.",
-        "body": "Promotion on performance, with managers trained in evaluating fairly — the part that decides whether the rest of it is real."
+        "body": "Promotion on performance, with managers trained in evaluating fairly - the part that decides whether the rest of it is real."
       },
       "c4": {
         "term": "Community programmes.",
@@ -17399,13 +17399,13 @@
     "jumpCulture": "Company culture",
     "explainersTitle": "The course explainers Red Education publishes",
     "explainersIntro": "Red Education writes an explainer for each platform it trains on: what the courses cover, what they lead to, and how they fit a career. Ten are published, and these are all of them, ordered with the platforms I teach first. Worth reading before you choose a course, because they say more about outcomes than a course outline does.",
-    "explainersMine": "— a platform I deliver",
+    "explainersMine": "- a platform I deliver",
     "explainersGap": "Read on 16 August 2026. Of the platforms I deliver, F5 and Extreme Networks have no explainer published at the time of reading; their vendor pages carry the course listings instead.",
     "jumpExplainers": "Course explainers",
     "articlesTitle": "What Red Education writes about",
     "articlesIntro": "Red Education runs a blog on certifications, careers and the state of security training. Their index is drawn after the page loads, so only the featured article can be linked directly from here; the rest are behind the index link below. Read on 16 August 2026.",
     "article1Title": "F5 Certification: career pathways and salary expectations",
-    "article1Body": "The featured article on the day this section was written, and relevant here: F5 is one of the platforms I teach. It walks through what the F5 certification track leads to in career terms and what the market pays for it — the question most students actually arrive with, and one a course outline never answers.",
+    "article1Body": "The featured article on the day this section was written, and relevant here: F5 is one of the platforms I teach. It walks through what the F5 certification track leads to in career terms and what the market pays for it - the question most students actually arrive with, and one a course outline never answers.",
     "article1Link": "Read it on Red Education",
     "articlesIndexLink": "All Red Education articles",
     "jumpArticles": "Articles",
@@ -17524,7 +17524,7 @@
     "careerTitle": "The career vendors",
     "careerNote": "Two kinds of company appear here, and the markers tell them apart: the ones I was employed by, and the ones whose technology I worked with directly from the other side of the table. Chronological by first engagement, from 1996.",
     "careerStripTitle": "The chapters lived from inside",
-    "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before — an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
+    "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before - an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
     "careerStripLink": "Read the career record"
   },
   "sitemap": {
@@ -17579,7 +17579,7 @@
       },
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
-        "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture — with the three native tools to practice on."
+        "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture - with the three native tools to practice on."
       },
       "netskope-sase": {
         "title": "Netskope SASE, End to End",
@@ -17762,7 +17762,7 @@
     "fullscreenEnter": "Fullscreen",
     "fullscreenExit": "Exit fullscreen",
     "disclaimerHeading": "A note on the phrase",
-    "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference — that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
+    "disclaimerBody": "If English is not your first language: “zero fucks given” is a common informal expression meaning complete indifference - that something does not concern you in the slightest. It is vulgar, and it is used humorously far more often than aggressively, usually about bureaucracy, pointless urgency and work theatre rather than about people. The idea is not particular to English. Most European languages have their own idiom for the same shrug, built variously from food, animals, weather or anatomy, and several are a good deal more colourful than the English one. Register matters more than the words: it belongs in casual speech among people who know each other, and not in professional writing, a customer email or anything with your employer’s name on it.",
     "disclaimerSourcesHeading": "Where to read more"
   },
   "industryTags": {
@@ -17897,9 +17897,11 @@
     "exclusion3Term": "Staff augmentation",
     "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
-    "exclusion4Body": "Training is not sold from this page. I deliver official instructor-led courses under vendor authorization, and that is a separate engagement with its own scheduling and its own terms - ask and I will point you to it. What is offered here is judgement on a decision, not a curriculum.",
+    "exclusion4Body": "I do not sell training as advisory work. I deliver official instructor-led courses under vendor authorization, and that is a separate engagement with its own scheduling and its own terms - ask and I will point you to it. What I offer here is judgement on a decision, not a curriculum.",
+    "exclusion5Term": "Course material development",
+    "exclusion5Body": "I do not offer this. Slides, lab guides, speaker notes and assessment are a separate craft, commissioned on its own scope and its own terms, and it is not advisory time. Telling you whether a course should exist is work I will do. Writing the course is not.",
     "offerSpeakingTitle": "Speaking engagements",
-    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now — plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
+    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now - plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
     "advisorEyebrow": "Your advisor",
     "advisorBody": "Thirty years on the supply side of enterprise networking and security, from inside vendors, value-added resellers and distributors, consulting practices, and direct engagements with the customer - implementing, supporting, deploying and teaching what those companies sell, rather than selling it. That is the whole basis of the advice: my job was to make the thing work afterwards, so I have always had to live with the answer. This practice is my own, the analysis is mine, and I put my name on it. The credentials, the career record and what past clients and students say are a click away, because a claim you cannot check is not worth making.",
     "advisorLinkCreds": "Credentials",
@@ -17985,12 +17987,12 @@
     "relatedAria": "Related articles in The Practice",
     "backToIndex": "All of The Practice",
     "provenanceTitle": "Where this comes from",
-    "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff — one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, most of it was for the end-customer who had to live with the result on Monday.\n\nNone of it is theory I have read about, it is what my career taught me.",
+    "provenanceBody": "Thirty years is long enough to have done a great deal and nowhere near long enough to have done everything. What is here is the part I have lived.\n\nI executed and I planned. I audited other people's estates and oversaw work I did not carry out myself. I was the hands on the keyboard, and I was the name on the rota when it failed at night. I trained operations staff - one at a time at a console, and rooms full of them at once. Some of this I did for vendors, some for integrators, most of it was for the end-customer who had to live with the result on Monday.\n\nNone of it is theory I have read about, it is what my career taught me.",
     "articleCount": "{n, plural, =0 {no articles yet} one {# article} other {# articles}}",
     "whoDoesThis": "Who does this work",
     "rolesAria": "Roles that do this work",
     "rolesTitle": "The positions this work belongs to",
-    "rolesBody": "Every article here describes work that somebody is employed to do. The Roles covers {count} of those positions — what each answers for, who it receives from, who it serves, and how it is measured.",
+    "rolesBody": "Every article here describes work that somebody is employed to do. The Roles covers {count} of those positions - what each answers for, who it receives from, who it serves, and how it is measured.",
     "rolesLink": "Read The Roles",
     "toolsTitle": "Tools for this",
     "toolsAria": "Tools that support this work"
@@ -18021,7 +18023,7 @@
       },
       "sells": {
         "title": "Who sells it",
-        "lede": "Pre-sales, inside and outside sales, account management, business development — and the procurement function on the other side of the table. A transaction has two sides, and both are described here: the technical truth and the commercial promise, carried by people who answer for the same deal from opposite directions."
+        "lede": "Pre-sales, inside and outside sales, account management, business development - and the procurement function on the other side of the table. A transaction has two sides, and both are described here: the technical truth and the commercial promise, carried by people who answer for the same deal from opposite directions."
       },
       "deploys": {
         "title": "Who deploys it",
@@ -18058,7 +18060,7 @@
       "sources": "The published sources",
       "leadHere": "Roles that lead here"
     },
-    "practiceLede": "The Practice covers how this work is done — triage, escalation, evidence, handover — across the whole corpus.",
+    "practiceLede": "The Practice covers how this work is done - triage, escalation, evidence, handover - across the whole corpus.",
     "practiceLink": "Read The Practice",
     "levels": {
       "title": "Grades, the fork, and where these roles are found",
@@ -18088,7 +18090,7 @@
     "entries": {
       "technical-instructor": {
         "title": "Technical instructor",
-        "whatItIs": "The engineer who teaches the product to the people who will run it. Authorised instruction is delivered against a vendor's own curriculum to a room of practising engineers, which makes the role a teaching job resting on a practitioner's foundation: the questions arrive from real environments and expect answers that hold up in them. The work is also continuous with what came before it — field, consulting and support roles all end with training the customer's staff, and instruction is that final hour of the visit made into the whole job.",
+        "whatItIs": "The engineer who teaches the product to the people who will run it. Authorised instruction is delivered against a vendor's own curriculum to a room of practising engineers, which makes the role a teaching job resting on a practitioner's foundation: the questions arrive from real environments and expect answers that hold up in them. The work is also continuous with what came before it - field, consulting and support roles all end with training the customer's staff, and instruction is that final hour of the visit made into the whole job.",
         "turnsOn": "Evaluation scores measure the week and the value shows up months later, in the engineer who diagnoses something alone. The instructor's real leverage is choosing which questions to follow: a class steered toward the mechanisms underneath transfers to problems well beyond the curriculum, and one steered toward the interface teaches this release. Both score well on the day; only one of them is still working a year later.",
         "theDay": {
           "0": "Delivering a class, live, to engineers in several countries and time zones at once.",
@@ -18224,7 +18226,7 @@
         "theDay": {
           "0": "Taking an escalation from the second line, which arrives with a history and a customer who has already waited.",
           "1": "Reproducing the fault in a laboratory, which is the hardest part of the day and the most persuasive thing the role produces.",
-          "2": "Reading code, or reading close enough to it — release notes, defect records, debug output — to form a hypothesis a developer will recognise.",
+          "2": "Reading code, or reading close enough to it - release notes, defect records, debug output - to form a hypothesis a developer will recognise.",
           "3": "Deciding what genuinely belongs to engineering, which is the gate this role exists to hold.",
           "4": "Building the case file that a developer can act on without repeating the investigation.",
           "5": "Feeding the resolution back down as a workaround, a knowledge article and an explanation the second line can use next time."
@@ -18284,13 +18286,13 @@
       "knowledge-base-manager": {
         "title": "Knowledge base manager",
         "whatItIs": "The person who turns what the organisation learned into something the next person can use. Every resolved case contains knowledge that exists in one engineer's head and one ticket nobody will read again; this role converts that into articles, keeps them current, and measures whether they are answering anything. It sits across support and engineering because the raw material comes from both.",
-        "turnsOn": "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue — which is why the role has to belong to somebody rather than to everybody's good intentions.",
+        "turnsOn": "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue - which is why the role has to belong to somebody rather than to everybody's good intentions.",
         "theDay": {
           "0": "Reading closed cases for the ones that will recur, which is a judgement made from pattern rather than from volume.",
           "1": "Turning a resolution into an article somebody can follow without the engineer who wrote it.",
           "2": "Retiring and correcting: an article describing a release nobody runs is worse than an absent one.",
           "3": "Working the taxonomy, since an article that cannot be found has the same value as an article that was never written.",
-          "4": "Measuring deflection — which articles answered a question before it became a case — and feeding that back into what gets written next."
+          "4": "Measuring deflection - which articles answered a question before it became a case - and feeding that back into what gets written next."
         },
         "accountableFor": {
           "0": "Articles being accurate at the version they claim to cover.",
@@ -18346,7 +18348,7 @@
       "high-touch-operations-manager": {
         "title": "High-touch operations manager",
         "whatItIs": "A named vendor engineer assigned to one large customer, holding their support relationship end to end. Where standard support answers whoever calls, a high-touch role knows the customer's environment, their change calendar and their people, and carries their cases through the vendor's organisation personally. The arrangement exists for customers whose outage is a public event.",
-        "turnsOn": "The visible work is incident response and the durable work is prevention, which produces quiet. A high-touch engagement that succeeds shows fewer escalations, calmer reviews and a customer who stops needing to phone — and every one of those reads as reduced activity. Making the prevented incident visible, in the reporting and in the review, is what keeps the arrangement funded and is as much part of the role as the diagnosis.",
+        "turnsOn": "The visible work is incident response and the durable work is prevention, which produces quiet. A high-touch engagement that succeeds shows fewer escalations, calmer reviews and a customer who stops needing to phone - and every one of those reads as reduced activity. Making the prevented incident visible, in the reporting and in the review, is what keeps the arrangement funded and is as much part of the role as the diagnosis.",
         "theDay": {
           "0": "Holding the customer's open cases and knowing each one's actual state rather than its recorded state.",
           "1": "Convening the vendor's specialists on a fault that crosses several product areas.",
@@ -18537,13 +18539,13 @@
       },
       "channel-systems-engineer": {
         "title": "Channel systems engineer",
-        "whatItIs": "A systems engineer whose customers are other engineers. Distribution sits between the vendor and the reseller, and the channel systems engineer is the technical face of that layer: enabling the partner's engineers, sizing and configuring what the partner will sell, and holding the first line of technical help for a whole population of resellers rather than for one end customer. The role is also the technical arm a reseller borrows — running the proof of concept and the proof of value on the partner's behalf — and the channel through which a partner's technical questions reach the vendor and come back answered.",
-        "turnsOn": "The output is capability in other companies, and capability is slow, cumulative and hard to attribute. A partner engineer who becomes self-sufficient stops calling, which reads in the numbers as reduced engagement and reads in reality as the job done. The same shape governs the brokering: a question carried accurately between a partner and a vendor leaves both sides believing they simply understood each other. Holding that line — investing in partners who will need less help next year — is the whole discipline of the role, and it asks for a manager who understands the same thing.",
+        "whatItIs": "A systems engineer whose customers are other engineers. Distribution sits between the vendor and the reseller, and the channel systems engineer is the technical face of that layer: enabling the partner's engineers, sizing and configuring what the partner will sell, and holding the first line of technical help for a whole population of resellers rather than for one end customer. The role is also the technical arm a reseller borrows - running the proof of concept and the proof of value on the partner's behalf - and the channel through which a partner's technical questions reach the vendor and come back answered.",
+        "turnsOn": "The output is capability in other companies, and capability is slow, cumulative and hard to attribute. A partner engineer who becomes self-sufficient stops calling, which reads in the numbers as reduced engagement and reads in reality as the job done. The same shape governs the brokering: a question carried accurately between a partner and a vendor leaves both sides believing they simply understood each other. Holding that line - investing in partners who will need less help next year - is the whole discipline of the role, and it asks for a manager who understands the same thing.",
         "theDay": {
           "0": "Sizing and configuring a bill of materials for a partner's opportunity, frequently for an end customer nobody in the room has met.",
           "1": "Enabling partner engineers: workshops, demonstrations, and the answering of the same foundational question for a dozen different companies.",
           "2": "Enabling partner SALESPEOPLE, which is separate work with a separate vocabulary: what the product is for, which conversation opens the door, and which technical detail belongs in a first meeting.",
-          "3": "Running the proof of concept — PoC, showing the thing works — and the proof of value — PoV, showing the thing is worth what it costs — as the partner's technical arm, in front of the partner's customer.",
+          "3": "Running the proof of concept - PoC, showing the thing works - and the proof of value - PoV, showing the thing is worth what it costs - as the partner's technical arm, in front of the partner's customer.",
           "4": "Making the technical case for a product to engineers who already run something that works and have reasons to keep it, which is persuasion resting on evidence rather than on enthusiasm.",
           "5": "Brokering between the partner and the vendor on technical matters, so that a question asked in one company's vocabulary arrives in the other's and returns in a form the asker can use.",
           "6": "Standing in for the vendor's systems engineer where the deal is too small for the vendor to staff, which is most deals.",
@@ -18672,7 +18674,7 @@
       "incident-responder": {
         "title": "Incident responder",
         "whatItIs": "The person who takes charge once an event is confirmed as an incident. Where the operations analyst watches and triages, the responder investigates, contains, eradicates and recovers, and then writes what happened. The national guidance frames the work as a lifecycle beginning long before the incident, in preparation, and ending after it, in the lessons the organisation keeps.",
-        "turnsOn": "Preparation is the phase that decides the outcome, and it happens on ordinary days. Whether logs exist, whether the asset inventory is current, whether the escalation list has the right mobile numbers on it — all of that is settled months before an incident and determines how well it goes. The responder's most valuable hours are therefore the quiet ones spent making the next response possible, and those hours compete with everything more visible.",
+        "turnsOn": "Preparation is the phase that decides the outcome, and it happens on ordinary days. Whether logs exist, whether the asset inventory is current, whether the escalation list has the right mobile numbers on it - all of that is settled months before an incident and determines how well it goes. The responder's most valuable hours are therefore the quiet ones spent making the next response possible, and those hours compete with everything more visible.",
         "theDay": {
           "0": "Establishing scope: which systems, which accounts, which data, and since when.",
           "1": "Containing, which trades evidence against spread and is a judgement made with partial information.",
@@ -18794,7 +18796,7 @@
       "threat-intelligence-analyst": {
         "title": "Threat intelligence analyst",
         "whatItIs": "The analyst who studies adversaries rather than systems. The framework describes the work as collecting, processing, analysing and disseminating threat assessments, and the last of those verbs carries the role: intelligence that reaches nobody in a form they can act on has been research rather than intelligence.",
-        "turnsOn": "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision — which detection, which priority, which hunt — and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
+        "turnsOn": "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision - which detection, which priority, which hunt - and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
         "theDay": {
           "0": "Collecting from sources of varying reliability, and recording which was which.",
           "1": "Assessing what an adversary can do and what they appear to intend, which are separate judgements.",
@@ -18916,7 +18918,7 @@
       "penetration-tester": {
         "title": "Penetration tester",
         "whatItIs": "The specialist who tests defences by behaving like an attacker, inside an agreement that says exactly what is permitted. The national skills framework places it at the second or third tier, normally reached after several years in security operations, which is worth stating because the role is frequently imagined as an entry point and is in practice an advanced one.",
-        "turnsOn": "The technical work is shared with the adversary; the authorisation is what makes it a profession. Scope, rules of engagement and the discipline to stay inside them are the whole distinction, and they are also what makes the findings usable — a test conducted where somebody agreed it would be produces a report the organisation can act on, while anything obtained outside that boundary creates a problem rather than a finding. The good ones treat the scope document as the first deliverable rather than as paperwork preceding the real work.",
+        "turnsOn": "The technical work is shared with the adversary; the authorisation is what makes it a profession. Scope, rules of engagement and the discipline to stay inside them are the whole distinction, and they are also what makes the findings usable - a test conducted where somebody agreed it would be produces a report the organisation can act on, while anything obtained outside that boundary creates a problem rather than a finding. The good ones treat the scope document as the first deliverable rather than as paperwork preceding the real work.",
         "theDay": {
           "0": "Reading the scope and the rules of engagement until both are unambiguous, since everything afterwards depends on them.",
           "1": "Reconnaissance, scanning and enumeration, which is most of the time and produces most of the findings.",
@@ -18976,8 +18978,8 @@
       },
       "it-auditor": {
         "title": "IT auditor",
-        "whatItIs": "The person who establishes whether the controls an organisation believes it has are actually there and actually working. Audit runs as an engagement — planning, fieldwork, reporting — and produces evidence rather than opinion. The profession has its own framework of standards covering not only method but ethics and expected behaviour, which exists because the value of the finding rests entirely on the independence of whoever produced it.",
-        "turnsOn": "Independence is the product, and it is spent by helpfulness. An auditor who begins designing the fix becomes an adviser to the thing they will later examine, and the next report carries their own recommendation as its subject — which is why the profession puts ethics and expected behaviour into the same framework as method. The useful position is close enough to understand the estate and separate enough that the finding still means something, and holding it takes deliberate effort in every friendly conversation.",
+        "whatItIs": "The person who establishes whether the controls an organisation believes it has are actually there and actually working. Audit runs as an engagement - planning, fieldwork, reporting - and produces evidence rather than opinion. The profession has its own framework of standards covering not only method but ethics and expected behaviour, which exists because the value of the finding rests entirely on the independence of whoever produced it.",
+        "turnsOn": "Independence is the product, and it is spent by helpfulness. An auditor who begins designing the fix becomes an adviser to the thing they will later examine, and the next report carries their own recommendation as its subject - which is why the profession puts ethics and expected behaviour into the same framework as method. The useful position is close enough to understand the estate and separate enough that the finding still means something, and holding it takes deliberate effort in every friendly conversation.",
         "theDay": {
           "0": "Planning an engagement against objectives that connect to what the organisation is actually exposed to.",
           "1": "Fieldwork: sampling, testing, and asking for the evidence rather than the assurance.",
@@ -19038,7 +19040,7 @@
       "security-manager": {
         "title": "Security manager",
         "whatItIs": "The first rung of the management arm, in security. A security manager runs the people who do the analysis, the response and the assessment: hiring them, developing them, staffing the rota, and turning a leader's direction into work that fits in a week. It is the rung where a career stops being about your own output and starts being about somebody else's.",
-        "turnsOn": "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so — because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
+        "turnsOn": "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so - because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
         "theDay": {
           "0": "Staffing: the rota, the on-call, and the arithmetic of covering a queue that runs at all hours.",
           "1": "Developing people, which is the part that compounds and the part most easily postponed.",
@@ -19098,7 +19100,7 @@
       },
       "network-operations-specialist": {
         "title": "Network operations specialist",
-        "whatItIs": "The engineer who runs the network an organisation depends on. The federal work role puts it as planning, implementing and operating network services and systems, and then does something unusually useful: it lists the titles the same work is advertised under — network administrator, network analyst, network designer, network engineer, network systems engineer, telecommunications specialist. One body of work, seven names, which is worth holding on to before comparing two job descriptions.",
+        "whatItIs": "The engineer who runs the network an organisation depends on. The federal work role puts it as planning, implementing and operating network services and systems, and then does something unusually useful: it lists the titles the same work is advertised under - network administrator, network analyst, network designer, network engineer, network systems engineer, telecommunications specialist. One body of work, seven names, which is worth holding on to before comparing two job descriptions.",
         "turnsOn": "Every problem in an organisation arrives as a network problem until somebody proves otherwise, which makes proving a negative a large part of the job. That proof is the actual craft: a capture, a counter, a timing that shows the request left and the answer came back, offered quickly enough that the investigation moves on to where the fault really is. Engineers who build the habit of producing that evidence in minutes become the person other teams want in the bridge call; those who assert it instead spend the same hours being doubted.",
         "theDay": {
           "0": "Configuring and optimising the switches, routers and the protocols running across them.",
@@ -19160,7 +19162,7 @@
       "systems-administrator": {
         "title": "Systems administrator",
         "whatItIs": "The person who keeps the systems running. The framework lists the work plainly: installing, configuring and updating hardware and software, managing accounts, overseeing backup and recovery, and implementing the controls that policy requires. It is the most widely held technical role in any organisation of size, and the one whose output is measured almost entirely by the absence of events.",
-        "turnsOn": "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions — why that service runs on that host, which job has to finish before that one starts — become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
+        "turnsOn": "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions - why that service runs on that host, which job has to finish before that one starts - become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
         "theDay": {
           "0": "Patching, updating and renewing the things that expire: certificates, licences, agents, firmware.",
           "1": "Managing accounts and access, which is a security control performed as an administrative task.",
@@ -19220,7 +19222,7 @@
       },
       "systems-analyst": {
         "title": "Systems analyst",
-        "whatItIs": "The role that faces two directions at once. The prefix names the subject — network analyst, security analyst, data analyst — and the word analyst names the stance: studying what an organisation currently runs and what it currently needs, and describing each to the other. The framework puts it plainly as bringing business and technology together by understanding the needs and limitations of both.",
+        "whatItIs": "The role that faces two directions at once. The prefix names the subject - network analyst, security analyst, data analyst - and the word analyst names the stance: studying what an organisation currently runs and what it currently needs, and describing each to the other. The framework puts it plainly as bringing business and technology together by understanding the needs and limitations of both.",
         "turnsOn": "The analyst holds the only complete picture in the room, and holds it without authority to act on it. That combination is the role: the business knows what it wants, engineering knows what is possible, and the person who knows both is the one who has to make each legible to the other. Influence comes from the description being trusted, which is why accuracy about the current state matters more here than elegance about the future one.",
         "theDay": {
           "0": "Studying the systems and procedures as they actually operate, which differs from how they were designed and from how they are described.",
@@ -19282,7 +19284,7 @@
       "service-desk-analyst": {
         "title": "Service desk analyst",
         "whatItIs": "The single point of contact between an organisation and the people who use its technology. The framework defines the service desk as the practice that captures demand for incident resolution and service requests, and the phrase that matters in that definition is single point of contact: a user reports a problem to one place, and the desk works out who owns it.",
-        "turnsOn": "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling — a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
+        "turnsOn": "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling - a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
         "theDay": {
           "0": "Logging, categorising and prioritising whatever arrives, across every channel the organisation offers.",
           "1": "Investigating and diagnosing far enough to resolve at first contact, which is where the value concentrates.",
@@ -19342,8 +19344,8 @@
       },
       "change-manager": {
         "title": "Change manager",
-        "whatItIs": "The person who decides what may be done to production, and when. The framework states the purpose exactly: maximise the number of successful changes by assessing risk properly, authorising changes to proceed, and managing the schedule. The word in that sentence carrying the most weight is maximise — the practice exists to let changes happen, with the assessment as the means rather than the object.",
-        "turnsOn": "Two numbers pull opposite ways: change success rate and lead time. A practice tuned only for success reviews everything, and the queue becomes the reason teams stop proposing improvements; one tuned only for speed accumulates the incidents that produce the next review board. The resolution is categorical rather than case by case — deciding which classes of change are standard and letting those flow — and the framework is unusually candid that in product-focused organisations this may be daily practice and automation rather than a job at all.",
+        "whatItIs": "The person who decides what may be done to production, and when. The framework states the purpose exactly: maximise the number of successful changes by assessing risk properly, authorising changes to proceed, and managing the schedule. The word in that sentence carrying the most weight is maximise - the practice exists to let changes happen, with the assessment as the means rather than the object.",
+        "turnsOn": "Two numbers pull opposite ways: change success rate and lead time. A practice tuned only for success reviews everything, and the queue becomes the reason teams stop proposing improvements; one tuned only for speed accumulates the incidents that produce the next review board. The resolution is categorical rather than case by case - deciding which classes of change are standard and letting those flow - and the framework is unusually candid that in product-focused organisations this may be daily practice and automation rather than a job at all.",
         "theDay": {
           "0": "Assessing what is proposed: blast radius, dependencies, the plan to return, and whether the plan has been tried.",
           "1": "Authorising, at whatever level the risk justifies, which for routine work should be automatic.",
@@ -19465,7 +19467,7 @@
       "managed-service-provider-engineer": {
         "title": "Managed service provider engineer",
         "whatItIs": "The engineer who runs other companies' infrastructure for a living. A managed service provider takes on the day-to-day operation under a subscription, mostly remotely, and the engineering is shaped by that arrangement: many customers, one set of hands, and a contract that defines what counts as done. The security variant carries the same shape with an adversary added.",
-        "turnsOn": "Standardisation is the margin. Every customer arrives with an environment shaped by their own history and asks, reasonably, to keep it — and each accommodation granted is a permanent tax on every future change. Providers that thrive negotiate the estate toward a pattern they can operate at scale, and the engineer who explains that trade to a customer in terms of their own resilience is doing the commercial work as well as the technical.",
+        "turnsOn": "Standardisation is the margin. Every customer arrives with an environment shaped by their own history and asks, reasonably, to keep it - and each accommodation granted is a permanent tax on every future change. Providers that thrive negotiate the estate toward a pattern they can operate at scale, and the engineer who explains that trade to a customer in terms of their own resilience is doing the commercial work as well as the technical.",
         "theDay": {
           "0": "Working a queue that spans several customers, each believing they are the only one.",
           "1": "Responding to monitoring alerts against thresholds the provider chose and the customer accepted.",
@@ -19648,7 +19650,7 @@
       "channel-account-manager": {
         "title": "Channel account manager",
         "whatItIs": "The commercial counterpart to the channel systems engineer, and the person a partner's management deals with. A channel account manager owns a set of partner companies rather than a set of end customers, which changes the work fundamentally: the revenue arrives through somebody else's sales team, so the job is to make that team choose this line card over the others they carry.",
-        "turnsOn": "Partner attention is the scarce thing. A partner carries several vendors and allocates its engineers and sellers to whichever combination of margin, demand and ease returns most — so the account manager competes with the other logos on that partner's wall rather than with the vendor's own competitors. Making the line easy to sell, easy to configure and easy to support wins more capacity than a richer rebate does, which is why this role and the channel systems engineer succeed together or separately.",
+        "turnsOn": "Partner attention is the scarce thing. A partner carries several vendors and allocates its engineers and sellers to whichever combination of margin, demand and ease returns most - so the account manager competes with the other logos on that partner's wall rather than with the vendor's own competitors. Making the line easy to sell, easy to configure and easy to support wins more capacity than a richer rebate does, which is why this role and the channel systems engineer succeed together or separately.",
         "theDay": {
           "0": "Recruiting and onboarding partners, then working out which of them will actually transact.",
           "1": "Running the programme: tiers, targets, rebates, accreditations and the renewals that keep a partner in benefit.",
@@ -19769,8 +19771,8 @@
       },
       "security-leader": {
         "title": "Security leader",
-        "whatItIs": "The top of the management arm, in security. The framework describes the work as establishing vision and direction for an organisation's cybersecurity operations and resources, with the authority to make decisions that reach the whole organisation, approve policy and engage stakeholders. The ladder below it runs manager, then director, then this — and each rung trades proximity to the work for reach across it.",
-        "turnsOn": "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept — because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
+        "whatItIs": "The top of the management arm, in security. The framework describes the work as establishing vision and direction for an organisation's cybersecurity operations and resources, with the authority to make decisions that reach the whole organisation, approve policy and engage stakeholders. The ladder below it runs manager, then director, then this - and each rung trades proximity to the work for reach across it.",
+        "turnsOn": "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept - because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
         "theDay": {
           "0": "Setting direction, and holding it while the quarter argues with it.",
           "1": "Acquiring resources: budget, headcount, and the authority to require things of teams elsewhere.",
@@ -19891,8 +19893,8 @@
       },
       "procurement-specialist": {
         "title": "Procurement specialist",
-        "whatItIs": "The person on the other side of every sale described in this corpus. Procurement runs the cycle — market analysis, sourcing, negotiation, contracting and supplier management — with the object of acquiring at the right price, quality, quantity and time. The professional body draws a line worth keeping: procurement covers that whole cycle, while purchasing fulfils the transaction.",
-        "turnsOn": "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented — a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
+        "whatItIs": "The person on the other side of every sale described in this corpus. Procurement runs the cycle - market analysis, sourcing, negotiation, contracting and supplier management - with the object of acquiring at the right price, quality, quantity and time. The professional body draws a line worth keeping: procurement covers that whole cycle, while purchasing fulfils the transaction.",
+        "turnsOn": "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented - a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
         "theDay": {
           "0": "Running a tender or a request for proposal, and keeping it defensible while the business argues for the supplier it already chose.",
           "1": "Negotiating price, terms, service levels and the renewal clauses that decide the next three years.",
@@ -19952,8 +19954,8 @@
       },
       "product-manager": {
         "title": "Product manager",
-        "whatItIs": "The person who decides what the product is. The body of knowledge frames the work across a lifecycle — conceive, plan, develop, qualify, launch, deliver, retire — with a decision point between each phase. A product manager owns those decisions and the reasoning behind them, and owns them without commanding any of the teams whose work depends on them.",
-        "turnsOn": "A roadmap is a list of refusals. Every item on it represents many that were declined, and the declining is where the role is actually exercised — most of all at the gate, where stopping something the organisation is already committed to costs more socially than continuing it costs commercially. Product managers who can close a gate produce focused products; those who cannot produce long roadmaps and thin releases, and both look like activity from outside.",
+        "whatItIs": "The person who decides what the product is. The body of knowledge frames the work across a lifecycle - conceive, plan, develop, qualify, launch, deliver, retire - with a decision point between each phase. A product manager owns those decisions and the reasoning behind them, and owns them without commanding any of the teams whose work depends on them.",
+        "turnsOn": "A roadmap is a list of refusals. Every item on it represents many that were declined, and the declining is where the role is actually exercised - most of all at the gate, where stopping something the organisation is already committed to costs more socially than continuing it costs commercially. Product managers who can close a gate produce focused products; those who cannot produce long roadmaps and thin releases, and both look like activity from outside.",
         "theDay": {
           "0": "Talking to customers, and to the people who talk to customers, which is a different and larger population.",
           "1": "Deciding what enters the roadmap, and revisiting it when the evidence moves.",
@@ -20258,7 +20260,7 @@
       "customer-success-manager": {
         "title": "Customer success manager",
         "whatItIs": "The person who owns the relationship after the sale closes. Customer success grew out of subscription business, where the revenue arrives in instalments and every one of them is a decision the customer makes again. The role guides onboarding, adoption and expansion, and it is separated deliberately from support, which is reactive, and from the account executive, who owns new business.",
-        "turnsOn": "Satisfaction and retention are different measurements, and the distance between them is the job. A customer can be entirely happy and still leave, because their priorities moved and nobody on the vendor side noticed — which makes the useful question whether the customer is achieving outcomes that justify continued investment, rather than whether they are pleased. Managers who ask the second question find the risk in time; those who ask the first find it at the renewal.",
+        "turnsOn": "Satisfaction and retention are different measurements, and the distance between them is the job. A customer can be entirely happy and still leave, because their priorities moved and nobody on the vendor side noticed - which makes the useful question whether the customer is achieving outcomes that justify continued investment, rather than whether they are pleased. Managers who ask the second question find the risk in time; those who ask the first find it at the renewal.",
         "theDay": {
           "0": "Onboarding: getting a customer to their first real outcome, since the time that takes predicts everything afterwards.",
           "1": "Watching adoption across a portfolio, which runs from a handful of strategic accounts to several hundred at the lighter end.",
@@ -20383,7 +20385,7 @@
         "turnsOn": "The role is paid by one side and useful to the other, and the value depends entirely on the community believing the second part. That belief is built by the unglamorous half: filing the bug, saying plainly where the product falls short, and returning later with what changed. Advocates who do that are trusted and their companies benefit; the internal half of the job is what makes the external half true, which is why measuring only outbound activity produces a function that gradually stops working.",
         "theDay": {
           "0": "Writing sample code and reference integrations that show the product doing something real.",
-          "1": "Answering in public — forums, chat, issues — where the answer stays available to everybody who arrives later.",
+          "1": "Answering in public - forums, chat, issues - where the answer stays available to everybody who arrives later.",
           "2": "Speaking and running workshops, which is teaching to a room that chose to attend.",
           "3": "Filing the detailed bug report that a frustrated user would have abandoned.",
           "4": "Internal advocacy: carrying the community's difficulty into the company, in terms product and engineering can act on."
@@ -20530,7 +20532,35 @@
           "The judgement to accept a risk deliberately rather than escalating everything.",
           "Writing. An architecture that exists only in conversation is not an architecture.",
           "Tolerance for being overruled commercially, and the discipline to record the decision anyway."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "The business",
+            "what": "What is being built, and the deadline it is being built against."
+          },
+          "1": {
+            "who": "Risk and compliance",
+            "what": "The obligations the design has to satisfy, and their real deadlines."
+          },
+          "2": {
+            "who": "Engineering",
+            "what": "What is actually deployable here, as distinct from what is theoretically correct."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "Security engineers",
+            "what": "A design specific enough to build without guessing."
+          },
+          "1": {
+            "who": "Network and platform teams",
+            "what": "Boundaries and requirements they can implement in their own systems."
+          },
+          "2": {
+            "who": "Auditors",
+            "what": "A written rationale that answers why, not only what."
+          }
+        }
       },
       "security-engineer": {
         "title": "Security engineer",
@@ -20563,7 +20593,35 @@
           "Change discipline, because this role breaks production in a uniquely embarrassing way.",
           "The patience to tune rather than to disable.",
           "Scripting, since consistency at scale is not achieved by hand."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "Security architecture",
+            "what": "The design and the requirement it satisfies."
+          },
+          "1": {
+            "who": "The security operations centre",
+            "what": "What is not being detected, and what is drowning them."
+          },
+          "2": {
+            "who": "Vendors",
+            "what": "Products, and roadmaps that arrive later than promised."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "The security operations centre",
+            "what": "Telemetry that is complete enough to detect with."
+          },
+          "1": {
+            "who": "Application and infrastructure teams",
+            "what": "Controls that let them ship, rather than a queue."
+          },
+          "2": {
+            "who": "Incident responders",
+            "what": "The ability to contain, which depends on what was built beforehand."
+          }
+        }
       },
       "network-security-engineer": {
         "title": "Network security engineer",
@@ -20596,7 +20654,35 @@
           "The discipline to keep a rule base clean when nobody is asking for that.",
           "Enough diplomacy to be the person who says no, repeatedly, to colleagues.",
           "Comfort with the fact that success here is invisible and failure is a conference call."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "Security architecture",
+            "what": "The boundary to enforce and the reason for it."
+          },
+          "1": {
+            "who": "Network engineering",
+            "what": "The topology, and the change window."
+          },
+          "2": {
+            "who": "Application teams",
+            "what": "Requests that describe a symptom rather than a flow."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "The whole estate",
+            "what": "A path that is both open enough to work and closed enough to matter."
+          },
+          "1": {
+            "who": "Incident responders",
+            "what": "The ability to isolate a segment on demand."
+          },
+          "2": {
+            "who": "Auditors",
+            "what": "Evidence that the boundary is what the design says it is."
+          }
+        }
       },
       "grc-analyst": {
         "title": "Governance, risk and compliance analyst",
@@ -20629,15 +20715,43 @@
           "Writing that survives being read by a lawyer, an engineer and an auditor.",
           "The stubbornness to keep asking for evidence after being told it exists.",
           "Judgement about proportion, since a control programme that ignores cost is ignored in turn."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "Legal and regulators",
+            "what": "Obligations, with deadlines that do not negotiate."
+          },
+          "1": {
+            "who": "Security architecture and engineering",
+            "what": "What is actually implemented, which is the input compliance most often lacks."
+          },
+          "2": {
+            "who": "The business",
+            "what": "Appetite for risk, usually stated only after an incident."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "Executives and the board",
+            "what": "An account of exposure they can act on."
+          },
+          "1": {
+            "who": "Sales",
+            "what": "The answers that unblock an enterprise customer's review."
+          },
+          "2": {
+            "who": "Engineering teams",
+            "what": "Requirements stated once, rather than rediscovered per project."
+          }
+        }
       }
     }
   },
   "people": {
     "title": "People",
-    "metaTitle": "People — the individuals behind the networks and the tools",
+    "metaTitle": "People - the individuals behind the networks and the tools",
     "metaDescription": "The people this site records: the ones who wrote the tools, founded the conferences, testified before senates, and built the Brazilian internet. Each links to their glossary entry.",
-    "lede": "The people the corpus records — the ones who wrote the tools everyone still runs, founded the conferences, went to prison, testified before senates, or connected a country. Each name links to its entry.",
+    "lede": "The people the corpus records - the ones who wrote the tools everyone still runs, founded the conferences, went to prison, testified before senates, or connected a country. Each name links to its entry.",
     "count": "{count} people",
     "filterAll": "All",
     "filterLabel": "Filter the timeline by strand",

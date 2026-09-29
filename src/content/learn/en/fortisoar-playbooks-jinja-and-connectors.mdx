@@ -21,7 +21,7 @@ A playbook starts from one of a few trigger types, and choosing the right one pr
 - **On create or update** of a record, which is how alert enrichment usually starts.
 - **Manual**, run by an analyst against a record, which suits actions a human should authorise.
 - **Scheduled**, for periodic work such as reconciliation or reporting.
-- **Referenced**, meaning called by another playbook — this is how you factor common logic out instead of copying it.
+- **Referenced**, meaning called by another playbook: this is how you factor common logic out instead of copying it.
 
 The mistake worth naming is using an update trigger on a record the playbook itself updates, which produces a loop. Conditions on the trigger, or a flag the playbook sets, are how that is avoided.
 
@@ -40,7 +40,7 @@ Jinja is the templating language used to reference and transform data inside a p
 - Filtering or reshaping a list.
 - Building a string from several values, for a comment or notification.
 
-**Filters** transform values — changing case, formatting dates, joining lists, applying defaults when a value is absent. That last one deserves emphasis: a playbook that assumes a field is present will fail on the record where it is not, and a default filter is the difference between a graceful path and a stopped execution.
+**Filters** transform values: changing case, formatting dates, joining lists, applying defaults when a value is absent. That last one deserves emphasis: a playbook that assumes a field is present will fail on the record where it is not, and a default filter is the difference between a graceful path and a stopped execution.
 
 **The Jinja editor** evaluates an expression against real data before you commit to it. Using it is the single biggest time-saver in playbook development, because the alternative is running the playbook to find out and reading the failure afterwards.
 
@@ -72,7 +72,7 @@ FortiSOAR exposes both a **REST API** and a **JSON-RPC API**, and the distinctio
 
 REST addresses resources through URLs and standard verbs, and it is what most integrations use. JSON-RPC calls named procedures with parameters over a single endpoint.
 
-For most work — creating records from an external system, querying incidents, triggering a playbook — REST is the expected route. The practical reason to know both is that reading examples in the wild means recognising which one you are looking at.
+For most work (creating records from an external system, querying incidents, triggering a playbook), REST is the expected route. The practical reason to know both is that reading examples in the wild means recognising which one you are looking at.
 
 ## What an exam candidate should be able to state cold
 

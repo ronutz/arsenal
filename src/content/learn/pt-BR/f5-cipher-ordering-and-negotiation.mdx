@@ -8,7 +8,7 @@ relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords", "f5
 category: transport
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-09-27"
 ---
 
 Quando uma cipher string expande em uma lista concreta, a ordem dessa lista importa tanto quanto seu conteúdo, porque a ordem é o que decide qual cipher uma conexão de fato usa.
@@ -33,3 +33,11 @@ A surpresa mais comum aqui nem é sobre ordenação. **O TLS 1.3 define as próp
 Uma string de cifras cuidadosamente restritiva, escrita para excluir suítes fracas do 1.2, pode deixar o TLS 1.3 inteiramente intocado — a conexão negocia uma suíte 1.3 que a string nunca mencionou, e um scan de conformidade reporta algo que a configuração parece proibir.
 
 **Verifique qual versão do protocolo uma conexão de teste realmente negociou antes de concluir que uma regra de cifra funcionou.** Uma regra que governa o 1.2 e um cliente que fala 1.3 não concordam sobre nada e não produzem erro — que é o jeito mais silencioso de um controle de segurança estar ausente.
+
+## Fontes
+
+Que o TLS 1.3 negocia a partir de suas próprias definições de suítes, e não de uma cipher string de 1.2, tem duas metades: a mudança de protocolo está na especificação e as superfícies de configuração separadas estão no guia da F5.
+
+- [RFC 8446, TLS 1.3 - "The cipher suite concept has been changed to separate the authentication and key exchange mechanisms from the record protection algorithm ... and a hash"](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [SSL Traffic Management - as configurações DH Groups e Signature Algorithms, que a F5 observa "allow modification of TLS 1.2 and 1.3 key agreements and signature algorithms", e que o TLSv1.3 vem desabilitado por padrão em algumas configurações de perfil](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)
+- [Configuring a Custom Cipher String for SSL Negotiation - regras e grupos de cifras, as instruções allow, restrict e exclude, e a lista Order: Default, Speed, Strength, FIPS, Hardware](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)

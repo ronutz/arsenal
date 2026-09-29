@@ -33,7 +33,44 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 
-const THRESHOLD = 12;
+// THRESHOLD: 12 -> 4 on 2026-09-27, after the corpus was actually cleaned.
+//
+// 12 was chosen when healthy components measured 0-6, partial gaps peaked near
+// 10, and the five incidents measured 20-36. It sat in the gap and it was the
+// right number for that corpus. The corpus has changed:
+//
+//   BEFORE  178 real-missing class uses across 52 components, worst 8
+//   NOW       7 real-missing class uses across  5 components, worst 2
+//
+// What was repaired, and it was not tidiness:
+//   - The dig-* family: EIGHT names used 236 times by seventeen tools and
+//     defined nowhere, including .dig-kv and .dig-notes, which are named in
+//     check-css-classes' own header as the founding fault. Every result section
+//     in those seventeen rendered as browser defaults. Authored in-family from
+//     .jwt-panel, .dig-warning-list, .dig-meaning and .dig-row.
+//   - Two tools using a jwt-* FORM family that exists in no stylesheet and no
+//     other component, and using `jwt-tool` as a standalone root where 47
+//     siblings use `cidr-tool jwt-tool`. Repointed at the house pattern.
+//   - 107 more references across 28 components: cidr-h, cidr-result,
+//     cidr-result-title, cidr-list, cidr-hint, cidr-result-block, tmsh-name,
+//     json-error, json-error-title and type-badge, each repointed at the
+//     defined equivalent that already existed in its own family.
+//   - The last six in HttpRequestTranslator, one of the five incidents named
+//     above: down from 36 to 0.
+//   - A blind spot in this guard's own rule 2, described at classGroups below.
+//
+// The seven that remain are NOT defects, and are listed so nobody "fixes" them:
+//   lineage-acq, lineage-founded-body, rca-evidence-col, vprofile-block
+//     semantic wrappers and family roots whose children carry the rules
+//   ws-line, ws-line--rx
+//     the base and the DEFAULT variant of a base/variant scheme: .ws-line--tx
+//     and .ws-line--sys are the deviations, rx inherits .ws-console's colour
+//   gloss-hint-off
+//     a state variant of the defined .gloss-hint
+//
+// 4 keeps margin over the current worst of 2 while catching a whole family
+// arriving unstyled, which is the failure this guard exists for.
+const THRESHOLD = 4;
 
 // -- 1. Collect every class the stylesheets define ---------------------------
 // Comments are stripped first so a class mentioned in prose (".poison-stat is
@@ -54,16 +91,28 @@ const defined = new Set([...css.matchAll(/\.([A-Za-z][A-Za-z0-9_-]*)/g)].map((m)
 // Static attributes are read directly; for className={...} the balanced brace
 // body is walked and every string/template literal inside contributes tokens
 // (template ${...} spans blanked first), covering ternaries and concatenation.
+// Two token lists per className attribute, for two different questions.
+//
+// `tokensOf` is what gets REPORTED, and the hyphen requirement earns its place
+// there: it drops template stems and the incidental string literals that live
+// inside className={...} expressions ("explain", "warn", comparison operands).
+//
+// `siblingsOf` is what decides whether an element is styled at all, and the
+// hyphen requirement was WRONG there until 2026-09-27. It silently discarded
+// every hyphen-less class from sibling detection, so `className="seg seg--layers"`
+// looked unstyled even though `.seg` carries the whole control - border, radius,
+// inline-flex, background. Rule 2 cannot answer "is this element styled" while
+// it is blind to `.seg`, `.card`, `.mono` and every other single-word class.
 function classGroups(src) {
   const groups = [];
+  const clean = (s) => s.replace(/\$\{[^}]*\}/g, " ").split(/\s+/);
+  const siblingsOf = (s) =>
+    clean(s).filter((t) => /^[a-z][a-z0-9-]*$/i.test(t) && !t.endsWith("-"));
   const tokensOf = (s) =>
-    s
-      .replace(/\$\{[^}]*\}/g, " ")
-      .split(/\s+/)
-      .filter((t) => /^[a-z][a-z0-9-]*$/i.test(t) && t.includes("-") && !t.endsWith("-"));
+    clean(s).filter((t) => /^[a-z][a-z0-9-]*$/i.test(t) && t.includes("-") && !t.endsWith("-"));
   for (const m of src.matchAll(/className="([^"]+)"/g)) {
     const g = tokensOf(m[1]);
-    if (g.length) groups.push(g);
+    if (g.length) groups.push({ tokens: g, siblings: siblingsOf(m[1]) });
   }
   let i = 0;
   while ((i = src.indexOf("className={", i)) !== -1) {
@@ -76,8 +125,12 @@ function classGroups(src) {
     }
     const body = src.slice(i + 11, j - 1);
     const g = [];
-    for (const m of body.matchAll(/["'`]([^"'`]*)["'`]/g)) g.push(...tokensOf(m[1]));
-    if (g.length) groups.push(g);
+    const sib = [];
+    for (const m of body.matchAll(/["'`]([^"'`]*)["'`]/g)) {
+      g.push(...tokensOf(m[1]));
+      sib.push(...siblingsOf(m[1]));
+    }
+    if (g.length) groups.push({ tokens: g, siblings: sib });
     i = j;
   }
   return groups;
@@ -89,8 +142,8 @@ for (const f of readdirSync("src/components").filter((x) => x.endsWith(".tsx")))
   const missing = new Set();
   const aliased = new Set();
   for (const group of classGroups(readFileSync("src/components/" + f, "utf8"))) {
-    const hasDefinedSibling = group.some((t) => defined.has(t));
-    for (const t of group) {
+    const hasDefinedSibling = group.siblings.some((t) => defined.has(t));
+    for (const t of group.tokens) {
       if (defined.has(t)) continue;
       if (hasDefinedSibling) aliased.add(t); // rule 2: styled via sibling
       else missing.add(t);

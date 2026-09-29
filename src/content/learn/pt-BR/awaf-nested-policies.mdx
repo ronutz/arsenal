@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-bl
 category: security
 order: 9
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-09-27"
 ---
 
 Quando uma política de segurança plana não basta, o F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) oferece duas formas distintas de estruturar a configuração de política, e elas resolvem problemas diferentes. Vale ser preciso, porque "políticas aninhadas" pode significar qualquer uma das duas.
@@ -36,3 +36,10 @@ O hostname e a URL de um microsserviço podem cada um ser um wildcard puro ou n�
 ## Qual usar
 
 Recorra a **pai/filho** quando você opera muitas políticas e precisa impor padrões de segurança comuns a todas elas de um único lugar. Recorra a **microsserviços** quando uma aplicação, atrás de uma política, tem partes que precisam de tratamento diferente, um novo endpoint que você quer rodar em transparent enquanto o resto bloqueia, ou um caminho específico que precisa de overrides mais rígidos. Os dois compõem: uma política filho pode, ela mesma, usar microsserviços internamente.
+
+## Fontes
+
+A versão que introduziu políticas em camadas é nomeada nas próprias notas de versão da F5, fonte mais firme do que um manual que apenas documenta o recurso.
+
+- [BIG-IP ASM 13.0.0 Release Notes - "Layered Policies: Security policies can now be created in a hierarchical manner with a parent and child policies"](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/releasenotes/product/relnote-asm-13-0-0.html)
+- [Creating Parent and Child Security Policies - as configurações mandatory, optional e not-inherited, por seção da política](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/manuals/product/asm-getting-started-13-0-0/3.html)

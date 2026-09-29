@@ -34,6 +34,6 @@ That is the key insight this demonstrator makes concrete. A hash protects a secr
 
 A cryptographic hash resists **preimage** attack: given the output, you cannot compute the input. That is real and it is not what breaks in a password breach.
 
-An attacker with a stolen hash does not invert it. **They guess forward** — hashing candidates until one matches — which needs no inversion at all and defeats one-wayness completely. The hash function is doing its job perfectly while the account falls.
+An attacker with a stolen hash does not invert it. **They guess forward** (hashing candidates until one matches), which needs no inversion at all and defeats one-wayness completely. The hash function is doing its job perfectly while the account falls.
 
 That is the whole reason password hashing is a separate discipline from hashing. **SHA-256 is an excellent hash and a terrible password hash**, not because it is weak but because it is fast, and speed is precisely the attacker's budget.

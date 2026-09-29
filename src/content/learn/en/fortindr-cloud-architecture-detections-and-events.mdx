@@ -26,7 +26,7 @@ Three things justify watching traffic when you already have endpoint agents.
 
 ## Architecture and sensors
 
-**Sensors** sit where they can see traffic — typically a span or tap at a network chokepoint, or a virtual sensor in a cloud environment. They observe, extract metadata, and forward it for analysis. The analysis and retention happen in the cloud service, which is what keeps the sensor's job narrow.
+**Sensors** sit where they can see traffic: typically a span or tap at a network chokepoint, or a virtual sensor in a cloud environment. They observe, extract metadata, and forward it for analysis. The analysis and retention happen in the cloud service, which is what keeps the sensor's job narrow.
 
 Sensor placement is the decision that determines everything the product can do. A sensor at the internet edge sees traffic entering and leaving and cannot see host-to-host traffic inside a segment. A sensor internally sees lateral movement and not egress. Coverage is a deliberate design, and the honest position is to know which segments are unmonitored rather than to assume the deployment sees everything.
 
@@ -52,4 +52,4 @@ The mistake is treating observations as alerts. They are the material investigat
 
 ## What an exam candidate should be able to state cold
 
-Network detection covers agentless devices, lateral movement, and devices no inventory knows about. Sensors observe at a tap or span and extract per-protocol metadata rather than retaining packets, and sensor placement determines what can be seen at all — edge sees egress, internal sees lateral. Detection works on encrypted traffic because certificate, SNI, timing and volume are observable without payload, and beaconing is recognisable from regularity alone. Detections are actionable judgements; behavioural observations are context and should not be treated as a work queue.
+Network detection covers agentless devices, lateral movement, and devices no inventory knows about. Sensors observe at a tap or span and extract per-protocol metadata rather than retaining packets, and sensor placement determines what can be seen at all: edge sees egress, internal sees lateral. Detection works on encrypted traffic because certificate, SNI, timing and volume are observable without payload, and beaconing is recognisable from regularity alone. Detections are actionable judgements; behavioural observations are context and should not be treated as a work queue.

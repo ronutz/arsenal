@@ -26,7 +26,7 @@ You can keep going. You will always be able to keep going, in both directions, u
 
 Once you accept that the chain is unbounded, the question changes from *what was the root cause* to *where should we stop*, and that is a judgement somebody has to make and own.
 
-The right place to stop is **where you have leverage**. Not the deepest point you can reach, and not the first one that sounds satisfying — the point at which a change is available to you that would prevent recurrence.
+The right place to stop is **where you have leverage**. Not the deepest point you can reach, and not the first one that sounds satisfying - the point at which a change is available to you that would prevent recurrence.
 
 In the example above, several stopping points are defensible. Add the index: cheap, fast, fixes this query and nothing else. Add pool exhaustion alarming: catches the whole class of fault next time, does not prevent it. Restore capacity review: prevents a family of faults, costs an ongoing commitment somebody must fund. Fix reorganisation handovers: enormous leverage, and now you are writing an organisational recommendation from a database incident, which may be exactly right and will need a different audience.
 
@@ -40,7 +40,7 @@ When you think you have a cause rather than a link in the chain, these are worth
 
 **The recurrence test.** If you fix only this, will the same incident happen again? If yes, you have found the proximate mechanism and stopped too early. The index fixes today's query and not next quarter's.
 
-**The leverage test.** Do you have the authority, budget and access to change this? If no, you have not found a cause — you have found something to escalate, and the honest report says so rather than recommending an action nobody in the room can take.
+**The leverage test.** Do you have the authority, budget and access to change this? If no, you have not found a cause - you have found something to escalate, and the honest report says so rather than recommending an action nobody in the room can take.
 
 A statement that passes all three is worth calling a cause. One that passes two is worth writing down anyway, clearly labelled as what it is.
 
@@ -68,6 +68,6 @@ The [incident timeline builder](/tools/incident-timeline-rca-builder) exists to 
 
 The single practice that improves this most costs one paragraph.
 
-State the chain as far as you followed it. State where you stopped. State why you stopped there — leverage, cost, authority, or a judgement that further links were outside the scope of this incident. State what you are choosing not to fix, and say who would need to own it if somebody decided to.
+State the chain as far as you followed it. State where you stopped. State why you stopped there - leverage, cost, authority, or a judgement that further links were outside the scope of this incident. State what you are choosing not to fix, and say who would need to own it if somebody decided to.
 
-That paragraph converts an analysis from a claim about reality into a documented decision. It survives review, it tells the next person what was already considered, and when the same fault recurs eighteen months later it shows precisely which link somebody chose not to address — which is a far more useful thing to inherit than a report asserting that the root cause was a missing index.
+That paragraph converts an analysis from a claim about reality into a documented decision. It survives review, it tells the next person what was already considered, and when the same fault recurs eighteen months later it shows precisely which link somebody chose not to address - which is a far more useful thing to inherit than a report asserting that the root cause was a missing index.

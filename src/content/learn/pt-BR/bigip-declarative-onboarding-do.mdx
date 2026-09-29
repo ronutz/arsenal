@@ -8,7 +8,7 @@ relatedArticles: ["as3-declaration-anatomy"]
 category: networking
 order: 6
 status: reviewed
-updated: "2026-07-05"
+updated: "2026-09-27"
 ---
 
 O F5 Automation Toolchain tem duas metades declarativas, e o jeito mais rápido de mantê-las separadas é pela camada em que cada uma trabalha. O AS3, o Application Services 3 Extension, configura os serviços de aplicação de Camada 4-7, os virtual servers, pools, monitores e profiles TLS, em um BIG-IP que já está na rede. O Declarative Onboarding, DO, é a outra metade: faz o onboarding de Camada 1-3 que coloca a caixa na rede em primeiro lugar. Um BIG-IP recém-inicializado não tem licença, nenhum módulo provisionado, nenhuma VLAN (LAN virtual, do inglês virtual LAN), nenhum self IP, nenhuma rota e nenhuma conta de usuário além das padrão; o DO é como você declara tudo isso em um documento JSON em vez de clicar pelo Setup Utility ou roteirizar tmsh. O [explicador de DO](/tools/do-explainer-validator) lê uma declaração de volta do jeito que este artigo descreve.
@@ -30,3 +30,10 @@ Três detalhes na documentação do DO causam mais casos de suporte do que seu t
 ## Um verificador de sanidade, não o validador de schema
 
 O explicador é deliberadamente um explicador de estrutura e verificador de sanidade, não um validador completo de JSON-Schema. A F5 publica o schema DO completo, e o jeito pretendido de validar cada propriedade é apontar seu editor para ele, o VS Code verifica uma declaração contra o schema enquanto você digita. Uma declaração que lê limpo aqui ainda pode ser rejeitada pelo DO por uma propriedade que o [Explicador e validador de declaração DO](/tools/do-explainer-validator) não modela, então trate o explicador como a primeira passada rápida que nomeia cada classe, agrupa o onboarding e pega as armadilhas documentadas, e trate o schema publicado como a palavra final. Como toda ferramenta aqui, ela roda inteiramente no navegador e nunca contata um BIG-IP ou um BIG-IQ.
+
+## Fontes
+
+O padrão que mudou sem aviso está registrado no próprio histórico de revisões da F5 para a versão que o alterou, e é a entrada a reler antes de um upgrade.
+
+- [Histórico de revisões do BIG-IP Declarative Onboarding - na 1.36, "The default value for allowService on a SelfIp is now none"](https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/revision-history.html)
+- [Troubleshooting do BIG-IP Declarative Onboarding - a mudança de comportamento do self IP descrita como armadilha](https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/troubleshooting.html)

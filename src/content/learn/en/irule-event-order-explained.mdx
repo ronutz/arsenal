@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
-An iRule is a set of event handlers. You write blocks like `when HTTP_REQUEST { ... }`, and the BIG-IP runs each block when its event fires. The events are not arbitrary — they fire in a specific sequence that mirrors how a connection is actually processed, and which events appear depends on which profiles are attached to the virtual server.
+An iRule is a set of event handlers. You write blocks like `when HTTP_REQUEST { ... }`, and the BIG-IP runs each block when its event fires. The events are not arbitrary: they fire in a specific sequence that mirrors how a connection is actually processed, and which events appear depends on which profiles are attached to the virtual server.
 
 ## The happy path, end to end
 
@@ -35,7 +35,7 @@ Remove a profile and the related events simply drop out. Take away the HTTP prof
 
 ## Why the order matters
 
-The order is not trivia — it dictates what data is available when. `HTTP::header` works in `HTTP_REQUEST` because the headers have been parsed by then; calling it in `CLIENT_ACCEPTED` errors, because at that point the BIG-IP has a TCP connection and nothing more. Pool selection commands belong before `LB_SELECTED`; response commands only make sense from `HTTP_RESPONSE` onward. A large share of iRule runtime errors are really an event-order mistake — touching something that does not exist yet.
+The order is not trivia: it dictates what data is available when. `HTTP::header` works in `HTTP_REQUEST` because the headers have been parsed by then; calling it in `CLIENT_ACCEPTED` errors, because at that point the BIG-IP has a TCP connection and nothing more. Pool selection commands belong before `LB_SELECTED`; response commands only make sense from `HTTP_RESPONSE` onward. A large share of iRule runtime errors are really an event-order mistake: touching something that does not exist yet.
 
 ## A map, not the territory
 

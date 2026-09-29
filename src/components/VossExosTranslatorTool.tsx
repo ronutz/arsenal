@@ -49,7 +49,7 @@ export default function VossExosTranslatorTool() {
           autoComplete="off"
           spellCheck={false}
         />
-        <p className="cidr-hint">{t("hint")}</p>
+        <p className="cidr-note">{t("hint")}</p>
       </div>
 
       <div className="vet-list">

@@ -169,7 +169,7 @@ export default async function MilestonesPage({
                       <div className="lineage-deal-card">
                         <div className="lineage-deal-top">
                           <span className="lineage-deal-name">{m.title}</span>
-                          {m.who ? <span className="type-badge">{m.who}</span> : null}
+                          {m.who ? <span className="lineage-deal-who">{m.who}</span> : null}
                           {/* WHERE THE WORK WAS DONE (PRIME 2026-08-13).
                               Multiple flags where the work genuinely spans
                               countries, in the order the data lists them.

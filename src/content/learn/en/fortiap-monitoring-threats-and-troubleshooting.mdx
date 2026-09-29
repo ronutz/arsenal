@@ -30,10 +30,10 @@ Two of these readings, taken together, distinguish most cases:
 
 | Signal | Utilization | Likely cause |
 |---|---|---|
-| Weak | Low | Coverage — the client is too far or obstructed |
-| Strong | High | Congestion — too many clients or too much traffic |
-| Strong, poor SNR | Low | Interference — something non-Wi-Fi is raising the noise floor |
-| Strong | Low, still slow | Not wireless — look upstream at DHCP, DNS, routing or the WAN |
+| Weak | Low | Coverage: the client is too far or obstructed |
+| Strong | High | Congestion: too many clients or too much traffic |
+| Strong, poor SNR | Low | Interference: something non-Wi-Fi is raising the noise floor |
+| Strong | Low, still slow | Not wireless: look upstream at DHCP, DNS, routing or the WAN |
 
 That last row is worth taking seriously. A meaningful share of wireless complaints are wired problems experienced over wireless, and the fastest way to establish it is to reproduce the problem on a cable.
 
@@ -41,7 +41,7 @@ That last row is worth taking seriously. A meaningful share of wireless complain
 
 **Rogue AP detection** finds access points broadcasting in your space that are not yours. Most are neighbours, and the meaningful cases are the two that are not: an AP plugged into your own network by someone who wanted better coverage, and an AP impersonating your SSID to collect credentials.
 
-The distinction that matters is **on-wire detection** — whether the discovered AP is connected to your network or merely audible. A neighbour's AP is noise; a rogue on your own wire is an open door, and treating them the same produces a list nobody reads.
+The distinction that matters is **on-wire detection**: whether the discovered AP is connected to your network or merely audible. A neighbour's AP is noise; a rogue on your own wire is an open door, and treating them the same produces a list nobody reads.
 
 **Wireless intrusion detection** watches for the recognisable attack patterns: deauthentication floods that force clients off so they can be captured reassociating, evil twins presenting a familiar SSID, and clients probing for networks they have previously joined.
 

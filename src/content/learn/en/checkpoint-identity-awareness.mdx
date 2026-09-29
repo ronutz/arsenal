@@ -18,7 +18,7 @@ A rule that permits an address permits whoever is using that address. In an envi
 
 The firewall sees addresses. Policy usually wants to talk about people: this department reaches the finance application, contractors do not, administrators reach management interfaces from anywhere.
 
-Identity Awareness supplies the missing mapping — which user is currently at which address — so a rule can reference an identity and the gateway can resolve it at match time.
+Identity Awareness supplies the missing mapping (which user is currently at which address) so a rule can reference an identity and the gateway can resolve it at match time.
 
 ## Access Roles
 
@@ -39,7 +39,7 @@ This is the part that determines whether a deployment works well, and the option
 
 **AD Query** is the agentless predecessor: the gateway itself queries domain controllers for login events. It requires no additional software, which is its appeal, and it puts the query load on the gateway.
 
-**Browser-Based Authentication** presents a captive portal. The user authenticates in a browser and the gateway learns the mapping. It covers anyone with a browser, including devices outside the domain, and it is intrusive by design — the user notices.
+**Browser-Based Authentication** presents a captive portal. The user authenticates in a browser and the gateway learns the mapping. It covers anyone with a browser, including devices outside the domain, and it is intrusive by design: the user notices.
 
 **Identity Agent** is software on the endpoint that reports the logged-in user directly. It gives the strongest binding and requires deployment and maintenance.
 
@@ -61,7 +61,7 @@ The recurring faults, and what they look like:
 
 **Identity is stale.** A user logged out or moved, but the mapping persists until it times out. A shared machine amplifies this: the previous user's identity may still be attached to the address.
 
-**Users appear as unknown.** The identity source is not covering them — a non-domain device, an unsupported operating system, or a login the collector never saw because it happened before the collector was watching.
+**Users appear as unknown.** The identity source is not covering them: a non-domain device, an unsupported operating system, or a login the collector never saw because it happened before the collector was watching.
 
 **Everyone on a terminal server looks the same.** The specific case above, and it needs the specific solution rather than tuning.
 

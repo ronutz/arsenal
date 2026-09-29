@@ -30,7 +30,7 @@ One practical mapping: nslookup's `Non-authoritative answer:` marker corresponds
 
 ## They disagree because they are asking differently, not because one is wrong
 
-`dig` sends what you asked for and prints what came back. `nslookup` is more accommodating — it applies the search list, retries, and formats per record type — and **that helpfulness is what makes the two disagree.**
+`dig` sends what you asked for and prints what came back. `nslookup` is more accommodating: it applies the search list, retries, and formats per record type, and **that helpfulness is what makes the two disagree.**
 
 A name that resolves in `nslookup` and fails in `dig` has usually been completed by the search domain in one and taken literally in the other. Neither tool is broken; they were asked different questions and both answered correctly.
 

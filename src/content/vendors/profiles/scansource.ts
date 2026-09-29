@@ -6,6 +6,15 @@
 //     Owings was one of its former chief executives, having also led Argent
 //     Technologies
 //   - PortersFiveForce: founded 18 December 1992 in Greenville
+//     *** THAT SOURCE IS DEAD as of 2026-09-27: portersfiveforce.com answers 200
+//     at its root and 404 on the cited path, which is the control the liveness
+//     audit prescribes. The 18 December date therefore has no live source. It
+//     STAYS in the 1992 timeline entry below, per PRIME's ruling of 2026-09-27
+//     that a fact is not deleted for want of a source; what is recorded here is
+//     the gap. The ScanSource 10-K cited in partners.ts carries only
+//     "incorporated in 1992", not the day, and the entry's intro says
+//     "December 1992" without one. A replacement would be the company's own
+//     first annual report or the South Carolina incorporation record.
 //   - Umbrex company profile: INTELISYS acquired in 2016, bringing a
 //     recurring-revenue, ADVISOR-LED telecom and cloud services model; Channel
 //     Advisors added 2021; as of fiscal 2024 the two reporting segments are

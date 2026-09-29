@@ -26,7 +26,7 @@ The practical consequence is the same in both: **a file that is not included is 
 
 Directives live in blocks, and a block is a context: `main` at the top level, then `events`, then `http`, then `server` inside it, then `location` inside that. A directive is only legal in the contexts its documentation lists.
 
-Inheritance runs downward. Set something in `http` and every `server` gets it; set it again in a `server` and that value wins there. The rule that catches people is that inheritance is **per directive, not per group of directives** — some directives replace an inherited value, and some, like `add_header`, stop inheriting entirely as soon as the child sets one of its own.
+Inheritance runs downward. Set something in `http` and every `server` gets it; set it again in a `server` and that value wins there. The rule that catches people is that inheritance is **per directive, not per group of directives**: some directives replace an inherited value, and some, like `add_header`, stop inheriting entirely as soon as the child sets one of its own.
 
 ## Include order is file order
 
@@ -42,7 +42,7 @@ The **master** starts as root, and it needs to: it binds the privileged ports an
 
 The **workers** drop to the account named by the `user` directive, and they are what actually reads your content. This is the split that explains most permission problems: the master opened the socket without difficulty, so the service starts cleanly, and then a worker cannot read a file and returns 403.
 
-When a file is unreadable, the question is never "can root read this" — it is whether the worker user can traverse every directory in the path *and* read the file at the end. A permissive file inside a directory the worker cannot enter is still unreachable.
+When a file is unreadable, the question is never "can root read this"; it is whether the worker user can traverse every directory in the path *and* read the file at the end. A permissive file inside a directory the worker cannot enter is still unreachable.
 
 ## Shared memory zones
 
@@ -50,7 +50,7 @@ Several features need workers to share state rather than each keeping its own: r
 
 So those directives take a **zone**: a name and a size, allocated once and mapped into every worker. `zone=one:10m` is a region called `one` of ten megabytes.
 
-Two things follow. The name is how other directives refer to the same region, so the definition and the use must agree. And the size is finite — when a zone fills, NGINX starts evicting older entries, which for a rate limiter means it quietly stops tracking some clients. Sizing is not a formality.
+Two things follow. The name is how other directives refer to the same region, so the definition and the use must agree. And the size is finite: when a zone fills, NGINX starts evicting older entries, which for a rate limiter means it quietly stops tracking some clients. Sizing is not a formality.
 
 ## What to check first
 
@@ -60,7 +60,7 @@ Two things follow. The name is how other directives refer to the same region, so
 
 **Did something later override it?** Same directive, same context, later position.
 
-**Can the worker user read it?** Not root — the worker.
+**Can the worker user read it?** Not root. The worker.
 
 ## What a learner should be able to state cold
 

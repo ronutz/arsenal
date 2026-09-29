@@ -63,6 +63,21 @@ export default async function AdvisoryPage({
   const t = await getTranslations("advisory");
   const tNav = await getTranslations("nav");
 
+  // How many entries the "Not offered here" list has, DERIVED FROM THE MESSAGES
+  // rather than hardcoded here. The count used to live in this component as a
+  // literal array while the entries lived in en.json and pt-BR.json, which is one
+  // fact in two places: adding an entry meant editing three files, and forgetting
+  // the array left the new entry invisible while forgetting the messages rendered a
+  // raw key. check-message-keys cannot catch either, because a templated key like
+  // `exclusion${n}Term` is not statically resolvable - it is one of the 429 dynamic
+  // keys that guard reports it cannot check. Deriving it means a new exclusion is an
+  // edit to the two message files and nothing else. Capped at 20 so a malformed
+  // message pack cannot spin the loop.
+  const exclusionIndices: number[] = [];
+  for (let n = 1; n <= 20 && t.has(`exclusion${n}Term`); n += 1) {
+    exclusionIndices.push(n);
+  }
+
   // The five kinds of work, rendered as equals. PRIME's instruction was to
   // frame this as AVAILABILITY rather than to lead with one specialism, because
   // he is employed full time and is not trying to build a single-offer funnel.
@@ -229,8 +244,13 @@ export default async function AdvisoryPage({
                     sentences sat under a heading with nothing to scan. The term
                     now leads on its own line and the explanation follows, which
                     is the difference between a list somebody reads and a list
-                    somebody skips. */}
-                {[1, 2, 3, 4].map((n) => (
+                    somebody skips.
+
+                    The INDICES are derived from the messages - see
+                    exclusionIndices above - so this renders however many
+                    exclusions exist rather than however many were hardcoded on
+                    the day it was written. */}
+                {exclusionIndices.map((n) => (
                   <li key={n}>
                     <span className="advisory-exclusion-term">
                       {t(`exclusion${n}Term`)}

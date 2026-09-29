@@ -44,6 +44,6 @@ The fix is refreshingly simple: **do not process the DOCTYPE**. Nearly every XML
 
 XXE is rarely a bug somebody wrote. It is a **default** somebody inherited: a parser whose entity resolution was enabled because that was the sensible choice when the library was designed, in an era when XML documents came from colleagues rather than from the internet.
 
-That is why the fix is almost never in the handling code and almost always in the parser construction — and why an application can be vulnerable in one deployment and safe in another **with identical source**, because the platform shipped a different default.
+That is why the fix is almost never in the handling code and almost always in the parser construction, and why an application can be vulnerable in one deployment and safe in another **with identical source**, because the platform shipped a different default.
 
 **Find where the parser is built, not where the document is read.** And check it after every dependency upgrade, because a default that changed in your favour can change back, and nothing in a changelog is addressed to a security assumption you never wrote down.

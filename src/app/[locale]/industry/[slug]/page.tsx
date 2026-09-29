@@ -169,6 +169,12 @@ import { promonLogicalisProfile } from "@/content/vendors/profiles/promon-logica
 import { tivitProfile } from "@/content/vendors/profiles/tivit";
 import { compugrafProfile } from "@/content/vendors/profiles/compugraf";
 import { parxtechProfile } from "@/content/vendors/profiles/parxtech";
+import { capgeminiProfile } from "@/content/vendors/profiles/capgemini";
+import { cipherProfile } from "@/content/vendors/profiles/cipher";
+import { navaProfile } from "@/content/vendors/profiles/nava";
+import { cylkProfile } from "@/content/vendors/profiles/cylk";
+import { flipsideProfile } from "@/content/vendors/profiles/flipside";
+import { tdecProfile } from "@/content/vendors/profiles/tdec";
 import { accessHomeFleetProfile } from "@/content/vendors/profiles/access-home-fleet";
 import { watchguardProfile } from "@/content/vendors/profiles/watchguard";
 import { a10Profile } from "@/content/vendors/profiles/a10";
@@ -251,6 +257,12 @@ const PROFILES: Record<string, VendorProfile> = {
   [zscalerProfile.slug]: zscalerProfile,
   [cloudflareProfile.slug]: cloudflareProfile,
   [parxtechProfile.slug]: parxtechProfile,
+  [capgeminiProfile.slug]: capgeminiProfile,
+  [cipherProfile.slug]: cipherProfile,
+  [navaProfile.slug]: navaProfile,
+  [cylkProfile.slug]: cylkProfile,
+  [flipsideProfile.slug]: flipsideProfile,
+  [tdecProfile.slug]: tdecProfile,
   [hpeJuniperArubaProfile.slug]: hpeJuniperArubaProfile,
   [brocadeBroadcomProfile.slug]: brocadeBroadcomProfile,
   [mcafeeFireeyeTrellixProfile.slug]: mcafeeFireeyeTrellixProfile,

@@ -57,4 +57,4 @@ The header can say `status: NOERROR` while the answer section is empty:
 
 **That is not success and it is not NXDOMAIN.** It is **NODATA**: the name exists, and it has no record of the type you asked for. A host with an A record but no AAAA answers exactly like this to an AAAA query.
 
-The practical consequence is that *"DNS returned NOERROR"* is not evidence a lookup worked. **Read the `ANSWER:` count, not the status**, and check the AUTHORITY section — an SOA there is the server telling you which zone denied you the record.
+The practical consequence is that *"DNS returned NOERROR"* is not evidence a lookup worked. **Read the `ANSWER:` count, not the status**, and check the AUTHORITY section, where an SOA is the server telling you which zone denied you the record.

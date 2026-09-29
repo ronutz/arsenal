@@ -8,7 +8,7 @@ relatedArticles: ["oauth-code-flow", "oauth-tokens", "pkce", "jwt-anatomy"]
 category: identity
 order: 8
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-09-27"
 ---
 
 ## Authorization is not authentication
@@ -43,3 +43,10 @@ Two endpoints round it out: a **userinfo** endpoint returns profile claims for a
 OIDC is what most "Sign in with ..." buttons actually run on. Keeping the two tokens straight is the key insight: the **ID token proves identity to the client**, the **access token authorizes API calls**, and they are not interchangeable. Combined with the code flow and PKCE, it is the modern, standards-based way to do federated login.
 
 The [PKCE tool](/tools/pkce) generates and verifies the `code_verifier` and `code_challenge` for the flow, and the [JWT tool](/tools/jwt) decodes and verifies the ID token, both entirely in your browser with nothing sent anywhere.
+
+## Sources
+
+Both standards named above are public, and the division of labour between them is stated in their own opening sections rather than being an interpretation.
+
+- [OpenID Connect Core 1.0 - the identity layer on top of OAuth 2.0, and the ID Token it adds](https://openid.net/specs/openid-connect-core-1_0.html)
+- [RFC 6749, The OAuth 2.0 Authorization Framework - which answers the authorization question only](https://www.rfc-editor.org/rfc/rfc6749.html)

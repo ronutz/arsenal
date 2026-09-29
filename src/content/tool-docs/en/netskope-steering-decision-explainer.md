@@ -4,7 +4,7 @@ Paste a compact description of a steering configuration and one flow, and walk t
 
 ## The grammar
 
-Key–value lines, one decision input per line:
+Key-value lines, one decision input per line:
 
 ```
 mode: web                     # cloud-apps | web | all

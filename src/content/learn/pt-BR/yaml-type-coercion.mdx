@@ -8,7 +8,7 @@ relatedArticles: ["json-vs-yaml", "config-formats-in-practice", "json-grammar"]
 category: encoding
 order: 2
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## Por que um escalar sem aspas é perigoso
@@ -26,3 +26,10 @@ A coerção numérica é igualmente afiada. Uma versão de software como `1.0` v
 ## Como um conversor se mantém seguro
 
 É por isso que converter JSON para YAML não é apenas uma questão de trocar a pontuação. Toda string JSON que, escrita sem aspas, seria lida de volta como booleano, número, null ou data precisa ser emitida entre aspas, ou o YAML significaria algo diferente do JSON. Um conversor correto aplica essas regras de aspas automaticamente, que é exatamente o que o [Conversor JSON ↔ YAML](/tools/json-yaml-convert) faz: uma string permanece string. Quando você lê a saída YAML dela e vê aspas em torno de algo como `"NO"` ou `"1.0"`, essas aspas não são ruído; são o conversor protegendo o valor da adivinhação de tipos do YAML.
+
+## Fontes
+
+Ambos os esquemas são publicados, e o motivo pelo qual yes e no soltos são perigosos é que o mais antigo os resolve como booleanos e o mais novo não os carrega.
+
+- [Tipo bool do YAML 1.1 - a resolução ampla: y|Y|yes|Yes|YES|n|N|no|No|NO|true|True|TRUE|false|False|FALSE|on|On|ON|off|Off|OFF](https://yaml.org/type/bool.html)
+- [YAML versão 1.2, revisão 1.2.2 (1 de outubro de 2021) - a especificação cujo Core Schema define ao que um escalar solto resolve hoje](https://yaml.org/spec/1.2.2/)

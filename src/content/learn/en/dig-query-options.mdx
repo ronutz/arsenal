@@ -37,6 +37,6 @@ The options compose. `dig @1.1.1.1 example.com MX +short` asks Cloudflare's reso
 
 `@server` looks like a convenience and is the most consequential flag on the list. **It bypasses your system resolver entirely** and asks the named server directly.
 
-That makes it the right tool for *"is this zone correct"* and the wrong tool for *"does resolution work here"*, because a query to `@8.8.8.8` proves nothing about the resolver your applications actually use — its cache, its forwarders, its access rules, or whether the host can reach it at all.
+That makes it the right tool for *"is this zone correct"* and the wrong tool for *"does resolution work here"*, because a query to `@8.8.8.8` proves nothing about the resolver your applications actually use: its cache, its forwarders, its access rules, or whether the host can reach it at all.
 
 **Ask without `@` first.** If that works, resolution is fine. If it fails and `@` succeeds, you have already localised the fault to your own resolver path, which is more than most troubleshooting achieves in its first minute.

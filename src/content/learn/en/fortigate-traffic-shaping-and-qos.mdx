@@ -36,7 +36,7 @@ A shaper carries up to three settings and they interact in a way worth being pre
 
 The failure that appears in every deployment eventually: **guarantees that sum to more than the link can carry**. Each looks reasonable in isolation, the total is impossible, and the device honours them in an order nobody designed. The discipline is to add the guarantees up against the real link speed, and to leave headroom rather than allocating the last megabit.
 
-The related subtlety is that a guarantee on an idle class is not free — it is capacity that cannot be given away, so over-guaranteeing quiet traffic starves busy traffic for no benefit.
+The related subtlety is that a guarantee on an idle class is not free: it is capacity that cannot be given away, so over-guaranteeing quiet traffic starves busy traffic for no benefit.
 
 ## DSCP, and who you can trust
 
@@ -54,7 +54,7 @@ Voice and video are the reason most people configure shaping at all, and they fa
 
 **Forward error correction** takes a different approach to loss: rather than retransmitting what was lost, it sends redundant data so the receiver can reconstruct missing packets without asking again. On a real-time stream that is the only option that helps, because a retransmission arrives after the moment it was needed.
 
-The cost is bandwidth — you are deliberately sending more than the payload requires. That is worth it on a lossy link carrying voice and wasteful on a clean link carrying backups, so it belongs on specific overlays rather than switched on globally.
+The cost is bandwidth: you are deliberately sending more than the payload requires. That is worth it on a lossy link carrying voice and wasteful on a clean link carrying backups, so it belongs on specific overlays rather than switched on globally.
 
 ## What an exam candidate should be able to state cold
 

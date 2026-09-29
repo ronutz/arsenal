@@ -71,28 +71,28 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
       {error && <div className="cidr-error" role="alert">{error}</div>}
 
       {result && result.mode === "reference" && (
-        <div className="cidr-result">
-          <h3 className="cidr-result-title">{t("howItWorks")}</h3>
-          <ul className="cidr-list">
+        <div className="cidr-results">
+          <h3 className="cidr-section-title">{t("howItWorks")}</h3>
+          <ul className="dig-notes">
             {result.notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>
         </div>
       )}
 
       {result && result.mode === "analyze" && (
-        <div className="cidr-result">
+        <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
             </ul>
           )}
 
           {/* The verdict leads: which phase fails is the whole diagnosis. */}
-          {result.verdict && <p className="cidr-result-title">{result.verdict}</p>}
+          {result.verdict && <p className="cidr-section-title">{result.verdict}</p>}
 
           {fatal.length > 0 && (
             <>
-              <h3 className="cidr-result-title">{t("blocking")}</h3>
+              <h3 className="cidr-section-title">{t("blocking")}</h3>
               <table className="cidr-table">
                 <thead>
                   <tr>
@@ -119,15 +119,15 @@ export default function FortigateIpsecPhaseMismatchAnalyzerTool() {
               {/* Kept visually separate: presenting "lifetimes differ" with the
                   same weight as "no common encryption" trains people to ignore
                   the whole output. */}
-              <h3 className="cidr-result-title">{t("notFaults")}</h3>
-              <ul className="cidr-list">
+              <h3 className="cidr-section-title">{t("notFaults")}</h3>
+              <ul className="dig-notes">
                 {info.map((i, n) => <li key={n}>{i.detail}</li>)}
               </ul>
             </>
           )}
 
           {result.notes.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.notes.map((n, i) => <li key={i}>{n}</li>)}
             </ul>
           )}

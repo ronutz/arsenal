@@ -24,13 +24,13 @@ IP was designed to cross links with different limits, so it needed an answer for
 - Firewalls and load balancers see port numbers only in the first fragment, so policy and hashing break on the rest.
 - Many networks simply drop fragments, which turns an inefficiency into a hard failure.
 
-**IPv6 removed router fragmentation entirely.** Routers may not fragment; a packet that does not fit is dropped with a "packet too big" message, and the sender must adapt. The design decision was to make the problem loud rather than quiet — which only works if the message gets back.
+**IPv6 removed router fragmentation entirely.** Routers may not fragment; a packet that does not fit is dropped with a "packet too big" message, and the sender must adapt. The design decision was to make the problem loud rather than quiet, which only works if the message gets back.
 
 ## Path MTU Discovery, and why it fails silently
 
 The mechanism is straightforward: send with the do-not-fragment bit, receive an ICMP "fragmentation needed" or "packet too big" message from whichever router is too narrow, lower the estimate, repeat.
 
-It fails constantly, because those messages are ICMP, and ICMP is blocked by an enormous number of firewalls configured by people who classified it as an attack surface. The result is the **path MTU black hole**: the handshake completes, small packets flow, and the connection then hangs the moment a full-size packet is sent — which is why the classic symptom is *"the login page works but nothing loads after it"*, and why it is so often misdiagnosed as an application fault.
+It fails constantly, because those messages are ICMP, and ICMP is blocked by an enormous number of firewalls configured by people who classified it as an attack surface. The result is the **path MTU black hole**: the handshake completes, small packets flow, and the connection then hangs the moment a full-size packet is sent, which is why the classic symptom is *"the login page works but nothing loads after it"*, and why it is so often misdiagnosed as an application fault.
 
 **Packetization Layer Path MTU Discovery** exists as the answer that does not depend on ICMP: the transport probes upward with progressively larger packets and treats loss as the signal. It is slower to converge and it works where the network is hostile.
 
@@ -62,7 +62,7 @@ Every layer of envelope takes its cut from the same 1,500. Approximate, and wort
 - **TCP header** 20 bytes, more with options such as timestamps and selective acknowledgement.
 - **VLAN tag** 4 bytes per tag; **VXLAN** roughly 50 bytes total including its outer headers.
 - **GRE** 4 to 8 bytes; **PPPoE** 8, which is why so many broadband links land at 1,492.
-- **IPsec** varies widely with mode and cipher — commonly 50 to 80 bytes; tunnel mode adds a second IP header.
+- **IPsec** varies widely with mode and cipher, commonly 50 to 80 bytes; tunnel mode adds a second IP header.
 - **WireGuard** roughly 60 bytes, which is why 1,420 is its usual recommendation.
 
 Two consequences follow. **Encapsulations stack**, so a VXLAN-over-IPsec design pays both. And **the loss is asymmetric**: the sender's stack knows nothing of the tunnel in the middle, so the byte math must be applied where the encapsulation happens.
@@ -73,7 +73,7 @@ Two consequences follow. **Encapsulations stack**, so a VXLAN-over-IPsec design 
 
 **MSS clamping** is the reliable answer for TCP. The device at the tunnel edge rewrites the maximum segment size in the handshake, so the endpoints negotiate a size that fits before any large packet is sent. It works on the first try, it needs no ICMP, and it is a single setting on nearly every tunnel-terminating platform.
 
-Its limits are worth knowing: it only helps **TCP**, because only TCP has an MSS to rewrite. UDP-based traffic — QUIC, VPN (virtual private network) payloads, DNS over UDP, video — is unaffected, which is why QUIC deliberately probes and paces its own datagram size, and why UDP applications should not assume 1,500.
+Its limits are worth knowing: it only helps **TCP**, because only TCP has an MSS to rewrite. UDP-based traffic is unaffected, whether QUIC, VPN (virtual private network) payloads, DNS over UDP or video. That is why QUIC deliberately probes and paces its own datagram size, and why UDP applications should not assume 1,500.
 
 The checklist that resolves most of these:
 

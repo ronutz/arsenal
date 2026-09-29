@@ -8,7 +8,7 @@ relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites"]
 category: transport
 order: 20
 status: reviewed
-updated: "2026-07-10"
+updated: "2026-09-27"
 ---
 
 ## O que é um fingerprint TLS
@@ -48,3 +48,10 @@ O JA4, o fingerprint de cliente TLS descrito aqui, é publicado pela FoxIO sob a
 ## O que ele não é
 
 Um fingerprint identifica software, não uma pessoa, e é uma pista, não uma prova. Programas diferentes construídos sobre a mesma biblioteca TLS podem compartilhar um JA4, então uma correspondência estreita o campo sem nomear uma aplicação específica, e um cliente pode imitar deliberadamente o ClientHello de outro para forjá-lo. Ele não diz nada sobre o conteúdo da conexão, que permanece criptografado. Leia um JA4 como um sinal forte sobre o que está falando, a ser ponderado com o resto do que você consegue ver, e não como uma identidade por si só.
+
+## Fontes
+
+Tanto o layout dos campos quanto a divisão de licenças são definidos pela FoxIO, autora do método, no repositório JA4+, e não são reconstruções da comunidade.
+
+- [FoxIO JA4+ - a lista da família e a divisão de licenças: o JA4 em si sob BSD 3-Clause e todos os outros métodos sob a FoxIO License 1.1, que não permite monetização](https://github.com/FoxIO-LLC/ja4)
+- [JA4 technical details - a seção a campo por campo: t para TLS sobre TCP e q para QUIC, 13 para TLS 1.3, d para domínio e i para IP puro](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)

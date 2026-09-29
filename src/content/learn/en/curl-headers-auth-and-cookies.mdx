@@ -21,7 +21,7 @@ When you translate the request, HTTP Basic becomes the target language's auth me
 
 ## Where the credential actually ends up
 
-A password on a curl command line does not stay on the command line. It goes into **shell history**, and on most systems it is visible in the **process list** to anyone who can run `ps` while the command executes — including other users on a shared jump host.
+A password on a curl command line does not stay on the command line. It goes into **shell history**, and on most systems it is visible in the **process list** to anyone who can run `ps` while the command executes, including other users on a shared jump host.
 
 `-u user` without the colon makes curl prompt instead. `--netrc` reads credentials from a file. A config file passed with `-K` keeps them out of argv entirely.
 

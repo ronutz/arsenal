@@ -40,7 +40,7 @@ Two details matter operationally:
 
 **ADOM version tracking.** An ADOM is associated with a firmware version, and devices in it are expected to match. A device on a different major version than its ADOM is the usual cause of an install that behaves oddly or an option that will not appear, because the schema FortiManager holds does not match the device's.
 
-**The global database.** Objects and header/footer policies defined in the global ADOM can be assigned down to multiple ADOMs, which is how a rule that must exist everywhere gets maintained in one place. Header policies land above the ADOM's own policies and footer policies below, so a global deny at the footer is a genuine catch-all and a global allow at the header outranks everything local — worth remembering, because it interacts with first-match evaluation exactly as you would expect and exactly as people forget.
+**The global database.** Objects and header/footer policies defined in the global ADOM can be assigned down to multiple ADOMs, which is how a rule that must exist everywhere gets maintained in one place. Header policies land above the ADOM's own policies and footer policies below, so a global deny at the footer is a genuine catch-all and a global allow at the header outranks everything local, worth remembering, because it interacts with first-match evaluation exactly as you would expect and exactly as people forget.
 
 ## Revisions are the undo you actually have
 

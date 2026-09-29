@@ -8,7 +8,7 @@ relatedArticles: ["dns-blocklists-and-response-policy", "choosing-a-public-dns-r
 category: networking
 order: 257
 status: reviewed
-updated: "2026-08-11"
+updated: "2026-09-27"
 ---
 
 ## Quatro modos, e não são variações de uma mesma coisa
@@ -53,3 +53,10 @@ O caso primário é o que acumula dívida em silêncio. Registros criados para u
 Versões recentes do FortiOS expõem configurações de **DoH, DoH3 e DoQ** no servidor DNS, com certificado tomado da configuração do servidor DNS e recaindo na do web proxy.
 
 Isso fecha um ciclo que vale nomear. DNS cifrado costuma ser discutido como **aquilo que derrota a política da rede** - um cliente escolhendo o próprio resolvedor por HTTPS. Um firewall que oferece DNS cifrado ele mesmo está oferecendo a privacidade sem a perda de controle: **o transporte fica protegido e a política continua valendo, porque o resolvedor é o que a rede opera.**
+
+## Fontes
+
+Os quatro modos e a versão que acrescentou o quarto são da própria Fortinet, documentados tanto na lista de novidades quanto no guia de administração daquela versão.
+
+- [FortiGate as a recursive DNS resolver - novidades do FortiOS 7.6.0, onde o modo resolver foi acrescentado à interface do servidor DNS](https://docs.fortinet.com/document/fortigate/7.6.0/new-features/650959/fortigate-as-a-recursive-dns-resolver)
+- [FortiGate DNS server - Guia de Administração do FortiOS 7.6.0](https://docs.fortinet.com/document/fortigate/7.6.0/administration-guide/960561/fortigate-dns-server)

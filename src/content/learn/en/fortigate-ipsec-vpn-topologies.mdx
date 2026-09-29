@@ -29,7 +29,7 @@ The split is why the failure tells you so much. A phase 1 failure is about ident
 | Tunnel up, no traffic passes | Neither | Missing route or missing firewall policy |
 | Tunnel drops on a schedule | Either | Lifetime mismatch, or rekey failing |
 
-That third row is the one that wastes the most time. A tunnel that reports up and passes nothing is not an IPsec problem at all — it is a routing or policy problem, and the two things a working tunnel still needs are a **route** pointing traffic into it and a **firewall policy** permitting the traffic across it.
+That third row is the one that wastes the most time. A tunnel that reports up and passes nothing is not an IPsec problem at all: it is a routing or policy problem, and the two things a working tunnel still needs are a **route** pointing traffic into it and a **firewall policy** permitting the traffic across it.
 
 ## The mismatches that actually happen
 
@@ -37,7 +37,7 @@ That third row is the one that wastes the most time. A tunnel that reports up an
 
 **Perfect forward secrecy** must match. Enabled on one side and not the other fails phase 2 with a message that does not obviously say so.
 
-**Lifetimes** need not match exactly — the shorter one wins — but wildly different values cause rekeys at awkward intervals, and a rekey that fails presents as a tunnel that drops on a regular cadence.
+**Lifetimes** need not match exactly (the shorter one wins) but wildly different values cause rekeys at awkward intervals, and a rekey that fails presents as a tunnel that drops on a regular cadence.
 
 **NAT traversal** is required whenever a device between the peers translates addresses, because ESP has no ports for a translator to rewrite. Detection happens during phase 1 and the tunnel then encapsulates in UDP 4500. Keepalives matter, because a translation entry expires when idle, which produces a tunnel that works and then silently stops after a quiet period.
 
@@ -60,7 +60,7 @@ ADVPN is worth knowing as the answer to the trade: it keeps hub-and-spoke config
 
 ## Redundancy within a tunnel
 
-Beyond topology, a single logical connection can be made redundant. Configuring **multiple phase 1 interfaces to different remote gateways** and controlling which is preferred through routing distance gives an active-standby pair: the primary route is used while its tunnel is up, and the floating backup route takes over when it is withdrawn. This is exactly the static-route mechanic from the routing article, applied to tunnels, and it depends on the tunnel interface going down when the tunnel does — which is what dead peer detection provides.
+Beyond topology, a single logical connection can be made redundant. Configuring **multiple phase 1 interfaces to different remote gateways** and controlling which is preferred through routing distance gives an active-standby pair: the primary route is used while its tunnel is up, and the floating backup route takes over when it is withdrawn. This is exactly the static-route mechanic from the routing article, applied to tunnels, and it depends on the tunnel interface going down when the tunnel does, which is what dead peer detection provides.
 
 ## What an exam candidate should be able to state cold
 

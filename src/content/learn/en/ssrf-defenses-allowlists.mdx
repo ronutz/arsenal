@@ -36,6 +36,6 @@ The defence most often defeated is the one that looks correct: **resolve the hos
 
 That gap is **DNS rebinding**. An attacker controls a name with a very short TTL; the validating lookup returns a permitted public address, and the connecting lookup, moments later, returns `169.254.169.254`. Every line of the check ran correctly and the request went somewhere the policy forbids.
 
-Closing it means **checking and connecting against the same resolved address** — resolve once, validate that address, then connect to it rather than to the name.
+Closing it means **checking and connecting against the same resolved address**: resolve once, validate that address, then connect to it rather than to the name.
 
 **And redirects re-open it.** A permitted host answering `302` to an internal URL bypasses a check performed only on the original input. Either follow no redirects, or re-validate every hop, because a policy applied once to a chain of requests is a policy applied to the first one.

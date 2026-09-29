@@ -38,7 +38,7 @@ The mitigations, in rough order of how often they are skipped:
 
 ## What the service provides
 
-**WAF** — the same signature and behavioural protection as the on-premises product, managed as a service.
+**WAF**: the same signature and behavioural protection as the on-premises product, managed as a service.
 
 **DDoS (distributed denial) mitigation** at network and application layers, with capacity that is the point of the model.
 
@@ -56,11 +56,11 @@ The service terminates TLS, which means it needs a certificate for your hostname
 
 The managed option removes an expiry that someone has to remember, and expiring certificates remain a leading cause of self-inflicted outages. The uploaded option keeps issuance under your control where policy requires it.
 
-Either way the origin connection should also be encrypted, which means the origin needs a certificate too — commonly one nobody thinks about because no browser ever validates it.
+Either way the origin connection should also be encrypted, which means the origin needs a certificate too, commonly one nobody thinks about because no browser ever validates it.
 
 ## Visibility
 
-The trade for not operating the platform is that you see what the service reports. In practice this is generous — traffic, attacks, bots, latency, cache behaviour — and it is not the same as holding the logs.
+The trade for not operating the platform is that you see what the service reports. In practice this is generous (traffic, attacks, bots, latency, cache behaviour) and it is not the same as holding the logs.
 
 The two things worth setting up early:
 

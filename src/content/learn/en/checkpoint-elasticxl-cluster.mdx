@@ -18,7 +18,7 @@ Clustering answers two different requirements that are easy to conflate, and it 
 
 **Availability** means one member can fail and traffic continues. That requires enough capacity in the survivors to carry the load, which is the part people forget: two members each running at 70% do not survive losing one.
 
-**Capacity** means the members share load so the cluster carries more than any one could. That requires traffic to be distributed, and it requires that distribution to keep a connection's packets going to the same member — because a firewall is stateful, and a packet arriving at a member that has never seen the connection is dropped as out of state.
+**Capacity** means the members share load so the cluster carries more than any one could. That requires traffic to be distributed, and it requires that distribution to keep a connection's packets going to the same member, because a firewall is stateful, and a packet arriving at a member that has never seen the connection is dropped as out of state.
 
 Most clustering complexity across all vendors comes from that second requirement.
 
@@ -26,7 +26,7 @@ Most clustering complexity across all vendors comes from that second requirement
 
 Check Point describes ElasticXL as a high-performance, flexible cluster solution for large-scale environments, and the operational shift is that the cluster is treated as **one entity**.
 
-The consequence that matters day to day is what happens when you add a member. In a traditional cluster, a new member is a device to configure, add to the cluster object, license, and bring into sync — several steps, each with its own way to go wrong. Where the cluster is a single logical entity, adding capacity is closer to joining than to building.
+The consequence that matters day to day is what happens when you add a member. In a traditional cluster, a new member is a device to configure, add to the cluster object, license, and bring into sync: several steps, each with its own way to go wrong. Where the cluster is a single logical entity, adding capacity is closer to joining than to building.
 
 The same applies to management: policy is installed to the cluster, and the members are an implementation detail rather than a list to maintain.
 
@@ -48,9 +48,9 @@ Some properties come from clustering itself, not from any implementation, and th
 
 The checks worth running before believing a cluster works:
 
-**Status** — every member up, one active or all sharing depending on mode, and no member in a state nobody can explain.
+**Status**: every member up, one active or all sharing depending on mode, and no member in a state nobody can explain.
 
-**Sync health** — that state is actually being replicated, not merely that a sync interface exists.
+**Sync health**: that state is actually being replicated, not merely that a sync interface exists.
 
 **A real failover, once, in a window.** Force it and watch what happens to established connections. This is the test that finds the difference between a cluster that is configured and one that works, and it is worth the maintenance window precisely because the answer is sometimes uncomfortable.
 

@@ -32,4 +32,4 @@ It did, once. **Carrier-grade NAT, corporate egress and mobile networks have mad
 
 The result is not a failure; it is an imbalance nobody attributes correctly. One pool member carries a disproportionate share, its metrics look like a capacity problem, and adding members does not help because the distribution key has fewer distinct values than there are members to spread across.
 
-**And the opposite failure runs alongside it**: a client whose egress address changes mid-session — a phone moving between networks — loses its persistence and lands somewhere new. **One address, many users; one user, many addresses.** Both break the assumption in the same method, and the cure is a persistence key that identifies the session rather than the path it arrived by.
+**And the opposite failure runs alongside it**: a client whose egress address changes mid-session (a phone moving between networks) loses its persistence and lands somewhere new. **One address, many users; one user, many addresses.** Both break the assumption in the same method, and the cure is a persistence key that identifies the session rather than the path it arrived by.

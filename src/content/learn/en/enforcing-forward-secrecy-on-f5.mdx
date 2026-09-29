@@ -9,7 +9,7 @@ relatedArticles: ["forward-secrecy", "f5-clientssl-vs-serverssl", "f5-cipher-ord
 category: transport
 order: 45
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 The generic forward-secrecy article explains the property: a session has forward secrecy when its secret was derived from an ephemeral key exchange (ECDHE or DHE) rather than encrypted under the server's long-term RSA key. On F5 BIG-IP that property is not a toggle you enable; it is decided by the cipher configuration attached to the SSL profile that terminates the connection. This companion shows where that configuration lives and how to make forward secrecy the guaranteed outcome, then notes how the same job is done on Fortinet and Netskope.
@@ -31,3 +31,11 @@ The cleanest enforcement is to prefer TLS 1.3 on the client-facing side. As the 
 ## The same job on Fortinet and Netskope
 
 The principle is vendor-independent; only the control surface differs. On a **FortiGate**, the SSL/SSH inspection and the VIP or server-load-balance SSL settings expose the allowed cipher suites and TLS versions, and enforcing forward secrecy means permitting ECDHE suites and disabling static-RSA and obsolete protocol versions; here too, preferring TLS 1.3 makes it automatic. On **Netskope**, TLS termination happens in the cloud data plane, so the cipher policy is a tenant-level setting rather than a per-device profile: the platform negotiates modern, forward-secret suites with clients and destinations, and the administrator's lever is the minimum TLS version and the decryption policy rather than a hand-written cipher string. In every case the underlying rule from the generic article holds unchanged: forward secrecy is present exactly when the negotiated key exchange is ephemeral, and each product simply gives you a different way to guarantee that outcome.
+
+## Sources
+
+The protocol half of this is normative and the configuration half is F5's, so enforcing forward secrecy has one source for why and another for where.
+
+- [RFC 8446, TLS 1.3 - "static RSA and Diffie-Hellman cipher suites have been removed; all public-key based key exchange mechanisms now provide forward secrecy"](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [Configuring a Custom Cipher String for SSL Negotiation - where the ECDHE preference is actually expressed, through cipher rules and groups rather than a hand-typed string](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)
+- [SSL Traffic Management - the client-side and server-side profile settings this has to be applied on both of, and the note that TLSv1.3 is disabled by default in some configurations](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)

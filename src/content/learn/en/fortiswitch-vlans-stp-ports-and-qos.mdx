@@ -38,7 +38,7 @@ A loop that forms anyway announces itself the same way every time: a broadcast s
 
 ## Ports, split ports and transceivers
 
-A **split port** breaks one high-speed interface into several lower-speed ones — a 40G port into four 10G, a 100G into four 25G — using a breakout cable. Two things follow:
+A **split port** breaks one high-speed interface into several lower-speed ones (a 40G port into four 10G, a 100G into four 25G) using a breakout cable. Two things follow:
 
 Splitting changes the port inventory, so port names change and configuration bound to the original port does not survive. Do it before the port is in service, not after.
 
@@ -60,7 +60,7 @@ Marked traffic is then mapped to egress queues, and the queue configuration deci
 
 **LLDP-MED** extends LLDP with the fields IP phones need. The switch advertises the voice VLAN and QoS policy, and a phone that understands the advertisement configures itself.
 
-The value is operational: it removes per-port voice configuration and lets a phone be moved without touching the switch. The failure mode is a phone that does not receive the advertisement, ends up in the data VLAN, and works — badly, unprioritised, and on the wrong subnet — which is harder to notice than a phone that does not work at all.
+The value is operational: it removes per-port voice configuration and lets a phone be moved without touching the switch. The failure mode is a phone that does not receive the advertisement, ends up in the data VLAN, and works (badly, unprioritised, and on the wrong subnet), which is harder to notice than a phone that does not work at all.
 
 ## What an exam candidate should be able to state cold
 

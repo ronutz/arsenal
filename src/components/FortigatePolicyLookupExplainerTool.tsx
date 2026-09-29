@@ -93,25 +93,25 @@ export default function FortigatePolicyLookupExplainerTool() {
       {error && <div className="cidr-error" role="alert">{error}</div>}
 
       {result && result.mode === "reference" && (
-        <div className="cidr-result">
-          <h3 className="cidr-result-title">{t("howItWorks")}</h3>
-          <ul className="cidr-list">
+        <div className="cidr-results">
+          <h3 className="cidr-section-title">{t("howItWorks")}</h3>
+          <ul className="dig-notes">
             {result.notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>
         </div>
       )}
 
       {result && result.mode === "lookup" && (
-        <div className="cidr-result">
+        <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
             </ul>
           )}
 
           {/* The headline answer, stated before the trace. */}
           {result.packet && (
-            <p className="cidr-result-title">
+            <p className="cidr-section-title">
               {result.matched
                 ? t("matchedPolicy", { id: result.matched.id, action: result.matched.action })
                 : t("implicitDeny")}
@@ -145,7 +145,7 @@ export default function FortigatePolicyLookupExplainerTool() {
           )}
 
           {result.notes.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.notes.map((n, i) => <li key={i}>{n}</li>)}
             </ul>
           )}

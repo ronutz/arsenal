@@ -8,7 +8,7 @@ relatedArticles: ["awaf-enforcement-mode-blocking-vs-transparent", "awaf-signatu
 category: security
 order: 1
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-09-27"
 ---
 
 O F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) pode definir uma política de segurança de forma declarativa, como um arquivo JSON que você mantém em controle de versão e importa no BIG-IP. Como a política é apenas um arquivo, ela se encaixa naturalmente em um pipeline de CI/CD (integração e entrega contínuas): puxe do Git, ajuste e envie de volta para o dispositivo.
@@ -38,3 +38,9 @@ Todo ajuste é opcional, e esta é a coisa mais importante a entender ao ler uma
 A política é organizada em seções lógicas, cada uma com um propósito definido: enforcement (`enforcementMode`, `signature-settings`, `policy-builder`), contexto da aplicação (`applicationLanguage`, `caseInsensitive`, `server-technologies`), a superfície de tráfego (`urls`, `parameters`, `filetypes`, `methods`, `headers`, `cookies`) e proteções (`blocking-settings`, `data-guard`, `brute-force-attack-preventions`, `csrf-protection` e outras).
 
 A F5 publica o schema completo, versionado da v16.0 à v17.5, no clouddocs. Ler uma política bem significa percorrer essas seções uma a uma, sempre lembrando que o que não está escrito é herdado.
+
+## Fontes
+
+O schema é publicado por versão do BIG-IP, portanto a faixa citada acima está visível no sumário, não é uma afirmação sobre ele.
+
+- [F5 BIG-IP WAF Declarative Policy - o conjunto de schemas publicado: v16.0, v16.1, v17.0, v17.1 e v17.5](https://clouddocs.f5.com/products/waf-declarative-policy/)

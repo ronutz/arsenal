@@ -8,7 +8,7 @@ relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "aead-vs-cbc", 
 category: transport
 order: 4
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-09-27"
 ---
 
 ## A pergunta que o sigilo de encaminhamento responde
@@ -44,3 +44,10 @@ O TLS 1.3 encerrou a questão removendo o transporte de chave RSA estático por 
 ## Coletar agora, decifrar depois
 
 O sigilo de encaminhamento protege contra um comprometimento de chave que aconteça depois do fato, mas pressupõe que a matemática Diffie-Hellman subjacente continue difícil. A preocupação iminente é um futuro computador quântico que possa quebrar as trocas de chaves de curva elíptica de hoje, o que dá ao tráfego gravado uma longa vida útil para um atacante disposto a esperar. Essa é a ameaça de coletar agora e decifrar depois, e ela está impulsionando a migração para trocas de chaves híbridas pós-quânticas, que executam uma troca clássica e uma resistente a quântica juntas. O sigilo de encaminhamento continua necessário; ele apenas deixou de ser presumido suficiente para sempre.
+
+## Fontes
+
+Que o TLS 1.3 tornou o sigilo futuro obrigatório em vez de opcional é uma mudança de protocolo, não uma preferência de configuração, e a especificação afirma isso diretamente.
+
+- [RFC 8446, TLS 1.3 - suítes de RSA estático e Diffie-Hellman removidas; toda troca de chaves passa a ter sigilo futuro](https://www.rfc-editor.org/rfc/rfc8446.html)
+- [RFC 5246, TLS 1.2 - a última versão em que o transporte de chave por RSA estático ainda era uma escolha](https://www.rfc-editor.org/rfc/rfc5246.html)

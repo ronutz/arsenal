@@ -24,7 +24,7 @@ Access control decides whether a connection is allowed. Threat Prevention decide
 
 **Threat Emulation** runs unknown files in a sandbox and observes what they do, which is how a file with no signature gets a verdict. The cost is time.
 
-**Threat Extraction** takes the opposite approach: rather than deciding whether a document is malicious, it removes the active content and delivers a clean version immediately. It is decisive where emulation is thorough, and the two are frequently deployed together — extraction delivers a safe copy at once while emulation reaches a verdict on the original.
+**Threat Extraction** takes the opposite approach: rather than deciding whether a document is malicious, it removes the active content and delivers a clean version immediately. It is decisive where emulation is thorough, and the two are frequently deployed together: extraction delivers a safe copy at once while emulation reaches a verdict on the original.
 
 The division worth holding: IPS and Anti-Virus catch what is known, Emulation handles what is unknown, Extraction sidesteps the question, and Anti-Bot assumes the others have already failed.
 
@@ -36,7 +36,7 @@ Every engine acts in one of two modes, and this is the setting that decides whet
 
 **Prevent** blocks.
 
-A profile in Detect produces an accurate, complete, entirely inert record of attacks that succeeded. That is genuinely valuable during a rollout and worthless as a permanent state, and the failure mode is that nobody notices the difference — the dashboards look identical, because the events are the same events.
+A profile in Detect produces an accurate, complete, entirely inert record of attacks that succeeded. That is genuinely valuable during a rollout and worthless as a permanent state, and the failure mode is that nobody notices the difference: the dashboards look identical, because the events are the same events.
 
 The sequence that works is to deploy in Detect, run long enough to see the false positives your environment produces, tune those, then move to Prevent. Skipping the middle step is how a business application gets blocked on the first morning.
 
@@ -44,7 +44,7 @@ The sequence that works is to deploy in Detect, run long enough to see the false
 
 A **profile** bundles which engines are active, in which mode, with what sensitivity, and is applied to gateways through the Threat Prevention policy.
 
-Shipped profiles cover the common intents — a permissive one favouring availability, a balanced one, and a strict one favouring security. Cloning one and adjusting is the normal starting point.
+Shipped profiles cover the common intents: a permissive one favouring availability, a balanced one, and a strict one favouring security. Cloning one and adjusting is the normal starting point.
 
 Different populations justify different profiles, and this is where the feature earns its place: a profile for servers, where traffic is predictable and strictness is affordable, and a profile for general user traffic, where it is not.
 

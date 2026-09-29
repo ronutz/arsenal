@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
-When an identity provider signs a token, the relying party that receives it needs the matching public key to check the signature. The provider cannot send the key inside every token, so instead it publishes a small JSON document — the JSON Web Key Set — at a well-known URL. Anyone can fetch it, and that is the point: the keys in it are public.
+When an identity provider signs a token, the relying party that receives it needs the matching public key to check the signature. The provider cannot send the key inside every token, so instead it publishes a small JSON document, the JSON Web Key Set, at a well-known URL. Anyone can fetch it, and that is the point: the keys in it are public.
 
 ## The shape of a JWKS
 

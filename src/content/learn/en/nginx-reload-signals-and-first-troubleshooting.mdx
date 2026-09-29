@@ -12,7 +12,7 @@ status: reviewed
 updated: "2026-07-27"
 ---
 
-Most NGINX troubleshooting is short, provided you start in the right place. The trouble is that the obvious first move — restart it and see — is the one that both loses information and drops connections.
+Most NGINX troubleshooting is short, provided you start in the right place. The trouble is that the obvious first move, restart it and see, is the one that both loses information and drops connections.
 
 ## Test before you reload
 
@@ -26,7 +26,7 @@ Send a reload and the master process validates the new configuration, and if it 
 
 Nothing in flight is dropped. This is why configuration changes in production are routine rather than an event, and it is the single most useful thing to know about running NGINX.
 
-A **restart** stops everything and starts it again. Connections die. It is needed when the master itself must change — a new binary, or a directive that only the master reads at startup — and not otherwise.
+A **restart** stops everything and starts it again. Connections die. It is needed when the master itself must change (a new binary, or a directive that only the master reads at startup) and not otherwise.
 
 Worth knowing for the exam and for reading older material: reload is `SIGHUP` to the master, graceful shutdown is `SIGQUIT`, immediate shutdown is `SIGTERM`, and log reopening is `SIGUSR1`. A service manager wraps these, but the signals are what it sends.
 
@@ -38,7 +38,7 @@ The fix is to tell NGINX to reopen its logs after the rename. Every sensible log
 
 ## Which log answers which question
 
-**The error log** holds the reason. Failures to start, permission denials, upstream connection problems, TLS handshake failures. Its level is configurable, and `debug` is available if the build supports it — but be deliberate, because debug output is enormous.
+**The error log** holds the reason. Failures to start, permission denials, upstream connection problems, TLS handshake failures. Its level is configurable, and `debug` is available if the build supports it, but be deliberate, because debug output is enormous.
 
 **The access log** holds the record. Which request, which status, how long it took, how large it was. This is where you learn *what* happened.
 
@@ -50,7 +50,7 @@ The division is worth internalising: the access log tells you a request returned
 
 **Is it running, and as whom?** The master should be root and the workers the `user` account. A missing master means it never started, and the error log will say why.
 
-**Can the worker read it?** Almost every 403 that is not an explicit `deny` is a worker-user permission problem — the whole path, not just the file.
+**Can the worker read it?** Almost every 403 that is not an explicit `deny` is a worker-user permission problem: the whole path, not just the file.
 
 **Which location actually matched?** For anything routing-related, this is the question, and the answer is frequently not the block you expected. The [location matcher](/tools/nginx-location-matcher) on this site runs the documented selection algorithm and shows the walk.
 
@@ -58,8 +58,8 @@ The division is worth internalising: the access log tells you a request returned
 
 **502** means NGINX reached upstream and got something it could not use, or could not connect at all. The problem is usually behind NGINX, not in it.
 
-**504** means upstream accepted the connection and did not answer in time. That is a timeout, and the fix is either upstream being faster or the timeout being longer — deciding which is the actual work.
+**504** means upstream accepted the connection and did not answer in time. That is a timeout, and the fix is either upstream being faster or the timeout being longer, and deciding which is the actual work.
 
 ## What a learner should be able to state cold
 
-`nginx -t` validates without changing anything and should precede every reload. A reload starts new workers with the new configuration and lets old workers finish their existing connections, so nothing in flight is dropped; a restart drops connections and is only needed when the master itself must change. Reload is SIGHUP, graceful shutdown SIGQUIT, immediate SIGTERM, log reopen SIGUSR1. Renaming a log file does not redirect output — NGINX must be told to reopen. The error log holds the reason and the access log holds the record. For a 403 suspect worker-user permissions across the whole path; a 502 means upstream returned something unusable or was unreachable, and a 504 means it did not answer in time.
+`nginx -t` validates without changing anything and should precede every reload. A reload starts new workers with the new configuration and lets old workers finish their existing connections, so nothing in flight is dropped; a restart drops connections and is only needed when the master itself must change. Reload is SIGHUP, graceful shutdown SIGQUIT, immediate SIGTERM, log reopen SIGUSR1. Renaming a log file does not redirect output: NGINX must be told to reopen. The error log holds the reason and the access log holds the record. For a 403 suspect worker-user permissions across the whole path; a 502 means upstream returned something unusable or was unreachable, and a 504 means it did not answer in time.

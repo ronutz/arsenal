@@ -18,7 +18,7 @@ Rule-based detection has a structural limit: it finds what someone thought to de
 
 Both machine learning detection and user behaviour analytics build a model of normal from observed data and report departures from it. The consequences of that mechanism are worth stating before the features:
 
-**The baseline period matters enormously.** A model learned during a period that included an incident treats the incident as normal. A model learned over too short a period treats routine variation — month end, a holiday, a project launch — as anomalous.
+**The baseline period matters enormously.** A model learned during a period that included an incident treats the incident as normal. A model learned over too short a period treats routine variation (month end, a holiday, a project launch) as anomalous.
 
 **Anomalous is not malicious.** A deviation is a statement about statistics, not intent. Someone changing role, a new application rolling out, and an attacker exfiltrating data all produce departures from baseline. The output is a prioritisation signal, not a verdict.
 
@@ -41,7 +41,7 @@ UEBA output feeds two places. It can **contribute to rules**, so a rule fires on
 
 Zero trust access decisions produce a rich event stream: which user, which device, which application, what posture, allowed or denied. Feeding that into the SIEM (security information and event management) adds a dimension the network alone does not carry.
 
-The correlation this enables is the point. A device failing posture checks, then a user from that device attempting access to several applications in succession, then a burst of denials — each is minor and the sequence is not. Only a system seeing both the access decisions and the surrounding activity can join them.
+The correlation this enables is the point. A device failing posture checks, then a user from that device attempting access to several applications in succession, then a burst of denials: each is minor and the sequence is not. Only a system seeing both the access decisions and the surrounding activity can join them.
 
 It also closes a loop back to policy. A SIEM that identifies an account as high risk can drive the access system to require more of it, which is zero trust behaving as intended rather than as a static rule set.
 

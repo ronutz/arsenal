@@ -39,8 +39,8 @@ Two defenses apply, and the stronger one is familiar. Parsers can impose **expan
 
 ## A denial of service that arrives as a valid document
 
-Nothing about the attack is malformed. The document is well-formed XML, the entities are legal, and the parser is doing precisely what the specification describes. **The failure is in arithmetic, not in validation** — ten nested entities each referencing the previous ten times is a billion expansions from a few hundred bytes.
+Nothing about the attack is malformed. The document is well-formed XML, the entities are legal, and the parser is doing precisely what the specification describes. **The failure is in arithmetic, not in validation**: ten nested entities each referencing the previous ten times is a billion expansions from a few hundred bytes.
 
 This is why input-size limits feel like protection and are not. **The dangerous property is the ratio, not the size**, and a payload small enough to pass any reasonable byte limit can exhaust memory on expansion.
 
-The defences that work are structural: **disable entity expansion**, or cap the expansion count and total expanded size at the parser. Both are settings on the object that does the work, which is the same place XXE is fixed — and for the same reason.
+The defences that work are structural: **disable entity expansion**, or cap the expansion count and total expanded size at the parser. Both are settings on the object that does the work, which is the same place XXE is fixed, and for the same reason.

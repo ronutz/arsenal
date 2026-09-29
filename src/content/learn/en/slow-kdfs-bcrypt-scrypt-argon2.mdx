@@ -40,4 +40,4 @@ A work factor chosen in 2015 is not the same defence in 2026 against the same mo
 
 The failure is silent by construction: hashes created with an old factor keep verifying correctly forever, so an application can be running a decade-old cost setting with no error, no warning and no visible symptom.
 
-Two practical consequences. **Store the parameters with the hash** — the standard formats do — so old and new can coexist while you migrate. And **re-hash on successful login**, when you briefly hold the plaintext, which is the only moment an upgrade is possible without asking users to do anything.
+Two practical consequences. **Store the parameters with the hash** (the standard formats do) so old and new can coexist while you migrate. And **re-hash on successful login**, when you briefly hold the plaintext, which is the only moment an upgrade is possible without asking users to do anything.

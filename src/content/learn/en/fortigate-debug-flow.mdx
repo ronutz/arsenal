@@ -45,8 +45,8 @@ correction.
 
 `trace start 100` means **one hundred packets**, not a hundred seconds or until
 you press something. On a busy interface a narrow-looking filter can exhaust
-that before you have finished reading the first screen. Start small — ten is
-often enough to answer "which policy matched" — and repeat.
+that before you have finished reading the first screen. Start small (ten is
+often enough to answer "which policy matched") and repeat.
 
 ## Why a correct trace can show nothing
 
@@ -58,7 +58,7 @@ platforms with NP or SP processors, once a session is established it can be
 handled in silicon, and the debug flow sees nothing while traffic is plainly
 flowing. The trace is working; the packets simply are not going past it.
 
-The usual test is to disable offload for the affected policy — but understand
+The usual test is to disable offload for the affected policy, but understand
 what you have done: **you are now measuring a different path from the one in
 production.** Treat it as a deliberate step with a deliberate revert, not as a
 fix.

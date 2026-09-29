@@ -1,13 +1,13 @@
 // ============================================================================
 // src/lib/roles.ts
 // ----------------------------------------------------------------------------
-// THE ROLES — the corpus about the positions the industry is made of.
+// THE ROLES - the corpus about the positions the industry is made of.
 //
 // Ratified by PRIME 2026-08-14. Name: "The Roles". Lives at /roles/, a sibling
 // of /practice/, with its card in /learn/ immediately after The Practice.
 //
 // WHAT SEPARATES THIS FROM THE PRACTICE. The Practice is VERBS: how the work is
-// done — triage, escalation, evidence, handover. This is NOUNS: what a position
+// done - triage, escalation, evidence, handover. This is NOUNS: what a position
 // IS. Who it receives from, who it serves, what it answers for, what it is
 // measured on. A reader arrives at The Practice holding a question about an
 // activity, and arrives here holding a question about a job.
@@ -36,7 +36,7 @@
 // rejects a bare marker.
 //
 //   "Held this role" is a claim.
-//   "Held this role — in distribution, 2015-2019" is a fact a reader can weigh.
+//   "Held this role - in distribution, 2015-2019" is a fact a reader can weigh.
 //
 // The mechanism matches the one the vendor entries use for sourceNote: state
 // the provenance in the artefact and let the reader judge it.
@@ -80,7 +80,7 @@ export interface RoleProvenance {
   /** Required for documented: where the description comes from. */
   /**
    * Where the description comes from. `sourceNote` carries what the citation
-   * alone leaves out — most usefully, that a role HAS no professional body and
+   * alone leaves out - most usefully, that a role HAS no professional body and
    * the sources are therefore industry rather than institutional. That absence
    * is informative about the role, so the page renders it rather than keeping
    * it in the data where only a maintainer would see it.
@@ -127,7 +127,7 @@ export interface Role {
    * *** PART I OF THE ENRICHMENT ROUND (2026-08-15) ***
    *
    * The tags above are five coarse values, and `second-line` alone matches most
-   * of a 64-article corpus — so deriving the list from tags gave two very
+   * of a 64-article corpus - so deriving the list from tags gave two very
    * different roles nearly the same reading. Selection replaces filtering:
    * these are the articles that belong to THIS job. Where the field is absent
    * the page falls back to the tag filter, so a new role is useful before it is
@@ -204,12 +204,12 @@ export const ROLES: readonly Role[] = Object.freeze([
     order: 1,
     provenance: { kind: "held", where: "in distribution, at two distributors", when: "2015-2019" },
     whatItIs:
-      "A systems engineer whose customers are other engineers. Distribution sits between the vendor and the reseller, and the channel systems engineer is the technical face of that layer: enabling the partner's engineers, sizing and configuring what the partner will sell, and holding the first line of technical help for a whole population of resellers rather than for one end customer. The role is also the technical arm a reseller borrows — running the proof of concept and the proof of value on the partner's behalf — and the channel through which a partner's technical questions reach the vendor and come back answered.",
+      "A systems engineer whose customers are other engineers. Distribution sits between the vendor and the reseller, and the channel systems engineer is the technical face of that layer: enabling the partner's engineers, sizing and configuring what the partner will sell, and holding the first line of technical help for a whole population of resellers rather than for one end customer. The role is also the technical arm a reseller borrows - running the proof of concept and the proof of value on the partner's behalf - and the channel through which a partner's technical questions reach the vendor and come back answered.",
     theDay: [
       "Sizing and configuring a bill of materials for a partner's opportunity, frequently for an end customer nobody in the room has met.",
       "Enabling partner engineers: workshops, demonstrations, and the answering of the same foundational question for a dozen different companies.",
       "Enabling partner SALESPEOPLE, which is separate work with a separate vocabulary: what the product is for, which conversation opens the door, and which technical detail belongs in a first meeting.",
-      "Running the proof of concept — PoC, showing the thing works — and the proof of value — PoV, showing the thing is worth what it costs — as the partner's technical arm, in front of the partner's customer.",
+      "Running the proof of concept - PoC, showing the thing works - and the proof of value - PoV, showing the thing is worth what it costs - as the partner's technical arm, in front of the partner's customer.",
       "Making the technical case for a product to engineers who already run something that works and have reasons to keep it, which is persuasion resting on evidence rather than on enthusiasm.",
       "Brokering between the partner and the vendor on technical matters, so that a question asked in one company's vocabulary arrives in the other's and returns in a form the asker can use.",
       "Standing in for the vendor's systems engineer where the deal is too small for the vendor to staff, which is most deals.",
@@ -252,7 +252,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Standing in front of a partner's customer under the partner's name, with the partner's reputation attached to the answer.",
     ],
     turnsOn:
-      "The output is capability in other companies, and capability is slow, cumulative and hard to attribute. A partner engineer who becomes self-sufficient stops calling, which reads in the numbers as reduced engagement and reads in reality as the job done. The same shape governs the brokering: a question carried accurately between a partner and a vendor leaves both sides believing they simply understood each other. Holding that line — investing in partners who will need less help next year — is the whole discipline of the role, and it asks for a manager who understands the same thing.",
+      "The output is capability in other companies, and capability is slow, cumulative and hard to attribute. A partner engineer who becomes self-sufficient stops calling, which reads in the numbers as reduced engagement and reads in reality as the job done. The same shape governs the brokering: a question carried accurately between a partner and a vendor leaves both sides believing they simply understood each other. Holding that line - investing in partners who will need less help next year - is the whole discipline of the role, and it asks for a manager who understands the same thing.",
     adjacentRoles: ["systems-engineer", "technical-instructor", "network-consulting-engineer"],
     practiceRoles: ["field", "design"],
     practiceArticles: ["what-vendor-support-can-and-cannot-do", "opening-a-vendor-case", "handover-project-to-operation"],
@@ -395,7 +395,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     theDay: [
       "Taking an escalation from the second line, which arrives with a history and a customer who has already waited.",
       "Reproducing the fault in a laboratory, which is the hardest part of the day and the most persuasive thing the role produces.",
-      "Reading code, or reading close enough to it — release notes, defect records, debug output — to form a hypothesis a developer will recognise.",
+      "Reading code, or reading close enough to it - release notes, defect records, debug output - to form a hypothesis a developer will recognise.",
       "Deciding what genuinely belongs to engineering, which is the gate this role exists to hold.",
       "Building the case file that a developer can act on without repeating the investigation.",
       "Feeding the resolution back down as a workaround, a knowledge article and an explanation the second line can use next time.",
@@ -487,7 +487,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The steadiness to hold a relationship through an incident and remain trusted afterwards.",
     ],
     turnsOn:
-      "The visible work is incident response and the durable work is prevention, which produces quiet. A high-touch engagement that succeeds shows fewer escalations, calmer reviews and a customer who stops needing to phone — and every one of those reads as reduced activity. Making the prevented incident visible, in the reporting and in the review, is what keeps the arrangement funded and is as much part of the role as the diagnosis.",
+      "The visible work is incident response and the durable work is prevention, which produces quiet. A high-touch engagement that succeeds shows fewer escalations, calmer reviews and a customer who stops needing to phone - and every one of those reads as reduced activity. Making the prevented incident visible, in the reporting and in the review, is what keeps the arrangement funded and is as much part of the role as the diagnosis.",
     adjacentRoles: ["product-support-engineer", "field-network-engineer", "systems-engineer"],
     practiceRoles: ["second-line", "management", "field"],
     practiceArticles: ["communicating-upward-while-live", "running-a-war-room", "prevention-that-survives-the-budget", "the-customer-who-is-furious-and-correct", "judgment-at-hour-eleven"],
@@ -743,7 +743,7 @@ export const ROLES: readonly Role[] = Object.freeze([
     provenance: { kind: "held", where: "at every technical role since 1997, and exclusively from 2020",
       when: "1997-present" },
     whatItIs:
-      "The engineer who teaches the product to the people who will run it. Authorised instruction is delivered against a vendor's own curriculum to a room of practising engineers, which makes the role a teaching job resting on a practitioner's foundation: the questions arrive from real environments and expect answers that hold up in them. The work is also continuous with what came before it — field, consulting and support roles all end with training the customer's staff, and instruction is that final hour of the visit made into the whole job.",
+      "The engineer who teaches the product to the people who will run it. Authorised instruction is delivered against a vendor's own curriculum to a room of practising engineers, which makes the role a teaching job resting on a practitioner's foundation: the questions arrive from real environments and expect answers that hold up in them. The work is also continuous with what came before it - field, consulting and support roles all end with training the customer's staff, and instruction is that final hour of the visit made into the whole job.",
     theDay: [
       "Delivering a class, live, to engineers in several countries and time zones at once.",
       "Repairing a laboratory environment during a break, so the exercise runs for everybody.",
@@ -907,7 +907,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The judgement to hold a standard when a customer asks for an exception that would be simpler to grant.",
     ],
     turnsOn:
-      "Standardisation is the margin. Every customer arrives with an environment shaped by their own history and asks, reasonably, to keep it — and each accommodation granted is a permanent tax on every future change. Providers that thrive negotiate the estate toward a pattern they can operate at scale, and the engineer who explains that trade to a customer in terms of their own resilience is doing the commercial work as well as the technical.",
+      "Standardisation is the margin. Every customer arrives with an environment shaped by their own history and asks, reasonably, to keep it - and each accommodation granted is a permanent tax on every future change. Providers that thrive negotiate the estate toward a pattern they can operate at scale, and the engineer who explains that trade to a customer in terms of their own resilience is doing the commercial work as well as the technical.",
     adjacentRoles: ["network-consulting-engineer", "technical-assistance-centre-engineer", "security-operations-analyst"],
     practiceRoles: ["first-line", "second-line", "field"],
     practiceArticles: ["on-call-honestly", "the-queue-as-a-psychological-object", "baselines-knowing-what-normal-looks-like", "handover-project-to-operation"],
@@ -1093,7 +1093,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Even handling of conflict, because a partner who feels displaced remembers it for years.",
     ],
     turnsOn:
-      "Partner attention is the scarce thing. A partner carries several vendors and allocates its engineers and sellers to whichever combination of margin, demand and ease returns most — so the account manager competes with the other logos on that partner's wall rather than with the vendor's own competitors. Making the line easy to sell, easy to configure and easy to support wins more capacity than a richer rebate does, which is why this role and the channel systems engineer succeed together or separately.",
+      "Partner attention is the scarce thing. A partner carries several vendors and allocates its engineers and sellers to whichever combination of margin, demand and ease returns most - so the account manager competes with the other logos on that partner's wall rather than with the vendor's own competitors. Making the line easy to sell, easy to configure and easy to support wins more capacity than a richer rebate does, which is why this role and the channel systems engineer succeed together or separately.",
     adjacentRoles: ["channel-systems-engineer", "account-manager"],
     practiceRoles: ["management"],
     relatedTools: [],
@@ -1155,7 +1155,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The composure to lead a room of people who are frightened and senior.",
     ],
     turnsOn:
-      "Preparation is the phase that decides the outcome, and it happens on ordinary days. Whether logs exist, whether the asset inventory is current, whether the escalation list has the right mobile numbers on it — all of that is settled months before an incident and determines how well it goes. The responder's most valuable hours are therefore the quiet ones spent making the next response possible, and those hours compete with everything more visible.",
+      "Preparation is the phase that decides the outcome, and it happens on ordinary days. Whether logs exist, whether the asset inventory is current, whether the escalation list has the right mobile numbers on it - all of that is settled months before an incident and determines how well it goes. The responder's most valuable hours are therefore the quiet ones spent making the next response possible, and those hours compete with everything more visible.",
     adjacentRoles: ["security-operations-analyst", "technical-assistance-centre-engineer", "digital-forensics-analyst"],
     practiceRoles: ["second-line", "management"],
     practiceArticles: ["containment-before-cure", "running-a-war-room", "timelines-reconstructing-what-happened", "deciding-with-incomplete-information", "communicating-upward-while-live", "judgment-at-hour-eleven"],
@@ -1234,7 +1234,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       kind: "documented",
       sources: [
         { label: "Cisco - IOS XR software architecture: independent protected processes, message passing between components, and the two-stage commit that constrains how configuration changes are written", url: "https://www.cisco.com/c/en/us/products/collateral/ios-nx-os-software/ios-xr-software/index.html" },
-        { label: "Juniper - Junos OS Evolved architecture: a distributed state store from which a restarted process retrieves its state, including on a different node", url: "https://www.juniper.net/documentation/us/en/software/junos/junos-evolved-overview/topics/concept/evo-overview.html" },
+        { label: "Juniper - Junos OS Evolved architecture: a distributed state store from which a restarted process retrieves its state, including on a different node", url: "https://www.juniper.net/documentation/us/en/software/junos/overview-evo/topics/concept/evo-overview.html" },
         { label: "Arista - EOS architecture: an unmodified Linux kernel with a central state database, where processes publish and subscribe rather than communicating directly", url: "https://www.arista.com/en/products/eos" },
       ],
     },
@@ -1341,7 +1341,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Steadiness with people who are frustrated and whose day this has interrupted.",
     ],
     turnsOn:
-      "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling — a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
+      "The desk exists so that the routing knowledge lives in one place rather than in every head in the organisation. That makes first-contact resolution the honest measure and volume a misleading one: an analyst who resolves fewer tickets while raising what the team can handle alone has improved the service, and the numbers show it slowly. It also explains the ceiling - a desk kept purely at intake stays a switchboard, and one given time to learn becomes the reason specialists are left alone.",
     adjacentRoles: ["managed-service-provider-engineer", "technical-assistance-centre-engineer", "network-operations-specialist"],
     practiceRoles: ["first-line"],
     practiceArticles: ["problem-report-intake", "triage-and-severity", "the-queue-as-a-psychological-object", "not-your-problem"],
@@ -1362,7 +1362,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The role that faces two directions at once. The prefix names the subject — network analyst, security analyst, data analyst — and the word analyst names the stance: studying what an organisation currently runs and what it currently needs, and describing each to the other. The framework puts it plainly as bringing business and technology together by understanding the needs and limitations of both.",
+      "The role that faces two directions at once. The prefix names the subject - network analyst, security analyst, data analyst - and the word analyst names the stance: studying what an organisation currently runs and what it currently needs, and describing each to the other. The framework puts it plainly as bringing business and technology together by understanding the needs and limitations of both.",
     theDay: [
       "Studying the systems and procedures as they actually operate, which differs from how they were designed and from how they are described.",
       "Gathering requirements from people whose expertise is their own work rather than technology.",
@@ -1423,7 +1423,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The top of the management arm, in security. The framework describes the work as establishing vision and direction for an organisation's cybersecurity operations and resources, with the authority to make decisions that reach the whole organisation, approve policy and engage stakeholders. The ladder below it runs manager, then director, then this — and each rung trades proximity to the work for reach across it.",
+      "The top of the management arm, in security. The framework describes the work as establishing vision and direction for an organisation's cybersecurity operations and resources, with the authority to make decisions that reach the whole organisation, approve policy and engage stakeholders. The ladder below it runs manager, then director, then this - and each rung trades proximity to the work for reach across it.",
     theDay: [
       "Setting direction, and holding it while the quarter argues with it.",
       "Acquiring resources: budget, headcount, and the authority to require things of teams elsewhere.",
@@ -1463,7 +1463,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The judgement to say what the organisation is choosing to accept, and to have it recorded as a choice.",
     ],
     turnsOn:
-      "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept — because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
+      "The role is accountable for an outcome it produces through other people's budgets and other people's priorities. Authority over policy is real and authority over the engineering that implements it usually belongs to somebody else, so the work is persuasion carried out with a mandate. Leaders who last make the risk legible to the people who hold the budget, and record what the organisation decided to accept - because the record is what turns a later incident from a failure of the programme into a consequence of a decision somebody made knowingly.",
     adjacentRoles: ["security-manager", "security-operations-analyst", "incident-responder", "vulnerability-analyst", "it-auditor"],
     practiceRoles: ["management"],
     practiceArticles: ["communicating-upward-while-live", "prevention-that-survives-the-budget", "hindsight-makes-it-look-inevitable", "rca-without-a-scapegoat"],
@@ -1585,7 +1585,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Honesty upward about capacity, which is the same skill the project manager needs and costs the same to use.",
     ],
     turnsOn:
-      "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so — because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
+      "This is the rung the Y moment leads to, and the trade is immediate: the day fills with other people's work and the technical depth that earned the promotion begins to age from the first week. Managers who thrive decide early what they are keeping current and what they are letting go, and say so - because the alternative is a slow drift in which the team stops asking and the manager stops being able to answer.",
     adjacentRoles: ["security-leader", "security-operations-analyst", "incident-responder"],
     practiceRoles: ["management"],
     practiceArticles: ["burnout-in-operations", "on-call-honestly", "the-queue-as-a-psychological-object", "working-with-people-who-are-frightened"],
@@ -1646,7 +1646,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Writing things down, which is the difference between expertise and a dependency.",
     ],
     turnsOn:
-      "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions — why that service runs on that host, which job has to finish before that one starts — become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
+      "The role accumulates knowledge that lives nowhere else. Fifteen years of small decisions - why that service runs on that host, which job has to finish before that one starts - become the reason the estate works and the reason it cannot be handed over. Administrators who write it down convert personal indispensability into organisational capability, and the trade is real: the documented administrator is easier to replace and far easier to promote.",
     adjacentRoles: ["service-desk-analyst", "managed-service-provider-engineer", "systems-analyst", "network-operations-specialist"],
     practiceRoles: ["second-line", "first-line", "field"],
     practiceArticles: ["documenting-for-the-inheritor", "what-to-automate-and-what-never-to", "configuration-diffing-and-version-control", "log-discipline", "the-scripts-worth-keeping"],
@@ -1707,7 +1707,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Resistance to the compelling narrative, since a good story is the commonest way an assessment goes wrong.",
     ],
     turnsOn:
-      "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision — which detection, which priority, which hunt — and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
+      "Intelligence earns its name by changing a decision. A report that arrives, is read, and leaves the defence exactly as it was has cost the organisation an analyst's week and delivered news. The analysts who matter work backwards from the decision - which detection, which priority, which hunt - and write toward it, which also makes the work measurable in a way that generic reporting leaves out of reach.",
     adjacentRoles: ["security-operations-analyst", "incident-responder", "vulnerability-analyst"],
     practiceRoles: ["second-line", "design"],
     practiceArticles: ["when-the-evidence-disagrees", "deciding-with-incomplete-information", "the-assumption-you-cannot-see"],
@@ -1728,7 +1728,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Turning a resolution into an article somebody can follow without the engineer who wrote it.",
       "Retiring and correcting: an article describing a release nobody runs is worse than an absent one.",
       "Working the taxonomy, since an article that cannot be found has the same value as an article that was never written.",
-      "Measuring deflection — which articles answered a question before it became a case — and feeding that back into what gets written next.",
+      "Measuring deflection - which articles answered a question before it became a case - and feeding that back into what gets written next.",
     ],
     accountableFor: [
       "Articles being accurate at the version they claim to cover.",
@@ -1762,7 +1762,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Comfort with an output whose success is a case that never opened.",
     ],
     turnsOn:
-      "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue — which is why the role has to belong to somebody rather than to everybody's good intentions.",
+      "The knowledge exists at the moment the case closes and decays from that moment. An engineer asked a week later remembers the fix; asked a month later remembers that there was one. Capturing it inside that window is the whole discipline, and it competes directly with the next case in the queue - which is why the role has to belong to somebody rather than to everybody's good intentions.",
     adjacentRoles: ["product-support-engineer", "technical-assistance-centre-engineer", "technical-instructor"],
     practiceRoles: ["second-line", "design"],
     practiceArticles: ["knowledge-capture-that-gets-found", "the-write-up", "feeding-the-fix-back", "documenting-for-the-inheritor"],
@@ -1784,7 +1784,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The person on the other side of every sale described in this corpus. Procurement runs the cycle — market analysis, sourcing, negotiation, contracting and supplier management — with the object of acquiring at the right price, quality, quantity and time. The professional body draws a line worth keeping: procurement covers that whole cycle, while purchasing fulfils the transaction.",
+      "The person on the other side of every sale described in this corpus. Procurement runs the cycle - market analysis, sourcing, negotiation, contracting and supplier management - with the object of acquiring at the right price, quality, quantity and time. The professional body draws a line worth keeping: procurement covers that whole cycle, while purchasing fulfils the transaction.",
     theDay: [
       "Running a tender or a request for proposal, and keeping it defensible while the business argues for the supplier it already chose.",
       "Negotiating price, terms, service levels and the renewal clauses that decide the next three years.",
@@ -1824,7 +1824,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The independence to say that the chosen supplier lost on the criteria the organisation set.",
     ],
     turnsOn:
-      "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented — a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
+      "The seller is measured on revenue captured and the buyer on discount obtained, which makes one number the target of two careers pulling opposite ways. The subtlety is in how a saving is counted: a reduction from a known baseline is auditable, while cost avoided is measured against an increase that was proposed and then prevented - a comparison with something that stayed hypothetical. Buyers who explain that distinction to their own finance function get credit for both kinds; those who leave it implicit find the second kind quietly discounted.",
     adjacentRoles: ["account-manager", "channel-account-manager", "systems-engineer"],
     practiceRoles: ["management"],
     practiceArticles: ["what-vendor-support-can-and-cannot-do", "evidence-that-convinces-next-quarter"],
@@ -1906,7 +1906,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The person who decides what the product is. The body of knowledge frames the work across a lifecycle — conceive, plan, develop, qualify, launch, deliver, retire — with a decision point between each phase. A product manager owns those decisions and the reasoning behind them, and owns them without commanding any of the teams whose work depends on them.",
+      "The person who decides what the product is. The body of knowledge frames the work across a lifecycle - conceive, plan, develop, qualify, launch, deliver, retire - with a decision point between each phase. A product manager owns those decisions and the reasoning behind them, and owns them without commanding any of the teams whose work depends on them.",
     theDay: [
       "Talking to customers, and to the people who talk to customers, which is a different and larger population.",
       "Deciding what enters the roadmap, and revisiting it when the evidence moves.",
@@ -1946,7 +1946,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The nerve to hold a gate closed.",
     ],
     turnsOn:
-      "A roadmap is a list of refusals. Every item on it represents many that were declined, and the declining is where the role is actually exercised — most of all at the gate, where stopping something the organisation is already committed to costs more socially than continuing it costs commercially. Product managers who can close a gate produce focused products; those who cannot produce long roadmaps and thin releases, and both look like activity from outside.",
+      "A roadmap is a list of refusals. Every item on it represents many that were declined, and the declining is where the role is actually exercised - most of all at the gate, where stopping something the organisation is already committed to costs more socially than continuing it costs commercially. Product managers who can close a gate produce focused products; those who cannot produce long roadmaps and thin releases, and both look like activity from outside.",
     adjacentRoles: ["network-software-engineer", "product-support-engineer", "systems-engineer", "product-marketing-manager"],
     practiceRoles: ["design", "management"],
     practiceArticles: ["root-cause-is-a-choice", "feeding-the-fix-back", "prevention-that-survives-the-budget"],
@@ -2088,7 +2088,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The person who decides what may be done to production, and when. The framework states the purpose exactly: maximise the number of successful changes by assessing risk properly, authorising changes to proceed, and managing the schedule. The word in that sentence carrying the most weight is maximise — the practice exists to let changes happen, with the assessment as the means rather than the object.",
+      "The person who decides what may be done to production, and when. The framework states the purpose exactly: maximise the number of successful changes by assessing risk properly, authorising changes to proceed, and managing the schedule. The word in that sentence carrying the most weight is maximise - the practice exists to let changes happen, with the assessment as the means rather than the object.",
     theDay: [
       "Assessing what is proposed: blast radius, dependencies, the plan to return, and whether the plan has been tried.",
       "Authorising, at whatever level the risk justifies, which for routine work should be automatic.",
@@ -2128,7 +2128,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "A blameless instinct in review, since the alternative is accurate proposals becoming optimistic ones.",
     ],
     turnsOn:
-      "Two numbers pull opposite ways: change success rate and lead time. A practice tuned only for success reviews everything, and the queue becomes the reason teams stop proposing improvements; one tuned only for speed accumulates the incidents that produce the next review board. The resolution is categorical rather than case by case — deciding which classes of change are standard and letting those flow — and the framework is unusually candid that in product-focused organisations this may be daily practice and automation rather than a job at all.",
+      "Two numbers pull opposite ways: change success rate and lead time. A practice tuned only for success reviews everything, and the queue becomes the reason teams stop proposing improvements; one tuned only for speed accumulates the incidents that produce the next review board. The resolution is categorical rather than case by case - deciding which classes of change are standard and letting those flow - and the framework is unusually candid that in product-focused organisations this may be daily practice and automation rather than a job at all.",
     adjacentRoles: ["systems-administrator", "service-desk-analyst", "project-manager"],
     practiceRoles: ["management", "second-line"],
     practiceArticles: ["change-windows-and-rollback-arithmetic", "capture-before-you-change", "what-acceptance-testing-is-for"],
@@ -2206,7 +2206,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       kind: "documented",
       sources: [
         { label: "PeopleCert - ITIL 4 Practitioner: Problem Management, whose purpose is to reduce the likelihood and impact of incidents by identifying actual and potential causes and managing workarounds and known errors", url: "https://www.peoplecert.org/browse-certifications/it-governance-and-service-management/ITIL-1/itil4-practices-problem-management-3688" },
-        { label: "An account of the ITIL 4 problem management practice and its three phases — problem identification, problem control and error control — and how it differs from incident management, which addresses the symptom to restore service", url: "https://www.beyond20.com/blog/an-overview-of-the-itil-4-problem-management-practice/" },
+        { label: "An account of the ITIL 4 problem management practice and its three phases - problem identification, problem control and error control - and how it differs from incident management, which addresses the symptom to restore service", url: "https://www.beyond20.com/blog/an-overview-of-the-itil-4-problem-management-practice/" },
       ],
     },
     whatItIs:
@@ -2272,7 +2272,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The engineer who runs the network an organisation depends on. The federal work role puts it as planning, implementing and operating network services and systems, and then does something unusually useful: it lists the titles the same work is advertised under — network administrator, network analyst, network designer, network engineer, network systems engineer, telecommunications specialist. One body of work, seven names, which is worth holding on to before comparing two job descriptions.",
+      "The engineer who runs the network an organisation depends on. The federal work role puts it as planning, implementing and operating network services and systems, and then does something unusually useful: it lists the titles the same work is advertised under - network administrator, network analyst, network designer, network engineer, network systems engineer, telecommunications specialist. One body of work, seven names, which is worth holding on to before comparing two job descriptions.",
     theDay: [
       "Configuring and optimising the switches, routers and the protocols running across them.",
       "Diagnosing connectivity, which begins by establishing whether the network is involved at all.",
@@ -2390,7 +2390,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       kind: "documented",
       sources: [
         { label: "A revenue-role lexicon defining the customer success manager as the post-sale relationship owner, measured on net revenue retention, logo retention and expansion, and distinct from the account executive who owns new business", url: "https://www.startups.com/lexicon/customer-success-manager" },
-        { label: "A business-to-business sales glossary on the role's metrics — gross and net revenue retention, logo churn, health score and time to value — and on its frequently non-closing, light-commercial position", url: "https://www.getchief.com/sales-glossary-terms/customer-success-manager-csm" },
+        { label: "A business-to-business sales glossary on the role's metrics - gross and net revenue retention, logo churn, health score and time to value - and on its frequently non-closing, light-commercial position", url: "https://www.getchief.com/sales-glossary-terms/customer-success-manager-csm" },
         { label: "An account of how the role has shifted, from a satisfaction function to one carrying retention and expansion targets alongside traditional measures", url: "https://www.csinsider.co/email/customer-success-manager-role", sourceNote: "Unlike most roles in this corpus, customer success has no professional body and no framework definition. That absence is informative rather than a gap: the role is roughly as old as subscription software, and it grew from a commercial change rather than from a discipline. The sources here are industry rather than institutional, and they agree with one another closely enough to be reported." },
       ],
     },
@@ -2435,7 +2435,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The candour to record an account as at risk while the relationship still feels warm.",
     ],
     turnsOn:
-      "Satisfaction and retention are different measurements, and the distance between them is the job. A customer can be entirely happy and still leave, because their priorities moved and nobody on the vendor side noticed — which makes the useful question whether the customer is achieving outcomes that justify continued investment, rather than whether they are pleased. Managers who ask the second question find the risk in time; those who ask the first find it at the renewal.",
+      "Satisfaction and retention are different measurements, and the distance between them is the job. A customer can be entirely happy and still leave, because their priorities moved and nobody on the vendor side noticed - which makes the useful question whether the customer is achieving outcomes that justify continued investment, rather than whether they are pleased. Managers who ask the second question find the risk in time; those who ask the first find it at the renewal.",
     adjacentRoles: ["account-manager", "technical-assistance-centre-engineer", "product-manager"],
     practiceRoles: ["management"],
     practiceArticles: ["the-customer-who-is-furious-and-correct", "prevention-that-survives-the-budget"],
@@ -2513,14 +2513,14 @@ export const ROLES: readonly Role[] = Object.freeze([
       sources: [
         { label: "A survey of developer relations roles, placing the advocate at the intersection of customer success and product: writing sample code and reference integrations, running office hours, answering in community channels, filing detailed bug reports, and turning recurring developer pain into product proposals", url: "https://www.moesif.com/blog/developer-relations/definition/What-is-Developer-Relations-and-What-are-Common-Roles/" },
         { label: "An account of developer relations as the umbrella term for the team building a community online and offline, covering advocacy, developer experience, events, community management and content", url: "https://www.marythengvall.com/blog/2019/5/22/what-is-developer-relations-and-why-should-you-care" },
-        { label: "A practitioner guide to developer relations, including internal advocacy — representing the developer's voice inside the company — as a core function alongside content, speaking and community engagement", url: "https://www.jonobacon.com/2023/04/02/what-is-developer-relations-devrel-a-complete-guide/", sourceNote: "Developer relations has no professional body and no framework definition; its literature is written by practitioners. The titles vary across companies — developer advocate, developer evangelist, developer programs manager, developer experience engineer — for work that overlaps heavily, which is the same pattern the federal work-role material records for network operations." },
+        { label: "A practitioner guide to developer relations, including internal advocacy - representing the developer's voice inside the company - as a core function alongside content, speaking and community engagement", url: "https://www.jonobacon.com/2023/04/02/what-is-developer-relations-devrel-a-complete-guide/", sourceNote: "Developer relations has no professional body and no framework definition; its literature is written by practitioners. The titles vary across companies - developer advocate, developer evangelist, developer programs manager, developer experience engineer - for work that overlaps heavily, which is the same pattern the federal work-role material records for network operations." },
       ],
     },
     whatItIs:
       "The engineer employed by a vendor whose work serves the people who use its technology. Advocacy sits inside developer relations, the broader function covering community, events, experience and content, and the advocate is its technical face: writing sample code, building reference integrations, answering in public channels, and carrying what the community says back into product and engineering.",
     theDay: [
       "Writing sample code and reference integrations that show the product doing something real.",
-      "Answering in public — forums, chat, issues — where the answer stays available to everybody who arrives later.",
+      "Answering in public - forums, chat, issues - where the answer stays available to everybody who arrives later.",
       "Speaking and running workshops, which is teaching to a room that chose to attend.",
       "Filing the detailed bug report that a frustrated user would have abandoned.",
       "Internal advocacy: carrying the community's difficulty into the company, in terms product and engineering can act on.",
@@ -2680,7 +2680,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "Judgement about impact, since a technically real finding with no consequence spends attention a serious one needed.",
     ],
     turnsOn:
-      "The technical work is shared with the adversary; the authorisation is what makes it a profession. Scope, rules of engagement and the discipline to stay inside them are the whole distinction, and they are also what makes the findings usable — a test conducted where somebody agreed it would be produces a report the organisation can act on, while anything obtained outside that boundary creates a problem rather than a finding. The good ones treat the scope document as the first deliverable rather than as paperwork preceding the real work.",
+      "The technical work is shared with the adversary; the authorisation is what makes it a profession. Scope, rules of engagement and the discipline to stay inside them are the whole distinction, and they are also what makes the findings usable - a test conducted where somebody agreed it would be produces a report the organisation can act on, while anything obtained outside that boundary creates a problem rather than a finding. The good ones treat the scope document as the first deliverable rather than as paperwork preceding the real work.",
     adjacentRoles: ["vulnerability-analyst", "incident-responder", "security-operations-analyst"],
     practiceRoles: ["second-line", "design"],
     practiceArticles: ["building-an-evidence-pack", "evidence-that-convinces-next-quarter", "what-to-capture-before-you-know"],
@@ -2702,7 +2702,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       ],
     },
     whatItIs:
-      "The person who establishes whether the controls an organisation believes it has are actually there and actually working. Audit runs as an engagement — planning, fieldwork, reporting — and produces evidence rather than opinion. The profession has its own framework of standards covering not only method but ethics and expected behaviour, which exists because the value of the finding rests entirely on the independence of whoever produced it.",
+      "The person who establishes whether the controls an organisation believes it has are actually there and actually working. Audit runs as an engagement - planning, fieldwork, reporting - and produces evidence rather than opinion. The profession has its own framework of standards covering not only method but ethics and expected behaviour, which exists because the value of the finding rests entirely on the independence of whoever produced it.",
     theDay: [
       "Planning an engagement against objectives that connect to what the organisation is actually exposed to.",
       "Fieldwork: sampling, testing, and asking for the evidence rather than the assurance.",
@@ -2742,7 +2742,7 @@ export const ROLES: readonly Role[] = Object.freeze([
       "The independence to record a finding about a team whose cooperation the next engagement needs.",
     ],
     turnsOn:
-      "Independence is the product, and it is spent by helpfulness. An auditor who begins designing the fix becomes an adviser to the thing they will later examine, and the next report carries their own recommendation as its subject — which is why the profession puts ethics and expected behaviour into the same framework as method. The useful position is close enough to understand the estate and separate enough that the finding still means something, and holding it takes deliberate effort in every friendly conversation.",
+      "Independence is the product, and it is spent by helpfulness. An auditor who begins designing the fix becomes an adviser to the thing they will later examine, and the next report carries their own recommendation as its subject - which is why the profession puts ethics and expected behaviour into the same framework as method. The useful position is close enough to understand the estate and separate enough that the finding still means something, and holding it takes deliberate effort in every friendly conversation.",
     adjacentRoles: ["security-leader", "vulnerability-analyst", "systems-analyst", "management-consultant"],
     practiceRoles: ["management", "design"],
     practiceArticles: ["evidence-that-convinces-next-quarter", "verifying-without-trusting", "documenting-for-the-inheritor"],
@@ -2768,7 +2768,7 @@ export function findRole(slug: string): Role | undefined {
  * *** PART II OF THE ENRICHMENT ROUND, SOLVED MECHANICALLY (2026-08-15) ***
  *
  * The link guard found 115 adjacency claims and only 13 mutual pairs. The
- * obvious repair — making every claim symmetric — is the wrong one: the
+ * obvious repair - making every claim symmetric - is the wrong one: the
  * technical assistance centre is named by eight roles and would end up with
  * eleven links, which helps nobody.
  *
@@ -2813,7 +2813,7 @@ export function rolesUsingTool(toolSlug: string): Role[] {
   );
 }
 
-/** How many of each provenance kind — used by the section page. */
+/** How many of each provenance kind - used by the section page. */
 export function provenanceCounts(): Record<Provenance, number> {
   return ROLES.reduce(
     (acc, r) => ({ ...acc, [r.provenance.kind]: acc[r.provenance.kind] + 1 }),
@@ -2822,7 +2822,7 @@ export function provenanceCounts(): Record<Provenance, number> {
 }
 
 // ============================================================================
-// LEVELS — the axis that runs across every role in this corpus.
+// LEVELS - the axis that runs across every role in this corpus.
 //
 // A grade is orthogonal to a role. The same title exists at four grades, and
 // the same grade exists across every group on the path, so levels are modelled
@@ -2889,7 +2889,7 @@ export const GRADES: readonly Grade[] = Object.freeze([
 ]);
 
 /**
- * THE Y MOMENT — the fork. Below it, everyone advances the same way; at it, the
+ * THE Y MOMENT - the fork. Below it, everyone advances the same way; at it, the
  * ladder splits into a management arm and a technical arm.
  *
  * Recorded here because it is the single most consequential career decision in
@@ -2910,7 +2910,7 @@ export const Y_MOMENT = Object.freeze({
     "The arm's length depends entirely on the organisation, which is the part worth checking before choosing it.",
   ]),
   theHonestPart:
-    "The two arms are equal in principle and unequal in many organisations. Where the technical arm stops at senior while the management arm continues to director, the choice has already been made for anyone who wants to be paid more — and capable engineers become reluctant managers, which costs the organisation twice. Asking how long the technical arm is, and who is currently at the top of it, tells you more than any statement of values.",
+    "The two arms are equal in principle and unequal in many organisations. Where the technical arm stops at senior while the management arm continues to director, the choice has already been made for anyone who wants to be paid more - and capable engineers become reluctant managers, which costs the organisation twice. Asking how long the technical arm is, and who is currently at the top of it, tells you more than any statement of values.",
 });
 
 /**
@@ -2922,5 +2922,5 @@ export const PERVASIVENESS = Object.freeze({
   claim:
     "Every organisation of any size now runs infrastructure, and therefore contains these roles. A bank employs network engineers, a hospital employs security analysts, a supermarket chain employs a service desk, a farm employs somebody who owns the connectivity between the silos and the office.",
   consequence:
-    "That has two effects worth naming. The first is that the same job title carries different weight in different sectors: a network engineer in a hospital works under constraints a retailer never meets. The second is that the technology industry is no longer where most technology workers are employed — the vendors, distributors and integrators on this path are a minority of the people doing the work described here.",
+    "That has two effects worth naming. The first is that the same job title carries different weight in different sectors: a network engineer in a hospital works under constraints a retailer never meets. The second is that the technology industry is no longer where most technology workers are employed - the vendors, distributors and integrators on this path are a minority of the people doing the work described here.",
 });

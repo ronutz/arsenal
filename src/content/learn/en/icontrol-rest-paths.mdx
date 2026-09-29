@@ -28,14 +28,14 @@ Once you know that, the rest of the path reads in order.
 ## The shape
 
 **`/mgmt`** is the management root. **`/mgmt/tm`** is the TMOS configuration
-tree — the objects tmsh manages. **`/mgmt/shared`** is a different thing: the
+tree, the objects tmsh manages. **`/mgmt/shared`** is a different thing: the
 shared worker space, where iApps LX, file transfer and licensing live.
 
 **The module** comes next: `ltm`, `gtm`, `net`, `sys`, `security`, `asm`, `apm`,
 `auth`, `cm`. It tells you which subsystem owns the object, and it is the same
 division tmsh uses.
 
-**The collection** follows — `pool`, `virtual`, `node`, `monitor`. Address it
+**The collection** follows: `pool`, `virtual`, `node`, `monitor`. Address it
 alone and you get every object in it.
 
 **The object** is the tilde-encoded part. **A sub-collection** may follow, and
@@ -43,7 +43,7 @@ pool members are the one everybody meets.
 
 ## The partition detail that causes 404s
 
-A name written without a partition — `/mgmt/tm/ltm/node/web1.example.net` — is
+A name written without a partition, `/mgmt/tm/ltm/node/web1.example.net`, is
 resolved **in the caller's current partition**. The same request can therefore
 succeed for one administrator and return a 404 for another, with nothing wrong
 in either case. If a script works for you and not in production, check which

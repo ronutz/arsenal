@@ -1,14 +1,14 @@
 ---
 slug: troubleshooting-zcc-connectivity
 title: "Troubleshooting Client Connector: The Diagnostics Menu and the First Four Checks"
-summary: "When a user 'can't get online through Zscaler,' the Client Connector carries its own toolkit: the connection states, Export Logs, admin-enabled packet capture, Restart Service, and the session-scoped Log Mode. The ip.zscaler.com verification, the generate_204 captive-portal probe, the reserved 100.64.0.0/24 health-check range, the DTLS-throttling signature that a switch to TLS cures, and the discipline of localizing before fixing."
+summary: "When a user 'can't get online through Zscaler,' the Client Connector carries its own toolkit: the connection states, Export Logs, admin-enabled packet capture, Restart Service, and the session-scoped Log Mode. The ip.zscaler.com verification, the generate_204 captive-portal probe, the synthetic 100.64.0.0/16 range that Private Access addresses applications from, the DTLS-throttling signature that a switch to TLS cures, and the discipline of localizing before fixing."
 concepts: ["zscaler", "zcc", "troubleshooting", "packet capture", "logs", "captive portal", "ip.zscaler.com", "z-tunnel"]
 relatedTools: []
 relatedArticles: ["zscaler-client-connector-profiles", "zia-traffic-forwarding-methods", "fault-isolation-first-hour", "zdx-score-anatomy-and-probes"]
 category: networking
 order: 196
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 "I can't get online" through a cloud security platform is a sentence with five possible subjects - the device, the local network, the identity provider, the tunnel, or the cloud - and the fastest resolver is the one who localizes before fixing. [The profiles article](/learn/zscaler-client-connector-profiles) explained what Zscaler Client Connector (ZCC) is *told* to do; this one is about finding out what it is *actually* doing. Grounded in Zscaler's official troubleshooting documentation and runbooks, verified 2026-07-21.
@@ -19,7 +19,7 @@ ZCC ships its own diagnostics, and the documented menu is the crime kit: **Expor
 
 ## The first four checks
 
-**One: what does the agent say?** The connection state on the app's face localizes by itself - an authentication state points at the IdP conversation, a connected state with no traffic points downstream. **Two: is traffic actually transiting Zscaler?** The service's verification page at **ip.zscaler.com** answers from the authoritative vantage: whether this browser's traffic is arriving through the platform, and through which node - the single fastest divider between "forwarding is broken" and "forwarding is fine, look elsewhere." **Three: is a captive portal in the way?** The documented detection probes **http://gateway.&lt;cloud&gt;.net:443/generate_204** and expects an HTTP 204; anything else - the hotel login page, a redirect - means the network wants a human first, and the agent is correctly waiting. **Four: is something local eating the agent?** The documented interference checklist: VPN (virtual private network) clients claiming routes that must exclude the **reserved 100.64.0.0/24 health-check range**, endpoint firewalls and antivirus filtering the agent's flows, and a second inspection product breaking the agent's own TLS - the class of failure where ZCC works after a clean boot and degrades when the other agent starts.
+**One: what does the agent say?** The connection state on the app's face localizes by itself - an authentication state points at the IdP conversation, a connected state with no traffic points downstream. **Two: is traffic actually transiting Zscaler?** The service's verification page at **ip.zscaler.com** answers from the authoritative vantage: whether this browser's traffic is arriving through the platform, and through which node - the single fastest divider between "forwarding is broken" and "forwarding is fine, look elsewhere." **Three: is a captive portal in the way?** The documented detection probes **http://gateway.&lt;cloud&gt;.net:443/generate_204** and expects an HTTP 204; anything else - the hotel login page, a redirect - means the network wants a human first, and the agent is correctly waiting. **Four: is something local eating the agent?** The documented interference checklist: VPN (virtual private network) clients claiming routes that must exclude the **synthetic 100.64.0.0/16 range that Private Access addresses applications from**, endpoint firewalls and antivirus filtering the agent's flows, and a second inspection product breaking the agent's own TLS - the class of failure where ZCC works after a clean boot and degrades when the other agent starts.
 
 ## Reading the tunnel's vocabulary
 
@@ -28,3 +28,11 @@ Two documented signatures reward memorization. **SERVER_DOWN_ERROR and FIREWALL_
 ## The discipline
 
 Every check above is [fault isolation](/learn/fault-isolation-first-hour) wearing a product badge: establish which *segment* owns the failure before touching anything, capture evidence (logs exported, capture running) *while the failure is live*, and let [ZDX](/learn/zdx-score-anatomy-and-probes) answer the fleet-scale version of the same question - one user failing is a device conversation; a location failing is a network one; everyone failing is a status page.
+
+## Sources
+
+The synthetic range and its default prefix are Zscaler's own, and so is the transport Z-Tunnel 2.0 uses, which is what makes the DTLS-throttling signature read the way it does.
+
+- [Configuring the Zscaler Client Connector Synthetic IP Range - the default range is 100.64.0.0/16, configurable between 100.64.0.0/16 and 100.127.0.0/16, and it serves Private Access applications](https://help.zscaler.com/zscaler-client-connector/configuring-zscaler-client-connector-synthetic-ip-range)
+- [About Z-Tunnel 1.0 & Z-Tunnel 2.0 - 2.0 "uses DTLS or TLS to send packets to the Zscaler service", which is why an ISP that throttles UDP shows up here](https://help.zscaler.com/zscaler-client-connector/about-z-tunnel-1.0-z-tunnel-2.0)
+- [Zscaler Client Connector: Connection Status Errors - the Service Status messages the app itself shows, with the action for each](https://help.zscaler.com/zscaler-client-connector/zscaler-client-connector-connection-status-errors)

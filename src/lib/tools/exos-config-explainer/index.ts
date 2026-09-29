@@ -72,7 +72,7 @@ export const manifest = Object.freeze({
   sources: [
     { id: "exos-cmd-ref", label: "Extreme Networks: ExtremeXOS Command Reference Guide (the imperative verb set create/configure/enable/disable/delete/unconfigure; configure vlan add ports [tagged|untagged]; create vlan tag; enable ipforwarding; configure iproute add default; enable sharing grouping; port numbering slot:port)", url: "https://documentation.extremenetworks.com/exos_commands_16/EXOS_16_2/EXOS_Commands_All/ExtremeXOS_all_commands.shtml" },
     { id: "exos-vlan-add-ports", label: "Extreme Networks: configure vlan add ports (untagged ports belong to a single VLAN and must be removed from the Default VLAN first; tagged ports carry the 802.1Q tag; example configure vlan accounting add ports 1:1, 1:2, 1:3, 1:6 tagged)", url: "https://documentation.extremenetworks.com/exos_commands_16/EXOS_16_2/EXOS_Commands_All/r_configure-vlan-add-ports.shtml" },
-    { id: "exos-user-guide", label: "Extreme Networks: ExtremeXOS / Switch Engine User Guide (VLANs, virtual routers, IP routing, link aggregation 'sharing', spanning tree, accounts and management)", url: "https://documentation.extremenetworks.com/switchengine_32.7/" },
+    { id: "exos-user-guide", label: "Extreme Networks: ExtremeXOS / Switch Engine User Guide (VLANs, virtual routers, IP routing, link aggregation 'sharing', spanning tree, accounts and management)", url: "https://documentation.extremenetworks.com/exos_32.7.1/" },
   ],
 });
 

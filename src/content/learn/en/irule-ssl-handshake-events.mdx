@@ -8,7 +8,7 @@ relatedArticles: ["irule-clientside-vs-serverside", "irule-event-order-explained
 category: transport
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 When a virtual server has a client-SSL profile, the BIG-IP terminates TLS from the client, and that adds events to the iRule flow around the handshake. A server-SSL profile does the same on the connection out to the pool member.
@@ -20,7 +20,7 @@ Two events matter most on the client side, and the order between them is the who
 - `CLIENTSSL_CLIENTHELLO` fires when the client's TLS **ClientHello** has arrived, *before* the BIG-IP processes the handshake. This is early enough to read the SNI (Server Name Indication) server name and other ClientHello fields and make a decision.
 - `CLIENTSSL_HANDSHAKE` fires *after* the client-side handshake has completed successfully. By here, the negotiated cipher and protocol are settled.
 
-Because `CLIENTSSL_CLIENTHELLO` runs before the handshake finishes, it is the hook for SNI-based selection — choosing a client-SSL profile or a pool based on the hostname the client asked for:
+Because `CLIENTSSL_CLIENTHELLO` runs before the handshake finishes, it is the hook for SNI-based selection, choosing a client-SSL profile or a pool based on the hostname the client asked for:
 
 ```
 when CLIENTSSL_CLIENTHELLO {
@@ -32,8 +32,16 @@ when CLIENTSSL_CLIENTHELLO {
 
 ## The server-side mirror
 
-On the connection to the pool member, the server-SSL profile contributes its own handshake events — `SERVERSSL_CLIENTHELLO_SEND` as the BIG-IP sends its ClientHello to the server, and `SERVERSSL_HANDSHAKE` once that handshake completes. In the overall flow these land after `SERVER_CONNECTED`: the TCP connection to the member comes first, then TLS is negotiated on top of it.
+On the connection to the pool member, the server-SSL profile contributes its own handshake events: `SERVERSSL_CLIENTHELLO_SEND` as the BIG-IP sends its ClientHello to the server, and `SERVERSSL_HANDSHAKE` once that handshake completes. In the overall flow these land after `SERVER_CONNECTED`: the TCP connection to the member comes first, then TLS is negotiated on top of it.
 
 ## Where they sit in the order
 
-Putting it together, an HTTPS virtual server that re-encrypts runs `CLIENT_ACCEPTED`, then the client handshake events, then `HTTP_REQUEST`, then load balancing, then `SERVER_CONNECTED`, then `SERVERSSL_HANDSHAKE`, and only then sends the request. The two handshakes are independent: the client can negotiate TLS 1.3 with one cipher while the BIG-IP negotiates something entirely different with the server. That independence is the reason SSL events exist on both sides — each handshake is a separate negotiation you may want to inspect or steer.
+Putting it together, an HTTPS virtual server that re-encrypts runs `CLIENT_ACCEPTED`, then the client handshake events, then `HTTP_REQUEST`, then load balancing, then `SERVER_CONNECTED`, then `SERVERSSL_HANDSHAKE`, and only then sends the request. The two handshakes are independent: the client can negotiate TLS 1.3 with one cipher while the BIG-IP negotiates something entirely different with the server. That independence is the reason SSL events exist on both sides: each handshake is a separate negotiation you may want to inspect or steer.
+
+## Sources
+
+That the two handshakes are separate events, not two views of one, is visible in F5's own event reference: each side has its own. Why their negotiated parameters need not match is in the protocol specification.
+
+- [CLIENTSSL_HANDSHAKE - "Triggered when a client-side SSL handshake is completed", after CLIENTSSL_CLIENTCERT when a client certificate is requested](https://clouddocs.f5.com/api/irules/CLIENTSSL_HANDSHAKE.html)
+- [SERVERSSL_HANDSHAKE - "Triggered when a server-side SSL handshake is completed": the other half, with its own lifecycle](https://clouddocs.f5.com/api/irules/SERVERSSL_HANDSHAKE.html)
+- [RFC 8446, TLS 1.3 - where the cipher suite concept was changed to cover only record protection and the hash, separately from key exchange and authentication](https://www.rfc-editor.org/rfc/rfc8446.html)

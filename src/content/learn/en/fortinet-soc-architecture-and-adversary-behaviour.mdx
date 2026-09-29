@@ -50,9 +50,9 @@ An alert says a thing matched a rule. Behaviour is the sequence, and reading it 
 
 The frames that help:
 
-**Stages.** Attacks proceed through recognisable phases: gaining access, establishing persistence, escalating privilege, moving laterally, collecting, and acting on objectives. Placing an observation in a stage tells you what to look for next — an execution alert should prompt a check for persistence, because that is what usually follows.
+**Stages.** Attacks proceed through recognisable phases: gaining access, establishing persistence, escalating privilege, moving laterally, collecting, and acting on objectives. Placing an observation in a stage tells you what to look for next: an execution alert should prompt a check for persistence, because that is what usually follows.
 
-**Techniques over indicators.** An indicator is a specific address or hash and changes cheaply. A technique — dumping credentials from process memory, scheduling a task for persistence — is expensive for an attacker to change because it is how the objective is achieved. Detections written against techniques survive; detections written against indicators expire.
+**Techniques over indicators.** An indicator is a specific address or hash and changes cheaply. A technique (dumping credentials from process memory, scheduling a task for persistence) is expensive for an attacker to change because it is how the objective is achieved. Detections written against techniques survive; detections written against indicators expire.
 
 **Baselines.** Much malicious activity is ordinary activity in an unusual place or at an unusual time. An administrative tool is not suspicious; that account using it on that server at that hour may be. This only works if normal has been characterised, which is what UEBA is for.
 
@@ -72,4 +72,4 @@ The properties worth insisting on:
 
 ## What an exam candidate should be able to state cold
 
-Each SOC product answers a different question — endpoint, network, correlated, workflow, behavioural baseline — and the value is in correlating across them, because meaningful attacks are unremarkable in any single view. The main attack vectors are phishing, exposed services, credential abuse, supply chain and insiders, and credential abuse is what makes activity authorised by definition. Read behaviour as staged sequences, prefer techniques over indicators because indicators change cheaply, and baseline normal so that ordinary activity in an unusual context becomes visible. A detection needs a defined response, tolerable false positives measured in your own environment, documented intent, and telemetry that is actually collected.
+Each SOC product answers a different question (endpoint, network, correlated, workflow, behavioural baseline), and the value is in correlating across them, because meaningful attacks are unremarkable in any single view. The main attack vectors are phishing, exposed services, credential abuse, supply chain and insiders, and credential abuse is what makes activity authorised by definition. Read behaviour as staged sequences, prefer techniques over indicators because indicators change cheaply, and baseline normal so that ordinary activity in an unusual context becomes visible. A detection needs a defined response, tolerable false positives measured in your own environment, documented intent, and telemetry that is actually collected.

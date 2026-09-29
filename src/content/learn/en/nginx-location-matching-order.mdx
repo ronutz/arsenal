@@ -36,7 +36,7 @@ This is why "my `/images/` block is being ignored" is nearly always a file-exten
 
 It is read as "higher priority", and that is the wrong mental model. `^~` means **stop before the regular expressions**. It does not make the prefix stronger, it removes step four from the search.
 
-Which makes it the precise fix for the case above. Change the block to `location ^~ /images/` and the extension regex never runs for URIs under `/images/` — while continuing to work everywhere else.
+Which makes it the precise fix for the case above. Change the block to `location ^~ /images/` and the extension regex never runs for URIs under `/images/`, while continuing to work everywhere else.
 
 ## Longest, not first
 

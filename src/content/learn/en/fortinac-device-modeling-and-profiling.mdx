@@ -16,7 +16,7 @@ Network access control answers two questions in order: what is this thing, and w
 
 ## Modeling the infrastructure
 
-FortiNAC needs to know about the **network devices** — switches, wireless controllers, firewalls — because those are what it reads endpoint information from and what it instructs to move a port into a different VLAN (virtual local area network).
+FortiNAC needs to know about the **network devices** (switches, wireless controllers, firewalls) because those are what it reads endpoint information from and what it instructs to move a port into a different VLAN (virtual local area network).
 
 Modeling a device means telling FortiNAC how to reach it and how to talk to it: the management address, the SNMP credentials for reading port and MAC data, and the CLI credentials for making changes. Both matter, and they fail differently. Wrong SNMP means FortiNAC sees nothing on that device's ports. Wrong CLI credentials mean FortiNAC sees everything and can change nothing, which presents as policies that evaluate correctly and never take effect.
 
@@ -24,9 +24,9 @@ Devices are organised into containers and groups, which is not cosmetic: groups 
 
 ## Profiling: deciding what an endpoint is
 
-An endpoint appears as a MAC address on a port. **Device profiling** turns that into a classification — a printer, a badge reader, a corporate laptop, an unknown — using rules that examine what can be observed about it.
+An endpoint appears as a MAC address on a port. **Device profiling** turns that into a classification (a printer, a badge reader, a corporate laptop, an unknown) using rules that examine what can be observed about it.
 
-The signals available include the MAC address vendor prefix, DHCP fingerprint, active scan results, HTTP user agent, and responses to targeted probes. A profiling rule combines these into a test, and rules are evaluated in order, so **the first matching rule wins** — the same ordering discipline as a firewall policy list, with the same shadowing risk when a broad rule sits above a specific one.
+The signals available include the MAC address vendor prefix, DHCP fingerprint, active scan results, HTTP user agent, and responses to targeted probes. A profiling rule combines these into a test, and rules are evaluated in order, so **the first matching rule wins**, the same ordering discipline as a firewall policy list, with the same shadowing risk when a broad rule sits above a specific one.
 
 The classification matters because policy is written against device type. A rule that grants printers access to the print VLAN does nothing for a printer that profiled as unknown.
 
@@ -49,7 +49,7 @@ The order that resolves most cases:
 
 **1. Is the network device reachable and readable?** If SNMP is failing, every endpoint on that device is invisible and the symptom looks like an endpoint problem.
 
-**2. Does FortiNAC see the endpoint at all?** Search by MAC. If it is absent, the gap is upstream — the port, the device model, or the credentials.
+**2. Does FortiNAC see the endpoint at all?** Search by MAC. If it is absent, the gap is upstream: the port, the device model, or the credentials.
 
 **3. What did it classify as?** An endpoint that exists but classified unexpectedly points at profiling rule order or a rule whose signals that device does not emit.
 
@@ -57,7 +57,7 @@ The order that resolves most cases:
 
 **5. Did the enforcement action actually happen?** This is where CLI credentials and device support matter. FortiNAC decided correctly and the switch did not do it is a different fault from FortiNAC deciding wrongly.
 
-Keeping steps 4 and 5 apart is the single most useful habit here, because the symptom is identical — the endpoint is on the wrong VLAN — and the cause is at opposite ends of the system.
+Keeping steps 4 and 5 apart is the single most useful habit here, because the symptom is identical (the endpoint is on the wrong VLAN) and the cause is at opposite ends of the system.
 
 ## What an exam candidate should be able to state cold
 

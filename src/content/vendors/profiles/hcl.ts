@@ -2,6 +2,16 @@
 // VERIFICATION MANIFEST — verified 2026-08-05 against:
 //   - PortersFiveForce and MatrixBCG: the first product was the HCL 8C 8-bit
 //     microcomputer, launched 1978
+//     *** BOTH OF THOSE SOURCES ARE DEAD as of 2026-09-27, and they died
+//     differently, which is the interesting part. portersfiveforce.com returns a
+//     plain 404 on the cited path with its root at 200. matrixbcg.com returns
+//     301 to growthsharematrix.com, which then returns 404 - a rebrand that did
+//     not carry its paths across. A redirect answering is not the document
+//     existing, and the liveness audit filed all 306 of its redirects as benign
+//     until this was found; the script was corrected the same day.
+//     The HCL 8C and its 1978 date STAY in the timeline below, per PRIME
+//     2026-09-27. A replacement would be HCLTech's own corporate history or
+//     Indian computing-history scholarship, neither yet read.
 //   - Wikipedia (HCLTech): revenue Rs131,674 crore, about US$14B (2026);
 //     Roshni Nadar Malhotra chairperson, C Vijayakumar chief executive; the
 //     product list carried today - Notes/Domino, AppScan, Connections,

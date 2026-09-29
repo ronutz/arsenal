@@ -16,7 +16,7 @@ The unit of work in FortiManager is the **policy package**: an ordered set of fi
 
 ## Packages, objects, and the reference that breaks installs
 
-A policy package contains policies. Those policies reference **objects** — addresses, services, schedules, profiles — which live in the ADOM rather than in the package. One object can be referenced by many packages, which is the point.
+A policy package contains policies. Those policies reference **objects** (addresses, services, schedules, profiles), which live in the ADOM rather than in the package. One object can be referenced by many packages, which is the point.
 
 It also means an object cannot be deleted while something references it, and that a package installed to a device brings its referenced objects along. A device that ends up with objects it does not appear to use usually acquired them this way.
 
@@ -60,7 +60,7 @@ In rough order of frequency:
 
 1. **The device is out of sync** and the install was blocked or partially applied. Check sync status first.
 2. **The package was not saved** in workspace mode.
-3. **The install was to the wrong device or scope** — a package targeting a group rather than the device in question.
+3. **The install was to the wrong device or scope**: a package targeting a group rather than the device in question.
 4. **A dependency failed**, typically an object that cannot be resolved on the target, which shows in the install log rather than as a general error.
 5. **ADOM version mismatch**, where the generated CLI is not valid for the device's firmware.
 

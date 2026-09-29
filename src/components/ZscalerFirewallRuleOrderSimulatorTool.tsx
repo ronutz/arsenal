@@ -120,7 +120,7 @@ export default function ZscalerFirewallRuleOrderSimulatorTool() {
             <div className="tmsh-object">
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{actionLabel(result.verdict.action)}</span>
-                <span className="tmsh-name">
+                <span className="tmsh-object-name">
                   {result.verdict.source === "rule"
                     ? t("verdictRule", { order: result.verdict.order ?? 0, name: result.verdict.name })
                     : t("verdictDefault")}

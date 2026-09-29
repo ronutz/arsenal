@@ -66,11 +66,11 @@ export default function GreekAlphabetTool() {
       {result && result.ok && result.data.kind === "decompose" && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("translitTitle")}</h3>
+            <h3 className="cidr-section-title">{t("translitTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.3rem" }}>{result.data.transliteration}</p>
           </section>
           <section>
-            <h3 className="cidr-h">{t("decomposeTitle")}</h3>
+            <h3 className="cidr-section-title">{t("decomposeTitle")}</h3>
             <div className="cidr-table-wrap">
               <table className="cidr-table">
                 <thead><tr><th>{t("colGlyph")}</th><th>{t("colName")}</th><th>{t("colTranslit")}</th></tr></thead>
@@ -93,7 +93,7 @@ export default function GreekAlphabetTool() {
       {result && result.ok && result.data.kind === "byName" && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("lettersTitle")}</h3>
+            <h3 className="cidr-section-title">{t("lettersTitle")}</h3>
             <div className="cidr-table-wrap">
               <table className="cidr-table">
                 <thead><tr><th>{t("colGlyph")}</th><th>{t("colName")}</th><th>{t("colTranslit")}</th><th>{t("colUsage")}</th></tr></thead>
@@ -115,7 +115,7 @@ export default function GreekAlphabetTool() {
 
       <div className="tmsh-results">
         <section>
-          <h3 className="cidr-h">{t("alphabetTitle")}</h3>
+          <h3 className="cidr-section-title">{t("alphabetTitle")}</h3>
           <p>{t("alphabetIntro")}</p>
           <div className="cidr-table-wrap">
             <table className="cidr-table">

@@ -1,7 +1,7 @@
 ---
 slug: netskope-steering-methods
 title: "Choosing how traffic reaches the service edge"
-summary: "Client, IPsec, GRE, explicit proxy or proxy chaining. Each one changes what the edge can know, not just how packets arrive — and the client disables itself when it finds a tunnel."
+summary: "Client, IPsec, GRE, explicit proxy or proxy chaining. Each one changes what the edge can know, not just how packets arrive, and the client disables itself when it finds a tunnel."
 concepts: ["netskope", "steering", "sse", "newedge", "tls-inspection"]
 relatedTools: ["netskope-steering-explainer", "netskope-steering-decision-explainer", "sse-architecture-explainer"]
 relatedArticles: ["sse-single-pass-architecture"]
@@ -28,7 +28,7 @@ follows the user off the corporate network, which a tunnel from a site cannot.
 The cost is that it must be deployed and maintained on every device.
 
 **An IPsec tunnel** steers everything leaving a site, including the devices that
-will never run an agent — printers, appliances, contractor laptops. It preserves
+will never run an agent: printers, appliances, contractor laptops. It preserves
 **the user's private address**, which is what makes address-based policy and
 detailed logging possible. It knows the site, not the person.
 
@@ -39,7 +39,7 @@ trusted, not on convenience grounds.
 **An explicit proxy** points the browser or the operating system at the service.
 It is the method for legacy and regulated environments and for cases where
 policy-based routing is not available. It steers **what is configured to use
-it** — an application that ignores proxy settings is simply not steered, and
+it**, and an application that ignores proxy settings is simply not steered, and
 nothing announces that.
 
 **Proxy chaining** forwards from a proxy you already run. It is a migration
@@ -53,7 +53,7 @@ it finds IPsec, GRE or an explicit proxy.**
 
 So "we have the client *and* a tunnel" is not automatically belt and braces. It
 is one of them, and which one depends on a setting most people have never
-opened. The client can be configured to keep steering — and there is a third
+opened. The client can be configured to keep steering, and there is a third
 arrangement worth knowing: deploy it alongside the tunnel **not to steer**, but
 to provision certificates and supply user identity. The tunnel carries the
 traffic; the client answers who the user is.
@@ -65,7 +65,7 @@ intermediate certificates on the endpoint.**
 
 A tunnel from a site carries traffic from devices nobody manages. If the
 certificate bundle cannot be installed on those devices, the traffic arrives and
-**cannot be decrypted** — policy still runs, on metadata. Any rule written as
+**cannot be decrypted**, and policy still runs, on metadata. Any rule written as
 though content were visible will not do what its author believes, and it will
 look correct in the console.
 
@@ -83,6 +83,6 @@ web. For anything else it is a quiet exemption.
 ## And a related question this does not answer
 
 Choosing a method is a design decision. Working out what happens to **one
-specific flow** given a steering configuration already in place — modes,
-exceptions, fail-close behaviour — is a different question, and the steering
+specific flow** given a steering configuration already in place (modes,
+exceptions, fail-close behaviour) is a different question, and the steering
 decision explainer on this site is the tool for it.

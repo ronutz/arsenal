@@ -27,7 +27,7 @@ Three forms of request target exist and they are worth telling apart, because th
 
 ## The URL is not in the message
 
-This is the first trap. `GET /users HTTP/1.1` does not say where to send the request; the connection already knew. Reconstructing something runnable means joining the target to the **`Host`** header, which is exactly why that header was made mandatory in HTTP/1.1 — it is what allowed many sites to share one address, and it is what makes a captured request reconstructable at all.
+This is the first trap. `GET /users HTTP/1.1` does not say where to send the request; the connection already knew. Reconstructing something runnable means joining the target to the **`Host`** header, which is exactly why that header was made mandatory in HTTP/1.1: it is what allowed many sites to share one address, and it is what makes a captured request reconstructable at all.
 
 If `Host` is missing on an origin-form request, the URL cannot be recovered from the message alone. A tool should say so rather than invent a host.
 
@@ -37,7 +37,7 @@ The second trap is subtler, and it produces bugs that look like server problems.
 
 **`Host`** is set by every client from the URL you give it. Copying it through as an explicit header gives you two, and which one wins depends on the client.
 
-**`Content-Length`** is calculated by the client from the body it is about to send. Copying the captured value pins a number that may no longer be true — and a length that disagrees with the body is not a cosmetic error. It is the ingredient in request smuggling, where a front-end and a back-end disagree about where one message ends and the next begins.
+**`Content-Length`** is calculated by the client from the body it is about to send. Copying the captured value pins a number that may no longer be true, and a length that disagrees with the body is not a cosmetic error. It is the ingredient in request smuggling, where a front-end and a back-end disagree about where one message ends and the next begins.
 
 **`Connection`** describes that specific hop's behaviour, not the request's meaning.
 
@@ -45,13 +45,13 @@ So a faithful translation is not a literal one. Reproducing every header verbati
 
 ## The paste is usually a credential
 
-The third trap has nothing to do with syntax. Requests captured from a working session carry `Authorization` headers, `Cookie` headers, API keys in query strings — and they are usually captured precisely because something was going wrong, which is the moment people paste them into tickets, chats and issue trackers.
+The third trap has nothing to do with syntax. Requests captured from a working session carry `Authorization` headers, `Cookie` headers, API keys in query strings, and they are usually captured precisely because something was going wrong, which is the moment people paste them into tickets, chats and issue trackers.
 
 A bearer token in a ticket is a valid credential until it expires, readable by everyone with access to that ticket, and searchable long afterwards. Treat any pasted request as a live secret: redact before sharing, and prefer tooling that parses **locally** rather than posting the message to a service to be formatted.
 
 ## Chunked bodies, and knowing when to stop
 
-If the message carries `Transfer-Encoding: chunked`, the body you can see is not the body that was sent: it is a sequence of size-prefixed chunks terminated by a zero-length one. Decoding that is a different job from translating a request, and a tool that half-does it — decoding some encodings and not others — is worse than one that says plainly that it did not.
+If the message carries `Transfer-Encoding: chunked`, the body you can see is not the body that was sent: it is a sequence of size-prefixed chunks terminated by a zero-length one. Decoding that is a different job from translating a request, and a tool that half-does it (decoding some encodings and not others) is worse than one that says plainly that it did not.
 
 ## The practical routine
 
@@ -59,4 +59,4 @@ If the message carries `Transfer-Encoding: chunked`, the body you can see is not
 2. Drop the headers the client will set for itself.
 3. Note whether the body is chunked or length-declared, and whether the declared length is true.
 4. Redact credentials before the request leaves your machine in any form.
-5. Translate, then run the result against a test target rather than production, because a replayed request repeats whatever the original did — including the write.
+5. Translate, then run the result against a test target rather than production, because a replayed request repeats whatever the original did, including the write.

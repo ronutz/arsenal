@@ -168,7 +168,7 @@ export default function BigipDnsGslbSimulatorTool() {
       {result && result.ok && !result.simulable && result.reasonCode && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("notSimulableTitle")}</h3>
+            <h3 className="cidr-section-title">{t("notSimulableTitle")}</h3>
             <p className="cidr-note">{t(`reason.${result.reasonCode}`)}</p>
             <p className="cidr-note">{t("notSimulableGeneric")}</p>
           </section>
@@ -179,7 +179,7 @@ export default function BigipDnsGslbSimulatorTool() {
       {result && result.ok && result.simulable && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("poolTierTitle")}</h3>
+            <h3 className="cidr-section-title">{t("poolTierTitle")}</h3>
             <table className="cidr-table">
               <thead><tr><th>{t("poolIdCol")}</th><th>{t("upCol")}</th><th>{t("countCol")}</th><th>{t("pctCol")}</th></tr></thead>
               <tbody>
@@ -196,7 +196,7 @@ export default function BigipDnsGslbSimulatorTool() {
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("memberTierTitle")}</h3>
+            <h3 className="cidr-section-title">{t("memberTierTitle")}</h3>
             <table className="cidr-table">
               <thead><tr><th>{t("poolIdCol")}</th><th>{t("memberIdCol")}</th><th>{t("regionCol")}</th><th>{t("upCol")}</th><th>{t("countCol")}</th><th>{t("pctCol")}</th></tr></thead>
               <tbody>
@@ -219,7 +219,7 @@ export default function BigipDnsGslbSimulatorTool() {
 
           {result.notes.length > 0 && (
             <section>
-              <h3 className="cidr-h">{t("notesTitle")}</h3>
+              <h3 className="cidr-section-title">{t("notesTitle")}</h3>
               <ul style={{ margin: 0, paddingLeft: "1.2rem" }}>
                 {result.notes.map((nkey, i) => <li key={i} className="cidr-note">{t(`note.${nkey}`)}</li>)}
               </ul>

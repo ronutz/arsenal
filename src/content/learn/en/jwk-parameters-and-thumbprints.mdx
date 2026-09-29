@@ -32,6 +32,6 @@ That makes thumbprints useful as stable, collision-resistant key identifiers: ma
 
 A JWT header carries `kid` so a verifier can find the right key in a set. It is chosen by whoever produced the token, which means **it is attacker-controlled input on an unverified message.**
 
-The failures follow directly. A `kid` used as a **file path** or a **database lookup key** turns key selection into path traversal or injection, against a value read before any signature was checked. And a verifier that fetches a key from a URL named in the token is not verifying anything — **it is asking the sender which key to believe.**
+The failures follow directly. A `kid` used as a **file path** or a **database lookup key** turns key selection into path traversal or injection, against a value read before any signature was checked. And a verifier that fetches a key from a URL named in the token is not verifying anything: **it is asking the sender which key to believe.**
 
 The safe shape is narrow: **resolve `kid` only within a key set you already trust**, obtained out of band, and fail closed when it does not match. A thumbprint is useful precisely because it is computed from the key material rather than asserted alongside it.

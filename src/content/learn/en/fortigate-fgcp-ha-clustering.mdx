@@ -26,10 +26,10 @@ The honest guidance is that active-passive is right for most deployments. Active
 
 When a cluster forms or a member fails, the primary is chosen by comparing, in order:
 
-1. **Failed monitored interfaces** — fewer is better. A unit with a monitored interface down loses.
-2. **Age** — the unit that has been up longer wins, so a rebooted unit does not immediately reclaim the role.
-3. **Priority** — the configured value; higher wins.
-4. **Serial number** — the deterministic tie-break.
+1. **Failed monitored interfaces**: fewer is better. A unit with a monitored interface down loses.
+2. **Age**: the unit that has been up longer wins, so a rebooted unit does not immediately reclaim the role.
+3. **Priority**: the configured value; higher wins.
+4. **Serial number**: the deterministic tie-break.
 
 The subtlety is the position of **age above priority**. With override disabled, which is the default, a recovered unit stays secondary even if it has the higher priority, because the current primary has greater age. That is deliberate: it prevents a flapping unit from repeatedly seizing and losing the role, and each seizure is a disruption.
 
@@ -55,7 +55,7 @@ Configuration synchronisation is continuous, so the secondary always holds the c
 | IPsec tunnels | With IPsec synchronisation configured |
 | SSL VPN (virtual private network) sessions | Not preserved; users reconnect |
 
-**Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over — it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
+**Session pickup is not enabled by default.** Without it, every session drops on failover, and the cluster still "works" in that the secondary takes over; it just breaks every connection in the process. Enabling it costs synchronisation overhead, which is the reason for the default, but for most deployments the overhead is the better trade.
 
 The row worth internalising is proxy-mode inspection. A session being buffered and inspected by a proxy holds state that is not synchronised, so it does not survive. This is the concrete cost of the flow-versus-proxy choice showing up somewhere unexpected.
 
@@ -66,7 +66,7 @@ get system ha status
 diagnose sys ha checksum cluster
 ```
 
-The first shows the members, roles and health. The second is the more valuable check: it compares configuration checksums across members, and a mismatch means the cluster is **out of sync** — the secondary will take over with a different configuration than the one you have been editing. A cluster that reports both members up and has mismatched checksums is a failed failover waiting to happen, and nothing in the ordinary status view reveals it.
+The first shows the members, roles and health. The second is the more valuable check: it compares configuration checksums across members, and a mismatch means the cluster is **out of sync**, and the secondary will take over with a different configuration than the one you have been editing. A cluster that reports both members up and has mismatched checksums is a failed failover waiting to happen, and nothing in the ordinary status view reveals it.
 
 ## What an exam candidate should be able to state cold
 

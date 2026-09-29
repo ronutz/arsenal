@@ -23,10 +23,10 @@ Time did not begin in 1970, so Unix time simply goes **negative** for earlier mo
 
 ## Converting to a date is arithmetic
 
-Turning a Unix timestamp into a calendar date needs no clock and no network — it is pure arithmetic over the proleptic Gregorian calendar. You divide and modulo your way from seconds to days, account for leap years, and arrive at a year, month, day, and time. Because the rules are fixed, the same timestamp always yields the same date, which is what lets a converter like this one run entirely in your browser and produce identical output every time.
+Turning a Unix timestamp into a calendar date needs no clock and no network: it is pure arithmetic over the proleptic Gregorian calendar. You divide and modulo your way from seconds to days, account for leap years, and arrive at a year, month, day, and time. Because the rules are fixed, the same timestamp always yields the same date, which is what lets a converter like this one run entirely in your browser and produce identical output every time.
 
 ## Why it won
 
-Unix time beat the alternatives for boringly practical reasons: it is compact (one number), trivially comparable, lexically irrelevant (no string parsing to compare two instants), and unambiguous (no "is this 3 PM in London or Tokyo?"). The cost is that the raw number is unreadable to humans — `1700000000` means nothing at a glance — which is the entire reason date formats and converters exist.
+Unix time beat the alternatives for boringly practical reasons: it is compact (one number), trivially comparable, lexically irrelevant (no string parsing to compare two instants), and unambiguous (no "is this 3 PM in London or Tokyo?"). The cost is that the raw number is unreadable to humans (`1700000000` means nothing at a glance), which is the entire reason date formats and converters exist.
 
 Two subtleties are worth knowing before you trust a raw timestamp: which **unit** it is in (seconds, milliseconds, or smaller), and the fact that Unix time quietly **ignores leap seconds**. Both have their own articles.

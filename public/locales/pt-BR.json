@@ -17846,7 +17846,9 @@
     "exclusion3Term": "Alocação de mão de obra",
     "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação — não é o que este trabalho resolve.",
     "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
-    "exclusion4Body": "Treinamento não é vendido nesta página. Ministro cursos oficiais sob autorização de fabricante, e isso é um trabalho separado, com agenda e condições próprias - é só perguntar que eu indico o caminho. O que se oferece aqui é julgamento sobre uma decisão, e não uma grade de curso.",
+    "exclusion4Body": "Treinamento eu não vendo como consultoria. Ministro cursos oficiais sob autorização de fabricante, e isso é um trabalho separado, com agenda e condições próprias — é só perguntar que eu indico o caminho. O que eu ofereço aqui é julgamento sobre uma decisão, e não uma grade de curso.",
+    "exclusion5Term": "Desenvolvimento de material de curso",
+    "exclusion5Body": "Isso eu não ofereço. Slides, guias de laboratório, notas do instrutor e avaliação são um ofício separado, contratado com escopo e condições próprias, e não são tempo de consultoria. Dizer se um curso deve existir é trabalho que eu faço. Escrever o curso não é.",
     "offerSpeakingTitle": "Palestras",
     "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação.",
     "advisorEyebrow": "Seu consultor",
@@ -20479,7 +20481,35 @@
           "Discernimento para aceitar um risco de propósito, em vez de escalar tudo.",
           "Escrita. Uma arquitetura que só existe em conversa não é uma arquitetura.",
           "Tolerância a ser vencido comercialmente, e disciplina para registrar a decisão assim mesmo."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "O negócio",
+            "what": "O que está sendo construído, e o prazo contra o qual está sendo construído."
+          },
+          "1": {
+            "who": "Risco e compliance",
+            "what": "As obrigações que o desenho tem de satisfazer, e os prazos reais delas."
+          },
+          "2": {
+            "who": "A engenharia",
+            "what": "O que é de fato implantável aqui, em distinção ao que é teoricamente correto."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "Os engenheiros de segurança",
+            "what": "Um desenho específico o suficiente para construir sem adivinhar."
+          },
+          "1": {
+            "who": "As equipes de rede e de plataforma",
+            "what": "Fronteiras e requisitos que eles consigam implementar nos próprios sistemas."
+          },
+          "2": {
+            "who": "Os auditores",
+            "what": "Uma justificativa escrita que responda por quê, não apenas o quê."
+          }
+        }
       },
       "security-engineer": {
         "title": "Engenheiro de segurança",
@@ -20512,7 +20542,35 @@
           "Disciplina de mudança, porque este papel quebra a produção de um jeito singularmente constrangedor.",
           "Paciência para ajustar em vez de desligar.",
           "Scripting, já que consistência em escala não se alcança à mão."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "A arquitetura de segurança",
+            "what": "O desenho e o requisito que ele satisfaz."
+          },
+          "1": {
+            "who": "O centro de operações de segurança (SOC)",
+            "what": "O que não está sendo detectado, e o que está afogando a equipe."
+          },
+          "2": {
+            "who": "Os fornecedores",
+            "what": "Produtos, e roadmaps que chegam mais tarde do que o prometido."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "O centro de operações de segurança (SOC)",
+            "what": "Telemetria completa o suficiente para detectar com ela."
+          },
+          "1": {
+            "who": "As equipes de aplicação e de infraestrutura",
+            "what": "Controles que permitam entregar, em vez de uma fila."
+          },
+          "2": {
+            "who": "Quem responde a incidentes",
+            "what": "A capacidade de conter, que depende do que foi construído antes."
+          }
+        }
       },
       "network-security-engineer": {
         "title": "Engenheiro de segurança de redes",
@@ -20545,7 +20603,35 @@
           "Disciplina para manter uma base de regras limpa quando ninguém está pedindo isso.",
           "Diplomacia suficiente para ser a pessoa que diz não, repetidamente, a colegas.",
           "Conforto com o fato de que aqui o sucesso é invisível e a falha é uma teleconferência."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "A arquitetura de segurança",
+            "what": "A fronteira a impor e a razão dela."
+          },
+          "1": {
+            "who": "A engenharia de redes",
+            "what": "A topologia, e a janela de mudança."
+          },
+          "2": {
+            "who": "As equipes de aplicação",
+            "what": "Pedidos que descrevem um sintoma em vez de um fluxo."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "O parque inteiro",
+            "what": "Um caminho ao mesmo tempo aberto o suficiente para funcionar e fechado o suficiente para importar."
+          },
+          "1": {
+            "who": "Quem responde a incidentes",
+            "what": "A capacidade de isolar um segmento sob demanda."
+          },
+          "2": {
+            "who": "Os auditores",
+            "what": "Evidência de que a fronteira é o que o desenho diz que ela é."
+          }
+        }
       },
       "grc-analyst": {
         "title": "Analista de governança, risco e conformidade",
@@ -20578,7 +20664,35 @@
           "Escrita que sobreviva à leitura de um advogado, de um engenheiro e de um auditor.",
           "Teimosia para seguir pedindo evidência depois de ouvir que ela existe.",
           "Senso de proporção, já que um programa de controles que ignora custo passa a ser ignorado."
-        ]
+        ],
+        "receivesFrom": {
+          "0": {
+            "who": "O jurídico e os reguladores",
+            "what": "Obrigações, com prazos que não negociam."
+          },
+          "1": {
+            "who": "A arquitetura e a engenharia de segurança",
+            "what": "O que está de fato implementado — que é justamente o insumo que falta com mais frequência ao compliance."
+          },
+          "2": {
+            "who": "O negócio",
+            "what": "Apetite a risco, em geral declarado somente depois de um incidente."
+          }
+        },
+        "serves": {
+          "0": {
+            "who": "A diretoria e o conselho",
+            "what": "Um relato da exposição sobre o qual consigam agir."
+          },
+          "1": {
+            "who": "A área comercial",
+            "what": "As respostas que desbloqueiam a avaliação de um cliente corporativo."
+          },
+          "2": {
+            "who": "As equipes de engenharia",
+            "what": "Requisitos declarados uma vez, em vez de redescobertos a cada projeto."
+          }
+        }
       }
     }
   },

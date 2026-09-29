@@ -1,7 +1,7 @@
 ---
 slug: the-write-up
 title: "The write-up: what to record while you still remember"
-thesis: "The facts of an incident survive; the reasoning does not. Within a day the dead ends, the things ruled out and the reason you looked where you looked are gone — and those are the only parts the next person actually needs, because the answer is the one thing they can already read in the ticket."
+thesis: "The facts of an incident survive; the reasoning does not. Within a day the dead ends, the things ruled out and the reason you looked where you looked are gone - and those are the only parts the next person actually needs, because the answer is the one thing they can already read in the ticket."
 part: after
 order: 1
 roles: ["first-line", "second-line", "field", "management"]
@@ -14,7 +14,7 @@ updated: "2026-08-09"
 
 ## What decays, and how fast
 
-Service is back. It is late, everybody is tired, and the write-up is tomorrow's problem — which is a reasonable decision made by reasonable people, and it costs more than it looks.
+Service is back. It is late, everybody is tired, and the write-up is tomorrow's problem - which is a reasonable decision made by reasonable people, and it costs more than it looks.
 
 **What survives on its own is the answer.** The ticket has it, the change record has it, three people can recite it. That part needs no help from you.
 
@@ -32,7 +32,7 @@ Every one of those is more useful to the next person than the answer, because **
 
 The instinct when writing up is to produce a tidy account: symptom, investigation, cause, fix. It reads well, it survives being forwarded, and **it has had removed from it precisely the material that would have helped.**
 
-A tidy narrative implies the path was direct. It never was. Somebody spent ninety minutes on a theory that turned out to be wrong, and that ninety minutes is the most transferable thing in the entire incident — because the theory was *plausible*, which means the next person will have it too.
+A tidy narrative implies the path was direct. It never was. Somebody spent ninety minutes on a theory that turned out to be wrong, and that ninety minutes is the most transferable thing in the entire incident - because the theory was *plausible*, which means the next person will have it too.
 
 > **Write the dead ends. "We spent ninety minutes on the firewall because the timing matched a policy push; it was not the firewall, and here is what ruled it out"** is the paragraph nobody writes and everybody needs. It looks like an admission. It is a map.
 
@@ -52,13 +52,13 @@ They want opposite things, and blending them produces a document that serves nei
 
 **The next engineer needs**: the symptom as it first appeared, the path, the dead ends, the observations with timestamps, and what is still unexplained.
 
-Keep them as two sections with honest headings rather than one document trying to be both. **The failure mode of blending is that the dead ends get cut** — they read as incompetence to the first audience and are the whole value to the second.
+Keep them as two sections with honest headings rather than one document trying to be both. **The failure mode of blending is that the dead ends get cut** - they read as incompetence to the first audience and are the whole value to the second.
 
 ## What is still unknown belongs in writing
 
 The strongest and least common section: **what this write-up cannot explain.**
 
-The fault stopped before the cause was found. The second site was never affected and nobody knows why. The change that triggered it should not have been capable of triggering it. Recording these is what makes the document honest — and more practically, it is what lets the *next* occurrence be recognised as a recurrence rather than treated as new. An incident that [stopped before anybody found it](/practice/stops-before-you-find-it) and was written up as resolved will be met a second time by somebody starting from zero.
+The fault stopped before the cause was found. The second site was never affected and nobody knows why. The change that triggered it should not have been capable of triggering it. Recording these is what makes the document honest - and more practically, it is what lets the *next* occurrence be recognised as a recurrence rather than treated as new. An incident that [stopped before anybody found it](/practice/stops-before-you-find-it) and was written up as resolved will be met a second time by somebody starting from zero.
 
 ## Write the skeleton before you sleep
 
@@ -70,12 +70,12 @@ The realistic version of this advice, because "write it up tonight" loses to exh
 
 Fillable at four in the morning, in any order, in fragments:
 
-- **Symptom as first reported** — in the reporter's words, before anybody reframed it
-- **Times** — first symptom, detection, each change of direction, mitigation, verification
-- **What we thought it was, in order** — and what moved us off each one
-- **Ruled out** — and the evidence that ruled it, not the conclusion
-- **Tried and did nothing** — the highest-value list and the first one cut from a tidy write-up
-- **What we changed** — including anything temporary that is still in place
+- **Symptom as first reported** - in the reporter's words, before anybody reframed it
+- **Times** - first symptom, detection, each change of direction, mitigation, verification
+- **What we thought it was, in order** - and what moved us off each one
+- **Ruled out** - and the evidence that ruled it, not the conclusion
+- **Tried and did nothing** - the highest-value list and the first one cut from a tidy write-up
+- **What we changed** - including anything temporary that is still in place
 - **Still unexplained**
 - **Where I would start next time**
 

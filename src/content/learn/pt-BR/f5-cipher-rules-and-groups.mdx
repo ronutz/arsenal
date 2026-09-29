@@ -8,7 +8,7 @@ relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords"]
 category: transport
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 Editar uma cipher string longa à mão é propenso a erros, e um único operador fora do lugar pode mudar uma postura de segurança sem nenhum sintoma óbvio. O BIG-IP v13 introduziu um modelo mais estruturado para gerenciar essa complexidade: cipher rules e cipher groups.
@@ -30,3 +30,10 @@ Uma cipher string é um conjunto de instruções, e transformar essas instruçõ
 ## O que o explicador faz
 
 Por essa razão, o [explicador de cipher string do F5](/tools/f5-cipher-string-expander) deliberadamente não inventa uma lista de suites. Ele interpreta a string, expande os nomes de rules pré-definidas que reconhece, explica cada palavra-chave e operador, e relata a postura de segurança, deixando a expansão exata e ordenada para o `tmm` na versão alvo. Para a gramática, veja [lendo uma cipher string do F5](/learn/f5-cipher-string-syntax); para o significado de segurança das palavras-chave, veja [palavras-chave de segurança de cifras TLS](/learn/tls-cipher-security-keywords).
+
+## Fontes
+
+O guia de administração de SSL da F5 é onde a remoção do COMPAT e sua substituição por NONE estão declaradas. Observe que a página declara o comportamento sem nomear a versão em que isso ocorreu.
+
+- [SSL Traffic Management, BIG-IP System: SSL Administration - "the COMPAT cipher string has been removed", e uma configuração que ainda o nomeie "will be replaced with NONE and secure connections relying on these cipher suites will fail"](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)
+- [Configuring a Custom Cipher String for SSL Negotiation - regras e grupos de cifras, as instruções allow, restrict e exclude, e a lista Order: Default, Speed, Strength, FIPS, Hardware](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)

@@ -36,6 +36,6 @@ In `bigip.conf` a pool appears as an `ltm pool` stanza listing its members and a
 
 Choosing between Round Robin and Least Connections is a smaller decision than choosing what "up" means, because **a load-balancing method can only distribute among members the monitor says are healthy.**
 
-A TCP monitor on port 443 establishes that **a socket answers**. It says nothing about whether the application behind it works. A member with a listening port and a broken application is, to that monitor, perfectly healthy — and every method will keep sending it traffic, forever, in whatever proportion its algorithm dictates.
+A TCP monitor on port 443 establishes that **a socket answers**. It says nothing about whether the application behind it works. A member with a listening port and a broken application is, to that monitor, perfectly healthy, and every method will keep sending it traffic, forever, in whatever proportion its algorithm dictates.
 
 That is why an HTTP monitor that requests a real path and matches an expected string is worth the configuration it costs. **The method decides where traffic goes among healthy members; the monitor decides which members are healthy, and it is the one that is usually wrong.**

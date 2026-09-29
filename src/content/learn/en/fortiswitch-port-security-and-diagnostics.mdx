@@ -23,7 +23,7 @@ The access layer is where untrusted devices attach, so it is where the switch's 
 
 Authentication runs against a RADIUS (Remote Authentication Dial-In User Service) server, and the server can return the VLAN (virtual local area network) the device should be placed in. That is how a single physical port serves different network segments depending on who connects to it, and it is the mechanism network access control builds on.
 
-**Sticky MAC** takes a different approach: the port learns the MAC addresses currently connected and then refuses others. It requires no authentication infrastructure, which makes it attractive for devices that cannot authenticate — printers, cameras, industrial equipment.
+**Sticky MAC** takes a different approach: the port learns the MAC addresses currently connected and then refuses others. It requires no authentication infrastructure, which makes it attractive for devices that cannot authenticate: printers, cameras, industrial equipment.
 
 Its weakness is that it trusts what it learned. If the wrong device was connected when the port learned, the wrong device is now permitted, and MAC addresses can be spoofed by anything determined enough to try. It raises the effort required; it does not settle the question.
 
@@ -31,13 +31,13 @@ Its weakness is that it trusts what it learned. If the wrong device was connecte
 
 Three features work together, and the order they depend on each other is the thing to remember.
 
-**DHCP snooping** watches DHCP exchanges and builds a table of which address was assigned to which MAC on which port. It also classifies ports as trusted or untrusted, and drops DHCP server responses arriving on untrusted ports — which stops a rogue DHCP server, whether malicious or someone's home router plugged in backwards.
+**DHCP snooping** watches DHCP exchanges and builds a table of which address was assigned to which MAC on which port. It also classifies ports as trusted or untrusted, and drops DHCP server responses arriving on untrusted ports, which stops a rogue DHCP server, whether malicious or someone's home router plugged in backwards.
 
 **Dynamic ARP inspection** uses that table to validate ARP packets. An ARP claiming an address that the snooping table says belongs to a different MAC is dropped, which defeats ARP spoofing.
 
 **IP source guard** uses the same table to drop IP packets whose source address does not match what was assigned to that port, which stops address spoofing outright.
 
-The dependency is the operationally important part: **the second and third need the first.** Enabling dynamic ARP inspection without DHCP snooping leaves it with no table to validate against. And any device with a static address is invisible to the snooping table, so it will be blocked unless a static binding is added for it — which is the single most common cause of "we turned on the security features and the servers stopped working".
+The dependency is the operationally important part: **the second and third need the first.** Enabling dynamic ARP inspection without DHCP snooping leaves it with no table to validate against. And any device with a static address is invisible to the snooping table, so it will be blocked unless a static binding is added for it, which is the single most common cause of "we turned on the security features and the servers stopped working".
 
 ## Getting information out of the switch
 

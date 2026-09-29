@@ -28,15 +28,15 @@ The second argument is durability. Fixing production without fixing the template
 - **In the pipeline**, as a build stage, where a policy can fail the build.
 - **In the registry**, scanning images so a vulnerable base image is caught before anything runs it.
 
-**What to fail on** is the decision that determines whether this survives contact with delivery teams. Failing a build on every finding produces a pipeline people route around. Failing on a narrow, defensible set — publicly exposed storage, hardcoded credentials, critical vulnerabilities with a fix available — and reporting the rest keeps the gate credible.
+**What to fail on** is the decision that determines whether this survives contact with delivery teams. Failing a build on every finding produces a pipeline people route around. Failing on a narrow, defensible set (publicly exposed storage, hardcoded credentials, critical vulnerabilities with a fix available) and reporting the rest keeps the gate credible.
 
 ## Runtime detection
 
 Shifting left prevents known-bad configurations. It does not prevent compromise, stolen credentials, or an authorised identity doing something it should not, which is what runtime detection is for.
 
-Cloud threat detection is harder than endpoint detection for a specific reason: much of what an attacker does is legitimate API activity performed with valid credentials. There is no malware to find. Creating a user, attaching a policy, reading a bucket, launching an instance — all ordinary, all part of real attacks.
+Cloud threat detection is harder than endpoint detection for a specific reason: much of what an attacker does is legitimate API activity performed with valid credentials. There is no malware to find. Creating a user, attaching a policy, reading a bucket, launching an instance: all ordinary, all part of real attacks.
 
-That is why **behavioural baselining** rather than signature matching is the workable approach. The platform learns what normal looks like for each identity and resource — which APIs they call, from where, at what times, against what — and surfaces deviation.
+That is why **behavioural baselining** rather than signature matching is the workable approach. The platform learns what normal looks like for each identity and resource (which APIs they call, from where, at what times, against what) and surfaces deviation.
 
 The detections that matter follow from that:
 
@@ -52,12 +52,12 @@ None of these is conclusive alone. All of them are unusual, and unusual is the c
 
 An alert needs context to be triaged, and the context is what a unified view provides:
 
-**The identity** — what is it, what may it do, what does it normally do.
-**The resource** — what is it, what is on it, is it exposed.
-**The sequence** — what happened before and after, since a single action rarely tells the story.
-**The path** — what could be reached from here, which is what turns an alert into an assessment of consequence.
+**The identity**: what is it, what may it do, what does it normally do.
+**The resource**: what is it, what is on it, is it exposed.
+**The sequence**: what happened before and after, since a single action rarely tells the story.
+**The path**: what could be reached from here, which is what turns an alert into an assessment of consequence.
 
-That last one is where investigation and posture data meet. The same question — what can this reach — is a risk question before an incident and a blast-radius question during one.
+That last one is where investigation and posture data meet. The same question (what can this reach) is a risk question before an incident and a blast-radius question during one.
 
 ## Remediation
 
@@ -75,7 +75,7 @@ Untuned detection produces noise, and noisy detection gets muted. The tuning tha
 
 **Scope by environment.** Development and production justify different thresholds, and applying production sensitivity to a sandbox generates alerts nobody will action.
 
-**Tune the baseline period.** A baseline learned during an atypical window — a migration, a launch — encodes the wrong normal.
+**Tune the baseline period.** A baseline learned during an atypical window (a migration, a launch) encodes the wrong normal.
 
 **Review what is suppressed.** Suppressions accumulate and outlive their reasons, and an unreviewed suppression list is a growing blind spot.
 

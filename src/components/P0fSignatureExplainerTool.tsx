@@ -62,13 +62,13 @@ export default function P0fSignatureExplainerTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("osTitle")}</h3>
+            <h3 className="cidr-section-title">{t("osTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.15rem" }}>{result.data.osHint.label}</p>
             <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.osHint.confidence}`)} — {result.data.osHint.rationale}</p>
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("fieldsTitle")}</h3>
+            <h3 className="cidr-section-title">{t("fieldsTitle")}</h3>
             <table className="cidr-table">
               <thead><tr><th>{t("colField")}</th><th>{t("colValue")}</th><th>{t("colMeaning")}</th></tr></thead>
               <tbody>
@@ -80,13 +80,13 @@ export default function P0fSignatureExplainerTool() {
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("ttlTitle")}</h3>
+            <h3 className="cidr-section-title">{t("ttlTitle")}</h3>
             <p className="cidr-note">{result.data.ttlNote}</p>
           </section>
 
           {result.data.options.length > 0 && (
             <section>
-              <h3 className="cidr-h">{t("optionsTitle")}</h3>
+              <h3 className="cidr-section-title">{t("optionsTitle")}</h3>
               <table className="cidr-table">
                 <thead><tr><th>{t("colToken")}</th><th>{t("colName")}</th><th>{t("colMeaning")}</th></tr></thead>
                 <tbody>
@@ -100,7 +100,7 @@ export default function P0fSignatureExplainerTool() {
 
           {result.data.quirks.length > 0 && (
             <section>
-              <h3 className="cidr-h">{t("quirksTitle")}</h3>
+              <h3 className="cidr-section-title">{t("quirksTitle")}</h3>
               <table className="cidr-table">
                 <thead><tr><th>{t("colToken")}</th><th>{t("colMeaning")}</th></tr></thead>
                 <tbody>

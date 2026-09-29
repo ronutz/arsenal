@@ -34,8 +34,8 @@ Three parameters do the security heavy lifting. **`state`** ties the response ba
 
 They are frequently implemented as if either satisfies the requirement. They do not overlap.
 
-**`state`** binds the redirect to the browser session that started it. Without it, an attacker can complete their own authorisation and have the victim's browser deliver the resulting code — the victim ends up logged into the attacker's account, which is quiet, confusing, and worse than it sounds when the account is then used to collect what the victim uploads.
+**`state`** binds the redirect to the browser session that started it. Without it, an attacker can complete their own authorisation and have the victim's browser deliver the resulting code: the victim ends up logged into the attacker's account, which is quiet, confusing, and worse than it sounds when the account is then used to collect what the victim uploads.
 
 **`nonce`** binds the ID token to that same request, so a token issued for one login cannot be replayed into another.
 
-**Implementing one and assuming the other is covered leaves a whole attack open**, and neither failure produces an error — the flow completes, the user is signed in, and the only sign is that they are signed in as somebody else.
+**Implementing one and assuming the other is covered leaves a whole attack open**, and neither failure produces an error: the flow completes, the user is signed in, and the only sign is that they are signed in as somebody else.

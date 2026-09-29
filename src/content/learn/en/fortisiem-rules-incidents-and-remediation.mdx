@@ -30,7 +30,7 @@ The grouping fields are worth pausing on, because they determine whether a rule 
 
 A **subpattern** is a filter plus an aggregation plus a threshold: events matching this condition, grouped this way, exceeding this count within the window.
 
-A rule with one subpattern expresses a threshold condition — more than N failures from one source in five minutes. That is useful and is not what makes correlation valuable.
+A rule with one subpattern expresses a threshold condition: more than N failures from one source in five minutes. That is useful and is not what makes correlation valuable.
 
 A rule with **multiple subpatterns** expresses a relationship: a run of authentication failures from a source, followed by a success from the same source. Neither half is remarkable alone. Failures happen constantly and successes are the normal case. The sequence is what matters, and it is only expressible with subpatterns that share a grouping field.
 
@@ -66,7 +66,7 @@ The CMDB (configuration management database) earns its keep here. Notification s
 
 FortiSIEM can act rather than only report: block an address on a firewall, disable an account, isolate an endpoint, run a script.
 
-The same rule applies as everywhere else in this stack — match the action to the confidence — with one addition specific to a SIEM. A SIEM acts on correlated evidence from multiple systems, so its confidence in a conclusion can be higher than any single product's. That is the argument for automated remediation here being viable where it would not be from a single sensor.
+The same rule applies as everywhere else in this stack: match the action to the confidence, with one addition specific to a SIEM. A SIEM acts on correlated evidence from multiple systems, so its confidence in a conclusion can be higher than any single product's. That is the argument for automated remediation here being viable where it would not be from a single sensor.
 
 It also means the blast radius is larger. An automated block driven by a rule with a subtly wrong subpattern join can act on a lot of things quickly, so the sequence is: run the rule without the action, read what it would have done over a representative period, then enable it.
 

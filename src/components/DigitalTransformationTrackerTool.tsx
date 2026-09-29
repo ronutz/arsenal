@@ -95,8 +95,8 @@ export default function DigitalTransformationTrackerTool() {
       </div>
 
       {!result.ok ? (
-        <div className="json-error">
-          <p className="json-error-title">{t("errorTitle")}</p>
+        <div className="json-error-box">
+          <p className="json-error-headline">{t("errorTitle")}</p>
           <p>{result.error}</p>
         </div>
       ) : result.milestones.length === 0 ? (
@@ -121,8 +121,8 @@ export default function DigitalTransformationTrackerTool() {
                 <div className="lineage-deal-card">
                   <div className="lineage-deal-top">
                     <span className="lineage-deal-name">{m.title}</span>
-                    <span className="type-badge">{t(`domain_${m.domain}`)}</span>
-                    <span className="type-badge">{t(`certainty_${m.certainty}`)}</span>
+                    <span className="tmsh-type-badge">{t(`domain_${m.domain}`)}</span>
+                    <span className="tmsh-type-badge">{t(`certainty_${m.certainty}`)}</span>
                   </div>
                   <p className="lineage-deal-what">{m.changed}</p>
                   <p className="lineage-deal-note">
@@ -130,7 +130,7 @@ export default function DigitalTransformationTrackerTool() {
                     {m.enabled}
                   </p>
                   {m.contestedNote ? (
-                    <p className="json-error-title">{m.contestedNote}</p>
+                    <p className="json-error-headline">{m.contestedNote}</p>
                   ) : null}
                   {m.source ? (
                     <p className="lineage-deal-note">

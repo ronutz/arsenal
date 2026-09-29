@@ -30,6 +30,6 @@ To watch all of this happen on a real connection, [The Illustrated TLS 1.3 Conne
 
 ## The practical consequence for a cipher rule
 
-Because the two notions of a suite are different, **the same configuration line cannot govern both**. That produces a specific and quiet failure: a restrictive rule written against 1.2 suites leaves 1.3 negotiation untouched, and nothing reports an error because nothing went wrong — a suite was offered, a suite was chosen, and it simply was not one the rule had an opinion about.
+Because the two notions of a suite are different, **the same configuration line cannot govern both**. That produces a specific and quiet failure: a restrictive rule written against 1.2 suites leaves 1.3 negotiation untouched, and nothing reports an error because nothing went wrong: a suite was offered, a suite was chosen, and it simply was not one the rule had an opinion about.
 
 **The check is always the same: look at what a real connection negotiated**, protocol version and suite together, rather than at what the configuration says should happen. A control you have not observed working is a control you are assuming.

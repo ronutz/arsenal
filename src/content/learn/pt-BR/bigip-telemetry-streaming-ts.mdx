@@ -8,7 +8,7 @@ relatedArticles: ["bigip-declarative-onboarding-do", "as3-declaration-anatomy"]
 category: networking
 order: 7
 status: reviewed
-updated: "2026-07-05"
+updated: "2026-09-27"
 ---
 
 O F5 Automation Toolchain é geralmente descrito em termos de suas duas extensões de configuração, e com razão: o AS3 (Extensão Application Services 3, do inglês Application Services 3 Extension) configura os serviços de aplicação de Camada 4-7 em um BIG-IP, e o DO faz o onboarding de Camada 1-3 que coloca a caixa na rede. O Telemetry Streaming é a terceira extensão, e pertence a uma categoria de trabalho diferente. O AS3 e o DO mudam a configuração do dispositivo; o TS não toca na configuração de forma alguma. Ele agrega, normaliza e encaminha estatísticas e eventos do BIG-IP para uma aplicação consumidora, o que o torna a metade de observabilidade de um toolchain que de resto é sobre configuração. A mecânica é o mesmo modelo declarativo, você faz POST de uma única declaração JSON em um endpoint REST (transferência de estado representacional, do inglês representational state transfer), mas a declaração descreve um pipeline de dados em vez de uma configuração desejada. O [explicador de TS](/tools/telemetry-streaming-explainer) lê esse pipeline de volta do jeito que este artigo descreve.
@@ -30,3 +30,9 @@ A coisa mais valiosa de verificar em uma declaração TS não é nenhuma proprie
 ## Modo de manutenção, e os limites de um verificador de estrutura
 
 Um fato pertence a qualquer descrição honesta do TS hoje: a F5 colocou o Telemetry Streaming em uma fase de manutenção e suporte contínuos. Ele continua recebendo correções críticas e atualizações de segurança, e a F5 declarou que não há plano de depreciá-lo, mas não é mais o produto em expansão ativa que já foi, e o novo investimento em observabilidade tende a apontar para outro lugar. Isso não diminui sua utilidade nos muitos BIG-IPs que já transmitem telemetria através dele, mas vale saber antes de construir novos pipelines sobre ele. Como nos explicadores de AS3 e DO, [Explicador de Telemetry Streaming (TS)](/tools/telemetry-streaming-explainer) é um explicador de estrutura e verificador de sanidade em vez do validador completo de schema, a F5 publica o schema do TS para isso, e ela roda inteiramente no navegador e nunca contata um BIG-IP.
+
+## Fontes
+
+A versão que inverteu a direção da telemetria está declarada na primeira linha da própria página da F5 sobre o recurso.
+
+- [Pull Consumers - "F5 BIG-IP Telemetry Streaming 1.11 introduced a pull consumer ... using a new class called Telemetry_Pull_Consumer", e o poller com interval=0 que o acompanha](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/pull-consumers.html)

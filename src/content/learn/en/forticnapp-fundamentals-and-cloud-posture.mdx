@@ -16,19 +16,19 @@ Cloud security tooling accumulated as a set of acronyms because each addressed a
 
 ## The four problems
 
-**Misconfiguration** — a storage bucket readable by anyone, a database reachable from the internet, logging disabled. This is posture management, and it is the largest source of cloud incidents by a wide margin, because it requires no exploit at all.
+**Misconfiguration**: a storage bucket readable by anyone, a database reachable from the internet, logging disabled. This is posture management, and it is the largest source of cloud incidents by a wide margin, because it requires no exploit at all.
 
-**Excessive permissions** — an identity that can do far more than its job needs. Cloud permission models are permissive by default and grow through accretion, and the gap between granted and used is where lateral movement lives.
+**Excessive permissions**: an identity that can do far more than its job needs. Cloud permission models are permissive by default and grow through accretion, and the gap between granted and used is where lateral movement lives.
 
-**Vulnerable workloads** — the containers and instances actually running, with whatever unpatched software they contain.
+**Vulnerable workloads**: the containers and instances actually running, with whatever unpatched software they contain.
 
-**Unsafe infrastructure code** — the templates that will produce tomorrow's misconfiguration, currently sitting in a repository.
+**Unsafe infrastructure code**: the templates that will produce tomorrow's misconfiguration, currently sitting in a repository.
 
 The compounding is the point. A vulnerable container is a finding. A vulnerable container that is internet-facing and running as an identity with administrative permissions is an incident waiting to happen, and only a view that spans all three can say so.
 
 ## Connecting cloud accounts
 
-Integration is read-only access to the cloud provider's own APIs and logs — a role in AWS, an application registration in Azure, a service account in GCP. The platform reads configuration, permissions, resource inventory and activity logs.
+Integration is read-only access to the cloud provider's own APIs and logs: a role in AWS, an application registration in Azure, a service account in GCP. The platform reads configuration, permissions, resource inventory and activity logs.
 
 Two points that decide whether the deployment is useful:
 
@@ -46,7 +46,7 @@ Most real deployments use both, and the sensible sequence is agentless first for
 
 ## Compliance reporting
 
-The platform evaluates the estate against frameworks — CIS benchmarks, PCI DSS, SOC (security operations center) 2, HIPAA, and others — and reports which controls pass and which do not.
+The platform evaluates the estate against frameworks (CIS benchmarks, PCI DSS, SOC (security operations center) 2, HIPAA, and others) and reports which controls pass and which do not.
 
 The honest framing is that this is a mapping exercise, not an audit. It tells you which technical controls the framework expects and which of them your configuration satisfies. It does not know about your compensating controls, your documented exceptions, or the parts of the framework that are about process rather than configuration.
 

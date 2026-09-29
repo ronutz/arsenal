@@ -28,7 +28,7 @@ Most deployments use all three, and the coverage question is the one to keep ask
 
 Posture turns "this is Ana's laptop" into "this is Ana's laptop and it is in a state I am willing to grant access from".
 
-The checks are the familiar ones — the security agent is running and current, the operating system is patched to a required level, disk encryption is on, required software is present, prohibited software is not.
+The checks are the familiar ones: the security agent is running and current, the operating system is patched to a required level, disk encryption is on, required software is present, prohibited software is not.
 
 What matters is what happens on failure, and there are three sensible answers rather than one:
 
@@ -48,7 +48,7 @@ The operational point is that a rule nobody can satisfy produces a fleet in perm
 
 ## Performance SLAs
 
-Where SASE carries traffic that has performance requirements, service-level agreements measure the paths — latency, jitter, packet loss — and steer traffic accordingly. This is the same mechanic as SD-WAN (software-defined WAN) performance SLA (service level agreement), applied to the path between the user and the point of presence.
+Where SASE carries traffic that has performance requirements, service-level agreements measure the paths (latency, jitter, packet loss) and steer traffic accordingly. This is the same mechanic as SD-WAN (software-defined WAN) performance SLA (service level agreement), applied to the path between the user and the point of presence.
 
 The detail worth carrying over is that the measurement must resemble the traffic. A health check against a nearby endpoint that reports excellent numbers while the application everyone uses performs badly is measuring the wrong thing, and it will keep steering traffic onto a path that is failing for the use that matters.
 

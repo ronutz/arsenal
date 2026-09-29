@@ -40,7 +40,7 @@ Because `algorithm`, `digits`, and `period` are all part of the URI, a mismatch 
 
 ## The QR code is the secret, in a form people forget is a secret
 
-An `otpauth://` URI contains the shared secret in plain text. The QR image is an encoding of that URI, which makes **the picture a credential** — as sensitive as a password and far more likely to be treated casually.
+An `otpauth://` URI contains the shared secret in plain text. The QR image is an encoding of that URI, which makes **the picture a credential**, as sensitive as a password and far more likely to be treated casually.
 
 The consequences are entirely predictable and happen constantly: enrolment screenshots pasted into support tickets, saved in shared drives, or sent over chat to help somebody who could not scan it. **Each one hands over a second factor permanently**, because unlike a password nobody rotates a TOTP secret after an incident they never noticed.
 

@@ -8,7 +8,7 @@ relatedArticles: ["id-token-claims", "oidc-vs-oauth", "oidc-discovery"]
 category: identity
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 ## O que é o OpenID Connect
@@ -40,3 +40,10 @@ O que o decodificador OIDC acrescenta a uma visão simples de JWT é significado
 ## O que o decodificador faz e não faz
 
 Decodificar um ID token permite lê-lo. Não o torna confiável. Uma relying party que recebe um ID token deve verificar a assinatura contra a chave do provedor, confirmar que o emissor é o provedor esperado, confirmar que seu próprio identificador de cliente está na audiência, checar que o token não expirou e confirmar que o nonce corresponde ao que ela enviou. [Decodificador OIDC](/tools/oidc) deliberadamente para na decodificação e explicação: ela nunca busca as chaves do provedor, nunca verifica a assinatura e nunca compara a expiração ao relógio. Ler o token é para entendê-lo; verificá-lo, contra chaves reais, é o que uma relying party faz para confiar nele.
+
+## Fontes
+
+Os dois padrões citados acima são públicos, e a divisão de trabalho entre eles está declarada nas próprias seções de abertura; não é interpretação.
+
+- [OpenID Connect Core 1.0 - a camada de identidade sobre o OAuth 2.0 e o ID Token que ela acrescenta](https://openid.net/specs/openid-connect-core-1_0.html)
+- [RFC 6749, The OAuth 2.0 Authorization Framework - que responde apenas à pergunta de autorização](https://www.rfc-editor.org/rfc/rfc6749.html)

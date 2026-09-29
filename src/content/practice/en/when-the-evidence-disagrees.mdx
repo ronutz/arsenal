@@ -24,7 +24,7 @@ The productive move is the opposite one. Start from the position that **both rea
 
 Instruments do not lie often. What they do constantly is answer a slightly different question from the one you think you asked.
 
-**They measure at different points.** Requests genuinely left the application and genuinely did not arrive, because something between the two — a proxy, a policy, a translation, a silently dropping middlebox — is a place where a packet can stop existing.
+**They measure at different points.** Requests genuinely left the application and genuinely did not arrive, because something between the two - a proxy, a policy, a translation, a silently dropping middlebox - is a place where a packet can stop existing.
 
 **They count different events.** One counter increments on attempt, the other on completion. In a healthy system the two track each other closely enough that nobody notices they are different quantities. Under fault they diverge, and the divergence is the whole story.
 
@@ -36,13 +36,13 @@ Instruments do not lie often. What they do constantly is answer a slightly diffe
 
 Here is the reframe that turns this from a frustration into a technique.
 
-When two observation points disagree, the fault is bounded by them. Everything before the first point is behaving as the first point says. Everything after the second is behaving as the second says. **What you have is not a broken dataset — it is a search space with an upper and lower bound**, which is a far better position than one consistent story that quietly excludes the truth.
+When two observation points disagree, the fault is bounded by them. Everything before the first point is behaving as the first point says. Everything after the second is behaving as the second says. **What you have is not a broken dataset - it is a search space with an upper and lower bound**, which is a far better position than one consistent story that quietly excludes the truth.
 
 This makes contradictions worth *seeking* rather than resolving. If two measurements agree, they tell you about one region. If they disagree, they have partitioned the system for you, and the next measurement goes between them. That is bisection, arriving through the front door.
 
 ## The questions that resolve it
 
-**Where exactly is each measuring?** Not which device — which side of which process. A firewall counter before policy evaluation and one after are different measurements of the same traffic, and the gap between them has a name.
+**Where exactly is each measuring?** Not which device - which side of which process. A firewall counter before policy evaluation and one after are different measurements of the same traffic, and the gap between them has a name.
 
 **What exactly does each count?** Read the definition rather than the label. "Errors" on one platform and "errors" on another are frequently disjoint sets, and a counter that resets on read behaves differently from one that accumulates.
 
@@ -58,7 +58,7 @@ The two instruments frequently belong to two teams, and by the time the contradi
 
 At that point the disagreement stops being technical. Nobody wants to be the team that was wrong, so both defend, and the discussion moves from *what does this counter count* to *whose fault is this*. The problem then survives, not because it is difficult, but because resolving it now costs somebody an admission.
 
-The way out is to make the question one that nobody loses. **"What would have to be true for both of these to be correct?"** is not a rhetorical device — it is genuinely the right question, and it has the useful property that answering it requires no one to retract anything. It is also, almost always, answerable.
+The way out is to make the question one that nobody loses. **"What would have to be true for both of these to be correct?"** is not a rhetorical device - it is genuinely the right question, and it has the useful property that answering it requires no one to retract anything. It is also, almost always, answerable.
 
 If you have any seniority in the room, asking it early is worth more than any measurement you could take.
 
@@ -66,6 +66,6 @@ If you have any seniority in the room, asking it early is worth more than any me
 
 It happens. A counter that has not been correct since a firmware upgrade, a graph aggregating the wrong node, a log with a timezone bug.
 
-The point is not that instruments are infallible. It is that **"my instrument is right and yours is wrong" is a conclusion, not a starting position** — and starting there means you will find the evidence for it, because you will stop looking once you do.
+The point is not that instruments are infallible. It is that **"my instrument is right and yours is wrong" is a conclusion, not a starting position** - and starting there means you will find the evidence for it, because you will stop looking once you do.
 
-Establish the boundary first. Determine what each measurement actually measures. If, after that, one of them is genuinely faulty, you will have found that out with evidence rather than asserted it with confidence — and you will know which of your other conclusions rested on it.
+Establish the boundary first. Determine what each measurement actually measures. If, after that, one of them is genuinely faulty, you will have found that out with evidence rather than asserted it with confidence - and you will know which of your other conclusions rested on it.

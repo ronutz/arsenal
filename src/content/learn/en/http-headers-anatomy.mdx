@@ -8,7 +8,7 @@ relatedArticles: ["http-status-codes-the-five-families", "secure-headers-overvie
 category: networking
 order: 209
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-09-27"
 ---
 
 Strip an HTTP message of its body and its first line, and what remains is the protocol's entire nervous system: **headers** - `Name: value` lines, names case-insensitive, values shaped by each header's own grammar. Headers are where caching, authentication, negotiation, routing, and security actually happen; the body is just cargo. This article gives the anatomy; [the request translator](/tools/curl-command-explainer) lets you dissect real specimens.
@@ -28,3 +28,11 @@ The web is a chain of intermediaries, and headers split into two citizenships. *
 ## Order, custom headers, and the fingerprint
 
 Two field notes complete the anatomy. First, custom headers: the `X-` prefix convention was officially deprecated years ago (the experiments never stay experiments - `X-Forwarded-For` is load-bearing infrastructure), so new headers just take honest names. Second, a subtlety this site turned into a tool: the specification says header *order* mostly does not matter semantically - so implementations never agreed on one, and every client emits its own characteristic sequence. Browsers, curl, Python, and bots each have a recognizable signature, which makes [header order a fingerprint](/tools/http-header-order-fingerprint) - one more instance of the recurring lesson that whatever a specification leaves free, implementations will make identifying.
+
+## Sources
+
+That HTTP/1.0 carried no Host field and HTTP/1.1 requires one is normative in three documents, one per protocol version, and virtual hosting follows from the requirement rather than from convention.
+
+- [RFC 1945, HTTP/1.0 - the request line carries only the absolute path, and Host is not among its header fields](https://www.rfc-editor.org/rfc/rfc1945.html)
+- [RFC 9112, HTTP/1.1 - "A client MUST send a Host header field in all HTTP/1.1 request messages"](https://www.rfc-editor.org/rfc/rfc9112.html)
+- [RFC 9110, HTTP Semantics - the current definitions of the header fields themselves](https://www.rfc-editor.org/rfc/rfc9110.html)

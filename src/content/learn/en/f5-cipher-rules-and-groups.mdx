@@ -8,7 +8,7 @@ relatedArticles: ["f5-cipher-string-syntax", "tls-cipher-security-keywords"]
 category: transport
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 Editing a long raw cipher string by hand is error-prone, and a single misplaced operator can change a security posture without any obvious symptom. BIG-IP v13 introduced a more structured model to manage that complexity: cipher rules and cipher groups.
@@ -30,3 +30,10 @@ A cipher string is a set of instructions, and turning those instructions into th
 ## What the explainer does
 
 For that reason, the [F5 cipher-string explainer](/tools/f5-cipher-string-expander) deliberately does not invent a suite list. It parses the string, expands the pre-built rule names it recognizes, explains every keyword and operator, and reports the security posture, while leaving the exact ordered expansion to `tmm` on the target version. For the grammar, see [reading an F5 cipher string](/learn/f5-cipher-string-syntax); for the security meaning of the keywords, see [TLS cipher security keywords](/learn/tls-cipher-security-keywords).
+
+## Sources
+
+F5's SSL administration guide is where the COMPAT removal and its replacement by NONE are stated. Note that the page states the behaviour without naming the release it happened in.
+
+- [SSL Traffic Management, BIG-IP System: SSL Administration - "the COMPAT cipher string has been removed", and a configuration that still names it "will be replaced with NONE and secure connections relying on these cipher suites will fail"](https://techdocs.f5.com/en-us/bigip-16-0-0/big-ip-system-ssl-administration/ssl-traffic-management.html)
+- [Configuring a Custom Cipher String for SSL Negotiation - cipher rules and groups, the allow, restrict and exclude instructions, and the Order list: Default, Speed, Strength, FIPS, Hardware](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-ltm-configuring-custom-cipher-string-for-ssl-negotiation/configuring-a-custom-cipher-string-for-ssl-negotiation.html)

@@ -34,4 +34,4 @@ Beyond elements and attributes there are three special constructs, comments, CDA
 
 XML has document order, and it is significant: sibling elements are a sequence, not a set. **Two documents with the same elements in a different order are different documents**, which is exactly the opposite of the intuition JSON object keys build.
 
-That has a practical edge in signing and comparison. **Canonicalisation exists because two logically identical XML documents can differ byte for byte** — attribute order, whitespace, namespace declarations — and a signature covers bytes. This is why XML signature verification is subtle in a way that JSON signing is not, and why a document that "looks the same" can fail verification for reasons invisible in a diff.
+That has a practical edge in signing and comparison. **Canonicalisation exists because two logically identical XML documents can differ byte for byte** (attribute order, whitespace, namespace declarations), and a signature covers bytes. This is why XML signature verification is subtle in a way that JSON signing is not, and why a document that "looks the same" can fail verification for reasons invisible in a diff.

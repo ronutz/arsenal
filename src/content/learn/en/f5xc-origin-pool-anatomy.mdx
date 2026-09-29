@@ -8,7 +8,7 @@ relatedArticles: ["f5xc-lb-algorithms-and-persistence", "f5xc-tls-security-level
 category: networking
 order: 75
 status: reviewed
-updated: "2026-07-11"
+updated: "2026-09-27"
 ---
 
 ## What an origin pool is
@@ -38,3 +38,9 @@ If you came looking for per-origin weights or priorities in the pool, you will n
 ## Reading one fast
 
 An origin pool spec is compact but the important parts are scattered - the origin oneof keys, the TLS sub-object, the port choice. The companion tool decodes the whole thing at once: every origin's type and address, the port and algorithm and endpoint selection, the health checks, and the full TLS-to-origin picture, with the skip-verification case flagged. It turns "what does this pool actually connect to, and how" into a glance.
+
+## Sources
+
+The security levels and the minimum TLS version each implies are tabulated in F5's own Distributed Cloud reference, which is where to re-check them when the platform moves.
+
+- [TLS Versions and Cipher Suites for Load Balancer Reference - the predefined security levels, where Default is "applied by default ... also the high security level" at minimum TLS 1.2](https://docs.cloud.f5.com/docs-v2/web-app-and-api-protection/reference/tls-reference)

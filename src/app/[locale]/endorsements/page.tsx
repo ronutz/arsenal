@@ -46,6 +46,28 @@ function ReviewReminder({ count }: { count: number }) {
   );
 }
 
+/**
+ * PAGE TITLE (2026-09-26). This route shipped with NO generateMetadata export
+ * at all, so it inherited the site-wide default <title> from [locale]/layout.tsx
+ * and shared one identical string with thirteen other pages. That is the exact
+ * fault check-page-titles was written for on 2026-08-16; the fix that day
+ * reached the index routes and never came back for these.
+ *
+ * Title only, deliberately: ogImages() would point at public/og/page/endorsements-<locale>.png,
+ * and this slug is not in gen-og's STATIC_PAGES list, so the card does not exist
+ * and check-og would fail on a manifest entry with nothing behind it. The page
+ * keeps the default social card until the slug is added to that list.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "endorsements" });
+  return { title: t("title") };
+}
+
 export default async function EndorsementsPage({
   params,
 }: {

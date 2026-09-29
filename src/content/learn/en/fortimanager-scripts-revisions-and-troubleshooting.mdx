@@ -12,15 +12,15 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-Most FortiManager troubleshooting is a search for which of two configurations is being talked about — the database's or the device's — and what happened between them.
+Most FortiManager troubleshooting is a search for which of two configurations is being talked about, the database's or the device's, and what happened between them.
 
 ## Scripts, and where they run
 
 A CLI script is a block of FortiOS commands that FortiManager can execute. The important distinction is the **target**, because the same script has different consequences depending on it:
 
-- **Against the device database** — the script changes FortiManager's copy, and the change reaches the device on the next install. This is the safer default, because the install preview still applies.
-- **Directly on the device** — the script runs on the FortiGate itself, immediately. FortiManager's database is now behind, and the device goes out of sync.
-- **Against a policy package** — for policy and object changes expressed as CLI.
+- **Against the device database**: the script changes FortiManager's copy, and the change reaches the device on the next install. This is the safer default, because the install preview still applies.
+- **Directly on the device**: the script runs on the FortiGate itself, immediately. FortiManager's database is now behind, and the device goes out of sync.
+- **Against a policy package**: for policy and object changes expressed as CLI.
 
 Running directly on the device is occasionally necessary and routinely regretted, because it creates exactly the drift the platform exists to prevent. Where it is used, an import afterwards is what puts the two copies back in agreement.
 
@@ -34,7 +34,7 @@ Every install creates a revision. The history gives two things that matter in an
 
 **A restore point.** Reverting loads an earlier configuration into the database; it becomes real on the device only when you install it. That two-step is deliberate, and it means a revert can be reviewed in the install preview before it takes effect.
 
-For comparing configurations outside FortiManager — a support case, a change review, two devices that should match — a structural diff is easier to read than a line diff, because it groups by object rather than by line number and does not report a moved block as a deletion plus an insertion.
+For comparing configurations outside FortiManager (a support case, a change review, two devices that should match), a structural diff is easier to read than a line diff, because it groups by object rather than by line number and does not report a moved block as a deletion plus an insertion.
 
 ## The troubleshooting order
 

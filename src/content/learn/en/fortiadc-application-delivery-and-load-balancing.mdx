@@ -24,7 +24,7 @@ A **server pool** groups real servers and defines how requests are distributed a
 
 A **virtual server** is what clients connect to: the address and port published to the world, bound to a pool.
 
-**Profiles and policies** attached to the virtual server govern the rest — how the protocol is handled, whether TLS is terminated, what is inspected, how persistence works.
+**Profiles and policies** attached to the virtual server govern the rest: how the protocol is handled, whether TLS is terminated, what is inspected, how persistence works.
 
 The shape is deliberately close to a firewall's virtual IP, and the difference matters: a VIP forwards to one destination, an ADC chooses among many and knows whether each is alive.
 
@@ -36,7 +36,7 @@ The distribution methods differ in what they optimise:
 
 **Weighted round robin** respects capacity differences, so a larger server takes proportionally more.
 
-**Least connections** sends to whichever server currently holds fewest, which adapts to requests that vary in duration — the usual right answer for anything with long-lived connections.
+**Least connections** sends to whichever server currently holds fewest, which adapts to requests that vary in duration, and is the usual right answer for anything with long-lived connections.
 
 **Least response time** factors in how quickly each server is actually answering, which catches a server that is up and struggling.
 
@@ -50,25 +50,25 @@ A health check determines which servers are eligible. Get it wrong and the load 
 
 The levels, in increasing usefulness:
 
-**Layer 3** — does it answer a ping. Confirms the host is powered on. Almost worthless as an application health signal.
+**Layer 3**: does it answer a ping. Confirms the host is powered on. Almost worthless as an application health signal.
 
-**Layer 4** — does the port accept a connection. Confirms something is listening. A crashed application whose listener survives passes this.
+**Layer 4**: does the port accept a connection. Confirms something is listening. A crashed application whose listener survives passes this.
 
-**Layer 7** — fetch a page and check the response. Confirms the application answers. This is the minimum that means anything.
+**Layer 7**: fetch a page and check the response. Confirms the application answers. This is the minimum that means anything.
 
-**Content-matched layer 7** — fetch a page and check the body contains what it should. This is the one that catches the application returning a friendly error page with a 200 status, which is the failure mode that most often defeats naive checks.
+**Content-matched layer 7**: fetch a page and check the body contains what it should. This is the one that catches the application returning a friendly error page with a 200 status, which is the failure mode that most often defeats naive checks.
 
 The best checks exercise the dependency chain: a page that queries the database proves the database is reachable, which a static page does not. The cost is that a database blip takes every server out at once, so the check should be as deep as the failure you need to detect and no deeper.
 
 ## Persistence
 
-Persistence keeps a client on the same server across requests. Applications that hold session state in memory require it, and the symptom of its absence is distinctive: users randomly logged out, baskets emptying, forms losing their contents — intermittent, unreproducible, and blamed on everything except the load balancer.
+Persistence keeps a client on the same server across requests. Applications that hold session state in memory require it, and the symptom of its absence is distinctive: users randomly logged out, baskets emptying, forms losing their contents, all intermittent, unreproducible, and blamed on everything except the load balancer.
 
 The mechanisms trade reliability against intrusiveness:
 
 **Source address** requires nothing of the application and groups everyone behind one NAT onto a single server.
 
-**Cookie-based** is accurate per browser and requires the ADC to insert or read a cookie, which needs the traffic to be readable — so with TLS, it needs termination.
+**Cookie-based** is accurate per browser and requires the ADC to insert or read a cookie, which needs the traffic to be readable, so with TLS it needs termination.
 
 **SSL session ID** works without reading the payload and is unreliable as clients renegotiate.
 

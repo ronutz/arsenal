@@ -14,6 +14,17 @@
 //   - PortersFiveForce: Tech Data bootstrapped with $5,000 (founding date given
 //     variously as April and November 1974; the body uses 19 November, which is
 //     the date in the incorporation record)
+//     *** THAT SOURCE IS DEAD as of 2026-09-27 (root 200, cited path 404). ***
+//     The $5,000 figure was never carried into the copy, and it is NOT promoted
+//     into it now. It was looked for on 2026-09-27 in three live sources -
+//     Wikipedia's Edward C. Raymund article, company-histories.com on Tech Data,
+//     and referenceforbusiness.com's Steven A. Raymund biography - and appears in
+//     none of them. PRIME's ruling of 2026-09-27 keeps an unsourced fact that is
+//     ALREADY STATED; it does not license adding an unconfirmable figure that is
+//     not. The $10,000 sale from father to son, which several live sources do
+//     carry, remains the entry's founding-capital detail. The April-versus-
+//     November 1974 variance is unaffected: 19 November stands on the
+//     incorporation record cited in partners.ts.
 //
 // *** BODY READ AFTER DRAFTING, AND IT IS OUTSTANDING. It has the $10,000 sale
 // in the tagline and explains why the detail matters, SYNNEX as Compac

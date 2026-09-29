@@ -1,7 +1,7 @@
 ---
 slug: brazilian-cybercrime-from-boleto-to-pix
 title: "Brazilian cybercrime: from the boleto to the Pix"
-summary: "Brazil banked online early, invented payment instruments the rest of the world did not have, and grew a criminal industry precisely shaped to them — barcode manipulation, screen overlays, ATM jackpotting, and now social engineering aimed at instant transfers. The techniques, the crews that exported them, the attacks on the state, and the laws written after each shock."
+summary: "Brazil banked online early, invented payment instruments the rest of the world did not have, and grew a criminal industry precisely shaped to them: barcode manipulation, screen overlays, ATM jackpotting, and now social engineering aimed at instant transfers. The techniques, the crews that exported them, the attacks on the state, and the laws written after each shock."
 concepts: ["cybercrime", "brazil", "banking malware", "fraud", "ransomware"]
 relatedTools: []
 relatedArticles: ["the-brazilian-hacker-scene", "hacking-in-the-20th-century", "latin-american-security-conferences"]
@@ -17,7 +17,7 @@ Two conditions produced the Brazilian fraud industry, and neither was criminal i
 
 Brazil **banked online early and enthusiastically**. Internet banking reached ordinary account holders sooner than in most countries, and the population adopted it. That created a large, connected target years before the defensive tooling matured.
 
-And Brazil **built payment instruments nobody else had**. The boleto — a printed slip with a barcode that anyone can pay at any bank, a lottery agent or an application — and later Pix, instant transfers between any two accounts, free and around the clock. Local instruments demand local fraud: none of the malware written for European or American banking applied cleanly here, so criminals wrote their own.
+And Brazil **built payment instruments nobody else had**. The boleto, a printed slip with a barcode that anyone can pay at any bank, a lottery agent or an application, and later Pix, instant transfers between any two accounts, free and around the clock. Local instruments demand local fraud: none of the malware written for European or American banking applied cleanly here, so criminals wrote their own.
 
 ## The technique lineage
 
@@ -25,11 +25,11 @@ And Brazil **built payment instruments nobody else had**. The boleto — a print
 
 **Boleto manipulation.** The barcode encodes the destination. Malware that rewrites it as the slip is generated or displayed sends the money somewhere else, and the victim pays what appears on their screen. Elegant, quiet, and specific to an instrument that only existed here.
 
-**[Banking trojan](/glossary/banking-trojan) families that went global.** Kaspersky researchers grouped four of them as [the Tetrade](/glossary/tetrade) — Guildma, Javali, Melcoz and Grandoreiro — malware that matured domestically and then reached Latin America, Spain and Portugal. Grandoreiro became the most widespread, and was rented to other criminals as a service.
+**[Banking trojan](/glossary/banking-trojan) families that went global.** Kaspersky researchers grouped four of them as [the Tetrade](/glossary/tetrade): Guildma, Javali, Melcoz and Grandoreiro, malware that matured domestically and then reached Latin America, Spain and Portugal. Grandoreiro became the most widespread, and was rented to other criminals as a service.
 
-**[Prilex](/glossary/prilex)** is the most technically impressive and the most sobering. It began as ATM malware, and in a single 2016 incident infected more than a thousand machines at one bank and [cloned some twenty-eight thousand cards](https://securelist.com/prilex-atm-pos-malware-evolution/107551/). Then it pivoted to point-of-sale, moving down to the PIN pad protocol itself, patching software in real time, and generating cryptograms so that transactions on chip-and-PIN cards could be replayed as fraudulent ones. It also became a service sold to others. That progression — deep payment-industry knowledge, applied by people who clearly understood the systems from the inside — is what distinguishes the Brazilian scene from commodity fraud.
+**[Prilex](/glossary/prilex)** is the most technically impressive and the most sobering. It began as ATM malware, and in a single 2016 incident infected more than a thousand machines at one bank and [cloned some twenty-eight thousand cards](https://securelist.com/prilex-atm-pos-malware-evolution/107551/). Then it pivoted to point-of-sale, moving down to the PIN pad protocol itself, patching software in real time, and generating cryptograms so that transactions on chip-and-PIN cards could be replayed as fraudulent ones. It also became a service sold to others. That progression, deep payment-industry knowledge applied by people who clearly understood the systems from the inside, is what distinguishes the Brazilian scene from commodity fraud.
 
-**And the Pix era changed the target rather than removing it.** Instant, irreversible transfers made malware less necessary: the efficient attack became convincing the victim to authorise the transfer themselves, which moved fraud from code to conversation. The countermeasure that works is not detection but friction — out-of-band confirmation of the destination, limits, and delays for unfamiliar recipients.
+**And the Pix era changed the target rather than removing it.** Instant, irreversible transfers made malware less necessary: the efficient attack became convincing the victim to authorise the transfer themselves, which moved fraud from code to conversation. The countermeasure that works is not detection but friction: out-of-band confirmation of the destination, limits, and delays for unfamiliar recipients.
 
 ## The attacks on the state
 
@@ -37,7 +37,7 @@ Two incidents changed how Brazilian institutions think about this.
 
 **The Superior Court of Justice, November 2020.** Ransomware identified as RansomExx encrypted the court's case files. Proceedings were suspended, deadlines paused, and the system was restored over roughly two weeks with support from the Federal Police, army intelligence and Microsoft. It was widely described as the worst attack on a Brazilian state institution to that point, and the judiciary's response included creating a standing body to address protection across the courts. One honest detail: the court never publicly confirmed a ransom demand, and careful accounts note that.
 
-**The Ministry of Health, December 2021.** A group calling itself Lapsus$ compromised ministry systems and took down ConecteSUS, the platform holding vaccination records, during a pandemic. The immediate harm was administrative — millions of people could not retrieve proof of vaccination — and the lasting lesson was about the dependency: a health record is only as available as the platform serving it.
+**The Ministry of Health, December 2021.** A group calling itself Lapsus$ compromised ministry systems and took down ConecteSUS, the platform holding vaccination records, during a pandemic. The immediate harm was administrative, since millions of people could not retrieve proof of vaccination, and the lasting lesson was about the dependency: a health record is only as available as the platform serving it.
 
 Both were failures of ordinary hygiene at scale rather than of anything exotic, which is the pattern this history keeps repeating.
 
@@ -49,7 +49,7 @@ Both were failures of ordinary hygiene at scale rather than of anything exotic, 
 
 **LGPD (13.709/2018)** brought data protection obligations and, with them, the reporting and accountability duties that make incidents visible.
 
-**Law 14.155/2021** raised penalties for electronic fraud and device intrusion — a direct response to fraud volumes that the earlier statutes had not anticipated.
+**Law 14.155/2021** raised penalties for electronic fraud and device intrusion, a direct response to fraud volumes that the earlier statutes had not anticipated.
 
 ## What the country built in response
 

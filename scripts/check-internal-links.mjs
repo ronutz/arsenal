@@ -105,8 +105,51 @@ function walk(dir, out = []) {
 // and must resolve inside /de/. Sharing one route set between locales would let
 // a link to a page that exists only in English pass while it is broken in
 // German - the precise failure this widening exists to catch.
+// ---------------------------------------------------------------------------
+// REDIRECTS COUNT AS RESOLVING - added 2026-09-27.
+//
+// Until now this guard asked "was this target BUILT", and a 301 in
+// public/_redirects was invisible to it. That is the wrong question: the thing
+// a reader experiences is whether the link lands somewhere, and a permanent
+// redirect lands. It is how every moved route on this site is meant to behave,
+// and treating those as broken turns a working site into permanent baseline debt.
+//
+// STRICTER, not looser. A redirect only excuses a link when its DESTINATION
+// resolves. A rule pointing at a route that no longer exists is a broken link
+// with an extra hop, and that case now fails where before it was never examined.
+const REDIRECTS = (() => {
+  const out = [];
+  const file = path.join(process.cwd(), "public", "_redirects");
+  if (!fs.existsSync(file)) return out;
+  for (const line of fs.readFileSync(file, "utf8").split("\n")) {
+    const s = line.trim();
+    if (!s || s.startsWith("#")) continue;
+    const [from, to] = s.split(/\s+/);
+    if (!from || !to) continue;
+    out.push({ from, to });
+  }
+  return out;
+})();
+
+/** Apply the redirect table to a locale-qualified path, or null if no rule matches. */
+function followRedirect(fullPath) {
+  for (const { from, to } of REDIRECTS) {
+    if (from.endsWith("/*")) {
+      const stem = from.slice(0, -1); // keep the trailing slash
+      if (fullPath.startsWith(stem)) {
+        return to.replace(":splat", fullPath.slice(stem.length));
+      }
+    } else if (from === fullPath || `${from}/` === fullPath || from === `${fullPath}/`) {
+      return to;
+    }
+  }
+  return null;
+}
+
 let pages = [];
 const broken = new Map();
+/** Redirect rules whose own destination does not resolve. Always fatal. */
+const danglingRedirects = new Map();
 
 for (const loc of LOCALES_TO_READ) {
   const base = path.join(OUT, loc);
@@ -145,6 +188,16 @@ for (const loc of LOCALES_TO_READ) {
       ) {
         continue;
       }
+      // A 301 in public/_redirects answers this link. Accept it only if the
+      // destination itself resolves; otherwise the redirect is the defect.
+      const hop = followRedirect(`/${loc}${raw}`);
+      if (hop) {
+        const hopLocal = hop.startsWith(`/${loc}/`) ? hop.slice(loc.length + 1) : null;
+        const hopTarget = hopLocal ? hopLocal.replace(/\/$/, "") || "/" : null;
+        if (hopTarget && (routes.has(hopTarget) || files.has(hopLocal) || files.has(hopTarget))) continue;
+        const dk = `${loc}:${raw}`;
+        if (!danglingRedirects.has(dk)) danglingRedirects.set(dk, hop);
+      }
       const key = `${loc}:${target}`;
       if (!broken.has(key)) broken.set(key, from);
     }
@@ -154,16 +207,37 @@ for (const loc of LOCALES_TO_READ) {
 const LEGACY_UNUSED = (
 true);
 
-// Pre-existing, and one of them deliberate — see the header.
-// The baseline counts DISTINCT TARGETS, not occurrences. Since 2026-09-10 this
-// guard reads more than one locale, and the single deliberate exception - the
-// changelog's link to the pre-1996 page's old address, kept because editing a
-// dated record to tidy a report is worse than the broken link - appears once in
-// every locale read. Counting occurrences would make the baseline depend on how
-// many locales a given build happened to include, which is not a property of
-// the site at all.
+// CLOSED AT ZERO, 2026-09-27.
+//
+// The one entry this baseline held was the changelog's dated link to
+// /industry/history/pre-1996, kept on the reasoning that editing a dated record
+// to tidy a report is worse than the broken link. That reasoning is right and it
+// was never the only option: public/_redirects had carried a comment since
+// 2026-08-06 announcing exactly this redirect, and the rules under it were for
+// an unrelated block. The redirect had been documented and never written, so the
+// link answered 404 for seven weeks while the guard recorded it as deliberate.
+//
+// Written now, for all sixteen built locales, bare and splat forms. The record
+// is untouched and the reader lands on /about/pre-1996. This guard also learned
+// to read the redirect table, and to verify each destination, so a moved route
+// with a working 301 is no longer counted as debt and a rule pointing at
+// nothing is fatal rather than invisible.
+//
+// The baseline still counts DISTINCT TARGETS rather than occurrences, because
+// since 2026-09-10 the guard reads more than one locale and an occurrence count
+// would depend on how many locales a given build included, which is not a
+// property of the site.
 const distinctTargets = new Set([...broken.keys()].map((k) => k.split(":").slice(1).join(":")));
-const BASELINE = 1;
+const BASELINE = 0;
+
+// A redirect whose destination does not resolve is worse than a plain broken
+// link: it looks handled. No baseline, ever.
+if (danglingRedirects.size > 0) {
+  console.error(`\n[check-internal-links] FAIL: ${danglingRedirects.size} link(s) are answered by a redirect whose DESTINATION resolves to nothing.\n`);
+  for (const [k, to] of danglingRedirects) console.error(`      ${k}  ->  ${to}`);
+  console.error("\n      A rule pointing at a route that no longer exists is a broken link with an extra hop.\n");
+  process.exit(1);
+}
 
 if (distinctTargets.size > BASELINE) {
   console.error(`\n[check-internal-links] FAIL: ${distinctTargets.size} distinct target(s) resolve to nothing, above the baseline of ${BASELINE}.\n`);

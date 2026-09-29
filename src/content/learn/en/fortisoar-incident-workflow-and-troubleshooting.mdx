@@ -16,7 +16,7 @@ Everything the platform automates exists so that people can work incidents well.
 
 ## Phases
 
-An incident moves through **phases** — triage, investigation, containment, eradication, recovery, closure, in whatever shape your process actually uses.
+An incident moves through **phases**: triage, investigation, containment, eradication, recovery, closure, in whatever shape your process actually uses.
 
 Phases matter for two reasons beyond tidiness. They make **where an incident is** visible without reading it, which is what lets a supervisor see a backlog forming in one phase rather than a general sense of busyness. And they give automation something to key on: a playbook can act when an incident enters containment without needing to interpret free-text status.
 
@@ -30,7 +30,7 @@ The advice worth following is to model the process you have rather than an ideal
 
 Two operational benefits follow, and they are the reason to do this rather than assign directly:
 
-**Nothing is assigned to someone who is not there.** Direct assignment fails silently at exactly the wrong times — overnight, at a weekend, during leave.
+**Nothing is assigned to someone who is not there.** Direct assignment fails silently at exactly the wrong times: overnight, at a weekend, during leave.
 
 **Ownership is explicit.** Work drawn from a queue has been accepted by someone, which is different from work that was pushed at them and may not have been seen.
 
@@ -54,13 +54,13 @@ The order that resolves most failures:
 
 **3. What did the step actually receive?** Not what you expect it to receive. A previous step returning an empty list, or a field absent on this particular record, produces a failure that looks like the step is broken when the data was wrong.
 
-**4. Is it the connector?** A step calling an external system fails for the reasons connectors fail — credentials, API drift, rate limits — and the connector health check distinguishes those from a playbook logic problem in seconds.
+**4. Is it the connector?** A step calling an external system fails for the reasons connectors fail (credentials, API drift, rate limits) and the connector health check distinguishes those from a playbook logic problem in seconds.
 
 **5. Evaluate the Jinja.** The Jinja editor renders an expression against real data. An expression that looks correct and produces an empty string is a very common cause, and this is where it becomes visible.
 
 ## The failure modes worth recognising on sight
 
-**It works on one record and not another.** Almost always a data difference — a field present on one and absent on the other. The default filter is the fix.
+**It works on one record and not another.** Almost always a data difference: a field present on one and absent on the other. The default filter is the fix.
 
 **It used to work.** Something external changed: a connector's API, a credential, a picklist value that a condition tests against.
 

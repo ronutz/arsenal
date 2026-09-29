@@ -34,6 +34,6 @@ AWS IMDSv2 requires a session token obtained with a PUT request and sets a low I
 
 The instinct is to block `169.254.169.254` at the network layer. It is link-local, which means **the rule has to exist on every instance**, forever, and one image built without it is one credential theft away from the rest.
 
-The durable fix moved the defence into the protocol. **IMDSv2 requires a PUT to obtain a short-lived token before any metadata read**, and a plain SSRF — which typically forces a GET the attacker cannot shape — cannot perform that handshake. The endpoint stops being reachable by accident rather than being hidden.
+The durable fix moved the defence into the protocol. **IMDSv2 requires a PUT to obtain a short-lived token before any metadata read**, and a plain SSRF, which typically forces a GET the attacker cannot shape, cannot perform that handshake. The endpoint stops being reachable by accident rather than being hidden.
 
 The general shape is worth taking away: **a control that depends on every deployment remembering it will eventually meet a deployment that did not.** Making the wrong thing structurally impossible outlives making it administratively forbidden.

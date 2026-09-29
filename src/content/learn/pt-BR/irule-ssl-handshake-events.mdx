@@ -8,7 +8,7 @@ relatedArticles: ["irule-clientside-vs-serverside", "irule-event-order-explained
 category: transport
 order: 3
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-09-27"
 ---
 
 Quando um virtual server tem um perfil Client-SSL, o BIG-IP termina o TLS do cliente, e isso adiciona eventos ao fluxo da iRule em torno do handshake. Um perfil Server-SSL faz o mesmo na conexão de saída ao membro do pool.
@@ -37,3 +37,11 @@ Na conexão com o membro do pool, o perfil Server-SSL contribui com seus própri
 ## Onde eles se encaixam na ordem
 
 Juntando tudo, um virtual server HTTPS que recriptografa roda `CLIENT_ACCEPTED`, depois os eventos de handshake do cliente, depois `HTTP_REQUEST`, depois o balanceamento, depois `SERVER_CONNECTED`, depois `SERVERSSL_HANDSHAKE`, e só então envia a requisição. Os dois handshakes são independentes: o cliente pode negociar TLS 1.3 com uma cifra enquanto o BIG-IP negocia algo totalmente diferente com o servidor. Essa independência é a razão de existirem eventos SSL em ambos os lados — cada handshake é uma negociação separada que você pode querer inspecionar ou direcionar.
+
+## Fontes
+
+Que os dois handshakes são eventos separados, e não duas visões de um só, está visível na própria referência de eventos da F5: cada lado tem o seu. O motivo pelo qual seus parâmetros negociados não precisam coincidir está na especificação do protocolo.
+
+- [CLIENTSSL_HANDSHAKE - "Triggered when a client-side SSL handshake is completed", após CLIENTSSL_CLIENTCERT quando um certificado de cliente é solicitado](https://clouddocs.f5.com/api/irules/CLIENTSSL_HANDSHAKE.html)
+- [SERVERSSL_HANDSHAKE - "Triggered when a server-side SSL handshake is completed": a outra metade, com seu próprio ciclo de vida](https://clouddocs.f5.com/api/irules/SERVERSSL_HANDSHAKE.html)
+- [RFC 8446, TLS 1.3 - onde o conceito de cipher suite passou a cobrir apenas a proteção de registro e o hash, separadamente da troca de chaves e da autenticação](https://www.rfc-editor.org/rfc/rfc8446.html)

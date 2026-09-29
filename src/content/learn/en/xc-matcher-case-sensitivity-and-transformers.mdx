@@ -54,6 +54,6 @@ Case and encoding gaps are not cosmetic. A deny rule meant to block `/admin` tha
 
 A matcher compares the request to a value, and **transformers decide the form both sides are in before that comparison happens.** Get the transformer wrong and the comparison is technically correct on data that no longer resembles what arrived.
 
-This is where evasion lives. A path compared without normalisation treats `/Admin`, `/admin` and a percent-encoded spelling as three different strings — so a DENY on one leaves the others reachable, and the rule looks right in review. Applying the same transformers an origin server applies is what makes a policy decision correspond to the request the origin will actually see.
+This is where evasion lives. A path compared without normalisation treats `/Admin`, `/admin` and a percent-encoded spelling as three different strings, so a DENY on one leaves the others reachable, and the rule looks right in review. Applying the same transformers an origin server applies is what makes a policy decision correspond to the request the origin will actually see.
 
 **Mismatched normalisation between the policy and the origin is the gap**, and it is invisible from either side alone: the policy is enforcing its rule correctly, the origin is serving the request correctly, and they disagree about what the request said.

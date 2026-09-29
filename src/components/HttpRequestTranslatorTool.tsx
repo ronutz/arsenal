@@ -102,7 +102,7 @@ export default function HttpRequestTranslatorTool() {
           {p.warnings.length > 0 && (
             <ul className="curl-warnings">
               {p.warnings.map((w) => (
-                <li className="curl-warning" key={w}>
+                <li className="curl-warn" key={w}>
                   {t("warn." + w)}
                 </li>
               ))}
@@ -110,8 +110,8 @@ export default function HttpRequestTranslatorTool() {
           )}
 
           {p.headers.length > 0 && (
-            <div className="curl-section">
-              <h3 className="curl-section-title">{t("headers")}</h3>
+            <div className="curlb-section">
+              <h3 className="curlb-section-title">{t("headers")}</h3>
               {p.headers.map((h, i) => (
                 <div className="curl-row" key={`${h.name}-${i}`}>
                   <div className="curl-row-key">{h.name}</div>
@@ -121,12 +121,12 @@ export default function HttpRequestTranslatorTool() {
             </div>
           )}
 
-          <div className="curl-section">
-            <h3 className="curl-section-title">{t("translations")}</h3>
+          <div className="curlb-section">
+            <h3 className="curlb-section-title">{t("translations")}</h3>
             {codeBlocks.map(([id, code]) => (
-              <div className="curl-block" key={id}>
-                <div className="curl-block-head">
-                  <span className="curl-block-name">{t("out." + id)}</span>
+              <div className="curl-code" key={id}>
+                <div className="curl-code-head">
+                  <span className="curl-code-lang">{t("out." + id)}</span>
                   <CopyButton text={code} label={t("copy")} done={t("copied")} />
                 </div>
                 <pre className="curl-code dig-mono">{code}</pre>

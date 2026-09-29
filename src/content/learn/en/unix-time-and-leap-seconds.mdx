@@ -1,7 +1,7 @@
 ---
 slug: unix-time-and-leap-seconds
 title: "Why Unix Time Ignores Leap Seconds"
-summary: "UTC occasionally inserts a leap second to stay aligned with the Earth's rotation, but Unix time pretends every day is exactly 86,400 seconds long. That deliberate simplification means a Unix timestamp is not a true count of elapsed seconds since the epoch — and it is the right trade-off for civil time."
+summary: "UTC occasionally inserts a leap second to stay aligned with the Earth's rotation, but Unix time pretends every day is exactly 86,400 seconds long. That deliberate simplification means a Unix timestamp is not a true count of elapsed seconds since the epoch, and it is the right trade-off for civil time."
 concepts: ["leap seconds", "utc", "tai", "posix", "unix time"]
 relatedTools: ["epoch"]
 relatedArticles: ["unix-time-explained", "iso-8601-and-rfc-3339"]
@@ -15,21 +15,21 @@ It is tempting to read "seconds since 1970" as a precise count of physical secon
 
 ## What a leap second is
 
-The Earth's rotation is slightly irregular and, on average, slowly slowing. To keep clock time (UTC) aligned with the Sun's actual position, timekeepers occasionally insert a **leap second** — an extra `:60` second added to the last minute of a day, announced a few months ahead. Since 1972, more than two dozen have been added.
+The Earth's rotation is slightly irregular and, on average, slowly slowing. To keep clock time (UTC) aligned with the Sun's actual position, timekeepers occasionally insert a **leap second**, an extra `:60` second added to the last minute of a day, announced a few months ahead. Since 1972, more than two dozen have been added.
 
 ## Unix time looks away
 
 Here is the key fact: **Unix time does not count leap seconds.** The POSIX (Portable Operating System Interface) standard defines a day as exactly **86,400 seconds**, full stop. When a leap second happens, Unix time does not get a `:60`; instead the same timestamp value is effectively used twice (or the clock is nudged), so that midnight always lands on a round multiple of 86,400. The calendar stays tidy at the cost of strict accuracy.
 
-The consequence is precise and a little surprising: a Unix timestamp is **not** the true number of SI (International System of Units) seconds elapsed since the epoch. It is short by the number of leap seconds inserted in between — around 27 seconds as of the late 2010s. The atomic-time scale that *does* count every second, TAI (International Atomic Time), has drifted that far ahead of UTC.
+The consequence is precise and a little surprising: a Unix timestamp is **not** the true number of SI (International System of Units) seconds elapsed since the epoch. It is short by the number of leap seconds inserted in between, around 27 seconds as of the late 2010s. The atomic-time scale that *does* count every second, TAI (International Atomic Time), has drifted that far ahead of UTC.
 
 ## Why this is the right choice
 
-Counting leap seconds would make every Unix timestamp depend on a table of historical insertions that also has to predict future ones — turning a trivial division into a lookup, and breaking the clean property that a day is always 86,400 seconds. For **civil** timekeeping — logs, schedules, "when did this happen" — that simplicity is worth far more than sub-second exactness. Systems that genuinely need every second (high-precision physics, some financial and navigation systems) use TAI or GPS time instead and convert deliberately.
+Counting leap seconds would make every Unix timestamp depend on a table of historical insertions that also has to predict future ones, turning a trivial division into a lookup, and breaking the clean property that a day is always 86,400 seconds. For **civil** timekeeping (logs, schedules, "when did this happen") that simplicity is worth far more than sub-second exactness. Systems that genuinely need every second (high-precision physics, some financial and navigation systems) use TAI or GPS time instead and convert deliberately.
 
 ## A moving target, soon frozen
 
-Leap seconds have always been a nuisance for computing, and the world has decided to stop: a 2022 resolution will retire the leap second by **2035**, letting UTC and atomic time drift apart slowly rather than jolting clocks. Until then, the practical takeaway stands — treat a Unix timestamp as civil time, accurate to the second for everyday purposes, but not as a stopwatch reading since 1970.
+Leap seconds have always been a nuisance for computing, and the world has decided to stop: a 2022 resolution will retire the leap second by **2035**, letting UTC and atomic time drift apart slowly rather than jolting clocks. Until then, the practical takeaway stands: treat a Unix timestamp as civil time, accurate to the second for everyday purposes, but not as a stopwatch reading since 1970.
 
 ## 30 June 2012: the night it actually broke
 
@@ -37,7 +37,7 @@ The theory above is tidy. What happened in practice, the last time a leap second
 
 At the end of 30 June 2012 the leap second was inserted, and machines running Linux began consuming their processors for no visible reason. Reddit went offline. Qantas' reservation systems failed and flights were delayed. Java applications pinned a core each. The failures were not in the applications: they were in one missing line in the kernel.
 
-The kernel commit that fixed it, from John Stultz, states the fault precisely. The timekeeping code failed to update the high-resolution timer subsystem after a leap second, so timers based on the real-time clock expired a second early or late — and, crucially, **the discrepancy stayed forever** unless something else happened to update those structures. Software that sets a timer, has it fire immediately, and sets it again, does that in a very tight loop.
+The kernel commit that fixed it, from John Stultz, states the fault precisely. The timekeeping code failed to update the high-resolution timer subsystem after a leap second, so timers based on the real-time clock expired a second early or late and, crucially, **the discrepancy stayed forever** unless something else happened to update those structures. Software that sets a timer, has it fire immediately, and sets it again, does that in a very tight loop.
 
 The workaround discovered by operators that night is the detail worth remembering, because it looks like nonsense and is not:
 
@@ -51,7 +51,7 @@ Set the clock to the time it already says. The value does not change; the *act o
 
 The deeper problem is that Unix and Linux never implemented a sixty-first second, so second 59 simply runs twice. Software does not expect a timestamp to occur twice, and what it does when that happens is undefined by the application rather than by the standard.
 
-Google's answer, published in 2011 and adopted widely since, was to refuse the discontinuity entirely: rather than repeat a second, **spread the extra second across many hours** by running the clocks fractionally slow. No timestamp repeats, no clock steps backwards, and no application ever sees an impossible value. The cost is that during the smear window the machine's time deliberately disagrees with UTC by up to half a second — which is acceptable for almost everything, and unacceptable for the applications that need true UTC to the millisecond.
+Google's answer, published in 2011 and adopted widely since, was to refuse the discontinuity entirely: rather than repeat a second, **spread the extra second across many hours** by running the clocks fractionally slow. No timestamp repeats, no clock steps backwards, and no application ever sees an impossible value. The cost is that during the smear window the machine's time deliberately disagrees with UTC by up to half a second, which is acceptable for almost everything, and unacceptable for the applications that need true UTC to the millisecond.
 
 The major cloud providers now smear by default and publish the window they use. That creates the practical hazard for a network operator: **two devices smearing on different schedules, or one smearing and one stepping, disagree with each other for hours.** Time sources should be consistent across an estate, which means checking what the upstream servers do rather than assuming.
 

@@ -24,7 +24,7 @@ The one worth dwelling on is **web filtering on the endpoint**. A gateway filter
 
 ## Quarantine
 
-Quarantine isolates a compromised endpoint. FortiClient blocks that endpoint's network traffic locally, so isolation does not depend on the endpoint being on a network segment you control — which is the point, because a compromised laptop is frequently at home.
+Quarantine isolates a compromised endpoint. FortiClient blocks that endpoint's network traffic locally, so isolation does not depend on the endpoint being on a network segment you control, which is the point, because a compromised laptop is frequently at home.
 
 Quarantine can be triggered manually by an administrator, automatically by EMS on a detection, or by the Security Fabric when a FortiGate or FortiAnalyzer concludes the endpoint is compromised.
 
@@ -41,7 +41,7 @@ ZTNA (zero trust network access) replaces "you are on the network, therefore you
 The pieces:
 
 - **The endpoint** presents a client certificate issued through EMS, which identifies the device rather than the user.
-- **EMS** supplies device posture — is it registered, is protection on, is it compliant — as **ZTNA tags**.
+- **EMS** supplies device posture (is it registered, is protection on, is it compliant) as **ZTNA tags**.
 - **The FortiGate** acts as the access proxy, terminating the session and deciding per request using the user's identity plus those tags.
 
 The practical difference from VPN (virtual private network) is worth stating plainly. A VPN grants network access and then relies on firewall policy to narrow it; ZTNA grants nothing until a specific request is evaluated, and posture is part of that evaluation. A device that falls out of compliance loses access without any network change, because the tag it was relying on is gone.
@@ -60,7 +60,7 @@ The order that resolves most cases:
 
 **1. Is the endpoint registered and reporting?** EMS shows last-seen. An endpoint that stopped reporting explains stale posture, missing tags and unapplied profile changes all at once.
 
-**2. Which profile did it get?** Not which profile you assigned — which one EMS says it received.
+**2. Which profile did it get?** Not which profile you assigned. Which one EMS says it received.
 
 **3. Is the feature actually enabled in that profile?** Licensing gates some features, and a feature that is not licensed is not going to run however carefully it is configured.
 

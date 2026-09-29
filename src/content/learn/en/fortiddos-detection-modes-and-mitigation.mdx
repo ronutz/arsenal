@@ -30,11 +30,11 @@ That is not a criticism of the product; it is the physics of the deployment, and
 
 The sequence that works is detection first, for long enough to see a representative period, then prevention. A device switched straight to prevention drops legitimate traffic during the first busy period it has never seen, and the resulting incident is caused by the protection rather than by an attack.
 
-"Long enough" means covering the cycles your traffic actually has — the working week, the month end, whatever campaign or batch job moves your numbers. A baseline learned over a quiet fortnight encodes the wrong normal.
+"Long enough" means covering the cycles your traffic actually has: the working week, the month end, whatever campaign or batch job moves your numbers. A baseline learned over a quiet fortnight encodes the wrong normal.
 
 ## Thresholds and the baseline
 
-FortiDDoS establishes what normal looks like across many parameters — packet rates by type, connection rates, protocol distribution, source behaviour — and treats deviation as the signal.
+FortiDDoS establishes what normal looks like across many parameters (packet rates by type, connection rates, protocol distribution, source behaviour) and treats deviation as the signal.
 
 Thresholds can be learned automatically or set manually. Automatic is right for most deployments, because the number of parameters is far beyond what anyone will tune by hand. Manual matters where you know something the appliance cannot infer, such as a scheduled event that will legitimately look like an attack.
 
@@ -56,7 +56,7 @@ The practical effect is that mitigation is self-limiting rather than accumulatin
 
 ## SYN floods and anomalies
 
-**SYN flood** protection addresses the classic exhaustion attack, where half-open connections consume the server's connection table. The appliance validates that a source completes the handshake before the connection is allowed to consume server resources, so spoofed sources — which cannot complete it — are filtered without the server ever seeing them.
+**SYN flood** protection addresses the classic exhaustion attack, where half-open connections consume the server's connection table. The appliance validates that a source completes the handshake before the connection is allowed to consume server resources, so spoofed sources, which cannot complete it, are filtered without the server ever seeing them.
 
 **Anomaly protection** drops packets that are malformed or impossible: invalid flag combinations, bad lengths, addresses that cannot be legitimate. These cost almost nothing to check and there is no legitimate traffic on the other side of the decision.
 

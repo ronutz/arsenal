@@ -1,7 +1,7 @@
 ---
 slug: the-scripts-worth-keeping
 title: "The scripts worth keeping"
-thesis: "Most operational scripts are written once, used once, and kept forever. The ones worth keeping are not distinguished by quality but by whether somebody other than the author can run them safely — and a script nobody else dares run is a liability wearing the costume of an asset."
+thesis: "Most operational scripts are written once, used once, and kept forever. The ones worth keeping are not distinguished by quality but by whether somebody other than the author can run them safely - and a script nobody else dares run is a liability wearing the costume of an asset."
 part: craft
 order: 8
 roles: ["second-line", "field", "first-line", "design"]
@@ -34,13 +34,13 @@ At that moment it became infrastructure, and **nothing about it was re-examined*
 
 Not elegance, and not tests. Five properties, and each maps to a way scripts hurt people:
 
-**It says what it does before it does it.** Run with no arguments, it prints what it is for and what it will touch — rather than starting. The most dangerous script is the one that begins working the moment you type its name.
+**It says what it does before it does it.** Run with no arguments, it prints what it is for and what it will touch - rather than starting. The most dangerous script is the one that begins working the moment you type its name.
 
-**It is read-only, or it says loudly that it is not.** Most operational scripts should only gather. For the ones that change something, **dry-run should be the default and acting should require a flag** — because the person running it at three in the morning inherited the command from a runbook and has not read the source.
+**It is read-only, or it says loudly that it is not.** Most operational scripts should only gather. For the ones that change something, **dry-run should be the default and acting should require a flag** - because the person running it at three in the morning inherited the command from a runbook and has not read the source.
 
 **It fails completely rather than partially.** A script that processes forty devices and dies at device twelve, having half-configured device twelve, is worse than one that refuses to start. Partial success is the failure mode that costs the most, because the estate is now in a state nobody designed.
 
-**It does not depend on its author's environment.** The alias, the path, the credential already in their shell, the assumption that `python` means version three. Somebody else runs it and gets an error — or worse, a result that looks complete and is not, because the credential they had granted read access to only half the estate.
+**It does not depend on its author's environment.** The alias, the path, the credential already in their shell, the assumption that `python` means version three. Somebody else runs it and gets an error - or worse, a result that looks complete and is not, because the credential they had granted read access to only half the estate.
 
 **Its output can be trusted or is obviously untrustworthy.** Silence must never mean success. An empty result and a failed lookup should not look the same, because a check whose input silently came back empty reports success for work it never did.
 
@@ -57,7 +57,7 @@ The code says what it does. **Only a comment can say why it exists and when it s
 
 Four lines, and they contain the two things that determine the script's future: **the reason it was written and the condition under which it should die.** Without them it will be inherited, half-understood, and kept forever by people who assume somebody had a reason.
 
-This is the same instinct as recording a changed value's reason in the template it came from — a fix or a tool with no rationale attached invites the next person to remove it or, worse, to preserve it long past its usefulness.
+This is the same instinct as recording a changed value's reason in the template it came from - a fix or a tool with no rationale attached invites the next person to remove it or, worse, to preserve it long past its usefulness.
 
 ## What to delete
 
@@ -68,21 +68,21 @@ Deletion is the underrated half, because **every script kept is a thing somebody
 - **The three that nearly do the same thing.** Keep the one that works; the ambiguity itself is the hazard, because on a bad night somebody will pick wrongly.
 - **Anything whose output nobody can interpret any more.**
 
-The test is not *"might this be useful?"* — everything might. It is **"if somebody finds this in an emergency and runs it, are they better off?"**
+The test is not *"might this be useful?"* - everything might. It is **"if somebody finds this in an emergency and runs it, are they better off?"**
 
 ## The line between a script and a tool
 
-Some scripts earn the promotion: run by several people, relied on in procedures, or producing something people act on. Those want the things a script does not — an interface somebody can discover, validation of input, output that explains itself, and a home that is not one person's laptop.
+Some scripts earn the promotion: run by several people, relied on in procedures, or producing something people act on. Those want the things a script does not - an interface somebody can discover, validation of input, output that explains itself, and a home that is not one person's laptop.
 
 Most do not earn it, and forcing them through that gate is how a useful ten-line loop becomes a project nobody finishes. **The promotion should follow the usage, not precede it.**
 
 ## Four questions before a script stops being yours
 
-Asked at the moment somebody else is about to run it — which is the moment it changes category:
+Asked at the moment somebody else is about to run it - which is the moment it changes category:
 
 1. **Does it say what it will do before doing it?**
 2. **If it changes anything, is dry-run the default?**
 3. **Does it fail loudly and completely, and can silence be mistaken for success?**
 4. **Does it work in somebody else's environment, with somebody else's access?**
 
-And the fifth, which is the same test the whole of this part keeps arriving at: **could somebody run this at three in the morning, from a runbook, without you?** If not, the honest options are to fix it or to keep it to yourself — but not to send it and hope, because it will end up in a procedure either way.
+And the fifth, which is the same test the whole of this part keeps arriving at: **could somebody run this at three in the morning, from a runbook, without you?** If not, the honest options are to fix it or to keep it to yourself - but not to send it and hope, because it will end up in a procedure either way.

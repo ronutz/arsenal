@@ -18,11 +18,11 @@ FortiAnalyzer's security operations features are four layers stacked on the log 
 
 **Logs** are what devices sent. Every other level is derived from them.
 
-**Events** are logs that matched an **event handler** — a rule with filter conditions, a severity, and optionally a threshold over a time window. An event handler does not search the archive; it evaluates logs arriving into analytics. That single fact answers the most common complaint about them, below.
+**Events** are logs that matched an **event handler**: a rule with filter conditions, a severity, and optionally a threshold over a time window. An event handler does not search the archive; it evaluates logs arriving into analytics. That single fact answers the most common complaint about them, below.
 
 **Incidents** group related events into a unit of work with an owner, a status and a history. An event is a machine observation; an incident is a human case.
 
-**Indicators** are the observables attached to an incident — an address, a hash, a domain. They are what let one incident be compared with another and with threat intelligence.
+**Indicators** are the observables attached to an incident: an address, a hash, a domain. They are what let one incident be compared with another and with threat intelligence.
 
 **Playbooks** automate response. They are triggered by an event, an incident, a schedule, or manually, and they act through **connectors** to other products.
 
@@ -52,7 +52,7 @@ When troubleshooting, read the playbook's own execution history first. It record
 
 ## Where FortiView fits
 
-FortiView is the interactive view over analytics — top sources, top destinations, threats, applications, each drillable down to the contributing logs. It is a reading surface, not a storage layer, so its limits are the analytics limits: it shows what is indexed, in the current ADOM, within retention.
+FortiView is the interactive view over analytics: top sources, top destinations, threats, applications, each drillable down to the contributing logs. It is a reading surface, not a storage layer, so its limits are the analytics limits: it shows what is indexed, in the current ADOM, within retention.
 
 A FortiView panel that looks empty for a period that definitely had traffic is the analytics retention question again, not a FortiView problem.
 

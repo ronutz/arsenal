@@ -57,7 +57,7 @@ export default function Ja4FingerprintDecoderTool() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <p className="cidr-hint">{t("runsLocally")}</p>
+        <p className="cidr-note">{t("runsLocally")}</p>
       </div>
 
       {/* ---- JA4 result ---- */}

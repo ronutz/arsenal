@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-07-04"
+updated: "2026-09-27"
 ---
 
 O AS3, a Application Services 3 Extension do F5, permite configurar um BIG-IP descrevendo o estado final que você quer em vez de emitir os comandos individuais para chegar lá. Uma declaração descreve a configuração desejada de um Application Delivery Controller em termos de tenant e application, expressa como um documento JSON, e o AS3 resolve a ordem das operações para o dispositivo corresponder. A declaração é uma árvore, e assim que você consegue ler a árvore, o AS3 deixa de ser um mistério.
@@ -42,3 +42,10 @@ Dentro de uma application você encontrará um elenco recorrente, cada um identi
 Os objetos se referem uns aos outros por **pointer**. Um pointer relativo de uma palavra como `web_pool` refere-se a um objeto com esse nome na mesma application e tenant; o AS3 preenche o caminho. A palavra-chave `use` aponta para outro objeto na declaração, enquanto `bigip` aponta para um objeto existente já configurado no dispositivo fora do AS3. Para compartilhar um recurso, uma application chamada `Shared` dentro de um tenant é referenciável por outras applications naquele tenant, e `/Common/Shared` é referenciável em todo lugar.
 
 Alguns nomes são reservados: o nome de tenant **Common**, o nome de application **Shared**, o nome de virtual server **service**, e o nome de propriedade **constants**. Todo outro nome de tenant, application e recurso é sua escolha, sujeito a uma regra: de 1 a 64 caracteres, alfanuméricos, começando com uma letra. O explicador aqui verifica exatamente isso, junto com as regras estruturais acima, para você pegar uma declaração malformada antes do AS3. É um verificador de estrutura, não o schema completo do AS3, então trate um resultado limpo como um bom sinal, não uma garantia.
+
+## Fontes
+
+Os dois comportamentos dependentes de versão acima estão declarados no próprio guia de AS3 da F5, que é onde reconferi-los contra a build de AS3 instalada.
+
+- [Using AS3 - "Initially, you could use three HTTP request methods with AS3: POST, GET, and DELETE. AS3 v3.1.0 added PATCH"](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/using-as3.html)
+- [Composing a BIG-IP AS3 Declaration - a exigência de nomear serviceMain conforme o template, e que o AS3 3.20 e posteriores usam o template generic por padrão quando nenhum é informado](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html)

@@ -50,8 +50,8 @@ The explainer on this site renders each predicate with its values, marks OR list
 
 ## A predicate that never matches looks exactly like one that always allows
 
-The two levels of logic — AND across predicates, OR within a matcher — mean a rule can be **narrower than intended without failing.** A header name misspelled, a path prefix missing its leading slash, a selector whose label no longer exists: each of these makes the predicate unsatisfiable, and an unsatisfiable predicate in an ALLOW rule simply means the rule never fires.
+The two levels of logic (AND across predicates, OR within a matcher) mean a rule can be **narrower than intended without failing.** A header name misspelled, a path prefix missing its leading slash, a selector whose label no longer exists: each of these makes the predicate unsatisfiable, and an unsatisfiable predicate in an ALLOW rule simply means the rule never fires.
 
-Traffic then falls through to whatever comes next. **The policy is enforcing something, so nothing looks broken** — and if what comes next is permissive, the rule you wrote to constrain the request is contributing nothing while appearing in the configuration.
+Traffic then falls through to whatever comes next. **The policy is enforcing something, so nothing looks broken**, and if what comes next is permissive, the rule you wrote to constrain the request is contributing nothing while appearing in the configuration.
 
 **Test that a rule matches what it should, and also that it matches at all.** A rule with zero hits after a day of traffic is either unnecessary or wrong, and the configuration cannot tell you which.

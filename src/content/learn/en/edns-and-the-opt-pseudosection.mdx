@@ -35,7 +35,7 @@ The `do` flag ties directly into DNSSEC: without it, a resolver will not return 
 
 ## The buffer size is a promise the network may not keep
 
-The OPT record advertises how large a UDP response the client will accept — commonly 1232 or 4096 bytes. **Advertising is not the same as receiving.**
+The OPT record advertises how large a UDP response the client will accept, commonly 1232 or 4096 bytes. **Advertising is not the same as receiving.**
 
 A response larger than the path MTU gets fragmented, and plenty of middleboxes and firewalls drop IP fragments without comment. The query goes out, the server answers, the answer never arrives, and the resolver waits for a timeout it will blame on the server.
 

@@ -31,8 +31,8 @@ There is a security angle too. Because `../` walks up the path, and because sche
 
 ## The base is the part nobody checks
 
-Resolving a relative URL needs a base, and **the base is often not what the code believes it is.** A `<base>` element in the document, a redirect that changed the effective location, or a proxy that rewrote the path can all move it — and the same relative reference then resolves somewhere else entirely.
+Resolving a relative URL needs a base, and **the base is often not what the code believes it is.** A `<base>` element in the document, a redirect that changed the effective location, or a proxy that rewrote the path can all move it, and the same relative reference then resolves somewhere else entirely.
 
 This is why relative URLs are a recurring source of security surprise rather than merely a convenience. **A reference that points inside your application when resolved against the intended base can point outside it when resolved against a base an attacker influenced.**
 
-**Resolve explicitly against a base you control**, and treat any resolution that crosses an origin as a decision rather than a detail — because the parser will perform it silently and correctly, and correctness is not the property at issue.
+**Resolve explicitly against a base you control**, and treat any resolution that crosses an origin as a decision rather than a detail, because the parser will perform it silently and correctly, and correctness is not the property at issue.

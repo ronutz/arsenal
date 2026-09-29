@@ -1,7 +1,7 @@
 ---
 slug: what-a-baseline-cannot-tell-you
 title: "What a baseline cannot tell you"
-thesis: "A baseline records what happened during the period it was taken and silently promotes that period's conditions to the status of normal. It answers whether something changed, which is worth having — but it cannot tell you whether the thing it recorded was ever right, and the difference between those two questions is where confident wrong answers come from."
+thesis: "A baseline records what happened during the period it was taken and silently promotes that period's conditions to the status of normal. It answers whether something changed, which is worth having - but it cannot tell you whether the thing it recorded was ever right, and the difference between those two questions is where confident wrong answers come from."
 part: before
 order: 6
 roles: ["second-line", "field", "design"]
@@ -26,7 +26,7 @@ The capture is silent about its own conditions. Whatever was true on the day bec
 
 A device already misconfigured is recorded as normal. A link already running hotter than it should is recorded as normal. A memory leak already three weeks into its climb is recorded at whatever value it had reached, and every future comparison measures against a number that was itself a symptom.
 
-**This is not a flaw in the practice; it is what a snapshot is.** But it means a baseline can only ever tell you how far you have moved from a point — never whether the point was a good place to stand.
+**This is not a flaw in the practice; it is what a snapshot is.** But it means a baseline can only ever tell you how far you have moved from a point - never whether the point was a good place to stand.
 
 ## Four things it cannot see, however carefully it was taken
 
@@ -34,7 +34,7 @@ A device already misconfigured is recorded as normal. A link already running hot
 
 **What the conditions were.** A capture taken in the quiet week of January and one taken at month-end close describe different systems. Neither is wrong; comparing them is. Without the conditions recorded, the comparison silently spans two different questions.
 
-**Anything below its resolution.** A quarterly snapshot cannot speak about a Tuesday. If the symptom is a two-second stall, a set of counters read once a quarter has nothing to say about it — and its silence will be read as absence, which is the [when the instruments agree](/practice/when-the-instruments-agree) error arriving from the past instead of from a dashboard.
+**Anything below its resolution.** A quarterly snapshot cannot speak about a Tuesday. If the symptom is a two-second stall, a set of counters read once a quarter has nothing to say about it - and its silence will be read as absence, which is the [when the instruments agree](/practice/when-the-instruments-agree) error arriving from the past instead of from a dashboard.
 
 **Whether the thing it measured is still the thing that matters.** The estate changed. A capacity number for a component that now carries a tenth of what it did is still accurate and no longer relevant, and it will keep looking reassuring indefinitely.
 
@@ -42,7 +42,7 @@ A device already misconfigured is recorded as normal. A link already running hot
 
 The dangerous sentence is *"we checked against the baseline and it is the same, so it is not that."*
 
-Sameness rules out **change**. It does not rule out the component. If the fault is a design limit rather than a drift — a table that was always going to fill at this transaction rate, a timeout that was always slightly too short for this path, a licence ceiling reached by growth that is entirely normal — then **the baseline will match perfectly right up to the moment the system stops working**, and the match will have been used as a reason to look elsewhere.
+Sameness rules out **change**. It does not rule out the component. If the fault is a design limit rather than a drift - a table that was always going to fill at this transaction rate, a timeout that was always slightly too short for this path, a licence ceiling reached by growth that is entirely normal - then **the baseline will match perfectly right up to the moment the system stops working**, and the match will have been used as a reason to look elsewhere.
 
 Every one of those faults is invisible to a comparison and obvious to a first-principles reading of the design. That is why this article sits beside [reading a design you did not write](/practice/reading-a-design-you-did-not-write) rather than replacing it.
 
@@ -61,6 +61,6 @@ Before letting a baseline rule anything out:
 1. **When was it taken, and what was happening that week?** If the conditions are not recorded, the comparison is weaker than it looks.
 2. **Was the system known-good then, or merely not-yet-complaining?** Nobody captures a baseline the week after an incident; they capture it when things are quiet, which is not the same as verified.
 3. **Is its resolution finer than the symptom?** A quarterly capture cannot testify about a ten-second event.
-4. **If this value had always been wrong, would this baseline look any different?** If the answer is no — and it usually is — then the match is not evidence about correctness, and saying so is the difference between a finding and a false negative.
+4. **If this value had always been wrong, would this baseline look any different?** If the answer is no - and it usually is - then the match is not evidence about correctness, and saying so is the difference between a finding and a false negative.
 
 That last question is the whole article in one line, and it is worth asking aloud, because it is the one that turns a comfortable comparison back into an open investigation.

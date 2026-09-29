@@ -42,6 +42,6 @@ The explainer separates these clearly: it shows each rule's verdict as an allow,
 
 The value of a default-deny policy is entirely in the gap it covers: requests nobody anticipated. That makes it the one setting whose benefit **never appears in testing**, because testing exercises the paths somebody thought of.
 
-The practical consequence is that default deny is usually removed for a good reason and never put back. Something legitimate broke, the default was flipped to allow while it was diagnosed, and the diagnosis succeeded. **The temporary change survives because nothing fails afterwards** — and the policy now enforces only what its rules explicitly deny, which is a different security posture wearing the same name.
+The practical consequence is that default deny is usually removed for a good reason and never put back. Something legitimate broke, the default was flipped to allow while it was diagnosed, and the diagnosis succeeded. **The temporary change survives because nothing fails afterwards**, and the policy now enforces only what its rules explicitly deny, which is a different security posture wearing the same name.
 
 **Whether the default is deny is worth checking on a schedule**, not because it changes often, but because when it changes it does so quietly and for a reason that seemed sound at the time.

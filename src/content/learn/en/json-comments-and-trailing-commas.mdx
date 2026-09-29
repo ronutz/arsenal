@@ -29,8 +29,8 @@ These are genuinely different formats that happen to look like JSON. The trap is
 
 ## The dialect your parser accepts is not the one you documented
 
-JSON has no comments and no trailing commas, and **most real parsers accept at least one of them anyway** — under a flag, by default, or because the runtime's implementation was always permissive.
+JSON has no comments and no trailing commas, and **most real parsers accept at least one of them anyway**: under a flag, by default, or because the runtime's implementation was always permissive.
 
 That creates a file that works on the machine where it was written and fails on the one where it is deployed, with an error pointing at a line that has been fine for months. Nothing changed except which parser read it.
 
-**The tolerant parser is the dangerous one**, because it lets a non-conforming file accumulate more non-conformance until something strict finally reads it. If a configuration format needs comments, use one that has them — **YAML, JSON5 or TOML** — rather than relying on a parser's generosity, which is a dependency you did not declare.
+**The tolerant parser is the dangerous one**, because it lets a non-conforming file accumulate more non-conformance until something strict finally reads it. If a configuration format needs comments, use one that has them (**YAML, JSON5 or TOML**) rather than relying on a parser's generosity, which is a dependency you did not declare.

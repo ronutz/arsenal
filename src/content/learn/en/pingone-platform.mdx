@@ -8,7 +8,7 @@ relatedArticles: ["pingone-davinci-orchestration", "pingaccess-policy-model", "p
 category: identity
 order: 229
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-09-27"
 ---
 
 "PingOne" is the most overloaded word in the Ping catalog, and the confusion dissolves once you see the shape: **PingOne is the platform**, and the names after it are services on that platform. This article draws the map - what the platform is, what each service does, and how it relates to the software you run yourself. (Facts follow Ping's official product documentation, verified at the time of writing.)
@@ -28,3 +28,12 @@ The platform does not replace the self-managed stack; it *partners* with it, and
 ## Why the map matters
 
 Operationally, the map decides where configuration lives and where an outage can come from - a Protect policy misfire is a platform-service question, a PingFederate adapter failure is a self-managed one, and hybrid architectures need both runbooks. Commercially and in certification terms, the map is the syllabus boundary: the Certified Professional **PingOne** exam covers the platform and its services, while Advanced Identity Cloud, DaVinci, and the self-managed products each carry their own credential - all tracked on [the certifications hub](/certifications) as their official objectives land. For regulated environments, the platform family extends to a government cloud carrying FedRAMP High and DoD Impact Level 5 authorizations, the compliance names this site's glossary work will keep expanding.
+
+## Sources
+
+That the standard protocols are the interface is stated in Ping's own introduction, and each of those protocols has a specification of its own.
+
+- [Introduction to PingOne - the organization and environment model, and that "connections to external resources use open standards protocols", with client connections configuring OIDC and OAuth and the application portal serving SAML and OpenID Connect applications](https://docs.pingidentity.com/pingone/introduction_to_pingone/p1_introduction.html)
+- [RFC 6749, The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html)
+- [OpenID Connect Core 1.0 - the identity layer above it](https://openid.net/specs/openid-connect-core-1_0.html)
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 March 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

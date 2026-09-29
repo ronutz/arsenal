@@ -12,6 +12,32 @@
 // preserved in sourceNote fields rather than silently resolved. This is the
 // homage format: the pioneers of networking, telecom, and cybersecurity,
 // recorded accurately.
+//
+// *** A FACT IS NOT DELETED FOR WANT OF A SOURCE (PRIME, 2026-09-27). ***
+// The rule above governs what may SHIP. It says nothing about what happens when
+// a source that was read, quoted and dated LATER DIES, and on 2026-09-27 a
+// liveness sweep found that this happens often: content farms are pruned or
+// rebranded, agency newsrooms drop their archives, and a citation verified in
+// August answers 404 in September.
+//
+// PRIME's ruling is that the fact STAYS IN THE COPY. What has gone missing is
+// the citation, not the fact, and a reader is better served by a claim marked
+// as uncited than by a silently shortened history. So when a source dies:
+//
+//   1. Replace it if a live source reaches the same claim. Prefer first-party
+//      or filed documents, and say in the note what the replacement does NOT
+//      reach, because a replacement almost never carries everything.
+//   2. Where nothing replaces it, LEAVE THE CLAIM and record the gap in the
+//      sourceNote or the file's verification manifest, with the date the source
+//      was found dead and the control that established it.
+//   3. Never soften, hedge or quietly drop the claim to make the citation
+//      situation tidier. A sourceNote reading "remains unsourced" is a record
+//      of work outstanding, never a licence to delete.
+//
+// The one thing the ruling does NOT license is the reverse move: promoting into
+// copy a figure that was only ever in a manifest comment and can no longer be
+// confirmed. Keeping a stated fact and inventing an unstated one are different
+// acts, and only the first is protected here.
 // ============================================================================
 
 export interface FoundingStory {

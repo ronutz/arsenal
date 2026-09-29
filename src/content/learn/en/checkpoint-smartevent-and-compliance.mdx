@@ -20,7 +20,7 @@ The **correlation unit** reads logs and applies rules that recognise patterns ac
 
 The value is the compression. A port scan is hundreds of dropped connections in the log and one event in SmartEvent. A brute-force attempt is dozens of authentication failures and one event. Reading the second is possible; reading the first is not.
 
-The architecture can be consolidated on the management server for smaller deployments, or separated where log volume justifies dedicated hardware — the same reasoning that separates a log server, applied one layer up.
+The architecture can be consolidated on the management server for smaller deployments, or separated where log volume justifies dedicated hardware: the same reasoning that separates a log server, applied one layer up.
 
 ## Events and alerts
 
@@ -36,7 +36,7 @@ An untuned SmartEvent produces events for things that are normal in your environ
 
 Tuning means adjusting thresholds, excluding known-good sources, and disabling the definitions that do not apply. It is ongoing rather than a setup step, because the environment changes.
 
-The failure to avoid is the familiar one: leaving a noisy event enabled because disabling it feels like reducing security. A noisy event is already providing no security, because nobody reads it — and it is actively harmful, because it hides the ones that matter.
+The failure to avoid is the familiar one: leaving a noisy event enabled because disabling it feels like reducing security. A noisy event is already providing no security, because nobody reads it, and it is actively harmful, because it hides the ones that matter.
 
 ## Reports
 

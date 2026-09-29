@@ -33,7 +33,7 @@ The useful split is between an **answer that says no** and **no answer at all**.
 
 They look alike and they blame different parties.
 
-**REFUSED** means the server understood you and declined — you are not permitted to ask. That is policy: a recursive resolver that only serves its own network, or an authoritative server that will not recurse for you. **Nothing is broken.**
+**REFUSED** means the server understood you and declined: you are not permitted to ask. That is policy: a recursive resolver that only serves its own network, or an authoritative server that will not recurse for you. **Nothing is broken.**
 
 **SERVFAIL** means the server tried and could not finish. Upstream timeouts, a broken delegation, or DNSSEC validation failing all land here. **Something is broken, and usually not on the box you asked.**
 

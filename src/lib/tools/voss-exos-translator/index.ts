@@ -39,7 +39,7 @@ export const manifest = Object.freeze({
       id: "exos-no-spbm-fa",
       label: "Extreme Fabric Installation & Configuration Student Guide (2024): EXOS does not support SPBM; works with fabric via Fabric Attach",
       type: "docs",
-      url: "https://documentation.extremenetworks.com/FABRICENGINE/SW/91/FabricEngineUserGuide/",
+      url: "https://documentation.extremenetworks.com/Fabric%20Engine%20v9.1%20User%20Guide/",
       access_date: "2026-07-11",
       scope: "the EXOS-does-not-run-SPBM fact and the Fabric Attach integration model",
       status: "active",

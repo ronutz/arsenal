@@ -42,7 +42,7 @@ Threat hunting inverts the usual flow. Rather than waiting for a detection, you 
 
 The building blocks are **queries** over the collected data and **scheduled queries** that run repeatedly and report changes. The second is what turns hunting from an occasional activity into ongoing coverage.
 
-**Threat hunting profiles** control how much telemetry collectors retain. This is a real trade: more collection means more to hunt through and more resource used on endpoints and in storage. Deciding it deliberately per collector group — richer on servers and high-value endpoints, lighter on general workstations — is better than accepting a default that is wrong at both ends.
+**Threat hunting profiles** control how much telemetry collectors retain. This is a real trade: more collection means more to hunt through and more resource used on endpoints and in storage. Deciding it deliberately per collector group (richer on servers and high-value endpoints, lighter on general workstations) is better than accepting a default that is wrong at both ends.
 
 The honest constraint is that hunting only finds what was collected. A profile that does not retain a category of telemetry makes that category unhuntable no matter how good the query, and discovering this during an investigation is the wrong moment.
 
@@ -70,4 +70,4 @@ The general shape is the one that runs through this whole platform: confirm the 
 
 ## What an exam candidate should be able to state cold
 
-Triage an alert from the process tree, the triggering action, the classification and the scope, and separate "is it malicious" from "does it warrant action now". Forensics reconstructs the surrounding activity and must be collected before remediation, because reimaging destroys the evidence. Threat hunting queries retained telemetry, scheduled queries make it continuous, and hunting profiles decide what is retained — so absence of results may mean absence of collection. FortiXDR correlates across products. When results are missing, check the collector is reporting and in the right group before trusting the query.
+Triage an alert from the process tree, the triggering action, the classification and the scope, and separate "is it malicious" from "does it warrant action now". Forensics reconstructs the surrounding activity and must be collected before remediation, because reimaging destroys the evidence. Threat hunting queries retained telemetry, scheduled queries make it continuous, and hunting profiles decide what is retained, so absence of results may mean absence of collection. FortiXDR correlates across products. When results are missing, check the collector is reporting and in the right group before trusting the query.

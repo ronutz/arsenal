@@ -42,6 +42,6 @@ The explainer on this site is built for exactly this reading: paste the policy, 
 
 Almost anything a service policy does can also be done in an iRule, which makes capability a useless criterion. The useful one is **who needs to read the rule six months from now.**
 
-A service policy is declarative and inspectable: it can be listed, diffed, reviewed by somebody who does not write TCL, and reasoned about without executing it. An iRule is a program — more expressive, and **its behaviour is only fully knowable by running it.**
+A service policy is declarative and inspectable: it can be listed, diffed, reviewed by somebody who does not write TCL, and reasoned about without executing it. An iRule is a program: more expressive, and **its behaviour is only fully knowable by running it.**
 
 So the boundary is not technical. **Put in a policy anything that expresses a rule somebody outside the team might have to audit, and reserve iRules for the cases where the logic genuinely needs a program.** A security control that only one person can read is a control with a single point of failure that is not the platform.

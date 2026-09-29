@@ -20,7 +20,7 @@ Most firewalls are configured on the firewall. Check Point is not, and every ear
 
 **The Security Gateway** enforces. It inspects traffic against a policy it received from the management server. It does not hold the authoritative configuration; it holds a compiled copy of it.
 
-**SmartConsole** is the client. It is not the management server and does not store anything itself — it is a window onto the database, which is why closing it changes nothing and why two administrators can have it open at once.
+**SmartConsole** is the client. It is not the management server and does not store anything itself; it is a window onto the database, which is why closing it changes nothing and why two administrators can have it open at once.
 
 The arrangement can be **distributed**, with management and gateway on separate machines, or **standalone**, with both on one. Distributed is the normal production shape. Standalone is common in labs and small sites, and it is the one that makes people think Check Point works like other firewalls, which stops being true the moment they meet a real deployment.
 
@@ -28,7 +28,7 @@ The arrangement can be **distributed**, with management and gateway on separate 
 
 **You install policy.** Saving a rule in SmartConsole changes the database, and the gateway is unaffected until the policy is installed on it. A rule that is correct and uninstalled does nothing. This is the single most common source of "I changed it and nothing happened".
 
-**Gateways survive management outages.** A gateway with an installed policy keeps enforcing it whether or not the management server is reachable. What you lose is the ability to change policy, and — depending on configuration — where logs go.
+**Gateways survive management outages.** A gateway with an installed policy keeps enforcing it whether or not the management server is reachable. What you lose is the ability to change policy, and, depending on configuration, where logs go.
 
 **The database is the source of truth.** As with FortiManager, the authoritative configuration is not on the enforcing device. Anyone who edits a gateway directly is editing something that will be overwritten.
 
@@ -40,7 +40,7 @@ Establishing SIC is a one-time step per gateway: you set a one-time password on 
 
 Two things worth knowing before you meet them:
 
-**SIC failures look like policy failures.** If SIC is broken, policy installation fails, logs stop arriving, and the gateway shows as unreachable — a set of symptoms that invites you to investigate policy, which is fine.
+**SIC failures look like policy failures.** If SIC is broken, policy installation fails, logs stop arriving, and the gateway shows as unreachable, a set of symptoms that invites you to investigate policy, which is fine.
 
 **Resetting SIC is disruptive and sometimes necessary.** It is the standard fix after a gateway is rebuilt or its address changes, and it means re-establishing trust from both ends.
 
@@ -60,10 +60,10 @@ The division that matters for the exam and for real work: **Gaia configures the 
 
 Four views, and knowing what each is for shortens everything afterwards:
 
-- **Gateways & Servers** — the managed estate, its status, and its version.
-- **Security Policies** — the rule bases: access control, threat prevention, and their layers.
-- **Logs & Monitor** — what actually happened, plus reporting and views.
-- **Manage & Settings** — administrators, permission profiles, sessions, revisions, and the preferences that govern the database itself.
+- **Gateways & Servers**: the managed estate, its status, and its version.
+- **Security Policies**: the rule bases: access control, threat prevention, and their layers.
+- **Logs & Monitor**: what actually happened, plus reporting and views.
+- **Manage & Settings**: administrators, permission profiles, sessions, revisions, and the preferences that govern the database itself.
 
 The object explorer sits alongside these and is where the reusable pieces live. Getting comfortable with search there is worth the ten minutes it takes, because a large environment has thousands of objects and scrolling is not a strategy.
 

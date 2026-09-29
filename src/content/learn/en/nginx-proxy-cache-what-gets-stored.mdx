@@ -16,7 +16,7 @@ Two questions get treated as one, and they are not. Whether NGINX **stores** a r
 
 ## Nothing is cached until you say so
 
-`proxy_cache` naming a zone is the switch. Without it every other cache directive in the file is inert, and this is by far the most common reason nothing is ever cached — the configuration looks complete because it has `proxy_cache_valid` and a path, but the switch was never thrown.
+`proxy_cache` naming a zone is the switch. Without it every other cache directive in the file is inert, and this is by far the most common reason nothing is ever cached: the configuration looks complete because it has `proxy_cache_valid` and a path, but the switch was never thrown.
 
 ## What stops a response being stored
 
@@ -26,7 +26,7 @@ Two questions get treated as one, and they are not. Whether NGINX **stores** a r
 
 **The origin's own instruction.** `Cache-Control: no-cache`, `no-store` or `private`, or an `Expires` in the past, prevent storage. The application is telling you something about the response, and by default NGINX listens.
 
-**No lifetime.** If nothing gives the status a lifetime — no matching `proxy_cache_valid`, no freshness header from upstream — there is nothing to store it under.
+**No lifetime.** If nothing gives the status a lifetime (no matching `proxy_cache_valid`, no freshness header from upstream) there is nothing to store it under.
 
 **`proxy_no_cache`** with a non-empty, non-zero value.
 
@@ -34,13 +34,13 @@ Two questions get treated as one, and they are not. Whether NGINX **stores** a r
 
 `proxy_no_cache` prevents the **write**. The response is fetched and used, and nothing is stored.
 
-`proxy_cache_bypass` skips the **lookup**. The request goes upstream instead of being served from cache — and the result **is still stored**.
+`proxy_cache_bypass` skips the **lookup**. The request goes upstream instead of being served from cache, and the result **is still stored**.
 
 They read like synonyms and they are opposites in the half that matters. Using bypass where you meant no_cache fills the cache with exactly the responses you were trying to keep out of it.
 
 ## The key decides what "the same request" means
 
-The default key is `$scheme$proxy_host$request_uri`, and `$request_uri` includes the query string. So `?page=2` is a distinct entry, which is right — and also means any cache-busting parameter defeats the cache entirely, which is sometimes a surprise on the bill rather than in the logs.
+The default key is `$scheme$proxy_host$request_uri`, and `$request_uri` includes the query string. So `?page=2` is a distinct entry, which is right, and also means any cache-busting parameter defeats the cache entirely, which is sometimes a surprise on the bill rather than in the logs.
 
 Build a key from `$uri` instead and you have dropped the query string. Two requests differing only in their query now share one entry, and one of them receives the other's response.
 
@@ -52,11 +52,11 @@ NGINX excludes cookied **responses** from storage. It does **not** exclude cooki
 
 A request arriving with `Cookie: session=abc` is looked up under the ordinary key. If a shared entry exists, that user is served the shared entry. NGINX never considered their cookie, because the key did not mention it.
 
-On its own that is usually harmless, because the personalised responses were never stored. It stops being harmless the moment someone adds `proxy_ignore_headers Set-Cookie` — often to make caching "work" on a site where the backend sets a session cookie on every response.
+On its own that is usually harmless, because the personalised responses were never stored. It stops being harmless the moment someone adds `proxy_ignore_headers Set-Cookie`, often to make caching "work" on a site where the backend sets a session cookie on every response.
 
 Now per-user responses are stored under a key every user shares. The first logged-in user's page is served to everybody. This is not an exotic attack; it is a two-line configuration change that looks like a performance fix.
 
-**If responses vary per user, the key must vary per user** — `$cookie_session` in the key, or the responses kept out of the cache entirely. There is no third option where you ignore `Set-Cookie` and stay safe.
+**If responses vary per user, the key must vary per user**: `$cookie_session` in the key, or the responses kept out of the cache entirely. There is no third option where you ignore `Set-Cookie` and stay safe.
 
 ## What to check when caching misbehaves
 

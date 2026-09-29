@@ -8,7 +8,7 @@ relatedArticles: ["quantum-threat-to-cryptography", "hash-function-families", "p
 category: transport
 order: 7
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 A ameaça quântica recai sobre a criptografia de chave pública: estabelecimento de chaves e assinaturas, os dois trabalhos que o RSA e as curvas elípticas fazem hoje. Então as substituições vêm exatamente nesses dois formatos. O NIST conduziu uma competição aberta desde 2016, selecionou os primeiros vencedores em 2022 e, em 13 de agosto de 2024, publicou os três primeiros padrões finalizados. São com eles que se deve construir hoje.
@@ -42,3 +42,11 @@ O **HQC** foi selecionado em 11 de março de 2025 como um mecanismo de encapsula
 O **FN-DSA**, a ser publicado como FIPS 206, é um quarto padrão de assinatura baseado na submissão Falcon (o nome vem de FFT sobre Algoritmo de Assinatura Digital Baseado em Reticulado NTRU). É outra assinatura de reticulado, mas ajustada para assinaturas pequenas ao custo de um projeto mais sensível à implementação, o que o torna adequado para nichos como assinatura de firmware e sistemas embarcados onde o tamanho da assinatura é a restrição vinculante. No momento em que este texto é escrito, ele está em desenvolvimento / rascunho, e não final, então o ML-DSA continua o ponto de partida de uso geral.
 
 Nenhum desses padrões, vale notar, especifica como combinar um algoritmo pós-quântico com um clássico. Essa questão "híbrida", rodar o ML-KEM junto com o X25519 para que a falha de qualquer um ainda o deixe seguro, é tratada no nível do protocolo, e é o tema do artigo companheiro sobre troca de chaves híbrida no TLS.
+
+## Fontes
+
+Cada algoritmo acima é um FIPS publicado com número e data, e os tamanhos de chave vêm das próprias tabelas de parâmetros dos padrões, não de um resumo deles.
+
+- [FIPS 203, Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM), 13 de agosto de 2024 - a Tabela 3 dá a chave de encapsulamento do ML-KEM-768 como 1.184 bytes](https://csrc.nist.gov/pubs/fips/203/final)
+- [FIPS 204, Module-Lattice-Based Digital Signature Standard (ML-DSA), 13 de agosto de 2024 - os conjuntos de parâmetros ML-DSA-44, ML-DSA-65 e ML-DSA-87](https://csrc.nist.gov/pubs/fips/204/final)
+- [FIPS 205, Stateless Hash-Based Digital Signature Standard (SLH-DSA), 13 de agosto de 2024 - a linhagem SPHINCS+](https://csrc.nist.gov/pubs/fips/205/final)

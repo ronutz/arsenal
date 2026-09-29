@@ -73,32 +73,32 @@ export default function FortigateSessionTableExplainerTool() {
       {error && <div className="cidr-error" role="alert">{error}</div>}
 
       {result && result.mode === "reference" && (
-        <div className="cidr-result">
-          <h3 className="cidr-result-title">{t("howToRead")}</h3>
-          <ul className="cidr-list">
+        <div className="cidr-results">
+          <h3 className="cidr-section-title">{t("howToRead")}</h3>
+          <ul className="dig-notes">
             {result.notes.map((n, i) => <li key={i}>{n}</li>)}
           </ul>
         </div>
       )}
 
       {result && result.mode === "decode" && (
-        <div className="cidr-result">
+        <div className="cidr-results">
           {result.parseWarnings.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.parseWarnings.map((w, i) => <li key={i}><strong>{w}</strong></li>)}
             </ul>
           )}
 
           {result.sessions.map((s) => (
-            <div key={s.index} className="cidr-result-block">
-              <h3 className="cidr-result-title">
+            <div key={s.index} className="dig-record">
+              <h3 className="cidr-section-title">
                 {t("sessionHeading", { n: s.index, proto: s.protoName })}
                 {s.policyId !== null ? ` — policy_id ${s.policyId}` : ""}
               </h3>
 
               {/* Findings FIRST: the conclusion, not the field dump. */}
               {s.findings.length > 0 && (
-                <ul className="cidr-list">
+                <ul className="dig-notes">
                   {s.findings.map((f, i) => <li key={i}>{f}</li>)}
                 </ul>
               )}
@@ -180,7 +180,7 @@ export default function FortigateSessionTableExplainerTool() {
           ))}
 
           {result.notes.length > 0 && (
-            <ul className="cidr-list">
+            <ul className="dig-notes">
               {result.notes.map((n, i) => <li key={i}>{n}</li>)}
             </ul>
           )}

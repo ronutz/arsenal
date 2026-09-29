@@ -9,7 +9,7 @@ relatedArticles: ["ssl-forward-proxy-interception", "http-proxy-forward-and-reve
 category: security
 order: 43
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 The generic SSL forward proxy article describes outbound TLS interception performed by a proxy at the network edge. Netskope does the same job, but relocates the proxy: instead of an appliance in the data center, the interception happens in Netskope's cloud, the NewEdge global network of data planes, and traffic is steered there from wherever the user is. That single architectural shift is what makes it a Secure Service Edge (SSE) product rather than a box, and it changes how the pieces of the generic model are arranged without changing the mechanics of interception itself.
@@ -29,3 +29,10 @@ A forward proxy needs to know *who* the user is to apply per-user policy, and he
 ## The pinning problem, and Bypass + Tunnel
 
 Being a forward proxy, Netskope hits the same wall the generic article describes: certificate-pinned applications reject the re-signed certificate and break. Netskope's handling has a useful twist for a cloud proxy. A plain **Bypass** sends the traffic straight to its destination, skipping Netskope entirely. But pinned applications also have the option to **Bypass Netskope Proxy + Tunnel**: the traffic is still tunneled to Netskope and egresses through its data plane (so it is still steered and still visible at the connection level), but SSL decryption and policy enforcement are skipped for it. That preserves egress control and some visibility for pinned apps that cannot tolerate interception, and Netskope recommends Bypass + Tunnel over a plain bypass for exactly that reason. It is the cloud-proxy expression of the generic article's rule that a real interception deployment is inspect-by-default plus a maintained set of exceptions for pinned and otherwise un-interceptable traffic.
+
+## Sources
+
+The identity path for the explicit proxy, including where it is configured, is Netskope's own; the standard it speaks is an OASIS Standard with a date.
+
+- [Cloud Explicit Proxy, Netskope - SAML 2.0 authentication via the SAML Proxy, configured under Settings > Security Cloud Platform > Forward Proxy > SAML](https://docs.netskope.com/en/explicit-proxy/)
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 March 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)

@@ -15,7 +15,7 @@ updated: "2026-08-14"
 
 **The terminal is a program.** The shell is **a process like any other**. The
 TTY is **a kernel object sitting between them**. The console is **a particular
-terminal** — the one attached to the machine itself.
+terminal**: the one attached to the machine itself.
 
 Everything below is that sentence, unpacked.
 
@@ -23,26 +23,26 @@ Everything below is that sentence, unpacked.
 
 TTY is short for **teletypewriter**. That is not a metaphor: the first ones were
 electromechanical typewriters on the end of a wire, and the abstraction Unix
-built for them is the one still in use. A terminal was a separate device — a
+built for them is the one still in use. A terminal was a separate device: a
 keyboard, a printer or later a screen, a serial cable, and no processing power
 worth mentioning. It sent the characters you typed and displayed the characters
 it received. It had **no idea what a command was.**
 
 That is still true of your terminal emulator. GNOME Terminal, iTerm, Windows
-Terminal, PuTTY — each draws a grid of characters and sends your keystrokes
+Terminal, PuTTY: each draws a grid of characters and sends your keystrokes
 somewhere. **None of them knows what `ls` means.**
 
 ## The shell is not special
 
-`bash`, `zsh`, `fish`, `ash` — these are ordinary programs. From the kernel's
+`bash`, `zsh`, `fish`, `ash`: these are ordinary programs. From the kernel's
 point of view a shell is **a process with standard input and standard output
 connected to whatever file descriptors it inherited**. It has no privileged
 relationship with the terminal, no special hook into the keyboard, and nothing
 the kernel treats differently from `grep`.
 
 What it does is read lines, expand them, fork, and wait. Everything else people
-attribute to "the shell" — the cursor moving when you press left arrow, the
-character appearing as you type it, Ctrl+C stopping a command — **is not the
+attribute to "the shell" (the cursor moving when you press left arrow, the
+character appearing as you type it, Ctrl+C stopping a command) **is not the
 shell.**
 
 ## The TTY is where the behaviour actually lives
@@ -53,7 +53,7 @@ of and it is the part doing almost everything people find surprising.
 
 In its default **canonical** mode, the line discipline:
 
-- **echoes** what you type, so the character appears on screen — the shell has
+- **echoes** what you type, so the character appears on screen, and the shell has
   not seen it yet
 - **buffers the line** until you press Enter, and handles backspace within it
 - **turns control characters into signals**: Ctrl+C becomes SIGINT, Ctrl+Z
@@ -61,14 +61,14 @@ In its default **canonical** mode, the line discipline:
 
 Which resolves the question in this article's subtitle. **Ctrl+C is not sent to
 the shell and forwarded.** The line discipline sends SIGINT to the **foreground
-process group** — the command you are running — and the shell is not in it. The
+process group**, the command you are running, and the shell is not in it. The
 shell survives because it was never the target.
 
 The same mechanism explains something people notice without explaining: a
 background job that tries to write to the terminal gets stopped. The kernel
 suspends it, because only the foreground job is allowed to write.
 
-And when a full-screen program starts — `vim`, `top`, `less` — it turns most of
+And when a full-screen program starts (`vim`, `top`, `less`) it turns most of
 this **off**. It asks the kernel to stop echoing, stop buffering lines, stop
 interpreting Ctrl+C, and hand over raw bytes. That is **raw mode**, and it is
 why a crashed full-screen program leaves your terminal behaving strangely until
@@ -77,7 +77,7 @@ you run `reset`: nobody turned the line discipline back on.
 ## Pseudoterminals: the pair that makes windows work
 
 There is no serial cable in a terminal window, so the kernel provides a
-**pseudoterminal** — a pair of endpoints wired back to back.
+**pseudoterminal**: a pair of endpoints wired back to back.
 
 The **master** is held by userspace: your terminal emulator, or `sshd`, or
 `tmux`. The **slave** appears as `/dev/pts/N` and the shell treats it as its
@@ -100,7 +100,7 @@ Three things follow, and each answers a question people actually ask:
 
 It means at least three things:
 
-**The system console** is where the kernel talks — boot messages, panics,
+**The system console** is where the kernel talks: boot messages, panics,
 anything printed before userspace exists to receive it. Where it points is set
 at boot, and on a server it is frequently the serial port rather than the
 screen.
@@ -124,19 +124,19 @@ Not a device: a name that resolves, per process, to **whatever terminal is
 controlling it**. It means something different to every process that opens it.
 
 That is what makes it useful. Writing there reaches the user **even when
-standard output has been redirected to a file** — which is why a password prompt
+standard output has been redirected to a file**, which is why a password prompt
 appears on screen when you have redirected everything, and why you cannot
 capture one.
 
 A terminal is the controlling terminal of **at most one session**. The
 association is inherited across `fork`, and a process severs it by calling
-`setsid` — which is exactly what a daemon does so that closing a terminal cannot
+`setsid`, which is exactly what a daemon does so that closing a terminal cannot
 kill it.
 
 ## Why any of this matters here
 
 Because this industry lives on serial consoles. A console cable into a switch or
-a firewall lands on a real TTY — the original case, unchanged — and it works
+a firewall lands on a real TTY, the original case, unchanged, and it works
 when the network is the thing that is broken. Serial parameters are **not
 negotiated**: baud rate, data bits, parity and stop bits must match at both
 ends, and a mismatch produces convincing-looking rubbish rather than silence.

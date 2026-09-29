@@ -77,14 +77,14 @@ export default function HttpHeaderOrderFingerprintTool() {
       {result && result.ok && (
         <div className="tmsh-results">
           <section>
-            <h3 className="cidr-h">{t("clientTitle")}</h3>
+            <h3 className="cidr-section-title">{t("clientTitle")}</h3>
             <p className="mono" style={{ fontSize: "1.15rem" }}>{result.data.clientHint.label}</p>
             <p className="cidr-note">{t("confidence")}: {t(`conf.${result.data.clientHint.confidence}`)} — {result.data.clientHint.rationale}</p>
             <p className="cidr-note">{t("orderHash")}: <span className="mono">{result.data.orderHash}</span></p>
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("orderTitle")}</h3>
+            <h3 className="cidr-section-title">{t("orderTitle")}</h3>
             <table className="cidr-table">
               <thead><tr><th>#</th><th>{t("colHeader")}</th><th>{t("colNote")}</th></tr></thead>
               <tbody>
@@ -96,13 +96,13 @@ export default function HttpHeaderOrderFingerprintTool() {
           </section>
 
           <section>
-            <h3 className="cidr-h">{t("casingTitle")}</h3>
+            <h3 className="cidr-section-title">{t("casingTitle")}</h3>
             <p className="cidr-note">{result.data.casingNote}</p>
           </section>
 
           {result.data.missingCommon.length > 0 && (
             <section>
-              <h3 className="cidr-h">{t("missingTitle")}</h3>
+              <h3 className="cidr-section-title">{t("missingTitle")}</h3>
               <p className="cidr-note">{t("missingIntro")} <span className="mono">{result.data.missingCommon.join(", ")}</span></p>
             </section>
           )}

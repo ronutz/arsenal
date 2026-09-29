@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-06-29"
 ---
 
-A Unix timestamp is a count of time units since the epoch — but *which* unit is not part of the number itself, and different ecosystems pick different ones. The same moment in late 2023 can be written four ways:
+A Unix timestamp is a count of time units since the epoch, but *which* unit is not part of the number itself, and different ecosystems pick different ones. The same moment in late 2023 can be written four ways:
 
 - seconds: `1700000000`
 - milliseconds: `1700000000000`
@@ -24,7 +24,7 @@ The convention depends on where the timestamp came from. The Unix shell `date +%
 
 ## The off-by-1000 bug
 
-Confusing units is one of the most common timestamp bugs, and it fails loudly. Feed a milliseconds value into something expecting seconds and you land roughly 50,000 years in the future. Feed a seconds value into something expecting milliseconds and your "recent" event collapses back toward 1970. Neither is subtle once you see the date — which is exactly why converting and *looking* at the result is the fastest way to catch it.
+Confusing units is one of the most common timestamp bugs, and it fails loudly. Feed a milliseconds value into something expecting seconds and you land roughly 50,000 years in the future. Feed a seconds value into something expecting milliseconds and your "recent" event collapses back toward 1970. Neither is subtle once you see the date, which is exactly why converting and *looking* at the result is the fastest way to catch it.
 
 ## Telling them apart by size
 

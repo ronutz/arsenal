@@ -120,7 +120,7 @@ export default function ZdxScoreFactorExplainerTool() {
             <div className="tmsh-object" key={r.key}>
               <div className="tmsh-object-head">
                 <span className="tmsh-type-badge">{familyLabel(r.family)}</span>
-                <span className="tmsh-name">
+                <span className="tmsh-object-name">
                   {r.key} = {r.value}
                 </span>
               </div>

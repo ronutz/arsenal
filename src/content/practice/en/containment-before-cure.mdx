@@ -20,7 +20,7 @@ The first is the one everybody can see: how long the service is unavailable. It 
 
 The second is the one that decides whether this happens again: how much you understand about why. Nobody is watching it, it has no number, and it is invisible in every report ever written about an outage.
 
-The two are in direct conflict, and the conflict is not a matter of discipline or priorities. It is mechanical: **almost every action that stops the first clock destroys the information feeding the second.** Restart the process and the memory state is gone. Fail over and the faulty node is now idle and behaving perfectly. Clear the table, flush the cache, roll back the change — each one restores service and deletes the thing you would have used to explain it.
+The two are in direct conflict, and the conflict is not a matter of discipline or priorities. It is mechanical: **almost every action that stops the first clock destroys the information feeding the second.** Restart the process and the memory state is gone. Fail over and the faulty node is now idle and behaving perfectly. Clear the table, flush the cache, roll back the change - each one restores service and deletes the thing you would have used to explain it.
 
 Understanding this is what separates people who fix outages from people who fix them repeatedly.
 
@@ -38,7 +38,7 @@ Most incidents end at containment. That is not failure, it is the normal shape o
 
 Here is the discipline that resolves the conflict between the two clocks, and it costs almost nothing.
 
-Before you take any containment action, spend one minute capturing state. Not five minutes, not a full investigation — one minute, on a system that is already down.
+Before you take any containment action, spend one minute capturing state. Not five minutes, not a full investigation - one minute, on a system that is already down.
 
 What to grab depends on the layer, but the shape is always the same: the counters, the current sessions or connections, the log tail, the running configuration, a screenshot of whatever the monitoring is showing, and the exact time. If a capture is already running, mark the moment rather than stopping it.
 
@@ -64,7 +64,7 @@ The uncomfortable pattern, and the one every long career accumulates examples of
 
 Containment applied under pressure becomes permanent. The feature stays disabled. The node stays out of the pool. The rule stays in the firewall. Three years later somebody finds a configuration nobody can explain, and the person who applied it has left, and the ticket number in the comment points at a system that was decommissioned.
 
-The prevention is one line of writing at the moment you contain: **what was changed, why, what it costs, and what would have to be true to reverse it.** Not a date, because a date will pass and nothing will happen. A *condition* — "revert once the vendor confirms the fix in 17.1" — which somebody can later evaluate.
+The prevention is one line of writing at the moment you contain: **what was changed, why, what it costs, and what would have to be true to reverse it.** Not a date, because a date will pass and nothing will happen. A *condition* - "revert once the vendor confirms the fix in 17.1" - which somebody can later evaluate.
 
 That single line is the difference between a workaround and a piece of unexplained configuration, and it takes about as long to write as this sentence took to read.
 

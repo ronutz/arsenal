@@ -8,7 +8,7 @@ relatedArticles: ["awaf-declarative-policy-structure", "awaf-enforcement-mode-bl
 category: security
 order: 9
 status: reviewed
-updated: "2026-07-02"
+updated: "2026-09-27"
 ---
 
 When one flat security policy is not enough, F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager) offers two distinct ways to structure policy configuration, and they solve different problems. It is worth being precise, because "nested policies" can mean either one.
@@ -36,3 +36,10 @@ A microservice's hostname and URL can each be a pure or non-pure wildcard, but t
 ## Which to use
 
 Reach for **parent/child** when you run many policies and need to enforce common security standards across all of them from one place. Reach for **microservices** when one application, behind one policy, has parts that need different handling, a new endpoint you want to run in transparent while the rest blocks, or a specific path that needs stricter overrides. The two compose: a child policy can itself use microservices internally.
+
+## Sources
+
+The release that introduced layered policies is named in F5's own release notes for it, which is a firmer source than a manual that merely happens to document the feature.
+
+- [BIG-IP ASM 13.0.0 Release Notes - "Layered Policies: Security policies can now be created in a hierarchical manner with a parent and child policies"](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/releasenotes/product/relnote-asm-13-0-0.html)
+- [Creating Parent and Child Security Policies - the mandatory, optional and not-inherited settings, per policy section](https://techdocs.f5.com/kb/en-us/products/big-ip_asm/manuals/product/asm-getting-started-13-0-0/3.html)

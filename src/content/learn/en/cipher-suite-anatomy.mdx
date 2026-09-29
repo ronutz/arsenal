@@ -13,7 +13,7 @@ updated: "2026-06-29"
 
 ## Origins: why a suite exists at all
 
-Early protocol designs hard-wired their cryptography. Changing an algorithm meant changing the protocol, which meant a flag day, which meant it never happened — and the algorithm was still in the field long after it was broken.
+Early protocol designs hard-wired their cryptography. Changing an algorithm meant changing the protocol, which meant a flag day, which meant it never happened, and the algorithm was still in the field long after it was broken.
 
 SSL introduced **negotiation** instead: a client offers the combinations it supports, the server picks one, and both proceed. The **cipher suite** is that combination named as a single unit, with an assigned code point so it can be offered in a list.
 
@@ -23,7 +23,7 @@ That decision bought thirty years of algorithm agility and created its own failu
 - **Combinatorial explosion.** TLS 1.2 defines hundreds of registered suites. Every additional option is another interaction to reason about, and the weakest accepted option sets the actual security.
 - **Configuration as the real risk.** The dangerous cipher suite is almost never the one an attacker breaks mathematically; it is the one left enabled by a template copied from somewhere else.
 
-TLS 1.3's answer was subtraction. Suites no longer include key exchange or authentication at all — those are negotiated separately — so a suite names only the symmetric cipher and the hash. Five are defined. **A TLS 1.3 suite name is shorter because the protocol removed the choices that made the long names necessary.**
+TLS 1.3's answer was subtraction. Suites no longer include key exchange or authentication at all (those are negotiated separately) so a suite names only the symmetric cipher and the hash. Five are defined. **A TLS 1.3 suite name is shorter because the protocol removed the choices that made the long names necessary.**
 
 ## What a cipher suite is
 
@@ -79,10 +79,10 @@ The IANA name is the registry standard. OpenSSL uses hyphens, drops the `WITH`, 
 The order of importance in practice is the reverse of how much attention each part gets:
 
 1. **Which protocol versions are enabled.** TLS 1.0 and 1.1 off, 1.2 as the floor, 1.3 preferred. This single setting decides more than any suite list.
-2. **AEAD only.** Authenticated encryption with associated data — the CBC-based constructions carry the padding-oracle history and gain nothing.
+2. **AEAD only.** Authenticated encryption with associated data: the CBC-based constructions carry the padding-oracle history and gain nothing.
 3. **Forward secrecy.** Ephemeral key exchange, so a compromised long-term key does not decrypt yesterday's captured traffic. Mandatory in TLS 1.3, optional and frequently unset in 1.2.
 4. **Order and preference.** Whether the server enforces its own preference matters when clients offer weak options.
-5. **The specific suite** — which, if the four above are right, is nearly a detail.
+5. **The specific suite**, which, if the four above are right, is nearly a detail.
 
 **Hardware shapes the honest default.** AES with dedicated instructions is faster than ChaCha20 on modern server processors; ChaCha20-Poly1305 is faster where those instructions are absent, which is much of the mobile and embedded world. Offering both and letting the client's preference decide is the sound configuration, not a hedge.
 
@@ -90,9 +90,9 @@ The order of importance in practice is the reverse of how much attention each pa
 
 ## Where the choice actually gets made
 
-- **TLS libraries** — OpenSSL, BoringSSL, GnuTLS, NSS, rustls — each with its own default list and its own naming. The same suite has an IANA name, an OpenSSL name and a GnuTLS name, which is why a configuration copied between them so often fails to mean what it did.
+- **TLS libraries** (OpenSSL, BoringSSL, GnuTLS, NSS, rustls) each with its own default list and its own naming. The same suite has an IANA name, an OpenSSL name and a GnuTLS name, which is why a configuration copied between them so often fails to mean what it did.
 - **Servers and proxies**, which express the choice in their own syntax and frequently ship a list that outlives its correctness.
-- **Platform policies** — operating systems and managed runtimes that override the application's list entirely, which is where "the code says X but the wire says Y" comes from.
+- **Platform policies**: operating systems and managed runtimes that override the application's list entirely, which is where "the code says X but the wire says Y" comes from.
 - **Compliance regimes** that mandate particular suites, sometimes lagging current advice, and which are the reason an otherwise indefensible option is still enabled somewhere.
 
 The practical rule: **configure the version floor and the AEAD requirement, take the library's modern default for the rest, and test what the wire actually negotiates** rather than what the configuration file appears to say.
@@ -101,4 +101,4 @@ The practical rule: **configure the version floor and the AEAD requirement, take
 
 Reading a suite tells you what it would do, not whether you should use it. A name can be perfectly well formed and still describe RC4, anonymous key exchange, or export-grade keys. The decoder pairs the structural breakdown with a security read-out and the independent IANA recommendation, so a healthy-looking name with a fatal flaw does not slip past. The companion articles cover what makes a suite modern: AEAD over CBC, and forward secrecy in the key exchange.
 
-To see where each piece of a suite actually lands on the wire, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) and [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotate real handshakes byte by byte — one for the long bundled names, one for the short modern ones.
+To see where each piece of a suite actually lands on the wire, [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/) and [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/) annotate real handshakes byte by byte, one for the long bundled names, one for the short modern ones.

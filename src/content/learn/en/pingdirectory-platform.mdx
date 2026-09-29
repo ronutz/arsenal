@@ -8,7 +8,7 @@ relatedArticles: ["ldap-fundamentals", "scim-overview", "pingone-platform", "pin
 category: identity
 order: 228
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-09-27"
 ---
 
 Every identity system stands on a data layer, and **PingDirectory** is Ping's answer at scale: not one server but a four-piece platform, each piece owning one verb. Knowing the verbs - store, aggregate, sync, delegate - turns the product diagram into a sentence. ([LDAP (Lightweight Directory Access Protocol) fundamentals](/learn/ldap-fundamentals) is the prerequisite article; facts here follow the official PingDirectory documentation, verified at the time of writing.)
@@ -28,3 +28,11 @@ The **PingDirectoryProxy server** is a fast LDAPv3 gateway in front of directory
 ## Delegate, and where the platform sits
 
 **Delegated Admin** completes the set: a web application through which helpdesk staff, HR, or managers perform the routine identity tasks - password resets, attribute updates, group changes - inside guardrails, without raw directory access. Around the four pieces, the platform's posture is horizontal: add machines for parallel workloads, replicate for availability, and extend behavior through the Server SDK (software development kit)'s plugin points without forking the product. In the wider Ping map, PingDirectory is the self-managed identity store integrated with [the PingOne platform](/learn/pingone-platform), offered in the FedRAMP High and DoD IL5-authorized government cloud, and distinct in lineage from PingDS, the *ForgeRock-heritage* directory - a naming distinction [the lineage article](/learn/ping-forgerock-lineage) untangles, and one worth having straight before the Certified Professional PingDirectory exam, whose [study guide](/certifications/ping-cp-pingdirectory) tracks the official objectives as they land.
+
+## Sources
+
+SCIM 2.0 is an IETF standard in two documents, and how PingDirectory exposes it over LDAP is Ping's own configuration reference.
+
+- [SCIM 2.0 Components, PingDirectory - resource types, schemas, and the LDAP mapping and pass-through models](https://docs.pingidentity.com/pingdirectory/11.0/managing_scim_11_and_20_servlet_extensions/pd_proxy_scim_2_components.html)
+- [RFC 7644, SCIM Protocol - "an application-level HTTP-based protocol for provisioning and managing identity data"](https://www.rfc-editor.org/rfc/rfc7644.html)
+- [RFC 7643, SCIM Core Schema - the resource, attribute and extension definitions the protocol carries](https://www.rfc-editor.org/rfc/rfc7643.html)

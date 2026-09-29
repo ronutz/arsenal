@@ -29,7 +29,7 @@ That is all of it. There is no allocation step, no negotiation, and no table to 
 
 **No backbone MAC learning.** Every node has the link-state database, so every node knows every other node's nickname. Given an I-SID, all of them compute the identical group address without exchanging a single additional message. A conventional bridge learns MACs by watching frames arrive; SPBM does not need to, because there is nothing to discover.
 
-**One tree per root, not one per service.** The same I-SID rooted on a different node produces a different address — `03:40:01:00:00:c8` and `03:40:02:00:00:c8` are the same service from two different sources. This is source-specific multicast expressed in the address itself, which is what lets the fabric prune per-source rather than flooding a shared tree.
+**One tree per root, not one per service.** The same I-SID rooted on a different node produces a different address: `03:40:01:00:00:c8` and `03:40:02:00:00:c8` are the same service from two different sources. This is source-specific multicast expressed in the address itself, which is what lets the fabric prune per-source rather than flooding a shared tree.
 
 **Unknown is dropped.** Because addresses are derived rather than learned, a frame carrying a backbone address nobody computed is not a cache miss to be flooded. It is simply not forwarded.
 
@@ -37,7 +37,7 @@ That is all of it. There is no allocation step, no negotiation, and no table to 
 
 This is where the rule pays for itself. `show isis spbm multicast-fib` prints a column of group addresses, and both facts you want are inside each one.
 
-`03:00:41:00:04:4d` splits into `03:00:41` and `00:04:4d` — nickname `0.00.41`, I-SID 1101. The next line, `03:00:41:00:04:4f`, is the same root carrying I-SID 1103. Two services from one node, and the addresses differ by two.
+`03:00:41:00:04:4d` splits into `03:00:41` and `00:04:4d`, giving nickname `0.00.41`, I-SID 1101. The next line, `03:00:41:00:04:4f`, is the same root carrying I-SID 1103. Two services from one node, and the addresses differ by two.
 
 A larger service looks no different: `03:00:07:e4:e2:02` is nickname `0.00.07` carrying I-SID 15000066, because `0xe4e202` is that number. When you see two entries whose last three bytes match and whose middle bytes differ, you are looking at one service with two roots.
 
@@ -53,8 +53,8 @@ And the **I-SID number itself** carries no meaning to this calculation. Whether 
 
 ## One edge worth knowing
 
-Bits 16 and 17 of that first half belong to the fixed prefix. A nickname whose first field overlaps them yields an address that cannot be decoded back to exactly one nickname. Every example in the vendor documentation uses a first field of `0`, and in practice deployments follow that. If you meet one that does not, the address is still valid and still forwards — you simply cannot reverse it with certainty, and should read the nickname off the node rather than out of the MAC.
+Bits 16 and 17 of that first half belong to the fixed prefix. A nickname whose first field overlaps them yields an address that cannot be decoded back to exactly one nickname. Every example in the vendor documentation uses a first field of `0`, and in practice deployments follow that. If you meet one that does not, the address is still valid and still forwards; you simply cannot reverse it with certainty, and should read the nickname off the node rather than out of the MAC.
 
 ## What a learner should be able to state cold
 
-An SPBM group B-MAC is the fixed prefix `0x30000` combined with the 20-bit nickname of the tree's root, followed by the 24-bit I-SID. Nickname `0.00.10` with I-SID 100 is `03:00:10:00:00:64`. Nothing is learned or allocated: every node derives the same address from the link-state database, which is why SPBM does no backbone MAC learning and drops unknown backbone destinations rather than flooding them. The same service rooted elsewhere gets a different address, one tree per root. Reading the multicast FIB is therefore direct — the middle bytes name the root, the last three name the service. The unicast backbone MAC is the chassis address and is not derived, and the B-VID is chosen rather than computed.
+An SPBM group B-MAC is the fixed prefix `0x30000` combined with the 20-bit nickname of the tree's root, followed by the 24-bit I-SID. Nickname `0.00.10` with I-SID 100 is `03:00:10:00:00:64`. Nothing is learned or allocated: every node derives the same address from the link-state database, which is why SPBM does no backbone MAC learning and drops unknown backbone destinations rather than flooding them. The same service rooted elsewhere gets a different address, one tree per root. Reading the multicast FIB is therefore direct: the middle bytes name the root, the last three name the service. The unicast backbone MAC is the chassis address and is not derived, and the B-VID is chosen rather than computed.

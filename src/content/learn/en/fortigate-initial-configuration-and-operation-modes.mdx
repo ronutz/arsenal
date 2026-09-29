@@ -16,7 +16,7 @@ The first hour with a new FortiGate sets three things that are awkward to revers
 
 ## The factory state
 
-A FortiGate ships with a known configuration. The internal interface holds a documented management address and runs a DHCP server, so a laptop plugged into it gets an address and can reach the web interface immediately. The admin account has no password. There are no firewall policies, which combined with the implicit deny means **nothing passes** until you write one — a new unit is not permissive by default, it is inert.
+A FortiGate ships with a known configuration. The internal interface holds a documented management address and runs a DHCP server, so a laptop plugged into it gets an address and can reach the web interface immediately. The admin account has no password. There are no firewall policies, which combined with the implicit deny means **nothing passes** until you write one: a new unit is not permissive by default, it is inert.
 
 A factory reset returns to exactly that state, which matters during recovery: it is a known baseline rather than a partially cleaned configuration.
 
@@ -32,7 +32,7 @@ The operation mode determines what the device is on the network.
 
 **NAT mode** is the default and the usual choice. Interfaces have IP addresses, the device routes between them, and it acts as a gateway. Everything about policies, NAT, routing and SD-WAN (software-defined WAN) assumes this mode.
 
-**Transparent mode** turns the device into a bump in the wire. Interfaces have no IP addresses, the FortiGate bridges between them at layer 2, and hosts on either side are unaware it exists. It gets a single management IP for administration and nothing else. This is what you use to insert inspection into an existing segment without re-addressing anything — a common requirement when the network cannot be changed but the traffic must be inspected.
+**Transparent mode** turns the device into a bump in the wire. Interfaces have no IP addresses, the FortiGate bridges between them at layer 2, and hosts on either side are unaware it exists. It gets a single management IP for administration and nothing else. This is what you use to insert inspection into an existing segment without re-addressing anything, a common requirement when the network cannot be changed but the traffic must be inspected.
 
 | | NAT mode | Transparent mode |
 |---|---|---|
@@ -52,7 +52,7 @@ The reasons to enable them are real: separating tenants or business units that m
 
 The cost is that every operation acquires a context. Configuration commands, diagnostics and routing all become per-VDOM, and a command run in the wrong VDOM returns a truthful answer about the wrong network. That single confusion accounts for a large share of "the configuration is correct but it does not work" reports on multi-VDOM devices.
 
-There is always a management VDOM, which owns the device's own outbound traffic — updates, logging, and DNS for the system itself.
+There is always a management VDOM, which owns the device's own outbound traffic: updates, logging, and DNS for the system itself.
 
 ## Administrative access, and how people lock themselves out
 

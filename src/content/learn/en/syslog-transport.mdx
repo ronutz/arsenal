@@ -30,4 +30,4 @@ Classic syslog over UDP has no acknowledgement, so **a log message that does not
 
 That failure mode is exactly inverted from what monitoring expects. An alert fires when logs say something is wrong; **nothing fires when logs stop saying anything**, and a device whose syslog destination was mistyped six months ago looks quieter and healthier than its neighbours.
 
-**Alert on the absence of logs, not only on their contents.** And where the record matters — audit trails, security events — the transport has to be one that can tell you it failed: TCP, or TLS, at the cost of the back-pressure UDP was chosen to avoid.
+**Alert on the absence of logs, not only on their contents.** And where the record matters (audit trails, security events) the transport has to be one that can tell you it failed: TCP, or TLS, at the cost of the back-pressure UDP was chosen to avoid.

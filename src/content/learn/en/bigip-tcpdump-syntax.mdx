@@ -44,6 +44,6 @@ Use `-w <file>` to write a binary pcap you can open in Wireshark, which is requi
 
 Naming `0.0` captures across TMM, which is usually right. But the choice is not only about scope, it is about **what stage of processing you observe.**
 
-Traffic on a full proxy exists in two forms — client-side and server-side — and they are different connections with different addresses and ports. A filter written for the client's address will not match the server-side flow at all, and an engineer who concludes "the request never reached the pool member" from that filter has proved nothing of the kind.
+Traffic on a full proxy exists in two forms (client-side and server-side), and they are different connections with different addresses and ports. A filter written for the client's address will not match the server-side flow at all, and an engineer who concludes "the request never reached the pool member" from that filter has proved nothing of the kind.
 
 **Capture both sides, or capture with a filter loose enough to contain both, then narrow in the reader.** It is cheaper to discard packets in Wireshark than to re-run a capture during an incident because the filter was too clever.

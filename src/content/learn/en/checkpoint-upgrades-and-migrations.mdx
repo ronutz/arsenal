@@ -20,7 +20,7 @@ The compatibility rule that determines sequencing: **a management server can man
 
 So management is upgraded first, and gateways follow. Reversing that leaves gateways a management server cannot talk to, which is a self-inflicted outage of the management plane at the worst moment.
 
-Check Point publishes the supported version combinations, and checking them is a five-minute task that occasionally cancels the whole plan — which is a good outcome discovered early and an expensive one discovered mid-window.
+Check Point publishes the supported version combinations, and checking them is a five-minute task that occasionally cancels the whole plan, which is a good outcome discovered early and an expensive one discovered mid-window.
 
 ## Three things that all sound like backup
 
@@ -28,11 +28,11 @@ They are not interchangeable, and choosing the wrong one is discovered during re
 
 **Backup** captures the Gaia configuration and the Check Point database. It restores onto the same version and is the lightest of the three.
 
-**Snapshot** captures the entire system, operating system included. It is the heaviest, the slowest, and the only one that restores the machine to exactly its previous state — which is what you want before an in-place upgrade.
+**Snapshot** captures the entire system, operating system included. It is the heaviest, the slowest, and the only one that restores the machine to exactly its previous state, which is what you want before an in-place upgrade.
 
 **Migrate export** captures the management database alone, without the operating system, and is designed to be imported onto a different machine, typically a newer version. It is the tool for moving management to new hardware.
 
-The rule that follows: **take a snapshot before an in-place upgrade** — it is the only one that gets you back if the upgrade itself fails.
+The rule that follows: **take a snapshot before an in-place upgrade**: it is the only one that gets you back if the upgrade itself fails.
 
 ## Upgrade methods
 
@@ -48,7 +48,7 @@ The rule that follows: **take a snapshot before an in-place upgrade** — it is 
 
 The sequence is unremarkable and unforgiving of skipped steps: export from the source, build the target, import, verify, then repoint the gateways.
 
-**Verification is the step people skip**, and the one that matters. Import succeeding is not the same as the database being right. Objects, policies, administrators and — critically — certificates and licences all need checking before anything depends on the new server.
+**Verification is the step people skip**, and the one that matters. Import succeeding is not the same as the database being right. Objects, policies, administrators and, critically, certificates and licences all need checking before anything depends on the new server.
 
 The certificate point deserves emphasis: SIC trust is certificate-based, so a migration that loses or invalidates the ICA leaves you with a management server that cannot talk to its gateways. That is recoverable and it is a long afternoon.
 

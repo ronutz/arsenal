@@ -35,4 +35,4 @@ The `ad` (Authentic Data) flag in the header is the resolver's verdict: it means
 
 Between that resolver and your application is a path you may not control. **A forged response with the AD bit set looks exactly like a validated one** to anything that trusts the flag without validating, which is why the bit is only meaningful over a trusted channel to a resolver you trust.
 
-If validation matters to you, validate — `+dnssec` and checking the RRSIG yourself answers your question. **The AD flag answers somebody else's.**
+If validation matters to you, validate: `+dnssec` and checking the RRSIG yourself answers your question. **The AD flag answers somebody else's.**

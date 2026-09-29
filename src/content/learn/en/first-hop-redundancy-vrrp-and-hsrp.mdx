@@ -17,15 +17,15 @@ The problem is old and structural. A host learns one default gateway, from confi
 
 Two families of answer were tried, and one of them lost:
 
-**Make the host smarter.** ICMP Router Discovery, and later IPv6 Router Advertisements, let hosts learn routers dynamically. This works, and in IPv4 it never arrived in time — the installed base already assumed one static gateway. It is worth noting that **IPv6 largely solved this at the host**, with routers advertising themselves and hosts holding several defaults, which is why first-hop redundancy is more of an IPv4-shaped problem.
+**Make the host smarter.** ICMP Router Discovery, and later IPv6 Router Advertisements, let hosts learn routers dynamically. This works, and in IPv4 it never arrived in time: the installed base already assumed one static gateway. It is worth noting that **IPv6 largely solved this at the host**, with routers advertising themselves and hosts holding several defaults, which is why first-hop redundancy is more of an IPv4-shaped problem.
 
 **Lie to the host instead.** Give the gateway address to whichever router is currently alive. The host never learns anything; the address simply keeps answering.
 
 The second approach won, and produced three protocols:
 
-- **HSRP (Cisco, 1998, RFC 2281)** — the first widely deployed, and proprietary; the RFC is informational, published to describe it rather than to standardise it.
-- **VRRP (RFC 2338 in 1998, now RFC 5798 covering IPv4 and IPv6)** — the IETF standard, multi-vendor, and close enough to HSRP that Cisco's patent position was a live topic during its standardisation.
-- **GLBP (Cisco)** — which adds load sharing by answering ARP requests with different virtual MAC addresses, so hosts on the same subnet are distributed across gateways rather than all using one.
+- **HSRP (Cisco, 1998, RFC 2281)**: the first widely deployed, and proprietary; the RFC is informational, published to describe it rather than to standardise it.
+- **VRRP (RFC 2338 in 1998, now RFC 5798 covering IPv4 and IPv6)**: the IETF standard, multi-vendor, and close enough to HSRP that Cisco's patent position was a live topic during its standardisation.
+- **GLBP (Cisco)**, which adds load sharing by answering ARP requests with different virtual MAC addresses, so hosts on the same subnet are distributed across gateways rather than all using one.
 
 The terminology differs and the mechanism does not: HSRP has active and standby routers, VRRP has a master and backups, GLBP has an active virtual gateway with forwarders. **A design that understands one understands all three.**
 
@@ -41,23 +41,23 @@ First-hop redundancy protocols do exactly that: they make the gateway address a 
 
 The virtual IP is the obvious half. The half that makes it work is the **virtual MAC address**.
 
-A host that has been talking to its gateway has an ARP cache entry mapping the gateway IP to a MAC. If failover changed only the IP ownership, every host on the segment would keep sending frames to the old router's MAC until its ARP entry aged out — **minutes, typically, which is an eternity in an outage and is exactly the window nobody accounts for.**
+A host that has been talking to its gateway has an ARP cache entry mapping the gateway IP to a MAC. If failover changed only the IP ownership, every host on the segment would keep sending frames to the old router's MAC until its ARP entry aged out: **minutes, typically, which is an eternity in an outage and is exactly the window nobody accounts for.**
 
 So the standby router takes over the same virtual MAC, and announces it so the switches relearn which port it lives behind. **The host's ARP cache remains correct because nothing it knows has changed.** That is why failover can be sub-second to a host that was never informed anything happened.
 
 ## VRRP versus HSRP matters less than the third question
 
-HSRP is Cisco's, VRRP is the IETF standard, and there is a real reason to prefer VRRP in a mixed-vendor environment. Beyond that, **the operational differences are smaller than the amount of argument they attract** — both elect an active router by priority, both use a virtual address pair, both preempt if configured to.
+HSRP is Cisco's, VRRP is the IETF standard, and there is a real reason to prefer VRRP in a mixed-vendor environment. Beyond that, **the operational differences are smaller than the amount of argument they attract**, since both elect an active router by priority, both use a virtual address pair, both preempt if configured to.
 
 **The question that actually decides whether the pair works is neither of them: what does the router consider a failure?**
 
 A router that has lost its uplink, or its routing adjacency, or the ability to reach anything beyond the segment, is still perfectly capable of winning an election and answering ARP. **It is present, it is healthy by its own measure, and it is a black hole for every host that trusts it.**
 
-That is what interface and object tracking exist for — decrementing the priority when the thing the gateway is a gateway *to* becomes unreachable. **A first-hop redundancy pair without tracking is two routers agreeing about which of them will absorb your traffic**, and it fails in exactly the situation it was installed for.
+That is what interface and object tracking exist for: decrementing the priority when the thing the gateway is a gateway *to* becomes unreachable. **A first-hop redundancy pair without tracking is two routers agreeing about which of them will absorb your traffic**, and it fails in exactly the situation it was installed for.
 
 ## The failure modes worth knowing
 
-**Both routers active.** If the routers cannot hear each other but both can reach the hosts, each concludes it should be active. Two devices now answer for the same IP and MAC on the same segment, and the switches see the virtual MAC moving between ports continuously. **The symptom is not an outage — it is intermittent, direction-dependent, and looks like a switching problem**, which is where the investigation goes first.
+**Both routers active.** If the routers cannot hear each other but both can reach the hosts, each concludes it should be active. Two devices now answer for the same IP and MAC on the same segment, and the switches see the virtual MAC moving between ports continuously. **The symptom is not an outage. It is intermittent, direction-dependent, and looks like a switching problem**, which is where the investigation goes first.
 
 **Preemption during a flapping link.** A recovering router that immediately reclaims the active role will hand traffic back and forth as the underlying link stabilises. Every transition is brief and the aggregate is a service nobody can use. **Delay on preemption is not a tuning nicety.**
 
@@ -65,31 +65,31 @@ That is what interface and object tracking exist for — decrementing the priori
 
 ## The mechanics worth knowing precisely
 
-**Both addresses move together.** The group owns a virtual IP and a virtual MAC — VRRP uses `00:00:5E:00:01:{group}`, HSRP `00:00:0C:07:AC:{group}`. Failover moves both, so the host's ARP cache stays valid and nothing has to be relearned. That is the entire trick, and it is why a failover can be invisible to a host that never notices.
+**Both addresses move together.** The group owns a virtual IP and a virtual MAC: VRRP uses `00:00:5E:00:01:{group}`, HSRP `00:00:0C:07:AC:{group}`. Failover moves both, so the host's ARP cache stays valid and nothing has to be relearned. That is the entire trick, and it is why a failover can be invisible to a host that never notices.
 
-**Election and preemption.** Highest priority wins; equal priority is broken by address. **Preemption** decides whether a recovering router takes the role back, and it is where most operational surprise lives: on by default in VRRP, off by default in HSRP. A router that returns from maintenance, seizes the role, and then reboots again produces two outages instead of one — which is why preemption delay exists, and why it should be set to something longer than the time it takes the routing protocol to converge.
+**Election and preemption.** Highest priority wins; equal priority is broken by address. **Preemption** decides whether a recovering router takes the role back, and it is where most operational surprise lives: on by default in VRRP, off by default in HSRP. A router that returns from maintenance, seizes the role, and then reboots again produces two outages instead of one, which is why preemption delay exists, and why it should be set to something longer than the time it takes the routing protocol to converge.
 
-**Hello and hold timers** determine failover speed. Defaults measured in seconds mean seconds of blackhole; sub-second timers detect faster and make the pair vulnerable to false failovers whenever the control plane is briefly busy. The mature answer is not aggressive timers but **BFD** — a lightweight, purpose-built liveness protocol — driving the failover instead.
+**Hello and hold timers** determine failover speed. Defaults measured in seconds mean seconds of blackhole; sub-second timers detect faster and make the pair vulnerable to false failovers whenever the control plane is briefly busy. The mature answer is not aggressive timers but **BFD**, a lightweight, purpose-built liveness protocol, driving the failover instead.
 
-**Interface and object tracking** is the feature that decides whether the design is real. A router whose uplink has failed still answers on the LAN and will happily remain master while forwarding traffic nowhere. Tracking lowers its priority when the tracked uplink or route disappears, handing the role to a router that still has a path. **Redundancy without tracking is a group that fails over for the one event it was least likely to face — the router dying — and not for the one it will actually meet.**
+**Interface and object tracking** is the feature that decides whether the design is real. A router whose uplink has failed still answers on the LAN and will happily remain master while forwarding traffic nowhere. Tracking lowers its priority when the tracked uplink or route disappears, handing the role to a router that still has a path. **Redundancy without tracking is a group that fails over for the one event it was least likely to face, the router dying, and not for the one it will actually meet.**
 
 **Authentication** was in early VRRP, was found to add no real security against an attacker on the segment, and was removed in RFC 5798. The honest control is segment access, not a shared secret.
 
 ## The failure modes, and what they look like
 
-- **Both routers active.** The hello path is broken while both are alive — a blocked VLAN, a filtered multicast, an MTU problem on the peering link. Both own the virtual address, ARP flaps between two MACs, and traffic breaks intermittently in a way that looks like a physical fault.
+- **Both routers active.** The hello path is broken while both are alive: a blocked VLAN, a filtered multicast, an MTU problem on the peering link. Both own the virtual address, ARP flaps between two MACs, and traffic breaks intermittently in a way that looks like a physical fault.
 - **Failover that does not fail back cleanly**, from preemption settings that differ between the pair.
 - **Silent asymmetry**, where the standby has a different filtering or policy configuration and everything works until the day it takes over. Configuration parity between members is part of the design, not an afterthought.
 - **Stateful services behind a stateless failover.** VRRP moves an address; it does not move firewall connection state. A firewall pair needs its own state synchronisation, and mixing the two ideas produces a failover that reconnects everything at once.
 
 ## Where this sits against the alternatives
 
-- **Chassis and stack clustering** — virtual chassis, stacking, MLAG — where two devices present as one, so the gateway never moves at all. More capable and more coupled: a shared control plane is also a shared failure.
-- **Anycast gateway in fabrics** — EVPN and similar designs, where every leaf owns the same gateway address, and the concept of a standby disappears.
+- **Chassis and stack clustering** (virtual chassis, stacking, MLAG) where two devices present as one, so the gateway never moves at all. More capable and more coupled: a shared control plane is also a shared failure.
+- **Anycast gateway in fabrics**: EVPN and similar designs, where every leaf owns the same gateway address, and the concept of a standby disappears.
 - **Cloud environments**, where the gateway is the platform's own and none of this is exposed. The equivalent question there is whether a route table entry or a floating address moves, and how fast.
 
 **Vendors, by category.** VRRP is available across Cisco, Juniper, Arista, Nokia, Fortinet, MikroTik, and in Linux implementations such as Keepalived, which is what puts the same mechanism under a great many load balancers and firewalls. HSRP and GLBP remain Cisco. The practical rule in a mixed estate: **standardise on VRRP unless a single-vendor feature earns its lock-in**, and confirm that the virtual MAC ranges are not colliding with anything else.
 
 ## What to take away
 
-**Redundancy that has not been tested by failing on purpose is a configuration, not a capability.** The specific test worth doing is not powering off a router — that is the easy case and it usually works. **It is failing the uplink while leaving the router running**, because that is the scenario tracking exists for and the one where an untested pair discovers it has none.
+**Redundancy that has not been tested by failing on purpose is a configuration, not a capability.** The specific test worth doing is not powering off a router, since that is the easy case and it usually works. **It is failing the uplink while leaving the router running**, because that is the scenario tracking exists for and the one where an untested pair discovers it has none.

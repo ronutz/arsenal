@@ -34,7 +34,7 @@ The quickest tell is right after the PRI: a digit and a space (the version, almo
 
 ## Two formats, and parsers that guess between them
 
-RFC 3164 and RFC 5424 are different enough to break a parser and similar enough that one will often accept the other and produce nonsense — a timestamp read as a hostname, a structured-data block treated as free text.
+RFC 3164 and RFC 5424 are different enough to break a parser and similar enough that one will often accept the other and produce nonsense: a timestamp read as a hostname, a structured-data block treated as free text.
 
 The practical hazard is that **the wrong-format parse usually succeeds.** Fields land in the wrong columns, the message is indexed, and the search that would have found it looks in a field that never received the value. The event is present and unfindable, which during an investigation is worse than absent.
 

@@ -34,9 +34,42 @@ if (!fs.existsSync(BASE)) {
   process.exit(0);
 }
 
-// Pages that SHOULD carry the site name: the homepage and a few utility and
-// dev routes, where the site is the subject. Measured 2026-08-16.
-const BASELINE_DEFAULT = 14;
+// Pages that SHOULD carry the site name, where the site itself is the subject.
+//
+// PAID DOWN 2026-09-27: 14 -> 2, measured against a real en build, not inferred.
+// The comment this replaces said "the homepage and a few utility and dev
+// routes", and that was wrong about its own list: of the fourteen, EIGHT were
+// substantive content pages competing for entirely different search intents on
+// one identical string - /endorsements, /colophon, /contact, /about/credentials,
+// the three career-era pages and /industry/chapters - plus four more with real
+// titles sitting unused in the message packs (/license, /privacy, /settings,
+// /support). None of them had a generateMetadata export at all, which is the
+// same root cause this guard's header describes; the 2026-08-16 fix reached the
+// index routes and never came back for these.
+//
+// Two remain, and both are correct:
+//   /                          the homepage, where the site IS the subject
+//   /dev/other/serial-console  a dev route, not public surface
+//
+// Titles come from keys that already existed in en.json and pt-BR.json, so both
+// authored locales resolve. No ogImages() was added: none of these slugs is in
+// gen-og's STATIC_PAGES, so a card would be named and never generated, and
+// check-og fails on a manifest entry with nothing behind it. Adding the twelve
+// to that list is a separate change with an image-budget cost (canon
+// FIX-incident-asset-budget-20260831).
+// Routes permitted to carry the site-wide default title, each with the reason.
+// Keys are routes RELATIVE TO BASE, which is out/en - this guard walks one locale,
+// so the routes are already locale-free and are compared as-is. An earlier version
+// of this change stripped a leading locale segment from them, which would have
+// turned "/tools" into "/" and tolerated exactly the route family the guard exists
+// to catch. Replaced a bare count of 2 on 2026-09-27, because a count cannot see a
+// swap: give a new route family the default title and fix the homepage in the same
+// change, and the total is still two.
+const DECLARED_DEFAULT = new Map([
+  ["/", "The homepage, where the site itself IS the subject, so the site-wide title is the correct title rather than a fallback."],
+  ["/dev/other/serial-console", "A dev route, not public surface. Nothing competes with it for search intent."],
+]);
+
 
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -50,6 +83,7 @@ function walk(dir, out = []) {
 const pages = walk(BASE);
 const titles = new Map();
 let defaultCount = 0;
+const defaultRoutes = [];
 let missing = 0;
 
 for (const f of pages) {
@@ -58,22 +92,36 @@ for (const f of pages) {
   const route = "/" + path.relative(BASE, path.dirname(f)).split(path.sep).join("/");
   if (!m) { missing += 1; continue; }
   const title = m[1].trim();
-  if (title.startsWith("ronutz \u00b7 Network")) defaultCount += 1;
+  if (title.startsWith("ronutz \u00b7 Network")) {
+    defaultCount += 1;
+    defaultRoutes.push(route);
+  }
   if (!titles.has(title)) titles.set(title, []);
   titles.get(title).push(route);
 }
 
 const problems = [];
 if (missing > 0) problems.push(`${missing} page(s) render no <title> at all.`);
-if (defaultCount > BASELINE_DEFAULT) {
-  const offenders = [...titles.entries()]
-    .filter(([t]) => t.startsWith("ronutz \u00b7 Network"))
-    .flatMap(([, routes]) => routes)
-    .slice(0, 12);
+// Per route, with the locale stripped. An undeclared route on the default title
+// is a failure whatever the total is, which is the point of the change.
+const undeclared = [...new Set(defaultRoutes)].filter((r) => !DECLARED_DEFAULT.has(r));
+if (undeclared.length > 0) {
   problems.push(
-    `${defaultCount} page(s) carry the site-wide default title, above the baseline of ${BASELINE_DEFAULT}.\n` +
-    `        A route family has probably shipped without a generateMetadata export.\n        ` +
-    offenders.join("\n        "),
+    `${undeclared.length} route(s) carry the site-wide default title and are not declared.\n` +
+    `        A route family has probably shipped without a generateMetadata export.\n` +
+    `        If a route belongs here, add it to DECLARED_DEFAULT with a REASON.\n        ` +
+    undeclared.slice(0, 12).join("\n        "),
+  );
+}
+
+// A declaration whose route no longer carries the default has been fixed, and the
+// list has to shrink or it stops meaning anything.
+const seenStripped = new Set(defaultRoutes);
+const stale = [...DECLARED_DEFAULT.keys()].filter((r) => !seenStripped.has(r));
+if (stale.length > 0 && pages.length > 0) {
+  problems.push(
+    `${stale.length} stale declaration(s) in DECLARED_DEFAULT - these routes no longer\n` +
+    `        carry the default title, so remove them:\n        ` + stale.join("\n        "),
   );
 }
 
@@ -86,7 +134,7 @@ if (problems.length > 0) {
 const dupes = [...titles.values()].filter((r) => r.length > 1).length;
 console.log(
   `[check-page-titles] OK: ${pages.length} page(s), ${titles.size} distinct title(s); ` +
-  `${defaultCount} on the site default (baseline ${BASELINE_DEFAULT})` +
-  (dupes ? `, ${dupes} title(s) shared by more than one page.` : ".") +
-  (defaultCount < BASELINE_DEFAULT ? ` LOWER - drop BASELINE_DEFAULT to ${defaultCount}.` : ""),
+  `${defaultCount} page(s) on the site default, across ${DECLARED_DEFAULT.size} declared ` +
+  `route(s) with a reason (per-route since 2026-09-27)` +
+  (dupes ? `, ${dupes} title(s) shared by more than one page.` : "."),
 );

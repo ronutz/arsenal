@@ -2210,7 +2210,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "18:00",
     kind: "content",
     title: "Pre-1996: the record corrected, and a dream kept",
-    body: "Three refinements from the source. The academic internet moves to 1991, where it actually happened — the university shell account over a modem — and 1993 earns its own beat: a program compiled on that shell account turned the dial-up session itself into a SLIP/PPP tunnel, and through it NCSA Mosaic opened the first glimpse of the World Wide Web. The phreaking movement gains its flash-forward: the payphone-modem dream of 1990, recognized seventeen years later in a jailbroken first-generation iPhone running community-made apps. And the Brazilian Portuguese telling of the father thread now carries the author's own ratified wording.",
+    body: "Three refinements from the source. The academic internet moves to 1991, where it actually happened - the university shell account over a modem - and 1993 earns its own beat: a program compiled on that shell account turned the dial-up session itself into a SLIP/PPP tunnel, and through it NCSA Mosaic opened the first glimpse of the World Wide Web. The phreaking movement gains its flash-forward: the payphone-modem dream of 1990, recognized seventeen years later in a jailbroken first-generation iPhone running community-made apps. And the Brazilian Portuguese telling of the father thread now carries the author's own ratified wording.",
     links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
   },
   {
@@ -2218,7 +2218,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "16:00",
     kind: "content",
     title: "Pre-1996: the father at the root",
-    body: "The origin story now starts where it truly did. The ham-radio movement is reframed around Rodolfo's father — an engineer and avid amateur operator whose call sign and QSL cards were the first proof that a signal could cross the world — and the national-micros movement opens a scene earlier, with a nine-year-old watching him load a cassette program onto the family television before the watching turned into doing. The timeline beats for the 1984 TK-82C and the amateur-radio years follow suit. Authored natively in English and Brazilian Portuguese.",
+    body: "The origin story now starts where it truly did. The ham-radio movement is reframed around Rodolfo's father - an engineer and avid amateur operator whose call sign and QSL cards were the first proof that a signal could cross the world - and the national-micros movement opens a scene earlier, with a nine-year-old watching him load a cassette program onto the family television before the watching turned into doing. The timeline beats for the 1984 TK-82C and the amateur-radio years follow suit. Authored natively in English and Brazilian Portuguese.",
     links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
   },
   {
@@ -2624,7 +2624,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "feature",
     title: "The developer wing gets an index, and a green room opens: /dev, /dev/fun, /dev/other",
     body:
-      "/dev-fun moved to its canonical home at /dev/fun (old URLs 301), a small /dev index now fronts the wing, and a new room opened: /dev/other, for tools that ask the live internet instead of computing locally. The room is marked by a deep-green background (the site palette hue-rotated, same darkness) and a visible notice stating exactly how it differs: input leaves the browser only when you press Ask, it goes browser-direct to the official registry (never to ronutz.com servers), and live answers carry no golden-vector guarantee. First resident: RDAP lookup, WHOIS the modern way — domain, IP, or AS number routed deterministically via vendored IANA bootstrap snapshots (RFC 9224), with the registry named before anything is sent, 15 golden vectors on the deterministic layers, and honest curl fallbacks where registries do not allow browser queries. The tools index gained a green door after the last tool.",
+      "/dev-fun moved to its canonical home at /dev/fun (old URLs 301), a small /dev index now fronts the wing, and a new room opened: /dev/other, for tools that ask the live internet instead of computing locally. The room is marked by a deep-green background (the site palette hue-rotated, same darkness) and a visible notice stating exactly how it differs: input leaves the browser only when you press Ask, it goes browser-direct to the official registry (never to ronutz.com servers), and live answers carry no golden-vector guarantee. First resident: RDAP lookup, WHOIS the modern way - domain, IP, or AS number routed deterministically via vendored IANA bootstrap snapshots (RFC 9224), with the registry named before anything is sent, 15 golden vectors on the deterministic layers, and honest curl fallbacks where registries do not allow browser queries. The tools index gained a green door after the last tool.",
     links: [
       { label: "/dev", href: "/dev" },
       { label: "/dev/other", href: "/dev/other" },

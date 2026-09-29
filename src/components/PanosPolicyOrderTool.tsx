@@ -92,13 +92,13 @@ export default function PanosPolicyOrderTool() {
   };
 
   return (
-    <div className="jwt-tool">
-      <div className="jwt-field">
-        <div className="jwt-label-row">
-          <label className="jwt-label" htmlFor="panos-rules">
+    <div className="cidr-tool jwt-tool">
+      <div className="cidr-input-row">
+        <div className="dig-input-head">
+          <label className="cidr-label" htmlFor="panos-rules">
             {t("rulesLabel")}
           </label>
-          <div className="jwt-label-actions">
+          <div className="dig-input-actions">
             <button type="button" className="b64-copy" onClick={() => onRules(EXAMPLE)}>
               {t("example")}
             </button>
@@ -116,10 +116,10 @@ export default function PanosPolicyOrderTool() {
           placeholder={t("rulesPlaceholder")}
           spellCheck={false}
         />
-        <p className="jwt-hint">{t("runsLocally")}</p>
+        <p className="cidr-privacy">{t("runsLocally")}</p>
       </div>
 
-      <div className="jwt-field">
+      <div className="cidr-input-row">
         <label className="panos-toggle">
           <input
             type="checkbox"
@@ -145,7 +145,7 @@ export default function PanosPolicyOrderTool() {
         )}
       </div>
 
-      {error && <p className="jwt-error">{error}</p>}
+      {error && <p className="cidr-error">{error}</p>}
 
       {report && (
         <div className="jwt-results">

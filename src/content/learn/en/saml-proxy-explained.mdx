@@ -8,16 +8,16 @@ relatedArticles: ["saml-overview", "saml-bindings-and-sso-initiation", "ssl-forw
 category: security
 order: 6
 status: reviewed
-updated: "2026-07-06"
+updated: "2026-09-27"
 ---
 
 The proxies in the companion articles operate on packets and connections: a TCP proxy splices transport flows, an HTTP proxy parses requests, a TLS proxy handles encryption. A SAML (Security Assertion Markup Language) proxy operates on something different, the authentication decision, and it is worth being precise about the sense in which it is a proxy at all. It does not primarily move bytes; it inserts itself into the single-sign-on handshake so that no request reaches a protected resource until an identity provider has vouched for the user. Understanding it requires the SAML roles first (the overview article covers them in full), then how a proxy slots between them.
 
 ## Origins: a standard from before the web had logins
 
-SAML — Security Assertion Markup Language — was ratified by OASIS in 2002, with **SAML 2.0 arriving in 2005** and converging three earlier efforts: SAML 1.1, the Liberty Alliance's Identity Federation Framework, and Internet2's Shibboleth. That convergence is why the standard is large: it had to satisfy three constituencies at once.
+SAML, or Security Assertion Markup Language, was ratified by OASIS in 2002, with **SAML 2.0 arriving in 2005** and converging three earlier efforts: SAML 1.1, the Liberty Alliance's Identity Federation Framework, and Internet2's Shibboleth. That convergence is why the standard is large: it had to satisfy three constituencies at once.
 
-The problem it was built for was not consumer login. It was **federation between organisations** — a university letting students reach a publisher's journals, a company letting employees reach a payroll provider — where the two sides have no shared user database and no intention of building one. The insight was to move a signed *statement about a user* instead of the user's credentials.
+The problem it was built for was not consumer login. It was **federation between organisations**: a university letting students reach a publisher's journals, a company letting employees reach a payroll provider, where the two sides have no shared user database and no intention of building one. The insight was to move a signed *statement about a user* instead of the user's credentials.
 
 That produces the vocabulary that still governs it:
 
@@ -26,7 +26,7 @@ That produces the vocabulary that still governs it:
 - **The assertion** is the statement itself: who authenticated, when, by what method, for which audience, and valid for how long.
 - **The trust** is a certificate exchange, configured deliberately by both sides, expressed in a metadata document.
 
-Being XML-based and predating the mobile era, SAML assumes a browser: its common flows redirect through one, and it has no good answer for a native application or a machine-to-machine call. That is precisely the gap [OpenID Connect](/learn/oidc-vs-oauth) was built to fill — and the reason both are still deployed side by side rather than one having replaced the other.
+Being XML-based and predating the mobile era, SAML assumes a browser: its common flows redirect through one, and it has no good answer for a native application or a machine-to-machine call. That is precisely the gap [OpenID Connect](/learn/oidc-vs-oauth) was built to fill, and the reason both are still deployed side by side rather than one having replaced the other.
 
 ## A one-paragraph refresher on the roles
 
@@ -56,7 +56,7 @@ The failure modes are remarkably consistent across every deployment:
 
 **Signature scope.** Signing the assertion, the response, or both is a real choice with real consequences, and mismatched expectations between two implementations produce failures that look like configuration typos.
 
-**XML itself.** The format brought its own vulnerability classes — signature wrapping, where an attacker relocates a validly signed element so the parser and the validator disagree about what was signed, plus the general [XML external entity](/learn/xxe-and-xml-security) surface. These are implementation flaws rather than protocol flaws, and they have recurred across many products, which is the argument for using a mature library rather than parsing assertions yourself.
+**XML itself.** The format brought its own vulnerability classes: signature wrapping, where an attacker relocates a validly signed element so the parser and the validator disagree about what was signed, plus the general [XML external entity](/learn/xxe-and-xml-security) surface. These are implementation flaws rather than protocol flaws, and they have recurred across many products, which is the argument for using a mature library rather than parsing assertions yourself.
 
 **Identifier choice.** Using an email address as the persistent identifier breaks when somebody changes name; the standard offers persistent and transient formats precisely so it does not have to be an email.
 
@@ -67,15 +67,22 @@ The failure modes are remarkably consistent across every deployment:
 - **Adding a control the applications cannot.** Step-up authentication, device posture, or a policy decision applied uniformly regardless of what each application supports.
 - **Absorbing a migration.** Applications keep pointing at the proxy while the identity provider behind it is replaced.
 
-The cost is stated in the same breath: the proxy becomes the **single point through which every login passes**, it holds the keys, and its outage is a total outage. It also lengthens the chain — every additional hop is another place where an attribute is dropped, a clock disagrees, or a signature is re-issued rather than passed through, which matters because a re-signed assertion means the downstream service is trusting the proxy's word rather than the original issuer's.
+The cost is stated in the same breath: the proxy becomes the **single point through which every login passes**, it holds the keys, and its outage is a total outage. It also lengthens the chain, and every additional hop is another place where an attribute is dropped, a clock disagrees, or a signature is re-issued rather than passed through, which matters because a re-signed assertion means the downstream service is trusting the proxy's word rather than the original issuer's.
 
 ## Where it appears, by category
 
-- **Enterprise identity platforms** — Microsoft Entra, Okta, Ping Identity, ForgeRock and others, all of which can act as identity provider, service provider, or both.
-- **Open-source implementations** — Keycloak, Shibboleth, SimpleSAMLphp, and the language libraries beneath them. Shibboleth in particular still carries the academic federations it was built for.
+- **Enterprise identity platforms**: Microsoft Entra, Okta, Ping Identity, ForgeRock and others, all of which can act as identity provider, service provider, or both.
+- **Open-source implementations**: Keycloak, Shibboleth, SimpleSAMLphp, and the language libraries beneath them. Shibboleth in particular still carries the academic federations it was built for.
 - **Access gateways and proxies**, which terminate the session at the edge and hand a validated identity to applications that could never have implemented it themselves.
-- **Academic and government federations** — the eduGAIN and national research networks, where SAML remains the working standard rather than a legacy one, because the trust model it was designed for is exactly theirs.
+- **Academic and government federations**: the eduGAIN and national research networks, where SAML remains the working standard rather than a legacy one, because the trust model it was designed for is exactly theirs.
 
 ## Why the mode matters
 
 Because a SAML proxy rides the browser-redirect flow, it inherits SAML's assumptions, and they shape where it fits. It works cleanly for browser-based access, where redirects and POSTs are natural, and it depends on the user having a browser session to redirect, which is why it suits interactive users and struggles with headless clients and servers that cannot follow a SAML redirect. Its security rests entirely on validating the assertion correctly: checking the signature, the issuer, the audience, and the conditions, exactly the checks the SAML signatures and assertions articles describe, because a proxy that admits requests on the strength of an assertion it failed to verify is an open door. And as a trust hub it concentrates risk: compromise the proxy and you compromise access to everything behind it, the identity-layer analogue of the concentration-of-plaintext concern that an SSL forward proxy raises for content.
+
+## Sources
+
+The year SAML 2.0 arrived is an OASIS ratification date, so it is checkable on the standard itself.
+
+- [Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS Standard, 15 March 2005](https://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf)
+- [The full SAML 2.0 OASIS Standard set, including the bindings and profiles a proxy has to satisfy on both sides](https://docs.oasis-open.org/security/saml/v2.0/)
