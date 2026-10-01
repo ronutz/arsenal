@@ -303,8 +303,8 @@ export default async function ToolsPage({
                                   )}
                                 </span>
                               </td>
-                              <td className="mono admin-posture">{c?.posture ?? "—"}</td>
-                              <td className="admin-specs">{c?.specs?.length ? c.specs.join(" · ") : "—"}</td>
+                              <td className="mono admin-posture">{c?.posture ?? "-"}</td>
+                              <td className="admin-specs">{c?.specs?.length ? c.specs.join(" · ") : "-"}</td>
                             </tr>
                           );
                         })}

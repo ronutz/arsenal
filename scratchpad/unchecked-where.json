@@ -1,0 +1,2135 @@
+{
+ "http://cr.yp.to/qmail/venema.html": [
+  "src/content/glossary/glossary.ts:4315"
+ ],
+ "http://domainincite.com/24830-top-icann-advisor-tarek-kamel-dies-at-57": [
+  "src/content/glossary/glossary.ts:3494"
+ ],
+ "http://ftp.porcupine.org/pub/security/index.html": [
+  "src/content/glossary/glossary.ts:4291"
+ ],
+ "http://info.cern.ch/hypertext/WWW/TheProject.html": [
+  "src/content/glossary/glossary.ts:7560"
+ ],
+ "http://joeduffyblog.com/2015/11/03/blogging-about-midori/": [
+  "src/content/glossary/glossary.ts:2075"
+ ],
+ "http://opentranscripts.org/transcript/daniel-karrenberg-internet-hall-fame-2012-induction-speech/": [
+  "src/content/glossary/glossary.ts:3554"
+ ],
+ "http://opentranscripts.org/transcript/yvonne-marie-andres-ihof-2017-speech/": [
+  "src/content/glossary/glossary.ts:3506"
+ ],
+ "http://sseguranca.blogspot.com/": [
+  "src/content/glossary/glossary.ts:2198"
+ ],
+ "http://www.catb.org/jargon/html/R/RTFM.html": [
+  "src/content/glossary/glossary.ts:8230"
+ ],
+ "http://www.catb.org/jargon/html/W/wetware.html": [
+  "src/content/glossary/glossary.ts:8954"
+ ],
+ "http://www.catb.org/jargon/html/Z/Zero-One-Infinity-Rule.html": [
+  "src/content/glossary/glossary.ts:8657"
+ ],
+ "http://www.catb.org/~esr/writings/taoup/": [
+  "src/content/glossary/glossary.ts:12188"
+ ],
+ "http://www.efnet.org/": [
+  "src/content/glossary/glossary.ts:2039"
+ ],
+ "https://1.ieee802.org": [
+  "src/content/glossary/glossary.ts:6681",
+  "src/content/glossary/glossary.ts:6692"
+ ],
+ "https://2026.cryptorave.org": [
+  "src/content/glossary/glossary.ts:6387"
+ ],
+ "https://8dot8.org": [
+  "src/content/glossary/glossary.ts:6447"
+ ],
+ "https://afrinic.net/2019-09-28-congratulatory-message-to-adiel": [
+  "src/content/glossary/glossary.ts:3413"
+ ],
+ "https://agilemanifesto.org": [
+  "src/content/glossary/glossary.ts:10187"
+ ],
+ "https://amturing.acm.org/award_winners/cerf_1083211.cfm": [
+  "src/content/glossary/glossary.ts:2801",
+  "src/content/glossary/glossary.ts:2813"
+ ],
+ "https://amturing.acm.org/award_winners/lamport_1205376.cfm": [
+  "src/content/glossary/glossary.ts:4061"
+ ],
+ "https://amturing.acm.org/award_winners/metcalfe_3968158.cfm": [
+  "src/content/glossary/glossary.ts:2825"
+ ],
+ "https://amturing.acm.org/award_winners/rivest_1403005.cfm": [
+  "src/content/glossary/glossary.ts:3869",
+  "src/content/glossary/glossary.ts:3881",
+  "src/content/glossary/glossary.ts:3893"
+ ],
+ "https://anchisesbr.blogspot.com/": [
+  "src/content/glossary/glossary.ts:2168"
+ ],
+ "https://anchisesbr.blogspot.com/2010/01/seguranca-72-perfis-de-profissionais-de.html": [
+  "src/content/glossary/glossary.ts:2186",
+  "src/content/glossary/glossary.ts:2222"
+ ],
+ "https://anchisesbr.blogspot.com/2025/12/seguranca-calendario-de-eventos-de.html": [
+  "src/content/glossary/glossary.ts:2231",
+  "src/content/glossary/glossary.ts:2276",
+  "src/content/glossary/glossary.ts:2285"
+ ],
+ "https://arxiv.org/abs/1706.03762": [
+  "src/content/glossary/glossary.ts:12148"
+ ],
+ "https://arxiv.org/abs/2005.11401": [
+  "src/content/glossary/glossary.ts:12158"
+ ],
+ "https://arxiv.org/pdf/1801.08806": [
+  "src/content/glossary/glossary.ts:3047"
+ ],
+ "https://arxiv.org/pdf/cs/0109056": [
+  "src/content/glossary/glossary.ts:3188"
+ ],
+ "https://attack.mitre.org": [
+  "src/content/glossary/glossary.ts:6619"
+ ],
+ "https://attack.mitre.org/": [
+  "src/content/glossary/glossary.ts:1877",
+  "src/content/glossary/glossary.ts:2744"
+ ],
+ "https://awards.acm.org/about/2015-turing": [
+  "src/content/glossary/glossary.ts:3833",
+  "src/content/glossary/glossary.ts:3845"
+ ],
+ "https://awards.acm.org/award-recipients/hellman_4055781": [
+  "src/content/glossary/glossary.ts:3845"
+ ],
+ "https://awards.acm.org/award-recipients/ritchie_1506389": [
+  "src/content/glossary/glossary.ts:4037",
+  "src/content/glossary/glossary.ts:4049"
+ ],
+ "https://aws.amazon.com/": [
+  "src/content/glossary/glossary.ts:12275"
+ ],
+ "https://blog.cloudflare.com/": [
+  "src/content/glossary/glossary.ts:2492",
+  "src/content/glossary/glossary.ts:2501"
+ ],
+ "https://blog.codinghorror.com/the-principle-of-least-power/": [
+  "src/content/glossary/glossary.ts:8892"
+ ],
+ "https://britannica.com/print/article/271591": [
+  "src/content/glossary/glossary.ts:2873"
+ ],
+ "https://bsidessp.org": [
+  "src/content/glossary/glossary.ts:6517"
+ ],
+ "https://cabforum.org/baseline-requirements-documents/": [
+  "src/content/glossary/glossary.ts:13123",
+  "src/content/glossary/glossary.ts:13155"
+ ],
+ "https://campus-party.org": [
+  "src/content/glossary/glossary.ts:6407"
+ ],
+ "https://canaltech.com.br/comportamento/qual-a-origem-da-palavra-gambiarra/": [
+  "src/content/glossary/glossary.ts:364"
+ ],
+ "https://certbot.eff.org": [
+  "src/content/glossary/glossary.ts:6670"
+ ],
+ "https://certificate.transparency.dev/": [
+  "src/content/glossary/glossary.ts:2474"
+ ],
+ "https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/": [
+  "src/content/glossary/glossary.ts:12265"
+ ],
+ "https://cloudsecurityalliance.org": [
+  "src/content/glossary/glossary.ts:6639"
+ ],
+ "https://cloudsecurityalliance.org/star": [
+  "src/content/glossary/glossary.ts:13291",
+  "src/content/glossary/glossary.ts:6639"
+ ],
+ "https://community.fortinet.com": [
+  "src/content/glossary/glossary.ts:6578"
+ ],
+ "https://conference.hitb.org/": [
+  "src/content/glossary/glossary.ts:6307"
+ ],
+ "https://conservancy.umn.edu/signposting/describedby/53e369fc-240a-4341-8178-6677cf7bf265": [
+  "src/content/glossary/glossary.ts:3200"
+ ],
+ "https://core.tcl-lang.org/expect/wiki?name=Expect": [
+  "src/content/glossary/glossary.ts:3221"
+ ],
+ "https://cryptocellar.org/cesg/notense.pdf": [
+  "src/content/glossary/glossary.ts:3917"
+ ],
+ "https://cryptocellar.org/cesg/possnse.pdf": [
+  "src/content/glossary/glossary.ts:3905"
+ ],
+ "https://cs.purdue.edu/news/articles/2019/comer_ihof.html": [
+  "src/content/glossary/glossary.ts:3377"
+ ],
+ "https://csrc.nist.gov": [
+  "src/content/glossary/glossary.ts:6609"
+ ],
+ "https://csrc.nist.gov/projects/post-quantum-cryptography": [
+  "src/content/glossary/glossary.ts:12520"
+ ],
+ "https://csrc.nist.gov/publications/fips": [
+  "src/content/glossary/glossary.ts:12285"
+ ],
+ "https://csrc.nist.gov/pubs/fips/180-4/final": [
+  "src/content/glossary/glossary.ts:11709"
+ ],
+ "https://csrc.nist.gov/pubs/fips/186-5/final": [
+  "src/content/glossary/glossary.ts:11699"
+ ],
+ "https://csrc.nist.gov/pubs/fips/197/final": [
+  "src/content/glossary/glossary.ts:11636"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/108/r1/final": [
+  "src/content/glossary/glossary.ts:12777"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/34/r1/upd1/final": [
+  "src/content/glossary/glossary.ts:2690"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/38/a/final": [
+  "src/content/glossary/glossary.ts:11606",
+  "src/content/glossary/glossary.ts:11647"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/38/c/final": [
+  "src/content/glossary/glossary.ts:11668"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/38/d/final": [
+  "src/content/glossary/glossary.ts:11658"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/56/a/r3/final": [
+  "src/content/glossary/glossary.ts:12530"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/90/a/r1/final": [
+  "src/content/glossary/glossary.ts:13566"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/92/final": [
+  "src/content/glossary/glossary.ts:2753"
+ ],
+ "https://csrc.nist.gov/pubs/sp/800/94/final": [
+  "src/content/glossary/glossary.ts:12966"
+ ],
+ "https://cwi.nl/news/2018/cwi-celebrates-30-year-of-open-internet-in-europe": [
+  "src/content/glossary/glossary.ts:3542"
+ ],
+ "https://datatracker.ietf.org/doc/draft-iab-protocol-maintenance/00/": [
+  "src/content/glossary/glossary.ts:2849"
+ ],
+ "https://datatracker.ietf.org/doc/html/draft-ietf-secsh-filexfer": [
+  "src/content/glossary/glossary.ts:11817"
+ ],
+ "https://datatracker.ietf.org/doc/html/draft-ietf-wrec-wpad-01": [
+  "src/content/glossary/glossary.ts:12737"
+ ],
+ "https://datatracker.ietf.org/doc/html/draft-vixie-dns-rpz-04": [
+  "src/content/glossary/glossary.ts:12875"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc1058": [
+  "src/content/glossary/glossary.ts:9089"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc1112": [
+  "src/content/glossary/glossary.ts:9127"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc2544": [
+  "src/content/glossary/glossary.ts:3248",
+  "src/content/glossary/glossary.ts:3257"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc7858": [
+  "src/content/glossary/glossary.ts:12843"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc7871": [
+  "src/content/glossary/glossary.ts:12854"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc793": [
+  "src/content/glossary/glossary.ts:9045"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc8484": [
+  "src/content/glossary/glossary.ts:12832"
+ ],
+ "https://datatracker.ietf.org/doc/html/rfc919": [
+  "src/content/glossary/glossary.ts:9135"
+ ],
+ "https://dc.fortune.com/asia/2024/09/18/taiwan-brand-gold-apollo-lebanon-exploding-pagers-hungary-manufacturer-bac": [
+  "src/content/glossary/glossary.ts:3458"
+ ],
+ "https://defcon.org": [
+  "src/content/glossary/glossary.ts:6457"
+ ],
+ "https://developer.mozilla.org/": [
+  "src/content/glossary/glossary.ts:12757"
+ ],
+ "https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX": [
+  "src/content/glossary/glossary.ts:13630"
+ ],
+ "https://developer.mozilla.org/en-US/docs/Web/HTTP/Proxy_servers_and_tunneling/Proxy_Auto-Configuration_PAC_file": [
+  "src/content/glossary/glossary.ts:12727"
+ ],
+ "https://dl.acm.org/doi/10.1145/358198.358210": [
+  "src/content/glossary/glossary.ts:7390"
+ ],
+ "https://dl.acm.org/doi/10.1145/360248.360253": [
+  "src/content/glossary/glossary.ts:15630",
+  "src/content/glossary/glossary.ts:9161"
+ ],
+ "https://dl.acm.org/doi/10.5555/862335": [
+  "src/content/glossary/glossary.ts:4385"
+ ],
+ "https://docs.cloud.f5.com/docs/ves-concepts/site": [
+  "src/content/glossary/glossary.ts:13362"
+ ],
+ "https://docs.fortinet.com/": [
+  "src/content/glossary/glossary.ts:12976"
+ ],
+ "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html": [
+  "src/content/glossary/glossary.ts:11899",
+  "src/content/glossary/glossary.ts:11909"
+ ],
+ "https://ecma-international.org/": [
+  "src/content/glossary/glossary.ts:13586"
+ ],
+ "https://ee.stanford.edu/~hellman/publications/24.pdf": [
+  "src/content/glossary/glossary.ts:3833",
+  "src/content/glossary/glossary.ts:3845"
+ ],
+ "https://ekoparty.org/premio-a-la-trayectoria/": [
+  "src/content/glossary/glossary.ts:2135"
+ ],
+ "https://electricityforum.com/a-timeline-of-history-of-electricity": [
+  "src/content/glossary/glossary.ts:2897",
+  "src/content/glossary/glossary.ts:2945"
+ ],
+ "https://en-academic.com/dic.nsf/enwiki/4529204": [
+  "src/content/glossary/glossary.ts:3470"
+ ],
+ "https://en.wikipedia.org/wiki/2013_Target_data_breach": [
+  "src/content/glossary/glossary.ts:1649"
+ ],
+ "https://en.wikipedia.org/wiki/2016_Democratic_National_Committee_email_leak": [
+  "src/content/glossary/glossary.ts:1631"
+ ],
+ "https://en.wikipedia.org/wiki/2024_Lebanon_pager_explosions": [
+  "src/content/glossary/glossary.ts:3458"
+ ],
+ "https://en.wikipedia.org/wiki/AACS_encryption_key_controversy": [
+  "src/content/glossary/glossary.ts:8826"
+ ],
+ "https://en.wikipedia.org/wiki/Aaron_Swartz": [
+  "src/content/glossary/glossary.ts:1682"
+ ],
+ "https://en.wikipedia.org/wiki/Adrian_Lamo": [
+  "src/content/glossary/glossary.ts:1337"
+ ],
+ "https://en.wikipedia.org/wiki/Advanced_persistent_threat": [
+  "src/content/glossary/glossary.ts:1859",
+  "src/content/glossary/glossary.ts:1868",
+  "src/content/glossary/glossary.ts:1895"
+ ],
+ "https://en.wikipedia.org/wiki/Air_gap_(networking)": [
+  "src/content/glossary/glossary.ts:8991"
+ ],
+ "https://en.wikipedia.org/wiki/Albert_Gonzalez": [
+  "src/content/glossary/glossary.ts:1349"
+ ],
+ "https://en.wikipedia.org/wiki/Amdahl%27s_law": [
+  "src/content/glossary/glossary.ts:8680"
+ ],
+ "https://en.wikipedia.org/wiki/Analog_signal": [
+  "src/content/glossary/glossary.ts:9072"
+ ],
+ "https://en.wikipedia.org/wiki/Anonymous_(hacker_group)": [
+  "src/content/glossary/glossary.ts:1100"
+ ],
+ "https://en.wikipedia.org/wiki/Automotive_hacking": [
+  "src/content/glossary/glossary.ts:989"
+ ],
+ "https://en.wikipedia.org/wiki/Back_Orifice": [
+  "src/content/glossary/glossary.ts:971"
+ ],
+ "https://en.wikipedia.org/wiki/Backhoe_fade": [
+  "src/content/glossary/glossary.ts:8940"
+ ],
+ "https://en.wikipedia.org/wiki/Banker_trojan": [
+  "src/content/glossary/glossary.ts:1913"
+ ],
+ "https://en.wikipedia.org/wiki/Barnaby_Jack": [
+  "src/content/glossary/glossary.ts:1001"
+ ],
+ "https://en.wikipedia.org/wiki/Berkeley_r-commands": [
+  "src/content/glossary/glossary.ts:1172"
+ ],
+ "https://en.wikipedia.org/wiki/Blaster_(computer_worm)": [
+  "src/content/glossary/glossary.ts:8587"
+ ],
+ "https://en.wikipedia.org/wiki/Blockchain": [
+  "src/content/glossary/glossary.ts:1190"
+ ],
+ "https://en.wikipedia.org/wiki/Blue_box": [
+  "src/content/glossary/glossary.ts:8031"
+ ],
+ "https://en.wikipedia.org/wiki/Blue_screen_of_death": [
+  "src/content/glossary/glossary.ts:8704"
+ ],
+ "https://en.wikipedia.org/wiki/Brian_Kernighan": [
+  "src/content/glossary/glossary.ts:8878"
+ ],
+ "https://en.wikipedia.org/wiki/Broadcast,_unknown-unicast_and_multicast_traffic": [
+  "src/content/glossary/glossary.ts:9152"
+ ],
+ "https://en.wikipedia.org/wiki/Broadcast_storm": [
+  "src/content/glossary/glossary.ts:8999"
+ ],
+ "https://en.wikipedia.org/wiki/Bruce_Schneier": [
+  "src/content/glossary/glossary.ts:1574"
+ ],
+ "https://en.wikipedia.org/wiki/CAP_theorem": [
+  "src/content/glossary/glossary.ts:8759"
+ ],
+ "https://en.wikipedia.org/wiki/Captain_Midnight_broadcast_signal_intrusion": [
+  "src/content/glossary/glossary.ts:8785"
+ ],
+ "https://en.wikipedia.org/wiki/Capture_the_flag_(cybersecurity)": [
+  "src/content/glossary/glossary.ts:1790"
+ ],
+ "https://en.wikipedia.org/wiki/Carding_(fraud)": [
+  "src/content/glossary/glossary.ts:1670"
+ ],
+ "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_avoidance": [
+  "src/content/glossary/glossary.ts:9170"
+ ],
+ "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_detection": [
+  "src/content/glossary/glossary.ts:9161"
+ ],
+ "https://en.wikipedia.org/wiki/Centrifugal_governor": [
+  "src/content/glossary/glossary.ts:3047"
+ ],
+ "https://en.wikipedia.org/wiki/Chaos_Communication_Congress": [
+  "src/content/glossary/glossary.ts:1772"
+ ],
+ "https://en.wikipedia.org/wiki/Citizenfour": [
+  "src/content/glossary/glossary.ts:1763"
+ ],
+ "https://en.wikipedia.org/wiki/Clarke%27s_three_laws": [
+  "src/content/glossary/glossary.ts:8925"
+ ],
+ "https://en.wikipedia.org/wiki/Clifford_Stoll": [
+  "src/content/glossary/glossary.ts:1313"
+ ],
+ "https://en.wikipedia.org/wiki/Clipper_chip": [
+  "src/content/glossary/glossary.ts:1829"
+ ],
+ "https://en.wikipedia.org/wiki/Collision_domain": [
+  "src/content/glossary/glossary.ts:9143"
+ ],
+ "https://en.wikipedia.org/wiki/Countdown_to_Zero_Day": [
+  "src/content/glossary/glossary.ts:1091"
+ ],
+ "https://en.wikipedia.org/wiki/Crookes_tube": [
+  "src/content/glossary/glossary.ts:2981"
+ ],
+ "https://en.wikipedia.org/wiki/Crypto_Wars": [
+  "src/content/glossary/glossary.ts:8532"
+ ],
+ "https://en.wikipedia.org/wiki/Cult_of_the_Dead_Cow": [
+  "src/content/glossary/glossary.ts:905"
+ ],
+ "https://en.wikipedia.org/wiki/Cyberpunk:_Outlaws_and_Hackers_on_the_Computer_Frontier": [
+  "src/content/glossary/glossary.ts:1736"
+ ],
+ "https://en.wikipedia.org/wiki/Cypherpunk": [
+  "src/content/glossary/glossary.ts:1514"
+ ],
+ "https://en.wikipedia.org/wiki/DEF_CON": [
+  "src/content/glossary/glossary.ts:1244",
+  "src/content/glossary/glossary.ts:1799"
+ ],
+ "https://en.wikipedia.org/wiki/Daniel_Karrenberg": [
+  "src/content/glossary/glossary.ts:3554"
+ ],
+ "https://en.wikipedia.org/wiki/Deep_Blue_versus_Garry_Kasparov": [
+  "src/content/glossary/glossary.ts:8612"
+ ],
+ "https://en.wikipedia.org/wiki/Dongle": [
+  "src/content/glossary/glossary.ts:5569"
+ ],
+ "https://en.wikipedia.org/wiki/ELIZA": [
+  "src/content/glossary/glossary.ts:8523"
+ ],
+ "https://en.wikipedia.org/wiki/Eating_your_own_dog_food": [
+  "src/content/glossary/glossary.ts:8933"
+ ],
+ "https://en.wikipedia.org/wiki/Edward_Snowden": [
+  "src/content/glossary/glossary.ts:1841"
+ ],
+ "https://en.wikipedia.org/wiki/Elizabeth_J._Feinler": [
+  "src/content/glossary/glossary.ts:4239"
+ ],
+ "https://en.wikipedia.org/wiki/End-of-life_product": [
+  "src/content/glossary/glossary.ts:8983"
+ ],
+ "https://en.wikipedia.org/wiki/Expect": [
+  "src/content/glossary/glossary.ts:3230"
+ ],
+ "https://en.wikipedia.org/wiki/Fail_Whale": [
+  "src/content/glossary/glossary.ts:8834"
+ ],
+ "https://en.wikipedia.org/wiki/Fallacies_of_distributed_computing": [
+  "src/content/glossary/glossary.ts:8870"
+ ],
+ "https://en.wikipedia.org/wiki/Firewalls_and_Internet_Security": [
+  "src/content/glossary/glossary.ts:4385",
+  "src/content/glossary/glossary.ts:4397"
+ ],
+ "https://en.wikipedia.org/wiki/Garbage_in,_garbage_out": [
+  "src/content/glossary/glossary.ts:8737"
+ ],
+ "https://en.wikipedia.org/wiki/Gary_McKinnon": [
+  "src/content/glossary/glossary.ts:1361"
+ ],
+ "https://en.wikipedia.org/wiki/Georg_Ohm": [
+  "src/content/glossary/glossary.ts:2933"
+ ],
+ "https://en.wikipedia.org/wiki/George_Boole": [
+  "src/content/glossary/glossary.ts:3773"
+ ],
+ "https://en.wikipedia.org/wiki/George_Hotz": [
+  "src/content/glossary/glossary.ts:1385"
+ ],
+ "https://en.wikipedia.org/wiki/Ghost_in_the_Wires": [
+  "src/content/glossary/glossary.ts:1718"
+ ],
+ "https://en.wikipedia.org/wiki/Glenn_Ricart": [
+  "src/content/glossary/glossary.ts:3341"
+ ],
+ "https://en.wikipedia.org/wiki/Goodhart%27s_law": [
+  "src/content/glossary/glossary.ts:8206"
+ ],
+ "https://en.wikipedia.org/wiki/Graphical_user_interface": [
+  "src/content/glossary/glossary.ts:13661"
+ ],
+ "https://en.wikipedia.org/wiki/Greenspun%27s_tenth_rule": [
+  "src/content/glossary/glossary.ts:8885"
+ ],
+ "https://en.wikipedia.org/wiki/HD_Moore": [
+  "src/content/glossary/glossary.ts:1397"
+ ],
+ "https://en.wikipedia.org/wiki/Hacker_culture": [
+  "src/content/glossary/glossary.ts:2177"
+ ],
+ "https://en.wikipedia.org/wiki/Hackers:_Heroes_of_the_Computer_Revolution": [
+  "src/content/glossary/glossary.ts:1064"
+ ],
+ "https://en.wikipedia.org/wiki/Hackers_(film)": [
+  "src/content/glossary/glossary.ts:1055"
+ ],
+ "https://en.wikipedia.org/wiki/Hackers_on_Planet_Earth": [
+  "src/content/glossary/glossary.ts:1781"
+ ],
+ "https://en.wikipedia.org/wiki/Hacktivism": [
+  "src/content/glossary/glossary.ts:1127"
+ ],
+ "https://en.wikipedia.org/wiki/High_Performance_Computing_Act_of_1991": [
+  "src/content/glossary/glossary.ts:3470"
+ ],
+ "https://en.wikipedia.org/wiki/Homebrew_Computer_Club": [
+  "src/content/glossary/glossary.ts:8777"
+ ],
+ "https://en.wikipedia.org/wiki/HotWired": [
+  "src/content/glossary/glossary.ts:8562"
+ ],
+ "https://en.wikipedia.org/wiki/Howard_Frank_(network_engineer)": [
+  "src/content/glossary/glossary.ts:3200"
+ ],
+ "https://en.wikipedia.org/wiki/Illegal_number": [
+  "src/content/glossary/glossary.ts:8826"
+ ],
+ "https://en.wikipedia.org/wiki/Indirection": [
+  "src/content/glossary/glossary.ts:8917"
+ ],
+ "https://en.wikipedia.org/wiki/Intergalactic_Computer_Network": [
+  "src/content/glossary/glossary.ts:4279"
+ ],
+ "https://en.wikipedia.org/wiki/Internet_Relay_Chat": [
+  "src/content/glossary/glossary.ts:1145",
+  "src/content/glossary/glossary.ts:2057"
+ ],
+ "https://en.wikipedia.org/wiki/Interpacket_gap": [
+  "src/content/glossary/glossary.ts:9081"
+ ],
+ "https://en.wikipedia.org/wiki/Ira_Fuchs": [
+  "src/content/glossary/glossary.ts:3401"
+ ],
+ "https://en.wikipedia.org/wiki/J._C._R._Licklider": [
+  "src/content/glossary/glossary.ts:4279"
+ ],
+ "https://en.wikipedia.org/wiki/Jeff_Moss_(hacker)": [
+  "src/content/glossary/glossary.ts:1256"
+ ],
+ "https://en.wikipedia.org/wiki/John_Gall_(author)": [
+  "src/content/glossary/glossary.ts:8642"
+ ],
+ "https://en.wikipedia.org/wiki/John_Markoff": [
+  "src/content/glossary/glossary.ts:1595"
+ ],
+ "https://en.wikipedia.org/wiki/Jon_Lech_Johansen": [
+  "src/content/glossary/glossary.ts:1373"
+ ],
+ "https://en.wikipedia.org/wiki/Joybubbles": [
+  "src/content/glossary/glossary.ts:1301"
+ ],
+ "https://en.wikipedia.org/wiki/Jude_Milhon": [
+  "src/content/glossary/glossary.ts:1526"
+ ],
+ "https://en.wikipedia.org/wiki/Julian_Assange": [
+  "src/content/glossary/glossary.ts:1562"
+ ],
+ "https://en.wikipedia.org/wiki/Karl_Koch_(hacker)": [
+  "src/content/glossary/glossary.ts:941"
+ ],
+ "https://en.wikipedia.org/wiki/Katie_Moussouris": [
+  "src/content/glossary/glossary.ts:4303"
+ ],
+ "https://en.wikipedia.org/wiki/Kevin_Mitnick": [
+  "src/content/glossary/glossary.ts:7798"
+ ],
+ "https://en.wikipedia.org/wiki/Kevin_Poulsen": [
+  "src/content/glossary/glossary.ts:8846"
+ ],
+ "https://en.wikipedia.org/wiki/Key_escrow": [
+  "src/content/glossary/glossary.ts:1850"
+ ],
+ "https://en.wikipedia.org/wiki/Kill_chain": [
+  "src/content/glossary/glossary.ts:1886"
+ ],
+ "https://en.wikipedia.org/wiki/L%C3%A9on_Foucault": [
+  "src/content/glossary/glossary.ts:3035"
+ ],
+ "https://en.wikipedia.org/wiki/L0pht": [
+  "src/content/glossary/glossary.ts:1208",
+  "src/content/glossary/glossary.ts:8539"
+ ],
+ "https://en.wikipedia.org/wiki/Laurence_Canter_and_Martha_Siegel": [
+  "src/content/glossary/glossary.ts:8039"
+ ],
+ "https://en.wikipedia.org/wiki/Leap_second": [
+  "src/content/glossary/glossary.ts:8854"
+ ],
+ "https://en.wikipedia.org/wiki/Leet": [
+  "src/content/glossary/glossary.ts:1226"
+ ],
+ "https://en.wikipedia.org/wiki/Legion_of_Doom_(hacker_group)": [
+  "src/content/glossary/glossary.ts:914"
+ ],
+ "https://en.wikipedia.org/wiki/Linus%27s_law": [
+  "src/content/glossary/glossary.ts:8199"
+ ],
+ "https://en.wikipedia.org/wiki/Linus_Torvalds": [
+  "src/content/glossary/glossary.ts:1457"
+ ],
+ "https://en.wikipedia.org/wiki/Longest_common_subsequence": [
+  "src/content/glossary/glossary.ts:13609"
+ ],
+ "https://en.wikipedia.org/wiki/LulzSec": [
+  "src/content/glossary/glossary.ts:1109"
+ ],
+ "https://en.wikipedia.org/wiki/MafiaBoy": [
+  "src/content/glossary/glossary.ts:962"
+ ],
+ "https://en.wikipedia.org/wiki/Magic_number_(programming)": [
+  "src/content/glossary/glossary.ts:8947"
+ ],
+ "https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)": [
+  "src/content/glossary/glossary.ts:4227"
+ ],
+ "https://en.wikipedia.org/wiki/Mark_Abene": [
+  "src/content/glossary/glossary.ts:1280"
+ ],
+ "https://en.wikipedia.org/wiki/Masters_of_Deception": [
+  "src/content/glossary/glossary.ts:923"
+ ],
+ "https://en.wikipedia.org/wiki/Max_Butler": [
+  "src/content/glossary/glossary.ts:1661"
+ ],
+ "https://en.wikipedia.org/wiki/Max_Headroom_signal_hijacking": [
+  "src/content/glossary/glossary.ts:8619"
+ ],
+ "https://en.wikipedia.org/wiki/Metcalfe%27s_law": [
+  "src/content/glossary/glossary.ts:8153"
+ ],
+ "https://en.wikipedia.org/wiki/Micha%C5%82_Zalewski": [
+  "src/content/glossary/glossary.ts:1493"
+ ],
+ "https://en.wikipedia.org/wiki/Michelson%E2%80%93Morley_experiment": [
+  "src/content/glossary/glossary.ts:15629"
+ ],
+ "https://en.wikipedia.org/wiki/Mr._Robot": [
+  "src/content/glossary/glossary.ts:1754"
+ ],
+ "https://en.wikipedia.org/wiki/Mt._Gox": [
+  "src/content/glossary/glossary.ts:8801"
+ ],
+ "https://en.wikipedia.org/wiki/Murphy%27s_law": [
+  "src/content/glossary/glossary.ts:8160"
+ ],
+ "https://en.wikipedia.org/wiki/NORAD": [
+  "src/content/glossary/glossary.ts:5330"
+ ],
+ "https://en.wikipedia.org/wiki/Netsplit": [
+  "src/content/glossary/glossary.ts:2048"
+ ],
+ "https://en.wikipedia.org/wiki/Neuromancer": [
+  "src/content/glossary/glossary.ts:1691"
+ ],
+ "https://en.wikipedia.org/wiki/Newbie": [
+  "src/content/glossary/glossary.ts:1235"
+ ],
+ "https://en.wikipedia.org/wiki/Nimda": [
+  "src/content/glossary/glossary.ts:8578"
+ ],
+ "https://en.wikipedia.org/wiki/Ninety%E2%80%93ninety_rule": [
+  "src/content/glossary/glossary.ts:8688"
+ ],
+ "https://en.wikipedia.org/wiki/No_Silver_Bullet": [
+  "src/content/glossary/glossary.ts:8696"
+ ],
+ "https://en.wikipedia.org/wiki/Npm_left-pad_incident": [
+  "src/content/glossary/glossary.ts:8861"
+ ],
+ "https://en.wikipedia.org/wiki/Null_Community": [
+  "src/content/glossary/glossary.ts:6317"
+ ],
+ "https://en.wikipedia.org/wiki/Nyquist%E2%80%93Shannon_sampling_theorem": [
+  "src/content/glossary/glossary.ts:9072"
+ ],
+ "https://en.wikipedia.org/wiki/Office_Assistant": [
+  "src/content/glossary/glossary.ts:8604"
+ ],
+ "https://en.wikipedia.org/wiki/Operation_Aurora": [
+  "src/content/glossary/glossary.ts:8595"
+ ],
+ "https://en.wikipedia.org/wiki/Operation_Sundevil": [
+  "src/content/glossary/glossary.ts:932"
+ ],
+ "https://en.wikipedia.org/wiki/PARC_(company)": [
+  "src/content/glossary/glossary.ts:8514"
+ ],
+ "https://en.wikipedia.org/wiki/Paul_Vixie": [
+  "src/content/glossary/glossary.ts:2861"
+ ],
+ "https://en.wikipedia.org/wiki/Peiter_Zatko": [
+  "src/content/glossary/glossary.ts:1268"
+ ],
+ "https://en.wikipedia.org/wiki/Personal_area_network": [
+  "src/content/glossary/glossary.ts:3128"
+ ],
+ "https://en.wikipedia.org/wiki/Perverse_incentive": [
+  "src/content/glossary/glossary.ts:8908"
+ ],
+ "https://en.wikipedia.org/wiki/Peter_Eckersley_(computer_scientist)": [
+  "src/content/glossary/glossary.ts:3365"
+ ],
+ "https://en.wikipedia.org/wiki/Phil_Zimmermann": [
+  "src/content/glossary/glossary.ts:1820"
+ ],
+ "https://en.wikipedia.org/wiki/Piet_Beertema": [
+  "src/content/glossary/glossary.ts:3542"
+ ],
+ "https://en.wikipedia.org/wiki/Poe%27s_law": [
+  "src/content/glossary/glossary.ts:8900"
+ ],
+ "https://en.wikipedia.org/wiki/Pretty_Good_Privacy": [
+  "src/content/glossary/glossary.ts:1808"
+ ],
+ "https://en.wikipedia.org/wiki/Principle_of_least_astonishment": [
+  "src/content/glossary/glossary.ts:8650"
+ ],
+ "https://en.wikipedia.org/wiki/Pwn2Own": [
+  "src/content/glossary/glossary.ts:1028"
+ ],
+ "https://en.wikipedia.org/wiki/Pwnie_Awards": [
+  "src/content/glossary/glossary.ts:1019"
+ ],
+ "https://en.wikipedia.org/wiki/RSA_SecurID": [
+  "src/content/glossary/glossary.ts:1640"
+ ],
+ "https://en.wikipedia.org/wiki/Ray_Tomlinson": [
+  "src/content/glossary/glossary.ts:8015"
+ ],
+ "https://en.wikipedia.org/wiki/Richard_Stallman": [
+  "src/content/glossary/glossary.ts:1445"
+ ],
+ "https://en.wikipedia.org/wiki/SOLID": [
+  "src/content/glossary/glossary.ts:8729"
+ ],
+ "https://en.wikipedia.org/wiki/SQL_Slammer": [
+  "src/content/glossary/glossary.ts:8097"
+ ],
+ "https://en.wikipedia.org/wiki/Secure_access_service_edge": [
+  "src/content/glossary/glossary.ts:9179",
+  "src/content/glossary/glossary.ts:9188"
+ ],
+ "https://en.wikipedia.org/wiki/Security_BSides": [
+  "src/content/glossary/glossary.ts:2573"
+ ],
+ "https://en.wikipedia.org/wiki/ShmooCon": [
+  "src/content/glossary/glossary.ts:6287"
+ ],
+ "https://en.wikipedia.org/wiki/Silk_Road_(marketplace)": [
+  "src/content/glossary/glossary.ts:8809"
+ ],
+ "https://en.wikipedia.org/wiki/Slashdot_effect": [
+  "src/content/glossary/glossary.ts:8570"
+ ],
+ "https://en.wikipedia.org/wiki/Sneakers_(1992_film)": [
+  "src/content/glossary/glossary.ts:1046"
+ ],
+ "https://en.wikipedia.org/wiki/Snow_Crash": [
+  "src/content/glossary/glossary.ts:1700"
+ ],
+ "https://en.wikipedia.org/wiki/Software_protection_dongle": [
+  "src/content/glossary/glossary.ts:5568"
+ ],
+ "https://en.wikipedia.org/wiki/Sony_Pictures_hack": [
+  "src/content/glossary/glossary.ts:1622"
+ ],
+ "https://en.wikipedia.org/wiki/Space_Rogue": [
+  "src/content/glossary/glossary.ts:1469"
+ ],
+ "https://en.wikipedia.org/wiki/Split-brain_(computing)": [
+  "src/content/glossary/glossary.ts:8720"
+ ],
+ "https://en.wikipedia.org/wiki/Sturgeon%27s_law": [
+  "src/content/glossary/glossary.ts:8183"
+ ],
+ "https://en.wikipedia.org/wiki/Susan_Headley": [
+  "src/content/glossary/glossary.ts:1538"
+ ],
+ "https://en.wikipedia.org/wiki/Symbolics": [
+  "src/content/glossary/glossary.ts:8554"
+ ],
+ "https://en.wikipedia.org/wiki/TL;DR": [
+  "src/content/glossary/glossary.ts:8972"
+ ],
+ "https://en.wikipedia.org/wiki/Tadao_Takahashi": [
+  "src/content/glossary/glossary.ts:1973"
+ ],
+ "https://en.wikipedia.org/wiki/Takedown_(book)": [
+  "src/content/glossary/glossary.ts:1727"
+ ],
+ "https://en.wikipedia.org/wiki/Tarek_Kamel": [
+  "src/content/glossary/glossary.ts:3494"
+ ],
+ "https://en.wikipedia.org/wiki/Tcl_(programming_language)": [
+  "src/content/glossary/glossary.ts:3221"
+ ],
+ "https://en.wikipedia.org/wiki/Tesla_coil": [
+  "src/content/glossary/glossary.ts:2969"
+ ],
+ "https://en.wikipedia.org/wiki/Teus_Hagen": [
+  "src/content/glossary/glossary.ts:3530",
+  "src/content/glossary/glossary.ts:3554"
+ ],
+ "https://en.wikipedia.org/wiki/The_Art_of_Deception": [
+  "src/content/glossary/glossary.ts:1073"
+ ],
+ "https://en.wikipedia.org/wiki/The_DAO": [
+  "src/content/glossary/glossary.ts:8793"
+ ],
+ "https://en.wikipedia.org/wiki/The_Matrix": [
+  "src/content/glossary/glossary.ts:1745"
+ ],
+ "https://en.wikipedia.org/wiki/The_Mother_of_All_Demos": [
+  "src/content/glossary/glossary.ts:4215"
+ ],
+ "https://en.wikipedia.org/wiki/The_Shadow_Brokers": [
+  "src/content/glossary/glossary.ts:1118"
+ ],
+ "https://en.wikipedia.org/wiki/The_Shockwave_Rider": [
+  "src/content/glossary/glossary.ts:1709"
+ ],
+ "https://en.wikipedia.org/wiki/Tim_Berners-Lee": [
+  "src/content/glossary/glossary.ts:3809"
+ ],
+ "https://en.wikipedia.org/wiki/Token_Ring": [
+  "src/content/glossary/glossary.ts:8490"
+ ],
+ "https://en.wikipedia.org/wiki/Trojan_Room_coffee_pot": [
+  "src/content/glossary/glossary.ts:8046"
+ ],
+ "https://en.wikipedia.org/wiki/Tsutomu_Shimomura": [
+  "src/content/glossary/glossary.ts:1325"
+ ],
+ "https://en.wikipedia.org/wiki/Turing_machine": [
+  "src/content/glossary/glossary.ts:3761"
+ ],
+ "https://en.wikipedia.org/wiki/Two_Generals%27_Problem": [
+  "src/content/glossary/glossary.ts:9007"
+ ],
+ "https://en.wikipedia.org/wiki/UUCP": [
+  "src/content/glossary/glossary.ts:1163"
+ ],
+ "https://en.wikipedia.org/wiki/Underground_(Dreyfus_book)": [
+  "src/content/glossary/glossary.ts:1082"
+ ],
+ "https://en.wikipedia.org/wiki/Usenet": [
+  "src/content/glossary/glossary.ts:1154"
+ ],
+ "https://en.wikipedia.org/wiki/User_error": [
+  "src/content/glossary/glossary.ts:8964"
+ ],
+ "https://en.wikipedia.org/wiki/WANK_(computer_worm)": [
+  "src/content/glossary/glossary.ts:950"
+ ],
+ "https://en.wikipedia.org/wiki/Wall_of_Sheep": [
+  "src/content/glossary/glossary.ts:1010"
+ ],
+ "https://en.wikipedia.org/wiki/WarGames": [
+  "src/content/glossary/glossary.ts:1037"
+ ],
+ "https://en.wikipedia.org/wiki/Wardialing": [
+  "src/content/glossary/glossary.ts:1136"
+ ],
+ "https://en.wikipedia.org/wiki/Wardriving": [
+  "src/content/glossary/glossary.ts:1199"
+ ],
+ "https://en.wikipedia.org/wiki/Warez_scene": [
+  "src/content/glossary/glossary.ts:1217"
+ ],
+ "https://en.wikipedia.org/wiki/Wau_Holland": [
+  "src/content/glossary/glossary.ts:1421"
+ ],
+ "https://en.wikipedia.org/wiki/Werner_Buchholz": [
+  "src/content/glossary/glossary.ts:9035"
+ ],
+ "https://en.wikipedia.org/wiki/Weston_cell": [
+  "src/content/glossary/glossary.ts:3071"
+ ],
+ "https://en.wikipedia.org/wiki/Wirth%27s_law": [
+  "src/content/glossary/glossary.ts:8673"
+ ],
+ "https://en.wikipedia.org/wiki/X_Window_System": [
+  "src/content/glossary/glossary.ts:1181"
+ ],
+ "https://en.wikipedia.org/wiki/Year_2000_problem": [
+  "src/content/glossary/glossary.ts:8072"
+ ],
+ "https://en.wikipedia.org/wiki/Year_2038_problem": [
+  "src/content/glossary/glossary.ts:8769"
+ ],
+ "https://en.wikipedia.org/wiki/Yvonne_Andres": [
+  "src/content/glossary/glossary.ts:3506"
+ ],
+ "https://en.wikiquote.org/wiki/Bill_Gates": [
+  "src/content/glossary/glossary.ts:8062"
+ ],
+ "https://eprint.iacr.org/2022/975": [
+  "src/content/glossary/glossary.ts:12627"
+ ],
+ "https://esamultimedia.esa.int/docs/esa-x-1819eng.pdf": [
+  "src/content/glossary/glossary.ts:8121"
+ ],
+ "https://ethw.org/Edward_Weston": [
+  "src/content/glossary/glossary.ts:3071"
+ ],
+ "https://ethw.org/Ethernet": [
+  "src/content/glossary/glossary.ts:2825"
+ ],
+ "https://ethw.org/Milestones:First_Intelligible_Voice_Transmission_over_Electric_Wire,_1876": [
+  "src/content/glossary/glossary.ts:3083"
+ ],
+ "https://eur-lex.europa.eu/eli/dir/2022/2555": [
+  "src/content/glossary/glossary.ts:13341"
+ ],
+ "https://fidoalliance.org/passkeys/": [
+  "src/content/glossary/glossary.ts:2609",
+  "src/content/glossary/glossary.ts:2636"
+ ],
+ "https://firstmonday.org/ojs/index.php/fm/article/download/613/534?inline=1": [
+  "src/content/glossary/glossary.ts:3566"
+ ],
+ "https://firstsiteguide.com/who-invented-internet-part-5/": [
+  "src/content/glossary/glossary.ts:3305"
+ ],
+ "https://foldoc.org/byte": [
+  "src/content/glossary/glossary.ts:9035"
+ ],
+ "https://forum.cert.br": [
+  "src/content/glossary/glossary.ts:2267"
+ ],
+ "https://furukawa.my.salesforce-sites.com/pt-br/ift-detalhes/fcp-gestao-de-infraestrutura-de-redes": [
+  "src/content/glossary/glossary.ts:10215"
+ ],
+ "https://garoa.net.br": [
+  "src/content/glossary/glossary.ts:6527"
+ ],
+ "https://github.com/Netflix/chaosmonkey": [
+  "src/content/glossary/glossary.ts:8712"
+ ],
+ "https://github.com/salesforce/ja3": [
+  "src/content/glossary/glossary.ts:12393"
+ ],
+ "https://github.com/ulid/spec": [
+  "src/content/glossary/glossary.ts:13576"
+ ],
+ "https://google.github.io/eng-practices/review/": [
+  "src/content/glossary/glossary.ts:8238"
+ ],
+ "https://gtergts.nic.br/": [
+  "src/content/glossary/glossary.ts:6397"
+ ],
+ "https://historyofinformation.com/detail.php?id=858": [
+  "src/content/glossary/glossary.ts:3965"
+ ],
+ "https://icannwiki.org/Tarek_Kamel": [
+  "src/content/glossary/glossary.ts:3494"
+ ],
+ "https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm": [
+  "src/content/glossary/glossary.ts:12168"
+ ],
+ "https://ieeemilestones.ethw.org/Milestone-Proposal:Grace_Hopper's_Compiler_and_Programming_Language_Work,_1952-1959": [
+  "src/content/glossary/glossary.ts:2873"
+ ],
+ "https://ieeexplore.ieee.org/document/274940": [
+  "src/content/glossary/glossary.ts:8113"
+ ],
+ "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/11588421": [
+  "src/content/glossary/glossary.ts:2993"
+ ],
+ "https://infosec-conferences.com/troopers/": [
+  "src/content/glossary/glossary.ts:6297"
+ ],
+ "https://insights.sei.cmu.edu/library/1998-cert-advisories/": [
+  "src/content/glossary/glossary.ts:8506"
+ ],
+ "https://isc.sans.edu": [
+  "src/content/glossary/glossary.ts:6649"
+ ],
+ "https://it.wikipedia.org/wiki/Marisa_Bellisario": [
+  "src/content/glossary/glossary.ts:3578"
+ ],
+ "https://itseller.pe/2025/08/04/security-bsides-peru-2025-un-compromiso-con-la-comunidad-de-ciberseguridad/": [
+  "src/content/glossary/glossary.ts:2564"
+ ],
+ "https://john.cs.olemiss.edu/~hcc/csci555/notes/localcopy/Liskov_Data_Abstraction_and_Hierarchy_1987.pdf": [
+  "src/content/glossary/glossary.ts:4073"
+ ],
+ "https://kartsci.org/science_computers/wireless-communications-radio/": [
+  "src/content/glossary/glossary.ts:2993"
+ ],
+ "https://lamport.azurewebsites.net/pubs/time-clocks.pdf": [
+  "src/content/glossary/glossary.ts:4061"
+ ],
+ "https://latinoware.org": [
+  "src/content/glossary/glossary.ts:6417"
+ ],
+ "https://learn.microsoft.com/en-us/iis/get-started/introduction-to-iis/introduction-to-iis-architecture": [
+  "src/content/glossary/glossary.ts:13934"
+ ],
+ "https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-smb2/": [
+  "src/content/glossary/glossary.ts:11939"
+ ],
+ "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview": [
+  "src/content/glossary/glossary.ts:13415"
+ ],
+ "https://learn.microsoft.com/en-us/windows-server/remote/remote-desktop-services/welcome-to-rds": [
+  "src/content/glossary/glossary.ts:13503"
+ ],
+ "https://learn.microsoft.com/en-us/windows-server/security/kerberos/ntlm-overview": [
+  "src/content/glossary/glossary.ts:12986"
+ ],
+ "https://learn.microsoft.com/en-us/windows/win32/ad/service-principal-names": [
+  "src/content/glossary/glossary.ts:12996"
+ ],
+ "https://lemelson.mit.edu/award-winners/douglas-engelbart": [
+  "src/content/glossary/glossary.ts:4215"
+ ],
+ "https://lemelson.mit.edu/resources/radia-perlman": [
+  "src/content/glossary/glossary.ts:2837"
+ ],
+ "https://letsencrypt.org/": [
+  "src/content/glossary/glossary.ts:2483"
+ ],
+ "https://libera.chat/": [
+  "src/content/glossary/glossary.ts:2066"
+ ],
+ "https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf": [
+  "src/content/glossary/glossary.ts:8129"
+ ],
+ "https://man.openbsd.org/scp": [
+  "src/content/glossary/glossary.ts:11827"
+ ],
+ "https://martinfowler.com/bliki/TwoHardThings.html": [
+  "src/content/glossary/glossary.ts:8214"
+ ],
+ "https://mathshistory.st-andrews.ac.uk/Honours/Turing_Award/": [
+  "src/content/glossary/glossary.ts:4073"
+ ],
+ "https://media.defense.gov/2019/Nov/18/2002212783/-1/-1/0/MANAGING%20RISK%20FROM%20TRANSPORT%20LAYER%20SECURITY%20INSPECTION.PDF": [
+  "src/content/glossary/glossary.ts:3668"
+ ],
+ "https://modelcontextprotocol.io/": [
+  "src/content/glossary/glossary.ts:12138"
+ ],
+ "https://my.f5.com/": [
+  "src/content/glossary/glossary.ts:12335",
+  "src/content/glossary/glossary.ts:12346",
+  "src/content/glossary/glossary.ts:12356",
+  "src/content/glossary/glossary.ts:12366",
+  "src/content/glossary/glossary.ts:12376"
+ ],
+ "https://my.f5.com/manage/s/article/K13375": [
+  "src/content/glossary/glossary.ts:13017"
+ ],
+ "https://my.f5.com/manage/s/article/K7332": [
+  "src/content/glossary/glossary.ts:12896"
+ ],
+ "https://my.f5.com/manage/s/article/K7820": [
+  "src/content/glossary/glossary.ts:13493"
+ ],
+ "https://nationalmaglab.org/magnet-academy/history-of-electricity-magnetism/museum/torsion-balance-1785/": [
+  "src/content/glossary/glossary.ts:2909"
+ ],
+ "https://ndmais.com.br/cidadania/o-homem-que-popularizou-a-informatica-relembre-o-legado-de-max-goncalves/": [
+  "src/content/glossary/glossary.ts:6277"
+ ],
+ "https://news2mail.com/nl.html": [
+  "src/content/glossary/glossary.ts:3530",
+  "src/content/glossary/glossary.ts:3542"
+ ],
+ "https://nlnet.nl/people/TeusHagen/": [
+  "src/content/glossary/glossary.ts:3530",
+  "src/content/glossary/glossary.ts:3566"
+ ],
+ "https://nlnet.nl/press/20170919-internethalloffame-en.html": [
+  "src/content/glossary/glossary.ts:3482"
+ ],
+ "https://nmap.org/": [
+  "src/content/glossary/glossary.ts:1505"
+ ],
+ "https://nmap.org/book/history-future.html": [
+  "src/content/glossary/glossary.ts:1505"
+ ],
+ "https://northdenvertribune.com/neighborhood-news/al-gore-and-the-modern-internet-a-balanced-assessment-of-legislative-leadership/": [
+  "src/content/glossary/glossary.ts:3470"
+ ],
+ "https://nullcon.net": [
+  "src/content/glossary/glossary.ts:6317"
+ ],
+ "https://nvd.nist.gov/": [
+  "src/content/glossary/glossary.ts:13619"
+ ],
+ "https://olhardigital.com.br/2025/04/08/dicas-e-tutoriais/qual-a-origem-da-palavra-gambiarra/": [
+  "src/content/glossary/glossary.ts:363"
+ ],
+ "https://ooni.org/": [
+  "src/content/glossary/glossary.ts:2519",
+  "src/content/glossary/glossary.ts:2528"
+ ],
+ "https://openvpn.net/community-resources/how-to/": [
+  "src/content/glossary/glossary.ts:3632"
+ ],
+ "https://owasp.org": [
+  "src/content/glossary/glossary.ts:6756"
+ ],
+ "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing": [
+  "src/content/glossary/glossary.ts:13168"
+ ],
+ "https://passkeys.dev/": [
+  "src/content/glossary/glossary.ts:2609"
+ ],
+ "https://people.csail.mit.edu/rivest/Rsapaper.pdf": [
+  "src/content/glossary/glossary.ts:3869",
+  "src/content/glossary/glossary.ts:3881",
+  "src/content/glossary/glossary.ts:3893"
+ ],
+ "https://peruhack.org/index.html": [
+  "src/content/glossary/glossary.ts:2555"
+ ],
+ "https://phrack.org/issues/49/smashing-the-stack-for-fun-and-profit": [
+  "src/content/glossary/glossary.ts:1433"
+ ],
+ "https://pt.wikipedia.org/wiki/Fenasoft": [
+  "src/content/glossary/glossary.ts:6277"
+ ],
+ "https://pt.wikipedia.org/wiki/Gambiarra": [
+  "src/content/glossary/glossary.ts:362"
+ ],
+ "https://pt.wikipedia.org/wiki/Jeitinho": [
+  "src/content/glossary/glossary.ts:331"
+ ],
+ "https://pt.wikipedia.org/wiki/O_Rei_da_Internet": [
+  "src/content/glossary/glossary.ts:1949"
+ ],
+ "https://pubs.opengroup.org/onlinepubs/9699919799/": [
+  "src/content/glossary/glossary.ts:13178"
+ ],
+ "https://revistapesquisa.fapesp.br/demi-getschko-um-construtor-da-internet/": [
+  "src/content/glossary/glossary.ts:1961"
+ ],
+ "https://revistaseguridad.cl/2026/02/12/8-8-computer-security-conference-presenta-8-8-unreal-cuando-la-ciberseguridad-enfrenta-lo-que-parece-real-pero-no-lo-es/": [
+  "src/content/glossary/glossary.ts:6447"
+ ],
+ "https://roadsec.com.br": [
+  "src/content/glossary/glossary.ts:6377"
+ ],
+ "https://rpm-packaging-guide.github.io/": [
+  "src/content/glossary/glossary.ts:12315"
+ ],
+ "https://rtmp.veriskope.com/docs/spec/": [
+  "src/content/glossary/glossary.ts:11929"
+ ],
+ "https://securelist.com/the-tetrade-brazilian-banking-malware/97779/": [
+  "src/content/glossary/glossary.ts:1904",
+  "src/content/glossary/glossary.ts:2210"
+ ],
+ "https://seginfo.com.br/2016/02/22/seginfocast-29-ysts-you-sh0t-the-sheriff-10a-edicao/": [
+  "src/content/glossary/glossary.ts:2147"
+ ],
+ "https://sites.google.com/site/internethistoryasia/book1/2--THE-INTERNET-IN-1980s": [
+  "src/content/glossary/glossary.ts:3281"
+ ],
+ "https://standards.ieee.org": [
+  "src/content/glossary/glossary.ts:6736"
+ ],
+ "https://standards.ieee.org/ieee/802.1D/3387/": [
+  "src/content/glossary/glossary.ts:12325"
+ ],
+ "https://standards.ieee.org/ieee/802.1ah/3234/": [
+  "src/content/glossary/glossary.ts:12460"
+ ],
+ "https://standards.ieee.org/ieee/802.1aq/4245/": [
+  "src/content/glossary/glossary.ts:12417"
+ ],
+ "https://standards.ieee.org/products-programs/regauth/": [
+  "src/content/glossary/glossary.ts:12916"
+ ],
+ "https://tedium.co/2022/10/19/will-dongles-ever-go-away/": [
+  "src/content/glossary/glossary.ts:5567"
+ ],
+ "https://tosconf.lhc.net.br": [
+  "src/content/glossary/glossary.ts:2249"
+ ],
+ "https://troopers.de": [
+  "src/content/glossary/glossary.ts:6297"
+ ],
+ "https://uptimeinstitute.com/tiers": [
+  "src/content/glossary/glossary.ts:9954"
+ ],
+ "https://web.archive.org/web/20100207131818/http://newsroom.cisco.com/dlls/1994/corp_102494.html": [
+  "src/content/glossary/glossary.ts:9016"
+ ],
+ "https://wiki.archlinux.org/": [
+  "src/content/glossary/glossary.ts:2339",
+  "src/content/glossary/glossary.ts:2357"
+ ],
+ "https://www.2600.com": [
+  "src/content/glossary/glossary.ts:6487"
+ ],
+ "https://www.abetterinternet.org/": [
+  "src/content/glossary/glossary.ts:12597"
+ ],
+ "https://www.accessnow.org/campaign/keepiton/": [
+  "src/content/glossary/glossary.ts:2510"
+ ],
+ "https://www.acm.org/articles/bulletins/2014/march/03182014-turing-award": [
+  "src/content/glossary/glossary.ts:4061"
+ ],
+ "https://www.acm.org/articles/bulletins/2023/march/turing-award-2022": [
+  "src/content/glossary/glossary.ts:2825"
+ ],
+ "https://www.amazon.com/Internetworking-TCP-Vol-1-Principles-Architecture/dp/0130183806": [
+  "src/content/glossary/glossary.ts:3377"
+ ],
+ "https://www.apc.org/en/profile/karenb": [
+  "src/content/glossary/glossary.ts:3449"
+ ],
+ "https://www.apisecuniversity.com": [
+  "src/content/glossary/glossary.ts:6588"
+ ],
+ "https://www.baguete.com.br/noticias/liane-tarouco-entra-no-hall-da-fama-da-internet": [
+  "src/content/glossary/glossary.ts:1997"
+ ],
+ "https://www.bipm.org/en/measurement-units": [
+  "src/content/glossary/glossary.ts:13208"
+ ],
+ "https://www.bipm.org/en/time-metrology": [
+  "src/content/glossary/glossary.ts:13188"
+ ],
+ "https://www.bipm.org/en/time-metrology/time-scales": [
+  "src/content/glossary/glossary.ts:13218"
+ ],
+ "https://www.blackhat.com": [
+  "src/content/glossary/glossary.ts:6467"
+ ],
+ "https://www.blackhat.com/presentations/bh-dc-09/Marlinspike/BlackHat-DC-09-Marlinspike-Defeating-SSL.pdf": [
+  "src/content/glossary/glossary.ts:3677"
+ ],
+ "https://www.britannica.com/biography/Andre-Marie-Ampere": [
+  "src/content/glossary/glossary.ts:2921"
+ ],
+ "https://www.britannica.com/biography/Douglas-Engelbart": [
+  "src/content/glossary/glossary.ts:4215"
+ ],
+ "https://www.britannica.com/biography/Paul-Baran": [
+  "src/content/glossary/glossary.ts:3929"
+ ],
+ "https://www.britannica.com/science/Peltier-effect": [
+  "src/content/glossary/glossary.ts:3023"
+ ],
+ "https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Informationen-und-Empfehlungen/Empfehlungen-nach-Angriffszielen/Cloud-Computing/Kriterienkatalog-C5/kriterienkatalog-c5_node.html": [
+  "src/content/glossary/glossary.ts:13311"
+ ],
+ "https://www.caida.org/catalog/papers/2002_codered/": [
+  "src/content/glossary/glossary.ts:8088"
+ ],
+ "https://www.captcha.net/": [
+  "src/content/glossary/glossary.ts:13651"
+ ],
+ "https://www.cbsnews.com/news/hezbollah-pagers-explode-israel-taiwan-hungary-gold-apollo-bac-consulting/": [
+  "src/content/glossary/glossary.ts:3458"
+ ],
+ "https://www.ccc.de": [
+  "src/content/glossary/glossary.ts:6477"
+ ],
+ "https://www.cert.br/": [
+  "src/content/glossary/glossary.ts:1940"
+ ],
+ "https://www.cert.br/sobre/reconhecimento/": [
+  "src/content/glossary/glossary.ts:2009"
+ ],
+ "https://www.cert.org/": [
+  "src/content/glossary/glossary.ts:12885"
+ ],
+ "https://www.chkrootkit.org/": [
+  "src/content/glossary/glossary.ts:2018"
+ ],
+ "https://www.cigre.org/article/GB/andre-marie-ampere-and-the-two-hundred-years-of-electrodynamics": [
+  "src/content/glossary/glossary.ts:2921"
+ ],
+ "https://www.cisa.gov/news-events/cybersecurity-advisories/aa20-073a": [
+  "src/content/glossary/glossary.ts:3614"
+ ],
+ "https://www.cisa.gov/stopransomware/ransomware-guide": [
+  "src/content/glossary/glossary.ts:2672",
+  "src/content/glossary/glossary.ts:2681"
+ ],
+ "https://www.cisco.com/c/en/us/products/ios-nx-os-software/": [
+  "src/content/glossary/glossary.ts:12607"
+ ],
+ "https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp/configuration/xe-16/iap-xe-16-book/iap-wccp.html": [
+  "src/content/glossary/glossary.ts:13513"
+ ],
+ "https://www.cisco.com/site/us/en/learn/training-certifications/certifications/index.html": [
+  "src/content/glossary/glossary.ts:10225"
+ ],
+ "https://www.ciscolive.com": [
+  "src/content/glossary/glossary.ts:6337"
+ ],
+ "https://www.cisoadvisor.com.br/h2hc-reune-top-hackers-do-brasil-e-do-mundo/": [
+  "src/content/glossary/glossary.ts:2123"
+ ],
+ "https://www.computerhistory.org/tdih/august/28/": [
+  "src/content/glossary/glossary.ts:8267"
+ ],
+ "https://www.cs.cmu.edu/~sef/sefSmiley.htm": [
+  "src/content/glossary/glossary.ts:7406"
+ ],
+ "https://www.cs.columbia.edu/~smb/papers/ipext.pdf": [
+  "src/content/glossary/glossary.ts:4397"
+ ],
+ "https://www.cs.cornell.edu/courses/cs6410/2025fa/slides/24-congestion-control.pdf": [
+  "src/content/glossary/glossary.ts:3977"
+ ],
+ "https://www.cs.princeton.edu/courses/archive/fall06/cos561/papers/cerf74.pdf": [
+  "src/content/glossary/glossary.ts:2801",
+  "src/content/glossary/glossary.ts:2813"
+ ],
+ "https://www.cve.org": [
+  "src/content/glossary/glossary.ts:6619"
+ ],
+ "https://www.cwi.nl/en/news/cwi-celebrates-30-year-of-open-internet-in-europe/": [
+  "src/content/glossary/glossary.ts:3482"
+ ],
+ "https://www.cwi.nl/en/news/jaap-akkerhuis-admitted-to-internet-hall-of-fame/": [
+  "src/content/glossary/glossary.ts:3482"
+ ],
+ "https://www.cwnp.com/certifications/": [
+  "src/content/glossary/glossary.ts:10245"
+ ],
+ "https://www.cyber.gov.au/irap": [
+  "src/content/glossary/glossary.ts:13321"
+ ],
+ "https://www.dataprivacyframework.gov": [
+  "src/content/glossary/glossary.ts:13331"
+ ],
+ "https://www.debian.org/social_contract": [
+  "src/content/glossary/glossary.ts:2330"
+ ],
+ "https://www.dragonjar.org": [
+  "src/content/glossary/glossary.ts:6437"
+ ],
+ "https://www.ebsco.com/research-starters/biography/radia-perlman/": [
+  "src/content/glossary/glossary.ts:2837"
+ ],
+ "https://www.economist.com/news/1955/11/19/parkinsons-law": [
+  "src/content/glossary/glossary.ts:8168"
+ ],
+ "https://www.eff.org": [
+  "src/content/glossary/glossary.ts:6670"
+ ],
+ "https://www.ekoparty.org": [
+  "src/content/glossary/glossary.ts:6427"
+ ],
+ "https://www.elon.edu/u/imagining/event-coverage/isoc-events/hof-ietf-2013/": [
+  "src/content/glossary/glossary.ts:3317",
+  "src/content/glossary/glossary.ts:3329",
+  "src/content/glossary/glossary.ts:3341"
+ ],
+ "https://www.es.net/news-and-publications/esnet-news/archived-news/2012/vint-cerf-and-van-jacobson-inducted-into-internet-hall-of-fame/": [
+  "src/content/glossary/glossary.ts:3977"
+ ],
+ "https://www.escavador.com/sobre/1490298/rodrigo-rubira-branco": [
+  "src/content/glossary/glossary.ts:2030"
+ ],
+ "https://www.extremenetworks.com/support/documentation/": [
+  "src/content/glossary/glossary.ts:12440",
+  "src/content/glossary/glossary.ts:12617"
+ ],
+ "https://www.f-secure.com/v-descs/mssqlm.shtml": [
+  "src/content/glossary/glossary.ts:8097"
+ ],
+ "https://www.f5.com/company/trust-center/iso-27001-iso-27017-iso-27018": [
+  "src/content/glossary/glossary.ts:13228"
+ ],
+ "https://www.f5.com/glossary/application-delivery-controller": [
+  "src/content/glossary/glossary.ts:13144"
+ ],
+ "https://www.f5.com/glossary/load-balancer": [
+  "src/content/glossary/glossary.ts:13535"
+ ],
+ "https://www.f5.com/products": [
+  "src/content/glossary/glossary.ts:13405"
+ ],
+ "https://www.f5.com/services/support/f5-security-incident-response-team": [
+  "src/content/glossary/glossary.ts:13395"
+ ],
+ "https://www.facebook.com/people/SampaSec/100064403183254/": [
+  "src/content/glossary/glossary.ts:6507"
+ ],
+ "https://www.fbi.gov/news/stories/melissa-virus-20th-anniversary-032519": [
+  "src/content/glossary/glossary.ts:8080"
+ ],
+ "https://www.fcc.gov/document/fcc-opens-6-ghz-band-wi-fi-and-other-unlicensed-uses": [
+  "src/content/glossary/glossary.ts:7352"
+ ],
+ "https://www.fedramp.gov": [
+  "src/content/glossary/glossary.ts:13261"
+ ],
+ "https://www.first.org/": [
+  "src/content/glossary/glossary.ts:13028"
+ ],
+ "https://www.first.org/epss/": [
+  "src/content/glossary/glossary.ts:13038"
+ ],
+ "https://www.fondazionebellisario.org/online/en/marisa-bellisario/": [
+  "src/content/glossary/glossary.ts:3578"
+ ],
+ "https://www.furukawalatam.com/pt-br": [
+  "src/content/glossary/glossary.ts:10215"
+ ],
+ "https://www.gartner.com/en/documents/3956841": [
+  "src/content/glossary/glossary.ts:9179"
+ ],
+ "https://www.gartner.com/en/information-technology/glossary/security-service-edge-sse": [
+  "src/content/glossary/glossary.ts:9188"
+ ],
+ "https://www.gnu.org/licenses/": [
+  "src/content/glossary/glossary.ts:2303"
+ ],
+ "https://www.guinnessworldrecords.com/world-records/107110-first-banner-ad": [
+  "src/content/glossary/glossary.ts:8562"
+ ],
+ "https://www.h2hc.com.br": [
+  "src/content/glossary/glossary.ts:6548"
+ ],
+ "https://www.hhs.gov/hipaa/index.html": [
+  "src/content/glossary/glossary.ts:13281"
+ ],
+ "https://www.history.com/this-day-in-history/january-26/baird-demonstrates-tv": [
+  "src/content/glossary/glossary.ts:3059"
+ ],
+ "https://www.historyofinformation.com/detail.php?id=673": [
+  "src/content/glossary/glossary.ts:9026"
+ ],
+ "https://www.hyrumslaw.com/": [
+  "src/content/glossary/glossary.ts:8665"
+ ],
+ "https://www.iana.org/": [
+  "src/content/glossary/glossary.ts:13351"
+ ],
+ "https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml": [
+  "src/content/glossary/glossary.ts:7316"
+ ],
+ "https://www.iana.org/domains/root/db": [
+  "src/content/glossary/glossary.ts:12715"
+ ],
+ "https://www.icann.org/": [
+  "src/content/glossary/glossary.ts:13198"
+ ],
+ "https://www.icann.org/en/blogs/details/elizabeth-jake-feinler-the-woman-behind-whois-25-03-2025-en": [
+  "src/content/glossary/glossary.ts:4239"
+ ],
+ "https://www.ieee.org": [
+  "src/content/glossary/glossary.ts:6736"
+ ],
+ "https://www.ieee802.org/1/": [
+  "src/content/glossary/glossary.ts:7340"
+ ],
+ "https://www.ieee802.org/11/": [
+  "src/content/glossary/glossary.ts:6714",
+  "src/content/glossary/glossary.ts:7328"
+ ],
+ "https://www.ietf.org": [
+  "src/content/glossary/glossary.ts:6629"
+ ],
+ "https://www.ilsecondomestiere.org/marisa-bellisario-first-italian-female-top-manager-not-only-the-8th-of-march/": [
+  "src/content/glossary/glossary.ts:3578"
+ ],
+ "https://www.in-formality.com/wiki/index.php?title=Jugaad_%28India%29": [
+  "src/content/glossary/glossary.ts:330",
+  "src/content/glossary/glossary.ts:365"
+ ],
+ "https://www.influencewatch.org/person/craig-newmark/": [
+  "src/content/glossary/glossary.ts:3518"
+ ],
+ "https://www.informatik.kit.edu/english/7089_7098.php": [
+  "src/content/glossary/glossary.ts:3269"
+ ],
+ "https://www.instagram.com/sampasec/": [
+  "src/content/glossary/glossary.ts:6507"
+ ],
+ "https://www.intel.com/content/www/us/en/architecture-and-technology/intel-quick-assist-technology-overview.html": [
+  "src/content/glossary/glossary.ts:12305"
+ ],
+ "https://www.internethalloffame.org/2012/05/14/unrepentant-hippie-and-world-networker-randy-bush-enters-nets-hall-fame/": [
+  "src/content/glossary/glossary.ts:3389"
+ ],
+ "https://www.internethalloffame.org/2016/09/09/kees-neggers-global-networking-requires-global-collaboration/": [
+  "src/content/glossary/glossary.ts:3425"
+ ],
+ "https://www.internethalloffame.org/2018/08/16/how-ham-radio-inspired-internet/": [
+  "src/content/glossary/glossary.ts:3401"
+ ],
+ "https://www.internethalloffame.org/2018/10/09/building-first-global-classroom/": [
+  "src/content/glossary/glossary.ts:3506"
+ ],
+ "https://www.internethalloffame.org/2019/12/09/arpanet-envy-fueled-bitnet-creation/": [
+  "src/content/glossary/glossary.ts:3401"
+ ],
+ "https://www.internethalloffame.org/2020/10/08/how-africas-regional-internet-network-started-one-driven-intern-quest-lan/": [
+  "src/content/glossary/glossary.ts:3413"
+ ],
+ "https://www.internethalloffame.org/inductee/adiel-akplogan/": [
+  "src/content/glossary/glossary.ts:3413"
+ ],
+ "https://www.internethalloffame.org/inductee/carlos-afonso/": [
+  "src/content/glossary/glossary.ts:1985"
+ ],
+ "https://www.internethalloffame.org/inductee/craig-newmark/": [
+  "src/content/glossary/glossary.ts:3518"
+ ],
+ "https://www.internethalloffame.org/inductee/dan-kaminsky/": [
+  "src/content/glossary/glossary.ts:2885"
+ ],
+ "https://www.internethalloffame.org/inductee/danny-cohen/": [
+  "src/content/glossary/glossary.ts:3353"
+ ],
+ "https://www.internethalloffame.org/inductee/demi-getschko/": [
+  "src/content/glossary/glossary.ts:1961"
+ ],
+ "https://www.internethalloffame.org/inductee/douglas-comer/": [
+  "src/content/glossary/glossary.ts:3377"
+ ],
+ "https://www.internethalloffame.org/inductee/jaap-akkerhuis/": [
+  "src/content/glossary/glossary.ts:3482"
+ ],
+ "https://www.internethalloffame.org/inductee/jon-postel/": [
+  "src/content/glossary/glossary.ts:2849"
+ ],
+ "https://www.internethalloffame.org/inductee/jun-murai/": [
+  "src/content/glossary/glossary.ts:3281"
+ ],
+ "https://www.internethalloffame.org/inductee/kanchana-kanchanasut/": [
+  "src/content/glossary/glossary.ts:3305"
+ ],
+ "https://www.internethalloffame.org/inductee/karen-banks/": [
+  "src/content/glossary/glossary.ts:3449"
+ ],
+ "https://www.internethalloffame.org/inductee/kees-neggers/": [
+  "src/content/glossary/glossary.ts:3425"
+ ],
+ "https://www.internethalloffame.org/inductee/mike-jensen/": [
+  "src/content/glossary/glossary.ts:3437"
+ ],
+ "https://www.internethalloffame.org/inductee/nii-quaynor/": [
+  "src/content/glossary/glossary.ts:3293"
+ ],
+ "https://www.internethalloffame.org/inductee/randy-bush/": [
+  "src/content/glossary/glossary.ts:3389"
+ ],
+ "https://www.internethalloffame.org/inductee/raymond-tomlinson/": [
+  "src/content/glossary/glossary.ts:3176"
+ ],
+ "https://www.internethalloffame.org/inductee/tarek-kamel/": [
+  "src/content/glossary/glossary.ts:3494"
+ ],
+ "https://www.internethalloffame.org/inductee/vint-cerf/": [
+  "src/content/glossary/glossary.ts:2801"
+ ],
+ "https://www.internethalloffame.org/inductee/werner-zorn/": [
+  "src/content/glossary/glossary.ts:3269"
+ ],
+ "https://www.internethalloffame.org/inductee/yvonne-marie-andres/": [
+  "src/content/glossary/glossary.ts:3506"
+ ],
+ "https://www.internethalloffame.org/official-biography-craig-newmark/": [
+  "src/content/glossary/glossary.ts:3518"
+ ],
+ "https://www.internethalloffame.org/official-biography-elizabeth-feinler/": [
+  "src/content/glossary/glossary.ts:4239"
+ ],
+ "https://www.internethalloffame.org/official-biography-randy-bush/": [
+  "src/content/glossary/glossary.ts:3389"
+ ],
+ "https://www.internetsociety.org/blog/2019/10/tarek-kamel-a-loss-to-the-internet-community/": [
+  "src/content/glossary/glossary.ts:3494"
+ ],
+ "https://www.internetsociety.org/internet/history-internet/brief-history-internet/": [
+  "src/content/glossary/glossary.ts:3317",
+  "src/content/glossary/glossary.ts:3329"
+ ],
+ "https://www.ioccc.org/": [
+  "src/content/glossary/glossary.ts:8817"
+ ],
+ "https://www.isc.org/bind/": [
+  "src/content/glossary/glossary.ts:12956"
+ ],
+ "https://www.isc2.org": [
+  "src/content/glossary/glossary.ts:6659"
+ ],
+ "https://www.isc2.org/certifications/cissp": [
+  "src/content/glossary/glossary.ts:10235"
+ ],
+ "https://www.iscpc.org/": [
+  "src/content/glossary/glossary.ts:2429",
+  "src/content/glossary/glossary.ts:2447"
+ ],
+ "https://www.iso.org/standard/20269.html": [
+  "src/content/glossary/glossary.ts:12253",
+  "src/content/glossary/glossary.ts:13425",
+  "src/content/glossary/glossary.ts:13545"
+ ],
+ "https://www.iso.org/standard/30932.html": [
+  "src/content/glossary/glossary.ts:12428"
+ ],
+ "https://www.iso.org/standard/43757.html": [
+  "src/content/glossary/glossary.ts:13241"
+ ],
+ "https://www.iso.org/standard/62021.html": [
+  "src/content/glossary/glossary.ts:12661"
+ ],
+ "https://www.iso.org/standard/68669.html": [
+  "src/content/glossary/glossary.ts:13090"
+ ],
+ "https://www.iso.org/standard/75839.html": [
+  "src/content/glossary/glossary.ts:13458"
+ ],
+ "https://www.iso.org/standard/76559.html": [
+  "src/content/glossary/glossary.ts:13251"
+ ],
+ "https://www.iso.org/standard/76583.html": [
+  "src/content/glossary/glossary.ts:12243"
+ ],
+ "https://www.itu.int/rec/T-REC-G.694.1": [
+  "src/content/glossary/glossary.ts:8372"
+ ],
+ "https://www.itu.int/rec/T-REC-G.707": [
+  "src/content/glossary/glossary.ts:8352"
+ ],
+ "https://www.itu.int/rec/T-REC-X.690/": [
+  "src/content/glossary/glossary.ts:12787"
+ ],
+ "https://www.lacnic.net": [
+  "src/content/glossary/glossary.ts:6367"
+ ],
+ "https://www.linkedin.com/groups/9381855/": [
+  "src/content/glossary/glossary.ts:6507"
+ ],
+ "https://www.linkedin.com/showcase/roadsec/": [
+  "src/content/glossary/glossary.ts:6377"
+ ],
+ "https://www.livinginternet.com/i/iw_packet_inv.htm": [
+  "src/content/glossary/glossary.ts:3941"
+ ],
+ "https://www.lk.cs.ucla.edu/bibliography-public_reports.html": [
+  "src/content/glossary/glossary.ts:3953"
+ ],
+ "https://www.manrs.org/": [
+  "src/content/glossary/glossary.ts:2402",
+  "src/content/glossary/glossary.ts:2411",
+  "src/content/glossary/glossary.ts:2420"
+ ],
+ "https://www.mentebinaria.com.br": [
+  "src/content/glossary/glossary.ts:6538"
+ ],
+ "https://www.mindthesec.com.br": [
+  "src/content/glossary/glossary.ts:6558"
+ ],
+ "https://www.mitre.org": [
+  "src/content/glossary/glossary.ts:6619"
+ ],
+ "https://www.mwcbarcelona.com": [
+  "src/content/glossary/glossary.ts:6347"
+ ],
+ "https://www.nanog.org": [
+  "src/content/glossary/glossary.ts:6357"
+ ],
+ "https://www.nationalacademies.org/read/13338/chapter/4": [
+  "src/content/glossary/glossary.ts:3929",
+  "src/content/glossary/glossary.ts:3941",
+  "src/content/glossary/glossary.ts:3953"
+ ],
+ "https://www.ncsc.gov.uk/cyberessentials/overview": [
+  "src/content/glossary/glossary.ts:13301"
+ ],
+ "https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-2-of-12-packet-switching-and-the-first-message/": [
+  "src/content/glossary/glossary.ts:3953",
+  "src/content/glossary/glossary.ts:3965"
+ ],
+ "https://www.newsweek.com/april-fools-day-april-fools-kremvax-kremlin-soviet-union-usenet-piet-beertema-318451": [
+  "src/content/glossary/glossary.ts:3542"
+ ],
+ "https://www.nic.br/pagina/gts/157/": [
+  "src/content/glossary/glossary.ts:6397"
+ ],
+ "https://www.nist.gov": [
+  "src/content/glossary/glossary.ts:6609"
+ ],
+ "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html": [
+  "src/content/glossary/glossary.ts:4037",
+  "src/content/glossary/glossary.ts:4049"
+ ],
+ "https://www.nokia.com/blog/plan-9-from-bell-labs-in-cyberspace/": [
+  "src/content/glossary/glossary.ts:3566"
+ ],
+ "https://www.nullbyte-con.org/": [
+  "src/content/glossary/glossary.ts:2240"
+ ],
+ "https://www.openwall.com/john/": [
+  "src/content/glossary/glossary.ts:1481"
+ ],
+ "https://www.paloaltonetworks.com/cortex": [
+  "src/content/glossary/glossary.ts:9212"
+ ],
+ "https://www.paloaltonetworks.com/network-security": [
+  "src/content/glossary/glossary.ts:9196"
+ ],
+ "https://www.paloaltonetworks.com/prisma": [
+  "src/content/glossary/glossary.ts:9204"
+ ],
+ "https://www.pcisecuritystandards.org": [
+  "src/content/glossary/glossary.ts:13271"
+ ],
+ "https://www.planalto.gov.br/ccivil_03/Leis/L7232.htm": [
+  "src/content/glossary/glossary.ts:15752"
+ ],
+ "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12737.htm": [
+  "src/content/glossary/glossary.ts:1922"
+ ],
+ "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm": [
+  "src/content/glossary/glossary.ts:1931"
+ ],
+ "https://www.planalto.gov.br/ccivil_03/leis/l8248.htm": [
+  "src/content/glossary/glossary.ts:15753"
+ ],
+ "https://www.ralphmerkle.com/1974/": [
+  "src/content/glossary/glossary.ts:3857"
+ ],
+ "https://www.rand.org/pubs/research_memoranda/RM3420.html": [
+  "src/content/glossary/glossary.ts:3929"
+ ],
+ "https://www.reaganlibrary.gov/archives/speech/statement-trade-sanctions-against-brazil": [
+  "src/content/glossary/glossary.ts:15754"
+ ],
+ "https://www.reddit.com": [
+  "src/content/glossary/glossary.ts:6598"
+ ],
+ "https://www.reddit.com/r/networking/": [
+  "src/content/glossary/glossary.ts:6598"
+ ],
+ "https://www.researchgate.net/publication/238778689_An_Algorithm_for_Distributed_computation_of_a_Spanning_Tree_in_an_Extended_LAN": [
+  "src/content/glossary/glossary.ts:2837"
+ ],
+ "https://www.rfc-editor.org": [
+  "src/content/glossary/glossary.ts:6629"
+ ],
+ "https://www.rfc-editor.org/info/rfc7637/": [
+  "src/content/glossary/glossary.ts:3164"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1034": [
+  "src/content/glossary/glossary.ts:12033"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1075": [
+  "src/content/glossary/glossary.ts:9119"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1122": [
+  "src/content/glossary/glossary.ts:8145"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1149": [
+  "src/content/glossary/glossary.ts:7283"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1191": [
+  "src/content/glossary/glossary.ts:5943"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1350": [
+  "src/content/glossary/glossary.ts:11959"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1436": [
+  "src/content/glossary/glossary.ts:11979"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1812": [
+  "src/content/glossary/glossary.ts:8498"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1930": [
+  "src/content/glossary/glossary.ts:13070",
+  "src/content/glossary/glossary.ts:13556"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc1939": [
+  "src/content/glossary/glossary.ts:11867"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2045": [
+  "src/content/glossary/glossary.ts:12747"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2229": [
+  "src/content/glossary/glossary.ts:11969"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2289": [
+  "src/content/glossary/glossary.ts:13101"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2324": [
+  "src/content/glossary/glossary.ts:7363"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2453": [
+  "src/content/glossary/glossary.ts:12450"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2549": [
+  "src/content/glossary/glossary.ts:7293"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2615": [
+  "src/content/glossary/glossary.ts:8362"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2631": [
+  "src/content/glossary/glossary.ts:13671"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2661": [
+  "src/content/glossary/glossary.ts:3596"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2663": [
+  "src/content/glossary/glossary.ts:5911"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc2827.html": [
+  "src/content/glossary/glossary.ts:2699"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3092": [
+  "src/content/glossary/glossary.ts:5400",
+  "src/content/glossary/glossary.ts:5410"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3164": [
+  "src/content/glossary/glossary.ts:13468"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3261": [
+  "src/content/glossary/glossary.ts:11989"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3376": [
+  "src/content/glossary/glossary.ts:9099"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3507": [
+  "src/content/glossary/glossary.ts:12906"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3514": [
+  "src/content/glossary/glossary.ts:8055"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3596": [
+  "src/content/glossary/glossary.ts:12023"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc3706": [
+  "src/content/glossary/glossary.ts:9351"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4033": [
+  "src/content/glossary/glossary.ts:12673"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4084": [
+  "src/content/glossary/glossary.ts:12946"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4217": [
+  "src/content/glossary/glossary.ts:11807"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4251": [
+  "src/content/glossary/glossary.ts:11787"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4271": [
+  "src/content/glossary/glossary.ts:5963"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4303": [
+  "src/content/glossary/glossary.ts:13006"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4513": [
+  "src/content/glossary/glossary.ts:11889"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4732.html": [
+  "src/content/glossary/glossary.ts:2708"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4862": [
+  "src/content/glossary/glossary.ts:12926"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc4949": [
+  "src/content/glossary/glossary.ts:3641"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5116": [
+  "src/content/glossary/glossary.ts:11596"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5155": [
+  "src/content/glossary/glossary.ts:12705"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5321": [
+  "src/content/glossary/glossary.ts:11837",
+  "src/content/glossary/glossary.ts:12043"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5416.html": [
+  "src/content/glossary/glossary.ts:2789"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5424": [
+  "src/content/glossary/glossary.ts:13480"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5798": [
+  "src/content/glossary/glossary.ts:9315"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5880": [
+  "src/content/glossary/glossary.ts:9608"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc5905": [
+  "src/content/glossary/glossary.ts:12221"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6214": [
+  "src/content/glossary/glossary.ts:7304"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6302.html": [
+  "src/content/glossary/glossary.ts:2663"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6376": [
+  "src/content/glossary/glossary.ts:12083"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6455": [
+  "src/content/glossary/glossary.ts:11999",
+  "src/content/glossary/glossary.ts:12009"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6480": [
+  "src/content/glossary/glossary.ts:5974"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6598.html": [
+  "src/content/glossary/glossary.ts:2645"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc6888.html": [
+  "src/content/glossary/glossary.ts:2654"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7208": [
+  "src/content/glossary/glossary.ts:12073"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7231.html": [
+  "src/content/glossary/glossary.ts:2717",
+  "src/content/glossary/glossary.ts:2726",
+  "src/content/glossary/glossary.ts:2735"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7296": [
+  "src/content/glossary/glossary.ts:12211",
+  "src/content/glossary/glossary.ts:3605"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7301": [
+  "src/content/glossary/glossary.ts:11763"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7348.html": [
+  "src/content/glossary/glossary.ts:2762"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7468": [
+  "src/content/glossary/glossary.ts:12808"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7469": [
+  "src/content/glossary/glossary.ts:3659"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7489.html": [
+  "src/content/glossary/glossary.ts:2582"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7517": [
+  "src/content/glossary/glossary.ts:12488",
+  "src/content/glossary/glossary.ts:12500"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc760.txt": [
+  "src/content/glossary/glossary.ts:2849"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7761": [
+  "src/content/glossary/glossary.ts:9109"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7826": [
+  "src/content/glossary/glossary.ts:11919"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc7868": [
+  "src/content/glossary/glossary.ts:13060"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc792": [
+  "src/content/glossary/glossary.ts:12233"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc801.html": [
+  "src/content/glossary/glossary.ts:9045"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8017": [
+  "src/content/glossary/glossary.ts:11689",
+  "src/content/glossary/glossary.ts:12510"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc826": [
+  "src/content/glossary/glossary.ts:3650"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8314": [
+  "src/content/glossary/glossary.ts:11857"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8422": [
+  "src/content/glossary/glossary.ts:11773"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8439": [
+  "src/content/glossary/glossary.ts:11616"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8461.html": [
+  "src/content/glossary/glossary.ts:2600"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8484": [
+  "src/content/glossary/glossary.ts:7032"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc854": [
+  "src/content/glossary/glossary.ts:11949"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8617.html": [
+  "src/content/glossary/glossary.ts:2591"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8659": [
+  "src/content/glossary/glossary.ts:12113"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc8945": [
+  "src/content/glossary/glossary.ts:12123"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc9051": [
+  "src/content/glossary/glossary.ts:11847"
+ ],
+ "https://www.rfc-editor.org/rfc/rfc959": [
+  "src/content/glossary/glossary.ts:11797"
+ ],
+ "https://www.ripe.net/about-us/press-centre/publications/speakers/daniel-karrenberg/": [
+  "src/content/glossary/glossary.ts:3554"
+ ],
+ "https://www.rsaconference.com": [
+  "src/content/glossary/glossary.ts:6327"
+ ],
+ "https://www.sans.org": [
+  "src/content/glossary/glossary.ts:6649"
+ ],
+ "https://www.sbseg2026.uff.br": [
+  "src/content/glossary/glossary.ts:2258"
+ ],
+ "https://www.schneier.com/academic/archives/1999/09/cryptanalysis_of_mic.html": [
+  "src/content/glossary/glossary.ts:3623"
+ ],
+ "https://www.schneier.com/blog/archives/2011/04/schneiers_law.html": [
+  "src/content/glossary/glossary.ts:8635"
+ ],
+ "https://www.sec.gov/Archives/edgar/data/1327567/000132756719000006/ex991q219earningsrelease.htm": [
+  "src/content/glossary/glossary.ts:9212"
+ ],
+ "https://www.sec.gov/Archives/edgar/data/1327567/000132756719000014/ex991q319earningsrelease.htm": [
+  "src/content/glossary/glossary.ts:9204"
+ ],
+ "https://www.secg.org/sec1-v2.pdf": [
+  "src/content/glossary/glossary.ts:13640"
+ ],
+ "https://www.securitybsides.com": [
+  "src/content/glossary/glossary.ts:6517"
+ ],
+ "https://www.shmoocon.org/about_shmoocon/": [
+  "src/content/glossary/glossary.ts:6287"
+ ],
+ "https://www.sidn.nl/en/news-and-blogs/dutch-internet-pioneer-jaap-akkerhuis-knighted": [
+  "src/content/glossary/glossary.ts:3482"
+ ],
+ "https://www.snopes.com/fact-check/internet-of-lies/": [
+  "src/content/glossary/glossary.ts:3470"
+ ],
+ "https://www.storiaolivetti.it/articolo/48-marisa-bellisario-donna-e-top-manager/": [
+  "src/content/glossary/glossary.ts:3578"
+ ],
+ "https://www.submarinecablemap.com/": [
+  "src/content/glossary/glossary.ts:2438"
+ ],
+ "https://www.swarthmore.edu/bulletin/archive/fall-2015-issue-i-cxiii/pioneers-internet.html": [
+  "src/content/glossary/glossary.ts:3212"
+ ],
+ "https://www.tnmoc.org/npl-gallery": [
+  "src/content/glossary/glossary.ts:3941"
+ ],
+ "https://www.treccani.it/enciclopedia/marisa-bellisario_(Dizionario-Biografico)/": [
+  "src/content/glossary/glossary.ts:3578"
+ ],
+ "https://www.w3.org/TR/soap12/": [
+  "src/content/glossary/glossary.ts:12178"
+ ],
+ "https://www.w3.org/TR/webauthn-2/": [
+  "src/content/glossary/glossary.ts:2618",
+  "src/content/glossary/glossary.ts:2627"
+ ],
+ "https://www.w3.org/TR/xml/#sec-cdata-sect": [
+  "src/content/glossary/glossary.ts:13598"
+ ],
+ "https://www.wi-fi.org": [
+  "src/content/glossary/glossary.ts:6714"
+ ],
+ "https://www.wi-fi.org/discover-wi-fi/security": [
+  "src/content/glossary/glossary.ts:6725"
+ ],
+ "https://www.wi-fi.org/discover-wi-fi/wi-fi-certified-6": [
+  "src/content/glossary/glossary.ts:7353"
+ ],
+ "https://www.wiley.com/en-us/The+Art+of+Deception%3A+Controlling+the+Human+Element+of+Security-p-9780764542800": [
+  "src/content/glossary/glossary.ts:7798"
+ ],
+ "https://www.worldhistory.org/Electrical_Telegraph/": [
+  "src/content/glossary/glossary.ts:2957"
+ ],
+ "https://www.yorku.ca/pclassic/Lovelace/lovelace.htm": [
+  "src/content/glossary/glossary.ts:7877"
+ ],
+ "https://www.ysts.org/info": [
+  "src/content/glossary/glossary.ts:2159"
+ ],
+ "https://x.com/sampasec": [
+  "src/content/glossary/glossary.ts:6507"
+ ],
+ "https://xkcd.com/356/": [
+  "src/content/glossary/glossary.ts:8221"
+ ]
+}

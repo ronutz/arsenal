@@ -16652,6 +16652,17 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   display: block;
 }
 
+/* WHAT THE YEAR MEANS (PRIME, 2026-09-30). A bare year above a name reads as a
+   birth year, so the page says once what it actually is. Deliberately quiet: the
+   same tertiary token .people-count and .people-year already use, so it reads as
+   apparatus rather than as a second lede competing with the one above it. */
+.people-year-note {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  max-width: 62ch;
+  margin-top: 0.75rem;
+}
+
 /* ---------------------------------------------------------------------------
  * ORPHAN-CLASS SWEEP (2026-09-04)
  *

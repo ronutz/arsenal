@@ -135,7 +135,7 @@ export default function F5ReleaseCadenceCalendarTool() {
                   <td className="mono">{fmt(c.date)}</td>
                   <td>{t("releaseYes")}</td>
                   <td>{c.notificationPublished ? t("releaseYes") : <span className="rc-none">{t("notifNone")}</span>}</td>
-                  <td className="mono">{c.notificationCovers ? fmt(c.notificationCovers) : "—"}</td>
+                  <td className="mono">{c.notificationCovers ? fmt(c.notificationCovers) : "-"}</td>
                 </tr>
               ))}
             </tbody>

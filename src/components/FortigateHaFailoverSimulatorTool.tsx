@@ -80,7 +80,7 @@ export default function FortigateHaFailoverSimulatorTool() {
             <>
               <p className="cidr-section-title">
                 {t("primaryIs", { name: result.primary.name })}
-                {result.decidedBy ? ` — ${t("decidedBy", { criterion: t(`crit_${result.decidedBy}`) })}` : ""}
+                {result.decidedBy ? ` - ${t("decidedBy", { criterion: t(`crit_${result.decidedBy}`) })}` : ""}
               </p>
 
               {/* The evaluation order actually in force, which changes with

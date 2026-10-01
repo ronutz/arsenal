@@ -13655,7 +13655,7 @@ export const OUI_MA_L_PACKED = `000000XEROX CORPORATION
 0808EAAMSC
 0809B6Masimo Corp
 0809C7Zhuhai Unitech Power Technology Co., Ltd.
-080A4EPlanet Bingo® — 3rd Rock Gaming®
+080A4EPlanet Bingo® - 3rd Rock Gaming®
 080C0BSysMik GmbH Dresden
 080CC9Mission Technology Group, dba Magma
 080D84GECO, Inc.

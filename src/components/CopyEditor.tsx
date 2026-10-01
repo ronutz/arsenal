@@ -225,7 +225,7 @@ export default function CopyEditor({
     return JSON.stringify(lines, null, 2) + "\n";
   };
 
-  const openFull = () => setModal({ title: `${labels.fullTitle} — ${active?.code}.json`, text: buildFull() });
+  const openFull = () => setModal({ title: `${labels.fullTitle} - ${active?.code}.json`, text: buildFull() });
   const openDiff = () => setModal({ title: labels.diffTitle, text: buildDiff() });
 
   const copyModal = async () => {

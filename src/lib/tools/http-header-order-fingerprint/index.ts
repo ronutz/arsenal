@@ -21,8 +21,8 @@ export const manifest = Object.freeze({
     "learn/passive-fingerprinting-what-you-emit",
   ],
   sources: [
-    { id: "rfc9110", label: "RFC 9110 — HTTP Semantics (field order)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9110", access_date: "2026-07-19", scope: "header field semantics; order not significant to meaning but observable", status: "active" },
-    { id: "rfc9113", label: "RFC 9113 — HTTP/2 (lowercased field names, :authority)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9113", access_date: "2026-07-19", scope: "the wire lowercasing and pseudo-headers this tool notes", status: "active" },
-    { id: "fetch-metadata", label: "W3C — Fetch Metadata Request Headers", type: "spec", url: "https://www.w3.org/TR/fetch-metadata/", access_date: "2026-07-19", scope: "Sec-Fetch-* headers emitted by browsers", status: "active" },
+    { id: "rfc9110", label: "RFC 9110 - HTTP Semantics (field order)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9110", access_date: "2026-07-19", scope: "header field semantics; order not significant to meaning but observable", status: "active" },
+    { id: "rfc9113", label: "RFC 9113 - HTTP/2 (lowercased field names, :authority)", type: "spec", url: "https://www.rfc-editor.org/rfc/rfc9113", access_date: "2026-07-19", scope: "the wire lowercasing and pseudo-headers this tool notes", status: "active" },
+    { id: "fetch-metadata", label: "W3C - Fetch Metadata Request Headers", type: "spec", url: "https://www.w3.org/TR/fetch-metadata/", access_date: "2026-07-19", scope: "Sec-Fetch-* headers emitted by browsers", status: "active" },
   ],
 });

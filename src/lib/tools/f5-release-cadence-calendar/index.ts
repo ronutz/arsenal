@@ -31,7 +31,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "f5-cadence-blog",
-      label: "F5 blog — A faster release cadence: What's changing at F5 (Kunal Anand, CPO, 2026-07-06)",
+      label: "F5 blog - A faster release cadence: What's changing at F5 (Kunal Anand, CPO, 2026-07-06)",
       type: "reference",
       url: "https://www.f5.com/company/blog/release-cadence-security-notifications-frontier-ai",
       access_date: "2026-07-07",
@@ -40,7 +40,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "f5-sirt-email",
-      label: "F5 SIRT — Announcement of Monthly Security Notifications (2026-07-07)",
+      label: "F5 SIRT - Announcement of Monthly Security Notifications (2026-07-07)",
       type: "reference",
       url: "https://www.f5.com/company/blog/release-cadence-security-notifications-frontier-ai",
       access_date: "2026-07-07",
@@ -49,7 +49,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "f5-frontier-ai",
-      label: "F5 blog — Securing our code with frontier AI: What F5 built and learned (Kunal Anand)",
+      label: "F5 blog - Securing our code with frontier AI: What F5 built and learned (Kunal Anand)",
       type: "reference",
       url: "https://www.f5.com/company/blog/securing-our-code-with-frontier-ai-what-f5-built-and-learned",
       access_date: "2026-07-07",
@@ -58,7 +58,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "f5-k4602",
-      label: "F5 — Vulnerability disclosure policy (K4602)",
+      label: "F5 - Vulnerability disclosure policy (K4602)",
       type: "reference",
       url: "https://my.f5.com/manage/s/article/K4602",
       access_date: "2026-07-07",

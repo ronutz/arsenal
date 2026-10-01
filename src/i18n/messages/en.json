@@ -13331,7 +13331,7 @@
       "sloth": {
         "def": "A 2016 set of attacks abusing obsolete hashes like MD5 in TLS negotiation.",
         "context": "Security Losses from Obsolete and Truncated Transcript Hashes showed that allowing weak hashes such as MD5 in TLS signatures enabled transcript-collision and downgrade attacks. It pushed removal of MD5-based signatures from TLS.",
-        "depth": "SLOTH attacked protocols still using weak hash functions in their handshake signatures. The name stands for security losses from obsolete and truncated hash constructions, and the finding was that transcript collisions could be used to impersonate a party during TLS, IKE or SSH negotiation.\n\nThe important detail is where the weak hash was. Everyone had stopped using MD5 and SHA-1 for certificates, and the deprecation campaigns focused there. But the same functions survived inside handshake signature negotiation, where they attracted no attention because nobody thought of the handshake as a place hashes lived.\n\nThat is the generalizable lesson: deprecating a primitive means finding every place it is used, and the ones that get missed are the internal, unglamorous uses that no compliance checklist enumerates. A scanner that reports a certificate's signature algorithm says nothing about what the handshake negotiated. Removing a weak algorithm requires an inventory of uses rather than an inventory of certificates."
+        "depth": "SLOTH attacked protocols still using weak hash functions in their handshake signatures. The name stands for security losses from obsolete and truncated transcript hashes, and the finding was that transcript collisions could be used to impersonate a party during TLS, IKE or SSH negotiation.\n\nThe important detail is where the weak hash was. Everyone had stopped using MD5 and SHA-1 for certificates, and the deprecation campaigns focused there. But the same functions survived inside handshake signature negotiation, where they attracted no attention because nobody thought of the handshake as a place hashes lived.\n\nThat is the generalizable lesson: deprecating a primitive means finding every place it is used, and the ones that get missed are the internal, unglamorous uses that no compliance checklist enumerates. A scanner that reports a certificate's signature algorithm says nothing about what the handshake negotiated. Removing a weak algorithm requires an inventory of uses rather than an inventory of certificates."
       },
       "terrapin": {
         "def": "A 2023 attack that can weaken or truncate the SSH handshake.",
@@ -20752,6 +20752,8 @@
     "metaTitle": "People - the individuals behind the networks and the tools",
     "metaDescription": "The people this site records: the ones who wrote the tools, founded the conferences, testified before senates, and built the Brazilian internet. Each links to their glossary entry.",
     "lede": "The people the corpus records - the ones who wrote the tools everyone still runs, founded the conferences, went to prison, testified before senates, or connected a country. Each name links to its entry.",
+    "yearNote": "The year beside each name anchors the work that entry describes. It is not a birth year and not the span of a career: Faraday did not stop in 1831.",
+    "yearLabel": "year of the work described: {year}",
     "count": "{count} people",
     "filterAll": "All",
     "filterLabel": "Filter the timeline by strand",

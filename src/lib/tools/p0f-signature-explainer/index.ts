@@ -20,7 +20,7 @@ export const manifest = Object.freeze({
     "learn/passive-fingerprinting-what-you-emit",
   ],
   sources: [
-    { id: "p0f-readme", label: "p0f v3 — signature format (docs/README)", type: "spec", url: "https://github.com/p0f/p0f/blob/master/docs/README", access_date: "2026-07-19", scope: "the ver:ittl:olen:mss:wsize,scale:olayout:quirks:pclass grammar, option tokens, quirk flags", status: "active" },
-    { id: "p0f-db", label: "p0f — bundled p0f.fp signature database", type: "reference", url: "https://github.com/p0f/p0f/blob/master/p0f.fp", access_date: "2026-07-19", scope: "the reference OS signatures used for the family hints", status: "active" },
+    { id: "p0f-readme", label: "p0f v3 - signature format (docs/README)", type: "spec", url: "https://github.com/p0f/p0f/blob/master/docs/README", access_date: "2026-07-19", scope: "the ver:ittl:olen:mss:wsize,scale:olayout:quirks:pclass grammar, option tokens, quirk flags", status: "active" },
+    { id: "p0f-db", label: "p0f - bundled p0f.fp signature database", type: "reference", url: "https://github.com/p0f/p0f/blob/master/p0f.fp", access_date: "2026-07-19", scope: "the reference OS signatures used for the family hints", status: "active" },
   ],
 });

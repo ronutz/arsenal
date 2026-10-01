@@ -258,14 +258,14 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
         level: "high",
         title: "SSLv3 is not disabled",
         detail:
-          "no-sslv3 is absent, so this profile permits SSLv3. SSLv3 is broken (POODLE, CVE-2014-3566) — add no-sslv3 to options. On current TMOS it may already be blocked at the system level, but make it explicit.",
+          "no-sslv3 is absent, so this profile permits SSLv3. SSLv3 is broken (POODLE, CVE-2014-3566) - add no-sslv3 to options. On current TMOS it may already be blocked at the system level, but make it explicit.",
       });
     }
     if ((p.name === "TLSv1.0" || p.name === "TLSv1.1") && p.enabled) {
       findings.push({
         level: "medium",
         title: `${p.name} is not disabled`,
-        detail: `${p.name} is permitted (${flag} is absent). It is deprecated (RFC 8996) and fails most compliance baselines — add ${flag} unless a legacy client truly requires it.`,
+        detail: `${p.name} is permitted (${flag} is absent). It is deprecated (RFC 8996) and fails most compliance baselines - add ${flag} unless a legacy client truly requires it.`,
       });
     }
     if (p.name === "TLSv1.3" && !p.enabled) {
@@ -469,7 +469,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: ocsp,
       explain:
         ocsp === "enabled"
-          ? "The BIG-IP staples a fresh OCSP response into the handshake (RFC 6066/6961), so clients need not contact the CA themselves — faster and more private. Requires an OCSP Stapling profile."
+          ? "The BIG-IP staples a fresh OCSP response into the handshake (RFC 6066/6961), so clients need not contact the CA themselves - faster and more private. Requires an OCSP Stapling profile."
           : "OCSP stapling is off; clients that check revocation must reach the CA's OCSP responder on their own.",
       level: ocsp === "enabled" ? "ok" : undefined,
     });
@@ -488,7 +488,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
           : "The backend server MUST present a valid certificate; the BIG-IP rejects the connection otherwise.";
     } else if (peerMode === "request") {
       explain =
-        "The peer certificate is REQUESTED but optional — the handshake still completes if none is presented. Often paired with an iRule or APM that inspects the result.";
+        "The peer certificate is REQUESTED but optional - the handshake still completes if none is presented. Often paired with an iRule or APM that inspects the result.";
     } else {
       explain = "No peer certificate is requested (the default). No mutual TLS.";
     }
@@ -529,7 +529,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       value: sessionTicket,
       explain:
         sessionTicket === "enabled"
-          ? "Stateless session resumption via tickets (RFC 5077) is on — faster reconnects without server-side session cache."
+          ? "Stateless session resumption via tickets (RFC 5077) is on - faster reconnects without server-side session cache."
           : "Session tickets are off; resumption relies on the server-side session cache instead.",
     });
   }
@@ -539,7 +539,7 @@ export function explainSslProfile(input: string): SslProfileAnalysis {
       key: "alpn",
       value: alpn,
       explain:
-        "ALPN negotiation is configured — required for the virtual server to negotiate HTTP/2 over TLS.",
+        "ALPN negotiation is configured - required for the virtual server to negotiate HTTP/2 over TLS.",
     });
   }
 

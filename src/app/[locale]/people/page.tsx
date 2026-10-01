@@ -112,6 +112,13 @@ export default async function PeoplePage({
               <header className="section">
                 <h1 className="page-hero-title">{t("title")}</h1>
                 <p className="page-hero-lede">{t("lede")}</p>
+                {/* WHAT THE YEAR MEANS, said once in prose (PRIME, 2026-09-30).
+                    A bare year above a name reads as a birth year, and for most of
+                    this list it is not one: it anchors the work the entry is about.
+                    The same meaning is repeated on every year as an accessible
+                    label below, because this sentence has scrolled away long before
+                    a reader reaches the 1990s. */}
+                <p className="people-year-note">{t("yearNote")}</p>
                 <p className="people-count">
                   {t("count", { count: people.length })}
                 </p>
@@ -141,7 +148,21 @@ export default async function PeoplePage({
                           data-name={p.headword}
                           key={p.slug}
                         >
-                          <span className="people-year">{p.personYear}</span>
+                          {/* The year carries its own label so the meaning travels
+                              with the number. Without it a screen reader announces
+                              "1831 Michael Faraday", which is exactly the birth-year
+                              misreading the note above exists to prevent, with no
+                              visual context to correct it. The year is passed as a
+                              STRING: an ICU placeholder holding a number can pick up
+                              locale grouping, and "1.831" in pt-BR would be a worse
+                              defect than the one being fixed. */}
+                          <span
+                            className="people-year"
+                            aria-label={t("yearLabel", { year: String(p.personYear ?? "") })}
+                            title={t("yearLabel", { year: String(p.personYear ?? "") })}
+                          >
+                            {p.personYear}
+                          </span>
                           <Link
                             className="people-link"
                             href={`/glossary/${p.slug}`}

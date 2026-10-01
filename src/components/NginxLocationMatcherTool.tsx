@@ -127,7 +127,7 @@ export default function NginxLocationMatcherTool() {
                 <li key={i} className="tmsh-object">
                   <p className="tmsh-object-head mono">
                     {stageLabel(step.stage)}
-                    {step.decisive ? ` — ${t("decisive")}` : ""}
+                    {step.decisive ? ` - ${t("decisive")}` : ""}
                   </p>
                   <p className="ztc-notes">{step.reason}</p>
                 </li>

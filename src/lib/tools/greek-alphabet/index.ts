@@ -22,8 +22,8 @@ export const manifest = Object.freeze({
     "learn/greek-alphabet-the-engineers-second-alphabet",
   ],
   sources: [
-    { id: "unicode-greek", label: "Unicode — Greek and Coptic block (U+0370..U+03FF)", type: "spec", url: "https://www.unicode.org/charts/PDF/U0370.pdf", access_date: "2026-07-18", scope: "code points, final sigma, accented forms", status: "active" },
-    { id: "iso843", label: "ISO 843 / ELOT 743 — transliteration of Greek", type: "spec", url: "https://www.iso.org/standard/5215.html", access_date: "2026-07-18", scope: "the modern romanization scheme", status: "active" },
-    { id: "nist-symbols", label: "NIST — Greek letters used as symbols in science", type: "reference", url: "https://physics.nist.gov/cuu/Units/checklist.html", access_date: "2026-07-18", scope: "SI usage (μ, Ω) conventions", status: "active" },
+    { id: "unicode-greek", label: "Unicode - Greek and Coptic block (U+0370..U+03FF)", type: "spec", url: "https://www.unicode.org/charts/PDF/U0370.pdf", access_date: "2026-07-18", scope: "code points, final sigma, accented forms", status: "active" },
+    { id: "iso843", label: "ISO 843 / ELOT 743 - transliteration of Greek", type: "spec", url: "https://www.iso.org/standard/5215.html", access_date: "2026-07-18", scope: "the modern romanization scheme", status: "active" },
+    { id: "nist-symbols", label: "NIST - Greek letters used as symbols in science", type: "reference", url: "https://physics.nist.gov/cuu/Units/checklist.html", access_date: "2026-07-18", scope: "SI usage (μ, Ω) conventions", status: "active" },
   ],
 });

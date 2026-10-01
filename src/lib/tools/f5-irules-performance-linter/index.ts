@@ -49,7 +49,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "cmp-compat",
-      label: "F5 clouddocs — iRules CMP Compatibility",
+      label: "F5 clouddocs - iRules CMP Compatibility",
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/CMPCompatibility.html",
       access_date: "2026-07-07",
@@ -58,7 +58,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "rule-init",
-      label: "F5 clouddocs — RULE_INIT",
+      label: "F5 clouddocs - RULE_INIT",
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/RULE_INIT.html",
       access_date: "2026-07-07",
@@ -67,7 +67,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "class-cmd",
-      label: "F5 clouddocs — class (and matchclass)",
+      label: "F5 clouddocs - class (and matchclass)",
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/class.html",
       access_date: "2026-07-07",
@@ -76,7 +76,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "fast-rules",
-      label: "F5 clouddocs — How To Write Fast Rules",
+      label: "F5 clouddocs - How To Write Fast Rules",
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html",
       access_date: "2026-07-07",

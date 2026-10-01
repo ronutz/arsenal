@@ -147,7 +147,7 @@ export default function StatsPanels({
           return ra - rb || la.localeCompare(lb);
         });
         out[key(p)] = keys.map((k) => [
-          k ? `${k} — ${localeNames[k] ?? k}` : strings.groupOther,
+          k ? `${k} - ${localeNames[k] ?? k}` : strings.groupOther,
           buckets.get(k)!.sort((a, b) => Number(b.views) - Number(a.views)).slice(0, 15),
         ]);
         totals[key(p)] = strings.pagesTotal
@@ -209,7 +209,7 @@ export default function StatsPanels({
           { measure: strings.coverageDistinct, views: distinct },
           { measure: strings.coverageRequests, views: total },
           ...[...byLoc.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([l, n]) => ({
-            measure: `${strings.coveragePer} ${l} — ${localeNames[l] ?? l}`, views: n,
+            measure: `${strings.coveragePer} ${l} - ${localeNames[l] ?? l}`, views: n,
           })),
         ]]];
       } else if (p.kind === "hourofday" || p.kind === "weekday") {
@@ -257,7 +257,7 @@ export default function StatsPanels({
         </span>
       );
     }
-    if (p.kind === "locales") return `${raw} — ${localeNames[raw] ?? raw}`;
+    if (p.kind === "locales") return `${raw} - ${localeNames[raw] ?? raw}`;
     if (p.kind === "devices") return strings[`device_${raw}`] ?? raw;
     return raw;
   };

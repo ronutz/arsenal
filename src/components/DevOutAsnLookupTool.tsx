@@ -230,7 +230,7 @@ export default function DevOutAsnLookupTool() {
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">
               {fetchState.summary.range ?? t("resultTitle")}
-              {fetchState.summary.name ? ` — ${fetchState.summary.name}` : ""}
+              {fetchState.summary.name ? ` - ${fetchState.summary.name}` : ""}
             </h4>
             {fetchState.summary.status.length > 0 && (
               <div className="jwt-badges" style={{ marginTop: "0.5rem" }}>

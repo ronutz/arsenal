@@ -21,8 +21,8 @@ export const manifest = Object.freeze({
     "learn/time-arithmetic-and-time-zones",
   ],
   sources: [
-    { id: "iana-tz", label: "IANA — Time Zone Database", type: "reference", url: "https://www.iana.org/time-zones", access_date: "2026-07-18", scope: "the zone and DST rules the runtime carries", status: "active" },
-    { id: "ecma-intl", label: "ECMA-402 — Intl.DateTimeFormat and time zone handling", type: "spec", url: "https://tc39.es/ecma402/#datetimeformat-objects", access_date: "2026-07-18", scope: "how the readings are computed", status: "active" },
-    { id: "rfc3339", label: "RFC 3339 — Date and Time on the Internet: Timestamps", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3339", access_date: "2026-07-18", scope: "the instant's input format", status: "active" },
+    { id: "iana-tz", label: "IANA - Time Zone Database", type: "reference", url: "https://www.iana.org/time-zones", access_date: "2026-07-18", scope: "the zone and DST rules the runtime carries", status: "active" },
+    { id: "ecma-intl", label: "ECMA-402 - Intl.DateTimeFormat and time zone handling", type: "spec", url: "https://tc39.es/ecma402/#datetimeformat-objects", access_date: "2026-07-18", scope: "how the readings are computed", status: "active" },
+    { id: "rfc3339", label: "RFC 3339 - Date and Time on the Internet: Timestamps", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3339", access_date: "2026-07-18", scope: "the instant's input format", status: "active" },
   ],
 });

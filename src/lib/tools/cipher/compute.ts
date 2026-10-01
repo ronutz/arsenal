@@ -525,7 +525,7 @@ export function decodeCipherSuite(input: string): DecodedCipherSuite {
   const security = assess(parsed, rec);
 
   const code = record ? record.code : -1;
-  const hex = record ? record.hex : "—";
+  const hex = record ? record.hex : "-";
 
   const components: CipherComponentInfo = {
     keyExchange: parsed.keyExchange,

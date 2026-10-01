@@ -219,7 +219,7 @@ export function run(input: string): ToolRunResult {
   const blind = findings.filter((f) => f.coverage === "blind");
   if (blind.length > 0 && blind.every((f) => f.failedAt === 2)) {
     notes.push(
-      `${blind.length} profile${blind.length === 1 ? " is" : "s are"} attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them — and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.`,
+      `${blind.length} profile${blind.length === 1 ? " is" : "s are"} attached and blind for the same reason: the payload is never decrypted. Switching this policy to deep inspection is the single change that fixes all of them - and it is a real decision, because deep inspection means terminating TLS, which has certificate-trust, privacy and performance consequences.`,
     );
   }
   if (traffic === "https" && ssl === "certificate") {

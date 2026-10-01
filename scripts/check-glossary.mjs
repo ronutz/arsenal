@@ -65,6 +65,45 @@ const arrStart = src.indexOf(": GlossaryEntry[] = [");
 const body = arrStart >= 0 ? src.slice(arrStart) : src;
 
 const chunks = body.split(/\n\s*\{\s*\n/).slice(1); // each chunk = one entry body
+// ---------------------------------------------------------------------------
+// THE CHUNKER'S OWN COMPLETENESS ASSERTION, enforced at zero since 2026-10-01.
+//
+// The split above means "a brace alone on its line opens an entry". That is true
+// of entries, and it is ALSO true of any object literal written multi-line INSIDE
+// one - a `sources: [` block whose objects open on their own lines, for instance.
+// When that happens the entry is torn in two: the first piece keeps the slug, the
+// second keeps everything after the brace, and the second is dropped here because
+// it has no slug of its own.
+//
+// HOW THIS WAS FOUND. On 2026-10-01 six lore entries were given real citations,
+// written multi-line for readability, and rule 5b reported all six as carrying no
+// href while every one of them plainly did. The href had landed in the discarded
+// half. That failure was loud, because rule 5b fails on a missing link.
+//
+// THE DANGEROUS CASE IS THE QUIET ONE. Every field below is read out of `chunk`,
+// so any field positioned AFTER the tear reads as absent: `relatedTools: []`
+// instead of its real contents, and the dangling-tool check for that entry
+// becomes vacuous and passes. Nothing reports it. The file's one pre-existing
+// instance - `silent-failure`, which is too apt to invent - was harmless only
+// because `sources` happened to be its last field. That is an invariant no
+// author could see and none was written down.
+//
+// SO THE SHAPE IS BANNED RATHER THAN ACCOMMODATED. Teaching the chunker to
+// balance braces would make it a parser; asserting that it parsed everything
+// costs four lines and cannot itself go wrong. Source objects go on one line,
+// which is what all 1711 entries already do.
+const fragments = chunks.filter((c) => !/slug:\s*"/.test(c));
+if (fragments.length > 0) {
+  console.error(
+    `[check-glossary] FAIL: ${fragments.length} fragment(s) with no slug - an object literal ` +
+      `opened on its own line has split an entry, and every field after the split is invisible ` +
+      `to this guard. Put the object on one line. First lines:`
+  );
+  for (const f of fragments.slice(0, 10)) {
+    console.error(`  - ${JSON.stringify(f.split("\n")[0].trim().slice(0, 120))}`);
+  }
+  process.exit(1);
+}
 const entries = [];
 for (const chunk of chunks) {
   const slug = chunk.match(/slug:\s*"([^"]+)"/)?.[1];
@@ -75,6 +114,9 @@ for (const chunk of chunks) {
   const relatedRaw = chunk.match(/relatedTerms:\s*\[([^\]]*)\]/)?.[1] ?? "";
   const relatedTerms = [...relatedRaw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
   const hasSources = /sources:\s*\[/.test(chunk);
+  // Whether any of those sources is actually a link. The distinction between this
+  // and hasSources is the whole of rule 5b.
+  const hasSourceLink = /href:\s*"https?:\/\//.test(chunk);
   // relatedTools / relatedArticles are parsed so their targets can be
   // validated below. Before 2026-07-23 these rails were NOT checked, which
   // let a dangling "mac-oui" tool reference sit in the file unnoticed:
@@ -87,11 +129,65 @@ for (const chunk of chunks) {
   // headword is parsed for the duplicate-topic check in section 3b. It was not
   // captured before, which is part of why duplicate subjects went unnoticed.
   const headword = chunk.match(/headword:\s*"([^"]+)"/)?.[1];
-  entries.push({ slug, headword, kind, domains, relatedTerms, hasSources, relatedTools, relatedArticles });
+  entries.push({ slug, headword, kind, domains, relatedTerms, hasSources, hasSourceLink, relatedTools, relatedArticles });
 }
 
 if (entries.length === 0) {
   console.error("[check-glossary] FAIL: parsed zero entries from the registry.");
+  process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// CORPUS FLOOR AND PART STRUCTURE, declared rather than merely reported.
+//
+// WHY THIS EXISTS. On 2026-10-01 a replacement bounded by a text search deleted
+// 3,841 lines of this file, taking the whole of GLOSSARY_PART_3 with it. Two
+// guards caught it: tsc, because the export referenced a name that no longer
+// existed, and the stale-declaration half of rule 5b, because a slug in
+// DECLARED_UNLINKED no longer resolved to an entry.
+//
+// NEITHER OF THOSE IS THIS GUARD, and that is the point. This guard parsed the
+// wreckage, counted what was left, and would have printed a green OK line with a
+// smaller number. A deletion that happened to remove no declared slug and to
+// break no const would have passed here in silence. The guard that counts the
+// corpus was the one with a bare tolerance: any count was acceptable.
+//
+// SO THE COUNT IS DECLARED. The floor may only be RAISED, and raising it is a
+// deliberate edit with the date. It is a floor rather than an exact figure because
+// entries are added often and removed almost never; an exact figure would fail on
+// every addition and would be edited without thought, which is how a declared
+// number becomes a rubber stamp.
+const MIN_ENTRIES = 1711;        // 2026-10-01: 1711 entries. May only be raised.
+const EXPECTED_PARTS = 4;        // GLOSSARY_PART_1..4, a TS2590 accommodation.
+
+if (entries.length < MIN_ENTRIES) {
+  console.error(
+    `[check-glossary] FAIL: ${entries.length} entries parsed, below the declared floor of ` +
+      `${MIN_ENTRIES}. Entries are added often and removed almost never, so a drop means ` +
+      `something was deleted. If the removal is intended, lower the floor in the same commit ` +
+      `and say why.`
+  );
+  process.exit(1);
+}
+
+// The parts must all be declared AND all spread into the export. Checking only the
+// declarations would miss a part that exists and is never included, which renders
+// its entries invisible to every guard in this chain while the file still compiles.
+const declaredParts = [...src.matchAll(/const (GLOSSARY_PART_\d+)\s*:\s*GlossaryEntry\[\]/g)].map((m) => m[1]);
+const spreadParts = [...src.matchAll(/\.\.\.(GLOSSARY_PART_\d+)/g)].map((m) => m[1]);
+if (declaredParts.length !== EXPECTED_PARTS) {
+  console.error(
+    `[check-glossary] FAIL: ${declaredParts.length} GLOSSARY_PART declaration(s), expected ` +
+      `${EXPECTED_PARTS} (found ${declaredParts.join(", ") || "none"}).`
+  );
+  process.exit(1);
+}
+const notSpread = declaredParts.filter((p) => !spreadParts.includes(p));
+if (notSpread.length > 0) {
+  console.error(
+    `[check-glossary] FAIL: declared but never spread into the export: ${notSpread.join(", ")}. ` +
+      `Its entries compile and are invisible to every check in this chain.`
+  );
   process.exit(1);
 }
 
@@ -103,6 +199,70 @@ const ptEntries = JSON.parse(readFileSync(PT, "utf8"))?.glossary?.entries ?? {};
 
 // ---- 3. run every invariant ------------------------------------------------
 const errors = [];
+
+// ---------------------------------------------------------------------------
+// DECLARED_UNLINKED - lore entries whose sources name a work and link nowhere.
+//
+// Rule 5b below requires at least one followable absolute link per lore entry.
+// These are the exceptions, and each carries its reason IN THE CODE rather than
+// only in canon. That matters: canon had two of them filed under "a document this
+// sandbox cannot reach", and on 2026-10-01 both were read without difficulty. The
+// category was an artefact of having tried a single fetch tool, and nothing here
+// could have contradicted it. A reason that lives beside the declaration can be
+// checked against reality by the next person who looks.
+//
+// THE LIST MAY ONLY SHRINK. An entry that gains a link fails as a stale
+// declaration, so this cannot quietly accumulate.
+//
+// Three of the groups below are PRIME's to rule on rather than mine to research:
+// an ORIGIN rather than a document (snafu, fubar, pwned, hack, yak-shaving), a
+// label naming a TOPIC or an OBSERVATION rather than a work (googol), and a work
+// that exists only as a game (all-your-base, set-us-up-the-bomb, the-konami-code).
+const DECLARED_UNLINKED = new Map([
+  // The source is a game, so there is no document. Each reason says what was tried,
+  // because the previous generation of reasons here was wrong for three entries
+  // precisely through being written as conclusions rather than as attempts.
+  ["all-your-base", "The source is Zero Wing's own script (Toaplan/Sega, 1991, European Mega Drive port). No publisher document reproduces it; Toaplan is dissolved and Sega publishes no script archive."],
+  ["set-us-up-the-bomb", "The source is Zero Wing's own script (Toaplan/Sega, 1991, European Mega Drive port). Same as all-your-base: no publisher document reproduces it."],
+  ["the-konami-code", "The source is the code as entered in Gradius (1986). Konami's corporate site answers 200 but carries no Hashimoto record at any path found, and a guessed URL for its 2020 tribute post answered 404."],
+  // A work with no free edition and no permanent record located. Checked against
+  // Crossref and Open Library; a Datamation-style reprint DOI existed for
+  // real-programmers and none exists for this.
+  ["the-414s", "Newsweek cover, 'Beware: Hackers at Play' (September 1983). No free edition, no reprint DOI in Crossref, and no Open Library work record for the issue."],
+  // Blocked for legal reasons rather than by bot protection, which is a different fact
+  // and is not something to route around.
+  ["captain-crunch", "Rosenbaum, 'Secrets of the Little Blue Box', Esquire (1971). Esquire's archive returns a LEGAL block to our fetch tools, not a bot block, so no alternative route is attempted."],
+]);
+
+  // 5b: A LORE SOURCE MUST BE SOMEWHERE A READER CAN GO.
+  //
+  // Rule 5 below tests `/sources:\s*\[/` - that the ARRAY EXISTS. On 2026-09-30
+  // that was found to pass on a label with no link at all: 108 of 347 lore
+  // entries cited a work by name and pointed nowhere. The guard reported "lore
+  // sourced" for all 347, which was true of the field and false of the citation.
+  //
+  // Two of those 108 were person entries and were caught the same day by
+  // check-person-year-sources, whose fifth fault says it plainly: a label naming
+  // a book or a case with no link is not somewhere a reader can go. This is that
+  // rule for the rest of the glossary.
+  //
+  // ELEVEN WERE PAID DOWN IMMEDIATELY, because the link existed and nobody had
+  // looked: five cited "The Jargon File", which is online at a host this very
+  // file cites elsewhere, with a stable page per entry. AltaVista's label already
+  // read "Wikipedia: AltaVista - launch 15 December 1995" and simply had no href.
+  //
+  // THE REMAINING NINETY-SEVEN ARE DECLARED, not tolerated as a count, because a
+  // count cannot say which and cannot see a swap. They are not all one thing:
+  //   * Some name a document that IS findable and has not been found yet -
+  //     "Rosenbaum, 'Secrets of the Little Blue Box', Esquire (1971)".
+  //   * Some name an ORIGIN rather than a document - "US military slang, WWII",
+  //     "Tech Model Railroad Club / MIT, from the 1950s". That is an etymology
+  //     note, and arguably should not sit in `sources` at all; PRIME's call.
+  //   * Some name a book with no free edition - "The Pragmatic Programmer".
+  // Sorting those three apart is editorial work, so the list is flat for now and
+  // the distinction is recorded here rather than guessed at.
+  //
+  // This list may only SHRINK. A new lore entry with an unlinked source fails.
 
 for (const e of entries) {
   // 2: kind valid
@@ -136,6 +296,18 @@ for (const e of entries) {
   // 5: lore has sources
   if (e.kind === "lore" && !e.hasSources) {
     errors.push(`"${e.slug}": kind lore but no sources (accuracy rule)`);
+  }
+  // 5b: and at least one of them is a link a reader can follow.
+  if (
+    e.kind === "lore" &&
+    e.hasSources &&
+    !e.hasSourceLink &&
+    !DECLARED_UNLINKED.has(e.slug)
+  ) {
+    errors.push(
+      `"${e.slug}": lore sources name a work but carry no href - not somewhere a reader can go. ` +
+        `Link it, or add the slug to DECLARED_UNLINKED with the reason it cannot be linked.`
+    );
   }
   // 1: def + context in both locales
   const en = enEntries[e.slug];
@@ -257,6 +429,26 @@ const DISTINCT_DESPITE_SHARED_TOKENS = new Set([
 }
 
 // ---- 4. report -------------------------------------------------------------
+// 5b, the other half: a declaration for an entry that NOW has a link is stale and
+// must come off, so the list can only shrink. Without this the list silently
+// accumulates entries that no longer need declaring - the rot that every other
+// declared list in this chain is written to prevent. Caught by its own negative
+// test on 2026-09-30, which passed when it should have failed.
+for (const slug of DECLARED_UNLINKED.keys()) {
+  const e = entries.find((x) => x.slug === slug);
+  if (!e) {
+    errors.push(
+      `DECLARED_UNLINKED lists "${slug}", which is not a glossary entry - remove it.`
+    );
+  } else if (e.hasSourceLink) {
+    errors.push(
+      `DECLARED_UNLINKED lists "${slug}", but its sources now carry a link - remove it from the list. ` +
+        `The declaration claimed: ${JSON.stringify(DECLARED_UNLINKED.get(slug))}`
+    );
+  }
+}
+
+
 if (errors.length > 0) {
   console.error("[check-glossary] FAIL:");
   for (const e of errors) console.error(`  - ${e}`);
@@ -264,6 +456,8 @@ if (errors.length > 0) {
 }
 
 console.log(
-  `[check-glossary] OK: ${entries.length} entries, all with def+context in en+pt-BR; ` +
-    `kinds/domains valid, relatedTerms resolve, lore sourced, no orphans.`,
+  `[check-glossary] OK: ${entries.length} entries (declared floor ${MIN_ENTRIES}, may only be raised) across ${declaredParts.length} parts, all spread into the export; all with def+context in en+pt-BR; ` +
+    `kinds/domains valid, relatedTerms resolve, no orphans; ` +
+    `every lore entry sourced and its source a followable link ` +
+    `(${DECLARED_UNLINKED.size} declared unlinked, may only shrink).`,
 );

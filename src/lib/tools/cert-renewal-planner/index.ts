@@ -35,7 +35,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "cabf-sc081v3",
-      label: "CA/Browser Forum — Ballot SC-081v3 (schedule of reducing validity and data reuse periods)",
+      label: "CA/Browser Forum - Ballot SC-081v3 (schedule of reducing validity and data reuse periods)",
       type: "spec",
       url: "https://cabforum.org/",
       access_date: "2026-06-29",
@@ -44,7 +44,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "rfc5280",
-      label: "RFC 5280 — Internet X.509 PKI Certificate and CRL Profile",
+      label: "RFC 5280 - Internet X.509 PKI Certificate and CRL Profile",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc5280",
       access_date: "2026-06-29",
@@ -53,7 +53,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "rfc8555",
-      label: "RFC 8555 — Automatic Certificate Management Environment (ACME)",
+      label: "RFC 8555 - Automatic Certificate Management Environment (ACME)",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc8555",
       access_date: "2026-06-29",

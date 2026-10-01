@@ -22,10 +22,10 @@ const FORMAT_ROWS: { key: keyof EpochAnalysis["formats"]; label: string }[] = [
   { key: "iso8601", label: "ISO 8601" },
   { key: "rfc3339", label: "RFC 3339" },
   { key: "httpDate", label: "HTTP date" },
-  { key: "unixSeconds", label: "Unix — seconds" },
-  { key: "unixMillis", label: "Unix — milliseconds" },
-  { key: "unixMicros", label: "Unix — microseconds" },
-  { key: "unixNanos", label: "Unix — nanoseconds" },
+  { key: "unixSeconds", label: "Unix - seconds" },
+  { key: "unixMillis", label: "Unix - milliseconds" },
+  { key: "unixMicros", label: "Unix - microseconds" },
+  { key: "unixNanos", label: "Unix - nanoseconds" },
 ];
 
 function relativeTime(targetMs: number, nowMs: number, locale: string): string {

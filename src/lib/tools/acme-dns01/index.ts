@@ -69,7 +69,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "rfc8555",
-      label: "RFC 8555 — Automatic Certificate Management Environment (ACME)",
+      label: "RFC 8555 - Automatic Certificate Management Environment (ACME)",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc8555",
       access_date: "2026-07-07",
@@ -78,7 +78,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "rfc7638",
-      label: "RFC 7638 — JSON Web Key (JWK) Thumbprint",
+      label: "RFC 7638 - JSON Web Key (JWK) Thumbprint",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc7638",
       access_date: "2026-07-07",
@@ -87,7 +87,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "rfc4648",
-      label: "RFC 4648 — The Base16, Base32, and Base64 Data Encodings",
+      label: "RFC 4648 - The Base16, Base32, and Base64 Data Encodings",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc4648",
       access_date: "2026-07-07",

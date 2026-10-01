@@ -1,0 +1,29 @@
+adrian-lamo	2002	hacker-culture	https://en.wikipedia.org/wiki/Adrian_Lamo
+michal-zalewski	2013	security	https://en.wikipedia.org/wiki/Micha%C5%82_Zalewski
+jude-milhon	1992	hacker-culture	https://en.wikipedia.org/wiki/Jude_Milhon
+max-butler	2007	security	https://en.wikipedia.org/wiki/Max_Butler
+aaron-swartz	2001	hacker-culture	https://en.wikipedia.org/wiki/Aaron_Swartz
+tadao-takahashi	1989	brazil	https://en.wikipedia.org/wiki/Tadao_Takahashi
+liane-tarouco	1988	brazil	https://www.baguete.com.br/noticias/liane-tarouco-entra-no-hall-da-fama-da-internet
+cristine-hoepers	1997	brazil	https://www.cert.br/sobre/reconhecimento/
+rodrigo-rubira-branco	2007	brazil	https://www.escavador.com/sobre/1490298/rodrigo-rubira-branco
+francisco-amato	2001	brazil	https://en.wikipedia.org/wiki/Ekoparty
+filipe-balestra	2008	brazil	https://www.cisoadvisor.com.br/h2hc-reune-top-hackers-do-brasil-e-do-mundo/
+jaime-andres-restrepo	2009	brazil	https://ekoparty.org/premio-a-la-trayectoria/
+willian-caprino	2007	brazil	https://seginfo.com.br/2016/02/22/seginfocast-29-ysts-you-sh0t-the-sheriff-10a-edicao/
+anchises-moraes	2011	brazil	https://www.ysts.org/info
+fabio-assolini	2011	brazil	https://securelist.com/the-tetrade-brazilian-banking-malware/97779/
+paul-vixie	1988	internet	https://en.wikipedia.org/wiki/Paul_Vixie
+grace-hopper	1952	computing	https://britannica.com/print/article/271591 https://ieeemilestones.ethw.org/Milestone-Proposal:Grace_Hopper's_Compiler_and_Programming_Language_Work,_1952-1959
+james-prescott-joule	1841	electricity	https://electricityforum.com/a-timeline-of-history-of-electricity
+william-crookes	1875	electricity	https://en.wikipedia.org/wiki/Crookes_tube
+howard-frank	1969	internet	https://en.wikipedia.org/wiki/Howard_Frank_(network_engineer) https://conservancy.umn.edu/signposting/describedby/53e369fc-240a-4341-8178-6677cf7bf265
+nii-quaynor	1993	internet	https://www.internethalloffame.org/inductee/nii-quaynor/
+glenn-ricart	1989	internet	https://www.elon.edu/u/imagining/event-coverage/isoc-events/hof-ietf-2013/ https://hostingct.com/help/tips/amazing-timeline-f/
+nelson-murilo	1997	brazil	https://creators.spotify.com/pod/profile/ists https://www.ysts.org
+barbara-liskov	1988	computing	https://mathshistory.st-andrews.ac.uk/Honours/Turing_Award/ https://amturing.acm.org/award_winners/lamport_1205376.cfm
+margaret-hamilton	1969	computing	https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)
+wietse-venema	1995	security	https://en.wikipedia.org/wiki/Wietse_Venema http://ftp.porcupine.org/pub/security/index.html
+katie-moussouris	2013	security	https://en.wikipedia.org/wiki/Katie_Moussouris
+daniel-j-bernstein	1996	crypto	http://cr.yp.to/qmail/venema.html
+steven-bellovin	1989	security	https://en.wikipedia.org/wiki/Firewalls_and_Internet_Security

@@ -117,13 +117,24 @@ const QUOTED_SOURCE_EXEMPT = new Map([
 // at that number. Any surface needing an entry here gets a count AND the date it
 // was measured, never a bare number.
 const DECLARED_BACKLOG = new Map([
-  // Code surfaces, measured 2026-09-27. 134 published strings in total, reached
-  // independently by two different parsers that agreed. Awaiting a change of its
-  // own: see the note above on golden vectors and GOLDEN_VECTOR_SET_ID.
-  ["src/lib",        113],   // tool engines and manifests - dig-output-explainer 22,
-                             // f5-ssl-profile-explainer 7, f5-release-cadence-calendar 7
-  ["src/components",  17],   // tool UIs - EpochTool 4, StatsPanels 3, CidrTool 2
-  ["src/app",          4],   // page-level strings
+  // EMPTY, AND THAT IS THE POINT. Every surface this list ever held has been paid
+  // down. The three code surfaces were the last, cleared on 2026-10-01:
+  //
+  //     src/lib         113 -> 0
+  //     src/components   17 -> 0
+  //     src/app           4 -> 0
+  //
+  // They are REMOVED rather than declared at 0. A backlog entry of zero is a
+  // tolerance for nothing, and an entry that exists is an entry somebody can raise.
+  // With the list empty, any em dash newly published from these surfaces fails
+  // outright, exactly as it does in check-em-dash-policy's three directories.
+  //
+  // What made the paydown safe was built the same day: the 145 golden-vector sets
+  // had never been executed, and `tsx scripts/run-golden-vectors.mts` is now prebuild
+  // step 41. All 145 passed before the edits and all 145 passed after, which is how a
+  // 134-string change to tool output was shown to be behaviour-neutral rather than
+  // asserted to be. 39 files changed; only string literals were touched, never
+  // comments, because a dash in a comment is not published.
 ]);
 
 /** Markdown: the WHOLE file, stripping nothing.
@@ -236,6 +247,6 @@ if (under.length > 0) {
 console.log(
   `[check-em-dash-scope] OK: ${SURFACES.length} English surface(s) beyond ` +
     `check-em-dash-policy's three directories; ${total} em dash(es), ` +
-    `${DECLARED_BACKLOG.size === 0 ? "enforced at zero since 2026-09-27" : `backlog across ${DECLARED_BACKLOG.size} surface(s), may only shrink`}; ` +
+    `${DECLARED_BACKLOG.size === 0 ? "enforced at zero since 2026-10-01, the day the last backlog surface was cleared" : `backlog across ${DECLARED_BACKLOG.size} surface(s), may only shrink`}; ` +
     `${exempted} exempt as quoted source material.`
 );

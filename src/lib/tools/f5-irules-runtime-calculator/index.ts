@@ -49,7 +49,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "dc-runtime-calc-sdk",
-      label: "DevCentral — Generate the iRules Runtime Calculator Excel Spreadsheet with the Python SDK",
+      label: "DevCentral - Generate the iRules Runtime Calculator Excel Spreadsheet with the Python SDK",
       type: "reference",
       url: "https://community.f5.com/kb/technicalarticles/generate-the-irules-runtime-calculator-excel-spreadsheet-with-the-python-sdk/285509",
       access_date: "2026-07-07",
@@ -58,7 +58,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "dc-eval-perf",
-      label: "DevCentral — Intermediate iRules: Evaluating Performance",
+      label: "DevCentral - Intermediate iRules: Evaluating Performance",
       type: "reference",
       url: "https://community.f5.com/kb/technicalarticles/intermediate-irules-evaluating-performance/290352",
       access_date: "2026-07-07",
@@ -67,7 +67,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "irules-timing",
-      label: "F5 clouddocs — iRules timing command",
+      label: "F5 clouddocs - iRules timing command",
       type: "reference",
       url: "https://clouddocs.f5.com/api/irules/timing.html",
       access_date: "2026-07-07",

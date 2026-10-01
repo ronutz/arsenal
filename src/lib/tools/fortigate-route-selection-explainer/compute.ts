@@ -243,7 +243,7 @@ function referenceResult(): RouteResult {
   return {
     mode: "reference", destination: null, routes: [], evaluations: [], selected: [],
     notes: [
-      "A policy route is consulted BEFORE the routing table and overrides it. If the table says one thing and traffic does another, look for a policy route first — this tool models the table, not policy routes.",
+      "A policy route is consulted BEFORE the routing table and overrides it. If the table says one thing and traffic does another, look for a policy route first - this tool models the table, not policy routes.",
       "DISTANCE decides which route is INSTALLED. Routes to the same destination compete, the lowest distance wins, and the loser is absent from the table rather than merely deprioritised.",
       "PRIORITY decides which of several ALREADY-INSTALLED routes is preferred. It never resurrects a route that lost on distance.",
       "Same prefix and same distance means both install and priority chooses. Different distances means one installs and the other is a floating backup.",
@@ -289,7 +289,7 @@ export function run(input: string): ToolRunResult {
     notes.push(`${floatingCount} route${floatingCount === 1 ? " is" : "s are"} configured but NOT in the forwarding table, having lost the distance comparison. A route you cannot find in \`get router info routing-table all\` did not fail to save; it lost on distance.`);
   }
   if (selected.length > 1) {
-    notes.push("Several routes tied completely, so ECMP load shares across them. The default hash is source-IP based, which keeps a given source on a consistent path — per-packet sharing across paths of different latency causes reordering.");
+    notes.push("Several routes tied completely, so ECMP load shares across them. The default hash is source-IP based, which keeps a given source on a consistent path - per-packet sharing across paths of different latency causes reordering.");
   }
   notes.push("This models the routing table only. A policy route is consulted BEFORE the table and overrides it, and SD-WAN rules select a member before the table is reached.");
 

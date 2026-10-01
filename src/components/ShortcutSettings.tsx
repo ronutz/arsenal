@@ -106,7 +106,7 @@ export default function ShortcutSettings({ labels }: { labels: ShortcutSettingsL
                       className="shortcut-select"
                       value={current}
                       disabled={!customizable}
-                      aria-label={`${labels.keyLabels[key] ?? key} — ${labels.colAction}`}
+                      aria-label={`${labels.keyLabels[key] ?? key} - ${labels.colAction}`}
                       onChange={(e) => onPick(key, e.target.value)}
                     >
                       {SHORTCUT_ACTIONS.map((a) => (

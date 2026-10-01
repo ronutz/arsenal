@@ -100,7 +100,13 @@ for (const a of entries) {
     if (a.slug >= b.slug) continue;
     if (b.slug.startsWith(`${a.slug}-`) || a.slug.startsWith(`${b.slug}-`)) {
       if (DECLARED_STEMS.has(`${a.slug}|${b.slug}`)) continue;
-      warnings.push(`"${a.slug}" and "${b.slug}" share a slug stem - same company under two entries?`);
+      warnings.push({
+        // Keyed by the KIND of overlap plus the sorted slug pair, so the key is
+        // stable when entries move in the file and cannot be satisfied by a
+        // different pair arriving as this one is fixed.
+        key: `stem:${[a.slug, b.slug].sort().join("|")}`,
+        message: `"${a.slug}" and "${b.slug}" share a slug stem - same company under two entries?`,
+      });
     }
   }
 }
@@ -146,7 +152,10 @@ for (const e of entries) {
 }
 for (const [tok, slugs] of byToken) {
   if (slugs.length > 1 && !DECLARED_TOKENS.has(tok)) {
-    warnings.push(`name token "${tok}" shared by: ${slugs.join(", ")}`);
+    warnings.push({
+      key: `token:${tok}:${[...slugs].sort().join("|")}`,
+      message: `name token "${tok}" shared by: ${slugs.join(", ")}`,
+    });
   }
 }
 
@@ -225,7 +234,35 @@ if (sharedCopy.length) {
   process.exit(1);
 }
 
-const BASELINE = 2; // ratcheted 111 -> 14 on 2026-09-07 when the tokeniser was fixed to read the company-name head only
+// Overlaps that are deliberate, declared one per overlap with the reason.
+//
+// *** WHY NOT A COUNT. *** This was `BASELINE = 2` (ratcheted 111 -> 14 on
+// 2026-09-07 when the tokeniser was fixed to read the company-name head only,
+// then to 2). A count of 2 cannot say WHICH two, so it tolerates a third
+// identically - and it cannot see a SWAP, where a real duplicate arrives as a
+// declared overlap is resolved and the total never moves. Declared per overlap,
+// both halves of that swap fail: the newcomer as undeclared, the resolved one as
+// a stale declaration.
+//
+// The two entries below are the same situation counted twice, which is itself an
+// argument for naming rather than counting: one guard rule sees the shared slug
+// stem, another sees the shared name token, and a reader looking at "2" cannot
+// tell that from two unrelated problems.
+const DECLARED_OVERLAPS = new Map([
+  [
+    "stem:intel|intel-amd",
+    "Two deliberate entries. `intel` is Intel as a vendor in the control plane - " +
+      "x86, the first microprocessor, the network interface. `intel-amd` is a JOINT " +
+      "entry on the Intel and AMD rivalry, whose own tagline gives the reason: one " +
+      "entry, because neither story parses without the other. Same company name at " +
+      "the head of both, by design.",
+  ],
+  [
+    "token:intel:intel|intel-amd",
+    "The same overlap as the slug-stem entry above, seen by the name-token rule " +
+      "instead. Both entries are named for Intel because both are about Intel.",
+  ],
+]);
 
 if (failures.length) {
   console.error("\n[check-partner-duplicates] FAIL:\n");
@@ -234,19 +271,39 @@ if (failures.length) {
   process.exit(1);
 }
 
-if (warnings.length > BASELINE) {
-  console.error(
-    `\n[check-partner-duplicates] FAIL: ${warnings.length} possible duplicate(s), above the baseline of ${BASELINE}.\n`
-  );
-  for (const w of warnings.slice(0, 20)) console.error(`      ${w}`);
-  console.error(
-    "\n  If these are genuinely distinct companies, raise the baseline with a reason.\n"
-  );
+const undeclaredOverlaps = warnings.filter((w) => !DECLARED_OVERLAPS.has(w.key));
+
+// A declaration for an overlap that no longer occurs is stale and must come off,
+// so the list can only shrink. This is the half of a swap a count cannot see.
+const staleOverlaps = [...DECLARED_OVERLAPS.keys()].filter(
+  (k) => !warnings.some((w) => w.key === k)
+);
+
+if (undeclaredOverlaps.length || staleOverlaps.length) {
+  console.error("\n[check-partner-duplicates] FAIL:\n");
+  if (undeclaredOverlaps.length) {
+    console.error(`  ${undeclaredOverlaps.length} undeclared name/stem overlap(s):`);
+    for (const w of undeclaredOverlaps.slice(0, 20)) {
+      console.error(`      ${w.message}`);
+      console.error(`        key: ${w.key}`);
+    }
+    console.error(
+      "\n      If these are genuinely one company under two entries, merge them. If they\n" +
+        "      are genuinely distinct, add the key above to DECLARED_OVERLAPS with the\n" +
+        "      reason - never a bare key, because a declaration without a reason cannot be\n" +
+        "      argued with later and the next real duplicate hides behind it.\n"
+    );
+  }
+  if (staleOverlaps.length) {
+    console.error(`  ${staleOverlaps.length} stale declaration(s) - the overlap no longer occurs:`);
+    for (const k of staleOverlaps) console.error(`      ${k}`);
+    console.error("");
+  }
   process.exit(1);
 }
 
 console.log(
   `[check-partner-duplicates] OK: ${entries.length} entries; no duplicate slugs; ` +
-    `${warnings.length} name/stem overlap(s) (baseline ${BASELINE}` +
-    `${warnings.length < BASELINE ? " - LOWER THAN BASELINE, drop it to " + warnings.length : ""}).`
+    `${warnings.length} name/stem overlap(s), every one declared with a reason ` +
+    `(per overlap since 2026-09-30; a count could not say which, nor see a swap).`
 );

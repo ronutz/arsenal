@@ -149,8 +149,37 @@ for (const root of ROOTS) {
     lines.forEach((line, i) => {
       const found = [
         ...[...line.matchAll(/url:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+        // *** AND `href:`, WHICHEVER FIELD THE FILE HAPPENS TO USE. *** Until
+        // 2026-09-30 this audit collected `url:` only. partners.ts writes
+        // `url:` and was covered; glossary.ts writes `href:` and was NOT - so
+        // 906 citations across 1,711 glossary entries, including every source
+        // behind the /people timeline, had never once been checked for liveness.
+        // 689 distinct URLs, invisible to an audit whose whole purpose is to
+        // find dead ones.
+        //
+        // The failure is the same shape as three others logged this session: the
+        // instrument was narrower than the content, and its OWN output looked
+        // healthy because it only ever reported on what it could see. Nothing
+        // was wrong with the numbers it printed; the numbers were about a
+        // smaller corpus than the one they appeared to describe.
+        ...[...line.matchAll(/href:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+        // Three more citation-bearing keys, found by the same sweep that found
+        // `href`: externalUrl is the further-reading link rendered on a page,
+        // sourceUrl and blueprintSourceUrl are the certification-blueprint
+        // citations. 391 URLs between them, none previously collected.
+        ...[...line.matchAll(/externalUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+        ...[...line.matchAll(/sourceUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+        ...[...line.matchAll(/blueprintSourceUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
         ...markdownTargets(line),
       ];
+      // *** AND DELIBERATELY NOT THESE. *** `input`, `example`, `issuer`,
+      // `webhook` and `raw` also carry http URLs in these roots, and they are
+      // FIXTURES - example.com, RFC-reserved documentation addresses, and
+      // 169.254.169.254, which is the cloud instance-metadata endpoint. Fetching
+      // a tool's example input would be wrong on its own terms and, in that last
+      // case, would have this audit probing a metadata service. The split between
+      // the two lists is enforced by check-citation-fields.mjs, so a NEW
+      // URL-bearing key cannot quietly land on the wrong side of it.
       for (const u of found) {
         if (!where.has(u)) where.set(u, new Set());
         where.get(u).add(`${file}:${i + 1}`);

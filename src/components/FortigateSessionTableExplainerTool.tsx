@@ -93,7 +93,7 @@ export default function FortigateSessionTableExplainerTool() {
             <div key={s.index} className="dig-record">
               <h3 className="cidr-section-title">
                 {t("sessionHeading", { n: s.index, proto: s.protoName })}
-                {s.policyId !== null ? ` — policy_id ${s.policyId}` : ""}
+                {s.policyId !== null ? ` - policy_id ${s.policyId}` : ""}
               </h3>
 
               {/* Findings FIRST: the conclusion, not the field dump. */}

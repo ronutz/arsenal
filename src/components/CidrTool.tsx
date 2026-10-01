@@ -636,7 +636,7 @@ export default function CidrTool() {
               <tbody>
                 {vlsm.subnets.map((s, i) => (
                   <tr key={i}>
-                    <td>{s.label || "—"}</td>
+                    <td>{s.label || "-"}</td>
                     <td>{s.requestedHosts.toLocaleString()}</td>
                     <td className="mono">{s.network}</td>
                     <td className="mono">/{s.prefix}</td>
@@ -656,7 +656,7 @@ export default function CidrTool() {
               <span className="cidr-section-title">{t("vlsm.unfit")}</span>
               <ul className="cidr-unfit-list">
                 {vlsm.unallocated.map((u, i) => (
-                  <li key={i}>{(u.label || "—") + ": " + u.hosts.toLocaleString()}</li>
+                  <li key={i}>{(u.label || "-") + ": " + u.hosts.toLocaleString()}</li>
                 ))}
               </ul>
             </div>

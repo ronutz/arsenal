@@ -13331,7 +13331,7 @@
       "sloth": {
         "def": "Um conjunto de ataques de 2016 que abusa de hashes obsoletos como o MD5 na negociação TLS.",
         "context": "Security Losses from Obsolete and Truncated Transcript Hashes mostrou que permitir hashes fracos como o MD5 em assinaturas TLS possibilitava ataques de colisão de transcrição e de downgrade. Impulsionou a remoção de assinaturas baseadas em MD5 do TLS.",
-        "depth": "O SLOTH atacou protocolos que ainda usavam funções de hash fracas nas assinaturas de handshake. O nome vem de perdas de segurança por construções de hash obsoletas e truncadas, e o achado foi que colisões de transcrição podiam ser usadas para personificar uma parte durante a negociação de TLS, IKE ou SSH.\n\nO detalhe importante é onde estava o hash fraco. Todo mundo havia parado de usar MD5 e SHA-1 em certificados, e as campanhas de depreciação focaram ali. Mas as mesmas funções sobreviveram dentro da negociação de assinatura do handshake, onde não atraíam atenção porque ninguém pensava no handshake como um lugar onde hashes moram.\n\nEssa é a lição generalizável: depreciar uma primitiva significa encontrar todo lugar em que ela é usada, e os que passam despercebidos são os usos internos e sem glamour que lista de conformidade alguma enumera. Um scanner que informa o algoritmo de assinatura de um certificado nada diz sobre o que o handshake negociou. Remover um algoritmo fraco exige inventário de usos, e não inventário de certificados."
+        "depth": "O SLOTH atacou protocolos que ainda usavam funções de hash fracas nas assinaturas de handshake. O nome vem de perdas de segurança por hashes de transcrição obsoletos e truncados, e o achado foi que colisões de transcrição podiam ser usadas para personificar uma parte durante a negociação de TLS, IKE ou SSH.\n\nO detalhe importante é onde estava o hash fraco. Todo mundo havia parado de usar MD5 e SHA-1 em certificados, e as campanhas de depreciação focaram ali. Mas as mesmas funções sobreviveram dentro da negociação de assinatura do handshake, onde não atraíam atenção porque ninguém pensava no handshake como um lugar onde hashes moram.\n\nEssa é a lição generalizável: depreciar uma primitiva significa encontrar todo lugar em que ela é usada, e os que passam despercebidos são os usos internos e sem glamour que lista de conformidade alguma enumera. Um scanner que informa o algoritmo de assinatura de um certificado nada diz sobre o que o handshake negociou. Remover um algoritmo fraco exige inventário de usos, e não inventário de certificados."
       },
       "terrapin": {
         "def": "Um ataque de 2023 que pode enfraquecer ou truncar o handshake SSH.",
@@ -20701,6 +20701,8 @@
     "metaTitle": "Pessoas — os indivíduos por trás das redes e das ferramentas",
     "metaDescription": "As pessoas que este site registra: quem escreveu as ferramentas, fundou as conferências, depôs perante senados e construiu a internet brasileira. Cada uma leva ao seu verbete.",
     "lede": "As pessoas que o corpus registra - quem escreveu as ferramentas que todo mundo ainda roda, fundou as conferências, foi presa, depôs perante senados, ou conectou um país. Cada nome leva ao seu verbete.",
+    "yearNote": "O ano ao lado de cada nome ancora o trabalho de que aquele verbete trata. Não é ano de nascimento nem a duração de uma carreira: Faraday não parou em 1831.",
+    "yearLabel": "ano do trabalho descrito: {year}",
     "count": "{count} pessoas",
     "filterAll": "Todos",
     "filterLabel": "Filtrar a linha do tempo por eixo",

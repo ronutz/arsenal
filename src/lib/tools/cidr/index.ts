@@ -70,9 +70,9 @@ export const manifest = Object.freeze({
     "learn/vlsm-worked-example",
   ],
   sources: [
-    { id: "rfc4632", label: "RFC 4632 — Classless Inter-domain Routing (CIDR)", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc4632", access_date: "2026-06-29", scope: "CIDR prefix arithmetic", status: "active" },
-    { id: "rfc1918", label: "RFC 1918 — Address Allocation for Private Internets", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc1918", access_date: "2026-06-29", scope: "private-range classification", status: "active" },
-    { id: "rfc3021", label: "RFC 3021 — Using 31-Bit Prefixes on IPv4 Point-to-Point Links", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3021", access_date: "2026-06-29", scope: "/31 host counting", status: "active" },
-    { id: "rfc6890", label: "RFC 6890 — Special-Purpose IP Address Registries", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc6890", access_date: "2026-06-29", scope: "special-use classification", status: "active" },
+    { id: "rfc4632", label: "RFC 4632 - Classless Inter-domain Routing (CIDR)", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc4632", access_date: "2026-06-29", scope: "CIDR prefix arithmetic", status: "active" },
+    { id: "rfc1918", label: "RFC 1918 - Address Allocation for Private Internets", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc1918", access_date: "2026-06-29", scope: "private-range classification", status: "active" },
+    { id: "rfc3021", label: "RFC 3021 - Using 31-Bit Prefixes on IPv4 Point-to-Point Links", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc3021", access_date: "2026-06-29", scope: "/31 host counting", status: "active" },
+    { id: "rfc6890", label: "RFC 6890 - Special-Purpose IP Address Registries", type: "rfc", url: "https://www.rfc-editor.org/rfc/rfc6890", access_date: "2026-06-29", scope: "special-use classification", status: "active" },
   ],
 });

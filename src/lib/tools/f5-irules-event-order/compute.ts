@@ -224,7 +224,7 @@ export function planEventOrder(config: VirtualConfig): EventOrderResult {
   if (config.fastL4) {
     notes.push({
       level: "warn",
-      text: "FastL4 is a packet-based fast path, not a full TCP proxy. Most L7 and SSL events do not fire; CLIENT_ACCEPTED triggers on the initial SYN. This model shows the Standard (full-proxy) sequence — treat the HTTP and SSL rows as not applicable under FastL4.",
+      text: "FastL4 is a packet-based fast path, not a full TCP proxy. Most L7 and SSL events do not fire; CLIENT_ACCEPTED triggers on the initial SYN. This model shows the Standard (full-proxy) sequence - treat the HTTP and SSL rows as not applicable under FastL4.",
     });
   }
   if (config.serverSsl && !config.pool) {
@@ -236,13 +236,13 @@ export function planEventOrder(config: VirtualConfig): EventOrderResult {
   if (config.http && !config.pool) {
     notes.push({
       level: "info",
-      text: "With an HTTP profile but no pool, HTTP_REQUEST still fires (the request is parsed on the client side), but there is no server to forward to — typical of an iRule that answers directly with HTTP::respond.",
+      text: "With an HTTP profile but no pool, HTTP_REQUEST still fires (the request is parsed on the client side), but there is no server to forward to - typical of an iRule that answers directly with HTTP::respond.",
     });
   }
   if (config.serverSsl && !config.clientSsl) {
     notes.push({
       level: "info",
-      text: "Server-SSL without client-SSL means the BIG-IP terminates plaintext from the client and initiates TLS to the pool — a less common 'encrypt on the way out' design.",
+      text: "Server-SSL without client-SSL means the BIG-IP terminates plaintext from the client and initiates TLS to the pool - a less common 'encrypt on the way out' design.",
     });
   }
   notes.push({

@@ -222,18 +222,13 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
       "no error",
     ],
     relatedTerms: ["observer-effect", "heisenbug", "bisection", "postmortem", "triage"],
-    sources: [
-      {
-        label:
-          "RFC 2132 s8.4: option 43 is vendor-specific, so a wrongly encoded value is simply not understood rather than rejected",
-        href: "https://www.rfc-editor.org/rfc/rfc2132#section-8.4",
-      },
-      {
-        label:
-          "Palo Alto Networks, Security Policy Rulebase Best Practices: 'Commit and Push doesn't provide shadowing information'",
-        href: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices",
-      },
-    ],
+    // Both sources kept verbatim, reformatted to the file's single-line object
+    // form: an object literal opened on its own line splits this entry in
+    // check-glossary's chunker, which is now enforced at zero by its own
+    // assertion. Nothing was lost here only because `sources` is this entry's
+    // last field - an invariant no reader could have seen.
+    sources: [{ label: "RFC 2132 s8.4: option 43 is vendor-specific, so a wrongly encoded value is simply not understood rather than rejected", href: "https://www.rfc-editor.org/rfc/rfc2132#section-8.4" },
+    { label: "Palo Alto Networks, Security Policy Rulebase Best Practices: 'Commit and Push doesn't provide shadowing information'", href: "https://docs.paloaltonetworks.com/best-practices/security-policy-best-practices/security-policy-best-practices/deploy-security-policy-best-practices/security-policy-rulebase-best-practices" }],
   },
   {
     slug: "observer-effect",
@@ -374,7 +369,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["bhack conference", "bhack belo horizonte"],
     relatedTerms: ["mind-the-sec", "security-leaders", "roadsec"],
     sources: [
-      { label: "Anchises Moraes' annual Brazilian security event surveys, which have tracked BHack since its early editions" },
+      { label: "Anchises Moraes' calendar of Brazilian security events for 2026, which lists BHACK in Belo Horizonte, Minas Gerais, on 5 and 6 December", href: "https://anchisesbr.blogspot.com/2025/12/seguranca-calendario-de-eventos-de.html" },
       { label: "SegInfo coverage of the seventh edition, November in Belo Horizonte" },
     ],
   },
@@ -386,7 +381,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["security leaders brasil", "security leaders congresso"],
     relatedTerms: ["mind-the-sec", "bhack", "roadsec"],
     sources: [
-      { label: "Anchises Moraes' Brazilian security event surveys, recording seven regional Security Leaders editions in 2024" },
+      { label: "Anchises Moraes' Brazilian security event surveys, recording seven regional Security Leaders editions in 2024; that year's survey is not the document linked below" }, { label: "Anchises Moraes' calendar for 2026, which lists eleven regional Security Leaders editions - Belo Horizonte, Brasilia, Curitiba, Cyber Arena in Guaruja, Floripa, Fortaleza, Porto Alegre, Recife, Rio de Janeiro and Salvador - alongside the national event and the awards", href: "https://anchisesbr.blogspot.com/2025/12/seguranca-calendario-de-eventos-de.html" },
       { label: "SegInfo coverage describing it among the largest Brazilian information security and risk events, aimed at technology and security executives" },
     ],
   },
@@ -438,7 +433,11 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["winrar trial", "winrar 40 days", "winrar nag screen"],
     relatedTerms: ["archive-formats", "zip-and-the-lawsuit"],
     sources: [
-      { label: "WinRAR's own trial terms: a 40-day evaluation period, after which the software continues to function while displaying a purchase reminder" },
+      // The EULA states the term and the obligation, and says the opposite of the
+      // observed behaviour: "the user must purchase a license to continue using the
+      // software". The software continuing to work anyway is the whole joke, and no
+      // vendor document describes it, so the label says which half is sourced.
+      { label: "win.rar GmbH, WinRAR End User License Agreement: \"The software is distributed as try before you buy. This means that anyone may use the software during a test period of a maximum of 40 days at no charge. Following this test period, the user must purchase a license to continue using the software.\" The EULA states the 40 days and the obligation to buy, and nowhere states that the software keeps running once the test period ends", href: "https://www.win-rar.com/winrarlicense.html" },
       { label: "Two decades of public commentary treating the expired-but-working trial as a running joke; RARLAB has never changed the behaviour" },
     ],
   },
@@ -452,7 +451,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["phil katz", "pkzip", "pkarc", "sea arc lawsuit"],
     relatedTerms: ["archive-formats", "winrar-licence"],
     sources: [
-      { label: "System Enhancement Associates v. PKWARE (1988), over Katz's PKARC implementation of the ARC format" },
+      { label: "PKWARE was founded in 1986 by Phil Katz, who had begun distributing a compression utility called PKARC as shareware, 'a radical improvement over existing compression software (including the ARC utility, on which it was based)'. This page does NOT carry the 1988 System Enhancement Associates lawsuit, which was read for and is not on it; that remains uncited", href: "https://en.wikipedia.org/wiki/PKWare" },
       { label: "PKWARE's release of the ZIP format specification for free use, and its subsequent adoption as a de facto standard" },
       { label: "Contemporary and retrospective accounts of Phil Katz's later life and his death in 2000 at the age of 37" },
     ],
@@ -816,7 +815,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["google name origin"],
     relatedTerms: ["pagerank"],
-    sources: [{ label: "History of Google - the name as a misspelling of googol" }],
+    // Declared on 2026-10-01 as "the label names a topic, PRIME's call". That was wrong:
+    // the founders' own paper states the origin in one sentence, and one probe found it.
+    // PARTIAL: the paper does not name the child who coined the mathematical term.
+    sources: [{ label: "Brin & Page, 'The Anatomy of a Large-Scale Hypertextual Web Search Engine', Computer Science Department, Stanford University: \"We chose our system name, Google, because it is a common spelling of googol, or 10^100 and fits well with our goal of building very large-scale search engines.\" The paper does not name the child who coined the mathematical term", href: "http://infolab.stanford.edu/~backrub/google.html" }],
   },
   {
     slug: "six-degrees-of-separation",
@@ -826,7 +828,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["sixdegrees", "six degrees"],
     relatedTerms: ["pagerank"],
     sources: [
-      { label: "SixDegrees.com launch coverage; the first social-networking patent, Andrew Weinreich" },
+      // The patent itself, which carries Weinreich as first-named inventor and a
+      // priority date of 17 January 1997. Its own title is "Method and apparatus for
+      // constructing a networking database and system"; the description of it as the
+      // first social-networking patent is a characterisation the document does not
+      // make, so the label states the title and leaves the characterisation out.
+      { label: "US Patent 6,175,831 B1, 'Method and apparatus for constructing a networking database and system', inventors Andrew P. Weinreich et al., application 08/785,559, priority 17 January 1997, status expired", href: "https://patents.google.com/patent/US6175831B1/en" },
     ],
   },
   {
@@ -837,7 +844,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["alta vista", "altavista.digital.com"],
     relatedTerms: ["babel-fish", "scooter-crawler"],
     sources: [
-      { label: "Wikipedia: AltaVista - launch 15 December 1995, shutdown 8 July 2013" },
+      { label: "AltaVista publicly launched on 15 December 1995; the shutdown of 8 July 2013 is carried by two contemporaneous reports cited on the page", href: "https://en.wikipedia.org/wiki/AltaVista" },
       { label: "Grokipedia: AltaVista - the DEC Western Research Laboratory origin" },
     ],
   },
@@ -849,7 +856,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["babelfish", "altavista translate"],
     relatedTerms: ["altavista"],
     sources: [
-      { label: "AltaVista product history; named for the fish in The Hitchhiker's Guide to the Galaxy" },
+      { label: "'In 1997, it launched Babel Fish, a web-based machine translation application that translated text or webpages.' The page does NOT name the fish in The Hitchhiker's Guide to the Galaxy as the origin, which was read for and is not there", href: "https://en.wikipedia.org/wiki/AltaVista" },
     ],
   },
   {
@@ -859,7 +866,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["web-development"],
     aliases: ["scooter", "altavista crawler"],
     relatedTerms: ["altavista"],
-    sources: [{ label: "AltaVista engineering history; crawler written by Louis Monier at DEC" }],
+    sources: [{ label: "AltaVista at launch used 'a fast, multi-threaded web crawler, Scooter, that could cover many more World Wide Web pages than were believed to exist at the time'; the page names Louis Monier as the one who programmed it, at Digital Equipment Corporation", href: "https://en.wikipedia.org/wiki/AltaVista" }],
   },
   {
     slug: "apache-httpd",
@@ -882,7 +889,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     relatedTerms: ["apache-httpd", "apache-software-foundation"],
     disputed: true,
     sources: [
-      { label: "Apache Server FAQ, 1996-2001 - the 'patchy server' explanation" },
+      { label: "The Apache HTTP Server Project's own history: in February 1995 the most popular server software on the web was the NCSA daemon, and the group restarted development in April 1995. It does NOT carry the 'patchy server' naming story, which was read for and is not on this page", href: "https://httpd.apache.org/ABOUT_APACHE.html" },
       { label: "Brian Behlendorf interviews, 2000 and 2007 - which contradict each other" },
     ],
   },
@@ -998,7 +1005,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["atm jackpotting", "jackpotting", "medical device hacking"],
     relatedTerms: ["defcon", "black-hat", "the-jeep-hack"],
-    sources: [{ label: "Barnaby Jack - researcher biography", href: "https://en.wikipedia.org/wiki/Barnaby_Jack" }],
+    sources: [{ label: "He was known for his 2010 Black Hat presentation on jackpotting, in which he exploited two ATMs on stage and made them dispense currency", href: "https://en.wikipedia.org/wiki/Barnaby_Jack" }],
   },
   {
     slug: "wall-of-sheep",
@@ -1007,7 +1014,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["wall of sheep", "defcon wall", "sheep wall"],
     relatedTerms: ["defcon", "tls"],
-    sources: [{ label: "Wall of Sheep - DEF CON village", href: "https://en.wikipedia.org/wiki/Wall_of_Sheep" }],
+    sources: [{ label: "The Wall of Sheep's own site, now the Packet Hacking Village: 'Wall of Sheep - Spreading awareness to the flock', running at DEF CON", href: "https://www.phvillage.io/" }],
   },
   {
     slug: "pwnie-awards",
@@ -1088,7 +1095,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["kim zetter", "stuxnet book"],
     relatedTerms: ["stuxnet", "zero-day"],
-    sources: [{ label: "Countdown to Zero Day", href: "https://en.wikipedia.org/wiki/Countdown_to_Zero_Day" }],
+    sources: [{ label: "Kim Zetter, investigative journalist covering cybersecurity and national security since 1999; her bibliography lists 'Countdown to Zero Day: Stuxnet and the Launch of the World's First Digital Weapon', Crown, 2014", href: "https://en.wikipedia.org/wiki/Kim_Zetter" }],
   },
   {
     slug: "anonymous",
@@ -1253,7 +1260,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["dark tangent", "dt", "defcon founder"],
     relatedTerms: ["defcon", "black-hat", "defcon-goons"],
-    sources: [{ label: "Jeff Moss - biography", href: "https://en.wikipedia.org/wiki/Jeff_Moss_(hacker)" }],
+    sources: [{ label: "In 1993 he created the first DEF CON, built around a party for members of a Fido hacking network in Canada", href: "https://en.wikipedia.org/wiki/Jeff_Moss_(hacker)" }],
   },
   {
     slug: "mudge",
@@ -1265,7 +1272,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["peiter zatko", "l0phtcrack author", "cyber fast track"],
     relatedTerms: ["l0pht", "the-l0pht-testimony", "buffer-overflow"],
-    sources: [{ label: "Peiter Zatko - biography", href: "https://en.wikipedia.org/wiki/Peiter_Zatko" }],
+    sources: [{ label: "He was one of the seven L0pht members who testified before a Senate committee in 1998 on the vulnerabilities of the internet at that time; L0pht became the consultancy @stake in 1999", href: "https://en.wikipedia.org/wiki/Peiter_Zatko" }],
   },
   {
     slug: "phiber-optik",
@@ -1277,7 +1284,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "isp-telecom"],
     aliases: ["mark abene", "mod founder"],
     relatedTerms: ["masters-of-deception", "legion-of-doom", "operation-sundevil"],
-    sources: [{ label: "Mark Abene - biography", href: "https://en.wikipedia.org/wiki/Mark_Abene" }],
+    sources: [{ label: "On 24 January 1990 Abene and other Masters of Deception members had their homes searched and property seized by the US Secret Service; he was a high-profile figure through the late 1980s and early 1990s", href: "https://en.wikipedia.org/wiki/Mark_Abene" }],
   },
   {
     slug: "the-mentor",
@@ -1289,7 +1296,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "ops-culture"],
     aliases: ["loyd blankenship", "conscience of a hacker", "gurps cyberpunk"],
     relatedTerms: ["the-hacker-manifesto", "legion-of-doom", "operation-sundevil"],
-    sources: [{ label: "Loyd Blankenship - biography", href: "https://en.wikipedia.org/wiki/Loyd_Blankenship" }],
+    sources: [{ label: "Loyd Blankenship, the person behind the pseudonym", href: "https://en.wikipedia.org/wiki/Loyd_Blankenship" }, { label: "The Mentor, 'The Conscience of a Hacker', in Phrack issue 7. The text carries its own date - \"Written on January 8, 1986\" - and Phrack dates that issue 25 September 1986", href: "https://phrack.org/issues/7/hackers-manifesto.html" }],
   },
   {
     slug: "joybubbles",
@@ -1310,7 +1317,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["clifford stoll", "the 75-cent error", "klein bottles"],
     relatedTerms: ["the-cuckoos-egg", "the-kgb-hack", "honeypot"],
-    sources: [{ label: "Clifford Stoll - biography", href: "https://en.wikipedia.org/wiki/Clifford_Stoll" }],
+    sources: [{ label: "He is most noted for his 1986 investigation, made while a systems administrator at Lawrence Berkeley National Laboratory, which led to the capture of the hacker Markus Hess", href: "https://en.wikipedia.org/wiki/Clifford_Stoll" }],
   },
   {
     slug: "tsutomu-shimomura",
@@ -1322,7 +1329,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["shimomura", "takedown", "ip spoofing attack"],
     relatedTerms: ["kevin-mitnick", "the-cuckoos-egg"],
-    sources: [{ label: "Tsutomu Shimomura - biography", href: "https://en.wikipedia.org/wiki/Tsutomu_Shimomura" }],
+    sources: [{ label: "He is best known for events in 1995, when he assisted in tracking down Kevin Mitnick", href: "https://en.wikipedia.org/wiki/Tsutomu_Shimomura" }],
   },
   {
     slug: "adrian-lamo",
@@ -1334,7 +1341,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security"],
     aliases: ["the homeless hacker", "new york times intrusion", "manning informant"],
     relatedTerms: ["kevin-mitnick", "responsible-disclosure", "hacktivism"],
-    sources: [{ label: "Adrian Lamo - biography", href: "https://en.wikipedia.org/wiki/Adrian_Lamo" }],
+    sources: [{ label: "In December 2001 WorldCom praised Lamo for helping fortify its corporate security, and in February 2002 he broke into the internal network of The New York Times and added his own name to its database of expert sources", href: "https://en.wikipedia.org/wiki/Adrian_Lamo" }],
   },
   {
     slug: "albert-gonzalez",
@@ -1346,7 +1353,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["soupnazi", "operation get rich or die tryin", "tjx breach", "heartland breach"],
     relatedTerms: ["sql-injection", "war-driving"],
-    sources: [{ label: "Albert Gonzalez - biography", href: "https://en.wikipedia.org/wiki/Albert_Gonzalez" }],
+    sources: [{ label: "Accused of masterminding the theft and resale of more than 170 million card and ATM numbers from 2005 to 2007, the largest such fraud recorded; investigation of the TJX breach traced intrusions back to July 2005", href: "https://en.wikipedia.org/wiki/Albert_Gonzalez" }],
   },
   {
     slug: "gary-mckinnon",
@@ -1358,7 +1365,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "grc"],
     aliases: ["solo", "ufo hacker", "extradition case"],
     relatedTerms: ["norad", "kevin-mitnick"],
-    sources: [{ label: "Gary McKinnon - biography", href: "https://en.wikipedia.org/wiki/Gary_McKinnon" }],
+    sources: [{ label: "A US prosecutor accused him in 2002 of the biggest military computer hack of all time, covering 97 military and NASA computers over thirteen months between February 2001 and March 2002; UK police first interviewed him on 19 March 2002", href: "https://en.wikipedia.org/wiki/Gary_McKinnon" }],
   },
   {
     slug: "dvd-jon",
@@ -1382,7 +1389,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security"],
     aliases: ["geohot", "iphone unlock", "ps3 jailbreak", "millionaire dollar hacker"],
     relatedTerms: ["dvd-jon", "anonymous", "responsible-disclosure"],
-    sources: [{ label: "George Hotz - biography", href: "https://en.wikipedia.org/wiki/George_Hotz" }],
+    sources: [{ label: "In August 2007, at seventeen, Hotz became the first person reported to remove the SIM lock from an iPhone", href: "https://en.wikipedia.org/wiki/George_Hotz" }],
   },
   {
     slug: "hd-moore",
@@ -1394,7 +1401,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["metasploit", "hdm", "month of browser bugs"],
     relatedTerms: ["l0pht", "pentest", "zero-day"],
-    sources: [{ label: "HD Moore - biography", href: "https://en.wikipedia.org/wiki/HD_Moore" }],
+    sources: [{ label: "He founded the Metasploit Project in the summer of 2003, intending it as a public resource for exploit code research and development", href: "https://en.wikipedia.org/wiki/HD_Moore" }],
   },
   {
     slug: "marcus-hutchins",
@@ -1406,7 +1413,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["malwaretech", "wannacry killswitch", "kronos case"],
     relatedTerms: ["wannacry", "shadow-brokers"],
-    sources: [{ label: "Marcus Hutchins - biography", href: "https://en.wikipedia.org/wiki/Marcus_Hutchins" }],
+    sources: [{ label: "The WannaCry ransomware attack began around 12 May 2017, and his actions against it brought him celebrity within the security field; he was arrested by the FBI on 3 August 2017", href: "https://en.wikipedia.org/wiki/Marcus_Hutchins" }],
   },
   {
     slug: "wau-holland",
@@ -1418,7 +1425,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "privacy"],
     aliases: ["herwart holland-moritz", "ccc founder", "btx hack"],
     relatedTerms: ["chaos-computer-club", "the-kgb-hack", "hacktivism"],
-    sources: [{ label: "Wau Holland - biography", href: "https://en.wikipedia.org/wiki/Wau_Holland" }],
+    sources: [{ label: "In 1981 Holland co-founded the Chaos Computer Club, one of the world's oldest hacking clubs, and from 1983 wrote a column for the Berlin newspaper Die Tageszeitung", href: "https://en.wikipedia.org/wiki/Wau_Holland" }],
   },
   {
     slug: "aleph-one",
@@ -1430,7 +1437,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["elias levy", "smashing the stack for fun and profit", "phrack 49"],
     relatedTerms: ["buffer-overflow", "phrack", "the-morris-worm"],
-    sources: [{ label: "Smashing the Stack for Fun and Profit (Phrack 49)", href: "https://phrack.org/issues/49/14.html" }],
+    sources: [{ label: "Aleph One, 'Smashing the Stack for Fun and Profit', Phrack 49, which the magazine dates 8 November 1996", href: "https://phrack.org/issues/49/smashing-the-stack-for-fun-and-profit" }],
   },
   {
     slug: "richard-stallman",
@@ -1442,7 +1449,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "programming"],
     aliases: ["rms", "gnu", "fsf founder", "st ignucius"],
     relatedTerms: ["free-software", "copyleft", "hackers-heroes-book"],
-    sources: [{ label: "Richard Stallman - biography", href: "https://en.wikipedia.org/wiki/Richard_Stallman" }],
+    sources: [{ label: "Stallman launched the GNU Project in September 1983 to write a Unix-like operating system composed entirely of free software, and with it the free software movement; he left MIT in February 1984 to work on it full time", href: "https://en.wikipedia.org/wiki/Richard_Stallman" }],
   },
   {
     slug: "linus-torvalds",
@@ -1454,7 +1461,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "programming"],
     aliases: ["linux creator", "git author", "just a hobby"],
     relatedTerms: ["free-software", "open-source", "usenet"],
-    sources: [{ label: "Linus Torvalds - biography", href: "https://en.wikipedia.org/wiki/Linus_Torvalds" }],
+    sources: [{ label: "Creator and lead developer of the Linux kernel since 1991: he bought an Intel 80386 PC clone on 5 January 1991, and the first Linux prototypes were released publicly from his university's FTP server in late 1991, with version 1.0 following on 14 March 1994", href: "https://en.wikipedia.org/wiki/Linus_Torvalds" }],
   },
   {
     slug: "space-rogue",
@@ -1502,7 +1509,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["gordon lyon", "nmap", "insecure.org", "network mapper"],
     relatedTerms: ["pentest", "hackers-film", "hd-moore"],
-    sources: [{ label: "Nmap - the Network Mapper", href: "https://nmap.org/" }],
+    sources: [{ label: "Nmap, the Network Mapper; its own history records the release: on 1 September 1997 Nmap was first published in Phrack issue 51, article 11, about 2,000 lines long and with no version number because further releases were not planned", href: "https://nmap.org/" }, { label: "Nmap's own history and release chronology, which carries the 1 September 1997 first release", href: "https://nmap.org/book/history-future.html" },],
   },
   {
     slug: "cypherpunks",
@@ -1559,7 +1566,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "privacy"],
     aliases: ["mendax", "wikileaks", "international subversives"],
     relatedTerms: ["underground-book", "wank-worm", "adrian-lamo"],
-    sources: [{ label: "Julian Assange - biography", href: "https://en.wikipedia.org/wiki/Julian_Assange" }],
+    sources: [{ label: "He founded WikiLeaks in 2006 and came to international attention in 2010, when WikiLeaks published the leaks from Chelsea Manning; publication of those leaks began in February 2010", href: "https://en.wikipedia.org/wiki/Julian_Assange" }],
   },
   {
     slug: "bruce-schneier",
@@ -1571,7 +1578,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["applied cryptography", "schneier's law", "security theater", "blowfish"],
     relatedTerms: ["cypherpunks", "threat-model"],
-    sources: [{ label: "Bruce Schneier - biography", href: "https://en.wikipedia.org/wiki/Bruce_Schneier" }],
+    sources: [{ label: "In 1994 Schneier published Applied Cryptography, which details the design, use and implementation of cryptographic algorithms; he wrote it because no such book existed", href: "https://en.wikipedia.org/wiki/Bruce_Schneier" }],
   },
   {
     slug: "satan-scanner",
@@ -1592,7 +1599,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "cyber-security"],
     aliases: ["markoff", "takedown author", "new york times technology"],
     relatedTerms: ["kevin-mitnick", "tsutomu-shimomura"],
-    sources: [{ label: "John Markoff - biography", href: "https://en.wikipedia.org/wiki/John_Markoff" }],
+    sources: [{ label: "He co-authored with Katie Hafner the 1991 book Cyberpunk: Outlaws and Hackers on the Computer Frontier, which profiled Mitnick and other early figures of the hacking and phone-phreaking community", href: "https://en.wikipedia.org/wiki/John_Markoff" }],
   },
   {
     slug: "moonlight-maze",
@@ -1658,7 +1665,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "hacking"],
     aliases: ["max vision", "iceman", "cardersmarket", "kingpin"],
     relatedTerms: ["albert-gonzalez", "carding", "kevin-poulsen"],
-    sources: [{ label: "Max Butler - biography", href: "https://en.wikipedia.org/wiki/Max_Butler" }],
+    sources: [{ label: "Apprehended in 2007 and convicted on two counts of wire fraud, drawing 13 years of imprisonment, five years of supervised release and $27.5 million in restitution", href: "https://en.wikipedia.org/wiki/Max_Butler" }],
   },
   {
     slug: "carding",
@@ -1679,7 +1686,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["ops-culture", "privacy"],
     aliases: ["rss author", "jstor case", "securedrop", "guerilla open access"],
     relatedTerms: ["kevin-poulsen", "eff", "open-source"],
-    sources: [{ label: "Aaron Swartz - biography", href: "https://en.wikipedia.org/wiki/Aaron_Swartz" }],
+    sources: [{ label: "In 2001 Swartz joined the RDF Core working group at the World Wide Web Consortium, where he authored RFC 3870 on the application/rdf+xml media type", href: "https://en.wikipedia.org/wiki/Aaron_Swartz" }],
   },
   {
     slug: "neuromancer",
@@ -1817,7 +1824,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "privacy"],
     aliases: ["pgp author", "zimmermann", "source code as a book"],
     relatedTerms: ["pgp", "the-crypto-wars", "cypherpunks"],
-    sources: [{ label: "Phil Zimmermann - biography", href: "https://en.wikipedia.org/wiki/Phil_Zimmermann" }],
+    sources: [{ label: "In 1991 he wrote Pretty Good Privacy and made it available with its source code by public FTP", href: "https://en.wikipedia.org/wiki/Phil_Zimmermann" }],
   },
   {
     slug: "clipper-chip",
@@ -1838,7 +1845,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["privacy", "cyber-security"],
     aliases: ["nsa disclosures", "2013 leaks", "citizenfour"],
     relatedTerms: ["citizenfour", "the-crypto-wars", "cypherpunks"],
-    sources: [{ label: "Edward Snowden - biography", href: "https://en.wikipedia.org/wiki/Edward_Snowden" }],
+    sources: [{ label: "Known for revealing classified US government surveillance programmes, and in exile in Russia since 23 June 2013; he was employed by Booz Allen Hamilton in 2013", href: "https://en.wikipedia.org/wiki/Edward_Snowden" }],
   },
   {
     slug: "key-escrow",
@@ -1910,7 +1917,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["bancos", "overlay attack", "boleto malware", "web inject"],
     relatedTerms: ["tetrade", "phishing"],
-    sources: [{ label: "Banking trojan - technique overview", href: "https://en.wikipedia.org/wiki/Banker_trojan" }],
+    sources: [{ label: "Man-in-the-browser, the technique this entry describes: the customer is shown the payment information they keyed in while different values are transmitted; a 2014 survey of financial service professionals rated it the greatest threat to online banking", href: "https://en.wikipedia.org/wiki/Man-in-the-browser" }],
   },
   {
     slug: "lei-carolina-dieckmann",
@@ -1958,7 +1965,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["isp-telecom", "ops-culture"],
     aliases: ["getschko", "primeira conexão internet brasil", "nic.br"],
     relatedTerms: ["cert-br", "rnp", "tadao-takahashi"],
-    sources: [{ label: "Demi Getschko - Internet Hall of Fame", href: "https://www.internethalloffame.org/inductee/demi-getschko/" }],
+    sources: [{ label: "Demi Getschko - Internet Hall of Fame", href: "https://www.internethalloffame.org/inductee/demi-getschko/" }, { label: "FAPESP's Revista Pesquisa, in Getschko's own words: he was leading FAPESP's data processing centre in 1991 when the first internet packets arrived at the foundation's building in Lapa, Sao Paulo, the country's first contact with the network", href: "https://revistapesquisa.fapesp.br/demi-getschko-um-construtor-da-internet/" },],
   },
   {
     slug: "tadao-takahashi",
@@ -1970,7 +1977,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["isp-telecom", "ops-culture"],
     aliases: ["eduardo tadao takahashi", "fundador da rnp", "livro verde"],
     relatedTerms: ["rnp", "demi-getschko", "carlos-afonso"],
-    sources: [{ label: "Tadao Takahashi - biography", href: "https://en.wikipedia.org/wiki/Tadao_Takahashi" }],
+    sources: [{ label: "He was associated with the organisation from 1989 to 1996, and later founded and chaired SOCINFO, Brazil's National Program for the Information Society", href: "https://en.wikipedia.org/wiki/Tadao_Takahashi" }],
   },
   {
     slug: "carlos-afonso",
@@ -1982,7 +1989,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["isp-telecom", "privacy"],
     aliases: ["ca", "ibase", "betinho", "primeiro provedor brasileiro"],
     relatedTerms: ["tadao-takahashi", "demi-getschko", "rnp"],
-    sources: [{ label: "Internet Hall of Fame inductees", href: "https://www.internethalloffame.org/inductee/carlos-afonso/" }],
+    sources: [{ label: "Internet Hall of Fame: Alternex launched in 1989, and rose to global recognition in 1992 when Afonso proposed and coordinated its use at the UN Conference on Environment and Development, the first use of the internet at a UN event", href: "https://www.internethalloffame.org/inductee/carlos-afonso/" }],
   },
   {
     slug: "liane-tarouco",
@@ -2084,7 +2091,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["ekoparty ceo", "base4 security", "ekolabs"],
     relatedTerms: ["ekoparty", "federico-kirschbaum", "jaime-andres-restrepo"],
-    sources: [{ label: "Ekoparty - founders and history", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
+    sources: [{ label: "Ekoparty was founded in 2001 by Juan Pablo Daniel Borgna, Leonardo Pigner, Federico Kirschbaum, Jeronimo Basaldua and Francisco Muller Amato, and its briefings are held in Buenos Aires", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
   },
   {
     slug: "federico-kirschbaum",
@@ -2096,7 +2103,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["fede kirschbaum", "infobyte", "faraday security", "ekoparty founder"],
     relatedTerms: ["ekoparty", "leonardo-pigner", "francisco-amato"],
-    sources: [{ label: "Ekoparty - founders and history", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
+    sources: [{ label: "Ekoparty was founded in 2001 by Juan Pablo Daniel Borgna, Leonardo Pigner, Federico Kirschbaum, Jeronimo Basaldua and Francisco Muller Amato, and its briefings are held in Buenos Aires", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
   },
   {
     slug: "francisco-amato",
@@ -2108,7 +2115,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "events"],
     aliases: ["evilgrade", "infobyte", "ekoparty founder"],
     relatedTerms: ["ekoparty", "federico-kirschbaum", "leonardo-pigner"],
-    sources: [{ label: "Ekoparty - founders and history", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
+    sources: [{ label: "Ekoparty was founded in 2001 by Juan Pablo Daniel Borgna, Leonardo Pigner, Federico Kirschbaum, Jeronimo Basaldua and Francisco Muller Amato, and its briefings are held in Buenos Aires", href: "https://en.wikipedia.org/wiki/Ekoparty" }],
   },
   {
     slug: "filipe-balestra",
@@ -2207,7 +2214,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["assolini", "kaspersky great", "boleto malware research"],
     relatedTerms: ["tetrade", "banking-trojan", "lista-do-anchises"],
-    sources: [{ label: "The Tetrade: Brazilian banking malware goes global (Securelist)", href: "https://securelist.com/the-tetrade-brazilian-banking-malware/97779/" }],
+    sources: [{ label: "Securelist on the Tetrade: Brazilian banking trojans first attempted a global reach in 2011, timidly, with very basic trojans and a low success rate", href: "https://securelist.com/the-tetrade-brazilian-banking-malware/97779/" }],
   },
   {
     slug: "rodrigo-montoro",
@@ -2219,7 +2226,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["spooker", "spookerlabs", "deteccao", "snort rules"],
     relatedTerms: ["lista-do-anchises", "anchises-moraes", "mitre-attack"],
-    sources: [{ label: "Lista de profissionais de segurança - AnchisesLandia", href: "https://anchisesbr.blogspot.com/2010/01/seguranca-72-perfis-de-profissionais-de.html" }],
+    sources: [{ label: "The list itself, posted on 30 January 2010: more than 700 Brazilian security professionals on Twitter", href: "https://anchisesbr.blogspot.com/2010/01/seguranca-72-perfis-de-profissionais-de.html" }],
   },
   {
     slug: "calendario-anchises",
@@ -2798,7 +2805,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "ops-culture"],
     aliases: ["vinton cerf", "cerf"],
     relatedTerms: ["ip", "arpanet", "ietf"],
-    sources: [{ label: "ACM A.M. Turing Award - Vinton Cerf, 2004 laureate citation and biography", href: "https://amturing.acm.org/award_winners/cerf_1083211.cfm" }, { label: "Internet Hall of Fame inductee biography for Vint Cerf, inducted in the inaugural 2012 class as a Pioneer", href: "https://www.internethalloffame.org/inductee/vint-cerf/" },],
+    sources: [{ label: "ACM A.M. Turing Award - Vinton Cerf, 2004 laureate citation and biography", href: "https://amturing.acm.org/award_winners/cerf_1083211.cfm" }, { label: "Internet Hall of Fame inductee biography for Vint Cerf, inducted in the inaugural 2012 class as a Pioneer", href: "https://www.internethalloffame.org/inductee/vint-cerf/" }, { label: "Cerf and Kahn, 'A Protocol for Packet Network Intercommunication', IEEE Transactions on Communications COM-22 No. 5, May 1974, carrying the IEEE reprint notice for that issue", href: "https://www.cs.princeton.edu/courses/archive/fall06/cos561/papers/cerf74.pdf" },],
   },
   {
     slug: "bob-kahn",
@@ -2810,7 +2817,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "ops-culture"],
     aliases: ["robert kahn", "robert e. kahn"],
     relatedTerms: ["ip", "arpanet"],
-    sources: [{ label: "ACM A.M. Turing Award - Vinton Cerf, 2004 laureate citation and biography", href: "https://amturing.acm.org/award_winners/cerf_1083211.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Vinton Cerf, 2004 laureate citation and biography", href: "https://amturing.acm.org/award_winners/cerf_1083211.cfm" }, { label: "Cerf and Kahn, 'A Protocol for Packet Network Intercommunication', IEEE Transactions on Communications COM-22 No. 5, May 1974, carrying the IEEE reprint notice for that issue", href: "https://www.cs.princeton.edu/courses/archive/fall06/cos561/papers/cerf74.pdf" },],
   },
   {
     slug: "bob-metcalfe",
@@ -2822,7 +2829,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "ops-culture"],
     aliases: ["robert metcalfe", "robert m. metcalfe"],
     relatedTerms: ["ethernet", "packet", "csma-cd"],
-    sources: [{ label: "ACM A.M. Turing Award - Robert Metcalfe, 2022 laureate profile", href: "https://amturing.acm.org/award_winners/metcalfe_3968158.cfm" }, { label: "ACM press release, March 2023: Turing Award honours Bob Metcalfe for Ethernet", href: "https://www.acm.org/articles/bulletins/2023/march/turing-award-2022" }],
+    sources: [{ label: "ACM A.M. Turing Award - Robert Metcalfe, 2022 laureate profile", href: "https://amturing.acm.org/award_winners/metcalfe_3968158.cfm" }, { label: "ACM press release, March 2023: Turing Award honours Bob Metcalfe for Ethernet", href: "https://www.acm.org/articles/bulletins/2023/march/turing-award-2022" }, { label: "IEEE Engineering and Technology History Wiki on Ethernet: on 22 May 1973 Metcalfe presented the first schematic and coined the term, and the system first functioned on 11 November 1973", href: "https://ethw.org/Ethernet" },],
   },
   {
     slug: "radia-perlman",
@@ -2846,7 +2853,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "ops-culture"],
     aliases: ["postel"],
     relatedTerms: ["postels-law", "iana", "ietf", "rfc", "elizabeth-feinler"],
-    sources: [{ label: "Internet Hall of Fame - Jon Postel", href: "https://www.internethalloffame.org/inductee/jon-postel/" }, { label: "RFC 9413 lineage - the IAB draft arguing the robustness principle causes protocol decay", href: "https://datatracker.ietf.org/doc/draft-iab-protocol-maintenance/00/" }],
+    sources: [{ label: "Internet Hall of Fame - Jon Postel", href: "https://www.internethalloffame.org/inductee/jon-postel/" }, { label: "RFC 9413 lineage - the IAB draft arguing the robustness principle causes protocol decay", href: "https://datatracker.ietf.org/doc/draft-iab-protocol-maintenance/00/" }, { label: "RFC 760, DoD Standard Internet Protocol, Postel, January 1980 - the 1980 IP specification the entry quotes, stating that an implementation should be conservative in its sending behavior and liberal in its receiving behavior; the more often quoted wording appears the same month in RFC 761, the TCP specification", href: "https://www.rfc-editor.org/rfc/rfc760.txt" },],
   },
   {
     slug: "paul-vixie",
@@ -2858,7 +2865,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "cyber-security"],
     aliases: ["vixie", "vixie cron"],
     relatedTerms: ["bind", "dns", "rpz", "hosts-file", "cache-poisoning"],
-    sources: [{ label: "Paul Vixie - BIND, ISC, MAPS and Vixie cron", href: "https://en.wikipedia.org/wiki/Paul_Vixie" }],
+    sources: [{ label: "Paul Vixie - he worked on BIND as a software engineer at Digital Equipment Corporation from 1988 to 1993, then founded the Internet Software Consortium in 1996; also MAPS and Vixie cron", href: "https://en.wikipedia.org/wiki/Paul_Vixie" }],
   },
   {
     slug: "grace-hopper",
@@ -2870,7 +2877,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["grace murray hopper", "amazing grace"],
     relatedTerms: ["compiler", "ada-lovelace", "debugging"],
-    sources: [{ label: "Britannica - Grace Hopper: Mark I, the first computer manual, the compiler, Flow-Matic and COBOL", href: "https://britannica.com/print/article/271591" }, { label: "IEEE Milestones - Grace Hopper's compiler and programming language work, 1951-1959", href: "https://ieeemilestones.ethw.org/Milestone-Proposal:Grace_Hopper's_Compiler_and_Programming_Language_Work,_1952-1959" }],
+    sources: [{ label: "Britannica - Grace Hopper: Mark I, the first computer manual, the compiler, Flow-Matic and COBOL", href: "https://britannica.com/print/article/271591" }, { label: "IEEE Milestones - Grace Hopper's compiler and programming language work, 1952-1959, as the milestone proposal itself is titled", href: "https://ieeemilestones.ethw.org/Milestone-Proposal:Grace_Hopper's_Compiler_and_Programming_Language_Work,_1952-1959" }],
   },
   {
     slug: "dan-kaminsky",
@@ -2882,7 +2889,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["kaminsky bug", "cve-2008-1447"],
     relatedTerms: ["dns", "dnssec", "cache-poisoning", "coordinated-disclosure"],
-    sources: [{ label: "Internet Hall of Fame - Dan Kaminsky", href: "https://www.internethalloffame.org/inductee/dan-kaminsky/" }, { label: "ISC advisory for CVE-2008-1447, the DNS cache-poisoning issue Kaminsky found", href: "https://kb.isc.org/docs/aa-00924" }],
+    sources: [{ label: "Internet Hall of Fame: Kaminsky discovered a fatal flaw in the Domain Name System in 2008 and spearheaded the fix, coordinating contributors who worked in stealth to patch DNS servers worldwide", href: "https://www.internethalloffame.org/inductee/dan-kaminsky/" }, { label: "ISC advisory for CVE-2008-1447, the DNS cache-poisoning issue Kaminsky found, with a posting date of 8 July 2008", href: "https://kb.isc.org/docs/aa-00924" }],
   },
   {
     slug: "luigi-galvani",
@@ -2942,7 +2949,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["joule", "joule heating", "mechanical equivalent of heat"],
     relatedTerms: [],
-    sources: [{ label: "Joule's demonstration that energy is conserved in electrical circuits, linking electrical energy, thermal heating and chemical transformation", href: "https://electricityforum.com/a-timeline-of-history-of-electricity" }],
+    sources: [{ label: "A timeline of the history of electricity, at 1841: Joule demonstrates that energy is conserved in electrical circuits, linking electrical energy, thermal heating and chemical transformation", href: "https://electricityforum.com/a-timeline-of-history-of-electricity" }],
   },
   {
     slug: "samuel-morse",
@@ -2978,7 +2985,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["crookes", "crookes tube", "cathode ray"],
     relatedTerms: [],
-    sources: [{ label: "The Crookes tube, the partially evacuated glass tube in which cathode rays were studied, and the line from it to the cathode ray tube", href: "https://en.wikipedia.org/wiki/Crookes_tube" }],
+    sources: [{ label: "The Crookes tube, the partially evacuated glass tube invented by Crookes and others around 1869 to 1875, in which cathode rays were discovered and studied, and the line from it to the cathode ray tube", href: "https://en.wikipedia.org/wiki/Crookes_tube" }],
   },
   {
     slug: "lee-de-forest",
@@ -3080,7 +3087,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["alexander bell", "graham bell", "telephone"],
     relatedTerms: [],
-    sources: [{ label: "The IEEE Alexander Graham Bell Medal, awarded for exceptional contributions to communications sciences and engineering - the award Norman Abramson received in 2007 for fundamental work in random multiple access", href: "https://ethw.org/Milestones:Demonstration_of_the_ALOHA_Packet_Radio_Data_Network,_1971" }],
+    sources: [{ label: "IEEE Milestone, First Intelligible Voice Transmission over Electric Wire, 1876: the first transmission of intelligible speech over electrical wires took place on 10 March 1876, when Bell called to his assistant Thomas Watson from their attic laboratory at 5 Exeter Place", href: "https://ethw.org/Milestones:First_Intelligible_Voice_Transmission_over_Electric_Wire,_1876" }],
   },
   {
     slug: "lan",
@@ -3173,7 +3180,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["tomlinson", "first email", "at sign"],
     relatedTerms: [],
-    sources: [{ label: "Tomlinson at BBN modifying SNDMSG with code from his CPYNET file transfer program to send messages across the ARPANET, on his own initiative rather than as a commissioned project", href: "https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html" }, { label: "A Raytheon spokesman noting that developing email was not an assignment at all - he was just fooling around, looking for something to do with the ARPANET; inducted into the Internet Hall of Fame in 2012 and died in 2016 aged 74", href: "https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/" }],
+    sources: [{ label: "Tomlinson at BBN modifying SNDMSG with code from his CPYNET file transfer program to send messages across the ARPANET, on his own initiative rather than as a commissioned project", href: "https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html" }, { label: "A Raytheon spokesman noting that developing email was not an assignment at all - he was just fooling around, looking for something to do with the ARPANET; inducted into the Internet Hall of Fame in 2012 and died in 2016 aged 74", href: "https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/" }, { label: "Internet Hall of Fame inductee page: beyond the message itself he designed a tool for creating and reading email and led work on the first email standards - in 1972 he was among the participants in the meeting to extend FTP to carry email, the arrangement used until SMTP replaced it in 1982, and he co-authored RFC 561 of September 1973, the first standard for internet email message formats, which defined From, Subject and Date; he died in March 2016", href: "https://www.internethalloffame.org/inductee/raymond-tomlinson/" },],
   },
   {
     slug: "robert-taylor",
@@ -3197,7 +3204,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["frank", "network analysis corporation", "topology"],
     relatedTerms: [],
-    sources: [{ label: "Howard Frank, 4 June 1941 to 1 May 2017, network engineer who laid the groundwork for analysing and designing computer networks; PhD 1965, consultant to the Office of Emergency Preparedness, founder of Network Analysis Corporation, later at DARPA and dean at Maryland; Presidential Distinguished Service Medal and Internet Hall of Fame", href: "https://en.wikipedia.org/wiki/Howard_Frank_(network_engineer)" }, { label: "Charles Babbage Institute oral history: Frank's background, the founding of Network Analysis Corporation, his ARPANET work and his interaction with Roberts, the IPT Office, BBN and Kleinrock", href: "https://conservancy.umn.edu/signposting/describedby/53e369fc-240a-4341-8178-6677cf7bf265" }],
+    sources: [{ label: "Howard Frank, 4 June 1941 to 1 May 2017, network engineer who laid the groundwork for analysing and designing computer networks; PhD 1965, consultant to the Office of Emergency Preparedness, founder in 1969 of Network Analysis Corporation, later at DARPA and dean at Maryland; Presidential Distinguished Service Medal and Internet Hall of Fame", href: "https://en.wikipedia.org/wiki/Howard_Frank_(network_engineer)" }, { label: "Charles Babbage Institute oral history: Frank's background, the founding of Network Analysis Corporation, his ARPANET work and his interaction with Roberts, the IPT Office, BBN and Kleinrock", href: "https://conservancy.umn.edu/signposting/describedby/53e369fc-240a-4341-8178-6677cf7bf265" }],
   },
   {
     slug: "david-clark",
@@ -3290,7 +3297,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["quaynor", "network computer systems", "africa internet"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame 2013 inductee, recognised for pioneering Internet development and expansion throughout Africa", href: "https://finance.yahoo.com/news/marc-andreessen-richard-stallman-aaron-000541506.html" }],
+    sources: [{ label: "Internet Hall of Fame inductee page: he established some of Africa's first internet connections over nearly two decades, helped set up the African Network Operators Group, was founding chairman of AFRINIC, has taught at the University of Cape Coast in Ghana since 1979, and received the Internet Society's Jonathan B. Postel Service Award in 2007", href: "https://www.internethalloffame.org/inductee/nii-quaynor/" }],
   },
   {
     slug: "kanchana-kanchanasut",
@@ -3302,7 +3309,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["kanchanasut", "thailand internet", ".th"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame 2013 inductee, recognised for bringing the Internet to Thailand", href: "https://finance.yahoo.com/news/marc-andreessen-richard-stallman-aaron-000541506.html" }, { label: "Internet history timeline: through the work of Dr Kanchana Kanchanasut, Thailand obtained its own domain name", href: "https://firstsiteguide.com/who-invented-internet-part-5/" }],
+    sources: [{ label: "Internet Hall of Fame inductee page: she set up her nation's first experimental domestic research and education network in 1988, connecting five Thai universities by dial-up to the Australian Academic and Research Network, and registered the .TH domain, which she has administered since 1988; in 1991 her efforts led to the first leased line with a TCP/IP connection to the global network", href: "https://www.internethalloffame.org/inductee/kanchana-kanchanasut/" }, { label: "Internet history timeline: through the work of Dr Kanchana Kanchanasut, Thailand obtained its own domain name", href: "https://firstsiteguide.com/who-invented-internet-part-5/" }],
   },
   {
     slug: "stephen-wolff",
@@ -3338,7 +3345,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["ricart", "first internet exchange point", "fix"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame 2013: Ricart set up the first Internet Exchange Point and led teams writing code for the first implementation of TCP/IP for the IBM PC in the 1980s", href: "https://www.elon.edu/u/imagining/event-coverage/isoc-events/hof-ietf-2013/" }, { label: "Timeline entry: Dr Glenn Ricart set up the first Internet Exchange point, connecting the original federal TCP/IP networks and the first United States commercial and non-commercial networks", href: "https://hostingct.com/help/tips/amazing-timeline-f/" }],
+    sources: [{ label: "Internet Hall of Fame 2013: Ricart set up the first Internet Exchange Point and led teams writing code for the first implementation of TCP/IP for the IBM PC in the 1980s", href: "https://www.elon.edu/u/imagining/event-coverage/isoc-events/hof-ietf-2013/" }, { label: "Ricart set up what was probably the first internet exchange point, the Federal Internet Exchange in College Park, Maryland, which interconnected the original federal TCP/IP networks and was extended to form MAE-East", href: "https://en.wikipedia.org/wiki/Glenn_Ricart" }],
   },
   {
     slug: "danny-cohen",
@@ -3350,7 +3357,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["cohen", "network voice protocol", "packet voice"],
     relatedTerms: [],
-    sources: [{ label: "Danny Cohen was the first to implement packet video and packet voice, the Network Voice Protocol, when he adapted the visual flight simulator to run over the ARPANET in 1973; it was the first application of packet switching to real-time applications", href: "https://hostingct.com/help/tips/amazing-timeline-f/" }],
+    sources: [{ label: "Internet Hall of Fame inductee page, in its own words: in 1967 Cohen developed the first real-time visual flight simulator on a general purpose computer, and then in 1973 he was the first to implement packet-video and packet voice, the Network Voice Protocol, when he adapted that simulator to run over the ARPANET - the first application of packet switching to real-time applications", href: "https://www.internethalloffame.org/inductee/danny-cohen/" }],
   },
   {
     slug: "peter-eckersley",
@@ -3405,12 +3412,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     headword: "Adiel Akplogan",
     kind: "lore",
     person: true,
-    personYear: 2004,
+    personYear: 2003,
     personField: "internet",
     domains: ["enterprise-networking"],
     aliases: ["akplogan", "afrinic", "togo"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame: an electrical engineer by training, between 1996 and 1997 Akplogan helped establish the first TCP/IP connection in his native Togo; he played a key role in the development of several of the first West African ISPs, and by 2003 had helped start AFRINIC, Africa's first Regional Internet Registry, serving as its first CEO until 2015", href: "https://www.internethalloffame.org/inductee/adiel-akplogan/" }, { label: "Internet Hall of Fame: Akplogan began as an intern promised a full-time job if he could succeed where others had failed, worked three days and nights to fix the technical problem and produce an online banking prototype based on Minitel technology, and described that as the start of the journey to the internet in Togo; he planned to spend two years at AFRINIC and stayed ten", href: "https://www.internethalloffame.org/2020/10/08/how-africas-regional-internet-network-started-one-driven-intern-quest-lan/" }, { label: "AFRINIC on his induction of 27 September 2019, noting he joins Nii Quaynor, one of AFRINIC's founders, among previous inductees", href: "https://afrinic.net/2019-09-28-congratulatory-message-to-adiel" }],
+    sources: [{ label: "Internet Hall of Fame: an electrical engineer by training, between 1996 and 1997 Akplogan helped establish the first TCP/IP connection in his native Togo; he played a key role in the development of several of the first West African ISPs, and by 2003 had helped start AFRINIC, Africa's first Regional Internet Registry, serving as its first CEO until 2015", href: "https://www.internethalloffame.org/inductee/adiel-akplogan/" }, { label: "Internet Hall of Fame: Akplogan began as an intern promised a full-time job if he could succeed where others had failed, worked three days and nights to fix the technical problem and produce an online banking prototype based on Minitel technology, and described that as the start of the journey to the internet in Togo; he planned to spend two years at AFRINIC and stayed ten", href: "https://www.internethalloffame.org/2020/10/08/how-africas-regional-internet-network-started-one-driven-intern-quest-lan/" }, { label: "AFRINIC on his induction of 27 September 2019, noting he joins Nii Quaynor, one of AFRINIC's founders, among previous inductees", href: "https://web.archive.org/web/20210127104728/https://afrinic.net/2019-09-28-congratulatory-message-to-adiel" }],
   },
   {
     slug: "kees-neggers",
@@ -3479,7 +3486,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["akkerhuis", "sidn", "nlnet labs", "iso 3166"],
     relatedTerms: [],
-    sources: [{ label: "Internet Hall of Fame inductee page: after seven years in the United States - the Information Technology Center at Carnegie Mellon, the software company mtXinu, and AT&T Bell Labs - Akkerhuis returned to join NLnet, the first independent ISP in the Netherlands, and later advised the .nl registry; he moved between research institutes, ISPs and registries in Europe and the United States as a connector in the technical community, and holds roles across the IETF, ISOC, ICANN, RIPE and the European ccTLD council; he was made a Knight of the Order of the Dutch Lion on 24 April 2026", href: "https://www.internethalloffame.org/inductee/jaap-akkerhuis/" }, { label: "NLnet, on the 2017 induction: he began at the Mathematical Centre in Amsterdam, now CWI, which became the centre of European computer networks, in the small team led by Teus Hagen that did most of the networking, later joined by Piet Beertema, Jim McKie and Daniel Karrenberg; he spent nights and weekends setting up and debugging the first international gateways, reaching Australia via Japan and South Korea, and well before the first official public connection outside the USA was made at CWI he personally convinced Jon Postel to allocate him a range of IP addresses to avoid future collisions", href: "https://nlnet.nl/press/20170919-internethalloffame-en.html" }, { label: "SIDN, on the 2026 knighthood: he was part of the CWI team that realised the first public internet connection between Europe and America, and with Hagen, Beertema, McKie and Karrenberg laid the foundations for Amsterdam as a global internet hub; his applied research at SIDN made it possible to sign internet names cryptographically at scale; he is Vice-Chair of the ISO 3166 Maintenance Agency, responsible for the assignment of country codes such as NL and DE, which also underlie domains such as .nl", href: "https://www.sidn.nl/en/news-and-blogs/dutch-internet-pioneer-jaap-akkerhuis-knighted" }, { label: "CWI, on the induction: his career began in 1977 at the Mathematical Centre; he joined NLnet in 1995 and worked at SIDN from 1999 to 2004, during which the number of .nl domains passed one million; the induction made him the fourth Dutch member of a Hall of Fame then numbering 103", href: "https://www.cwi.nl/en/news/jaap-akkerhuis-admitted-to-internet-hall-of-fame/" }],
+    sources: [{ label: "Internet Hall of Fame inductee page: after seven years in the United States - the Information Technology Center at Carnegie Mellon, the software company mtXinu, and AT&T Bell Labs - Akkerhuis returned to join NLnet, the first independent ISP in the Netherlands, and later advised the .nl registry; he moved between research institutes, ISPs and registries in Europe and the United States as a connector in the technical community, and holds roles across the IETF, ISOC, ICANN, RIPE and the European ccTLD council; he was made a Knight of the Order of the Dutch Lion on 24 April 2026", href: "https://www.internethalloffame.org/inductee/jaap-akkerhuis/" }, { label: "NLnet, on the 2017 induction: he began at the Mathematical Centre in Amsterdam, now CWI, which became the centre of European computer networks, in the small team led by Teus Hagen that did most of the networking, later joined by Piet Beertema, Jim McKie and Daniel Karrenberg; he spent nights and weekends setting up and debugging the first international gateways, reaching Australia via Japan and South Korea, and well before the first official public connection outside the USA was made at CWI he personally convinced Jon Postel to allocate him a range of IP addresses to avoid future collisions", href: "https://nlnet.nl/press/20170919-internethalloffame-en.html" }, { label: "SIDN, on the 2026 knighthood: he was part of the CWI team that realised the first public internet connection between Europe and America, and with Hagen, Beertema, McKie and Karrenberg laid the foundations for Amsterdam as a global internet hub; his applied research at SIDN made it possible to sign internet names cryptographically at scale; he is Vice-Chair of the ISO 3166 Maintenance Agency, responsible for the assignment of country codes such as NL and DE, which also underlie domains such as .nl", href: "https://www.sidn.nl/en/news-and-blogs/dutch-internet-pioneer-jaap-akkerhuis-knighted" }, { label: "CWI, on the induction: his career began in 1977 at the Mathematical Centre; he joined NLnet in 1995 and worked at SIDN from 1999 to 2004, during which the number of .nl domains passed one million; the induction made him the fourth Dutch member of a Hall of Fame then numbering 103", href: "https://www.cwi.nl/en/news/jaap-akkerhuis-admitted-to-internet-hall-of-fame/" }, { label: "CWI on the thirtieth anniversary: on 17 November 1988 CWI became the first institute outside North America to gain access to NSFnet, making the Netherlands the first country in Europe connected to the internet, and naming Akkerhuis among the CWI people later inducted into the Internet Hall of Fame", href: "https://www.cwi.nl/en/news/cwi-celebrates-30-year-of-open-internet-in-europe/" },],
   },
   {
     slug: "tarek-kamel",
@@ -3830,7 +3837,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["diffie"],
     relatedTerms: ["public-key-cryptography", "key-exchange"],
-    sources: [{ label: "ACM press release, 2015 Turing Award to Diffie and Hellman for public-key cryptography", href: "https://awards.acm.org/about/2015-turing" }, { label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }],
+    sources: [{ label: "ACM press release, 2015 Turing Award to Diffie and Hellman for public-key cryptography", href: "https://awards.acm.org/about/2015-turing" }, { label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }, { label: "Diffie and Hellman, 'New Directions in Cryptography', IEEE Transactions on Information Theory IT-22 No. 6, November 1976, from Hellman's own Stanford publication list; the manuscript was received on 3 June 1976", href: "https://ee.stanford.edu/~hellman/publications/24.pdf" },],
   },
   {
     slug: "martin-hellman",
@@ -3842,7 +3849,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["hellman"],
     relatedTerms: ["key-exchange", "forward-secrecy"],
-    sources: [{ label: "ACM award record - Martin Hellman, 2015 Turing citation", href: "https://awards.acm.org/award-recipients/hellman_4055781" }, { label: "ACM press release, 2015 Turing Award to Diffie and Hellman for public-key cryptography", href: "https://awards.acm.org/about/2015-turing" }],
+    sources: [{ label: "ACM award record - Martin Hellman, 2015 Turing citation", href: "https://awards.acm.org/award-recipients/hellman_4055781" }, { label: "ACM press release, 2015 Turing Award to Diffie and Hellman for public-key cryptography", href: "https://awards.acm.org/about/2015-turing" }, { label: "Diffie and Hellman, 'New Directions in Cryptography', IEEE Transactions on Information Theory IT-22 No. 6, November 1976, from Hellman's own Stanford publication list; the manuscript was received on 3 June 1976", href: "https://ee.stanford.edu/~hellman/publications/24.pdf" },],
   },
   {
     slug: "ralph-merkle",
@@ -3854,7 +3861,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["merkle"],
     relatedTerms: ["merkle-tree", "public-key-cryptography"],
-    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }, { label: "Merkle's own archive, in his own words: in the Fall of 1974, as an undergraduate, he enrolled in CS244 at UC Berkeley and submitted the project proposal that became Merkle's puzzles; the page carries the scanned proposal, the paper as published in April 1978 and the Communications of the ACM rejection letter of 22 October 1975", href: "https://www.ralphmerkle.com/1974/" },],
   },
   {
     slug: "ron-rivest",
@@ -3866,7 +3873,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["rivest", "rsa"],
     relatedTerms: ["rsa", "public-key-cryptography", "digital-signature"],
-    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }, { label: "Rivest, Shamir and Adleman, 'A Method for Obtaining Digital Signatures and Public-Key Cryptosystems', from Rivest's own MIT page; received 4 April 1977 and revised 1 September 1977, with publication in Communications of the ACM following in February 1978", href: "https://people.csail.mit.edu/rivest/Rsapaper.pdf" },],
   },
   {
     slug: "adi-shamir",
@@ -3878,7 +3885,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["shamir", "secret sharing"],
     relatedTerms: ["rsa", "public-key-cryptography"],
-    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }, { label: "Rivest, Shamir and Adleman, 'A Method for Obtaining Digital Signatures and Public-Key Cryptosystems', from Rivest's own MIT page; received 4 April 1977 and revised 1 September 1977, with publication in Communications of the ACM following in February 1978", href: "https://people.csail.mit.edu/rivest/Rsapaper.pdf" },],
   },
   {
     slug: "leonard-adleman",
@@ -3890,7 +3897,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["adleman"],
     relatedTerms: ["rsa", "public-key-cryptography"],
-    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Ronald Rivest, laureate page", href: "https://amturing.acm.org/award_winners/rivest_1403005.cfm" }, { label: "Rivest, Shamir and Adleman, 'A Method for Obtaining Digital Signatures and Public-Key Cryptosystems', from Rivest's own MIT page; received 4 April 1977 and revised 1 September 1977, with publication in Communications of the ACM following in February 1978", href: "https://people.csail.mit.edu/rivest/Rsapaper.pdf" },],
   },
   {
     slug: "james-ellis",
@@ -3902,7 +3909,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["ellis", "non-secret encryption"],
     relatedTerms: ["public-key-cryptography"],
-    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }, { label: "Ellis, 'The Possibility of Secure Non-Secret Digital Encryption', CESG, dated January 1970 on its own title page; declassified in 1997, after his death", href: "https://cryptocellar.org/cesg/possnse.pdf" },],
   },
   {
     slug: "clifford-cocks",
@@ -3914,7 +3921,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["cocks"],
     relatedTerms: ["rsa", "public-key-cryptography"],
-    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }],
+    sources: [{ label: "ACM A.M. Turing Award - Whitfield Diffie, laureate page", href: "https://amturing.acm.org/award_winners/diffie_8371646.cfm" }, { label: "Cocks, 'A Note on Non-Secret Encryption', CESG, dated 20 November 1973 on its own title page; declassified in 1997", href: "https://cryptocellar.org/cesg/notense.pdf" },],
   },
   {
     slug: "paul-baran",
@@ -3926,7 +3933,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "isp-telecom"],
     aliases: ["baran", "message blocks"],
     relatedTerms: ["packet-switching", "packet", "arpanet"],
-    sources: [{ label: "Britannica - Paul Baran, distributed networks and message blocks", href: "https://www.britannica.com/biography/Paul-Baran" }, { label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }],
+    sources: [{ label: "Britannica - Paul Baran, distributed networks and message blocks", href: "https://www.britannica.com/biography/Paul-Baran" }, { label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }, { label: "Baran, 'On Distributed Communications: I. Introduction to Distributed Communications Networks', RAND Memorandum RM-3420-PR, which RAND records as published in 1964", href: "https://www.rand.org/pubs/research_memoranda/RM3420.html" },],
   },
   {
     slug: "donald-davies",
@@ -3938,7 +3945,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking", "isp-telecom"],
     aliases: ["davies", "npl"],
     relatedTerms: ["packet-switching", "packet", "arpanet"],
-    sources: [{ label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }, { label: "Living Internet - the invention of packet switching, Baran and Davies", href: "https://www.livinginternet.com/i/iw_packet_inv.htm" }],
+    sources: [{ label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }, { label: "Living Internet - the invention of packet switching, Baran and Davies", href: "https://www.livinginternet.com/i/iw_packet_inv.htm" }, { label: "The National Museum of Computing, NPL Technology of the Internet Gallery: Davies's ideas were first presented in public at the ACM symposium in Gatlinburg in 1967, and in that same year NPL's packet switching ideas were adopted by the US Department of Defense", href: "https://www.tnmoc.org/npl-gallery" },],
   },
   {
     slug: "leonard-kleinrock",
@@ -3950,7 +3957,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["kleinrock", "queueing theory"],
     relatedTerms: ["latency", "packet-switching", "arpanet"],
-    sources: [{ label: "Heidelberg Laureate Foundation - packet switching and the first ARPANET message", href: "https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-2-of-12-packet-switching-and-the-first-message/" }, { label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }],
+    sources: [{ label: "Heidelberg Laureate Foundation - packet switching and the first ARPANET message", href: "https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-2-of-12-packet-switching-and-the-first-message/" }, { label: "National Academies memorial tribute to Paul Baran, on the RAND studies and the parallel work at NPL", href: "https://www.nationalacademies.org/read/13338/chapter/4" }, { label: "Kleinrock's own UCLA bibliography of public reports, listing 'Information Flow in Large Communication Nets' as an MIT Ph.D. thesis proposal of May 1961 and an MIT RLE Quarterly Progress Report of July 1961", href: "https://www.lk.cs.ucla.edu/bibliography-public_reports.html" },],
   },
   {
     slug: "larry-roberts",
@@ -3962,7 +3969,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["lawrence roberts"],
     relatedTerms: ["arpanet"],
-    sources: [{ label: "Heidelberg Laureate Foundation - packet switching and the first ARPANET message", href: "https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-2-of-12-packet-switching-and-the-first-message/" }],
+    sources: [{ label: "Heidelberg Laureate Foundation - packet switching and the first ARPANET message", href: "https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-2-of-12-packet-switching-and-the-first-message/" }, { label: "History of Information: in October 1967 Roberts published 'Multiple computer networks and intercomputer communication' at the ACM Symposium on Operating System Principles in Gatlinburg, the first paper on the design of the ARPANET", href: "https://historyofinformation.com/detail.php?id=858" },],
   },
   {
     slug: "van-jacobson",
@@ -4034,7 +4041,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["ritchie", "dmr"],
     relatedTerms: ["c", "unix", "posix", "compiler"],
-    sources: [{ label: "ACM award record - Dennis M. Ritchie: the 1983 Turing Award with Ken Thompson, and the 1983 Software System Award for Unix", href: "https://awards.acm.org/award-recipients/ritchie_1506389" }],
+    sources: [{ label: "ACM award record - Dennis M. Ritchie: the 1983 Turing Award with Ken Thompson, and the 1983 Software System Award for Unix", href: "https://awards.acm.org/award-recipients/ritchie_1506389" }, { label: "Ritchie, 'The Development of the C Language', in his own words: C came into being in the years 1969 to 1973, and the most creative period occurred during 1972", href: "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html" },],
   },
   {
     slug: "ken-thompson",
@@ -4046,7 +4053,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "cyber-security"],
     aliases: ["thompson", "ken"],
     relatedTerms: ["unix", "c", "trusting-trust", "compiler"],
-    sources: [{ label: "ACM award record - Dennis M. Ritchie: the 1983 Turing Award with Ken Thompson, and the 1983 Software System Award for Unix", href: "https://awards.acm.org/award-recipients/ritchie_1506389" }],
+    sources: [{ label: "ACM award record - Dennis M. Ritchie: the 1983 Turing Award with Ken Thompson, and the 1983 Software System Award for Unix", href: "https://awards.acm.org/award-recipients/ritchie_1506389" }, { label: "Ritchie, 'The Development of the C Language': Unix first ran on the PDP-7 in 1969", href: "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/chist.html" },],
   },
   {
     slug: "leslie-lamport",
@@ -4058,7 +4065,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "cloud"],
     aliases: ["lamport", "paxos", "tla+"],
     relatedTerms: ["paxos", "consensus", "byzantine-fault-tolerance", "quorum"],
-    sources: [{ label: "ACM A.M. Turing Award - Leslie Lamport, laureate page: logical clocks, distributed snapshots, Paxos and TLA+", href: "https://amturing.acm.org/award_winners/lamport_1205376.cfm" }, { label: "ACM announcement of the 2013 Turing Award to Leslie Lamport, naming safety and liveness, Byzantine fault tolerance, TLA+ and LaTeX", href: "https://www.acm.org/articles/bulletins/2014/march/03182014-turing-award" }],
+    sources: [{ label: "ACM A.M. Turing Award - Leslie Lamport, laureate page: logical clocks, distributed snapshots, Paxos and TLA+", href: "https://amturing.acm.org/award_winners/lamport_1205376.cfm" }, { label: "ACM announcement of the 2013 Turing Award to Leslie Lamport, naming safety and liveness, Byzantine fault tolerance, TLA+ and LaTeX", href: "https://www.acm.org/articles/bulletins/2014/march/03182014-turing-award" }, { label: "Lamport, 'Time, Clocks, and the Ordering of Events in a Distributed System', Communications of the ACM 21(7), July 1978, from his own publication archive", href: "https://lamport.azurewebsites.net/pubs/time-clocks.pdf" },],
   },
   {
     slug: "barbara-liskov",
@@ -4070,7 +4077,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["liskov", "liskov substitution"],
     relatedTerms: ["abstraction", "consensus", "fault-tolerance", "paxos"],
-    sources: [{ label: "MacTutor listing of the Turing Award citations, including Barbara Liskov, 2008", href: "https://mathshistory.st-andrews.ac.uk/Honours/Turing_Award/" }, { label: "ACM A.M. Turing Award - Leslie Lamport, laureate page: logical clocks, distributed snapshots, Paxos and TLA+", href: "https://amturing.acm.org/award_winners/lamport_1205376.cfm" }],
+    sources: [{ label: "MacTutor listing of the Turing Award citations, including Barbara Liskov, 2008", href: "https://mathshistory.st-andrews.ac.uk/Honours/Turing_Award/" }, { label: "Liskov, 'Data Abstraction and Hierarchy', MIT Laboratory for Computer Science: the paper that states the substitution principle, delivered as the 1987 OOPSLA keynote and published in SIGPLAN Notices the following year", href: "https://john.cs.olemiss.edu/~hcc/csci555/notes/localcopy/Liskov_Data_Abstraction_and_Hierarchy_1987.pdf" }],
   },
   {
     slug: "tcp",
@@ -4224,7 +4231,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["hamilton", "apollo guidance computer"],
     relatedTerms: ["fault-tolerance", "abstraction", "grace-hopper"],
-    sources: [{ label: "Margaret Hamilton: director of the Software Engineering Division at the MIT Instrumentation Laboratory, first programmer hired for Apollo there, Presidential Medal of Freedom", href: "https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)" }],
+    sources: [{ label: "Margaret Hamilton: director of the Software Engineering Division at the MIT Instrumentation Laboratory, first programmer hired for Apollo there, photographed in 1969 beside the listings of the Apollo guidance software her team produced, Presidential Medal of Freedom", href: "https://en.wikipedia.org/wiki/Margaret_Hamilton_(software_engineer)" }],
   },
   {
     slug: "elizabeth-feinler",
@@ -4394,7 +4401,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["bellovin", "smb"],
     relatedTerms: ["firewall", "tcp", "dns"],
-    sources: [{ label: "Firewalls and Internet Security: Repelling the Wily Hacker, Cheswick and Bellovin, Addison-Wesley 1994 - one of the first books on firewalls, written by the people who ran AT&T's internet gateway", href: "https://en.wikipedia.org/wiki/Firewalls_and_Internet_Security" }],
+    sources: [{ label: "Firewalls and Internet Security: Repelling the Wily Hacker, Cheswick and Bellovin, Addison-Wesley 1994 - one of the first books on firewalls, written by the people who ran AT&T's internet gateway", href: "https://en.wikipedia.org/wiki/Firewalls_and_Internet_Security" }, { label: "Bellovin, 'Security Problems in the TCP/IP Protocol Suite', on his own Columbia page, reprinted from Computer Communication Review Vol. 19 No. 2, pages 32 to 48, April 1989", href: "https://www.cs.columbia.edu/~smb/papers/ipext.pdf" },],
   },
   {
     slug: "firewall",
@@ -5384,9 +5391,13 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["first bug", "computer moth", "debugging origin"],
     relatedTerms: ["debugging", "heisenbug"],
     disputed: true,
-    sources: [
-      { label: "National Museum of American History - the 1947 logbook" },
-      { label: "Hopper / Harvard Mark II operations log, 1947-09-09" },
+    // Read in a browser, which gave three things a summary did not: a source for the
+    // Edison claim in the body text, which had been uncited; the museum's own
+    // "probably not Hopper's"; and its two references, one with a DOI in Crossref.
+    // The widely repeated 9 September is in none of them.
+    sources: [{ label: "Smithsonian National Museum of American History, object record 'Log Book With Computer Bug' (ID 1994.0191.01, dated 1947): engineers on the Harvard Mark II \"found a moth stuck in one of the components\" and \"taped the insect in their logbook and labeled it 'first actual case of bug being found'\". The same record sets the moth in its longer context: \"American engineers have been calling small flaws in machines 'bugs' for over a century. Thomas Edison talked about bugs in electrical circuits in the 1870s.\" It places Grace Hopper \"among those working on the Mark II in 1947\" and states that \"This log book was probably not Hopper's\"", href: "https://americanhistory.si.edu/collections/object/nmah_334663" },
+      { label: "P. A. Kidwell, 'Stalking the elusive computer bug', IEEE Annals of the History of Computing, vol. 20, no. 4 (1998), pp. 5-9, DOI 10.1109/85.728224, one of the two references the museum gives for its own record", href: "https://doi.org/10.1109/85.728224" },
+      { label: "Grace Murray Hopper, 'The First Bug', Annals of the History of Computing, vol. 3 no. 3 (1981), pp. 285-286, the museum's other reference and Hopper's own account. Named without a link: the pre-1987 Annals volumes are not indexed in Crossref and no DOI for it was found. The widely repeated day, 9 September, appears in neither the museum's record nor any document read here" },
     ],
   },
   {
@@ -5417,7 +5428,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "Situation Normal, All Fouled Up",
     aliases: ["snafu"],
     relatedTerms: ["fubar", "yak-shaving"],
-    sources: [{ label: "US military slang, WWII" }],
+    // One of five entries wrongly escalated to PRIME as "an origin rather than a
+    // document". The Jargon File records the etymology, and this file already cites
+    // catb.org on five other entries.
+    sources: [{ label: "The Jargon File, 'SNAFU principle', whose etymology bracket reads \"from a WWII Army acronym for 'Situation Normal, All Fucked Up'\", the unbowdlerised form of the expansion given in the body text as the polite version", href: "http://www.catb.org/jargon/html/S/SNAFU-principle.html" }],
   },
   {
     slug: "fubar",
@@ -5427,7 +5441,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "Fouled Up Beyond All Recognition",
     aliases: ["fubar"],
     relatedTerms: ["snafu", "foo-bar"],
-    sources: [{ label: "US military slang, WWII" }],
+    // The body text already named RFC 3092, which is reachable. The RFC carries the WWII
+    // derivation AND the doubt about it, which a label reading "US military slang, WWII"
+    // asserted as settled.
+    sources: [{ label: "RFC 3092, 'Etymology of Foo', which the body text already names: \"When used in connection with 'bar' it is generally traced to the WW II era Army slang acronym FUBAR ('Fucked Up Beyond All Repair'), later modified to foobar.\" The same RFC records the doubt, that \"it now seems more likely that FUBAR was itself a derivative of 'foo'\" and that the acronym \"was probably a backronym\", so the WWII derivation is the usual account rather than a settled one", href: "https://www.rfc-editor.org/rfc/rfc3092" }],
   },
   {
     slug: "yak-shaving",
@@ -5436,7 +5453,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["yak-shaving", "shaving the yak"],
     relatedTerms: ["bikeshedding", "rabbit-hole"],
-    sources: [{ label: "MIT AI Lab / Carlin Vieri, 1990s" }],
+    // A CONFLICT, not a confirmation. The Jargon File dates the term after 2000 and traces
+    // it to a Ren and Stimpy episode; the body text says the MIT AI Lab in the 1990s and
+    // the old label named Carlin Vieri. Whether the body text changes is PRIME's call.
+    sources: [{ label: "The Jargon File, 'yak shaving', whose etymology bracket reads \"[MIT AI Lab, after 2000: orig. probably from a Ren & Stimpy episode.]\". It supports the MIT AI Lab attribution and contradicts the dating given in the body text, saying after 2000 where the body says the 1990s, and it names no individual originator", href: "http://www.catb.org/jargon/html/Y/yak-shaving.html" }],
   },
   {
     slug: "bikeshedding",
@@ -5447,7 +5467,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["bike-shedding", "bike shed", "law of triviality"],
     relatedTerms: ["yak-shaving"],
     sources: [
-      { label: "C. Northcote Parkinson, \"Parkinson's Law\", 1957" },
+      { label: "Poul-Henning Kamp, 'Why Should I Care What Color the Bikeshed Is?' - the FreeBSD message that carried Parkinson's 1957 observation into software", href: "https://bikeshed.org/" }, { label: "C. Northcote Parkinson, 'Parkinson's Law', 1957, where the observation originates; no online edition is cited here" },
     ],
   },
   {
@@ -5458,7 +5478,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["Mel", "Mel Kaye", "real programmer"],
     relatedTerms: ["the-jargon-file", "hack"],
     sources: [
-      { label: "Ed Nather, Usenet, 1983" },
+      { label: "The Story of Mel, a Real Programmer, in full: 'This was posted to USENET by its author, Ed Nather (utastro!nather)'", href: "https://users.cs.utah.edu/~elb/folklore/mel.html" },
     ],
   },
   {
@@ -5469,7 +5489,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["500 mile email", "500-mile email", "Trey Harris"],
     relatedTerms: ["heisenbug", "root-cause"],
     sources: [
-      { label: "Trey Harris, sysadmin folklore, c. 1994 (published 2002)" },
+      { label: "Trey Harris's original message, archived at MIT: \"We can't send mail more than 500 miles,\" the chairman explained", href: "https://web.mit.edu/jemorris/humor/500-miles" },
     ],
   },
   {
@@ -5479,7 +5499,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["heisenbug", "heisenberg bug"],
     relatedTerms: ["the-first-bug", "bohrbug", "debugging"],
-    sources: [{ label: "The Jargon File" }],
+    sources: [{ label: "The Jargon File on heisenbug: from Heisenberg's uncertainty principle, a bug that disappears or alters its behaviour when one attempts to probe or isolate it", href: "http://www.catb.org/jargon/html/H/heisenbug.html" }],
   },
   {
     slug: "bohrbug",
@@ -5488,7 +5508,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["bohrbug", "bohr bug"],
     relatedTerms: ["heisenbug"],
-    sources: [{ label: "The Jargon File" }],
+    sources: [{ label: "The Jargon File on Bohr bug: a repeatable bug, one that manifests reliably under a possibly unknown but well-defined set of conditions; the antonym of heisenbug", href: "http://www.catb.org/jargon/html/B/Bohr-bug.html" }],
   },
   {
     slug: "the-jargon-file",
@@ -5498,7 +5518,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["jargon file", "hacker's dictionary", "hackers dictionary"],
     relatedTerms: ["hack", "the-story-of-mel"],
     sources: [
-      { label: "The Jargon File (1975-), ed. Raymond et al." },
+      { label: "The Jargon File itself, in its own words: a comprehensive compendium of hacker slang illuminating many aspects of hackish tradition, folklore and humour, placed in the public domain", href: "http://www.catb.org/jargon/html/online-preface.html" },
     ],
   },
   {
@@ -5509,7 +5529,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["cargo cult", "cargo-cult"],
     relatedTerms: ["yak-shaving", "rubber-duck-debugging"],
     sources: [
-      { label: "after Feynman's \"cargo cult science\", 1974" },
+      { label: "Feynman, 'Cargo Cult Science', his 1974 Caltech commencement address, at Caltech's own library - the phrase this term is built on", href: "https://calteches.library.caltech.edu/51/2/CargoCult.htm" },
     ],
   },
   {
@@ -5520,7 +5540,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["rubber ducking", "rubberduck", "rubber-duck"],
     relatedTerms: ["debugging", "the-story-of-mel"],
     sources: [
-      { label: "\"The Pragmatic Programmer\", Hunt & Thomas, 1999" },
+      { label: "'The Pragmatic Programmer' by David Thomas and Andrew Hunt, first published 1999, at its publisher; the page shown is the 20th anniversary edition", href: "https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/" },
     ],
   },
   {
@@ -5530,7 +5550,10 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "programming"],
     aliases: ["hacking", "hacker", "kludge"],
     relatedTerms: ["the-jargon-file", "kludge", "hacker-hat-colors"],
-    sources: [{ label: "Tech Model Railroad Club / MIT, from the 1950s" }],
+    // A PRECISION CORRECTION to the old label, which said "from the 1950s". The Jargon
+    // File dates the TMRC adoption to the 1960s; the mid-1950s report is about radio hams
+    // who were not at TMRC. The body text names no decade and needed no change.
+    sources: [{ label: "The Jargon File, 'hacker': the term \"seems to have been first adopted as a badge in the 1960s by the hacker culture surrounding TMRC and the MIT AI Lab\", with a report of mid-1950s use \"by teenage radio hams and electronics tinkerers\" who were not at TMRC. The TMRC adoption is dated to the 1960s rather than the 1950s", href: "http://www.catb.org/jargon/html/H/hacker.html" }],
   },
   {
     slug: "kludge",
@@ -5539,7 +5562,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["kluge", "kludgy"],
     relatedTerms: ["hack", "technical-debt"],
-    sources: [{ label: "The Jargon File" }],
+    sources: [{ label: "The Jargon File on kluge: from the German klug, clever, and possibly related to the Polish and Russian klucz, a key or a main point; a Rube Goldberg device in hardware or software, or a clever programming trick", href: "http://www.catb.org/jargon/html/K/kluge.html" }],
   },
   {
     // DONGLE (PRIME 2026-09-17). Asked for by name, and the reason it earns a
@@ -5734,7 +5757,9 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["hacking", "cyber-security"],
     aliases: ["pwn", "owned", "pwnage"],
     relatedTerms: ["hack", "have-i-been-pwned"],
-    sources: [{ label: "gaming / hacker slang, early 2000s" }],
+    // The Jargon File has no entry for the word. Troy Hunt's own page sources the service
+    // the body text names; the mistyped-'owned' derivation is in no document found.
+    sources: [{ label: "Troy Hunt, 'Have I Been Pwned: Who, What & Why': \"I built HIBP as a free resource for anyone to quickly assess if they may have been put at risk due to an online account of theirs having been compromised or 'pwned' in a data breach.\" This sources the service named in the body text; the derivation from a mistyped 'owned' is in no document found and is not claimed here. The Jargon File has no entry for the word", href: "https://haveibeenpwned.com/About" }],
   },
   {
     slug: "have-i-been-pwned",
@@ -6990,7 +7015,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["off by one", "obo", "fencepost error", "fencepost"],
     relatedTerms: ["heisenbug", "regex"],
-    sources: [{ label: "The Jargon File (\"fencepost error\")" }],
+    sources: [{ label: "The Jargon File on the off-by-one error: exceedingly common, induced by starting at 0 when you should have started at 1 or vice versa, or by writing < N instead of <= N", href: "http://www.catb.org/jargon/html/O/off-by-one-error.html" }, { label: "The Jargon File on the fencepost error, the same mistake under its other name", href: "http://www.catb.org/jargon/html/F/fencepost-error.html" }],
   },
   {
     slug: "xkcd-workflow",
@@ -7369,7 +7394,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["Internet Worm", "Morris worm", "the Great Worm"],
     relatedTerms: ["the-cuckoos-egg", "trusting-trust"],
-    sources: [{ label: "United States v. Morris (1991)" }, { label: "Spafford, 'The Internet Worm Program: An Analysis' (1988)" }],
+    sources: [{ label: "United States v. Morris (1991)" }, { label: "Spafford, 'The Internet Worm Program: An Analysis' (1988), at his own Purdue page", href: "https://spaf.cerias.purdue.edu/tech-reps/823.pdf" }],
   },
   {
     slug: "the-cuckoos-egg",
@@ -7378,7 +7403,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["Cliff Stoll", "Markus Hess", "the 75-cent hack"],
     relatedTerms: ["the-morris-worm"],
-    sources: [{ label: "Stoll, 'The Cuckoo's Egg' (1989)" }],
+    sources: [{ label: "Stoll, 'The Cuckoo's Egg', a 1989 nonfiction book by Clifford Stoll", href: "https://en.wikipedia.org/wiki/The_Cuckoo%27s_Egg_(book)" }],
   },
   {
     slug: "trusting-trust",
@@ -7395,7 +7420,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "cyber-security"],
     aliases: ["Gary Thuerk", "DEC spam", "first UCE"],
-    sources: [{ label: "Templeton, 'Reaction to the DEC Spam of 1978'" }],
+    sources: [{ label: "Brad Templeton, 'Reaction to the DEC Spam of 1978', which reproduces the message itself and the replies it drew: \"Possibly the first spam ever was a message from a DEC marketing rep to every Arpanet address on the west coast\". It records that the message was sent on 3 May by co-writer Carl Gartley from Thuerk's account, and that the mail program \"would only accept 320 addresses. The rest overflowed into the body of the message\", which is a different figure from this entry's count of intended recipients rather than a correction to it", href: "https://www.templetons.com/brad/spamreact.html" }],
   },
   {
     slug: "the-first-emoticon",
@@ -7419,7 +7444,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "web-development"],
     aliases: ["Douglas Engelbart", "1968 demo", "NLS"],
-    sources: [{ label: "Engelbart, SRI, 9 December 1968 (Fall Joint Computer Conference)" }],
+    // The Doug Engelbart Institute's own page on the demo, which carries every element
+    // of this entry: "On December 9th, 1968 Doug Engelbart appeared on stage at the Fall
+    // Joint Computer Conference in San Francisco's Civic Auditorium to give his slated
+    // presentation, titled 'A Research Center for Augmenting Human Intellect'"; the NLS
+    // machine "residing 30 miles away in his research lab at Stanford Research Institute
+    // (SRI)"; and the name itself, "This seminal demonstration came to be known as 'The
+    // Mother of All Demos.'"
+    sources: [{ label: "Doug Engelbart Institute, 'Firsts: The Demo': on 9 December 1968 Engelbart presented 'A Research Center for Augmenting Human Intellect' at the Fall Joint Computer Conference in San Francisco's Civic Auditorium, driving NLS from his lab at Stanford Research Institute 30 miles away, in the demonstration that came to be known as the Mother of All Demos", href: "https://www.dougengelbart.org/content/view/209/448/" }],
   },
   {
     slug: "the-at-sign",
@@ -7427,7 +7459,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "enterprise-networking"],
     aliases: ["Ray Tomlinson", "at sign", "arroba"],
-    sources: [{ label: "Tomlinson, BBN - first networked email (1971)" }],
+    sources: [{ label: "Internet Hall of Fame on Raymond Tomlinson: beyond the message itself he designed a tool for creating and reading email and led the first email standards work - in 1972 he was among those at the meeting to extend FTP to carry email, and he co-authored RFC 561 of September 1973, the first standard for internet email message formats, which defined From, Subject and Date", href: "https://www.internethalloffame.org/inductee/raymond-tomlinson/" }],
   },
   {
     slug: "error-404-myth",
@@ -7444,7 +7476,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "enterprise-networking"],
     aliases: ["big-endian", "little-endian", "byte order", "On Holy Wars and a Plea for Peace"],
-    sources: [{ label: "Cohen, 'On Holy Wars and a Plea for Peace', IEEE Computer (1981)" }, { label: "Swift, 'Gulliver's Travels' (1726)" }],
+    // The label named the IEEE Computer publication; what is freely readable is
+    // the earlier internet memo behind it. Same shape as goto-considered-harmful,
+    // where EWD215 is the manuscript and CACM gave the published letter its title.
+    sources: [{ label: "Cohen, 'On Holy Wars and a Plea for Peace', IEN 137, USC/ISI, 1 April 1980 - the memo that coined Little-Endian and Big-Endian", href: "https://www.rfc-editor.org/ien/ien137.txt" },
+    // The journal version, named for precision and not linked: IEEE Computer of
+    // October 1981 is behind the IEEE paywall and the memo carries the argument.
+    { label: "Cohen, 'On Holy Wars and a Plea for Peace', IEEE Computer 14(10) (October 1981) - the journal version of IEN 137, behind the IEEE paywall" },
+    { label: "Swift, 'Gulliver's Travels' (1726)" }],
   },
   {
     slug: "the-answer-42",
@@ -7452,7 +7491,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "programming"],
     aliases: ["the Answer to Life the Universe and Everything", "Deep Thought", "Hitchhiker's Guide"],
-    sources: [{ label: "Adams, 'The Hitchhiker's Guide to the Galaxy' (1979)" }],
+    // No free edition exists. A library catalogue record IS somewhere a reader can go for
+    // the work of record, which is more than a bare label naming it.
+    sources: [{ label: "Douglas Adams, 'The Hitchhiker's Guide to the Galaxy', first published 1979, per the Open Library work record. There is no free edition, so what is linked is the catalogue record for the work, with its editions and library holdings", href: "https://openlibrary.org/works/OL2163649W" }],
   },
   {
     slug: "boil-the-ocean",
@@ -7566,7 +7607,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["programming", "ops-culture"],
     aliases: ["HCF", "halt and catch fire"],
     disputed: true,
-    sources: [{ label: "The Jargon File - HCF" }, { label: "Motorola 6800 undocumented opcodes" }],
+    sources: [{ label: "The Jargon File on HCF: 'Mnemonic for Halt and Catch Fire, any of several undocumented and semi-mythical machine instructions', tracing them back as far as the IBM 360 and naming the MC6800 microprocessor - the same page carries both claims this entry made separately", href: "http://www.catb.org/jargon/html/H/HCF.html" }],
   },
   {
     slug: "the-konami-code",
@@ -7600,7 +7641,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["FDIV bug", "Pentium bug", "Intel FDIV"],
-    sources: [{ label: "Nicely (1994); Intel Q4 1994 charge (~US$475M)" }],
+    // Intel's support article is blocked at its edge to all three fetch paths, but Intel's
+    // own SEC filings are not. The December filing calls the charge "as yet unspecified"
+    // and the January one puts the figure on it, so both are cited rather than one.
+    sources: [{ label: "Intel Form 8-K filed 21 December 1994, exhibit 99.1: \"INTEL ADOPTS UPON-REQUEST REPLACEMENT POLICY ON PENTIUM PROCESSORS WITH FLOATING POINT FLAW; WILL TAKE Q4 CHARGE AGAINST EARNINGS\", and \"The flaw can produce reduced precision in floating point divide operations once every nine billion random number pairs.\" At that date the charge was still \"as yet unspecified\"", href: "https://www.sec.gov/Archives/edgar/data/50863/0000050863-94-000018.txt" },
+      { label: "Intel Form 8-K filed 20 January 1995, exhibit 99.2, which puts the figure on it: \"Q4 Results impacted by a $475 million charge\", a \"one-time pretax charge of $475 million\" covering \"replacement and other costs associated with a divide problem in the floating point unit of the company's Pentium processor\"", href: "https://www.sec.gov/Archives/edgar/data/50863/0000050863-95-000001.txt" },
+      { label: "Alan Edelman, 'The Mathematics of the Pentium Division Bug', SIAM Review vol. 39, no. 1 (1997), pp. 54-67, DOI 10.1137/s0036144595293959, per the Crossref record: the peer-reviewed account of the flaw", href: "https://doi.org/10.1137/s0036144595293959" },
+      { label: "Thomas Nicely's 1994 report of the flaw, named for precision and not linked: his page answers 404 and the Internet Archive's content host is blocked to every fetch path available here" },
+    ],
   },
   {
     slug: "knight-capital",
@@ -7608,7 +7656,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["Knightmare", "Knight Capital", "$440 million"],
-    sources: [{ label: "SEC Release No. 70694 (2013)" }],
+    // TWO primary sources, because the two loss figures in circulation are two
+    // different measurements and neither is wrong. The SEC order carries the
+    // mechanism and a $460M finding; the company's own 8-K carries the ~$440M
+    // realized PRE-TAX loss, which is the figure this entry uses. Reading the 8-K
+    // is what stopped this from becoming a wrong "correction" of 440 to 460.
+    sources: [{ label: "SEC, Release No. 34-70694 (16 October 2013), In the Matter of Knight Capital Americas LLC - \"one of Knight's technicians did not copy the new code to one of the eight SMARS computer servers\", the repurposed Power Peg flag, 4 million executions in 154 stocks in about 45 minutes, and a loss finding of over $460 million on the positions", href: "https://www.sec.gov/litigation/admin/2013/34-70694.pdf" },
+    // The company's own words, filed the day after the incident.
+    { label: "Knight Capital Group, Form 8-K and press release of 2 August 2012 (SEC EDGAR) - \"a realized pre-tax loss of approximately $440 million\", which is the figure this entry uses", href: "https://www.sec.gov/Archives/edgar/data/1060749/000119312512332176/d391111dex991.htm" }],
   },
   {
     slug: "hello-world",
@@ -7616,7 +7671,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["hello world", "Hello, World!"],
-    sources: [{ label: "Kernighan, 'A Tutorial Introduction to the Language B' (1972); Kernighan & Ritchie (1978)" }],
+    // The PDF's own text layer, extracted with pdf.js in a browser rather than summarised.
+    // A summarising fetch had first reported the greeting ABSENT from the document, which
+    // is the kind of negative a summary cannot establish. The same search confirms the
+    // words never appear as one contiguous string, which IS a checkable negative, and that
+    // the title page sets the title in capitals.
+    sources: [{ label: "B. W. Kernighan, Bell Laboratories, Murray Hill: 'A TUTORIAL INTRODUCTION TO THE LANGUAGE B', as its own title page sets it. Its section on External Variables, page 4, prints the greeting from three character constants rather than one string, with successive putchar calls. Searching the document's text layer shows the words never appear as a single contiguous string anywhere in it, and the document carries no date on its face; the conventional 1972 dating is not stated in it", href: "https://www.nokia.com/bell-labs/about/dennis-m-ritchie/btut.pdf" },
+      { label: "Kernighan & Ritchie, 'The C Programming Language' (1978), named for precision and not linked because no free edition was found" },
+    ],
   },
   {
     slug: "goto-considered-harmful",
@@ -7625,7 +7687,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["programming"],
     aliases: ["Go To Statement Considered Harmful", "Dijkstra goto", "considered harmful"],
     relatedTerms: ["spaghetti-code"],
-    sources: [{ label: "Dijkstra, CACM (March 1968)" }],
+    sources: [{ label: "Dijkstra, EWD215, 'A Case against the GO TO Statement', in his own archive at UT Austin - the manuscript behind the letter Communications of the ACM published in March 1968 under the title it gave it", href: "https://www.cs.utexas.edu/~EWD/transcriptions/EWD02xx/EWD215.html" }],
   },
   {
     slug: "real-programmers",
@@ -7634,7 +7696,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["ops-culture", "programming"],
     aliases: ["Real Programmers Don't Use Pascal", "Real Programmer"],
     relatedTerms: ["the-story-of-mel"],
-    sources: [{ label: "Post, 'Real Programmers Don't Use Pascal', Datamation (July 1983)" }],
+    // Declared as "no free edition located" until Crossref showed a MIT Press reprint with
+    // its own DOI, which gives a 1983 trade-magazine humour piece a permanent record.
+    sources: [{ label: "Post, 'Real Programmers Don't Use Pascal', Datamation (July 1983), reprinted as a chapter of 'Humour the Computer' (The MIT Press, 1995), DOI 10.7551/mitpress/3615.003.0023. The reprint is what has a permanent record; the DOI resolves to MIT Press Direct, which refuses automated retrieval, so what was read here is the Crossref record of it", href: "https://doi.org/10.7551/mitpress/3615.003.0023" }],
   },
   {
     slug: "the-first-tweet",
@@ -7642,7 +7706,9 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["ops-culture", "web-development"],
     aliases: ["just setting up my twttr", "Jack Dorsey first tweet"],
-    sources: [{ label: "Dorsey, Twitter, 21 March 2006" }],
+    // Read in a browser. Declared earlier the same day because X "serves nothing to a
+    // plain fetch", which was true of the fetch and false as a conclusion.
+    sources: [{ label: "The post itself, @jack, \"just setting up my twttr\", timestamped 5:50 PM, 21 March 2006. The page renders in JavaScript, so it reads in a browser rather than a plain fetch", href: "https://x.com/jack/status/20" }],
   },
   {
     slug: "wall-of-confusion",
@@ -7767,7 +7833,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["hacking", "ops-culture"],
     aliases: ["The Conscience of a Hacker", "The Mentor", "Phrack manifesto"],
-    sources: [{ label: "The Mentor, 'The Conscience of a Hacker', Phrack Vol. 1 Issue 7 (1986)" }],
+    sources: [{ label: "The Mentor, 'The Conscience of a Hacker', in Phrack issue 7. The text carries its own date - \"Written on January 8, 1986\" - and Phrack dates that issue 25 September 1986", href: "https://phrack.org/issues/7/hackers-manifesto.html" }],
   },
   {
     slug: "the-gnu-manifesto",
@@ -7784,7 +7850,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["ops-culture", "programming"],
     aliases: ["Cathedral and Bazaar", "ESR", "Eric Raymond"],
     relatedTerms: ["the-gnu-manifesto"],
-    sources: [{ label: "Raymond, 'The Cathedral and the Bazaar' (1997)" }],
+    sources: [{ label: "Raymond, 'The Cathedral and the Bazaar', at his own site", href: "http://www.catb.org/~esr/writings/cathedral-bazaar/" }],
   },
   {
     slug: "kevin-mitnick",
@@ -7795,7 +7861,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     personField: "hacker-culture",
     domains: ["hacking", "cyber-security"],
     aliases: ["Mitnick", "Condor"],
-    sources: [{ label: "Mitnick & Simon, 'The Art of Deception' (2002); US v. Mitnick" }],
+    sources: [{ label: "The FBI arrested Mitnick on 15 February 1995 at his apartment in Raleigh, North Carolina, after a well-publicised pursuit, on federal charges covering two and a half years of intrusion; the account cites the Department of Justice press release of the same day, whose own pre-1996 archive is no longer served to the public", href: "https://en.wikipedia.org/wiki/Kevin_Mitnick" }, { label: "Mitnick and Simon, 'The Art of Deception: Controlling the Human Element of Security' (2002), at its publisher", href: "https://www.wiley.com/en-us/The+Art+of+Deception%3A+Controlling+the+Human+Element+of+Security-p-9780764542800" }],
   },
   {
     slug: "the-414s",
@@ -7812,7 +7878,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Log4Shell", "CVE-2021-44228", "Log4j vulnerability"],
     relatedTerms: ["heartbleed", "shellshock"],
-    sources: [{ label: "CVE-2021-44228; CISA advisory (December 2021)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2021-44228, state PUBLISHED, published 2021-12-10: 'Apache Log4j2 2.0-beta9 through 2.15.0 (excluding security releases 2.12.2, 2.12.3, and 2.3.1) JNDI features used in configuration, log messages, and parameters do not protect against ...'; the entry also cites CVE-2021-44228; CISA advisory (December 2021)", href: "https://www.cve.org/CVERecord?id=CVE-2021-44228" }],
   },
   {
     slug: "heartbleed",
@@ -7821,7 +7887,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "crypto"],
     aliases: ["Heartbleed", "CVE-2014-0160", "OpenSSL heartbeat bug"],
     relatedTerms: ["shellshock"],
-    sources: [{ label: "CVE-2014-0160 (2014)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2014-0160, state PUBLISHED, published 2014-04-07: 'The (1) TLS and (2) DTLS implementations in OpenSSL 1.0.1 before 1.0.1g do not properly handle Heartbeat Extension packets, which allows remote attackers to obtain sensitive information ...'", href: "https://www.cve.org/CVERecord?id=CVE-2014-0160" }],
   },
   {
     slug: "shellshock",
@@ -7830,7 +7896,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Shellshock", "Bashdoor", "CVE-2014-6271"],
     relatedTerms: ["heartbleed"],
-    sources: [{ label: "CVE-2014-6271 (2014)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2014-6271, state PUBLISHED, published 2014-09-24: 'GNU Bash through 4.3 processes trailing strings after function definitions in the values of environment variables, which allows remote attackers to execute arbitrary code via a crafted ...'", href: "https://www.cve.org/CVERecord?id=CVE-2014-6271" }],
   },
   {
     slug: "stuxnet",
@@ -7838,7 +7904,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
     aliases: ["Stuxnet", "SCADA worm"],
-    sources: [{ label: "Symantec, 'W32.Stuxnet Dossier' (2011)" }],
+    sources: [{ label: "Symantec's 'W32.Stuxnet Dossier', now served by Broadcom, which holds Symantec's enterprise documentation", href: "https://docs.broadcom.com/doc/security-response-w32-stuxnet-dossier-11-en" }],
   },
   {
     slug: "wannacry",
@@ -7847,7 +7913,15 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["WannaCry", "WannaCrypt", "WCry"],
     relatedTerms: ["the-morris-worm"],
-    sources: [{ label: "Widely documented (May 2017); NCSC/US-CERT advisories" }],
+    // Microsoft's own bulletin for the flaw WannaCry exploited, which dates the
+    // patch and so supports "patched by Microsoft roughly two months before the
+    // outbreak". PARTIAL: published in March 2017, it predates the outbreak and
+    // says nothing about WannaCry, the NSA's development of EternalBlue or the
+    // Shadow Brokers leak. Those stay in the copy and uncited, per PRIME's
+    // 2026-09-27 ruling that a fact is not deleted for want of a source.
+    sources: [{ label: "Microsoft Security Bulletin MS17-010, 'Security Update for Microsoft Windows SMB Server (4013389)', published 14 March 2017 - the patch for the SMBv1 flaw WannaCry exploited, two months before the May 2017 outbreak; it predates the outbreak and does not describe it", href: "https://learn.microsoft.com/en-us/security-updates/securitybulletins/2017/ms17-010" },
+    // The CVE Program's record for the EternalBlue vulnerability itself.
+    { label: "The CVE Program's record for CVE-2017-0144, state PUBLISHED, published 2017-03-17: 'The SMBv1 server in Microsoft Windows ... allows remote attackers to execute arbitrary code via crafted packets, aka \"Windows SMB Remote Code Execution Vulnerability.\"'", href: "https://www.cve.org/CVERecord?id=CVE-2017-0144" }],
   },
   {
     slug: "the-iloveyou-virus",
@@ -7855,7 +7929,10 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["cyber-security", "ops-culture"],
     aliases: ["ILOVEYOU", "Love Bug", "LoveLetter"],
-    sources: [{ label: "Widely documented (May 2000)" }],
+    // CERT CA-2000-04 exists only in the Internet Archive, whose content host is refused
+    // by all three fetch paths, so a first-party VENDOR analysis stands in, the same class
+    // of source as the Stuxnet dossier and the Talos write-up on notpetya.
+    sources: [{ label: "F-Secure threat description, 'Email-Worm:VBS/LoveLetter': the worm \"spreads through email as a chain letter, using the Microsoft Outlook email application to spread itself\", carrying the subject ILOVEYOU and the attachment LOVE-LETTER-FOR-YOU.TXT.vbs, and it \"was found globally in-the-wild on May 4th, 2000\", a more precise date than the body text gives", href: "https://www.f-secure.com/v-descs/love.shtml" }],
   },
   {
     slug: "the-turing-test",
@@ -7863,7 +7940,10 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["imitation game", "Turing test"],
-    sources: [{ label: "Turing, 'Computing Machinery and Intelligence', Mind (1950)" }],
+    // Oxford Academic's record for the article of record. It supplies what the bare
+    // label lacked: volume, issue, month and page range. The full text is behind the
+    // Oxford paywall, so what is cited is the journal record a reader goes to.
+    sources: [{ label: "A. M. Turing, 'I. Computing Machinery and Intelligence', Mind, Vol. LIX, Issue 236, October 1950, pp. 433-460 (Oxford Academic record; the full text is behind the publisher's paywall)", href: "https://academic.oup.com/mind/article/LIX/236/433/986238" }],
   },
   {
     slug: "ada-lovelace",
@@ -7874,7 +7954,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     personField: "computing",
     domains: ["programming", "ops-culture"],
     aliases: ["Ada Lovelace", "Note G", "Augusta Ada King"],
-    sources: [{ label: "Lovelace, notes on Menabrea's 'Sketch of the Analytical Engine' (1843)" }],
+    sources: [{ label: "Lovelace's Notes by the Translator on Menabrea's 'Sketch of the Analytical Engine', in full: the translation was originally published in 1843 in Scientific Memoirs 3, pages 666 to 731", href: "https://www.yorku.ca/pclassic/Lovelace/lovelace.htm" }],
   },
   {
     slug: "the-eniac-programmers",
@@ -7882,7 +7962,11 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["programming", "ops-culture"],
     aliases: ["ENIAC six", "ENIAC women"],
-    sources: [{ label: "Documented; Light, 'When Computers Were Women' (1999)" }],
+    // Not linked: the article is in Technology and Culture, which sits behind Project
+    // MUSE's verification challenge and JSTOR's JavaScript challenge, so neither the
+    // text nor its volume and page range could be read from here. Named at the level
+    // that was already known, with nothing added that was not verified.
+    sources: [{ label: "Jennifer S. Light, 'When Computers Were Women', Technology and Culture, vol. 40, no. 3 (1999), pp. 455-483, DOI 10.1353/tech.1999.0128, per the Crossref record. The DOI resolves to the publisher's access gate rather than to the text, so the full citation is given for a reader to find it in any library", href: "https://doi.org/10.1353/tech.1999.0128" }],
   },
   {
     slug: "the-streisand-effect",
@@ -7890,7 +7974,13 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["privacy", "ops-culture"],
     aliases: ["Streisand effect"],
-    sources: [{ label: "Coined by Masnick, Techdirt (2005); Streisand v. Adelman (2003)" }],
+    // Read in a browser on 2026-10-01. Two corrections to a label written from a summary:
+    // the page DOES carry its own date, 'Wed, Jan 5th 2005 01:36am', and the coining
+    // sentence is there in full. An earlier search of mine missed it by using a straight
+    // apostrophe against the page's typographic one.
+    sources: [{ label: "Mike Masnick, 'Since When Is It Illegal To Just Mention A Trademark Online?', Techdirt, dated on the page itself 'Wed, Jan 5th 2005 01:36am', where the name is coined in the closing sentence: \"How long is it going to take before lawyers realize that the simple act of trying to repress something they don't like online is likely to make it so that something that most people would never, ever see (like a photo of a urinal in some random beach resort) is now seen by many more people? Let's call it the Streisand Effect.\"", href: "https://www.techdirt.com/2005/01/05/since-when-is-it-illegal-to-just-mention-a-trademark-online/" },
+      { label: "Streisand v. Adelman, Los Angeles County Superior Court (2003), the suit the name refers to, named for precision and not linked because no court record for it was readable from here" },
+    ],
   },
   {
     slug: "moores-law",
@@ -8245,7 +8335,14 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "DECnet (Digital Equipment Corporation network protocols)",
     aliases: ["decnet", "dna", "digital network architecture", "phase iv", "phase v"],
     relatedTerms: ["xns", "sna", "ethernet"],
-    sources: [{ label: "DEC vendor profile", href: "/industry/chapters/dec" }],
+    // DEC's own architecture document states the DNA-to-OSI correspondence and
+    // the Phase V use of OSI protocols, and dates DDCMP to 1974, which places the
+    // design work in the mid-1970s. It does NOT call Phase IV peer-to-peer; that
+    // wording stays in the copy and uncited, per PRIME's 2026-09-27 ruling.
+    sources: [{ label: "DEC, 'DECnet DIGITAL Network Architecture (Phase V) General Description' (EK-DNAPV-GD, September 1987) - carries the DNA-to-OSI correspondence and the Phase V use of OSI protocols, and dates DDCMP to 1974; it does not carry the peer-to-peer description of Phase IV", href: "https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/dec/decnet/EK-DNAPV-GD_DECnet_Phase_V_General_Description_Sep87.pdf" },
+    // A cross-reference rather than a citation: our own DEC chapter, which carries
+    // its own sources. It is kept because it is where the vendor's story is told.
+    { label: "DEC vendor profile", href: "/industry/chapters/dec" }],
   },
   {
     slug: "xns",
@@ -8843,7 +8940,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["hacking"],
     aliases: ["Dark Dante"],
     relatedTerms: ["blue-box"],
-    sources: [{ label: "Kevin Poulsen - Wikipedia", href: "https://en.wikipedia.org/wiki/Kevin_Poulsen" }],
+    sources: [{ label: "On 1 June 1990 Poulsen took over every telephone line into the Los Angeles radio station KIIS-FM, guaranteeing that he would be the 102nd caller and win the prize", href: "https://en.wikipedia.org/wiki/Kevin_Poulsen" }],
   },
   {
     slug: "the-leap-second",
@@ -11363,10 +11460,16 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     domains: ["privacy", "grc"],
     aliases: ["privacy shield", "schrems"],
     relatedTerms: ["standard-contractual-clauses", "cross-border-transfer", "gdpr"],
-    sources: [
-      { label: "CJEU judgment C-311/18 (Schrems II), 2020-07-16" },
-      { label: "CJEU judgment C-362/14 (Schrems I), 2015-10-06" },
-    ],
+    // The Court's own press releases are cited rather than the judgments: curia's
+    // document viewer is a JavaScript application and EUR-Lex serves full text
+    // only to a browser, so the press releases are the first-party documents that
+    // can actually be read. Each carries its operative holding in the Court's words.
+    sources: [{ label: "Court of Justice of the European Union, Press Release No 91/20 (16 July 2020) on the judgment in Case C-311/18 - \"The Court of Justice invalidates Decision 2016/1250 on the adequacy of the protection provided by the EU-US Data Protection Shield\", while Decision 2010/87 on standard contractual clauses remains valid", href: "https://curia.europa.eu/jcms/upload/docs/application/pdf/2020-07/cp200091en.pdf" },
+    // Schrems I, whose 6 October 2015 date matches the label exactly.
+    { label: "Court of Justice of the European Union, Press Release No 117/15 (6 October 2015) on the judgment in Case C-362/14 - \"The Court of Justice declares that the Commission's US Safe Harbour Decision is invalid\"", href: "https://curia.europa.eu/jcms/upload/docs/application/pdf/2015-10/cp150117en.pdf" },
+    // The EUR-Lex record for the full judgment, confirming case number, parties
+    // and the Grand Chamber, and where a reader goes for the operative part.
+    { label: "Judgment of the Court (Grand Chamber) of 16 July 2020, Data Protection Commissioner v Facebook Ireland Limited and Maximillian Schrems, C-311/18 (EUR-Lex, CELEX 62018CJ0311)", href: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:62018CJ0311" }],
   },
   {
     slug: "metadata",
@@ -11419,8 +11522,8 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["nat", "stateful-firewall", "cgnat"],
     disputed: true,
     sources: [
-      { label: "IETF RFC 4864 - Local Network Protection for IPv6 (2007)" },
-      { label: "IETF RFC 2663 - IP NAT terminology and considerations (1999)" },
+      { label: "RFC 4864, 'Local Network Protection for IPv6', 2007", href: "https://www.rfc-editor.org/rfc/rfc4864.txt" },
+      { label: "RFC 2663, 'IP Network Address Translator (NAT) Terminology and Considerations', 1999", href: "https://www.rfc-editor.org/rfc/rfc2663.txt" },
     ],
   },
   {
@@ -11431,9 +11534,10 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: ["private browsing myth"],
     relatedTerms: ["browser-fingerprinting", "tracking-pixel"],
     disputed: true,
-    sources: [
-      { label: "Google Chrome Incognito mode disclosure text" },
-      { label: "Brown v. Google settlement, N.D. Cal. (2024)" },
+    // Google's own disclosure is a published page, not in-product text only. curl answers
+    // 404 for this exact URL and a browser answers 200.
+    sources: [{ label: "Google Chrome Help, 'Browse in Incognito mode': \"While Incognito can help keep your browsing private on your device, it doesn't make you invisible. Websites you visit, including Google sites, and organizations that manage your network, like your school, employer, or internet service provider, may be able to observe your activity in Incognito.\"", href: "https://support.google.com/chrome/answer/95464" },
+      { label: "Brown v. Google settlement, N.D. Cal. (2024), named for precision and not linked because no docket record for it could be read from here" },
     ],
   },
   {
@@ -11445,8 +11549,12 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["tls", "phishing"],
     disputed: true,
     sources: [
-      { label: "FBI IC3 PSA I-061019-PSA - HTTPS phishing (2019)" },
-      { label: "APWG Phishing Activity Trends Reports - HTTPS share of phishing sites" },
+      // The FBI advisory this entry's context refers to, by its own alert number and
+      // title. It states the myth in the Bureau's words.
+      { label: "FBI IC3 public service announcement I-061019-PSA, 10 June 2019, 'Cyber Actors Exploit Secure Websites In Phishing Campaigns': \"Unfortunately, cyber criminals are banking on the public's trust of 'https' and the lock icon\"", href: "https://www.ic3.gov/PSA/2019/PSA190610" },
+      // The report series itself, which is where the HTTPS share of phishing sites is
+      // tracked quarter by quarter rather than asserted.
+      { label: "APWG Phishing Activity Trends Reports, which analyse phishing attacks reported by APWG member companies and its Global Research Partners", href: "https://www.apwg.org/trendsreports/" },
     ],
   },
   {
@@ -11458,8 +11566,12 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["vpn", "browser-fingerprinting", "tor-relay"],
     disputed: true,
     sources: [
-      { label: "EFF - Choosing the VPN That's Right for You" },
-      { label: "US FTC staff report on VPN marketing claims (2021)" },
+      // EFF's Surveillance Self-Defense guide, which answers this myth under a heading
+      // of its own: "VPNs Don't Completely Anonymize You".
+      { label: "EFF Surveillance Self-Defense, 'Choosing the VPN That's Right for You', last reviewed 28 July 2026: \"A VPN is not a tool for anonymity, and while it can protect your location from some companies, there are many other ways companies may track you, including GPS, web cookies, tracking pixels, or fingerprinting\"", href: "https://ssd.eff.org/module/choosing-vpn-thats-right-you" },
+      // Named for precision and not linked: the staff report could not be located at a
+      // readable address from this workspace, so nothing is cited as read that was not.
+      { label: "US FTC staff report on VPN marketing claims (2021), named for precision and not linked because it could not be located at a readable address" },
     ],
   },
   {
@@ -11472,7 +11584,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     disputed: true,
     sources: [
       { label: "IEEE 802.11 band propagation characteristics (free-space path loss)" },
-      { label: "ITU-R P.2040 - building entry loss and material attenuation" },
+      { label: "ITU-R Recommendation P.2040, 'Effects of building materials and structures on radiowave propagation in the range of 1 MHz to 450 GHz', at the ITU's own recommendation page", href: "https://www.itu.int/rec/R-REC-P.2040/en" },
     ],
   },
   {
@@ -11484,7 +11596,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["mac-address", "port-security"],
     disputed: true,
     sources: [
-      { label: "IEEE Std 802c - local MAC address usage (2017)" },
+      { label: "IEEE Std 802c, the standard's own page at IEEE SA - the local MAC address usage specification the entry rests on", href: "https://standards.ieee.org/ieee/802c/6690/" },
       { label: "Apple / Google / Microsoft platform documentation on MAC address randomization" },
     ],
   },
@@ -11496,10 +11608,12 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: [],
     relatedTerms: ["oversubscription", "qos"],
     disputed: true,
-    sources: [
-      { label: "Gettys & Nichols - Bufferbloat: Dark Buffers in the Internet, ACM Queue (2011)" },
-      { label: "bufferbloat.net project documentation" },
-    ],
+    // The project's own introduction states the mechanism this entry turns on,
+    // which is why more bandwidth does not mean a faster connection.
+    sources: [{ label: "Bufferbloat.net project documentation, 'Introduction' - \"Bufferbloat is the undesirable latency that comes from a router or other network equipment buffering too much data\"", href: "https://www.bufferbloat.net/projects/bloat/wiki/Introduction/" },
+    // Named for precision and not linked: ACM Queue refuses automated retrieval,
+    // so no quotation from it could be verified from here.
+    { label: "Gettys & Nichols, 'Bufferbloat: Dark Buffers in the Internet', ACM Queue (2011) - the paper behind the project, not linked because ACM Queue refuses automated retrieval" }],
   },
   {
     slug: "password-rotation-myth",
@@ -11510,7 +11624,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["password-manager", "credential-stuffing"],
     disputed: true,
     sources: [
-      { label: "NIST SP 800-63B - Digital Identity Guidelines, section 5.1.1.2" },
+      { label: "NIST SP 800-63B, Digital Identity Guidelines, in full; section 5.1.1.2 covers memorized secret verifiers and Appendix A the strength of memorized secrets", href: "https://pages.nist.gov/800-63-3/sp800-63b.html" },
       { label: "UK NCSC password guidance - the problems with forcing regular expiry" },
     ],
   },
@@ -11523,7 +11637,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["full-disk-encryption"],
     disputed: true,
     sources: [
-      { label: "NIST SP 800-88 Rev. 1 - Guidelines for Media Sanitization" },
+      { label: "NIST SP 800-88 Rev. 1, 'Guidelines for Media Sanitization', at the Computer Security Resource Center", href: "https://csrc.nist.gov/pubs/sp/800/88/r1/final" },
     ],
   },
   {
@@ -11535,7 +11649,10 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["iaas-paas-saas", "shared-responsibility-model"],
     disputed: true,
     sources: [
-      { label: "Chris Watterston - 'There is no cloud' sticker (2015)" },
+      // Watterston's own account of the sticker. It dates his frustration to "late
+      // 2014" and reproduces photographs posted from April 2015 onward, which is what
+      // supports the 2015 in this entry; the post itself is dated 13 February 2016.
+      { label: "Chris Watterston, 'The Success of my There Is No Cloud Sticker', 13 February 2016: his own account, which dates the frustration behind it to late 2014 and collects photographs posted from April 2015 onward", href: "https://www.chriswatterston.com/blog/my-there-is-no-cloud-sticker" },
     ],
   },
   {
@@ -11547,7 +11664,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     relatedTerms: ["post-quantum-cryptography", "public-key-cryptography"],
     disputed: true,
     sources: [
-      { label: "NIST FIPS 203 / 204 / 205 - post-quantum cryptography standards (2024)" },
+      { label: "NIST FIPS 203, 'Module-Lattice-Based Key-Encapsulation Mechanism Standard', 2024 - the first of the three post-quantum standards; FIPS 204 and 205 sit alongside it in the same catalogue", href: "https://csrc.nist.gov/pubs/fips/203/final" },
       { label: "Shor, P. - Algorithms for quantum computation (1994)" },
     ],
   },
@@ -11559,10 +11676,13 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: [],
     relatedTerms: ["onion-routing", "exit-node"],
     disputed: true,
-    sources: [
-      { label: "Tor Project - Who uses Tor?" },
-      { label: "Onion routing origins - US Naval Research Laboratory publications (Reed, Syverson, Goldschlag)" },
-    ],
+    // The Tor Project's own page answers the myth directly and enumerates each
+    // constituency. The live path redirects to the archived legacy site, so the
+    // resolved address is cited.
+    sources: [{ label: "Tor Project, 'Who uses Tor?' - Tor \"is used every day for a wide variety of purposes by the military, journalists, law enforcement officers, activists, and many others\"", href: "https://2019.www.torproject.org/about/torusers.html" },
+    // NRL's own site: "a complete list of all NRL publications on Onion Routing
+    // along with on-line copies where possible".
+    { label: "US Naval Research Laboratory, Onion Routing publications - the complete list of NRL papers on onion routing, with online copies", href: "https://www.onion-router.net/Publications.html" }],
   },
   {
     slug: "public-wifi-panic",
@@ -11572,9 +11692,10 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: [],
     relatedTerms: ["tls", "vpn-anonymity-myth"],
     disputed: true,
-    sources: [
-      { label: "EFF - Why Public Wi-Fi Is a Lot Safer Than You Think (2020)" },
-      { label: "Google Transparency Report - HTTPS usage across the web" },
+    // The Google report was declared unlinkable because a plain fetch returns 26
+    // characters of static text. Rendered in a browser it returns 98KB.
+    sources: [{ label: "EFF, 'Why Public Wi-Fi is a Lot Safer Than You Think' (January 2020): \"due to the widespread deployment of HTTPS encryption on most popular websites, advice to avoid public Wi-Fi is mostly out of date and applicable to a lot fewer people than it once was\", and \"You can cross 'public Wi-Fi' off your list\"", href: "https://www.eff.org/deeplinks/2020/01/why-public-wi-fi-lot-safer-you-think" },
+      { label: "Google Transparency Report, 'HTTPS encryption on the web': \"Desktop users load more than half of the pages they view over HTTPS and spend two-thirds of their time on HTTPS pages.\" The report renders in JavaScript, so it reads in a browser rather than a plain fetch", href: "https://transparencyreport.google.com/https/overview" },
     ],
   },
   // ==========================================================================
@@ -13215,7 +13336,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     expansion: "Coordinated Universal Time",
     aliases: ["utc"],
     relatedTerms: ["tai", "iana"],
-    sources: [{ label: "ITU-R TF.460 / BIPM", href: "https://www.bipm.org/en/time-metrology/time-scales" }],
+    sources: [{ label: "BIPM time metrology: realizing and disseminating the international reference time scales UTC, UTCr and TT(BIPM)", href: "https://www.bipm.org/en/time-metrology" }],
   },
   {
     slug: "iso-27001",
@@ -13392,7 +13513,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     expansion: "Security Incident Response Team",
     aliases: ["sirt"],
     relatedTerms: ["cert", "cve"],
-    sources: [{ label: "F5 SIRT", href: "https://www.f5.com/services/support/f5-security-incident-response-team" }],
+    sources: [{ label: "F5 Security Incident Response Team (F5 SIRT), F5's own page: contact the team for rapid expert assistance around the clock to mitigate attacks and resolve critical security issues", href: "https://www.f5.com/support/security-incident-response-team-sirt" }],
   },
   {
     slug: "adsp",
@@ -13678,7 +13799,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["BEAST", "Browser Exploit Against SSL/TLS", "CVE-2011-3389"],
     relatedTerms: ["poodle", "crime"],
-    sources: [{ label: "Browser Exploit Against SSL/TLS (2011)" }],
+    sources: [{ label: "Bodo Moller, 'Security of CBC Ciphersuites in SSL/TLS: Problems and Countermeasures', at OpenSSL - the CBC record-splitting weakness BEAST exploits. It is the mechanism rather than the attack's own 2011 disclosure, which remains uncited", href: "https://www.openssl.org/~bodo/tls-cbc.txt" }],
   },
   {
     slug: "poodle",
@@ -13687,7 +13808,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["POODLE", "Padding Oracle On Downgraded Legacy Encryption", "CVE-2014-3566"],
     relatedTerms: ["beast", "drown"],
-    sources: [{ label: "CVE-2014-3566 (2014)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2014-3566, state PUBLISHED, published 2014-10-15: 'The SSL protocol 3.0, as used in OpenSSL through 1.0.1i and other products, uses nondeterministic CBC padding, which makes it easier for man-in-the-middle attackers to obtain cleartext data ...'", href: "https://www.cve.org/CVERecord?id=CVE-2014-3566" }],
   },
   {
     slug: "crime",
@@ -13696,7 +13817,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["CRIME", "Compression Ratio Info-leak Made Easy", "CVE-2012-4929"],
     relatedTerms: ["breach", "beast"],
-    sources: [{ label: "CVE-2012-4929 (2012)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2012-4929, state PUBLISHED, published 2012-09-15: 'The TLS protocol 1.2 and earlier, as used in Mozilla Firefox, Google Chrome, Qt, and other products, can encrypt compressed data without properly obfuscating the length of the unencrypted ...'", href: "https://www.cve.org/CVERecord?id=CVE-2012-4929" }],
   },
   {
     slug: "breach",
@@ -13705,7 +13826,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["BREACH", "Browser Reconnaissance and Exfiltration via Adaptive Compression of Hypertext"],
     relatedTerms: ["crime"],
-    sources: [{ label: "CVE-2013-3587 (2013)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2013-3587, state PUBLISHED, published 2020-02-21: 'The HTTPS protocol, as used in unspecified web applications, can encrypt compressed data without properly obfuscating the length of the unencrypted data, which makes it easier for ...'; the identifier carries 2013, the year the attack was disclosed, while the record itself was published in 2020 - the two dates are not in conflict", href: "https://www.cve.org/CVERecord?id=CVE-2013-3587" }],
   },
   {
     slug: "grease",
@@ -13714,7 +13835,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "enterprise-networking"],
     aliases: ["GREASE", "Generate Random Extensions And Sustain Extensibility"],
     relatedTerms: ["ja3", "ja4"],
-    sources: [{ label: "RFC 8701 (2020)" }],
+    sources: [{ label: "RFC 8701, 'Applying Generate Random Extensions And Sustain Extensibility (GREASE)', 2020", href: "https://www.rfc-editor.org/rfc/rfc8701.txt" }],
   },
   {
     slug: "logjam",
@@ -13723,7 +13844,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["Logjam", "CVE-2015-4000"],
     relatedTerms: ["freak", "drown"],
-    sources: [{ label: "CVE-2015-4000 (2015)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2015-4000, state PUBLISHED, published 2015-05-21: 'The TLS protocol 1.2 and earlier, when a DHE_EXPORT ciphersuite is enabled on a server but not on a client, does not properly convey a DHE_EXPORT choice, which allows man-in-the-middle ...'", href: "https://www.cve.org/CVERecord?id=CVE-2015-4000" }],
   },
   {
     slug: "freak",
@@ -13732,7 +13853,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["FREAK", "Factoring RSA Export Keys", "CVE-2015-0204"],
     relatedTerms: ["logjam", "drown"],
-    sources: [{ label: "CVE-2015-0204 (2015)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2015-0204, state PUBLISHED, published 2015-01-09: 'The ssl3_get_key_exchange function in s3_clnt.c in OpenSSL before 0.9.8zd, 1.0.0 before 1.0.0p, and 1.0.1 before 1.0.1k allows remote SSL servers to conduct RSA-to-EXPORT_RSA downgrade ...'", href: "https://www.cve.org/CVERecord?id=CVE-2015-0204" }],
   },
   {
     slug: "drown",
@@ -13741,7 +13862,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["DROWN", "Decrypting RSA with Obsolete and Weakened eNcryption", "CVE-2016-0800"],
     relatedTerms: ["poodle", "freak"],
-    sources: [{ label: "CVE-2016-0800 (2016)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2016-0800, state PUBLISHED, published 2016-03-01: 'The SSLv2 protocol, as used in OpenSSL before 1.0.1s and 1.0.2 before 1.0.2g and other products, requires a server to send a ServerVerify message before establishing that a client possesses ...'", href: "https://www.cve.org/CVERecord?id=CVE-2016-0800" }],
   },
   {
     slug: "lucky13",
@@ -13750,7 +13871,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["Lucky Thirteen", "Lucky 13", "CVE-2013-0169"],
     relatedTerms: ["poodle"],
-    sources: [{ label: "CVE-2013-0169 (2013)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2013-0169, state PUBLISHED, published 2013-02-08: 'The TLS protocol 1.1 and 1.2 and the DTLS protocol 1.0 and 1.2, as used in OpenSSL, OpenJDK, PolarSSL, and other products, do not properly consider timing side-channel attacks on a MAC ...'", href: "https://www.cve.org/CVERecord?id=CVE-2013-0169" }],
   },
   {
     slug: "sweet32",
@@ -13759,7 +13880,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["Sweet32", "CVE-2016-2183"],
     relatedTerms: ["logjam"],
-    sources: [{ label: "CVE-2016-2183 (2016)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2016-2183, state PUBLISHED, published 2016-09-01: 'The DES and Triple DES ciphers, as used in the TLS, SSH, and IPSec protocols and other protocols and products, have a birthday bound of approximately four billion blocks, which makes it ...'", href: "https://www.cve.org/CVERecord?id=CVE-2016-2183" }],
   },
   {
     slug: "robot",
@@ -13768,7 +13889,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["ROBOT", "Return Of Bleichenbacher's Oracle Threat"],
     relatedTerms: ["drown"],
-    sources: [{ label: "ROBOT attack (2017)" }],
+    sources: [{ label: "The attack's own site: 'The ROBOT Attack - Return of Bleichenbacher's Oracle Threat', disclosed in 2017", href: "https://robotattack.org/" }],
   },
   {
     slug: "raccoon-attack",
@@ -13777,7 +13898,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["Raccoon", "Raccoon attack", "CVE-2020-1968"],
     relatedTerms: ["logjam"],
-    sources: [{ label: "CVE-2020-1968 (2020)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2020-1968, state PUBLISHED, published 2020-09-09: 'The Raccoon attack exploits a flaw in the TLS specification which can lead to an attacker being able to compute the pre-master secret in connections which have used a Diffie-Hellman (DH) ...'", href: "https://www.cve.org/CVERecord?id=CVE-2020-1968" }],
   },
   {
     slug: "spectre",
@@ -13786,7 +13907,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Spectre", "CVE-2017-5753", "CVE-2017-5715"],
     relatedTerms: ["meltdown", "rowhammer"],
-    sources: [{ label: "CVE-2017-5753 (2018)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2017-5753, state PUBLISHED, published 2018-01-04: 'Systems with microprocessors utilizing speculative execution and branch prediction may allow unauthorized disclosure of information to an attacker with local user access via a side-channel ...'", href: "https://www.cve.org/CVERecord?id=CVE-2017-5753" }],
   },
   {
     slug: "meltdown",
@@ -13795,7 +13916,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Meltdown", "CVE-2017-5754"],
     relatedTerms: ["spectre", "rowhammer"],
-    sources: [{ label: "CVE-2017-5754 (2018)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2017-5754, state PUBLISHED, published 2018-01-04: 'Systems with microprocessors utilizing speculative execution and indirect branch prediction may allow unauthorized disclosure of information to an attacker with local user access via a ...'", href: "https://www.cve.org/CVERecord?id=CVE-2017-5754" }],
   },
   {
     slug: "roca",
@@ -13804,7 +13925,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["ROCA", "Return of Coppersmith's Attack", "CVE-2017-15361"],
     relatedTerms: ["robot"],
-    sources: [{ label: "CVE-2017-15361 (2017)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2017-15361, state PUBLISHED, published 2017-10-16: 'The Infineon RSA library 1.02.013 in Infineon Trusted Platform Module (TPM) firmware, such as versions before 0000000000000422 - 4.34, before 000000000000062b - 6.43, and before ...'", href: "https://www.cve.org/CVERecord?id=CVE-2017-15361" }],
   },
   {
     slug: "sloth",
@@ -13813,7 +13934,11 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto"],
     aliases: ["SLOTH", "Security Losses from Obsolete and Truncated Transcript Hashes"],
     relatedTerms: ["freak"],
-    sources: [{ label: "SLOTH attack (2016)" }],
+    // The authors' own paper, NDSS 2016. It is where the acronym is expanded -
+    // "disclosed under the acronym SLOTH (security losses from obsolete and
+    // truncated transcript hashes)" - which is how this entry's `depth` was found
+    // to disagree with its own `context` and was corrected in both locales.
+    sources: [{ label: "Bhargavan & Leurent (INRIA), 'Transcript Collision Attacks: Breaking Authentication in TLS, IKE, and SSH', NDSS 2016 - the paper, which expands the acronym as \"security losses from obsolete and truncated transcript hashes\" and records the protocol-level CVE-2015-7575", href: "https://ndss-symposium.org/wp-content/uploads/2017/09/transcript-collision-attacks-breaking-authentication-tls-ike-ssh.pdf" }],
   },
   {
     slug: "terrapin",
@@ -13822,7 +13947,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["Terrapin", "CVE-2023-48795"],
     relatedTerms: ["grease"],
-    sources: [{ label: "CVE-2023-48795 (2023)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2023-48795, state PUBLISHED, published 2023-12-18: 'The SSH transport protocol with certain OpenSSH extensions, found in OpenSSH before 9.6 and other products, allows remote attackers to bypass integrity checks such that some packets are ...'", href: "https://www.cve.org/CVERecord?id=CVE-2023-48795" }],
   },
   {
     slug: "alpaca",
@@ -13831,7 +13956,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["crypto", "cyber-security"],
     aliases: ["ALPACA", "Application Layer Protocol Confusion Analyzing Cross-protocol Attacks"],
     relatedTerms: ["drown"],
-    sources: [{ label: "ALPACA attack (2021)" }],
+    sources: [{ label: "The ALPACA attack's own site, published by the researchers who disclosed it in 2021", href: "https://alpaca-attack.com/" }],
   },
   {
     slug: "krack",
@@ -13840,7 +13965,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["KRACK", "Key Reinstallation Attack", "CVE-2017-13077"],
     relatedTerms: [],
-    sources: [{ label: "CVE-2017-13077 (2017)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2017-13077, state PUBLISHED, published 2017-10-17: 'Wi-Fi Protected Access (WPA and WPA2) allows reinstallation of the Pairwise Transient Key (PTK) Temporal Key (TK) during the four-way handshake, allowing an attacker within radio range to ...'", href: "https://www.cve.org/CVERecord?id=CVE-2017-13077" }],
   },
   {
     slug: "rowhammer",
@@ -13849,7 +13974,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Rowhammer"],
     relatedTerms: ["spectre", "meltdown"],
-    sources: [{ label: "Rowhammer (2014)" }],
+    sources: [{ label: "Kim et al., 'Flipping Bits in Memory Without Accessing Them: An Experimental Study of DRAM Disturbance Errors', ISCA 2014 - the paper that established the effect", href: "https://users.ece.cmu.edu/~yoonguk/papers/kim-isca14.pdf" }],
   },
   {
     slug: "bluekeep",
@@ -13858,7 +13983,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["BlueKeep", "CVE-2019-0708"],
     relatedTerms: ["eternalblue", "printnightmare"],
-    sources: [{ label: "CVE-2019-0708 (2019)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2019-0708, state PUBLISHED, published 2019-05-16: 'A remote code execution vulnerability exists in Remote Desktop Services formerly known as Terminal Services when an unauthenticated attacker connects to the target system using RDP and ...'", href: "https://www.cve.org/CVERecord?id=CVE-2019-0708" }],
   },
   {
     slug: "zerologon",
@@ -13867,7 +13992,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["Zerologon", "CVE-2020-1472"],
     relatedTerms: ["printnightmare"],
-    sources: [{ label: "CVE-2020-1472 (2020)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2020-1472, state PUBLISHED, published 2020-08-17: 'An elevation of privilege vulnerability exists when an attacker establishes a vulnerable Netlogon secure channel connection to a domain controller, using the Netlogon Remote Protocol ...'", href: "https://www.cve.org/CVERecord?id=CVE-2020-1472" }],
   },
   {
     slug: "printnightmare",
@@ -13876,7 +14001,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["PrintNightmare", "CVE-2021-34527"],
     relatedTerms: ["zerologon", "bluekeep"],
-    sources: [{ label: "CVE-2021-34527 (2021)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2021-34527, state PUBLISHED, published 2021-07-02: 'A remote code execution vulnerability exists when the Windows Print Spooler service improperly performs privileged file operations. An attacker who successfully exploited this vulnerability ...'", href: "https://www.cve.org/CVERecord?id=CVE-2021-34527" }],
   },
   {
     slug: "proxylogon",
@@ -13885,7 +14010,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["ProxyLogon", "CVE-2021-26855"],
     relatedTerms: ["proxyshell"],
-    sources: [{ label: "CVE-2021-26855 (2021)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2021-26855, state PUBLISHED, published 2021-03-02: 'Microsoft Exchange Server Remote Code Execution Vulnerability'", href: "https://www.cve.org/CVERecord?id=CVE-2021-26855" }],
   },
   {
     slug: "proxyshell",
@@ -13894,7 +14019,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["ProxyShell", "CVE-2021-34473"],
     relatedTerms: ["proxylogon"],
-    sources: [{ label: "CVE-2021-34473 (2021)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2021-34473, state PUBLISHED, published 2021-07-14: 'Microsoft Exchange Server Remote Code Execution Vulnerability'", href: "https://www.cve.org/CVERecord?id=CVE-2021-34473" }],
   },
   {
     slug: "mirai",
@@ -13903,7 +14028,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["Mirai", "Mirai botnet"],
     relatedTerms: ["wannacry", "notpetya"],
-    sources: [{ label: "Mirai botnet (2016)" }],
+    sources: [{ label: "Antonakakis et al., 'Understanding the Mirai Botnet', USENIX Security 2017 - the measurement study of the botnet that ran in 2016; the paper year and the botnet year differ and are not in conflict", href: "https://www.usenix.org/system/files/conference/usenixsecurity17/sec17-antonakakis.pdf" }],
   },
   {
     slug: "notpetya",
@@ -13912,7 +14037,12 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security"],
     aliases: ["NotPetya", "ExPetr"],
     relatedTerms: ["wannacry", "stuxnet"],
-    sources: [{ label: "NotPetya (2017)" }],
+    // Two sources because they carry different halves. Talos has the mechanism and
+    // explicitly declines to attribute; CISA's own alert carries the attribution. The
+    // CISA page answers 403 to the shell and to WebFetch, and reads in a browser.
+    sources: [{ label: "Cisco Talos, 'New Ransomware Variant Nyetya Compromises Systems Worldwide', 27 June 2017: \"The sample leverages EternalBlue, EternalRomance, WMI, and PsExec for lateral movement inside an affected network\"; infections \"associated with software update systems for a Ukrainian tax accounting package called MeDoc\"; and Talos \"assesses with high confidence that the intent of the actor behind Nyetya was destructive in nature and not economically motivated\". Talos does not attribute the attack to a state", href: "https://blog.talosintelligence.com/worldwide-ransomware-variant/" },
+      { label: "CISA alert TA17-181A, 'Petya Ransomware', last revised 15 February 2018, which carries the attribution: \"This Alert has been updated to reflect the U.S. Government's public attribution of the 'NotPetya' malware variant to the Russian military\", and records that the malware \"encrypts files with extensions from a hard-coded list\" and, with administrator rights, \"encrypts the master boot record (MBR), making the infected Windows computers unusable\"", href: "https://www.cisa.gov/news-events/alerts/2017/07/01/petya-ransomware" },
+    ],
   },
   {
     slug: "spring4shell",
@@ -13921,7 +14051,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["Spring4Shell", "CVE-2022-22965"],
     relatedTerms: ["log4shell"],
-    sources: [{ label: "CVE-2022-22965 (2022)" }],
+    sources: [{ label: "The CVE Program's record for CVE-2022-22965, state PUBLISHED, published 2022-04-01: 'A Spring MVC or Spring WebFlux application running on JDK 9+ may be vulnerable to remote code execution (RCE) via data binding. The specific exploit requires the application to run on ...'", href: "https://www.cve.org/CVERecord?id=CVE-2022-22965" }],
   },
   {
     slug: "iis",
@@ -15122,7 +15252,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     relatedTerms: ["telebras", "anatel", "adsl"],
     sources: [
       { label: "Telesp - Telecomunicações de São Paulo S.A. (corporate history)" },
-      { label: "Privatização da Telebrás, 1998-07-29 (BNDES / Memorial da Democracia records)" },
+      { label: "BNDES on the Telebras privatisation of 29 July 1998, twelve consecutive auctions at the Rio de Janeiro stock exchange; Telesp is named among the companies in the record", href: "https://www.bndes.gov.br/wps/portal/site/home/transparencia/desestatizacao/projetos-encerrados/privatizacao-federais-telecomunicacoes" },
     ],
   },
   {
@@ -15133,7 +15263,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Telecomunicações Brasileiras", "Sistema Telebrás"],
     relatedTerms: ["telesp", "embratel", "anatel"],
     sources: [
-      { label: "Privatização do Sistema Telebrás, 1998-07-29 (BNDES desestatização records)" },
+      { label: "BNDES, the bank that coordinated the sale and the auction itself: the privatisation of the Telebras System took place on 29 July 1998 through twelve consecutive auctions at the Rio de Janeiro stock exchange, selling control of three fixed-line holdings, one long-distance holding and eight cellular holdings. The same record notes that the Lei Geral das Telecomunicacoes of July 1997 carried the directives for the privatisation, and that BNDES signed the coordination contract with the Ministry of Communications in February 1998", href: "https://www.bndes.gov.br/wps/portal/site/home/transparencia/desestatizacao/projetos-encerrados/privatizacao-federais-telecomunicacoes" },
       { label: "Telecomunicações Brasileiras S.A. (system history)" },
     ],
   },
@@ -15145,8 +15275,8 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Empresa Brasileira de Telecomunicações"],
     relatedTerms: ["telebras", "cgi-br"],
     sources: [
-      { label: "Embratel corporate lineage: 1998 privatization to MCI WorldCom, 2004 to Telmex, 2015 into Claro" },
-      { label: "Serviço de Internet Comercial trial, December 1994 (Agência Brasil retrospective)" },
+      { label: "BNDES on the Telebras privatisation of 29 July 1998: Embratel appears in the record as Regiao IV, one of the holdings whose control was sold in the twelve consecutive auctions at the Rio de Janeiro stock exchange. The record does NOT carry the later transfers - to MCI WorldCom, then Telmex in 2004, then into Claro in 2015 - which remain uncited", href: "https://www.bndes.gov.br/wps/portal/site/home/transparencia/desestatizacao/projetos-encerrados/privatizacao-federais-telecomunicacoes" },
+      { label: "FAPESP's Revista Pesquisa dates the arrival of commercial internet in Brazil to 1994 - 'em 1994, comecou a sair do ambito academico e tornar-se tambem comercial' - and notes that until then the Fermilab connection carried all of Brazil's international internet traffic. It does NOT name the December Servico de Internet Comercial trial specifically, so that month remains uncited", href: "https://revistapesquisa.fapesp.br/prim%C3%B3rdios-da-rede_/" },
     ],
   },
   {
@@ -15157,7 +15287,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Agência Nacional de Telecomunicações"],
     relatedTerms: ["telebras", "telesp"],
     sources: [
-      { label: "Lei Geral de Telecomunicações (Lei 9.472, July 1997) creating the agency" },
+      { label: "Lei 9.472 of 16 July 1997, the Lei Geral de Telecomunicações, at the Presidency's own repository - the law that created the agency", href: "https://www.planalto.gov.br/ccivil_03/leis/l9472.htm" },
     ],
   },
   {
@@ -15168,7 +15298,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Comitê Gestor da Internet no Brasil"],
     relatedTerms: ["nic-br", "fapesp"],
     sources: [
-      { label: "NIC.br institutional history (nic.br/historia): CGI.br created 1995 by the Science & Technology and Communications ministries" },
+      { label: "NIC.br's own institutional history: in 1995 an initiative of the Ministry of Science and Technology and the Ministry of Communications created the Comite Gestor da Internet no Brasil, to coordinate and integrate the country's network initiatives. The same page records that in June 1997 a CGI.br study produced the NBSO, which became CERT.br", href: "https://nic.br/historia/" },
     ],
   },
   {
@@ -15179,7 +15309,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Núcleo de Informação e Coordenação do Ponto BR"],
     relatedTerms: ["cgi-br", "fapesp"],
     sources: [
-      { label: "NIC.br institutional history: legal entity 2003 (Decreto 4.829), .br registry operations from 2005" },
+      { label: "NIC.br's own institutional history: in 2003 NIC.br was formally established as a legal person and the shape of CGI.br was changed by Decreto 4.829; in 2005 NIC.br became the institution administering name registration under .br. The functions had until then been carried out at FAPESP, and CGI.br moved them to an independent institution", href: "https://nic.br/historia/" }, { label: "Decreto 4.829 of 3 September 2003, at the Presidency's own repository: it provides for the creation of the Comite Gestor da Internet no Brasil and for the internet governance model in Brazil. The institutional history gives the year; this gives the day", href: "https://www.planalto.gov.br/ccivil_03/decreto/2003/d4829.htm" },
     ],
   },
   {
@@ -15190,7 +15320,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Fundação de Amparo à Pesquisa do Estado de São Paulo"],
     relatedTerms: ["usp", "unicamp", "nic-br", "cgi-br"],
     sources: [
-      { label: "Jon Postel's 1989 delegation of ccTLD .br to the FAPESP academic-networks team (NIC.br history)" },
+      { label: "NIC.br's own institutional history: in 1989 Jon Postel, responsible for top-level domain assignment, delegated the .br ccTLD to the team working on academic networks in the country, at FAPESP - at a time when the internet did not yet exist in Brazil and .br was used by other academic networks such as UUCP, with the few registrations made by hand. The same page dates the first permanent internet access to 1991", href: "https://nic.br/historia/" },
       { label: "First Brazilian TCP/IP connection, 1991, FAPESP to ESnet via Fermilab (Demi Getschko biography)" },
     ],
   },
@@ -15202,7 +15332,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Universidade de São Paulo"],
     relatedTerms: ["unicamp", "fapesp"],
     sources: [
-      { label: "ANSP academic-network history: USP among the founding participants of Brazil's pre-internet academic networking (FAPESP / Agência Brasil retrospectives)" },
+      { label: "FAPESP's own Revista Pesquisa on the early network: ANSP, the Academic Network at Sao Paulo, was created and financed by FAPESP from 1988 to carry electronic communication between the state's main teaching and research institutions, and unlike the LNCC's pioneering connection in Rio, Sao Paulo had to form a network with USP, Unicamp, Unesp and the Instituto de Pesquisas Tecnologicas. ANSP ran on DECnet, and reached the internet through Fermilab", href: "https://revistapesquisa.fapesp.br/prim%C3%B3rdios-da-rede_/" },
     ],
   },
   {
@@ -15213,7 +15343,7 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     aliases: ["Universidade Estadual de Campinas"],
     relatedTerms: ["usp", "fapesp"],
     sources: [
-      { label: "ANSP academic-network history: Unicamp among the founding participants alongside USP and UNESP" },
+      { label: "FAPESP's own Revista Pesquisa on the early network: ANSP, the Academic Network at Sao Paulo, was created and financed by FAPESP from 1988 to carry electronic communication between the state's main teaching and research institutions, and unlike the LNCC's pioneering connection in Rio, Sao Paulo had to form a network with USP, Unicamp, Unesp and the Instituto de Pesquisas Tecnologicas. ANSP ran on DECnet, and reached the internet through Fermilab", href: "https://revistapesquisa.fapesp.br/prim%C3%B3rdios-da-rede_/" },
     ],
   },
   {

@@ -107,7 +107,7 @@ export default function RegexTool() {
             {m.groups.map((g) => (
               <span className="regex-group" key={g.index}>
                 <span className="regex-group-n">{g.index}</span>
-                <code className="mono">{g.value === undefined ? "—" : g.value}</code>
+                <code className="mono">{g.value === undefined ? "-" : g.value}</code>
               </span>
             ))}
           </div>

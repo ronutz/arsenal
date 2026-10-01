@@ -60,7 +60,7 @@ export const manifest = Object.freeze({
   sources: [
     {
       id: "le-ratelimits",
-      label: "Let's Encrypt — Rate Limits",
+      label: "Let's Encrypt - Rate Limits",
       type: "reference",
       url: "https://letsencrypt.org/docs/rate-limits/",
       access_date: "2026-07-07",
@@ -69,7 +69,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "le-integration",
-      label: "Let's Encrypt — Integration Guide",
+      label: "Let's Encrypt - Integration Guide",
       type: "reference",
       url: "https://letsencrypt.org/docs/integration-guide/",
       access_date: "2026-07-07",
@@ -78,7 +78,7 @@ export const manifest = Object.freeze({
     },
     {
       id: "psl",
-      label: "Public Suffix List — publicsuffix.org",
+      label: "Public Suffix List - publicsuffix.org",
       type: "reference",
       url: "https://publicsuffix.org/list/",
       access_date: "2026-07-07",

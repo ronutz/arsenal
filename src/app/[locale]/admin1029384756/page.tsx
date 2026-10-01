@@ -269,8 +269,8 @@ export default async function AdminConsolePage({
                               </span>
                             </td>
                             <td className="mono admin-posture">{tool.posture}</td>
-                            <td className="admin-specs">{tool.specs?.join(", ") || "—"}</td>
-                            <td className="admin-note">{tool.note || "—"}</td>
+                            <td className="admin-specs">{tool.specs?.join(", ") || "-"}</td>
+                            <td className="admin-note">{tool.note || "-"}</td>
                           </tr>
                         ))}
                       </tbody>
