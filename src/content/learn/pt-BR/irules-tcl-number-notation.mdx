@@ -1,0 +1,84 @@
+---
+slug: irules-tcl-number-notation
+title: "Números em iRules: octal, hexadecimal, e por que 08 não é um número"
+summary: "Os iRules leem números pelas regras do Tcl 8.4.6, e essas regras escondem uma armadilha: um zero à esquerda significa octal, então 010 é oito e 08 nem é um número. Veja como o Tcl lê inteiros e doubles, os dois lugares onde ele os lê, e os valores com zero à esquerda que quebram regras de verdade."
+concepts: ["irules", "tcl", "f5", "expr", "octal", "hexadecimal", "floating point"]
+relatedTools: ["f5-irules-number-notation", "f5-irules-expression-lab"]
+relatedArticles: ["irules-expression-operators", "irules-scan-command"]
+category: networking
+order: 25
+status: reviewed
+updated: "2026-10-03"
+---
+
+A F5 informa no K6091 que o conjunto de comandos de iRules do BIG-IP foi desenvolvido a partir da versão base 8.4.6 do Tcl (Tool Command Language), e que essa base é usada em todas as versões do BIG-IP. Então, quando um iRule compara um cabeçalho com um número ou faz conta com um valor da requisição, ele segue as regras do Tcl 8.4.6 para ler números. A maioria dessas regras é o que se espera. Uma delas não é, e aparece em produção como uma regra que funciona a manhã inteira e falha às 08:00.
+
+## Como o Tcl 8.4 lê um inteiro
+
+O manual de `expr` do Tcl 8.4 dá três formas de escrever um inteiro:
+
+- dígitos sem prefixo são **decimais**: `10` é dez;
+- um `0` inicial torna os dígitos **octais**, base 8: `010` é oito;
+- um `0x` inicial os torna **hexadecimais**: `0x10` é dezesseis.
+
+A regra do octal é a armadilha. Os dígitos octais vão de 0 a 7, então `08` e `09` têm a forma de um número octal e um dígito que o octal não tem. O Tcl não volta para decimal. O texto `08` simplesmente não é um número.
+
+| Escrito | Lido como | Valor |
+| --- | --- | --- |
+| `10` | decimal | 10 |
+| `010` | octal | 8 |
+| `0x10` | hexadecimal | 16 |
+| `08` | não é número | nenhum |
+
+## Onde morde: valores com zero à esquerda
+
+As requisições estão cheias de números com zero à esquerda: horários, datas, códigos, campos de versão. Digamos que um cabeçalho traga um horário e um iRule separe a hora:
+
+```tcl
+set hour [getfield "08:30" ":" 1]
+if { $hour > 7 } {
+    pool day_pool
+}
+```
+
+Às 08:30 essa condição é **falsa**. `$hour` contém `08`, que não é um número, então `>` passa a comparar texto, e o texto `08` vem antes de `7` porque o caractere `0` vem antes do `7`. A aritmética é mais escandalosa: `expr {$hour + 1}` falha com "can't use invalid octal number as operand of +". Às 07:30 as duas funcionam, porque `07` é um sete octal válido.
+
+A correção é ler o valor como decimal de propósito. `scan` com `%d` faz exatamente isso, com ou sem zero à esquerda:
+
+```tcl
+scan "08:30" "%d:%d" hour minute
+# hour vale 8, minute vale 30
+```
+
+## Dois lugares onde o Tcl lê um número
+
+O Tcl lê números em dois lugares diferentes, e eles falham de jeitos diferentes:
+
+- **Um literal escrito dentro da expressão**, como `expr {$code == 08}`. O Tcl 8.4 verifica os literais ao compilar a expressão, então `08` é um erro antes que qualquer parte da expressão rode: "expected integer but got 08 (looks like invalid octal number)".
+- **Um valor guardado numa variável**, como `set code 08; expr {$code == 8}`. Aqui o valor só é lido quando um operador precisa de um número. A aritmética falha nesse momento; uma comparação passa a comparar texto sem avisar, e `$code == 8` simplesmente dá falso.
+
+O segundo caso é o perigoso, porque nada vai para o log.
+
+## Doubles, e os dígitos que você não vê
+
+Um número com ponto decimal ou expoente é um double, um valor binário de ponto flutuante. O Tcl nunca trata um double como inteiro, nem um redondo: `3.0 == 3` é verdadeiro, mas `3.0` é impresso com o ponto decimal e o operador `%`, que só aceita inteiros, o recusa. `1e3` é lido como o double `1000.0`.
+
+O Tcl 8.4 imprime doubles com 12 dígitos significativos, porque sua variável `tcl_precision` vale 12 por padrão. Isso deixa a saída limpa e esconde o resto do valor: `expr {0.1 + 0.2}` imprime `0.3`, mas `expr {0.1 + 0.2 == 0.3}` dá `0`, porque a soma guardada é `0.30000000000000004`. Compare doubles com uma tolerância, ou trabalhe com unidades inteiras (milissegundos, centavos) quando puder.
+
+A divisão segue o tipo dos operandos. `10 / 3` é divisão inteira e dá `3`; `10 / 3.` é divisão de doubles e imprime `3.33333333333`. A divisão inteira arredonda em direção ao infinito negativo, então `-7 / 2` dá `-4`, não `-3`.
+
+## Valores grandes
+
+Os inteiros neste motor têm 64 bits, como o Tcl 8.4 os compila numa plataforma de 64 bits. Valores de 2 elevado a 63 até 2 elevado a 64 menos 1 são aceitos e dão a volta para números negativos, então `0xFFFFFFFFFFFFFFFF` é lido como `-1`; acima disso, o valor é recusado com "integer value too large to represent". Um build de 32 bits do Tcl 8.4 leria valores grandes de outro jeito, então código que depende de valores além de 32 bits merece um teste no sistema que vai rodá-lo.
+
+## Experimente
+
+O [conversor de notação numérica](/tools/f5-irules-number-notation) recebe qualquer valor como você o escreveria e mostra como ele é lido, suas outras notações, as leituras como literal e como variável lado a lado, e como `==`, `eq`, `<` e `>` o comparam com um valor à sua escolha. O [laboratório de expressões](/tools/f5-irules-expression-lab) avalia expressões inteiras e mostra onde cada operando foi lido como número ou como texto.
+
+## Fontes
+
+A versão do Tcl vem da base de conhecimento da própria F5, as regras de leitura do manual do Tcl 8.4, e a precisão de impressão do código-fonte do Tcl 8.4.6; todos os exemplos acima foram rodados no Tcl 8.4.6.
+
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [Manual do Tcl 8.4: expr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/expr.htm)
+- [Código-fonte do Tcl 8.4.6, tag core-8-4-6 (doc/tclvars.n documenta o tcl_precision)](https://github.com/tcltk/tcl/tree/core-8-4-6)

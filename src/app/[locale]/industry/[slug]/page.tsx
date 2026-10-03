@@ -424,6 +424,9 @@ export default async function PartnerVendorPage({
     const tTag = await getTranslations({ locale, namespace: "industryTags" });
     const tNavTag = await getTranslations({ locale, namespace: "nav" });
     const tIndTag = await getTranslations({ locale, namespace: "industry" });
+    // The timeline rows below reuse partnerVendors' own labels, so the string
+    // is declared once and both routes read the same key (PRIME 2026-10-02).
+    const tpTag = await getTranslations({ locale, namespace: "partnerVendors" });
     return (
       <>
         <a href="#main" className="skip-link">
@@ -458,13 +461,38 @@ export default async function PartnerVendorPage({
                 <div className="vendor-timeline">
                   {listed.map((v) => (
                     <div className="vendor-timeline-row" key={v.slug}>
+                      {/* The gutter marks POSITION (PRIME 2026-10-02): vendorsByTag
+                          orders by storyStart(), so a card sorted at its
+                          predecessor's year is labelled with that year here while
+                          the card below states its own subject's founding. */}
                       <span className="vendor-timeline-year mono" aria-hidden="true">
-                        {v.founded}
+                        {v.storyBegins?.year ?? v.founded}
                       </span>
                       <Link className="vendor-card" href={`/industry/${v.slug}`}>
                         <span className="vendor-card-years mono">
                           {v.founded}
                           {v.ended ? ` - ${v.ended.year}` : " - present"}
+                          {/* WHOSE YEAR IS THIS (PRIME 2026-10-02). Same reason
+                              as on the /industry index: where the year belongs
+                              to a company this card is not named for, the card
+                              says so rather than letting a bare year imply the
+                              wrong founding. */}
+                          {v.storyBegins && (
+                            <span className="vendor-card-founded-company">
+                              <span className="vendor-card-founded-company-label">
+                                {tpTag("storyBeginsLabel")}
+                              </span>
+                              {`${v.storyBegins.year}, ${v.storyBegins.company}`}
+                            </span>
+                          )}
+                          {v.foundedCompany && (
+                            <span className="vendor-card-founded-company">
+                              <span className="vendor-card-founded-company-label">
+                                {tpTag("foundedCompanyLabel")}
+                              </span>
+                              {v.foundedCompany}
+                            </span>
+                          )}
                         </span>
                         <span className="vendor-card-name">{v.name}</span>
                         <span className="vendor-card-tagline">{v.tagline}</span>

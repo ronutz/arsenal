@@ -1,0 +1,84 @@
+---
+slug: irules-findstr-substr-getfield
+title: "findstr, substr e getfield: o que a F5 documenta e o que deixa em aberto"
+summary: "A F5 acrescenta três comandos aos iRules para recortar um pedaço de um valor. findstr encontra e pula, substr começa num índice, getfield divide num separador, e dois deles recebem um terminador que é um comprimento ou um texto de parada. Veja cada regra com os próprios exemplos da F5, o Tcl puro que faz o mesmo trabalho e os casos que as páginas da F5 não resolvem."
+concepts: ["irules", "f5", "tcl", "findstr", "substr", "getfield", "string"]
+relatedTools: ["f5-irules-string-extract", "f5-irules-string-workbench"]
+relatedArticles: ["irules-string-commands", "irules-scan-command"]
+category: networking
+order: 30
+status: reviewed
+updated: "2026-10-03"
+---
+
+O Tcl já tem `string first`, `string range` e `split`. A F5 acrescentou aos iRules três comandos próprios para o recorte mais comum: achar uma marca, pular por cima dela e parar em outra. Eles são curtos de escrever, e as páginas de referência deixam alguns casos em aberto, o que importa quando um valor vindo da requisição não tem a forma que você esperava.
+
+## findstr: achar, pular, parar
+
+`findstr string search ?skip? ?terminator?` encontra a primeira ocorrência de `search`, avança `skip` caracteres a partir do **início do casamento** e devolve tudo até o terminador. A referência tmsh da F5 dá dois exemplos:
+
+```tcl
+findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"   ;# sip.example.com
+findstr "aaa123456xxyz" "aaa" 3 "xyz"                    ;# 123456x
+```
+
+No segundo exemplo o resultado para antes do primeiro `xyz`, então o `x` que vem antes dele fica no resultado. O uso típico em iRules é um parâmetro de query, em que o salto é o comprimento da marca:
+
+```tcl
+findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
+```
+
+## substr: começar num índice
+
+`substr string skip ?terminator?` começa no índice `skip`, onde 0 é o primeiro caractere, e devolve até o terminador. Os exemplos da F5, todos na mesma string:
+
+```tcl
+substr "abcdefghijklm" 2 "x"    ;# cdefghijklm (não há x depois do índice 2, então vai até o fim)
+substr "abcdefghijklm" 2 "gh"   ;# cdef
+substr "abcdefghijklm" 2 4      ;# cdef
+substr "abcdefghijklm" 2 20     ;# cdefghijklm
+```
+
+## O terminador é um comprimento ou um texto
+
+Nos dois comandos, um terminador inteiro é um **comprimento**: essa quantidade de caracteres, ou até o fim da string, o que for menor. Qualquer outro terminador é um **texto** antes do qual parar; se esse texto não aparecer, a página de `substr` diz que o resto da string é devolvido. O teste de inteiro é o do Tcl, então um terminador escrito `010` é oito em octal.
+
+## getfield: dividir e escolher
+
+`getfield string separator field` divide em cada ocorrência do separador, que pode ser um caractere ou uma string inteira, e devolve o campo, contando a partir de 1:
+
+```tcl
+getfield "a:b:c" ":" 2                     ;# b
+getfield "/login.php?user=abc" "?" 2       ;# user=abc
+getfield "one--two--three" "--" 3          ;# three
+```
+
+## Os mesmos trabalhos em Tcl puro
+
+- o `findstr` de dois argumentos é, na descrição da própria F5, um `string range` de `string first` até `end`;
+- o `substr` com comprimento é `string range $s $skip [expr {$skip + $len - 1}]`;
+- o `getfield` com separador de um caractere é `lindex [split $s $sep] [expr {$n - 1}]`, já que os índices de lista contam a partir de 0. Com um separador mais longo não há equivalente direto, porque o `split` trata cada caractere do segundo argumento como um separador independente.
+
+## O que as páginas deixam em aberto
+
+Uma leitura atenta das páginas de referência revela casos que elas não resolvem. Confirme-os num BIG-IP antes de depender deles:
+
+- **`findstr` quando o texto procurado não aparece.** Nenhuma página diz o que é devolvido. A F5 diz que o `findstr` de dois argumentos equivale a `string range` com `string first`, mas esse equivalente devolve a string **inteira** quando o texto não aparece (porque `string first` devolve -1), o que dificilmente é o que o `findstr` faz.
+- **Uma contagem 0.** A regra diz que um terminador inteiro devolve essa quantidade de caracteres, o que faria 0 devolver nada. O próprio exemplo de `substr` da F5 com 0 devolve o resto da string (`substr "abcdefghijklm" 2 0` dá `cdefghijklm`), e uma nota de colaborador na página mais antiga da referência de API relata que a forma com 0 não funcionou nas versões 11.5.4 e 11.6.0.
+- **Um salto além do fim, um salto ou uma contagem negativos, um terminador vazio e um número de campo fora dos campos existentes** também não são tratados.
+
+Nada disso é exótico em produção: uma requisição sem o parâmetro que você procura é o caso normal na maior parte do tráfego de um site.
+
+## Experimente
+
+O [explicador de findstr, substr e getfield](/tools/f5-irules-string-extract) roda cada comando na sua entrada, marca o casamento, o salto, o terminador e o resultado numa régua, roda o equivalente em Tcl puro ao lado e identifica cada caso não documentado com a suposição que fez. Todos os exemplos publicados pela F5 acima fazem parte dos testes da ferramenta.
+
+## Fontes
+
+A sintaxe, as regras e os exemplos vêm das páginas da referência tmsh da F5 para cada comando; a nota de colaborador sobre a contagem 0 está na página mais antiga da referência de API de iRules.
+
+- [Referência tmsh da F5: findstr](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_findstr.html)
+- [Referência tmsh da F5: substr](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_substr.html)
+- [Referência tmsh da F5: getfield](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_getfield.html)
+- [Referência de iRules da F5: substr (com a nota de colaborador)](https://clouddocs.f5.com/api/irules/substr.html)
+- [Manual do Tcl 8.4: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm)

@@ -118,6 +118,15 @@ import { run as publicSuffixRun } from "./public-suffix";
 import { run as letsEncryptRateLimitsRun } from "./letsencrypt-rate-limits";
 import { run as f5IrulesRuntimeCalculatorRun } from "./f5-irules-runtime-calculator";
 import { run as f5IrulesPerformanceLinterRun } from "./f5-irules-performance-linter";
+// The iRules / Tcl 8.4 teaching tools (2026-10-03). Six run in bounded time on
+// structured input and are exposed; the expression lab and the script stepper
+// execute caller-supplied Tcl and are excluded below.
+import { run as f5IrulesNumberNotationRun } from "./f5-irules-number-notation";
+import { run as f5IrulesStringWorkbenchRun } from "./f5-irules-string-workbench";
+import { run as f5IrulesScanExplainerRun } from "./f5-irules-scan-explainer";
+import { run as f5IrulesStringExtractRun } from "./f5-irules-string-extract";
+import { run as f5IrulesConditionalBuilderRun } from "./f5-irules-conditional-builder";
+import { run as f5IrulesStyleCheckerRun } from "./f5-irules-style-checker";
 import { run as f5ReleaseCadenceCalendarRun } from "./f5-release-cadence-calendar";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
@@ -234,6 +243,14 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "flow-path-reasoner", structured: true, run: flowPathReasonerRun },
   { slug: "health-snapshot-comparator", structured: true, run: healthSnapshotComparatorRun },
   { slug: "f5-irules-performance-linter", structured: true, run: (input) => f5IrulesPerformanceLinterRun(JSON.parse(input)) },
+  // iRules / Tcl 8.4 teaching tools: each input field is length-limited in the
+  // tool itself, and none of these runs caller-supplied commands.
+  { slug: "f5-irules-number-notation", structured: true, run: (input) => f5IrulesNumberNotationRun(JSON.parse(input)) },
+  { slug: "f5-irules-string-workbench", structured: true, run: (input) => f5IrulesStringWorkbenchRun(JSON.parse(input)) },
+  { slug: "f5-irules-scan-explainer", structured: true, run: (input) => f5IrulesScanExplainerRun(JSON.parse(input)) },
+  { slug: "f5-irules-string-extract", structured: true, run: (input) => f5IrulesStringExtractRun(JSON.parse(input)) },
+  { slug: "f5-irules-conditional-builder", structured: true, run: (input) => f5IrulesConditionalBuilderRun(JSON.parse(input)) },
+  { slug: "f5-irules-style-checker", structured: true, run: (input) => f5IrulesStyleCheckerRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },
@@ -385,4 +402,13 @@ export const API_EXCLUDED: Record<string, string> = {
     "Vendor-context explainer: the value is the rendered attribute-source walk and the silent-failure warnings. The PingFederate mapping grammar is a deliberate teaching subset, not a stable API contract.",
   "hash-preimage-finder":
     "Bounded brute-force preimage search: compute-heavy and abuse-prone on a shared edge. Browser-only by design.",
+  // ---- iRules / Tcl 8.4 TEACHING INTERPRETER (added 2026-10-03) ------------
+  // Both run caller-supplied Tcl in the teaching interpreter. In the browser that
+  // is bounded (2,000 commands, 1,000,000-character values, 200 nesting levels)
+  // and harms nobody but the tab; on a shared edge the same bounds still allow
+  // seconds of CPU per request, and the value is the rendered trace anyway.
+  "f5-irules-expression-lab":
+    "Executes caller-supplied Tcl (the set script and any [command] in the expression) in the teaching interpreter; bounded, but compute-heavy on a shared edge, and the value is the rendered evaluation tree. Browser-only by design.",
+  "f5-irules-script-stepper":
+    "Executes caller-supplied Tcl one command at a time in the teaching interpreter; bounded, but compute-heavy on a shared edge, and the value is the rendered step-by-step trace. Browser-only by design.",
 };

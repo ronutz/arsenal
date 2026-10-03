@@ -1,0 +1,84 @@
+---
+slug: irules-findstr-substr-getfield
+title: "findstr, substr and getfield: what F5 documents, and what it leaves open"
+summary: "F5 adds three commands to iRules for cutting a piece out of a value. findstr finds and skips, substr starts at an index, getfield splits on a separator, and two of them take a terminator that is either a length or a stop text. Here is each rule with F5's own examples, the plain Tcl that does the same job, and the cases F5's pages do not settle."
+concepts: ["irules", "f5", "tcl", "findstr", "substr", "getfield", "string"]
+relatedTools: ["f5-irules-string-extract", "f5-irules-string-workbench"]
+relatedArticles: ["irules-string-commands", "irules-scan-command"]
+category: networking
+order: 30
+status: reviewed
+updated: "2026-10-03"
+---
+
+Tcl already has `string first`, `string range` and `split`. F5 added three commands of its own to iRules for the most common cut: find a marker, skip past it, and stop at another. They are short to write, and their reference pages leave a few cases open, which matters when a value from a request is not shaped the way you expected.
+
+## findstr: find, skip, stop
+
+`findstr string search ?skip? ?terminator?` finds the first occurrence of `search`, moves `skip` characters on from the **start of the match**, and returns everything up to the terminator. F5's tmsh reference gives two examples:
+
+```tcl
+findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"   ;# sip.example.com
+findstr "aaa123456xxyz" "aaa" 3 "xyz"                    ;# 123456x
+```
+
+In the second example the result stops before the first `xyz`, so the `x` before it stays in the result. The usual iRules use is a query parameter, where the skip is the length of the marker:
+
+```tcl
+findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
+```
+
+## substr: start at an index
+
+`substr string skip ?terminator?` starts at index `skip`, where 0 is the first character, and returns up to the terminator. F5's examples, all on the same string:
+
+```tcl
+substr "abcdefghijklm" 2 "x"    ;# cdefghijklm (no x after index 2, so to the end)
+substr "abcdefghijklm" 2 "gh"   ;# cdef
+substr "abcdefghijklm" 2 4      ;# cdef
+substr "abcdefghijklm" 2 20     ;# cdefghijklm
+```
+
+## The terminator is a length or a text
+
+For both commands, a terminator that is an integer is a **length**: that many characters, or up to the end of the string, whichever is shorter. Any other terminator is **text** to stop just before; if that text does not appear, `substr`'s page says the rest of the string is returned. The integer test is Tcl's, so a terminator written `010` is octal eight.
+
+## getfield: split and pick
+
+`getfield string separator field` splits at every occurrence of the separator, which may be one character or a whole string, and returns the field, counting from 1:
+
+```tcl
+getfield "a:b:c" ":" 2                     ;# b
+getfield "/login.php?user=abc" "?" 2       ;# user=abc
+getfield "one--two--three" "--" 3          ;# three
+```
+
+## The same jobs in plain Tcl
+
+- two-argument `findstr` is, in F5's own description, `string range` from `string first` to `end`;
+- `substr` with a length is `string range $s $skip [expr {$skip + $len - 1}]`;
+- `getfield` with a one-character separator is `lindex [split $s $sep] [expr {$n - 1}]`, since list indexes count from 0. With a longer separator there is no direct equivalent, because `split` treats every character of its second argument as a separator of its own.
+
+## What the pages leave open
+
+Reading the reference pages closely turns up cases they do not settle. Check these on a BIG-IP before you depend on them:
+
+- **`findstr` when the search text is absent.** No page says what is returned. F5 calls two-argument `findstr` equivalent to `string range` with `string first`, but that equivalent returns the **whole** string when the text is absent (because `string first` returns -1), which is unlikely to be what `findstr` does.
+- **A count of 0.** The rule says an integer terminator returns that many characters, which would make 0 return nothing. F5's own `substr` example with 0 returns the rest of the string (`substr "abcdefghijklm" 2 0` gives `cdefghijklm`), and a contributor note on the older API reference page reports that the 0 form did not work for them on 11.5.4 and 11.6.0.
+- **A skip past the end, a negative skip or count, an empty terminator, and a field number outside the fields** are not covered either.
+
+None of these is exotic in production: a request without the parameter you look for is the normal case on most of a site's traffic.
+
+## Try it
+
+The [findstr, substr and getfield explainer](/tools/f5-irules-string-extract) runs each command on your input, marks the match, skip, terminator and result on a ruler, runs the plain Tcl equivalent beside it, and labels every undocumented case with the assumption it made. All of F5's published examples above are part of its tests.
+
+## Sources
+
+The syntax, rules and examples are from F5's tmsh reference pages for each command; the contributor note on the 0 count is on the older iRules API reference page.
+
+- [F5 tmsh reference: findstr](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_findstr.html)
+- [F5 tmsh reference: substr](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_substr.html)
+- [F5 tmsh reference: getfield](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_getfield.html)
+- [F5 iRules reference: substr (with the contributor note)](https://clouddocs.f5.com/api/irules/substr.html)
+- [Tcl 8.4 manual: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm)

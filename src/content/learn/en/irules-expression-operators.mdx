@@ -1,0 +1,93 @@
+---
+slug: irules-expression-operators
+title: "iRules comparisons: == versus eq, precedence, and the quiet fallback to text"
+summary: "In an iRule, == compares numbers when it can and text when it cannot, while eq always compares text. That one rule explains why 012 == 10 is true, why true == 1 is false, and why bench sorts after Chair. Here are the comparison rules of Tcl 8.4.6, the precedence that groups an expression, and F5's own operators."
+concepts: ["irules", "tcl", "f5", "expr", "operators", "comparison", "precedence"]
+relatedTools: ["f5-irules-expression-lab", "f5-irules-number-notation"]
+relatedArticles: ["irules-tcl-number-notation", "irules-building-strings"]
+category: networking
+order: 26
+status: reviewed
+updated: "2026-10-03"
+---
+
+Every `if`, `while` and `expr` in an iRule evaluates an expression with the rules of Tcl 8.4.6, the base F5 names in K6091. Most of the operators behave as in any C-like language. The comparison operators do not, because Tcl values are text that may or may not read as numbers, and the operators decide at run time which kind of comparison to make.
+
+## == compares numbers when it can
+
+The Tcl 8.4 `expr` manual puts it plainly: string values may be used as operands of the comparison operators, and the evaluator tries to compare them as integers or floating-point numbers when it can. In practice:
+
+- if both sides read as numbers, `==`, `!=`, `<`, `>`, `<=` and `>=` compare the numbers;
+- if either side does not, they compare the two values as text;
+- `eq` and `ne` always compare text, and never convert.
+
+| Expression | Result | Why |
+| --- | --- | --- |
+| `012 == 10` | 1 | `012` is octal ten |
+| `012 eq 10` | 0 | the texts differ |
+| `"1.0" == 1` | 1 | both are numbers |
+| `"1.0" eq 1` | 0 | the texts differ |
+| `true == 1` | 0 | `true` is a boolean word, not a number, so the texts are compared |
+| `"" == 0` | 0 | an empty side always means a text comparison |
+
+That fallback is silent. When one side is not a number you get a text comparison and no warning, which is why a value such as `08` (not a valid number, because a leading zero means octal) makes `$hour > 7` false at eight o'clock. Use `eq` when you mean text, convert values you mean as numbers (`scan $v %d n`), and keep `==` for values you know are numeric.
+
+## Text comparison is by character code
+
+When values are compared as text, Tcl compares the bytes of its internal UTF-8 one by one. In ASCII every upper-case letter comes before every lower-case one, so `"bench" < "Chair"` is false: `b` is 98 and `C` is 67. Host names and paths are case-insensitive in practice, so lower-case them first:
+
+```tcl
+if { [string tolower [HTTP::host]] eq "www.example.com" } {
+    pool web_pool
+}
+```
+
+`string compare -nocase` and `string equal -nocase` do the same for a single comparison.
+
+## Precedence
+
+The Tcl 8.4 manual lists the operators in decreasing order of precedence: unary `-` `+` `~` `!`; then `*` `/` `%`; `+` `-`; `<<` `>>`; `<` `>` `<=` `>=`; `==` `!=`; `eq` `ne`; `&`; `^`; `|`; `&&`; `||`; and the conditional `?:`. So `$a + $b * 2` is `$a + ($b * 2)`, and `$n > 5 && $m < 3` groups the comparisons before the `&&`.
+
+One detail differs from the manual's table: it shows `eq` and `ne` one row below `==` and `!=`, but the Tcl 8.4.6 parser handles all four at the same level, left to right (the equality loop in `generic/tclParseExpr.c` accepts `==`, `!=`, `eq` and `ne` together). `"a" eq "a" == 1` is therefore `("a" eq "a") == 1`, which is 1. Parentheses make the question go away, and they are kinder to the next reader anyway.
+
+Tcl 8.4 has no power operator. `2 ** 3` is a syntax error; `pow(2, 3)` returns the double `8.0`.
+
+## Arithmetic rules worth remembering
+
+- Integer division rounds toward negative infinity: `7 / -2` is `-4`, and `-7 / 2` is `-4` too.
+- The remainder takes the sign of the divisor: `-7 % 2` is `1`, `7 % -2` is `-1`.
+- Any double operand makes the operation floating point: `10 / 3` is `3`, `10 / 3.` is `3.33333333333`.
+- `&&` and `||` stop as soon as the answer is known, so in `$n > 5 || [incr n] > 0` with `n` at 7 the `incr` never runs. The conditional `?:` evaluates only the branch it takes.
+
+## F5's operators
+
+F5's Operators page adds words for iRules: `contains`, `starts_with`, `ends_with`, `equals`, `matches_glob` and `matches_regex` compare text, and `and`, `or` and `not` are spelled versions of `&&`, `||` and `!`.
+
+```tcl
+if { [HTTP::uri] starts_with "/api/" and [HTTP::method] eq "POST" } {
+    pool api_write_pool
+}
+```
+
+F5 does not document where these words sit in the precedence table. The DevCentral iRules Style Guide asks for the Tcl operators `&&`, `||` and `!` instead of the words, with parentheses to make the grouping plain, which settles the question in practice.
+
+## Brace every expression
+
+Write `expr {...}` and `if {...}` with braces. Without them Tcl substitutes the expression text once as a command argument and again inside `expr`, which is slower (F5's How To Write Fast Rules puts the difference at "a factor of 20 or so") and lets a value from a request run as code. F5 K57410758 is the validator warning for exactly this, and K15650046 is the security advisory behind it.
+
+## Try it
+
+The [expression lab](/tools/f5-irules-expression-lab) evaluates any expression in Tcl 8.4 or iRules mode and shows the grouping, every operand reading, and `==` beside `eq` for the same operands. The [number notation converter](/tools/f5-irules-number-notation) focuses on how a single value is read.
+
+## Sources
+
+The comparison and precedence rules are the Tcl 8.4 manual's, checked against the Tcl 8.4.6 parser source; F5's operator words, its bracing advice and the speed figure come from the F5 pages below.
+
+- [Tcl 8.4 manual: expr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/expr.htm)
+- [Tcl 8.4.6 source, tag core-8-4-6 (generic/tclParseExpr.c)](https://github.com/tcltk/tcl/tree/core-8-4-6)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 iRules reference: Operators](https://clouddocs.f5.com/api/irules/Operators.html)
+- [F5 iRules reference: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)

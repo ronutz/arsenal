@@ -1497,7 +1497,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "programming"],
     aliases: ["lcamtuf", "afl", "american fuzzy lop", "silence on the wire"],
     relatedTerms: ["fuzzing", "solar-designer"],
-    sources: [{ label: "Michal Zalewski - biography", href: "https://en.wikipedia.org/wiki/Micha%C5%82_Zalewski" }],
+    // personYear 2013 is dated by AFL's own changelog, which records "Version 0.21b
+    // (2013-11-12): Initial public release." This row was declared NEITHER and escalated
+    // to PRIME because a raw fetch of the changelog 404'd; the 404 was the wrong
+    // filename, docs/ChangeLog.txt for docs/ChangeLog, and not a property of the host.
+    sources: [{ label: "American Fuzzy Lop's own ChangeLog, which dates the first release: \"Version 0.21b (2013-11-12): Initial public release.\" The project's release archive at lcamtuf.coredump.cx carries the later tarballs from 2014 onward", href: "https://raw.githubusercontent.com/google/AFL/master/docs/ChangeLog" },
+    { label: "Michal Zalewski - biography", href: "https://en.wikipedia.org/wiki/Micha%C5%82_Zalewski" }],
   },
   {
     slug: "fyodor",
@@ -2013,7 +2018,12 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "ops-culture"],
     aliases: ["cert.br", "mary litynski award", "first hall of fame"],
     relatedTerms: ["cert-br", "kaminsky-dns-flaw", "honeypot"],
-    sources: [{ label: "CERT.br - reconhecimento das atividades e premiações", href: "https://www.cert.br/sobre/reconhecimento/" }],
+    // personYear 1997 is dated by NIC.br's own institutional history, which carries the
+    // founding and the 1999 figure from the entry's copy in a single sentence. This row
+    // was declared NEITHER and escalated to PRIME on 2026-09-30; it needed reading a
+    // page already cited elsewhere in this file, not a ruling.
+    sources: [{ label: "NIC.br institutional history: \"Em junho de 1997 ... foi constituído o NBSO (NIC.br Security Office). Esse grupo evoluiu para o atual CERT.br ... que desde 1999 recebe notificações de incidentes relacionados às redes que operam no Brasil.\" The founding of the body is 1997 and incident notification begins in 1999, so both dates in this entry come from one sentence", href: "https://www.nic.br/historia/" },
+    { label: "CERT.br - reconhecimento das atividades e premiações", href: "https://www.cert.br/sobre/reconhecimento/" }],
   },
   {
     slug: "chkrootkit",
@@ -3180,7 +3190,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["tomlinson", "first email", "at sign"],
     relatedTerms: [],
-    sources: [{ label: "Tomlinson at BBN modifying SNDMSG with code from his CPYNET file transfer program to send messages across the ARPANET, on his own initiative rather than as a commissioned project", href: "https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html" }, { label: "A Raytheon spokesman noting that developing email was not an assignment at all - he was just fooling around, looking for something to do with the ARPANET; inducted into the Internet Hall of Fame in 2012 and died in 2016 aged 74", href: "https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/" }, { label: "Internet Hall of Fame inductee page: beyond the message itself he designed a tool for creating and reading email and led work on the first email standards - in 1972 he was among the participants in the meeting to extend FTP to carry email, the arrangement used until SMTP replaced it in 1982, and he co-authored RFC 561 of September 1973, the first standard for internet email message formats, which defined From, Subject and Date; he died in March 2016", href: "https://www.internethalloffame.org/inductee/raymond-tomlinson/" },],
+    sources: [{ label: "Wikipedia: Ray Tomlinson - invented the first email program on the ARPANET system in 1971, the first able to send mail between users on different hosts", href: "https://en.wikipedia.org/wiki/Ray_Tomlinson" }, { label: "Tomlinson at BBN modifying SNDMSG with code from his CPYNET file transfer program to send messages across the ARPANET, on his own initiative rather than as a commissioned project", href: "https://www.prolateral.com/help/kb/smtp/420-when-was-the-first-smtp-email.html" }, { label: "A Raytheon spokesman noting that developing email was not an assignment at all - he was just fooling around, looking for something to do with the ARPANET; inducted into the Internet Hall of Fame in 2012 and died in 2016 aged 74", href: "https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/" }, { label: "Internet Hall of Fame inductee page: beyond the message itself he designed a tool for creating and reading email and led work on the first email standards - in 1972 he was among the participants in the meeting to extend FTP to carry email, the arrangement used until SMTP replaced it in 1982, and he co-authored RFC 561 of September 1973, the first standard for internet email message formats, which defined From, Subject and Date; he died in March 2016", href: "https://www.internethalloffame.org/inductee/raymond-tomlinson/" },],
   },
   {
     slug: "robert-taylor",

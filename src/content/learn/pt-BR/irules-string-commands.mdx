@@ -1,0 +1,95 @@
+---
+slug: irules-string-commands
+title: "Comandos string do Tcl em iRules: índices, map, match, compare e trim"
+summary: "O comando string faz a maior parte do trabalho com texto num iRule, e cada subcomando tem uma regra que costuma ser errada: índices que leem 010 como octal, um map que é uma passada só, um trim que remove um conjunto de caracteres e não uma palavra, e um compare que põe toda maiúscula antes de toda minúscula."
+concepts: ["irules", "tcl", "f5", "string", "glob", "string map"]
+relatedTools: ["f5-irules-string-workbench", "f5-irules-string-extract"]
+relatedArticles: ["irules-findstr-substr-getfield", "irules-building-strings"]
+category: networking
+order: 27
+status: reviewed
+updated: "2026-10-03"
+---
+
+A maior parte do trabalho com texto num iRule é feita pelo comando `string` do Tcl: recortar um caminho de uma URI, normalizar um nome de host, testar um prefixo, reescrever um valor. Os iRules rodam o Tcl 8.4.6 (F5 K6091), e os subcomandos abaixo se comportam exatamente como o manual e o código-fonte dele definem. Cada um tem uma regra fácil de errar.
+
+## Os índices contam a partir de 0, e podem ser octais
+
+`string index`, `string range`, `string first`, `string last` e `string replace` recebem índices de caractere. Um índice é um inteiro contado a partir de 0, `end` para o último caractere, ou `end-N` contando para trás a partir dele:
+
+```tcl
+string range "/login.php?user=abc" 0 9        ;# /login.php
+string range "abcdef" 1 end-1                 ;# bcde
+```
+
+Um índice é lido do jeito que o Tcl lê qualquer inteiro, então um zero à esquerda o torna octal: `string index "abcdefghij" 010` devolve `i`, o caractere do índice 8, e um índice `08` dá erro. O Tcl 8.4.6 também aceita `e` e `en` sozinhos como abreviações de `end`, mas `e-1` dá erro. Um índice fora da string não é erro em `index` e `range`; você recebe uma string vazia.
+
+## first e last encontram, e last precisa caber
+
+`string first agulha palheiro` devolve o índice onde a agulha começa, ou -1. Um índice inicial opcional faz a busca começar mais adiante. `string last` busca a partir do fim, e seu índice final opcional limita a busca aos casamentos que **terminam** nele ou antes dele: `string last bc abcbc 3` dá 1, porque o casamento no índice 3 terminaria no índice 4.
+
+Uma agulha vazia nunca é encontrada: o resultado é -1.
+
+## string map é uma passada só
+
+`string map` troca chaves por valores numa única passada, da esquerda para a direita. Em cada posição as chaves são testadas na ordem da lista, vence a primeira que casar, e o texto trocado nunca é examinado de novo:
+
+```tcl
+string map {a 1 ab 2} "abab"   ;# 1b1b: "a" é testada antes de "ab"
+string map {ab 2 a 1} "abab"   ;# 22
+string map {http:// https://} "http://a/ and http://b/"
+                               ;# https://a/ and https://b/
+```
+
+Por causa da passada única, um `string map` não encadeia trocas, e um valor que contém a própria chave não corre o risco de ser trocado duas vezes.
+
+## string match é casamento glob
+
+`string match padrão string` devolve 1 ou 0. No padrão, `*` casa qualquer sequência de caracteres, `?` um caractere, `[abc]` um caractere de um conjunto, e uma barra invertida torna literal o caractere seguinte. O casamento diferencia maiúsculas, a menos que você acrescente `-nocase`:
+
+```tcl
+string match -nocase "*.EXAMPLE.com" "www.example.com"   ;# 1
+string match "*.EXAMPLE.com" "www.example.com"           ;# 0
+```
+
+`switch -glob` usa os mesmos padrões, e é por isso que ele é o jeito natural de testar um valor contra vários padrões glob.
+
+## compare e equal olham o código do caractere
+
+`string compare` devolve -1, 0 ou 1 comparando os códigos dos caracteres um a um, e `string equal` devolve 1 ou 0. No ASCII toda letra maiúscula vem antes de toda minúscula, então `string compare bench Chair` dá 1. Use `-nocase`, ou passe os dois lados para minúsculas antes, sempre que maiúsculas e minúsculas não devam importar.
+
+## trim remove um conjunto, não uma palavra
+
+`string trim`, `trimleft` e `trimright` removem espaço em branco por padrão. Com um segundo argumento, removem das pontas qualquer um **daqueles caracteres**, em qualquer ordem. Este é um erro clássico:
+
+```tcl
+string trimleft "/apiary/x" "/api"   ;# ry/x, e não ary/x
+```
+
+Todo caractere inicial que aparece no conjunto `/`, `a`, `p`, `i` é removido. Para tirar um prefixo, teste se ele está lá e corte:
+
+```tcl
+if { [string first "/api" $path] == 0 } {
+    set rest [string range $path 4 end]
+}
+```
+
+## length conta caracteres, bytelength conta bytes
+
+`string length "héllo"` dá 5; `string bytelength "héllo"` dá 6, porque `é` ocupa dois bytes no UTF-8 interno do Tcl. Use `length` para texto e `bytelength` só quando precisar do tamanho que o Tcl guarda na memória.
+
+## A conversão de caixa usa as tabelas do Tcl 8.4.6
+
+`string tolower` e `string toupper` usam as tabelas Unicode de caixa compiladas no Tcl 8.4.6, mais antigas que as de um navegador moderno. No ASCII elas concordam; em cerca de mil outros caracteres, não (o Tcl 8.4.6 não tem forma maiúscula para o sinal de micro `µ`, por exemplo). Nomes de host e caminhos costumam ser ASCII, então isso raramente importa, mas é um motivo para não testar a conversão de caixa de outros textos no console do navegador.
+
+## Experimente
+
+A [bancada de strings](/tools/f5-irules-string-workbench) roda qualquer um desses subcomandos e desenha o resultado numa régua de caracteres, com a leitura de cada argumento de índice e a passada única do `string map` mostrada passo a passo. Para os comandos de recorte da própria F5, veja o [explicador de findstr, substr e getfield](/tools/f5-irules-string-extract).
+
+## Fontes
+
+Todos os comportamentos acima vêm do manual do Tcl 8.4 ou do código-fonte do Tcl 8.4.6 que ele descreve, e cada exemplo foi rodado no Tcl 8.4.6; a versão do Tcl usada pelos iRules é declaração da F5.
+
+- [Manual do Tcl 8.4: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm)
+- [Código-fonte do Tcl 8.4.6, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)

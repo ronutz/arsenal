@@ -8,7 +8,7 @@ relatedArticles: ["tls-cipher-security-keywords", "f5-cipher-rules-and-groups"]
 category: transport
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-02"
 ---
 
 A BIG-IP cipher string controls which TLS cipher suites an SSL profile will offer and in what order. You will find it as the `cipher` field of an `ltm cipher rule`, or typed directly into an SSL profile. It looks cryptic at first, but it follows a small, consistent grammar.
@@ -19,7 +19,7 @@ A cipher string is a list of **sets**, separated by a colon `:`, a comma `,`, or
 
 ## Keywords combined with plus
 
-Within a set, **keywords** are joined with a plus sign `+` to narrow the selection. Each keyword constrains a different part of a cipher suite: the protocol version (`TLSv1_2`), the key exchange and authentication (`ECDHE`, `RSA`, `ECDHE_ECDSA`), the bulk cipher (`AES-GCM`, `3DES`), and the MAC or hash (`SHA256`). So `TLSv1_2+ECDHE+AES-GCM+SHA384` means exactly the suites that are TLS 1.2, use ECDHE, use AES (Advanced Encryption Standard)-GCM, and use SHA-384. A bare keyword like `AES` with no pluses is broad, matching every AES suite. Keywords are case-insensitive, so `tlsv1_2+ecdhe` and `TLSv1_2+ECDHE` are identical.
+Within a set, **keywords** are joined with a plus sign `+` to narrow the selection. Each keyword constrains a different part of a cipher suite: the protocol version (`TLSv1_2`), the key exchange and authentication (`ECDHE`, `RSA`, `ECDHE_ECDSA`), the bulk cipher (`AES-GCM`, `3DES`), and the MAC or hash (`SHA256`). So `TLSv1_2+ECDHE+AES-GCM+SHA384` means exactly the suites that are TLS 1.2, use ECDHE, use AES (Advanced Encryption Standard)-GCM, and use SHA-384. A bare keyword like `AES` with no pluses is broad, matching every AES suite. The explainer reads keywords without regard to case, but none of the F5 pages read for this article says TMM does, and OpenSSL treated cipher lists as case-sensitive until version 4.0, so write them in the case F5's own articles use: `TLSv1_2`, `ECDHE`, `AES-GCM`.
 
 ## Operators
 
@@ -28,10 +28,20 @@ A set can carry a leading operator that changes what BIG-IP does with it:
 - `!` **excludes** the set permanently. `!SSLv3` removes every SSL 3.0 suite, and nothing later in the string can add them back. This is the safe way to forbid weak ciphers.
 - `-` **deletes** the set from the list built so far, but a later set may re-add it. It is weaker than `!`.
 - A leading `+` **lowers the priority** of the set, moving its suites toward the end of the list rather than removing them. Note this is different from the `+` that joins keywords inside a set.
-- `@STRENGTH` is not a set but a directive: it re-sorts everything selected so far by key length, strongest first. `@SPEED` sorts by encryption speed instead.
+- `@STRENGTH` is not a set but a directive: it re-sorts everything selected so far by key length, strongest first. `@SPEED` asks for the same re-sort by encryption speed, but do not rely on it: on BIG-IP 14 a user found `DEFAULT:@SPEED` returned the same list as `DEFAULT`, and an F5 engineer replied that sorting by speed is no longer supported.
 
 So `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` reads as: prefer ECDHE, then RSA, never allow SSL 3.0 or RC4 (Rivest Cipher 4), then sort what remains by strength.
 
 ## What the string does not tell you directly
 
 The grammar tells you the instructions, but not the final list of suites those instructions produce. That list depends on which suites a given TMOS version actually supports, so the same string can expand differently across BIG-IP versions. The [F5 cipher-string explainer](/tools/f5-cipher-string-expander) parses the grammar and explains every keyword and operator; to see the exact ordered suites, run `tmm --clientciphers` on the target box. For which keywords are safe and which are not, see [TLS cipher security keywords](/learn/tls-cipher-security-keywords); for how rules and groups assemble these strings, see [F5 cipher rules and groups](/learn/f5-cipher-rules-and-groups).
+
+## Sources
+
+Parts of this grammar are documented by F5 and parts are not. F5's articles show the colon separator, the `!` exclusion, keywords joined with `+`, and `@STRENGTH`. None of the F5 pages read here shows the `-` operator, a leading `+`, or the comma and whitespace separators, or says whether keywords ignore case: the operators and separators are the rules of OpenSSL's cipher-list format, which K15194 says F5's format resembles while warning that some strings differ, so confirm them on the target version with `tmm --clientciphers`. Every page below was read on 2 October 2026.
+
+- [K15194: Overview of BIG-IP SSL/TLS cipher suites - the cipher-suite format and trait keywords such as `TLSv1_2`, `AES-GCM` and `ECDHE`; a format similar to OpenSSL's in which some strings differ; `@STRENGTH` ordering a colon-separated list through `tmm --clientciphers`](https://my.f5.com/manage/s/article/K15194)
+- [K01770517: Configuring the cipher strength for SSL profiles (14.x - 21.x) - `!` excluding a single cipher, a cipher family or a protocol version (`DEFAULT:!AES128-SHA`, `DEFAULT:!TLSv1`), and `DEFAULT:@STRENGTH` sorting the list by key length](https://my.f5.com/manage/s/article/K01770517)
+- [K15216 (archived): The default cipher for SSL profiles is now ordered to optimize BIG-IP hardware performance - keywords joined with `+` inside a set, such as `RSA+AES` and `ECDHE+AES` in the 11.5 default list; before BIG-IP 11.5.0 the default list was ordered by speed](https://my.f5.com/manage/s/article/K15216)
+- [F5 DevCentral, October 2020: on BIG-IP 14, `DEFAULT:@SPEED` returned the same list as `DEFAULT`, and an F5 engineer replied "We no longer support sorting by speed"](https://community.f5.com/t/clientciphers-speed-option-will-not-works-anymore/45910)
+- [OpenSSL, openssl-ciphers, Cipher List Format - colons, commas or spaces as separators; `+` as a logical and; a leading `!` deletes permanently, `-` deletes but lets a later option add back, and `+` moves to the end; `@STRENGTH` sorts by key length; cipher lists case-sensitive before OpenSSL 4.0 and case-insensitive from it](https://docs.openssl.org/master/man1/openssl-ciphers/)

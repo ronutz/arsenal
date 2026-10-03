@@ -123,7 +123,11 @@ const KEYWORDS: Record<string, KwDef> = {
 
 const SORT_KEYWORDS: Record<string, string> = {
   "@STRENGTH": "Re-sort the ciphers selected so far by key length (strongest first).",
-  "@SPEED": "Re-sort the ciphers selected so far by encryption speed.",
+  // @SPEED: F5 no longer supports sorting by speed. On BIG-IP 14 DEFAULT:@SPEED
+  // returned the same list as DEFAULT, and an F5 engineer confirmed it on
+  // DevCentral (October 2020); K15216 dates the change in the default order to
+  // 11.5.0. Both are in the manifest's sources.
+  "@SPEED": "Asks for a re-sort by encryption speed, which F5 says is no longer supported: on BIG-IP 14, DEFAULT:@SPEED returned the same list as DEFAULT. Check with tmm --clientciphers on your version.",
 };
 
 // Pre-built F5 cipher rules and their documented cipher strings.

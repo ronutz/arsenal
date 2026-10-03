@@ -1,0 +1,73 @@
+---
+slug: irules-style-guide-explained
+title: "The DevCentral iRules Style Guide, rule by rule, with the reasons"
+summary: "F5's DevCentral published an iRules Style Guide in 2022: editor settings and twenty numbered rules. Some are taste, but several prevent real failures: an iRule that will not load, a switch an attacker can steer, an expression that runs request data as code, a log storm. Here are the rules grouped by what they protect, with the reason behind each."
+concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability"]
+relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder"]
+relatedArticles: ["irules-building-strings", "irules-branching-and-lookups"]
+category: networking
+order: 31
+status: reviewed
+updated: "2026-10-03"
+---
+
+In December 2022 JRahm, with Jim_Deucker, published an "iRules Style Guide" on F5's DevCentral community: a handful of editor settings and twenty numbered rules. It reads like a house style, and much of it is, but several rules are there because breaking them causes real failures. Grouping the rules by what they protect makes the reasons clearer.
+
+## Rules that keep an iRule loading
+
+- **R11, a space between `}` and `{`.** `if { $x }{ ... }` is not a style problem in Tcl 8.4: the parser stops with "extra characters after close-brace", and the iRule does not load.
+- **R1, no smart quotes or no-break spaces.** Text pasted from a word processor can carry curly quotes and no-break spaces that look identical to the real characters and break the code without an obvious error.
+- **R2, the 64 KB limit.** A single iRule is limited to 64 KB, and the guide's advice on reaching it is to question the design of the solution rather than to squeeze.
+
+## Rules that keep request data from steering the rule
+
+- **R12, brace every expression.** Without braces, `expr`, `if` and `while` substitute their argument twice, so a value from the request can run as code. F5 K15650046 is the security advisory, K57410758 the validator warning, and F5's How To Write Fast Rules puts the speed cost at "a factor of 20 or so".
+- **R15, end options with `--`.** `switch` reads any word starting with a dash as an option. A Host header such as `-glob` could change how your switch matches, and an unknown one stops the iRule with "bad option". K15650046 shows the exact log line. The guide asks for `--` on `switch` and `table`; `class match` takes it too.
+- **R13 and R14, spaces and braces around variables in expressions.** `if { ${host} eq "a" }` leaves no doubt where the variable name ends, and it reads the same in every editor.
+
+## Rules that keep behaviour predictable
+
+- **R9, store state as 0 or 1.** Tcl accepts many spellings of true and false (`yes`, `on`, `tru`, and others); a value compared with `==` against 1 only works for the numeric form.
+- **R10, `&&` and `||` rather than `and` and `or`.** F5's word operators work, but F5 does not document where they sit in the precedence table; the Tcl operators, with parentheses, leave nothing to guess.
+- **R16, a priority on every event.** F5's `priority` page sets the default at 500 and the range from 0 to 1000, with lower numbers running first. Writing it down means the order of several iRules on one virtual server is a decision, not an accident.
+- **R17, a timeout or lifetime on every table entry.** F5's `table` reference gives an entry a default timeout of 180 seconds and an indefinite lifetime when none is set; writing them down makes the entry's life a decision. The guide also asks whether the table is needed at all, and suggests the `static::` namespace as the alternative for configuration-like values.
+- **R18 and R19, careful with `static::`.** Static variables are shared by every connection; prefix their names so two iRules cannot collide, and do not use them for debug switches, which the guide names as a leading cause of log storms.
+
+## Rules that keep it readable
+
+- **Editor settings:** 4-space indents with no tabs, a 100-column goal (120 at most), ASCII, Unix line feeds, no trailing white space, and a final line feed.
+- **R3, functional blocks;** **R4, the opening brace at the end of the line** and `} else {` on one line; **R5, the 4-space indent carried into nested values** such as `switch` arms; **R7, one command per line;** **R8, no single-line `if`,** even for a debug log.
+- **R6, comments on their own line,** written `# comment`, never at the end of a line and never between `switch` patterns, where Tcl reads them as patterns.
+- **R20, no commented-out code** in the version that ships.
+
+## A rule that follows the guide
+
+```tcl
+when HTTP_REQUEST priority 500 {
+    # Send API traffic to its own pool.
+    set path [string tolower [HTTP::path]]
+    switch -glob -- ${path} {
+        "/api/*" {
+            pool api_pool
+        }
+        default {
+            pool web_pool
+        }
+    }
+}
+```
+
+## Try it
+
+The [iRules style checker](/tools/f5-irules-style-checker) reads a pasted iRule against these rules and a real Tcl 8.4 parse, and names the rule behind each finding. The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes decisions in this style from the start.
+
+## Sources
+
+The rules are quoted from the guide itself; the security, warning and priority details come from the F5 pages it relies on, and the parse error was reproduced in Tcl 8.4.6.
+
+- [F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22)](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 iRules reference: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [F5 iRules reference: priority](https://clouddocs.f5.com/api/irules/priority.html)
+- [F5 iRules reference: table](https://clouddocs.f5.com/api/irules/table.html)

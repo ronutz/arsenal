@@ -52,6 +52,16 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-10-03",
+    time: "02:30",
+    kind: "tool",
+    title: "Eight iRules and Tcl 8.4 teaching tools",
+    body:
+      "Eight tools for the parts of iRules that trip people up, built on one Tcl 8.4.6 engine (the base F5 names for iRules in K6091) that was checked against a real Tcl 8.4.6 interpreter: a number notation converter (why 010 == 8 holds while 08 is not a number at all), an expression lab, a string workbench, a scan explainer, a script stepper, findstr, substr and getfield drawn on a ruler, an if / switch / class builder that shows where first match and longest match disagree, and a style checker for the DevCentral iRules Style Guide. Each one shows its work step by step, and the string-cutting tool flags every case F5's own pages leave undocumented.",
+    tools: ["f5-irules-number-notation", "f5-irules-expression-lab", "f5-irules-string-workbench", "f5-irules-scan-explainer", "f5-irules-script-stepper", "f5-irules-string-extract", "f5-irules-conditional-builder", "f5-irules-style-checker"],
+    articles: ["irules-tcl-number-notation", "irules-expression-operators", "irules-string-commands", "irules-scan-command", "irules-building-strings", "irules-findstr-substr-getfield", "irules-style-guide-explained", "irules-branching-and-lookups"],
+  },
+  {
     date: "2026-09-16",
     time: "12:40",
     kind: "tool",

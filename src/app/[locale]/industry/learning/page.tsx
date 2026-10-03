@@ -20,7 +20,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import { partnerVendors } from "@/content/vendors/partners";
+import { partnerVendors, storyStart } from "@/content/vendors/partners";
 
 /** Section membership by slug. Order within a section is by founding year. */
 const SECTIONS: ReadonlyArray<{ key: string; slugs: readonly string[] }> = [
@@ -61,13 +61,13 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
     items: s.slugs
       .map((slug) => bySlug.get(slug))
       .filter((v): v is NonNullable<typeof v> => !!v)
-      .sort((a, b) => (a.founded ?? 9999) - (b.founded ?? 9999)),
+      .sort((a, b) => storyStart(a) - storyStart(b)),
   }));
   for (const s of sections) for (const v of s.items) placed.add(v.slug);
   // Everything tagged "training" that the map does not name.
   const rest = partnerVendors
     .filter((v) => (v.tags as readonly string[]).includes("training") && !placed.has(v.slug))
-    .sort((a, b) => (a.founded ?? 9999) - (b.founded ?? 9999));
+    .sort((a, b) => storyStart(a) - storyStart(b));
 
   return (
     <>

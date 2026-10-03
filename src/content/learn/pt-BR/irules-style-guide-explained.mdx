@@ -1,0 +1,73 @@
+---
+slug: irules-style-guide-explained
+title: "O iRules Style Guide do DevCentral, regra por regra, com os motivos"
+summary: "O DevCentral da F5 publicou em 2022 um iRules Style Guide: configurações de editor e vinte regras numeradas. Algumas são questão de gosto, mas várias evitam falhas reais: um iRule que não carrega, um switch que um atacante consegue manipular, uma expressão que roda dados da requisição como código, uma tempestade de log. Veja as regras agrupadas pelo que protegem, com o motivo de cada uma."
+concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability"]
+relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder"]
+relatedArticles: ["irules-building-strings", "irules-branching-and-lookups"]
+category: networking
+order: 31
+status: reviewed
+updated: "2026-10-03"
+---
+
+Em dezembro de 2022, JRahm, com Jim_Deucker, publicou um "iRules Style Guide" na comunidade DevCentral da F5: algumas configurações de editor e vinte regras numeradas. Ele parece um guia de estilo da casa, e em boa parte é, mas várias regras existem porque descumpri-las causa falhas reais. Agrupar as regras pelo que elas protegem deixa os motivos mais claros.
+
+## Regras que mantêm o iRule carregando
+
+- **R11, um espaço entre `}` e `{`.** `if { $x }{ ... }` não é problema de estilo no Tcl 8.4: o parser para com "extra characters after close-brace", e o iRule não carrega.
+- **R1, nada de aspas curvas ou espaços não separáveis.** Texto colado de um processador de texto pode trazer aspas curvas e espaços não separáveis idênticos aos caracteres verdadeiros, que quebram o código sem um erro óbvio.
+- **R2, o limite de 64 KB.** Um único iRule é limitado a 64 KB, e o conselho do guia ao chegar nesse limite é questionar o desenho da solução em vez de espremer.
+
+## Regras que impedem os dados da requisição de conduzir a regra
+
+- **R12, coloque toda expressão entre chaves.** Sem chaves, `expr`, `if` e `while` substituem o argumento duas vezes, então um valor vindo da requisição pode rodar como código. O K15650046 da F5 é o aviso de segurança, o K57410758 é o alerta do validador, e o How To Write Fast Rules da F5 fala num custo de velocidade de "a factor of 20 or so".
+- **R15, termine as opções com `--`.** O `switch` lê qualquer palavra que comece com hífen como opção. Um cabeçalho Host como `-glob` poderia mudar o jeito como seu switch casa, e um desconhecido para o iRule com "bad option". O K15650046 mostra a linha de log exata. O guia pede `--` em `switch` e `table`; o `class match` também aceita.
+- **R13 e R14, espaços e chaves em volta das variáveis nas expressões.** `if { ${host} eq "a" }` não deixa dúvida sobre onde termina o nome da variável, e se lê igual em qualquer editor.
+
+## Regras que mantêm o comportamento previsível
+
+- **R9, guarde estado como 0 ou 1.** O Tcl aceita muitas grafias de verdadeiro e falso (`yes`, `on`, `tru` e outras); um valor comparado com `==` contra 1 só funciona na forma numérica.
+- **R10, `&&` e `||` em vez de `and` e `or`.** Os operadores por extenso da F5 funcionam, mas a F5 não documenta onde eles ficam na tabela de precedência; os operadores do Tcl, com parênteses, não deixam nada para adivinhar.
+- **R16, uma prioridade em todo evento.** A página de `priority` da F5 define o padrão em 500 e a faixa de 0 a 1000, com os números menores rodando primeiro. Escrever a prioridade faz da ordem de vários iRules num mesmo servidor virtual uma decisão, e não um acaso.
+- **R17, um timeout ou um lifetime em toda entrada de table.** A referência de `table` da F5 dá a uma entrada um timeout padrão de 180 segundos e um lifetime indefinido quando nenhum é informado; escrevê-los faz da vida da entrada uma decisão. O guia também pergunta se a table é mesmo necessária, e sugere o namespace `static::` como alternativa para valores de configuração.
+- **R18 e R19, cuidado com `static::`.** Variáveis static são compartilhadas por todas as conexões; ponha prefixo nos nomes para que dois iRules não colidam, e não as use como chaves de debug, que o guia aponta como uma das principais causas de tempestades de log.
+
+## Regras que mantêm a leitura fácil
+
+- **Configurações de editor:** indentação de 4 espaços sem tabulação, meta de 100 colunas (120 no máximo), ASCII, quebras de linha do Unix, nenhum espaço no fim das linhas e uma quebra de linha no final do arquivo.
+- **R3, blocos funcionais;** **R4, a chave de abertura no fim da linha** e `} else {` numa linha só; **R5, a indentação de 4 espaços levada para valores aninhados**, como os ramos de um `switch`; **R7, um comando por linha;** **R8, nada de `if` numa linha só,** nem para um log de debug.
+- **R6, comentários na própria linha,** escritos como `# comentário`, nunca no fim de uma linha e nunca entre padrões do `switch`, onde o Tcl os lê como padrões.
+- **R20, nada de código comentado** na versão que vai para produção.
+
+## Uma regra que segue o guia
+
+```tcl
+when HTTP_REQUEST priority 500 {
+    # Send API traffic to its own pool.
+    set path [string tolower [HTTP::path]]
+    switch -glob -- ${path} {
+        "/api/*" {
+            pool api_pool
+        }
+        default {
+            pool web_pool
+        }
+    }
+}
+```
+
+## Experimente
+
+O [verificador de estilo de iRules](/tools/f5-irules-style-checker) lê um iRule colado segundo estas regras e uma análise real de sintaxe Tcl 8.4, e indica a regra por trás de cada apontamento. O [construtor de if / switch / class](/tools/f5-irules-conditional-builder) já escreve as decisões neste estilo.
+
+## Fontes
+
+As regras são citadas do próprio guia; os detalhes de segurança, do alerta, de prioridade e de table vêm das páginas da F5 em que ele se apoia, e o erro de análise foi reproduzido no Tcl 8.4.6.
+
+- [F5 DevCentral: iRules Style Guide (JRahm com Jim_Deucker, 2022-12-22)](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [Referência de iRules da F5: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [Referência de iRules da F5: priority](https://clouddocs.f5.com/api/irules/priority.html)
+- [Referência de iRules da F5: table](https://clouddocs.f5.com/api/irules/table.html)

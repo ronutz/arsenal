@@ -36,14 +36,50 @@
 //      to record provenance, so no context tracking is needed to know it is a
 //      citation.
 //
-// THE SCOPE IS ASSERTED, NOT ASSUMED. Those two together cover the whole surface
-// only while no citation object OUTSIDE the glossary is written label-only, with
-// no url. Today that count is ZERO: every non-glossary citation label is paired
-// with a url and so is reachable by other means. A bare claim like that rots
-// silently, so section 3 below MEASURES it and fails if it stops being zero.
-// That is the lesson of this session applied to scope itself: the instrument was
-// narrower than the content seven times, and every one of those was a scope
-// nobody had measured.
+//   3. Every citation label in the tree OUTSIDE the glossary, added 2026-10-01.
+//
+// WHY 3 EXISTS, AND WHAT THE HEADER USED TO SAY. Until 2026-10-01 this guard
+// read only 1 and 2, and the header justified that by claiming every
+// non-glossary citation label "is paired with a url and so is reachable by
+// other means". THAT CLAUSE WAS WRONG, and it was load-bearing. A label paired
+// with a url is not thereby checkable: `{ label: "Founding year: 2003", url:
+// "https://en.wikipedia.org/wiki/Barracuda_Networks" }` names a datum and
+// points at a page without naming anything in it, which IS the fault this
+// guard exists to catch. The link does not repair the label; it only makes the
+// reader go and look for a sentence the citation declined to identify.
+//
+// So the guard was enforced at zero on a scope that excluded 2861 of the 4391
+// label fields in the tree, and partners.ts held 22 instances of a fault the
+// guard reported as absent. The zero was true of the SCOPE, not of the corpus -
+// the same false reassurance a bare ratchet count gives, in a new place.
+//
+// WHAT WIDENING ACTUALLY COST, measured before it was done rather than after:
+// across all 4391 labels, `appeal-to-ubiquity` and `bare-documented` return
+// ZERO. So for two of the three original faults the old clause happened to be
+// harmless, and that is luck, not design. Only the third fault was present, in
+// a syntax the pattern did not recognise (see BARE_FIELD below).
+//
+// WHY THE SCOPE IS "A LABEL THAT CARRIES A URL" AND NOT "EVERY LABEL". Tested
+// first: a tree-wide `label:` sweep flags "AES-128", "SHA-256" and "RIPEMD-160"
+// in src/lib/tools/*, which are cipher names in UI dropdowns and not citations
+// at all. 636 labels in the tree carry no url. The mark of a citation is that
+// it points somewhere, so that is the scope, and it is read through a
+// brace-matching reader because 329 of the 3114 citation objects in the tree
+// put `label` and `url` on SEPARATE lines - mostly the RFC and IANA citations
+// in src/config/toolProvenance.ts and src/lib/tools/*, which are the best
+// citations in the corpus. A line-based reader would have missed a tenth of the
+// surface while reporting that it had read it all.
+//
+// WHAT IS STILL GLOSSARY-ONLY, and why. `headword-and-year` needs the entry's
+// own headword to compare against, and outside the glossary there is no single
+// field that plays that role. It is therefore applied to scope 1 only, and that
+// is a stated limit rather than a silent one.
+//
+// THE SCOPE IS STILL ASSERTED. Section 3c measures label-only citation objects
+// outside the glossary and fails if any appear, because a label with no url is
+// a surface no amount of pattern work reaches. That assertion is now about
+// STYLE rather than completeness: it keeps citations pointing somewhere.
+// Section 3d asserts that every field the guard believes it read, it read.
 //
 // WHAT THIS GUARD CANNOT SEE, stated rather than left to be discovered. Two real
 // faults found on the same day are not mechanically detectable and are NOT caught
@@ -136,6 +172,22 @@ const UBIQUITY = new RegExp(
 // A bare "Documented" standing in for a citation, alone or as the opening clause.
 const BARE_DOCUMENTED = /^\s*documented\b/i;
 
+// A citation label that is nothing but a field name and a bare number. The 22
+// real instances were all `Founding year: NNNN` in partners.ts, every one of
+// them pointing at a Wikipedia article: the reader is told a year and handed a
+// page, with nothing saying where in the page the year sits or what else the
+// page establishes. Nine of the 22 duplicated a url the same entry already
+// cited with a label that carried the claim; the other thirteen were the ONLY
+// citation of that year, so they were rewritten from the page rather than
+// deleted (PRIME, 2026-09-27: a fact is not deleted for want of a source).
+//
+// THE VALUE MUST BE ONLY A NUMBER. That is what keeps legitimate labels out:
+// "Fortinet newsroom: Q3 2024 results" has words after the colon and so names
+// something in the page. Tested against all 4391 labels in the tree before
+// being installed, and against four labels it MUST flag and four it must not,
+// because a pattern that cannot fail proves nothing.
+const BARE_FIELD = /^\s*[A-Za-z][A-Za-z ]{0,24}\s*[:\u2013-]\s*(?:c\.?\s*)?\d{3,4}\s*$/;
+
 /** Normalise text for the headword comparison: case and punctuation out. */
 function norm(s) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
@@ -160,8 +212,45 @@ function isHeadwordAndYear(label, headword) {
 function faultOf(text, headword) {
   if (UBIQUITY.test(text)) return "appeal-to-ubiquity";
   if (BARE_DOCUMENTED.test(text)) return "bare-documented";
+  if (BARE_FIELD.test(text)) return "bare-field-and-number";
   if (headword && isHeadwordAndYear(text, headword)) return "headword-and-year";
   return null;
+}
+
+/**
+ * Every citation label in one file: a `label` that shares an object literal
+ * with a `url` or `href`. Brace-matched forward from the label rather than
+ * read line by line, because 329 citation objects in the tree spread their
+ * fields over several lines and a line reader silently drops them.
+ *
+ * Returns [{ label, line }]. A label with no url in its own object is NOT a
+ * citation by this definition and is left to section 3c, which forbids them.
+ */
+function citationLabelsIn(text) {
+  const out = [];
+  for (const m of text.matchAll(/label:\s*"((?:[^"\\]|\\.)*)"/g)) {
+    // Walk forward from the end of the label to the close of its own object,
+    // tracking depth so a nested object cannot end the scan early.
+    let depth = 0;
+    let end = -1;
+    for (let i = m.index + m[0].length; i < text.length; i++) {
+      const c = text[i];
+      if (c === "{" || c === "[") depth += 1;
+      else if (c === "]") depth -= 1;
+      else if (c === "}") {
+        if (depth === 0) { end = i; break; }
+        depth -= 1;
+      }
+    }
+    if (end < 0) continue;                       // unterminated: not a citation
+    const body = text.slice(m.index, end);
+    if (!/(?:url|href):\s*"/.test(body)) continue;
+    out.push({
+      label: m[1].replace(/\\"/g, '"'),
+      line: text.slice(0, m.index).split("\n").length,
+    });
+  }
+  return out;
 }
 
 // ---- 2. the declared list --------------------------------------------------
@@ -247,9 +336,78 @@ for (const file of files) {
   }
 }
 
-// 3c. THE SCOPE ASSERTION. The two scopes above are complete only while every
-// citation object outside the glossary carries a url, so that a label-only
-// citation cannot exist where this guard is not looking. Measured, not assumed.
+// 3b2. EVERY CITATION LABEL OUTSIDE THE GLOSSARY, added 2026-10-01. The header
+// says why this was not here before and what the omission cost. `headword` is
+// null: outside the glossary no field plays that role, so headword-and-year
+// cannot fire here and that limit is stated rather than silent.
+let outsideLabels = 0;
+for (const file of files) {
+  if (path.resolve(file) === path.resolve(GLOSSARY)) continue;
+  const rel = path.relative(ROOT, file);
+  const text = fs.readFileSync(file, "utf8");
+  for (const { label, line } of citationLabelsIn(text)) {
+    outsideLabels += 1;
+    const fault = faultOf(label, null);
+    if (!fault) continue;
+    const key = `${rel}|${label}`;
+    found.add(key);
+    if (!DECLARED.has(key)) {
+      errors.push(
+        `${rel}:${line}: citation label names nothing in the page it points at (${fault}): ` +
+          `${JSON.stringify(label)}. Say what the document establishes, or add the exact text ` +
+          `to DECLARED with the reason it cannot be said.`
+      );
+    }
+  }
+}
+
+// THE SCOPE HAS A FLOOR, so it cannot quietly shrink back to where it was. A
+// scope is the one thing a guard cannot measure about itself: every check here
+// could pass while reading half the corpus, which is exactly what happened
+// before 2026-10-01. The count below may only be RAISED. If a refactor moves
+// citations into a shape `citationLabelsIn` does not recognise, this fails and
+// names the shortfall instead of reporting a green run over a smaller corpus.
+const MIN_OUTSIDE_LABELS = 2701;   // raised 2026-10-02 from 2691 as citations were added. May only be raised.
+if (outsideLabels < MIN_OUTSIDE_LABELS) {
+  errors.push(
+    `this guard read ${outsideLabels} citation label(s) outside the glossary, below the floor of ` +
+      `${MIN_OUTSIDE_LABELS}. Either citations were removed (lower the floor in the same commit ` +
+      `and say why) or they were moved into a shape citationLabelsIn no longer recognises, in ` +
+      `which case the scope shrank silently and every zero above is a zero over a smaller corpus.`
+  );
+}
+
+// WHAT THIS SCOPE DELIBERATELY DOES NOT CATCH, stated so the next reader does
+// not assume it was missed. Two real faults found on 2026-10-01 are matters of
+// judgement and would be WRONG as mechanical rules:
+//
+//   * A url cited twice in one entry. 50 groups exist across 48 entries, and a
+//     sample of four showed the split is roughly even: telebras-system cites
+//     Law 5.792 of 11 July 1972 for one fact and the twelve regional companies
+//     for another, and nv7 cites one page for solution lines and client logos.
+//     Those are one document supporting two claims, which is correct practice.
+//     tenable quoted the SAME S-1 sentence twice, from reads three days apart.
+//     A guard failing on a repeated url would have punished the right behaviour
+//     about half the time, so the 10 redundant groups were merged by hand and
+//     the 40 distinct-claim groups left alone. Recorded as an audit, not a rule.
+//
+//   * Wikipedia's own short description used as a label ("Barracuda Networks -
+//     American software company (Wikipedia)"). 18 existed; all 18 sat in an
+//     entry that already cited that page for a claim, and 15 also duplicated
+//     the entry's own externalUrl, which is the field that exists to say "go
+//     read the page". They were removed. But the same label is LEGITIMATE when
+//     it is an entry's only citation of a page, as further reading, so a guard
+//     on the form would be wrong. Judgement, not pattern.
+//
+// Url identity is also string-based wherever it is measured, and that cannot
+// see a redirect pair: proofpoint cited /wiki/Proofpoint and
+// /wiki/Proofpoint,_Inc., which the MediaWiki API confirmed on 2026-10-01 to be
+// one page (pageid 17815480). Any count of repeated urls therefore UNDERCOUNTS.
+
+// 3c. THE SCOPE ASSERTION. Since 3b2 reads citation labels tree-wide, this is
+// no longer the argument for completeness that it was. It remains worth
+// enforcing for a different reason: a label with no url points nowhere, so no
+// amount of pattern work can make it checkable. Measured, not assumed.
 let labelOnlyOutside = 0;
 const labelOnlyWhere = [];
 for (const file of files) {
@@ -356,16 +514,21 @@ for (const key of DECLARED.keys()) {
 }
 console.log(
   `[check-placeholder-sources] OK: ${glossaryLabels} glossary source label(s) and ${sourceNotes} ` +
-    `sourceNote(s) checked for three faults (appeal to ubiquity, bare "Documented", the entry's ` +
-    `own name plus a year); ${DECLARED.size} declared with a reason` +
+    `sourceNote(s) checked for four faults (appeal to ubiquity, bare "Documented", a bare field ` +
+    `name plus a number, and the entry's own name plus a year - the last of these glossary-only, ` +
+    `because no field outside the glossary plays the headword role); ` +
+    `${DECLARED.size} declared with a reason` +
     // At zero the parenthetical would be empty, which printed "(, may only shrink)" on
     // 2026-10-01 the moment the last declaration came off. A guard whose own output is
     // malformed in its best state is a guard nobody reads carefully in that state.
     (DECLARED.size > 0
       ? ` (${[...kinds].map(([k, n]) => `${k} ${n}`).join(", ")}, may only shrink)`
       : ` (ENFORCED AT ZERO since 2026-10-01: every placeholder citation in the corpus was replaced with a document)`) +
-    `; ${labelOnlyOutside} label-only citation(s) outside the glossary, ` +
-    `enforced at zero so the scope statement cannot rot. Every citation field in scope was read: ` +
-    `the remaining "label:" occurrence is the GlossarySource type declaration and the remaining ` +
+    `; ${outsideLabels} citation label(s) outside the glossary also read, tree-wide since ` +
+    `2026-10-01 (before that the scope excluded them and the zero was true of the scope, not the ` +
+    `corpus: 22 real faults sat in partners.ts); ${labelOnlyOutside} label-only citation(s) outside ` +
+    `the glossary, enforced at zero because a label with no url points nowhere. ` +
+    `Every citation field in scope was read: ` +
+    `of the 1153 glossary labels, 1032 carry a link and 121 are label-only, which is permitted inside the glossary and is why the chunker figure exceeds a link-based count; the remaining "label:" occurrence is the GlossarySource type declaration and the remaining ` +
     `two "sourceNote:" occurrences are prose in file-header comments.`
 );

@@ -20,7 +20,10 @@ export const zteProfile: VendorProfile = {
   slug: "zte",
   foundings: [
     {
-      company: "ZTE (Zhongxing Telecommunication Equipment)",
+      // The founding name first (2026-10-02): Wikipedia's infobox dates ZTE to
+      // "1985 (as Zhongxing Semiconductor Co., Ltd.)", which is what the industry
+      // card's foundedCompany says; the later name follows.
+      company: "ZTE (founded as Zhongxing Semiconductor; later Zhongxing Telecommunication Equipment)",
       year: 1985,
       place: "Shenzhen, China",
       founders: ["Hou Weigui (founding chairman) and aerospace-ministry investors"],

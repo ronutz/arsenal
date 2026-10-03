@@ -16,7 +16,11 @@ export const ibmProfile: VendorProfile = {
   slug: "ibm",
   foundings: [
     {
-      company: "IBM (formed as CTR)",
+      // The full founding name (2026-10-02), so the industry card's
+      // foundedCompany - set from the Wikipedia infobox's "1911 (as
+      // Computing-Tabulating-Recording Company)" row, Ruling 2's criterion for
+      // renamed predecessors - and this record name the same company in words.
+      company: "IBM (formed as the Computing-Tabulating-Recording Company, CTR)",
       year: 1911,
       place: "Endicott, New York",
       founders: ["Charles Flint (merger architect); Thomas J. Watson Sr. (builder)"],

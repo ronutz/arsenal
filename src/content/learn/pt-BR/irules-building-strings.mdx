@@ -1,0 +1,89 @@
+---
+slug: irules-building-strings
+title: "Montando strings em iRules: aspas, chaves, append, concat e listas"
+summary: "Aspas substituem, chaves não, e colchetes rodam um comando: quase toda surpresa quando um iRule monta um valor vem dessas três regras. Veja o que o Tcl faz com cada palavra antes de um comando recebê-la, como append, concat e lappend diferem, por que um valor com espaços é uma lista, e como a dupla substituição deixa dados rodarem como código."
+concepts: ["irules", "tcl", "f5", "substitution", "quoting", "lists"]
+relatedTools: ["f5-irules-script-stepper", "f5-irules-style-checker"]
+relatedArticles: ["irules-expression-operators", "irules-string-commands"]
+category: networking
+order: 29
+status: reviewed
+updated: "2026-10-03"
+---
+
+Um iRule passa boa parte do tempo montando valores: um endereço de redirecionamento a partir de um host e um caminho, uma linha de log com vários campos, um nome de pool a partir de um cabeçalho. O Tcl (Tool Command Language) não tem operadores de string para isso. Ele monta os valores enquanto divide um comando em palavras, e as regras para isso são curtas. Os iRules rodam o Tcl 8.4.6 (F5 K6091), cuja página de manual `Tcl` as define.
+
+## Três jeitos de escrever uma palavra
+
+- **Aspas duplas** substituem: `$name` vira o valor da variável, `[comando]` vira o resultado do comando, e as sequências com barra invertida são trocadas. Depois as aspas somem, e o resultado é uma palavra só, com espaços e tudo.
+- **Chaves** não substituem nada. `{$a $b}` são exatamente os seis caracteres `$a $b`.
+- **Colchetes** rodam um comando e põem o resultado no lugar: `[string tolower [HTTP::host]]`.
+
+O manual acrescenta a regra que resolve a maioria das discussões: cada caractere é processado exatamente uma vez enquanto as palavras são montadas. Um valor que por acaso contém `$` ou `[` não é substituído de novo pelas regras das palavras.
+
+```tcl
+set a "foo"
+set b "bar"
+set c "$a$b"     ;# foobar
+set d "$a $b"    ;# foo bar
+set e {$a $b}    ;# $a $b
+```
+
+## Onde termina o nome de uma variável
+
+`$name` pega a sequência mais longa de letras, dígitos e sublinhados, então `"$host_pool"` procura uma variável chamada `host_pool`, e falha com "can't read host_pool: no such variable" se ela não existir. As chaves marcam o fim do nome: `"${host}_pool"` é o valor de `host` seguido de `_pool`. O iRules Style Guide do DevCentral pede a forma com chaves dentro das expressões pelo mesmo motivo.
+
+## append, concat e lappend
+
+Três comandos montam valores mais longos, e cada um trata os espaços de um jeito:
+
+```tcl
+set x " a "
+append x " b"                 ;# x vale " a  b": texto acrescentado exatamente como veio
+set y [concat " a " " b"]     ;# y vale "a b": cada argumento aparado, depois unido com um espaço
+set l {}
+lappend l "one two" three     ;# l vale {{one two} three}: dois elementos de lista
+```
+
+`append` é para texto, e o manual observa que é o jeito eficiente de fazer um valor longo crescer. `concat` tira o espaço em branco das duas pontas de cada argumento, descarta os vazios e junta o que sobra com espaços simples. `lappend` acrescenta cada valor como um elemento de lista, pondo-o entre chaves se ele contiver espaços.
+
+## Um valor com espaços é uma lista
+
+As listas do Tcl são strings divididas nos espaços em branco (com chaves e aspas para agrupar). Então `foreach item "red green blue"` roda três vezes, uma por palavra. Isso é prático para valores que você montou como listas e surpreendente para valores que só contêm espaços, como um cabeçalho. Monte listas com `list` e `lappend`, mantenha texto livre fora do `foreach`, e use `split` com um separador explícito quando um valor for delimitado por outra coisa:
+
+```tcl
+foreach part [split [HTTP::path] "/"] {
+    log local0. "segment: $part"
+}
+```
+
+## incr também lê octal
+
+`incr` exige um inteiro e o lê do mesmo jeito que o `expr`, então uma variável com `010` é oito em octal e o `incr` a transforma em `9`. Contadores e códigos com zero à esquerda merecem ser convertidos com `scan $v %d v` antes de serem usados como números.
+
+## Dupla substituição
+
+Alguns comandos avaliam os argumentos de novo: o `expr`, e as condições de `if` e `while`, interpretam o argumento como expressão e fazem uma segunda substituição dentro dele. Se esse argumento não estiver entre chaves, um valor vindo da requisição participa da segunda rodada:
+
+```tcl
+set count [HTTP::header value X-Count]
+set next [expr $count + 1]       ;# nunca faça isto
+set next [expr {$count + 1}]     ;# com chaves: $count é sempre só um valor
+```
+
+Se um cliente mandar um cabeçalho `X-Count` contendo `[...]`, a forma sem chaves roda o texto entre colchetes como comando durante a segunda substituição. O K15650046 da F5 descreve isso como uma exposição causada por prática de código, não como uma vulnerabilidade do produto, e o K57410758 documenta o alerta do validador "use curly braces to avoid double substitution". A correção é a mesma nos dois: coloque as expressões entre chaves e ponha `--` antes de um valor passado para `switch`, para que um valor começando com hífen não seja lido como opção.
+
+## Experimente
+
+O [executor passo a passo](/tools/f5-irules-script-stepper) roda um trecho um comando por vez e mostra as palavras que cada comando de fato recebeu, então as aspas, `append` contra `concat` e a dupla substituição ficam visíveis. O [verificador de estilo](/tools/f5-irules-style-checker) aponta expressões sem chaves e a falta de `--` nos seus próprios iRules.
+
+## Fontes
+
+As regras das palavras e os três comandos de montagem estão documentados nas páginas do manual do Tcl 8.4 abaixo; o enquadramento de segurança e o alerta do validador são da F5.
+
+- [Manual do Tcl 8.4: Tcl (as regras de substituição)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)
+- [Manual do Tcl 8.4: append](https://www.tcl-lang.org/man/tcl8.4/TclCmd/append.htm), [concat](https://www.tcl-lang.org/man/tcl8.4/TclCmd/concat.htm), [lappend](https://www.tcl-lang.org/man/tcl8.4/TclCmd/lappend.htm), [incr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/incr.htm)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)

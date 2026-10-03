@@ -1,0 +1,76 @@
+---
+slug: irules-scan-command
+title: "scan in iRules: taking values apart without regular expressions"
+summary: "F5's own reference recommends string commands such as scan over regular expressions. scan is short and fast, but its result counts conversions rather than matches, -1 and 0 mean different things, and Tcl 8.4.6 stores integers through a 32-bit C int. Here is how to read a format, and the checks that make a scan reliable."
+concepts: ["irules", "tcl", "f5", "scan", "parsing"]
+relatedTools: ["f5-irules-scan-explainer", "f5-irules-string-extract"]
+relatedArticles: ["irules-tcl-number-notation", "irules-string-commands"]
+category: networking
+order: 28
+status: reviewed
+updated: "2026-10-03"
+---
+
+F5's reference page for the `matches_regex` operator carries a short note: it is more efficient to use a string command than a regular expression, and most scenarios can be handled with `string match` or `scan`. `scan` takes a value apart with a format, the way C's `sscanf` does, and stores the pieces in variables. iRules run Tcl 8.4.6 (F5 K6091), so its `scan` is the one described here.
+
+## Reading a format
+
+A format is a sequence of three kinds of directive:
+
+- **white space** skips any amount of white space in the input, including none;
+- **literal text** must match the input character for character;
+- **conversions** start with `%` and read a value: `%d` a decimal integer, `%x` hexadecimal, `%o` octal, `%i` an integer whose base comes from its prefix, `%s` characters up to white space, `%c` one character as its code, `%[...]` characters from a set (`%[^&]` is everything up to an ampersand), and `%n` the amount of input consumed so far. A `*` after the `%` converts without storing, and a number sets a maximum width.
+
+```tcl
+scan "10:30" "%d:%d" hours minutes          ;# 2
+scan "192.168.1.20" "%d.%d.%d.%d" a b c d   ;# 4
+scan "user=abc&x=1" "user=%[^&]" user       ;# 1, user is abc
+```
+
+## What the result means
+
+With variable names, `scan` returns the number of **conversions that stored a value**, which is not the same as "the input matched":
+
+- `-1`: the input ran out before the first conversion (an empty value, for example);
+- `0`: a conversion was tried and did not match (`scan "abc" "%d" n`);
+- a smaller number than you expected: scanning stopped part-way, and every variable after that point was not set by this scan, so it keeps whatever value it had before.
+
+Without variable names, `scan` returns the converted values as a list instead.
+
+Because the count only counts conversions, a literal that fails **after** the last conversion does not change the result. F5's `matches_regex` page shows this check as a `scan` alternative to a regular expression for "www., then a name, then .com":
+
+```tcl
+scan [string tolower [HTTP::host]] {www.%[a-z0-9.:-].com} host_token
+```
+
+It returns 1 for `www.example.com`, and also 1 for `www.example.org`: the set includes the dot, so it consumes `example.org` and the literal `.com` is never reached. Even with the dot taken out of the set, the failed `.com` would not lower the count. To check what comes after the last conversion, end the format with `%n` and require it to be stored:
+
+```tcl
+if { [scan [string tolower [HTTP::host]] {www.%[a-z0-9-].com%n} name used] == 2
+     && $used == [string length [HTTP::host]] } {
+    pool www_pool
+}
+```
+
+## Tcl 8.4.6 details the manual does not spell out
+
+- **Integers go through a C int.** `scan "3000000000" "%d" n` stores `-1294967296`, and the `l` size modifier does not change that in 8.4.6. To keep a large number intact, read it as text with `%[0-9]` and let `expr` interpret it, since `expr` works with 64-bit integers.
+- **`%n` counts bytes.** The manual says characters, but Tcl 8.4.6 counts the bytes of its internal UTF-8, so each character outside ASCII counts 2 or 3.
+- **`%i` follows the prefix rules**, so `08` read with `%i` gives 0 and stops at the 8. Use `%d` for zero-padded decimal values such as times.
+
+## When scan is the right tool
+
+`scan` shines when the shape of the value is fixed: an address, a time, a version string, a request line, a known prefix followed by a value. When the value is free-form, `string first` and `string range`, F5's `getfield`, or a `switch -glob` are often clearer. For a value with a fixed separator, compare `scan` with [findstr, substr and getfield](/learn/irules-findstr-substr-getfield).
+
+## Try it
+
+The [scan explainer](/tools/f5-irules-scan-explainer) lines every directive up against the characters it consumed, shows each variable's value, and says exactly why scanning stopped, including the Tcl 8.4.6 behaviours above.
+
+## Sources
+
+The efficiency note and the www./.com example are from F5's matches_regex reference; the conversions and result codes are from the Tcl 8.4 manual; the int storage and byte counting were confirmed by running Tcl 8.4.6 itself.
+
+- [F5 iRules reference: matches_regex](https://clouddocs.f5.com/api/irules/matches_regex.html)
+- [Tcl 8.4 manual: scan](https://www.tcl-lang.org/man/tcl8.4/TclCmd/scan.htm)
+- [Tcl 8.4.6 source, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)

@@ -91,6 +91,26 @@ export const manifest = Object.freeze({
       scope: "building a cipher string from rules and groups, and F5 hardening recommendations",
       status: "active",
     },
+    {
+      // Why @SPEED is described as unsupported: the question and an F5 engineer's answer.
+      id: "speed-sort-unsupported",
+      label: "F5 DevCentral: clientciphers @SPEED option will not works anymore? (an F5 engineer: sorting by speed is no longer supported)",
+      type: "vendor-community",
+      url: "https://community.f5.com/t/clientciphers-speed-option-will-not-works-anymore/45910",
+      access_date: "2026-10-02",
+      scope: "@SPEED on BIG-IP 14 returned the same list as DEFAULT; F5 no longer supports sorting by speed",
+      status: "active",
+    },
+    {
+      // When the default order stopped being by speed, and keywords joined with +.
+      id: "k15216-default-order",
+      label: "F5 K15216 (archived): The default cipher for SSL profiles is now ordered to optimize BIG-IP hardware performance",
+      type: "vendor-docs",
+      url: "https://my.f5.com/manage/s/article/K15216",
+      access_date: "2026-10-02",
+      scope: "the default list was ordered by speed before 11.5.0 and for hardware performance since; keywords joined with + such as RSA+AES",
+      status: "active",
+    },
   ],
   credits: [{ handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true }],
 });

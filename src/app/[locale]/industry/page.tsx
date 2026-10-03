@@ -96,6 +96,15 @@ export default async function IndustryHubPage({
     name: string;
     tagline: string;
     founded?: number;
+    /** The company `founded` belongs to, where that is not this card's own
+     *  subject. Carried through so the timeline cannot show a bare year that
+     *  implies the wrong company was founded then (PRIME 2026-10-02). Career
+     *  chapters never set it. */
+    foundedCompany?: string;
+    /** Where this card's story starts, when earlier than its own subject's
+     *  founding. Drives the timeline position (PRIME 2026-10-02) and is shown
+     *  on the card, so the reader can see why a 1986 company sits at 1886. */
+    storyBegins?: { year: number; company: string };
     /** Set only where the company stopped existing independently. Career
      *  chapters do not carry one - none of those companies has ended. */
     ended?: { year: number; note: string };
@@ -135,6 +144,8 @@ export default async function IndustryHubPage({
       name: v.name,
       tagline: v.tagline,
       founded: v.founded,
+      foundedCompany: v.foundedCompany,
+      storyBegins: v.storyBegins,
       ended: v.ended,
       // Company histories live under /industry (PRIME 2026-07-29); the career
       // chapters below keep /industry/chapters, because those are a different kind
@@ -233,7 +244,13 @@ export default async function IndustryHubPage({
   const partnerSlugs = new Set(fromPartners.map((v) => v.slug));
   const careerOnly = fromCareer.filter((v) => !partnerSlugs.has(v.slug));
   const lineageTimeline: TimelineEntry[] = [...fromPartners, ...careerOnly].sort(
-    (a, b) => (a.founded ?? 9999) - (b.founded ?? 9999) || a.name.localeCompare(b.name),
+    // TIMELINE POSITION (PRIME 2026-10-02): a card sits where its STORY starts,
+    // not where its own subject was founded, so unisys stays at 1886 (Burroughs)
+    // while its card correctly states 1986. storyStart() is the single
+    // definition; three other call sites read the same one.
+    (a, b) =>
+      ((a.storyBegins?.year ?? a.founded) ?? 9999) -
+        ((b.storyBegins?.year ?? b.founded) ?? 9999) || a.name.localeCompare(b.name),
   );
 
   return (
@@ -379,8 +396,12 @@ export default async function IndustryHubPage({
                      it, so the chip and the card can never disagree. */
                   data-country={VENDOR_ORIGINS[v.slug] ?? ""}
                 >
+                  {/* The gutter marks the card's POSITION, which is where its
+                      story starts - otherwise a card sorted at 1886 would be
+                      labelled 1986 in the margin beside it. The card itself
+                      states its own subject's founding, below. */}
                   <span className="vendor-timeline-year mono" aria-hidden="true">
-                    {v.founded}
+                    {v.storyBegins?.year ?? v.founded}
                   </span>
                   <Link href={v.href} className="vendor-card">
                     {/* METADATA LINE (PRIME 2026-08-06): years first, a spaced
@@ -402,6 +423,32 @@ export default async function IndustryHubPage({
                       {v.ended
                         ? tp("timelineSpan", { from: v.founded, to: v.ended.year })
                         : tp("timelineSince", { from: v.founded })}
+                      {/* WHOSE YEAR IS THIS (PRIME 2026-10-02): on a card that
+                          covers several companies, or whose subject was renamed
+                          from an earlier one, the year belongs to a company the
+                          card is not named for. Saying so beside the year is the
+                          whole point of the ruling: a bare "1895" on "Nortel &
+                          Bay Networks" tells the reader something false. */}
+                      {/* WHERE THE STORY STARTS (PRIME 2026-10-02): this card
+                          sorts at an earlier year than it states, so it names the
+                          predecessor that year belongs to. Without this the
+                          timeline position would be unexplained. */}
+                      {v.storyBegins && (
+                        <span className="vendor-card-founded-company">
+                          <span className="vendor-card-founded-company-label">
+                            {tp("storyBeginsLabel")}
+                          </span>
+                          {`${v.storyBegins.year}, ${v.storyBegins.company}`}
+                        </span>
+                      )}
+                      {v.foundedCompany && (
+                        <span className="vendor-card-founded-company">
+                          <span className="vendor-card-founded-company-label">
+                            {tp("foundedCompanyLabel")}
+                          </span>
+                          {v.foundedCompany}
+                        </span>
+                      )}
                       {VENDOR_ORIGINS[v.slug] && (
                         <span className="vendor-card-origin">
                           <span className="vendor-card-origin-label">

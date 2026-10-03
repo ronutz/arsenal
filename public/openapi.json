@@ -3969,6 +3969,94 @@
         }
       }
     },
+    "/f5-irules-conditional-builder": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_conditional_builder",
+        "summary": "iRules if / switch / class builder",
+        "description": "Describe one decision as rules and get it written as an if / elseif chain, a switch and a class match with its tmsh data groups, then see which pool each picks for a test value. Shows where first match and longest match disagree. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules class, Tcl 8.4 switch, F5 K15650046. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"subject\":\"path\",\"lowercase\":true,\"rules\":[{\"op\":\"starts_with\",\"value\":\"/api\",\"pool\":\"api_pool\"}],\"defaultPool\":\"web_pool\",\"testValue\":\"/api/v2/users\",\"dataGroup\":\"path_pools\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_conditional_builder_post",
+        "summary": "iRules if / switch / class builder (POST)",
+        "description": "Describe one decision as rules and get it written as an if / elseif chain, a switch and a class match with its tmsh data groups, then see which pool each picks for a test value. Shows where first match and longest match disagree. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules class, Tcl 8.4 switch, F5 K15650046. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-irules-event-order": {
       "get": {
         "tags": [
@@ -4025,6 +4113,94 @@
             "text/plain": {
               "schema": {
                 "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-irules-number-notation": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_number_notation",
+        "summary": "iRules number notation converter",
+        "description": "Type a value as it appears in an iRule (010, 0x1F, 08, 1e3) and see how Tcl 8.4 reads it: integer or double, the base, the same value in other notations, and why 010 == 8 is true while 010 eq 8 is false. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 expr, F5 K6091. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"text\":\"010\",\"other\":\"8\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_number_notation_post",
+        "summary": "iRules number notation converter (POST)",
+        "description": "Type a value as it appears in an iRule (010, 0x1F, 08, 1e3) and see how Tcl 8.4 reads it: integer or double, the base, the same value in other notations, and why 010 == 8 is true while 010 eq 8 is false. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 expr, F5 K6091. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
               }
             }
           }
@@ -4193,6 +4369,358 @@
         "operationId": "run_f5_irules_runtime_calculator_post",
         "summary": "iRules runtime calculator (POST)",
         "description": "Turn iRule timing statistics into real runtime, CPU cost per request, and maximum requests per second. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules timing. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-irules-scan-explainer": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_scan_explainer",
+        "summary": "iRules scan explainer",
+        "description": "Give a value and a scan format and see each %d, %s or %[^&] line up against the characters it took, the variable it filled, and exactly why scanning stopped. Explains the -1 result and the Tcl 8.4 quirks. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 scan. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"input\":\"10:30\",\"format\":\"%d:%d\",\"vars\":\"hours minutes\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_scan_explainer_post",
+        "summary": "iRules scan explainer (POST)",
+        "description": "Give a value and a scan format and see each %d, %s or %[^&] line up against the characters it took, the variable it filled, and exactly why scanning stopped. Explains the -1 result and the Tcl 8.4 quirks. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 scan. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-irules-string-extract": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_string_extract",
+        "summary": "findstr, substr and getfield explainer",
+        "description": "Run F5's findstr, substr or getfield on your string and see the match, the skip, the terminator and the result marked on a ruler, next to the plain Tcl that does the same job. Cases F5 does not document are flagged. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules findstr, F5 iRules substr, F5 iRules getfield. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"command\":\"findstr\",\"string\":\"/login.php?user=abcdefg&lang=en\",\"args\":[\"user=\",\"5\",\"&\"]}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_string_extract_post",
+        "summary": "findstr, substr and getfield explainer (POST)",
+        "description": "Run F5's findstr, substr or getfield on your string and see the match, the skip, the terminator and the result marked on a ruler, next to the plain Tcl that does the same job. Cases F5 does not document are flagged. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: F5 iRules findstr, F5 iRules substr, F5 iRules getfield. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-irules-string-workbench": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_string_workbench",
+        "summary": "iRules string workbench",
+        "description": "Run a Tcl 8.4 string command (range, first, map, match, compare, trim and more) and see the result on a character ruler: what was searched, matched, returned or replaced, and how indexes like end-1 or 010 were read. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 string. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"op\":\"range\",\"args\":[\"/login.php?user=abc\",\"0\",\"9\"]}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_string_workbench_post",
+        "summary": "iRules string workbench (POST)",
+        "description": "Run a Tcl 8.4 string command (range, first, map, match, compare, trim and more) and see the result on a character ruler: what was searched, matched, returned or replaced, and how indexes like end-1 or 010 were read. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4 string. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/f5-irules-style-checker": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_style_checker",
+        "summary": "iRules style checker",
+        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"irule\":\"when HTTP_REQUEST {\\n    pool web_pool\\n}\\n\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_irules_style_checker_post",
+        "summary": "iRules style checker (POST)",
+        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",

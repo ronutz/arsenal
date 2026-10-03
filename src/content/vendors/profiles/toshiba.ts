@@ -20,7 +20,11 @@ export const toshibaProfile: VendorProfile = {
   slug: "toshiba",
   foundings: [
     {
-      company: "Tanaka Seisakusho (Toshiba's oldest root)",
+      // Both names (2026-10-02): the 1875 workshop and its successor, Shibaura
+      // Seisakusho - the name the industry card's foundedCompany uses, taken from
+      // the Wikipedia infobox's "1875 (as Shibaura Seisakusho)" row. The story
+      // below already records the succession; the heading now says it too.
+      company: "Tanaka Seisakusho, later Shibaura Seisakusho (Toshiba's oldest root)",
       year: 1875,
       place: "Tokyo, Japan",
       founders: ["Hisashige Tanaka"],

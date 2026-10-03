@@ -59,8 +59,20 @@ export default function VendorProfileSections({
                   <div>
                     <h3 className="vprofile-founding-company">{f.company}</h3>
                     <p className="vprofile-founding-meta">
-                      {f.place} · <span className="vprofile-founders-label">{labels.founders}:</span>{" "}
-                      {f.founders.join(", ")}
+                      {/* Where the company was founded; always present. */}
+                      {f.place}
+                      {/* The founders segment renders only when the profile names
+                          founders. Some foundings record none that a source verifies
+                          (apache, arcsight, asus-askey, cylk, flipside, and Lumen's
+                          1968 incorporation), and an empty list used to print a
+                          dangling "Founders:" label with nothing after it. */}
+                      {f.founders.length > 0 && (
+                        <>
+                          {" · "}
+                          <span className="vprofile-founders-label">{labels.founders}:</span>{" "}
+                          {f.founders.join(", ")}
+                        </>
+                      )}
                     </p>
                   </div>
                 </header>

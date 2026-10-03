@@ -6989,6 +6989,790 @@
         "no-traffic": "Descreva o fluxo que quer traçar.",
         "too-many-rules": "São mais regras do que esta ferramenta analisa de uma vez."
       }
+    },
+    "f5-irules-number-notation": {
+      "name": "Conversor de notação numérica de iRules",
+      "blurb": "Digite um valor como ele aparece num iRule (010, 0x1F, 08, 1e3) e veja como o Tcl 8.4 o lê: inteiro ou double, a base, o mesmo valor em outras notações, e por que 010 == 8 é verdadeiro enquanto 010 eq 8 é falso. Local, sem rede.",
+      "valueLabel": "Valor, como escrito no iRule",
+      "valuePlaceholder": "por exemplo 010, 0x1F, 08 ou 1e3",
+      "otherLabel": "Comparar com",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "presetsLabel": "Experimente",
+      "kind": {
+        "int": "Inteiro",
+        "double": "Double (ponto flutuante)",
+        "not-number": "Não é número"
+      },
+      "base": {
+        "8": "escrito em octal",
+        "10": "escrito em decimal",
+        "16": "escrito em hexadecimal"
+      },
+      "special": {
+        "inf": "um infinito, lido pela biblioteca C",
+        "nan": "um não-número (NaN), lido pela biblioteca C",
+        "hex": "um ponto flutuante hexadecimal, lido pela biblioteca C"
+      },
+      "canonicalLabel": "O Tcl o imprime como",
+      "noCanonical": "Sem leitura numérica: o Tcl mantém o texto como está",
+      "note": {
+        "whitespace": "Espaços em volta dos dígitos são aceitos quando o número está guardado num valor. Dentro de uma expressão eles são só separadores.",
+        "wrapped64": "O valor fica entre 2 elevado a 63 e 2 elevado a 64 menos 1. O Tcl 8.4 o aceita, mas o guarda como inteiro de 64 bits com sinal, então ele dá a volta para <c>{value}</c>.",
+        "octal": "Um 0 inicial faz o Tcl ler os dígitos em octal (base 8): <c>{text}</c> vale {value} em decimal.",
+        "octal-not-decimal": "Esta é a surpresa clássica dos iRules: um valor com cara de decimal, como um código ou um horário com zero à esquerda, é octal por causa do 0 inicial.",
+        "hex": "0x faz o Tcl ler os dígitos em hexadecimal (base 16): <c>{text}</c> vale {value} em decimal.",
+        "outside32": "O valor não cabe em 32 bits. Os inteiros do Tcl 8.4 têm a largura do long em C da plataforma para a qual ele foi compilado; esta ferramenta usa 64 bits, e um build de 32 bits leria o valor de outro jeito.",
+        "double": "Para o Tcl, um double nunca é inteiro, mesmo quando é um número redondo: <c>3.0</c> mantém o ponto decimal ao ser impresso, e operadores só de inteiros, como <c>%</c>, o recusam.",
+        "twelve-digits": "O Tcl 8.4 imprime doubles com 12 dígitos significativos (tcl_precision vale 12 por padrão), então a forma impressa pode esconder o resto do valor. Compare com o valor exato abaixo.",
+        "c-library": "Isto é um infinito ou um não-número (NaN), lido pelo strtod da biblioteca C. Guardado num valor, ele pode ser comparado, mas qualquer aritmética com ele falha; escrito como literal numa expressão, é recusado.",
+        "invalid-octal": "<c>{text}</c> começa com 0, então o Tcl tenta ler em octal, e 8 e 9 não são dígitos octais. A aritmética o recusa; as comparações passam a comparar texto.",
+        "too-large": "O inteiro precisa de mais de 64 bits, então o Tcl 8.4 o recusa: integer value too large to represent.",
+        "int-garbage": "Começa como um inteiro, mas outros caracteres vêm depois, então não é um número.",
+        "empty": "Uma string vazia não é um número. A aritmética a recusa; as comparações a tratam como texto.",
+        "float-range": "O valor está fora da faixa de um double (grande demais, ou tão pequeno que vira underflow), então o Tcl o recusa.",
+        "not-number": "Não é um número: a aritmética o recusa, e comparações como == passam a comparar texto."
+      },
+      "formsTitle": "O mesmo inteiro em outras notações",
+      "formsNotation": "Notação",
+      "formsDigits": "Dígitos",
+      "formsWrite": "Como escrever num iRule",
+      "forms": {
+        "decimal": "Decimal",
+        "hex": "Hexadecimal",
+        "octal": "Octal",
+        "binary": "Binário"
+      },
+      "formsNoBinary": "O Tcl 8.4 não tem notação binária",
+      "doubleTitle": "Por dentro do double",
+      "double": {
+        "printed": "Impresso pelo Tcl 8.4 (12 dígitos significativos)",
+        "roundTrip": "Forma mais curta que é lida de volta no mesmo double",
+        "exact": "Valor exato do double binário"
+      },
+      "placesTitle": "Dois lugares onde o Tcl lê números",
+      "literalTitle": "Escrito na própria expressão",
+      "literalEmpty": "Nada para avaliar",
+      "literalNote": "Um literal é lido quando a expressão é compilada, então um literal ruim (como 08) para a expressão inteira antes que qualquer parte dela rode.",
+      "variableTitle": "Guardado numa variável",
+      "variableNote": "Um valor só é lido quando um operador precisa de um número. Se não puder ser lido, a aritmética falha nesse ponto, e as comparações passam a comparar texto sem avisar.",
+      "probesTitle": "Comparando com {other}",
+      "probesExpr": "Expressão",
+      "probesResult": "Resultado",
+      "probesWhy": "Por quê",
+      "probeWhy": {
+        "eq": "<c>eq</c> sempre compara o texto.",
+        "num": "Numérica quando os dois lados são lidos como números; senão, compara o texto."
+      },
+      "probesNote": "Nestas expressões <c>$x</c> contém <c>{text}</c> e <c>$y</c> contém <c>{other}</c>, os dois definidos como valores simples."
+    },
+    "f5-irules-expression-lab": {
+      "name": "Laboratório de expressões de iRules",
+      "blurb": "Avalie uma expressão do jeito que expr e if fazem num iRule e veja cada passo: como cada operando foi lido, comparação numérica ou de texto, precedência, onde o && parou, e == ao lado de eq. Modo Tcl 8.4 ou iRules. Local, sem rede.",
+      "modeLabel": "Linguagem",
+      "modeTcl": "Tcl 8.4",
+      "modeIrules": "iRules",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "precedence": "Precedência",
+        "string-compare-case": "bench vs Chair",
+        "octal-equality": "012 == 10",
+        "true-is-not-1": "true == 1",
+        "no-power-operator": "Operador de potência",
+        "floor-division": "7 / -2",
+        "short-circuit": "Curto-circuito ||",
+        "irules-starts-with": "starts_with",
+        "irules-and": "contains e eq",
+        "literal-08": "Literal 08"
+      },
+      "setupLabel": "Variáveis (comandos set, rodam antes)",
+      "setupPlaceholder": "set x 012; set y 10",
+      "exprLabel": "Expressão (o que vai entre as chaves)",
+      "exprPlaceholder": "$x == $y",
+      "sampleTitle": "Requisição de exemplo (o que os comandos de iRules devolvem)",
+      "sampleUri": "HTTP::uri",
+      "sampleHost": "HTTP::host",
+      "sampleNote": "Neste exemplo HTTP::method devolve GET e o cabeçalho User-Agent é curl/8.0. Nada é enviado para lugar nenhum.",
+      "resultLabel": "Resultado",
+      "held": {
+        "int": "inteiro",
+        "double": "double",
+        "string": "string",
+        "boolean": "booleano"
+      },
+      "stage": {
+        "setup": "Os comandos set falharam:",
+        "parse": "Erro de sintaxe:",
+        "compile": "Recusada antes de rodar:",
+        "run": "Erro durante a avaliação:"
+      },
+      "stageNote": {
+        "setup": "As variáveis são definidas por comandos Tcl comuns, então as aspas funcionam exatamente como num iRule.",
+        "parse": "O Tcl não conseguiu ler a expressão, então nada nela rodou. O acento circunflexo marca onde a leitura parou.",
+        "compile": "O Tcl 8.4 verifica os literais ao compilar uma expressão, então isto para a expressão inteira antes que qualquer parte dela rode.",
+        "run": "As partes desenhadas abaixo rodaram antes do erro; o resto não."
+      },
+      "groupingTitle": "Como a precedência agrupa",
+      "groupingNote": "Cada operador com seus operandos entre parênteses. O Tcl aplica primeiro o operador de maior precedência, seja qual for o espaçamento.",
+      "treeTitle": "Avaliação, passo a passo",
+      "skipped": "nunca avaliado",
+      "exprNote": {
+        "lit-int": "Um número inteiro escrito na própria expressão, {base, select, 8 {em octal (começa com 0)} 16 {em hexadecimal (começa com 0x)} other {em decimal}}.",
+        "lit-bool": "Uma palavra booleana escrita na própria expressão.",
+        "lit-double": "Um número de ponto flutuante escrito na própria expressão.",
+        "braced": "Texto entre chaves é lido literalmente: nada dentro dele é substituído.",
+        "lone-dollar": "Um <c>$</c> sem nome de variável depois é só o caractere <c>$</c>.",
+        "var": "Lê a variável <c>{name}</c>.",
+        "cmd": "Executa o comando entre colchetes; o resultado dele vira o operando.",
+        "quoted": "Texto entre aspas duplas, sem nada para substituir.",
+        "quoted-subst": "Texto entre aspas duplas: as variáveis e os comandos dentro dele são substituídos antes.",
+        "ternary": "A condição é {branch, select, then {verdadeira, então vale o valor depois de <c>?</c>} other {falsa, então vale o valor depois de <c>:</c>}}; o outro ramo nunca é avaliado.",
+        "bitnot": "<c>~</c> inverte todos os bits de um inteiro.",
+        "uplus": "O <c>+</c> unário exige um número e o deixa como está.",
+        "uminus": "O <c>-</c> unário troca o sinal do número.",
+        "lnot": "<c>!</c> dá 1 para um operando falso e 0 para um verdadeiro.",
+        "short-circuit": "<c>{op}</c> parou aqui: o lado esquerdo é {left, select, true {verdadeiro} other {falso}}, o que já decide o resultado, então o lado direito nunca rodou.",
+        "logic": "Os dois lados rodaram: {left, select, true {verdadeiro} other {falso}} <c>{op}</c> {right, select, true {verdadeiro} other {falso}}.",
+        "streq": "<c>{op}</c> compara os dois valores como texto, caractere por caractere. Números nunca são convertidos.",
+        "f5-op": "<c>{op}</c> é um dos operadores que a F5 acrescenta aos iRules. Ele compara os valores como texto.",
+        "mod": "O resto de {a} dividido por {b}. Ele fica com o sinal do divisor.",
+        "shl": "Deslocamento de {count} bits para a esquerda.",
+        "shr": "Deslocamento de {count} bits para a direita; o bit de sinal é copiado a partir da esquerda.",
+        "bitwise": "Operação bit a bit <c>{op}</c> sobre inteiros.",
+        "arith": "<c>{op}</c> sobre {mode, select, int {inteiros} other {números de ponto flutuante, porque pelo menos um operando é double}}: {a} {op} {b}.",
+        "intdiv": "{floored, select, true {A divisão inteira arredonda para baixo, em direção ao infinito negativo: {a} / {b} dá o piso do quociente exato, não o valor truncado em direção a zero.} other {A divisão inteira fica com a parte inteira de {a} / {b}.}}",
+        "cmp-same": "Os dois lados são exatamente o mesmo valor, então são iguais sem nenhuma conversão.",
+        "cmp-string": "Comparado como texto porque {why, select, empty {um dos lados é uma string vazia} left_text {o lado esquerdo não é um número} right_text {o lado direito não é um número} left_bad_int {o lado esquerdo parece um inteiro mas não é válido (um 0 inicial seguido de 8 ou 9, por exemplo)} right_bad_int {o lado direito parece um inteiro mas não é válido (um 0 inicial seguido de 8 ou 9, por exemplo)} other {um dos lados não é um número}}. Os códigos dos caracteres decidem a ordem, então toda letra maiúscula vem antes de toda minúscula.",
+        "cmp-number": "Comparado como {mode, select, int {inteiros} other {números de ponto flutuante}}: {left} e {right}.",
+        "canon": "O resultado é um número, então o Tcl o devolve na forma canônica: <c>{from}</c> vira <c>{to}</c>.",
+        "canon-none": "O resultado <c>{text}</c> não é um número, então é devolvido exatamente como está.",
+        "fn": "Chama a função matemática <c>{name}()</c>."
+      },
+      "platform": {
+        "int-overflow": "O resultado exato não cabe em 64 bits, e o Tcl 8.4 dá a volta sem gerar erro.",
+        "shift-count": "Um deslocamento fora de 0 a 63 é indefinido em C. Processadores x86 usam só os 6 bits mais baixos da contagem, que é o que aparece aqui.",
+        "int-range-32": "O resultado não cabe em 32 bits. Um build do Tcl 8.4 com inteiros de 32 bits daria outra resposta.",
+        "libm": "Este valor vem da biblioteca matemática C da plataforma e pode diferir nos últimos dígitos de um sistema para outro."
+      },
+      "compareTitle": "Os mesmos operandos em cada operador de comparação",
+      "compareExpr": "Expressão",
+      "compareResult": "Resultado",
+      "compareHow": "Como compara",
+      "compareWhy": {
+        "eq": "<c>eq</c> compara só texto.",
+        "num": "Números quando os dois lados são lidos como números; senão, texto."
+      },
+      "varsTitle": "Variáveis depois dos comandos set",
+      "empty": "(vazio)",
+      "sideEffectsTitle": "Registrado no log e anotado",
+      "recorded": "anotado, não executado"
+    },
+    "f5-irules-string-workbench": {
+      "name": "Bancada de strings de iRules",
+      "blurb": "Rode um comando string do Tcl 8.4 (range, first, map, match, compare, trim e outros) e veja o resultado numa régua de caracteres: o que foi buscado, casado, devolvido ou trocado, e como índices como end-1 ou 010 foram lidos. Local, sem rede.",
+      "opLabel": "Subcomando",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "optional": "(opcional)",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "length-utf8": "length de héllo",
+        "bytelength-utf8": "bytelength de héllo",
+        "range-path": "range 0 9",
+        "first-param": "first user=",
+        "map-version": "map de /v1/ para /v2/",
+        "map-order": "map: ordem das chaves",
+        "match-nocase": "match -nocase",
+        "match-case": "match (com caixa)",
+        "tolower-host": "tolower de um host",
+        "index-octal": "index 010",
+        "range-end": "range 1 end-1",
+        "trim-path": "trim",
+        "compare-case": "compare bench Chair",
+        "equal-nocase": "equal -nocase",
+        "last-slash": "last /",
+        "replace-segment": "replace",
+        "repeat": "repeat"
+      },
+      "opHelp": {
+        "length": "Conta caracteres, não bytes.",
+        "bytelength": "Conta os bytes da forma UTF-8 interna do Tcl.",
+        "tolower": "Passa a string para minúsculas, ou só os caracteres de first a last.",
+        "toupper": "Passa a string para maiúsculas, ou só os caracteres de first a last.",
+        "range": "Devolve os caracteres de first a last, os dois incluídos. Os índices podem ser inteiros, <c>end</c> ou <c>end-N</c>.",
+        "index": "Devolve um caractere, ou uma string vazia quando o índice está fora da string.",
+        "first": "Devolve o índice onde a agulha aparece primeiro, ou -1. Um índice inicial faz a busca começar mais adiante.",
+        "last": "Devolve o índice onde a agulha aparece por último, ou -1. Um índice final faz a busca terminar mais cedo.",
+        "map": "Troca cada chave pelo seu valor numa única passada, da esquerda para a direita. Em cada posição vence a primeira chave da lista que casar.",
+        "match": "Casamento glob: <c>*</c> casa qualquer sequência de caracteres, <c>?</c> um caractere, <c>[abc]</c> um de um conjunto. Devolve 1 ou 0.",
+        "compare": "Devolve -1, 0 ou 1 comparando os códigos dos caracteres, então maiúsculas vêm antes de minúsculas.",
+        "equal": "Devolve 1 quando as duas strings são idênticas, 0 caso contrário.",
+        "trim": "Remove os caracteres dados (espaço em branco, por padrão) das duas pontas.",
+        "trimleft": "Remove os caracteres dados (espaço em branco, por padrão) do início.",
+        "trimright": "Remove os caracteres dados (espaço em branco, por padrão) do fim.",
+        "replace": "Troca os caracteres de first a last pela nova string, ou os remove quando nenhuma nova string é dada.",
+        "repeat": "Devolve a string repetida count vezes."
+      },
+      "field": {
+        "string": "String",
+        "first": "Índice inicial",
+        "last": "Índice final",
+        "charIndex": "Índice",
+        "needle": "Procurar",
+        "haystack": "Na string",
+        "startIndex": "Índice de início",
+        "lastIndex": "Último índice da busca",
+        "mapping": "Mapa (chave valor chave valor ...)",
+        "pattern": "Padrão glob",
+        "string1": "String 1",
+        "string2": "String 2",
+        "chars": "Caracteres a remover",
+        "newString": "Nova string",
+        "count": "Quantidade"
+      },
+      "commandTitle": "O comando",
+      "resultLabel": "Resultado",
+      "errorLabel": "Erro do Tcl",
+      "rulerTitle": "A string, caractere por caractere",
+      "rulerCaption": "{count} caracteres; os números pequenos são índices, contados a partir de 0.",
+      "rulerTruncated": "Só os primeiros 400 caracteres são desenhados.",
+      "role": {
+        "result": "devolvido ou convertido",
+        "window": "buscado",
+        "match": "casamento",
+        "replaced": "trocado",
+        "trimmed": "removido",
+        "differ": "primeira diferença"
+      },
+      "readingsTitle": "Como os argumentos de índice foram lidos",
+      "readingArg": "Argumento",
+      "readingText": "Escrito",
+      "readingValue": "Índice",
+      "readingHow": "Lido como",
+      "clampedTo": "(usado como {value})",
+      "readEnd": "end menos {offset}",
+      "readInt": "{base, select, 8 {um inteiro octal (0 inicial)} 16 {um inteiro hexadecimal} other {um inteiro decimal}}",
+      "mapTitle": "A passada única do string map",
+      "mapReplace": "trocar",
+      "mapKeep": "manter",
+      "mapPair": "(par {n})",
+      "note": {
+        "bytes-differ": "Caracteres fora do ASCII ocupam mais de um byte no UTF-8 interno do Tcl, então a contagem de bytes é maior que a de caracteres.",
+        "empty-span-unchanged": "Os índices first e last não selecionam nenhum caractere, então a string volta sem mudança.",
+        "range-empty": "O último índice vem antes do primeiro, então o resultado é vazio.",
+        "index-out-of-range": "O índice está fora da string, então o resultado é uma string vazia, não um erro.",
+        "empty-needle": "Uma agulha vazia nunca é encontrada: o resultado é -1.",
+        "last-whole-match": "Com um índice final, só contam os casamentos que terminam nele ou antes dele.",
+        "map-one-pass": "Cada troca é definitiva: o texto inserido nunca é examinado de novo, então uma passada não encadeia trocas.",
+        "compare-codes": "Os caracteres são comparados pelos seus códigos, um a um: toda letra maiúscula vem antes de toda minúscula.",
+        "trim-set": "Os caracteres a remover formam um conjunto, não uma palavra: cada caractere dele é removido das pontas, em qualquer ordem.",
+        "replace-unchanged": "Os índices não selecionam nada dentro da string, então ela volta sem mudança.",
+        "octal-index": "Um índice escrito com 0 inicial é octal: <c>010</c> significa o índice 8.",
+        "end-prefix": "O Tcl 8.4.6 aceita qualquer prefixo de <c>end</c> sozinho (<c>e</c>, <c>en</c>), mas não com deslocamento (<c>e-1</c> dá erro)."
+      }
+    },
+    "f5-irules-scan-explainer": {
+      "name": "Explicador de scan para iRules",
+      "blurb": "Informe um valor e um formato de scan e veja cada %d, %s ou %[^&] alinhado com os caracteres que consumiu, a variável que preencheu e exatamente por que a leitura parou. Explica o resultado -1 e as peculiaridades do Tcl 8.4. Local, sem rede.",
+      "inputLabel": "Valor a desmontar",
+      "inputPlaceholder": "10:30",
+      "formatLabel": "Formato",
+      "varsLabel": "Nomes das variáveis",
+      "varsPlaceholder": "horas minutos (deixe vazio para uma lista)",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "time": "10:30",
+        "ipv4": "Endereço IPv4",
+        "no-digits": "Sem dígitos",
+        "empty-input": "Entrada vazia",
+        "query-set": "%[^&]",
+        "i-octal": "%i e 08",
+        "int32": "3000000000",
+        "inline": "Sem variáveis",
+        "request-line": "Linha de requisição",
+        "n-bytes": "%n e é"
+      },
+      "commandTitle": "O comando",
+      "resultLabel": "scan devolveu",
+      "errorLabel": "Erro do Tcl",
+      "resultCount": "{n, plural, =0 {Nenhuma variável recebeu valor: a primeira conversão não casou.} one {Uma variável recebeu valor.} other {# variáveis receberam valor.}}",
+      "resultMinusOne": "A entrada acabou antes da primeira conversão, então scan devolve -1 em vez de 0.",
+      "resultInline": "Nenhum nome de variável foi dado, então scan devolve os valores convertidos como uma lista.",
+      "rulerTitle": "O valor, como o formato o consumiu",
+      "rulerTruncated": "Só os primeiros 400 caracteres são desenhados.",
+      "role": {
+        "skipped": "espaço em branco pulado",
+        "match": "literal casado",
+        "consumed": "convertido",
+        "consumed-alt": "convertido (seguinte)",
+        "stop": "onde parou"
+      },
+      "stepsTitle": "Diretiva por diretiva",
+      "colDirective": "Diretiva",
+      "colConsumed": "Caracteres",
+      "colOutcome": "Resultado",
+      "colValue": "Valor",
+      "colVariable": "Variável",
+      "conv": {
+        "d": "inteiro decimal",
+        "o": "inteiro octal",
+        "x": "inteiro hexadecimal",
+        "i": "inteiro na base indicada pelo prefixo (0 octal, 0x hexadecimal)",
+        "u": "inteiro decimal sem sinal",
+        "c": "um caractere, guardado como seu código",
+        "s": "caracteres até um espaço em branco",
+        "set": "caracteres do conjunto: {set}",
+        "n": "quantidade de entrada consumida até aqui (não usa entrada)",
+        "e": "número de ponto flutuante",
+        "f": "número de ponto flutuante",
+        "g": "número de ponto flutuante"
+      },
+      "dirKind": {
+        "space": "espaço em branco: pula qualquer quantidade, inclusive nenhuma",
+        "literal": "texto literal: precisa casar exatamente"
+      },
+      "width": "(no máximo {n} caracteres)",
+      "suppressed": "(convertido, não guardado)",
+      "nothing": "nada",
+      "outcome": {
+        "matched": "casou",
+        "assigned": "guardado",
+        "suppressed": "descartado",
+        "stopped": "parou",
+        "out-of-input": "a entrada acabou"
+      },
+      "readBase": "lido na base {base}",
+      "int32Cell": "fora de 32 bits: guardado por meio de um int em C",
+      "stopped": {
+        "format-end": "Todas as diretivas do formato rodaram.",
+        "mismatch": "A leitura parou num caractere que a diretiva não pôde usar. As variáveis depois dela não foram definidas por este scan.",
+        "no-chars": "A leitura parou porque o conjunto <c>%[...]</c> não casou nenhum caractere.",
+        "input-end": "A entrada acabou antes do formato."
+      },
+      "varsTitle": "Variáveis depois",
+      "notSet": "não definida por este scan",
+      "note": {
+        "minus-one": "-1 significa que a entrada acabou antes da primeira conversão; 0 significa que uma conversão foi tentada e falhou. Verifique os dois casos quando um valor puder ser vazio.",
+        "n-bytes": "O Tcl 8.4.6 conta bytes do seu UTF-8 interno em <c>%n</c>, embora o manual fale em caracteres: cada caractere fora do ASCII conta 2 ou 3.",
+        "i-prefix": "<c>%i</c> tira a base do prefixo, como um inteiro numa expressão: 0 significa octal, 0x hexadecimal. Use <c>%d</c> para valores decimais com zero à esquerda, como horários.",
+        "int32": "O Tcl 8.4.6 guarda as conversões inteiras por meio de um int em C, então um valor fora de 32 bits volta alterado (o modificador <c>l</c> não resolve aqui). Para manter um número grande intacto, leia-o como texto com <c>%[0-9]</c> e deixe o <c>expr</c> interpretá-lo.",
+        "inline": "Sem nomes de variáveis, scan devolve uma lista com os valores convertidos (um elemento vazio para uma conversão que não aconteceu)."
+      }
+    },
+    "f5-irules-script-stepper": {
+      "name": "Executor passo a passo de iRules",
+      "blurb": "Rode um trecho curto de iRule um comando por vez e veja o que cada comando recebeu depois da substituição, o que devolveu e quais variáveis mudaram. O caminho mais rápido para entender aspas, chaves, append, concat, incr e o ramo que if ou switch tomou. Local, sem rede.",
+      "modeLabel": "Linguagem",
+      "modeTcl": "Tcl 8.4",
+      "modeIrules": "iRules",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "quote-concat": "Juntando entre aspas",
+        "append-vs-concat": "append vs concat",
+        "incr-octal": "incr 010",
+        "foreach-count": "foreach sobre uma string",
+        "append-vs-lappend": "append vs lappend",
+        "switch-glob": "switch -glob --",
+        "if-elseif": "if / elseif na URI",
+        "double-substitution": "Dupla substituição"
+      },
+      "scriptLabel": "Script",
+      "scriptPlaceholder": "set a \"foo\"",
+      "sampleTitle": "Requisição de exemplo (o que os comandos de iRules devolvem)",
+      "sampleUri": "HTTP::uri",
+      "sampleHost": "HTTP::host",
+      "sampleMethod": "HTTP::method",
+      "sampleAgent": "Cabeçalho User-Agent",
+      "sampleNote": "Estas são as respostas que os comandos de iRules dão nesta ferramenta. Nada é enviado para lugar nenhum: pool, HTTP::redirect e ações parecidas são anotadas, não executadas.",
+      "code": {
+        "ok": "Terminou. Último resultado:",
+        "error": "Parou com um erro:",
+        "return": "Retornou:",
+        "break": "Terminou com break fora de um laço:",
+        "continue": "Terminou com continue fora de um laço:"
+      },
+      "stepsTitle": "{n, plural, one {Um comando} other {# comandos}}, na ordem em que começaram",
+      "stepsNote": "Um comando recuado rodou dentro do comando acima dele: no corpo, ou entre colchetes enquanto as palavras dele eram montadas (então terminou antes).",
+      "lineLabel": "linha {n}",
+      "wordsLabel": "recebeu",
+      "returned": "devolveu",
+      "unset": "indefinida",
+      "exprSummary": "Expressão avaliada:",
+      "held": {
+        "int": "inteiro",
+        "double": "double",
+        "string": "string",
+        "boolean": "booleano"
+      },
+      "skipped": "nunca avaliado",
+      "exprNote": {
+        "lit-int": "Um número inteiro escrito na própria expressão, {base, select, 8 {em octal (começa com 0)} 16 {em hexadecimal (começa com 0x)} other {em decimal}}.",
+        "lit-bool": "Uma palavra booleana escrita na própria expressão.",
+        "lit-double": "Um número de ponto flutuante escrito na própria expressão.",
+        "braced": "Texto entre chaves é lido literalmente: nada dentro dele é substituído.",
+        "lone-dollar": "Um <c>$</c> sem nome de variável depois é só o caractere <c>$</c>.",
+        "var": "Lê a variável <c>{name}</c>.",
+        "cmd": "Executa o comando entre colchetes; o resultado dele vira o operando.",
+        "quoted": "Texto entre aspas duplas, sem nada para substituir.",
+        "quoted-subst": "Texto entre aspas duplas: as variáveis e os comandos dentro dele são substituídos antes.",
+        "ternary": "A condição é {branch, select, then {verdadeira, então vale o valor depois de <c>?</c>} other {falsa, então vale o valor depois de <c>:</c>}}; o outro ramo nunca é avaliado.",
+        "bitnot": "<c>~</c> inverte todos os bits de um inteiro.",
+        "uplus": "O <c>+</c> unário exige um número e o deixa como está.",
+        "uminus": "O <c>-</c> unário troca o sinal do número.",
+        "lnot": "<c>!</c> dá 1 para um operando falso e 0 para um verdadeiro.",
+        "short-circuit": "<c>{op}</c> parou aqui: o lado esquerdo é {left, select, true {verdadeiro} other {falso}}, o que já decide o resultado, então o lado direito nunca rodou.",
+        "logic": "Os dois lados rodaram: {left, select, true {verdadeiro} other {falso}} <c>{op}</c> {right, select, true {verdadeiro} other {falso}}.",
+        "streq": "<c>{op}</c> compara os dois valores como texto, caractere por caractere. Números nunca são convertidos.",
+        "f5-op": "<c>{op}</c> é um dos operadores que a F5 acrescenta aos iRules. Ele compara os valores como texto.",
+        "mod": "O resto de {a} dividido por {b}. Ele fica com o sinal do divisor.",
+        "shl": "Deslocamento de {count} bits para a esquerda.",
+        "shr": "Deslocamento de {count} bits para a direita; o bit de sinal é copiado a partir da esquerda.",
+        "bitwise": "Operação bit a bit <c>{op}</c> sobre inteiros.",
+        "arith": "<c>{op}</c> sobre {mode, select, int {inteiros} other {números de ponto flutuante, porque pelo menos um operando é double}}: {a} {op} {b}.",
+        "intdiv": "{floored, select, true {A divisão inteira arredonda para baixo, em direção ao infinito negativo: {a} / {b} dá o piso do quociente exato, não o valor truncado em direção a zero.} other {A divisão inteira fica com a parte inteira de {a} / {b}.}}",
+        "cmp-same": "Os dois lados são exatamente o mesmo valor, então são iguais sem nenhuma conversão.",
+        "cmp-string": "Comparado como texto porque {why, select, empty {um dos lados é uma string vazia} left_text {o lado esquerdo não é um número} right_text {o lado direito não é um número} left_bad_int {o lado esquerdo parece um inteiro mas não é válido (um 0 inicial seguido de 8 ou 9, por exemplo)} right_bad_int {o lado direito parece um inteiro mas não é válido (um 0 inicial seguido de 8 ou 9, por exemplo)} other {um dos lados não é um número}}. Os códigos dos caracteres decidem a ordem, então toda letra maiúscula vem antes de toda minúscula.",
+        "cmp-number": "Comparado como {mode, select, int {inteiros} other {números de ponto flutuante}}: {left} e {right}.",
+        "canon": "O resultado é um número, então o Tcl o devolve na forma canônica: <c>{from}</c> vira <c>{to}</c>.",
+        "canon-none": "O resultado <c>{text}</c> não é um número, então é devolvido exatamente como está.",
+        "fn": "Chama a função matemática <c>{name}()</c>."
+      },
+      "platform": {
+        "int-overflow": "O resultado exato não cabe em 64 bits, e o Tcl 8.4 dá a volta sem gerar erro.",
+        "shift-count": "Um deslocamento fora de 0 a 63 é indefinido em C. Processadores x86 usam só os 6 bits mais baixos da contagem, que é o que aparece aqui.",
+        "int-range-32": "O resultado não cabe em 32 bits. Um build do Tcl 8.4 com inteiros de 32 bits daria outra resposta.",
+        "libm": "Este valor vem da biblioteca matemática C da plataforma e pode diferir nos últimos dígitos de um sistema para outro."
+      },
+      "stepNote": {
+        "append-creates": "A variável não existia, então <c>append</c> a criou.",
+        "lappend-creates": "A variável não existia, então <c>lappend</c> a criou como lista.",
+        "catch": "O script interno terminou com código {code} (0 ok, 1 erro, 2 return, 3 break, 4 continue); <c>catch</c> devolve esse código em vez de deixar um erro parar tudo.",
+        "class-longest": "{count} entradas casaram; com starts_with ou ends_with, class match devolve a mais longa, <c>{name}</c>.",
+        "class-match": "{hit, select, true {A entrada <c>{name}</c> do data group casou (operador {op}).} other {Nenhuma entrada do data group casou (operador {op}).}}",
+        "concat": "<c>concat</c> tirou o espaço em branco das duas pontas de cada argumento, descartou os vazios e juntou o resto com espaços simples.",
+        "cut-count": "Um número como terminador é um comprimento: até {count} caracteres, menos se a string acabar antes.",
+        "cut-terminator": "Parou logo antes de <c>{terminator}</c>, encontrado no índice {at}.",
+        "cut-terminator-absent": "<c>{terminator}</c> não aparece depois do ponto de início, então o resto da string é devolvido.",
+        "expr-unbraced": "<c>expr</c> recebeu várias palavras: o Tcl as junta com espaços e substitui o resultado de novo, então um valor que contém <c>[</c> ou <c>$</c> roda como código. Coloque a expressão entre chaves (F5 K57410758).",
+        "findstr-found": "A string procurada começa no índice {at}; o resultado começa {skip} caracteres depois disso.",
+        "foreach": "Rodou o corpo uma vez por elemento: {iterations} ao todo.",
+        "getfield": "Dividida em {count} campos; o campo {field} é devolvido (os campos contam a partir de 1).",
+        "if-branch": "Uma condição foi verdadeira, então o corpo depois dela roda e o resto é pulado.",
+        "if-else": "Nenhuma condição foi verdadeira, então o corpo do <c>else</c> roda.",
+        "if-none": "Nenhuma condição foi verdadeira e não há <c>else</c>: nada roda e <c>if</c> devolve uma string vazia.",
+        "incr-octal": "A variável contém <c>{text}</c>, que <c>incr</c> lê como inteiro octal por causa do 0 inicial.",
+        "switch-list": "Os padrões e os corpos vêm como uma única lista entre chaves.",
+        "switch-match": "O valor casou com o padrão <c>{pattern}</c> (casamento {mode}){fallthrough, select, true {; o corpo dele é um hífen, então roda o corpo seguinte} other {}}.",
+        "switch-none": "Nenhum padrão casou e não há <c>default</c>: <c>switch</c> devolve uma string vazia.",
+        "when": "<c>when {event}</c>: num BIG-IP este corpo roda cada vez que o evento dispara; aqui ele roda uma vez, com a requisição de exemplo."
+      },
+      "undocumented": {
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
+        "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
+        "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "empty-terminator": "As páginas da F5 não tratam de um terminador vazio. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "terminator-absent-findstr": "A página de findstr da F5 não diz o que acontece quando o terminador não aparece (a página de substr diz que o resto da string é devolvido). A ferramenta assume o mesmo para findstr.",
+        "findstr-not-found": "As páginas da F5 não dizem o que findstr devolve quando <c>{search}</c> não está na string. A ferramenta assume uma string vazia. A F5 diz que findstr equivale a string range com string first, mas esse equivalente devolve a string inteira aqui, então os dois não podem estar certos ao mesmo tempo; confirme num BIG-IP antes de depender disso.",
+        "substr-no-terminator": "O terminador é opcional na sintaxe da F5, mas a página não diz o que acontece sem ele. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "getfield-empty-split": "As páginas da F5 não tratam de um separador vazio. A ferramenta trata a string inteira como o campo 1.",
+        "getfield-empty-field": "Dois separadores seguidos criam aqui um campo vazio. As páginas da F5 não mostram esse caso.",
+        "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+      },
+      "varsTitle": "Variáveis no final",
+      "sideEffectsTitle": "Registrado no log e anotado",
+      "recorded": "anotado, não executado"
+    },
+    "f5-irules-string-extract": {
+      "name": "Explicador de findstr, substr e getfield",
+      "blurb": "Rode findstr, substr ou getfield da F5 na sua string e veja o casamento, o salto, o terminador e o resultado marcados numa régua, ao lado do Tcl puro que faz o mesmo trabalho. Casos que a F5 não documenta são sinalizados. Local, sem rede.",
+      "commandLabel": "Comando",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "syntax": {
+        "findstr": "<c>findstr string search ?skip? ?terminator?</c> encontra a string procurada, pula essa quantidade de caracteres a partir do início do casamento e devolve até o terminador: um comprimento, ou um texto antes do qual parar.",
+        "substr": "<c>substr string skip ?terminator?</c> começa no índice skip (0 é o primeiro caractere) e devolve até o terminador: um comprimento, ou um texto antes do qual parar.",
+        "getfield": "<c>getfield string separator field</c> divide em cada ocorrência do separador (um caractere ou uma string) e devolve aquele campo, contando a partir de 1."
+      },
+      "stringLabel": "String",
+      "field": {
+        "search": "Procurar",
+        "skip": "Pular",
+        "terminator": "Terminador: comprimento ou texto",
+        "separator": "Separador",
+        "field": "Número do campo"
+      },
+      "optional": "(opcional)",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "findstr-f5-sip": "F5: URI SIP",
+        "findstr-f5-aaa": "F5: de aaa a xyz",
+        "findstr-query": "Parâmetro de query",
+        "findstr-two-args": "Dois argumentos",
+        "findstr-not-found": "Não encontrado",
+        "substr-f5-x": "F5: 2 x",
+        "substr-f5-gh": "F5: 2 gh",
+        "substr-f5-4": "F5: 2 4",
+        "substr-f5-20": "F5: 2 20",
+        "substr-f5-0": "F5: 2 0",
+        "getfield-colon": "a:b:c",
+        "getfield-query": "Query string",
+        "getfield-multichar": "Separador de dois caracteres"
+      },
+      "commandTitle": "O comando",
+      "resultLabel": "Resultado",
+      "errorLabel": "Erro",
+      "rulerTitle": "A string, marcada",
+      "rulerTruncated": "Só os primeiros 400 caracteres são desenhados.",
+      "role": {
+        "match": "string procurada encontrada",
+        "skipped": "pulado",
+        "result": "devolvido",
+        "terminator": "terminador",
+        "separator": "separador",
+        "field": "o campo devolvido"
+      },
+      "undocumentedLabel": "Não documentado pela F5:",
+      "note": {
+        "findstr-found": "A string procurada começa no índice {at}; o resultado começa {skip} caracteres depois disso.",
+        "cut-count": "Um número como terminador é um comprimento: até {count} caracteres, menos se a string acabar antes.",
+        "cut-terminator": "Parou logo antes de <c>{terminator}</c>, encontrado no índice {at}.",
+        "cut-terminator-absent": "<c>{terminator}</c> não aparece depois do ponto de início, então o resto da string é devolvido.",
+        "getfield": "Dividida em {count} campos; o campo {field} é devolvido (os campos contam a partir de 1).",
+        "split-chars": "O <c>split</c> do Tcl puro trata cada caractere de <c>{sep}</c> como um separador independente, então não é um equivalente aqui: getfield divide na string inteira."
+      },
+      "undocumented": {
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
+        "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
+        "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "empty-terminator": "As páginas da F5 não tratam de um terminador vazio. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "terminator-absent-findstr": "A página de findstr da F5 não diz o que acontece quando o terminador não aparece (a página de substr diz que o resto da string é devolvido). A ferramenta assume o mesmo para findstr.",
+        "findstr-not-found": "As páginas da F5 não dizem o que findstr devolve quando <c>{search}</c> não está na string. A ferramenta assume uma string vazia. A F5 diz que findstr equivale a string range com string first, mas esse equivalente devolve a string inteira aqui, então os dois não podem estar certos ao mesmo tempo; confirme num BIG-IP antes de depender disso.",
+        "substr-no-terminator": "O terminador é opcional na sintaxe da F5, mas a página não diz o que acontece sem ele. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "getfield-empty-split": "As páginas da F5 não tratam de um separador vazio. A ferramenta trata a string inteira como o campo 1.",
+        "getfield-empty-field": "Dois separadores seguidos criam aqui um campo vazio. As páginas da F5 não mostram esse caso.",
+        "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+      },
+      "equivalentTitle": "O mesmo trabalho em Tcl puro",
+      "agrees": "mesmo resultado",
+      "differs": "resultado diferente",
+      "equivalentNote": {
+        "findstr": "A F5 descreve o findstr de dois argumentos como equivalente a isto. A ferramenta roda isto no mesmo motor Tcl 8.4 para conferir.",
+        "substr": "string range recebe um índice final, não um comprimento nem um texto de parada, então este é o Tcl puro mais próximo, rodado aqui para conferir.",
+        "getfield": "split cria uma lista e lindex pega um elemento, contando a partir de 0 onde getfield conta a partir de 1."
+      }
+    },
+    "f5-irules-conditional-builder": {
+      "name": "Construtor de if / switch / class para iRules",
+      "blurb": "Descreva uma decisão como regras e receba-a escrita como uma cadeia if / elseif, um switch e um class match com seus data groups em tmsh, e veja qual pool cada forma escolhe para um valor de teste. Mostra onde o primeiro casamento e o casamento mais longo divergem. Local, sem rede.",
+      "subjectLabel": "Decidir com base em",
+      "headerLabel": "Nome do cabeçalho",
+      "lowercaseLabel": "Comparar em minúsculas (string tolower)",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "copyLabel": "Copiar o código da forma {form}",
+      "copyTmsh": "Copiar os comandos tmsh",
+      "rulesTitle": "Regras, em ordem",
+      "opLabel": "Comparação",
+      "valueLabel": "Valor",
+      "poolLabel": "Pool",
+      "op": {
+        "equals": "igual a",
+        "starts_with": "começa com",
+        "ends_with": "termina com",
+        "contains": "contém",
+        "glob": "casa com o glob"
+      },
+      "valuePlaceholder": "/api",
+      "poolPlaceholder": "api_pool",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "remove": "Remover",
+      "addRule": "Adicionar regra",
+      "defaultLabel": "Pool quando nada casar",
+      "groupLabel": "Nome do data group",
+      "testLabel": "Valor de teste",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "longest-vs-first": "Primeiro vs mais longo",
+        "host-glob": "Host com glob",
+        "header-contains": "User-Agent contém",
+        "lone-brace": "Chave sem par"
+      },
+      "agreeTitle": "Todas as formas concordam.",
+      "disagreeTitle": "As formas discordam.",
+      "testedWith": "Testado com",
+      "noPool": "nenhum pool",
+      "shadowed": "A regra {rule} nunca pode ser escolhida por if ou switch: a regra {by} vem antes e casa com todo valor que a regra {rule} casa.",
+      "note": {
+        "class-multiple-groups": "As regras usam mais de um tipo de comparação, então a forma class precisa de um data group por comparação, consultados na ordem em que as comparações aparecem pela primeira vez.",
+        "class-longest-vs-first": "class match com starts_with ou ends_with devolve a entrada mais longa que casar, seja qual for a ordem das regras (referência de class da F5). if e switch pegam a primeira regra que casar, em ordem.",
+        "case-sensitive": "O valor é comparado como está, então maiúsculas e minúsculas importam: Curl não casaria com curl. Marque minúsculas para comparar sem distinguir caixa, e escreva os valores das regras em minúsculas.",
+        "uppercase-never-matches": "Um valor de regra tem letras maiúsculas, mas o valor da requisição é passado para minúsculas antes, então essa regra nunca casa.",
+        "unmatched-brace": "Um valor de regra tem uma chave sem par, então o código a escreve com uma barra invertida na frente. O Tcl conta as chaves dentro de um corpo entre chaves mesmo entre aspas duplas, e uma chave sozinha ali quebraria a regra.",
+        "tmsh-quoted": "Um nome de registro tem caracteres além de letras, dígitos e _ . / : -, então o texto em tmsh o coloca entre aspas duplas. Essas aspas não foram testadas num BIG-IP: depois de criar o data group, liste-o no tmsh e confira o registro.",
+        "path-stops-at-query": "O valor de teste tem um ponto de interrogação, que inicia a query string. HTTP::path retorna só a parte anterior a ele, e é essa parte que as regras comparam."
+      },
+      "form": {
+        "if": "if / elseif",
+        "switch": "switch",
+        "class": "class match"
+      },
+      "chose": "Escolheu para o valor de teste:",
+      "tmshTitle": "Os data groups (tmsh)",
+      "formNote": {
+        "if": "As condições são testadas de cima para baixo; vence a primeira verdadeira.",
+        "switch": "Os padrões são testados de cima para baixo; vence o primeiro que casar. O -- impede que um valor começando com hífen seja lido como opção (F5 K15650046).",
+        "class": "Cada consulta devolve o valor da entrada que casou, aqui o nome do pool. Os data groups precisam existir no BIG-IP; as definições em tmsh estão abaixo."
+      },
+      "unavailable": {
+        "glob": "class match não tem comparação glob, então regras com padrão glob não podem virar uma consulta a data group.",
+        "empty": "Não há regras para colocar num data group."
+      }
+    },
+    "f5-irules-style-checker": {
+      "name": "Verificador de estilo de iRules",
+      "blurb": "Cole um iRule e leia-o segundo o iRules Style Guide do DevCentral: indentação, chaves, comentários, expressões entre chaves, switch --, prioridade de eventos, nomes static:: e mais, além de uma verificação de sintaxe Tcl 8.4 real. Analisado, nunca executado. Local, sem rede.",
+      "iruleLabel": "iRule",
+      "irulePlaceholder": "Cole um iRule",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "messy": "Uma regra com problemas",
+        "clean": "Uma regra limpa",
+        "brace-brace": "Chaves sem espaço"
+      },
+      "parsesYes": "O Tcl 8.4 consegue carregá-lo.",
+      "parsesNo": "O Tcl 8.4 não consegue carregá-lo.",
+      "clean": "Nenhum apontamento: segue o guia em todos os pontos que o verificador lê.",
+      "counts": "{error, plural, one {# erro} other {# erros}}, {warning, plural, one {# alerta} other {# alertas}}, {info, plural, one {# nota} other {# notas}}.",
+      "stats": "{lines} linhas; a mais longa tem {longest} caracteres.",
+      "eventsTitle": "Eventos e prioridades",
+      "lineShort": "linha {n}",
+      "priority": "prioridade {p}",
+      "noPriority": "sem prioridade",
+      "codeTitle": "A regra, com as linhas marcadas",
+      "findingsTitle": "Apontamentos",
+      "sev": {
+        "error": "erro",
+        "warning": "alerta",
+        "info": "nota"
+      },
+      "ruleSyntax": "Tcl",
+      "ruleName": {
+        "E1": "Indentação",
+        "E2": "Comprimento da linha",
+        "E3": "Caracteres e fins de linha",
+        "R1": "Aspas curvas e espaços invisíveis",
+        "R2": "Limite de tamanho",
+        "R4": "Posição das chaves",
+        "R6": "Comentários",
+        "R7": "Um comando por linha",
+        "R8": "Nada de if em uma linha",
+        "R9": "Estado como 0 ou 1",
+        "R10": "Operadores lógicos do Tcl",
+        "R11": "Um espaço entre as chaves",
+        "R12": "Expressões entre chaves",
+        "R13": "Espaços em volta das variáveis",
+        "R14": "Nomes de variáveis entre chaves",
+        "R15": "Terminador de opções --",
+        "R16": "Prioridade do evento",
+        "R17": "Tempo de expiração em table",
+        "R18": "Nomes static:: com prefixo",
+        "R19": "Nada de flags de debug em static::",
+        "R20": "Nada de código comentado",
+        "syntax": "Sintaxe"
+      },
+      "finding": {
+        "E1": {
+          "tab": "Um caractere de tabulação. O guia pede indentação de 4 espaços e nenhuma tabulação.",
+          "indent": "Indentado com {spaces} espaços, que não é múltiplo de 4."
+        },
+        "E2": {
+          "main": "{length} caracteres. O guia mira em 100 colunas, 120 no máximo."
+        },
+        "E3": {
+          "crlf": "Um fim de linha do Windows (retorno de carro). O guia pede quebras de linha do Unix.",
+          "trailing": "Espaço em branco no fim da linha.",
+          "non-ascii": "Um caractere fora do ASCII. O guia pede arquivos em ASCII.",
+          "no-final-newline": "O arquivo não termina com uma quebra de linha."
+        },
+        "R1": {
+          "main": "Uma aspa curva ou um espaço não separável. Parecem aspas e espaços comuns, mas são outros caracteres e quebram o código sem um erro óbvio; digite-os de novo."
+        },
+        "R2": {
+          "main": "A regra tem {bytes} bytes. O guia lembra que um iRule é limitado a 64 KB; divida-o, ou leve os dados para data groups."
+        },
+        "R4": {
+          "main": "Uma chave sozinha na própria linha. Coloque a chave de abertura no fim da linha anterior.",
+          "else-line": "else ou elseif começa uma linha nova. Mantenha a chave de fechamento, o else e a chave de abertura na mesma linha."
+        },
+        "R6": {
+          "eol": "Um comentário no fim da linha. Coloque comentários na própria linha, na indentação do código.",
+          "no-space": "Um comentário sem espaço depois da cerquilha. O guia escreve comentários como cerquilha, espaço, texto, e reserva cerquilha seguida de texto para código comentado.",
+          "switch-comment": "Um comentário entre padrões do switch. O Tcl o lê como padrão, o que quebra o switch; coloque comentários dentro de um corpo."
+        },
+        "R7": {
+          "main": "{count} comandos na mesma linha. Escreva um comando por linha."
+        },
+        "R8": {
+          "main": "Um if numa linha só. Distribua-o em várias linhas, mesmo para um log de debug."
+        },
+        "R9": {
+          "main": "Estado guardado como {value}. Guarde-o como 0 ou 1."
+        },
+        "R10": {
+          "main": "Um dos operadores em palavra da F5 (and, or, not). Use os operadores do Tcl &&, || e !, com parênteses para deixar o agrupamento claro."
+        },
+        "R11": {
+          "main": "Uma chave de fechamento seguida direto de uma de abertura. Deixe um espaço entre elas."
+        },
+        "R12": {
+          "main": "Uma expressão sem chaves: {word}. Uma expressão sem chaves é substituída duas vezes (risco de injeção, F5 K57410758) e não pode ser compilada antes; coloque-a entre chaves."
+        },
+        "R13": {
+          "main": "Uma variável numa expressão sem espaço de cada lado."
+        },
+        "R14": {
+          "main": "Uma variável numa expressão escrita sem chaves em volta do nome. O guia escreve o nome entre chaves depois do cifrão."
+        },
+        "R15": {
+          "main": "{command} sem -- antes do valor. Um valor que começa com hífen seria lido como opção (F5 K15650046)."
+        },
+        "R16": {
+          "main": "O evento {event} não tem prioridade. O guia pede uma em todo evento; o padrão é 500."
+        },
+        "R17": {
+          "main": "Uma entrada de table sem timeout nem lifetime. A F5 então aplica um timeout padrão de 180 segundos e um lifetime indefinido; defina-os de propósito."
+        },
+        "R18": {
+          "main": "static::{name} não tem prefixo. Coloque prefixo nos nomes static::, por exemplo o nome da regra, para que duas regras não colidam."
+        },
+        "R19": {
+          "main": "Uma flag de debug em static::. O guia alerta que elas levam a tempestades de log; guarde a flag numa variável definida por conexão."
+        },
+        "R20": {
+          "commented-code": "Código comentado. Remova-o antes de a regra ir para produção."
+        },
+        "syntax": {
+          "main": "O Tcl 8.4 não consegue analisar isto: {message}. A regra não vai carregar."
+        }
+      },
+      "limits": "O verificador lê estrutura e texto, e nunca executa a regra. Onde não pode ter certeza (por exemplo, se uma linha começando com cerquilha é código ou um comentário sem o espaço) o apontamento é uma nota, não um alerta."
     }
   },
   "privacy_page": {
@@ -14303,7 +15087,7 @@
       "mind-the-sec": {
         "def": "A conferência de segurança da informação em escala corporativa de São Paulo - onde quem decide no mercado brasileiro encontra o ecossistema de fornecedores.",
         "context": "O Mind the Sec ocupa a ponta enterprise do espectro brasileiro de conferências: vários dias, exposição pesada, foco executivo - a contraparte dos eventos comunitários (BSidesSP, H2HC) no mesmo calendário. A edição de 2026 acontece de 15 a 17 de setembro em São Paulo. Para praticantes, é a parada de observação do mercado: quem está vendendo o quê para quem na segurança brasileira.",
-        "depth": "Tanto este evento quanto o Roadsec sao realizados pela mesma empresa, a Flipside, e foram fundados pela mesma pessoa, Anderson Ramos - fato que nenhuma das duas fichas registrava até agora e que explica bastante do calendário brasileiro. Os dois eram opostos deliberados: um corporativo, cheio de estandes e em São Paulo; o outro um festival itinerante levando a cultura hacker às capitais. Uma organização tocava as duas pontas do espectro. Então, em 2024, o Roadsec não aconteceu. A avaliação de quem acompanha a cena não foi de que ele fracassou, e sim de que o evento corporativo cresceu tanto que consumiu a capacidade da organização de tocar o outro, e a Flipside também havia encerrado as edições regionais dos dois. E uma coisa específica e instrutiva de se ver acontecer: o evento lucrativo não venceu o evento comunitario em mercado nenhum; venceu-o na disputa pela atenção de quem tocava os dois. A consequência não foi nula. Conferências comunitárias locais se multiplicaram no espaço deixado pelas edições regionais, e por isso o calendário brasileiro hoje tem mais eventos pequenos fora de São Paulo do que quando uma grande organizadora atendia aquelas cidades diretamente. Se esse e um desfecho melhor depende do que você valoriza, e a resposta honesta é que e um desfecho diferente."
+        "depth": "Tanto este evento quanto o Roadsec são realizados pela mesma empresa, a Flipside, e foram fundados pela mesma pessoa, Anderson Ramos - fato que nenhuma das duas fichas registrava até agora e que explica bastante do calendário brasileiro. Os dois eram opostos deliberados: um corporativo, cheio de estandes e em São Paulo; o outro um festival itinerante levando a cultura hacker às capitais. Uma organização tocava as duas pontas do espectro. Então, em 2024, o Roadsec não aconteceu. A avaliação de quem acompanha a cena não foi de que ele fracassou, e sim de que o evento corporativo cresceu tanto que consumiu a capacidade da organização de tocar o outro, e a Flipside também havia encerrado as edições regionais dos dois. É uma coisa específica e instrutiva de se ver acontecer: o evento lucrativo não venceu o evento comunitário em mercado nenhum; venceu-o na disputa pela atenção de quem tocava os dois. A consequência não foi nula. Conferências comunitárias locais se multiplicaram no espaço deixado pelas edições regionais, e por isso o calendário brasileiro hoje tem mais eventos pequenos fora de São Paulo do que quando uma grande organizadora atendia aquelas cidades diretamente. Se esse é um desfecho melhor depende do que você valoriza, e a resposta honesta é que é um desfecho diferente."
       },
       "f5-devcentral": {
         "def": "A comunidade técnica oficial da F5 - artigos, perguntas e respostas e duas décadas de conhecimento de iRules, com um programa MVP reconhecido.",
@@ -14624,8 +15408,8 @@
       },
       "roadsec": {
         "def": "O maior festival hacker da América Latina - um dia inteiro de palestras, CTF, drones e lockpicking que percorre às capitais brasileiras desde 2014.",
-        "context": "O Roadsec inverteu a fórmula das conferências: em vez de fazer os hackers do Brasil viajarem a uma cidade, o festival viaja até eles - uma caravana pelàs capitais, culminando a cada ano numa megaedição em São Paulo. O formato é deliberadamente festival, não conferência: palestras de carreira ao lado de vilas de hardware, montagem de robôs ao lado de pesquisa séria, e no centro o Hackaflag, o campeonato de CTF cujas etapas regionais ao longo da turnê coroam um campeão nacional. Para uma geração de estudantes brasileiros longe do eixo São Paulo-Rio, uma parada do Roadsec foi a primeira vez que a comunidade de segurança chegou à sua cidade - que é exatamente o ponto.\n\nA organização por trás dele é a Flipside, que agora tem uma entrada na linha do tempo da indústria deste site.",
-        "depth": "O Roadsec inverteu a economia usual das conferências. Em vez de exigir que os hackers do país viajassem a uma cidade, ele viajou até eles, com uma caravana de edições pelàs capitais antes de culminar num grande evento em São Paulo. Num país de escala continental, em que um voo doméstico pode custar mais que um salário mensal, essa inversão é todo o argumento.\n\nO formato é deliberadamente festival, e não conferência. Palestras de carreira convivem com hacking de hardware, competições de captura de bandeira, arrombamento de fechaduras e música, o que baixa a barreira de entrada para quem jamais se descreveria como pertencente a um evento de segurança. Essa mistura é tanto estratégia de recrutamento para a área quanto programação.\n\nO que ele demonstra é que geografia é um problema de segurança. A especialização se concentra onde estão os eventos, os eventos estão onde está o dinheiro, e o dinheiro está em poucas cidades, então o talento fora delas permanece invisível para uma indústria que reclama de escassez. Levar o evento às pessoas, em vez do contrário, é uma das poucas intervenções que atacam o mecanismo, e não o sintoma.\n\nTanto este evento quanto o Roadsec sao realizados pela mesma empresa, a Flipside, e foram fundados pela mesma pessoa, Anderson Ramos - fato que nenhuma das duas fichas registrava até agora e que explica bastante do calendário brasileiro. Os dois eram opostos deliberados: um corporativo, cheio de estandes e em São Paulo; o outro um festival itinerante levando a cultura hacker às capitais. Uma organização tocava as duas pontas do espectro. Então, em 2024, o Roadsec não aconteceu. A avaliação de quem acompanha a cena não foi de que ele fracassou, e sim de que o evento corporativo cresceu tanto que consumiu a capacidade da organização de tocar o outro, e a Flipside também havia encerrado as edições regionais dos dois. E uma coisa específica e instrutiva de se ver acontecer: o evento lucrativo não venceu o evento comunitario em mercado nenhum; venceu-o na disputa pela atenção de quem tocava os dois. A consequência não foi nula. Conferências comunitárias locais se multiplicaram no espaço deixado pelas edições regionais, e por isso o calendário brasileiro hoje tem mais eventos pequenos fora de São Paulo do que quando uma grande organizadora atendia aquelas cidades diretamente. Se esse e um desfecho melhor depende do que você valoriza, e a resposta honesta é que e um desfecho diferente."
+        "context": "O Roadsec inverteu a fórmula das conferências: em vez de fazer os hackers do Brasil viajarem a uma cidade, o festival viaja até eles - uma caravana pelas capitais, culminando a cada ano numa megaedição em São Paulo. O formato é deliberadamente festival, não conferência: palestras de carreira ao lado de vilas de hardware, montagem de robôs ao lado de pesquisa séria, e no centro o Hackaflag, o campeonato de CTF cujas etapas regionais ao longo da turnê coroam um campeão nacional. Para uma geração de estudantes brasileiros longe do eixo São Paulo-Rio, uma parada do Roadsec foi a primeira vez que a comunidade de segurança chegou à sua cidade - que é exatamente o ponto.\n\nA organização por trás dele é a Flipside, que agora tem uma entrada na linha do tempo da indústria deste site.",
+        "depth": "O Roadsec inverteu a economia usual das conferências. Em vez de exigir que os hackers do país viajassem a uma cidade, ele viajou até eles, com uma caravana de edições pelas capitais antes de culminar num grande evento em São Paulo. Num país de escala continental, em que um voo doméstico pode custar mais que um salário mensal, essa inversão é todo o argumento.\n\nO formato é deliberadamente festival, e não conferência. Palestras de carreira convivem com hacking de hardware, competições de captura de bandeira, arrombamento de fechaduras e música, o que baixa a barreira de entrada para quem jamais se descreveria como pertencente a um evento de segurança. Essa mistura é tanto estratégia de recrutamento para a área quanto programação.\n\nO que ele demonstra é que geografia é um problema de segurança. A especialização se concentra onde estão os eventos, os eventos estão onde está o dinheiro, e o dinheiro está em poucas cidades, então o talento fora delas permanece invisível para uma indústria que reclama de escassez. Levar o evento às pessoas, em vez do contrário, é uma das poucas intervenções que atacam o mecanismo, e não o sintoma.\n\nTanto este evento quanto o Mind The Sec são realizados pela mesma empresa, a Flipside, e foram fundados pela mesma pessoa, Anderson Ramos - fato que nenhuma das duas fichas registrava até agora e que explica bastante do calendário brasileiro. Os dois eram opostos deliberados: um corporativo, cheio de estandes e em São Paulo; o outro um festival itinerante levando a cultura hacker às capitais. Uma organização tocava as duas pontas do espectro. Então, em 2024, o Roadsec não aconteceu. A avaliação de quem acompanha a cena não foi de que ele fracassou, e sim de que o evento corporativo cresceu tanto que consumiu a capacidade da organização de tocar o outro, e a Flipside também havia encerrado as edições regionais dos dois. É uma coisa específica e instrutiva de se ver acontecer: o evento lucrativo não venceu o evento comunitário em mercado nenhum; venceu-o na disputa pela atenção de quem tocava os dois. A consequência não foi nula. Conferências comunitárias locais se multiplicaram no espaço deixado pelas edições regionais, e por isso o calendário brasileiro hoje tem mais eventos pequenos fora de São Paulo do que quando uma grande organizadora atendia aquelas cidades diretamente. Se esse é um desfecho melhor depende do que você valoriza, e a resposta honesta é que é um desfecho diferente."
       },
       "cryptorave": {
         "def": "A maratona de criptoativismo financiada coletivamente de São Paulo: 24 horas ininterruptas de privacidade, segurança e direitos digitais - gratuita, voluntária e enfaticamente sem patrocínio corporativo.",
@@ -15122,12 +15906,12 @@
       "bhack": {
         "def": "A conferência técnica de segurança de Belo Horizonte, é um dos eventos que fizeram da cena brasileira algo além de uma cena paulistana.",
         "context": "Técnico e não corporativo, e fora de São Paulo - uma das conferências regionais que existem na proporção inversa de quão bem o circuito comercial atende as regiões.",
-        "depth": "Técnico e não corporativo, em Belo Horizonte e não em São Paulo, e os dois fatos importam. A segurança brasileira tem forte gravidade paulistana: as grandes conferências comerciais estao la, o ecossistema de fabricantes esta la, e por anos um engenheiro de Minas, da Bahia ou do Rio Grande do Sul ou viajava ou ficava de fora. A BHack é um dos eventos que empurraram contra isso, ao lado do NullByte em Salvador, do Jampasec em João Pessoa e do BXSec em Santos - uma geração de conferências regionais tocadas por comunidades locais com orçamentos locais. Sua reputação e específicamente de qualidade de palestra, não de escala, e a avaliação da comunidade que vale registrar e que, depois de alguns anos mais apagados, ela recuperou o prestígio dàs primeiras edições e voltou a ser onde os melhores profissionais da região de fato aparecem. O ponto estrutural não e sobre o Brasil. Conferências técnicas regionais existem na proporção inversa de quão bem o circuito comercial atende as regiões, e a ilustração mais clara foi o que aconteceu quando a maior organizadora brasileira encerrou suas edições regionais: eventos comunitários locais se multiplicaram no espaço deixado. Vale entender isso para quem ja se perguntou por que uma cena floresce numa cidade sem presença da indústria. A ausência muitas vezes e a causa."
+        "depth": "Técnico e não corporativo, em Belo Horizonte e não em São Paulo, e os dois fatos importam. A segurança brasileira tem forte gravidade paulistana: as grandes conferências comerciais estão lá, o ecossistema de fabricantes está lá, e por anos um engenheiro de Minas, da Bahia ou do Rio Grande do Sul ou viajava ou ficava de fora. A BHack é um dos eventos que empurraram contra isso, ao lado do NullByte em Salvador, do Jampasec em João Pessoa e do BXSec em Santos - uma geração de conferências regionais tocadas por comunidades locais com orçamentos locais. Sua reputação é especificamente de qualidade de palestra, não de escala, e a avaliação da comunidade que vale registrar é que, depois de alguns anos mais apagados, ela recuperou o prestígio das primeiras edições e voltou a ser onde os melhores profissionais da região de fato aparecem. O ponto estrutural não é sobre o Brasil. Conferências técnicas regionais existem na proporção inversa de quão bem o circuito comercial atende as regiões, e a ilustração mais clara foi o que aconteceu quando a maior organizadora brasileira encerrou suas edições regionais: eventos comunitários locais se multiplicaram no espaço deixado. Vale entender isso para quem já se perguntou por que uma cena floresce numa cidade sem presença da indústria. A ausência muitas vezes é a causa."
       },
       "security-leaders": {
         "def": "A ponta executiva do calendário brasileiro de segurança - onde se encontram as pessoas que assinam, não as que configuram.",
         "context": "Risco, governança e orçamento em vez de técnica. Conferências técnicas transmitem habilidade; as executivas transmitem prioridades, e uma não substitui a outra.",
-        "depth": "A ponta executiva do calendário brasileiro de segurança: risco, governança, orçamento e as conversas que acontecem entre pessoas que assinam coisas, não que as configuram. Tem um evento principal em São Paulo ao lado de edições regionais - sete delas em 2024 - o que o torna um dos poucos circuitos comerciais que de fato alcanca além da capital com consistência. Sua utilidade depende inteiramente do que você vai buscar. Como lugar para aprender uma técnica, é a sala errada; os eventos técnicos do mesmo calendário existem para isso. Como lugar para entender no que o mercado acredita, o que estao dizendo a quem compra e quais preocupações chegaram ao nível em que alguém com orçamento está inquieto, é incomumente informativo - e esses são tipos genuinamente diferentes de conhecimento que engenheiros costumam confundir. Quem nunca sentou numa conferência executiva de segurança tende a se surpreender com quanto da tomada de decisao de que reclama esta visível de antemão, discutida abertamente, meses antes de cair sobre ele como política. A observação geral que o calendário brasileiro sustenta melhor que a maioria é que uma cena de segurança precisa dos dois tipos de evento e que um não substitui o outro. As conferências técnicas transmitem habilidade; as executivas transmitem prioridades. Um engenheiro que só vai às primeiras e repetidamente surpreendido por decisoes, e um executivo que só vai às segundas e repetidamente surpreendido pela realidade."
+        "depth": "A ponta executiva do calendário brasileiro de segurança: risco, governança, orçamento e as conversas que acontecem entre pessoas que assinam coisas, não que as configuram. Tem um evento principal em São Paulo ao lado de edições regionais - sete delas em 2024 - o que o torna um dos poucos circuitos comerciais que de fato alcança além da capital com consistência. Sua utilidade depende inteiramente do que você vai buscar. Como lugar para aprender uma técnica, é a sala errada; os eventos técnicos do mesmo calendário existem para isso. Como lugar para entender no que o mercado acredita, o que estão dizendo a quem compra e quais preocupações chegaram ao nível em que alguém com orçamento está inquieto, é incomumente informativo - e esses são tipos genuinamente diferentes de conhecimento que engenheiros costumam confundir. Quem nunca sentou numa conferência executiva de segurança tende a se surpreender com quanto da tomada de decisão de que reclama está visível de antemão, discutida abertamente, meses antes de cair sobre ele como política. A observação geral que o calendário brasileiro sustenta melhor que a maioria é que uma cena de segurança precisa dos dois tipos de evento e que um não substitui o outro. As conferências técnicas transmitem habilidade; as executivas transmitem prioridades. Um engenheiro que só vai às primeiras é repetidamente surpreendido por decisões, e um executivo que só vai às segundas é repetidamente surpreendido pela realidade."
       },
       "tac": {
         "def": "O centro de assistência técnica do fabricante: os engenheiros que você aciona quando o próprio produto, e não a sua configuração dele, pode ser o culpado.",
@@ -16581,312 +17365,312 @@
         "context": "A questão de projeto inteira é a letra que muda. Detecção produz alertas que alguém precisa ler; prevenção produz quedas quando erra. Passar de uma para a outra converte todo falso positivo de ruído em incidente, e é por isso que implantações maduras escalonam: monitorar, depois bloquear num piloto, depois bloquear em geral, com data em cada passo. A segunda restrição é a cifragem - um sensor que não lê o tráfego fica reduzido a metadados, e é por isso que tanto dessa capacidade migrou para o endpoint."
       },
       "hub": {
-        "def": "Um repetidor que copia todo quadro para todas as portas - o equipamento que os comutadores substituiram, e a razao de redes antigas compartilharem banda.",
-        "context": "Tudo ligado a um hub ficava num dominio de colisao e enxergava o trafego de todo mundo, e e por isso que capturar pacote era trivial e por que a comutacao foi uma melhoria de seguranca que ninguem vendeu como tal. A palavra sobrevive em dois lugares uteis: um espelhamento de porta recria de proposito o comportamento de hub para monitoracao, e o sem fio e meio compartilhado por fisica, entao a velha aritmetica de contencao ainda vale para um canal, mesmo que o cabeamento tenha deixado de funcionar assim decadas atras."
+        "def": "Um repetidor que copia todo quadro para todas as portas - o equipamento que os comutadores substituíram, e a razão de redes antigas compartilharem banda.",
+        "context": "Tudo ligado a um hub ficava num domínio de colisão e enxergava o tráfego de todo mundo, e é por isso que capturar pacote era trivial e por que a comutação foi uma melhoria de segurança que ninguém vendeu como tal. A palavra sobrevive em dois lugares úteis: um espelhamento de porta recria de propósito o comportamento de hub para monitoração, e o sem fio é meio compartilhado por física, então a velha aritmética de contenção ainda vale para um canal, mesmo que o cabeamento tenha deixado de funcionar assim décadas atrás."
       },
       "trunk": {
-        "def": "Um enlace que carrega varias VLANs de uma vez, etiquetando cada quadro para que a outra ponta saiba a qual rede ele pertence.",
-        "context": "O tronco e onde a segmentacao e aplicada e onde ela e desfeita em silencio com mais frequencia. Uma porta configurada para carregar todas as VLANs por padrao entrega o parque inteiro a partir de um cabo, e um descompasso de VLAN nativa entre dois comutadores funde silenciosamente duas redes que o diagrama diz separadas. Os dois sao defeitos de configuracao, e nao de protocolo, e e por isso que revisoes de segmentacao olham as listas de permissao dos troncos antes de olhar regras de firewall."
+        "def": "Um enlace que carrega várias VLANs de uma vez, etiquetando cada quadro para que a outra ponta saiba a qual rede ele pertence.",
+        "context": "O tronco é onde a segmentação é aplicada e onde ela é desfeita em silêncio com mais frequência. Uma porta configurada para carregar todas as VLANs por padrão entrega o parque inteiro a partir de um cabo, e um descompasso de VLAN nativa entre dois comutadores funde silenciosamente duas redes que o diagrama diz separadas. Os dois são defeitos de configuração, e não de protocolo, e é por isso que revisões de segmentação olham as listas de permissão dos troncos antes de olhar regras de firewall."
       },
       "pat": {
-        "def": "Traduzir muitos enderecos privados para um endereco publico reescrevendo tambem as portas - o que a maioria das pessoas quer dizer ao falar NAT.",
-        "context": "A porta e o que torna o compartilhamento possivel: o equipamento que traduz mantem uma tabela ligando cada conversa interna a uma porta de origem unica no endereco compartilhado, e desfaz isso na volta. Duas consequencias decorrem direto. A tabela e finita, entao um host que abre milhares de conexoes pode esgota-la para todos atras do mesmo endereco. E a atribuicao desaba - um endereco num log identifica o gateway, e nao o usuario, que e o problema que implantacoes em escala de operadora criam onde quer que sejam usadas."
+        "def": "Traduzir muitos endereços privados para um endereço público reescrevendo também as portas - o que a maioria das pessoas quer dizer ao falar NAT.",
+        "context": "A porta é o que torna o compartilhamento possível: o equipamento que traduz mantém uma tabela ligando cada conversa interna a uma porta de origem única no endereço compartilhado, e desfaz isso na volta. Duas consequências decorrem direto. A tabela é finita, então um host que abre milhares de conexões pode esgotá-la para todos atrás do mesmo endereço. E a atribuição desaba - um endereço num log identifica o gateway, e não o usuário, que é o problema que implantações em escala de operadora criam onde quer que sejam usadas."
       },
       "vm": {
-        "def": "Um computador simulado completo, com nucleo proprio, isolado dos vizinhos pelo hipervisor, e nao pelo sistema operacional.",
-        "context": "O nucleo proprio e a diferenca inteira em relacao a um conteiner, e e o que decide onde cada um cabe: maquinas virtuais custam mais para iniciar e rodar, e dao uma fronteira que sobrevive a um defeito no nucleo do convidado. E por isso que cargas nao confiaveis ou mutuamente hostis ainda vao para maquinas separadas, e nao para espacos de nome separados. A heranca operacional sao os retratos - congelar e restaurar um sistema inteiro e a coisa mais util que a virtualizacao deu a operacao, e a mais perigosa para quem testa uma restauracao que nunca ensaiou."
+        "def": "Um computador simulado completo, com núcleo próprio, isolado dos vizinhos pelo hipervisor, e não pelo sistema operacional.",
+        "context": "O núcleo próprio é a diferença inteira em relação a um contêiner, e é o que decide onde cada um cabe: máquinas virtuais custam mais para iniciar e rodar, e dão uma fronteira que sobrevive a um defeito no núcleo do convidado. É por isso que cargas não confiáveis ou mutuamente hostis ainda vão para máquinas separadas, e não para espaços de nome separados. A herança operacional são os retratos - congelar e restaurar um sistema inteiro é a coisa mais útil que a virtualização deu à operação, e a mais perigosa para quem testa uma restauração que nunca ensaiou."
       },
       "telemetry": {
-        "def": "As medicoes que um sistema emite sobre si mesmo, enviadas a outro lugar para serem guardadas e lidas.",
-        "context": "A palavra esconde uma decisao: algo escolheu o que emitir, e tudo o que nao foi escolhido e invisivel, por melhor que seja a analise depois. Isso faz da selecao de telemetria um ato arquitetural, e nao operacional, e ela costuma ser feita por padroes de fabrica - a configuracao inicial do agente decide o que a organizacao vai conseguir investigar por anos. A segunda restricao e custo, e e por isso que a pergunta util nao e o que da para coletar, e sim o que continuara pagavel guardar quando o parque dobrar."
+        "def": "As medições que um sistema emite sobre si mesmo, enviadas a outro lugar para serem guardadas e lidas.",
+        "context": "A palavra esconde uma decisão: algo escolheu o que emitir, e tudo o que não foi escolhido é invisível, por melhor que seja a análise depois. Isso faz da seleção de telemetria um ato arquitetural, e não operacional, e ela costuma ser feita por padrões de fábrica - a configuração inicial do agente decide o que a organização vai conseguir investigar por anos. A segunda restrição é custo, e é por isso que a pergunta útil não é o que dá para coletar, e sim o que continuará pagável guardar quando o parque dobrar."
       },
       "metrics": {
-        "def": "Numeros amostrados ao longo do tempo - baratos de guardar, rapidos de consultar, e incapazes de explicar uma requisicao isolada.",
-        "context": "Metricas respondem quanto e com que frequencia, o que as torna certas para alertar e erradas para investigar: um agregado diz que a taxa de erro subiu e nao diz qual cliente, qual versao ou qual consulta. O erro recorrente e a media, porque ela esconde a cauda que os usuarios de fato sentem - se a resposta media e rapida e o percentil noventa e nove e pessimo, uma fracao relevante de pessoas esta passando mal de forma invisivel."
+        "def": "Números amostrados ao longo do tempo - baratos de guardar, rápidos de consultar, e incapazes de explicar uma requisição isolada.",
+        "context": "Métricas respondem quanto e com que frequência, o que as torna certas para alertar e erradas para investigar: um agregado diz que a taxa de erro subiu e não diz qual cliente, qual versão ou qual consulta. O erro recorrente é a média, porque ela esconde a cauda que os usuários de fato sentem - se a resposta média é rápida e o percentil noventa e nove é péssimo, uma fração relevante de pessoas está passando mal de forma invisível."
       },
       "tracing": {
-        "def": "Seguir uma requisicao por todos os servicos que ela toca, com cada passo registrado e ligado por um identificador comum.",
-        "context": "Existe porque quebrar uma aplicacao em servicos quebrou o rastro de pilha: nenhuma maquina sozinha ve a requisicao inteira, e o passo lento pode estar em qualquer lugar. Um traco remonta isso, e e por isso que ele e a ferramenta que responde para onde foi o tempo. O custo e instrumentacao e propagacao - todo servico precisa repassar o identificador, e um que nao repassa vira a lacuna onde a trilha para, que costuma ser o componente mais velho e muitas vezes o que esta sendo culpado."
+        "def": "Seguir uma requisição por todos os serviços que ela toca, com cada passo registrado e ligado por um identificador comum.",
+        "context": "Existe porque quebrar uma aplicação em serviços quebrou o rastro de pilha: nenhuma máquina sozinha vê a requisição inteira, e o passo lento pode estar em qualquer lugar. Um traço remonta isso, e é por isso que ele é a ferramenta que responde para onde foi o tempo. O custo é instrumentação e propagação - todo serviço precisa repassar o identificador, e um que não repassa vira a lacuna onde a trilha para, que costuma ser o componente mais velho e muitas vezes o que está sendo culpado."
       },
       "retention": {
-        "def": "Por quanto tempo registros sao guardados antes de apagados - decisao com consequencias legais, financeiras e investigativas que costuma ser tomada so pelo custo de armazenamento.",
-        "context": "Duas pressoes opostas se encontram aqui, e as duas sao legitimas. Investigacao precisa de historico, e invasoes sao descobertas com frequencia meses depois de comecarem, entao uma janela de noventa dias pode significar que o comeco ja sumiu antes de alguem olhar. Regulacao de privacidade e exposicao judicial empurram para o outro lado, porque dado guardado e dado que pode ser exigido ou vazado. Decidir de proposito e o exercicio inteiro; deixar o padrao vencer significa que a resposta foi dada por quem precificou o nivel de armazenamento."
+        "def": "Por quanto tempo registros são guardados antes de apagados - decisão com consequências legais, financeiras e investigativas que costuma ser tomada só pelo custo de armazenamento.",
+        "context": "Duas pressões opostas se encontram aqui, e as duas são legítimas. Investigação precisa de histórico, e invasões são descobertas com frequência meses depois de começarem, então uma janela de noventa dias pode significar que o começo já sumiu antes de alguém olhar. Regulação de privacidade e exposição judicial empurram para o outro lado, porque dado guardado é dado que pode ser exigido ou vazado. Decidir de propósito é o exercício inteiro; deixar o padrão vencer significa que a resposta foi dada por quem precificou o nível de armazenamento."
       },
       "forensics": {
         "def": "Estabelecer o que aconteceu num sistema, de um jeito que sobreviva a ser questionado depois.",
-        "context": "A disciplina e definida por essa segunda parte. Qualquer um consegue olhar uma maquina; pericia e olhar sem alterar o que se olha, registrar como se sabe, e conseguir mostrar depois que a evidencia e a mesma. E por isso que a primeira acao costuma ser capturar estado volatil e isolar, em vez de reiniciar ou limpar - e por que uma organizacao que apaga e reinstala um host comprometido escolheu velocidade de recuperacao em vez de um dia saber o que houve, o que as vezes e a troca certa e deveria ser decisao, e nao reflexo."
+        "context": "A disciplina é definida por essa segunda parte. Qualquer um consegue olhar uma máquina; perícia é olhar sem alterar o que se olha, registrar como se sabe, e conseguir mostrar depois que a evidência é a mesma. É por isso que a primeira ação costuma ser capturar estado volátil e isolar, em vez de reiniciar ou limpar - e por que uma organização que apaga e reinstala um host comprometido escolheu velocidade de recuperação em vez de um dia saber o que houve, o que às vezes é a troca certa e deveria ser decisão, e não reflexo."
       },
       "chain-of-custody": {
-        "def": "O registro ininterrupto de quem deteve a evidencia, quando, e o que fez com ela.",
-        "context": "A finalidade e tornar uma resposta defensavel, e nao apenas correta: um investigador que nao consegue mostrar que a evidencia foi protegida de alteracao tem achados que podem ser descartados sem serem refutados. Na pratica e sem glamour - resumos criptograficos tirados na aquisicao, trabalho sobre copias e nao sobre originais, carimbos de tempo, assinaturas e registro de cada transferencia. Importa fora de tribunal porque a mesma disciplina e o que faz um relatorio interno de incidente sobreviver ao contato com um fabricante, uma seguradora ou um regulador."
+        "def": "O registro ininterrupto de quem deteve a evidência, quando, e o que fez com ela.",
+        "context": "A finalidade é tornar uma resposta defensável, e não apenas correta: um investigador que não consegue mostrar que a evidência foi protegida de alteração tem achados que podem ser descartados sem serem refutados. Na prática é sem glamour - resumos criptográficos tirados na aquisição, trabalho sobre cópias e não sobre originais, carimbos de tempo, assinaturas e registro de cada transferência. Importa fora de tribunal porque a mesma disciplina é o que faz um relatório interno de incidente sobreviver ao contato com um fabricante, uma seguradora ou um regulador."
       },
       "change-management": {
-        "def": "O processo pelo qual mudancas planejadas sao propostas, revisadas, agendadas e registradas.",
-        "context": "Existe porque a maioria das quedas e autoinfligida e chega de proposito, entao um registro do que mudou e o caminho mais rapido para o que quebrou. Ele falha em duas direcoes opostas. Pesado demais, atrasa mudancas pequenas e seguras ate elas chegarem em lotes grandes e arriscados - o processo fabricando o risco que deveria controlar. Leve demais, e ninguem responde o que mudou na hora em que o grafico virou. O teste util e se o registro responde essa pergunta em um minuto, durante um incidente."
+        "def": "O processo pelo qual mudanças planejadas são propostas, revisadas, agendadas e registradas.",
+        "context": "Existe porque a maioria das quedas é autoinfligida e chega de propósito, então um registro do que mudou é o caminho mais rápido para o que quebrou. Ele falha em duas direções opostas. Pesado demais, atrasa mudanças pequenas e seguras até elas chegarem em lotes grandes e arriscados - o processo fabricando o risco que deveria controlar. Leve demais, e ninguém responde o que mudou na hora em que o gráfico virou. O teste útil é se o registro responde essa pergunta em um minuto, durante um incidente."
       },
       "idempotence": {
         "def": "A propriedade de que fazer algo duas vezes tem o mesmo efeito de fazer uma vez.",
-        "context": "E o que torna repetir seguro, e repetir e inevitavel: redes perdem respostas, entao um cliente que nao recebeu resposta nao tem como saber se o trabalho aconteceu. Sem idempotencia, as opcoes sao arriscar duplicar a acao ou arriscar pula-la. E por isso que interfaces de pagamento recebem uma chave de idempotencia, que ferramentas de configuracao descrevem estado desejado em vez de passos, e que a pergunta interessante sobre qualquer interface e o que acontece quando a mesma requisicao chega duas vezes."
+        "context": "É o que torna repetir seguro, e repetir é inevitável: redes perdem respostas, então um cliente que não recebeu resposta não tem como saber se o trabalho aconteceu. Sem idempotência, as opções são arriscar duplicar a ação ou arriscar pulá-la. É por isso que interfaces de pagamento recebem uma chave de idempotência, que ferramentas de configuração descrevem estado desejado em vez de passos, e que a pergunta interessante sobre qualquer interface é o que acontece quando a mesma requisição chega duas vezes."
       },
       "rto-rpo": {
-        "def": "Quanto tempo a recuperacao pode levar, e quanto de dado recente pode ser perdido - os dois numeros que transformam continuidade de aspiracao em projeto.",
-        "context": "Sao uteis porque custam dinheiro de formas opostas. Um tempo de recuperacao curto compra capacidade em espera, que fica ociosa; um ponto de recuperacao curto compra replicacao e a banda para sustenta-la. Declarar os dois obriga o negocio a dizer quanto valem, de fato, uma hora parada e uma hora de trabalho perdido, que e a conversa para a qual o planejamento de continuidade existe. O modo de falha e declarar numeros que ninguem testou, o que produz um plano preciso e falso."
+        "def": "Quanto tempo a recuperação pode levar, e quanto de dado recente pode ser perdido - os dois números que transformam continuidade de aspiração em projeto.",
+        "context": "São úteis porque custam dinheiro de formas opostas. Um tempo de recuperação curto compra capacidade em espera, que fica ociosa; um ponto de recuperação curto compra replicação e a banda para sustentá-la. Declarar os dois obriga o negócio a dizer quanto valem, de fato, uma hora parada e uma hora de trabalho perdido, que é a conversa para a qual o planejamento de continuidade existe. O modo de falha é declarar números que ninguém testou, o que produz um plano preciso e falso."
       },
       "secure-boot": {
-        "def": "Verificar cada etapa da inicializacao contra uma assinatura antes de executa-la, para que codigo carregado antes do sistema operacional nao possa ser trocado em silencio.",
-        "context": "Isso fecha uma lacuna especifica: qualquer coisa que roda antes do sistema operacional esta acima de toda defesa que o sistema oferece, entao um bootkit ve o software de seguranca iniciar e consegue mentir para ele. A cadeia precisa estar ancorada em hardware. A troca e controle - o mesmo mecanismo que impede codigo malicioso nao assinado impede codigo legitimo nao assinado, e e por isso que a discussao sobre quem detem as chaves de assinatura em hardware de uso geral e genuina, e nao obstrucao."
+        "def": "Verificar cada etapa da inicialização contra uma assinatura antes de executá-la, para que código carregado antes do sistema operacional não possa ser trocado em silêncio.",
+        "context": "Isso fecha uma lacuna específica: qualquer coisa que roda antes do sistema operacional está acima de toda defesa que o sistema oferece, então um bootkit vê o software de segurança iniciar e consegue mentir para ele. A cadeia precisa estar ancorada em hardware. A troca é controle - o mesmo mecanismo que impede código malicioso não assinado impede código legítimo não assinado, e é por isso que a discussão sobre quem detém as chaves de assinatura em hardware de uso geral é genuína, e não obstrução."
       },
       "persistence": {
-        "def": "Os arranjos que um atacante faz para sobreviver a um reinicio, a uma troca de senha ou a uma limpeza parcial.",
-        "context": "E a diferenca entre um incidente que acaba e um que volta, e e por isso que a contencao e julgada por o invasor poder retornar, e nao por a sessao atual estar fechada. Os mecanismos quase sempre sao recursos legitimos - tarefas agendadas, entradas de inicializacao, contas de servico, regras de e-mail, credenciais acrescentadas num provedor de identidade - e e por isso que cacar persistencia e revisar configuracao, e nao procurar arquivos, e por que uma organizacao que reinstala um host sem auditar identidade costuma encontrar o visitante ja esperando."
+        "def": "Os arranjos que um atacante faz para sobreviver a um reinício, a uma troca de senha ou a uma limpeza parcial.",
+        "context": "É a diferença entre um incidente que acaba e um que volta, e é por isso que a contenção é julgada por o invasor poder retornar, e não por a sessão atual estar fechada. Os mecanismos quase sempre são recursos legítimos - tarefas agendadas, entradas de inicialização, contas de serviço, regras de e-mail, credenciais acrescentadas num provedor de identidade - e é por isso que caçar persistência é revisar configuração, e não procurar arquivos, e por que uma organização que reinstala um host sem auditar identidade costuma encontrar o visitante já esperando."
       },
       "command-and-control": {
-        "def": "O canal que um host comprometido usa para receber instrucoes e reportar de volta.",
-        "context": "E a etapa mais detectavel de uma invasao, de forma confiavel, porque precisa ser repetitiva: algo tem de se apresentar, e apresentar-se deixa um ritmo. E por isso que a deteccao foca em batimento - intervalos regulares, tamanhos constantes, um destino com o qual nenhum outro host do parque conversa - e nao em conteudo, que e cifrado. Canais modernos se escondem em servicos comuns justamente para derrotar isso, usando armazenamento em nuvem, plataformas de conversa e DNS, entao o sinal util costuma ser um host conversando com algo normal num padrao anormal."
+        "def": "O canal que um host comprometido usa para receber instruções e reportar de volta.",
+        "context": "É a etapa mais detectável de uma invasão, de forma confiável, porque precisa ser repetitiva: algo tem de se apresentar, e apresentar-se deixa um ritmo. É por isso que a detecção foca em batimento - intervalos regulares, tamanhos constantes, um destino com o qual nenhum outro host do parque conversa - e não em conteúdo, que é cifrado. Canais modernos se escondem em serviços comuns justamente para derrotar isso, usando armazenamento em nuvem, plataformas de conversa e DNS, então o sinal útil costuma ser um host conversando com algo normal num padrão anormal."
       },
       "key-management": {
-        "def": "Gerar, guardar, rotacionar, revogar e aposentar chaves criptograficas - a parte da criptografia que de fato falha.",
-        "context": "Algoritmos raramente sao quebrados na pratica; chaves e que sao copiadas, comitadas em repositorio, compartilhadas entre ambientes, deixadas em hardware desativado e nunca rotacionadas porque ninguem sabe o que quebraria. As perguntas uteis sao, portanto, administrativas: onde essa chave existe, quem pode usa-la, o que acontece no dia em que precisar ser trocada, e se isso ja foi feito alguma vez. Uma organizacao que nao responde a ultima tem cifragem cuja forca nunca foi testada do unico jeito que importa."
+        "def": "Gerar, guardar, rotacionar, revogar e aposentar chaves criptográficas - a parte da criptografia que de fato falha.",
+        "context": "Algoritmos raramente são quebrados na prática; chaves é que são copiadas, comitadas em repositório, compartilhadas entre ambientes, deixadas em hardware desativado e nunca rotacionadas porque ninguém sabe o que quebraria. As perguntas úteis são, portanto, administrativas: onde essa chave existe, quem pode usá-la, o que acontece no dia em que precisar ser trocada, e se isso já foi feito alguma vez. Uma organização que não responde à última tem cifragem cuja força nunca foi testada do único jeito que importa."
       },
       "blameless": {
-        "def": "Revisar um incidente para achar as condicoes que o permitiram, e nao a pessoa que agiu dentro delas.",
-        "context": "O argumento a favor e pratico, e nao gentil: quem espera culpa relata menos, mais tarde e com menos exatidao, e uma organizacao que nao enxerga os quase-acidentes voa apenas com os eventos grandes demais para esconder. A disciplina e perguntar por que a acao fez sentido na hora - o que o operador via, o que a ferramenta sugeria, qual era a pressao - porque um sistema em que um comando errado causa uma queda tem um problema de projeto que vai sobreviver a pessoa que o digitou."
+        "def": "Revisar um incidente para achar as condições que o permitiram, e não a pessoa que agiu dentro delas.",
+        "context": "O argumento a favor é prático, e não gentil: quem espera culpa relata menos, mais tarde e com menos exatidão, e uma organização que não enxerga os quase-acidentes voa apenas com os eventos grandes demais para esconder. A disciplina é perguntar por que a ação fez sentido na hora - o que o operador via, o que a ferramenta sugeria, qual era a pressão - porque um sistema em que um comando errado causa uma queda tem um problema de projeto que vai sobreviver à pessoa que o digitou."
       },
       "wireguard": {
-        "def": "Um protocolo de VPN construido em torno de uma base de codigo deliberadamente pequena e de escolhas criptograficas modernas fixas, sem negociacao.",
-        "context": "A ausencia de negociacao e o argumento de projeto. IPsec e TLS deixam as duas pontas combinarem algoritmos, o que e flexivel e e tambem onde moram ataques de rebaixamento e descompassos de configuracao; o WireGuard elimina a conversa entregando uma suite so e versionando o protocolo inteiro caso precise mudar. A troca e real: sem agilidade de algoritmo, uma quebra numa primitiva exige nova versao do protocolo em todo lugar, e o conjunto pequeno de recursos empurra identidade, politica e atribuicao de endereco para o que quer que o embrulhe."
+        "def": "Um protocolo de VPN construído em torno de uma base de código deliberadamente pequena e de escolhas criptográficas modernas fixas, sem negociação.",
+        "context": "A ausência de negociação é o argumento de projeto. IPsec e TLS deixam as duas pontas combinarem algoritmos, o que é flexível e é também onde moram ataques de rebaixamento e descompassos de configuração; o WireGuard elimina a conversa entregando uma suíte só e versionando o protocolo inteiro caso precise mudar. A troca é real: sem agilidade de algoritmo, uma quebra numa primitiva exige nova versão do protocolo em todo lugar, e o conjunto pequeno de recursos empurra identidade, política e atribuição de endereço para o que quer que o embrulhe."
       },
       "accounting": {
-        "def": "O terceiro A do AAA: registrar o que uma parte autenticada de fato fez, para faturamento, capacidade ou evidencia.",
-        "context": "E o que mais costuma ser configurado por ultimo e o mais necessario sob pressao, porque autenticacao e autorizacao respondem perguntas sobre o presente, e a contabilizacao e a unica que responde sobre o passado. Em rede de operadora ela existe para gerar fatura; em rede corporativa existe para que alguem possa dizer qual conta emitiu qual comando em qual equipamento, que e exatamente a pergunta feita depois de uma queda ou de uma invasao, e exatamente o registro que ninguem habilitou."
+        "def": "O terceiro A do AAA: registrar o que uma parte autenticada de fato fez, para faturamento, capacidade ou evidência.",
+        "context": "É o que mais costuma ser configurado por último e o mais necessário sob pressão, porque autenticação e autorização respondem perguntas sobre o presente, e a contabilização é a única que responde sobre o passado. Em rede de operadora ela existe para gerar fatura; em rede corporativa existe para que alguém possa dizer qual conta emitiu qual comando em qual equipamento, que é exatamente a pergunta feita depois de uma queda ou de uma invasão, e exatamente o registro que ninguém habilitou."
       },
       "tacacs": {
-        "def": "Um protocolo para centralizar o acesso administrativo a equipamentos de rede, separando autenticacao, autorizacao e contabilizacao em trocas distintas.",
-        "context": "A separacao e a diferenca pratica em relacao ao RADIUS: como a autorizacao e uma troca propria, o equipamento pode consultar o servidor sobre cada comando conforme ele e digitado, e e assim que controle por comando e registro completo funcionam. Isso o torna a escolha usual para administracao de equipamento, enquanto o RADIUS segue usual para acesso a rede. A dependencia merece ser dita - se o servidor esta inalcancavel e o retorno local nunca foi configurado nem testado, o parque fica ingerenciavel exatamente no momento em que alguem precisa entrar."
+        "def": "Um protocolo para centralizar o acesso administrativo a equipamentos de rede, separando autenticação, autorização e contabilização em trocas distintas.",
+        "context": "A separação é a diferença prática em relação ao RADIUS: como a autorização é uma troca própria, o equipamento pode consultar o servidor sobre cada comando conforme ele é digitado, e é assim que controle por comando e registro completo funcionam. Isso o torna a escolha usual para administração de equipamento, enquanto o RADIUS segue usual para acesso à rede. A dependência merece ser dita - se o servidor está inalcançável e o retorno local nunca foi configurado nem testado, o parque fica ingerenciável exatamente no momento em que alguém precisa entrar."
       },
       "rce": {
-        "def": "Um defeito que permite a um atacante rodar codigo proprio num sistema pela rede, sem precisar de conta nele.",
-        "context": "E o topo da escala de severidade porque colapsa todos os outros passos: sem phishing, sem roubo de credencial, sem movimento lateral para conseguir o primeiro apoio. E por isso que um caso sem autenticacao num produto exposto a internet produz ciclos de correcao de emergencia, seja qual for a nota do scanner. A pergunta seguinte util e como o codigo roda - o mesmo defeito e um incidente diferente conforme o servico estivesse com menor privilegio ou como root."
+        "def": "Um defeito que permite a um atacante rodar código próprio num sistema pela rede, sem precisar de conta nele.",
+        "context": "É o topo da escala de severidade porque colapsa todos os outros passos: sem phishing, sem roubo de credencial, sem movimento lateral para conseguir o primeiro apoio. É por isso que um caso sem autenticação num produto exposto à internet produz ciclos de correção de emergência, seja qual for a nota do scanner. A pergunta seguinte útil é como o código roda - o mesmo defeito é um incidente diferente conforme o serviço estivesse com menor privilégio ou como root."
       },
       "lfi": {
-        "def": "Fazer uma aplicacao ler ou executar um arquivo escolhido por quem chama, controlando um caminho que ela monta a partir da entrada.",
-        "context": "Pertence a mesma familia da injecao: entrada de usuario chegando a um interpretador, aqui o sistema de arquivos. Ler ja e ruim - arquivos de configuracao, credenciais, chaves - e escala para execucao sempre que a aplicacao roda o que inclui. Filtrar o caminho e a estrategia perdedora pela razao conhecida: cada codificacao, cada variante de travessia e cada camada de normalizacao entre a verificacao e a abertura e outra chance de as duas discordarem, e e por isso que a correcao duravel e nunca montar caminho a partir de entrada."
+        "def": "Fazer uma aplicação ler ou executar um arquivo escolhido por quem chama, controlando um caminho que ela monta a partir da entrada.",
+        "context": "Pertence à mesma família da injeção: entrada de usuário chegando a um interpretador, aqui o sistema de arquivos. Ler já é ruim - arquivos de configuração, credenciais, chaves - e escala para execução sempre que a aplicação roda o que inclui. Filtrar o caminho é a estratégia perdedora pela razão conhecida: cada codificação, cada variante de travessia e cada camada de normalização entre a verificação e a abertura é outra chance de as duas discordarem, e é por isso que a correção durável é nunca montar caminho a partir de entrada."
       },
       "microservice": {
-        "def": "Uma arquitetura que divide uma aplicacao em servicos implantaveis de forma independente, que se comunicam pela rede.",
-        "context": "O beneficio prometido e organizacional antes de ser tecnico: equipes conseguem entregar sem coordenar uma unica publicacao. O custo e que toda chamada de funcao que cruzava fronteira de processo agora cruza a rede, entao falhas que eram impossiveis viram rotina - sucesso parcial, tempo esgotado, tempestade de repeticoes, e divergencia de versao entre servicos que antes eram compilados juntos. E por isso que traco, idempotencia e contrapressao deixam de ser opcionais, e por que dividir um sistema que uma equipe entrega uma vez por semana costuma comprar os custos sem o beneficio."
+        "def": "Uma arquitetura que divide uma aplicação em serviços implantáveis de forma independente, que se comunicam pela rede.",
+        "context": "O benefício prometido é organizacional antes de ser técnico: equipes conseguem entregar sem coordenar uma única publicação. O custo é que toda chamada de função que cruzava fronteira de processo agora cruza a rede, então falhas que eram impossíveis viram rotina - sucesso parcial, tempo esgotado, tempestade de repetições, e divergência de versão entre serviços que antes eram compilados juntos. É por isso que traço, idempotência e contrapressão deixam de ser opcionais, e por que dividir um sistema que uma equipe entrega uma vez por semana costuma comprar os custos sem o benefício."
       },
       "graphql": {
-        "def": "Uma linguagem de consulta para interfaces em que quem chama especifica exatamente quais campos quer, numa requisicao so.",
-        "context": "Ela resolve um problema real - clientes buscando demais ou fazendo varias idas e voltas - movendo o formato da resposta para a mao de quem chama. Essa inversao e tambem a mudanca de seguranca: a autorizacao nao pode mais ser verificada por endpoint, porque na pratica ha um endpoint e quem chama compoe a consulta. As verificacoes precisam viver no nivel de campo e de objeto, e uma consulta profundamente aninhada e tambem uma questao de recurso, e e por isso que limite de profundidade e analise de custo fazem parte de opera-la, e nao sao refinamentos."
+        "def": "Uma linguagem de consulta para interfaces em que quem chama especifica exatamente quais campos quer, numa requisição só.",
+        "context": "Ela resolve um problema real - clientes buscando demais ou fazendo várias idas e voltas - movendo o formato da resposta para a mão de quem chama. Essa inversão é também a mudança de segurança: a autorização não pode mais ser verificada por endpoint, porque na prática há um endpoint e quem chama compõe a consulta. As verificações precisam viver no nível de campo e de objeto, e uma consulta profundamente aninhada é também uma questão de recurso, e é por isso que limite de profundidade e análise de custo fazem parte de operá-la, e não são refinamentos."
       },
       "webhook": {
-        "def": "Um arranjo em que um sistema chama uma URL que voce fornece quando algo acontece, em vez de voce ficar perguntando.",
-        "context": "Ele inverte quem inicia, e essa inversao carrega tres obrigacoes que as pessoas descobrem tarde. O endpoint e publico, entao precisa autenticar quem chama - em geral verificando uma assinatura sobre o corpo, porque URL nao e segredo. A entrega e pelo menos uma vez, entao o tratador precisa ser idempotente, ou duplicatas viram cobrancas em dobro. E o remetente espera resposta rapida, entao trabalho de verdade pertence a uma fila, e nao a requisicao, ou um tratador lento vira repeticoes que pioram a carga."
+        "def": "Um arranjo em que um sistema chama uma URL que você fornece quando algo acontece, em vez de você ficar perguntando.",
+        "context": "Ele inverte quem inicia, e essa inversão carrega três obrigações que as pessoas descobrem tarde. O endpoint é público, então precisa autenticar quem chama - em geral verificando uma assinatura sobre o corpo, porque URL não é segredo. A entrega é pelo menos uma vez, então o tratador precisa ser idempotente, ou duplicatas viram cobranças em dobro. E o remetente espera resposta rápida, então trabalho de verdade pertence a uma fila, e não à requisição, ou um tratador lento vira repetições que pioram a carga."
       },
       "pam": {
-        "def": "Controlar e registrar o uso de contas administrativas - retirando credenciais, intermediando a sessao, e rotacionando o segredo depois.",
-        "context": "A finalidade e tornar o privilegio temporario e observavel, porque acesso administrativo permanente e o que um invasor procura e o que uma auditoria nao consegue reconciliar. Bem feito, remove senha compartilhada da mao humana por completo. Mal feito, vira um sistema unico guardando todas as credenciais do parque, alcancavel de estacao comum - e e por isso que a pergunta interessante sobre qualquer implantacao e o que acontece com ela, e com o negocio, quando esse sistema esta indisponivel ou comprometido."
+        "def": "Controlar e registrar o uso de contas administrativas - retirando credenciais, intermediando a sessão, e rotacionando o segredo depois.",
+        "context": "A finalidade é tornar o privilégio temporário e observável, porque acesso administrativo permanente é o que um invasor procura e o que uma auditoria não consegue reconciliar. Bem feito, remove senha compartilhada da mão humana por completo. Mal feito, vira um sistema único guardando todas as credenciais do parque, alcançável de estação comum - e é por isso que a pergunta interessante sobre qualquer implantação é o que acontece com ela, e com o negócio, quando esse sistema está indisponível ou comprometido."
       },
       "tpm": {
-        "def": "Um chip que guarda chaves e medicoes em hardware, para que segredos sejam utilizaveis pela maquina sem serem extraiveis dela.",
-        "context": "A propriedade que importa e uma chave poder ser usada sem ser lida: o software pede ao chip para assinar ou decifrar, e nunca detem o material privado. E isso que permite a cifragem de disco destravar sem senha guardada no proprio disco, e que permite a uma maquina provar qual software ela inicializou. Os limites tambem valem: ele protege contra copiar o disco, e nao contra um atacante que ja roda codigo na maquina ligada, como o usuario dono da chave."
+        "def": "Um chip que guarda chaves e medições em hardware, para que segredos sejam utilizáveis pela máquina sem serem extraíveis dela.",
+        "context": "A propriedade que importa é uma chave poder ser usada sem ser lida: o software pede ao chip para assinar ou decifrar, e nunca detém o material privado. É isso que permite à cifragem de disco destravar sem senha guardada no próprio disco, e que permite a uma máquina provar qual software ela inicializou. Os limites também valem: ele protege contra copiar o disco, e não contra um atacante que já roda código na máquina ligada, como o usuário dono da chave."
       },
       "tabletop": {
-        "def": "Conduzir uma equipe por um incidente hipotetico numa sala, para achar as lacunas antes que um incidente real ache.",
-        "context": "O valor esta em testar as partes que um teste tecnico nao alcanca: quem decide, quem e acionado as tres da manha, quem fala com clientes, e se o plano pressupoe um sistema que estara indisponivel durante justamente o evento que ele descreve. A descoberta recorrente e banal e cara - o procedimento mora no wiki que esta atras do provedor de identidade que caiu, ou a unica pessoa que conhece o passo a passo e a que esta de ferias. Nada mais acha isso barato."
+        "def": "Conduzir uma equipe por um incidente hipotético numa sala, para achar as lacunas antes que um incidente real ache.",
+        "context": "O valor está em testar as partes que um teste técnico não alcança: quem decide, quem é acionado às três da manhã, quem fala com clientes, e se o plano pressupõe um sistema que estará indisponível durante justamente o evento que ele descreve. A descoberta recorrente é banal e cara - o procedimento mora no wiki que está atrás do provedor de identidade que caiu, ou a única pessoa que conhece o passo a passo é a que está de férias. Nada mais acha isso barato."
       },
       "capacity": {
-        "def": "Quanta carga um sistema aguenta antes de o comportamento degradar - o que nao e o mesmo que o numero da especificacao.",
-        "context": "O valor util e o ponto em que o tempo de resposta comeca a subir, e nao aquele em que algo para de responder, e os dois estao longe um do outro: filas crescem de forma nao linear, entao um sistema a noventa por cento de utilizacao se comporta de forma nada parecida com um a cinquenta, e os ultimos dez por cento da capacidade nominal costumam ser inutilizaveis na pratica. Planejar contra o numero nominal, e nao contra o joelho medido, e a forma padrao de descobrir isso, sempre no momento menos conveniente."
+        "def": "Quanta carga um sistema aguenta antes de o comportamento degradar - o que não é o mesmo que o número da especificação.",
+        "context": "O valor útil é o ponto em que o tempo de resposta começa a subir, e não aquele em que algo para de responder, e os dois estão longe um do outro: filas crescem de forma não linear, então um sistema a noventa por cento de utilização se comporta de forma nada parecida com um a cinquenta, e os últimos dez por cento da capacidade nominal costumam ser inutilizáveis na prática. Planejar contra o número nominal, e não contra o joelho medido, é a forma padrão de descobrir isso, sempre no momento menos conveniente."
       },
       "dhcp-snooping": {
-        "def": "Um recurso de comutador que so permite respostas de atribuicao de endereco vindas de portas que voce declarou confiaveis.",
-        "context": "Existe porque o protocolo de atribuicao nao tem autenticacao: qualquer dispositivo do segmento pode responder, e a resposta mais rapida vence. Um servidor invasor entrega o proprio endereco como gateway e vira silenciosamente o caminho de tudo, o que e uma maquina no meio conseguida sem tocar num unico cabo do datacenter. Marcar o uplink como unica porta confiavel elimina a classe inteira, e a tabela que ele constroi e o que varias outras protecoes usam depois para validar enderecos."
+        "def": "Um recurso de comutador que só permite respostas de atribuição de endereço vindas de portas que você declarou confiáveis.",
+        "context": "Existe porque o protocolo de atribuição não tem autenticação: qualquer dispositivo do segmento pode responder, e a resposta mais rápida vence. Um servidor invasor entrega o próprio endereço como gateway e vira silenciosamente o caminho de tudo, o que é uma máquina no meio conseguida sem tocar num único cabo do datacenter. Marcar o uplink como única porta confiável elimina a classe inteira, e a tabela que ele constrói é o que várias outras proteções usam depois para validar endereços."
       },
       "region": {
-        "def": "Uma area geografica onde um provedor de nuvem opera data centers, e a fronteira que a maioria dos servicos nao cruza por padrao.",
-        "context": "E a unidade que importa para lei e para falha: residencia de dados e discutida em termos de regiao, e uma queda regional e a maior falha que uma conta de provedor experimenta rotineiramente. A armadilha e supor que multirregiao e uma caixa a marcar - significa dado duplicado com uma decisao de consistencia, esteiras de implantacao duplicadas, e uma fatura de saida pelo trafego entre elas."
+        "def": "Uma área geográfica onde um provedor de nuvem opera data centers, e a fronteira que a maioria dos serviços não cruza por padrão.",
+        "context": "É a unidade que importa para lei e para falha: residência de dados é discutida em termos de região, e uma queda regional é a maior falha que uma conta de provedor experimenta rotineiramente. A armadilha é supor que multirregião é uma caixa a marcar - significa dado duplicado com uma decisão de consistência, esteiras de implantação duplicadas, e uma fatura de saída pelo tráfego entre elas."
       },
       "object-storage": {
-        "def": "Armazenamento enderecado por chave, e nao por caminho ou bloco, com metadados anexados e sem semantica de sistema de arquivos.",
-        "context": "Abrir mao do sistema de arquivos e o que faz aquilo escalar: sem diretorios para travar, sem escrita parcial para coordenar, objetos substituidos inteiros. Isso tambem remove o que as aplicacoes esperam - sem acrescentar ao fim, sem renomear que nao seja copia, e concordancia eventual, e nao imediata, em alguns desenhos. A falha de seguranca recorrente nao e a tecnologia, e a permissao: um balde tornado publico para resolver um problema de acesso, e nunca fechado de volta."
+        "def": "Armazenamento endereçado por chave, e não por caminho ou bloco, com metadados anexados e sem semântica de sistema de arquivos.",
+        "context": "Abrir mão do sistema de arquivos é o que faz aquilo escalar: sem diretórios para travar, sem escrita parcial para coordenar, objetos substituídos inteiros. Isso também remove o que as aplicações esperam - sem acrescentar ao fim, sem renomear que não seja cópia, e concordância eventual, e não imediata, em alguns desenhos. A falha de segurança recorrente não é a tecnologia, é a permissão: um balde tornado público para resolver um problema de acesso, e nunca fechado de volta."
       },
       "block-storage": {
-        "def": "Armazenamento apresentado a uma maquina como disco cru, que o sistema operacional formata e administra sozinho.",
-        "context": "E o que um banco de dados e um sistema operacional esperam, porque querem controlar layout, cache e ordenacao. A consequencia em nuvem e a anexacao: um volume pertence a uma maquina por vez e vive numa zona, o que faz dele a coisa que prende uma carga a um lugar. Quem projeta para falha descobre que mover a computacao e facil e mover o disco e o projeto de verdade."
+        "def": "Armazenamento apresentado a uma máquina como disco cru, que o sistema operacional formata e administra sozinho.",
+        "context": "É o que um banco de dados e um sistema operacional esperam, porque querem controlar layout, cache e ordenação. A consequência em nuvem é a anexação: um volume pertence a uma máquina por vez e vive numa zona, o que faz dele a coisa que prende uma carga a um lugar. Quem projeta para falha descobre que mover a computação é fácil e mover o disco é o projeto de verdade."
       },
       "shared-responsibility": {
-        "def": "A divisao de deveres de seguranca entre um provedor de nuvem e o cliente - o provedor protege a plataforma, o cliente protege o que poe nela.",
-        "context": "Esta na documentacao de todo provedor e e lida errado o tempo todo, porque a linha se move com o servico: numa maquina virtual o cliente corrige o sistema operacional, num banco gerenciado nao, e num servico de armazenamento o provedor garante durabilidade enquanto so o cliente decide quem pode ler. Quase todo vazamento de nuvem noticiado esta do lado do cliente de uma linha que fora publicada de antemao."
+        "def": "A divisão de deveres de segurança entre um provedor de nuvem e o cliente - o provedor protege a plataforma, o cliente protege o que põe nela.",
+        "context": "Está na documentação de todo provedor e é lida errado o tempo todo, porque a linha se move com o serviço: numa máquina virtual o cliente corrige o sistema operacional, num banco gerenciado não, e num serviço de armazenamento o provedor garante durabilidade enquanto só o cliente decide quem pode ler. Quase todo vazamento de nuvem noticiado está do lado do cliente de uma linha que fora publicada de antemão."
       },
       "multi-tenancy": {
-        "def": "Um sistema atendendo varios clientes a partir de infraestrutura compartilhada, com isolamento imposto por software, e nao por hardware separado.",
-        "context": "E o que faz a economia da nuvem funcionar e o que torna a seguranca dela interessante: a fronteira entre dois clientes e codigo, e um defeito nesse codigo e um problema entre inquilinos, e nao um bug. A pergunta que vale fazer a qualquer plataforma e onde o isolamento de fato mora - processos separados, maquinas separadas, ou apenas um identificador de cliente numa consulta, porque o ultimo caso cai com um unico filtro esquecido."
+        "def": "Um sistema atendendo vários clientes a partir de infraestrutura compartilhada, com isolamento imposto por software, e não por hardware separado.",
+        "context": "É o que faz a economia da nuvem funcionar e o que torna a segurança dela interessante: a fronteira entre dois clientes é código, e um defeito nesse código é um problema entre inquilinos, e não um bug. A pergunta que vale fazer a qualquer plataforma é onde o isolamento de fato mora - processos separados, máquinas separadas, ou apenas um identificador de cliente numa consulta, porque o último caso cai com um único filtro esquecido."
       },
       "egress-fee": {
-        "def": "O que um provedor de nuvem cobra pelos dados que saem da rede dele - em geral gratis para receber e tarifado para enviar.",
-        "context": "A assimetria e a estrategia: importar dado nao custa nada e exportar custa, entao a fatura cresce com qualquer arquitetura que tira dado de la, e encolhe com qualquer uma que o mantem dentro. Isso molda decisoes reais - onde os backups moram, se a analitica roda ao lado do dado, e quanto custaria sair. Vale precificar essa ultima antes de ela importar, e nao durante uma migracao."
+        "def": "O que um provedor de nuvem cobra pelos dados que saem da rede dele - em geral grátis para receber e tarifado para enviar.",
+        "context": "A assimetria é a estratégia: importar dado não custa nada e exportar custa, então a fatura cresce com qualquer arquitetura que tira dado de lá, e encolhe com qualquer uma que o mantém dentro. Isso molda decisões reais - onde os backups moram, se a analítica roda ao lado do dado, e quanto custaria sair. Vale precificar essa última antes de ela importar, e não durante uma migração."
       },
       "pon": {
-        "def": "Uma rede de acesso em fibra em que um alimentador e dividido opticamente para muitas casas, sem equipamento energizado entre a central e o assinante.",
-        "context": "Passivo e o argumento economico: divisores nao precisam de energia, refrigeracao nem visita de manutencao, e foi isso que tornou fibra ate a casa pagavel. As consequencias decorrem direto - a capacidade de um alimentador e compartilhada por todos do divisor, entao contencao e parametro de projeto, e nao defeito, e o trafego de descida de cada assinante alcanca fisicamente todos os outros, e e por isso que a cifragem no enlace de acesso faz parte do padrao, e nao e opcional."
+        "def": "Uma rede de acesso em fibra em que um alimentador é dividido opticamente para muitas casas, sem equipamento energizado entre a central e o assinante.",
+        "context": "Passivo é o argumento econômico: divisores não precisam de energia, refrigeração nem visita de manutenção, e foi isso que tornou fibra até a casa pagável. As consequências decorrem direto - a capacidade de um alimentador é compartilhada por todos do divisor, então contenção é parâmetro de projeto, e não defeito, e o tráfego de descida de cada assinante alcança fisicamente todos os outros, e é por isso que a cifragem no enlace de acesso faz parte do padrão, e não é opcional."
       },
       "spectrum": {
-        "def": "A faixa de frequencias de radio disponivel para transmissao, dividida pelos reguladores em bandas licenciadas e nao licenciadas.",
-        "context": "E o unico insumo de fato finito em redes: fibra pode ser lancada e processador melhorado, mas uma frequencia num lugar so pode ser usada uma vez. Essa escassez explica os dois mundos - espectro licenciado e comprado em leilao e vem com exclusividade, e o nao licenciado e gratuito e vem com vizinhos. Tudo o que e dificil no sem fio de um escritorio e consequencia de escolher o segundo, em que a interferencia sao outras pessoas fazendo a mesma coisa, legalmente."
+        "def": "A faixa de frequências de rádio disponível para transmissão, dividida pelos reguladores em bandas licenciadas e não licenciadas.",
+        "context": "É o único insumo de fato finito em redes: fibra pode ser lançada e processador melhorado, mas uma frequência num lugar só pode ser usada uma vez. Essa escassez explica os dois mundos - espectro licenciado é comprado em leilão e vem com exclusividade, e o não licenciado é gratuito e vem com vizinhos. Tudo o que é difícil no sem fio de um escritório é consequência de escolher o segundo, em que a interferência são outras pessoas fazendo a mesma coisa, legalmente."
       },
       "ix": {
-        "def": "Um tecido compartilhado em que muitas redes se interconectam diretamente, em vez de pagarem um terceiro para carregar trafego entre elas.",
-        "context": "O argumento e custo e distancia ao mesmo tempo: sem um ponto de troca, o trafego entre duas redes da mesma cidade pode viajar a outro pais e voltar, o que custa dinheiro e acrescenta atraso. Um ponto de troca remove os dois tornando a conexao local. E por isso que pontos de troca sao infraestrutura estrategica de um pais, e nao produtos comerciais, e por que os maiores sao operados como entidades neutras sem fins lucrativos, com regras de associacao, e nao como negocios."
+        "def": "Um tecido compartilhado em que muitas redes se interconectam diretamente, em vez de pagarem um terceiro para carregar tráfego entre elas.",
+        "context": "O argumento é custo e distância ao mesmo tempo: sem um ponto de troca, o tráfego entre duas redes da mesma cidade pode viajar a outro país e voltar, o que custa dinheiro e acrescenta atraso. Um ponto de troca remove os dois tornando a conexão local. É por isso que pontos de troca são infraestrutura estratégica de um país, e não produtos comerciais, e por que os maiores são operados como entidades neutras sem fins lucrativos, com regras de associação, e não como negócios."
       },
       "federation": {
-        "def": "Aceitar uma identidade comprovada em outro lugar, para que um usuario autenticado pela propria organizacao alcance um servico operado por outra.",
-        "context": "Isso move a decisao de confianca de uma senha para uma relacao: o servico deixa de guardar credenciais e passa a decidir em quais emissores acredita. As consequencias merecem ser ditas. O ciclo de vida da conta pertence ao emissor, entao remover alguem em casa remove o acesso em todo lugar - que e o beneficio inteiro e tambem significa que um emissor comprometido e um comprometimento de todo servico que confia nele."
+        "def": "Aceitar uma identidade comprovada em outro lugar, para que um usuário autenticado pela própria organização alcance um serviço operado por outra.",
+        "context": "Isso move a decisão de confiança de uma senha para uma relação: o serviço deixa de guardar credenciais e passa a decidir em quais emissores acredita. As consequências merecem ser ditas. O ciclo de vida da conta pertence ao emissor, então remover alguém em casa remove o acesso em todo lugar - que é o benefício inteiro e também significa que um emissor comprometido é um comprometimento de todo serviço que confia nele."
       },
       "assertion": {
-        "def": "A afirmacao assinada que um protocolo de federacao carrega: quem se autenticou, quando, como, para qual audiencia, e por quanto tempo vale.",
-        "context": "Todo campo dela sustenta algo. A audiencia impede que um token emitido para um servico seja reapresentado noutro; a janela de validade limita por quanto tempo um roubado serve; o metodo de autenticacao diz ao servico se um segundo fator foi de fato usado. Servicos que conferem a assinatura e ignoram o resto aceitam asserções que eram tecnicamente validas e nao eram para eles."
+        "def": "A afirmação assinada que um protocolo de federação carrega: quem se autenticou, quando, como, para qual audiência, e por quanto tempo vale.",
+        "context": "Todo campo dela sustenta algo. A audiência impede que um token emitido para um serviço seja reapresentado noutro; a janela de validade limita por quanto tempo um roubado serve; o método de autenticação diz ao serviço se um segundo fator foi de fato usado. Serviços que conferem a assinatura e ignoram o resto aceitam asserções que eram tecnicamente válidas e não eram para eles."
       },
       "passwordless": {
-        "def": "Autenticar com uma chave guardada por um dispositivo, em vez de um segredo compartilhado que o usuario digita.",
-        "context": "A propriedade que importa nao e a conveniencia: como a credencial e vinculada a origem do site e nunca sai do dispositivo, nao ha nada que o usuario possa digitar numa copia convincente da pagina de login. Isso derrota phishing de forma estrutural, e nao por treinamento. Os problemas em aberto sao recuperacao e inscricao - o que acontece quando o dispositivo se perde, e como a primeira credencial e estabelecida, que e onde os ataques restantes agora se concentram."
+        "def": "Autenticar com uma chave guardada por um dispositivo, em vez de um segredo compartilhado que o usuário digita.",
+        "context": "A propriedade que importa não é a conveniência: como a credencial é vinculada à origem do site e nunca sai do dispositivo, não há nada que o usuário possa digitar numa cópia convincente da página de login. Isso derrota phishing de forma estrutural, e não por treinamento. Os problemas em aberto são recuperação e inscrição - o que acontece quando o dispositivo se perde, e como a primeira credencial é estabelecida, que é onde os ataques restantes agora se concentram."
       },
       "raid": {
-        "def": "Combinar varios discos para que o arranjo sobreviva a perda de um - ou mais, conforme o layout escolhido.",
-        "context": "A frase que precisa acompanhar isso e que RAID nao e backup: ele protege contra um disco morrer, e copia uma exclusao, uma corrupcao ou uma cifragem fielmente para todos os membros. O segundo fato operacional e a reconstrucao - trocar um disco falho poe o arranjo sob carga sustentada exatamente quando a redundancia acabou, que e quando a segunda falha costuma chegar."
+        "def": "Combinar vários discos para que o arranjo sobreviva à perda de um - ou mais, conforme o layout escolhido.",
+        "context": "A frase que precisa acompanhar isso é que RAID não é backup: ele protege contra um disco morrer, e copia uma exclusão, uma corrupção ou uma cifragem fielmente para todos os membros. O segundo fato operacional é a reconstrução - trocar um disco falho põe o arranjo sob carga sustentada exatamente quando a redundância acabou, que é quando a segunda falha costuma chegar."
       },
       "replication": {
-        "def": "Manter copias de dados em mais de uma maquina, para que a perda de uma nao perca o dado.",
-        "context": "O assunto inteiro e a palavra 'quando'. A replicacao sincrona confirma uma escrita so depois que a copia a tem, o que custa latencia proporcional a distancia e garante nenhuma perda; a assincrona confirma na hora e aceita que uma falha perde o que ainda nao seguiu. Essa escolha e o objetivo de ponto de recuperacao expresso em engenharia, e nao da para evita-la - um sistema que nao escolheu escolheu assincrona por padrao."
+        "def": "Manter cópias de dados em mais de uma máquina, para que a perda de uma não perca o dado.",
+        "context": "O assunto inteiro é a palavra 'quando'. A replicação síncrona confirma uma escrita só depois que a cópia a tem, o que custa latência proporcional à distância e garante nenhuma perda; a assíncrona confirma na hora e aceita que uma falha perde o que ainda não seguiu. Essa escolha é o objetivo de ponto de recuperação expresso em engenharia, e não dá para evitá-la - um sistema que não escolheu escolheu assíncrona por padrão."
       },
       "sharding": {
-        "def": "Dividir um conjunto de dados entre maquinas por alguma chave, para que cada uma guarde parte, e nao tudo.",
-        "context": "E o que se faz quando uma maquina nao consegue mais guardar ou servir o dado, e a chave de particao e a decisao que nao se desfaz barato. Escolha mal e o trafego concentra num fragmento enquanto os outros ficam ociosos, ou a consulta comum precisa visitar todos e o proposito se perde. Tudo o que e dificil nisso - rebalancear, transacao entre fragmentos, chaves quentes - descende daquela unica escolha inicial."
+        "def": "Dividir um conjunto de dados entre máquinas por alguma chave, para que cada uma guarde parte, e não tudo.",
+        "context": "É o que se faz quando uma máquina não consegue mais guardar ou servir o dado, e a chave de partição é a decisão que não se desfaz barato. Escolha mal e o tráfego concentra num fragmento enquanto os outros ficam ociosos, ou a consulta comum precisa visitar todos e o propósito se perde. Tudo o que é difícil nisso - rebalancear, transação entre fragmentos, chaves quentes - descende daquela única escolha inicial."
       },
       "data-at-rest": {
-        "def": "Dado parado em armazenamento, e nao em movimento - e, em geral, abreviacao para cifra-lo ali.",
-        "context": "A cifragem em repouso defende contra uma ameaca especifica: alguem obter o meio. Um disco roubado, um arranjo desativado, um retrato copiado. Ela nao faz nada contra um atacante com acesso ao sistema em funcionamento, porque o sistema precisa conseguir ler os proprios dados. E por isso que ela atende um requisito de conformidade com mais frequencia do que muda um incidente, e por que a pergunta util e onde a chave mora em relacao ao dado."
+        "def": "Dado parado em armazenamento, e não em movimento - e, em geral, abreviação para cifrá-lo ali.",
+        "context": "A cifragem em repouso defende contra uma ameaça específica: alguém obter o meio. Um disco roubado, um arranjo desativado, um retrato copiado. Ela não faz nada contra um atacante com acesso ao sistema em funcionamento, porque o sistema precisa conseguir ler os próprios dados. É por isso que ela atende um requisito de conformidade com mais frequência do que muda um incidente, e por que a pergunta útil é onde a chave mora em relação ao dado."
       },
       "data-in-transit": {
-        "def": "Dado em movimento por uma rede - e a cifragem aplicada para que quem o carrega nao consiga ler.",
-        "context": "E a metade mais bem entendida, e aquela em que a suposicao mais costuma correr na frente da configuracao: o trafego e cifrado ate o balanceador e vai em texto claro atras dele, ou e cifrado com um certificado que ninguem valida. A pergunta honesta de auditoria nao e se esta cifrado, e sim em quais trechos, e o que cada ponta de fato verificou antes de confiar na outra."
+        "def": "Dado em movimento por uma rede - e a cifragem aplicada para que quem o carrega não consiga ler.",
+        "context": "É a metade mais bem entendida, e aquela em que a suposição mais costuma correr na frente da configuração: o tráfego é cifrado até o balanceador e vai em texto claro atrás dele, ou é cifrado com um certificado que ninguém valida. A pergunta honesta de auditoria não é se está cifrado, e sim em quais trechos, e o que cada ponta de fato verificou antes de confiar na outra."
       },
       "ssid": {
-        "def": "O nome que uma rede sem fio anuncia - um rotulo, e nao uma identidade, e trivialmente copiavel.",
-        "context": "Como o nome e apenas um texto, qualquer dispositivo pode reivindica-lo, e e essa a base inteira do gemeo maligno: um radio mais forte anunciando a mesma rede e recolhendo o que se conectar. Esconde-lo nao protege nada, ja que clientes que o conhecem transmitem a busca por ele e o revelam assim mesmo. O que de fato distingue uma rede legitima e a troca de credenciais atras do nome, e e por isso que autenticacao corporativa e validacao de certificado no cliente sao os controles que importam."
+        "def": "O nome que uma rede sem fio anuncia - um rótulo, e não uma identidade, e trivialmente copiável.",
+        "context": "Como o nome é apenas um texto, qualquer dispositivo pode reivindicá-lo, e é essa a base inteira do gêmeo maligno: um rádio mais forte anunciando a mesma rede e recolhendo o que se conectar. Escondê-lo não protege nada, já que clientes que o conhecem transmitem a busca por ele e o revelam assim mesmo. O que de fato distingue uma rede legítima é a troca de credenciais atrás do nome, e é por isso que autenticação corporativa e validação de certificado no cliente são os controles que importam."
       },
       "wpa3": {
-        "def": "A geracao atual de seguranca sem fio, substituindo o aperto de mao de chave compartilhada que permitia adivinhacao de senha fora de linha.",
-        "context": "A mudanca substantiva e o aperto de mao: o esquema antigo permitia a quem capturasse uma tentativa de conexao adivinhar a senha fora de linha no proprio ritmo, e o novo nao permite, e e por isso que uma senha fraca deixa de ser catastrofica no primeiro dia. Ele tambem cifra redes abertas, de modo que um ponto publico deixa de ser legivel por todos os presentes. A adocao e a historia de sempre - o modo misto mantem o aperto de mao antigo disponivel para clientes antigos, e uma rede em modo misto tem as propriedades antigas para quem as pedir."
+        "def": "A geração atual de segurança sem fio, substituindo o aperto de mão de chave compartilhada que permitia adivinhação de senha fora de linha.",
+        "context": "A mudança substantiva é o aperto de mão: o esquema antigo permitia a quem capturasse uma tentativa de conexão adivinhar a senha fora de linha no próprio ritmo, e o novo não permite, e é por isso que uma senha fraca deixa de ser catastrófica no primeiro dia. Ele também cifra redes abertas, de modo que um ponto público deixa de ser legível por todos os presentes. A adoção é a história de sempre - o modo misto mantém o aperto de mão antigo disponível para clientes antigos, e uma rede em modo misto tem as propriedades antigas para quem as pedir."
       },
       "captive-portal": {
-        "def": "A pagina que uma rede obriga um cliente novo a ver antes de liberar acesso, implementada interceptando as primeiras requisicoes.",
-        "context": "Funciona mentindo: a rede responde DNS e HTTP por nomes que nao lhe pertencem, para que o navegador va parar em outro lugar. Isso e indistinguivel de um ataque, e e justamente por isso que quebra mais a cada ano - validacao de certificado, DNS cifrado e aplicacoes com fixacao recusam a intercepcao de proposito. Sistemas operacionais hoje sondam um endereco conhecido para detectar a situacao e abrir uma janela restrita, que e a industria admitindo que a tecnica e uma gambiarra que ela concordou em acomodar."
+        "def": "A página que uma rede obriga um cliente novo a ver antes de liberar acesso, implementada interceptando as primeiras requisições.",
+        "context": "Funciona mentindo: a rede responde DNS e HTTP por nomes que não lhe pertencem, para que o navegador vá parar em outro lugar. Isso é indistinguível de um ataque, e é justamente por isso que quebra mais a cada ano - validação de certificado, DNS cifrado e aplicações com fixação recusam a intercepção de propósito. Sistemas operacionais hoje sondam um endereço conhecido para detectar a situação e abrir uma janela restrita, que é a indústria admitindo que a técnica é uma gambiarra que ela concordou em acomodar."
       },
       "cache-control": {
-        "def": "O cabecalho que diz aos caches se uma resposta pode ser guardada, por quem, e por quanto tempo.",
-        "context": "Dois erros se repetem e os dois sao caros. Cachear algo privado num cache compartilhado serve a pagina de um usuario para outro, o que e vazamento de dados causado por um cabecalho. E nao cachear nada faz toda requisicao chegar a origem, o que transforma um pico de trafego numa queda que a diretiva correta teria absorvido inteira. A diretiva e pequena, fica num lugar so, e decide as duas coisas."
+        "def": "O cabeçalho que diz aos caches se uma resposta pode ser guardada, por quem, e por quanto tempo.",
+        "context": "Dois erros se repetem e os dois são caros. Cachear algo privado num cache compartilhado serve a página de um usuário para outro, o que é vazamento de dados causado por um cabeçalho. E não cachear nada faz toda requisição chegar à origem, o que transforma um pico de tráfego numa queda que a diretiva correta teria absorvido inteira. A diretiva é pequena, fica num lugar só, e decide as duas coisas."
       },
       "etag": {
-        "def": "Um identificador opaco para uma versao especifica de um recurso, usado para perguntar se a copia em cache ainda vale.",
-        "context": "Ele transforma uma transferencia inteira numa pergunta curta: o cliente envia a etiqueta que tem, e o servidor responde nao-modificado se nada mudou. E a economia de banda mais barata da web. Tem uma segunda vida em operacoes de escrita, em que enviar a etiqueta junto de uma atualizacao significa que a mudanca so se aplica se ninguem mais mudou antes, o que e concorrencia otimista implementada num cabecalho."
+        "def": "Um identificador opaco para uma versão específica de um recurso, usado para perguntar se a cópia em cache ainda vale.",
+        "context": "Ele transforma uma transferência inteira numa pergunta curta: o cliente envia a etiqueta que tem, e o servidor responde não-modificado se nada mudou. É a economia de banda mais barata da web. Tem uma segunda vida em operações de escrita, em que enviar a etiqueta junto de uma atualização significa que a mudança só se aplica se ninguém mais mudou antes, o que é concorrência otimista implementada num cabeçalho."
       },
       "websocket": {
-        "def": "Uma conexao que comeca como HTTP e depois evolui para um canal de mao dupla que fica aberto.",
-        "context": "Existe porque o formato requisicao-resposta nao expressa um servidor que precisa falar primeiro. As consequencias operacionais e que surpreendem: a conexao e longeva, entao segura recursos em todo proxy e firewall do caminho e morre com os tempos limite de ociosidade deles; ela contorna as verificacoes por requisicao que um gateway faz, porque ha uma requisicao so; e precisa de modelo proprio de autorizacao, ja que a credencial foi conferida uma vez na evolucao e o canal depois carrega qualquer coisa."
+        "def": "Uma conexão que começa como HTTP e depois evolui para um canal de mão dupla que fica aberto.",
+        "context": "Existe porque o formato requisição-resposta não expressa um servidor que precisa falar primeiro. As consequências operacionais é que surpreendem: a conexão é longeva, então segura recursos em todo proxy e firewall do caminho e morre com os tempos limite de ociosidade deles; ela contorna as verificações por requisição que um gateway faz, porque há uma requisição só; e precisa de modelo próprio de autorização, já que a credencial foi conferida uma vez na evolução e o canal depois carrega qualquer coisa."
       },
       "same-origin": {
-        "def": "A regra do navegador de que script de um site nao le respostas de outro, em que site significa esquema, host e porta juntos.",
-        "context": "E a fundacao sobre a qual todo o modelo de seguranca da web se apoia: sem ela, qualquer pagina poderia ler seu e-mail pedindo-o com os seus cookies anexados. Tudo que parece excecao e uma abertura deliberada dela - o CORS e um servidor dizendo quem pode ler as respostas dele, e uma falha de script entre sites importa justamente porque o codigo injetado roda como a origem, e a politica passa entao a proteger o atacante."
+        "def": "A regra do navegador de que script de um site não lê respostas de outro, em que site significa esquema, host e porta juntos.",
+        "context": "É a fundação sobre a qual todo o modelo de segurança da web se apoia: sem ela, qualquer página poderia ler seu e-mail pedindo-o com os seus cookies anexados. Tudo que parece exceção é uma abertura deliberada dela - o CORS é um servidor dizendo quem pode ler as respostas dele, e uma falha de script entre sites importa justamente porque o código injetado roda como a origem, e a política passa então a proteger o atacante."
       },
       "mta": {
-        "def": "O servidor que aceita mensagens e as repassa em direcao ao destino.",
-        "context": "E um dos ultimos lugares em que uma maquina aceita conexoes nao solicitadas de estranhos e depois age sobre o conteudo delas, e e por isso que a infraestrutura de e-mail carrega tanto da historia de seguranca da internet: controle de repasse, listas de reputacao, registros de autenticacao e filtragem de conteudo foram inventados ali primeiro. A regra operacional que nao mudou e que um agente que aceita e repassa sem conferir quem pediu sera encontrado e usado em horas."
+        "def": "O servidor que aceita mensagens e as repassa em direção ao destino.",
+        "context": "É um dos últimos lugares em que uma máquina aceita conexões não solicitadas de estranhos e depois age sobre o conteúdo delas, e é por isso que a infraestrutura de e-mail carrega tanto da história de segurança da internet: controle de repasse, listas de reputação, registros de autenticação e filtragem de conteúdo foram inventados ali primeiro. A regra operacional que não mudou é que um agente que aceita e repassa sem conferir quem pediu será encontrado e usado em horas."
       },
       "open-relay": {
-        "def": "Um servidor de e-mail que repassa mensagens de qualquer um para qualquer um - o padrao na internet inicial e um passivo desde entao.",
-        "context": "Nao era um defeito no comeco: repassar para estranhos era comportamento cooperativo numa rede de colegas. O spam transformou aquilo em infraestrutura gratuita para quem o achasse, e a resposta inventou a lista de reputacao, que e o mecanismo que depois se espalhou muito alem do e-mail. Vale lembrar como o caso mais claro de um projeto que estava certo para a rede em que foi construido e virou vulnerabilidade quando a populacao mudou."
+        "def": "Um servidor de e-mail que repassa mensagens de qualquer um para qualquer um - o padrão na internet inicial e um passivo desde então.",
+        "context": "Não era um defeito no começo: repassar para estranhos era comportamento cooperativo numa rede de colegas. O spam transformou aquilo em infraestrutura gratuita para quem o achasse, e a resposta inventou a lista de reputação, que é o mecanismo que depois se espalhou muito além do e-mail. Vale lembrar como o caso mais claro de um projeto que estava certo para a rede em que foi construído e virou vulnerabilidade quando a população mudou."
       },
       "attestation": {
-        "def": "Uma afirmacao de uma parte de que algo sobre outra e verdadeiro, feita numa forma em que um terceiro aceita se apoiar.",
-        "context": "E o que sao um relatorio, uma certificacao e uma lista assinada de componentes de software, e a pergunta util e sempre a mesma trinca: quem esta afirmando, o que exatamente foi verificado, e o que acontece se estiverem errados. Uma atestacao de escopo estreito com responsavel nomeado vale mais que uma ampla que ninguem sustenta, e e por isso que ler a secao de escopo e a habilidade inteira."
+        "def": "Uma afirmação de uma parte de que algo sobre outra é verdadeiro, feita numa forma em que um terceiro aceita se apoiar.",
+        "context": "É o que são um relatório, uma certificação e uma lista assinada de componentes de software, e a pergunta útil é sempre a mesma trinca: quem está afirmando, o que exatamente foi verificado, e o que acontece se estiverem errados. Uma atestação de escopo estreito com responsável nomeado vale mais que uma ampla que ninguém sustenta, e é por isso que ler a seção de escopo é a habilidade inteira."
       },
       "compliance": {
-        "def": "Demonstrar que uma organizacao atende a um requisito externo - objetivo diferente de estar segura.",
-        "context": "Os dois se sobrepoem e nao sao a mesma coisa, e fingir o contrario desperdica dinheiro nas duas direcoes. Um controle pode satisfazer um requisito e nao impedir nada, e uma melhoria real pode ser invisivel para o arcabouco. A postura util e tratar o requisito como piso e como alavanca - ele obtem orcamento e atencao que um argumento de risco nao obteria - enquanto se mede o programa por se um atacante seria de fato impedido."
+        "def": "Demonstrar que uma organização atende a um requisito externo - objetivo diferente de estar segura.",
+        "context": "Os dois se sobrepõem e não são a mesma coisa, e fingir o contrário desperdiça dinheiro nas duas direções. Um controle pode satisfazer um requisito e não impedir nada, e uma melhoria real pode ser invisível para o arcabouço. A postura útil é tratar o requisito como piso e como alavanca - ele obtém orçamento e atenção que um argumento de risco não obteria - enquanto se mede o programa por se um atacante seria de fato impedido."
       },
       "5g": {
-        "def": "A quinta geracao de redes moveis, definida tanto pela arquitetura de rede quanto pela velocidade do radio.",
-        "context": "O numero de manchete e a vazao, e as mudancas duraveis estao noutro lugar: um nucleo construido como funcoes de software, e nao como caixas fixas, e o fatiamento de rede, que permite a uma rede fisica apresentar varias logicas com garantias diferentes. A consequencia de seguranca segue a arquitetura - quando o nucleo e software rodando em data centers, seguranca de rede movel vira problema de nuvem e de cadeia de suprimento, e nao de telecomunicacoes."
+        "def": "A quinta geração de redes móveis, definida tanto pela arquitetura de rede quanto pela velocidade do rádio.",
+        "context": "O número de manchete é a vazão, e as mudanças duráveis estão noutro lugar: um núcleo construído como funções de software, e não como caixas fixas, e o fatiamento de rede, que permite a uma rede física apresentar várias lógicas com garantias diferentes. A consequência de segurança segue a arquitetura - quando o núcleo é software rodando em data centers, segurança de rede móvel vira problema de nuvem e de cadeia de suprimento, e não de telecomunicações."
       },
       "lte": {
-        "def": "O padrao movel de quarta geracao, e o ponto em que redes moveis passaram a ser inteiramente por pacotes.",
-        "context": "Abandonar o caminho comutado por circuito e a parte historicamente importante: a voz deixou de ser um sistema separado e virou aplicacao na rede de dados, e e por isso que qualidade de chamada virou problema de qualidade de servico, e nao de comutacao. Boa parte do mundo ainda roda nele, e ele segue sendo o retorno que carrega o servico quando o radio mais novo nao esta disponivel - o que torna suas propriedades de seguranca atuais, e nao historicas."
+        "def": "O padrão móvel de quarta geração, e o ponto em que redes móveis passaram a ser inteiramente por pacotes.",
+        "context": "Abandonar o caminho comutado por circuito é a parte historicamente importante: a voz deixou de ser um sistema separado e virou aplicação na rede de dados, e é por isso que qualidade de chamada virou problema de qualidade de serviço, e não de comutação. Boa parte do mundo ainda roda nele, e ele segue sendo o retorno que carrega o serviço quando o rádio mais novo não está disponível - o que torna suas propriedades de segurança atuais, e não históricas."
       },
       "sim": {
-        "def": "O modulo que guarda a identidade de um assinante e a chave que o autentica na rede movel.",
-        "context": "E uma credencial de hardware, e trata-la assim explica tanto a forca quanto a fraqueza mais explorada. A chave nunca sai do cartao, o que e genuinamente forte. A conta por tras dele, porem, e transferivel por um atendente - que e o que a troca de SIM ataca, e por que tudo que trata a posse de um numero de telefone como prova de identidade herda a seguranca de uma central de atendimento, e nao a da criptografia."
+        "def": "O módulo que guarda a identidade de um assinante e a chave que o autentica na rede móvel.",
+        "context": "É uma credencial de hardware, e tratá-la assim explica tanto a força quanto a fraqueza mais explorada. A chave nunca sai do cartão, o que é genuinamente forte. A conta por trás dele, porém, é transferível por um atendente - que é o que a troca de SIM ataca, e por que tudo que trata a posse de um número de telefone como prova de identidade herda a segurança de uma central de atendimento, e não a da criptografia."
       },
       "cloud-iam": {
-        "def": "O sistema de permissoes de uma plataforma de nuvem - quem e o que pode chamar qual interface em qual recurso.",
-        "context": "Difere do controle de acesso tradicional porque maquinas sao sujeitos de primeira classe: a maioria das identidades numa conta madura sao cargas de trabalho, e nao pessoas, e as credenciais delas sao emitidas automaticamente. E essa a melhoria e o risco, porque um papel permissivo anexado a uma instancia e alcancavel por qualquer coisa que rode codigo nela. O achado recorrente e escopo - curingas concedidos na implantacao e nunca estreitados, porque ninguem sabe qual deles agora sustenta algo."
+        "def": "O sistema de permissões de uma plataforma de nuvem - quem e o que pode chamar qual interface em qual recurso.",
+        "context": "Difere do controle de acesso tradicional porque máquinas são sujeitos de primeira classe: a maioria das identidades numa conta madura são cargas de trabalho, e não pessoas, e as credenciais delas são emitidas automaticamente. É essa a melhoria e o risco, porque um papel permissivo anexado a uma instância é alcançável por qualquer coisa que rode código nela. O achado recorrente é escopo - curingas concedidos na implantação e nunca estreitados, porque ninguém sabe qual deles agora sustenta algo."
       },
       "spot-instance": {
-        "def": "Capacidade ociosa de nuvem vendida barato sob a condicao de poder ser retomada com pouco aviso.",
-        "context": "E o exemplo mais claro de preco expressando uma garantia: a mesma maquina custa uma fracao da tarifa sob demanda porque o provedor mantem o direito de retoma-la. Isso a torna otima para trabalho que pode ser interrompido e recomecado, e uma armadilha para qualquer coisa que guarde estado. Projetar para ela e a mesma disciplina de projetar para falha, e e por isso que equipes que a usam bem costumam ter melhor comportamento de recuperacao em todo o resto."
+        "def": "Capacidade ociosa de nuvem vendida barato sob a condição de poder ser retomada com pouco aviso.",
+        "context": "É o exemplo mais claro de preço expressando uma garantia: a mesma máquina custa uma fração da tarifa sob demanda porque o provedor mantém o direito de retomá-la. Isso a torna ótima para trabalho que pode ser interrompido e recomeçado, e uma armadilha para qualquer coisa que guarde estado. Projetar para ela é a mesma disciplina de projetar para falha, e é por isso que equipes que a usam bem costumam ter melhor comportamento de recuperação em todo o resto."
       },
       "edge-computing": {
-        "def": "Rodar computacao perto de onde o dado e produzido ou consumido, em vez de manda-lo antes para um lugar central.",
-        "context": "O motivo em geral e latencia e as vezes lei: a fisica impoe um piso a ida e volta ate uma regiao distante, e regras de residencia de dados podem proibir a viagem por completo. O custo e multiplicacao operacional - a mesma carga passa a rodar em muitos lugares que voce nao controla fisicamente, com os problemas de atualizacao, monitoracao e gestao de chaves que decorrem. E uma decisao de distribuicao antes de ser tecnologia."
+        "def": "Rodar computação perto de onde o dado é produzido ou consumido, em vez de mandá-lo antes para um lugar central.",
+        "context": "O motivo em geral é latência e às vezes lei: a física impõe um piso à ida e volta até uma região distante, e regras de residência de dados podem proibir a viagem por completo. O custo é multiplicação operacional - a mesma carga passa a rodar em muitos lugares que você não controla fisicamente, com os problemas de atualização, monitoração e gestão de chaves que decorrem. É uma decisão de distribuição antes de ser tecnologia."
       },
       "deprovisioning": {
-        "def": "Remover o acesso de uma identidade quando uma pessoa sai ou um papel muda - a metade do ciclo de vida por que ninguem esta esperando.",
-        "context": "O provisionamento tem publico impaciente e o desprovisionamento nao tem nenhum, e e por isso que acesso se acumula e saidas deixam contas para tras. O residuo perigoso raramente e a conta principal do diretorio, que alguem desabilita, e sim tudo que e federado, local ou entre maquinas e foi concedido a parte: uma chave num repositorio, uma conta no portal de um fornecedor, um token num trabalho agendado. A pergunta mensuravel e quanto tempo depois de uma saida a ultima credencial morre."
+        "def": "Remover o acesso de uma identidade quando uma pessoa sai ou um papel muda - a metade do ciclo de vida por que ninguém está esperando.",
+        "context": "O provisionamento tem público impaciente e o desprovisionamento não tem nenhum, e é por isso que acesso se acumula e saídas deixam contas para trás. O resíduo perigoso raramente é a conta principal do diretório, que alguém desabilita, e sim tudo que é federado, local ou entre máquinas e foi concedido à parte: uma chave num repositório, uma conta no portal de um fornecedor, um token num trabalho agendado. A pergunta mensurável é quanto tempo depois de uma saída a última credencial morre."
       },
       "transaction": {
-        "def": "Um grupo de operacoes que ou todas surtem efeito ou nenhuma surte, sem deixar estado visivel pela metade.",
-        "context": "A garantia e o que permite raciocinar sobre um sistema: dinheiro se move entre duas contas sem um instante em que nao esteja em nenhuma. E tambem cara, e sistemas distribuidos gastam a maior parte do esforco de projeto decidindo quanto dela abrir mao - e e por isso que a pergunta interessante sobre qualquer sistema de armazenamento e o que ele promete ENTRE maquinas, e nao dentro de uma."
+        "def": "Um grupo de operações que ou todas surtem efeito ou nenhuma surte, sem deixar estado visível pela metade.",
+        "context": "A garantia é o que permite raciocinar sobre um sistema: dinheiro se move entre duas contas sem um instante em que não esteja em nenhuma. É também cara, e sistemas distribuídos gastam a maior parte do esforço de projeto decidindo quanto dela abrir mão - e é por isso que a pergunta interessante sobre qualquer sistema de armazenamento é o que ele promete ENTRE máquinas, e não dentro de uma."
       },
       "data-classification": {
-        "def": "Decidir qual dado e sensivel e como cada classe deve ser tratada - o passo de que todo outro controle de dados depende.",
-        "context": "Ela falha de um jeito especifico: um esquema com cinco niveis que ninguem aplica e pior que dois que todo mundo aplica, porque controles atrelados a rotulos nao fazem nada quando os rotulos faltam ou estao errados. A versao viavel e grosseira, automatica onde der, e ligada a uma consequencia que as pessoas veem. Se nada se comporta diferente depois que algo e rotulado confidencial, o exercicio produziu papelada, e nao protecao."
+        "def": "Decidir qual dado é sensível e como cada classe deve ser tratada - o passo de que todo outro controle de dados depende.",
+        "context": "Ela falha de um jeito específico: um esquema com cinco níveis que ninguém aplica é pior que dois que todo mundo aplica, porque controles atrelados a rótulos não fazem nada quando os rótulos faltam ou estão errados. A versão viável é grosseira, automática onde der, e ligada a uma consequência que as pessoas veem. Se nada se comporta diferente depois que algo é rotulado confidencial, o exercício produziu papelada, e não proteção."
       },
       "bssid": {
-        "def": "O identificador de um radio especifico numa rede sem fio - na pratica o endereco do proprio ponto de acesso, distinto do nome da rede.",
-        "context": "Um nome pode ser servido por centenas de radios, e o cliente escolhe entre eles; o identificador e como se sabe a qual ele de fato se associou. Isso faz dele o campo que importa em diagnostico sem fio, porque uma reclamacao sobre a rede em geral e uma reclamacao sobre um ponto de acesso, e o agregado esconde isso. E tambem como se distingue um invasor anunciando o nome da sua rede do seu proprio equipamento."
+        "def": "O identificador de um rádio específico numa rede sem fio - na prática o endereço do próprio ponto de acesso, distinto do nome da rede.",
+        "context": "Um nome pode ser servido por centenas de rádios, e o cliente escolhe entre eles; o identificador é como se sabe a qual ele de fato se associou. Isso faz dele o campo que importa em diagnóstico sem fio, porque uma reclamação sobre a rede em geral é uma reclamação sobre um ponto de acesso, e o agregado esconde isso. É também como se distingue um invasor anunciando o nome da sua rede do seu próprio equipamento."
       },
       "channel-width": {
-        "def": "Quanto espectro um canal sem fio ocupa - mais largo carrega mais por transmissao e deixa menos canais sem sobreposicao.",
-        "context": "E a troca mais clara do projeto sem fio e a mais comumente errada: o ajuste mais largo da o melhor teste de velocidade com um cliente e o pior comportamento em implantacao densa, porque todo ponto de acesso vizinho passa a se sobrepor e eles se revezam em vez de trabalhar em paralelo. Num escritorio a resposta certa costuma ser mais estreita que o padrao, e esse e um argumento que precisa ser feito contra um numero que todo mundo ve no notebook."
+        "def": "Quanto espectro um canal sem fio ocupa - mais largo carrega mais por transmissão e deixa menos canais sem sobreposição.",
+        "context": "É a troca mais clara do projeto sem fio e a mais comumente errada: o ajuste mais largo dá o melhor teste de velocidade com um cliente e o pior comportamento em implantação densa, porque todo ponto de acesso vizinho passa a se sobrepor e eles se revezam em vez de trabalhar em paralelo. Num escritório a resposta certa costuma ser mais estreita que o padrão, e esse é um argumento que precisa ser feito contra um número que todo mundo vê no notebook."
       },
       "eap-tls": {
-        "def": "Autenticacao sem fio e cabeada usando certificados dos dois lados, em vez de senha compartilhada.",
-        "context": "E a opcao comum mais forte porque nao ha senha para compartilhar, afixar ou levar para um ex-empregador, e cada dispositivo se autentica como si mesmo. O custo e um ciclo de vida de certificado para cada ponta, que e a razao de implantacoes travarem. A configuracao errada frequente merece nome: um cliente que nao valida o certificado do servidor se autentica alegremente a um impostor, o que transforma a opcao mais forte numa oportunidade de colheita de credenciais."
+        "def": "Autenticação sem fio e cabeada usando certificados dos dois lados, em vez de senha compartilhada.",
+        "context": "É a opção comum mais forte porque não há senha para compartilhar, afixar ou levar para um ex-empregador, e cada dispositivo se autentica como si mesmo. O custo é um ciclo de vida de certificado para cada ponta, que é a razão de implantações travarem. A configuração errada frequente merece nome: um cliente que não valida o certificado do servidor se autentica alegremente a um impostor, o que transforma a opção mais forte numa oportunidade de colheita de credenciais."
       },
       "http2": {
-        "def": "Uma revisao que multiplexa muitas requisicoes numa conexao e comprime cabecalhos, sem mudar o que uma requisicao significa.",
-        "context": "Ela corrigiu o desperdicio principal da epoca - navegadores abrindo varias conexoes e enfileirando requisicoes umas atras das outras - pondo fluxos independentes numa conexao. A limitacao e herdada de baixo: os fluxos sao independentes para a aplicacao e nao para o TCP, entao um pacote perdido trava todos, que e o bloqueio de cabeca de fila que o QUIC foi desenhado para remover. O outro legado e operacional, ja que uma conexao unica e longa se comporta de forma diferente atraves de proxies do que muitas curtas."
+        "def": "Uma revisão que multiplexa muitas requisições numa conexão e comprime cabeçalhos, sem mudar o que uma requisição significa.",
+        "context": "Ela corrigiu o desperdício principal da época - navegadores abrindo várias conexões e enfileirando requisições umas atrás das outras - pondo fluxos independentes numa conexão. A limitação é herdada de baixo: os fluxos são independentes para a aplicação e não para o TCP, então um pacote perdido trava todos, que é o bloqueio de cabeça de fila que o QUIC foi desenhado para remover. O outro legado é operacional, já que uma conexão única e longa se comporta de forma diferente através de proxies do que muitas curtas."
       },
       "http3": {
-        "def": "HTTP carregado sobre QUIC em UDP, para que perda num fluxo nao trave mais os outros.",
-        "context": "Mudar para UDP e o que remove o bloqueio de cabeca de fila, e traz consequencias alem de velocidade. O transporte e cifrado, entao middleboxes veem bem menos e classificar trafego por inspecao praticamente para de funcionar. Conexoes sobrevivem a troca de endereco, e e por isso que um celular que muda de rede mantem a sessao. E redes que bloqueiam UDP forcam o retorno a versao anterior, o que costuma funcionar e custa o beneficio em silencio."
+        "def": "HTTP carregado sobre QUIC em UDP, para que perda num fluxo não trave mais os outros.",
+        "context": "Mudar para UDP é o que remove o bloqueio de cabeça de fila, e traz consequências além de velocidade. O transporte é cifrado, então middleboxes veem bem menos e classificar tráfego por inspeção praticamente para de funcionar. Conexões sobrevivem à troca de endereço, e é por isso que um celular que muda de rede mantém a sessão. E redes que bloqueiam UDP forçam o retorno à versão anterior, o que costuma funcionar e custa o benefício em silêncio."
       },
       "user-agent": {
-        "def": "O cliente se identificando num cabecalho - uma alegacao, e nao um fato, e uma das mentiras mais antigas da web.",
-        "context": "A string e famosa por ter se acumulado: navegadores alegam ser outros navegadores porque sites um dia testaram nomes em vez de capacidades, entao quase todo agente moderno afirma uma linhagem que nao tem. Dois pontos praticos sobrevivem a essa historia. Qualquer coisa relevante para seguranca que dependa dele e contornada trivialmente, ja que o cliente escolhe o que enviar. E ele e entrada de identificacao por impressao digital, e e por isso que navegadores hoje reduzem o que ele revela, em vez de acrescentar."
+        "def": "O cliente se identificando num cabeçalho - uma alegação, e não um fato, e uma das mentiras mais antigas da web.",
+        "context": "A string é famosa por ter se acumulado: navegadores alegam ser outros navegadores porque sites um dia testaram nomes em vez de capacidades, então quase todo agente moderno afirma uma linhagem que não tem. Dois pontos práticos sobrevivem a essa história. Qualquer coisa relevante para segurança que dependa dele é contornada trivialmente, já que o cliente escolhe o que enviar. E ele é entrada de identificação por impressão digital, e é por isso que navegadores hoje reduzem o que ele revela, em vez de acrescentar."
       },
       "spam-filter": {
-        "def": "O sistema que decide qual mensagem chega a uma pessoa - o julgamento automatizado mais consequente que a maioria das organizacoes opera.",
-        "context": "E mais um problema de falso positivo que de deteccao: deixar spam passar e chateacao, e bloquear uma fatura, uma proposta de emprego ou a resposta de um cliente e incidente de negocio, e e por isso que quarentena e liberacao existem. E tambem o primeiro controle que um atacante testa, porque entrega e a pre-condicao do phishing, e a razao de os registros de autenticacao de um dominio importarem a todos que recebem mensagens dele, e nao so ao dono."
+        "def": "O sistema que decide qual mensagem chega a uma pessoa - o julgamento automatizado mais consequente que a maioria das organizações opera.",
+        "context": "É mais um problema de falso positivo que de detecção: deixar spam passar é chateação, e bloquear uma fatura, uma proposta de emprego ou a resposta de um cliente é incidente de negócio, e é por isso que quarentena e liberação existem. É também o primeiro controle que um atacante testa, porque entrega é a pré-condição do phishing, e a razão de os registros de autenticação de um domínio importarem a todos que recebem mensagens dele, e não só ao dono."
       },
       "audit": {
-        "def": "Um exame independente de se os controles existem e operam como descrito, produzindo uma opiniao em que um terceiro pode se apoiar.",
-        "context": "A independencia e o produto: uma revisao interna acha mais e convence menos. O que auditores testam em geral e uma amostra contra um controle declarado, o que significa que o resultado diz que o controle funcionou naquelas ocasioes, e nao sempre - distincao que vale segurar quando um relatorio limpo encontra um incidente real. A preparacao util nao e arrumar evidencia antes da visita, e sim manter registros que o proprio processo ja produz."
+        "def": "Um exame independente de se os controles existem e operam como descrito, produzindo uma opinião em que um terceiro pode se apoiar.",
+        "context": "A independência é o produto: uma revisão interna acha mais e convence menos. O que auditores testam em geral é uma amostra contra um controle declarado, o que significa que o resultado diz que o controle funcionou naquelas ocasiões, e não sempre - distinção que vale segurar quando um relatório limpo encontra um incidente real. A preparação útil não é arrumar evidência antes da visita, e sim manter registros que o próprio processo já produz."
       },
       "control-framework": {
-        "def": "Um conjunto publicado de controles usado como referencia comum - para que uma organizacao descreva o que faz em termos que os outros reconhecem.",
-        "context": "O valor e vocabulario compartilhado, e nao novidade: nada num arcabouco e desconhecido de um profissional competente, e o ponto e que um cliente, uma seguradora e um regulador consigam ler o mesmo mapa. A falha e adota-lo como lista de tarefas, o que produz cobertura uniforme em vez de defesa onde e preciso. Arcaboucos descrevem o que considerar, e a organizacao ainda precisa decidir o que o proprio risco exige."
+        "def": "Um conjunto publicado de controles usado como referência comum - para que uma organização descreva o que faz em termos que os outros reconhecem.",
+        "context": "O valor é vocabulário compartilhado, e não novidade: nada num arcabouço é desconhecido de um profissional competente, e o ponto é que um cliente, uma seguradora e um regulador consigam ler o mesmo mapa. A falha é adotá-lo como lista de tarefas, o que produz cobertura uniforme em vez de defesa onde é preciso. Arcabouços descrevem o que considerar, e a organização ainda precisa decidir o que o próprio risco exige."
       },
       "luigi-galvani": {
         "def": "O médico que viu pernas de rã morta se contraírem ao toque de metais diferentes em 1780 e chamou aquilo de eletricidade animal.",
@@ -17497,6 +18281,8 @@
       "carrier": "Operadora",
       "datacentre": "Data center"
     },
+    "storyBeginsLabel": "A história começa em:",
+    "foundedCompanyLabel": "Ano de fundação:",
     "originLabel": "Origem:",
     "officialLabel": "Da própria empresa",
     "officialSite": "Site oficial",

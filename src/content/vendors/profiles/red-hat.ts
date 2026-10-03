@@ -4,8 +4,12 @@
 // RED HAT - the company that made open source a business model, and IBM's
 // largest acquisition. Knowledge-based, well-documented (2026-07-15): Marc
 // Ewing's Red Hat Linux ships 1994 (the fedora-hat name from his Cornell
-// lacrosse cap); Bob Young's ACC Corporation merges with Ewing's work to
-// incorporate Red Hat Software 1995; IPO August 1999 - one of Wall Street's
+// lacrosse cap); Bob Young's ACC Corp., Inc. - incorporated in Connecticut in
+// March 1993 - takes in Ewing's work and renames itself Red Hat Software in
+// September 1995 (corrected 2026-10-02 against Red Hat's own 1999 IPO
+// prospectus, which records a rename, not a new incorporation, and dates the
+// company to 1993; the founding below previously said 1995 while the industry
+// card said 1994 and its own body 1993); IPO August 1999 - one of Wall Street's
 // largest first-day pops of the dot-com era; RHEL model debuts 2002 with
 // Fedora as the community project from 2003; JBoss 2006, Ansible 2015,
 // CoreOS 2018; IBM's ~$34B acquisition closed July 9, 2019 - then the
@@ -20,15 +24,17 @@ export const redHatProfile: VendorProfile = {
   foundings: [
     {
       company: "Red Hat",
-      year: 1995,
-      place: "Durham, North Carolina",
+      year: 1993,
+      place: "Connecticut (as ACC Corp., Inc.); later Durham, North Carolina",
       founders: ["Bob Young", "Marc Ewing"],
       story:
-        "Marc Ewing built his Linux distribution in 1994 and named it for the red Cornell lacrosse cap he wore; Bob Young was selling Linux CDs out of a catalog business and knew distribution when he saw it. Their 1995 merger incorporated Red Hat Software around a heretical idea: give the software away and sell the trust - packaging, updates, certification, support. The August 1999 IPO, one of the wildest first days of the dot-com era, put a market price on that idea; the 2002 pivot to Red Hat Enterprise Linux perfected it. Subscriptions to open source became a business the size of a software giant - which is exactly what eventually bought it.",
+        "Marc Ewing built his Linux distribution in 1994 and named it for the red Cornell lacrosse cap he wore; Bob Young was selling Linux CDs out of a catalog business, incorporated in 1993 as ACC Corp., and knew distribution when he saw it. In 1995 the two businesses combined and Young's company took the name Red Hat Software, built around a heretical idea: give the software away and sell the trust - packaging, updates, certification, support. The August 1999 IPO, one of the wildest first days of the dot-com era, put a market price on that idea; the 2002 pivot to Red Hat Enterprise Linux perfected it. Subscriptions to open source became a business the size of a software giant - which is exactly what eventually bought it.",
+      sourceNote:
+        "Red Hat's IPO prospectus (SEC Form 424B1, 11 August 1999) records the corporate line: incorporated in Connecticut in March 1993 as ACC Corp., Inc.; renamed Red Hat Software, Inc. in September 1995; reincorporated in Delaware in September 1998; renamed Red Hat, Inc. in June 1999. Wikipedia describes the 1995 step as Young buying Ewing's business and flags that sentence for clarification.",
     },
   ],
   timeline: [
-    { year: 1994, title: "Red Hat Linux ships", detail: "Ewing's distribution arrives with RPM package management on the way - Linux made installable for people with jobs; Young's merger incorporates Red Hat Software the following year." },
+    { year: 1994, title: "Red Hat Linux ships", detail: "Ewing's distribution arrives with RPM package management on the way - Linux made installable for people with jobs; the following year Young's company, incorporated in 1993 as ACC Corp., takes the name Red Hat Software." },
     { year: 1999, title: "The IPO heard round the Valley", detail: "The August listing rockets on day one - open source arrives on Wall Street, with Red Hat as the proof that free software could carry a ticker." },
     { year: 2002, title: "RHEL: the model perfected", detail: "Red Hat Enterprise Linux splits the stable, certified, subscription product from the fast-moving community stream - Fedora, from 2003 - creating the template every open-source business since has studied." },
     { year: 2006, title: "Up the stack: JBoss", detail: "The JBoss acquisition adds middleware; Ansible (2015) later adds automation and CoreOS (2018) adds container-Linux DNA - each one widening subscriptions beyond the operating system." },

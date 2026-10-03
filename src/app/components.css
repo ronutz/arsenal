@@ -17311,3 +17311,268 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .panos-shadow li:last-child { border-bottom: none; }
 .panos-cross { color: var(--status-warning, #fbbf24); }
 .panos-differs { color: var(--status-danger, #f87171); }
+
+/* WHOSE FOUNDING YEAR IS THIS (PRIME 2026-10-02: "founding should be of the
+   entry itself. Ancestor founding should be made explicit what it is").
+   Twenty cards show a year that belongs to a company the card is not named
+   for: either one member of a combined lineage (1895 on "Nortel & Bay
+   Networks" is Northern Electric and Manufacturing) or an earlier name of the
+   same company (1875 on Toshiba is Shibaura Seisakusho). Rendered beside the
+   year so a bare number cannot imply the wrong founding.
+
+   Mirrors .vendor-card-origin deliberately: same metadata line, same middot
+   separator, same recessive label. A new visual pattern here would make the
+   line read as three unrelated things instead of one row of metadata. */
+.vendor-card-founded-company {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.vendor-card-founded-company::before {
+  content: "\00b7";
+  margin: 0 0.75rem 0 0.65rem;
+  opacity: 0.45;
+}
+
+.vendor-card-founded-company-label {
+  /* Recessive, like the origin label: the label names the field, the value
+     carries it. */
+  opacity: 0.7;
+}
+
+/* ===========================================================================
+   iRules / Tcl teaching tools  (the eight F5Irules*Tool components and the
+   shared pieces in src/components/TclTeachParts.tsx). Prefix: tcl-.
+   Built only from the semantic tokens, so every theme (the dark set and the
+   light "reader" theme) recolours them without any per-theme rule here.
+   Roles on the character ruler use fill for "what it is" (result, field,
+   converted) and an inset ring for "where the eye should go" (match, first
+   difference, stop), so two roles on one character stay readable together.
+   =========================================================================== */
+
+/* Root: the tool card's children stack with one rhythm. Ligatures are off so
+   operators read as typed: == stays two characters, not one long bar. */
+.tcl-tool { display: flex; flex-direction: column; gap: 1rem; }
+.tcl-tool code, .tcl-tool pre, .tcl-tool input, .tcl-tool textarea, .tcl-tool .tcl-chip, .tcl-tool .tcl-code { font-variant-ligatures: none; }
+.tcl-tool > .jwt-results { margin-top: 0.25rem; }
+
+/* Toolbar: a mode toggle or selector on the left, Example / Clear on the right. */
+.tcl-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.75rem; }
+
+/* Fields side by side, stacking on narrow screens. */
+.tcl-fields { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: flex-end; }
+.tcl-fields-top { margin-top: 0.85rem; }
+.tcl-inline-field { display: flex; flex-direction: column; gap: 0.35rem; flex: 1 1 12rem; min-width: 0; }
+.tcl-inline-field .cidr-label { margin-bottom: 0; }
+.tcl-inline-field .cidr-input { min-width: 0; width: 100%; }
+.tcl-select { cursor: pointer; }
+.tcl-short { min-height: 3.2rem; resize: vertical; }
+.tcl-check { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; color: var(--text-secondary); padding-bottom: 0.55rem; }
+
+/* The expression shown inside the braces it would sit in. */
+.tcl-braced { display: flex; align-items: center; gap: 0.5rem; }
+.tcl-braced-edge { font-family: var(--font-mono); color: var(--text-secondary); white-space: nowrap; }
+.tcl-braced .cidr-input { flex: 1 1 auto; min-width: 0; }
+
+/* Segmented toggle (Tcl 8.4 / iRules, findstr / substr / getfield). */
+.tcl-seg { display: inline-flex; border: 1px solid var(--border-strong); border-radius: var(--radius-md); overflow: hidden; }
+.tcl-seg-btn { appearance: none; border: 0; background: var(--surface-elevated); color: var(--text-secondary); font: inherit; font-size: 0.85rem; padding: 0.42rem 0.9rem; cursor: pointer; }
+.tcl-seg-btn + .tcl-seg-btn { border-left: 1px solid var(--border-strong); }
+.tcl-seg-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--accent-primary) 18%, var(--surface-elevated)); color: var(--text-primary); font-weight: 600; }
+.tcl-seg-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: -2px; }
+
+/* Preset chips: one click loads a named example. */
+.tcl-presets { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 0.75rem; }
+.tcl-presets-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+.tcl-presets-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tcl-chip { appearance: none; border: 1px solid var(--border-subtle); background: var(--surface-base); color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.2; padding: 0.3rem 0.6rem; border-radius: 999px; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.tcl-chip:hover { border-color: var(--accent-primary); color: var(--text-primary); }
+.tcl-chip[aria-pressed="true"] { border-color: var(--accent-primary); color: var(--text-primary); background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-base)); }
+.tcl-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* Verdict boxes: the outcome first, in a tint that says how it went. */
+.tcl-verdict { margin: 0; padding: 0.8rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); background: var(--surface-elevated); color: var(--text-primary); overflow-wrap: anywhere; }
+.tcl-verdict p { margin: 0; }
+.tcl-verdict > * + * { margin-top: 0.35rem; }
+.tcl-verdict-ok { border-color: color-mix(in srgb, var(--color-success) 45%, transparent); background: color-mix(in srgb, var(--color-success) 9%, var(--surface-base)); }
+.tcl-verdict-bad { border-color: color-mix(in srgb, var(--color-danger) 50%, transparent); background: color-mix(in srgb, var(--color-danger) 10%, var(--surface-base)); }
+.tcl-verdict-warn { border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent); background: color-mix(in srgb, var(--accent-amber) 10%, var(--surface-base)); }
+.tcl-verdict-label { font-weight: 600; margin-right: 0.35rem; }
+.tcl-big { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 600; }
+.tcl-caret { margin: 0.2rem 0 0; font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-danger); white-space: pre; overflow-x: auto; }
+
+/* The number tool's headline. */
+.tcl-hero { display: flex; flex-direction: column; gap: 0.4rem; }
+.tcl-hero-kind { margin: 0; }
+.tcl-hero-value { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem; }
+.tcl-hero-value code { font-family: var(--font-mono); font-size: clamp(1.6rem, 5vw, 2.3rem); font-weight: 700; color: var(--accent-primary); overflow-wrap: anywhere; }
+.tcl-hero-label { font-size: 0.85rem; }
+.tcl-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.55rem; border-radius: 999px; border: 1px solid currentColor; }
+.tcl-badge-int { color: var(--accent-primary); }
+.tcl-badge-double { color: var(--color-info); }
+.tcl-badge-not-number { color: var(--color-danger); }
+
+/* Small utilities. */
+.tcl-muted { color: var(--text-secondary); }
+.tcl-small { font-size: 0.78rem; }
+.tcl-wrap { overflow-wrap: anywhere; word-break: break-all; }
+.tcl-tone-ok { color: var(--color-success); }
+.tcl-tone-bad { color: var(--color-danger); }
+.tcl-tone-warn { color: var(--accent-amber); }
+.tcl-held { display: inline-block; margin-left: 0.4rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.05rem 0.35rem; vertical-align: middle; }
+.tcl-outcome { margin: 0.5rem 0 0.25rem; font-size: 0.9rem; overflow-wrap: anywhere; }
+.tcl-outcome code { font-family: var(--font-mono); }
+
+/* Pills: values, true / false, errors. */
+.tcl-pill { display: inline-block; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.3; padding: 0.12rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--surface-elevated); color: var(--text-primary); overflow-wrap: anywhere; max-width: 100%; }
+.tcl-pill-value { border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.tcl-pill-true { color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 55%, transparent); }
+.tcl-pill-false { color: var(--text-secondary); }
+.tcl-pill-bad { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); font-family: inherit; }
+.tcl-pill-warn { color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); font-family: inherit; }
+.tcl-pill-muted { color: var(--text-secondary); font-family: inherit; font-style: italic; }
+
+/* Notes: plain explanations, with undocumented cases flagged in amber. */
+.tcl-notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.tcl-note { font-size: 0.88rem; line-height: 1.55; color: var(--text-primary); padding: 0.55rem 0.8rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.tcl-note-flag { border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base)); }
+.tcl-note code, .tcl-node-notes code, .hmac-build-note code { font-family: var(--font-mono); font-size: 0.92em; }
+.tcl-flag-label { display: inline-block; margin-right: 0.4rem; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-amber); }
+
+/* Tables and pair lists. */
+.tcl-table-wrap { overflow-x: auto; }
+.tcl-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.tcl-table th, .tcl-table td { text-align: left; vertical-align: top; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--border-subtle); }
+.tcl-table thead th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
+.tcl-table tbody th { font-weight: 600; color: var(--text-secondary); white-space: nowrap; }
+.tcl-table code { font-family: var(--font-mono); overflow-wrap: anywhere; }
+.tcl-pairs { display: grid; grid-template-columns: minmax(6rem, max-content) 1fr; gap: 0.35rem 1rem; margin: 0; font-size: 0.88rem; }
+.tcl-pairs-name { color: var(--text-secondary); }
+.tcl-pairs-value { margin: 0; overflow-wrap: anywhere; }
+.tcl-pairs-value code { font-family: var(--font-mono); }
+.tcl-pool-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; }
+
+/* Two cards side by side. */
+.tcl-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); gap: 0.85rem; }
+.tcl-card { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; background: var(--surface-base); min-width: 0; }
+.tcl-card-title { margin: 0 0 0.5rem; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* The character ruler. */
+.tcl-ruler { display: flex; flex-direction: column; gap: 0.5rem; }
+.tcl-ruler-caption { margin: 0; font-size: 0.8rem; color: var(--text-secondary); }
+.tcl-ruler-scroll { overflow-x: auto; padding-bottom: 0.2rem; }
+.tcl-cells { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px; }
+.tcl-cell { display: inline-flex; flex-direction: column; align-items: center; min-width: 1.55rem; padding: 0.22rem 0.12rem 0.12rem; border-radius: var(--radius-sm); background: var(--surface-elevated); border: 1px solid var(--border-subtle); }
+.tcl-cell-ch { font-family: var(--font-mono); font-size: 1rem; line-height: 1.25; color: var(--text-primary); white-space: pre; }
+.tcl-cell-i { font-family: var(--font-mono); font-size: 0.6rem; line-height: 1.2; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.tcl-cell-empty { min-width: 3rem; }
+.tcl-legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: 0.78rem; color: var(--text-secondary); }
+.tcl-key { display: inline-flex; align-items: center; gap: 0.4rem; }
+.tcl-swatch { display: inline-block; width: 0.95rem; height: 0.95rem; border-radius: 3px; background: var(--surface-elevated); border: 1px solid var(--border-subtle); }
+
+/* Ruler roles: fills. */
+.tcl-r-result { background: color-mix(in srgb, var(--accent-primary) 24%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
+.tcl-r-window { background: color-mix(in srgb, var(--text-secondary) 14%, var(--surface-elevated)); }
+.tcl-r-replaced { background: color-mix(in srgb, var(--color-info) 26%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--color-info) 60%, transparent); }
+.tcl-r-terminator { background: color-mix(in srgb, var(--color-danger) 20%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.tcl-r-separator { background: color-mix(in srgb, var(--accent-amber) 24%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); }
+.tcl-r-field { background: color-mix(in srgb, var(--color-success) 22%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--color-success) 55%, transparent); }
+.tcl-r-consumed { background: color-mix(in srgb, var(--accent-primary) 24%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); }
+.tcl-r-consumed-alt { background: color-mix(in srgb, var(--color-success) 22%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--color-success) 55%, transparent); }
+/* Ruler roles: dimmed or struck through. */
+.tcl-r-skipped .tcl-cell-ch, .tcl-r-trimmed .tcl-cell-ch { text-decoration: line-through; text-decoration-thickness: 2px; color: var(--text-secondary); }
+.tcl-r-skipped, .tcl-r-trimmed { background: var(--surface-base); border-style: dashed; }
+/* Ruler roles: rings, which sit on top of any fill. */
+.tcl-r-match { box-shadow: inset 0 0 0 2px var(--accent-amber); }
+.tcl-r-differ, .tcl-r-stop { box-shadow: inset 0 0 0 2px var(--color-danger); }
+.tcl-swatch.tcl-r-match { background: var(--surface-elevated); }
+
+/* The evaluation tree: operands nested under their operator. */
+.tcl-tree, .tcl-tree-kids { list-style: none; margin: 0; padding: 0; }
+.tcl-tree-kids { margin-top: 0.45rem; padding-left: 1rem; border-left: 1px dashed var(--border-strong); display: flex; flex-direction: column; gap: 0.45rem; }
+.tcl-node { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.tcl-node-head { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; }
+.tcl-node-src { font-family: var(--font-mono); font-size: 0.82rem; padding: 0.12rem 0.45rem; border-radius: var(--radius-sm); background: var(--surface-elevated); border: 1px solid var(--border-subtle); color: var(--text-primary); overflow-wrap: anywhere; max-width: 100%; }
+.tcl-node-arrow { color: var(--text-secondary); }
+.tcl-node-notes { list-style: none; margin: 0; padding: 0 0 0 0.2rem; display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.82rem; line-height: 1.5; color: var(--text-secondary); }
+.tcl-node-platform { color: var(--accent-amber); }
+.tcl-node-skipped > .tcl-node-head .tcl-node-src { opacity: 0.55; text-decoration: line-through; }
+.tcl-node-error > .tcl-node-head .tcl-node-src { border-color: color-mix(in srgb, var(--color-danger) 60%, transparent); }
+
+/* Numbered code with marked lines. */
+.tcl-code { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem 0; overflow-x: auto; }
+.tcl-code-line { display: grid; grid-template-columns: 2.8rem max-content; min-width: max-content; }
+.tcl-ln { text-align: right; padding-right: 0.8rem; color: var(--text-secondary); user-select: none; font-variant-numeric: tabular-nums; }
+.tcl-code-text { white-space: pre; padding-right: 1rem; color: var(--text-primary); }
+.tcl-code-error { background: color-mix(in srgb, var(--color-danger) 16%, transparent); }
+.tcl-code-warning { background: color-mix(in srgb, var(--accent-amber) 15%, transparent); }
+.tcl-code-info { background: color-mix(in srgb, var(--color-info) 12%, transparent); }
+.tcl-code-hit { background: color-mix(in srgb, var(--accent-primary) 14%, transparent); }
+
+/* string map: the single pass. */
+.tcl-map { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; }
+.tcl-map-step { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+.tcl-map-step code { font-family: var(--font-mono); }
+.tcl-map-at { font-family: var(--font-mono); font-size: 0.72rem; min-width: 2rem; text-align: right; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.tcl-map-replace code { color: var(--color-info); }
+
+/* The script stepper: one entry per command, indented by depth. */
+.tcl-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.tcl-step { margin-left: calc(min(var(--tcl-depth, 0), 6) * 1.1rem); padding: 0.6rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
+.tcl-step-error { border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.tcl-step-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+.tcl-step-n { display: inline-grid; place-items: center; min-width: 1.5rem; height: 1.5rem; padding: 0 0.3rem; border-radius: 999px; font-size: 0.72rem; font-weight: 700; font-variant-numeric: tabular-nums; background: var(--surface-elevated); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
+.tcl-step-src { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); overflow-wrap: anywhere; }
+.tcl-step-out { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem; }
+.tcl-words { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem; }
+.tcl-word { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.08rem 0.4rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--text-primary); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+.tcl-changes { list-style: none; margin: 0; padding: 0; font-size: 0.82rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.15rem; }
+.tcl-changes code { font-family: var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
+
+/* Disclosure blocks (sample request, expression trees, tmsh). */
+.tcl-details { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.55rem 0.8rem; background: var(--surface-base); }
+.tcl-details > summary { cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); }
+.tcl-details > summary code { font-family: var(--font-mono); color: var(--text-primary); }
+.tcl-details[open] > summary { margin-bottom: 0.6rem; }
+.tcl-expr-details { padding: 0.45rem 0.65rem; }
+
+/* The conditional builder: rule rows and the three forms. */
+.tcl-rules { list-style: none; margin: 0 0 0.75rem; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.tcl-rule-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.tcl-rule-row .cidr-input { flex: 1 1 9rem; min-width: 0; padding: 0.5rem 0.7rem; font-size: 0.9rem; }
+.tcl-rule-row .tcl-select { flex: 0 1 11rem; }
+.tcl-rule-actions { display: inline-flex; gap: 0.3rem; }
+.tcl-rule-actions .b64-copy:disabled { opacity: 0.4; cursor: not-allowed; }
+.tcl-forms { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); gap: 1rem; }
+.tcl-form { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; background: var(--surface-base); display: flex; flex-direction: column; gap: 0.6rem; min-width: 0; }
+.tcl-form .jwt-panel-title { margin: 0; }
+.tcl-form-pool { margin: 0; font-size: 0.88rem; color: var(--text-secondary); }
+/* A form's name and its Copy button share one row; they wrap on a narrow pane. */
+.tcl-form-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+/* The Copy button under the tmsh definitions sits apart from the code above it. */
+.tcl-copy-below { margin-top: 0.6rem; }
+
+/* The style checker: findings by line. */
+.tcl-findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.tcl-finding { padding: 0.65rem 0.8rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.tcl-finding-error { border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); }
+.tcl-finding-warning { border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent); }
+.tcl-finding-info { border-color: var(--border-subtle); }
+.tcl-finding-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem; }
+.tcl-rule { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; padding: 0.05rem 0.4rem; border-radius: var(--radius-sm); background: var(--surface-elevated); border: 1px solid var(--border-subtle); color: var(--text-primary); }
+.tcl-finding-title { font-weight: 600; font-size: 0.9rem; }
+.tcl-finding-snippet { display: block; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; overflow-wrap: anywhere; }
+.tcl-finding-msg { margin: 0; font-size: 0.88rem; line-height: 1.55; }
+
+/* scan outcomes. */
+.tcl-out-matched { color: var(--text-secondary); font-family: inherit; }
+.tcl-out-assigned { color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 55%, transparent); font-family: inherit; }
+.tcl-out-suppressed { color: var(--text-secondary); font-family: inherit; font-style: italic; }
+.tcl-out-stopped { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 55%, transparent); font-family: inherit; }
+.tcl-out-out-of-input { color: var(--accent-amber); border-color: color-mix(in srgb, var(--accent-amber) 55%, transparent); font-family: inherit; }
+
+/* Motion: none of this animates, but chips and toggles fade colour only when allowed. */
+@media (prefers-reduced-motion: reduce) {
+  .tcl-chip { transition: none; }
+}

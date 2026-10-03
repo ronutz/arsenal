@@ -8,7 +8,7 @@ relatedArticles: ["tls-cipher-security-keywords", "f5-cipher-rules-and-groups"]
 category: transport
 order: 1
 status: reviewed
-updated: "2026-06-29"
+updated: "2026-10-02"
 ---
 
 Uma cipher string do BIG-IP controla quais cipher suites TLS um perfil SSL oferecerá e em que ordem. Você a encontra no campo `cipher` de uma `ltm cipher rule`, ou digitada diretamente em um perfil SSL. Parece enigmática à primeira vista, mas segue uma gramática pequena e consistente.
@@ -19,7 +19,7 @@ Uma cipher string é uma lista de **conjuntos**, separados por dois-pontos `:`, 
 
 ## Palavras-chave combinadas com mais
 
-Dentro de um conjunto, as **palavras-chave** são unidas com um sinal de mais `+` para estreitar a seleção. Cada palavra-chave restringe uma parte diferente de uma cipher suite: a versão de protocolo (`TLSv1_2`), a troca de chaves e autenticação (`ECDHE`, `RSA`, `ECDHE_ECDSA`), a cifra de bloco (`AES-GCM`, `3DES`) e o MAC ou hash (`SHA256`). Então `TLSv1_2+ECDHE+AES-GCM+SHA384` significa exatamente as suites que são TLS 1.2, usam ECDHE, usam AES (Padrão de Criptografia Avançada, do inglês Advanced Encryption Standard)-GCM e usam SHA-384. Uma palavra-chave isolada como `AES` sem nenhum mais é ampla, correspondendo a todas as suites AES. As palavras-chave não diferenciam maiúsculas de minúsculas, então `tlsv1_2+ecdhe` e `TLSv1_2+ECDHE` são idênticas.
+Dentro de um conjunto, as **palavras-chave** são unidas com um sinal de mais `+` para estreitar a seleção. Cada palavra-chave restringe uma parte diferente de uma cipher suite: a versão de protocolo (`TLSv1_2`), a troca de chaves e autenticação (`ECDHE`, `RSA`, `ECDHE_ECDSA`), a cifra de bloco (`AES-GCM`, `3DES`) e o MAC ou hash (`SHA256`). Então `TLSv1_2+ECDHE+AES-GCM+SHA384` significa exatamente as suites que são TLS 1.2, usam ECDHE, usam AES (Padrão de Criptografia Avançada, do inglês Advanced Encryption Standard)-GCM e usam SHA-384. Uma palavra-chave isolada como `AES` sem nenhum mais é ampla, correspondendo a todas as suites AES. O explicador lê as palavras-chave sem diferenciar maiúsculas de minúsculas, mas nenhuma das páginas da F5 lidas para este artigo diz que o TMM faz o mesmo, e o OpenSSL tratava listas de cifras como sensíveis a maiúsculas até a versão 4.0; então escreva-as como os próprios artigos da F5 escrevem: `TLSv1_2`, `ECDHE`, `AES-GCM`.
 
 ## Operadores
 
@@ -28,10 +28,20 @@ Um conjunto pode carregar um operador inicial que muda o que o BIG-IP faz com el
 - `!` **exclui** o conjunto permanentemente. `!SSLv3` remove todas as suites SSL 3.0, e nada mais adiante na string pode adicioná-las de volta. Essa é a forma segura de proibir cifras fracas.
 - `-` **remove** o conjunto da lista construída até ali, mas um conjunto posterior pode readicioná-lo. É mais fraco que `!`.
 - Um `+` inicial **rebaixa a prioridade** do conjunto, movendo suas suites para o fim da lista em vez de removê-las. Note que isso é diferente do `+` que une palavras-chave dentro de um conjunto.
-- `@STRENGTH` não é um conjunto, mas uma diretiva: reordena tudo o que foi selecionado até ali por comprimento de chave, do mais forte primeiro. `@SPEED` ordena por velocidade de criptografia em vez disso.
+- `@STRENGTH` não é um conjunto, mas uma diretiva: reordena tudo o que foi selecionado até ali por comprimento de chave, do mais forte primeiro. `@SPEED` pede a mesma reordenação por velocidade de criptografia, mas não conte com ela: no BIG-IP 14, um usuário viu `DEFAULT:@SPEED` devolver a mesma lista que `DEFAULT`, e um engenheiro da F5 respondeu que a ordenação por velocidade não é mais suportada.
 
 Então `ECDHE:RSA:!SSLv3:!RC4:@STRENGTH` lê-se como: prefira ECDHE, depois RSA, nunca permita SSL 3.0 ou RC4 (Cifra Rivest 4, do inglês Rivest Cipher 4), depois ordene o que resta por força.
 
 ## O que a string não diz diretamente
 
 A gramática diz as instruções, mas não a lista final de suites que essas instruções produzem. Essa lista depende de quais suites uma dada versão do TMOS de fato suporta, então a mesma string pode expandir de forma diferente entre versões do BIG-IP. O [explicador de cipher string do F5](/tools/f5-cipher-string-expander) interpreta a gramática e explica cada palavra-chave e operador; para ver as suites exatas e ordenadas, execute `tmm --clientciphers` na máquina alvo. Para saber quais palavras-chave são seguras e quais não são, veja [palavras-chave de segurança de cifras TLS](/learn/tls-cipher-security-keywords); para como rules e groups montam essas strings, veja [cipher rules e groups do F5](/learn/f5-cipher-rules-and-groups).
+
+## Fontes
+
+Parte dessa gramática é documentada pela F5, e parte não. Os artigos da F5 mostram o separador dois-pontos, a exclusão com `!`, palavras-chave unidas com `+` e `@STRENGTH`. Nenhuma das páginas da F5 lidas aqui mostra o operador `-`, um `+` inicial nem a vírgula e o espaço como separadores, nem diz se as palavras-chave ignoram maiúsculas: os operadores e separadores são regras do formato de lista de cifras do OpenSSL, com o qual o K15194 diz que o formato da F5 se parece, avisando que algumas strings diferem; então confirme-as na versão alvo com `tmm --clientciphers`. Todas as páginas abaixo foram lidas em 2 de outubro de 2026.
+
+- [K15194: Overview of BIG-IP SSL/TLS cipher suites - o formato da suíte de cifras e as palavras-chave de característica como `TLSv1_2`, `AES-GCM` e `ECDHE`; um formato semelhante ao do OpenSSL, em que algumas strings diferem; `@STRENGTH` ordenando uma lista separada por dois-pontos com `tmm --clientciphers`](https://my.f5.com/manage/s/article/K15194)
+- [K01770517: Configuring the cipher strength for SSL profiles (14.x - 21.x) - `!` excluindo uma única cifra, uma família de cifras ou uma versão de protocolo (`DEFAULT:!AES128-SHA`, `DEFAULT:!TLSv1`), e `DEFAULT:@STRENGTH` ordenando a lista por tamanho de chave](https://my.f5.com/manage/s/article/K01770517)
+- [K15216 (arquivado): The default cipher for SSL profiles is now ordered to optimize BIG-IP hardware performance - palavras-chave unidas com `+` dentro de um conjunto, como `RSA+AES` e `ECDHE+AES` na lista padrão do 11.5; antes do BIG-IP 11.5.0, a lista padrão era ordenada por velocidade](https://my.f5.com/manage/s/article/K15216)
+- [F5 DevCentral, outubro de 2020: no BIG-IP 14, `DEFAULT:@SPEED` devolveu a mesma lista que `DEFAULT`, e um engenheiro da F5 respondeu "We no longer support sorting by speed"](https://community.f5.com/t/clientciphers-speed-option-will-not-works-anymore/45910)
+- [OpenSSL, openssl-ciphers, Cipher List Format - dois-pontos, vírgulas ou espaços como separadores; `+` como "e" lógico; um `!` inicial remove de vez, `-` remove mas deixa uma opção posterior readicionar, e `+` move para o fim; `@STRENGTH` ordena por tamanho de chave; listas de cifras sensíveis a maiúsculas antes do OpenSSL 4.0 e insensíveis a partir dele](https://docs.openssl.org/master/man1/openssl-ciphers/)

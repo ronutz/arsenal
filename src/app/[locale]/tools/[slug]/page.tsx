@@ -60,6 +60,23 @@ import F5IrulesRuntimeCalculatorTool from "@/components/F5IrulesRuntimeCalculato
 import { manifest as f5IrulesRuntimeCalculatorManifest } from "@/lib/tools/f5-irules-runtime-calculator";
 import F5IrulesPerformanceLinterTool from "@/components/F5IrulesPerformanceLinterTool";
 import { manifest as f5IrulesPerformanceLinterManifest } from "@/lib/tools/f5-irules-performance-linter";
+// The iRules / Tcl 8.4 teaching tools (2026-10-03).
+import F5IrulesNumberNotationTool from "@/components/F5IrulesNumberNotationTool";
+import { manifest as f5IrulesNumberNotationManifest } from "@/lib/tools/f5-irules-number-notation";
+import F5IrulesExpressionLabTool from "@/components/F5IrulesExpressionLabTool";
+import { manifest as f5IrulesExpressionLabManifest } from "@/lib/tools/f5-irules-expression-lab";
+import F5IrulesStringWorkbenchTool from "@/components/F5IrulesStringWorkbenchTool";
+import { manifest as f5IrulesStringWorkbenchManifest } from "@/lib/tools/f5-irules-string-workbench";
+import F5IrulesScanExplainerTool from "@/components/F5IrulesScanExplainerTool";
+import { manifest as f5IrulesScanExplainerManifest } from "@/lib/tools/f5-irules-scan-explainer";
+import F5IrulesScriptStepperTool from "@/components/F5IrulesScriptStepperTool";
+import { manifest as f5IrulesScriptStepperManifest } from "@/lib/tools/f5-irules-script-stepper";
+import F5IrulesStringExtractTool from "@/components/F5IrulesStringExtractTool";
+import { manifest as f5IrulesStringExtractManifest } from "@/lib/tools/f5-irules-string-extract";
+import F5IrulesConditionalBuilderTool from "@/components/F5IrulesConditionalBuilderTool";
+import { manifest as f5IrulesConditionalBuilderManifest } from "@/lib/tools/f5-irules-conditional-builder";
+import F5IrulesStyleCheckerTool from "@/components/F5IrulesStyleCheckerTool";
+import { manifest as f5IrulesStyleCheckerManifest } from "@/lib/tools/f5-irules-style-checker";
 import F5ReleaseCadenceCalendarTool from "@/components/F5ReleaseCadenceCalendarTool";
 import { manifest as f5ReleaseCadenceCalendarManifest } from "@/lib/tools/f5-release-cadence-calendar";
 import DiffTool from "@/components/DiffTool";
@@ -903,6 +920,38 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-irules-vs-ltm-policy": {
     Component: IrulesVsLtmPolicyTool,
     sources: irulesPolManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-number-notation": {
+    Component: F5IrulesNumberNotationTool,
+    sources: f5IrulesNumberNotationManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-expression-lab": {
+    Component: F5IrulesExpressionLabTool,
+    sources: f5IrulesExpressionLabManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-string-workbench": {
+    Component: F5IrulesStringWorkbenchTool,
+    sources: f5IrulesStringWorkbenchManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-scan-explainer": {
+    Component: F5IrulesScanExplainerTool,
+    sources: f5IrulesScanExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-script-stepper": {
+    Component: F5IrulesScriptStepperTool,
+    sources: f5IrulesScriptStepperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-string-extract": {
+    Component: F5IrulesStringExtractTool,
+    sources: f5IrulesStringExtractManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-conditional-builder": {
+    Component: F5IrulesConditionalBuilderTool,
+    sources: f5IrulesConditionalBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "f5-irules-style-checker": {
+    Component: F5IrulesStyleCheckerTool,
+    sources: f5IrulesStyleCheckerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-oneconnect-source-mask": {
     Component: OneconnectSourceMaskTool,

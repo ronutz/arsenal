@@ -1,0 +1,89 @@
+---
+slug: irules-building-strings
+title: "Building strings in iRules: quotes, braces, append, concat and lists"
+summary: "Quotes substitute, braces do not, and brackets run a command: almost every surprise when an iRule builds a value comes from those three rules. Here is what Tcl does to each word before a command sees it, how append, concat and lappend differ, why a value with spaces is a list, and how double substitution lets data run as code."
+concepts: ["irules", "tcl", "f5", "substitution", "quoting", "lists"]
+relatedTools: ["f5-irules-script-stepper", "f5-irules-style-checker"]
+relatedArticles: ["irules-expression-operators", "irules-string-commands"]
+category: networking
+order: 29
+status: reviewed
+updated: "2026-10-03"
+---
+
+An iRule spends much of its time building values: a redirect location from a host and a path, a log line from several fields, a pool name from a header. Tcl (Tool Command Language) has no string operators for this. It builds values while it splits a command into words, and the rules for that are short. iRules run Tcl 8.4.6 (F5 K6091), whose manual page `Tcl` states them.
+
+## Three ways to write a word
+
+- **Double quotes** substitute: `$name` becomes the variable's value, `[command]` becomes the command's result, and backslash sequences are replaced. The quotes then disappear, and the result is one word, spaces and all.
+- **Braces** do not substitute anything. `{$a $b}` is the six characters `$a $b`, exactly.
+- **Brackets** run a command and put its result in place: `[string tolower [HTTP::host]]`.
+
+The manual adds the rule that settles most arguments: each character is processed exactly once while the words are built. A value that happens to contain `$` or `[` is not substituted again by the word rules.
+
+```tcl
+set a "foo"
+set b "bar"
+set c "$a$b"     ;# foobar
+set d "$a $b"    ;# foo bar
+set e {$a $b}    ;# $a $b
+```
+
+## Where a variable name ends
+
+`$name` takes the longest run of letters, digits and underscores, so `"$host_pool"` looks for a variable called `host_pool`, and fails with "can't read host_pool: no such variable" if there is none. Braces mark the end of the name: `"${host}_pool"` is the value of `host` followed by `_pool`. The DevCentral iRules Style Guide asks for the braced form inside expressions for the same reason.
+
+## append, concat and lappend
+
+Three commands build longer values, and they do different things with spaces:
+
+```tcl
+set x " a "
+append x " b"                 ;# x is " a  b": text added exactly as given
+set y [concat " a " " b"]     ;# y is "a b": each argument trimmed, then joined with one space
+set l {}
+lappend l "one two" three     ;# l is {{one two} three}: two list elements
+```
+
+`append` is for text, and the manual notes it is the efficient way to grow a long value. `concat` trims the white space at both ends of every argument, drops empty ones, and joins what is left with single spaces. `lappend` adds each value as one list element, quoting it if it contains spaces.
+
+## A value with spaces is a list
+
+Tcl lists are strings split on white space (with braces and quotes for grouping). So `foreach item "red green blue"` runs three times, once per word. That is convenient for values you built as lists and surprising for values that merely contain spaces, such as a header. Build lists with `list` and `lappend`, keep free text out of `foreach`, and use `split` with an explicit separator when a value is delimited by something else:
+
+```tcl
+foreach part [split [HTTP::path] "/"] {
+    log local0. "segment: $part"
+}
+```
+
+## incr reads octal too
+
+`incr` requires an integer and reads it the way `expr` does, so a variable holding `010` is octal eight and `incr` makes it `9`. Zero-padded counters and codes are worth converting with `scan $v %d v` before they are used as numbers.
+
+## Double substitution
+
+Some commands evaluate their arguments again: `expr`, and the conditions of `if` and `while`, parse their argument as an expression and substitute inside it a second time. If that argument is not braced, a value from the request takes part in the second round:
+
+```tcl
+set count [HTTP::header value X-Count]
+set next [expr $count + 1]       ;# never do this
+set next [expr {$count + 1}]     ;# braced: $count is only ever a value
+```
+
+If a client sends an `X-Count` header that contains `[...]`, the unbraced form runs the bracketed text as a command during the second substitution. F5's K15650046 describes this as a coding-practice exposure rather than a product vulnerability, and K57410758 documents the validator warning "use curly braces to avoid double substitution". The fix is the same in both: brace expressions, as in `if { $ua eq "curl" }`, and put `--` before a value passed to `switch`, so a value starting with a dash cannot be read as an option.
+
+## Try it
+
+The [script stepper](/tools/f5-irules-script-stepper) runs a snippet one command at a time and shows the words each command actually received, so quoting, `append` against `concat`, and double substitution become visible. The [style checker](/tools/f5-irules-style-checker) flags unbraced expressions and missing `--` in your own iRules.
+
+## Sources
+
+The word rules and the three building commands are documented in the Tcl 8.4 manual pages below; the security framing and the validator warning are F5's.
+
+- [Tcl 8.4 manual: Tcl (the substitution rules)](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)
+- [Tcl 8.4 manual: append](https://www.tcl-lang.org/man/tcl8.4/TclCmd/append.htm), [concat](https://www.tcl-lang.org/man/tcl8.4/TclCmd/concat.htm), [lappend](https://www.tcl-lang.org/man/tcl8.4/TclCmd/lappend.htm), [incr](https://www.tcl-lang.org/man/tcl8.4/TclCmd/incr.htm)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
+- [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)

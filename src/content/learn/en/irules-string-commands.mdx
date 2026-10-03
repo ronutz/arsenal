@@ -1,0 +1,95 @@
+---
+slug: irules-string-commands
+title: "Tcl string commands in iRules: indexes, map, match, compare and trim"
+summary: "The string command does most of the text work in an iRule, and each subcommand has one rule people get wrong: indexes that read 010 as octal, a map that is a single pass, a trim that removes a set of characters rather than a word, and a compare that puts every capital before every lower-case letter."
+concepts: ["irules", "tcl", "f5", "string", "glob", "string map"]
+relatedTools: ["f5-irules-string-workbench", "f5-irules-string-extract"]
+relatedArticles: ["irules-findstr-substr-getfield", "irules-building-strings"]
+category: networking
+order: 27
+status: reviewed
+updated: "2026-10-03"
+---
+
+Most text work in an iRule is done by Tcl's `string` command: cutting a path out of a URI, normalizing a host name, testing a prefix, rewriting a value. iRules run Tcl 8.4.6 (F5 K6091), and the subcommands below behave exactly as its manual and source define them. Each has one rule that is easy to get wrong.
+
+## Indexes count from 0, and can be octal
+
+`string index`, `string range`, `string first`, `string last` and `string replace` take character indexes. An index is an integer counted from 0, `end` for the last character, or `end-N` counting back from it:
+
+```tcl
+string range "/login.php?user=abc" 0 9        ;# /login.php
+string range "abcdef" 1 end-1                 ;# bcde
+```
+
+An index is read the way Tcl reads any integer, so a leading zero makes it octal: `string index "abcdefghij" 010` returns `i`, the character at index 8, and an index of `08` is an error. Tcl 8.4.6 also accepts `e` and `en` on their own as abbreviations of `end`, though `e-1` is an error. An index outside the string is not an error for `index` and `range`; you get an empty string.
+
+## first and last find, and last must fit
+
+`string first needle haystack` returns the index where the needle starts, or -1. An optional start index begins the search later. `string last` searches from the end, and its optional last index limits the search to matches that **end** at or before that index: `string last bc abcbc 3` is 1, because the match at index 3 would end at index 4.
+
+An empty needle is never found: the result is -1.
+
+## string map is one pass
+
+`string map` replaces keys with values in a single pass from left to right. At each position the keys are tried in the order the list gives them, the first that matches wins, and replaced text is never looked at again:
+
+```tcl
+string map {a 1 ab 2} "abab"   ;# 1b1b: "a" is tried before "ab"
+string map {ab 2 a 1} "abab"   ;# 22
+string map {http:// https://} "http://a/ and http://b/"
+                               ;# https://a/ and https://b/
+```
+
+Because of the single pass, one `string map` cannot chain replacements, and a value that contains its own key is safe from being replaced twice.
+
+## string match is glob matching
+
+`string match pattern string` returns 1 or 0. In the pattern, `*` matches any run of characters, `?` one character, `[abc]` one character from a set, and a backslash makes the next character literal. Matching is case-sensitive unless you add `-nocase`:
+
+```tcl
+string match -nocase "*.EXAMPLE.com" "www.example.com"   ;# 1
+string match "*.EXAMPLE.com" "www.example.com"           ;# 0
+```
+
+`switch -glob` uses the same patterns, which is why it is the natural way to test one value against several glob patterns.
+
+## compare and equal look at character codes
+
+`string compare` returns -1, 0 or 1 by comparing character codes one by one, and `string equal` returns 1 or 0. In ASCII every capital letter precedes every lower-case letter, so `string compare bench Chair` is 1. Use `-nocase`, or lower-case both sides first, whenever case should not matter.
+
+## trim removes a set, not a word
+
+`string trim`, `trimleft` and `trimright` remove white space by default. Given a second argument, they remove any of **those characters**, in any order, from the ends. This is a classic bug:
+
+```tcl
+string trimleft "/apiary/x" "/api"   ;# ry/x, not ary/x
+```
+
+Every leading character that appears in the set `/`, `a`, `p`, `i` is removed. To remove a prefix, test for it and cut it:
+
+```tcl
+if { [string first "/api" $path] == 0 } {
+    set rest [string range $path 4 end]
+}
+```
+
+## length counts characters, bytelength counts bytes
+
+`string length "héllo"` is 5; `string bytelength "héllo"` is 6, because `é` takes two bytes in Tcl's internal UTF-8. Use `length` for text and `bytelength` only when you need the size Tcl holds in memory.
+
+## Case conversion uses Tcl 8.4.6's tables
+
+`string tolower` and `string toupper` use the Unicode case tables compiled into Tcl 8.4.6, which are older than a modern browser's. For ASCII they agree; for about a thousand other characters they do not (Tcl 8.4.6 has no upper-case form for the micro sign `µ`, for example). Host names and paths are usually ASCII, so this rarely matters, but it is a reason not to test case conversion of other text in a browser console.
+
+## Try it
+
+The [string workbench](/tools/f5-irules-string-workbench) runs any of these subcommands and draws the result on a character ruler, with every index argument's reading and the single pass of `string map` laid out step by step. For F5's own cutting commands, see the [findstr, substr and getfield explainer](/tools/f5-irules-string-extract).
+
+## Sources
+
+Every behaviour above is from the Tcl 8.4 manual or the Tcl 8.4.6 source it describes, and each example was run in Tcl 8.4.6; the Tcl version iRules use is F5's statement.
+
+- [Tcl 8.4 manual: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm)
+- [Tcl 8.4.6 source, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)

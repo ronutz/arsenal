@@ -6989,6 +6989,790 @@
         "no-traffic": "Describe the flow you want traced.",
         "too-many-rules": "That is more rules than this tool will reason about at once."
       }
+    },
+    "f5-irules-number-notation": {
+      "name": "iRules number notation converter",
+      "blurb": "Type a value as it appears in an iRule (010, 0x1F, 08, 1e3) and see how Tcl 8.4 reads it: integer or double, the base, the same value in other notations, and why 010 == 8 is true while 010 eq 8 is false. Local, no network.",
+      "valueLabel": "Value, as written in the iRule",
+      "valuePlaceholder": "for example 010, 0x1F, 08 or 1e3",
+      "otherLabel": "Compare with",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "kind": {
+        "int": "Integer",
+        "double": "Double (floating point)",
+        "not-number": "Not a number"
+      },
+      "base": {
+        "8": "written in octal",
+        "10": "written in decimal",
+        "16": "written in hexadecimal"
+      },
+      "special": {
+        "inf": "an infinity, read by the C library",
+        "nan": "not-a-number, read by the C library",
+        "hex": "a hexadecimal floating-point value, read by the C library"
+      },
+      "canonicalLabel": "Tcl prints it as",
+      "noCanonical": "No numeric reading: Tcl keeps the text as it is",
+      "note": {
+        "whitespace": "Spaces around the digits are accepted when the number is held in a value. Inside an expression they are only separators.",
+        "wrapped64": "The value lies between 2 to the power 63 and 2 to the power 64 minus 1. Tcl 8.4 accepts it but stores it as a signed 64-bit integer, so it wraps around to <c>{value}</c>.",
+        "octal": "A leading 0 makes Tcl read the digits as octal (base 8): <c>{text}</c> is {value} in decimal.",
+        "octal-not-decimal": "This is the classic iRules surprise: a value that looks decimal, such as a zero-padded code or time, is octal because of its leading 0.",
+        "hex": "0x makes Tcl read the digits as hexadecimal (base 16): <c>{text}</c> is {value} in decimal.",
+        "outside32": "The value does not fit in 32 bits. Tcl 8.4 integers are as wide as the C long of the platform it was built for; this tool uses 64 bits, and a 32-bit build would read the value differently.",
+        "double": "A double is never an integer to Tcl, even when it is a whole number: <c>3.0</c> keeps its decimal point when printed, and integer-only operators such as <c>%</c> refuse it.",
+        "twelve-digits": "Tcl 8.4 prints doubles with 12 significant digits (tcl_precision defaults to 12), so the printed form can hide the rest of the value. Compare the exact value below.",
+        "c-library": "This is an infinity or a not-a-number, read by the C library's strtod. Held in a value it can be compared, but any arithmetic on it fails; written as a literal in an expression it is refused.",
+        "invalid-octal": "<c>{text}</c> starts with 0, so Tcl tries octal, and 8 and 9 are not octal digits. Arithmetic refuses it; comparisons fall back to comparing text.",
+        "too-large": "The integer needs more than 64 bits, so Tcl 8.4 refuses it: integer value too large to represent.",
+        "int-garbage": "It starts like an integer but other characters follow, so it is not a number.",
+        "empty": "An empty string is not a number. Arithmetic refuses it; comparisons treat it as text.",
+        "float-range": "The value is outside the range of a double (too large, or so small it underflows), so Tcl refuses it.",
+        "not-number": "Not a number: arithmetic refuses it, and comparisons such as == fall back to comparing text."
+      },
+      "formsTitle": "The same integer in other notations",
+      "formsNotation": "Notation",
+      "formsDigits": "Digits",
+      "formsWrite": "How to write it in an iRule",
+      "forms": {
+        "decimal": "Decimal",
+        "hex": "Hexadecimal",
+        "octal": "Octal",
+        "binary": "Binary"
+      },
+      "formsNoBinary": "Tcl 8.4 has no binary notation",
+      "doubleTitle": "Inside the double",
+      "double": {
+        "printed": "Printed by Tcl 8.4 (12 significant digits)",
+        "roundTrip": "Shortest form that reads back to the same double",
+        "exact": "Exact value of the binary double"
+      },
+      "placesTitle": "Two places Tcl reads numbers",
+      "literalTitle": "Written in the expression itself",
+      "literalEmpty": "Nothing to evaluate",
+      "literalNote": "A literal is read when the expression is compiled, so a bad one (such as 08) stops the whole expression before anything in it runs.",
+      "variableTitle": "Held in a variable",
+      "variableNote": "A value is read only when an operator needs a number. If it cannot be read, arithmetic fails at that point, and comparisons quietly compare text instead.",
+      "probesTitle": "Comparing it with {other}",
+      "probesExpr": "Expression",
+      "probesResult": "Result",
+      "probesWhy": "Why",
+      "probeWhy": {
+        "eq": "<c>eq</c> always compares the text.",
+        "num": "Numeric when both sides read as numbers; otherwise the text is compared."
+      },
+      "probesNote": "In these expressions <c>$x</c> holds <c>{text}</c> and <c>$y</c> holds <c>{other}</c>, both set as plain values."
+    },
+    "f5-irules-expression-lab": {
+      "name": "iRules expression lab",
+      "blurb": "Evaluate an expression the way expr and if do in an iRule and see every step: how each operand was read, numeric or text comparison, precedence, where && stopped, and == next to eq. Tcl 8.4 or iRules mode. Local, no network.",
+      "modeLabel": "Language",
+      "modeTcl": "Tcl 8.4",
+      "modeIrules": "iRules",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "precedence": "Precedence",
+        "string-compare-case": "bench vs Chair",
+        "octal-equality": "012 == 10",
+        "true-is-not-1": "true == 1",
+        "no-power-operator": "Power operator",
+        "floor-division": "7 / -2",
+        "short-circuit": "Short-circuit ||",
+        "irules-starts-with": "starts_with",
+        "irules-and": "contains and eq",
+        "literal-08": "Literal 08"
+      },
+      "setupLabel": "Variables (set commands, run first)",
+      "setupPlaceholder": "set x 012; set y 10",
+      "exprLabel": "Expression (what goes between the braces)",
+      "exprPlaceholder": "$x == $y",
+      "sampleTitle": "Sample request (what the iRules commands return)",
+      "sampleUri": "HTTP::uri",
+      "sampleHost": "HTTP::host",
+      "sampleNote": "In this sample HTTP::method returns GET and the User-Agent header is curl/8.0. Nothing is sent anywhere.",
+      "resultLabel": "Result",
+      "held": {
+        "int": "integer",
+        "double": "double",
+        "string": "string",
+        "boolean": "boolean"
+      },
+      "stage": {
+        "setup": "The set commands failed:",
+        "parse": "Syntax error:",
+        "compile": "Rejected before running:",
+        "run": "Error while evaluating:"
+      },
+      "stageNote": {
+        "setup": "The variables are set by ordinary Tcl commands, so quoting works exactly as in an iRule.",
+        "parse": "Tcl could not read the expression, so nothing in it ran. The caret marks where reading stopped.",
+        "compile": "Tcl 8.4 checks literals when it compiles an expression, so this stops the whole expression before any part of it runs.",
+        "run": "The parts drawn below ran before the error; the rest did not."
+      },
+      "groupingTitle": "How precedence groups it",
+      "groupingNote": "Every operator with its operands in parentheses. Tcl applies the higher-precedence operator first, whatever the spacing.",
+      "treeTitle": "Evaluation, step by step",
+      "skipped": "never evaluated",
+      "exprNote": {
+        "lit-int": "A whole number written in the expression, {base, select, 8 {in octal (it starts with 0)} 16 {in hexadecimal (it starts with 0x)} other {in decimal}}.",
+        "lit-bool": "A boolean word written in the expression.",
+        "lit-double": "A floating-point number written in the expression.",
+        "braced": "Text in braces is taken literally: nothing inside it is substituted.",
+        "lone-dollar": "A <c>$</c> with no variable name after it is just the character <c>$</c>.",
+        "var": "Reads the variable <c>{name}</c>.",
+        "cmd": "Runs the command in brackets; its result becomes the operand.",
+        "quoted": "Text in double quotes, with nothing inside to substitute.",
+        "quoted-subst": "Text in double quotes: the variables and commands inside it are substituted first.",
+        "ternary": "The condition is {branch, select, then {true, so the value after <c>?</c> is used} other {false, so the value after <c>:</c> is used}}; the other branch is never evaluated.",
+        "bitnot": "<c>~</c> flips every bit of an integer.",
+        "uplus": "Unary <c>+</c> requires a number and leaves it as it is.",
+        "uminus": "Unary <c>-</c> negates the number.",
+        "lnot": "<c>!</c> gives 1 for a false operand and 0 for a true one.",
+        "short-circuit": "<c>{op}</c> stopped here: the left side is {left, select, true {true} other {false}}, which already decides the result, so the right side never ran.",
+        "logic": "Both sides ran: {left, select, true {true} other {false}} <c>{op}</c> {right, select, true {true} other {false}}.",
+        "streq": "<c>{op}</c> compares the two values as text, character by character. Numbers are never converted.",
+        "f5-op": "<c>{op}</c> is one of the operators F5 adds to iRules. It compares the values as text.",
+        "mod": "The remainder of {a} divided by {b}. It takes the sign of the divisor.",
+        "shl": "Shift left by {count} bits.",
+        "shr": "Shift right by {count} bits; the sign bit is copied in from the left.",
+        "bitwise": "Bitwise <c>{op}</c> on integers.",
+        "arith": "<c>{op}</c> on {mode, select, int {integers} other {floating-point numbers, because at least one operand is a double}}: {a} {op} {b}.",
+        "intdiv": "{floored, select, true {Integer division rounds down, toward negative infinity: {a} / {b} gives the floor of the exact quotient, not the value truncated toward zero.} other {Integer division keeps the whole part of {a} / {b}.}}",
+        "cmp-same": "Both sides are the very same value, so they are equal without any conversion.",
+        "cmp-string": "Compared as text because {why, select, empty {one side is an empty string} left_text {the left side is not a number} right_text {the right side is not a number} left_bad_int {the left side looks like an integer but is not a valid one (a leading 0 followed by 8 or 9, for example)} right_bad_int {the right side looks like an integer but is not a valid one (a leading 0 followed by 8 or 9, for example)} other {one side is not a number}}. Character codes decide the order, so every upper-case letter sorts before every lower-case one.",
+        "cmp-number": "Compared as {mode, select, int {integers} other {floating-point numbers}}: {left} and {right}.",
+        "canon": "The result is a number, so Tcl returns it in canonical form: <c>{from}</c> becomes <c>{to}</c>.",
+        "canon-none": "The result <c>{text}</c> is not a number, so it is returned exactly as it is.",
+        "fn": "Calls the math function <c>{name}()</c>."
+      },
+      "platform": {
+        "int-overflow": "The exact result does not fit in 64 bits, and Tcl 8.4 wraps it around without an error.",
+        "shift-count": "A shift count outside 0 to 63 is undefined in C. x86 processors use only the low 6 bits of the count, which is what is shown here.",
+        "int-range-32": "The result does not fit in 32 bits. A build of Tcl 8.4 with 32-bit integers would give a different answer.",
+        "libm": "This value comes from the platform's C math library and can differ in the last digits from one system to another."
+      },
+      "compareTitle": "The same operands under each comparison operator",
+      "compareExpr": "Expression",
+      "compareResult": "Result",
+      "compareHow": "How it compares",
+      "compareWhy": {
+        "eq": "<c>eq</c> compares text only.",
+        "num": "Numbers when both sides read as numbers; otherwise text."
+      },
+      "varsTitle": "Variables after the set commands",
+      "empty": "(empty)",
+      "sideEffectsTitle": "Logged and recorded",
+      "recorded": "recorded, not performed"
+    },
+    "f5-irules-string-workbench": {
+      "name": "iRules string workbench",
+      "blurb": "Run a Tcl 8.4 string command (range, first, map, match, compare, trim and more) and see the result on a character ruler: what was searched, matched, returned or replaced, and how indexes like end-1 or 010 were read. Local, no network.",
+      "opLabel": "Subcommand",
+      "example": "Example",
+      "clear": "Clear",
+      "optional": "(optional)",
+      "presetsLabel": "Try",
+      "preset": {
+        "length-utf8": "length of héllo",
+        "bytelength-utf8": "bytelength of héllo",
+        "range-path": "range 0 9",
+        "first-param": "first user=",
+        "map-version": "map /v1/ to /v2/",
+        "map-order": "map: key order",
+        "match-nocase": "match -nocase",
+        "match-case": "match (case)",
+        "tolower-host": "tolower a host",
+        "index-octal": "index 010",
+        "range-end": "range 1 end-1",
+        "trim-path": "trim",
+        "compare-case": "compare bench Chair",
+        "equal-nocase": "equal -nocase",
+        "last-slash": "last /",
+        "replace-segment": "replace",
+        "repeat": "repeat"
+      },
+      "opHelp": {
+        "length": "Counts characters, not bytes.",
+        "bytelength": "Counts the bytes of Tcl's internal UTF-8 form.",
+        "tolower": "Lower-cases the string, or only the characters from first to last.",
+        "toupper": "Upper-cases the string, or only the characters from first to last.",
+        "range": "Returns the characters from first to last, both included. Indexes can be integers, <c>end</c>, or <c>end-N</c>.",
+        "index": "Returns one character, or an empty string when the index is outside the string.",
+        "first": "Returns the index where the needle first appears, or -1. A start index makes the search begin later.",
+        "last": "Returns the index where the needle last appears, or -1. A last index makes the search end earlier.",
+        "map": "Replaces each key with its value in one pass from left to right. At each position the first key in the list that matches wins.",
+        "match": "Glob matching: <c>*</c> matches any run of characters, <c>?</c> one character, <c>[abc]</c> one of a set. Returns 1 or 0.",
+        "compare": "Returns -1, 0 or 1 by comparing character codes, so upper case sorts before lower case.",
+        "equal": "Returns 1 when the two strings are identical, 0 otherwise.",
+        "trim": "Removes the given characters (white space by default) from both ends.",
+        "trimleft": "Removes the given characters (white space by default) from the start.",
+        "trimright": "Removes the given characters (white space by default) from the end.",
+        "replace": "Replaces the characters from first to last with the new string, or removes them when no new string is given.",
+        "repeat": "Returns the string repeated count times."
+      },
+      "field": {
+        "string": "String",
+        "first": "First index",
+        "last": "Last index",
+        "charIndex": "Index",
+        "needle": "Look for",
+        "haystack": "In the string",
+        "startIndex": "Start index",
+        "lastIndex": "Last index to search",
+        "mapping": "Map (key value key value ...)",
+        "pattern": "Glob pattern",
+        "string1": "String 1",
+        "string2": "String 2",
+        "chars": "Characters to remove",
+        "newString": "New string",
+        "count": "Count"
+      },
+      "commandTitle": "The command",
+      "resultLabel": "Result",
+      "errorLabel": "Tcl error",
+      "rulerTitle": "The string, character by character",
+      "rulerCaption": "{count} characters; the small numbers are indexes, counted from 0.",
+      "rulerTruncated": "Only the first 400 characters are drawn.",
+      "role": {
+        "result": "returned or converted",
+        "window": "searched",
+        "match": "match",
+        "replaced": "replaced",
+        "trimmed": "trimmed",
+        "differ": "first difference"
+      },
+      "readingsTitle": "How the index arguments were read",
+      "readingArg": "Argument",
+      "readingText": "Written",
+      "readingValue": "Index",
+      "readingHow": "Read as",
+      "clampedTo": "(used as {value})",
+      "readEnd": "end minus {offset}",
+      "readInt": "{base, select, 8 {an octal integer (leading 0)} 16 {a hexadecimal integer} other {a decimal integer}}",
+      "mapTitle": "The single pass of string map",
+      "mapReplace": "replace",
+      "mapKeep": "keep",
+      "mapPair": "(pair {n})",
+      "note": {
+        "bytes-differ": "Characters outside ASCII take more than one byte in Tcl's internal UTF-8, so the byte count is larger than the character count.",
+        "empty-span-unchanged": "The first and last indexes select no characters, so the string comes back unchanged.",
+        "range-empty": "The last index is before the first, so the result is empty.",
+        "index-out-of-range": "The index is outside the string, so the result is an empty string, not an error.",
+        "empty-needle": "An empty needle is never found: the result is -1.",
+        "last-whole-match": "With a last index, only matches that end at or before it count.",
+        "map-one-pass": "Each replacement is final: the text it inserts is never scanned again, so one pass cannot chain replacements.",
+        "compare-codes": "Characters are compared by their codes, one by one: every upper-case letter comes before every lower-case one.",
+        "trim-set": "The characters to remove are a set, not a word: each character in it is removed from the ends, in any order.",
+        "replace-unchanged": "The indexes select nothing inside the string, so it comes back unchanged.",
+        "octal-index": "An index written with a leading 0 is octal: <c>010</c> means index 8.",
+        "end-prefix": "Tcl 8.4.6 accepts any prefix of <c>end</c> on its own (<c>e</c>, <c>en</c>), but not with an offset (<c>e-1</c> is an error)."
+      }
+    },
+    "f5-irules-scan-explainer": {
+      "name": "iRules scan explainer",
+      "blurb": "Give a value and a scan format and see each %d, %s or %[^&] line up against the characters it took, the variable it filled, and exactly why scanning stopped. Explains the -1 result and the Tcl 8.4 quirks. Local, no network.",
+      "inputLabel": "Value to take apart",
+      "inputPlaceholder": "10:30",
+      "formatLabel": "Format",
+      "varsLabel": "Variable names",
+      "varsPlaceholder": "hours minutes (leave empty for a list)",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "time": "10:30",
+        "ipv4": "IPv4 address",
+        "no-digits": "No digits",
+        "empty-input": "Empty input",
+        "query-set": "%[^&]",
+        "i-octal": "%i and 08",
+        "int32": "3000000000",
+        "inline": "No variables",
+        "request-line": "Request line",
+        "n-bytes": "%n and é"
+      },
+      "commandTitle": "The command",
+      "resultLabel": "scan returned",
+      "errorLabel": "Tcl error",
+      "resultCount": "{n, plural, =0 {No variable received a value: the first conversion did not match.} one {One variable received a value.} other {# variables received a value.}}",
+      "resultMinusOne": "The input ran out before the first conversion, so scan returns -1 rather than 0.",
+      "resultInline": "No variable names were given, so scan returns the converted values as a list.",
+      "rulerTitle": "The value, as the format consumed it",
+      "rulerTruncated": "Only the first 400 characters are drawn.",
+      "role": {
+        "skipped": "white space skipped",
+        "match": "literal matched",
+        "consumed": "converted",
+        "consumed-alt": "converted (next)",
+        "stop": "where it stopped"
+      },
+      "stepsTitle": "Directive by directive",
+      "colDirective": "Directive",
+      "colConsumed": "Characters",
+      "colOutcome": "Outcome",
+      "colValue": "Value",
+      "colVariable": "Variable",
+      "conv": {
+        "d": "decimal integer",
+        "o": "octal integer",
+        "x": "hexadecimal integer",
+        "i": "integer in the base its prefix shows (0 octal, 0x hexadecimal)",
+        "u": "unsigned decimal integer",
+        "c": "one character, stored as its code",
+        "s": "characters up to white space",
+        "set": "characters in the set: {set}",
+        "n": "count of input consumed so far (uses no input)",
+        "e": "floating-point number",
+        "f": "floating-point number",
+        "g": "floating-point number"
+      },
+      "dirKind": {
+        "space": "white space: skips any amount, including none",
+        "literal": "literal text: must match exactly"
+      },
+      "width": "(at most {n} characters)",
+      "suppressed": "(converted, not stored)",
+      "nothing": "nothing",
+      "outcome": {
+        "matched": "matched",
+        "assigned": "stored",
+        "suppressed": "discarded",
+        "stopped": "stopped",
+        "out-of-input": "input ran out"
+      },
+      "readBase": "read in base {base}",
+      "int32Cell": "outside 32 bits: stored through a C int",
+      "stopped": {
+        "format-end": "Every directive in the format ran.",
+        "mismatch": "Scanning stopped at a character the directive could not use. The variables after it were not set by this scan.",
+        "no-chars": "Scanning stopped because the <c>%[...]</c> set matched no characters.",
+        "input-end": "The input ran out before the format did."
+      },
+      "varsTitle": "Variables afterwards",
+      "notSet": "not set by this scan",
+      "note": {
+        "minus-one": "-1 means the input ended before the first conversion; 0 means a conversion was tried and failed. Check for both when a value may be empty.",
+        "n-bytes": "Tcl 8.4.6 counts bytes of its internal UTF-8 for <c>%n</c>, although the manual says characters: each character outside ASCII counts 2 or 3.",
+        "i-prefix": "<c>%i</c> takes the base from the prefix, like an integer in an expression: 0 means octal, 0x hexadecimal. Use <c>%d</c> for zero-padded decimal values such as times.",
+        "int32": "Tcl 8.4.6 stores integer conversions through a C int, so a value outside 32 bits comes back changed (the <c>l</c> modifier does not help here). To keep a large number intact, scan it as text with <c>%[0-9]</c> and let <c>expr</c> read it.",
+        "inline": "With no variable names, scan returns a list of the converted values (an empty element for a conversion that did not happen)."
+      }
+    },
+    "f5-irules-script-stepper": {
+      "name": "iRules script stepper",
+      "blurb": "Run a short iRule snippet one command at a time and see what each command received after substitution, what it returned and which variables changed. The quickest way to understand quotes, braces, append, concat, incr and the branch if or switch took. Local, no network.",
+      "modeLabel": "Language",
+      "modeTcl": "Tcl 8.4",
+      "modeIrules": "iRules",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "quote-concat": "Joining in quotes",
+        "append-vs-concat": "append vs concat",
+        "incr-octal": "incr 010",
+        "foreach-count": "foreach over a string",
+        "append-vs-lappend": "append vs lappend",
+        "switch-glob": "switch -glob --",
+        "if-elseif": "if / elseif on the URI",
+        "double-substitution": "Double substitution"
+      },
+      "scriptLabel": "Script",
+      "scriptPlaceholder": "set a \"foo\"",
+      "sampleTitle": "Sample request (what the iRules commands return)",
+      "sampleUri": "HTTP::uri",
+      "sampleHost": "HTTP::host",
+      "sampleMethod": "HTTP::method",
+      "sampleAgent": "User-Agent header",
+      "sampleNote": "These are the answers the iRules commands give in this tool. Nothing is sent anywhere: pool, HTTP::redirect and similar actions are recorded, not performed.",
+      "code": {
+        "ok": "Finished. Last result:",
+        "error": "Stopped with an error:",
+        "return": "Returned:",
+        "break": "Ended with break outside a loop:",
+        "continue": "Ended with continue outside a loop:"
+      },
+      "stepsTitle": "{n, plural, one {One command} other {# commands}}, in the order they started",
+      "stepsNote": "An indented command ran inside the one above it: in its body, or in brackets while its words were being built (so it finished first).",
+      "lineLabel": "line {n}",
+      "wordsLabel": "received",
+      "returned": "returned",
+      "unset": "unset",
+      "exprSummary": "Expression evaluated:",
+      "held": {
+        "int": "integer",
+        "double": "double",
+        "string": "string",
+        "boolean": "boolean"
+      },
+      "skipped": "never evaluated",
+      "exprNote": {
+        "lit-int": "A whole number written in the expression, {base, select, 8 {in octal (it starts with 0)} 16 {in hexadecimal (it starts with 0x)} other {in decimal}}.",
+        "lit-bool": "A boolean word written in the expression.",
+        "lit-double": "A floating-point number written in the expression.",
+        "braced": "Text in braces is taken literally: nothing inside it is substituted.",
+        "lone-dollar": "A <c>$</c> with no variable name after it is just the character <c>$</c>.",
+        "var": "Reads the variable <c>{name}</c>.",
+        "cmd": "Runs the command in brackets; its result becomes the operand.",
+        "quoted": "Text in double quotes, with nothing inside to substitute.",
+        "quoted-subst": "Text in double quotes: the variables and commands inside it are substituted first.",
+        "ternary": "The condition is {branch, select, then {true, so the value after <c>?</c> is used} other {false, so the value after <c>:</c> is used}}; the other branch is never evaluated.",
+        "bitnot": "<c>~</c> flips every bit of an integer.",
+        "uplus": "Unary <c>+</c> requires a number and leaves it as it is.",
+        "uminus": "Unary <c>-</c> negates the number.",
+        "lnot": "<c>!</c> gives 1 for a false operand and 0 for a true one.",
+        "short-circuit": "<c>{op}</c> stopped here: the left side is {left, select, true {true} other {false}}, which already decides the result, so the right side never ran.",
+        "logic": "Both sides ran: {left, select, true {true} other {false}} <c>{op}</c> {right, select, true {true} other {false}}.",
+        "streq": "<c>{op}</c> compares the two values as text, character by character. Numbers are never converted.",
+        "f5-op": "<c>{op}</c> is one of the operators F5 adds to iRules. It compares the values as text.",
+        "mod": "The remainder of {a} divided by {b}. It takes the sign of the divisor.",
+        "shl": "Shift left by {count} bits.",
+        "shr": "Shift right by {count} bits; the sign bit is copied in from the left.",
+        "bitwise": "Bitwise <c>{op}</c> on integers.",
+        "arith": "<c>{op}</c> on {mode, select, int {integers} other {floating-point numbers, because at least one operand is a double}}: {a} {op} {b}.",
+        "intdiv": "{floored, select, true {Integer division rounds down, toward negative infinity: {a} / {b} gives the floor of the exact quotient, not the value truncated toward zero.} other {Integer division keeps the whole part of {a} / {b}.}}",
+        "cmp-same": "Both sides are the very same value, so they are equal without any conversion.",
+        "cmp-string": "Compared as text because {why, select, empty {one side is an empty string} left_text {the left side is not a number} right_text {the right side is not a number} left_bad_int {the left side looks like an integer but is not a valid one (a leading 0 followed by 8 or 9, for example)} right_bad_int {the right side looks like an integer but is not a valid one (a leading 0 followed by 8 or 9, for example)} other {one side is not a number}}. Character codes decide the order, so every upper-case letter sorts before every lower-case one.",
+        "cmp-number": "Compared as {mode, select, int {integers} other {floating-point numbers}}: {left} and {right}.",
+        "canon": "The result is a number, so Tcl returns it in canonical form: <c>{from}</c> becomes <c>{to}</c>.",
+        "canon-none": "The result <c>{text}</c> is not a number, so it is returned exactly as it is.",
+        "fn": "Calls the math function <c>{name}()</c>."
+      },
+      "platform": {
+        "int-overflow": "The exact result does not fit in 64 bits, and Tcl 8.4 wraps it around without an error.",
+        "shift-count": "A shift count outside 0 to 63 is undefined in C. x86 processors use only the low 6 bits of the count, which is what is shown here.",
+        "int-range-32": "The result does not fit in 32 bits. A build of Tcl 8.4 with 32-bit integers would give a different answer.",
+        "libm": "This value comes from the platform's C math library and can differ in the last digits from one system to another."
+      },
+      "stepNote": {
+        "append-creates": "The variable did not exist, so <c>append</c> created it.",
+        "lappend-creates": "The variable did not exist, so <c>lappend</c> created it as a list.",
+        "catch": "The script inside ended with code {code} (0 ok, 1 error, 2 return, 3 break, 4 continue); <c>catch</c> returns that code instead of letting an error stop everything.",
+        "class-longest": "{count} entries matched; with starts_with or ends_with, class match returns the longest one, <c>{name}</c>.",
+        "class-match": "{hit, select, true {The data group entry <c>{name}</c> matched (operator {op}).} other {No entry in the data group matched (operator {op}).}}",
+        "concat": "<c>concat</c> trimmed the white space at both ends of each argument, dropped empty ones, and joined the rest with single spaces.",
+        "cut-count": "A number as terminator is a length: up to {count} characters, fewer when the string ends first.",
+        "cut-terminator": "Stopped just before <c>{terminator}</c>, found at index {at}.",
+        "cut-terminator-absent": "<c>{terminator}</c> does not appear after the start point, so the rest of the string is returned.",
+        "expr-unbraced": "<c>expr</c> received several words: Tcl joins them with spaces and substitutes the result again, so a value holding <c>[</c> or <c>$</c> runs as code. Brace the expression (F5 K57410758).",
+        "findstr-found": "The search string starts at index {at}; the result begins {skip} characters after that.",
+        "foreach": "Ran the body once per element: {iterations} in all.",
+        "getfield": "Split into {count} fields; field {field} is returned (fields count from 1).",
+        "if-branch": "A condition was true, so the body after it runs and the rest are skipped.",
+        "if-else": "No condition was true, so the <c>else</c> body runs.",
+        "if-none": "No condition was true and there is no <c>else</c>: nothing runs and <c>if</c> returns an empty string.",
+        "incr-octal": "The variable holds <c>{text}</c>, which <c>incr</c> reads as an octal integer because of the leading 0.",
+        "switch-list": "The patterns and bodies are given as one braced list.",
+        "switch-match": "The value matched the pattern <c>{pattern}</c> ({mode} matching){fallthrough, select, true {; its body is a dash, so the next body runs} other {}}.",
+        "switch-none": "No pattern matched and there is no <c>default</c>: <c>switch</c> returns an empty string.",
+        "when": "<c>when {event}</c>: on a BIG-IP this body runs each time the event fires; here it runs once, with the sample request."
+      },
+      "undocumented": {
+        "skip-past-end": "F5's pages do not say what <c>{cmd}</c> returns when the skip goes past the end of the string. The tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "negative-skip": "F5's pages do not cover a negative skip count for <c>{cmd}</c>. The tool starts at the beginning of the string; check on a BIG-IP before relying on it.",
+        "count-format": "The count <c>{text}</c> is not written as plain decimal digits. Tcl reads it as an integer (a leading 0 means octal, 0x hexadecimal), but F5 does not say how findstr and substr read it.",
+        "count-zero": "F5's rule says a number as terminator returns that many characters, which would make 0 return nothing, yet F5's own substr example with 0 returns the rest of the string. The tool follows the example. A contributor note on F5's API reference page reports that 0 did not work for them on 11.5.4 and 11.6.0, so check on your version.",
+        "count-negative": "F5's pages do not cover a negative count. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "empty-terminator": "F5's pages do not cover an empty terminator. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "terminator-absent-findstr": "F5's findstr page does not say what happens when the terminator is absent (its substr page says the rest of the string is returned). The tool assumes the same for findstr.",
+        "findstr-not-found": "F5's pages do not say what findstr returns when <c>{search}</c> is not in the string. The tool assumes an empty string. F5 calls findstr equivalent to string range with string first, but that equivalent returns the whole string here, so the two cannot both be right; check on a BIG-IP before relying on it.",
+        "substr-no-terminator": "The terminator is optional in F5's syntax, but the page does not say what happens without it. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "getfield-empty-split": "F5's pages do not cover an empty separator. The tool treats the whole string as field 1.",
+        "getfield-empty-field": "Two separators in a row make an empty field here. F5's pages do not show this case.",
+        "getfield-out-of-range": "There are {count} fields and field {field} was asked for. F5's pages do not say what getfield returns then; the tool assumes an empty string.",
+        "class-contains-multiple": "{count} entries contain the value. F5 documents that starts_with and ends_with return the longest match, but not which entry contains returns; the tool takes the first one in the order the data group lists them."
+      },
+      "varsTitle": "Variables at the end",
+      "sideEffectsTitle": "Logged and recorded",
+      "recorded": "recorded, not performed"
+    },
+    "f5-irules-string-extract": {
+      "name": "findstr, substr and getfield explainer",
+      "blurb": "Run F5's findstr, substr or getfield on your string and see the match, the skip, the terminator and the result marked on a ruler, next to the plain Tcl that does the same job. Cases F5 does not document are flagged. Local, no network.",
+      "commandLabel": "Command",
+      "example": "Example",
+      "clear": "Clear",
+      "syntax": {
+        "findstr": "<c>findstr string search ?skip? ?terminator?</c> finds the search string, skips that many characters from the start of the match, then returns up to the terminator: a length, or text to stop before.",
+        "substr": "<c>substr string skip ?terminator?</c> starts at index skip (0 is the first character), then returns up to the terminator: a length, or text to stop before.",
+        "getfield": "<c>getfield string separator field</c> splits at every occurrence of the separator (one character or a string) and returns that field, counting from 1."
+      },
+      "stringLabel": "String",
+      "field": {
+        "search": "Search for",
+        "skip": "Skip",
+        "terminator": "Terminator: length or text",
+        "separator": "Separator",
+        "field": "Field number"
+      },
+      "optional": "(optional)",
+      "presetsLabel": "Try",
+      "preset": {
+        "findstr-f5-sip": "F5: SIP URI",
+        "findstr-f5-aaa": "F5: aaa to xyz",
+        "findstr-query": "Query parameter",
+        "findstr-two-args": "Two arguments",
+        "findstr-not-found": "Not found",
+        "substr-f5-x": "F5: 2 x",
+        "substr-f5-gh": "F5: 2 gh",
+        "substr-f5-4": "F5: 2 4",
+        "substr-f5-20": "F5: 2 20",
+        "substr-f5-0": "F5: 2 0",
+        "getfield-colon": "a:b:c",
+        "getfield-query": "Query string",
+        "getfield-multichar": "Two-character separator"
+      },
+      "commandTitle": "The command",
+      "resultLabel": "Result",
+      "errorLabel": "Error",
+      "rulerTitle": "The string, marked",
+      "rulerTruncated": "Only the first 400 characters are drawn.",
+      "role": {
+        "match": "search string found",
+        "skipped": "skipped",
+        "result": "returned",
+        "terminator": "terminator",
+        "separator": "separator",
+        "field": "the field returned"
+      },
+      "undocumentedLabel": "Not documented by F5:",
+      "note": {
+        "findstr-found": "The search string starts at index {at}; the result begins {skip} characters after that.",
+        "cut-count": "A number as terminator is a length: up to {count} characters, fewer when the string ends first.",
+        "cut-terminator": "Stopped just before <c>{terminator}</c>, found at index {at}.",
+        "cut-terminator-absent": "<c>{terminator}</c> does not appear after the start point, so the rest of the string is returned.",
+        "getfield": "Split into {count} fields; field {field} is returned (fields count from 1).",
+        "split-chars": "Plain Tcl's <c>split</c> treats every character of <c>{sep}</c> as a separator of its own, so it is not an equivalent here: getfield splits at the whole string."
+      },
+      "undocumented": {
+        "skip-past-end": "F5's pages do not say what <c>{cmd}</c> returns when the skip goes past the end of the string. The tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "negative-skip": "F5's pages do not cover a negative skip count for <c>{cmd}</c>. The tool starts at the beginning of the string; check on a BIG-IP before relying on it.",
+        "count-format": "The count <c>{text}</c> is not written as plain decimal digits. Tcl reads it as an integer (a leading 0 means octal, 0x hexadecimal), but F5 does not say how findstr and substr read it.",
+        "count-zero": "F5's rule says a number as terminator returns that many characters, which would make 0 return nothing, yet F5's own substr example with 0 returns the rest of the string. The tool follows the example. A contributor note on F5's API reference page reports that 0 did not work for them on 11.5.4 and 11.6.0, so check on your version.",
+        "count-negative": "F5's pages do not cover a negative count. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "empty-terminator": "F5's pages do not cover an empty terminator. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "terminator-absent-findstr": "F5's findstr page does not say what happens when the terminator is absent (its substr page says the rest of the string is returned). The tool assumes the same for findstr.",
+        "findstr-not-found": "F5's pages do not say what findstr returns when <c>{search}</c> is not in the string. The tool assumes an empty string. F5 calls findstr equivalent to string range with string first, but that equivalent returns the whole string here, so the two cannot both be right; check on a BIG-IP before relying on it.",
+        "substr-no-terminator": "The terminator is optional in F5's syntax, but the page does not say what happens without it. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "getfield-empty-split": "F5's pages do not cover an empty separator. The tool treats the whole string as field 1.",
+        "getfield-empty-field": "Two separators in a row make an empty field here. F5's pages do not show this case.",
+        "getfield-out-of-range": "There are {count} fields and field {field} was asked for. F5's pages do not say what getfield returns then; the tool assumes an empty string.",
+        "class-contains-multiple": "{count} entries contain the value. F5 documents that starts_with and ends_with return the longest match, but not which entry contains returns; the tool takes the first one in the order the data group lists them."
+      },
+      "equivalentTitle": "The same job in plain Tcl",
+      "agrees": "same result",
+      "differs": "different result",
+      "equivalentNote": {
+        "findstr": "F5 describes two-argument findstr as equivalent to this. The tool runs it in the same Tcl 8.4 engine to check.",
+        "substr": "string range takes a last index rather than a length or a stop text, so this is the closest plain Tcl, run here to check.",
+        "getfield": "split makes a list and lindex picks one element, counting from 0 where getfield counts from 1."
+      }
+    },
+    "f5-irules-conditional-builder": {
+      "name": "iRules if / switch / class builder",
+      "blurb": "Describe one decision as rules and get it written as an if / elseif chain, a switch and a class match with its tmsh data groups, then see which pool each picks for a test value. Shows where first match and longest match disagree. Local, no network.",
+      "subjectLabel": "Decide on",
+      "headerLabel": "Header name",
+      "lowercaseLabel": "Compare in lower case (string tolower)",
+      "example": "Example",
+      "clear": "Clear",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copyLabel": "Copy the {form} code",
+      "copyTmsh": "Copy the tmsh commands",
+      "rulesTitle": "Rules, in order",
+      "opLabel": "Comparison",
+      "valueLabel": "Value",
+      "poolLabel": "Pool",
+      "op": {
+        "equals": "equals",
+        "starts_with": "starts with",
+        "ends_with": "ends with",
+        "contains": "contains",
+        "glob": "matches glob"
+      },
+      "valuePlaceholder": "/api",
+      "poolPlaceholder": "api_pool",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove",
+      "addRule": "Add a rule",
+      "defaultLabel": "Pool when nothing matches",
+      "groupLabel": "Data group name",
+      "testLabel": "Test value",
+      "presetsLabel": "Try",
+      "preset": {
+        "longest-vs-first": "First vs longest match",
+        "host-glob": "Host with a glob",
+        "header-contains": "User-Agent contains",
+        "lone-brace": "Lone brace"
+      },
+      "agreeTitle": "All forms agree.",
+      "disagreeTitle": "The forms disagree.",
+      "testedWith": "Tested with",
+      "noPool": "no pool",
+      "shadowed": "Rule {rule} can never be chosen by if or switch: rule {by} comes first and matches every value rule {rule} matches.",
+      "note": {
+        "class-multiple-groups": "The rules use more than one comparison, so the class form needs one data group per comparison, looked up in the order the comparisons first appear.",
+        "class-longest-vs-first": "class match with starts_with or ends_with returns the longest matching entry, whatever the order of the rules (F5's class reference). if and switch take the first rule that matches, in order.",
+        "case-sensitive": "The value is compared as it is, so case matters: Curl would not match curl. Tick lower case to compare without case, and write the rule values in lower case.",
+        "uppercase-never-matches": "A rule value has upper-case letters, but the request value is lower-cased first, so that rule can never match.",
+        "unmatched-brace": "A rule value has a brace without its partner, so the code writes it with a backslash in front. Tcl counts the braces inside a braced body even between double quotes, so a lone one there would break the rule.",
+        "tmsh-quoted": "A record name has characters other than letters, digits and _ . / : -, so the tmsh text puts it in double quotes. That quoting has not been tried on a BIG-IP: after creating the data group, list it in tmsh and check the record.",
+        "path-stops-at-query": "The test value has a question mark, which starts the query string. HTTP::path returns only the part before it, and that part is what the rules compare."
+      },
+      "form": {
+        "if": "if / elseif",
+        "switch": "switch",
+        "class": "class match"
+      },
+      "chose": "Chose for the test value:",
+      "tmshTitle": "The data groups (tmsh)",
+      "formNote": {
+        "if": "Conditions are tested from the top; the first true one wins.",
+        "switch": "Patterns are tested from the top; the first match wins. The -- keeps a value that starts with a dash from being read as an option (F5 K15650046).",
+        "class": "Each lookup returns the matching entry's value, here the pool name. The data groups must exist on the BIG-IP; their tmsh definitions are below."
+      },
+      "unavailable": {
+        "glob": "class match has no glob comparison, so rules that use a glob pattern cannot become a data group lookup.",
+        "empty": "There are no rules to put in a data group."
+      }
+    },
+    "f5-irules-style-checker": {
+      "name": "iRules style checker",
+      "blurb": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network.",
+      "iruleLabel": "iRule",
+      "irulePlaceholder": "Paste an iRule",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "messy": "A rule with problems",
+        "clean": "A clean rule",
+        "brace-brace": "Braces with no space"
+      },
+      "parsesYes": "Tcl 8.4 can load it.",
+      "parsesNo": "Tcl 8.4 cannot load it.",
+      "clean": "No findings: it follows the guide on every point the checker reads.",
+      "counts": "{error, plural, one {# error} other {# errors}}, {warning, plural, one {# warning} other {# warnings}}, {info, plural, one {# note} other {# notes}}.",
+      "stats": "{lines} lines; the longest has {longest} characters.",
+      "eventsTitle": "Events and priorities",
+      "lineShort": "line {n}",
+      "priority": "priority {p}",
+      "noPriority": "no priority",
+      "codeTitle": "The rule, lines marked",
+      "findingsTitle": "Findings",
+      "sev": {
+        "error": "error",
+        "warning": "warning",
+        "info": "note"
+      },
+      "ruleSyntax": "Tcl",
+      "ruleName": {
+        "E1": "Indentation",
+        "E2": "Line length",
+        "E3": "Characters and line ends",
+        "R1": "Smart quotes and invisible spaces",
+        "R2": "Size limit",
+        "R4": "Brace placement",
+        "R6": "Comments",
+        "R7": "One command per line",
+        "R8": "No single-line if",
+        "R9": "State as 0 or 1",
+        "R10": "Tcl logical operators",
+        "R11": "A space between braces",
+        "R12": "Braced expressions",
+        "R13": "Spaces around variables",
+        "R14": "Braced variable names",
+        "R15": "Option terminator --",
+        "R16": "Event priority",
+        "R17": "Table timeouts",
+        "R18": "Prefixed static:: names",
+        "R19": "No static:: debug flags",
+        "R20": "No commented-out code",
+        "syntax": "Syntax"
+      },
+      "finding": {
+        "E1": {
+          "tab": "A tab character. The guide asks for 4-space indents and no tabs.",
+          "indent": "Indented by {spaces} spaces, which is not a multiple of 4."
+        },
+        "E2": {
+          "main": "{length} characters long. The guide aims for 100 columns, 120 at most."
+        },
+        "E3": {
+          "crlf": "A Windows line ending (carriage return). The guide asks for Unix line feeds.",
+          "trailing": "White space at the end of the line.",
+          "non-ascii": "A character outside ASCII. The guide asks for ASCII files.",
+          "no-final-newline": "The file does not end with a line feed."
+        },
+        "R1": {
+          "main": "A curly quote or a no-break space. They look like ordinary quotes and spaces but are different characters, and they break code without an obvious error; retype them."
+        },
+        "R2": {
+          "main": "The rule is {bytes} bytes. The guide reminds you an iRule is limited to 64 KB; split it, or move data into data groups."
+        },
+        "R4": {
+          "main": "A brace alone on its own line. Put the opening brace at the end of the line before it.",
+          "else-line": "else or elseif starts a new line. Keep the closing brace, else and the opening brace on one line."
+        },
+        "R6": {
+          "eol": "An end-of-line comment. Put comments on their own line, at the indent of the code.",
+          "no-space": "A comment with no space after the hash. The guide writes comments as hash, space, text, and keeps hash-then-text for commented-out code.",
+          "switch-comment": "A comment between switch patterns. Tcl reads it as a pattern, which breaks the switch; put comments inside a body."
+        },
+        "R7": {
+          "main": "{count} commands on one line. Write one command per line."
+        },
+        "R8": {
+          "main": "A single-line if. Spread it over several lines, even for a debug log."
+        },
+        "R9": {
+          "main": "State stored as {value}. Store it as 0 or 1."
+        },
+        "R10": {
+          "main": "One of F5's word operators (and, or, not). Use the Tcl operators &&, || and !, with parentheses to make the grouping plain."
+        },
+        "R11": {
+          "main": "A closing brace followed directly by an opening one. Leave a space between them."
+        },
+        "R12": {
+          "main": "An expression that is not braced: {word}. An unbraced expression is substituted twice (an injection risk, F5 K57410758) and cannot be compiled ahead; brace it."
+        },
+        "R13": {
+          "main": "A variable in an expression without a space on each side."
+        },
+        "R14": {
+          "main": "A variable in an expression written without braces around its name. The guide writes the name in braces after the dollar sign."
+        },
+        "R15": {
+          "main": "{command} without -- before its value. A value that starts with a dash would be read as an option (F5 K15650046)."
+        },
+        "R16": {
+          "main": "The event {event} has no priority. The guide asks for one on every event; the default is 500."
+        },
+        "R17": {
+          "main": "A table entry without a timeout or lifetime. F5 then applies a default timeout of 180 seconds and an indefinite lifetime; set them on purpose."
+        },
+        "R18": {
+          "main": "static::{name} has no prefix. Prefix static:: names, for example with the rule's name, so two rules cannot collide."
+        },
+        "R19": {
+          "main": "A static:: debug flag. The guide warns these lead to log storms; keep the flag in a variable set per connection instead."
+        },
+        "R20": {
+          "commented-code": "Commented-out code. Remove it before the rule goes to production."
+        },
+        "syntax": {
+          "main": "Tcl 8.4 cannot parse this: {message}. The rule will not load."
+        }
+      },
+      "limits": "The checker reads structure and text, never runs the rule. Where it cannot be sure (for example whether a line starting with a hash is code or a comment missing its space) the finding is a note, not a warning."
     }
   },
   "privacy_page": {
@@ -14625,7 +15409,7 @@
       "roadsec": {
         "def": "Latin America's largest hacker festival - a full-day carnival of talks, CTF, drones, and lockpicks that has toured Brazil's state capitals since 2014.",
         "context": "Roadsec inverted the conference formula: instead of making Brazil's hackers travel to one city, the festival travels to them - a caravan through the state capitals, culminating each year in a mega-edition in São Paulo. The format is deliberately festival, not conference: career talks beside hardware villages, robot-building beside serious research, and at the center the Hackaflag, the CTF championship whose regional rounds along the tour crown a national champion. For a generation of Brazilian students far from the São Paulo-Rio axis, a Roadsec stop was the first time the security community came to their town - which is precisely the point.\n\nThe organisation behind it is Flipside, which now has an entry on this site's industry timeline.",
-        "depth": "Roadsec inverted the usual conference economics. Rather than requiring the country's hackers to travel to one city, it travelled to them, running a caravan of editions through state capitals before culminating in a large São Paulo event. In a country of continental scale where a domestic flight can cost more than a monthly wage, that inversion is the whole argument.\n\nThe format is deliberately a festival rather than a conference. Career talks sit beside hardware hacking, capture-the-flag competitions, lockpicking and music, which lowers the entry barrier for people who would never have described themselves as belonging at a security event. That mix is a recruitment strategy for the field as much as a programme.\n\nWhat it demonstrates is that geography is a security problem. Expertise concentrates where events are, events are where money is, and money is in a few cities, so talent outside them stays invisible to an industry that complains about a shortage. Taking the event to the people rather than the reverse is one of the few interventions that addresses the mechanism rather than the symptom.\n\nBoth this event and Roadsec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in Sao Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside Sao Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
+        "depth": "Roadsec inverted the usual conference economics. Rather than requiring the country's hackers to travel to one city, it travelled to them, running a caravan of editions through state capitals before culminating in a large São Paulo event. In a country of continental scale where a domestic flight can cost more than a monthly wage, that inversion is the whole argument.\n\nThe format is deliberately a festival rather than a conference. Career talks sit beside hardware hacking, capture-the-flag competitions, lockpicking and music, which lowers the entry barrier for people who would never have described themselves as belonging at a security event. That mix is a recruitment strategy for the field as much as a programme.\n\nWhat it demonstrates is that geography is a security problem. Expertise concentrates where events are, events are where money is, and money is in a few cities, so talent outside them stays invisible to an industry that complains about a shortage. Taking the event to the people rather than the reverse is one of the few interventions that addresses the mechanism rather than the symptom.\n\nBoth this event and Mind The Sec are run by the same company, Flipside, and were founded by the same person, Anderson Ramos - a fact neither entry recorded until now, and which explains a great deal about the Brazilian calendar. The two were deliberate opposites: one corporate, expo-heavy and in Sao Paulo; the other a travelling festival taking hacker culture to the state capitals. One organisation ran both ends of the spectrum. Then, in 2024, Roadsec did not happen. The assessment from people close to the scene was not that it failed but that the corporate event had grown so large it consumed the organisation's capacity to run the other one, and Flipside had also wound down the regional editions of both. That is a specific and instructive thing to watch happen: the profitable event did not out-compete the community event in any market, it out-competed it for the attention of the people who ran both. The consequence was not nothing. Local community conferences multiplied into the space the regional editions vacated, which is why the Brazilian calendar now has more small events outside Sao Paulo than it did when a large organiser was serving those cities directly. Whether that is a better outcome depends on what you value, and the honest answer is that it is a different one."
       },
       "cryptorave": {
         "def": "São Paulo's crowdfunded cryptoactivism marathon: 24 uninterrupted hours of privacy, security, and digital-rights activities - free, volunteer-run, and pointedly without corporate sponsorship.",
@@ -17497,6 +18281,8 @@
       "carrier": "Carrier",
       "datacentre": "Data centre"
     },
+    "storyBeginsLabel": "Story begins:",
+    "foundedCompanyLabel": "Founding year:",
     "originLabel": "Origin:",
     "officialLabel": "From the company",
     "officialSite": "Official site",

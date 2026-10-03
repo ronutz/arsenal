@@ -3,12 +3,12 @@ slug: irules-branching-and-lookups
 title: "iRules: choosing between if, switch, class match, and static arrays"
 summary: "When an iRule has to match one value against many and act, there are four common tools: chained if, switch, a data group with class match, and a directly-indexed static:: array. F5 has actually ranked them for speed. Here is that ranking, and the two questions that decide which one you should reach for."
 concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
-relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator"]
-relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing", "irules-style-guide-explained"]
 category: networking
 order: 22
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## The same job, four ways
@@ -34,7 +34,7 @@ if { $x eq "a" } { ... } elseif { $x eq "b" } { ... } elseif { $x eq "c" } { ...
 **Prefer switch over any form of if when you can.** Matching one variable against a list of values is exactly what `switch` is for, and it avoids the extra expression evaluation that each `if` carries. It is also far easier to read.
 
 ```tcl
-switch [string tolower [HTTP::host]] {
+switch -- [string tolower [HTTP::host]] {
     "www.example.com"  { pool web_pool }
     "api.example.com"  { pool api_pool }
     default            { pool default_pool }
@@ -77,8 +77,24 @@ when HTTP_REQUEST {
 
 **What kind of match is it?** The four tools are not interchangeable. A `static::` array does exact-key lookups only. `switch` does exact matches, and `switch -glob` does simple wildcard patterns. A data group with `class match` does exact, and also the address- and string-aware forms (`starts_with`, `ends_with`, `contains`, longest-match on IP subnets) that the others cannot express cleanly. Pick the construct whose match type fits, then optimize within it.
 
+## First match or longest match
+
+The four constructs also differ in **which** entry wins when several could match. An `if` / `elseif` chain and a `switch` take the first one, in the order written. `class match` with `starts_with` or `ends_with` returns the longest matching entry, whatever the order of the data group (F5's `class` reference states this). So with entries `/api` and `/api/v2`, the path `/api/v2/users` reaches the `/api` branch of an `if` chain or a `switch`, and the `/api/v2` entry of a data group. Put the longer prefix first in `if` and `switch` when that is what you mean; the data group needs no ordering.
+
+Whichever you choose, put `--` before the value a `switch` tests, as in the example above. `switch` reads any word that starts with a dash as an option, so without `--` a request value such as `-glob` can change how it matches, and an unknown one stops the iRule with a "bad option" error (F5 K15650046).
+
+The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes one decision all three ways, with the data group definitions, and runs a test value through each so the difference between first and longest match is visible.
+
 ## A caveat about the numbers, honestly
 
 That "hundred entries or fewer" crossover is measured against `matchclass`, which was **deprecated in version 10** in favor of the `class` command. The `class` command was introduced precisely because it offers better functionality and performance than its predecessor, so the crossover point where a data group overtakes `switch` is a guideline inherited from the old command, not a hard number for modern code. When it matters, do not guess: read the real per-event cost with timing statistics using the [iRules runtime calculator](/tools/f5-irules-runtime-calculator), and let the numbers from your own box decide.
 
 And when none of these fit, and only then, reach for a regular expression. The [iRules performance linter](/tools/f5-irules-performance-linter) flags `regexp` and `regsub` for exactly this reason: they are the most expensive way to match, and one of `switch`, `class`, or a `static::` array is almost always cheaper. The [companion article on CMP and the static:: namespace](/learn/irules-cmp-and-static-namespace) covers why `static::` is the right home for that array in the first place.
+
+## Sources
+
+The ranking, its hedged reasons (including matchclass hashing with MD5) and the directly-indexed array are from F5's How To Write Fast Rules; the longest-match rule is from F5's class reference, and the switch option exposure from K15650046.
+
+- [F5 iRules reference: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [F5 iRules reference: class](https://clouddocs.f5.com/api/irules/class.html)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)

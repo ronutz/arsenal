@@ -3,12 +3,12 @@ slug: irules-branching-and-lookups
 title: "iRules: escolhendo entre if, switch, class match e arrays static"
 summary: "Quando um iRule precisa comparar um valor com muitos e agir, há quatro ferramentas comuns: if encadeado, switch, um data group com class match, e um array static:: indexado diretamente. A F5 de fato ordenou essas opções por velocidade. Aqui está essa ordem, e as duas perguntas que decidem qual usar."
 concepts: ["irules", "tcl", "f5", "performance", "switch", "data groups", "static", "class"]
-relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator"]
-relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing"]
+relatedTools: ["f5-irules-performance-linter", "f5-irules-runtime-calculator", "f5-irules-conditional-builder"]
+relatedArticles: ["irules-cmp-and-static-namespace", "irules-performance-and-timing", "irules-style-guide-explained"]
 category: networking
 order: 22
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## O mesmo trabalho, quatro formas
@@ -34,7 +34,7 @@ if { $x eq "a" } { ... } elseif { $x eq "b" } { ... } elseif { $x eq "c" } { ...
 **Prefira switch a qualquer forma de if quando puder.** Comparar uma variável com uma lista de valores é exatamente para o que o `switch` serve, e ele evita a avaliação extra de expressão que cada `if` carrega. Também é bem mais fácil de ler.
 
 ```tcl
-switch [string tolower [HTTP::host]] {
+switch -- [string tolower [HTTP::host]] {
     "www.example.com"  { pool web_pool }
     "api.example.com"  { pool api_pool }
     default            { pool default_pool }
@@ -77,8 +77,24 @@ when HTTP_REQUEST {
 
 **Que tipo de casamento é?** As quatro ferramentas não são intercambiáveis. Um array `static::` faz apenas buscas por chave exata. O `switch` faz casamentos exatos, e o `switch -glob` faz padrões curinga simples. Um data group com `class match` faz exato, e também as formas cientes de endereço e de string (`starts_with`, `ends_with`, `contains`, casamento mais longo em sub-redes IP) que as outras não expressam de forma limpa. Escolha o construto cujo tipo de casamento serve, depois otimize dentro dele.
 
+## Primeiro casamento ou casamento mais longo
+
+As quatro construções também diferem em **qual** entrada vence quando várias poderiam casar. Uma cadeia `if` / `elseif` e um `switch` pegam a primeira, na ordem escrita. `class match` com `starts_with` ou `ends_with` devolve a entrada mais longa que casar, seja qual for a ordem do data group (a referência de `class` da F5 diz isso). Então, com as entradas `/api` e `/api/v2`, o caminho `/api/v2/users` cai no ramo `/api` de uma cadeia `if` ou de um `switch`, e na entrada `/api/v2` de um data group. Ponha o prefixo mais longo primeiro no `if` e no `switch` quando for isso que você quer; o data group dispensa ordenação.
+
+Seja qual for a escolha, coloque `--` antes do valor que um `switch` testa, como no exemplo acima. O `switch` lê qualquer palavra que comece com hífen como opção, então sem `--` um valor da requisição como `-glob` pode mudar o jeito como ele casa, e um desconhecido para o iRule com um erro "bad option" (F5 K15650046).
+
+O [construtor de if / switch / class](/tools/f5-irules-conditional-builder) escreve uma mesma decisão dos três jeitos, com as definições dos data groups, e passa um valor de teste por cada um para que a diferença entre o primeiro casamento e o mais longo fique visível.
+
 ## Uma ressalva sobre os números, com honestidade
 
 Aquele ponto de virada de "cem entradas ou menos" é medido contra o `matchclass`, que foi **descontinuado na versão 10** em favor do comando `class`. O comando `class` foi introduzido justamente porque oferece melhor funcionalidade e desempenho que seu antecessor, então o ponto de virada onde um data group ultrapassa o `switch` é uma diretriz herdada do comando antigo, não um número exato para código moderno. Quando importar, não adivinhe: leia o custo real por evento com estatísticas de timing usando a [calculadora de runtime de iRules](/tools/f5-irules-runtime-calculator), e deixe os números da sua própria caixa decidirem.
 
 E quando nenhuma dessas serve, e só então, recorra a uma expressão regular. O [linter de desempenho de iRules](/tools/f5-irules-performance-linter) sinaliza `regexp` e `regsub` exatamente por isso: são a forma mais cara de casar, e um de `switch`, `class` ou um array `static::` é quase sempre mais barato. O [artigo companheiro sobre CMP e o namespace static::](/learn/irules-cmp-and-static-namespace) cobre por que o `static::` é o lugar certo para esse array em primeiro lugar.
+
+## Fontes
+
+A ordem, seus motivos com ressalva (incluindo o matchclass usar MD5 como hash) e o array indexado diretamente vêm do How To Write Fast Rules da F5; a regra do casamento mais longo vem da referência de class da F5, e a exposição das opções do switch, do K15650046.
+
+- [Referência de iRules da F5: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [Referência de iRules da F5: class](https://clouddocs.f5.com/api/irules/class.html)
+- [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)

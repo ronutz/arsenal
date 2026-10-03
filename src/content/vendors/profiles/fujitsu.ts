@@ -18,7 +18,10 @@ export const fujitsuProfile: VendorProfile = {
   slug: "fujitsu",
   foundings: [
     {
-      company: "Fujitsu (Fuji Tsushinki Seizo)",
+      // Both forms of the founding name (2026-10-02): the romanized Japanese and
+      // the English the industry card's foundedCompany uses, which is also the
+      // Wikipedia infobox's own "(as ...)" row, so data and label agree.
+      company: "Fujitsu (Fuji Tsushinki Seizo, or Fuji Telecommunications Equipment Manufacturing)",
       year: 1935,
       place: "Kawasaki, Japan",
       founders: ["Spun from Fuji Electric (the 1923 Furukawa-Siemens venture)"],

@@ -27,6 +27,25 @@ import type { VendorProfile } from "../profile-types";
 export const lumenProfile: VendorProfile = {
   slug: "lumen-centurylink-level3",
   foundings: [
+    // ADDED 2026-10-02. The industry card has always carried 1968 - the
+    // incorporation of the company that is Lumen today - but this profile
+    // declared only Level 3's root, so nothing could say whose year 1968 was and
+    // the founded-year guard, which skipped single-founding profiles, never asked.
+    // Year and state from Lumen's own Form 10-K for 2025; the 1930 family
+    // purchase, the "family-operated until incorporated in 1968" sentence and the
+    // former-name list from the Wikipedia article, whose infobox dates the
+    // company to 1930. Founders are left empty because no source read names who
+    // incorporated it in 1968; the 1930 buyers are recorded in the story instead.
+    {
+      company: "Central Telephone and Electronics Corporation, which became CenturyTel, CenturyLink and Lumen",
+      year: 1968,
+      place: "Louisiana",
+      founders: [],
+      story:
+        "William Clarke and Marie Williams bought the local telephone business in 1930, with 75 paid subscribers, for $500, and it stayed family-operated until it was incorporated in Louisiana in 1968 as Central Telephone and Electronics. Renamed Century Telephone Enterprises in 1971, it spent four decades as CenturyTel, a rural local exchange carrier in Monroe, Louisiana that grew by buying other rural carriers, before the Embarq, Qwest and Level 3 acquisitions turned it into CenturyLink and then Lumen.",
+      sourceNote:
+        "Incorporation in Louisiana in 1968 per Lumen's Form 10-K for 2025 (\"Since being incorporated in Louisiana in 1968\"); the 1930 purchase and the family operation until 1968 per Wikipedia's Lumen Technologies article, whose infobox dates the company to 1930; former names per the same article.",
+    },
     {
       company: "Kiewit Diversified Group, which became Level 3",
       year: 1985,

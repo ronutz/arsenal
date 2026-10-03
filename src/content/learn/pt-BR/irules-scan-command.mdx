@@ -1,0 +1,76 @@
+---
+slug: irules-scan-command
+title: "scan em iRules: desmontando valores sem expressões regulares"
+summary: "A própria referência da F5 recomenda comandos de string como scan no lugar de expressões regulares. scan é curto e rápido, mas o resultado conta conversões e não casamentos, -1 e 0 significam coisas diferentes, e o Tcl 8.4.6 guarda inteiros por meio de um int em C de 32 bits. Veja como ler um formato e as verificações que tornam um scan confiável."
+concepts: ["irules", "tcl", "f5", "scan", "parsing"]
+relatedTools: ["f5-irules-scan-explainer", "f5-irules-string-extract"]
+relatedArticles: ["irules-tcl-number-notation", "irules-string-commands"]
+category: networking
+order: 28
+status: reviewed
+updated: "2026-10-03"
+---
+
+A página de referência da F5 para o operador `matches_regex` traz uma observação curta: é mais eficiente usar um comando de string do que uma expressão regular, e a maioria dos casos pode ser resolvida com `string match` ou `scan`. O `scan` desmonta um valor usando um formato, como o `sscanf` do C, e guarda os pedaços em variáveis. Os iRules rodam o Tcl 8.4.6 (F5 K6091), então o `scan` descrito aqui é o dele.
+
+## Lendo um formato
+
+Um formato é uma sequência de três tipos de diretiva:
+
+- **espaço em branco** pula qualquer quantidade de espaço em branco na entrada, inclusive nenhuma;
+- **texto literal** precisa casar com a entrada caractere por caractere;
+- **conversões** começam com `%` e leem um valor: `%d` um inteiro decimal, `%x` hexadecimal, `%o` octal, `%i` um inteiro cuja base vem do prefixo, `%s` caracteres até um espaço em branco, `%c` um caractere como seu código, `%[...]` caracteres de um conjunto (`%[^&]` é tudo até um "e comercial"), e `%n` quanto da entrada foi consumido até ali. Um `*` depois do `%` converte sem guardar, e um número define uma largura máxima.
+
+```tcl
+scan "10:30" "%d:%d" hours minutes          ;# 2
+scan "192.168.1.20" "%d.%d.%d.%d" a b c d   ;# 4
+scan "user=abc&x=1" "user=%[^&]" user       ;# 1, user vale abc
+```
+
+## O que o resultado significa
+
+Com nomes de variáveis, `scan` devolve o número de **conversões que guardaram um valor**, o que não é o mesmo que "a entrada casou":
+
+- `-1`: a entrada acabou antes da primeira conversão (um valor vazio, por exemplo);
+- `0`: uma conversão foi tentada e não casou (`scan "abc" "%d" n`);
+- um número menor que o esperado: a leitura parou no meio, e toda variável depois desse ponto não foi definida por este scan, então mantém o valor que tinha antes.
+
+Sem nomes de variáveis, `scan` devolve os valores convertidos como uma lista.
+
+Como a contagem só conta conversões, um literal que falha **depois** da última conversão não muda o resultado. A página de `matches_regex` da F5 mostra esta verificação como alternativa com `scan` a uma expressão regular para "www., depois um nome, depois .com":
+
+```tcl
+scan [string tolower [HTTP::host]] {www.%[a-z0-9.:-].com} host_token
+```
+
+Ela devolve 1 para `www.example.com`, e também 1 para `www.example.org`: o conjunto inclui o ponto, então consome `example.org` e o literal `.com` nunca é alcançado. Mesmo tirando o ponto do conjunto, o `.com` que falha não diminuiria a contagem. Para verificar o que vem depois da última conversão, termine o formato com `%n` e exija que ele seja guardado:
+
+```tcl
+if { [scan [string tolower [HTTP::host]] {www.%[a-z0-9-].com%n} name used] == 2
+     && $used == [string length [HTTP::host]] } {
+    pool www_pool
+}
+```
+
+## Detalhes do Tcl 8.4.6 que o manual não explicita
+
+- **Os inteiros passam por um int em C.** `scan "3000000000" "%d" n` guarda `-1294967296`, e o modificador de tamanho `l` não muda isso no 8.4.6. Para manter um número grande intacto, leia-o como texto com `%[0-9]` e deixe o `expr` interpretá-lo, já que o `expr` trabalha com inteiros de 64 bits.
+- **`%n` conta bytes.** O manual fala em caracteres, mas o Tcl 8.4.6 conta os bytes do seu UTF-8 interno, então cada caractere fora do ASCII conta 2 ou 3.
+- **`%i` segue as regras de prefixo**, então `08` lido com `%i` dá 0 e para no 8. Use `%d` para valores decimais com zero à esquerda, como horários.
+
+## Quando o scan é a ferramenta certa
+
+O `scan` brilha quando a forma do valor é fixa: um endereço, um horário, uma string de versão, uma linha de requisição, um prefixo conhecido seguido de um valor. Quando o valor é livre, `string first` e `string range`, o `getfield` da F5 ou um `switch -glob` costumam ser mais claros. Para um valor com separador fixo, compare o `scan` com [findstr, substr e getfield](/learn/irules-findstr-substr-getfield).
+
+## Experimente
+
+O [explicador de scan](/tools/f5-irules-scan-explainer) alinha cada diretiva com os caracteres que ela consumiu, mostra o valor de cada variável e diz exatamente por que a leitura parou, incluindo os comportamentos do Tcl 8.4.6 acima.
+
+## Fontes
+
+A observação sobre eficiência e o exemplo www./.com vêm da referência de matches_regex da F5; as conversões e os códigos de resultado, do manual do Tcl 8.4; o armazenamento em int e a contagem em bytes foram confirmados rodando o próprio Tcl 8.4.6.
+
+- [Referência de iRules da F5: matches_regex](https://clouddocs.f5.com/api/irules/matches_regex.html)
+- [Manual do Tcl 8.4: scan](https://www.tcl-lang.org/man/tcl8.4/TclCmd/scan.htm)
+- [Código-fonte do Tcl 8.4.6, tag core-8-4-6](https://github.com/tcltk/tcl/tree/core-8-4-6)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)

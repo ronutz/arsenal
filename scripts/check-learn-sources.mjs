@@ -98,15 +98,24 @@ const DIR = "src/content/learn/en";
 //
 // NO LONGER A BARE COUNT. A number says "four are tolerated" and cannot say
 // WHICH, so it tolerates the fifth - a new unsourced version claim - exactly as
-// readily. Each of the four below is declared with the reason its source could
-// not be reached, and anything not on this list fails. The list may only shrink.
+// readily. Each entry below is declared with the reason its source could not be
+// reached, and anything not on this list fails. The list may only shrink.
+//
+// 2026-10-02: f5-cipher-string-syntax came off. my.f5.com renders in PRIME's own
+// browser session, so K15194 and K01770517 were READ, and the article now cites
+// them for what they establish: the suite format, the trait keywords, `!`
+// exclusion and @STRENGTH ordering. Neither shows the `+` that joins keywords,
+// the comma or whitespace separators, the `-` (delete) operator or the leading
+// `+` (de-prioritise) operator; F5 says only that its format is similar to
+// OpenSSL's, whose grammar has all four. Later the same day the article gained
+// a ## Sources section that says exactly that: K15216 (archived) shows `+`
+// joining keywords (RSA+AES), OpenSSL's own openssl-ciphers page is cited for
+// the separators, `-` and the leading `+`, and the article tells the reader to
+// confirm them with tmm --clientciphers. The same reading corrected @SPEED,
+// which the article and the tool had described as working: on BIG-IP 14 it
+// changed nothing, and an F5 engineer answered on DevCentral (October 2020)
+// that sorting by speed is no longer supported.
 const DECLARED_UNSOURCED = new Map([
-  ["f5-cipher-string-syntax",
-   "the cipher-string grammar (sets, + joins, ! - + operators, @STRENGTH) is " +
-   "documented in K15194 on my.f5.com, a Salesforce Lightning app that fails " +
-   "to load outside a real browser session; techdocs carries the f5-secure " +
-   "example and the Order list but not the grammar. Citing K15194 unread would " +
-   "be citing from memory."],
   ["f5xc-openapi-and-api-inventory",
    "F5's XC import guide confirms OpenAPI \"(formerly Swagger)\" but never " +
    "states WHICH spec versions XC accepts, so the article's \"OpenAPI 2.0 ... " +
@@ -114,8 +123,12 @@ const DECLARED_UNSOURCED = new Map([
   ["how-iquery-connects-bigip-dns",
    "the article says Link Controller was removed in BIG-IP 21.0.0. The 21.0.0 " +
    "release notes never say so; the module is merely ABSENT from the supported " +
-   "list, and absence is not documented removal. The end-of-sale notice is " +
-   "K47621243, on the unreachable portal. Raised for PRIME."],
+   "list, and absence is not documented removal. The end-of-sale notice, " +
+   "K47621243, was READ on 2026-10-02 in PRIME's browser: End of Sale 1 January " +
+   "2023, End of New Software Support 1 January 2025, End of Software Development " +
+   "1 January 2026, replacement direction BIG-IP DNS plus LTM. It does not say " +
+   "the module was removed in 21.0.0, so citing it would pass this check without " +
+   "supporting the claim. The wording is PRIME's call."],
   ["zscaler-client-connector-profiles",
    "the forwarding-profile menu (Z-Tunnel 1.0, Z-Tunnel 2.0, Tunnel with Local " +
    "Proxy, Enforce Proxy, None) is on Zscaler's forwarding-profile " +

@@ -44,3 +44,9 @@ __pycache__/
 # (via `wrangler types`) on every build so they can never go stale.
 worker/worker-configuration.d.ts
 .source-liveness.json
+
+# Session working files from audits (sweep scripts, TSV dumps, interim lists).
+# They had been staged by mistake and were taken out of the index on
+# 2026-10-02: the conclusions they produced live in the guards and the CONCORD
+# canon, not in the public repository.
+/scratchpad/

@@ -160,15 +160,58 @@ export interface PartnerVendor {
   group: "redu" | "other" | "contemporary";
   /** Display name (current company for "other", the vendor for "redu"). */
   name: string;
-  /** Year the story on this card BEGINS - the founding of the earliest company
-   *  it covers. Used to order the lineage timeline (PRIME 2026-07-27), which
-   *  replaced a "contemporaries" vs "other vendors" split that did not survive
-   *  contact with the facts: several vendors in "other" are demonstrably still
+  /** The founding year of THIS CARD'S OWN SUBJECT.
+   *
+   *  PRIME, 2026-10-02: "founding should be of the entry itself. Ancestor
+   *  founding should be made explicit what it is." That SUPERSEDES the rule
+   *  recorded here since 2026-07-27, which was "the founding of the earliest
+   *  company it covers" - so a card named for one company could display, and
+   *  sort by, a predecessor's year with nothing saying so. Three cards were
+   *  wrong under the new rule and were corrected: `unisys` 1886 to 1986 (1886
+   *  is Burroughs, and this card's own profile already declared Unisys as
+   *  founded 1986, so the site contradicted itself), `apache` 1995 to 1999
+   *  (1995 is The Apache Group; the card is named for the Foundation), and
+   *  `riverstone` 1996 to 2000 (1996 is Yago Systems).
+   *
+   *  Still used to order the lineage timeline, which replaced a
+   *  "contemporaries" vs "other vendors" split that did not survive contact
+   *  with the facts: several vendors in "other" are demonstrably still
    *  trading. A founding year is a fact rather than a judgement, so ordering by
    *  it removes the need to categorise at all.
-   *  On combined-lineage cards this is the EARLIEST company in the story, which
-   *  is the one the card opens with. */
+   *
+   *  On a card that is explicitly a lineage of SEVERAL companies - "Nortel &
+   *  Bay Networks", "The access & home fleet" - there is no single "own"
+   *  subject, so this stays the earliest company in the story and
+   *  `foundedCompany` names which company that is. */
   founded?: number;
+  /** Where this card's STORY starts, when that is earlier than its own subject's
+   *  founding - the predecessor the card opens with, named.
+   *
+   *  PRIME, 2026-10-02. `founded` used to double as both "this subject's
+   *  founding" and "where this card sits on the timeline". Ruling 2 gave the
+   *  first meaning to `founded`; this field takes the second, so neither has to
+   *  lie. The /industry timeline, the learning timeline and vendorsByTag all
+   *  order by `storyStart()` below, which reads this when present.
+   *
+   *  Set ONLY where it differs from `founded`, so its presence means something.
+   *  On a combined-lineage card `founded` is already the earliest company in the
+   *  story and `foundedCompany` names which, so this stays unset there: three
+   *  cards carry it, the three whose `founded` was corrected on 2026-10-02 to
+   *  their own subject's year.
+   *
+   *  The year is ASSERTED to be earlier than `founded` by
+   *  scripts/check-vendor-founded-sources.mjs - a story cannot begin after its
+   *  own subject was founded. */
+  storyBegins?: { year: number; company: string };
+  /** The company `founded` belongs to, set ONLY where that is not this card's
+   *  own named subject - so its PRESENCE is itself the signal that the year is
+   *  an ancestor's or one member's of a lineage. Rendered beside the year, so a
+   *  bare "1895" can no longer imply something false about who was founded
+   *  when. Required by PRIME's 2026-10-02 ruling above; enforced by
+   *  scripts/check-vendor-founded-sources.mjs, which fails if a card declaring
+   *  two or more foundings in its profile carries a `founded` that is not its
+   *  own subject's and does not say whose it is. */
+  foundedCompany?: string;
   /** Set only where the company on this card stopped existing independently -
    *  absorbed, renamed away, or wound up. LEFT UNSET where that has not
    *  happened or is not stated plainly in the profile's own sourced timeline;
@@ -337,7 +380,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://www.rededucation.com/nutanix/",
     externalLabel: "Nutanix training at Red Education",
-    sources: [
+    sources: [{ label: "Wikipedia: Nutanix - the infobox records the company founded 2009", url: "https://en.wikipedia.org/wiki/Nutanix" }, 
       { label: "Red Education - Nutanix (ATP, 98% CSAT)", url: "https://www.rededucation.com/nutanix/" },
       ...REDU_SOURCES,
     ],
@@ -371,7 +414,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/OpenAI",
     externalLabel: "OpenAI",
-    sources: [
+    sources: [{ label: "Wikipedia: OpenAI - infobox records the organization founded 8 December 2015", url: "https://en.wikipedia.org/wiki/OpenAI" }, 
       { label: "Grokipedia: OpenAI - founding date and founders", url: "https://grokipedia.com/page/OpenAI" },
       { label: "Who created ChatGPT - the 30 November 2022 launch, adoption figures, Microsoft stake", url: "https://felloai.com/who-created-chatgpt/" },
       { label: "OpenAI and Anthropic funding history - the capped-profit and PBC restructurings", url: "https://pinggy.io/blog/openai_anthropic_funding_history/" },
@@ -438,7 +481,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/History_of_Google",
     externalLabel: "History of Google",
-    sources: [
+    sources: [{ label: "Wikipedia: Google - the infobox records the company founded 4 September 1998", url: "https://en.wikipedia.org/wiki/Google" }, 
       { label: "EBSCO Research Starters: Google is founded - the AltaVista offer and the PageRank origin", url: "https://www.ebsco.com/research-starters/history/google-founded" },
       { label: "History of Google - domain registration, incorporation date, BackRub, RankDex", url: "https://google.fandom.com/wiki/History_of_Google" },
     ],
@@ -460,8 +503,8 @@ export const partnerVendors: PartnerVendor[] = [
     name: "SixDegrees.com",
     founded: 1996,
     ended: {
-      year: 2001,
-      note: "Sold to YouthStream Media Networks in December 2000 and shut down the following year.",
+      year: 2000,
+      note: "Bought by YouthStream Media Networks in December 1999 for $125 million and shut down about a year later, on 30 December 2000.",
     },
     tagline: "The first social network, and it failed because not enough people were online yet.",
     intro:
@@ -475,6 +518,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/SixDegrees.com",
     externalLabel: "SixDegrees.com",
     sources: [
+      { label: "Wikipedia: SixDegrees.com - the article states the social network was bought by YouthStream Media Networks in December 1999 for $125 million and shut down on 30 December 2000", url: "https://en.wikipedia.org/wiki/SixDegrees.com" },
       { label: "SixDegrees.com - the first recognised social media platform, founded by Andrew Weinreich", url: "https://medium.com/@emijones/sixdegrees-com-the-start-of-social-media-86e287d46e9e" },
       { label: "Evolution of social media - founding May 1996, launch 1997, 3.5M users, sale to YouthStream", url: "https://www.studocu.com/ph/document/technological-university-of-the-philippines/bachelor-of-science-in-civil-engineering/evolution-of-social-media/5477563" },
     ],
@@ -819,9 +863,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Wikipédia (pt) on the Telebrás system: CPqD listed among the system's components from 1976 to 1998, operating since then as an independent organisation", url: "https://pt.wikipedia.org/wiki/Telecomunica%C3%A7%C3%B5es_Brasileiras_S.A." },
       { label: "CPqD (own site): current activity across telecommunications, energy and digital government, including testing and certification work", url: "https://www.cpqd.com.br/" },
     
-      { label: "CPQD (institutional): created in 1976 as the research and development centre of Telebras, becoming a private-law foundation in 1998 with the privatisation of the sector; today it runs the largest information and communications technology research programme in Latin America", url: "https://www.cpqd.com.br/sobre-o-cpqd/" },
       { label: "Interdependencia dossier on Fundacao CPqD: created 31 August 1976 alongside Telebras by the telecommunications ministry (Criado em 31 de agosto de 1976 junto a Telebras pelo Ministerio das Telecomunicacoes), to reproduce in Brazil a telecom research model aiming at national technological autonomy, covering applied research, basic research developed with the universities but coordinated and financed by Telebras, and the development and transfer of technology, prototypes and products to industry", url: "https://direcaocultura.com.br/interdependencia/fundacao-cpqd-centro-de-pesquisa-e-desenvolvimento-em-telecomunicacoes/", sourceNote: "Replaces the same dossier at forumcampinas.org.br, which was confirmed dead on 2026-09-27 (host root 200, cited path 404) along with its PDF. The text is the same document at a live host, and the two sentences this entry rests on were read there verbatim." },
-      { label: "CPqD on itself: created in 1976 as the research and development centre of Telebras (Criado em 1976 como Centro de Pesquisa e Desenvolvimento da Telebras), becoming a private-law foundation in 1998 with the privatisation of the sector, and describing its purpose as building Brazilian technology to end dependence on foreign solutions", url: "https://www.cpqd.com.br/sobre-o-cpqd/", sourceNote: "First-party corroboration added alongside the dossier. It confirms 1976 and the 1998 conversion but states neither exact date, so it supports the dossier rather than replacing it." },
+      { label: "CPqD on itself (institutional page): created in 1976 as the research and development centre of Telebras (Criado em 1976 como Centro de Pesquisa e Desenvolvimento da Telebras), becoming a private-law foundation in 1998 with the privatisation of the sector; it describes its purpose as building Brazilian technology to end dependence on foreign solutions, and says it runs the largest information and communications technology research programme in Latin America", url: "https://www.cpqd.com.br/sobre-o-cpqd", sourceNote: "First-party corroboration alongside the dossier. It confirms 1976 and the 1998 conversion but states neither exact date, so it supports the dossier rather than replacing it." },
       { label: "Conexis, O rumo e o prumo do CPqD: the Telebras board decided to create the centre on 31 August 1976; it worked first from an office in central Campinas, then in Embratel premises, and across five locations before the present campus on land bought in June 1980", url: "https://conexis.org.br/o-rumo-e-o-prumo-do-cpqd-ii/" },
     ],
   },
@@ -851,6 +894,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://pt.wikipedia.org/wiki/Brasil_Telecom",
     externalLabel: "Brasil Telecom",
     sources: [
+      { label: "Wikipedia: Brasil Telecom - the infobox records the company founded 1998 and defunct 9 January 2009, parent Oi", url: "https://en.wikipedia.org/wiki/Brasil_Telecom" },
       { label: "Correio Braziliense: the 29 July 1998 auction creating three fixed-line holdings, one long-distance carrier and eight mobile holdings from the Telebrás system", url: "https://www.correiobraziliense.com.br/app/noticia/economia/2008/07/29/internas_economia,22069/saiba-como-foi-a-privatizacao-da-telebras-em-1998.shtml" },
       { label: "Museu Capixaba do Computador: the twelve regional companies produced by the split, giving rise to Telemar, Brasil Telecom and Telefônica among others", url: "https://museucapixaba.com.br/hoje/fundacao-da-empresa-telebras-de-1972/" },
       { label: "Wikipédia (pt) on the Telebrás privatisation: the successor companies and their consolidation into Oi and Vivo", url: "https://pt.wikipedia.org/wiki/Privatiza%C3%A7%C3%A3o_da_Telebr%C3%A1s", sourceNote: "Used for the consolidation chronology. Corporate and financial developments after the merger are not detailed here; check current sources." },
@@ -1021,7 +1065,9 @@ export const partnerVendors: PartnerVendor[] = [
     // NV7 - added 2026-08-04 (PRIME), from nv7.com.br. Split out of the Niva
     // entry at his instruction.
     slug: "nv7",
-    // Founded 2018, per the company's own LinkedIn profile (PRIME 2026-08-06). The entry
+    // Founded 2018 (PRIME 2026-08-06, from the company's LinkedIn profile). Since 2026-10-02 the year is cited
+    // to the federal tax registry record in `sources` below, found through the CNPJ NV7 gives for itself in its
+    // own privacy notice. (The line this replaced ended mid-sentence, "The entry", before an unrelated note.)
     // (A comment here previously said the founding year was not in the public
     // record. A `founded` value now sits below it, so the comment contradicted
     // the code and was removed 2026-08-10 - a comment asserting the opposite of
@@ -1044,6 +1090,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.nv7.com.br/",
     externalLabel: "NV7 Soluções Tecnológicas",
     sources: [
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 31.111.952/0001-06, NV7 SOLUCOES TECNOLOGICAS LTDA: MATRIZ in Sao Paulo, situation ATIVA, activity start date 3 August 2018, technical support and other information technology services", url: "https://brasilapi.com.br/api/cnpj/v1/31111952000106", sourceNote: "Queried 2026-10-02. Identity is established by the company itself: NV7’s own privacy notice (Comunicado de Privacidade, November 2024, https://www.nv7.com.br/wp-content/uploads/2024/11/Comunicado-de-Privacidade-NV7.pdf) names NV7 as data controller under this CNPJ, at Av. das Nacoes Unidas 12901, Torre Norte, 23rd floor, Sao Paulo. Twelve other registry entries returned by searches for the name were tested and rejected first." },
       { label: "NV7: four solution lines across data, cloud, endpoint and application security; partner roster including Palo Alto Networks, F5, CrowdStrike, Forescout, Tenable, Fortinet, Netskope, Claroty and Tuvis; offices in the Torre Norte, Centro Empresarial Nações Unidas, Avenida das Nações Unidas, São Paulo", url: "https://www.nv7.com.br/" },
       { label: "NV7 published governance documents: information classification standard, malicious code standard, technical vulnerability management standard, operational procedures and responsibilities, secure areas standard, information and communication security policy, and incident response policy", url: "https://www.nv7.com.br/home/quem-somos/" },
       { label: "NV7 client logos as displayed on its own site, including B3, WEG, Honda, Eurofarma, Hypera, Unipar, Tramontina, Assaí, Iguatemi, Unimed, OLX, Locaweb, Loggi, Movida, Neon, Pismo, Catho and Tembici", url: "https://www.nv7.com.br/", sourceNote: "Client logos on a supplier's own marketing site indicate a commercial relationship of unstated scope, and are reported on that basis." },
@@ -1059,8 +1106,8 @@ export const partnerVendors: PartnerVendor[] = [
     // partner list. Under the standing reconciliation an entry is as long as
     // its evidence; padding this to match its neighbours would be inventing.
     slug: "niva",
-    // Founded 2007, per Serasa Experian company register, CNPJ 09.053.350/0001-90 (PRIME 2026-08-06). The entry
-    // previously carried no founding year at all.
+    // Founded 2007, per the federal tax registry record cited in `sources` below (CNPJ 09.053.350/0001-90,
+    // supplied by PRIME 2026-08-06, cited 2026-10-02). The entry previously carried no founding year at all.
     founded: 2007,
     group: "other",
     name: "Niva",
@@ -1074,7 +1121,7 @@ export const partnerVendors: PartnerVendor[] = [
     relationships: ["worked-with-directly"],
     tagline: "An integrator whose partner list is a map of this timeline.",
     intro:
-      "Niva Tecnologia da Informação is a São Paulo integrator working across three lines: information security, electronic security and data centre.",
+      "Niva Tecnologia da Informação is a Brasília integrator working across three lines: information security, electronic security and data centre.",
     body: [
       "The partner list is the most informative thing in the public record, and it is worth reading as a document rather than a roster: F5, Palo Alto Networks, NetApp, CrowdStrike, Forescout, Netskope, Citrix, Avigilon, Furukawa and Lenel. Six of those are network and security vendors; two are physical security; one is structured cabling; one is storage.",
       "That combination describes a specific kind of company, and one this timeline has documented from every side except this one. An integrator carrying both information security and electronic security is selling into a building rather than into a network - firewalls and door controllers, network access control and cameras, on the same project, for the same customer, who has one budget and one set of contractors. The distinction between the two disciplines is much sharper in the vendor catalogues than it is on a construction site.",
@@ -1083,6 +1130,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://br.linkedin.com/company/nivati",
     externalLabel: "Niva Tecnologia da Informação",
     sources: [
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 09.053.350/0001-90, NIVA TECNOLOGIA DA INFORMACAO LTDA, trading as NIVA TI: MATRIZ at SIG Quadra 1, 985, salas 236 a 243, Brasilia, situation ATIVA, activity start date 6 September 2007, technical support and other information technology services", url: "https://brasilapi.com.br/api/cnpj/v1/09053350000190", sourceNote: "Queried 2026-10-02. PRIME supplied this CNPJ on 2026-08-06, but it lived only in a code comment beside the founded field, which no reader and no guard can see; it is cited here so the year carries its provenance on the page. Identity is established by address, not name alone: the company’s own site, nivati.com.br, gives SIG Quadra 1, 985, sala 236 a 243, and the federal Transparency Portal gives the same telephone, 61 3326-8673." },
       { label: "Niva Tecnologia da Informação: an integrator of complex IT solutions across information security, electronic security and data centre, working with F5 Networks, Palo Alto Networks, NetApp, CrowdStrike, Forescout, Netskope, Citrix, Avigilon, Furukawa and Lenel; services spanning project design, configuration, installation, maintenance and performance management", url: "https://br.linkedin.com/company/nivati", sourceNote: "A company page is the whole of the public record found for this business; no founding date, founder or ownership history could be established." },
     ],
   },
@@ -2057,6 +2105,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.businesswire.com/news/home/20140815005219/en/ScanSource-Announces-Agreement-to-Acquire-Brazil%E2%80%99s-Leading-Communications-Distributor-Network1",
     externalLabel: "ScanSource announcement, 15 August 2014",
     sources: [
+      { label: "ScanSource Form 8-K press release, 12 January 2015: ScanSource agrees to acquire Network1 (Intersmart Comercio Importacao Exportacao de Equipamentos Eletronicos, S.A.), a Brazilian distributor, with the transaction anticipated to close that week", url: "https://www.sec.gov/Archives/edgar/data/0000918965/000119312515009409/d846044dex991.htm", sourceNote: "Read 2026-10-02. Primary SEC filing for the January 2015 completion the entry carries; the 15 August 2014 date in the note is the earlier announcement, not this document." },
       { label: "ScanSource investor release (Portuguese): founded 2004, headquartered in São Paulo, around 400 staff across Latin America; 2014 net sales estimated at approximately R$850M (US$374M); Mike Baur on entering Brazil in 2011 via CDC Brasil", url: "https://www.scansource.com/~/media/C768332F1FB04580B05DBF15380B788F.pdf" },
       { label: "Demarest / Latin Counsel (legal advisers to ScanSource): acquisition of 100% of Intersmart for BRL 156,928,000 plus EBITA-linked earn-outs over four years, made THROUGH CDC Brasil Distribuidora de Tecnologias Especiais; 2014 net sales of approximately R$720M (US$306M) on a US-GAAP-adjusted basis; over 60 vendors, 8,000 customers, nearly 400 employees", url: "https://www.latincounsel.com/?Noticias=Acquisition_of_Intersmart_Comercio_Importaiio_e_Exportaiio_de_Equipamentos_Eletrinicos_SA_Network1" },
       { label: "Business Wire, 15 August 2014: the agreement announced, and Rafael Paloni going on to lead ScanSource's communications business in Latin America", url: "https://www.businesswire.com/news/home/20140815005219/en/ScanSource-Announces-Agreement-to-Acquire-Brazil%E2%80%99s-Leading-Communications-Distributor-Network1" },
@@ -2639,7 +2688,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://www.elastic.co/pricing/faq/licensing",
     externalLabel: "Elastic: software licensing FAQ",
-    sources: [
+    sources: [{ label: "Wikipedia: Elastic (company) - infobox records the company founded 2012", url: "https://en.wikipedia.org/wiki/Elastic_(company)" }, 
       { label: "Elastic's own licensing FAQ - the January 2021 move off Apache 2.0 at release 7.11, and the September 2024 addition of AGPLv3 before 8.16", url: "https://www.elastic.co/pricing/faq/licensing" },
       { label: "InfoQ (2021): Elastic's stated intent, the Open Distro dispute, and the community reactions from Drew DeVault and Corey Quinn including the 1,573 contributors point", url: "https://www.infoq.com/news/2021/01/elastic-aws-open-source" },
       { label: "Socket: Banon's 2024 clarification that the issue was trademark rather than resale, Adrian Cockcroft's contrary account about security features, and Simon Phipps's response", url: "https://socket.dev/blog/developers-burned-by-elasticsearch-license-change-arent-going-back" },
@@ -2825,9 +2874,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Tenable - founded September 2002 by Gula, Huffard and Deraison; Nessus written in April 1998 at 17; Gula's NSA background and the sale of his prior company to Enterasys; Nessus 3 closing the source in October 2005 and the OpenVAS fork", url: "https://en.wikipedia.org/wiki/Tenable,_Inc." },
       { label: "Tenable's own profile of Renaud Deraison - first Nessus release at 17, and the CVE editorial board", url: "https://www.tenable.com/profile/renaud-deraison" },
-      { label: "Tenable Form S-1 (SEC, 29 June 2018): \u201cTenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002\u201d, with Tenable Holdings incorporated in Delaware in October 2015", url: "https://www.sec.gov/Archives/edgar/data/1660280/000119312518209705/d548092ds1.htm", sourceNote: "Read 2026-09-30. Confirms the state and the year of incorporation from the company\u2019s own registration. It does NOT give the day, so 16 September 2002 stays in the copy uncited." },
-      { label: "TechCrunch, 5 September 2012 - a $50 million Series A from Accel Partners, described as the company's very first round of institutional funding after being bootstrapped, with the company founded in 2002 and Accel partner Ping Li having followed it for years because its products kept appearing across his portfolio", url: "https://techcrunch.com/2012/09/05/tenable-accel-series-a/", sourceNote: "Replaces a dead content-farm page (dcf-model.com now 301s to dcfanalyst.com, which 404s; confirmed 2026-09-27). It carries the round, the amount, the investor, the bootstrapped history and the founding YEAR. It does NOT carry the exact incorporation date of 16 September 2002, which stays in the copy. The 2018 Form S-1 was read on 2026-09-30 and DOES NOT CARRY THE DAY EITHER: it says only \u201cTenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002\u201d. That is cited below for the state and the year; the day remains uncited, and this note records that the obvious document has already been checked so the next reader does not check it twice." },
-      { label: "Tenable Form S-1 (SEC, 2018), the IPO prospectus: \u201cTenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002\u201d, and the company describing its co-founder as the creator of Nessus", url: "https://www.sec.gov/Archives/edgar/data/1660280/000119312518209705/d548092ds1.htm", sourceNote: "Read 2026-09-27. It settles the YEAR and the state from the company itself and adds Delaware, which the entry did not have, but it gives no day - so it decides neither side of the 16 September against 4 October discrepancy recorded below. Both dates stand." },
+      { label: "Tenable Form S-1 (SEC, 29 June 2018), the IPO prospectus: “Tenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002”, with Tenable Holdings incorporated in Delaware in October 2015, and the company describing its co-founder as the creator of Nessus", url: "https://www.sec.gov/Archives/edgar/data/1660280/000119312518209705/d548092ds1.htm", sourceNote: "Read 2026-09-27 and again 2026-09-30 by sessions that did not see each other’s work, which is why this one document was cited twice until the duplication was merged on 2026-10-01. It settles the YEAR and the state from the company itself and adds Delaware, which the entry did not have. It gives NO DAY, so it decides neither side of the 16 September against 4 October discrepancy recorded below, and 16 September 2002 stays in the copy uncited. Recorded here so the next reader does not fetch this document a third time." },
+      { label: "TechCrunch, 5 September 2012 - a $50 million Series A from Accel Partners, described as the company's very first round of institutional funding after being bootstrapped, with the company founded in 2002 and Accel partner Ping Li having followed it for years because its products kept appearing across his portfolio", url: "https://techcrunch.com/2012/09/05/tenable-accel-series-a/", sourceNote: "Replaces a dead content-farm page (dcf-model.com now 301s to dcfanalyst.com, which 404s; confirmed 2026-09-27). It carries the round, the amount, the investor, the bootstrapped history and the founding YEAR. It does NOT carry the exact incorporation date of 16 September 2002, which stays in the copy; the Form S-1 cited alongside it does not carry the day either." },
       { label: "Alternative date of 4 October 2002 for incorporation, recorded as a discrepancy", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/tenable-brief-history" },
     ],
   },
@@ -2860,6 +2908,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/Rapid7",
     externalLabel: "Rapid7",
     sources: [
+      { label: "Rapid7 IPO prospectus (SEC Form 424B4, July 2015), Corporate Information: \"We were initially incorporated in July 2000 in Delaware\"; the director biographies date the co-founding to July 2000", url: "https://www.sec.gov/Archives/edgar/data/1560327/000119312515255115/d908531d424b4.htm" },
       { label: "Origin of vulnerability management: Rapid7's 2009 Metasploit acquisition, Moore's 2003 authorship, and the risk-scoring convergence across Tenable, Qualys and Rapid7 after CISA's KEV catalogue in November 2021", url: "https://artiflexit.com/blog/origin-vulnerability-management" },
     ],
   },
@@ -2877,6 +2926,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Lumen, CenturyLink, Level 3 and Global Crossing",
     founded: 1968,
+    foundedCompany: "Central Telephone and Electronics Corporation (Century Telephone Enterprises from 1971)",
     tagline: "A rural Louisiana phone company that ended up owning one of the internet's largest backbones.",
     intro:
       "This is one company by succession and four or five by history. It was incorporated in 1968 as Central Telephone and Electronics Corporation, renamed Century Telephone Enterprises in 1971, and spent four decades as CenturyTel - a rural local exchange carrier headquartered in Monroe, Louisiana, growing by buying other rural carriers. It is now Lumen Technologies, and it operates AS3356.",
@@ -2905,6 +2955,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/Lumen_Technologies",
     externalLabel: "Lumen Technologies",
     sources: [
+      { label: "Lumen Technologies Form 10-K for 2025 (SEC, filed 20 February 2026): \"Since being incorporated in Louisiana in 1968, we have grown principally through acquisitions\"", url: "https://www.sec.gov/Archives/edgar/data/18926/000001892626000014/lumn-20251231.htm" },
       { label: "Grokipedia: Lumen operating companies - 1968 incorporation as Central Telephone and Electronics, 1971 rename, Embarq at $5.8B closing 1 July 2009, Qwest at $12.2B, the 2022 Brightspeed divestiture", url: "https://grokipedia.com/page/List_of_Lumen_Technologies_operating_companies" },
       { label: "Wikipedia: Global Crossing - founded March 1997 by Gary Winnick and David L. Lee, $47B valuation in 1999, never profitable, 2002 bankruptcy, acquired by Level 3 on 3 October 2011 for $3B including $1.1B debt", url: "https://en.wikipedia.org/wiki/Global_Crossing" },
       { label: "Wikipedia: Level 3 Communications - founded 1985, Broomfield, largest US CLEC, AS3356, defunct 1 November 2017", url: "https://en.wikipedia.org/wiki/Level_3_Communications" },
@@ -3122,7 +3173,6 @@ export const partnerVendors: PartnerVendor[] = [
       url: "https://www.zscaler.com",
       resources: [
       { label: "Zscaler's own Zenith Ventures page: a stage-agnostic fund making strategic investments in cybersecurity companies that leverage the Zscaler security cloud; names Deep Instinct and P0 Security", url: "https://www.zscaler.com/company/zenithventures" },
-      { label: "Zscaler: Zenith Ventures - a stage-agnostic fund investing in cybersecurity companies that leverage the Zscaler security cloud; names Deep Instinct and P0 Security", url: "https://www.zscaler.com/company/zenithventures" },
         { label: "Zscaler Help Portal", url: "https://help.zscaler.com" },
       ],
     },
@@ -3445,7 +3495,8 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     group: "other",
     name: "Riverstone Networks",
-    founded: 1996,
+    founded: 2000,
+    storyBegins: { year: 1996, company: "Yago Systems" },
     ended: {
       year: 2006,
       note: "Assets acquired by Lucent Technologies in early 2006 following a Chapter 11 filing, and absorbed into Alcatel-Lucent when the two merged later that year.",
@@ -3462,8 +3513,8 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Riverstone_Networks",
     externalLabel: "Riverstone Networks",
-    sources: [
-      { label: "Wikipedia: Riverstone Networks - Yago origins, Cabletron acquisition, 2001 spin-off, Chapter 11 and the Lucent asset purchase", url: "https://en.wikipedia.org/wiki/Riverstone_Networks" },
+    sources: [{ label: "Riverstone Networks IPO prospectus (SEC Form 424B4, February 2001): Yago Systems, acquired by Cabletron, was renamed Riverstone, and on 3 June 2000 Cabletron and Riverstone entered into the Transformation and Contribution Agreements that set Riverstone up as a separate business", url: "https://www.sec.gov/Archives/edgar/data/1123028/0000927016-01-000990.txt" }, 
+      { label: "Wikipedia: Riverstone Networks - Yago origins, Cabletron acquisition, 2001 spin-off, Chapter 11, and the infobox record of the company defunct 2006, absorbed by Alcatel-Lucent", url: "https://en.wikipedia.org/wiki/Riverstone_Networks" },
       { label: "Wikipedia: Cabletron Systems - the four-way split that produced Riverstone, Enterasys, Aprisma and GNTS", url: "https://en.wikipedia.org/wiki/Cabletron_Systems" },
     ],
   },
@@ -3566,7 +3617,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/CrowdStrike",
     externalLabel: "CrowdStrike",
     sources: [
-      { label: "Wikipedia: CrowdStrike - founders, 2019 IPO, S&P 500 in 2024, the 19 July 2024 outage and the Delta litigation", url: "https://en.wikipedia.org/wiki/CrowdStrike" },
+      { label: "Wikipedia: CrowdStrike - founders, 2019 IPO, S&P 500 in 2024, the 19 July 2024 outage and the Delta litigation; the infobox records the company founded 2011", url: "https://en.wikipedia.org/wiki/CrowdStrike" },
       { label: "Grokipedia: CrowdStrike - Kurtz as McAfee CTO, Alperovitch and Operation Aurora, Warburg Pincus funding, IPO valuation", url: "https://grokipedia.com/page/CrowdStrike" },
       { label: "TechCrunch: the $26M Series A and Kurtz's move from McAfee via Warburg Pincus", url: "https://techcrunch.com/?p=507029" },
       { label: "Forbes: George Kurtz - Foundstone founded 1999, acquired by McAfee 2004", url: "https://www.forbes.com/profile/george-kurtz/" },
@@ -3794,7 +3845,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Electronic_Data_Systems",
     externalLabel: "Electronic Data Systems",
-    sources: [
+    sources: [{ label: "Wikipedia: Electronic Data Systems - the infobox records the company founded 27 June 1962", url: "https://en.wikipedia.org/wiki/Electronic_Data_Systems" }, 
       { label: "World Economic Forum: HP completed the EDS purchase for nearly $14B in August 2008", url: "https://www.weforum.org/stories/2015/10/the-12-biggest-technology-acquisitions-of-all-time/" },
     ],
   },
@@ -3806,6 +3857,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Getronics",
     founded: 1887,
+    foundedCompany: "Electrical Factory N.V., part of Groeneveld, Van der Pol & Co",
     tagline: "A Dutch electrical firm from the 1880s that ended up owning what was left of Wang Laboratories.",
     intro:
       "Getronics traces to Groeneveld, van der Poll & Co., a Dutch electrotechnical business of the late nineteenth century. It is on this timeline for one reason: in 1999 it acquired Wang Global, and so became the place a company that had defined word processing came to rest.",
@@ -3817,6 +3869,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/Getronics",
     externalLabel: "Getronics",
     sources: [
+      { label: "Getronics (Wikipedia): the infobox dates the company to 1 September 1887 as Electrical Factory N.V., part of Groeneveld, Van der Pol & Co, and the article opens \u201cfounded in 1887\u201d; Dutch-headquartered ICT services, around 4,000 staff, a founding member of the Global Workspace Alliance", url: "https://en.wikipedia.org/wiki/Getronics", sourceNote: "Fetched 2026-10-02. This settles the 1887 the entry carries, which until now no citation, no entry copy and no profile stated. It also names whose founding it is: the year belongs to Electrical Factory N.V. within Groeneveld, Van der Pol & Co, not to anything called Getronics." },
       { label: "Wikipedia: Wang Laboratories - acquisition by Getronics in 1999 and the subsequent sales to KPN and CompuCom", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
       { label: "Wang Laboratories SEC filing (SC 14D1, 1999) on the Getronics transaction", url: "https://www.sec.gov/Archives/edgar/data/0000104519/000095013099002847/0000950130-99-002847.txt/seq-7" },
     ],
@@ -3854,7 +3907,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://en.wikipedia.org/wiki/AltaVista",
     externalLabel: "AltaVista",
     sources: [
-      { label: "Wikipedia: AltaVista - launch date, ownership chain, shutdown", url: "https://en.wikipedia.org/wiki/AltaVista" },
+      { label: "Wikipedia: AltaVista - launched December 1995, acquired by Yahoo in 2003, and the article records its domain redirected to Yahoo Search in 2013 when the service was shut down", url: "https://en.wikipedia.org/wiki/AltaVista" },
       { label: "Grokipedia: AltaVista - the DEC labs, the 16-million-document index, the CMGI and Overture figures", url: "https://grokipedia.com/page/AltaVista" },
       { label: "History of Domain Names: the altavista.com purchase and the portal turn", url: "https://historyofdomainnames.com/altavista-the-history-of-domain-names/" },
     ],
@@ -3877,7 +3930,8 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["standards", "vendor"],
     group: "contemporary",
     name: "The Apache Software Foundation",
-    founded: 1995,
+    founded: 1999,
+    storyBegins: { year: 1995, company: "The Apache Group" },
     tagline: "The web server that ran the web, built by eight people trading patches by email.",
     intro:
       "Apache began in February 1995 as a set of patches to a web server nobody was maintaining any more. Within a year it was the most-used server on the internet, and it held that position for most of two decades - the default answer to 'what serves this site' for a whole generation of the web.",
@@ -3890,7 +3944,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     externalUrl: "https://httpd.apache.org/ABOUT_APACHE.html",
     externalLabel: "About the Apache HTTP Server Project",
-    sources: [
+    sources: [{ label: "Wikipedia: The Apache Software Foundation - the infobox records the foundation formed 1999", url: "https://en.wikipedia.org/wiki/The_Apache_Software_Foundation" }, 
       { label: "Apache Software Foundation: ASF history and milestones", url: "https://apache.org/history/" },
       { label: "httpd project: About the Apache HTTP Server", url: "https://httpd.apache.org/ABOUT_APACHE.html" },
       { label: "ASF press: 15th anniversary release, with the founding eight named", url: "https://www.prnewswire.com/news-releases/the-apache-software-foundation-announces-the-15th-anniversary-of-the-apache-http-web-server-85036317.html" },
@@ -3920,7 +3974,7 @@ export const partnerVendors: PartnerVendor[] = [
     awards: REDU_AWARDS_GENERAL,
     externalUrl: "https://www.rededucation.com/arista/",
     externalLabel: "Arista training at Red Education",
-    sources: [
+    sources: [{ label: "Arista Networks IPO prospectus (SEC Form 424B4, June 2014): \"We were incorporated in October 2004 in the State of California under the name Arastra, Inc.\"; renamed Arista Networks, Inc. in October 2008", url: "https://www.sec.gov/Archives/edgar/data/1596532/000119312514227698/d639957d424b4.htm" }, 
       { label: "Red Education - Arista (authorised training partner)", url: "https://www.rededucation.com/arista/" },
       ...REDU_SOURCES,
     ],
@@ -3950,7 +4004,7 @@ export const partnerVendors: PartnerVendor[] = [
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/avaya/",
     externalLabel: "Avaya training at Red Education",
-    sources: [
+    sources: [{ label: "Wikipedia: Avaya - infobox records the company founded 2000 (spun off from Lucent)", url: "https://en.wikipedia.org/wiki/Avaya" }, 
       { label: "Red Education - Avaya training", url: "https://www.rededucation.com/avaya/" },
       ...REDU_SOURCES,
     ],
@@ -3984,7 +4038,7 @@ export const partnerVendors: PartnerVendor[] = [
       "None of this argues against the platform. It argues that when a supplier becomes the substrate for everything else, a mistyped command and an unauthenticated endpoint stop being that supplier's problems and become everybody's, and that the responsibility model which sounds like a division of labour is, in practice, a description of whose failures land on whom.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
-    sources: [
+    sources: [{ label: "About AWS: \"Since launching in 2006, Amazon Web Services has been providing industry-leading cloud capabilities and expertise\"", url: "https://aws.amazon.com/about-aws/", sourceNote: "Wikipedia's infobox lists two dates: July 2002, when the original Amazon Web Services platform opened product data to developers as web services, and March 2006, when AWS began offering IT infrastructure services. AWS dates itself from 2006, as the card does." }, 
       { label: "Red Education - Cybersecurity Excellence Awards profile", url: "https://cybersecurity-excellence-awards.com/candidates/red-education/" },
       ...REDU_SOURCES,
       { label: "AWS's own summary of the 28 February 2017 S3 disruption in US-EAST-1: at 9:37 AM PST an authorised team member using an established playbook executed a command intended to remove a small number of servers from a billing subsystem; one input was entered incorrectly and a larger set was removed, including servers supporting the index subsystem that manages the metadata and location of every S3 object in the region; both subsystems required a full restart, during which S3 could not serve requests, and EC2 instance launches, EBS volumes and Lambda in the region were affected", url: "https://aws.amazon.com/message/41926" },
@@ -4018,7 +4072,7 @@ export const partnerVendors: PartnerVendor[] = [
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/cyberark/",
     externalLabel: "CyberArk training at Red Education",
-    sources: [
+    sources: [{ label: "Wikipedia: CyberArk - infobox records the company founded 1999", url: "https://en.wikipedia.org/wiki/CyberArk" }, 
       { label: "Red Education - CyberArk training", url: "https://www.rededucation.com/cyberark/" },
       { label: "Palo Alto Networks 10-Q (CyberArk acquisition completed Feb 2026)", url: "https://investors.paloaltonetworks.com/" },
       ...REDU_SOURCES,
@@ -4048,6 +4102,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.rededucation.com/epi/",
     externalLabel: "EPI training at Red Education",
     sources: [
+      { label: "EPI on itself: \u201cEstablished in 1987, EPI\u2019s reputation has been built on delivering high quality technical expertise with a continuous drive for excellence and innovation\u201d", url: "https://www.epi-ap.com/content/19/123", sourceNote: "Fetched 2026-10-02. The company\u2019s home page and its /about/ and /about-epi/ paths were tried first: the home page states no year and both about paths return 404." },
       { label: "EPI - training and TIA-942 services", url: "https://www.epi-ap.com/" },
       { label: "Red Education - EPI training", url: "https://www.rededucation.com/epi/" },
       ...REDU_SOURCES,
@@ -4082,7 +4137,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The symmetry argument in the Huawei entry applies here without adjustment. The question of who can compel a supplier, and whether a supplier's own account of itself can be trusted, does not depend on where the supplier is incorporated. This is the vendor most of the world finds reassuring, and the finding was a cascade.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
-    sources: [
+    sources: [{ label: "Wikipedia: Microsoft - infobox records the company founded 4 April 1975 in Albuquerque, New Mexico", url: "https://en.wikipedia.org/wiki/Microsoft" }, 
       { label: "Red Education - course finder (vendor list)", url: "https://www.rededucation.com/" },
       ...REDU_SOURCES,
       { label: "Cyber Safety Review Board, Review of the Summer 2023 Microsoft Exchange Online Intrusion, 20 March 2024: the Board concludes that this intrusion should never have happened, and that Storm-0558 was able to succeed because of a cascade of security failures at Microsoft; it issues recommendations to a company that sits at the centre of the technology ecosystem and serves more than one billion customers", url: "https://www.cisa.gov/sites/default/files/2025-03/CSRBReviewOfTheSummer2023MEOIntrusion508.pdf" },
@@ -4116,7 +4171,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Founded in 2007 in Mountain View, MobileIron helped define MDM as a category and listed on NASDAQ in 2014. In December 2020 it was acquired by Ivanti, together with Pulse Secure, and its technology continues inside Ivanti's unified endpoint management line - the same lineage that runs through the career-era vendors here.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
-    sources: [
+    sources: [{ label: "Wikipedia: MobileIron - infobox records the company founded 2007", url: "https://en.wikipedia.org/wiki/MobileIron" }, 
       { label: "Ivanti press release - acquisition of MobileIron and Pulse Secure (Dec 2020)", url: "https://www.ivanti.com/company/press-releases/2020/ivanti-acquires-mobileiron-and-pulse-secure" },
       ...REDU_SOURCES,
     ],
@@ -4146,7 +4201,7 @@ export const partnerVendors: PartnerVendor[] = [
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/paessler/",
     externalLabel: "Paessler training at Red Education",
-    sources: [
+    sources: [{ label: "Paessler official About Us: \"Founded in Nuremberg Germany in 1997\", by Dirk Paessler", url: "https://www.paessler.com/company/about-us" }, 
       { label: "Red Education - Paessler training", url: "https://www.rededucation.com/paessler/" },
       { label: "Paessler - company", url: "https://www.paessler.com/company" },
       ...REDU_SOURCES,
@@ -4166,7 +4221,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     group: "redu",
     name: "Red Hat",
-    founded: 1994,
+    founded: 1993,
     tagline: "Enterprise open source: RHEL, OpenShift, Ansible.",
     intro:
       "Red Hat made open source safe for the enterprise: Red Hat Enterprise Linux, OpenShift, and Ansible are the commercially supported spine of Linux estates, container platforms, and automation worldwide.",
@@ -4176,6 +4231,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     awards: [...REDU_AWARDS_GENERAL],
     sources: [
+      { label: "Red Hat IPO prospectus (SEC Form 424B1, 11 August 1999), Our History: \"Red Hat, Inc. was incorporated in Connecticut in March 1993 as ACC Corp., Inc. In September 1995, ACC Corp., Inc. changed its name to Red Hat Software, Inc.\"", url: "https://www.sec.gov/Archives/edgar/data/1087423/0001047469-99-031070.txt" },
       { label: "Red Education - course finder (vendor list)", url: "https://www.rededucation.com/" },
       { label: "IBM - Red Hat acquisition (2019)", url: "https://www.ibm.com/investor/news/ibm-completes-acquisition-of-red-hat" },
       ...REDU_SOURCES,
@@ -4201,7 +4257,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Founded in 2002 by Jerry Kennelly and Steve McCanne - the latter a co-author of tcpdump and the Berkeley Packet Filter, tools half this site's tutorials assume - Riverbed rode the SteelHead era to an IPO, was taken private in 2015, and went through a court-supervised restructuring in late 2021. Today it competes in unified observability, a long way from the branch-office WAN it was built to shrink.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
-    sources: [
+    sources: [{ label: "Wikipedia: Riverbed Technology - infobox records the company founded 23 May 2002", url: "https://en.wikipedia.org/wiki/Riverbed_Technology" }, 
       { label: "Red Education - Professional Services (Riverbed since 2008)", url: "https://www.rededucation.com/professional-services/" },
       ...REDU_SOURCES,
     ],
@@ -4223,7 +4279,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Founded in 1982, Symantec grew by acquisition into a security conglomerate before splitting itself: the enterprise security business was sold to Broadcom in November 2019, which retains the Symantec brand for it, while the consumer side became NortonLifeLock and, after merging with Avast, Gen Digital. It is one more lineage this site's industry pages trace: the name survives, the company that carried it does not.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
-    sources: [
+    sources: [{ label: "Wikipedia (Gen Digital, formerly Symantec): infobox records Symantec founded 1 March 1982 in Sunnyvale, California", url: "https://en.wikipedia.org/wiki/Gen_Digital" }, 
       { label: "Broadcom - Symantec enterprise security (2019)", url: "https://www.broadcom.com/company/news/financial-releases/52706" },
       ...REDU_SOURCES,
     ],
@@ -4234,13 +4290,14 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "HPE Networking - HP, 3Com, Aruba, Juniper",
     founded: 1939,
+    foundedCompany: "Hewlett-Packard",
     tagline: "The great consolidation: from the Addison Avenue garage to the $14B Juniper merger.",
     intro:
       "Four founding stories converged into one company: Hewlett-Packard (1939), 3Com and the commercialization of Ethernet (1979), Juniper Networks and purpose-built routing silicon (1996), and Aruba Networks and the mobile-first enterprise (2002). HP acquired 3Com in 2010 and Aruba in 2015, split into HP Inc and HPE that same year, and closed the acquisition of Juniper Networks on July 2, 2025 - assembling the industry's broadest challenge to Cisco.",
     body: [],
     note:
       "Neither I nor Red Education delivers HPE, Aruba, or Juniper training. Those courses are run by HPE Education Services and by HPE / Juniper authorized education partners. This page is corporate history - a lineage record of the pioneers, verified against primary sources.",
-    sources: [
+    sources: [{ label: "Wikipedia: Hewlett-Packard - the infobox records the company founded 2 July 1939", url: "https://en.wikipedia.org/wiki/Hewlett-Packard" }, 
       { label: "HPE 10-K FY2025 - Juniper merger closed Jul 2, 2025 (~$13.4B cash)", url: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001645590&type=10-K" },
       { label: "HPE / Juniper - DOJ settlement release (SEC 8-K, Jun 28, 2025)", url: "https://www.sec.gov/Archives/edgar/data/1043604/000119312525154400/d912160dex991.htm" },
       { label: "NetScreen SEC Form 425 - Juniper/NetScreen merger (Feb 9, 2004)", url: "https://www.sec.gov/Archives/edgar/data/0001088454/000089161804000509/f96338j2e425.htm" },
@@ -4259,13 +4316,14 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Brocade & Foundry - the Broadcom diaspora",
     founded: 1995,
+    foundedCompany: "Brocade Communications Systems",
     tagline: "Two 1990s pioneers, one 2017 dismemberment: SAN to Broadcom, data center to Extreme, campus and Wi-Fi to CommScope.",
     intro:
       "Brocade built the switched Fibre Channel fabric that made storage area networks possible; Foundry shipped the first gigabit Ethernet, Layer 3, and Layer 4-7 switches. They merged in 2008, and in 2017 Broadcom took the combination apart: the SAN business stayed with Broadcom, the Foundry-derived data-center lines went to Extreme Networks, and campus switching plus Ruckus Wi-Fi went to ARRIS, then CommScope - with Belden announced as the next owner in 2026.",
     body: [],
     note:
       "Neither I nor Red Education delivers Brocade or Broadcom training. This page is corporate history, verified against SEC filings and primary sources. One accurate connection: Extreme Networks, which absorbed the Foundry-derived data-center portfolio in 2017, is one of the vendors I am authorized to teach.",
-    sources: [
+    sources: [{ label: "Wikipedia: Brocade Communications Systems - the infobox records the company founded 1995", url: "https://en.wikipedia.org/wiki/Brocade_Communications_Systems" }, 
       { label: "Broadcom 10-K FY2018 - Brocade closed Nov 17, 2017 (~$5.3B + $701M debt)", url: "https://www.sec.gov/Archives/edgar/data/0001730168/000173016818000084/avgo-11042018x10k.htm" },
       { label: "Broadcom / Extreme press release - data-center business, $55M (Mar 29, 2017)", url: "https://investors.broadcom.com/news-releases/news-release-details/extreme-networks-acquire-brocades-data-center-networking" },
       { label: "ARRIS SEC 8-K - Ruckus + ICX, $800M (Feb 22, 2017)", url: "https://www.sec.gov/Archives/edgar/data/0001645494/000119312517053883/d330887dex991.htm" },
@@ -4292,6 +4350,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "McAfee, FireEye & Mandiant - the road to Trellix",
     founded: 1987,
+    foundedCompany: "McAfee Associates",
     tagline: "Three security pioneers, one private-equity remix: Trellix and Skyhigh under STG, Mandiant inside Google Cloud, McAfee consumer private.",
     intro:
       "Three founding stories - McAfee and commercial antivirus (1987), FireEye and virtual-machine detonation (2004), Mandiant and incident response as a discipline (2004) - collided in 2021-2022. Symphony Technology Group carved out McAfee Enterprise ($4.0B) and FireEye's products plus the FireEye name ($1.2B), fused them into Trellix, and spun the SSE portfolio out as Skyhigh Security; the remaining company renamed itself Mandiant and joined Google Cloud; McAfee's consumer business went private for over $14 billion.",
@@ -4327,7 +4386,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Neither I nor Red Education delivers MikroTik training. This page is corporate history, verified against MikroTik's own company history and public records. My connection is from the field: MikroTik gear is the backbone of countless Brazilian ISP and WISP networks he has worked alongside since the 1990s.",
     sources: [
       { label: "MikroTik - company history (RouterOS 1997; RouterBOARD 2002)", url: "https://mikrotik.com/aboutus" },
-      { label: "MikroTik - Wikipedia (founders; 2022 EUR 1.30B; first Latvian private company past EUR 1B)", url: "https://en.wikipedia.org/wiki/MikroTik" },
+      { label: "MikroTik - Wikipedia (founders; 2022 EUR 1.30B; first Latvian private company past EUR 1B); the infobox records the company founded 14 March 1996 in Riga, Latvia", url: "https://en.wikipedia.org/wiki/MikroTik" },
     ],
   },
   {
@@ -4402,6 +4461,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Nortel & Bay Networks - the giant that vanished",
     founded: 1895,
+    foundedCompany: "Northern Electric and Manufacturing",
     tagline: "From 1895 Montreal to a third of Canada's stock index to the largest bankruptcy in Canadian history - and the $4.5B patent auction that ended it.",
     intro:
       "Northern Electric (1895) became Northern Telecom, bet everything on digital switching in 1976, and grew into Nortel - worth C$398 billion at the 2000 peak, more than a third of the entire Toronto Stock Exchange. Along the way it swallowed Bay Networks (the 1994 SynOptics-Wellfleet merger) for $9.1 billion and Alteon WebSystems for $7.8 billion. The collapse erased it all: the January 14, 2009 filing was the largest corporate failure in Canadian history, the pieces scattered to Ericsson, Avaya, Ciena, Radware, and eventually Extreme Networks, and the 2011 Rockstar patent auction - $4.5 billion, against Google's pi-themed bids - was the tombstone.",
@@ -4458,7 +4518,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Oracle, which acquired Sun in 2010", url: "https://www.oracle.com" },
     },
     sources: [
-      { label: "Sun Microsystems", url: "https://en.wikipedia.org/wiki/Sun_Microsystems" },
+      { label: "Wikipedia: Sun Microsystems - the infobox records the company founded 24 February 1982 and defunct 27 January 2010, fate acquired by Oracle Corporation", url: "https://en.wikipedia.org/wiki/Sun_Microsystems" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4479,6 +4539,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Hewlett Packard Enterprise, which acquired SGI in 2016", url: "https://www.hpe.com" },
     },
     sources: [
+      { label: "Silicon Graphics (Wikipedia): the infobox dates the company to 9 November 1981 in Mountain View, California", url: "https://en.wikipedia.org/wiki/Silicon_Graphics", sourceNote: "Fetched 2026-10-01. A DISCREPANCY, recorded rather than silently resolved. This page says 1981 and the label says only that, because a label states what the document establishes: writing \u201cone year earlier than the 1982 this entry carries\u201d into the label would have made check-vendor-founded-sources read 1982 as cited by a page that contradicts it, which is the same fault that narrowing the year test to labels was meant to end. The site states 1982 in three places: this entry\u2019s founded field and its profile twice (\u201cfounded 1982 by Jim Clark\u201d and year 1982). PRIME ruled on 2026-10-02 that 1982 stands, so both figures are on the record and the reader can see that the difference was examined rather than missed." },
       { label: "Silicon Graphics", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
     ],
     tags: ["vendor"],
@@ -4491,7 +4552,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xerox",
-    sources: [
+    sources: [{ label: "Wikipedia: Xerox - the infobox records the company founded 18 April 1906 in Rochester, New York", url: "https://en.wikipedia.org/wiki/Xerox" }, 
       { label: "IEEE Spectrum: the Palo Alto Research Center was founded in 1970 by Xerox's then chief scientist Jack Goldman; its researchers invented foundational technologies of the shift from mainframes to personal computers, including the graphical user interface, Ethernet, object-oriented programming and laser printing, combined in 1973 into the Xerox Alto - the first computer with a desktop of windows and folders driven by keyboard and mouse, able to reach other machines and printers over a local network. Xerox later donated PARC to SRI International to focus on its core business", url: "https://spectrum.ieee.org/parc" },
       { label: "On PARC's concentration of talent and output: by the mid-1970s almost half of the world's top hundred computer scientists worked there, and within five years of founding it had produced the Alto, a WYSIWYG editor, computer-generated graphics, an Ethernet local area network and laser printing", url: "https://futureblind.com/p/fumbling-the-future-at-xerox-parc" },
       { label: "Steve Jobs on his visit, in a 1995 interview: they showed him three things, and he was so blinded by the first of them - the graphical user interface - that he did not recognise the importance of the other two", url: "https://www.goodreads.com/book/show/3982572" },
@@ -4524,7 +4585,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "HP, via Compaq, which acquired Digital in 1998", url: "https://www.hp.com" },
     },
     sources: [
-      { label: "Digital Equipment Corporation", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
+      { label: "Wikipedia: Digital Equipment Corporation - the infobox records the company founded 1957", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4722,7 +4783,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "IBM Documentation", url: "https://www.ibm.com/docs" },
       ],
     },
-    sources: [
+    sources: [{ label: "Wikipedia: IBM - the infobox records the company founded 16 June 1911 as Computing-Tabulating-Recording Company", url: "https://en.wikipedia.org/wiki/IBM" }, 
       { label: "IBM's own account of the System/360: called IBM's five billion dollar gamble and a bet-the-business move, the family of mainframes introduced in 1964 unified a family of computers under a single architecture for the first time and established the first platform business model; before it, anyone buying a new computer system had to scrap their existing programs and start again", url: "https://www.ibm.com/history/system-360" },
       { label: "History of Computer Communications on the announcement of 7 April 1964: at an estimated cost of five billion dollars the System/360 traumatised IBM's customers and sent its competitors scrambling, an effect so cataclysmic as to preclude IBM from ever again introducing a computer system incompatible with its existing ones", url: "https://historyofcomputercommunications.info/section/2.22/The-IBM-System-360-and-the-Third-Generation-of-Computing-1964/" },
       { label: "IBM timeline: the System/360 announced 7 April 1964 as the first family of computers sharing the same software and peripherals; the IBM Personal Computer, Model 5150, introduced on 12 August 1981 at a base price of 1,565 dollars, its use of off-the-shelf components and open architecture enabling what followed", url: "https://www.thestreet.com/technology/history-of-ibm-company-timeline-milestones-facts" },
@@ -4731,6 +4792,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "IBM - the century company",
     founded: 1911,
+    foundedCompany: "Computing-Tabulating-Recording Company",
     tagline: "Punched cards to System/360 to the PC to Red Hat: the company the rest of the industry defined itself against.",
     intro: "For most of computing's history, IBM was the industry: the tabulating monopoly, the $5 billion System/360 bet that created the mainframe world, the PC that accidentally crowned Microsoft and Intel, and the services turnaround that saved it. Its networking fingerprints - SNA, Token Ring - run through several other pages in this section, and the 2019 Red Hat acquisition ties it to the open-source lineage told there.",
     body: [
@@ -4751,7 +4813,7 @@ export const partnerVendors: PartnerVendor[] = [
       ],
     },
     sources: [
-      { label: "SAP", url: "https://en.wikipedia.org/wiki/SAP" },
+      { label: "Wikipedia: SAP - the infobox records the company founded 1972 in Weinheim, West Germany", url: "https://en.wikipedia.org/wiki/SAP" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4769,7 +4831,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Hewlett Packard Enterprise, which acquired 3Com in 2010", url: "https://www.hpe.com" },
     },
     sources: [
-      { label: "3Com", url: "https://en.wikipedia.org/wiki/3Com" },
+      { label: "Wikipedia: 3Com - the article records that Metcalfe left Xerox and co-founded 3Com in 1979", url: "https://en.wikipedia.org/wiki/3Com" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4786,6 +4848,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "HP, which merged with Compaq in 2002", url: "https://www.hp.com" },
     },
     sources: [
+      { label: "Wikipedia: Compaq - the infobox records the company defunct 2002 as a separate company, fate acquired by Hewlett-Packard, brand retired by HP in 2013", url: "https://en.wikipedia.org/wiki/Compaq" },
       { label: "Compaq was founded in February 1982 by Rod Canion, Jim Harris and Bill Murto, three senior managers from Texas Instruments, each investing 1,000 dollars, with first venture capital from Benjamin Rosen and the Sevin Rosen funds; the name derived from Compatibility and Quality, and the company was founded under the temporary name Gateway Technology. When Compaq introduced the Deskpro 386 in 1986 it marked the first CPU change to the PC platform not initiated by IBM; an IBM 386 machine reached the market seven months later, by which time Compaq was the 386 supplier of choice and IBM had lost its image of technical leadership", url: "https://en-academic.com/dic.nsf/enwiki/4462" },
       { label: "The original design was sketched on a placemat by Ted Papajohn, a retired industrial designer, at the House of Pies in Houston; the brief was that it should look like an Osborne 1 but less army surplus", url: "https://every.to/feeds/b0e329f3048258e8eeb7/the-man-who-beat-ibm" },
       { label: "The Compaq Portable launched in November 1982 weighing 28 pounds, using an Intel 8088 and running IBM-compatible software through a reverse-engineered BIOS; IBM did not respond with a comparable portable until February 1984. In its first full year Compaq shipped 53,000 units for 111 million dollars, the largest first-year sales figure in US business history. Dell's build-to-order direct model later carried a 10 to 15 per cent cost advantage over Compaq's reseller channel and overtook it in US sales in 1999", url: "https://tms-outsource.com/blog/posts/what-happened-to-compaq/" },
@@ -4817,7 +4880,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "the Mozilla project, which grew from the Netscape source release", url: "https://www.mozilla.org" },
     },
     sources: [
-      { label: "Netscape", url: "https://en.wikipedia.org/wiki/Netscape" },
+      { label: "Wikipedia: Netscape - the infobox records the company founded 4 April 1994", url: "https://en.wikipedia.org/wiki/Netscape" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4830,7 +4893,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "motorola",
     sources: [
-      { label: "Motorola", url: "https://en.wikipedia.org/wiki/Motorola" },
+      { label: "Wikipedia: Motorola - the infobox records the company founded 25 September 1928 in Chicago, Illinois", url: "https://en.wikipedia.org/wiki/Motorola" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4851,7 +4914,8 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor", "services"],
     group: "other",
     name: "Unisys - computing's oldest bloodlines",
-    founded: 1886,
+    founded: 1986,
+    storyBegins: { year: 1886, company: "Burroughs" },
     tagline: "Burroughs (1886) plus Sperry's UNIVAC - the ENIAC creators' company - merged in 1986: the deepest lineage in this section, still running ClearPath descendants today.",
     intro: "Unisys is where computing's two oldest commercial bloodlines meet: William Seward Burroughs's 1886 adding-machine company, and Sperry's UNIVAC division - built on Eckert and Mauchly, the engineers of ENIAC itself, whose UNIVAC I of 1951 was America's first commercial computer and famously called the 1952 election on CBS. The 1986 merger created Unisys; the mainframe heritage survives in ClearPath.",
     body: [
@@ -4870,7 +4934,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Dell, via EMC", url: "https://www.dell.com" },
     },
     sources: [
-      { label: "Data General", url: "https://en.wikipedia.org/wiki/Data_General" },
+      { label: "Wikipedia: Data General - the infobox records the company founded 1968 and defunct 1999, fate acquired, successor EMC Corporation", url: "https://en.wikipedia.org/wiki/Data_General" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4888,13 +4952,14 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "marconi",
     sources: [
-      { label: "Marconi Company", url: "https://en.wikipedia.org/wiki/Marconi_Company" },
+      { label: "Wikipedia: Marconi Company - the infobox records the company founded 1897 (as Wireless Telegraph & Signal Company)", url: "https://en.wikipedia.org/wiki/Marconi_Company" },
       { label: "Marconi Communications", url: "https://en.wikipedia.org/wiki/Marconi_plc" },
     ],
     tags: ["vendor", "carrier"],
     group: "other",
     name: "Marconi - wireless itself, then the bubble",
     founded: 1897,
+    foundedCompany: "the Wireless Telegraph & Signal Company",
     tagline: "Guglielmo Marconi bridged the Atlantic in 1901; a century later the company bearing his name became telecom's starkest dot-com cautionary tale, carved up by Ericsson in 2006.",
     intro: "Marconi is two stories a century apart: the man who made radio a business - transatlantic signals in 1901, the operators aboard Titanic in 1912 - and the GEC conglomerate that took his name in 1999, bet its fortune on telecom equipment at the bubble's exact top, and collapsed within two years. Few lineages contain both the birth of an industry and its most instructive corporate death.",
     body: ["The profile follows the Wireless Telegraph and Signal Company through GEC's electronics empire, the 1999 renaming and acquisition spree, the 2001 collapse, and the 2006 Ericsson carve-up that ended the name in networking."],
@@ -4905,7 +4970,7 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
     },
     sources: [
-      { label: "Wang Laboratories", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
+      { label: "Wikipedia: Wang Laboratories - after Chapter 11 in 1992 it became Wang Global, which the article states was acquired by Getronics of the Netherlands in 1999; the infobox records the company founded 1951 in Cambridge, Massachusetts", url: "https://en.wikipedia.org/wiki/Wang_Laboratories" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4926,7 +4991,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "Hewlett Packard Enterprise, via Compaq", url: "https://www.hpe.com" },
     },
     sources: [
-      { label: "Tandem Computers", url: "https://en.wikipedia.org/wiki/Tandem_Computers" },
+      { label: "Wikipedia: Tandem Computers - the infobox records the company founded 1974 and its fate as acquired by Compaq in 1997, then by Hewlett-Packard", url: "https://en.wikipedia.org/wiki/Tandem_Computers" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4946,7 +5011,7 @@ export const partnerVendors: PartnerVendor[] = [
       defunct: true,
     },
     sources: [
-      { label: "Banyan Systems", url: "https://en.wikipedia.org/wiki/Banyan_Systems" },
+      { label: "Wikipedia: Banyan Systems - the infobox records the company founded 1983", url: "https://en.wikipedia.org/wiki/Banyan_Systems" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4959,7 +5024,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "fujitsu",
     sources: [
-      { label: "Fujitsu", url: "https://en.wikipedia.org/wiki/Fujitsu" },
+      { label: "Wikipedia: Fujitsu - the infobox records the company founded 20 June 1935 as Fuji Telecommunications Equipment Manufacturing", url: "https://en.wikipedia.org/wiki/Fujitsu" },
       { label: "Criminal Cases Review Commission: the scandal concerned the wrongful prosecution of sub-postmasters for theft, fraud and false accounting between 1999 and 2015; the Horizon system was operated by Fujitsu on behalf of the Post Office, piloted from 1996 and rolled out from 1999. It calculated how much cash and stock a branch should hold, and where the cash on hand differed from the figure Horizon generated, the sub-postmaster was required by contract to make up the difference", url: "https://ccrc.gov.uk/post-office-horizon-cases/" },
       { label: "Computer Weekly, which has investigated the case since 2008: at its rollout Horizon was the largest non-military IT project in Europe; between 2000 and 2015 about 900 sub-postmasters were convicted on evidence from it; Fujitsu knew the system had errors that could cause unexplained losses but gave evidence in court that Horizon was robust; at the public inquiry in 2024 Fujitsu's European head admitted the company had missed an opportunity to prevent the convictions, and Fujitsu apologised and said it had a moral obligation to contribute to redress", url: "https://www.computerweekly.com/feature/Fujitsus-role-in-the-Post-Office-scandal-Everything-you-need-to-know" },
       { label: "The Register on the Court of Appeal ruling of April 2021 quashing 39 convictions: Lord Justice Holroyde said the Post Office had, by representing Horizon as reliable, effectively sought to reverse the burden of proof; the prosecutions relied on Horizon data, and the complete keystroke record known as ARQ data was often not made available to defendants, leading to unjustifiable convictions and coerced guilty pleas", url: "https://www.theregister.com/2021/04/23/post_office_scandal_fujitsu_convictions_quashed/" },
@@ -4969,6 +5034,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Fujitsu - Japan's computing standard-bearer",
     founded: 1935,
+    foundedCompany: "Fuji Telecommunications Equipment Manufacturing",
     tagline: "Born from a 1935 Fuji Electric spin-off (itself a Furukawa-Siemens venture), Fujitsu fought IBM with Amdahl, absorbed ICL, and built the K and Fugaku supercomputers.",
     intro: "Fujitsu carries Japan's mainframe century: FACOM computers from the 1950s, the Amdahl partnership that took the IBM-compatible fight to IBM's own customers, the ICL acquisition that made it a European power, and the K and Fugaku machines that twice topped the world's supercomputer rankings. Its optical and network businesses wire a substantial share of the Pacific.",
     body: [
@@ -4983,12 +5049,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "nec",
     sources: [
-      { label: "NEC", url: "https://en.wikipedia.org/wiki/NEC" },
+      { label: "Wikipedia: NEC - the infobox records the English name Nippon Electric Company, Limited for 1899 to 1983; the article dates the predecessor, Nippon Electric Limited Partnership, to 31 August 1898", url: "https://en.wikipedia.org/wiki/NEC" },
     ],
     tags: ["vendor", "services"],
     group: "other",
     name: "NEC - Japan's first joint venture",
     founded: 1899,
+    foundedCompany: "Nippon Electric Company, Limited",
     tagline: "Founded 1899 with Western Electric capital; NEAX switched the world's calls, the PC-98 owned Japan's PC market, and the C&C vision named the convergence everyone now lives in.",
     intro: "NEC was Japan's first joint venture with foreign capital - Western Electric, 1899 - and grew into the country's communications backbone: NEAX exchanges, satellites, submarine cable systems, and the SX vector supercomputers behind the Earth Simulator. Its PC-8001 and PC-98 lines dominated Japan's personal-computer market for over a decade, and Koji Kobayashi's 1977 'C&C' - Computers and Communications - named the convergence this whole industry became.",
     body: ["The profile covers the Western Electric founding, the switching and space decades, the PC-98 era, the world-number-one semiconductor years that ended in the Renesas merger, and today's biometrics and submarine-cable strengths."],
@@ -5004,6 +5071,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Bell Labs, Lucent & Alcatel - the transistor's bloodline",
     founded: 1898,
+    foundedCompany: "Compagnie Générale d'Électricité (Alcatel's root)",
     tagline: "The transistor, information theory, Unix, the laser, cellular - ten Nobel Prizes of foundations, spun into Lucent in 1996, merged with Alcatel in 2006, carried into Nokia in 2016.",
     intro: "No institution shaped this industry more than Bell Telephone Laboratories: the 1947 transistor, Shannon's 1948 information theory, Unix and C, the CCD, the cellular concept. Its corporate afterlife - the record-setting Lucent IPO, the bubble's hardest fall, the Alcatel merger, the Nokia acquisition - is the industry's sharpest lesson that inventing the future and capturing its value are different skills.",
     body: ["The profile covers the 1925 founding, the 1947-1969 invention run, the 1996 trivestiture and Lucent's rise and fall, Alcatel's CGE-to-ITT ascent, the 2006 merger, and the 2016 passage into Nokia - where Bell Labs continues."],
@@ -5011,13 +5079,14 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "intel-amd",
     sources: [
-      { label: "Intel", url: "https://en.wikipedia.org/wiki/Intel" },
+      { label: "Wikipedia: Intel - the infobox records the company founded 18 July 1968", url: "https://en.wikipedia.org/wiki/Intel" },
       { label: "AMD", url: "https://en.wikipedia.org/wiki/Advanced_Micro_Devices" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Intel & AMD - Fairchild's children: the x86 rivalry",
     founded: 1968,
+    foundedCompany: "Intel",
     tagline: "The 4004, Moore's Law, and the second source that wrote AMD64 - one entry, because neither story parses without the other.",
     intro: "Both companies walked out of Fairchild Semiconductor a year apart - Noyce and Moore in 1968, Jerry Sanders in 1969 - and spent the next half-century pricing computing for everyone. Intel invented the commercial microprocessor and set the industry's cadence; AMD went from licensed second source to the author of the 64-bit x86 instruction set the whole world (Intel included) now runs.",
     body: ["The profile covers the Fairchild exodus, the 4004 and the IBM PC's dual-source mandate, the memory exit, the gigahertz race, the AMD64 irony, Zen's comeback, and the duopoly's diverging bets."],
@@ -5029,7 +5098,7 @@ export const partnerVendors: PartnerVendor[] = [
       successor: { label: "the RAND Corporation, which continues as a research institution", url: "https://www.rand.org" },
     },
     sources: [
-      { label: "RAND Corporation", url: "https://en.wikipedia.org/wiki/RAND_Corporation" },
+      { label: "Wikipedia: RAND Corporation - the infobox records the corporation formed 14 May 1948", url: "https://en.wikipedia.org/wiki/RAND_Corporation" },
     ],
     tags: ["standards"],
     group: "other",
@@ -5044,7 +5113,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["standards"],
     group: "other",
     name: "CYCLADES (IRIA, France)",
-    founded: 1971,
+    founded: 1972,
     tagline: "Where the datagram was born.",
     intro:
       "Louis Pouzin's 1972-1973 research network at IRIA was the first to make hosts responsible for reliability over an unreliable packet substrate - Pouzin coined the word datagram for it - and Cerf and Kahn's 1974 TCP/IP founding paper cites the work directly.",
@@ -5053,18 +5122,20 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     sources: [
       { label: "INRIA - Between Stanford and Cyclades", url: "https://www.inria.fr/en/between-stanford-and-cyclades-transatlantic-perspective-creation-internet" },
-      { label: "History of Computer Communications - CYCLADES and Louis Pouzin", url: "https://historyofcomputercommunications.info/section/8.3/CYCLADES-Network-and-Louis-Pouzin-1971-1972/" },
+      { label: "History of Computer Communications - CYCLADES and Louis Pouzin: Pouzin joined the Délégation à l'informatique in November 1971 and began designing the network after his 1971 trip to the United States", url: "https://historyofcomputercommunications.info/section/8.3/CYCLADES-Network-and-Louis-Pouzin-1971-1972/" },
+      { label: "Wikipedia: CYCLADES - planning for the project began in 1971; design and staffing started in 1972, and November 1973 saw the first demonstration, using three hosts and one packet switch", url: "https://en.wikipedia.org/wiki/CYCLADES" },
     ],
   },
   {
     slug: "toshiba",
     sources: [
-      { label: "Toshiba", url: "https://en.wikipedia.org/wiki/Toshiba" },
+      { label: "Wikipedia: Toshiba - the infobox records the company founded 11 July 1875 as Shibaura Seisakusho", url: "https://en.wikipedia.org/wiki/Toshiba" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Toshiba - the company that gave the world flash",
     founded: 1875,
+    foundedCompany: "Shibaura Seisakusho",
     tagline: "Fujio Masuoka invented NOR and then NAND flash at Toshiba in the 1980s - every SSD, phone, and memory card descends from it; the T1100 started the laptop era.",
     intro: "From an 1875 telegraph works founded by a maker of mechanical dolls to the conglomerate that invented flash memory and the mass-market laptop - and then, through the Westinghouse disaster and the accounting scandal, sold the memory crown jewels (today's Kioxia) and left the stock exchange after 74 years. One immortal contribution bracketed by a very mortal corporate story.",
     body: ["The profile covers the Tanaka and Hakunetsusha roots, the 1939 merger, the JW-10 and T1100 firsts, Masuoka's NOR and NAND inventions, the DVD and HD DVD chapters, and the Westinghouse-to-Kioxia unwinding."],
@@ -5072,7 +5143,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "hitachi",
     sources: [
-      { label: "Hitachi", url: "https://en.wikipedia.org/wiki/Hitachi" },
+      { label: "Wikipedia: Hitachi - the infobox records the company founded 1910", url: "https://en.wikipedia.org/wiki/Hitachi" },
     ],
     tags: ["vendor", "services"],
     group: "other",
@@ -5085,7 +5156,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "bull",
     sources: [
-      { label: "Groupe Bull", url: "https://en.wikipedia.org/wiki/Groupe_Bull" },
+      { label: "Wikipedia: Groupe Bull - the infobox records the company founded 1931", url: "https://en.wikipedia.org/wiki/Groupe_Bull" },
     ],
     tags: ["vendor", "services"],
     group: "other",
@@ -5098,7 +5169,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "ncsa",
     sources: [
-      { label: "National Center for Supercomputing Applications", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
+      { label: "Wikipedia: National Center for Supercomputing Applications - the infobox records the center established 1986", url: "https://en.wikipedia.org/wiki/National_Center_for_Supercomputing_Applications" },
     ],
     tags: ["standards"],
     group: "other",
@@ -5114,7 +5185,7 @@ export const partnerVendors: PartnerVendor[] = [
       url: "https://www.ciena.com",
     },
     sources: [
-      { label: "Ciena", url: "https://en.wikipedia.org/wiki/Ciena" },
+      { label: "Wikipedia: Ciena - the infobox records the company founded 1992", url: "https://en.wikipedia.org/wiki/Ciena" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -5133,6 +5204,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "The Sniffer lineage - Network General to NetScout",
     founded: 1984,
+    foundedCompany: "NetScout Systems",
     tagline: "The 1986 Sniffer made protocol analysis a profession; through Dolch luggables, Network Associates, and Arbor's DDoS telemetry, the whole bloodline converged on NetScout.",
     intro: "One entry for five companies, because they are one story: Network General's Sniffer named the practice every engineer still uses, Volker Dolch's rugged luggables were its field chassis, the Network Associates merger and un-merger carried the brand through the roll-up era, Arbor Networks scaled packet thinking to internet-wide DDoS telemetry - and NetScout, founded two years before the Sniffer existed, became the house where the whole analyzer tradition came home.",
     body: ["The profile covers the 1986 Sniffer, Sniffer University, the Dolch chassis, the 1997 NAI merger and 2004 rebirth, Arbor's Peakflow and ATLAS, and NetScout's 2007 and 2015 consolidating acquisitions."],
@@ -5153,7 +5225,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Founded 1987 in California by Volker Dolch; twice ranked first in rugged portables (VDC, 1999 and 2002); acquired by Kontron AG in February 2005, with the rugged mobile platform passing to Azonix in 2007. The hardware half of the packet-analysis story told in the Sniffer lineage profile.",
     ],
     sources: [
-      { label: "Wikipedia - Dolch", url: "https://en.wikipedia.org/wiki/Dolch" },
+      { label: "Wikipedia: Dolch - the infobox records the company founded 1987", url: "https://en.wikipedia.org/wiki/Dolch" },
       { label: "Kontron - acquisition announcement (2005)", url: "https://www.kontron.com/en/news/kontron-ag-completes-acquisition-of-dolch-computer-systems-inc/n128919" },
       { label: "Computer History Museum - Dolch network analyzer materials", url: "https://www.computerhistory.org/collections/catalog/102727516" },
     ],
@@ -5161,13 +5233,14 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "blue-coat-packeteer",
     sources: [
-      { label: "Blue Coat Systems", url: "https://en.wikipedia.org/wiki/Blue_Coat_Systems" },
+      { label: "Wikipedia: Blue Coat Systems - the infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/Blue_Coat_Systems" },
       { label: "Packeteer", url: "https://en.wikipedia.org/wiki/Packeteer" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Blue Coat & Packeteer - the chokepoint companies",
     founded: 1996,
+    foundedCompany: "CacheFlow (Blue Coat Systems from 2002)",
     tagline: "CacheFlow's pivot made the proxy a security platform; PacketShaper created traffic shaping - together, the prehistory of the SSE category.",
     intro: "Two 1996 companies that answered the same question - what happens at the chokepoint, the point all traffic must pass through - for content and for bandwidth. Blue Coat (born CacheFlow) made the inline proxy the enterprise web's enforcement point, SSL inspection included; Packeteer's PacketShaper taught the WAN that traffic has identity. Merged in 2008, carried through Symantec into Broadcom, their architecture is what every cloud secure web gateway runs today.",
     body: ["The profile covers the legendary CacheFlow IPO, the 2002 pivot to Blue Coat, PacketShaper's category creation, the 2008 acquisition, the private-equity years, and the Symantec-to-Broadcom passage."],
@@ -5182,19 +5255,21 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Cyclades, Avocent & Vertiv - the physical layer of uptime",
     founded: 1965,
+    foundedCompany: "Liebert (Vertiv's physical-layer root)",
     tagline: "A Brazilian-founded console-server pioneer, the KVM leaders, and Liebert's computer-room weather - consolidated into the company whose product is uptime itself.",
     intro: "Cyclades - founded in 1988 in a São Paulo garage by João Lima and Daniel Dalarossa, an early Linux champion that later moved to California - built the out-of-band discipline: the console path that shares no fate with the network it manages. Through Avocent's KVM heritage and Emerson Network Power (whose other root is Ralph Liebert's 1965 precision cooling), the lineage became Vertiv: access, power, and cooling as one problem, now the constraint the AI build-out plans around. The name also earns an honorable footnote: Pouzin's CYCLADES research network - TCP/IP's credited French ancestor - now has its own profile in this pioneer lineage; same name, different continent, no corporate relation.",
-    body: ["The profile covers the 1989 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
+    body: ["The profile covers the 1988 Brazilian founding, the console-server category, the 2006 Avocent acquisition, Emerson Network Power and the Liebert root, the 2016 Vertiv carve-out, and the AI-density era."],
   },
   {
     slug: "dell-force10",
-    sources: [
+    sources: [{ label: "Wikipedia: Dell - the infobox records the company founded 3 May 1984 in Austin, Texas", url: "https://en.wikipedia.org/wiki/Dell" }, 
       { label: "Force10", url: "https://en.wikipedia.org/wiki/Force10_Networks" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Dell & Force10 - the direct model and its fabric",
     founded: 1984,
+    foundedCompany: "Dell (PC's Limited)",
     tagline: "A dorm-room assembler became the datacenter's broadest supplier - and the 10GbE pioneer it absorbed in 2011 became its switching lineage.",
     intro: "Michael Dell's direct model reset how hardware reaches buyers; the 2013 take-private and the 2016 EMC acquisition - the largest technology deal in history - rebuilt the company around the datacenter. Inside it runs Force10's engineering: the 1999 startup whose purpose-built E-Series delivered line-rate 10 Gigabit Ethernet before anyone else, whose FTOS lineage survives as Dell's switching OS today.",
     body: ["The profile covers the 1984 dorm-room founding and the direct model, Force10's E1200 and HPC fabrics, the 2011 acquisition, the take-private, the EMC megadeal, and the PowerSwitch present."],
@@ -5205,12 +5280,13 @@ export const partnerVendors: PartnerVendor[] = [
       url: "https://www.zte.com.cn",
     },
     sources: [
-      { label: "ZTE", url: "https://en.wikipedia.org/wiki/ZTE" },
+      { label: "Wikipedia: ZTE - the infobox records the company founded 1985 as Zhongxing Semiconductor Co., Ltd.", url: "https://en.wikipedia.org/wiki/ZTE" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "ZTE - China's other giant",
     founded: 1985,
+    foundedCompany: "Zhongxing Semiconductor Co., Ltd.",
     tagline: "Shenzhen 1985, top-four in 5G - and the 2018 denial order that made supply-chain dependency the industry's most vivid lesson.",
     intro: "Founded two years before its Shenzhen neighbor Huawei, ZTE grew from digital switching into one of the world's four mobile-equipment majors. In April 2018 a US component ban halted the company within weeks; the $1.4 billion settlement that restarted it - fine, escrow, replaced management, embedded monitors - turned 'where does your silicon come from' into a board-level network-design question everywhere.",
     body: ["The profile covers the 1985 founding, the ZXJ10 era, global scale through CDMA and handsets, the 2017 plea and 2018 denial-order crisis with its settlement, and the bifurcated 5G market ZTE now inhabits."],
@@ -5244,26 +5320,28 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "dns-bind",
     sources: [
-      { label: "Domain Name System", url: "https://en.wikipedia.org/wiki/Domain_Name_System" },
+      { label: "Wikipedia: Domain Name System - Mockapetris created the Domain Name System in 1983 at the USC Information Sciences Institute; the original specifications were published as RFC 882 and RFC 883 in November 1983", url: "https://en.wikipedia.org/wiki/Domain_Name_System" },
       { label: "BIND", url: "https://en.wikipedia.org/wiki/BIND" },
     ],
     tags: ["standards"],
     group: "other",
     name: "DNS & BIND - the internet's phone book and its reference implementation",
     founded: 1983,
+    foundedCompany: "The Domain Name System (RFC 882/883)",
     tagline: "Mockapetris's 1983 design and Berkeley's software that ran it - delegation, caching, and forty years of the same wire format.",
     intro: "Before the DNS, the internet's names lived in a text file everyone downloaded. Paul Mockapetris's 1983 design replaced it with a delegated, cached, planetary database - and four Berkeley grad students wrote BIND, the implementation that made 'running DNS' and 'running BIND' the same sentence for a quarter century.",
     body: ["The profile covers HOSTS.TXT's collapse, RFC 882/883 and 1034/1035, the MX record, Vixie and ISC, BIND 9, the Kaminsky patch, the 2010 root signing, Dyn day, and the DoT/DoH era."],
   },
   {
     slug: "http-gopher",
-    sources: [
+    sources: [{ label: "W3C archive: Information Management: A Proposal, by Tim Berners-Lee, CERN, dated March 1989 and May 1990", url: "https://www.w3.org/History/1989/proposal.html" }, 
       { label: "Gopher (protocol)", url: "https://en.wikipedia.org/wiki/Gopher_(protocol)" },
     ],
     tags: ["standards"],
     group: "other",
     name: "HTTP & Gopher - the web's protocol and the rival it eclipsed",
     founded: 1989,
+    foundedCompany: "HTTP and the World Wide Web",
     tagline: "Two futures shipped in 1991; one spring of licensing decided between them - CERN gave the web away, Minnesota asked for money.",
     intro: "Gopher was the better-organized system and for two years it was winning. Then, weeks apart in 1993, Minnesota announced server fees and CERN declared the web royalty-free forever - the cleanest natural experiment in protocol economics ever run. HTTP went on to replace its own transport twice without breaking a URL.",
     body: ["The profile covers the 1989 CERN proposal and HTTP/0.9, Gopher's rise and Veronica, the spring-1993 licensing fork, Mosaic, the Host header, REST, and the HTTP/2-to-HTTP/3-over-QUIC arc this site's WAF material continues."],
@@ -5277,7 +5355,7 @@ export const partnerVendors: PartnerVendor[] = [
       ],
     },
     sources: [
-      { label: "Nvidia", url: "https://en.wikipedia.org/wiki/Nvidia" },
+      { label: "Wikipedia: Nvidia - the infobox records the company founded 5 April 1993 in Sunnyvale, California", url: "https://en.wikipedia.org/wiki/Nvidia" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5326,6 +5404,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "contemporary",
     name: "The access & home fleet - Netgear, TP-Link, Zyxel, Asus & Askey, Allied Telesis",
     founded: 1987,
+    foundedCompany: "Allied Telesis (founded as Allied Telesyn)",
     tagline: "The boxes everyone actually owns: the first hop of most packets on Earth, told as one fleet.",
     intro: "Five names, one layer: the CPE and SOHO gear that put networking in ordinary rooms. Netgear's Bay Networks spinoff roots, TP-Link's decade-plus shipment crown, Zyxel's modem-era pedigree, the ASUS/Askey retail-and-ODM pairing, and Allied Telesis holding the access edge since 1987 - plus the 2024 geopolitics that scale eventually attracts.",
     body: ["The profile tells the five foundings, the mesh and cloud-management turns, the enthusiast-firmware culture, the invisible carrier-ODM fleet, and why this tier is both the industry's proving ground and its largest attack surface."],
@@ -5333,7 +5412,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "watchguard",
     sources: [
-      { label: "WatchGuard", url: "https://en.wikipedia.org/wiki/WatchGuard" },
+      { label: "Wikipedia: WatchGuard - the infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/WatchGuard" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5358,7 +5437,7 @@ export const partnerVendors: PartnerVendor[] = [
     name: "A10 Networks",
     founded: 2004,
     sources: [
-      { label: "A10 Networks", url: "https://en.wikipedia.org/wiki/A10_Networks" },
+      { label: "Wikipedia: A10 Networks - the infobox records the company founded 2004", url: "https://en.wikipedia.org/wiki/A10_Networks" },
     ],
     tags: ["vendor"],
     tagline: "Attacked application delivery from the throughput flank, where the traffic is heaviest.",
@@ -5378,7 +5457,7 @@ export const partnerVendors: PartnerVendor[] = [
     name: "Kemp Technologies",
     founded: 2000,
     sources: [
-      { label: "Kemp Technologies", url: "https://en.wikipedia.org/wiki/KEMP_Technologies" },
+      { label: "Wikipedia: Kemp Technologies - the infobox records the company founded 1 November 2000", url: "https://en.wikipedia.org/wiki/KEMP_Technologies" },
     ],
     tags: ["vendor"],
     tagline: "Priced the load balancer for the administrator rather than the committee, and went virtual before the market did.",
@@ -5394,7 +5473,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "datacom",
     sources: [
-      { label: "Datacom - About (Teracom Telematica S.A., Eldorado do Sul, RS)", url: "https://datacom.com.br/en/institucional" },
+      { label: "Datacom - About (Teracom Telematica S.A., Eldorado do Sul, RS): \"Since its foundation in 1998, Datacom has always focused on the development of technological products and solutions\"", url: "https://datacom.com.br/en/institucional" },
     ],
     tags: ["vendor"],
     group: "contemporary",
@@ -5411,6 +5490,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "contemporary",
     name: "ASUS + Askey",
     founded: 1989,
+    foundedCompany: "ASUS (ASUSTeK Computer)",
     tagline: "The motherboard empire and its network-communications arm.",
     intro:
       "ASUS grew from four ex-Acer engineers' 1989 motherboard startup into the world's fifth-largest PC vendor; Askey, founded the same year and later an ASUS Group member, is the invisible ODM behind decades of carrier modems, gateways, and 5G CPE - with offices that include Brazil.",
@@ -5418,7 +5498,7 @@ export const partnerVendors: PartnerVendor[] = [
       "Consolidated into one profile per the corporate reality: the branded systems giant and the white-label access-hardware machine, one group, both 1989 Taipei foundings.",
     ],
     sources: [
-      { label: "Wikipedia - Asus", url: "https://en.wikipedia.org/wiki/Asus" },
+      { label: "Wikipedia: Asus - the infobox records the company founded 2 April 1989", url: "https://en.wikipedia.org/wiki/Asus" },
       { label: "Askey - about", url: "https://www.askey.com.tw/about/" },
     ],
   },
@@ -5437,7 +5517,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "Survived the Nortel absorption of its parent, reached independence and a NASDAQ listing in 2003, spun Arlo off in 2018, and still defines what home and small-business networking looks like on a shelf.",
     ],
-    sources: [
+    sources: [{ label: "Wikipedia: Netgear - infobox records the company founded 8 January 1996", url: "https://en.wikipedia.org/wiki/Netgear" }, 
       { label: "NETGEAR - company", url: "https://www.netgear.com/about/" },
     ],
   },
@@ -5456,7 +5536,7 @@ export const partnerVendors: PartnerVendor[] = [
     body: [
       "Archer and Deco carry the volume core, Omada takes the controller model to the SMB value tier, Tapo reaches into the smart home - and, kept factual, US-government scrutiny reported since late 2024 remains on the public record, unresolved at verification.",
     ],
-    sources: [
+    sources: [{ label: "Wikipedia: TP-Link - infobox records the company founded 1996", url: "https://en.wikipedia.org/wiki/TP-Link" }, 
       { label: "TP-Link - about", url: "https://www.tp-link.com/about-us/" },
     ],
   },
@@ -5468,7 +5548,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["vendor"],
     group: "contemporary",
     name: "Zyxel",
-    founded: 1988,
+    founded: 1989,
     tagline: "The modem-era first-mover from Hsinchu.",
     intro:
       "Begun in a rented Taoyuan apartment in 1988 and founded at Hsinchu Science Park in 1989 by Dr. Shun-I Chu, Zyxel built the U-1496 modems the BBS generation saved up for - then shipped the world's first integrated data/fax/voice modem (1992) and analog/digital ISDN modem (1995).",
@@ -5476,8 +5556,9 @@ export const partnerVendors: PartnerVendor[] = [
       "Listed in Taiwan in 1999 and restructured under the Zyxel Group holding, it still ships carrier CPE and SMB networking-and-security across every access generation since the modem - with the 2025 end-of-life zero-day episode kept honestly in the record.",
     ],
     sources: [
+      { label: "Zyxel 30th-anniversary release (Hsinchu, 16 August 2019): \"In the summer of 1989, a time when the internet was still in its infancy, Dr. Shun-I Chu founded Zyxel\"", url: "https://www.zyxel.com/service-provider/global/en/go-30-beyond-possibility-zyxel-celebrates-three-decades-innovation" },
+      { label: "Wikipedia: Zyxel - infobox records the company founded 1989 in Hsinchu, Taiwan by Shun-I Chu; its timeline has Chu renting an apartment in Taoyuan as a lab in 1988 and the headquarters established at Hsinchu Science Park in 1989", url: "https://en.wikipedia.org/wiki/Zyxel" },
       { label: "Zyxel - company history", url: "https://www.zyxel.com/global/en/company/about-zyxel" },
-      { label: "Wikipedia - Zyxel", url: "https://en.wikipedia.org/wiki/Zyxel" },
     ],
   },
   {
@@ -5497,7 +5578,7 @@ export const partnerVendors: PartnerVendor[] = [
     ],
     sources: [
       { label: "Allied Telesis - founder memorial", url: "https://www.alliedtelesis.com/us/en/press/mr-takayoshi-oshima-founder-and-ceo-allied-telesis" },
-      { label: "Wikipedia - Allied Telesis", url: "https://en.wikipedia.org/wiki/Allied_Telesis" },
+      { label: "Wikipedia: Allied Telesis - the infobox records the company founded 9 March 1987", url: "https://en.wikipedia.org/wiki/Allied_Telesis" },
     ],
   },
 
@@ -5568,7 +5649,6 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "versim",
     sources: [
       { label: "Versim - About us (on the Polish market since 2005; one of the largest network-solution distributors by turnover)", url: "https://www.versim.pl/en/en-o-nas/" },
-      { label: "Versim ATP - About us (Authorized Training Center since 2016 for Extreme Networks, Techstep and Gigaset Pro)", url: "https://versimatp.com/about-us/" },
       { label: "Versim - company site (Pozna\u0144; distributor of advanced networking and IT security solutions, wired and wireless)", url: "https://versim.pl/" },
       { label: "Versim S.A., company page: a value-added distributor of advanced IT networking technology, on the market since 2005 and by turnover one of the largest distributors of networking solutions in Poland; it sells exclusively to partners - integrators, resellers and service providers - never to end customers; it runs a competence centre and an equipped hardware laboratory; timeline: 2017 authorised Extreme Networks distributor for Poland, 2021 Hillstone Networks, 2022 Cambium Networks, 2023 authorised Extreme Networks distributor for Bulgaria", url: "https://www.versim.pl/o-nas/" },
       { label: "Versim S.A., home page: portfolio led by Extreme Networks, Cambium Networks and Techstep, with Check Point and Gigaset Pro; distributes NACVIEW, a Polish network access control system; services include network design, Wi-Fi surveys, implementation support and the Extreme Networks Co-Delivery service programme; headquartered at ul. Jasielska 10, Poznan", url: "https://www.versim.pl/" },
@@ -5651,7 +5731,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "mitre",
     sources: [
-      { label: "Mitre Corporation - American not-for-profit corporation operating federally funded research and development centers", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
+      { label: "Mitre Corporation (Wikipedia): founded 1958, a 501(c)(3) not-for-profit corporation operating federally funded research and development centers, with headquarters at Bedford, Massachusetts and McLean, Virginia", url: "https://en.wikipedia.org/wiki/Mitre_Corporation" },
     
       { label: "History of Computer Communications - National Bureau of Standards and MITRE, 1971 to 1979, including the NBS and MITRE workshop of January 1979 that preceded the local networking symposium", url: "https://historyofcomputercommunications.info/section/8.13/National-Bureau-of-Standards-and-MITRE-1971-1979/" },
       { label: "History of Computer Communications on the founding of Sytek: the Ford Aerospace team that became Sytek had built a CATV-based network with lineage to MITRENET, and presented at the MITRE and NBS symposium", url: "https://historyofcomputercommunications.info/section/9.10/Michael-Pliner-and-the-Founding-of-Sytek/" },
@@ -5681,7 +5761,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "ungermann-bass",
     sources: [
-      { label: "Ungermann-Bass - computer networking company", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
     
       { label: "Ungermann-Bass: founded 1979 in Santa Clara by Ralph Ungermann and Charlie Bass, the first large networking company independent of any computer manufacturer; John Davidson, vice president of engineering, was one of the creators of NCP, the ARPANET transport protocol that preceded TCP; defunct 1997, successor Newbridge Networks", url: "https://en.wikipedia.org/wiki/Ungermann-Bass" },
       { label: "History of Computer Communications on the founding: Bass resigned from Zilog and the two incorporated Ungermann-Bass in July 1979; after investigating and rejecting broadband, Bass built consensus for Ethernet; the first product, the NIU-1, connected eight to thirty-two terminals to host computers over Ethernet using the XNS protocol", url: "https://historyofcomputercommunications.info/section/9.11/Ralph-Ungermann-and-Charlie-Bass-and-the-Founding-of-Ungermann-Bass/" },
@@ -5909,7 +5988,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "bridge-communications",
     sources: [
-      { label: "Bridge Communications - American computer networking company, merged with 3Com in 1987", url: "https://en.wikipedia.org/wiki/Bridge_Communications" },
+      { label: "Bridge Communications (Wikipedia): founded 1981 by Judy Estrin and Bill Carrico in Mountain View, California, building network bridges, routers and communications servers; Estrin says the company shipped the first commercial router; merged with 3Com in 1987", url: "https://en.wikipedia.org/wiki/Bridge_Communications" },
     
       { label: "History of Computer Communications on Bridge Communications, and on the consolidation of 1987-1988 in which 3Com merged with Bridge, Tandem acquired Ungermann-Bass and Interlan went into Micom", url: "https://historyofcomputercommunications.info/section/12.18/Bridge-Communications/" },
     ],
@@ -5936,9 +6015,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "tufin",
     sources: [
-      { label: "Tufin - software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Tufin" },
       { label: "skyboxsecurity.com now serves a Tufin page welcoming Skybox customers", url: "https://www.skyboxsecurity.com/", sourceNote: "Fetched 2026-08-11: the domain resolves to a Tufin transition page, which is how the absorption is visible from outside." },
-      { label: "Founding year: 2005", url: "https://en.wikipedia.org/wiki/Tufin" },
     
       { label: "Tufin: founded 2005 in Tel Aviv by Ruvi Kitov and Reuven Harrison, both formerly of Check Point; public on the New York Stock Exchange in April 2019; acquired by Turn/River Capital on 25 August 2022, after which the company went private", url: "https://en.wikipedia.org/wiki/Tufin" },
       { label: "Grokipedia on Tufin: the Turn/River Capital acquisition was an all-cash transaction of approximately 570 million dollars at 13.00 dollars a share, a 44 per cent premium to the prior closing price, completed 25 August 2022 and delisting the company from the NYSE", url: "https://grokipedia.com/page/Tufin" },
@@ -5963,7 +6040,6 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "algosec",
     sources: [
       { label: "AlgoSec - company site (AlgoSec Horizon Platform; automating application connectivity and security policy)", url: "https://www.algosec.com/" },
-      { label: "Founding year: 2004", url: "https://en.wikipedia.org/wiki/AlgoSec" },
     
       { label: "AlgoSec: founded 2004 by Yuval Baron and Professor Avishai Wool, whose core technology was developed in 2001 with his research team at Bell Labs while he was a postdoctoral researcher; headquarters moved from Reston, Virginia to Roswell, Georgia in 2010 and to Ridgefield Park, New Jersey in 2012; the company operated self-funded for 14 years before its first external funding round", url: "https://en.wikipedia.org/wiki/AlgoSec" },
     ],
@@ -6026,8 +6102,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "infoblox",
     sources: [
-      { label: "Infoblox - American technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Infoblox" },
-      { label: "Founding year: 1999", url: "https://en.wikipedia.org/wiki/Infoblox" },
     
       { label: "Infoblox: founded 1999 in Chicago by Stuart Bailey, Michael Ford, Greg Lanier, Tom Kowal and Ivan Pulleyn; products manage DNS, DHCP and IP address management, collectively DDI; public on the New York Stock Exchange from 2012 to 2016, then acquired by Vista Equity Partners; SilverBox, an early nonstop DNS and DHCP appliance, launched 2005", url: "https://en.wikipedia.org/wiki/Infoblox" },
     ],
@@ -6050,10 +6124,8 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "proofpoint",
     sources: [
-      { label: "Proofpoint - American cybersecurity company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Proofpoint" },
-      { label: "Founding year: 2002", url: "https://en.wikipedia.org/wiki/Proofpoint,_Inc." },
     
-      { label: "Proofpoint: founded July 2002 by Eric Hahn, formerly chief technology officer of Netscape Communications; launched 21 July 2003 after a 7 million dollar Series A; public in April 2012 at 13 dollars a share; acquired by Thoma Bravo in 2021 for 12.3 billion dollars", url: "https://en.wikipedia.org/wiki/Proofpoint,_Inc." },
+      { label: "Proofpoint: founded July 2002 by Eric Hahn, formerly chief technology officer of Netscape Communications; launched 21 July 2003 after a 7 million dollar Series A; public in April 2012 at 13 dollars a share; acquired by Thoma Bravo in 2021 for 12.3 billion dollars", url: "https://en.wikipedia.org/wiki/Proofpoint" },
       { label: "Proofpoint acquisitions and incidents: Wombat Security in 2018 for 225 million dollars, ObserveIT in 2019 for 225 million, Meta Networks for about 120 million, InteliSecure in 2021 and Tessian in December 2023; the EchoSpoofing incident disclosed in 2024 saw up to 14 million fraudulent emails a day relayed through Proofpoint infrastructure over six months", url: "https://www.captaindns.com/en/blog/proofpoint-secure-email-gateway" },
     ],
     tags: ["vendor"],
@@ -6107,8 +6179,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "barracuda",
     sources: [
-      { label: "Barracuda Networks - American software company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
-      { label: "Founding year: 2003", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
     
       { label: "Barracuda Networks: founded 2003 by Dean Drako, Michael Perone and Zach Levow, introducing the Barracuda Spam and Virus Firewall in the same year; headquartered in Campbell, California; owned by KKR", url: "https://en.wikipedia.org/wiki/Barracuda_Networks" },
       { label: "The Silicon Review on Barracuda: the three founders were running an internet service provider in 2002 and could not find an affordable spam-blocking product for their own small business, so they built one, in a small Los Altos office next to a Mexican restaurant that often served as the conference room", url: "https://thesiliconreview.com/magazine/profile/providing-a-secured-environment-for-companies-in-various-regions-and-industry-barracuda" },
@@ -6133,8 +6203,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "logrhythm",
     sources: [
-      { label: "LogRhythm - American security intelligence company (Wikipedia)", url: "https://en.wikipedia.org/wiki/LogRhythm" },
-      { label: "Founding year: 2003", url: "https://en.wikipedia.org/wiki/LogRhythm" },
     
       { label: "LogRhythm: founded 2003 in Boulder, Colorado, specialising in security information and event management, log management, network monitoring and user behaviour analytics; merged with Exabeam in 2024", url: "https://en.wikipedia.org/wiki/LogRhythm" },
       { label: "Grokipedia on LogRhythm: founded in 2003 in Boulder by Chris Petersen and Phillip Villella, initially operating as Security Conscious, Inc. before rebranding in 2005; Petersen relocated from Washington and sold his home there for 100,000 dollars to bootstrap the venture; acquired by Thoma Bravo in 2018", url: "https://grokipedia.com/page/LogRhythm" },
@@ -6183,8 +6251,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "supermicro",
     sources: [
-      { label: "Supermicro - American supplier of servers and information technology equipment (Wikipedia)", url: "https://en.wikipedia.org/wiki/Supermicro" },
-      { label: "Founding year: 1993", url: "https://en.wikipedia.org/wiki/Supermicro" },
     
       { label: "Supermicro (official): Charles Liang has served as president, chief executive and chairman since the company inception in September 1993; previously president and chief design engineer of Micro Center Computer from July 1991 to August 1993", url: "https://www.supermicro.com/en/about" },
       { label: "Supermicro: founded 1993 by Charles Liang, Sara Liu and Wally Liaw in San Jose; first European partnership with Boston Limited in the founding year; energy-saving server development from 2004; revenue of 21.97 billion dollars and 6,238 employees in 2025", url: "https://en.wikipedia.org/wiki/Supermicro" },
@@ -6254,8 +6320,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "atos",
     sources: [
-      { label: "Atos - French IT corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Atos" },
-      { label: "Founding year: 2000", url: "https://en.wikipedia.org/wiki/Atos" },
+      { label: "Wikipedia: Atos - a French IT company founded in 2000, headquartered at Bezons near Paris", url: "https://en.wikipedia.org/wiki/Atos" },
       { label: "Defense News, April 2024: the French government offered to buy Atos's defence-strategic assets to keep them from foreign control after Airbus ended talks to buy the Big Data and Security unit; the finance minister said the aim was to keep the strategic activities under the exclusive control of France and to avoid sensitive technologies crucial to supercomputers or defence depending on foreign interests; Atos builds the supercomputers used in the nuclear-deterrent programme and designed the Scorpion combat-information system; it had posted a record loss in 2023 and was restructuring an unsustainable level of debt", url: "https://www.defensenews.com/global/europe/2024/04/29/france-offers-to-buy-strategic-assets-from-struggling-it-firm-atos/" },
       { label: "Reporting on the same period: Atos was the world's largest managed security services vendor, carried net debt of 3.9 billion euros attributed to customers moving from on-premises services to the cloud, and was the official IT and cybersecurity provider for the Paris Olympics; earlier attempts to sell the BDS division to Airbus and the Tech Foundations business to a Czech investor had both failed", url: "https://www.bankinfosecurity.com/french-government-bids-on-atos-cyber-computing-assets-a-24965" },
       { label: "On the restructuring: creditors converted 2.9 billion euros of debt into shares, taking control of the company, and the share price fell from 7.7 euros in December 2023 to 2 euros in early 2024 and 0.18 euros by November 2024, when the French state offered 500 million euros for the Advanced Computing business; the finance ministry said it was the role of the state to guarantee the perennity of the industrial activities most strategic for sovereignty", url: "https://techresearchonline.com/news/atos-advanced-computing/" },
@@ -6283,8 +6348,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "dxc",
     sources: [
-      { label: "DXC Technology - American multinational IT services company (Wikipedia)", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
-      { label: "Founding year: 2017", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
+      { label: "Wikipedia: DXC Technology - founded 3 April 2017, with Computer Sciences Corporation, Hewlett Packard Enterprise and Electronic Data Systems named as its predecessors; headquartered in Ashburn, Virginia", url: "https://en.wikipedia.org/wiki/DXC_Technology" },
     
       { label: "DXC Technology annual report FY2017 (SEC): DXC was formed by the spin-off of the Enterprise Services business of Hewlett Packard Enterprise on 31 March 2017 and the merger of CSC with a wholly owned subsidiary of DXC on 1 April 2017; regular-way trading began on the New York Stock Exchange on 3 April 2017, with expected annual revenues of approximately 25 billion dollars and nearly 6,000 clients across 70 countries", url: "https://www.sec.gov/Archives/edgar/data/0001688568/000162612917000419/dxc-ars_033117.htm" },
       { label: "Forbes on the completed spin-merger: a Reverse Morris Trust structure, tax-free to shareholders of both companies, leaving legacy CSC shareholders with 49.9 per cent of DXC and HPE shareholders with 50.1 per cent; DXC also assumed additional debt and liabilities from the Enterprise Services segment", url: "https://www.forbes.com/sites/joecornell/2017/04/04/hewlett-packard-enterprise-completes-spin-merger-to-form-dxc-technology/" },
@@ -6310,8 +6374,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "orange",
     sources: [
-      { label: "Orange Group - French multinational telecommunications corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
-      { label: "Founding year: 1988", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
+      { label: "Wikipedia: Orange S.A. - founded 1 January 1988, with the Postes, Telegraphes et Telephones administration named as its predecessor; headquartered at Issy-les-Moulineaux", url: "https://en.wikipedia.org/wiki/Orange_S.A." },
     
       { label: "History of Equant N.V.: in 1949 a consortium of European airlines - Air France, KLM, Sabena, Swissair, British European Airways, BOAC, AG Aerotransport, Det Danske Luftfartselskab and Det Norske Luftfartselskap - combined their communications networks as Societe Internationale de Telecommunications Aeronautiques, a not-for-profit governing the shared network; France Telecom later paid 3.5 billion dollars for SITA share in Equant plus 1.2 billion of further investment, and the merged company kept the Equant name and very little long-term debt", url: "https://www.fundinguniverse.com/company-histories/equant-n-v-history/" },
       { label: "Orange Business: France Telecom bought out the Sprint and Deutsche Telekom stakes in the Global One joint venture, founded January 1996, for 3.88 billion dollars in January 2000; it took a controlling 53 per cent of Dutch-based Equant, part of the SITA group, in November 2000; on 1 June 2006 the businesses of Equant and Wanadoo were rebranded as Orange Business Services, operating in over 220 countries and territories", url: "https://en.wikipedia.org/wiki/Orange_Business" },
@@ -6336,8 +6399,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "dimension-data",
     sources: [
-      { label: "Dimension Data - technology company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
-      { label: "Founding year: 1983", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
     
       { label: "Dimension Data: founded 1983 in Johannesburg by Keith McLachlan, Werner Sievers, Jeremy Ord, Peter Neale and Kevin Hamilton; listed on the Johannesburg Stock Exchange on 15 July 1987; official South African distributor for Cisco Systems from 1991; fully acquired by Nippon Telegraph and Telephone in 2010; from 1 July 2019 operations outside the Middle East and Africa became part of NTT Ltd", url: "https://en.wikipedia.org/wiki/Dimension_Data" },
       { label: "Grokipedia on Dimension Data: expanded to nearly 50 countries by 2010 with revenue of approximately 5.8 billion dollars before the NTT acquisition, which was valued at 3.2 billion dollars; rebranded under NTT DATA in 2024", url: "https://grokipedia.com/page/Dimension_Data" },
@@ -6361,8 +6422,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "hughes",
     sources: [
-      { label: "Hughes Network Systems - satellite internet service provider (Wikipedia)", url: "https://en.wikipedia.org/wiki/Hughes_Network_Systems" },
-      { label: "Founding year: 1971", url: "https://en.wikipedia.org/wiki/Hughes_Network_Systems" },
+      { label: "Wikipedia: Hughes Network Systems - founded in 1971 as Digital Communications Corporation, which is the company the 1971 date belongs to; headquartered in Germantown, Maryland", url: "https://en.wikipedia.org/wiki/Hughes_Network_Systems" },
     ],
     tags: ["carrier", "vendor"],
     group: "contemporary",
@@ -6380,8 +6440,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "spacex",
     sources: [
-      { label: "SpaceX - American spaceflight company (Wikipedia)", url: "https://en.wikipedia.org/wiki/SpaceX" },
-      { label: "Founding year: 2002", url: "https://en.wikipedia.org/wiki/SpaceX" },
+      { label: "Wikipedia: SpaceX - founded 14 March 2002 by Elon Musk in El Segundo, California", url: "https://en.wikipedia.org/wiki/SpaceX" },
       { label: "CBS News, September 2023: an excerpt from Walter Isaacson's biography describes Ukraine attempting a September 2022 attack on the Russian fleet at Sevastopol with six explosive-laden drone submarines guided by Starlink, and Musk telling engineers to turn off coverage within 100 kilometres of the Crimean coast; Musk responded that the regions in question had never been activated and SpaceX had deactivated nothing, and that agreeing to the request would have made SpaceX explicitly complicit in a major act of war", url: "https://www.cbsnews.com/news/elon-musk-ukraine-russia-war-starlink-satellite-denied-major-act-of-war/" },
       { label: "Senators Shaheen, Warren and Duckworth's letter to the Defense Secretary, September 2023, recording Isaacson's clarification that the Ukrainians thought coverage was enabled to Crimea when it was not and that Musk declined to enable it, and Musk's statement that Starlink's terms of service prohibit offensive military use as a civilian system, and that Starshield, built for the US government, would be owned and controlled by it", url: "https://www.duckworth.senate.gov/news/in-the-news/shaheen-warren-and-duckworth-want-to-know-if-musk-limited-ukraines-starlink-access-at-a-crucial-point-in-war-with-russia" },
       { label: "PBS: Musk was not on a military contract when he refused the request, having provided terminals to Ukraine free after the February 2022 invasion; in the months after, the US military funded and formally contracted with Starlink for continued support", url: "https://www.pbs.org/newshour/economy/elon-musks-refusal-to-provide-starlink-support-for-ukraine-attack-in-crimea-raises-questions-for-pentagon" },
@@ -6451,13 +6510,15 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "prolan",
-    sources: [{ label: "Prolan's own services page: a culture rooted in networking, on the principle that the network is the vital mechanism of information; support covering more than 950 Brazilian localities with four-hour response times, and one hour in the main cities, from centres operating 24 hours a day, seven days a week", url: "http://www.prolan.com.br/servicos/" }, { label: "Prolan's own technologies page: experience including network projects of worldwide reach for corporations and financial institutions, and the development and implementation of strategies for government agencies and providers of information and telecommunications services", url: "http://prolan.com.br/tecnologias/default.htm" }, { label: "Prolan on LinkedIn: mission to provide complete solutions integrating communication and information systems into the client's production chain; strategy stated as technical excellence, market vision and experience in pioneering projects", url: "https://br.linkedin.com/company/prolan" }, { label: "Registry data: Prolan Solucoes Integradas SA, trading as Prolan, headquartered at Rua Tres de Dezembro in central Sao Paulo, principal activity information technology consulting", url: "https://www.econodata.com.br/consulta-empresa/65668311000764-PROLAN-SOLUCOES-INTEGRADAS-SA" }],
+    sources: [
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 65.668.311/0001-79, PROLAN SOLUCOES INTEGRADAS SA, trading as PROLAN: MATRIZ, situation ATIVA, activity start date 25 March 1991, consultancy in information technology", url: "https://brasilapi.com.br/api/cnpj/v1/65668311000179", sourceNote: "Queried 2026-10-02. PRIME ruled on 2026-10-02 that this registry date governs, and founded was corrected from 1994 to 1991. The 1994 it replaced was stated by no citation, no entry copy and no profile. The CNPJ already cited by this entry, 65.668.311/0007-64, is establishment 0007 and not the headquarters, and its own activity start date is 21 June 2011, so it dates a branch rather than the company. The matriz number was derived from the same root by computing the check digits." },
+      { label: "Prolan's own services page: a culture rooted in networking, on the principle that the network is the vital mechanism of information; support covering more than 950 Brazilian localities with four-hour response times, and one hour in the main cities, from centres operating 24 hours a day, seven days a week", url: "http://www.prolan.com.br/servicos/" }, { label: "Prolan's own technologies page: experience including network projects of worldwide reach for corporations and financial institutions, and the development and implementation of strategies for government agencies and providers of information and telecommunications services", url: "http://prolan.com.br/tecnologias/default.htm" }, { label: "Prolan on LinkedIn: mission to provide complete solutions integrating communication and information systems into the client's production chain; strategy stated as technical excellence, market vision and experience in pioneering projects", url: "https://br.linkedin.com/company/prolan" }, { label: "Registry data: Prolan Solucoes Integradas SA, trading as Prolan, headquartered at Rua Tres de Dezembro in central Sao Paulo, principal activity information technology consulting", url: "https://www.econodata.com.br/consulta-empresa/65668311000764-PROLAN-SOLUCOES-INTEGRADAS-SA" }],
     intro: "Prolan is a Brazilian systems integrator based in Sao Paulo, working in enterprise networking and communications.",
     tags: ["services"],
     name: "Prolan - the promise measured in hours",
     tagline: "A Sao Paulo integrator whose distinguishing claim is reach: support across more than 950 localities.",
     group: "contemporary",
-    founded: 1994,
+    founded: 1991,
     body: [
       "Prolan is a Sao Paulo integrator whose stated philosophy is unusually specific for the category: a culture rooted in networking, on the principle that the network is the vital mechanism of information rather than one system among several. Its work is described as network projects of worldwide reach for corporations and financial institutions, and strategy for government agencies and telecommunications providers.",
       "The number worth pausing on is not a technology. Prolan states support coverage across more than 950 Brazilian localities, with four-hour response and one hour in the main cities, from centres running around the clock.",
@@ -6688,9 +6749,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "opendns",
     sources: [
-      { label: "OpenDNS - domain name system provided by Cisco (Wikipedia)", url: "https://en.wikipedia.org/wiki/OpenDNS" },
       { label: "Cisco Umbrella - the same lineage under its current name", url: "https://en.wikipedia.org/wiki/Cisco_Umbrella" },
-      { label: "Founding year: 2005", url: "https://en.wikipedia.org/wiki/OpenDNS" },
     
       { label: "OpenDNS: founded 1 November 2005 by David Ulevitch in San Francisco, providing resolution with phishing protection and optional content filtering, plus the Umbrella cloud security suite; acquired by Cisco in 2015", url: "https://en.wikipedia.org/wiki/OpenDNS" },
       { label: "David Ulevitch: entered the internet industry in junior high school at the San Diego provider Electriciti, then a founding member of Packet Clearing House while it built one of the first internet exchange points; created EveryDNS in May 2001 as a student, sold it to Dyn, and later became senior vice president and general manager of Cisco Security", url: "https://en.wikipedia.org/wiki/David_Ulevitch" },
@@ -6715,8 +6774,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "dyn",
     sources: [
-      { label: "Dyn - former Internet infrastructure company (Wikipedia)", url: "https://en.wikipedia.org/wiki/Dyn_(company)" },
-      { label: "Founding year: 2001", url: "https://en.wikipedia.org/wiki/Dyn_(company)" },
+      { label: "Wikipedia: Dyn - founded 2001 in Manchester, New Hampshire by Tom Daly, Jeremy Hitchcock, Chris Reinhardt and Tim Wilde; acquired by Oracle and defunct as an independent company on 2 February 2017", url: "https://en.wikipedia.org/wiki/Dyn_(company)" },
       { label: "Technical retrospective: Mirai surfaced by 31 August 2016, scanning the whole IPv4 internet for devices with telnet open and logging in with a list of 62 factory-default passwords; it used neither amplification nor reflection. On 30 September a user calling themselves Anna-senpai posted the complete source code to HackForums; in December 2017 three authors pleaded guilty, the motive traced to Minecraft server hosting, and in September 2018 they received probation, 2,500 hours of service and 127,000 dollars of restitution rather than prison", url: "https://blog.crawlex.net/blog/mirai-botnet/" },
       { label: "Case study of the attack: on 21 October 2016 an estimated 100,000 Mirai-infected devices, primarily consumer security cameras, attacked Dyn in multiple waves with traffic estimated at 1.2 terabits per second; Twitter, Netflix, Reddit, Spotify, GitHub, PayPal and dozens of other sites went offline or degraded for millions of users in the United States and Europe", url: "https://datafield.dev/ethical-hacking/part-06/chapter-31/case-study-01.html" },
       { label: "TechCrunch, 24 October 2016: Chinese electronics maker Hangzhou Xiongmai recalled web cameras using its components after they were identified as making up a good portion of the devices in the botnet; the company denied its devices were the majority and noted that users not changing default passwords was a contributing cause", url: "https://techcrunch.com/2016/10/24/webcams-involved-in-dyn-ddos-attack-recalled" },
@@ -6742,8 +6800,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "quad9",
     sources: [
-      { label: "Quad9 - public recursive DNS resolver based in Switzerland (Wikipedia)", url: "https://en.wikipedia.org/wiki/Quad9" },
-      { label: "Founding year: 2016", url: "https://en.wikipedia.org/wiki/Quad9" },
+      { label: "Wikipedia: Quad9 - founded 11 May 2016 by Packet Clearing House, IBM, the Global Cyber Alliance and SWITCH; a public-benefit not-for-profit foundation based in Zurich", url: "https://en.wikipedia.org/wiki/Quad9" },
       { label: "Quad9's own account of the case: the domain in question was under Tonga's top-level domain, its servers were not in Germany and the links it pointed to were on servers also outside Germany; Quad9 has no office or standing in Germany, but the Lugano Convention allowed Sony to serve an injunction in Switzerland; Sony asserted that the block had to be global because geolocation cannot exclude German users with certainty; the Regional Court in Leipzig found for Sony and convicted Quad9 as a wrongdoer before the Dresden appeal reversed it", url: "https://quad9.net/news/blog/quad9-turns-the-sony-case-around-in-dresden/" },
       { label: "Reporting on the June 2021 Hamburg injunction, the first of its kind against a public resolver: the court found the DNS service not eligible for the liability protections that ISPs and domain registrars enjoy, and set the penalty for non-compliance at 250,000 euros per infringing query, with up to two years' imprisonment", url: "https://everything.explained.today/Quad9/" },
       { label: "TorrentFreak on the March 2023 Leipzig ruling: the court ordered global blocking and held the resolver liable for its users' infringement; Quad9's expert argued that under EU law a resolver is a mere conduit passing metadata, not a host, and should at most be subject to a no-fault injunction of the kind used against ISPs", url: "https://torrentfreak.com/dns-resolver-quad9-loses-global-pirate-site-blocking-case-against-sony-230308/" },
@@ -6817,9 +6874,8 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "nextdns",
     sources: [
       { label: "NextDNS - company site (configurable public resolver, described as a firewall for the modern internet)", url: "https://nextdns.io/", sourceNote: "Cited to the company's own site; no third-party encyclopaedia article was found." },
-      { label: "NextDNS help centre - the company states it was founded in May 2019 in Delaware by two French founders, Romain Cointepas and Olivier Poitrey; Poitrey co-founded Dailymotion in 2005 and is Director of Engineering at Netflix, and the two worked together at Dailymotion", url: "https://help.nextdns.io/t/y4hmv0n/who-is-behind-nextdns" },
     
-      { label: "NextDNS help centre: founded May 2019 in Delaware by two French founders, Romain Cointepas and Olivier Poitrey; Poitrey founded Dailymotion in 2005 and is director of engineering at Netflix working on Open Connect; the company states it supports net neutrality and internet privacy and considers unencrypted resolvers operated by internet providers detrimental to both", url: "https://help.nextdns.io/t/y4hmv0n/who-is-behind-nextdns" },
+      { label: "NextDNS help centre, the company on itself: founded in May 2019 in Delaware by two French founders, Romain Cointepas and Olivier Poitrey; the page states that Poitrey founded Dailymotion in 2005 and is Director of Engineering at Netflix working on Open Connect, which it describes as carrying about 30 percent of total United States internet traffic; Cointepas led the mobile and TV department at Dailymotion, where the two worked together for years; the company declares itself a supporter of net neutrality and internet privacy and holds that unencrypted DNS resolvers operated by internet providers are detrimental to both", url: "https://help.nextdns.io/t/y4hmv0n/who-is-behind-nextdns", sourceNote: "Fetched 2026-10-01. The page’s own wording is that Poitrey “founded” Dailymotion; it does not say co-founded, and this label reports what the page says rather than resolving that." },
       { label: "NextDNS: a resolver built on an anycast network, offering DNS over HTTPS across platforms, with selectable blocking lists for advertising, malware, trackers, phishing and crypto-mining, and CNAME uncloaking support added in November 2019", url: "https://en.everybodywiki.com/NextDNS" },
     ],
     tags: ["services"],
@@ -6847,8 +6903,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "usp",
     sources: [
-      { label: "University of Sao Paulo - public state university in Brazil (Wikipedia)", url: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo" },
-      { label: "Founding year: 1934", url: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo" },
+      { label: "Wikipedia: University of Sao Paulo - established 25 January 1934, the page noting its Law Academy antecedent of 11 August 1827, so the 1934 date is the university's and not the institution's oldest faculty", url: "https://en.wikipedia.org/wiki/University_of_S%C3%A3o_Paulo" },
       { label: "Escola Politécnica da USP: the Patinho Feio, Brazil's first computer, was born in 1972 as the final project of the Computer Architecture course in the graduate programme in electrical engineering, built from the school's own budget; it was the basis for the G-10, built by Poli with PUC-Rio at the request of the Brazilian Navy, which in turn was the prototype for the country's first commercial computer, Cobra's MC 500", url: "https://www.poli.usp.br/noticias/polinamidia/o-legado-do-patinho-feio/" },
       { label: "Pesquisa FAPESP on the thirtieth anniversary: a metal box one metre by one metre by eighty centimetres, weighing a hundred kilograms; in July 1972 the bishop, the state governor and the rector gathered to see it run, and at the moment the governor was about to press the switch a photographer tripped on a wire and pulled the plug, emptying the memory, so the demonstration did not take place", url: "https://revistapesquisa.fapesp.br/en/the-ugly-duckling-completes-thirty-years/" },
       { label: "Pesquisa FAPESP on the legacy: the students had to design and build the hardware, the software and the peripheral interfaces, because none of it was produced in Brazil at the time - 'we had to learn to make each item', in Edith Ranzini's words; the name came from a joke by master's student Paulo Wanderlei Patullo after Unicamp announced with the Navy that it would build the first Brazilian computer, the White Swan - 'we said we were building the Ugly Duckling, but that it would be the first to work; in the end it was the only one of the two that materialised'", url: "https://revistapesquisa.fapesp.br/en/the-legacy-of-the-ugly-duckling/" },
@@ -6877,8 +6932,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "unicamp",
     sources: [
-      { label: "State University of Campinas - public university in Sao Paulo, Brazil (Wikipedia)", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
-      { label: "Founding year: 1962", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
+      { label: "Wikipedia: State University of Campinas - established 28 December 1962, founded by Zeferino Vaz", url: "https://en.wikipedia.org/wiki/State_University_of_Campinas" },
     
       { label: "Unicamp - Historia (official): officially founded 5 October 1966 with the laying of the cornerstone on 30 alqueires of land donated by Joao Adhemar de Almeida Prado, twelve kilometres from the centre of Campinas; the organising commission of 1965 was chaired by Zeferino Vaz", url: "https://www.unicamp.br/historia/" },
       { label: "University of Campinas Institute of Computing: the origins trace to 1969, when Unicamp created a baccalaureate in Computer Science - the first of its kind in Brazil, which served as a model for computing courses at other universities; the department became a full institute in March 1996", url: "https://en.wikipedia.org/wiki/University_of_Campinas_Institute_of_Computing" },
@@ -6905,7 +6959,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "fatec",
     sources: [
       { label: "Faculdade de Tecnologia do Estado de Sao Paulo (Fatec) - Portuguese Wikipedia", url: "https://pt.wikipedia.org/wiki/Faculdade_de_Tecnologia_do_Estado_de_S%C3%A3o_Paulo" },
-      { label: "Founding year: 1970", url: "https://en.wikipedia.org/wiki/Fatec" },
+      { label: "Wikipedia: Fatec - established 20 May 1970, founded by Abreu Sodre", url: "https://en.wikipedia.org/wiki/Fatec" },
     
       { label: "Fatec Sao Paulo - Historia: the state technological education centre was created as an autarchy on 6 October 1969; the state education council approved its installation on 20 April 1970; in 1973 it was renamed after Paula Souza and on 10 April 1973 the Faculdade de Tecnologia de Sao Paulo was created; on 2 June 1974 the Data Processing course was approved", url: "https://www.fatecsp.br/paginas/historia_fatecsp.php" },
       { label: "Centro Paula Souza (Fatec Santo Andre): created by the decree-law of 6 October 1969 under Governor Roberto Costa de Abreu Sodre, as the result of a working group assessing the gradual implantation of a network of two and three year higher technology courses; it began operating in 1970 with three civil construction courses and two in mechanics, the first two faculties being in Sorocaba and Sao Paulo; the institution today runs 218 technical schools and 64 technology faculties with more than 283,000 students across over 300 municipalities", url: "https://fatecsantoandre.cps.sp.gov.br/sobre/" },
@@ -6930,8 +6984,7 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "capgemini",
     sources: [
-      { label: "Capgemini - French multinational corporation (Wikipedia)", url: "https://en.wikipedia.org/wiki/Capgemini" },
-      { label: "Founding year: 1967", url: "https://en.wikipedia.org/wiki/Capgemini" },
+      { label: "Wikipedia: Capgemini - founded 1 October 1967 by Serge Kampf; headquartered in Paris", url: "https://en.wikipedia.org/wiki/Capgemini" },
     ],
     tags: ["services"],
     group: "contemporary",
@@ -6956,7 +7009,6 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Prodesp - Historia (official site): created 24 July 1969 by State Decree 137; began operating that October in a borrowed room at the Secretaria da Fazenda with two employees and no equipment; first premises 1970 in Ponte Pequena; first computer an IBM 360/65 at about US$9 million; first job July 1970 was the state payroll, then 290,000 employees; ~14 large computers and about 900 terminals by the early 1980s; Poupatempo from 1997; incorporated Imprensa Oficial in 2021 under State Law 17.056/2019", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
     
-      { label: "Prodesp - Historia (official): created 24 July 1969 by State Decree 137, beginning operations that October in a borrowed room in the Finance Secretariat with two employees and no equipment; first computer an IBM 360/65 costing about 9 million dollars; first job in July 1970 was the state payroll of 290,000 employees; in 2021 it absorbed the Imprensa Oficial", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
       { label: "Prodesp - Historia (official), on the decentralisation programme: regional operations centre at Bauru, the first teleprocessing services, and the Rede Estadual de Processamento de Dados with regional centres at Campinas, Bauru, Presidente Prudente and Ribeirao Preto as the equipment estate more than doubled between 1987 and 1989", url: "https://www.prodesp.sp.gov.br/institucional/historia" },
     ],
     tags: ["services", "datacentre"],
@@ -7101,7 +7153,7 @@ export const partnerVendors: PartnerVendor[] = [
       // 2026-09-27, so the dead citation was stripped on PRIME's instruction.
       // See canon QUEUE-llm-transcript-as-source-20260927.md.
     
-      { label: "Soow Sigma, July 2025: Sigma completes 40 years, Fortinet Expert Partner and strategic integrator, with 2025 awards for sales in the South region and for specialisation, and nominations in the managed security and operational technology categories", url: "https://www.soow.com.br/sem-categoria/sigma-completa-40-anos-conectandoempresas-ao-futuro-com-tecnologiaconfianca-e-resultados/" },
+      { label: "Soow Sigma, July 2025: the company states \u201cFundada em 1985, a empresa iniciou suas atividades oferecendo servicos para centrais telefonicas\u201d, with a strategic transformation in 2008 when new partners arrived; Sigma completes 40 years, Fortinet Expert Partner and strategic integrator, with 2025 awards for sales in the South region and for specialisation, and nominations in the managed security and operational technology categories", url: "https://www.soow.com.br/sem-categoria/sigma-completa-40-anos-conectandoempresas-ao-futuro-com-tecnologiaconfianca-e-resultados/" },
       { label: "Soow Sigma - company site, including the notice that the change of brand, trading name and corporate name left the CNPJ and every existing contract unchanged", url: "https://www.soow.com.br/" },
     ],
     tags: ["reseller", "services"],
@@ -7191,7 +7243,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "xz-utils",
-    sources: [{ label: "The backdoor in XZ Utils, CVE-2024-3094, was discovered on or before 27 March 2024 and disclosed on 29 March by Andres Freund; it gave an attacker holding a specific private key the ability to execute code remotely through OpenSSH on affected systems", url: "https://en.wikipedia.org/wiki/XZ_Utils_backdoor" }, { label: "Timeline and mechanism: from around 2021 an account using the name Jia Tan began contributing, while sockpuppet accounts including Jigar Kumar and Dennis Ens pressured the original maintainer Lasse Collin on mailing lists about slow response times and pushed for a co-maintainer to be added; Collin, dealing with burnout and that pressure, granted commit access and eventually co-maintainer status. Version 5.6.0 shipped on 24 February 2024 with the backdoor hidden across binary test files disguised as corrupt compression test cases and obfuscated changes to an autoconf macro that activated only during a distribution-style package build, not from a clean git checkout", url: "https://safeguard.sh/resources/blog/the-xz-backdoor-cve-2024-3094-deep-dive" }, { label: "The discovery: Andres Freund, a Microsoft principal engineer and PostgreSQL developer, was benchmarking PostgreSQL on Debian unstable when he noticed SSH logins taking about 500 milliseconds instead of the usual 100; he investigated, found errors pointing to liblzma, and traced the cause to malicious code present in the release tarballs but not in the version-controlled source", url: "https://www.softwareseni.com/the-xz-utils-backdoor-cve-2024-3094-and-the-multi-year-social-engineering-campaign-behind-it/" }, { label: "Scale and assessment: XZ Utils was used by nearly 30,000 Debian and Ubuntu packages, making the compromise one of the most severe supply-chain incidents in the history of Linux distributions; analysis found the backdoor difficult to detect with conventional malware scanning because it was integrated into the build pipeline rather than into source code", url: "https://arxiv.org/pdf/2603.02512" }],
+    sources: [
+      { label: "XZ Utils (Wikipedia): released 14 January 2009, authored by Lasse Collin and developed by the Tukaani Project, previously named LZMA Utils, and begun as a Unix port of Igor Pavlov’s LZMA SDK", url: "https://en.wikipedia.org/wiki/XZ_Utils", sourceNote: "Fetched 2026-10-02. The entry already cited the separate XZ Utils BACKDOOR article, which carries no release or founding date for the project itself." },
+      { label: "The backdoor in XZ Utils, CVE-2024-3094, was discovered on or before 27 March 2024 and disclosed on 29 March by Andres Freund; it gave an attacker holding a specific private key the ability to execute code remotely through OpenSSH on affected systems", url: "https://en.wikipedia.org/wiki/XZ_Utils_backdoor" }, { label: "Timeline and mechanism: from around 2021 an account using the name Jia Tan began contributing, while sockpuppet accounts including Jigar Kumar and Dennis Ens pressured the original maintainer Lasse Collin on mailing lists about slow response times and pushed for a co-maintainer to be added; Collin, dealing with burnout and that pressure, granted commit access and eventually co-maintainer status. Version 5.6.0 shipped on 24 February 2024 with the backdoor hidden across binary test files disguised as corrupt compression test cases and obfuscated changes to an autoconf macro that activated only during a distribution-style package build, not from a clean git checkout", url: "https://safeguard.sh/resources/blog/the-xz-backdoor-cve-2024-3094-deep-dive" }, { label: "The discovery: Andres Freund, a Microsoft principal engineer and PostgreSQL developer, was benchmarking PostgreSQL on Debian unstable when he noticed SSH logins taking about 500 milliseconds instead of the usual 100; he investigated, found errors pointing to liblzma, and traced the cause to malicious code present in the release tarballs but not in the version-controlled source", url: "https://www.softwareseni.com/the-xz-utils-backdoor-cve-2024-3094-and-the-multi-year-social-engineering-campaign-behind-it/" }, { label: "Scale and assessment: XZ Utils was used by nearly 30,000 Debian and Ubuntu packages, making the compromise one of the most severe supply-chain incidents in the history of Linux distributions; analysis found the backdoor difficult to detect with conventional malware scanning because it was integrated into the build pipeline rather than into source code", url: "https://arxiv.org/pdf/2603.02512" }],
     intro: "XZ Utils is a widely used open source compression library whose 2024 releases briefly carried a backdoor, inserted after a multi-year campaign to gain maintainer access.",
     tags: ["vendor"],
     name: "XZ Utils - the supply chain with no supplier",
@@ -7208,7 +7262,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "rsa-security",
-    sources: [{ label: "Wikipedia, RSA BSAFE: from 2004 to 2013 the default random number generator in the library was Dual_EC_DRBG, a NIST-approved standard widely known to be insecure from at least 2006 and containing an alleged backdoor from the NSA as part of its Bullrun programme; in 2013 Reuters revealed RSA had received a payment of 10 million dollars to set the compromised algorithm as the default; the standard was withdrawn in 2014 and the generator removed from BSAFE from 2015. RSA has largely declined to explain its choice and has denied knowingly inserting a backdoor", url: "https://en.wikipedia.org/wiki/RSA_BSAFE" }, { label: "The Register on the Reuters report: BSAFE tools brought in 27.5 million dollars of RSA's 310 million dollars of revenue in 2005, so a 10 million dollar payment increased the division's contribution by more than a third; in 2007 two Microsoft researchers observed that the algorithm contained flaws with the potential to open a perfect backdoor", url: "https://www.theregister.com/2013/12/21/nsa_paid_rsa_10_million/" }, { label: "RSA's response, as reported: the company said it categorically denied entering into a secret contract to incorporate a known flawed random number generator, that it chose Dual_EC_DRBG as the default in 2004 when the NSA had a trusted role in strengthening encryption, that it was one of several available options, and that it was retained for its value in FIPS compliance; in September 2013 RSA told customers to stop using it", url: "https://www.theregister.com/2013/12/23/rsa_nsa_response/" }, { label: "Princeton's Center for Information Technology Policy on the response: RSA issued a vehement but artfully worded quasi-denial; the report was that only after NIST recalled the standard in September 2013 did RSA stop shipping the algorithm as a default", url: "https://blog.citp.princeton.edu/2013/12/23/rsa-doesnt-quite-deny-undermining-customers-crypto" }, { label: "On the history and the reaction: during the 1990s the company led the successful fight against the NSA's proposed Clipper Chip; after the Reuters report a number of security researchers boycotted the 2014 RSA Conference in protest", url: "https://www.theregister.com/2014/01/08/rsa_conference_boycott/" }],
+    sources: [{ label: "Wikipedia: RSA Security - infobox records the company founded 1982", url: "https://en.wikipedia.org/wiki/RSA_Security" }, { label: "Wikipedia, RSA BSAFE: from 2004 to 2013 the default random number generator in the library was Dual_EC_DRBG, a NIST-approved standard widely known to be insecure from at least 2006 and containing an alleged backdoor from the NSA as part of its Bullrun programme; in 2013 Reuters revealed RSA had received a payment of 10 million dollars to set the compromised algorithm as the default; the standard was withdrawn in 2014 and the generator removed from BSAFE from 2015. RSA has largely declined to explain its choice and has denied knowingly inserting a backdoor", url: "https://en.wikipedia.org/wiki/RSA_BSAFE" }, { label: "The Register on the Reuters report: BSAFE tools brought in 27.5 million dollars of RSA's 310 million dollars of revenue in 2005, so a 10 million dollar payment increased the division's contribution by more than a third; in 2007 two Microsoft researchers observed that the algorithm contained flaws with the potential to open a perfect backdoor", url: "https://www.theregister.com/2013/12/21/nsa_paid_rsa_10_million/" }, { label: "RSA's response, as reported: the company said it categorically denied entering into a secret contract to incorporate a known flawed random number generator, that it chose Dual_EC_DRBG as the default in 2004 when the NSA had a trusted role in strengthening encryption, that it was one of several available options, and that it was retained for its value in FIPS compliance; in September 2013 RSA told customers to stop using it", url: "https://www.theregister.com/2013/12/23/rsa_nsa_response/" }, { label: "Princeton's Center for Information Technology Policy on the response: RSA issued a vehement but artfully worded quasi-denial; the report was that only after NIST recalled the standard in September 2013 did RSA stop shipping the algorithm as a default", url: "https://blog.citp.princeton.edu/2013/12/23/rsa-doesnt-quite-deny-undermining-customers-crypto" }, { label: "On the history and the reaction: during the 1990s the company led the successful fight against the NSA's proposed Clipper Chip; after the Reuters report a number of security researchers boycotted the 2014 RSA Conference in protest", url: "https://www.theregister.com/2014/01/08/rsa_conference_boycott/" }],
     intro: "RSA Security is an American security company, founded in 1982 by the authors of the RSA algorithm, whose BSAFE toolkit shipped the Dual_EC_DRBG generator as its default from 2004 to 2013.",
     tags: ["vendor"],
     name: "RSA Security - the company that fought Clipper, then shipped Dual_EC",
@@ -7244,7 +7298,7 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "tippingpoint",
-    sources: [
+    sources: [{ label: "Wikipedia: TippingPoint - the infobox records the company founded 1999, headquartered in Austin, Texas", url: "https://en.wikipedia.org/wiki/TippingPoint" }, 
       { label: "SecurityWeek: 3Com paid $430 million in stock for TippingPoint Technologies; HP acquired 3Com for $2.7 billion in 2010; Trend Micro completed its $300 million purchase from HPE", url: "https://www.securityweek.com/trend-micro-completes-acquisition-hps-tippingpoint/" },
       { label: "Trend Micro newsroom: close of the TippingPoint agreement, 9 March 2016, including DVLabs and the Zero Day Initiative", url: "https://newsroom.trendmicro.com/2016-03-09-Trend-Micro-Finalizes-Acquisition-of-TippingPoint-Includes-Next-Gen-IPS-and-Award-Winning-Zero-Day-Initiative" },
       { label: "eWeek: 3Com acquired TippingPoint in December 2004; the deal marked the third owner in just over a decade", url: "https://www.eweek.com/security/hp-sells-tippingpoint-security-division-to-trend-micro-for-300m/" },
@@ -7515,13 +7569,37 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "oxid-it",
-    sources: [{ label: "Wikipedia, Cain and Abel: a password recovery tool for Microsoft Windows by Massimiliano Montoro and Sean Babcock, recovering passwords by network sniffing, dictionary, brute-force and cryptanalysis attacks, recording VoIP conversations, revealing password boxes and uncovering cached passwords; the last version, 4.9.56, dates from 7 April 2014, and the oxid.it site is reachable through the Internet Archive", url: "https://en.wikipedia.org/wiki/Cain_and_Abel_(software)" }, { label: "Interview with Massimiliano Montoro: the tool began as a way to recover passwords from Windows 9x PWL files; Cain is the graphical interface and Abel the Windows service that provides a remote console; even with every vendor patch applied it could still crack Windows passwords and perform man-in-the-middle attacks against remote desktop sessions using the vulnerability he published in 2005, because the address resolution protocol remains stateless and without authentication, and he had never come across a company that took into account the mitigation of those risks", url: "https://www.digital-forensics.it/interview-with-massimiliano-montoro-author-of-cain-abel/" }],
+    sources: [
+      { label: "Internet Archive capture index (CDX) for oxid.it/cain.html: the page is captured at its full size through 21 June 2019, returns 404 on 26 and 29 June and 1 July 2019, and from 15 August 2019 returns a placeholder roughly a quarter of the former size", url: "https://web.archive.org/web/20190621230013/http://www.oxid.it/cain.html", sourceNote: "Read 2026-10-02 in a browser (this sandbox\u2019s egress refuses web.archive.org). The 21 June 2019 capture shows the real Cain & Abel page \u2013 the 4.9.56 download and the \u201cCopyright (c) 2001-2014 Massimiliano Montoro\u201d footer; the capture sizes collapse from about 4.3 KB to about 1 KB across August 2019, and the live domain now serves a \u201cComing Soon\u201d page. This dates the end of the site, not of the software, whose last release was 2014." },
+      { label: "Usenet, alt.hack.nl, thread \"*.pwl hacken...[veel gestelde vraag]\", 6 August 1999: Marco Opdam posts a direct download URL for Cain v1.0, cain10.exe, on hackersclub.com, and a reply the next day discusses Cain 1.00", url: "https://groups.google.com/g/alt.hack.nl/c/28EqA2SQKiA", sourceNote: "Read 2026-10-02 through WebFetch, twice, the second time asking for the date verbatim: \u201cAug 6, 1999\u201d. Google Groups rate-limited direct browser reads (HTTP 429). Corroborated independently: Google\u2019s own index of this thread shows Marco Opdam posting the same URL, and the Internet Archive holds cain10.exe at that URL, captured 7 October 2000 (488,706 bytes), alongside a hackersclub.com listing archived 10 November 2000 that describes Cain v1.0 as shareware for Windows 95/98. PRIME remembered using Cain before 2000; this is the record that confirms it." },
+      { label: "oxid.it, Cain & Abel page as archived on 31 December 2007: Cain & Abel described as a password recovery tool for Microsoft operating systems, offered as v4.9.10 for Windows NT/2000/XP and as a discontinued v2.0 for Windows 9x, under the footer Copyright (c) 2001-2008 Massimiliano Montoro", url: "https://web.archive.org/web/20071231160500/http://www.oxid.it:80/cain.html", sourceNote: "Read 2026-10-02 in a browser; this sandbox’s egress relay refuses web.archive.org. This settled the founding year. The site’s own home page as archived on 22 December 2002 carries the same start year, Copyright 2001-2002, and the earliest capture of oxid.it at all is 24 January 2002. A third-party thesis bibliography dates an oxid.it About page to the earlier year, but names no document that says so. The interview with Montoro this entry also cites is down: it fails in this sandbox, through WebFetch on a TLS certificate hostname mismatch, and in a real browser. PRIME ruled on 2026-10-02 to stand on what can be verified, and founded was corrected to 2001. The 1998 it replaced was traced through git (whose history begins at a 2026-09-17 baseline), the canon research record of 2026-09-08 (which lists the verified facts about Cain and does not include it) and every corpus mention of oxid.it: nothing supported it." },
+      { label: "Wikipedia, Cain and Abel: a password recovery tool for Microsoft Windows by Massimiliano Montoro and Sean Babcock, recovering passwords by network sniffing, dictionary, brute-force and cryptanalysis attacks, recording VoIP conversations, revealing password boxes and uncovering cached passwords; the last version, 4.9.56, dates from 7 April 2014, and the oxid.it site is reachable through the Internet Archive", url: "https://en.wikipedia.org/wiki/Cain_and_Abel_(software)" }, { label: "Interview with Massimiliano Montoro: the tool began as a way to recover passwords from Windows 9x PWL files; Cain is the graphical interface and Abel the Windows service that provides a remote console; even with every vendor patch applied it could still crack Windows passwords and perform man-in-the-middle attacks against remote desktop sessions using the vulnerability he published in 2005, because the address resolution protocol remains stateless and without authentication, and he had never come across a company that took into account the mitigation of those risks", url: "https://www.digital-forensics.it/interview-with-massimiliano-montoro-author-of-cain-abel/" }],
     intro: "oxid.it was the personal site of Italian networking consultant Massimiliano Montoro, from which he published Cain & Abel, the Windows password recovery and network analysis tool, until its last release in 2014.",
     tags: ["vendor"],
     name: "oxid.it - one man, one tool, and a site that is no longer there",
     tagline: "Massimiliano Montoro published Cain & Abel from a personal Italian domain for over a decade; the software taught a generation how switched networks really behave, and the documentation now exists only in the Internet Archive.",
     group: "other",
-    founded: 1998,
+    // 2001 is the start year the site gives itself: "Copyright 2001-2002" on its home page as archived
+    // 22 December 2002, and "Copyright (c) 2001-2008" on the Cain & Abel page as archived 31 December 2007,
+    // both cited below. Until 2026-10-02 this said 1998, which no citation, copy, comment or canon record
+    // supported: the research record of 2026-09-08 lists every fact verified about Cain and 1998 is not among
+    // them. PRIME, 2026-10-02: "if there are no sources, was it invented? better stick with what can be
+    // verified". This is a copyright start year, the earliest the site verifies, not a stated founding date.
+    //
+    // THE TOOL IS OLDER THAN THE SITE. PRIME, minutes after the change above: "I REMEMBER using cain
+    // pre-2000". He was right, and it is now verified: on 6 August 1999 a post to the Usenet group
+    // alt.hack.nl gave a direct download URL for Cain v1.0 (cain10.exe) on hackersclub.com, and the next
+    // day's reply discusses "Cain 1.00". The Internet Archive holds that same file, captured 7 October
+    // 2000. So `founded` stays the site's own verified year and storyBegins makes the earlier origin
+    // explicit, as PRIME's ruling of 2026-10-02 requires ("Ancestor founding should be made explicit
+    // what it is"). 1998 is still NOT verified: a forum post says "Created: Nov 1998" beside a list of
+    // Cain files, but it sits behind a bot-verification wall and its referent is unclear.
+    founded: 2001,
+    storyBegins: { year: 1999, company: "Cain v1.0" },
+    ended: {
+      year: 2019,
+      note: "The site stopped serving Cain & Abel in mid-2019. The Internet Archive holds the real page (the 4.9.56 release, footer \u201cCopyright (c) 2001-2014\u201d) through 21 June 2019; by late June 2019 the URL returned 404, and from 15 August 2019 it served only a small placeholder. The domain now shows a \u201cComing Soon\u201d parking page. The last RELEASE was 2014; the site outlived it by five years.",
+    },
     body: [
       "It was one person's domain. Montoro, a networking consultant, published Cain & Abel from it for well over a decade, alongside advisories he wrote himself - including the 2005 disclosure of a man-in-the-middle weakness in Microsoft's remote desktop protocol, which his own tool then implemented. There was no company, no funding round and no support contract. The software was free, Windows-only, and enormously capable: sniffing, credential extraction, cryptanalysis with precomputed tables, voice call recording, wireless key recovery, and the address-resolution attack he called ARP Poison Routing.",
       "Antivirus vendors shipped detection signatures for it, which was reasonable and also revealing - the same code was a diagnostic instrument in one pair of hands and an intrusion tool in another, and no property of the software distinguished the cases. The last release, 4.9.56, is dated 7 April 2014.",
@@ -7531,7 +7609,9 @@ export const partnerVendors: PartnerVendor[] = [
   },
   {
     slug: "progress-software",
-    sources: [{ label: "CISA advisory AA23-158A, #StopRansomware: in May 2023 the CL0P ransomware group, also known as TA505, exploited a previously unknown SQL injection vulnerability, CVE-2023-34362, in Progress Software's managed file transfer solution MOVEit Transfer, infecting internet-facing web applications with a web shell named LEMURLOOT and using it to steal data from the underlying databases; the same actor had conducted zero-day campaigns against Accellion File Transfer Appliance devices in 2020 and 2021 and Fortra GoAnywhere servers in early 2023", url: "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a" }, { label: "Progress Software's own advisory of 31 May 2023: a SQL injection vulnerability in the MOVEit Transfer web application could allow an unauthenticated attacker to gain access to the database and execute statements that alter or delete elements; all versions before the five listed are affected, including older unsupported versions; exploitation of unpatched systems can occur over HTTP or HTTPS", url: "https://community.progress.com/s/article/MOVEit-Transfer-Critical-Vulnerability-31May2023" }, { label: "Akamai's analysis: Progress began warning customers on 31 May 2023; Mandiant observed exploitation attempts as early as 27 May; Microsoft attributed the campaign on 2 June and the group confirmed it on 5 June; the actor is financially motivated and extorts by data exfiltration rather than encryption", url: "https://www.akamai.com/blog/security-research/moveit-sqli-zero-day-exploit-clop-ransomware" }, { label: "Rapid7's running analysis: on 9 June 2023 Progress released new versions of MOVEit Transfer to fix a second vulnerability found in the same code, later designated CVE-2023-35036", url: "https://www.rapid7.com/blog/post/2023/06/01/rapid7-observed-exploitation-of-critical-moveit-transfer-vulnerability/" }, { label: "Reported scale of the campaign: over 2,700 organisations compromised and data on more than 95 million individuals exposed, with the exploitation carried out over a United States holiday weekend before the patch was released", url: "https://www.cloudskope.com/breaches/moveit-breach-2023" }],
+    sources: [
+      { label: "Progress Software (Wikipedia): founded 1981, headquartered in Burlington, Massachusetts, producing software for building and deploying business applications, with offices in 16 countries as of 2024", url: "https://en.wikipedia.org/wiki/Progress_Software", sourceNote: "Fetched 2026-10-02. The entry’s other sources are all about the 2023 MOVEit exploitation and none of them dates the company." },
+      { label: "CISA advisory AA23-158A, #StopRansomware: in May 2023 the CL0P ransomware group, also known as TA505, exploited a previously unknown SQL injection vulnerability, CVE-2023-34362, in Progress Software's managed file transfer solution MOVEit Transfer, infecting internet-facing web applications with a web shell named LEMURLOOT and using it to steal data from the underlying databases; the same actor had conducted zero-day campaigns against Accellion File Transfer Appliance devices in 2020 and 2021 and Fortra GoAnywhere servers in early 2023", url: "https://www.cisa.gov/news-events/cybersecurity-advisories/aa23-158a" }, { label: "Progress Software's own advisory of 31 May 2023: a SQL injection vulnerability in the MOVEit Transfer web application could allow an unauthenticated attacker to gain access to the database and execute statements that alter or delete elements; all versions before the five listed are affected, including older unsupported versions; exploitation of unpatched systems can occur over HTTP or HTTPS", url: "https://community.progress.com/s/article/MOVEit-Transfer-Critical-Vulnerability-31May2023" }, { label: "Akamai's analysis: Progress began warning customers on 31 May 2023; Mandiant observed exploitation attempts as early as 27 May; Microsoft attributed the campaign on 2 June and the group confirmed it on 5 June; the actor is financially motivated and extorts by data exfiltration rather than encryption", url: "https://www.akamai.com/blog/security-research/moveit-sqli-zero-day-exploit-clop-ransomware" }, { label: "Rapid7's running analysis: on 9 June 2023 Progress released new versions of MOVEit Transfer to fix a second vulnerability found in the same code, later designated CVE-2023-35036", url: "https://www.rapid7.com/blog/post/2023/06/01/rapid7-observed-exploitation-of-critical-moveit-transfer-vulnerability/" }, { label: "Reported scale of the campaign: over 2,700 organisations compromised and data on more than 95 million individuals exposed, with the exploitation carried out over a United States holiday weekend before the patch was released", url: "https://www.cloudskope.com/breaches/moveit-breach-2023" }],
     intro: "Progress Software is an American application and infrastructure software company whose acquisitions include Telerik, maker of the Fiddler debugging proxy, the Kemp load balancer line, and the MOVEit managed file transfer product.",
     tags: ["vendor"],
     name: "Progress Software - the company that owns the debugger, the load balancer and MOVEit",
@@ -8247,6 +8327,7 @@ export const partnerVendors: PartnerVendor[] = [
     // write it because "Multiplus" returns MULTIPLUS Softwares Tecnicos, a
     // CAD/CAE/BIM vendor - the wrong company entirely.
     sources: [
+      { label: "Federal tax registry (Receita Federal data, via BrasilAPI) for CNPJ 68.588.326/0001-15, MULTIPLUS SERVICOS DE INFORMATICA LTDA: MATRIZ at Rua Francisco Eugenio 268, Sao Cristovao, Rio de Janeiro, situation ATIVA, activity start date 24 July 1992", url: "https://brasilapi.com.br/api/cnpj/v1/68588326000115", sourceNote: "Queried 2026-10-02. Identity is established by address, not by name alone: Multiplus Ciberseguranca’s own home page lists its Rio de Janeiro office at R. Francisco Eugenio 268, salas 602 e 603, Sao Cristovao, the street and number on this record. Fourteen other registry entries named Multiplus or similar were tested and rejected first, among them the loyalty-programme company Multiplus S.A. and a CAD vendor this entry had already been confused with once." },
       { label: "Multiplus Ciberseguranca - company site: compliance and data protection, endpoint protection, modern application delivery, network, cloud and application security, and observability and monitoring", url: "https://www.multiplusciberseguranca.com.br/" },
     ],
     tags: ["reseller", "services"],
@@ -8271,7 +8352,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "sisco",
     sources: [
-      { label: "Ferje Informatica's own history page: Ferje was founded 15 June 2001 by five former Sisco employees as Sisco was winding down, carrying IT knowledge acquired since 1979", url: "http://www.ferje.com.br/historia.html" },
       { label: "UFF history department paper on Revista Visao and the Maksoud group: Sisco - Sistemas e Computadores S.A., manufacturer of hardware and software for micro, mini and medium computers, listed among the group's companies alongside Hidroservice and the Maksoud Plaza", url: "https://www.historia.uff.br/estadoepoder/6snepc/GT5/GT5-GERVASIO.pdf" },
       { label: "InfoJobs - SISCO Sistemas e Computadores S.A: Brazilian medium-to-large computer manufacturer with units in other Brazilian states, belonging to Grupo Maksoud; former-employee reviews record tenures of 29 to 37 years", url: "https://www.infojobs.com.br/availacoes-sisco-sistemas-computadores-s-a__-87156.aspx" },
       { label: "Ferje Informatica - company history: Ferje was founded on 15 June 2001 by five former Sisco Sistemas e Computadores employees as Sisco was ending its activities, with the stated aim of not leaving Sisco\u2019s clients unattended, drawing on IT knowledge the team had accumulated since 1979", url: "http://www.ferje.com.br/historia.html" },
@@ -8949,7 +9029,7 @@ export const partnerVendors: PartnerVendor[] = [
 
   {
     slug: "amd",
-    sources: [
+    sources: [{ label: "Wikipedia: AMD - infobox records the company founded 1 May 1969", url: "https://en.wikipedia.org/wiki/AMD" }, 
       { label: "AMD Form 10-Q filed with the SEC, 2022: the company completed the acquisition of Xilinx on 14 February 2022 and of Pensando Systems on 26 May 2022", url: "https://www.sec.gov/Archives/edgar/data/2488/000000248822000123/amd-20220625.htm" },
       { label: "AMD annual report filed with the SEC for 2022: the Pensando acquisition expanded data centre capability with high-performance data processing units and a software stack; 2022 net revenue was US$23.6 billion, up 44% on 2021", url: "https://www.sec.gov/Archives/edgar/data/2488/000119312523088137/d447088dars.pdf" },
       { label: "The Next Platform, June 2022 - the Xilinx and Pensando acquisitions gave AMD network adapters and the people who design SerDes and packet-processing engines, while leaving it without datacentre switching; AMD\u2019s earlier networking attempt was the US$334 million purchase of SeaMicro in February 2012", url: "https://www.nextplatform.com/2022/06/24/amd-needs-to-complete-the-datacenter-set-with-switching/" },
@@ -9059,12 +9139,13 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "texas-instruments",
     sources: [
-      { label: "Texas Instruments (Wikipedia): American semiconductor company, its origins in Geophysical Service Incorporated, renamed Texas Instruments in 1951; employer of Jack Kilby, who demonstrated the integrated circuit in 1958", url: "https://en.wikipedia.org/wiki/Texas_Instruments" },
+      { label: "Texas Instruments (Wikipedia): the infobox dates the company to 1930 \u201cas Geophysical Service Incorporated\u201d and names Geophysical Service as its predecessor, with founders Cecil H. Green, J. Erik Jonsson, Eugene McDermott and Patrick E. Haggerty; renamed Texas Instruments in 1951; employer of Jack Kilby, who demonstrated the integrated circuit in 1958", url: "https://en.wikipedia.org/wiki/Texas_Instruments" },
       { label: "Integrated circuit (Wikipedia): Kilby\u2019s 1958 demonstration at Texas Instruments, alongside Noyce\u2019s planar work at Fairchild", url: "https://en.wikipedia.org/wiki/Integrated_circuit" },
     ],
     tags: ["vendor"],
     group: "contemporary",
     founded: 1930,
+    foundedCompany: "Geophysical Service Incorporated",
     name: "Texas Instruments - where the integrated circuit was demonstrated",
     tagline: "Semiconductor company whose employee demonstrated the first integrated circuit in 1958.",
     intro: "Texas Instruments began as a company doing seismic survey work for the oil industry and took its present name in 1951. In 1958 one of its engineers, Jack Kilby, demonstrated that several components could be built on a single piece of semiconductor - the integrated circuit.",
@@ -9080,7 +9161,7 @@ export const partnerVendors: PartnerVendor[] = [
     slug: "raspberry-pi",
     sources: [
       { label: "Raspberry Pi (Wikipedia): a series of small single-board computers developed in the United Kingdom by the Raspberry Pi Foundation, established to promote the teaching of basic computer science in schools and developing countries", url: "https://en.wikipedia.org/wiki/Raspberry_Pi" },
-      { label: "Founding year: 2009", url: "https://en.wikipedia.org/wiki/Raspberry_Pi_Foundation" },
+      { label: "Wikipedia: Raspberry Pi Foundation - formed in May 2009 by David Braben, Jack Lang, Pete Lomas, Rob Mullins, Alan Mycroft and Eben Upton; based on Hills Road, Cambridge", url: "https://en.wikipedia.org/wiki/Raspberry_Pi_Foundation" },
     ],
     tags: ["vendor", "training"],
     group: "contemporary",
@@ -9191,7 +9272,7 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Procera Networks (Wikipedia): moved to NASDAQ as PKT in December 2011; bought the Canadian deep packet inspection company Vineyard Networks in 2013 for C$28 million, sold onward to equipment vendors as the Network Application Visibility Library; acquired by Francisco Partners in 2015; in 2017 Francisco Partners acquired Sandvine and merged it with Procera. The article cites Forbes, October 2016, reporting on the use of the company\u2019s technology in Turkey", url: "https://en.wikipedia.org/wiki/Procera_Networks" },
       { label: "Converge Digest - Procera, based in Fremont, California with significant operations in Sweden, whose PacketLogic platforms use deep packet inspection for analytics, traffic management and enforcement for broadband operators, mobile operators and academic institutions; the combined company operates under the Sandvine name, Sandvine having been founded in 2001 in Waterloo, Ontario by a team from PixStream, which Cisco had acquired that same year for C$554 million", url: "https://convergedigest.com/procera-rebrands-as-sandvine-now-that/" },
       { label: "TheStreet, April 2015 - Procera agreed to a US$240 million buyout by Francisco Partners at US$11.50 per share, after months of pressure from activist shareholders; the company had gone public in 2003 through a reverse merger", url: "https://www.thestreet.com/story/13122929/1/procera-networks-agrees-to-be-taken-private-by-francisco-partners.html" },
-      { label: "Founding year: 2002", url: "https://en.wikipedia.org/wiki/Procera_Networks" },
+      { label: "Wikipedia: Procera Networks - founded 2002, a privately held company headquartered in Fremont, California", url: "https://en.wikipedia.org/wiki/Procera_Networks" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -9343,7 +9424,6 @@ export const partnerVendors: PartnerVendor[] = [
   {
     slug: "mude",
     sources: [
-      { label: "Exame: federal court convicted six businessmen and executives; interposed companies concealed the real importer, Mude Comercio e Servicos Ltda; fraudulent imports exceeded US$370 million across 16 identified operations", url: "https://exame.com/negocios/justica-condena-executivos-de-distribuidora-da-cisco/" },
       { label: "Senate archive of O Estado de S. Paulo, 19 October 2007: Mude was a Brazilian company with a US branch intermediating Cisco imports; goods left Florida, most destined for Bahia, where state law gives incentives to IT companies", url: "https://www2.senado.leg.br/bdsf/bitstream/handle/id/331628/noticia.htm?sequence=1" },
       { label: "CARF administrative ruling 3301-012.149: the tax authority treated Mude as the REAL importer and therefore as an industrial establishment for IPI purposes, with joint liability across the group", url: "https://acordaos.economia.gov.br/acordaos2/pdfs/processados/10803000134200802_6751476.pdf" },
       { label: "Ministerio Publico Federal, Procuradoria da Republica em Sao Paulo - official release on Operacao Persona: the transactions ran between the United States manufacturer Cisco Systems Inc and the real importer in Brazil, Mude Comercio e Servicos Ltda, intermediated by a series of front companies controlled through nominees and offshore entities; those firms simulated purchases and resales among themselves to conceal the true recipient and the amount actually paid, and under-invoicing of the sales allowed the Brazilian companies in the scheme to evade the taxes due on the real price; by the tax authority\u2019s calculation the total unpaid amounted to R$1.5 billion. The release also records that in 2011 the Federal Court sentenced two of those involved to more than five years", url: "https://mpf.jusbrasil.com.br/noticias/386329570/operacao-persona-dois-envolvidos-em-esquema-bilionario-de-sonegacao-viram-reus-por-lavagem-de-dinheiro", sourceNote: "The release is cited at its Jusbrasil mirror because the MPF's own copy is gone: mpf.mp.br now answers that page with its portal error, \u201cO endereco acessado nao existe ou foi alterado durante a atualizacao do portal\u201d, confirmed by a second client on 2026-09-27. The mirror reproduces the release in full and carries MORE than was previously cited from it: the two defendants named as the businessman Cid Guardia Filho and the retired tax auditor Ernani Bertino Maciel, R$33.5 million concealed in fraudulent operations between 2004 and 2008, the laundering done through simulated service contracts and profit distributions and two properties in Ilheus, Bahia registered to front companies, the prosecutor Rodrigo de Grandis, and case number 0012366-26.2006.403.6181. Note that the 2011 sentence it records, of more than five years for descaminho AND use of false documents, is against these two men and is a different proceeding from the six Mude executives in the citation below, who were acquitted of the false-documents charge." },
@@ -9568,8 +9648,23 @@ export const TAG_ROUTE_FOR: Record<VendorTag, string> = Object.fromEntries(
 ) as Record<VendorTag, string>;
 
 /** Every company carrying a given tag, in the timeline's chronological order. */
+/**
+ * Where a card sits on a timeline: the year its STORY starts, which is its own
+ * subject's founding unless the card opens with an earlier predecessor.
+ *
+ * SINGLE SOURCE (PRIME 2026-10-02). Four places ordered vendors by `founded`
+ * with the same expression written out four times: the /industry timeline, the
+ * two learning timelines, and vendorsByTag below. When ruling 2 changed what
+ * `founded` MEANS, four copies would have had to change together or the same
+ * company would sit in different places depending on which page reached it.
+ * They all call this instead.
+ */
+export function storyStart(v: PartnerVendor): number {
+  return v.storyBegins?.year ?? v.founded ?? 9999;
+}
+
 export function vendorsByTag(tag: VendorTag): PartnerVendor[] {
   return partnerVendors
     .filter((v) => v.tags?.includes(tag))
-    .sort((a, b) => (a.founded ?? 0) - (b.founded ?? 0));
+    .sort((a, b) => storyStart(a) - storyStart(b));
 }

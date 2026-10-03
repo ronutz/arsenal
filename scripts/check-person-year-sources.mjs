@@ -40,7 +40,8 @@
 // year was tested against three separate facts, each gathered by fetching:
 // does a source LABEL name the year, does the entry's own COPY state it, and
 // does the CITED PAGE state it. Four categories fall out, and they are not
-// equally serious:
+// equally serious (counts as of the 2026-09-30 sweep; the guard prints the
+// live breakdown on every run):
 //
 //   COPY+PAGE (2)  The copy and the cited page both state the year. Label debt
 //                   only: a reader who follows the link finds the date.
@@ -103,36 +104,46 @@ const src = fs.readFileSync(
 // editorial judgement. Generated from the 2026-09-30 sweep; every entry here
 // was fetched and read. This list may only shrink.
 const DECLARED_ANCHOR = new Map([
-  // NEITHER (12) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
+  // NEITHER (10) - NOTHING states it: no label, no cited page, no entry copy - awaiting PRIME
   ["susan-headley", { year: 1980, why: "NEITHER" }],
   ["anchises-moraes", { year: 2011, why: "NEITHER" }],
-  ["cristine-hoepers", { year: 1997, why: "NEITHER" }],
   ["daniel-j-bernstein", { year: 1996, why: "NEITHER" }],
   ["filipe-balestra", { year: 2008, why: "NEITHER" }],
   ["jaime-andres-restrepo", { year: 2009, why: "NEITHER" }],
   ["jude-milhon", { year: 1992, why: "NEITHER" }],
   ["liane-tarouco", { year: 1988, why: "NEITHER" }],
-  ["michal-zalewski", { year: 2013, why: "NEITHER" }],
   ["nii-quaynor", { year: 1993, why: "NEITHER" }],
   ["rodrigo-rubira-branco", { year: 2007, why: "NEITHER" }],
   ["willian-caprino", { year: 2007, why: "NEITHER" }],
 
   // COPY-ONLY (4) - the entry copy states it; no cited page does
+  // Re-read 2026-10-02: the Wikipedia articles for dvd-jon and space-rogue carry
+  // no 1999 and no 1998 in their wikitext either, so citing them would not help.
   ["sandro-suffert", { year: 2010, why: "COPY-ONLY" }],
   ["dvd-jon", { year: 1999, why: "COPY-ONLY" }],
   ["solar-designer", { year: 1996, why: "COPY-ONLY" }],
   ["space-rogue", { year: 1998, why: "COPY-ONLY" }],
 
   // PAGE-ONLY (5) - the cited page states it; neither the label nor the entry copy does
+  //
+  // RE-READ 2026-10-02, and the category is weaker than it looks. Read as
+  // wikitext rather than as a rendered page: katie-moussouris's article carries
+  // "2013" only for the Wassenaar Arrangement amendment, not for her Microsoft
+  // bug bounty programme - a substring match on the wrong event, the trap this
+  // file's header describes; wietse-venema's article carries no 1995 anywhere.
+  // These need a document that dates the contribution, not a tightened label.
   ["barbara-liskov", { year: 1988, why: "PAGE-ONLY" }],
   ["glenn-ricart", { year: 1989, why: "PAGE-ONLY" }],
   ["katie-moussouris", { year: 2013, why: "PAGE-ONLY" }],
   ["nelson-murilo", { year: 1997, why: "PAGE-ONLY" }],
   ["wietse-venema", { year: 1995, why: "PAGE-ONLY" }],
 
-  // COPY+PAGE (2) - the entry copy and the cited page both state it; only the label is silent
+  // COPY+PAGE (1) - the entry copy and the cited page both state it; only the label is silent
+  // emmanuel-goldstein, re-read 2026-10-02: in the Eric Corley article's wikitext
+  // "1984" appears only inside a reference title, not in the article's own text.
+  // ray-tomlinson came off the same day: its cited Hall of Fame page dates nothing
+  // earlier than 1972, so a Wikipedia citation stating 1971 was added instead.
   ["emmanuel-goldstein", { year: 1984, why: "COPY+PAGE" }],
-  ["ray-tomlinson", { year: 1971, why: "COPY+PAGE" }],
 
 ]);
 
@@ -189,9 +200,17 @@ for (const b of blocks) {
     while ((at = l.indexOf(year, at + 1)) !== -1) {
       const after = l.slice(at + year.length, at + year.length + 6);
       const before = l.slice(Math.max(0, at - 6), at);
+      // An ISO date is NOT a range, and must be tested first. `2013-11-12` leaves
+      // `-11-12` after the year, which matches the range test below, so without this
+      // the most precise form a date can take was classified as the vaguest. A range
+      // boundary is a year followed by another YEAR; an ISO date is a year followed by
+      // a MONTH and optionally a DAY, both of which are two digits in 01-12 / 01-31.
+      // Found 2026-10-01 by AFL's own changelog: "Version 0.21b (2013-11-12)".
+      const isIsoDate = /^-(0[1-9]|1[0-2])(-(0[1-9]|[12]\d|3[01]))?\b/.test(after);
       const isRange =
-        /^\s*(-|\u2013|to )\s*\d{2,4}/.test(after) ||
-        /\d{2,4}\s*(-|\u2013|to )\s*$/.test(before);
+        !isIsoDate &&
+        (/^\s*(-|\u2013|to )\s*\d{2,4}/.test(after) ||
+          /\d{2,4}\s*(-|\u2013|to )\s*$/.test(before));
       hits.push({ isRange, window: l.slice(Math.max(0, at - 70), at + 90) });
     }
   }

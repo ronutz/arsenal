@@ -281,10 +281,22 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_f5_irules_command_context",
     "tag": "F5 LTM, iRules & platform"
   },
+  "f5-irules-conditional-builder": {
+    "url": "https://ronutz.com/api/v1/f5-irules-conditional-builder",
+    "method": "GET",
+    "op": "run_f5_irules_conditional_builder",
+    "tag": "F5 LTM, iRules & platform"
+  },
   "f5-irules-event-order": {
     "url": "https://ronutz.com/api/v1/f5-irules-event-order",
     "method": "GET",
     "op": "run_f5_irules_event_order",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-irules-number-notation": {
+    "url": "https://ronutz.com/api/v1/f5-irules-number-notation",
+    "method": "GET",
+    "op": "run_f5_irules_number_notation",
     "tag": "F5 LTM, iRules & platform"
   },
   "f5-irules-performance-linter": {
@@ -297,6 +309,30 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/f5-irules-runtime-calculator",
     "method": "GET",
     "op": "run_f5_irules_runtime_calculator",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-irules-scan-explainer": {
+    "url": "https://ronutz.com/api/v1/f5-irules-scan-explainer",
+    "method": "GET",
+    "op": "run_f5_irules_scan_explainer",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-irules-string-extract": {
+    "url": "https://ronutz.com/api/v1/f5-irules-string-extract",
+    "method": "GET",
+    "op": "run_f5_irules_string_extract",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-irules-string-workbench": {
+    "url": "https://ronutz.com/api/v1/f5-irules-string-workbench",
+    "method": "GET",
+    "op": "run_f5_irules_string_workbench",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-irules-style-checker": {
+    "url": "https://ronutz.com/api/v1/f5-irules-style-checker",
+    "method": "GET",
+    "op": "run_f5_irules_style_checker",
     "tag": "F5 LTM, iRules & platform"
   },
   "f5-irules-vs-ltm-policy": {
