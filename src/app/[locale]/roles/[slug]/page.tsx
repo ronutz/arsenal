@@ -98,7 +98,7 @@ export default async function RolePage({ params }: { params: Promise<{ locale: s
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

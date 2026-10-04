@@ -77,6 +77,16 @@ import F5IrulesConditionalBuilderTool from "@/components/F5IrulesConditionalBuil
 import { manifest as f5IrulesConditionalBuilderManifest } from "@/lib/tools/f5-irules-conditional-builder";
 import F5IrulesStyleCheckerTool from "@/components/F5IrulesStyleCheckerTool";
 import { manifest as f5IrulesStyleCheckerManifest } from "@/lib/tools/f5-irules-style-checker";
+import F5BigipIndexBaseFinderTool from "@/components/F5BigipIndexBaseFinderTool";
+import { manifest as f5BigipIndexBaseFinderManifest } from "@/lib/tools/f5-bigip-index-base-finder";
+import AsciiTableTool from "@/components/AsciiTableTool";
+import { manifest as asciiTableManifest } from "@/lib/tools/ascii-table";
+import UnicodeInspectorTool from "@/components/UnicodeInspectorTool";
+import { manifest as unicodeInspectorManifest } from "@/lib/tools/unicode-inspector";
+import CharsetEquivalencyTool from "@/components/CharsetEquivalencyTool";
+import { manifest as charsetEquivalencyManifest } from "@/lib/tools/charset-equivalency";
+import ChmodPermissionCalculatorTool from "@/components/ChmodPermissionCalculatorTool";
+import { manifest as chmodPermissionCalculatorManifest } from "@/lib/tools/chmod-permission-calculator";
 import F5ReleaseCadenceCalendarTool from "@/components/F5ReleaseCadenceCalendarTool";
 import { manifest as f5ReleaseCadenceCalendarManifest } from "@/lib/tools/f5-release-cadence-calendar";
 import DiffTool from "@/components/DiffTool";
@@ -953,6 +963,26 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: F5IrulesStyleCheckerTool,
     sources: f5IrulesStyleCheckerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "f5-bigip-index-base-finder": {
+    Component: F5BigipIndexBaseFinderTool,
+    sources: f5BigipIndexBaseFinderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "ascii-table": {
+    Component: AsciiTableTool,
+    sources: asciiTableManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "unicode-inspector": {
+    Component: UnicodeInspectorTool,
+    sources: unicodeInspectorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "charset-equivalency": {
+    Component: CharsetEquivalencyTool,
+    sources: charsetEquivalencyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "chmod-permission-calculator": {
+    Component: ChmodPermissionCalculatorTool,
+    sources: chmodPermissionCalculatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "f5-oneconnect-source-mask": {
     Component: OneconnectSourceMaskTool,
     sources: oneconnectManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -1144,7 +1174,7 @@ export default async function ToolDetailPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

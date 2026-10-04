@@ -1,0 +1,1109 @@
+// ============================================================================
+// src/lib/unicode/hidden.ts
+// ----------------------------------------------------------------------------
+// CHARACTERS THAT HIDE IN CODE - which non-ASCII characters look like nothing,
+// like a space, like a quote, like a dash, or like some other ASCII text, with
+// the official name of each. GENERATED, not typed, from the Unicode Character
+// Database, version 18.0.0, downloaded from unicode.org on 2026-10-03:
+//
+//   UnicodeData.txt            names and compatibility decompositions;
+//   PropList.txt               White_Space, Quotation_Mark and Dash
+//                              (file dated 2026-08-07, 16:20:14 GMT);
+//   DerivedCoreProperties.txt  Default_Ignorable_Code_Point
+//                              (file dated 2026-08-07, 16:19:42 GMT).
+//
+// The classes, in the order a character is tested:
+//   invisible  Default_Ignorable_Code_Point: Unicode's own list of characters
+//              that render as nothing (zero-width spaces and joiners, the byte
+//              order mark, soft hyphen, bidirectional controls, variation
+//              selectors, tags);
+//   space      White_Space outside ASCII (no-break space, em space, ...);
+//   quote      Quotation_Mark outside ASCII (curly quotes, guillemets, ...);
+//   dash       Dash outside ASCII (hyphen, en dash, em dash, minus sign, ...);
+//   lookalike  any other Basic Multilingual Plane character whose full
+//              compatibility decomposition is printable ASCII (fullwidth
+//              forms, the ellipsis, ligatures, Roman numerals, ...): it looks
+//              like that ASCII text but is a different character.
+// Names are given for every non-ASCII Basic Multilingual Plane character in
+// those classes; anything else is reported by code point only.
+//
+// Regenerate with scratchpad/ucd/gen-hidden.py when the Unicode version moves.
+// ============================================================================
+
+/** The Unicode version the tables below come from. */
+export const UNICODE_VERSION = "18.0.0";
+
+/** The day the Unicode files were read. */
+export const UNICODE_READ = "2026-10-03";
+
+/** The Unicode files the tables come from, as source records. */
+export const UNICODE_SOURCES = [
+  // Names and decompositions.
+  { id: "ucd-unicodedata", label: "Unicode Character Database 18.0.0: UnicodeData.txt", type: "standard", url: "https://www.unicode.org/Public/UCD/latest/ucd/UnicodeData.txt", access_date: UNICODE_READ, scope: "character names and compatibility decompositions" },
+  // White_Space, Quotation_Mark, Dash.
+  { id: "ucd-proplist", label: "Unicode Character Database 18.0.0: PropList.txt", type: "standard", url: "https://www.unicode.org/Public/UCD/latest/ucd/PropList.txt", access_date: UNICODE_READ, scope: "the White_Space, Quotation_Mark and Dash properties" },
+  // Default_Ignorable_Code_Point.
+  { id: "ucd-derivedcore", label: "Unicode Character Database 18.0.0: DerivedCoreProperties.txt", type: "standard", url: "https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt", access_date: UNICODE_READ, scope: "the Default_Ignorable_Code_Point property" },
+] as const;
+
+/** What kind of hiding a character does. */
+export type HiddenClass = "invisible" | "space" | "quote" | "dash" | "lookalike";
+
+
+/** Default_Ignorable_Code_Point ranges (DerivedCoreProperties.txt). */
+export const DEFAULT_IGNORABLE: readonly (readonly [number, number])[] = [
+  // SOFT HYPHEN
+  [0x00AD, 0x00AD],
+  // COMBINING GRAPHEME JOINER
+  [0x034F, 0x034F],
+  // ARABIC LETTER MARK
+  [0x061C, 0x061C],
+  // HANGUL CHOSEONG FILLER..HANGUL JUNGSEONG FILLER
+  [0x115F, 0x1160],
+  // KHMER VOWEL INHERENT AQ..KHMER VOWEL INHERENT AA
+  [0x17B4, 0x17B5],
+  // MONGOLIAN FREE VARIATION SELECTOR ONE..MONGOLIAN FREE VARIATION SELECTOR FOUR
+  [0x180B, 0x180F],
+  // ZERO WIDTH SPACE..RIGHT-TO-LEFT MARK
+  [0x200B, 0x200F],
+  // LEFT-TO-RIGHT EMBEDDING..RIGHT-TO-LEFT OVERRIDE
+  [0x202A, 0x202E],
+  // WORD JOINER..NOMINAL DIGIT SHAPES
+  [0x2060, 0x206F],
+  // HANGUL FILLER
+  [0x3164, 0x3164],
+  // VARIATION SELECTOR-1..VARIATION SELECTOR-16
+  [0xFE00, 0xFE0F],
+  // ZERO WIDTH NO-BREAK SPACE
+  [0xFEFF, 0xFEFF],
+  // HALFWIDTH HANGUL FILLER
+  [0xFFA0, 0xFFA0],
+  // unassigned..unassigned
+  [0xFFF0, 0xFFF8],
+  // SHORTHAND FORMAT LETTER OVERLAP..SHORTHAND FORMAT UP STEP
+  [0x1BCA0, 0x1BCA3],
+  // MUSICAL SYMBOL BEGIN BEAM..MUSICAL SYMBOL END PHRASE
+  [0x1D173, 0x1D17A],
+  // unassigned..unassigned
+  [0xE0000, 0xE0FFF],
+];
+
+/** White_Space ranges (PropList.txt), ASCII included; the classifier skips ASCII. */
+export const WHITE_SPACE: readonly (readonly [number, number])[] = [
+  // <control>..<control>
+  [0x0009, 0x000D],
+  // SPACE
+  [0x0020, 0x0020],
+  // <control>
+  [0x0085, 0x0085],
+  // NO-BREAK SPACE
+  [0x00A0, 0x00A0],
+  // OGHAM SPACE MARK
+  [0x1680, 0x1680],
+  // EN QUAD..HAIR SPACE
+  [0x2000, 0x200A],
+  // LINE SEPARATOR..PARAGRAPH SEPARATOR
+  [0x2028, 0x2029],
+  // NARROW NO-BREAK SPACE
+  [0x202F, 0x202F],
+  // MEDIUM MATHEMATICAL SPACE
+  [0x205F, 0x205F],
+  // IDEOGRAPHIC SPACE
+  [0x3000, 0x3000],
+];
+
+/** Quotation_Mark ranges (PropList.txt), ASCII included; the classifier skips ASCII. */
+export const QUOTATION_MARK: readonly (readonly [number, number])[] = [
+  // QUOTATION MARK
+  [0x0022, 0x0022],
+  // APOSTROPHE
+  [0x0027, 0x0027],
+  // LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+  [0x00AB, 0x00AB],
+  // RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+  [0x00BB, 0x00BB],
+  // LEFT SINGLE QUOTATION MARK..DOUBLE HIGH-REVERSED-9 QUOTATION MARK
+  [0x2018, 0x201F],
+  // SINGLE LEFT-POINTING ANGLE QUOTATION MARK..SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+  [0x2039, 0x203A],
+  // DOUBLE LOW-REVERSED-9 QUOTATION MARK
+  [0x2E42, 0x2E42],
+  // LEFT CORNER BRACKET..RIGHT WHITE CORNER BRACKET
+  [0x300C, 0x300F],
+  // REVERSED DOUBLE PRIME QUOTATION MARK..LOW DOUBLE PRIME QUOTATION MARK
+  [0x301D, 0x301F],
+  // PRESENTATION FORM FOR VERTICAL LEFT CORNER BRACKET..PRESENTATION FORM FOR VERTICAL RIGHT WHITE CORNER BRACKET
+  [0xFE41, 0xFE44],
+  // FULLWIDTH QUOTATION MARK
+  [0xFF02, 0xFF02],
+  // FULLWIDTH APOSTROPHE
+  [0xFF07, 0xFF07],
+  // HALFWIDTH LEFT CORNER BRACKET..HALFWIDTH RIGHT CORNER BRACKET
+  [0xFF62, 0xFF63],
+];
+
+/** Dash ranges (PropList.txt), ASCII included; the classifier skips ASCII. */
+export const DASH: readonly (readonly [number, number])[] = [
+  // HYPHEN-MINUS
+  [0x002D, 0x002D],
+  // ARMENIAN HYPHEN
+  [0x058A, 0x058A],
+  // HEBREW PUNCTUATION MAQAF
+  [0x05BE, 0x05BE],
+  // CANADIAN SYLLABICS HYPHEN
+  [0x1400, 0x1400],
+  // MONGOLIAN TODO SOFT HYPHEN
+  [0x1806, 0x1806],
+  // HYPHEN..HORIZONTAL BAR
+  [0x2010, 0x2015],
+  // SWUNG DASH
+  [0x2053, 0x2053],
+  // SUPERSCRIPT MINUS
+  [0x207B, 0x207B],
+  // SUBSCRIPT MINUS
+  [0x208B, 0x208B],
+  // MINUS SIGN
+  [0x2212, 0x2212],
+  // DOUBLE OBLIQUE HYPHEN
+  [0x2E17, 0x2E17],
+  // HYPHEN WITH DIAERESIS
+  [0x2E1A, 0x2E1A],
+  // TWO-EM DASH..THREE-EM DASH
+  [0x2E3A, 0x2E3B],
+  // DOUBLE HYPHEN
+  [0x2E40, 0x2E40],
+  // OBLIQUE HYPHEN
+  [0x2E5D, 0x2E5D],
+  // WAVE DASH
+  [0x301C, 0x301C],
+  // WAVY DASH
+  [0x3030, 0x3030],
+  // KATAKANA-HIRAGANA DOUBLE HYPHEN
+  [0x30A0, 0x30A0],
+  // PRESENTATION FORM FOR VERTICAL EM DASH..PRESENTATION FORM FOR VERTICAL EN DASH
+  [0xFE31, 0xFE32],
+  // SMALL EM DASH
+  [0xFE58, 0xFE58],
+  // SMALL HYPHEN-MINUS
+  [0xFE63, 0xFE63],
+  // FULLWIDTH HYPHEN-MINUS
+  [0xFF0D, 0xFF0D],
+  // GARAY HYPHEN
+  [0x10D6E, 0x10D6E],
+  // YEZIDI HYPHENATION MARK
+  [0x10EAD, 0x10EAD],
+];
+
+/** Basic Multilingual Plane characters whose full compatibility decomposition is printable ASCII. */
+export const ASCII_LOOKALIKE: ReadonlyMap<number, string> = new Map<number, string>([
+  // U+0000 block: 6 character(s), NO-BREAK SPACE to MASCULINE ORDINAL INDICATOR.
+  [0x00A0, " "], [0x00AA, "a"], [0x00B2, "2"], [0x00B3, "3"], [0x00B9, "1"], [0x00BA, "o"],
+  // U+0100 block: 12 character(s), LATIN CAPITAL LIGATURE IJ to LATIN SMALL LETTER DZ.
+  [0x0132, "IJ"], [0x0133, "ij"], [0x017F, "s"], [0x01C7, "LJ"], [0x01C8, "Lj"], [0x01C9, "lj"], [0x01CA, "NJ"], [0x01CB, "Nj"],
+  [0x01CC, "nj"], [0x01F1, "DZ"], [0x01F2, "Dz"], [0x01F3, "dz"],
+  // U+0200 block: 8 character(s), MODIFIER LETTER SMALL H to MODIFIER LETTER SMALL X.
+  [0x02B0, "h"], [0x02B2, "j"], [0x02B3, "r"], [0x02B7, "w"], [0x02B8, "y"], [0x02E1, "l"], [0x02E2, "s"], [0x02E3, "x"],
+  // U+0300 block: 1 character(s), GREEK QUESTION MARK to GREEK QUESTION MARK.
+  [0x037E, ";"],
+  // U+1D00 block: 37 character(s), MODIFIER LETTER CAPITAL A to MODIFIER LETTER SMALL Z.
+  [0x1D2C, "A"], [0x1D2E, "B"], [0x1D30, "D"], [0x1D31, "E"], [0x1D33, "G"], [0x1D34, "H"], [0x1D35, "I"], [0x1D36, "J"],
+  [0x1D37, "K"], [0x1D38, "L"], [0x1D39, "M"], [0x1D3A, "N"], [0x1D3C, "O"], [0x1D3E, "P"], [0x1D3F, "R"], [0x1D40, "T"],
+  [0x1D41, "U"], [0x1D42, "W"], [0x1D43, "a"], [0x1D47, "b"], [0x1D48, "d"], [0x1D49, "e"], [0x1D4D, "g"], [0x1D4F, "k"],
+  [0x1D50, "m"], [0x1D52, "o"], [0x1D56, "p"], [0x1D57, "t"], [0x1D58, "u"], [0x1D5B, "v"], [0x1D62, "i"], [0x1D63, "r"],
+  [0x1D64, "u"], [0x1D65, "v"], [0x1D9C, "c"], [0x1DA0, "f"], [0x1DBB, "z"],
+  // U+1F00 block: 1 character(s), GREEK VARIA to GREEK VARIA.
+  [0x1FEF, "`"],
+  // U+2000 block: 63 character(s), EN QUAD to RUPEE SIGN.
+  [0x2000, " "], [0x2001, " "], [0x2002, " "], [0x2003, " "], [0x2004, " "], [0x2005, " "], [0x2006, " "], [0x2007, " "],
+  [0x2008, " "], [0x2009, " "], [0x200A, " "], [0x2024, "."], [0x2025, ".."], [0x2026, "..."], [0x202F, " "], [0x203C, "!!"],
+  [0x2047, "??"], [0x2048, "?!"], [0x2049, "!?"], [0x205F, " "], [0x2070, "0"], [0x2071, "i"], [0x2074, "4"], [0x2075, "5"],
+  [0x2076, "6"], [0x2077, "7"], [0x2078, "8"], [0x2079, "9"], [0x207A, "+"], [0x207C, "="], [0x207D, "("], [0x207E, ")"],
+  [0x207F, "n"], [0x2080, "0"], [0x2081, "1"], [0x2082, "2"], [0x2083, "3"], [0x2084, "4"], [0x2085, "5"], [0x2086, "6"],
+  [0x2087, "7"], [0x2088, "8"], [0x2089, "9"], [0x208A, "+"], [0x208C, "="], [0x208D, "("], [0x208E, ")"], [0x2090, "a"],
+  [0x2091, "e"], [0x2092, "o"], [0x2093, "x"], [0x2095, "h"], [0x2096, "k"], [0x2097, "l"], [0x2098, "m"], [0x2099, "n"],
+  [0x209A, "p"], [0x209B, "s"], [0x209C, "t"], [0x209D, "w"], [0x209E, "y"], [0x209F, "z"], [0x20A8, "Rs"],
+  // U+2100 block: 73 character(s), ACCOUNT OF to SMALL ROMAN NUMERAL ONE THOUSAND.
+  [0x2100, "a/c"], [0x2101, "a/s"], [0x2102, "C"], [0x2105, "c/o"], [0x2106, "c/u"], [0x210A, "g"], [0x210B, "H"], [0x210C, "H"],
+  [0x210D, "H"], [0x210E, "h"], [0x2110, "I"], [0x2111, "I"], [0x2112, "L"], [0x2113, "l"], [0x2115, "N"], [0x2116, "No"],
+  [0x2119, "P"], [0x211A, "Q"], [0x211B, "R"], [0x211C, "R"], [0x211D, "R"], [0x2120, "SM"], [0x2121, "TEL"], [0x2122, "TM"],
+  [0x2124, "Z"], [0x2128, "Z"], [0x212A, "K"], [0x212C, "B"], [0x212D, "C"], [0x212F, "e"], [0x2130, "E"], [0x2131, "F"],
+  [0x2133, "M"], [0x2134, "o"], [0x2139, "i"], [0x213B, "FAX"], [0x2145, "D"], [0x2146, "d"], [0x2147, "e"], [0x2148, "i"],
+  [0x2149, "j"], [0x2160, "I"], [0x2161, "II"], [0x2162, "III"], [0x2163, "IV"], [0x2164, "V"], [0x2165, "VI"], [0x2166, "VII"],
+  [0x2167, "VIII"], [0x2168, "IX"], [0x2169, "X"], [0x216A, "XI"], [0x216B, "XII"], [0x216C, "L"], [0x216D, "C"], [0x216E, "D"],
+  [0x216F, "M"], [0x2170, "i"], [0x2171, "ii"], [0x2172, "iii"], [0x2173, "iv"], [0x2174, "v"], [0x2175, "vi"], [0x2176, "vii"],
+  [0x2177, "viii"], [0x2178, "ix"], [0x2179, "x"], [0x217A, "xi"], [0x217B, "xii"], [0x217C, "l"], [0x217D, "c"], [0x217E, "d"],
+  [0x217F, "m"],
+  // U+2400 block: 139 character(s), CIRCLED DIGIT ONE to CIRCLED DIGIT ZERO.
+  [0x2460, "1"], [0x2461, "2"], [0x2462, "3"], [0x2463, "4"], [0x2464, "5"], [0x2465, "6"], [0x2466, "7"], [0x2467, "8"],
+  [0x2468, "9"], [0x2469, "10"], [0x246A, "11"], [0x246B, "12"], [0x246C, "13"], [0x246D, "14"], [0x246E, "15"], [0x246F, "16"],
+  [0x2470, "17"], [0x2471, "18"], [0x2472, "19"], [0x2473, "20"], [0x2474, "(1)"], [0x2475, "(2)"], [0x2476, "(3)"], [0x2477, "(4)"],
+  [0x2478, "(5)"], [0x2479, "(6)"], [0x247A, "(7)"], [0x247B, "(8)"], [0x247C, "(9)"], [0x247D, "(10)"], [0x247E, "(11)"], [0x247F, "(12)"],
+  [0x2480, "(13)"], [0x2481, "(14)"], [0x2482, "(15)"], [0x2483, "(16)"], [0x2484, "(17)"], [0x2485, "(18)"], [0x2486, "(19)"], [0x2487, "(20)"],
+  [0x2488, "1."], [0x2489, "2."], [0x248A, "3."], [0x248B, "4."], [0x248C, "5."], [0x248D, "6."], [0x248E, "7."], [0x248F, "8."],
+  [0x2490, "9."], [0x2491, "10."], [0x2492, "11."], [0x2493, "12."], [0x2494, "13."], [0x2495, "14."], [0x2496, "15."], [0x2497, "16."],
+  [0x2498, "17."], [0x2499, "18."], [0x249A, "19."], [0x249B, "20."], [0x249C, "(a)"], [0x249D, "(b)"], [0x249E, "(c)"], [0x249F, "(d)"],
+  [0x24A0, "(e)"], [0x24A1, "(f)"], [0x24A2, "(g)"], [0x24A3, "(h)"], [0x24A4, "(i)"], [0x24A5, "(j)"], [0x24A6, "(k)"], [0x24A7, "(l)"],
+  [0x24A8, "(m)"], [0x24A9, "(n)"], [0x24AA, "(o)"], [0x24AB, "(p)"], [0x24AC, "(q)"], [0x24AD, "(r)"], [0x24AE, "(s)"], [0x24AF, "(t)"],
+  [0x24B0, "(u)"], [0x24B1, "(v)"], [0x24B2, "(w)"], [0x24B3, "(x)"], [0x24B4, "(y)"], [0x24B5, "(z)"], [0x24B6, "A"], [0x24B7, "B"],
+  [0x24B8, "C"], [0x24B9, "D"], [0x24BA, "E"], [0x24BB, "F"], [0x24BC, "G"], [0x24BD, "H"], [0x24BE, "I"], [0x24BF, "J"],
+  [0x24C0, "K"], [0x24C1, "L"], [0x24C2, "M"], [0x24C3, "N"], [0x24C4, "O"], [0x24C5, "P"], [0x24C6, "Q"], [0x24C7, "R"],
+  [0x24C8, "S"], [0x24C9, "T"], [0x24CA, "U"], [0x24CB, "V"], [0x24CC, "W"], [0x24CD, "X"], [0x24CE, "Y"], [0x24CF, "Z"],
+  [0x24D0, "a"], [0x24D1, "b"], [0x24D2, "c"], [0x24D3, "d"], [0x24D4, "e"], [0x24D5, "f"], [0x24D6, "g"], [0x24D7, "h"],
+  [0x24D8, "i"], [0x24D9, "j"], [0x24DA, "k"], [0x24DB, "l"], [0x24DC, "m"], [0x24DD, "n"], [0x24DE, "o"], [0x24DF, "p"],
+  [0x24E0, "q"], [0x24E1, "r"], [0x24E2, "s"], [0x24E3, "t"], [0x24E4, "u"], [0x24E5, "v"], [0x24E6, "w"], [0x24E7, "x"],
+  [0x24E8, "y"], [0x24E9, "z"], [0x24EA, "0"],
+  // U+2A00 block: 3 character(s), DOUBLE COLON EQUAL to THREE CONSECUTIVE EQUALS SIGNS.
+  [0x2A74, "::="], [0x2A75, "=="], [0x2A76, "==="],
+  // U+2C00 block: 2 character(s), LATIN SUBSCRIPT SMALL LETTER J to MODIFIER LETTER CAPITAL V.
+  [0x2C7C, "j"], [0x2C7D, "V"],
+  // U+3000 block: 1 character(s), IDEOGRAPHIC SPACE to IDEOGRAPHIC SPACE.
+  [0x3000, " "],
+  // U+3200 block: 35 character(s), PARTNERSHIP SIGN to LIMITED LIABILITY SIGN.
+  [0x3250, "PTE"], [0x3251, "21"], [0x3252, "22"], [0x3253, "23"], [0x3254, "24"], [0x3255, "25"], [0x3256, "26"], [0x3257, "27"],
+  [0x3258, "28"], [0x3259, "29"], [0x325A, "30"], [0x325B, "31"], [0x325C, "32"], [0x325D, "33"], [0x325E, "34"], [0x325F, "35"],
+  [0x32B1, "36"], [0x32B2, "37"], [0x32B3, "38"], [0x32B4, "39"], [0x32B5, "40"], [0x32B6, "41"], [0x32B7, "42"], [0x32B8, "43"],
+  [0x32B9, "44"], [0x32BA, "45"], [0x32BB, "46"], [0x32BC, "47"], [0x32BD, "48"], [0x32BE, "49"], [0x32BF, "50"], [0x32CC, "Hg"],
+  [0x32CD, "erg"], [0x32CE, "eV"], [0x32CF, "LTD"],
+  // U+3300 block: 90 character(s), SQUARE HPA to SQUARE GAL.
+  [0x3371, "hPa"], [0x3372, "da"], [0x3373, "AU"], [0x3374, "bar"], [0x3375, "oV"], [0x3376, "pc"], [0x3377, "dm"], [0x3378, "dm2"],
+  [0x3379, "dm3"], [0x337A, "IU"], [0x3380, "pA"], [0x3381, "nA"], [0x3383, "mA"], [0x3384, "kA"], [0x3385, "KB"], [0x3386, "MB"],
+  [0x3387, "GB"], [0x3388, "cal"], [0x3389, "kcal"], [0x338A, "pF"], [0x338B, "nF"], [0x338E, "mg"], [0x338F, "kg"], [0x3390, "Hz"],
+  [0x3391, "kHz"], [0x3392, "MHz"], [0x3393, "GHz"], [0x3394, "THz"], [0x3396, "ml"], [0x3397, "dl"], [0x3398, "kl"], [0x3399, "fm"],
+  [0x339A, "nm"], [0x339C, "mm"], [0x339D, "cm"], [0x339E, "km"], [0x339F, "mm2"], [0x33A0, "cm2"], [0x33A1, "m2"], [0x33A2, "km2"],
+  [0x33A3, "mm3"], [0x33A4, "cm3"], [0x33A5, "m3"], [0x33A6, "km3"], [0x33A9, "Pa"], [0x33AA, "kPa"], [0x33AB, "MPa"], [0x33AC, "GPa"],
+  [0x33AD, "rad"], [0x33B0, "ps"], [0x33B1, "ns"], [0x33B3, "ms"], [0x33B4, "pV"], [0x33B5, "nV"], [0x33B7, "mV"], [0x33B8, "kV"],
+  [0x33B9, "MV"], [0x33BA, "pW"], [0x33BB, "nW"], [0x33BD, "mW"], [0x33BE, "kW"], [0x33BF, "MW"], [0x33C2, "a.m."], [0x33C3, "Bq"],
+  [0x33C4, "cc"], [0x33C5, "cd"], [0x33C7, "Co."], [0x33C8, "dB"], [0x33C9, "Gy"], [0x33CA, "ha"], [0x33CB, "HP"], [0x33CC, "in"],
+  [0x33CD, "KK"], [0x33CE, "KM"], [0x33CF, "kt"], [0x33D0, "lm"], [0x33D1, "ln"], [0x33D2, "log"], [0x33D3, "lx"], [0x33D4, "mb"],
+  [0x33D5, "mil"], [0x33D6, "mol"], [0x33D7, "PH"], [0x33D8, "p.m."], [0x33D9, "PPM"], [0x33DA, "PR"], [0x33DB, "sr"], [0x33DC, "Sv"],
+  [0x33DD, "Wb"], [0x33FF, "gal"],
+  // U+A700 block: 4 character(s), MODIFIER LETTER CAPITAL S to MODIFIER LETTER CAPITAL Q.
+  [0xA7F1, "S"], [0xA7F2, "C"], [0xA7F3, "F"], [0xA7F4, "Q"],
+  // U+FB00 block: 8 character(s), LATIN SMALL LIGATURE FF to HEBREW LETTER ALTERNATIVE PLUS SIGN.
+  [0xFB00, "ff"], [0xFB01, "fi"], [0xFB02, "fl"], [0xFB03, "ffi"], [0xFB04, "ffl"], [0xFB05, "st"], [0xFB06, "st"], [0xFB29, "+"],
+  // U+FE00 block: 40 character(s), PRESENTATION FORM FOR VERTICAL COMMA to SMALL COMMERCIAL AT.
+  [0xFE10, ","], [0xFE13, ":"], [0xFE14, ";"], [0xFE15, "!"], [0xFE16, "?"], [0xFE19, "..."], [0xFE30, ".."], [0xFE33, "_"],
+  [0xFE34, "_"], [0xFE35, "("], [0xFE36, ")"], [0xFE37, "{"], [0xFE38, "}"], [0xFE47, "["], [0xFE48, "]"], [0xFE4D, "_"],
+  [0xFE4E, "_"], [0xFE4F, "_"], [0xFE50, ","], [0xFE52, "."], [0xFE54, ";"], [0xFE55, ":"], [0xFE56, "?"], [0xFE57, "!"],
+  [0xFE59, "("], [0xFE5A, ")"], [0xFE5B, "{"], [0xFE5C, "}"], [0xFE5F, "#"], [0xFE60, "&"], [0xFE61, "*"], [0xFE62, "+"],
+  [0xFE63, "-"], [0xFE64, "<"], [0xFE65, ">"], [0xFE66, "="], [0xFE68, "\\"], [0xFE69, "$"], [0xFE6A, "%"], [0xFE6B, "@"],
+  // U+FF00 block: 94 character(s), FULLWIDTH EXCLAMATION MARK to FULLWIDTH TILDE.
+  [0xFF01, "!"], [0xFF02, "\""], [0xFF03, "#"], [0xFF04, "$"], [0xFF05, "%"], [0xFF06, "&"], [0xFF07, "'"], [0xFF08, "("],
+  [0xFF09, ")"], [0xFF0A, "*"], [0xFF0B, "+"], [0xFF0C, ","], [0xFF0D, "-"], [0xFF0E, "."], [0xFF0F, "/"], [0xFF10, "0"],
+  [0xFF11, "1"], [0xFF12, "2"], [0xFF13, "3"], [0xFF14, "4"], [0xFF15, "5"], [0xFF16, "6"], [0xFF17, "7"], [0xFF18, "8"],
+  [0xFF19, "9"], [0xFF1A, ":"], [0xFF1B, ";"], [0xFF1C, "<"], [0xFF1D, "="], [0xFF1E, ">"], [0xFF1F, "?"], [0xFF20, "@"],
+  [0xFF21, "A"], [0xFF22, "B"], [0xFF23, "C"], [0xFF24, "D"], [0xFF25, "E"], [0xFF26, "F"], [0xFF27, "G"], [0xFF28, "H"],
+  [0xFF29, "I"], [0xFF2A, "J"], [0xFF2B, "K"], [0xFF2C, "L"], [0xFF2D, "M"], [0xFF2E, "N"], [0xFF2F, "O"], [0xFF30, "P"],
+  [0xFF31, "Q"], [0xFF32, "R"], [0xFF33, "S"], [0xFF34, "T"], [0xFF35, "U"], [0xFF36, "V"], [0xFF37, "W"], [0xFF38, "X"],
+  [0xFF39, "Y"], [0xFF3A, "Z"], [0xFF3B, "["], [0xFF3C, "\\"], [0xFF3D, "]"], [0xFF3E, "^"], [0xFF3F, "_"], [0xFF40, "`"],
+  [0xFF41, "a"], [0xFF42, "b"], [0xFF43, "c"], [0xFF44, "d"], [0xFF45, "e"], [0xFF46, "f"], [0xFF47, "g"], [0xFF48, "h"],
+  [0xFF49, "i"], [0xFF4A, "j"], [0xFF4B, "k"], [0xFF4C, "l"], [0xFF4D, "m"], [0xFF4E, "n"], [0xFF4F, "o"], [0xFF50, "p"],
+  [0xFF51, "q"], [0xFF52, "r"], [0xFF53, "s"], [0xFF54, "t"], [0xFF55, "u"], [0xFF56, "v"], [0xFF57, "w"], [0xFF58, "x"],
+  [0xFF59, "y"], [0xFF5A, "z"], [0xFF5B, "{"], [0xFF5C, "|"], [0xFF5D, "}"], [0xFF5E, "~"],
+]);
+
+/** Official names of the non-ASCII Basic Multilingual Plane characters classified above. */
+export const HIDDEN_NAMES: ReadonlyMap<number, string> = new Map<number, string>([
+  // U+0000 block: 10 name(s).
+  [0x0085, "<control>"],
+  [0x00A0, "NO-BREAK SPACE"],
+  [0x00AA, "FEMININE ORDINAL INDICATOR"],
+  [0x00AB, "LEFT-POINTING DOUBLE ANGLE QUOTATION MARK"],
+  [0x00AD, "SOFT HYPHEN"],
+  [0x00B2, "SUPERSCRIPT TWO"],
+  [0x00B3, "SUPERSCRIPT THREE"],
+  [0x00B9, "SUPERSCRIPT ONE"],
+  [0x00BA, "MASCULINE ORDINAL INDICATOR"],
+  [0x00BB, "RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK"],
+  // U+0100 block: 12 name(s).
+  [0x0132, "LATIN CAPITAL LIGATURE IJ"],
+  [0x0133, "LATIN SMALL LIGATURE IJ"],
+  [0x017F, "LATIN SMALL LETTER LONG S"],
+  [0x01C7, "LATIN CAPITAL LETTER LJ"],
+  [0x01C8, "LATIN CAPITAL LETTER L WITH SMALL LETTER J"],
+  [0x01C9, "LATIN SMALL LETTER LJ"],
+  [0x01CA, "LATIN CAPITAL LETTER NJ"],
+  [0x01CB, "LATIN CAPITAL LETTER N WITH SMALL LETTER J"],
+  [0x01CC, "LATIN SMALL LETTER NJ"],
+  [0x01F1, "LATIN CAPITAL LETTER DZ"],
+  [0x01F2, "LATIN CAPITAL LETTER D WITH SMALL LETTER Z"],
+  [0x01F3, "LATIN SMALL LETTER DZ"],
+  // U+0200 block: 8 name(s).
+  [0x02B0, "MODIFIER LETTER SMALL H"],
+  [0x02B2, "MODIFIER LETTER SMALL J"],
+  [0x02B3, "MODIFIER LETTER SMALL R"],
+  [0x02B7, "MODIFIER LETTER SMALL W"],
+  [0x02B8, "MODIFIER LETTER SMALL Y"],
+  [0x02E1, "MODIFIER LETTER SMALL L"],
+  [0x02E2, "MODIFIER LETTER SMALL S"],
+  [0x02E3, "MODIFIER LETTER SMALL X"],
+  // U+0300 block: 2 name(s).
+  [0x034F, "COMBINING GRAPHEME JOINER"],
+  [0x037E, "GREEK QUESTION MARK"],
+  // U+0500 block: 2 name(s).
+  [0x058A, "ARMENIAN HYPHEN"],
+  [0x05BE, "HEBREW PUNCTUATION MAQAF"],
+  // U+0600 block: 1 name(s).
+  [0x061C, "ARABIC LETTER MARK"],
+  // U+1100 block: 2 name(s).
+  [0x115F, "HANGUL CHOSEONG FILLER"],
+  [0x1160, "HANGUL JUNGSEONG FILLER"],
+  // U+1400 block: 1 name(s).
+  [0x1400, "CANADIAN SYLLABICS HYPHEN"],
+  // U+1600 block: 1 name(s).
+  [0x1680, "OGHAM SPACE MARK"],
+  // U+1700 block: 2 name(s).
+  [0x17B4, "KHMER VOWEL INHERENT AQ"],
+  [0x17B5, "KHMER VOWEL INHERENT AA"],
+  // U+1800 block: 6 name(s).
+  [0x1806, "MONGOLIAN TODO SOFT HYPHEN"],
+  [0x180B, "MONGOLIAN FREE VARIATION SELECTOR ONE"],
+  [0x180C, "MONGOLIAN FREE VARIATION SELECTOR TWO"],
+  [0x180D, "MONGOLIAN FREE VARIATION SELECTOR THREE"],
+  [0x180E, "MONGOLIAN VOWEL SEPARATOR"],
+  [0x180F, "MONGOLIAN FREE VARIATION SELECTOR FOUR"],
+  // U+1D00 block: 37 name(s).
+  [0x1D2C, "MODIFIER LETTER CAPITAL A"],
+  [0x1D2E, "MODIFIER LETTER CAPITAL B"],
+  [0x1D30, "MODIFIER LETTER CAPITAL D"],
+  [0x1D31, "MODIFIER LETTER CAPITAL E"],
+  [0x1D33, "MODIFIER LETTER CAPITAL G"],
+  [0x1D34, "MODIFIER LETTER CAPITAL H"],
+  [0x1D35, "MODIFIER LETTER CAPITAL I"],
+  [0x1D36, "MODIFIER LETTER CAPITAL J"],
+  [0x1D37, "MODIFIER LETTER CAPITAL K"],
+  [0x1D38, "MODIFIER LETTER CAPITAL L"],
+  [0x1D39, "MODIFIER LETTER CAPITAL M"],
+  [0x1D3A, "MODIFIER LETTER CAPITAL N"],
+  [0x1D3C, "MODIFIER LETTER CAPITAL O"],
+  [0x1D3E, "MODIFIER LETTER CAPITAL P"],
+  [0x1D3F, "MODIFIER LETTER CAPITAL R"],
+  [0x1D40, "MODIFIER LETTER CAPITAL T"],
+  [0x1D41, "MODIFIER LETTER CAPITAL U"],
+  [0x1D42, "MODIFIER LETTER CAPITAL W"],
+  [0x1D43, "MODIFIER LETTER SMALL A"],
+  [0x1D47, "MODIFIER LETTER SMALL B"],
+  [0x1D48, "MODIFIER LETTER SMALL D"],
+  [0x1D49, "MODIFIER LETTER SMALL E"],
+  [0x1D4D, "MODIFIER LETTER SMALL G"],
+  [0x1D4F, "MODIFIER LETTER SMALL K"],
+  [0x1D50, "MODIFIER LETTER SMALL M"],
+  [0x1D52, "MODIFIER LETTER SMALL O"],
+  [0x1D56, "MODIFIER LETTER SMALL P"],
+  [0x1D57, "MODIFIER LETTER SMALL T"],
+  [0x1D58, "MODIFIER LETTER SMALL U"],
+  [0x1D5B, "MODIFIER LETTER SMALL V"],
+  [0x1D62, "LATIN SUBSCRIPT SMALL LETTER I"],
+  [0x1D63, "LATIN SUBSCRIPT SMALL LETTER R"],
+  [0x1D64, "LATIN SUBSCRIPT SMALL LETTER U"],
+  [0x1D65, "LATIN SUBSCRIPT SMALL LETTER V"],
+  [0x1D9C, "MODIFIER LETTER SMALL C"],
+  [0x1DA0, "MODIFIER LETTER SMALL F"],
+  [0x1DBB, "MODIFIER LETTER SMALL Z"],
+  // U+1F00 block: 1 name(s).
+  [0x1FEF, "GREEK VARIA"],
+  // U+2000 block: 110 name(s).
+  [0x2000, "EN QUAD"],
+  [0x2001, "EM QUAD"],
+  [0x2002, "EN SPACE"],
+  [0x2003, "EM SPACE"],
+  [0x2004, "THREE-PER-EM SPACE"],
+  [0x2005, "FOUR-PER-EM SPACE"],
+  [0x2006, "SIX-PER-EM SPACE"],
+  [0x2007, "FIGURE SPACE"],
+  [0x2008, "PUNCTUATION SPACE"],
+  [0x2009, "THIN SPACE"],
+  [0x200A, "HAIR SPACE"],
+  [0x200B, "ZERO WIDTH SPACE"],
+  [0x200C, "ZERO WIDTH NON-JOINER"],
+  [0x200D, "ZERO WIDTH JOINER"],
+  [0x200E, "LEFT-TO-RIGHT MARK"],
+  [0x200F, "RIGHT-TO-LEFT MARK"],
+  [0x2010, "HYPHEN"],
+  [0x2011, "NON-BREAKING HYPHEN"],
+  [0x2012, "FIGURE DASH"],
+  [0x2013, "EN DASH"],
+  [0x2014, "EM DASH"],
+  [0x2015, "HORIZONTAL BAR"],
+  [0x2018, "LEFT SINGLE QUOTATION MARK"],
+  [0x2019, "RIGHT SINGLE QUOTATION MARK"],
+  [0x201A, "SINGLE LOW-9 QUOTATION MARK"],
+  [0x201B, "SINGLE HIGH-REVERSED-9 QUOTATION MARK"],
+  [0x201C, "LEFT DOUBLE QUOTATION MARK"],
+  [0x201D, "RIGHT DOUBLE QUOTATION MARK"],
+  [0x201E, "DOUBLE LOW-9 QUOTATION MARK"],
+  [0x201F, "DOUBLE HIGH-REVERSED-9 QUOTATION MARK"],
+  [0x2024, "ONE DOT LEADER"],
+  [0x2025, "TWO DOT LEADER"],
+  [0x2026, "HORIZONTAL ELLIPSIS"],
+  [0x2028, "LINE SEPARATOR"],
+  [0x2029, "PARAGRAPH SEPARATOR"],
+  [0x202A, "LEFT-TO-RIGHT EMBEDDING"],
+  [0x202B, "RIGHT-TO-LEFT EMBEDDING"],
+  [0x202C, "POP DIRECTIONAL FORMATTING"],
+  [0x202D, "LEFT-TO-RIGHT OVERRIDE"],
+  [0x202E, "RIGHT-TO-LEFT OVERRIDE"],
+  [0x202F, "NARROW NO-BREAK SPACE"],
+  [0x2039, "SINGLE LEFT-POINTING ANGLE QUOTATION MARK"],
+  [0x203A, "SINGLE RIGHT-POINTING ANGLE QUOTATION MARK"],
+  [0x203C, "DOUBLE EXCLAMATION MARK"],
+  [0x2047, "DOUBLE QUESTION MARK"],
+  [0x2048, "QUESTION EXCLAMATION MARK"],
+  [0x2049, "EXCLAMATION QUESTION MARK"],
+  [0x2053, "SWUNG DASH"],
+  [0x205F, "MEDIUM MATHEMATICAL SPACE"],
+  [0x2060, "WORD JOINER"],
+  [0x2061, "FUNCTION APPLICATION"],
+  [0x2062, "INVISIBLE TIMES"],
+  [0x2063, "INVISIBLE SEPARATOR"],
+  [0x2064, "INVISIBLE PLUS"],
+  [0x2066, "LEFT-TO-RIGHT ISOLATE"],
+  [0x2067, "RIGHT-TO-LEFT ISOLATE"],
+  [0x2068, "FIRST STRONG ISOLATE"],
+  [0x2069, "POP DIRECTIONAL ISOLATE"],
+  [0x206A, "INHIBIT SYMMETRIC SWAPPING"],
+  [0x206B, "ACTIVATE SYMMETRIC SWAPPING"],
+  [0x206C, "INHIBIT ARABIC FORM SHAPING"],
+  [0x206D, "ACTIVATE ARABIC FORM SHAPING"],
+  [0x206E, "NATIONAL DIGIT SHAPES"],
+  [0x206F, "NOMINAL DIGIT SHAPES"],
+  [0x2070, "SUPERSCRIPT ZERO"],
+  [0x2071, "SUPERSCRIPT LATIN SMALL LETTER I"],
+  [0x2074, "SUPERSCRIPT FOUR"],
+  [0x2075, "SUPERSCRIPT FIVE"],
+  [0x2076, "SUPERSCRIPT SIX"],
+  [0x2077, "SUPERSCRIPT SEVEN"],
+  [0x2078, "SUPERSCRIPT EIGHT"],
+  [0x2079, "SUPERSCRIPT NINE"],
+  [0x207A, "SUPERSCRIPT PLUS SIGN"],
+  [0x207B, "SUPERSCRIPT MINUS"],
+  [0x207C, "SUPERSCRIPT EQUALS SIGN"],
+  [0x207D, "SUPERSCRIPT LEFT PARENTHESIS"],
+  [0x207E, "SUPERSCRIPT RIGHT PARENTHESIS"],
+  [0x207F, "SUPERSCRIPT LATIN SMALL LETTER N"],
+  [0x2080, "SUBSCRIPT ZERO"],
+  [0x2081, "SUBSCRIPT ONE"],
+  [0x2082, "SUBSCRIPT TWO"],
+  [0x2083, "SUBSCRIPT THREE"],
+  [0x2084, "SUBSCRIPT FOUR"],
+  [0x2085, "SUBSCRIPT FIVE"],
+  [0x2086, "SUBSCRIPT SIX"],
+  [0x2087, "SUBSCRIPT SEVEN"],
+  [0x2088, "SUBSCRIPT EIGHT"],
+  [0x2089, "SUBSCRIPT NINE"],
+  [0x208A, "SUBSCRIPT PLUS SIGN"],
+  [0x208B, "SUBSCRIPT MINUS"],
+  [0x208C, "SUBSCRIPT EQUALS SIGN"],
+  [0x208D, "SUBSCRIPT LEFT PARENTHESIS"],
+  [0x208E, "SUBSCRIPT RIGHT PARENTHESIS"],
+  [0x2090, "LATIN SUBSCRIPT SMALL LETTER A"],
+  [0x2091, "LATIN SUBSCRIPT SMALL LETTER E"],
+  [0x2092, "LATIN SUBSCRIPT SMALL LETTER O"],
+  [0x2093, "LATIN SUBSCRIPT SMALL LETTER X"],
+  [0x2095, "LATIN SUBSCRIPT SMALL LETTER H"],
+  [0x2096, "LATIN SUBSCRIPT SMALL LETTER K"],
+  [0x2097, "LATIN SUBSCRIPT SMALL LETTER L"],
+  [0x2098, "LATIN SUBSCRIPT SMALL LETTER M"],
+  [0x2099, "LATIN SUBSCRIPT SMALL LETTER N"],
+  [0x209A, "LATIN SUBSCRIPT SMALL LETTER P"],
+  [0x209B, "LATIN SUBSCRIPT SMALL LETTER S"],
+  [0x209C, "LATIN SUBSCRIPT SMALL LETTER T"],
+  [0x209D, "LATIN SUBSCRIPT SMALL LETTER W"],
+  [0x209E, "LATIN SUBSCRIPT SMALL LETTER Y"],
+  [0x209F, "LATIN SUBSCRIPT SMALL LETTER Z"],
+  [0x20A8, "RUPEE SIGN"],
+  // U+2100 block: 73 name(s).
+  [0x2100, "ACCOUNT OF"],
+  [0x2101, "ADDRESSED TO THE SUBJECT"],
+  [0x2102, "DOUBLE-STRUCK CAPITAL C"],
+  [0x2105, "CARE OF"],
+  [0x2106, "CADA UNA"],
+  [0x210A, "SCRIPT SMALL G"],
+  [0x210B, "SCRIPT CAPITAL H"],
+  [0x210C, "BLACK-LETTER CAPITAL H"],
+  [0x210D, "DOUBLE-STRUCK CAPITAL H"],
+  [0x210E, "PLANCK CONSTANT"],
+  [0x2110, "SCRIPT CAPITAL I"],
+  [0x2111, "BLACK-LETTER CAPITAL I"],
+  [0x2112, "SCRIPT CAPITAL L"],
+  [0x2113, "SCRIPT SMALL L"],
+  [0x2115, "DOUBLE-STRUCK CAPITAL N"],
+  [0x2116, "NUMERO SIGN"],
+  [0x2119, "DOUBLE-STRUCK CAPITAL P"],
+  [0x211A, "DOUBLE-STRUCK CAPITAL Q"],
+  [0x211B, "SCRIPT CAPITAL R"],
+  [0x211C, "BLACK-LETTER CAPITAL R"],
+  [0x211D, "DOUBLE-STRUCK CAPITAL R"],
+  [0x2120, "SERVICE MARK"],
+  [0x2121, "TELEPHONE SIGN"],
+  [0x2122, "TRADE MARK SIGN"],
+  [0x2124, "DOUBLE-STRUCK CAPITAL Z"],
+  [0x2128, "BLACK-LETTER CAPITAL Z"],
+  [0x212A, "KELVIN SIGN"],
+  [0x212C, "SCRIPT CAPITAL B"],
+  [0x212D, "BLACK-LETTER CAPITAL C"],
+  [0x212F, "SCRIPT SMALL E"],
+  [0x2130, "SCRIPT CAPITAL E"],
+  [0x2131, "SCRIPT CAPITAL F"],
+  [0x2133, "SCRIPT CAPITAL M"],
+  [0x2134, "SCRIPT SMALL O"],
+  [0x2139, "INFORMATION SOURCE"],
+  [0x213B, "FACSIMILE SIGN"],
+  [0x2145, "DOUBLE-STRUCK ITALIC CAPITAL D"],
+  [0x2146, "DOUBLE-STRUCK ITALIC SMALL D"],
+  [0x2147, "DOUBLE-STRUCK ITALIC SMALL E"],
+  [0x2148, "DOUBLE-STRUCK ITALIC SMALL I"],
+  [0x2149, "DOUBLE-STRUCK ITALIC SMALL J"],
+  [0x2160, "ROMAN NUMERAL ONE"],
+  [0x2161, "ROMAN NUMERAL TWO"],
+  [0x2162, "ROMAN NUMERAL THREE"],
+  [0x2163, "ROMAN NUMERAL FOUR"],
+  [0x2164, "ROMAN NUMERAL FIVE"],
+  [0x2165, "ROMAN NUMERAL SIX"],
+  [0x2166, "ROMAN NUMERAL SEVEN"],
+  [0x2167, "ROMAN NUMERAL EIGHT"],
+  [0x2168, "ROMAN NUMERAL NINE"],
+  [0x2169, "ROMAN NUMERAL TEN"],
+  [0x216A, "ROMAN NUMERAL ELEVEN"],
+  [0x216B, "ROMAN NUMERAL TWELVE"],
+  [0x216C, "ROMAN NUMERAL FIFTY"],
+  [0x216D, "ROMAN NUMERAL ONE HUNDRED"],
+  [0x216E, "ROMAN NUMERAL FIVE HUNDRED"],
+  [0x216F, "ROMAN NUMERAL ONE THOUSAND"],
+  [0x2170, "SMALL ROMAN NUMERAL ONE"],
+  [0x2171, "SMALL ROMAN NUMERAL TWO"],
+  [0x2172, "SMALL ROMAN NUMERAL THREE"],
+  [0x2173, "SMALL ROMAN NUMERAL FOUR"],
+  [0x2174, "SMALL ROMAN NUMERAL FIVE"],
+  [0x2175, "SMALL ROMAN NUMERAL SIX"],
+  [0x2176, "SMALL ROMAN NUMERAL SEVEN"],
+  [0x2177, "SMALL ROMAN NUMERAL EIGHT"],
+  [0x2178, "SMALL ROMAN NUMERAL NINE"],
+  [0x2179, "SMALL ROMAN NUMERAL TEN"],
+  [0x217A, "SMALL ROMAN NUMERAL ELEVEN"],
+  [0x217B, "SMALL ROMAN NUMERAL TWELVE"],
+  [0x217C, "SMALL ROMAN NUMERAL FIFTY"],
+  [0x217D, "SMALL ROMAN NUMERAL ONE HUNDRED"],
+  [0x217E, "SMALL ROMAN NUMERAL FIVE HUNDRED"],
+  [0x217F, "SMALL ROMAN NUMERAL ONE THOUSAND"],
+  // U+2200 block: 1 name(s).
+  [0x2212, "MINUS SIGN"],
+  // U+2400 block: 139 name(s).
+  [0x2460, "CIRCLED DIGIT ONE"],
+  [0x2461, "CIRCLED DIGIT TWO"],
+  [0x2462, "CIRCLED DIGIT THREE"],
+  [0x2463, "CIRCLED DIGIT FOUR"],
+  [0x2464, "CIRCLED DIGIT FIVE"],
+  [0x2465, "CIRCLED DIGIT SIX"],
+  [0x2466, "CIRCLED DIGIT SEVEN"],
+  [0x2467, "CIRCLED DIGIT EIGHT"],
+  [0x2468, "CIRCLED DIGIT NINE"],
+  [0x2469, "CIRCLED NUMBER TEN"],
+  [0x246A, "CIRCLED NUMBER ELEVEN"],
+  [0x246B, "CIRCLED NUMBER TWELVE"],
+  [0x246C, "CIRCLED NUMBER THIRTEEN"],
+  [0x246D, "CIRCLED NUMBER FOURTEEN"],
+  [0x246E, "CIRCLED NUMBER FIFTEEN"],
+  [0x246F, "CIRCLED NUMBER SIXTEEN"],
+  [0x2470, "CIRCLED NUMBER SEVENTEEN"],
+  [0x2471, "CIRCLED NUMBER EIGHTEEN"],
+  [0x2472, "CIRCLED NUMBER NINETEEN"],
+  [0x2473, "CIRCLED NUMBER TWENTY"],
+  [0x2474, "PARENTHESIZED DIGIT ONE"],
+  [0x2475, "PARENTHESIZED DIGIT TWO"],
+  [0x2476, "PARENTHESIZED DIGIT THREE"],
+  [0x2477, "PARENTHESIZED DIGIT FOUR"],
+  [0x2478, "PARENTHESIZED DIGIT FIVE"],
+  [0x2479, "PARENTHESIZED DIGIT SIX"],
+  [0x247A, "PARENTHESIZED DIGIT SEVEN"],
+  [0x247B, "PARENTHESIZED DIGIT EIGHT"],
+  [0x247C, "PARENTHESIZED DIGIT NINE"],
+  [0x247D, "PARENTHESIZED NUMBER TEN"],
+  [0x247E, "PARENTHESIZED NUMBER ELEVEN"],
+  [0x247F, "PARENTHESIZED NUMBER TWELVE"],
+  [0x2480, "PARENTHESIZED NUMBER THIRTEEN"],
+  [0x2481, "PARENTHESIZED NUMBER FOURTEEN"],
+  [0x2482, "PARENTHESIZED NUMBER FIFTEEN"],
+  [0x2483, "PARENTHESIZED NUMBER SIXTEEN"],
+  [0x2484, "PARENTHESIZED NUMBER SEVENTEEN"],
+  [0x2485, "PARENTHESIZED NUMBER EIGHTEEN"],
+  [0x2486, "PARENTHESIZED NUMBER NINETEEN"],
+  [0x2487, "PARENTHESIZED NUMBER TWENTY"],
+  [0x2488, "DIGIT ONE FULL STOP"],
+  [0x2489, "DIGIT TWO FULL STOP"],
+  [0x248A, "DIGIT THREE FULL STOP"],
+  [0x248B, "DIGIT FOUR FULL STOP"],
+  [0x248C, "DIGIT FIVE FULL STOP"],
+  [0x248D, "DIGIT SIX FULL STOP"],
+  [0x248E, "DIGIT SEVEN FULL STOP"],
+  [0x248F, "DIGIT EIGHT FULL STOP"],
+  [0x2490, "DIGIT NINE FULL STOP"],
+  [0x2491, "NUMBER TEN FULL STOP"],
+  [0x2492, "NUMBER ELEVEN FULL STOP"],
+  [0x2493, "NUMBER TWELVE FULL STOP"],
+  [0x2494, "NUMBER THIRTEEN FULL STOP"],
+  [0x2495, "NUMBER FOURTEEN FULL STOP"],
+  [0x2496, "NUMBER FIFTEEN FULL STOP"],
+  [0x2497, "NUMBER SIXTEEN FULL STOP"],
+  [0x2498, "NUMBER SEVENTEEN FULL STOP"],
+  [0x2499, "NUMBER EIGHTEEN FULL STOP"],
+  [0x249A, "NUMBER NINETEEN FULL STOP"],
+  [0x249B, "NUMBER TWENTY FULL STOP"],
+  [0x249C, "PARENTHESIZED LATIN SMALL LETTER A"],
+  [0x249D, "PARENTHESIZED LATIN SMALL LETTER B"],
+  [0x249E, "PARENTHESIZED LATIN SMALL LETTER C"],
+  [0x249F, "PARENTHESIZED LATIN SMALL LETTER D"],
+  [0x24A0, "PARENTHESIZED LATIN SMALL LETTER E"],
+  [0x24A1, "PARENTHESIZED LATIN SMALL LETTER F"],
+  [0x24A2, "PARENTHESIZED LATIN SMALL LETTER G"],
+  [0x24A3, "PARENTHESIZED LATIN SMALL LETTER H"],
+  [0x24A4, "PARENTHESIZED LATIN SMALL LETTER I"],
+  [0x24A5, "PARENTHESIZED LATIN SMALL LETTER J"],
+  [0x24A6, "PARENTHESIZED LATIN SMALL LETTER K"],
+  [0x24A7, "PARENTHESIZED LATIN SMALL LETTER L"],
+  [0x24A8, "PARENTHESIZED LATIN SMALL LETTER M"],
+  [0x24A9, "PARENTHESIZED LATIN SMALL LETTER N"],
+  [0x24AA, "PARENTHESIZED LATIN SMALL LETTER O"],
+  [0x24AB, "PARENTHESIZED LATIN SMALL LETTER P"],
+  [0x24AC, "PARENTHESIZED LATIN SMALL LETTER Q"],
+  [0x24AD, "PARENTHESIZED LATIN SMALL LETTER R"],
+  [0x24AE, "PARENTHESIZED LATIN SMALL LETTER S"],
+  [0x24AF, "PARENTHESIZED LATIN SMALL LETTER T"],
+  [0x24B0, "PARENTHESIZED LATIN SMALL LETTER U"],
+  [0x24B1, "PARENTHESIZED LATIN SMALL LETTER V"],
+  [0x24B2, "PARENTHESIZED LATIN SMALL LETTER W"],
+  [0x24B3, "PARENTHESIZED LATIN SMALL LETTER X"],
+  [0x24B4, "PARENTHESIZED LATIN SMALL LETTER Y"],
+  [0x24B5, "PARENTHESIZED LATIN SMALL LETTER Z"],
+  [0x24B6, "CIRCLED LATIN CAPITAL LETTER A"],
+  [0x24B7, "CIRCLED LATIN CAPITAL LETTER B"],
+  [0x24B8, "CIRCLED LATIN CAPITAL LETTER C"],
+  [0x24B9, "CIRCLED LATIN CAPITAL LETTER D"],
+  [0x24BA, "CIRCLED LATIN CAPITAL LETTER E"],
+  [0x24BB, "CIRCLED LATIN CAPITAL LETTER F"],
+  [0x24BC, "CIRCLED LATIN CAPITAL LETTER G"],
+  [0x24BD, "CIRCLED LATIN CAPITAL LETTER H"],
+  [0x24BE, "CIRCLED LATIN CAPITAL LETTER I"],
+  [0x24BF, "CIRCLED LATIN CAPITAL LETTER J"],
+  [0x24C0, "CIRCLED LATIN CAPITAL LETTER K"],
+  [0x24C1, "CIRCLED LATIN CAPITAL LETTER L"],
+  [0x24C2, "CIRCLED LATIN CAPITAL LETTER M"],
+  [0x24C3, "CIRCLED LATIN CAPITAL LETTER N"],
+  [0x24C4, "CIRCLED LATIN CAPITAL LETTER O"],
+  [0x24C5, "CIRCLED LATIN CAPITAL LETTER P"],
+  [0x24C6, "CIRCLED LATIN CAPITAL LETTER Q"],
+  [0x24C7, "CIRCLED LATIN CAPITAL LETTER R"],
+  [0x24C8, "CIRCLED LATIN CAPITAL LETTER S"],
+  [0x24C9, "CIRCLED LATIN CAPITAL LETTER T"],
+  [0x24CA, "CIRCLED LATIN CAPITAL LETTER U"],
+  [0x24CB, "CIRCLED LATIN CAPITAL LETTER V"],
+  [0x24CC, "CIRCLED LATIN CAPITAL LETTER W"],
+  [0x24CD, "CIRCLED LATIN CAPITAL LETTER X"],
+  [0x24CE, "CIRCLED LATIN CAPITAL LETTER Y"],
+  [0x24CF, "CIRCLED LATIN CAPITAL LETTER Z"],
+  [0x24D0, "CIRCLED LATIN SMALL LETTER A"],
+  [0x24D1, "CIRCLED LATIN SMALL LETTER B"],
+  [0x24D2, "CIRCLED LATIN SMALL LETTER C"],
+  [0x24D3, "CIRCLED LATIN SMALL LETTER D"],
+  [0x24D4, "CIRCLED LATIN SMALL LETTER E"],
+  [0x24D5, "CIRCLED LATIN SMALL LETTER F"],
+  [0x24D6, "CIRCLED LATIN SMALL LETTER G"],
+  [0x24D7, "CIRCLED LATIN SMALL LETTER H"],
+  [0x24D8, "CIRCLED LATIN SMALL LETTER I"],
+  [0x24D9, "CIRCLED LATIN SMALL LETTER J"],
+  [0x24DA, "CIRCLED LATIN SMALL LETTER K"],
+  [0x24DB, "CIRCLED LATIN SMALL LETTER L"],
+  [0x24DC, "CIRCLED LATIN SMALL LETTER M"],
+  [0x24DD, "CIRCLED LATIN SMALL LETTER N"],
+  [0x24DE, "CIRCLED LATIN SMALL LETTER O"],
+  [0x24DF, "CIRCLED LATIN SMALL LETTER P"],
+  [0x24E0, "CIRCLED LATIN SMALL LETTER Q"],
+  [0x24E1, "CIRCLED LATIN SMALL LETTER R"],
+  [0x24E2, "CIRCLED LATIN SMALL LETTER S"],
+  [0x24E3, "CIRCLED LATIN SMALL LETTER T"],
+  [0x24E4, "CIRCLED LATIN SMALL LETTER U"],
+  [0x24E5, "CIRCLED LATIN SMALL LETTER V"],
+  [0x24E6, "CIRCLED LATIN SMALL LETTER W"],
+  [0x24E7, "CIRCLED LATIN SMALL LETTER X"],
+  [0x24E8, "CIRCLED LATIN SMALL LETTER Y"],
+  [0x24E9, "CIRCLED LATIN SMALL LETTER Z"],
+  [0x24EA, "CIRCLED DIGIT ZERO"],
+  // U+2A00 block: 3 name(s).
+  [0x2A74, "DOUBLE COLON EQUAL"],
+  [0x2A75, "TWO CONSECUTIVE EQUALS SIGNS"],
+  [0x2A76, "THREE CONSECUTIVE EQUALS SIGNS"],
+  // U+2C00 block: 2 name(s).
+  [0x2C7C, "LATIN SUBSCRIPT SMALL LETTER J"],
+  [0x2C7D, "MODIFIER LETTER CAPITAL V"],
+  // U+2E00 block: 7 name(s).
+  [0x2E17, "DOUBLE OBLIQUE HYPHEN"],
+  [0x2E1A, "HYPHEN WITH DIAERESIS"],
+  [0x2E3A, "TWO-EM DASH"],
+  [0x2E3B, "THREE-EM DASH"],
+  [0x2E40, "DOUBLE HYPHEN"],
+  [0x2E42, "DOUBLE LOW-REVERSED-9 QUOTATION MARK"],
+  [0x2E5D, "OBLIQUE HYPHEN"],
+  // U+3000 block: 11 name(s).
+  [0x3000, "IDEOGRAPHIC SPACE"],
+  [0x300C, "LEFT CORNER BRACKET"],
+  [0x300D, "RIGHT CORNER BRACKET"],
+  [0x300E, "LEFT WHITE CORNER BRACKET"],
+  [0x300F, "RIGHT WHITE CORNER BRACKET"],
+  [0x301C, "WAVE DASH"],
+  [0x301D, "REVERSED DOUBLE PRIME QUOTATION MARK"],
+  [0x301E, "DOUBLE PRIME QUOTATION MARK"],
+  [0x301F, "LOW DOUBLE PRIME QUOTATION MARK"],
+  [0x3030, "WAVY DASH"],
+  [0x30A0, "KATAKANA-HIRAGANA DOUBLE HYPHEN"],
+  // U+3100 block: 1 name(s).
+  [0x3164, "HANGUL FILLER"],
+  // U+3200 block: 35 name(s).
+  [0x3250, "PARTNERSHIP SIGN"],
+  [0x3251, "CIRCLED NUMBER TWENTY ONE"],
+  [0x3252, "CIRCLED NUMBER TWENTY TWO"],
+  [0x3253, "CIRCLED NUMBER TWENTY THREE"],
+  [0x3254, "CIRCLED NUMBER TWENTY FOUR"],
+  [0x3255, "CIRCLED NUMBER TWENTY FIVE"],
+  [0x3256, "CIRCLED NUMBER TWENTY SIX"],
+  [0x3257, "CIRCLED NUMBER TWENTY SEVEN"],
+  [0x3258, "CIRCLED NUMBER TWENTY EIGHT"],
+  [0x3259, "CIRCLED NUMBER TWENTY NINE"],
+  [0x325A, "CIRCLED NUMBER THIRTY"],
+  [0x325B, "CIRCLED NUMBER THIRTY ONE"],
+  [0x325C, "CIRCLED NUMBER THIRTY TWO"],
+  [0x325D, "CIRCLED NUMBER THIRTY THREE"],
+  [0x325E, "CIRCLED NUMBER THIRTY FOUR"],
+  [0x325F, "CIRCLED NUMBER THIRTY FIVE"],
+  [0x32B1, "CIRCLED NUMBER THIRTY SIX"],
+  [0x32B2, "CIRCLED NUMBER THIRTY SEVEN"],
+  [0x32B3, "CIRCLED NUMBER THIRTY EIGHT"],
+  [0x32B4, "CIRCLED NUMBER THIRTY NINE"],
+  [0x32B5, "CIRCLED NUMBER FORTY"],
+  [0x32B6, "CIRCLED NUMBER FORTY ONE"],
+  [0x32B7, "CIRCLED NUMBER FORTY TWO"],
+  [0x32B8, "CIRCLED NUMBER FORTY THREE"],
+  [0x32B9, "CIRCLED NUMBER FORTY FOUR"],
+  [0x32BA, "CIRCLED NUMBER FORTY FIVE"],
+  [0x32BB, "CIRCLED NUMBER FORTY SIX"],
+  [0x32BC, "CIRCLED NUMBER FORTY SEVEN"],
+  [0x32BD, "CIRCLED NUMBER FORTY EIGHT"],
+  [0x32BE, "CIRCLED NUMBER FORTY NINE"],
+  [0x32BF, "CIRCLED NUMBER FIFTY"],
+  [0x32CC, "SQUARE HG"],
+  [0x32CD, "SQUARE ERG"],
+  [0x32CE, "SQUARE EV"],
+  [0x32CF, "LIMITED LIABILITY SIGN"],
+  // U+3300 block: 90 name(s).
+  [0x3371, "SQUARE HPA"],
+  [0x3372, "SQUARE DA"],
+  [0x3373, "SQUARE AU"],
+  [0x3374, "SQUARE BAR"],
+  [0x3375, "SQUARE OV"],
+  [0x3376, "SQUARE PC"],
+  [0x3377, "SQUARE DM"],
+  [0x3378, "SQUARE DM SQUARED"],
+  [0x3379, "SQUARE DM CUBED"],
+  [0x337A, "SQUARE IU"],
+  [0x3380, "SQUARE PA AMPS"],
+  [0x3381, "SQUARE NA"],
+  [0x3383, "SQUARE MA"],
+  [0x3384, "SQUARE KA"],
+  [0x3385, "SQUARE KB"],
+  [0x3386, "SQUARE MB"],
+  [0x3387, "SQUARE GB"],
+  [0x3388, "SQUARE CAL"],
+  [0x3389, "SQUARE KCAL"],
+  [0x338A, "SQUARE PF"],
+  [0x338B, "SQUARE NF"],
+  [0x338E, "SQUARE MG"],
+  [0x338F, "SQUARE KG"],
+  [0x3390, "SQUARE HZ"],
+  [0x3391, "SQUARE KHZ"],
+  [0x3392, "SQUARE MHZ"],
+  [0x3393, "SQUARE GHZ"],
+  [0x3394, "SQUARE THZ"],
+  [0x3396, "SQUARE ML"],
+  [0x3397, "SQUARE DL"],
+  [0x3398, "SQUARE KL"],
+  [0x3399, "SQUARE FM"],
+  [0x339A, "SQUARE NM"],
+  [0x339C, "SQUARE MM"],
+  [0x339D, "SQUARE CM"],
+  [0x339E, "SQUARE KM"],
+  [0x339F, "SQUARE MM SQUARED"],
+  [0x33A0, "SQUARE CM SQUARED"],
+  [0x33A1, "SQUARE M SQUARED"],
+  [0x33A2, "SQUARE KM SQUARED"],
+  [0x33A3, "SQUARE MM CUBED"],
+  [0x33A4, "SQUARE CM CUBED"],
+  [0x33A5, "SQUARE M CUBED"],
+  [0x33A6, "SQUARE KM CUBED"],
+  [0x33A9, "SQUARE PA"],
+  [0x33AA, "SQUARE KPA"],
+  [0x33AB, "SQUARE MPA"],
+  [0x33AC, "SQUARE GPA"],
+  [0x33AD, "SQUARE RAD"],
+  [0x33B0, "SQUARE PS"],
+  [0x33B1, "SQUARE NS"],
+  [0x33B3, "SQUARE MS"],
+  [0x33B4, "SQUARE PV"],
+  [0x33B5, "SQUARE NV"],
+  [0x33B7, "SQUARE MV"],
+  [0x33B8, "SQUARE KV"],
+  [0x33B9, "SQUARE MV MEGA"],
+  [0x33BA, "SQUARE PW"],
+  [0x33BB, "SQUARE NW"],
+  [0x33BD, "SQUARE MW"],
+  [0x33BE, "SQUARE KW"],
+  [0x33BF, "SQUARE MW MEGA"],
+  [0x33C2, "SQUARE AM"],
+  [0x33C3, "SQUARE BQ"],
+  [0x33C4, "SQUARE CC"],
+  [0x33C5, "SQUARE CD"],
+  [0x33C7, "SQUARE CO"],
+  [0x33C8, "SQUARE DB"],
+  [0x33C9, "SQUARE GY"],
+  [0x33CA, "SQUARE HA"],
+  [0x33CB, "SQUARE HP"],
+  [0x33CC, "SQUARE IN"],
+  [0x33CD, "SQUARE KK"],
+  [0x33CE, "SQUARE KM CAPITAL"],
+  [0x33CF, "SQUARE KT"],
+  [0x33D0, "SQUARE LM"],
+  [0x33D1, "SQUARE LN"],
+  [0x33D2, "SQUARE LOG"],
+  [0x33D3, "SQUARE LX"],
+  [0x33D4, "SQUARE MB SMALL"],
+  [0x33D5, "SQUARE MIL"],
+  [0x33D6, "SQUARE MOL"],
+  [0x33D7, "SQUARE PH"],
+  [0x33D8, "SQUARE PM"],
+  [0x33D9, "SQUARE PPM"],
+  [0x33DA, "SQUARE PR"],
+  [0x33DB, "SQUARE SR"],
+  [0x33DC, "SQUARE SV"],
+  [0x33DD, "SQUARE WB"],
+  [0x33FF, "SQUARE GAL"],
+  // U+A700 block: 4 name(s).
+  [0xA7F1, "MODIFIER LETTER CAPITAL S"],
+  [0xA7F2, "MODIFIER LETTER CAPITAL C"],
+  [0xA7F3, "MODIFIER LETTER CAPITAL F"],
+  [0xA7F4, "MODIFIER LETTER CAPITAL Q"],
+  // U+FB00 block: 8 name(s).
+  [0xFB00, "LATIN SMALL LIGATURE FF"],
+  [0xFB01, "LATIN SMALL LIGATURE FI"],
+  [0xFB02, "LATIN SMALL LIGATURE FL"],
+  [0xFB03, "LATIN SMALL LIGATURE FFI"],
+  [0xFB04, "LATIN SMALL LIGATURE FFL"],
+  [0xFB05, "LATIN SMALL LIGATURE LONG S T"],
+  [0xFB06, "LATIN SMALL LIGATURE ST"],
+  [0xFB29, "HEBREW LETTER ALTERNATIVE PLUS SIGN"],
+  // U+FE00 block: 64 name(s).
+  [0xFE00, "VARIATION SELECTOR-1"],
+  [0xFE01, "VARIATION SELECTOR-2"],
+  [0xFE02, "VARIATION SELECTOR-3"],
+  [0xFE03, "VARIATION SELECTOR-4"],
+  [0xFE04, "VARIATION SELECTOR-5"],
+  [0xFE05, "VARIATION SELECTOR-6"],
+  [0xFE06, "VARIATION SELECTOR-7"],
+  [0xFE07, "VARIATION SELECTOR-8"],
+  [0xFE08, "VARIATION SELECTOR-9"],
+  [0xFE09, "VARIATION SELECTOR-10"],
+  [0xFE0A, "VARIATION SELECTOR-11"],
+  [0xFE0B, "VARIATION SELECTOR-12"],
+  [0xFE0C, "VARIATION SELECTOR-13"],
+  [0xFE0D, "VARIATION SELECTOR-14"],
+  [0xFE0E, "VARIATION SELECTOR-15"],
+  [0xFE0F, "VARIATION SELECTOR-16"],
+  [0xFE10, "PRESENTATION FORM FOR VERTICAL COMMA"],
+  [0xFE13, "PRESENTATION FORM FOR VERTICAL COLON"],
+  [0xFE14, "PRESENTATION FORM FOR VERTICAL SEMICOLON"],
+  [0xFE15, "PRESENTATION FORM FOR VERTICAL EXCLAMATION MARK"],
+  [0xFE16, "PRESENTATION FORM FOR VERTICAL QUESTION MARK"],
+  [0xFE19, "PRESENTATION FORM FOR VERTICAL HORIZONTAL ELLIPSIS"],
+  [0xFE30, "PRESENTATION FORM FOR VERTICAL TWO DOT LEADER"],
+  [0xFE31, "PRESENTATION FORM FOR VERTICAL EM DASH"],
+  [0xFE32, "PRESENTATION FORM FOR VERTICAL EN DASH"],
+  [0xFE33, "PRESENTATION FORM FOR VERTICAL LOW LINE"],
+  [0xFE34, "PRESENTATION FORM FOR VERTICAL WAVY LOW LINE"],
+  [0xFE35, "PRESENTATION FORM FOR VERTICAL LEFT PARENTHESIS"],
+  [0xFE36, "PRESENTATION FORM FOR VERTICAL RIGHT PARENTHESIS"],
+  [0xFE37, "PRESENTATION FORM FOR VERTICAL LEFT CURLY BRACKET"],
+  [0xFE38, "PRESENTATION FORM FOR VERTICAL RIGHT CURLY BRACKET"],
+  [0xFE41, "PRESENTATION FORM FOR VERTICAL LEFT CORNER BRACKET"],
+  [0xFE42, "PRESENTATION FORM FOR VERTICAL RIGHT CORNER BRACKET"],
+  [0xFE43, "PRESENTATION FORM FOR VERTICAL LEFT WHITE CORNER BRACKET"],
+  [0xFE44, "PRESENTATION FORM FOR VERTICAL RIGHT WHITE CORNER BRACKET"],
+  [0xFE47, "PRESENTATION FORM FOR VERTICAL LEFT SQUARE BRACKET"],
+  [0xFE48, "PRESENTATION FORM FOR VERTICAL RIGHT SQUARE BRACKET"],
+  [0xFE4D, "DASHED LOW LINE"],
+  [0xFE4E, "CENTRELINE LOW LINE"],
+  [0xFE4F, "WAVY LOW LINE"],
+  [0xFE50, "SMALL COMMA"],
+  [0xFE52, "SMALL FULL STOP"],
+  [0xFE54, "SMALL SEMICOLON"],
+  [0xFE55, "SMALL COLON"],
+  [0xFE56, "SMALL QUESTION MARK"],
+  [0xFE57, "SMALL EXCLAMATION MARK"],
+  [0xFE58, "SMALL EM DASH"],
+  [0xFE59, "SMALL LEFT PARENTHESIS"],
+  [0xFE5A, "SMALL RIGHT PARENTHESIS"],
+  [0xFE5B, "SMALL LEFT CURLY BRACKET"],
+  [0xFE5C, "SMALL RIGHT CURLY BRACKET"],
+  [0xFE5F, "SMALL NUMBER SIGN"],
+  [0xFE60, "SMALL AMPERSAND"],
+  [0xFE61, "SMALL ASTERISK"],
+  [0xFE62, "SMALL PLUS SIGN"],
+  [0xFE63, "SMALL HYPHEN-MINUS"],
+  [0xFE64, "SMALL LESS-THAN SIGN"],
+  [0xFE65, "SMALL GREATER-THAN SIGN"],
+  [0xFE66, "SMALL EQUALS SIGN"],
+  [0xFE68, "SMALL REVERSE SOLIDUS"],
+  [0xFE69, "SMALL DOLLAR SIGN"],
+  [0xFE6A, "SMALL PERCENT SIGN"],
+  [0xFE6B, "SMALL COMMERCIAL AT"],
+  [0xFEFF, "ZERO WIDTH NO-BREAK SPACE"],
+  // U+FF00 block: 106 name(s).
+  [0xFF01, "FULLWIDTH EXCLAMATION MARK"],
+  [0xFF02, "FULLWIDTH QUOTATION MARK"],
+  [0xFF03, "FULLWIDTH NUMBER SIGN"],
+  [0xFF04, "FULLWIDTH DOLLAR SIGN"],
+  [0xFF05, "FULLWIDTH PERCENT SIGN"],
+  [0xFF06, "FULLWIDTH AMPERSAND"],
+  [0xFF07, "FULLWIDTH APOSTROPHE"],
+  [0xFF08, "FULLWIDTH LEFT PARENTHESIS"],
+  [0xFF09, "FULLWIDTH RIGHT PARENTHESIS"],
+  [0xFF0A, "FULLWIDTH ASTERISK"],
+  [0xFF0B, "FULLWIDTH PLUS SIGN"],
+  [0xFF0C, "FULLWIDTH COMMA"],
+  [0xFF0D, "FULLWIDTH HYPHEN-MINUS"],
+  [0xFF0E, "FULLWIDTH FULL STOP"],
+  [0xFF0F, "FULLWIDTH SOLIDUS"],
+  [0xFF10, "FULLWIDTH DIGIT ZERO"],
+  [0xFF11, "FULLWIDTH DIGIT ONE"],
+  [0xFF12, "FULLWIDTH DIGIT TWO"],
+  [0xFF13, "FULLWIDTH DIGIT THREE"],
+  [0xFF14, "FULLWIDTH DIGIT FOUR"],
+  [0xFF15, "FULLWIDTH DIGIT FIVE"],
+  [0xFF16, "FULLWIDTH DIGIT SIX"],
+  [0xFF17, "FULLWIDTH DIGIT SEVEN"],
+  [0xFF18, "FULLWIDTH DIGIT EIGHT"],
+  [0xFF19, "FULLWIDTH DIGIT NINE"],
+  [0xFF1A, "FULLWIDTH COLON"],
+  [0xFF1B, "FULLWIDTH SEMICOLON"],
+  [0xFF1C, "FULLWIDTH LESS-THAN SIGN"],
+  [0xFF1D, "FULLWIDTH EQUALS SIGN"],
+  [0xFF1E, "FULLWIDTH GREATER-THAN SIGN"],
+  [0xFF1F, "FULLWIDTH QUESTION MARK"],
+  [0xFF20, "FULLWIDTH COMMERCIAL AT"],
+  [0xFF21, "FULLWIDTH LATIN CAPITAL LETTER A"],
+  [0xFF22, "FULLWIDTH LATIN CAPITAL LETTER B"],
+  [0xFF23, "FULLWIDTH LATIN CAPITAL LETTER C"],
+  [0xFF24, "FULLWIDTH LATIN CAPITAL LETTER D"],
+  [0xFF25, "FULLWIDTH LATIN CAPITAL LETTER E"],
+  [0xFF26, "FULLWIDTH LATIN CAPITAL LETTER F"],
+  [0xFF27, "FULLWIDTH LATIN CAPITAL LETTER G"],
+  [0xFF28, "FULLWIDTH LATIN CAPITAL LETTER H"],
+  [0xFF29, "FULLWIDTH LATIN CAPITAL LETTER I"],
+  [0xFF2A, "FULLWIDTH LATIN CAPITAL LETTER J"],
+  [0xFF2B, "FULLWIDTH LATIN CAPITAL LETTER K"],
+  [0xFF2C, "FULLWIDTH LATIN CAPITAL LETTER L"],
+  [0xFF2D, "FULLWIDTH LATIN CAPITAL LETTER M"],
+  [0xFF2E, "FULLWIDTH LATIN CAPITAL LETTER N"],
+  [0xFF2F, "FULLWIDTH LATIN CAPITAL LETTER O"],
+  [0xFF30, "FULLWIDTH LATIN CAPITAL LETTER P"],
+  [0xFF31, "FULLWIDTH LATIN CAPITAL LETTER Q"],
+  [0xFF32, "FULLWIDTH LATIN CAPITAL LETTER R"],
+  [0xFF33, "FULLWIDTH LATIN CAPITAL LETTER S"],
+  [0xFF34, "FULLWIDTH LATIN CAPITAL LETTER T"],
+  [0xFF35, "FULLWIDTH LATIN CAPITAL LETTER U"],
+  [0xFF36, "FULLWIDTH LATIN CAPITAL LETTER V"],
+  [0xFF37, "FULLWIDTH LATIN CAPITAL LETTER W"],
+  [0xFF38, "FULLWIDTH LATIN CAPITAL LETTER X"],
+  [0xFF39, "FULLWIDTH LATIN CAPITAL LETTER Y"],
+  [0xFF3A, "FULLWIDTH LATIN CAPITAL LETTER Z"],
+  [0xFF3B, "FULLWIDTH LEFT SQUARE BRACKET"],
+  [0xFF3C, "FULLWIDTH REVERSE SOLIDUS"],
+  [0xFF3D, "FULLWIDTH RIGHT SQUARE BRACKET"],
+  [0xFF3E, "FULLWIDTH CIRCUMFLEX ACCENT"],
+  [0xFF3F, "FULLWIDTH LOW LINE"],
+  [0xFF40, "FULLWIDTH GRAVE ACCENT"],
+  [0xFF41, "FULLWIDTH LATIN SMALL LETTER A"],
+  [0xFF42, "FULLWIDTH LATIN SMALL LETTER B"],
+  [0xFF43, "FULLWIDTH LATIN SMALL LETTER C"],
+  [0xFF44, "FULLWIDTH LATIN SMALL LETTER D"],
+  [0xFF45, "FULLWIDTH LATIN SMALL LETTER E"],
+  [0xFF46, "FULLWIDTH LATIN SMALL LETTER F"],
+  [0xFF47, "FULLWIDTH LATIN SMALL LETTER G"],
+  [0xFF48, "FULLWIDTH LATIN SMALL LETTER H"],
+  [0xFF49, "FULLWIDTH LATIN SMALL LETTER I"],
+  [0xFF4A, "FULLWIDTH LATIN SMALL LETTER J"],
+  [0xFF4B, "FULLWIDTH LATIN SMALL LETTER K"],
+  [0xFF4C, "FULLWIDTH LATIN SMALL LETTER L"],
+  [0xFF4D, "FULLWIDTH LATIN SMALL LETTER M"],
+  [0xFF4E, "FULLWIDTH LATIN SMALL LETTER N"],
+  [0xFF4F, "FULLWIDTH LATIN SMALL LETTER O"],
+  [0xFF50, "FULLWIDTH LATIN SMALL LETTER P"],
+  [0xFF51, "FULLWIDTH LATIN SMALL LETTER Q"],
+  [0xFF52, "FULLWIDTH LATIN SMALL LETTER R"],
+  [0xFF53, "FULLWIDTH LATIN SMALL LETTER S"],
+  [0xFF54, "FULLWIDTH LATIN SMALL LETTER T"],
+  [0xFF55, "FULLWIDTH LATIN SMALL LETTER U"],
+  [0xFF56, "FULLWIDTH LATIN SMALL LETTER V"],
+  [0xFF57, "FULLWIDTH LATIN SMALL LETTER W"],
+  [0xFF58, "FULLWIDTH LATIN SMALL LETTER X"],
+  [0xFF59, "FULLWIDTH LATIN SMALL LETTER Y"],
+  [0xFF5A, "FULLWIDTH LATIN SMALL LETTER Z"],
+  [0xFF5B, "FULLWIDTH LEFT CURLY BRACKET"],
+  [0xFF5C, "FULLWIDTH VERTICAL LINE"],
+  [0xFF5D, "FULLWIDTH RIGHT CURLY BRACKET"],
+  [0xFF5E, "FULLWIDTH TILDE"],
+  [0xFF62, "HALFWIDTH LEFT CORNER BRACKET"],
+  [0xFF63, "HALFWIDTH RIGHT CORNER BRACKET"],
+  [0xFFA0, "HALFWIDTH HANGUL FILLER"],
+]);
+
+/** True when the code point falls in one of the [first, last] ranges (binary search). */
+export function inRanges(cp: number, ranges: readonly (readonly [number, number])[]): boolean {
+  // Search bounds.
+  let lo = 0, hi = ranges.length - 1;
+  // Halve until found or empty.
+  while (lo <= hi) {
+    // The middle range.
+    const mid = (lo + hi) >> 1;
+    // Below it, above it, or inside it.
+    if (cp < ranges[mid][0]) hi = mid - 1; else if (cp > ranges[mid][1]) lo = mid + 1; else return true;
+  }
+  // Not in any range.
+  return false;
+}
+
+/** How a non-ASCII character hides, or null when it does not (ASCII is never classified). */
+export function hiddenClass(cp: number): HiddenClass | null {
+  // ASCII is what the classes are measured against.
+  if (cp <= 0x7f) return null;
+  // Renders as nothing.
+  if (inRanges(cp, DEFAULT_IGNORABLE)) return "invisible";
+  // A space that is not the ASCII space.
+  if (inRanges(cp, WHITE_SPACE)) return "space";
+  // A quote that is not an ASCII quote.
+  if (inRanges(cp, QUOTATION_MARK)) return "quote";
+  // A dash that is not the ASCII hyphen-minus.
+  if (inRanges(cp, DASH)) return "dash";
+  // Anything else that decomposes to ASCII.
+  if (ASCII_LOOKALIKE.has(cp)) return "lookalike";
+  // Not one of the hiding kinds.
+  return null;
+}
+
+/** "U+200B" style label for a code point. */
+export function codePointLabel(cp: number): string {
+  // Four hex digits at least, upper case.
+  return "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
+}
+
+/** The official name, or undefined when the table does not carry one. */
+export function hiddenName(cp: number): string | undefined {
+  // Looked up in the generated table.
+  return HIDDEN_NAMES.get(cp);
+}

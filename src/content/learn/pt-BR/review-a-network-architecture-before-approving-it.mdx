@@ -1,0 +1,71 @@
+---
+slug: review-a-network-architecture-before-approving-it
+title: "Como revisar uma arquitetura de rede de forma independente antes de aprová-la"
+summary: "Um projeto chega com um diagrama, uma lista de materiais e uma data. Aprová-lo é uma decisão com anos de consequência, e o material diante de você foi preparado por quem quer a aprovação. Um método para lê-lo nos seus próprios termos: o que pedir antes de começar, as sete perguntas que encontram a maioria dos problemas, como separar o que o projeto diz do que ele presume, e o que uma revisão por escrito deve conter para que a aprovação sobreviva a quem a deu."
+concepts: ["architecture-review", "design-review", "decision", "assumptions", "procurement", "governance"]
+relatedTools: ["change-blast-radius-mapper", "flow-path-reasoner", "fault-hypothesis-builder", "health-snapshot-comparator"]
+relatedArticles: ["hidden-assumptions-in-an-architecture-diagram", "questions-executives-should-ask-before-a-network-transformation", "product-limitations-versus-architecture-failures", "ariane-5-and-the-assumption-that-expired"]
+category: operations
+order: 320
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Com o que uma aprovação de fato compromete você
+
+Uma arquitetura de rede é aprovada uma vez e vivida por cinco a sete anos. O diagrama do slide será substituído por equipamento, contratos, procedimentos de operação, um arranjo de suporte e um conjunto de hábitos, e cada um deles é mais difícil de mudar do que o diagrama era. Então a revisão não é uma conferência de que o desenho está arrumado. É o último momento barato para descobrir o que o projeto presume sobre a sua organização, e se essas premissas são verdadeiras.
+
+A dificuldade é que o material chega de quem quer a aprovação: um fornecedor, um integrador ou um time interno que já investiu meses nele. Nenhum deles está mentindo. Todos eles deixaram de enxergar as coisas que decidiram cedo, e o trabalho da revisão é enxergá-las de novo.
+
+## Antes de ler um único slide
+
+Peça quatro coisas, e repare quanto tempo cada uma leva para chegar.
+
+1. **Os requisitos que o projeto afirma atender**, como uma lista, nas palavras da sua organização e não nas do fornecedor. Se essa lista não existe, o projeto foi desenhado a partir de uma conversa, e a revisão terá de reconstruir os requisitos antes de poder testar qualquer coisa contra eles.
+2. **O inventário da situação atual** que o projeto substitui ou ao qual se conecta: o que existe, o que cada coisa faz, o que depende dela. Um projeto produzido sem esse inventário é um projeto para uma rede diferente da que você tem. A [revisão do parque](/advisory) existe exatamente para essa lacuna.
+3. **A análise de modos de falha**, se foi feita. A maioria dos projetos vem com um percentual de disponibilidade e nenhuma explicação de como ele foi calculado. Pergunte o que falha junto, e o que o projeto faz quando isso acontece.
+4. **O modelo de operação**: quem opera, com que habilidades, em que escala, por qual console. Um projeto é tão bom quanto o time que estará acordado quando ele quebrar.
+
+Um fornecedor que entrega as quatro coisas num dia fez o trabalho. Um que precisa de três semanas acabou de lhe dar o primeiro achado.
+
+## Sete perguntas que encontram a maioria dos problemas
+
+**Onde está escondido o domínio de falha único?** Todo projeto com dois de tudo tem em algum lugar um de alguma coisa: um plano de gerência, um servidor de licenças, uma autoridade certificadora, um provedor de identidade, um refletor de rotas, o único circuito que os dois caminhos "diversos" compartilham no último quilômetro. Desenhe o grafo de dependências em vez da topologia, e procure o nó sem gêmeo. O [mapeador de raio de impacto](/tools/change-blast-radius-mapper) foi construído em torno dessa pergunta.
+
+**O que o projeto presume sobre tráfego que não mediu?** O dimensionamento costuma ser feito a partir de um pico de que alguém se lembra, e não de um que alguém mediu, e o formato do tráfego importa tanto quanto o volume. Peça a medição, e a data dela.
+
+**O que acontece no primeiro dia depois da migração?** Projetos são revisados em regime permanente. O período perigoso é a sobreposição, quando o antigo e o novo existem ao mesmo tempo, o roteamento é assimétrico, o monitoramento cobre um deles, e o time está aprendendo o console sob pressão. Peça a sequência de migração e o ponto de retorno de cada passo.
+
+**Que parte disto o time não vai conseguir enxergar?** Todo projeto moderno move alguma função para dentro de algo em que o time não consegue entrar: um serviço em nuvem, um equipamento gerenciado pelo fornecedor, um orquestrador. Muitas vezes é uma boa troca. É uma troca, e a revisão deve dizer que visibilidade se perde e o que o fornecedor expõe no lugar.
+
+**Quanto custa operar, e não comprar?** Licenças que contam coisas que crescem, níveis de suporte que mudam na renovação, o treinamento de que o time precisa, a segunda pessoa que agora tem de entender aquilo. O preço de compra é o número que todo mundo tem; o custo de operação é aquele com que a aprovação compromete você.
+
+**O que tornaria este projeto errado?** Não "quais são os riscos": que mudança no mundo, no negócio ou no tráfego transformaria uma decisão correta numa incorreta. Uma aquisição, uma regulação, um produto chegando ao fim de vida, um time de cinco virando um time de três. Um projeto que não consegue responder a isso não foi pensado como aposta, e todo projeto é uma aposta.
+
+**Quem mais opera exatamente esta combinação?** Não o produto: a combinação, na sua escala, com o seu provedor de identidade, a sua WAN e as suas restrições. Referências são escolhidas; a pergunta é se alguma delas se parece com você.
+
+## Separe o que o projeto diz do que ele presume
+
+Um documento de projeto registra decisões. Quase nunca registra as condições sob as quais cada decisão é correta, que é onde o risco mora. O artigo da Practice sobre [as premissas que um projeto codifica e nunca declara](/practice/assumptions-a-design-never-states) lista as cinco que expiram com mais frequência: a carga e o seu formato, a independência das coisas colocadas juntas, o que a camada de baixo faz, quem opera, e como será o crescimento.
+
+Para uma revisão, o método prático é um registro de premissas. Para cada componente ou escolha, escreva três colunas: o valor escolhido, a aposta por trás dele, e o observável que diria que a aposta deixou de pagar. O registro vale mais do que os achados, porque os achados são sobre hoje e o registro é sobre o terceiro ano.
+
+## Lendo um diagrama contra a realidade
+
+Três hábitos pegam o que uma leitura corrida deixa passar.
+
+- **Percorra um fluxo real de ponta a ponta**, à mão: um usuário numa agência alcançando a aplicação no segundo data center, por todos os saltos, com o caminho de volta. A maioria dos diagramas é desenhada num sentido só. O [raciocinador de caminho de fluxo](/tools/flow-path-reasoner) é a versão estruturada dessa caminhada.
+- **Derrube uma coisa de cada vez, no papel.** Um link, um equipamento, um site, o provedor de identidade, o DNS. Para cada um, escreva o que o projeto faz e o que o usuário vê. A resposta "faz failover" não é resposta até dizer em quanto tempo e com que estado perdido.
+- **Peça a configuração, não a figura.** Um revisor que vê a política real, o roteamento real e os temporizadores reais encontra coisas que a figura não mostra, e um fornecedor que não os mostra antes da aprovação está lhe dizendo alguma coisa.
+
+## O que a revisão por escrito deve conter
+
+Uma revisão que vive numa reunião é esquecida na reunião seguinte. Escreva-a, e estruture-a para que alguém que não estava lá consiga acompanhar o raciocínio e questioná-lo: a pergunta sendo respondida, o material examinado, as premissas encontradas e se cada uma foi verificada, os achados em ordem de consequência e não em ordem de descoberta, as condições sob as quais a aprovação é razoável, e as perguntas ainda abertas com um responsável para cada. O [memorando de decisão de exemplo](/advisory/decision-memorandum) mostra o formato.
+
+Três achados que vale a pena declarar explicitamente mesmo quando a resposta é boa: se o projeto pode ser revertido e até quando, do que o time de operação vai precisar e não tem, e qual decisão dentro do projeto deve ser adiada porque a evidência para tomá-la ainda não existe.
+
+## A aprovação em si
+
+Uma aprovação raramente é sim ou não. Em geral é "sim, sob estas condições, com esta decisão adiada para esta data, com estas perguntas respondidas antes". Escrevê-la assim não é hesitação. É a diferença entre uma aprovação e uma assinatura.
+
+Se uma arquitetura como esta está esperando a sua aprovação, lê-la nos seus termos é o tipo de pergunta que eu assumo profissionalmente: [assessoria técnica independente](/advisory).

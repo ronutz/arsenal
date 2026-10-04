@@ -1,0 +1,58 @@
+---
+slug: what-a-technically-fair-rfp-looks-like
+title: "What a technically fair RFP looks like"
+summary: "Most bad procurement is decided when the request for proposal is written, not when the bids are opened. A fair RFP describes the outcome precisely enough to be scored, states the environment the solution will land in, separates what must be true from what would be nice, and closes the gaps a supplier would otherwise interpret in their own favour. What that takes in practice: the structure, the requirement wording that can be tested, the evidence to ask for, the scoring published in advance, and the questions a supplier should be able to ask."
+concepts: ["rfp", "procurement", "requirements", "scoring", "specification", "decision"]
+relatedTools: ["change-blast-radius-mapper", "curl-command-builder", "cert-renewal-planner", "f5-release-cadence-calendar"]
+relatedArticles: ["evaluating-competing-firewall-proposals", "twenty-questions-before-signing-a-sase-proposal", "review-a-network-architecture-before-approving-it", "capex-versus-subscription-networking"]
+category: operations
+order: 323
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Fair to whom
+
+A fair request for proposal is fair to the buyer first: it produces bids that can be compared, and it closes the room for interpretation that a supplier would otherwise use. It is fair to the suppliers second: it tells them what will be scored and how, so the bid is written to the requirement rather than to a guess about the evaluator. The two kinds of fairness are the same document. An RFP that is vague is unfair to everyone, and the party that profits from vagueness is whoever reads it most creatively.
+
+## Start from the outcome, not the product
+
+The first page says what the organisation needs to be true afterwards, in its own words: which users reach which applications from where, what must keep working during a failure, what must be visible to the operations team, what must be exportable, what the regulator must be shown, what the team can operate. A requirement written as "a next-generation firewall with application control" has already chosen the product category and left the outcome unstated; a requirement written as "traffic between the branch network and the card-processing environment is inspected, logged, and blocked by application, with the log delivered to our platform within one minute" can be tested, scored and held to.
+
+Then state the environment: the current estate the solution connects to, the traffic measured rather than remembered, the identity provider, the constraints (regions, regulations, change freezes, the team's size and skills). A supplier that is not told the environment will assume the one that suits their bid.
+
+## Requirements that can be tested
+
+Each requirement should pass three tests before it goes in the document.
+
+- **Is it observable?** Could two people watch the system and agree whether it is met? "High availability" is not observable; "a failure of either member restores forwarding within N seconds with existing TCP sessions preserved" is.
+- **Is it scored or is it a gate?** Separate the requirements a bid must meet to be considered from the ones that earn points. A gate that is really a preference excludes good bids; a preference that is really a gate lets a bad bid score well.
+- **Does it describe the outcome or the mechanism?** Mechanism requirements ("must use protocol X") exclude solutions that reach the outcome another way. Write the mechanism only where interoperability genuinely demands it.
+
+Number every requirement, and ask bidders to respond to each by number with one of three words, comply, partial or not, followed by the evidence. A bid that writes a paragraph where a word was asked for is answering a different question.
+
+## Ask for evidence, not adjectives
+
+For each requirement that matters, say what evidence will be accepted: a documented feature with the document cited, a demonstration in the pilot, a reference customer running the same combination at a similar scale, a measured figure under stated conditions. State that marketing material is not evidence. Ask for the published documentation of behaviour under failure, the upgrade procedure, the logging format and delivery interval, the export formats, and the support model with its escalation path and hours. Ask for the operating cost over the full term at your stated growth, in a table whose columns you define.
+
+Two requests that change the quality of the answers: ask each bidder to list the requirements they consider ambiguous and how they interpreted them, and ask them to list what is NOT included in their price. Both are cheap to ask and expensive to discover later.
+
+## Publish the scoring in advance
+
+The weighting of the criteria, the gates, and the way ties are resolved all go in the RFP. Doing so prevents the common failure in which the weighting is adjusted, in good faith, after the bids are read and a favourite has emerged. It also improves the bids, because a supplier who knows that operability from the pilot carries twenty per cent will put their best engineer in the pilot rather than their best presenter in the pitch.
+
+A workable structure: gates first (compliance with the mandatory requirements, and the evidence for them), then weighted criteria for fit, operability, total cost over the term, support, and the exit, then the pilot as an evidence-gathering stage whose results feed the scores rather than replacing them.
+
+## Give the suppliers a way to ask
+
+A question period, with every question and every answer shared with every bidder, is part of fairness and part of quality. The questions suppliers ask tell you where your requirements are unclear, and a requirement three bidders asked about is one you should rewrite. Record the answers as amendments to the RFP, so the document the bids respond to is the document you score against.
+
+## What the RFP should not do
+
+It should not describe the incumbent's product under another name, which happens more often by habit than by intent; a requirement copied from a datasheet is a mechanism requirement in disguise. It should not ask for everything the team has ever wanted, because a long list of equal requirements scores like a short list of none. And it should not be issued before the organisation has decided what it is actually buying, which is the decision the [architecture review](/learn/review-a-network-architecture-before-approving-it) and the [comparative assessment](/advisory) exist to make.
+
+## The output is a decision, not a document
+
+The RFP exists to produce a defensible choice, and the record of that choice, the normalised bids, the scores with their evidence and the conditions attached to the award, is what will be examined when the choice is questioned. The [example decision memorandum](/advisory/decision-memorandum) shows what that record looks like for a decision of this kind.
+
+If an RFP is being drafted in your organisation and the requirements have to be written so that the bids can be scored, that drafting is work I do professionally: [independent technical advisory](/advisory).

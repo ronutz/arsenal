@@ -157,7 +157,7 @@ if (entries.length === 0) {
 // entries are added often and removed almost never; an exact figure would fail on
 // every addition and would be edited without thought, which is how a declared
 // number becomes a rubber stamp.
-const MIN_ENTRIES = 1711;        // 2026-10-01: 1711 entries. May only be raised.
+const MIN_ENTRIES = 1716;        // 2026-10-01: 1711 entries; 2026-10-03: 1716 (ascii, unicode, utf-8, byte-order-mark, mojibake). May only be raised.
 const EXPECTED_PARTS = 4;        // GLOSSARY_PART_1..4, a TS2590 accommodation.
 
 if (entries.length < MIN_ENTRIES) {

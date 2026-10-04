@@ -8,7 +8,7 @@ relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-looku
 category: networking
 order: 24
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## The fact that governs every loop
@@ -22,7 +22,7 @@ That does not make loops forbidden. It makes them something to keep small and bo
 When you are walking a list, `foreach` is both faster and cleaner than a `for` or `while` loop that indexes the list by hand. F5's optimization notes make the same point: the `for` version that pulls each element with `lindex` is the slower one.
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     set domains { bob.com ted.com example.com }
 
     # preferred: foreach, faster and more elegant
@@ -64,9 +64,10 @@ set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
 Some parsing has two spellings: a pure-Tcl one and an iRule-command one. `getfield` does much the same job as `lindex [split ...]` and reads more clearly, but there is a subtlety worth knowing. An iRule-specific command has to jump from the Tcl virtual machine back into TMM to run, which the pure-Tcl commands do not. F5 describes the cost as incredibly negligible in normal use, something to be aware of only if you are squeezing out every last cycle. Note too that they count differently: `getfield` starts at field 1, while `lindex` starts at index 0.
 
 ```tcl
-# same result, two spellings
-set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]   ;# 0-indexed
-set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]         ;# 1-indexed
+# Same result, two spellings: lindex counts from 0
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
+# getfield counts from 1
+set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]
 ```
 
 ## Prefer a lookup to a loop

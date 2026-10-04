@@ -33,7 +33,7 @@ export default async function LevelsPage({ params }: { params: Promise<{ locale:
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

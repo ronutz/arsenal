@@ -64,7 +64,12 @@ Tcl 8.4 has no power operator. `2 ** 3` is a syntax error; `pow(2, 3)` returns t
 F5's Operators page adds words for iRules: `contains`, `starts_with`, `ends_with`, `equals`, `matches_glob` and `matches_regex` compare text, and `and`, `or` and `not` are spelled versions of `&&`, `||` and `!`.
 
 ```tcl
+# F5's word operators work in iRules
 if { [HTTP::uri] starts_with "/api/" and [HTTP::method] eq "POST" } {
+    pool api_write_pool
+}
+# The style guide prefers the Tcl operator, with parentheses
+if { ([HTTP::uri] starts_with "/api/") && ([HTTP::method] eq "POST") } {
     pool api_write_pool
 }
 ```

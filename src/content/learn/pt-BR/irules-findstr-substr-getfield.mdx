@@ -18,14 +18,17 @@ O Tcl já tem `string first`, `string range` e `split`. A F5 acrescentou aos iRu
 `findstr string search ?skip? ?terminator?` encontra a primeira ocorrência de `search`, avança `skip` caracteres a partir do **início do casamento** e devolve tudo até o terminador. A referência tmsh da F5 dá dois exemplos:
 
 ```tcl
-findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"   ;# sip.example.com
-findstr "aaa123456xxyz" "aaa" 3 "xyz"                    ;# 123456x
+# devolve sip.example.com
+findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"
+# devolve 123456x
+findstr "aaa123456xxyz" "aaa" 3 "xyz"
 ```
 
 No segundo exemplo o resultado para antes do primeiro `xyz`, então o `x` que vem antes dele fica no resultado. O uso típico em iRules é um parâmetro de query, em que o salto é o comprimento da marca:
 
 ```tcl
-findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
+# devolve abcdefg
+findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"
 ```
 
 ## substr: começar num índice
@@ -33,10 +36,14 @@ findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
 `substr string skip ?terminator?` começa no índice `skip`, onde 0 é o primeiro caractere, e devolve até o terminador. Os exemplos da F5, todos na mesma string:
 
 ```tcl
-substr "abcdefghijklm" 2 "x"    ;# cdefghijklm (não há x depois do índice 2, então vai até o fim)
-substr "abcdefghijklm" 2 "gh"   ;# cdef
-substr "abcdefghijklm" 2 4      ;# cdef
-substr "abcdefghijklm" 2 20     ;# cdefghijklm
+# devolve cdefghijklm: não há x depois do índice 2, então vai até o fim
+substr "abcdefghijklm" 2 "x"
+# devolve cdef
+substr "abcdefghijklm" 2 "gh"
+# devolve cdef
+substr "abcdefghijklm" 2 4
+# devolve cdefghijklm
+substr "abcdefghijklm" 2 20
 ```
 
 ## O terminador é um comprimento ou um texto
@@ -48,9 +55,12 @@ Nos dois comandos, um terminador inteiro é um **comprimento**: essa quantidade 
 `getfield string separator field` divide em cada ocorrência do separador, que pode ser um caractere ou uma string inteira, e devolve o campo, contando a partir de 1:
 
 ```tcl
-getfield "a:b:c" ":" 2                     ;# b
-getfield "/login.php?user=abc" "?" 2       ;# user=abc
-getfield "one--two--three" "--" 3          ;# three
+# devolve b
+getfield "a:b:c" ":" 2
+# devolve user=abc
+getfield "/login.php?user=abc" "?" 2
+# devolve three
+getfield "one--two--three" "--" 3
 ```
 
 ## Os mesmos trabalhos em Tcl puro

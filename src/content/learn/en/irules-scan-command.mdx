@@ -22,10 +22,17 @@ A format is a sequence of three kinds of directive:
 - **conversions** start with `%` and read a value: `%d` a decimal integer, `%x` hexadecimal, `%o` octal, `%i` an integer whose base comes from its prefix, `%s` characters up to white space, `%c` one character as its code, `%[...]` characters from a set (`%[^&]` is everything up to an ampersand), and `%n` the amount of input consumed so far. A `*` after the `%` converts without storing, and a number sets a maximum width.
 
 ```tcl
-scan "10:30" "%d:%d" hours minutes          ;# 2
-scan "192.168.1.20" "%d.%d.%d.%d" a b c d   ;# 4
-scan "user=abc&x=1" "user=%[^&]" user       ;# 1, user is abc
+% scan "10:30" "%d:%d" hours minutes
+2
+% scan "192.168.1.20" "%d.%d.%d.%d" a b c d
+4
+% scan "user=abc&x=1" {user=%[^&]} user
+1
+% set user
+abc
 ```
+
+These are tclsh sessions: each command follows the `%` prompt and its result is on the next line. The third format is braced: in double quotes, Tcl would run `[^&]` as a command before `scan` ever saw it (Tcl 8.4.6 stops with invalid command name "^&"), so brace any format that contains `[`.
 
 ## What the result means
 

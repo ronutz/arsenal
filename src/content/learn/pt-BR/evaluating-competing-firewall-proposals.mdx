@@ -1,0 +1,52 @@
+---
+slug: evaluating-competing-firewall-proposals
+title: "Como avaliar propostas concorrentes de firewall"
+summary: "Chegam três propostas de firewall, cada uma com uma vazão de datasheet, um pacote de licenças e um cliente de referência, e nenhuma delas responde à pergunta que você tem, que é o que cada uma faria na sua rede, com o seu tráfego, operada pelo seu time. Um método para compará-las nos mesmos termos: como normalizar as alegações de vazão, o que uma licença realmente conta, onde a alta disponibilidade difere, quanto vai custar migrar a sua base de regras atual, e como pontuar as três para que a pontuação, e não o desconto, decida."
+concepts: ["firewall", "vendor-evaluation", "procurement", "scoring", "throughput", "licensing", "decision"]
+relatedTools: ["fortigate-security-profile-coverage-checker", "fortigate-policy-match-order", "checkpoint-policy-layer-evaluator", "network-os-comparer", "mtu-mss"]
+relatedArticles: ["firewall-family-history", "what-a-technically-fair-rfp-looks-like", "capex-versus-subscription-networking", "product-limitations-versus-architecture-failures"]
+category: operations
+order: 322
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Os três documentos não são comparáveis como foram escritos
+
+Cada fornecedor escreveu a sua proposta para fazer o próprio produto parecer o melhor, que é o trabalho dele. A consequência é que os três documentos medem coisas diferentes: um cota a vazão com todas as funções de inspeção desligadas, outro com uma mistura de tráfego específica, um terceiro cota o equipamento acima daquele que precificou. Um empacota três anos de assinaturas; outro as precifica por ano; o terceiro deixa duas delas de fora e as chama de opcionais. Antes que qualquer comparação signifique algo, as propostas têm de ser reescritas numa única planilha, nos termos da sua organização. Essa reescrita é a maior parte do trabalho, e é um trabalho que os fornecedores não podem fazer por você.
+
+## Normalize as alegações de desempenho
+
+Um datasheet de firewall traz vários números de vazão, e o da primeira página é o maior. Para a comparação você precisa do número que corresponde ao seu tráfego: as funções de inspeção que você vai de fato ligar (prevenção de ameaças, decifração de TLS, identificação de aplicações, log), com os seus tamanhos de pacote e de sessão, com o número de sessões simultâneas e de sessões novas por segundo que você realmente vê. Peça a cada fornecedor o mesmo número nas mesmas condições declaradas, por escrito. Depois pergunte o que o número publicado deles pressupõe, e compare as duas respostas.
+
+Mais duas verificações. Pergunte o que o equipamento faz quando está sobrecarregado: descarta, deixa passar sem inspecionar, ou degrada uma função, e qual. E pergunte sobre a decifração de TLS em separado, porque é a função que mais altera o dimensionamento e a que mais fica de fora da demonstração. A [calculadora de MTU e MSS](/tools/mtu-mss) é um pequeno lembrete de que o tamanho do pacote faz parte de toda alegação de vazão.
+
+## O que a licença conta
+
+O licenciamento é onde os três preços deixam de ser comparáveis. Para cada proposta, anote a unidade que cada assinatura conta (equipamento, faixa de vazão, usuário, sessão, site), o que acontece na renovação, quais funções param de funcionar quando uma assinatura vence, e se o hardware continua encaminhando tráfego sem ela. Depois precifique o quarto ano, não o primeiro, porque é quando o desconto acabou e o reajuste de renovação chegou.
+
+Pergunte explicitamente quais funções da demonstração estavam numa licença que não está na proposta. É uma lacuna comum, e um fornecedor honesto dirá na hora.
+
+## Alta disponibilidade, em detalhe
+
+Os três dirão "ativo-passivo ou ativo-ativo, failover com estado". Os detalhes diferem, e os detalhes são aquilo com que você vai conviver: o tempo de failover medido e não alegado; que estado de sessão sobrevive (TCP, túneis VPN (rede privada virtual), estado de inspeção); se os dois membros precisam das mesmas licenças; como o par é atualizado sem interrupção, e quanto tempo isso leva; se gerência e log sobrevivem à perda de um membro; e o que a sincronização de configuração faz quando os dois membros discordam. Peça o procedimento, não o nome da funcionalidade. O [comparador de sistemas operacionais de rede](/tools/network-os-comparer) registra como as plataformas tratam estado e atualizações de formas diferentes.
+
+## A política que você já tem
+
+As propostas precificam o equipamento novo. Raramente precificam a mudança da sua base de regras para ele, e é aí que as substituições de firewall atrasam. Conte as regras, os objetos, as entradas de NAT (tradução de endereços de rede) e as exceções de que ninguém é dono. Pergunte a cada fornecedor como a tradução é feita, por quem, o que a ferramenta deles faz com uma regra que não consegue expressar, e como o resultado é testado antes da migração. As ferramentas de avaliação de regras deste site, para o [FortiGate](/tools/fortigate-policy-match-order) e para as [camadas do Check Point](/tools/checkpoint-policy-layer-evaluator), mostram que a mesma intenção é ordenada e casada de forma diferente em cada plataforma, que é exatamente por que uma tradução precisa de teste em vez de confiança.
+
+## O time que vai operar
+
+Três perguntas honestas: quem no time já operou esta plataforma em produção; quanto o treinamento custa em dinheiro e em semanas; e qual dos três consoles o time achou utilizável no piloto. Uma plataforma que o time não consegue operar às três da manhã é mais cara do que o seu preço, e a avaliação deve dizer isso numa linha própria.
+
+## Pontue de modo que a pontuação decida
+
+Escreva os critérios antes de abrir as propostas, atribua pesos, e faça as pessoas que vão operar o resultado participarem da ponderação. Um conjunto que funciona: aderência ao tráfego medido; comportamento de alta disponibilidade, como demonstrado; esforço de migração de política, como estimado por você; operabilidade, a partir do piloto; custo total no prazo, no seu crescimento; modelo de suporte e caminho de escalonamento; e a saída, isto é, o que custaria sair. Pontue cada proposta em cada critério com a evidência escrita ao lado da nota, para que um membro do comitê possa discordar de uma nota em vez de discordar de uma sensação.
+
+Então, e só então, olhe o desconto. Um desconto muda uma linha da planilha. Se ele muda a decisão, a planilha não estava terminada.
+
+## A comparação é um documento
+
+Escreva o resultado como uma comparação que quem não estava na sala consiga acompanhar: a pergunta, as três propostas normalizadas, os critérios e os pesos, as notas com as suas evidências, as perguntas abertas com responsáveis, e a recomendação com as condições anexadas. O [memorando de decisão de exemplo](/advisory/decision-memorandum) mostra a estrutura para uma decisão desse tipo.
+
+Se três propostas assim estão na sua mesa e a comparação tem de ser defendida diante de um conselho, essa comparação é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

@@ -90,7 +90,7 @@ export default async function CareerChapterPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -119,6 +119,7 @@ export default async function CareerChapterPage({
               <VendorMarks
                 vendors={entry?.markVendors ?? [vendorKey]}
                 eraLabel={(era) => tp("markEra", { era })}
+                since={(y) => tp("markSince", { year: y })}
               />
               <p className="vendor-years mono">{years}</p>
               <h1 className="vendor-name">{t(`${vendorKey}.name`)}</h1>

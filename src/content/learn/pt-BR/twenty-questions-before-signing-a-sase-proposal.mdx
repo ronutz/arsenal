@@ -1,0 +1,72 @@
+---
+slug: twenty-questions-before-signing-a-sase-proposal
+title: "Vinte perguntas a fazer antes de assinar uma proposta de SASE"
+summary: "Uma proposta de SASE é um arranjo de compra embrulhado em vários produtos, em geral numa assinatura de vários anos, em geral com um desconto que expira logo. As perguntas que decidem se ela serve raramente são sobre funcionalidades. São sobre para onde o tráfego vai, o que o time deixa de enxergar, o que acontece quando o caminho único falha, como é a saída, e o que o preço faz no segundo ano. Vinte delas, agrupadas para que um comitê diretor as faça ao fornecedor por escrito antes que o desconto faça o seu trabalho."
+concepts: ["sase", "sse", "ztna", "procurement", "decision", "vendor-evaluation", "subscription"]
+relatedTools: ["sse-architecture-explainer", "zscaler-tunnel-chooser", "netskope-steering-explainer", "f5xc-ce-egress-checklist"]
+relatedArticles: ["zero-trust-ztna-and-sase-without-the-marketing", "sse-five-vendors-one-decision", "capex-versus-subscription-networking", "when-vendor-consolidation-reduces-cost"]
+category: operations
+order: 321
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Por que as perguntas não são sobre funcionalidades
+
+Toda proposta de SASE (secure access service edge) responde à mesma pergunta, "este fluxo passa?", com uma maquinaria diferente, e a [comparação de cinco delas](/learn/sse-five-vendors-one-decision) mostra quanto essa maquinaria difere. Mas a decisão diante de um comitê diretor raramente se perde numa funcionalidade. Ela se perde num caminho que ninguém percorreu, numa agência com um único link, num log que chega atrasado, num contrato de que não se consegue sair, e num preço cotado para o primeiro ano. As vinte perguntas abaixo são as que encontram essas coisas, e foram escritas para serem enviadas ao fornecedor com antecedência, por escrito, para que as respostas fiquem registradas antes de qualquer assinatura. O vocabulário, se estiver atrapalhando, inclusive ZTNA (zero trust network access), está resolvido em [zero trust, ZTNA e SASE sem o marketing](/learn/zero-trust-ztna-and-sase-without-the-marketing).
+
+## Para onde o tráfego vai
+
+**1. Para cada classe de tráfego que temos, onde ela é inspecionada e onde sai para a internet?** Agência para internet, usuário para aplicação privada, usuário para SaaS, site a site, túneis de parceiros, voz. Peça a resposta por classe, com a geografia. Uma proposta que responde "na nuvem" não respondeu.
+
+**2. Quais dos nossos fluxos não vão passar pela plataforma, e como são tratados?** Impressoras, sistemas prediais, protocolos legados, qualquer coisa que não suporte um agente ou não fale HTTP. Todo parque os tem, e o diagrama da proposta em geral não.
+
+**3. Qual é a latência medida que se acrescenta às nossas duas aplicações mais sensíveis, a partir das nossas agências?** Medida, num piloto, e não estimada a partir de um mapa de pontos de presença. O [explicador de arquitetura SSE](/tools/sse-architecture-explainer) mostra por que o caminho de inspeção difere entre os produtos.
+
+**4. A inspeção pode ser fixada numa região, para todas as funções, e o que se perde se for?** Reguladores perguntam onde os dados são processados; algumas plataformas fixam algumas funções e outras não.
+
+**5. Como um usuário na rede corporativa alcança uma aplicação, e a resposta muda quando ele está em casa?** A plataforma que trata os dois casos do mesmo jeito é uma arquitetura diferente da que os trata de forma distinta, e o time de operação precisa saber qual está comprando.
+
+## O que falha, e o que o usuário vê
+
+**6. Numa agência com um único link de internet, o que acontece quando ele falha, e em quanto tempo o serviço volta?** Peça o comportamento documentado e o tempo de recuperação medido, separadamente.
+
+**7. O que acontece quando a própria plataforma está degradada ou inalcançável: falha aberta, falha fechada, ou configurável, e por quê?** Depois pergunte qual a proposta recomenda para você, e por quê.
+
+**8. Quando o provedor de identidade está indisponível, quem ainda consegue se conectar?** Tudo nessas arquiteturas pende da identidade. A resposta deve incluir sessões existentes, sessões novas e o console.
+
+**9. Qual é o histórico de incidentes publicado do fornecedor para as regiões que usaríamos, e onde está a página de status?** Não o crédito do nível de serviço; o histórico.
+
+## O que o time deixa de enxergar
+
+**10. Que diagnósticos ficam disponíveis aos nossos próprios engenheiros, e quais só ao suporte do fornecedor?** É a pergunta que mais importa ao líder de redes, e raramente está na proposta. Peça a lista por escrito.
+
+**11. Com que intervalo os logs são entregues à nossa plataforma de logs, em que formato, e ele pode ser reduzido?** Detecções que pressupõem logs em tempo real param de funcionar com um intervalo de entrega de quinze minutos.
+
+**12. O que pode ser exportado em massa, e o que só pode ser visto no console?** Política, logs, configuração, a lista de usuários e dispositivos. O que não pode ser exportado não pode ser auditado, migrado nem reconciliado.
+
+**13. Como uma mudança é testada antes de chegar a todos os usuários?** Homologação, grupos canário, política agendada, retorno. "Mudanças são imediatas" é funcionalidade na demonstração e perigo na operação.
+
+## Identidade, dispositivos e política
+
+**14. Que atributos de identidade precisam existir antes da adesão, e o que acontece com um usuário cuja associação a grupos muda no meio da sessão?**
+
+**15. O que a verificação de postura do dispositivo de fato verifica, com que frequência, e o que um dispositivo reprovado recebe?** Pergunte o que a verificação faz num dispositivo não gerenciado, num celular pessoal e no notebook de um terceiro, que são três respostas diferentes.
+
+**16. Como a política atual de firewall e de proxy é traduzida, e quem faz a tradução?** Conte as regras; pergunte quem é dono da lista de exceções; pergunte o que a ferramenta do fornecedor faz com uma regra que não consegue expressar.
+
+## Comercial, aprisionamento e saída
+
+**17. Qual é a unidade de preço, o que a faz crescer, e quanto custa o segundo ano no nosso crescimento esperado?** Usuários, dispositivos, banda, sites, conectores, retenção de logs. Peça o reajuste de renovação por escrito.
+
+**18. As funções podem ser contratadas separadamente, agora ou depois, ao mesmo preço unitário?** Uma proposta que desconta pesado o pacote está precificando a saída.
+
+**19. O que recebemos no encerramento, em que formato, em quantos dias, e o que continua rodando durante o aviso prévio?** Essa resposta pertence ao plano de saída sobre o qual o regulador vai perguntar, e deve ser escrita antes da assinatura.
+
+**20. Quais dessas respostas estão no contrato, e quais estão num documento que o fornecedor pode mudar?** A última pergunta é a que transforma as outras dezenove em compromissos.
+
+## Como usar as respostas
+
+Coloque as vinte por escrito antes da sessão técnica, e resuma as respostas recebidas contra cada uma, marcando as que ficaram abertas. As perguntas abertas não são uma falha do processo; são o produto dele, porque cada uma vira uma condição de aprovação ou uma dependência com responsável. Uma aprovação que diz "sim, assim que as perguntas 6, 11 e 19 forem respondidas por escrito, com a decisão das agências adiada para o nono mês" é uma decisão melhor do que sim, e muito melhor do que um sim comprado por um desconto de fim de trimestre. O [memorando de decisão de exemplo](/advisory/decision-memorandum) mostra uma aprovação assim por escrito.
+
+Se uma proposta de SASE com data marcada está diante do seu comitê, fazer estas perguntas a ela é o tipo de trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

@@ -8,7 +8,7 @@ relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-ca
 category: networking
 order: 21
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## Where the parallelism comes from
@@ -24,10 +24,10 @@ A **global variable** demotes the virtual server to a single TMM. F5's own docum
 A global variable in Tcl is one in the global namespace: written with the `global` keyword, or with a `::` prefix on the name. The reason globals are easy to write by accident is that the syntax looks ordinary:
 
 ```tcl
-when RULE_INIT {
+when RULE_INIT priority 500 {
     set ::max_sessions 5000
 }
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { [table keys -subtable sessions -count] > $::max_sessions } {
         HTTP::respond 503 content "busy"
     }
@@ -41,11 +41,11 @@ That `::max_sessions` reads and writes a global, and it demotes every virtual th
 The replacement for a shared, read-mostly value is the **`static::` namespace**. A `static::` variable is set once, per TMM, when the rule loads, and every TMM gets its own copy of the same value, so nothing has to be serialized and CMP stays intact. It is the CMP-safe way to hold a constant that many events or many connections need:
 
 ```tcl
-when RULE_INIT {
+when RULE_INIT priority 500 {
     set static::max_sessions 5000
     set static::maintenance 0
 }
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { $static::maintenance } {
         HTTP::respond 503 content "maintenance"
     }
@@ -63,7 +63,7 @@ The rule of thumb is simple. For a value that is the same for every connection a
 `static::` and `RULE_INIT` are for values baked into the rule. When you have data that you want to change without touching the iRule at all, a list of blocked paths, a mapping of hosts to pools, an allow-list of client networks, the right tool is a **data group** (a class), read with the **`class` command**. A data group is a separate configuration object, edited independently of the rule, so you can add or remove entries without a rule change and without a reload of the code that uses it:
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { [class match [HTTP::path] starts_with blocked_paths] } {
         HTTP::respond 403 content "forbidden"
     }

@@ -1,0 +1,57 @@
+---
+slug: when-vendor-consolidation-reduces-cost
+title: "When vendor consolidation actually reduces cost, and when it does not"
+summary: "Consolidating onto one supplier is sold as simplicity and savings, and sometimes it is both. The savings are real where integration was expensive, where several teams did the same work on different consoles, and where the discount for the bundle outlasts the term. They are not real where the second product is weaker and the gap is filled by effort, where one renewal now carries every function at once, and where the exit from everything becomes one project nobody will start. How to tell the two cases apart before signing."
+concepts: ["vendor-consolidation", "procurement", "tco", "lock-in", "decision", "platform"]
+relatedTools: ["network-os-comparer", "sse-architecture-explainer", "f5-bigip-license-explainer", "change-blast-radius-mapper"]
+relatedArticles: ["capex-versus-subscription-networking", "twenty-questions-before-signing-a-sase-proposal", "evaluating-competing-firewall-proposals", "sse-five-vendors-one-decision"]
+category: operations
+order: 326
+status: reviewed
+updated: "2026-10-03"
+---
+
+## The argument, stated fairly
+
+Fewer suppliers means fewer contracts, fewer consoles, fewer integrations to maintain, one support number, one set of training, and a bigger order that earns a bigger discount. All of that is true, and in estates that grew by accretion, where every problem was solved with a new product from a new vendor, consolidation is often the right decision. The point of this article is not to argue against it. It is to separate the cases where the savings arrive from the cases where they are promised, because the proposal that consolidates three functions onto one platform looks identical in both.
+
+## Where the savings are real
+
+**Integration you were paying for.** If the organisation maintains connectors, scripts, exports and reconciliations between products so that policy, identity and logs agree, that effort is a cost, and a platform where those functions share one data model removes it. Measure it: hours per month, incidents caused by drift between the products, the time a change takes because it has to be made in three places.
+
+**Duplicated operation.** Two teams doing the same thing on two consoles, two on-call rotations for functions that could be one, two sets of certifications to keep current. Consolidation that merges work merges cost. Consolidation that merges consoles while the work stays separate merges nothing.
+
+**A discount that survives the term.** A bundle discount that is written into the renewal terms is a saving. One that applies to year one and is "to be discussed" at renewal is a loan from the supplier, repaid with interest at the moment the organisation is least able to leave.
+
+**A product that is at least as good.** Where the consolidated platform's version of each function is as capable as the one it replaces for the uses the organisation actually has, nothing is lost. The qualification matters: "as capable for our uses", measured in the pilot, not "feature-complete" on a datasheet.
+
+## Where the savings are not real
+
+**The weaker second product.** Platforms are rarely best at everything. Where the consolidated platform's version of a function is weaker, the gap is filled by effort (workarounds, exceptions, manual steps), by risk (a control that is now less effective), or by a third product bought later, which ends the consolidation. The [comparison of five SSE platforms](/learn/sse-five-vendors-one-decision) shows how differently the same function is built across vendors; "it does that too" is the start of a question, not the end of one.
+
+**One renewal that carries everything.** Three functions on three contracts gave the organisation three negotiating moments and three independent exits. One contract gives it one moment, in which the supplier knows that leaving means replacing everything at once. The uplift at that renewal is the price of the consolidation, and it is not on the proposal.
+
+**The exit nobody will start.** Leaving one product is a project; leaving a platform that carries identity, access, inspection and logging is a programme, and programmes are postponed. The practical meaning is that the consolidated platform will be kept past the point where it should have been replaced, and that cost is real even though it never appears as a line.
+
+**Simplicity that moved rather than disappeared.** A single console over functions that are architecturally separate underneath is a user interface, not a consolidation. Ask whether the functions share one policy model, one identity model and one log, or whether they share a login page.
+
+**The team's skills.** Consolidating onto a platform the team has never run replaces several things the team knows with one thing it does not. The training cost is budgetable; the year of lower competence is not, and it coincides with the migration.
+
+## The test: what gets merged
+
+For each function in the proposal, ask what actually becomes one thing: the contract, the console, the policy model, the identity model, the log, the support path, the team's work, the upgrade cycle. Score each as merged, shared or separate. Consolidations that score "merged" on policy, identity, logs and work deliver their savings; those that score "merged" only on the contract and the console deliver a discount and a dependency.
+
+## Protecting the decision
+
+If the consolidation is right, four conditions keep it right.
+
+1. The renewal terms in the contract, for every function, with the uplift stated.
+2. The right to drop a function at a stated price, so that the weaker product can be replaced without ending the whole arrangement.
+3. The export of policy, logs and configuration in a documented format, exercised once during the pilot so that the exit plan is a tested procedure rather than a paragraph.
+4. A review date, in writing, at which the organisation measures the savings it expected against the ones it received.
+
+## Writing it up
+
+A consolidation decision deserves the same document as any other consequential one: the question, the functions and what each becomes, the measured savings and the assumed ones marked as such, the risks with the renewal and the exit named, and the conditions under which proceeding is reasonable. The [example decision memorandum](/advisory/decision-memorandum) is a consolidation decision written in that form, and it does not approve the proposal as submitted.
+
+If a consolidation proposal with a bundle discount is in front of your committee, finding out which of its savings are real is work I do professionally: [independent technical advisory](/advisory).

@@ -8,7 +8,7 @@ relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-looku
 category: networking
 order: 23
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-03"
 ---
 
 ## The end of copy-paste
@@ -23,10 +23,10 @@ Almost everything in an iRule lives inside a `when EVENT` block. Procs are one o
 proc logme { msg } {
     log local0. $msg
 }
-when CLIENT_ACCEPTED {
+when CLIENT_ACCEPTED priority 500 {
     call logme "arrived at CLIENT_ACCEPTED"
 }
-when CLIENT_DATA {
+when CLIENT_DATA priority 500 {
     call logme "arrived at CLIENT_DATA"
 }
 ```
@@ -43,11 +43,20 @@ rule proc_library {
     proc html_encode { str } {
         set out ""
         foreach ch [split $str ""] {
-            switch $ch {
-                "<" { append out "&lt;" }
-                ">" { append out "&gt;" }
-                "&" { append out "&amp;" }
-                default { append out $ch }
+            # -- before the value: a hyphen in the URI must not be read as an option
+            switch -- $ch {
+                "<" {
+                    append out "&lt;"
+                }
+                ">" {
+                    append out "&gt;"
+                }
+                "&" {
+                    append out "&amp;"
+                }
+                default {
+                    append out $ch
+                }
             }
         }
         return $out
@@ -55,10 +64,12 @@ rule proc_library {
 }
 ```
 
+The `--` before `$ch` is not decoration. Without it, the first hyphen in a URI is read as an option, and in Tcl 8.4.6 the proc stops with "ambiguous option"; the DevCentral style guide (R15) and F5 K15650046 ask for it on every `switch`.
+
 To call a proc that lives in another iRule, you qualify it with the name of the iRule that defines it. Across partitions, prefix the partition and rule name too.
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     set safe [call proc_library::html_encode [HTTP::uri]]
     # cross-partition form:
     # call /Common/proc_library::html_encode $value
@@ -116,3 +127,6 @@ The release that introduced procs is stated on F5's own iRules reference, which 
 - [iRules Procedures (procs) - F5's own page: supported in iRules as of 11.4](https://clouddocs.f5.com/api/irules/Procs.html)
 - [proc - the iRules command reference](https://clouddocs.f5.com/api/irules/proc.html)
 - [call - invoking a procedure from another iRule](https://clouddocs.f5.com/api/irules/call.html)
+- [F5 DevCentral: Advanced iRules, Getting Started with iRules Procedures (the library rule that calls itself)](https://community.f5.com/t/advanced-irules-getting-started-with-irules-procedures/67691)
+- [F5 K15650046: Tcl code injection security exposure (the -- on switch)](https://my.f5.com/manage/s/article/K15650046)
+- [F5 DevCentral: iRules Style Guide (R15)](https://community.f5.com/t/irules-style-guide/71151)

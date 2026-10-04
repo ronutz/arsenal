@@ -20,6 +20,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+// MARKS (PRIME 2026-10-04): the current wordmark on each platform card.
+import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
 
@@ -45,6 +47,14 @@ export default async function TrainingLandingPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("teach");
+  // The era caption for the marks' alt text, and the year the current marks are looked up for.
+  const tMarks = await getTranslations("partnerVendors");
+  const era = (e: string) => tMarks("markEra", { era: e });
+  // "since {year}" in the page's language, for the marks still in use.
+  const since = (y: number) => tMarks("markSince", { year: y });
+  const thisYear = new Date().getFullYear();
+  // Platform slug to mark registry key (the registry uses short keys).
+  const MARK_KEY: Record<string, string> = { f5: "f5", extreme: "extreme", fortinet: "fortinet", netskope: "netskope" };
   const tT = await getTranslations("training");
   const tNav = await getTranslations("nav");
   // "What I do now" moved here from /about and kept its original keys.
@@ -53,7 +63,7 @@ export default async function TrainingLandingPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -172,6 +182,7 @@ export default async function TrainingLandingPage({
                       href={`/training/${p.slug}`}
                       className="platform-card"
                     >
+                      {MARK_KEY[p.slug] && <VendorMark vendor={MARK_KEY[p.slug]} year={thisYear} eraLabel={era} since={since} compact />}
                       <span className="platform-card-name">{p.name}</span>
                       <span className="platform-card-tagline">{p.tagline}</span>
                       <span className="platform-card-meta mono">

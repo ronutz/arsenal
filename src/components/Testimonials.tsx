@@ -17,13 +17,14 @@
 // anywhere (no runtime translation calls), consistent with the local-first site.
 // ============================================================================
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import {
   TESTIMONIALS,
   HAS_TRANSLATABLE,
   type Testimonial,
 } from "@/content/testimonials/data";
+import { TESTIMONIAL_KINDS, kindsOf, type TestimonialKind } from "@/content/testimonials/kinds";
 
 function langTag(lang: string | null): string {
   if (!lang) return "";
@@ -40,11 +41,36 @@ function sourceLabel(source: string): string {
   return source;
 }
 
+/** The message key for a kind's label: "training" -> "kindTraining". */
+function kindKey(kind: TestimonialKind): string {
+  return "kind" + kind.charAt(0).toUpperCase() + kind.slice(1);
+}
+
+/** The kind filter value in the URL, if any, so /endorsements?kind=advisory opens filtered. */
+function kindFromLocation(): TestimonialKind | "all" {
+  // Server render and the first client render both start at "all"; the effect
+  // below reads the URL afterwards, so the markup never differs between them.
+  if (typeof window === "undefined") return "all";
+  const raw = new URLSearchParams(window.location.search).get("kind");
+  return raw && (TESTIMONIAL_KINDS as readonly string[]).includes(raw) ? (raw as TestimonialKind) : "all";
+}
+
 export default function Testimonials() {
   const t = useTranslations("testimonials");
 
   const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [langFilter, setLangFilter] = useState<string>("all");
+  /* KIND OF WORK (PRIME 2026-10-03, from the advisory review). The record is
+     mostly about teaching, and a reader weighing an advisory engagement needs
+     the design, selection, procurement and leadership entries without reading
+     all eighty-nine. The kinds come from kinds.ts, never from the verbatim data.
+     A deep link (?kind=advisory) from the advisory page preselects a kind; it
+     is read in an effect so that the static HTML and the first client render
+     agree. */
+  const [kindFilter, setKindFilter] = useState<TestimonialKind | "all">("all");
+  useEffect(() => {
+    setKindFilter(kindFromLocation());
+  }, []);
   /* Global translate-to-English toggle (the primary translation control).
      ON BY DEFAULT (PRIME 2026-08-14).
 
@@ -66,13 +92,22 @@ export default function Testimonials() {
     return ["all", ...Array.from(set)];
   }, []);
 
+  // The translated label of every kind, built once and handed to each card.
+  const kindLabels = useMemo(() => {
+    const out = {} as Record<TestimonialKind, string>;
+    for (const k of TESTIMONIAL_KINDS) out[k] = t(kindKey(k));
+    return out;
+  }, [t]);
+
   const filtered = useMemo(() => {
     return TESTIMONIALS.filter((x) => {
       const okSource = sourceFilter === "all" || sourceLabel(x.source) === sourceFilter;
       const okLang = langFilter === "all" || langTag(x.lang) === langFilter;
-      return okSource && okLang;
+      // One card can carry several kinds; it matches when any of them is selected.
+      const okKind = kindFilter === "all" || kindsOf(x.id).includes(kindFilter);
+      return okSource && okLang && okKind;
     });
-  }, [sourceFilter, langFilter]);
+  }, [sourceFilter, langFilter, kindFilter]);
 
   return (
     <div className="tm-root">
@@ -110,6 +145,25 @@ export default function Testimonials() {
           </div>
         </div>
 
+        {/* Kind of work. Six chips plus "all"; the hint below says a card can
+            carry more than one kind, so the counts across chips exceed the total. */}
+        <div className="tm-filter-group">
+          <span className="tm-filter-label">{t("kindFilter")}</span>
+          <div className="tm-filter-buttons">
+            {(["all", ...TESTIMONIAL_KINDS] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                className={"tm-chip" + (kindFilter === k ? " tm-chip--active" : "")}
+                onClick={() => setKindFilter(k)}
+              >
+                {k === "all" ? t("all") : t(kindKey(k))}
+              </button>
+            ))}
+          </div>
+          <p className="tm-kind-hint">{t("kindHint")}</p>
+        </div>
+
         {/* Translate-to-English toggle, shown only if there is anything to translate */}
         {HAS_TRANSLATABLE && (
           <div className="tm-filter-group">
@@ -145,6 +199,7 @@ export default function Testimonials() {
             t={x}
             translate={translate}
             repliedLabel={t("reply")}
+            kindLabels={kindLabels}
             disclaimer={t("machineDisclaimer")}
             showOriginalLabel={t("showOriginal")}
             hideOriginalLabel={t("hideOriginal")}
@@ -159,6 +214,7 @@ function TestimonialCard({
   t,
   translate,
   repliedLabel,
+  kindLabels,
   disclaimer,
   showOriginalLabel,
   hideOriginalLabel,
@@ -166,6 +222,8 @@ function TestimonialCard({
   t: Testimonial;
   translate: boolean;
   repliedLabel: string;
+  /** Translated label per kind, for the badges in the footer. */
+  kindLabels: Record<TestimonialKind, string>;
   disclaimer: string;
   showOriginalLabel: string;
   hideOriginalLabel: string;
@@ -245,6 +303,12 @@ function TestimonialCard({
         <span className={"tm-badge tm-badge--" + sourceLabel(t.source).toLowerCase().replace(/\s+/g, "")}>
           {sourceLabel(t.source)}
         </span>
+        {/* The kinds of work this entry describes (kinds.ts), after the source. */}
+        {kindsOf(t.id).map((k) => (
+          <span key={k} className={"tm-kind tm-kind--" + k}>
+            {kindLabels[k]}
+          </span>
+        ))}
         {t.rating && <span className="tm-rating">{t.rating}</span>}
         {t.lang && <span className="tm-lang mono">{langTag(t.lang)}</span>}
         {t.date && <span className="tm-date">{t.date}</span>}

@@ -79,8 +79,12 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // The number of vector sets that must be found. A set that stops being discovered
 // is as bad as one that fails, and a bare count of "sets that passed" could not
 // see one disappear. Declared on 2026-10-01; may only be raised. Raised 145 -> 153
-// on 2026-10-03 with the eight iRules / Tcl 8.4 teaching tools' sets.
-const MIN_SETS = 153;
+// on 2026-10-03 with the eight iRules / Tcl 8.4 teaching tools' sets,
+// 153 -> 154 the same day with the BIG-IP zero-or-one finder's set, and
+// 154 -> 156 the same day with the ASCII table explorer's and the Unicode
+// inspector's sets, 156 -> 157 the same day with the charset converter's, and
+// 157 -> 158 on 2026-10-04 with the chmod permission calculator's.
+const MIN_SETS = 158;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

@@ -1,0 +1,83 @@
+---
+slug: hidden-and-lookalike-characters
+title: "Hidden and lookalike characters: what a line of text can hide"
+summary: "Zero-width characters, bidirectional controls that reorder what you see (Trojan Source), line breaks your parser does not see, Cyrillic letters that pass for Latin, and the typographic quotes and dashes that break configs: what each one does, how the Unicode security documents describe it, and how to find them."
+concepts: ["unicode", "zero width space", "bidirectional text", "trojan source", "homoglyph", "confusables", "mixed script", "uts-39", "uts-55"]
+relatedTools: ["unicode-inspector", "f5-irules-style-checker", "ascii-table", "url-inspector"]
+relatedArticles: ["unicode-code-points-and-properties", "ascii-the-128-codes", "irules-style-guide-explained", "url-encoding-and-idn", "mojibake-and-code-pages"]
+category: encoding
+order: 217
+status: reviewed
+updated: "2026-10-03"
+---
+
+Two strings can look identical on screen and differ in memory. Sometimes that is harmless, a no-break space where a space was expected. Sometimes it is a bug that takes an afternoon to find, a zero-width space after a closing brace. And sometimes it is an attack, a line of code that a reviewer reads one way and a compiler runs another. Unicode's own security documents describe each of these, and the [Unicode inspector](/tools/unicode-inspector) finds them.
+
+## Characters that draw as nothing
+
+Unicode marks a set of code points as Default_Ignorable_Code_Point: format controls, variation selectors and similar characters that have no visible glyph, so that a system that does not support one simply does not render it at all. Among them are U+200B ZERO WIDTH SPACE, U+200C ZERO WIDTH NON-JOINER, U+200D ZERO WIDTH JOINER, U+2060 WORD JOINER, U+00AD SOFT HYPHEN and U+FEFF ZERO WIDTH NO-BREAK SPACE, better known by its alias BYTE ORDER MARK.
+
+Many of them have real jobs: the joiners control whether neighbouring letters join in cursive scripts such as Arabic, and the byte order mark serves as a signature for a file's byte order and encoding. The trouble starts when one ends up where nobody expects it. It still counts in the string's length, changes its hash, and breaks equality, and a parser sees it even though a reader cannot. The DevCentral iRules Style Guide's own example ends with a zero-width space after a closing brace, and Tcl 8.4.6 rejects that line with "extra characters after close-brace" (see [the iRules Style Guide, reviewed](/learn/irules-style-guide-explained)).
+
+Vendor documentation is not immune either. F5's BIG-IP ASM operations guide, K13050156 (updated 2024-07-29), shows a custom blocking page whose `charset="utf-8"` holds U+00AD SOFT HYPHEN where the hyphen should be, so a browser does not recognise the label and [reads the page in another charset](/learn/mojibake-and-code-pages).
+
+## Bidirectional controls: Trojan Source
+
+Arabic and Hebrew run right to left, so Unicode's Bidirectional Algorithm (UAX #9) decides the display order of mixed text, and twelve formatting characters let an author steer it. Three are implicit marks (LRM, RLM, ALM). Four start an embedding or an override (LRE, RLE, LRO, RLO), ended by PDF. Three start an isolate (LRI, RLI, FSI), ended by PDI. Their effect is limited to the current paragraph, which in plain text means it ends at the next line feed or carriage return.
+
+In 2021 that machinery was reported as a vulnerability, CVE-2021-42574, under the name Trojan Source: the controls can make source code display in an order different from the order a compiler reads it, so a reviewer approves one program and the build compiles another. The NVD record carries the Unicode Consortium's own statement alongside the report: the visual order of tokens may differ from their logical order, and the Consortium points to its security documents for mitigations. NVD scores it 8.3 (CVSS 3.1).
+
+UTS #55, Unicode Source Code Handling, gives short examples. In C++, a seemingly empty string that holds a right-to-left mark makes a message print the reverse of what the code appears to say. In Rust, right-to-left marks around `<<` make a left shift look like a right shift. The standard's answer is explicit: "The solution is not to forbid the directional formatting characters". Right-to-left text needs them. Editors should instead display code by its lexical structure, and tools should remove the spurious ones and insert the right ones.
+
+The pattern to look for is an embedding, override or isolate that is still open when its line ends, because everything after it on that line can be reordered. The inspector reports exactly that, and draws the text in the order it is stored, so no control in the text can reorder what you see.
+
+## Line breaks your parser does not see
+
+Unicode has more ways to end a line than LF and CR: the Unicode Standard lists NEL (U+0085) as the line ending of EBCDIC-based systems, and adds LINE SEPARATOR (U+2028) and PARAGRAPH SEPARATOR (U+2029). An editor that follows the Unicode line-breaking rules starts a new line at them (supporting NEL is optional); a language may not. UTS #55 shows the consequence: if a comment line in C ends with U+2028, which C does not treat as a line terminator, the compiler reads the next line as part of the comment, and a null check the reviewer can see is not in the program. It also shows the reverse: Ada treats U+0085 as an end of line, so text an editor may display as part of a comment can be executable code.
+
+## Lookalikes
+
+The same shape can be several characters: Latin A, Greek Α and Cyrillic А look alike in most fonts. UTS #39, Unicode Security Mechanisms, maps characters to prototypes, so that two strings with the same prototype sequence are confusable. Its data lists 2,262 characters outside ASCII whose prototype is ASCII text: Cyrillic а for a, Greek ο for o, fullwidth letters for their ASCII forms. Even ASCII has confusables of its own: 1, I, l and | share a prototype, and so do 0 and O.
+
+UTS #55 again gives a code example: a C function that appears to zero a whole matrix, where one loop variable is a Latin `i` and the other a Cyrillic `і`, so the program zeroes only a diagonal. In names and addresses the same trick works on whole words: UTS #39's own example is "scope" written entirely in Cyrillic letters.
+
+A second check catches what prototypes cannot: a word whose letters come from scripts that never share a writing system. UTS #39 defines it with each character's augmented script set, its Script_Extensions plus the writing systems that combine scripts. Japanese combines Han, Hiragana and Katakana, and Korean combines Han and Hangul, so 日本語のテキスト is single-script. A word is mixed-script when no script is left after intersecting those sets, as in `pаypal` with a Cyrillic а.
+
+## Spaces, quotes and dashes from documents
+
+Text pasted from a word processor, a ticket or a chat window brings typographic punctuation with it, and code reads those characters literally. In the Tcl 8.4.6 interpreter, the language under iRules:
+
+| Pasted character | What happens |
+|---|---|
+| Curly quotes around two words, `set x “hello world”` | an error, "wrong # args": curly quotes do not group words |
+| A no-break space between two words | one word, three characters long, not equal to the same text with an ASCII space |
+| An en dash in a `switch` pattern | no match, and no error |
+| A fullwidth quotation mark | becomes part of the value |
+
+None of them is visible in most editors. The [iRules style checker](/tools/f5-irules-style-checker) reports them in an iRule, and the inspector's cleaned copy replaces them with ASCII.
+
+## What to do about it
+
+- **Look before you trust.** Paste the suspect text into the [Unicode inspector](/tools/unicode-inspector). It lists every code point, flags the hidden and lookalike ones, and shows the text in stored order.
+- **Clean code and configuration, not prose.** Removing invisible characters and normalising spaces, quotes and dashes is right for an iRule or a config file. Replacing lookalikes is right for an identifier, but it would also change genuine Cyrillic or Greek words, which is why the inspector leaves that option off by default.
+- **Keep bidirectional controls where they belong.** In right-to-left text they are needed. In code they belong only where a review shows they are intended, and never left open at the end of a line.
+- **Check where text enters.** A comparison, a hash, a URL or a user name check is only as good as the characters it compares.
+
+## Sources
+
+The definitions come from the Unicode Standard 18.0.0, UAX #9 and the Unicode Character Database; the attacks and their mitigations from UTS #55 and UTS #39 and the NVD record of CVE-2021-42574; the confusable count from UTS #39's confusables.txt; the Tcl behaviour was run in Tcl 8.4.6 on 2026-10-03. All read on 2026-10-03.
+
+- [UTS #55: Unicode Source Code Handling](https://www.unicode.org/reports/tr55/)
+- [UTS #39: Unicode Security Mechanisms](https://www.unicode.org/reports/tr39/)
+- [UTS #39 data: confusables.txt (18.0.0)](https://www.unicode.org/Public/18.0.0/security/confusables.txt)
+- [UAX #9: Unicode Bidirectional Algorithm](https://www.unicode.org/reports/tr9/)
+- [NVD: CVE-2021-42574](https://nvd.nist.gov/vuln/detail/CVE-2021-42574)
+- [The Unicode Standard 18.0.0, chapter 5: Implementation Guidelines](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-5/)
+- [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/18.0.0/ucd/DerivedCoreProperties.txt)
+- [Unicode Character Database 18.0.0: NameAliases.txt](https://www.unicode.org/Public/18.0.0/ucd/NameAliases.txt)
+- [Unicode Character Database 18.0.0: ScriptExtensions.txt](https://www.unicode.org/Public/18.0.0/ucd/ScriptExtensions.txt)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 K13050156: Policy tuning and enhancement, BIG-IP ASM operations guide](https://my.f5.com/manage/s/article/K13050156)
+- [The Unicode Standard 18.0.0, chapter 23: Special Areas and Format Characters](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-23/)
+- [Tcl 8.4 manual: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)

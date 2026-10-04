@@ -1,0 +1,107 @@
+---
+slug: unicode-code-points-and-properties
+title: "Unicode: code points, planes, names and properties"
+summary: "What a code point is, how the 1,114,112 of them are organised into planes, why a character on screen can be several code points, how Unicode names and classifies every character, and why the same emoji is 1, 2, 4 or 4 depending on which language counts it."
+concepts: ["unicode", "code point", "plane", "utf-8", "utf-16", "surrogate pair", "general category", "script", "grapheme cluster"]
+relatedTools: ["unicode-inspector", "ascii-table", "base64"]
+relatedArticles: ["ascii-the-128-codes", "hidden-and-lookalike-characters", "character-encoding", "percent-encoding"]
+category: encoding
+order: 216
+status: reviewed
+updated: "2026-10-03"
+---
+
+Unicode gives every character a number and a name, and describes it with properties that software uses to decide how to sort it, draw it, break lines around it and compare it. Version 18.0, published on 16 September 2026, adds 13,007 characters, for a total of 172,808, including three new scripts: Proto-Cuneiform numerals, Jurchen and Small Seal.
+
+The [Unicode inspector](/tools/unicode-inspector) shows all of this for any code point or any pasted text. This article explains what it is showing.
+
+## Code points and planes
+
+A code point is a number from 0 to 10FFFF in hexadecimal: that range is the Unicode codespace, 1,114,112 values. Code points are written `U+` followed by four to six hexadecimal digits, so the letter A is `U+0041` and the grinning face is `U+1F600`.
+
+The Unicode Standard finds it convenient to think of the codespace as planes of 64K code points each, which makes seventeen planes:
+
+| Plane | Range | What is there |
+|---|---|---|
+| 0, the Basic Multilingual Plane (BMP) | U+0000 to U+FFFF | almost every character in common use, the surrogates, and 6,400 private-use code points |
+| 1 to 3 | U+10000 to U+3FFFF | historic scripts, emoji and symbols, more Han ideographs, and new scripts such as Small Seal |
+| 14 | U+E0000 to U+EFFFF | tag characters and variation selectors |
+| 15 and 16 | U+F0000 to U+10FFFF | 131,068 more private-use code points |
+
+Not every code point is a character. 2,048 of them, U+D800 to U+DFFF, are surrogates, set aside so UTF-16 can reach beyond the BMP; a process shall not interpret one as a character. 66 are noncharacters, permanently reserved for internal use: U+FDD0 to U+FDEF and the last two code points of every plane. Private-use code points mean whatever the people exchanging them agree they mean. Everything else that is not yet assigned is reserved for the future.
+
+## A character on screen can be several code points
+
+What a reader sees as one character is often a sequence. An e with an acute accent can be stored as one code point, U+00E9, or as two: U+0065 followed by U+0301 COMBINING ACUTE ACCENT. Both draw the same, but they are different strings: different lengths, different bytes, and an exact comparison says they are not equal. Unicode calls what a user perceives as a single character a grapheme cluster, and normalization (UAX #15) is the process that makes the two spellings of é compare equal.
+
+The inspector lists code points, not grapheme clusters, because code points are what programs store, compare and hash.
+
+## Names, aliases and labels
+
+Every assigned character has a name in capital letters, and names are a permanent identifier: since Unicode 2.0 the stability policy forbids changing them, even when a name turns out to be wrong. A mistake is fixed with a formal alias instead, of type correction. Other aliases name the controls, which have no name of their own (U+000A is LINE FEED, NEW LINE or END OF LINE), give alternates (BYTE ORDER MARK for U+FEFF), list figments that were documented but never standardised, and add abbreviations such as NBSP, ZWSP and BOM.
+
+Some names are built by rule rather than listed: a CJK unified ideograph is `CJK UNIFIED IDEOGRAPH-` followed by its code point, and the 11,172 Hangul syllables are named from the short names of their parts. A code point with no name at all, such as a control, a surrogate or an unassigned one, is identified by a code point label, written in angle brackets: `<control-0085>`, `<surrogate-D800>`, `<reserved-0378>`.
+
+When people type names they rarely match the capitals and hyphens exactly, so UAX #44 defines loose matching: ignore case, white space, underscores and the hyphens between letters, with one exception that keeps U+1180 HANGUL JUNGSEONG O-E apart from U+116C HANGUL JUNGSEONG OE. The inspector matches names that way.
+
+## Properties
+
+Every code point carries dozens of properties. Four do most of the work in everyday debugging:
+
+- **General_Category** is a two-letter class: `Lu` for an uppercase letter, `Nd` for a decimal digit, `Zs` for a space, `Cc` for a control, `Cf` for a format character, `Mn` for a nonspacing mark, and so on, thirty values in all. UAX #44 warns that the classes are a rough partition: `@`, `#`, `%` and `&` have long been Other_Punctuation, although they are not punctuation in Western typography.
+- **Block** is a named range of code points. It says where a character was put, not what it is: U+0964 DEVANAGARI DANDA sits in the Devanagari block, but its Script is Common.
+- **Script** says which writing system a character belongs to. Three values are special: Inherited for characters, such as combining marks, that take their script from the base character before them; Common for other characters used with several scripts; and Unknown for code points that are unassigned, private-use, noncharacters or surrogates. **Script_Extensions** refines it: U+30FC KATAKANA-HIRAGANA PROLONGED SOUND MARK has Script Common and Script_Extensions Hiragana and Katakana, and the danda lists twenty-one Indic scripts.
+- **Age** is the Unicode version that first assigned the code point: 1.1 for most of Latin, 2.1 for the euro sign, 6.1 for the grinning face, 18.0 for the Small Seal characters.
+
+Age matters because software ships with a fixed copy of the data. CPython 3.11, for example, carries Unicode 14.0.0 in its `unicodedata` module, so it has no name for a Small Seal character; a text written with Unicode 18.0 characters may show boxes, or fail validation, on a system whose data is older.
+
+## Three ways to store a code point
+
+A code point is a number; an encoding form turns it into code units:
+
+| Code point | UTF-8 bytes | UTF-16 units | UTF-32 |
+|---|---|---|---|
+| U+0041 A | `41` | `0041` | `00000041` |
+| U+00E9 é | `C3 A9` | `00E9` | `000000E9` |
+| U+20AC € | `E2 82 AC` | `20AC` | `000020AC` |
+| U+1F600 grinning face | `F0 9F 98 80` | `D83D DE00` | `0001F600` |
+
+UTF-8 uses one to four bytes and keeps ASCII as single bytes. UTF-16 uses one 16-bit unit for the BMP and a surrogate pair for everything beyond it. UTF-32 uses one 32-bit unit for every code point. UTF-8 cannot encode a surrogate code point at all, and UTF-16 cannot go beyond U+10FFFF, which is where the codespace ends.
+
+That is why "how long is this string" has several answers. For the grinning face alone:
+
+| Who counts | Answer | Because |
+|---|---|---|
+| Python `len()` | 1 | a Python string is a sequence of code points |
+| JavaScript `.length` | 2 | a JavaScript string is a sequence of 16-bit units |
+| UTF-8 bytes on the wire | 4 | four bytes in UTF-8 |
+| Tcl 8.4.6 `string length` | 4 | it reads each byte of a four-byte UTF-8 character as a character |
+
+The last line matters on a BIG-IP: F5 states that the iRules command set was developed from Tcl 8.4.6 (K6091), and in the Tcl 8.4.6 interpreter a character beyond U+FFFF has no `\u` escape and is counted as four characters. Measure lengths, compare strings and cut substrings with that in mind.
+
+## Where to go next
+
+The [Unicode inspector](/tools/unicode-inspector) shows every property above for any code point, and finds the characters in a text that are not what they seem; [Hidden and lookalike characters](/learn/hidden-and-lookalike-characters) explains why those matter. For the first 128 code points, see [ASCII: the 128 codes](/learn/ascii-the-128-codes).
+
+## Sources
+
+The counts and scripts of Unicode 18.0 come from its release page; the codespace, planes, surrogates, noncharacters, names and labels from the core specification and the stability policy; the properties from UAX #44 and the Unicode Character Database 18.0.0; the encoding forms from RFC 3629 and RFC 2781; the string lengths were measured in CPython 3.11, Node 22 and Tcl 8.4.6 on 2026-10-03. All read on 2026-10-03.
+
+- [Unicode 18.0.0 release](https://www.unicode.org/versions/Unicode18.0.0/)
+- [The Unicode Standard 18.0.0, chapter 2: General Structure](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-2/)
+- [The Unicode Standard 18.0.0, chapter 3: Conformance](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/)
+- [The Unicode Standard 18.0.0, chapter 4: Character Properties](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-4/)
+- [The Unicode Standard 18.0.0, chapter 23: Special Areas and Format Characters](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-23/)
+- [The Unicode Standard 18.0.0, appendix A: Notational Conventions](https://www.unicode.org/versions/Unicode18.0.0/core-spec/appendix-a/)
+- [Unicode Character Encoding Stability Policies](https://www.unicode.org/policies/stability_policy.html)
+- [Unicode FAQ: Private-Use Characters, Noncharacters and Sentinels](https://www.unicode.org/faq/private_use.html)
+- [UAX #44: Unicode Character Database](https://www.unicode.org/reports/tr44/)
+- [UAX #15: Unicode Normalization Forms](https://www.unicode.org/reports/tr15/)
+- [UAX #24: Unicode Script Property](https://www.unicode.org/reports/tr24/)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [Unicode Character Database 18.0.0](https://www.unicode.org/Public/18.0.0/ucd/)
+- [RFC 3629: UTF-8](https://www.rfc-editor.org/rfc/rfc3629)
+- [RFC 2781: UTF-16](https://www.rfc-editor.org/rfc/rfc2781)
+- [ECMA-262: ECMAScript Language Specification](https://tc39.es/ecma262/)
+- [Python documentation: Built-in Types (str)](https://docs.python.org/3/library/stdtypes.html)
+- [Tcl 8.4 manual: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)

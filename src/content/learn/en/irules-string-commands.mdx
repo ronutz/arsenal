@@ -15,11 +15,13 @@ Most text work in an iRule is done by Tcl's `string` command: cutting a path out
 
 ## Indexes count from 0, and can be octal
 
-`string index`, `string range`, `string first`, `string last` and `string replace` take character indexes. An index is an integer counted from 0, `end` for the last character, or `end-N` counting back from it:
+`string index`, `string range`, `string first`, `string last` and `string replace` take character indexes. An index is an integer counted from 0, `end` for the last character, or `end-N` counting back from it. The examples on this page are tclsh sessions, with each command after the `%` prompt and its result on the next line:
 
 ```tcl
-string range "/login.php?user=abc" 0 9        ;# /login.php
-string range "abcdef" 1 end-1                 ;# bcde
+% string range "/login.php?user=abc" 0 9
+/login.php
+% string range "abcdef" 1 end-1
+bcde
 ```
 
 An index is read the way Tcl reads any integer, so a leading zero makes it octal: `string index "abcdefghij" 010` returns `i`, the character at index 8, and an index of `08` is an error. Tcl 8.4.6 also accepts `e` and `en` on their own as abbreviations of `end`, though `e-1` is an error. An index outside the string is not an error for `index` and `range`; you get an empty string.
@@ -35,21 +37,25 @@ An empty needle is never found: the result is -1.
 `string map` replaces keys with values in a single pass from left to right. At each position the keys are tried in the order the list gives them, the first that matches wins, and replaced text is never looked at again:
 
 ```tcl
-string map {a 1 ab 2} "abab"   ;# 1b1b: "a" is tried before "ab"
-string map {ab 2 a 1} "abab"   ;# 22
-string map {http:// https://} "http://a/ and http://b/"
-                               ;# https://a/ and https://b/
+% string map {a 1 ab 2} "abab"
+1b1b
+% string map {ab 2 a 1} "abab"
+22
+% string map {http:// https://} "http://a/ and http://b/"
+https://a/ and https://b/
 ```
 
-Because of the single pass, one `string map` cannot chain replacements, and a value that contains its own key is safe from being replaced twice.
+The first map lists `a` before `ab`, so `a` wins at every position; the second lists `ab` first. Because of the single pass, one `string map` cannot chain replacements, and a value that contains its own key is safe from being replaced twice.
 
 ## string match is glob matching
 
 `string match pattern string` returns 1 or 0. In the pattern, `*` matches any run of characters, `?` one character, `[abc]` one character from a set, and a backslash makes the next character literal. Matching is case-sensitive unless you add `-nocase`:
 
 ```tcl
-string match -nocase "*.EXAMPLE.com" "www.example.com"   ;# 1
-string match "*.EXAMPLE.com" "www.example.com"           ;# 0
+% string match -nocase "*.EXAMPLE.com" "www.example.com"
+1
+% string match "*.EXAMPLE.com" "www.example.com"
+0
 ```
 
 `switch -glob` uses the same patterns, which is why it is the natural way to test one value against several glob patterns.
@@ -63,10 +69,11 @@ string match "*.EXAMPLE.com" "www.example.com"           ;# 0
 `string trim`, `trimleft` and `trimright` remove white space by default. Given a second argument, they remove any of **those characters**, in any order, from the ends. This is a classic bug:
 
 ```tcl
-string trimleft "/apiary/x" "/api"   ;# ry/x, not ary/x
+% string trimleft "/apiary/x" "/api"
+ry/x
 ```
 
-Every leading character that appears in the set `/`, `a`, `p`, `i` is removed. To remove a prefix, test for it and cut it:
+The result is `ry/x`, not `ary/x`: every leading character that appears in the set `/`, `a`, `p`, `i` is removed. To remove a prefix, test for it and cut it:
 
 ```tcl
 if { [string first "/api" $path] == 0 } {

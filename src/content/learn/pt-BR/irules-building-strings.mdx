@@ -19,14 +19,19 @@ Um iRule passa boa parte do tempo montando valores: um endereço de redirecionam
 - **Chaves** não substituem nada. `{$a $b}` são exatamente os seis caracteres `$a $b`.
 - **Colchetes** rodam um comando e põem o resultado no lugar: `[string tolower [HTTP::host]]`.
 
-O manual acrescenta a regra que resolve a maioria das discussões: cada caractere é processado exatamente uma vez enquanto as palavras são montadas. Um valor que por acaso contém `$` ou `[` não é substituído de novo pelas regras das palavras.
+O manual acrescenta a regra que resolve a maioria das discussões: cada caractere é processado exatamente uma vez enquanto as palavras são montadas. Um valor que por acaso contém `$` ou `[` não é substituído de novo pelas regras das palavras. Nesta sessão do tclsh, cada comando vem depois do prompt `%` e o resultado fica na linha seguinte:
 
 ```tcl
-set a "foo"
-set b "bar"
-set c "$a$b"     ;# foobar
-set d "$a $b"    ;# foo bar
-set e {$a $b}    ;# $a $b
+% set a "foo"
+foo
+% set b "bar"
+bar
+% set c "$a$b"
+foobar
+% set d "$a $b"
+foo bar
+% set e {$a $b}
+$a $b
 ```
 
 ## Onde termina o nome de uma variável
@@ -39,10 +44,13 @@ Três comandos montam valores mais longos, e cada um trata os espaços de um jei
 
 ```tcl
 set x " a "
-append x " b"                 ;# x vale " a  b": texto acrescentado exatamente como veio
-set y [concat " a " " b"]     ;# y vale "a b": cada argumento aparado, depois unido com um espaço
+# O texto é acrescentado exatamente como veio: x passa a valer " a  b"
+append x " b"
+# Cada argumento é aparado e depois unido com um espaço: y vale "a b"
+set y [concat " a " " b"]
 set l {}
-lappend l "one two" three     ;# l vale {{one two} three}: dois elementos de lista
+# Cada argumento vira um elemento da lista: l vale {{one two} three}
+lappend l "one two" three
 ```
 
 `append` é para texto, e o manual observa que é o jeito eficiente de fazer um valor longo crescer. `concat` tira o espaço em branco das duas pontas de cada argumento, descarta os vazios e junta o que sobra com espaços simples. `lappend` acrescenta cada valor como um elemento de lista, pondo-o entre chaves se ele contiver espaços.
@@ -67,8 +75,10 @@ Alguns comandos avaliam os argumentos de novo: o `expr`, e as condições de `if
 
 ```tcl
 set count [HTTP::header value X-Count]
-set next [expr $count + 1]       ;# nunca faça isto
-set next [expr {$count + 1}]     ;# com chaves: $count é sempre só um valor
+# Nunca faça isto: sem chaves, o valor do cabeçalho passa por uma segunda rodada de substituição
+set next [expr $count + 1]
+# Com chaves: ${count} é sempre só um valor
+set next [expr { ${count} + 1 }]
 ```
 
 Se um cliente mandar um cabeçalho `X-Count` contendo `[...]`, a forma sem chaves roda o texto entre colchetes como comando durante a segunda substituição. O K15650046 da F5 descreve isso como uma exposição causada por prática de código, não como uma vulnerabilidade do produto, e o K57410758 documenta o alerta do validador "use curly braces to avoid double substitution". A correção é a mesma nos dois: coloque as expressões entre chaves e ponha `--` antes de um valor passado para `switch`, para que um valor começando com hífen não seja lido como opção.

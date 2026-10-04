@@ -292,6 +292,94 @@
         }
       }
     },
+    "/ascii-table": {
+      "get": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_ascii_table",
+        "summary": "ASCII table explorer",
+        "description": "All 128 ASCII codes in every notation, with their names from RFC 20 to Unicode 18.0.0, how to write each one in C, JSON, JavaScript, Python, Tcl, HTML and URLs, and a look-up that tells you when a character is not ASCII at all. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 20 (USAS X3.4-1968), Unicode 18.0.0 UCD, UAX #44, UTS #39, WHATWG HTML, RFC 8259, RFC 3986, C11 (N1570), ECMA-262, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"mode\":\"lookup\",\"value\":\"&tilde;\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_ascii_table_post",
+        "summary": "ASCII table explorer (POST)",
+        "description": "All 128 ASCII codes in every notation, with their names from RFC 20 to Unicode 18.0.0, how to write each one in C, JSON, JavaScript, Python, Tcl, HTML and URLs, and a look-up that tells you when a character is not ASCII at all. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 20 (USAS X3.4-1968), Unicode 18.0.0 UCD, UAX #44, UTS #39, WHATWG HTML, RFC 8259, RFC 3986, C11 (N1570), ECMA-262, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/base64": {
       "get": {
         "tags": [
@@ -857,6 +945,182 @@
         "operationId": "run_change_window_runbook_builder_post",
         "summary": "Change Window Runbook Builder (POST)",
         "description": "Describe a planned change in six structured fields; a fixed rule set assembles an ordered runbook across six phases - with the risks the plan carries and readiness cautions about the input. Advisory structure to review and adapt, never an approval. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Original ruleset (D-18). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/charset-equivalency": {
+      "get": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_charset_equivalency",
+        "summary": "Charset converter and mojibake fixer",
+        "description": "Turn text into bytes and bytes into text in fourteen charsets, from UTF-8, UTF-16 and UTF-32 to windows-1252, IBM 850 and EBCDIC, with every ill-formed byte replaced exactly as a browser replaces it. Paste a hex dump, escapes, %XX or Base64, compare what every charset makes of the same bytes, and turn garbled text such as cafÃ© back into what it was. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: WHATWG Encoding Standard, Unicode 18.0.0 (3.9, 3.10), RFC 3629, RFC 2781, RFC 4648, Unicode vendor mapping tables (IBM 437, 850, 037, 500). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"mode\":\"repair\",\"text\":\"RequisiÃ§Ã£o bloqueada â€“ cafÃ©\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_charset_equivalency_post",
+        "summary": "Charset converter and mojibake fixer (POST)",
+        "description": "Turn text into bytes and bytes into text in fourteen charsets, from UTF-8, UTF-16 and UTF-32 to windows-1252, IBM 850 and EBCDIC, with every ill-formed byte replaced exactly as a browser replaces it. Paste a hex dump, escapes, %XX or Base64, compare what every charset makes of the same bytes, and turn garbled text such as cafÃ© back into what it was. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: WHATWG Encoding Standard, Unicode 18.0.0 (3.9, 3.10), RFC 3629, RFC 2781, RFC 4648, Unicode vendor mapping tables (IBM 437, 850, 037, 500). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chmod-permission-calculator": {
+      "get": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_chmod_permission_calculator",
+        "summary": "chmod permission calculator",
+        "description": "Type a file mode as octal (4755), as ls shows it (-rwsr-xr-x) or as chmod clauses on a base (g+s,o-rwx) and read it every other way: the bits, who may do what, what setuid, setgid and the sticky bit mean for a file or a directory, the commands that reach it, the umask that would create it, and a trace of each clause. From POSIX.1-2024 chmod and ls and coreutils 9.11 chmod(1); nothing leaves the browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: POSIX.1-2024 chmod, POSIX.1-2024 ls, GNU coreutils 9.11 chmod(1). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"mode\":\"g+s,o-rwx\",\"base\":\"755\",\"kind\":\"directory\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Text & utilities"
+        ],
+        "operationId": "run_chmod_permission_calculator_post",
+        "summary": "chmod permission calculator (POST)",
+        "description": "Type a file mode as octal (4755), as ls shows it (-rwsr-xr-x) or as chmod clauses on a base (g+s,o-rwx) and read it every other way: the bits, who may do what, what setuid, setgid and the sticky bit mean for a file or a directory, the commands that reach it, the umask that would create it, and a trace of each clause. From POSIX.1-2024 chmod and ls and coreutils 9.11 chmod(1); nothing leaves the browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: POSIX.1-2024 chmod, POSIX.1-2024 ls, GNU coreutils 9.11 chmod(1). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -3257,6 +3521,94 @@
         }
       }
     },
+    "/f5-bigip-index-base-finder": {
+      "get": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigip_index_base_finder",
+        "summary": "BIG-IP zero-or-one finder",
+        "description": "Zero or one? Look up where each Tcl command, iRules command, configuration object, API and on-box tool on a BIG-IP starts counting, with F5's own wording and the date each source was read, then translate a position into every command's own number and run it. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4, F5 iRules reference, F5 tmsh reference, iControl REST, syslog (RFC 5424 severities). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"mode\":\"translate\",\"question\":\"segment\",\"value\":\"/api/v2/users\",\"n\":2}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "F5 LTM, iRules & platform"
+        ],
+        "operationId": "run_f5_bigip_index_base_finder_post",
+        "summary": "BIG-IP zero-or-one finder (POST)",
+        "description": "Zero or one? Look up where each Tcl command, iRules command, configuration object, API and on-box tool on a BIG-IP starts counting, with F5's own wording and the date each source was read, then translate a position into every command's own number and run it. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Tcl 8.4, F5 iRules reference, F5 tmsh reference, iControl REST, syslog (RFC 5424 severities). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/f5-bigip-license-explainer": {
       "get": {
         "tags": [
@@ -4676,7 +5028,7 @@
         ],
         "operationId": "run_f5_irules_style_checker",
         "summary": "iRules style checker",
-        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4, Unicode 18.0.0, F5 K9204. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -4720,7 +5072,7 @@
         ],
         "operationId": "run_f5_irules_style_checker_post",
         "summary": "iRules style checker (POST)",
-        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste an iRule and read it against the DevCentral iRules Style Guide: indentation, braces, comments, braced expressions, switch --, event priorities, static:: names and more, plus a real Tcl 8.4 syntax check. Parsed, never run. Local, no network. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: DevCentral iRules Style Guide, Tcl 8.4, Unicode 18.0.0, F5 K9204. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -12328,6 +12680,94 @@
         "operationId": "run_totp_hotp_post",
         "summary": "TOTP / HOTP Generator & Validator (POST)",
         "description": "Generate and check time-based (TOTP, RFC 6238) and counter-based (HOTP, RFC 4226) one-time passwords - the codes behind authenticator apps and hardware tokens such as FortiToken. SHA-1/256/512, configurable digits and step. Computed locally with Web Crypto; your secret never leaves your browser. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 6238, RFC 4226. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/unicode-inspector": {
+      "get": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_unicode_inspector",
+        "summary": "Unicode inspector",
+        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"mode\":\"codepoint\",\"value\":\"U+202E\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Encoding"
+        ],
+        "operationId": "run_unicode_inspector_post",
+        "summary": "Unicode inspector (POST)",
+        "description": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: Unicode 18.0.0 UCD, UTS #39, UTS #55, UAX #9, UAX #44, RFC 3629, RFC 2781. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",

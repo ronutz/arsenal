@@ -71,7 +71,7 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
 
   return (
     <>
-      <a href="#main" className="skip-link">{tNav("skipToContent")}</a>
+      <a href="#main" className="skip-link" data-pagefind-ignore>{tNav("skipToContent")}</a>
       <Header />
       <main id="main">
         <section className="section">

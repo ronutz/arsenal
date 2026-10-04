@@ -33,7 +33,7 @@ export default async function EraPage({ eraKey, sections, next }: EraPageProps) 
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -69,6 +69,19 @@ export default async function EraPage({ eraKey, sections, next }: EraPageProps) 
                     <div className="era-section-content">
                       <h2 className="era-section-title">{t(`${eraKey}.${s}Title`)}</h2>
                       <p className="era-section-body">{t(`${eraKey}.${s}Body`)}</p>
+                      {/* OPTIONAL LINK (2026-10-03). A section may carry a `<s>LinkHref`
+                          and `<s>LinkLabel` pair; when both exist the section ends in
+                          one internal link. Added for the sixth section of 1996-2020,
+                          which points at the catalogue of the earlier sites rather
+                          than squeezing an inventory into a paragraph. Sections
+                          without the pair render exactly as before. */}
+                      {t.has(`${eraKey}.${s}LinkHref`) && t.has(`${eraKey}.${s}LinkLabel`) && (
+                        <p className="era-section-link">
+                          <Link href={t(`${eraKey}.${s}LinkHref`)}>
+                            {t(`${eraKey}.${s}LinkLabel`)} &#8594;
+                          </Link>
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))}

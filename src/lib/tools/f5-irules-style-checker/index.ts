@@ -4,9 +4,10 @@
 // THE iRULES STYLE CHECKER: the self-describing {manifest, run, vectors} triple.
 //
 // Paste an iRule and read it against the DevCentral iRules Style Guide
-// (editor settings and rules R1 to R20) plus a real Tcl 8.4 syntax check.
-// The rule is parsed, never run; each finding names the guide rule it
-// comes from.
+// (editor settings and rules R1 to R20), the points its comment thread added
+// (D1, D2) and a real Tcl 8.4 syntax check. The rule is parsed, never run;
+// each finding names the rule it comes from. Characters are named from the
+// Unicode Character Database 18.0.0, and the size limit is F5's (K9204).
 //
 // Engine: src/lib/tcl84 (Tcl 8.4.6 semantics, the base F5 names for iRules in
 // K6091), differential-tested against a real Tcl 8.4.6 interpreter. Local and
@@ -15,9 +16,12 @@
 
 import { run as compute, type StyleCheckerResult } from "./compute";
 import { GOLDEN_VECTOR_SET_ID, VECTORS } from "./golden-vectors";
+import { UNICODE_SOURCES } from "@/lib/unicode/hidden";
 
 // The compute layer's public types.
 export type { StyleCheckerResult, StyleFinding, Severity } from "./compute";
+// The size limit, for pages that quote it.
+export { IRULE_MAX_CHARS } from "./compute";
 // The vector set and its runner.
 export { GOLDEN_VECTOR_SET_ID, VECTORS, verifyVectors } from "./golden-vectors";
 
@@ -48,11 +52,11 @@ export const manifest = Object.freeze({
   // The Learn articles written for it.
   learnLinks: ["learn/irules-style-guide-explained"],
   // Tools that teach the neighbouring ideas.
-  relatedTools: ["f5-irules-performance-linter", "f5-irules-conditional-builder"],
+  relatedTools: ["f5-irules-performance-linter", "f5-irules-conditional-builder", "f5-irules-expression-lab", "f5-bigip-index-base-finder"],
   // Sources, each read live on its access date.
   sources: [
     // F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22)
-    { id: "devcentral-style", label: "F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22)", type: "vendor-community", url: "https://community.f5.com/t/irules-style-guide/71151", access_date: "2026-10-03", scope: "the editor settings and the numbered rules R1 to R20 the checker reads an iRule against", status: "active" },
+    { id: "devcentral-style", label: "F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22)", type: "vendor-community", url: "https://community.f5.com/t/irules-style-guide/71151", access_date: "2026-10-03", scope: "the editor settings and the numbered rules R1 to R20 the checker reads an iRule against; its comment thread (Kai Wilke on == against eq for text, D1; Juergen Mang on return and break in switch arms, D2)", status: "active" },
     // F5 K15650046: Tcl code injection security exposure
     { id: "k15650046", label: "F5 K15650046: Tcl code injection security exposure", type: "vendor-kb", url: "https://my.f5.com/manage/s/article/K15650046", access_date: "2026-10-03", scope: "always brace expressions; always put -- before the switch string; the bad option error a value starting with - produces", status: "active" },
     // F5 K57410758: warning [use curly braces to avoid double substitution]
@@ -62,13 +66,23 @@ export const manifest = Object.freeze({
     // F5 iRules reference: table
     { id: "f5-table", label: "F5 iRules reference: table", type: "vendor-docs", url: "https://clouddocs.f5.com/api/irules/table.html", access_date: "2026-10-03", scope: "a table entry gets a default timeout of 180 seconds and an indefinite lifetime when none is given (the R17 finding)", status: "active" },
     // F5 iRules reference: How To Write Fast Rules
-    { id: "f5-fast-rules", label: "F5 iRules reference: How To Write Fast Rules", type: "vendor-docs", url: "https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html", access_date: "2026-10-03", scope: "switch over if, chained elseif over separate ifs, switch over matchclass up to 100 elements, and braced expr (about a factor of 20)", status: "active" },
+    { id: "f5-fast-rules", label: "F5 iRules reference: How To Write Fast Rules", type: "vendor-docs", url: "https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html", access_date: "2026-10-03", scope: "switch over if, chained elseif over separate ifs, switch over matchclass up to 100 elements, braced expr (about a factor of 20), and comparing numbers to numbers and strings to strings, including == against eq (D1)", status: "active" },
+    // F5 K9204: iRules are limited to 65,520 characters
+    { id: "k9204", label: "F5 K9204: iRules are limited to 65,520 characters", type: "vendor-kb", url: "https://my.f5.com/manage/s/article/K9204", access_date: "2026-10-03", scope: "the 65,520-character limit, and the errors BIG-IP reports when saving or loading a longer iRule (the R2 finding)", status: "active" },
+    // F5 iRules reference: return
+    { id: "f5-return", label: "F5 iRules reference: return", type: "vendor-docs", url: "https://clouddocs.f5.com/api/irules/return.html", access_date: "2026-10-03", scope: "return causes immediate exit from the currently executing event (D2); its example writes if{ with no space, which Tcl 8.4.6 runs as a command named if{ (R11)", status: "active" },
+    // Tcl 8.4 manual: break
+    { id: "tcl84-break", label: "Tcl 8.4 manual: break", type: "reference", url: "https://www.tcl-lang.org/man/tcl8.4/TclCmd/break.htm", access_date: "2026-10-03", scope: "break aborts out to the innermost containing loop command; switch is not one (D2)", status: "active" },
+    // Tcl 8.4 manual: continue
+    { id: "tcl84-continue", label: "Tcl 8.4 manual: continue", type: "reference", url: "https://www.tcl-lang.org/man/tcl8.4/TclCmd/continue.htm", access_date: "2026-10-03", scope: "continue goes to the next iteration of the innermost containing loop (D2)", status: "active" },
     // Tcl 8.4 manual: switch
-    { id: "tcl84-switch", label: "Tcl 8.4 manual: switch", type: "reference", url: "https://www.tcl-lang.org/man/tcl8.4/TclCmd/switch.htm", access_date: "2026-10-03", scope: "the -exact, -glob, -regexp and -- options, fall-through bodies, default, and comments only inside bodies", status: "active" },
+    { id: "tcl84-switch", label: "Tcl 8.4 manual: switch", type: "reference", url: "https://www.tcl-lang.org/man/tcl8.4/TclCmd/switch.htm", access_date: "2026-10-03", scope: "the -exact, -glob, -regexp and -- options, a body of - shared with the next pattern, default, and comments only inside bodies", status: "active" },
     // F5 K6091: The version of Tcl used to develop iRules
     { id: "k6091", label: "F5 K6091: The version of Tcl used to develop iRules", type: "vendor-kb", url: "https://my.f5.com/manage/s/article/K6091", access_date: "2026-10-03", scope: "the iRules command set was developed from Tcl base version 8.4.6, which is used in all BIG-IP versions; the engine models that version", status: "active" },
     // Tcl 8.4.6 source code, tag core-8-4-6 on GitHub
     { id: "tcl846-source", label: "Tcl 8.4.6 source code, tag core-8-4-6 on GitHub", type: "implementation", url: "https://github.com/tcltk/tcl/tree/core-8-4-6", access_date: "2026-10-03", scope: "the reference interpreter: the engine was differential-tested against tclsh built from this tag (commit bf3eeadc)", status: "active" },
+    // The Unicode Character Database files the character findings are named from (R1, E3).
+    ...UNICODE_SOURCES.map((u) => ({ ...u, status: "active" as const })),
   ],
   // Credits.
   credits: [{ handle: "ronutz", display_name: "Rodolfo Nützmann", role: "implementation", public: true }],

@@ -44,6 +44,8 @@ import { ogImages } from "@/lib/og";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+// MARK (PRIME 2026-10-04): the company's own wordmark on its profile page.
+import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import {
   RED_EDUCATION_ALL_VENDORS,
@@ -115,6 +117,12 @@ export default async function RedEducationPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("redEducation");
+  // The era caption for the mark (same string the career chapters use) and the year to look it up.
+  const tMarks = await getTranslations("partnerVendors");
+  const era = (e: string) => tMarks("markEra", { era: e });
+  // "since {year}" in the page's language ("desde 2025" in Portuguese).
+  const since = (y: number) => tMarks("markSince", { year: y });
+  const thisYear = new Date().getFullYear();
   const tNav = await getTranslations("nav");
 
   // The lead-attributed outbound CTA (utm_campaign identifies this page).
@@ -144,7 +152,7 @@ export default async function RedEducationPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -164,6 +172,8 @@ export default async function RedEducationPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title"><ReduBrand linked={false}>{t("title")}</ReduBrand></h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* The company's mark, dated like every mark on the site (registry: src/content/vendors/marks.ts). */}
+              <VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} />
 
               {/* SECTION ANCHORS (PRIME 2026-08-16). The page is long and its
                   sections answer different questions - who Red Education is,

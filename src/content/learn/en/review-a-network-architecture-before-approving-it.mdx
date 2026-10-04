@@ -1,0 +1,71 @@
+---
+slug: review-a-network-architecture-before-approving-it
+title: "How to independently review a network architecture before approving it"
+summary: "A design arrives with a diagram, a bill of materials and a date. Approving it is a decision with years of consequences, and the material in front of you was prepared by people who want it approved. A method for reading it on your own terms: what to ask for before you start, the seven questions that find most problems, how to separate what the design says from what it assumes, and what a written review should contain so the approval survives the person who gave it."
+concepts: ["architecture-review", "design-review", "decision", "assumptions", "procurement", "governance"]
+relatedTools: ["change-blast-radius-mapper", "flow-path-reasoner", "fault-hypothesis-builder", "health-snapshot-comparator"]
+relatedArticles: ["hidden-assumptions-in-an-architecture-diagram", "questions-executives-should-ask-before-a-network-transformation", "product-limitations-versus-architecture-failures", "ariane-5-and-the-assumption-that-expired"]
+category: operations
+order: 320
+status: reviewed
+updated: "2026-10-03"
+---
+
+## What an approval actually commits you to
+
+A network architecture is approved once and lived with for five to seven years. The diagram on the slide will be replaced by equipment, contracts, operating procedures, a support arrangement and a set of habits, and every one of those is harder to change than the diagram was. So the review is not a check that the drawing is tidy. It is the last cheap moment to find out what the design assumes about your organisation, and whether those assumptions are true.
+
+The difficulty is that the material arrives from the people who want the approval: a supplier, an integrator, or an internal team that has already invested months in it. None of them is lying. All of them have stopped seeing the things they decided early, and the review's job is to see those things again.
+
+## Before you read a single slide
+
+Ask for four things, and notice how long each takes to arrive.
+
+1. **The requirements the design claims to meet**, as a list, in your organisation's words rather than the supplier's. If no such list exists, the design was drawn to a conversation, and the review will have to reconstruct the requirements before it can test anything against them.
+2. **The current-state inventory** the design replaces or connects to: what exists, what each thing does, what depends on it. A design that was produced without one is a design for a different network than the one you have. The [estate review](/advisory) exists for exactly this gap.
+3. **The failure-mode analysis**, if one was done. Most designs come with an availability percentage and no account of how it was calculated. Ask what fails together, and what the design does when it does.
+4. **The operating model**: who runs it, with what skills, on what rota, through which console. A design is only as good as the team that will be awake when it breaks.
+
+A supplier who can produce all four in a day has done the work. One who needs three weeks has given you your first finding.
+
+## Seven questions that find most of the problems
+
+**Where is the single failure domain hiding?** Every design with two of everything has somewhere that is one of something: a management plane, a licensing server, a certificate authority, an identity provider, a route reflector, the one circuit both "diverse" paths share for the last kilometre. Draw the dependency graph rather than the topology, and look for the node with no twin. The [blast-radius mapper](/tools/change-blast-radius-mapper) is built around this question.
+
+**What does the design assume about traffic it has not measured?** Sizing is usually done from a peak that somebody remembers rather than one that somebody measured, and the shape of the traffic matters as much as the volume. Ask for the measurement, and the date of it.
+
+**What happens on the first day after cut-over?** Designs are reviewed for steady state. The dangerous period is the overlap, when both the old and the new exist, routing is asymmetric, monitoring covers one of them, and the team is learning the console under pressure. Ask for the migration sequence and the rollback point of each step.
+
+**Which part of this will the team be unable to see?** Every modern design moves some function into something the team cannot log into: a cloud service, a vendor-managed appliance, an orchestrator. That is often a good trade. It is a trade, and the review should say what visibility is lost and what the supplier exposes instead.
+
+**What does it cost to operate, rather than to buy?** Licences that count things that grow, support tiers that change at renewal, the training the team needs, the second person who now has to understand it. The purchase price is the number everybody has; the operating cost is the one the approval commits you to.
+
+**What would make this design wrong?** Not "what are the risks": what change in the world, the business or the traffic would turn a correct decision into an incorrect one. An acquisition, a regulation, a product reaching end of life, a team of five becoming a team of three. A design that cannot answer this has not been thought about as a bet, and every design is a bet.
+
+**Who else has run this exact combination?** Not the product: the combination, at your scale, with your identity provider, your WAN and your constraints. References are chosen; the question is whether any of them resembles you.
+
+## Separate what the design says from what it assumes
+
+A design document records decisions. It almost never records the conditions under which each decision is correct, which is where the risk lives. The Practice article on [the assumptions a design encodes and never states](/practice/assumptions-a-design-never-states) sets out the five that expire most often: the load and its shape, the independence of things placed together, what the layer below does, who operates it, and what the growth will look like.
+
+For a review, the practical method is an assumption register. For each component or choice, write three columns: the value chosen, the bet behind it, and the observable that would tell you the bet has stopped paying. The register is more valuable than the findings, because the findings are about today and the register is about year three.
+
+## Reading a diagram against reality
+
+Three habits catch what a read-through misses.
+
+- **Trace one real flow end to end**, by hand: a user in a branch reaching the application in the second data centre, through every hop, with the return path. Most diagrams are drawn one way. The [flow-path reasoner](/tools/flow-path-reasoner) is the structured version of this walk.
+- **Fail one thing at a time, on paper.** A link, a device, a site, the identity provider, DNS. For each, write what the design does and what the user sees. The answer "it fails over" is not an answer until it says in how long and with what state lost.
+- **Ask for the configuration, not the picture.** A reviewer who sees the actual policy, the actual routing and the actual timers finds things the picture cannot show, and a supplier who will not show them before approval is telling you something.
+
+## What the written review should contain
+
+A review that lives in a meeting is forgotten by the next one. Write it, and structure it so that someone who was not there can follow the reasoning and challenge it: the question being answered, the material reviewed, the assumptions found and whether each was verified, the findings in order of consequence rather than in order of discovery, the conditions under which approval is reasonable, and the questions still open with an owner for each. The [example decision memorandum](/advisory/decision-memorandum) shows the shape.
+
+Three findings worth stating explicitly even when the answer is good: whether the design can be reversed and until when, what the operating team will need that it does not have, and which decision inside the design should be deferred because the evidence to make it does not exist yet.
+
+## The approval itself
+
+An approval is rarely yes or no. It is usually "yes, under these conditions, with this decision deferred to this date, with these questions answered first". Writing it that way is not hedging. It is the difference between an approval and a signature.
+
+If an architecture like this one is waiting for your approval, reading it on your terms is the kind of question I take on professionally: [independent technical advisory](/advisory).

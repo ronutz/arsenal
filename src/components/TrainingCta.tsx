@@ -18,12 +18,17 @@
 
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+// MARK (PRIME 2026-10-04): the Red Education wordmark on the card that names it.
+import VendorMark from "@/components/VendorMark";
 
 export default async function TrainingCta() {
   const t = await getTranslations("trainingCta");
+  // The era caption for the mark's alt text.
+  const tMarks = await getTranslations("partnerVendors");
   return (
     <aside className="training-cta">
       <span className="training-cta-eyebrow">{t("eyebrow")}</span>
+      <VendorMark vendor="rededucation" year={new Date().getFullYear()} eraLabel={(e) => tMarks("markEra", { era: e })} since={(y) => tMarks("markSince", { year: y })} compact />
       <p className="training-cta-body">
         {/* Rich body: the <redu> tag wraps "Red Education" as an internal link
             to the /red-education profile page (site-wide internal linking). */}

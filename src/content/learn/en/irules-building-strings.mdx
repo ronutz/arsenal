@@ -19,14 +19,19 @@ An iRule spends much of its time building values: a redirect location from a hos
 - **Braces** do not substitute anything. `{$a $b}` is the six characters `$a $b`, exactly.
 - **Brackets** run a command and put its result in place: `[string tolower [HTTP::host]]`.
 
-The manual adds the rule that settles most arguments: each character is processed exactly once while the words are built. A value that happens to contain `$` or `[` is not substituted again by the word rules.
+The manual adds the rule that settles most arguments: each character is processed exactly once while the words are built. A value that happens to contain `$` or `[` is not substituted again by the word rules. In this tclsh session, each command follows the `%` prompt and its result is on the next line:
 
 ```tcl
-set a "foo"
-set b "bar"
-set c "$a$b"     ;# foobar
-set d "$a $b"    ;# foo bar
-set e {$a $b}    ;# $a $b
+% set a "foo"
+foo
+% set b "bar"
+bar
+% set c "$a$b"
+foobar
+% set d "$a $b"
+foo bar
+% set e {$a $b}
+$a $b
 ```
 
 ## Where a variable name ends
@@ -39,10 +44,13 @@ Three commands build longer values, and they do different things with spaces:
 
 ```tcl
 set x " a "
-append x " b"                 ;# x is " a  b": text added exactly as given
-set y [concat " a " " b"]     ;# y is "a b": each argument trimmed, then joined with one space
+# The text is added exactly as given: x is now " a  b"
+append x " b"
+# Each argument is trimmed, then joined with one space: y is "a b"
+set y [concat " a " " b"]
 set l {}
-lappend l "one two" three     ;# l is {{one two} three}: two list elements
+# Each argument becomes one list element: l is {{one two} three}
+lappend l "one two" three
 ```
 
 `append` is for text, and the manual notes it is the efficient way to grow a long value. `concat` trims the white space at both ends of every argument, drops empty ones, and joins what is left with single spaces. `lappend` adds each value as one list element, quoting it if it contains spaces.
@@ -67,8 +75,10 @@ Some commands evaluate their arguments again: `expr`, and the conditions of `if`
 
 ```tcl
 set count [HTTP::header value X-Count]
-set next [expr $count + 1]       ;# never do this
-set next [expr {$count + 1}]     ;# braced: $count is only ever a value
+# Never do this: unbraced, the header value goes through a second round of substitution
+set next [expr $count + 1]
+# Braced: ${count} is only ever a value
+set next [expr { ${count} + 1 }]
 ```
 
 If a client sends an `X-Count` header that contains `[...]`, the unbraced form runs the bracketed text as a command during the second substitution. F5's K15650046 describes this as a coding-practice exposure rather than a product vulnerability, and K57410758 documents the validator warning "use curly braces to avoid double substitution". The fix is the same in both: brace expressions, as in `if { $ua eq "curl" }`, and put `--` before a value passed to `switch`, so a value starting with a dash cannot be read as an option.

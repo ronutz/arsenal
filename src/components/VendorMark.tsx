@@ -52,18 +52,38 @@ interface VendorMarkProps {
    * component and the copy lives with the rest of the page's messages.
    */
   eraLabel: (era: string) => string;
+  /**
+   * Localised "since {year}" for a mark that is still current (2026-10-04).
+   * The era string used to be composed here in English ("since 2025"), which
+   * every other locale then printed inside its own caption ("marca em uso
+   * since 2025" on the pt-BR Red Education page). Passed in like eraLabel, for
+   * the same reason; when omitted the English form is kept, so older call sites
+   * keep working until they are updated. A retired mark's era is two years
+   * joined by an en dash, which needs no translation.
+   */
+  since?: (from: number) => string;
+  /**
+   * COMPACT (2026-10-04). On a card or a timeline row the mark identifies the
+   * company beside its name and the visible era caption would repeat what the
+   * row already says, so the caption moves into the alt text only and the
+   * plate shrinks (see .vendor-mark--compact). The era is still stated, to a
+   * reader of the alt text and to the registry; only its print on the page is
+   * dropped. Default false keeps every existing use exactly as it was.
+   */
+  compact?: boolean;
 }
 
-export default function VendorMark({ vendor, year, eraLabel }: VendorMarkProps) {
+export default function VendorMark({ vendor, year, eraLabel, since, compact = false }: VendorMarkProps) {
   const mark = markForYear(vendor, year);
   if (!mark) return null;
 
-  // "1983–2000" for a retired mark; "since 1996" while a mark is still current.
-  const era = mark.to === null ? `since ${mark.from}` : `${mark.from}–${mark.to}`;
+  // "1983–2000" for a retired mark; "since 1996" (localised by the caller's
+  // `since`, English when none is given) while a mark is still current.
+  const era = mark.to === null ? (since ? since(mark.from) : `since ${mark.from}`) : `${mark.from}–${mark.to}`;
   const caption = eraLabel(era);
 
   return (
-    <figure className="vendor-mark">
+    <figure className={compact ? "vendor-mark vendor-mark--compact" : "vendor-mark"}>
       <div className="vendor-mark-plate">
         {/*
           A plain <img> rather than next/image: these are small SVGs served as
@@ -81,7 +101,8 @@ export default function VendorMark({ vendor, year, eraLabel }: VendorMarkProps) 
           decoding="async"
         />
       </div>
-      <figcaption className="vendor-mark-era mono">{caption}</figcaption>
+      {/* The compact form keeps the era in the alt text and prints nothing under the plate. */}
+      {!compact && <figcaption className="vendor-mark-era mono">{caption}</figcaption>}
     </figure>
   );
 }
@@ -109,10 +130,13 @@ import { marksForVendor } from "@/content/vendors/marks";
 export function VendorMarks({
   vendors,
   eraLabel,
+  since,
 }: {
   /** Registry keys, in the order the chapter should present them. */
   vendors: string[];
   eraLabel: (era: string) => string;
+  /** Localised "since {year}" for a current mark; see VendorMarkProps.since. */
+  since?: (from: number) => string;
 }) {
   const marks = vendors.flatMap((v) => marksForVendor(v));
   if (marks.length === 0) return null;
@@ -120,7 +144,7 @@ export function VendorMarks({
   return (
     <div className="vendor-marks">
       {marks.map((mark) => {
-        const era = mark.to === null ? `since ${mark.from}` : `${mark.from}\u2013${mark.to}`;
+        const era = mark.to === null ? (since ? since(mark.from) : `since ${mark.from}`) : `${mark.from}\u2013${mark.to}`;
         const caption = eraLabel(era);
         return (
           <figure className="vendor-mark" key={mark.src}>

@@ -31,6 +31,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import ReduBrand from "@/components/ReduBrand";
 
 export default async function DisclaimerPage({
   params,
@@ -47,12 +48,24 @@ export default async function DisclaimerPage({
   const short = ["short1", "short2", "short3"];
 
   // The body sections: each is a heading key + a body key. Order tells the
-  // story: no warranty -> why (public info) -> not advice -> no liability ->
-  // security posture -> the open-source code -> things change.
+  // story: no warranty -> why (public info) -> not advice -> the advisory
+  // carve-out -> no liability -> security posture -> the open-source code ->
+  // things change.
+  //
+  // THE ADVISORY CARVE-OUT (PRIME 2026-10-03, from the advisory review). The
+  // "not professional advice" section says nothing here creates a professional
+  // relationship, and another page on the site sells professional advisory
+  // services. Both are true, and the notice now says how: website material is
+  // not an engagement, a professional relationship begins only under the Red
+  // Education proposal or agreement for a specific engagement, and the limits
+  // of liability for that work live in that agreement, not in this notice. The
+  // wording is plain-language and is flagged for review by whoever manages
+  // contracts at Red Education, as the review recommended.
   const sections = [
     ["asIsTitle", "asIsBody"],
     ["accuracyTitle", "accuracyBody"],
     ["adviceTitle", "adviceBody"],
+    ["advisoryTitle", "advisoryBody"],
     ["liabilityTitle", "liabilityBody"],
     ["securityTitle", "securityBody"],
     ["goodFaithTitle", "goodFaithBody"],
@@ -63,7 +76,7 @@ export default async function DisclaimerPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -99,7 +112,13 @@ export default async function DisclaimerPage({
             <section className="section" key={titleKey}>
               <div className="container colophon-container">
                 <h2 className="colophon-h2">{t(titleKey)}</h2>
-                <p className="colophon-body">{t(bodyKey)}</p>
+                {/* ReduBrand: the advisory carve-out names Red Education, and the
+                    standing rule is that the name carries its brand style wherever
+                    it appears in text. The other sections contain no match and
+                    render unchanged. */}
+                <p className="colophon-body">
+                  <ReduBrand>{t(bodyKey)}</ReduBrand>
+                </p>
               </div>
             </section>
           ))}

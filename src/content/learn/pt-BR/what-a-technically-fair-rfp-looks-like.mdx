@@ -1,0 +1,58 @@
+---
+slug: what-a-technically-fair-rfp-looks-like
+title: "Como é uma RFP tecnicamente justa"
+summary: "A maior parte da má contratação é decidida quando o pedido de proposta é escrito, e não quando as propostas são abertas. Uma RFP justa descreve o resultado com precisão suficiente para ser pontuado, declara o ambiente em que a solução vai cair, separa o que precisa ser verdade do que seria bom, e fecha as brechas que um fornecedor interpretaria a favor dele. O que isso exige na prática: a estrutura, a redação de requisito que pode ser testada, a evidência a pedir, a pontuação publicada antes, e as perguntas que um fornecedor deve poder fazer."
+concepts: ["rfp", "procurement", "requirements", "scoring", "specification", "decision"]
+relatedTools: ["change-blast-radius-mapper", "curl-command-builder", "cert-renewal-planner", "f5-release-cadence-calendar"]
+relatedArticles: ["evaluating-competing-firewall-proposals", "twenty-questions-before-signing-a-sase-proposal", "review-a-network-architecture-before-approving-it", "capex-versus-subscription-networking"]
+category: operations
+order: 323
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Justa com quem
+
+Um pedido de proposta justo é justo primeiro com o comprador: produz propostas que podem ser comparadas, e fecha o espaço de interpretação que um fornecedor usaria. É justo com os fornecedores em segundo lugar: diz a eles o que será pontuado e como, para que a proposta seja escrita para o requisito e não para um palpite sobre o avaliador. Os dois tipos de justiça são o mesmo documento. Uma RFP vaga é injusta com todos, e quem lucra com a vagueza é quem a lê com mais criatividade.
+
+## Comece pelo resultado, não pelo produto
+
+A primeira página diz o que a organização precisa que seja verdade depois, nas palavras dela: quais usuários alcançam quais aplicações de onde, o que precisa continuar funcionando durante uma falha, o que precisa estar visível ao time de operação, o que precisa ser exportável, o que o regulador precisa ver, o que o time consegue operar. Um requisito escrito como "um firewall de próxima geração com controle de aplicações" já escolheu a categoria de produto e deixou o resultado sem declarar; um requisito escrito como "o tráfego entre a rede das agências e o ambiente de processamento de cartões é inspecionado, registrado e bloqueado por aplicação, com o log entregue à nossa plataforma em até um minuto" pode ser testado, pontuado e cobrado.
+
+Depois declare o ambiente: o parque atual ao qual a solução se conecta, o tráfego medido e não lembrado, o provedor de identidade, as restrições (regiões, regulações, congelamentos de mudança, o tamanho e as habilidades do time). Um fornecedor a quem não se descreve o ambiente vai presumir o ambiente que convém à proposta dele.
+
+## Requisitos que podem ser testados
+
+Cada requisito deve passar por três testes antes de entrar no documento.
+
+- **É observável?** Duas pessoas poderiam observar o sistema e concordar se ele é atendido? "Alta disponibilidade" não é observável; "uma falha de qualquer dos membros restabelece o encaminhamento em N segundos com as sessões TCP existentes preservadas" é.
+- **É pontuado ou é eliminatório?** Separe os requisitos que uma proposta precisa atender para ser considerada dos que rendem pontos. Um critério eliminatório que é na verdade uma preferência exclui boas propostas; uma preferência que é na verdade eliminatória deixa uma proposta ruim pontuar bem.
+- **Descreve o resultado ou o mecanismo?** Requisitos de mecanismo ("deve usar o protocolo X") excluem soluções que chegam ao resultado por outro caminho. Escreva o mecanismo só onde a interoperabilidade de fato o exige.
+
+Numere todos os requisitos, e peça aos proponentes que respondam a cada um pelo número com uma de três palavras, atende, parcial ou não atende, seguida da evidência. Uma proposta que escreve um parágrafo onde se pediu uma palavra está respondendo a outra pergunta.
+
+## Peça evidência, não adjetivos
+
+Para cada requisito que importa, diga que evidência será aceita: uma funcionalidade documentada com o documento citado, uma demonstração no piloto, um cliente de referência rodando a mesma combinação em escala parecida, um número medido em condições declaradas. Declare que material de marketing não é evidência. Peça a documentação publicada do comportamento em falha, o procedimento de atualização, o formato e o intervalo de entrega dos logs, os formatos de exportação, e o modelo de suporte com o seu caminho de escalonamento e horários. Peça o custo de operação ao longo de todo o prazo, no crescimento que você declarou, numa tabela cujas colunas você define.
+
+Dois pedidos que mudam a qualidade das respostas: peça a cada proponente que liste os requisitos que considera ambíguos e como os interpretou, e peça que listem o que NÃO está incluído no preço. Os dois são baratos de pedir e caros de descobrir depois.
+
+## Publique a pontuação antes
+
+A ponderação dos critérios, os critérios eliminatórios e a forma de desempate vão na RFP. Isso evita a falha comum em que a ponderação é ajustada, de boa-fé, depois que as propostas foram lidas e uma favorita surgiu. Também melhora as propostas, porque um fornecedor que sabe que a operabilidade no piloto vale vinte por cento vai colocar o seu melhor engenheiro no piloto, e não o seu melhor apresentador na reunião.
+
+Uma estrutura que funciona: primeiro os eliminatórios (atendimento aos requisitos obrigatórios, e a evidência deles), depois os critérios ponderados de aderência, operabilidade, custo total no prazo, suporte e saída, depois o piloto como etapa de coleta de evidência cujos resultados alimentam as notas em vez de substituí-las.
+
+## Dê aos fornecedores um jeito de perguntar
+
+Um período de perguntas, com toda pergunta e toda resposta compartilhadas com todos os proponentes, faz parte da justiça e faz parte da qualidade. As perguntas que os fornecedores fazem dizem onde os seus requisitos estão pouco claros, e um requisito sobre o qual três proponentes perguntaram é um que você deve reescrever. Registre as respostas como aditivos à RFP, para que o documento ao qual as propostas respondem seja o documento contra o qual você pontua.
+
+## O que a RFP não deve fazer
+
+Não deve descrever o produto do fornecedor atual com outro nome, o que acontece mais por hábito do que por intenção; um requisito copiado de um datasheet é um requisito de mecanismo disfarçado. Não deve pedir tudo o que o time sempre quis, porque uma lista longa de requisitos iguais pontua como uma lista curta de nenhum. E não deve ser emitida antes de a organização ter decidido o que de fato está comprando, que é a decisão para a qual a [revisão de arquitetura](/learn/review-a-network-architecture-before-approving-it) e a [avaliação comparativa](/advisory) existem.
+
+## A saída é uma decisão, não um documento
+
+A RFP existe para produzir uma escolha defensável, e o registro dessa escolha, as propostas normalizadas, as notas com as suas evidências e as condições anexadas à adjudicação, é o que será examinado quando a escolha for questionada. O [memorando de decisão de exemplo](/advisory/decision-memorandum) mostra como é esse registro para uma decisão desse tipo.
+
+Se uma RFP está sendo redigida na sua organização e os requisitos precisam ser escritos de modo que as propostas possam ser pontuadas, essa redação é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

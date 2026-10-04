@@ -31,7 +31,11 @@ export default async function SiteFooter() {
   const locale = await getLocale();
 
   return (
-    <footer className="site-footer">
+    // data-pagefind-ignore keeps the footer out of the search index: its Red
+    // Education line and legal links are on every page, so without this a search
+    // for "Red Education" matched the whole site through the footer rather than
+    // the pages about it (2026-10-04). The page itself stays indexed.
+    <footer className="site-footer" data-pagefind-ignore>
       <div className="container site-footer-inner">
         {/* This page's own count. Mounted here, once, so every route carries a
             counter without each of eighty-seven pages having to remember one -

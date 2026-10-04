@@ -52,6 +52,131 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-10-04",
+    time: "17:55",
+    kind: "content",
+    title: "Advisory, the second pass",
+    body:
+      "Seven refinements from a second review of the advisory page, none of them structural. The three ways to engage now say how the money behaves without quoting figures: one fee for a scoped decision review or executive advisory engagement, never an open hourly meter, and an agreed term, cadence and scope for retained counsel, with the proposal and the invoice from Red Education in every case. The retained arrangement defines what access means. The implementation note now says plainly what the commercial position is: as a full-time Red Education employee, he will propose Red Education for the work that follows a decision wherever it is work Red Education does, the choice remains the client's, and the analysis does not bend towards creating implementation work for anyone. The independence section adds that a supplier confident in its proposal can suggest the review itself. The close-out step now asks, every time, whether an account of the engagement may be published, so that real advisory cases can accumulate with permission. Every section and each way to engage has a stable anchor, so a prospect can be sent straight to one. The page's structured data gains the offer: provided by the person, offered by Red Education.",
+    links: [
+      { label: "Advisory", href: "/advisory" },
+      { label: "Retained technical counsel", href: "/advisory#retained-technical-counsel" },
+    ],
+  },
+  {
+    date: "2026-10-04",
+    time: "16:50",
+    kind: "feature",
+    title: "Vendor marks on the cards and the timeline, and colour-coded search",
+    body:
+      "The four platforms taught today, F5, Extreme Networks, Fortinet and Netskope, now carry the vendor's mark on their cards on the training and about pages, and the career timeline on the about page shows, beside each span of years, the mark each vendor used in those years: Cabletron in 1996, Riverstone in 2000, the Cisco and Enterasys marks of 2003 and 2005, Juniper's 2009 mark, the 2011 row of Juniper, Cisco, Palo Alto Networks and Extreme, F5's 2015 mark, and Red Education's current one. Red Education's mark is registered with its provenance like every other mark here (the header artwork of rededucation.com, dated by its May 2025 upload path) and appears on the Red Education page and on every card that names the company. Search results are now told apart by colour as well as by label: each hit carries a filled pill and a rail down its left edge in its kind's hue, and the type filters above the list take the same hues, so tools, articles, the user guide and other pages can be picked out at a glance. Each result now also shows its page title, which the search had been dropping, and the site header and footer are no longer indexed, so an excerpt starts with the page's own words and a search for a phrase from the footer no longer matches every page.",
+    links: [
+      { label: "Training", href: "/training" },
+      { label: "About", href: "/about" },
+      { label: "Red Education", href: "/red-education" },
+    ],
+  },
+  {
+    date: "2026-10-04",
+    time: "16:45",
+    kind: "content",
+    title: "iRules LX, explained end to end",
+    body:
+      "A detailed Learn article on iRules LX, the BIG-IP feature that lets a Tcl iRule hand work to Node.js: what it is and is not, the objects it is made of (the workspace, the extension, the LX rule and the plugin, and where each lives on the box), the call path from ILX::init through ILX::call and ILX::notify to the ILXServer methods on the Node side with the return-value mapping and the 65K limit, the per-extension process model and the fifty-process ceiling, how npm modules are installed in a workspace, the Node.js runtime versions BIG-IP has shipped (0.12 and 6.9.1, and the release that drops 0.12), the streaming mode, when the feature is the right answer and when a plain iRule is, and ten review questions. Every fact is drawn from F5's own documentation and dated.",
+    articles: ["irules-lx-explained"],
+  },
+  {
+    date: "2026-10-04",
+    time: "16:40",
+    kind: "tool",
+    title: "File modes, all twelve bits",
+    body:
+      "A new chmod permission calculator reads a file mode written any of the three ways people write it, octal (755, 0644, 4755, 00755), an ls string (rwxr-xr-x, -rwsr-xr-x, drwxrwxrwt) or chmod clauses applied to a base mode under a umask (u+x,go-w, a=rX, g+s,o-rwx, =755), and gives back every other spelling: the four octal digits, the ten-character ls string, a clickable grid of the twelve bits, the plain reading per class worded for a file or a directory, the three special bits with what each means for that kind, the combinations worth a second look, the chmod commands that reach the mode, the umask that would create it, and, for clauses, a trace of the mode after each one. It follows the POSIX.1-2024 grammar (X is not x, a clause with no class is filtered through the umask, s follows the class) and models the GNU coreutils rule that keeps a directory's set-user-ID and set-group-ID bits under chmod 755 unless 00755, -6000 or =755 is written. Twenty-five golden vectors pin the behaviour. The companion Learn article reads the whole twelve-bit word from the standards.",
+    tools: ["chmod-permission-calculator"],
+    articles: ["file-modes-octal-symbolic-and-the-special-bits"],
+  },
+  {
+    date: "2026-10-03",
+    time: "16:40",
+    kind: "content",
+    title: "The earlier sites, from the archive",
+    body:
+      "Before ronutz.com there were nutzmann.net, first captured by the Internet Archive on 25 August 2004, and ntz.com.br, which carried NTZ Tecnologia from 2013. Ninety-four archived pages were saved in full, printed and catalogued, and a new page under About records, era by era, what each site was, how it was built, what it offered and what it contained, with every capture linked so the record can be checked. The 1996 to 2020 era gains a section on the sites of those years, the About page a card, and the colophon a line of lineage: the bits-and-bytes calculator, the IP addressing calculator and the cabling pinout on the 2004 home page are the oldest ancestors of the tools here, and the independence line on the advisory page has a 2004 original.",
+    links: [
+      { label: "The earlier sites", href: "/about/earlier-sites" },
+      { label: "The practitioner, 1996 to 2020", href: "/about/1996-2020" },
+      { label: "About", href: "/about" },
+      { label: "Colophon", href: "/colophon" },
+    ],
+  },
+  {
+    date: "2026-10-03",
+    time: "11:55",
+    kind: "content",
+    title: "Advisory, rewritten around the decision",
+    body:
+      "The advisory page now reads the way a buyer decides: the problem, who the advisor is, the five situations the work is useful in, one advisory model applied to seven shapes of decision, what you receive (with a complete fictional example of the decision memorandum on its own page), three ways to engage including a retained arrangement, and a precise definition of what independent means here, including what is not claimed. The commercial relationship is stated once, where a reader meets it knowing what is being contracted, and when a decision leads to implementation the page says where that work can go, with Red Education's professional services named as one credible option and the choice left with the client. The endorsements are now filterable by the kind of work each describes, and the advisory-shaped ones appear on the advisory page in the clients' own words. Ten Learn articles on the decisions themselves join the Operations shelf: reviewing an architecture before approving it, twenty questions before a SASE proposal, comparing firewall proposals, a technically fair RFP, CapEx against subscription, the assumptions hidden in a diagram, when consolidation reduces cost, the post-incident technical review, product limitations against architecture failures, and what executives should ask before a transformation. The disclaimer gains a carve-out that separates website material from a contracted engagement, and the MCP article is updated for the protocol's 2026-07-28 revision, which removed sessions and the Mcp-Session-Id header. Eight tool ideas from a research pass over public repositories, from an MCP request inspector to a DNS zone file linter, join the roadmap as queued entries.",
+    articles: [
+      "review-a-network-architecture-before-approving-it",
+      "twenty-questions-before-signing-a-sase-proposal",
+      "evaluating-competing-firewall-proposals",
+      "what-a-technically-fair-rfp-looks-like",
+      "capex-versus-subscription-networking",
+      "hidden-assumptions-in-an-architecture-diagram",
+      "when-vendor-consolidation-reduces-cost",
+      "what-belongs-in-a-post-incident-technical-review",
+      "product-limitations-versus-architecture-failures",
+      "questions-executives-should-ask-before-a-network-transformation",
+      "bigip-ai-mcp",
+    ],
+    links: [
+      { label: "Advisory", href: "/advisory" },
+      { label: "Example decision memorandum", href: "/advisory/decision-memorandum" },
+      { label: "Endorsements by kind", href: "/endorsements" },
+      { label: "Roadmap", href: "/roadmap" },
+    ],
+  },
+  {
+    date: "2026-10-03",
+    time: "09:45",
+    kind: "tool",
+    title: "Charsets side by side, and mojibake undone",
+    body:
+      "A new charset converter turns text into bytes and bytes into text in fourteen charsets: UTF-8, UTF-16, UTF-32, US-ASCII, ISO-8859-1, windows-1252, ISO-8859-15, Mac OS Roman, the DOS code pages IBM 437 and IBM 850, and EBCDIC 037 and 500. It decodes exactly as a browser does, replacing each ill-formed sequence with one U+FFFD and saying why (overlong, surrogate, beyond U+10FFFF, cut short); it reads hex, hexdump -C, xxd and od dumps, C, Python and git escapes, %XX and Base64; and it shows what every charset makes of the same text or bytes, so the mojibake each wrong guess produces is on the page. Its repair mode turns cafÃ© back into café, undoing up to three rounds of double encoding and saying how strong the evidence is. Two new Learn articles go with it: UTF-8, UTF-16 and UTF-32 byte by byte, and mojibake and code pages, which includes the encoding setting of a BIG-IP Advanced WAF policy and a charset label in F5's own blocking-page example that a browser cannot read.",
+    tools: ["charset-equivalency"],
+    articles: ["utf-8-and-utf-16-byte-by-byte", "mojibake-and-code-pages", "hidden-and-lookalike-characters"],
+  },
+  {
+    date: "2026-10-03",
+    time: "07:50",
+    kind: "tool",
+    title: "ASCII and Unicode, character by character",
+    body:
+      "Two new tools and three Learn articles on the characters under every config file and iRule. The ASCII table explorer shows all 128 codes in every notation, with names from RFC 20 (1969) to Unicode 18.0.0, what RFC 20 defined each control for and what Linux does with it today, how to write each code in C, JSON, JavaScript, Python, Tcl, HTML and a URL, and which of seven definitions count it as white space; its look-up box names anything outside ASCII, including the two HTML references often listed as ASCII by mistake (&minus; and &tilde;). The Unicode inspector reveals what a text really holds: every code point by name, invisible characters, bidirectional controls left open at the end of a line (the Trojan Source pattern), line breaks other than LF and CR, characters confusable with ASCII and words that mix scripts, with a cleaned copy and the text written as escapes in eight languages; it also looks up any code point and searches every Unicode 18.0.0 name. Every escape both tools print was decoded back by its own language (CPython, Node, GCC, Tcl 8.4.6 and Chromium), and the name and property tables were checked against the Unicode Character Database for all 1,114,112 code points. Wide tables in articles and tool docs now scroll on their own on a phone instead of widening the page.",
+    tools: ["ascii-table", "unicode-inspector"],
+    articles: ["ascii-the-128-codes", "unicode-code-points-and-properties", "hidden-and-lookalike-characters"],
+  },
+  {
+    date: "2026-10-03",
+    time: "06:10",
+    kind: "content",
+    title: "The iRules Style Guide, read to the last reply",
+    body:
+      "The iRules style checker now names every character that hides in code (invisible ones, non-ASCII spaces, typographic quotes, dashes and other ASCII lookalikes) from the Unicode Character Database 18.0.0, uses F5's own size limit of 65,520 characters (K9204), catches a keyword glued to its brace, reads the iRule inside a tmsh ltm rule wrapper, treats array variables as valid Tcl, and adds two checks from the guide's comment thread: == used on text where eq is meant, and break, continue or return in a switch arm. The guide's article now covers that thread, the zero-width characters in the guide's own examples, the VS Code extension that replaced the one it links, and an EditorConfig value outside the specification. Code examples across the iRules articles were brought into line with the guide, which fixed two real bugs: a scan format Tcl would have run as a command, and a switch without -- that stopped on the first hyphen in a URI. Code blocks in articles and tool docs now scroll on their own on a phone instead of widening the page.",
+    tools: ["f5-irules-style-checker"],
+    articles: ["irules-style-guide-explained", "irules-procedures-proc-and-call", "irules-scan-command", "irules-string-commands", "irules-findstr-substr-getfield", "irules-building-strings", "irules-branching-and-lookups", "irules-loops-and-lists", "irules-cmp-and-static-namespace", "irules-expression-operators"],
+  },
+  {
+    date: "2026-10-03",
+    time: "05:04",
+    kind: "tool",
+    title: "Zero or one: where BIG-IP starts counting",
+    body:
+      "A look-up of 76 places on a BIG-IP that count from 0 or from 1, or count from the right, or use 0 as a value: Tcl inside iRules, the commands F5 adds, configuration objects, platform naming, the APIs, logging and packet capture. Each one says what is counted, how to reach the first and the last, what comes back when nothing is there, the trap, and where F5's own pages disagree, with dated sources; every Tcl example was run in tclsh 8.4.6. How Tcl reads 0, -1 and the words yes, no, on and off in a condition has its own entry, with the DevCentral iRules Style Guide's advice to store state as 0 or 1. A translator turns a position counted from 1 into each command's own number and runs it beside the off-by-one version. The iRules teaching tools also join the user guide's recipes.",
+    tools: ["f5-bigip-index-base-finder"],
+    articles: ["bigip-zero-or-one"],
+  },
+  {
     date: "2026-10-03",
     time: "02:30",
     kind: "tool",

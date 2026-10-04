@@ -1,0 +1,56 @@
+---
+slug: product-limitations-versus-architecture-failures
+title: "Como separar limitações de produto de falhas de arquitetura"
+summary: "Quando algo falha, a primeira explicação na mesa é o produto, porque o produto tem um fabricante e o fabricante tem uma linha de suporte. Muitas vezes o produto fez exatamente o que foi construído para fazer, dentro de um projeto que lhe pediu outra coisa. Distinguir os dois importa, porque a correção para uma limitação de produto é um chamado, uma correção ou uma substituição, e a correção para uma falha de arquitetura é uma mudança no projeto, e comprar um produto novo para corrigir um projeto é a forma mais cara de manter o problema. Um método para fazer a distinção, com evidência."
+concepts: ["architecture", "troubleshooting", "root-cause", "vendor-support", "design", "decision"]
+relatedTools: ["fault-hypothesis-builder", "tac-escalation-packet-builder", "flow-path-reasoner", "health-snapshot-comparator"]
+relatedArticles: ["what-belongs-in-a-post-incident-technical-review", "hidden-assumptions-in-an-architecture-diagram", "review-a-network-architecture-before-approving-it", "incident-to-escalation"]
+category: operations
+order: 328
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Por que a distinção vale dinheiro
+
+Uma organização que lê uma falha de arquitetura como limitação de produto substitui o produto, herda a mesma falha no novo, e gastou um ano e um orçamento para voltar ao ponto de partida. Uma que lê uma limitação de produto como falha de arquitetura redesenha em torno de um defeito que o fabricante teria corrigido, e carrega a complexidade pela vida do projeto. Os dois erros são comuns, os dois são caros, e os dois são cometidos pela mesma razão: a primeira explicação que chega é a que tem um nome anexado, e o produto sempre tem um nome.
+
+## Três categorias, não duas
+
+A taxonomia honesta tem três casos, e o do meio é onde mora a maioria das disputas.
+
+**Uma limitação de produto.** O produto não consegue fazer o que foi pedido em nenhuma configuração: um máximo documentado, uma funcionalidade que não existe, um defeito que se reproduz num sistema limpo. Evidência: a documentação do fabricante diz isso, ou o comportamento se reproduz fora do seu ambiente.
+
+**Uma falha de arquitetura.** O projeto pediu ao produto algo para o qual ele nunca foi especificado, colocou-o onde as premissas dele não valem, ou combinou-o com algo cujo comportamento conflita com o dele. O produto está funcionando como documentado; o projeto está errado. Evidência: o produto se comporta como a documentação diz, e a documentação estava disponível quando o projeto foi feito.
+
+**Uma lacuna de configuração ou de operação.** O produto consegue, o projeto é sólido, e a instância específica foi configurada, dimensionada ou operada fora do envelope. Evidência: uma segunda instância, configurada como documentado, não falha.
+
+O artigo da Practice [não é um bug](/practice/not-a-bug) explica por que "funcionando conforme o projeto" é quase sempre verdade e quase nunca o fim da pergunta. A pergunta é: projeto de quem.
+
+## O método: tire a sua rede da discussão
+
+O fabricante vai dizer que é a arquitetura. O arquiteto vai dizer que é o produto. Os dois são partes interessadas, e o jeito de resolver é a mesma disciplina que a Practice descreve para [provar que o fabricante está errado](/practice/proving-the-vendor-wrong): construir evidência que sobreviva a um leitor cético que não estava lá.
+
+1. **Declare o comportamento como observação**, com a evidência anexada: a captura, o log, o contador, o horário. Não "o firewall descarta tráfego sob carga"; "às 09:14, com N sessões e M sessões novas por segundo, o equipamento registrou X e a captura mostra Y". O [artigo sobre escalonamento](/learn/incident-to-escalation) define o formato.
+2. **Encontre o envelope documentado.** O que a documentação do fabricante diz que o produto faz exatamente nessas condições? Leia a versão atual, com a data. Se a documentação diz que o comportamento é esperado, você está na segunda ou na terceira categoria; se diz o contrário, está na primeira; se não diz nada, você tem uma pergunta para o fabricante, não uma resposta.
+3. **Reproduza em isolamento.** O mesmo produto, configurado como documentado, sem o resto do seu projeto em volta. Se falha, produto. Se não falha, o projeto ou a configuração acrescentou algo, e o passo seguinte é acrescentar o seu projeto de volta um elemento por vez até falhar de novo. O [construtor de hipóteses de falha](/tools/fault-hypothesis-builder) é uma forma estruturada de conduzir essa bissecção.
+4. **Verifique as premissas do próprio projeto.** O que o projeto presumiu sobre este componente: capacidade, estado, independência, ordem, o comportamento da coisa ao lado? O [guia de premissas](/learn/hidden-assumptions-in-an-architecture-diagram) lista onde elas se escondem. Uma premissa falhada é um achado de arquitetura mesmo quando o produto também tem culpa.
+5. **Escreva qual categoria, e por quê, com a evidência que mudaria a sua opinião.** Uma classificação que não consegue dizer o que a falsificaria é uma opinião.
+
+## Padrões que apontam para cada lado
+
+Na direção do produto: a falha se reproduz num sistema limpo; o fabricante tem um artigo de base de conhecimento ou um registro de problema conhecido; o comportamento contradiz a documentação; apareceu com uma versão de software e some quando a versão é revertida.
+
+Na direção da arquitetura: o produto se comporta como documentado; a falha só ocorre em combinação com um segundo componente; coincide com uma condição que o projeto nunca considerou (caminhos de volta assimétricos, um domínio de falha compartilhado, um pico para o qual o projeto não foi dimensionado); o mesmo produto executa a mesma função em outro lugar sem a falha; a correção que o time propõe é um contorno que move o problema em vez de removê-lo.
+
+Na direção da configuração ou da operação: uma segunda instância não falha; a falha começou depois de uma mudança; a documentação descreve uma configuração que a instância não tem; a capacidade atingida é a que foi configurada, não a que o produto suporta.
+
+## Por que as duas coisas podem ser verdade ao mesmo tempo
+
+Os casos mais difíceis, e os comuns em incidentes graves, são aqueles em que uma limitação de produto e uma falha de arquitetura coincidem: um equipamento tem um defeito, e o projeto colocou esse equipamento onde a falha dele leva tudo junto. A revisão tem de dizer as duas coisas, porque a correção também é as duas, e porque corrigir só o defeito deixa o projeto esperando o próximo defeito. A [revisão pós-incidente](/learn/what-belongs-in-a-post-incident-technical-review) tem um lugar exatamente para isso: o gatilho, e as condições.
+
+## O que fazer com a resposta
+
+Uma limitação de produto vai para o fabricante como um chamado com evidência anexada, e para o registro de riscos como dependência do roteiro dele; se a limitação é um máximo que você atingiu, vai para a conversa de [capacidade e renovação](/learn/capex-versus-subscription-networking). Uma falha de arquitetura vai para uma mudança de projeto, com a premissa que falhou escrita no registro, para que a próxima [revisão de arquitetura](/learn/review-a-network-architecture-before-approving-it) comece a partir dela. Uma lacuna de configuração vai para o runbook, e para a pergunta de por que o runbook deixou acontecer. Comprar um produto novo é a resposta certa só no primeiro caso, e só depois que o segundo foi descartado com evidência.
+
+Se uma discussão desse tipo está acontecendo na sua organização, entre um time e um fabricante ou entre dois times, resolvê-la com evidência em vez de opinião é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

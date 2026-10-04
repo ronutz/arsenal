@@ -73,6 +73,7 @@ export default async function SitemapPage({
         { href: "/about", label: tNav("about") },
         { href: "/industry/chapters", label: tNav("careerRecord") },
         { href: "/about/credentials", label: tNav("credentials") },
+        { href: "/about/earlier-sites", label: tNav("earlierSites") }, // 2026-10-03: the archived earlier sites
         { href: "/contact", label: tNav("contact") },
       ],
     },
@@ -91,7 +92,7 @@ export default async function SitemapPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">{tNav("skipToContent")}</a>
+      <a href="#main" className="skip-link" data-pagefind-ignore>{tNav("skipToContent")}</a>
       <Header />
       <main id="main">
         <section className="section">

@@ -141,7 +141,7 @@ export default async function AdminConsolePage({
     // search index — keeping the unguessable URL out of search results — while
     // remaining transparent to the body's flex layout.
     <div data-pagefind-ignore="all" style={{ display: "contents" }}>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

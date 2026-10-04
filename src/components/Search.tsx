@@ -34,14 +34,26 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
+// What result.data() resolves to: the page URL, the highlighted excerpt, and the
+// page metadata, where Pagefind puts the TITLE (meta.title, taken from the page's
+// first h1 at index time). There is no top-level title field; this component
+// read one for its first weeks and every result rendered without a title (found
+// 2026-10-04 while colour-coding the result kinds).
+interface PagefindRawResult {
+  url: string;
+  excerpt: string;
+  meta?: { title?: string };
+}
+interface PagefindResult {
+  id: string;
+  data: () => Promise<PagefindRawResult>;
+}
+// The shape this component renders: the raw result with its title lifted out
+// of meta, so the rest of the file reads title as a plain string.
 interface PagefindSubResult {
   url: string;
   title: string;
   excerpt: string;
-}
-interface PagefindResult {
-  id: string;
-  data: () => Promise<PagefindSubResult>;
 }
 interface PagefindApi {
   options?: (opts: Record<string, unknown>) => Promise<void>;
@@ -274,7 +286,10 @@ export default function Search() {
       // return an empty set - which would leave the spinner running for ever.
       try {
         const search = await pf.search(q);
-        const data = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+        const raw = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
+        // Lift the title out of meta (see PagefindRawResult above); a page with
+        // no h1 at index time has none, and then only the excerpt is shown.
+        const data: PagefindSubResult[] = raw.map((d) => ({ url: d.url, excerpt: d.excerpt, title: d.meta?.title ?? "" }));
         if (!cancelled) {
           setResults(data);
           setLoading(false);
@@ -376,14 +391,20 @@ export default function Search() {
               <div className="search-filters" role="group" aria-label={t("filterLabel")}>
                 {FILTER_KINDS.map((kind) => {
                   const active = enabled.has(kind);
+                  // The pill carries its kind as a modifier class so it takes the
+                  // SAME hue as the badge on every result of that kind (PRIME
+                  // 2026-10-04: results must be told apart by colour, not only by
+                  // the badge text). A small dot in that hue sits before the label
+                  // so the colour reads even while the pill is switched off.
                   return (
                     <button
                       key={kind}
                       type="button"
-                      className={`search-filter${active ? " search-filter--active" : ""}`}
+                      className={`search-filter search-filter--${kind}${active ? " search-filter--active" : ""}`}
                       aria-pressed={active}
                       onClick={() => toggleKind(kind)}
                     >
+                      <span className="search-kind-dot" aria-hidden="true" />
                       {t(FILTER_LABEL_KEY[kind])}
                       <span className="search-filter-count">{counts[kind]}</span>
                     </button>
@@ -405,7 +426,13 @@ export default function Search() {
                 <ul className="search-result-list">
                   {shown.map((r, i) => (
                     <li key={`${r.url}-${i}`}>
-                      <a className="search-result" href={r.url}>
+                      {/* The result row carries its kind too (search-result--tool,
+                          --article, --guide, --page) so the whole row, not only
+                          the badge, can be coloured: the stylesheet paints a rail
+                          down its left edge in the kind's hue, and the badge is a
+                          filled pill in the same hue. Kind is still URL-derived
+                          (classifyKind); nothing about ranking changes. */}
+                      <a className={`search-result search-result--${r.kind}`} href={r.url}>
                         <span className="search-result-head">
                           <span
                             className={`search-result-kind search-result-kind--${r.kind}`}

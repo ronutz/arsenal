@@ -2,7 +2,7 @@
 // src/lib/tcl84/irules.ts
 // ----------------------------------------------------------------------------
 // iRULES COMMANDS, EMULATED FROM F5's DOCUMENTATION - the commands F5 added to
-// Tcl that the teaching tools need: findstr, substr, getfield, log, class
+// Tcl that the teaching tools need: findstr, substr, getfield, domain, log, class
 // match / search / lookup, the request accessors (HTTP::uri, HTTP::host, ...)
 // and the actions an iRule takes (pool, HTTP::redirect, drop, ...), recorded
 // instead of performed.
@@ -14,6 +14,7 @@
 //   findstr  https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_findstr.html
 //   substr   https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_substr.html
 //   getfield https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_rule_command_getfield.html
+//   domain   https://clouddocs.f5.com/api/irules/domain.html (read 2026-10-03)
 //   class    https://clouddocs.f5.com/api/irules/class.html
 //   log      https://clouddocs.f5.com/api/irules/log.html
 // (all read on 2026-10-02/03).
@@ -241,6 +242,32 @@ export function irulesCommands(sample: SampleRequest, groups: Record<string, Dat
       ev.notes.push({ code: "getfield", params: { count: fields.length, field } });
       // The field.
       return S(fields[field - 1]);
+    },
+    // domain string count: the last <count> dot-separated labels of a name,
+    // counted from the RIGHT (F5's examples: 1 gives "com", 2 "domain.com",
+    // and a count above the number of labels gives the whole name).
+    domain(_it, a, ev) {
+      // Exactly two arguments.
+      if (a.length !== 3) throw new TclError('wrong # args: should be "domain string count"');
+      // The name.
+      const s = a[1].string;
+      // How many labels to keep, from the right.
+      const count = getInt32(a[2]);
+      // The labels, left to right.
+      const labels = s.split(".");
+      // F5's page shows positive counts only.
+      if (count < 1) {
+        // Undocumented.
+        undocumented(ev, "domain-count", { count });
+        // Assume nothing is returned.
+        return S("");
+      }
+      // A leading, trailing or doubled dot makes an empty label, which no example shows.
+      if (labels.some((l) => l === "")) undocumented(ev, "domain-empty-label");
+      // Note how many labels there are and how many were kept.
+      ev.notes.push({ code: "domain", params: { count, labels: labels.length } });
+      // The last `count` labels; a larger count keeps them all (F5's examples 5 and 6).
+      return S(labels.slice(Math.max(0, labels.length - count)).join("."));
     },
     // class match | search | lookup | exists | size ...
     class(_it, a, ev) {

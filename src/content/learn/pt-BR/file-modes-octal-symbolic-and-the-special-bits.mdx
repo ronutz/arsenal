@@ -1,0 +1,79 @@
+---
+slug: file-modes-octal-symbolic-and-the-special-bits
+title: "Modos de arquivo, lidos como o kernel os lê: octal, simbólico e os três bits que quase todo mundo pula"
+summary: "Um modo de arquivo Unix tem doze bits, e quase todo erro de permissão vem de ler nove deles. De onde vem o 755, por que o ls imprime um s ou um T, o que set-user-ID, set-group-ID e a flag de exclusão restrita fazem num arquivo e num diretório, como uma cláusula do chmod sem classe passa em silêncio pelo umask, por que X não é x, e a regra do GNU que preserva o set-group-ID de um diretório quando você digita chmod 755. Do POSIX.1-2024 e do coreutils 9.11, com a calculadora para experimentar cada caso."
+concepts: ["chmod", "file-modes", "permissions", "setuid", "setgid", "sticky-bit", "umask", "posix", "linux"]
+relatedTools: ["chmod-permission-calculator", "ascii-table"]
+relatedArticles: ["structured-cabling", "baselines-before-you-need-them"]
+category: operations
+order: 330
+status: reviewed
+updated: "2026-10-04"
+---
+
+Todo mundo que já digitou `chmod 755` sabe o que isso significa, e um número surpreendente de interrupções e algumas brechas de segurança vêm do intervalo entre saber o que significa e saber o que faz. O modo tem doze bits. Os três da esquerda são os que as calculadoras pulam, que o `ls` imprime como letras que ninguém consulta, e que o `chmod` trata em diretórios de um jeito diferente do que o número digitado sugere. Este artigo lê a palavra inteira, bit a bit, a partir das normas, e a [calculadora de permissões chmod](/tools/chmod-permission-calculator) mostra cada caso abaixo enquanto você lê.
+
+## Nove bits, três classes, um número para cada
+
+Uma permissão é um bit, e há nove deles: leitura, escrita e execução, para o dono do arquivo, para o seu grupo e para todos os demais. Os três bits de cada classe são lidos como um dígito octal, leitura 4, escrita 2, execução 1, e é por isso que `755` significa que o dono tem 4+2+1, o grupo 4+1 e os outros 4+1. `rwxr-xr-x` é o mesmo número escrito um bit por caractere. Não há mágica nos dígitos; são os bits agrupados de três em três.
+
+O que os bits permitem depende do que o arquivo é. O manual do GNU coreutils diz de forma compacta: leitura é "permissão para ler o arquivo. Para diretórios, isso significa permissão para listar o conteúdo"; escrita é "permissão para escrever no arquivo (alterá-lo). Para diretórios, isso significa permissão para criar e remover arquivos"; execução é "permissão para executar o arquivo (rodá-lo como programa). Para diretórios, isso significa permissão para acessar arquivos". Essa última é onde os diretórios surpreendem. Um diretório com leitura mas sem execução deixa você ver os nomes das entradas e nada mais sobre elas: dá para listar, não dá para abrir, consultar atributos nem entrar no diretório. Um diretório com execução mas sem leitura é o inverso: dá para alcançar uma entrada se você já sabe o nome, e não dá para listar o que há. As duas são configurações legítimas, e as duas são sinalizadas pela calculadora porque costumam ser acidentes.
+
+## O quarto dígito
+
+Os três bits à esquerda dos nove são os bits especiais, e a grafia octal lhes dá um quarto dígito: set-user-ID é 4000, set-group-ID é 2000 e a flag de exclusão restrita, ainda chamada de sticky bit, é 1000. `4755` é `755` com set-user-ID; `2775` é `775` com set-group-ID; `1777` é `777` com a flag de exclusão restrita. Quando o quarto dígito é zero ele costuma ser omitido, e é por isso que a maioria das pessoas nunca o digitou e algumas nunca o viram.
+
+O que eles fazem, segundo o mesmo manual:
+
+- **set-user-ID (4000)**: "Na execução, define o ID de usuário efetivo do processo como o do arquivo." O programa roda como o seu dono, seja quem for que o iniciou. O `passwd` é o caso de livro; ele precisa escrever num arquivo que só o root pode escrever.
+- **set-group-ID (2000)**: "Na execução, define o ID de grupo efetivo do processo como o do arquivo. Para diretórios, na maioria dos sistemas, dá aos arquivos criados no diretório o mesmo grupo do diretório." A segunda frase é a que importa na prática: um diretório de projeto compartilhado com `2775` faz todo arquivo novo pertencer ao grupo do projeto em vez de ao membro que o criou.
+- **exclusão restrita ou sticky (1000)**: "Impede que usuários sem privilégio removam ou renomeiem um arquivo num diretório a menos que sejam donos do arquivo ou do diretório." É isso que mantém o `/tmp` utilizável: qualquer um pode criar um arquivo ali, ninguém pode apagar o de outra pessoa. O chmod(1) acrescenta que em arquivos comuns o bit só tem um significado histórico, "em alguns sistemas mais antigos, o bit guarda a imagem de texto do programa no dispositivo de swap", de onde veio o nome.
+
+## O que o ls está dizendo
+
+O `ls -l` imprime os doze bits em nove posições de caractere, por isso os bits especiais precisam dividir espaço. O POSIX.1-2024 especifica a regra, e vale conhecê-la com exatidão porque as letras são fáceis de ler errado:
+
+- a posição de execução do dono mostra `s` quando set-user-ID está ligado e o dono pode executar, `S` quando set-user-ID está ligado e o dono não pode;
+- a posição de execução do grupo mostra `s` quando set-group-ID está ligado e o grupo pode executar, `S` quando não pode;
+- a posição de execução dos outros mostra `t` quando a flag de exclusão restrita está ligada e os outros podem pesquisar o diretório, `T` quando não podem.
+
+A norma põe a regra inteira numa frase: as letras "devem ser escritas em minúscula se o arquivo é executável ou pesquisável, e em maiúscula se não é". Assim, um `S` maiúsculo num arquivo é quase sempre um engano: o bit especial está ligado, o bit de execução que lhe daria sentido não está, e o bit não faz nada até que alguém acrescente `+x`. `rwSr--r--` é `4644`, e a calculadora o sinaliza.
+
+## A gramática simbólica, como o POSIX a escreve
+
+O `chmod` aceita o número ou uma lista de cláusulas, e a gramática das cláusulas é especificada, não folclore. Uma cláusula é um conjunto de classes, `u`, `g`, `o` ou `a` para as três, seguido de uma ou mais ações, cada uma um operador e uma lista de permissões:
+
+- `+` acrescenta as permissões, `-` as remove, `=` as define exatamente, limpando antes o que as classes nomeadas tinham;
+- as permissões são `r`, `w`, `x`, o `X` maiúsculo, `s` e `t`, ou uma única letra de classe `u`, `g` ou `o`, que copia os bits atuais de leitura, escrita e execução daquela classe.
+
+Dois detalhes dessa gramática causam a maior parte das surpresas.
+
+**`X` não é `x`.** O POSIX define `X` como a "porção de execução/pesquisa dos bits de modo se o arquivo é um diretório ou se os bits de modo atuais têm pelo menos um dos bits de execução ligado". Ele existe para um trabalho: `chmod -R a+rX` numa árvore torna todo diretório pesquisável e deixa os arquivos comuns em paz, em vez de marcar todo documento como executável, como `a+rx` faria. Num único arquivo comum sem bit de execução, `a+X` não faz nada.
+
+**Uma cláusula sem classe passa pelo umask.** Ela é lida como se `a` tivesse sido escrito, "mas bits ligados no umask não são afetados", nas palavras do chmod(1); o POSIX diz o mesmo da máscara de criação de modo de arquivo. Com o umask usual de 022, `chmod +w arquivo` acrescenta escrita só para o dono, porque a escrita do grupo e a dos outros estão mascaradas; `chmod +x arquivo` acrescenta execução para as três, porque o umask não tem bits de execução. Scripts que contam com `+w` querendo dizer "todo mundo" quebram na primeira máquina com outro umask, e o rastro da calculadora mostra quais bits a máscara removeu.
+
+Letras menores da mesma página: `s` segue a classe, por isso `u+s` é set-user-ID, `g+s` é set-group-ID e `o+s` não muda nada; `=` sem permissões depois limpa a classe (`o=` tira os bits dos outros); e se limpar todos os bits de execução também limpa set-user-ID e set-group-ID é "definido pela implementação", por isso um script cuidadoso os limpa explicitamente com `u-s,g-s`.
+
+## A regra do GNU para diretórios
+
+Esta é a que pega administradores experientes. Num diretório que já tem set-user-ID ou set-group-ID, `chmod 755` não os limpa. O chmod(1) do coreutils 9.11 é explícito: "Para diretórios o chmod preserva os bits set-user-ID e set-group-ID a menos que você especifique explicitamente o contrário. Você pode ligar ou limpar os bits com modos simbólicos como u+s e g-s. Para limpar esses bits em diretórios com um modo numérico é preciso um zero inicial adicional como 00755, um menos inicial como -6000 ou um igual inicial como =755."
+
+Assim, `chmod 755 compartilhado/` num diretório `2775` o deixa em `2755`, com a herança de grupo intacta, que normalmente é o que você queria e ocasionalmente não. A calculadora modela isso quando você lhe dá uma base de diretório: `755` sobre uma base `2775` resulta em `2755` e nomeia a regra no rastro; `00755` e `=755` resultam em `0755`.
+
+## O umask, lido de trás para a frente
+
+Um programa que cria um arquivo pede `666` e um que cria um diretório pede `777`; o kernel remove os bits ligados no umask do processo. É por isso que arquivos novos são `644` e diretórios novos `755` sob o umask comum de `022`, e por isso nenhum umask jamais produz um arquivo executável: a criação parte de `666`, e um bit que nunca foi pedido não sobrevive à máscara. A calculadora roda isso de trás para a frente e diz que umask produziria o modo digitado, ou por que nenhum consegue (um bit de execução num arquivo, ou qualquer bit especial).
+
+## Quatro modos para reconhecer de vista
+
+- **`4755` num arquivo, `-rwsr-xr-x`**: um programa set-user-ID. O que conferir são os bits de escrita: se alguém além do dono pode escrever nele, qualquer um pode substituir o conteúdo e executá-lo com os privilégios do dono. `4777` é a brecha num só número.
+- **`2775` num diretório, `drwxrwsr-x`**: um diretório de projeto compartilhado. Os arquivos novos recebem o grupo do diretório, e os colaboradores desse grupo leem o que os outros criam sem um `chgrp` depois de cada gravação.
+- **`1777` num diretório, `drwxrwxrwt`**: o padrão do `/tmp`. Todos podem criar, só os donos podem apagar.
+- **`0644` e `0755`**: o arquivo comum e o diretório ou programa comum, que são o que um umask `022` produz sozinho.
+
+## Fontes
+
+- [POSIX.1-2024 (IEEE Std 1003.1-2024): chmod](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/chmod.html) (lido em 2026-10-03): a gramática simbólica, `X`, `=`, a regra do umask quando nenhuma classe é dada, `s` com `o`, a limpeza dos bits set-ID definida pela implementação
+- [POSIX.1-2024 (IEEE Std 1003.1-2024): ls](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html) (lido em 2026-10-03): a regra de `s`, `S`, `t` e `T`
+- [Manual do GNU coreutils: Mode Structure](https://www.gnu.org/software/coreutils/manual/html_node/Mode-Structure.html) (lido em 2026-10-03): o que os nove bits e os três bits especiais fazem em arquivos e diretórios
+- [chmod(1), GNU coreutils 9.11](https://man7.org/linux/man-pages/man1/chmod.1.html) (lido em 2026-10-03): diretórios preservam set-user-ID e set-group-ID sob um modo numérico salvo 00755, -6000 ou =755; a regra do umask; a história do sticky bit

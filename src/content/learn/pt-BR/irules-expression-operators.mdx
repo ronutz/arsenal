@@ -64,7 +64,12 @@ O Tcl 8.4 não tem operador de potência. `2 ** 3` é erro de sintaxe; `pow(2, 3
 A página de Operators da F5 acrescenta palavras para os iRules: `contains`, `starts_with`, `ends_with`, `equals`, `matches_glob` e `matches_regex` comparam texto, e `and`, `or` e `not` são versões por extenso de `&&`, `||` e `!`.
 
 ```tcl
+# Os operadores por extenso da F5 funcionam nos iRules
 if { [HTTP::uri] starts_with "/api/" and [HTTP::method] eq "POST" } {
+    pool api_write_pool
+}
+# O guia de estilo prefere o operador do Tcl, com parênteses
+if { ([HTTP::uri] starts_with "/api/") && ([HTTP::method] eq "POST") } {
     pool api_write_pool
 }
 ```

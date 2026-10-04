@@ -1,0 +1,107 @@
+---
+slug: utf-8-and-utf-16-byte-by-byte
+title: "UTF-8, UTF-16 and UTF-32, byte by byte"
+summary: "How each Unicode encoding lays a code point out in bytes, how to recognise each one in a hex dump, which byte sequences are ill-formed and exactly what a decoder replaces with U+FFFD, and what a byte order mark does, including the one point where a browser and the Unicode Standard disagree."
+concepts: ["utf-8", "utf-16", "utf-32", "byte order mark", "surrogate pair", "maximal subpart", "replacement character", "overlong encoding", "hex dump"]
+relatedTools: ["charset-equivalency", "unicode-inspector", "base64", "url-inspector"]
+relatedArticles: ["unicode-code-points-and-properties", "mojibake-and-code-pages", "hidden-and-lookalike-characters", "character-encoding", "hex-encoding"]
+category: encoding
+order: 218
+status: reviewed
+updated: "2026-10-03"
+---
+
+Unicode gives every character a number. An encoding form turns the number into code units, and an encoding scheme puts the units into bytes. [Unicode: code points, planes, names and properties](/learn/unicode-code-points-and-properties) is about the numbers; this article is about the bytes: what each form writes, how to read it back from a hex dump, and what a decoder does when the bytes are wrong. The [charset converter](/tools/charset-equivalency) shows all of it for any text or byte string.
+
+## UTF-8: one to four bytes, and the first says how many
+
+RFC 3629 lays UTF-8 out as a table. A code point's bits are spread over one to four bytes, and the high bits of every byte say what kind of byte it is:
+
+| Code points | Bytes (each x is one bit of the code point) |
+|---|---|
+| U+0000 to U+007F | `0xxxxxxx` |
+| U+0080 to U+07FF | `110xxxxx 10xxxxxx` |
+| U+0800 to U+FFFF | `1110xxxx 10xxxxxx 10xxxxxx` |
+| U+10000 to U+10FFFF | `11110xxx 10xxxxxx 10xxxxxx 10xxxxxx` |
+
+Take é, U+00E9. Its eleven bits are `00011 101001`, so it becomes `110 00011` and `10 101001`: C3 A9. The euro sign, U+20AC, takes three bytes, E2 82 AC, and the grinning face, U+1F600, four, F0 9F 98 80.
+
+Three properties follow, and RFC 3629 lists them. ASCII text is already UTF-8, byte for byte. "US-ASCII octet values do not appear otherwise", so a search for `/` or `"` in UTF-8 never matches part of a longer character. And the first byte of a sequence gives its length, so a reader dropped anywhere in the stream can find where the next character starts.
+
+## Reading UTF-8 in a hex dump
+
+The first byte of a character tells you what you are looking at:
+
+| First byte | Meaning |
+|---|---|
+| 00 to 7F | an ASCII character, one byte |
+| C2 to DF | the start of a two-byte character |
+| E0 to EF | the start of a three-byte character |
+| F0 to F4 | the start of a four-byte character |
+| 80 to BF | never a start: it continues the character before it |
+| C0, C1, F5 to FF | never anything |
+
+RFC 3629 puts the last row in one line: "The octet values C0, C1, F5 to FF never appear." C0 and C1 could only start a two-byte form of an ASCII character, which already has a one-byte form. F5 and above would start code points beyond U+10FFFF, where Unicode ends.
+
+Four first bytes also narrow the byte after them. The Unicode Standard's Table 3-7 lists every well-formed sequence, and the only exceptions to "80 to BF" are in the second byte:
+
+| After | The next byte must be | Because anything else would be |
+|---|---|---|
+| E0 | A0 to BF | a longer form of a code point below U+0800 |
+| ED | 80 to 9F | a surrogate, U+D800 to U+DFFF |
+| F0 | 90 to BF | a longer form of a code point below U+10000 |
+| F4 | 80 to 8F | a code point beyond U+10FFFF |
+
+## When the bytes are wrong
+
+A decoder that meets an ill-formed sequence has to decide how much of it to replace, and decoders have not always decided alike. The Unicode Standard describes a practice in section 3.9.6, noting that "an increasing number of implementations are adopting" it, and the WHATWG Encoding Standard makes it the only behaviour a browser may have: one U+FFFD REPLACEMENT CHARACTER for each maximal subpart, the longest run of bytes that could still have been the start of a well-formed character, or a single byte when nothing could.
+
+The Unicode Standard's own examples show what that means, and each is a preset in the converter:
+
+| Bytes | Decoded | Why |
+|---|---|---|
+| `C0 AF E0 80 BF F0 81 82 41` | eight U+FFFD, then A | every byte of a longer-than-necessary form is replaced on its own (Table 3-8) |
+| `ED A0 80 ED BF BF ED AF 41` | eight U+FFFD, then A | the same for surrogates (Table 3-9) |
+| `F4 91 92 93 FF 41 80 BF 42` | five U+FFFD, A, two U+FFFD, B | beyond U+10FFFF, a byte that never appears, and stray continuation bytes (Table 3-10) |
+| `E1 80 E2 F0 91 92 F1 BF 41` | four U+FFFD, then A | a sequence cut short counts once, however many of its bytes arrived (Table 3-11) |
+
+This matters for security. RFC 3629 describes a parser that rejects the bytes `2F 2E 2E 2F` (`/../`) but accepts the ill-formed `2F C0 AE 2E 2F` and decodes C0 AE as a dot, and adds that "this last exploit has actually been used in a widespread virus attacking Web servers in 2001". A decoder that replaces C0 AE instead of reading a dot closes that door; a check that looks at the bytes before they are decoded does not.
+
+A web application firewall faces the same problem from the other side: it has to see what the server will see. F5's BIG-IP ASM documentation (17.5.0, Working with Violations) lists evasion-technique sub-violations that are all about encodings: "Bad unescape" for illegal hex encoding such as `%RR`, "Bare byte decoding" for bytes above 127, "IIS Unicode codepoints" for IIS-specific `%u` mappings through the Windows-1252 code page, and "Directory traversals" for patterns such as `../`.
+
+## UTF-16: two bytes, or four
+
+UTF-16 writes every code point up to U+FFFF as one 16-bit unit. Beyond that, RFC 2781 subtracts 0x10000, which leaves a 20-bit number, and splits it in two: the high ten bits go into a unit that starts at 0xD800, the low ten into one that starts at 0xDC00. Those two ranges, D800 to DBFF and DC00 to DFFF, are the surrogates. Unicode never assigns characters to them, so a surrogate in UTF-16 can only be half of a pair. The grinning face, U+1F600, becomes D83D DE00.
+
+A surrogate without its partner is ill-formed, and the decoder replaces it with U+FFFD. Strings in JavaScript are sequences of 16-bit units, so they can hold an unpaired surrogate; TextEncoder writes one as EF BF BD, the UTF-8 bytes of U+FFFD (measured in Node 22 on 2026-10-03).
+
+## Byte order: BE, LE and the byte order mark
+
+A 16-bit unit is two bytes, and machines disagree about which comes first. UTF-16BE writes the high byte first and UTF-16LE the low byte first. For ASCII text that is the difference between `00 48 00 69` and `48 00 69 00` for "Hi", and it is how UTF-16 gives itself away in a dump: every other byte is zero.
+
+Plain "UTF-16" can say which order it uses with a byte order mark, U+FEFF at the very start: FE FF in big-endian, FF FE in little-endian. The Unicode Standard (D98) adds that "when there is no BOM, and in the absence of a higher-level protocol, the byte order of the UTF-16 encoding scheme is big-endian". Browsers do the opposite: in the WHATWG Encoding Standard the label "utf-16" means UTF-16LE, "to deal with deployed content". And when a browser finds a byte order mark at the start of a document, the mark wins over any label, because it "has been found to be more accurate in deployed content".
+
+UTF-8 has no byte order to mark, but EF BB BF, which is U+FEFF in UTF-8, is still used as a signature. The Unicode Standard (D95) says its presence "does not affect conformance" and can be taken as "a near-certain indication" that the data is UTF-8. Some formats forbid it: RFC 8259 says JSON implementations "MUST NOT add a byte order mark (U+FEFF) to the beginning of a networked-transmitted JSON text", while a parser may ignore one. The mark is invisible in most editors, which is how it ends up where nobody wanted it (see [Hidden and lookalike characters](/learn/hidden-and-lookalike-characters)).
+
+## UTF-32: four bytes, always
+
+UTF-32 writes every code point as one 32-bit unit, big- or little-endian, with the marks 00 00 FE FF and FF FE 00 00. It is the simplest of the three, and the WHATWG Encoding Standard does not define it at all: a browser cannot decode it, and its byte order mark sniffing knows only the UTF-8 and UTF-16 marks.
+
+## Reading a dump yourself
+
+- **Find the first bytes.** In UTF-8 they give each character's length; 80 to BF only ever continue one.
+- **Count the zeros.** Every other byte zero means UTF-16 (zeros second: little-endian); three bytes in four means UTF-32.
+- **Look for a mark at the start.** EF BB BF, FE FF, FF FE, 00 00 FE FF or FF FE 00 00.
+- **Let the tool do it.** Paste the dump into the [charset converter](/tools/charset-equivalency): it reads `hexdump -C`, `xxd` and `od` output, names each ill-formed sequence, and shows what every charset makes of the same bytes. When the bytes decode but the text looks wrong, the charset was the wrong one: see [Mojibake](/learn/mojibake-and-code-pages).
+
+## Sources
+
+The bit layouts and properties come from RFC 3629 and RFC 2781; the well-formed sequences, the replacement practice and the encoding schemes from chapter 3 of the Unicode Standard 18.0.0; the browser's decoders, labels and byte order mark handling from the WHATWG Encoding Standard; the JSON rule from RFC 8259; the ASM sub-violations from F5's BIG-IP 17.5.0 documentation. The decodings in the tables were run in the charset converter and in Node 22's TextDecoder on 2026-10-03. All read on 2026-10-03.
+
+- [RFC 3629: UTF-8, a transformation format of ISO 10646](https://www.rfc-editor.org/rfc/rfc3629)
+- [RFC 2781: UTF-16, an encoding of ISO 10646](https://www.rfc-editor.org/rfc/rfc2781)
+- [The Unicode Standard 18.0.0, chapter 3: Conformance](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/)
+- [Unicode FAQ: UTF-8, UTF-16, UTF-32 & BOM](https://www.unicode.org/faq/utf_bom.html)
+- [WHATWG Encoding Standard](https://encoding.spec.whatwg.org/)
+- [RFC 8259: The JavaScript Object Notation (JSON) Data Interchange Format](https://www.rfc-editor.org/rfc/rfc8259)
+- [F5 BIG-IP ASM 17.5.0: Working with Violations](https://techdocs.f5.com/en-us/bigip-17-5-0/big-ip-asm-implementations/working-with-violations.html)

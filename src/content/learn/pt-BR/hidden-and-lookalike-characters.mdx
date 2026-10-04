@@ -1,0 +1,83 @@
+---
+slug: hidden-and-lookalike-characters
+title: "Caracteres escondidos e sósias: o que uma linha de texto pode esconder"
+summary: "Caracteres de largura zero, controles bidirecionais que reordenam o que você vê (Trojan Source), quebras de linha que o seu analisador não enxerga, letras cirílicas que passam por latinas, e as aspas e traços tipográficos que quebram configurações: o que cada um faz, como os documentos de segurança do Unicode os descrevem e como encontrá-los."
+concepts: ["unicode", "espaço de largura zero", "texto bidirecional", "trojan source", "homóglifo", "confundíveis", "escritas misturadas", "uts-39", "uts-55"]
+relatedTools: ["unicode-inspector", "f5-irules-style-checker", "ascii-table", "url-inspector"]
+relatedArticles: ["unicode-code-points-and-properties", "ascii-the-128-codes", "irules-style-guide-explained", "url-encoding-and-idn", "mojibake-and-code-pages"]
+category: encoding
+order: 217
+status: reviewed
+updated: "2026-10-03"
+---
+
+Duas strings podem parecer idênticas na tela e diferir na memória. Às vezes isso é inofensivo, um espaço não separável onde se esperava um espaço. Às vezes é um bug que custa uma tarde inteira, um espaço de largura zero depois de uma chave de fechamento. E às vezes é um ataque, uma linha de código que o revisor lê de um jeito e o compilador executa de outro. Os próprios documentos de segurança do Unicode descrevem cada um desses casos, e o [inspetor Unicode](/tools/unicode-inspector) os encontra.
+
+## Caracteres que não desenham nada
+
+O Unicode marca um conjunto de pontos de código como Default_Ignorable_Code_Point: controles de formato, seletores de variação e caracteres parecidos que não têm glifo visível, de modo que um sistema que não suporta um deles simplesmente não o desenha. Entre eles estão U+200B ZERO WIDTH SPACE, U+200C ZERO WIDTH NON-JOINER, U+200D ZERO WIDTH JOINER, U+2060 WORD JOINER, U+00AD SOFT HYPHEN e U+FEFF ZERO WIDTH NO-BREAK SPACE, mais conhecido pelo apelido BYTE ORDER MARK.
+
+Muitos têm funções legítimas: os unificadores controlam se letras vizinhas se ligam em escritas cursivas como o árabe, e a marca de ordem de bytes serve de assinatura para a ordem de bytes e a codificação de um arquivo. O problema começa quando um deles aparece onde ninguém espera. Ele continua contando no comprimento da string, muda o seu hash e quebra a igualdade, e um analisador o enxerga mesmo quando um leitor não enxerga. O próprio exemplo do iRules Style Guide da DevCentral termina com um espaço de largura zero depois de uma chave de fechamento, e o Tcl 8.4.6 rejeita essa linha com "extra characters after close-brace" (veja [o iRules Style Guide, revisado](/learn/irules-style-guide-explained)).
+
+A documentação dos fabricantes também não está imune. O guia de operações do BIG-IP ASM da F5, K13050156 (atualizado em 2024-07-29), mostra uma página de bloqueio personalizada cujo `charset="utf-8"` tem um U+00AD SOFT HYPHEN onde deveria estar o hífen, então um navegador não reconhece o rótulo e [lê a página em outro charset](/learn/mojibake-and-code-pages).
+
+## Controles bidirecionais: Trojan Source
+
+O árabe e o hebraico correm da direita para a esquerda, então o algoritmo bidirecional do Unicode (UAX #9) decide a ordem de exibição de texto misto, e doze caracteres de formatação deixam o autor guiá-lo. Três são marcas implícitas (LRM, RLM, ALM). Quatro iniciam um embedding ou um override (LRE, RLE, LRO, RLO), encerrados por PDF. Três iniciam um isolate (LRI, RLI, FSI), encerrado por PDI. O efeito deles se limita ao parágrafo atual, o que em texto simples significa que termina no próximo avanço de linha ou retorno de carro.
+
+Em 2021 esse mecanismo foi relatado como vulnerabilidade, a CVE-2021-42574, com o nome de Trojan Source: os controles podem fazer código-fonte ser exibido numa ordem diferente da ordem em que o compilador o lê, então o revisor aprova um programa e o build compila outro. O registro no NVD traz, ao lado do relato, a declaração do próprio Consórcio Unicode: a ordem visual dos tokens pode diferir da ordem lógica, e o Consórcio aponta os seus documentos de segurança para as mitigações. O NVD dá nota 8,3 (CVSS 3.1).
+
+A UTS #55, Unicode Source Code Handling, traz exemplos curtos. Em C++, uma string aparentemente vazia que contém uma marca da direita para a esquerda faz uma mensagem imprimir o contrário do que o código parece dizer. Em Rust, marcas da direita para a esquerda em volta de `<<` fazem um deslocamento à esquerda parecer à direita. A resposta do padrão é explícita: "The solution is not to forbid the directional formatting characters" (a solução não é proibir os caracteres de formatação direcional). Texto da direita para a esquerda precisa deles. Os editores devem, em vez disso, exibir o código pela sua estrutura léxica, e as ferramentas devem remover os espúrios e inserir os corretos.
+
+O padrão a procurar é um embedding, override ou isolate ainda aberto quando a sua linha termina, porque tudo o que vem depois dele nessa linha pode ser reordenado. O inspetor aponta exatamente isso, e desenha o texto na ordem em que está armazenado, para que nenhum controle do texto reordene o que você vê.
+
+## Quebras de linha que o seu analisador não enxerga
+
+O Unicode tem mais maneiras de terminar uma linha que LF e CR: o padrão Unicode lista o NEL (U+0085) como o final de linha dos sistemas baseados em EBCDIC, e acrescenta LINE SEPARATOR (U+2028) e PARAGRAPH SEPARATOR (U+2029). Um editor que segue as regras de quebra de linha do Unicode começa uma nova linha neles (o suporte ao NEL é opcional); uma linguagem pode não começar. A UTS #55 mostra a consequência: se uma linha de comentário em C termina com U+2028, que o C não trata como terminador de linha, o compilador lê a linha seguinte como parte do comentário, e uma verificação de nulo que o revisor vê não está no programa. Ela também mostra o inverso: o Ada trata U+0085 como fim de linha, então um texto que um editor pode exibir como parte de um comentário pode ser código executável.
+
+## Sósias
+
+A mesma forma pode ser vários caracteres: o A latino, o Α grego e o А cirílico são iguais na maioria das fontes. A UTS #39, Unicode Security Mechanisms, associa caracteres a protótipos, de modo que duas strings com a mesma sequência de protótipos são confundíveis. Os seus dados listam 2.262 caracteres fora do ASCII cujo protótipo é texto ASCII: а cirílico por a, ο grego por o, letras de largura total pelas suas formas ASCII. Até o ASCII tem os seus confundíveis: 1, I, l e | compartilham um protótipo, e 0 e O também.
+
+A UTS #55 dá de novo um exemplo em código: uma função em C que parece zerar uma matriz inteira, em que uma variável de laço é um `i` latino e a outra um `і` cirílico, então o programa zera só uma diagonal. Em nomes e endereços o mesmo truque funciona com palavras inteiras: o exemplo da própria UTS #39 é "scope" escrito todo em letras cirílicas.
+
+Uma segunda verificação pega o que os protótipos não pegam: uma palavra cujas letras vêm de escritas que nunca compartilham um sistema de escrita. A UTS #39 a define com o conjunto de escritas aumentado de cada caractere, o seu Script_Extensions mais os sistemas de escrita que combinam escritas. O japonês combina Han, Hiragana e Katakana, e o coreano combina Han e Hangul, então 日本語のテキスト é de uma só escrita. Uma palavra é de escritas misturadas quando não sobra nenhuma escrita depois de intersectar esses conjuntos, como em `pаypal` com um а cirílico.
+
+## Espaços, aspas e traços vindos de documentos
+
+Texto colado de um editor de texto, de um chamado ou de uma janela de chat traz pontuação tipográfica junto, e o código lê esses caracteres ao pé da letra. No interpretador Tcl 8.4.6, a linguagem por baixo das iRules:
+
+| Caractere colado | O que acontece |
+|---|---|
+| Aspas curvas em volta de duas palavras, `set x “hello world”` | um erro, "wrong # args": aspas curvas não agrupam palavras |
+| Um espaço não separável entre duas palavras | uma palavra só, com três caracteres, diferente do mesmo texto com um espaço ASCII |
+| Uma meia-risca num padrão de `switch` | nenhuma correspondência, e nenhum erro |
+| Uma aspa de largura total | vira parte do valor |
+
+Nenhum deles aparece na maioria dos editores. O [verificador de estilo de iRules](/tools/f5-irules-style-checker) os aponta numa iRule, e a cópia limpa do inspetor os troca por ASCII.
+
+## O que fazer
+
+- **Olhe antes de confiar.** Cole o texto suspeito no [inspetor Unicode](/tools/unicode-inspector). Ele lista cada ponto de código, aponta os escondidos e os sósias, e mostra o texto na ordem armazenada.
+- **Limpe código e configuração, não prosa.** Remover caracteres invisíveis e normalizar espaços, aspas e traços é o certo para uma iRule ou um arquivo de configuração. Trocar sósias é o certo para um identificador, mas também mudaria palavras legítimas em cirílico ou grego, e é por isso que o inspetor deixa essa opção desligada.
+- **Deixe os controles bidirecionais onde pertencem.** Em texto da direita para a esquerda eles são necessários. Em código, só onde uma revisão mostra que são intencionais, e nunca abertos no fim de uma linha.
+- **Verifique onde o texto entra.** Uma comparação, um hash, uma URL ou uma checagem de nome de usuário só valem tanto quanto os caracteres que comparam.
+
+## Fontes
+
+As definições vêm do padrão Unicode 18.0.0, da UAX #9 e do Unicode Character Database; os ataques e as mitigações, da UTS #55, da UTS #39 e do registro da CVE-2021-42574 no NVD; a contagem de confundíveis, do confusables.txt da UTS #39; o comportamento do Tcl foi executado no Tcl 8.4.6 em 2026-10-03. Tudo lido em 2026-10-03.
+
+- [UTS #55: Unicode Source Code Handling](https://www.unicode.org/reports/tr55/)
+- [UTS #39: Unicode Security Mechanisms](https://www.unicode.org/reports/tr39/)
+- [Dados da UTS #39: confusables.txt (18.0.0)](https://www.unicode.org/Public/18.0.0/security/confusables.txt)
+- [UAX #9: Unicode Bidirectional Algorithm](https://www.unicode.org/reports/tr9/)
+- [NVD: CVE-2021-42574](https://nvd.nist.gov/vuln/detail/CVE-2021-42574)
+- [The Unicode Standard 18.0.0, capítulo 5: Implementation Guidelines](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-5/)
+- [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/18.0.0/ucd/DerivedCoreProperties.txt)
+- [Unicode Character Database 18.0.0: NameAliases.txt](https://www.unicode.org/Public/18.0.0/ucd/NameAliases.txt)
+- [Unicode Character Database 18.0.0: ScriptExtensions.txt](https://www.unicode.org/Public/18.0.0/ucd/ScriptExtensions.txt)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 K13050156: Policy tuning and enhancement, guia de operações do BIG-IP ASM](https://my.f5.com/manage/s/article/K13050156)
+- [The Unicode Standard 18.0.0, capítulo 23: Special Areas and Format Characters](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-23/)
+- [Manual do Tcl 8.4: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)

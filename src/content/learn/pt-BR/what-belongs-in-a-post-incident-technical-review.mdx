@@ -1,0 +1,65 @@
+---
+slug: what-belongs-in-a-post-incident-technical-review
+title: "O que deve haver numa revisão técnica pós-incidente"
+summary: "Depois de uma interrupção grave alguém tem de escrever o que aconteceu, e o documento que resulta costuma ser ou uma defesa ou uma acusação. Uma revisão técnica não é nenhuma das duas. É escrita para quem não estava lá, mantém o que foi observado separado do que foi concluído, nomeia as condições que tornaram a falha possível em vez da pessoa que tocou o teclado, e termina em mudanças que podem ser verificadas. O que uma revisão assim contém, quem deve escrevê-la, e os três tipos de revisão que não se podem confundir."
+concepts: ["post-incident", "rca", "review", "incident", "root-cause", "governance", "decision"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder", "packet-capture-plan-builder"]
+relatedArticles: ["incident-to-escalation", "change-windows-that-do-not-become-incidents", "product-limitations-versus-architecture-failures", "ariane-5-and-the-assumption-that-expired"]
+category: operations
+order: 327
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Três documentos que se parecem e não são iguais
+
+Antes de qualquer coisa ser escrita, a organização tem de decidir que revisão está encomendando, porque os três tipos têm autores, leitores e regras diferentes.
+
+Uma **revisão de engenharia para aprendizado** pergunta o que aconteceu, por que o sistema permitiu, e o que impediria a repetição. É escrita por engenheiros ou com eles, para a organização, e o seu valor depende de as pessoas dizerem a verdade sobre o que viram e fizeram.
+
+Uma **investigação forense** estabelece fatos num padrão probatório, preserva evidências, e pode ser usada numa disputa. Tem regras sobre cadeia de custódia e sobre quem pode falar com quem.
+
+Uma **análise jurídica ou regulatória** determina responsabilidade, conformidade e obrigações de comunicação, e em geral é protegida por sigilo profissional.
+
+A primeira não pode ser feita direito sob as regras das outras duas, e as outras duas não podem ser feitas pelas pessoas que fazem a primeira. Onde há litígio, seguradoras, um regulador ou um processo disciplinar em jogo, a revisão de engenharia precisa do seu escopo declarado por escrito antes de começar, e precisa dos especialistas dos outros tipos ao lado dela, e não no lugar dela. O resto deste artigo é sobre o primeiro tipo.
+
+## Escrita para quem não estava lá
+
+O leitor de uma revisão técnica é um comitê diretor, um sucessor, um auditor dois anos depois, ou o engenheiro que vai enfrentar o mesmo sintoma na próxima primavera. Nenhum deles estava na sala. Então a revisão explica o sistema como ele era antes do incidente, com detalhe suficiente para que a falha faça sentido, e não presume que o leitor sabe o que um dado componente faz ou por que ele estava lá.
+
+## A linha do tempo, com observação e conclusão separadas
+
+A espinha dorsal da revisão é uma linha do tempo, construída a partir de evidências (logs, monitoramento, chamados, chat, registros de mudança) e reconciliada entre relógios antes que alguém escreva uma frase de interpretação. O artigo da Practice sobre [reconstruir o que aconteceu](/practice/timelines-reconstructing-what-happened) descreve o método, e o [construtor de linha do tempo e RCA (análise de causa raiz)](/tools/incident-timeline-rca-builder) é um lugar estruturado para montá-la.
+
+A disciplina que mais importa é a que o [artigo sobre escalonamento](/learn/incident-to-escalation) descreve para um chamado de suporte: manter o que foi observado separado do que foi concluído. "O link caiu às 09:14" é uma observação se o log diz isso e uma conclusão se alguém se lembra disso. A revisão marca qual é qual, porque as conclusões são onde a discussão vai estar.
+
+## Causas, no plural
+
+Incidentes graves quase nunca têm uma causa. Têm um gatilho, em geral pequeno, e um conjunto de condições que deixou o gatilho virar interrupção: uma redundância que tinha silenciosamente deixado de ser redundante, um alerta que disparava e era ignorado, um runbook que presumia um estado que já não valia, uma mudança feita sob pressão de tempo porque a janela era curta demais. A revisão nomeia o gatilho e depois gasta a maior parte da sua extensão nas condições, porque as condições são o que a organização pode mudar. O artigo da Practice [causa raiz é uma escolha](/practice/root-cause-is-a-choice) explica por que "a" causa raiz é uma decisão sobre onde parar de procurar, e a revisão deve dizer onde parou e por quê.
+
+## O que ela não é: uma busca por uma pessoa
+
+Uma revisão que identifica a pessoa que rodou o comando encontrou o gatilho e parou. Culpa nomeada produz dois efeitos, os dois ruins: as testemunhas do próximo incidente param de dizer a verdade, e as condições que tornaram o erro fácil continuam no lugar para a próxima pessoa. O artigo da Practice sobre [RCA sem bode expiatório](/practice/rca-without-a-scapegoat) é o argumento completo. A regra prática para o documento é que as ações são descritas pelo papel e pelo que a pessoa sabia na hora, e que "por que fazia sentido para ela fazer aquilo" é uma pergunta obrigatória, não uma cortesia.
+
+## O que a revisão deve conter
+
+1. **Escopo e tipo.** Qual das três revisões é esta, quem a encomendou, o que ela cobre e o que não cobre.
+2. **O sistema antes do incidente**, como o leitor precisa dele, com as premissas de projeto relevantes declaradas.
+3. **Impacto**, nos termos da organização: quem não conseguiu fazer o quê, por quanto tempo, com que consequência. Medido onde possível.
+4. **A linha do tempo**, com fontes, observação e conclusão separadas.
+5. **Detecção e resposta**: quanto tempo até alguém saber, quanto tempo até a pessoa certa saber, o que os respondentes tentaram, o que funcionou, e o que faltou a eles.
+6. **O gatilho e as condições**, cada um com a sua evidência.
+7. **O que deu certo**, com honestidade, porque as coisas que limitaram o dano também são coisas que a organização deve manter.
+8. **Mudanças**, cada uma com responsável, data, e o observável que mostrará que foi feita e está funcionando. Uma mudança que não pode ser verificada é um desejo.
+9. **Perguntas abertas**, com responsáveis, porque uma revisão que finge estar completa é menos útil do que uma que diz o que não sabe.
+10. **O registro**: quais premissas de projeto o incidente falsificou, para que a [revisão de arquitetura](/learn/review-a-network-architecture-before-approving-it) do próximo projeto comece a partir delas.
+
+## Quem deve escrevê-la
+
+Alguém com profundidade técnica para ler as evidências, distância suficiente da resposta para fazer as perguntas óbvias, e nenhum interesse na resposta. O time que conduziu a resposta pode fornecer os fatos e deve revisar o rascunho; não deve ser o único autor, porque não vai enxergar o que deixou de enxergar meses atrás. O fornecedor cujo produto esteve envolvido deve receber perguntas específicas e também não deve escrever a revisão, pela razão simétrica.
+
+## O teste de uma boa revisão
+
+Seis meses depois, alguém deve conseguir pegá-la, entender o que aconteceu sem ter estado lá, encontrar as mudanças e verificar se foram feitas, e reconhecer as mesmas condições se formando num sistema diferente. Se ela também protegeu as pessoas que disseram a verdade, foi uma boa revisão.
+
+Se a sua organização precisa de uma revisão assim depois de um incidente grave, escrita de forma independente e sem a busca por um culpado, isso é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

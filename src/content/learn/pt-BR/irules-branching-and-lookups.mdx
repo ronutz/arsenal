@@ -22,13 +22,24 @@ As constatações abaixo são da F5, e a F5 as declara com uma ressalva honesta 
 **Encadeie suas condições com elseif em vez de empilhar instruções if separadas.** Uma sequência de blocos `if` independentes avalia todos; uma cadeia `if` / `elseif` é uma única instrução que para no primeiro casamento, então menos comandos são buscados e executados e menos valores de retorno são ponderados.
 
 ```tcl
-# mais lento: tres instrucoes separadas, todas avaliadas
-if { $x eq "a" } { ... }
-if { $x eq "b" } { ... }
-if { $x eq "c" } { ... }
-
-# mais rapido: uma instrucao, para no primeiro casamento
-if { $x eq "a" } { ... } elseif { $x eq "b" } { ... } elseif { $x eq "c" } { ... }
+# Mais lento: três instruções separadas, todas avaliadas
+if { ${x} eq "a" } {
+    pool a_pool
+}
+if { ${x} eq "b" } {
+    pool b_pool
+}
+if { ${x} eq "c" } {
+    pool c_pool
+}
+# Mais rápido: uma instrução só, que para no primeiro casamento
+if { ${x} eq "a" } {
+    pool a_pool
+} elseif { ${x} eq "b" } {
+    pool b_pool
+} elseif { ${x} eq "c" } {
+    pool c_pool
+}
 ```
 
 **Prefira switch a qualquer forma de if quando puder.** Comparar uma variável com uma lista de valores é exatamente para o que o `switch` serve, e ele evita a avaliação extra de expressão que cada `if` carrega. Também é bem mais fácil de ler.
@@ -46,14 +57,14 @@ switch -- [string tolower [HTTP::host]] {
 **Para uma busca por chave exata em dados estáticos, um array indexado diretamente é o mais rápido de todos.** Se o que você tem é de fato um mapa de chave para valor, coloque-o em um array `static::` no carregamento e indexe-o diretamente. Isso é uma busca hash O(1) sem nada do trabalho por comparação do `switch` ou da chamada de função do `matchclass`.
 
 ```tcl
-when RULE_INIT {
+when RULE_INIT priority 500 {
     array set static::pool_for {
         www  web_pool
         api  api_pool
         img  image_pool
     }
 }
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     set key [getfield [HTTP::host] "." 1]
     if { [info exists static::pool_for($key)] } {
         pool $static::pool_for($key)
@@ -68,7 +79,7 @@ Velocidade é só metade da história. Antes de escolher a partir da ordem, resp
 **Os dados mudam independentemente da regra?** Um corpo de `switch` e um array `static::` estão embutidos no iRule: mudar uma entrada significa editar e recarregar a regra. Um **data group** (uma class), lido com o comando `class`, é um objeto de configuração separado que você pode editar sozinho, sem mudança no código que o usa. Então no momento em que sua lista é mantida por outra pessoa, muda com frequência ou é grande, um data group vence por motivos que nada têm a ver com velocidade bruta, e é seguro para CMP.
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { [class match [HTTP::path] starts_with blocked_paths] } {
         HTTP::respond 403 content "forbidden"
     }

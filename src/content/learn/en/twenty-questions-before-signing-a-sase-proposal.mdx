@@ -1,0 +1,72 @@
+---
+slug: twenty-questions-before-signing-a-sase-proposal
+title: "Twenty questions to ask before signing a SASE proposal"
+summary: "A SASE proposal is a purchasing arrangement wrapped around several products, usually on a multi-year subscription, usually with a discount that expires soon. The questions that decide whether it fits are rarely about features. They are about where traffic goes, what the team loses sight of, what happens when the single path fails, what the exit looks like, and what the price does in year two. Twenty of them, grouped so a steering committee can put them to the supplier in writing before the discount does its work."
+concepts: ["sase", "sse", "ztna", "procurement", "decision", "vendor-evaluation", "subscription"]
+relatedTools: ["sse-architecture-explainer", "zscaler-tunnel-chooser", "netskope-steering-explainer", "f5xc-ce-egress-checklist"]
+relatedArticles: ["zero-trust-ztna-and-sase-without-the-marketing", "sse-five-vendors-one-decision", "capex-versus-subscription-networking", "when-vendor-consolidation-reduces-cost"]
+category: operations
+order: 321
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Why the questions are not about features
+
+Every SASE (secure access service edge) proposal answers the same question, "does this flow pass", with different machinery, and the [comparison of five of them](/learn/sse-five-vendors-one-decision) shows how different that machinery is. But the decision in front of a steering committee is seldom lost on a feature. It is lost on a path nobody traced, a branch with one line, a log that arrives late, a contract that cannot be left, and a price that was quoted for year one. The twenty questions below are the ones that find those, and they are written to be sent to the supplier in advance, in writing, so that the answers are on record before anything is signed. The vocabulary, if it is in the way, including ZTNA (zero trust network access), is sorted out in [zero trust, ZTNA and SASE without the marketing](/learn/zero-trust-ztna-and-sase-without-the-marketing).
+
+## Where the traffic goes
+
+**1. For each class of traffic we have, where is it inspected, and where does it break out?** Branch to internet, user to private application, user to SaaS, site to site, partner tunnels, voice. Ask for the answer per class, with the geography. A proposal that answers "in the cloud" has not answered.
+
+**2. Which of our flows will not go through the platform at all, and how are they handled?** Printers, building systems, legacy protocols, anything that cannot carry an agent or does not speak HTTP. Every estate has them, and the proposal's diagram usually does not.
+
+**3. What is the measured latency added to our two most sensitive applications, from our branches?** Measured, by a pilot, not estimated from a map of points of presence. The [SSE architecture explainer](/tools/sse-architecture-explainer) shows why the inspection path differs between products.
+
+**4. Can inspection be pinned to a region, for all functions, and what is lost if it is?** Regulators ask where data is processed; some platforms pin some functions and not others.
+
+**5. How does a user on the corporate network reach an application, and does the answer change when they are at home?** The platform that treats both the same is a different architecture from one that treats them differently, and the operations team needs to know which they are buying.
+
+## What fails, and what the user sees
+
+**6. At a branch with one internet line, what happens when it fails, and in how long is service restored?** Ask for the documented behaviour and the measured recovery time, separately.
+
+**7. What happens when the platform itself is degraded or unreachable: fail open, fail closed, or configurable, and per what?** Then ask which the proposal recommends for you, and why.
+
+**8. When the identity provider is unavailable, who can still connect?** Everything in these architectures hangs on identity. The answer should include existing sessions, new sessions and the console.
+
+**9. What is the supplier's published incident history for the regions we would use, and where is the status page?** Not the service-level credit; the record.
+
+## What the team loses sight of
+
+**10. Which diagnostics are available to our own engineers, and which only to the supplier's support?** This is the question the network lead cares about most, and it is rarely in the proposal. Ask for the written list.
+
+**11. At what interval are logs delivered to our log platform, in what format, and can it be shortened?** Detections that assume real-time logs stop working at a fifteen-minute delivery interval.
+
+**12. What can be exported in bulk, and what can only be viewed in the console?** Policy, logs, configuration, the list of users and devices. What cannot be exported cannot be audited, migrated or reconciled.
+
+**13. How is a change tested before it reaches every user?** Staging, canary groups, scheduled policy, rollback. "Changes are immediate" is a feature in the demonstration and a hazard in operation.
+
+## Identity, devices and policy
+
+**14. Which identity attributes must exist before enrolment, and what happens to a user whose group membership changes mid-session?**
+
+**15. What does the device posture check actually verify, how often, and what does a failing device get?** Ask what the check does on an unmanaged device, a personal phone and a contractor's laptop, which are three different answers.
+
+**16. How is the existing firewall and proxy policy translated, and who does the translation?** Count the rules; ask who owns the exceptions list; ask what the supplier's tool does with a rule it cannot express.
+
+## Commercials, lock-in and the exit
+
+**17. What is the unit of pricing, what makes it grow, and what does year two cost at our expected growth?** Users, devices, bandwidth, sites, connectors, log retention. Ask for the renewal uplift in writing.
+
+**18. Can functions be contracted separately, now or later, at the same unit price?** A proposal that discounts the bundle heavily is pricing the exit.
+
+**19. What do we receive at termination, in what format, within how many days, and what runs during the notice period?** This answer belongs in the exit plan the regulator will ask about, and it should be written before signature.
+
+**20. Which of these answers is in the contract, and which is in a document the supplier can change?** The last question is the one that turns the other nineteen into commitments.
+
+## How to use the answers
+
+Put all twenty in writing before the technical session, and summarise the answers received against each one, marking the open ones. The open questions are not a failure of the process; they are its product, because each becomes a condition of approval or a dependency with an owner. An approval that says "yes, once questions 6, 11 and 19 are answered in writing, with the branch decision deferred to month nine" is a better decision than yes, and a far better one than a yes bought by a quarter-end discount. The [example decision memorandum](/advisory/decision-memorandum) shows such an approval written out.
+
+If a SASE proposal with a date on it is sitting in front of your committee, putting these questions to it is the kind of work I do professionally: [independent technical advisory](/advisory).

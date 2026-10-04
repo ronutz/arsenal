@@ -22,10 +22,17 @@ Um formato é uma sequência de três tipos de diretiva:
 - **conversões** começam com `%` e leem um valor: `%d` um inteiro decimal, `%x` hexadecimal, `%o` octal, `%i` um inteiro cuja base vem do prefixo, `%s` caracteres até um espaço em branco, `%c` um caractere como seu código, `%[...]` caracteres de um conjunto (`%[^&]` é tudo até um "e comercial"), e `%n` quanto da entrada foi consumido até ali. Um `*` depois do `%` converte sem guardar, e um número define uma largura máxima.
 
 ```tcl
-scan "10:30" "%d:%d" hours minutes          ;# 2
-scan "192.168.1.20" "%d.%d.%d.%d" a b c d   ;# 4
-scan "user=abc&x=1" "user=%[^&]" user       ;# 1, user vale abc
+% scan "10:30" "%d:%d" hours minutes
+2
+% scan "192.168.1.20" "%d.%d.%d.%d" a b c d
+4
+% scan "user=abc&x=1" {user=%[^&]} user
+1
+% set user
+abc
 ```
+
+São sessões do tclsh: cada comando vem depois do prompt `%` e o resultado fica na linha seguinte. O terceiro formato está entre chaves: entre aspas duplas, o Tcl executaria `[^&]` como comando antes de o `scan` vê-lo (o Tcl 8.4.6 para com invalid command name "^&"), então coloque entre chaves todo formato que tenha `[`.
 
 ## O que o resultado significa
 

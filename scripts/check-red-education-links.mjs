@@ -64,7 +64,14 @@ if (!fs.existsSync(BASE)) {
 // link is an IDENTITY page - it also serves as a schema.org sameAs - rather
 // than another route into the course catalogue, which is the creep this
 // baseline exists to resist. The guard still catches a 101st.
-const BASELINE_TOTAL = 100;
+// 100 -> 101 on 2026-10-03, deliberately. The advisory review PRIME asked to
+// implement in full, and his own follow-up in it, add ONE link: from the
+// advisory page's professional-services boundary to rededucation.com's
+// /professional-services/ page, already a declared destination. It exists so
+// that "I do not implement" ends in a path rather than a dead end, with Red
+// Education named as one credible option and the choice left with the client.
+// Not a route into the course catalogue, and not in the Learn corpus.
+const BASELINE_TOTAL = 101;
 
 // *** AND A COUNT CANNOT SEE A SWAP. *** The baseline above has an honest audit
 // trail - every increment from 86 is traced to the decision behind it - but it is

@@ -93,6 +93,93 @@ export const VECTORS: StyleCheckerVector[] = [
       events: [{ name: "HTTP_REQUEST", line: 1, priority: "500" }],
     },
   },
+  // A ZERO WIDTH SPACE after a closing brace: invisible, and Tcl 8.4.6 stops with extra characters after close-brace (R1 and syntax).
+  {
+    id: "zero-width",
+    input: {
+      irule: "when RULE_INIT priority 500 {\n    set static::myapp_limit 10\n}\u200B\nwhen HTTP_REQUEST priority 500 {\n    log local0. \"limit ${static::myapp_limit}\"\n}\n",
+    },
+    expect: {
+      findings: [
+        [
+          "R1",
+          "error",
+          3,
+          "{\"what\":\"invisible\",\"char\":\"U+200B\",\"name\":\"ZERO WIDTH SPACE\",\"col\":2,\"count\":1}",
+        ],
+        ["syntax", "error", 3, "{\"message\":\"extra characters after close-brace\"}"],
+      ],
+      counts: { error: 2, warning: 0, info: 0 },
+      parses: false,
+      events: [],
+    },
+  },
+  // Pasted from a word processor: an EN DASH where -- belongs (so switch takes it as the value), curly quotes and a NO-BREAK SPACE.
+  {
+    id: "word-processor",
+    input: {
+      irule: "when HTTP_REQUEST priority 500 {\n    switch \u2013- [HTTP::host] {\n        \u201Cwww.example.com\u201D {\n            pool\u00A0web_pool\n        }\n    }\n}\n",
+    },
+    expect: {
+      findings: [
+        [
+          "E3",
+          "warning",
+          2,
+          "{\"what\":\"dash\",\"char\":\"U+2013\",\"name\":\"EN DASH\",\"col\":12,\"count\":1}",
+        ],
+        ["R15", "warning", 2, "{\"command\":\"switch\"}"],
+        [
+          "R1",
+          "error",
+          3,
+          "{\"what\":\"quote\",\"char\":\"U+201C\",\"name\":\"LEFT DOUBLE QUOTATION MARK\",\"col\":9,\"count\":2}",
+        ],
+        [
+          "R1",
+          "error",
+          4,
+          "{\"what\":\"space\",\"char\":\"U+00A0\",\"name\":\"NO-BREAK SPACE\",\"col\":17,\"count\":1}",
+        ],
+      ],
+      counts: { error: 2, warning: 2, info: 0 },
+      parses: true,
+      events: [{ name: "HTTP_REQUEST", line: 1, priority: "500" }],
+    },
+  },
+  // The comment thread's points: == against a piece of text (D1), break in a switch arm with no loop (D2 error) and return in an arm (D2 note).
+  {
+    id: "thread-points",
+    input: {
+      irule: "when HTTP_REQUEST priority 500 {\n    if { ${state} == \"IL\" } {\n        pool gold_pool\n    }\n    switch -- [HTTP::method] {\n        \"GET\" {\n            pool get_pool\n            break\n        }\n        default {\n            return\n        }\n    }\n}\n",
+    },
+    expect: {
+      findings: [
+        ["D1", "warning", 2, "{\"op\":\"==\",\"text\":\"\\\"IL\\\"\",\"suggest\":\"eq\"}"],
+        ["D2", "error", 8, "{\"what\":\"outside-loop\",\"cmd\":\"break\"}"],
+        ["D2", "info", 11, "{\"what\":\"return-arm\"}"],
+      ],
+      counts: { error: 1, warning: 1, info: 1 },
+      parses: true,
+      events: [{ name: "HTTP_REQUEST", line: 1, priority: "500" }],
+    },
+  },
+  // An array variable (valid Tcl the engine does not model: a note, and the rest is still checked) and if{ glued to its brace (R11 error).
+  {
+    id: "array-and-keyword",
+    input: {
+      irule: "when HTTP_REQUEST priority 500 {\n    set key [string tolower [HTTP::host]]\n    if { [info exists static::myapp_pools(${key})] } {\n        pool $static::myapp_pools(${key})\n    }\n    if{ [HTTP::method] eq \"POST\" } {\n        log local0. \"post\"\n    }\n}\n",
+    },
+    expect: {
+      findings: [
+        ["limit", "info", 4, "{\"what\":\"array\",\"ref\":\"$static::myapp_pools(${key})\"}"],
+        ["R11", "error", 6, "{\"what\":\"keyword-brace\",\"word\":\"if{\"}"],
+      ],
+      counts: { error: 1, warning: 0, info: 1 },
+      parses: true,
+      events: [{ name: "HTTP_REQUEST", line: 1, priority: "500" }],
+    },
+  },
 ];
 
 /** What verifyVectors reports (the shape scripts/run-golden-vectors.mts reads). */

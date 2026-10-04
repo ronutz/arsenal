@@ -1,33 +1,35 @@
 ---
 slug: irules-style-guide-explained
 title: "O iRules Style Guide do DevCentral, regra por regra, com os motivos"
-summary: "O DevCentral da F5 publicou em 2022 um iRules Style Guide: configurações de editor e vinte regras numeradas. Algumas são questão de gosto, mas várias evitam falhas reais: um iRule que não carrega, um switch que um atacante consegue manipular, uma expressão que roda dados da requisição como código, uma tempestade de log. Veja as regras agrupadas pelo que protegem, com o motivo de cada uma."
-concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability"]
-relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder"]
-relatedArticles: ["irules-building-strings", "irules-branching-and-lookups"]
+summary: "O DevCentral da F5 publicou em 2022 um iRules Style Guide: configurações de editor e vinte regras numeradas. Algumas são questão de gosto, mas várias evitam falhas reais: um iRule que não carrega, um switch que um atacante consegue manipular, uma expressão que roda dados da requisição como código, uma tempestade de log. Veja as regras agrupadas pelo que protegem, com o motivo de cada uma, o que os comentários do guia corrigiram e o que mudou desde que ele foi escrito."
+concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability", "unicode"]
+relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder", "f5-irules-expression-lab", "f5-bigip-index-base-finder"]
+relatedArticles: ["irules-building-strings", "irules-branching-and-lookups", "bigip-zero-or-one"]
 category: networking
 order: 31
 status: reviewed
 updated: "2026-10-03"
 ---
 
-Em dezembro de 2022, JRahm, com Jim_Deucker, publicou um "iRules Style Guide" na comunidade DevCentral da F5: algumas configurações de editor e vinte regras numeradas. Ele parece um guia de estilo da casa, e em boa parte é, mas várias regras existem porque descumpri-las causa falhas reais. Agrupar as regras pelo que elas protegem deixa os motivos mais claros.
+Em dezembro de 2022, JRahm, com Jim_Deucker, publicou um "iRules Style Guide" na comunidade DevCentral da F5: algumas configurações de editor e vinte regras numeradas. Ele parece um guia de estilo da casa, e em boa parte é, mas várias regras existem porque descumpri-las causa falhas reais. Agrupar as regras pelo que elas protegem deixa os motivos mais claros. O guia e as doze respostas a ele foram lidos por inteiro em 2026-10-03, e todo comportamento de Tcl abaixo foi executado num tclsh 8.4.6 de verdade, a versão de Tcl que a F5 indica para os iRules (K6091).
 
 ## Regras que mantêm o iRule carregando
 
-- **R11, um espaço entre `}` e `{`.** `if { $x }{ ... }` não é problema de estilo no Tcl 8.4: o parser para com "extra characters after close-brace", e o iRule não carrega.
-- **R1, nada de aspas curvas ou espaços não separáveis.** Texto colado de um processador de texto pode trazer aspas curvas e espaços não separáveis idênticos aos caracteres verdadeiros, que quebram o código sem um erro óbvio.
-- **R2, o limite de 64 KB.** Um único iRule é limitado a 64 KB, e o conselho do guia ao chegar nesse limite é questionar o desenho da solução em vez de espremer.
+- **R11, um espaço entre `}` e `{`.** `if { $x }{ ... }` não é problema de estilo no Tcl 8.4: o parser para com "extra characters after close-brace", e o iRule não carrega. Uma palavra-chave colada à chave também falha, só que mais tarde: o Tcl lê `if{` como uma palavra só, o nome de um comando que não existe. A própria página de referência de `return` da F5 tem exatamente esse deslize no exemplo.
+- **R1, nada de aspas curvas ou espaços não separáveis.** Texto colado de um editor de texto pode trazer caracteres idênticos aos verdadeiros. Um espaço não separável cola duas palavras num único nome de comando, e aspas curvas simplesmente não agrupam palavras. A família é maior que os dois casos que o guia cita: espaços de largura zero, a marca de ordem de bytes e os outros caracteres que o Unicode lista como default-ignorable são invisíveis, e uma meia-risca digitada onde deveria estar `--` é tomada pelo `switch` como o valor, então nada casa e nada reclama.
+- **R2, o limite de tamanho.** O guia fala em 64 KB; o F5 K9204 dá o número exato, 65.520 caracteres, e o BIG-IP se recusa a salvar ou carregar um iRule maior ("Max string size exceeded", "max:65520"). O K9204 sugere dividir o código em iRules separados no mesmo servidor virtual; o conselho do guia ao chegar no limite é questionar o desenho da solução em vez de espremer.
+
+O guia demonstra a R1 sem querer. Como publicado em 2026-10-03, o exemplo de `RULE_INIT` tem um ZERO WIDTH SPACE (U+200B) logo depois da chave de fechamento, e o exemplo de debug tem uma linha que não contém mais nada. Copiados literalmente, o primeiro faz o Tcl 8.4.6 parar com "extra characters after close-brace", e o segundo roda como um comando cujo nome é um caractere invisível. O [verificador de estilo](/tools/f5-irules-style-checker) nomeia cada um desses caracteres com o code point, o nome no Unicode e a coluna.
 
 ## Regras que impedem os dados da requisição de conduzir a regra
 
-- **R12, coloque toda expressão entre chaves.** Sem chaves, `expr`, `if` e `while` substituem o argumento duas vezes, então um valor vindo da requisição pode rodar como código. O K15650046 da F5 é o aviso de segurança, o K57410758 é o alerta do validador, e o How To Write Fast Rules da F5 fala num custo de velocidade de "a factor of 20 or so".
+- **R12, coloque toda expressão entre chaves.** Sem chaves, `expr`, `if` e `while` substituem o argumento duas vezes, então um valor vindo da requisição pode rodar como código. O F5 K15650046 é o aviso de segurança, e o K57410758 é o alerta que o BIG-IP grava ao carregar uma configuração com expressão sem chaves; esse alerta é informativo, não impede o carregamento e não pega todos os casos. O link de "deep dive" do guia hoje leva a um artigo de 2014 do DevCentral que desmonta o bytecode: sem chaves, o Tcl monta a expressão como string em tempo de execução e a entrega ao motor de expressões; com chaves, o compilador cuida dela antes, e no exemplo do artigo chega a calcular a resposta constante (o desmontador que ele usa exige Tcl 8.5 ou posterior). O How To Write Fast Rules da F5 fala num custo de velocidade de "a factor of 20 or so".
 - **R15, termine as opções com `--`.** O `switch` lê qualquer palavra que comece com hífen como opção. Um cabeçalho Host como `-glob` poderia mudar o jeito como seu switch casa, e um desconhecido para o iRule com "bad option". O K15650046 mostra a linha de log exata. O guia pede `--` em `switch` e `table`; o `class match` também aceita.
 - **R13 e R14, espaços e chaves em volta das variáveis nas expressões.** `if { ${host} eq "a" }` não deixa dúvida sobre onde termina o nome da variável, e se lê igual em qualquer editor.
 
 ## Regras que mantêm o comportamento previsível
 
-- **R9, guarde estado como 0 ou 1.** O Tcl aceita muitas grafias de verdadeiro e falso (`yes`, `on`, `tru` e outras); um valor comparado com `==` contra 1 só funciona na forma numérica.
+- **R9, guarde estado como 0 ou 1.** Num `if`, 0 é falso e qualquer outro número é verdadeiro, inclusive -1. O Tcl também aceita true, yes e on, e false, no e off, em maiúsculas ou minúsculas e abreviados, desde que a forma curta não seja ambígua: `n` e `of` são falsos, `t` é verdadeiro e `o` dá erro. E `string is true -1` devolve 0, enquanto o `if` trata -1 como verdadeiro. Uma grafia só, 0 ou 1, elimina tudo isso; o [localizador zero-ou-um](/tools/f5-bigip-index-base-finder) tem os detalhes.
 - **R10, `&&` e `||` em vez de `and` e `or`.** Os operadores por extenso da F5 funcionam, mas a F5 não documenta onde eles ficam na tabela de precedência; os operadores do Tcl, com parênteses, não deixam nada para adivinhar.
 - **R16, uma prioridade em todo evento.** A página de `priority` da F5 define o padrão em 500 e a faixa de 0 a 1000, com os números menores rodando primeiro. Escrever a prioridade faz da ordem de vários iRules num mesmo servidor virtual uma decisão, e não um acaso.
 - **R17, um timeout ou um lifetime em toda entrada de table.** A referência de `table` da F5 dá a uma entrada um timeout padrão de 180 segundos e um lifetime indefinido quando nenhum é informado; escrevê-los faz da vida da entrada uma decisão. O guia também pergunta se a table é mesmo necessária, e sugere o namespace `static::` como alternativa para valores de configuração.
@@ -39,6 +41,49 @@ Em dezembro de 2022, JRahm, com Jim_Deucker, publicou um "iRules Style Guide" na
 - **R3, blocos funcionais;** **R4, a chave de abertura no fim da linha** e `} else {` numa linha só; **R5, a indentação de 4 espaços levada para valores aninhados**, como os ramos de um `switch`; **R7, um comando por linha;** **R8, nada de `if` numa linha só,** nem para um log de debug.
 - **R6, comentários na própria linha,** escritos como `# comentário`, nunca no fim de uma linha e nunca entre padrões do `switch`, onde o Tcl os lê como padrões.
 - **R20, nada de código comentado** na versão que vai para produção.
+
+## O que os comentários do guia acrescentam
+
+As respostas abaixo do guia valem a leitura junto com ele. Três pontos se destacam, e os dois primeiros agora são verificações próprias do verificador de estilo (D1 e D2).
+
+**`eq` para texto, `==` para números.** Kai Wilke apontou que o exemplo da regra 10 do guia compara texto com `==`. `==` e `!=` comparam como números sempre que os dois lados parecem números, então tudo isto é verdadeiro no Tcl 8.4.6:
+
+```tcl
+% expr {10 == 012}
+1
+% expr {1 == "0x0000001"}
+1
+% expr {1 == 1.0}
+1
+% expr {"1.0" eq "1"}
+0
+```
+
+`012` é octal, então vale 10, e o `eq` compara os caracteres, então `"1.0"` e `"1"` são diferentes. Jim Deucker concordou em acrescentar um ponto sobre `eq` e `ne`; como lido em 2026-10-03, o exemplo ainda usa `==`. O How To Write Fast Rules da F5 diz o mesmo com outras palavras: compare números com números e strings com strings, e preste atenção às conversões implícitas, `==` versus `eq` entre elas.
+
+**Um ramo de `switch` não precisa de `return` nem de `break`.** Juergen Mang contou que vê muito `return` usado para encerrar um ramo de `switch`. Um ramo nunca segue para o próximo (um corpo escrito como `-` compartilha de propósito o corpo do padrão seguinte), então nada é necessário. O `return` sai do evento inteiro, não só do switch, como diz a página de `return` da F5. O `break` não tem o que interromper: o `switch` não é um laço, então dentro de um laço o `break` sai do laço, e sem nenhum laço em volta o Tcl 8.4.6 informa "invoked "break" outside of a loop" (verificado no corpo de um proc; a F5 não documenta o que o TMM faz com ele num evento). Jim Deucker respondeu que isso estava fora do escopo do guia de estilo, mas que era candidato a um diagnóstico na extensão do VS Code.
+
+**Um exemplo corrigido.** Kai também percebeu que o `foreach { f } { ${e} }` do exemplo final percorreria o texto literal, e não a lista em `e`. JRahm corrigiu para `foreach { f } ${e}`, e o guia publicado traz a correção.
+
+## As configurações de editor, e o que mudou
+
+O guia traz as configurações para VS Code, EditorConfig, Vim e Sublime. Duas coisas mudaram desde que ele foi escrito:
+
+- **O link da extensão do VS Code está morto.** A extensão "F5 Networks iRules" que o guia recomenda (`bitwisecook.irule`) devolveu 404 no Visual Studio Marketplace em 2026-10-03. A extensão atual do mesmo autor é a "Tcl/Tk, iRules, EDA-Tools, Expect LSP/MCP" (`bitwisecook.tcl-lsp`), anunciada no DevCentral em março de 2026 com diagnósticos de iRule, formatação e rastreamento da entrada do usuário (taint tracking). A "The F5 Extension" (`F5DevCentral.vscode-f5`) continua listada.
+- **Um valor do EditorConfig não está na especificação.** O bloco de EditorConfig do guia define `charset = ascii`, mas a especificação do EditorConfig (versão 0.17.2) só define latin1, utf-8, utf-8-bom, utf-16be e utf-16le, e manda os editores ignorarem valores que não suportam. Um arquivo ASCII já é UTF-8 válido, então `utf-8` é a configuração válida mais próxima; manter o arquivo em ASCII passa a ser trabalho de um verificador.
+
+Uma seção de EditorConfig com as configurações do guia e só valores especificados:
+
+```ini
+# iRules files: the DevCentral style guide's editor settings
+[*.irule]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+```
 
 ## Uma regra que segue o guia
 
@@ -59,15 +104,27 @@ when HTTP_REQUEST priority 500 {
 
 ## Experimente
 
-O [verificador de estilo de iRules](/tools/f5-irules-style-checker) lê um iRule colado segundo estas regras e uma análise real de sintaxe Tcl 8.4, e indica a regra por trás de cada apontamento. O [construtor de if / switch / class](/tools/f5-irules-conditional-builder) já escreve as decisões neste estilo.
+O [verificador de estilo de iRules](/tools/f5-irules-style-checker) lê um iRule colado segundo estas regras, os dois pontos dos comentários do guia e uma análise real de sintaxe Tcl 8.4, e indica a regra por trás de cada apontamento. Os exemplos "Colado de um editor de texto" e "Um caractere invisível" mostram a R1 em ação. O [construtor de if / switch / class](/tools/f5-irules-conditional-builder) já escreve as decisões neste estilo, e o [laboratório de expressões](/tools/f5-irules-expression-lab) mostra `==` e `eq` lado a lado.
 
 ## Fontes
 
-As regras são citadas do próprio guia; os detalhes de segurança, do alerta, de prioridade e de table vêm das páginas da F5 em que ele se apoia, e o erro de análise foi reproduzido no Tcl 8.4.6.
+As regras e as respostas são citadas da página do guia; os detalhes de segurança, do alerta, de tamanho, de prioridade e de table vêm das páginas da F5 em que ele se apoia; todo comportamento de Tcl foi reproduzido no Tcl 8.4.6. Tudo lido em 2026-10-03.
 
-- [F5 DevCentral: iRules Style Guide (JRahm com Jim_Deucker, 2022-12-22)](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 DevCentral: iRules Style Guide (JRahm com Jim_Deucker, 2022-12-22), com os comentários](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K9204: iRules are limited to 65,520 characters](https://my.f5.com/manage/s/article/K9204)
 - [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
 - [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
 - [Referência de iRules da F5: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [Referência de iRules da F5: return](https://clouddocs.f5.com/api/irules/return.html)
 - [Referência de iRules da F5: priority](https://clouddocs.f5.com/api/irules/priority.html)
 - [Referência de iRules da F5: table](https://clouddocs.f5.com/api/irules/table.html)
+- [F5 DevCentral: Advanced iRules, an abstract view of iRules with the Tcl bytecode disassembler (2014)](https://community.f5.com/t/advanced-irules-an-abstract-view-of-irules-with-the-tcl-bytecode-disassembler/67788)
+- [F5 DevCentral: iRule Developer Tools (2026)](https://community.f5.com/t/irule-developer-tools/76979)
+- [Visual Studio Marketplace: Tcl/Tk, iRules, EDA-Tools, Expect LSP/MCP](https://marketplace.visualstudio.com/items?itemName=bitwisecook.tcl-lsp)
+- [Visual Studio Marketplace: The F5 Extension](https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5)
+- [Especificação do EditorConfig 0.17.2](https://spec.editorconfig.org/)
+- [Manual do Tcl 8.4: if](https://www.tcl-lang.org/man/tcl8.4/TclCmd/if.htm)
+- [Manual do Tcl 8.4: switch](https://www.tcl-lang.org/man/tcl8.4/TclCmd/switch.htm)
+- [Manual do Tcl 8.4: break](https://www.tcl-lang.org/man/tcl8.4/TclCmd/break.htm)
+- [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt)

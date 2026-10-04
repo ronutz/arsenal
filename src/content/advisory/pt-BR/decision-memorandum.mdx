@@ -1,0 +1,138 @@
+---
+slug: decision-memorandum
+title: "Memorando de decisão de exemplo: consolidar acesso remoto, segurança web e firewalls de agência numa única plataforma por assinatura"
+summary: "Um exemplo completo e fictício da análise por escrito que uma contratação de assessoria produz. A organização, os fornecedores, os números e os achados são inventados para mostrar a estrutura e o nível de detalhe; os títulos são os mesmos de toda contratação."
+decision: "Assinar ou não uma assinatura de três anos que substitui os concentradores de VPN de acesso remoto, o gateway de segurança web e os firewalls de sessenta agências pela plataforma em nuvem de um único fornecedor, conforme proposto."
+prepared: "Para o comitê diretor de tecnologia de uma seguradora fictícia de médio porte (4.200 funcionários, 60 agências, dois data centers)."
+status: "Exemplo fictício. Não é um documento de cliente."
+updated: "2026-10-03"
+---
+
+## 1. A pergunta executiva
+
+O comitê deve aprovar a proposta do Fornecedor A de consolidar o acesso remoto, a segurança web e os firewalls das sessenta agências na plataforma de segurança em nuvem do Fornecedor A, sob uma assinatura de três anos, com as primeiras agências migradas no próximo trimestre? A proposta chegou com um desconto de 22 por cento que expira no fim do trimestre, e é por isso que a pergunta está na mesa agora, e não no próximo ciclo orçamentário.
+
+A pergunta não é "a plataforma do Fornecedor A é boa". É se esta organização, com este parque, estas restrições e este time de operação, deve se comprometer com esta arquitetura, deste fornecedor, nestes termos, agora.
+
+## 2. Situação atual
+
+- Dois data centers, ativo e reserva, cada um com um par de firewalls do Fornecedor B, renovados há quatro anos e com suporte por mais três.
+- Acesso remoto por dois concentradores de VPN do Fornecedor B, licenciados para 2.500 usuários simultâneos, com média de 1.100 no pico diário desde que a política de retorno ao escritório se estabilizou.
+- Segurança web por um gateway local do Fornecedor C, com fim de suporte em catorze meses, configuração de proxy explícito distribuída a 3.900 notebooks gerenciados e uma lista de exceções que ninguém assume.
+- Sessenta agências, cada uma com um firewall pequeno do Fornecedor B, conectadas por MPLS aos dois data centers; onze agências têm também um link direto de internet, usado apenas para contingência.
+- Duas aplicações de processamento de sinistros e o sistema central de apólices só são alcançáveis de dentro da rede; o parceiro de integração do sistema de apólices se conecta por um túnel site a site terminado nos firewalls de data center.
+- Um time de redes de cinco pessoas, uma delas com a certificação da plataforma do Fornecedor B; o time de segurança, de três, opera o gateway web e a política de VPN.
+
+## 3. Premissas
+
+Declaradas para que cada uma possa ser questionada. As marcadas como "não verificada" não tiveram evidência disponível durante a contratação.
+
+1. O pico de usuários remotos simultâneos não passará de 1.500 ao longo do prazo. Baseada em doze meses de estatísticas dos concentradores; não verificada contra a aquisição planejada de uma corretora de 300 pessoas.
+2. O parceiro de integração do sistema de apólices consegue mover o túnel para um novo ponto de terminação dentro da janela de migração. Não verificada; o parceiro não foi consultado.
+3. Os links de internet das agências podem ser ampliados para carregar todo o tráfego da agência. Verificada para 49 agências; onze estão em contratos que não permitem ampliação antes do nono mês.
+4. O desconto de 22 por cento é a posição de fim de trimestre do fornecedor, e não um piso. Suposta pelo momento; não testada.
+5. A organização manterá os firewalls de data center do Fornecedor B durante o prazo. Afirmada pela proposta; coerente com o contrato de suporte.
+
+## 4. Evidências examinadas
+
+- A proposta do Fornecedor A (versão 3), o diagrama de arquitetura de referência, a descrição do serviço e o anexo de níveis de serviço.
+- Doze meses de estatísticas dos concentradores e do gateway web, exportadas pelo time de segurança.
+- Os contratos de MPLS e de link de internet das sessenta agências.
+- A base de regras dos firewalls de data center (2.140 regras), revisada em busca de regras que referenciem sub-redes de agência ou os pools de VPN.
+- Entrevistas com o líder de redes, o líder de segurança, o responsável pela operação de sinistros e o dono da aplicação do sistema de apólices.
+- A documentação publicada pelo Fornecedor A sobre o conector de agência, a integração de identidade e a exportação de logs, lida nas versões atuais.
+- Uma sessão técnica de duas horas com o engenheiro do Fornecedor A, com as perguntas da seção 14 enviadas antes.
+
+## 5. Restrições
+
+- O fim de suporte do gateway web em catorze meses impõe um prazo real a um terço da decisão; nada impõe prazo comparável aos outros dois terços.
+- A orientação do regulador sobre terceirização exige um plano de saída documentado para qualquer serviço em nuvem que processe dados de clientes, e os dados do sistema de apólices transitariam pela plataforma.
+- O time não consegue operar duas arquiteturas de acesso remoto por mais de um trimestre sem uma pessoa a mais; a direção de operações descartou uma sexta contratação este ano.
+- O congelamento de mudanças em torno da temporada de renovações de fim de ano bloqueia migrações de agência por sete semanas.
+
+## 6. Opções
+
+**Opção 1. Aprovar a proposta como submetida.** As três funções passam ao Fornecedor A; as agências migram a dez por mês depois de um piloto com duas; os concentradores e o gateway web são desativados até o oitavo mês.
+
+**Opção 2. Aprovar em duas etapas.** Mover agora a segurança web e o acesso remoto, que o prazo de fim de suporte e as estatísticas de uso justificam; adiar os firewalls de agência para uma decisão no nono mês, quando os onze contratos restritos permitirem a ampliação e as duas primeiras funções tiverem rodado em produção por dois trimestres.
+
+**Opção 3. Substituir por equivalente.** Renovar o gateway web com a edição em nuvem do Fornecedor C, manter os concentradores e os firewalls de agência, e revisitar a consolidação na renovação dos firewalls de data center, em três anos.
+
+**Opção 4. Conduzir uma seleção competitiva.** Recusar o desconto de fim de trimestre, escrever os requisitos da seção 14 num pedido de proposta e selecionar entre o Fornecedor A, a edição em nuvem do Fornecedor C e mais um fornecedor em quatro meses.
+
+## 7. Compromissos
+
+| | Opção 1: como submetida | Opção 2: duas etapas | Opção 3: equivalente | Opção 4: seleção competitiva |
+|---|---|---|---|---|
+| Cumpre o prazo do gateway web | Sim | Sim | Sim | Só se a seleção fechar em quatro meses |
+| Carga operacional sobre um time de oito | A mais alta: três migrações em paralelo | Duas migrações, depois uma | A mais baixa | A mais baixa agora, a mais alta depois |
+| Reversibilidade | Baixa depois do quarto mês | Média: a decisão das agências fica aberta | Alta | Alta |
+| Posição comercial | Desconto capturado, alavancagem gasta | Desconto provavelmente perdido no terço das agências | Sem mudança | A mais forte, ao custo de tempo |
+| Dependência de um fornecedor | Três funções | Duas funções, depois possivelmente três | Nenhuma acrescentada | Decidida com evidência |
+| Ônus do plano de saída | Um plano, três funções | Um plano, crescido em etapas | Nenhum novo | Um plano, escrito antes da assinatura |
+
+## 8. Riscos
+
+1. **A contingência das agências passa a ter caminho único.** A proposta aposenta o MPLS em cada agência assim que o conector entra. Onze agências passariam a depender de um único link de internet com contrato que não pode ser ampliado antes do nono mês. Probabilidade alta se a Opção 1 seguir o cronograma; o impacto é uma agência fora do ar enquanto durar uma falha de link.
+2. **O parceiro de integração não consegue mover a tempo.** O túnel do parceiro do sistema de apólices termina em firewalls que a proposta não toca, mas o desenho de roteamento da proposta manda o tráfego do parceiro pela plataforma nova. Probabilidade desconhecida (premissa 2); o impacto é a emissão de apólices parar.
+3. **Lacunas de log durante a sobreposição.** A exportação de logs do Fornecedor A está documentada com intervalo de entrega de quinze minutos; as detecções atuais do time de segurança pressupõem logs do gateway web quase em tempo real. Probabilidade certa durante o período de sobreposição; o impacto é um ponto cego de detecção de até quinze minutos.
+4. **Capacidade do time.** Três migrações em paralelo com oito pessoas e um congelamento de sete semanas. Probabilidade alta; o impacto é atraso de cronograma, que também empurra a migração do gateway web para perto do seu prazo.
+5. **Aprisionamento comercial.** Um prazo de três anos em três funções elimina os dois próximos momentos de negociação. Não é um risco técnico, mas o comitê pediu que fosse declarado.
+
+## 9. Dependências
+
+- O provedor de identidade precisa publicar a associação a grupos para o Fornecedor A antes de qualquer usuário migrar; o time de identidade tem dois sprints de fila.
+- Onze contratos de internet de agência (premissa 3).
+- O processo de mudança do parceiro de integração (premissa 2).
+- O modelo de plano de saída do regulador, que o time de conformidade ainda não aplicou a uma plataforma de segurança.
+
+## 10. Considerações de custo e de operação
+
+A proposta compara a assinatura de três anos com o custo de capital de substituir o gateway web e os firewalls de agência, e a comparação é justa até onde vai. Ela deixa de fora três itens que o comitê deve somar antes de comparar totais: as ampliações de internet das agências (49 links agora, onze depois), o período de sobreposição em que as duas arquiteturas rodam e as duas são pagas, e o treinamento de que o time precisa numa plataforma que nenhum deles operou. Ela também contabiliza a desativação dos concentradores como economia, embora essas licenças já estejam pagas pelo prazo.
+
+Operacionalmente, a plataforma leva a política de quatro consoles para um, o que o time de segurança quer. Também leva a resolução de problemas de conectividade de agência de um equipamento em que o time de redes consegue entrar para um conector cujos diagnósticos são os que o fornecedor expõe; o líder de redes classificou isso como a mudança que mais o preocupa, e é uma preocupação razoável.
+
+## 11. Incógnitas
+
+- Se a aquisição da corretora prossegue, e quando (premissa 1).
+- Se o Fornecedor A manterá o desconto para uma aprovação em duas etapas (premissa 4).
+- A latência real do caminho pelo conector de agência para as duas aplicações de sinistros, que nenhum teste mediu.
+- Se a edição em nuvem do Fornecedor C pode ser contratada como ponte de um ano, o que mudaria a economia da Opção 3.
+
+## 12. Recomendação, ou as condições para prosseguir
+
+O comitê não deve aprovar a proposta como submetida. Deve aprovar a Opção 2, movendo agora a segurança web e o acesso remoto, sujeita a quatro condições, e adiar a decisão das agências para o nono mês, com a evidência listada abaixo.
+
+Condições para a primeira etapa:
+
+1. O parceiro de integração confirma por escrito que o túnel dele não é afetado pela primeira etapa, ou existe uma terminação alternativa testada antes do piloto.
+2. O time de segurança aceita por escrito o intervalo de quinze minutos dos logs, ou o Fornecedor A documenta uma exportação mais rápida, antes de o gateway web ser desligado.
+3. A integração de identidade é testada com as duas aplicações de sinistros no piloto, com a latência medida e registrada.
+4. O plano de saída é escrito e revisado pela conformidade antes da assinatura, não depois.
+
+Evidência exigida para a decisão das agências no nono mês: dois trimestres de operação da primeira etapa, a latência medida do conector, os onze contratos liberados, e um segundo preço de pelo menos um outro fornecedor para a função de agência isoladamente.
+
+Se o Fornecedor A retirar o desconto em vez de aceitar uma aprovação em duas etapas, isso é informação sobre o desconto, e a recomendação se mantém.
+
+## 13. Ações imediatas
+
+| Ação | Responsável | Prazo |
+|---|---|---|
+| Colocar a premissa 2 por escrito para o parceiro de integração | Dono da aplicação, sistema de apólices | Duas semanas |
+| Pedir a especificação da exportação de logs e uma opção de intervalo menor | Líder de segurança | Uma semana |
+| Pedir ao escritório de programas o cronograma da aquisição da corretora | Responsável pela operação de sinistros | Uma semana |
+| Pedir ao Fornecedor A a posição comercial para duas etapas, por escrito | Compras | Uma semana |
+| Iniciar o modelo de plano de saída com a conformidade | Líder de redes | Antes do piloto |
+
+## 14. Perguntas para o fornecedor
+
+Enviadas antes da sessão técnica; as respostas recebidas estão resumidas entre colchetes, e as abertas estão marcadas.
+
+1. Qual é o comportamento documentado de contingência do conector de agência quando o único link de internet falha, e qual é o tempo medido de recuperação? [Respondida: sem contingência local sem um segundo link. Aberta: o tempo de recuperação.]
+2. Com que intervalo os logs de web e de acesso remoto são entregues à plataforma de logs do cliente, e ele pode ser reduzido? [Respondida: quinze minutos. Aberta: um intervalo menor.]
+3. Que atributos de identidade precisam estar publicados antes da adesão, e o que acontece com um usuário cuja associação a grupos muda no meio da sessão? [Respondida.]
+4. Onde, geograficamente, o tráfego do cliente é inspecionado, e a inspeção pode ser fixada numa região por razões regulatórias? [Respondida: fixação disponível para duas das três funções. Aberta: a terceira.]
+5. O que o cliente recebe no encerramento, em que formato e em quantos dias? [Aberta.]
+6. A função de agência pode ser contratada separadamente, mais tarde, ao mesmo preço unitário? [Aberta; levada a compras.]
+7. Quais diagnósticos do conector de agência ficam disponíveis aos engenheiros do próprio cliente, e quais só ao fornecedor? [Respondida em parte; lista por escrito solicitada.]
+8. Qual é o limite publicado do fornecedor de usuários simultâneos de acesso remoto por tenant, e qual é o prazo para ampliá-lo? [Respondida.]

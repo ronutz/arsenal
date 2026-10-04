@@ -739,6 +739,16 @@
   padding: 0.15rem 0.4rem;
   border-radius: var(--radius-sm);
   color: var(--accent-hover);
+  /* No programming ligatures: an article about == and != must show == and !=,
+     not a long bar and a not-equal sign (the tool pages already do this). */
+  font-variant-ligatures: none;
+  /* An inline path or command with no spaces, such as
+     /var/ilx/workspaces/<partition>/<workspace_name>/, is one unbreakable word
+     to the browser and ran 91 px past a 390 px viewport, scrolling the whole
+     page sideways (iRules LX article, found 2026-10-04). Let it break anywhere
+     it must. Code blocks are unaffected: inside a pre, white-space: pre keeps
+     every line whole and the block scrolls on its own. */
+  overflow-wrap: anywhere;
 }
 .article-body a {
   color: var(--accent-primary);
@@ -768,6 +778,42 @@
 }
 .article-body td {
   color: var(--text-secondary);
+}
+/* On a phone, a table wider than the column scrolls inside its own box instead of widening the
+   page. Added 2026-10-03 after measuring 390 px viewports: the new ASCII article reached 580 px,
+   and existing articles 396 to 417 px (bigip-21x-whats-new, fortigate-authentication-and-fsso,
+   fortigate-cloud-deployments-and-fortisase). Desktop layout is unchanged. */
+@media (max-width: 720px) {
+  .article-body table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+}
+/* Code blocks in Learn articles and tool docs (fenced Markdown). One panel that
+   scrolls sideways on its own, so a long line never widens the page on a phone;
+   the inline-code chip styling above is reset inside the block. Added
+   2026-10-03: until then blocks had no rule, rendered as a stack of chips, and
+   pushed pages up to 806 px wide at a 390 px viewport. */
+.article-body pre {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  max-width: 100%;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  tab-size: 4;
+}
+.article-body pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  color: var(--text-primary);
+  white-space: pre;
 }
 
 /* --- Read-next related articles --- */
@@ -977,11 +1023,28 @@
   gap: 0.25rem;
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-md);
+  /* A rail down the left edge in the kind's hue (set per kind below), so a list
+     of hits can be told apart by colour while scanning the titles, before the
+     badge text is read. Transparent until a kind modifier colours it. */
+  border-left: 3px solid transparent;
   transition: background 0.1s ease;
 }
 .search-result:hover {
   background: var(--surface-base);
 }
+/* ---- ONE HUE PER RESULT KIND (PRIME 2026-10-04) ------------------------------
+   Tools, articles, the user guide and other pages each take one colour, and the
+   same colour is used in three places so they read as one system: the rail on
+   the result row, the filled badge on the row, and the filter pill above the
+   list. The hues are existing theme tokens, so every theme keeps its own
+   palette: the primary accent for tools (the colour tools already carry across
+   the site), the success green for articles, the warning amber for the guide,
+   and the neutral slate for everything else. The four stay distinct in every
+   theme because each theme defines them as four separate tokens. */
+.search-result--tool { border-left-color: var(--accent-primary); }
+.search-result--article { border-left-color: var(--color-success); }
+.search-result--guide { border-left-color: var(--color-warning); }
+.search-result--page { border-left-color: var(--color-neutral); }
 .search-result-title {
   font-weight: 600;
   color: var(--text-primary);
@@ -997,8 +1060,9 @@
   color: var(--accent-primary);
   font-weight: 600;
 }
-/* Result type badge (TOOL / ARTICLE / PAGE): a leading indicator. Results are
-   grouped tools -> articles -> pages in the component; the badge names the type. */
+/* Result type badge (TOOL / ARTICLE / GUIDE / PAGE): a filled pill at the head
+   of each row, in the kind's hue (tinted fill, coloured text and border). Results
+   keep Pagefind's relevance order; the pill and the rail name the type. */
 .search-result-head {
   display: flex;
   align-items: baseline;
@@ -1010,27 +1074,36 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 0.1rem 0.4rem;
-  border-radius: var(--radius-sm, 4px);
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
   border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
   color: var(--text-secondary);
   line-height: 1.4;
   white-space: nowrap;
 }
+/* The four kinds: the same tokens as the rails above and the filter pills
+   below. The fill is the hue at low opacity so it holds on every theme ground;
+   the text is the hue itself, which every theme defines with enough contrast
+   against its own surfaces. */
 .search-result-kind--tool {
   color: var(--accent-primary);
-  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  border-color: color-mix(in srgb, var(--accent-primary) 50%, transparent);
+  background: color-mix(in srgb, var(--accent-primary) 16%, transparent);
 }
 .search-result-kind--article {
-  color: var(--text-secondary);
+  color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 50%, transparent);
+  background: color-mix(in srgb, var(--color-success) 16%, transparent);
 }
 .search-result-kind--guide {
-  color: var(--color-warning, #f59e0b);
-  border-color: color-mix(in srgb, var(--color-warning, #f59e0b) 45%, transparent);
+  color: var(--color-warning);
+  border-color: color-mix(in srgb, var(--color-warning) 50%, transparent);
+  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
 }
 .search-result-kind--page {
-  color: var(--text-secondary);
-  opacity: 0.8;
+  color: var(--color-neutral);
+  border-color: color-mix(in srgb, var(--color-neutral) 50%, transparent);
+  background: color-mix(in srgb, var(--color-neutral) 16%, transparent);
 }
 
 /* ---- Type filter pills (include/exclude Tools / Articles / User Guide / Pages)
@@ -1063,11 +1136,29 @@
 .search-filter:hover {
   opacity: 0.85;
 }
+/* Each filter pill carries its kind's hue in a custom property (--kind-hue) set
+   by the four modifiers below, so one set of rules colours the dot, the active
+   border and fill, and the count. The hue tokens are the same four the result
+   rails and badges use, so a reader who switches "Articles" off sees the green
+   pill dim and the green rows disappear together. */
+.search-filter--tool { --kind-hue: var(--accent-primary); }
+.search-filter--article { --kind-hue: var(--color-success); }
+.search-filter--guide { --kind-hue: var(--color-warning); }
+.search-filter--page { --kind-hue: var(--color-neutral); }
+/* The dot: a small filled circle in the kind's hue, visible whether the pill is
+   on or off, so the colour key stays legible even for an excluded kind. */
+.search-kind-dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--kind-hue, var(--text-secondary));
+}
 .search-filter--active {
   opacity: 1;
   color: var(--text-primary);
-  border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent);
-  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  border-color: color-mix(in srgb, var(--kind-hue, var(--accent-primary)) 55%, transparent);
+  background: color-mix(in srgb, var(--kind-hue, var(--accent-primary)) 12%, transparent);
 }
 .search-filter-count {
   font-size: 0.6875rem;
@@ -1081,8 +1172,20 @@
   background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
 }
 .search-filter--active .search-filter-count {
-  color: var(--accent-primary);
-  background: color-mix(in srgb, var(--accent-primary) 18%, transparent);
+  color: var(--kind-hue, var(--accent-primary));
+  background: color-mix(in srgb, var(--kind-hue, var(--accent-primary)) 18%, transparent);
+}
+
+/* The pricing-basis line under the three ways to engage (advisory, 2026-10-04):
+   an advisory-note with air above it, so it reads as the footnote to the three
+   cards rather than as part of the third. The sections and cards that carry a
+   link anchor get a scroll margin, so a heading reached by link is not hidden
+   under the sticky header. */
+.advisory-layers-basis { margin-top: 1.25rem; }
+#shapes, #what-you-receive, #ways-to-engage, #independence, #not-provided,
+#implementation, #how-an-engagement-runs, #how-this-is-contracted,
+#independent-decision-review, #executive-technical-advisory, #retained-technical-counsel {
+  scroll-margin-top: 5rem;
 }
 
 /* ============================================================================
@@ -4662,7 +4765,10 @@ a.tools-card:hover {
   text-decoration: none;
 }
 .footer-contribute-link:hover { color: var(--text-secondary); text-decoration: underline; }
-.footer-sep { color: var(--border-strong); margin: 0 0.5rem; }
+/* inline-block: an atomic inline gives the line a place to wrap on each side of
+   the dot, so the link row wraps between links at phone width instead of
+   pushing every page 80 px wider than a 390 px screen (fixed 2026-10-03). */
+.footer-sep { color: var(--border-strong); margin: 0 0.5rem; display: inline-block; }
 /* QUIET TRAILING BLOCK - the machine row sits with the build stamp at the very
    end of the footer: pushed apart from the human links above (margin-top) and
    sized + dimmed to match .footer-modified (0.72rem, tertiary, ~0.55 opacity),
@@ -7250,6 +7356,20 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
   }
   .stat-sep {
     height: 2.5rem;
+  }
+  /* A band with more than two figures (the Red Education profile carries four)
+     cannot sit on one 390 px line: four figures and three rules measured 414 px
+     in a 351 px container and scrolled the page sideways (found 2026-10-04).
+     Let the figures wrap onto a second line, and drop the rules in that case,
+     because a rule that lands at the start of a line separates nothing. The
+     two-figure band on the home page is unaffected: it fits, so it never wraps,
+     and its single rule stays. */
+  .stats-band-inner {
+    flex-wrap: wrap;
+    row-gap: 1.25rem;
+  }
+  .stats-band-inner:has(.stat:nth-of-type(5)) .stat-sep {
+    display: none;
   }
 }
 
@@ -17553,6 +17673,81 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 /* The Copy button under the tmsh definitions sits apart from the code above it. */
 .tcl-copy-below { margin-top: 0.6rem; }
 
+/* ---------------------------------------------------------------------------
+   BIG-IP zero-or-one finder (idx-): look-up cards and the position translator.
+   Each base has one colour, used for its badge and the card's left edge:
+   0 cyan, 1 amber, from the right blue, both together cyan and amber,
+   zero as a value green, a count grey.
+   --------------------------------------------------------------------------- */
+/* Rules of thumb: a compact numbered list. */
+.idx-thumbs { padding-block: 0.6rem; }
+.idx-thumb-list { margin: 0.4rem 0 0; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.9rem; line-height: 1.55; color: var(--text-primary); }
+.idx-thumb-list code { font-family: var(--font-mono); font-size: 0.92em; }
+/* Narrow fields beside wider ones. */
+.idx-area-field { flex: 0 1 16rem; }
+.idx-n-field { flex: 0 1 9rem; }
+/* The base filter row reuses the preset row layout. */
+.idx-bases { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+/* Base badges. */
+.idx-badge { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; line-height: 1.2; padding: 0.1rem 0.45rem; border-radius: var(--radius-sm); border: 1px solid currentColor; white-space: nowrap; }
+.idx-badge-text { font-family: inherit; font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.idx-badge-zero { color: var(--accent-primary); }
+.idx-badge-one { color: var(--accent-amber); }
+.idx-badge-right { color: var(--color-info); }
+.idx-badge-mixed { color: var(--accent-primary); border-color: var(--accent-amber); }
+.idx-badge-value { color: var(--color-success); }
+.idx-badge-count { color: var(--text-secondary); }
+/* Results: a count line, then one group per part of the system. */
+.idx-results { display: flex; flex-direction: column; gap: 1.1rem; }
+.idx-showing { margin: 0; font-size: 0.85rem; }
+.idx-group { display: flex; flex-direction: column; gap: 0.6rem; }
+.idx-group > .jwt-panel-title { margin: 0; }
+.idx-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); gap: 0.75rem; }
+/* One entry. */
+.idx-card { display: flex; flex-direction: column; gap: 0.55rem; padding: 0.8rem 0.9rem; border: 1px solid var(--border-subtle); border-left-width: 3px; border-radius: var(--radius-md); background: var(--surface-base); min-width: 0; }
+.idx-card-zero { border-left-color: var(--accent-primary); }
+.idx-card-one { border-left-color: var(--accent-amber); }
+.idx-card-right { border-left-color: var(--color-info); }
+.idx-card-mixed { border-left-color: var(--accent-amber); }
+.idx-card-value { border-left-color: var(--color-success); }
+.idx-card-count { border-left-color: var(--border-strong); }
+.idx-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.idx-subject { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
+.idx-rule { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); }
+.idx-rule code, .idx-trap code, .idx-conflict code, .idx-facts code, .idx-example code { font-family: var(--font-mono); font-size: 0.9em; overflow-wrap: anywhere; }
+/* The facts: label and value pairs that wrap as a row. */
+.idx-facts { margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; font-size: 0.82rem; }
+.idx-facts > div { display: flex; gap: 0.35rem; align-items: baseline; min-width: 0; }
+.idx-facts dt { color: var(--text-secondary); font-weight: 600; }
+.idx-facts dd { margin: 0; color: var(--text-primary); }
+.idx-example { margin: 0; font-size: 0.84rem; line-height: 1.6; padding: 0.45rem 0.6rem; border-radius: var(--radius-sm); background: var(--surface-elevated); overflow-wrap: anywhere; }
+/* The trap (amber) and the disagreement between F5 pages (red). */
+.idx-trap, .idx-conflict { margin: 0; font-size: 0.86rem; line-height: 1.55; padding: 0.45rem 0.65rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+.idx-trap { border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent); background: color-mix(in srgb, var(--accent-amber) 8%, var(--surface-base)); }
+.idx-conflict { border-color: color-mix(in srgb, var(--color-danger) 45%, transparent); background: color-mix(in srgb, var(--color-danger) 7%, var(--surface-base)); }
+.idx-flag { font-weight: 700; margin-right: 0.3rem; }
+/* How sure, and the dated sources. */
+.idx-card-foot { display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.78rem; color: var(--text-secondary); border-top: 1px solid var(--border-subtle); padding-top: 0.45rem; }
+.idx-confidence { font-weight: 600; }
+.idx-confidence-verified { color: var(--color-success); }
+.idx-confidence-stated { color: var(--text-secondary); }
+.idx-confidence-example { color: var(--accent-amber); }
+.idx-confidence-conflict { color: var(--color-danger); }
+.idx-sources { margin: 0; padding-left: 1rem; display: flex; flex-direction: column; gap: 0.15rem; }
+.idx-sources a { color: var(--accent-primary); overflow-wrap: anywhere; }
+/* The translator's table. */
+.idx-rows td { line-height: 1.5; }
+.idx-form { display: block; font-size: 0.78rem; color: var(--text-secondary); }
+.idx-code { display: block; color: var(--text-primary); }
+.idx-kind { display: inline-block; margin-top: 0.25rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.idx-kind-right { color: var(--color-success); }
+.idx-kind-trap { color: var(--color-danger); }
+.idx-kind-other { color: var(--text-secondary); }
+.idx-row-right { background: transparent; }
+.idx-row-trap { background: color-mix(in srgb, var(--color-danger) 5%, transparent); }
+.idx-row-other { background: color-mix(in srgb, var(--text-secondary) 5%, transparent); }
+.idx-row-note { display: block; margin-top: 0.3rem; font-size: 0.78rem; line-height: 1.45; }
+
 /* The style checker: findings by line. */
 .tcl-findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
 .tcl-finding { padding: 0.65rem 0.8rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
@@ -17576,3 +17771,699 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 @media (prefers-reduced-motion: reduce) {
   .tcl-chip { transition: none; }
 }
+
+/* ===========================================================================
+   ASCII table explorer and Unicode inspector (AsciiTableTool,
+   UnicodeInspectorTool). Prefix: chr-. Built on the tcl- layout pieces
+   (toolbar, chips, cards, pairs, notes) and only the semantic tokens, so both
+   themes recolour it. Each kind of code has one colour, used for its glyph in
+   the headline, the grid and the list: controls blue, digits green, letters
+   cyan, punctuation and symbols amber, space and DEL grey.
+   =========================================================================== */
+
+/* Root: no programming ligatures, so == and != read as typed. */
+.chr-tool code, .chr-tool input, .chr-tool textarea { font-variant-ligatures: none; }
+
+/* Verdicts: the first line carries the finding. */
+.chr-verdict-title { font-weight: 600; }
+.chr-verdict code, .chr-prose code, .chr-note-line code { font-family: var(--font-mono); font-size: 0.92em; overflow-wrap: anywhere; }
+.chr-inline-btn { padding: 0.1rem 0.5rem; margin-left: 0.25rem; font-family: var(--font-mono); }
+.chr-link { color: var(--accent-primary); overflow-wrap: anywhere; }
+
+/* Colour by kind of code. */
+.chr-k-control { color: var(--color-info); }
+.chr-k-digit { color: var(--color-success); }
+.chr-k-upper, .chr-k-lower { color: var(--accent-primary); }
+.chr-k-punct { color: var(--accent-amber); }
+.chr-k-space, .chr-k-delete { color: var(--text-secondary); }
+
+/* The detail: a headline, then cards. */
+.chr-detail { display: flex; flex-direction: column; gap: 0.9rem; }
+.chr-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+.chr-hero-glyph { display: inline-grid; place-items: center; min-width: 4.2rem; height: 4.2rem; padding: 0 0.6rem; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-elevated); font-family: var(--font-mono); font-size: 2.1rem; font-weight: 700; line-height: 1; }
+.chr-hero-text { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.chr-hero-text p { margin: 0; }
+.chr-hero-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); }
+.chr-hero-name code { font-family: var(--font-mono); font-size: 0.9rem; overflow-wrap: anywhere; }
+/* Cards in the .tcl-two grid start at the top of their row instead of stretching. */
+.chr-cards { align-items: start; }
+/* In a card a long label such as "Unicode alias (controls have no name)" would take its whole
+   max-content width and squeeze the value to one letter per line; cap the label column. */
+.chr-cards .tcl-pairs { grid-template-columns: fit-content(45%) minmax(0, 1fr); }
+/* The ASCII detail has four or five cards of very different heights: they flow into up to three
+   balanced columns (at least 17rem each) instead of grid rows, so the tall Numbers card leaves no
+   empty space under its shorter neighbours; one column on a phone. This overrides the grid of
+   .tcl-two, which the element also carries. */
+.chr-flow { display: block; columns: 3 17rem; column-gap: 0.85rem; }
+.chr-flow > .tcl-card { break-inside: avoid; margin-bottom: 0.85rem; }
+.chr-flow > .tcl-card:last-child { margin-bottom: 0; }
+/* A muted help sentence on its own line under the value it explains. */
+.chr-help-line { display: block; margin-top: 0.15rem; }
+.chr-sub { margin: 0.8rem 0 0.4rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); }
+.chr-prose { margin: 0; font-size: 0.9rem; line-height: 1.6; color: var(--text-primary); }
+.chr-gap { margin-right: 0.45rem; font-family: var(--font-mono); }
+.chr-notes { margin-top: 0.6rem; }
+.chr-notes:empty { display: none; }
+
+/* Bit buttons: b7 to b1 in one row of seven equal columns, the column bits (b7 b6 b5) set apart
+   from the row bits by a dashed border. */
+.chr-bits { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.25rem; }
+.chr-bit { appearance: none; display: inline-flex; flex-direction: column; align-items: center; gap: 0.1rem; min-width: 0; padding: 0.3rem 0.1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-secondary); font: inherit; cursor: pointer; }
+.chr-bit-col { border-style: dashed; }
+.chr-bit-on { background: color-mix(in srgb, var(--accent-primary) 16%, var(--surface-base)); color: var(--text-primary); border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent); }
+.chr-bit:hover { border-color: var(--accent-primary); }
+.chr-bit:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.chr-bit-name { font-size: 0.65rem; letter-spacing: 0.05em; }
+.chr-bit-val { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; }
+.chr-bit-to { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-secondary); }
+
+/* White space marks. */
+.chr-ws-list { list-style: none; margin: 0 0 0.4rem; padding: 0; display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.86rem; }
+.chr-mark { display: inline-block; width: 1.2rem; font-weight: 700; }
+.chr-yes { color: var(--text-primary); }
+.chr-yes .chr-mark, td.chr-yes { color: var(--color-success); }
+.chr-no { color: var(--text-secondary); }
+
+/* How to write it. */
+.chr-write th { width: 1%; }
+/* An escape is short and must read as one token: never break it (a phone showed "\03" over "3"). */
+.chr-write td code { font-family: var(--font-mono); font-size: 0.95rem; white-space: nowrap; overflow-wrap: normal; }
+
+/* The grid: eight columns by sixteen rows, in its own scroller on a phone. The scrollers are
+   positioned so the screen-reader-only text inside their cells (position: absolute) is clipped
+   with them instead of widening the page (measured: 539 px at a 390 px viewport without it). */
+.chr-grid-wrap { overflow-x: auto; padding-bottom: 0.2rem; position: relative; }
+.chr-tool .tcl-table-wrap { position: relative; }
+.chr-grid { border-collapse: separate; border-spacing: 2px; margin: 0 auto; font-size: 0.8rem; }
+.chr-grid th { font-weight: 600; color: var(--text-secondary); text-align: center; vertical-align: middle; padding: 0.15rem 0.3rem; }
+.chr-grid-corner { font-size: 0.6rem; line-height: 1.3; }
+.chr-grid-corner span, .chr-grid th > .chr-grid-num, .chr-grid th > .chr-grid-bits { display: block; }
+.chr-grid-num { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-primary); }
+.chr-grid-bits { display: block; font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.chr-grid td { padding: 0; }
+.chr-cell { appearance: none; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 2.6rem; height: 2.6rem; padding: 0; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-base); font: inherit; cursor: pointer; }
+.chr-cell:hover { border-color: var(--accent-primary); }
+.chr-cell:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+.chr-cell[aria-pressed="true"] { background: color-mix(in srgb, var(--accent-primary) 22%, var(--surface-base)); border-color: var(--accent-primary); }
+.chr-cell-dim { opacity: 0.32; }
+.chr-cell-glyph { font-family: var(--font-mono); font-size: 1rem; line-height: 1.1; font-weight: 600; }
+.chr-k-control .chr-cell-glyph, .chr-k-space .chr-cell-glyph, .chr-k-delete .chr-cell-glyph { font-size: 0.62rem; letter-spacing: 0.02em; }
+.chr-cell-dec { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+/* The list view. */
+.chr-list td { font-variant-numeric: tabular-nums; }
+.chr-row-sel { background: color-mix(in srgb, var(--accent-primary) 10%, transparent); }
+.chr-row-btn { appearance: none; border: 0; background: none; padding: 0; color: var(--accent-primary); font: inherit; font-family: var(--font-mono); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.chr-row-btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* Text to codes: one cell per character, outside-ASCII ones marked. */
+.chr-text { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.6rem; }
+.chr-strip-wrap { overflow-x: auto; }
+.chr-strip { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 2px; }
+.chr-sc { display: inline-flex; flex-direction: column; align-items: center; min-width: 1.7rem; padding: 0.2rem 0.15rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-elevated); }
+.chr-sc-out { background: color-mix(in srgb, var(--accent-amber) 18%, var(--surface-elevated)); border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent); }
+.chr-sc-ch { font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.25; white-space: pre; color: var(--text-primary); }
+.chr-sc-code { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.chr-note-line { display: block; font-size: 0.82rem; }
+
+/* White space compared. */
+.chr-compare th, .chr-compare td { text-align: center; }
+.chr-compare tbody th { text-align: left; }
+.chr-compare td { font-weight: 700; }
+
+/* ---------------------------------------------------------------------------
+   Unicode inspector (uni-). Hidden characters are drawn as tags in the order
+   the text is stored: red for what changes meaning or order (bidirectional
+   controls, controls, unusual line breaks, surrogates, noncharacters, the
+   replacement character), amber for what imitates (invisible characters,
+   spaces, quotes, dashes, confusables, styled ASCII, private use, unassigned).
+   --------------------------------------------------------------------------- */
+.uni-tool .uni-report { display: flex; flex-direction: column; gap: 0.9rem; }
+.uni-style-field { flex: 0 1 14rem; }
+.uni-out { margin: 0.5rem 0 0; padding: 0.7rem 0.9rem; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow-x: auto; max-height: 18rem; font-size: 0.85rem; line-height: 1.55; }
+.uni-out code { font-family: var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-primary); }
+.uni-opts { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+
+/* The text in stored order: bidi-override so no control can reorder what is shown. */
+.uni-reveal { direction: ltr; unicode-bidi: bidi-override; font-family: var(--font-mono); font-size: 0.95rem; line-height: 2; padding: 0.6rem 0.8rem; background: var(--surface-elevated); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22rem; overflow: auto; color: var(--text-primary); }
+.uni-eol { color: var(--text-secondary); font-size: 0.75rem; }
+.uni-tag { display: inline-flex; align-items: baseline; gap: 0.2rem; margin: 0 0.1rem; padding: 0 0.3rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-base); color: var(--text-primary); line-height: 1.5; }
+.uni-tag:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 1px; }
+.uni-tag-ch { font-size: 1rem; }
+.uni-tag-cp { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.02em; color: var(--text-secondary); }
+
+/* Severity colours, shared by tags, finding notes and table rows. */
+.uni-tag-bidi, .uni-tag-control, .uni-tag-line-break, .uni-tag-surrogate, .uni-tag-noncharacter, .uni-tag-replacement { border-color: color-mix(in srgb, var(--color-danger) 60%, transparent); background: color-mix(in srgb, var(--color-danger) 12%, var(--surface-base)); }
+.uni-tag-invisible, .uni-tag-space, .uni-tag-quote, .uni-tag-dash, .uni-tag-confusable, .uni-tag-compat-ascii, .uni-tag-private-use, .uni-tag-unassigned { border-color: color-mix(in srgb, var(--accent-amber) 60%, transparent); background: color-mix(in srgb, var(--accent-amber) 12%, var(--surface-base)); }
+.uni-finding { border-left-width: 3px; }
+.uni-row-bidi, .uni-row-control, .uni-row-line-break, .uni-row-surrogate, .uni-row-noncharacter, .uni-row-replacement { background: color-mix(in srgb, var(--color-danger) 7%, transparent); }
+.uni-row-invisible, .uni-row-space, .uni-row-quote, .uni-row-dash, .uni-row-confusable, .uni-row-compat-ascii, .uni-row-private-use, .uni-row-unassigned { background: color-mix(in srgb, var(--accent-amber) 7%, transparent); }
+
+/* The table of code points. */
+.uni-rows-wrap { max-height: 26rem; overflow: auto; }
+.uni-rows td { font-variant-numeric: tabular-nums; }
+.uni-char { font-family: var(--font-mono); font-size: 1.05rem; }
+
+/* One code point: a larger glyph box for characters of any width. */
+.uni-hero-glyph { font-size: 1.9rem; min-width: 4.6rem; }
+
+/* Name search results. */
+.uni-hits { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+.uni-hit { display: grid; grid-template-columns: 2.4rem 6.2rem 1fr auto; align-items: center; gap: 0.6rem; padding: 0.35rem 0.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); background: var(--surface-base); min-width: 0; }
+.uni-hit-glyph { font-size: 1.3rem; text-align: center; }
+.uni-hit-cp { font-family: var(--font-mono); font-size: 0.85rem; }
+.uni-hit-name { font-size: 0.85rem; overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 480px) {
+  .uni-hit { grid-template-columns: 2rem 1fr auto; }
+  .uni-hit-cp { grid-column: 2; }
+  .uni-hit-name { grid-column: 1 / -1; }
+}
+
+/* Motion: nothing here animates. */
+@media (prefers-reduced-motion: reduce) {
+  .chr-cell, .chr-bit { transition: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Charset converter and mojibake fixer (cs-). It reuses the chr- and uni-
+   vocabulary (tags for controls and replacement characters, the stored-order
+   text box) and adds the comparison tables: the selected charset's row in the
+   accent colour, rows with characters a charset cannot hold or bytes it
+   replaced in amber, and the row a repair points at in green.
+   --------------------------------------------------------------------------- */
+.cs-tool .cs-report { display: flex; flex-direction: column; gap: 0.9rem; }
+/* Tables of bytes and readings: tabular figures, escapes never broken mid-token. */
+.cs-table td, .cs-table th { font-variant-numeric: tabular-nums; }
+.cs-table td code { font-family: var(--font-mono); white-space: nowrap; overflow-wrap: normal; }
+.cs-num { text-align: right; white-space: nowrap; }
+.cs-char { font-family: var(--font-mono); font-size: 1.05rem; }
+/* A reading of the bytes: one line per charset, wrapped anywhere so a long reading stays in its cell. */
+.cs-reading { font-family: var(--font-mono); overflow-wrap: anywhere; min-width: 12rem; }
+.cs-row-current { background: color-mix(in srgb, var(--accent-primary) 10%, transparent); }
+.cs-row-current > th { color: var(--text-primary); }
+.cs-row-missing { background: color-mix(in srgb, var(--accent-amber) 7%, transparent); }
+.cs-row-highlight { background: color-mix(in srgb, var(--color-success) 12%, transparent); }
+/* The decoded or repaired text, in stored order. */
+.cs-text { min-height: 2.4rem; }
+/* The most likely repair stands out from the other readings. */
+.cs-best { border-color: color-mix(in srgb, var(--color-success) 45%, var(--border-subtle)); }
+.cs-steps { margin: 0.6rem 0; padding-left: 1.3rem; font-size: 0.9rem; line-height: 1.55; color: var(--text-primary); }
+
+/* ===========================================================================
+   ADVISORY REVISION, 2026-10-03 (PRIME: implement the advisory review in full)
+   ---------------------------------------------------------------------------
+   Endorsement kinds, the advisory page's new sections (who it is for, the
+   engagement shapes, what you receive, the three layers, the evidence, the
+   public corpus, the professional-services boundary) and the example
+   decision memorandum page. Everything is built from existing tokens, and the
+   learn-card and vendor-note vocabularies are reused wherever a card is a card.
+   =========================================================================== */
+
+/* The kind-of-work badge on an endorsement card: neutral by default, one hue
+   per kind so a scan of the footer tells training from advisory at a glance.
+   Colours are the site's semantic tokens, never raw hex, so all themes agree. */
+.tm-kind {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-tertiary);
+  background: var(--surface-base);
+}
+.tm-kind--advisory { color: var(--accent-amber); border-color: var(--accent-amber); }
+.tm-kind--architecture { color: var(--accent-primary); border-color: var(--accent-primary); }
+.tm-kind--leadership { color: var(--text-secondary); border-color: var(--text-tertiary); }
+
+/* The one-line note under the kind chips: a card can carry several kinds. */
+.tm-kind-hint {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  max-width: 70ch;
+}
+
+/* "When this tends to be useful": five situations as a term-and-explanation
+   list, the same shape as the exclusions so the two read as one vocabulary. */
+.advisory-when {
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.advisory-when > li {
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  line-height: 1.6;
+}
+.advisory-when-term {
+  display: block;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+.advisory-when-body {
+  display: block;
+  color: var(--text-secondary);
+}
+
+/* The engagement shapes. Each card leads with the buyer's own question,
+   then what comes back, then the paragraph that only experience writes. */
+.advisory-shapes {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.advisory-shape {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+}
+.advisory-shape-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+.advisory-shape-row {
+  display: grid;
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
+  gap: 0.2rem 0.75rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+.advisory-shape-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding-top: 0.2rem;
+}
+.advisory-shape-question {
+  color: var(--text-primary);
+  font-style: italic;
+}
+.advisory-shape-output {
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+.advisory-shape-body {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* What you receive: the fixed structure of the memorandum as an ordered
+   list that wraps into columns on a wide screen and stacks on a phone. */
+.advisory-memo-outline {
+  margin: 1.25rem 0 0;
+  padding-left: 1.25rem;
+  columns: 2 16rem;
+  column-gap: 2rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+.advisory-memo-outline li { break-inside: avoid; }
+.advisory-note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+
+/* The three ways to engage, numbered because the order is the order of
+   commitment: one decision, then several, then a retained relationship. */
+.advisory-layers {
+  list-style: none;
+  counter-reset: layer;
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.advisory-layer {
+  counter-increment: layer;
+  position: relative;
+  padding: 1.25rem 1.4rem 1.25rem 3.4rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+}
+.advisory-layer::before {
+  content: counter(layer);
+  position: absolute;
+  left: 1.2rem;
+  top: 1.15rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-amber);
+  border: 1px solid var(--accent-amber);
+}
+.advisory-layer-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.advisory-layer-body {
+  margin: 0;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Evidence: each entry is a one-line framing of the engagement, set in the
+   mono eyebrow style, over the verbatim quotation in the featured-quote style. */
+.advisory-evidence {
+  list-style: none;
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+.advisory-evidence-frame {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--text-tertiary);
+  margin: 0 0 0.25rem;
+}
+.advisory-evidence .about-featured-quote { margin-top: 0; }
+
+/* The public corpus as due diligence: four doors in one row, wrapping. */
+.advisory-corpus-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+/* The professional-services boundary sits inside the scope section as its
+   own card, amber-edged like the contracting card, because both state how the
+   commercial side works rather than what the advice is. */
+.advisory-ps {
+  margin-top: 2rem;
+}
+.advisory-ps .vendor-note-body { margin-bottom: 0.75rem; }
+.advisory-ps-link {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--redu-brand);
+  color: var(--text-primary);
+}
+
+/* The speaking cross-link under the call to action: one quiet line. */
+.advisory-speaking-note {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+}
+
+/* The example memorandum page: a document, so the article body styles carry
+   the headings and tables; this block only frames it. */
+.memo-notice {
+  margin-bottom: 2rem;
+}
+.memo-document {
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-base);
+}
+.memo-document .article-body > h2:first-child { margin-top: 0; }
+.memo-meta {
+  display: grid;
+  grid-template-columns: fit-content(40%) minmax(0, 1fr);
+  gap: 0.3rem 1rem;
+  margin: 0 0 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.memo-meta dt {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding-top: 0.2rem;
+}
+.memo-meta dd {
+  margin: 0;
+  color: var(--text-secondary);
+}
+.memo-foot {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+}
+
+/* The seventh engagement shape would otherwise sit alone in the last row of a
+   three-column grid; when the last card starts a row on its own it spans the
+   row, so the grid ends square. */
+.advisory-shape:last-child:nth-child(3n + 1) {
+  grid-column: 1 / -1;
+}
+
+/* The speaking cross-link reads as a link, not as the end of the sentence. */
+.advisory-speaking-note a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* ==========================================================================
+   THE EARLIER SITES, /about/earlier-sites (PRIME 2026-10-03).
+   Reuses the era-page vocabulary (era-hero, era-container, era-section-num,
+   era-section-title) so the page reads as a sibling of the three era pages,
+   and adds only what a catalogue needs: a labelled four-field block per era,
+   a collapsed inventory with a scrollable table, the "carried through" list
+   and the sources paragraph. Tokens only; no new colours.
+   ========================================================================== */
+/* Provenance card under the age line: the existing vendor-note surface, with a heading inside. */
+.es-provenance { margin-top: 1.5rem; }
+.es-h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+}
+/* The eras: the same number-plus-content grid as the era sections. */
+.es-eras { display: grid; gap: 3rem; }
+.es-era {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.es-era-content { min-width: 0; }
+.es-era-years {
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 0.35rem;
+}
+/* Four labelled paragraphs: label in small caps above, body below; one column at any width. */
+.es-fields { display: grid; gap: 1rem; margin: 1rem 0 0; }
+.es-field { margin: 0; }
+.es-field-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin: 0 0 0.25rem;
+}
+.es-field-body {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+/* The inventory, collapsed by default. */
+.es-inventory {
+  margin-top: 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-elevated);
+}
+.es-inventory-summary {
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+  list-style: none;
+}
+.es-inventory-summary::-webkit-details-marker { display: none; }
+.es-inventory-summary::before {
+  content: "\25B8";
+  color: var(--accent-primary);
+  margin-right: 0.5rem;
+}
+.es-inventory[open] > .es-inventory-summary::before { content: "\25BE"; }
+.es-inventory-title { font-weight: 600; color: var(--text-primary); }
+.es-inventory-count { font-size: 0.85rem; color: var(--text-secondary); }
+/* The table scrolls sideways inside its own box; the page never does. */
+.es-table-wrap { overflow-x: auto; padding: 0 1rem 1rem; }
+.es-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.es-table th,
+.es-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.4rem 0.6rem 0.4rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.es-table th {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.es-cell-file { white-space: nowrap; font-size: 0.8rem; }
+.es-cell-title { color: var(--text-secondary); min-width: 14rem; }
+.es-cell-date { white-space: nowrap; font-size: 0.8rem; }
+.es-cell-link a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  white-space: nowrap;
+}
+/* What carried through: five short paragraphs as a list without bullets, then the live links. */
+.es-carried {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 1rem;
+}
+.es-carried-item {
+  color: var(--text-secondary);
+  line-height: 1.65;
+  padding-left: 1rem;
+  border-left: 2px solid var(--accent-primary);
+}
+.es-links-title {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.es-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+}
+.es-links a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.es-sources { color: var(--text-secondary); line-height: 1.65; margin: 0; }
+@media (max-width: 640px) {
+  .es-era { grid-template-columns: 1fr; gap: 0.5rem; }
+}
+/* An era section's optional closing link (EraPage, 2026-10-03). */
+.era-section-link { margin: 0.75rem 0 0; }
+.era-section-link a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* ==========================================================================
+   COMPACT VENDOR MARKS ON CARDS AND TIMELINE ROWS (PRIME 2026-10-04).
+   The mark beside a platform card, a timeline entry or a Red Education card:
+   no printed caption (it lives in the alt text), a smaller plate, no bottom
+   margin so the card's own rhythm holds. The plate stays white on purpose
+   (see VendorMark.tsx): the artwork is never recoloured for the theme.
+   ========================================================================== */
+.vendor-mark--compact { margin: 0; gap: 0; }
+.vendor-mark--compact .vendor-mark-plate { padding: 0.3rem 0.5rem; border-radius: 5px; }
+.vendor-mark--compact .vendor-mark-img { max-height: 2rem; max-width: 7.5rem; }
+/* A row of compact marks (the multi-vendor timeline entry). */
+.mark-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0.25rem; }
+/* The platform cards on /about and /training carry the mark above the name. */
+.about-platform .vendor-mark--compact,
+.platform-card .vendor-mark--compact { margin-bottom: 0.6rem; }
+/* The timeline entry: the mark sits between the years and the place. */
+.about-era .vendor-mark--compact { margin: 0.25rem 0 0.4rem; }
+/* The Red Education profile hero: the mark under the title, left-aligned with it. */
+.redu-hero .vendor-mark { margin: 1rem 0 0; }
+/* Cards that mention Red Education (home map, training CTA, advisory contracting note). */
+.learn-portal-card .vendor-mark--compact { margin: 0 0 0.6rem; }
+.training-cta .vendor-mark--compact { margin: 0.5rem 0 0.75rem; }
+.vendor-note .vendor-mark--compact { margin: 0 0 0.75rem; }
+
+/* ==========================================================================
+   CHMOD PERMISSION CALCULATOR (2026-10-04). Reuses the cidr/jwt scaffolding;
+   only the headline, the clickable bit grid, the special-bit buttons and the
+   command rows are new.
+   ========================================================================== */
+.chmod-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) { .chmod-fields { grid-template-columns: 1fr; } }
+.chmod-headline { text-align: left; }
+.chmod-big { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem 1.5rem; }
+.chmod-big-octal { font-size: 2.4rem; font-weight: 700; color: var(--accent-primary); letter-spacing: 0.04em; }
+.chmod-big-ls { font-size: 1.4rem; color: var(--text-primary); letter-spacing: 0.08em; }
+/* A bit cell: a square button, lit when the bit is set. */
+.chmod-bit {
+  appearance: none; cursor: pointer; font: inherit; font-family: var(--font-mono, ui-monospace, monospace);
+  width: 2.2rem; height: 2.2rem; border-radius: 6px;
+  border: 1px solid var(--border-subtle); background: var(--surface-elevated); color: var(--text-tertiary);
+}
+.chmod-bit--on { background: var(--accent-primary); color: var(--canvas-primary); border-color: var(--accent-primary); font-weight: 700; }
+.chmod-bit:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+.chmod-grid td, .chmod-grid th { vertical-align: middle; }
+.chmod-reading { color: var(--text-secondary); font-size: 0.9rem; min-width: 14rem; }
+/* The three special bits as toggles with their meaning. */
+.chmod-specials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem; }
+@media (max-width: 720px) { .chmod-specials { grid-template-columns: 1fr; } }
+.chmod-special {
+  appearance: none; cursor: pointer; font: inherit; text-align: left;
+  display: grid; grid-template-columns: auto auto; gap: 0.15rem 0.6rem; align-items: baseline;
+  padding: 0.7rem 0.85rem; border-radius: 8px;
+  border: 1px solid var(--border-subtle); background: var(--surface-elevated); color: var(--text-secondary);
+}
+.chmod-special--on { border-color: var(--accent-primary); box-shadow: inset 0 0 0 1px var(--accent-primary); color: var(--text-primary); }
+.chmod-special-name { font-weight: 700; }
+.chmod-special-value { font-size: 0.8rem; color: var(--text-tertiary); }
+.chmod-special-meaning { grid-column: 1 / -1; font-size: 0.85rem; line-height: 1.45; }
+.chmod-special:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+/* Flags reuse the tcl-finding rows; commands are label, code, copy. */
+.chmod-flags .tcl-finding-msg { display: inline; }
+.chmod-commands { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.chmod-command { display: grid; grid-template-columns: 1fr; gap: 0.3rem; }
+@media (min-width: 720px) { .chmod-command { grid-template-columns: 11rem 1fr auto; align-items: center; gap: 0.75rem; } }
+.chmod-command-label { font-size: 0.8rem; color: var(--text-secondary); }
+.chmod-command-code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.9rem; color: var(--text-primary); overflow-wrap: anywhere; }

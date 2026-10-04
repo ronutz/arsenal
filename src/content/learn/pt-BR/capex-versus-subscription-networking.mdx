@@ -1,0 +1,63 @@
+---
+slug: capex-versus-subscription-networking
+title: "CapEx versus rede por assinatura: o que a comparação costuma deixar de fora"
+summary: "A comparação que um fornecedor traz põe o custo de capital do equipamento contra uma assinatura mensal e chega à resposta que o fornecedor vende. Os dois modelos são legítimos, e a comparação honesta entre eles é mais longa do que um slide: os itens que cada lado omite, o crescimento que faz um preço por usuário se mover, o período de sobreposição pago duas vezes, as licenças já pagas, o que a organização possui no fim de cada prazo, e as três perguntas que um comitê financeiro deve fazer antes de acreditar em qualquer total."
+concepts: ["capex", "opex", "subscription", "tco", "procurement", "decision", "licensing"]
+relatedTools: ["f5-bigip-license-explainer", "f5-release-cadence-calendar", "f5-service-check-date", "cert-renewal-planner"]
+relatedArticles: ["when-vendor-consolidation-reduces-cost", "twenty-questions-before-signing-a-sase-proposal", "evaluating-competing-firewall-proposals", "bigip-license-file-anatomy"]
+category: operations
+order: 324
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Dois modelos legítimos, um slide inclinado
+
+Comprar equipamento e operá-lo, ou pagar por um serviço conforme o uso, são duas formas razoáveis de adquirir uma capacidade de rede. O problema não são os modelos; é a comparação, em geral preparada pela parte que vende um deles. O slide de um fornecedor põe o preço de tabela do hardware contra a assinatura, esquece os itens que favorecem o outro lado, e chega a um total. A correção não é preferir o outro modelo. É reconstruir a comparação de modo que as duas colunas contenham as mesmas coisas.
+
+## O que a coluna de capital costuma deixar de fora
+
+- **Suporte e assinaturas de software** do equipamento, que são um custo recorrente dentro do modelo de capital e muitas vezes são cotados só para o primeiro ano.
+- **A renovação do parque**, que chega esteja ou não na planilha. Uma comparação de cinco anos com equipamento de cinco anos de vida tem um precipício no fim que a coluna da assinatura não tem.
+- **O esforço de operação**: atualizações, correções, renovações de certificado, gestão de capacidade, a pessoa que entende a plataforma. O [calendário de cadência de versões](/tools/f5-release-cadence-calendar) e a [verificação de datas de serviço](/tools/f5-service-check-date) existem porque esse trabalho é real e tem agenda.
+- **Peças sobressalentes, energia, espaço em rack e o segundo site**, que não são grandes individualmente e nunca são zero.
+
+## O que a coluna da assinatura costuma deixar de fora
+
+- **O crescimento.** Um preço por usuário, por dispositivo, por gigabit ou por site se move com o negócio, e a proposta está precificada na contagem de hoje. Pergunte quanto é a fatura no crescimento que o negócio planeja, não no que o fornecedor presume.
+- **O reajuste de renovação.** O desconto que tornou o primeiro ano atraente não existe no quarto, e o reajuste está num documento que o fornecedor controla, a menos que esteja no contrato.
+- **O período de sobreposição**, em que o antigo e o novo estão rodando e os dois são pagos. Raramente dura menos de um trimestre e quase nunca está na comparação.
+- **O que já foi pago.** Licenças e suporte de equipamento existente, pré-pagos pelo prazo, não viram economia quando o equipamento é desligado antes; a proposta que os contabiliza como economia está contando dinheiro que foi gasto de qualquer jeito.
+- **A saída.** Deixar uma assinatura no fim do prazo significa migrar de novo. O custo dessa migração pertence à coluna da assinatura, porque a coluna de capital já pagou o equivalente dela na renovação do parque.
+- **As mudanças de conectividade** que o novo modelo exige: as ampliações de internet das agências, o segundo link, a banda que o caminho de inspeção consome.
+
+## O que nenhuma das colunas mostra
+
+Algumas consequências da escolha não são custos e ainda assim devem estar na planilha, porque são o que o comitê de fato está decidindo.
+
+**A posse no fim.** No fim do prazo de capital a organização possui equipamento que pode continuar operando, vender ou realocar; no fim de uma assinatura ela não possui nada e guarda dados num formato que o fornecedor escolheu. Nenhuma das duas está errada. São posições diferentes, e o plano de saída deve dizer qual está sendo comprada.
+
+**A flexibilidade em cada direção.** Uma assinatura cresce com facilidade e encolhe com menos facilidade do que o folheto diz; o equipamento encolhe de graça e cresce ao preço de uma caixa nova. Pergunte de qual direção o negócio tem mais probabilidade de precisar.
+
+**Onde o risco fica.** Com equipamento, a organização carrega o risco de um dimensionamento ruim; com um serviço, carrega o risco das decisões de incidente, de roteiro e de preço do fornecedor. O [explicador de licenças](/tools/f5-bigip-license-explainer) lembra que até equipamento "próprio" tem direitos que expiram.
+
+## Como montar a comparação honesta
+
+1. Escolha o prazo, e faça-o longo o bastante para incluir uma renovação do equipamento, de modo que o precipício de capital fique dentro da janela e não logo depois dela.
+2. Liste cada categoria de custo uma vez, numa coluna que valha para os dois modelos, incluindo as de cima que favorecem cada lado.
+3. Preencha os dois modelos com o número de crescimento da própria organização, com as condições de renovação escritas no lado da assinatura como o contrato as declara, e não como a proposta sugere.
+4. Acrescente o período de sobreposição e a migração em cada ponta.
+5. Mostre o resultado como um perfil de caixa ao longo do prazo, e não só como total, porque a forma do gasto faz parte do que a área financeira está decidindo.
+6. Declare numa lista as premissas em que a comparação se apoia, com as não verificadas marcadas. O [método de revisão de arquitetura](/learn/review-a-network-architecture-before-approving-it) usa o mesmo registro pela mesma razão.
+
+## Três perguntas para o comitê financeiro
+
+**Quais itens desta comparação foram fornecidos pelo fabricante, e quais foram medidos por nós?** A resposta costuma ser "a maioria" e "poucos", e a comparação deve ser refeita até inverter.
+
+**Quanto custa a assinatura no ano seguinte ao fim do desconto, no nosso crescimento planejado?** Se ninguém consegue responder com um número, a comparação não está terminada.
+
+**O que possuímos, e o que conseguimos exportar, no fim do prazo em cada modelo?** A resposta determina quanto vai custar a próxima decisão, e a próxima decisão já está no horizonte.
+
+Uma comparação que responde a essas três é uma decisão; uma que não responde é um slide. O [memorando de decisão de exemplo](/advisory/decision-memorandum) mostra a seção de custo de uma decisão assim por escrito, inclusive os itens que a proposta tinha deixado de fora.
+
+Se uma comparação desse tipo está prestes a ser apresentada ao seu comitê financeiro, refazê-la em termos iguais é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

@@ -47,6 +47,14 @@ const NAME = "Red Education";
  *
  * Non-string children pass through untouched, so this is safe to wrap around
  * anything - it simply does nothing where there is no text to match.
+ *
+ * ARRAYS OF NODES (2026-10-03). `t.rich()` returns an array: the plain runs of
+ * the message as strings, the tagged runs as elements. The advisory page's
+ * contracting card has wrapped that output since 2026-09-05 and the name inside
+ * it was never styled, because the array fell through the string check above.
+ * Now each string item of a top-level array is processed and every other item
+ * passes through unchanged, so the amber phrase keeps its own span and the
+ * brand name around it gets its colour.
  */
 export default function ReduBrand({
   children,
@@ -55,6 +63,23 @@ export default function ReduBrand({
   children: ReactNode;
   linked?: boolean;
 }) {
+  if (Array.isArray(children)) {
+    return (
+      <>
+        {children.map((child, i) =>
+          typeof child === "string" ? (
+            <ReduBrand key={i} linked={linked}>
+              {child}
+            </ReduBrand>
+          ) : (
+            // Elements and other nodes pass through as they are; the key keeps
+            // React quiet about a list built from a message.
+            <span key={i}>{child}</span>
+          ),
+        )}
+      </>
+    );
+  }
   if (typeof children !== "string" || !children.includes(NAME)) {
     return <>{children}</>;
   }

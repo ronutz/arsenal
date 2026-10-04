@@ -1,0 +1,107 @@
+---
+slug: unicode-code-points-and-properties
+title: "Unicode: pontos de código, planos, nomes e propriedades"
+summary: "O que é um ponto de código, como os 1.114.112 deles se organizam em planos, por que um caractere na tela pode ser vários pontos de código, como o Unicode nomeia e classifica cada caractere, e por que o mesmo emoji mede 1, 2, 4 ou 4 conforme a linguagem que conta."
+concepts: ["unicode", "ponto de código", "plano", "utf-8", "utf-16", "par surrogate", "categoria geral", "escrita", "agrupamento de grafemas"]
+relatedTools: ["unicode-inspector", "ascii-table", "base64"]
+relatedArticles: ["ascii-the-128-codes", "hidden-and-lookalike-characters", "character-encoding", "percent-encoding"]
+category: encoding
+order: 216
+status: reviewed
+updated: "2026-10-03"
+---
+
+O Unicode dá a cada caractere um número e um nome, e o descreve com propriedades que os programas usam para decidir como ordená-lo, desenhá-lo, quebrar linhas ao redor dele e compará-lo. A versão 18.0, publicada em 16 de setembro de 2026, acrescenta 13.007 caracteres, num total de 172.808, incluindo três escritas novas: os numerais protocuneiformes, o jurchen e o selo pequeno (Small Seal).
+
+O [inspetor Unicode](/tools/unicode-inspector) mostra tudo isso para qualquer ponto de código ou qualquer texto colado. Este artigo explica o que ele está mostrando.
+
+## Pontos de código e planos
+
+Um ponto de código é um número de 0 a 10FFFF em hexadecimal: esse intervalo é o espaço de códigos do Unicode, 1.114.112 valores. Pontos de código são escritos `U+` seguido de quatro a seis dígitos hexadecimais, então a letra A é `U+0041` e o rosto sorridente é `U+1F600`.
+
+O padrão Unicode acha conveniente pensar no espaço de códigos como planos de 64K pontos de código cada, o que dá dezessete planos:
+
+| Plano | Intervalo | O que há ali |
+|---|---|---|
+| 0, o Plano Multilíngue Básico (BMP) | U+0000 a U+FFFF | quase todos os caracteres de uso comum, os surrogates e 6.400 pontos de código de uso privado |
+| 1 a 3 | U+10000 a U+3FFFF | escritas históricas, emoji e símbolos, mais ideogramas Han, e escritas novas como o selo pequeno |
+| 14 | U+E0000 a U+EFFFF | caracteres de tag e seletores de variação |
+| 15 e 16 | U+F0000 a U+10FFFF | mais 131.068 pontos de código de uso privado |
+
+Nem todo ponto de código é um caractere. 2.048 deles, de U+D800 a U+DFFF, são surrogates, reservados para que o UTF-16 alcance além do BMP; um processo não deve interpretar um deles como caractere. 66 são não caracteres, reservados para sempre para uso interno: U+FDD0 a U+FDEF e os dois últimos pontos de código de cada plano. Pontos de código de uso privado significam o que quem os troca combinar que significam. Todo o resto que ainda não foi atribuído fica reservado para o futuro.
+
+## Um caractere na tela pode ser vários pontos de código
+
+O que um leitor vê como um caractere muitas vezes é uma sequência. Um e com acento agudo pode ser guardado como um ponto de código, U+00E9, ou como dois: U+0065 seguido de U+0301 COMBINING ACUTE ACCENT. Os dois são desenhados iguais, mas são strings diferentes: comprimentos diferentes, bytes diferentes, e uma comparação exata diz que não são iguais. O Unicode chama de agrupamento de grafemas (grapheme cluster) o que o usuário percebe como um único caractere, e a normalização (UAX #15) é o processo que faz as duas grafias de é serem comparadas como iguais.
+
+O inspetor lista pontos de código, não agrupamentos de grafemas, porque pontos de código são o que os programas guardam, comparam e passam por hash.
+
+## Nomes, apelidos e rótulos
+
+Todo caractere atribuído tem um nome em maiúsculas, e nomes são um identificador permanente: desde o Unicode 2.0 a política de estabilidade proíbe mudá-los, mesmo quando um nome se revela errado. Um erro é corrigido com um apelido formal, do tipo correção. Outros apelidos nomeiam os controles, que não têm nome próprio (U+000A é LINE FEED, NEW LINE ou END OF LINE), dão nomes alternativos (BYTE ORDER MARK para U+FEFF), listam nomes fictícios que foram documentados mas nunca padronizados, e acrescentam abreviações como NBSP, ZWSP e BOM.
+
+Alguns nomes são construídos por regra em vez de listados: um ideograma CJK unificado é `CJK UNIFIED IDEOGRAPH-` seguido do seu ponto de código, e as 11.172 sílabas Hangul são nomeadas a partir dos nomes curtos das suas partes. Um ponto de código sem nome nenhum, como um controle, um surrogate ou um não atribuído, é identificado por um rótulo de ponto de código, escrito entre sinais de menor e maior: `<control-0085>`, `<surrogate-D800>`, `<reserved-0378>`.
+
+Quando as pessoas digitam nomes, raramente acertam as maiúsculas e os hífens, então a UAX #44 define uma comparação flexível: ignorar maiúsculas, espaços, sublinhados e os hífens entre letras, com uma exceção que mantém U+1180 HANGUL JUNGSEONG O-E separado de U+116C HANGUL JUNGSEONG OE. O inspetor compara nomes desse jeito.
+
+## Propriedades
+
+Cada ponto de código carrega dezenas de propriedades. Quatro fazem a maior parte do trabalho na depuração do dia a dia:
+
+- **General_Category** é uma classe de duas letras: `Lu` para letra maiúscula, `Nd` para dígito decimal, `Zs` para espaço, `Cc` para controle, `Cf` para caractere de formato, `Mn` para marca sem espaçamento, e assim por diante, trinta valores ao todo. A UAX #44 avisa que as classes são uma partição aproximada: `@`, `#`, `%` e `&` são há muito tempo Other_Punctuation, embora não sejam pontuação na tipografia ocidental.
+- **Block** é um intervalo nomeado de pontos de código. Diz onde um caractere foi colocado, não o que ele é: U+0964 DEVANAGARI DANDA fica no bloco Devanagari, mas o seu Script é Common.
+- **Script** diz a que sistema de escrita um caractere pertence. Três valores são especiais: Inherited para caracteres, como marcas combinantes, que herdam a escrita do caractere base anterior; Common para outros caracteres usados com várias escritas; e Unknown para pontos de código não atribuídos, de uso privado, não caracteres ou surrogates. **Script_Extensions** refina isso: U+30FC KATAKANA-HIRAGANA PROLONGED SOUND MARK tem Script Common e Script_Extensions Hiragana e Katakana, e o danda lista vinte e uma escritas índicas.
+- **Age** é a versão do Unicode que atribuiu o ponto de código pela primeira vez: 1.1 para quase todo o latim, 2.1 para o símbolo do euro, 6.1 para o rosto sorridente, 18.0 para os caracteres do selo pequeno.
+
+A idade importa porque os programas vêm com uma cópia fixa dos dados. O CPython 3.11, por exemplo, traz o Unicode 14.0.0 no módulo `unicodedata`, então não tem nome para um caractere do selo pequeno; um texto escrito com caracteres do Unicode 18.0 pode aparecer com caixas, ou falhar numa validação, num sistema com dados mais antigos.
+
+## Três jeitos de guardar um ponto de código
+
+Um ponto de código é um número; uma forma de codificação o transforma em unidades de código:
+
+| Ponto de código | Bytes UTF-8 | Unidades UTF-16 | UTF-32 |
+|---|---|---|---|
+| U+0041 A | `41` | `0041` | `00000041` |
+| U+00E9 é | `C3 A9` | `00E9` | `000000E9` |
+| U+20AC € | `E2 82 AC` | `20AC` | `000020AC` |
+| U+1F600 rosto sorridente | `F0 9F 98 80` | `D83D DE00` | `0001F600` |
+
+O UTF-8 usa de um a quatro bytes e mantém o ASCII em bytes únicos. O UTF-16 usa uma unidade de 16 bits para o BMP e um par surrogate para tudo além dele. O UTF-32 usa uma unidade de 32 bits para cada ponto de código. O UTF-8 não codifica um ponto de código surrogate de jeito nenhum, e o UTF-16 não vai além de U+10FFFF, que é onde o espaço de códigos termina.
+
+Por isso "qual o comprimento desta string" tem várias respostas. Só para o rosto sorridente:
+
+| Quem conta | Resposta | Por quê |
+|---|---|---|
+| `len()` do Python | 1 | uma string Python é uma sequência de pontos de código |
+| `.length` do JavaScript | 2 | uma string JavaScript é uma sequência de unidades de 16 bits |
+| Bytes UTF-8 na rede | 4 | quatro bytes em UTF-8 |
+| `string length` do Tcl 8.4.6 | 4 | ele lê cada byte de um caractere UTF-8 de quatro bytes como um caractere |
+
+A última linha pesa num BIG-IP: a F5 afirma que o conjunto de comandos das iRules foi desenvolvido a partir do Tcl 8.4.6 (K6091), e no interpretador Tcl 8.4.6 um caractere além de U+FFFF não tem escape `\u` e conta como quatro caracteres. Meça comprimentos, compare strings e corte substrings com isso em mente.
+
+## Para onde ir depois
+
+O [inspetor Unicode](/tools/unicode-inspector) mostra todas as propriedades acima para qualquer ponto de código, e encontra num texto os caracteres que não são o que parecem; [Caracteres escondidos e sósias](/learn/hidden-and-lookalike-characters) explica por que eles importam. Para os primeiros 128 pontos de código, veja [ASCII: os 128 códigos](/learn/ascii-the-128-codes).
+
+## Fontes
+
+Os números e as escritas do Unicode 18.0 vêm da página de lançamento; o espaço de códigos, os planos, os surrogates, os não caracteres, os nomes e os rótulos, da especificação principal e da política de estabilidade; as propriedades, da UAX #44 e do Unicode Character Database 18.0.0; as formas de codificação, da RFC 3629 e da RFC 2781; os comprimentos de string foram medidos no CPython 3.11, no Node 22 e no Tcl 8.4.6 em 2026-10-03. Tudo lido em 2026-10-03.
+
+- [Lançamento do Unicode 18.0.0](https://www.unicode.org/versions/Unicode18.0.0/)
+- [The Unicode Standard 18.0.0, capítulo 2: General Structure](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-2/)
+- [The Unicode Standard 18.0.0, capítulo 3: Conformance](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-3/)
+- [The Unicode Standard 18.0.0, capítulo 4: Character Properties](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-4/)
+- [The Unicode Standard 18.0.0, capítulo 23: Special Areas and Format Characters](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-23/)
+- [The Unicode Standard 18.0.0, apêndice A: Notational Conventions](https://www.unicode.org/versions/Unicode18.0.0/core-spec/appendix-a/)
+- [Unicode Character Encoding Stability Policies](https://www.unicode.org/policies/stability_policy.html)
+- [Unicode FAQ: Private-Use Characters, Noncharacters and Sentinels](https://www.unicode.org/faq/private_use.html)
+- [UAX #44: Unicode Character Database](https://www.unicode.org/reports/tr44/)
+- [UAX #15: Unicode Normalization Forms](https://www.unicode.org/reports/tr15/)
+- [UAX #24: Unicode Script Property](https://www.unicode.org/reports/tr24/)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [Unicode Character Database 18.0.0](https://www.unicode.org/Public/18.0.0/ucd/)
+- [RFC 3629: UTF-8](https://www.rfc-editor.org/rfc/rfc3629)
+- [RFC 2781: UTF-16](https://www.rfc-editor.org/rfc/rfc2781)
+- [ECMA-262: ECMAScript Language Specification](https://tc39.es/ecma262/)
+- [Documentação do Python: Built-in Types (str)](https://docs.python.org/3/library/stdtypes.html)
+- [Manual do Tcl 8.4: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)

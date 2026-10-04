@@ -1,0 +1,138 @@
+---
+slug: decision-memorandum
+title: "Example decision memorandum: consolidating remote access, web security and branch firewalls onto one subscription platform"
+summary: "A complete, fictional example of the written analysis an advisory engagement produces. The organisation, the suppliers, the figures and the findings are invented to show the structure and the level of detail; the headings are the ones every engagement uses."
+decision: "Whether to sign a three-year subscription that replaces the remote-access VPN concentrators, the secure web gateway and the firewalls of sixty branches with one supplier's cloud-delivered platform, as proposed."
+prepared: "For the technology steering committee of a fictional mid-sized insurer (4,200 staff, 60 branches, two data centres)."
+status: "Fictional example. Not a client document."
+updated: "2026-10-03"
+---
+
+## 1. The executive question
+
+Should the committee approve Supplier A's proposal to consolidate remote access, web security and the sixty branch firewalls onto Supplier A's cloud-delivered security platform under a three-year subscription, with the first branches cut over in the next quarter? The proposal arrived with a 22 per cent discount that expires at the end of the quarter, which is the reason the question is on the table now rather than in the next budget cycle.
+
+The question is not "is Supplier A's platform good". It is whether this organisation, with this estate, these constraints and this operating team, should commit to this architecture, from this supplier, on these terms, now.
+
+## 2. Current state
+
+- Two data centres, active and standby, each with a firewall pair from Supplier B, refreshed four years ago and under support for another three.
+- Remote access through two VPN concentrators from Supplier B, licensed for 2,500 concurrent users, averaging 1,100 at the daily peak since the return-to-office policy settled.
+- Web security through an on-premises secure web gateway from Supplier C, end of support in fourteen months, with explicit proxy settings pushed to 3,900 managed laptops and a bypass list that nobody owns.
+- Sixty branches, each with a small firewall from Supplier B, connected by MPLS to both data centres; eleven branches also have a direct internet line that is used only for failover.
+- Two claims-processing applications and the core policy system are reachable only from inside the network; the policy system's integration partner connects through a site-to-site tunnel terminated on the data-centre firewalls.
+- A network team of five, one of whom holds the certification for Supplier B's platform; the security team of three operates the web gateway and the VPN policy.
+
+## 3. Assumptions
+
+Stated so that each can be challenged. Those marked "unverified" were not supported by evidence available during the engagement.
+
+1. Peak concurrent remote users will not exceed 1,500 over the term. Based on twelve months of concentrator statistics; unverified against the planned acquisition of a 300-person brokerage.
+2. The policy system's integration partner can move its tunnel to a new termination point within the cut-over window. Unverified; the partner has not been asked.
+3. Branch internet lines can be upgraded to carry all branch traffic. Verified for 49 branches; eleven branches are on contracts that do not allow an upgrade before month nine.
+4. The 22 per cent discount is the supplier's quarter-end position rather than a floor. Assumed from the timing; untested.
+5. The organisation will keep the Supplier B data-centre firewalls for the term. Stated by the proposal; consistent with the support contract.
+
+## 4. Evidence reviewed
+
+- Supplier A's proposal (version 3), the reference architecture diagram, the service description and the service-level schedule.
+- Twelve months of concentrator and web-gateway statistics, exported by the security team.
+- The MPLS and internet-line contracts for all sixty branches.
+- The data-centre firewall rule base (2,140 rules), reviewed for rules that reference branch subnets or the VPN pools.
+- Interviews with the network lead, the security lead, the head of claims operations and the application owner of the policy system.
+- Supplier A's published documentation on the branch connector, the identity integration and the logging export, read in the current versions.
+- A two-hour technical session with Supplier A's engineer, with the questions in section 14 put in advance.
+
+## 5. Constraints
+
+- The web gateway's end of support in fourteen months sets a real deadline for one third of the decision; nothing sets a comparable deadline for the other two thirds.
+- The regulator's outsourcing guidance requires a documented exit plan for any cloud service that processes customer data, and the policy system's data would transit the platform.
+- The team cannot operate two remote-access architectures for longer than a quarter without an additional person; the head of operations has ruled out a sixth hire this year.
+- The change freeze around the year-end renewal season blocks branch cut-overs for seven weeks.
+
+## 6. Options
+
+**Option 1. Approve the proposal as submitted.** All three functions move to Supplier A; branches cut over at ten per month after a two-branch pilot; the concentrators and the web gateway are decommissioned by month eight.
+
+**Option 2. Approve in two stages.** Move web security and remote access now, which the end-of-support deadline and the user statistics justify; defer the branch firewalls to a decision in month nine, when the eleven constrained branch contracts allow an upgrade and the first two functions have run in production for two quarters.
+
+**Option 3. Replace like for like.** Renew the web gateway with Supplier C's cloud edition, keep the concentrators and branch firewalls, and revisit consolidation at the data-centre firewall refresh in three years.
+
+**Option 4. Run a competitive selection.** Decline the quarter-end discount, write the requirements in section 14 into a request for proposal, and select among Supplier A, Supplier C's cloud edition and one further supplier within four months.
+
+## 7. Trade-offs
+
+| | Option 1: as submitted | Option 2: two stages | Option 3: like for like | Option 4: competitive selection |
+|---|---|---|---|---|
+| Meets the web-gateway deadline | Yes | Yes | Yes | Only if the selection closes in four months |
+| Operational load on a team of eight | Highest: three migrations in parallel | Two migrations, then one | Lowest | Lowest now, highest later |
+| Reversibility | Low after month four | Medium: the branch decision stays open | High | High |
+| Commercial position | Discount captured, leverage spent | Discount likely lost on the branch third | No change | Strongest, at the cost of time |
+| Dependency on one supplier | Three functions | Two functions, then possibly three | None added | Decided with evidence |
+| Exit plan burden | One plan, three functions | One plan, grown in stages | None new | One plan, written before signature |
+
+## 8. Risks
+
+1. **Branch failover becomes single-path.** The proposal retires MPLS at each branch once the connector is in. Eleven branches would then depend on one internet line with a contract that cannot be upgraded until month nine. Likelihood high if Option 1 proceeds on schedule; impact is a branch offline for the duration of a line fault.
+2. **The integration partner cannot move in time.** The policy system's partner tunnel terminates on firewalls the proposal does not touch, but the proposal's routing design sends partner traffic through the new platform. Likelihood unknown (assumption 2); impact is policy issuance stopping.
+3. **Logging gaps during the overlap.** Supplier A's logging export is documented at a fifteen-minute delivery interval; the security team's current detections assume near-real-time web-gateway logs. Likelihood certain for the overlap period; impact is a detection blind spot of up to fifteen minutes.
+4. **Team capacity.** Three parallel migrations with eight people and a seven-week freeze. Likelihood high; impact is schedule slip, which also moves the web-gateway cut-over towards its deadline.
+5. **Commercial lock-in.** A three-year term across three functions removes the next two negotiating moments. Not a technical risk, but the committee asked for it to be stated.
+
+## 9. Dependencies
+
+- The identity provider must publish group membership to Supplier A before any user moves; the identity team has a two-sprint backlog.
+- Eleven branch internet contracts (assumption 3).
+- The integration partner's change process (assumption 2).
+- The regulator's exit-plan template, which the compliance team has not yet applied to a security platform.
+
+## 10. Cost and operational considerations
+
+The proposal compares its three-year subscription with the capital cost of replacing the web gateway and the branch firewalls, and that comparison is fair as far as it goes. It leaves out three items the committee should add before comparing totals: the branch internet upgrades (49 lines now, eleven later), the overlap period in which both architectures run and both are paid for, and the training the team needs on a platform none of them has operated. It also books the concentrator decommissioning as a saving, although those licences are already paid for the term.
+
+Operationally, the platform moves policy from four consoles to one, which the security team wants. It also moves troubleshooting of branch connectivity from a device the network team can log into to a connector whose diagnostics are what the supplier exposes; the network lead rated this as the change that worries him most, and it is a reasonable worry.
+
+## 11. Unknowns
+
+- Whether the acquisition of the brokerage proceeds, and when (assumption 1).
+- Whether Supplier A will hold the discount for a two-stage approval (assumption 4).
+- The real latency of the branch connector path for the two claims applications, which no test has measured.
+- Whether Supplier C's cloud edition can be contracted for a one-year bridge, which would change Option 3's economics.
+
+## 12. Recommendation, or the conditions for proceeding
+
+The committee should not approve the proposal as submitted. It should approve Option 2, moving web security and remote access now, subject to four conditions, and defer the branch decision to month nine with the evidence listed below.
+
+Conditions for the first stage:
+
+1. The integration partner confirms in writing that its tunnel is unaffected by the first stage, or a tested alternative termination exists before the pilot.
+2. The security team accepts the fifteen-minute logging interval in writing, or Supplier A documents a faster export, before the web gateway is switched off.
+3. The identity integration is tested with the two claims applications in the pilot, with the latency measured and recorded.
+4. The exit plan is written and reviewed by compliance before signature, not after.
+
+Evidence required for the branch decision in month nine: two quarters of operating the first stage, the measured connector latency, the eleven contracts cleared, and a second price from at least one other supplier for the branch function alone.
+
+If Supplier A withdraws the discount rather than accept a two-stage approval, that is information about the discount, and the recommendation stands.
+
+## 13. Immediate actions
+
+| Action | Owner | By |
+|---|---|---|
+| Put assumption 2 to the integration partner in writing | Application owner, policy system | Two weeks |
+| Request the logging export specification and a faster-interval option | Security lead | One week |
+| Request the brokerage acquisition timeline from the programme office | Head of claims operations | One week |
+| Ask Supplier A for the two-stage commercial position in writing | Procurement | One week |
+| Start the exit-plan template with compliance | Network lead | Before the pilot |
+
+## 14. Questions for the supplier
+
+Put in advance of the technical session; the answers received are summarised in brackets, and the open ones are marked.
+
+1. What is the documented failover behaviour of the branch connector when its only internet line fails, and what is the measured time to recover? [Answered: no local failover without a second line. Open: recovery time.]
+2. At what interval are web and remote-access logs delivered to the customer's log platform, and can it be shortened? [Answered: fifteen minutes. Open: a shorter interval.]
+3. Which identity attributes must be published before enrolment, and what happens to a user whose group membership changes mid-session? [Answered.]
+4. Where, geographically, is customer traffic inspected, and can inspection be pinned to one region for regulatory reasons? [Answered: pinning available for two of three functions. Open: the third.]
+5. What does the customer receive at termination, in what format, and within how many days? [Open.]
+6. Can the branch function be contracted separately, at a later date, at the same unit price? [Open; raised to procurement.]
+7. Which diagnostics of the branch connector are available to the customer's own engineers, and which only to the supplier? [Answered in part; a written list requested.]
+8. What is the supplier's published limit on concurrent remote-access users per tenant, and what is the lead time to raise it? [Answered.]

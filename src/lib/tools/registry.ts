@@ -127,6 +127,14 @@ import { run as f5IrulesScanExplainerRun } from "./f5-irules-scan-explainer";
 import { run as f5IrulesStringExtractRun } from "./f5-irules-string-extract";
 import { run as f5IrulesConditionalBuilderRun } from "./f5-irules-conditional-builder";
 import { run as f5IrulesStyleCheckerRun } from "./f5-irules-style-checker";
+// The BIG-IP zero-or-one finder (2026-10-03): a static look-up plus a translator that runs
+// only commands it generates itself, on bounded input; exposed.
+import { run as f5BigipIndexBaseFinderRun } from "./f5-bigip-index-base-finder";
+import { run as asciiTableRun } from "./ascii-table";
+import { run as unicodeInspectorRun } from "./unicode-inspector";
+// The charset converter and mojibake repair (2026-10-03): pure, bounded, never fetches; exposed.
+import { run as charsetEquivalencyRun } from "./charset-equivalency";
+import { run as chmodPermissionCalculatorRun } from "./chmod-permission-calculator";
 import { run as f5ReleaseCadenceCalendarRun } from "./f5-release-cadence-calendar";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
@@ -251,6 +259,12 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-string-extract", structured: true, run: (input) => f5IrulesStringExtractRun(JSON.parse(input)) },
   { slug: "f5-irules-conditional-builder", structured: true, run: (input) => f5IrulesConditionalBuilderRun(JSON.parse(input)) },
   { slug: "f5-irules-style-checker", structured: true, run: (input) => f5IrulesStyleCheckerRun(JSON.parse(input)) },
+  // Zero or one: a look-up, or a translation run on generated commands only.
+  { slug: "f5-bigip-index-base-finder", structured: true, run: (input) => f5BigipIndexBaseFinderRun(JSON.parse(input)) },
+  { slug: "ascii-table", structured: true, run: (input) => asciiTableRun(JSON.parse(input)) },
+  { slug: "unicode-inspector", structured: true, run: (input) => unicodeInspectorRun(JSON.parse(input)) },
+  { slug: "charset-equivalency", structured: true, run: (input) => charsetEquivalencyRun(JSON.parse(input)) },
+  { slug: "chmod-permission-calculator", structured: true, run: (input) => chmodPermissionCalculatorRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },

@@ -1,0 +1,65 @@
+---
+slug: what-belongs-in-a-post-incident-technical-review
+title: "What should be in a post-incident technical review"
+summary: "After a serious outage somebody has to write down what happened, and the document that results is usually either a defence or a prosecution. A technical review is neither. It is written for people who were not there, it keeps what was observed apart from what was concluded, it names the conditions that made the failure possible rather than the person who touched the keyboard, and it ends in changes that can be checked. What such a review contains, who should write it, and the three kinds of review that must not be confused."
+concepts: ["post-incident", "rca", "review", "incident", "root-cause", "governance", "decision"]
+relatedTools: ["incident-timeline-rca-builder", "fault-hypothesis-builder", "tac-escalation-packet-builder", "packet-capture-plan-builder"]
+relatedArticles: ["incident-to-escalation", "change-windows-that-do-not-become-incidents", "product-limitations-versus-architecture-failures", "ariane-5-and-the-assumption-that-expired"]
+category: operations
+order: 327
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Three documents that look alike and are not
+
+Before anything is written, the organisation has to decide which review it is commissioning, because the three kinds have different authors, different readers and different rules.
+
+An **engineering learning review** asks what happened, why the system allowed it, and what would prevent it recurring. It is written by or with engineers, for the organisation, and its value depends on people telling the truth about what they saw and did.
+
+A **forensic investigation** establishes facts to an evidentiary standard, preserves evidence, and may be used in a dispute. It has rules about chain of custody and about who may talk to whom.
+
+A **legal or regulatory analysis** determines liability, compliance and reporting obligations, and is usually privileged.
+
+The first cannot be done properly under the rules of the other two, and the other two cannot be done by the people who do the first. Where litigation, insurers, a regulator or a disciplinary process are in play, the engineering review needs its scope stated in writing before it starts, and it needs the specialists for the other kinds alongside it rather than instead of it. The rest of this article is about the first kind.
+
+## Written for people who were not there
+
+The reader of a technical review is a steering committee, a successor, an auditor two years later, or the engineer who will face the same symptom next spring. None of them was in the room. So the review explains the system as it was before the incident, in enough detail that the failure makes sense, and it does not assume the reader knows what a given component does or why it was there.
+
+## The timeline, with observation and conclusion kept apart
+
+The spine of the review is a timeline, built from evidence (logs, monitoring, tickets, chat, change records) and reconciled across clocks before anybody writes a sentence of interpretation. The Practice article on [reconstructing what happened](/practice/timelines-reconstructing-what-happened) describes the method, and the [timeline and RCA (root cause analysis) builder](/tools/incident-timeline-rca-builder) is a structured place to assemble it.
+
+The discipline that matters most is the one the [escalation article](/learn/incident-to-escalation) describes for a support case: keep what was observed separate from what was concluded. "The link went down at 09:14" is an observation if the log says so and a conclusion if somebody remembers it. The review marks which is which, because the conclusions are where the argument will be.
+
+## Causes, in the plural
+
+Serious incidents almost never have one cause. They have a trigger, which is usually small, and a set of conditions that let the trigger become an outage: a redundancy that had quietly stopped being redundant, an alert that was firing and ignored, a runbook that assumed a state that no longer held, a change made under time pressure because the window was too short. The review names the trigger and then spends most of its length on the conditions, because the conditions are what the organisation can change. The Practice article [root cause is a choice](/practice/root-cause-is-a-choice) explains why "the" root cause is a decision about where to stop looking, and the review should say where it stopped and why.
+
+## What it is not: a search for a person
+
+A review that identifies the person who ran the command has found the trigger and stopped. Named blame produces two effects, both bad: the next incident's witnesses stop telling the truth, and the conditions that made the mistake easy stay in place for the next person. The Practice article on [RCA without a scapegoat](/practice/rca-without-a-scapegoat) is the full argument. The practical rule for the document is that actions are described by role and by what the person knew at the time, and that "why did it make sense to them to do that" is a required question, not a courtesy.
+
+## What the review should contain
+
+1. **Scope and kind.** Which of the three reviews this is, who commissioned it, what it covers and what it does not.
+2. **The system before the incident**, as the reader needs it, with the relevant design assumptions stated.
+3. **Impact**, in the organisation's terms: who could not do what, for how long, with what consequence. Measured where possible.
+4. **The timeline**, with sources, observation and conclusion separated.
+5. **Detection and response**: how long until somebody knew, how long until the right somebody knew, what the responders tried, what worked, and what the responders lacked.
+6. **The trigger and the conditions**, each with its evidence.
+7. **What went well**, honestly, because the things that limited the damage are also things the organisation should keep.
+8. **Changes**, each with an owner, a date, and the observable that will show it was made and is working. A change that cannot be checked is a wish.
+9. **Open questions**, with owners, because a review that pretends to be complete is less useful than one that says what it does not know.
+10. **The register**: which design assumptions the incident falsified, so the [architecture review](/learn/review-a-network-architecture-before-approving-it) of the next design starts from them.
+
+## Who should write it
+
+Someone with the technical depth to read the evidence, enough distance from the response to ask the obvious questions, and no stake in the answer. The team that ran the response can supply the facts and should review the draft; it should not be the sole author, because it will not see what it stopped seeing months ago. The supplier whose product was involved should be asked specific questions and should not write the review either, for the symmetrical reason.
+
+## The test of a good review
+
+Six months later, somebody should be able to pick it up, understand what happened without having been there, find the changes and check whether they were made, and recognise the same conditions forming in a different system. If it also protected the people who told the truth, it was a good review.
+
+If your organisation needs that kind of review after a serious incident, written independently and without the search for someone to blame, it is work I do professionally: [independent technical advisory](/advisory).

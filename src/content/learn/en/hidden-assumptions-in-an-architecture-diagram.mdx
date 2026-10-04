@@ -1,0 +1,48 @@
+---
+slug: hidden-assumptions-in-an-architecture-diagram
+title: "How to find the hidden assumptions in an architecture diagram"
+summary: "A diagram shows what was decided and hides what was assumed. The boxes are products, the lines are intentions, and the things that will actually fail, the shared dependency, the unmeasured peak, the function nobody owns, the path that only works one way, are not drawn because nobody thought of them as decisions. Eight places assumptions hide in a diagram, the questions that bring each one out, and the register that turns a reading into something the organisation can act on in year three."
+concepts: ["architecture", "assumptions", "diagrams", "design-review", "dependencies", "failure-domains"]
+relatedTools: ["flow-path-reasoner", "change-blast-radius-mapper", "fault-hypothesis-builder", "cidr"]
+relatedArticles: ["review-a-network-architecture-before-approving-it", "ariane-5-and-the-assumption-that-expired", "product-limitations-versus-architecture-failures", "baselines-before-you-need-them"]
+category: operations
+order: 325
+status: reviewed
+updated: "2026-10-03"
+---
+
+## What a diagram is for, and what it is not
+
+A diagram is a communication device, drawn to make a design understandable to people who will approve it. It is very good at that, which is the problem: it makes the design look complete. What it records is the set of decisions somebody made; what it cannot record is the condition under which each decision is correct, because the person drawing it was not thinking of the decision as a bet. The Practice article on [the assumptions a design encodes and never states](/practice/assumptions-a-design-never-states) makes the general case. This article is the field guide: where, on the drawing in front of you, the assumptions are standing.
+
+## Eight places to look
+
+**1. The line between two boxes.** A line means "these communicate". It does not say over what, in which direction, at what volume, through which intermediate devices that are not drawn, or what happens when it is cut. Pick three lines that matter and ask for each: the protocol, the ports, the direction, the bandwidth, the path on the physical network, and the behaviour on failure. The [flow-path reasoner](/tools/flow-path-reasoner) is a structured way of asking.
+
+**2. The thing drawn once.** Every design that has two of everything has something drawn once: the management server, the licence server, the certificate authority, the identity provider, the DNS, the orchestrator, the out-of-band network. Sometimes it is drawn once because it is genuinely redundant inside; usually it is drawn once because it is one. Ask.
+
+**3. The two things drawn apart that live together.** Two firewalls in two racks are independent until both are virtual machines on the same host, both depend on the same storage, both resolve names from the same server, or both share the last kilometre of two "diverse" circuits. Independence is a property of the physical and logical layers below the drawing, and the drawing does not show those layers. The [blast-radius mapper](/tools/change-blast-radius-mapper) is built around this question.
+
+**4. The number with no measurement behind it.** Capacity figures on a diagram are usually a peak somebody remembered or a figure copied from a datasheet. Ask for the measurement, its date and its shape over the day, because the same daily volume arriving in a four-minute burst is a different design problem.
+
+**5. The cloud.** Literally, the cloud symbol: internet, the provider's network, a SaaS, a service. Everything inside the symbol is somebody else's design, with its own single points of failure, its own maintenance windows and its own idea of what "available" means. Ask what the organisation can see inside the symbol, and what it can do when something in there fails.
+
+**6. The arrow that only points one way.** Return paths are the most common omission in a drawing. Asymmetric routing through stateful devices is a classic failure, and it is invisible on a diagram drawn from the client's point of view. Trace one flow back.
+
+**7. The box with no name on it.** Every design has a function nobody has assigned: who renews the certificate on the load balancer, who owns the exceptions list on the proxy, who gets paged when the connector in the branch fails. The diagram has a box for the component and no box for the person. Ask who, for each component, and watch for the pause.
+
+**8. The absence of time.** A diagram is a snapshot of steady state. It has no first day, no overlap period, no upgrade, no refresh, no acquisition in month fourteen that doubles the user count. Ask what the design looks like during the migration, and what in the drawing is the first thing to run out of capacity.
+
+## The questions, in one list
+
+For each assumption found, three questions turn it from a worry into a record: what is the value or decision as drawn; what has to be true of the environment for it to be correct; and what observable would tell you it has stopped being true. Write the three columns down. That table, the assumption register, is more durable than the findings, because the findings describe today and the register describes the day the design starts to be wrong.
+
+## A worked example
+
+A diagram shows two data centres, a firewall pair in each, two branches connected to both over MPLS (Multiprotocol Label Switching), and a cloud symbol labelled "identity". Reading it with the list above: the identity cloud is drawn once (place 2) and everything authenticates through it (place 5); the branch lines are two each but both leave the building on the same provider's fibre (place 3); the firewall pairs are sized from a datasheet (place 4); the application's return traffic from the second data centre goes through the first centre's firewall because the default route points there (place 6); nobody on the drawing owns the certificates on the identity proxy (place 7); and the acquisition the business is negotiating is not on the drawing at all (place 8). None of these is a defect in a product. Each is a decision the design made without noticing, and each belongs in the register with its observable next to it.
+
+## Why this matters more than finding errors
+
+An error in a design is found and fixed. An assumption is correct when made, keeps working, and is inherited by people who never saw it as a choice. [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired) is the famous case: code that was correct for one rocket and flew on the next. The reading above does not make a design right. It makes the bets visible while they are still cheap to change, and it leaves behind the list that tells the operations team what to watch.
+
+If a diagram like this is waiting for your approval and the assumptions behind it need to be brought out before you sign, that reading is work I do professionally: [independent technical advisory](/advisory).

@@ -21,6 +21,8 @@ import { STORY_SLUGS } from "@/content/learn/stories";
 import MessageSlice from "@/components/MessageSlice";
 import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
+// MARK (PRIME 2026-10-04): the Red Education wordmark on the card that names it.
+import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import CidrTool from "@/components/CidrTool";
 import ToolLearnPanel from "@/components/ToolLearnPanel";
@@ -65,6 +67,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // Async server component → use getTranslations (the async server function),
   // NOT the useTranslations hook (which is for client/sync components).
   const t = await getTranslations("home");
+  // The era caption for the Red Education mark on its card.
+  const tMarks = await getTranslations("partnerVendors");
   const tNav = await getTranslations("nav");
   // Career strip copy: headings from the "industry" namespace, per-vendor
   // name/years from "vendors". Both reused verbatim so the move requires no
@@ -111,7 +115,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   return (
     <>
       {/* Keyboard skip link — first focusable element. */}
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
 
@@ -434,6 +438,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </Link>
               <Link href="/red-education" className="learn-portal-card" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <VendorMark vendor="rededucation" year={new Date().getFullYear()} eraLabel={(e) => tMarks("markEra", { era: e })} since={(y) => tMarks("markSince", { year: y })} compact />
                 <p className="learn-portal-title">
                   {t("map.redu")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>

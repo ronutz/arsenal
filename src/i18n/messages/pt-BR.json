@@ -37,7 +37,8 @@
     "contribute": "Contribuir",
     "colophon": "Colofão",
     "devFun": "Laboratório de diversão",
-    "advisory": "Consultoria"
+    "advisory": "Consultoria",
+    "earlierSites": "Os sites anteriores"
   },
   "languageSwitcher": {
     "label": "Idioma",
@@ -113,7 +114,7 @@
       "certsLede": "O que cada exame cobra e o que estudar para ele. Gratuito, e útil tendo você contratado um curso ou não.",
       "certsBadge": "{count} guias",
       "advisory": "Consultoria",
-      "advisoryLede": "Julgamento em nível de conselho sobre decisões de tecnologia antes de elas serem tomadas. Trabalho com escopo, resposta escrita que se defende internamente, sem plantão.",
+      "advisoryLede": "Julgamento técnico executivo sobre decisões de tecnologia antes de elas serem tomadas. Trabalho com escopo, resposta escrita que se defende internamente, sem plantão.",
       "advisoryBadge": "Sob contratação",
       "hubs": "Hubs de fabricantes",
       "hubsLede": "Uma porta por plataforma: as ferramentas, artigos e material de certificação daquele fabricante, reunidos num só lugar.",
@@ -7463,6 +7464,7 @@
         "findstr-found": "A string procurada começa no índice {at}; o resultado começa {skip} caracteres depois disso.",
         "foreach": "Rodou o corpo uma vez por elemento: {iterations} ao todo.",
         "getfield": "Dividida em {count} campos; o campo {field} é devolvido (os campos contam a partir de 1).",
+        "domain": "O nome tem {labels} rótulos; os últimos {count} são devolvidos (<c>domain</c> conta pela direita, e 1 é o último rótulo).",
         "if-branch": "Uma condição foi verdadeira, então o corpo depois dela roda e o resto é pulado.",
         "if-else": "Nenhuma condição foi verdadeira, então o corpo do <c>else</c> roda.",
         "if-none": "Nenhuma condição foi verdadeira e não há <c>else</c>: nada roda e <c>if</c> devolve uma string vazia.",
@@ -7485,6 +7487,8 @@
         "getfield-empty-split": "As páginas da F5 não tratam de um separador vazio. A ferramenta trata a string inteira como o campo 1.",
         "getfield-empty-field": "Dois separadores seguidos criam aqui um campo vazio. As páginas da F5 não mostram esse caso.",
         "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
+        "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
         "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
       },
       "varsTitle": "Variáveis no final",
@@ -7562,6 +7566,8 @@
         "getfield-empty-split": "As páginas da F5 não tratam de um separador vazio. A ferramenta trata a string inteira como o campo 1.",
         "getfield-empty-field": "Dois separadores seguidos criam aqui um campo vazio. As páginas da F5 não mostram esse caso.",
         "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
+        "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
         "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
       },
       "equivalentTitle": "O mesmo trabalho em Tcl puro",
@@ -7654,7 +7660,11 @@
       "preset": {
         "messy": "Uma regra com problemas",
         "clean": "Uma regra limpa",
-        "brace-brace": "Chaves sem espaço"
+        "brace-brace": "Chaves sem espaço",
+        "zero-width": "Um caractere invisível",
+        "word-processor": "Colado de um editor de texto",
+        "thread-points": "== em texto, break no switch",
+        "array-and-keyword": "Variável de array, if colado à chave"
       },
       "parsesYes": "O Tcl 8.4 consegue carregá-lo.",
       "parsesNo": "O Tcl 8.4 não consegue carregá-lo.",
@@ -7673,11 +7683,12 @@
         "info": "nota"
       },
       "ruleSyntax": "Tcl",
+      "ruleLimit": "Ferramenta",
       "ruleName": {
         "E1": "Indentação",
         "E2": "Comprimento da linha",
         "E3": "Caracteres e fins de linha",
-        "R1": "Aspas curvas e espaços invisíveis",
+        "R1": "Aspas curvas e caracteres invisíveis",
         "R2": "Limite de tamanho",
         "R4": "Posição das chaves",
         "R6": "Comentários",
@@ -7685,7 +7696,7 @@
         "R8": "Nada de if em uma linha",
         "R9": "Estado como 0 ou 1",
         "R10": "Operadores lógicos do Tcl",
-        "R11": "Um espaço entre as chaves",
+        "R11": "Espaços em volta das chaves",
         "R12": "Expressões entre chaves",
         "R13": "Espaços em volta das variáveis",
         "R14": "Nomes de variáveis entre chaves",
@@ -7695,7 +7706,10 @@
         "R18": "Nomes static:: com prefixo",
         "R19": "Nada de flags de debug em static::",
         "R20": "Nada de código comentado",
-        "syntax": "Sintaxe"
+        "syntax": "Sintaxe",
+        "D1": "Texto comparado com ==",
+        "D2": "break, continue e return",
+        "limit": "Além desta ferramenta"
       },
       "finding": {
         "E1": {
@@ -7708,14 +7722,18 @@
         "E3": {
           "crlf": "Um fim de linha do Windows (retorno de carro). O guia pede quebras de linha do Unix.",
           "trailing": "Espaço em branco no fim da linha.",
-          "non-ascii": "Um caractere fora do ASCII. O guia pede arquivos em ASCII.",
-          "no-final-newline": "O arquivo não termina com uma quebra de linha."
+          "non-ascii": "{glyph} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: um caractere fora do ASCII. O guia pede arquivos em ASCII; dentro de uma mensagem de log entre aspas ele é inofensivo, em qualquer outro lugar confira.",
+          "no-final-newline": "O arquivo não termina com uma quebra de linha.",
+          "dash": "{name} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: um traço que não é o hífen-menos ASCII. O Tcl não o lê nem como hífen de opção nem como sinal de menos; um switch com meia-risca antes do valor toma o traço como valor e silenciosamente não casa nada.",
+          "lookalike": "{glyph} é {name} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: parece {ascii}, mas é outro caractere, então o Tcl não o trata como {ascii}."
         },
         "R1": {
-          "main": "Uma aspa curva ou um espaço não separável. Parecem aspas e espaços comuns, mas são outros caracteres e quebram o código sem um erro óbvio; digite-os de novo."
+          "invisible": "{name} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: um caractere invisível. O Tcl o lê como parte do texto em volta, então depois de uma chave de fechamento a regra não carrega, e numa linha sozinha ele roda como um comando que não existe. Apague-o.",
+          "space": "{name} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: parece um espaço, mas o Tcl só separa palavras em espaços em branco ASCII, então as palavras dos dois lados ficam grudadas. Digite um espaço comum.",
+          "quote": "{name} ({char}), coluna {col}{count, plural, =1 {} other {, um de # nesta linha}}: uma aspa tipográfica. O Tcl não a trata como aspa, então ela não agrupa palavras. Digite uma aspa reta."
         },
         "R2": {
-          "main": "A regra tem {bytes} bytes. O guia lembra que um iRule é limitado a 64 KB; divida-o, ou leve os dados para data groups."
+          "main": "{chars} caracteres ({bytes} bytes em UTF-8). O F5 K9204 limita um iRule a 65.520 caracteres, e o BIG-IP se recusa a salvar ou carregar um maior; divida-o em vários iRules, ou leve os dados para data groups."
         },
         "R4": {
           "main": "Uma chave sozinha na própria linha. Coloque a chave de abertura no fim da linha anterior.",
@@ -7739,7 +7757,8 @@
           "main": "Um dos operadores em palavra da F5 (and, or, not). Use os operadores do Tcl &&, || e !, com parênteses para deixar o agrupamento claro."
         },
         "R11": {
-          "main": "Uma chave de fechamento seguida direto de uma de abertura. Deixe um espaço entre elas."
+          "main": "Uma chave de fechamento seguida direto de uma de abertura. Deixe um espaço entre elas.",
+          "keyword-brace": "{word} é uma palavra só para o Tcl, não a palavra-chave seguida de chave, então esta linha falha quando roda (um nome de comando inválido, ou palavras a mais no if). Coloque um espaço antes da chave."
         },
         "R12": {
           "main": "Uma expressão sem chaves: {word}. Uma expressão sem chaves é substituída duas vezes (risco de injeção, F5 K57410758) e não pode ser compilada antes; coloque-a entre chaves."
@@ -7770,9 +7789,1557 @@
         },
         "syntax": {
           "main": "O Tcl 8.4 não consegue analisar isto: {message}. A regra não vai carregar."
+        },
+        "D1": {
+          "main": "{op} com o texto {text}. == e != comparam como números sempre que os dois lados parecem números (no Tcl 8.4, 10 == 012 é verdadeiro, porque 012 é octal); para texto use {suggest}. Levantado nos comentários do guia; o How To Write Fast Rules da F5 também pede que você compare strings com strings."
+        },
+        "D2": {
+          "outside-loop": "{cmd} sem nenhum laço em volta. O switch não é um laço, então seus braços nunca precisam de {cmd} para parar, e fora de um laço o Tcl 8.4 o transforma num erro: invoked \"{cmd}\" outside of a loop. Remova-o; para sair do evento antes, use return.",
+          "leaves-loop": "{cmd} num braço do switch sai do laço em volta, não só do switch: no Tcl, o switch não é um laço. Se a intenção era só encerrar o braço, remova-o; um braço nunca segue para o próximo.",
+          "return-arm": "return sai do evento inteiro (a página de return da F5: sai do evento em execução), não só do switch. Um braço nunca segue para o próximo, então nenhum return é necessário para encerrá-lo."
+        },
+        "limit": {
+          "array": "{ref} é uma variável de array. O Tcl a aceita, mas esta ferramenta não modela arrays, então ela foi lida como variável simples e o resto da regra continuou sendo verificado."
         }
       },
-      "limits": "O verificador lê estrutura e texto, e nunca executa a regra. Onde não pode ter certeza (por exemplo, se uma linha começando com cerquilha é código ou um comentário sem o espaço) o apontamento é uma nota, não um alerta."
+      "limits": "O verificador lê estrutura e texto, e nunca executa a regra. Onde não pode ter certeza (por exemplo, se uma linha começando com cerquilha é código ou um comentário sem o espaço) o apontamento é uma nota, não um alerta. D1 e D2 vêm dos comentários do guia, e os caracteres são nomeados pelo Unicode Character Database 18.0.0."
+    },
+    "f5-bigip-index-base-finder": {
+      "name": "Localizador zero-ou-um do BIG-IP",
+      "blurb": "Zero ou um? Veja onde cada comando Tcl, comando de iRules, objeto de configuração, API e ferramenta do BIG-IP começa a contar, com as palavras da própria F5 e a data em que cada fonte foi lida, e traduza uma posição para o número de cada comando, executando-o. Local, sem rede.",
+      "modeLabel": "O que você quer fazer?",
+      "modeLookup": "Consultar",
+      "modeTranslate": "Traduzir uma posição",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "lookupIntro": "Cada lugar do BIG-IP encontrado que conta a partir de 0 ou de 1, com o que é contado, como chegar ao primeiro e ao último, o que volta quando não há nada, e as fontes. Filtre por onde a contagem começa, ou pesquise.",
+      "thumbsTitle": "Regras práticas",
+      "thumb": {
+        "1": "As posições do Tcl contam a partir de 0, e <c>end</c> é o último índice, o comprimento menos um.",
+        "2": "Os números no estilo de campo da F5 contam a partir de 1: campos de <c>getfield</c>, profundidades de <c>URI::path</c>, índices de path-segment das políticas LTM, o antigo <c>matchclass</c>.",
+        "3": "Contadores devolvem 1 para o primeiro item: <c>HTTP::request_num</c>, <c>table incr</c>.",
+        "4": "Muitos zeros são valores, não posições: domínio de roteamento 0, porta 0, connection-limit 0, <c>SSL::verify_result</c> 0, e o 0.0 do tcpdump.",
+        "5": "O menor vai primeiro quase sempre (prioridade de evento, ordinais de política, ordem do GTM, severidade do syslog), exceto nos grupos de prioridade de pool, onde o maior ganha.",
+        "6": "Num <c>if</c>, 0 é falso e qualquer outro número é verdadeiro, inclusive -1: compare um índice com <c>>= 0</c> em vez de testá-lo, e guarde suas próprias flags como 0 ou 1, como pede o iRules Style Guide do DevCentral."
+      },
+      "searchLabel": "Pesquisar",
+      "searchPlaceholder": "getfield, caminho, route domain, tcpdump, prioridade...",
+      "baseFilterLabel": "Conta a partir de",
+      "areaFilterLabel": "Parte do sistema",
+      "allBases": "Tudo",
+      "allAreas": "Todas",
+      "showing": "Mostrando {shown} de {total}.",
+      "noResults": "Nada corresponde. Tente menos palavras, ou limpe os filtros.",
+      "base": {
+        "zero": "Começa em 0",
+        "one": "Começa em 1",
+        "right": "Conta pela direita",
+        "mixed": "0 e 1 juntos",
+        "value": "Zero é um valor",
+        "count": "Uma contagem, não uma posição"
+      },
+      "baseHelp": {
+        "zero": "O primeiro item é o número 0.",
+        "one": "O primeiro item é o número 1.",
+        "right": "Contado de trás para frente: end, end-1, ou os últimos N.",
+        "mixed": "As duas bases se encontram no mesmo lugar.",
+        "value": "Não é uma posição: 0 significa algo (padrão, sem limite, todos, sucesso, igual).",
+        "count": "Não é uma posição, embora seja fácil confundir com uma."
+      },
+      "area": {
+        "tcl": "Tcl dentro de iRules",
+        "irules": "Comandos que a F5 acrescenta às iRules",
+        "config": "Objetos de configuração",
+        "platform": "Plataforma e hardware",
+        "api": "APIs e declarações",
+        "logs": "Logs e captura de pacotes"
+      },
+      "counts": "Conta",
+      "first": "Primeiro",
+      "last": "Último",
+      "missing": "Quando não há nada",
+      "exampleLabel": "Exemplo",
+      "returns": "devolve",
+      "trapLabel": "Atenção",
+      "conflictLabel": "As páginas da F5 discordam",
+      "sourcesLabel": "Fontes",
+      "readOn": "lido em {date}",
+      "confidenceLabel": "Grau de certeza",
+      "confidence": {
+        "verified": "Afirmado pelo manual do Tcl e executado no tclsh 8.4.6",
+        "stated": "Afirmado pela fonte",
+        "example": "Mostrado só por um exemplo na página da fonte",
+        "conflict": "Duas afirmações da F5 discordam"
+      },
+      "translateIntro": "Pergunte do jeito que as pessoas contam, em que 1 é o primeiro. Cada comando abaixo recebe o número de que precisa, roda no motor didático de Tcl 8.4.6, e fica ao lado da versão com erro de um.",
+      "questionLabel": "Pergunta",
+      "question": {
+        "char": "O N-ésimo caractere",
+        "field": "O N-ésimo campo depois de dividir",
+        "segment": "O N-ésimo segmento de um caminho",
+        "label": "Os últimos N rótulos de um nome de host",
+        "element": "O N-ésimo elemento de uma lista Tcl",
+        "search": "Onde um texto aparece primeiro"
+      },
+      "valueLabel": "Valor",
+      "nLabel": "N (1 é o primeiro)",
+      "separatorLabel": "Separador",
+      "needleLabel": "Texto a procurar",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "segment-2": "2º segmento do caminho",
+        "char-3": "3º caractere",
+        "field-octet-3": "3º octeto",
+        "field-multichar": "Separador de dois caracteres",
+        "label-2": "Últimos 2 rótulos",
+        "element-2": "2º par de membro do pool",
+        "search-at-zero": "Encontrado no índice 0",
+        "search-missing": "Não encontrado",
+        "lookup-all": "Tudo",
+        "lookup-one": "Começa em 1",
+        "lookup-path": "Caminho",
+        "lookup-config-value": "Zeros de configuração"
+      },
+      "answerLabel": "Resposta",
+      "answerNone": "Não há uma resposta única: os comandos discordam.",
+      "emptyResult": "(string vazia)",
+      "colCommand": "Comando",
+      "colCounts": "Conta a partir de",
+      "colResult": "Devolve",
+      "colCheck": "Conferência",
+      "kind": {
+        "right": "A numeração do próprio comando",
+        "trap": "Erro de um",
+        "other": "Uma resposta relacionada"
+      },
+      "agrees": "igual à resposta",
+      "differs": "diferente",
+      "errorWord": "erro",
+      "form": {
+        "string-index": "string index",
+        "string-range": "string range",
+        "substr": "substr (F5)",
+        "string-index-n": "string index, contando a partir de 1",
+        "getfield": "getfield (F5)",
+        "split-lindex": "split, depois lindex",
+        "getfield-n-1": "getfield, contando a partir de 0",
+        "split-lindex-n": "split, depois lindex, contando a partir de 1",
+        "split-lindex-forgot": "split, depois lindex, esquecendo o elemento vazio",
+        "domain": "domain (F5)",
+        "lrange-end": "split, lrange a partir do fim, join",
+        "lindex-end": "só aquele rótulo (lindex a partir do fim)",
+        "lrange-end-n": "lrange a partir do fim, um rótulo a mais",
+        "lindex": "lindex",
+        "lrange": "lrange (uma lista de um elemento)",
+        "lindex-n": "lindex, contando a partir de 1",
+        "string-first": "string first",
+        "first-test": "string first, depois >= 0",
+        "first-if": "if no próprio índice"
+      },
+      "tnote": {
+        "split-multichar": "<c>split</c> trata cada caractere de {sep} como separador, enquanto <c>getfield</c> divide pela string inteira, então os dois podem dar campos diferentes.",
+        "leading-separator": "O valor começa com o separador, então o primeiro campo é vazio: o campo 1 em <c>getfield</c>, o elemento 0 depois de <c>split</c>.",
+        "leading-slash": "O caminho começa com barra, então <c>split</c> cria um elemento 0 vazio e <c>getfield</c> um campo 1 vazio: cada comando precisa de um a mais do que se espera.",
+        "getfield-leading-assumed": "A página de getfield da F5 não tem exemplo em que a string começa com o separador. A ferramenta assume que o campo 1 é o texto vazio antes dele, como faz <c>split</c>; confirme num BIG-IP antes de depender disso.",
+        "query-in-path": "O valor tem um ponto de interrogação: um caminho tirado de <c>HTTP::uri</c> inclui a query string. Use <c>HTTP::path</c> para cortar segmentos sem ela.",
+        "right-rows-disagree": "Comandos que deveriam responder à mesma pergunta discordam aqui: leia as notas antes de escolher um.",
+        "lrange-list": "<c>lrange</c> devolve uma lista, então um elemento com espaços ou chaves volta entre aspas, enquanto <c>lindex</c> devolve o próprio elemento.",
+        "found-at-zero": "Encontrado no índice {index}, a primeiríssima posição (posição {position} para pessoas). Um <c>if</c> sobre o índice lê 0 como falso e pula o corpo.",
+        "found": "Encontrado no índice {index} (posição {position} para pessoas). Qualquer índice acima de 0 é verdadeiro num <c>if</c>, então a armadilha só aparece em 0 e em -1.",
+        "not-found": "Não encontrado: -1. Um <c>if</c> sobre o índice lê -1 como verdadeiro e roda o corpo mesmo assim."
+      },
+      "undocumentedLabel": "Não documentado pela F5:",
+      "undocumented": {
+        "skip-past-end": "As páginas da F5 não dizem o que <c>{cmd}</c> devolve quando o salto passa do fim da string. A ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "negative-skip": "As páginas da F5 não tratam de um salto negativo em <c>{cmd}</c>. A ferramenta começa no início da string; confirme num BIG-IP antes de depender disso.",
+        "count-format": "A contagem <c>{text}</c> não está escrita só com dígitos decimais. O Tcl a lê como inteiro (0 inicial é octal, 0x é hexadecimal), mas a F5 não diz como findstr e substr a leem.",
+        "count-zero": "A regra da F5 diz que um número como terminador devolve essa quantidade de caracteres, o que faria 0 devolver nada; mas o próprio exemplo de substr da F5 com 0 devolve o resto da string. A ferramenta segue o exemplo. Uma nota de colaborador na página da referência de API da F5 relata que 0 não funcionou nas versões 11.5.4 e 11.6.0, então confirme na sua versão.",
+        "count-negative": "As páginas da F5 não tratam de uma contagem negativa. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "empty-terminator": "As páginas da F5 não tratam de um terminador vazio. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "terminator-absent-findstr": "A página de findstr da F5 não diz o que acontece quando o terminador não aparece (a página de substr diz que o resto da string é devolvido). A ferramenta assume o mesmo para findstr.",
+        "findstr-not-found": "As páginas da F5 não dizem o que findstr devolve quando <c>{search}</c> não está na string. A ferramenta assume uma string vazia. A F5 diz que findstr equivale a string range com string first, mas esse equivalente devolve a string inteira aqui, então os dois não podem estar certos ao mesmo tempo; confirme num BIG-IP antes de depender disso.",
+        "substr-no-terminator": "O terminador é opcional na sintaxe da F5, mas a página não diz o que acontece sem ele. A ferramenta devolve o resto da string; confirme num BIG-IP antes de depender disso.",
+        "getfield-empty-split": "As páginas da F5 não tratam de um separador vazio. A ferramenta trata a string inteira como o campo 1.",
+        "getfield-empty-field": "Dois separadores seguidos criam aqui um campo vazio. As páginas da F5 não mostram esse caso.",
+        "getfield-out-of-range": "Há {count} campos e foi pedido o campo {field}. As páginas da F5 não dizem o que getfield devolve nesse caso; a ferramenta assume uma string vazia.",
+        "domain-count": "A página da F5 mostra <c>domain</c> só com contagens de 1 ou mais. Para {count}, a ferramenta assume uma string vazia; confirme num BIG-IP antes de depender disso.",
+        "domain-empty-label": "O nome tem um rótulo vazio (um ponto no início, no fim ou duplicado). A página da F5 não tem exemplo disso para <c>domain</c>.",
+        "class-contains-multiple": "{count} entradas contêm o valor. A F5 documenta que starts_with e ends_with devolvem o casamento mais longo, mas não qual entrada contains devolve; a ferramenta pega a primeira na ordem em que o data group as lista."
+      },
+      "entry": {
+        "tcl-string-index": {
+          "counts": "caracteres",
+          "rule": "<c>string index</c> conta caracteres a partir de 0: o índice 0 é o primeiro caractere, <c>end</c> o último e <c>end-1</c> o anterior. Um índice abaixo de 0, ou igual ou maior que o comprimento, devolve uma string vazia, não um erro."
+        },
+        "tcl-string-range": {
+          "counts": "caracteres, com as duas pontas incluídas",
+          "rule": "<c>string range</c> recebe um índice inicial e um final, ambos contados a partir de 0 e ambos incluídos: <c>string range $s 0 2</c> devolve três caracteres. Um índice inicial abaixo de 0 é lido como 0, e um índice final além do fim é lido como <c>end</c>.",
+          "trap": "Como o índice final está incluído, o resultado tem o final menos o inicial mais um caracteres. Os N primeiros caracteres são <c>string range $s 0 N-1</c>, não N."
+        },
+        "tcl-string-first": {
+          "counts": "caracteres",
+          "rule": "<c>string first</c> e <c>string last</c> devolvem o índice onde o texto começa, contado a partir de 0, ou -1 quando ele não está lá. O índice de início opcional de <c>string first</c> (e o índice final de <c>string last</c>) usa a mesma numeração.",
+          "trap": "Num <c>if</c>, 0 é falso e qualquer outro número é verdadeiro. Então <c>if [string first ...]</c> pula o corpo quando o texto está bem no início (índice 0) e roda o corpo quando o texto não existe (-1). Teste <c>[string first ...] >= 0</c> em vez disso."
+        },
+        "tcl-string-compare": {
+          "counts": "um resultado de comparação, não uma posição",
+          "rule": "<c>string compare</c> devolve -1, 0 ou 1: 0 significa que as duas strings são iguais, -1 que a primeira vem antes da segunda na ordenação, e 1 que vem depois.",
+          "trap": "Lido como condição, 0 é falso: <c>if [string compare $a $b]</c> roda quando as strings são diferentes. Para igualdade use <c>string equal</c> ou o operador <c>eq</c>, que dão 1 quando as strings são iguais."
+        },
+        "tcl-truth": {
+          "counts": "uma condição, não uma posição",
+          "rule": "Na condição de um <c>if</c>, e sempre que <c>expr</c> lê um valor como verdadeiro ou falso, 0 é falso e qualquer outro número é verdadeiro, inclusive -1. O Tcl também aceita as palavras true, yes e on, e false, no e off, em maiúsculas ou minúsculas e abreviadas, desde que a abreviação não seja ambígua: <c>n</c>, <c>t</c> e <c>of</c> funcionam, enquanto <c>o</c> dá erro. O iRules Style Guide do DevCentral pede que você guarde estado só como 0 ou 1.",
+          "trap": "<c>string is true</c> e <c>string is false</c> seguem regras diferentes das do <c>if</c>: aceitam só 0, 1 e as palavras, então <c>string is true -1</c> devolve 0 embora o <c>if</c> trate -1 como verdadeiro. Sem <c>-strict</c>, também devolvem 1 para uma string vazia, que o <c>if</c> recusa com um erro."
+        },
+        "tcl-string-other": {
+          "counts": "caracteres",
+          "rule": "<c>string replace</c> recebe índices inicial e final como <c>string range</c>; <c>string wordstart</c> e <c>string wordend</c> recebem um índice e devolvem outro; <c>string is</c> com <c>-failindex</c> guarda o índice do primeiro caractere que falhou. Todos contam a partir de 0, e os argumentos de índice aceitam <c>end</c>."
+        },
+        "tcl-end-keyword": {
+          "counts": "posições a partir do fim",
+          "rule": "<c>end</c> é o último índice, ou seja, o comprimento menos um, e <c>end-1</c> é o anterior. Funciona em <c>string index</c>, <c>string range</c>, <c>string replace</c>, <c>lindex</c>, <c>lrange</c>, <c>linsert</c>, <c>lreplace</c> e <c>lsort -index</c>.",
+          "trap": "<c>end</c> não é o comprimento: numa string de 4 caracteres, <c>end</c> é 3. <c>end-0</c> é o mesmo que <c>end</c>."
+        },
+        "tcl-lindex": {
+          "counts": "elementos de lista",
+          "rule": "<c>lindex</c> conta elementos a partir de 0: o índice 0 é o primeiro elemento e <c>end</c> o último. Um índice negativo, ou igual ou maior que o número de elementos, devolve uma string vazia."
+        },
+        "tcl-lrange": {
+          "counts": "elementos de lista, com as duas pontas incluídas",
+          "rule": "<c>lrange</c> devolve os elementos do inicial ao final, contados a partir de 0 e ambos incluídos: <c>lrange $l 0 1</c> são os dois primeiros. Um índice inicial abaixo de 0 é lido como 0, e um final além do fim como <c>end</c>."
+        },
+        "tcl-lsearch": {
+          "counts": "elementos de lista",
+          "rule": "<c>lsearch</c> devolve o índice do primeiro elemento que casa, contado a partir de 0, ou -1 quando nada casa. <c>-start</c> recebe um índice na mesma numeração.",
+          "trap": "A mesma armadilha de <c>string first</c>: um casamento no índice 0 é falso num <c>if</c>, e nenhum casamento (-1) é verdadeiro. Compare o resultado com -1."
+        },
+        "tcl-list-edit": {
+          "counts": "elementos de lista",
+          "rule": "<c>linsert</c>, <c>lreplace</c> e <c>lset</c> recebem índices contados a partir de 0. <c>linsert</c> em 0 (ou abaixo) coloca os novos elementos primeiro, e em <c>end</c> (ou além do fim) acrescenta no fim."
+        },
+        "tcl-lsort-index": {
+          "counts": "elementos dentro de cada sublista",
+          "rule": "<c>lsort -index</c> ordena uma lista de listas por um elemento de cada sublista, contado a partir de 0: <c>-index 1</c> ordena pelo segundo elemento. <c>end</c> e <c>end-N</c> são aceitos."
+        },
+        "tcl-split": {
+          "counts": "elementos da lista depois da divisão",
+          "rule": "<c>split</c> cria uma lista, e <c>lindex</c> a conta a partir de 0. Quando a string começa com o separador, o primeiro elemento é o texto vazio antes dele.",
+          "trap": "Um caminho começa com barra, então <c>split /api/v2/users /</c> dá quatro elementos, o primeiro vazio: o primeiro segmento, api, é o elemento 1, não o 0."
+        },
+        "tcl-regexp-indices": {
+          "counts": "caracteres",
+          "rule": "Com <c>-indices</c>, <c>regexp</c> guarda cada casamento como um par de índices, o primeiro e o último caractere, contados a partir de 0 e ambos incluídos. Um grupo que não participou do casamento recebe -1 -1. <c>-start</c> recebe um índice na mesma numeração."
+        },
+        "tcl-regexp-groups": {
+          "counts": "grupos de captura",
+          "rule": "Os grupos de captura contam a partir de 1, na ordem em que os parênteses de abertura aparecem: a primeira variável de sub-casamento de <c>regexp</c> recebe o grupo 1, e <c>regsub</c> o escreve como <c>\\1</c>. O grupo 0 é o casamento inteiro: a variável de casamento de <c>regexp</c>, e & ou <c>\\0</c> em <c>regsub</c>.",
+          "trap": "Os números de grupo começam em 1 enquanto as posições na string começam em 0: na mesma chamada <c>regexp -indices</c>, o grupo 1 pode informar a posição 0."
+        },
+        "tcl-positional": {
+          "counts": "argumentos e variáveis",
+          "rule": "Em <c>format</c> e <c>scan</c>, um especificador de posição como <c>%2$s</c> escolhe um argumento (ou uma variável) pelo número, e 1 é o primeiro. Quando um especificador é posicional, todos precisam ser."
+        },
+        "tcl-scan-count": {
+          "counts": "entrada lida até ali",
+          "rule": "<c>%n</c> guarda quanto da entrada <c>scan</c> já leu, então é igual ao índice onde o resto da string começa e pode alimentar <c>string range</c>.",
+          "trap": "No Tcl 8.4.6 essa quantidade é contada em bytes de UTF-8, não em caracteres: depois de um caractere como é ela passa à frente de <c>string range</c> (o explicador de scan mostra isso)."
+        },
+        "tcl-clock-zero": {
+          "counts": "dias da semana, horas, minutos, segundos, semanas",
+          "rule": "Estes campos de <c>clock format</c> começam em 0: %w é o dia da semana com domingo 0, %H a hora de 00 a 23, %M e %S de 00 a 59, e %U e %W a semana do ano a partir de 00 (no tclsh 8.4.6, 1 de janeiro de 1970, uma quinta-feira, é a semana 00 nos dois)."
+        },
+        "tcl-clock-one": {
+          "counts": "dias da semana, dias, meses, semanas",
+          "rule": "Estes campos de <c>clock format</c> começam em 1: %u é o dia da semana com segunda-feira 1 e domingo 7, %d e %e o dia do mês, %j o dia do ano a partir de 001, %m o mês a partir de 01, %I o relógio de 12 horas a partir de 01, e %V a semana ISO 8601 a partir de 01.",
+          "trap": "%w e %u numeram o mesmo dia de forma diferente: domingo é 0 em %w e 7 em %u, enquanto segunda-feira é 1 nos dois."
+        },
+        "tcl-binary-at": {
+          "counts": "bytes",
+          "rule": "Em <c>binary scan</c>, @ leva o cursor a uma posição absoluta em bytes, e a posição 0 é o primeiro byte. Uma posição além do fim deixa o cursor depois do último byte."
+        },
+        "tcl-levels": {
+          "counts": "níveis da pilha de chamadas",
+          "rule": "<c>info level</c> é 0 no topo (o nível global) e 1 dentro de um proc chamado dali. <c>uplevel</c> e <c>upvar</c> recebem um nível relativo, em que 1 (quem chamou) é o padrão, ou um absoluto escrito com #: #0 é o nível global."
+        },
+        "tcl-rand": {
+          "counts": "posições de lista",
+          "rule": "<c>rand()</c> devolve um valor entre 0 e 1, nunca o próprio 1, então <c>int(rand()*N)</c> é um número inteiro de 0 a N-1: exatamente as posições de <c>lindex</c> numa lista com N elementos."
+        },
+        "f5-getfield": {
+          "counts": "campos",
+          "rule": "<c>getfield</c> divide uma string num caractere ou numa string e devolve um campo. Página da F5: o número do campo começa em 1, então o campo 1 é o texto antes do primeiro separador.",
+          "trap": "Quando a string começa com o separador, o campo 1 é o texto vazio antes dele, então o primeiro segmento de um caminho é o campo 2. A página da F5 não tem exemplo com separador no início; o tradutor sinaliza isso."
+        },
+        "f5-substr": {
+          "counts": "caracteres",
+          "rule": "<c>substr</c> começa num índice contado a partir de 0: a página da F5 diz que o skip é o índice do primeiro caractere devolvido, onde 0 é o primeiro caractere. O terminador é um comprimento ou um texto antes do qual parar.",
+          "conflict": "A regra da F5 diz que um terminador numérico devolve essa quantidade de caracteres, então 0 não devolveria nada, mas o exemplo publicado com 0 devolve o resto da string, e a página da API marca essa linha como não funcionando no 11.5.4 e no 11.6.0."
+        },
+        "f5-findstr": {
+          "counts": "caracteres a partir do casamento",
+          "rule": "<c>findstr</c> encontra o texto procurado e então pula uma quantidade de caracteres contada a partir do primeiro caractere do casamento: 0, o padrão, devolve o próprio casamento. Para começar logo depois do texto procurado, pule o comprimento dele.",
+          "trap": "<c>substr</c> conta o skip a partir do início da string e <c>findstr</c> a partir do início do casamento, embora a página de substr da F5 diga que os dois usam esses argumentos do mesmo jeito."
+        },
+        "f5-domain": {
+          "counts": "rótulos, a partir da direita",
+          "rule": "<c>domain</c> devolve os últimos N rótulos de um nome com pontos, contados a partir da direita: no exemplo da F5, 1 dá com e 2 dá domain.com. Uma contagem maior que o número de rótulos devolve o nome inteiro.",
+          "trap": "Num nome como www.sub.my.domain.co.uk, 2 devolve co.uk, não o nome da organização (exemplo da própria F5)."
+        },
+        "f5-uri-path": {
+          "counts": "profundidade de diretório",
+          "rule": "<c>URI::path</c> com uma profundidade inicial (e uma final) devolve parte do caminho de diretórios, e a profundidade 1 é o primeiro diretório: a página da F5 diz que o intervalo exige início >= 1, e o exemplo mostra que 0 gera um erro de Tcl.",
+          "conflict": "O exemplo da F5 se contradiz: um comentário diz que a profundidade é 3 onde a saída mostra 2, um início de 3 devolve / enquanto um início de 4 devolve /path/to/, e a cópia da página no tmsh omite essas linhas."
+        },
+        "f5-request-num": {
+          "counts": "requisições na conexão",
+          "rule": "<c>HTTP::request_num</c> conta as transações HTTP da conexão atual incluindo a atual, então a primeira requisição devolve 1. <c>HTTP2::requests</c> conta do mesmo jeito na sessão HTTP/2 e devolve 0 quando o HTTP/2 não está ativo."
+        },
+        "f5-http-header": {
+          "counts": "linhas de cabeçalho",
+          "rule": "<c>HTTP::header at</c> devolve o nome do cabeçalho num índice que começa em zero, então 0 é a primeira linha de cabeçalho. Pedir o valor de um cabeçalho que não existe devolve uma string vazia.",
+          "trap": "Quando um cabeçalho aparece mais de uma vez, <c>HTTP::header value</c> trabalha com o último, enquanto <c>SIP::header</c> sem índice devolve o primeiro. <c>HTTP::header values</c> devolve todos."
+        },
+        "f5-payload": {
+          "counts": "bytes",
+          "rule": "Os comandos de payload recebem um deslocamento em bytes contado a partir de 0: a página de HTTP::payload da F5 diz que, para substituir o payload inteiro, o deslocamento deve ser 0, e as páginas de payload de TCP, UDP e SSL mostram a mesma base nos exemplos.",
+          "result": "o payload TCP coletado fica vazio (exemplo da F5)"
+        },
+        "f5-tcp-offset": {
+          "counts": "bytes coletados (uma contagem)",
+          "rule": "Apesar do nome, <c>TCP::offset</c> não é uma posição: a página da F5 diz que ele devolve o número de bytes retidos na memória por <c>TCP::collect</c>.",
+          "trap": "Use-o como comprimento, não como deslocamento do último byte: com N bytes retidos, o último fica no deslocamento N menos 1.",
+          "result": "o número de bytes coletados até agora"
+        },
+        "f5-ssl-cert": {
+          "counts": "certificados na cadeia do par",
+          "rule": "<c>SSL::cert</c> e <c>SSL::cert issuer</c> recebem um índice a partir de 0: a página da F5 diz que zero indica o primeiro certificado da cadeia enviada pelo par e um o seguinte. <c>SSL::cert count</c> é o total, então o último índice é a contagem menos 1.",
+          "conflict": "Um dos exemplos da F5 tem o comentário \"Check if there is more than one client cert\" acima de um teste de contagem maior que 0, o que significa pelo menos um.",
+          "result": "o primeiro certificado enviado pelo par (os exemplos da F5 o usam como o próprio certificado do cliente)"
+        },
+        "f5-ssl-extensions": {
+          "counts": "extensões TLS",
+          "rule": "<c>SSL::extensions -index</c> devolve a N-ésima extensão, com índice a partir de zero nas palavras da F5, e <c>SSL::extensions count</c> é quantas chegaram.",
+          "trap": "O próprio exemplo da F5 percorre a partir de 0 e imprime o número mais um para pessoas: conte a partir de 0 no código e a partir de 1 nas mensagens.",
+          "result": "a primeira extensão recebida, em bytes"
+        },
+        "f5-class-index": {
+          "counts": "entradas do data group",
+          "rule": "Com <c>-index</c>, <c>class match</c> e <c>class search</c> devolvem índices de entradas, e <c>class element</c> recebe um; o exemplo da F5 lista os três primeiros casamentos como 0 1 2. Sem opção, <c>class match</c> devolve 1 quando casa e 0 quando não casa.",
+          "trap": "A F5 avisa que esses índices não têm garantia de continuar os mesmos quando o data group muda, nem entre eventos.",
+          "conflict": "Um comentário de exemplo na página da F5 chama lindex $element 1 de chave, mas no par de nome e valor esse índice é o valor."
+        },
+        "f5-matchclass": {
+          "counts": "linhas do data group",
+          "rule": "O antigo <c>matchclass</c> devolve o índice da linha que casou contado a partir de 1, e 0 quando nada casa, então o resultado funciona como condição. A página da F5 lembra que lindex conta a partir de 0, daí o menos 1 no exemplo.",
+          "conflict": "A mesma página afirma que nenhum casamento devolve 0, mas o exemplo testa o resultado contra -1.",
+          "result": "a linha que casou, do antigo data group em forma de lista"
+        },
+        "f5-tmm-cmp": {
+          "counts": "instâncias e grupos de TMM",
+          "rule": "<c>TMM::cmp_unit</c> devolve o número (0-x) da CPU, a instância de TMM, que executa a regra, e o exemplo da F5 chama 0 de primeira instância de TMM. <c>TMM::cmp_group</c> devolve o grupo (0-x), que é sempre 0 em plataformas que não são chassis. <c>TMM::cmp_count</c> é quantos TMMs rodam.",
+          "result": "0 na primeira instância de TMM"
+        },
+        "f5-sip-index": {
+          "counts": "entradas de cabeçalho SIP",
+          "rule": "<c>SIP::route</c> e <c>SIP::record-route</c> recebem um índice numérico que começa em zero (ou a palavra top), e <c>SIP::via</c> também recebe um índice a partir de zero, segundo a cópia da página no tmsh. Sem índice, <c>SIP::via</c> devolve o primeiro Via.",
+          "result": "a parte de protocolo do primeiro cabeçalho Via"
+        },
+        "f5-diameter-avp": {
+          "counts": "AVPs com o mesmo código",
+          "rule": "<c>DIAMETER::avp</c> escolhe o N-ésimo AVP com um código pelo índice que começa em zero, e omitir o índice funciona exatamente como o índice 0, o primeiro."
+        },
+        "f5-radius-avp": {
+          "counts": "ocorrências do atributo",
+          "rule": "Os exemplos de <c>RADIUS::avp</c> da F5 leem atributos repetidos com index 0, 1, 2 e assim por diante, e param no primeiro resultado vazio. A página nunca diz a base com palavras.",
+          "result": "o primeiro atributo específico de fornecedor que casa, como string"
+        },
+        "f5-message-field": {
+          "counts": "ocorrências do campo",
+          "rule": "<c>MESSAGE::field value</c> recebe um índice opcional que a página da F5 chama de baseado em 0. Um campo que não existe devolve uma string vazia, e a ordem dos campos repetidos depende do protocolo.",
+          "result": "o primeiro campo Via da mensagem"
+        },
+        "f5-name-response": {
+          "counts": "registros de endereço",
+          "rule": "<c>NAME::response address</c> recebe um índice de 0 a 15, inclusive; sem índice devolve a lista de até 16 registros, e nulo quando nada voltou. A F5 o descontinuou na versão 15.1 em favor dos comandos RESOLVER e DNSMSG.",
+          "result": "o primeiro endereço devolvido por NAME::lookup"
+        },
+        "f5-json-array": {
+          "counts": "valores do array",
+          "rule": "Os comandos <c>JSON::array</c>, que a F5 lista como introduzidos no BIG-IP 21.0.0, contam posições a partir de 0: inserir num índice igual ao tamanho acrescenta no fim, e remover desliza os valores seguintes uma posição para baixo. A página nunca escreve a base com palavras.",
+          "result": "o primeiro valor do array"
+        },
+        "f5-dns-lists": {
+          "counts": "endereços e registros",
+          "rule": "<c>RESOLV::lookup</c> e <c>DNSMSG::section</c> devolvem listas Tcl, então <c>lindex</c> 0 é o primeiro item; a página de RESOLV::lookup da F5 usa exatamente isso para obter um único endereço.",
+          "conflict": "O exemplo de DNSMSG::record da F5 guarda lindex $answer 1 numa variável chamada first_rr, mas o índice 1 é o segundo registro.",
+          "result": "o primeiro endereço devolvido pela consulta"
+        },
+        "f5-whereis": {
+          "counts": "posições da lista",
+          "rule": "<c>whereis</c> devolve uma lista Tcl com o continente, o país e o estado, nessa ordem, então o exemplo da F5 lê o continente com <c>lindex</c> 0 e o país com <c>lindex</c> 1.",
+          "result": "o código de país do cliente"
+        },
+        "f5-member-lists": {
+          "counts": "membros do pool",
+          "rule": "<c>active_members -list</c> devolve uma lista Tcl de pares de endereço e porta dos membros ativos, e <c>members -list</c> cobre todos os membros, então <c>lindex</c> 0 é o primeiro par da lista.",
+          "trap": "As páginas da F5 não dizem em que ordem os membros vêm, então o primeiro par não é um membro específico: não baseie lógica numa posição."
+        },
+        "f5-table-incr": {
+          "counts": "um contador",
+          "rule": "<c>table incr</c> começa uma chave inexistente em 0, soma 1 a menos que se diga outro valor, e devolve o valor depois da soma, então a primeira chamada devolve 1."
+        },
+        "f5-stats-fields": {
+          "counts": "campos de um perfil Statistics",
+          "rule": "A página da F5 diz que os campos de um perfil Statistics são numerados de 1 a 32, mas <c>STATS::incr</c> recebe o nome do campo, não o número.",
+          "result": "o campo hits do perfil my_stats sobe 1"
+        },
+        "f5-priority": {
+          "counts": "valores de prioridade de evento",
+          "rule": "A prioridade de um evento vai de 0 a 1000, inclusive, tem 500 como padrão, e números menores rodam primeiro, então a prioridade 0 roda antes dos números maiores nesse evento. O iRules Style Guide do DevCentral pede uma prioridade em todo evento, com 500 quando não houver outro ponto de partida.",
+          "conflict": "A mesma página da F5 também diz que a prioridade pode ser atribuída entre 1 e 1000.",
+          "result": "este corpo de HTTP_REQUEST roda antes dos que estão no padrão 500"
+        },
+        "f5-mr-clone-id": {
+          "counts": "clones de mensagem",
+          "rule": "<c>MR::message clone -count</c> numera os novos clones a partir da contagem anterior de clones mais 1, então o primeiro clone de uma mensagem recebe o ID 1; o original não tem ID de clone (uma string vazia).",
+          "conflict": "A página da F5 descreve clone_count como o número de clones incluindo o original e, na mesma frase, diz que ele devolve 0 quando não há clones.",
+          "result": "dois clones, com IDs 1 e 2, para uma mensagem que não tinha nenhum"
+        },
+        "f5-mr-instance": {
+          "counts": "instâncias de conexão",
+          "rule": "<c>MR::connection_instance</c> devolve um texto na forma instância of total, e a página da F5 diz que conexões de entrada devolvem 0 of 1: a instância conta a partir de 0."
+        },
+        "f5-ssl-verify-result": {
+          "counts": "um código de resultado, não uma posição",
+          "rule": "<c>SSL::verify_result</c> devolve 0 para X509_V_OK, que a tabela da F5 descreve como operação bem-sucedida; os outros números são códigos de erro de verificação.",
+          "trap": "Lido como condição, o sucesso é falso: <c>if [SSL::verify_result]</c> roda quando a verificação falhou. Compare com 0 para dizer o que você quer."
+        },
+        "f5-lb-server": {
+          "counts": "um valor de prioridade e um domínio de roteamento",
+          "rule": "<c>LB::server priority</c> devolve 1 quando o membro do pool não tem prioridade configurada, e <c>LB::server route_domain</c> devolve nulo quando o domínio de roteamento é 0, o padrão.",
+          "conflict": "A própria configuração do membro do pool, priority-group, tem 0 como padrão na referência do tmsh, então o 1 que LB::server informa para um membro não configurado não bate com o padrão configurado. Não testado num BIG-IP."
+        },
+        "cfg-route-domain": {
+          "counts": "domínios de roteamento",
+          "rule": "O domínio de roteamento 0 é o padrão: o guia de roteamento da F5 diz que, sem domínios criados, toda rota pertence ao domínio 0, e que um endereço sem %ID usa o domínio padrão da partição, ou o domínio 0 em Common. A referência do tmsh acrescenta que, quando nenhuma rota é encontrada, o sistema procura no domínio 0.",
+          "result": "um membro de pool em 10.10.10.30, porta 80, no domínio de roteamento 2"
+        },
+        "cfg-priority-group": {
+          "counts": "grupos de prioridade",
+          "rule": "O priority-group de um membro de pool vai de 0 a 65535 e tem 0 como padrão, e números maiores recebem tráfego primeiro, então 0 é o grupo mais baixo: seus membros só recebem tráfego quando todos os membros dos grupos mais altos estão indisponíveis. Um min-active-members de 0 desliga a ativação por grupo de prioridade.",
+          "trap": "Aqui o número maior ganha, o contrário da prioridade de evento, dos ordinais de política LTM e da ordem do GTM, onde o número menor vai primeiro.",
+          "result": "o grupo de prioridade mais baixo (o padrão)"
+        },
+        "cfg-ratio": {
+          "counts": "peso de balanceamento",
+          "rule": "Os pesos de ratio têm 1 como padrão para membros de pool LTM, e o esquema AS3 também dá 1 como padrão para membros de pool GSLB; ele aceita de 0 a 100 para um membro de pool LTM.",
+          "result": "o peso padrão"
+        },
+        "cfg-zero-limits": {
+          "counts": "limites",
+          "rule": "Nesses campos 0 não é um tamanho, significa sem limite: um connection-limit de 0 permite conexões ilimitadas em servidores virtuais, membros de pool e domínios de roteamento, um queue-depth-limit de 0 significa sem limite, e reselect-tries 0 significa que o sistema não tenta outro membro do pool.",
+          "result": "sem limite de conexões"
+        },
+        "cfg-port-zero": {
+          "counts": "portas de serviço",
+          "rule": "A porta 0 num servidor virtual significa todas as portas: a F5 descreve um servidor virtual curinga padrão como um que usa a porta 0 e atende o tráfego de todos os serviços. Os exemplos do tmsh escrevem a porta como any.",
+          "result": "um servidor virtual em 11.11.11.12 para todas as portas"
+        },
+        "cfg-policy-numbers": {
+          "counts": "regras, condições e ações",
+          "rule": "Dentro de uma regra de política LTM, condições e ações são numeradas 0, 1 e assim por diante, como mostra o exemplo de tmsh da F5. As regras têm um ordinal: o menor valor vem primeiro, e o artigo do DevCentral sobre estratégias de casamento diz que 0 é o padrão e não aparece.",
+          "conflict": "A referência do iControl REST descreve o ordinal como um inteiro positivo, enquanto o padrão é 0.",
+          "result": "a primeira condição da regra"
+        },
+        "cfg-policy-index": {
+          "counts": "segmentos de caminho e parâmetros de query",
+          "rule": "Numa condição de política LTM, path-segment index e unnamed-query-param index contam a partir de 1, e valores negativos contam a partir da direita.",
+          "trap": "O primeiro segmento de /api/v2 é o index 1 numa política e o elemento 1 depois de split no Tcl, por motivos diferentes: a política conta a partir de 1, enquanto o Tcl conta a partir de 0 e tem um elemento vazio antes da barra inicial.",
+          "result": "a condição olha o segundo segmento do caminho do Referer"
+        },
+        "cfg-policy-precedence": {
+          "counts": "níveis de precedência",
+          "rule": "A tabela de precedência de uma estratégia de política LTM começa em 1, e um valor menor é uma precedência maior: best-match a usa para decidir qual condição que casou é a mais específica.",
+          "result": "a maior precedência da tabela"
+        },
+        "cfg-gtm-order": {
+          "counts": "pools e membros, em ordem",
+          "rule": "No BIG-IP DNS, os pools de um wide IP e os membros de um pool têm uma ordem que começa em 0: o laboratório da F5 cria o primeiro pool com order 0, e o esquema AS3 tem memberOrder 0 como padrão. O Global Availability usa o primeiro pool da lista enquanto ele estiver disponível.",
+          "result": "o primeiro pool do wide IP"
+        },
+        "cfg-vlan-tag": {
+          "counts": "IDs de VLAN",
+          "rule": "Uma tag de VLAN vai de 1 a 4094: a faixa começa em 1. A referência do tmsh também aceita 4096, uma tag especial que não é usada no caminho de processamento dos pacotes e ajuda na configuração de virtual-wire.",
+          "result": "a maior tag comum"
+        },
+        "cfg-traffic-group": {
+          "counts": "grupos de tráfego",
+          "rule": "Todo BIG-IP vem com traffic-group-1, o grupo flutuante ao qual objetos flutuantes novos entram por padrão, e traffic-group-local-only: o grupo flutuante é numerado a partir de 1. O unit ID de um grupo de tráfego fica entre 1 e 15.",
+          "result": "o grupo de tráfego flutuante pré-configurado"
+        },
+        "cfg-apm-acl-order": {
+          "counts": "posições de ACL",
+          "rule": "acl-order posiciona uma ACL do APM na lista de ACLs, e um número menor fica mais acima na lista.",
+          "conflict": "A referência do tmsh descreve acl-order 3 como a terceira ACL da lista, o que conta a partir de 1, enquanto a documentação do módulo Ansible da F5 diz que o menor número, 0, é o do topo, o que faz de 3 a quarta.",
+          "result": "a posição de MyACL na lista de ACLs"
+        },
+        "plat-interfaces": {
+          "counts": "interfaces",
+          "rule": "As interfaces do BIG-IP se chamam slot.porta, como 1.1, 1.2 e 2.1 nos exemplos da F5, então os dois números começam em 1. Num VIPRION o slot da lâmina vem primeiro, como em 1/1.2 (slot 1, interface 1.2), e a interface de gerência se chama mgmt.",
+          "result": "uma VLAN nas interfaces 1.2, 1.3 e 1.4"
+        },
+        "plat-f5os-ports": {
+          "counts": "portas físicas",
+          "rule": "No F5OS, as portas do rSeries são numeradas de 1.0 até a última porta (10.0 na série r5000, 20.0 na série r10000). No VELOS uma porta agrupada é 1/1.0, e a mesma porta dividida em quatro é 1/1.1 a 1/1.4.",
+          "trap": "O .0 não é uma porta 0: no VELOS ele marca uma porta que não está dividida, e as partes divididas são .1 a .4.",
+          "result": "a primeira porta de um appliance rSeries"
+        },
+        "plat-slots": {
+          "counts": "slots do chassi",
+          "rule": "Os slots do VIPRION contam a partir de 1: o artigo da F5 sobre o LCD diz que o ID do slot é contado a partir de 1, então a lâmina 2 é 2, e o tmsh lista os membros de cluster de 1 a 8. Num appliance os mesmos comandos do LCD usam o slot 0.",
+          "trap": "No vCMP, a configuração slots de um convidado é uma quantidade de slots (maior que zero, padrão 1), não um número de slot.",
+          "result": "limpa os avisos de nível 0 do LCD no slot 0, de um appliance"
+        },
+        "plat-volumes": {
+          "counts": "discos e volumes",
+          "rule": "Os volumes de software se chamam HDX.Y (MDX.Y em RAID, CFX.Y em compact flash), onde X é o disco e Y o volume nele; os exemplos da F5 começam em HD1.1 e MD1.1.",
+          "result": "reinicia no primeiro volume do primeiro disco"
+        },
+        "plat-tmm-ids": {
+          "counts": "instâncias de TMM",
+          "rule": "As instâncias de TMM são numeradas a partir de 0: o tmsh mostra Sys::TMM: 0.0 a 0.7 numa plataforma com oito TMMs, e os processos começam em tmm.0. Com HTSplit só IDs pares são usados: o 10º TMM tem o ID 18."
+        },
+        "api-rest-skip": {
+          "counts": "objetos a pular",
+          "rule": "Na paginação do iControl REST, $skip é quantos objetos pular, então a primeira página é $skip=0 (a nota de bug da F5 busca os 100 primeiros pools assim), e $top é quantos devolver.",
+          "result": "os 100 primeiros pools"
+        },
+        "api-rest-page-index": {
+          "counts": "páginas e posições",
+          "rule": "Os campos de paginação de uma resposta do iControl REST contam a partir de 1: no exemplo do DevCentral a primeira página informa pageIndex 1 e startIndex 1.",
+          "trap": "Então a mesma primeira página é $skip=0 na requisição e startIndex 1 na resposta."
+        },
+        "api-soap-sysloglevel": {
+          "counts": "níveis de syslog",
+          "rule": "Os valores de Log::SyslogLevel do iControl SOAP ficam um acima dos números do syslog: LOG_LEVEL_EMERG é 1 e LOG_LEVEL_DEBUG 8, com 0 para nível desconhecido. ASM::SeverityName, no mesmo site, usa os números do syslog, EMERG 0 a DEBUG 7.",
+          "trap": "Converter entre eles exige ajuste de um: um valor de SyslogLevel menos 1 é a severidade do syslog."
+        },
+        "log-severity": {
+          "counts": "níveis de severidade",
+          "rule": "As severidades do syslog vão de 0, a mais grave (emerg), a 7 (debug). Numa linha de log do BIG-IP, o dígito entre os dois-pontos depois do código da mensagem é a severidade, com 0 sendo a mais alta.",
+          "trap": "Número maior é menos grave: 3 (err) é pior que 6 (info).",
+          "result": "severidade 3, err"
+        },
+        "log-facility": {
+          "counts": "facilities do syslog",
+          "rule": "O BIG-IP usa as facilities local0 a local7 do syslog, e local0 é a do próprio BIG-IP: a F5 a associa a /var/log/ltm, onde caem as mensagens de iRule registradas com local0. A facility padrão de local-syslog é local0.",
+          "result": "uma linha em /var/log/ltm"
+        },
+        "cap-tcpdump-00": {
+          "counts": "um nome de interface, não um número",
+          "rule": "No tcpdump de um BIG-IP, 0.0 não é a interface número 0: significa todas as interfaces do TMM de uma vez. Não captura a interface de gerência e não tem limite de taxa, então use filtros.",
+          "result": "o tráfego de todas as interfaces do TMM"
+        },
+        "cap-ethtrailer": {
+          "counts": "lâminas e TMMs",
+          "rule": "O trailer Ethernet da F5 numa captura registra o slot do chassi e o TMM que tratou cada pacote, e o exemplo de Wireshark da F5 para TMM0 no Slot1 lê slot == 1 e tmm == 0: os slots contam a partir de 1, os TMMs a partir de 0.",
+          "result": "pacotes tratados pelo primeiro TMM da primeira lâmina"
+        }
+      }
+    },
+    "ascii-table": {
+      "name": "Explorador da tabela ASCII",
+      "blurb": "Os 128 códigos ASCII em todas as notações, com os nomes da RFC 20 ao Unicode 18.0.0, como escrever cada um em C, JSON, JavaScript, Python, Tcl, HTML e URLs, e uma consulta que avisa quando um caractere nem é ASCII.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda no seu navegador. Nada do que você digita sai da página.",
+      "lookupLabel": "Consulte um código, um caractere ou um nome",
+      "lookupPlaceholder": "A, 65, 0x41, 4/1, &#65;, %41, ^A, LF, Reverse Slant",
+      "lookupHelp": "Lê decimal, hexadecimal (0x41 ou 41h), octal (0o101), sete ou oito dígitos binários, coluna/linha da RFC 20 (4/11), U+0041, referências HTML, codificação por porcentagem, escapes com barra invertida, notação de circunflexo, abreviações e nomes de controles, nomes Unicode ou o próprio caractere.",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "lookup-character": "A",
+        "lookup-column-row": "4/11",
+        "lookup-tilde": "&tilde;",
+        "lookup-minus": "&minus;",
+        "lookup-caret": "^[",
+        "lookup-control-name": "line feed",
+        "lookup-bits": "00100101",
+        "lookup-rfc20-name": "Reverse Slant",
+        "lookup-delete": "DEL",
+        "lookup-en-dash": "uma meia-risca",
+        "lookup-c1-control": "U+0085"
+      },
+      "namesLoading": "Carregando a tabela de nomes Unicode...",
+      "readAsLabel": "Lido como",
+      "readAs": {
+        "character": "o próprio caractere",
+        "decimal": "um número decimal",
+        "hexadecimal": "um número hexadecimal",
+        "octal": "um número octal",
+        "binary": "dígitos binários",
+        "column-row": "uma posição coluna/linha da RFC 20",
+        "unicode": "notação Unicode",
+        "html-decimal": "uma referência HTML decimal",
+        "html-hex": "uma referência HTML hexadecimal",
+        "html-named": "uma referência HTML nomeada",
+        "percent": "codificação por porcentagem",
+        "escape-hex": "um escape hexadecimal",
+        "escape-unicode": "um escape Unicode",
+        "escape-octal": "um escape octal",
+        "escape-named": "um escape nomeado",
+        "caret": "notação de circunflexo",
+        "name": "um nome"
+      },
+      "unknownTitle": "Nada aqui é lido como código, caractere ou nome.",
+      "unknownBody": "Experimente um número (65, 0x41, 0o101), uma posição (4/1), U+0041, uma referência (&#65;), um escape, a notação de circunflexo (^A) ou um nome (LF, line feed).",
+      "outsideTitle": "<c>{label}</c> não é ASCII",
+      "outsideName": "Nome Unicode",
+      "outsideAlias": "Sem nome Unicode; apelido formal",
+      "outsideNoName": "Este ponto de código não tem nome.",
+      "outsideBytes": "O ASCII termina em 127 (0x7F). Este precisa de {n} bytes em UTF-8.",
+      "outsideHidden": {
+        "invisible": "É invisível: não ocupa espaço na tela.",
+        "space": "É um espaço, mas não o espaço ASCII (32).",
+        "quote": "É uma aspa tipográfica, não a aspa ASCII com que se parece.",
+        "dash": "É um traço, não o hífen-menos ASCII (45).",
+        "lookalike": "A sua forma de compatibilidade é texto ASCII."
+      },
+      "outsideCompat": "Decomposição de compatibilidade (Unicode): <c>{text}</c>",
+      "outsidePrototype": "Confundível com o texto ASCII <c>{text}</c> (UTS #39).",
+      "outsideAsciiMeant": "Se você queria o caractere ASCII, ele é <c>{ch}</c>, código {code}: em HTML escreva <c>{ref}</c> ou o próprio caractere.",
+      "outsideInspect": "Veja todas as propriedades deste ponto de código no inspetor Unicode.",
+      "detailTitle": "Código {code}",
+      "numbersTitle": "Números",
+      "numDec": "Decimal",
+      "numHex": "Hexadecimal",
+      "numOct": "Octal",
+      "numBin": "Binário (7 bits)",
+      "numBin8": "Num byte (8 bits)",
+      "columnRow": "Coluna/linha (RFC 20)",
+      "columnRowHelp": "Os bits b7 b6 b5 dão a coluna, de b4 a b1 a linha.",
+      "bitsTitle": "Inverta um bit",
+      "bitsHelp": "Cada botão inverte um bit e salta para o código resultante. O b6 (valor 32) separa maiúsculas de minúsculas; o b7 (valor 64) separa um controle do caractere com que ele forma par na notação de circunflexo.",
+      "bitLabel": "b{n}, valor {value}",
+      "namesTitle": "Nomes",
+      "nameUnicode": "Unicode 18.0.0",
+      "nameUnicodeAlias": "Apelido Unicode (controles não têm nome)",
+      "nameAliases": "Outros apelidos",
+      "nameAbbr": "Abreviação",
+      "nameUnicode1": "Unicode 1.0",
+      "nameRfc20": "RFC 20 (USAS X3.4-1968)",
+      "nameRfc20Alt": "Também, na RFC 20",
+      "nameCategory": "General_Category",
+      "gc": {
+        "Cc": "Control",
+        "Zs": "Space_Separator",
+        "Po": "Other_Punctuation",
+        "Sc": "Currency_Symbol",
+        "Ps": "Open_Punctuation",
+        "Pe": "Close_Punctuation",
+        "Sm": "Math_Symbol",
+        "Pd": "Dash_Punctuation",
+        "Nd": "Decimal_Number",
+        "Lu": "Uppercase_Letter",
+        "Sk": "Modifier_Symbol",
+        "Pc": "Connector_Punctuation",
+        "Ll": "Lowercase_Letter"
+      },
+      "classLabel": "Classe na RFC 20",
+      "class": {
+        "CC": "Controle de comunicação: controla ou facilita a transmissão de informação em redes.",
+        "FE": "Efetuador de formato: controla o leiaute ou a posição numa impressora ou tela.",
+        "IS": "Separador de informação: divide os dados logicamente, numa hierarquia de quatro.",
+        "none": "Controle sem classe na RFC 20.",
+        "graphic": "Caractere gráfico."
+      },
+      "noteAgree": "Nota 3 da RFC 20: não use esta posição em intercâmbio internacional sem antes combinar o seu uso.",
+      "notePound": "Nota 4 da RFC 20: onde o # não é necessário, o símbolo da libra esterlina pode ocupar esta posição.",
+      "noteDelStrict": "RFC 20: a rigor, o DEL não é um caractere de controle. O Unicode o classifica como controle (Cc).",
+      "noteGcPo": "A UAX #44 observa que @, #, % e & são classificados há muito tempo como Other_Punctuation, embora a tipografia ocidental não os use como pontuação.",
+      "rfcTitle": "Para que a RFC 20 o define",
+      "todayTitle": "O que ele faz hoje",
+      "ctl": {
+        "c0": {
+          "rfc": "O caractere de bits todos zero, definido para preencher tempo ou espaço num meio. A linguagem C termina toda string com ele, então um NUL no meio dos dados encurta o texto em código C."
+        },
+        "c1": {
+          "rfc": "Start of Heading (início de cabeçalho): abre um cabeçalho, a informação de endereço ou de roteamento enviada antes do texto de uma mensagem. Um STX encerra o cabeçalho."
+        },
+        "c2": {
+          "rfc": "Start of Text (início de texto): abre o texto que deve chegar ao destino final como uma unidade. Também encerra um cabeçalho aberto por SOH."
+        },
+        "c3": {
+          "rfc": "End of Text (fim de texto): encerra o texto que o STX abriu.",
+          "today": "Digitado como Ctrl-C num terminal Linux, é o caractere de interrupção: o terminal envia SIGINT ao programa (termios(3))."
+        },
+        "c4": {
+          "rfc": "End of Transmission (fim de transmissão): encerra uma transmissão que pode ter levado vários textos e seus cabeçalhos.",
+          "today": "Digitado como Ctrl-D, é o caractere de fim de arquivo: a entrada pendente vai na hora para o programa, e no início de uma linha o programa lê fim de arquivo (termios(3))."
+        },
+        "c5": {
+          "rfc": "Enquiry (consulta): pede a uma estação remota que responda, por exemplo com a sua identidade (\"Who Are You\") ou o seu estado.",
+          "today": "No terminal VT102 da DEC, disparava uma mensagem de resposta automática (console_codes(4))."
+        },
+        "c6": {
+          "rfc": "Acknowledge (confirmação): a resposta positiva de um receptor a quem enviou."
+        },
+        "c7": {
+          "rfc": "Bell (campainha): chama a atenção de uma pessoa e pode acionar um alarme ou dispositivo de atenção.",
+          "today": "O console do Linux emite um bipe quando o recebe (console_codes(4))."
+        },
+        "c8": {
+          "rfc": "Backspace (retrocesso): move a posição de impressão uma casa para trás, na mesma linha.",
+          "today": "O console do Linux volta uma coluna, nunca além do início da linha (console_codes(4)); Ctrl-H é um dos caracteres de apagar usuais num terminal (termios(3))."
+        },
+        "c9": {
+          "rfc": "Horizontal Tabulation (tabulação horizontal): move a posição de impressão para a próxima de uma série de posições predefinidas na linha; em cartões perfurados, a função de salto.",
+          "today": "O console do Linux vai para a próxima parada de tabulação, ou para o fim da linha se não houver nenhuma (console_codes(4))."
+        },
+        "c10": {
+          "rfc": "Line Feed (avanço de linha): move a posição de impressão para a próxima linha. Quem envia e quem recebe podem combinar que ele também signifique New Line (NL): a primeira posição da próxima linha.",
+          "today": "O console do Linux faz um avanço de linha, e também um retorno de carro quando o modo de nova linha está ativo (console_codes(4)). O POSIX termina cada linha de um arquivo de texto com o caractere de nova linha, que o C escreve como \\n: LF em sistemas ASCII."
+        },
+        "c11": {
+          "rfc": "Vertical Tabulation (tabulação vertical): move a posição de impressão para a próxima de uma série de linhas predefinidas.",
+          "today": "O console do Linux o trata como um avanço de linha (console_codes(4))."
+        },
+        "c12": {
+          "rfc": "Form Feed (avanço de formulário): move a posição de impressão para a primeira linha predefinida do próximo formulário ou página.",
+          "today": "O console do Linux o trata como um avanço de linha (console_codes(4))."
+        },
+        "c13": {
+          "rfc": "Carriage Return (retorno de carro): move a posição de impressão para a primeira posição da mesma linha.",
+          "today": "O console do Linux volta ao início da linha (console_codes(4)). O SMTP e o HTTP/1.1 terminam as suas linhas com CR seguido de LF (RFC 5321, RFC 9112)."
+        },
+        "c14": {
+          "rfc": "Shift Out: os códigos seguintes são lidos fora do conjunto de caracteres padrão, até um Shift In.",
+          "today": "O console do Linux passa para o seu conjunto de caracteres G1 (console_codes(4))."
+        },
+        "c15": {
+          "rfc": "Shift In: os códigos seguintes voltam a ser lidos com a tabela padrão.",
+          "today": "O console do Linux volta ao seu conjunto de caracteres G0 (console_codes(4))."
+        },
+        "c16": {
+          "rfc": "Data Link Escape: muda o significado de alguns caracteres que vêm depois dele, para levar controles extras em redes de comunicação de dados."
+        },
+        "c17": {
+          "rfc": "Device Control 1: controla um dispositivo auxiliar, principalmente ligando-o ou desligando-o.",
+          "today": "Digitado como Ctrl-Q, é o caractere de início: a saída parada por Ctrl-S recomeça (termios(3)). O VT102 da DEC o usava como XON, para retomar a transmissão (console_codes(4))."
+        },
+        "c18": {
+          "rfc": "Device Control 2: controla um dispositivo auxiliar, principalmente ligando-o ou desligando-o.",
+          "today": "Digitado como Ctrl-R, os terminais Linux o usam para reimprimir a entrada ainda não lida (termios(3); fora do POSIX)."
+        },
+        "c19": {
+          "rfc": "Device Control 3: controla um dispositivo auxiliar, principalmente ligando-o ou desligando-o.",
+          "today": "Digitado como Ctrl-S, é o caractere de parada: a saída para até um Ctrl-Q (termios(3)), então um terminal que parece travado depois de um Ctrl-S precisa de um Ctrl-Q, não de reinício. O VT102 da DEC o usava como XOFF (console_codes(4))."
+        },
+        "c20": {
+          "rfc": "Device Control 4: controla um dispositivo auxiliar; quando basta um único controle de parada, é este o indicado."
+        },
+        "c21": {
+          "rfc": "Negative Acknowledge (confirmação negativa): a resposta negativa de um receptor a quem enviou.",
+          "today": "Digitado como Ctrl-U, é o caractere de descarte: apaga a entrada digitada desde o início da linha (termios(3))."
+        },
+        "c22": {
+          "rfc": "Synchronous Idle (ocioso síncrono): enviado por um enlace síncrono quando não há mais nada a enviar, para que as duas pontas mantenham ou recuperem o sincronismo.",
+          "today": "Digitado como Ctrl-V, os terminais Linux o usam como próximo literal: a próxima tecla perde qualquer significado especial (termios(3); fora do POSIX)."
+        },
+        "c23": {
+          "rfc": "End of Transmission Block (fim de bloco de transmissão): encerra um bloco de dados para fins de comunicação; os blocos não precisam coincidir com a forma como os dados são processados.",
+          "today": "Digitado como Ctrl-W, os terminais Linux o usam para apagar a última palavra (termios(3); fora do POSIX)."
+        },
+        "c24": {
+          "rfc": "Cancel (cancelar): os dados enviados com ele estão errados ou devem ser desconsiderados.",
+          "today": "O console do Linux aborta uma sequência de escape em andamento (console_codes(4))."
+        },
+        "c25": {
+          "rfc": "End of Medium (fim do meio): marca o fim físico do meio, ou o fim da parte dele que está em uso ou que interessa."
+        },
+        "c26": {
+          "rfc": "Substitute (substituto): ocupa o lugar de um caractere considerado inválido ou errado.",
+          "today": "Digitado como Ctrl-Z, é o caractere de suspensão: o terminal envia SIGTSTP (termios(3)). O console do Linux também aborta uma sequência de escape ao recebê-lo (console_codes(4))."
+        },
+        "c27": {
+          "rfc": "Escape: um prefixo que muda o significado de um número limitado de caracteres depois dele, para estender o código.",
+          "today": "No console do Linux ele inicia uma sequência de escape, e ESC [ é o Control Sequence Introducer, que começa as sequências que definem cores e movem o cursor (console_codes(4))."
+        },
+        "c28": {
+          "rfc": "File Separator (separador de arquivo): o mais abrangente dos quatro separadores de informação (FS, GS, RS, US), usados para dividir dados em hierarquia.",
+          "today": "Digitado como Ctrl-\\, é o caractere de saída: o terminal envia SIGQUIT (termios(3))."
+        },
+        "c29": {
+          "rfc": "Group Separator (separador de grupo): o segundo dos quatro separadores de informação, dentro de um arquivo e acima de um registro."
+        },
+        "c30": {
+          "rfc": "Record Separator (separador de registro): o terceiro dos quatro separadores de informação, dentro de um grupo e acima de uma unidade."
+        },
+        "c31": {
+          "rfc": "Unit Separator (separador de unidade): o menos abrangente dos quatro separadores de informação."
+        },
+        "c32": {
+          "rfc": "Space (espaço): um caractere gráfico normalmente não impresso que separa palavras. Também é um efetuador de formato: move a posição de impressão uma casa para a frente."
+        },
+        "c127": {
+          "rfc": "Delete (apagar): usado principalmente para apagar caracteres indesejados em fita de papel perfurada. Os seus sete bits são todos um. A RFC 20 acrescenta que, a rigor, o DEL não é um caractere de controle.",
+          "today": "É um dos caracteres de apagar usuais num terminal Linux, removendo o caractere antes do cursor (termios(3)); o console do Linux o ignora quando o recebe (console_codes(4))."
+        }
+      },
+      "writeTitle": "Como escrevê-lo",
+      "writeHelp": "Dentro de um literal de string de cada linguagem, ou em HTML e numa URL.",
+      "lang": {
+        "c": "C",
+        "json": "JSON",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "tcl": "Tcl e iRules",
+        "htmlDec": "HTML, decimal",
+        "htmlHex": "HTML, hexadecimal",
+        "htmlNamed": "HTML, nomeada",
+        "url": "URL"
+      },
+      "how": {
+        "simple": "escape nomeado",
+        "numeric": "escape numérico",
+        "plain": "como ele mesmo"
+      },
+      "noNamed": "nenhuma",
+      "escNote": {
+        "c-octal": "C: escapes octais têm no máximo três dígitos, então não engolem o caractere seguinte; um escape hexadecimal como \\x1B continua lendo todo dígito hexadecimal que vier depois.",
+        "json-must": "JSON: aspas, barra invertida e os controles de 0 a 31 precisam de escape (RFC 8259, seção 7).",
+        "json-solidus": "JSON: a barra pode ser escrita como \\/, mas não precisa.",
+        "json-del": "JSON: o DEL (127) não está entre os caracteres que precisam de escape, então pode aparecer como ele mesmo.",
+        "js-nul": "JavaScript: \\0 só é NUL quando nenhum dígito vem depois dele.",
+        "tcl-quoted": "Tcl: precisa da barra invertida dentro de uma palavra entre aspas; entre chaves nada é substituído.",
+        "tcl-octal": "Tcl 8.4 (e iRules): escrito em octal porque \\x lê todo dígito hexadecimal que vem depois e guarda só os dois últimos, então \"\\x1Bfoo\" não é ESC seguido de foo."
+      },
+      "htmlNote": {
+        "null": "HTML: uma referência a 0 é erro de análise e vira U+FFFD, o caractere de substituição.",
+        "control": "HTML: uma referência a este controle é erro de análise (o caractere ainda assim é inserido)."
+      },
+      "urlClass": {
+        "unreserved": "Não reservado na RFC 3986: nunca precisa de codificação por porcentagem.",
+        "gen-delim": "Um delimitador geral na RFC 3986: codifique-o quando for dado, não sintaxe.",
+        "sub-delim": "Um subdelimitador na RFC 3986: codifique-o quando for dado, não sintaxe.",
+        "other": "Não é permitido como ele mesmo numa URI: sempre codifique-o por porcentagem."
+      },
+      "wsTitle": "Espaço em branco?",
+      "wsHelp": "Quais definições contam este código como espaço em branco, medido em cada implementação em 2026-10-03.",
+      "wsYes": "sim",
+      "wsNo": "não",
+      "wsSet": {
+        "c": "C isspace()",
+        "json": "JSON (RFC 8259)",
+        "whatwg": "WHATWG (HTML, URLs)",
+        "abnf": "ABNF WSP (RFC 5234)",
+        "tcl": "Separador de palavras do Tcl 8.4",
+        "python": "Python str.isspace()",
+        "javascript": "JavaScript \\s e trim()"
+      },
+      "relationsTitle": "Relações",
+      "caretLabel": "Notação de circunflexo",
+      "caretHelp": "<c>{caret}</c>: o controle é <c>{pair}</c> com o bit b7 zerado (64 a menos).",
+      "caretDelHelp": "<c>^?</c>: o DEL é escrito como o ponto de interrogação com o bit b7 ligado (64 a mais).",
+      "otherCaseLabel": "Outra caixa",
+      "otherCaseHelp": "<c>{other}</c>, a um bit de distância: maiúsculas e minúsculas só diferem no b6 (valor 32).",
+      "digitLabel": "Valor do dígito",
+      "digitHelp": "{value}: os dígitos são 48 (0x30) mais o seu valor.",
+      "confusableLabel": "Confundível (UTS #39)",
+      "confusableHelp": "A UTS #39 dá a ele o mesmo protótipo, <c>{prototype}</c>, que a: {others}",
+      "tableTitle": "A tabela",
+      "tableHelp": "Disposta como a RFC 20 a desenha: oito colunas por dezesseis linhas. Escolha um código para vê-lo acima.",
+      "viewLabel": "Visualização",
+      "viewGrid": "Grade",
+      "viewList": "Lista",
+      "filterLabel": "Mostrar",
+      "filter": {
+        "all": "Todos os 128",
+        "control": "Controles",
+        "digit": "Dígitos",
+        "upper": "Maiúsculas",
+        "lower": "Minúsculas",
+        "punct": "Pontuação e símbolos",
+        "agree": "Nota 3 da RFC 20"
+      },
+      "colColumn": "Coluna",
+      "colRow": "Linha",
+      "colDec": "Dec",
+      "colHex": "Hex",
+      "colOct": "Oct",
+      "colBin": "Binário",
+      "colChar": "Car.",
+      "colName": "Nome",
+      "colHtml": "HTML",
+      "gridBitsColumn": "b7 b6 b5",
+      "gridBitsRow": "b4 b3 b2 b1",
+      "cellLabel": "{dec}, {name}",
+      "showing": "{n} de 128 códigos",
+      "textTitle": "Texto em códigos",
+      "textLabel": "Cole um texto para ver o código de cada caractere",
+      "textPlaceholder": "Cole uma linha de configuração, de uma iRule, de um e-mail...",
+      "textSummary": "{total, plural, one {# caractere} other {# caracteres}}: {ascii} ASCII, {outside} fora do ASCII.",
+      "textTruncated": "Só os primeiros 2.000 caracteres são mostrados.",
+      "textAllAscii": "Todos os caracteres são ASCII.",
+      "textOutsideTitle": "Caracteres fora do ASCII",
+      "textColPos": "Posição",
+      "textColChar": "Car.",
+      "textColCode": "Ponto de código",
+      "textColBytes": "Bytes UTF-8",
+      "textColName": "Nome",
+      "textColNote": "Observação",
+      "compareTitle": "Espaço em branco, comparado",
+      "compareHelp": "Os mesmos dez códigos, sete definições. O JSON deixa de fora VT e FF, o WHATWG deixa de fora VT, o Tcl termina um comando no LF em vez de separar palavras, e o Python também conta os quatro separadores de informação."
+    },
+    "unicode-inspector": {
+      "name": "Inspetor Unicode",
+      "blurb": "Veja o que há de fato num texto: cada ponto de código com o seu nome, e os caracteres que se escondem ou enganam, de espaços de largura zero e controles bidirecionais do Trojan Source a letras cirílicas fingindo ser latinas. Consulte qualquer ponto de código, encontre um pelo nome, limpe um texto e escreva-o como escapes em oito linguagens.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda no seu navegador. Nada do que você cola sai da página.",
+      "modeLabel": "Modo",
+      "modeInspect": "Inspecionar um texto",
+      "modeCodepoint": "Um ponto de código",
+      "modeSearch": "Encontrar pelo nome",
+      "namesLoading": "Carregando a tabela de nomes Unicode...",
+      "presetsLabel": "Experimente",
+      "preset": {
+        "inspect-mixed-script": "Latim com um a cirílico",
+        "inspect-trojan-source": "Trojan Source",
+        "inspect-invisible": "Espaços escondidos",
+        "inspect-smart-punctuation": "Aspas curvas e um traço",
+        "inspect-fullwidth-folded": "Letras de largura total",
+        "inspect-line-separator": "Separador de linha",
+        "inspect-escapes": "Acentos e emoji",
+        "inspect-japanese": "Japonês",
+        "inspect-combining": "Um acento combinante",
+        "codepoint-e-acute": "U+00E9",
+        "codepoint-emoji": "um emoji",
+        "codepoint-rlo": "U+202E",
+        "codepoint-bom-by-alias": "BOM",
+        "codepoint-cyrillic-a": "U+0430",
+        "codepoint-surrogate": "U+D800",
+        "codepoint-small-seal": "U+3D000",
+        "codepoint-noncharacter": "U+FFFE",
+        "codepoint-reserved": "U+0378",
+        "codepoint-nel": "U+0085",
+        "search-zero-width": "zero width"
+      },
+      "textLabel": "Cole o texto a inspecionar",
+      "textPlaceholder": "Cole uma linha de código, uma URL, um nome de usuário, um arquivo de configuração...",
+      "summary": "{cps, plural, one {# ponto de código} other {# pontos de código}}, {units, plural, one {# unidade UTF-16} other {# unidades UTF-16}}, {bytes, plural, one {# byte UTF-8} other {# bytes UTF-8}}, {lines, plural, one {# linha} other {# linhas}}; {outside} fora do ASCII.",
+      "truncated": "Só os primeiros 10.000 pontos de código são lidos.",
+      "verdictClean": "Nada se esconde aqui: nenhum caractere invisível, bidirecional, de controle, de quebra de linha incomum ou sósia.",
+      "verdictFound": "{n, plural, one {# ponto de código merece} other {# pontos de código merecem}} atenção.",
+      "findingsTitle": "O que foi encontrado",
+      "findingCount": "{label}: {count}",
+      "openBidiTitle": "Controles bidirecionais deixados abertos",
+      "openBidiLine": "Linha {line}: <c>{controls}</c> ainda abertos no fim da linha. Tudo o que vem depois deles nessa linha pode ser exibido numa ordem diferente da ordem em que um compilador ou analisador o lê, que é o padrão do Trojan Source (CVE-2021-42574).",
+      "mixedTitle": "Palavras que misturam escritas",
+      "mixedWord": "<c>{word}</c> (linha {line}, coluna {col}) mistura {scripts}: nenhum sistema de escrita usa todas as suas letras (detecção de escritas misturadas da UTS #39).",
+      "revealTitle": "O texto, com cada caractere escondido à mostra",
+      "revealHelp": "Cada caractere que merece atenção aparece como uma etiqueta com o seu ponto de código; passe o mouse ou o foco sobre ela para ver o nome.",
+      "rowsTitle": "Todos os pontos de código",
+      "rowsCapped": "Os primeiros 2.000 são listados.",
+      "colAt": "Posição",
+      "colLine": "Linha",
+      "colCol": "Col.",
+      "colChar": "Car.",
+      "colCp": "Ponto de código",
+      "colName": "Nome",
+      "colGc": "Categoria",
+      "colScript": "Escrita",
+      "colFlags": "Marcas",
+      "cleanTitle": "Cópia limpa",
+      "cleanHelp": "Escolha o que mudar. Trocar sósias também altera palavras legítimas de outras escritas, por isso vem desligado.",
+      "cleanOpt": {
+        "removeInvisible": "Remover caracteres invisíveis e bidirecionais",
+        "asciiSpaces": "Usar espaços e quebras de linha ASCII",
+        "asciiPunctuation": "Usar aspas e hífens ASCII",
+        "foldLookalikes": "Trocar sósias por ASCII"
+      },
+      "cleanChanges": "{removed} removidos, {spaces} espaços ou quebras de linha, {punctuation} aspas ou traços, {folded} sósias trocados.",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "escapeTitle": "Escrever o texto como escapes",
+      "escapeHelp": "Todo caractere fora do ASCII imprimível vira escape, e os caracteres que cada linguagem reserva também. Cada forma foi decodificada de volta pela própria linguagem quando esta ferramenta foi construída.",
+      "styleLabel": "Linguagem",
+      "style": {
+        "json": "JSON",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "html": "HTML",
+        "css": "CSS",
+        "url": "URL",
+        "c": "C (string u8)",
+        "tcl": "Tcl e iRules"
+      },
+      "escUnavailable": {
+        "tcl": "O Tcl 8.4, e portanto as iRules, não tem escape para caracteres além de U+FFFF, e o Tcl 8.4.6 lê os seus quatro bytes UTF-8 como quatro caracteres.",
+        "url": "Um surrogate isolado não tem forma UTF-8, então não pode ser codificado por porcentagem.",
+        "html": "Um surrogate isolado não pode aparecer em HTML.",
+        "css": "O CSS transforma um 0 ou um surrogate escapado em U+FFFD.",
+        "c": "Um surrogate isolado não pode ser escrito numa string C.",
+        "json": "",
+        "javascript": "",
+        "python": ""
+      },
+      "cpLabel": "Um ponto de código, um caractere ou um nome",
+      "cpPlaceholder": "U+00E9, é, 0xE9, &eacute;, \\u00e9, zero width space, BOM",
+      "cpHelp": "Lê U+XXXX, hexadecimal, decimal, o próprio caractere, referências HTML, escapes com barra invertida, codificação por porcentagem e qualquer nome ou apelido Unicode.",
+      "cpUnknown": "Nada aqui é lido como ponto de código ou nome.",
+      "readAs": "Lido como {how}",
+      "readAsHow": {
+        "character": "o próprio caractere",
+        "decimal": "um número decimal",
+        "hexadecimal": "um número hexadecimal",
+        "octal": "um número octal",
+        "binary": "dígitos binários",
+        "column-row": "uma posição coluna/linha da RFC 20",
+        "unicode": "notação Unicode",
+        "html-decimal": "uma referência HTML decimal",
+        "html-hex": "uma referência HTML hexadecimal",
+        "html-named": "uma referência HTML nomeada",
+        "percent": "codificação por porcentagem",
+        "escape-hex": "um escape hexadecimal",
+        "escape-unicode": "um escape Unicode",
+        "escape-octal": "um escape octal",
+        "escape-named": "um escape nomeado",
+        "caret": "notação de circunflexo",
+        "name": "um nome"
+      },
+      "nameKind": {
+        "name": "Nome",
+        "alias": "Sem nome; apelido formal",
+        "label": "Sem nome; rótulo de ponto de código"
+      },
+      "aliasesTitle": "Apelidos",
+      "aliasType": {
+        "correction": "correção",
+        "control": "nome de controle",
+        "alternate": "alternativo",
+        "figment": "fictício",
+        "abbreviation": "abreviação"
+      },
+      "propsTitle": "Propriedades",
+      "propGc": "General_Category",
+      "propBlock": "Bloco",
+      "propScript": "Script (escrita)",
+      "propScx": "Script_Extensions",
+      "propAge": "Incluído no Unicode",
+      "ageUnassigned": "não atribuído",
+      "encTitle": "Codificações",
+      "encUtf8": "UTF-8",
+      "encUtf16": "UTF-16",
+      "encUtf32": "UTF-32",
+      "encNoUtf8": "nenhuma: o UTF-8 não codifica um ponto de código surrogate",
+      "escTitle": "Escapes",
+      "htmlDec": "HTML, decimal",
+      "htmlHex": "HTML, hexadecimal",
+      "htmlNamed": "HTML, nomeada",
+      "noNamed": "nenhuma",
+      "unavailable": "não disponível",
+      "htmlNote": {
+        "null": "HTML: uma referência a 0 é erro de análise e vira U+FFFD.",
+        "surrogate": "HTML: uma referência a um surrogate é erro de análise e vira U+FFFD.",
+        "c1": "HTML: uma referência de U+0080 a U+009F é erro de análise, e 27 das 32 são trocadas pelo caractere do Windows-1252 (a referência a U+0085 dá reticências).",
+        "control": "HTML: uma referência a este controle é erro de análise (o caractere ainda assim é inserido).",
+        "noncharacter": "HTML: uma referência a um não caractere é erro de análise."
+      },
+      "cNote": "C: um nome de caractere universal não pode nomear caracteres abaixo de U+00A0 além de $, @ e `, nem um surrogate (C11, 6.4.3).",
+      "tclNote": "Tcl 8.4 e iRules: \\u aceita de um a quatro dígitos hexadecimais, então nada além de U+FFFF tem escape.",
+      "cssNote": "CSS: termine o escape com um espaço quando depois dele vier um dígito hexadecimal ou um espaço.",
+      "flagsTitle": "O que saber",
+      "flag": {
+        "bidi": {
+          "label": "Controle bidirecional",
+          "help": "Muda a ordem em que o texto ao redor é exibido. Texto da direita para a esquerda precisa dele; em código, pode fazer uma linha parecer diferente do que ela executa (UTS #55)."
+        },
+        "invisible": {
+          "label": "Invisível",
+          "help": "Default_Ignorable_Code_Point: onde não é suportado, simplesmente não é desenhado."
+        },
+        "control": {
+          "label": "Controle",
+          "help": "Um código de controle, não texto. A maioria das ferramentas o descarta, mostra uma caixa ou trava nele."
+        },
+        "line-break": {
+          "label": "Quebra de linha que não é LF nem CR",
+          "help": "Um editor pode começar uma nova linha onde a linguagem não começa, ou o contrário: a UTS #55 mostra uma verificação de nulo escondida assim."
+        },
+        "surrogate": {
+          "label": "Surrogate isolado",
+          "help": "Metade de um par UTF-16. Não é um caractere, e o UTF-8 não o codifica."
+        },
+        "noncharacter": {
+          "label": "Não caractere",
+          "help": "Reservado para sempre para uso interno e nunca atribuído a um caractere."
+        },
+        "private-use": {
+          "label": "Uso privado",
+          "help": "O significado é definido por acordo privado, então fontes e sistemas divergem."
+        },
+        "unassigned": {
+          "label": "Não atribuído",
+          "help": "Nenhum caractere tem este ponto de código no Unicode 18.0.0."
+        },
+        "replacement": {
+          "label": "Caractere de substituição",
+          "help": "U+FFFD: muitas vezes a marca de um erro de conversão anterior, onde bytes não puderam ser decodificados."
+        },
+        "space": {
+          "label": "Espaço não ASCII",
+          "help": "Um espaço que não é o espaço ASCII (32): divisões, cortes e comparações podem não tratá-lo como espaço."
+        },
+        "quote": {
+          "label": "Aspa tipográfica",
+          "help": "Uma aspa que não é a aspa ASCII que um analisador espera."
+        },
+        "dash": {
+          "label": "Traço não ASCII",
+          "help": "Um traço que não é o hífen-menos ASCII (45)."
+        },
+        "confusable": {
+          "label": "Confundível com ASCII",
+          "help": "A UTS #39 o lista como visualmente confundível com o texto ASCII mostrado."
+        },
+        "compat-ascii": {
+          "label": "ASCII estilizado",
+          "help": "A sua decomposição de compatibilidade é ASCII: uma forma de largura total, ligadura ou parecida de um texto comum."
+        },
+        "combining": {
+          "label": "Marca combinante",
+          "help": "Junta-se ao caractere anterior."
+        },
+        "format": {
+          "label": "Caractere de formato",
+          "help": "Afeta o leiaute ou o processamento e normalmente não desenha nada."
+        },
+        "ascii": {
+          "label": "ASCII",
+          "help": "Um dos 128 códigos ASCII."
+        }
+      },
+      "prototypeLabel": "Parece com",
+      "prototypeHelp": "Protótipo da UTS #39 <c>{proto}</c>, compartilhado pelos caracteres ASCII: {sharing}",
+      "compatLabel": "Forma de compatibilidade de",
+      "openAscii": "Todos os detalhes deste código no explorador da tabela ASCII",
+      "gc": {
+        "Lu": "Uppercase_Letter",
+        "Ll": "Lowercase_Letter",
+        "Lt": "Titlecase_Letter",
+        "Lm": "Modifier_Letter",
+        "Lo": "Other_Letter",
+        "Mn": "Nonspacing_Mark",
+        "Mc": "Spacing_Mark",
+        "Me": "Enclosing_Mark",
+        "Nd": "Decimal_Number",
+        "Nl": "Letter_Number",
+        "No": "Other_Number",
+        "Pc": "Connector_Punctuation",
+        "Pd": "Dash_Punctuation",
+        "Ps": "Open_Punctuation",
+        "Pe": "Close_Punctuation",
+        "Pi": "Initial_Punctuation",
+        "Pf": "Final_Punctuation",
+        "Po": "Other_Punctuation",
+        "Sm": "Math_Symbol",
+        "Sc": "Currency_Symbol",
+        "Sk": "Modifier_Symbol",
+        "So": "Other_Symbol",
+        "Zs": "Space_Separator",
+        "Zl": "Line_Separator",
+        "Zp": "Paragraph_Separator",
+        "Cc": "Control",
+        "Cf": "Format",
+        "Cs": "Surrogate",
+        "Co": "Private_Use",
+        "Cn": "Unassigned"
+      },
+      "searchLabel": "Palavras do nome",
+      "searchPlaceholder": "smiling face, zero width, arrow left",
+      "searchHelp": "Cada palavra precisa começar uma palavra do nome ou de um apelido: smil encontra SMILING, width não encontra FULLWIDTH.",
+      "searchNone": "Nenhum nome ou apelido tem palavras que comecem assim.",
+      "searchMore": "Mostrando os primeiros {n}; acrescente uma palavra para estreitar.",
+      "searchPick": "Inspecionar"
+    },
+    "charset-equivalency": {
+      "name": "Conversor de charsets e reparo de mojibake",
+      "blurb": "Transforme texto em bytes e bytes em texto em catorze charsets, do UTF-8, UTF-16 e UTF-32 ao windows-1252, IBM 850 e EBCDIC, com cada byte malformado substituído exatamente como um navegador substitui. Cole um dump hexadecimal, escapes, %XX ou Base64, compare o que cada charset faz dos mesmos bytes e devolva um texto embaralhado como cafÃ© ao que ele era.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "runsLocally": "Roda no seu navegador. Nada do que você cola sai da página.",
+      "presetsLabel": "Experimente",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "modeLabel": "Modo",
+      "modeEncode": "Texto para bytes",
+      "modeDecode": "Bytes para texto",
+      "modeRepair": "Consertar mojibake",
+      "textLabel": "Texto",
+      "textPlaceholder": "Digite ou cole um texto",
+      "charsetLabel": "Charset",
+      "charsetAuto": "Detectar",
+      "policyLabel": "Caracteres que o charset não comporta",
+      "policy": {
+        "replace": "Escrever ? no lugar",
+        "html": "Escrever uma referência HTML, como faz um formulário do navegador",
+        "strict": "Não escrever nada (estrito)"
+      },
+      "bomLabel": "Começar com uma marca de ordem de bytes (só nos UTFs)",
+      "encSummary": "{cps, plural, one {# caractere virou} other {# caracteres viraram}} {bytes, plural, one {# byte} other {# bytes}} em {charset}.",
+      "encBom": "{n, plural, one {O primeiro byte} other {Os primeiros # bytes}} ({bytes}) {n, plural, one {é} other {são}} a marca de ordem de bytes, U+FEFF.",
+      "encLone": "{n, plural, one {# surrogate isolado} other {# surrogates isolados}} no texto {n, plural, one {virou} other {viraram}} U+FFFD, como faz o TextEncoder de um navegador.",
+      "encUnencodable": "{charset} não comporta {n, plural, one {# caractere} other {# caracteres}} deste texto.",
+      "encPolicy": {
+        "replace": "Cada um foi escrito como ?, a substituição que a maioria dos conversores usa; o caractere original não está nos bytes.",
+        "html": "Cada um foi escrito como uma referência HTML decimal, como &#8364;. Um navegador faz isso quando um formulário é enviado num charset que não comporta o que foi digitado, e o servidor não consegue distinguir isso de alguém que digitou esses caracteres.",
+        "strict": "O modo estrito não escreve nada quando um caractere não cabe."
+      },
+      "truncatedText": "Só os primeiros 20.000 caracteres foram codificados.",
+      "bytesTitle": "Os bytes",
+      "styleLabel": "Escrever como",
+      "style": {
+        "hex": "Pares hexadecimais",
+        "dump": "hexdump -C",
+        "c": "Array em C",
+        "python": "bytes do Python",
+        "base64": "Base64",
+        "percent": "Codificação por porcentagem (URL)"
+      },
+      "charsTitle": "Caractere por caractere",
+      "rowsCapped": "Só as primeiras {n} linhas aparecem.",
+      "colChar": "Caractere",
+      "colCp": "Ponto de código",
+      "colBytes": "Bytes em {charset}",
+      "cannotHold": "não existe em {charset}",
+      "writtenInstead": "(escrito como <c>{bytes}</c>)",
+      "everywhereTitle": "O mesmo texto em todos os charsets",
+      "everywhereHelp": "Quantos bytes cada charset precisa e quantos caracteres do texto ele não comporta (escritos como ?). O charset escolhido aparece destacado.",
+      "colCharset": "Charset",
+      "colByteCount": "Bytes",
+      "colHex": "Hexadecimal",
+      "colMissing": "Não comporta",
+      "readBackTitle": "Estes bytes em {charset}, lidos em cada charset",
+      "readBackHelp": "O que cada charset faz dos mesmos bytes. A linha do charset em que eles foram escritos é o próprio texto; todas as outras são o mojibake que um palpite errado produz. Controles e caracteres de substituição aparecem como etiquetas.",
+      "colReading": "Fica",
+      "colReplaced": "Substituídos",
+      "bytesLabel": "Bytes",
+      "bytesPlaceholder": "C3 A9, c3a9 ou 0xC3 0xA9; a saída de hexdump -C, xxd ou od; escapes como \\xC3\\xA9 ou \\303\\251; %C3%A9; ou Base64",
+      "formatLabel": "Escritos como",
+      "format": {
+        "auto": "Detectar",
+        "hex": "Hexadecimal ou um dump",
+        "escaped": "Escapes (C, Python, git)",
+        "percent": "Codificação por porcentagem (URL)",
+        "base64": "Base64"
+      },
+      "sniffLabel": "Deixar uma marca de ordem de bytes decidir o charset",
+      "readAs": "{n, plural, one {# byte lido} other {# bytes lidos}} de {format}.",
+      "readFormat": {
+        "hex": "hexadecimal",
+        "hexdump": "um dump do hexdump -C",
+        "xxd": "um dump do xxd",
+        "offsets": "um dump com deslocamentos (od)",
+        "escaped": "escapes",
+        "percent": "codificação por porcentagem",
+        "base64": "Base64"
+      },
+      "parseError": {
+        "odd-hex": "Um número ímpar de dígitos hexadecimais: o dígito na posição {at} não tem par.",
+        "bad-char": "A posição {at} tem algo que não é dígito hexadecimal nem separador.",
+        "bad-escape": "O escape na posição {at} não é um dos que esta ferramenta lê: \\x com dígitos hexadecimais, octal \\NNN até \\377, ou \\n, \\t, \\r e os outros escapes de C.",
+        "bad-base64": "Não é Base64: o caractere na posição {at}, ou o comprimento, não cabe no alfabeto da RFC 4648.",
+        "unrecognised": "Não reconhecido como hexadecimal, dump, escapes, codificação por porcentagem ou Base64. Se for um deles, escolha-o em Escritos como.",
+        "too-long": "Longo demais: esta ferramenta lê até 64 KiB de bytes."
+      },
+      "utf8Literals": "Os caracteres além do ASCII na caixa foram lidos como os seus bytes UTF-8.",
+      "urlSafe": "Este Base64 usa o alfabeto seguro para URLs (- e _ no lugar de + e /, RFC 4648, seção 5).",
+      "guess": {
+        "empty": "Nada para ler.",
+        "bom": "Uma marca de ordem de bytes no início diz {charset}.",
+        "ascii": "Todos os bytes são ASCII, então todo charset compatível com ASCII lê o mesmo texto (mostrado como US-ASCII).",
+        "utf8-valid": "Os bytes são UTF-8 bem formado e têm caracteres além do ASCII, o que raramente acontece por acaso: lidos como UTF-8.",
+        "zeros": "Os bytes zero caem onde texto ASCII em {charset} os coloca: lidos como {charset}.",
+        "ebcdic": "0x40, o espaço do EBCDIC, é comum, não há espaços ASCII e a maioria dos bytes está acima de 0x80: EBCDIC, lidos como {charset}.",
+        "none": "Não há uma resposta única: estes bytes não são UTF-8 bem formado e não mostram outro padrão. Compare as leituras abaixo."
+      },
+      "bomFound": "Os dados começam com uma marca de ordem de bytes de {charset} ({n} bytes), que não faz parte do texto.",
+      "bomOverride": "Os dados começam com uma marca de ordem de bytes de {charset}, que prevalece sobre o charset escolhido, como num navegador: o WHATWG Encoding Standard trata a marca de ordem de bytes como mais confiável que um rótulo.",
+      "decSummary": "{cps, plural, one {# caractere} other {# caracteres}} de {bytes, plural, one {# byte} other {# bytes}} em {charset}.",
+      "truncatedBytes": "Só os primeiros 64 KiB foram decodificados.",
+      "decErrors": "{n, plural, one {# sequência malformada foi substituída} other {# sequências malformadas foram substituídas}} por U+FFFD.",
+      "decClean": "Todos os bytes foram decodificados; nada foi substituído.",
+      "textTitle": "O texto",
+      "errorsTitle": "O que foi substituído, e por quê",
+      "errorCount": "{n, plural, one {# sequência} other {# sequências}}",
+      "errorAt": "No deslocamento (bytes): {places}.",
+      "error": {
+        "continuation": "Um byte de continuação (0x80 a 0xBF) onde um caractere deveria começar: a sua sequência perdeu o primeiro byte, ou os dados não são UTF-8.",
+        "overlong-lead": "0xC0 ou 0xC1, que só poderiam começar uma forma de dois bytes de um caractere ASCII, forma que o UTF-8 proíbe.",
+        "invalid-lead": "Um byte de 0xF5 a 0xFF, que nunca aparece em UTF-8.",
+        "overlong": "Uma forma mais longa de um ponto de código que tem uma mais curta (E0 seguido de 80 a 9F, ou F0 seguido de 80 a 8F).",
+        "surrogate": "ED seguido de A0 a BF: um surrogate, U+D800 a U+DFFF, que o UTF-8 não pode carregar.",
+        "too-large": "F4 seguido de 90 a BF: além de U+10FFFF, o último ponto de código.",
+        "truncated": "A sequência foi cortada por um byte que não pode continuá-la; os bytes lidos até ali viraram um U+FFFD e esse byte foi lido de novo.",
+        "truncated-end": "Os dados terminam no meio de um caractere.",
+        "unpaired-lead": "Um surrogate inicial (D800 a DBFF) sem um final depois dele.",
+        "unpaired-trail": "Um surrogate final (DC00 a DFFF) sem um inicial antes dele.",
+        "odd-byte": "Sobrou um byte: o UTF-16 precisa de dois bytes por unidade de código.",
+        "utf32-invalid": "Uma unidade de quatro bytes que é um surrogate ou passa de U+10FFFF.",
+        "utf32-incomplete": "Sobraram de um a três bytes: o UTF-32 precisa de quatro bytes por unidade.",
+        "not-ascii": "Um byte de 0x80 ou mais, fora dos sete bits do US-ASCII."
+      },
+      "errorShort": {
+        "continuation": "byte de continuação solto",
+        "overlong-lead": "C0 ou C1",
+        "invalid-lead": "F5 a FF",
+        "overlong": "forma longa demais",
+        "surrogate": "surrogate",
+        "too-large": "além de U+10FFFF",
+        "truncated": "cortada",
+        "truncated-end": "cortada no fim",
+        "unpaired-lead": "surrogate inicial sem par",
+        "unpaired-trail": "surrogate final sem par",
+        "odd-byte": "byte ímpar",
+        "utf32-invalid": "não é um valor escalar",
+        "utf32-incomplete": "unidade incompleta",
+        "not-ascii": "não é ASCII"
+      },
+      "unitsTitle": "Byte por byte",
+      "colOffset": "Deslocamento",
+      "colBytesPlain": "Bytes",
+      "readingsTitle": "Os mesmos bytes em todos os charsets",
+      "readingsHelp": "O que cada charset faz destes bytes, incluindo uma marca de ordem de bytes (aqui ela é lida como dado). O charset usado acima aparece destacado.",
+      "garbledLabel": "Texto embaralhado",
+      "garbledPlaceholder": "Cole um texto como cafÃ©, donâ€™t ou a‡Æo",
+      "truncatedRepair": "Só os primeiros 2.000 caracteres foram examinados.",
+      "repairNone": "Nenhum reparo encontrado.",
+      "repairNoneClean": "Nada aqui parece mojibake: o texto se lê como texto comum.",
+      "repairNoneHelp": "Nenhuma releitura transforma isto num texto mais comum. Um texto que mistura caracteres certos e embaralhados fica como está (conserte a parte embaralhada sozinha), e bytes que se perderam ou viraram ? não voltam. Se você tem os bytes originais, leia-os em Bytes para texto.",
+      "repairBest": "Mais provável",
+      "repairOther": "Leitura {n}",
+      "stepLine": "Bytes em {original} foram lidos como {misread}.",
+      "evidence": {
+        "utf8": "Evidência forte: desfazer a leitura errada dá UTF-8 bem formado, que bytes além do ASCII raramente formam por acaso.",
+        "looks": "Evidência mais fraca: todo byte decodifica nestes charsets, então esta leitura foi escolhida só por parecer mais com um texto comum."
+      },
+      "lossy": "{n, plural, one {# caractere não pôde ser recuperado} other {# caracteres não puderam ser recuperados}} (mostrados como U+FFFD): {n, plural, one {os seus bytes se perderam} other {os bytes deles se perderam}} antes de o texto chegar a você.",
+      "showGarbling": "Ver embaralhado",
+      "charset": {
+        "utf-8": "UTF-8",
+        "utf-16le": "UTF-16LE",
+        "utf-16be": "UTF-16BE",
+        "utf-32le": "UTF-32LE",
+        "utf-32be": "UTF-32BE",
+        "us-ascii": "US-ASCII",
+        "iso-8859-1": "ISO-8859-1 (Latin-1)",
+        "windows-1252": "windows-1252",
+        "iso-8859-15": "ISO-8859-15 (Latin-9)",
+        "macintosh": "Mac OS Roman",
+        "ibm437": "IBM 437 (DOS, EUA)",
+        "ibm850": "IBM 850 (DOS, Europa Ocidental)",
+        "ibm037": "IBM 037 (EBCDIC, EUA e Canadá)",
+        "ibm500": "IBM 500 (EBCDIC, Internacional)"
+      },
+      "group": {
+        "unicode": "Unicode",
+        "latin": "ASCII e Latin",
+        "dos": "Páginas de código do DOS",
+        "ebcdic": "EBCDIC"
+      },
+      "browser": {
+        "means-windows-1252": "Um navegador a quem se diz {charset} lê windows-1252: o WHATWG Encoding Standard faz de iso-8859-1, latin1, ascii e us-ascii rótulos do windows-1252.",
+        "no": "Navegadores não decodificam {charset}: o WHATWG Encoding Standard não o define."
+      },
+      "preset": {
+        "encode-portuguese-utf8": "Português em UTF-8",
+        "encode-euro-everywhere": "O euro em todos os charsets",
+        "encode-emoji-utf16-bom": "Emoji, UTF-16LE com BOM",
+        "encode-utf32be": "UTF-32BE",
+        "encode-ebcdic": "EBCDIC 037",
+        "encode-html-mode": "Euro em Latin-1, como formulário",
+        "encode-strict-fails": "O modo estrito falha",
+        "encode-cp850-portuguese": "IBM 850",
+        "encode-mac-roman": "Mac OS Roman",
+        "decode-hexdump-auto": "Um dump do hexdump -C",
+        "decode-unicode-table-3-8": "Formas longas demais",
+        "decode-unicode-table-3-9": "Surrogates em UTF-8",
+        "decode-unicode-table-3-10": "Além de U+10FFFF",
+        "decode-unicode-table-3-11": "Sequências cortadas",
+        "decode-bom-overrides": "Uma BOM prevalece sobre UTF-8",
+        "decode-utf16-unpaired": "Surrogate sem par",
+        "decode-xxd": "Um dump do xxd",
+        "decode-git-octal": "Escapes octais do git",
+        "decode-percent": "Codificação por porcentagem",
+        "decode-base64": "Base64",
+        "decode-windows-1252": "Bytes C1 no windows-1252",
+        "decode-latin1": "Os mesmos em Latin-1",
+        "decode-ebcdic-auto": "EBCDIC, detectado",
+        "decode-utf16-auto": "UTF-16, detectado",
+        "decode-odd-hex": "Dígitos ímpares",
+        "repair-utf8-as-1252": "UTF-8 lido como windows-1252",
+        "repair-twice": "Lido errado duas vezes",
+        "repair-three-times": "Lido errado três vezes",
+        "repair-utf8-as-cp437": "UTF-8 num console do DOS",
+        "repair-cp850-as-1252": "IBM 850 lido como windows-1252",
+        "repair-1252-as-cp850": "windows-1252 lido como IBM 850",
+        "repair-ebcdic-as-latin1": "EBCDIC lido como Latin-1",
+        "repair-lossy": "Um byte perdido",
+        "repair-correct-text": "Texto correto",
+        "repair-mixed-left-alone": "Texto misturado"
+      }
+    },
+    "chmod-permission-calculator": {
+      "name": "Calculadora de permissões chmod",
+      "blurb": "Digite um modo de arquivo em octal (4755), como o ls mostra (-rwsr-xr-x) ou como cláusulas do chmod sobre uma base (g+s,o-rwx) e leia-o de todas as outras formas: os bits, quem pode fazer o quê, o que setuid, setgid e o sticky bit significam para um arquivo ou um diretório, os comandos que chegam a ele, o umask que o criaria e um rastro de cada cláusula. Do chmod e do ls do POSIX.1-2024 e do chmod(1) do coreutils 9.11; nada sai do navegador.",
+      "modeLabel": "Modo",
+      "modePlaceholder": "755, -rwsr-xr-x ou u+x,go-w",
+      "modeHint": "Octal (um a cinco dígitos), uma string do ls (nove caracteres, ou dez com a letra de tipo) ou cláusulas do chmod separadas por vírgula. Uma cláusula sem classe (+x) é aplicada sob o umask, como o chmod faz.",
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "kindLabel": "Tipo",
+      "kind": {
+        "file": "Arquivo",
+        "directory": "Diretório"
+      },
+      "baseLabel": "Modo base (para cláusulas)",
+      "baseHint": "Aquilo a que as cláusulas se aplicam. Em branco significa 644 para arquivo e 755 para diretório. Num diretório, um modo numérico de até quatro dígitos preserva os bits set-user-ID e set-group-ID, como o chmod do GNU faz.",
+      "umaskLabel": "umask (para cláusulas sem classe)",
+      "umaskHint": "Bits ligados aqui não são tocados por + e - quando nenhuma classe é nomeada. Em branco significa 022.",
+      "form": {
+        "octal": "Lido como modo octal.",
+        "ls": "Lido como string do ls.",
+        "symbolic": "Lido como cláusulas do chmod sobre a base."
+      },
+      "binaryLabel": "binário",
+      "decimalLabel": "decimal",
+      "gridTitle": "Os doze bits (clique num deles para inverter)",
+      "gridClass": "Classe",
+      "gridOctal": "Dígito",
+      "gridReading": "Leitura",
+      "flipTitle": "Inverter este bit",
+      "perm": {
+        "read": "leitura",
+        "write": "escrita",
+        "execute": "execução"
+      },
+      "who": {
+        "owner": "Dono",
+        "group": "Grupo",
+        "other": "Outros"
+      },
+      "verb": {
+        "file": {
+          "read": "lê-lo",
+          "write": "alterá-lo",
+          "execute": "executá-lo"
+        },
+        "directory": {
+          "read": "listar as entradas",
+          "write": "criar e remover entradas",
+          "execute": "entrar nele e alcançar entradas pelo nome"
+        }
+      },
+      "readingNone": "{who}: nada.",
+      "readingOne": "{who} pode {a}.",
+      "readingTwo": "{who} pode {a} e {b}.",
+      "readingThree": "{who} pode {a}, {b} e {c}.",
+      "special": {
+        "setuid": {
+          "name": "setuid",
+          "file": "Na execução, o processo assume o ID de usuário efetivo do dono do arquivo. Aparece como s (ou S sem execução) na terceira posição do dono.",
+          "directory": "Sem significado portável num diretório; alguns sistemas o ignoram. Aparece como s ou S na terceira posição do dono."
+        },
+        "setgid": {
+          "name": "setgid",
+          "file": "Na execução, o processo assume o grupo do arquivo como ID de grupo efetivo. Aparece como s (ou S sem execução) na terceira posição do grupo.",
+          "directory": "As entradas criadas dentro recebem o grupo do diretório em vez do grupo de quem as criou (na maioria dos sistemas). Aparece como s ou S na terceira posição do grupo."
+        },
+        "sticky": {
+          "name": "sticky",
+          "file": "Num arquivo comum o bit não tem significado portável hoje; alguns sistemas antigos o usavam para manter o texto do programa no swap. Aparece como t ou T na última posição.",
+          "directory": "Exclusão restrita: uma entrada só pode ser removida ou renomeada pelo seu dono, pelo dono do diretório ou por um usuário privilegiado. O /tmp é o caso clássico. Aparece como t (ou T quando outros não podem pesquisar) na última posição."
+        }
+      },
+      "flagsTitle": "Vale uma segunda olhada",
+      "sev": {
+        "high": "alto",
+        "warning": "conferir",
+        "info": "nota"
+      },
+      "flag": {
+        "no-permissions": "Nenhum bit de permissão está ligado: ninguém pode ler, escrever ou executar, nem o dono (que ainda pode mudar o modo).",
+        "all-permissions": "Todos os bits de permissão estão ligados: qualquer pessoa no sistema pode ler, escrever e executar.",
+        "world-writable-file": "Outros podem escrever neste arquivo: qualquer pessoa no sistema pode alterar o conteúdo.",
+        "world-writable-dir-no-sticky": "Outros podem criar e remover entradas neste diretório e, sem o sticky bit, podem remover entradas que não são deles.",
+        "world-writable-dir-sticky": "Outros podem criar entradas aqui, e a flag de exclusão restrita os impede de remover o que não é deles (o padrão do /tmp).",
+        "setid-world-writable": "Um arquivo set-user-ID ou set-group-ID em que outros podem escrever: qualquer um poderia substituir o conteúdo e executá-lo com os privilégios do arquivo.",
+        "setuid-without-execute": "set-user-ID ligado, mas o dono não pode executar o arquivo: o ls mostra um S maiúsculo e o bit não faz nada até que um bit de execução seja ligado.",
+        "setgid-without-execute": "set-group-ID ligado, mas o grupo não pode executar o arquivo: o ls mostra um S maiúsculo na posição do grupo.",
+        "setuid-file": "Um programa set-user-ID: roda com o ID de usuário efetivo do dono. Mantenha-o sem escrita para qualquer um além do dono.",
+        "setgid-file": "Um programa set-group-ID: roda com o grupo do arquivo como ID de grupo efetivo.",
+        "setuid-directory": "set-user-ID num diretório não tem significado portável; alguns sistemas o ignoram.",
+        "setgid-directory": "set-group-ID num diretório: as novas entradas herdam o grupo do diretório, a configuração usual de um diretório de projeto compartilhado.",
+        "sticky-directory": "A flag de exclusão restrita está ligada: as entradas só podem ser removidas pelo seu dono ou pelo dono do diretório.",
+        "sticky-file": "O sticky bit num arquivo comum não tem significado portável hoje; alguns sistemas antigos o usavam para manter o texto do programa no swap.",
+        "sticky-no-search": "A flag de exclusão restrita está ligada, mas outros não podem pesquisar o diretório, por isso o ls mostra um T maiúsculo.",
+        "owner-execute-without-read": "O dono pode executar mas não ler: um script não roda assim (o interpretador precisa lê-lo); um programa compilado roda.",
+        "group-execute-without-read": "O grupo pode executar mas não ler: um script não roda assim; um programa compilado roda.",
+        "other-execute-without-read": "Outros podem executar mas não ler: um script não roda assim; um programa compilado roda.",
+        "owner-write-without-read": "O dono pode escrever mas não ler: o arquivo pode ser sobrescrito e estendido, não lido de volta.",
+        "group-write-without-read": "O grupo pode escrever mas não ler.",
+        "other-write-without-read": "Outros podem escrever mas não ler.",
+        "owner-list-without-search": "O dono pode listar os nomes do diretório mas não entrar nele: os nomes aparecem, o conteúdo e os atributos não são alcançáveis.",
+        "group-list-without-search": "O grupo pode listar os nomes mas não entrar no diretório.",
+        "other-list-without-search": "Outros podem listar os nomes mas não entrar no diretório.",
+        "owner-less-than-others": "O dono tem menos do que o grupo ou os outros. É legal, e quase sempre um engano, porque o dono continua sendo quem pode mudar o modo."
+      },
+      "commandsTitle": "Comandos que chegam a este modo",
+      "command": {
+        "octal": "Absoluto, octal",
+        "symbolicAbsolute": "Absoluto, simbólico",
+        "fromBase": "A partir da base, mínimo"
+      },
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "umaskYes": "Um umask de {umask} cria este modo a partir do padrão que um programa pede ({def}).",
+      "umaskNo": {
+        "special-bits": "Nenhum umask cria este modo: os bits especiais nunca vêm de um umask.",
+        "needs-execute": "Nenhum umask cria este modo para um arquivo: os programas pedem 666, por isso bits de execução nunca são ligados só pela criação."
+      },
+      "traceTitle": "Cláusula por cláusula, a partir de {base} sob o umask {umask}",
+      "traceClause": "Cláusula",
+      "traceWho": "Classes",
+      "traceWhoOmitted": "(nenhuma dada: {who})",
+      "traceOp": "Op",
+      "tracePerm": "Perm",
+      "traceEmptyPerm": "(vazio)",
+      "traceAfter": "Modo depois",
+      "traceNotes": "Notas",
+      "note": {
+        "x-skipped": "X não concedeu nada: o alvo é um arquivo sem bit de execução.",
+        "s-with-o": "s só com o nomeado não muda nada (POSIX).",
+        "umask-applied": "Nenhuma classe nomeada: os bits ligados no umask foram deixados como estavam.",
+        "permcopy": "As permissões de uma classe copiadas para outra.",
+        "gnu-dir-preserves-special": "Um modo numérico num diretório preserva os bits set-user-ID e set-group-ID, salvo se escrito como 00755, -6000 ou =755 (chmod(1)).",
+        "gnu-numeric-operator": "Um modo numérico com =, + ou - na frente (chmod do GNU): = define exatamente, + acrescenta, - remove."
+      },
+      "error": {
+        "empty": "Nada para ler.",
+        "too-long": "Longo demais ({at} caracteres; o limite é 64).",
+        "octal-digit": "{at} não é um dígito octal (0 a 7).",
+        "octal-too-long": "Um modo octal tem no máximo cinco dígitos: {at}.",
+        "octal-range": "Um modo octal vai no máximo até 7777: {at}.",
+        "ls-position": "Não é uma string válida do ls: {at}. Cada classe recebe r w x (ou -), com s ou S permitidos só na terceira posição do dono e do grupo e t ou T só na última.",
+        "symbolic-empty-clause": "Uma cláusula vazia entre vírgulas: {at}.",
+        "symbolic-operator": "Esperava +, - ou = em {at}.",
+        "symbolic-perm": "{at} não é uma letra de permissão (r w x X s t) nem uma classe de onde copiar (u g o).",
+        "symbolic-no-operator": "Sem operador em {at}: uma cláusula precisa de +, - ou =.",
+        "base-unreadable": "O modo base não pôde ser lido: {at}. Use octal ou uma string do ls.",
+        "umask-unreadable": "O umask não pôde ser lido: {at}. Use octal, por exemplo 022."
+      },
+      "limits": "A calculadora conhece os bits do modo, não o sistema de arquivos: ela não vê propriedade, listas de controle de acesso, capabilities, opções de montagem nem o controle de acesso mandatório que pode se sobrepor a estes bits. Os comportamentos específicos do GNU (um diretório preservando setuid e setgid sob um modo numérico; =755, +x e -w com um número) são modelados como o chmod(1) do coreutils 9.11 os descreve; outras implementações podem diferir."
     }
   },
   "privacy_page": {
@@ -7933,7 +9500,9 @@
       "coursesDesc": "O catálogo completo por plataforma, com os objetivos que cada curso cobre.",
       "coursesCta": "Ver o catálogo",
       "blogTitle": "Blog",
-      "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento."
+      "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento.",
+      "sitesTitle": "Os sites anteriores",
+      "sitesDesc": "O que o Internet Archive guardou de nutzmann.net (2004) e ntz.com.br (2013): datas, ofertas, conteúdos e todas as capturas ligadas."
     },
     "historySectionTitle": "A História",
     "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa",
@@ -7960,7 +9529,15 @@
     "translateOn": "Exibindo em inglês",
     "machineDisclaimer": "Tradução gerada por máquina. Pode não refletir com exatidão o texto original.",
     "showOriginal": "Ver original",
-    "hideOriginal": "Ocultar original"
+    "hideOriginal": "Ocultar original",
+    "kindFilter": "Tipo de trabalho",
+    "kindTraining": "Treinamento",
+    "kindEngineering": "Engenharia",
+    "kindArchitecture": "Arquitetura",
+    "kindAdvisory": "Assessoria",
+    "kindLeadership": "Liderança",
+    "kindGeneral": "Geral",
+    "kindHint": "Uma recomendação pode descrever mais de um tipo de trabalho, então um cartão pode aparecer em vários tipos. Os tipos foram atribuídos a partir do texto de cada recomendação; o texto em si nunca é alterado."
   },
   "history": {
     "indexTitle": "A história",
@@ -8182,7 +9759,11 @@
       "s4Body": "A segunda metade da década voltou ao lado do fabricante como especialista na LAN corporativa. Na Enterasys a partir de 2005, o foco eram os switches e roteadores, Wi-Fi e WLAN, gerenciamento de rede, NAC e UAC, e detecção e prevenção de intrusões, passando por design de soluções, implementação, auditoria e treinamento. A partir de 2009, na Juniper Networks através da Professional Services para a América Latina, o cargo foi a promoção de novos produtos para o parceiro estratégico Telefónica Empresas no Brasil, com foco em switches EX e firewalls SRX, com treinamento operacional de Junos-SRX ministrado na Level 3 e na Impsat, hoje Lumen.",
       "s5Title": "Os anos de canal e consultoria, 2010 a 2020",
       "s5Body": "A última década desta época transitou com fluidez entre cargos, todos construindo em direção ao instrutor a que a história chega. Houve períodos como engenheiro de redes e segurança através de revendas e distribuidores, aprofundando a expertise em switching e roteamento corporativo, firewalls e firewalls de próxima geração, SSL-VPN, controle de acesso de usuários, aceleração de WAN e balanceamento de carga de internet em soluções da Juniper e da Cisco. De forma decisiva, esse período incluiu a virada para a F5, com o início do trabalho com F5 BIG-IP que definiria os anos seguintes. Em meio a tudo isso, o treinamento técnico foi um fio constante, nunca ausente de cargo nenhum.",
-      "closer": "Em 2020, o quadro estava completo: alguém que não apenas havia estudado esses sistemas, mas vivido dentro deles por vinte anos, no lado do fabricante e no do cliente, no projeto e na crise. Essa é a diferença que um implementador leva para uma sala de aula. Quando essa pessoa explica por que uma configuração se comporta de determinada maneira, é porque a viu se comportar assim, às três da manhã, com um correio nacional esperando."
+      "closer": "Em 2020, o quadro estava completo: alguém que não apenas havia estudado esses sistemas, mas vivido dentro deles por vinte anos, no lado do fabricante e no do cliente, no projeto e na crise. Essa é a diferença que um implementador leva para uma sala de aula. Quando essa pessoa explica por que uma configuração se comporta de determinada maneira, é porque a viu se comportar assim, às três da manhã, com um correio nacional esperando.",
+      "s6Title": "Os sites daqueles anos, 2004 a 2019",
+      "s6Body": "A web guardou o seu próprio registro desta época. A partir de 2004, o nutzmann.net apresentava a Nützmann Networks, a consultoria constituída em São Paulo em 2003, com os seus serviços, uma relação de parceiros, uma página de missão construída em torno do retorno sobre o investimento e três pequenas ferramentas: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e a pinagem de cabeamento. A partir de 2013, o ntz.com.br carregava a mesma empresa como NTZ Tecnologia: consultoria, serviços especializados, cursos de quarenta horas dados por um instrutor desde 1999, um laboratório remoto de equipamentos reais e uma cronologia de trabalhos que recua até o contrato em Brasília. Um site reconstruído em 2017 a 2019 listava competências por fabricante, com a F5 como foco principal. Cada captura está ligada a partir da página sobre os sites anteriores.",
+      "s6LinkLabel": "Os sites anteriores, com todas as capturas",
+      "s6LinkHref": "/about/earlier-sites"
     },
     "era2020present": {
       "years": "2020 – atual",
@@ -8617,7 +10198,7 @@
     "principlesTitle": "Como foi feito",
     "principlesBody": "Alguns princípios valeram do início ao fim, e são visíveis se você souber onde olhar.",
     "p1Title": "Calcular, nunca chutar",
-    "p1Body": "As ferramentas deste site calculam respostas de forma local e determinística. Elas não chamam um servidor com a sua informação, e não aproximam. O que roda no seu navegador, fica no seu navegador.",
+    "p1Body": "As ferramentas deste site calculam respostas de forma local e determinística. Elas não chamam um servidor com a sua informação, e não aproximam. O que roda no seu navegador, fica no seu navegador. As mais antigas têm linhagem: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e uma pinagem de cabeamento já estavam no nutzmann.net em 2004 e no ntz.com.br em 2013, e o Internet Archive ainda as guarda.",
     "p2Title": "Aberto no núcleo",
     "p3Title": "Documentado por construção",
     "p3Body": "Cada parte do código é comentada e documentada, não como algo deixado para depois, mas como regra permanente. A build é feita para ser legível, para quem a mantém e para qualquer um que a herde.",
@@ -9995,6 +11576,30 @@
       "get-an-access-point-onto-its-controller": {
         "title": "Colocar um ponto de acesso na controladora",
         "desc": "Monte o valor de DHCP option 43 na codificação que o fabricante do seu ponto de acesso realmente espera, e planeje a passagem de cabo que leva energia e dados até onde o AP vai ficar."
+      },
+      "cut-a-value-out-of-a-request": {
+        "title": "Recortar um valor de uma requisição",
+        "desc": "Confira se o comando escolhido conta a partir de 0 ou de 1, recorte o valor com findstr, substr ou getfield ao lado do Tcl puro que faz o mesmo, teste os comandos de string na sua entrada exata e leia um valor estruturado com scan."
+      },
+      "work-out-what-tcl-does-with-a-value": {
+        "title": "Entender o que o Tcl faz com um valor",
+        "desc": "Veja como o Tcl 8.4 lê um número como foi escrito (010 é octal, então vale 8), como expr e if avaliam uma condição passo a passo com == ao lado de eq, e depois execute o trecho um comando por vez para ver cada substituição."
+      },
+      "turn-a-routing-decision-into-an-irule": {
+        "title": "Transformar uma decisão de roteamento numa iRule",
+        "desc": "Escreva a decisão como regras e receba-a como cadeia de if, switch ou class match com o seu data group, confira o código contra o iRules Style Guide do DevCentral e depois passe o linter nos padrões que custam CPU."
+      },
+      "find-what-is-hiding-in-a-string": {
+        "title": "Descubra o que se esconde numa string",
+        "desc": "Cole o texto no inspetor Unicode para ver cada ponto de código, com caracteres invisíveis, controles bidirecionais, quebras de linha incomuns e sósias apontados; compare com o ASCII que o texto deveria ter; e passe uma iRule pelo verificador de estilo, que aponta os mesmos caracteres em Tcl."
+      },
+      "write-a-character-in-any-language": {
+        "title": "Escreva um caractere em qualquer linguagem",
+        "desc": "Consulte um código ASCII em qualquer notação e copie o escape para C, JSON, JavaScript, Python, Tcl, HTML ou URL; para qualquer coisa além do ASCII, pegue os escapes e os bytes UTF-8 no inspetor Unicode; depois codifique os bytes em hexadecimal, Base64 ou porcentagem."
+      },
+      "fix-garbled-text": {
+        "title": "Conserte um texto que saiu embaralhado",
+        "desc": "Cole o texto embaralhado no modo Consertar mojibake do conversor de charsets para achar o charset que o leu errado e recuperar o original; se você tem os bytes, leia-os em Bytes para texto e compare todos os charsets lado a lado; depois procure caracteres escondidos no resultado com o inspetor Unicode."
       }
     },
     "manualHeading": "Manual",
@@ -10065,7 +11670,9 @@
     "goodFaithTitle": "Material de fabricantes, fontes públicas e boa-fé",
     "goodFaithBody": "Os guias de estudo, as páginas de certificação e os recursos ligados a fabricantes neste site são obras educacionais independentes. São montados a partir de material publicamente disponível - blueprints de exame publicados, documentação oficial de produto, catálogos de treinamento dos fabricantes e anúncios públicos - e existem com um único propósito: ajudar profissionais em atividade a aprender uma tecnologia de verdade e a evoluir na própria carreira. Cada objetivo é citado à fonte pública de onde veio, os apontamentos de estudo são identificados como material autoral e não como texto do fabricante, e nada aqui contém questões de prova, respostas ou brain dumps de qualquer espécie, porque isso violaria justamente os acordos de certificação que este site existe para respeitar. Nomes de produtos, códigos de exame e marcas pertencem a seus respectivos titulares e são usados de forma nominativa, apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante aqui citado, nem endossado por eles, nem fala em nome deles.",
     "takedownTitle": "Se algo não deveria estar aqui",
-    "takedownBody": "Boa-fé vale nos dois sentidos, e um titular de direitos nunca deveria precisar brigar para ser ouvido. Se você detém ou representa material publicado aqui e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço de contato informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema - se o conteúdo não é de fato público, se a atribuição está errada, ou se a reprodução causa um dano que não previmos. Essa explicação é genuinamente útil, e não uma formalidade: ela permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé, material contestado pode ser retirado enquanto a questão ainda está em aberto, e nenhum titular precisa justificar sua reivindicação antes de o conteúdo sair do ar, caso prefira que ele saia primeiro."
+    "takedownBody": "Boa-fé vale nos dois sentidos, e um titular de direitos nunca deveria precisar brigar para ser ouvido. Se você detém ou representa material publicado aqui e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço de contato informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema - se o conteúdo não é de fato público, se a atribuição está errada, ou se a reprodução causa um dano que não previmos. Essa explicação é genuinamente útil, e não uma formalidade: ela permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé, material contestado pode ser retirado enquanto a questão ainda está em aberto, e nenhum titular precisa justificar sua reivindicação antes de o conteúdo sair do ar, caso prefira que ele saia primeiro.",
+    "advisoryTitle": "Serviços de assessoria são assunto separado, e contratado",
+    "advisoryBody": "Este site também descreve serviços de assessoria pagos. Nada neste site, inclusive a página de assessoria e os documentos de exemplo que ela aponta, é em si um conselho dado a você, e lê-lo não cria relação profissional alguma. Uma relação profissional, e o conselho dado dentro dela, começa somente sob a proposta, a declaração de trabalho ou o contrato emitido pela Red Education para uma contratação específica, e os termos dessa contratação, inclusive qualquer limitação de responsabilidade, são definidos nesse contrato, e não neste aviso. Todo o resto desta página continua valendo para o site em si."
   },
   "notFound": {
     "sub": "Página não encontrada",
@@ -17997,6 +19604,26 @@
         "def": "Um pequeno equipamento que se espeta numa porta para alguma coisa funcionar: originalmente para provar que você pagou pelo software, hoje em geral para devolver a uma máquina um recurso que ela não veio de fábrica.",
         "context": "O objeto é banal; a palavra é que tem história. A aparição impressa mais antiga está na Byte de outubro de 1981, num trecho sobre pirataria de software no Reino Unido, e o relato que resiste ao escrutínio a liga ao Wordcraft 80, um processador de texto para equipamentos Commodore. Numa carta de 1982 à Personal Computer World, Mike Lake lembrou Graham Heggie, da Analog Electronics de Coventry, perguntando como iam chamar aquela coisa de dongle, e o nome pegou antes de alguém combinar o que ele significava. A derivação mais provável é simplesmente dangle, pendurar, porque a coisa ficava dependurada atrás da máquina, e isso continua sem estar resolvido. O que está resolvido é a origem inventada: em 1992 a Rainbow Technologies publicou um anúncio atribuindo a palavra a uma pessoa chamada Don Gall. Esse inventor não existiu. A afirmação era uma piada de marketing, e vem sendo repetida como fato desde então.",
         "depth": "Os primeiros eram dispositivos de passagem numa porta paralela ou serial, entre o computador e a impressora, de modo que a porta continuasse servindo; o software se recusava a rodar se não conseguisse interrogar a peça. Os dongles de proteção modernos são criptoprocessadores seguros que guardam chaves e executam instruções, em vez de apenas responder a um desafio, e esse é outro argumento de segurança: o segredo não precisa estar presente no software em momento algum.\n\nDepois o sentido se inverteu. Dongle era o que o fabricante obrigava você a carregar para o software dele rodar. Hoje é o que você carrega para o seu próprio equipamento funcionar: o adaptador Bluetooth do notebook cujo rádio ficou de fora, o adaptador de USB-C para todo o resto, o bastão de streaming. Mesmo formato, mesma porta, propósito oposto. A queixa deixou de ser pagar por permissão e passou a ser pagar pelas portas que a máquina já tinha.\n\nA história do Don Gall vale por si. Um fabricante publicou uma etimologia fabricada numa revista do setor como piada, e a piada correu na frente da correção por décadas, que é mais ou menos o que acontece com toda origem contada com confiança e que ninguém confere."
+      },
+      "ascii": {
+        "def": "O código de caracteres de 7 bits que numera de 0 a 127 as letras do inglês, os dígitos, a pontuação e 33 códigos de controle; os primeiros 128 pontos de código do Unicode.",
+        "context": "Os seus 128 códigos estão por baixo de quase tudo o que um engenheiro de redes lê: cabeçalhos HTTP, comandos SMTP, nomes de host na forma ASCII, arquivos de configuração. Sete bits não deixam espaço para letras acentuadas, e é por isso que tantos charsets de 8 bits foram construídos em cima dele, e ele sobrevive dentro do UTF-8 byte por byte. A RFC 20 (1969) reproduz a versão de 1968 do padrão, então chamada USA Standard Code for Information Interchange. Um navegador a quem se diz que uma página está em \"ascii\" lê windows-1252."
+      },
+      "unicode": {
+        "def": "O padrão que dá a cada caractere de cada sistema de escrita um número, um nome e um conjunto de propriedades; a versão 18.0 conta 172.808 caracteres.",
+        "context": "O Unicode é o catálogo, não os bytes: um ponto de código como U+00E9 só vira bytes por uma forma de codificação, quase sempre o UTF-8. A maioria dos bugs de texto que um engenheiro de redes encontra mora no espaço entre os dois: comprimentos contados em unidades diferentes, caracteres que não desenham nada, letras de outra escrita que parecem idênticas e bytes lidos no charset errado. Cada versão acrescenta caracteres, então um software com dados mais antigos pode não conhecer um caractere que um texto mais novo contém."
+      },
+      "utf-8": {
+        "def": "A codificação que escreve cada ponto de código do Unicode em um a quatro bytes e mantém o ASCII em bytes únicos; a codificação que a web exige.",
+        "context": "O desenho dela é o motivo da vitória: texto ASCII já é UTF-8 válido, nenhum byte de um caractere mais longo cai na faixa ASCII, e o primeiro byte de cada caractere diz quantos bytes ele tem, então quem lê se acha em qualquer ponto de um fluxo. Os padrões de bytes também são estritos: C0, C1 e F5 a FF nunca aparecem, e um decodificador que encontra bytes malformados os substitui por U+FFFD em vez de adivinhar. Um texto que mostra Ã© no lugar de é é UTF-8 lido no charset errado."
+      },
+      "byte-order-mark": {
+        "def": "U+FEFF logo no início de um texto: diz que ordem de bytes um texto UTF-16 ou UTF-32 usa, e serve de assinatura de que um texto é UTF-8.",
+        "context": "Em UTF-16 ela se lê FE FF em big-endian e FF FE em little-endian; em UTF-8 ela é EF BB BF e não diz nada sobre ordem de bytes, só que o texto muito provavelmente é UTF-8. Um navegador confia mais nela do que em qualquer rótulo de charset. Fora daí ela costuma ser indesejada: é invisível na maioria dos editores, a RFC 8259 proíbe acrescentá-la a um JSON enviado pela rede, e um analisador que não a espera vê um caractere a mais (o JSON.parse do JavaScript rejeita um texto que começa com ela)."
+      },
+      "mojibake": {
+        "def": "Texto embaralhado que surge quando bytes escritos num charset são lidos em outro: café aparece como cafÃ©, don’t como donâ€™t.",
+        "context": "Quase nunca é aleatório. Cada par de charsets embaralha de um jeito reconhecível: UTF-8 lido como windows-1252 enche o texto de Ã e â€, uma página de código do DOS mostra caracteres de desenho de caixas, EBCDIC lido como Latin-1 transforma cada espaço em @. Como a leitura errada normalmente preserva todos os bytes, o estrago muitas vezes pode ser desfeito codificando o texto de volta com o charset que o leu errado e decodificando com o certo; um byte que virou ? ou foi descartado está perdido para sempre."
       }
     },
     "totalCount": "{count} termos",
@@ -18298,7 +19925,8 @@
     "filterCountryLabel": "País",
     "worksPill": "Trabalha dentro",
     "worksWithPill": "Trabalha com",
-    "markEra": "marca em uso {era}"
+    "markEra": "marca em uso {era}",
+    "markSince": "desde {year}"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -18594,13 +20222,13 @@
     }
   },
   "advisory": {
-    "eyebrow": "Consultoria estratégica",
-    "title": "Assessoria independente para decisões de rede e segurança.",
-    "lede": "Trinta anos do lado de quem fornece em redes e segurança corporativa, vistos de todos os ângulos possíveis: por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e diretamente do outro lado da mesa com o cliente. Oferecidos aqui como julgamento sobre decisões que ainda não foram tomadas, no nível em que elas de fato se tomam.",
+    "eyebrow": "Assessoria",
+    "title": "Julgamento técnico independente para decisões de tecnologia com consequência.",
+    "lede": "Redes corporativas, segurança cibernética, entrega de aplicações, identidade e infraestrutura: antes de você se comprometer com a arquitetura, o fornecedor, a plataforma, a migração ou o orçamento. A entrega é uma análise de decisão por escrito, que declara as premissas, os compromissos, os riscos, as consequências operacionais e as perguntas que ainda precisam de resposta. A tecnologia é o domínio de especialidade. O que você está comprando é qualidade de decisão.",
     "availabilityTitle": "Disponível, não empacotado",
     "availabilityBody": "Isto não é um catálogo de produtos. O que está descrito abaixo são os tipos de pergunta em que sou útil; o formato de cada contratação é acordado antes de começar. Se a sua necessidade for parecida com alguma delas, mas não igual, em geral não há problema e vale uma conversa.",
-    "scopeTitle": "O que é, e o que não é",
-    "scopeIn": "Julgamento técnico sobre uma decisão: revisar um projeto antes de o orçamento ser comprometido, escrever a especificação, avaliar a proposta de terceiros, escolher entre alternativas, ou explicar depois do ocorrido por que algo falhou e o que deveria mudar.",
+    "scopeTitle": "O que eu não forneço pessoalmente",
+    "scopeIn": "Não uso estas contratações como alocação de mão de obra, implantação de projeto, operação gerenciada, acionamento em qualquer hora ou engenharia de resposta a incidente. A separação é deliberada: o valor da contratação é julgamento técnico independente antes de uma decisão com consequência ser tomada, e esse valor cai no momento em que o assessor passa a ter interesse em fazer o trabalho que o conselho gera.",
     "scopeOutTitle": "Não faz parte do escopo",
     "offersTitle": "Assessoria executiva",
     "offerReviewTitle": "Revisão de projeto e arquitetura",
@@ -18613,32 +20241,32 @@
     "offerSelectBody": "Ficar ou mudar, consolidar ou manter dois, local ou como serviço. Uma pergunta definida, os compromissos ditos nos termos da organização e não nos do fabricante, e uma resposta defensável com o raciocínio anexado - para a decisão sobreviver a quem a tomou.",
     "offerPostmortemTitle": "Análise pós-incidente",
     "offerPostmortemBody": "Não é resposta a incidente - é a revisão depois, quando o fogo acabou e alguém precisa dar uma conta honesta do que aconteceu e do que impediria a repetição. Escrita para ser lida por quem não estava lá, e sem a procura por um culpado que torna inúteis quase todos esses documentos.",
-    "independenceTitle": "Por que a independência é a parte que sustenta",
-    "independenceBody": "A literatura sobre relações de assessoria põe a confiabilidade como credibilidade, constância e franqueza, tudo dividido pelo interesse próprio - e é a divisão que decide o resultado. Um denominador grande estraga um numerador excelente, e é por isso que um especialista com algo a vender vale menos que um competente sem nada a vender.\n\nEntão o fato relevante aqui não são os trinta anos. É que sou instrutor autorizado em quatro plataformas e não vendo nenhuma delas: não há produto deste lado da mesa, não há cota, não há margem de parceiro por trás da recomendação, e não existe versão deste trabalho que me pague mais se você comprar uma coisa em vez de outra. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.",
+    "independenceTitle": "O que independente quer dizer aqui, exatamente",
+    "independenceBody": "Independência é uma propriedade da análise, e vale a pena dizê-la com precisão em vez de em termos amplos.\n\nA análise é escrita por mim e leva o meu nome. Tenho autorização vigente de instrutor nas plataformas de quatro fabricantes e não vendo nenhuma delas: nenhuma cota de vendas, nenhuma margem de revenda, nenhuma comissão de indicação e nenhuma premiação por implantação atrelada à tecnologia que a análise favoreça. Não existe versão desta contratação que me pague mais se você comprar uma coisa em vez de outra, e se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.\n\nO que não se afirma é independência comercial de toda empresa do ecossistema. As contratações são firmadas e faturadas através da Red Education, que vende treinamento autorizado e serviços profissionais nas plataformas de vários fabricantes. Onde qualquer um dos dois for candidato ao que vem depois de uma decisão, o documento diz isso com todas as letras, e a escolha de quem faz esse trabalho continua sendo sua.\n\nInteresse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e saber exatamente qual é esse contexto, dos dois lados da mesa, é parte do que você está pagando. Isso também significa que a revisão não é uma arma contra fornecedores: um fornecedor confiante na sua proposta pode sugerir a revisão ele mesmo, porque uma proposta que resiste ao escrutínio independente é mais fácil de aprovar pelo cliente, e uma que não resiste sai mais barato de corrigir antes da implantação do que depois.",
     "howTitle": "Como funciona uma contratação",
     "howStep1": "Uma conversa sobre a decisão que você tem pela frente, sem custo, para estabelecer se sou a pessoa certa para ela.",
-    "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora.",
+    "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora. Numa análise pós-incidente, o escopo também diz que tipo de revisão ela é.",
     "howStep3": "O trabalho, com acesso a quem detém o detalhe técnico.",
-    "howStep4": "Uma resposta por escrito que você possa circular internamente, e uma call para percorrê-la.",
+    "howStep4": "Uma resposta por escrito que você possa circular internamente, e uma call para percorrê-la. No encerramento, pergunto se um relato da contratação pode ser publicado mais tarde, com nome, anonimizado, ou reduzido ao formato da decisão; um não é resposta completa, e nada é publicado sem um sim por escrito.",
     "ctaTitle": "Se há uma decisão na sua mesa",
-    "ctaBody": "Escreva diretamente para mim. Esta prática é minha, então a primeira conversa é com quem vai fazer o trabalho, e não com um gerente de contas. A mensagem inicial útil diz qual é a decisão, quem tem de assiná-la, e quando.",
+    "ctaBody": "Escreva diretamente para mim. A primeira conversa é com quem vai fazer o trabalho, e não com um gerente de contas. A mensagem inicial útil diz qual é a decisão, quem tem de assiná-la, e quando.",
     "ctaButton": "Iniciar uma conversa",
-    "disclaimerTitle": "Antes de continuar a ler",
-    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de consultoria descrito nesta página é entregue pessoalmente por mim <amber>e contratado através da</amber> Red Education. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que serei o principal defensor do melhor resultado possível para você. Desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. O certo é o certo, e o justo é o justo. Se você precisa de treinamento, isso também passa pela Red Education.",
+    "disclaimerTitle": "Como isto é contratado",
+    "disclaimerBody": "Trabalho em tempo integral para a Red Education. O trabalho de assessoria descrito nesta página é entregue pessoalmente por mim <amber>e contratado através da</amber> Red Education, que também emite a proposta e a fatura. A única coisa sobre a qual não posso informar é preço: isso vem somente depois de uma conversa detalhada de escopo e alinhamento de expectativas, e é fornecido exclusivamente pela Red Education. O que posso dizer é que, dentro da contratação, serei o principal defensor do melhor resultado possível para você: desde 1996 venho argumentando de forma consistente pelo que serve ao cliente final, e não necessariamente pelo que servia à empresa para a qual eu trabalhava na época. Se você precisa de treinamento, isso também passa pela Red Education.",
     "exclusion1Term": "Implantação e configuração",
     "exclusion1Body": "Reviso o que está planejado e audito o que foi construído, mas não sou as mãos que constroem.",
     "exclusion2Term": "Plantão, sobreaviso e responsabilidade operacional",
     "exclusion2Body": "Não vendo horas, e não sou nome em escala nem em cadeia de acionamento. Presença durante janela de manutenção não é oferecida, nem presencial nem remota.",
     "exclusion3Term": "Alocação de mão de obra",
-    "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação — não é o que este trabalho resolve.",
+    "exclusion3Body": "Se o que falta é mais uma pessoa no time, isso é uma decisão de contratação, não é o que este trabalho resolve.",
     "exclusion4Term": "Treinamento e capacitação, em qualquer formato",
-    "exclusion4Body": "Treinamento eu não vendo como consultoria. Ministro cursos oficiais sob autorização de fabricante, e isso é um trabalho separado, com agenda e condições próprias — é só perguntar que eu indico o caminho. O que eu ofereço aqui é julgamento sobre uma decisão, e não uma grade de curso.",
+    "exclusion4Body": "Treinamento eu não vendo como consultoria. Ministro cursos oficiais sob autorização de fabricante, e isso é um trabalho separado, com agenda e condições próprias; é só perguntar que eu indico o caminho. O que eu ofereço aqui é julgamento sobre uma decisão, e não uma grade de curso.",
     "exclusion5Term": "Desenvolvimento de material de curso",
     "exclusion5Body": "Isso eu não ofereço. Slides, guias de laboratório, notas do instrutor e avaliação são um ofício separado, contratado com escopo e condições próprias, e não são tempo de consultoria. Dizer se um curso deve existir é trabalho que eu faço. Escrever o curso não é.",
     "offerSpeakingTitle": "Palestras",
     "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação.",
-    "advisorEyebrow": "Seu consultor",
-    "advisorBody": "Trinta anos do lado de quem fornece em redes e segurança corporativa, por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e em engajamentos diretos com o cliente - implantando, sustentando, operando e ensinando o que essas empresas vendem, em vez de vender. É essa a base inteira da assessoria: meu trabalho era fazer aquilo funcionar depois, então sempre tive de conviver com a resposta. Esta prática é minha, a análise é minha, e eu assino embaixo. As credenciais, o histórico de carreira e o que clientes e alunos dizem estão a um clique, porque afirmação que não se pode conferir não vale a pena fazer.",
+    "advisorEyebrow": "Seu assessor",
+    "advisorBody": "Trinta anos do lado de quem fornece em redes e segurança corporativa, por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e em engajamentos diretos com o cliente: implantando, sustentando, operando e ensinando o que essas empresas vendem, em vez de vender. É essa a base inteira da assessoria: meu trabalho era fazer aquilo funcionar depois, então sempre tive de conviver com a resposta. A análise é minha e leva o meu nome; como uma contratação é feita está dito com clareza mais abaixo nesta página. As credenciais, o histórico de carreira e o que clientes e alunos dizem estão a um clique, porque afirmação que não se pode conferir não vale a pena fazer.",
     "advisorLinkCreds": "Credenciais",
     "advisorLinkCareer": "Histórico de carreira",
     "advisorLinkEndorsements": "O que dizem os clientes",
@@ -18648,12 +20276,104 @@
     "offerExecutiveTitle": "Assessoria técnica de nível executivo para decisões de missão crítica",
     "offerExecutiveBody": "Para o conselho, o comitê diretor ou o executivo que precisa se comprometer com uma direção de adoção de tecnologia, transformação digital, ou habilitação e melhoria de serviço - e que precisa da realidade técnica daquela decisão dita por alguém sem nada a vender. A entrega é uma análise estruturada, metódica e neutra: o diagnóstico, as opções com seus compromissos, as cautelas, os riscos, e o que cada caminho de fato exigiria para ser executado. Escrita para circular e ser defendida internamente, e não para ser apresentada e esquecida. O que ela não inclui é recomendação moldada por comissão, porque não há comissão - sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma. O impacto quem diz é o negócio.",
     "secondaryTitle": "Palestras",
-    "recordTitle": "De onde isso vem",
-    "recordBody": "Passei os primeiros vinte e quatro anos de carreira, de 1996 a 2020, fazendo este trabalho para organizações líderes de muitos segmentos: instituições financeiras, órgãos de governo, provedores de serviço de todo tipo, grandes conglomerados multinacionais de comércio e serviços, e indústria numa faixa ampla. Entreguei, fui responsável, supervisionei, colaborei, liderei e participei - muitas vezes, de dentro de fabricantes, distribuidores e integradores. Estes trabalhos não são mais o que eu vendo. São aquilo de que a assessoria acima é feita, e estão listados aqui para você julgar se essa base é a certa para a sua decisão.",
+    "recordTitle": "De onde isso vem, nas palavras dos clientes",
+    "recordBody": "Passei os primeiros vinte e quatro anos de carreira, de 1996 a 2020, fazendo este trabalho para organizações líderes de muitos segmentos: instituições financeiras, órgãos de governo, provedores de serviço de todo tipo, grandes conglomerados multinacionais de comércio e serviços, e indústria numa faixa ampla. Entreguei, fui responsável, supervisionei, colaborei, liderei e participei, muitas vezes, de dentro de fabricantes, distribuidores e integradores. Estes trabalhos não são mais o que eu vendo. São aquilo de que a assessoria acima é feita.",
     "earnTitle": "O que eu não farei",
-    "earnBody": "Não vou dizer o que fazer antes de entender a sua situação, e a primeira conversa existe para estabelecer se posso ser útil - inclusive a resposta de que não posso, ou de que a pergunta é melhor endereçada a outra pessoa. Um assessor que já tem certeza antes de ter ouvido está vendendo alguma coisa. Se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta que você receberá por escrito, e será a frase mais valiosa do documento.",
+    "earnBody": "Não vou dizer o que fazer antes de entender a sua situação, e a primeira conversa existe para estabelecer se posso ser útil, inclusive a resposta de que não posso, ou de que a pergunta é melhor endereçada a outra pessoa. Um assessor que já tem certeza antes de ter ouvido está vendendo alguma coisa. Se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta que você receberá por escrito, e será a frase mais valiosa do documento.",
     "problemTitle": "O problema para o qual isto existe",
-    "problemBody": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes. O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Todo diagrama é desenhado por alguém com uma cota atrás, toda referência é escolhida a dedo, e o time interno - que pode ser excelente - está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.\n\nÉ essa a lacuna que esta prática existe para fechar, e nada além. Não para substituir o time, não para tocar o projeto, e não para virar mais um fornecedor com um diagrama: para pôr uma leitura técnica independente e experiente diante de quem tem de assinar, a tempo de mudar a decisão em vez de explicá-la depois."
+    "problemBody": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes. O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Boa parte do que chega à mesa é desenhada por alguém com uma cota atrás, e toda referência é escolhida a dedo; parte vem de times internos, de comunidades de código aberto e de engenheiros sem transação nenhuma por trás, e a primeira tarefa é saber qual é qual. Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e o time interno, que pode ser excelente, está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.\n\nÉ essa a lacuna que esta prática existe para fechar, e nada além. Não para substituir o time, não para tocar o projeto, e não para virar mais um fornecedor com um diagrama: para pôr uma leitura técnica independente e experiente diante de quem tem de assinar, a tempo de mudar a decisão em vez de explicá-la depois.",
+    "positioning": "Um assessor sênior profundamente técnico, chamado para decisões difíceis de infraestrutura e segurança quando a consultoria executiva não é técnica o bastante e a consultoria de engenharia não é independente o bastante. Julgamento sobre decisões que ainda não foram tomadas, no nível em que elas de fato se tomam.",
+    "metaTitle": "Assessoria técnica independente para decisões de rede e segurança · Rodolfo Nützmann",
+    "metaDescription": "Julgamento técnico independente antes de você se comprometer com uma arquitetura, um fornecedor, uma plataforma ou um orçamento: uma análise de decisão por escrito, por Rodolfo Nützmann.",
+    "whenTitle": "Quando isto costuma ser útil",
+    "whenLede": "Quem mais aproveita uma contratação costuma chegar numa destas cinco situações.",
+    "when1Term": "Liderança de infraestrutura, segurança e tecnologia",
+    "when1Body": "Um CIO, um CISO ou um responsável por infraestrutura com uma decisão de consequência técnica, e ou pouca competência independente dentro de casa para testá-la, ou a vontade de uma segunda opinião antes de assinar.",
+    "when2Term": "Comitês diretores e patrocinadores executivos",
+    "when2Body": "Um grupo que precisa transformar premissas técnicas em compromissos de negócio defensáveis, e precisa que elas sejam ditas por alguém que possa ser questionado na sala.",
+    "when3Term": "Times de compras",
+    "when3Body": "Requisitos que valem a pena pedir, propostas interpretadas pelo mérito, e uma pontuação que os fornecedores não consigam conduzir.",
+    "when4Term": "Organizações em transição de arquitetura",
+    "when4Body": "Modernização de data center, SASE e SSE, consolidação de fornecedores, redesenho de rede, arquitetura de segurança de aplicações, transformação de WAN, troca de firewalls, conectividade híbrida e de nuvem, migração de plataforma de grande porte.",
+    "when5Term": "Organizações depois de um incidente grave",
+    "when5Body": "Não a resposta, que tem gente própria: a reconstrução independente depois, e o que a organização deve aprender com ela.",
+    "shapesTitle": "Um modelo de assessoria, aplicado a vários tipos de decisão com consequência",
+    "shapesLede": "São formatos, não pacotes. A pergunta, os insumos, a entrega, as datas e o valor são acordados por escrito antes de o trabalho começar, e uma contratação que fica entre dois formatos é o comum, não um problema.",
+    "shapeQuestionLabel": "A pergunta",
+    "shapeOutputLabel": "O que você recebe",
+    "shape1Title": "Revisão de decisão",
+    "shape1Question": "Devemos aprovar esta arquitetura, ou esta proposta?",
+    "shape1Output": "Um memorando de decisão.",
+    "shape1Body": "Uma segunda leitura neutra do orçamento e do diagrama de um fornecedor, por escrito: o que de fato está sendo proposto, o que fica de fora, o que se presume sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
+    "shape2Title": "Avaliação comparativa",
+    "shape2Question": "Qual destas abordagens, ou destes fornecedores, serve para nós?",
+    "shape2Output": "Uma análise de opções e compromissos.",
+    "shape2Body": "Ficar ou mudar, consolidar ou manter dois, local ou como serviço. Uma pergunta definida, os compromissos ditos nos termos da organização e não nos do fornecedor, e uma resposta defensável com o raciocínio anexado, para a decisão sobreviver a quem a tomou.",
+    "shape3Title": "Desafio de arquitetura",
+    "shape3Question": "O que estamos deixando passar antes da implantação?",
+    "shape3Output": "Achados de arquitetura e um registro de riscos.",
+    "shape3Body": "Ler um projeto proposto antes de ele ser construído e pago: o que ele presume, onde vai forçar, o que vai custar para operar em vez de para comprar, e quais das premissas sustentam o resto. As falhas que importam raramente estão no produto; estão no que o projeto deu por certo.",
+    "shape4Title": "Assessoria de compras e RFP",
+    "shape4Question": "O que de fato devemos pedir que os fornecedores entreguem?",
+    "shape4Output": "Requisitos e um modelo de pontuação.",
+    "shape4Body": "Escrever o que pedir. Uma especificação ou um pedido de proposta que descreva o resultado com precisão suficiente para ser pontuado com justiça, e feche as brechas que um fornecedor interpretaria livremente a favor dele. A má contratação costuma ser decidida nesta etapa, e não na proposta.",
+    "shape5Title": "Revisão do parque",
+    "shape5Question": "O que de fato temos, e o que depende disso?",
+    "shape5Output": "Um mapa do parque, com as partes que ninguém sabe explicar marcadas.",
+    "shape5Body": "Um inventário que vira mapa: o que está conectado, o que cada coisa de fato faz, o que depende dela, e quais partes ninguém consegue explicar hoje. Chamado de revisão, e não de auditoria, porque auditoria carrega um sentido de garantia que isto não reivindica. Quase todo parque tem algo que sustenta o resto e que ninguém olha há anos.",
+    "shape6Title": "Análise pós-incidente",
+    "shape6Question": "O que falhou, e o que deve mudar de verdade?",
+    "shape6Output": "Uma revisão de engenharia independente.",
+    "shape6Body": "Não é resposta a incidente: é a revisão depois, quando o fogo acabou e alguém precisa dar uma conta honesta do que aconteceu e do que impediria a repetição. Escrita para ser lida por quem não estava lá, e sem a procura por um culpado que torna inúteis quase todos esses documentos. O escopo é uma revisão de engenharia para aprendizado. Não é investigação forense nem análise jurídica ou regulatória: onde há litígio, seguradoras, reguladores ou preservação de provas, isso exige especialistas próprios, e o escopo por escrito diz que tipo de revisão é esta antes de ela começar.",
+    "shape7Title": "Aconselhamento técnico executivo contínuo",
+    "shape7Question": "Enfrentamos decisões assim repetidamente.",
+    "shape7Output": "Apoio recorrente à decisão, por escrito a cada vez.",
+    "shape7Body": "Para a organização em que decisões de infraestrutura e segurança com consequência chegam à mesa executiva várias vezes por ano. Descrito abaixo, no arranjo retido.",
+    "receiveTitle": "O que você recebe",
+    "receiveBody": "Uma resposta por escrito, feita para circular e ser defendida internamente, e não para ser apresentada e esquecida, e uma call para percorrê-la. O documento segue uma estrutura fixa, para que quem não estava na sala consiga acompanhar o raciocínio e questioná-lo.",
+    "receiveLink": "Leia um memorando de exemplo completo",
+    "receiveNote": "O exemplo é fictício, montado para mostrar a estrutura e o nível de detalhe. Nenhum documento de cliente é publicado, nunca.",
+    "layersTitle": "Três maneiras de contratar",
+    "layersLede": "A primeira é a principal, e é o que a maioria das contratações é. As outras duas existem para perguntas que não cabem dentro de uma única decisão.",
+    "layer1Title": "Revisão de decisão independente",
+    "layer1Body": "Uma decisão. Insumos definidos, um memorando por escrito, uma reunião para percorrê-lo, valor fechado. A contratação mais fácil de comprar, e a que o resto desta página descreve.",
+    "layer2Title": "Assessoria técnica executiva",
+    "layer2Body": "Perguntas maiores, que atravessam várias decisões: uma arquitetura, um roteiro de tecnologia, o panorama de fornecedores, uma estratégia de transição, os riscos e as consequências operacionais. Ainda com escopo, ainda por escrito, ainda sem operação.",
+    "layer3Title": "Aconselhamento técnico retido",
+    "layer3Body": "Para um número pequeno de organizações, acesso ao longo de três, seis ou doze meses: sessões recorrentes de decisão, questionamento de arquiteturas e de propostas de fornecedores, participação em reuniões do comitê quando uma decisão chega a elas, revisão de propostas importantes, interpretação de risco tecnológico, e um parecer por escrito a cada vez. Acesso significa apoio recorrente à decisão ao longo do prazo acordado, com a cadência, a disponibilidade e o escopo escritos na proposta; não é uma linha aberta para o que quer que apareça. Quando decisões de infraestrutura e segurança com consequência chegam à mesa executiva, mais uma pessoa do seu lado dela. O que não é: gestão de pessoas, acionamento de suporte, gerência de projeto, responsabilidade operacional, disponibilidade em qualquer hora, ou mão de obra de implantação.",
+    "evidenceLede": "A maior parte do que se diz publicamente sobre mim trata de ensino, porque é o que fiz de mais visível desde 2020. Abaixo está a parte mais antiga do histórico, a que tem o formato de assessoria: o que clientes e parceiros escreveram sobre trabalho de projeto, seleção e compras, na íntegra, cada um com o engajamento que descreve dito numa linha. O conjunto completo, filtrado por tipo, está na página de depoimentos.",
+    "evidence38": "Compras e seleção de fornecedor para um cliente do setor financeiro, 2008: consultoria, definição de tecnologia, a RFP e a supervisão da negociação comercial, depois o ponto de contato ao longo da implantação e depois dela.",
+    "evidence63": "Projeto, concepção e análise de uma solução de telefonia IP e gravação em alta disponibilidade para uma das maiores corretoras do país, 2008, conduzida entre vários fornecedores.",
+    "evidence42": "Uma análise de capacidade de enlace de dados, 2012, cuja profundidade e cujos resultados apresentados o parceiro credita pelo desfecho do projeto.",
+    "evidence28": "Como os projetos eram feitos, nas palavras de um especialista em segurança, 2020: aplicando o conceito, e não por tentativa e erro.",
+    "evidenceTranslated": "traduzido do original",
+    "evidenceAllLink": "Todos os depoimentos, filtrados por tipo",
+    "reasonTitle": "Inspecione o raciocínio antes de contratá-lo",
+    "reasonBody": "Trinta anos é uma afirmação que muita gente pode fazer. O que menos gente consegue mostrar é como pensa. O resto deste site é um registro público disso: ferramentas que calculam em vez de chutar, cada uma com seus vetores de teste e suas fontes anexadas; algumas centenas de artigos técnicos que citam a documentação em que se apoiam; um corpus sobre a disciplina de operar redes e suporte; e uma história da indústria escrita de dentro dela. Leia qualquer parte antes da primeira conversa. É o mesmo raciocínio que entra num memorando de decisão.",
+    "reasonLinkTools": "As ferramentas",
+    "reasonLinkLearn": "Learn",
+    "reasonLinkPractice": "The Practice",
+    "reasonLinkIndustry": "Indústria",
+    "psTitle": "Quando a decisão leva à implantação",
+    "psBody": "Meu papel nestas contratações é de assessoria: reviso, questiono, analiso e documento a decisão, e não forneço pessoalmente a implantação, o serviço gerenciado nem o suporte operacional que podem vir depois. Isso não significa que a contratação termine sem um caminho prático adiante. A Red Education mantém uma capacidade de Serviços Profissionais, entregue pelos seus engenheiros certificados pelos fabricantes: instalações, atualizações e migrações de software e de hardware, health checks, transferência de conhecimento, engenheiros residentes no local e consultores sob demanda. Trabalho na Red Education em tempo integral e, onde o trabalho que vem depois de uma decisão é trabalho que a Red Education faz, é lá que vou propor que ele seja feito: conheço as pessoas que o fazem e acredito no compromisso da empresa com a qualidade e com a satisfação do cliente. A escolha continua sendo sua, incluindo o seu parceiro atual, o seu time interno ou outro prestador. O que não se move é a análise: onde os serviços profissionais da Red Education estiverem sendo considerados para o trabalho seguinte, a contratação diz isso explicitamente, e o documento permanece no mérito técnico, nas restrições, nos riscos e nos requisitos da decisão, e não na criação de trabalho de implantação para quem quer que seja, Red Education incluída.",
+    "psLink": "Serviços Profissionais da Red Education",
+    "speakingNote": "Também disponível para palestras em conferências e sessões executivas, que têm página própria.",
+    "speakingLink": "Palestras",
+    "memoOutline1": "A pergunta executiva",
+    "memoOutline2": "Situação atual",
+    "memoOutline3": "Premissas",
+    "memoOutline4": "Evidências examinadas",
+    "memoOutline5": "Restrições",
+    "memoOutline6": "Opções",
+    "memoOutline7": "Compromissos",
+    "memoOutline8": "Riscos",
+    "memoOutline9": "Dependências",
+    "memoOutline10": "Considerações de custo e de operação",
+    "memoOutline11": "Incógnitas",
+    "memoOutline12": "Recomendação, ou as condições para prosseguir",
+    "memoOutline13": "Ações imediatas",
+    "memoOutline14": "Perguntas para o fornecedor",
+    "layersBasis": "Como o dinheiro se comporta, já que os valores em si só vêm depois do escopo: uma revisão de decisão e uma assessoria técnica executiva têm o escopo definido primeiro e são cotadas como um valor único para esse escopo, nunca como um taxímetro de horas em aberto; o conselho técnico retido é cotado para um prazo, uma cadência e um escopo acordados. Em todos os casos, a proposta e a fatura vêm da Red Education."
   },
   "speaking": {
     "eyebrow": "Palestras",
@@ -21638,5 +23358,102 @@
     "query": "Consulta",
     "fragment": "Fragmento",
     "cannotSegment": "Não foi possível separar esta entrada em partes com segurança, então ela aparece sem marcação em vez de destacada de forma errada."
+  },
+  "advisoryMemo": {
+    "eyebrow": "Assessoria",
+    "metaTitle": "Memorando de decisão de exemplo · Rodolfo Nützmann",
+    "metaDescription": "Um exemplo completo e fictício da análise de decisão por escrito que uma contratação de assessoria produz: a estrutura, o nível de detalhe e as perguntas que ela deixa para o fornecedor.",
+    "noticeTitle": "Um exemplo fictício",
+    "noticeBody": "A organização, os fornecedores, os números e os achados abaixo são inventados, montados apenas para mostrar a estrutura e o nível de detalhe do documento que uma contratação produz. Nenhum documento de cliente é publicado, nunca, e nada aqui é conselho a leitor algum. A estrutura é a mesma em toda contratação; o conteúdo é sempre do próprio cliente.",
+    "backLink": "Voltar para a assessoria",
+    "ctaBody": "Se uma decisão como esta está na sua mesa, a primeira conversa é gratuita e é com a pessoa que escreveria o documento.",
+    "ctaButton": "Iniciar uma conversa",
+    "preparedLabel": "Preparado para",
+    "statusLabel": "Situação",
+    "updatedLabel": "Atualizado"
+  },
+  "earlierSites": {
+    "eyebrow": "Sobre · Os sites anteriores",
+    "title": "O que a web lembra",
+    "lede": "Antes do ronutz.com houve dois domínios, nutzmann.net e ntz.com.br, e o Internet Archive os guardou. {pages} páginas arquivadas, lidas em {date}, foram salvas por inteiro, impressas e catalogadas. Aqui, época por época: o que cada site foi, quando, o que oferecia e o que continha, com o link de cada captura, para que o registro possa ser conferido.",
+    "metaTitle": "Os sites anteriores: nutzmann.net e ntz.com.br, 2004 a 2021 · Rodolfo Nützmann",
+    "metaDescription": "O que o Internet Archive guardou dos sites anteriores de Rodolfo Nützmann, nutzmann.net desde 2004 e ntz.com.br desde 2013: datas, características, ofertas, conteúdos e o link de cada captura.",
+    "ageLine": "A primeira captura é de 25 de agosto de 2004, {years} anos antes de esta página ser construída. A página inicial daquele dia já apontava para três pequenas ferramentas, uma calculadora de bits e bytes, uma calculadora de endereçamento IP e a pinagem de cabeamento de redes: as ancestrais mais antigas das ferramentas deste site.",
+    "provenanceTitle": "De onde isto vem",
+    "provenanceBody": "Cada afirmação desta página foi lida nas capturas da Wayback Machine dos dois domínios em {date}; nada é citado de memória. Cada captura foi salva com os bytes originais do arquivo, com imagens, folhas de estilo e scripts embutidos, renderizada sem rede e impressa, e o inventário ao fim de cada seção aponta para a cópia no arquivo, para que qualquer pessoa abra a página como ela era. Onde o arquivo nunca guardou uma imagem, a impressão mostra o vazio e o catálogo diz isso. Nomes de clientes que aparecem nas páginas antigas ficam no arquivo; esta página descreve o trabalho pela forma.",
+    "labels": {
+      "nature": "O que era",
+      "characteristics": "Como era feito",
+      "offerings": "O que oferecia",
+      "contents": "O que continha"
+    },
+    "eras": {
+      "nn-2004": {
+        "years": "2004 a 2007",
+        "title": "nutzmann.net, o site da Nützmann Networks",
+        "nature": "O primeiro site da Nützmann Networks Consultoria em Comunicação de Dados e Tecnologia da Informação LTDA., a consultoria constituída em São Paulo em 2003, apresentada sob a marca nützmann.net e escrita, em português, na voz plural de uma empresa. A página inicial falava em treze anos de mercado, a página de parceiros em presença na área desde 1996, e a de áreas de atuação em um começo em 1991: três formas de contar o mesmo caminho.",
+        "characteristics": "Uma abertura em Flash na raiz, que o arquivo não guardou, e depois um conjunto de frames com cabeçalho, menu lateral e conteúdo, à maneira de 2004: páginas .htm, tipografia pequena sem serifa, uma página inicial em duas colunas com faixa de notícias e caixa de lista de e-mails, crédito de design e de hospedagem no rodapé. Cerca de trinta páginas. Serviços, casos de sucesso, a página da equipe e o acervo traziam o aviso de que o novo site ainda estava em fase final de desenvolvimento. Primeira captura em 25 de agosto de 2004; o mesmo desenho ainda era servido em junho de 2007.",
+        "offerings": "Consultoria em redes, telecomunicações e sistemas de informação: projetos sob medida, serviços modulares, gerência do relacionamento de pós-venda de um fabricante com clientes estratégicos, atendimento aos fabricantes de redes Cabletron, Enterasys e Riverstone e aos seus clientes, implementação de redes (Internet, filiais, LAN, MAN, WAN e sem fio) e serviços profissionais sobre o parque instalado. Uma página de missão defendia o investimento em tecnologia com uma fórmula de retorno e um exemplo numérico. A página de áreas de atuação listava os setores atendidos, órgãos públicos, bancos, operadoras, indústria, mídia, universidades, centrais de atendimento, e uma relação de cerca de quarenta organizações atendidas por seus profissionais.",
+        "contents": "Principal, a empresa, missão, áreas de atuação e clientes, equipe, um explicador sobre comunicação em redes, soluções (LAN, WAN, sem fio, Internet, VPN, voz e vídeo), serviços, casos de sucesso, um acervo planejado em oito seções, parceiros (dez empresas, dos fabricantes com que trabalhava ao provedor que hospedava o site), contato, privacidade e termos. E as três ferramentas apontadas na página inicial, das quais o arquivo guardou a calculadora de bits e bytes: uma página inteira com a nota sobre os prefixos da IEC de 1998, um exemplo de tempo de transferência e uma tabela de tipos de conexão."
+      },
+      "nn-later": {
+        "years": "2007 a 2021",
+        "title": "nutzmann.net, ano a ano",
+        "nature": "Uma captura por ano da página inicial, para mostrar as faces sucessivas do domínio depois do desenho de 2004. Em dezembro de 2010 uma página única intitulada N T Z o havia substituído, sob a mesma razão social, constituída em 2003 em São Paulo. A partir de junho de 2013 o domínio encaminhava para o ntz.com.br. Em dezembro de 2013 abrigou por alguns meses um site em WordPress e, de março de 2014 até pelo menos junho de 2021, uma página simples intitulada Engenharia de Redes.",
+        "characteristics": "A página de 2010: um logotipo, cinco linhas de serviço em maiúsculas (consultoria, auditoria, serviços especializados, elaboração e gerenciamento de projetos, treinamentos), as áreas de atuação em uma linha cada, um painel com cerca de trinta logotipos de fabricantes e plataformas, um bloco de gerenciamento de crises com plantão de 24 horas, os idiomas de atendimento (português, inglês, alemão, espanhol) e os lugares de atuação (Brasil, Califórnia, Alemanha, Argentina). O WordPress de 2014 tinha dois posts, uma declaração de missão em inglês e o anúncio das linhas de Engenharia de Redes. A página seguinte era deliberadamente simples: linhas numeradas de escopo, a lista das tecnologias de fabricantes com que os clientes podiam contar e a nota de que os serviços estavam disponíveis em quatro idiomas e, com agendamento, em qualquer lugar.",
+        "offerings": "A página de 2010 é a declaração mais clara do período: Consultoria independente. Não há vínculo a nenhum fornecedor de tecnologia. E um domínio declarado das tecnologias dos fabricantes mostrados. Resposta a incidentes, depuração de problemas persistentes e escalonamento junto a centrais de suporte de fabricantes no exterior eram oferecidos como serviços nomeados.",
+        "contents": "As capturas de 2005, 2006 e 2007, impressas com os seus frames da mesma data; a página N T Z de 2010 e 2011; o encaminhamento de 2013; a página inicial do WordPress e os seus dois posts de 2013 e 2014; a página Engenharia de Redes como capturada em 2014, 2015, 2016, 2017 e 2021."
+      },
+      "ntz-2013": {
+        "years": "2013 a 2017",
+        "title": "ntz.com.br, o site da NTZ Tecnologia",
+        "nature": "O site da NTZ Tecnologia, nome comercial da mesma empresa: fundada em 2003 por Rodolfo Nützmann, constituída em 2003 na cidade de São Paulo, atuando no mercado de tecnologia desde 1995. Consultoria e serviços especializados em comunicação em redes e segurança da informação, em português, com uma página de casos de sucesso que se lê como uma cronologia datada do ano de fundação a 2008.",
+        "characteristics": "HTML estático com cabeçalho e rodapé compartilhados, um menu à esquerda por seção, os títulos longos e cheios de palavras-chave da época, uma faixa de certificações e links sociais na página inicial. Primeira captura em 18 de maio de 2013, ainda servido em maio de 2017; o site reconstruído aparece em outubro de 2017. A página inicial de cada ano de 2014 a 2017 está no inventário.",
+        "offerings": "Consultoria (definição, gerência e viabilização de projetos, seleção de fornecedores, análises comparativas), serviços especializados (gerência de projetos, suporte preventivo e de emergência, instalação e configuração, qualidade de serviço, definição de SLA, site survey, network assessment, dimensionamento para novas aplicações, projetos de endereçamento e roteamento, auditoria de segurança e vulnerabilidade, atualizações), um portfólio por tema (segurança, controle, eficiência operacional, conectividade) e treinamentos: três cursos de fundamentos, aulas modulares de protocolos de duas a oito horas e um curso de quarenta horas de operação e troubleshooting, ministrados por Rodolfo Nützmann, estudante de tecnologias de rede desde 1995 e instrutor desde 1999. Um laboratório remoto de switches, firewalls, roteadores, telefonia IP, equipamentos sem fio e máquinas virtuais reais, acessível por servidores de console e VPN, servia aos cursos e às provas de conceito, com um fórum de discussão gratuito ao lado. A página de missão: uma empresa de serviços independente, livre de vínculos com fabricantes e fornecedores. A de parceiros: não somos imparciais, tomamos o partido do cliente.",
+        "contents": "Principal, a empresa (com os segmentos de mercado atendidos, setor por setor), missão e valores, áreas de atuação e clientes, consultoria, serviços, portfólio, treinamentos, o laboratório com a sua lista de equipamentos, certificações, casos de sucesso (da fundação em 2003 e do contrato em Brasília pelos serviços profissionais de um fabricante, passando pelos anos de suporte estratégico aos parceiros de outro fabricante, até projetos por integradores em 2007 e 2008), parceiros, um explicador sobre comunicações em rede, contato, privacidade e termos, o acervo marcado como desativado, e as mesmas três ferramentas de 2004."
+      },
+      "ntz-2018": {
+        "years": "2017 a 2019",
+        "title": "ntz.com.br, reconstruído",
+        "nature": "Um site reconstruído em um construtor de sites hospedado, intitulado NTZ Comunicações e Segurança em Rede, Desde 1995. Cinco páginas, com uma tabela pública de preços por hora, e a consultoria agora apresentada abertamente como os serviços de Rodolfo Nützmann, com link para o seu perfil profissional. A única captura de 2024 do domínio é uma resposta vazia; nada mais foi publicado ali.",
+        "characteristics": "Modelos do construtor, um cabeçalho com a marca e o ano, um menu curto, páginas longas em coluna única. Capturado de outubro de 2017 a dezembro de 2018. As fontes e os scripts do próprio construtor não fizeram parte da cópia arquivada, por isso as impressões podem diferir um pouco do original na tipografia.",
+        "offerings": "Consultoria e serviços (arquitetura e engenharia de sistemas de comunicação e segurança em rede; gestão de definição, aquisição e implantação, com especificação de requisitos, elaboração de RFP e seleção de fornecedores; formação de equipes de operação com uma matriz de responsabilidades; oficinas de tecnologia de um a cinco dias; condução de testes e provas de conceito), treinamentos, uma página de competências por fabricante com a F5 como foco principal (pré-venda e treinamentos, seis anos por um distribuidor e uma revenda, as certificações obtidas e as em andamento em 2018), Palo Alto Networks e outros, e uma página Contrate com a lista de serviços, uma tabela pública de preços por hora em três faixas de horário e atendimento remoto por vídeo com sessões gravadas.",
+        "contents": "Home, sobre, consultoria e serviços, competências e Contrate. A página de treinamentos não foi capturada."
+      },
+      "ntz-prev": {
+        "years": "2003 a 2008, outro dono",
+        "title": "ntz.com.br antes da NTZ",
+        "nature": "Não é um destes sites. Antes de carregar a NTZ Tecnologia, o ntz.com.br pertencia à Plásticos NTZ, uma fabricante de sacos plásticos do interior de São Paulo, capturada de junho de 2003 a janeiro de 2008. Está no inventário para que ninguém a confunda com uma versão anterior da consultoria.",
+        "characteristics": "Um pequeno site em ASP com catálogo de produtos; a maior parte das imagens nunca foi arquivada, por isso as impressões são esparsas.",
+        "offerings": "Sacos plásticos, sacolas para lixo, bobinas para açougue e embalagens em geral, pela própria descrição.",
+        "contents": "Principal, produtos, história da empresa, finalidade, diretoria, distribuidores, localização e contato."
+      }
+    },
+    "carriedTitle": "O que atravessou o tempo",
+    "carried": {
+      "tools": "As três ferramentas. A página inicial de 2004 apontava para uma calculadora de bits e bytes, uma calculadora de endereçamento IP e a pinagem de cabeamento de redes; a de 2013 manteve as três. As descendentes estão aqui: a calculadora de IP virou a calculadora CIDR, a pinagem vive no artigo sobre cabeamento estruturado, e a calculadora de bits e bytes está na fila do roteiro como Bits / bytes / vazão, o que a torna, por ancestralidade, o item aberto mais antigo do catálogo.",
+      "independence": "A linha da independência, sem quebra. 2004: uma empresa independente e sem vínculos de exclusividade com fornecedores específicos. 2010: consultoria independente, sem vínculo a nenhum fornecedor de tecnologia. 2013: livre de vínculos com fabricantes e fornecedores, e não imparcial, do lado do cliente. A frase ficou mais cuidadosa desde então: a página de assessoria diz hoje exatamente o que é reivindicado e o que não é, inclusive como o trabalho é contratado.",
+      "teaching": "Ensinar, nunca ausente. Treinamentos e palestras eram um serviço listado em 2004; em 2013 havia cursos nomeados em formato de quarenta horas, dados por um instrutor desde 1999, com um laboratório de equipamentos reais por trás; o site de 2017 oferecia oficinas e seminários executivos. O treinamento autorizado de fabricantes que é dado hoje é o mesmo fio.",
+      "vendors": "A relação entre cliente e fornecedor como objeto do trabalho. 2004: gerência do relacionamento de pós-venda de um fabricante com clientes estratégicos, pré e pós-venda. 2013: otimizar as relações entre os clientes e os seus fornecedores e parceiros. 2017: elaboração de RFP, seleção de fornecedores, provas de conceito. O registro de carreira e as formas de assessoria descrevem o mesmo trabalho de onde ele está agora.",
+      "company": "Uma empresa sob três nomes. Constituída em São Paulo em 2003 como Nützmann Networks Consultoria em Comunicação de Dados e Tecnologia da Informação LTDA., operou como nützmann.net, depois como NTZ Tecnologia, depois como NTZ Comunicações e Segurança em Rede. A página de termos de 2004, o rodapé de 2010, a página de contato de 2013 e a cronologia de 2013 dão o mesmo nome e o mesmo ano."
+    },
+    "linksTitle": "Neste site, hoje",
+    "linkCidr": "Calculadora CIDR",
+    "linkCabling": "Cabeamento estruturado",
+    "linkRoadmap": "Roteiro",
+    "linkAdvisory": "Assessoria técnica independente",
+    "linkTraining": "Treinamentos",
+    "linkEra": "Quem é da área, 1996 a 2020",
+    "inventoryTitle": "Inventário",
+    "inventorySummary": "{count} páginas arquivadas, de {from} a {to}",
+    "colFile": "Arquivo",
+    "colTitle": "Título como publicado",
+    "colCaptured": "Capturada em",
+    "colLink": "Cópia no arquivo",
+    "open": "Abrir",
+    "untitled": "(sem título)",
+    "sourcesTitle": "Fontes",
+    "sourcesBody": "A Wayback Machine do Internet Archive (web.archive.org): o índice CDX e as capturas de nutzmann.net e ntz.com.br, lidos em {date}. Os carimbos de tempo dos inventários são os que o arquivo serviu, em UTC; cada link abre aquela captura. O endpoint de disponibilidade do arquivo respondeu que não tinha nada para nenhum dos domínios; o índice provou o contrário, e por isso os inventários foram construídos a partir do índice.",
+    "backToAbout": "Sobre"
   }
 }

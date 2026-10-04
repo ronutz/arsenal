@@ -1,0 +1,63 @@
+---
+slug: capex-versus-subscription-networking
+title: "CapEx versus subscription networking: what the comparison usually leaves out"
+summary: "The comparison a supplier brings puts the capital cost of equipment against a monthly subscription and arrives at the answer the supplier sells. Both models are legitimate, and the honest comparison between them is longer than one slide: the items each side omits, the growth that makes a per-user price move, the overlap period that is paid twice, the licences already paid for, what the organisation owns at the end of each term, and the three questions a finance committee should ask before it believes any total."
+concepts: ["capex", "opex", "subscription", "tco", "procurement", "decision", "licensing"]
+relatedTools: ["f5-bigip-license-explainer", "f5-release-cadence-calendar", "f5-service-check-date", "cert-renewal-planner"]
+relatedArticles: ["when-vendor-consolidation-reduces-cost", "twenty-questions-before-signing-a-sase-proposal", "evaluating-competing-firewall-proposals", "bigip-license-file-anatomy"]
+category: operations
+order: 324
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Two legitimate models, one slanted slide
+
+Buying equipment and running it, or paying for a service as you use it, are both reasonable ways to acquire a network capability. The problem is not the models; it is the comparison, which is usually prepared by the party selling one of them. A supplier's slide puts the sticker price of the hardware against the subscription, forgets the items that favour the other side, and arrives at a total. The correction is not to prefer the other model. It is to rebuild the comparison so that both columns contain the same things.
+
+## What the capital column usually leaves out
+
+- **Support and software subscriptions** on the equipment, which are a recurring cost inside the capital model and are often quoted for year one only.
+- **The refresh**, which arrives whether or not it is in the spreadsheet. A five-year comparison of equipment with a five-year life has a cliff at the end that the subscription column does not.
+- **Operating effort**: upgrades, patching, certificate renewals, capacity management, the person who understands the platform. The [release cadence calendar](/tools/f5-release-cadence-calendar) and the [service check](/tools/f5-service-check-date) exist because this work is real and scheduled.
+- **Spares, power, rack space and the second site**, which are not large individually and are never zero.
+
+## What the subscription column usually leaves out
+
+- **Growth.** A price per user, per device, per gigabit or per site moves with the business, and the proposal is priced at today's count. Ask what the bill is at the growth the business plans, not the growth the supplier assumes.
+- **The renewal uplift.** The discount that made year one attractive is gone in year four, and the uplift is in a document the supplier controls unless it is in the contract.
+- **The overlap period**, in which both the old and the new are running and both are paid for. It is rarely shorter than a quarter and is almost never in the comparison.
+- **What was already paid.** Licences and support on existing equipment that are prepaid for the term do not become a saving when the equipment is switched off early; the proposal that books them as one is counting money that was spent either way.
+- **The exit.** Leaving a subscription at the end of the term means migrating again. The cost of that migration belongs to the subscription column, because the capital column already paid its equivalent in the refresh.
+- **Connectivity changes** the new model requires: the branch internet upgrades, the second line, the bandwidth the inspection path consumes.
+
+## The things neither column shows
+
+Some consequences of the choice are not costs and should still be on the sheet, because they are what the committee is actually deciding about.
+
+**Ownership at the end.** At the end of the capital term the organisation owns equipment it can keep running, sell or redeploy; at the end of a subscription it owns nothing and holds data in a format the supplier chose. Neither is wrong. They are different positions, and the exit plan should say which one is being bought.
+
+**Flexibility in each direction.** A subscription scales up easily and down less easily than the brochure says; equipment scales down for free and up at the price of a new box. Ask which direction the business is more likely to need.
+
+**Where the risk sits.** With equipment, the organisation carries the risk of a bad sizing decision; with a service, it carries the risk of the supplier's incident, roadmap and pricing decisions. The [licensing explainer](/tools/f5-bigip-license-explainer) is a reminder that even "owned" equipment has entitlements that expire.
+
+## How to build the honest comparison
+
+1. Choose the term, and make it long enough to include one refresh of the equipment, so that the capital cliff is inside the window rather than just beyond it.
+2. List every cost category once, in a column that applies to both models, including the ones above that favour each side.
+3. Fill both models at the organisation's own growth figure, with the renewal terms written into the subscription side as the contract states them, not as the proposal implies.
+4. Add the overlap period and the migration at each end.
+5. Show the result as a cash profile over the term, not only as a total, because the shape of the spending is part of what finance is deciding.
+6. State the assumptions the comparison rests on in a list, with the ones that are unverified marked. The [architecture-review method](/learn/review-a-network-architecture-before-approving-it) uses the same register for the same reason.
+
+## Three questions for the finance committee
+
+**Which items in this comparison were supplied by the vendor, and which were measured by us?** The answer is usually "most" and "few", and the comparison should be rebuilt until it reverses.
+
+**What does the subscription cost in the year after the discount ends, at our planned growth?** If nobody can answer in one number, the comparison is not finished.
+
+**What do we own, and what can we export, at the end of the term under each model?** The answer determines how expensive the next decision will be, and the next decision is already on the horizon.
+
+A comparison that answers these three is a decision; one that does not is a slide. The [example decision memorandum](/advisory/decision-memorandum) shows the cost section of such a decision written out, including the items the proposal had left out.
+
+If a comparison of this kind is about to be presented to your finance committee, rebuilding it on even terms is work I do professionally: [independent technical advisory](/advisory).

@@ -127,7 +127,7 @@ export default async function CopyEditorPage({
     // display:contents wrapper carries data-pagefind-ignore so the WHOLE page
     // (header + footer included) is excluded from search, matching the console.
     <div data-pagefind-ignore="all" style={{ display: "contents" }}>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

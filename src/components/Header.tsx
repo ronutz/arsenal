@@ -20,7 +20,14 @@ export default async function Header() {
   const tSite = await getTranslations("site");
 
   return (
-    <header className="site-header">
+    // data-pagefind-ignore keeps the header's text (the navigation labels, the
+    // search button, the language switcher) out of the search index, so an
+    // excerpt starts with the page's own words rather than "ronutz Search Ctrl K"
+    // and a search for a nav label does not match every page (2026-10-04). The
+    // page itself stays indexed; only this element's content is skipped. The
+    // same attribute sits on the skip link ("Skip to content") that every page
+    // renders before this header, and on the site footer, for the same reason.
+    <header className="site-header" data-pagefind-ignore>
       <div className="container site-header-inner">
         {/* Wordmark — lowercase, mono-accented, matching the practitioner tone. */}
         <Link href="/" className="wordmark" aria-label={tSite("name")}>

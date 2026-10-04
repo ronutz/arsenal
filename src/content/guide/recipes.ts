@@ -223,6 +223,82 @@ export const GUIDE_RECIPES: GuideRecipe[] = [
     id: "get-an-access-point-onto-its-controller",
     toolIds: ["dhcp-option-43", "cable-run-planner"],
   },
+  // ---- added 2026-10-03 (PRIME) -------------------------------------------
+  // The iRules / Tcl 8.4 teaching tools and the zero-or-one finder shipped
+  // with no recipe. They form three real sequences, in the order a person
+  // works through them.
+  {
+    // Counting base first: the wrong base is the commonest extraction bug.
+    // Then the F5 extraction commands, the plain Tcl string commands, and scan.
+    id: "cut-a-value-out-of-a-request",
+    toolIds: [
+      // Does the command count from 0 or from 1?
+      "f5-bigip-index-base-finder",
+      // findstr, substr and getfield beside the plain Tcl equivalent.
+      "f5-irules-string-extract",
+      // The Tcl string commands on the exact input.
+      "f5-irules-string-workbench",
+      // scan for structured values.
+      "f5-irules-scan-explainer",
+    ],
+  },
+  {
+    // How a value is read (number notation), how a condition is evaluated
+    // (expression lab), then a whole snippet traced command by command.
+    id: "work-out-what-tcl-does-with-a-value",
+    toolIds: [
+      // 010, 0x1F, 08, 1e3: what Tcl 8.4 makes of them.
+      "f5-irules-number-notation",
+      // expr and if, step by step, with == next to eq.
+      "f5-irules-expression-lab",
+      // One command at a time, with every substitution shown.
+      "f5-irules-script-stepper",
+    ],
+  },
+  {
+    // Build the decision, check its style against the DevCentral guide, then
+    // lint it for the costs that only show under load.
+    id: "turn-a-routing-decision-into-an-irule",
+    toolIds: [
+      // Rules in, if / switch / class match out.
+      "f5-irules-conditional-builder",
+      // The DevCentral iRules Style Guide, rule by rule.
+      "f5-irules-style-checker",
+      // F5-documented performance anti-patterns.
+      "f5-irules-performance-linter",
+    ],
+  },
+  {
+    id: "find-what-is-hiding-in-a-string",
+    toolIds: [
+      // Every code point, the hidden and lookalike ones flagged, the text in stored order.
+      "unicode-inspector",
+      // The 128 ASCII codes, for what the text should have contained.
+      "ascii-table",
+      // The same characters checked inside an iRule.
+      "f5-irules-style-checker",
+    ],
+  },
+  {
+    id: "write-a-character-in-any-language",
+    toolIds: [
+      // An ASCII code in every notation and seven escape forms.
+      "ascii-table",
+      // Any code point: UTF-8, UTF-16, escapes in eight languages, HTML references.
+      "unicode-inspector",
+      // The bytes as hex, Base64 or percent-encoding.
+      "base64",
+    ],
+  },
+  {
+    id: "fix-garbled-text",
+    toolIds: [
+      // Undo the misreading, or read the raw bytes in every charset side by side.
+      "charset-equivalency",
+      // Then check the repaired text for hidden and lookalike characters.
+      "unicode-inspector",
+    ],
+  },
 ];
 
 /**

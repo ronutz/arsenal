@@ -1,0 +1,48 @@
+---
+slug: hidden-assumptions-in-an-architecture-diagram
+title: "Como encontrar as premissas escondidas num diagrama de arquitetura"
+summary: "Um diagrama mostra o que foi decidido e esconde o que foi presumido. As caixas são produtos, as linhas são intenções, e as coisas que de fato vão falhar, a dependência compartilhada, o pico não medido, a função sem dono, o caminho que só funciona num sentido, não estão desenhadas porque ninguém as pensou como decisões. Oito lugares em que as premissas se escondem num diagrama, as perguntas que trazem cada uma à tona, e o registro que transforma uma leitura em algo que a organização consegue usar no terceiro ano."
+concepts: ["architecture", "assumptions", "diagrams", "design-review", "dependencies", "failure-domains"]
+relatedTools: ["flow-path-reasoner", "change-blast-radius-mapper", "fault-hypothesis-builder", "cidr"]
+relatedArticles: ["review-a-network-architecture-before-approving-it", "ariane-5-and-the-assumption-that-expired", "product-limitations-versus-architecture-failures", "baselines-before-you-need-them"]
+category: operations
+order: 325
+status: reviewed
+updated: "2026-10-03"
+---
+
+## Para que serve um diagrama, e para que não serve
+
+Um diagrama é um instrumento de comunicação, desenhado para tornar um projeto compreensível a quem vai aprová-lo. Ele é muito bom nisso, e é esse o problema: ele faz o projeto parecer completo. O que ele registra é o conjunto de decisões que alguém tomou; o que ele não consegue registrar é a condição sob a qual cada decisão é correta, porque quem o desenhou não estava pensando na decisão como aposta. O artigo da Practice sobre [as premissas que um projeto codifica e nunca declara](/practice/assumptions-a-design-never-states) faz o argumento geral. Este artigo é o guia de campo: onde, no desenho diante de você, as premissas estão paradas.
+
+## Oito lugares para olhar
+
+**1. A linha entre duas caixas.** Uma linha quer dizer "estas se comunicam". Não diz por qual protocolo, em que sentido, com que volume, por quais equipamentos intermediários que não estão desenhados, nem o que acontece quando ela é cortada. Escolha três linhas que importam e pergunte, para cada uma: o protocolo, as portas, o sentido, a banda, o caminho na rede física e o comportamento em falha. O [raciocinador de caminho de fluxo](/tools/flow-path-reasoner) é uma forma estruturada de perguntar.
+
+**2. A coisa desenhada uma vez só.** Todo projeto que tem dois de tudo tem algo desenhado uma vez: o servidor de gerência, o servidor de licenças, a autoridade certificadora, o provedor de identidade, o DNS, o orquestrador, a rede fora de banda. Às vezes está desenhado uma vez porque é de fato redundante por dentro; em geral está desenhado uma vez porque é um só. Pergunte.
+
+**3. As duas coisas desenhadas separadas que vivem juntas.** Dois firewalls em dois racks são independentes até que os dois sejam máquinas virtuais no mesmo host, os dois dependam do mesmo armazenamento, os dois resolvam nomes no mesmo servidor, ou os dois compartilhem o último quilômetro de dois circuitos "diversos". Independência é uma propriedade das camadas físicas e lógicas abaixo do desenho, e o desenho não mostra essas camadas. O [mapeador de raio de impacto](/tools/change-blast-radius-mapper) foi construído em torno dessa pergunta.
+
+**4. O número sem medição por trás.** Os números de capacidade num diagrama costumam ser um pico de que alguém se lembra ou um valor copiado de um datasheet. Peça a medição, a data dela e o formato ao longo do dia, porque o mesmo volume diário chegando numa rajada de quatro minutos é um problema de projeto diferente.
+
+**5. A nuvem.** Literalmente, o símbolo de nuvem: internet, a rede do provedor, um SaaS, um serviço. Tudo dentro do símbolo é projeto de outra pessoa, com os seus próprios pontos únicos de falha, as suas próprias janelas de manutenção e a sua própria ideia do que "disponível" significa. Pergunte o que a organização consegue ver dentro do símbolo, e o que consegue fazer quando algo lá dentro falha.
+
+**6. A seta que só aponta num sentido.** Caminhos de volta são a omissão mais comum num desenho. Roteamento assimétrico por equipamentos com estado é uma falha clássica, e é invisível num diagrama desenhado do ponto de vista do cliente. Percorra um fluxo de volta.
+
+**7. A caixa sem nome em cima.** Todo projeto tem uma função que ninguém assumiu: quem renova o certificado no balanceador, quem é dono da lista de exceções do proxy, quem é acionado quando o conector da agência falha. O diagrama tem uma caixa para o componente e nenhuma caixa para a pessoa. Pergunte quem, para cada componente, e repare na pausa.
+
+**8. A ausência de tempo.** Um diagrama é uma fotografia do regime permanente. Não tem primeiro dia, nem período de sobreposição, nem atualização, nem renovação, nem a aquisição no décimo quarto mês que dobra o número de usuários. Pergunte como o projeto fica durante a migração, e o que no desenho é a primeira coisa a ficar sem capacidade.
+
+## As perguntas, numa lista só
+
+Para cada premissa encontrada, três perguntas a transformam de preocupação em registro: qual é o valor ou a decisão como desenhada; o que precisa ser verdade no ambiente para que ela esteja correta; e que observável diria que ela deixou de ser verdade. Escreva as três colunas. Essa tabela, o registro de premissas, é mais durável do que os achados, porque os achados descrevem o hoje e o registro descreve o dia em que o projeto começa a ficar errado.
+
+## Um exemplo trabalhado
+
+Um diagrama mostra dois data centers, um par de firewalls em cada, duas agências conectadas aos dois por MPLS (Multiprotocol Label Switching), e um símbolo de nuvem rotulado "identidade". Lendo-o com a lista acima: a nuvem de identidade está desenhada uma vez só (lugar 2) e tudo se autentica por ela (lugar 5); as linhas das agências são duas cada, mas as duas saem do prédio pela fibra do mesmo provedor (lugar 3); os pares de firewall foram dimensionados a partir de um datasheet (lugar 4); o tráfego de volta da aplicação do segundo data center passa pelo firewall do primeiro porque a rota padrão aponta para lá (lugar 6); ninguém no desenho é dono dos certificados do proxy de identidade (lugar 7); e a aquisição que o negócio está negociando não está no desenho (lugar 8). Nenhum desses é defeito de produto. Cada um é uma decisão que o projeto tomou sem perceber, e cada um pertence ao registro com o seu observável ao lado.
+
+## Por que isso importa mais do que encontrar erros
+
+Um erro num projeto é encontrado e corrigido. Uma premissa está correta quando é feita, continua funcionando, e é herdada por pessoas que nunca a viram como escolha. O [Ariane 5](/learn/ariane-5-and-the-assumption-that-expired) é o caso famoso: código que estava correto para um foguete e voou no seguinte. A leitura acima não torna um projeto certo. Ela torna as apostas visíveis enquanto ainda é barato mudá-las, e deixa a lista que diz ao time de operação o que vigiar.
+
+Se um diagrama como esse está esperando a sua aprovação e as premissas por trás dele precisam vir à tona antes de você assinar, essa leitura é trabalho que eu faço profissionalmente: [assessoria técnica independente](/advisory).

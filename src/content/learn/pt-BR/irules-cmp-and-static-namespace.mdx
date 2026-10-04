@@ -8,7 +8,7 @@ relatedArticles: ["irules-branching-and-lookups", "irules-procedures-proc-and-ca
 category: networking
 order: 21
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## De onde vem o paralelismo
@@ -24,10 +24,10 @@ Uma **variável global** demove o servidor virtual para um único TMM. A própri
 Uma variável global em Tcl é uma no namespace global: escrita com a palavra-chave `global`, ou com um prefixo `::` no nome. A razão pela qual globais são fáceis de escrever por acidente é que a sintaxe parece comum:
 
 ```tcl
-when RULE_INIT {
+when RULE_INIT priority 500 {
     set ::max_sessions 5000
 }
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { [table keys -subtable sessions -count] > $::max_sessions } {
         HTTP::respond 503 content "busy"
     }
@@ -41,11 +41,11 @@ Aquele `::max_sessions` lê e escreve uma global, e demove todo virtual ao qual 
 O substituto para um valor compartilhado e majoritariamente de leitura é o **namespace `static::`**. Uma variável `static::` é definida uma vez, por TMM, quando a regra carrega, e cada TMM recebe sua própria cópia do mesmo valor, então nada precisa ser serializado e o CMP permanece intacto. É a forma segura para CMP de guardar uma constante que muitos eventos ou muitas conexões precisam:
 
 ```tcl
-when RULE_INIT {
+when RULE_INIT priority 500 {
     set static::max_sessions 5000
     set static::maintenance 0
 }
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { $static::maintenance } {
         HTTP::respond 503 content "maintenance"
     }
@@ -63,7 +63,7 @@ A regra prática é simples. Para um valor que é o mesmo para toda conexão e r
 `static::` e `RULE_INIT` são para valores embutidos na regra. Quando você tem dados que quer mudar sem tocar no iRule, uma lista de caminhos bloqueados, um mapeamento de hosts para pools, uma lista de permissão de redes de cliente, a ferramenta certa é um **data group** (uma class), lido com o **comando `class`**. Um data group é um objeto de configuração separado, editado independentemente da regra, então você pode adicionar ou remover entradas sem uma mudança na regra e sem um reload do código que o usa:
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     if { [class match [HTTP::path] starts_with blocked_paths] } {
         HTTP::respond 403 content "forbidden"
     }

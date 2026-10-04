@@ -37,7 +37,8 @@
     "contribute": "Contribute",
     "colophon": "Colophon",
     "devFun": "Fun lab",
-    "advisory": "Advisory"
+    "advisory": "Advisory",
+    "earlierSites": "The earlier sites"
   },
   "languageSwitcher": {
     "label": "Language",
@@ -113,7 +114,7 @@
       "certsLede": "What each exam tests and what to study for it. Free, and useful whether or not you ever book a course.",
       "certsBadge": "{count} guides",
       "advisory": "Advisory",
-      "advisoryLede": "Board-level judgement on technology decisions before they are made. Scoped work, a written answer you can defend internally, no on-call.",
+      "advisoryLede": "Executive technical judgement on technology decisions before they are made. Scoped work, a written answer you can defend internally, no on-call.",
       "advisoryBadge": "By engagement",
       "hubs": "Vendor hubs",
       "hubsLede": "One door per platform: the tools, articles and certification material for that vendor, gathered in one place.",
@@ -7463,6 +7464,7 @@
         "findstr-found": "The search string starts at index {at}; the result begins {skip} characters after that.",
         "foreach": "Ran the body once per element: {iterations} in all.",
         "getfield": "Split into {count} fields; field {field} is returned (fields count from 1).",
+        "domain": "The name has {labels} labels; the last {count} are returned (<c>domain</c> counts from the right, and 1 is the last label).",
         "if-branch": "A condition was true, so the body after it runs and the rest are skipped.",
         "if-else": "No condition was true, so the <c>else</c> body runs.",
         "if-none": "No condition was true and there is no <c>else</c>: nothing runs and <c>if</c> returns an empty string.",
@@ -7485,6 +7487,8 @@
         "getfield-empty-split": "F5's pages do not cover an empty separator. The tool treats the whole string as field 1.",
         "getfield-empty-field": "Two separators in a row make an empty field here. F5's pages do not show this case.",
         "getfield-out-of-range": "There are {count} fields and field {field} was asked for. F5's pages do not say what getfield returns then; the tool assumes an empty string.",
+        "domain-count": "F5's page shows <c>domain</c> only with counts of 1 or more. For {count}, the tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "domain-empty-label": "The name has an empty label (a leading, trailing or doubled dot). F5's page has no example of this for <c>domain</c>.",
         "class-contains-multiple": "{count} entries contain the value. F5 documents that starts_with and ends_with return the longest match, but not which entry contains returns; the tool takes the first one in the order the data group lists them."
       },
       "varsTitle": "Variables at the end",
@@ -7562,6 +7566,8 @@
         "getfield-empty-split": "F5's pages do not cover an empty separator. The tool treats the whole string as field 1.",
         "getfield-empty-field": "Two separators in a row make an empty field here. F5's pages do not show this case.",
         "getfield-out-of-range": "There are {count} fields and field {field} was asked for. F5's pages do not say what getfield returns then; the tool assumes an empty string.",
+        "domain-count": "F5's page shows <c>domain</c> only with counts of 1 or more. For {count}, the tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "domain-empty-label": "The name has an empty label (a leading, trailing or doubled dot). F5's page has no example of this for <c>domain</c>.",
         "class-contains-multiple": "{count} entries contain the value. F5 documents that starts_with and ends_with return the longest match, but not which entry contains returns; the tool takes the first one in the order the data group lists them."
       },
       "equivalentTitle": "The same job in plain Tcl",
@@ -7654,7 +7660,11 @@
       "preset": {
         "messy": "A rule with problems",
         "clean": "A clean rule",
-        "brace-brace": "Braces with no space"
+        "brace-brace": "Braces with no space",
+        "zero-width": "An invisible character",
+        "word-processor": "Pasted from a word processor",
+        "thread-points": "== on text, break in a switch",
+        "array-and-keyword": "Array variable, if glued to a brace"
       },
       "parsesYes": "Tcl 8.4 can load it.",
       "parsesNo": "Tcl 8.4 cannot load it.",
@@ -7673,11 +7683,12 @@
         "info": "note"
       },
       "ruleSyntax": "Tcl",
+      "ruleLimit": "Tool",
       "ruleName": {
         "E1": "Indentation",
         "E2": "Line length",
         "E3": "Characters and line ends",
-        "R1": "Smart quotes and invisible spaces",
+        "R1": "Smart quotes and invisible characters",
         "R2": "Size limit",
         "R4": "Brace placement",
         "R6": "Comments",
@@ -7685,7 +7696,7 @@
         "R8": "No single-line if",
         "R9": "State as 0 or 1",
         "R10": "Tcl logical operators",
-        "R11": "A space between braces",
+        "R11": "Spaces around braces",
         "R12": "Braced expressions",
         "R13": "Spaces around variables",
         "R14": "Braced variable names",
@@ -7695,7 +7706,10 @@
         "R18": "Prefixed static:: names",
         "R19": "No static:: debug flags",
         "R20": "No commented-out code",
-        "syntax": "Syntax"
+        "syntax": "Syntax",
+        "D1": "Text compared with ==",
+        "D2": "break, continue and return",
+        "limit": "Beyond this tool"
       },
       "finding": {
         "E1": {
@@ -7708,14 +7722,18 @@
         "E3": {
           "crlf": "A Windows line ending (carriage return). The guide asks for Unix line feeds.",
           "trailing": "White space at the end of the line.",
-          "non-ascii": "A character outside ASCII. The guide asks for ASCII files.",
-          "no-final-newline": "The file does not end with a line feed."
+          "non-ascii": "{glyph} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: a character outside ASCII. The guide asks for ASCII files; inside a quoted log message it is harmless, anywhere else check it.",
+          "no-final-newline": "The file does not end with a line feed.",
+          "dash": "{name} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: a dash that is not the ASCII hyphen-minus. Tcl reads it neither as an option dash nor as a minus sign; a switch with an en dash before its value takes the dash as the value and silently matches nothing.",
+          "lookalike": "{glyph} is {name} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: it looks like {ascii} but is a different character, so Tcl does not treat it as {ascii}."
         },
         "R1": {
-          "main": "A curly quote or a no-break space. They look like ordinary quotes and spaces but are different characters, and they break code without an obvious error; retype them."
+          "invisible": "{name} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: an invisible character. Tcl reads it as part of the text around it, so after a closing brace the rule will not load, and on a line of its own it runs as a command that does not exist. Delete it.",
+          "space": "{name} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: it looks like a space, but Tcl separates words only on ASCII white space, so the words on either side run together. Type an ordinary space.",
+          "quote": "{name} ({char}), column {col}{count, plural, =1 {} other {, one of # on this line}}: a typographic quote. Tcl does not treat it as a quote, so it does not hold words together. Type a straight quote."
         },
         "R2": {
-          "main": "The rule is {bytes} bytes. The guide reminds you an iRule is limited to 64 KB; split it, or move data into data groups."
+          "main": "{chars} characters ({bytes} bytes as UTF-8). F5 K9204 limits an iRule to 65,520 characters, and BIG-IP refuses to save or load a longer one; split it into several iRules, or move data into data groups."
         },
         "R4": {
           "main": "A brace alone on its own line. Put the opening brace at the end of the line before it.",
@@ -7739,7 +7757,8 @@
           "main": "One of F5's word operators (and, or, not). Use the Tcl operators &&, || and !, with parentheses to make the grouping plain."
         },
         "R11": {
-          "main": "A closing brace followed directly by an opening one. Leave a space between them."
+          "main": "A closing brace followed directly by an opening one. Leave a space between them.",
+          "keyword-brace": "{word} is a single word to Tcl, not the keyword followed by a brace, so this line fails when it runs (an invalid command name, or extra words in the if). Put a space before the brace."
         },
         "R12": {
           "main": "An expression that is not braced: {word}. An unbraced expression is substituted twice (an injection risk, F5 K57410758) and cannot be compiled ahead; brace it."
@@ -7770,9 +7789,1557 @@
         },
         "syntax": {
           "main": "Tcl 8.4 cannot parse this: {message}. The rule will not load."
+        },
+        "D1": {
+          "main": "{op} with the text {text}. == and != compare as numbers whenever both sides look like numbers (in Tcl 8.4, 10 == 012 is true, 012 being octal); for text use {suggest}. Raised in the guide's comment thread; F5's How To Write Fast Rules also asks you to compare strings to strings."
+        },
+        "D2": {
+          "outside-loop": "{cmd} with no loop around it. switch is not a loop, so its arms never need {cmd} to stop, and outside a loop Tcl 8.4 turns it into an error: invoked \"{cmd}\" outside of a loop. Remove it; to leave the event early, use return.",
+          "leaves-loop": "{cmd} in a switch arm leaves the enclosing loop, not just the switch: in Tcl, switch is not a loop. If you only meant to end the arm, remove it; an arm never runs into the next one.",
+          "return-arm": "return leaves the whole event (F5's return page: it exits the currently executing event), not just the switch. An arm never runs into the next one, so no return is needed to end it."
+        },
+        "limit": {
+          "array": "{ref} is an array variable. Tcl accepts it, but this tool does not model arrays, so it was read as a plain variable and the rest of the rule was still checked."
         }
       },
-      "limits": "The checker reads structure and text, never runs the rule. Where it cannot be sure (for example whether a line starting with a hash is code or a comment missing its space) the finding is a note, not a warning."
+      "limits": "The checker reads structure and text, never runs the rule. Where it cannot be sure (for example whether a line starting with a hash is code or a comment missing its space) the finding is a note, not a warning. D1 and D2 come from the guide's comment thread, and characters are named from the Unicode Character Database 18.0.0."
+    },
+    "f5-bigip-index-base-finder": {
+      "name": "BIG-IP zero-or-one finder",
+      "blurb": "Zero or one? Look up where each Tcl command, iRules command, configuration object, API and on-box tool on a BIG-IP starts counting, with F5's own wording and the date each source was read, then translate a position into every command's own number and run it. Local, no network.",
+      "modeLabel": "What do you want to do?",
+      "modeLookup": "Look up",
+      "modeTranslate": "Translate a position",
+      "example": "Example",
+      "clear": "Clear",
+      "lookupIntro": "Every place on a BIG-IP found to count from 0 or from 1, with what is counted, how to reach the first and the last, what comes back when nothing is there, and the sources. Filter by where counting starts, or search.",
+      "thumbsTitle": "Rules of thumb",
+      "thumb": {
+        "1": "Tcl positions count from 0, and <c>end</c> is the last index, the length minus one.",
+        "2": "F5's field-style numbers count from 1: <c>getfield</c> fields, <c>URI::path</c> depths, LTM policy path-segment indexes, the legacy <c>matchclass</c>.",
+        "3": "Counters return 1 for the first item: <c>HTTP::request_num</c>, <c>table incr</c>.",
+        "4": "Many zeros are values, not positions: route domain 0, port 0, connection-limit 0, <c>SSL::verify_result</c> 0, and tcpdump's 0.0.",
+        "5": "Lower goes first almost everywhere (event priority, policy ordinals, GTM order, syslog severity), except pool priority groups, where higher wins.",
+        "6": "In an <c>if</c>, 0 is false and every other number is true, -1 included: compare an index with <c>>= 0</c> instead of testing it, and store your own flags as 0 or 1, as the DevCentral iRules Style Guide asks."
+      },
+      "searchLabel": "Search",
+      "searchPlaceholder": "getfield, path, route domain, tcpdump, priority...",
+      "baseFilterLabel": "Counts from",
+      "areaFilterLabel": "Part of the system",
+      "allBases": "Everything",
+      "allAreas": "Everywhere",
+      "showing": "Showing {shown} of {total}.",
+      "noResults": "Nothing matches. Try fewer words, or clear the filters.",
+      "base": {
+        "zero": "Starts at 0",
+        "one": "Starts at 1",
+        "right": "Counts from the right",
+        "mixed": "0 and 1 together",
+        "value": "Zero is a value",
+        "count": "A count, not a position"
+      },
+      "baseHelp": {
+        "zero": "The first item is number 0.",
+        "one": "The first item is number 1.",
+        "right": "Counted back from the end: end, end-1, or the last N.",
+        "mixed": "Both bases meet in the same place.",
+        "value": "Not a position: 0 means something (default, no limit, all, success, equal).",
+        "count": "Not a position, though it is easy to mistake for one."
+      },
+      "area": {
+        "tcl": "Tcl inside iRules",
+        "irules": "Commands F5 adds to iRules",
+        "config": "Configuration objects",
+        "platform": "Platform and hardware",
+        "api": "APIs and declarations",
+        "logs": "Logging and packet capture"
+      },
+      "counts": "Counts",
+      "first": "First",
+      "last": "Last",
+      "missing": "Nothing there",
+      "exampleLabel": "Example",
+      "returns": "returns",
+      "trapLabel": "Watch out",
+      "conflictLabel": "F5's pages disagree",
+      "sourcesLabel": "Sources",
+      "readOn": "read {date}",
+      "confidenceLabel": "How sure",
+      "confidence": {
+        "verified": "Stated by the Tcl manual and run in tclsh 8.4.6",
+        "stated": "Stated by the source",
+        "example": "Shown only by an example on the source page",
+        "conflict": "Two F5 statements disagree"
+      },
+      "translateIntro": "Ask the way people count, where 1 is the first. Each command below gets the number it needs, runs in the Tcl 8.4.6 teaching engine, and sits next to the off-by-one version.",
+      "questionLabel": "Question",
+      "question": {
+        "char": "The Nth character",
+        "field": "The Nth field after a split",
+        "segment": "The Nth segment of a path",
+        "label": "The last N labels of a host name",
+        "element": "The Nth element of a Tcl list",
+        "search": "Where text first appears"
+      },
+      "valueLabel": "Value",
+      "nLabel": "N (1 is the first)",
+      "separatorLabel": "Separator",
+      "needleLabel": "Text to find",
+      "presetsLabel": "Try",
+      "preset": {
+        "segment-2": "2nd path segment",
+        "char-3": "3rd character",
+        "field-octet-3": "3rd octet",
+        "field-multichar": "Two-character separator",
+        "label-2": "Last 2 labels",
+        "element-2": "2nd pool member pair",
+        "search-at-zero": "Found at index 0",
+        "search-missing": "Not found",
+        "lookup-all": "Everything",
+        "lookup-one": "Starts at 1",
+        "lookup-path": "Path",
+        "lookup-config-value": "Configuration zeros"
+      },
+      "answerLabel": "Answer",
+      "answerNone": "No single answer: the commands disagree.",
+      "emptyResult": "(empty string)",
+      "colCommand": "Command",
+      "colCounts": "Counts from",
+      "colResult": "Returns",
+      "colCheck": "Check",
+      "kind": {
+        "right": "Its own numbering",
+        "trap": "Off by one",
+        "other": "A related answer"
+      },
+      "agrees": "same as the answer",
+      "differs": "different",
+      "errorWord": "error",
+      "form": {
+        "string-index": "string index",
+        "string-range": "string range",
+        "substr": "substr (F5)",
+        "string-index-n": "string index, counting from 1",
+        "getfield": "getfield (F5)",
+        "split-lindex": "split, then lindex",
+        "getfield-n-1": "getfield, counting from 0",
+        "split-lindex-n": "split, then lindex, counting from 1",
+        "split-lindex-forgot": "split, then lindex, forgetting the empty element",
+        "domain": "domain (F5)",
+        "lrange-end": "split, lrange from the end, join",
+        "lindex-end": "only that label (lindex from the end)",
+        "lrange-end-n": "lrange from the end, one label too many",
+        "lindex": "lindex",
+        "lrange": "lrange (a one-element list)",
+        "lindex-n": "lindex, counting from 1",
+        "string-first": "string first",
+        "first-test": "string first, then >= 0",
+        "first-if": "if on the index itself"
+      },
+      "tnote": {
+        "split-multichar": "<c>split</c> treats each character of {sep} as a separator, while <c>getfield</c> splits on the whole string, so the two can give different fields.",
+        "leading-separator": "The value starts with the separator, so the first field is empty: field 1 for <c>getfield</c>, element 0 after <c>split</c>.",
+        "leading-slash": "The path starts with a slash, so <c>split</c> makes an empty element 0 and <c>getfield</c> an empty field 1: each command needs one more than you might expect.",
+        "getfield-leading-assumed": "F5's getfield page has no example where the string starts with the separator. The tool assumes field 1 is the empty text before it, as <c>split</c> does; check on a BIG-IP before relying on it.",
+        "query-in-path": "The value has a question mark: a path taken from <c>HTTP::uri</c> includes the query string. Use <c>HTTP::path</c> to cut segments without it.",
+        "right-rows-disagree": "Commands that should answer the same question disagree here: read the notes before choosing one.",
+        "lrange-list": "<c>lrange</c> returns a list, so an element with spaces or braces comes back quoted, while <c>lindex</c> returns the element itself.",
+        "found-at-zero": "Found at index {index}, the very first position (position {position} for people). An <c>if</c> on the index reads 0 as false and skips the body.",
+        "found": "Found at index {index} (position {position} for people). Any index above 0 is true in an <c>if</c>, so the trap only shows at 0 and -1.",
+        "not-found": "Not found: -1. An <c>if</c> on the index reads -1 as true and runs the body anyway."
+      },
+      "undocumentedLabel": "Not documented by F5:",
+      "undocumented": {
+        "skip-past-end": "F5's pages do not say what <c>{cmd}</c> returns when the skip goes past the end of the string. The tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "negative-skip": "F5's pages do not cover a negative skip count for <c>{cmd}</c>. The tool starts at the beginning of the string; check on a BIG-IP before relying on it.",
+        "count-format": "The count <c>{text}</c> is not written as plain decimal digits. Tcl reads it as an integer (a leading 0 means octal, 0x hexadecimal), but F5 does not say how findstr and substr read it.",
+        "count-zero": "F5's rule says a number as terminator returns that many characters, which would make 0 return nothing, yet F5's own substr example with 0 returns the rest of the string. The tool follows the example. A contributor note on F5's API reference page reports that 0 did not work for them on 11.5.4 and 11.6.0, so check on your version.",
+        "count-negative": "F5's pages do not cover a negative count. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "empty-terminator": "F5's pages do not cover an empty terminator. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "terminator-absent-findstr": "F5's findstr page does not say what happens when the terminator is absent (its substr page says the rest of the string is returned). The tool assumes the same for findstr.",
+        "findstr-not-found": "F5's pages do not say what findstr returns when <c>{search}</c> is not in the string. The tool assumes an empty string. F5 calls findstr equivalent to string range with string first, but that equivalent returns the whole string here, so the two cannot both be right; check on a BIG-IP before relying on it.",
+        "substr-no-terminator": "The terminator is optional in F5's syntax, but the page does not say what happens without it. The tool returns the rest of the string; check on a BIG-IP before relying on it.",
+        "getfield-empty-split": "F5's pages do not cover an empty separator. The tool treats the whole string as field 1.",
+        "getfield-empty-field": "Two separators in a row make an empty field here. F5's pages do not show this case.",
+        "getfield-out-of-range": "There are {count} fields and field {field} was asked for. F5's pages do not say what getfield returns then; the tool assumes an empty string.",
+        "domain-count": "F5's page shows <c>domain</c> only with counts of 1 or more. For {count}, the tool assumes an empty string; check on a BIG-IP before relying on it.",
+        "domain-empty-label": "The name has an empty label (a leading, trailing or doubled dot). F5's page has no example of this for <c>domain</c>.",
+        "class-contains-multiple": "{count} entries contain the value. F5 documents that starts_with and ends_with return the longest match, but not which entry contains returns; the tool takes the first one in the order the data group lists them."
+      },
+      "entry": {
+        "tcl-string-index": {
+          "counts": "characters",
+          "rule": "<c>string index</c> counts characters from 0: index 0 is the first character, <c>end</c> the last, and <c>end-1</c> the one before it. An index below 0, or at the length or beyond, returns an empty string, not an error."
+        },
+        "tcl-string-range": {
+          "counts": "characters, both ends included",
+          "rule": "<c>string range</c> takes a first and a last index, both counted from 0 and both included: <c>string range $s 0 2</c> returns three characters. A first index below 0 is read as 0, and a last index past the end is read as <c>end</c>.",
+          "trap": "Because the last index is included, the result has last minus first plus one characters. The first N characters are <c>string range $s 0 N-1</c>, not N."
+        },
+        "tcl-string-first": {
+          "counts": "characters",
+          "rule": "<c>string first</c> and <c>string last</c> return the index where the text starts, counted from 0, or -1 when it is not there. The optional start index of <c>string first</c> (and last index of <c>string last</c>) uses the same numbering.",
+          "trap": "In an <c>if</c>, 0 is false and every other number is true. So <c>if [string first ...]</c> skips the body when the text is at the very start (index 0) and runs it when the text is missing (-1). Test <c>[string first ...] >= 0</c> instead."
+        },
+        "tcl-string-compare": {
+          "counts": "a comparison result, not a position",
+          "rule": "<c>string compare</c> returns -1, 0 or 1: 0 means the two strings are equal, -1 that the first sorts before the second, and 1 that it sorts after.",
+          "trap": "Read as a condition, 0 is false: <c>if [string compare $a $b]</c> runs when the strings are different. For equality use <c>string equal</c> or the <c>eq</c> operator, which give 1 when the strings are equal."
+        },
+        "tcl-truth": {
+          "counts": "a condition, not a position",
+          "rule": "In an <c>if</c> condition, and wherever <c>expr</c> reads a value as true or false, 0 is false and every other number is true, -1 included. Tcl also accepts the words true, yes and on, and false, no and off, in upper or lower case and shortened, as long as the short form is not ambiguous: <c>n</c>, <c>t</c> and <c>of</c> work, while <c>o</c> is an error. The DevCentral iRules Style Guide asks you to store state only as 0 or 1.",
+          "trap": "<c>string is true</c> and <c>string is false</c> follow different rules from <c>if</c>: they accept only 0, 1 and the words, so <c>string is true -1</c> returns 0 although <c>if</c> treats -1 as true. Without <c>-strict</c> they also return 1 for an empty string, which <c>if</c> rejects with an error."
+        },
+        "tcl-string-other": {
+          "counts": "characters",
+          "rule": "<c>string replace</c> takes first and last indexes like <c>string range</c>; <c>string wordstart</c> and <c>string wordend</c> take an index and return one; <c>string is</c> with <c>-failindex</c> stores the index of the first character that failed. All count from 0, and the index arguments accept <c>end</c>."
+        },
+        "tcl-end-keyword": {
+          "counts": "positions from the end",
+          "rule": "<c>end</c> is the last index, which is the length minus one, and <c>end-1</c> is the one before it. It works in <c>string index</c>, <c>string range</c>, <c>string replace</c>, <c>lindex</c>, <c>lrange</c>, <c>linsert</c>, <c>lreplace</c> and <c>lsort -index</c>.",
+          "trap": "<c>end</c> is not the length: in a 4-character string, <c>end</c> is 3. <c>end-0</c> is the same as <c>end</c>."
+        },
+        "tcl-lindex": {
+          "counts": "list elements",
+          "rule": "<c>lindex</c> counts elements from 0: index 0 is the first element and <c>end</c> the last. A negative index, or one at the number of elements or beyond, returns an empty string."
+        },
+        "tcl-lrange": {
+          "counts": "list elements, both ends included",
+          "rule": "<c>lrange</c> returns the elements from first to last, counted from 0 and both included: <c>lrange $l 0 1</c> is the first two. A first index below 0 is read as 0, and a last index past the end as <c>end</c>."
+        },
+        "tcl-lsearch": {
+          "counts": "list elements",
+          "rule": "<c>lsearch</c> returns the index of the first matching element, counted from 0, or -1 when nothing matches. <c>-start</c> takes an index in the same numbering.",
+          "trap": "The same trap as <c>string first</c>: a match at index 0 is false in an <c>if</c>, and no match (-1) is true. Compare the result with -1."
+        },
+        "tcl-list-edit": {
+          "counts": "list elements",
+          "rule": "<c>linsert</c>, <c>lreplace</c> and <c>lset</c> take indexes counted from 0. <c>linsert</c> at 0 (or below) puts the new elements first, and at <c>end</c> (or past the end) appends them."
+        },
+        "tcl-lsort-index": {
+          "counts": "elements inside each sublist",
+          "rule": "<c>lsort -index</c> sorts a list of lists by one element of each sublist, counted from 0: <c>-index 1</c> sorts by the second element. <c>end</c> and <c>end-N</c> are allowed."
+        },
+        "tcl-split": {
+          "counts": "list elements after the split",
+          "rule": "<c>split</c> makes a list, and <c>lindex</c> counts it from 0. When the string starts with the separator, the first element is the empty text before it.",
+          "trap": "A path starts with a slash, so <c>split /api/v2/users /</c> gives four elements, the first one empty: the first segment, api, is element 1, not 0."
+        },
+        "tcl-regexp-indices": {
+          "counts": "characters",
+          "rule": "With <c>-indices</c>, <c>regexp</c> stores each match as a pair of indexes, the first and the last character, counted from 0 and both included. A group that took no part in the match gets -1 -1. <c>-start</c> takes an index in the same numbering."
+        },
+        "tcl-regexp-groups": {
+          "counts": "capture groups",
+          "rule": "Capture groups count from 1, in the order their opening parentheses appear: the first sub-match variable of <c>regexp</c> holds group 1, and <c>regsub</c> writes it as <c>\\1</c>. Group 0 is the whole match: the match variable of <c>regexp</c>, and & or <c>\\0</c> in <c>regsub</c>.",
+          "trap": "Group numbers start at 1 while string positions start at 0: in the same <c>regexp -indices</c> call, group 1 can report position 0."
+        },
+        "tcl-positional": {
+          "counts": "arguments and variables",
+          "rule": "In <c>format</c> and <c>scan</c>, a position specifier such as <c>%2$s</c> picks an argument (or a variable) by number, and 1 is the first. When one specifier is positional, all of them must be."
+        },
+        "tcl-scan-count": {
+          "counts": "input read so far",
+          "rule": "<c>%n</c> stores how much of the input <c>scan</c> has read so far, so it equals the index where the rest of the string starts and can feed <c>string range</c>.",
+          "trap": "In Tcl 8.4.6 that amount is counted in bytes of UTF-8, not characters: after a character such as é it runs ahead of <c>string range</c> (the scan explainer shows it)."
+        },
+        "tcl-clock-zero": {
+          "counts": "weekdays, hours, minutes, seconds, weeks",
+          "rule": "These <c>clock format</c> fields start at 0: %w is the weekday with Sunday 0, %H the hour from 00 to 23, %M and %S from 00 to 59, and %U and %W the week of the year from 00 (in tclsh 8.4.6, 1 January 1970, a Thursday, is week 00 for both)."
+        },
+        "tcl-clock-one": {
+          "counts": "weekdays, days, months, weeks",
+          "rule": "These <c>clock format</c> fields start at 1: %u is the weekday with Monday 1 and Sunday 7, %d and %e the day of the month, %j the day of the year from 001, %m the month from 01, %I the 12-hour clock from 01, and %V the ISO 8601 week from 01.",
+          "trap": "%w and %u number the same day differently: Sunday is 0 for %w and 7 for %u, while Monday is 1 for both."
+        },
+        "tcl-binary-at": {
+          "counts": "bytes",
+          "rule": "In <c>binary scan</c>, @ moves the cursor to an absolute byte position, and position 0 is the first byte. A position past the end leaves the cursor after the last byte."
+        },
+        "tcl-levels": {
+          "counts": "levels of the call stack",
+          "rule": "<c>info level</c> is 0 at the top (the global level) and 1 inside a proc called from there. <c>uplevel</c> and <c>upvar</c> take a relative level, where 1 (the caller) is the default, or an absolute one written with #: #0 is the global level."
+        },
+        "tcl-rand": {
+          "counts": "list positions",
+          "rule": "<c>rand()</c> returns a value between 0 and 1, never 1 itself, so <c>int(rand()*N)</c> is a whole number from 0 to N-1: exactly the <c>lindex</c> positions of a list with N elements."
+        },
+        "f5-getfield": {
+          "counts": "fields",
+          "rule": "<c>getfield</c> splits a string on a character or a string and returns one field. F5's page: the field number is 1 indexed, so field 1 is the text before the first separator.",
+          "trap": "When the string starts with the separator, field 1 is the empty text before it, so the first segment of a path is field 2. F5's page has no example with a leading separator; the translator flags it."
+        },
+        "f5-substr": {
+          "counts": "characters",
+          "rule": "<c>substr</c> starts at an index counted from 0: F5's page says the skip count is the index of the first character returned, where 0 is the first character. The terminator is either a length or a text to stop before.",
+          "conflict": "F5's rule says a numeric terminator returns that many characters, so 0 would return nothing, yet the published example with 0 returns the rest of the string, and the API page marks that line as not working on 11.5.4 and 11.6.0."
+        },
+        "f5-findstr": {
+          "counts": "characters from the match",
+          "rule": "<c>findstr</c> finds the search text, then skips a number of characters counted from the first character of the match: 0, the default, returns the match itself. To start right after the search text, skip its length.",
+          "trap": "<c>substr</c> counts its skip from the start of the string and <c>findstr</c> from the start of the match, although F5's substr page says the two use these arguments in the same way."
+        },
+        "f5-domain": {
+          "counts": "labels, from the right",
+          "rule": "<c>domain</c> returns the last N labels of a dotted name, counted from the right: in F5's example, 1 gives com and 2 gives domain.com. A count larger than the number of labels returns the whole name.",
+          "trap": "For a name such as www.sub.my.domain.co.uk, 2 returns co.uk, not the organisation's name (F5's own example)."
+        },
+        "f5-uri-path": {
+          "counts": "directory depth",
+          "rule": "<c>URI::path</c> with a start (and an end) depth returns part of the directory path, and depth 1 is the first directory: F5's page says the range needs start >= 1, and its example shows that 0 raises a Tcl error.",
+          "conflict": "F5's example contradicts itself: a comment says the depth is 3 where the output shows 2, a start of 3 returns / while a start of 4 returns /path/to/, and the tmsh copy of the page leaves those lines out."
+        },
+        "f5-request-num": {
+          "counts": "requests on the connection",
+          "rule": "<c>HTTP::request_num</c> counts the HTTP transactions on the current connection including the current one, so the first request returns 1. <c>HTTP2::requests</c> counts the same way for the HTTP/2 session and returns 0 when HTTP/2 is not active."
+        },
+        "f5-http-header": {
+          "counts": "header lines",
+          "rule": "<c>HTTP::header at</c> returns the name of the header at a zero-based index, so 0 is the first header line. Asking for the value of a header that is not there returns an empty string.",
+          "trap": "When a header appears more than once, <c>HTTP::header value</c> works on the last one, while <c>SIP::header</c> without an index returns the first. <c>HTTP::header values</c> returns them all."
+        },
+        "f5-payload": {
+          "counts": "bytes",
+          "rule": "The payload commands take a byte offset counted from 0: F5's HTTP::payload page says that to replace the whole payload the offset should be 0, and the TCP, UDP and SSL payload pages show the same base in their examples.",
+          "result": "the collected TCP payload is now empty (F5's example)"
+        },
+        "f5-tcp-offset": {
+          "counts": "bytes collected (a count)",
+          "rule": "Despite its name, <c>TCP::offset</c> is not a position: F5's page says it returns the number of bytes currently held in memory by <c>TCP::collect</c>.",
+          "trap": "Use it as a length, not as the offset of the last byte: with N bytes held, the last one is at offset N minus 1.",
+          "result": "the number of bytes collected so far"
+        },
+        "f5-ssl-cert": {
+          "counts": "certificates in the peer's chain",
+          "rule": "<c>SSL::cert</c> and <c>SSL::cert issuer</c> take an index from 0: F5's page says zero denotes the first certificate in the chain the peer sent and one the next. <c>SSL::cert count</c> is the total, so the last index is the count minus 1.",
+          "conflict": "One of F5's examples has the comment \"Check if there is more than one client cert\" above a test for a count greater than 0, which means at least one.",
+          "result": "the first certificate the peer sent (F5's examples use it as the client's own certificate)"
+        },
+        "f5-ssl-extensions": {
+          "counts": "TLS extensions",
+          "rule": "<c>SSL::extensions -index</c> returns the N-th extension, zero-indexed in F5's words, and <c>SSL::extensions count</c> is how many arrived.",
+          "trap": "F5's own example loops from 0 and prints the number plus one for people: count from 0 in code and from 1 in messages.",
+          "result": "the first extension received, as bytes"
+        },
+        "f5-class-index": {
+          "counts": "data group entries",
+          "rule": "With <c>-index</c>, <c>class match</c> and <c>class search</c> return entry indexes, and <c>class element</c> takes one; F5's example lists the first three matches as 0 1 2. Without an option, <c>class match</c> returns 1 for a match and 0 for none.",
+          "trap": "F5 warns that these indexes are not guaranteed to stay the same when the data group changes, even between events.",
+          "conflict": "An example comment on F5's page calls lindex $element 1 the key, but in the name and value pair that index is the value."
+        },
+        "f5-matchclass": {
+          "counts": "data group rows",
+          "rule": "The legacy <c>matchclass</c> returns the matching row's index counted from 1, and 0 when nothing matches, so the result works as a condition. F5's page adds that lindex counts from 0, hence the minus 1 in its example.",
+          "conflict": "The same page states that no match returns 0, yet its example tests the result against -1.",
+          "result": "the matching row of the old list-style data group"
+        },
+        "f5-tmm-cmp": {
+          "counts": "TMM instances and groups",
+          "rule": "<c>TMM::cmp_unit</c> returns the number (0-x) of the CPU, the TMM instance, running the rule, and F5's example calls 0 the first TMM instance. <c>TMM::cmp_group</c> returns the group (0-x), which is always 0 on platforms other than a chassis. <c>TMM::cmp_count</c> is how many TMMs run.",
+          "result": "0 on the first TMM instance"
+        },
+        "f5-sip-index": {
+          "counts": "SIP header entries",
+          "rule": "<c>SIP::route</c> and <c>SIP::record-route</c> take a numeric zero-based index (or the word top), and <c>SIP::via</c> takes a zero-based index too, according to the tmsh copy of its page. Without an index, <c>SIP::via</c> returns the first Via.",
+          "result": "the protocol part of the first Via header"
+        },
+        "f5-diameter-avp": {
+          "counts": "AVPs with the same code",
+          "rule": "<c>DIAMETER::avp</c> picks the Nth AVP with a given code by a zero-based index, and leaving the index out works exactly like index 0, the first one."
+        },
+        "f5-radius-avp": {
+          "counts": "attribute instances",
+          "rule": "F5's <c>RADIUS::avp</c> examples read repeated attributes with index 0, 1, 2 and so on, and stop at the first empty result. The page never states the base in words.",
+          "result": "the first matching vendor-specific attribute, as a string"
+        },
+        "f5-message-field": {
+          "counts": "field instances",
+          "rule": "<c>MESSAGE::field value</c> takes an optional index that F5's page calls 0-based. A field that is not there returns an empty string, and the order of repeated fields depends on the protocol.",
+          "result": "the first Via field of the message"
+        },
+        "f5-name-response": {
+          "counts": "address records",
+          "rule": "<c>NAME::response address</c> takes an index from 0 to 15 inclusive; without one it returns the list of up to 16 records, and null when none came back. F5 deprecated it in version 15.1 in favour of the RESOLVER and DNSMSG commands.",
+          "result": "the first address returned by NAME::lookup"
+        },
+        "f5-json-array": {
+          "counts": "array values",
+          "rule": "The <c>JSON::array</c> commands, which F5 lists as introduced in BIG-IP 21.0.0, count positions from 0: inserting at an index equal to the size appends, and removing slides the later values down by one. The page never writes the base in words.",
+          "result": "the first value of the array"
+        },
+        "f5-dns-lists": {
+          "counts": "addresses and records",
+          "rule": "<c>RESOLV::lookup</c> and <c>DNSMSG::section</c> return Tcl lists, so <c>lindex</c> 0 is the first item; F5's RESOLV::lookup page uses exactly that to get a single address.",
+          "conflict": "F5's DNSMSG::record example stores lindex $answer 1 in a variable named first_rr, but index 1 is the second record.",
+          "result": "the first address the lookup returned"
+        },
+        "f5-whereis": {
+          "counts": "list positions",
+          "rule": "<c>whereis</c> returns a Tcl list with the continent, the country and the state, in that order, so F5's example reads the continent with <c>lindex</c> 0 and the country with <c>lindex</c> 1.",
+          "result": "the client's country code"
+        },
+        "f5-member-lists": {
+          "counts": "pool members",
+          "rule": "<c>active_members -list</c> returns a Tcl list of address and port pairs for the active members, and <c>members -list</c> covers every member, so <c>lindex</c> 0 is the first pair in the list.",
+          "trap": "F5's pages do not say in what order the members come, so the first pair is not a particular member: do not build logic on a position."
+        },
+        "f5-table-incr": {
+          "counts": "a counter",
+          "rule": "<c>table incr</c> starts a missing key at 0, adds 1 unless told otherwise, and returns the value after adding, so the first call returns 1."
+        },
+        "f5-stats-fields": {
+          "counts": "fields of a Statistics profile",
+          "rule": "F5's page says the fields of a Statistics profile are numbered from 1 to 32, but <c>STATS::incr</c> takes the field's name, not its number.",
+          "result": "the hits field of the my_stats profile goes up by 1"
+        },
+        "f5-priority": {
+          "counts": "event priority values",
+          "rule": "An event's priority runs from 0 to 1000 inclusive and defaults to 500, and lower numbers run first, so priority 0 runs before the higher numbers on that event. The DevCentral iRules Style Guide asks for a priority on every event, with 500 when you have no other starting point.",
+          "conflict": "The same F5 page also says a priority can be assigned between 1 and 1000.",
+          "result": "this HTTP_REQUEST body runs before the ones at the default 500"
+        },
+        "f5-mr-clone-id": {
+          "counts": "message clones",
+          "rule": "<c>MR::message clone -count</c> numbers the new clones from the previous clone count plus 1, so the first clone of a message gets ID 1; the original has no clone ID (an empty string).",
+          "conflict": "F5's page describes clone_count as the number of clones including the original, and in the same sentence says it returns 0 when there are no clones.",
+          "result": "two clones, with clone IDs 1 and 2 for a message that had none"
+        },
+        "f5-mr-instance": {
+          "counts": "connection instances",
+          "rule": "<c>MR::connection_instance</c> returns text in the form instance of total, and F5's page says incoming connections return 0 of 1: the instance counts from 0."
+        },
+        "f5-ssl-verify-result": {
+          "counts": "a result code, not a position",
+          "rule": "<c>SSL::verify_result</c> returns 0 for X509_V_OK, which F5's table describes as the operation was successful; the other numbers are verification error codes.",
+          "trap": "Read as a condition, success is false: <c>if [SSL::verify_result]</c> runs when verification failed. Compare with 0 to say what you mean."
+        },
+        "f5-lb-server": {
+          "counts": "a priority value and a route domain",
+          "rule": "<c>LB::server priority</c> returns 1 when the pool member has no priority configured, and <c>LB::server route_domain</c> returns null when the route domain is 0, the default.",
+          "conflict": "The pool member setting itself, priority-group, defaults to 0 in the tmsh reference, so the 1 that LB::server reports for an unconfigured member does not match the configured default. Not tested on a BIG-IP."
+        },
+        "cfg-route-domain": {
+          "counts": "route domains",
+          "rule": "Route domain 0 is the default: F5's routing guide says that with no route domains created every route belongs to route domain 0, and that an address without a %ID uses the partition's default route domain, or route domain 0 in Common. The tmsh reference adds that when no route is found, the system searches route domain 0.",
+          "result": "a pool member on 10.10.10.30, port 80, in route domain 2"
+        },
+        "cfg-priority-group": {
+          "counts": "priority groups",
+          "rule": "A pool member's priority-group runs from 0 to 65535 and defaults to 0, and higher numbers get traffic first, so 0 is the lowest group: its members receive traffic only when every member in the higher groups is unavailable. A min-active-members of 0 turns priority group activation off.",
+          "trap": "Here the bigger number wins, the opposite of event priority, LTM policy ordinals and GTM order, where the lower number goes first.",
+          "result": "the lowest priority group (the default)"
+        },
+        "cfg-ratio": {
+          "counts": "load balancing weight",
+          "rule": "Ratio weights default to 1 for LTM pool members, and the AS3 schema gives 1 as the default for GSLB pool members too; it allows 0 to 100 for an LTM pool member.",
+          "result": "the default weight"
+        },
+        "cfg-zero-limits": {
+          "counts": "limits",
+          "rule": "In these fields 0 is not a size, it means no limit: a connection-limit of 0 allows unlimited connections on virtual servers, pool members and route domains, a queue-depth-limit of 0 means no limit, and reselect-tries 0 means the system does not try another pool member.",
+          "result": "no connection limit"
+        },
+        "cfg-port-zero": {
+          "counts": "service ports",
+          "rule": "Port 0 on a virtual server means every port: F5 describes a default wildcard virtual server as one that uses port 0 and handles traffic for all services. The tmsh examples write the port as any.",
+          "result": "a virtual server on 11.11.11.12 for every port"
+        },
+        "cfg-policy-numbers": {
+          "counts": "rules, conditions and actions",
+          "rule": "Inside an LTM policy rule, conditions and actions are numbered 0, 1 and so on, as F5's tmsh example shows. Rules carry an ordinal: the lower value comes first, and DevCentral's article on matching strategies says 0 is the default and is not shown.",
+          "conflict": "The iControl REST reference describes the ordinal as a positive integer, while the default is 0.",
+          "result": "the first condition of the rule"
+        },
+        "cfg-policy-index": {
+          "counts": "path segments and query parameters",
+          "rule": "In an LTM policy condition, path-segment index and unnamed-query-param index count from 1, and negative values count from the right.",
+          "trap": "The first segment of /api/v2 is index 1 in a policy and element 1 after split in Tcl, for different reasons: the policy counts from 1, while Tcl counts from 0 and has an empty element before the leading slash.",
+          "result": "the condition looks at the second segment of the Referer path"
+        },
+        "cfg-policy-precedence": {
+          "counts": "precedence ranks",
+          "rule": "The precedence table of an LTM policy strategy starts at 1, and a lower value is a higher precedence: best-match uses it to decide which matching condition is the most specific.",
+          "result": "the highest precedence in the table"
+        },
+        "cfg-gtm-order": {
+          "counts": "pools and members, in order",
+          "rule": "In BIG-IP DNS, a wide IP's pools and a pool's members carry an order that starts at 0: F5's lab creates the first pool with order 0, and the AS3 schema defaults memberOrder to 0. Global Availability takes the first pool in the list for as long as it is available.",
+          "result": "the wide IP's first pool"
+        },
+        "cfg-vlan-tag": {
+          "counts": "VLAN IDs",
+          "rule": "A VLAN tag runs from 1 to 4094: the range starts at 1. The tmsh reference also accepts 4096, a special tag that is not used in the packet processing path and helps with virtual-wire configuration.",
+          "result": "the highest regular tag"
+        },
+        "cfg-traffic-group": {
+          "counts": "traffic groups",
+          "rule": "Every BIG-IP comes with traffic-group-1, the floating group that new floating objects join by default, and traffic-group-local-only: the floating group is numbered from 1. A traffic group's unit ID is between 1 and 15.",
+          "result": "the pre-configured floating traffic group"
+        },
+        "cfg-apm-acl-order": {
+          "counts": "ACL positions",
+          "rule": "acl-order places an APM ACL in the list of ACLs, and a lower number sits higher in the list.",
+          "conflict": "The tmsh reference describes acl-order 3 as the third ACL in the list, which counts from 1, while F5's Ansible module documentation says the lowest number, 0, is the topmost, which makes 3 the fourth.",
+          "result": "MyACL's place in the list of ACLs"
+        },
+        "plat-interfaces": {
+          "counts": "interfaces",
+          "rule": "BIG-IP interfaces are named slot.port, such as 1.1, 1.2 and 2.1 in F5's examples, so both numbers start at 1. On a VIPRION the blade's slot comes first, as in 1/1.2 (slot 1, interface 1.2), and the management interface is named mgmt.",
+          "result": "a VLAN on interfaces 1.2, 1.3 and 1.4"
+        },
+        "plat-f5os-ports": {
+          "counts": "physical ports",
+          "rule": "On F5OS, rSeries ports are numbered from 1.0 to the last port (10.0 on the r5000 series, 20.0 on the r10000 series). On VELOS a bundled port is 1/1.0, and the same port unbundled into four is 1/1.1 to 1/1.4.",
+          "trap": "The .0 is not a port 0: on VELOS it marks a port that is not split, and the split parts are .1 to .4.",
+          "result": "the first port of an rSeries appliance"
+        },
+        "plat-slots": {
+          "counts": "chassis slots",
+          "rule": "VIPRION slots count from 1: F5's LCD article says the slot ID is counted from 1, so blade 2 is 2, and tmsh lists cluster members 1 to 8. On an appliance the same LCD commands use slot 0.",
+          "trap": "In vCMP, a guest's slots setting is a number of slots (greater than zero, default 1), not a slot number.",
+          "result": "clears the level 0 LCD warnings of slot 0, an appliance"
+        },
+        "plat-volumes": {
+          "counts": "disks and volumes",
+          "rule": "Software volumes are named HDX.Y (MDX.Y on RAID, CFX.Y on compact flash), where X is the disk and Y the volume on it; F5's examples start at HD1.1 and MD1.1.",
+          "result": "reboots into the first volume of the first disk"
+        },
+        "plat-tmm-ids": {
+          "counts": "TMM instances",
+          "rule": "TMM instances are numbered from 0: tmsh shows Sys::TMM: 0.0 to 0.7 on an eight-TMM platform, and the processes start at tmm.0. With HTSplit only even IDs are used: the 10th TMM has the ID 18."
+        },
+        "api-rest-skip": {
+          "counts": "objects to skip",
+          "rule": "In iControl REST paging, $skip is how many objects to skip, so the first page is $skip=0 (F5's bug note fetches the first 100 pools that way), and $top is how many to return.",
+          "result": "the first 100 pools"
+        },
+        "api-rest-page-index": {
+          "counts": "pages and positions",
+          "rule": "The paging fields of an iControl REST response count from 1: in DevCentral's example the first page reports pageIndex 1 and startIndex 1.",
+          "trap": "So the same first page is $skip=0 in the request and startIndex 1 in the response."
+        },
+        "api-soap-sysloglevel": {
+          "counts": "syslog levels",
+          "rule": "The iControl SOAP Log::SyslogLevel values sit one above the syslog numbers: LOG_LEVEL_EMERG is 1 and LOG_LEVEL_DEBUG 8, with 0 for an unknown level. ASM::SeverityName on the same site uses the syslog numbers, EMERG 0 to DEBUG 7.",
+          "trap": "Converting between them is off by one: a SyslogLevel value minus 1 is the syslog severity."
+        },
+        "log-severity": {
+          "counts": "severity levels",
+          "rule": "Syslog severities run from 0, the most severe (emerg), to 7 (debug). In a BIG-IP log line, the digit between the colons after the message code is the severity, with 0 being the highest.",
+          "trap": "A bigger number is less severe: 3 (err) is worse than 6 (info).",
+          "result": "severity 3, err"
+        },
+        "log-facility": {
+          "counts": "syslog facilities",
+          "rule": "BIG-IP uses the syslog facilities local0 to local7, and local0 is BIG-IP's own: F5 maps it to /var/log/ltm, where iRule messages logged with local0 land. The local-syslog default facility is local0.",
+          "result": "a line in /var/log/ltm"
+        },
+        "cap-tcpdump-00": {
+          "counts": "an interface name, not a number",
+          "rule": "In tcpdump on a BIG-IP, 0.0 is not interface number 0: it means all TMM interfaces at once. It does not capture the management interface and is not rate-limited, so use filters.",
+          "result": "traffic on every TMM interface"
+        },
+        "cap-ethtrailer": {
+          "counts": "blades and TMMs",
+          "rule": "The F5 Ethernet trailer in a capture records the chassis slot and the TMM that handled each packet, and F5's Wireshark example for TMM0 on Slot1 reads slot == 1 and tmm == 0: slots count from 1, TMMs from 0.",
+          "result": "packets handled by the first TMM on the first blade"
+        }
+      }
+    },
+    "ascii-table": {
+      "name": "ASCII table explorer",
+      "blurb": "All 128 ASCII codes in every notation, with their names from RFC 20 to Unicode 18.0.0, how to write each one in C, JSON, JavaScript, Python, Tcl, HTML and URLs, and a look-up that tells you when a character is not ASCII at all.",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs in your browser. Nothing you type leaves the page.",
+      "lookupLabel": "Look up a code, a character or a name",
+      "lookupPlaceholder": "A, 65, 0x41, 4/1, &#65;, %41, ^A, LF, Reverse Slant",
+      "lookupHelp": "Reads decimal, hexadecimal (0x41 or 41h), octal (0o101), seven or eight binary digits, RFC 20 column/row (4/11), U+0041, HTML references, percent-encoding, backslash escapes, caret notation, control abbreviations and names, Unicode names, or the character itself.",
+      "presetsLabel": "Try",
+      "preset": {
+        "lookup-character": "A",
+        "lookup-column-row": "4/11",
+        "lookup-tilde": "&tilde;",
+        "lookup-minus": "&minus;",
+        "lookup-caret": "^[",
+        "lookup-control-name": "line feed",
+        "lookup-bits": "00100101",
+        "lookup-rfc20-name": "Reverse Slant",
+        "lookup-delete": "DEL",
+        "lookup-en-dash": "an en dash",
+        "lookup-c1-control": "U+0085"
+      },
+      "namesLoading": "Loading the Unicode name table...",
+      "readAsLabel": "Read as",
+      "readAs": {
+        "character": "the character itself",
+        "decimal": "a decimal number",
+        "hexadecimal": "a hexadecimal number",
+        "octal": "an octal number",
+        "binary": "binary digits",
+        "column-row": "an RFC 20 column/row position",
+        "unicode": "Unicode notation",
+        "html-decimal": "an HTML decimal reference",
+        "html-hex": "an HTML hexadecimal reference",
+        "html-named": "an HTML named reference",
+        "percent": "percent-encoding",
+        "escape-hex": "a hexadecimal escape",
+        "escape-unicode": "a Unicode escape",
+        "escape-octal": "an octal escape",
+        "escape-named": "a named escape",
+        "caret": "caret notation",
+        "name": "a name"
+      },
+      "unknownTitle": "Nothing here reads as a code, a character or a name.",
+      "unknownBody": "Try a number (65, 0x41, 0o101), a position (4/1), U+0041, a reference (&#65;), an escape, caret notation (^A), or a name (LF, line feed).",
+      "outsideTitle": "<c>{label}</c> is not ASCII",
+      "outsideName": "Unicode name",
+      "outsideAlias": "No Unicode name; formal alias",
+      "outsideNoName": "This code point has no name.",
+      "outsideBytes": "ASCII stops at 127 (0x7F). This one needs {n} bytes in UTF-8.",
+      "outsideHidden": {
+        "invisible": "It is invisible: it takes up no space on screen.",
+        "space": "It is a space, but not the ASCII space (32).",
+        "quote": "It is a typographic quotation mark, not the ASCII quote it resembles.",
+        "dash": "It is a dash, not the ASCII hyphen-minus (45).",
+        "lookalike": "Its compatibility form is ASCII text."
+      },
+      "outsideCompat": "Compatibility decomposition (Unicode): <c>{text}</c>",
+      "outsidePrototype": "Confusable with the ASCII text <c>{text}</c> (UTS #39).",
+      "outsideAsciiMeant": "If you meant the ASCII character, it is <c>{ch}</c>, code {code}: in HTML write <c>{ref}</c> or the character itself.",
+      "outsideInspect": "See every property of this code point in the Unicode inspector.",
+      "detailTitle": "Code {code}",
+      "numbersTitle": "Numbers",
+      "numDec": "Decimal",
+      "numHex": "Hexadecimal",
+      "numOct": "Octal",
+      "numBin": "Binary (7 bits)",
+      "numBin8": "In a byte (8 bits)",
+      "columnRow": "Column/row (RFC 20)",
+      "columnRowHelp": "Bits b7 b6 b5 give the column, b4 to b1 the row.",
+      "bitsTitle": "Flip a bit",
+      "bitsHelp": "Each button flips one bit and jumps to the code it lands on. b6 (value 32) separates upper and lower case; b7 (value 64) separates a control from the character it is paired with in caret notation.",
+      "bitLabel": "b{n}, value {value}",
+      "namesTitle": "Names",
+      "nameUnicode": "Unicode 18.0.0",
+      "nameUnicodeAlias": "Unicode alias (controls have no name)",
+      "nameAliases": "Other aliases",
+      "nameAbbr": "Abbreviation",
+      "nameUnicode1": "Unicode 1.0",
+      "nameRfc20": "RFC 20 (USAS X3.4-1968)",
+      "nameRfc20Alt": "Also, in RFC 20",
+      "nameCategory": "General_Category",
+      "gc": {
+        "Cc": "Control",
+        "Zs": "Space_Separator",
+        "Po": "Other_Punctuation",
+        "Sc": "Currency_Symbol",
+        "Ps": "Open_Punctuation",
+        "Pe": "Close_Punctuation",
+        "Sm": "Math_Symbol",
+        "Pd": "Dash_Punctuation",
+        "Nd": "Decimal_Number",
+        "Lu": "Uppercase_Letter",
+        "Sk": "Modifier_Symbol",
+        "Pc": "Connector_Punctuation",
+        "Ll": "Lowercase_Letter"
+      },
+      "classLabel": "RFC 20 class",
+      "class": {
+        "CC": "Communication control: controls or helps the transmission of information over networks.",
+        "FE": "Format effector: controls layout or position on a printer or display.",
+        "IS": "Information separator: divides data logically, in a hierarchy of four.",
+        "none": "Control without a class in RFC 20.",
+        "graphic": "Graphic character."
+      },
+      "noteAgree": "RFC 20 note 3: do not use this position in international interchange without agreeing on it first.",
+      "notePound": "RFC 20 note 4: where # is not needed, the pound sterling sign may take this position.",
+      "noteDelStrict": "RFC 20: in the strict sense, DEL is not a control character. Unicode classes it as a control (Cc).",
+      "noteGcPo": "UAX #44 notes that @, #, % and & have long been classed as Other_Punctuation, although Western typography does not use them as punctuation.",
+      "rfcTitle": "What RFC 20 defines it for",
+      "todayTitle": "What it does today",
+      "ctl": {
+        "c0": {
+          "rfc": "The all-zeros character, defined to fill time or space on a medium. C ends every string with it, so a NUL inside data cuts the text short in C code."
+        },
+        "c1": {
+          "rfc": "Start of Heading: opens a heading, the address or routing information sent before a message's text. An STX ends the heading."
+        },
+        "c2": {
+          "rfc": "Start of Text: opens the text that is to travel to its final destination as one unit. It also closes a heading opened by SOH."
+        },
+        "c3": {
+          "rfc": "End of Text: closes the text that STX opened.",
+          "today": "Typed as Ctrl-C at a Linux terminal, it is the interrupt character: the terminal sends SIGINT to the program (termios(3))."
+        },
+        "c4": {
+          "rfc": "End of Transmission: closes a transmission that may have held several texts and their headings.",
+          "today": "Typed as Ctrl-D, it is the end-of-file character: pending input goes to the program at once, and at the start of a line the program reads end of file (termios(3))."
+        },
+        "c5": {
+          "rfc": "Enquiry: asks a remote station to answer, for example with its identity (\"Who Are You\") or its status.",
+          "today": "On DEC's VT102 terminal it triggered an answerback message (console_codes(4))."
+        },
+        "c6": {
+          "rfc": "Acknowledge: a receiver's positive answer to a sender."
+        },
+        "c7": {
+          "rfc": "Bell: calls for human attention, and may set off an alarm or attention device.",
+          "today": "The Linux console beeps when it receives it (console_codes(4))."
+        },
+        "c8": {
+          "rfc": "Backspace: moves the printing position one place back on the same line.",
+          "today": "The Linux console moves back one column, never past the start of the line (console_codes(4)); Ctrl-H is one of the usual erase characters at a terminal (termios(3))."
+        },
+        "c9": {
+          "rfc": "Horizontal Tabulation: moves the printing position to the next of a series of preset positions on the line; on punched cards, the skip function.",
+          "today": "The Linux console goes to the next tab stop, or to the end of the line if there is none (console_codes(4))."
+        },
+        "c10": {
+          "rfc": "Line Feed: moves the printing position to the next line. Sender and receiver may agree that it also means New Line (NL): the first position of the next line.",
+          "today": "The Linux console gives a line feed, and a carriage return as well when new-line mode is set (console_codes(4)). POSIX ends every line of a text file with the newline character, which C writes as \\n: LF on ASCII systems."
+        },
+        "c11": {
+          "rfc": "Vertical Tabulation: moves the printing position to the next of a series of preset lines.",
+          "today": "The Linux console treats it as a line feed (console_codes(4))."
+        },
+        "c12": {
+          "rfc": "Form Feed: moves the printing position to the first preset line of the next form or page.",
+          "today": "The Linux console treats it as a line feed (console_codes(4))."
+        },
+        "c13": {
+          "rfc": "Carriage Return: moves the printing position to the first position of the same line.",
+          "today": "The Linux console returns to the start of the line (console_codes(4)). SMTP and HTTP/1.1 end their lines with CR followed by LF (RFC 5321, RFC 9112)."
+        },
+        "c14": {
+          "rfc": "Shift Out: the codes that follow are read outside the standard character set, until a Shift In.",
+          "today": "The Linux console switches to its G1 character set (console_codes(4))."
+        },
+        "c15": {
+          "rfc": "Shift In: the codes that follow are read with the standard table again.",
+          "today": "The Linux console switches back to its G0 character set (console_codes(4))."
+        },
+        "c16": {
+          "rfc": "Data Link Escape: changes the meaning of a few characters that follow it, to carry extra controls in data communication networks."
+        },
+        "c17": {
+          "rfc": "Device Control 1: controls an ancillary device, chiefly switching it on or off.",
+          "today": "Typed as Ctrl-Q, it is the start character: output stopped by Ctrl-S resumes (termios(3)). DEC's VT102 used it as XON, to resume transmission (console_codes(4))."
+        },
+        "c18": {
+          "rfc": "Device Control 2: controls an ancillary device, chiefly switching it on or off.",
+          "today": "Typed as Ctrl-R, Linux terminals use it to reprint unread input (termios(3); not in POSIX)."
+        },
+        "c19": {
+          "rfc": "Device Control 3: controls an ancillary device, chiefly switching it on or off.",
+          "today": "Typed as Ctrl-S, it is the stop character: output halts until Ctrl-Q (termios(3)), so a terminal that seems frozen after Ctrl-S needs a Ctrl-Q, not a restart. DEC's VT102 used it as XOFF (console_codes(4))."
+        },
+        "c20": {
+          "rfc": "Device Control 4: controls an ancillary device; when one single stop control is needed, this is the one to use."
+        },
+        "c21": {
+          "rfc": "Negative Acknowledge: a receiver's negative answer to a sender.",
+          "today": "Typed as Ctrl-U, it is the kill character: it erases the input typed since the start of the line (termios(3))."
+        },
+        "c22": {
+          "rfc": "Synchronous Idle: sent by a synchronous link when there is nothing else to send, so both ends keep or regain synchronism.",
+          "today": "Typed as Ctrl-V, Linux terminals use it as literal next: the next key loses any special meaning (termios(3); not in POSIX)."
+        },
+        "c23": {
+          "rfc": "End of Transmission Block: ends a block of data for communication purposes; the blocks need not match how the data is processed.",
+          "today": "Typed as Ctrl-W, Linux terminals use it to erase the last word (termios(3); not in POSIX)."
+        },
+        "c24": {
+          "rfc": "Cancel: the data sent with it is in error or should be disregarded.",
+          "today": "The Linux console aborts an escape sequence in progress (console_codes(4))."
+        },
+        "c25": {
+          "rfc": "End of Medium: marks the physical end of the medium, or the end of the part of it that is used or wanted."
+        },
+        "c26": {
+          "rfc": "Substitute: takes the place of a character found to be invalid or in error.",
+          "today": "Typed as Ctrl-Z, it is the suspend character: the terminal sends SIGTSTP (termios(3)). The Linux console also aborts an escape sequence when it receives it (console_codes(4))."
+        },
+        "c27": {
+          "rfc": "Escape: a prefix that changes the meaning of a limited number of characters after it, to extend the code.",
+          "today": "At the Linux console it starts an escape sequence, and ESC [ is the Control Sequence Introducer, which begins the sequences that set colours and move the cursor (console_codes(4))."
+        },
+        "c28": {
+          "rfc": "File Separator: the most inclusive of the four information separators (FS, GS, RS, US), used to divide data in a hierarchy.",
+          "today": "Typed as Ctrl-\\, it is the quit character: the terminal sends SIGQUIT (termios(3))."
+        },
+        "c29": {
+          "rfc": "Group Separator: the second of the four information separators, inside a file and above a record."
+        },
+        "c30": {
+          "rfc": "Record Separator: the third of the four information separators, inside a group and above a unit."
+        },
+        "c31": {
+          "rfc": "Unit Separator: the least inclusive of the four information separators."
+        },
+        "c32": {
+          "rfc": "Space: a normally non-printing graphic character that separates words. It is also a format effector: it moves the printing position one place forward."
+        },
+        "c127": {
+          "rfc": "Delete: used mainly to erase unwanted characters on punched paper tape. Its seven bits are all ones. RFC 20 adds that, strictly speaking, DEL is not a control character.",
+          "today": "It is one of the usual erase characters at a Linux terminal, removing the character before the cursor (termios(3)); the Linux console ignores it when received (console_codes(4))."
+        }
+      },
+      "writeTitle": "How to write it",
+      "writeHelp": "Inside a string literal of each language, or in HTML and a URL.",
+      "lang": {
+        "c": "C",
+        "json": "JSON",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "tcl": "Tcl and iRules",
+        "htmlDec": "HTML, decimal",
+        "htmlHex": "HTML, hexadecimal",
+        "htmlNamed": "HTML, named",
+        "url": "URL"
+      },
+      "how": {
+        "simple": "named escape",
+        "numeric": "numeric escape",
+        "plain": "as itself"
+      },
+      "noNamed": "none",
+      "escNote": {
+        "c-octal": "C: octal escapes take at most three digits, so they cannot swallow the next character; a hexadecimal escape such as \\x1B keeps reading every hex digit that follows.",
+        "json-must": "JSON: quotation mark, reverse solidus and the controls 0 to 31 must be escaped (RFC 8259, section 7).",
+        "json-solidus": "JSON: the solidus may be written as \\/ but need not be.",
+        "json-del": "JSON: DEL (127) is not among the characters that must be escaped, so it may appear as it is.",
+        "js-nul": "JavaScript: \\0 is NUL only when no digit follows it.",
+        "tcl-quoted": "Tcl: needs the backslash inside a quoted word; inside braces nothing is substituted.",
+        "tcl-octal": "Tcl 8.4 (and iRules): written in octal because \\x reads every hexadecimal digit that follows and keeps only the last two, so \"\\x1Bfoo\" is not ESC followed by foo."
+      },
+      "htmlNote": {
+        "null": "HTML: a reference to 0 is a parse error and becomes U+FFFD, the replacement character.",
+        "control": "HTML: a reference to this control is a parse error (the character is still inserted)."
+      },
+      "urlClass": {
+        "unreserved": "Unreserved in RFC 3986: it never needs percent-encoding.",
+        "gen-delim": "A general delimiter in RFC 3986: encode it when it is data, not syntax.",
+        "sub-delim": "A sub-delimiter in RFC 3986: encode it when it is data, not syntax.",
+        "other": "Not allowed as itself in a URI: always percent-encode it."
+      },
+      "wsTitle": "White space?",
+      "wsHelp": "Which definitions count this code as white space, measured in each implementation on 2026-10-03.",
+      "wsYes": "yes",
+      "wsNo": "no",
+      "wsSet": {
+        "c": "C isspace()",
+        "json": "JSON (RFC 8259)",
+        "whatwg": "WHATWG (HTML, URLs)",
+        "abnf": "ABNF WSP (RFC 5234)",
+        "tcl": "Tcl 8.4 word separator",
+        "python": "Python str.isspace()",
+        "javascript": "JavaScript \\s and trim()"
+      },
+      "relationsTitle": "Relations",
+      "caretLabel": "Caret notation",
+      "caretHelp": "<c>{caret}</c>: the control is <c>{pair}</c> with bit b7 cleared (64 subtracted).",
+      "caretDelHelp": "<c>^?</c>: DEL is written as the question mark with bit b7 set (64 added).",
+      "otherCaseLabel": "Other case",
+      "otherCaseHelp": "<c>{other}</c>, one bit away: upper and lower case differ only in b6 (value 32).",
+      "digitLabel": "Digit value",
+      "digitHelp": "{value}: the digits are 48 (0x30) plus their value.",
+      "confusableLabel": "Confusable (UTS #39)",
+      "confusableHelp": "UTS #39 gives it the same prototype, <c>{prototype}</c>, as: {others}",
+      "tableTitle": "The table",
+      "tableHelp": "Laid out as RFC 20 draws it: eight columns by sixteen rows. Pick a code to see it above.",
+      "viewLabel": "View",
+      "viewGrid": "Grid",
+      "viewList": "List",
+      "filterLabel": "Show",
+      "filter": {
+        "all": "All 128",
+        "control": "Controls",
+        "digit": "Digits",
+        "upper": "Upper case",
+        "lower": "Lower case",
+        "punct": "Punctuation and symbols",
+        "agree": "RFC 20 note 3"
+      },
+      "colColumn": "Column",
+      "colRow": "Row",
+      "colDec": "Dec",
+      "colHex": "Hex",
+      "colOct": "Oct",
+      "colBin": "Binary",
+      "colChar": "Char",
+      "colName": "Name",
+      "colHtml": "HTML",
+      "gridBitsColumn": "b7 b6 b5",
+      "gridBitsRow": "b4 b3 b2 b1",
+      "cellLabel": "{dec}, {name}",
+      "showing": "{n} of 128 codes",
+      "textTitle": "Text to codes",
+      "textLabel": "Paste text to see every character's code",
+      "textPlaceholder": "Paste a line from a config, an iRule, an email...",
+      "textSummary": "{total, plural, one {# character} other {# characters}}: {ascii} ASCII, {outside} outside ASCII.",
+      "textTruncated": "Only the first 2,000 characters are shown.",
+      "textAllAscii": "Every character is ASCII.",
+      "textOutsideTitle": "Characters outside ASCII",
+      "textColPos": "At",
+      "textColChar": "Char",
+      "textColCode": "Code point",
+      "textColBytes": "UTF-8 bytes",
+      "textColName": "Name",
+      "textColNote": "Note",
+      "compareTitle": "White space, compared",
+      "compareHelp": "The same ten codes, seven definitions. JSON leaves out VT and FF, WHATWG leaves out VT, Tcl ends a command at LF instead of separating words, and Python also counts the four information separators."
+    },
+    "unicode-inspector": {
+      "name": "Unicode inspector",
+      "blurb": "See what is really in a piece of text: every code point with its name, and the characters that hide or deceive, from zero-width spaces and Trojan Source bidirectional controls to Cyrillic letters posing as Latin. Look up any code point, find one by name, clean a text and write it as escapes in eight languages.",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs in your browser. Nothing you paste leaves the page.",
+      "modeLabel": "Mode",
+      "modeInspect": "Inspect a text",
+      "modeCodepoint": "One code point",
+      "modeSearch": "Find by name",
+      "namesLoading": "Loading the Unicode name table...",
+      "presetsLabel": "Try",
+      "preset": {
+        "inspect-mixed-script": "Latin with a Cyrillic a",
+        "inspect-trojan-source": "Trojan Source",
+        "inspect-invisible": "Hidden spaces",
+        "inspect-smart-punctuation": "Smart quotes and a dash",
+        "inspect-fullwidth-folded": "Fullwidth letters",
+        "inspect-line-separator": "Line separator",
+        "inspect-escapes": "Accents and emoji",
+        "inspect-japanese": "Japanese",
+        "inspect-combining": "A combining accent",
+        "codepoint-e-acute": "U+00E9",
+        "codepoint-emoji": "an emoji",
+        "codepoint-rlo": "U+202E",
+        "codepoint-bom-by-alias": "BOM",
+        "codepoint-cyrillic-a": "U+0430",
+        "codepoint-surrogate": "U+D800",
+        "codepoint-small-seal": "U+3D000",
+        "codepoint-noncharacter": "U+FFFE",
+        "codepoint-reserved": "U+0378",
+        "codepoint-nel": "U+0085",
+        "search-zero-width": "zero width"
+      },
+      "textLabel": "Paste the text to inspect",
+      "textPlaceholder": "Paste a line of code, a URL, a user name, a config file...",
+      "summary": "{cps, plural, one {# code point} other {# code points}}, {units, plural, one {# UTF-16 unit} other {# UTF-16 units}}, {bytes, plural, one {# UTF-8 byte} other {# UTF-8 bytes}}, {lines, plural, one {# line} other {# lines}}; {outside} outside ASCII.",
+      "truncated": "Only the first 10,000 code points are read.",
+      "verdictClean": "Nothing hides here: no invisible, bidirectional, control, unusual line-break or lookalike characters.",
+      "verdictFound": "{n, plural, one {# code point needs} other {# code points need}} a look.",
+      "findingsTitle": "What was found",
+      "findingCount": "{label}: {count}",
+      "openBidiTitle": "Bidirectional controls left open",
+      "openBidiLine": "Line {line}: <c>{controls}</c> still open at the end of the line. Everything after them on that line can be displayed in an order different from the order a compiler or parser reads it, which is the Trojan Source pattern (CVE-2021-42574).",
+      "mixedTitle": "Words that mix scripts",
+      "mixedWord": "<c>{word}</c> (line {line}, column {col}) mixes {scripts}: no single writing system uses all its letters (UTS #39 mixed-script detection).",
+      "revealTitle": "The text, with every hidden character shown",
+      "revealHelp": "Each character that needs a look is drawn as a tag with its code point; hover or focus it for the name.",
+      "rowsTitle": "Every code point",
+      "rowsCapped": "The first 2,000 are listed.",
+      "colAt": "At",
+      "colLine": "Line",
+      "colCol": "Col",
+      "colChar": "Char",
+      "colCp": "Code point",
+      "colName": "Name",
+      "colGc": "Category",
+      "colScript": "Script",
+      "colFlags": "Flags",
+      "cleanTitle": "Cleaned copy",
+      "cleanHelp": "Choose what to change. Folding lookalikes also changes genuine words in other scripts, so it is off by default.",
+      "cleanOpt": {
+        "removeInvisible": "Remove invisible and bidirectional characters",
+        "asciiSpaces": "Use ASCII spaces and line feeds",
+        "asciiPunctuation": "Use ASCII quotes and hyphens",
+        "foldLookalikes": "Replace lookalikes with ASCII"
+      },
+      "cleanChanges": "{removed} removed, {spaces} spaces or line breaks, {punctuation} quotes or dashes, {folded} lookalikes replaced.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "escapeTitle": "Write the text as escapes",
+      "escapeHelp": "Every character outside printable ASCII as an escape, and the characters each language reserves escaped too. Each form was decoded back by its own language when this tool was built.",
+      "styleLabel": "Language",
+      "style": {
+        "json": "JSON",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "html": "HTML",
+        "css": "CSS",
+        "url": "URL",
+        "c": "C (u8 string)",
+        "tcl": "Tcl and iRules"
+      },
+      "escUnavailable": {
+        "tcl": "Tcl 8.4, and so iRules, has no escape for a character beyond U+FFFF, and Tcl 8.4.6 reads its four UTF-8 bytes as four characters.",
+        "url": "A lone surrogate has no UTF-8 form, so it cannot be percent-encoded.",
+        "html": "A lone surrogate cannot appear in HTML.",
+        "css": "CSS turns an escaped 0 or surrogate into U+FFFD.",
+        "c": "A lone surrogate cannot be written in a C string.",
+        "json": "",
+        "javascript": "",
+        "python": ""
+      },
+      "cpLabel": "A code point, a character or a name",
+      "cpPlaceholder": "U+00E9, é, 0xE9, &eacute;, \\u00e9, zero width space, BOM",
+      "cpHelp": "Reads U+XXXX, hexadecimal, decimal, the character itself, HTML references, backslash escapes, percent-encoding, and any Unicode name or alias.",
+      "cpUnknown": "Nothing here reads as a code point or a name.",
+      "readAs": "Read as {how}",
+      "readAsHow": {
+        "character": "the character itself",
+        "decimal": "a decimal number",
+        "hexadecimal": "a hexadecimal number",
+        "octal": "an octal number",
+        "binary": "binary digits",
+        "column-row": "an RFC 20 column/row position",
+        "unicode": "Unicode notation",
+        "html-decimal": "an HTML decimal reference",
+        "html-hex": "an HTML hexadecimal reference",
+        "html-named": "an HTML named reference",
+        "percent": "percent-encoding",
+        "escape-hex": "a hexadecimal escape",
+        "escape-unicode": "a Unicode escape",
+        "escape-octal": "an octal escape",
+        "escape-named": "a named escape",
+        "caret": "caret notation",
+        "name": "a name"
+      },
+      "nameKind": {
+        "name": "Name",
+        "alias": "No name; formal alias",
+        "label": "No name; code point label"
+      },
+      "aliasesTitle": "Aliases",
+      "aliasType": {
+        "correction": "correction",
+        "control": "control name",
+        "alternate": "alternate",
+        "figment": "figment",
+        "abbreviation": "abbreviation"
+      },
+      "propsTitle": "Properties",
+      "propGc": "General_Category",
+      "propBlock": "Block",
+      "propScript": "Script",
+      "propScx": "Script_Extensions",
+      "propAge": "Added in Unicode",
+      "ageUnassigned": "not assigned",
+      "encTitle": "Encodings",
+      "encUtf8": "UTF-8",
+      "encUtf16": "UTF-16",
+      "encUtf32": "UTF-32",
+      "encNoUtf8": "none: UTF-8 cannot encode a surrogate code point",
+      "escTitle": "Escapes",
+      "htmlDec": "HTML, decimal",
+      "htmlHex": "HTML, hexadecimal",
+      "htmlNamed": "HTML, named",
+      "noNamed": "none",
+      "unavailable": "not available",
+      "htmlNote": {
+        "null": "HTML: a reference to 0 is a parse error and becomes U+FFFD.",
+        "surrogate": "HTML: a reference to a surrogate is a parse error and becomes U+FFFD.",
+        "c1": "HTML: a reference to U+0080 to U+009F is a parse error, and 27 of the 32 are replaced by the Windows-1252 character (the reference to U+0085 gives an ellipsis).",
+        "control": "HTML: a reference to this control is a parse error (the character is still inserted).",
+        "noncharacter": "HTML: a reference to a noncharacter is a parse error."
+      },
+      "cNote": "C: a universal character name cannot name a character below U+00A0 other than $, @ and `, nor a surrogate (C11, 6.4.3).",
+      "tclNote": "Tcl 8.4 and iRules: \\u takes one to four hexadecimal digits, so nothing beyond U+FFFF has an escape.",
+      "cssNote": "CSS: end the escape with a space when a hexadecimal digit or a space follows it.",
+      "flagsTitle": "What to know",
+      "flag": {
+        "bidi": {
+          "label": "Bidirectional control",
+          "help": "Changes the order in which the text around it is displayed. Right-to-left text needs it; in code it can make a line read differently from how it runs (UTS #55)."
+        },
+        "invisible": {
+          "label": "Invisible",
+          "help": "Default_Ignorable_Code_Point: where it is not supported it is simply not rendered at all."
+        },
+        "control": {
+          "label": "Control",
+          "help": "A control code, not text. Most tools drop it, show a box or stop on it."
+        },
+        "line-break": {
+          "label": "Line break other than LF or CR",
+          "help": "An editor may start a new line where a language does not, or the reverse: UTS #55 shows a null check hidden this way."
+        },
+        "surrogate": {
+          "label": "Lone surrogate",
+          "help": "Half of a UTF-16 pair. Not a character, and UTF-8 cannot encode it."
+        },
+        "noncharacter": {
+          "label": "Noncharacter",
+          "help": "Permanently reserved for internal use and never assigned to a character."
+        },
+        "private-use": {
+          "label": "Private use",
+          "help": "Its meaning is defined by private agreement, so fonts and systems differ."
+        },
+        "unassigned": {
+          "label": "Unassigned",
+          "help": "No character has this code point in Unicode 18.0.0."
+        },
+        "replacement": {
+          "label": "Replacement character",
+          "help": "U+FFFD: often the mark of a conversion error upstream, where bytes could not be decoded."
+        },
+        "space": {
+          "label": "Non-ASCII space",
+          "help": "A space that is not the ASCII space (32): splits, trims and comparisons may not treat it as one."
+        },
+        "quote": {
+          "label": "Typographic quote",
+          "help": "A quotation mark that is not the ASCII quote a parser expects."
+        },
+        "dash": {
+          "label": "Non-ASCII dash",
+          "help": "A dash that is not the ASCII hyphen-minus (45)."
+        },
+        "confusable": {
+          "label": "Confusable with ASCII",
+          "help": "UTS #39 lists it as visually confusable with the ASCII text shown."
+        },
+        "compat-ascii": {
+          "label": "Styled ASCII",
+          "help": "Its compatibility decomposition is ASCII: a fullwidth, ligature or similar form of ordinary text."
+        },
+        "combining": {
+          "label": "Combining mark",
+          "help": "Attaches to the character before it."
+        },
+        "format": {
+          "label": "Format character",
+          "help": "Affects layout or processing and usually draws nothing."
+        },
+        "ascii": {
+          "label": "ASCII",
+          "help": "One of the 128 ASCII codes."
+        }
+      },
+      "prototypeLabel": "Looks like",
+      "prototypeHelp": "UTS #39 prototype <c>{proto}</c>, shared by the ASCII characters: {sharing}",
+      "compatLabel": "Compatibility form of",
+      "openAscii": "Every detail of this code in the ASCII table explorer",
+      "gc": {
+        "Lu": "Uppercase_Letter",
+        "Ll": "Lowercase_Letter",
+        "Lt": "Titlecase_Letter",
+        "Lm": "Modifier_Letter",
+        "Lo": "Other_Letter",
+        "Mn": "Nonspacing_Mark",
+        "Mc": "Spacing_Mark",
+        "Me": "Enclosing_Mark",
+        "Nd": "Decimal_Number",
+        "Nl": "Letter_Number",
+        "No": "Other_Number",
+        "Pc": "Connector_Punctuation",
+        "Pd": "Dash_Punctuation",
+        "Ps": "Open_Punctuation",
+        "Pe": "Close_Punctuation",
+        "Pi": "Initial_Punctuation",
+        "Pf": "Final_Punctuation",
+        "Po": "Other_Punctuation",
+        "Sm": "Math_Symbol",
+        "Sc": "Currency_Symbol",
+        "Sk": "Modifier_Symbol",
+        "So": "Other_Symbol",
+        "Zs": "Space_Separator",
+        "Zl": "Line_Separator",
+        "Zp": "Paragraph_Separator",
+        "Cc": "Control",
+        "Cf": "Format",
+        "Cs": "Surrogate",
+        "Co": "Private_Use",
+        "Cn": "Unassigned"
+      },
+      "searchLabel": "Words in the name",
+      "searchPlaceholder": "smiling face, zero width, arrow left",
+      "searchHelp": "Each word must start a word of the name or of an alias: smil finds SMILING, width does not find FULLWIDTH.",
+      "searchNone": "No name or alias has words starting with these.",
+      "searchMore": "Showing the first {n}; add a word to narrow it.",
+      "searchPick": "Inspect"
+    },
+    "charset-equivalency": {
+      "name": "Charset converter and mojibake fixer",
+      "blurb": "Turn text into bytes and bytes into text in fourteen charsets, from UTF-8, UTF-16 and UTF-32 to windows-1252, IBM 850 and EBCDIC, with every ill-formed byte replaced exactly as a browser replaces it. Paste a hex dump, escapes, %XX or Base64, compare what every charset makes of the same bytes, and turn garbled text such as cafÃ© back into what it was.",
+      "example": "Example",
+      "clear": "Clear",
+      "runsLocally": "Runs in your browser. Nothing you paste leaves the page.",
+      "presetsLabel": "Try",
+      "copy": "Copy",
+      "copied": "Copied",
+      "modeLabel": "Mode",
+      "modeEncode": "Text to bytes",
+      "modeDecode": "Bytes to text",
+      "modeRepair": "Fix mojibake",
+      "textLabel": "Text",
+      "textPlaceholder": "Type or paste text",
+      "charsetLabel": "Charset",
+      "charsetAuto": "Detect",
+      "policyLabel": "Characters the charset cannot hold",
+      "policy": {
+        "replace": "Write ? instead",
+        "html": "Write an HTML reference, as a browser form does",
+        "strict": "Write nothing (strict)"
+      },
+      "bomLabel": "Start with a byte order mark (UTFs only)",
+      "encSummary": "{cps, plural, one {# character} other {# characters}} became {bytes, plural, one {# byte} other {# bytes}} in {charset}.",
+      "encBom": "The first {n, plural, one {# byte} other {# bytes}} ({bytes}) are the byte order mark, U+FEFF.",
+      "encLone": "{n, plural, one {# lone surrogate} other {# lone surrogates}} in the text became U+FFFD, as a browser's TextEncoder does.",
+      "encUnencodable": "{charset} cannot hold {n, plural, one {# character} other {# characters}} of this text.",
+      "encPolicy": {
+        "replace": "Each was written as ?, the replacement most converters use; the original character is not in the bytes.",
+        "html": "Each was written as a decimal HTML reference such as &#8364;. A browser does this when a form is submitted in a charset that cannot hold what was typed, and the server cannot tell it from someone typing those characters.",
+        "strict": "Strict mode writes nothing when a character does not fit."
+      },
+      "truncatedText": "Only the first 20,000 characters were encoded.",
+      "bytesTitle": "The bytes",
+      "styleLabel": "Write them as",
+      "style": {
+        "hex": "Hex pairs",
+        "dump": "hexdump -C",
+        "c": "C array",
+        "python": "Python bytes",
+        "base64": "Base64",
+        "percent": "Percent-encoding (URL)"
+      },
+      "charsTitle": "Character by character",
+      "rowsCapped": "Only the first {n} rows are listed.",
+      "colChar": "Character",
+      "colCp": "Code point",
+      "colBytes": "Bytes in {charset}",
+      "cannotHold": "not in {charset}",
+      "writtenInstead": "(written as <c>{bytes}</c>)",
+      "everywhereTitle": "The same text in every charset",
+      "everywhereHelp": "How many bytes each charset needs, and how many characters of the text it cannot hold (written as ?). The selected charset is highlighted.",
+      "colCharset": "Charset",
+      "colByteCount": "Bytes",
+      "colHex": "Hex",
+      "colMissing": "Cannot hold",
+      "readBackTitle": "These {charset} bytes, read in every charset",
+      "readBackHelp": "What each charset makes of the same bytes. The row of the charset they were written in is the text itself; every other row is the mojibake that a wrong guess produces. Controls and replacement characters are shown as tags.",
+      "colReading": "Reads as",
+      "colReplaced": "Replaced",
+      "bytesLabel": "Bytes",
+      "bytesPlaceholder": "C3 A9, c3a9 or 0xC3 0xA9; the output of hexdump -C, xxd or od; escapes such as \\xC3\\xA9 or \\303\\251; %C3%A9; or Base64",
+      "formatLabel": "Written as",
+      "format": {
+        "auto": "Detect",
+        "hex": "Hex or a hex dump",
+        "escaped": "Escapes (C, Python, git)",
+        "percent": "Percent-encoding (URL)",
+        "base64": "Base64"
+      },
+      "sniffLabel": "Let a byte order mark decide the charset",
+      "readAs": "Read {n, plural, one {# byte} other {# bytes}} from {format}.",
+      "readFormat": {
+        "hex": "hex",
+        "hexdump": "a hexdump -C dump",
+        "xxd": "an xxd dump",
+        "offsets": "a dump with offsets (od)",
+        "escaped": "escapes",
+        "percent": "percent-encoding",
+        "base64": "Base64"
+      },
+      "parseError": {
+        "odd-hex": "An odd number of hex digits: the digit at position {at} has no partner.",
+        "bad-char": "Position {at} holds something that is neither a hex digit nor a separator.",
+        "bad-escape": "The escape at position {at} is not one this tool reads: \\x with hex digits, octal \\NNN up to \\377, or \\n, \\t, \\r and the other C escapes.",
+        "bad-base64": "Not Base64: the character at position {at}, or the length, does not fit the alphabet of RFC 4648.",
+        "unrecognised": "Not recognised as hex, a hex dump, escapes, percent-encoding or Base64. If it is one of them, choose it under Written as.",
+        "too-long": "Too long: this tool reads up to 64 KiB of bytes."
+      },
+      "utf8Literals": "Characters beyond ASCII in the box were taken as their UTF-8 bytes.",
+      "urlSafe": "This Base64 uses the URL-safe alphabet (- and _ instead of + and /, RFC 4648 section 5).",
+      "guess": {
+        "empty": "Nothing to read.",
+        "bom": "A byte order mark at the start says {charset}.",
+        "ascii": "Every byte is ASCII, so every ASCII-compatible charset reads the same text (shown as US-ASCII).",
+        "utf8-valid": "The bytes are well-formed UTF-8 and include characters beyond ASCII, which rarely happens by chance: read as UTF-8.",
+        "zeros": "The zero bytes fall where ASCII text in {charset} puts them: read as {charset}.",
+        "ebcdic": "0x40, the EBCDIC space, is common, there are no ASCII spaces, and most bytes are above 0x80: EBCDIC, read as {charset}.",
+        "none": "No single answer: these bytes are not well-formed UTF-8 and show no other pattern. Compare the readings below."
+      },
+      "bomFound": "The data starts with a {charset} byte order mark ({n} bytes), which is not part of the text.",
+      "bomOverride": "The data starts with a {charset} byte order mark, which overrides the charset chosen, as in a browser: the WHATWG Encoding Standard treats a byte order mark as more authoritative than a label.",
+      "decSummary": "{cps, plural, one {# character} other {# characters}} from {bytes, plural, one {# byte} other {# bytes}} in {charset}.",
+      "truncatedBytes": "Only the first 64 KiB were decoded.",
+      "decErrors": "{n, plural, one {# ill-formed sequence was} other {# ill-formed sequences were}} replaced with U+FFFD.",
+      "decClean": "Every byte decoded; nothing was replaced.",
+      "textTitle": "The text",
+      "errorsTitle": "What was replaced, and why",
+      "errorCount": "{n, plural, one {# sequence} other {# sequences}}",
+      "errorAt": "At byte offset (bytes): {places}.",
+      "error": {
+        "continuation": "A continuation byte (0x80 to 0xBF) where a character should start: its sequence lost its first byte, or the data is not UTF-8.",
+        "overlong-lead": "0xC0 or 0xC1, which could only start a two-byte form of an ASCII character, a form UTF-8 forbids.",
+        "invalid-lead": "A byte from 0xF5 to 0xFF, which never appears in UTF-8.",
+        "overlong": "A longer form of a code point that has a shorter one (E0 followed by 80 to 9F, or F0 followed by 80 to 8F).",
+        "surrogate": "ED followed by A0 to BF: a surrogate, U+D800 to U+DFFF, which UTF-8 cannot carry.",
+        "too-large": "F4 followed by 90 to BF: beyond U+10FFFF, the last code point.",
+        "truncated": "The sequence was cut short by a byte that cannot continue it; the bytes taken so far became one U+FFFD and that byte was read again.",
+        "truncated-end": "The data ends in the middle of a character.",
+        "unpaired-lead": "A leading surrogate (D800 to DBFF) not followed by a trailing one.",
+        "unpaired-trail": "A trailing surrogate (DC00 to DFFF) with no leading surrogate before it.",
+        "odd-byte": "One byte left over: UTF-16 needs two bytes per code unit.",
+        "utf32-invalid": "A four-byte unit that is a surrogate or beyond U+10FFFF.",
+        "utf32-incomplete": "One to three bytes left over: UTF-32 needs four bytes per unit.",
+        "not-ascii": "A byte of 0x80 or more, outside the seven bits of US-ASCII."
+      },
+      "errorShort": {
+        "continuation": "stray continuation byte",
+        "overlong-lead": "C0 or C1",
+        "invalid-lead": "F5 to FF",
+        "overlong": "overlong",
+        "surrogate": "surrogate",
+        "too-large": "beyond U+10FFFF",
+        "truncated": "cut short",
+        "truncated-end": "cut short at the end",
+        "unpaired-lead": "unpaired leading surrogate",
+        "unpaired-trail": "unpaired trailing surrogate",
+        "odd-byte": "odd byte",
+        "utf32-invalid": "not a scalar value",
+        "utf32-incomplete": "incomplete unit",
+        "not-ascii": "not ASCII"
+      },
+      "unitsTitle": "Byte by byte",
+      "colOffset": "Offset",
+      "colBytesPlain": "Bytes",
+      "readingsTitle": "The same bytes in every charset",
+      "readingsHelp": "What each charset makes of these bytes, a byte order mark included (here it is read as data). The charset used above is highlighted.",
+      "garbledLabel": "Garbled text",
+      "garbledPlaceholder": "Paste text such as cafÃ©, donâ€™t or a‡Æo",
+      "truncatedRepair": "Only the first 2,000 characters were examined.",
+      "repairNone": "No repair found.",
+      "repairNoneClean": "Nothing here looks like mojibake: it reads as ordinary text.",
+      "repairNoneHelp": "No reinterpretation turns this into more ordinary text. Text that mixes correct and garbled characters is left alone (repair the garbled part on its own), and bytes that were lost or replaced with ? cannot be brought back. If you have the original bytes, read them with Bytes to text.",
+      "repairBest": "Most likely",
+      "repairOther": "Reading {n}",
+      "stepLine": "{original} bytes were read as {misread}.",
+      "evidence": {
+        "utf8": "Strong evidence: undoing the misreading gives well-formed UTF-8, which bytes beyond ASCII rarely form by chance.",
+        "looks": "Weaker evidence: every byte decodes in these charsets, so this reading is chosen only because it looks more like ordinary text."
+      },
+      "lossy": "{n, plural, one {# character} other {# characters}} could not be recovered (shown as U+FFFD): {n, plural, one {its bytes were} other {their bytes were}} lost before the text reached you.",
+      "showGarbling": "See it garbled",
+      "charset": {
+        "utf-8": "UTF-8",
+        "utf-16le": "UTF-16LE",
+        "utf-16be": "UTF-16BE",
+        "utf-32le": "UTF-32LE",
+        "utf-32be": "UTF-32BE",
+        "us-ascii": "US-ASCII",
+        "iso-8859-1": "ISO-8859-1 (Latin-1)",
+        "windows-1252": "windows-1252",
+        "iso-8859-15": "ISO-8859-15 (Latin-9)",
+        "macintosh": "Mac OS Roman",
+        "ibm437": "IBM 437 (DOS, US)",
+        "ibm850": "IBM 850 (DOS, Western Europe)",
+        "ibm037": "IBM 037 (EBCDIC, US and Canada)",
+        "ibm500": "IBM 500 (EBCDIC, International)"
+      },
+      "group": {
+        "unicode": "Unicode",
+        "latin": "ASCII and Latin",
+        "dos": "DOS code pages",
+        "ebcdic": "EBCDIC"
+      },
+      "browser": {
+        "means-windows-1252": "A browser told {charset} reads windows-1252 instead: the WHATWG Encoding Standard makes iso-8859-1, latin1, ascii and us-ascii labels of windows-1252.",
+        "no": "Browsers do not decode {charset}: the WHATWG Encoding Standard does not define it."
+      },
+      "preset": {
+        "encode-portuguese-utf8": "Portuguese in UTF-8",
+        "encode-euro-everywhere": "The euro sign everywhere",
+        "encode-emoji-utf16-bom": "Emoji, UTF-16LE with BOM",
+        "encode-utf32be": "UTF-32BE",
+        "encode-ebcdic": "EBCDIC 037",
+        "encode-html-mode": "Euro in Latin-1, as a form",
+        "encode-strict-fails": "Strict mode fails",
+        "encode-cp850-portuguese": "IBM 850",
+        "encode-mac-roman": "Mac OS Roman",
+        "decode-hexdump-auto": "A hexdump -C dump",
+        "decode-unicode-table-3-8": "Overlong forms",
+        "decode-unicode-table-3-9": "Surrogates in UTF-8",
+        "decode-unicode-table-3-10": "Beyond U+10FFFF",
+        "decode-unicode-table-3-11": "Cut-short sequences",
+        "decode-bom-overrides": "A BOM overrides UTF-8",
+        "decode-utf16-unpaired": "Unpaired surrogate",
+        "decode-xxd": "An xxd dump",
+        "decode-git-octal": "git octal escapes",
+        "decode-percent": "Percent-encoding",
+        "decode-base64": "Base64",
+        "decode-windows-1252": "windows-1252 C1 bytes",
+        "decode-latin1": "The same in Latin-1",
+        "decode-ebcdic-auto": "EBCDIC, detected",
+        "decode-utf16-auto": "UTF-16, detected",
+        "decode-odd-hex": "Odd hex digits",
+        "repair-utf8-as-1252": "UTF-8 read as windows-1252",
+        "repair-twice": "Misread twice",
+        "repair-three-times": "Misread three times",
+        "repair-utf8-as-cp437": "UTF-8 in a DOS console",
+        "repair-cp850-as-1252": "IBM 850 read as windows-1252",
+        "repair-1252-as-cp850": "windows-1252 read as IBM 850",
+        "repair-ebcdic-as-latin1": "EBCDIC read as Latin-1",
+        "repair-lossy": "A lost byte",
+        "repair-correct-text": "Correct text",
+        "repair-mixed-left-alone": "Mixed text"
+      }
+    },
+    "chmod-permission-calculator": {
+      "name": "chmod permission calculator",
+      "blurb": "Type a file mode as octal (4755), as ls shows it (-rwsr-xr-x) or as chmod clauses on a base (g+s,o-rwx) and read it every other way: the bits, who may do what, what setuid, setgid and the sticky bit mean for a file or a directory, the commands that reach it, the umask that would create it, and a trace of each clause. From POSIX.1-2024 chmod and ls and coreutils 9.11 chmod(1); nothing leaves the browser.",
+      "modeLabel": "Mode",
+      "modePlaceholder": "755, -rwsr-xr-x, or u+x,go-w",
+      "modeHint": "Octal (one to five digits), an ls string (nine characters, or ten with the type letter), or chmod clauses separated by commas. A clause with no class (+x) is applied under the umask, as chmod does.",
+      "example": "Example",
+      "clear": "Clear",
+      "kindLabel": "Kind",
+      "kind": {
+        "file": "File",
+        "directory": "Directory"
+      },
+      "baseLabel": "Base mode (for clauses)",
+      "baseHint": "What the clauses are applied to. Blank means 644 for a file and 755 for a directory. On a directory, a numeric mode of up to four digits keeps its set-user-ID and set-group-ID bits, as GNU chmod does.",
+      "umaskLabel": "umask (for clauses with no class)",
+      "umaskHint": "Bits set here are left alone by + and - when no class is named. Blank means 022.",
+      "form": {
+        "octal": "Read as an octal mode.",
+        "ls": "Read as an ls string.",
+        "symbolic": "Read as chmod clauses on the base."
+      },
+      "binaryLabel": "binary",
+      "decimalLabel": "decimal",
+      "gridTitle": "The twelve bits (click one to flip it)",
+      "gridClass": "Class",
+      "gridOctal": "Digit",
+      "gridReading": "Reading",
+      "flipTitle": "Flip this bit",
+      "perm": {
+        "read": "read",
+        "write": "write",
+        "execute": "execute"
+      },
+      "who": {
+        "owner": "Owner",
+        "group": "Group",
+        "other": "Others"
+      },
+      "verb": {
+        "file": {
+          "read": "read it",
+          "write": "change it",
+          "execute": "run it"
+        },
+        "directory": {
+          "read": "list its entries",
+          "write": "create and remove entries",
+          "execute": "enter it and reach entries by name"
+        }
+      },
+      "readingNone": "{who}: nothing.",
+      "readingOne": "{who} can {a}.",
+      "readingTwo": "{who} can {a} and {b}.",
+      "readingThree": "{who} can {a}, {b} and {c}.",
+      "special": {
+        "setuid": {
+          "name": "setuid",
+          "file": "On execution the process takes the file owner's effective user ID. Shown as s (or S without execute) in the owner's third slot.",
+          "directory": "No portable meaning on a directory; some systems ignore it. Shown as s or S in the owner's third slot."
+        },
+        "setgid": {
+          "name": "setgid",
+          "file": "On execution the process takes the file's group as its effective group ID. Shown as s (or S without execute) in the group's third slot.",
+          "directory": "New entries created inside take the directory's group instead of the creator's (most systems). Shown as s or S in the group's third slot."
+        },
+        "sticky": {
+          "name": "sticky",
+          "file": "On a regular file the bit has no portable meaning today; some older systems used it to keep the program text in swap. Shown as t or T in the last slot.",
+          "directory": "Restricted deletion: an entry can be removed or renamed only by its owner, the directory's owner or a privileged user. /tmp is the classic case. Shown as t (or T when others cannot search) in the last slot."
+        }
+      },
+      "flagsTitle": "Worth a second look",
+      "sev": {
+        "high": "high",
+        "warning": "check",
+        "info": "note"
+      },
+      "flag": {
+        "no-permissions": "No permission bit is set: nobody can read, write or execute it, including the owner (who can still change the mode).",
+        "all-permissions": "Every permission bit is set: anyone on the system can read, write and execute it.",
+        "world-writable-file": "Others can write this file: anyone on the system can change its contents.",
+        "world-writable-dir-no-sticky": "Others can create and remove entries in this directory, and without the sticky bit they can remove entries they do not own.",
+        "world-writable-dir-sticky": "Others can create entries here, and the restricted deletion flag keeps them from removing what they do not own (the /tmp pattern).",
+        "setid-world-writable": "A set-user-ID or set-group-ID file that others can write: anyone could replace its contents and run them with the file's privileges.",
+        "setuid-without-execute": "set-user-ID is set but the owner cannot execute the file: ls shows a capital S, and the bit does nothing until an execute bit is set.",
+        "setgid-without-execute": "set-group-ID is set but the group cannot execute the file: ls shows a capital S in the group slot.",
+        "setuid-file": "A set-user-ID program: it runs with the owner's effective user ID. Keep it unwritable by anyone but the owner.",
+        "setgid-file": "A set-group-ID program: it runs with the file's group as its effective group ID.",
+        "setuid-directory": "set-user-ID on a directory has no portable meaning; some systems ignore it.",
+        "setgid-directory": "set-group-ID on a directory: new entries inherit the directory's group, the usual setting for a shared project directory.",
+        "sticky-directory": "The restricted deletion flag is set: entries can be removed only by their owner or the directory's owner.",
+        "sticky-file": "The sticky bit on a regular file has no portable meaning today; some older systems used it to keep the program text in swap.",
+        "sticky-no-search": "The restricted deletion flag is set but others cannot search the directory, so ls shows a capital T.",
+        "owner-execute-without-read": "The owner can execute but not read: a script cannot be run this way (the interpreter has to read it); a compiled program can.",
+        "group-execute-without-read": "The group can execute but not read: a script cannot be run this way; a compiled program can.",
+        "other-execute-without-read": "Others can execute but not read: a script cannot be run this way; a compiled program can.",
+        "owner-write-without-read": "The owner can write but not read: the file can be overwritten and appended to, not read back.",
+        "group-write-without-read": "The group can write but not read.",
+        "other-write-without-read": "Others can write but not read.",
+        "owner-list-without-search": "The owner can list the directory's names but not enter it: names are visible, their contents and attributes are not reachable.",
+        "group-list-without-search": "The group can list names but not enter the directory.",
+        "other-list-without-search": "Others can list names but not enter the directory.",
+        "owner-less-than-others": "The owner has less than the group or others. Legal, and almost always a mistake, because the owner is still the one who can change the mode."
+      },
+      "commandsTitle": "Commands that reach this mode",
+      "command": {
+        "octal": "Absolute, octal",
+        "symbolicAbsolute": "Absolute, symbolic",
+        "fromBase": "From the base, minimal"
+      },
+      "copy": "Copy",
+      "copied": "Copied",
+      "umaskYes": "A umask of {umask} creates this mode from the default a program asks for ({def}).",
+      "umaskNo": {
+        "special-bits": "No umask creates this mode: the special bits never come from a umask.",
+        "needs-execute": "No umask creates this mode for a file: programs ask for 666, so execute bits are never set by creation alone."
+      },
+      "traceTitle": "Clause by clause, from {base} under umask {umask}",
+      "traceClause": "Clause",
+      "traceWho": "Classes",
+      "traceWhoOmitted": "(none given: {who})",
+      "traceOp": "Op",
+      "tracePerm": "Perm",
+      "traceEmptyPerm": "(empty)",
+      "traceAfter": "Mode after",
+      "traceNotes": "Notes",
+      "note": {
+        "x-skipped": "X granted nothing: the target is a file with no execute bit.",
+        "s-with-o": "s with only o named changes nothing (POSIX).",
+        "umask-applied": "No class named: bits set in the umask were left alone.",
+        "permcopy": "The permissions of one class copied to another.",
+        "gnu-dir-preserves-special": "A numeric mode on a directory keeps its set-user-ID and set-group-ID bits unless written as 00755, -6000 or =755 (chmod(1)).",
+        "gnu-numeric-operator": "A numeric mode with a leading =, + or - (GNU chmod): = sets exactly, + adds, - removes."
+      },
+      "error": {
+        "empty": "Nothing to read.",
+        "too-long": "Too long ({at} characters; the limit is 64).",
+        "octal-digit": "{at} is not an octal digit (0 to 7).",
+        "octal-too-long": "An octal mode has at most five digits: {at}.",
+        "octal-range": "An octal mode is at most 7777: {at}.",
+        "ls-position": "Not a valid ls string: {at}. Each class takes r w x (or -), with s or S allowed only in the owner's and group's third slot and t or T only in the last one.",
+        "symbolic-empty-clause": "An empty clause between commas: {at}.",
+        "symbolic-operator": "Expected +, - or = in {at}.",
+        "symbolic-perm": "{at} is not a permission letter (r w x X s t) or a class to copy from (u g o).",
+        "symbolic-no-operator": "No operator in {at}: a clause needs +, - or =.",
+        "base-unreadable": "The base mode could not be read: {at}. Use octal or an ls string.",
+        "umask-unreadable": "The umask could not be read: {at}. Use octal, for example 022."
+      },
+      "limits": "The calculator knows the mode bits, not the file system: it cannot see ownership, access control lists, capabilities, mount options or the mandatory access control that may override these bits. The GNU-specific behaviours (a directory keeping setuid and setgid under a numeric mode; =755, +x and -w with a number) are modelled as chmod(1) from coreutils 9.11 describes them; other implementations may differ."
     }
   },
   "privacy_page": {
@@ -7933,7 +9500,9 @@
       "coursesDesc": "The full catalogue by platform, with the objectives each course covers.",
       "coursesCta": "See the catalogue",
       "blogTitle": "Blog",
-      "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately."
+      "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately.",
+      "sitesTitle": "The earlier sites",
+      "sitesDesc": "What the Internet Archive kept of nutzmann.net (2004) and ntz.com.br (2013): dates, offerings, contents, and every capture linked."
     },
     "historySectionTitle": "The History",
     "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security",
@@ -7960,7 +9529,15 @@
     "translateOn": "Showing English",
     "machineDisclaimer": "Machine-generated translation. It may not accurately reflect the original wording.",
     "showOriginal": "Show original",
-    "hideOriginal": "Hide original"
+    "hideOriginal": "Hide original",
+    "kindFilter": "Kind of work",
+    "kindTraining": "Training",
+    "kindEngineering": "Engineering",
+    "kindArchitecture": "Architecture",
+    "kindAdvisory": "Advisory",
+    "kindLeadership": "Leadership",
+    "kindGeneral": "General",
+    "kindHint": "One recommendation can describe more than one kind of work, so a card may appear under several kinds. The kinds were assigned from the text of each recommendation; the text itself is never changed."
   },
   "history": {
     "indexTitle": "The history",
@@ -8182,7 +9759,11 @@
       "s4Body": "The second half of the decade returned to the vendor side as an enterprise LAN subject-matter expert. At Enterasys from 2005, the focus was switches and routers, Wi-Fi and WLAN, network management, NAC and UAC, and intrusion detection and prevention, across solution design, implementation, auditing, and training. From 2009, at Juniper Networks through Professional Services for LATAM, the role was new-product advocacy for the strategic partner Telefónica Empresas in Brazil, centered on EX switches and SRX firewalls, with operations training on Junos-SRX delivered at Level 3 and Impsat, now Lumen.",
       "s5Title": "The channel and consulting years, 2010 to 2020",
       "s5Body": "The final decade of this era moved fluidly between roles, all of them building toward the instructor the story arrives at. There were stints as a network and security engineer through resellers and distributors, deepening expertise in enterprise switching and routing, firewalls and next-generation firewalls, SSL-VPN, user access control, WAN acceleration, and internet load-balancing across Juniper and Cisco solutions. Crucially, this period included the pivot toward F5, beginning work with F5 BIG-IP that would define the years to come. Across all of it, technical training was a constant thread, never absent from any role.",
-      "closer": "By 2020, the picture was complete: someone who had not just studied these systems but lived inside them for twenty years, on the vendor side and the customer side, in design and in crisis. That is the difference an implementer brings to a classroom. When this person explains why a configuration behaves a certain way, it is because they have seen it behave that way, at three in the morning, with a critical service waiting."
+      "closer": "By 2020, the picture was complete: someone who had not just studied these systems but lived inside them for twenty years, on the vendor side and the customer side, in design and in crisis. That is the difference an implementer brings to a classroom. When this person explains why a configuration behaves a certain way, it is because they have seen it behave that way, at three in the morning, with a critical service waiting.",
+      "s6Title": "The sites of those years, 2004 to 2019",
+      "s6Body": "The web kept its own record of this era. From 2004, nutzmann.net presented Nützmann Networks, the consultancy constituted in São Paulo in 2003, with its services, a partner roster, a mission page built around return on investment and three small tools: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout. From 2013, ntz.com.br carried the same company as NTZ Tecnologia: consultancy, specialised services, forty-hour courses taught by an instructor since 1999, a remote laboratory of real equipment, and a chronology of engagements back to the Brasília contract. A rebuilt site of 2017 to 2019 listed competences by vendor, with F5 as the main focus. Every capture is linked from the page on the earlier sites.",
+      "s6LinkLabel": "The earlier sites, with every capture",
+      "s6LinkHref": "/about/earlier-sites"
     },
     "era2020present": {
       "years": "2020 – present",
@@ -8617,7 +10198,7 @@
     "principlesTitle": "How it was made",
     "principlesBody": "A few principles held throughout, and they are visible if you know where to look.",
     "p1Title": "Compute, never guess",
-    "p1Body": "The tools on this site calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate. What runs in your browser, stays in your browser.",
+    "p1Body": "The tools on this site calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate. What runs in your browser, stays in your browser. The oldest of them have a lineage: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout were already on nutzmann.net in 2004 and on ntz.com.br in 2013, and the Internet Archive still has them.",
     "p2Title": "Open at the core",
     "p2Body": "The deterministic logic each tool runs is the whole of the tool. There is no hidden server step, no account, and nothing about your use of a tool is reported anywhere. Everything runs in your browser.",
     "p3Title": "Documented by construction",
@@ -9995,6 +11576,30 @@
       "get-an-access-point-onto-its-controller": {
         "title": "Get an access point onto its controller",
         "desc": "Build the DHCP option 43 value in the encoding your access point vendor actually expects, and plan the cable run that gets power and data to where the AP is going."
+      },
+      "cut-a-value-out-of-a-request": {
+        "title": "Cut a value out of a request",
+        "desc": "Check whether the command you picked counts from 0 or from 1, cut the value with findstr, substr or getfield beside the plain Tcl that does the same, try the string commands on your exact input, and read a structured value with scan."
+      },
+      "work-out-what-tcl-does-with-a-value": {
+        "title": "Work out what Tcl does with a value",
+        "desc": "See how Tcl 8.4 reads a number as written (010 is octal, so it equals 8), how expr and if evaluate a condition step by step with == next to eq, then run the snippet one command at a time and watch each substitution."
+      },
+      "turn-a-routing-decision-into-an-irule": {
+        "title": "Turn a routing decision into an iRule",
+        "desc": "Write the decision as rules and get it as an if chain, a switch or a class match with its data group, check the code against the DevCentral iRules Style Guide, then lint it for the patterns that cost CPU."
+      },
+      "find-what-is-hiding-in-a-string": {
+        "title": "Find what is hiding in a string",
+        "desc": "Paste the text into the Unicode inspector to see every code point, with invisible characters, bidirectional controls, unusual line breaks and lookalikes flagged; compare against the ASCII the text should have held; and run an iRule through the style checker, which reports the same characters in Tcl."
+      },
+      "write-a-character-in-any-language": {
+        "title": "Write a character in any language",
+        "desc": "Look up an ASCII code in any notation and copy its escape for C, JSON, JavaScript, Python, Tcl, HTML or a URL; for anything beyond ASCII, take the escapes and UTF-8 bytes from the Unicode inspector; then encode the bytes as hex, Base64 or percent-encoding."
+      },
+      "fix-garbled-text": {
+        "title": "Fix text that came out garbled",
+        "desc": "Paste the garbled text into the charset converter's Fix mojibake mode to find the charset that misread it and get the original back; if you have the raw bytes, read them in Bytes to text and compare every charset side by side; then check the result for hidden characters in the Unicode inspector."
       }
     },
     "manualHeading": "Manual",
@@ -10065,7 +11670,9 @@
     "goodFaithTitle": "Vendor material, public sources, and good faith",
     "goodFaithBody": "The study guides, certification pages, and vendor-linked resources on this site are independent educational works. They are assembled from publicly available material - published exam blueprints, official product documentation, vendor training catalogues, and public announcements - and they exist for one purpose: to help working professionals learn a technology properly and advance their own careers. Every objective is cited to the public source it came from, study pointers are labelled as authored study aids rather than vendor text, and nothing here contains exam questions, answers, or brain dumps of any kind, because those breach the certification agreements this site exists to respect. Product names, exam codes, and trademarks belong to their respective owners and are used nominatively to identify the subject being taught. This site is not affiliated with, endorsed by, or speaking for any vendor named on it.",
     "takedownTitle": "If something should not be here",
-    "takedownBody": "Good faith cuts both ways, and a rights holder should never have to fight to be heard. If you own or represent material published here and believe it should be removed, corrected, or attributed differently, write to the contact address with the exact URL or URLs concerned and, where you can, a short note on what the issue is - whether the content is not in fact public, whether the attribution is wrong, or whether reproduction causes a harm we have not anticipated. That explanation is genuinely useful rather than a formality: it lets a mistake be fixed properly across the whole site instead of one page at a time. Requests are reviewed promptly and in good faith, contested material can be removed while a question is still open, and no rights holder is asked to justify their claim before the content comes down if they would prefer it down first."
+    "takedownBody": "Good faith cuts both ways, and a rights holder should never have to fight to be heard. If you own or represent material published here and believe it should be removed, corrected, or attributed differently, write to the contact address with the exact URL or URLs concerned and, where you can, a short note on what the issue is - whether the content is not in fact public, whether the attribution is wrong, or whether reproduction causes a harm we have not anticipated. That explanation is genuinely useful rather than a formality: it lets a mistake be fixed properly across the whole site instead of one page at a time. Requests are reviewed promptly and in good faith, contested material can be removed while a question is still open, and no rights holder is asked to justify their claim before the content comes down if they would prefer it down first.",
+    "advisoryTitle": "Advisory services are a separate, contracted matter",
+    "advisoryBody": "This site also describes paid advisory services. Nothing on this website, including the advisory page and the example documents it links to, is itself advice given to you, and reading it creates no professional relationship. A professional relationship, and the advice given inside it, begins only under the proposal, statement of work or agreement issued by Red Education for a specific engagement, and the terms of that engagement, including any limitation of liability, are set in that agreement rather than in this notice. Everything else on this page continues to apply to the website itself."
   },
   "notFound": {
     "sub": "Page not found",
@@ -17997,6 +19604,26 @@
         "def": "A small piece of hardware you plug into a port to make something work: originally to prove you had paid for software, now usually to give a machine back a capability it shipped without.",
         "context": "The object is ordinary; the word has a history. Its earliest print appearance is in Byte, October 1981, in a passage about software piracy in the United Kingdom, and the account that survives scrutiny traces it to Wordcraft 80, a word processor for Commodore hardware. In a 1982 letter to Personal Computer World, Mike Lake recalled Graham Heggie of Analog Electronics of Coventry asking what they were going to call this dongle thingy, and the name stuck to the thing before anyone agreed what the name meant. The likeliest derivation is simply dangle, because it hung off the back of the machine, and that is still not settled. What is settled is the invented origin: in 1992 Rainbow Technologies ran an advertisement attributing the word to a person named Don Gall. There was no such inventor. The claim was a marketing joke, and it has been repeated as fact ever since.",
         "depth": "The early ones were pass-through devices on a parallel or serial port, sitting between the computer and the printer so the port still worked; the software refused to run unless it could interrogate the thing. Modern protection dongles are secure cryptoprocessors that hold keys and execute instructions rather than merely answering a challenge, which is a different security argument: the secret never has to be present in the software at all.\n\nThen the meaning inverted. A dongle used to be what a vendor made you carry so their software would run. It is now what you carry so your own hardware will run: the Bluetooth adapter on a laptop whose radio was left out, the USB-C to everything-else adapter, the streaming stick. Same shape, same port, opposite purpose. The complaint changed from paying for permission to paying for the ports you used to have.\n\nThe Don Gall story is worth keeping for its own sake. A vendor printed a fabricated etymology in a trade magazine as a joke, and the joke outran the correction by decades, which is roughly what happens to every confident origin story nobody checks."
+      },
+      "ascii": {
+        "def": "The 7-bit character code that numbers 0 to 127 the English letters, the digits, punctuation and 33 control codes; the first 128 code points of Unicode.",
+        "context": "Its 128 codes sit under almost everything a network engineer reads: HTTP headers, SMTP commands, host names in their ASCII form, configuration files. Seven bits leave no room for accented letters, which is why so many 8-bit charsets were built on top of it, and it survives inside UTF-8 byte for byte. RFC 20 (1969) reproduces the 1968 version of the standard, then called the USA Standard Code for Information Interchange. A browser told a page is in \"ascii\" reads windows-1252 instead."
+      },
+      "unicode": {
+        "def": "The standard that gives every character of every writing system a number, a name and a set of properties; version 18.0 counts 172,808 characters.",
+        "context": "Unicode is the catalogue, not the bytes: a code point such as U+00E9 becomes bytes only through an encoding form, almost always UTF-8. Most text bugs a network engineer meets live in the gap between the two: lengths counted in different units, characters that draw as nothing, letters from another script that look identical, and bytes read in the wrong charset. Each version adds characters, so software with older data may not know a character that newer text contains."
+      },
+      "utf-8": {
+        "def": "The encoding that writes each Unicode code point as one to four bytes and keeps ASCII as single bytes; the encoding the web requires.",
+        "context": "Its design is why it won: ASCII text is already valid UTF-8, no byte of a longer character falls in the ASCII range, and the first byte of each character says how long it is, so a reader can find its place anywhere in a stream. Its byte patterns are strict too: C0, C1 and F5 to FF never appear, and a decoder that meets ill-formed bytes replaces them with U+FFFD instead of guessing. Text that shows Ã© where é belongs is UTF-8 read in the wrong charset."
+      },
+      "byte-order-mark": {
+        "def": "U+FEFF at the very start of a text: it says which byte order a UTF-16 or UTF-32 text uses, and serves as a signature that a text is UTF-8.",
+        "context": "In UTF-16 it reads FE FF in big-endian order and FF FE in little-endian; in UTF-8 it is EF BB BF and says nothing about byte order, only that the text is very probably UTF-8. A browser trusts it over any charset label. Elsewhere it is often unwelcome: it is invisible in most editors, RFC 8259 forbids adding one to JSON sent over a network, and a parser that does not expect one sees an extra character (JavaScript's JSON.parse rejects a text that starts with one)."
+      },
+      "mojibake": {
+        "def": "Garbled text produced when bytes written in one charset are read in another: café shown as cafÃ©, don’t as donâ€™t.",
+        "context": "It is almost never random. Each pair of charsets garbles in its own recognisable way: UTF-8 read as windows-1252 fills a text with Ã and â€, a DOS code page shows box-drawing characters, EBCDIC read as Latin-1 turns every space into @. Because the wrong reading usually keeps every byte, the damage can often be undone by encoding the text back with the charset that misread it and decoding it with the right one; a byte that was replaced with ? or dropped is gone for good."
       }
     },
     "totalCount": "{count} terms",
@@ -18298,7 +19925,8 @@
     "filterCountryLabel": "Country",
     "worksPill": "Works inside",
     "worksWithPill": "Works with",
-    "markEra": "wordmark in use {era}"
+    "markEra": "wordmark in use {era}",
+    "markSince": "since {year}"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -18646,12 +20274,12 @@
   },
   "advisory": {
     "eyebrow": "Advisory",
-    "title": "Independent advice on network and security decisions.",
-    "lede": "Thirty years on the supply side of enterprise networking and security, seen from every angle it can be seen from: inside vendors, inside value-added resellers and distributors, inside consulting practices, and directly across the table from the customer. Offered here as judgement on decisions that have not yet been made, at the level where they are actually taken.",
+    "title": "Independent technical judgement for consequential technology decisions.",
+    "lede": "Enterprise networking, cybersecurity, application delivery, identity and infrastructure: before you commit to the architecture, the supplier, the platform, the migration or the budget. The deliverable is a written decision analysis that states the assumptions, the trade-offs, the risks, the operational consequences and the questions that still need answers. The technology is the domain expertise. What you are buying is decision quality.",
     "availabilityTitle": "Available, not packaged",
     "availabilityBody": "This is not a product catalogue. The work below describes the kinds of question I am useful on; the shape of any particular engagement is agreed before it starts. If what you need is close to one of these but not the same, that is usually fine and worth a conversation.",
-    "scopeTitle": "What this is, and what it is not",
-    "scopeIn": "Judgement on a decision: reviewing a design before the budget is committed, writing the specification, assessing somebody else's proposal, choosing between options, or explaining after the fact why something failed and what should change.",
+    "scopeTitle": "What I do not personally provide",
+    "scopeIn": "I do not use these engagements as staff augmentation, project implementation, managed operations, round-the-clock escalation or incident-response engineering. The separation is deliberate: the value of the engagement is independent technical judgement before a consequential decision is made, and that value falls the moment the adviser stands to do the work the advice creates.",
     "scopeOutTitle": "Not offered here",
     "offersTitle": "Executive advisory",
     "offerReviewTitle": "Design and architecture review",
@@ -18664,18 +20292,18 @@
     "offerSelectBody": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in the terms of the organisation rather than the vendor's, and a defensible answer with the reasoning attached - so the decision survives the person who made it.",
     "offerPostmortemTitle": "Post-incident review",
     "offerPostmortemBody": "Not incident response - the review afterwards, when the fire is out and somebody has to give an honest account of what happened and what would prevent it recurring. Written to be read by people who were not there, and without the search for someone to blame that makes most such documents useless.",
-    "independenceTitle": "Why independence is the load-bearing part",
-    "independenceBody": "The literature on advisory relationships puts trustworthiness as credibility, reliability and candour, all divided by self-interest - and it is the division that decides the result. A large denominator ruins an otherwise excellent numerator, which is why an expert with something to sell is worth less than a competent one with nothing to sell.\n\nSo the relevant fact here is not the thirty years. It is that I hold current instructor authorizations across four vendors' platforms and sell none of them: no product on this side of the table, no quota, no partner margin behind the recommendation, and no version of this engagement that pays me more if you buy one thing rather than another. You can verify each authorization independently, which is the point of naming them.",
+    "independenceTitle": "What independent means here, exactly",
+    "independenceBody": "Independence is a property of the analysis, and it is worth stating precisely rather than broadly.\n\nThe analysis is written by me and carries my name. I hold current instructor authorizations across four vendors' platforms and sell none of them: no sales quota, no resale margin, no referral commission and no implementation award attached to the technology the analysis favours. There is no version of this engagement that pays me more if you buy one thing rather than another, and if the honest answer is that your incumbent is right, that is the answer. You can verify each authorization independently, which is the point of naming them.\n\nWhat is not claimed is commercial independence from every company in the ecosystem. Engagements are contracted and invoiced through Red Education, which sells authorized training and professional services across several vendors' platforms. Where either is a candidate for what follows a decision, the document says so in plain words, and the choice of who does that work stays yours.\n\nCommercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and knowing exactly what that context is, on both sides of the table, is part of what you are paying for. It also means the review is not a weapon against suppliers: a supplier confident in its proposal can suggest the review itself, because a proposal that holds up under independent scrutiny is easier for its customer to approve, and one that does not is cheaper to fix before deployment than after.",
     "howTitle": "How an engagement runs",
     "howStep1": "A conversation about the decision you are facing, at no charge, to establish whether I am the right person for it.",
-    "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour.",
+    "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour. For a post-incident review, the scope also says which kind of review it is.",
     "howStep3": "The work, with access to whoever holds the technical detail.",
-    "howStep4": "A written answer you can circulate internally, and a call to walk through it.",
+    "howStep4": "A written answer you can circulate internally, and a call to walk through it. At close-out I ask whether an account of the engagement may be published later, named, anonymised, or reduced to the shape of the decision; a no is a complete answer, and nothing is published without a yes in writing.",
     "ctaTitle": "If there is a decision on your desk",
-    "ctaBody": "Write to me directly. This is my own practice, so the first conversation is with the person who will do the work, not with an account manager. The useful first message says what the decision is, who has to sign it, and when.",
+    "ctaBody": "Write to me directly. The first conversation is with the person who will do the work, not with an account manager. The useful first message says what the decision is, who has to sign it, and when.",
     "ctaButton": "Start a conversation",
-    "disclaimerTitle": "Before you read further",
-    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me <amber>and contracted through</amber> Red Education. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that I will be the main advocate for the best possible outcome for you. Since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. Right is right, and fair is fair. If you need training, that goes through Red Education too.",
+    "disclaimerTitle": "How this is contracted",
+    "disclaimerBody": "I work full time for Red Education. The advisory work described on this page is delivered personally by me <amber>and contracted through</amber> Red Education, which also issues the proposal and the invoice. The one thing I cannot tell you about is pricing: that comes only after a detailed scoping and expectations call, and is provided exclusively by Red Education. What I can tell you is that inside the engagement I am the main advocate for the best possible outcome for you: since 1996 I have consistently argued for what serves the end customer, not necessarily for what served the company I was working for at the time. If you need training, that goes through Red Education too.",
     "exclusion1Term": "Implementation and configuration",
     "exclusion1Body": "I will review what is planned and audit what was built, but I am not the pair of hands that builds it.",
     "exclusion2Term": "On-call, standby, and operational duty",
@@ -18683,13 +20311,13 @@
     "exclusion3Term": "Staff augmentation",
     "exclusion3Body": "If what is needed is another person on the team, that is a hiring decision rather than an advisory one.",
     "exclusion4Term": "Training and enablement, in any form",
-    "exclusion4Body": "I do not sell training as advisory work. I deliver official instructor-led courses under vendor authorization, and that is a separate engagement with its own scheduling and its own terms - ask and I will point you to it. What I offer here is judgement on a decision, not a curriculum.",
+    "exclusion4Body": "I do not sell training as advisory work. I deliver official instructor-led courses under vendor authorization, and that is a separate engagement with its own scheduling and its own terms; ask and I will point you to it. What I offer here is judgement on a decision, not a curriculum.",
     "exclusion5Term": "Course material development",
     "exclusion5Body": "I do not offer this. Slides, lab guides, speaker notes and assessment are a separate craft, commissioned on its own scope and its own terms, and it is not advisory time. Telling you whether a course should exist is work I will do. Writing the course is not.",
     "offerSpeakingTitle": "Speaking engagements",
     "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now - plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
     "advisorEyebrow": "Your advisor",
-    "advisorBody": "Thirty years on the supply side of enterprise networking and security, from inside vendors, value-added resellers and distributors, consulting practices, and direct engagements with the customer - implementing, supporting, deploying and teaching what those companies sell, rather than selling it. That is the whole basis of the advice: my job was to make the thing work afterwards, so I have always had to live with the answer. This practice is my own, the analysis is mine, and I put my name on it. The credentials, the career record and what past clients and students say are a click away, because a claim you cannot check is not worth making.",
+    "advisorBody": "Thirty years on the supply side of enterprise networking and security, from inside vendors, value-added resellers and distributors, consulting practices, and direct engagements with the customer: implementing, supporting, deploying and teaching what those companies sell, rather than selling it. That is the whole basis of the advice: my job was to make the thing work afterwards, so I have always had to live with the answer. The analysis is mine and it carries my name; how an engagement is contracted is stated plainly further down this page. The credentials, the career record and what past clients and students say are a click away, because a claim you cannot check is not worth making.",
     "advisorLinkCreds": "Credentials",
     "advisorLinkCareer": "Career record",
     "advisorLinkEndorsements": "What clients say",
@@ -18699,12 +20327,104 @@
     "offerExecutiveTitle": "Executive-level technical advisory for mission-critical decisions",
     "offerExecutiveBody": "For the board, the steering committee or the executive who has to commit to a direction on technology adoption, digital transformation, or enabling and improving a service - and who needs the technical reality of that decision stated by someone with nothing to sell. The deliverable is a structured, methodical and neutral analysis: the diagnosis, the options with their trade-offs, the cautions, the risks, and what each path would actually take to carry out. Written to be circulated and defended internally, not presented and forgotten. What it does not include is a recommendation shaped by a commission, because there is no commission - I hold authorized instructor status across four platforms and a sales quota on none of them. The impact is for the business to tell.",
     "secondaryTitle": "Speaking",
-    "recordTitle": "Where this comes from",
-    "recordBody": "I spent the first twenty-four years of my career, from 1996 to 2020, doing this work for leading organisations across many segments: financial institutions, government agencies, service providers of every sort, large multinational conglomerates in commerce and services, and industry across a wide range. Delivered, been responsible for, overseen, collaborated on, led and taken part in - many times over, from inside vendors, distributors and integrators. These engagements are no longer what I sell. They are what the advice above is made of, and they are listed here so you can judge whether that foundation is the right one for your decision.",
+    "recordTitle": "Where this comes from, in the client's words",
+    "recordBody": "I spent the first twenty-four years of my career, from 1996 to 2020, doing this work for leading organisations across many segments: financial institutions, government agencies, service providers of every sort, large multinational conglomerates in commerce and services, and industry across a wide range. Delivered, been responsible for, overseen, collaborated on, led and taken part in, many times over, from inside vendors, distributors and integrators. These engagements are no longer what I sell. They are what the advice above is made of.",
     "earnTitle": "What I will not do",
-    "earnBody": "I will not tell you what to do before I understand your situation, and the first conversation exists to establish whether I can be useful at all - including the answer that I cannot, or that the question is better put to someone else. An advisor who is certain before they have listened is selling something. If the honest answer is that your existing supplier is right, that is the answer you will get in writing, and it will be the most valuable sentence in the document.",
+    "earnBody": "I will not tell you what to do before I understand your situation, and the first conversation exists to establish whether I can be useful at all, including the answer that I cannot, or that the question is better put to someone else. An advisor who is certain before they have listened is selling something. If the honest answer is that your existing supplier is right, that is the answer you will get in writing, and it will be the most valuable sentence in the document.",
     "problemTitle": "The problem this exists for",
-    "problemBody": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first. The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Every diagram is drawn by someone with a quota behind it, every reference is chosen, and the internal team - who may be excellent - is being asked to referee a game where they only see one side's playbook.\n\nThat is the gap this practice exists to close, and nothing more. Not to replace the team, not to run the project, and not to become another supplier with a diagram: to put an independent, experienced technical reading in front of the people who have to sign, in time for it to change the decision rather than explain it afterwards."
+    "problemBody": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first. The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Much of what reaches the table is drawn by someone with a quota behind it, and every reference is chosen; some of it comes from internal teams, open-source communities and engineers with no transaction attached, and the first job is knowing which is which. Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and the internal team, who may be excellent, is being asked to referee a game where they only see one side's playbook.\n\nThat is the gap this practice exists to close, and nothing more. Not to replace the team, not to run the project, and not to become another supplier with a diagram: to put an independent, experienced technical reading in front of the people who have to sign, in time for it to change the decision rather than explain it afterwards.",
+    "positioning": "A deeply technical senior advisor, brought into difficult infrastructure and security decisions when executive consulting is not technical enough and engineering consulting is not independent enough. Judgement on decisions that have not yet been made, at the level where they are actually taken.",
+    "metaTitle": "Independent technical advisory for network and security decisions · Rodolfo Nützmann",
+    "metaDescription": "Independent technical judgement before you commit to an architecture, supplier, platform or budget: a written decision analysis by Rodolfo Nützmann.",
+    "whenTitle": "When this tends to be useful",
+    "whenLede": "The people who get the most out of an engagement usually arrive in one of five situations.",
+    "when1Term": "Infrastructure, security and technology leadership",
+    "when1Body": "A CIO, CISO or head of infrastructure with a technically consequential decision, and either too little independent expertise in-house to test it or the wish for a second opinion before signing.",
+    "when2Term": "Steering committees and executive sponsors",
+    "when2Body": "A group that has to turn technical assumptions into defensible business trade-offs, and needs them stated by someone who can be questioned in the room.",
+    "when3Term": "Procurement teams",
+    "when3Body": "Requirements worth asking for, proposals interpreted on their merits, and scoring that suppliers cannot steer.",
+    "when4Term": "Organisations in an architecture transition",
+    "when4Body": "Data-centre modernisation, SASE and SSE, vendor consolidation, a network redesign, application-security architecture, WAN transformation, a firewall refresh, hybrid and cloud connectivity, a major platform migration.",
+    "when5Term": "Organisations after a serious incident",
+    "when5Body": "Not the response, which has its own people: the independent reconstruction afterwards, and what the organisation should learn from it.",
+    "shapesTitle": "One advisory model, applied to several kinds of consequential decision",
+    "shapesLede": "These are shapes, not packages. The question, the inputs, the deliverable, the dates and the fee are agreed in writing before the work starts, and an engagement that sits between two shapes is usual rather than a problem.",
+    "shapeQuestionLabel": "The question",
+    "shapeOutputLabel": "What you get",
+    "shape1Title": "Decision review",
+    "shape1Question": "Should we approve this architecture, or this proposal?",
+    "shape1Output": "A decision memorandum.",
+    "shape1Body": "A neutral second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
+    "shape2Title": "Comparative assessment",
+    "shape2Question": "Which of these approaches, or vendors, fits us?",
+    "shape2Output": "An options and trade-off analysis.",
+    "shape2Body": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in the terms of the organisation rather than the vendor's, and a defensible answer with the reasoning attached, so the decision survives the person who made it.",
+    "shape3Title": "Architecture challenge",
+    "shape3Question": "What are we overlooking before implementation?",
+    "shape3Output": "Architecture findings and a risk register.",
+    "shape3Body": "Reading a proposed design before it is built and paid for: what it assumes, where it will strain, what it will cost to operate rather than to buy, and which of its assumptions are load-bearing. The failures that matter are rarely in the product; they are in what the design took for granted.",
+    "shape4Title": "Procurement and RFP advisory",
+    "shape4Question": "What should we actually ask suppliers to deliver?",
+    "shape4Output": "Requirements and a scoring framework.",
+    "shape4Body": "Writing what to ask for. A specification or request for proposal that describes the outcome precisely enough to be scored fairly, and closes the gaps a supplier would otherwise be free to interpret in their own favour. Most bad procurement is decided at this stage rather than at the bid.",
+    "shape5Title": "Estate review",
+    "shape5Question": "What do we actually have, and what depends on it?",
+    "shape5Output": "A map of the estate, with the parts nobody can explain marked.",
+    "shape5Body": "An inventory that becomes a map: what is connected, what each thing actually does, what depends on it, and which parts nobody can currently explain. Named a review rather than an audit, because audit carries assurance meaning this does not claim. Most estates contain something load-bearing that no one has looked at in years.",
+    "shape6Title": "Post-incident review",
+    "shape6Question": "What failed, and what should materially change?",
+    "shape6Output": "An independent engineering review.",
+    "shape6Body": "Not incident response: the review afterwards, when the fire is out and somebody has to give an honest account of what happened and what would prevent it recurring. Written to be read by people who were not there, and without the search for someone to blame that makes most such documents useless. The scope is an engineering learning review. It is not a forensic investigation and not a legal or regulatory analysis: where litigation, insurers, regulators or evidence preservation are in play, those need their own specialists, and the written scope says which kind of review this is before it starts.",
+    "shape7Title": "Ongoing executive technical counsel",
+    "shape7Question": "We face decisions like these repeatedly.",
+    "shape7Output": "Recurring decision support, written each time.",
+    "shape7Body": "For the organisation where consequential infrastructure and security decisions reach the executive table several times a year. Described below, under the retained arrangement.",
+    "receiveTitle": "What you receive",
+    "receiveBody": "A written answer, made to be circulated and defended internally rather than presented and forgotten, and a call to walk through it. The document follows a fixed structure, so that a reader who was not in the room can follow the reasoning and challenge it.",
+    "receiveLink": "Read a complete example memorandum",
+    "receiveNote": "The example is fictional, assembled to show the structure and the level of detail. No client document is ever published.",
+    "layersTitle": "Three ways to engage",
+    "layersLede": "The first is the flagship, and it is what most engagements are. The other two exist for questions that do not fit inside one decision.",
+    "layer1Title": "Independent decision review",
+    "layer1Body": "One decision. Defined inputs, a written memorandum, a walkthrough, a fixed fee. The easiest engagement to buy, and the one the rest of this page describes.",
+    "layer2Title": "Executive technical advisory",
+    "layer2Body": "Larger questions that span several decisions: an architecture, a technology roadmap, the vendor landscape, a transition strategy, the risks and the operational consequences. Still scoped, still written, still non-operational.",
+    "layer3Title": "Retained technical counsel",
+    "layer3Body": "For a small number of organisations, access over three, six or twelve months: recurring decision sessions, challenge of architectures and vendor proposals, participation in steering meetings when a decision reaches them, review of important proposals, interpretation of technology risk, and a written brief each time. Access means recurring decision support over the agreed term, with the cadence, the availability and the scope written into the proposal; it is not an open line for whatever comes up. When consequential infrastructure and security decisions reach the executive table, another person on your side of it. What it is not: line management, helpdesk escalation, project management, operational ownership, availability around the clock, or implementation labour.",
+    "evidenceLede": "Most of what people say about me publicly concerns teaching, because that is what I have done most visibly since 2020. Below is the older, advisory-shaped part of the record: what clients and partners wrote about design, selection and procurement work, verbatim, each with the engagement it describes stated in one line. The full set, filtered by kind, is on the endorsements page.",
+    "evidence38": "Procurement and vendor selection for a financial-sector client, 2008: consulting, technology definition, the RFP and oversight of the commercial negotiation, then the point of contact through implementation and after it.",
+    "evidence63": "Design, conception and analysis of a high-availability IP telephony and recording solution for one of Brazil's largest brokerages, 2008, led across several suppliers.",
+    "evidence42": "A data-link capacity analysis, 2012, whose depth and presented results the partner credits for the project's outcome.",
+    "evidence28": "How the designs were made, in a security specialist's words, 2020: by applying the concept, not by trial and error.",
+    "evidenceTranslated": "translated from the original",
+    "evidenceAllLink": "All endorsements, filtered by kind",
+    "reasonTitle": "Inspect the reasoning before you hire it",
+    "reasonBody": "Thirty years is a claim many people can make. What fewer can show is how they think. The rest of this site is a public record of that: tools that compute instead of guessing, each with its test vectors and its sources attached; several hundred technical articles that cite the documentation they rest on; a corpus on the discipline of running networks and support; and a history of the industry written from inside it. Read any of it before the first conversation. It is the same reasoning that goes into a decision memorandum.",
+    "reasonLinkTools": "The tools",
+    "reasonLinkLearn": "Learn",
+    "reasonLinkPractice": "The Practice",
+    "reasonLinkIndustry": "Industry",
+    "psTitle": "When the decision leads to implementation",
+    "psBody": "My role in these engagements is advisory: I review, challenge, analyse and document the decision, and I do not personally provide the implementation, managed service or operational support that may follow. That does not mean the engagement ends without a practical path forward. Red Education maintains a Professional Services capability, delivered by its vendor-certified engineers: installations, software and hardware upgrades and migrations, health checks, knowledge transfer, resident on-site engineers and consultants on demand. I work for Red Education full time, and where the work that follows a decision is work Red Education does, that is where I will propose it be done: I know the people who do it, and I believe in the company's commitment to quality and to the customer's satisfaction. The choice remains yours, your existing partner, your internal team or another provider included. What does not move is the analysis: where Red Education's professional services are being considered for the downstream work, the engagement says so explicitly, and the document stays on the technical merits, constraints, risks and requirements of the decision rather than on creating implementation work for anyone, Red Education included.",
+    "psLink": "Red Education Professional Services",
+    "speakingNote": "Also available for conference and executive speaking, which has its own page.",
+    "speakingLink": "Speaking",
+    "memoOutline1": "The executive question",
+    "memoOutline2": "Current state",
+    "memoOutline3": "Assumptions",
+    "memoOutline4": "Evidence reviewed",
+    "memoOutline5": "Constraints",
+    "memoOutline6": "Options",
+    "memoOutline7": "Trade-offs",
+    "memoOutline8": "Risks",
+    "memoOutline9": "Dependencies",
+    "memoOutline10": "Cost and operational considerations",
+    "memoOutline11": "Unknowns",
+    "memoOutline12": "Recommendation, or the conditions for proceeding",
+    "memoOutline13": "Immediate actions",
+    "memoOutline14": "Questions for the supplier",
+    "layersBasis": "How the money behaves, since the figures themselves come only after scoping: a decision review and an executive technical advisory engagement are scoped first and quoted as one fee for that scope, never as an open hourly meter; retained technical counsel is quoted for an agreed term, cadence and scope. In every case the proposal and the invoice come from Red Education."
   },
   "speaking": {
     "eyebrow": "Speaking",
@@ -21689,5 +23409,102 @@
     "query": "Query",
     "fragment": "Fragment",
     "cannotSegment": "This input could not be cut into parts cleanly, so it is shown unmarked rather than highlighted incorrectly."
+  },
+  "advisoryMemo": {
+    "eyebrow": "Advisory",
+    "metaTitle": "Example decision memorandum · Rodolfo Nützmann",
+    "metaDescription": "A complete, fictional example of the written decision analysis an advisory engagement produces: the structure, the level of detail and the questions it leaves for the supplier.",
+    "noticeTitle": "A fictional example",
+    "noticeBody": "The organisation, the suppliers, the figures and the findings below are invented, assembled only to show the structure and the level of detail of the document an engagement produces. No client document is ever published, and nothing here is advice to any reader. The structure is the same in every engagement; the content is always the client's own.",
+    "backLink": "Back to advisory",
+    "ctaBody": "If a decision like this one is on your desk, the first conversation is free and is with the person who would write the document.",
+    "ctaButton": "Start a conversation",
+    "preparedLabel": "Prepared for",
+    "statusLabel": "Status",
+    "updatedLabel": "Updated"
+  },
+  "earlierSites": {
+    "eyebrow": "About · The earlier sites",
+    "title": "What the web remembers",
+    "lede": "Before ronutz.com there were two domains, nutzmann.net and ntz.com.br, and the Internet Archive kept them. {pages} archived pages, read on {date}, were saved in full, printed and catalogued. Here, era by era: what each site was, when, what it offered and what it contained, with a link to every capture so the record can be checked.",
+    "metaTitle": "The earlier sites: nutzmann.net and ntz.com.br, 2004 to 2021 · Rodolfo Nützmann",
+    "metaDescription": "What the Internet Archive kept of Rodolfo Nützmann's earlier websites, nutzmann.net from 2004 and ntz.com.br from 2013: dates, characteristics, offerings, contents, and a link to every capture.",
+    "ageLine": "The first capture is from 25 August 2004, {years} years before this page was built. The home page of that day already linked three small tools, a bits-and-bytes calculator, an IP addressing calculator and a network cabling pinout: the oldest ancestors of the tools on this site.",
+    "provenanceTitle": "Where this comes from",
+    "provenanceBody": "Every statement on this page was read from the Wayback Machine's captures of the two domains on {date}; nothing is quoted from memory. Each capture was saved as the archive's raw bytes with its images, stylesheets and scripts folded in, rendered offline and printed, and the inventory under each section links to the archive copy, so a reader can open any page as it was. Where the archive never stored an image, the print shows a gap and the catalogue says so. Client names that appear on the old pages are left to the archive; this page describes the work by shape.",
+    "labels": {
+      "nature": "What it was",
+      "characteristics": "How it was built",
+      "offerings": "What it offered",
+      "contents": "What it contained"
+    },
+    "eras": {
+      "nn-2004": {
+        "years": "2004 to 2007",
+        "title": "nutzmann.net, the Nützmann Networks site",
+        "nature": "The first site of Nützmann Networks Consultoria em Comunicação de Dados e Tecnologia da Informação LTDA., the consultancy constituted in São Paulo in 2003, presented under the brand nützmann.net and written, in Portuguese, in the plural voice of a firm. Its home page claimed thirteen years in the market, its partners page a presence in the field since 1996, and its areas-of-work page a start in 1991, three ways of counting the same path.",
+        "characteristics": "A Flash intro at the root, which the archive did not keep, then a frameset of header, side menu and content in the manner of 2004: .htm pages, small sans-serif type, a two-column home with a news strip and a mailing-list box, a design credit and a hosting credit in the footer. About thirty pages. Services, success cases, the team page and the reference library carried a notice that the new site was still being finished. First captured on 25 August 2004; the same design was still being served in June 2007.",
+        "offerings": "Consultancy in networks, telecommunications and information systems: bespoke projects, modular services, management of a vendor's post-sales relationship with strategic clients, service to the network vendors Cabletron, Enterasys and Riverstone and to their clients, network implementation (Internet, branches, LAN, MAN, WAN and wireless) and professional services on installed estates. A mission page argued for technology spend with a return-on-investment formula and a worked example. The areas-of-work page listed the sectors served, public bodies, banks, carriers, industry, media, universities, call centres, and a roster of some forty organisations served by its professionals.",
+        "contents": "Home, company, mission, areas of work and clients, team, an explainer on communication in networks, solutions (LAN, WAN, wireless, Internet, VPN, voice and video), services, success cases, a reference library planned in eight sections, partners (ten companies, from the vendors it worked with to the host of the site), contact, privacy and terms. And the three tools linked from the home page, of which the archive kept the bits-and-bytes calculator: a full page with the 1998 IEC prefix note, a transfer-time example and a table of connection types."
+      },
+      "nn-later": {
+        "years": "2007 to 2021",
+        "title": "nutzmann.net, year by year",
+        "nature": "One capture per year of the home page, to show the domain's successive faces after the 2004 design. By December 2010 a single page titled N T Z had replaced it, under the same legal name, constituted in 2003 in São Paulo. From June 2013 the domain forwarded to ntz.com.br. In December 2013 it carried a WordPress site for a few months, and from March 2014 to at least June 2021 a plain page titled Engenharia de Redes.",
+        "characteristics": "The 2010 page: a logo, five service lines in capitals (consultancy, auditing, specialised services, project design and management, training), the areas of work in one line each, a wall of some thirty vendor and platform logos, a crisis-management block with a 24-hour on-call line, the languages of service (Portuguese, English, German, Spanish) and the places worked (Brazil, California, Germany, Argentina). The 2014 WordPress site had two posts, a mission statement in English and an announcement of the Engenharia de Redes lines. The page that followed was deliberately plain: numbered lines of scope, a list of the vendor technologies the clients could count on, and a note that services were available in four languages and, pre-scheduled, anywhere.",
+        "offerings": "The 2010 page is the clearest statement of the period: Consultoria independente. Não há vínculo a nenhum fornecedor de tecnologia. Independent consultancy, with no tie to any technology vendor, and a declared command of the technologies of the vendors shown. Incident response, troubleshooting of persistent problems, and escalation to vendors' support centres abroad were offered as named services.",
+        "contents": "The 2005, 2006 and 2007 captures, printed with their frames of the same date; the 2010 and 2011 N T Z page; the 2013 forward; the WordPress home and its two posts of 2013 and 2014; the Engenharia de Redes page as captured in 2014, 2015, 2016, 2017 and 2021."
+      },
+      "ntz-2013": {
+        "years": "2013 to 2017",
+        "title": "ntz.com.br, the NTZ Tecnologia site",
+        "nature": "The site of NTZ Tecnologia, the trading name of the same company: founded in 2003 by Rodolfo Nützmann, constituted in 2003 in the city of São Paulo, working in the technology market since 1995. Consultancy and specialised services in network communications and information security, in Portuguese, with a success-cases page that reads as a dated chronology from the founding year to 2008.",
+        "characteristics": "Static HTML with a shared header and footer, a left menu per section, the long keyword titles of the period, a certification strip and social links on the home page. First captured on 18 May 2013 and still served in May 2017; the rebuilt site appears in October 2017. The home page of each year from 2014 to 2017 is in the inventory.",
+        "offerings": "Consultancy (definition, management and delivery of projects, supplier selection, comparative analyses), specialised services (project management, preventive and emergency support, installation and configuration, quality of service, service-level definition, site surveys, network assessments, capacity for new applications, addressing and routing design, security and vulnerability audits, upgrades), a portfolio by theme (security, control, operational efficiency, connectivity), and training: three fundamentals courses, modular protocol classes of two to eight hours, and a forty-hour operations and troubleshooting course, taught by Rodolfo Nützmann, a student of network technologies since 1995 and an instructor since 1999. A remote laboratory of real switches, firewalls, routers, IP telephony, wireless equipment and virtual machines, reachable through console servers and VPN, served the courses and proofs of concept, with a free discussion forum beside it. The mission page: an independent services company, free of ties to manufacturers and suppliers. The partners page: not impartial, on the client's side.",
+        "contents": "Home, company (with the market segments served, sector by sector), mission and values, areas of work and clients, consultancy, services, portfolio, training, the laboratory with its equipment list, certifications, success cases (from the 2003 founding and the Brasília contract through a vendor's professional services, through the strategic-support years for another vendor's partners, to projects through integrators in 2007 and 2008), partners, an explainer on communications in networks, contact, privacy and terms, the reference library marked as discontinued, and the same three tools as 2004."
+      },
+      "ntz-2018": {
+        "years": "2017 to 2019",
+        "title": "ntz.com.br, rebuilt",
+        "nature": "A rebuilt site on a hosted site builder, titled NTZ Comunicações e Segurança em Rede, Desde 1995. Five pages, with a public hourly rate card, and the consultancy now openly presented as the services of Rodolfo Nützmann and a link to his professional profile. The only 2024 capture of the domain is an empty response; nothing later was published there.",
+        "characteristics": "Builder templates, a header with the brand and the year, a short menu, long single-column pages. Captured from October 2017 to December 2018. The builder's own fonts and scripts were not part of the archive copy, so the prints may differ slightly in type from the original.",
+        "offerings": "Consultancy and services (architecture and engineering of communication and security systems; definition, procurement and deployment management with requirement specification, RFP writing and supplier selection; formation of operations teams with a responsibilities matrix; one- to five-day technology workshops; conduct of tests and proofs of concept), training, a competences page by vendor with F5 as the main focus (pre-sales and training, six years through a distributor and a reseller, the certifications held and the ones in progress in 2018), Palo Alto Networks and others, and a Contrate page with a services list, a public hourly rate card in three time bands and remote-first delivery over video with recorded sessions.",
+        "contents": "Home, about, consultancy and services, competences, and Contrate. The training page was not captured."
+      },
+      "ntz-prev": {
+        "years": "2003 to 2008, a different owner",
+        "title": "ntz.com.br before NTZ",
+        "nature": "Not one of these sites. Before the domain carried NTZ Tecnologia, ntz.com.br belonged to Plásticos NTZ, a plastic-bag maker in the interior of São Paulo state, captured from June 2003 to January 2008. It is in the inventory so that nobody mistakes it for an earlier version of the consultancy.",
+        "characteristics": "A small ASP site with a product catalogue; most of its images were never archived, so the prints are sparse.",
+        "offerings": "Plastic bags, refuse sacks, butcher rolls and packaging in general, by its own description.",
+        "contents": "Home, products, company history, purpose, management, distributors, location and contact."
+      }
+    },
+    "carriedTitle": "What carried through",
+    "carried": {
+      "tools": "The three tools. The 2004 home page linked a bits-and-bytes calculator, an IP addressing calculator and a network cabling pinout; the 2013 home page kept all three. Their descendants are here: the IP calculator became the CIDR calculator, the pinout lives in the structured cabling article, and the bits-and-bytes calculator is queued on the roadmap as Bits / bytes / throughput, which makes it, by ancestry, the oldest open item in the catalogue.",
+      "independence": "The independence line, unbroken. 2004: an independent company with no exclusivity ties to specific suppliers. 2010: independent consultancy, no tie to any technology vendor. 2013: free of ties to manufacturers and suppliers, and not impartial, on the client's side. The sentence has grown more careful since: the advisory page now states exactly what is claimed and what is not, including how the work is contracted.",
+      "teaching": "Teaching, never absent. Training and talks were a listed service in 2004; by 2013 there were named courses in a forty-hour format, taught by an instructor since 1999, with a laboratory of real equipment behind them; the 2017 site offered workshops and executive seminars. The authorized vendor training taught today is the same thread.",
+      "vendors": "The relationship between client and vendor as the object of the work. 2004: management of a vendor's post-sales relationship with strategic clients, pre-sales and post-sales. 2013: optimising the relations between clients and their suppliers and partners. 2017: RFP writing, supplier selection, proofs of concept. The career record and the advisory shapes describe the same work from where it stands now.",
+      "company": "One company under three names. Constituted in São Paulo in 2003 as Nützmann Networks Consultoria em Comunicação de Dados e Tecnologia da Informação LTDA., it traded as nützmann.net, then as NTZ Tecnologia, then as NTZ Comunicações e Segurança em Rede. The 2004 terms page, the 2010 footer, the 2013 contact page and the 2013 chronology all give the same name and year."
+    },
+    "linksTitle": "On this site today",
+    "linkCidr": "CIDR calculator",
+    "linkCabling": "Structured cabling",
+    "linkRoadmap": "Roadmap",
+    "linkAdvisory": "Independent technical advisory",
+    "linkTraining": "Training",
+    "linkEra": "The practitioner, 1996 to 2020",
+    "inventoryTitle": "Inventory",
+    "inventorySummary": "{count} archived pages, {from} to {to}",
+    "colFile": "File",
+    "colTitle": "Title as published",
+    "colCaptured": "Captured",
+    "colLink": "Archive copy",
+    "open": "Open",
+    "untitled": "(no title)",
+    "sourcesTitle": "Sources",
+    "sourcesBody": "The Internet Archive's Wayback Machine (web.archive.org): the CDX index and the captures of nutzmann.net and ntz.com.br, read on {date}. The timestamps in the inventories are the ones the archive served, in UTC; each link opens that capture. The availability endpoint of the archive answered that it held nothing for either domain; the index proved otherwise, which is why the inventories were built from the index.",
+    "backToAbout": "About"
   }
 }

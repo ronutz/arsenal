@@ -8,7 +8,7 @@ relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-looku
 category: networking
 order: 23
 status: reviewed
-updated: "2026-09-27"
+updated: "2026-10-03"
 ---
 
 ## O fim do copiar e colar
@@ -23,10 +23,10 @@ Quase tudo em um iRule vive dentro de um bloco `when EVENT`. Procs são uma das 
 proc logme { msg } {
     log local0. $msg
 }
-when CLIENT_ACCEPTED {
+when CLIENT_ACCEPTED priority 500 {
     call logme "chegou em CLIENT_ACCEPTED"
 }
-when CLIENT_DATA {
+when CLIENT_DATA priority 500 {
     call logme "chegou em CLIENT_DATA"
 }
 ```
@@ -43,11 +43,20 @@ rule proc_library {
     proc html_encode { str } {
         set out ""
         foreach ch [split $str ""] {
-            switch $ch {
-                "<" { append out "&lt;" }
-                ">" { append out "&gt;" }
-                "&" { append out "&amp;" }
-                default { append out $ch }
+            # -- antes do valor: um hífen no URI não pode ser lido como opção
+            switch -- $ch {
+                "<" {
+                    append out "&lt;"
+                }
+                ">" {
+                    append out "&gt;"
+                }
+                "&" {
+                    append out "&amp;"
+                }
+                default {
+                    append out $ch
+                }
             }
         }
         return $out
@@ -55,10 +64,12 @@ rule proc_library {
 }
 ```
 
+O `--` antes de `$ch` não é enfeite. Sem ele, o primeiro hífen de um URI é lido como opção, e no Tcl 8.4.6 o proc para com "ambiguous option"; o guia de estilo do DevCentral (R15) e o F5 K15650046 pedem esse terminador em todo `switch`.
+
 Para chamar um proc que vive em outro iRule, você o qualifica com o nome do iRule que o define. Entre partições, prefixe também a partição e o nome da regra.
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     set safe [call proc_library::html_encode [HTTP::uri]]
     # forma entre particoes:
     # call /Common/proc_library::html_encode $value
@@ -116,3 +127,6 @@ A versão que introduziu procs está declarada na própria referência de iRules
 - [iRules Procedures (procs) - a própria página da F5: suportados em iRules a partir do 11.4](https://clouddocs.f5.com/api/irules/Procs.html)
 - [proc - a referência do comando de iRules](https://clouddocs.f5.com/api/irules/proc.html)
 - [call - invocando um procedimento a partir de outro iRule](https://clouddocs.f5.com/api/irules/call.html)
+- [F5 DevCentral: Advanced iRules, Getting Started with iRules Procedures (a regra de biblioteca que chama a si mesma)](https://community.f5.com/t/advanced-irules-getting-started-with-irules-procedures/67691)
+- [F5 K15650046: Tcl code injection security exposure (o -- no switch)](https://my.f5.com/manage/s/article/K15650046)
+- [F5 DevCentral: iRules Style Guide (R15)](https://community.f5.com/t/irules-style-guide/71151)

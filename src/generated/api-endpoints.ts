@@ -29,6 +29,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_as3_explainer_validator",
     "tag": "F5 automation (AS3 / DO)"
   },
+  "ascii-table": {
+    "url": "https://ronutz.com/api/v1/ascii-table",
+    "method": "GET",
+    "op": "run_ascii_table",
+    "tag": "Encoding"
+  },
   "base64": {
     "url": "https://ronutz.com/api/v1/base64",
     "method": "GET",
@@ -70,6 +76,18 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_change_window_runbook_builder",
     "tag": "Operations & Fieldcraft"
+  },
+  "charset-equivalency": {
+    "url": "https://ronutz.com/api/v1/charset-equivalency",
+    "method": "GET",
+    "op": "run_charset_equivalency",
+    "tag": "Encoding"
+  },
+  "chmod-permission-calculator": {
+    "url": "https://ronutz.com/api/v1/chmod-permission-calculator",
+    "method": "GET",
+    "op": "run_chmod_permission_calculator",
+    "tag": "Text & utilities"
   },
   "cidr": {
     "url": "https://ronutz.com/api/v1/cidr",
@@ -231,6 +249,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "url": "https://ronutz.com/api/v1/f5-bigd-thread-calculator",
     "method": "GET",
     "op": "run_f5_bigd_thread_calculator",
+    "tag": "F5 LTM, iRules & platform"
+  },
+  "f5-bigip-index-base-finder": {
+    "url": "https://ronutz.com/api/v1/f5-bigip-index-base-finder",
+    "method": "GET",
+    "op": "run_f5_bigip_index_base_finder",
     "tag": "F5 LTM, iRules & platform"
   },
   "f5-bigip-license-explainer": {
@@ -856,6 +880,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_totp_hotp",
     "tag": "Identity & tokens"
+  },
+  "unicode-inspector": {
+    "url": "https://ronutz.com/api/v1/unicode-inspector",
+    "method": "GET",
+    "op": "run_unicode_inspector",
+    "tag": "Encoding"
   },
   "url-inspector": {
     "url": "https://ronutz.com/api/v1/url-inspector",

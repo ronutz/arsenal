@@ -1,33 +1,35 @@
 ---
 slug: irules-style-guide-explained
 title: "The DevCentral iRules Style Guide, rule by rule, with the reasons"
-summary: "F5's DevCentral published an iRules Style Guide in 2022: editor settings and twenty numbered rules. Some are taste, but several prevent real failures: an iRule that will not load, a switch an attacker can steer, an expression that runs request data as code, a log storm. Here are the rules grouped by what they protect, with the reason behind each."
-concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability"]
-relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder"]
-relatedArticles: ["irules-building-strings", "irules-branching-and-lookups"]
+summary: "F5's DevCentral published an iRules Style Guide in 2022: editor settings and twenty numbered rules. Some are taste, but several prevent real failures: an iRule that will not load, a switch an attacker can steer, an expression that runs request data as code, a log storm. Here are the rules grouped by what they protect, with the reason behind each, what the comment thread under the guide corrected, and what has changed since it was written."
+concepts: ["irules", "f5", "tcl", "style guide", "security", "maintainability", "unicode"]
+relatedTools: ["f5-irules-style-checker", "f5-irules-conditional-builder", "f5-irules-expression-lab", "f5-bigip-index-base-finder"]
+relatedArticles: ["irules-building-strings", "irules-branching-and-lookups", "bigip-zero-or-one"]
 category: networking
 order: 31
 status: reviewed
 updated: "2026-10-03"
 ---
 
-In December 2022 JRahm, with Jim_Deucker, published an "iRules Style Guide" on F5's DevCentral community: a handful of editor settings and twenty numbered rules. It reads like a house style, and much of it is, but several rules are there because breaking them causes real failures. Grouping the rules by what they protect makes the reasons clearer.
+In December 2022 JRahm, with Jim_Deucker, published an "iRules Style Guide" on F5's DevCentral community: a handful of editor settings and twenty numbered rules. It reads like a house style, and much of it is, but several rules are there because breaking them causes real failures. Grouping the rules by what they protect makes the reasons clearer. The guide and its twelve replies were read in full on 2026-10-03, and every Tcl behaviour below was run in a real tclsh 8.4.6, the Tcl version F5 names for iRules (K6091).
 
 ## Rules that keep an iRule loading
 
-- **R11, a space between `}` and `{`.** `if { $x }{ ... }` is not a style problem in Tcl 8.4: the parser stops with "extra characters after close-brace", and the iRule does not load.
-- **R1, no smart quotes or no-break spaces.** Text pasted from a word processor can carry curly quotes and no-break spaces that look identical to the real characters and break the code without an obvious error.
-- **R2, the 64 KB limit.** A single iRule is limited to 64 KB, and the guide's advice on reaching it is to question the design of the solution rather than to squeeze.
+- **R11, a space between `}` and `{`.** `if { $x }{ ... }` is not a style problem in Tcl 8.4: the parser stops with "extra characters after close-brace", and the iRule does not load. A keyword glued to its brace fails too, only later: Tcl reads `if{` as a single word, the name of a command that does not exist. F5's own reference page for `return` has exactly that slip in its example.
+- **R1, no smart quotes or no-break spaces.** Text pasted from a word processor can carry characters that look identical to the real ones. A no-break space glues two words into one command name, and curly quotes do not group words at all. The family is wider than the two the guide names: zero-width spaces, the byte order mark and the other characters Unicode lists as default-ignorable are invisible, and an en dash typed where `--` belongs is taken by `switch` as the value, so nothing matches and nothing complains.
+- **R2, the size limit.** The guide says 64 KB; F5 K9204 gives the exact figure, 65,520 characters, and BIG-IP refuses to save or load a longer iRule ("Max string size exceeded", "max:65520"). K9204 suggests splitting the code into separate iRules on the same virtual server; the guide's advice on reaching the limit is to question the design of the solution rather than to squeeze.
+
+The guide demonstrates R1 by accident. As published on 2026-10-03, its `RULE_INIT` example has a ZERO WIDTH SPACE (U+200B) right after the closing brace, and its debug example has a line that holds nothing else. Copied verbatim, the first stops Tcl 8.4.6 with "extra characters after close-brace" and the second runs as a command named after an invisible character. The [style checker](/tools/f5-irules-style-checker) names each such character with its code point, its Unicode name and its column.
 
 ## Rules that keep request data from steering the rule
 
-- **R12, brace every expression.** Without braces, `expr`, `if` and `while` substitute their argument twice, so a value from the request can run as code. F5 K15650046 is the security advisory, K57410758 the validator warning, and F5's How To Write Fast Rules puts the speed cost at "a factor of 20 or so".
+- **R12, brace every expression.** Without braces, `expr`, `if` and `while` substitute their argument twice, so a value from the request can run as code. F5 K15650046 is the security advisory and K57410758 the warning BIG-IP writes when it loads a configuration with an unbraced expression; that warning is informational, does not stop the load, and does not catch every case. The guide's "deep dive" link now leads to a 2014 DevCentral article that disassembles the bytecode: unbraced, Tcl builds the expression as a string at run time and hands it to the expression engine; braced, the compiler handles it ahead of time, and in the article's example even computes the constant answer (the disassembler it uses needs Tcl 8.5 or later). F5's How To Write Fast Rules puts the speed cost at "a factor of 20 or so".
 - **R15, end options with `--`.** `switch` reads any word starting with a dash as an option. A Host header such as `-glob` could change how your switch matches, and an unknown one stops the iRule with "bad option". K15650046 shows the exact log line. The guide asks for `--` on `switch` and `table`; `class match` takes it too.
 - **R13 and R14, spaces and braces around variables in expressions.** `if { ${host} eq "a" }` leaves no doubt where the variable name ends, and it reads the same in every editor.
 
 ## Rules that keep behaviour predictable
 
-- **R9, store state as 0 or 1.** Tcl accepts many spellings of true and false (`yes`, `on`, `tru`, and others); a value compared with `==` against 1 only works for the numeric form.
+- **R9, store state as 0 or 1.** In an `if`, 0 is false and every other number is true, -1 included. Tcl also accepts true, yes and on, and false, no and off, in either case and abbreviated as long as the short form is not ambiguous: `n` and `of` are false, `t` is true, and `o` is an error. And `string is true -1` returns 0 while `if` treats -1 as true. One spelling, 0 or 1, removes all of that; the [zero-or-one finder](/tools/f5-bigip-index-base-finder) has the details.
 - **R10, `&&` and `||` rather than `and` and `or`.** F5's word operators work, but F5 does not document where they sit in the precedence table; the Tcl operators, with parentheses, leave nothing to guess.
 - **R16, a priority on every event.** F5's `priority` page sets the default at 500 and the range from 0 to 1000, with lower numbers running first. Writing it down means the order of several iRules on one virtual server is a decision, not an accident.
 - **R17, a timeout or lifetime on every table entry.** F5's `table` reference gives an entry a default timeout of 180 seconds and an indefinite lifetime when none is set; writing them down makes the entry's life a decision. The guide also asks whether the table is needed at all, and suggests the `static::` namespace as the alternative for configuration-like values.
@@ -39,6 +41,49 @@ In December 2022 JRahm, with Jim_Deucker, published an "iRules Style Guide" on F
 - **R3, functional blocks;** **R4, the opening brace at the end of the line** and `} else {` on one line; **R5, the 4-space indent carried into nested values** such as `switch` arms; **R7, one command per line;** **R8, no single-line `if`,** even for a debug log.
 - **R6, comments on their own line,** written `# comment`, never at the end of a line and never between `switch` patterns, where Tcl reads them as patterns.
 - **R20, no commented-out code** in the version that ships.
+
+## What the comment thread adds
+
+The replies under the guide are worth reading with it. Three points stand out, and the first two are now checks of their own in the style checker (D1 and D2).
+
+**`eq` for text, `==` for numbers.** Kai Wilke pointed out that the guide's rule 10 example compares text with `==`. `==` and `!=` compare as numbers whenever both sides look like numbers, so all of these are true in Tcl 8.4.6:
+
+```tcl
+% expr {10 == 012}
+1
+% expr {1 == "0x0000001"}
+1
+% expr {1 == 1.0}
+1
+% expr {"1.0" eq "1"}
+0
+```
+
+`012` is octal, so it equals 10, and `eq` compares the characters, so `"1.0"` and `"1"` differ. Jim Deucker agreed to add a point about `eq` and `ne`; as read on 2026-10-03 the example still uses `==`. F5's How To Write Fast Rules makes the same point in its own words: compare numbers to numbers and strings to strings, and mind the implicit conversions, `==` against `eq` among them.
+
+**A `switch` arm needs no `return` or `break`.** Juergen Mang noted that he often sees `return` used to stop a `switch` arm. An arm never runs into the next one (a body written as `-` deliberately shares the next pattern's body), so nothing is needed. `return` leaves the whole event, not just the switch, as F5's `return` page says. `break` has nothing to break: `switch` is not a loop, so inside a loop `break` leaves the loop, and with no loop around it Tcl 8.4.6 reports "invoked "break" outside of a loop" (checked in a proc body; F5 does not document what TMM does with it in an event). Jim Deucker replied that this was outside the style guide's scope but a candidate for a diagnostic in the VS Code extension.
+
+**A corrected example.** Kai also spotted that the final example's `foreach { f } { ${e} }` would loop over the literal text rather than the list in `e`. JRahm corrected it to `foreach { f } ${e}`, and the published guide carries the fix.
+
+## The editor settings, and what has moved
+
+The guide gives the settings for VS Code, EditorConfig, Vim and Sublime. Two things have changed since it was written:
+
+- **The VS Code extension link is dead.** The "F5 Networks iRules" extension the guide recommends (`bitwisecook.irule`) returned 404 on the Visual Studio Marketplace on 2026-10-03. Its author's current extension is "Tcl/Tk, iRules, EDA-Tools, Expect LSP/MCP" (`bitwisecook.tcl-lsp`), announced on DevCentral in March 2026 with iRule diagnostics, formatting and taint tracking of user input. "The F5 Extension" (`F5DevCentral.vscode-f5`) is still listed.
+- **One EditorConfig value is not in the specification.** The guide's EditorConfig block sets `charset = ascii`, but the EditorConfig specification (version 0.17.2) defines only latin1, utf-8, utf-8-bom, utf-16be and utf-16le, and tells editors to ignore values they do not support. An ASCII file is already valid UTF-8, so `utf-8` is the nearest valid setting; keeping the file ASCII is then a job for a checker.
+
+An EditorConfig section with the guide's settings and only specified values:
+
+```ini
+# iRules files: the DevCentral style guide's editor settings
+[*.irule]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+```
 
 ## A rule that follows the guide
 
@@ -59,15 +104,27 @@ when HTTP_REQUEST priority 500 {
 
 ## Try it
 
-The [iRules style checker](/tools/f5-irules-style-checker) reads a pasted iRule against these rules and a real Tcl 8.4 parse, and names the rule behind each finding. The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes decisions in this style from the start.
+The [iRules style checker](/tools/f5-irules-style-checker) reads a pasted iRule against these rules, the two points from the comment thread and a real Tcl 8.4 parse, and names the rule behind each finding. Its "Pasted from a word processor" and "An invisible character" presets show R1 at work. The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes decisions in this style from the start, and the [expression lab](/tools/f5-irules-expression-lab) shows `==` and `eq` side by side.
 
 ## Sources
 
-The rules are quoted from the guide itself; the security, warning and priority details come from the F5 pages it relies on, and the parse error was reproduced in Tcl 8.4.6.
+The rules and the replies are quoted from the guide's page; the security, warning, size, priority and table details come from the F5 pages it relies on; every Tcl behaviour was reproduced in Tcl 8.4.6. All read on 2026-10-03.
 
-- [F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22)](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 DevCentral: iRules Style Guide (JRahm with Jim_Deucker, 2022-12-22), with its comment thread](https://community.f5.com/t/irules-style-guide/71151)
+- [F5 K9204: iRules are limited to 65,520 characters](https://my.f5.com/manage/s/article/K9204)
 - [F5 K15650046: Tcl code injection security exposure](https://my.f5.com/manage/s/article/K15650046)
 - [F5 K57410758: use curly braces to avoid double substitution](https://my.f5.com/manage/s/article/K57410758)
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
 - [F5 iRules reference: How To Write Fast Rules](https://clouddocs.f5.com/api/irules/HowToWriteFastRules.html)
+- [F5 iRules reference: return](https://clouddocs.f5.com/api/irules/return.html)
 - [F5 iRules reference: priority](https://clouddocs.f5.com/api/irules/priority.html)
 - [F5 iRules reference: table](https://clouddocs.f5.com/api/irules/table.html)
+- [F5 DevCentral: Advanced iRules, an abstract view of iRules with the Tcl bytecode disassembler (2014)](https://community.f5.com/t/advanced-irules-an-abstract-view-of-irules-with-the-tcl-bytecode-disassembler/67788)
+- [F5 DevCentral: iRule Developer Tools (2026)](https://community.f5.com/t/irule-developer-tools/76979)
+- [Visual Studio Marketplace: Tcl/Tk, iRules, EDA-Tools, Expect LSP/MCP](https://marketplace.visualstudio.com/items?itemName=bitwisecook.tcl-lsp)
+- [Visual Studio Marketplace: The F5 Extension](https://marketplace.visualstudio.com/items?itemName=F5DevCentral.vscode-f5)
+- [EditorConfig Specification 0.17.2](https://spec.editorconfig.org/)
+- [Tcl 8.4 manual: if](https://www.tcl-lang.org/man/tcl8.4/TclCmd/if.htm)
+- [Tcl 8.4 manual: switch](https://www.tcl-lang.org/man/tcl8.4/TclCmd/switch.htm)
+- [Tcl 8.4 manual: break](https://www.tcl-lang.org/man/tcl8.4/TclCmd/break.htm)
+- [Unicode Character Database 18.0.0: DerivedCoreProperties.txt](https://www.unicode.org/Public/UCD/latest/ucd/DerivedCoreProperties.txt)

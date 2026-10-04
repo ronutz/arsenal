@@ -429,7 +429,7 @@ export default async function PartnerVendorPage({
     const tpTag = await getTranslations({ locale, namespace: "partnerVendors" });
     return (
       <>
-        <a href="#main" className="skip-link">
+        <a href="#main" className="skip-link" data-pagefind-ignore>
           {tNavTag("skipToContent")}
         </a>
         <Header />
@@ -534,7 +534,7 @@ export default async function PartnerVendorPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />

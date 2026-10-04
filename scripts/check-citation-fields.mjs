@@ -62,6 +62,12 @@ const EXEMPT = new Map([
   ["webhook", "an example webhook endpoint at example.com"],
   ["raw", "a raw example string in tool documentation"],
   ["s", "a single-letter local variable in an example, not a content field"],
+  // 2026-10-03: the earlier-sites inventory (src/content/about/earlier-sites.ts) records each
+  // archived page's ORIGINAL URL as the Wayback Machine captured it, e.g. http://nutzmann.net:80/
+  // in 2004. Those addresses are dead by definition (the domains no longer serve those sites) and
+  // are never linked from the page; the live link is built by waybackUrl() from this value and the
+  // served timestamp. Fetching them would report 94 dead links that are the historical record itself.
+  ["original", "an archived page's original URL in the earlier-sites inventory; dead by nature, never linked, the archive link is derived from it"],
 ]);
 
 function walk(dir, out = []) {

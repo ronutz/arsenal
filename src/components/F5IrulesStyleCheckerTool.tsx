@@ -5,9 +5,10 @@
 // ----------------------------------------------------------------------------
 // THE iRULES STYLE CHECKER (page UI). Paste an iRule and read it against the
 // DevCentral iRules Style Guide: the guide's editor settings and its numbered
-// rules, plus a Tcl 8.4 syntax check (an error there stops the rule from
-// loading at all). Findings are listed by line beside the numbered code, each
-// naming the guide rule it comes from and what to change.
+// rules, the points its comment thread added (D1, D2), plus a Tcl 8.4 syntax
+// check (an error there stops the rule from loading at all). Findings are
+// listed by line beside the numbered code, each naming the rule it comes from
+// and what to change; characters are named from Unicode 18.0.0.
 //
 // All answers come from src/lib/tools/f5-irules-style-checker (the rule is
 // parsed, never run); this component only lays them out and words them.
@@ -62,10 +63,10 @@ export default function F5IrulesStyleCheckerTool() {
   }, [r]);
   // A finding's sentence, by rule and its parameters.
   const message = (rule: string, params?: Record<string, string | number>) => {
-    // Parameters as text.
-    const p = Object.fromEntries(Object.entries(params ?? {}).map(([k, v]) => [k, String(v)]));
+    // Parameters as they came: numbers stay numbers (plural forms and digit grouping need them), the rest is text.
+    const p = Object.fromEntries(Object.entries(params ?? {}).map(([k, v]) => [k, typeof v === "number" ? v : String(v)]));
     // Each rule's sentences are keyed by variant ("main" when the rule has one).
-    return t(`finding.${rule}.${p.what ?? "main"}`, p);
+    return t(`finding.${rule}.${typeof p.what === "string" ? p.what : "main"}`, p);
   };
   // Draw.
   return (
@@ -120,7 +121,7 @@ export default function F5IrulesStyleCheckerTool() {
                   <li key={i} className={`tcl-finding tcl-finding-${f.severity}`}>
                     <div className="tcl-finding-head">
                       <span className={`irl-sev irl-sev-${f.severity === "error" ? "high" : f.severity}`}>{t(`sev.${f.severity}`)}</span>
-                      <span className="tcl-rule">{f.rule === "syntax" ? t("ruleSyntax") : f.rule}</span>
+                      <span className="tcl-rule">{f.rule === "syntax" ? t("ruleSyntax") : f.rule === "limit" ? t("ruleLimit") : f.rule}</span>
                       <span className="tcl-muted tcl-small">{t("lineShort", { n: f.line })}</span>
                       <span className="tcl-finding-title">{t(`ruleName.${f.rule}`)}</span>
                     </div>

@@ -1,0 +1,107 @@
+---
+slug: mojibake-and-code-pages
+title: "Mojibake: por que café vira cafÃ©, e como recuperar o texto"
+summary: "O texto se embaralha quando bytes escritos num charset são lidos em outro. Como surgem os padrões clássicos (UTF-8 lido como windows-1252, arquivos do DOS e do Windows lidos um como o outro, EBCDIC lido como Latin-1), por que um navegador lê Latin-1 como windows-1252, como um único caractere invisível num rótulo de charset embaralha uma página, como desfazer o estrago e quando não dá, e o que a codificação de uma política de WAF do BIG-IP tem a ver com isso."
+concepts: ["mojibake", "charset", "página de código", "windows-1252", "iso-8859-1", "ibm 850", "ebcdic", "codificação dupla", "caractere de substituição"]
+relatedTools: ["charset-equivalency", "unicode-inspector", "url-inspector", "ascii-table"]
+relatedArticles: ["utf-8-and-utf-16-byte-by-byte", "hidden-and-lookalike-characters", "character-encoding", "ascii-the-128-codes"]
+category: encoding
+order: 219
+status: reviewed
+updated: "2026-10-03"
+---
+
+Um arquivo, uma página web ou um campo de banco de dados guarda bytes, não caracteres. Transformar os bytes de volta em texto exige o charset em que eles foram escritos, e nada nos bytes diz qual foi. Leia-os com o charset errado e todo caractere fora do ASCII vira outra coisa: "café" vira "cafÃ©", "don’t" vira "donâ€™t". Esse texto embaralhado se chama mojibake, e quase sempre é o resultado dos mesmos poucos erros. O [conversor de charsets](/tools/charset-equivalency) mostra cada um deles e desfaz a maioria.
+
+## UTF-8 lido como windows-1252
+
+O UTF-8 escreve o é como dois bytes, C3 A9 (veja [UTF-8, UTF-16 e UTF-32, byte por byte](/learn/utf-8-and-utf-16-byte-by-byte)). O windows-1252 tem um caractere por byte, então os lê como dois caracteres: C3 é Ã e A9 é ©. Toda letra latina acentuada começa com C3 em UTF-8, e é por isso que o Ã aparece em toda parte:
+
+| Caractere | Bytes UTF-8 | Lido como windows-1252 |
+|---|---|---|
+| é | C3 A9 | Ã© |
+| ç | C3 A7 | Ã§ |
+| ã | C3 A3 | Ã£ |
+| ü | C3 BC | Ã¼ |
+| É | C3 89 | Ã‰ |
+| ’ | E2 80 99 | â€™ |
+| “ | E2 80 9C | â€œ |
+| € | E2 82 AC | â‚¬ |
+| ™ | E2 84 A2 | â„¢ |
+
+Dois casos escondem parte do estrago. O í é C3 AD, e AD no windows-1252 é o hífen condicional (soft hyphen), que não desenha nada, então o í vira um Ã sozinho. E o ” é E2 80 9D, em que 9D é um dos cinco bytes do windows-1252 que o WHATWG Encoding Standard mapeia para um controle C1 invisível: o ” vira â€ seguido de U+009D. Um software que remove caracteres de controle no caminho joga fora um byte de que o conserto precisa.
+
+## Codificação dupla
+
+Quando o texto embaralhado é salvo de novo como UTF-8 e lido de novo como windows-1252, ele se embaralha de novo, e cada rodada o deixa mais longo. O é vira Ã© depois de uma rodada, ÃƒÂ© depois de duas e ÃƒÆ’Ã‚Â© depois de três; o ’ vira Ã¢â‚¬â„¢ depois de duas. É o que acontece quando um cliente de banco de dados e um servidor acham, cada um, que o outro está convertendo.
+
+## Latin-1, windows-1252 e o que um navegador faz
+
+O ISO-8859-1 (Latin-1) e o windows-1252 concordam em todos os bytes, exceto de 0x80 a 0x9F. O ISO-8859-1 não tem caracteres imprimíveis ali; o windows-1252 põe ali aspas curvas, travessões, o símbolo do euro e algumas letras. Um navegador não os distingue. O WHATWG Encoding Standard faz de "latin1", "iso-8859-1" e "ascii" rótulos do windows-1252, de modo que o software que o segue vai "decode 0x80 as U+20AC (€) when asked for the 'Latin1' or 'ASCII' decoding of that byte" (decodificar 0x80 como U+20AC, €, quando lhe pedirem a decodificação "Latin1" ou "ASCII" desse byte). Software fora do navegador pode responder diferente: o codec latin-1 do CPython decodifica 0x80 como o controle U+0080.
+
+A mesma tabela rege as referências numéricas do HTML: uma referência de `&#128;` a `&#159;` também é lida pelo windows-1252 (veja [ASCII: os 128 códigos](/learn/ascii-the-128-codes)).
+
+## Um caractere invisível num rótulo de charset
+
+Uma página diz o que é em dois lugares: o parâmetro charset do cabeçalho Content-Type e um elemento `<meta charset>`. Se nenhum dos dois está lá ou nenhum é entendido, o navegador recorre a um padrão, e texto UTF-8 lido com o padrão errado é mojibake.
+
+O próprio guia de operações do BIG-IP ASM da F5 mostra como isso acontece fácil. O K13050156 (atualizado em 2024-07-29) inclui o HTML de uma página de bloqueio personalizada cuja linha de charset aparece na tela como `<meta charset="utf-8">`, mas entre "utf" e "8" há um U+00AD SOFT HYPHEN no lugar de um hífen; o exemplo tem 24 hífens condicionais ao todo. "utf" + hífen condicional + "8" não é um rótulo que o padrão do WHATWG conheça, então o elemento é ignorado. Servida sem charset no cabeçalho Content-Type, uma cópia dessa página com texto em português ("Requisição bloqueada") apareceu no Chromium 141 como "RequisiÃ§Ã£o bloqueada", decodificada como windows-1252 (medido em 2026-10-03). Código copiado de um documento merece uma passada pelo [inspetor Unicode](/tools/unicode-inspector) antes de entrar em produção.
+
+## Um formulário do navegador e a referência HTML
+
+A outra direção também perde informação. Quando um formulário é enviado de uma página em windows-1252 e alguém digita um caractere que o charset não comporta, o navegador envia no lugar uma referência HTML decimal, como `&#8364;` para o símbolo do euro. O padrão do WHATWG explica o custo: "a server will not be able to distinguish between an end user entering '💩' and '&amp;#128169;' into a form" (o servidor não consegue distinguir alguém que digitou "💩" de alguém que digitou "&amp;#128169;").
+
+## Páginas de código do DOS: IBM 437 e IBM 850
+
+As páginas de código do DOS são outra família de charsets de um byte: o IBM 437, que a tabela de mapeamento do Unicode chama de DOSLatinUS, e o IBM 850, DOSLatin1, que acrescenta letras como Ã e õ que o IBM 437 não tem. Texto que passa entre elas e o windows-1252 se embaralha de jeitos reconhecíveis:
+
+| O que aconteceu | Texto | Vira |
+|---|---|---|
+| Bytes IBM 850 lidos como windows-1252 | ação | a‡Æo |
+| Bytes windows-1252 lidos como IBM 850 | ação | aþÒo |
+| Bytes UTF-8 lidos como IBM 437 | café | caf├⌐ |
+| Bytes UTF-8 lidos como IBM 850 | ação | a├º├úo |
+
+Os caracteres de desenho de caixas nas duas últimas linhas (├ é U+251C) são a marca de uma página de código do DOS: o IBM 437 e o IBM 850 mantêm linhas e cantos em faixas de bytes onde o Latin-1 e o windows-1252 têm letras acentuadas.
+
+## EBCDIC lido como Latin-1
+
+Os mainframes usam EBCDIC, em que as letras nem são contíguas: no IBM 037, de A a I são C1 a C9, de J a R são D1 a D9, de S a Z são E2 a E9, os dígitos são F0 a F9 e o espaço é 40. "HELLO, World" em IBM 037 é `C8 C5 D3 D3 D6 6B 40 E6 96 99 93 84`, e lido como Latin-1 vira ÈÅÓÓÖk@æ seguido de quatro controles invisíveis. Um @ onde deveria haver cada espaço é a marca do EBCDIC.
+
+## Recuperando o texto
+
+Um mojibake pode ser desfeito quando a leitura errada não perdeu nada: codifique o texto embaralhado de volta com o charset que o leu errado, o que devolve os bytes originais, e decodifique esses bytes com o charset certo. O windows-1252, como o padrão do WHATWG o define, mapeia todo byte para um caractere, então UTF-8 lido errado como windows-1252 por um navegador sempre pode ser recuperado. Duas coisas fazem isso falhar:
+
+- **Um byte foi substituído ou descartado.** Um conversor que escreveu ? ou U+FFFD para um byte que não entendeu, ou uma etapa que removeu caracteres de controle, destruiu a informação. Só o resto pode ser recuperado.
+- **Texto certo e embaralhado estão misturados.** Consertar a string inteira embaralharia a parte certa. Cada parte precisa ser consertada sozinha.
+
+Desfazer uma leitura errada de UTF-8 vem com uma verificação: os bytes precisam formar UTF-8 bem formado, o que bytes além do ASCII raramente fazem por acaso, então um conserto que passa nela muito provavelmente está certo. Um conserto entre dois charsets de um byte não tem essa verificação, porque todo byte é um caractere nos dois, e só parece mais ou menos plausível.
+
+O modo **Consertar mojibake** do conversor tenta os dois, diz que tipo de evidência tem, desfaz até três rodadas de codificação dupla e marca com U+FFFD o que não pôde ser recuperado.
+
+## Evitando
+
+- **Use UTF-8 e diga isso.** O padrão do WHATWG é direto: "Authors must use the UTF-8 encoding and must use its (ASCII case-insensitive) 'utf-8' label to identify it." (autores devem usar a codificação UTF-8 e o rótulo "utf-8" para identificá-la). Envie o charset no cabeçalho Content-Type, onde nenhum caractere copiado consegue quebrá-lo, e também num `<meta charset>`.
+- **Converta uma vez, na borda.** A codificação dupla acontece onde duas camadas convertem. Decida qual delas converte.
+- **Guarde os bytes.** Quando um texto chega embaralhado, os bytes originais (uma captura de pacotes, um dump hexadecimal do arquivo) valem mais que o texto. Leia-os no modo **Bytes para texto** do conversor, que mostra todos os charsets lado a lado.
+
+## Num BIG-IP: a codificação da política de segurança
+
+Uma política de segurança do Advanced WAF (ASM) lê cabeçalhos e parâmetros numa codificação própria. O K6335 da F5 (atualizado em 2023-02-21) diz que a configuração Application Language é "the default character encoding set for the web application" (o conjunto de caracteres padrão da aplicação web), que "determines the default character sets for headers, objects, parameter names, and parameter values" (determina os conjuntos de caracteres padrão de cabeçalhos, objetos, nomes e valores de parâmetros). Ela vale pela vida inteira da política: "The character encoding method is a key characteristic of the security policy, and cannot be changed" (o método de codificação é uma característica essencial da política e não pode ser alterado), e "policies cannot be imported to replace a policy that uses a different encoding language" (políticas não podem ser importadas para substituir uma política com outra codificação). A referência do tmsh para `asm policy` descreve a mesma propriedade, `encoding`, e avisa que modificá-la "causes ASM to reconfigure the security policy and clear all its former data" (faz o ASM reconfigurar a política e apagar todos os dados anteriores).
+
+O guia de operações do ASM (K13050156) explica o que a configuração verifica: "The BIG-IP ASM system checks to see if the sequence of bytes is valid within the defined encoding. Sequences not found trigger the Failed to convert character violation." (o ASM verifica se a sequência de bytes é válida na codificação definida; sequências que não existem disparam a violação Failed to convert character). O conselho dele é manter o padrão, Auto detect, quando estiver disponível, e, ao definir a língua à mão, "make sure you know the character set the application uses for HTML form submission" (ter certeza do charset que a aplicação usa para enviar formulários HTML). Uma violação Failed to convert character em tráfego que parece legítimo é sinal de que a codificação da política e a da aplicação discordam; os bytes no log da requisição, lidos no conversor, mostram que charset o cliente realmente usou.
+
+## Fontes
+
+Os rótulos, decodificadores, índices e o comportamento dos formulários vêm do WHATWG Encoding Standard; as tabelas do DOS e do EBCDIC, das tabelas de mapeamento arquivadas do Consórcio Unicode; o comportamento do BIG-IP, do K6335, do K13050156 e da referência do tmsh da F5. As formas embaralhadas das tabelas foram produzidas no conversor de charsets, no TextDecoder do Node 22 e no CPython 3.11 em 2026-10-03; a página de bloqueio foi renderizada no Chromium 141 em 2026-10-03. Tudo lido em 2026-10-03.
+
+- [WHATWG Encoding Standard](https://encoding.spec.whatwg.org/)
+- [WHATWG Encoding Standard: index-windows-1252.txt](https://encoding.spec.whatwg.org/index-windows-1252.txt)
+- [Tabela de mapeamento do Unicode: CP437 (cp437_DOSLatinUS)](https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP437.TXT)
+- [Tabela de mapeamento do Unicode: CP850 (cp850_DOSLatin1)](https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/PC/CP850.TXT)
+- [Tabela de mapeamento do Unicode: CP037 (EBCDIC EUA/Canadá)](https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/EBCDIC/CP037.TXT)
+- [Tabelas de mapeamento do Unicode: ReadMe](https://www.unicode.org/Public/MAPPINGS/ReadMe.txt)
+- [Documentação do Python: codecs, codificações padrão](https://docs.python.org/3/library/codecs.html)
+- [F5 K6335: Overview of encoding language settings for the BIG-IP ASM system](https://my.f5.com/manage/s/article/K6335)
+- [F5 K13050156: Policy tuning and enhancement, guia de operações do BIG-IP ASM](https://my.f5.com/manage/s/article/K13050156)
+- [Referência do tmsh da F5: asm policy](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/asm/asm_policy.html)

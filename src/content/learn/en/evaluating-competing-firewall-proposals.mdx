@@ -1,0 +1,52 @@
+---
+slug: evaluating-competing-firewall-proposals
+title: "How to evaluate competing firewall proposals"
+summary: "Three firewall proposals arrive, each with a datasheet throughput, a licence bundle and a reference customer, and none of them answers the question you have, which is what each would do in your network, with your traffic, run by your team. A method for comparing them on the same terms: how to normalise throughput claims, what a licence really counts, where high availability differs, what the migration of your existing rule base will cost, and how to score the three so that the scoring, not the discount, decides."
+concepts: ["firewall", "vendor-evaluation", "procurement", "scoring", "throughput", "licensing", "decision"]
+relatedTools: ["fortigate-security-profile-coverage-checker", "fortigate-policy-match-order", "checkpoint-policy-layer-evaluator", "network-os-comparer", "mtu-mss"]
+relatedArticles: ["firewall-family-history", "what-a-technically-fair-rfp-looks-like", "capex-versus-subscription-networking", "product-limitations-versus-architecture-failures"]
+category: operations
+order: 322
+status: reviewed
+updated: "2026-10-03"
+---
+
+## The three documents are not comparable as written
+
+Each supplier wrote its proposal to make its own product look best, which is their job. The consequence is that the three documents measure different things: one quotes throughput with every inspection feature off, another with a particular traffic mix, a third quotes the appliance above the one it priced. One bundles three years of subscriptions; another prices them per year; the third leaves two of them out and calls them optional. Before any comparison means anything, the proposals have to be rewritten onto one sheet in your organisation's terms. That rewriting is most of the work, and it is work the suppliers cannot do for you.
+
+## Normalise the performance claims
+
+A firewall datasheet carries several throughput figures, and the one on the first page is the largest. For the comparison you need the figure that matches your traffic: the inspection features you will actually enable (threat prevention, TLS decryption, application identification, logging), at your packet and session sizes, with the number of concurrent sessions and new sessions per second you actually see. Ask each supplier for the same figure under the same stated conditions, in writing. Then ask what their published figure assumes, and compare the two answers.
+
+Two further checks. Ask what the device does when it is overloaded: drop, bypass, or degrade a feature, and which one. And ask about TLS decryption separately, because it is the feature that changes the sizing most and the one most often left out of the demonstration. The [MTU and MSS calculator](/tools/mtu-mss) is a small reminder that packet size is part of every throughput claim.
+
+## What the licence counts
+
+Licensing is where the three prices stop being comparable. For each proposal, write down the unit each subscription counts (device, throughput tier, user, session, site), what happens at renewal, which features stop working when a subscription lapses, and whether the hardware keeps forwarding traffic without it. Then price year four, not year one, because that is when the discount is gone and the renewal uplift arrives.
+
+Ask explicitly which features in the demonstration were on a licence that is not in the proposal. It is a common gap and an honest supplier will tell you at once.
+
+## High availability, in detail
+
+All three will say "active-passive or active-active, stateful failover". The details differ, and the details are what you live with: the failover time measured rather than claimed; what session state survives (TCP, VPN (virtual private network) tunnels, inspection state); whether both members need the same licences; how the pair is upgraded without an outage, and how long that takes; whether management and logging survive the loss of one member; and what the configuration synchronisation does when the two members disagree. Ask for the procedure, not the feature name. The [network operating system comparer](/tools/network-os-comparer) records how differently the platforms treat state and upgrades.
+
+## The policy you already have
+
+The proposals price the new device. They rarely price the move of your rule base onto it, and that is where firewall replacements go late. Count the rules, the objects, the NAT (network address translation) entries and the exceptions nobody owns. Ask each supplier how the translation is done, by whom, what their tool does with a rule it cannot express, and how the result is tested before cut-over. The rule-evaluation tools on this site, for [FortiGate](/tools/fortigate-policy-match-order) and for [Check Point layers](/tools/checkpoint-policy-layer-evaluator), show that the same intent is ordered and matched differently on each platform, which is exactly why a translation needs testing rather than trust.
+
+## The team that will run it
+
+Three honest questions: who on the team has run this platform in production; what the training costs in money and in weeks; and which of the three consoles the team found usable in the pilot. A platform the team cannot operate at three in the morning is more expensive than its price, and the evaluation should say so in a row of its own.
+
+## Score it so that the scoring decides
+
+Write the criteria before the proposals are opened, weight them, and have the people who will operate the result take part in the weighting. A workable set: fit to the measured traffic; high-availability behaviour, as demonstrated; policy migration effort, as estimated by you; operability, from the pilot; total cost over the term at your growth; support model and escalation path; and the exit, meaning what it would take to leave. Score each proposal against each criterion with the evidence written next to the score, so that a committee member can disagree with a score rather than with a feeling.
+
+Then, and only then, look at the discount. A discount changes one row of the sheet. If it changes the decision, the sheet was not finished.
+
+## The comparison is a document
+
+Write the result as a comparison that a reader who was not in the room can follow: the question, the three proposals normalised, the criteria and weights, the scores with their evidence, the open questions with owners, and the recommendation with the conditions attached to it. The [example decision memorandum](/advisory/decision-memorandum) shows the structure for a decision of this kind.
+
+If three such proposals are on your desk and the comparison has to be defended to a board, that comparison is work I do professionally: [independent technical advisory](/advisory).

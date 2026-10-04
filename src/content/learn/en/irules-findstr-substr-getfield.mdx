@@ -18,14 +18,17 @@ Tcl already has `string first`, `string range` and `split`. F5 added three comma
 `findstr string search ?skip? ?terminator?` finds the first occurrence of `search`, moves `skip` characters on from the **start of the match**, and returns everything up to the terminator. F5's tmsh reference gives two examples:
 
 ```tcl
-findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"   ;# sip.example.com
-findstr "aaa123456xxyz" "aaa" 3 "xyz"                    ;# 123456x
+# returns sip.example.com
+findstr "<sip:+12065551234@sip.example.com>" "@" 1 ">"
+# returns 123456x
+findstr "aaa123456xxyz" "aaa" 3 "xyz"
 ```
 
 In the second example the result stops before the first `xyz`, so the `x` before it stays in the result. The usual iRules use is a query parameter, where the skip is the length of the marker:
 
 ```tcl
-findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
+# returns abcdefg
+findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"
 ```
 
 ## substr: start at an index
@@ -33,10 +36,14 @@ findstr "/login.php?user=abcdefg&lang=en" "user=" 5 "&"  ;# abcdefg
 `substr string skip ?terminator?` starts at index `skip`, where 0 is the first character, and returns up to the terminator. F5's examples, all on the same string:
 
 ```tcl
-substr "abcdefghijklm" 2 "x"    ;# cdefghijklm (no x after index 2, so to the end)
-substr "abcdefghijklm" 2 "gh"   ;# cdef
-substr "abcdefghijklm" 2 4      ;# cdef
-substr "abcdefghijklm" 2 20     ;# cdefghijklm
+# returns cdefghijklm: there is no x after index 2, so it runs to the end
+substr "abcdefghijklm" 2 "x"
+# returns cdef
+substr "abcdefghijklm" 2 "gh"
+# returns cdef
+substr "abcdefghijklm" 2 4
+# returns cdefghijklm
+substr "abcdefghijklm" 2 20
 ```
 
 ## The terminator is a length or a text
@@ -48,9 +55,12 @@ For both commands, a terminator that is an integer is a **length**: that many ch
 `getfield string separator field` splits at every occurrence of the separator, which may be one character or a whole string, and returns the field, counting from 1:
 
 ```tcl
-getfield "a:b:c" ":" 2                     ;# b
-getfield "/login.php?user=abc" "?" 2       ;# user=abc
-getfield "one--two--three" "--" 3          ;# three
+# returns b
+getfield "a:b:c" ":" 2
+# returns user=abc
+getfield "/login.php?user=abc" "?" 2
+# returns three
+getfield "one--two--three" "--" 3
 ```
 
 ## The same jobs in plain Tcl

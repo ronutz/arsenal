@@ -392,6 +392,21 @@ export const VENDOR_MARKS: VendorMark[] = [
       "retired. Dates are from general knowledge rather than a source cited in " +
       "this repository; good to a year.",
   },
+  // RED EDUCATION (PRIME, 2026-10-04: "Add the Red Education logo to its
+  // respective page, and to any card mentioning it"). Not a vendor whose
+  // equipment the career ran through but the training company the site is
+  // affiliated with, so the mark appears where the company is named: the
+  // /red-education profile, the About timeline entry, the home and training
+  // cards. Nominative, as every other mark here; the authorization itself is
+  // stated in words on /about/credentials.
+  {
+    vendor: "rededucation",
+    label: "Red Education",
+    src: "/img/marks/red-education-current.png",
+    from: 2025,
+    to: null,
+    note: "Current. The mark in the header of rededucation.com, downloaded 2026-10-04 from /wp-content/uploads/2025/05/red-education-logo.webp (the upload path dates it to May 2025, the earliest use this repository can vouch for; earlier marks are not held) and converted to PNG with its transparent margins trimmed, artwork untouched.",
+  },
 ];
 
 /**

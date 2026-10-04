@@ -8,7 +8,7 @@ relatedArticles: ["irules-cmp-and-static-namespace", "irules-branching-and-looku
 category: networking
 order: 24
 status: reviewed
-updated: "2026-07-07"
+updated: "2026-10-03"
 ---
 
 ## O fato que rege todo laço
@@ -22,7 +22,7 @@ Isso não torna os laços proibidos. Torna-os algo a manter pequeno e limitado, 
 Quando você está percorrendo uma lista, o `foreach` é ao mesmo tempo mais rápido e mais limpo que um laço `for` ou `while` que indexa a lista à mão. As notas de otimização da F5 fazem o mesmo ponto: a versão `for` que puxa cada elemento com `lindex` é a mais lenta.
 
 ```tcl
-when HTTP_REQUEST {
+when HTTP_REQUEST priority 500 {
     set domains { bob.com ted.com example.com }
 
     # preferido: foreach, mais rapido e mais elegante
@@ -64,9 +64,10 @@ set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
 Alguma análise tem duas grafias: uma de Tcl puro e uma de comando de iRule. O `getfield` faz praticamente o mesmo trabalho que `lindex [split ...]` e lê de forma mais clara, mas há uma sutileza que vale saber. Um comando específico de iRule precisa saltar da máquina virtual Tcl de volta para o TMM para rodar, o que os comandos de Tcl puro não fazem. A F5 descreve o custo como incrivelmente insignificante no uso normal, algo a se atentar apenas se você está espremendo cada último ciclo. Note também que eles contam de forma diferente: o `getfield` começa no campo 1, enquanto o `lindex` começa no índice 0.
 
 ```tcl
-# mesmo resultado, duas grafias
-set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]   ;# indexado em 0
-set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]         ;# indexado em 1
+# Mesmo resultado, duas grafias: lindex conta a partir de 0
+set id [lindex [split [HTTP::cookie "JSESSIONID"] "!"] 0]
+# getfield conta a partir de 1
+set id [getfield [HTTP::cookie "JSESSIONID"] "!" 1]
 ```
 
 ## Prefira uma busca a um laço

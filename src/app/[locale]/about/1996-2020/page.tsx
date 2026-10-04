@@ -1,7 +1,7 @@
 // ============================================================================
 // src/app/[locale]/industry/history/1996-2020/page.tsx
 // ----------------------------------------------------------------------------
-// ERA PAGE: 1996-2020 — "The practitioner". The longest era (5 sections),
+// ERA PAGE: 1996-2020 — "The practitioner". The longest era (6 sections since 2026-10-03),
 // spanning the full vendor-and-implementation career. Content in the "history"
 // namespace, rendered by the shared EraPage component.
 // ============================================================================
@@ -42,7 +42,9 @@ export default async function Era19962020Page({
   return (
     <EraPage
       eraKey="era19962020"
-      sections={["s1", "s2", "s3", "s4", "s5"]}
+      sections={["s1", "s2", "s3", "s4", "s5", "s6"]}
+      /* s6 ADDED 2026-10-03: "The sites of those years", from the Wayback
+         captures of nutzmann.net and ntz.com.br, linking /about/earlier-sites. */
       next={{ slug: "2020-present", key: "era2020present" }}
     />
   );

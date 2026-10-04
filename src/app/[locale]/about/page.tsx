@@ -27,6 +27,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+// MARKS (PRIME 2026-10-04): the era-matched vendor wordmarks beside the platform cards and the timeline entries.
+import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import { TESTIMONIALS } from "@/content/testimonials/data";
 
@@ -184,6 +186,13 @@ export default async function AboutPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("about");
+  // The era caption the marks carry in their alt text (same string the career chapters print).
+  const tMarks = await getTranslations("partnerVendors");
+  const era = (e: string) => tMarks("markEra", { era: e });
+  // "since {year}" in the page's language, for the marks still in use.
+  const since = (y: number) => tMarks("markSince", { year: y });
+  // Marks are dated: a current platform card shows the mark of this year, a timeline entry the mark of its first year.
+  const thisYear = new Date().getFullYear();
   // The era copy keeps its own namespace: the strings did not move, only the
   // pages that render them.
   const tHistory = await getTranslations("history");
@@ -191,7 +200,7 @@ export default async function AboutPage({
 
   return (
     <>
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" data-pagefind-ignore>
         {tNav("skipToContent")}
       </a>
       <Header />
@@ -279,18 +288,22 @@ export default async function AboutPage({
             </p>
             <ul className="about-platforms">
               <li className="about-platform">
+                <VendorMark vendor="f5" year={thisYear} eraLabel={era} since={since} compact />
                 <span className="about-platform-name">F5</span>
                 <span className="about-platform-detail">{t("platforms.f5")}</span>
               </li>
               <li className="about-platform">
+                <VendorMark vendor="fortinet" year={thisYear} eraLabel={era} since={since} compact />
                 <span className="about-platform-name">Fortinet</span>
                 <span className="about-platform-detail">{t("platforms.fortinet")}</span>
               </li>
               <li className="about-platform">
+                <VendorMark vendor="extreme" year={thisYear} eraLabel={era} since={since} compact />
                 <span className="about-platform-name">Extreme Networks</span>
                 <span className="about-platform-detail">{t("platforms.extreme")}</span>
               </li>
               <li className="about-platform">
+                <VendorMark vendor="netskope" year={thisYear} eraLabel={era} since={since} compact />
                 <span className="about-platform-name">Netskope</span>
                 <span className="about-platform-detail">{t("platforms.netskope")}</span>
               </li>
@@ -397,26 +410,31 @@ export default async function AboutPage({
             <ol className="about-timeline">
               <li className="about-era">
                 <span className="about-era-years mono">1996 – 2000</span>
+                <VendorMark vendor="cabletron" year={1996} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Cabletron Systems · São Paulo</span>
                 <span className="about-era-what">{t("path.cabletron")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2000 – 2002</span>
+                <VendorMark vendor="riverstone" year={2000} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Riverstone Networks · Santa Clara, California</span>
                 <span className="about-era-what">{t("path.riverstone")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2003 – 2004</span>
+                <VendorMark vendor="cisco" year={2003} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Cisco Systems · Brasília</span>
                 <span className="about-era-what">{t("path.cisco")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2005 – 2007</span>
+                <VendorMark vendor="enterasys" year={2005} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Enterasys Networks · São Paulo</span>
                 <span className="about-era-what">{t("path.enterasys")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2009 – 2010</span>
+                <VendorMark vendor="juniper" year={2009} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Juniper Networks · São Paulo</span>
                 <span className="about-era-what">{t("path.juniper")}</span>
               </li>
@@ -426,16 +444,20 @@ export default async function AboutPage({
                   resellers and direct engagements. Supplied first-hand. */}
               <li className="about-era">
                 <span className="about-era-years mono">2011 – 2014</span>
+                {/* Four vendors, one entry: the marks of the equipment named in the text, as of 2011. */}
+                <span className="mark-row"><VendorMark vendor="juniper" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={2011} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Implementation · via CYLK, TDec and direct engagements</span>
                 <span className="about-era-what">{t("path.implementation")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2015 – 2019</span>
+                <VendorMark vendor="f5" year={2015} eraLabel={era} since={since} compact />
                 <span className="about-era-where">F5 Networks · channel (Westcon, ScanSource)</span>
                 <span className="about-era-what">{t("path.f5channel")}</span>
               </li>
               <li className="about-era about-era--current">
                 <span className="about-era-years mono">2020 – {t("path.present")}</span>
+                <VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact />
                 <span className="about-era-where">Red Education</span>
                 <span className="about-era-what">{t("path.rededucation")}</span>
               </li>
@@ -547,6 +569,21 @@ export default async function AboutPage({
                   {t("credibility.blogTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.blogDesc")}</p>
+              </Link>
+              {/* ADDED 2026-10-03 (PRIME): the earlier sites. What the Internet
+                  Archive kept of nutzmann.net (2004) and ntz.com.br (2013),
+                  catalogued with a link to every capture. A reader who has just
+                  read the career record is the one who will want to see it. */}
+              <Link
+                href="/about/earlier-sites"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#8984;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.sitesTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.sitesDesc")}</p>
               </Link>
             </div>
           </div>

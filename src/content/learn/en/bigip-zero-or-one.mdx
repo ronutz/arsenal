@@ -1,0 +1,174 @@
+---
+slug: bigip-zero-or-one
+title: "Zero or one: where BIG-IP starts counting"
+summary: "Tcl counts from 0, several commands F5 adds count from 1, counters return 1 for the first item, many zeros in the configuration are values rather than positions, and the same path segment is element 1, field 2 or index 1 depending on who is asking. Here is where each one comes from, in F5's own words, with the traps and the places where F5's pages disagree with themselves."
+concepts: ["irules", "f5", "tcl", "index", "lindex", "getfield", "off-by-one", "big-ip"]
+relatedTools: ["f5-bigip-index-base-finder", "f5-irules-string-extract", "f5-irules-string-workbench", "f5-irules-expression-lab", "f5-irules-style-checker"]
+relatedArticles: ["irules-findstr-substr-getfield", "irules-string-commands", "irules-scan-command"]
+category: networking
+order: 32
+status: reviewed
+updated: "2026-10-03"
+---
+
+An off-by-one mistake on a BIG-IP rarely stops anything. The iRule keeps running and sends the request to the wrong pool, logs the neighbouring field, or quietly matches nothing. Almost every one of those mistakes comes from the same question asked in the wrong place: does this count start at 0 or at 1? The answer depends on who does the counting, and BIG-IP has several counters: the Tcl language under iRules, the commands F5 added to it, the configuration, the hardware and the APIs.
+
+The [zero-or-one finder](/tools/f5-bigip-index-base-finder) lists 76 of those places with their sources. This article explains the patterns behind them.
+
+## Tcl counts from 0, and end is the last
+
+iRules run on Tcl 8.4.6 (F5 K6091), and in Tcl every position starts at 0. `string index`, `string range`, `lindex`, `lrange`, `lsearch`, `linsert`, `regexp -indices` and the `@` position of `binary scan` all agree: 0 is the first character, element or byte. The keyword `end` is the last position, which is the length minus one, and `end-1` is the one before it.
+
+```tcl
+% string index "abcd" 0
+a
+% string index "abcd" end
+d
+% lindex {a b c} end-1
+b
+% string range "abcdef" 2 3
+cd
+% string length [string index "abcd" 4]
+0
+```
+
+These are tclsh sessions: each command follows the `%` prompt and its result is on the next line. Two details catch people out. `string range` and `lrange` include both ends, so `2 3` returns two characters and the first N characters are `string range $s 0 N-1`. And an index past the end returns an empty string instead of an error, which is why the last line measures the result and gets 0: a wrong number fails silently. Every example in this section was run in a real tclsh 8.4.6, and none of these commands is on F5's list of disabled Tcl commands (K36322151).
+
+## One path segment, three right numbers
+
+Take the path `/api/v2/users` and ask for its first segment, `api`. Three correct answers use three different numbers:
+
+```tcl
+# Tcl: split returns {} api v2 users, so api is element 1
+set segment [lindex [split "/api/v2/users" "/"] 1]
+# F5: getfield counts fields from 1 and field 1 is the empty text, so api is field 2
+set segment [getfield "/api/v2/users" "/" 2]
+```
+
+In Tcl, `split` turns the path into four elements, and the first one is the empty text before the leading slash, so `api` is element 1 of a list that starts at 0. F5's `getfield` counts fields from 1 ("The field_number parameter is 1 indexed"), and field 1 is that same empty text, so `api` is field 2. An LTM policy condition numbers path segments from 1 ("Identify a segment of a path by its numerical order starting at 1", in the tmsh reference), so there `path-segment index 1` names the first segment, and negative indexes count from the right. The same segment is element 1, field 2 and index 1, for three different reasons.
+
+One caution on `getfield`: F5's page has no example where the string starts with the separator. Field 2 is the natural reading and the widespread practice, but it is not written down, so check it on your version before an iRule depends on it.
+
+## The commands F5 adds mostly count from 1
+
+Where F5 numbers fields, depths or rows, it usually starts at 1:
+
+- `getfield` fields start at 1, as above.
+- `URI::path` takes a start and an end depth, and depth 1 is the first directory. F5's page says the range needs a start of 1 or more, and its example shows that 0 raises a Tcl error.
+- The legacy `matchclass` returns the matching row counted from 1, and 0 when nothing matches. F5's page spells out the consequence: "Matchclass index starts at 1, while lindex uses a 0 based index."
+- The fields of a Statistics profile are numbered from 1 to 32, although `STATS::incr` takes the field's name.
+
+The exceptions are the commands that cut text by position. `substr` takes a skip count that F5 defines as the index of the first character returned, where 0 is the first character. `findstr` skips from the first character of the match instead, so 0 returns the match itself. And `domain` counts from the right: in F5's example, `domain www.sub.my.domain.com 2` returns `domain.com`.
+
+Commands that walk a list of protocol items use 0, as Tcl does: `SSL::cert 0` is the first certificate in the chain the peer sent, `HTTP::header at 0` is the first header line, `DIAMETER::avp` and `SIP::route` take zero-based indexes, `NAME::response address` accepts 0 to 15, and `TMM::cmp_unit` reports 0 on the first TMM instance.
+
+## Counters return 1 for the first item
+
+A counter is not a position. `HTTP::request_num` counts the HTTP transactions on the connection including the current one, so it returns 1 on the first request. `table incr` starts a missing key at 0 and returns the value after adding 1, so its first call also returns 1. Message routing numbers new clones from the previous clone count plus 1.
+
+F5's `SSL::extensions` example shows the habit to copy: it loops from 0, because that is what the command takes, and prints the loop variable plus one, because that is what people read.
+
+The opposite trap is a name that sounds like a position. `TCP::offset` returns the number of bytes `TCP::collect` holds, not an offset, so with N bytes held the last one sits at offset N minus 1.
+
+## When 0 is a position, and when it is an answer
+
+`string first` and `lsearch` return the position of a match or -1. In an `if`, Tcl reads 0 as false and every other number as true, so testing the position directly gets both edge cases wrong:
+
+```tcl
+# Wrong: skips the body when /api is at index 0, and runs it when /api is missing (-1)
+if { [string first "/api" ${path}] } {
+    pool api_pool
+}
+# What was meant
+if { [string first "/api" ${path}] >= 0 } {
+    pool api_pool
+}
+```
+
+The same happens with results where 0 is the good news. `string compare` returns 0 when two strings are equal, so `if {[string compare $a $b]}` runs when they differ. `SSL::verify_result` returns 0 for `X509_V_OK`, so an `if` on it runs when verification failed. Compare with a number, or use `eq` and `string equal`, and the condition says what you mean.
+
+Tcl's own rule for a condition is short. In an `if`, 0 is false and every other number is true, -1 included, and the words true, yes and on and false, no and off count as well, in either case and abbreviated as long as the short form is not ambiguous: `n` and `of` are false, `t` is true, and `o` is an error. `string is true` and `string is false` are stricter than `if`: `string is true -1` returns 0, and without `-strict` an empty string passes both, while `if` stops with an error on it. For your own flags, the [DevCentral iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151) settles the question: store state only as 0 or 1. The iRule examples on this page follow that guide's layout.
+
+## In the configuration, zero is often a value
+
+Many configuration zeros are not the first of anything:
+
+- Route domain 0 is the default. F5's routing guide says that with no route domains created, every route belongs to route domain 0, and an address without a `%ID` falls back to the partition's default route domain or to route domain 0 in Common.
+- Port 0 on a virtual server means every port: F5 calls a virtual server that uses port 0 a wildcard that handles traffic for all services.
+- A connection limit of 0 means no limit on virtual servers, pool members and route domains, a queue depth limit of 0 means no limit, and 0 reselect tries means no retry on another member.
+- Priority group 0 is the lowest group, and a minimum of 0 active members turns priority group activation off.
+- In tcpdump on a BIG-IP, `0.0` is not interface zero but all TMM interfaces at once (F5 K411).
+
+## Lower goes first, except for priority groups
+
+Most BIG-IP orderings run from the smallest number. An event's priority runs from 0 to 1000 with 500 as the default, and lower numbers run first; the DevCentral iRules Style Guide asks for an explicit priority on every event, with 500 when there is no other starting point. An LTM policy rule with a lower ordinal comes first, and inside a rule the conditions and actions are numbered 0, 1 and so on. BIG-IP DNS numbers a wide IP's pools and a pool's members from 0. Syslog severity 0 is the most severe. The precedence table of a policy strategy starts at 1, and 1 is the highest precedence.
+
+Pool priority groups go the other way: the higher number gets traffic first, and the members of group 0 only receive traffic when every member in the higher groups is unavailable.
+
+## Hardware, processes and logs
+
+- Interfaces are named slot.port and start at `1.1`; on a VIPRION the blade comes first, as in `1/1.2`. On F5OS, rSeries ports start at `1.0`, and on VELOS a port that is not split is `1/1.0` while its four parts are `1/1.1` to `1/1.4`.
+- VIPRION slots count from 1 (F5 K11094), while an appliance uses slot 0 in the LCD commands.
+- TMM instances count from 0: tmsh shows `Sys::TMM: 0.0` and up, and with HTSplit only even IDs are used, so the 10th TMM has the ID 18 (F5 K14358 and K15003).
+- The F5 Ethernet trailer in a capture mixes both: F5's Wireshark filter for TMM0 on Slot1 is `f5ethtrailer.slot == 1 and f5ethtrailer.tmm == 0` (K13637).
+- Software volumes start at `HD1.1`, or `MD1.1` on RAID, VLAN tags run from 1 to 4094, and the pre-configured floating traffic group is `traffic-group-1`.
+- Syslog severities run from 0 (emerg) to 7 (debug), and BIG-IP's own facility is `local0`, which F5 maps to `/var/log/ltm`, where `log local0.` messages from iRules land.
+
+## The APIs
+
+iControl REST pages with `$skip` and `$top`: `$skip` is how many objects to skip, so the first page is `$skip=0`, yet the response reports `pageIndex` 1 and `startIndex` 1. The old iControl SOAP `Log::SyslogLevel` enumeration is one higher than syslog, with `LOG_LEVEL_EMERG` at 1 and 0 meaning unknown, while `ASM::SeverityName` on the same site uses 0 for emergency. The `JSON::array` commands that F5 lists for BIG-IP 21.0.0 count from 0.
+
+## Where F5's pages disagree with themselves
+
+Reading the sources closely turned up places where two F5 statements cannot both be right. None of them was tested on a BIG-IP here, so treat each as a question to check on your version:
+
+- The `substr` rule says a numeric terminator returns that many characters, so 0 should return nothing, but the published example with 0 returns the rest of the string.
+- The `URI::path` example has a comment saying the depth is 3 above an output of 2, and a start of 4 returns more than a start of 3.
+- The `matchclass` page says no match returns 0, while its example tests for -1.
+- The `priority` page says 0 to 1000 inclusive, and elsewhere "between 1 and 1000".
+- The `DNSMSG::record` example stores `lindex $answer 1` in a variable named `first_rr`.
+- The iControl REST reference calls an LTM policy ordinal a positive integer, while its default is 0.
+- The tmsh reference calls `acl-order 3` the third APM access control list (ACL) in the list, while F5's Ansible documentation says the lowest number, 0, is the topmost.
+- `LB::server priority` returns 1 for a member with no priority configured, while the pool member's `priority-group` defaults to 0.
+
+## Before you trust a number
+
+1. Is it a position, a count, or a value with a meaning?
+2. Who reads it: a Tcl command (from 0) or an F5 field-style command (often from 1)?
+3. Does the text start with the separator, adding an empty first piece?
+4. What comes back when there is nothing there (-1, 0 or an empty string), and is that result used in an `if`?
+5. Does the lower number go first, or is it a priority group?
+
+The [zero-or-one finder](/tools/f5-bigip-index-base-finder) answers the first two for 76 places, and its translator runs the commands side by side for your own value.
+
+## Sources
+
+The Tcl behaviour is from the Tcl 8.4 manual and was run in tclsh 8.4.6. The F5 statements are from F5's iRules and tmsh references, TechDocs manuals and knowledge articles, all read on 2026-10-03; the finder lists every source with its date.
+
+- [F5 K6091: The version of Tcl used to develop iRules](https://my.f5.com/manage/s/article/K6091)
+- [F5 K36322151: List of disabled Tcl commands for iRules (12.x - 17.x)](https://my.f5.com/manage/s/article/K36322151)
+- [Tcl 8.4 manual: string](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm)
+- [Tcl 8.4 manual: lindex](https://www.tcl-lang.org/man/tcl8.4/TclCmd/lindex.htm)
+- [Tcl 8.4 manual: split](https://www.tcl-lang.org/man/tcl8.4/TclCmd/split.htm)
+- [Tcl 8.4 manual: if](https://www.tcl-lang.org/man/tcl8.4/TclCmd/if.htm)
+- [Tcl 8.4 manual: Tcl_GetBoolean](https://www.tcl-lang.org/man/tcl8.4/TclLib/GetInt.htm)
+- [F5 iRules reference: getfield](https://clouddocs.f5.com/api/irules/getfield.html)
+- [F5 iRules reference: substr](https://clouddocs.f5.com/api/irules/substr.html)
+- [F5 iRules reference: findstr](https://clouddocs.f5.com/api/irules/findstr.html)
+- [F5 iRules reference: URI::path](https://clouddocs.f5.com/api/irules/URI__path.html)
+- [F5 iRules reference: matchclass](https://clouddocs.f5.com/api/irules/matchclass.html)
+- [F5 iRules reference: HTTP::request_num](https://clouddocs.f5.com/api/irules/HTTP__request_num.html)
+- [F5 iRules reference: SSL::cert](https://clouddocs.f5.com/api/irules/SSL__cert.html)
+- [F5 iRules reference: SSL::extensions](https://clouddocs.f5.com/api/irules/SSL__extensions.html)
+- [F5 iRules reference: priority](https://clouddocs.f5.com/api/irules/priority.html)
+- [F5 tmsh reference: ltm policy](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_policy.html)
+- [F5 tmsh reference: ltm pool](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/ltm/ltm_pool.html)
+- [F5 TechDocs: TMOS Routing Administration 14.0, Route Domains](https://techdocs.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/big-ip-tmos-routing-administration-14-0-0/09.html)
+- [F5 TechDocs: About Virtual Servers](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-local-traffic-management-basics/about-virtual-servers.html)
+- [F5 K411: Overview of packet tracing with the tcpdump utility](https://my.f5.com/manage/s/article/K411)
+- [F5 K11094: Clearing the LCD and the Alarm LED remotely](https://my.f5.com/manage/s/article/K11094)
+- [F5 K14358: Overview of Clustered Multiprocessing (11.3.0 and later)](https://my.f5.com/manage/s/article/K14358)
+- [F5 K13637: Capturing internal TMM information with tcpdump](https://my.f5.com/manage/s/article/K13637)
+- [F5 K16197: Reviewing BIG-IP log files](https://my.f5.com/manage/s/article/K16197)
+- [F5 DevCentral: Demystifying iControl REST Part 3](https://community.f5.com/t/demystifying-icontrol-rest-part-3-how-to-pass-query-parameters-and-tmsh-options/68038)
+- [F5 DevCentral: iRules Style Guide](https://community.f5.com/t/irules-style-guide/71151)

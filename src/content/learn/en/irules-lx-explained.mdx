@@ -1,0 +1,121 @@
+---
+slug: irules-lx-explained
+title: "iRules LX, explained: what runs where when Tcl calls Node.js"
+summary: "iRules LX puts a Node.js process beside the Traffic Management Microkernel and lets a Tcl iRule call into it with ILX::call, wait at most three seconds by default, and get the answer back as a Tcl value. This is the whole mechanism, object by object and command by command, from F5's own reference: workspaces, extensions, plugins and the LX rule; ILX::init, ILX::call and ILX::notify; dedicated and single process modes; npm without an internet connection; the Node.js 6.9.1 runtime that BIG-IP 21.1 still ships after removing 0.12; the upgrade that used to break workspaces; and the questions to ask before a design depends on it."
+concepts: ["irules-lx", "irules", "f5", "node.js", "tcl", "big-ip", "ilx", "rpc", "streaming"]
+relatedTools: ["f5-irules-style-checker", "f5-irules-scan-explainer", "f5-bigip-index-base-finder", "f5-irules-expression-lab"]
+relatedArticles: ["irules-style-guide-explained", "bigip-zero-or-one", "irules-string-commands"]
+category: networking
+order: 33
+status: reviewed
+updated: "2026-10-04"
+---
+
+An iRule is Tcl, and Tcl inside the Traffic Management Microkernel (TMM) is fast because it does little: no threads, no sockets of its own, no libraries beyond what F5 compiled in. iRules LX (Language eXtensions) is the answer F5 gave in 2016 to the requests that did not fit that box: parse this JSON properly, look this user up in a database, sign this with a library nobody will port to Tcl 8.4. It does not make Tcl faster or richer. It puts a Node.js process next to TMM and gives the iRule three commands to talk to it. Everything that is good and everything that is awkward about iRules LX follows from that one sentence.
+
+## What it is, and what it is not
+
+iRules LX "takes advantage of the capabilities of Node.js to enhance the data plane programmability of a BIG-IP system", in F5's words, and it comes in two modes. The first, remote procedure call (RPC), arrived with BIG-IP 12.0 and became usable without an early-access licence in 12.1: a Tcl iRule, still the thing attached to the virtual server, calls a named JavaScript function and uses what comes back. The second, streaming, arrived in 13.0: the Node.js side receives the flow itself, through the TCP, SSL, HTTP compression and web acceleration profiles, and can act on the data as it passes. Nearly everything written about iRules LX, and nearly everything deployed, is the first mode, and that is what this article is about until the streaming section near the end.
+
+What iRules LX is not: a replacement for the iRule. The LX rule is a normal Tcl iRule with ILX commands in it; it is parsed by the same Tcl 8.4 interpreter, attached to the same virtual server, and subject to the same event model. Node.js is a helper the rule calls, not a place where the rule lives. It is also not the same thing as iControl LX or iApps LX, which are Node.js on the control plane, for management and automation; iRules LX is Node.js in the data path, on the same box, per request.
+
+## The objects
+
+Four objects, and the path each one lives on, because the paths matter when something breaks.
+
+A **workspace** is a directory under `/var/ilx/workspaces/<partition>/<workspace_name>/`, with `extensions/` and `rules/` beneath it. F5 describes it as "a portable development package environment with NPM-like directory structure", and portable is the operative word: a workspace can be exported from one BIG-IP and imported on another, which is how code written in a lab reaches production. The GUI path is Local Traffic, iRules, LX Workspaces; the menu only appears once ILX is provisioned under System, Resource Provisioning.
+
+An **extension** is one Node.js program inside the workspace, at `extensions/<extension_name>/`: an `index.js`, a `package.json`, and the `node_modules` it needs. One workspace can hold several extensions.
+
+An **LX rule** is the Tcl iRule, under `rules/`, that calls the extension. It is an ordinary iRule in every respect except that it uses the ILX commands below.
+
+A **plugin** is what the system runs. It is built from a workspace ("Reload from Workspace" in the GUI, `modify ilx plugin <plugin_name> from-workspace <workspace_name>` in tmsh) and published by copying the result to `/var/sdm/plugin_store/plugins`. The plugin, not the workspace, is what the ILX commands name; editing the workspace changes nothing until the plugin is reloaded from it.
+
+## The call path, command by command
+
+Three Tcl commands, all introduced in BIG-IP 12.0 and all documented in the iRules API reference.
+
+**`ILX::init <plugin> <extension>`** creates "a handle for future use by ILX::call and ILX::notify. This handle is a reference to a running ILX plugin extension." It may be used in any event except `RULE_INIT`, which is the first thing that surprises people: the handle cannot be cached once at load time in a `static::` variable, because `RULE_INIT` is excluded. The reference page adds a sentence worth reading twice: "Instances of the plugin extension will be held in draining mode as long as there are open references to the ILX handle in any event." A handle kept alive keeps a draining extension instance alive with it, so a plugin reload waits on rules that are still holding handles.
+
+**`ILX::call <handle> [-timeout n] <method> [arg]+`** is the synchronous call. `n` is in milliseconds and the default is 3000, three seconds, during which the connection's event handler is waiting. The return value "is the argument passed to response.reply() call on the extension side": a JavaScript array or dictionary comes back as a Tcl list, anything else as a Tcl string. The API reference states one hard limit: "There is a 65K limit to the amount of data that can be sent via the ILX::call command." A request body larger than that does not go to Node.js in one call.
+
+**`ILX::notify <handle> <method> [arg]+`** is the asynchronous one. It "does not wait for the method to complete before returning"; the return value is `TCL_OK` if "the message was successfully queued", and a failure otherwise. Nothing comes back from the method. It is the right command for logging, counting and side effects whose result the rule does not need.
+
+On the Node.js side, the extension loads F5's module and registers methods:
+
+```javascript
+var f5 = require('f5-nodejs');
+var ilx = new f5.ILXServer();
+ilx.addMethod('lookup', function (req, res) {
+  var args = req.params();      // the arguments ILX::call passed, in order
+  res.reply(['group-a', 'group-b']);   // an array comes back to Tcl as a list
+});
+ilx.listen();
+```
+
+`addMethod(name, function(req, res))` names the method the Tcl side calls, `req.params()` returns the arguments, `res.reply(value)` sends the answer, and `ilx.listen()` starts serving. The same module carries the classes the reference lists for the rest of the surface: `ILXPlugin`, `ILXPluginOptions` and `ILXLbOptions` for streaming, `ILXStream`, `ILXFlow`, `ILXTransaction` and `ILXHttpRequest` for the data they carry, `ILXDatagroup` and `ILXTable` for reaching the BIG-IP's own data groups and the session table from JavaScript, `ILXBufferUtil` and `ILXLogger`.
+
+## Processes, and how many of them
+
+An extension runs as one or more Node.js processes, and the choice is a property of the extension. In **dedicated** mode, the default, there is "one Node.js process per TMM per extension"; F5's guidance recommends it for "CPU intensive operations" and high-traffic applications, because each TMM has its own worker and none waits on another. In **single** mode there is "one Node.js process per extension" shared by every TMM, which suits "light weight processes" with low traffic and costs less memory.
+
+The number adds up quickly: extensions multiplied by TMMs, on every blade. F5's own best-practice article from the launch year puts the ceiling plainly: "no more than 50 active Node processes on your BIG-IP at one time (per appliance or per blade)." `tmsh show ilx plugin` shows each process with its CPU, memory, connection counts and process id, and is the first command to run when a plugin misbehaves. F5's bug tracker also records cases of Node.js processes "consuming excessive memory" (ID 941481), which is a reminder that these are ordinary processes competing with TMM for the box.
+
+## npm, on a box with no internet
+
+Extensions use npm packages like any Node.js program, with two constraints F5 states. Modules are installed locally, inside `extensions/<extension_name>/`, never globally: "when you export the workspace to another BIG-IP, a module installed globally won't be included." And "you can not install native modules", the ones written in C++ that need compiling on the target. A production BIG-IP normally has no route to the npm registry, so the recommended practice is to build the workspace "in a lab that has internet access" and export it, `node_modules` included, to the other systems.
+
+## The Node.js version, which is the part that ages
+
+This is where iRules LX shows its date. A workspace has a `node-version` property, and the two values F5's current documentation names are 0.12 and 6.9.1. Node.js 6 (Boron) was first released on 26 April 2016 and received its last release on 3 April 2019; the Node.js project's current lines, as the same page reads today, are 24 and 22, with 20 in maintenance. An iRules LX extension written in 2026 runs on a JavaScript engine whose last release is seven years old, and any package that declares a newer engine in its package.json will refuse to install on it.
+
+BIG-IP 21.1 removes the older of the two: "iRules LX no longer supports Node.js v0.12", and "If you use iRules LX workspaces based on Node.js v0.12, you must update them to Node.js v6 to maintain functionality." The release notes say affected workspaces are flagged during the upgrade and log messages identify them. The documented procedure is short:
+
+```
+tmsh list ilx workspace <workspace_name> all-properties
+tmsh modify ilx workspace <workspace_name> node-version 6.9.1
+tmsh modify ilx plugin <plugin_name> from-workspace <workspace_name>
+```
+
+or, in the GUI, the Node.js Version drop-down on the workspace set to 6.9.1 followed by Reload from Workspace on the plugin. F5 adds the caution that matters: "If the Node modules in your current workspace is not compatible with Node.js 6, you may encounter errors", and the remedy is a new workspace or reinstalled modules.
+
+The version property has a history of its own. Bug ID 746078, "Upgrades break existing iRulesLX workspaces that use node version 6", affected BIG-IP 13.1.0 through 14.1.2.4: a system upgrade reverted a workspace's node version to the default 0.12, and the plugin then failed on reload with "Error: No such module: ILXServerWrap". The workaround was to edit the `node_version` file under `/var/ilx/workspaces/<partition>/<workspace name>` by hand before reloading; the fix, in 14.1.2.5 and 15.0.0, "prevented the node version from getting reverted to default during an upgrade." Anyone operating iRules LX across upgrades should read that bug once, because its shape, a per-workspace setting silently reset, is the shape of most iRules LX upgrade surprises.
+
+## Streaming mode, briefly
+
+From 13.0 an extension can be a stream handler rather than a method server. The Node.js side creates an `ILXPlugin`, configures it with `ILXPluginOptions` and `ILXLbOptions`, and listens for the `initialized` and `connect` events; each flow then emits `data`, `error` and `requestComplete`. The flow is delivered through the TCP, SSL, HTTP compression and web acceleration profiles, which is F5's way of saying the data reaches Node.js after the proxy has done its work. It is the right tool for a protocol TMM does not speak and the wrong one for anything a profile or a Tcl rule can already do, because every byte of the flow now crosses into a process outside TMM and back.
+
+## When to use it, and when not to
+
+The honest case for iRules LX is a specific one: a per-request decision that needs a library or a data source Tcl cannot reach, with an answer small enough for 65K and fast enough for a three-second ceiling, on a box with the memory for the processes. User lookups in an external database, F5's own launch example, fit it. Token handling that needs a real JSON parser fits it. Anything that could be a data group, a sideband connection, an APM policy or a plain Tcl rule should stay there, because each ILX::call adds a process boundary, a serialisation and a wait to the request path.
+
+Before a design depends on it, the questions a reviewer should ask:
+
+1. Which Node.js version does the workspace declare, and does every package in `node_modules` install and run on 6.9.1 today, with no native module among them?
+2. How many Node.js processes will this add (extensions times TMMs times blades, in dedicated mode), and what does `show ilx plugin` report once it is loaded?
+3. What happens when `ILX::call` times out? Is the call wrapped in `catch`, and does the rule have a safe default when it is?
+4. Is anything sent to `ILX::call` able to approach 65K, and what does the rule do then?
+5. Could `ILX::notify` carry it instead, because the rule does not need the answer?
+6. Where is the handle taken, since `ILX::init` cannot run in `RULE_INIT`, and does any event hold it longer than it needs to?
+7. Who owns the workspace export, where is it kept, and has the import been rehearsed on the target version?
+8. Is the upgrade path tested with the plugin loaded, including a reload from workspace after the upgrade?
+9. Does the box have a route to anything the extension connects to, and what is the extension's own timeout to that service, relative to the three seconds Tcl will wait?
+10. Would the same logic be simpler on the control plane, in iControl LX or outside the BIG-IP altogether, with the data path consuming a result rather than computing it?
+
+A checker for the first question, the one that bites most often, is queued on this site's roadmap; until it exists, `npm ls` inside the extension directory and the engines field of each package's `package.json` are the manual version.
+
+## Sources
+
+- [F5 BIG-IP iRulesLX API reference index](https://clouddocs.f5.com/api/irules-lx/) (read 2026-10-04): the RPC mode from TMOS 12.1.0, streaming from 13.0.0, the f5-nodejs classes
+- [F5 iRulesLX API Reference](https://clouddocs.f5.com/api/irules-lx/APIReference.html) (read 2026-10-04): ILXServer, addMethod, req.params, res.reply, listen; ILXPlugin events; the 65K limit on ILX::call
+- [F5 iRules API: ILX::init](https://clouddocs.f5.com/api/irules/ILX__init.html) (read 2026-10-04): the handle, ANY_EVENT except RULE_INIT, draining mode, introduced in 12.0 and available without an EA licence from 12.1
+- [F5 iRules API: ILX::call](https://clouddocs.f5.com/api/irules/ILX__call.html) (read 2026-10-04): the -timeout option and its 3000 ms default, the return value mapping
+- [F5 iRules API: ILX::notify](https://clouddocs.f5.com/api/irules/ILX__notify.html) (read 2026-10-04): does not wait, TCL_OK when queued
+- [BIG-IP iRulesLX User Guide, version 12.1.0 (PDF)](https://cdn.f5.com/websites/devcentral.f5.com/downloads/bigip-iruleslx-user-1210.pdf) (read 2026-10-03): workspace and plugin store paths, dedicated and single modes, ILX provisioning
+- [BIG-IP 21.0.0 release notes: Upgrade Node.js version of iRule LX Workspace](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/upgrade-nodejs.html) (updated 09/02/2026, read 2026-10-04): 0.12 no longer supported from 21.1, the 6.9.1 procedure in GUI and tmsh, the module compatibility caution
+- [New Features in BIG-IP Version 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html) (updated 09/02/2026, read 2026-10-04): removal of Node.js v0.12 support, workspaces flagged during upgrade
+- [F5 Bug ID 746078: Upgrades break existing iRulesLX workspaces that use node version 6](https://cdn.f5.com/product/bugtracker/ID746078.html) (read 2026-10-04): 13.1.0 to 14.1.2.4, the ILXServerWrap error, the workaround, fixed in 14.1.2.5 and 15.0.0
+- [F5 Bug ID 941481: iRules LX nodejs processes consuming excessive memory](https://cdn.f5.com/product/bugtracker/ID941481.html) (title read 2026-10-03)
+- [DevCentral: Introducing iRules LX, Danny Luedke, 13 May 2016](https://community.f5.com/kb/technicalarticles/introducing-irules-lx/273910) (read 2026-10-04): the launch description, workspaces as a portable NPM-like package, the MySQL lookup example
+- [DevCentral: Getting Started with iRules LX, Part 4: NPM and Best Practices, Eric Flores, 9 June 2016](https://community.f5.com/kb/technicalarticles/getting-started-with-irules-lx-part-4-npm--best-practices/276228) (read 2026-10-04): local installs, no native modules, the lab-and-export practice, dedicated versus single, the 50-process ceiling, show ilx plugin
+- [Node.js previous releases](https://nodejs.org/en/about/previous-releases) (read 2026-10-04): v6 Boron first released 26 April 2016, last updated 3 April 2019; the current LTS lines

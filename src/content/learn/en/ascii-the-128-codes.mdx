@@ -1,0 +1,129 @@
+---
+slug: ascii-the-128-codes
+title: "ASCII: the 128 codes, and why the table is laid out that way"
+summary: "Seven bits, eight columns, sixteen rows: how the ASCII table is organised, why upper and lower case are one bit apart, what the 33 controls were defined for and which of them still do something, why white space depends on who is asking, and the HTML references that look like ASCII and are not."
+concepts: ["ascii", "rfc-20", "control characters", "caret notation", "white space", "escape sequences", "character references", "encoding"]
+relatedTools: ["ascii-table", "unicode-inspector", "f5-irules-style-checker", "base64"]
+relatedArticles: ["character-encoding", "unicode-code-points-and-properties", "hex-encoding", "percent-encoding", "irules-style-guide-explained"]
+category: encoding
+order: 215
+status: reviewed
+updated: "2026-10-03"
+---
+
+ASCII is the first 128 numbers of almost every text encoding still in use. Unicode gives the same 128 characters the same numbers, and UTF-8 stores each of them as the one byte it always was, so a file that holds only ASCII is already valid UTF-8. Most of what you type into a router, a load balancer or a shell is ASCII from start to end. The table is older than the Internet's protocols: in October 1969, RFC 20 proposed it for interchange between hosts on the network, copying the USA Standard Code for Information Interchange, X3.4-1968, "embedded in an 8 bit byte whose high order bit is always 0".
+
+The [ASCII table explorer](/tools/ascii-table) shows every code in every notation. This article explains the design behind it, because once the layout makes sense, most of the table can be worked out instead of looked up.
+
+## Seven bits, eight columns, sixteen rows
+
+RFC 20 does not number the codes 0 to 127. It draws them as eight columns and sixteen rows and names each position by both: the letter K is "column 4, row 11", written 4/11. The column is the top three bits, b7 b6 b5, and the row is the bottom four, b4 to b1. So K is 100 1011, which is 75.
+
+The columns group the codes by kind:
+
+| Column | Bits b7 b6 b5 | Codes | What lives there |
+|---|---|---|---|
+| 0 and 1 | 000, 001 | 0 to 31 | the 32 controls |
+| 2 | 010 | 32 to 47 | space and punctuation |
+| 3 | 011 | 48 to 63 | the digits, then `: ; < = > ?` |
+| 4 and 5 | 100, 101 | 64 to 95 | `@`, the capital letters, `[ \ ] ^ _` |
+| 6 and 7 | 110, 111 | 96 to 127 | `` ` ``, the small letters, `{ \| } ~` and DEL |
+
+## One bit apart
+
+Three relations in the layout are worth knowing by heart, because they explain code you will read.
+
+**Case is one bit.** Every capital letter is its small letter minus 32: A is 65 and a is 97. In binary that is a single bit, b6, so code can change case by setting or clearing it, and comparing letters while ignoring case only needs that bit masked off.
+
+**A digit's code is 48 plus its value.** The digits sit at 0x30 to 0x39, so the low four bits of a digit are its value, and `'7' - '0'` is 7 in any language that lets you subtract characters.
+
+**A control is a character minus 64.** The controls in columns 0 and 1 are the characters in columns 4 and 5 with b7 cleared. That is caret notation: `^A` is code 1, `^[` is code 27 (ESC), `^@` is NUL. It is also why the Ctrl key produces controls. Ctrl-C sends 3 (ETX), and on Linux the terminal turns that into the interrupt signal, SIGINT. The one exception is DEL, 127, which is written `^?`: the question mark, 63, with b7 set rather than cleared.
+
+## The controls: what they were for, and what is left
+
+RFC 20 defines all 33 controls (0 to 31 and DEL) and sorts most of them into three classes: communication controls, which run a transmission (SOH, STX, ETX, EOT, ENQ, ACK, DLE, NAK, SYN, ETB); format effectors, which move a print head (BS, HT, LF, VT, FF, CR); and information separators, four of them in a hierarchy from FS, the most inclusive, through GS and RS to US, the least.
+
+Most of those jobs belong to teleprinters and synchronous links that no longer exist, but the codes kept working in other roles. The Linux manual pages list the ones a terminal still acts on. When you type them: Ctrl-C (ETX) interrupts, Ctrl-D (EOT) marks end of file, Ctrl-Z (SUB) suspends, Ctrl-\ (FS) quits, Ctrl-U (NAK) erases the line, Ctrl-W (ETB) erases a word, and Ctrl-S and Ctrl-Q (DC3 and DC1) stop and restart output. A terminal that seems to freeze after an accidental Ctrl-S is waiting for Ctrl-Q, not broken. When the Linux console receives them: BEL beeps, BS moves back a column, HT jumps to the next tab stop, LF, VT and FF all move down a line, CR returns to the start of the line, and ESC starts an escape sequence. ESC followed by `[` is the Control Sequence Introducer, which begins the sequences that set colours and move the cursor: `ESC [ 31 m` sets a red foreground.
+
+DEL is a special case. RFC 20 says it was used mainly to erase unwanted characters in perforated tape, and that in the strict sense it is not a control character at all. Its seven bits are all ones. Unicode, which keeps all 128 codes at their ASCII values, classes it as a control anyway.
+
+## CR, LF, or both
+
+Line endings are the controls that still cause the most trouble. RFC 20 already allowed LF to mean New Line, the first position of the next line, but only by agreement between sender and receiver, and platforms never agreed: the Unicode Standard lists LF for Unix and macOS, CR followed by LF for Windows, CR alone for Mac OS 9 and earlier, and NEL (U+0085) for EBCDIC-based systems. POSIX ends every line of a text file with a single newline character, the one C writes as `\n`, which on an ASCII system is LF. SMTP ends every line with CR followed by LF, and RFC 5321 says a conforming implementation "MUST NOT recognize or generate any other character or character sequence as a line terminator". HTTP/1.1 also uses CR LF, but RFC 9112 lets a recipient accept a lone LF, while a sender must never send a bare CR.
+
+On a BIG-IP that matters in two places: a header or payload built in an iRule needs `\r\n` where HTTP expects it, and a file pasted from Windows into a Unix tool can carry a CR at the end of every line, invisible until something compares it.
+
+## White space depends on who is asking
+
+Ask which codes are white space and you get a different answer from each standard. The explorer measured them in each implementation:
+
+| Definition | TAB 9 | LF 10 | VT 11 | FF 12 | CR 13 | FS to US, 28 to 31 | SP 32 |
+|---|---|---|---|---|---|---|---|
+| C `isspace()` | yes | yes | yes | yes | yes | no | yes |
+| JSON (RFC 8259) | yes | yes | no | no | yes | no | yes |
+| WHATWG (HTML, URLs) | yes | yes | no | yes | yes | no | yes |
+| ABNF `WSP` (RFC 5234) | yes | no | no | no | no | no | yes |
+| Tcl 8.4 word separator | yes | ends the command | yes | yes | yes | no | yes |
+| Python `str.isspace()` | yes | yes | yes | yes | yes | yes | yes |
+| JavaScript `\s`, `trim()` | yes | yes | yes | yes | yes | no | yes |
+
+Two results surprise people. JSON accepts only four codes between tokens, so a form feed that C would skip makes a JSON parser fail. And Python counts the four information separators as white space, so `"a\x1fb".split()` splits where no other language on the list would. ABNF, the grammar notation of most RFCs, calls only space and tab `WSP`; line breaks are written separately.
+
+## Names: three generations
+
+The same character can carry three names, and the explorer shows all of them:
+
+| Code | RFC 20 (1969) | Unicode 1.0 | Unicode today |
+|---|---|---|---|
+| 47 `/` | Slant | SLASH | SOLIDUS |
+| 92 `\` | Reverse Slant | BACKSLASH | REVERSE SOLIDUS |
+| 95 `_` | Underline | SPACING UNDERSCORE | LOW LINE |
+| 126 `~` | Overline (Tilde; General Accent) | TILDE | TILDE |
+
+Unicode names cannot change any more: the Unicode Standard says no character name has been changed since version 2.0, which is why the 1.0 names survive only as a separate property. The controls are different again. Unicode gives them no name at all, only formal aliases taken from ISO 6429, such as LINE FEED, NEW LINE and END OF LINE for code 10, and abbreviations such as LF, NL and EOL.
+
+RFC 20 also flags eleven positions, `#` `@` `[` `\` `]` `^` `` ` `` `{` `|` `}` `~`, that "should not be used in international interchange without determining that there is agreement between sender and recipient", and lets the pound sterling sign take the place of `#` where `#` is not needed.
+
+## Writing a character inside code
+
+Each language has its own escapes, and the differences are where the bugs live:
+
+- **C**: `\n`, `\t` and friends, octal escapes of up to three digits, and hexadecimal escapes that keep reading for as long as hex digits follow. `"\x1Bfoo"` is not ESC followed by `foo`; `"\033foo"` is.
+- **Tcl 8.4, and so iRules**: the same named escapes, but `\x` reads every hex digit that follows and keeps only the last two. In Tcl 8.4.6, `"\x1Bfoo"` becomes the byte 0xBF followed by `oo`. Octal (`\033`) is the safe form.
+- **JSON**: the quotation mark, the reverse solidus and every control from 0 to 31 must be escaped; DEL may appear as it is.
+- **JavaScript**: `\0` is NUL only when no digit follows it.
+- **Python**: `\x` takes exactly two hex digits, unlike C, and octal escapes take up to three.
+- **HTML**: `&#65;` and `&#x41;` work for every code, but a reference to 0 becomes U+FFFD, the replacement character, and references to most controls are parse errors.
+- **URLs**: letters, digits and `- . _ ~` never need encoding; the delimiters `: / ? # [ ] @` and `! $ & ' ( ) * + , ; =` need it only when they are data; everything else, controls and space included, must be percent-encoded.
+
+## Lookalikes that are not ASCII
+
+Two HTML named references catch people who write the ASCII table out by hand. `&minus;` is U+2212 MINUS SIGN, and `&tilde;` is U+02DC SMALL TILDE. Neither is ASCII, and the ASCII hyphen-minus (45) and tilde (126) have no named reference at all, so the only references for them are numeric: `&#45;` and `&#126;`. Some published ASCII tables print `&minus;` and `&tilde;` beside 45 and 126; the WHATWG list says otherwise, and so does the browser.
+
+The same thing happens without HTML. Text copied from a word processor or a chat window brings typographic quotes, en dashes and no-break spaces that look like ASCII and are not, and Unicode's security data (UTS #39) lists more than two thousand characters it considers confusable with ASCII, from Cyrillic letters that match Latin ones to fullwidth digits. Paste a suspect line into the explorer's text box, or into the [Unicode inspector](/tools/unicode-inspector), to see which characters are really there. In an iRule, the [style checker](/tools/f5-irules-style-checker) flags them.
+
+## Sources
+
+The table, the names, the classes, the definitions and notes 3 and 4 are RFC 20's; the Unicode names, aliases and categories come from the Unicode Character Database 18.0.0; the terminal behaviour from the Linux manual pages; each escape and white-space rule from its language's specification, and every one of them was also run in that language on 2026-10-03. All read on 2026-10-03.
+
+- [RFC 20: ASCII format for Network Interchange (1969)](https://www.rfc-editor.org/rfc/rfc20)
+- [The Unicode Standard 18.0.0, chapter 4: Character Properties](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-4/)
+- [The Unicode Standard 18.0.0, chapter 5: Implementation Guidelines (newline guidelines)](https://www.unicode.org/versions/Unicode18.0.0/core-spec/chapter-5/)
+- [Unicode Character Database 18.0.0: UnicodeData.txt](https://www.unicode.org/Public/18.0.0/ucd/UnicodeData.txt)
+- [Unicode Character Database 18.0.0: NameAliases.txt](https://www.unicode.org/Public/18.0.0/ucd/NameAliases.txt)
+- [UTS #39: Unicode Security Mechanisms](https://www.unicode.org/reports/tr39/)
+- [Linux manual page termios(3)](https://man7.org/linux/man-pages/man3/termios.3.html)
+- [Linux manual page console_codes(4)](https://man7.org/linux/man-pages/man4/console_codes.4.html)
+- [POSIX.1-2024: Definitions](https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap03.html)
+- [RFC 5321: Simple Mail Transfer Protocol](https://www.rfc-editor.org/rfc/rfc5321)
+- [RFC 9112: HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112)
+- [RFC 8259: JSON](https://www.rfc-editor.org/rfc/rfc8259)
+- [RFC 5234: ABNF](https://www.rfc-editor.org/rfc/rfc5234)
+- [RFC 3986: URI Generic Syntax](https://www.rfc-editor.org/rfc/rfc3986)
+- [WHATWG HTML: named character references](https://html.spec.whatwg.org/entities.json)
+- [WHATWG HTML: parsing](https://html.spec.whatwg.org/multipage/parsing.html)
+- [WHATWG Infra Standard](https://infra.spec.whatwg.org/)
+- [ISO/IEC 9899:2011 committee draft N1570 (C11)](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf)
+- [ECMA-262: ECMAScript Language Specification](https://tc39.es/ecma262/)
+- [The Python Language Reference: Lexical analysis](https://docs.python.org/3/reference/lexical_analysis.html)
+- [Tcl 8.4 manual: Tcl](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm)
