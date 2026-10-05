@@ -1,0 +1,65 @@
+---
+slug: colour-contrast-wcag-and-css-color-notations
+title: "Colour contrast: the WCAG arithmetic, and the ten ways CSS spells a colour"
+summary: "Whether text can be read against its background is, in WCAG, a single number computed from two colours, and the computation is short enough to do by hand once. Here is the arithmetic (relative luminance, the ratio, the 4.5:1 and 3:1 thresholds and where they come from), followed by the notations CSS Color Level 4 lets you write a colour in, from #hex to oklch(), and why the newer ones make a failing pair easier to fix."
+concepts: ["wcag", "contrast", "accessibility", "css color", "oklch", "srgb", "relative luminance"]
+relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector"]
+relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works"]
+category: web
+order: 142
+status: reviewed
+updated: "2026-10-05"
+---
+
+A stylesheet makes a thousand small decisions about colour, and almost none of them are checked. The one that is checked, by accessibility audits, by procurement rules and in some places by law, is whether text can be read against what is behind it, and the Web Content Accessibility Guidelines reduce that question to one number: the contrast ratio between two colours. The number is simple to compute, and knowing how it is computed changes how you fix a failing pair. The [colour contrast and format tool](/tools/color-contrast-format) does the arithmetic below and shows the intermediate values; this article is what it is doing, with the sources quoted (WCAG 2.2, W3C Recommendation of 12 December 2024, and CSS Color Module Level 4, read 2026-10-05).
+
+## Relative luminance
+
+WCAG defines the relative luminance of a colour as "the relative brightness of any point in colorspace, normalized to 0 for darkest black and 1 for lightest white". For a colour given as sRGB (the space every hex code and `rgb()` lives in), the recipe is:
+
+1. Take each channel as a fraction of its maximum: `#767676` is 118/255 = 0.4627 for red, green and blue alike.
+2. Undo the sRGB gamma. A channel value c at or below 0.04045 becomes c / 12.92; above it, ((c + 0.055) / 1.055) ^ 2.4. For 0.4627 that gives 0.1812. (WCAG 2.0 and 2.1 wrote the threshold as 0.03928; WCAG 2.2 uses 0.04045, the value in the sRGB standard. For 8-bit channels the two thresholds classify every value identically, so no colour's result changed.)
+3. Weight the linear channels by how much each contributes to perceived brightness: L = 0.2126 R + 0.7152 G + 0.0722 B. Green carries most of it, blue almost none, which is why pure blue text on black is so hard to read and pure yellow on white is nearly invisible.
+
+For `#767676`, L = 0.1812. For white, L = 1. For black, L = 0.
+
+## The ratio
+
+The contrast ratio is "(L1 + 0.05) / (L2 + 0.05), where L1 is the relative luminance of the lighter of the colors, and L2 is the relative luminance of the darker of the colors." The 0.05 added to both sides stands for the light a screen reflects and scatters even on black, and it is what keeps the scale finite: black on white is (1 + 0.05) / (0 + 0.05) = 21, so ratios run from 1:1 to 21:1. For `#767676` on white, (1 + 0.05) / (0.1812 + 0.05) = 4.54, which is why that grey is the textbook borderline: a pass at AA by four hundredths.
+
+Two things follow from the formula. It is symmetric, so swapping foreground and background changes nothing. And it is about luminance only: a red and a green of equal luminance have a ratio of 1:1 however different they look, which is the point, since a reader who cannot tell red from green sees exactly that 1:1.
+
+## The thresholds
+
+Three success criteria use the ratio. Success Criterion 1.4.3, Contrast (Minimum), Level AA, requires 4.5:1 for text and images of text, and 3:1 for large-scale text. Success Criterion 1.4.6, Contrast (Enhanced), Level AAA, raises those to 7:1 and 4.5:1. Success Criterion 1.4.11, Non-text Contrast, Level AA, requires 3:1 for "user interface components" and "graphical objects" against adjacent colours: the outline of a text field, the line of a chart, the icon that is the only sign a button exists. Both text criteria exempt incidental text (in an inactive control, pure decoration, part of a picture with other significant content) and logotypes.
+
+Large-scale text is "at least 18 point or 14 point bold or font size that would yield equivalent size for Chinese, Japanese and Korean (CJK) fonts". Points, not pixels: 18 point is 24 CSS pixels, and 14 point bold is about 18.7 pixels, so a bold 20 px heading gets the 3:1 rule and a 16 px paragraph gets 4.5:1.
+
+## Alpha, gamut, and what is actually measured
+
+The criteria speak of the colours as displayed. A foreground with alpha, `rgb(0 0 0 / 50%)`, is not a colour until it is painted over something; over white it becomes `#808080`, and that is the colour whose luminance counts. The tool composites a translucent foreground over the background before measuring and says so.
+
+The same goes for colours a screen cannot show. `color(display-p3 1 1 0)` is a yellow outside the sRGB gamut; a browser on an sRGB display clips it to `#ffff00`. Since the criteria are defined over sRGB, the tool measures the clipped colour and marks the clip. The wide-gamut notations below are still shown unclipped, so you can see what you asked for beside what sRGB can give.
+
+## Ten ways to spell a colour
+
+CSS Color Module Level 4 defines every notation the tool reads, and they fall into two families. The first family is sRGB in different clothes:
+
+- A **named colour**, one of 148 (`rebeccapurple` is `#663399`; `gray` and `grey` are both `#808080`), plus `transparent`, which the specification defines as "a transparent black".
+- **Hex**, "a hash character followed by some number of digits": 3, 4, 6 or 8 of them, letters in either case, with the three- and four-digit forms expanded by replicating each digit (`#abc` is `#aabbcc`).
+- **rgb()**, with each channel a number from 0 to 255 or a percentage (100% = 255), an optional alpha after a slash, and the older comma-separated form still accepted; out-of-range components are clamped "at parsed-value time".
+- **hsl()**, hue as an angle plus saturation and lightness in percent (the specification's own HSL algorithm is the one the tool runs), and **hwb()**, hue plus whiteness and blackness: the same colours, described the way a painter mixes them.
+
+The second family is perceptual: coordinates in which equal steps look roughly equal. **lab()** and **lch()** are CIE Lab and its polar form, with lightness 0 to 100 and, for percentages, a and b at 100% = 125 and chroma at 100% = 150. **oklab()** and **oklch()** are the newer OKLab, with lightness 0 to 1 and a, b and chroma at 100% = 0.4. **color()** names a space explicitly: `srgb`, `srgb-linear`, `display-p3`, `xyz` and its D50 and D65 variants, among others. The conversions between all of these are given in the specification as sample code (sRGB to linear light, the rational sRGB-XYZ matrices, Bradford adaptation between the D65 and D50 white points, the Lab and OKLab formulas), and the tool runs that code, so `#7654CD` comes out as `lab(44.36% 36.05 -58.99)` and `color(xyz-d65 0.21661 0.14602 0.59452)`, the specification's own worked example.
+
+## Why the perceptual notations fix contrast better
+
+Here is the practical payoff. A failing pair is usually fixed by making the foreground lighter or darker without changing what colour it is. In `hsl()`, lightness is a geometric quantity: `hsl(240 100% 50%)` and `hsl(60 100% 50%)` share a lightness of 50% and are a saturated blue and a saturated yellow with luminances of 0.07 and 0.93. Moving HSL lightness moves luminance by amounts that depend on the hue, so the same adjustment fixes one pair and not another.
+
+In `oklch()`, the L coordinate was designed so that colours with the same L look about equally light, and the hue and chroma stay put while L moves. That is the move the tool makes when it proposes a fix: it keeps the foreground's OKLCH hue and chroma, searches for the lightness at which the ratio reaches 3:1, 4.5:1 or 7:1, reduces chroma only if the result would leave the sRGB gamut, and shows the result in both directions. The fix is still judged by the WCAG formula, which is sRGB arithmetic and not a perceptual model, but it is found in the space where "a bit lighter" means what a designer means by it.
+
+## Sources
+
+- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (read 2026-10-05): the definitions of relative luminance, contrast ratio and large-scale text; Success Criteria 1.4.3, 1.4.6 and 1.4.11
+- [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (read 2026-10-05): the notations, their percentage reference ranges, the named colours, the worked conversion examples
+- [CSS Color Level 4 sample code, csswg-drafts repository](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (read 2026-10-05)

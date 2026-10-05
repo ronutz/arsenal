@@ -1,0 +1,65 @@
+---
+slug: colour-contrast-wcag-and-css-color-notations
+title: "Contraste de cor: a aritmética do WCAG e as dez maneiras de o CSS escrever uma cor"
+summary: "Se um texto pode ser lido sobre o seu fundo é, no WCAG, um único número calculado a partir de duas cores, e o cálculo é curto o bastante para se fazer à mão uma vez. Aqui está a aritmética (luminância relativa, a razão, os limiares de 4.5:1 e 3:1 e de onde vêm), seguida das notações em que o CSS Color Level 4 permite escrever uma cor, de #hex a oklch(), e por que as mais novas tornam um par reprovado mais fácil de corrigir."
+concepts: ["wcag", "contraste", "acessibilidade", "css color", "oklch", "srgb", "luminância relativa"]
+relatedTools: ["color-contrast-format", "url-inspector", "unicode-inspector"]
+relatedArticles: ["hidden-messages-in-http-headers", "how-a-webassembly-tool-works"]
+category: web
+order: 142
+status: reviewed
+updated: "2026-10-05"
+---
+
+Uma folha de estilos toma mil pequenas decisões sobre cor, e quase nenhuma é verificada. A que é verificada, por auditorias de acessibilidade, por regras de compras públicas e em alguns lugares por lei, é se o texto pode ser lido sobre o que está atrás dele, e as Diretrizes de Acessibilidade para Conteúdo Web reduzem essa pergunta a um número: a razão de contraste entre duas cores. O número é simples de calcular, e saber como é calculado muda o modo de corrigir um par reprovado. A [ferramenta de contraste e formato de cor](/tools/color-contrast-format) faz a aritmética abaixo e mostra os valores intermediários; este artigo é o que ela está fazendo, com as fontes citadas (WCAG 2.2, W3C Recommendation de 12 de dezembro de 2024, e CSS Color Module Level 4, lidos em 2026-10-05).
+
+## Luminância relativa
+
+O WCAG define a luminância relativa de uma cor como "the relative brightness of any point in colorspace, normalized to 0 for darkest black and 1 for lightest white". Para uma cor dada em sRGB (o espaço em que vive todo código hex e todo `rgb()`), a receita é:
+
+1. Tome cada canal como fração do seu máximo: `#767676` é 118/255 = 0.4627 para vermelho, verde e azul igualmente.
+2. Desfaça o gama do sRGB. Um valor de canal c até 0.04045 vira c / 12.92; acima disso, ((c + 0.055) / 1.055) ^ 2.4. Para 0.4627 isso dá 0.1812. (O WCAG 2.0 e o 2.1 escreviam o limiar como 0.03928; o WCAG 2.2 usa 0.04045, o valor do padrão sRGB. Para canais de 8 bits os dois limiares classificam todos os valores igualmente, então o resultado de nenhuma cor mudou.)
+3. Pondere os canais lineares pelo quanto cada um contribui ao brilho percebido: L = 0.2126 R + 0.7152 G + 0.0722 B. O verde carrega a maior parte, o azul quase nada, e é por isso que texto azul puro sobre preto é tão difícil de ler e amarelo puro sobre branco é quase invisível.
+
+Para `#767676`, L = 0.1812. Para o branco, L = 1. Para o preto, L = 0.
+
+## A razão
+
+A razão de contraste é "(L1 + 0.05) / (L2 + 0.05), where L1 is the relative luminance of the lighter of the colors, and L2 is the relative luminance of the darker of the colors." O 0.05 somado aos dois lados representa a luz que uma tela reflete e espalha mesmo no preto, e é o que mantém a escala finita: preto sobre branco é (1 + 0.05) / (0 + 0.05) = 21, então as razões vão de 1:1 a 21:1. Para `#767676` sobre branco, (1 + 0.05) / (0.1812 + 0.05) = 4.54, e por isso esse cinza é o limite dos livros: passa em AA por quatro centésimos.
+
+Duas coisas decorrem da fórmula. Ela é simétrica, então trocar primeiro plano e fundo não muda nada. E ela trata só de luminância: um vermelho e um verde de luminância igual têm razão 1:1 por mais diferentes que pareçam, e esse é o ponto, já que um leitor que não distingue vermelho de verde vê exatamente esse 1:1.
+
+## Os limiares
+
+Três critérios de sucesso usam a razão. O critério 1.4.3, Contraste (mínimo), nível AA, exige 4.5:1 para texto e imagens de texto, e 3:1 para texto em escala grande. O critério 1.4.6, Contraste (aprimorado), nível AAA, eleva esses valores para 7:1 e 4.5:1. O critério 1.4.11, Contraste não textual, nível AA, exige 3:1 para "user interface components" e "graphical objects" contra as cores adjacentes: o contorno de um campo de texto, a linha de um gráfico, o ícone que é o único sinal de que um botão existe. Os dois critérios de texto isentam texto incidental (num controle inativo, decoração pura, parte de uma imagem com outro conteúdo significativo) e logotipos.
+
+Texto em escala grande é "at least 18 point or 14 point bold or font size that would yield equivalent size for Chinese, Japanese and Korean (CJK) fonts". Pontos, não pixels: 18 pontos são 24 pixels CSS, e 14 pontos em negrito são cerca de 18,7 pixels, então um título em negrito de 20 px recebe a regra de 3:1 e um parágrafo de 16 px recebe 4.5:1.
+
+## Alfa, gamut e o que de fato se mede
+
+Os critérios falam das cores como exibidas. Um primeiro plano com alfa, `rgb(0 0 0 / 50%)`, não é uma cor até ser pintado sobre algo; sobre branco ele vira `#808080`, e essa é a cor cuja luminância conta. A ferramenta compõe um primeiro plano translúcido sobre o fundo antes de medir e diz que o fez.
+
+O mesmo vale para cores que uma tela não consegue mostrar. `color(display-p3 1 1 0)` é um amarelo fora do gamut sRGB; um navegador numa tela sRGB o recorta para `#ffff00`. Como os critérios são definidos sobre sRGB, a ferramenta mede a cor recortada e marca o recorte. As notações de gamut amplo abaixo continuam a aparecer sem recorte, para que se veja o que foi pedido ao lado do que o sRGB consegue dar.
+
+## Dez maneiras de escrever uma cor
+
+O CSS Color Module Level 4 define todas as notações que a ferramenta lê, e elas caem em duas famílias. A primeira é o sRGB com roupas diferentes:
+
+- Uma **cor nomeada**, uma de 148 (`rebeccapurple` é `#663399`; `gray` e `grey` são ambos `#808080`), mais `transparent`, que a especificação define como "a transparent black".
+- **Hex**, "a hash character followed by some number of digits": 3, 4, 6 ou 8 deles, letras em qualquer caixa, com as formas de três e quatro dígitos expandidas pela repetição de cada dígito (`#abc` é `#aabbcc`).
+- **rgb()**, com cada canal como número de 0 a 255 ou porcentagem (100% = 255), um alfa opcional depois de uma barra, e a forma antiga separada por vírgulas ainda aceita; componentes fora da faixa são limitados "at parsed-value time".
+- **hsl()**, matiz como ângulo mais saturação e luminosidade em porcentagem (o algoritmo HSL da própria especificação é o que a ferramenta roda), e **hwb()**, matiz mais brancura e pretura: as mesmas cores, descritas do jeito que um pintor as mistura.
+
+A segunda família é perceptual: coordenadas em que passos iguais parecem mais ou menos iguais. **lab()** e **lch()** são o CIE Lab e a sua forma polar, com luminosidade de 0 a 100 e, para porcentagens, a e b em 100% = 125 e croma em 100% = 150. **oklab()** e **oklch()** são o OKLab mais novo, com luminosidade de 0 a 1 e a, b e croma em 100% = 0.4. **color()** nomeia um espaço explicitamente: `srgb`, `srgb-linear`, `display-p3`, `xyz` e as suas variantes D50 e D65, entre outros. As conversões entre todos eles estão na especificação como código de exemplo (sRGB para luz linear, as matrizes racionais sRGB-XYZ, a adaptação de Bradford entre os brancos D65 e D50, as fórmulas de Lab e OKLab), e a ferramenta roda esse código, de modo que `#7654CD` sai como `lab(44.36% 36.05 -58.99)` e `color(xyz-d65 0.21661 0.14602 0.59452)`, o exemplo resolvido da própria especificação.
+
+## Por que as notações perceptuais corrigem contraste melhor
+
+Eis o ganho prático. Um par reprovado em geral se corrige clareando ou escurecendo o primeiro plano sem mudar que cor ele é. Em `hsl()`, luminosidade é uma grandeza geométrica: `hsl(240 100% 50%)` e `hsl(60 100% 50%)` compartilham a luminosidade de 50% e são um azul saturado e um amarelo saturado com luminâncias de 0.07 e 0.93. Mover a luminosidade HSL move a luminância em quantidades que dependem do matiz, então o mesmo ajuste corrige um par e não corrige outro.
+
+Em `oklch()`, a coordenada L foi desenhada para que cores com o mesmo L pareçam igualmente claras, e o matiz e o croma ficam parados enquanto L se move. É esse o movimento que a ferramenta faz quando propõe uma correção: mantém o matiz e o croma OKLCH do primeiro plano, procura a luminosidade em que a razão alcança 3:1, 4.5:1 ou 7:1, reduz o croma só se o resultado sair do gamut sRGB, e mostra o resultado nas duas direções. A correção continua a ser julgada pela fórmula do WCAG, que é aritmética sRGB e não um modelo perceptual, mas é encontrada no espaço em que "um pouco mais claro" significa o que um designer quer dizer com isso.
+
+## Fontes
+
+- [WCAG 2.2, W3C Recommendation 12 December 2024](https://www.w3.org/TR/WCAG22/) (lido em 2026-10-05): as definições de luminância relativa, razão de contraste e texto em escala grande; critérios de sucesso 1.4.3, 1.4.6 e 1.4.11
+- [CSS Color Module Level 4, W3C Candidate Recommendation Draft 30 September 2026](https://www.w3.org/TR/css-color-4/) (lido em 2026-10-05): as notações, as faixas de referência de porcentagem, as cores nomeadas, os exemplos de conversão resolvidos
+- [Código de exemplo do CSS Color Level 4, repositório csswg-drafts](https://github.com/w3c/csswg-drafts/tree/main/css-color-4) (lido em 2026-10-05)

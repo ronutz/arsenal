@@ -68,6 +68,12 @@ const EXEMPT = new Map([
   // are never linked from the page; the live link is built by waybackUrl() from this value and the
   // served timestamp. Fetching them would report 94 dead links that are the historical record itself.
   ["original", "an archived page's original URL in the earlier-sites inventory; dead by nature, never linked, the archive link is derived from it"],
+  // 2026-10-05: the three-tools record on the same page keeps the OUTSIDE address the 2013 home page
+  // linked under a tool's name (www.subnet-calculator.com, www.ertyu.org/...). It is a fact about the 2013
+  // page, shown as a host name and never rendered as a link; whether that destination answers today is
+  // not something the page states, so the audit must not be the one to find out.
+  ["outsideLink2013", "the outside address the 2013 home page linked under a tool's name, in the earlier-sites record; a historical fact shown as a host name, never linked"],
+  ["reference", "the IANA field-name and status-code registries' own reference column, copied as written into the HTTP message decoder's data (four rows cite a W3C page by URL); shown as text beside a field, never linked, and the registries themselves are audited through the manifest's sources"],
 ]);
 
 function walk(dir, out = []) {

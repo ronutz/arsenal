@@ -72,6 +72,7 @@ export function flagFor(code: CountryCode): string {
  * which appears 108 times on one page and would dominate it.
  */
 export const COUNTRY_NAMES: Record<CountryCode, string> = {
+  AE: "United Arab Emirates", // added 2026-10-05: the training clocks (Dubai row) carry a flag per row (PRIME)
   AT: "Austria",
   AU: "Australia",
   BR: "Brazil",
@@ -80,6 +81,7 @@ export const COUNTRY_NAMES: Record<CountryCode, string> = {
   CN: "China",
   DE: "Germany",
   DK: "Denmark", // added 2026-10-05: the Ørsted milestone (1820) carried DK with no name and no flag (PRIME)
+  EU: "European Union", // not a country: the exceptionally reserved ISO 3166 code, used for the Central European Time row of the training clocks (2026-10-05)
   FI: "Finland",
   FR: "France",
   GB: "United Kingdom",
@@ -88,10 +90,15 @@ export const COUNTRY_NAMES: Record<CountryCode, string> = {
   IN: "India",
   IT: "Italy",
   JP: "Japan",
+  KR: "South Korea", // added 2026-10-05 for the training clocks (Seoul row)
   LV: "Latvia",
   NL: "Netherlands",
+  NZ: "New Zealand", // added 2026-10-05 for the training clocks (Auckland row)
+  PH: "Philippines", // added 2026-10-05 for the training clocks (Manila row)
   RU: "Russia",
   SE: "Sweden",
+  SG: "Singapore", // added 2026-10-05 for the training clocks
+  TH: "Thailand", // added 2026-10-05 for the training clocks (Bangkok row)
   TW: "Taiwan",
   US: "United States",
 };

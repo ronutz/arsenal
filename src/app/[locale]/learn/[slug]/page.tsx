@@ -15,6 +15,7 @@ import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import BigipTimeline from "@/components/learn/BigipTimeline";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
@@ -155,7 +156,10 @@ export default async function ArticlePage({
                     // mention of each eligible term in <GlossaryTerm>. Built at
                     // compile time; the visible affordance is opt-out via the
                     // glossary-hints setting.
-                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()]],
+                    // Root-relative links written without a locale get this
+                    // page's locale, so a reader stays in their language
+                    // (src/lib/rehypeLocaliseLinks.ts has the measurements).
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
                   },
                 }}
                 components={{ BigipTimeline, GlossaryTerm }}

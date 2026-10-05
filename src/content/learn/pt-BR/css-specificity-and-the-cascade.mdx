@@ -1,0 +1,74 @@
+---
+slug: css-specificity-and-the-cascade
+title: "Especificidade, contada pela especificação, e as cinco coisas que a cascata verifica antes"
+summary: "Toda guerra de folhas de estilo acaba no mesmo lugar: duas regras querem a mesma propriedade no mesmo elemento e uma vence. O CSS decide com um procedimento curto e exato, e a especificidade é só o quinto passo. Aqui está como o Selectors Level 4 conta um seletor em três números, o que :is(), :where(), :not() e :nth-child(of) fazem com a conta, os dez exemplos que a própria especificação dá, e os cinco critérios que a cascata resolve antes de olhar para a especificidade."
+concepts: ["css", "especificidade", "cascata", "seletores", "camadas de cascata", "important"]
+relatedTools: ["css-specificity-calculator", "color-contrast-format", "regex"]
+relatedArticles: ["colour-contrast-wcag-and-css-color-notations", "hidden-messages-in-http-headers"]
+category: web
+order: 143
+status: reviewed
+updated: "2026-10-05"
+---
+
+Uma regra diz que o link é azul. Outra, escrita depois, por outra pessoa, diz que é verde. O navegador pinta azul, e o segundo autor recorre ao `!important`. Esse reflexo é o sintoma de não conhecer o procedimento, porque o procedimento é curto e exato, e uma vez na cabeça o vencedor nunca surpreende. Duas especificações o guardam: o Selectors Level 4 diz como um seletor é contado numa especificidade, e o CSS Cascading and Inheritance Level 5 diz onde essa conta fica entre as outras coisas que decidem. Ambos foram lidos em 2026-10-05 e são citados abaixo; a [calculadora de especificidade CSS](/tools/css-specificity-calculator) faz a conta para qualquer seletor colado e mostra a contribuição de cada peça.
+
+## Três números
+
+O Selectors Level 4 define a especificidade de um seletor como três contagens, calculadas "as follows":
+
+- "count the number of ID selectors in the selector (= A)"
+- "count the number of class selectors, attributes selectors, and pseudo-classes in the selector (= B)"
+- "count the number of type selectors and pseudo-elements in the selector (= C)"
+- "ignore the universal selector"
+
+Então `#main nav a:hover::before` tem um ID (A = 1), uma pseudoclasse (B = 1), e dois seletores de tipo mais um pseudoelemento (C = 3): escreve-se (1,1,3). Combinadores (o espaço, `>`, `+`, `~`) não somam nada; descrevem a relação, não o peso. Os três números não são dígitos de um número só: "Specificities are compared by comparing the three components in order: the specificity with a larger A value is more specific; if the two A values are tied, then the specificity with a larger B value is more specific; if the two B values are also tied, then the specificity with a larger C value is more specific; if all the values are tied, the two specificities are equal." Um ID pesa mais que qualquer número de classes; onze classes não viram um ID. Escrever especificidade como "110" e comparar como número é o erro mais antigo do assunto.
+
+A tabela de exemplos da própria especificação é a calibração mais rápida:
+
+```
+*               /* a=0 b=0 c=0 */
+LI              /* a=0 b=0 c=1 */
+UL LI           /* a=0 b=0 c=2 */
+UL OL+LI        /* a=0 b=0 c=3 */
+H1 + *[REL=up]  /* a=0 b=1 c=1 */
+UL OL LI.red    /* a=0 b=1 c=3 */
+LI.red.level    /* a=0 b=2 c=1 */
+#x34y           /* a=1 b=0 c=0 */
+#s12:not(FOO)   /* a=1 b=0 c=1 */
+.foo :is(.bar, #baz)
+                /* a=1 b=1 c=0 */
+```
+
+E uma nota que surpreende: "Repeated occurrences of the same simple selector are allowed and do increase specificity." `.button.button` é (0,2,0), um jeito legítimo, embora inelegante, de superar `.button.primary` sem um ID.
+
+## As pseudoclasses que contam diferente
+
+Quatro pseudoclasses funcionais recebem seletores como argumentos, e a especificação dá a cada uma uma regra de "evaluation context":
+
+- "The specificity of an :is(), :not(), or :has() pseudo-class is replaced by the specificity of the most specific complex selector in its selector list argument." Então `:is(em, #foo)` é (1,0,0), qualquer que seja o argumento que de fato casou, e `:not(em, strong#foo)` é (1,0,1): negar um seletor não custa nem rende nada além do peso do próprio argumento.
+- "The specificity of an :nth-child() or :nth-last-child() selector is the specificity of the pseudo-class itself (counting as one pseudo-class selector) plus the specificity of the most specific complex selector in its selector list argument (if any)." `:nth-child(even of li, .item)` é (0,2,0): um pela pseudoclasse, um por `.item`.
+- "The specificity of a :where() pseudo-class is replaced by zero." `.qux:where(em, #foo#bar#baz)` é (0,1,0); os três IDs dentro não contribuem nada.
+
+Essa última regra é a resposta moderna ao reflexo do `!important`. Uma biblioteca que envolve os seus seletores em `:where()` entrega regras com especificidade zero, de modo que qualquer regra que o autor da página escreva, por mais simples, as sobrepõe; um autor que envolve em `:is()` obtém o contrário, um piso definido pelo argumento mais pesado. As duas foram desenhadas como par.
+
+Mais dois cantos. Pseudoelementos escritos com um dois-pontos, `:before`, `:after`, `:first-line`, `:first-letter`, são a grafia do CSS2 e continuam pseudoelementos, então contam em C como `::before`. E no shadow DOM, o CSS Shadow Module Level 1 (Editor's Draft, 28 de abril de 2026) diz que `:host()` e `:host-context()` são "a pseudo-class, plus the specificity of its argument", e `::slotted()` é "a pseudo-element, plus the specificity of its argument", de modo que `:host(.dark) ::slotted(span)` é (0,2,2).
+
+## Cinco coisas que a cascata verifica antes
+
+A especificidade é o quinto de seis critérios. O CSS Cascading and Inheritance Level 5 "sorts declarations according to the following criteria, in descending order of priority":
+
+1. **Origem e importância.** As origens, em ordem decrescente: declarações de transição, importantes do agente de usuário, importantes do usuário, importantes do autor, animações, normais do autor, normais do usuário, normais do agente de usuário. "Declarations from origins earlier in this list win over declarations from later origins." É aqui que o `!important` mora: uma declaração importante do autor vence toda declaração normal do autor, e nenhum seletor muda isso.
+2. **Contexto.** Entre shadow trees, "for normal rules the declaration from the outer context wins, and for important rules the declaration from the inner context wins."
+3. **Estilos ligados ao elemento.** Declarações num atributo `style` "take precedence over declarations the same importance that are mapped via style rule." Nenhum seletor alcança um estilo inline; só a importância alcança.
+4. **Camadas.** "When comparing declarations that belong to different layers, then for normal rules the declaration whose cascade layer is last wins, and for important rules the declaration whose cascade layer is first wins." Declarações fora de qualquer `@layer` vão para "an implicit final layer", então estilos sem camada vencem os em camadas independentemente da especificidade, que é o sentido das camadas: um reset ou um framework numa camada inicial nunca vence uma briga que não deveria ter.
+5. **Especificidade.** "Each declaration has the same specificity as the style rule it appears in. The declaration with the highest specificity wins."
+6. **Ordem de aparição.** "The last declaration in document order wins", com folhas importadas contadas onde o seu `@import` está e atributos style "all placed after any style sheets".
+
+Então o link azul é azul porque as duas regras diferiram num passo acima da especificidade, ou empataram na especificidade e a regra azul veio depois. Recorrer ao `!important` move a briga para o passo um, onde será vencida, e onde o próximo autor terá de seguir. Recorrer à calculadora encontra o passo, o que em geral basta para corrigir a regra no lugar: acrescentar uma classe, tirar um ID, ou mover a regra para a camada certa.
+
+## Fontes
+
+- [Selectors Level 4, W3C Working Draft 22 January 2026: Calculating a selector's specificity](https://www.w3.org/TR/selectors-4/#specificity-rules) (lido em 2026-10-05)
+- [CSS Cascading and Inheritance Level 5, W3C Candidate Recommendation Snapshot 13 January 2022: Cascade Sorting Order](https://www.w3.org/TR/css-cascade-5/#cascade-sort) (lido em 2026-10-05)
+- [CSS Shadow Module Level 1, Editor's Draft 28 April 2026](https://drafts.csswg.org/css-shadow-1/) (lido em 2026-10-05)

@@ -3,7 +3,7 @@ slug: content-security-policy
 title: "Content Security Policy, Diretiva por Diretiva"
 summary: "Como a CSP funciona como controle contra cross-site scripting e injeção: a forma de uma política, por que default-src importa, o que 'unsafe-inline' e 'unsafe-eval' entregam, como nonces e hashes permitem código inline específico com segurança e para que serve o modo report-only."
 concepts: ["csp", "xss", "default-src", "script-src", "frame-ancestors", "nonce", "hash", "report-only"]
-relatedTools: ["secure-headers"]
+relatedTools: ["secure-headers", "csp-evaluator"]
 relatedArticles: ["secure-headers-overview", "clickjacking-and-framing", "hsts-and-https"]
 category: security
 order: 2
@@ -84,3 +84,5 @@ Duas diretivas menores fecham brechas reais. `object-src 'none'` bloqueia conte�
 ## Erros comuns
 
 As falhas recorrentes são: publicar uma política que mantém o `'unsafe-inline'` e, portanto, oferece pouca proteção real; omitir o `default-src`, o que deixa tipos de recurso não nomeados abertos; depender do report-only como se ele reforçasse algo; e usar uma fonte curinga `*`, que permite qualquer origem e desfaz a restrição. Uma boa política é restritiva por padrão, nomeia suas fontes explicitamente, permite código inline específico por nonce ou hash em vez de por `'unsafe-inline'`, e é reforçada em vez de apenas relatada.
+
+O [avaliador de CSP](/tools/csp-evaluator) lê uma política colada como o navegador a lê e lista cada um desses erros onde ocorre, com a frase da especificação que o torna um erro.

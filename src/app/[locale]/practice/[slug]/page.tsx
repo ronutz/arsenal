@@ -28,6 +28,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import remarkGfm from "remark-gfm";
 import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
@@ -153,7 +154,8 @@ export default async function PracticeArticlePage({
                 options={{
                   mdxOptions: {
                     remarkPlugins: [remarkGfm],
-                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()]],
+                    // Root-relative links get this page's locale (src/lib/rehypeLocaliseLinks.ts).
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
                   },
                 }}
                 components={{ GlossaryTerm }}

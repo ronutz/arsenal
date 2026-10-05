@@ -181,3 +181,140 @@ export const ARCHIVED_ERAS: readonly ArchivedEra[] = [
 
 /** Total pages across every era, for the page lede. */
 export const ARCHIVED_PAGE_COUNT = ARCHIVED_ERAS.reduce((n, e) => n + e.pages.length, 0);
+
+// ============================================================================
+// THE THREE TOOLS, ON THE RECORD (PRIME, 2026-10-05 02:31: "link to a locally-stored record / rendering /
+// reproduction ... and a link to the Internet Archive page on each individual record"). The 2004 home page
+// (principal.htm, captured 2004-10-09) linked three tools of its own: /bitsandbytes.htm, /ipsubnet.htm and
+// /pinout.htm. What the archive holds of each was read from the Wayback CDX index on 2026-10-05
+// (web.archive.org/cdx/search/cdx?url=nutzmann.net/* and ...ntz.com.br/*): the bits-and-bytes calculator was
+// captured nine times on nutzmann.net (2004-10-09 to 2013-12-04) and seventeen times on ntz.com.br
+// (2013-08-02 to 2017-06-13); the other two were requested four times each between October 2004 and May 2005
+// and the archive recorded a 404 every time, so no copy of either page exists anywhere. The 2013 home page
+// (index.html, captured 2013-05-18) kept the bits-and-bytes calculator as its own page and linked outside
+// pages under the other two names: www.subnet-calculator.com and www.ertyu.org/steven_nikkel/ethernetcables.html.
+// The renderings under /archive/earlier-sites/ were made here on 2026-10-05 from the captures saved on
+// 2026-10-03 (self-contained HTML, rendered offline in Chromium at 900 or 1024 px; images the archive never
+// stored appear as gaps, which is the honest picture of what survives).
+// ============================================================================
+
+/** One archive record behind a tool: a capture (status 200, with a rendering) or a refusal (404, no copy). */
+export interface ToolArchiveRecord {
+  /** The domain the record belongs to. */
+  domain: "nutzmann.net" | "ntz.com.br";
+  /** The original URL as the archive recorded it. */
+  original: string;
+  /** The capture timestamp (UTC, YYYYMMDDhhmmss) this record links to: the first capture, or the first 404. */
+  captured: string;
+  /** What the archive answered: a stored page, or a recorded 404. */
+  status: 200 | 404;
+  /** How many captures the archive holds (status 200 only). */
+  captures?: number;
+  /** The last capture, YYYYMMDDhhmmss (status 200 only). */
+  lastCaptured?: string;
+  /** Every request the archive made and its 404 answer, YYYYMMDDhhmmss (status 404 only). */
+  attempts?: string[];
+  /** The rendering made here from the saved capture, under /archive/earlier-sites/ (status 200 only). */
+  rendering?: string;
+}
+
+/** One of the three tools: its message key, the records behind it, where the idea lives on this site today. */
+export interface ToolRecord {
+  key: "bits" | "ip" | "pinout";
+  records: ToolArchiveRecord[];
+  /** The 2013 home page's outside link under the tool's name, when the tool was no longer the site's own. */
+  outsideLink2013?: string;
+  /** The page on this site that carries the idea today (locale-free). */
+  today: string;
+}
+
+/** The capture of the 2004 home page body (principal.htm) that links the three tools, and its rendering. */
+export const HOME_2004: ToolArchiveRecord = {
+  domain: "nutzmann.net",
+  original: "http://nutzmann.net:80/principal.htm",
+  captured: "20041009091654",
+  status: 200,
+  rendering: "/archive/earlier-sites/nutzmann-net-2004-10-09-principal.png",
+};
+
+/** The capture of the 2013 home page (index.html) and its rendering. */
+export const HOME_2013: ToolArchiveRecord = {
+  domain: "ntz.com.br",
+  original: "http://ntz.com.br/",
+  captured: "20130518185907",
+  status: 200,
+  rendering: "/archive/earlier-sites/ntz-com-br-2013-05-18-index.png",
+};
+
+/** The day the CDX index was read for the records below. */
+export const TOOL_RECORDS_READ_DATE = "2026-10-05";
+
+export const TOOL_RECORDS: readonly ToolRecord[] = [
+  {
+    key: "bits",
+    records: [
+      { domain: "nutzmann.net", original: "http://nutzmann.net:80/bitsandbytes.htm", captured: "20041009131549", status: 200, captures: 9, lastCaptured: "20131204114346", rendering: "/archive/earlier-sites/nutzmann-net-2004-10-09-bitsandbytes.png" },
+      { domain: "ntz.com.br", original: "http://ntz.com.br/bitsandbytes.html", captured: "20130802011252", status: 200, captures: 17, lastCaptured: "20170613164904", rendering: "/archive/earlier-sites/ntz-com-br-2013-08-02-bitsandbytes.png" },
+    ],
+    today: "/tools/bits-bytes",
+  },
+  {
+    key: "ip",
+    records: [
+      { domain: "nutzmann.net", original: "http://nutzmann.net:80/ipsubnet.htm", captured: "20041009113804", status: 404, attempts: ["20041009113804", "20041209165241", "20050207163444", "20050506100108"] },
+    ],
+    outsideLink2013: "http://www.subnet-calculator.com/",
+    today: "/tools/cidr",
+  },
+  {
+    key: "pinout",
+    records: [
+      { domain: "nutzmann.net", original: "http://nutzmann.net:80/pinout.htm", captured: "20041009112525", status: 404, attempts: ["20041009112525", "20041209165649", "20050207164758", "20050506100205"] },
+    ],
+    outsideLink2013: "http://www.ertyu.org/steven_nikkel/ethernetcables.html",
+    today: "/learn/structured-cabling",
+  },
+];
+
+/** The archive URL of one tool record (the same form as waybackUrl, for a record rather than an inventory page). */
+export function recordWaybackUrl(original: string, captured: string): string {
+  return `https://web.archive.org/web/${captured}/${original}`;
+}
+
+// ============================================================================
+// THE FLASH TOP BARS, REPRODUCED (PRIME, 2026-10-05 03:22: "versions of the old site's flash top animation. If you
+// can faithfully reproduce them in modern ... technology"). PRIME's own files, from a backup dated 30 May 2013:
+// barra2_topo.fla and five SWFs (Flash 5 format, 798 x 78 px, 12 frames per second, timeline animations with no
+// script beyond a stop and a button to principal.htm). The 2004 nutzmann.net header (topo.htm) embedded
+// imagens/barra2_topo.swf (620 frames, 51.7 s, the Nützmann logo and taglines); the 2013 ntz.com.br home page
+// embedded images/topbar.swf (568 frames, 47.3 s, the NTZ Tecnologia logo and the same taglines). Two more SWFs
+// in the backup are variants of the 2013 bar (one identical to topbar_old.swf, one with a different logo text).
+// Reproduction, 2026-10-05: every frame rendered from the SWF by the JPEXS Free Flash Decompiler 24.0.1
+// (timeline, shapes, embedded fonts and the lossless background bitmap), then encoded with ffmpeg at the
+// original 12 frames per second as WebM (VP9) and MP4 (H.264), with the first frame as the poster. The
+// clickable button of the original is not reproduced; nothing else is changed. Served from this origin.
+// ============================================================================
+
+/** One reproduced Flash bar. */
+export interface FlashBar {
+  /** The era it belongs to (the es-era section it renders in). */
+  era: ArchivedEra["id"];
+  /** The SWF's file name as the backup names it, and the page that embedded it. */
+  file: string;
+  embeddedBy: string;
+  /** Frames, frames per second, pixel size: read from the SWF header. */
+  frames: number;
+  fps: number;
+  width: number;
+  height: number;
+  /** The reproductions, under /archive/earlier-sites/flash/: the two video encodes, the animated GIF, the first frame. */
+  webm: string;
+  mp4: string;
+  gif: string;
+  poster: string;
+}
+
+export const FLASH_BARS: readonly FlashBar[] = [
+  { era: "nn-2004", file: "barra2_topo.swf", embeddedBy: "topo.htm", frames: 620, fps: 12, width: 798, height: 78, webm: "/archive/earlier-sites/flash/barra2_topo.webm", mp4: "/archive/earlier-sites/flash/barra2_topo.mp4", gif: "/archive/earlier-sites/flash/barra2_topo.gif", poster: "/archive/earlier-sites/flash/barra2_topo-poster.png" },
+  { era: "ntz-2013", file: "topbar.swf", embeddedBy: "index.html", frames: 568, fps: 12, width: 798, height: 78, webm: "/archive/earlier-sites/flash/topbar.webm", mp4: "/archive/earlier-sites/flash/topbar.mp4", gif: "/archive/earlier-sites/flash/topbar.gif", poster: "/archive/earlier-sites/flash/topbar-poster.png" },
+];

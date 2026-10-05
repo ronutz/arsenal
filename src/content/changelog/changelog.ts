@@ -53,6 +53,113 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "10:48",
+    kind: "tool",
+    title: "What a page head declares, read by every party that reads it",
+    body:
+      "Paste a page, or just its head, and read everything it declares the way each standard reads it. The HTML Standard's rules for the title and the character encoding (one title; UTF-8, declared once, within the first 1024 bytes) and for the meta element itself (exactly one identifying attribute, a content attribute to go with it); every meta element classified as a standard name, a name registered in the WHATWG MetaExtensions wiki, a pragma directive, a non-conforming one or unknown, each known name carrying the standard's own sentence; every link element with its rel tokens, the canonical per RFC 6596 and the hreflang alternates; the Open Graph object per ogp.me, with its arrays, its structured properties attached to the root before them, the four required properties and the og:image:alt it says a page should give; the twitter:* card properties against the registry, with X's withdrawn documentation said as such; robots and googlebot rules against Google's published list, retired rules and conflicts included; the viewport, with a warning when it keeps users from zooming; and every JSON-LD block parsed and outlined per JSON-LD 1.1, invalid JSON named by the parser's own message. Forty-six findings, each quoting the sentence it rests on. Nothing is fetched. A Learn article maps who reads each line of a head and by which rules.",
+    tools: ["meta-og-jsonld-inspector"],
+    articles: ["what-a-page-head-declares-and-who-reads-it"],
+  },
+  {
+    date: "2026-10-05",
+    time: "10:07",
+    kind: "tool",
+    title: "Which elements does this selector match? The CSS selector tester",
+    body:
+      "Paste HTML and one or more selectors, one per line, and see exactly which elements each selector matches: highlighted in the tree the HTML parser built (the same parser as the HTML structure explainer), with each element's path and source line, the count per selector, and its specificity counted per Selectors Level 4 section 15. The matcher is written from the specification: compound by compound, right to left; the HTML Standard's case rules, including the 46 attribute values compared case-insensitively and the i and s flags; the seven attribute operators and the empty string that matches nothing; :is() and :where() with their forgiving lists, :not(), :has(); :nth-child(An+B of S); :lang() and :dir(); the form-state pseudo-classes read from attributes. What a static document cannot answer is said in so many words: :hover and the other user-action states are valid but never match, :valid is not evaluated, a pseudo-element selector lists its originating elements. A selector left open at the end is closed there, as CSS Syntax and browsers do, with a note. Checked against Chromium's querySelectorAll on the shipped vectors. A Learn article reads the specification as the matching algorithm it is.",
+    tools: ["css-selector-tester"],
+    articles: ["how-a-selector-finds-its-elements"],
+  },
+  {
+    date: "2026-10-05",
+    time: "08:53",
+    kind: "tool",
+    title: "A Content Security Policy, read and graded the way the specification reads it",
+    body:
+      "Paste a Content-Security-Policy, as a header value, a whole header line, a Report-Only header or a meta element, and read it the way CSP Level 3 reads it: split on semicolons, names lower-cased, a repeated directive ignored. Every directive is classified and explained, every source expression is read against the grammar (keyword, nonce, hash, scheme, host and its wildcards), with the two classic silent failures called out where they happen: a keyword written without quotes becomes a host name, and a directive name inside a value is a missing semicolon. The effective policy per destination follows the specification's fallback chain, so a default-src that governs nothing once script-src is set shows as exactly that. Twenty-six findings, graded high to good and each quoting the specification: 'unsafe-inline' and whether a nonce or hash overrides it, 'unsafe-eval', wildcard and bare-scheme sources, host allowlists, missing object-src, base-uri and frame-ancestors, short nonces, 'strict-dynamic' without a nonce, directives ignored in meta or Report-Only, obsolete directives, and reporting. A policy that meets the specification's own Strict CSP grades strict. Decode and grade only, offline. A Learn article walks the specification's reading of a policy, step by step.",
+    tools: ["csp-evaluator"],
+    articles: ["content-security-policy-read-by-the-specification"],
+  },
+  {
+    date: "2026-10-05",
+    time: "08:05",
+    kind: "tool",
+    title: "The tree the HTML parser really built",
+    body:
+      "Paste HTML and read the tree the standard's parser builds from it, node by node with the line of each tag, and with every repair the parser made marked where it made it: the elements it created without a tag (html, head, body, tbody), the end tags it supplied, the formatting elements it split when end tags came out of order, the content it lifted out of a table, and the typos it turned into comments. The document mode (quirks or not) and every parse error by the HTML Standard's own code, line and column, with the standard's description beside each. Then the findings, each tied to a sentence of the HTML Standard or WCAG 2.2: the DOCTYPE, the language, the title, the encoding declaration, images without alternative text, links and buttons with no name, heading jumps, duplicate ids, controls without labels, and the obsolete elements and attributes with the standard's replacement advice. The parser is parse5, the same one jsdom and Cheerio use, run with scripting off and locations on; nothing is executed, fetched or rendered, and the hosted API returns the same tree. A Learn article walks the five repairs and explains why WCAG 2.2 could drop its parsing criterion.",
+    tools: ["html-structure-explainer"],
+    articles: ["how-the-html-parser-repairs-your-markup"],
+  },
+  {
+    date: "2026-10-05",
+    time: "07:17",
+    kind: "tool",
+    title: "Specificity, counted the way the specification counts it",
+    body:
+      "Paste one or more CSS selectors, or a whole stylesheet, and read each selector's specificity as the (A, B, C) triple Selectors Level 4 defines, with every simple selector named and the column it adds to, the selectors ranked the way the cascade ranks them and ties called out, since order of appearance decides there. The special cases are applied and explained beside each selector: :is(), :not() and :has() take their most specific argument, :nth-child(of) adds its argument to one pseudo-class, :where() counts for nothing, the universal selector adds nothing, a repeated class counts again, a single-colon pseudo-element from CSS2 counts as a pseudo-element, and :host() and ::slotted() add their argument as the Shadow module says. The page ends with the five things CSS Cascade Level 5 settles before it ever compares specificity (origin and importance, context, inline styles, cascade layers), which is where most surprising winners come from. The engine reproduces the specification's own examples table. A Learn article reads the counting rules and the cascade order from the specifications.",
+    tools: ["css-specificity-calculator"],
+    articles: ["css-specificity-and-the-cascade"],
+  },
+  {
+    date: "2026-10-05",
+    time: "07:10",
+    kind: "tool",
+    title: "Colour contrast, computed the way WCAG computes it",
+    body:
+      "Two colours in any notation CSS Color Level 4 defines (a named colour, hex, rgb(), hsl(), hwb(), lab(), lch(), oklab(), oklch(), color()) and out come the WCAG 2.2 contrast ratio with pass or fail at every level (AA and AAA, normal and large text, and the 3:1 rule for controls and graphics), a live preview of the pair, each colour converted to every notation with its relative luminance and its names, and, for each level the pair misses, the nearest foreground that would pass it, found by moving the foreground's lightness in OKLCH with its hue and chroma kept. A translucent foreground is composited over the background before measuring, a colour outside the sRGB gamut is clipped and marked, and the formula is shown with the numbers filled in. The conversions are the specification's own sample code, fetched from its repository, and reproduce its worked examples to the last digit shown. A Learn article walks the arithmetic and the ten ways CSS spells a colour.",
+    tools: ["color-contrast-format"],
+    articles: ["colour-contrast-wcag-and-css-color-notations"],
+  },
+  {
+    date: "2026-10-05",
+    time: "06:40",
+    kind: "tool",
+    title: "Raw HTTP, decoded against the registries",
+    body:
+      "Paste a raw HTTP/1.1 request or response and read it decoded. The request line is read against the methods table (safe, idempotent, the four request-target forms) and the status line against the IANA status code registry, with the reason phrase sent beside the registry's. Every field is checked against the IANA field name registry (permanent, deprecated, obsoleted, unregistered, the X- prefix RFC 6648 deprecates) and filed under the part of the specification that defines it: framing, routing, representation, negotiation, conditional and range requests, caching, authentication, cookies, security policy, CORS, fetch metadata, WebSocket, proxies, WebDAV. The body is framed the way RFC 9112 frames it: which of the eight rules of Section 6.3 applies, Content-Length validated and compared with the octets actually present, Transfer-Encoding overriding it (the request-smuggling signal), chunked bodies decoded chunk by chunk with their extensions, trailers, truncation and whatever is left after the last chunk. Credentials are surfaced and masked (Basic decoded to the user-id only, never the password; Bearer tokens masked, a JWT-shaped one handed to the JWT decoder), and cookies are read pair by pair, Set-Cookie attributes included, with the __Secure- and __Host- prefix rules, SameSite's default and Max-Age over Expires. Twenty-eight rules cite their RFC. Nothing is sent, replayed or altered. A Learn article walks the eight framing rules and what request smuggling makes of them.",
+    tools: ["http-message-decoder"],
+    articles: ["http-message-framing-content-length-and-chunked"],
+  },
+  {
+    date: "2026-10-05",
+    time: "05:20",
+    kind: "feature",
+    title: "Local links keep the reader's language",
+    body:
+      "Articles, blog posts, practice pages and tool documentation are written once and rendered in every language, and their authors write links to other pages here without a language prefix. Until tonight such a link had no page behind it and was answered with a redirect to the English page, so a reader in Portuguese who followed a link from an article landed in English (1,430 links across the 711 articles, 38 on the blog, 13 in tool documentation, measured in the Portuguese build). Every such link now receives the page's own language when the page is built. The same pass made those links visible to the build's link check for the first time, which found three dead ones in the articles (a renamed slug, a slug that never existed, and an article that was never written) and three in the glossary (vendor profiles linked under the wrong path); all six are fixed.",
+    articles: ["git", "http-cookies-state-over-stateless", "the-interception-tools"],
+  },
+  {
+    date: "2026-10-05",
+    time: "04:50",
+    kind: "tool",
+    title: "Expect scripts, explained and read against the manual",
+    body:
+      "Paste an Expect script and read what it would do: what it spawns, what it waits for and how, what it types and whether a return ends the line, when it hands the keyboard over. The commands are explained one by one with their nesting (the bodies of expect, if, loops, switch, catch and proc included), the dialogue is rebuilt as a table of each expect beside the send that answers it, and eighteen rules report the mistakes the expect(1) manual answers: a secret typed in clear after a password prompt (masked in the output), a timeout left at the default of 10 seconds or set to never, a pattern that matches whatever is already there or a one-character prompt, a script whose last act is a send, a send without the return a line-buffered program waits for or with a braced string Tcl does not substitute, expects with no timeout arm (the implicit null action), exp_continue outside an expect, brackets and variables substituted inside a quoted pattern, ssh with the host-key question unanswered, sleep, log_user 0 and stty -echo never restored, set timeout placed after the first expect or inside a procedure, close without wait, nothing spawned, and a real Tcl syntax check. The script is parsed with the site's Tcl 8.4 engine, which now accepts array references such as $env(NAME) when a tool asks for them, and never run. A Learn article walks the manual's sentences and what each costs when ignored.",
+    tools: ["expect-script-explainer"],
+    articles: ["expect-scripts-explained"],
+  },
+  {
+    date: "2026-10-05",
+    time: "03:10",
+    kind: "content",
+    title: "Industries and clients, 1996 to 2012, on the career record",
+    body:
+      "The career record now names the organisations the author's own résumés of 2008 to 2014 list as clients or customers: some seventy engagements across sixty-odd names, grouped by sector on the chapters page (banks, brokers, exchanges and insurers first; government; a dozen carriers from the Riverstone years; manufacturing; media; oil and gas; aerospace; universities; integrators; consumer goods), each with the chapter it belongs to, the years and the capacity the résumé states, and a note where two résumés disagree or where the résumé states the scope. Each chapter page lists its own names. Names only, no logos, nothing beyond the résumé's line, and nothing after 2020. The confidentiality ruling that had kept four of these names off public pages was lifted the same night for everything before the full-time work at Red Education; the guard keeps one name absolute. The two-company chapter cards now show both companies' marks. On the earlier-sites page the Flash top bars of 2004 and 2013 play again, reproduced frame by frame from the original SWF files (Flash 5, 798 by 78 pixels, 12 frames per second) as WebM, MP4 and GIF at exactly the original rate, with the facts of each file beneath. And the home page's sixth door, Take me somewhere, now opens a random page itself instead of scrolling to a column; the column announces itself when reached by its anchor.",
+    links: [{ label: "Industries and clients", href: "/industry/chapters#clients" }],
+  },
+  {
+    date: "2026-10-05",
+    time: "02:45",
+    kind: "content",
+    title: "Flags on the clocks, the record of the three tools, and the links a name deserves",
+    body:
+      "On the training page the class time now opens each row of the time table (it is the figure the table exists to answer, and beside the live time it read as a second clock), the control that sets it wears the same colour, and every row carries the flag of its country and the time zone's own name where one is more recognisable than a city (Brasília Time, Greenwich Mean Time, Central and Eastern European Time, Gulf Standard Time, India Standard Time, Indochina Time, Singapore Time, Philippine Time, Korea Standard Time, Australian Eastern Time, New Zealand Time), with the abbreviation and the UTC offset in force shown larger than the IANA id. Seven flags were drawn for it. The countries delivered to gained fourteen names across three regions. On the earlier-sites page the three tools the 2004 home page linked are now on the record one by one: a rendering of each saved capture made here, the capture itself at the Internet Archive, and what the archive answered for the two it never stored (four dated requests each, four 404s, no copy anywhere; by 2013 those two names pointed outside the site). The carried-through paragraph was corrected on the same facts, and now says that the bits-and-bytes calculator was rebuilt rather than queued. The colophon's fifth principle links the names it drops, Terry Pratchett's to the glossary entry for the header that carries it. The About timeline shows Red Education's current mark only, and the career record's cards carry the era-matched marks of the companies each chapter covers.",
+    links: [{ label: "Where the classes are, and when", href: "/training" }, { label: "The three tools, on the record", href: "/about/earlier-sites" }],
+  },
+  {
+    date: "2026-10-05",
     time: "01:50",
     kind: "feature",
     title: "The front door, rebuilt around what you came to do",

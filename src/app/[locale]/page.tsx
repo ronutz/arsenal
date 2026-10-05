@@ -50,8 +50,9 @@ import HomeStats from "@/components/HomeStats";
 import HomeOmnibox from "@/components/HomeOmnibox";
 import HomeQuickCidr from "@/components/HomeQuickCidr";
 import HomePopular from "@/components/HomePopular";
-import HomeRabbitHole from "@/components/HomeRabbitHole";
 import HomeContinue from "@/components/HomeContinue";
+import HomeSurpriseIntent from "@/components/HomeSurpriseIntent";
+import HomeRabbitHole from "@/components/HomeRabbitHole";
 import VendorMark from "@/components/VendorMark";
 import { STORY_SLUGS } from "@/content/learn/stories";
 import { CAREER_VENDORS } from "@/content/vendors/career";
@@ -224,14 +225,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                   </Link>
                 </li>
               ))}
-              {/* The sixth: not an intent, a door to the rabbit hole below. Neutral grey, the colour of "not yet decided"
-                  (never the fuchsia WebAssembly mark, which is reserved for that one meaning site-wide). */}
+              {/* The sixth: not an intent, a door to the "Take me somewhere" column below. Neutral grey, the colour of
+                  "not yet decided" (never the fuchsia WebAssembly mark, reserved for that one meaning site-wide). A click
+                  asks the column for a draw and goes there, so the reader lands on a destination already named and chooses
+                  (PRIME 03:10, 11:03, 11:35). Without JavaScript it is the plain anchor. */}
               <li className="intent intent--surprise" style={{ "--intent-accent": "var(--color-neutral)" } as CSSProperties}>
-                <a href="#surprise" className="intent-link">
-                  <span className="intent-q">{t("front.intent.surprise.q")}</span>
-                  <span className="intent-label">{t("front.intent.surprise.label")} <span aria-hidden="true">&#8594;</span></span>
-                  <span className="intent-verb mono">{t("front.intent.surprise.verb")}</span>
-                </a>
+                <HomeSurpriseIntent q={t("front.intent.surprise.q")} label={t("front.intent.surprise.label")} verb={t("front.intent.surprise.verb")} />
               </li>
             </ul>
           </div>
@@ -290,7 +289,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               </div>
               {/* Popular: the site's own anonymous stats, after load; renders nothing when there is nothing to say. */}
               <MessageSlice namespaces={["home.front"]}><HomePopular /></MessageSlice>
-              {/* Unexpected: one random thing from the whole corpus, on request. */}
+              {/* Unexpected: one random thing from the whole corpus, on request; the reader chooses to open it or draw again. */}
               <div className="happening-col happening-col--surprise" id="surprise">
                 <h3 className="happening-title">{t("front.surpriseTitle")}</h3>
                 <p className="happening-lede">{t("front.surpriseLede")}</p>

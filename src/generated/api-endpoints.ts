@@ -113,17 +113,41 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_cipher",
     "tag": "TLS & transport"
   },
+  "color-contrast-format": {
+    "url": "https://ronutz.com/api/v1/color-contrast-format",
+    "method": "GET",
+    "op": "run_color_contrast_format",
+    "tag": "Web front-end & CSS"
+  },
   "cron-expression-explainer": {
     "url": "https://ronutz.com/api/v1/cron-expression-explainer",
     "method": "GET",
     "op": "run_cron_expression_explainer",
     "tag": "Text & utilities"
   },
+  "csp-evaluator": {
+    "url": "https://ronutz.com/api/v1/csp-evaluator",
+    "method": "GET",
+    "op": "run_csp_evaluator",
+    "tag": "Security & WAF"
+  },
   "csr-decoder": {
     "url": "https://ronutz.com/api/v1/csr-decoder",
     "method": "GET",
     "op": "run_csr_decoder",
     "tag": "PKI"
+  },
+  "css-selector-tester": {
+    "url": "https://ronutz.com/api/v1/css-selector-tester",
+    "method": "GET",
+    "op": "run_css_selector_tester",
+    "tag": "Web front-end & CSS"
+  },
+  "css-specificity-calculator": {
+    "url": "https://ronutz.com/api/v1/css-specificity-calculator",
+    "method": "GET",
+    "op": "run_css_specificity_calculator",
+    "tag": "Web front-end & CSS"
   },
   "curl-command-builder": {
     "url": "https://ronutz.com/api/v1/curl-command-builder",
@@ -190,6 +214,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_exos_config_explainer",
     "tag": "Extreme switching & fabric (EXOS / VOSS / SPB)"
+  },
+  "expect-script-explainer": {
+    "url": "https://ronutz.com/api/v1/expect-script-explainer",
+    "method": "GET",
+    "op": "run_expect_script_explainer",
+    "tag": "Text & utilities"
   },
   "extreme-switch-os-mapper": {
     "url": "https://ronutz.com/api/v1/extreme-switch-os-mapper",
@@ -629,11 +659,23 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_hmac",
     "tag": "Hashing"
   },
+  "html-structure-explainer": {
+    "url": "https://ronutz.com/api/v1/html-structure-explainer",
+    "method": "GET",
+    "op": "run_html_structure_explainer",
+    "tag": "Web front-end & CSS"
+  },
   "http-header-order-fingerprint": {
     "url": "https://ronutz.com/api/v1/http-header-order-fingerprint",
     "method": "GET",
     "op": "run_http_header_order_fingerprint",
     "tag": "Fingerprinting"
+  },
+  "http-message-decoder": {
+    "url": "https://ronutz.com/api/v1/http-message-decoder",
+    "method": "GET",
+    "op": "run_http_message_decoder",
+    "tag": "HTTP & web"
   },
   "http-methods-comparison": {
     "url": "https://ronutz.com/api/v1/http-methods-comparison",
@@ -730,6 +772,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_letsencrypt_rate_limits",
     "tag": "PKI"
+  },
+  "meta-og-jsonld-inspector": {
+    "url": "https://ronutz.com/api/v1/meta-og-jsonld-inspector",
+    "method": "GET",
+    "op": "run_meta_og_jsonld_inspector",
+    "tag": "HTTP & web"
   },
   "mtu-mss": {
     "url": "https://ronutz.com/api/v1/mtu-mss",

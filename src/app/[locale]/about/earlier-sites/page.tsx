@@ -35,9 +35,19 @@ import {
   ARCHIVED_PAGE_COUNT,
   ARCHIVE_READ_DATE,
   FIRST_CAPTURE_YEAR,
+  FLASH_BARS,
+  HOME_2004,
+  HOME_2013,
+  TOOL_RECORDS,
+  TOOL_RECORDS_READ_DATE,
   captureDate,
+  recordWaybackUrl,
   waybackUrl,
+  type ToolArchiveRecord,
 } from "@/content/about/earlier-sites";
+
+/** YYYYMMDDhhmmss to YYYY-MM-DD, for a record's own timestamps (the inventory helper takes a page). */
+const stamp = (ts: string) => `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
 
 /** The four labelled paragraphs every era carries, in display order. */
 const ERA_FIELDS = ["nature", "characteristics", "offerings", "contents"] as const;
@@ -123,6 +133,21 @@ export default async function EarlierSitesPage({
                           </div>
                         ))}
                       </dl>
+                      {/* THE FLASH TOP BAR, REPRODUCED (PRIME, 2026-10-05): the animation the era's header carried, rendered frame by
+                          frame from PRIME's own SWF and encoded at its original rate; a muted loop with controls, the first frame as
+                          its poster, the facts of the file beneath. Only the eras whose header was a Flash bar carry one. */}
+                      {FLASH_BARS.filter((b) => b.era === era.id).map((b) => (
+                        <figure className="es-flash" key={b.file}>
+                          <video className="es-flash-video" width={b.width} height={b.height} poster={b.poster} controls muted loop playsInline preload="metadata" aria-label={t("flashAria", { file: b.file })}>
+                            <source src={b.webm} type="video/webm" />
+                            <source src={b.mp4} type="video/mp4" />
+                          </video>
+                          <figcaption className="es-flash-caption">
+                            {t("flashCaption", { file: b.file, page: b.embeddedBy, frames: b.frames, fps: b.fps, seconds: Math.round((b.frames / b.fps) * 10) / 10, width: b.width, height: b.height })}{" "}
+                            <a href={b.webm}>WebM</a> · <a href={b.mp4}>MP4</a> · <a href={b.gif}>GIF</a>
+                          </figcaption>
+                        </figure>
+                      ))}
                       {/* The inventory is collapsed by default: the paragraphs are the reading,
                           the table is the evidence, and a reader opens it when they want to check. */}
                       <details className="es-inventory">
@@ -177,8 +202,84 @@ export default async function EarlierSitesPage({
                   </li>
                 ))}
               </ul>
+              {/* THE THREE TOOLS, ON THE RECORD (PRIME, 2026-10-05 02:31): for each tool the 2004 home page linked, the
+                  archive's answer, a rendering made here from each saved capture, the capture at the archive, and the
+                  page that carries the idea today. The two home pages come first, because they are where the links
+                  were. A 404 is a record too: four dated requests, four refusals, no copy anywhere. */}
+              <h3 className="es-h3">{t("recordsTitle")}</h3>
+              <p className="es-records-lede">{t("recordsLede", { date: TOOL_RECORDS_READ_DATE })}</p>
+              <ul className="es-records">
+                {/* The two home pages that carried the links. */}
+                {([
+                  { key: "home2004", label: t("recordHome2004"), rec: HOME_2004 },
+                  { key: "home2013", label: t("recordHome2013"), rec: HOME_2013 },
+                ] as { key: string; label: string; rec: ToolArchiveRecord }[]).map(({ key, label, rec }) => (
+                  <li className="es-record" key={key}>
+                    <a className="es-record-thumb" href={rec.rendering} target="_blank" rel="noopener noreferrer">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={rec.rendering} alt={t("recordRenderingOf", { date: stamp(rec.captured) })} loading="lazy" decoding="async" />
+                    </a>
+                    <div className="es-record-body">
+                      <p className="es-record-name">{label}</p>
+                      <p className="es-record-note mono">{rec.original}</p>
+                      <p className="es-record-links">
+                        <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: stamp(rec.captured) })}</a>
+                        <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(rec.captured) })}</a>
+                      </p>
+                    </div>
+                  </li>
+                ))}
+                {/* The three tools. */}
+                {TOOL_RECORDS.map((tool) => {
+                  const first = tool.records.find((r) => r.status === 200 && r.rendering);
+                  return (
+                    <li className="es-record" key={tool.key}>
+                      {first ? (
+                        <a className="es-record-thumb" href={first.rendering} target="_blank" rel="noopener noreferrer">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={first.rendering} alt={t("recordRenderingOf", { date: stamp(first.captured) })} loading="lazy" decoding="async" />
+                        </a>
+                      ) : (
+                        <span className="es-record-thumb es-record-thumb--none" aria-hidden="true">404</span>
+                      )}
+                      <div className="es-record-body">
+                        <p className="es-record-name">{t(`record.${tool.key}.name`)}</p>
+                        <p className="es-record-note">{t(`record.${tool.key}.note`)}</p>
+                        {tool.records.map((rec) => (
+                          <div className="es-record-row" key={rec.original}>
+                            <span className="mono es-record-url">{rec.original}</span>
+                            {rec.status === 200 ? (
+                              <span className="es-record-links">
+                                <span className="es-record-fact">{t("recordCaptures", { count: rec.captures ?? 1, from: stamp(rec.captured), to: stamp(rec.lastCaptured ?? rec.captured) })}</span>
+                                {rec.rendering && <a href={rec.rendering} target="_blank" rel="noopener noreferrer">{t("recordRenderingOf", { date: stamp(rec.captured) })}</a>}
+                                <a href={recordWaybackUrl(rec.original, rec.captured)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(rec.captured) })}</a>
+                              </span>
+                            ) : (
+                              <span className="es-record-links">
+                                <span className="es-record-fact">{t("recordAttempts", { dates: (rec.attempts ?? []).map(stamp).join(", ") })} {t("recordNoCopy")}</span>
+                                {(rec.attempts ?? []).map((a) => (
+                                  <a key={a} href={recordWaybackUrl(rec.original, a)} target="_blank" rel="noopener noreferrer">{t("recordArchive", { date: stamp(a) })}</a>
+                                ))}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                        {tool.outsideLink2013 && (
+                          <p className="es-record-outside">{t("recordOutside", { host: new URL(tool.outsideLink2013).host })}</p>
+                        )}
+                        <p className="es-record-today">
+                          <span className="es-record-fact">{t("recordToday")}:</span>{" "}
+                          <Link href={tool.today}>{tool.key === "bits" ? t("linkBits") : tool.key === "ip" ? t("linkCidr") : t("linkCabling")} <span aria-hidden="true">&#8594;</span></Link>
+                        </p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+
               <p className="es-links-title">{t("linksTitle")}</p>
               <ul className="es-links">
+                <li><Link href="/tools/bits-bytes">{t("linkBits")}</Link></li>
                 <li><Link href="/tools/cidr">{t("linkCidr")}</Link></li>
                 <li><Link href="/learn/structured-cabling">{t("linkCabling")}</Link></li>
                 <li><Link href="/roadmap">{t("linkRoadmap")}</Link></li>

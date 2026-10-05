@@ -83,8 +83,13 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // 153 -> 154 the same day with the BIG-IP zero-or-one finder's set, and
 // 154 -> 156 the same day with the ASCII table explorer's and the Unicode
 // inspector's sets, 156 -> 157 the same day with the charset converter's, and
-// 157 -> 158 on 2026-10-04 with the chmod permission calculator's.
-const MIN_SETS = 162;
+// 157 -> 158 on 2026-10-04 with the chmod permission calculator's, and 162 -> 163
+// on 2026-10-05 with the Expect script explainer's (rank 7), 163 -> 164 the same day
+// with the HTTP message decoder's (rank 8), 164 -> 165 with Color contrast & format's (rank 9), and
+// 165 -> 166 with the CSS specificity calculator's (rank 10), 166 -> 167 with the HTML structure
+// & DOM explainer's (rank 11), 167 -> 168 with the CSP evaluator's (rank 12), 168 -> 169 with the CSS
+// selector tester's (rank 13), and 169 -> 170 with the meta, Open Graph & JSON-LD inspector's (rank 14).
+const MIN_SETS = 170;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

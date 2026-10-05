@@ -127,6 +127,7 @@ import { run as f5IrulesScanExplainerRun } from "./f5-irules-scan-explainer";
 import { run as f5IrulesStringExtractRun } from "./f5-irules-string-extract";
 import { run as f5IrulesConditionalBuilderRun } from "./f5-irules-conditional-builder";
 import { run as f5IrulesStyleCheckerRun } from "./f5-irules-style-checker";
+import { run as expectScriptExplainerRun } from "./expect-script-explainer";
 // The BIG-IP zero-or-one finder (2026-10-03): a static look-up plus a translator that runs
 // only commands it generates itself, on bounded input; exposed.
 import { run as f5BigipIndexBaseFinderRun } from "./f5-bigip-index-base-finder";
@@ -149,6 +150,13 @@ import { run as hmacRun } from "./hmac";
 import { run as curlCommandBuilderRun } from "./curl-command-builder";
 import { run as httpRequestTranslatorRun } from "./curl-command-explainer";
 import { run as rawRequestTranslatorRun } from "./http-request-translator";
+import { run as httpMessageDecoderRun } from "./http-message-decoder";
+import { run as colorContrastFormatRun } from "./color-contrast-format";
+import { run as cssSpecificityCalculatorRun } from "./css-specificity-calculator";
+import { run as htmlStructureExplainerRun } from "./html-structure-explainer";
+import { run as cspEvaluatorRun } from "./csp-evaluator";
+import { run as cssSelectorTesterRun } from "./css-selector-tester";
+import { run as metaOgJsonldInspectorRun } from "./meta-og-jsonld-inspector";
 import { run as ipv6Run } from "./ipv6";
 import { run as irulesEventOrderRun } from "./f5-irules-event-order";
 import { run as jsonFormatterRun } from "./json-formatter";
@@ -262,6 +270,8 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "f5-irules-string-extract", structured: true, run: (input) => f5IrulesStringExtractRun(JSON.parse(input)) },
   { slug: "f5-irules-conditional-builder", structured: true, run: (input) => f5IrulesConditionalBuilderRun(JSON.parse(input)) },
   { slug: "f5-irules-style-checker", structured: true, run: (input) => f5IrulesStyleCheckerRun(JSON.parse(input)) },
+  // Structured: the body is {"script": "..."}; the script is parsed, never run (rank 7, 2026-10-05).
+  { slug: "expect-script-explainer", structured: true, run: (input) => expectScriptExplainerRun(JSON.parse(input)) },
   // Zero or one: a look-up, or a translation run on generated commands only.
   { slug: "f5-bigip-index-base-finder", structured: true, run: (input) => f5BigipIndexBaseFinderRun(JSON.parse(input)) },
   { slug: "ascii-table", structured: true, run: (input) => asciiTableRun(JSON.parse(input)) },
@@ -328,6 +338,20 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "hmac", structured: true, run: (input) => hmacRun(JSON.parse(input)) },
   { slug: "curl-command-explainer", run: httpRequestTranslatorRun },
   { slug: "http-request-translator", run: rawRequestTranslatorRun },
+  // Structured: the body is {"message": "..."}; the message is decoded, never sent (rank 8, 2026-10-05).
+  { slug: "http-message-decoder", structured: true, run: (input) => httpMessageDecoderRun(JSON.parse(input)) },
+  // Structured: the body is {"foreground": ..., "background": ...}, two CSS colour strings (rank 9, 2026-10-05).
+  { slug: "color-contrast-format", structured: true, run: (input) => colorContrastFormatRun(JSON.parse(input)) },
+  // Structured: the body is {"selectors": "..."}, one or more selectors or a stylesheet; parsed, never applied (rank 10, 2026-10-05).
+  { slug: "css-specificity-calculator", structured: true, run: (input) => cssSpecificityCalculatorRun(JSON.parse(input)) },
+  // Structured: the body is {"html": "..."}; parsed with parse5 into a tree and read, never executed or fetched (rank 11, 2026-10-05).
+  { slug: "html-structure-explainer", structured: true, run: (input) => htmlStructureExplainerRun(JSON.parse(input)) },
+  // Structured: the body is {"policy": "..."}, a CSP header value, header line(s) or meta element; parsed and graded, never fetched (rank 12, 2026-10-05).
+  { slug: "csp-evaluator", structured: true, run: (input) => cspEvaluatorRun(JSON.parse(input)) },
+  // Structured: the body is {"html": "...", "selectors": "one per line"}; parsed with parse5 and matched in-house, never rendered (rank 13, 2026-10-05).
+  { slug: "css-selector-tester", structured: true, run: (input) => cssSelectorTesterRun(JSON.parse(input)) },
+  // Structured: the body is {"html": "..."}, a page or its head; parsed with parse5, JSON-LD parsed with JSON.parse, nothing fetched (rank 14, 2026-10-05).
+  { slug: "meta-og-jsonld-inspector", structured: true, run: (input) => metaOgJsonldInspectorRun(JSON.parse(input)) },
   { slug: "ipv6", run: ipv6Run },
   { slug: "f5-irules-event-order", run: irulesEventOrderRun },
   { slug: "json-formatter", run: jsonFormatterRun },

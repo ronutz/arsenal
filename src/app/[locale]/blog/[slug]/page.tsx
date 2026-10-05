@@ -15,6 +15,7 @@ import MessageSlice from "@/components/MessageSlice";
 import ShareControl from "@/components/ShareControl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -145,7 +146,8 @@ export default async function BlogPostPage({
                 options={{
                   mdxOptions: {
                     remarkPlugins: [remarkGfm],
-                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()]],
+                    // Root-relative links get this page's locale (src/lib/rehypeLocaliseLinks.ts).
+                    rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
                   },
                 }}
                 components={{ GlossaryTerm }}

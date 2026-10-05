@@ -106,6 +106,8 @@ export const tools: ToolEntry[] = [
   { id: "python-playground", href: "/tools/python-playground", category: "operations", available: true, runtime: "wasm" },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
+  // Rank 12 of the 2026-10 campaign: the CSP evaluator (built 2026-10-05; decode and grade only).
+  { id: "csp-evaluator", href: "/tools/csp-evaluator", category: "security", available: true },
   { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "sso", available: true },
   { id: "xml-decoder", href: "/tools/xml-decoder", category: "security", available: true },
   { id: "f5xc-service-policy-explainer", sub: "f5xc", href: "/tools/f5xc-service-policy-explainer", category: "security", vendors: ["f5"], available: true },
@@ -197,6 +199,8 @@ export const tools: ToolEntry[] = [
   { id: "oauth-flow-chooser", href: "/tools/oauth-flow-chooser", category: "identity", available: true },
   { id: "diff", href: "/tools/diff", category: "text", available: true },
   { id: "cron-expression-explainer", href: "/tools/cron-expression-explainer", category: "text", available: true },
+  // Rank 7 of the 2026-10 campaign: the Expect script explainer (built 2026-10-05).
+  { id: "expect-script-explainer", href: "/tools/expect-script-explainer", category: "text", available: true },
   // The four below were built but never registered here (drift caught and
   // guarded by scripts/check-tools-registry.mjs in the prebuild chain).
   { id: "cvss-vector-decoder", href: "/tools/cvss-vector-decoder", category: "security", available: true },
@@ -204,6 +208,18 @@ export const tools: ToolEntry[] = [
   { id: "curl-command-builder", href: "/tools/curl-command-builder", category: "web", available: true },
   { id: "curl-command-explainer", href: "/tools/curl-command-explainer", category: "web", available: true },
   { id: "http-request-translator", href: "/tools/http-request-translator", category: "web", available: true },
+  // Rank 8 of the 2026-10 campaign: the HTTP message decoder (built 2026-10-05).
+  { id: "http-message-decoder", href: "/tools/http-message-decoder", category: "web", available: true },
+  // Rank 9 of the 2026-10 campaign: colour contrast and format (built 2026-10-05).
+  { id: "color-contrast-format", href: "/tools/color-contrast-format", category: "web", available: true },
+  // Rank 10 of the 2026-10 campaign: the CSS specificity calculator (built 2026-10-05).
+  { id: "css-specificity-calculator", href: "/tools/css-specificity-calculator", category: "web", available: true },
+  // Rank 11 of the 2026-10 campaign: the HTML structure & DOM explainer (built 2026-10-05; parses with parse5, never executes).
+  { id: "html-structure-explainer", href: "/tools/html-structure-explainer", category: "web", available: true },
+  // Rank 13 of the 2026-10 campaign: the CSS selector tester (built 2026-10-05; parse and match only, inert).
+  { id: "css-selector-tester", href: "/tools/css-selector-tester", category: "web", available: true },
+  // Rank 14 of the 2026-10 campaign: the meta, Open Graph & JSON-LD inspector (built 2026-10-05; reads the head, fetches nothing).
+  { id: "meta-og-jsonld-inspector", href: "/tools/meta-og-jsonld-inspector", category: "web", available: true },
   { id: "ssrf-url-classifier", href: "/tools/ssrf-url-classifier", category: "security", available: true },
   { id: "f5-awaf-declarative-policy-explainer", sub: "asm-awaf", href: "/tools/f5-awaf-declarative-policy-explainer", category: "security", vendors: ["f5"], available: true },
   { id: "ognl-injection-decoder", sub: "asm-awaf", href: "/tools/ognl-injection-decoder", category: "security", vendors: [], available: true },

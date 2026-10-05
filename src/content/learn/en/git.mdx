@@ -4,7 +4,7 @@ title: "Git: the content-addressed database wearing a version-control suit"
 summary: "What Git actually stores (snapshots, not diffs), why a branch is just a 41-byte pointer, how the three areas explain almost every confusing command, and what made a two-week side project the industry's default in fifteen years."
 concepts: ["git", "version control", "commit", "branch", "merge", "rebase", "sha-1", "content addressing"]
 relatedTools: []
-relatedArticles: ["github", "hash-functions-overview", "terminal-shell-tty-console"]
+relatedArticles: ["github", "hash-function-families", "terminal-shell-tty-console"]
 category: operations
 order: 6
 status: reviewed
@@ -45,7 +45,7 @@ The names most people learn as advanced Git are this model's bookkeeping. A **re
 
 Two silences in the design are worth knowing on purpose. Git tracks content, not files: an empty directory is invisible to it (there is no tree entry to make), and a rename is not recorded anywhere. It is *detected* later, when a delete and an add look similar enough. And Git's hashes authenticate content, not authorship: the `author` line on a commit is a free-text claim anyone can write. Verifying who made a commit is a separate mechanism (signed commits and tags), layered on top for the projects that need it.
 
-The hash function itself has one asterisk. Git shipped on SHA-1, which is no longer collision-resistant against a funded attacker; Git hardened its implementation against the known collision constructions and defined a SHA-256 repository format, and the ecosystem's migration is a long, deliberately boring project (see the [hash functions overview](/learn/hash-functions-overview) for what collision resistance means and why it erodes). For integrity against accident, the job the hash does a billion times a day, SHA-1 remains entirely effective.
+The hash function itself has one asterisk. Git shipped on SHA-1, which is no longer collision-resistant against a funded attacker; Git hardened its implementation against the known collision constructions and defined a SHA-256 repository format, and the ecosystem's migration is a long, deliberately boring project (see the [hash functions overview](/learn/hash-function-families) for what collision resistance means and why it erodes). For integrity against accident, the job the hash does a billion times a day, SHA-1 remains entirely effective.
 
 ## Why this design won
 

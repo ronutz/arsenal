@@ -486,10 +486,10 @@ export default async function AboutPage({
               </li>
               <li className="about-era about-era--current">
                 <span className="about-era-years mono">2020 – {t("path.present")}</span>
-                {/* Both Red Education marks of the period: the thin-outline mark
-                    in use when the contract began (2021) and the bolder 2025
-                    redraw in use now; the registry note carries the history. */}
-                <span className="mark-row"><VendorMark vendor="rededucation" year={2021} eraLabel={era} since={since} compact /><VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact /></span>
+                {/* The current Red Education mark only (PRIME, 2026-10-05 02:36: "the 2020-present entry doesn't
+                    need two logos"); the 2020 mark stays in the registry and on the /red-education profile, where
+                    the history of the mark is told. */}
+                <span className="mark-row"><VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Red Education</span>
                 <span className="about-era-what">{t("path.rededucation")}</span>
                 {/* CURRENTLY TEACHING (PRIME, 2026-10-04): the four platforms

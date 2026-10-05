@@ -171,7 +171,20 @@ export default async function ColophonPage({
                 {principles.map((p) => (
                   <div className="colophon-principle" key={p}>
                     <h3 className="colophon-principle-title">{t(`${p}Title`)}</h3>
-                    <p className="colophon-principle-body">{t(`${p}Body`)}</p>
+                    {/* The fifth principle names things that have pages here, and names them as links (PRIME,
+                        2026-10-05 02:31: "Terry Pratchett should link to its glossary page"): the header's glossary
+                        entry for the name and the header, the article for X-Collective, the changelog. The other
+                        four are plain. */}
+                    <p className="colophon-principle-body">
+                      {p === "p5"
+                        ? t.rich("p5Body", {
+                            pratchett: (chunks) => <Link href="/glossary/x-clacks-overhead">{chunks}</Link>,
+                            clacks: (chunks) => <Link href="/glossary/x-clacks-overhead">{chunks}</Link>,
+                            collective: (chunks) => <Link href="/learn/hidden-messages-in-http-headers">{chunks}</Link>,
+                            changelog: (chunks) => <Link href="/changelog">{chunks}</Link>,
+                          })
+                        : t(`${p}Body`)}
+                    </p>
                   </div>
                 ))}
               </div>

@@ -156,16 +156,31 @@ export function backslashAt(src: string, i: number): { text: string; length: num
   return { text: c, length: 2 };
 }
 
+/** Options a caller may pass; every default keeps the iRules tools' behaviour. */
+export interface ParseOptions {
+  /**
+   * Accept array references ($name(index)) as variable parts whose name carries the
+   * index text, e.g. name "env(HOME)". Off by default: the iRules tools report arrays
+   * as unmodelled (their teaching interpreter has no arrays). The Expect explainer
+   * turns it on, since $env(...) and $expect_out(buffer) appear in nearly every script.
+   */
+  arrays?: boolean;
+}
+
 /** Internal parser state over one source string. */
 class Parser {
   /** The source text being parsed. */
   readonly src: string;
   /** Current offset. */
   pos = 0;
+  /** Whether $name(index) is accepted (see ParseOptions.arrays). */
+  readonly arrays: boolean;
   /** Create a parser over the given text. */
-  constructor(src: string) {
+  constructor(src: string, opts: ParseOptions = {}) {
     // Keep the source.
     this.src = src;
+    // Arrays are refused unless asked for.
+    this.arrays = opts.arrays === true;
   }
 
   /** The character at the current offset (undefined at the end). */
@@ -491,8 +506,36 @@ class Parser {
     }
     // No name characters at all: the "$" is literal.
     if (p === start + 1) return null;
-    // An array reference is recognised but not modelled.
-    if (this.src[p] === "(") throw new TclParseError("array variables ($name(index)) are not modelled by this tool", start);
+    // An array reference: refused by default (not modelled), or read through its index when asked.
+    if (this.src[p] === "(") {
+      // The default: recognised but not modelled.
+      if (!this.arrays) throw new TclParseError("array variables ($name(index)) are not modelled by this tool", start);
+      // Read the index up to the first ")" at the top level, stepping over [commands] and \escapes as Tcl's token parser does.
+      let q = p + 1;
+      // Nesting depth of [brackets] inside the index.
+      let depth = 0;
+      // Scan.
+      while (q < this.src.length) {
+        // The character.
+        const ch = this.src[q];
+        // A backslash protects the next character.
+        if (ch === "\\") { q += 2; continue; }
+        // Brackets nest.
+        if (ch === "[") depth++;
+        // A close bracket ends one level.
+        else if (ch === "]" && depth > 0) depth--;
+        // The close paren at the top level ends the index.
+        else if (ch === ")" && depth === 0) break;
+        // Next.
+        q++;
+      }
+      // Tcl's own message when the paren never closes.
+      if (q >= this.src.length) throw new TclParseError("missing )", start);
+      // Step past the ")".
+      this.pos = q + 1;
+      // The whole reference, index included, as the name.
+      return { kind: "var", name: this.src.slice(start + 1, this.pos), raw: this.src.slice(start, this.pos) };
+    }
     // Step past the name.
     this.pos = p;
     // The variable part.
@@ -501,9 +544,9 @@ class Parser {
 }
 
 /** Parse a whole script into commands and words. Throws TclParseError. */
-export function parseScript(src: string): Command[] {
-  // A fresh parser over the text.
-  return new Parser(src).parseScript(false);
+export function parseScript(src: string, opts: ParseOptions = {}): Command[] {
+  // A fresh parser over the text, with the caller's options.
+  return new Parser(src, opts).parseScript(false);
 }
 
 /** True when a word has no substitutions at all (its text is fixed). */
@@ -519,9 +562,9 @@ export function literalText(w: Word): string {
 }
 
 /** Parse a "quoted" string at src[pos] (a double quote), as an expression operand. */
-export function parseQuotedAt(src: string, pos: number): { word: Word; end: number } {
-  // A parser positioned on the quote.
-  const p = new Parser(src);
+export function parseQuotedAt(src: string, pos: number, opts: ParseOptions = {}): { word: Word; end: number } {
+  // A parser positioned on the quote, with the caller's options.
+  const p = new Parser(src, opts);
   // Start at the quote.
   p.pos = pos;
   // Parse without the command-word ending rule.
@@ -571,9 +614,9 @@ export function parseCommandAt(src: string, pos: number): { script: string; end:
  * the commands before a syntax error are returned along with that error, so a
  * caller can run them first and report the error where Tcl would.
  */
-export function parseScriptPartial(src: string): { commands: Command[]; error?: TclParseError } {
-  // A parser over the text.
-  const p = new Parser(src);
+export function parseScriptPartial(src: string, opts: ParseOptions = {}): { commands: Command[]; error?: TclParseError } {
+  // A parser over the text, with the caller's options.
+  const p = new Parser(src, opts);
   // Commands parsed so far.
   const commands: Command[] = [];
   // One command at a time.

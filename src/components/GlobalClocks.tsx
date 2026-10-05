@@ -29,28 +29,32 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import CountryFlag from "./CountryFlag";
 
-/** The sixteen rows, west to east, with their IANA zones. The keys are message ids.
+/** The sixteen rows, west to east, with their IANA zones and the flag of the country (or union) the zone
+ *  is named for. The keys are message ids under teach.clocks.zoneName (PRIME, 2026-10-05 02:21: a flag in
+ *  front of each row, the time zone's recognisable name rather than a city where one exists, with the city
+ *  kept in brackets where it helps; the earlier city keys stay in the packs for the record).
  *  PRIME, 2026-10-04 23:53: the four United States zones by name (Pacific, Mountain, Central, Eastern)
  *  in place of three cities; Central European in place of Berlin (Europe/Berlin remains the zone that
  *  carries CET/CEST); Helsinki, Bangkok, Manila, Seoul and Auckland added; Singapore was already here. */
-const CITIES: readonly { key: string; zone: string }[] = [
-  { key: "pacific", zone: "America/Los_Angeles" },
-  { key: "mountain", zone: "America/Denver" },
-  { key: "central", zone: "America/Chicago" },
-  { key: "eastern", zone: "America/New_York" },
-  { key: "saopaulo", zone: "America/Sao_Paulo" },
-  { key: "london", zone: "Europe/London" },
-  { key: "cet", zone: "Europe/Berlin" },
-  { key: "helsinki", zone: "Europe/Helsinki" },
-  { key: "dubai", zone: "Asia/Dubai" },
-  { key: "mumbai", zone: "Asia/Kolkata" },
-  { key: "bangkok", zone: "Asia/Bangkok" },
-  { key: "singapore", zone: "Asia/Singapore" },
-  { key: "manila", zone: "Asia/Manila" },
-  { key: "seoul", zone: "Asia/Seoul" },
-  { key: "sydney", zone: "Australia/Sydney" },
-  { key: "auckland", zone: "Pacific/Auckland" },
+const CITIES: readonly { key: string; zone: string; flag: string }[] = [
+  { key: "pacific", zone: "America/Los_Angeles", flag: "US" },
+  { key: "mountain", zone: "America/Denver", flag: "US" },
+  { key: "central", zone: "America/Chicago", flag: "US" },
+  { key: "eastern", zone: "America/New_York", flag: "US" },
+  { key: "brasilia", zone: "America/Sao_Paulo", flag: "BR" },
+  { key: "gmt", zone: "Europe/London", flag: "GB" },
+  { key: "cet", zone: "Europe/Berlin", flag: "EU" },
+  { key: "eet", zone: "Europe/Helsinki", flag: "FI" },
+  { key: "gulf", zone: "Asia/Dubai", flag: "AE" },
+  { key: "india", zone: "Asia/Kolkata", flag: "IN" },
+  { key: "indochina", zone: "Asia/Bangkok", flag: "TH" },
+  { key: "singapore", zone: "Asia/Singapore", flag: "SG" },
+  { key: "philippine", zone: "Asia/Manila", flag: "PH" },
+  { key: "korea", zone: "Asia/Seoul", flag: "KR" },
+  { key: "aet", zone: "Australia/Sydney", flag: "AU" },
+  { key: "nz", zone: "Pacific/Auckland", flag: "NZ" },
 ];
 
 /** "HH:MM" in a zone for an instant, 24-hour clock. */
@@ -83,6 +87,14 @@ function offsetMinutes(at: Date, zone: string): number {
   return Math.round((asUtc - at.getTime()) / 60000);
 }
 
+/** The offset of a zone at an instant as "UTC+05:30" / "UTC-03:00", for the row beside the abbreviation. */
+function offsetLabel(at: Date, zone: string): string {
+  const m = offsetMinutes(at, zone);
+  const sign = m < 0 ? "-" : "+";
+  const a = Math.abs(m);
+  return `UTC${sign}${String(Math.floor(a / 60)).padStart(2, "0")}:${String(a % 60).padStart(2, "0")}`;
+}
+
 /** The instant at which the wall clock in `zone` reads `hh:mm` on the zone's current date. */
 function instantFor(hhmm: string, zone: string, now: Date): Date {
   // The date in that zone today, then a UTC guess, corrected by the zone's offset at the guess (twice, for a DST edge).
@@ -113,16 +125,17 @@ export default function GlobalClocks() {
 
   // The class instant, when a valid time is set.
   const classAt = useMemo(() => (now && /^\d{2}:\d{2}$/.test(startTime) ? instantFor(startTime, startZone, now) : null), [now, startTime, startZone]);
-  // The reader's zone as a row of its own when it is not already one of the ten.
+  // The reader's zone as a row of its own when it is not already one of the sixteen.
   const ownIsListed = ownZone !== null && CITIES.some((c) => c.zone === ownZone);
   // The locale for zone abbreviations.
   const locale = typeof navigator !== "undefined" ? navigator.language : "en";
 
-  /** One row: the city, its zone, the live time and the class time with a day marker. */
-  const row = (key: string, zone: string, label: string, own: boolean) => {
+  /** One row: the flag and the zone's name, its abbreviation and offset over the IANA id, the live time and the class time with a day marker. */
+  const row = (key: string, zone: string, label: string, own: boolean, flag?: string) => {
     // Before mount there is no instant to show; render the structure with placeholders so nothing jumps.
     const live = now ? wallTime(now, zone) : "--:--";
     const abbrev = now ? zoneAbbrev(now, zone, locale) : "";
+    const offset = now ? offsetLabel(now, zone) : "";
     let cls = "--:--";
     let day = "";
     if (classAt) {
@@ -134,10 +147,15 @@ export default function GlobalClocks() {
     }
     return (
       <li key={key} className={"gclock" + (own ? " gclock--own" : "")}>
-        <span className="gclock-city">{label}</span>
-        <span className="gclock-zone mono">{zone}{abbrev ? ` · ${abbrev}` : ""}</span>
-        <span className="gclock-now mono" aria-label={t("nowLabel")}>{live}</span>
+        {/* The class time opens the row (PRIME, 2026-10-05 02:26): it is the figure the table exists to answer, and
+            beside the live time it read as a second clock. Its colour is the colour of the control above. */}
         <span className="gclock-class mono" aria-label={t("classLabel")}>{cls}{day ? <span className="gclock-day"> {day}</span> : null}</span>
+        <span className="gclock-city">{flag ? <CountryFlag code={flag} /> : null}{label}</span>
+        <span className="gclock-zone mono">
+          <span className="gclock-abbrev">{abbrev}{abbrev && offset ? " · " : ""}{offset}</span>
+          <span className="gclock-iana">{zone}</span>
+        </span>
+        <span className="gclock-now mono" aria-label={t("nowLabel")}>{live}</span>
       </li>
     );
   };
@@ -147,23 +165,23 @@ export default function GlobalClocks() {
       {/* The control: a time and the zone it is stated in. */}
       <div className="gclocks-control">
         <label className="gclocks-label" htmlFor="gclocks-time">{t("startLabel")}</label>
-        <input id="gclocks-time" className="curlb-input gclocks-time" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} step={300} />
+        <input id="gclocks-time" className="curlb-input gclocks-time gclocks-control-class" type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} step={300} />
         <span className="gclocks-in">{t("startIn")}</span>
-        <select id="gclocks-zone" className="curlb-select gclocks-zone" value={startZone} onChange={(e) => setStartZone(e.target.value)} aria-label={t("startIn")}>
-          {CITIES.map((c) => <option key={c.zone} value={c.zone}>{t(`city.${c.key}`)}</option>)}
+        <select id="gclocks-zone" className="curlb-select gclocks-zone gclocks-control-class" value={startZone} onChange={(e) => setStartZone(e.target.value)} aria-label={t("startIn")}>
+          {CITIES.map((c) => <option key={c.zone} value={c.zone}>{t(`zoneName.${c.key}`)}</option>)}
           {ownZone && !ownIsListed && <option value={ownZone}>{t("yourTime")} ({ownZone})</option>}
         </select>
       </div>
       {/* The column heads, then the rows. */}
       <ul className="gclocks-list">
         <li className="gclock gclock--head" aria-hidden="true">
+          <span className="gclock-class">{t("classLabel")}</span>
           <span className="gclock-city" />
           <span className="gclock-zone" />
           <span className="gclock-now">{t("nowLabel")}</span>
-          <span className="gclock-class">{t("classLabel")}</span>
         </li>
         {ownZone && !ownIsListed && row("own", ownZone, t("yourTime"), true)}
-        {CITIES.map((c) => row(c.key, c.zone, t(`city.${c.key}`), ownZone === c.zone))}
+        {CITIES.map((c) => row(c.key, c.zone, t(`zoneName.${c.key}`), ownZone === c.zone, c.flag))}
       </ul>
       {/* The reader's zone, named, and the provenance of the arithmetic. */}
       <p className="hmac-build-note gclocks-note">{ownZone ? t("yourZone", { zone: ownZone }) + " " : ""}{t("note")}</p>

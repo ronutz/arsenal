@@ -43,6 +43,7 @@
     "next": "^15.5.19",
     "next-intl": "^3.26.5",
     "next-mdx-remote": "^6.0.0",
+    "parse5": "^8.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "rehype-stringify": "^10.0.1",

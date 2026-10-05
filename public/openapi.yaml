@@ -57,6 +57,7 @@ tags:
   - name: Security & WAF
   - name: TLS & transport
   - name: Text & utilities
+  - name: Web front-end & CSS
 paths:
   /acme-dns01:
     get:
@@ -1142,6 +1143,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /color-contrast-format:
+    get:
+      tags:
+        - Web front-end & CSS
+      operationId: run_color_contrast_format
+      summary: Color contrast & format
+      description: >-
+        Two colours in any CSS notation (named, hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color())
+        and out come the WCAG contrast ratio with pass or fail at every level (AA and AAA, normal
+        and large text, user interface components), a live preview, each colour converted to every
+        notation with its relative luminance, and the nearest foreground that would pass each
+        failing level. Pure arithmetic from the WCAG formulas and the CSS Color Level 4 sample code;
+        nothing leaves the browser. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Standards: WCAG 2.2, CSS Color 4. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"foreground":"#767676","background":"white"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Web front-end & CSS
+      operationId: run_color_contrast_format_post
+      summary: Color contrast & format (POST)
+      description: >-
+        Two colours in any CSS notation (named, hex, rgb, hsl, hwb, lab, lch, oklab, oklch, color())
+        and out come the WCAG contrast ratio with pass or fail at every level (AA and AAA, normal
+        and large text, user interface components), a live preview, each colour converted to every
+        notation with its relative luminance, and the nearest foreground that would pass each
+        failing level. Pure arithmetic from the WCAG formulas and the CSS Color Level 4 sample code;
+        nothing leaves the browser. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Standards: WCAG 2.2, CSS Color 4. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /cron-expression-explainer:
     get:
       tags:
@@ -1207,6 +1282,90 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /csp-evaluator:
+    get:
+      tags:
+        - Security & WAF
+      operationId: run_csp_evaluator
+      summary: CSP evaluator
+      description: >-
+        Paste a Content-Security-Policy, as a header value, a whole header line, a Report-Only
+        header, a meta element or several at once, and read it the way CSP Level 3 reads it: each
+        directive named and explained, each source expression classified by the grammar (keyword,
+        nonce, hash, scheme, host and its wildcards), the effective source list per destination
+        through the fallback chain, and a graded list of findings, each quoting the specification:
+        'unsafe-inline' and 'unsafe-eval', wildcard, data: and http: sources, missing object-src,
+        base-uri and frame-ancestors, short nonces, 'strict-dynamic' without a nonce, keywords
+        without quotes, missing semicolons, duplicate, unknown and obsolete directives, directives
+        ignored in meta or in Report-Only, and whether the policy meets the specification's own
+        Strict CSP. Decode and grade only, offline: nothing is fetched. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: CSP Level 3
+        (W3C). Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"policy":"script-src 'strict-dynamic' 'nonce-DhcnhD3khTMePgXwdayK9BsMqXjhguVV';
+                object-src 'none'; base-uri 'self'"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Security & WAF
+      operationId: run_csp_evaluator_post
+      summary: CSP evaluator (POST)
+      description: >-
+        Paste a Content-Security-Policy, as a header value, a whole header line, a Report-Only
+        header, a meta element or several at once, and read it the way CSP Level 3 reads it: each
+        directive named and explained, each source expression classified by the grammar (keyword,
+        nonce, hash, scheme, host and its wildcards), the effective source list per destination
+        through the fallback chain, and a graded list of findings, each quoting the specification:
+        'unsafe-inline' and 'unsafe-eval', wildcard, data: and http: sources, missing object-src,
+        base-uri and frame-ancestors, short nonces, 'strict-dynamic' without a nonce, keywords
+        without quotes, missing semicolons, duplicate, unknown and obsolete directives, directives
+        ignored in meta or in Report-Only, and whether the policy meets the specification's own
+        Strict CSP. Decode and grade only, offline: nothing is fetched. The input is a JSON object:
+        send it as the request body (POST) or as a JSON string (?input=). Standards: CSP Level 3
+        (W3C). Stateless and side-effect-free: the same input always yields the same result, and
+        nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /csr-decoder:
     get:
       tags:
@@ -1250,6 +1409,164 @@ paths:
         it as the request body (POST) or as a JSON string (?input=). Standards: PKCS#10 / RFC 2986,
         RFC 5280. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /css-selector-tester:
+    get:
+      tags:
+        - Web front-end & CSS
+      operationId: run_css_selector_tester
+      summary: CSS selector tester
+      description: >-
+        Paste HTML and one or more selectors (one per line) and see exactly which elements each
+        selector matches: the elements highlighted in the parsed tree with their path and line, the
+        count per selector, and its specificity counted per section 15 of Selectors Level 4. The
+        HTML is parsed inertly with the same parser as the HTML structure explainer; the selectors
+        are parsed and matched by Selectors Level 4's own rules (compound by compound, right to
+        left), including :is(), :not(), :where(), :has(), :nth-child(An+B of S), attribute operators
+        with the i and s flags, CSS escapes and the form-state pseudo-classes read from attributes.
+        Invalid selectors are named with the position of the error; the pseudo-classes a static
+        document cannot answer are marked. Checked against Chromium's querySelectorAll. The input is
+        a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        CSS Selectors 4, CSS Syntax 3, HTML Living Standard. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"html":"<ul><li
+                class=\"a\">one</li><li>two</li></ul>","selectors":"li.a\nli:nth-child(2)"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Web front-end & CSS
+      operationId: run_css_selector_tester_post
+      summary: CSS selector tester (POST)
+      description: >-
+        Paste HTML and one or more selectors (one per line) and see exactly which elements each
+        selector matches: the elements highlighted in the parsed tree with their path and line, the
+        count per selector, and its specificity counted per section 15 of Selectors Level 4. The
+        HTML is parsed inertly with the same parser as the HTML structure explainer; the selectors
+        are parsed and matched by Selectors Level 4's own rules (compound by compound, right to
+        left), including :is(), :not(), :where(), :has(), :nth-child(An+B of S), attribute operators
+        with the i and s flags, CSS escapes and the form-state pseudo-classes read from attributes.
+        Invalid selectors are named with the position of the error; the pseudo-classes a static
+        document cannot answer are marked. Checked against Chromium's querySelectorAll. The input is
+        a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        CSS Selectors 4, CSS Syntax 3, HTML Living Standard. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /css-specificity-calculator:
+    get:
+      tags:
+        - Web front-end & CSS
+      operationId: run_css_specificity_calculator
+      summary: CSS specificity calculator
+      description: >-
+        Paste one or more CSS selectors, or a whole stylesheet, and read each selector's specificity
+        as the (A, B, C) triple of Selectors Level 4, every simple selector named with the column it
+        adds to, the selectors ranked the way the cascade ranks them with ties called out, and the
+        special cases spelled out: :where() counts for nothing, :is(), :not() and :has() take their
+        most specific argument, :nth-child(of) adds its argument, the universal selector adds
+        nothing, a repeated class counts twice, a legacy single-colon pseudo-element counts as one.
+        With the reminder of the five things the cascade checks before specificity. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        CSS Selectors 4, CSS Cascade 5. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"selectors":"nav a:hover\n#site-nav a\n.nav .link"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Web front-end & CSS
+      operationId: run_css_specificity_calculator_post
+      summary: CSS specificity calculator (POST)
+      description: >-
+        Paste one or more CSS selectors, or a whole stylesheet, and read each selector's specificity
+        as the (A, B, C) triple of Selectors Level 4, every simple selector named with the column it
+        adds to, the selectors ranked the way the cascade ranks them with ties called out, and the
+        special cases spelled out: :where() counts for nothing, :is(), :not() and :has() take their
+        most specific argument, :nth-child(of) adds its argument, the universal selector adds
+        nothing, a repeated class counts twice, a legacy single-colon pseudo-element counts as one.
+        With the reminder of the five things the cascade checks before specificity. The input is a
+        JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards:
+        CSS Selectors 4, CSS Cascade 5. Stateless and side-effect-free: the same input always yields
+        the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.
@@ -2001,6 +2318,82 @@ paths:
               type: string
               examples:
                 - create vlan engineering tag 100
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /expect-script-explainer:
+    get:
+      tags:
+        - Text & utilities
+      operationId: run_expect_script_explainer
+      summary: Expect script explainer
+      description: >-
+        Paste an Expect script and read what it would do, command by command: what it spawns, what
+        it waits for, what it types, when it hands over to you. Then the dialogue it conducts and
+        the findings: a password in clear text, a timeout left at the default or set to never, a
+        pattern that matches too soon, a send without the return the program waits for, a script
+        that ends before the program has answered. Parsed with the Tcl 8.4 engine, never run; every
+        rule cites the expect(1) manual. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: expect(1), Expect version 5, Tcl 8.4,
+        ssh_config(5). Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"script":"set timeout 10\nspawn telnet 192.0.2.1\nexpect \"login:\"\nsend
+                \"admin\\r\"\nexpect eof\n"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Text & utilities
+      operationId: run_expect_script_explainer_post
+      summary: Expect script explainer (POST)
+      description: >-
+        Paste an Expect script and read what it would do, command by command: what it spawns, what
+        it waits for, what it types, when it hands over to you. Then the dialogue it conducts and
+        the findings: a password in clear text, a timeout left at the default or set to never, a
+        pattern that matches too soon, a send without the return the program waits for, a script
+        that ends before the program has answered. Parsed with the Tcl 8.4 engine, never run; every
+        rule cites the expect(1) manual. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: expect(1), Expect version 5, Tcl 8.4,
+        ssh_config(5). Stateless and side-effect-free: the same input always yields the same result,
+        and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
@@ -6858,6 +7251,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /html-structure-explainer:
+    get:
+      tags:
+        - Web front-end & CSS
+      operationId: run_html_structure_explainer
+      summary: HTML structure & DOM explainer
+      description: >-
+        Paste HTML and read the tree the HTML parser builds from it: every element, text node and
+        comment with its line, the elements the parser created without a tag (html, head, body,
+        tbody), the end tags it supplied, the formatting elements it split and the content it moved
+        out of a table, with the document mode (quirks or not) and every parse error by the
+        standard's own code and position. Then the findings: the DOCTYPE, the language, the title,
+        the encoding, images without alternative text, links and buttons with no name, heading
+        jumps, duplicate ids, controls without labels, obsolete elements and attributes, each tied
+        to a sentence of the HTML Standard or WCAG 2.2. Parsing only: no script runs, nothing is
+        fetched, nothing is rendered. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Standards: HTML Living Standard, WCAG 2.2. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - '{"html":"<!DOCTYPE html><title>Hi</title><p>Hello<p>World"}'
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - Web front-end & CSS
+      operationId: run_html_structure_explainer_post
+      summary: HTML structure & DOM explainer (POST)
+      description: >-
+        Paste HTML and read the tree the HTML parser builds from it: every element, text node and
+        comment with its line, the elements the parser created without a tag (html, head, body,
+        tbody), the end tags it supplied, the formatting elements it split and the content it moved
+        out of a table, with the document mode (quirks or not) and every parse error by the
+        standard's own code and position. Then the findings: the DOCTYPE, the language, the title,
+        the encoding, images without alternative text, links and buttons with no name, heading
+        jumps, duplicate ids, controls without labels, obsolete elements and attributes, each tied
+        to a sentence of the HTML Standard or WCAG 2.2. Parsing only: no script runs, nothing is
+        fetched, nothing is rendered. The input is a JSON object: send it as the request body (POST)
+        or as a JSON string (?input=). Standards: HTML Living Standard, WCAG 2.2. Stateless and
+        side-effect-free: the same input always yields the same result, and nothing is stored or
+        logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /http-header-order-fingerprint:
     get:
       tags:
@@ -6904,6 +7377,84 @@ paths:
           text/plain:
             schema:
               type: string
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /http-message-decoder:
+    get:
+      tags:
+        - HTTP & web
+      operationId: run_http_message_decoder
+      summary: HTTP message decoder
+      description: >-
+        Paste a raw HTTP/1.1 request or response and read it decoded: the request line or status
+        line against the IANA registries, every field filed under the part of the specification that
+        defines it, the framing decision RFC 9112 makes for the body (which of its eight rules
+        applies, Content-Length against the bytes present, Transfer-Encoding overriding it, the
+        chunks decoded one by one with their trailers), and the credentials and cookies the message
+        carries, surfaced and masked. The decode-only half of an interception proxy's inspector: it
+        never sends, replays or tampers. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: RFC 9112, RFC 9110, RFC 9111, IANA HTTP
+        registries, rfc6265bis, RFC 7617, RFC 6648. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"message":"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTransfer-Encoding:
+                chunked\r\n\r\n4\r\nWiki\r\n5\r\npedia\r\n0\r\n\r\n"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - HTTP & web
+      operationId: run_http_message_decoder_post
+      summary: HTTP message decoder (POST)
+      description: >-
+        Paste a raw HTTP/1.1 request or response and read it decoded: the request line or status
+        line against the IANA registries, every field filed under the part of the specification that
+        defines it, the framing decision RFC 9112 makes for the body (which of its eight rules
+        applies, Content-Length against the bytes present, Transfer-Encoding overriding it, the
+        chunks decoded one by one with their trailers), and the credentials and cookies the message
+        carries, surfaced and masked. The decode-only half of an interception proxy's inspector: it
+        never sends, replays or tampers. The input is a JSON object: send it as the request body
+        (POST) or as a JSON string (?input=). Standards: RFC 9112, RFC 9110, RFC 9111, IANA HTTP
+        registries, rfc6265bis, RFC 7617, RFC 6648. Stateless and side-effect-free: the same input
+        always yields the same result, and nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
       responses:
         '200':
           description: The computed result.
@@ -7959,6 +8510,88 @@ paths:
         request body (POST) or as a JSON string (?input=). Standards: LE Rate Limits, Public Suffix
         List. Stateless and side-effect-free: the same input always yields the same result, and
         nothing is stored or logged.
+      requestBody:
+        required: true
+        description: The tool input as a JSON object.
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /meta-og-jsonld-inspector:
+    get:
+      tags:
+        - HTTP & web
+      operationId: run_meta_og_jsonld_inspector
+      summary: Meta, Open Graph & JSON-LD inspector
+      description: >-
+        Paste a page, or just its head, and read everything it declares the way each standard reads
+        it: the title and the character encoding by the HTML Standard, every meta element classified
+        (the standard's own names, the WHATWG MetaExtensions registry, the pragma directives, the
+        non-conforming ones), every link element with its rel tokens (canonical per RFC 6596,
+        hreflang alternates, icons, manifest), the Open Graph object with its arrays and structured
+        properties per ogp.me, the twitter:* card properties as registered, the robots and googlebot
+        rules by Google's published list, the viewport, and every JSON-LD block parsed and outlined
+        per JSON-LD 1.1. Forty-six findings, each quoting the sentence it rests on. Parsed inertly
+        with parse5; nothing is fetched or executed. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: HTML Living Standard, Open
+        Graph protocol, JSON-LD 1.1, RFC 6596, HTML+RDFa 1.1. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
+      parameters:
+        - name: input
+          in: query
+          required: true
+          description: The tool input, as a JSON string.
+          schema:
+            type: string
+            examples:
+              - >-
+                {"html":"<title>T</title><meta name=\"description\" content=\"d\"><meta
+                property=\"og:title\" content=\"T\">"}
+      responses:
+        '200':
+          description: The computed result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+        '400':
+          description: The input is missing or could not be processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      tags:
+        - HTTP & web
+      operationId: run_meta_og_jsonld_inspector_post
+      summary: Meta, Open Graph & JSON-LD inspector (POST)
+      description: >-
+        Paste a page, or just its head, and read everything it declares the way each standard reads
+        it: the title and the character encoding by the HTML Standard, every meta element classified
+        (the standard's own names, the WHATWG MetaExtensions registry, the pragma directives, the
+        non-conforming ones), every link element with its rel tokens (canonical per RFC 6596,
+        hreflang alternates, icons, manifest), the Open Graph object with its arrays and structured
+        properties per ogp.me, the twitter:* card properties as registered, the robots and googlebot
+        rules by Google's published list, the viewport, and every JSON-LD block parsed and outlined
+        per JSON-LD 1.1. Forty-six findings, each quoting the sentence it rests on. Parsed inertly
+        with parse5; nothing is fetched or executed. The input is a JSON object: send it as the
+        request body (POST) or as a JSON string (?input=). Standards: HTML Living Standard, Open
+        Graph protocol, JSON-LD 1.1, RFC 6596, HTML+RDFa 1.1. Stateless and side-effect-free: the
+        same input always yields the same result, and nothing is stored or logged.
       requestBody:
         required: true
         description: The tool input as a JSON object.

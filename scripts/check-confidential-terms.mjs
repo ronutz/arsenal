@@ -22,6 +22,16 @@
 //     itself supplies the association even if the sentence does not
 //   - a ruled name in ordinary third-party prose -> allowed
 //
+// LIFTED (PRIME, 2026-10-05 02:52): "Confidentiality for public pages is now
+// lifted on: Mapfre, Porto Seguro, Inmetrics, Sigma Telecom, Martini Meat.
+// Anything and everything I catered to directly or indirectly up until I
+// started full-time with Red Education is NOT confidential and can be mentioned
+// and attributed its correct context." So the four client names left the list
+// that day, and the career record names its clients, in context, by name
+// (src/content/vendors/clients.ts, from PRIME's own résumés). The association
+// machinery below stays in place with an EMPTY client list: a future ruling can
+// add a name without rebuilding the guard.
+//
 // MINDSTREAM IS NOT RELAXED. The amendment speaks about consulting CLIENTS;
 // Mindstream is his own legal vehicle, excluded from public copy by a different
 // ruling that was not amended. It stays absolute, and a reading that quietly
@@ -73,8 +83,10 @@ const ALLOWED = [
   // { term: "...", file: "out/en/...", reason: "..." },
 ];
 
-// Client names: publishable in neutral third-party prose, never as his clients.
-const CLIENT_NAMES = ["Mapfre", "Porto Seguro", "Inmetrics", "Sigma Telecom"];
+// Client names under the association rule. EMPTY since 2026-10-05 (PRIME lifted
+// the ruling on the four names that were here; see the header); the mechanism
+// is kept so a future name can be added with its decision date.
+const CLIENT_NAMES = [];
 
 // Absolute, unchanged by the 2026-09-02 amendment (see header).
 const ALWAYS_FORBIDDEN = ["Mindstream"];

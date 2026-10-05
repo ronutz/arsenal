@@ -30,6 +30,7 @@
 // ============================================================================
 
 import { getTranslations } from "next-intl/server";
+import { clientsForChapter } from "@/content/vendors/clients";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -64,6 +65,8 @@ export default async function CareerChapterPage({
   const t = await getTranslations("vendors");
   const tp = await getTranslations("partnerVendors");
   const tNav = await getTranslations("nav");
+  // The clients the résumés name under this chapter (empty for most teaching-era chapters).
+  const clients = clientsForChapter(slug);
 
   const entry = CAREER_VENDORS.find((v) => v.slug === slug);
   const years = t(`${vendorKey}.years`);
@@ -169,6 +172,30 @@ export default async function CareerChapterPage({
               </div>
             </section>
           ))}
+
+          {/* CLIENTS NAMED IN THE RECORD (PRIME, 2026-10-05): the organisations the résumés of the time name under
+              this chapter, in the capacity they state. Rendered only where the registry has entries. */}
+          {clients.length > 0 && (
+            <section className="section">
+              <div className="container vendor-container">
+                <h2 className="section-title">{t("clients.chapterTitle")}</h2>
+                <p className="section-body">{t("clients.chapterLede")}</p>
+                <ul className="clients-list clients-list--chapter">
+                  {clients.map((e, i) => (
+                    <li className="clients-item" key={`${e.name}-${i}`}>
+                      <span className="clients-name">{e.name}</span>
+                      <span className="clients-ctx">
+                        <span className="mono">{e.to ? t("clients.years", { from: String(e.from), to: String(e.to) }) : String(e.from)}</span>, {t(`clients.capacity.${e.capacity}`)}
+                        {e.via ? `, ${t("clients.via", { via: e.via })}` : ""}
+                        {e.noteKey ? <span className="clients-note"> {t(`clients.notes.${e.noteKey}`)}</span> : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="clients-sources">{t("clients.sourcesLine", { list: [...new Set(clients.map((e) => e.source))].map((id) => t(`clients.sources.${id}`)).join("; ") })}</p>
+              </div>
+            </section>
+          )}
 
           {certs && !certs.startsWith("vendors.") && (
             <section className="section section-accent">

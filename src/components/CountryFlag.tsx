@@ -2,7 +2,9 @@
 // src/components/CountryFlag.tsx
 // ----------------------------------------------------------------------------
 // The national flags used on the industry timeline and the milestones, as inline SVG
-// (twenty-five at the last count; Denmark added 2026-10-05).
+// (thirty-two at the last count; Denmark added 2026-10-05; the United Arab Emirates, the
+// European Union, South Korea, New Zealand, the Philippines, Singapore and Thailand added
+// 2026-10-05 for the training page's clocks, one flag per time zone row, PRIME).
 //
 // WHY INLINE RATHER THAN FILES OR EMOJI.
 //
@@ -68,6 +70,91 @@ const FLAGS: Record<CountryCode, React.ReactNode> = {
       <circle cx="24.5" cy="9" r="1.1" fill="#fff" />
       <circle cx="21" cy="13" r="0.9" fill="#fff" />
       <circle cx="26" cy="14.5" r="0.8" fill="#fff" />
+    </>
+  ),
+
+  // EXACT — the red hoist band is one quarter of the length; green, white and black thirds (2026-10-05).
+  AE: (
+    <>
+      <rect width="30" height="20" fill="#00732F" />
+      <rect y="6.67" width="30" height="6.66" fill="#fff" />
+      <rect y="13.33" width="30" height="6.67" fill="#000" />
+      <rect width="7.5" height="20" fill="#FF0000" />
+    </>
+  ),
+
+  // SIMPLIFIED — twelve five-pointed stars on a circle, as specified; the star radius is enlarged a little so
+  // they survive at text size (2026-10-05). Not a country: the reserved code for the European Union, used
+  // for the Central European Time row.
+  EU: (
+    <>
+      <rect width="30" height="20" fill="#003399" />
+      <path d="M15.00,2.65 L15.21,3.31 L15.90,3.31 L15.35,3.71 L15.56,4.37 L15.00,3.96 L14.44,4.37 L14.65,3.71 L14.10,3.31 L14.79,3.31Z M18.20,3.51 L18.41,4.16 L19.10,4.16 L18.55,4.57 L18.76,5.23 L18.20,4.82 L17.64,5.23 L17.85,4.57 L17.30,4.16 L17.99,4.16Z M20.54,5.85 L20.76,6.51 L21.45,6.51 L20.89,6.91 L21.10,7.57 L20.54,7.16 L19.98,7.57 L20.20,6.91 L19.64,6.51 L20.33,6.51Z M21.40,9.05 L21.61,9.71 L22.30,9.71 L21.75,10.11 L21.96,10.77 L21.40,10.36 L20.84,10.77 L21.05,10.11 L20.50,9.71 L21.19,9.71Z M20.54,12.25 L20.76,12.91 L21.45,12.91 L20.89,13.31 L21.10,13.97 L20.54,13.56 L19.98,13.97 L20.20,13.31 L19.64,12.91 L20.33,12.91Z M18.20,14.59 L18.41,15.25 L19.10,15.25 L18.55,15.65 L18.76,16.31 L18.20,15.91 L17.64,16.31 L17.85,15.65 L17.30,15.25 L17.99,15.25Z M15.00,15.45 L15.21,16.11 L15.90,16.11 L15.35,16.51 L15.56,17.17 L15.00,16.76 L14.44,17.17 L14.65,16.51 L14.10,16.11 L14.79,16.11Z M11.80,14.59 L12.01,15.25 L12.70,15.25 L12.15,15.65 L12.36,16.31 L11.80,15.91 L11.24,16.31 L11.45,15.65 L10.90,15.25 L11.59,15.25Z M9.46,12.25 L9.67,12.91 L10.36,12.91 L9.80,13.31 L10.02,13.97 L9.46,13.56 L8.90,13.97 L9.11,13.31 L8.55,12.91 L9.24,12.91Z M8.60,9.05 L8.81,9.71 L9.50,9.71 L8.95,10.11 L9.16,10.77 L8.60,10.36 L8.04,10.77 L8.25,10.11 L7.70,9.71 L8.39,9.71Z M9.46,5.85 L9.67,6.51 L10.36,6.51 L9.80,6.91 L10.02,7.57 L9.46,7.16 L8.90,7.57 L9.11,6.91 L8.55,6.51 L9.24,6.51Z M11.80,3.51 L12.01,4.16 L12.70,4.16 L12.15,4.57 L12.36,5.23 L11.80,4.82 L11.24,5.23 L11.45,4.57 L10.90,4.16 L11.59,4.16Z" fill="#FFCC00" />
+    </>
+  ),
+
+  // SIMPLIFIED — the taegeuk is drawn as a red upper and blue lower disc with the two inner discs; the four
+  // trigrams are reduced to three bars at each corner, unrotated, which is what reads at 18x12 (2026-10-05).
+  KR: (
+    <>
+      <rect width="30" height="20" fill="#fff" />
+      <path d="M10 10a5 5 0 0 1 10 0Z" fill="#CD2E3A" />
+      <path d="M10 10a5 5 0 0 0 10 0Z" fill="#0047A0" />
+      <circle cx="12.5" cy="10" r="2.5" fill="#CD2E3A" />
+      <circle cx="17.5" cy="10" r="2.5" fill="#0047A0" />
+      <path d="M2.5 3.2h4M2.5 4.6h4M2.5 6h4M23.5 3.2h4M23.5 4.6h4M23.5 6h4M2.5 14h4M2.5 15.4h4M2.5 16.8h4M23.5 14h4M23.5 15.4h4M23.5 16.8h4" stroke="#000" strokeWidth="0.7" />
+    </>
+  ),
+
+  // SIMPLIFIED — the Union Jack canton as on the Australian flag; the Southern Cross as four red stars with a
+  // white border, placed as on the specification (2026-10-05).
+  NZ: (
+    <>
+      <rect width="30" height="20" fill="#00247D" />
+      <g clipPath="url(#nz-canton)">
+        <rect width="15" height="10" fill="#00247D" />
+        <path d="M0 0 15 10M15 0 0 10" stroke="#fff" strokeWidth="2" />
+        <path d="M0 0 15 10M15 0 0 10" stroke="#CC142B" strokeWidth="0.9" />
+        <path d="M7.5 0v10M0 5h15" stroke="#fff" strokeWidth="3.3" />
+        <path d="M7.5 0v10M0 5h15" stroke="#CC142B" strokeWidth="2" />
+      </g>
+      <clipPath id="nz-canton">
+        <rect width="15" height="10" />
+      </clipPath>
+      <path d="M22.20,2.95 L22.48,3.81 L23.39,3.81 L22.65,4.35 L22.93,5.21 L22.20,4.68 L21.47,5.21 L21.75,4.35 L21.01,3.81 L21.92,3.81Z M25.80,7.15 L26.08,8.01 L26.99,8.01 L26.25,8.55 L26.53,9.41 L25.80,8.88 L25.07,9.41 L25.35,8.55 L24.61,8.01 L25.52,8.01Z M20.60,9.35 L20.88,10.21 L21.79,10.21 L21.05,10.75 L21.33,11.61 L20.60,11.08 L19.87,11.61 L20.15,10.75 L19.41,10.21 L20.32,10.21Z M23.40,14.15 L23.68,15.01 L24.59,15.01 L23.85,15.55 L24.13,16.41 L23.40,15.88 L22.67,16.41 L22.95,15.55 L22.21,15.01 L23.12,15.01Z" fill="#CC142B" stroke="#fff" strokeWidth="0.4" />
+    </>
+  ),
+
+  // SIMPLIFIED — blue over red with the white hoist triangle, as specified; the sun's eight rays are omitted
+  // and the three stars kept (2026-10-05).
+  PH: (
+    <>
+      <rect width="30" height="20" fill="#0038A8" />
+      <rect y="10" width="30" height="10" fill="#CE1126" />
+      <path d="M0 0 17.32 10 0 20Z" fill="#fff" />
+      <circle cx="6" cy="10" r="2.3" fill="#FCD116" />
+      <path d="M2.30,1.50 L2.55,2.26 L3.35,2.26 L2.70,2.73 L2.95,3.49 L2.30,3.02 L1.65,3.49 L1.90,2.73 L1.25,2.26 L2.05,2.26Z M2.30,16.30 L2.55,17.06 L3.35,17.06 L2.70,17.53 L2.95,18.29 L2.30,17.82 L1.65,18.29 L1.90,17.53 L1.25,17.06 L2.05,17.06Z M13.60,8.90 L13.85,9.66 L14.65,9.66 L14.00,10.13 L14.25,10.89 L13.60,10.42 L12.95,10.89 L13.20,10.13 L12.55,9.66 L13.35,9.66Z" fill="#FCD116" />
+    </>
+  ),
+
+  // SIMPLIFIED — red over white; the crescent and the five stars in the canton, the stars enlarged to read at
+  // text size (2026-10-05).
+  SG: (
+    <>
+      <rect width="30" height="20" fill="#EF3340" />
+      <rect y="10" width="30" height="10" fill="#fff" />
+      <circle cx="7.6" cy="5.1" r="3.6" fill="#fff" />
+      <circle cx="8.7" cy="5.1" r="3.1" fill="#EF3340" />
+      <path d="M10.60,2.90 L10.73,3.31 L11.17,3.31 L10.82,3.57 L10.95,3.99 L10.60,3.73 L10.25,3.99 L10.38,3.57 L10.03,3.31 L10.47,3.31Z M12.22,4.07 L12.35,4.49 L12.79,4.49 L12.43,4.75 L12.57,5.16 L12.22,4.90 L11.86,5.16 L12.00,4.75 L11.65,4.49 L12.08,4.49Z M11.60,5.98 L11.73,6.39 L12.17,6.39 L11.82,6.65 L11.95,7.06 L11.60,6.80 L11.25,7.06 L11.38,6.65 L11.03,6.39 L11.46,6.39Z M9.60,5.98 L9.74,6.39 L10.17,6.39 L9.82,6.65 L9.95,7.06 L9.60,6.80 L9.25,7.06 L9.38,6.65 L9.03,6.39 L9.47,6.39Z M8.98,4.07 L9.12,4.49 L9.55,4.49 L9.20,4.75 L9.34,5.16 L8.98,4.90 L8.63,5.16 L8.77,4.75 L8.41,4.49 L8.85,4.49Z" fill="#fff" />
+    </>
+  ),
+
+  // EXACT — five stripes in the proportion 1:1:2:1:1 (2026-10-05).
+  TH: (
+    <>
+      <rect width="30" height="20" fill="#A51931" />
+      <rect y="3.33" width="30" height="13.34" fill="#fff" />
+      <rect y="6.67" width="30" height="6.66" fill="#2D2A4A" />
     </>
   ),
 

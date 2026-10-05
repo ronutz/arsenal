@@ -4,7 +4,7 @@ title: "Cookies HTTP: Estado Sobre um Protocolo Sem Estado"
 summary: "O HTTP esquece você depois de cada requisição - por projeto. Cookies são o retrofit que o deixa lembrar mesmo assim: o servidor escreve um bilhete com Set-Cookie, o navegador o devolve com Cookie, e todo o resto - escopo, vida útil, segurança - são regras sobre quando esse bilhete viaja. Escopo por Domain e Path, vidas de sessão vs persistente, por que o servidor nunca vê o que o navegador sabe, e onde o artigo de flags de segurança assume."
 concepts: ["cookies", "set-cookie", "session", "state", "domain", "path", "expires", "max-age"]
 relatedTools: ["curl-command-explainer", "secure-headers"]
-relatedArticles: ["cookie-security-flags", "http-headers-anatomy", "bigip-persistence-cookies", "curl-headers-auth-and-cookies"]
+relatedArticles: ["cookie-security-flags", "http-headers-anatomy", "f5-bigip-persistence-cookies", "curl-headers-auth-and-cookies"]
 category: networking
 order: 210
 status: reviewed
@@ -15,7 +15,7 @@ A simplificação fundadora do HTTP é a amnésia: cada requisição vale sozinh
 
 ## Os dois cabeçalhos, e quem guarda o livro-caixa
 
-Uma resposta diz `Set-Cookie: session=abc123; Path=/; Max-Age=3600` - um cookie por linha de cabeçalho, nome, valor e atributos. Dali em diante, cada requisição que o navegador envia *dentro do escopo* carrega `Cookie: session=abc123` - só nomes e valores, atributos nunca ecoados de volta. Duas assimetrias se escondem aí, e ambas importam. Primeira, **o navegador guarda o livro-caixa**: o servidor declarou as regras uma vez na hora de gravar, mas só o cliente sabe o que armazenou, quando expira e o que mais há no pote - o servidor só vê o que volta. Segunda, cookies são por *requisição*, não por sessão: o navegador anexa todo cookie em escopo a toda requisição correspondente, o que é a superfície inteira de performance e segurança num só hábito - e a razão de identificadores de sessão serem curtos e de [balanceadores pegarem carona no mecanismo para persistência](/learn/bigip-persistence-cookies).
+Uma resposta diz `Set-Cookie: session=abc123; Path=/; Max-Age=3600` - um cookie por linha de cabeçalho, nome, valor e atributos. Dali em diante, cada requisição que o navegador envia *dentro do escopo* carrega `Cookie: session=abc123` - só nomes e valores, atributos nunca ecoados de volta. Duas assimetrias se escondem aí, e ambas importam. Primeira, **o navegador guarda o livro-caixa**: o servidor declarou as regras uma vez na hora de gravar, mas só o cliente sabe o que armazenou, quando expira e o que mais há no pote - o servidor só vê o que volta. Segunda, cookies são por *requisição*, não por sessão: o navegador anexa todo cookie em escopo a toda requisição correspondente, o que é a superfície inteira de performance e segurança num só hábito - e a razão de identificadores de sessão serem curtos e de [balanceadores pegarem carona no mecanismo para persistência](/learn/f5-bigip-persistence-cookies).
 
 ## Escopo: quais requisições o carregam
 

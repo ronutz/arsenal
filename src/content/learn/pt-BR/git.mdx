@@ -4,7 +4,7 @@ title: "Git: o banco endereçado por conteúdo vestindo terno de controle de ver
 summary: "O que o Git guarda de verdade (snapshots, não diffs), por que uma branch é só um ponteiro de 41 bytes, como as três áreas explicam quase todo comando confuso, e o que fez de um projeto paralelo de duas semanas o padrão da indústria em quinze anos."
 concepts: ["git", "version control", "commit", "branch", "merge", "rebase", "sha-1", "content addressing"]
 relatedTools: []
-relatedArticles: ["github", "hash-functions-overview", "terminal-shell-tty-console"]
+relatedArticles: ["github", "hash-function-families", "terminal-shell-tty-console"]
 category: operations
 order: 6
 status: reviewed
@@ -45,7 +45,7 @@ Os nomes que a maioria aprende como Git avançado são a contabilidade desse mod
 
 Dois silêncios do desenho valem conhecer de propósito. O Git rastreia conteúdo, não arquivos: um diretório vazio é invisível para ele (não há entrada de tree a fazer), e um rename não é registrado em lugar nenhum — ele é *detectado* depois, quando uma remoção e uma adição parecem suficientemente parecidas. E os hashes do Git autenticam conteúdo, não autoria: a linha `author` de um commit é uma alegação em texto livre que qualquer um escreve. Verificar quem fez um commit é um mecanismo separado (commits e tags assinados), colocado por cima para os projetos que precisam disso.
 
-A função de hash em si carrega um asterisco. O Git nasceu no SHA-1, que já não resiste a colisão contra um atacante com verba; o Git blindou a própria implementação contra as construções de colisão conhecidas e definiu um formato de repositório em SHA-256, e a migração do ecossistema é um projeto longo e deliberadamente sem emoção (veja o [panorama de funções de hash](/learn/hash-functions-overview) para o que é resistência a colisão e por que ela se desgasta). Para integridade contra acidente — o trabalho que o hash faz um bilhão de vezes por dia — o SHA-1 segue inteiramente eficaz.
+A função de hash em si carrega um asterisco. O Git nasceu no SHA-1, que já não resiste a colisão contra um atacante com verba; o Git blindou a própria implementação contra as construções de colisão conhecidas e definiu um formato de repositório em SHA-256, e a migração do ecossistema é um projeto longo e deliberadamente sem emoção (veja o [panorama de funções de hash](/learn/hash-function-families) para o que é resistência a colisão e por que ela se desgasta). Para integridade contra acidente — o trabalho que o hash faz um bilhão de vezes por dia — o SHA-1 segue inteiramente eficaz.
 
 ## Por que esse desenho ganhou
 

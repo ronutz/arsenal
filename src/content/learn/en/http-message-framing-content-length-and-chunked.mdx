@@ -1,0 +1,108 @@
+---
+slug: http-message-framing-content-length-and-chunked
+title: "Where an HTTP/1.1 message ends: Content-Length, chunked, and the eight rules"
+summary: "An HTTP/1.1 connection is a stream of bytes with messages laid end to end, and nothing marks where one stops except the rules both ends agree on. RFC 9112 gives eight of them, in order of precedence, and every request-smuggling attack of the last twenty years is two implementations applying a different one to the same bytes. Here are the rules, the chunked coding decoded by hand, what Content-Length promises, and what goes wrong when the promise and the bytes disagree."
+concepts: ["http", "framing", "content-length", "chunked", "transfer-encoding", "request smuggling", "rfc 9112"]
+relatedTools: ["http-message-decoder", "http-request-translator", "curl-command-explainer", "http-status-code-explainer"]
+relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-headers-anatomy", "http-versions-09-to-3", "http-cookies-state-over-stateless"]
+category: web
+order: 144
+status: reviewed
+updated: "2026-10-05"
+---
+
+HTTP/1.1 runs over a connection that carries nothing but bytes. A request goes down it, a response comes back, and if the connection stays open the next request follows the first with no separator between them. So both ends need the same answer to one question for every message: where does this one end? RFC 9112, the HTTP/1.1 specification, answers it in Section 6.3 with a list, "in order of precedence", of eight rules. The whole of message framing is in that list, and so is the whole of request smuggling. The [HTTP message decoder](/tools/http-message-decoder) applies the list to whatever you paste and says which rule won; this article is the list read slowly, with the sources quoted (RFC 9112 and RFC 9110, read 2026-10-05).
+
+## The shape of a message
+
+RFC 9112 Section 2.1 gives the grammar in four lines: a start line, then field lines, then an empty line, then an optional body.
+
+```
+HTTP-message = start-line CRLF
+               *( field-line CRLF )
+               CRLF
+               [ message-body ]
+```
+
+The start line is a request line (`method SP request-target SP HTTP-version`) or a status line (`HTTP-version SP status-code SP [ reason-phrase ]`). A field line is `field-name ":" OWS field-value OWS`, and the specification is strict about one detail that pasted text often gets wrong: "No whitespace is allowed between the field name and colon. A server MUST reject, with a response status code of 400 (Bad Request), any received request message that contains whitespace between a header field name and colon." The reason is the same one that runs through the whole section: two parsers that disagree about whether `Content-Length :` names the field are two parsers that disagree about where the message ends.
+
+Everything up to the empty line is parsed by every implementation the same way, more or less. The body is where they diverge, because the header section has to say how long it is, and there are several ways to say it.
+
+## The eight rules
+
+Here is Section 6.3, condensed, with the rule numbers the decoder reports:
+
+1. **A response that cannot have a body.** "Any response to a HEAD request and any response with a 1xx (Informational), 204 (No Content), or 304 (Not Modified) status code is always terminated by the first empty line after the header fields, regardless of the header fields present in the message, and thus cannot contain a message body or trailer section." Whatever `Content-Length` says, the message ends at the empty line.
+2. **A tunnel.** A 2xx response to CONNECT means the connection "will become a tunnel immediately after the empty line"; a client "MUST ignore any Content-Length or Transfer-Encoding header fields received in such a message".
+3. **Both framing fields at once.** "If a message is received with both a Transfer-Encoding and a Content-Length header field, the Transfer-Encoding overrides the Content-Length. Such a message might indicate an attempt to perform request smuggling (Section 11.2) or response splitting (Section 11.1) and ought to be handled as an error."
+4. **Transfer-Encoding.** If chunked is the final coding, "the message body length is determined by reading and decoding the chunked data until the transfer coding indicates the data is complete." In a response with some other final coding, the body is read "until it is closed by the server". In a request with some other final coding, "the message body length cannot be determined reliably; the server MUST respond with the 400 (Bad Request) status code and then close the connection."
+5. **An invalid Content-Length.** Without Transfer-Encoding and with a Content-Length that is not a number, or a list whose values differ, "the message framing is invalid and the recipient MUST treat it as an unrecoverable error": 400 and close for a request, and for a response received by a proxy, "close the connection to the server, discard the received response, and send a 502 (Bad Gateway) response to the client".
+6. **A valid Content-Length.** "its decimal value defines the expected message body length in octets. If the sender closes the connection or the recipient times out before the indicated number of octets are received, the recipient MUST consider the message to be incomplete and close the connection."
+7. **A request with neither.** "the message body length is zero (no message body is present)."
+8. **A response with neither.** "the message body length is determined by the number of octets received prior to the server closing the connection."
+
+Rules 7 and 8 explain an asymmetry worth remembering: a request can never be delimited by the connection closing, because the server would then never know when to answer, so a request body without a length is a body of length zero. A response can, because closing the connection is the oldest way HTTP ever had of saying "done": RFC 1945, the HTTP/1.0 specification, determined a body's length either by Content-Length or "by the closing of the connection by the server", and in its day "current practice requires that the connection be established by the client prior to each request and closed by the server after sending the response".
+
+## Content-Length, the promise
+
+`Content-Length = 1*DIGIT` (RFC 9110 Section 8.6): one or more decimal digits, nothing else. Its value "indicates the associated representation's data length as a decimal non-negative integer number of octets", and because it delimits framing, the specification is unusually blunt about getting it right: "a sender MUST NOT forward a message with a Content-Length header field value that is known to be incorrect." One tolerance is allowed: a value "consisting of the same decimal value repeated as a comma-separated list (e.g, "Content-Length: 42, 42")" may be rejected or collapsed to one, "since this likely indicates that a duplicate was generated or combined by an upstream message processor". Two different values are an unrecoverable error (rule 5).
+
+Octets, not characters. A body of `olá` is three characters and four octets in UTF-8. The decoder counts UTF-8 octets of the pasted text and compares them with the declared length, and it reports the two ways they can disagree. Shorter than declared: the recipient waits for bytes that never come, then "MUST consider the message to be incomplete and close the connection"; in a paste, this usually means the body was cut. Longer than declared: the recipient reads exactly the declared number and treats the rest as the beginning of the next message. That second case is the seed of every desynchronisation attack.
+
+## Chunked, decoded by hand
+
+Transfer-Encoding: chunked exists for the body whose length the sender does not know when it writes the header section: a page generated on the fly, a stream, a compressed body whose compressed size is only known at the end. Instead of one length up front, the sender writes the body in pieces, each announced by its own length:
+
+```
+chunked-body   = *chunk
+                 last-chunk
+                 trailer-section
+                 CRLF
+chunk          = chunk-size [ chunk-ext ] CRLF
+                 chunk-data CRLF
+chunk-size     = 1*HEXDIG
+last-chunk     = 1*("0") [ chunk-ext ] CRLF
+```
+
+The size is hexadecimal, and that is the first thing people misread. Take the textbook example:
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+Transfer-Encoding: chunked
+
+4
+Wiki
+5
+pedia
+E
+ in
+
+chunks.
+0
+
+```
+
+`4` announces four octets, `Wiki`. `5` announces five, `pedia`. `E` is fourteen: a space, `in`, CRLF, CRLF, `chunks.` (1 + 2 + 2 + 2 + 7). Then `0`, the last-chunk, then the empty line that ends the trailer section. Decoded, the body is twenty-three octets: `Wikipedia in` followed by two line breaks and `chunks.` RFC 9112 Section 7.1.3 gives the decoding as pseudocode: read a size, read that many octets of data and a CRLF, add the size to a running length, repeat until the size is zero, read trailer fields until an empty line, then "Content-Length := length" and "Remove "chunked" from Transfer-Encoding". A recipient that has decoded the chunks knows the length the sender did not.
+
+Two things can follow a chunk size: extensions after a semicolon, which "a recipient MUST ignore" when it does not recognise them, and after the last chunk, trailer fields, which carry metadata the sender only knew at the end (a checksum, a timing). And one thing must not follow the trailer section's empty line: anything at all. Whatever comes next is the next message.
+
+## Where smuggling lives
+
+Rule 3 is phrased as a warning because of history. RFC 9112 Section 6.1 explains it: "Early implementations of Transfer-Encoding would occasionally send both a chunked transfer coding for message framing and an estimated Content-Length header field for use by progress bars. This is why Transfer-Encoding is defined as overriding Content-Length, as opposed to them being mutually incompatible. Unfortunately, forwarding such a message can lead to vulnerabilities regarding request smuggling (Section 11.2) or response splitting (Section 11.1) attacks if any downstream recipient fails to parse the message according to this specification, particularly when a downstream recipient only implements HTTP/1.0."
+
+The attack needs two parsers in a row, a front end and a back end, that apply different rules to the same bytes. The front end honours Content-Length, say 13, and forwards exactly thirteen octets as the request body. The back end honours Transfer-Encoding, reads `0`, the empty line, and finishes the message there, after five octets. The remaining eight, `SMUGGLED` in the usual demonstration, sit on the back-end connection as the beginning of the next request, which belongs to whoever sends the next bytes down that shared connection. The decoder's "smuggling shape" preset is exactly this message; it reports rule 3, decodes the chunked body as empty, and counts the octets left over after it. The modern defences are the ones the rules imply: reject a message that carries both fields, normalise to one framing before forwarding, and never let two implementations on one path disagree about Section 6.3.
+
+Two more lines in the same spirit. "A server or client that receives an HTTP/1.0 message containing a Transfer-Encoding header field MUST treat the message as if the framing is faulty, even if a Content-Length is present, and close the connection after processing the message": HTTP/1.0 never had Transfer-Encoding, so an HTTP/1.0 parser would use Content-Length and disagree with everyone else. And obsolete line folding, a field value continued on the next line by indentation, must be rejected or replaced with spaces, because a parser that does not fold sees a new, nameless line where another sees a continuation.
+
+## Reading a paste
+
+A capture or a log is text, and text has already been through at least one program that may have rewritten it. RFC 9112 Section 2.2 is lenient on purpose: "a recipient MAY recognize a single LF as a line terminator and ignore any preceding CR", and a server "SHOULD ignore at least one empty line (CRLF) received prior to the request-line". The decoder follows both and notes them rather than counting them against the message. A bare CR, on the other hand, a carriage return with no line feed, is one the specification does not forgive: a recipient "MUST consider that element to be invalid or replace each bare CR with SP before processing".
+
+So when the decoder says a message is incomplete, the first question is whether the wire or the paste lost the bytes; when it says the message carries both framing fields, there is no such doubt. The rules are the same ones every server and proxy on the path applies, and they were written down so that they all apply the same one.
+
+## Sources
+
+- [RFC 9112: HTTP/1.1](https://www.rfc-editor.org/rfc/rfc9112.html) (read 2026-10-05): Sections 2.1, 2.2, 3, 4, 5, 5.2, 6.1, 6.3, 7.1, 7.1.3
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) (read 2026-10-05): Section 8.6
+- [RFC 1945: Hypertext Transfer Protocol -- HTTP/1.0](https://www.rfc-editor.org/rfc/rfc1945.html) (read 2026-10-05): Sections 1.3 and 7.2.2

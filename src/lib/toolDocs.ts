@@ -26,6 +26,7 @@ import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
+import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import { getTranslations } from "next-intl/server";
 import { getGlossaryEntry } from "@/content/glossary/glossary";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -73,6 +74,8 @@ async function hintingProcessor(locale: string) {
 
   return baseProcessor()
     .use(rehypeGlossaryHintsStatic, getHintSurfaces(), proseFor, expandLabel)
+    // Root-relative links written without a locale get this doc's locale.
+    .use(rehypeLocaliseLinks, locale)
     .use(rehypeStringify);
 }
 

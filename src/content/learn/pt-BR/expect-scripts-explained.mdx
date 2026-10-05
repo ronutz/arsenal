@@ -1,0 +1,89 @@
+---
+slug: expect-scripts-explained
+title: "Scripts Expect, lidos devagar: spawn, expect, send e os erros entre eles"
+summary: "O Expect conduz programas interativos desde 1990 com quatro verbos: spawn inicia um, expect espera a saída dele, send digita nele, interact o entrega a você. Engenheiros de rede ainda o escrevem para entrar numa caixa e ler uma resposta. A página de manual é curta e precisa, e quase todo script que se comporta mal quebra uma das frases dela: o timeout padrão de 10 segundos, a ação nula implícita, o padrão que esvazia o buffer, o caractere de retorno, a conexão fechada na saída. Aqui estão essas frases, com o que cada uma custa quando ignorada."
+concepts: ["expect", "tcl", "automação", "ssh", "telnet", "scripts", "automação de rede"]
+relatedTools: ["expect-script-explainer", "f5-irules-style-checker", "regex"]
+relatedArticles: ["cron-the-schedule-language", "irules-style-guide-explained"]
+category: operations
+order: 61
+status: reviewed
+updated: "2026-10-05"
+---
+
+O [Expect](/glossary/expect) é, nas suas próprias palavras, "a tool for automating interactive applications such as telnet, ftp, passwd, fsck, rlogin, tip, etc." Don Libes o escreveu no National Institute of Standards and Technology, e a página de manual da versão 5 continua a ser a referência; a última versão do repositório original é a 5.45.4, de fevereiro de 2018, e a página hoje aponta para um fork mantido sob a organização tcltk-depot, com suporte a Tcl 8.6 e Tcl 9. Tudo abaixo cita essa página de manual, lida em 2026-10-05, porque os erros estão todos respondidos nela.
+
+O Expect é uma extensão do [Tcl](/glossary/tcl). Isso importa mais do que parece: as regras de citação são as do Tcl, as variáveis são as do Tcl, e metade das surpresas de um script Expect são surpresas do Tcl com chapéu de Expect.
+
+## Os quatro verbos
+
+- **`spawn programa args`** inicia um programa e o torna o processo atual. Daí em diante a saída dele é o que o `expect` lê e a entrada dele é o que o `send` escreve. Por padrão o `spawn` ecoa a linha de comando; `spawn -noecho` fica em silêncio.
+- **`expect padrão corpo ...`** "waits until one of the patterns matches the output of a spawned process, a specified time period has passed, or an end-of-file is seen." Os padrões são glob por padrão, a mesma linguagem do `string match` do Tcl (`*`, `?`, `[chars]`, `\x`); `-re` torna um deles expressão regular, `-ex` uma cadeia exata, `-nocase` ignora maiúsculas. Cinco palavras-chave representam eventos em vez de texto: `eof`, `timeout`, `full_buffer`, `null` e `default` (timeout ou fim de arquivo).
+- **`send cadeia`** digita a cadeia no programa. Variantes escrevem em outros lugares: `send_user` na saída padrão, `send_error` na saída de erro, `send_tty` no terminal. `-s` envia devagar e `-h` "(somewhat) like a human actually typing".
+- **`interact`** "gives control of the current process to the user, so that keystrokes are sent to the current process, and the stdout and stderr of the current process are returned."
+
+Um script de login são esses quatro em fila: spawn ssh, expect pelo prompt de senha, send da senha, expect pelo prompt do shell, send de um comando, expect pelo prompt de novo, leitura do que voltou em `expect_out(buffer)`, send de exit, expect eof. O [explicador de scripts Expect](/tools/expect-script-explainer) dispõe esse diálogo como tabela, cada `expect` ao lado do `send` que o responde, que é o jeito mais rápido de ver onde a imagem que o script tem da conversa e a conversa real do programa se separam.
+
+## Frase um: dez segundos, ou para sempre
+
+"The default timeout period is 10 seconds but may be set, for example to 30, by the command "set timeout 30". An infinite timeout may be designated by the value -1."
+
+Dois erros moram nessa frase. O primeiro é não definir timeout nenhum e deixar um login lento ou um `show tech` demorado esbarrar nos dez segundos. O segundo é a correção reflexa, `set timeout -1`, que transforma toda espera em espera sem fim: uma caixa que nunca imprime o prompt segura o script, e o que quer que o tenha agendado, para sempre. Defina um número que caiba no passo mais lento e trate o timeout (próxima frase). Um terceiro erro, mais discreto, é colocar o `set timeout` depois do primeiro `expect`; aquele já rodou com o padrão. E dentro de um procedimento, "variables written are always in the local scope (unless a "global" command has been issued)", então um `set timeout` numa proc sem `global timeout` não muda nada fora dela.
+
+## Frase dois: a ação nula implícita
+
+"If no timeout keyword is used, an implicit null action is executed upon timeout."
+
+Esta é a frase por trás da maioria dos relatos de "ontem funcionava". Um `expect "assword:"` sem padrão `timeout` não falha quando o prompt não vem; ele retorna, em silêncio, depois do timeout, e a linha seguinte roda. O script então envia a senha a um programa que está mostrando a pergunta da chave do host, envia `show version` a um programa que ainda pede a senha, e lê um `expect_out(buffer)` com o texto errado. Todo `expect` que espera algo que um programa talvez não diga quer um ramo `timeout` que avise e saia:
+
+```tcl
+expect {
+    -nocase "password:" { send -- "$env(SSHPASS)\r" }
+    timeout { send_user "sem prompt de senha de $host\n"; exit 1 }
+    eof { send_user "conexão fechada por $host\n"; exit 1 }
+}
+```
+
+## Frase três: o padrão que não espera
+
+"The pattern "*" (and -re ".*") will flush the output buffer without reading any more output from the process."
+
+`expect "*"` parece "espere por qualquer coisa". É o oposto: casa com o que já está no buffer, imediatamente, até com nada, e segue adiante. O mesmo manual explica por que prompts curtos falham: os padrões são "unanchored", e o `$` para marcar o fim de uma cadeia é recomendado "if you can exactly describe the characters at the end of a string". Um padrão `">"` casa com o primeiro `>` em qualquer ponto da saída, o que num switch com banner em geral não é o prompt. `-re {[>#] ?$}` nomeia os caracteres do prompt e os ancora ao fim do que chegou.
+
+## Frase quatro: o caractere de retorno
+
+"Characters are sent immediately although programs with line-buffered input will not read the characters until a return character is sent. A return character is denoted "\r"."
+
+`send "show version"` digita as palavras e para. O programa, que lê uma linha por vez, espera o retorno que nunca vem, e o próximo `expect` do script espera um prompt que também nunca vem, até que o timeout e a ação nula implícita retomem a história. Todo `send` para um programa que lê linhas termina em `\r`. O Tcl acrescenta um detalhe próprio: entre chaves "No substitutions are performed on the characters between the braces except for backslash-newline substitutions", então `send {show version\r}` envia uma barra invertida e a letra r, e `send {$env(PW)\r}` envia os oito caracteres do nome da variável. Aspas duplas são o delimitador certo para um `send` com `\r` ou `$` dentro.
+
+## Frase cinco: a conexão fecha quando você sai
+
+"Upon exiting, all connections to spawned processes are closed. Closure will be detected as an EOF by spawned processes."
+
+Um script cuja última linha é `send "show running-config\r"` fez uma pergunta e saiu da sala. O Expect fecha a conexão quando o script termina, o programa vê fim de arquivo, e a resposta que o script existia para colher nunca é lida. O fim de um script bem formado é um `expect` pelo prompt depois do último comando (para ler a saída dele), depois `send "exit\r"` e `expect eof` para deixar o programa terminar; ou `interact`, se o objetivo era entrar e entregar o teclado.
+
+O começo também tem a sua frase: "It is a good idea to precede the first send to a process by an expect. expect will wait for the process to start, while send cannot." Um `send` na linha seguinte ao `spawn`, antes de qualquer `expect`, pode chegar antes de o programa estar ouvindo, e "you run the risk of having your data ignored".
+
+## As regras do Tcl, na fronteira do padrão
+
+Um `expect` com vários padrões costuma ser escrito como um só bloco entre chaves, um padrão e um corpo por linha. O manual permite e acrescenta o detalhe que passa despercebido: "all the arguments may be "braced" into one so as to avoid terminating each line with a backslash. In this one case, the usual Tcl substitutions will occur despite the braces." Então, dentro desse bloco, um padrão entre aspas continua sujeito às substituições do Tcl. `-re "[Pp]assword: $"` pede ao Tcl que rode um comando chamado `Pp` antes de o Expect ver o padrão, e o script morre com "invalid command name". A correção é do Tcl: coloque o padrão entre chaves, `-re {[Pp]assword: $}`, e nada dentro é tocado. O mesmo vale para um `$` que deveria ser âncora de expressão regular em vez de variável: as chaves o mantêm literal.
+
+## Segredos, eco e o fim do processo
+
+Três hábitos completam o conselho do manual. Primeiro, uma senha pertence a fora do script: a um argumento (`lindex $argv 2`), ao ambiente (`$env(SSHPASS)`), ou ao usuário, com o idioma que o próprio manual dá, `stty -echo`, `send_user "Password: "`, `expect_user -re "(.*)\n"`, `set password $expect_out(1,string)`, `stty echo`. Note o último passo: o eco volta assim que a senha foi lida. Segundo, `log_user 0` esconde o diálogo da saída padrão; é a ferramenta certa para um script silencioso, desde que um `log_user 1` ou um `puts` da saída capturada dê ao operador algo para ler quando as coisas dão errado. Terceiro, "close does not call wait since there is no guarantee that closing a process connection will cause it to exit"; um script que fecha a conexão explicitamente deve chamar `wait` depois, para que o processo seja recolhido.
+
+## Mais uma, do ssh
+
+Não está no manual do Expect, mas está em quase todo script Expect: o `StrictHostKeyChecking` do OpenSSH tem como padrão `ask`, e com esse valor "new host keys will be added to the user known host files only after the user has confirmed that is what they really want to do" (ssh_config(5)). A primeira execução contra um host novo mostra, portanto, uma pergunta `(yes/no)` onde o script espera um prompt de senha, e a ação nula implícita faz o resto. Ou responda à pergunta num ramo do `expect` (`-re "\\(yes/no.*\\)\\?" { send "yes\r"; exp_continue }`) ou passe `-o StrictHostKeyChecking=accept-new`, que "will automatically add new host keys to the user's known_hosts file, but will not permit connections to hosts with changed host keys".
+
+## O explicador
+
+O [explicador de scripts Expect](/tools/expect-script-explainer) lê um script com o analisador Tcl 8.4 do site e nunca o executa. Explica cada comando em palavras simples, entra nos corpos de `expect`, `if`, laços, `switch`, `catch` e `proc`, reconstrói o diálogo e relata dezoito achados que correspondem às frases acima: o timeout padrão ou infinito, o ramo de timeout ausente, o padrão que esvazia o buffer e o prompt de um caractere, o send sem `\r` e o send entre chaves, o script que termina num send ou começa com um, o padrão entre aspas que o Tcl substitui, a pergunta da chave do host, o segredo em texto claro (mascarado na saída), `log_user 0` e `stty -echo` deixados como estão, `close` sem `wait`, `exp_continue` fora de um `expect`, e `set timeout` colocado tarde ou dentro de um procedimento. Cada achado nomeia a sua linha e cita o manual, de modo que a correção vem com a razão.
+
+## Fontes
+
+- [expect(1), a página de manual do Expect (Don Libes, NIST; Expect versão 5)](https://www.tcl-lang.org/man/expect5.31/expect.1.html) (lida em 2026-10-05)
+- [Expect em core.tcl-lang.org: descrição, versão 5.45.4, aviso de manutenção](https://core.tcl-lang.org/expect/index) (lida em 2026-10-05)
+- [Manual do Tcl 8.4: Tcl, as regras da linguagem](https://www.tcl-lang.org/man/tcl8.4/TclCmd/Tcl.htm) (lida em 2026-10-05)
+- [Manual do Tcl 8.4: string match](https://www.tcl-lang.org/man/tcl8.4/TclCmd/string.htm) (lida em 2026-10-05)
+- [OpenSSH ssh_config(5): StrictHostKeyChecking](https://man.openbsd.org/ssh_config.5) (lida em 2026-10-05)

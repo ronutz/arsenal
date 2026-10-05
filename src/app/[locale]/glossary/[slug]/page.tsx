@@ -218,7 +218,10 @@ export default async function GlossaryEntryPage({
                 <ul className="gloss-sources-list">
                   {entry.sources.map((s, i) => (
                     <li key={i}>
-                      {s.href ? (
+                      {/* An internal source (a vendor profile here) stays in the locale and the tab; an outside one opens in a new tab. */}
+                      {s.href && s.href.startsWith("/") ? (
+                        <Link href={s.href}>{s.label}</Link>
+                      ) : s.href ? (
                         <a href={s.href} target="_blank" rel="noopener noreferrer">
                           {s.label}
                         </a>

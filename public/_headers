@@ -104,3 +104,7 @@
 
 /workers/*.mjs
   Content-Type: text/javascript; charset=utf-8
+
+# The earlier-sites archive renderings and the reproduced Flash bars (2026-10-05): static records, a day's cache.
+/archive/earlier-sites/*
+  Cache-Control: public, max-age=86400

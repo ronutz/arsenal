@@ -77,6 +77,7 @@ import { manifest as f5IrulesStringExtractManifest } from "@/lib/tools/f5-irules
 import F5IrulesConditionalBuilderTool from "@/components/F5IrulesConditionalBuilderTool";
 import { manifest as f5IrulesConditionalBuilderManifest } from "@/lib/tools/f5-irules-conditional-builder";
 import F5IrulesStyleCheckerTool from "@/components/F5IrulesStyleCheckerTool";
+import ExpectScriptExplainerTool from "@/components/ExpectScriptExplainerTool";
 import { manifest as f5IrulesStyleCheckerManifest } from "@/lib/tools/f5-irules-style-checker";
 import F5BigipIndexBaseFinderTool from "@/components/F5BigipIndexBaseFinderTool";
 import { manifest as f5BigipIndexBaseFinderManifest } from "@/lib/tools/f5-bigip-index-base-finder";
@@ -279,6 +280,7 @@ import { manifest as mtuMssManifest } from "@/lib/tools/mtu-mss";
 import HttpMethodsComparisonTool from "@/components/HttpMethodsComparisonTool";
 import CronExpressionExplainerTool from "@/components/CronExpressionExplainerTool";
 import { manifest as cronExpressionExplainerManifest } from "@/lib/tools/cron-expression-explainer";
+import { manifest as expectScriptExplainerManifest } from "@/lib/tools/expect-script-explainer";
 import { manifest as httpMethodsManifest } from "@/lib/tools/http-methods-comparison";
 import { manifest as f5BigdThreadManifest } from "@/lib/tools/f5-bigd-thread-calculator";
 import FaultHypothesisBuilderTool from "@/components/FaultHypothesisBuilderTool";
@@ -392,6 +394,20 @@ import CvssVectorDecoderTool from "@/components/CvssVectorDecoderTool";
 import { manifest as cvssManifest } from "@/lib/tools/cvss-vector-decoder";
 import CurlCommandExplainerTool from "@/components/CurlCommandExplainerTool";
 import HttpRequestTranslatorTool from "@/components/HttpRequestTranslatorTool";
+import HttpMessageDecoderTool from "@/components/HttpMessageDecoderTool";
+import { manifest as httpMessageDecoderManifest } from "@/lib/tools/http-message-decoder";
+import ColorContrastFormatTool from "@/components/ColorContrastFormatTool";
+import { manifest as colorContrastFormatManifest } from "@/lib/tools/color-contrast-format";
+import CssSpecificityCalculatorTool from "@/components/CssSpecificityCalculatorTool";
+import { manifest as cssSpecificityCalculatorManifest } from "@/lib/tools/css-specificity-calculator";
+import HtmlStructureExplainerTool from "@/components/HtmlStructureExplainerTool";
+import { manifest as htmlStructureExplainerManifest } from "@/lib/tools/html-structure-explainer";
+import CspEvaluatorTool from "@/components/CspEvaluatorTool";
+import { manifest as cspEvaluatorManifest } from "@/lib/tools/csp-evaluator";
+import CssSelectorTesterTool from "@/components/CssSelectorTesterTool";
+import { manifest as cssSelectorTesterManifest } from "@/lib/tools/css-selector-tester";
+import MetaOgJsonldInspectorTool from "@/components/MetaOgJsonldInspectorTool";
+import { manifest as metaOgJsonldInspectorManifest } from "@/lib/tools/meta-og-jsonld-inspector";
 import { manifest as curlManifest } from "@/lib/tools/curl-command-explainer";
 import { manifest as reqTransManifest } from "@/lib/tools/http-request-translator";
 import { manifest as curlbManifest } from "@/lib/tools/curl-command-builder";
@@ -833,6 +849,34 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: HttpRequestTranslatorTool,
     sources: reqTransManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "http-message-decoder": {
+    Component: HttpMessageDecoderTool,
+    sources: httpMessageDecoderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "color-contrast-format": {
+    Component: ColorContrastFormatTool,
+    sources: colorContrastFormatManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "css-specificity-calculator": {
+    Component: CssSpecificityCalculatorTool,
+    sources: cssSpecificityCalculatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "html-structure-explainer": {
+    Component: HtmlStructureExplainerTool,
+    sources: htmlStructureExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "csp-evaluator": {
+    Component: CspEvaluatorTool,
+    sources: cspEvaluatorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "css-selector-tester": {
+    Component: CssSelectorTesterTool,
+    sources: cssSelectorTesterManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "meta-og-jsonld-inspector": {
+    Component: MetaOgJsonldInspectorTool,
+    sources: metaOgJsonldInspectorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "hash-preimage-finder": {
     Component: HashPreimageFinderTool,
     sources: hpfManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -980,6 +1024,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "f5-irules-style-checker": {
     Component: F5IrulesStyleCheckerTool,
     sources: f5IrulesStyleCheckerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "expect-script-explainer": {
+    Component: ExpectScriptExplainerTool,
+    sources: expectScriptExplainerManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "f5-bigip-index-base-finder": {
     Component: F5BigipIndexBaseFinderTool,

@@ -8355,7 +8355,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     sources: [{ label: "DEC, 'DECnet DIGITAL Network Architecture (Phase V) General Description' (EK-DNAPV-GD, September 1987) - carries the DNA-to-OSI correspondence and the Phase V use of OSI protocols, and dates DDCMP to 1974; it does not carry the peer-to-peer description of Phase IV", href: "https://ftp.mirrorservice.org/sites/www.bitsavers.org/pdf/dec/decnet/EK-DNAPV-GD_DECnet_Phase_V_General_Description_Sep87.pdf" },
     // A cross-reference rather than a citation: our own DEC chapter, which carries
     // its own sources. It is kept because it is where the vendor's story is told.
-    { label: "DEC vendor profile", href: "/industry/chapters/dec" }],
+    { label: "DEC vendor profile", href: "/industry/dec" }],
   },
   {
     slug: "xns",
@@ -8384,7 +8384,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Internetwork Packet Exchange / Sequenced Packet Exchange",
     aliases: ["ipx", "spx", "ipx/spx", "netware protocol"],
     relatedTerms: ["xns", "novell-sap", "appletalk"],
-    sources: [{ label: "Novell vendor profile", href: "/industry/chapters/novell" }],
+    sources: [{ label: "Novell vendor profile", href: "/industry/novell" }],
   },
   {
     slug: "novell-sap",
@@ -8394,7 +8394,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Service Advertising Protocol (Novell NetWare)",
     aliases: ["novell sap", "service advertising protocol", "sap protocol", "netware sap"],
     relatedTerms: ["ipx", "xns"],
-    sources: [{ label: "Novell vendor profile", href: "/industry/chapters/novell" }],
+    sources: [{ label: "Novell vendor profile", href: "/industry/novell" }],
   },
   {
     slug: "sna",
@@ -8404,7 +8404,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Systems Network Architecture (IBM)",
     aliases: ["sna", "systems network architecture", "appn", "vtam"],
     relatedTerms: ["sdlc", "hdlc", "token-ring"],
-    sources: [{ label: "IBM vendor profile", href: "/industry/chapters/ibm" }],
+    sources: [{ label: "IBM vendor profile", href: "/industry/ibm" }],
   },
   {
     slug: "ppp",
@@ -8561,7 +8561,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Synchronous Data Link Control (IBM)",
     aliases: ["sdlc", "synchronous data link control"],
     relatedTerms: ["hdlc", "sna"],
-    sources: [{ label: "IBM vendor profile", href: "/industry/chapters/ibm" }],
+    sources: [{ label: "IBM vendor profile", href: "/industry/ibm" }],
   },
   {
     slug: "frame-relay",
