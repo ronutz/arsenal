@@ -53,6 +53,19 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "15:05",
+    kind: "tool",
+    title: "Two observability tools: a syslog message parser that names every field in its RFC's words, and a log level mapper across ten systems on OpenTelemetry's scale",
+    body:
+      "The syslog message parser reads one message or one TCP frame and names each field in the order RFC 5424 names them (PRI, VERSION, TIMESTAMP, HOSTNAME, APP-NAME, PROCID, MSGID, STRUCTURED-DATA, MSG), or the BSD form of RFC 3164 when that is what arrived; the PRI opens into facility and severity through the same tables as the PRI decoder, structured data opens element by element with the IANA parameters explained, and whatever is non-compliant is flagged in the RFC's own sentence: a leading zero in the PRI, a lower-case T or Z, a seventh fraction digit, a leap second, a 49-character APP-NAME, a duplicate SD-ID, an unescaped bracket, UTF-8 without its byte order mark, a message over 480, 1024 or 2048 octets, an octet count that does not match. The log level mapper takes a level in syslog, printk, Cisco IOS, Junos, Windows Event Log, .NET, Python, java.util.logging, Log4j 2 or OpenTelemetry and reads it against the other nine through SeverityNumber, exact or at a stated distance, ties named, sentinels (OFF, ALL, NOTSET, None, LogAlways) kept out of the answers; the whole table is drawn beneath with each ladder's direction and caveat. Two articles accompany them. Also today: the blog steps back from the home directory to the footer and states its count and cadence under its intro; two citations found dead by the first scheduled source sweep were repaired (an EPI news item that now needs its title slug; the iRulesLX 12.1 user guide, gone from F5's CDN, cited from the Internet Archive).",
+    tools: ["syslog-message-parser", "log-level-mapper"],
+    articles: ["reading-a-syslog-message-field-by-field", "log-levels-across-systems-one-ladder-many-rungs"],
+    links: [
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+  {
+    date: "2026-10-05",
     time: "13:55",
     kind: "feature",
     title: "Learn, read two ways: a guided layer in front of the complete article index, with a Guided | Directory switch",

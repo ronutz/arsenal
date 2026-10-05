@@ -4102,7 +4102,7 @@ export const partnerVendors: PartnerVendor[] = [
     externalUrl: "https://www.rededucation.com/epi/",
     externalLabel: "EPI training at Red Education",
     sources: [
-      { label: "EPI on itself: \u201cEstablished in 1987, EPI\u2019s reputation has been built on delivering high quality technical expertise with a continuous drive for excellence and innovation\u201d", url: "https://www.epi-ap.com/content/19/123", sourceNote: "Fetched 2026-10-02. The company\u2019s home page and its /about/ and /about-epi/ paths were tried first: the home page states no year and both about paths return 404." },
+      { label: "EPI on itself: \u201cEstablished in 1987, EPI\u2019s reputation has been built on delivering high quality technical expertise with a continuous drive for excellence and innovation\u201d", url: "https://www.epi-ap.com/content/19/123/EPI_LATAM_moves_to_new_and_larger_office_in_Brickell,_Miami,_to_meet_the_high_demand_for_its_services_in_LATAM", sourceNote: "Fetched 2026-10-02 at /content/19/123; the company\u2019s home page and its /about/ and /about-epi/ paths were tried first: the home page states no year and both about paths return 404. On 2026-10-05 the unslugged path answered the liveness sweep and a second client with the site\u2019s own \u2018page cannot be found\u2019; the CMS now wants the title slug, where the same About EPI boilerplate (the 22 December 2015 news item) carries the sentence. Re-read 2026-10-05." },
       { label: "EPI - training and TIA-942 services", url: "https://www.epi-ap.com/" },
       { label: "Red Education - EPI training", url: "https://www.rededucation.com/epi/" },
       ...REDU_SOURCES,

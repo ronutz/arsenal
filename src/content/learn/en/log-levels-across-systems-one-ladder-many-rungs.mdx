@@ -1,0 +1,82 @@
+---
+slug: log-levels-across-systems-one-ladder-many-rungs
+title: "Log levels across systems: one scale, many ladders"
+summary: "Syslog counts down from 0, Python counts up in tens, Log4j gives FATAL the smallest number and TRACE the largest, Windows puts Critical at 1 and java.util.logging puts SEVERE at 1000. Every system has a ladder, no two ladders agree on direction or spacing, and the same word lands in different places. OpenTelemetry's SeverityNumber is the one scale written to hold them all, and this article walks the ten ladders the mapper knows, where each rung lands, and where the mapping is a judgement rather than a fact."
+concepts: ["log levels", "severity", "opentelemetry", "severitynumber", "syslog", "python logging", "log4j", "java.util.logging", "windows event log", "printk", "observability"]
+relatedTools: ["log-level-mapper", "syslog-pri-decoder", "syslog-message-parser"]
+relatedArticles: ["syslog-facilities-and-severities", "reading-a-syslog-message-field-by-field", "syslog-on-network-devices", "python-as-a-network-engineers-calculator"]
+category: operations
+order: 332
+status: reviewed
+updated: "2026-10-05"
+---
+
+Ask a Linux administrator, a Java developer, a Windows administrator and a network engineer what "warning" means and all four will say the same thing: something unexpected that is not yet an error. Ask them which number it is and you will hear 4, 900, 3 and 4 again, and the two 4s point in opposite directions. Each system has a perfectly sensible ladder of levels; the trouble starts when logs from several of them meet in one pipeline, and a filter written as "everything at warning or above" has to decide what "above" means for each source. The [log level mapper](/tools/log-level-mapper) does that decision in the open, and this article is the reasoning behind its table.
+
+## The ladders, as their owners define them
+
+- **syslog** (RFC 5424 §6.2.1, Table 2): eight severities from 0 Emergency ("system is unusable") to 7 Debug ("debug-level messages"), with Alert, Critical, Error, Warning, Notice and Informational between. Zero is the most severe. The [syslog PRI decoder](/tools/syslog-pri-decoder) is where these numbers usually first appear, folded into the PRI with the facility.
+- **The Linux kernel's printk**: the same eight, written as the strings KERN_EMERG "0" to KERN_DEBUG "7" at the front of each message, with pr_emerg() to pr_debug() as the functions that add them. KERN_DEFAULT (no level) and KERN_CONT (a continuation) are not levels. The kernel keeps a console_loglevel and shows a message when its level is numerically lower than that threshold, which is the same "lower is louder" direction as syslog.
+- **Cisco IOS**: `logging buffered` takes the severity by number or keyword, and the command reference lists the pairs: emergencies 0 LOG_EMERG, alerts 1 LOG_ALERT, critical 2 LOG_CRIT, errors 3 LOG_ERR, warnings 4 LOG_WARNING, notifications 5 LOG_NOTICE, informational 6 LOG_INFO, debugging 7 LOG_DEBUG, and notes that "The default logging level varies by platform but is generally 7". Syslog's numbers, Cisco's words.
+- **Junos**: the system syslog page lists the severities as emergency, alert, critical, error, warning, notice and info, in that order, plus `any` for every level and `none` to disable logging. Juniper's page gives names only, and there is no debug rung in the list.
+- **Windows Event Log**: the predefined levels of winmeta are Critical 1, Error 2, Warning 3, Informational 4 and Verbose 5; 0 is LogAlways, which is not a severity but a directive that the event is always logged; providers may define levels 16 to 255 of their own. One is the most severe, and "Higher numbers imply that you receive lower levels as well".
+- **.NET's Microsoft.Extensions.Logging**: Trace 0, Debug 1, Information 2, Warning 3, Error 4, Critical 5, and None 6, which "is not used for writing log messages" and exists to turn a category off. Zero is the least severe, the opposite of Windows' own event log.
+- **Python's logging module**: NOTSET 0, DEBUG 10, INFO 20, WARNING 30, ERROR 40, CRITICAL 50. Levels are integers and a program may define 35 if it likes. NOTSET on a logger means "inherit the parent's level".
+- **java.util.logging**: FINEST 300, FINER 400, FINE 500, CONFIG 700, INFO 800, WARNING 900, SEVERE 1000, with OFF and ALL at Integer.MAX_VALUE and Integer.MIN_VALUE. "Enabling logging at a given level also enables logging at all higher levels", and CONFIG, for static configuration messages, has no counterpart elsewhere.
+- **Log4j 2**: a level is a name and an integer priority, OFF 0, FATAL 100, ERROR 200, WARN 300, INFO 400, DEBUG 500, TRACE 600, ALL Integer.MAX_VALUE. A lower number is more severe, so Log4j and java.util.logging run in opposite directions inside the same language.
+- **OpenTelemetry's SeverityNumber**: 24 values in six ranges of four, TRACE 1 to 4, DEBUG 5 to 8, INFO 9 to 12, WARN 13 to 16, ERROR 17 to 20, FATAL 21 to 24, and 0 for unspecified. "Smaller numerical values correspond to less severe events (such as debug events), larger numerical values correspond to more severe events (such as errors and critical events)."
+
+Three things differ between the ladders, and a filter has to know all three: the direction (does a bigger number mean louder or quieter), the spacing (syslog steps by one, Python by ten, Log4j by a hundred and JUL by a hundred with a gap at 600), and the sentinels (OFF, ALL, NOTSET, None, LogAlways, any, none), which look like levels, sit on the ladder, and are not the severity of any message.
+
+## Why OpenTelemetry's scale has four slots per range
+
+The Logs Data Model is written to receive logs from every one of those systems without losing information, and the four values inside each range are how. A source that distinguishes two kinds of error (syslog's Error and Critical) can land them on 17 and 18 rather than merging them, and the original ordering survives: anything that was more severe at the source is still a larger number after mapping. Appendix B of the data model gives the example table the mapper follows:
+
+| SeverityNumber | syslog | Windows | Log4j | java.util.logging | .NET |
+| --- | --- | --- | --- | --- | --- |
+| 1 TRACE | | | TRACE | FINEST | Trace |
+| 5 DEBUG | Debug 7 | Verbose | DEBUG | FINER | Debug |
+| 6 DEBUG2 | | | | FINE | |
+| 7 DEBUG3 | | | | CONFIG | |
+| 9 INFO | Informational 6 | Informational | INFO | INFO | Information |
+| 10 INFO2 | Notice 5 | | | | |
+| 13 WARN | Warning 4 | Warning | WARN | WARNING | Warning |
+| 17 ERROR | Error 3 | Error | ERROR | SEVERE | Error |
+| 18 ERROR2 | Critical 2 | Critical | | | |
+| 19 ERROR3 | Alert 1 | | | | |
+| 21 FATAL | Emergency 0 | | FATAL | | Critical |
+
+Read across a row and the ladders agree; read down a column and you see each ladder's gaps. Syslog has three rungs above Error, so it spends 18, 19 and 21 on them. Java's FINE and CONFIG sit at 6 and 7 because they are finer than INFO but coarser than FINER. Windows and .NET both have a rung called Critical, and they land five apart: Windows' Critical is an "abnormal exit or termination event", one step past Error, while .NET's Critical describes "an unrecoverable application or system crash" and sits with FATAL.
+
+Python is not in Appendix B. The OpenTelemetry SDK (software development kit) for Python places it itself, in a table called `_STD_TO_OTEL`: 10 to DEBUG (5), 20 to INFO (9), 30 to WARN (13), 40 to ERROR (17), 50 to FATAL (21), and the integers between to the second, third and fourth slots of the range (11 to DEBUG2, 12 to DEBUG3, 13 to 19 to DEBUG4), so a custom Python level 35 lands at WARN4 (16) rather than being lost. Below 10 is unspecified; above 53 is FATAL4. The mapper itself maps the six named levels only; a custom integer is the SDK's business.
+
+The three network ladders are placed by correspondence. printk and Cisco IOS reuse syslog's numbers and names, and Junos reuses the names in syslog's order, so each rung takes the SeverityNumber of the syslog severity it was named for. That is a reading of the sources, not a sentence in them, and the mapper's caveat column says so.
+
+## What "nearest" means, and where the ties are
+
+Once every rung has a SeverityNumber, mapping one system to another is a lookup: find the rung in the target ladder whose SeverityNumber is the same, or failing that the nearest. Exact matches are common on the WARN and ERROR rows, where every ladder has a rung. The interesting cases are the gaps:
+
+- syslog **Notice** (10) has no exact match anywhere else. Its nearest rung in every other ladder is Informational at 9, one step away, which is the right call: a notice is "normal but significant", still not a warning.
+- syslog **Alert** (19) maps to Windows at distance 1 to Critical (18), and to Log4j at distance 2, with ERROR (17) and FATAL (21) equally near: a tie, and the mapper shows both rather than choosing for you.
+- Java **CONFIG** (7) is two steps from DEBUG (5) and two from INFO (9) in most ladders, another tie, and one worth a human decision: configuration dumps at start-up are usually wanted at INFO verbosity and are noise at DEBUG.
+- .NET **Trace** (1) and Log4j **TRACE** (1) have no counterpart in syslog, Windows or the network ladders; the nearest rung is Debug at 5, four steps away, and the mapper says four rather than pretending the match is good.
+
+Sentinels are never offered as equivalents. Log4j's OFF is 0, which looks like syslog's Emergency and is the opposite thing; Windows' LogAlways is 0 and means "no severity"; Python's NOTSET means "ask the parent". Mapping any of them to a severity would put a filter value into a message field.
+
+## Reading the table before trusting it
+
+Appendix B is titled "example mappings", and the mapper's docs say the same: this is the table the specification offers, not a law a collector must obey. A Windows administrator may well argue that Critical belongs at 21, and a shop whose Java code uses SEVERE for crashes may prefer it at 21 too. The point of putting the whole table on one page is that such a disagreement can be about one row, named, rather than about a filter that silently drops or floods. When a pipeline mixes sources, decide the rows once, write them down, and check every filter threshold against the written table rather than against the word "warning".
+
+## Sources
+
+- [OpenTelemetry specification, Logs Data Model: Field SeverityNumber and Appendix B, SeverityNumber example mappings](https://opentelemetry.io/docs/specs/otel/logs/data-model/) (read 2026-10-05): the six ranges, the 0 value, the direction sentence, the example table
+- [RFC 5424, The Syslog Protocol, section 6.2.1 Table 2](https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1) (read 2026-10-05): the eight severities and their descriptions
+- [The Linux Kernel documentation: Message logging with printk](https://www.kernel.org/doc/html/latest/core-api/printk-basics.html) (read 2026-10-05): KERN_EMERG to KERN_DEBUG, KERN_DEFAULT, KERN_CONT, the pr_*() functions, console_loglevel
+- [Cisco IOS Configuration Fundamentals Command Reference, logging buffered](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/cf_command_ref/L_through_mode.html) (read 2026-10-05): the keyword, number and LOG_* table, and the default of 7
+- [Juniper Networks, Junos OS: syslog facilities and severity levels](https://juniper.net/documentation/en_US/junos13.1/topics/reference/general/syslog-facilities-severity-levels.html) (published 2013-07-08, read 2026-10-05): the severity names in order, any and none
+- [Microsoft Learn, Windows Event Log: LevelType complex type](https://learn.microsoft.com/en-us/windows/win32/wes/eventmanifestschema-leveltype-complextype) (read 2026-10-05): the predefined levels, LogAlways, custom levels 16 to 255, the "higher numbers" sentence
+- [Microsoft Learn, Microsoft.Extensions.Logging.LogLevel enum](https://learn.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel) (read 2026-10-05): Trace 0 to None 6 with the field descriptions
+- [Python documentation, logging: Logging Levels](https://docs.python.org/3/library/logging.html#logging-levels) (read 2026-10-05): NOTSET 0 to CRITICAL 50 and what each means
+- [OpenTelemetry Python SDK, the _STD_TO_OTEL table](https://github.com/open-telemetry/opentelemetry-python/blob/main/opentelemetry-sdk/src/opentelemetry/sdk/_logs/_internal/__init__.py) (read 2026-10-05): Python level numbers to SeverityNumber, including the values between the tens
+- [Java SE 21 API, java.util.logging.Level](https://docs.oracle.com/en/java/javase/21/docs/api/java.logging/java/util/logging/Level.html) (read 2026-10-05): FINEST 300 to SEVERE 1000, OFF, ALL, and the "higher levels" sentence
+- [Apache Log4j 2.x manual: Levels](https://logging.apache.org/log4j/2.x/manual/customloglevels.html) (read 2026-10-05): OFF 0 to ALL, the int priorities, "WARN is less severe than ERROR"

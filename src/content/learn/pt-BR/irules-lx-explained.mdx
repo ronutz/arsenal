@@ -8,7 +8,7 @@ relatedArticles: ["irules-style-guide-explained", "bigip-zero-or-one", "irules-s
 category: networking
 order: 33
 status: reviewed
-updated: "2026-10-04"
+updated: "2026-10-05"
 ---
 
 Uma iRule é Tcl, e o Tcl dentro do Traffic Management Microkernel (TMM) é rápido porque faz pouco: sem threads, sem sockets próprios, sem bibliotecas além das que a F5 compilou. O iRules LX (Language eXtensions) foi a resposta que a F5 deu em 2016 aos pedidos que não cabiam nessa caixa: interpretar este JSON direito, consultar este usuário num banco de dados, assinar isto com uma biblioteca que ninguém vai portar para Tcl 8.4. Ele não torna o Tcl mais rápido nem mais rico. Ele coloca um processo Node.js ao lado do TMM e dá à iRule três comandos para falar com ele. Tudo o que é bom e tudo o que é desajeitado no iRules LX decorre dessa única frase.
@@ -111,7 +111,7 @@ Um verificador para a primeira pergunta, a que mais morde, está na fila do rote
 - [F5 iRules API: ILX::init](https://clouddocs.f5.com/api/irules/ILX__init.html) (lido em 2026-10-04): o handle, ANY_EVENT exceto RULE_INIT, modo de drenagem, introduzido no 12.0 e disponível sem licença de acesso antecipado a partir do 12.1
 - [F5 iRules API: ILX::call](https://clouddocs.f5.com/api/irules/ILX__call.html) (lido em 2026-10-04): a opção -timeout e o padrão de 3000 ms, o mapeamento do valor de retorno
 - [F5 iRules API: ILX::notify](https://clouddocs.f5.com/api/irules/ILX__notify.html) (lido em 2026-10-04): não espera, TCL_OK quando enfileirado
-- [BIG-IP iRulesLX User Guide, versão 12.1.0 (PDF)](https://cdn.f5.com/websites/devcentral.f5.com/downloads/bigip-iruleslx-user-1210.pdf) (lido em 2026-10-03): caminhos do workspace e do plugin store, modos dedicado e único, provisionamento do ILX
+- [BIG-IP iRulesLX User Guide, versão 12.1.0 (PDF), cópia do Internet Archive de 11 de junho de 2026](https://web.archive.org/web/20260611230918/https://cdn.f5.com/websites/devcentral.f5.com/downloads/bigip-iruleslx-user-1210.pdf) (lido em 2026-10-03 em cdn.f5.com; esse endereço respondeu 404 em 2026-10-05, confirmado com um segundo cliente, enquanto a página inicial do iRulesLX no clouddocs ainda aponta para ele; os bytes arquivados têm o mesmo digest de 2019 a junho de 2026): caminhos do workspace e do plugin store, modos dedicado e único, provisionamento do ILX
 - [Notas de versão do BIG-IP 21.0.0: Upgrade Node.js version of iRule LX Workspace](https://techdocs.f5.com/en-us/bigip-21-0-0/big-ip-release-notes/upgrade-nodejs.html) (atualizada em 09/02/2026, lida em 2026-10-04): 0.12 sem suporte a partir do 21.1, o procedimento 6.9.1 na interface e no tmsh, o aviso de compatibilidade de módulos
 - [New Features in BIG-IP Version 21.1.0](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-release-notes/big-ip-new-features.html) (atualizada em 09/02/2026, lida em 2026-10-04): remoção do suporte ao Node.js v0.12, workspaces marcados durante a atualização
 - [F5 Bug ID 746078: Upgrades break existing iRulesLX workspaces that use node version 6](https://cdn.f5.com/product/bugtracker/ID746078.html) (lido em 2026-10-04): 13.1.0 a 14.1.2.4, o erro ILXServerWrap, a solução de contorno, corrigido no 14.1.2.5 e no 15.0.0

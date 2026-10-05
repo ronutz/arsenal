@@ -11671,6 +11671,185 @@
       "label": "Search the tools",
       "placeholder": "A protocol, a format, a vendor, a problem to solve…",
       "examples": "Try"
+    },
+    "syslog-message-parser": {
+      "name": "Syslog message parser",
+      "blurb": "Paste one syslog message, or a TCP frame carrying one, and read every field named in the order its RFC names them: the PRI opened into facility and severity, the RFC 5424 header, the structured data element by element, the message; or the BSD form of RFC 3164 with its TIMESTAMP, HOSTNAME, TAG and CONTENT. Whatever is non-compliant is said in the RFC's own words. Nothing is sent anywhere.",
+      "inputLabel": "The message (one line, as received; a trailing newline or a leading octet count is read as framing)",
+      "placeholder": "<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut=\"3\"] An application event log entry...",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "rfc5424-example-1": "RFC 5424, example 1",
+        "rfc5424-example-2": "RFC 5424, example 2 (IPv4 host, PROCID)",
+        "rfc5424-example-3": "RFC 5424, example 3 (structured data)",
+        "rfc5424-example-4": "RFC 5424, example 4 (structured data only)",
+        "iana-sd": "timeQuality and origin",
+        "bsd-rfc3164": "RFC 3164, the BSD form",
+        "bsd-space-padded-day": "BSD, day under 10",
+        "octet-counting": "TCP octet counting",
+        "non-transparent": "TCP trailer (LF)",
+        "timestamp-findings": "Lower-case t and z",
+        "sd-problems": "Structured-data problems",
+        "field-lengths": "Fields too long",
+        "pri-then-text": "PRI, then just text"
+      },
+      "nil": "NILVALUE",
+      "absent": "absent",
+      "grammar": {
+        "rfc5424": "RFC 5424 syslog message.",
+        "bsd": "BSD syslog message (the form RFC 3164 describes).",
+        "unknown": "Not a syslog message: no PRI at the start."
+      },
+      "framing": {
+        "octet-counting": "TCP octet counting (RFC 6587): the frame declares {declared} octets and carries {actual}.",
+        "non-transparent": "TCP non-transparent framing (RFC 6587): the message ends with the LF trailer."
+      },
+      "lengthLine": "{octets, plural, one {# octet} other {# octets}} ({chars, plural, one {# character} other {# characters}}).",
+      "noFindings": "Nothing non-compliant found.",
+      "findingsCount": "{n, plural, one {# finding} other {# findings}}.",
+      "truncated": "The input was cut at 8,192 characters.",
+      "priTitle": "The PRI, opened",
+      "facility": "Facility",
+      "severity": "Severity",
+      "fieldsTitle": "The fields, in the RFC's order",
+      "colField": "field",
+      "colValue": "value",
+      "colReading": "reading",
+      "field": {
+        "PRI": "Facility × 8 + Severity in angle brackets; three to five characters (RFC 5424 §6.2.1).",
+        "VERSION": "The protocol version; this RFC's is 1 (§6.2.2).",
+        "TIMESTAMP": "RFC 3339 form: date, T, time, optional fraction of up to six digits, Z or an offset; or the NILVALUE (§6.2.3).",
+        "HOSTNAME": "The originator: FQDN, static IP address, hostname or dynamic IP address, in that order of preference; 1 to 255 printable US-ASCII characters (§6.2.4).",
+        "APP-NAME": "The device or application that originated the message; 1 to 48 characters (§6.2.5).",
+        "PROCID": "A change in its value indicates a discontinuity in reporting (often the process ID); 1 to 128 characters (§6.2.6).",
+        "MSGID": "The type of message; 1 to 32 characters (§6.2.7).",
+        "STRUCTURED-DATA": "Zero or more elements, each [SD-ID param=\"value\" ...]; the NILVALUE when none (§6.3).",
+        "MSG": "Free-form text; UTF-8 when it starts with the BOM, otherwise of unknown encoding (§6.4).",
+        "HEADER": "The header as far as it could be read.",
+        "TAG": "The name of the program or process; alphanumeric, at most 32 characters, ended by the first other character (RFC 3164 §4.1.3).",
+        "CONTENT": "The details of the message, free-form (RFC 3164 §4.1.3).",
+        "bsd-TIMESTAMP": "\"Mmm dd hh:mm:ss\" in local time: no year, no zone; a day under 10 is written with a leading space (RFC 3164 §4.1.2).",
+        "bsd-HOSTNAME": "The hostname as the device knows itself, or its IP address (RFC 3164 §4.1.2)."
+      },
+      "finding": {
+        "pri-missing": "no PRI at the start of the message",
+        "pri-leading-zero": "leading zero in the PRI: only the value 0 may start with 0 (RFC 5424 §6.2.1)",
+        "pri-out-of-range": "PRI above 191: no facility above 23 (§6.2.1)",
+        "version-not-1": "a VERSION other than 1; this RFC defines 1 (§6.2.2)",
+        "header-short": "fewer header fields than the grammar requires",
+        "timestamp-not-rfc3339": "not the RFC 3339 form the RFC requires (§6.2.3)",
+        "timestamp-lowercase-tz": "T and Z must be upper case (§6.2.3)",
+        "timestamp-fraction-too-long": "more than six fraction digits (TIME-SECFRAC, §6)",
+        "timestamp-leap-second": "a 60th second: leap seconds must not be used (§6.2.3)",
+        "field-not-printusascii": "characters outside printable US-ASCII (§6)",
+        "field-too-long": "longer than the field's maximum (§6)",
+        "sd-missing": "structured data neither an element nor the NILVALUE (§6.3)",
+        "sd-id-bad-chars": "characters not allowed in an SD-ID (§6.3.2)",
+        "sd-id-unregistered-no-pen": "a name that is neither IANA-registered nor private with an enterprise number (§6.3.2)",
+        "sd-id-too-long": "SD-ID longer than 32 characters (§6.3.2)",
+        "sd-param-malformed": "a parameter without name=\"value\" (§6.3.3)",
+        "sd-param-unclosed": "a parameter value with no closing quote (§6.3.3)",
+        "sd-value-unescaped-bracket": "a ] inside a value must be escaped (§6.3.3)",
+        "sd-element-unclosed": "an element with no closing ] (§6.3)",
+        "sd-param-unknown-for-iana-id": "a parameter the IANA SD-ID does not define (§7)",
+        "sd-id-duplicate": "the same SD-ID twice in one message (§6.3.2)",
+        "msg-no-space": "no space between the structured data and the MSG (§6)",
+        "msg-non-ascii-without-bom": "non-ASCII characters without the UTF-8 BOM: the encoding is unknown (§6.4)",
+        "length-over-2048": "over 2048 octets: beyond what receivers should accept (§6.1)",
+        "length-over-480": "over 480 octets: beyond what every receiver must accept (§6.1)",
+        "length-over-1024": "over 1024 bytes: the BSD limit (RFC 3164 §4.1)",
+        "bsd-month-unknown": "not one of the twelve month abbreviations (RFC 3164 §4.1.2)",
+        "bsd-tag-missing": "no TAG at the start of the message part (RFC 3164 §4.1.3)",
+        "bsd-tag-too-long": "TAG longer than 32 characters (RFC 3164 §4.1.3)",
+        "bsd-no-header": "no valid HEADER: a receiver treats everything after the PRI as the message (RFC 3164 §4.3)",
+        "no-grammar": "neither grammar matched",
+        "frame-length-mismatch": "the octet count differs from the message's length (RFC 6587 §3.4.1)"
+      },
+      "timestampParts": "date {date}, time {time}, offset {offset}",
+      "bsdTimestampParts": "local time; the year and the zone are not in the message",
+      "bomYes": "UTF-8, declared by the BOM.",
+      "bomNo": "No BOM: the encoding is not declared.",
+      "sdTitle": "Structured data: {n, plural, one {# element} other {# elements}}",
+      "registry": {
+        "iana": "IANA-registered",
+        "private": "private (enterprise number)",
+        "non-compliant": "non-compliant"
+      },
+      "sdParam": {
+        "timeQuality": {
+          "tzKnown": "whether the originator knows its time zone (0 or 1)",
+          "isSynced": "whether the originator is synchronised to a reliable external time source (0 or 1)",
+          "syncAccuracy": "the accuracy in microseconds, when synchronised"
+        },
+        "origin": {
+          "ip": "an IP address of the originator",
+          "enterpriseId": "the IANA private enterprise number",
+          "software": "the software that generated the message, at most 48 characters",
+          "swVersion": "its version, at most 32 characters"
+        },
+        "meta": {
+          "sequenceId": "an integer the originator increments per message, 1 to 2147483647",
+          "sysUpTime": "the originator's uptime in hundredths of a second (SNMP sysUpTime)",
+          "language": "the BCP 47 language tag of the MSG"
+        }
+      },
+      "notesTitle": "Findings, limits and transports",
+      "limits": {
+        "rfc5424": "Length: {octets} octets. Every receiver must accept 480; every receiver should accept 2048 (RFC 5424 §6.1).",
+        "bsd": "Length: {octets} bytes. A BSD syslog packet must be 1024 bytes or less (RFC 3164 §4.1)."
+      },
+      "transports": "Transports: UDP port 514 (RFC 5426); TCP with octet counting or a trailer (RFC 6587); TLS on TCP port 6514 (RFC 5425)."
+    },
+    "log-level-mapper": {
+      "name": "Log level mapper",
+      "blurb": "Pick a level in one logging system (syslog, the Linux kernel, Cisco IOS, Junos, Windows Event Log, .NET, Python, java.util.logging, Log4j 2, OpenTelemetry) and read its nearest equivalent in every other, with each system's own number and words, where the match is exact and where it is only the nearest rung. The bridge is OpenTelemetry's SeverityNumber, the one scale defined to hold the others. Nothing is sent anywhere.",
+      "systemLabel": "The system",
+      "levelLabel": "The level (a name, or the system's own number)",
+      "levelPlaceholder": "warning",
+      "rungsLabel": "This system's levels",
+      "example": "Example",
+      "clear": "Clear",
+      "presetsLabel": "Try",
+      "preset": {
+        "syslog-warning": "syslog Warning",
+        "syslog-notice": "syslog Notice",
+        "syslog-emergency": "syslog Emergency",
+        "python-critical": "Python CRITICAL",
+        "jul-config": "Java CONFIG",
+        "log4j2-fatal": "Log4j FATAL",
+        "windows-critical": "Windows Critical",
+        "dotnet-trace": ".NET Trace",
+        "otel-19": "SeverityNumber 19",
+        "cisco-notifications": "Cisco notifications",
+        "junos-notice": "Junos notice"
+      },
+      "error": {
+        "unknown-system": "No ladder named {system}.",
+        "unknown-level": "{system} has no level named or numbered {level}."
+      },
+      "sentinel": "A sentinel, not a message level: it has no place on the severity scale and no equivalent elsewhere.",
+      "onScale": "SeverityNumber {n} ({short}), in the {range} range.",
+      "equivalentsTitle": "The nearest level in every other system",
+      "colSystem": "system",
+      "colLevel": "level",
+      "colOwnNumber": "its own number",
+      "colMatch": "match",
+      "noNumber": "no number",
+      "exact": "exact",
+      "nearest": "{n, plural, one {# step} other {# steps}} away",
+      "tie": "a tie: the mapping is not one-to-one",
+      "scaleNote": "Distances are in SeverityNumber steps (1 to 24). Each ladder is placed on the scale by its own documentation or by OpenTelemetry's example mapping (Data Model Appendix B); where two rungs of a system are equally near, both are shown.",
+      "laddersTitle": "Every ladder, on the one scale",
+      "colDirection": "its numbers",
+      "colRungs": "levels, most severe first, each with its own number and its SeverityNumber",
+      "direction": {
+        "up": "grow with severity",
+        "down": "shrink with severity",
+        "none": "no numbers"
+      },
+      "laddersNote": "Sources: RFC 5424 Table 2; the Linux kernel's printk documentation; the Cisco IOS command reference (logging buffered); Juniper's Junos syslog reference; the Windows event manifest schema; the .NET LogLevel enum; the Python logging documentation and the OpenTelemetry Python SDK's own table; the Java SE 21 Level class; the Log4j 2 manual; the OpenTelemetry Logs Data Model and its Appendix B. All read on 2026-10-05; the full list is under Sources below the tool."
     }
   },
   "privacy_page": {
@@ -22784,7 +22963,8 @@
     "intro": "Dated commentary on what is happening in networking, security, and identity - written from a point of view, and true as of the day it was published.",
     "empty": "No posts yet.",
     "furtherReading": "Further reading",
-    "furtherReadingAria": "Further reading"
+    "furtherReadingAria": "Further reading",
+    "status": "{n, plural, one {One piece so far} other {# pieces so far}}, posted as each is written, with no fixed cadence. What changes on the site itself is in the <link>changelog</link>."
   },
   "importanceMeter": {
     "metaTitle": "Importance Meter",

@@ -10,9 +10,10 @@
 //
 // Each world: its key (also the message key under home.front.world.* and
 // home.front.worldVerb.*), the primary entries (what the home directory and the
-// footer show; label keys under home.map.*), and the further entries only the
-// human sitemap lists (label keys under nav.* or footer.*, or a literal where
-// the label is a proper name). Counts are not here: the home page computes
+// footer show; label keys under home.map.*; an entry marked home: false is the
+// footer's and the sitemap's only), and the further entries only the human
+// sitemap lists (label keys under nav.* or footer.*, or a literal where the
+// label is a proper name). Counts are not here: the home page computes
 // them from the registries at build time and attaches them by href.
 //
 // SEARCH SCOPE: routeWorld() maps a route's first segment below the locale to
@@ -31,6 +32,9 @@ export interface WorldEntry {
   label: string;
   /** The locale-relative path. */
   href: string;
+  /** False when the home directory skips the entry while the footer and the human sitemap keep it (PRIME
+   *  2026-10-05 14:49, G17: "move the Blog entry from the home directory to the footer"). Absent means shown. */
+  home?: false;
 }
 
 /** One world. */
@@ -98,7 +102,7 @@ export const WORLDS: readonly World[] = [
       { label: "map.about", href: "/about" },
       { label: "map.endorsements", href: "/endorsements" },
       { label: "map.redu", href: "/red-education" },
-      { label: "map.blog", href: "/blog" },
+      { label: "map.blog", href: "/blog", home: false },
       { label: "map.contribute", href: "/contribute" },
     ],
     more: [

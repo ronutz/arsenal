@@ -1,0 +1,82 @@
+---
+slug: reading-a-syslog-message-field-by-field
+title: "Reading a syslog message field by field: what a parser checks, and where each rule comes from"
+summary: "An RFC 5424 message is seven header fields, a structured-data block and a free-text tail, and every one of them has a rule a parser can test: the leading-zero rule of the PRI, the upper-case T and Z of the timestamp, the 48-character APP-NAME, the escapes inside structured data, the byte order mark that announces UTF-8, the 480 and 2048 octet lines, and the two ways a message is framed on TCP. Read from the RFCs themselves, with the parser that applies each rule as you go."
+concepts: ["syslog", "rfc 5424", "rfc 3164", "structured data", "octet counting", "framing", "parsing", "logging"]
+relatedTools: ["syslog-message-parser", "syslog-pri-decoder"]
+relatedArticles: ["syslog-message-formats", "syslog-transport", "syslog-pri-facility-severity", "log-levels-across-systems-one-ladder-many-rungs"]
+category: operations
+order: 331
+status: reviewed
+updated: "2026-10-05"
+---
+
+Two syslog grammars exist, and [the companion article](/learn/syslog-message-formats) explains why and how to tell them apart. This one goes one level down: given a message, what does a careful receiver check, field by field, and which sentence of which RFC is each check standing on. The [syslog message parser](/tools/syslog-message-parser) applies every rule below to a pasted line and names the sentence it failed, so the article can be read with a message open beside it.
+
+## The example the RFC itself gives
+
+RFC 5424 §6.5 offers a handful of example messages; its third one carries structured data and is the parser's default:
+
+```
+<165>1 2003-10-11T22:14:15.003Z mymachine.example.com evntslog - ID47 [exampleSDID@32473 iut="3" eventSource="Application" eventID="1011"] BOMAn application event log entry...
+```
+
+Read in order: PRI `<165>`, VERSION `1`, TIMESTAMP `2003-10-11T22:14:15.003Z`, HOSTNAME `mymachine.example.com`, APP-NAME `evntslog`, PROCID `-` (the NILVALUE, meaning "not supplied"), MSGID `ID47`, one STRUCTURED-DATA element whose SD-ID is `exampleSDID@32473` with three parameters, and the MSG, which begins with the byte order mark and then the text. The PRI opens as 165 = 20 × 8 + 5, facility 20 (local4) and severity 5 (Notice), the arithmetic the [PRI decoder](/tools/syslog-pri-decoder) does on its own.
+
+## The header, one rule per field
+
+RFC 5424 §6 gives the header as `PRI VERSION SP TIMESTAMP SP HOSTNAME SP APP-NAME SP PROCID SP MSGID`, and §6.2 gives each field its rule:
+
+- **PRI** is `<` PRIVAL `>`, PRIVAL = Facility × 8 + Severity, written in three to five characters. §6.2.1: "The only time a value of 0 follows the < is for the Priority value of 0. Otherwise, leading 0s MUST NOT be used." So `<034>` is a finding, `<0>` is fine, and anything above 191 (23 × 8 + 7) has no facility to belong to.
+- **VERSION** is a non-zero digit followed by up to two more. §6.2.2: "This document uses a VERSION value of 1." A `2` is not an error in the grammar, but it is a message the parser has no specification for, and it says so.
+- **TIMESTAMP** is "a formalized timestamp derived from RFC 3339" or the NILVALUE. Three sentences of §6.2.3 are testable: "The T and Z characters in this syntax MUST be upper case", "Leap seconds MUST NOT be used", and TIME-SECFRAC is a dot and one to six digits, so `.1234567` is one digit too many. A lower-case `t` or `z` parses in most libraries and is still non-compliant.
+- **HOSTNAME, APP-NAME, PROCID, MSGID** are printable US-ASCII, 1 to 255, 1 to 48, 1 to 128 and 1 to 32 characters respectively, or the NILVALUE. The limits are what a receiver is allowed to truncate at, which is why a 60-character application name may arrive as 48 on the other side.
+
+Any header field after VERSION may be the NILVALUE, a single `-`, and the RFC grades its use field by field: a syslog application "MUST use the NILVALUE as TIMESTAMP if the syslog application is incapable of obtaining system time" (§6.2.3); for HOSTNAME it "SHOULD only be used when the syslog application has no way to obtain its real hostname" (§6.2.4); for APP-NAME and PROCID it "MAY be used" when the information is unavailable or not applicable (§6.2.5 and §6.2.6); for MSGID it "SHOULD be used when the syslog application does not, or cannot, provide any value" (§6.2.7). It is a legitimate value, not an error, and the parser shows it as such rather than as something missing.
+
+## Structured data, the part most parsers get wrong
+
+§6.3 defines STRUCTURED-DATA as the NILVALUE or one or more SD-ELEMENTs, each `[` SD-ID *(SP SD-PARAM) `]`, with the elements adjacent and no space between them. Three rules on the SD-ID:
+
+1. It is at most 32 printable US-ASCII characters and may not contain `=`, a space, `]` or `"`.
+2. "The same SD-ID MUST NOT exist more than once in a message."
+3. Names are either IANA-registered, written without an at-sign, or private, written as a name, `@` and the sender's IANA enterprise number (`exampleSDID@32473`). A name with no at-sign that is not in the registry, or an at-sign followed by something that is not a number, satisfies neither form.
+
+Each SD-PARAM is `PARAM-NAME="PARAM-VALUE"`. Inside the value, §6.3.3 requires three characters to be escaped with a backslash: the double quote, the backslash itself and `]`. An unescaped `]` inside a value is the single most common way a hand-built message breaks a receiver, because the receiver takes it as the end of the element and the rest of the line becomes MSG.
+
+Three SD-IDs are registered by §7 and the parser knows their parameters:
+
+- `timeQuality`: `tzKnown`, `isSynced`, `syncAccuracy`. `[timeQuality tzKnown="1" isSynced="1" syncAccuracy="60000"]` says the sender knows its zone, is synchronised, and is accurate to 60,000 microseconds.
+- `origin`: `ip`, `enterpriseId`, `software`, `swVersion`. Where the message came from and which software version wrote it.
+- `meta`: `sequenceId`, `sysUpTime`, `language`. A sequence counter for detecting loss, the uptime in hundredths of a second, and the MSG's language tag.
+
+A parameter outside those lists under one of those three ids is flagged, since the registered ids are closed sets; a private id may carry whatever it likes.
+
+## MSG and the byte order mark
+
+§6.4: "If a syslog application encodes MSG in UTF-8, the string MUST start with the Unicode byte order mask (BOM)", the three bytes EF BB BF, which is what the `BOM` in the RFC's examples stands in for. A MSG without it is of unknown encoding, which §6.4 permits, so non-ASCII text without the BOM is a finding about certainty, not about correctness. The parser separates the two: BOM present and UTF-8 declared, or absent and encoding unknown.
+
+## Three lengths
+
+§6.1 draws two lines: "Any transport receiver MUST be able to accept messages of up to and including 480 octets in length. All transport receiver implementations SHOULD be able to accept messages of up to and including 2048 octets in length." Above 480 the message depends on the receiver's good will; above 2048 it depends on configuration. The transports add their own: RFC 5426 §3.2 derives the 480 from the minimum IPv4 MTU and gives IPv6 receivers 1180; RFC 5425 §4.3.1 raises the SHOULD to 8192 for TLS. For the BSD form, RFC 3164 §4.1 states the packet "MUST be 1024 bytes or less", which is why older collectors cut there. The parser measures the message in octets, not characters, because that is what every one of those limits counts, and a line of accented text is longer in octets than it looks.
+
+## Two framings on TCP
+
+UDP carries one message per datagram and needs no framing. TCP is a byte stream, so a receiver must know where one message ends. RFC 6587 §3.4 records the two ways that happened in practice:
+
+- **Octet counting**, §3.4.1: `SYSLOG-FRAME = MSG-LEN SP SYSLOG-MSG`, where "MSG-LEN is the octet count of the SYSLOG-MSG in the SYSLOG-FRAME", and "It can be assumed that octet-counting framing is used if a syslog frame starts with a digit." RFC 5425 §4.3 uses the same frame over TLS. A pasted line that starts with a count is read as this framing and the count is checked against the message's real octets; a mismatch is the finding that explains most "my collector receives garbage after the first line" reports.
+- **Non-transparent framing**, §3.4.2: the message followed by a TRAILER that "has usually been a single character and most often is ASCII LF". Its flaw is in the RFC's own words: "the traditional TRAILER character is not escaped within the message", so a message containing a newline "may be misinterpreted as multiple messages by the receiving syslog application". A receiver "can assume that non-transparent-framing is used if a syslog frame starts with the ASCII character" `<`.
+
+RFC 6587 is Historic by design; it describes what was seen, and its authors say the standards-track answer is RFC 5424 over TLS. Both framings are still in every collector's configuration dialog, so a parser has to read them.
+
+## When the message is the older kind
+
+If the text after the PRI is not `1 ` followed by a timestamp, the parser tries RFC 3164 §4.1: TIMESTAMP as `Mmm dd hh:mm:ss`, with the rule that "If the day of the month is less than 10, then it MUST be represented as a space and then the number", so `Oct  5` has two spaces; HOSTNAME, which "will contain the hostname, as it knows itself. If it does not have a hostname, then it will contain its own IP address"; and TAG, "a string of ABNF alphanumeric characters that MUST NOT exceed 32 characters", terminated by the first non-alphanumeric character, which is why `sshd[1234]:` yields TAG `sshd` and CONTENT `[1234]: ...`. There is no year and no zone, and the parser says so rather than inventing them. When even that header is absent, §4.3 applies: the receiver treats everything after the PRI as the message, and the parser labels the line accordingly.
+
+## Sources
+
+- [RFC 5424, The Syslog Protocol, section 6, Syslog Message Format](https://www.rfc-editor.org/rfc/rfc5424#section-6) (read 2026-10-05): the ABNF, the PRI leading-zero rule, VERSION, the timestamp rules, the field limits, structured data and its escapes, the BOM, the 480 and 2048 octet lines, the examples of §6.5, the registered SD-IDs of §7
+- [RFC 3164, The BSD syslog Protocol, section 4](https://www.rfc-editor.org/rfc/rfc3164#section-4.1) (read 2026-10-05): the 1024-byte packet, the space-padded day, HOSTNAME, the 32-character TAG, and the fallback of §4.3
+- [RFC 5426, Transmission of Syslog Messages over UDP, section 3](https://www.rfc-editor.org/rfc/rfc5426#section-3.1) (read 2026-10-05): port 514, the 480 and 1180 octet minimums, and why
+- [RFC 5425, TLS Transport Mapping for Syslog, sections 4.1 and 4.3](https://www.rfc-editor.org/rfc/rfc5425#section-4.1) (read 2026-10-05): port 6514, the MSG-LEN frame, 2048 MUST and 8192 SHOULD
+- [RFC 6587, Transmission of Syslog Messages over TCP, section 3.4](https://www.rfc-editor.org/rfc/rfc6587#section-3.4.1) (read 2026-10-05): octet counting, non-transparent framing, the digit and the `<` heuristics, and the document's Historic status

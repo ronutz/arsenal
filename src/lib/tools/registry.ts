@@ -184,6 +184,8 @@ import { run as samlDecoderRun } from "./saml-decoder";
 import { run as secureHeadersRun } from "./secure-headers";
 import { run as ssrfUrlClassifierRun } from "./ssrf-url-classifier";
 import { run as syslogPriDecoderRun } from "./syslog-pri-decoder";
+import { run as syslogMessageParserRun } from "./syslog-message-parser";
+import { run as logLevelMapperRun } from "./log-level-mapper";
 import { run as ja4FingerprintDecoderRun } from "./ja4-fingerprint-decoder";
 import { run as ouiLookupRun } from "./oui-lookup";
 import { run as vossFabricIdRun } from "./voss-fabric-id";
@@ -379,6 +381,10 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "secure-headers", run: secureHeadersRun },
   { slug: "ssrf-url-classifier", run: ssrfUrlClassifierRun },
   { slug: "syslog-pri-decoder", run: syslogPriDecoderRun },
+  // Structured: the body is {"text": "..."}, one syslog message or TCP frame; parsed by grammar, nothing fetched (rank 35, 2026-10-05).
+  { slug: "syslog-message-parser", structured: true, run: (input) => syslogMessageParserRun(JSON.parse(input)) },
+  // Structured: the body is {"system": "python", "level": "WARNING"}; a table lookup over the sources' ladders (2026-10-05).
+  { slug: "log-level-mapper", structured: true, run: (input) => logLevelMapperRun(JSON.parse(input)) },
   { slug: "ja4-fingerprint-decoder", run: ja4FingerprintDecoderRun },
   { slug: "oui-lookup", run: ouiLookupRun },
   { slug: "voss-fabric-id", run: vossFabricIdRun },

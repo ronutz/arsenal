@@ -8720,6 +8720,16 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
    of separation from the count line above it. */
 .changelog-roadmap-note { margin-top: 0.5rem; }
 
+/* ---- log level mapper: level names stay whole; on a phone the table wrapper scrolls sideways instead of
+        breaking "KERN_WARNING" across three lines; the rungs column keeps room for its words ---- */
+.llm-table code { white-space: nowrap; overflow-wrap: normal; }
+.llm-table td:last-child { min-width: 14rem; }
+.llm-ladders .tcl-words { min-width: 22rem; }
+
+/* ---- blog index: the honest status line under the intro (PRIME 2026-10-05, G17) ---- */
+.blog-status { margin: -0.25rem 0 1.25rem; font-size: 0.9rem; color: var(--text-secondary); }
+.blog-status a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
+
 /* ---- f5-dos-vector-explainer -------------------------------------------- */
 .dve-posture { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-secondary); }
 .dve-cat { color: var(--text-secondary); }
@@ -17704,6 +17714,8 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .tcl-step-out { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem; }
 .tcl-words { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem; }
 .tcl-word { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.08rem 0.4rem; border: 1px dashed var(--border-strong); border-radius: var(--radius-sm); color: var(--text-primary); white-space: pre-wrap; overflow-wrap: anywhere; max-width: 100%; }
+/* The word currently chosen in a ladder (the log level mapper, 2026-10-05): solid border and the accent's tint. */
+.tcl-word--on { border-style: solid; border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 14%, transparent); }
 .tcl-changes { list-style: none; margin: 0; padding: 0; font-size: 0.82rem; color: var(--text-secondary); display: flex; flex-direction: column; gap: 0.15rem; }
 .tcl-changes code { font-family: var(--font-mono); color: var(--text-primary); overflow-wrap: anywhere; }
 

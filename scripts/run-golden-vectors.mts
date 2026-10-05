@@ -89,7 +89,7 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // 165 -> 166 with the CSS specificity calculator's (rank 10), 166 -> 167 with the HTML structure
 // & DOM explainer's (rank 11), 167 -> 168 with the CSP evaluator's (rank 12), 168 -> 169 with the CSS
 // selector tester's (rank 13), and 169 -> 170 with the meta, Open Graph & JSON-LD inspector's (rank 14).
-const MIN_SETS = 170;
+const MIN_SETS = 172;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

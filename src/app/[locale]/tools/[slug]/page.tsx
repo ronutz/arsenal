@@ -408,6 +408,10 @@ import CssSelectorTesterTool from "@/components/CssSelectorTesterTool";
 import { manifest as cssSelectorTesterManifest } from "@/lib/tools/css-selector-tester";
 import MetaOgJsonldInspectorTool from "@/components/MetaOgJsonldInspectorTool";
 import { manifest as metaOgJsonldInspectorManifest } from "@/lib/tools/meta-og-jsonld-inspector";
+import SyslogMessageParserTool from "@/components/SyslogMessageParserTool";
+import { manifest as syslogMessageParserManifest } from "@/lib/tools/syslog-message-parser";
+import LogLevelMapperTool from "@/components/LogLevelMapperTool";
+import { manifest as logLevelMapperManifest } from "@/lib/tools/log-level-mapper";
 import { manifest as curlManifest } from "@/lib/tools/curl-command-explainer";
 import { manifest as reqTransManifest } from "@/lib/tools/http-request-translator";
 import { manifest as curlbManifest } from "@/lib/tools/curl-command-builder";
@@ -876,6 +880,14 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "meta-og-jsonld-inspector": {
     Component: MetaOgJsonldInspectorTool,
     sources: metaOgJsonldInspectorManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "syslog-message-parser": {
+    Component: SyslogMessageParserTool,
+    sources: syslogMessageParserManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "log-level-mapper": {
+    Component: LogLevelMapperTool,
+    sources: logLevelMapperManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "hash-preimage-finder": {
     Component: HashPreimageFinderTool,

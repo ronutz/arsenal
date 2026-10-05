@@ -173,6 +173,9 @@ export const tools: ToolEntry[] = [
   { id: "timezone-meeting-planner", href: "/tools/timezone-meeting-planner", category: "encoding", available: true },
   { id: "f5-irules-event-order", sub: "irules", href: "/tools/f5-irules-event-order", category: "networking", vendors: ["f5"], available: true },
   { id: "syslog-pri-decoder", href: "/tools/syslog-pri-decoder", category: "networking", available: true },
+  // The observability programme (PRIME 2026-10-05 02:47), first batch: the parser the catalogue queued at rank 35 and the level mapper.
+  { id: "syslog-message-parser", href: "/tools/syslog-message-parser", category: "operations", available: true },
+  { id: "log-level-mapper", href: "/tools/log-level-mapper", category: "operations", available: true },
   { id: "ja4-fingerprint-decoder", href: "/tools/ja4-fingerprint-decoder", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* FoxIO open suite; hub-affiliated, not vendor-owned */, sub: "signals", available: true },
   { id: "ja3-tls-fingerprint", href: "/tools/ja3-tls-fingerprint", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* Salesforce open-source origin; hub-affiliated, not vendor-owned */, sub: "signals", available: true },
   { id: "user-agent-entropy-analyzer", href: "/tools/user-agent-entropy-analyzer", category: "security", vendors: ["zscaler", "ping"], vendorNeutral: true /* generic UA analysis; relevant to signal-based risk auth, not vendor-owned */, sub: "signals", available: true },

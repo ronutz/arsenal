@@ -8,6 +8,10 @@
 // reverse-chronological list, each entry showing date, title, summary, and
 // tags. Ratified by PRIME 2026-07-23 (URL /blog, categories reused, byline
 // "Rodolfo Nützmann"). Statically generated for every locale.
+//
+// 2026-10-05 (PRIME 14:49, SCOUT G17): the page keeps its place but steps back
+// from the home directory to the footer, and carries one honest status line
+// under the intro, with the live post count and the changelog link.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -73,6 +77,15 @@ export default async function BlogIndexPage({
             />
             <h1 className="article-title">{t("title")}</h1>
             <p className="article-summary">{t("intro")}</p>
+            {/* The honest status line (PRIME 2026-10-05 14:49, SCOUT G17): how many pieces there are, that they come as
+                they are written, and where the site's own news lives. The count is the real one, so the line stays
+                true as posts are added; the changelog link is the "what changed here" the blog is not for. */}
+            <p className="blog-status">
+              {t.rich("status", {
+                n: posts.length,
+                link: (chunks) => <Link href="/changelog">{chunks}</Link>,
+              })}
+            </p>
 
             {posts.length === 0 ? (
               <p className="ztc-empty">{t("empty")}</p>

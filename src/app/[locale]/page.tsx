@@ -139,7 +139,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
   // THE FIVE WORLDS of the directory, from the shared registry (src/config/worlds.ts, wave 0: the footer, the human
   // sitemap and the search's scope draw the same five). Each item keeps its map.* label; a count is attached by href
-  // where one is counted, in the words the home has always used.
+  // where one is counted, in the words the home has always used. An entry marked home: false (the Blog, PRIME
+  // 2026-10-05 14:49) is left to the footer and the sitemap.
   const counts: Record<string, string> = {
     "/tools": t("map.toolsBadge", { count: toolCount }),
     "/learn": t("map.learnBadge", { count: articleCount }),
@@ -157,7 +158,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   };
   const worlds: { key: string; items: { label: string; href: string; count?: string }[] }[] = WORLDS.map((w) => ({
     key: w.key,
-    items: w.items.map((it) => ({ label: t(it.label), href: it.href, count: counts[it.href] })),
+    items: w.items.filter((it) => it.home !== false).map((it) => ({ label: t(it.label), href: it.href, count: counts[it.href] })),
   }));
 
   return (

@@ -773,6 +773,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_letsencrypt_rate_limits",
     "tag": "PKI"
   },
+  "log-level-mapper": {
+    "url": "https://ronutz.com/api/v1/log-level-mapper",
+    "method": "GET",
+    "op": "run_log_level_mapper",
+    "tag": "Logging & SIEM formats"
+  },
   "meta-og-jsonld-inspector": {
     "url": "https://ronutz.com/api/v1/meta-og-jsonld-inspector",
     "method": "GET",
@@ -904,6 +910,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_ssrf_url_classifier",
     "tag": "Security & WAF"
+  },
+  "syslog-message-parser": {
+    "url": "https://ronutz.com/api/v1/syslog-message-parser",
+    "method": "GET",
+    "op": "run_syslog_message_parser",
+    "tag": "Protocol & packet decoders"
   },
   "syslog-pri-decoder": {
     "url": "https://ronutz.com/api/v1/syslog-pri-decoder",
