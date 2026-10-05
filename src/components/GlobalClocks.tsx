@@ -3,7 +3,7 @@
 // ============================================================================
 // src/components/GlobalClocks.tsx
 // ----------------------------------------------------------------------------
-// THE TEACHING WINDOWS: ten cities across the regions the courses are delivered
+// THE TEACHING WINDOWS: sixteen zones across the regions the courses are delivered
 // in, each with its live local time and its IANA zone, the reader's own zone
 // first, and a "class starts at" control that answers the one scheduling
 // question an international training coordinator actually has: if the class
@@ -30,18 +30,27 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
-/** The ten cities, west to east, with their IANA zones. The keys are message ids. */
+/** The sixteen rows, west to east, with their IANA zones. The keys are message ids.
+ *  PRIME, 2026-10-04 23:53: the four United States zones by name (Pacific, Mountain, Central, Eastern)
+ *  in place of three cities; Central European in place of Berlin (Europe/Berlin remains the zone that
+ *  carries CET/CEST); Helsinki, Bangkok, Manila, Seoul and Auckland added; Singapore was already here. */
 const CITIES: readonly { key: string; zone: string }[] = [
-  { key: "sanfrancisco", zone: "America/Los_Angeles" },
-  { key: "chicago", zone: "America/Chicago" },
-  { key: "newyork", zone: "America/New_York" },
+  { key: "pacific", zone: "America/Los_Angeles" },
+  { key: "mountain", zone: "America/Denver" },
+  { key: "central", zone: "America/Chicago" },
+  { key: "eastern", zone: "America/New_York" },
   { key: "saopaulo", zone: "America/Sao_Paulo" },
   { key: "london", zone: "Europe/London" },
-  { key: "berlin", zone: "Europe/Berlin" },
+  { key: "cet", zone: "Europe/Berlin" },
+  { key: "helsinki", zone: "Europe/Helsinki" },
   { key: "dubai", zone: "Asia/Dubai" },
   { key: "mumbai", zone: "Asia/Kolkata" },
+  { key: "bangkok", zone: "Asia/Bangkok" },
   { key: "singapore", zone: "Asia/Singapore" },
+  { key: "manila", zone: "Asia/Manila" },
+  { key: "seoul", zone: "Asia/Seoul" },
   { key: "sydney", zone: "Australia/Sydney" },
+  { key: "auckland", zone: "Pacific/Auckland" },
 ];
 
 /** "HH:MM" in a zone for an instant, 24-hour clock. */

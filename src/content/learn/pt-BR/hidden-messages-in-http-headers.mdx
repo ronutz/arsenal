@@ -1,0 +1,71 @@
+---
+slug: hidden-messages-in-http-headers
+title: "Mensagens escondidas em cabeçalhos HTTP: tributos, piadas e vagas de emprego no overhead"
+summary: "O HTTP deixa um servidor acrescentar o cabeçalho que quiser, e há vinte anos operadores usam essa liberdade para coisas que não são protocolo. Depois que Terry Pratchett morreu em 2015, milhares de sites passaram a enviar X-Clacks-Overhead: GNU Terry Pratchett, um memorial construído a partir de um recurso de enredo do próprio romance dele. O Slashdot respondia a cada pedido com uma citação de Futurama. Automattic e Airbnb esconderam ofertas de emprego onde só quem lê cabeçalhos veria. Um cache de páginas se anuncia com o tema do Batman. Dois códigos de status levam piadas literárias para dentro do próprio padrão. Este artigo percorre cada caso, cita o artefato e diz o que os bons têm em comum: não custam nada a quem lê, são verdadeiros e são endereçados a quem olha. Termina com como lê-los por conta própria, e com os deste site."
+concepts: ["cabeçalhos http", "easter egg", "x-clacks-overhead", "terry pratchett", "418", "451", "recrutamento", "curl"]
+relatedTools: ["secure-headers", "curl-command-builder"]
+relatedArticles: ["http-headers-anatomy", "http-status-codes-the-five-families", "curl-headers-auth-and-cookies"]
+category: web
+order: 141
+status: reviewed
+updated: "2026-10-04"
+---
+
+Toda resposta HTTP começa com uma linha de status e um bloco de cabeçalhos, e os cabeçalhos de que o navegador precisa são um conjunto pequeno e conhecido: o tipo do conteúdo, o tamanho, as regras de cache, a política de segurança. Nada impede um servidor de acrescentar mais. O protocolo ignora um cabeçalho que não reconhece, e um nome começando com `X-` foi por décadas a convenção para um cabeçalho privado (a RFC 6648 aposentou a convenção em 2012 sem aposentar os cabeçalhos). Nesse espaço sem vigilância, operadores colocaram coisas que não são protocolo de forma alguma. Este artigo reúne as que valem conhecer, com a fonte primária de cada uma, porque todo o charme do gênero é ser verificável: rode `curl -I` e lá está.
+
+## O memorial: X-Clacks-Overhead
+
+Terry Pratchett morreu em 12 de março de 2015. No romance Going Postal (2004), a comunicação de longa distância do Discworld são os clacks, uma cadeia de torres de semáforo que repetem mensagens de uma para a seguinte, e o overhead de uma mensagem pode carregar códigos de manutenção: `G`, passe adiante para a próxima torre; `N`, não registre; `U`, no fim da linha, dê meia-volta e mande de volta. Um nome enviado como `GNU` circula pelas torres para sempre e nunca é escrito, e é assim que os operadores do livro mantêm vivo o nome de um colega morto. A frase é que um homem não está morto enquanto seu nome ainda é dito.
+
+Poucos dias depois da notícia, leitores do subreddit do Discworld perguntaram qual seria o overhead da internet e se decidiram por um cabeçalho de resposta HTTP: um pedaço de manutenção enviado junto com cada resposta, visto só pelas máquinas e por quem olha. O cabeçalho é `X-Clacks-Overhead` e seu valor é `GNU Terry Pratchett`. Trechos para Apache (`Header set`) e Nginx (`add_header`) foram publicados em 15 de março de 2015, depois um plugin de WordPress, depois extensões de navegador que mostram um pequeno marcador quando um site o envia. O próprio Reddit acrescentou o cabeçalho. A wiki L-Space, a enciclopédia dos fãs do Discworld, mantém a lista de adotantes, que chega até o Minecraft, onde `GNU Terry Pratchett` é o texto de abertura número 338 desde a Java Edition 1.8.5.
+
+O cabeçalho não faz nada. Navegadores o ignoram e caches o repassam; custa algumas dezenas de bytes por resposta. É exatamente esse o desenho: um tributo que não custa nada a quem lê e só é encontrado por quem foi procurar. É o modelo contra o qual o resto deste artigo é medido.
+
+## A piada: as citações de Futurama do Slashdot
+
+Por anos, toda resposta de slashdot.org carregava um cabeçalho extra chamado `X-Fry`, `X-Bender` ou `X-Lrrr`, pelos personagens de Futurama, cujo valor era uma fala do seriado escolhida ao acaso a cada pedido. Não havia propósito além do público: um site lido por gente que roda `curl` contra as coisas, mandando uma piada exatamente para essa gente. O levantamento do How-To Geek sobre cabeçalhos escondidos abriu com ele, e existia um comando de uma linha no commandlinefu só para buscar uma citação nova. É a forma mais pura do gênero, sem agenda nenhuma.
+
+## Os convites: X-hacker e X-Hi-Human
+
+Duas empresas usaram o mesmo canal para contratar. A Automattic, que opera o WordPress.com e a hospedagem WordPress VIP usada por seus clientes maiores, envia um cabeçalho `X-hacker` em várias redações, a mais conhecida sendo um convite para visitar a página de vagas da empresa e se candidatar "para entrar na diversão, mencione este cabeçalho", e a mais curta "Want root? Visit join.a8c.com and mention this header". Engenheiros da Wikimedia o notaram no próprio blog deles, hospedado no VIP, e abriram um chamado para perguntar a respeito. O time de Infraestrutura de Produção do Airbnb enviava `X-Hi-Human: The Production Infrastructure team added this header. Come work with us!` com o endereço de contratação de um engenheiro, o que Troy Hunt registrou em março de 2015 em um texto sobre mensagens de recrutamento escondidas em sites.
+
+A lógica é sólida e um pouco lisonjeira. Uma pessoa inspecionando os cabeçalhos de resposta de uma plataforma de blogs é uma pessoa que a plataforma talvez queira, e "mencione este cabeçalho" torna o caminho rastreável. O mais simpático dos dois diz oi primeiro.
+
+## O diagnóstico que sorri: x-nananana
+
+O Batcache é o cache de página inteira da Automattic para WordPress, apoiado em memcached. Seu arquivo-fonte abre com o comentário `nananananananananananananananana BATCACHE!!!`, e as implantações em produção respondem com um cabeçalho chamado `x-nananana` cujo valor informa o estado do cache: `Batcache-Hit` quando a página foi servida do cache. A Pressable, um host construído sobre a mesma pilha, manda os clientes procurarem exatamente esse cabeçalho para confirmar que o cache está funcionando. É um cabeçalho de diagnóstico funcional que por acaso é uma piada, o tipo mais raro: ele ganha seu lugar na resposta.
+
+## Os códigos de status: 418 e 451
+
+A tradição alcança o próprio padrão duas vezes. A RFC 2324, o Hyper Text Coffee Pot Control Protocol, foi publicada em 1 de abril de 1998 por Larry Masinter; a seção 2.3.2 diz que qualquer tentativa de passar café em um bule de chá deve resultar no código de erro 418 "I'm a teapot", e que o corpo da resposta pode ser curto e atarracado. O código nunca fez parte do HTTP propriamente dito, mas frameworks web o implementaram por diversão, e quando o presidente do grupo de trabalho de HTTP questionou mantê-lo em agosto de 2017, veio a campanha Save 418: Node.js, Go, ASP.NET e a biblioteca Requests o mantiveram, e uma proposta foi apresentada para reservar o 418 de modo que nada mais pudesse usar o número. O [verbete 418](/glossary/teapot-418) do glossário conta a história mais longa.
+
+A RFC 7725 é a séria. Publicada em fevereiro de 2016 e escrita por Tim Bray, define o código de status 451 "Unavailable For Legal Reasons", para uso quando o acesso a um recurso é negado em consequência de uma exigência legal, para que um bloqueio ordenado por um tribunal ou governo seja distinguível de um 403 comum. O número é uma reverência deliberada a Fahrenheit 451, de Ray Bradbury, o romance sobre queimar livros, e os agradecimentos da RFC terminam com "Thanks also to Ray Bradbury." É um código real, de trilha de padrões, com trabalho real; a referência literária está escrita no documento.
+
+## O que os bons têm em comum
+
+Três coisas. Não custam nada a quem lê: alguns bytes no overhead, nenhuma mudança na página, nenhum pop-up. São verdadeiros: um memorial real, uma vaga real, um acerto de cache real, um código de status real. E são endereçados a quem iria olhar, o que na web significa quem lê cabeçalhos, e que portanto ganha uma pequena recompensa por um hábito que vale ter. Uma mensagem escondida que falhe em qualquer das três (um banner que ninguém pediu, uma credencial falsa, uma piada mirada em quem nunca a verá) não faz parte desta tradição, por mais engenhosa que seja.
+
+## Como lê-los
+
+Qualquer cliente HTTP que mostre cabeçalhos de resposta serve. `curl -I https://example.com/` imprime a linha de status e os cabeçalhos de um pedido HEAD; `curl -sD - -o /dev/null https://example.com/` faz o mesmo com um GET, o que importa para servidores que respondem HEAD de forma diferente. No navegador, o painel de rede das ferramentas de desenvolvedor lista os cabeçalhos de toda resposta. O [verificador de cabeçalhos seguros](/tools/secure-headers) deste site lê um bloco de cabeçalhos que você cola e explica os relevantes para segurança; o resto do bloco é onde os easter eggs moram. O [construtor de comandos curl](/tools/curl-command-builder) escreve as formas `-I` e `-D` com cada flag explicada.
+
+## Os deste site
+
+Desde outubro de 2026, toda resposta deste site carrega duas linhas nessa tradição: `X-Clacks-Overhead: GNU Terry Pratchett`, porque o tributo vale a adesão e não custa nada, e um segundo cabeçalho, `X-Collective`, cujo valor declara um fato sobre como o site é feito: boas ideias são assimiladas aqui, com suas fontes. O segundo é uma piada sobre método, e o método é real; o changelog registra de onde veio cada ideia adotada, e o colofão diz isso em palavras simples. Os dois cabeçalhos são definidos na configuração do host estático, ao lado dos cabeçalhos de segurança, então são servidos com toda página e todo arquivo. A resistência é inútil; a atribuição é obrigatória.
+
+## Fontes
+
+- [A wiki L-Space, "GNU Terry Pratchett": os códigos dos clacks G, N e U de Going Postal, a origem no Reddit de esconder o texto GNU em cabeçalhos de sites, e os adotantes incluindo o texto de abertura 338 do Minecraft (Java Edition 1.8.5)](https://wiki.lspace.org/GNU_Terry_Pratchett)
+- [Boing Boing, 15 de março de 2015, "Sending Terry Pratchett home with HTTP headers": as configurações de Apache e Nginx transmitindo X-Clacks-Overhead: GNU Terry Pratchett](https://boingboing.net/2015/03/15/sending-terry-pratchett-home-w.html)
+- [IT Pro, 17 de março de 2015, "How Reddit ensured Sir Terry Pratchett's name lives on": administradores acrescentando o cabeçalho, a extensão de Chrome e o plugin de WordPress](https://itpro.com/server/24238/how-reddit-ensured-sir-terry-pratchetts-name-lives-on)
+- [How-To Geek, "Stupid Geek Tricks: Find Hidden Messages in Web Site Headers": as citações de Futurama em X-Fry, X-Bender e X-Lrrr do Slashdot e outros cabeçalhos escondidos](https://www.howtogeek.com/6499/stupid-geek-tricks-find-hidden-messages-in-web-site-headers/)
+- [commandlinefu, "slashdot.org webserver adds an X-Bender or X-Fry HTTP header to every response"](https://www.commandlinefu.com/commands/view/1608/gets-a-random-futurama-quote-from-.)
+- [http.dev, "X-Hacker": o cabeçalho de recrutamento da Automattic e suas redações](https://http.dev/x-hacker)
+- [Wikimedia Phabricator T70982: o cabeçalho X-hacker visto em blog.wikimedia.org](https://phabricator.wikimedia.org/T70982)
+- [Troy Hunt, 31 de março de 2015, "Deconstruct websites, get hired": o cabeçalho X-Hi-Human do Airbnb e o gênero das mensagens de recrutamento](https://troyhunt.com/deconstruct-websites-get-hired-hiding)
+- [Base de conhecimento da Pressable, "How does Batcache page caching work": o cabeçalho de resposta x-nananana Batcache-Hit](https://pressable.com/knowledgebase/how-does-batcache-page-caching-work/)
+- [Automattic/batcache, advanced-cache.php: o comentário no código-fonte que dá nome ao cabeçalho](https://github.com/Automattic/batcache/blob/master/advanced-cache.php)
+- [RFC 2324, Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0), 1 de abril de 1998, seção 2.3.2](https://www.rfc-editor.org/rfc/rfc2324)
+- [save418.com: a proposta de agosto de 2017, os frameworks que mantiveram o 418 e a proposta de reserva](https://save418.com/)
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles, fevereiro de 2016, com seu agradecimento a Ray Bradbury](https://www.rfc-editor.org/rfc/rfc7725)
+- [RFC 6648, Deprecating the "X-" Prefix and Similar Constructs in Application Protocols, junho de 2012](https://www.rfc-editor.org/rfc/rfc6648)

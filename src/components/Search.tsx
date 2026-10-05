@@ -32,6 +32,7 @@
 
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { tools } from "@/config/tools";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
 // What result.data() resolves to: the page URL, the highlighted excerpt, and the
@@ -95,6 +96,17 @@ function sanitizeExcerpt(raw: string): string {
  * also embeds the CIDR widget, and that home-page hit simply reads as a page.)
  */
 type ResultKind = "tool" | "article" | "guide" | "page";
+
+/** The tools that run a third-party WebAssembly interpreter: their result rows wear the short
+ *  fuchsia mark beside the kind badge, so a reader knows before opening that a 13 MB engine
+ *  downloads on first use (PROPOSTA-wasm-tools, 2026-10-04). Derived from the registry's
+ *  runtime flag, so a new WebAssembly tool is marked here without touching this file. */
+const WASM_SLUGS: ReadonlySet<string> = new Set(tools.filter((t) => t.runtime === "wasm").map((t) => t.id));
+/** Is this result URL a WebAssembly tool page? (/tools/<slug>/ with or without the trailing slash.) */
+function isWasmTool(url: string): boolean {
+  const m = /\/tools\/([a-z0-9-]+)\/?(?:[#?]|$)/.exec(url);
+  return m ? WASM_SLUGS.has(m[1]) : false;
+}
 function classifyKind(url: string): ResultKind {
   // /learn/ and /tools/ are checked first so an article or tool whose slug
   // happens to contain "guide" is not misclassified as the User Guide.
@@ -439,6 +451,9 @@ export default function Search() {
                           >
                             {t(KIND_LABEL_KEY[r.kind])}
                           </span>
+                          {r.kind === "tool" && isWasmTool(r.url) && (
+                            <span className="search-result-wasm" title={t("wasmTitle")}>{t("wasm")}</span>
+                          )}
                           <span className="search-result-title">{r.title}</span>
                         </span>
                         {/* Excerpt with highlights. Sanitized to allow ONLY

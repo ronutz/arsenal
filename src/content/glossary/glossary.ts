@@ -7394,8 +7394,11 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "lore",
     domains: ["web-development", "ops-culture"],
     expansion: "Hyper Text Coffee Pot Control Protocol (HTCPCP)",
-    aliases: ["HTCPCP", "I'm a teapot", "HTTP 418"],
-    sources: [{ label: "RFC 2324", href: "https://www.rfc-editor.org/rfc/rfc2324" }],
+    aliases: ["HTCPCP", "I'm a teapot", "HTTP 418", "save 418"],
+    // Linked into the hidden-messages family on 2026-10-04: the status-code branch of the easter egg tradition.
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "http-451-unavailable-for-legal-reasons", "x-clacks-overhead"],
+    sources: [{ label: "RFC 2324, Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0), L. Masinter, 1 April 1998, section 2.3.2", href: "https://www.rfc-editor.org/rfc/rfc2324" }, { label: "save418.com: the August 2017 proposal to drop the code, the frameworks that kept it (Node.js, Go, ASP.NET, Requests) and the proposal to reserve 418 in the standard", href: "https://save418.com/" }],
   },
   {
     slug: "the-morris-worm",
@@ -16321,6 +16324,84 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     relatedArticles: ["mojibake-and-code-pages", "utf-8-and-utf-16-byte-by-byte"],
     relatedTerms: ["utf-8", "unicode", "ascii"],
     sources: [{ label: "WHATWG Encoding Standard: the labels latin1, iso-8859-1 and ascii mean windows-1252", href: "https://encoding.spec.whatwg.org/" }],
+  },
+  // ---- HIDDEN MESSAGES IN HTTP (added 2026-10-04, PRIME) ----------------------
+  // Eight entries on the small tradition of putting a tribute, a joke or an
+  // invitation where only people who read response headers will find it. The
+  // umbrella term first, then the cases the Learn article walks. Every lore
+  // entry cites the artefact or a dated report of it; nothing here is
+  // reconstructed from memory.
+  {
+    slug: "easter-egg-header",
+    headword: "easter egg header",
+    kind: "jargon",
+    domains: ["web-development", "ops-culture"],
+    aliases: ["tribute header", "hidden header", "joke header", "X- header easter egg"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["x-clacks-overhead", "x-fry-x-bender", "x-hacker", "x-hi-human", "x-nananana-batcache", "teapot-418", "http-451-unavailable-for-legal-reasons"],
+    sources: [{ label: "How-To Geek, 'Stupid Geek Tricks: Find Hidden Messages in Web Site Headers': Slashdot's Futurama quotes and half a dozen other sites' hidden headers, read with curl", href: "https://www.howtogeek.com/6499/stupid-geek-tricks-find-hidden-messages-in-web-site-headers/" }, { label: "Troy Hunt, 31 March 2015, 'Deconstruct websites, get hired: hiding recruitment messages in headers and source'", href: "https://troyhunt.com/deconstruct-websites-get-hired-hiding" }],
+  },
+  {
+    slug: "x-clacks-overhead",
+    headword: "X-Clacks-Overhead",
+    kind: "lore",
+    domains: ["web-development", "ops-culture"],
+    expansion: "X-Clacks-Overhead: GNU Terry Pratchett",
+    aliases: ["GNU Terry Pratchett", "clacks overhead", "GNU"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "x-fry-x-bender", "teapot-418"],
+    sources: [{ label: "The L-Space Web wiki, 'GNU Terry Pratchett': the clacks overhead codes from Going Postal (G, send the message on to the next tower; N, do not log the message; U, at the end of the line, return the message), the line 'a man is not dead while his name is still spoken', the r/discworld origin of hiding GNU text in site headers, and the adopters, down to Minecraft splash text 338 in Java Edition 1.8.5", href: "https://wiki.lspace.org/GNU_Terry_Pratchett" }, { label: "Boing Boing, 15 March 2015, 'Sending Terry Pratchett home with HTTP headers': Apache and Nginx configurations that transmit the X-Clacks-Overhead header reading GNU Terry Pratchett, so that his name lives on in the overhead", href: "https://boingboing.net/2015/03/15/sending-terry-pratchett-home-w.html" }, { label: "IT Pro, 17 March 2015, 'How Reddit ensured Sir Terry Pratchett's name lives on': redditors and other administrators adding the header to the servers they control, with a Chrome extension and a WordPress plugin", href: "https://itpro.com/server/24238/how-reddit-ensured-sir-terry-pratchetts-name-lives-on" }],
+  },
+  {
+    slug: "x-fry-x-bender",
+    headword: "X-Fry / X-Bender",
+    kind: "lore",
+    domains: ["web-development", "ops-culture"],
+    aliases: ["X-Fry", "X-Bender", "X-Lrrr", "Slashdot Futurama headers"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "x-clacks-overhead"],
+    sources: [{ label: "How-To Geek, 'Stupid Geek Tricks: Find Hidden Messages in Web Site Headers': Slashdot returns random quotes from Futurama in X-Fry, X-Bender and X-Lrrr headers", href: "https://www.howtogeek.com/6499/stupid-geek-tricks-find-hidden-messages-in-web-site-headers/" }, { label: "commandlinefu: 'slashdot.org webserver adds an X-Bender or X-Fry HTTP header to every response', a one-liner that fetches a random quote", href: "https://www.commandlinefu.com/commands/view/1608/gets-a-random-futurama-quote-from-." }],
+  },
+  {
+    slug: "x-hacker",
+    headword: "X-hacker",
+    kind: "lore",
+    domains: ["web-development", "ops-culture"],
+    aliases: ["X-Hacker", "recruiting header", "Automattic hiring header"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "x-hi-human", "x-nananana-batcache"],
+    sources: [{ label: "http.dev, 'X-Hacker': Automattic's recruiting header in three variants, among them 'If you're reading this, you should visit https://join.a8c.com/viphacker and apply to join the fun, mention this header' and 'Want root? Visit join.a8c.com/hacker and mention this header'", href: "https://http.dev/x-hacker" }, { label: "Wikimedia Phabricator T70982: 'curl -vs blog.wikimedia.org | fgrep X-hacker', the header seen on a WordPress VIP-hosted blog", href: "https://phabricator.wikimedia.org/T70982" }],
+  },
+  {
+    slug: "x-hi-human",
+    headword: "X-Hi-Human",
+    kind: "lore",
+    domains: ["web-development", "ops-culture"],
+    aliases: ["Airbnb hiring header", "X-Hi-Human header"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "x-hacker"],
+    sources: [{ label: "Troy Hunt, 31 March 2015: Airbnb's response header X-Hi-Human read 'The Production Infrastructure team added this header. Come work with us!' with a hiring address", href: "https://troyhunt.com/deconstruct-websites-get-hired-hiding" }],
+  },
+  {
+    slug: "x-nananana-batcache",
+    headword: "x-nananana: Batcache",
+    kind: "lore",
+    domains: ["web-development", "ops-culture"],
+    aliases: ["X-nananana", "Batcache header", "nananana Batcache"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "x-hacker"],
+    sources: [{ label: "Pressable knowledge base, 'How does Batcache page caching work': if Batcache is active you should see x-nananana Batcache-Hit under the response headers", href: "https://pressable.com/knowledgebase/how-does-batcache-page-caching-work/" }, { label: "Automattic/batcache, advanced-cache.php: the source comment 'nananananananananananananananana BATCACHE!!!' at the top of the page cache", href: "https://github.com/Automattic/batcache/blob/master/advanced-cache.php" }],
+  },
+  {
+    slug: "http-451-unavailable-for-legal-reasons",
+    headword: "451 Unavailable For Legal Reasons",
+    kind: "term",
+    domains: ["web-development", "grc"],
+    expansion: "HTTP status code 451",
+    aliases: ["451", "RFC 7725", "Unavailable For Legal Reasons"],
+    relatedArticles: ["hidden-messages-in-http-headers"],
+    relatedTerms: ["easter-egg-header", "teapot-418"],
+    sources: [{ label: "RFC 7725, An HTTP Status Code to Report Legal Obstacles, T. Bray, February 2016: a status code for use when resource access is denied as a consequence of legal demands; the acknowledgements end 'Thanks also to Ray Bradbury'", href: "https://www.rfc-editor.org/rfc/rfc7725" }],
   },
 ];
 

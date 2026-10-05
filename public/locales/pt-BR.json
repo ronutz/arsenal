@@ -9853,7 +9853,120 @@
         "ttlunits": "+ttlunits: imprimir TTLs em s, m, h, d e w em vez de segundos.",
         "qr": "+qr: imprimir também a mensagem de consulta como foi enviada."
       }
-    }
+    },
+    "python-playground": {
+      "name": "Playground de Python",
+      "blurb": "CPython 3.14 de verdade no seu navegador, para a aritmética das redes: sub-redes, máscaras, EUI-64, cabeçalhos DNS em struct, HMAC, estatísticas de latência, tempos de transferência. Um motor de 13,5 MB é baixado uma vez, quando você autorizar; nada do que você digita sai da página.",
+      "explainer": {
+        "title": "Uma ferramenta em WebAssembly",
+        "runs": "O que roda: {engine} {version}, que é o CPython {python} compilado para WebAssembly pelo projeto Pyodide, sob a licença {licence}. É um interpretador de verdade, não uma imitação.",
+        "origin": "De onde vem: da mesma origem desta página, fixado por versão e por resumo SHA-256 no momento da construção. Nenhum servidor de terceiros é contatado em tempo de execução.",
+        "cost": "O que o primeiro uso custa: cerca de {mb} MB, baixados apenas quando você aperta o botão que diz o tamanho. O navegador guarda em cache; a segunda visita não custa nada.",
+        "leaves": "O que sai da página: nada. O programa e a entrada ficam em um Web Worker no seu dispositivo. O interpretador não tem rede nem processos; a política da página os recusaria de qualquer forma.",
+        "checks": "O que as verificações do próprio site cobrem: o arcabouço em volta do motor, os exemplos (executados de novo no motor real a cada construção), a pré-verificação e os limites. O comportamento do interpretador em si é do projeto dele."
+      },
+      "codeLabel": "Programa",
+      "codeHint": "Só a biblioteca padrão do Python 3.14; sem pacotes nesta versão. Até {max} caracteres. O valor da última expressão aparece como resultado, como em um REPL.",
+      "stdinLabel": "Entrada padrão (o que input() e sys.stdin leem, uma linha por linha)",
+      "stdinPlaceholder": "Linhas para input() ou sys.stdin, se o programa ler alguma",
+      "examplesLabel": "Exemplos:",
+      "examples": {
+        "subnet-split": "Dividir um /24 em /26",
+        "aggregate-routes": "Agregar prefixos",
+        "wildcard-mask": "Máscara e wildcard",
+        "ipv6-eui64": "EUI-64 a partir de um MAC",
+        "dns-header-struct": "Cabeçalho DNS em struct",
+        "hmac-sha256": "HMAC-SHA256",
+        "latency-stats": "Estatísticas de latência",
+        "transfer-time": "Tempos de transferência",
+        "syslog-count": "Contar syslog por severidade",
+        "stdin-lines": "Ler linhas da entrada padrão",
+        "json-pick": "Extrair campos de JSON",
+        "last-expression": "Só a última expressão"
+      },
+      "example": "Exemplo",
+      "clear": "Limpar",
+      "loadButton": "Carregar Python ({mb} MB)",
+      "loading": "Baixando o motor: {pct}% de cerca de {mb} MB, depois iniciando o Python",
+      "runButton": "Executar",
+      "stopButton": "Parar",
+      "engineReady": "Pyodide {version} pronto · Python {python}",
+      "loadFailed": "Não foi possível carregar o motor. Estar offline, um download bloqueado ou um navegador sem suporte são as causas comuns; os exemplos continuam legíveis.",
+      "retry": "Tentar de novo",
+      "preflightTitle": "Antes de executar",
+      "blocked": "Corrija os itens marcados como erro; o programa não é enviado ao motor enquanto algum restar.",
+      "outputTitle": "Saída",
+      "resultValue": "Resultado: {value}",
+      "noResult": "Concluído; a última instrução não produziu valor.",
+      "tookMs": "{ms} ms",
+      "outputTruncated": "A saída foi cortada em {max} caracteres por fluxo.",
+      "timedOut": "Interrompido após {seconds} s, o limite de relógio. O motor foi reiniciado; aperte Executar para tentar de novo.",
+      "stopped": "Interrompido. Um motor novo está iniciando a partir dos arquivos em cache; aperte Executar quando estiver pronto.",
+      "severity": {
+        "error": "bloqueia",
+        "warn": "atenção",
+        "info": "nota"
+      },
+      "findingTitle": {
+        "empty": "Nada para executar",
+        "too-long": "Programa longo demais",
+        "stdin-too-long": "Entrada padrão longa demais",
+        "line-cut": "Linhas muito longas",
+        "import-unavailable": "Módulo ausente nesta compilação",
+        "import-distribution": "Pacote não carregado nesta versão",
+        "import-unknown": "Módulo indisponível aqui",
+        "import-relative": "Import relativo",
+        "import-pyodide": "Módulo de ponte",
+        "network": "Sem rede",
+        "processes": "Sem processos",
+        "threads": "Threads",
+        "zoneinfo": "zoneinfo precisa de tzdata",
+        "pip": "Sem pip aqui",
+        "input-no-stdin": "input() com a caixa de entrada vazia",
+        "input-stdin": "Lê a entrada padrão",
+        "stdin-unused": "Entrada padrão não lida",
+        "sleep-over-limit": "Sleep maior que o limite",
+        "sleep": "Sleep conta contra o limite",
+        "loop-forever": "Laço sem fim",
+        "nondeterministic": "Saída muda entre execuções",
+        "files": "Arquivos ficam na memória",
+        "top-level-await": "await no nível superior",
+        "exit": "exit() encerra a execução",
+        "no-output": "Nada impresso",
+        "mixed-indent": "Tabulações e espaços misturados"
+      },
+      "finding": {
+        "empty": "O editor não tem código, só linhas em branco ou comentários.",
+        "too-long": "O programa tem {chars} caracteres; o limite é {max}. Encurte-o ou divida o trabalho.",
+        "stdin-too-long": "A caixa de entrada tem {chars} caracteres; o limite é {max}.",
+        "line-cut": "{lines} linha(s) passam de {max} caracteres. O motor ainda as executa; só esta pré-verificação as lê cortadas.",
+        "import-unavailable": "{module} faz parte da biblioteca padrão do Python, mas não desta compilação WebAssembly: o motor diz \"{error}\". Nada na página pode fornecê-lo.",
+        "import-distribution": "{module} existe para o Pyodide como o pacote {package}, mas pacotes não são carregados nesta versão ({version}): o import vai lançar ModuleNotFoundError. A biblioteca padrão é o que está disponível.",
+        "import-unknown": "{module} não está na biblioteca padrão nem na distribuição do Pyodide, então não pode ser importado aqui; o import vai lançar ModuleNotFoundError.",
+        "import-relative": "{module} é um import relativo, que precisa de um pacote ao qual ser relativo; um programa executado aqui é um módulo único e o import vai falhar.",
+        "import-pyodide": "{module} é a ponte entre o Python e o lado JavaScript do Worker. Funciona, mas alcança um escopo de Worker sem documento, e a política da página permite só esta origem.",
+        "network": "{modules} tenta usar a rede. O motor roda em um Worker sem sockets, e a política connect-src da página permite só esta origem: conexões lançam erro.",
+        "processes": "{modules} inicia processos. O Emscripten não suporta processos; subprocess, os.system e multiprocessing lançam OSError 138.",
+        "threads": "Threads existem, mas rodam cooperativamente dentro de uma única instância WebAssembly; threads de CPU não rodam em paralelo aqui.",
+        "zoneinfo": "zoneinfo não encontra banco de fusos horários nesta compilação (sem tzdata do sistema e sem o pacote tzdata carregado): ZoneInfo(...) lança ZoneInfoNotFoundError. Use datetime.timezone com deslocamento fixo.",
+        "pip": "pip e micropip não estão disponíveis nesta versão: pacotes estão desligados, então nada pode ser instalado. A biblioteca padrão é o que está disponível.",
+        "input-no-stdin": "O programa lê a entrada padrão, mas a caixa está vazia, então o primeiro input() lança EOFError. Digite na caixa as linhas que ele deve ler.",
+        "input-stdin": "O programa lê a entrada padrão; a caixa fornece {lines} linha(s), uma por leitura, depois fim de arquivo.",
+        "stdin-unused": "A caixa de entrada tem {lines} linha(s), mas o programa nunca lê input() nem sys.stdin.",
+        "sleep-over-limit": "time.sleep({seconds}) é maior que o limite de {limit} s; a execução será interrompida antes de acordar.",
+        "sleep": "time.sleep({seconds}) conta contra o limite de {limit} s.",
+        "loop-forever": "Um laço while True só termina por break, por exceção, pelo botão Parar ou pelo limite de {limit} s.",
+        "nondeterministic": "{modules} fazem a saída variar entre execuções; isso é esperado, não um defeito.",
+        "files": "Arquivos são gravados no sistema de arquivos em memória do motor e somem quando a execução termina; nada é gravado no seu disco.",
+        "top-level-await": "await no nível superior é permitido: o programa roda como um corpo assíncrono.",
+        "exit": "exit() ou sys.exit() encerra a execução com SystemExit; o motor é reiniciado depois.",
+        "no-output": "{result, select, 1 {O programa não imprime nada; o valor da última expressão aparece como resultado.} other {O programa não imprime nada e não termina em expressão, então nada será mostrado. Acrescente um print(...) ou termine com o valor que quer ver.}}",
+        "mixed-indent": "Tabulações e espaços são usados juntos na indentação; o Python 3 lança TabError quando discordam. Escolha um."
+      }
+    },
+    "wasmPill": "WebAssembly",
+    "wasmPillShort": "WASM",
+    "wasmFirstUse": "{mb} MB no primeiro uso"
   },
   "privacy_page": {
     "eyebrow": "Privacidade",
@@ -9930,7 +10043,9 @@
     "filterTools": "Ferramentas",
     "filterArticles": "Artigos",
     "filterGuide": "Guia do usuário",
-    "filterPages": "Páginas"
+    "filterPages": "Páginas",
+    "wasm": "WASM",
+    "wasmTitle": "Executa um interpretador de terceiros compilado para WebAssembly; o motor é baixado no primeiro uso, quando você autorizar"
   },
   "theme": {
     "label": "Tema",
@@ -10681,7 +10796,7 @@
       "sameDay": "mesmo dia",
       "nextDay": "dia seguinte",
       "prevDay": "dia anterior",
-      "note": "Os horários vêm dos dados de fuso horário do próprio navegador (os fusos IANA nomeados sob cada cidade), então os horários de verão já estão aplicados. Nada é enviado a lugar nenhum.",
+      "note": "Os horários vêm dos dados de fuso horário do próprio navegador (os fusos IANA nomeados sob cada linha), então os horários de verão já estão aplicados. Nada é enviado a lugar nenhum.",
       "city": {
         "sanfrancisco": "São Francisco",
         "chicago": "Chicago",
@@ -10692,7 +10807,17 @@
         "dubai": "Dubai",
         "mumbai": "Mumbai",
         "singapore": "Cingapura",
-        "sydney": "Sydney"
+        "sydney": "Sydney",
+        "pacific": "Horário do Pacífico",
+        "mountain": "Horário das Montanhas",
+        "central": "Horário Central",
+        "eastern": "Horário do Leste",
+        "cet": "Horário da Europa Central",
+        "helsinki": "Helsinque",
+        "bangkok": "Bangkok",
+        "manila": "Manila",
+        "seoul": "Seul",
+        "auckland": "Auckland"
       }
     },
     "ctaSpeaking": "Procurando uma palestra para conferência ou uma sessão interna em vez de um curso?",
@@ -10875,7 +11000,9 @@
     "wordExt": "2. Por extensão moderna, a página de um site que explica como o site foi construído. Ou seja: esta página.",
     "wordEty": "Do grego kolophôn, pelo latim medieval: cume, acabamento.",
     "fableNote": "Uma nota sobre o Fable 5. É o motor pretendido para este assento, mas apenas por uma janela limitada no plano atual; depois disso passa a ser pago por uso, e o custo adicional faz com que seja pouco usado aqui. Na prática, ele também recorre ao Claude Opus 4.8 na maior parte deste trabalho: o tema do ARSENAL é segurança de redes e de aplicações, e as salvaguardas do Fable 5 encaminham solicitações relacionadas a segurança para o Opus 4.8, capturando esse conteúdo (às vezes como falso positivo) porque o Fable 5 está atualmente impedido de tratar desses assuntos. Portanto, a maior parte do que está aqui foi construída com o Opus 4.8.",
-    "statsLink": "Como o site vai"
+    "statsLink": "Como o site vai",
+    "p5Title": "Assimilado, com fontes",
+    "p5Body": "Boas ideias são adotadas aqui venham de onde vierem: a nota de um leitor, uma revisão externa, a documentação de um fabricante, um padrão, o hábito de outro site que vale ter. Cada uma chega com sua fonte nomeada, na entrada do changelog que a adota e na página que a carrega, de modo que a trilha da ideia até a origem nunca se perde. Dois cabeçalhos de resposta dizem a mesma coisa a quem lê cabeçalhos: X-Clacks-Overhead leva o nome de Terry Pratchett no overhead, como milhares de sites fazem desde 2015, e X-Collective declara o método em poucas palavras. A resistência é inútil; a atribuição é obrigatória."
   },
   "support": {
     "title": "Apoie o projeto",
@@ -11059,7 +11186,8 @@
     "metaDescription": "As ferramentas planejadas e em consideração para o toolbox ronutz.com, geradas a partir do catálogo de build ao vivo.",
     "ceiling": "O crescimento aqui tem um teto medido, não vago. A plataforma de hospedagem limita quantos arquivos estáticos um Worker pode carregar, e a aritmética deste site — cerca de cem arquivos por pacote de ferramenta e artigo, em dezesseis idiomas — é conferida contra esse limite a cada build. Hoje há espaço para centenas de ferramentas a mais, e o caminho de expansão além de um único Worker já está desenhado, então o roadmap abaixo é limitado pelo critério, não pela hospedagem.",
     "intentApiLabel": "Acesso via API",
-    "intentOpenLabel": "Motor aberto"
+    "intentOpenLabel": "Motor aberto",
+    "wasm": "WASM"
   },
   "apiAffordance": {
     "label": "Também disponível como API",
@@ -20247,6 +20375,35 @@
       "mojibake": {
         "def": "Texto embaralhado que surge quando bytes escritos num charset são lidos em outro: café aparece como cafÃ©, don’t como donâ€™t.",
         "context": "Quase nunca é aleatório. Cada par de charsets embaralha de um jeito reconhecível: UTF-8 lido como windows-1252 enche o texto de Ã e â€, uma página de código do DOS mostra caracteres de desenho de caixas, EBCDIC lido como Latin-1 transforma cada espaço em @. Como a leitura errada normalmente preserva todos os bytes, o estrago muitas vezes pode ser desfeito codificando o texto de volta com o charset que o leu errado e decodificando com o certo; um byte que virou ? ou foi descartado está perdido para sempre."
+      },
+      "easter-egg-header": {
+        "def": "Um cabeçalho de resposta que carrega um tributo, uma piada ou um convite, posto onde só quem lê cabeçalhos vai encontrar.",
+        "context": "O HTTP deixa um servidor enviar o cabeçalho que quiser, e um nome começando com X- foi por décadas a convenção para um cabeçalho privado. Operadores usaram essa liberdade para coisas que não são protocolo: o Slashdot respondia a cada pedido com uma citação de Futurama, a Automattic escondeu uma oferta de emprego, o time de infraestrutura do Airbnb deu oi, e depois que Terry Pratchett morreu em 2015 milhares de sites passaram a enviar o nome dele no overhead. Nada disso muda o que a página faz; tudo isso aparece com um curl -I. O gênero tem três regras que seus melhores exemplos cumprem: não custa nada a quem lê, é verdadeiro (um convite real, um tributo real), e é endereçado a quem iria olhar."
+      },
+      "x-clacks-overhead": {
+        "def": "O cabeçalho HTTP que milhares de sites enviam em memória de Terry Pratchett: X-Clacks-Overhead: GNU Terry Pratchett.",
+        "context": "Em Going Postal, de Pratchett, os clacks são torres de semáforo que retransmitem mensagens pelo Discworld, e o overhead de uma mensagem pode carregar códigos de controle: G, passe adiante para a próxima torre; N, não registre; U, no fim da linha, dê meia-volta e mande de volta. Um nome enviado com GNU circula para sempre, porque, como diz o livro, um homem não está morto enquanto seu nome ainda é dito. Quando Pratchett morreu em 12 de março de 2015, leitores do r/discworld propuseram colocar o nome dele no único overhead que a internet tem, e em poucos dias circulavam trechos de configuração para Apache e Nginx, um plugin de WordPress e uma extensão de Chrome que acende quando o cabeçalho está presente. O cabeçalho ainda é enviado por muitíssimos servidores, e este está entre eles.",
+        "depth": "Os clacks dos romances do Discworld são um telégrafo óptico: torres com lâmpadas de venezianas, cada uma repetindo o que a anterior mostrou, de modo que uma mensagem cruza um continente em horas. Em Going Postal (2004) o sistema já criou cultura própria, inclusive o overhead, os códigos de manutenção enviados junto com o tráfego. Três deles importam para o memorial. G manda a torre passar a mensagem adiante. N manda não registrar a mensagem. U manda a torre no fim da linha dar meia-volta na mensagem e devolvê-la pelo caminho de onde veio. Um nome enviado com os três nunca para de circular pelas torres e nunca é escrito, e é assim que os operadores dos clacks mantêm vivo o nome de um colega morto: a frase do livro é que um homem não está morto enquanto seu nome ainda é dito. Terry Pratchett morreu em 12 de março de 2015. Em poucos dias, leitores do subreddit do Discworld perguntaram qual seria o overhead da internet, e se decidiram por um cabeçalho de resposta HTTP, que é exatamente um pedaço de manutenção enviado junto com o tráfego e visto só pelas máquinas e por quem olha. O nome X-Clacks-Overhead segue a convenção X- da época para cabeçalhos privados; o valor é GNU Terry Pratchett. Trechos de configuração para Apache (uma linha Header set) e Nginx (add_header) apareceram em 15 de março de 2015, depois um plugin de WordPress, depois extensões de navegador que mostram um pequeno marcador quando um site o envia. O próprio Reddit o adicionou. A wiki L-Space, a enciclopédia dos fãs do Discworld, lista adotantes posteriores, entre eles o Minecraft, que carrega GNU Terry Pratchett como texto de abertura número 338 desde a Java Edition 1.8.5. O cabeçalho não faz nada. Navegadores o ignoram; caches o repassam; acrescenta algumas dezenas de bytes a cada resposta. Esse é o ponto: um tributo que não custa nada a quem lê e só é encontrado por quem foi procurar, que é a forma das melhores coisas desse canto da web, e a razão de ele ser o modelo para os outros cabeçalhos escondidos deste glossário."
+      },
+      "x-fry-x-bender": {
+        "def": "Os cabeçalhos de resposta do Slashdot carregando uma citação aleatória de Futurama, nomeados pelos personagens que a disseram.",
+        "context": "Por anos, toda resposta de slashdot.org incluía um cabeçalho extra, X-Fry, X-Bender ou X-Lrrr, cujo valor era uma fala de Futurama escolhida ao acaso a cada pedido. Nada o lia além das pessoas que rodavam curl -I contra o site, o que no Slashdot era boa parte dos leitores. É a forma mais pura do cabeçalho easter egg: sem propósito, sem recrutamento, uma piada endereçada exatamente ao público que a entenderia. O texto do How-To Geek que catalogou cabeçalhos escondidos o usou como exemplo de abertura, e existia um comando de uma linha no commandlinefu só para buscar uma citação nova."
+      },
+      "x-hacker": {
+        "def": "O cabeçalho de recrutamento da Automattic no WordPress.com e nos sites hospedados no VIP: um convite para se candidatar, para quem estiver lendo os cabeçalhos.",
+        "context": "Respostas das plataformas da Automattic carregaram um cabeçalho X-hacker em várias redações ao longo dos anos, a mais conhecida sendo um convite para visitar a página de vagas da empresa e se candidatar para entrar na diversão, mencionando este cabeçalho, e a mais curta Want root? Visit join.a8c.com and mention this header. A lógica é sólida: uma pessoa inspecionando cabeçalhos de resposta de uma plataforma de blogs é uma pessoa que a plataforma talvez queira contratar, e mencione este cabeçalho torna rastreável o caminho do candidato. Engenheiros da Wikimedia o notaram em blog.wikimedia.org, hospedado no WordPress VIP, e abriram um chamado sobre isso. O cache de páginas da mesma empresa se anuncia com um cabeçalho mais bobo, x-nananana."
+      },
+      "x-hi-human": {
+        "def": "O cabeçalho de resposta do Airbnb cumprimentando quem o lê, com um endereço de contratação do time de Infraestrutura de Produção.",
+        "context": "O levantamento de Troy Hunt, em março de 2015, de mensagens de recrutamento escondidas em sites encontrou o Airbnb respondendo com X-Hi-Human: The Production Infrastructure team added this header. Come work with us!, seguido do endereço de contratação de um engenheiro. Fica ao lado do X-hacker no ramo de recrutamento do gênero, e é o mais simpático dos dois: primeiro o cumprimento, depois a oferta. O argumento de Hunt ao reuni-los era que as pessoas que desmontam um site para ver como foi feito são exatamente as pessoas que vale alcançar, e um cabeçalho as alcança no momento em que estão prestando atenção."
+      },
+      "x-nananana-batcache": {
+        "def": "O cabeçalho que o Batcache, o cache de páginas do WordPress feito pela Automattic, usa para dizer que uma página veio do cache, batizado com o tema do Batman.",
+        "context": "O Batcache é um cache de página inteira apoiado em memcached para WordPress, escrito na Automattic e usado no WordPress.com e nos hosts construídos sobre a mesma pilha. Seu código-fonte abre com o comentário nananananananananananananananana BATCACHE!!!, e as implantações em produção respondem com um cabeçalho chamado x-nananana cujo valor informa o estado do cache, Batcache-Hit quando a página foi servida do cache. A documentação da Pressable manda os clientes procurarem exatamente esse cabeçalho para confirmar que o cache está funcionando. É um cabeçalho de diagnóstico que por acaso é uma piada, o tipo mais raro e melhor: ganha seu lugar na resposta e sorri enquanto faz isso."
+      },
+      "http-451-unavailable-for-legal-reasons": {
+        "def": "O código de status HTTP para um recurso retido por exigência legal, numerado em homenagem a Fahrenheit 451.",
+        "context": "A RFC 7725, publicada em fevereiro de 2016 e escrita por Tim Bray, define o código de status 451 para uso quando o acesso a um recurso é negado em consequência de exigências legais, para que um bloqueio ordenado por um tribunal ou governo seja distinguível de um 403 comum. O número é uma escolha literária: Fahrenheit 451, de Ray Bradbury, é o romance sobre queimar livros, e os agradecimentos da RFC terminam com Thanks also to Ray Bradbury. Ao contrário do 418, é um código real, de trilha de padrões, com trabalho real, e por isso está listado como termo e não como lore; pertence às mensagens escondidas porque a reverência é deliberada e está escrita no próprio documento."
       }
     },
     "totalCount": "{count} termos",
@@ -20842,7 +20999,8 @@
       "show": "Mostrar",
       "all": "Todos",
       "countryLabel": "Filtrar por país"
-    }
+    },
+    "backToIndustry": "Voltar à indústria: as empresas construídas sobre estes marcos"
   },
   "advisory": {
     "eyebrow": "Assessoria",

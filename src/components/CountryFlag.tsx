@@ -1,7 +1,8 @@
 // ============================================================================
 // src/components/CountryFlag.tsx
 // ----------------------------------------------------------------------------
-// The twenty national flags used on the industry timeline, as inline SVG.
+// The national flags used on the industry timeline and the milestones, as inline SVG
+// (twenty-five at the last count; Denmark added 2026-10-05).
 //
 // WHY INLINE RATHER THAN FILES OR EMOJI.
 //
@@ -126,6 +127,18 @@ const FLAGS: Record<CountryCode, React.ReactNode> = {
   ),
 
   // EXACT — Nordic cross, offset toward the hoist as specified.
+  // SIMPLIFIED — the Dannebrog's red field and white Nordic cross; the official
+  // proportions are 12:4:21 across and 12:4:12 down on a 37x28 flag, fitted here
+  // to the shared 3:2 box like every other Nordic cross in this file. Added
+  // 2026-10-05: the Ørsted milestone (1820) is Danish and had no flag.
+  DK: (
+    <>
+      <rect width="30" height="20" fill="#C8102E" />
+      <rect x="8.6" width="2.9" height="20" fill="#fff" />
+      <rect y="8.6" width="30" height="2.9" fill="#fff" />
+    </>
+  ),
+
   FI: (
     <>
       <rect width="30" height="20" fill="#fff" />

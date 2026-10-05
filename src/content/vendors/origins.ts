@@ -79,6 +79,7 @@ export const COUNTRY_NAMES: Record<CountryCode, string> = {
   CH: "Switzerland",
   CN: "China",
   DE: "Germany",
+  DK: "Denmark", // added 2026-10-05: the Ørsted milestone (1820) carried DK with no name and no flag (PRIME)
   FI: "Finland",
   FR: "France",
   GB: "United Kingdom",

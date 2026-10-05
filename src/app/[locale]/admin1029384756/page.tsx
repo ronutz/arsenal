@@ -254,6 +254,8 @@ export default async function AdminConsolePage({
                                 {tool.netskope && <span className="admin-tag admin-tag--netskope">Netskope</span>}
                                 {tool.consolidationPending && <span className="admin-tag admin-tag--pending">merge pending</span>}
                                 {tool.isNew && <span className="admin-tag admin-tag--new">new</span>}
+                                {/* Runs a third-party WebAssembly interpreter: the fuchsia mark, as on the public surfaces. */}
+                                {tool.wasm && <span className="admin-tag admin-tag--wasm">WASM</span>}
                                 {typeof tool.vectors === "number" && (
                                   <span
                                     className="admin-tag"

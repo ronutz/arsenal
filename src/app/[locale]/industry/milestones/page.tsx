@@ -90,8 +90,17 @@ export default async function MilestonesPage({
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede">{t("intro")}</p>
             <p className="section-body">{t("test")}</p>
-            <p className="ztc-notes mono">
+            {/* The count as a hero figure of its own (PRIME 2026-10-05: it borrowed a
+                tool's notes-list class and rendered as an indented aside). */}
+            <p className="milestones-count mono">
               {t("count", { count: all.length, from: all[0].year, to: all[all.length - 1].year })}
+            </p>
+            {/* The way back, in the same amber the industry hub uses for the way here
+                (PRIME 2026-10-05: "go back if you're lost", prominent and satisfying). */}
+            <p className="industry-antecedent milestones-back">
+              <Link className="page-jump-link" href="/industry">
+                {t("backToIndustry")} <span aria-hidden="true">&#8594;</span>
+              </Link>
             </p>
           </div>
         </section>
@@ -245,9 +254,12 @@ export default async function MilestonesPage({
 
         <section className="section">
           <div className="container section-narrow">
-            <Link className="page-jump-link" href="/industry">
-              {t("backToCompanies")} <span aria-hidden="true">&#8594;</span>
-            </Link>
+            {/* The same amber way back at the foot of the page. */}
+            <p className="industry-antecedent milestones-back">
+              <Link className="page-jump-link" href="/industry">
+                {t("backToCompanies")} <span aria-hidden="true">&#8594;</span>
+              </Link>
+            </p>
           </div>
         </section>
       </main>

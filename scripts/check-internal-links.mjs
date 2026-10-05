@@ -207,6 +207,67 @@ for (const loc of LOCALES_TO_READ) {
 const LEGACY_UNUSED = (
 true);
 
+// ---------------------------------------------------------------------------
+// FRAGMENTS (added 2026-10-04). PRIME found the training page's "both
+// engagements, in detail" button landing at the TOP of /red-education: the
+// link said #cases and the section's id was case-studies. Every href above
+// was checked only up to the "#", so a dangling fragment was invisible to this
+// guard for as long as it existed. This pass reads each in-locale href that
+// carries a fragment, finds the built page it points at, and requires an
+// element with that id (or an anchor name) in its HTML. Same shape as the
+// route check: distinct (target, fragment) pairs, baseline 0, no exemptions,
+// because an anchor that does not exist is exactly a route that does not exist
+// with the error one screen further down.
+// ---------------------------------------------------------------------------
+// Declared, with the reason, never a bare entry. Keyed by route (no locale) and fragment.
+const DECLARED_FRAGMENTS = new Map([
+  ["/admin1029384756#main", "the private admin surface: its <main id=\"main\"> sits inside PrivPreviewOnly and is rendered only for an authorised client, so the static HTML carries the skip link and not yet its target; for that client the link is correct"],
+  ["/copy8825140637#main", "the private copy surface: same gate, same reason"],
+]);
+const brokenFragments = new Map();
+for (const loc of LOCALES_TO_READ) {
+  const base = path.join(OUT, loc);
+  if (!fs.existsSync(base)) continue;
+  const localePages = walk(base).filter((f) => f.endsWith("index.html"));
+  // id="x" and name="x" of every built page, read lazily and cached per page.
+  const idCache = new Map();
+  const idsOf = (file) => {
+    if (idCache.has(file)) return idCache.get(file);
+    const set = new Set();
+    if (fs.existsSync(file)) {
+      const h = fs.readFileSync(file, "utf8");
+      for (const m of h.matchAll(/\s(?:id|name)="([^"]+)"/g)) set.add(m[1]);
+    }
+    idCache.set(file, set);
+    return set;
+  };
+  for (const f of localePages) {
+    const from = `/${loc}/` + path.relative(base, path.dirname(f)).split(path.sep).join("/");
+    const html = fs.readFileSync(f, "utf8");
+    for (const m of html.matchAll(new RegExp(`href="(?:/${loc}([^"#?]*))?#([^"]+)"`, "g"))) {
+      const rawPath = m[1];
+      const frag = decodeURIComponent(m[2]);
+      // Same-page fragment ("#contact") when no path precedes the hash; otherwise the named page.
+      const targetFile = rawPath === undefined ? f : path.join(base, rawPath.replace(/^\//, "").replace(/\/$/, ""), "index.html");
+      // A page that does not exist is the route check's finding, not this one's.
+      if (!fs.existsSync(targetFile)) continue;
+      // "#main" and "#top" are the skip-link and the scroll-to-top conventions; main carries id="main" on every page.
+      if (idsOf(targetFile).has(frag)) continue;
+      // A declared exception is skipped by route and fragment, whatever the locale.
+      const route = (rawPath === undefined ? from.slice(loc.length + 1) : rawPath).replace(/\/$/, "") || "/";
+      if (DECLARED_FRAGMENTS.has(`${route}#${frag}`)) continue;
+      const key = `${rawPath === undefined ? from : "/" + loc + rawPath}#${frag}`;
+      if (!brokenFragments.has(key)) brokenFragments.set(key, from);
+    }
+  }
+}
+if (brokenFragments.size > 0) {
+  console.error(`\n[check-internal-links] FAIL: ${brokenFragments.size} fragment link(s) point at an id that does not exist on the target page.\n`);
+  for (const [k, from] of [...brokenFragments].slice(0, 20)) console.error(`      ${k}   (linked from ${from})`);
+  console.error("\n      An anchor that does not exist lands the reader at the top of the page, which reads as a broken link that pretends to work.\n      A target that exists only for an authorised client is declared in DECLARED_FRAGMENTS with its reason.\n");
+  process.exit(1);
+}
+
 // CLOSED AT ZERO, 2026-09-27.
 //
 // The one entry this baseline held was the changelog's dated link to

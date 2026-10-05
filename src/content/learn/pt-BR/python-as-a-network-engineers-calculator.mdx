@@ -1,0 +1,66 @@
+---
+slug: python-as-a-network-engineers-calculator
+title: "Python como calculadora do engenheiro de redes: a biblioteca padrão já sabe a sua aritmética"
+summary: "Divisões de sub-rede, agregação de rotas, máscaras wildcard, EUI-64, um cabeçalho DNS em bytes, um HMAC, um p95 de amostras de latência, um tempo de transferência na taxa da linha: cada um é poucas linhas de Python sem instalar nada, porque ipaddress, struct, hmac, statistics e re vêm com o interpretador. Este artigo percorre os doze exemplos com que o playground de Python abre, diz qual módulo faz o trabalho em cada um e por que é o certo, aponta as armadilhas (hosts() em um /31, arredondamento para o par, o bit universal/local), e mostra onde as mesmas respostas saem à mão nas outras ferramentas deste site, para que você confira uma contra a outra."
+concepts: ["python", "ipaddress", "struct", "hmac", "statistics", "sub-redes", "eui-64", "syslog", "cabeçalho dns"]
+relatedTools: ["python-playground", "cidr", "ipv6", "hmac", "bits-bytes", "syslog-pri-decoder"]
+relatedArticles: ["how-a-webassembly-tool-works"]
+category: networking
+order: 258
+status: reviewed
+updated: "2026-10-04"
+---
+
+O dia de um engenheiro de redes é cheio de aritmética miúda: quantos /26 cabem neste /24, qual é o wildcard de um /27, como fica o identificador de interface para este MAC, quais são os doze bytes do cabeçalho de uma consulta DNS, se aquele p95 é tão ruim quanto o painel diz. Cada resposta é uma ferramenta dedicada neste site, e cada uma é também poucas linhas de Python usando só a biblioteca padrão. O [playground de Python](/tools/python-playground) abre com doze desses programas. Este artigo os percorre, nomeia o módulo que faz o trabalho e diz o que observar. A saída de cada exemplo está fixada como vetor de ouro e é executada de novo no interpretador real a cada construção, então o que está citado aqui é o que a ferramenta imprime.
+
+## ipaddress: sub-redes, hosts, máscaras, agregação
+
+Quatro dos doze exemplos usam um único módulo. `ipaddress` está na biblioteca padrão desde o Python 3.3 e modela redes e endereços como objetos com a aritmética embutida.
+
+`ip_network("10.20.30.0/24")` dá uma rede; `.subnets(new_prefix=26)` itera os quatro /26 dentro dela; cada um tem `.netmask`, `.hostmask` (que é a máscara wildcard), `.broadcast_address` e `.hosts()`, um iterador sobre os endereços utilizáveis. O primeiro exemplo imprime tudo isso em cinco linhas, e a saída bate com o que a [ferramenta CIDR](/tools/cidr) mostra para o mesmo prefixo. Uma armadilha: `.hosts()` em um /31 devolve os dois endereços (ponto a ponto da RFC 3021) e em um /32 devolve o endereço único, o que está certo, mas surpreende quem espera "rede menos dois" em todo lugar. Outra: `len(list(net.hosts()))` em um /8 constrói dezesseis milhões de objetos; use `net.num_addresses - 2` em vez disso.
+
+`collapse_addresses(nets)` é o exemplo de agregação. Dados `192.0.2.0/26`, `192.0.2.64/26` e `192.0.2.128/25`, devolve `192.0.2.0/24`, e dados `198.51.100.0/24` e `198.51.101.0/24`, devolve `198.51.100.0/23`. A função ordena, funde prefixos adjacentes e aninhados, e devolve o conjunto mínimo; é exatamente a operação de que uma sumarização de rotas precisa, e está correta nos casos em que as pessoas erram à mão (dois /24 adjacentes só sumarizam quando o primeiro é par).
+
+O exemplo de wildcard imprime a máscara de rede, a máscara de host e o binário de 32 bits da máscara para /8, /20, /24, /27 e /30, usando `int(net.netmask)` com o formato `:032b`. A máscara de host é o que uma lista de acesso chama de wildcard; a coluna binária é a que vale encarar, porque a fronteira entre uns e zeros é o comprimento do prefixo.
+
+## EUI-64: os dois bytes do meio e o único bit que vira
+
+O exemplo de IPv6 constrói à mão um identificador de interface EUI-64 modificado a partir de um endereço MAC, e esse é o ponto: o Apêndice A da RFC 4291 manda inserir `FF FE` entre o terceiro e o quarto octetos do MAC de 48 bits e inverter o bit universal/local, o bit 7 do primeiro octeto (então `0x00` vira `0x02`). O exemplo faz as duas coisas com uma lista de octetos e `octets[0] ^= 0x02`, depois entrega o resultado a `ip_address()` para a forma comprimida, `.exploded` para a forma completa e `.reverse_pointer` para o nome em `ip6.arpa`. Para `00:1A:2B:3C:4D:5E` o identificador é `21a:2bff:fe3c:4d5e`. A [ferramenta IPv6](/tools/ipv6) deriva o mesmo identificador e nomeia cada passo. Note que as extensões de privacidade (RFC 8981) fazem com que o endereço real de um host moderno não seja o EUI-64; a derivação ainda importa para endereços link-local em roteadores e para ler redes mais antigas.
+
+## struct: doze bytes de cabeçalho DNS
+
+Um cabeçalho de mensagem DNS tem doze bytes: seis campos de 16 bits em ordem de rede (RFC 1035 seção 4.1.1). `struct.pack(">HHHHHH", 0x1A2B, 0x0100, 1, 0, 0, 0)` monta um: `>` significa big-endian, `H` um inteiro sem sinal de 16 bits. Flags `0x0100` é só o bit RD, que é o que um resolvedor stub envia; QDCOUNT é 1. O exemplo imprime os bytes como hex espaçado (`bytes.hex(" ")`) e os desempacota de novo para decodificar QR, OPCODE e RD com deslocamentos e máscaras. É a forma mais rápida de conferir uma captura a olho, e generaliza: a mesma chamada de `struct` lê um cabeçalho TCP, um prefixo de comprimento de syslog ou um TLV. O [explicador de saída do dig](/tools/dig-output-explainer) mostra as mesmas flags decodificadas de uma resposta real.
+
+## hmac e hashlib: uma assinatura em duas codificações
+
+`hmac.new(key, msg, hashlib.sha256).digest()` é HMAC-SHA256 em uma chamada. O exemplo imprime o resumo em hex e em base64url sem preenchimento (`base64.urlsafe_b64encode(mac).rstrip(b"=")`), porque essas são as duas formas que você encontra: hex em URLs assinadas e cabeçalhos de webhook, base64url em JSON Web Tokens. Também imprime o SHA-256 puro da mensagem para que você veja que um hash e um hash com chave dos mesmos bytes são strings sem relação. A [ferramenta HMAC](/tools/hmac) calcula o mesmo valor com a mesma chave e mensagem, que é como você confirma que uma biblioteca do outro lado está fazendo o que a especificação diz.
+
+## statistics: média, mediana, p95, jitter
+
+Amostras de latência são o exemplo que mais ensina sobre o módulo e sobre a medição. `statistics.mean`, `median` e `stdev` são uma chamada cada. Um percentil 95 não está no módulo, e o exemplo o calcula do jeito simples, ordenando e indexando em `round(0.95 * (n - 1))`, o que para doze amostras escolhe a décima primeira: 35,2 ms nos dados do exemplo, enquanto a média é puxada para 25,36 ms por um único valor atípico de 48,9 ms e a mediana fica em 22,0 ms. Essa dispersão é a lição: informe o percentil, não a média. O jitter é calculado como a diferença absoluta média entre amostras consecutivas (o estimador da RFC 3550 é uma versão suavizada disso). Uma armadilha: o `round()` do Python arredonda metade para o par, então `round(10.5)` é 10; para indexar percentis em amostras pequenas, decida a regra explicitamente se importar.
+
+## Tempo de transferência: bits, bytes e dois tipos de giga
+
+O exemplo de transferência divide o tamanho em bits pela taxa em bits por segundo e imprime uma tabela pequena para três tamanhos em três taxas. Mistura de propósito um tamanho decimal (4,7 GB, que é 4,7 vezes 10 elevado a 9 bytes) e um binário (25 GiB, que é 25 vezes 2 elevado a 30), porque a diferença é de 7,4 por cento e as pessoas a perdem. A 100 Mbit/s o DVD leva 376 segundos e o Blu-ray 2.147,5; a 10 Gbit/s, 3,8 e 21,5. A [ferramenta de bits e bytes](/tools/bits-bytes) faz a mesma aritmética com as convenções explicitadas e um fator de eficiência para a sobrecarga de protocolo, que o exemplo deixa em 100 por cento.
+
+## re e Counter: uma contagem de syslog
+
+O exemplo de syslog roda uma expressão regular sobre linhas de log coladas, extrai o valor PRI e o host de cada uma, e conta por severidade. A RFC 5424 seção 6.2.1 define PRI como facility vezes 8 mais severidade, então `pri % 8` é a severidade: 134 é informational (facility 16, local0), 131 é error, 132 é warning. `collections.Counter` faz a contagem. O [decodificador de PRI de syslog](/tools/syslog-pri-decoder) decodifica qualquer PRI isolado com as duas metades nomeadas. A expressão regular é ancorada no início da linha com `re.M`, que é o hábito que impede um parser de log de casar dentro do corpo de uma mensagem.
+
+## stdin, json e a última expressão
+
+Três exemplos menores mostram como o próprio playground se comporta. O exemplo de stdin lê nomes de interface da caixa de entrada com `for line in sys.stdin:` e os encurta; a caixa alimenta uma linha por leitura, depois fim de arquivo. O exemplo de JSON analisa uma resposta de API com `json.loads`, imprime uma tabela alinhada com especificadores de formato (`:<10`, `:>7`) e despeja um resumo com `json.dumps`. O último exemplo não tem `print` nenhum: `2 ** (32 - 20) - 2` sozinho na linha final avalia para 4094, os hosts utilizáveis de um /20, e o playground o mostra como resultado, do jeito que um REPL faria. A pré-verificação avisa isso antes de você executar, então um programa que termina em uma atribuição e não imprime nada é sinalizado em vez de ficar em branco em silêncio.
+
+## Fontes
+
+- [Documentação do Python 3.14, ipaddress: ip_network, subnets, hosts, netmask, hostmask, collapse_addresses](https://docs.python.org/3.14/library/ipaddress.html)
+- [Documentação do Python 3.14, struct: caracteres de formato e ordem de bytes](https://docs.python.org/3.14/library/struct.html)
+- [Documentação do Python 3.14, hmac](https://docs.python.org/3.14/library/hmac.html)
+- [Documentação do Python 3.14, statistics: mean, median, stdev](https://docs.python.org/3.14/library/statistics.html)
+- [Documentação do Python 3.14, round(): arredondamento de metade para o par](https://docs.python.org/3.14/library/functions.html#round)
+- [RFC 1035, seção 4.1.1: o formato da seção de cabeçalho DNS](https://www.rfc-editor.org/rfc/rfc1035#section-4.1.1)
+- [RFC 4291, Apêndice A: criação de identificadores de interface no formato EUI-64 modificado](https://www.rfc-editor.org/rfc/rfc4291#appendix-A)
+- [RFC 3021: uso de prefixos de 31 bits em enlaces IPv4 ponto a ponto](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 5424, seção 6.2.1: PRI, facility e severidade](https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1)
+- [RFC 3550, seção 6.4.1: o estimador de jitter entre chegadas](https://www.rfc-editor.org/rfc/rfc3550#section-6.4.1)
+- [RFC 8981: extensões de endereço temporário para autoconfiguração de endereço sem estado em IPv6](https://www.rfc-editor.org/rfc/rfc8981)

@@ -128,6 +128,39 @@ for (const slug of slugs) {
     miss.push("no API decision (add to API_TOOLS or API_EXCLUDED)");
   }
 
+  // 11. A WEBASSEMBLY tool (executionClass "wasmLocal", PROPOSTA-wasm-tools
+  //     2026-10-04) ships three more things or does not ship: the generated
+  //     engine record in its manifest (what runs, which version, which bytes),
+  //     the always-visible explainer in its component, and the consent step
+  //     (the button that names the download size). A reader must never meet a
+  //     13.5 MB third-party download without those; this check makes forgetting
+  //     them a build failure rather than a surprise. The registry's runtime
+  //     flag, which draws the fuchsia pill, must agree with the class.
+  const indexPath = path.join(dir, "index.ts");
+  if (fs.existsSync(indexPath)) {
+    const indexSrc = fs.readFileSync(indexPath, "utf8");
+    const isWasm = /executionClass:\s*\[\s*"wasmLocal"/.test(indexSrc);
+    const flagged = new RegExp(`id:\\s*"${slug}"[^}]*runtime:\\s*"wasm"`).test(registrySrc);
+    if (isWasm) {
+      if (!/\bengine:\s*\{/.test(indexSrc)) miss.push("wasmLocal tool without an `engine` block in its manifest");
+      if (!flagged) miss.push("wasmLocal tool whose src/config/tools.ts entry lacks runtime: \"wasm\" (no pill would be drawn)");
+      // The component: found by the page map's import for this slug.
+      const pageMap = read("src/app/[locale]/tools/[slug]/page.tsx");
+      const compMatch = new RegExp(`"${slug}":\\s*\\{\\s*Component:\\s*([A-Za-z0-9_]+)`).exec(pageMap);
+      const compName = compMatch ? compMatch[1] : null;
+      const compPath = compName ? path.join(root, "src/components", `${compName}.tsx`) : null;
+      if (!compPath || !fs.existsSync(compPath)) {
+        miss.push("wasmLocal tool whose component could not be found through the page map");
+      } else {
+        const comp = fs.readFileSync(compPath, "utf8");
+        if (!/explainer/.test(comp)) miss.push("wasmLocal component without the always-visible explainer");
+        if (!/loadButton|consent/.test(comp)) miss.push("wasmLocal component without the consent-to-download step");
+      }
+    } else if (flagged) {
+      miss.push("runtime: \"wasm\" in src/config/tools.ts but executionClass is not wasmLocal");
+    }
+  }
+
   if (miss.length) problems.push({ slug, miss });
 }
 
@@ -151,5 +184,5 @@ if (problems.length) {
 console.log(
   `[check-tool-package] OK: all ${slugs.length} available tools carry the whole ` +
     `package — module triple, catalogue, changelog, name + blurb in en and pt-BR, ` +
-    `docs in both locales, a Learn article in both locales, and an API decision.`
+    `docs in both locales, a Learn article in both locales, an API decision, and the engine record, explainer and consent step on every WebAssembly tool.`
 );

@@ -9853,7 +9853,120 @@
         "ttlunits": "+ttlunits: print TTLs in s, m, h, d and w rather than seconds.",
         "qr": "+qr: also print the query message as it is sent."
       }
-    }
+    },
+    "python-playground": {
+      "name": "Python playground",
+      "blurb": "Real CPython 3.14 in your browser, for the arithmetic of networks: subnets, masks, EUI-64, DNS headers in struct, HMAC, latency statistics, transfer times. A 13.5 MB engine downloads once, when you say so; nothing you type leaves the page.",
+      "explainer": {
+        "title": "A WebAssembly tool",
+        "runs": "What runs: {engine} {version}, which is CPython {python} compiled to WebAssembly by the Pyodide project, under the {licence} licence. It is a real interpreter, not an imitation of one.",
+        "origin": "Where it comes from: the same origin as this page, pinned by version and by SHA-256 digest at build time. No third-party server is contacted at run time.",
+        "cost": "What the first use costs: about {mb} MB, downloaded only when you press the button that names the size. Your browser caches it; the second visit costs nothing.",
+        "leaves": "What leaves the page: nothing. The program and its input stay in a Web Worker on your device. The interpreter has no network and no processes; the page policy would refuse them anyway.",
+        "checks": "What the site's own checks cover: the harness around the engine, the examples (re-run through the real engine at every build), the preflight and the limits. The interpreter's own behaviour is its project's."
+      },
+      "codeLabel": "Program",
+      "codeHint": "Python 3.14 standard library only; no packages in this version. Up to {max} characters. The value of the last expression is shown as the result, as in a REPL.",
+      "stdinLabel": "Standard input (what input() and sys.stdin read, one line per line)",
+      "stdinPlaceholder": "Lines for input() or sys.stdin, if the program reads any",
+      "examplesLabel": "Examples:",
+      "examples": {
+        "subnet-split": "Split a /24 into /26s",
+        "aggregate-routes": "Aggregate prefixes",
+        "wildcard-mask": "Netmask and wildcard",
+        "ipv6-eui64": "EUI-64 from a MAC",
+        "dns-header-struct": "DNS header in struct",
+        "hmac-sha256": "HMAC-SHA256",
+        "latency-stats": "Latency statistics",
+        "transfer-time": "Transfer times",
+        "syslog-count": "Count syslog by severity",
+        "stdin-lines": "Read lines from stdin",
+        "json-pick": "Pick fields from JSON",
+        "last-expression": "Just the last expression"
+      },
+      "example": "Example",
+      "clear": "Clear",
+      "loadButton": "Load Python ({mb} MB)",
+      "loading": "Downloading the engine: {pct}% of about {mb} MB, then starting Python",
+      "runButton": "Run",
+      "stopButton": "Stop",
+      "engineReady": "Pyodide {version} ready · Python {python}",
+      "loadFailed": "The engine could not be loaded. Offline, a blocked download or an unsupported browser are the usual causes; the examples stay readable.",
+      "retry": "Try again",
+      "preflightTitle": "Before it runs",
+      "blocked": "Fix the items marked as errors; the program is not sent to the engine while any remain.",
+      "outputTitle": "Output",
+      "resultValue": "Result: {value}",
+      "noResult": "Finished; the last statement produced no value.",
+      "tookMs": "{ms} ms",
+      "outputTruncated": "Output was cut at {max} characters per stream.",
+      "timedOut": "Stopped after {seconds} s, the wall-clock limit. The engine was restarted; press Run to try again.",
+      "stopped": "Stopped. A fresh engine is starting from the cached files; press Run when it is ready.",
+      "severity": {
+        "error": "blocks",
+        "warn": "check",
+        "info": "note"
+      },
+      "findingTitle": {
+        "empty": "Nothing to run",
+        "too-long": "Program too long",
+        "stdin-too-long": "Standard input too long",
+        "line-cut": "Very long lines",
+        "import-unavailable": "Module not in this build",
+        "import-distribution": "Package not loaded in this version",
+        "import-unknown": "Module not available here",
+        "import-relative": "Relative import",
+        "import-pyodide": "Bridge module",
+        "network": "No network",
+        "processes": "No processes",
+        "threads": "Threads",
+        "zoneinfo": "zoneinfo needs tzdata",
+        "pip": "No pip here",
+        "input-no-stdin": "input() with an empty stdin box",
+        "input-stdin": "Reads standard input",
+        "stdin-unused": "Standard input not read",
+        "sleep-over-limit": "Sleep longer than the limit",
+        "sleep": "Sleep counts against the limit",
+        "loop-forever": "Unbounded loop",
+        "nondeterministic": "Output changes between runs",
+        "files": "Files live in memory",
+        "top-level-await": "Top-level await",
+        "exit": "exit() ends the run",
+        "no-output": "Nothing printed",
+        "mixed-indent": "Tabs and spaces mixed"
+      },
+      "finding": {
+        "empty": "The editor holds no code, only blank lines or comments.",
+        "too-long": "The program is {chars} characters; the limit is {max}. Shorten it, or split the work.",
+        "stdin-too-long": "The stdin box holds {chars} characters; the limit is {max}.",
+        "line-cut": "{lines} line(s) exceed {max} characters. The engine still runs them; only this preflight reads them cut.",
+        "import-unavailable": "{module} is part of the Python standard library but not of this WebAssembly build: the engine says \"{error}\". Nothing on the page can supply it.",
+        "import-distribution": "{module} exists for Pyodide as the package {package}, but packages are not loaded in this version ({version}): the import will raise ModuleNotFoundError. The standard library is what is available.",
+        "import-unknown": "{module} is neither in the standard library nor in the Pyodide distribution, so it cannot be imported here; the import will raise ModuleNotFoundError.",
+        "import-relative": "{module} is a relative import, which needs a package to be relative to; a program run here is a single module and the import will fail.",
+        "import-pyodide": "{module} is the bridge between Python and the JavaScript side of the Worker. It works, but it reaches a Worker scope with no document, and the page policy allows this origin only.",
+        "network": "{modules} reaches for the network. The engine runs in a Worker with no sockets, and the page's connect-src policy allows this origin only: connections raise an error.",
+        "processes": "{modules} starts processes. Emscripten does not support processes; subprocess, os.system and multiprocessing raise OSError 138.",
+        "threads": "Threads are available but run cooperatively inside one WebAssembly instance; CPU-bound threads do not run in parallel here.",
+        "zoneinfo": "zoneinfo finds no time zone database in this build (no system tzdata and no tzdata package loaded): ZoneInfo(...) raises ZoneInfoNotFoundError. Use datetime.timezone with a fixed offset instead.",
+        "pip": "pip and micropip are not available in this version: packages are off, so nothing can be installed. The standard library is what is available.",
+        "input-no-stdin": "The program reads standard input but the stdin box is empty, so the first input() raises EOFError. Type the lines it should read into the box.",
+        "input-stdin": "The program reads standard input; the box supplies {lines} line(s), one per read, then end of file.",
+        "stdin-unused": "The stdin box holds {lines} line(s) but the program never reads input() or sys.stdin.",
+        "sleep-over-limit": "time.sleep({seconds}) is longer than the {limit} s wall-clock limit; the run will be stopped before it wakes.",
+        "sleep": "time.sleep({seconds}) counts against the {limit} s wall-clock limit.",
+        "loop-forever": "A while True loop ends only by break, an exception, the Stop button or the {limit} s limit.",
+        "nondeterministic": "{modules} make the output differ between runs; that is expected, not a fault.",
+        "files": "Files are written to the engine's in-memory filesystem and vanish when the run ends; nothing is written to your disk.",
+        "top-level-await": "await at the top level is allowed: the program runs as an asynchronous body.",
+        "exit": "exit() or sys.exit() ends the run with SystemExit; the engine is restarted afterwards.",
+        "no-output": "{result, select, 1 {The program prints nothing; the value of its last expression is shown as the result.} other {The program prints nothing and does not end in an expression, so nothing will be shown. Add a print(...) or end with the value you want to see.}}",
+        "mixed-indent": "Tabs and spaces are both used for indentation; Python 3 raises TabError when they disagree. Pick one."
+      }
+    },
+    "wasmPill": "WebAssembly",
+    "wasmPillShort": "WASM",
+    "wasmFirstUse": "{mb} MB on first use"
   },
   "privacy_page": {
     "eyebrow": "Privacy",
@@ -9930,7 +10043,9 @@
     "filterTools": "Tools",
     "filterArticles": "Articles",
     "filterGuide": "User Guide",
-    "filterPages": "Pages"
+    "filterPages": "Pages",
+    "wasm": "WASM",
+    "wasmTitle": "Runs a third-party interpreter compiled to WebAssembly; the engine downloads on first use, when you say so"
   },
   "theme": {
     "label": "Theme",
@@ -10681,7 +10796,7 @@
       "sameDay": "same day",
       "nextDay": "next day",
       "prevDay": "previous day",
-      "note": "Times come from the browser's own time-zone data (the IANA zones named under each city), so daylight-saving shifts are already applied. Nothing is sent anywhere.",
+      "note": "Times come from the browser's own time-zone data (the IANA zones named under each row), so daylight-saving shifts are already applied. Nothing is sent anywhere.",
       "city": {
         "sanfrancisco": "San Francisco",
         "chicago": "Chicago",
@@ -10692,7 +10807,17 @@
         "dubai": "Dubai",
         "mumbai": "Mumbai",
         "singapore": "Singapore",
-        "sydney": "Sydney"
+        "sydney": "Sydney",
+        "pacific": "Pacific Time",
+        "mountain": "Mountain Time",
+        "central": "Central Time",
+        "eastern": "Eastern Time",
+        "cet": "Central European Time",
+        "helsinki": "Helsinki",
+        "bangkok": "Bangkok",
+        "manila": "Manila",
+        "seoul": "Seoul",
+        "auckland": "Auckland"
       }
     },
     "ctaSpeaking": "Looking for a conference talk or an internal session rather than a course?",
@@ -10875,7 +11000,9 @@
     "wordExt": "2. By modern extension, a page on a website that explains how the site was built. In other words: this page.",
     "wordEty": "From the Greek kolophōn, via Latin: summit, finishing touch.",
     "fableNote": "A note on Fable 5. It is the seat's intended engine, but only for a limited window on the current plan; after that it becomes pay-per-use, and the added cost means it will see little use here. In practice it also falls back to Claude Opus 4.8 for most of this work: ARSENAL's subject is network and application security, and the safeguards on Fable 5 route security-related requests to Opus 4.8, catching this content (sometimes as a false positive) because Fable 5 is currently gated from handling those subjects. So most of what stands here was built on Opus 4.8.",
-    "statsLink": "How the site is doing"
+    "statsLink": "How the site is doing",
+    "p5Title": "Assimilated, with sources",
+    "p5Body": "Good ideas are adopted here wherever they come from: a reader's note, an outside review, a vendor's documentation, a standard, another site's habit worth having. Each one arrives with its source named, in the changelog entry that adopts it and in the page that carries it, so the trail from idea to origin is never lost. Two response headers say the same thing to anyone who reads headers: X-Clacks-Overhead carries Terry Pratchett's name in the overhead, as thousands of sites have since 2015, and X-Collective states the method in six words. Resistance is futile; attribution is mandatory."
   },
   "support": {
     "title": "Support the project",
@@ -11059,7 +11186,8 @@
     "metaDescription": "The tools planned and under consideration for the ronutz.com toolbox, generated from the live build catalogue.",
     "ceiling": "Growth here has a measured ceiling, not a vague one. The hosting platform caps how many static files one Worker may carry, and this site's own arithmetic - roughly a hundred files per tool-and-article pack, across sixteen languages - is checked against that cap on every build. Today there is room for hundreds more tools, and the expansion path beyond a single Worker is already designed, so the roadmap below is constrained by judgment, not by hosting.",
     "intentApiLabel": "API access",
-    "intentOpenLabel": "Open engine"
+    "intentOpenLabel": "Open engine",
+    "wasm": "WASM"
   },
   "apiAffordance": {
     "label": "Also available as an API",
@@ -20247,6 +20375,35 @@
       "mojibake": {
         "def": "Garbled text produced when bytes written in one charset are read in another: café shown as cafÃ©, don’t as donâ€™t.",
         "context": "It is almost never random. Each pair of charsets garbles in its own recognisable way: UTF-8 read as windows-1252 fills a text with Ã and â€, a DOS code page shows box-drawing characters, EBCDIC read as Latin-1 turns every space into @. Because the wrong reading usually keeps every byte, the damage can often be undone by encoding the text back with the charset that misread it and decoding it with the right one; a byte that was replaced with ? or dropped is gone for good."
+      },
+      "easter-egg-header": {
+        "def": "A response header that carries a tribute, a joke or an invitation, placed where only people who read headers will find it.",
+        "context": "HTTP lets a server send any header it likes, and a name beginning with X- was for decades the convention for a private one. Operators have used that freedom for things that are not protocol: Slashdot answered every request with a Futurama quote, Automattic hid a job offer, Airbnb's infrastructure team said hello, and after Terry Pratchett died in 2015 thousands of sites began sending his name in the overhead. None of it changes what the page does; all of it is found with one curl -I. The genre has three rules its best examples keep: it costs the reader nothing, it is true (a real invitation, a real tribute), and it is addressed to the people who would look."
+      },
+      "x-clacks-overhead": {
+        "def": "The HTTP header thousands of sites send in Terry Pratchett's memory: X-Clacks-Overhead: GNU Terry Pratchett.",
+        "context": "In Pratchett's Going Postal the clacks are semaphore towers that relay messages across the Discworld, and a message's overhead can carry control codes: G, send it on to the next tower; N, do not log it; U, at the end of the line, turn it around and send it back. A name sent with GNU circulates forever, because, as the book has it, a man is not dead while his name is still spoken. When Pratchett died on 12 March 2015, readers on r/discworld proposed putting his name in the one overhead the internet has, and within days Apache and Nginx snippets, a WordPress plugin and a Chrome extension that lights up when the header is present were in circulation. The header is still sent by a great many servers, and this one is among them.",
+        "depth": "The clacks of the Discworld novels are an optical telegraph: towers with shuttered lamps, each repeating what the previous one showed, so that a message crosses a continent in hours. In Going Postal (2004) the system has grown its own culture, including the overhead, the housekeeping codes sent along with the traffic. Three of them matter to the memorial. G tells a tower to pass the message on. N tells it not to log the message. U tells the tower at the end of the line to turn the message around and send it back the way it came. A name sent with all three never stops moving through the towers and is never written down, which is how the clacks operators keep a dead colleague's name alive: the book's line is that a man is not dead while his name is still spoken. Terry Pratchett died on 12 March 2015. Within days, readers on the Discworld subreddit asked what the internet's overhead would be, and settled on an HTTP response header, which is exactly a piece of housekeeping sent along with the traffic and seen only by the machines and the people who look. The name X-Clacks-Overhead follows the X- convention for private headers of the time; the value is GNU Terry Pratchett. Configuration snippets for Apache (a Header set line) and Nginx (add_header) appeared on 15 March 2015, then a WordPress plugin, then browser extensions that show a small marker when a site sends it. Reddit itself added it. The L-Space wiki, the Discworld fan encyclopaedia, lists later adopters, among them Minecraft, which carries GNU Terry Pratchett as splash text number 338 from Java Edition 1.8.5. The header does nothing. Browsers ignore it; caches pass it through; it adds a few dozen bytes to every response. That is the point: a tribute that costs the reader nothing and is found only by someone who went looking, which is the shape of the best things in this corner of the web, and the reason it is the model for the other hidden headers in this glossary."
+      },
+      "x-fry-x-bender": {
+        "def": "Slashdot's response headers carrying a random Futurama quote, named for the characters who said it.",
+        "context": "For years every response from slashdot.org included one extra header, X-Fry, X-Bender or X-Lrrr, whose value was a line from Futurama chosen at random per request. Nothing read it but the people who ran curl -I against the site, which on Slashdot was a fair share of the readership. It is the purest form of the easter egg header: no purpose, no recruitment, a joke addressed to exactly the audience that would get it. The How-To Geek write-up that catalogued hidden headers used it as the opening example, and a commandlinefu one-liner existed solely to fetch a fresh quote."
+      },
+      "x-hacker": {
+        "def": "Automattic's recruiting header on WordPress.com and its VIP-hosted sites: an invitation to apply, for whoever is reading the headers.",
+        "context": "Responses from Automattic's platforms have carried an X-hacker header in several wordings over the years, the best known being an invitation to visit the company's jobs page and apply to join the fun, mentioning this header, and the shorter Want root? Visit join.a8c.com and mention this header. The logic is sound: a person inspecting response headers of a blog platform is a person the platform might want to hire, and mention this header makes the candidate's path traceable. Wikimedia's engineers noticed it on blog.wikimedia.org, which was hosted on WordPress VIP, and filed a ticket about it. The same company's page cache announces itself with a sillier header, x-nananana."
+      },
+      "x-hi-human": {
+        "def": "Airbnb's response header greeting whoever reads it, with a hiring address from the Production Infrastructure team.",
+        "context": "Troy Hunt's March 2015 survey of recruitment messages hidden in sites found Airbnb answering with X-Hi-Human: The Production Infrastructure team added this header. Come work with us!, followed by an engineer's hiring address. It sits with X-hacker in the recruiting branch of the genre, and it is the friendlier of the two: a greeting first, the offer second. Hunt's point in collecting them was that the people who deconstruct a site to see how it is built are precisely the people worth reaching, and a header reaches them at the moment they are paying attention."
+      },
+      "x-nananana-batcache": {
+        "def": "The header Batcache, Automattic's WordPress page cache, uses to say a page came from the cache, named with the Batman theme.",
+        "context": "Batcache is a memcached-backed full-page cache for WordPress, written at Automattic and used on WordPress.com and the hosts built on its stack. Its source opens with the comment nananananananananananananananana BATCACHE!!!, and the production deployments answer with a header named x-nananana whose value reports the cache state, Batcache-Hit when the page was served from the cache. Pressable's documentation tells customers to look for exactly that header to confirm the cache is working. It is a diagnostic header that happens to be a joke, which is the rarest and best kind: it earns its place in the response and smiles while it does."
+      },
+      "http-451-unavailable-for-legal-reasons": {
+        "def": "The HTTP status code for a resource withheld because of a legal demand, numbered after Fahrenheit 451.",
+        "context": "RFC 7725, published in February 2016 and written by Tim Bray, defines status code 451 for use when resource access is denied as a consequence of legal demands, so that a block ordered by a court or a government is distinguishable from an ordinary 403. The number is a literary choice: Ray Bradbury's Fahrenheit 451 is the novel about burning books, and the RFC's acknowledgements end with Thanks also to Ray Bradbury. Unlike 418 it is a real, standards-track code with a real job, which is why it is listed as a term and not as lore; it belongs with the hidden messages because the nod is deliberate and written into the document itself."
       }
     },
     "totalCount": "{count} terms",
@@ -20893,7 +21050,8 @@
       "show": "Show",
       "all": "All",
       "countryLabel": "Filter by country"
-    }
+    },
+    "backToIndustry": "Back to the industry: the companies built on these milestones"
   },
   "advisory": {
     "eyebrow": "Advisory",

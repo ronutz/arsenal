@@ -53,6 +53,25 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-04",
+    time: "23:45",
+    kind: "content",
+    title: "Two lines in the overhead",
+    body:
+      "Every response now carries X-Clacks-Overhead: GNU Terry Pratchett, the memorial header thousands of sites have sent since March 2015, built from the clacks of Going Postal (G, pass it on; N, do not log it; U, turn it around at the end of the line), and a second header, X-Collective, which states a fact about method as the joke it also is: good ideas are assimilated here, with their sources. The developer console says the same in one line, the colophon gained a fifth principle saying it plainly, and the 404 page's console gained one more message (nothing was removed). Behind them, a Learn article documents the small tradition of tributes, jokes and job offers hidden in HTTP headers, each with its primary source: the Pratchett header, Slashdot's Futurama quotes, Automattic's and Airbnb's recruiting headers, Batcache's Batman theme, and the two status codes that carry literary jokes into the standard, 418 and 451. Seven glossary entries join the existing 418 one, linked as a family. Resistance is futile; attribution is mandatory.",
+    articles: ["hidden-messages-in-http-headers"],
+  },
+  {
+    date: "2026-10-04",
+    time: "23:30",
+    kind: "tool",
+    title: "Real Python in the browser, and the mark that says so",
+    body:
+      "The first tool that runs code which is not this site's own: CPython 3.14.2, compiled to WebAssembly by the Pyodide project (314.0.7, MPL-2.0), served from this origin, pinned by version and SHA-256 digest at build, downloaded only when the reader presses the button that names the size (13.5 MB, once, then cached), and run in a module Web Worker with a 30 s wall clock and a Stop that terminates it. Nothing typed leaves the page; the interpreter has no network and no processes, and the page policy would refuse them anyway, which was measured rather than assumed: the engine loads and runs under the site's existing Content Security Policy without unsafe-eval. What is this site's own is deterministic and tested: a preflight that reads the program before it runs and says what will not work here and why (a standard-library module absent from the build, a Pyodide package not loaded in this version, no network, no processes, zoneinfo without tzdata, input() with an empty stdin box, a sleep past the limit), twelve examples for the arithmetic of networks (subnets, aggregation, wildcards, EUI-64, a DNS header in struct, HMAC, latency percentiles, transfer times, a syslog count, stdin, JSON, the bare last expression) whose exact output is re-measured through the real engine at every build, and the engine record generated from the pinned package so the page can never state a figure the bytes do not bear out. Forty-two preflight vectors and twelve engine vectors. Such tools wear a fuchsia WebAssembly pill on the card, in search results and on the page, a hue used nowhere else, so the difference is visible before the first click. Two articles: how a WebAssembly tool works, and Python as a network engineer's calculator.",
+    tools: ["python-playground"],
+    articles: ["how-a-webassembly-tool-works", "python-as-a-network-engineers-calculator"],
+  },
+  {
+    date: "2026-10-04",
     time: "22:40",
     kind: "content",
     title: "Training, rewritten for the person deciding",

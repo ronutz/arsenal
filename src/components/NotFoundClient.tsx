@@ -46,6 +46,9 @@ const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string
   { pre: "!!", tone: "warn", text: "lp0 on fire" },
   { pre: "xx", tone: "err", text: "Segmentation fault (core dumped)" },
   { pre: "??", tone: "warn", text: "Abort, Retry, Fail?" },
+  // Added 2026-10-04 (PRIME): the collective has not reached this address yet. The dim link opens the
+  // Learn article on tributes, jokes and job offers hidden in HTTP headers, this site's own included.
+  { pre: ">>", tone: "info", text: "Not assimilated yet. Resistance is futile; this address simply does not exist.", dim: "the overhead", dimHref: "/en/learn/hidden-messages-in-http-headers/" },
 ];
 
 // English defaults double as the fallback for locales without a translated

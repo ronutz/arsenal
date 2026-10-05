@@ -381,6 +381,14 @@ export const API_TOOL_MAP: Map<string, ApiTool> = new Map(API_TOOLS.map((t) => [
  * without one, and the API and its docs stay in lockstep with the toolbox.
  */
 export const API_EXCLUDED: Record<string, string> = {
+  // ---- WEBASSEMBLY TOOLS (added 2026-10-04, PROPOSTA-wasm-tools decision 3) ---
+  // The interpreter runs only in the reader's browser, inside a Web Worker on
+  // the reader's own device. Executing arbitrary Python on this site's edge
+  // would be remote code execution on shared infrastructure, so the API does
+  // not offer it. The pure preflight is a teaching aid around the editor, not
+  // a contract anyone should build against.
+  "python-playground":
+    "WebAssembly interpreter tool: real CPython (Pyodide) runs in the reader's browser only. The API does not execute arbitrary Python server-side; the preflight that reads a program before it runs is a teaching aid, not a stable API contract.",
   "zcc-forwarding-decision-explainer":
     "Descoped documentation explainer (ratified clause): renders the documented forwarding spine and bypass ledger with sources; computes no bypass adjudication (precedence unpublished); the setting grammar is a teaching subset, not a stable API contract.",
   "zdx-score-factor-explainer":

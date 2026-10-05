@@ -1,0 +1,74 @@
+---
+slug: how-a-webassembly-tool-works
+title: "How a WebAssembly tool works: what runs, where it comes from, and what leaves the page"
+summary: "Most tools on this site are small pure functions written here and tested with golden vectors. A Python playground cannot be that: the thing you want is a real interpreter, and the honest way to give you one on a static site is CPython compiled to WebAssembly, downloaded by your browser and run in its sandbox. This article explains what changes when a tool runs third-party code: the download and why it waits for your consent, the Worker and why Stop is a termination, the Content Security Policy and what was measured against it, the pinned files and their digests, the wall clock, and which checks are the site's and which are the engine's. With the engine's own documentation cited for each claim."
+concepts: ["webassembly", "pyodide", "web worker", "content security policy", "sandbox", "subresource integrity", "static site"]
+relatedTools: ["python-playground"]
+relatedArticles: ["python-as-a-network-engineers-calculator"]
+category: web
+order: 140
+status: reviewed
+updated: "2026-10-04"
+---
+
+Every tool on this site before the [Python playground](/tools/python-playground) followed one shape: a pure, deterministic function written in this repository, a set of golden vectors asserting its output byte for byte, a page that calls it, and no third-party code at run time beyond the browser itself. That shape is why the site can say "tools that compute, never guess" and prove it at every build. A Python playground breaks the shape, and it is worth being exact about how, because the difference is the whole reason the tool wears a mark the others do not.
+
+## The thing you want is an interpreter
+
+You cannot fake Python. A regex that recognises `ipaddress.ip_network("10.0.0.0/24")` and prints what it thinks the answer is would be a toy, and a wrong one the first time you wrote a list comprehension. The only honest playground is one that runs CPython, and the only way to run CPython on a page served from static files is to run it inside the browser.
+
+That is what WebAssembly is for. WebAssembly is a binary instruction format that browsers execute in a sandbox, at near-native speed, with no access to anything the page does not hand it. The Pyodide project compiles CPython (the reference Python interpreter) to WebAssembly with the Emscripten toolchain, together with the standard library and a bridge between Python objects and JavaScript objects. The result is a set of files a browser can download and start: at the time of writing, Pyodide 314.0.7 carrying Python 3.14.2, under the MPL-2.0 licence, as its own lock file and package metadata state.
+
+So the playground is three things layered: the Pyodide engine, which is not this site's code; a Web Worker that hosts it; and a harness around both, which is this site's code and is tested the way every other tool is tested.
+
+## A download happens, and it is not small
+
+The engine is five files: the loader module, the compiled interpreter's JavaScript glue, the WebAssembly binary itself (about 9.6 MB), the standard library as a zip (about 2.5 MB) and a lock file describing the distribution. Together about 13.5 MB before transfer compression. On a fast connection that is a few seconds; on a metered mobile connection it is a decision.
+
+So the page does not download it. It opens with the editor, an example and the preflight already reading it, and one button that names the size: "Load Python (13.5 MB)". Nothing is fetched until that button is pressed. You can verify this yourself: open the browser's network panel, load the page, and watch nothing arrive from `/wasm/` until you click. The decision to wait for consent rather than download on page open was taken deliberately, and is recorded as such.
+
+Once downloaded, the files are cached. They live under a path that includes the engine's version (`/wasm/pyodide/314.0.7/`), so a new engine is a new path and the old cache can never be mixed with it; the server marks them immutable with a one-year lifetime. The second visit costs nothing.
+
+## Where the bytes come from, and how you know
+
+The engine files are not fetched from a content delivery network at run time. They are served from the same origin as the page you are reading. At build time, a script reads the pinned npm package (the version is fixed in the repository's lock file, which npm verifies by integrity hash on install), checks the SHA-256 digest of each of the five files against digests committed in the repository, and only then copies them into the site's static assets. If a digest does not match, the build stops and says which file moved.
+
+The digests, the sizes, the Python version, the licence and the list of standard-library modules the build contains are all generated from the package itself, never typed by hand. The pill on the tool page that reads "Pyodide 314.0.7 (Python 3.14.2) · 13.5 MB on first use" is rendered from that generated record. If someone upgrades the engine and forgets to regenerate the record, the build fails. This is the same discipline as a golden vector: the site states what it can prove, and a check exists to make a false statement impossible to ship.
+
+## The Worker, and why Stop is a termination
+
+The interpreter does not run on the page's main thread. It runs in a Web Worker, a separate JavaScript thread with its own global scope, no access to the document, and a message channel to the page. Pyodide requires a module-type worker, because its glue is an ES module; the Pyodide documentation says so plainly, and classic workers with `importScripts()` are not supported.
+
+Running in a Worker buys two things. First, a program that loops forever cannot freeze the page: the editor, the Stop button and the rest of the site keep responding. Second, the program cannot reach the page's DOM, cookies or storage, because the Worker scope has none of them.
+
+It also imposes one limitation worth understanding. Synchronous Python running inside a WebAssembly instance cannot be interrupted from outside unless the page shares a memory buffer with the Worker and the interpreter polls it. That mechanism (a `SharedArrayBuffer` interrupt buffer) requires the page to be served with cross-origin isolation headers, which change how every other resource on the site may be embedded, and this static site does not carry them. So Stop does the one thing that always works: it terminates the Worker. The interpreter is gone instantly, and a fresh one is started from the cached files, which takes a second or two. The wall-clock limit of 30 seconds does the same thing without you pressing anything. Each run also starts in a fresh global namespace, so a variable from one run never leaks into the next.
+
+## The policy the engine runs under
+
+Every page on this site is served with a Content Security Policy (CSP), the browser-enforced header that says which scripts may run and where connections may go. The site's policy allows scripts from its own origin, allows WebAssembly compilation (the `wasm-unsafe-eval` source, which the site already needed for its search index), and allows connections to its own origin only. It does not allow `unsafe-eval`, the source that permits JavaScript to compile strings into code.
+
+That mattered, because the engine's JavaScript glue contains code paths that call `eval`. Whether those paths are reached when the interpreter loads and runs is a fact about the build, not a matter of opinion, so it was measured: the engine was loaded in a Worker whose own response carried the site's exact policy, and it loaded, ran standard-library code, ran asynchronous code with top-level `await`, and exercised the Python-to-JavaScript bridge, with no policy violation. A control Worker under the same policy confirmed the policy was being enforced: a direct `eval("40+2")` was refused with `EvalError`. The conclusion is that this engine, at this version, does not need `unsafe-eval`, and the site's policy did not change for it. The measurement is repeated whenever the engine version changes.
+
+A detail that follows from the policy: the Worker inherits a `connect-src` of this origin only. So even if a Python program reaches for the network through the JavaScript bridge, the browser refuses the connection before the engine's own lack of sockets is reached. The preflight tells you this before you run; the browser enforces it after.
+
+## What is tested, and by whom
+
+Golden vectors are the site's proof that a tool does what it says. For the playground they come in two kinds, because the engine is not ours.
+
+The preflight, which reads your program and tells you what will not work here, is pure code in this repository and has 42 vectors run with every other tool's: one per finding it can raise, plus edge cases, plus every example. The twelve example programs have their exact stdout, stderr and the repr of their last expression recorded as a second set of vectors, and at every build those programs are run through the real engine under Node and compared byte for byte. If an engine upgrade changes the output of any example, the build fails and someone reads the diff. That is the correct response to third-party code: not trust, and not pretending to test it, but pinning what it produces for the cases you care about and refusing to ship silently when it moves.
+
+What is not tested here is the interpreter's own behaviour, which belongs to the Pyodide project and to CPython. The explainer on the tool page says exactly that, in the fifth of its five sentences, because a reader deserves to know which promises the site is making and which it is relaying.
+
+## Why the pill
+
+A tool that downloads thirteen megabytes of someone else's code on first use is a different kind of thing from a subnet calculator, even when both run entirely in your browser and neither sends anything anywhere. The fuchsia "WebAssembly" pill exists so the difference is visible before you open the tool: on the card, in search results and on the page itself. The colour is used nowhere else on the site, so it cannot be mistaken for a theme accent or a status. When a second WebAssembly tool arrives (a jq runner is next in the queue), it will wear the same mark and follow the same rules: consent before download, pinned and digest-checked files, a Worker, a wall clock, and vectors around the engine rather than inside it.
+
+## Sources
+
+- [Pyodide documentation, "Using Pyodide in a web worker", version 314.0.7: a module-type worker is required because pyodide.asm.mjs is an ES module; classic workers using importScripts() are not supported](https://pyodide.org/en/stable/usage/webworker.html)
+- [Pyodide documentation, "Redirecting standard streams", version 314.0.7: the stdin callback returns one full line per call and null for end of file](https://pyodide.org/en/stable/usage/streams.html)
+- [pyodide 314.0.7 on the npm registry: the MPL-2.0 licence, the five browser files, and the lock file stating Python 3.14.2](https://www.npmjs.com/package/pyodide/v/314.0.7)
+- [MDN, Content-Security-Policy script-src: the 'wasm-unsafe-eval' and 'unsafe-eval' sources](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src)
+- [MDN, Worker() constructor: the type option that makes a module worker, and Worker.terminate()](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)
+- [MDN, SharedArrayBuffer security requirements: cross-origin isolation headers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements)
+- [WebAssembly.org: what WebAssembly is](https://webassembly.org/)

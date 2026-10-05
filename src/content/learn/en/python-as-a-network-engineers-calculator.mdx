@@ -1,0 +1,66 @@
+---
+slug: python-as-a-network-engineers-calculator
+title: "Python as a network engineer's calculator: the standard library already knows your arithmetic"
+summary: "Subnet splits, route aggregation, wildcard masks, EUI-64, a DNS header in bytes, an HMAC, a p95 of latency samples, a transfer time at line rate: each is a few lines of Python with nothing installed, because ipaddress, struct, hmac, statistics and re ship with the interpreter. This article walks the twelve examples the Python playground opens with, says which module does the work in each and why it is the right one, points at the pitfalls (hosts() on a /31, round-half-even, the universal/local bit), and shows where the same answers come from by hand on this site's other tools, so you can check one against the other."
+concepts: ["python", "ipaddress", "struct", "hmac", "statistics", "subnetting", "eui-64", "syslog", "dns header"]
+relatedTools: ["python-playground", "cidr", "ipv6", "hmac", "bits-bytes", "syslog-pri-decoder"]
+relatedArticles: ["how-a-webassembly-tool-works"]
+category: networking
+order: 258
+status: reviewed
+updated: "2026-10-04"
+---
+
+A network engineer's day is full of small arithmetic: how many /26s in this /24, what is the wildcard for a /27, what does the interface identifier look like for this MAC, what are the twelve bytes of a DNS query header, is that p95 as bad as the dashboard says. Each answer is a dedicated tool on this site, and each is also a few lines of Python using nothing but the standard library. The [Python playground](/tools/python-playground) opens with twelve such programs. This article walks them, names the module doing the work, and says what to watch for. Every example's output is fixed as a golden vector and re-run through the real interpreter at every build, so what is quoted here is what the tool prints.
+
+## ipaddress: subnets, hosts, masks, aggregation
+
+Four of the twelve examples use one module. `ipaddress` has been in the standard library since Python 3.3 and models networks and addresses as objects with the arithmetic built in.
+
+`ip_network("10.20.30.0/24")` gives a network; `.subnets(new_prefix=26)` iterates the four /26s inside it; each has `.netmask`, `.hostmask` (which is the wildcard mask), `.broadcast_address` and `.hosts()`, an iterator over the usable addresses. The first example prints all of that in five lines, and the output matches what the [CIDR tool](/tools/cidr) shows for the same prefix. One pitfall: `.hosts()` on a /31 returns both addresses (RFC 3021 point-to-point) and on a /32 returns the single address, which is right, but surprises people who expect "network minus two" everywhere. Another: `len(list(net.hosts()))` on a /8 builds sixteen million objects; use `net.num_addresses - 2` instead.
+
+`collapse_addresses(nets)` is the aggregation example. Given `192.0.2.0/26`, `192.0.2.64/26` and `192.0.2.128/25` it returns `192.0.2.0/24`, and given `198.51.100.0/24` and `198.51.101.0/24` it returns `198.51.100.0/23`. The function sorts, merges adjacent and nested prefixes, and returns the minimal set; it is exactly the operation a route summarisation needs, and it is correct for the cases where people get it wrong by hand (two adjacent /24s summarise only when the first is even).
+
+The wildcard example prints the netmask, the hostmask and the 32-bit binary of the mask for /8, /20, /24, /27 and /30, using `int(net.netmask)` with the `:032b` format. The hostmask is what an access list calls a wildcard; the binary column is the one worth staring at, because the boundary between ones and zeros is the prefix length.
+
+## EUI-64: the two bytes in the middle and the one bit that flips
+
+The IPv6 example builds a modified EUI-64 interface identifier from a MAC address by hand, which is the point: RFC 4291 Appendix A says to insert `FF FE` between the third and fourth octets of the 48-bit MAC and to invert the universal/local bit, bit 7 of the first octet (so `0x00` becomes `0x02`). The example does both with a list of octets and `octets[0] ^= 0x02`, then hands the result to `ip_address()` for the compressed form, `.exploded` for the full form, and `.reverse_pointer` for the `ip6.arpa` name. For `00:1A:2B:3C:4D:5E` the identifier is `21a:2bff:fe3c:4d5e`. The [IPv6 tool](/tools/ipv6) derives the same identifier and names each step. Note that privacy extensions (RFC 8981) mean a modern host's actual address will not be the EUI-64 one; the derivation still matters for link-local addresses on routers and for reading older networks.
+
+## struct: twelve bytes of DNS header
+
+A DNS message header is twelve bytes: six 16-bit fields in network byte order (RFC 1035 section 4.1.1). `struct.pack(">HHHHHH", 0x1A2B, 0x0100, 1, 0, 0, 0)` builds one: `>` means big-endian, `H` an unsigned 16-bit integer. Flags `0x0100` is the RD bit alone, which is what a stub resolver sends; QDCOUNT is 1. The example prints the bytes as spaced hex (`bytes.hex(" ")`) and unpacks them again to decode QR, OPCODE and RD with shifts and masks. This is the fastest way to check a capture by eye, and it generalises: the same `struct` call reads a TCP header, a syslog length prefix or a TLV. The [dig output explainer](/tools/dig-output-explainer) shows the same flags decoded from a real answer.
+
+## hmac and hashlib: a signature in two encodings
+
+`hmac.new(key, msg, hashlib.sha256).digest()` is HMAC-SHA256 in one call. The example prints the digest as hex and as base64url without padding (`base64.urlsafe_b64encode(mac).rstrip(b"=")`), because those are the two shapes you meet: hex in signed URLs and webhook headers, base64url in JSON Web Tokens. It also prints the plain SHA-256 of the message so you can see that a hash and a keyed hash of the same bytes are unrelated strings. The [HMAC tool](/tools/hmac) computes the same value with the same key and message, which is how you confirm a library on the other end is doing what the specification says.
+
+## statistics: mean, median, p95, jitter
+
+Latency samples are the example that teaches the most about the module and about the measurement. `statistics.mean`, `median` and `stdev` are one call each. A 95th percentile is not in the module, and the example computes it the plain way, by sorting and indexing at `round(0.95 * (n - 1))`, which for twelve samples picks the eleventh: 35.2 ms in the example's data, while the mean is pulled to 25.36 ms by one 48.9 ms outlier and the median sits at 22.0 ms. That spread is the lesson: report the percentile, not the mean. Jitter is computed as the mean absolute difference between consecutive samples (the RFC 3550 estimator is a smoothed version of this). One pitfall: Python's `round()` rounds half to even, so `round(10.5)` is 10; for percentile indexing on small samples decide the rule explicitly if it matters.
+
+## Transfer time: bits, bytes and two kinds of giga
+
+The transfer example divides size in bits by rate in bits per second and prints a small table for three sizes at three rates. It deliberately mixes a decimal size (4.7 GB, which is 4.7 times 10 to the ninth bytes) and a binary one (25 GiB, which is 25 times 2 to the thirtieth), because the difference is 7.4 percent and people lose it. At 100 Mbit/s the DVD takes 376 seconds and the Blu-ray 2,147.5; at 10 Gbit/s, 3.8 and 21.5. The [bits and bytes tool](/tools/bits-bytes) does the same arithmetic with the conventions spelled out and an efficiency factor for protocol overhead, which the example leaves at 100 percent.
+
+## re and Counter: a syslog count
+
+The syslog example runs a regular expression over pasted log lines, pulls the PRI value and the host from each, and counts by severity. RFC 5424 section 6.2.1 defines PRI as facility times 8 plus severity, so `pri % 8` is the severity: 134 is informational (facility 16, local0), 131 is error, 132 is warning. `collections.Counter` does the tally. The [syslog PRI decoder](/tools/syslog-pri-decoder) decodes any single PRI with both halves named. The regex is anchored at line start with `re.M`, which is the habit that keeps a log parser from matching inside a message body.
+
+## stdin, json, and the last expression
+
+Three smaller examples show how the playground itself behaves. The stdin example reads interface names from the stdin box with `for line in sys.stdin:` and shortens them; the box feeds one line per read, then end of file. The JSON example parses an API response with `json.loads`, prints an aligned table with format specs (`:<10`, `:>7`), and dumps a summary with `json.dumps`. The last example has no `print` at all: `2 ** (32 - 20) - 2` on its own final line evaluates to 4094, the usable hosts in a /20, and the playground shows it as the result, the way a REPL would. The preflight notes this before you run, so a program that ends in an assignment and prints nothing is flagged rather than silently blank.
+
+## Sources
+
+- [Python 3.14 documentation, ipaddress: ip_network, subnets, hosts, netmask, hostmask, collapse_addresses](https://docs.python.org/3.14/library/ipaddress.html)
+- [Python 3.14 documentation, struct: format characters and byte order](https://docs.python.org/3.14/library/struct.html)
+- [Python 3.14 documentation, hmac](https://docs.python.org/3.14/library/hmac.html)
+- [Python 3.14 documentation, statistics: mean, median, stdev](https://docs.python.org/3.14/library/statistics.html)
+- [Python 3.14 documentation, round(): round half to even](https://docs.python.org/3.14/library/functions.html#round)
+- [RFC 1035, section 4.1.1: the DNS header section format](https://www.rfc-editor.org/rfc/rfc1035#section-4.1.1)
+- [RFC 4291, Appendix A: creating modified EUI-64 format interface identifiers](https://www.rfc-editor.org/rfc/rfc4291#appendix-A)
+- [RFC 3021: using 31-bit prefixes on IPv4 point-to-point links](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 5424, section 6.2.1: PRI, facility and severity](https://www.rfc-editor.org/rfc/rfc5424#section-6.2.1)
+- [RFC 3550, section 6.4.1: the interarrival jitter estimator](https://www.rfc-editor.org/rfc/rfc3550#section-6.4.1)
+- [RFC 8981: temporary address extensions for stateless address autoconfiguration in IPv6](https://www.rfc-editor.org/rfc/rfc8981)

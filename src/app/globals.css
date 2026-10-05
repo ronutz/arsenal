@@ -66,6 +66,15 @@
   --accent-hover: #67e8f9;       /* cyan, brighter — hover state */
   --accent-amber: #f59e0b;       /* amber — secondary accent */
 
+  /* WEBASSEMBLY MARK (2026-10-04, PROPOSTA-wasm-tools decision 1, ratified).
+     A hue used nowhere else on the site, so the "WebAssembly" / "WASM" pill on a
+     tool that runs a third-party interpreter can never be mistaken for a theme
+     accent (cyan/indigo/emerald/orange) or a status colour (success/warning/
+     danger/info). Fuchsia on the dark canvases; the eleven light themes take a
+     deeper fuchsia below so the dot and the pill border stay legible on a pale
+     ground. This is the base (dark) value, inherited by every dark theme. */
+  --color-wasm: #e879f9;         /* fuchsia — the WebAssembly mark, found nowhere else */
+
   /* --- Type --- */
   --font-prose: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -850,4 +859,23 @@ a {
   background: color-mix(in srgb, var(--color-accent) 14%, transparent);
   border-radius: 3px;
   padding: 0 2px;
+}
+
+/* WEBASSEMBLY MARK on the light themes (2026-10-04). The base fuchsia #e879f9 is
+   tuned for a dark canvas; on the eleven light themes it washes out, so the mark
+   deepens to fuchsia-700. The dot, the pill border and any accent built on the
+   token then hold their contrast on a pale ground. Grouped rather than repeated
+   per theme because the value is the same for all of them. */
+:root[data-theme="reader"],
+:root[data-theme="broadsheet"],
+:root[data-theme="emerald"],
+:root[data-theme="slate"],
+:root[data-theme="photon"],
+:root[data-theme="kevlar"],
+:root[data-theme="retro-coco"],
+:root[data-theme="retro-mac"],
+:root[data-theme="web-slashdot"],
+:root[data-theme="web-reddit"],
+:root[data-theme="swagger"] {
+  --color-wasm: #a21caf;         /* fuchsia-700 — the WebAssembly mark on a light ground */
 }

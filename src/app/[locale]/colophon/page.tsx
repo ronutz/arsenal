@@ -59,7 +59,8 @@ export default async function ColophonPage({
   ];
 
   // The build principles.
-  const principles = ["p1", "p2", "p3", "p4"];
+  // p5 added 2026-10-04 (PRIME): the assimilation principle, the one the X-Collective header points at.
+  const principles = ["p1", "p2", "p3", "p4", "p5"];
 
   // The CONCORD mechanics, shown as a labeled panel beneath the narrative.
   const mechanics = ["mech1", "mech2", "mech3", "mech4", "mech5", "mech6"];
@@ -161,8 +162,8 @@ export default async function ColophonPage({
             </div>
           </section>
 
-          {/* Principles */}
-          <section className="section">
+          {/* Principles (anchored: the console line and the X-Collective header point here) */}
+          <section className="section" id="principles">
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("principlesTitle")}</h2>
               <p className="colophon-body">{t("principlesBody")}</p>

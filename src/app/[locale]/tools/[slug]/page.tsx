@@ -35,6 +35,7 @@ import ToolApiEndpoint from "@/components/ToolApiEndpoint";
 import { API_TOOLS } from "@/lib/tools/registry";
 import { isApiProcessingEnabled } from "@/config/apiSurface";
 import FamilyChip from "@/components/FamilyChip";
+import WasmChip from "@/components/WasmChip";
 import PageCapabilities from "@/components/PageCapabilities";
 import ToolProvenance from "@/components/ToolProvenance";
 import { provenanceFor } from "@/config/toolProvenance";
@@ -93,6 +94,17 @@ import BitsBytesTool from "@/components/BitsBytesTool";
 import { manifest as bitsBytesManifest } from "@/lib/tools/bits-bytes";
 import DigCommandBuilderTool from "@/components/DigCommandBuilderTool";
 import { manifest as digCommandBuilderManifest } from "@/lib/tools/dig-command-builder";
+import PythonPlaygroundTool from "@/components/PythonPlaygroundTool";
+import { manifest as pythonPlaygroundManifest } from "@/lib/tools/python-playground";
+
+/**
+ * The WebAssembly engines behind the tools that carry one, keyed by slug and read from each
+ * manifest's generated engine block, so the pill's version and size can never drift from the
+ * bytes the site serves (PROPOSTA-wasm-tools, 2026-10-04). A new WebAssembly tool adds a line.
+ */
+const WASM_ENGINES: Record<string, { name: string; version: string; runtime: string; bytesWire: number }> = {
+  "python-playground": pythonPlaygroundManifest.engine,
+};
 import F5ReleaseCadenceCalendarTool from "@/components/F5ReleaseCadenceCalendarTool";
 import { manifest as f5ReleaseCadenceCalendarManifest } from "@/lib/tools/f5-release-cadence-calendar";
 import DiffTool from "@/components/DiffTool";
@@ -993,6 +1005,10 @@ const TOOL_PAGES: Record<string, ToolPage> = {
     Component: DigCommandBuilderTool,
     sources: digCommandBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
+  "python-playground": {
+    Component: PythonPlaygroundTool,
+    sources: pythonPlaygroundManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
   "cert-chain-builder": {
     Component: CertChainBuilderTool,
     sources: certChainBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
@@ -1274,6 +1290,13 @@ export default async function ToolDetailPage({
                   category={entry.category}
                   label={tTools(`categories.${entry.category}`)}
                 />
+                {/* The full WebAssembly mark: engine, runtime and the first-use size, from the manifest. */}
+                {entry.runtime === "wasm" && WASM_ENGINES[slug] && (
+                  <WasmChip
+                    label={tTools("wasmPill")}
+                    detail={`${WASM_ENGINES[slug].name} ${WASM_ENGINES[slug].version} (${WASM_ENGINES[slug].runtime}) · ${tTools("wasmFirstUse", { mb: new Intl.NumberFormat(locale, { maximumFractionDigits: 1, minimumFractionDigits: 1 }).format(WASM_ENGINES[slug].bytesWire / 1e6) })}`}
+                  />
+                )}
               </span>
             )}
 

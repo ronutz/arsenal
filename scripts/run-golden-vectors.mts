@@ -84,7 +84,7 @@ const DECLARED_FAILING = new Map<string, string>([]);
 // 154 -> 156 the same day with the ASCII table explorer's and the Unicode
 // inspector's sets, 156 -> 157 the same day with the charset converter's, and
 // 157 -> 158 on 2026-10-04 with the chmod permission calculator's.
-const MIN_SETS = 161;
+const MIN_SETS = 162;
 
 /**
  * Reduce any of the tree's verifyVectors return shapes to a list of failures.

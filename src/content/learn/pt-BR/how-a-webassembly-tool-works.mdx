@@ -1,0 +1,74 @@
+---
+slug: how-a-webassembly-tool-works
+title: "Como funciona uma ferramenta em WebAssembly: o que roda, de onde vem e o que sai da página"
+summary: "A maioria das ferramentas deste site são pequenas funções puras escritas aqui e testadas com vetores de ouro. Um playground de Python não pode ser isso: o que você quer é um interpretador de verdade, e a forma honesta de oferecer um em um site estático é o CPython compilado para WebAssembly, baixado pelo seu navegador e executado na sandbox dele. Este artigo explica o que muda quando uma ferramenta roda código de terceiros: o download e por que ele espera a sua autorização, o Worker e por que Parar é um encerramento, a Content Security Policy e o que foi medido contra ela, os arquivos fixados e seus resumos, o relógio de parede, e quais verificações são do site e quais são do motor. Com a documentação do próprio motor citada em cada afirmação."
+concepts: ["webassembly", "pyodide", "web worker", "content security policy", "sandbox", "integridade de subrecurso", "site estático"]
+relatedTools: ["python-playground"]
+relatedArticles: ["python-as-a-network-engineers-calculator"]
+category: web
+order: 140
+status: reviewed
+updated: "2026-10-04"
+---
+
+Toda ferramenta deste site antes do [playground de Python](/tools/python-playground) seguia uma forma: uma função pura e determinística escrita neste repositório, um conjunto de vetores de ouro afirmando a saída byte a byte, uma página que a chama, e nenhum código de terceiros em tempo de execução além do próprio navegador. Essa forma é o que permite ao site dizer "ferramentas que calculam, nunca adivinham" e provar isso a cada construção. Um playground de Python quebra a forma, e vale ser exato sobre como, porque a diferença é toda a razão de a ferramenta usar uma marca que as outras não usam.
+
+## O que você quer é um interpretador
+
+Não dá para fingir Python. Uma expressão regular que reconhecesse `ipaddress.ip_network("10.0.0.0/24")` e imprimisse o que acha que é a resposta seria um brinquedo, e um brinquedo errado na primeira vez que você escrevesse uma list comprehension. O único playground honesto é o que executa CPython, e a única forma de executar CPython em uma página servida a partir de arquivos estáticos é executá-lo dentro do navegador.
+
+É para isso que serve o WebAssembly. WebAssembly é um formato binário de instruções que os navegadores executam em uma sandbox, a velocidade próxima da nativa, sem acesso a nada que a página não lhe entregue. O projeto Pyodide compila o CPython (o interpretador de referência do Python) para WebAssembly com a toolchain Emscripten, junto com a biblioteca padrão e uma ponte entre objetos Python e objetos JavaScript. O resultado é um conjunto de arquivos que um navegador pode baixar e iniciar: no momento desta escrita, o Pyodide 314.0.7 carregando o Python 3.14.2, sob a licença MPL-2.0, como o próprio arquivo de lock e os metadados do pacote declaram.
+
+Então o playground são três coisas em camadas: o motor Pyodide, que não é código deste site; um Web Worker que o hospeda; e um arcabouço em volta dos dois, que é código deste site e é testado do jeito que toda outra ferramenta é testada.
+
+## Um download acontece, e não é pequeno
+
+O motor são cinco arquivos: o módulo carregador, a cola JavaScript do interpretador compilado, o binário WebAssembly em si (cerca de 9,6 MB), a biblioteca padrão como um zip (cerca de 2,5 MB) e um arquivo de lock descrevendo a distribuição. Juntos, cerca de 13,5 MB antes da compressão de transferência. Em uma conexão rápida são alguns segundos; em uma conexão móvel tarifada é uma decisão.
+
+Por isso a página não o baixa. Ela abre com o editor, um exemplo e a pré-verificação já lendo o exemplo, e um botão que diz o tamanho: "Carregar Python (13,5 MB)". Nada é buscado até esse botão ser apertado. Você pode verificar isso por conta própria: abra o painel de rede do navegador, carregue a página, e veja que nada chega de `/wasm/` até você clicar. A decisão de esperar pela autorização em vez de baixar na abertura da página foi tomada de propósito e está registrada como tal.
+
+Uma vez baixados, os arquivos ficam em cache. Eles vivem em um caminho que inclui a versão do motor (`/wasm/pyodide/314.0.7/`), então um motor novo é um caminho novo e o cache antigo nunca pode se misturar com ele; o servidor os marca como imutáveis com validade de um ano. A segunda visita não custa nada.
+
+## De onde vêm os bytes, e como você sabe
+
+Os arquivos do motor não são buscados de uma rede de distribuição de conteúdo em tempo de execução. São servidos da mesma origem da página que você está lendo. No momento da construção, um script lê o pacote npm fixado (a versão está travada no arquivo de lock do repositório, que o npm verifica por hash de integridade na instalação), confere o resumo SHA-256 de cada um dos cinco arquivos contra resumos registrados no repositório, e só então os copia para os ativos estáticos do site. Se um resumo não bate, a construção para e diz qual arquivo mudou.
+
+Os resumos, os tamanhos, a versão do Python, a licença e a lista de módulos da biblioteca padrão que a compilação contém são todos gerados a partir do próprio pacote, nunca digitados à mão. A pílula na página da ferramenta que diz "Pyodide 314.0.7 (Python 3.14.2) · 13,5 MB no primeiro uso" é renderizada a partir desse registro gerado. Se alguém atualizar o motor e esquecer de regenerar o registro, a construção falha. É a mesma disciplina de um vetor de ouro: o site afirma o que consegue provar, e existe uma verificação que torna impossível publicar uma afirmação falsa.
+
+## O Worker, e por que Parar é um encerramento
+
+O interpretador não roda na thread principal da página. Roda em um Web Worker, uma thread JavaScript separada com seu próprio escopo global, sem acesso ao documento, e um canal de mensagens para a página. O Pyodide exige um worker do tipo módulo, porque sua cola é um módulo ES; a documentação do Pyodide diz isso com clareza, e workers clássicos com `importScripts()` não são suportados.
+
+Rodar em um Worker compra duas coisas. Primeiro, um programa que entra em laço infinito não consegue travar a página: o editor, o botão Parar e o resto do site continuam respondendo. Segundo, o programa não consegue alcançar o DOM, os cookies ou o armazenamento da página, porque o escopo do Worker não tem nenhum deles.
+
+Também impõe uma limitação que vale entender. Python síncrono rodando dentro de uma instância WebAssembly não pode ser interrompido de fora a menos que a página compartilhe um buffer de memória com o Worker e o interpretador o consulte periodicamente. Esse mecanismo (um buffer de interrupção em `SharedArrayBuffer`) exige que a página seja servida com cabeçalhos de isolamento de origem cruzada, que mudam como todo outro recurso do site pode ser incorporado, e este site estático não os carrega. Então Parar faz a única coisa que sempre funciona: encerra o Worker. O interpretador some na hora, e um novo é iniciado a partir dos arquivos em cache, o que leva um ou dois segundos. O limite de relógio de 30 segundos faz a mesma coisa sem você apertar nada. Cada execução também começa em um namespace global novo, então uma variável de uma execução nunca vaza para a seguinte.
+
+## A política sob a qual o motor roda
+
+Toda página deste site é servida com uma Content Security Policy (CSP), o cabeçalho imposto pelo navegador que diz quais scripts podem rodar e para onde conexões podem ir. A política do site permite scripts da própria origem, permite compilação de WebAssembly (a fonte `wasm-unsafe-eval`, de que o site já precisava para seu índice de busca), e permite conexões só para a própria origem. Não permite `unsafe-eval`, a fonte que deixa o JavaScript compilar strings em código.
+
+Isso importava, porque a cola JavaScript do motor contém caminhos de código que chamam `eval`. Se esses caminhos são alcançados quando o interpretador carrega e executa é um fato sobre a compilação, não uma questão de opinião, então foi medido: o motor foi carregado em um Worker cuja própria resposta trazia a política exata do site, e ele carregou, executou código da biblioteca padrão, executou código assíncrono com `await` no nível superior e exercitou a ponte Python-JavaScript, sem nenhuma violação de política. Um Worker de controle sob a mesma política confirmou que a política estava sendo imposta: um `eval("40+2")` direto foi recusado com `EvalError`. A conclusão é que este motor, nesta versão, não precisa de `unsafe-eval`, e a política do site não mudou por causa dele. A medição é repetida sempre que a versão do motor muda.
+
+Um detalhe que decorre da política: o Worker herda um `connect-src` só desta origem. Então mesmo que um programa Python tente a rede pela ponte JavaScript, o navegador recusa a conexão antes de a própria falta de sockets do motor ser alcançada. A pré-verificação lhe diz isso antes de executar; o navegador impõe depois.
+
+## O que é testado, e por quem
+
+Vetores de ouro são a prova do site de que uma ferramenta faz o que diz. Para o playground eles vêm em dois tipos, porque o motor não é nosso.
+
+A pré-verificação, que lê o seu programa e diz o que não vai funcionar aqui, é código puro neste repositório e tem 42 vetores executados junto com os de toda outra ferramenta: um por achado que ela consegue levantar, mais casos de borda, mais todos os exemplos. Os doze programas de exemplo têm stdout, stderr e o repr da última expressão registrados exatamente como um segundo conjunto de vetores, e a cada construção esses programas são executados no motor real sob Node e comparados byte a byte. Se uma atualização do motor mudar a saída de qualquer exemplo, a construção falha e alguém lê o diff. Essa é a resposta correta a código de terceiros: não confiança, e não fingir testá-lo, mas fixar o que ele produz para os casos que importam e recusar-se a publicar em silêncio quando isso muda.
+
+O que não é testado aqui é o comportamento do próprio interpretador, que pertence ao projeto Pyodide e ao CPython. O painel explicativo na página da ferramenta diz exatamente isso, na quinta de suas cinco frases, porque quem lê merece saber quais promessas o site está fazendo e quais está repassando.
+
+## Por que a pílula
+
+Uma ferramenta que baixa treze megabytes de código de outra pessoa no primeiro uso é um tipo de coisa diferente de uma calculadora de sub-redes, mesmo quando as duas rodam inteiramente no seu navegador e nenhuma envia nada a lugar algum. A pílula fúcsia "WebAssembly" existe para que a diferença fique visível antes de você abrir a ferramenta: no cartão, nos resultados de busca e na própria página. A cor não é usada em nenhum outro lugar do site, então não pode ser confundida com um acento de tema ou um status. Quando uma segunda ferramenta em WebAssembly chegar (um executor de jq é a próxima na fila), ela usará a mesma marca e seguirá as mesmas regras: autorização antes do download, arquivos fixados e conferidos por resumo, um Worker, um relógio de parede, e vetores em volta do motor em vez de dentro dele.
+
+## Fontes
+
+- [Documentação do Pyodide, "Using Pyodide in a web worker", versão 314.0.7: um worker do tipo módulo é exigido porque pyodide.asm.mjs é um módulo ES; workers clássicos com importScripts() não são suportados](https://pyodide.org/en/stable/usage/webworker.html)
+- [Documentação do Pyodide, "Redirecting standard streams", versão 314.0.7: o callback de stdin devolve uma linha inteira por chamada e null para fim de arquivo](https://pyodide.org/en/stable/usage/streams.html)
+- [pyodide 314.0.7 no registro npm: a licença MPL-2.0, os cinco arquivos do navegador e o arquivo de lock declarando Python 3.14.2](https://www.npmjs.com/package/pyodide/v/314.0.7)
+- [MDN, Content-Security-Policy script-src: as fontes 'wasm-unsafe-eval' e 'unsafe-eval'](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/script-src)
+- [MDN, construtor Worker(): a opção type que cria um worker de módulo, e Worker.terminate()](https://developer.mozilla.org/en-US/docs/Web/API/Worker/Worker)
+- [MDN, requisitos de segurança do SharedArrayBuffer: cabeçalhos de isolamento de origem cruzada](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer#security_requirements)
+- [WebAssembly.org: o que é WebAssembly](https://webassembly.org/)

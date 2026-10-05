@@ -288,7 +288,7 @@ export default async function TrainingLandingPage({
                 </li>
               </ul>
               <p className="section-cta">
-                <Link href="/red-education#cases" className="btn btn-secondary">{t("teamsCta")} <span aria-hidden="true">&#8594;</span></Link>
+                <Link href="/red-education#case-studies" className="btn btn-secondary">{t("teamsCta")} <span aria-hidden="true">&#8594;</span></Link>
               </p>
             </div>
           </section>

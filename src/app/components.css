@@ -18737,3 +18737,82 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 @media (max-width: 22rem) {
   .ls-trigger-name { display: none; }
 }
+
+/* ==========================================================================
+   PYTHON PLAYGROUND and the WEBASSEMBLY MARK (2026-10-04)
+   --------------------------------------------------------------------------
+   The site's first tool that runs a third-party interpreter (Pyodide, CPython
+   compiled to WebAssembly). Two new vocabularies:
+     .wasm-chip   the fuchsia "WebAssembly" / "WASM" pill, built on the
+                  family-chip grammar through --chip-color: var(--color-wasm);
+                  the full form carries a detail (engine, runtime, size).
+     .pyp-*       the playground: an always-visible explainer, the editor and
+                  stdin box, the example chips, the consent / progress / run
+                  bar, the preflight findings (tcl-finding rows), the output
+                  stream with stdout and stderr interleaved, and the outcome.
+   Semantic tokens only; the fuchsia is confined to the mark and the explainer
+   rule so it stays a signal, not a theme.
+   ========================================================================== */
+
+/* --- the mark --- */
+.wasm-chip { gap: 0.4rem; }
+.wasm-chip-label { font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.68rem; color: var(--text-primary); }
+.wasm-chip-detail { color: var(--text-secondary); white-space: normal; }
+.wasm-chip-detail::before { content: "·"; margin-inline-end: 0.4rem; color: var(--text-tertiary); }
+
+/* --- the explainer: five facts, a fuchsia rule, nothing hidden behind a tooltip --- */
+.pyp-tool { display: flex; flex-direction: column; gap: 1.25rem; }
+.pyp-explainer { border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--color-wasm); border-radius: var(--radius-md); background: var(--surface-base); padding: 0.9rem 1.1rem; }
+.pyp-explainer-title { margin: 0 0 0.5rem; font-size: 0.95rem; font-weight: 600; }
+.pyp-explainer-list { margin: 0; padding-inline-start: 1.1rem; display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.88rem; line-height: 1.55; color: var(--text-secondary); }
+
+/* --- the editor and the stdin box --- */
+.pyp-editor { display: flex; flex-direction: column; gap: 0.5rem; }
+.pyp-code { min-height: 16rem; tab-size: 4; }
+.pyp-stdin-label { margin-top: 0.4rem; }
+.pyp-stdin { min-height: 4.5rem; }
+.pyp-examples { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-top: 0.3rem; }
+.pyp-examples-label { font-size: 0.78rem; color: var(--text-tertiary); margin-inline-end: 0.2rem; }
+.pyp-example-chip { font: inherit; font-size: 0.76rem; padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--border-subtle); background: transparent; color: var(--text-secondary); cursor: pointer; }
+.pyp-example-chip:hover { border-color: var(--color-wasm); color: var(--text-primary); }
+.pyp-example-chip:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+
+/* --- consent, progress, run --- */
+.pyp-run-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; min-height: 2.75rem; }
+.pyp-run:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.pyp-progress { display: flex; flex-direction: column; gap: 0.35rem; flex: 1 1 18rem; max-width: 32rem; }
+.pyp-progress-track { height: 0.5rem; border-radius: 999px; background: var(--surface-elevated); overflow: hidden; }
+.pyp-progress-fill { height: 100%; background: var(--color-wasm); transition: width 0.15s linear; }
+.pyp-progress-label { font-size: 0.78rem; color: var(--text-secondary); }
+.pyp-ready-note { font-size: 0.78rem; color: var(--text-tertiary); }
+.pyp-load-failed { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+
+/* --- preflight and output --- */
+.pyp-section-title { margin: 0 0 0.6rem; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--text-secondary); }
+.pyp-findings { margin: 0; }
+.pyp-blocked-note { margin-top: 0.5rem; }
+.pyp-stream { margin: 0; padding: 0.8rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 28rem; overflow: auto; }
+.pyp-stdout { color: var(--text-primary); }
+.pyp-stderr { color: var(--color-danger); }
+.pyp-outcome { margin: 0.6rem 0 0; font-size: 0.85rem; }
+.pyp-outcome-done { color: var(--color-success); }
+.pyp-outcome-stopped { color: var(--accent-amber); }
+.pyp-outcome-error { display: flex; flex-direction: column; gap: 0.4rem; }
+.pyp-error-line { margin: 0; color: var(--color-danger); font-size: 0.88rem; }
+.pyp-traceback { margin: 0; padding: 0.7rem 0.9rem; border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-danger) 8%, var(--surface-base)); border: 1px solid color-mix(in srgb, var(--color-danger) 40%, transparent); font-size: 0.8rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 22rem; overflow: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pyp-progress-fill { transition: none; }
+}
+
+/* The admin ledger's WebAssembly tag, in the row's tag vocabulary, fuchsia like the public mark. */
+.admin-tag--wasm { border-color: color-mix(in srgb, var(--color-wasm) 55%, transparent); color: var(--color-wasm); }
+/* The search result's short WebAssembly mark beside the kind badge. */
+.search-result-wasm { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.1rem 0.45rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--color-wasm) 55%, transparent); background: color-mix(in srgb, var(--color-wasm) 12%, transparent); color: var(--text-primary); margin-inline-end: 0.4rem; white-space: nowrap; }
+
+/* --------------------------------------------------------------------------
+   /industry/milestones (PRIME 2026-10-05): the count as a hero figure, and the
+   amber way back at the top as well as the foot of the page.
+   -------------------------------------------------------------------------- */
+.milestones-count { margin: 1rem 0 1.5rem; font-size: 0.95rem; letter-spacing: 0.02em; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.milestones-back { margin: 0; }

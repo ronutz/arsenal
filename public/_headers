@@ -13,6 +13,15 @@
 #
 # When deployed to a different host, port these headers to that host's mechanism.
 #
+# TWO LINES IN THE OVERHEAD (PRIME, 2026-10-04). After the security headers, every
+# response also carries X-Clacks-Overhead: GNU Terry Pratchett, the memorial
+# header thousands of sites have sent since March 2015 (the clacks of Going
+# Postal: G, pass it on; N, do not log it; U, turn it around at the end of the
+# line), and X-Collective, a stated fact about method dressed as a joke: good
+# ideas are adopted here and credited. Neither does anything; both cost a few
+# dozen bytes; both are addressed to the people who read headers. The story and
+# the sources are in the Learn article hidden-messages-in-http-headers.
+#
 # SCRIPT-SRC NOTE: script-src intentionally includes 'unsafe-inline' and
 # 'wasm-unsafe-eval'. This is REQUIRED by the chosen architecture, not a lapse:
 #   - 'unsafe-inline': Next.js App Router (static export) emits per-page inline
@@ -36,6 +45,8 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  X-Clacks-Overhead: GNU Terry Pratchett
+  X-Collective: resistance is futile; good ideas are assimilated here, with their sources (see /colophon)
 
 # ---------------------------------------------------------------------------
 # Explicit content types for the machine-readable outputs (2026-07-28).
@@ -58,3 +69,38 @@
 
 /llms.txt
   Content-Type: text/plain; charset=utf-8
+
+# ---------------------------------------------------------------------------
+# The WebAssembly engines and their worker scripts (2026-10-04).
+#
+# /wasm/<engine>/<version>/ holds the files a WebAssembly tool downloads on
+# first use (for Pyodide: 13.5 MB in five files, copied at prebuild from the
+# lockfile-pinned npm package, digests verified by scripts/check-wasm-engines).
+# The version is in the path, so the files can be cached for a year and marked
+# immutable: a new engine is a new path, never a changed file. The second visit
+# costs nothing, which is what the page promises.
+#
+# Content types are declared for the same reason as /sitemap.xml above: with
+# nosniff set, a module script served as anything but JavaScript is REFUSED
+# by the browser, and WebAssembly.instantiateStreaming needs application/wasm.
+# The page's CSP (above) is unchanged and applies to the worker too: measured
+# on 2026-10-04, Pyodide 314.0.7 loads and runs under it without unsafe-eval.
+# ---------------------------------------------------------------------------
+
+/wasm/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/wasm/*.mjs
+  Content-Type: text/javascript; charset=utf-8
+
+/wasm/*.wasm
+  Content-Type: application/wasm
+
+/wasm/*.json
+  Content-Type: application/json; charset=utf-8
+
+/wasm/*.zip
+  Content-Type: application/zip
+
+/workers/*.mjs
+  Content-Type: text/javascript; charset=utf-8

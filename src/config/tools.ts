@@ -48,6 +48,15 @@ export interface ToolEntry {
   secondaryCategories?: string[];
   /** False renders a muted "coming soon" card with no link. */
   available: boolean;
+  /**
+   * runtime - set to "wasm" on a tool that runs a third-party interpreter
+   * compiled to WebAssembly (python-playground first, jq to follow). The
+   * /tools cards, the search results and the tool page wear the fuchsia
+   * "WASM" / "WebAssembly" pill for it, so a reader knows before opening that
+   * a download happens on first use and that the engine is not this site's
+   * own code (PROPOSTA-wasm-tools, decisions ratified 2026-10-04).
+   */
+  runtime?: "wasm";
 }
 
 export const tools: ToolEntry[] = [
@@ -94,6 +103,7 @@ export const tools: ToolEntry[] = [
   { id: "f5os-restconf-path-explainer", sub: "f5os", href: "/tools/f5os-restconf-path-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
   { id: "dig-command-builder", href: "/tools/dig-command-builder", category: "networking", available: true },
+  { id: "python-playground", href: "/tools/python-playground", category: "operations", available: true, runtime: "wasm" },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
   { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "sso", available: true },

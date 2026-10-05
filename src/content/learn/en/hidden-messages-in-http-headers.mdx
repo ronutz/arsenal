@@ -1,0 +1,71 @@
+---
+slug: hidden-messages-in-http-headers
+title: "Hidden messages in HTTP headers: tributes, jokes and job offers in the overhead"
+summary: "HTTP lets a server add any header it likes, and for twenty years operators have used that freedom for things that are not protocol. After Terry Pratchett died in 2015, thousands of sites began sending X-Clacks-Overhead: GNU Terry Pratchett, a memorial built from a plot device in his own novel. Slashdot answered every request with a Futurama quote. Automattic and Airbnb hid job offers where only people reading headers would see them. A page cache announces itself with the Batman theme. Two status codes carry literary jokes into the standard itself. This article walks each case, cites the artefact, and says what the good ones have in common: they cost the reader nothing, they are true, and they are addressed to the people who look. It ends with how to read them yourself, and with this site's own."
+concepts: ["http headers", "easter egg", "x-clacks-overhead", "terry pratchett", "418", "451", "recruiting", "curl"]
+relatedTools: ["secure-headers", "curl-command-builder"]
+relatedArticles: ["http-headers-anatomy", "http-status-codes-the-five-families", "curl-headers-auth-and-cookies"]
+category: web
+order: 141
+status: reviewed
+updated: "2026-10-04"
+---
+
+Every HTTP response begins with a status line and a block of headers, and the headers the browser needs are a small, well-known set: the content type, the length, the caching rules, the security policy. Nothing stops a server from adding more. The protocol ignores a header it does not recognise, and a name beginning with `X-` was for decades the convention for a private one (RFC 6648 retired the convention in 2012 without retiring the headers). Into that unwatched space, operators have put things that are not protocol at all. This article collects the ones worth knowing, with the primary source for each, because the whole charm of the genre is that it is verifiable: run `curl -I` and there it is.
+
+## The memorial: X-Clacks-Overhead
+
+Terry Pratchett died on 12 March 2015. In his novel Going Postal (2004), the Discworld's long-distance communication is the clacks, a chain of semaphore towers that repeat messages from one to the next, and a message's overhead can carry housekeeping codes: `G`, send it on to the next tower; `N`, do not log it; `U`, at the end of the line, turn it around and send it back. A name sent as `GNU` circulates through the towers forever and is never written down, which is how the operators in the book keep a dead colleague's name alive. The line is that a man is not dead while his name is still spoken.
+
+Within days of the news, readers on the Discworld subreddit asked what the internet's overhead would be and settled on an HTTP response header: a piece of housekeeping sent along with every response, seen only by machines and by the people who look. The header is `X-Clacks-Overhead` and its value is `GNU Terry Pratchett`. Apache (`Header set`) and Nginx (`add_header`) snippets were published on 15 March 2015, then a WordPress plugin, then browser extensions that show a small marker when a site sends it. Reddit itself added the header. The L-Space wiki, the Discworld fan encyclopaedia, keeps the list of adopters, which reaches as far as Minecraft, where `GNU Terry Pratchett` is splash text number 338 from Java Edition 1.8.5.
+
+The header does nothing. Browsers ignore it and caches pass it through; it costs a few dozen bytes per response. That is exactly the design: a tribute that costs the reader nothing and is found only by someone who went looking. It is the model the rest of this article is measured against.
+
+## The joke: Slashdot's Futurama quotes
+
+For years every response from slashdot.org carried one extra header named `X-Fry`, `X-Bender` or `X-Lrrr`, after the Futurama characters, whose value was a line from the show chosen at random per request. There was no purpose beyond the audience: a site read by people who run `curl` against things, sending a joke to exactly those people. How-To Geek's survey of hidden headers opened with it, and a commandlinefu one-liner existed solely to fetch a fresh quote. It is the purest form of the genre, with no agenda at all.
+
+## The invitations: X-hacker and X-Hi-Human
+
+Two companies used the same channel to hire. Automattic, which runs WordPress.com and the WordPress VIP hosting its larger customers use, has sent an `X-hacker` header in several wordings, the best known being an invitation to visit the company's jobs page and apply "to join the fun, mention this header", and the shorter "Want root? Visit join.a8c.com and mention this header". Wikimedia's engineers noticed it on their own blog, which was VIP-hosted, and filed a ticket to ask about it. Airbnb's Production Infrastructure team sent `X-Hi-Human: The Production Infrastructure team added this header. Come work with us!` with an engineer's hiring address, which Troy Hunt recorded in March 2015 in a piece on recruitment messages hidden in sites.
+
+The logic is sound and a little flattering. A person inspecting the response headers of a blog platform is a person the platform might want, and "mention this header" makes the path traceable. The friendlier of the two says hello first.
+
+## The diagnostic that smiles: x-nananana
+
+Batcache is Automattic's full-page cache for WordPress, backed by memcached. Its source file opens with the comment `nananananananananananananananana BATCACHE!!!`, and the production deployments answer with a header named `x-nananana` whose value reports the cache state: `Batcache-Hit` when the page was served from cache. Pressable, a host built on the same stack, tells customers to look for exactly that header to confirm caching is working. It is a working diagnostic header that happens to be a joke, which is the rarest kind: it earns its place in the response.
+
+## The status codes: 418 and 451
+
+The tradition reaches into the standard itself twice. RFC 2324, the Hyper Text Coffee Pot Control Protocol, was published on 1 April 1998 by Larry Masinter; section 2.3.2 states that any attempt to brew coffee with a teapot should result in the error code 418 "I'm a teapot", and that the resulting entity body may be short and stout. The code was never part of HTTP proper, but web frameworks implemented it for fun, and when the chair of the HTTP working group questioned keeping it in August 2017, the Save 418 campaign followed: Node.js, Go, ASP.NET and the Requests library kept it, and a proposal was filed to reserve 418 so nothing else could ever use the number. The glossary's [418 entry](/glossary/teapot-418) has the longer story.
+
+RFC 7725 is the serious one. Published in February 2016 and written by Tim Bray, it defines status code 451 "Unavailable For Legal Reasons", for use when access to a resource is denied as a consequence of a legal demand, so that a block ordered by a court or a government is distinguishable from an ordinary 403. The number is a deliberate nod to Ray Bradbury's Fahrenheit 451, the novel about burning books, and the RFC's acknowledgements end with "Thanks also to Ray Bradbury." It is a real standards-track code with a real job; the literary reference is written into the document.
+
+## What the good ones share
+
+Three things. They cost the reader nothing: a few bytes in the overhead, no change to the page, no pop-up. They are true: a real memorial, a real job, a real cache hit, a real status code. And they are addressed to the people who would look, which on the web means the people who read headers, and who therefore get a small reward for a habit worth having. A hidden message that fails any of the three (a banner nobody asked for, a fake credential, a joke aimed at people who will never see it) is not part of this tradition, however clever.
+
+## How to read them
+
+Any HTTP client that shows response headers will do. `curl -I https://example.com/` prints the status line and headers of a HEAD request; `curl -sD - -o /dev/null https://example.com/` does the same with a GET, which matters for servers that answer HEAD differently. In a browser, the network panel of the developer tools lists every response's headers. This site's [secure headers checker](/tools/secure-headers) reads a header block you paste and explains the security-relevant ones; the rest of the block is where the easter eggs live. The [curl command builder](/tools/curl-command-builder) writes the `-I` and `-D` forms with every flag explained.
+
+## This site's own
+
+Since October 2026 every response from this site carries two lines in that tradition: `X-Clacks-Overhead: GNU Terry Pratchett`, because the tribute is worth joining and costs nothing, and a second header, `X-Collective`, whose value states a fact about how the site is made: good ideas are assimilated here, with their sources. The second is a joke about method, and the method is real; the changelog records where each adopted idea came from, and the colophon says so in plain words. Both headers are set in the static host's configuration, next to the security headers, so they are served with every page and every file. Resistance is futile; attribution is mandatory.
+
+## Sources
+
+- [The L-Space Web wiki, "GNU Terry Pratchett": the clacks codes G, N and U from Going Postal, the Reddit origin of hiding GNU text in site headers, and the adopters including Minecraft splash text 338 (Java Edition 1.8.5)](https://wiki.lspace.org/GNU_Terry_Pratchett)
+- [Boing Boing, 15 March 2015, "Sending Terry Pratchett home with HTTP headers": the Apache and Nginx configurations transmitting X-Clacks-Overhead: GNU Terry Pratchett](https://boingboing.net/2015/03/15/sending-terry-pratchett-home-w.html)
+- [IT Pro, 17 March 2015, "How Reddit ensured Sir Terry Pratchett's name lives on": administrators adding the header, the Chrome extension and the WordPress plugin](https://itpro.com/server/24238/how-reddit-ensured-sir-terry-pratchetts-name-lives-on)
+- [How-To Geek, "Stupid Geek Tricks: Find Hidden Messages in Web Site Headers": Slashdot's X-Fry, X-Bender and X-Lrrr Futurama quotes and other hidden headers](https://www.howtogeek.com/6499/stupid-geek-tricks-find-hidden-messages-in-web-site-headers/)
+- [commandlinefu, "slashdot.org webserver adds an X-Bender or X-Fry HTTP header to every response"](https://www.commandlinefu.com/commands/view/1608/gets-a-random-futurama-quote-from-.)
+- [http.dev, "X-Hacker": Automattic's recruiting header and its wordings](https://http.dev/x-hacker)
+- [Wikimedia Phabricator T70982: the X-hacker header seen on blog.wikimedia.org](https://phabricator.wikimedia.org/T70982)
+- [Troy Hunt, 31 March 2015, "Deconstruct websites, get hired": Airbnb's X-Hi-Human header and the recruiting-message genre](https://troyhunt.com/deconstruct-websites-get-hired-hiding)
+- [Pressable knowledge base, "How does Batcache page caching work": the x-nananana Batcache-Hit response header](https://pressable.com/knowledgebase/how-does-batcache-page-caching-work/)
+- [Automattic/batcache, advanced-cache.php: the source comment that names the header](https://github.com/Automattic/batcache/blob/master/advanced-cache.php)
+- [RFC 2324, Hyper Text Coffee Pot Control Protocol (HTCPCP/1.0), 1 April 1998, section 2.3.2](https://www.rfc-editor.org/rfc/rfc2324)
+- [save418.com: the August 2017 proposal, the frameworks that kept 418, and the reservation proposal](https://save418.com/)
+- [RFC 7725, An HTTP Status Code to Report Legal Obstacles, February 2016, with its acknowledgement of Ray Bradbury](https://www.rfc-editor.org/rfc/rfc7725)
+- [RFC 6648, Deprecating the "X-" Prefix and Similar Constructs in Application Protocols, June 2012](https://www.rfc-editor.org/rfc/rfc6648)

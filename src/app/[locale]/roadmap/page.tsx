@@ -27,6 +27,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+import WasmChip from "@/components/WasmChip";
 import { CATALOGUE, FAMILIES } from "@/content/catalogue/catalogue";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -118,6 +119,8 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
                     {g.tools.map((tool) => (
                       <li className="roadmap-item" key={tool.slug}>
                         <span className="roadmap-item-name">{tool.name}</span>
+                        {/* A queued tool that will run a third-party WebAssembly interpreter is marked now, not on arrival. */}
+                        {tool.wasm && <WasmChip label={t("wasm")} />}
                         <span className="roadmap-item-posture">{tool.posture}</span>
                         {tool.specs && tool.specs.length > 0 && (
                           <span className="roadmap-item-specs">

@@ -15,6 +15,7 @@ import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
 import { CATALOGUE } from "@/content/catalogue/catalogue";
 import FamilyChip from "@/components/FamilyChip";
+import WasmChip from "@/components/WasmChip";
 import { categoryColor } from "@/config/categoryColors";
 import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -225,6 +226,8 @@ export default async function ToolsPage({
                                   label={t(`vendors.${v}`)}
                                 />
                               ))}
+                              {/* The short WebAssembly mark: this tool downloads a third-party engine on first use. */}
+                              {tool.runtime === "wasm" && <WasmChip label={t("wasmPillShort")} />}
                             </span>
                             <span className="tools-card-go" aria-hidden="true">
                               {t("open")} →
