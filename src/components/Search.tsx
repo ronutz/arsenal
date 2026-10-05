@@ -268,7 +268,13 @@ export default function Search() {
   // a custom event, so the `s` / `/` shortcuts reuse this one search UI rather
   // than a parallel overlay. Any component can dispatch ronutz:open-search.
   useEffect(() => {
-    const onOpen = () => openSearch();
+    // The home page's omnibox (2026-10-05) dispatches the event with its text in detail.query, so the
+    // reader's words arrive in this dialog already typed; any other dispatcher opens it empty as before.
+    const onOpen = (e: Event) => {
+      openSearch();
+      const q = (e as CustomEvent<{ query?: string }>).detail?.query;
+      if (typeof q === "string" && q.trim()) setQuery(q);
+    };
     window.addEventListener("ronutz:open-search", onOpen);
     return () => window.removeEventListener("ronutz:open-search", onOpen);
   }, [openSearch]);

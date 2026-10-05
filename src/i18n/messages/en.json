@@ -93,7 +93,8 @@
       "headline": "Currently serving",
       "tools": "Tools",
       "articles": "Articles",
-      "sectionLabel": "The toolbox at a glance"
+      "sectionLabel": "The toolbox at a glance",
+      "companies": "Companies"
     },
     "map": {
       "title": "Sections",
@@ -153,6 +154,148 @@
       "stories": "Stories",
       "storiesLede": "The articles that connect other articles: what the failure cases have in common, what a request actually traverses, why the same bug keeps recurring.",
       "storiesBadge": "{count} threads"
+    },
+    "front": {
+      "metaTitle": "ronutz · Network & security tools, knowledge, history and practice",
+      "metaDescription": "Privacy-first network and security tools that compute in your browser, sourced technical articles, the history of the industry and the people who built it, and instructor-led training and advisory from thirty years in the field.",
+      "title": "A network and security workbench built from thirty years inside the field",
+      "lede": "Tools you can use, explanations you can learn from, the companies and people that built the industry, and professional training and advisory when the problem leaves the browser.",
+      "tag": "Network and security, from the packet to the people behind it.",
+      "omniboxLabel": "Search ronutz",
+      "omniboxPlaceholder": "What are you looking for? Tools, articles, companies, certifications, terms...",
+      "omniboxExamples": "Try:",
+      "startTitle": "Start here",
+      "intent": {
+        "tools": {
+          "q": "I need to calculate or inspect something",
+          "label": "Tools",
+          "verb": "compute"
+        },
+        "learn": {
+          "q": "I want to understand how something works",
+          "label": "Learn",
+          "verb": "read"
+        },
+        "industry": {
+          "q": "I am tracing a company, a product or a story",
+          "label": "Industry",
+          "verb": "trace"
+        },
+        "training": {
+          "q": "I need to train myself or a team",
+          "label": "Training",
+          "verb": "train"
+        },
+        "advisory": {
+          "q": "I have a consequential decision to make",
+          "label": "Advisory",
+          "verb": "decide"
+        },
+        "surprise": {
+          "q": "I don't know yet. Show me something interesting",
+          "label": "Take me somewhere",
+          "verb": "wander"
+        }
+      },
+      "tryTitle": "Try something now",
+      "tryBody": "Type a block and read the answer as you type. The full calculator, with subnetting, VLSM and overlap checks, is one click away.",
+      "quickLabel": "CIDR block",
+      "quickNetwork": "Network",
+      "quickBroadcast": "Broadcast",
+      "quickRange": "Usable range",
+      "quickHosts": "Usable hosts",
+      "quickWaiting": "Finish the block (address and prefix, like 10.0.0.0/8) to see the answer.",
+      "quickPrivacy": "Computed in your browser. Nothing was uploaded, nothing was logged.",
+      "quickPrivacyLink": "How privacy works here",
+      "quickFull": "Open the full CIDR calculator",
+      "quickToolbox": "All tools",
+      "happeningTitle": "What's happening",
+      "newTitle": "New",
+      "shipped": {
+        "tool": "New tool",
+        "article": "New article",
+        "improvement": "Improved"
+      },
+      "changelogLink": "Full changelog",
+      "popularTitle": "Most read this week",
+      "popularNote": "Counted from anonymous page views, the same for every reader.",
+      "popularStats": "How the counting works",
+      "kind": {
+        "tool": "Tool",
+        "article": "Article",
+        "company": "Company",
+        "person": "Person",
+        "term": "Term",
+        "guide": "Guide"
+      },
+      "surpriseTitle": "Take me somewhere",
+      "surpriseLede": "One random door into the whole corpus: a forgotten company, an odd tool, a term nobody says out loud, a person who changed the field.",
+      "surpriseMain": "Surprise me",
+      "surpriseTool": "a useful tool",
+      "surpriseWeird": "something weird",
+      "surpriseCompany": "a forgotten company",
+      "surpriseFailed": "The door would not open. Try again.",
+      "archiveLine": "The oldest ancestor here dates from 2004:",
+      "archiveTool": "the bits-and-bytes calculator, rebuilt",
+      "archiveSites": "the earlier sites",
+      "platformsTitle": "Browse by platform",
+      "platformsBody": "One door per vendor: the tools, articles, glossary terms and certification material for that platform, gathered in one place.",
+      "platformsAll": "All vendor hubs",
+      "workTitle": "Work with me",
+      "workBody": "When the problem leaves the browser. Three ways, each with its own page and its own terms.",
+      "work": {
+        "trainingVerb": "Train",
+        "trainingTitle": "Training",
+        "trainingBody": "Authorized instructor-led courses across four platforms, taught from engineering practice rather than from the slide deck.",
+        "trainingVia": "delivered through Red Education",
+        "trainingCta": "Courses, schedules and what to expect",
+        "advisoryVerb": "Decide",
+        "advisoryTitle": "Advisory",
+        "advisoryBody": "Executive technical judgement on a technology decision before it is made: scoped work, a written answer you can defend internally, no on-call.",
+        "advisoryCta": "How an engagement works",
+        "speakingVerb": "Listen",
+        "speakingTitle": "Speaking",
+        "speakingBody": "Talks and sessions for teams, conferences and classrooms, on the technology and on the people who work with it.",
+        "speakingCta": "Topics and past sessions"
+      },
+      "trustTitle": "Why trust this",
+      "trust": {
+        "local": "Runs on your machine",
+        "localBody": "Every tool computes in your browser. No upload, no logging, no account.",
+        "sourced": "Sourced, with dates",
+        "sourcedBody": "Technical claims cite vendor documentation and standards, each with the date it was read.",
+        "open": "Open source",
+        "openBody": "The whole site is a public repository. Read the code behind any result.",
+        "named": "A named author",
+        "namedBody": "One person, thirty years in the field, with a career record you can check."
+      },
+      "builtBy": "Built and maintained by Rodolfo Nützmann, a network and security engineer and instructor since 1996.",
+      "proofCredentials": "Credentials",
+      "proofEndorsements": "{count} endorsements, verbatim",
+      "proofColophon": "Colophon: how this is made",
+      "publicSource": "Source",
+      "publicChangelog": "Changelog",
+      "publicRoadmap": "Roadmap",
+      "continueTitle": "Continue where you left off",
+      "continueForget": "Forget these",
+      "continueNote": "Stored only in this browser. No account, nothing sent.",
+      "everythingTitle": "Everything on ronutz",
+      "everythingBody": "The complete directory, grouped by what you came to do.",
+      "world": {
+        "use": "Use",
+        "understand": "Understand",
+        "explore": "Explore",
+        "work": "Work with me",
+        "project": "The project"
+      },
+      "worldVerb": {
+        "use": "compute",
+        "understand": "read",
+        "explore": "trace",
+        "work": "hire",
+        "project": "about"
+      },
+      "endorsementsBadge": "{count} verbatim"
     }
   },
   "tools": {
@@ -9976,13 +10119,13 @@
     "short1": "This site sets no cookies, uses no advertising, and contains no third-party trackers or fingerprinting. Nothing follows you across the web. It does count requests at the server, in aggregate, and that counting is described in full below.",
     "short2": "It does not sell, share, or build profiles of its visitors, and it asks you for nothing in order to read it.",
     "short3": "The interactive tools run entirely in your browser. What you paste or type into them stays on your device and is not transmitted anywhere.",
-    "short4": "Only four things involve data at all, and each is explained below: a single theme setting saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, the aggregate request counts this site keeps at the server, and any message you choose to send by email.",
+    "short4": "Only four things involve data at all, and each is explained below: a handful of preferences and one short reading trail saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, the aggregate request counts this site keeps at the server, and any message you choose to send by email.",
     "controllerTitle": "Who is responsible",
     "controllerBody": "This is the personal website of Rodolfo Nützmann (ronutz.com). For any privacy question, or to exercise any of the rights described below, write to {email}. Enquiries are handled directly by Rodolfo Nützmann, as the data controller.",
     "noTrackTitle": "No cookies, no third-party analytics, and what is counted instead",
     "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records which page was served, the language, the visiting country as your network reports it, and whether the request came from a person or from a known crawler. The second records only a referring address, when your browser sends one, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent is never written; it is read only to decide whether the request came from a crawler, and the label kept is a category such as search engine or monitoring tool. No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
-    "browserBody": "One small thing: your chosen visual theme, saved in your browser's local storage so the site can remember it the next time you visit. It is a convenience setting that stays on your own device, is never sent to this site or to anyone else, and can be cleared at any time through your browser. No other data about you is stored on your device.",
+    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); the cards-or-list density you chose on an index page (ronutz:view:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); and, on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
     "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). It is retained only briefly by the provider and is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
@@ -10002,7 +10145,7 @@
     "updated": "Last updated: 30 June 2026",
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
-    "prefsBody": "Your theme choice is stored only in this browser's localStorage, on your device, and applied before first paint on your next visit; there is no cookie, no account, and no server that ever sees it, which also means it cannot follow you: a private window, cleared site data, or a different browser or device starts you back at the default theme by design. Your language is not stored anywhere at all, because it lives in the address itself: /en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it, while visiting the bare domain serves the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
+    "prefsBody": "Your preferences, your reading trail and the two dev-room values are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
     "shortcutsTitle": "Keyboard shortcuts",
     "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore."
   },

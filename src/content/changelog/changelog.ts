@@ -52,6 +52,15 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-10-05",
+    time: "01:50",
+    kind: "feature",
+    title: "The front door, rebuilt around what you came to do",
+    body:
+      "The home page no longer opens with the size of the site. It opens with the thesis (a network and security workbench built from thirty years inside the field), a search field that hands your words to the one search dialog, three counts, and six doors named for intents rather than sections: calculate or inspect, understand, trace a company or a story, train, decide, or let the site surprise you. A compact CIDR check answers as you type, with the privacy sentence beside the result. What's happening is generated: the newest tool, article and improvement from this changelog; the most-read pages of the week from the site's own anonymous counts, titled through a small index built at every build; and a rabbit hole into the whole corpus (a useful tool, something weird, a forgotten company). The vendor hubs are a strip of chips, kept a whole section away from the Training card that names the four platforms taught. Work with me, Why trust this and the complete directory (twenty-one destinations in five worlds) follow, in that order. One personal touch, built the only way this site builds such things: the last six pages you opened are kept in your own browser and offered again under Continue where you left off, with a button that forgets them. The privacy page now lists every key the site writes to a browser, including two it had never named (the language you last used, which the bare domain honours, and your keyboard shortcut bindings), and describes the new trail. On phones the search field sits directly under the title and something useful is within two screens.",
+    links: [{ label: "Privacy: what is stored in your browser", href: "/privacy" }],
+  },
+  {
     date: "2026-10-04",
     time: "23:45",
     kind: "content",

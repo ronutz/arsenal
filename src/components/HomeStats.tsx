@@ -48,9 +48,12 @@ interface HomeStatsProps {
   tools: number;
   /** Number of Learn articles — derived in page.tsx from the EN corpus. */
   articles: number;
+  /** Number of companies in the industry record — derived in page.tsx from partners.ts (2026-10-05: the
+   *  third figure of the new front door, "utility · knowledge · history"). Optional so older callers hold. */
+  companies?: number;
 }
 
-export default function HomeStats({ tools, articles }: HomeStatsProps) {
+export default function HomeStats({ tools, articles, companies }: HomeStatsProps) {
   const t = useTranslations("home");
 
   // Ref to the band, so the IntersectionObserver can watch it.
@@ -115,6 +118,7 @@ export default function HomeStats({ tools, articles }: HomeStatsProps) {
   // The figures shown this frame. round() keeps them whole as they climb.
   const shownTools = Math.round(progress * tools);
   const shownArticles = Math.round(progress * articles);
+  const shownCompanies = Math.round(progress * (companies ?? 0));
 
   return (
     <section
@@ -156,6 +160,24 @@ export default function HomeStats({ tools, articles }: HomeStatsProps) {
               {t("stats.articles")}
             </span>
           </Link>
+
+          {/* Companies — the third figure (2026-10-05), only when the page passes it: utility · knowledge · history. */}
+          {typeof companies === "number" && (
+            <>
+              <span className="stat-sep" aria-hidden="true" />
+              <Link href="/industry" className="stat stat-link">
+                <span className="sr-only">
+                  {companies} {t("stats.companies")}
+                </span>
+                <span className="stat-value" aria-hidden="true">
+                  {shownCompanies}
+                </span>
+                <span className="stat-label" aria-hidden="true">
+                  {t("stats.companies")}
+                </span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </section>

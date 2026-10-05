@@ -66,7 +66,7 @@ if (!fs.existsSync(BASE)) {
 // swap: give a new route family the default title and fix the homepage in the same
 // change, and the total is still two.
 const DECLARED_DEFAULT = new Map([
-  ["/", "The homepage, where the site itself IS the subject, so the site-wide title is the correct title rather than a fallback."],
+  ["/", "The homepage, where the site itself IS the subject. Since 2026-10-05 it sets its own title (home.front.metaTitle, 'ronutz · Network & security tools, knowledge, history and practice', PRIME's decision 4 of 05/10), which shares the 'ronutz · Network' opening this guard keys on by design: a title that starts with the site name is the right one here and a fallback anywhere else."],
   ["/dev/other/serial-console", "A dev route, not public surface. Nothing competes with it for search intent."],
 ]);
 

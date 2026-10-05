@@ -30,6 +30,7 @@ import { dirFor, getLocale } from "@/i18n/locales";
 import InputModality from "@/components/InputModality";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import ConsoleGreeting from "@/components/ConsoleGreeting";
+import RecentPagesRecorder from "@/components/RecentPagesRecorder";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import { SHORTCUT_ACTIONS } from "@/config/shortcuts";
 import { LIVE_LOCALE_CODES, DEFAULT_LOCALE } from "@/i18n/locales";
@@ -242,7 +243,13 @@ export default async function LocaleLayout({
         )}
         {/* Root provider carries only the global client-chrome namespaces (A1).
             Route layouts/pages add their own namespace via a nested provider. */}
-        <NextIntlClientProvider messages={globalClientMessages}>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={globalClientMessages}>
+          {children}
+          {/* The local trail behind the home page's "Continue where you left off" (2026-10-05): writes the
+              current page into this browser's storage and nowhere else; renders nothing. Inside the
+              provider because next-intl's usePathname needs the locale context. */}
+          <RecentPagesRecorder />
+        </NextIntlClientProvider>
         {/* The one console line (PRIME, 2026-10-04): side effect only, no markup, no messages needed. */}
         <ConsoleGreeting />
       </body>

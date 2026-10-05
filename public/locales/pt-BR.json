@@ -93,7 +93,8 @@
       "headline": "Disponíveis agora",
       "tools": "Ferramentas",
       "articles": "Artigos",
-      "sectionLabel": "O conjunto de ferramentas em números"
+      "sectionLabel": "O conjunto de ferramentas em números",
+      "companies": "Empresas"
     },
     "map": {
       "title": "Seções",
@@ -153,6 +154,148 @@
       "stories": "Histórias",
       "storiesLede": "Os artigos que ligam outros artigos: o que os casos de falha têm em comum, o que uma requisição de fato atravessa, por que o mesmo defeito se repete.",
       "storiesBadge": "{count} fios"
+    },
+    "front": {
+      "metaTitle": "ronutz · Ferramentas, conhecimento, história e prática de redes e segurança",
+      "metaDescription": "Ferramentas de rede e segurança que calculam no seu navegador e preservam a privacidade, artigos técnicos com fontes, a história da indústria e das pessoas que a construíram, e treinamento com instrutor e consultoria executiva de quem tem trinta anos de campo.",
+      "title": "Uma bancada de redes e segurança construída em trinta anos dentro da área",
+      "lede": "Ferramentas para usar, explicações para aprender, as empresas e as pessoas que construíram a indústria, e treinamento e consultoria profissionais quando o problema sai do navegador.",
+      "tag": "Redes e segurança, do pacote às pessoas por trás dele.",
+      "omniboxLabel": "Buscar no ronutz",
+      "omniboxPlaceholder": "O que você procura? Ferramentas, artigos, empresas, certificações, termos...",
+      "omniboxExamples": "Experimente:",
+      "startTitle": "Comece por aqui",
+      "intent": {
+        "tools": {
+          "q": "Preciso calcular ou inspecionar algo",
+          "label": "Ferramentas",
+          "verb": "calcular"
+        },
+        "learn": {
+          "q": "Quero entender como algo funciona",
+          "label": "Aprender",
+          "verb": "ler"
+        },
+        "industry": {
+          "q": "Estou rastreando uma empresa, um produto ou uma história",
+          "label": "Indústria",
+          "verb": "rastrear"
+        },
+        "training": {
+          "q": "Preciso treinar a mim ou a uma equipe",
+          "label": "Treinamentos",
+          "verb": "treinar"
+        },
+        "advisory": {
+          "q": "Tenho uma decisão importante a tomar",
+          "label": "Consultoria",
+          "verb": "decidir"
+        },
+        "surprise": {
+          "q": "Ainda não sei. Mostre algo interessante",
+          "label": "Leve-me a algum lugar",
+          "verb": "vagar"
+        }
+      },
+      "tryTitle": "Experimente agora",
+      "tryBody": "Digite um bloco e leia a resposta enquanto digita. A calculadora completa, com sub-redes, VLSM e verificação de sobreposição, está a um clique.",
+      "quickLabel": "Bloco CIDR",
+      "quickNetwork": "Rede",
+      "quickBroadcast": "Broadcast",
+      "quickRange": "Faixa utilizável",
+      "quickHosts": "Hosts utilizáveis",
+      "quickWaiting": "Complete o bloco (endereço e prefixo, como 10.0.0.0/8) para ver a resposta.",
+      "quickPrivacy": "Calculado no seu navegador. Nada foi enviado, nada foi registrado.",
+      "quickPrivacyLink": "Como a privacidade funciona aqui",
+      "quickFull": "Abrir a calculadora CIDR completa",
+      "quickToolbox": "Todas as ferramentas",
+      "happeningTitle": "O que está acontecendo",
+      "newTitle": "Novo",
+      "shipped": {
+        "tool": "Nova ferramenta",
+        "article": "Novo artigo",
+        "improvement": "Melhoria"
+      },
+      "changelogLink": "Changelog completo",
+      "popularTitle": "Mais lidos esta semana",
+      "popularNote": "Contados a partir de visualizações anônimas de página, iguais para todos os leitores.",
+      "popularStats": "Como a contagem funciona",
+      "kind": {
+        "tool": "Ferramenta",
+        "article": "Artigo",
+        "company": "Empresa",
+        "person": "Pessoa",
+        "term": "Termo",
+        "guide": "Guia"
+      },
+      "surpriseTitle": "Leve-me a algum lugar",
+      "surpriseLede": "Uma porta aleatória para todo o acervo: uma empresa esquecida, uma ferramenta curiosa, um termo que ninguém diz em voz alta, uma pessoa que mudou a área.",
+      "surpriseMain": "Surpreenda-me",
+      "surpriseTool": "uma ferramenta útil",
+      "surpriseWeird": "algo estranho",
+      "surpriseCompany": "uma empresa esquecida",
+      "surpriseFailed": "A porta não abriu. Tente de novo.",
+      "archiveLine": "O ancestral mais antigo daqui é de 2004:",
+      "archiveTool": "a calculadora de bits e bytes, reconstruída",
+      "archiveSites": "os sites anteriores",
+      "platformsTitle": "Navegue por plataforma",
+      "platformsBody": "Uma porta por fabricante: as ferramentas, os artigos, os termos do glossário e o material de certificação daquela plataforma, reunidos em um só lugar.",
+      "platformsAll": "Todos os hubs de fabricantes",
+      "workTitle": "Trabalhe comigo",
+      "workBody": "Quando o problema sai do navegador. Três caminhos, cada um com a própria página e os próprios termos.",
+      "work": {
+        "trainingVerb": "Treinar",
+        "trainingTitle": "Treinamentos",
+        "trainingBody": "Cursos autorizados com instrutor em quatro plataformas, ensinados a partir da prática de engenharia, e não do slide.",
+        "trainingVia": "ministrados pela Red Education",
+        "trainingCta": "Cursos, agenda e o que esperar",
+        "advisoryVerb": "Decidir",
+        "advisoryTitle": "Consultoria",
+        "advisoryBody": "Julgamento técnico executivo sobre uma decisão de tecnologia antes que ela seja tomada: trabalho com escopo, uma resposta escrita que você defende internamente, sem plantão.",
+        "advisoryCta": "Como funciona um engajamento",
+        "speakingVerb": "Ouvir",
+        "speakingTitle": "Palestras",
+        "speakingBody": "Palestras e sessões para equipes, conferências e salas de aula, sobre a tecnologia e sobre as pessoas que trabalham com ela.",
+        "speakingCta": "Temas e sessões anteriores"
+      },
+      "trustTitle": "Por que confiar",
+      "trust": {
+        "local": "Roda na sua máquina",
+        "localBody": "Cada ferramenta calcula no seu navegador. Sem envio, sem registro, sem conta.",
+        "sourced": "Com fontes e datas",
+        "sourcedBody": "As afirmações técnicas citam a documentação dos fabricantes e as normas, cada uma com a data em que foi lida.",
+        "open": "Código aberto",
+        "openBody": "O site inteiro é um repositório público. Leia o código por trás de qualquer resultado.",
+        "named": "Autoria nomeada",
+        "namedBody": "Uma pessoa, trinta anos na área, com um registro de carreira que você pode conferir."
+      },
+      "builtBy": "Construído e mantido por Rodolfo Nützmann, engenheiro e instrutor de redes e segurança desde 1996.",
+      "proofCredentials": "Credenciais",
+      "proofEndorsements": "{count} depoimentos, na íntegra",
+      "proofColophon": "Colofão: como isto é feito",
+      "publicSource": "Código-fonte",
+      "publicChangelog": "Changelog",
+      "publicRoadmap": "Roadmap",
+      "continueTitle": "Continue de onde parou",
+      "continueForget": "Esquecer estes",
+      "continueNote": "Guardado apenas neste navegador. Sem conta, nada enviado.",
+      "everythingTitle": "Tudo no ronutz",
+      "everythingBody": "O diretório completo, agrupado pelo que você veio fazer.",
+      "world": {
+        "use": "Usar",
+        "understand": "Entender",
+        "explore": "Explorar",
+        "work": "Trabalhe comigo",
+        "project": "O projeto"
+      },
+      "worldVerb": {
+        "use": "calcular",
+        "understand": "ler",
+        "explore": "rastrear",
+        "work": "contratar",
+        "project": "sobre"
+      },
+      "endorsementsBadge": "{count} na íntegra"
     }
   },
   "tools": {
@@ -9976,13 +10119,13 @@
     "short1": "Este site não usa cookies, não usa publicidade e não contém rastreadores de terceiros nem impressão digital de dispositivo. Nada segue você pela web. Ele conta requisições no servidor, de forma agregada, e essa contagem está descrita por inteiro abaixo.",
     "short2": "Ele não vende, compartilha nem cria perfis de seus visitantes, e não pede nada de você para que você o leia.",
     "short3": "As ferramentas interativas funcionam inteiramente no seu navegador. O que você cola ou digita nelas permanece no seu dispositivo e não é transmitido a lugar nenhum.",
-    "short4": "Apenas quatro coisas envolvem dados, e cada uma está explicada abaixo: uma única preferência de tema salva no seu próprio navegador, os registros de conexão padrão que toda visita a um site cria na camada de hospedagem, as contagens agregadas de requisição que este site mantém no servidor, e qualquer mensagem que você escolha enviar por e-mail.",
+    "short4": "Apenas quatro coisas envolvem dados, e cada uma está explicada abaixo: um punhado de preferências e uma pequena trilha de leitura salvas no seu próprio navegador, os registros de conexão padrão que toda visita a um site cria na camada de hospedagem, as contagens agregadas de requisição que este site mantém no servidor, e qualquer mensagem que você escolha enviar por e-mail.",
     "controllerTitle": "Quem é o responsável",
     "controllerBody": "Este é o site pessoal de Rodolfo Nützmann (ronutz.com). Para qualquer questão de privacidade, ou para exercer qualquer dos direitos descritos abaixo, escreva para {email}. As solicitações são tratadas diretamente por Rodolfo Nützmann, na condição de controlador dos dados.",
     "noTrackTitle": "Sem cookies, sem analytics de terceiros, e o que é contado no lugar",
     "noTrackBody": "Este site não usa cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), nem rede de publicidade, nem pixel de rastreamento de rede social, nem impressão digital de dispositivo. Nenhum script na página reporta nada sobre você.\n\nO que o site mantém é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. Dois registros separados são escritos, e eles são mantidos apartados de propósito, para que nenhum possa ser casado com o outro. O primeiro registra qual página foi servida, o idioma, o país de visita conforme a sua rede o informa, e se a requisição veio de uma pessoa ou de um rastreador conhecido. O segundo registra apenas um endereço de origem, quando o seu navegador envia um, e não carrega mais nada - nem página, nem país, nem correlação de tempo com o primeiro.\n\nSeu endereço IP nunca é gravado. O agente de usuário do seu navegador nunca é gravado; ele é lido apenas para decidir se a requisição veio de um rastreador, e o que fica guardado é uma categoria, como buscador ou ferramenta de monitoração. Nenhum identificador é usado, então não há visitante a perfilar, não há sessão a reconstruir, e não há nada a compartilhar.",
     "browserTitle": "O que é armazenado no seu navegador",
-    "browserBody": "Uma única coisa pequena: o tema visual que você escolher, salvo no armazenamento local (local storage) do seu navegador para que o site possa lembrá-lo na sua próxima visita. É uma configuração de conveniência que permanece no seu próprio dispositivo, nunca é enviada a este site nem a ninguém, e pode ser apagada a qualquer momento pelo seu navegador. Nenhum outro dado sobre você é armazenado no seu dispositivo.",
+    "browserBody": "Algumas coisas pequenas, todas no armazenamento local (local storage) do seu navegador, nenhuma delas jamais enviada a este site nem a ninguém, cada uma apagável pelo seu navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio puro possa levá-lo de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); a densidade em cartões ou lista que você escolheu em uma página de índice (ronutz:view:*); as últimas seis páginas que você abriu, para que a página inicial possa oferecê-las de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); e, em duas páginas da sala dev apenas, uma chave de movimento e uma pontuação de prática (ronutz-mb-motion, ronutz:subnet-drill:stats). Um único sinalizador de sessão (ronutz.privPreview) existe para a pré-visualização privada do autor de páginas não publicadas e nunca é definido para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e registros de servidor",
     "hostingBody": "O site é entregue por meio da Cloudflare, que fornece a sua hospedagem e a entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, atuando como provedora de hospedagem, processa dados básicos de conexão — incluindo o seu endereço IP e detalhes padrão da requisição — para entregar as páginas a você e proteger o site contra abuso e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR e das bases correspondentes dos Artigos 7 e 10 da LGPD). É retido apenas brevemente pela provedora e não é usado aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas funcionam no seu navegador",
@@ -10002,7 +10145,7 @@
     "updated": "Última atualização: 30 de junho de 2026",
     "backHome": "Voltar para o início",
     "prefsTitle": "Tema, idioma e o que este site lembra",
-    "prefsBody": "Sua escolha de tema é guardada apenas no localStorage deste navegador, no seu dispositivo, e aplicada antes da primeira pintura na próxima visita; não há cookie, não há conta e nenhum servidor jamais a vê, o que também significa que ela não pode seguir você: uma janela privada, os dados de site limpos, ou outro navegador ou dispositivo recomeçam no tema padrão, por desenho. Seu idioma não é guardado em lugar nenhum, porque ele mora no próprio endereço: /en/ e /pt-BR/ são páginas diferentes, então favoritar ou compartilhar uma URL no seu idioma o mantém, enquanto visitar o domínio puro serve o padrão. Essa é a troca inteira: sem contas e sem rastreamento, preferências só podem morar onde você pode vê-las e apagá-las.",
+    "prefsBody": "Suas preferências, sua trilha de leitura e os dois valores da sala dev são guardados apenas no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira pintura na próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela privada, os dados de site limpos, ou outro navegador ou dispositivo recomeçam nos padrões, por desenho. Seu idioma funciona em duas camadas: ele mora no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então favoritar ou compartilhar uma URL no seu idioma o mantém), e o último idioma que você usou também fica lembrado neste navegador, para que uma visita ao domínio puro chegue nele e não no padrão. Essa é a troca inteira: sem contas e sem rastreamento, preferências só podem morar onde você pode vê-las e apagá-las.",
     "shortcutsTitle": "Atalhos de teclado",
     "shortcutsBody": "O site tem alguns atalhos de tecla única para navegação rápida, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de uma convincente aplicação de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles são deliberadamente inertes sempre que você está digitando: se o foco está em um campo de texto, uma caixa de colar, um campo de busca, ou qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita é jamais engolido. Eles também são ignorados quando uma tecla modificadora está pressionada, então as combinações do seu próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não adicionam rastreamento algum, e são puramente uma conveniência que você pode ignorar."
   },

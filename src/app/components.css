@@ -18816,3 +18816,218 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    -------------------------------------------------------------------------- */
 .milestones-count { margin: 1rem 0 1.5rem; font-size: 0.95rem; letter-spacing: 0.02em; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .milestones-back { margin: 0; }
+
+/* ===========================================================================
+   THE HOME PAGE FRONT DOOR (2026-10-05, REVIEW-chatgpt-home-page-and-learn-hub
+   in the canon, PRIME's decisions of 05/10). Nine sections, in the order
+   promise > experience > explanation > evidence; every class below is named
+   for the section it belongs to (front-, omnibox-, intent-, quick-cidr-,
+   happening-, rabbit-, platform-, work-, trust-, continue-, world-). Colours
+   are theme tokens only; the one hue reserved elsewhere (--color-wasm) is
+   deliberately not used here.
+   =========================================================================== */
+
+/* --- 1. Hero: the thesis, the memorable line, the search field ------------ */
+/* The stats band below draws its own top rule, so the hero draws no bottom one. */
+.front-hero { border-bottom: 0; padding-block-end: clamp(2rem, 6vw, 4rem); }
+/* The landing scale: larger than the page-hero standard, smaller than the old toolbox hero. */
+.front-title { font-size: clamp(2rem, 5.5vw, 3.4rem); line-height: 1.08; letter-spacing: -0.025em; max-width: 24ch; }
+.front-lede { font-size: clamp(1.05rem, 2vw, 1.2rem); max-width: 62ch; margin-bottom: 0.9rem; }
+/* The closing line (PRIME, decision 1): the one sentence meant to be remembered, set apart by weight and an accent rule. */
+.front-tag { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); max-width: 62ch; margin: 0; padding-inline-start: 0.85rem; border-inline-start: 3px solid var(--accent-primary); }
+
+/* The omnibox: one field that opens the site's single search dialog with the text already in it. */
+.omnibox { margin-top: 2rem; max-width: 42rem; }
+.omnibox-field { display: flex; align-items: center; gap: 0.65rem; padding: 0.2rem 0.9rem 0.2rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+.omnibox-field:focus-within { border-color: var(--accent-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent); }
+.omnibox-icon { flex: none; color: var(--text-tertiary); }
+.omnibox-input { flex: 1 1 auto; min-width: 0; padding: 0.8rem 0; background: transparent; border: 0; color: var(--text-primary); font-size: 1.05rem; font-family: inherit; }
+.omnibox-input:focus { outline: none; }
+.omnibox-input::placeholder { color: var(--text-tertiary); }
+/* The search field's own clear button would compete with the dialog's; hidden in the engines that draw one. */
+.omnibox-input::-webkit-search-cancel-button { -webkit-appearance: none; appearance: none; }
+.omnibox-kbd { flex: none; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; padding: 0.15rem 0.45rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-tertiary); background: var(--canvas-primary); }
+.omnibox-examples { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.5rem; margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--text-secondary); }
+.omnibox-examples-label { margin-inline-end: 0.15rem; }
+.omnibox-example { padding: 0.25rem 0.7rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.78rem; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.omnibox-example:hover, .omnibox-example:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+
+/* --- 2. Start here: six intents, each a question, a destination and a verb -- */
+.intent-grid { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 1rem; }
+@media (min-width: 36rem) { .intent-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 56rem) { .intent-grid { grid-template-columns: repeat(3, 1fr); } }
+/* The item carries the accent as a custom property set inline by the page; the link reads it. */
+.intent { min-width: 0; }
+.intent-link { display: flex; flex-direction: column; gap: 0.45rem; height: 100%; padding: 1rem 1.1rem 1.05rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--intent-accent, var(--accent-primary)); border-radius: var(--radius-md); background: color-mix(in srgb, var(--intent-accent, var(--accent-primary)) 6%, var(--surface-base)); color: inherit; text-decoration: none; transition: transform 140ms ease, border-color 140ms ease, background 140ms ease; }
+.intent-link:hover, .intent-link:focus-visible { transform: translateY(-2px); border-color: color-mix(in srgb, var(--intent-accent, var(--accent-primary)) 55%, var(--border-subtle)); background: color-mix(in srgb, var(--intent-accent, var(--accent-primary)) 10%, var(--surface-base)); }
+.intent-q { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.4; }
+.intent-label { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.01em; }
+.intent-verb { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--intent-accent, var(--accent-primary)); }
+/* The sixth card is a door to the rabbit hole lower on the page, dashed because it is not a section. */
+.intent--surprise .intent-link { border-style: dashed; border-inline-start-style: solid; }
+
+/* --- 3. Try something now: the compact CIDR check with its privacy sentence -- */
+.quick-cidr { margin-top: 1.5rem; padding: clamp(1.1rem, 3vw, 1.6rem); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.quick-cidr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; }
+.quick-cidr-label { font-size: 0.85rem; color: var(--text-secondary); }
+/* Overrides on the shared .cidr-input: a larger field, capped so it does not stretch across the card. */
+.quick-cidr-input { flex: 1 1 14rem; max-width: 24rem; font-size: 1.15rem; }
+.quick-cidr-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); gap: 0.9rem 1.5rem; margin: 1.25rem 0 0; }
+.quick-cidr-fact dt { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: 0.2rem; }
+.quick-cidr-fact dd { margin: 0; font-size: 1.05rem; color: var(--text-primary); overflow-wrap: anywhere; }
+.quick-cidr-waiting { margin: 1.25rem 0 0; font-size: 0.95rem; color: var(--text-secondary); }
+.quick-cidr-privacy { display: flex; align-items: baseline; gap: 0.5rem; margin: 1.25rem 0 0; font-size: 0.9rem; color: var(--text-secondary); }
+.quick-cidr-privacy-text { flex: 1 1 auto; min-width: 0; }
+.quick-cidr-privacy a { color: var(--accent-primary); text-decoration: none; }
+.quick-cidr-privacy a:hover { text-decoration: underline; }
+/* The green dot: computed here, nothing left the machine. */
+.quick-cidr-dot { flex: none; align-self: center; width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--color-success); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 25%, transparent); }
+.quick-cidr-more { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin: 1.25rem 0 0; }
+.quick-cidr-toolbox { color: var(--accent-primary); text-decoration: none; font-size: 0.95rem; }
+.quick-cidr-toolbox:hover { text-decoration: underline; }
+
+/* --- 4. What's happening: new, most read, a rabbit hole ------------------- */
+.happening-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.75rem 2rem; margin-top: 1.5rem; }
+/* min-width 0 so a long title wraps inside its column instead of widening the grid. */
+.happening-col { min-width: 0; }
+.happening-col--popular { order: 0; }
+/* The rabbit-hole column takes the whole row when the grid wraps to one column; otherwise it is the third. */
+.happening-col--surprise { order: 1; }
+.happening-title { margin: 0 0 0.8rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-secondary); }
+.happening-lede { margin: 0 0 0.9rem; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
+.happening-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.happening-item { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; }
+/* The kind badge: the colour names the kind of thing, consistently across New, Most read and the rabbit hole. */
+.happening-kind { --kind-color: var(--accent-primary); font-family: var(--font-mono); font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--kind-color) 45%, transparent); background: color-mix(in srgb, var(--kind-color) 10%, transparent); color: var(--kind-color); white-space: nowrap; }
+.happening-kind--tool { --kind-color: var(--accent-primary); }
+.happening-kind--article { --kind-color: var(--color-warning); }
+.happening-kind--improvement { --kind-color: var(--color-neutral); }
+.happening-kind--company { --kind-color: var(--color-success); }
+.happening-kind--person { --kind-color: var(--accent-amber); }
+.happening-kind--term { --kind-color: var(--color-info); }
+.happening-kind--guide { --kind-color: var(--color-orange); }
+.happening-link { color: var(--text-primary); text-decoration: none; font-weight: 500; }
+.happening-link:hover, .happening-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+.happening-date { font-size: 0.72rem; color: var(--text-tertiary); }
+.happening-note { margin: 0.9rem 0 0; font-size: 0.85rem; color: var(--text-secondary); }
+.happening-note a { color: var(--accent-primary); text-decoration: none; }
+.happening-note a:hover { text-decoration: underline; }
+/* From the archive: the oldest ancestor, under a dashed rule so it reads as a footnote to the column. */
+.happening-archive { margin-top: 1.25rem; padding-top: 0.9rem; border-top: 1px dashed var(--border-subtle); }
+
+/* The rabbit hole: one button, three narrower ones, the pick. */
+.rabbit { display: flex; flex-direction: column; gap: 0.9rem; }
+.rabbit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.rabbit-main { font-weight: 600; }
+.rabbit-main:disabled { opacity: 0.6; cursor: wait; transform: none; }
+.rabbit-narrow { padding: 0.45rem 0.85rem; border: 1px solid var(--border-strong); border-radius: 999px; background: transparent; color: var(--text-secondary); font-size: 0.85rem; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.rabbit-narrow:hover, .rabbit-narrow:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.rabbit-narrow:disabled { opacity: 0.6; cursor: wait; }
+.rabbit-pick { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.35rem 0.6rem; margin: 0; padding: 0.8rem 0.95rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.rabbit-link { font-weight: 600; color: var(--text-primary); text-decoration: none; }
+.rabbit-link:hover, .rabbit-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+
+/* --- 5. Browse by platform: the vendor hubs as a strip of chips ----------- */
+.platform-strip { list-style: none; margin: 1.25rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* Each chip reads the vendor colour the page sets as --chip-color, the same property the family chips use. */
+.platform-link { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.42rem 0.9rem; border: 1px solid color-mix(in srgb, var(--chip-color, var(--accent-primary)) 40%, var(--border-subtle)); border-radius: 999px; background: color-mix(in srgb, var(--chip-color, var(--accent-primary)) 8%, transparent); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: border-color 0.15s ease, background 0.15s ease; }
+.platform-link:hover, .platform-link:focus-visible { border-color: var(--chip-color, var(--accent-primary)); background: color-mix(in srgb, var(--chip-color, var(--accent-primary)) 16%, transparent); }
+.platform-link--all { --chip-color: var(--accent-primary); border-style: dashed; }
+
+/* --- 6. Work with me: three cards, three verbs ---------------------------- */
+.work-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.work-card { --work-accent: var(--accent-primary); display: flex; flex-direction: column; gap: 0.6rem; padding: 1.2rem 1.25rem 1.35rem; border: 1px solid var(--border-subtle); border-top: 3px solid var(--work-accent); border-radius: var(--radius-md); background: var(--surface-base); }
+/* The partner's colour for Training, amber for Advisory, info blue for Speaking: three cards, three accents. */
+.work-card--training { --work-accent: var(--redu-brand); }
+.work-card--advisory { --work-accent: var(--accent-amber); }
+.work-card--speaking { --work-accent: var(--color-info); }
+.work-verb { margin: 0; font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--work-accent); }
+.work-title { margin: 0; font-size: 1.35rem; line-height: 1.2; }
+.work-title a { color: var(--text-primary); text-decoration: none; }
+.work-title a:hover, .work-title a:focus-visible { color: var(--accent-primary); }
+.work-body { margin: 0; flex: 1; font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; }
+/* The four platforms taught, as a quiet line of names on the Training card only. */
+.work-platforms { margin: 0; font-size: 0.78rem; letter-spacing: 0.02em; color: var(--text-secondary); }
+.work-via { margin: 0; font-size: 0.85rem; }
+.work-via-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; }
+.work-via-link:hover, .work-via-link:focus-visible { color: var(--text-primary); }
+.work-via-text { flex: 1 1 auto; min-width: 0; }
+.work-card .page-jump-link { align-self: flex-start; margin-top: 0.25rem; }
+
+/* --- 7. Why trust this: four kinds of trust, one sentence, four proofs ---- */
+.trust-strip { list-style: none; margin: 1.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.75rem; }
+.trust-item { min-width: 0; }
+.trust-link { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; padding: 0.95rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--canvas-primary); color: inherit; text-decoration: none; transition: border-color 0.15s ease; }
+.trust-link:hover, .trust-link:focus-visible { border-color: var(--accent-primary); }
+.trust-head { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.trust-body { font-size: 0.85rem; line-height: 1.45; color: var(--text-secondary); }
+/* The one sentence of biography, in the primary colour because it is the claim the proofs below support. */
+.trust-bio { margin-top: 1.75rem; color: var(--text-primary); }
+.trust-proofs { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; }
+.trust-proofs a { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.85rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; transition: border-color 0.15s ease, color 0.15s ease; }
+.trust-proofs a:hover, .trust-proofs a:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.trust-public { margin: 1.25rem 0 0; font-size: 0.78rem; letter-spacing: 0.02em; color: var(--text-tertiary); }
+.trust-public a { color: inherit; text-decoration: none; }
+.trust-public a:hover, .trust-public a:focus-visible { color: var(--accent-primary); }
+
+/* --- 8. Continue where you left off: a compact band, present only when there is a trail */
+.continue-section { padding-block: clamp(1.5rem, 4vw, 2.5rem); }
+.continue-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
+.continue-title { margin: 0; font-size: 1.15rem; }
+.continue-forget { padding: 0.3rem 0.8rem; border: 1px solid var(--border-subtle); border-radius: 999px; background: transparent; color: var(--text-secondary); font-size: 0.8rem; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.continue-forget:hover, .continue-forget:focus-visible { border-color: var(--color-danger); color: var(--color-danger); }
+.continue-list { list-style: none; margin: 0.9rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.continue-link { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.45rem 0.85rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-primary); text-decoration: none; font-size: 0.9rem; transition: border-color 0.15s ease; }
+.continue-link:hover, .continue-link:focus-visible { border-color: var(--accent-primary); }
+.continue-note { margin: 0.75rem 0 0; font-size: 0.78rem; color: var(--text-tertiary); }
+
+/* --- 9. Everything on ronutz: five worlds, compact and late --------------- */
+.worlds { display: grid; grid-template-columns: 1fr; gap: 1.5rem 2rem; margin-top: 1.5rem; }
+@media (min-width: 30rem) { .worlds { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 48rem) { .worlds { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 64rem) { .worlds { grid-template-columns: repeat(5, 1fr); } }
+.world { --world-accent: var(--border-strong); min-width: 0; padding-top: 0.75rem; border-top: 2px solid var(--world-accent); }
+/* The world accents follow the intents above: use = tools, understand = learn, explore = industry, work = advisory, project = neutral. */
+.world--use { --world-accent: var(--accent-primary); }
+.world--understand { --world-accent: var(--color-warning); }
+.world--explore { --world-accent: var(--color-success); }
+.world--work { --world-accent: var(--accent-amber); }
+.world--project { --world-accent: var(--color-neutral); }
+.world-title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.world-verb { margin: 0.15rem 0 0.75rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--world-accent); }
+.world-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; }
+.world-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.world-link { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; }
+.world-link:hover, .world-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+.world-count { font-size: 0.72rem; color: var(--text-tertiary); white-space: nowrap; }
+
+/* Phones (review item 44, the mobile acceptance test: search or a quick action within the first viewport, something
+   useful within two). The search field moves up under the H1, with the lede and the closing line following it; the
+   counts band and the intent cards tighten; the keyboard hint is meaningless without a keyboard and goes; the date on
+   a "New" row drops under its title. */
+@media (max-width: 40rem) {
+  .front-hero .container { display: flex; flex-direction: column; }
+  .front-hero .hero-eyebrow { font-size: 0.7rem; margin-bottom: 0.9rem; }
+  .front-title { order: 0; margin-bottom: 1rem; }
+  .omnibox { order: 1; margin: 0.25rem 0 1.5rem; }
+  .front-lede { order: 2; font-size: 1rem; margin-bottom: 0.75rem; }
+  .front-tag { order: 3; font-size: 1rem; }
+  .omnibox-kbd { display: none; }
+  .front-hero + .stats-band { padding: 1.6rem 0; }
+  .front-hero + .stats-band .stats-band-inner { gap: 1rem; }
+  .front-hero + .stats-band .stat { min-width: 0; flex: 1 1 0; }
+  .front-hero + .stats-band .stat-value { font-size: 2.1rem; }
+  .front-hero + .stats-band .stat-sep { height: 2.2rem; }
+  .intent-link { padding: 0.75rem 0.9rem 0.8rem; gap: 0.25rem; }
+  .intent-q { font-size: 0.85rem; }
+  .intent-label { font-size: 1.05rem; }
+  .intent-verb { display: none; }
+  .happening-date { flex-basis: 100%; }
+}
+@media (max-width: 25rem) {
+  .front-title { font-size: 1.85rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intent-link, .omnibox-field, .omnibox-example, .platform-link, .trust-link, .continue-link, .rabbit-narrow { transition: none; }
+  .intent-link:hover, .intent-link:focus-visible { transform: none; }
+}
