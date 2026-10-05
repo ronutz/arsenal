@@ -45,48 +45,110 @@
 .site-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 1.25rem;
+  align-items: center;
+  gap: 0.5rem 0.25rem;
+}
+/* THE BAR, REDESIGNED (PRIME 2026-10-04, adopting the independent review).
+   Three groups, one calm neutral at one weight for every label, the section's
+   accent reserved for hover and for the current page. The reasoning, in full,
+   is in SiteNav.tsx; the history of the four colour tiers it replaces
+   (2026-08-06, -09, -11) is kept further down this file for the record.
+
+   Groups: a hairline and a little space between knowledge | work | person. */
+.site-nav-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.1rem;
+}
+.site-nav-group + .site-nav-group {
+  margin-inline-start: 1.1rem;
+  padding-inline-start: 1.1rem;
+  border-inline-start: 1px solid var(--border-strong);
 }
 .site-nav-link {
-  /* SLIGHTLY BRIGHTER, DELIBERATELY NOT LOUDER (PRIME 2026-08-11: "a bit
-     shinier, brighter, so they pop-out a little bit more. Subtle, not
-     screaming.").
-
-     Three things were available and only two were taken.
-
-     TAKEN: the base colour lifts 30% of the way from --text-secondary towards
-     --text-primary. That is a nudge in the direction the eye already reads as
-     "active", and because it is a mix of two theme tokens it stays correct on
-     all 28 themes, light and dark, rather than being a hex that happens to look
-     right on one.
-
-     TAKEN: antialiased smoothing, which renders the strokes marginally crisper
-     and is the actual source of the "shine" - it changes how the glyph is drawn,
-     not how big or bold it is.
-
-     NOT TAKEN: font-weight. The bar was deliberately dropped to normal weight on
-     2026-08-09 and weight is not a tiering channel here; making it heavier would
-     undo a ruling rather than brighten anything. A text-shadow glow was also
-     rejected: at this size it reads as a blur, not a shine. */
-  color: color-mix(in srgb, var(--text-secondary) 70%, var(--text-primary) 30%);
+  /* One neutral for all six, brighter than the 2026-08-11 mix so the bar reads
+     confidently on every theme, and one weight (500): a reader should not have
+     to decode colour to tell what kind of destination a word is. */
+  --nav-accent: var(--accent-primary);
+  position: relative;
+  display: inline-block;
+  padding: 0.35rem 0;
+  color: color-mix(in srgb, var(--text-secondary) 40%, var(--text-primary) 60%);
   font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: color 0.15s ease;
 }
+/* The rule under a label: invisible at rest, the item's accent on hover and on
+   the current page. A pseudo-element rather than text-decoration so it can be
+   2px, sit below the descenders, and animate without moving the text. */
+.site-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--nav-accent);
+  opacity: 0;
+  transform: scaleX(0.6);
+  transform-origin: center;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
 .site-nav-link:hover {
   color: var(--text-primary);
 }
+.site-nav-link:hover::after {
+  opacity: 0.75;
+  transform: scaleX(1);
+}
+/* YOU ARE HERE: the current section, heavier and ruled in its own accent. The
+   attribute is set by SiteNav from the path, so the state is also announced to
+   assistive technology; weight and the rule mean colour is never the only
+   channel (WCAG 1.4.1). */
+.site-nav-link[aria-current="page"] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.site-nav-link[aria-current="page"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+/* Keyboard focus is unmistakable and does not depend on colour alone. */
+.site-nav-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+/* The accents, per section. Training keeps Red Education's colour as its
+   accent, and only as its accent: the word itself is no longer set in a
+   partner's low-contrast red, which is what the review measured at 4.33:1. */
+.site-nav-link--knowledge { --nav-accent: var(--accent-primary); }
+.site-nav-link--training { --nav-accent: var(--redu-brand); }
+.site-nav-link--advisory { --nav-accent: var(--accent-amber); }
+.site-nav-link--about { --nav-accent: var(--text-tertiary); }
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-link,
+  .site-nav-link::after { transition: none; }
+}
 /* Narrow / constrained windows: NEVER hide the nav. Drop it onto its own row
    below the wordmark + actions and let its links wrap, so every nav item stays
-   visible at any width (no hamburger, nothing disappears). */
+   visible at any width (no hamburger, nothing disappears). The group hairlines
+   stay; the group gaps tighten so the six words fit two rows at 320px. */
 @media (max-width: 48rem) {
   .site-nav {
     order: 1;
     flex-basis: 100%;
     justify-content: center;
-    padding-bottom: 0.35rem;
+    padding-bottom: 0.2rem;
   }
+  .site-nav-group { gap: 0.25rem 0.85rem; }
+  .site-nav-group + .site-nav-group { margin-inline-start: 0.85rem; padding-inline-start: 0.85rem; }
+  .site-nav-link { padding: 0.2rem 0; }
 }
 
 /* --- Hero --- */
@@ -15885,95 +15947,15 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
    hue than on the default. That is also the accessibility position: colour is
    never the only channel. */
 
-.site-nav-link.nav-primary {
-  color: var(--accent-primary);
-}
-
-.site-nav-link.nav-primary:hover {
-  color: var(--accent-primary);
-  text-decoration: underline;
-  text-underline-offset: 0.35em;
-}
-
-/* Training takes the Red Education brand colour, the same var(--redu-brand) the footer
-   credit uses. A RAW HEX IS CORRECT HERE and not a lapse: this is a partner's
-   brand colour rather than a site colour, so it must NOT shift with the theme -
-   for the same reason the footer hardcodes it. */
-/* TRAINING IN BOLD (PRIME 2026-08-11: "it is faded in relation to the text to
-   its right and its left").
-
-   HE WAS RIGHT, AND IT IS MEASURABLE. Contrast against the default canvas
-   (#020617):
-
-     Tools / Learn / Industry   #22d3ee   11.16:1
-     Advisory                   #f59e0b    9.39:1
-     About                      mixed     12.74:1
-     Training                   #a8605f    4.33:1   <- less than half
-
-   `--redu-brand` is Red Education's actual brand colour and is NOT ours to
-   adjust, so the colour stays. What changes is the weight.
-
-   AND THE WEIGHT IS NOT COSMETIC HERE. WCAG AA asks 4.5:1 for normal text and
-   3.0:1 for BOLD text. At 4.33:1 this link was BELOW the normal-text threshold;
-   as bold it is comfortably above the bold-text one. The fix PRIME asked for on
-   appearance is also the correct accessibility remedy.
-
-   NOTE ON THE 2026-08-09 RULING that dropped the bar to normal weight: this
-   does not reinstate weight as a TIERING channel - the four tiers are still
-   distinguished by colour alone. This is a contrast remedy for the single item
-   whose brand colour cannot be brightened. */
-.site-nav-link.nav-training {
-  color: var(--redu-brand);
-  font-weight: 600;
-}
-
-.site-nav-link.nav-training:hover {
-  color: var(--redu-brand);
-  text-decoration: underline;
-  text-underline-offset: 0.35em;
-  text-decoration-color: var(--redu-brand);
-}
-
-/* ADVISORY IN AMBER-GOLD (PRIME 2026-08-11). It leaves the quiet pair and
-   becomes the fourth tier in the bar, using var(--accent-amber) - a token every
-   one of the 28 themes defines, so it shifts with the theme exactly as
-   nav-primary does and never fights the palette. Amber is the site's own
-   emphasis colour, already carrying the milestones card; using it here says
-   "commercial offer" without red, which belongs to Red Education alone. */
-.site-nav-link.nav-advisory {
-  color: var(--accent-amber);
-}
-
-.site-nav-link.nav-advisory:hover {
-  color: var(--accent-amber);
-  text-decoration: underline;
-  text-underline-offset: 0.35em;
-  text-decoration-color: var(--accent-amber);
-}
-
-/* The quiet pair keeps the inherited .site-nav-link colour and weight. Declared
-   explicitly anyway, so that "unchanged" is a decision in the file rather than
-   an absence somebody later reads as an oversight. */
-.site-nav-link.nav-quiet {
-  /* WEIGHT EQUALISED ACROSS ALL SIX ITEMS (PRIME 2026-08-06), THEN DROPPED TO
-     NORMAL (PRIME 2026-08-09: "how about we make the nav item NOT bold?").
-
-     The 2026-08-06 ruling stands and is the reason this change touches all six
-     rather than one: weight is not a tiering channel, colour is. What changed
-     is the LEVEL, not the principle - the six moved together from 600 to the
-     inherited normal weight, so the bar is still uniform and the tiering is
-     still carried entirely by hue.
-
-     No font-weight is declared anywhere in the nav now. That is deliberate:
-     re-declaring 400 would invite a later reader to "fix" it back to 600 as if
-     the absence were an oversight, which is what the earlier version of this
-     comment was written to prevent.
-
-     THE CONSEQUENCE, UNCHANGED: on matrix-red, swagger and web-reddit the
-     primary group and Training still read as one group rather than two. That
-     was the accepted trade in August and it is unaffected by the weight. */
-  color: var(--text-secondary);
-}
+/* SUPERSEDED 2026-10-04. The four tier rules that stood here (nav-primary in
+   the theme accent, nav-training in Red Education's brand red at weight 600,
+   nav-advisory in amber, nav-quiet in the secondary text colour) are gone with
+   the classes that carried them; the bar is now one neutral with the accent on
+   hover and on the current page (see the header rules at the top of this file
+   and SiteNav.tsx). The record above of WHY colour could not carry the tiers on
+   the red themes, and of Training's 4.33:1 contrast, is kept because it is the
+   measurement that justified the change: a label whose colour needs bold to
+   pass is a label that should not be that colour. */
 
 /* ---------------------------------------------------------------------------
    RED EDUCATION, IN PROSE (PRIME 2026-08-06)
@@ -18580,3 +18562,178 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .jwt-badge.dcb-no { color: var(--text-tertiary); }
 /* The tool wrapper only groups the blocks; spacing comes from the pieces. */
 .dcb-tool .curlb-form { margin-top: 0.75rem; }
+
+/* ==========================================================================
+   Advisory: the first screens, restructured (PRIME, 2026-10-04 21:16: the hero
+   and the problem section were "large chunks of text"; the independence
+   section "a huge wall of text"). The copy is unchanged; it is set as a title
+   with a facts column, three cards and a does/does-not strip, and three cards
+   with a countable list. Tokens only; one column at phone width.
+   ========================================================================== */
+/* The hero: title and positioning on the left, the three facts on the right. */
+.advisory-hero-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 2.5rem 3.5rem; align-items: start; }
+@media (max-width: 56rem) { .advisory-hero-grid { grid-template-columns: 1fr; gap: 2rem; } }
+.advisory-hero-main .page-hero-lede { max-width: 52ch; }
+/* The one-line proposition, set apart with the accent rule the site uses for emphasis. */
+.advisory-hero-statement { margin-top: 1.5rem; padding-left: 1rem; border-left: 3px solid var(--accent-primary); font-size: 1.15rem; font-weight: 600; line-height: 1.45; color: var(--text-primary); max-width: 40ch; }
+.advisory-hero-actions { margin-top: 1.75rem; }
+/* The facts column: label over value, a hairline between facts. */
+.advisory-facts { margin: 0.5rem 0 0; padding: 0.25rem 1.5rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.advisory-fact { padding: 1.1rem 0; }
+.advisory-fact + .advisory-fact { border-top: 1px solid var(--border-subtle); }
+.advisory-fact-label { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin: 0 0 0.45rem; }
+.advisory-fact-body { margin: 0; color: var(--text-secondary); line-height: 1.55; font-size: 0.98rem; }
+/* The domain chips. */
+.advisory-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; }
+.advisory-chip { padding: 0.2rem 0.65rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, var(--border-subtle)); background: color-mix(in srgb, var(--accent-primary) 9%, transparent); color: var(--text-primary); font-size: 0.82rem; }
+/* The problem: three cards in a row, one column when narrow. */
+.advisory-problem-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 0; padding: 0; counter-reset: advisory-problem; }
+@media (max-width: 56rem) { .advisory-problem-grid { grid-template-columns: 1fr; } }
+.advisory-problem-card { padding: 1.25rem 1.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); counter-increment: advisory-problem; }
+.advisory-problem-title { margin: 0 0 0.6rem; font-size: 1.02rem; font-weight: 600; color: var(--text-primary); }
+/* The three cards read in order, so they are numbered. */
+.advisory-problem-title::before { content: counter(advisory-problem) " "; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-primary); margin-right: 0.35rem; }
+.advisory-problem-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.98rem; }
+/* The gap: the lead sentence, then what the practice does beside what it does not. */
+.advisory-gap { margin-top: 1.5rem; padding: 1.4rem 1.5rem; border-radius: var(--radius-lg); border: 1px solid color-mix(in srgb, var(--accent-primary) 35%, var(--border-subtle)); background: color-mix(in srgb, var(--accent-primary) 6%, var(--surface-elevated)); }
+.advisory-gap-lead { margin: 0 0 1rem; font-weight: 600; color: var(--text-primary); font-size: 1.05rem; }
+.advisory-gap-cols { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1.25rem 2.5rem; }
+@media (max-width: 48rem) { .advisory-gap-cols { grid-template-columns: 1fr; } }
+.advisory-gap-label { margin: 0 0 0.4rem; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); }
+.advisory-gap-body { margin: 0; color: var(--text-secondary); line-height: 1.6; }
+.advisory-gap-not { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; color: var(--text-secondary); }
+/* Each "not" carries a small cross, not a bullet. */
+.advisory-gap-not li::before { content: "\00d7"; display: inline-block; width: 1.2rem; color: var(--color-danger); font-weight: 700; }
+/* Independence: three cards, each labelled by what kind of statement it is. */
+.advisory-indep-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0 0; padding: 0; }
+@media (max-width: 62rem) { .advisory-indep-grid { grid-template-columns: 1fr; } }
+.advisory-indep-card { padding: 1.25rem 1.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); border-top: 3px solid var(--indep-hue, var(--border-strong)); }
+.advisory-indep-card--claimed { --indep-hue: var(--color-success); }
+.advisory-indep-card--not { --indep-hue: var(--color-warning); }
+.advisory-indep-card--practice { --indep-hue: var(--accent-primary); }
+.advisory-indep-label { margin: 0 0 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--indep-hue, var(--text-tertiary)); }
+.advisory-indep-title { margin: 0 0 0.6rem; font-size: 1.02rem; font-weight: 600; color: var(--text-primary); }
+.advisory-indep-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.98rem; }
+.advisory-indep-none-lead { margin: 0.9rem 0 0.4rem; font-size: 0.9rem; color: var(--text-tertiary); }
+.advisory-indep-none { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+/* The four things not received, each with the same cross as the gap list. */
+.advisory-indep-none li { color: var(--text-primary); font-size: 0.95rem; }
+.advisory-indep-none li::before { content: "\00d7"; display: inline-block; width: 1.2rem; color: var(--color-danger); font-weight: 700; }
+
+/* The "currently teaching" row at the end of the Red Education entry on the
+   About timeline (PRIME, 2026-10-04): a quiet label and the four current marks. */
+.about-era-teaching { display: block; margin-top: 0.75rem; }
+.about-era-teaching-label { display: block; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 0.1rem; }
+.about-era-teaching-marks { margin-top: 0.35rem; }
+/* The advisory hero section and the two columns of the gap strip (rules the
+   class guard asked for: each named class has one). */
+.advisory-hero { padding-block-end: clamp(2rem, 5vw, 3.5rem); }
+.advisory-gap-col { min-width: 0; }
+.advisory-gap-col--does .advisory-gap-label { color: var(--color-success); }
+.advisory-gap-col--not .advisory-gap-label { color: var(--color-danger); }
+
+/* ==========================================================================
+   Training page, restructured 2026-10-04 (the independent review's P0/P1 and
+   PRIME's amendments; see the page header). New blocks only; the hero, the
+   platform grid, the portal cards and the CTA keep their existing classes.
+   ========================================================================== */
+/* The proof strip under the hero lede: four facts, dots between them, wrapping freely. */
+.teach-proof { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; margin: 1.5rem 0 0; padding: 0; }
+.teach-proof-item { position: relative; font-size: 0.9rem; color: var(--text-secondary); letter-spacing: 0.01em; }
+.teach-proof-item + .teach-proof-item::before { content: ""; position: absolute; left: -1.05rem; top: 50%; width: 5px; height: 5px; border-radius: 50%; background: var(--accent-primary); transform: translateY(-50%); }
+/* The three buyer routes, as equal cards. */
+.teach-routes { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 0; padding: 0; }
+@media (max-width: 56rem) { .teach-routes { grid-template-columns: 1fr; } }
+.teach-route { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem 1.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.teach-route-title { margin: 0; font-size: 1.02rem; font-weight: 600; color: var(--text-primary); }
+.teach-route-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; flex: 1; }
+.teach-route-cta { font-weight: 600; color: var(--accent-primary); font-size: 0.95rem; }
+.teach-route-cta:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+/* The Red Education catalogue call-out after the personal catalogue. */
+.teach-red-catalogue { margin-top: 1.5rem; }
+.teach-red-catalogue-cta { margin: 0.9rem 0 0; }
+/* The three principles, numbered because they are read in order. */
+.teach-principles { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 0; padding: 0; counter-reset: teach-principle; }
+@media (max-width: 56rem) { .teach-principles { grid-template-columns: 1fr; } }
+.teach-principle { padding: 1.25rem 1.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); counter-increment: teach-principle; }
+.teach-principle-title { margin: 0 0 0.5rem; font-size: 1.02rem; font-weight: 600; color: var(--text-primary); }
+.teach-principle-title::before { content: counter(teach-principle) " "; font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-primary); margin-right: 0.35rem; }
+.teach-principle-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+.teach-practitioner { margin-top: 1.25rem; padding-left: 1rem; border-left: 3px solid var(--accent-primary); }
+/* The live-training argument: the lead line set larger. */
+.teach-live-lede { font-size: 1.15rem; font-weight: 600; line-height: 1.5; color: var(--text-primary); max-width: 52ch; margin: 0 0 0.75rem; }
+.teach-live-ladder { margin-top: 1rem; color: var(--text-tertiary); }
+/* The evidence list reuses the advisory evidence styles; a little more space before the button. */
+.teach-evidence { margin-top: 1.25rem; }
+/* The two team engagements, side by side. */
+.teach-teams { list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 0; padding: 0; }
+@media (max-width: 48rem) { .teach-teams { grid-template-columns: 1fr; } }
+.teach-team { padding: 1.25rem 1.4rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.teach-team-title { margin: 0.5rem 0 0.5rem; font-size: 1.02rem; font-weight: 600; color: var(--text-primary); }
+.teach-team-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+/* The disclosures under the clocks: the country record and the delivery platforms. */
+.teach-details { margin-top: 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.teach-details-summary { cursor: pointer; padding: 0.7rem 1rem; font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.teach-details-summary:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; border-radius: var(--radius-md); }
+.teach-details-body { margin: 0; padding: 0 1rem 0.9rem; color: var(--text-secondary); line-height: 1.6; font-size: 0.95rem; }
+/* The platform behind the class: the Red Education card and its answer about requests. */
+.teach-behind { margin: 0; }
+.teach-behind-ask { margin-top: 0.75rem; }
+/* After the class: three items in a row. */
+.teach-after { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 1.25rem 0 0; padding: 0; }
+@media (max-width: 56rem) { .teach-after { grid-template-columns: 1fr; } }
+.teach-after-item { padding: 1.1rem 1.25rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.teach-after-title { margin: 0 0 0.45rem; font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+.teach-after-body { margin: 0; color: var(--text-secondary); line-height: 1.6; font-size: 0.93rem; }
+
+/* --- The global clocks (src/components/GlobalClocks.tsx) --------------------
+   A control row, then one row per city: city, zone, the live time, the class
+   time. Tabular digits so the columns hold; the reader's own zone is tinted. */
+.gclocks { margin-top: 1.25rem; padding: 1rem 1.25rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); background: var(--surface-elevated); }
+.gclocks-control { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-bottom: 0.9rem; }
+.gclocks-label { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); }
+.gclocks-time { width: 8rem; flex: none; }
+.gclocks-in { color: var(--text-tertiary); font-size: 0.9rem; }
+.gclocks-zone { width: auto; min-width: 11rem; flex: none; }
+.gclocks-list { list-style: none; margin: 0; padding: 0; }
+.gclock { display: grid; grid-template-columns: minmax(7rem, 1.2fr) minmax(0, 1.6fr) 5rem 7rem; gap: 0.5rem 1rem; align-items: baseline; padding: 0.5rem 0.4rem; border-top: 1px solid var(--border-subtle); font-size: 0.95rem; }
+.gclock--head { border-top: none; padding-bottom: 0.2rem; font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); }
+.gclock--own { background: color-mix(in srgb, var(--accent-primary) 8%, transparent); border-radius: var(--radius-sm); }
+.gclock-city { font-weight: 600; color: var(--text-primary); }
+.gclock-zone { font-size: 0.78rem; color: var(--text-tertiary); overflow-wrap: anywhere; }
+.gclock-now { font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+.gclock-class { font-variant-numeric: tabular-nums; color: var(--accent-primary); font-weight: 600; }
+.gclock-day { font-size: 0.72rem; font-weight: 400; color: var(--text-tertiary); }
+.gclocks-note { margin-top: 0.75rem; }
+/* Phones: the zone id drops under the city; the two times stay on the right. */
+@media (max-width: 40rem) {
+  .gclock { grid-template-columns: minmax(0, 1fr) 4.2rem 5.5rem; }
+  .gclock-zone { grid-column: 1 / -1; order: 4; margin-top: -0.2rem; }
+  .gclock--head .gclock-zone { display: none; }
+}
+/* The curriculum-check stamp under a platform's course list. */
+.training-note--checked { margin-top: 0.4rem; font-family: var(--font-mono); font-size: 0.78rem; }
+/* The three routes at the end of /about (teach it, decide it, talk about it). */
+.about-routes { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin: 0 0 1.5rem; padding: 0; }
+@media (max-width: 48rem) { .about-routes { grid-template-columns: 1fr; } }
+.about-route { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.9rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); }
+.about-route-q { font-size: 0.9rem; color: var(--text-secondary); }
+.about-route-link { font-weight: 600; color: var(--accent-primary); }
+.about-route-link:hover { text-decoration: underline; text-underline-offset: 0.3em; }
+
+/* --- The header on phones (measured 2026-10-04 at 320, 360, 390 and 430 px) ---
+   Two things the measurement showed. First, the sticky bar cost 150 px of an
+   800 px viewport (the wordmark row plus two wrapped nav rows), which is too
+   much permanent reading viewport; below 48rem the header is therefore static,
+   so the six destinations stay visible at the top of every page and the
+   reading area is the whole screen once the reader scrolls. The review's other
+   option, a single horizontally scrolling row, hides destinations behind a
+   swipe; this hides nothing. Second, at 320 px the language switcher's name
+   pushed the actions row 4 px past the edge; the native name yields to the
+   code alone below 22rem. */
+@media (max-width: 48rem) {
+  .site-header { position: static; backdrop-filter: none; background: var(--canvas-primary); }
+}
+@media (max-width: 22rem) {
+  .ls-trigger-name { display: none; }
+}

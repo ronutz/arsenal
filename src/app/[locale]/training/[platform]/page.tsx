@@ -119,7 +119,14 @@ export default async function PlatformPage({
                   </li>
                 ))}
               </ul>
-              <p className="training-note">{t("representativeNote")}</p>
+              {/* Model A, the personal catalogue (PRIME, 2026-10-04): the exact
+                  set currently delivered, kept current; and the day the names,
+                  levels and outlines were last checked against the vendor's own
+                  material, where a platform records one. */}
+              <p className="training-note">{t("personalCatalogueNote")}</p>
+              {p.curriculumChecked && (
+                <p className="training-note training-note--checked">{t("curriculumChecked", { date: p.curriculumChecked })}</p>
+              )}
               <RequestTraining platform={p.slug} variant="block" />
             </div>
           </section>

@@ -177,14 +177,45 @@ export default async function AdvisoryPage({
         <article>
           <AdvisoryServiceSchema locale={locale} name={t("title")} description={t("metaDescription")} />
 
-          {/* Hero: the positioning statement the review recommended, narrowed
-              at once to the domain, the moment and the deliverable. */}
-          <section className="section">
-            <div className="container section-narrow">
-              <p className="hero-eyebrow">{t("eyebrow")}</p>
-              <h1 className="page-hero-title">{t("title")}</h1>
-              <p className="page-hero-lede">{t("lede")}</p>
-              <p className="section-body">{t("positioning")}</p>
+          {/* Hero (RESTRUCTURED 2026-10-04, PRIME: the first two sections were
+              "large chunks of text, the opposite of attractive, engaging,
+              enticing"). The words are the reviewed ones; the shape is new. The
+              title and the positioning sentence lead; the former lede's three
+              facts (domain, moment, deliverable) stand as a scannable column
+              beside them, the one-line proposition closes it, and the two
+              routes a reader takes next are buttons rather than a scroll. */}
+          <section className="section advisory-hero">
+            <div className="container advisory-hero-grid">
+              <div className="advisory-hero-main">
+                <p className="hero-eyebrow">{t("eyebrow")}</p>
+                <h1 className="page-hero-title">{t("title")}</h1>
+                <p className="page-hero-lede">{t("positioning")}</p>
+                <p className="advisory-hero-statement">{t("heroStatement")}</p>
+                <div className="hero-cta advisory-hero-actions">
+                  <a href="#contact" className="btn btn-primary">{t("heroCtaPrimary")}</a>
+                  <Link href="/advisory/decision-memorandum" className="btn btn-secondary">{t("heroCtaSecondary")}</Link>
+                </div>
+              </div>
+              <dl className="advisory-facts">
+                <div className="advisory-fact">
+                  <dt className="advisory-fact-label">{t("factDomainLabel")}</dt>
+                  <dd className="advisory-fact-body">
+                    <ul className="advisory-chips">
+                      {[1, 2, 3, 4, 5].map((n) => (
+                        <li key={n} className="advisory-chip">{t(`domain${n}`)}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+                <div className="advisory-fact">
+                  <dt className="advisory-fact-label">{t("factWhenLabel")}</dt>
+                  <dd className="advisory-fact-body">{t("factWhen")}</dd>
+                </div>
+                <div className="advisory-fact">
+                  <dt className="advisory-fact-label">{t("factDeliverableLabel")}</dt>
+                  <dd className="advisory-fact-body">{t("factDeliverable")}</dd>
+                </div>
+              </dl>
             </div>
           </section>
 
@@ -194,11 +225,37 @@ export default async function AdvisoryPage({
               carries a quota, not all of it, and that commercial interest
               changes the context of a recommendation rather than voiding it. */}
           <section className="section section-accent">
-            <div className="container section-narrow">
+            <div className="container">
               <h2 className="section-title">{t("problemTitle")}</h2>
-              <p className="section-body" style={{ whiteSpace: "pre-line" }}>
-                {t("problemBody")}
-              </p>
+              {/* RESTRUCTURED 2026-10-04 (PRIME): the same paragraph, read as
+                  the three things it says, then the gap it leaves, with what
+                  the practice does and does not do set side by side. The
+                  sentences are the reviewed ones; problemBody is superseded. */}
+              <ol className="advisory-problem-grid">
+                {[1, 2, 3].map((n) => (
+                  <li key={n} className="advisory-problem-card">
+                    <h3 className="advisory-problem-title">{t(`problemCard${n}Title`)}</h3>
+                    <p className="advisory-problem-body">{t(`problemCard${n}Body`)}</p>
+                  </li>
+                ))}
+              </ol>
+              <div className="advisory-gap">
+                <p className="advisory-gap-lead">{t("problemGapLead")}</p>
+                <div className="advisory-gap-cols">
+                  <div className="advisory-gap-col advisory-gap-col--does">
+                    <p className="advisory-gap-label">{t("problemDoesLabel")}</p>
+                    <p className="advisory-gap-body">{t("problemDoes")}</p>
+                  </div>
+                  <div className="advisory-gap-col advisory-gap-col--not">
+                    <p className="advisory-gap-label">{t("problemNotLabel")}</p>
+                    <ul className="advisory-gap-not">
+                      {[1, 2, 3].map((n) => (
+                        <li key={n}>{t(`problemNot${n}`)}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -330,11 +387,38 @@ export default async function AdvisoryPage({
               The trust-equation paragraph is replaced by the sentence that is
               harder to argue with. ReduBrand styles the two mentions. */}
           <section className="section" id="independence">
-            <div className="container section-narrow">
+            <div className="container">
               <h2 className="section-title">{t("independenceTitle")}</h2>
-              <p className="section-body" style={{ whiteSpace: "pre-line" }}>
-                <ReduBrand>{t("independenceBody")}</ReduBrand>
-              </p>
+              <p className="section-body">{t("indepLead")}</p>
+              {/* RESTRUCTURED 2026-10-04 (PRIME: "not just a huge wall of
+                  text"). The same four paragraphs as three cards: what is
+                  claimed, what is not, and what that means in practice; the
+                  four things the advisor is not paid are a list a reader can
+                  count. The sentences are the reviewed ones; independenceBody
+                  is superseded. ReduBrand still styles the one mention. */}
+              <ul className="advisory-indep-grid">
+                <li className="advisory-indep-card advisory-indep-card--claimed">
+                  <p className="advisory-indep-label">{t("indepClaimedLabel")}</p>
+                  <h3 className="advisory-indep-title">{t("indepClaimedTitle")}</h3>
+                  <p className="advisory-indep-body">{t("indepClaimedBody")}</p>
+                  <p className="advisory-indep-none-lead">{t("indepNoneLead")}</p>
+                  <ul className="advisory-indep-none">
+                    {[1, 2, 3, 4].map((n) => (
+                      <li key={n}>{t(`indepNone${n}`)}</li>
+                    ))}
+                  </ul>
+                </li>
+                <li className="advisory-indep-card advisory-indep-card--not">
+                  <p className="advisory-indep-label">{t("indepNotClaimedLabel")}</p>
+                  <h3 className="advisory-indep-title">{t("indepNotClaimedTitle")}</h3>
+                  <p className="advisory-indep-body"><ReduBrand>{t("indepNotClaimedBody")}</ReduBrand></p>
+                </li>
+                <li className="advisory-indep-card advisory-indep-card--practice">
+                  <p className="advisory-indep-label">{t("indepPracticeLabel")}</p>
+                  <h3 className="advisory-indep-title">{t("indepPracticeTitle")}</h3>
+                  <p className="advisory-indep-body">{t("indepPracticeBody")}</p>
+                </li>
+              </ul>
             </div>
           </section>
 
@@ -480,8 +564,9 @@ export default async function AdvisoryPage({
             </div>
           </section>
 
-          {/* Contact, and the one cross-link to speaking. */}
-          <section className="section section-accent">
+          {/* Contact, and the one cross-link to speaking. The id is the hero
+              button's target (2026-10-04). */}
+          <section className="section section-accent" id="contact">
             <div className="container section-narrow">
               <h2 className="section-title">{t("ctaTitle")}</h2>
               <p className="section-body">{t("ctaBody")}</p>

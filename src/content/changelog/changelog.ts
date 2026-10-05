@@ -53,6 +53,42 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-04",
+    time: "22:40",
+    kind: "content",
+    title: "Training, rewritten for the person deciding",
+    body:
+      "The training page proved that its author is an experienced instructor; it now helps a learner or a training buyer decide. Three doors at the top for the three readers who arrive (I know the course; I need to train a team; I know the capability, not the course), a personal catalogue that is the exact set of courses currently delivered rather than a representative sample, with a deliberate pointer to Red Education's far broader one, three teaching principles in place of four blocks that said one thing, and the argument that matters most in 2026: information is abundant, so the value of a live instructor is adaptive explanation, misconception diagnosis and guided reasoning, stated without calling anyone or anything inferior. Five verbatim student reviews chosen for what each shows, the two Red Education engagements as team cases, a live band of clocks across the teaching regions with a class-time converter in place of a twenty-country list, the platform names kept where search can find them, an honest line on asking for the instructor by name, and a CTA that asks what the team needs to be able to do. The Fortinet courses follow Fortinet's July 2026 programme: FortiOS Administrator at NSE 4, SD-WAN at NSE 5, FortiManager and FortiAnalyzer at NSE 6, checked against Fortinet's own pages today.",
+    links: [{ label: "Training", href: "/training" }, { label: "Fortinet courses", href: "/training/fortinet" }],
+  },
+  {
+    date: "2026-10-04",
+    time: "22:35",
+    kind: "feature",
+    title: "A navigation bar that says where you are",
+    body:
+      "The six destinations were set in four colours: cyan for the free material, a partner's red for Training (measured at 4.33:1 on the default canvas, which is why it had been made bold), amber for Advisory, grey for About, and the one thing a bar is for was missing: no current-page state. Now every label sits in the same calm neutral at the same weight, the three groups (knowledge, professional work, the person) are separated by a hairline, and the section you are in carries aria-current, a heavier weight and a two-pixel rule in its own accent, the theme colour for Tools, Learn and Industry, Red Education's for Training, amber for Advisory. Hover reveals the same rule; keyboard focus is unmistakable; the sticky translucent header, the order, the compact wordmark and the no-hamburger rule are unchanged.",
+    links: [{ label: "Home", href: "/" }],
+  },
+  {
+    date: "2026-10-04",
+    time: "22:30",
+    kind: "content",
+    title: "Advisory, from the first screen",
+    body:
+      "The hero and the two sections under it were blocks of text. The words are the reviewed ones; the shape is new: the title and the positioning sentence lead, the domain, the moment and the deliverable stand as a facts column beside them with the one-line proposition and two buttons, the problem is read as the three things it says and then the gap it leaves, with what the practice does beside what it does not, and the definition of independence is three cards (claimed, not claimed, in practice) with the four things the advisor is never paid as a list a reader can count.",
+    links: [{ label: "Advisory", href: "/advisory" }],
+  },
+  {
+    date: "2026-10-04",
+    time: "22:25",
+    kind: "content",
+    title: "The career record: IronPort, the Cisco OEM years, and the missing marks",
+    body:
+      "The About timeline gains the entry it lacked, IronPort Systems in São Paulo, late 2004 into 2005, channel development and pre-sales for the C-Series e-mail security appliances. The Cabletron entry now says what the job was: Cabletron was then Cisco's largest reseller through the OEM line that put Cisco IOS and Cisco routing inside its own hubs, and the author was one of the experts for it, carrying feature explanations and configuration examples to customers from the internal documentation discs the company sent its offices, the ones its engineers called Jeopardize after the warning printed on them. Cisco's mark now sits beside Cabletron's; NetScreen's beside the two ScreenOS-era entries; Ixia, FireEye, McAfee, Pulse Secure and VMware beside the distribution years, which now name Westcon / TD SYNNEX and Network1 / ScanSource; the Red Education entry shows both of its marks of the period, the thin-outline 2020 mark and the 2025 redraw, with the mark's history recorded in the registry, and closes with the four platforms currently taught.",
+    links: [{ label: "About", href: "/about" }],
+  },
+  {
+    date: "2026-10-04",
     time: "21:30",
     kind: "tool",
     title: "The dig command, written for you",

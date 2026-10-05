@@ -14,6 +14,9 @@ import { Link } from "@/i18n/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeSwitcher from "./ThemeSwitcher";
 import Search from "./Search";
+// The navigation is a client island since 2026-10-04 so it can mark the
+// current section (aria-current); the labels are still translated here.
+import SiteNav from "./SiteNav";
 
 export default async function Header() {
   const t = await getTranslations("nav");
@@ -35,49 +38,32 @@ export default async function Header() {
           <span className="wordmark-dot" aria-hidden="true" />
         </Link>
 
-        <nav className="site-nav" aria-label={t("primaryAria")}>
-          <Link href="/tools" className="site-nav-link nav-primary">
-            {t("tools")}
-          </Link>
-          <Link href="/learn" className="site-nav-link nav-primary">
-            {t("learn")}
-          </Link>
-          {/* Certifications and Vendors were removed from the primary nav
-              (PRIME 2026-08-06). Both remain fully reachable as cards on the
-              Learn index, which is where somebody looking for study material or
-              a vendor hub actually starts. The nav had grown to seven items;
-              two of them duplicated a destination one click away, and a nav
-              that lists everything ranks nothing. /certifications and
-              /vendor-hubs are unchanged and still linked from Learn, from the
-              Tools and Learn vendor strips, and from search. */}
-          {/* Industry hub (PRIME 2026-07-15): the front door to the
-              deep-research vendor histories and lineages. */}
-          <Link href="/industry" className="site-nav-link nav-primary">
-            {t("industry")}
-          </Link>
-          <Link href="/training" className="site-nav-link nav-training">
-            {t("training")}
-          </Link>
-          {/* ADVISORY (schema D, PRIME 2026-08-06). The commercial offer had no
-              entry point at all: /advisory had zero inbound links while sitting
-              built and reachable only by typing the URL. Training was in the
-              nav and advisory was not, which described the business backwards.
-              /speaking is reached FROM advisory rather than from here, because
-              event organisers arrive by referral and search, not by browsing a
-              navigation bar. */}
-          <Link href="/advisory" className="site-nav-link nav-advisory">
-            {t("advisory")}
-          </Link>
-          {/* About moves to LAST (PRIME 2026-08-06). It is the least
-              transactional item in the bar - nobody arrives at this site to
-              read a biography - so it sits where the eye finishes rather than
-              in the middle of the substance. */}
-          <Link href="/about" className="site-nav-link nav-quiet">
-            {t("about")}
-          </Link>
-          {/* Contact intentionally lives in the footer (nav option (a), sleek
-              4-item explore bar); /contact remains fully reachable. */}
-        </nav>
+        {/* Six destinations in three groups (PRIME 2026-08-06 for the set and
+            the order; PRIME 2026-10-04 for the grouping and the active state,
+            adopting the review of the bar; see SiteNav.tsx). Certifications and
+            Vendors were removed from the bar on 2026-08-06 (both reachable from
+            Learn: a nav that lists everything ranks nothing); Industry joined on
+            2026-07-15; Advisory on 2026-08-06, because the commercial offer had
+            no entry point while Training had one; About is last, where the eye
+            finishes. /speaking is reached from Advisory, About, the homepage and
+            the footer rather than from here, and Contact lives in the footer. */}
+        <SiteNav
+          ariaLabel={t("primaryAria")}
+          groups={[
+            { key: "knowledge", items: [
+              { href: "/tools", label: t("tools"), tone: "knowledge" },
+              { href: "/learn", label: t("learn"), tone: "knowledge" },
+              { href: "/industry", label: t("industry"), tone: "knowledge" },
+            ] },
+            { key: "work", items: [
+              { href: "/training", label: t("training"), tone: "training" },
+              { href: "/advisory", label: t("advisory"), tone: "advisory" },
+            ] },
+            { key: "person", items: [
+              { href: "/about", label: t("about"), tone: "about" },
+            ] },
+          ]}
+        />
 
         <div className="site-header-actions">
           <Search />

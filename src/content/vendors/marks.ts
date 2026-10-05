@@ -366,6 +366,24 @@ export const VENDOR_MARKS: VendorMark[] = [
       "which is unusually easy to date. The line it carried is older than the " +
       "name and continues after it; see the pulse-secure chapter.",
   },
+  // VMWARE (PRIME, 2026-10-04 21:16: the 2015-2019 distribution entry on the
+  // About timeline was missing the marks of the vendors its text names).
+  {
+    vendor: "vmware",
+    label: "VMware",
+    src: "/img/marks/vmware.svg",
+    from: 2009,
+    to: 2023,
+    note:
+      "Historic. The lower-case grey wordmark with the registered symbol, in use " +
+      "from the 2009 identity until the Broadcom-era lockup replaced it; both " +
+      "years are from general knowledge, good to a year. The file is Wikimedia " +
+      "Commons' Vmware.svg (downloaded 2026-10-04), which its file page records as " +
+      "vectorised from VMware's own investor-relations slide deck, colour #6A6667, " +
+      "held there as a text logo below the threshold of originality and marked as " +
+      "a trademark; used here nominatively on the timeline entry whose text names " +
+      "the company.",
+  },
   {
     vendor: "checkpoint",
     label: "Check Point Software Technologies",
@@ -402,10 +420,41 @@ export const VENDOR_MARKS: VendorMark[] = [
   {
     vendor: "rededucation",
     label: "Red Education",
+    src: "/img/marks/red-education-2020.png",
+    from: 2020,
+    to: 2024,
+    note:
+      "Historic, the second-generation mark: the thin-outline red cube with the " +
+      "two-stroke blue mortarboard and the lighter mixed-case wordmark. The file is " +
+      "the artwork Red Education supplied to Wilson Learning Worldwide for its " +
+      "14 December 2020 distributor announcement, downloaded 2026-10-04 from " +
+      "global.wilsonlearning.com/wp-content/uploads/2020/12/Red-Education.png " +
+      "(600 x 200 PNG; the upload path dates it to December 2020, the earliest " +
+      "dated use this repository can vouch for). It was replaced by the bolder " +
+      "redraw in the first half of 2025 (the current mark's note); the registry " +
+      "closes it at 2024, its last full year, so that 2025 resolves to one mark. " +
+      "The concept is older: an Australian trade mark for Red Education filed " +
+      "6 February 2009 describes the device as a box wearing a mortarboard, and the " +
+      "first generation was a filled, faceted cube with RED EDUCATION in capitals " +
+      "and the tagline empower yourself!, documented in use in October 2018; no " +
+      "file of that generation is held here. History assembled 2026-10-04 from " +
+      "PRIME's research notes and checked against the two dated files named.",
+  },
+  {
+    vendor: "rededucation",
+    label: "Red Education",
     src: "/img/marks/red-education-current.png",
     from: 2025,
     to: null,
-    note: "Current. The mark in the header of rededucation.com, downloaded 2026-10-04 from /wp-content/uploads/2025/05/red-education-logo.webp (the upload path dates it to May 2025, the earliest use this repository can vouch for; earlier marks are not held) and converted to PNG with its transparent margins trimmed, artwork untouched.",
+    note:
+      "Current, the third-generation mark: the same cube and mortarboard with " +
+      "heavier strokes and a heavier rounded wordmark. The mark in the header of " +
+      "rededucation.com, downloaded 2026-10-04 from " +
+      "/wp-content/uploads/2025/05/red-education-logo.webp; the upload path dates " +
+      "the artwork to May 2025, which is also when the agency case study for the " +
+      "2025 site (Digital Six, Brisbane: visual identity systems, brand guidelines, " +
+      "website) places the refresh. A refinement of the 2020 mark, not a new " +
+      "concept.",
   },
 ];
 

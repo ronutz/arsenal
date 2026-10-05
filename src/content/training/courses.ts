@@ -10,8 +10,10 @@
 // original wording, NOT copied from vendor marketing copy. The ToCs are factual
 // course structure (the module/chapter skeleton), which is reference fact.
 //
-// "Representative, not exhaustive": this catalog reflects the courses on record;
-// it is presented to visitors as representative. Durations and module lists are
+// PERSONAL CATALOGUE (Model A, PRIME 2026-10-04, superseding "representative,
+// not exhaustive"): this catalogue is presented as the exact set of courses
+// currently delivered, so an entry is removed when a course leaves the delivery
+// portfolio and added when one joins. Durations and module lists are
 // the best current public information and will be refined when Rodolfo supplies
 // the official, current datasheets.
 //
@@ -55,6 +57,8 @@ export interface Platform {
   workingTechKey?: string;
   /** The authorized courses for this platform. */
   courses: Course[];
+  /** The day the names, levels and outlines were last checked against the vendor's own material (ISO date). Shown on the platform page when present. */
+  curriculumChecked?: string;
 }
 
 // ============================================================================
@@ -483,22 +487,28 @@ const extreme: Platform = {
 };
 
 // ============================================================================
-// FORTINET — 5 courses, Secure Networking (FCP) track, FortiGate-centered.
-// NOTE: Fortinet renamed/restructured its program (mid-2026); "FortiGate
-// Administrator" is now "FortiOS Administrator" (NSE 4 level), FortiGate
-// Operator at NSE 3. Durations per vendor/partner catalogs (Administrator 4d).
-// This set is REPRESENTATIVE of the FCP Secure Networking path and will be
-// refined to Rodolfo's exact current authorizations from official datasheets.
+// FORTINET — 5 courses, FortiGate-centered, on the NSE ladder as Fortinet
+// reorganised it on 15 July 2026 (fortinet.com/nse-training-update and
+// training.fortinet.com, read 2026-10-04): the programme moved from five
+// certification levels (FCF, FCA, FCP, FCSS, FCX, which are no longer issued)
+// to eight NSE levels. The course names and levels used here are Fortinet's
+// own from that page: FortiGate Operator (NSE 3), FortiOS Administrator (NSE 4,
+// formerly FortiGate Administrator), SD-WAN Core Administrator (NSE 5, Secure
+// Networking track), FortiManager Administrator (NSE 6, formerly NSE 5),
+// FortiAnalyzer Administrator (NSE 6, formerly under Other Technical Training).
+// Durations per vendor/partner catalogues (Administrator 4d). Model A (PRIME,
+// 2026-10-04): this is the set currently delivered, not a representative one.
 // ============================================================================
 const fortinet: Platform = {
   slug: "fortinet",
   name: "Fortinet",
   tagline: "Network security on FortiGate and the Fortinet Security Fabric.",
   intro:
-    "Fortinet's FortiGate is one of the most widely deployed network security platforms, and its training centers on operating FortiGate effectively, firewall policy, secure connectivity, and the security profiles that inspect and control traffic. These courses follow the Fortinet Certified Professional path in Secure Networking, from foundational operation through administration and into the management and analytics tools of the Security Fabric. Fortinet recently restructured its certification program; the courses below reflect that path and will be refined to the exact current titles.",
+    "Fortinet's FortiGate is one of the most widely deployed network security platforms, and its training centers on operating FortiGate effectively, firewall policy, secure connectivity, and the security profiles that inspect and control traffic. These courses sit on Fortinet's NSE ladder as reorganised in July 2026: FortiGate Operator at NSE 3, FortiOS Administrator at NSE 4, SD-WAN at NSE 5 in the Secure Networking track, and FortiManager and FortiAnalyzer at NSE 6, from foundational operation through administration and into the management plane.",
   since: "2024",
   workingSince: "1998",
   workingTechKey: "firewalls",
+  curriculumChecked: "2026-10-04",
   courses: [
     {
       slug: "fortigate-operator",
@@ -519,12 +529,12 @@ const fortinet: Platform = {
     },
     {
       slug: "fortigate-administrator",
-      name: "FortiGate Administrator",
-      altName: "FortiOS Administrator, NSE 4 level",
+      name: "FortiOS Administrator",
+      altName: "formerly FortiGate Administrator, NSE 4 level",
       duration: "4 days",
       summary: "Configuring and administering the most-used FortiGate features.",
       description:
-        "The core FortiGate course and the heart of the FCP Secure Networking path, this builds a working command of the features used most in production. In hands-on labs, students configure firewall policies and NAT, user authentication including Fortinet Single Sign-On with Active Directory, and secure connectivity with SSL and site-to-site IPsec VPN. They apply the security profiles that make FortiGate a next-generation firewall, antivirus, web filtering, intrusion prevention, and application control, and work with high availability, SD-WAN, the Security Fabric, and diagnostics and troubleshooting.",
+        "The core FortiGate course, the one behind the NSE 4 certification, this builds a working command of the features used most in production. In hands-on labs, students configure firewall policies and NAT, user authentication including Fortinet Single Sign-On with Active Directory, and secure connectivity with SSL and site-to-site IPsec VPN. They apply the security profiles that make FortiGate a next-generation firewall, antivirus, web filtering, intrusion prevention, and application control, and work with high availability, SD-WAN, the Security Fabric, and diagnostics and troubleshooting.",
       toc: [
         "System and network settings",
         "Firewall policies and NAT",
@@ -542,12 +552,12 @@ const fortinet: Platform = {
         "High availability",
         "Diagnostics and troubleshooting",
       ],
-      note: "Prepares for the FCP FortiGate / FortiOS Administrator exam (NSE 4 level).",
+      note: "Prepares for the NSE 4 proctored exam, FortiOS Administrator (Fortinet, 15 July 2026 programme).",
     },
     {
       slug: "fortimanager",
-      name: "FortiManager",
-      altName: "NSE 5 level",
+      name: "FortiManager Administrator",
+      altName: "NSE 6 level",
       duration: "2 days",
       summary: "Centralized management of many FortiGate devices.",
       description:
@@ -562,12 +572,12 @@ const fortinet: Platform = {
         "Installing and verifying configuration",
         "Monitoring and administration",
       ],
-      note: "Part of the FCP Secure Networking path (NSE 5 level). Representative listing.",
+      note: "Prepares for the NSE 6 FortiManager Administrator exam, moved from NSE 5 on 15 July 2026.",
     },
     {
       slug: "fortianalyzer",
-      name: "FortiAnalyzer",
-      altName: "NSE 5 level",
+      name: "FortiAnalyzer Administrator",
+      altName: "NSE 6 level",
       duration: "2 days",
       summary: "Centralized logging, analytics, and reporting.",
       description:
@@ -582,11 +592,12 @@ const fortinet: Platform = {
         "Playbooks and task automation",
         "Administration and maintenance",
       ],
-      note: "Part of the FCP Secure Networking path (NSE 5 level). Representative listing.",
+      note: "Prepares for the NSE 6 FortiAnalyzer Administrator exam (Fortinet, 15 July 2026 programme).",
     },
     {
       slug: "secure-sdwan",
       name: "FortiGate Secure SD-WAN",
+      altName: "SD-WAN Core Administrator, NSE 5 level",
       duration: "2 days",
       summary: "Designing and operating SD-WAN on FortiGate.",
       description:
@@ -600,7 +611,7 @@ const fortinet: Platform = {
         "Centralized SD-WAN management",
         "Monitoring and troubleshooting",
       ],
-      note: "Representative of the SD-WAN specialization within Secure Networking.",
+      note: "Prepares for the NSE 5 SD-WAN Core Administrator exam in the Secure Networking track.",
     },
   ],
 };

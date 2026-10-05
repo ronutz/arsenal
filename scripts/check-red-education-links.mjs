@@ -71,7 +71,10 @@ if (!fs.existsSync(BASE)) {
 // that "I do not implement" ends in a path rather than a dead end, with Red
 // Education named as one credible option and the choice left with the client.
 // Not a route into the course catalogue, and not in the Learn corpus.
-const BASELINE_TOTAL = 101;
+// 102 since 2026-10-04: the training page's call-out to Red Education's broader
+// catalogue (Model A, the personal catalogue, with the bridge the review asked
+// for), one attributed link to "/" with cta=broader-catalogue.
+const BASELINE_TOTAL = 102;
 
 // *** AND A COUNT CANNOT SEE A SWAP. *** The baseline above has an honest audit
 // trail - every increment from 86 is traced to the decision behind it - but it is

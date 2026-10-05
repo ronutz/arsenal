@@ -410,7 +410,12 @@ export default async function AboutPage({
             <ol className="about-timeline">
               <li className="about-era">
                 <span className="about-era-years mono">1996 – 2000</span>
-                <VendorMark vendor="cabletron" year={1996} eraLabel={era} since={since} compact />
+                {/* Cisco beside Cabletron (PRIME, 2026-10-04 21:25): Cabletron
+                    sold Cisco's routing under its own name, Cisco IOS and the
+                    2500/4000/4500 routing technology integrated across the
+                    MMAC hub line (Cisco press release, 27 March 1995, read
+                    2026-10-04), and the text says what that meant for the job. */}
+                <span className="mark-row"><VendorMark vendor="cabletron" year={1996} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={1996} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Cabletron Systems · São Paulo</span>
                 <span className="about-era-what">{t("path.cabletron")}</span>
               </li>
@@ -426,6 +431,17 @@ export default async function AboutPage({
                 <span className="about-era-where">Cisco Systems · Brasília</span>
                 <span className="about-era-what">{t("path.cisco")}</span>
               </li>
+              {/* ADDED 2026-10-04 (PRIME: "there is an entry missing: IronPort
+                  2004 - 2005"). From the career record: channel development and
+                  pre-sales technical consulting for IronPort's Brazilian operation
+                  in late 2004, continued through 2005 with a Cisco and IronPort
+                  reseller; the C-Series e-mail security appliances. */}
+              <li className="about-era">
+                <span className="about-era-years mono">2004 – 2005</span>
+                <VendorMark vendor="ironport" year={2004} eraLabel={era} since={since} compact />
+                <span className="about-era-where">IronPort Systems · São Paulo</span>
+                <span className="about-era-what">{t("path.ironport")}</span>
+              </li>
               <li className="about-era">
                 <span className="about-era-years mono">2005 – 2007</span>
                 <VendorMark vendor="enterasys" year={2005} eraLabel={era} since={since} compact />
@@ -434,7 +450,15 @@ export default async function AboutPage({
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2009 – 2010</span>
-                <VendorMark vendor="juniper" year={2009} eraLabel={era} since={since} compact />
+                {/* NetScreen beside Juniper (PRIME, 2026-10-04 21:25). The
+                    ScreenOS firewalls this role supported kept the NetScreen name
+                    after the 2004 acquisition, but no NetScreen mark was issued
+                    after it: the only mark that identifies the line is the
+                    company's last one, so it is looked up at 2004, its final
+                    year, and its caption says so. A deliberate, declared
+                    exception to the era rule, for the one product line whose
+                    name outlived its mark. */}
+                <span className="mark-row"><VendorMark vendor="juniper" year={2009} eraLabel={era} since={since} compact /><VendorMark vendor="netscreen" year={2004} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Juniper Networks · São Paulo</span>
                 <span className="about-era-what">{t("path.juniper")}</span>
               </li>
@@ -444,22 +468,38 @@ export default async function AboutPage({
                   resellers and direct engagements. Supplied first-hand. */}
               <li className="about-era">
                 <span className="about-era-years mono">2011 – 2014</span>
-                {/* Four vendors, one entry: the marks of the equipment named in the text, as of 2011. */}
-                <span className="mark-row"><VendorMark vendor="juniper" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={2011} eraLabel={era} since={since} compact /></span>
+                {/* The marks of the equipment named in the text, as of 2011; NetScreen at
+                    2004, its last year, for the reason given on the entry above. */}
+                <span className="mark-row"><VendorMark vendor="juniper" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="netscreen" year={2004} eraLabel={era} since={since} compact /><VendorMark vendor="cisco" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2011} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={2011} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Implementation · via CYLK, TDec and direct engagements</span>
                 <span className="about-era-what">{t("path.implementation")}</span>
               </li>
               <li className="about-era">
                 <span className="about-era-years mono">2015 – 2019</span>
-                <VendorMark vendor="f5" year={2015} eraLabel={era} since={since} compact />
-                <span className="about-era-where">F5 Networks · channel (Westcon, ScanSource)</span>
+                {/* The marks of the vendors the text names (PRIME, 2026-10-04:
+                    "a few logos missing: IXIA, FireEye, McAfee, Pulse Secure,
+                    VMware"), each as of 2015. Keysight is named in the text but
+                    holds no mark here. */}
+                <span className="mark-row"><VendorMark vendor="f5" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="ixia" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="fireeye" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="mcafee" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="pulse" year={2015} eraLabel={era} since={since} compact /><VendorMark vendor="vmware" year={2015} eraLabel={era} since={since} compact /></span>
+                <span className="about-era-where">F5 Networks · Westcon / TD SYNNEX, Network1 / ScanSource</span>
                 <span className="about-era-what">{t("path.f5channel")}</span>
               </li>
               <li className="about-era about-era--current">
                 <span className="about-era-years mono">2020 – {t("path.present")}</span>
-                <VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact />
+                {/* Both Red Education marks of the period: the thin-outline mark
+                    in use when the contract began (2021) and the bolder 2025
+                    redraw in use now; the registry note carries the history. */}
+                <span className="mark-row"><VendorMark vendor="rededucation" year={2021} eraLabel={era} since={since} compact /><VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Red Education</span>
                 <span className="about-era-what">{t("path.rededucation")}</span>
+                {/* CURRENTLY TEACHING (PRIME, 2026-10-04): the four platforms
+                    whose authorized courses are delivered today, as marks, under
+                    a label. The list is the same four the credentials page
+                    states in words; the marks identify, they do not certify. */}
+                <span className="about-era-teaching">
+                  <span className="about-era-teaching-label">{t("path.teachingNow")}</span>
+                  <span className="mark-row about-era-teaching-marks"><VendorMark vendor="f5" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="netskope" year={thisYear} eraLabel={era} since={since} compact /></span>
+                </span>
               </li>
             </ol>
 
@@ -601,6 +641,21 @@ export default async function AboutPage({
             <p className="section-body" style={{ marginBottom: "1.5rem" }}>
               {t("cta.body")}
             </p>
+            {/* THREE ROUTES (PRIME 2026-10-04, from the Speaking discussion): a
+                reader who has just read the biography is usually buying the
+                person for one of three purposes, so the three doors are named
+                before the contact button rather than left implied by the
+                sentence above. */}
+            <ul className="about-routes">
+              {([1, 2, 3] as const).map((n) => (
+                <li key={n} className="about-route">
+                  <span className="about-route-q">{t(`cta.route${n}Q`)}</span>
+                  <Link href={n === 1 ? "/training" : n === 2 ? "/advisory" : "/speaking"} className="about-route-link">
+                    {t(`cta.route${n}Label`)} <span aria-hidden="true">&#8594;</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <div className="hero-cta">
               <Link href="/contact" className="btn btn-primary">
                 {t("cta.contactButton")}
