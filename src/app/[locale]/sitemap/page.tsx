@@ -17,6 +17,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { tools } from "@/config/tools";
+import { WORLDS } from "@/config/worlds";
 
 export async function generateMetadata({
   params,
@@ -37,58 +38,32 @@ export default async function SitemapPage({
   setRequestLocale(locale);
   const t = await getTranslations("sitemap");
   const tNav = await getTranslations("nav");
+  // The reconstructed earlier sites take their titles from the wrapper pages' copy (2026-10-05).
+  const tClone = await getTranslations("earlierSites.clone");
 
-  // Curated groups: label from nav where a nav label exists, path constant.
-  // Section-level by design - the exhaustive list is sitemap.xml's job.
-  const groups: { title: string; links: { href: string; label: string }[] }[] = [
-    {
-      title: t("gTools"),
-      links: [
-        { href: "/tools", label: tNav("tools") },
-        { href: "/category/networking", label: tNav("network") },
-        { href: "/category/security", label: tNav("security") },
-        { href: "/category/identity", label: tNav("identity") },
-        { href: "/glossary", label: tNav("glossary") },
-      ],
-    },
-    {
-      title: t("gLearn"),
-      links: [
-        { href: "/learn", label: tNav("learn") },
-        { href: "/study-guides", label: tNav("studyGuides") },
-        { href: "/training", label: tNav("training") },
-      ],
-    },
-    {
-      title: t("gVendors"),
-      links: [
-        { href: "/vendor-hubs", label: tNav("vendors") },
-        { href: "/industry", label: tNav("industry") },
-        { href: "/red-education", label: "Red Education" },
-      ],
-    },
-    {
-      title: t("gAbout"),
-      links: [
-        { href: "/about", label: tNav("about") },
-        { href: "/industry/chapters", label: tNav("careerRecord") },
-        { href: "/about/credentials", label: tNav("credentials") },
-        { href: "/about/earlier-sites", label: tNav("earlierSites") }, // 2026-10-03: the archived earlier sites
-        { href: "/contact", label: tNav("contact") },
-      ],
-    },
-    {
-      title: t("gSite"),
-      links: [
-        { href: "/changelog", label: tNav("changelog") },
-        { href: "/roadmap", label: tNav("roadmap") },
-        { href: "/contribute/tools", label: tNav("contribute") },
-        { href: "/colophon", label: tNav("colophon") },
-        { href: "/api", label: "API" },
-        { href: "/dev/fun", label: tNav("devFun") },
-      ],
-    },
-  ];
+  // THE FIVE SYSTEMS (wave 0, 2026-10-05; SCOUT G21): the same five worlds as the home directory and the footer,
+  // from the shared registry, each with its primary entries and then the further pages only this map lists.
+  // Section-level by design: the exhaustive list is sitemap.xml's job.
+  const tHome = await getTranslations("home");
+  const tFooter = await getTranslations("footer");
+  /** A registry label key to its text (see src/config/worlds.ts for the key forms). */
+  const label = (key: string) => key.startsWith("=") ? key.slice(1) : key.startsWith("nav.") ? tNav(key.slice(4)) : key.startsWith("footer.") ? tFooter(key.slice(7)) : tHome(key);
+  const groups: { key: string; title: string; verb: string; links: { href: string; label: string }[] }[] = WORLDS.map((w) => ({
+    key: w.key,
+    title: tHome(`front.world.${w.key}`),
+    verb: tHome(`front.worldVerb.${w.key}`),
+    links: [
+      ...w.items.map((it) => ({ href: it.href, label: label(it.label) })),
+      ...w.more.map((it) => ({ href: it.href, label: label(it.label) })),
+      // The reconstructed earlier sites, under The project after the earlier-sites inventory (2026-10-05).
+      ...(w.key === "project"
+        ? [
+            { href: "/about/earlier-sites/nutzmann-net-2004", label: tClone("title.nutzmann-net-2004") },
+            { href: "/about/earlier-sites/ntz-com-br-2013", label: tClone("title.ntz-com-br-2013") },
+          ]
+        : []),
+    ],
+  }));
 
   return (
     <>
@@ -102,8 +77,8 @@ export default async function SitemapPage({
             <p className="sitemap-tools-count mono">{t("toolsCount", { count: tools.length })}</p>
             <div className="sitemap-groups">
               {groups.map((g) => (
-                <div className="sitemap-group" key={g.title}>
-                  <h2 className="sitemap-group-title">{g.title}</h2>
+                <div className={`sitemap-group sitemap-group--${g.key}`} key={g.key}>
+                  <h2 className="sitemap-group-title">{g.title} <span className="sitemap-group-verb mono">{g.verb}</span></h2>
                   <ul className="sitemap-links">
                     {g.links.map((l) => (
                       <li key={l.href}>

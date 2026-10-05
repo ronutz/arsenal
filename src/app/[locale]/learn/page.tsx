@@ -1,20 +1,38 @@
 // ============================================================================
 // src/app/[locale]/learn/page.tsx
 // ----------------------------------------------------------------------------
-// THE LEARN SECTION INDEX — surface (b): the standalone reference/Learn area.
+// THE LEARN HUB (wave L of Round 1, 2026-10-05; SCOUT L1 to L9, L11, L25, L32;
+// PRIME's decision 6). Two layers on one page, one anchor:
 //
-// Articles are GROUPED BY CATEGORY (the same taxonomy as the tools index), so
-// the two sections read as one coherent library as the catalogue grows. The
-// grouping + ordering lives in the loader (getArticlesByCategory); the category
-// LABELS come from the shared "tools.categories.*" i18n keys, so one label set
-// serves both indexes. Fed by the SAME loader as the in-tool panels — one
-// content source, two surfaces.
+//   GUIDED (first): the ways in, each explained. Five learning modes as intent
+//   cards (the home's "Start here" vocabulary: a question, a destination, a
+//   verb): understand a subject, learn in order, prepare for a certification,
+//   learn a platform, look something up. Then "Browse by subject", the
+//   category browser as a major section with counts computed at build time.
+//   Then three Stories as editorial discovery. Then the contextual areas
+//   (The Practice, Roles, People, Industry, where the industry learns), lower
+//   and quieter: contextual extensions of Learn, not competing ways to find an
+//   article.
+//
+//   DIRECTORY (below, or first when the switch says so): the complete article
+//   index, explicitly named and counted, with its jump-to, filter and view
+//   controls, grouped by category exactly as before (the same taxonomy as the
+//   tools index; the grouping lives in getArticlesByCategory, the labels in the
+//   shared tools.categories.* keys). Nothing was removed: the eleven peer
+//   portal cards that led the page were demoted into the modes and the
+//   contextual rows (the canon rule: demote, do not remove; a hub explains
+//   choices, an index exposes inventory, never both at equal priority).
+//
+// The Guided | Directory switch (HubViewSwitch) writes data-hub-view on <main>;
+// the stylesheet hides the guided layer in the directory reading. /learn#directory
+// opens in the directory reading. The scoped search field (wave 0) sits under
+// the lede and opens the one dialog inside the Understand world.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { STORY_SLUGS } from "@/content/learn/stories";
+import { STORY_GROUPS, STORY_SLUGS } from "@/content/learn/stories";
 import { ogImages } from "@/lib/og";
-import { getArticlesByCategory, getArticleVendors } from "@/lib/learn";
+import { getArticle, getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
 import { GLOSSARY } from "@/content/glossary/glossary";
 import { partnerVendors } from "@/content/vendors/partners";
@@ -30,6 +48,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
 import Header from "@/components/Header";
+import HubSearch from "@/components/HubSearch";
+import HubViewSwitch from "@/components/HubViewSwitch";
 import SiteFooter from "@/components/SiteFooter";
 
 export async function generateMetadata({
@@ -59,13 +79,8 @@ export default async function LearnIndexPage({
     (v.tags as readonly string[]).includes("training")
   ).length;
   const tStories = await getTranslations("stories");
-  const tLearning = await getTranslations("learning_page");
-  const tIndustryTags = await getTranslations("industryTags");
   // Category labels are shared with the tools index (tools.categories.*).
   const tTools = await getTranslations("tools");
-  const tHub = await getTranslations("vendorHub"); // hub-strip chrome
-  const tGloss = await getTranslations("glossary");
-  const tSg = await getTranslations("studyGuidesIndex"); // glossary callout
   // Articles, grouped by the loader (within each group: curated order; English
   // fallback handled inside). Category groups themselves are sorted A->Z by
   // resolved label, locale-aware, to mirror the Tools index taxonomy.
@@ -82,8 +97,30 @@ export default async function LearnIndexPage({
 
 
   // Total mapped objectives across every certification study guide - the
-  // number on the study-guides portal badge, derived live from the registry.
+  // number on the learning-paths mode, derived live from the registry.
   const totalObjectives = studyGuides.reduce((n, g) => n + objectiveCount(g), 0);
+  // The three featured stories: the first thread of each group (the groups are the editorial order); the rest are
+  // one link away on /stories. Titles in the reader's locale, English fallback inside the loader.
+  const featuredStories = STORY_GROUPS.map((g) => getArticle(g.slugs[0], locale)).filter((a): a is NonNullable<typeof a> => a !== null).slice(0, 3);
+  // People in the glossary, the count on the People row.
+  const peopleCount = GLOSSARY.filter((e) => e.person).length;
+  // THE FIVE LEARNING MODES (SCOUT L4): a question, a destination, a verb, a count where one is counted.
+  const modes: { key: string; href: string; accent: string; count: string }[] = [
+    { key: "subject", href: "#subjects", accent: "var(--accent-primary)", count: t("hub.modeCount.subject", { count: articleCount, subjects: groups.length }) },
+    { key: "path", href: "/study-guides", accent: "var(--color-warning)", count: t("hub.modeCount.path", { count: READING_PATHS.length }) },
+    { key: "certification", href: "/certifications", accent: "var(--color-success)", count: t("hub.modeCount.certification", { count: studyGuides.length, objectives: totalObjectives }) },
+    { key: "platform", href: "/vendor-hubs", accent: "var(--accent-secondary)", count: t("hub.modeCount.platform", { count: VENDOR_FAMILIES.length }) },
+    { key: "lookup", href: "/glossary", accent: "var(--accent-amber)", count: t("hub.modeCount.lookup", { count: GLOSSARY.length }) },
+  ];
+  // THE CONTEXTUAL AREAS (SCOUT L6, L7): around Learn, lower and quieter.
+  const around: { key: string; href: string; count: string }[] = [
+    { key: "practice", href: "/practice", count: t("portalPracticeCount", { count: practiceCount }) },
+    { key: "roles", href: "/roles", count: t("portalRolesCount", { count: ROLES.length }) },
+    { key: "people", href: "/people", count: t("portalPeopleCount", { count: peopleCount }) },
+    { key: "industry", href: "/industry", count: t("portalCompanies", { count: partnerVendors.length }) },
+    { key: "learning", href: "/industry/learning", count: t("portalLearningCount", { count: trainingPartnerCount }) },
+    { key: "tools", href: "/tools", count: "" },
+  ];
 
   return (
     <>
@@ -98,196 +135,92 @@ export default async function LearnIndexPage({
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede learn-hero-lede">{t("lede")}</p>
+            {/* The scoped search field (wave 0, 2026-10-05; SCOUT L17): opens the one dialog inside the Understand world. */}
+            <HubSearch scope="understand" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["BGP", "TLS 1.3", "SASE", "NSE 4", "802.1X", "OUI"]} />
 
-            {/* Learn portal cards (PRIME 2026-07-21): the Glossary and the
-                Study-guides doors, upgraded from two long phrases to feature
-                cards - type ornament, per-card accent, live count badges
-                derived from the registries (never hand-counted). */}
-            <div className="learn-portal-grid">
-              {/* PRIME 2026-07-27: three doors ahead of the existing pair.
-                  The first is an in-page jump rather than a link - the article
-                  index is what this page IS, and it sat below three screens of
-                  portal cards with nothing pointing at it. The other two
-                  replace the per-vendor pill strip that used to sit here: one
-                  door to the hubs and one to the certification guides, instead
-                  of a row that grew by one pill per vendor. */}
-              <a
-                href="#articles"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9660;</span>
-                <p className="learn-portal-title">
-                  {t("portalArticles")} <span className="learn-portal-arrow">&#8595;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalArticlesLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalArticleCount", { count: articleCount })}</span>
-                </p>
-              </a>
-              {/* PRIME 2026-09-09: the stitchers. Articles that connect other
-                  articles are invisible in a category list, because a category
-                  sorts by subject and these sort by argument. */}
-              <Link
-                href="/stories"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#10038;</span>
-                <p className="learn-portal-title">
-                  {tStories("navLabel")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{tStories("lede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{tStories("count", { count: STORY_SLUGS.length })}</span>
-                </p>
-              </Link>
-              <Link
-                href="/vendor-hubs"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-warning)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
-                <p className="learn-portal-title">
-                  {t("portalHubs")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalHubsLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalHubCount", { count: VENDOR_FAMILIES.length })}</span>
-                </p>
-              </Link>
-              <Link
-                href="/industry"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#8620;</span>
-                <p className="learn-portal-title">
-                  {t("portalIndustry")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalIndustryLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalCompanies", { count: partnerVendors.length })}
-                  </span>
-                </p>
-              </Link>
-              <Link
-                href="/roles"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-accent)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
-                <p className="learn-portal-title">
-                  {t("portalRoles")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalRolesLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalRolesCount", { count: ROLES.length })}
-                  </span>
-                </p>
-              </Link>
-              <Link
-                href="/practice"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-danger)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
-                <p className="learn-portal-title">
-                  {t("portalPractice")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalPracticeLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalPracticeCount", { count: practiceCount })}
-                  </span>
-                </p>
-              </Link>
-              <Link
-                href="/people"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-amber)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9787;</span>
-                <p className="learn-portal-title">
-                  {t("portalPeople")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalPeopleLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalPeopleCount", { count: GLOSSARY.filter((e) => e.person).length })}
-                  </span>
-                </p>
-              </Link>
-              <Link
-                href="/certifications"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#10003;</span>
-                <p className="learn-portal-title">
-                  {t("portalCerts")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalCertsLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
-                </p>
-              </Link>
-              <Link
-                href="/study-guides"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>1&#8594;2&#8594;3</span>
-                <p className="learn-portal-title">
-                  {tSg("title")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{t("portalStudyLede")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalPaths", { count: READING_PATHS.length })}</span>
-                  <span className="learn-portal-badge">{t("portalGuides", { count: studyGuides.length })}</span>
-                  <span className="learn-portal-badge">{t("portalObjectives", { count: totalObjectives })}</span>
-                </p>
-              </Link>
-              {/* PRIME 2026-09-11: moved here from the industry page, where it
-                  sat as a jump-link under the timeline. The companies that TEACH
-                  the industry belong beside the other ways in to learning, not
-                  buried among three hundred vendors. Copy is reused, not
-                  rewritten: the title is the destination page's own, the lede is
-                  the sentence the industry link carried. */}
-              <Link
-                href="/industry/learning"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-secondary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>&#9650;</span>
-                <p className="learn-portal-title">
-                  {tLearning("title")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{tIndustryTags("learningLink")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">
-                    {t("portalLearningCount", { count: trainingPartnerCount })}
-                  </span>
-                </p>
-              </Link>
-              <Link
-                href="/glossary"
-                className="learn-portal-card"
-                style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}
-              >
-                <span className="learn-portal-ornament" aria-hidden>A&ndash;Z</span>
-                <p className="learn-portal-title">
-                  {tGloss("title")} <span className="learn-portal-arrow">&#8594;</span>
-                </p>
-                <p className="learn-portal-lede">{tGloss("tagline")}</p>
-                <p className="learn-portal-badges">
-                  <span className="learn-portal-badge">{t("portalTerms", { count: GLOSSARY.length })}</span>
-                </p>
-              </Link></div>
+            {/* GUIDED | DIRECTORY: the switch between the two readings of this page (decision 6). */}
+            <HubViewSwitch targetId="main" storageKey="ronutz:hub:learn" legend={t("hub.switchLegend")} guidedLabel={t("hub.switchGuided")} directoryLabel={t("hub.switchDirectory")} />
 
+            {/* ---- THE GUIDED LAYER: hidden in the directory reading. ---- */}
+            <div className="hub-guided">
+              {/* 1. The five learning modes: the first choices are learner intentions, not content structures (L3, L4). */}
+              <h2 className="section-title hub-h2">{t("hub.modesTitle")}</h2>
+              <ul className="intent-grid intent-grid--hub">
+                {modes.map((m) => (
+                  <li key={m.key} className="intent" style={{ "--intent-accent": m.accent } as CSSProperties}>
+                    {m.href.startsWith("#") ? (
+                      <a href={m.href} className="intent-link">
+                        <span className="intent-q">{t(`hub.mode.${m.key}.q`)}</span>
+                        <span className="intent-label">{t(`hub.mode.${m.key}.label`)} <span aria-hidden="true">&#8595;</span></span>
+                        <span className="intent-verb mono">{t(`hub.mode.${m.key}.verb`)} · {m.count}</span>
+                      </a>
+                    ) : (
+                      <Link href={m.href} className="intent-link">
+                        <span className="intent-q">{t(`hub.mode.${m.key}.q`)}</span>
+                        <span className="intent-label">{t(`hub.mode.${m.key}.label`)} <span aria-hidden="true">&#8594;</span></span>
+                        <span className="intent-verb mono">{t(`hub.mode.${m.key}.verb`)} · {m.count}</span>
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
 
+              {/* 2. Browse by subject (L8, L18): the category browser as a major section, one card per subject with its
+                  count, each card the door to the subject's own page and to its block in the directory below. */}
+              <div className="hub-subjects" id="subjects">
+                <h2 className="section-title hub-h2">{t("hub.subjectsTitle")}</h2>
+                <p className="hub-lede">{t("hub.subjectsLede", { count: articleCount, subjects: groups.length })}</p>
+                <ul className="hub-subject-grid">
+                  {groups.map((group) => (
+                    <li key={group.category} className="hub-subject" style={{ "--chip-color": categoryColor(group.category) } as CSSProperties}>
+                      <Link href={`/category/${group.category}`} className="hub-subject-link">
+                        <span className="category-dot" aria-hidden="true" />
+                        <span className="hub-subject-name">{tTools(`categories.${group.category}`)}</span>
+                        <span className="hub-subject-count mono">{t("hub.subjectCount", { count: group.articles.length })}</span>
+                      </Link>
+                      <a href={`#${group.category}`} className="hub-subject-index">{t("hub.subjectInIndex")} <span aria-hidden="true">&#8595;</span></a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 3. Stories as editorial discovery (L5): three threads, the rest one link away. */}
+              <div className="hub-stories">
+                <h2 className="section-title hub-h2">{tStories("navLabel")}</h2>
+                <p className="hub-lede">{tStories("lede")}</p>
+                <ul className="hub-story-list">
+                  {featuredStories.map((a) => (
+                    <li key={a.slug} className="hub-story">
+                      <Link href={`/learn/${a.slug}`} className="hub-story-link">
+                        <span className="hub-story-title">{a.title}</span>
+                        <span className="hub-story-summary">{a.summary}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <p className="hub-more"><Link href="/stories">{t("hub.storiesBrowse", { count: STORY_SLUGS.length })} <span aria-hidden="true">&#8594;</span></Link></p>
+              </div>
+
+              {/* 4. Around Learn (L6, L7): the contextual areas, demoted from the peer cards, not removed. */}
+              <div className="hub-around">
+                <h2 className="section-title hub-h2">{t("hub.aroundTitle")}</h2>
+                <ul className="hub-around-list">
+                  {around.map((a) => (
+                    <li key={a.key} className="hub-around-item">
+                      <Link href={a.href} className="hub-around-link">{t(`hub.around.${a.key}.label`)} <span aria-hidden="true">&#8594;</span></Link>
+                      <span className="hub-around-lede">{t(`hub.around.${a.key}.lede`)}</span>
+                      {a.count && <span className="hub-around-count mono">{a.count}</span>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* ---- THE DIRECTORY: the complete article index, explicitly named and counted (L9, L28). ---- */}
+            <div className="hub-directory-head" id="directory">
+              <h2 className="section-title hub-h2">{t("hub.directoryTitle")}</h2>
+              <p className="hub-lede">{t("hub.directoryLede", { count: articleCount, subjects: groups.length })}</p>
+            </div>
 
             {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +
                 view density in one strip that sticks below the site header on

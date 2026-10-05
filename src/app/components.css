@@ -676,6 +676,22 @@
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
+/* THE FOOTER DIRECTORY (wave 0, 2026-10-05; SCOUT G21): five columns, the home's world accents as a rule above
+   each, titles small and bold, links quiet; two columns on phones, three on tablets, five from 64 rem. Sits above
+   the credits with a rule beneath, so the utility rows keep their place. */
+.footer-worlds { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 1.5rem; margin: 0 0 1.5rem; padding: 0 0 1.5rem; border-bottom: 1px solid var(--border-subtle); }
+@media (min-width: 48rem) { .footer-worlds { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .footer-worlds { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.footer-world { --world-accent: var(--border-strong); min-width: 0; padding-top: 0.6rem; border-top: 2px solid var(--world-accent); }
+.footer-world--use { --world-accent: var(--accent-primary); }
+.footer-world--understand { --world-accent: var(--color-warning); }
+.footer-world--explore { --world-accent: var(--color-success); }
+.footer-world--work { --world-accent: var(--accent-amber); }
+.footer-world--project { --world-accent: var(--color-neutral); }
+.footer-world-title { margin: 0 0 0.5rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); }
+.footer-world-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
+.footer-world-link { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
+.footer-world-link:hover, .footer-world-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
 .footer-meta {
   color: var(--text-tertiary);
   font-size: 0.8rem;
@@ -690,14 +706,18 @@
 .learn-grid {
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr;
+  /* minmax(0, 1fr), not 1fr: a card whose summary carries an unbreakable token (a cipher-suite name) must not widen
+     the track past the viewport (found at 360 px on /pt-BR/learn, 2026-10-05); the token wraps inside the card instead. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 @media (min-width: 40rem) {
   .learn-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.learn-grid-item { min-width: 0; }
+.learn-card-title, .learn-card-summary { overflow-wrap: anywhere; }
 .learn-card {
   display: flex;
   flex-direction: column;
@@ -1168,6 +1188,47 @@
   background: color-mix(in srgb, var(--color-neutral) 16%, transparent);
 }
 
+/* ---- The scope row (wave 0, 2026-10-05): everywhere or one of the five worlds, each chip in its world's
+   accent (the home directory's), the count of hits in it beside the name; a world with no hit is disabled.
+   Sits above the kind pills, reading as the first question (where) before the second (what kind). --- */
+.search-scopes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem 0.25rem;
+}
+.search-scope {
+  --world-accent: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.14));
+  border-left: 3px solid var(--world-accent);
+  transition: border-color 0.12s ease, background 0.12s ease, color 0.12s ease;
+}
+.search-scope:hover { color: var(--text-primary); }
+.search-scope:disabled { opacity: 0.4; cursor: default; }
+.search-scope--use { --world-accent: var(--accent-primary); }
+.search-scope--understand { --world-accent: var(--color-warning); }
+.search-scope--explore { --world-accent: var(--color-success); }
+.search-scope--work { --world-accent: var(--accent-amber); }
+.search-scope--project { --world-accent: var(--color-neutral); }
+.search-scope--active {
+  color: var(--text-primary);
+  border-color: color-mix(in srgb, var(--world-accent) 55%, transparent);
+  border-left-color: var(--world-accent);
+  background: color-mix(in srgb, var(--world-accent) 12%, transparent);
+}
+.search-scope--active .search-filter-count { color: var(--world-accent); background: color-mix(in srgb, var(--world-accent) 18%, transparent); }
+
 /* ---- Type filter pills (include/exclude Tools / Articles / User Guide / Pages)
    Sit between the search input and the results; toggle which kinds appear. --- */
 .search-filters {
@@ -1237,6 +1298,12 @@
   color: var(--kind-hue, var(--accent-primary));
   background: color-mix(in srgb, var(--kind-hue, var(--accent-primary)) 18%, transparent);
 }
+/* The "show more" row under the results (2026-10-05): how far the list goes, and the button for the next page. */
+.search-more { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem; padding: 0.75rem 1rem 0.5rem; }
+.search-more-count { font-size: 0.75rem; color: var(--text-tertiary); }
+.search-more-button { padding: 0.4rem 0.9rem; border: 1px solid var(--border-strong); border-radius: 999px; background: transparent; color: var(--text-secondary); font-size: 0.85rem; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.search-more-button:hover, .search-more-button:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.search-more-button:disabled { opacity: 0.6; cursor: wait; }
 
 /* The pricing-basis line under the three ways to engage (advisory, 2026-10-04):
    an advisory-note with air above it, so it reads as the footnote to the three
@@ -14906,6 +14973,14 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   border-bottom: 1px solid var(--border-subtle);
   padding-bottom: 6px;
 }
+/* The five systems (wave 0, 2026-10-05): each group carries its world's accent rule and verb, as on the home page. */
+.sitemap-group { --world-accent: var(--border-strong); border-top: 2px solid var(--world-accent); padding-top: 10px; }
+.sitemap-group--use { --world-accent: var(--accent-primary); }
+.sitemap-group--understand { --world-accent: var(--color-warning); }
+.sitemap-group--explore { --world-accent: var(--color-success); }
+.sitemap-group--work { --world-accent: var(--accent-amber); }
+.sitemap-group--project { --world-accent: var(--color-neutral); }
+.sitemap-group-verb { margin-left: 0.5rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--world-accent); }
 .sitemap-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
 .sitemap-link { color: var(--text-primary); text-decoration: none; }
 .sitemap-link:hover { color: var(--accent-primary); }
@@ -18375,6 +18450,52 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 @media (max-width: 640px) {
   .es-era { grid-template-columns: 1fr; gap: 0.5rem; }
 }
+/* --------------------------------------------------------------------------
+   THE RECONSTRUCTED SITES (PRIME 2026-10-05 11:03): the feature cards on the
+   earlier-sites page and the wrapper page around each clone. The clone itself
+   is a frame at the 800 px width the sites were designed for; everything
+   around it reuses the es-* catalogue vocabulary. Tokens only.
+   -------------------------------------------------------------------------- */
+/* The feature on the earlier-sites page: a lede and two cards, thumbnail above, facts below. */
+.es-feature { margin: 0 0 2.5rem; }
+.es-feature-lede { color: var(--text-secondary); line-height: 1.65; margin: 0 0 1.25rem; }
+.es-feature-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+.es-feature-card { display: flex; flex-direction: column; border: 1px solid var(--border-subtle); border-radius: 12px; background: var(--surface-elevated); overflow: hidden; }
+.es-feature-thumb { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-bottom: 1px solid var(--border-subtle); background: var(--surface-base); }
+.es-feature-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.es-feature-body { display: flex; flex-direction: column; gap: 0.4rem; padding: 1rem 1.1rem 1.2rem; }
+.es-feature-name { margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text-primary); }
+.es-feature-name a { color: inherit; text-decoration: none; }
+.es-feature-name a:hover, .es-feature-name a:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+.es-feature-facts { margin: 0; font-size: 0.8rem; color: var(--text-secondary); }
+.es-feature-open { margin: 0.4rem 0 0; font-weight: 600; }
+/* The wrapper page: the bar above the frame (the way out, and the clone's address). */
+.es-clone-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1rem; margin: 0 0 1rem; }
+.es-clone-open { font-weight: 600; }
+.es-clone-url { font-size: 0.8rem; color: var(--text-secondary); overflow-wrap: anywhere; }
+/* The frame: the clone's own 800 px, centred, bordered like a window. The width is fixed on purpose: the 2004 frameset
+   and the 2013 tables were laid out for it and clip when squeezed, so a narrower screen scrolls the figure sideways
+   instead (the figure, not the page). */
+.es-clone-figure { margin: 0; overflow-x: auto; }
+.es-clone-frame { display: block; width: 800px; max-width: none; height: 720px; margin: 0 auto; border: 1px solid var(--border-strong); border-radius: 6px; background: #ffffff; }
+.es-clone-caption { margin: 0.75rem 0 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.55; text-align: center; }
+/* Kept, changed, excluded, tools, headers: paragraphs and the counted list. */
+.es-clone-body { margin: 0; color: var(--text-secondary); line-height: 1.65; }
+.es-clone-h2 { margin-top: 1.75rem; }
+.es-clone-changes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+.es-clone-change { display: grid; grid-template-columns: 3.5rem 1fr; gap: 0.75rem; align-items: baseline; color: var(--text-secondary); line-height: 1.6; }
+.es-clone-count { font-size: 0.95rem; font-weight: 700; color: var(--accent-primary); text-align: right; font-variant-numeric: tabular-nums; }
+.es-clone-note { margin: 1rem 0 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; }
+/* The page list: the unlinked mark and the no-capture cell. */
+.es-clone-orphan { display: inline-block; margin-left: 0.5rem; padding: 0.05rem 0.4rem; border: 1px solid var(--border-subtle); border-radius: 999px; font-size: 0.7rem; font-family: inherit; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-secondary); }
+.es-clone-nocapture { font-size: 0.8rem; color: var(--text-secondary); }
+.es-clone-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.25rem; margin: 0.75rem 0 0; }
+.es-clone-links a { color: var(--accent-primary); text-decoration: none; }
+.es-clone-links a:hover, .es-clone-links a:focus-visible { text-decoration: underline; }
+@media (max-width: 640px) {
+  .es-clone-frame { height: 600px; }
+  .es-clone-change { grid-template-columns: 2.75rem 1fr; }
+}
 /* An era section's optional closing link (EraPage, 2026-10-03). */
 .era-section-link { margin: 0.75rem 0 0; }
 .era-section-link a {
@@ -18850,6 +18971,16 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 
 /* The omnibox: one field that opens the site's single search dialog with the text already in it. */
 .omnibox { margin-top: 2rem; max-width: 42rem; }
+/* The hub fields (wave 0, 2026-10-05): the omnibox at the top of /tools, /learn and /industry, tinted with the
+   hub's world so the focus ring says where the search is scoped (the home field keeps the accent). */
+.omnibox--hub { --hub-accent: var(--accent-primary); margin-top: 1.5rem; max-width: 40rem; }
+.omnibox--use { --hub-accent: var(--accent-primary); }
+.omnibox--understand { --hub-accent: var(--color-warning); }
+.omnibox--explore { --hub-accent: var(--color-success); }
+.omnibox--work { --hub-accent: var(--accent-amber); }
+.omnibox--project { --hub-accent: var(--color-neutral); }
+.omnibox--hub .omnibox-field { border-left: 3px solid var(--hub-accent); }
+.omnibox--hub .omnibox-field:focus-within { border-color: var(--hub-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--hub-accent) 25%, transparent); }
 .omnibox-field { display: flex; align-items: center; gap: 0.65rem; padding: 0.2rem 0.9rem 0.2rem 1rem; border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface-base); transition: border-color 0.15s ease, box-shadow 0.15s ease; }
 .omnibox-field:focus-within { border-color: var(--accent-primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-primary) 25%, transparent); }
 .omnibox-icon { flex: none; color: var(--text-tertiary); }
@@ -19030,10 +19161,14 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .world-title { margin: 0; font-size: 1.05rem; font-weight: 700; }
 .world-verb { margin: 0.15rem 0 0.75rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--world-accent); }
 .world-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.45rem; }
-.world-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
-.world-link { color: var(--text-primary); text-decoration: none; font-size: 0.95rem; }
+/* A row is the label and, when counted, the count. The two sit on one line when the column has room and the count
+   drops to its own line, right-aligned, when it does not (PRIME 2026-10-05 12:43: "28 courses across 4 vendors" ran
+   into the next column and "Training I teach" broke in two because the count was unbreakable and the label gave way).
+   The label keeps its width; the count wraps rather than overflows. */
+.world-list li { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; column-gap: 0.5rem; row-gap: 0.1rem; }
+.world-link { flex: 0 0 auto; max-width: 100%; color: var(--text-primary); text-decoration: none; font-size: 0.95rem; }
 .world-link:hover, .world-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
-.world-count { font-size: 0.72rem; color: var(--text-tertiary); white-space: nowrap; }
+.world-count { flex: 0 1 auto; margin-left: auto; min-width: 0; font-size: 0.72rem; color: var(--text-tertiary); text-align: right; overflow-wrap: anywhere; }
 
 /* Phones (review item 44, the mobile acceptance test: search or a quick action within the first viewport, something
    useful within two). The search field moves up under the H1, with the lede and the closing line following it; the
@@ -19182,3 +19317,61 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .cst-marks { display: inline-flex; gap: 0.25rem; }
 /* The focused selector's row in the table. */
 .cst-row-focus > th, .cst-row-focus > td { background: color-mix(in srgb, var(--accent-primary) 10%, transparent); }
+
+/* ==========================================================================
+   THE LEARN HUB, GUIDED | DIRECTORY (wave L of Round 1, 2026-10-05; SCOUT L4
+   to L9, L11; PRIME's decision 6). The guided layer reuses the home's intent
+   vocabulary for the five modes; the subject browser, the three stories and
+   the contextual rows are new and quiet; the directory keeps the index as it
+   was, under an explicit heading. data-hub-view="directory" on <main> hides
+   the guided layer. Tokens only.
+   ========================================================================== */
+/* The switch: a small segmented control at the right of the hero, the same anatomy as the view toggle. */
+.hub-switch { display: flex; align-items: center; justify-content: flex-end; gap: 0.4rem; margin: 1.25rem 0 0; }
+.hub-switch-legend { font-size: 0.78rem; color: var(--text-tertiary); margin-right: 0.25rem; }
+.hub-switch-btn { padding: 0.35rem 0.85rem; border: 1px solid var(--border-strong); border-radius: 999px; background: transparent; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease; }
+.hub-switch-btn:hover, .hub-switch-btn:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.hub-switch-btn--on { border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 14%, transparent); color: var(--text-primary); }
+/* The directory reading: the guided layer goes, the index comes first. */
+main[data-hub-view="directory"] .hub-guided { display: none; }
+main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
+/* Section headings inside the hub: the page's section-title with air above. */
+.hub-h2 { margin-top: 2.75rem; }
+.hub-lede { margin: 0.35rem 0 1.1rem; max-width: 62ch; color: var(--text-secondary); line-height: 1.6; }
+.intent-grid--hub { margin-top: 1.1rem; }
+/* The subject browser: one card per subject, the category colour as the dot and the left rule. */
+.hub-subject-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0.75rem; }
+.hub-subject { display: flex; flex-direction: column; gap: 0.3rem; padding: 0.8rem 0.95rem; border: 1px solid var(--border-subtle); border-inline-start: 3px solid var(--chip-color, var(--accent-primary)); border-radius: var(--radius-md); background: var(--surface-base); }
+.hub-subject-link { display: flex; align-items: baseline; gap: 0.5rem; color: var(--text-primary); text-decoration: none; min-width: 0; }
+.hub-subject-link:hover .hub-subject-name, .hub-subject-link:focus-visible .hub-subject-name { color: var(--accent-primary); text-decoration: underline; }
+.hub-subject-name { font-weight: 700; flex: 1 1 auto; min-width: 0; }
+.hub-subject-count { flex: none; font-size: 0.72rem; color: var(--text-tertiary); }
+.hub-subject-index { font-size: 0.78rem; color: var(--text-secondary); text-decoration: none; }
+.hub-subject-index:hover, .hub-subject-index:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+/* The two wrappers, scroll margins for the modes' anchors and air between the sections. */
+.hub-stories, .hub-around { scroll-margin-top: var(--sticky-anchor-offset); }
+/* The three stories: title and summary, one row each. */
+.hub-story-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0.75rem; }
+.hub-story { min-width: 0; }
+.hub-story-link { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-elevated); color: inherit; text-decoration: none; transition: border-color 0.15s ease; }
+.hub-story-link:hover, .hub-story-link:focus-visible { border-color: color-mix(in srgb, var(--accent-secondary) 55%, var(--border-subtle)); }
+.hub-story-title { font-weight: 700; color: var(--text-primary); }
+.hub-story-summary { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+.hub-more { margin: 0.9rem 0 0; }
+.hub-more a { color: var(--accent-primary); text-decoration: none; font-weight: 600; }
+.hub-more a:hover, .hub-more a:focus-visible { text-decoration: underline; }
+/* Around Learn: quiet rows, label, lede, count. */
+.hub-around-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.1rem; }
+.hub-around-item { display: grid; grid-template-columns: 13rem 1fr auto; gap: 0.5rem 1rem; align-items: baseline; padding: 0.55rem 0; border-top: 1px solid var(--border-subtle); }
+.hub-around-item:last-child { border-bottom: 1px solid var(--border-subtle); }
+.hub-around-link { font-weight: 600; color: var(--text-primary); text-decoration: none; }
+.hub-around-link:hover, .hub-around-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+.hub-around-lede { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; }
+.hub-around-count { font-size: 0.72rem; color: var(--text-tertiary); white-space: nowrap; }
+/* The directory head: scroll margin for the #directory link under the sticky header. */
+.hub-directory-head { scroll-margin-top: var(--sticky-anchor-offset); margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid var(--border-strong); }
+.hub-subjects { scroll-margin-top: var(--sticky-anchor-offset); }
+@media (max-width: 640px) {
+  .hub-around-item { grid-template-columns: 1fr; gap: 0.15rem; }
+  .hub-switch { justify-content: flex-start; flex-wrap: wrap; }
+}

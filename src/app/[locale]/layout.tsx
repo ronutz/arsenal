@@ -28,6 +28,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { dirFor, getLocale } from "@/i18n/locales";
 import InputModality from "@/components/InputModality";
+import SearchKind from "@/components/SearchKind";
 import MachineTranslationNotice from "@/components/MachineTranslationNotice";
 import ConsoleGreeting from "@/components/ConsoleGreeting";
 import RecentPagesRecorder from "@/components/RecentPagesRecorder";
@@ -227,6 +228,10 @@ export default async function LocaleLayout({
         {/* Tracks last input modality (keyboard vs pointer) so the skip link
             reveals only for keyboard users — see InputModality. */}
         <InputModality />
+        {/* The page's kind for the search index (tool, article, guide, page), an empty hidden element Pagefind
+            reads at build time so the search can count and filter by kind over every hit, not the top eight
+            (PRIME 2026-10-05 12:44). See SearchKind. */}
+        <SearchKind />
         {/* Site-wide keyboard shortcuts (navigation, favorites, search, boss
             key, and the ? cheat-sheet). The listener stays inert whenever a
             form field is focused or a modifier is held — see KeyboardShortcuts. */}

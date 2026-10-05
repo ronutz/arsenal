@@ -26,6 +26,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
+import HubSearch from "@/components/HubSearch";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -274,9 +275,13 @@ export default async function IndustryHubPage({
             {/* Hero: mirrors the vendor-hub hero treatment. */}
             <p className="hero-eyebrow">{ti("eyebrow")}</p>
             <h1 className="page-hero-title">{ti("title")}</h1>
-            <p className="page-hero-lede" style={{ marginBottom: "2.5rem" }}>
+            <p className="page-hero-lede">
               {ti("lede")}
             </p>
+            {/* The scoped search field (wave 0, 2026-10-05; SCOUT E10): opens the one dialog inside the Explore world. */}
+            <div style={{ marginBottom: "2.5rem" }}>
+              <HubSearch scope="explore" label={ti("hubSearch.label")} placeholder={ti("hubSearch.placeholder")} examplesLabel={ti("hubSearch.examples")} examples={["Cabletron", "Bay Networks", "Juniper", "Netscreen", "Wellfleet", "3Com"]} />
+            </div>
 
             {/* The career chip strip MOVED TO THE HOMEPAGE (PRIME 2026-08-06),
                 where it now sits inside the credibility section, between the

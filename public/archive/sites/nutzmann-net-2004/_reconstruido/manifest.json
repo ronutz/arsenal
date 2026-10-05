@@ -1,0 +1,945 @@
+{
+  "site": "nutzmann.net",
+  "slug": "nutzmann-net-2004",
+  "made": "2026-10-05",
+  "exportDate": "2013-03-05",
+  "pages": [
+    {
+      "path": "ac.htm",
+      "title": "acervo",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 15340
+    },
+    {
+      "path": "acervo.htm",
+      "title": "Acervo :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6031
+    },
+    {
+      "path": "acervo/certificacoes.htm",
+      "title": "Acervo de Certificações :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3748
+    },
+    {
+      "path": "acervo/distribuidores.htm",
+      "title": "Acervo de Distribuidores :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3719
+    },
+    {
+      "path": "acervo/documentacao.htm",
+      "title": "Acervo de Documentação Técnica :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3741
+    },
+    {
+      "path": "acervo/fabricantes.htm",
+      "title": "Acervo de Fabricantes :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 30895
+    },
+    {
+      "path": "acervo/ferramentas.htm",
+      "title": "Acervo de Ferramentas :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3611
+    },
+    {
+      "path": "acervo/geral.htm",
+      "title": "Acervo de Links de Interesse Geral :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3645
+    },
+    {
+      "path": "acervo/revendas.htm",
+      "title": "Acervo de Revendas :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3688
+    },
+    {
+      "path": "acervo/seguranca.htm",
+      "title": "Acervo de Informações Relacionadas à Segurança :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3781
+    },
+    {
+      "path": "acervo/servicos.htm",
+      "title": "Acervo de Serviços Especializados :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3699
+    },
+    {
+      "path": "acervo_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4948
+    },
+    {
+      "path": "atuacao.htm",
+      "title": "Atuação e Portfólio de Clientes Atendidos :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6628
+    },
+    {
+      "path": "atuacao_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3260
+    },
+    {
+      "path": "bitsandbytes.htm",
+      "title": "Calculadora de bits e Bytes :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "forms",
+        "eval"
+      ],
+      "bytes": 35375
+    },
+    {
+      "path": "cases.htm",
+      "title": "Casos de Sucesso :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3789
+    },
+    {
+      "path": "cases/cas_aynil.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6080
+    },
+    {
+      "path": "cases/cas_cisco.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6080
+    },
+    {
+      "path": "cases/cas_ctron.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6080
+    },
+    {
+      "path": "cases/cas_ets.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6078
+    },
+    {
+      "path": "cases/cas_rstn.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6079
+    },
+    {
+      "path": "cases/cas_symn.htm",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6079
+    },
+    {
+      "path": "cases_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3199
+    },
+    {
+      "path": "certific.htm",
+      "title": "Certificação Profissional",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4164
+    },
+    {
+      "path": "certificados/CCNA.htm",
+      "title": "Certificação Profissional",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1139
+    },
+    {
+      "path": "comunicredes.htm",
+      "title": "Comunicação em Redes :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4241
+    },
+    {
+      "path": "comunicredes_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3265
+    },
+    {
+      "path": "confirma.htm",
+      "title": "Contato com Suceso :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3750
+    },
+    {
+      "path": "contat.htm",
+      "title": "Formas de Contato :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "forms"
+      ],
+      "bytes": 8854
+    },
+    {
+      "path": "contato.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1038
+    },
+    {
+      "path": "email.htm",
+      "title": "http://nutzmann.net :: email access",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1112
+    },
+    {
+      "path": "embreve.htm",
+      "title": "Conteúdo Indisponível :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "forms"
+      ],
+      "bytes": 5808
+    },
+    {
+      "path": "empr.htm",
+      "title": "A Empresa :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4615
+    },
+    {
+      "path": "empresa.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1037
+    },
+    {
+      "path": "empresa_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3259
+    },
+    {
+      "path": "equipe.htm",
+      "title": "equipe",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 9717
+    },
+    {
+      "path": "incompleto.htm",
+      "title": "informações incompletas",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3969
+    },
+    {
+      "path": "index.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 1055
+    },
+    {
+      "path": "inferior.htm",
+      "title": "Barra Inferior",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1298
+    },
+    {
+      "path": "jbs.htm",
+      "title": "Jobs, Vagas, Oportunidades de Trabalho :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4015
+    },
+    {
+      "path": "jobs.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1033
+    },
+    {
+      "path": "jobs_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2262
+    },
+    {
+      "path": "links.htm",
+      "title": "Links",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 14805
+    },
+    {
+      "path": "links_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3560
+    },
+    {
+      "path": "mail.htm",
+      "title": "email access :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3231
+    },
+    {
+      "path": "missao.htm",
+      "title": "Missão e Valores :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4727
+    },
+    {
+      "path": "missao_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3258
+    },
+    {
+      "path": "ob.htm",
+      "title": "Old Bits :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 10536
+    },
+    {
+      "path": "parceiros.htm",
+      "title": "Parcerias :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 15483
+    },
+    {
+      "path": "parceiros_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2252
+    },
+    {
+      "path": "principal.htm",
+      "title": "Página principal sem o topo e barra inferior :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "forms"
+      ],
+      "bytes": 15079
+    },
+    {
+      "path": "priv_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2373
+    },
+    {
+      "path": "privac.htm",
+      "title": "Política de Privacidade :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6266
+    },
+    {
+      "path": "privacidade.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1043
+    },
+    {
+      "path": "servicos.htm",
+      "title": "Serviços Especializados :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 5402
+    },
+    {
+      "path": "servicos_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2916
+    },
+    {
+      "path": "solucoes.htm",
+      "title": "Soluções Oferecidas :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6515
+    },
+    {
+      "path": "solucoes_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3257
+    },
+    {
+      "path": "term.htm",
+      "title": "Termos de utilização do site :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 6036
+    },
+    {
+      "path": "termos.htm",
+      "title": "Nützmann Networks - Redes e Telecomunicações",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1036
+    },
+    {
+      "path": "termos_menu.htm",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2375
+    },
+    {
+      "path": "topo.htm",
+      "title": "Barra Superior :: http://nutzmann.net",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 7350
+    }
+  ],
+  "orphans": [
+    "ac.htm",
+    "cases/cas_aynil.htm",
+    "cases/cas_cisco.htm",
+    "cases/cas_ctron.htm",
+    "cases/cas_ets.htm",
+    "cases/cas_rstn.htm",
+    "cases/cas_symn.htm",
+    "certific.htm",
+    "certificados/CCNA.htm",
+    "confirma.htm",
+    "email.htm",
+    "embreve.htm",
+    "equipe.htm",
+    "incompleto.htm",
+    "links.htm",
+    "links_menu.htm",
+    "mail.htm",
+    "ob.htm"
+  ],
+  "assets": 123,
+  "changes": {
+    "charset": 62,
+    "analytics": 2,
+    "flash": 1,
+    "forms": 4,
+    "mirrors": 0,
+    "missingTools": 2,
+    "caseFixes": 0,
+    "pathFixes": 12,
+    "deadLinks": 7,
+    "eval": 1,
+    "linkTypos": 7,
+    "absoluteSelf": 279,
+    "externalLinks": 393,
+    "crossSite": 0
+  },
+  "excluded": [
+    ".protect/.pemhtaccess",
+    "403.shtml",
+    "404.shtml",
+    "500.shtml",
+    "Cópia de estilo.css",
+    "acervo/404.shtml",
+    "acervo/500.shtml",
+    "acervo/estilo.css",
+    "acervo__.htm",
+    "arte/barrainf.png",
+    "arte/fundo.png",
+    "arte/home2.png",
+    "arte/http.cdr",
+    "arte/imagenstopo/!rj45.jpg",
+    "arte/imagenstopo/01G-016-RJ45.jpg",
+    "arte/imagenstopo/RJ45-6T.jpg",
+    "arte/imagenstopo/RJ45_.jpg",
+    "arte/imagenstopo/UTP Inside of RJ45 Jack.jpg",
+    "arte/imagenstopo/redes-lan1.jpg",
+    "arte/imagenstopo/redes.jpg",
+    "arte/imagenstopo/rj-45.jpg",
+    "arte/imagenstopo/rj45.jpg",
+    "arte/imagenstopo/rj45conn.jpg",
+    "arte/imagenstopo/rj_45.jpg",
+    "arte/links.ai",
+    "arte/logos/_notes/nutz.jpg.mno",
+    "arte/logos/logo1_color_completo.gif",
+    "arte/logos/logo1_color_completo.jpg",
+    "arte/logos/logo1_pb_completo.jpg",
+    "arte/logos/logo1_totalcurvas.ai",
+    "arte/logos/logo1_totalcurvas.wmf",
+    "arte/logos/logo2_color_completo.gif",
+    "arte/logos/logo2_color_completo.jpg",
+    "arte/logos/logo2_pb_completo.jpg",
+    "arte/logos/logo2_totalcurvas.ai",
+    "arte/logos/logo2_totalcurvas.wmf",
+    "arte/logos/logo_totalcurvas.cdr",
+    "arte/logos/logos.pdf",
+    "arte/logos/nutz.jpg",
+    "arte/logos/simbolo_color.gif",
+    "arte/logos/simbolo_color.jpg",
+    "arte/logos/simbolo_pb.gif",
+    "arte/logos/simbolo_pb.jpg",
+    "arte/modelo_bot_barra.png",
+    "arte/modelo_botao.png",
+    "arte/modelo_texto.png",
+    "arte/nutz.ai",
+    "cartoes.zip",
+    "cgi-bin/FormMail.pl",
+    "cgi-bin/ht.access",
+    "cgi-bin/teste.pl",
+    "favicon.ico",
+    "google754519aff8eb5e47.html",
+    "googlee1bb0e613de230fa.html",
+    "googlehostedservice.html",
+    "hospedado.jpg",
+    "imagens/404.shtml",
+    "imagens/500.shtml",
+    "imagens/Botao_acervo.png",
+    "imagens/Icone_Envelope_Preto.gif",
+    "imagens/Icone_Servicos.gif",
+    "imagens/Icone_Telefone_Preto.png",
+    "imagens/Icone_diag1.gif",
+    "imagens/Texto_Casos.png",
+    "imagens/Texto_Embreve.png",
+    "imagens/Texto_TRS.png",
+    "imagens/Texto_amiga.png",
+    "imagens/Texto_apple.png",
+    "imagens/Texto_email_comercial.png",
+    "imagens/Texto_email_suporte.png",
+    "imagens/Texto_fone_fax.png",
+    "imagens/Texto_fone_plantao.png",
+    "imagens/Texto_http_403.gif",
+    "imagens/Texto_http_403.png",
+    "imagens/Texto_http_404.png",
+    "imagens/Texto_http_500.png",
+    "imagens/Texto_jobs.png",
+    "imagens/Texto_missao.png",
+    "imagens/Texto_parcerias.png",
+    "imagens/Texto_portfolio.png",
+    "imagens/Texto_privacidade.png",
+    "imagens/Texto_sega.png",
+    "imagens/Texto_sony.png",
+    "imagens/Texto_tecnologia.png",
+    "imagens/Texto_termos.png",
+    "imagens/Texto_zx.gif",
+    "imagens/ac.htm",
+    "imagens/ac_certific.gif",
+    "imagens/ac_distr.gif",
+    "imagens/ac_doc.gif",
+    "imagens/ac_fab_cinza.gif",
+    "imagens/ac_programas.gif",
+    "imagens/ac_recursos.gif",
+    "imagens/ac_revendas.gif",
+    "imagens/ac_seguran.gif",
+    "imagens/ac_servicos.gif",
+    "imagens/acervo.htm",
+    "imagens/acervo_menu.htm",
+    "imagens/atuacao.htm",
+    "imagens/atuacao_menu.htm",
+    "imagens/barra2_topo.fla",
+    "imagens/barra2_topo.gif",
+    "imagens/barra2_topo.html",
+    "imagens/barra2_topo.swf",
+    "imagens/barrainf.png",
+    "imagens/bitsandbytes.htm",
+    "imagens/bot_acervo3.gif",
+    "imagens/bot_cases3.gif",
+    "imagens/bot_clientes3.gif",
+    "imagens/bot_contato3.gif",
+    "imagens/bot_empresa3.gif",
+    "imagens/bot_limpar.gif",
+    "imagens/bot_servicos3.gif",
+    "imagens/bot_solucoes3.gif",
+    "imagens/cas_aynil-mtel.gif",
+    "imagens/cas_aynil-mtel.png",
+    "imagens/cas_aynil.gif",
+    "imagens/cas_cisco.gif",
+    "imagens/cas_ctron.gif",
+    "imagens/cas_ets.gif",
+    "imagens/cas_nutzmann.gif",
+    "imagens/cas_rstn.gif",
+    "imagens/cas_symnetics.gif",
+    "imagens/cases.htm",
+    "imagens/cases_menu.htm",
+    "imagens/comunicredes.htm",
+    "imagens/fundo.gif",
+    "imagens/home_img1.gif",
+    "imagens/http2.gif",
+    "imagens/logo.gif",
+    "imagens/logo2.gif",
+    "imagens/logo3.gif",
+    "imagens/logo_Highcast.jpg",
+    "imagens/logo_Mtel.gif",
+    "imagens/logo_aynil.gif",
+    "imagens/logo_cris.gif",
+    "imagens/logo_penso.jpg",
+    "imagens/mail.png",
+    "imagens/marcador_aqui.gif",
+    "imagens/texto_cases.gif",
+    "imagens/texto_certif.png",
+    "imagens/texto_noticias.gif",
+    "imagens/texto_solucoes1.gif",
+    "index_NTZ.html",
+    "inferior_clean.htm",
+    "inferior_old.htm",
+    "logo_3com.jpg",
+    "logo_CA.jpg",
+    "logo_IBM.jpg",
+    "logo_alcatel-lucent.jpg",
+    "logo_alcatel_lucent.jpg",
+    "logo_apple.jpg",
+    "logo_aruba.JPG",
+    "logo_audiocodes.jpg",
+    "logo_avaya.jpg",
+    "logo_bsd.png",
+    "logo_cabletron.jpg",
+    "logo_cabletron2.png",
+    "logo_checkpoint.jpg",
+    "logo_cisco.gif",
+    "logo_enterasys.jpg",
+    "logo_enterasys2.jpg",
+    "logo_enterasys3.gif",
+    "logo_extreme.gif",
+    "logo_f5.jpg",
+    "logo_flexvision.jpg",
+    "logo_fortinet.jpg",
+    "logo_google.png",
+    "logo_hp.jpg",
+    "logo_ironport.gif",
+    "logo_ironport.jpg",
+    "logo_juniper.jpg",
+    "logo_linux.jpg",
+    "logo_microsoft.jpg",
+    "logo_netscreen.gif",
+    "logo_netscreen2.jpg",
+    "logo_nortel.gif",
+    "logo_novell.jpg",
+    "logo_riverstone.jpg",
+    "logo_siemens.jpg",
+    "logo_solaris.gif",
+    "logo_sonicwall.jpg",
+    "logo_tippingpoint.jpg",
+    "logo_tivoli.png",
+    "logo_ysts.png",
+    "mirrors/.htaccess",
+    "mirrors/Cable Pinouts.htm",
+    "mirrors/Cable Pinouts_arquivos/docstrip.gif",
+    "mirrors/Cable Pinouts_arquivos/feed.gif",
+    "mirrors/Cable Pinouts_arquivos/gloss.gif",
+    "mirrors/Cable Pinouts_arquivos/h11480.gif",
+    "mirrors/Cable Pinouts_arquivos/help.gif",
+    "mirrors/Cable Pinouts_arquivos/home.gif",
+    "mirrors/Cable Pinouts_arquivos/next.gif",
+    "mirrors/Cable Pinouts_arquivos/pdf_opt.gif",
+    "mirrors/Cable Pinouts_arquivos/prev.gif",
+    "mirrors/Cable Pinouts_arquivos/probb1.gif",
+    "mirrors/Cable Pinouts_arquivos/probb2.gif",
+    "mirrors/Cable Pinouts_arquivos/probb3.gif",
+    "mirrors/Cable Pinouts_arquivos/probb4.gif",
+    "mirrors/Cable Pinouts_arquivos/search.gif",
+    "mirrors/Cable Pinouts_arquivos/toc.gif",
+    "mirrors/Default Password List.htm",
+    "mirrors/IEEE OUI and Company_id Assignments.htm",
+    "mirrors/IEEE OUI and Company_id Assignments_arquivos/bcover2.jpg",
+    "mirrors/IEEE OUI and Company_id Assignments_arquivos/dot_bk.gif",
+    "mirrors/IEEE OUI and Company_id Assignments_arquivos/logo3.gif",
+    "mirrors/IEEE OUI and Company_id Assignments_arquivos/nav_ieee.gif",
+    "mirrors/IEEE OUI and Company_id Assignments_arquivos/nav_sa.gif",
+    "mirrors/IETF RFC Page.htm",
+    "mirrors/IETF RFC Page_arquivos/home11.gif",
+    "mirrors/IETF RFC Page_arquivos/id-index11.gif",
+    "mirrors/IETF RFC Page_arquivos/ietflogo_sm.gif",
+    "mirrors/IETF RFC Page_arquivos/meetings11.gif",
+    "mirrors/IETF RFC Page_arquivos/proceed11.gif",
+    "mirrors/IETF RFC Page_arquivos/rfc11.gif",
+    "mirrors/IETF RFC Page_arquivos/separator.gif",
+    "mirrors/IETF RFC Page_arquivos/wg11.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/breadcrumbs.js",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/findDOM.js",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/logo.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/master-px.css",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/search.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/tk0231-9-1.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/tk0231-9-2.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/tk0231-9-3.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/tk0231-9-4.gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/trans(1).gif",
+    "mirrors/RJ-45 Crossover Cable and Straight Through Pinouts_arquivos/trans.gif",
+    "mirrors/n3tworkZ_com - o ponto de encontro dos profissinais de telecomunicações.htm",
+    "mirrors/n3tworkZ_com - o ponto de encontro dos profissinais de telecomunicações_arquivos/basic.js",
+    "mirrors/n3tworkZ_com - o ponto de encontro dos profissinais de telecomunicações_arquivos/image.gif",
+    "mirrors/n3tworkZ_com - o ponto de encontro dos profissinais de telecomunicações_arquivos/n.gif",
+    "mirrors/oui.txt",
+    "mirrors/port-numbers.txt",
+    "ntz.gif",
+    "parceiros_old.htm",
+    "principal_.htm",
+    "principal_2.htm",
+    "principal_ntz.htm",
+    "principal_nutzmann.htm",
+    "principal_velha.htm",
+    "topo_.htm"
+  ],
+  "unresolved": [
+    {
+      "page": "embreve.htm",
+      "url": "/imagens/Texto_404.png"
+    }
+  ],
+  "repairs": [
+    {
+      "page": "cases/cas_aynil.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_aynil.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_cisco.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_cisco.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_ctron.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_ctron.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_ets.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_ets.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_rstn.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_rstn.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_symn.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    },
+    {
+      "page": "cases/cas_symn.htm",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "imagens/lin_tracfundo_vert.gif",
+      "how": "root"
+    }
+  ],
+  "dead": {
+    "wan.htm": "o Internet Archive registrou 404 em 21/10/2004",
+    "jbsold.htm": "não consta em nenhuma captura do Internet Archive (2004 a 2014)"
+  },
+  "toolsMissing": {
+    "ipsubnet.htm": "cidr",
+    "pinout.htm": "pinout"
+  },
+  "pageCount": 62
+}

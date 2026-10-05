@@ -10,6 +10,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
+import HubSearch from "@/components/HubSearch";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
@@ -81,6 +82,8 @@ export default async function ToolsPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* The scoped search field (wave 0, 2026-10-05; SCOUT E2): opens the one dialog inside the Use world. */}
+              <HubSearch scope="use" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["CIDR", "JWT", "BIG-IP", "FortiGate", "syslog", "regex"]} />
             </div>
           </section>
 

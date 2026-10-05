@@ -19,9 +19,29 @@
 // from each page's <html lang>). At runtime, loading /pagefind/pagefind.js on a
 // page auto-selects the index matching that page's <html lang>, so a visitor on
 // /pt-BR/ searches Portuguese content and one on /en/ searches English, with no
-// extra wiring. We therefore do NOT pass a language "filter": Pagefind filters
-// are faceted filters declared via data-pagefind-filter (this build has none),
-// so filtering by a non-existent "language" facet would match zero results.
+// extra wiring. We therefore do NOT pass a language "filter".
+//
+// THE KIND FACET (PRIME, 2026-10-05 12:44: "a search on Fortinet returns ZERO
+// tools, only ONE article, and ZERO user guides"). Until this date the dialog
+// loaded the top eight hits, classified them by URL and counted those eight, so
+// the pills described eight results, not the site (eleven Fortinet tools exist;
+// none ranked in the top eight against pages dense with the word). Now every
+// page declares its kind to the indexer (SearchKind.tsx renders
+// data-pagefind-filter="kind:tool|article|guide|page" from the locale layout),
+// and the dialog asks Pagefind for the counts of that facet over the WHOLE
+// result set (the response's totalFilters) and narrows with a real filter
+// ({ kind: { any: [...] } }) when the reader switches a pill off, so "Tools"
+// shows the ranked tools that match, however deep they sat in the mixed list.
+// Results load twenty at a time, with a "show more" row for the rest.
+//
+// THE SCOPE (wave 0 of Round 1; SCOUT E2, E10, L17 "scoped search"): a second
+// facet, "system", names each page's world among the five of the directory
+// (SearchKind renders it from src/config/worlds.ts). A row of chips above the
+// kind pills narrows the query to one world; a hub page's search field opens
+// this dialog with its world preset (the ronutz:open-search event carries
+// detail.scope). The counts on the chips are per world within the current kind
+// selection; the counts on the pills are per kind within the current scope;
+// each comes from the index over every hit, never from the loaded page.
 //
 // LOADING: the runtime lives in the build OUTPUT (/pagefind/pagefind.js), not
 // in node_modules, so it is imported dynamically at runtime via a path the
@@ -33,6 +53,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { tools } from "@/config/tools";
+import { WORLD_KEYS, type WorldKey } from "@/config/worlds";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
 // What result.data() resolves to: the page URL, the highlighted excerpt, and the
@@ -56,13 +77,28 @@ interface PagefindSubResult {
   title: string;
   excerpt: string;
 }
+/** Per-value counts of one facet, as Pagefind reports them ({ tool: 12, article: 30, ... }). */
+type FacetCounts = Record<string, number>;
 interface PagefindApi {
   options?: (opts: Record<string, unknown>) => Promise<void>;
+  /** Loads the filter index (one small file) and returns every facet's counts over the whole index. */
+  filters?: () => Promise<Record<string, FacetCounts>>;
   search: (
     query: string,
     opts?: { filters?: Record<string, unknown> }
-  ) => Promise<{ results: PagefindResult[] }>;
+  ) => Promise<{
+    results: PagefindResult[];
+    /** Counts if a value were applied IN ADDITION to the current filters. */
+    filters?: Record<string, FacetCounts>;
+    /** Counts if a value were applied INSTEAD of the current filters: the per-kind totals of the query. */
+    totalFilters?: Record<string, FacetCounts>;
+    /** The number of hits before any filter. */
+    unfilteredResultCount?: number;
+  }>;
 }
+
+/** How many hits load per page of results (each hit is one small fragment fetch). */
+const PAGE_SIZE = 20;
 
 /**
  * sanitizeExcerpt — SAFE-BY-CONSTRUCTION rendering of a search excerpt.
@@ -161,6 +197,16 @@ export default function Search() {
   const [results, setResults] = useState<PagefindSubResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+  // The facet counts per kind over the whole result set of the current query (null until the index answers; an
+  // index built before the facet existed answers nothing, and the pills then count the loaded hits as before).
+  const [facet, setFacet] = useState<Record<ResultKind, number> | null>(null);
+  // The scope: one world, or null for everywhere; and the per-world counts of the current query.
+  const [scope, setScope] = useState<WorldKey | null>(null);
+  const [worldCounts, setWorldCounts] = useState<Record<WorldKey, number> | null>(null);
+  // How many hits the current query and kind selection have in all, and the not-yet-loaded ones for "show more".
+  const [total, setTotal] = useState(0);
+  const pendingRef = useRef<PagefindResult[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
   // Shortcut hint: Mac users expect ⌘, everyone else Ctrl. Default to Ctrl (the
   // larger audience and a safe SSR default); corrected on mount for Mac.
   const [isMac, setIsMac] = useState(false);
@@ -176,10 +222,12 @@ export default function Search() {
   );
   const toggleKind = useCallback((kind: ResultKind) => {
     setEnabled((prev) => {
+      // From "everything", one click narrows to that kind alone (the common wish: "show me the tools");
+      // from one kind alone, clicking it again widens back to everything. In between, a click toggles
+      // membership, and the last remaining kind cannot be switched off (an empty panel with no way back).
+      if (prev.size === FILTER_KINDS.length) return new Set<ResultKind>([kind]);
+      if (prev.size === 1 && prev.has(kind)) return new Set<ResultKind>(FILTER_KINDS);
       const next = new Set(prev);
-      // Never let the reader switch every kind off — that would show an empty
-      // panel with no way back except re-enabling. Toggling the last remaining
-      // kind is a no-op; toggling any other behaves as expected.
       if (next.has(kind)) {
         if (next.size > 1) next.delete(kind);
       } else {
@@ -198,17 +246,22 @@ export default function Search() {
     [results],
   );
 
-  // Per-kind counts (over the unfiltered set) so each pill can show how many
-  // hits it holds, and the filtered list actually shown to the reader.
+  // Per-kind counts for the pills: the index's own facet counts over every hit of the query when the index
+  // carries the kind facet; the loaded hits, classified by URL, on an index that does not (the pre-facet
+  // behaviour, kept so an old index still shows something true about what is loaded).
   const counts = useMemo(() => {
+    if (facet) return facet;
     const c: Record<ResultKind, number> = { tool: 0, article: 0, guide: 0, page: 0 };
     for (const r of ordered) c[r.kind] += 1;
     return c;
-  }, [ordered]);
+  }, [facet, ordered]);
+  // What is shown: every loaded hit when the index narrowed the query itself; the URL-classified subset otherwise.
   const shown = useMemo(
-    () => ordered.filter((r) => enabled.has(r.kind)),
-    [ordered, enabled],
+    () => (facet ? ordered : ordered.filter((r) => enabled.has(r.kind))),
+    [facet, ordered, enabled],
   );
+  // The pills are shown once the query has any hit of any kind.
+  const anyHit = facet ? Object.values(facet).some((n) => n > 0) || (worldCounts ? Object.values(worldCounts).some((n) => n > 0) : false) : ordered.length > 0;
 
   // Lazily load the Pagefind runtime the first time search opens.
   const loadPagefind = useCallback(async () => {
@@ -227,6 +280,8 @@ export default function Search() {
       const pf = (await import(
         /* webpackIgnore: true */ "/pagefind/pagefind.js" as string
       )) as PagefindApi;
+      // The facet index: without it a search response carries no counts. One file, loaded once.
+      try { await pf.filters?.(); } catch { /* an index without filters: the pills count loaded hits instead */ }
       pagefindRef.current = pf;
       return pf;
     } catch {
@@ -272,19 +327,33 @@ export default function Search() {
     // reader's words arrive in this dialog already typed; any other dispatcher opens it empty as before.
     const onOpen = (e: Event) => {
       openSearch();
-      const q = (e as CustomEvent<{ query?: string }>).detail?.query;
+      const detail = (e as CustomEvent<{ query?: string; scope?: string }>).detail;
+      const q = detail?.query;
       if (typeof q === "string" && q.trim()) setQuery(q);
+      // A hub page's field presets its world; any other opener leaves the scope as the reader last set it.
+      const sc = detail?.scope;
+      if (typeof sc === "string" && (WORLD_KEYS as readonly string[]).includes(sc)) setScope(sc as WorldKey);
     };
     window.addEventListener("ronutz:open-search", onOpen);
     return () => window.removeEventListener("ronutz:open-search", onOpen);
   }, [openSearch]);
 
-  // Run the search whenever the query changes (debounced lightly).
+  /** Load the page data of the next PAGE_SIZE pending hits (title lifted out of meta; see PagefindRawResult). */
+  const loadPage = useCallback(async (): Promise<PagefindSubResult[]> => {
+    const batch = pendingRef.current.splice(0, PAGE_SIZE);
+    const raw = await Promise.all(batch.map((r) => r.data()));
+    return raw.map((d) => ({ url: d.url, excerpt: d.excerpt, title: d.meta?.title ?? "" }));
+  }, []);
+
+  // Run the search whenever the query or the kind selection changes (debounced lightly).
   useEffect(() => {
     if (!open) return;
     const q = query.trim();
     if (!q) {
       setResults([]);
+      setFacet(null);
+      setTotal(0);
+      pendingRef.current = [];
       return;
     }
     let cancelled = false;
@@ -303,18 +372,40 @@ export default function Search() {
       // fragments for that language, and the call below can reject rather than
       // return an empty set - which would leave the spinner running for ever.
       try {
-        const search = await pf.search(q);
-        const raw = await Promise.all(search.results.slice(0, 8).map((r) => r.data()));
-        // Lift the title out of meta (see PagefindRawResult above); a page with
-        // no h1 at index time has none, and then only the excerpt is shown.
-        const data: PagefindSubResult[] = raw.map((d) => ({ url: d.url, excerpt: d.excerpt, title: d.meta?.title ?? "" }));
+        // Narrow by kind in the index itself when the reader switched a pill off; every kind on = no filter.
+        const narrowed = enabled.size < FILTER_KINDS.length;
+        const kindFilter = narrowed ? { kind: { any: [...enabled] } } : {};
+        // 1. The query within the kind selection: its per-world counts feed the scope chips ("in addition to"
+        //    the kind filter, or the plain counts when none is applied).
+        const base = await pf.search(q, narrowed ? { filters: kindFilter } : undefined);
+        const sysCounts = base.filters?.system;
+        // 2. The query within the scope alone: its per-kind counts feed the pills (within the world, over every
+        //    kind). Without a scope the pills count the whole query: totalFilters when a kind filter is on
+        //    ("instead of" it), filters otherwise.
+        const scoped = scope ? await pf.search(q, { filters: { system: scope } }) : null;
+        const kindCounts = scoped ? scoped.filters?.kind : ((narrowed ? base.totalFilters?.kind : base.filters?.kind) ?? base.totalFilters?.kind);
+        // 3. The list: both filters when both apply, else whichever response already has it.
+        const search = scope && narrowed ? await pf.search(q, { filters: { ...kindFilter, system: scope } }) : (scoped ?? base);
+        const f: Record<ResultKind, number> | null = kindCounts
+          ? { tool: kindCounts.tool ?? 0, article: kindCounts.article ?? 0, guide: kindCounts.guide ?? 0, page: kindCounts.page ?? 0 }
+          : null;
+        const w: Record<WorldKey, number> | null = sysCounts
+          ? { use: sysCounts.use ?? 0, understand: sysCounts.understand ?? 0, explore: sysCounts.explore ?? 0, work: sysCounts.work ?? 0, project: sysCounts.project ?? 0 }
+          : null;
+        pendingRef.current = [...search.results];
+        const data = await loadPage();
         if (!cancelled) {
+          setFacet(f);
+          setWorldCounts(w);
+          setTotal(search.results.length);
           setResults(data);
           setLoading(false);
         }
       } catch {
         if (!cancelled) {
           setResults([]);
+          setFacet(null);
+          setTotal(0);
           setUnavailable(true);
           setLoading(false);
         }
@@ -324,7 +415,19 @@ export default function Search() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [query, open, loadPagefind]);
+  }, [query, open, enabled, scope, loadPagefind, loadPage]);
+
+  /** "Show more": append the next page of the same result set. */
+  const showMore = useCallback(async () => {
+    if (loadingMore || pendingRef.current.length === 0) return;
+    setLoadingMore(true);
+    try {
+      const more = await loadPage();
+      setResults((prev) => [...prev, ...more]);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadPage, loadingMore]);
 
   // Close on outside click.
   useEffect(() => {
@@ -405,7 +508,22 @@ export default function Search() {
             {/* Type filters — include/exclude Tools, Articles, User Guide, and
                 other Pages. Shown only once there are results to narrow, so an
                 empty search stays uncluttered. */}
-            {!unavailable && ordered.length > 0 && (
+            {/* The scope: everywhere, or one of the five worlds, with the count of hits in each (wave 0). Shown
+                only when the index carries the system facet. */}
+            {!unavailable && anyHit && worldCounts && (
+              <div className="search-scopes" role="group" aria-label={t("scopeLabel")}>
+                <button type="button" className={`search-scope${scope === null ? " search-scope--active" : ""}`} aria-pressed={scope === null} onClick={() => setScope(null)}>
+                  {t("scope.all")}
+                </button>
+                {WORLD_KEYS.map((k) => (
+                  <button key={k} type="button" className={`search-scope search-scope--${k}${scope === k ? " search-scope--active" : ""}`} aria-pressed={scope === k} onClick={() => setScope(scope === k ? null : k)} disabled={worldCounts[k] === 0 && scope !== k}>
+                    {t(`scope.${k}`)}
+                    <span className="search-filter-count">{worldCounts[k]}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {!unavailable && anyHit && (
               <div className="search-filters" role="group" aria-label={t("filterLabel")}>
                 {FILTER_KINDS.map((kind) => {
                   const active = enabled.has(kind);
@@ -434,10 +552,10 @@ export default function Search() {
             <div className="search-results">
               {unavailable && <p className="search-message">{t("unavailable")}</p>}
               {!unavailable && loading && <p className="search-message">{t("searching")}</p>}
-              {!unavailable && !loading && query.trim() && ordered.length === 0 && (
+              {!unavailable && !loading && query.trim() && !anyHit && (
                 <p className="search-message">{t("noResults", { query: query.trim() })}</p>
               )}
-              {!unavailable && ordered.length > 0 && shown.length === 0 && (
+              {!unavailable && !loading && anyHit && shown.length === 0 && (
                 <p className="search-message">{t("filterEmpty")}</p>
               )}
               {!unavailable && shown.length > 0 && (
@@ -472,6 +590,15 @@ export default function Search() {
                     </li>
                   ))}
                 </ul>
+              )}
+              {/* The rest of the ranked set, a page at a time; the count line says how far the list goes. */}
+              {!unavailable && shown.length > 0 && total > results.length && (
+                <div className="search-more">
+                  <span className="search-more-count mono">{t("resultCount", { shown: results.length, count: total })}</span>
+                  <button type="button" className="search-more-button" onClick={() => void showMore()} disabled={loadingMore}>
+                    {t("showMore", { count: Math.min(PAGE_SIZE, total - results.length) })}
+                  </button>
+                </div>
               )}
               {!query.trim() && !unavailable && (
                 <p className="search-hint">{t("hint")}</p>

@@ -45,6 +45,7 @@ import {
   waybackUrl,
   type ToolArchiveRecord,
 } from "@/content/about/earlier-sites";
+import { CLONE_EXPORT_DATE, OLD_SITE_CLONES, cloneWrapperPath } from "@/content/about/old-sites";
 
 /** YYYYMMDDhhmmss to YYYY-MM-DD, for a record's own timestamps (the inventory helper takes a page). */
 const stamp = (ts: string) => `${ts.slice(0, 4)}-${ts.slice(4, 6)}-${ts.slice(6, 8)}`;
@@ -113,9 +114,30 @@ export default async function EarlierSitesPage({
             </div>
           </section>
 
-          {/* One block per era: title and years, four labelled paragraphs, then the inventory. */}
+          {/* THE RECONSTRUCTIONS, FEATURED (PRIME 2026-10-05 11:03): the two sites rebuilt from the author's own files and
+              navigable, one card each, before the inventory of captures. */}
           <section className="section era-body-section">
             <div className="container era-container">
+              <div className="es-feature">
+                <h2 className="section-title">{t("featureTitle")}</h2>
+                <p className="es-feature-lede">{t("featureLede")}</p>
+                <ul className="es-feature-cards">
+                  {OLD_SITE_CLONES.map((c) => (
+                    <li className="es-feature-card" key={c.slug}>
+                      <Link href={cloneWrapperPath(c)} className="es-feature-thumb">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={c.thumbnail} alt={t("featureThumbAlt", { date: c.thumbnailDate, domain: c.domain })} loading="lazy" decoding="async" />
+                      </Link>
+                      <div className="es-feature-body">
+                        <p className="es-feature-name"><Link href={cloneWrapperPath(c)}>{t(`clone.title.${c.slug}`)}</Link></p>
+                        <p className="es-feature-facts mono">{t("featureFacts", { pages: c.manifest.pageCount, assets: c.manifest.assets, exportDate: CLONE_EXPORT_DATE })}</p>
+                        <p className="es-feature-open"><Link href={cloneWrapperPath(c)}>{t("featureOpen")} <span aria-hidden="true">&#8594;</span></Link></p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* One block per era: title and years, four labelled paragraphs, then the inventory. */}
               <div className="es-eras">
                 {ARCHIVED_ERAS.map((era, i) => (
                   <section className="es-era" key={era.id} id={era.id}>

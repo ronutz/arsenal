@@ -1,0 +1,1285 @@
+{
+  "site": "ntz.com.br",
+  "slug": "ntz-com-br-2013",
+  "made": "2026-10-05",
+  "exportDate": "2013-03-05",
+  "pages": [
+    {
+      "path": "acervo.html",
+      "title": "NTZ Tecnologia :: Acervo",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 9903
+    },
+    {
+      "path": "acervo/certificacoes.html",
+      "title": "Acervo de Certificações :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4278
+    },
+    {
+      "path": "acervo/distribuidores.html",
+      "title": "Acervo de Distribuidores :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4249
+    },
+    {
+      "path": "acervo/documentacao.html",
+      "title": "Acervo de Documentação Técnica :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4271
+    },
+    {
+      "path": "acervo/fabricantes.html",
+      "title": "Diretório de Fabricantes e Fornecedores de Tecnologia",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 10980
+    },
+    {
+      "path": "acervo/ferramentas.html",
+      "title": "Acervo de Ferramentas :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4141
+    },
+    {
+      "path": "acervo/geral.html",
+      "title": "Acervo de Links de Interesse Geral :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4175
+    },
+    {
+      "path": "acervo/revendas.html",
+      "title": "Acervo de Revendas :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4220
+    },
+    {
+      "path": "acervo/seguranca.html",
+      "title": "Acervo de Informações Relacionadas à Segurança :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4311
+    },
+    {
+      "path": "acervo/servicos.html",
+      "title": "Acervo de Serviços Especializados :: http://www.ntztecnologia.com.br",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4229
+    },
+    {
+      "path": "acervo_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/acervo.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 5400
+    },
+    {
+      "path": "atuacao.html",
+      "title": "NTZ Tecnologia :: Áreas de Atuação e Clientes",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 10286
+    },
+    {
+      "path": "atuacao_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/atuacao.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4380
+    },
+    {
+      "path": "barra2_topo.html",
+      "title": "barra2_topo",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 1124
+    },
+    {
+      "path": "bitsandbytes.html",
+      "title": "NTZ Tecnologia :: Calculadora e conversão de bits e bytes",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash",
+        "forms",
+        "eval"
+      ],
+      "bytes": 41994
+    },
+    {
+      "path": "cases.html",
+      "title": "NTZ Tecnologia :: Comunicações em Rede :: Gestão de Conhecimento :: Telecomunicações :: Consultoria Técnica e Operacional :: Serviços Profissionais Especializados",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash",
+        "forms"
+      ],
+      "bytes": 33516
+    },
+    {
+      "path": "cases/cas_aynil.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3680
+    },
+    {
+      "path": "cases/cas_cisco.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4785
+    },
+    {
+      "path": "cases/cas_ctron.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4403
+    },
+    {
+      "path": "cases/cas_ets.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4507
+    },
+    {
+      "path": "cases/cas_rstn.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 5814
+    },
+    {
+      "path": "cases/cas_symn.html",
+      "title": "cases",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3706
+    },
+    {
+      "path": "cases_menu.html",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3058
+    },
+    {
+      "path": "certificados.html",
+      "title": "NTZ Tecnologia :: Certificação",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 11070
+    },
+    {
+      "path": "certificados/CCNA.html",
+      "title": "Certificação Profissional",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1118
+    },
+    {
+      "path": "confirma.html",
+      "title": "NTZ Tecnologia :: Mensagem Enviada com Sucesso",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 7365
+    },
+    {
+      "path": "consultoria.html",
+      "title": "NTZ Tecnologia :: Comunicação em Rede : Segurança da Informação : Informática",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 13440
+    },
+    {
+      "path": "consultoria_menu.html",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3214
+    },
+    {
+      "path": "contato.html",
+      "title": "NTZ Tecnologia :: Contato",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "forms"
+      ],
+      "bytes": 11207
+    },
+    {
+      "path": "empresa.html",
+      "title": "NTZ Tecnologia :: Comunicação em Rede : Segurança da Informação : Informática",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 18802
+    },
+    {
+      "path": "empresa_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/empresa.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4350
+    },
+    {
+      "path": "equipe.html",
+      "title": "equipe",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 12543
+    },
+    {
+      "path": "footer.html",
+      "title": "Footer http://www.ntz.com.br/",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 1230
+    },
+    {
+      "path": "header.html",
+      "title": "Header http://www.ntz.com.br/",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 5968
+    },
+    {
+      "path": "incompleto.html",
+      "title": "NTZ Tecnologia :: Mensagem NÃO enviada",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 7699
+    },
+    {
+      "path": "index.html",
+      "title": "NTZ :: Consultoria em Tecnologia e Operações : Serviços Especializados : Comunicação em Redes : Segurança : Informática : Computadores : Telecomunicação : Interoperabilidade : Compatibilidade : Integração : Telecomunicaçõe : Gigabit : Ethernet : NAC : IDS : IPS : Firewall : VPN : Cisco : Enterasys : Juniper : Sniffer : Wireshark :",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 27241
+    },
+    {
+      "path": "jbs.html",
+      "title": "NTZ Tecnologia :: Oportunidades de Trabalho",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash"
+      ],
+      "bytes": 10691
+    },
+    {
+      "path": "jobs_menu.html",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2254
+    },
+    {
+      "path": "links.html",
+      "title": "NTZ Tecnologia :: Links Úteis",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 21441
+    },
+    {
+      "path": "links_menu.html",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 3650
+    },
+    {
+      "path": "missao.html",
+      "title": "NTZ Tecnologia :: Missão e Valores",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 9843
+    },
+    {
+      "path": "missao_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/missao.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4355
+    },
+    {
+      "path": "noticias.html",
+      "title": "NTZ Tecnologia :: Comunicações em Rede :: Gestão de Conhecimento :: Telecomunicações :: Consultoria Técnica e Operacional :: Serviços Profissionais Especializados",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "flash",
+        "forms"
+      ],
+      "bytes": 31625
+    },
+    {
+      "path": "parceiros.html",
+      "title": "NTZ Tecnologia ::",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 9841
+    },
+    {
+      "path": "parceiros_menu.html",
+      "title": "Documento sem título",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2244
+    },
+    {
+      "path": "portfolio.html",
+      "title": "NTZ Tecnologia :: Telecom : TI : Convergência",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 18653
+    },
+    {
+      "path": "portfolio_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/empresa.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4193
+    },
+    {
+      "path": "priv_menu.html",
+      "title": "Privacidade Menu",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2221
+    },
+    {
+      "path": "privacidade.html",
+      "title": "NTZ Tecnologia :: Privacidade",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 12303
+    },
+    {
+      "path": "redes.html",
+      "title": "NTZ Tecnologia :: Comunicações em rede",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 8189
+    },
+    {
+      "path": "redes_menu.html",
+      "title": "Menu da página http://www.ntz.com.br/redes.html",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 4340
+    },
+    {
+      "path": "servicos.html",
+      "title": "NTZ Tecnologia :: Comunicação em Rede : Segurança da Informação : Informática",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 12494
+    },
+    {
+      "path": "servicos_menu.html",
+      "title": "Menu da página de serviços da NTZ",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2712
+    },
+    {
+      "path": "tecnologia.html",
+      "title": "NTZ Tecnologia :: Comunicações em rede",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics"
+      ],
+      "bytes": 8139
+    },
+    {
+      "path": "termos.html",
+      "title": "NTZ Tecnologia :: Termos de Utilização do Site e das Informações Nele Contidas",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset",
+        "analytics",
+        "flash"
+      ],
+      "bytes": 12625
+    },
+    {
+      "path": "termos_menu.html",
+      "title": "Menu da página de termos da NTZ",
+      "encoding": "iso-8859-1",
+      "changes": [
+        "charset"
+      ],
+      "bytes": 2239
+    }
+  ],
+  "orphans": [
+    "acervo/certificacoes.html",
+    "acervo/distribuidores.html",
+    "acervo/documentacao.html",
+    "acervo/fabricantes.html",
+    "acervo/ferramentas.html",
+    "acervo/geral.html",
+    "acervo/revendas.html",
+    "acervo/seguranca.html",
+    "acervo/servicos.html",
+    "acervo_menu.html",
+    "barra2_topo.html",
+    "cases/cas_aynil.html",
+    "cases/cas_cisco.html",
+    "cases/cas_ctron.html",
+    "cases/cas_ets.html",
+    "cases/cas_rstn.html",
+    "cases/cas_symn.html",
+    "cases_menu.html",
+    "confirma.html",
+    "equipe.html",
+    "incompleto.html",
+    "jbs.html",
+    "jobs_menu.html",
+    "links.html",
+    "links_menu.html",
+    "parceiros_menu.html",
+    "portfolio_menu.html",
+    "priv_menu.html",
+    "termos_menu.html"
+  ],
+  "assets": 63,
+  "changes": {
+    "charset": 56,
+    "analytics": 19,
+    "flash": 17,
+    "forms": 4,
+    "mirrors": 0,
+    "missingTools": 0,
+    "caseFixes": 0,
+    "pathFixes": 72,
+    "deadLinks": 23,
+    "eval": 1,
+    "linkTypos": 2,
+    "absoluteSelf": 283,
+    "externalLinks": 196,
+    "crossSite": 9
+  },
+  "excluded": [
+    ".protect/.pemhtaccess",
+    "403.shtml",
+    "404.shtml",
+    "500.shtml",
+    "acervo/403.shtml",
+    "acervo/404.shtml",
+    "acervo/500.shtml",
+    "acervo/fabricantes_deprecated.html",
+    "acervo_deprecated.html",
+    "acervo_hot.html",
+    "acervo_menu_hot.html",
+    "cases_2008.05.11.html",
+    "certificados/954797_wallet_card.pdf",
+    "certificados/CCNA card.bmp",
+    "certificados/CCNA.bmp",
+    "certificados/Thumbs.db",
+    "cgi-bin/.htaccess",
+    "cgi-bin/FormMail.pl",
+    "cgi-bin/ht.access",
+    "cgi-bin/teste.pl",
+    "favicon.ico",
+    "google754519aff8eb5e47.html",
+    "googlee1bb0e613de230fa.html",
+    "googlehostedservice.html",
+    "images/Botao_acervo.png",
+    "images/Icone_Envelope_Preto.gif",
+    "images/Icone_Servicos.gif",
+    "images/Icone_Telefone_Preto.png",
+    "images/Icone_diag1.gif",
+    "images/Texto_Casos.png",
+    "images/Texto_Embreve.png",
+    "images/Texto_comunicredes.png",
+    "images/Texto_email_comercial.png",
+    "images/Texto_email_suporte.png",
+    "images/Texto_erro.gif",
+    "images/Texto_fone_fax.png",
+    "images/Texto_fone_plantao.png",
+    "images/Texto_http_403.gif",
+    "images/Texto_http_403.png",
+    "images/Texto_http_404.gif",
+    "images/Texto_http_404.png",
+    "images/Texto_http_500.gif",
+    "images/Texto_http_500.png",
+    "images/Texto_incompletas.gif",
+    "images/Texto_incompletas.png",
+    "images/Texto_jobs.png",
+    "images/Texto_missao.png",
+    "images/Texto_parcerias.gif",
+    "images/Texto_parcerias.png",
+    "images/Texto_portfolio.png",
+    "images/Texto_privacidade.png",
+    "images/Texto_solucoes.png",
+    "images/Texto_tecnologia.png",
+    "images/Texto_termos.png",
+    "images/Thumbs.db",
+    "images/ac_certific.gif",
+    "images/ac_certific.png",
+    "images/ac_certific_cinza.gif",
+    "images/ac_distr.gif",
+    "images/ac_distr.png",
+    "images/ac_distr_cinza.gif",
+    "images/ac_doc.gif",
+    "images/ac_doc.png",
+    "images/ac_doc_cinza.gif",
+    "images/ac_fab.gif",
+    "images/ac_fab.png",
+    "images/ac_fab_cinza.gif",
+    "images/ac_programas.gif",
+    "images/ac_programas.png",
+    "images/ac_programas_cinza.gif",
+    "images/ac_recursos.gif",
+    "images/ac_recursos.png",
+    "images/ac_recursos_cinza.gif",
+    "images/ac_revendas.gif",
+    "images/ac_revendas.png",
+    "images/ac_revendas_cinza.gif",
+    "images/ac_seguran.gif",
+    "images/ac_seguran.png",
+    "images/ac_seguran_cinza.gif",
+    "images/ac_servicos.gif",
+    "images/ac_servicos.png",
+    "images/ac_servicos_cinza.gif",
+    "images/barra2_topo.gif",
+    "images/barra2_topo.swf",
+    "images/barrainf.png",
+    "images/bot_acervo.gif",
+    "images/bot_acervo2.gif",
+    "images/bot_acervo3.gif",
+    "images/bot_cases3.gif",
+    "images/bot_clientes.gif",
+    "images/bot_clientes2.gif",
+    "images/bot_clientes3.gif",
+    "images/bot_contato3.gif",
+    "images/bot_empresa3.gif",
+    "images/bot_enviar.gif",
+    "images/bot_jobs.gif",
+    "images/bot_jobs2.gif",
+    "images/bot_limpar.gif",
+    "images/bot_servicos.gif",
+    "images/bot_servicos2.gif",
+    "images/bot_servicos3.gif",
+    "images/bot_solucoes3.gif",
+    "images/cas_aynil-mtel.gif",
+    "images/cas_aynil-mtel.png",
+    "images/cas_aynil.png",
+    "images/cas_aynil_cinza.gif",
+    "images/cas_cisco.png",
+    "images/cas_cisco_cinza.gif",
+    "images/cas_ctron.png",
+    "images/cas_ctron_cinza.gif",
+    "images/cas_ets.png",
+    "images/cas_ets_cinza.gif",
+    "images/cas_nutzmann.gif",
+    "images/cas_nutzmann.png",
+    "images/cas_nutzmann_cinza.gif",
+    "images/cas_rstn.png",
+    "images/cas_rstn_cinza.gif",
+    "images/cas_symnetics.png",
+    "images/cas_symnetics_cinza.gif",
+    "images/email.jpg",
+    "images/email.png",
+    "images/fone.jpg",
+    "images/fone.png",
+    "images/fundo.gif",
+    "images/home_img1.gif",
+    "images/http-button-ntztec.gif",
+    "images/http-button-ntztecnologia.png",
+    "images/http-button.png",
+    "images/http.png",
+    "images/http2.gif",
+    "images/http2_.gif",
+    "images/http2__.gif",
+    "images/http_cabletron.gif",
+    "images/index.html",
+    "images/iss-logo_pb_zero.png",
+    "images/logo-ntz.PNG",
+    "images/logo.gif",
+    "images/logo2.gif",
+    "images/logo3.gif",
+    "images/logo_Highcast.gif",
+    "images/logo_Highcast.jpg",
+    "images/logo_Highcast_big.jpg",
+    "images/logo_LanPro.JPG",
+    "images/logo_Mtel.gif",
+    "images/logo_Unicom_datagroup.gif",
+    "images/logo_avaya.PNG",
+    "images/logo_aynil.gif",
+    "images/logo_cisco.gif",
+    "images/logo_cp.gif",
+    "images/logo_cris.gif",
+    "images/logo_cris.png",
+    "images/logo_enterasys.gif",
+    "images/logo_f5logo_tag.gif",
+    "images/logo_flexvision_login.jpg",
+    "images/logo_fundo_quadric.png",
+    "images/logo_hospedado.biz.jpg",
+    "images/logo_hospedado.jpg",
+    "images/logo_ironport.gif",
+    "images/logo_lemenet.PNG",
+    "images/logo_n3tworkz.JPG",
+    "images/logo_ntzsolution.gif",
+    "images/logo_penso.jpg",
+    "images/logo_penso_novo.jpg",
+    "images/logo_pxt.jpg",
+    "images/logo_raventek.gif",
+    "images/logontz.gif",
+    "images/logontz2.gif",
+    "images/logontz2.png",
+    "images/marcador.png",
+    "images/marcador_aqui.gif",
+    "images/noticias.html",
+    "images/seo-marketing.PNG",
+    "images/setinha_dupla.png",
+    "images/texto_capacitacao.gif",
+    "images/texto_certif.png",
+    "images/texto_destaques.gif",
+    "images/texto_solucoes1.gif",
+    "images/top_bar.png",
+    "images/topbar-ntz-solution.swf",
+    "images/topbar-ntz-tecnologia.swf",
+    "images/topbar.swf",
+    "images/topbar_old.swf",
+    "images/topicamd.gif",
+    "images/topicannouncements.gif",
+    "images/topicapimac.gif",
+    "images/topicaposx.gif",
+    "images/topicapportables.gif",
+    "images/topicbiotech.gif",
+    "images/topicbsd.gif",
+    "images/topiccommunications.gif",
+    "images/topiccompaq.gif",
+    "images/topicdigital.gif",
+    "images/topicencryption.gif",
+    "images/topicgamecube.gif",
+    "images/topicgames.gif",
+    "images/topicgamesclassic.gif",
+    "images/topicgamesemulation.gif",
+    "images/topicgamesnes.gif",
+    "images/topicgamespcgames.gif",
+    "images/topicgamesportable.gif",
+    "images/topicgoogle.gif",
+    "images/topicgraphics3.gif",
+    "images/topichandhelds.gif",
+    "images/topichardware.gif",
+    "images/topichardwarehacking.gif",
+    "images/topichp.gif",
+    "images/topicibm.gif",
+    "images/topicinternet.gif",
+    "images/topiclinux.gif",
+    "images/topicmediaall.gif",
+    "images/topicmonitors.gif",
+    "images/topicmovies.gif",
+    "images/topicmusic.gif",
+    "images/topicnovell.gif",
+    "images/topicos.gif",
+    "images/topicportables.gif",
+    "images/topicprinters.gif",
+    "images/topicps2.gif",
+    "images/topicsecurity.gif",
+    "images/topicsgi.gif",
+    "images/topicsoftware.gif",
+    "images/topicstorage.gif",
+    "images/topicsun.gif",
+    "images/topictech2.gif",
+    "images/topictv.gif",
+    "images/topicupgrades.gif",
+    "images/topicwindows.gif",
+    "images/topicwireless.gif",
+    "images/topicworms.gif",
+    "images/topicx.gif",
+    "images/topicxbox.gif",
+    "index_.html",
+    "index_2008.05.10.html",
+    "parceiros_nahh.html",
+    "redirect.html",
+    "site.tar.gz",
+    "site20080429.tar.gz"
+  ],
+  "unresolved": [],
+  "repairs": [
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/cas_aynil.gif",
+      "to": "images/cas_aynil.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_aynil.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/cas_cisco.gif",
+      "to": "images/cas_cisco.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_cisco.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/cas_ctron.gif",
+      "to": "images/cas_ctron.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ctron.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/cas_ets.gif",
+      "to": "images/cas_ets.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_ets.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/cas_rstn.gif",
+      "to": "images/cas_rstn.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_rstn.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/lin_trac1.gif",
+      "to": "images/lin_trac1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/marcador1.gif",
+      "to": "images/marcador1.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/texto_casos.gif",
+      "to": "images/texto_casos.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/cas_symnetics.gif",
+      "to": "images/cas_symnetics.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/lin_trac2.gif",
+      "to": "images/lin_trac2.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/lin_trac3.gif",
+      "to": "images/lin_trac3.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/lin_tracfundo_vert.gif",
+      "to": "images/lin_tracfundo_vert.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/http.gif",
+      "to": "images/http.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/imagens/lin_trac4.gif",
+      "to": "images/lin_trac4.gif",
+      "how": "imgdir"
+    },
+    {
+      "page": "cases/cas_symn.html",
+      "url": "/cases_menu.htm",
+      "to": "cases_menu.html",
+      "how": "ext"
+    }
+  ],
+  "dead": {
+    "solucoes.html": "não consta em nenhuma captura do Internet Archive (2008 a 2019); os menus de 2013 ainda apontavam para o nome de 2004",
+    "principal.html": "não consta em nenhuma captura do Internet Archive (2008 a 2019); o site de 2013 não tinha mais o quadro principal de 2004",
+    "wan.html": "não consta em nenhuma captura do Internet Archive",
+    "jbsold.html": "não consta em nenhuma captura do Internet Archive",
+    "comunicredes.html": "não consta em nenhuma captura do Internet Archive; a página existia no site de 2004 (comunicredes.htm)",
+    "inferior.htm": "não consta em nenhuma captura do Internet Archive; o rodapé de 2013 era footer.html"
+  },
+  "toolsMissing": {},
+  "pageCount": 56
+}

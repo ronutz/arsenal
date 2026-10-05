@@ -53,6 +53,46 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "13:55",
+    kind: "feature",
+    title: "Learn, read two ways: a guided layer in front of the complete article index, with a Guided | Directory switch",
+    body:
+      "The Learn page opened with eleven peer cards and the index somewhere below them. It now opens with five ways to learn, each a question and a destination: understand a subject, learn something in order, prepare for an exam, learn a platform, look something up. Then the subjects themselves, every one with its article count computed at build time and two doors (the subject's page, its block in the index); three Stories; and, lower and quieter, the areas around Learn: The Practice, The Roles, People, the industry record, where the industry learns, the tools. The complete article index is still here, now named and counted at the head of its section, with its jump-to, filter and view controls as before. A switch at the top reads the page as Guided (both layers, guided first) or Directory (the index first); the choice is remembered, and /learn#directory opens in the Directory reading. Nothing was removed; the cards were demoted into the modes and the rows.",
+    links: [
+      { label: "Learn", href: "/learn" },
+      { label: "Stories", href: "/stories" },
+      { label: "Study guides and reading paths", href: "/study-guides" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "13:50",
+    kind: "feature",
+    title: "Search that counts the whole site, scoped to one of its five worlds; the footer and the sitemap by the same five",
+    body:
+      "The search dialog used to read only its top eight hits and count those, so a search for Fortinet reported no tools on a site with eleven. Every page now declares its kind (tool, article, user guide, page) and its world (Use, Understand, Explore, Work with me, The project) to the index at build time; the pills count every hit of a query, one click on a pill narrows to that kind in the index itself, and a new row of chips narrows to one world, with the count of hits in each. The hubs carry a search field of their own that opens the dialog inside their world: Use on the tools page, Understand on Learn, Explore on the industry record. Results load twenty at a time. The footer now ends every page with the same five-column directory as the home page, and the human sitemap is grouped by the same five systems.",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "Learn", href: "/learn" },
+      { label: "The industry record", href: "/industry" },
+      { label: "Sitemap", href: "/sitemap" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "12:40",
+    kind: "feature",
+    title: "The earlier sites, reconstructed and navigable: nutzmann.net as it stood in 2004 and ntz.com.br as it stood in 2013",
+    body:
+      "Two of the earlier sites are rebuilt here from the author's own files, the hosting account's export of 5 March 2013, and can be browsed as they were: the 2004 frameset with its animated top bar (the Flash bar, encoded as video from the original file), its GIF buttons and rollovers, its menus and its bits-and-bytes calculator working as written; the 2013 site with its bar, its calculator and its pages. Not captures: the sites, 62 and 56 pages, every page carrying a comment naming its source file. Each reconstruction has a page of its own with the site in a frame at the 800 pixel width it was designed for, what was kept, what was changed and how many times (re-encoded to UTF-8, Flash to video, Google Analytics removed, forms disarmed, the two tools the 2004 site announced but never published given pages that say so, links to pages that were not on the server given pages that state the Internet Archive's record, references the case-sensitive server failed repaired, never a guess), the list of pages with the archive capture of each file where one exists, and the sources. Served under a path-scoped Content Security Policy that allows the frameset and nothing else the global policy forbids.",
+    links: [
+      { label: "The earlier sites", href: "/about/earlier-sites" },
+      { label: "nutzmann.net, 2004, reconstructed", href: "/about/earlier-sites/nutzmann-net-2004" },
+      { label: "ntz.com.br, 2013, reconstructed", href: "/about/earlier-sites/ntz-com-br-2013" },
+    ],
+  },
+  {
+    date: "2026-10-05",
     time: "10:48",
     kind: "tool",
     title: "What a page head declares, read by every party that reads it",

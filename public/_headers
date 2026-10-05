@@ -108,3 +108,26 @@
 # The earlier-sites archive renderings and the reproduced Flash bars (2026-10-05): static records, a day's cache.
 /archive/earlier-sites/*
   Cache-Control: public, max-age=86400
+
+# ---------------------------------------------------------------------------
+# The reconstructed earlier sites (2026-10-05, PRIME 11:03: "let users navigate
+# a modernized local CLONE of the old sites"). nutzmann.net of 2004 is a
+# frameset and the 2013 ntz.com.br page embeds its header and footer in
+# iframes, and the wrapper pages under /about/earlier-sites/ show each clone in
+# an iframe of their own: all of that is same-origin framing, which the global
+# `frame-ancestors 'none'` and `X-Frame-Options: DENY` forbid. For this path
+# only, both are detached and a policy for the clones is set in their place:
+# same-origin framing both ways, no object or plug-in (the Flash bars play as
+# video), no base, no form submission (the 2004 FormMail forms are disarmed and
+# point at a page that says so), scripts and styles inline because the 2004
+# pages carry theirs inline (Dreamweaver rollovers, the bits-and-bytes
+# calculator, which no longer calls eval()). Nothing else changes: HSTS,
+# nosniff, the referrer policy and the two overhead lines stay as above.
+# ---------------------------------------------------------------------------
+
+/archive/sites/*
+  ! Content-Security-Policy
+  ! X-Frame-Options
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests
+  X-Frame-Options: SAMEORIGIN
+  X-Robots-Tag: noindex

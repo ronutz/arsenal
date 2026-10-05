@@ -23,12 +23,18 @@ import { BUILD_TIME } from "@/generated/build-info";
 import LicenseBadges from "@/components/LicenseBadges";
 import ItemViews from "@/components/ItemViews";
 import { getLocale } from "next-intl/server";
+import { WORLDS } from "@/config/worlds";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
   const tBadges = await getTranslations("licenseBadges");
   const tStats = await getTranslations("stats_page");
   const locale = await getLocale();
+  // The five worlds' titles and entry labels live with the home page's copy (home.front.world.*, home.map.*).
+  const tHome = await getTranslations("home");
+  const tNav = await getTranslations("nav");
+  /** A registry label key to its text: "map.x" under home, "nav.x" under nav, "footer.x" here, "=Literal" as is. */
+  const label = (key: string) => key.startsWith("=") ? key.slice(1) : key.startsWith("nav.") ? tNav(key.slice(4)) : key.startsWith("footer.") ? t(key.slice(7)) : tHome(key);
 
   return (
     // data-pagefind-ignore keeps the footer out of the search index: its Red
@@ -42,6 +48,21 @@ export default async function SiteFooter() {
             see components/ItemViews.tsx for why it locates itself. Renders
             nothing at all until it has a number. */}
         <ItemViews label={tStats("itemLabel")} locale={locale} />
+        {/* THE DIRECTORY BY THE FIVE WORLDS (wave 0, 2026-10-05; SCOUT G21): the same five columns as the home
+            page's "Everything on ronutz", from the shared registry, so every page ends with the way to every
+            system. Titles from the home copy, entries the primary ones only (the human sitemap lists the rest). */}
+        <nav className="footer-worlds" aria-label={t("directoryAria")}>
+          {WORLDS.map((w) => (
+            <div key={w.key} className={`footer-world footer-world--${w.key}`}>
+              <p className="footer-world-title">{tHome(`front.world.${w.key}`)}</p>
+              <ul className="footer-world-list">
+                {w.items.map((it) => (
+                  <li key={it.href}><Link href={it.href} className="footer-world-link">{label(it.label)}</Link></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
         <p className="footer-built">
           {/* The whole line links to the colophon; simple and reliable. */}
           <Link href="/colophon" className="footer-built-link">

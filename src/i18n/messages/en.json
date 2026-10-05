@@ -297,7 +297,8 @@
         "project": "about"
       },
       "endorsementsBadge": "{count} verbatim",
-      "surpriseAgain": "Draw again"
+      "surpriseAgain": "Draw again",
+      "archiveClone": "the 2004 site itself, navigable"
     }
   },
   "tools": {
@@ -11665,6 +11666,11 @@
       "handoffTree": "HTML structure & DOM explainer",
       "handoffSelectors": "and selectors can be tried against it in the CSS selector tester",
       "limits": "This page reads the head as written: no URL is fetched or resolved, so it cannot say whether an image exists, whether a canonical target answers, or how a given platform will render a card. Descriptions of meta names are the standard's and the registry's own sentences; what a crawler or a social platform does with a tag is quoted from that party's published documentation, dated. Inputs over {max, number} characters are refused."
+    },
+    "hubSearch": {
+      "label": "Search the tools",
+      "placeholder": "A protocol, a format, a vendor, a problem to solve…",
+      "examples": "Try"
     }
   },
   "privacy_page": {
@@ -11723,7 +11729,8 @@
     "glossary": "Glossary",
     "sitemap": "sitemap",
     "blog": "Blog",
-    "stats": "Stats"
+    "stats": "Stats",
+    "directoryAria": "Site directory"
   },
   "search": {
     "kindTool": "Tool",
@@ -11744,7 +11751,18 @@
     "filterGuide": "User Guide",
     "filterPages": "Pages",
     "wasm": "WASM",
-    "wasmTitle": "Runs a third-party interpreter compiled to WebAssembly; the engine downloads on first use, when you say so"
+    "wasmTitle": "Runs a third-party interpreter compiled to WebAssembly; the engine downloads on first use, when you say so",
+    "showMore": "Show {count, plural, one {# more} other {# more}}",
+    "resultCount": "{shown} of {count, plural, one {# result} other {# results}}",
+    "scopeLabel": "Where to search",
+    "scope": {
+      "all": "Everywhere",
+      "use": "Use",
+      "understand": "Understand",
+      "explore": "Explore",
+      "work": "Work with me",
+      "project": "The project"
+    }
   },
   "theme": {
     "label": "Theme",
@@ -13036,7 +13054,86 @@
     "portalPeople": "People",
     "portalPeopleLede": "The individuals behind the tools, the conferences and the networks - including the ones who built Brazil's.",
     "portalPeopleCount": "{count} people",
-    "portalLearningCount": "{count} institutions"
+    "portalLearningCount": "{count} institutions",
+    "hubSearch": {
+      "label": "Search Learn, the glossary and the guides",
+      "placeholder": "A concept, a protocol, an exam objective…",
+      "examples": "Try"
+    },
+    "hub": {
+      "switchLegend": "Read this page as",
+      "switchGuided": "Guided",
+      "switchDirectory": "Directory",
+      "modesTitle": "How do you want to learn?",
+      "mode": {
+        "subject": {
+          "q": "I want to understand a subject",
+          "label": "Browse by subject",
+          "verb": "explore"
+        },
+        "path": {
+          "q": "I want to learn something in order, from the start",
+          "label": "Learning paths",
+          "verb": "follow"
+        },
+        "certification": {
+          "q": "I am preparing for an exam",
+          "label": "Certification guides",
+          "verb": "prepare"
+        },
+        "platform": {
+          "q": "I work on a platform and need its documentation read for me",
+          "label": "Vendor hubs",
+          "verb": "learn a platform"
+        },
+        "lookup": {
+          "q": "I need a definition, fast",
+          "label": "The glossary",
+          "verb": "look up"
+        }
+      },
+      "modeCount": {
+        "subject": "{count, plural, one {# article} other {# articles}} in {subjects, plural, one {# subject} other {# subjects}}",
+        "path": "{count, plural, one {# reading path} other {# reading paths}}",
+        "certification": "{count, plural, one {# guide} other {# guides}}, {objectives, plural, one {# objective} other {# objectives}} mapped",
+        "platform": "{count, plural, one {# hub} other {# hubs}}",
+        "lookup": "{count, plural, one {# term} other {# terms}}"
+      },
+      "subjectsTitle": "Browse by subject",
+      "subjectsLede": "{count, plural, one {# article} other {# articles}} in {subjects, plural, one {# subject} other {# subjects}}, the same taxonomy as the tools. A subject's page gathers its articles, tools and glossary terms; the arrow jumps to its block in the index below.",
+      "subjectCount": "{count, plural, one {# article} other {# articles}}",
+      "subjectInIndex": "In the index",
+      "storiesBrowse": "Browse all {count, plural, one {# story} other {# stories}}",
+      "aroundTitle": "Around Learn",
+      "around": {
+        "practice": {
+          "label": "The Practice",
+          "lede": "Learn the work, not only the technology: triage, incident method, the reading of a change."
+        },
+        "roles": {
+          "label": "The Roles",
+          "lede": "Who does what across the value chain, and what each role needs to know."
+        },
+        "people": {
+          "label": "People",
+          "lede": "The engineers, founders and authors behind the protocols and the companies."
+        },
+        "industry": {
+          "label": "The industry record",
+          "lede": "How the companies, products and ideas got here: lineage, acquisitions, dates."
+        },
+        "learning": {
+          "label": "Where the industry learns",
+          "lede": "The companies that teach it, with their programmes and certifications."
+        },
+        "tools": {
+          "label": "The tools",
+          "lede": "Every article links the tools that compute what it explains; the tools link back."
+        }
+      },
+      "directoryTitle": "Complete article index",
+      "directoryLede": "All {count, plural, one {# article} other {# articles}}, grouped by {subjects, plural, one {# subject} other {# subjects}} and listed in each subject's reading order. Jump to a subject, filter, switch to the list, or search Learn above."
+    }
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -22495,7 +22592,12 @@
     "careerNote": "Two kinds of company appear here, and the markers tell them apart: the ones I was employed by, and the ones whose technology I worked with directly from the other side of the table. Chronological by first engagement, from 1996.",
     "careerStripTitle": "The chapters lived from inside",
     "careerStripNote": "In every one of these, employer or vendor, the work was the same shape: facing the end customer, in pre-sales and in post-sales technical support, and very often acting as the technical proxy and enablement facilitator for the partners who had to carry the product themselves. The job was to leave the customer with something that worked better than it did before - an innovation, a solution, an improvement they could keep running after I left. The full telling lives at the career record.",
-    "careerStripLink": "Read the career record"
+    "careerStripLink": "Read the career record",
+    "hubSearch": {
+      "label": "Search the industry record",
+      "placeholder": "A company, a product line, a person, a year…",
+      "examples": "Try"
+    }
   },
   "sitemap": {
     "metaTitle": "Sitemap - every section of ronutz.com",
@@ -26132,6 +26234,73 @@
     },
     "linkBits": "Bits, bytes and throughput",
     "flashAria": "The Flash top bar {file}, reproduced as video",
-    "flashCaption": "The Flash top bar of this era, {file}, embedded by {page}: {frames} frames at {fps} per second ({seconds} s), {width} by {height} pixels, Flash 5 format. Reproduced on 5 October 2026 from the original file: every frame rendered by the JPEXS Free Flash Decompiler and encoded at the original rate; the button the original carried is the one thing not reproduced."
+    "flashCaption": "The Flash top bar of this era, {file}, embedded by {page}: {frames} frames at {fps} per second ({seconds} s), {width} by {height} pixels, Flash 5 format. Reproduced on 5 October 2026 from the original file: every frame rendered by the JPEXS Free Flash Decompiler and encoded at the original rate; the button the original carried is the one thing not reproduced.",
+    "clone": {
+      "eyebrow": "About · The earlier sites · Reconstruction",
+      "title": {
+        "nutzmann-net-2004": "nutzmann.net as it stood in 2004",
+        "ntz-com-br-2013": "ntz.com.br as it stood in 2013"
+      },
+      "metaTitle": {
+        "nutzmann-net-2004": "nutzmann.net in 2004, reconstructed and navigable · Rodolfo Nützmann",
+        "ntz-com-br-2013": "ntz.com.br in 2013, reconstructed and navigable · Rodolfo Nützmann"
+      },
+      "metaDescription": {
+        "nutzmann-net-2004": "The 2004 nutzmann.net site rebuilt from the author's own files: the frameset, the animated top bar, the bits-and-bytes calculator, every page navigable, with each change listed and the Internet Archive's captures linked.",
+        "ntz-com-br-2013": "The 2013 ntz.com.br site rebuilt from the author's own files: the animated top bar, the calculator, every page navigable, with each change listed and the Internet Archive's captures linked."
+      },
+      "lede": "Rebuilt from the author's own files, the hosting account's export of {exportDate}: {pages, plural, one {# page} other {# pages}} and {assets, plural, one {# file} other {# files}}, navigable as they were, in the frame below or in a window of their own. Not a capture: the site.",
+      "openOwnWindow": "Open the site in its own window",
+      "frameTitle": "{domain} in {year}, reconstructed",
+      "frameNote": "The frame is 800 pixels wide, the width the site was designed for; it scrolls on its own. Links to other sites open in a new tab; links to today's ronutz.com leave the frame.",
+      "keptTitle": "What was kept",
+      "keptBody": "The layout, the frameset, the fonts, the colours, the GIF buttons and their rollovers, the copy of {year} with its typos, the dates, the rough edges. A reproduction does not edit, and every page carries a comment naming its source file.",
+      "changedTitle": "What was changed, and how often",
+      "changes": {
+        "charset": "{count, plural, one {# page} other {# pages}} re-encoded from ISO-8859-1 or Windows-1252 to UTF-8, with a charset declaration.",
+        "flash": "The Flash top bar replaced by the video encoded from the original SWF on {made} (autoplay, muted, looping, the first frame as its poster), in the same 798 by 78 box, on {count, plural, one {# page} other {# pages}}.",
+        "analytics": "Google Analytics removed from {count, plural, one {# page} other {# pages}}. Nothing is tracked here.",
+        "forms": "{count, plural, one {# form} other {# forms}} disarmed: the FormMail CGI of the time no longer runs, so the form sends nothing and lands on a page that says so.",
+        "eval": "The bits-and-bytes calculator's four eval() calls became Number(): same arithmetic, same results, and the reconstruction runs under a Content Security Policy with no eval allowance ({count, plural, one {# page} other {# pages}}).",
+        "missingTools": "{count, plural, one {# link} other {# links}} to the two tools the site announced but never published (ipsubnet.htm, pinout.htm) now reach a reconstruction page in the old style that says so and points at today's equivalents.",
+        "deadLinks": "{count, plural, one {# link} other {# links}} to {pages, plural, one {# page} other {# pages}} that were not on the server ({list}) now reach a page that states the Internet Archive's record for that path.",
+        "pathFixes": "{count, plural, one {# reference} other {# references}} repaired that the case-sensitive server of the time failed: the same path from the site root, the other image folder name, or the .htm/.html twin of a page. Never a guess by similarity.",
+        "linkTypos": "{count, plural, one {# address} other {# addresses}} with a typo repaired the way a reader would: a slash before the scheme, a missing scheme, htto://.",
+        "absoluteSelf": "{count, plural, one {# reference} other {# references}} written against the server root or the domain itself, re-rooted under the reconstruction's address.",
+        "crossSite": "{count, plural, one {# link} other {# links}} between the two sites now point into the other reconstruction.",
+        "externalLinks": "{count, plural, one {# link} other {# links}} to other sites open in a new tab, as written, sending no referrer.",
+        "caseFixes": "{count, plural, one {# reference} other {# references}} whose case did not match the file on disk, corrected.",
+        "mirrors": "{count, plural, one {# link} other {# links}} to copies of other people's pages saved on the server, pointed at the Internet Archive's capture of the original instead."
+      },
+      "noindexNote": "Every page carries a robots noindex meta and a provenance comment (source file, export date, original encoding, changes applied). This page is the indexed entry.",
+      "unresolvedNote": "{count, plural, one {# reference} other {# references}} left broken because {count, plural, one {it was} other {they were}} broken in the original too: {list}.",
+      "orphansNote": "{count, plural, one {# page was} other {# pages were}} on the server but no menu reached {count, plural, one {it} other {them}} (drafts, and the case studies the menus had stopped linking): included, and marked in the list.",
+      "pagesTitle": "The pages",
+      "pagesSummary": "{count, plural, one {# page} other {# pages}}, {orphans} unlinked",
+      "colArchive": "Archive capture",
+      "openPage": "Open",
+      "noCapture": "no capture of this file",
+      "orphanMark": "unlinked",
+      "excludedTitle": "What is not here",
+      "excludedBody": "{count, plural, one {# file} other {# files}} of the export were not carried over: the server-side scripts (the FormMail CGI), the saved copies of other people's pages (a pinout chart, a default-password list, the IEEE OUI list, the IETF RFC index), Dreamweaver's notes, the author's draft variants of pages, the Flash and artwork source files, and the Windows thumbnail caches.",
+      "toolsTitle": "The tools that were there",
+      "toolsBody": {
+        "nutzmann-net-2004": "The home page linked three tools: a bits-and-bytes calculator, an IP subnet calculator and a cabling pinout chart. Only the first was ever published; it works in the reconstruction as it was written. The other two were 404 on every archive capture and absent from the server export; their links now reach reconstruction pages that say so.",
+        "ntz-com-br-2013": "The 2013 site kept the bits-and-bytes calculator (five functions) and pointed the pinout link outside the site. The calculator works in the reconstruction as it was written."
+      },
+      "toolCalculator": "Open the calculator in the reconstruction",
+      "toolToday": "Today's version",
+      "headersTitle": "How it is served",
+      "headersBody": "This site's global headers forbid framing (frame-ancestors 'none', X-Frame-Options DENY). For the reconstructions' path only, both are detached and a policy for the clones is set in their place: same-origin framing (the 2004 frameset, the 2013 footer frame, and the frame on this page), scripts and styles inline because the pages carry theirs inline, media from this site, no plug-ins, no base element, no form submission. You can read the policy with the <cspTool>CSP evaluator</cspTool>.",
+      "switchTitle": "Also here",
+      "switchInventory": "The inventory: every capture, every era",
+      "sourcesBody": "The hosting account's export of {exportDate}, the author's own files: the site as it stood on the server that day. The Internet Archive's CDX index, read {cdxDate}, for the record of each path the site linked but never served. The Flash bars, encoded from the original SWF files on {made}. The generator and every rule above: scripts/old-sites/build-clone.py in the site's repository.",
+      "backToSites": "The earlier sites"
+    },
+    "featureTitle": "Browse the sites as they were",
+    "featureLede": "Two of the sites are reconstructed here from the author's own files, navigable with their animated bars and their tools. Not captures: the sites, with every change listed.",
+    "featureOpen": "Open the reconstruction",
+    "featureFacts": "{pages, plural, one {# page} other {# pages}} · {assets, plural, one {# file} other {# files}} · rebuilt from the export of {exportDate}",
+    "featureThumbAlt": "The reconstruction of {domain}, rendered {date}"
   }
 }

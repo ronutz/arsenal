@@ -297,7 +297,8 @@
         "project": "sobre"
       },
       "endorsementsBadge": "{count} na íntegra",
-      "surpriseAgain": "Sortear outra"
+      "surpriseAgain": "Sortear outra",
+      "archiveClone": "o próprio site de 2004, navegável"
     }
   },
   "tools": {
@@ -11665,6 +11666,11 @@
       "handoffTree": "explicador de estrutura HTML e DOM",
       "handoffSelectors": "e seletores podem ser testados contra ela no testador de seletores CSS",
       "limits": "Esta página lê o head como escrito: nenhuma URL é buscada ou resolvida, então ela não pode dizer se uma imagem existe, se um alvo canonical responde, ou como uma dada plataforma vai renderizar um card. As descrições dos nomes de meta são as frases do próprio padrão e do registro; o que um rastreador ou uma plataforma social faz com uma tag é citado da documentação publicada dessa parte, com data. Entradas acima de {max, number} caracteres são recusadas."
+    },
+    "hubSearch": {
+      "label": "Buscar nas ferramentas",
+      "placeholder": "Um protocolo, um formato, um fabricante, um problema a resolver…",
+      "examples": "Experimente"
     }
   },
   "privacy_page": {
@@ -11723,7 +11729,8 @@
     "glossary": "Glossário",
     "sitemap": "sitemap",
     "blog": "Blog",
-    "stats": "Estatísticas"
+    "stats": "Estatísticas",
+    "directoryAria": "Diretório do site"
   },
   "search": {
     "kindTool": "Ferramenta",
@@ -11744,7 +11751,18 @@
     "filterGuide": "Guia do usuário",
     "filterPages": "Páginas",
     "wasm": "WASM",
-    "wasmTitle": "Executa um interpretador de terceiros compilado para WebAssembly; o motor é baixado no primeiro uso, quando você autorizar"
+    "wasmTitle": "Executa um interpretador de terceiros compilado para WebAssembly; o motor é baixado no primeiro uso, quando você autorizar",
+    "showMore": "Mostrar mais {count}",
+    "resultCount": "{shown} de {count, plural, one {# resultado} other {# resultados}}",
+    "scopeLabel": "Onde buscar",
+    "scope": {
+      "all": "Em tudo",
+      "use": "Usar",
+      "understand": "Entender",
+      "explore": "Explorar",
+      "work": "Trabalhe comigo",
+      "project": "O projeto"
+    }
   },
   "theme": {
     "label": "Tema",
@@ -13036,7 +13054,86 @@
     "portalPeople": "Pessoas",
     "portalPeopleLede": "Os indivíduos por trás das ferramentas, das conferências e das redes - inclusive quem construiu as do Brasil.",
     "portalPeopleCount": "{count} pessoas",
-    "portalLearningCount": "{count} instituições"
+    "portalLearningCount": "{count} instituições",
+    "hubSearch": {
+      "label": "Buscar em Aprender, no glossário e nos guias",
+      "placeholder": "Um conceito, um protocolo, um objetivo de exame…",
+      "examples": "Experimente"
+    },
+    "hub": {
+      "switchLegend": "Ler esta página como",
+      "switchGuided": "Guiada",
+      "switchDirectory": "Diretório",
+      "modesTitle": "Como você quer aprender?",
+      "mode": {
+        "subject": {
+          "q": "Quero entender um assunto",
+          "label": "Navegar por assunto",
+          "verb": "explorar"
+        },
+        "path": {
+          "q": "Quero aprender algo em ordem, do começo",
+          "label": "Trilhas de aprendizado",
+          "verb": "seguir"
+        },
+        "certification": {
+          "q": "Estou me preparando para um exame",
+          "label": "Guias de certificação",
+          "verb": "preparar"
+        },
+        "platform": {
+          "q": "Trabalho com uma plataforma e preciso da documentação dela lida por mim",
+          "label": "Hubs de fabricantes",
+          "verb": "aprender uma plataforma"
+        },
+        "lookup": {
+          "q": "Preciso de uma definição, rápido",
+          "label": "O glossário",
+          "verb": "consultar"
+        }
+      },
+      "modeCount": {
+        "subject": "{count, plural, one {# artigo} other {# artigos}} em {subjects, plural, one {# assunto} other {# assuntos}}",
+        "path": "{count, plural, one {# trilha de leitura} other {# trilhas de leitura}}",
+        "certification": "{count, plural, one {# guia} other {# guias}}, {objectives, plural, one {# objetivo mapeado} other {# objetivos mapeados}}",
+        "platform": "{count, plural, one {# hub} other {# hubs}}",
+        "lookup": "{count, plural, one {# termo} other {# termos}}"
+      },
+      "subjectsTitle": "Navegar por assunto",
+      "subjectsLede": "{count, plural, one {# artigo} other {# artigos}} em {subjects, plural, one {# assunto} other {# assuntos}}, a mesma taxonomia das ferramentas. A página de um assunto reúne seus artigos, ferramentas e termos do glossário; a seta pula para o bloco dele no índice abaixo.",
+      "subjectCount": "{count, plural, one {# artigo} other {# artigos}}",
+      "subjectInIndex": "No índice",
+      "storiesBrowse": "Ver {count, plural, one {a # história} other {todas as # histórias}}",
+      "aroundTitle": "Em volta de Aprender",
+      "around": {
+        "practice": {
+          "label": "A Prática",
+          "lede": "Aprender o trabalho, não só a tecnologia: triagem, método de incidente, a leitura de uma mudança."
+        },
+        "roles": {
+          "label": "Os Papéis",
+          "lede": "Quem faz o quê ao longo da cadeia de valor, e o que cada papel precisa saber."
+        },
+        "people": {
+          "label": "Pessoas",
+          "lede": "Os engenheiros, fundadores e autores por trás dos protocolos e das empresas."
+        },
+        "industry": {
+          "label": "O registro da indústria",
+          "lede": "Como as empresas, os produtos e as ideias chegaram aqui: linhagem, aquisições, datas."
+        },
+        "learning": {
+          "label": "Onde a indústria aprende",
+          "lede": "As empresas que a ensinam, com seus programas e certificações."
+        },
+        "tools": {
+          "label": "As ferramentas",
+          "lede": "Cada artigo vincula as ferramentas que calculam o que ele explica; as ferramentas vinculam de volta."
+        }
+      },
+      "directoryTitle": "Índice completo de artigos",
+      "directoryLede": "{count, plural, one {Todo # artigo} other {Todos os # artigos}}, agrupados em {subjects, plural, one {# assunto} other {# assuntos}} e listados na ordem de leitura de cada assunto. Pule para um assunto, filtre, mude para a lista ou busque em Aprender acima."
+    }
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -22495,7 +22592,12 @@
     "careerNote": "Dois tipos de empresa aparecem aqui, e os marcadores os distinguem: aquelas em que fui empregado e aquelas cuja tecnologia trabalhei diretamente, do outro lado da mesa. Em ordem cronológica de primeiro contato, desde 1996.",
     "careerStripTitle": "Os capítulos vividos por dentro",
     "careerStripNote": "Em todas elas, empregadora ou fabricante, o trabalho teve o mesmo formato: de frente para o cliente final, em pré-vendas e em suporte técnico pós-vendas, e muitas vezes atuando como proxy técnico e facilitador de capacitação para os parceiros que precisavam sustentar o produto por conta própria. A tarefa era deixar o cliente com algo que funcionasse melhor do que antes — uma inovação, uma solução, uma melhoria que continuasse funcionando depois que eu saísse. O relato completo está no registro de carreira.",
-    "careerStripLink": "Ler o registro de carreira"
+    "careerStripLink": "Ler o registro de carreira",
+    "hubSearch": {
+      "label": "Buscar no registro da indústria",
+      "placeholder": "Uma empresa, uma linha de produtos, uma pessoa, um ano…",
+      "examples": "Experimente"
+    }
   },
   "sitemap": {
     "metaTitle": "Mapa do site - todas as seções do ronutz.com",
@@ -26081,6 +26183,73 @@
     },
     "linkBits": "Bits, bytes e vazão",
     "flashAria": "A barra superior em Flash {file}, reproduzida em vídeo",
-    "flashCaption": "A barra superior em Flash desta era, {file}, incorporada por {page}: {frames} quadros a {fps} por segundo ({seconds} s), {width} por {height} pixels, formato Flash 5. Reproduzida em 5 de outubro de 2026 a partir do arquivo original: cada quadro renderizado pelo JPEXS Free Flash Decompiler e codificado na taxa original; o botão que o original trazia é a única coisa não reproduzida."
+    "flashCaption": "A barra superior em Flash desta era, {file}, incorporada por {page}: {frames} quadros a {fps} por segundo ({seconds} s), {width} por {height} pixels, formato Flash 5. Reproduzida em 5 de outubro de 2026 a partir do arquivo original: cada quadro renderizado pelo JPEXS Free Flash Decompiler e codificado na taxa original; o botão que o original trazia é a única coisa não reproduzida.",
+    "clone": {
+      "eyebrow": "Sobre · Os sites anteriores · Reconstrução",
+      "title": {
+        "nutzmann-net-2004": "nutzmann.net como estava em 2004",
+        "ntz-com-br-2013": "ntz.com.br como estava em 2013"
+      },
+      "metaTitle": {
+        "nutzmann-net-2004": "nutzmann.net em 2004, reconstruído e navegável · Rodolfo Nützmann",
+        "ntz-com-br-2013": "ntz.com.br em 2013, reconstruído e navegável · Rodolfo Nützmann"
+      },
+      "metaDescription": {
+        "nutzmann-net-2004": "O site nutzmann.net de 2004 reconstruído a partir dos arquivos do próprio autor: o frameset, a barra animada do topo, a calculadora de bits e bytes, todas as páginas navegáveis, cada mudança listada e as capturas do Internet Archive vinculadas.",
+        "ntz-com-br-2013": "O site ntz.com.br de 2013 reconstruído a partir dos arquivos do próprio autor: a barra animada do topo, a calculadora, todas as páginas navegáveis, cada mudança listada e as capturas do Internet Archive vinculadas."
+      },
+      "lede": "Reconstruído a partir dos arquivos do próprio autor, a exportação da conta de hospedagem de {exportDate}: {pages, plural, one {# página} other {# páginas}} e {assets, plural, one {# arquivo} other {# arquivos}}, navegáveis como eram, no quadro abaixo ou em uma janela própria. Não é uma captura: é o site.",
+      "openOwnWindow": "Abrir o site em janela própria",
+      "frameTitle": "{domain} em {year}, reconstruído",
+      "frameNote": "O quadro tem 800 pixels de largura, a largura para a qual o site foi desenhado; ele rola por conta própria. Links para outros sites abrem em nova aba; links para o ronutz.com de hoje saem do quadro.",
+      "keptTitle": "O que foi mantido",
+      "keptBody": "O layout, o frameset, as fontes, as cores, os botões GIF e seus rollovers, o texto de {year} com seus erros de digitação, as datas, as arestas. Uma reprodução não edita, e cada página carrega um comentário com o nome do arquivo de origem.",
+      "changedTitle": "O que foi mudado, e quantas vezes",
+      "changes": {
+        "charset": "{count, plural, one {# página} other {# páginas}} recodificadas de ISO-8859-1 ou Windows-1252 para UTF-8, com a declaração de charset.",
+        "flash": "A barra Flash do topo substituída pelo vídeo codificado a partir do SWF original em {made} (reprodução automática, sem som, em laço, o primeiro quadro como pôster), na mesma caixa de 798 por 78, em {count, plural, one {# página} other {# páginas}}.",
+        "analytics": "Google Analytics removido de {count, plural, one {# página} other {# páginas}}. Nada é rastreado aqui.",
+        "forms": "{count, plural, one {# formulário desarmado} other {# formulários desarmados}}: o CGI FormMail da época não roda mais, então o formulário não envia nada e cai em uma página que diz isso.",
+        "eval": "As quatro chamadas eval() da calculadora de bits e bytes viraram Number(): a mesma aritmética, os mesmos resultados, e a reconstrução roda sob uma Content Security Policy sem permissão de eval ({count, plural, one {# página} other {# páginas}}).",
+        "missingTools": "{count, plural, one {# link} other {# links}} para as duas ferramentas que o site anunciou mas nunca publicou (ipsubnet.htm, pinout.htm) agora chegam a uma página de reconstrução no estilo antigo que diz isso e aponta para os equivalentes de hoje.",
+        "deadLinks": "{count, plural, one {# link} other {# links}} para {pages, plural, one {# página} other {# páginas}} que não estavam no servidor ({list}) agora chegam a uma página que registra o que o Internet Archive tem daquele caminho.",
+        "pathFixes": "{count, plural, one {# referência reparada} other {# referências reparadas}} que o servidor da época, sensível a maiúsculas, falhava: o mesmo caminho a partir da raiz do site, o outro nome da pasta de imagens, ou o gêmeo .htm/.html de uma página. Nunca um chute por semelhança.",
+        "linkTypos": "{count, plural, one {# endereço} other {# endereços}} com erro de digitação, reparados como um leitor repararia: uma barra antes do esquema, um esquema ausente, htto://.",
+        "absoluteSelf": "{count, plural, one {# referência escrita} other {# referências escritas}} contra a raiz do servidor ou o próprio domínio, reenraizadas sob o endereço da reconstrução.",
+        "crossSite": "{count, plural, one {# link} other {# links}} entre os dois sites agora apontam para a outra reconstrução.",
+        "externalLinks": "{count, plural, one {# link} other {# links}} para outros sites abrem em nova aba, como escritos, sem enviar referrer.",
+        "caseFixes": "{count, plural, one {# referência} other {# referências}} cuja caixa não batia com o arquivo em disco, corrigidas.",
+        "mirrors": "{count, plural, one {# link} other {# links}} para cópias de páginas de terceiros guardadas no servidor, apontados para a captura do original no Internet Archive."
+      },
+      "noindexNote": "Cada página carrega um meta robots noindex e um comentário de procedência (arquivo de origem, data da exportação, codificação original, mudanças aplicadas). Esta página é a entrada indexada.",
+      "unresolvedNote": "{count, plural, one {# referência deixada quebrada} other {# referências deixadas quebradas}} porque já {count, plural, one {estava quebrada} other {estavam quebradas}} no original: {list}.",
+      "orphansNote": "{count, plural, one {# página estava} other {# páginas estavam}} no servidor sem que nenhum menu chegasse a {count, plural, one {ela} other {elas}} (rascunhos, e os cases que os menus deixaram de vincular): incluídas, e marcadas na lista.",
+      "pagesTitle": "As páginas",
+      "pagesSummary": "{count, plural, one {# página} other {# páginas}}, {orphans} sem vínculo",
+      "colArchive": "Captura no arquivo",
+      "openPage": "Abrir",
+      "noCapture": "sem captura deste arquivo",
+      "orphanMark": "sem vínculo",
+      "excludedTitle": "O que não está aqui",
+      "excludedBody": "{count, plural, one {# arquivo} other {# arquivos}} da exportação não foram trazidos: os scripts do lado do servidor (o CGI FormMail), as cópias guardadas de páginas de terceiros (uma tabela de pinagem, uma lista de senhas padrão, a lista OUI do IEEE, o índice de RFCs do IETF), as notas do Dreamweaver, as variantes de rascunho do autor, os arquivos-fonte de Flash e de arte, e os caches de miniaturas do Windows.",
+      "toolsTitle": "As ferramentas que estavam lá",
+      "toolsBody": {
+        "nutzmann-net-2004": "A página inicial vinculava três ferramentas: uma calculadora de bits e bytes, uma calculadora de sub-redes IP e uma tabela de pinagem de cabos. Só a primeira foi publicada; ela funciona na reconstrução como foi escrita. As outras duas deram 404 em todas as capturas do arquivo e não existem na exportação do servidor; seus links agora chegam a páginas de reconstrução que dizem isso.",
+        "ntz-com-br-2013": "O site de 2013 manteve a calculadora de bits e bytes (cinco funções) e apontou o link de pinagem para fora do site. A calculadora funciona na reconstrução como foi escrita."
+      },
+      "toolCalculator": "Abrir a calculadora na reconstrução",
+      "toolToday": "A versão de hoje",
+      "headersTitle": "Como é servido",
+      "headersBody": "Os cabeçalhos globais deste site proíbem enquadramento (frame-ancestors 'none', X-Frame-Options DENY). Só para o caminho das reconstruções, os dois são removidos e uma política para os clones entra no lugar: enquadramento na mesma origem (o frameset de 2004, o quadro do rodapé de 2013 e o quadro desta página), scripts e estilos inline porque as páginas carregam os seus inline, mídia deste site, sem plug-ins, sem elemento base, sem envio de formulário. A política pode ser lida com o <cspTool>avaliador de CSP</cspTool>.",
+      "switchTitle": "Também aqui",
+      "switchInventory": "O inventário: cada captura, cada era",
+      "sourcesBody": "A exportação da conta de hospedagem de {exportDate}, os arquivos do próprio autor: o site como estava no servidor naquele dia. O índice CDX do Internet Archive, lido em {cdxDate}, para o registro de cada caminho que o site vinculava mas nunca serviu. As barras Flash, codificadas a partir dos arquivos SWF originais em {made}. O gerador e cada regra acima: scripts/old-sites/build-clone.py no repositório do site.",
+      "backToSites": "Os sites anteriores"
+    },
+    "featureTitle": "Navegue pelos sites como eram",
+    "featureLede": "Dois dos sites estão reconstruídos aqui a partir dos arquivos do próprio autor, navegáveis com suas barras animadas e suas ferramentas. Não são capturas: são os sites, com cada mudança listada.",
+    "featureOpen": "Abrir a reconstrução",
+    "featureFacts": "{pages, plural, one {# página} other {# páginas}} · {assets, plural, one {# arquivo} other {# arquivos}} · reconstruído da exportação de {exportDate}",
+    "featureThumbAlt": "A reconstrução de {domain}, renderizada em {date}"
   }
 }

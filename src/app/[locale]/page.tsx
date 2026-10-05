@@ -65,6 +65,7 @@ import { ROLES } from "@/lib/roles";
 import { VENDOR_FAMILIES, vendorColor } from "@/config/vendors";
 import { GLOSSARY } from "@/content/glossary/glossary";
 import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
+import { WORLDS } from "@/config/worlds";
 import { CHANGELOG, type ChangelogEntry } from "@/content/changelog/changelog";
 import { TESTIMONIALS } from "@/content/testimonials/data";
 
@@ -136,55 +137,28 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { key: "advisory", href: "/advisory", accent: "var(--accent-amber)" },
   ];
 
-  // THE FIVE WORLDS of the directory, each item a label (the map.* labels, reused) and a count where one is counted.
-  const worlds: { key: string; items: { label: string; href: string; count?: string }[] }[] = [
-    {
-      key: "use",
-      items: [
-        { label: t("map.tools"), href: "/tools", count: t("map.toolsBadge", { count: toolCount }) },
-        { label: t("map.dev"), href: "/dev" },
-      ],
-    },
-    {
-      key: "understand",
-      items: [
-        { label: t("map.learn"), href: "/learn", count: t("map.learnBadge", { count: articleCount }) },
-        { label: t("map.stories"), href: "/stories", count: t("map.storiesBadge", { count: storyCount }) },
-        { label: t("map.guides"), href: "/study-guides", count: t("map.guidesBadge", { count: guideCount }) },
-        { label: t("map.certs"), href: "/certifications", count: t("map.certsBadge", { count: guideCount }) },
-        { label: t("map.glossary"), href: "/glossary", count: t("map.glossaryBadge", { count: glossaryCount }) },
-        { label: t("map.practice"), href: "/practice", count: t("map.practiceBadge", { count: practiceCount }) },
-      ],
-    },
-    {
-      key: "explore",
-      items: [
-        { label: t("map.industry"), href: "/industry", count: t("map.industryBadge", { count: industryCount }) },
-        { label: t("map.hubs"), href: "/vendor-hubs", count: t("map.hubsBadge", { count: hubCount }) },
-        { label: t("map.people"), href: "/people" },
-        { label: t("map.roles"), href: "/roles", count: t("map.rolesBadge", { count: roleCount }) },
-        { label: t("map.career"), href: "/industry/chapters", count: t("map.careerBadge", { count: careerCount }) },
-      ],
-    },
-    {
-      key: "work",
-      items: [
-        { label: t("map.training"), href: "/training", count: t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount }) },
-        { label: t("map.advisory"), href: "/advisory" },
-        { label: t("map.speaking"), href: "/speaking" },
-      ],
-    },
-    {
-      key: "project",
-      items: [
-        { label: t("map.about"), href: "/about" },
-        { label: t("map.endorsements"), href: "/endorsements", count: t("front.endorsementsBadge", { count: endorsementCount }) },
-        { label: t("map.redu"), href: "/red-education" },
-        { label: t("map.blog"), href: "/blog" },
-        { label: t("map.contribute"), href: "/contribute" },
-      ],
-    },
-  ];
+  // THE FIVE WORLDS of the directory, from the shared registry (src/config/worlds.ts, wave 0: the footer, the human
+  // sitemap and the search's scope draw the same five). Each item keeps its map.* label; a count is attached by href
+  // where one is counted, in the words the home has always used.
+  const counts: Record<string, string> = {
+    "/tools": t("map.toolsBadge", { count: toolCount }),
+    "/learn": t("map.learnBadge", { count: articleCount }),
+    "/stories": t("map.storiesBadge", { count: storyCount }),
+    "/study-guides": t("map.guidesBadge", { count: guideCount }),
+    "/certifications": t("map.certsBadge", { count: guideCount }),
+    "/glossary": t("map.glossaryBadge", { count: glossaryCount }),
+    "/practice": t("map.practiceBadge", { count: practiceCount }),
+    "/industry": t("map.industryBadge", { count: industryCount }),
+    "/vendor-hubs": t("map.hubsBadge", { count: hubCount }),
+    "/roles": t("map.rolesBadge", { count: roleCount }),
+    "/industry/chapters": t("map.careerBadge", { count: careerCount }),
+    "/training": t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount }),
+    "/endorsements": t("front.endorsementsBadge", { count: endorsementCount }),
+  };
+  const worlds: { key: string; items: { label: string; href: string; count?: string }[] }[] = WORLDS.map((w) => ({
+    key: w.key,
+    items: w.items.map((it) => ({ label: t(it.label), href: it.href, count: counts[it.href] })),
+  }));
 
   return (
     <>
@@ -296,7 +270,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <MessageSlice namespaces={["home.front"]}><HomeRabbitHole /></MessageSlice>
                 {/* From the archive: the oldest thing here, humanising the site more than a bio paragraph would. */}
                 <p className="happening-note happening-archive">
-                  {t("front.archiveLine")} <Link href="/tools/bits-bytes">{t("front.archiveTool")}</Link> · <Link href="/about/earlier-sites">{t("front.archiveSites")}</Link>
+                  {t("front.archiveLine")} <Link href="/tools/bits-bytes">{t("front.archiveTool")}</Link> · <Link href="/about/earlier-sites/nutzmann-net-2004">{t("front.archiveClone")}</Link> · <Link href="/about/earlier-sites">{t("front.archiveSites")}</Link>
                 </p>
               </div>
             </div>

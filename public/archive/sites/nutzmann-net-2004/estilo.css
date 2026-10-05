@@ -1,0 +1,43 @@
+a:link 
+{ color: #333333; text-decoration: none} 
+a:active
+{ color: #1D3485; text-decoration: underline} 
+a:visited
+{color: #333333; text-decoration: none}
+a:hover { color: #1D3485; text-decoration: underline}
+
+body 
+{scrollbar-face-color: #FFFFFF; scrollbar-shadow-color: #CCCCCC; scrollbar-highlight-color: #FFFFFF; scrollbar-arrow-color: #2535AC; scrollbar-base-color: #FFFFFF; scrollbar-darkshadow-color: #FFFFFF; scrollbar-3dlight-color: #CCCCCC; scrollbar-track-color: #FFFFFF; margin: 0px;; background-color: #EEEEEE} 
+
+h1 { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 13px; font-weight: bold; color: #1D3485; margin-top: 4px; margin-bottom: 4px; margin-right: 2px; margin-left: 2px} 
+
+h2 { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-weight: bold; color: #1D3485; text-decoration: none; margin-top: 4px; margin-bottom: 4px; margin-right: 2px; margin-left: 2px}
+
+h3
+{ font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; font-weight: bold; color: #EB3B00; text-decoration: none; margin-top: 4px; margin-bottom: 2px; margin-right: 2px; margin-left: 2px}
+
+input
+{  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px}
+
+p { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; text-decoration: none; color: #333333; margin-top: 2px; margin-bottom: 2px; margin-right: 4px; margin-left: 4px}
+
+select
+{ font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; border-style: none; color: #333333}
+
+textarea
+{  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px}
+
+table
+{  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; color: #000000}
+
+.tabela {  font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; border: 1px #CCCCCC solid}
+
+.textos_barra
+{ font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; text-decoration: none; margin-top: 3px; margin-bottom: 3px; margin-right: 2px; margin-left: 2px ; font-weight: bold ; color: #1D3485}
+
+.tabelainf { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; border: solid; border-width: 0px 1px 1px; border-color: black #CCCCCC #CCCCCC}
+
+.tabelatop { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 10px; border: solid; border-width: 1px 1px 0px; border-color: #CCCCCC #CCCCCC black}
+
+.underline {  text-decoration: underline}
+

@@ -1,0 +1,296 @@
+<!-- reconstructed 2026-10-05 from nutzmann.net/bitsandbytes.htm (hosting export of 2013-03-05, iso-8859-1); changes: charset, forms, eval; see /about/earlier-sites/nutzmann-net-2004/ -->
+<html>
+<head>
+<meta name="robots" content="noindex">
+<title>Calculadora de bits e Bytes  ::  http://nutzmann.net</title>
+<meta charset="utf-8">
+<link rel="stylesheet" href="estilo.css" type="text/css">
+</head>
+
+<SCRIPT language=JavaScript1.2>
+<!--
+function doCalc(flag)
+{
+   Rels = new Array(1,8,8192,8388608,8589934592,8796093022208);
+   for (i=0;i<Rels.length;i++)
+   {
+        if (i==flag)
+        {
+            givenValue=document.getElementById(flag).value.replace(",",".");
+            newVal=Number(givenValue*Rels[i])
+            document.getElementById("0").value=newVal;
+        }
+   }
+   for (i=1;i<Rels.length;i++)
+   {
+        newVal=Number(document.getElementById("0").value/Rels[i]);
+        neg=0;
+        if (newVal < 0)
+        {
+            newVal*=-1;
+            neg=1;
+        }
+        j=0;
+        while (newVal<1 && newVal>0)
+        {
+               j++;
+               newVal*=10;
+        }
+        newVal*=100000;
+        newVal=Math.round(newVal);
+        newVal/=100000;
+        newVal/=Math.pow(10,j);
+        newVal="a"+newVal;
+        cache=0;
+        if (newVal.indexOf("e") != -1)
+        {
+            cache=newVal.substr(newVal.indexOf("e"),5);
+            newVal=newVal.substring(0,newVal.indexOf("e"));
+        }
+        dig=new Array;
+        for (j=1;j<5;j++)
+            dig[j]=newVal.substr(newVal.length-j-1,1);
+        if (dig[1] == 9 && dig[2] == 9 && dig[3] == 9 && dig[4] == 9)
+           {
+                rest=newVal.substring(newVal.indexOf("."),100).length-1;
+                newVal=newVal.substring(1,newVal.length-1);
+                newVal="a"+Number(Number(newVal)+Math.pow(10,-rest+2));
+            }
+       for (j=1;j<5;j++)
+             dig[j]=newVal.substr(newVal.length-j-1,1);
+       if (dig[1] == 0 && dig[2] == 0 && dig[3] == 0 && dig[4] == 0)
+             {
+                 check=0;
+                 for (j=0;j<newVal.length-5;j++)
+                 {
+                      if (newVal.substr(j,1)!=0)
+                          check++;
+                 }
+                 if (check>2)
+                     newVal=newVal.substring(0,newVal.length-1);
+             }
+        if (cache)
+            newVal=newVal+cache;
+        newVal=newVal.substring(1,newVal.length);
+        if (neg)
+            newVal*=-1;
+        document.getElementById(i).value=Number(newVal);
+   }
+}
+// end Conversion: bits and bytes -->
+</SCRIPT>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%"> 
+<tr> <td align="center" valign="top"> <table width="800" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" class="tabelainf" height="100%"> 
+<tr> <td align="left" valign="top" height="*"> <div id="Layer1" style="position:absolute; width:798; height:100%; z-index:1; overflow: auto; background-color: #FFFFFF; layer-background-color: #FFFFFF; border: 1px none #000000"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%"> 
+<tr> <td height="439" align="left" valign="top"> <table width="779" border="0" cellspacing="0" cellpadding="0" height="440"> 
+<tr> <td width="532" valign="top" height="439"> <br> <table width="778" border="0" cellspacing="0" cellpadding="0"> 
+<tr> <td width="18" height="424">&nbsp;</td><td align="left" valign="top" height="424"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="425"> <tr> 
+<td width="6"></td></tr> <tr> <td align="left" valign="top" height="3" background="imagens/lin_trac_horiz_fim.gif">&nbsp;</td></tr> 
+<tr> <td align="left" valign="top" height="403"> <div align=center> <p><font face="Arial, Helvetica, sans-serif" size="5" color="#000033"><b><font size="4">1 
+byte = 8 bits</font></b></font> </p><p>&nbsp;</p><font color="#000033"><noscript> </noscript></font><noscript> 
+<table> <tbody> <tr> <td bgcolor=#0000ff><font face="Arial, Helvetica, sans-serif" color="#000033"><b><font color="#FFFFFF">O 
+browser utilizado n&atilde;o suporta JavaScript.<br> A calculadora n&atilde;o 
+funcionar&aacute; devido a isso.</font></b></font></td></tr> </tbody> </table></noscript></div><form> 
+<table cellspacing=3 cellpadding=0 align=center border=0 width="325"> <tbody> 
+<tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">bit 
+(b):</font></div></td><td><font color="#000033"> <input id=0 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(0) name="Input"> 
+</font></td></tr> <tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">byte 
+(B):</font></div></td><td><font color="#000033"> <input id=1 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(1) name="Input2"> 
+</font></td></tr> <tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">kilobyte 
+(kB)</font><font face="Arial, Helvetica, sans-serif" color="#000033">:</font></div></td><td><font color="#000033"> 
+<input id=2 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(2) name="Input2"> 
+</font></td></tr> <tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">megabyte 
+(MB):</font></div></td><td><font color="#000033"> <input id=3 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(3) name="Input2"> 
+</font></td></tr> <tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">gigabyte 
+(GB):</font></div></td><td><font color="#000033"> <input id=4 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(4) name="Input2"> 
+</font></td></tr> <tr> <td> <div align=right><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">terabyte 
+(TB):</font></div></td><td><font color="#000033"> <input id=5 style="BACKGROUND-COLOR: #ffffff" onChange=doCalc(5) name="Input2"> 
+</font></td></tr> <tr> <td> <div align=center> <font color="#000033"> <input type=reset value=&nbsp;&nbsp;&nbsp;limpar&nbsp;&nbsp; name=reset> 
+</font></div></td><td> <div align=center> <font color="#000033"> <input type=button value= calcular name="button" > 
+</font></div></td></tr> </tbody> </table><p>&nbsp;</p></form><div align=center> <p><font face="Arial, Helvetica, sans-serif" color="#000033" size="3">Digite 
+o valor de alguma unidade e pressione 'calcular' para ver o equivalente nas outras 
+unidades.</font><font face="Arial, Helvetica, sans-serif" color="#000033"><br> 
+<br> Nossa calculadora utiliza o padr&atilde;o amplamente adotado pelo mercado, 
+em vigor desde antes da </font><font face="Arial, Helvetica, sans-serif"><a href="http://physics.nist.gov/cuu/Units/binary.html" target="_blank" rel="noopener noreferrer"><font color="#000033" class="underline">nova 
+regulamenta&ccedil;&atilde;o</font></a></font><font face="Arial, Helvetica, sans-serif" color="#000033"> 
+do </font><font face="Arial, Helvetica, sans-serif"><a href="http://www.iec.ch/" target="_blank" rel="noopener noreferrer"><font color="#000033"><span class="underline">IEC</span></font></a></font><span class="underline"><font face="Arial, Helvetica, sans-serif" color="#000033"></font></span><font face="Arial, Helvetica, sans-serif" color="#000033"> 
+aprovada em 1998. <br> Quando o novo padr&atilde;o for de fato adotado na pr&aacute;tica, 
+a calculadora ter&aacute; seu comportamento ajustado.</font></p><P ALIGN="CENTER"><FONT COLOR="#666666"><A HREF="/archive/sites/nutzmann-net-2004/index.htm" TARGET="_parent"><IMG SRC="/archive/sites/nutzmann-net-2004/imagens/http.gif" WIDTH="190" HEIGHT="34" BORDER="0"></A></FONT></P><P ALIGN="CENTER"><FONT COLOR="#666666"><A HREF="/archive/sites/nutzmann-net-2004/index.htm" TARGET="_parent"><B><FONT SIZE="-2">P&aacute;gina 
+Principal</FONT></B></A></FONT></P><P ALIGN="CENTER">&nbsp;</P><P ALIGN="CENTER">&nbsp;</P></div></td></tr> 
+</table></td></tr> </table></td></tr> </table></td></tr> <tr> <td height="60" align="left" valign="top"> 
+<table width="100%" border="0" cellspacing="0" cellpadding="0"> <tr> <td height="2" background="imagens/lin_trac_horiz_fim.gif">&nbsp;</td></tr> 
+<tr> <td height="10"> <div align=center> <p><font face="Arial, Helvetica, sans-serif" size="5" color="#000033"><b><font size="4">Unidades 
+de Medidas</font></b></font></p><p>&nbsp;</p><p><font face="Arial, Helvetica, sans-serif" color="#000033"><b><font size="3">Byte</font></b> 
+- <font size="2">a unidade de medida de </font><b><font size="2">grandeza de informa&ccedil;&otilde;es</font></b></font></p><p>&nbsp;</p><p><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1 
+Byte = 8 bits<br> 1024 Bytes = 1 kiloByte<br> 1024 kilobytes = 1 megaByte<br> 
+1 kiloByte = cerca de 8000 bits (exatos 8 x 1024 = 8192 bits)<br> 1 megaByte = 
+cerca de 8000000 bits (exatos 8 x 1024 x 1024 = 8388608 bits)</font></p><div align=center> 
+<p>&nbsp;</p><p><font face="Arial, Helvetica, sans-serif" color="#000033"><b><font size="3">bit</font></b><font size="3"></font> 
+- <font size="2">a unidade de medida para </font><b><font size="2">transfer&ecirc;ncia 
+de dados</font></b></font> <p>&nbsp; <p><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1 
+kilobit = 1000 bits<br> 1 megabit = 1000000 bits</font></p><p>&nbsp;</p></div><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Dados 
+armazenados (em disco r&iacute;gido, CDs, disquetes) t&ecirc;m seus tamanhos medidos 
+em kilo<b>bytes</b>,<br> por&eacute;m a taxa de transfer&ecirc;ncia de dados (a 
+velocidade com que os dados s&atilde;o transferidos) s&atilde;o expressos em kilo<b>bits</b>.</font></p><p align=center>&nbsp;</p><p align=center>&nbsp;</p><p align=center><font face="Arial, Helvetica, sans-serif" size="5" color="#000033"><b><font size="4">Taxa 
+de transfer&ecirc;ncia</font></b></font></p><p align="center"><font face="Arial, Helvetica, sans-serif" size="5" color="#000033"><b><font size="3">(largura 
+de banda, capacidade de vaz&atilde;o, velocidade de transfer&ecirc;ncia)</font></b></font></p><p>&nbsp;</p><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033"><font size="2">Regra 
+para calcular taxas de transfer&ecirc;ncia:<br> K<i><b>Byte&nbsp;</b></i>de dados 
+transferidos / segundos utilizados na transmiss&atilde;o = taxa de transfer&ecirc;ncia 
+em KBytes por segundo.</font><br> </font></p><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033"><font size="2">Tomemos 
+como exemplo o tempo gasto para a transfer&ecirc;ncia de um arquivo:</font></font></p><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Um 
+modem de &quot;56k&quot; usa quanto tempo para transferir um arquivo de &quot;56k&quot;? 
+</font></p><p align=center>&nbsp;</p><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Modem 
+de 56kbps (= 56000 <b>bits </b>por segundo)<br> Dados totalizando 56KB (=57344 
+<b>bytes</b> = 458753 <b>bits</b>)<br> 458753 bits levam '?' segundos para serem 
+transferidos a 56000 bits por segundo?</font></p><p align=center>&nbsp;</p><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">O 
+modem gasta pelo menos 8,2 segundos, e n&atilde;o 1 segundo como poderia-se supor.</font></p><p align=center>&nbsp;</p><p align=center>&nbsp;</p><table cellspacing=1 cellpadding=1 align=center border=1> 
+<tbody> <tr> <td style="BACKGROUND: #efefef" width="99"> <div align="center"><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Tipo 
+de Conex&atilde;o</font></b></font></div></td><td style="BACKGROUND: #efefef" width="119"> 
+<div align="center"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">Taxa m&aacute;xima de transf&ecirc;ncia 
+em Kbit/s</font></b></font></div></td><td style="BACKGROUND: #efefef" width="139"> 
+<div align="center"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">Taxa m&aacute;xima de transfer&ecirc;ncia 
+em KByte/s</font></b></font></div></td><td style="BACKGROUND: #efefef" width="144"> 
+<div align="center"><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Taxa 
+prov&aacute;vel de transfer&ecirc;ncia em KByte/s</font></b></font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">14.4k&nbsp;modem</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">14.4&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1.2&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;1&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">28.8k&nbsp;modem</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">28.8&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">2.4 
+KByte/s</font></div></td><td width="144"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;2&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">33.6k&nbsp;modem</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">33.6&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;&nbsp;3 
+KByte/s</font></div></td><td width="144"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">2.5KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">56k&nbsp;modem</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;&nbsp;53&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">4.8 
+KByte/s</font></div></td><td width="144"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;4&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"> 
+ISDN 1 canal </font></div></td><td width="119"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;&nbsp;64&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">6&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;5&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"> 
+ADSL</font></div></td><td width="119"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">128&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">12 
+KByte/s</font></div></td><td width="144"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">10&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">xDSL</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">256</font><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">xDSL</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">384&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">xDSL</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024&nbsp;kbit/s</font></div></td><td width="139"> 
+<p align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"> 
+KByte/s</font></p></td><td width="144"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">xDSL</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">2048&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">xDSL</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">3072&nbsp;kbit/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td height="22" width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">T1</font></div></td><td height="22" width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1,54&nbsp;Mbits/s</font></div></td><td height="22" width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td height="22" width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Cable&nbsp;modem</font></div></td><td width="119"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;&nbsp;6&nbsp;Mbits/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Intranet 
+/ LAN</font></div></td><td width="119"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">10&nbsp;Mbits/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+<tr> <td width="99"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">LAN 
+100Base-T</font></div></td><td width="119"> <div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">100&nbsp;Mbits/s</font></div></td><td width="139"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td><td width="144"> 
+<div align="center"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">&nbsp;KByte/s</font></div></td></tr> 
+</tbody> </table><p align=center><font face="Arial, Helvetica, sans-serif" color="#000033"><br> 
+</font></p></div><div align=left><font color="#000033" size="2">&nbsp;</font></div><div><font color="#000033" size="2">&nbsp;</font></div><table cellspacing=1 cellpadding=1 align=center border=1> 
+<tbody> <tr align=middle> <td style="BACKGROUND: #efefef" colspan=6><font face="Arial, Helvetica, sans-serif" color="#000033"><b>Capacidade 
+de Armazenamento de Dados, em Bits e Bytes</b></font></td></tr> <tr> <td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">&nbsp;</font></b></font></td><td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">bit</font></b></font></td><td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">byte</font></b></font></td><td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">Kilobyte</font></b></font></td><td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">Megabyte</font></b></font></td><td style="BACKGROUND: #efefef"><font color="#000033"><b><font 
+      face="Arial, Helvetica, sans-serif">Gigabyte</font></b></font></td></tr> 
+<tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">bit</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1/8</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 8,192</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 8,388,608</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 8,589,934,592</font></td></tr> <tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">byte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">8</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 1,024</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033"> 
+1 / 1,048,576</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 1,073,741,824</font></td></tr> <tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Kilobyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">8,192</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,024</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 1,024</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 1,048,576</font></td></tr> <tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Megabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">8,388,608</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,048,576</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,024</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1 
+/ 1,024</font></td></tr> <tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Gigabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">8,589,934,592</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,073,741,824</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,048,576</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,024</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1</font></td></tr> 
+<tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Terabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">8,796,093,022,208</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,099,511,627,776</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,073,741,824</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,048,576</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,024</font></td></tr> 
+<tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Petabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">9,007,199,254,740,990</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,125,899,906,842,620</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,099,511,627,776</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,073,741,824</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,048,576</font></td></tr> 
+<tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Exabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">9,223,372,036,854,780,000</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,152,921,504,606,850,000</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,125,899,906,842,620</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,099,511,627,776</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,073,741,824</font></td></tr> 
+<tr> <td><font color="#000033"><b><font face="Arial, Helvetica, sans-serif">Zettabyte</font></b></font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">9,444,732,965,739,290,000,000</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,180,591,620,717,410,000,000</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,152,921,504,606,850,000</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,125,899,906,842,620</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033">1,099,511,627,776</font></td></tr> 
+</tbody> </table><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><table cellspacing=1 cellpadding=1 align=center border=1 width="398"> 
+<tbody> <tr align=middle> <td style="BACKGROUND: #efefef" colspan=3><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"><b>Nossa 
+calculadora usa o padr&atilde;o amplamente aceito no mercado, adotado antes da 
+</b></font><font face="Arial, Helvetica, sans-serif" size="2"><b><a href="http://physics.nist.gov/cuu/Units/binary.html" target="_blank" rel="noopener noreferrer"><font color="#000033"><span class="underline">publica&ccedil;&atilde;o 
+de 1998 do IEC</span></font></a></b></font><span class="underline"><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"><b></b></font></span><font face="Arial, Helvetica, sans-serif" color="#000033" size="2"><b>, 
+que diferenciou as nomenclaturas utilizadas em nota&ccedil;&otilde;es bin&aacute;rias 
+e decimais:</b></font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">bit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">bit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">0 
+or 1</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">byte</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">B</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">8 
+bits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kibibit 
+(bin&aacute;rio; 2^10 bit)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Kibit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+bits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kilobit 
+(decimal; 10^3 bit)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kbit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+bits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kibibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">KiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+bytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kilobyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">kB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+bytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">megabit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Mbit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+kilobits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">mebibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">MiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+kibibytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">megabyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">MB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+kilobytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">gigabit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Gbit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+megabits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">gibibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">GiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+mebibytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">gigabyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">GB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+megabytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">terabit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Tbit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+gigabits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">tebibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">TiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+gibibytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">terabyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">TB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+gigabytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">petabit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Pbit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+terabits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">pebibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">PiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+tebibytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">petabyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">PB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+terabytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">exabit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">Ebit</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+petabits</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">exbibyte 
+(bin&aacute;rio)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">EiB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1024 
+pebibytes</font></td></tr> <tr> <td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">exabyte 
+(decimal)</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">EB</font></td><td><font face="Arial, Helvetica, sans-serif" color="#000033" size="2">1000 
+petabytes</font></td></tr> </tbody> </table><p>&nbsp;</p><P ALIGN="CENTER"><FONT COLOR="#666666"><A HREF="/archive/sites/nutzmann-net-2004/index.htm" TARGET="_parent"><IMG SRC="/archive/sites/nutzmann-net-2004/imagens/http.gif" WIDTH="190" HEIGHT="34" BORDER="0"></A></FONT></P><P ALIGN="CENTER"><FONT COLOR="#666666"><A HREF="/archive/sites/nutzmann-net-2004/index.htm" TARGET="_parent"><B><FONT SIZE="-2">P&aacute;gina 
+Principal</FONT></B></A></FONT></P><p>&nbsp;</p></td></tr> <tr> <td background="imagens/lin_trac_horiz_fim.gif" height="10">&nbsp;</td></tr> 
+<tr> <td height="20" align="center" valign="bottom"><img src="imagens/barra_inf.gif" width="757" height="20"></td></tr> 
+<tr> <td height="20" align="center" valign="bottom"> <p>:: &copy; N&uuml;tzmann 
+Networks - Todos os direitos reservados :: <a href="privacidade.htm">Pol&iacute;tica 
+de Privacidade</a> :: <a href="termos.htm">Termos de Uso</a> :: <a href="http://hospedado.biz/" target="_blank" rel="noopener noreferrer">hospedado.biz</a> 
+:: <a href="http://www.cristianecastro.net" target="_blank" rel="noopener noreferrer">Design by Cris</a> 
+::</p></td></tr> <tr> <td height="10" align="center" valign="bottom">&nbsp;</td></tr> 
+</table></td></tr> </table></div></td></tr> </table>4</td></tr> </table>
+</body>
+</html>
