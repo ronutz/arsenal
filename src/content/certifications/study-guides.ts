@@ -640,7 +640,9 @@ export const certifications: Certification[] = [
       "f5-cts-ltm-pcap-tls-ssl",
     ],
     renewalNote:
-      "Prerequisite: F5-CA, BIG-IP. The six exams can be taken in any order; beta exams run until 2026-07-31, with production exams to follow. An existing F5-CTS, LTM is renewed by passing the LTM Certified Technology Specialist Recertification exam (F5CTSLTMR).",
+      // F9 (SCOUT Round 1), corrected 2026-10-05 against F5's own pages, read that day: the beta window is in the
+      // past, and F5 names no production date yet, so the note says exactly that rather than a date that has gone by.
+      "Prerequisite: F5-CA, BIG-IP. The six exams can be taken in any order. They were offered as free beta exams until 31 July 2026 (F5's exam pages, read 2026-10-05), with production exams announced to follow and no date given by F5 as of that reading. An existing F5-CTS, LTM is renewed by passing the LTM Certified Technology Specialist Recertification exam (F5CTSLTMR), available online since 9 March 2026 and at Pearson VUE test centres since 1 May 2026.",
     sourceUrl: "https://support.education.f5.com/hc/en-us/article_attachments/47506970938907",
   },
   {

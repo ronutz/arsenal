@@ -11850,6 +11850,15 @@
         "none": "sem números"
       },
       "laddersNote": "Fontes: RFC 5424, Tabela 2; a documentação de printk do kernel Linux; a referência de comandos do Cisco IOS (logging buffered); a referência de syslog do Junos da Juniper; o esquema de manifesto de eventos do Windows; o enum LogLevel do .NET; a documentação do módulo logging do Python e a tabela do próprio SDK Python do OpenTelemetry; a classe Level do Java SE 21; o manual do Log4j 2; o Logs Data Model do OpenTelemetry e seu Apêndice B. Todas lidas em 05/10/2026; a lista completa está em Fontes, abaixo da ferramenta."
+    },
+    "hub": {
+      "switchLegend": "Ler esta página como",
+      "switchGuided": "Guiada",
+      "switchDirectory": "Diretório",
+      "recentTitle": "Adicionadas recentemente",
+      "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
+      "directoryTitle": "O índice completo",
+      "directoryLede": "{count} ferramentas em {categories} categorias, todas listadas abaixo; pule para uma categoria, mostre só algumas ou alterne entre cartões e lista."
     }
   },
   "privacy_page": {
@@ -12034,7 +12043,17 @@
       "blogTitle": "Blog",
       "blogDesc": "Textos ocasionais sobre a indústria, o ofício, e o que quer que eu esteja destrinchando no momento.",
       "sitesTitle": "Os sites anteriores",
-      "sitesDesc": "O que o Internet Archive guardou de nutzmann.net (2004) e ntz.com.br (2013): datas, ofertas, conteúdos e todas as capturas ligadas."
+      "sitesDesc": "O que o Internet Archive guardou de nutzmann.net (2004) e ntz.com.br (2013): datas, ofertas, conteúdos e todas as capturas ligadas.",
+      "inspectTitle": "Confira o registro",
+      "inspectBody": "Toda afirmação desta página tem um lugar onde pode ser conferida: os capítulos da carreira, as credenciais com seus emissores e datas, os depoimentos citados na íntegra, o catálogo de cursos, os textos, os sites anteriores e a forma como este site é construído.",
+      "recordCount": "{count} capítulos por fabricante",
+      "certsCount": "{count} credenciais, cada uma com emissor e data",
+      "endorsementsCount": "{count} depoimentos, na íntegra",
+      "coursesCount": "{count} cursos de {vendors} fabricantes",
+      "blogCount": "{count, plural, one {# texto} other {# textos}}, datados",
+      "sitesCount": "{count, plural, one {# site reconstruído} other {# sites reconstruídos}} a partir dos arquivos originais",
+      "colophonTitle": "Como este site é construído",
+      "colophonDesc": "O colofão: a pilha, os princípios que o site mantém e as guardas de build que recusam uma afirmação sem fonte."
     },
     "historySectionTitle": "A História",
     "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa",
@@ -13311,7 +13330,27 @@
         }
       },
       "directoryTitle": "Índice completo de artigos",
-      "directoryLede": "{count, plural, one {Todo # artigo} other {Todos os # artigos}}, agrupados em {subjects, plural, one {# assunto} other {# assuntos}} e listados na ordem de leitura de cada assunto. Pule para um assunto, filtre, mude para a lista ou busque em Aprender acima."
+      "directoryLede": "{count, plural, one {Todo # artigo} other {Todos os # artigos}}, agrupados em {subjects, plural, one {# assunto} other {# assuntos}} e listados na ordem de leitura de cada assunto. Pule para um assunto, filtre, mude para a lista ou busque em Aprender acima.",
+      "freshTitle": "Novos e revisados",
+      "freshNew": "Novo",
+      "freshRevised": "Revisado",
+      "popularTitle": "Mais lidos nesta semana",
+      "startTitle": "Começando agora? Três lugares por onde entrar",
+      "start": {
+        "fundamentals": {
+          "label": "Comece pelo assunto redes",
+          "lede": "Endereços, roteamento, os protocolos que todo o resto pressupõe: os artigos do assunto redes, na ordem do índice."
+        },
+        "exam": {
+          "label": "Preparando-se para um exame",
+          "lede": "Os guias de certificação: os objetivos de cada exame mapeados para os artigos que os cobrem, com as lacunas declaradas."
+        },
+        "problem": {
+          "label": "Algo está quebrado agora",
+          "lede": "A Prática: triagem, método de incidente e a leitura de uma mudança, escritos para o momento em que são necessários."
+        }
+      },
+      "rowTools": "Ferramentas:"
     }
   },
   "meetingBingo": {
@@ -22776,6 +22815,12 @@
       "label": "Buscar no registro da indústria",
       "placeholder": "Uma empresa, uma linha de produtos, uma pessoa, um ano…",
       "examples": "Experimente"
+    },
+    "paths": {
+      "chaptersTitle": "Os capítulos que vivi",
+      "chaptersLede": "{count} destas empresas em que trabalhei ou com as quais trabalhei lado a lado, de 1996 em diante: o registro lido de dentro, em ordem.",
+      "learningTitle": "Onde a indústria aprende",
+      "learningLede": "{count, plural, one {# empresa} other {# empresas}} cujo negócio é ensinar esta indústria, e como essa prática surgiu."
     }
   },
   "sitemap": {
@@ -22861,7 +22906,13 @@
     "collapseAll": "Recolher tudo",
     "seeContents": "Ver conteúdo",
     "hideContents": "Ocultar conteúdo",
-    "groupGeneral": "Independente de fabricante"
+    "groupGeneral": "Independente de fabricante",
+    "articlesCountDepth": "{depth} · {count} artigos",
+    "depth": {
+      "short": "Curta",
+      "medium": "Média",
+      "deep": "Longa"
+    }
   },
   "catDistribution": {
     "metaTitle": "Sistema Global de Distribuição de Gatos",

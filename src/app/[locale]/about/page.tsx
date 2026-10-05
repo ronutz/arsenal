@@ -31,6 +31,13 @@ import Header from "@/components/Header";
 import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import { TESTIMONIALS } from "@/content/testimonials/data";
+// E31 (SCOUT Round 1, wave A): the evidence block names its counts, every one computed from the registry it links
+// to, never typed: the career chapters, the credentials, the endorsements, the courses, the posts, the sites.
+import { CAREER_VENDORS } from "@/content/vendors/career";
+import { CREDENTIAL_COUNT } from "@/content/certifications/data";
+import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
+import { getAllPosts } from "@/lib/blog";
+import { OLD_SITE_CLONES } from "@/content/about/old-sites";
 
 // Dev-only gap flag. In production (NODE_ENV === "production") it renders
 // nothing, so no TODO ever ships. In dev it shows a visible amber note.
@@ -544,6 +551,11 @@ export default async function AboutPage({
                 page to join them: they are where a reader goes AFTER the career
                 timeline, not before it. The vendor-lineage link is gone - it
                 belongs on the vendor hubs, which is where it now lives. */}
+            {/* E31 (2026-10-05): the cards get the heading SCOUT asked for, "Inspect the record", a lede saying
+                what the block is for, and a count on each card, so the page states what can be checked and how
+                much of it there is. Counts are computed above from the same registries the cards link to. */}
+            <h2 className="section-title" style={{ marginTop: "3rem" }}>{t("credibility.inspectTitle")}</h2>
+            <p className="section-body">{t("credibility.inspectBody")}</p>
             <div className="learn-portal-grid" style={{ marginTop: "2rem" }}>
               {/* RESTYLED into the learn-portal idiom (PRIME 2026-08-06), which
                   is the vocabulary the homepage, Learn and Training already use
@@ -562,6 +574,7 @@ export default async function AboutPage({
                   {t("credibility.recordTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.recordDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.recordCount", { count: CAREER_VENDORS.length })}</p>
               </Link>
               <Link
                 href="/about/credentials"
@@ -573,6 +586,7 @@ export default async function AboutPage({
                   {t("credibility.certsTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.certsDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.certsCount", { count: CREDENTIAL_COUNT })}</p>
               </Link>
               <Link
                 href="/endorsements"
@@ -584,6 +598,7 @@ export default async function AboutPage({
                   {t("credibility.endorsementsTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.endorsementsDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.endorsementsCount", { count: TESTIMONIALS.length })}</p>
               </Link>
               <Link
                 href="/training#catalog"
@@ -595,6 +610,7 @@ export default async function AboutPage({
                   {t("credibility.coursesTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.coursesDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.coursesCount", { count: COURSE_COUNT, vendors: PLATFORMS.length })}</p>
               </Link>
               {/* BLOG (PRIME 2026-08-06), moved out of the footer where it was
                   one link among fifteen. On this page it sits beside the other
@@ -609,6 +625,7 @@ export default async function AboutPage({
                   {t("credibility.blogTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.blogDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.blogCount", { count: getAllPosts(locale).length })}</p>
               </Link>
               {/* ADDED 2026-10-03 (PRIME): the earlier sites. What the Internet
                   Archive kept of nutzmann.net (2004) and ntz.com.br (2013),
@@ -624,6 +641,20 @@ export default async function AboutPage({
                   {t("credibility.sitesTitle")} <span className="learn-portal-arrow">&#8594;</span>
                 </p>
                 <p className="learn-portal-lede">{t("credibility.sitesDesc")}</p>
+                <p className="about-evidence-count mono">{t("credibility.sitesCount", { count: OLD_SITE_CLONES.length })}</p>
+              </Link>
+              {/* G15 (SCOUT Round 1): About links the colophon, "How the site is built". The colophon itself is
+                  untouched; this is the one link SCOUT asked for, in the block where a reader checks things. */}
+              <Link
+                href="/colophon"
+                className="learn-portal-card"
+                style={{ "--note-accent": "var(--color-success)" } as CSSProperties}
+              >
+                <span className="learn-portal-ornament" aria-hidden>&#9881;</span>
+                <p className="learn-portal-title">
+                  {t("credibility.colophonTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{t("credibility.colophonDesc")}</p>
               </Link>
             </div>
           </div>

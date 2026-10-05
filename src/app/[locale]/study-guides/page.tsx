@@ -83,6 +83,13 @@ export default async function StudyGuidesPage({
   // second place the same missing-vendor bug appeared in one turn, which is
   // the argument for deriving rather than listing.
   const GROUP_ORDER = ["general", ...READING_PATH_VENDOR_KEYS];
+  // F7 (SCOUT Round 1, wave B, 2026-10-05): Short / Medium / Deep by article count, the thresholds taken from the
+  // distribution itself (the lower and upper terciles of the resolved step counts), never typed, and always shown
+  // beside the count so the label explains itself. With 13 paths of 5 to 63 articles the cuts fall at 7 and 14.
+  const stepCounts = READING_PATHS.map((path) => path.articles.filter((slug) => getArticle(slug, locale) !== null).length).sort((a, b) => a - b);
+  const cutShort = stepCounts[Math.floor(stepCounts.length / 3)] ?? 0;
+  const cutMedium = stepCounts[Math.floor((2 * stepCounts.length) / 3)] ?? 0;
+  const depthOf = (n: number): "short" | "medium" | "deep" => (n <= cutShort ? "short" : n <= cutMedium ? "medium" : "deep");
   const resolvedPaths = READING_PATHS.map((path) => {
     const steps = path.articles
       .map((slug) => getArticle(slug, locale))
@@ -98,7 +105,8 @@ export default async function StudyGuidesPage({
       color: categoryColor(path.category),
       title: t(`paths.${path.id}.title`),
       lede: t(`paths.${path.id}.lede`),
-      countBadge: t("articlesCount", { count: steps.length }),
+      // The badge reads "Short · 5 articles": the depth word from the distribution, the count from the path.
+      countBadge: t("articlesCountDepth", { depth: t(`depth.${depthOf(steps.length)}`), count: steps.length }),
       steps,
       tools,
     };

@@ -11850,6 +11850,15 @@
         "none": "no numbers"
       },
       "laddersNote": "Sources: RFC 5424 Table 2; the Linux kernel's printk documentation; the Cisco IOS command reference (logging buffered); Juniper's Junos syslog reference; the Windows event manifest schema; the .NET LogLevel enum; the Python logging documentation and the OpenTelemetry Python SDK's own table; the Java SE 21 Level class; the Log4j 2 manual; the OpenTelemetry Logs Data Model and its Appendix B. All read on 2026-10-05; the full list is under Sources below the tool."
+    },
+    "hub": {
+      "switchLegend": "Read this page as",
+      "switchGuided": "Guided",
+      "switchDirectory": "Directory",
+      "recentTitle": "Recently added",
+      "recentLede": "The newest tools, from the changelog, newest first.",
+      "directoryTitle": "The complete index",
+      "directoryLede": "{count} tools in {categories} categories, every one of them listed below; jump to a category, show only some, or switch between cards and the list."
     }
   },
   "privacy_page": {
@@ -12034,7 +12043,17 @@
       "blogTitle": "Blog",
       "blogDesc": "Occasional writing on the industry, the craft, and whatever I have been working through lately.",
       "sitesTitle": "The earlier sites",
-      "sitesDesc": "What the Internet Archive kept of nutzmann.net (2004) and ntz.com.br (2013): dates, offerings, contents, and every capture linked."
+      "sitesDesc": "What the Internet Archive kept of nutzmann.net (2004) and ntz.com.br (2013): dates, offerings, contents, and every capture linked.",
+      "inspectTitle": "Inspect the record",
+      "inspectBody": "Every claim on this page has a place where it can be checked: the career chapters, the credentials with their issuing bodies and dates, the endorsements quoted verbatim, the course catalogue, the writing, the earlier sites, and how this site itself is built.",
+      "recordCount": "{count} vendor chapters",
+      "certsCount": "{count} credentials, each with its issuer and date",
+      "endorsementsCount": "{count} endorsements, verbatim",
+      "coursesCount": "{count} courses across {vendors} vendors",
+      "blogCount": "{count, plural, one {# post} other {# posts}}, dated",
+      "sitesCount": "{count, plural, one {# site reconstructed} other {# sites reconstructed}} from the original files",
+      "colophonTitle": "How this site is built",
+      "colophonDesc": "The colophon: the stack, the principles the site keeps, and the build guards that refuse an unsourced claim."
     },
     "historySectionTitle": "The History",
     "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security",
@@ -13311,7 +13330,27 @@
         }
       },
       "directoryTitle": "Complete article index",
-      "directoryLede": "All {count, plural, one {# article} other {# articles}}, grouped by {subjects, plural, one {# subject} other {# subjects}} and listed in each subject's reading order. Jump to a subject, filter, switch to the list, or search Learn above."
+      "directoryLede": "All {count, plural, one {# article} other {# articles}}, grouped by {subjects, plural, one {# subject} other {# subjects}} and listed in each subject's reading order. Jump to a subject, filter, switch to the list, or search Learn above.",
+      "freshTitle": "New and revised",
+      "freshNew": "New",
+      "freshRevised": "Revised",
+      "popularTitle": "Most read this week",
+      "startTitle": "New here? Three places to start",
+      "start": {
+        "fundamentals": {
+          "label": "Start with the networking subject",
+          "lede": "Addresses, routing, the protocols everything else assumes: the articles of the networking subject, in the index's order."
+        },
+        "exam": {
+          "label": "Preparing for an exam",
+          "lede": "The certification guides: each exam's objectives mapped to the articles that cover them, and where the gaps are stated."
+        },
+        "problem": {
+          "label": "Something is broken right now",
+          "lede": "The Practice: triage, incident method and the reading of a change, written for the moment it is needed."
+        }
+      },
+      "rowTools": "Tools:"
     }
   },
   "meetingBingo": {
@@ -22776,6 +22815,12 @@
       "label": "Search the industry record",
       "placeholder": "A company, a product line, a person, a year…",
       "examples": "Try"
+    },
+    "paths": {
+      "chaptersTitle": "The chapters I lived",
+      "chaptersLede": "{count} of these companies I worked for or alongside, from 1996 on: the record read from the inside, in order.",
+      "learningTitle": "Where the industry learns",
+      "learningLede": "{count, plural, one {# company} other {# companies}} whose business is teaching this industry, and how that practice came to be."
     }
   },
   "sitemap": {
@@ -22861,7 +22906,13 @@
     "collapseAll": "Collapse all",
     "seeContents": "See contents",
     "hideContents": "Hide contents",
-    "groupGeneral": "Vendor-agnostic"
+    "groupGeneral": "Vendor-agnostic",
+    "articlesCountDepth": "{depth} · {count} articles",
+    "depth": {
+      "short": "Short",
+      "medium": "Medium",
+      "deep": "Deep"
+    }
   },
   "catDistribution": {
     "metaTitle": "The Global Cat Distribution System",

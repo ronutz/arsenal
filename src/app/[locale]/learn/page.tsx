@@ -50,6 +50,13 @@ import ViewToggle from "@/components/ViewToggle";
 import Header from "@/components/Header";
 import HubSearch from "@/components/HubSearch";
 import HubViewSwitch from "@/components/HubViewSwitch";
+// Learn P1 (L33, L30; 2026-10-05): New and Revised from each article's own `updated` stamp and the changelog, the
+// home's Most read reused for articles, the first article of each subject on its card, three starting points, and
+// the tools an article names shown on its index row. Nothing typed by hand except the three starting sentences.
+import HomePopular from "@/components/HomePopular";
+import MessageSlice from "@/components/MessageSlice";
+import { CHANGELOG } from "@/content/changelog/changelog";
+import { tools as toolRegistry } from "@/config/tools";
 import SiteFooter from "@/components/SiteFooter";
 
 export async function generateMetadata({
@@ -102,6 +109,19 @@ export default async function LearnIndexPage({
   // The three featured stories: the first thread of each group (the groups are the editorial order); the rest are
   // one link away on /stories. Titles in the reader's locale, English fallback inside the loader.
   const featuredStories = STORY_GROUPS.map((g) => getArticle(g.slugs[0], locale)).filter((a): a is NonNullable<typeof a> => a !== null).slice(0, 3);
+  // NEW AND REVISED (L33a): the six most recently touched articles by their `updated` stamp. An article is "new" when
+  // the changelog announced it on that same date (a changelog entry listing its slug, dated the day it was updated),
+  // otherwise it is a revision of something older. Both facts come from the files, none from memory.
+  const announcedOn = new Map<string, string>();
+  for (const e of CHANGELOG) for (const slug of e.articles ?? []) if (!announcedOn.has(slug)) announcedOn.set(slug, e.date);
+  const recentArticles = groups
+    .flatMap((g) => g.articles)
+    .sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : a.title.localeCompare(b.title, locale)))
+    .slice(0, 6)
+    .map((a) => ({ slug: a.slug, title: a.title, updated: a.updated, isNew: announcedOn.get(a.slug) === a.updated }));
+  const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" });
+  // THE TOOLS AN ARTICLE NAMES (L30): the first two of its relatedTools that are live, by name, on its index row.
+  const toolName = (id: string) => (toolRegistry.some((tl) => tl.id === id && tl.available) ? tTools(`${id}.name`) : null);
   // People in the glossary, the count on the People row.
   const peopleCount = GLOSSARY.filter((e) => e.person).length;
   // THE FIVE LEARNING MODES (SCOUT L4): a question, a destination, a verb, a count where one is counted.
@@ -178,7 +198,41 @@ export default async function LearnIndexPage({
                         <span className="hub-subject-name">{tTools(`categories.${group.category}`)}</span>
                         <span className="hub-subject-count mono">{t("hub.subjectCount", { count: group.articles.length })}</span>
                       </Link>
+                      {/* L33c: the subject's first article (the index's own order) as the card's representative. */}
+                      {group.articles[0] && <Link href={`/learn/${group.articles[0].slug}`} className="hub-subject-first">{group.articles[0].title}</Link>}
                       <a href={`#${group.category}`} className="hub-subject-index">{t("hub.subjectInIndex")} <span aria-hidden="true">&#8595;</span></a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 2b. New and revised (L33a) beside Most read (L33b): what moved lately and what is read most, two
+                  short columns in the home's "happening" idiom. Most read renders nothing until the anonymous
+                  stats answer, and nothing at all when they are absent. */}
+              <div className="hub-fresh">
+                <div className="happening-col hub-fresh-col">
+                  <h3 className="happening-title">{t("hub.freshTitle")}</h3>
+                  <ol className="happening-list">
+                    {recentArticles.map((a) => (
+                      <li key={a.slug} className="happening-item">
+                        <span className={`happening-kind ${a.isNew ? "happening-kind--tool" : "happening-kind--article"}`}>{a.isNew ? t("hub.freshNew") : t("hub.freshRevised")}</span>
+                        <Link href={`/learn/${a.slug}`} className="happening-link">{a.title}</Link>
+                        <time className="hub-fresh-date mono" dateTime={a.updated}>{dateFmt.format(new Date(`${a.updated}T12:00:00Z`))}</time>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+                <MessageSlice namespaces={["home.front"]}><HomePopular kinds={["article"]} title={t("hub.popularTitle")} className="hub-fresh-col" /></MessageSlice>
+              </div>
+
+              {/* 2c. New here? (L33d): three starting points, each an existing path. */}
+              <div className="hub-start">
+                <h2 className="section-title hub-h2">{t("hub.startTitle")}</h2>
+                <ul className="hub-around-list">
+                  {(["fundamentals", "exam", "problem"] as const).map((k) => (
+                    <li key={k} className="hub-around-item">
+                      <Link href={k === "fundamentals" ? "/category/networking" : k === "exam" ? "/certifications" : "/practice"} className="hub-around-link">{t(`hub.start.${k}.label`)}</Link>
+                      <span className="hub-around-lede">{t(`hub.start.${k}.lede`)}</span>
                     </li>
                   ))}
                 </ul>
@@ -308,6 +362,10 @@ export default async function LearnIndexPage({
                             <FamilyChip key={cat} category={cat} label={tTools(`categories.${cat}`)} />
                           ))}
                         </span>
+                        {/* L30: the tools the article names, two at most, as quiet text (the card is one link). */}
+                        {a.relatedTools.filter((id) => toolName(id)).length > 0 && (
+                          <span className="learn-card-tools">{t("hub.rowTools")} {a.relatedTools.filter((id) => toolName(id)).slice(0, 2).map((id) => toolName(id)).join(" · ")}</span>
+                        )}
                         <span className="learn-card-cta">{t("read")}</span>
                       </Link>
                     </li>

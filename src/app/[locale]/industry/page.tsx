@@ -23,6 +23,7 @@
 // ============================================================================
 
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -283,6 +284,31 @@ export default async function IndustryHubPage({
               <HubSearch scope="explore" label={ti("hubSearch.label")} placeholder={ti("hubSearch.placeholder")} examplesLabel={ti("hubSearch.examples")} examples={["Cabletron", "Bay Networks", "Juniper", "Netscreen", "Wellfleet", "3Com"]} />
             </div>
 
+            {/* TWO PATHS THROUGH THE RECORD (2026-10-05; SCOUT E15 and G10, wave I's cheapest pieces). Two quiet
+                cards, not a strip: "The chapters I lived" as an editorial path to /industry/chapters (the record
+                read from the inside, chronological, a different thing from the author-credibility strip PRIME moved
+                to the home page on 2026-08-06, which argued about the author rather than the industry), and "Where
+                the industry learns" as a specialised path to /industry/learning (whose portal card PRIME moved to
+                /learn on 2026-09-11; this is a path inside the record, not the advertisement that left). Counts
+                computed from the registries. If PRIME would rather not re-link either from here, these two cards
+                are the whole change. */}
+            <div className="learn-portal-grid learn-portal-grid-wide" style={{ marginBottom: "2.5rem" }}>
+              <Link href="/industry/chapters" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">
+                  {ti("paths.chaptersTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{ti("paths.chaptersLede", { count: CAREER_VENDORS.length })}</p>
+              </Link>
+              <Link href="/industry/learning" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">
+                  {ti("paths.learningTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                </p>
+                <p className="learn-portal-lede">{ti("paths.learningLede", { count: partnerVendors.filter((v) => (v.tags as readonly string[]).includes("training")).length })}</p>
+              </Link>
+            </div>
+
             {/* The career chip strip MOVED TO THE HOMEPAGE (PRIME 2026-08-06),
                 where it now sits inside the credibility section, between the
                 "not sold" claim and the link to /about. The reasoning is that
@@ -466,8 +492,12 @@ export default async function IndustryHubPage({
                     </span>
                     <span className="vendor-card-name">
                       {v.name}
+                      {/* linked={false}: this pill sits INSIDE the card's <a>. A link inside a link is invalid
+                          HTML; the browser breaks the outer anchor around it, the DOM no longer matches what
+                          React rendered, and every /industry load logged React #418 (confirmed live 2026-10-05
+                          14:24, fixed here). The brand keeps its mark; the card is the link. */}
                       {v.isRedu && (
-                        <span className="vendor-partner-pill"><ReduBrand>{tp("reduPill")}</ReduBrand></span>
+                        <span className="vendor-partner-pill"><ReduBrand linked={false}>{tp("reduPill")}</ReduBrand></span>
                       )}
                       {v.isInstructor && (
                         <span className="vendor-instructor-pill">{tp("instructorPill")}</span>

@@ -53,6 +53,32 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "18:30",
+    kind: "feature",
+    title: "Learn, the second layer: what is new or revised, what is read most, where to start, and the tools each article names",
+    body:
+      "Under the subject browser, two short columns: New and revised (the six most recently touched articles, each dated from its own file, New when the changelog announced it that day, Revised otherwise) and Most read this week (articles only, from the anonymous page counts, shown only when they answer). Then three starting points for a first visit: the networking subject, the certification guides, The Practice. Every subject card now names its first article, and every row of the complete index lists up to two of the tools the article names.",
+    links: [
+      { label: "Learn", href: "/learn" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "17:00",
+    kind: "feature",
+    title: "Six small things closed in one pass: the tools hub read two ways, About's evidence block with its counts, reading paths by depth, two paths into the industry record, a corrected F5 exam note, and a hydration error on the industry page",
+    body:
+      "The tools page gains the Guided | Directory switch Learn has, a Recently added row drawn from the changelog, and a named, counted complete index. About now ends its record with an Inspect the record block: each of the seven cards (career chapters, credentials, endorsements, courses, posts, the earlier sites, and now the colophon) states how many of the thing it links to there are, computed at build time. The reading paths are labelled Short, Medium or Deep from the distribution of their own article counts, shown with the count. The industry record gets two quiet paths at the top, the chapters lived from the inside and where the industry learns. The F5-CTS LTM renewal note no longer promises a beta window that closed in July; it says what F5's pages say as of today. And the industry page's long-standing console error on every load, React #418, had a cause: a Red Education link nested inside each partner card's own link, which browsers break apart; the brand inside a card is now a mark, not a second link.",
+    links: [
+      { label: "Tools", href: "/tools" },
+      { label: "About", href: "/about" },
+      { label: "Study guides and reading paths", href: "/study-guides" },
+      { label: "The industry record", href: "/industry" },
+      { label: "Certification guides", href: "/certifications" },
+    ],
+  },
+  {
+    date: "2026-10-05",
     time: "15:05",
     kind: "tool",
     title: "Two observability tools: a syslog message parser that names every field in its RFC's words, and a log level mapper across ten systems on OpenTelemetry's scale",

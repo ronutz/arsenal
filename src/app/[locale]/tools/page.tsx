@@ -22,6 +22,10 @@ import { vendorColor, populatedVendors } from "@/config/vendors";
 import ScrollToTop from "@/components/ScrollToTop";
 import CategoryFilter from "@/components/CategoryFilter";
 import ViewToggle from "@/components/ViewToggle";
+// Wave T, the cheap half (2026-10-05; SCOUT E6, E7): the Guided | Directory switch built for Learn, and "Recently
+// added" derived from the changelog the way the home's New column is, never typed.
+import HubViewSwitch from "@/components/HubViewSwitch";
+import { CHANGELOG } from "@/content/changelog/changelog";
 
 export async function generateMetadata({
   params,
@@ -62,6 +66,21 @@ export default async function ToolsPage({
     t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
   );
 
+  // RECENTLY ADDED (E6): the newest tools, read from the changelog's "tool" entries (newest first, the array's
+  // order), each tool once, those the generic index lists (vendor tools belong to their hubs), at most six. The
+  // date shown is the entry's; nothing here is typed by hand.
+  const byId = new Map(agnosticTools.map((tl) => [tl.id, tl]));
+  const recent: { id: string; href: string; date: string }[] = [];
+  for (const entry of CHANGELOG) {
+    if (entry.kind !== "tool" || !entry.tools) continue;
+    for (const id of entry.tools) {
+      const tl = byId.get(id);
+      if (tl && !recent.some((r) => r.id === id)) recent.push({ id, href: tl.href, date: entry.date });
+    }
+    if (recent.length >= 6) break;
+  }
+  const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
+
   // Tool count per vendor hub, computed the same way the hub route filters its
   // tools, so the number shown in the strip always matches what the hub lists.
   const vendorToolCount = (v: string) =>
@@ -84,6 +103,9 @@ export default async function ToolsPage({
               <p className="page-hero-lede">{t("lede")}</p>
               {/* The scoped search field (wave 0, 2026-10-05; SCOUT E2): opens the one dialog inside the Use world. */}
               <HubSearch scope="use" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["CIDR", "JWT", "BIG-IP", "FortiGate", "syslog", "regex"]} />
+              {/* Guided | Directory (E7): the same switch Learn has; Directory hides the guided layer below so the
+                  complete index and its controls come first; remembered per surface; #directory opens it. */}
+              <HubViewSwitch targetId="main" storageKey="ronutz:hub:tools" legend={t("hub.switchLegend")} guidedLabel={t("hub.switchGuided")} directoryLabel={t("hub.switchDirectory")} />
             </div>
           </section>
 
@@ -100,7 +122,7 @@ export default async function ToolsPage({
               The first is an in-page jump, mirroring what /learn already does:
               this page IS the tool index, and it sat below a screen of
               signposting with nothing pointing back at it. */}
-          <div className="container certs-container">
+          <div className="container certs-container hub-guided">
             <div className="learn-portal-grid learn-portal-grid-wide">
               <a href="#tools-index" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as React.CSSProperties}>
                 <span className="learn-portal-ornament" aria-hidden>&#9660;</span>
@@ -131,6 +153,29 @@ export default async function ToolsPage({
                 <p className="learn-portal-lede">{tp("examsLede")}</p>
               </Link>
             </div>
+
+            {/* RECENTLY ADDED (E6): the newest tools with their dates, from the changelog. */}
+            {recent.length > 0 && (
+              <section className="hub-recent" aria-labelledby="hub-recent-title">
+                <h2 className="section-title hub-h2" id="hub-recent-title">{t("hub.recentTitle")}</h2>
+                <p className="hub-lede">{t("hub.recentLede")}</p>
+                <ul className="hub-around-list">
+                  {recent.map((r) => (
+                    <li key={r.id} className="hub-around-item hub-recent-item">
+                      <Link href={r.href} className="hub-around-link">{t(`${r.id}.name`)}</Link>
+                      <span className="hub-around-lede">{t(`${r.id}.blurb`)}</span>
+                      <time className="hub-recent-date mono" dateTime={r.date}>{dateFmt.format(new Date(`${r.date}T12:00:00Z`))}</time>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
+
+          {/* THE COMPLETE INDEX, named and counted (E7): the directory layer begins here. */}
+          <div className="container certs-container hub-directory-head" id="directory">
+            <h2 className="section-title hub-h2">{t("hub.directoryTitle")}</h2>
+            <p className="hub-lede">{t("hub.directoryLede", { count: agnosticTools.length, categories: categories.length })}</p>
           </div>
 
 

@@ -36,7 +36,14 @@ function stripLocale(path: string): string {
   return path.replace(/^\/[a-z]{2}(?:-[A-Za-z]{2,4})?(?=\/)/, "");
 }
 
-export default function HomePopular() {
+export default function HomePopular({ kinds, title, className }: {
+  /** Learn P1 (L33, 2026-10-05): keep only these kinds of the index ("article", "guide", ...); absent means every kind. */
+  kinds?: readonly string[];
+  /** A heading in place of "Most read this week" (the hub's own words); absent keeps the home's. */
+  title?: string;
+  /** Extra classes on the column (the Learn hub lays it out as a row of its own). */
+  className?: string;
+}) {
   const t = useTranslations("home.front");
   const locale = useLocale();
   // The picks, or null until both reads are in; an empty list means "show nothing".
@@ -58,6 +65,8 @@ export default function HomePopular() {
       for (const r of rows) {
         const e = byPath.get(stripLocale(String(r.path)));
         if (!e) continue;
+        // A scoped list (the Learn hub asks for articles) drops the other kinds before ranking.
+        if (kinds && !kinds.includes(e.k)) continue;
         joined.push({ kind: e.k, path: e.p, title: (locale === "pt-BR" && e.t["pt-BR"]) || e.t.en, views: Number(r.views) || 0 });
       }
       // Variety first: the top item of each kind in view order, then the rest by views, five in all.
@@ -69,14 +78,14 @@ export default function HomePopular() {
       setPicks([...varied, ...rest].slice(0, 5));
     });
     return () => { cancelled = true; };
-  }, [locale]);
+  }, [locale, kinds]);
 
   // Nothing yet, or nothing to say: no column at all. The heading lives here so it never stands over an empty list.
   if (!picks || picks.length === 0) return null;
 
   return (
-    <div className="happening-col happening-col--popular">
-      <h3 className="happening-title">{t("popularTitle")}</h3>
+    <div className={`happening-col happening-col--popular${className ? ` ${className}` : ""}`}>
+      <h3 className="happening-title">{title ?? t("popularTitle")}</h3>
       <ol className="happening-list">
         {picks.map((p) => (
           <li key={p.path} className="happening-item">
