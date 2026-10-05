@@ -71,7 +71,7 @@ jobs:
           echo "Disk after cleanup:" && df -h /
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Node pin comes from .node-version (single source of truth, shared with
       # ci.yml and Cloudflare). It is 22 because wrangler >= 4.110, miniflare,
@@ -79,7 +79,7 @@ jobs:
       # wrangler deploy step aborts with "requires at least Node.js v22.0.0".
       # "cache: npm" caches ~/.npm only, never .next, so it is disk-cheap.
       - name: Set up Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: ".node-version"
           cache: npm
@@ -105,7 +105,7 @@ jobs:
       # it produced, so the next run starts warm.
       - name: Restore Next.js build cache
         id: next-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .next/cache
           key: nextjs-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx') }}
@@ -129,7 +129,7 @@ jobs:
       # fallbacks let an ordinary content edit reuse the rest.
       - name: Restore OG card cache
         id: og-cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: public/og
           key: og-${{ hashFiles('scripts/gen-og.mts') }}-${{ hashFiles('src/content/**', 'src/i18n/messages/en.json', 'src/i18n/messages/pt-BR.json') }}
@@ -176,7 +176,7 @@ jobs:
       - name: Save Next.js build cache
         if: always()
         continue-on-error: true
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: .next/cache
           key: ${{ steps.next-cache.outputs.cache-primary-key }}
@@ -184,7 +184,7 @@ jobs:
       - name: Save OG card cache
         if: always()
         continue-on-error: true
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: public/og
           key: ${{ steps.og-cache.outputs.cache-primary-key }}
@@ -224,7 +224,7 @@ jobs:
         # here rather than at the job guardrail, so the log points at the
         # right step.
         timeout-minutes: 25
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

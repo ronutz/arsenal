@@ -61,9 +61,9 @@ jobs:
     # generous for ~2,400 and still bounded if a host hangs on every request.
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: ".node-version"
           cache: "npm"
@@ -103,7 +103,7 @@ jobs:
       # useful question is usually "what changed", not "what is broken today".
       - name: Upload the full report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: source-liveness-${{ github.run_number }}
           path: |
