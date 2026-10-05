@@ -18467,3 +18467,116 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 @media (min-width: 720px) { .chmod-command { grid-template-columns: 11rem 1fr auto; align-items: center; gap: 0.75rem; } }
 .chmod-command-label { font-size: 0.8rem; color: var(--text-secondary); }
 .chmod-command-code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.9rem; color: var(--text-primary); overflow-wrap: anywhere; }
+
+/* ============================================================================
+   CERTIFICATE CHAIN BUILDER (2026-10-04)
+   The shared tool vocabulary (cidr-tool, jwt-panel, cidr-table, tcl-findings)
+   carries the page; these rules add only what a chain needs: the "as of" row,
+   the per-row status and signature marks, the missing-issuer card, the PEM
+   block to copy, and the per-certificate details.
+   ========================================================================== */
+.ccb-tool .ccb-results { display: flex; flex-direction: column; gap: 1.25rem; }
+/* The instant row: label, a date field, and the note saying which instant is in force. */
+.ccb-asof { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 0.75rem; }
+.ccb-asof .cidr-label { margin: 0; }
+.ccb-asof-input { width: auto; min-width: 11rem; flex: none; }
+.ccb-asof .hmac-build-note { margin: 0; flex: 1 1 16rem; }
+/* The path table: the subject cell carries the issuer underneath in smaller type.
+   Eight columns have to fit a 956 px desktop column without a scrollbar hiding
+   the signature column, so the table runs a step smaller, the cells sit tighter
+   and the two dates may wrap onto two lines (2026-10-04). */
+.ccb-path { font-size: 0.86rem; }
+.ccb-path th, .ccb-path td { padding: 0.45rem 0.55rem; }
+.ccb-path .ccb-dn { min-width: 12rem; }
+.ccb-issuer { display: block; font-size: 0.76rem; color: var(--text-tertiary); }
+/* Every cell may wrap (the shared .cidr-table rule says nowrap and outranks a lone
+   class, so the selector carries the table too); the dates get a floor so they
+   break at the arrow and not inside a date (2026-10-04). */
+.ccb-path td { white-space: normal; }
+.ccb-path td.ccb-validity { min-width: 8.5rem; }
+/* Validity at the instant, as a small coloured word before the dates. */
+.ccb-status { display: inline-block; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.05rem 0.4rem; border-radius: 999px; margin-right: 0.35rem; border: 1px solid var(--border-subtle); }
+.ccb-status--valid { color: var(--color-success); border-color: color-mix(in srgb, var(--color-success) 50%, transparent); }
+.ccb-status--expired, .ccb-status--notYet { color: var(--color-danger); border-color: color-mix(in srgb, var(--color-danger) 50%, transparent); }
+.ccb-status--unknown { color: var(--text-tertiary); }
+/* The browser-side signature check, one word per row. */
+.ccb-sig { font-size: 0.8rem; font-weight: 600; white-space: nowrap; }
+.ccb-sig--verified { color: var(--color-success); }
+.ccb-sig--failed { color: var(--color-danger); }
+.ccb-sig--unsupported, .ccb-sig--error, .ccb-sig--pending { color: var(--text-tertiary); font-weight: 500; }
+/* The missing issuer: an amber-edged panel, since it is the thing to act on. */
+.ccb-missing { border-color: color-mix(in srgb, var(--accent-amber) 50%, transparent); }
+.ccb-url { display: block; overflow-wrap: anywhere; margin-top: 0.25rem; }
+/* The missing issuer's key identifier is 59 characters of hex and colons with no
+   space to break at; at 390 px it ran 150 px past the viewport (found 2026-10-04).
+   Let every code run in the panel break anywhere it must. */
+.ccb-missing code { overflow-wrap: anywhere; }
+/* The ordered PEM: actions above, the block scrolls on its own at phone width. */
+.ccb-pem-actions { justify-content: flex-start; margin-bottom: 0.6rem; }
+.ccb-pem { margin: 0; padding: 0.75rem 0.9rem; font-size: 0.74rem; line-height: 1.45; max-height: 24rem; overflow: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); color: var(--text-secondary); }
+/* Each certificate's details, collapsed by default. */
+.ccb-cert { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.5rem 0.8rem; margin-top: 0.5rem; background: var(--surface-base); }
+.ccb-cert summary { cursor: pointer; font-weight: 600; }
+.ccb-cert summary .mono { color: var(--accent-primary); margin-right: 0.4rem; }
+.ccb-cert .jwt-claims { margin: 0.6rem 0; }
+.ccb-cert .jwt-claim-value { white-space: pre-wrap; overflow-wrap: anywhere; }
+.ccb-limits { margin-top: 0.25rem; }
+
+/* ============================================================================
+   BITS, BYTES AND THROUGHPUT (2026-10-04)
+   Three inputs in a row, the efficiency presets, a large headline figure for
+   the derived quantity, and the unit tables with their convention column.
+   ========================================================================== */
+.bb-tool .bb-results { display: flex; flex-direction: column; gap: 1.25rem; }
+/* Three fields side by side; one column at phone width. */
+.bb-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+@media (max-width: 640px) { .bb-fields { grid-template-columns: 1fr; } }
+.bb-field { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+/* The efficiency row: label, the preset segment, and a short percentage field. */
+.bb-eff { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-top: 0.9rem; }
+.bb-eff .cidr-label { margin: 0; }
+.bb-eff-custom { color: var(--text-tertiary); }
+.bb-eff-input { width: 6rem; flex: none; }
+/* The derived quantity, large. */
+.bb-headline .bb-big { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; color: var(--accent-primary); margin: 0.25rem 0 0.5rem; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+/* Key/value lines under a panel title. */
+.bb-line { margin: 0.35rem 0; font-size: 0.92rem; line-height: 1.55; overflow-wrap: anywhere; }
+.bb-k { color: var(--text-tertiary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.25rem; }
+.bb-line .bb-k + .mono { margin-right: 1rem; }
+.bb-note { margin: 0.5rem 0; }
+/* The tables: numbers right-aligned and tabular; the convention column quiet; binary rows tinted. */
+.bb-table .bb-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bb-table .bb-conv { color: var(--text-tertiary); font-size: 0.8rem; white-space: nowrap; }
+.bb-row--binary td:first-child { color: var(--accent-amber); }
+.bb-row--decimal td:first-child { color: var(--accent-primary); }
+.bb-approx { color: var(--text-tertiary); margin-left: 0.15rem; }
+/* The lineage rows of the connection table and their small year badge. */
+.bb-row--lineage td:first-child { color: var(--text-primary); }
+.bb-lineage { display: inline-block; margin-left: 0.5rem; font-family: var(--font-mono); font-size: 0.68rem; padding: 0.05rem 0.4rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--accent-amber) 55%, transparent); color: var(--accent-amber); vertical-align: middle; }
+.bb-limits { margin-top: 0.25rem; }
+
+/* ==========================================================================
+   dig command builder (/tools/dig-command-builder), 2026-10-04.
+   Reuses the curl builder's form vocabulary (curlb-*), the segmented control
+   (seg-*), the findings list (tcl-finding*) and the JWT claims grid for the
+   "what the query will carry" summary; these rules cover only what is new.
+   ========================================================================== */
+/* The segmented controls sit side by side with their labels above them; one column at phone width. */
+.dcb-segs { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; margin: 0.75rem 0 0.25rem; }
+.dcb-seg { display: flex; flex-direction: column; gap: 0.35rem; min-width: 0; }
+.dcb-seg .seg-group { flex-wrap: wrap; }
+/* Sub-headings inside a section (EDNS, timing) sit lower-key than the section title. */
+.dcb-subtitle { margin-top: 0.9rem; font-size: 0.74rem; opacity: 0.85; }
+/* The command: one line that wraps rather than scrolls, so the whole thing is readable on a phone. */
+.dcb-cmd { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* The empty state inside the preview box. */
+.dcb-empty { padding: 0.5rem 0; }
+/* The findings list sits between the command and the summary. */
+.dcb-findings { margin-top: 1rem; }
+/* The summary panel: a quiet parenthetical after a badge. */
+.dcb-effective .dcb-sub { color: var(--text-tertiary); font-size: 0.85rem; }
+/* The yes/no badges are neutral: neither answer is the right one in general. */
+.jwt-badge.dcb-yes { color: var(--accent-primary); border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent); }
+.jwt-badge.dcb-no { color: var(--text-tertiary); }
+/* The tool wrapper only groups the blocks; spacing comes from the pieces. */
+.dcb-tool .curlb-form { margin-top: 0.75rem; }

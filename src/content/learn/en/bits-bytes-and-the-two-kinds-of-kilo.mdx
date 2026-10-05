@@ -1,0 +1,60 @@
+---
+slug: bits-bytes-and-the-two-kinds-of-kilo
+title: "Bits, bytes and the two kinds of kilo: why a 56k file takes eight seconds on a 56k modem"
+summary: "The arithmetic every network conversation leans on and most get slightly wrong: a byte is eight bits, link speeds are in bits and file sizes in bytes, kilo means 1000 everywhere except where it means 1024, and the IEC gave the 1024 kind its own prefixes in 1998. Why a 1 TB disk shows 931 and nothing is missing, why a 100 Mbit/s link moves at most 11.87 MB/s of TCP payload (RFC 2544 and the header minima), and the worked example a calculator on this author's 2004 site already carried. With NIST, the GNU ls page, ITU-T V.90 and G.704, IEEE 802.3-2022 and the RFCs."
+concepts: ["bits", "bytes", "si-prefixes", "iec-binary-prefixes", "kibibyte", "throughput", "transfer-time", "ethernet-overhead", "protocol-efficiency"]
+relatedTools: ["bits-bytes", "mtu-mss", "cidr"]
+relatedArticles: ["tunnel-overhead-mtu-and-mss", "jumbo-frames", "structured-cabling"]
+category: networking
+order: 142
+status: reviewed
+updated: "2026-10-04"
+---
+
+A page on this author's 2004 site, nutzmann.net, posed a question and answered it: how long does a "56k" modem take to transfer a "56k" file? The reader was meant to say one second and be wrong. The modem's 56k is 56 000 bits per second; the file's 56k is 56 kilobytes of 1024 bytes, 57 344 bytes, 458 752 bits; the answer is a little over eight seconds. Twenty-two years later the modem is gone and the mistake is not. It is made with gigabit links and gigabyte files, with cloud egress bills and backup windows, and it has the same three causes: bits against bytes, decimal prefixes against binary ones, and the nominal rate of a link against what reaches the application. This article takes the three in turn, and the [bits, bytes and throughput calculator](/tools/bits-bytes), which descends from that 2004 page, does the arithmetic exactly.
+
+## Bits for links, bytes for files
+
+A byte is eight bits, and the two units are used in different places by convention that is older than most of the people using them. Link speeds are stated in bits per second: a 100 Mbit/s Ethernet port, a 1 Gbit/s fibre, a 56 000 bit/s modem (ITU-T V.90's own title: "data signalling rates of up to 56 000 bit/s downstream and up to 33 600 bit/s upstream"). File sizes, disk capacities and memory are stated in bytes. A transfer is a size in bytes moving over a rate in bits, so somewhere a factor of eight has to be applied, and a download that "should take a minute" and takes eight has usually skipped it.
+
+The symbols help if they are respected: a lower-case b is a bit and a capital B a byte, so 100 Mb/s and 12.5 MB/s are the same speed. Product sheets and dashboards do not always respect them, which is why the calculator flags a capital prefix with a lower-case b (Kb, Mb) as read in bits and worth a second look.
+
+## The two kinds of kilo
+
+Here is the part that produces support tickets. In the International System of Units, kilo means 1000, mega 1 000 000, giga 10^9, and so on; a kilobyte is 1000 bytes. Computer memory, however, comes in powers of two, and for decades "kilobyte" was used to mean 1024 bytes because 1024 is the power of two nearest to 1000, a habit NIST's page on the prefixes records. The two meanings coexisted for decades with the same symbol, and the gap between them grows with the prefix: 2.4 % at kilo, 4.86 % at mega, 7.37 % at giga, 10 % at tera, 12.6 % at peta.
+
+In December 1998 the International Electrotechnical Commission approved names and symbols for the binary multiples, published as IEC 60027-2 Amendment 2 in January 1999 and today part of IEC 80000-13: kibi (Ki, 2^10), mebi (Mi, 2^20), gibi (Gi, 2^30), tebi (Ti, 2^40), pebi (Pi, 2^50), exbi (Ei, 2^60). NIST's page on the prefixes is explicit that these "are not part of the International System of Units (SI)" and that in the SI "mega will mean 1 000 000". A kibibyte is 1024 bytes and a kilobyte is 1000; a mebibyte is 1 048 576 bytes and a megabyte is 1 000 000. The 2004 page already carried a note that its calculator used "the standard widely adopted by the market, in force since before the new IEC regulation approved in 1998", and that it would change "when the new standard is adopted in practice". The practice never became universal, which is why a calculator today has to show both.
+
+The everyday consequence is the disk that seems short. A drive sold as 1 TB holds 1 000 000 000 000 bytes, as the manufacturer's prefix means. An operating system that counts in powers of 1024 divides that by 2^40 and shows 931, and if it labels the result "GB" rather than "GiB" the owner concludes 69 GB are missing. Nothing is missing; the number was read under the other convention. Tools that print sizes say which they use, if you ask: the GNU ls page lists `-h, --human-readable` as printing "sizes like 1K 234M 2G" and `--si` as "likewise, but use powers of 1000 not 1024", and its SIZE argument reads K, M, G, T, P, E, Z, Y, R, Q as powers of 1024, KB, MB and so on as powers of 1000, and KiB as equal to K. So a bare K is 1024 and a KB is 1000 to the same program, and the calculator reads a bare prefix the same way and says so.
+
+## Nominal rate against payload
+
+The third cause is subtler. A 100 Mbit/s link carries 100 000 000 bits per second on the wire, but not all of them are the file. Every frame carries an Ethernet header and trailer, a preamble and an inter-frame gap, an IP header and a transport header, and only what is left is payload. RFC 2544, the benchmarking methodology for network devices, writes the Ethernet cost down in its Appendix C: on the wire a frame is "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", where N is the frame from destination address to frame check sequence. For the largest standard frame, 1518 bytes, that is 1538 bytes on the wire, and the appendix's table says a 10 Mb/s link can carry at most 812 such frames per second: 10 000 000 divided by 1538 times 8.
+
+Inside the 1518-byte frame, the 1500-byte payload field carries the IP packet; the IPv4 header is at least 20 octets (RFC 791) and the TCP header at least 20 octets (RFC 9293), which RFC 8200 states in one sentence when it explains why an IPv6 MSS is 20 octets smaller: the IPv4 MSS is "the maximum packet size ... minus 40 octets (20 octets for the minimum-length IPv4 header and 20 octets for the minimum-length TCP header)", and over IPv6 "minus 60 octets, because the minimum-length IPv6 header ... is 20 octets longer". So a full TCP segment over IPv4 carries 1460 bytes of application data in 1538 bytes of wire time: 94.93 %. Over IPv6 it is 1440 bytes, 93.63 %; UDP over IPv4, with its 8-octet header (RFC 768), 1472 bytes, 95.71 %. A 100 Mbit/s link therefore delivers at most 11.87 MB/s of TCP payload, not 12.5, and that before acknowledgements, slow start and any loss. The calculator applies these as efficiency presets, shows the arithmetic, and lets you type any other percentage.
+
+## The worked example, exactly
+
+The 2004 page said "at least 8.2 seconds". With exact arithmetic: 56 KiB is 57 344 bytes, 458 752 bits; at 56 000 bits per second, 8.192 seconds. Write the same file as 56 kB, the decimal reading, and it is 56 000 bytes, 448 000 bits, exactly 8 seconds. The 0.192 s between the two answers is the 2.4 % gap between the two kinds of kilo, and nothing else. The calculator's Example button loads this case, and its connection table runs the same file over a 64 kbit/s ISDN channel, a 1 544 kbit/s T1 and a 2 048 kbit/s E1 (the two rates in the title of ITU-T G.704), and every Ethernet speed IEEE 802.3-2022 specifies, from 10 Mb/s to 400 Gb/s, with the rows that were already in the 2004 table marked as such.
+
+## Four habits that end the arguments
+
+1. Write the unit with its case: b for bits, B for bytes, and the /s when it is a rate. "100 Mb" is not a size.
+2. Write Ki, Mi, Gi when you mean powers of 1024, and read k, M, G as powers of 1000 unless the program printing them says otherwise.
+3. Divide by eight before dividing by the rate, and then divide by the efficiency of the protocol stack, not by one.
+4. When a transfer is slower than the arithmetic, suspect the window and the round trip before suspecting the link; the arithmetic gives the ceiling, not the forecast.
+
+## Sources
+
+- [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (read 2026-10-04): the IEC approval in December 1998, IEC 60027-2 Amendment 2 (1999-01), the table of names and symbols, and the note that they are not part of the SI
+- [ls(1), GNU coreutils (man7.org)](https://man7.org/linux/man-pages/man1/ls.1.html) (read 2026-10-04): -h, --si and the SIZE argument
+- [RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Appendix C](https://www.rfc-editor.org/rfc/rfc2544#appendix-C) (read 2026-10-04): preamble, frame and gap; 812 frames per second of 1518 bytes at 10 Mb/s
+- [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791) (read 2026-10-04): the IPv4 header minimum
+- [RFC 8200: IPv6, section 8.3](https://www.rfc-editor.org/rfc/rfc8200#section-8.3) (read 2026-10-04): the 40 and 60 octet MSS deductions
+- [RFC 9293: TCP](https://www.rfc-editor.org/rfc/rfc9293) (read 2026-10-04): the TCP header minimum
+- [RFC 768: UDP](https://www.rfc-editor.org/rfc/rfc768) (read 2026-10-04): the 8-octet header
+- [ITU-T V.90 (09/98)](https://www.itu.int/rec/T-REC-V.90/en) (read 2026-10-04): 56 000 bit/s downstream
+- [ITU-T G.704 (10/98)](https://www.itu.int/rec/T-REC-G.704/en) (read 2026-10-04): the 1544 and 2048 kbit/s levels
+- [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (read 2026-10-04): speeds from 1 Mb/s to 400 Gb/s
+- [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (read 2026-10-04): the 2004 calculator's worked example, its IEC note and its connection table
+- [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (read 2026-10-04): the same calculator on the 2013 site, with its IEC prefix table

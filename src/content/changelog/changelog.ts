@@ -53,6 +53,45 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-04",
+    time: "21:30",
+    kind: "tool",
+    title: "The dig command, written for you",
+    body:
+      "The inverse of the dig output explainer. Say what to look up (a name and type, or an address for -x), where to ask (@server, port, UDP, TCP, TLS or HTTPS, one address family, a source address), how to ask (+trace, +nssearch, +norecurse, +dnssec, +cd, the EDNS buffer size, client subnet, NSID and cookie, the timers) and what to print (+short, +noall +answer, +yaml, +multiline, +ttlunits, +qr), and one copy-pasteable dig command assembles in a canonical order with every token explained. Findings mark what the BIND 9 manual says is redundant or contradictory: +trace already sets +dnssec and clears recursion and makes @server root-only, AXFR always runs over TCP, ANY may be answered minimally, a buffer under 512 reads as 512, +noedns cannot carry the options that live in the OPT record, -4 against an IPv6 server literal has nowhere to go, a name that is also a type or class mnemonic goes through -q. A summary derives what the query will carry: transport and port after the type defaults, RD, DO, CD, AD, EDNS and buffer, cookie, signature. Only -k is offered for TSIG, because the manual says -y puts the secret in ps output and shell history. Thirty-eight vectors, the first five the manual's own examples. The article walks a dig line from left to right, citing the manual, dig's source and the RFCs for each statement.",
+    tools: ["dig-command-builder"],
+    articles: ["anatomy-of-a-dig-command-line"],
+  },
+  {
+    date: "2026-10-04",
+    time: "20:50",
+    kind: "i18n",
+    title: "Numbers in the reader's own notation",
+    body:
+      "The bits, bytes and throughput calculator printed every decimal with a point, so a Portuguese reader saw 8.192 s where the page's own documentation says 8,192 s, a figure that reads as eight thousand seconds under the Brazilian convention. The page now takes the decimal separator from the browser's locale data for the language it is showing, so pt-BR prints 8,192 s, 94,93 % and 1,5 GB and English keeps the point; the three input fields accept either separator, and the time field understands the Portuguese unit words (2 horas, 3 dias) as well as the English ones. The certificate chain builder's path table, which overflowed its desktop column by about 170 pixels in both languages, now wraps its cells.",
+    tools: ["bits-bytes", "cert-chain-builder"],
+  },
+  {
+    date: "2026-10-04",
+    time: "20:30",
+    kind: "tool",
+    title: "The oldest tool, rebuilt: bits, bytes and throughput",
+    body:
+      "A bits-and-bytes calculator sat on nutzmann.net in 2004 and on ntz.com.br in 2013, the oldest ancestor of the tools here; it is back, with exact arithmetic. A size comes back in every unit of both conventions with the bit count written out, and an SI label on bytes is shown read both ways with the gap (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more). A rate comes back in bits and bytes per second and per minute, hour and day. Any two of size, rate and time give the third, with an efficiency applied if you ask: presets for TCP over IPv4 over Ethernet (1460 of 1538 bytes on the wire, 94.93 %, from RFC 2544 Appendix C and the RFC 791 and RFC 9293 header minima), TCP over IPv6 and UDP over IPv4, or any percentage. A connection table answers for a 56k modem (ITU-T V.90), ISDN, T1 and E1 (ITU-T G.704) and every Ethernet speed of IEEE 802.3-2022 at once, with the rows the 2004 table carried marked. The Example is the 2004 page's own worked question: a 56k file over a 56k modem takes 8.192 seconds, not one. Twenty-two golden vectors; the companion article explains the two kinds of kilo, with NIST and the GNU ls page.",
+    tools: ["bits-bytes"],
+    articles: ["bits-bytes-and-the-two-kinds-of-kilo"],
+  },
+  {
+    date: "2026-10-04",
+    time: "19:30",
+    kind: "tool",
+    title: "The chain, in the order a server sends it",
+    body:
+      "A new certificate chain builder takes a leaf and its intermediates in any order, with or without the root, and does what a TLS client's path builder does: finds the end entity, follows each certificate to its issuer by key identifier or, failing that, by name, and reports the chain to send (end entity first, each issuer after the certificate it signed, the trust anchor optional), the issuer that is missing, named with the key identifier the subject expects, the certificates that are extra or pasted twice, and every structural rule of RFC 5280 path validation the chain breaks: an issuer that is not a CA, one that cannot sign certificates, a pathLenConstraint exceeded, a certificate expired or not yet valid at the instant you choose, an intermediate that expires before the leaf it issued, a rolled-over CA with the same name and a different key, a cross-signed root appearing as an intermediate. Each signature is then verified in the browser with WebCrypto and labelled as checked there. Twenty-one golden vectors over a generated test PKI and the chain Let's Encrypt served on 4 October 2026, every verdict cross-checked against openssl verify. The companion article reads the chain from RFC 5280 and RFC 8446, with the nginx, Apache and BIG-IP ways of configuring it and why a missing intermediate fails in one browser and not another.",
+    tools: ["cert-chain-builder"],
+    articles: ["certificate-chains-order-anchors-and-what-breaks-them"],
+  },
+  {
+    date: "2026-10-04",
     time: "17:55",
     kind: "content",
     title: "Advisory, the second pass",

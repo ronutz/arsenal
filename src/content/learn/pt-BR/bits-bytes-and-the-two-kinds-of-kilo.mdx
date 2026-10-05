@@ -1,0 +1,60 @@
+---
+slug: bits-bytes-and-the-two-kinds-of-kilo
+title: "Bits, bytes e os dois tipos de quilo: por que um arquivo de 56k leva oito segundos num modem de 56k"
+summary: "A aritmética em que toda conversa de rede se apoia e que a maioria erra por pouco: um byte são oito bits, velocidades de enlace são em bits e tamanhos de arquivo em bytes, quilo significa 1000 em todo lugar menos onde significa 1024, e o IEC deu ao tipo 1024 prefixos próprios em 1998. Por que um disco de 1 TB mostra 931 e não falta nada, por que um enlace de 100 Mbit/s move no máximo 11,87 MB/s de carga útil TCP (a RFC 2544 e os mínimos dos cabeçalhos), e o exemplo resolvido que uma calculadora no site de 2004 deste autor já trazia. Com o NIST, a página do ls do GNU, as ITU-T V.90 e G.704, a IEEE 802.3-2022 e as RFCs."
+concepts: ["bits", "bytes", "si-prefixes", "iec-binary-prefixes", "kibibyte", "throughput", "transfer-time", "ethernet-overhead", "protocol-efficiency"]
+relatedTools: ["bits-bytes", "mtu-mss", "cidr"]
+relatedArticles: ["tunnel-overhead-mtu-and-mss", "jumbo-frames", "structured-cabling"]
+category: networking
+order: 142
+status: reviewed
+updated: "2026-10-04"
+---
+
+Uma página do site de 2004 deste autor, o nutzmann.net, fazia uma pergunta e a respondia: quanto tempo um modem de "56k" leva para transferir um arquivo de "56k"? O leitor deveria dizer um segundo e errar. O 56k do modem são 56 000 bits por segundo; o 56k do arquivo são 56 kilobytes de 1024 bytes, 57 344 bytes, 458 752 bits; a resposta é pouco mais de oito segundos. Vinte e dois anos depois o modem se foi e o erro não. Ele é cometido com enlaces de gigabit e arquivos de gigabytes, com faturas de saída de nuvem e janelas de backup, e tem as mesmas três causas: bits contra bytes, prefixos decimais contra binários, e a taxa nominal de um enlace contra o que chega à aplicação. Este artigo toma as três uma a uma, e a [calculadora de bits, bytes e vazão](/tools/bits-bytes), que descende daquela página de 2004, faz a aritmética exatamente.
+
+## Bits para enlaces, bytes para arquivos
+
+Um byte são oito bits, e as duas unidades são usadas em lugares diferentes por uma convenção mais antiga do que a maioria das pessoas que a usa. As velocidades de enlace são dadas em bits por segundo: uma porta Ethernet de 100 Mbit/s, uma fibra de 1 Gbit/s, um modem de 56 000 bit/s (o próprio título da ITU-T V.90: "data signalling rates of up to 56 000 bit/s downstream and up to 33 600 bit/s upstream"). Tamanhos de arquivo, capacidades de disco e memória são dados em bytes. Uma transferência é um tamanho em bytes movendo-se sobre uma taxa em bits, então em algum ponto um fator de oito tem de ser aplicado, e um download que "devia levar um minuto" e leva oito normalmente o pulou.
+
+Os símbolos ajudam se forem respeitados: b minúsculo é bit e B maiúsculo é byte, de modo que 100 Mb/s e 12,5 MB/s são a mesma velocidade. Fichas de produto e painéis nem sempre os respeitam, e é por isso que a calculadora sinaliza um prefixo maiúsculo com b minúsculo (Kb, Mb) como lido em bits e merecedor de uma segunda olhada.
+
+## Os dois tipos de quilo
+
+Aqui está a parte que gera chamados de suporte. No Sistema Internacional de Unidades, quilo significa 1000, mega 1 000 000, giga 10^9, e assim por diante; um kilobyte são 1000 bytes. A memória dos computadores, porém, vem em potências de dois, e durante décadas "kilobyte" foi usado para 1024 bytes porque 1024 é a potência de dois mais próxima de 1000, um hábito que a página do NIST sobre os prefixos registra. Os dois sentidos coexistiram por décadas com o mesmo símbolo, e a diferença entre eles cresce com o prefixo: 2,4 % no quilo, 4,86 % no mega, 7,37 % no giga, 10 % no tera, 12,6 % no peta.
+
+Em dezembro de 1998 a Comissão Eletrotécnica Internacional aprovou nomes e símbolos para os múltiplos binários, publicados como IEC 60027-2, Emenda 2, em janeiro de 1999 e hoje parte da IEC 80000-13: kibi (Ki, 2^10), mebi (Mi, 2^20), gibi (Gi, 2^30), tebi (Ti, 2^40), pebi (Pi, 2^50), exbi (Ei, 2^60). A página do NIST sobre os prefixos é explícita em que eles "não fazem parte do Sistema Internacional de Unidades (SI)" e em que no SI "mega significará 1 000 000". Um kibibyte são 1024 bytes e um kilobyte são 1000; um mebibyte são 1 048 576 bytes e um megabyte são 1 000 000. A página de 2004 já trazia uma nota de que a sua calculadora usava "o padrão amplamente adotado pelo mercado, em vigor desde antes da nova regulamentação do IEC aprovada em 1998", e de que mudaria "quando o novo padrão for de fato adotado na prática". A prática nunca se tornou universal, e é por isso que uma calculadora de hoje precisa mostrar as duas.
+
+A consequência do dia a dia é o disco que parece pequeno. Um disco vendido como 1 TB guarda 1 000 000 000 000 bytes, como o prefixo do fabricante quer dizer. Um sistema operacional que conta em potências de 1024 divide isso por 2^40 e mostra 931, e se rotula o resultado "GB" em vez de "GiB" o dono conclui que faltam 69 GB. Não falta nada; o número foi lido na outra convenção. As ferramentas que imprimem tamanhos dizem qual usam, se você perguntar: a página do ls do GNU lista `-h, --human-readable` como imprimindo "tamanhos como 1K 234M 2G" e `--si` como "o mesmo, mas usando potências de 1000 em vez de 1024", e o seu argumento SIZE lê K, M, G, T, P, E, Z, Y, R, Q como potências de 1024, KB, MB etc. como potências de 1000, e KiB como igual a K. Portanto um K sozinho é 1024 e um KB é 1000 para o mesmo programa, e a calculadora lê um prefixo sozinho da mesma maneira e diz isso.
+
+## Taxa nominal contra carga útil
+
+A terceira causa é mais sutil. Um enlace de 100 Mbit/s carrega 100 000 000 bits por segundo no fio, mas nem todos eles são o arquivo. Todo quadro carrega um cabeçalho e um trailer Ethernet, um preâmbulo e um intervalo entre quadros, um cabeçalho IP e um cabeçalho de transporte, e só o que sobra é carga útil. A RFC 2544, a metodologia de benchmarking de dispositivos de rede, anota o custo do Ethernet no seu Apêndice C: no fio um quadro é "Preamble 64 bits, Frame 8 x N bits, Gap 96 bits", onde N é o quadro do endereço de destino à sequência de verificação. Para o maior quadro padrão, 1518 bytes, isso dá 1538 bytes no fio, e a tabela do apêndice diz que um enlace de 10 Mb/s carrega no máximo 812 desses quadros por segundo: 10 000 000 dividido por 1538 vezes 8.
+
+Dentro do quadro de 1518 bytes, o campo de carga útil de 1500 bytes carrega o pacote IP; o cabeçalho IPv4 tem pelo menos 20 octetos (RFC 791) e o cabeçalho TCP pelo menos 20 octetos (RFC 9293), o que a RFC 8200 declara numa frase ao explicar por que um MSS IPv6 é 20 octetos menor: o MSS IPv4 é "o tamanho máximo do pacote ... menos 40 octetos (20 octetos para o cabeçalho IPv4 de comprimento mínimo e 20 octetos para o cabeçalho TCP de comprimento mínimo)", e sobre IPv6 "menos 60 octetos, porque o cabeçalho IPv6 de comprimento mínimo ... é 20 octetos mais longo". Assim, um segmento TCP cheio sobre IPv4 carrega 1460 bytes de dados da aplicação em 1538 bytes de tempo de fio: 94,93 %. Sobre IPv6 são 1440 bytes, 93,63 %; UDP sobre IPv4, com o seu cabeçalho de 8 octetos (RFC 768), 1472 bytes, 95,71 %. Um enlace de 100 Mbit/s entrega, portanto, no máximo 11,87 MB/s de carga útil TCP, não 12,5, e isso antes de confirmações, slow start e qualquer perda. A calculadora aplica isso como predefinidos de eficiência, mostra a aritmética e deixa você digitar qualquer outra porcentagem.
+
+## O exemplo resolvido, exatamente
+
+A página de 2004 dizia "pelo menos 8,2 segundos". Com aritmética exata: 56 KiB são 57 344 bytes, 458 752 bits; a 56 000 bits por segundo, 8,192 segundos. Escreva o mesmo arquivo como 56 kB, a leitura decimal, e são 56 000 bytes, 448 000 bits, exatamente 8 segundos. Os 0,192 s entre as duas respostas são a diferença de 2,4 % entre os dois tipos de quilo, e nada mais. O botão Exemplo da calculadora carrega este caso, e a sua tabela de conexões roda o mesmo arquivo por um canal ISDN de 64 kbit/s, um T1 de 1 544 kbit/s e um E1 de 2 048 kbit/s (as duas taxas do título da ITU-T G.704), e por toda velocidade de Ethernet que a IEEE 802.3-2022 especifica, de 10 Mb/s a 400 Gb/s, com as linhas que já estavam na tabela de 2004 marcadas como tais.
+
+## Quatro hábitos que encerram as discussões
+
+1. Escreva a unidade com a sua caixa: b para bits, B para bytes, e o /s quando é uma taxa. "100 Mb" não é um tamanho.
+2. Escreva Ki, Mi, Gi quando quiser dizer potências de 1024, e leia k, M, G como potências de 1000, a menos que o programa que as imprime diga o contrário.
+3. Divida por oito antes de dividir pela taxa, e depois divida pela eficiência da pilha de protocolos, não por um.
+4. Quando uma transferência é mais lenta do que a aritmética, suspeite da janela e da ida e volta antes de suspeitar do enlace; a aritmética dá o teto, não a previsão.
+
+## Fontes
+
+- [NIST: Prefixes for binary multiples](https://physics.nist.gov/cuu/Units/binary.html) (lido em 2026-10-04): a aprovação do IEC em dezembro de 1998, a IEC 60027-2 Emenda 2 (1999-01), a tabela de nomes e símbolos, e a nota de que não fazem parte do SI
+- [ls(1), GNU coreutils (man7.org)](https://man7.org/linux/man-pages/man1/ls.1.html) (lido em 2026-10-04): -h, --si e o argumento SIZE
+- [RFC 2544: Benchmarking Methodology for Network Interconnect Devices, Apêndice C](https://www.rfc-editor.org/rfc/rfc2544#appendix-C) (lida em 2026-10-04): preâmbulo, quadro e intervalo; 812 quadros por segundo de 1518 bytes a 10 Mb/s
+- [RFC 791: Internet Protocol](https://www.rfc-editor.org/rfc/rfc791) (lida em 2026-10-04): o mínimo do cabeçalho IPv4
+- [RFC 8200: IPv6, seção 8.3](https://www.rfc-editor.org/rfc/rfc8200#section-8.3) (lida em 2026-10-04): as deduções de 40 e 60 octetos do MSS
+- [RFC 9293: TCP](https://www.rfc-editor.org/rfc/rfc9293) (lida em 2026-10-04): o mínimo do cabeçalho TCP
+- [RFC 768: UDP](https://www.rfc-editor.org/rfc/rfc768) (lida em 2026-10-04): o cabeçalho de 8 octetos
+- [ITU-T V.90 (09/98)](https://www.itu.int/rec/T-REC-V.90/en) (lida em 2026-10-04): 56 000 bit/s de descida
+- [ITU-T G.704 (10/98)](https://www.itu.int/rec/T-REC-G.704/en) (lida em 2026-10-04): os níveis de 1544 e 2048 kbit/s
+- [IEEE 802.3-2022](https://standards.ieee.org/ieee/802.3/10422/) (lido em 2026-10-04): velocidades de 1 Mb/s a 400 Gb/s
+- [nutzmann.net, Calculadora de bits e bytes (2004), Internet Archive](https://web.archive.org/web/20041009131549/http://nutzmann.net:80/bitsandbytes.htm) (lido em 2026-10-04): o exemplo resolvido da calculadora de 2004, a sua nota sobre o IEC e a sua tabela de conexões
+- [ntz.com.br, Calculadora e conversão de bits e bytes (2013), Internet Archive](https://web.archive.org/web/2013/http://ntz.com.br/bitsandbytes.html) (lido em 2026-10-04): a mesma calculadora no site de 2013, com a sua tabela de prefixos do IEC

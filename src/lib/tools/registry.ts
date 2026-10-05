@@ -135,6 +135,9 @@ import { run as unicodeInspectorRun } from "./unicode-inspector";
 // The charset converter and mojibake repair (2026-10-03): pure, bounded, never fetches; exposed.
 import { run as charsetEquivalencyRun } from "./charset-equivalency";
 import { run as chmodPermissionCalculatorRun } from "./chmod-permission-calculator";
+import { run as certChainBuilderRun } from "./cert-chain-builder";
+import { run as bitsBytesRun } from "./bits-bytes";
+import { run as digCommandBuilderRun } from "./dig-command-builder";
 import { run as f5ReleaseCadenceCalendarRun } from "./f5-release-cadence-calendar";
 import { run as f5AwafFpRun } from "./f5-awaf-false-positive-triage";
 import { run as f5AwafLogRun } from "./f5-awaf-request-log-triage";
@@ -265,6 +268,9 @@ export const API_TOOLS: ApiTool[] = [
   { slug: "unicode-inspector", structured: true, run: (input) => unicodeInspectorRun(JSON.parse(input)) },
   { slug: "charset-equivalency", structured: true, run: (input) => charsetEquivalencyRun(JSON.parse(input)) },
   { slug: "chmod-permission-calculator", structured: true, run: (input) => chmodPermissionCalculatorRun(JSON.parse(input)) },
+  { slug: "cert-chain-builder", structured: true, run: (input) => certChainBuilderRun(JSON.parse(input)) },
+  { slug: "bits-bytes", structured: true, run: (input) => bitsBytesRun(JSON.parse(input)) },
+  { slug: "dig-command-builder", structured: true, run: (input) => digCommandBuilderRun(JSON.parse(input)) },
   { slug: "f5-release-cadence-calendar", structured: true, run: (input) => f5ReleaseCadenceCalendarRun(JSON.parse(input)) },
   { slug: "cvss-vector-decoder", run: cvssVectorDecoderRun },
   { slug: "diff", structured: true, run: (input) => diffRun(JSON.parse(input)) },

@@ -1,0 +1,90 @@
+---
+slug: certificate-chains-order-anchors-and-what-breaks-them
+title: "Cadeias de certificados: a ordem, a âncora e o que as quebra"
+summary: "Um certificado de servidor é só o último elo. Como um cliente monta o caminho do certificado final até uma raiz em que confia, por que a ordem da mensagem Certificate importa e o que o TLS 1.3 relaxou, por que a raiz normalmente fica de fora, como identificadores de chave e nomes ligam um certificado ao seguinte, o que pathLenConstraint, cA e keyCertSign proíbem, por que uma raiz com assinatura cruzada aparece numa cadeia como se fosse intermediária, e por que a mesma cadeia funciona num navegador e falha em outro. Com a RFC 5280, a RFC 8446, os Baseline Requirements e uma cadeia viva da Let's Encrypt."
+concepts: ["certificate-chain", "intermediate-certificate", "trust-anchor", "path-validation", "pathlenconstraint", "cross-signing", "authority-key-identifier", "tls-certificate-message"]
+relatedTools: ["cert-chain-builder", "x509", "csr-decoder"]
+relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy"]
+category: pki
+order: 4
+status: reviewed
+updated: "2026-10-04"
+---
+
+O certificado de que um servidor se orgulha é o menos importante do handshake. O cliente já decidiu em quem confia, anos atrás, quando o seu sistema operacional ou navegador veio com um repositório de certificados raiz; tudo o que o servidor envia precisa ligar essa raiz ao nome na barra de endereços, elo por elo, e o handshake falha no primeiro elo que falta ou está errado. A maioria dos incidentes com certificados que não são expirações são incidentes de cadeia: um intermediário não enviado, enviado na ordem errada, trocado por um irmão com o mesmo nome e outra chave, ou mantido depois do dia em que o seu próprio emissor expirou. Este artigo é sobre os elos. O [montador de cadeia de certificados](/tools/cert-chain-builder) executa cada passo abaixo sobre o que você colar.
+
+## O caminho, como a RFC 5280 o define
+
+A RFC 5280 descreve a validação como uma caminhada por "um caminho de certificação prospectivo (uma sequência de n certificados)" que precisa satisfazer quatro condições: "para todo x em \{1, ..., n-1\}, o titular do certificado x é o emissor do certificado x+1", "o certificado 1 é emitido pela âncora de confiança", "o certificado n é o certificado a ser validado", e todo certificado "era válido no momento em questão". Dois detalhes dessa definição decidem a maioria das discussões sobre cadeias.
+
+O primeiro: a âncora de confiança é uma entrada, não um elo. "Quando a âncora de confiança é fornecida na forma de um certificado autoassinado, esse certificado autoassinado não é incluído como parte do caminho de certificação prospectivo." O cliente traz a raiz; o servidor não precisa enviá-la, e enviá-la não muda nada quanto à confiança. O artigo da própria F5 sobre certificados de cadeia no BIG-IP diz com todas as letras: "colocar o certificado da CA raiz no pacote é opcional, e nunca fará o cliente confiar na CA raiz". Um cliente que não tem a raiz no seu repositório não vai passar a confiar nela porque o servidor ofereceu uma cópia.
+
+O segundo: o caminho é definido por nomes. O titular de cada certificado é o emissor do seguinte. Os identificadores de chave tornam a correspondência inequívoca, e a próxima seção é sobre eles, mas uma cadeia é, antes de tudo, uma cadeia de nomes.
+
+## Como um certificado encontra o seu emissor
+
+Todo certificado nomeia o seu emissor por inteiro e, quando vários certificados trazem o mesmo nome (uma CA que trocou de chave, uma CA com uma assinatura cruzada antiga e uma nova), o nome não basta. A RFC 5280 dá duas extensões para isso. O Subject Key Identifier "DEVE aparecer em todos os certificados de CA conformes", e "o valor do subject key identifier DEVE ser o valor colocado no campo key identifier da extensão authority key identifier" dos certificados que essa CA emite. Assim, um cliente que tem um certificado final procura o certificado cujo SKI é igual ao AKI daquele, e a correspondência é exata mesmo quando dois candidatos compartilham um nome. A norma acrescenta, na mesma frase, que "as aplicações não são obrigadas a verificar que os identificadores de chave correspondem ao executar a validação do caminho de certificação": os identificadores estão lá para encontrar o emissor, não para substituir a conferência de assinatura que o prova.
+
+As duas maneiras comuns de derivar um identificador de chave estão ambas na seção 4.2.1.2: o hash SHA-1 da chave pública, ou um campo de tipo de quatro bits seguido dos 60 bits baixos desse hash. Nenhuma é obrigatória; "outros métodos de gerar números únicos também são aceitáveis", e é por isso que um identificador de chave é uma sequência opaca de octetos para um validador, e não algo a recalcular.
+
+Quando um certificado final não traz AKI, ou um emissor não traz SKI, a correspondência recua para os nomes. Infraestruturas de chaves públicas (PKIs) privadas montadas à mão frequentemente acabam aí, e ainda validam; o montador de cadeia relata o elo como feito só pelo nome, para que você saiba quais elos ficariam ambíguos no dia em que uma CA trocar de chave.
+
+## Por que a raiz fica de fora, e por que a ordem importa
+
+O TLS 1.3 diz como a cadeia viaja. Na mensagem Certificate, "o certificado do remetente DEVE vir na primeira CertificateEntry da lista. Cada certificado seguinte DEVERIA certificar diretamente o imediatamente anterior. Como a validação de certificados exige que as âncoras de confiança sejam distribuídas de forma independente, um certificado que especifica uma âncora de confiança PODE ser omitido da cadeia, desde que se saiba que os pares suportados possuem os certificados omitidos".
+
+A mesma seção registra o que mudou: "antes do TLS 1.3, a ordenação de certificate_list exigia que cada certificado certificasse o imediatamente anterior; porém, algumas implementações permitiam alguma flexibilidade". Os servidores "às vezes enviam um intermediário atual e um descontinuado por razões de transição, e outros estão simplesmente configurados de forma incorreta", e, por compatibilidade, "todas as implementações DEVERIAM estar preparadas para lidar com certificados potencialmente estranhos e ordenações arbitrárias de qualquer versão do TLS, com exceção do certificado da entidade final, que DEVE vir primeiro". Então um cliente moderno normalmente resolve uma cadeia embaralhada e ignora um certificado a mais. Normalmente é a palavra que importa: clientes embarcados, runtimes Java antigos e bibliotecas estritas ainda tomam a lista como enviada, e o certificado final precisa vir primeiro em todo lugar.
+
+Onde a ordem é configurada depende do servidor, e os modos de falha diferem. O nginx recebe um arquivo só em que "o certificado do servidor deve aparecer antes dos certificados encadeados"; inverta e o nginx não sobe, com um erro de chave que não corresponde, "porque o nginx tentou usar a chave privada com o primeiro certificado do pacote em vez do certificado do servidor". O Apache httpd, desde a 2.4.8, deixa a SSLCertificateFile "incluir também certificados de CA intermediárias, ordenados da folha à raiz", o que "torna obsoleta a SSLCertificateChainFile". O BIG-IP mantém o certificado final e a cadeia separados: os intermediários são importados como um objeto de certificado próprio e selecionados como Chain do certificado e da chave no perfil Client SSL ou Server SSL. O montador de cadeia emite o arquivo ordenado com e sem a raiz, de modo que, seja qual for o servidor que você estiver configurando, a ordem já está certa.
+
+## O que um validador confere em cada CA, e o que quebra
+
+A seção 6.1.4 da RFC 5280 lista o que um cliente verifica em todo certificado que emite o seguinte, e três dos seus passos respondem pela maioria das cadeias que estão completas e ainda assim inválidas.
+
+**cA.** Passo (k): "Se o certificado i é um certificado versão 3, verifique que a extensão basicConstraints está presente e que cA está definido como TRUE." A seção 4.2.1.9 é mais direta sobre o porquê: "Se o booleano cA não está afirmado, então o bit keyCertSign da extensão key usage NÃO DEVE estar afirmado. Se a extensão basic constraints não está presente num certificado versão 3, ou está presente mas o booleano cA não está afirmado, então a chave pública certificada NÃO DEVE ser usada para verificar assinaturas de certificados." Um certificado emitido por quem não é CA, por mais válida que seja a sua assinatura, não tem caminho.
+
+**keyCertSign.** Passo (n): "Se uma extensão key usage está presente, verifique que o bit keyCertSign está ligado." Um certificado de CA cujo keyUsage diz digitalSignature e nada mais não pode assinar certificados aos olhos de um cliente conforme, e o OpenSSL diz exatamente isso: "key usage does not include certificate signing".
+
+**pathLenConstraint.** Os passos (l) e (m) mantêm um contador: "Se o certificado não é autoemitido, verifique que max_path_length é maior que zero e decremente max_path_length em 1", e depois "Se pathLenConstraint está presente no certificado e é menor que max_path_length, defina max_path_length como o valor de pathLenConstraint." O campo "dá o número máximo de certificados intermediários não autoemitidos que podem seguir este certificado num caminho de certificação válido", com a nota de que "o último certificado do caminho de certificação não é um certificado intermediário, e não é incluído nesse limite". Uma CA emissora restrita a pathlen 0 pode emitir certificados finais e nada mais; no dia em que alguém a usa para assinar uma sub-CA, todo certificado final abaixo dessa sub-CA falha com path length constraint exceeded, e o certificado final em si não tem culpa nenhuma. O contador pula certificados autoemitidos (mesmo nome em titular e emissor), que é como uma CA renova o próprio certificado sem consumir um passo.
+
+Depois, as datas. Cada certificado precisa ser válido no instante da validação, e isso inclui os intermediários. Um intermediário que expira antes dos certificados finais que emitiu é uma bomba-relógio com data conhecida: o certificado final está em dia, a cadeia deixa de validar, e a correção é um intermediário renovado, que a CA normalmente publica com boa antecedência. O montador de cadeia relata a data em que isso acontece para qualquer par em que o emissor termina primeiro.
+
+## Assinaturas cruzadas, ou por que uma raiz pode parecer um intermediário
+
+Uma raiz nova não é confiável para ninguém no dia em que é gerada; os repositórios de confiança levam anos para atualizar e os dispositivos em campo nunca atualizam. Então uma CA faz a sua raiz nova ser certificada pela antiga: o mesmo nome de titular e a mesma chave da raiz autoassinada nova, num segundo certificado emitido pela raiz antiga. Um cliente que confia só na raiz antiga vê uma cadeia um elo mais longa e fica satisfeito; um cliente que já confia na raiz nova ignora o certificado extra, ou nunca o recebe.
+
+A hierarquia atual da Let's Encrypt é o exemplo vivo. A sua página de certificados lista duas raízes mais novas geradas em 3 de setembro de 2025, ISRG Root YR (RSA) e ISRG Root YE (ECDSA), e diz que "a Root YE tem assinatura cruzada da ISRG Root X2, enquanto a Root YR tem assinatura cruzada da ISRG Root X1"; os intermediários RSA Let's Encrypt YR1 e YR2 são emitidos pela Root YR, e a cadeia padrão deles "encadeia até a ISRG Root X1". Em 2026-10-04 o servidor valid-isrgrootx1.letsencrypt.org enviou exatamente isso: o certificado final, emitido pela YR1; a YR1, emitida pela ISRG Root YR; e um certificado da ISRG Root YR emitido pela ISRG Root X1, válido a partir de 13 de maio de 2026. A própria ISRG Root X1 não foi enviada, porque é a âncora e todo cliente a tem. Para o montador de cadeia isso é um caminho de três com uma âncora de confiança omitida; acrescente a ISRG Root X1 autoassinada e ele passa a ler completa, quatro certificados, raiz incluída. O certificado da Root YR com assinatura cruzada é um intermediário nesse caminho, que é o que uma assinatura cruzada é: uma raiz vestida de intermediário para os clientes que ainda não a conhecem.
+
+Um detalhe que o montador anota nessa cadeia: a YR1 foi emitida em 3 de setembro de 2025, e o certificado da Root YR com assinatura cruzada ao qual ela se encadeia começa em 13 de maio de 2026. O titular é anterior ao certificado do seu emissor. Nada na RFC 5280 proíbe isso, já que a validade é conferida no momento da validação, não no da emissão, e uma assinatura cruzada é por natureza emitida depois da chave que certifica; um validador que insistisse em datas aninhadas rejeitaria metade da internet.
+
+## Quando a mesma cadeia funciona num navegador e não em outro
+
+Um servidor que esquece o seu intermediário não falha em todo lugar, e é isso que torna a falha difícil de ver. Alguns clientes buscam o emissor faltante na hora, na URL de caIssuers da extensão Authority Information Access do certificado final. O Firefox tomou outro caminho: ele "pré-carrega" os intermediários a partir do Common CA Database mantido pelo programa de raízes da Mozilla, baixados "uma vez por dia" com as suas outras configurações remotas, um mecanismo que "foi lançado nas plataformas desktop no Firefox 75", precisamente porque "às vezes os sites são configurados de forma incorreta" e não enviam o intermediário. A Mozilla descreve a alternativa, usada por outros navegadores, como um mecanismo em que "o navegador do usuário então, em segundo plano, conecta-se à CA e baixa o certificado na hora". Clientes fora dos navegadores, um curl num contêiner, um serviço Java, um terminal de pagamento, normalmente não fazem nem uma coisa nem outra. Então o chamado diz "funciona no Chrome, falha a partir do servidor da API", e o servidor é quem estava certo.
+
+O montador de cadeia trata um emissor faltante do jeito que esses clientes tratam: nomeia o emissor que o último certificado espera, por nome e por identificador de chave, imprime a URL de caIssuers se o certificado a traz, e não a busca. Se o que falta é uma raiz que os seus clientes têm, a cadeia é a normal a enviar; se é um intermediário, todo cliente que não busca vai falhar, e a correção é um bloco PEM a mais no lugar certo.
+
+## O que os Baseline Requirements acrescentam
+
+Certificados de confiança pública têm regras além da RFC 5280, definidas pelo CA/Browser Forum. Duas delas aparecem em cadeias. A seção 6.1.5 dos Baseline Requirements exige módulos RSA de "pelo menos 2048 bits" e chaves ECDSA nas "curvas elípticas NIST P-256, NIST P-384 ou NIST P-521", com "nenhum outro algoritmo ou tamanho de chave" permitido; um intermediário de 1024 bits numa cadeia de hoje é uma relíquia de PKI privada ou um erro. E o SHA-1 acabou: o registro de alterações dos Baseline Requirements anota o encerramento de "todo uso remanescente de assinaturas SHA-1 em Certificados e CRLs" (CRL é a lista de revogação de certificados) com efeito em 2026-09-15, e a RFC 9155 observa que "o CA/Browser Forum (CABF) também descontinuou o uso de SHA-1 em assinaturas de certificados". O único lugar em que uma assinatura SHA-1 é inofensiva é numa raiz autoassinada, cuja assinatura nenhum validador confere; a raiz é confiada, não verificada.
+
+## Lendo uma cadeia em cinco perguntas
+
+1. O certificado final vem primeiro, e é o único certificado que ninguém mais no conjunto emite?
+2. O AKI de cada certificado é igual ao SKI do seguinte ou, onde faltam identificadores, os nomes correspondem exatamente?
+3. Todo emissor é uma CA (basicConstraints cA TRUE, keyCertSign ligado), e todo pathLenConstraint no caminho para baixo deixa espaço para os intermediários abaixo dele?
+4. Todo certificado do caminho ainda estará válido no dia em que o certificado final expirar, ou algum intermediário termina antes?
+5. O último certificado é uma raiz que os seus clientes realmente têm e, se a raiz falta, é uma raiz ou um intermediário que você esqueceu?
+
+O montador de cadeia responde às cinco a partir do PEM e depois verifica cada assinatura no seu navegador, para que os elos não sejam só nomeados, mas provados.
+
+## Fontes
+
+- [RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280) (lida em 2026-10-04): seções 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.1.9, 6.1 e 6.1.4
+- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, seção 4.4.2](https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2) (lida em 2026-10-04): a ordem de certificate_list e a âncora de confiança opcional
+- [CA/Browser Forum: Baseline Requirements for TLS Server Certificates, versão 2.3.1](https://github.com/cabforum/servercert/blob/main/docs/BR.md) (lido em 2026-10-04): seção 6.1.5 e o registro de alterações
+- [RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2](https://www.rfc-editor.org/rfc/rfc9155) (lida em 2026-10-04)
+- [Let's Encrypt: Chains of Trust](https://letsencrypt.org/certificates/) (lido em 2026-10-04): a hierarquia em 8 de julho de 2026
+- [nginx: Configuring HTTPS servers, SSL certificate chains](https://nginx.org/en/docs/http/configuring_https_servers.html) (lido em 2026-10-04)
+- [Apache HTTP Server 2.4: mod_ssl](https://httpd.apache.org/docs/2.4/mod/mod_ssl.html) (lido em 2026-10-04): SSLCertificateFile e SSLCertificateChainFile
+- [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (atualizado em 2025-11-26, lido em 2026-10-04)
+- [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (lido em 2026-10-04)

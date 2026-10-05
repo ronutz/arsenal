@@ -257,8 +257,14 @@ const KEY_USAGE_BITS = [
 // Minimal DER (ASN.1) parser
 // ----------------------------------------------------------------------------
 
-/** A parsed ASN.1 TLV node. Constructed nodes carry their children. */
-interface Asn1Node {
+/**
+ * A parsed ASN.1 TLV node. Constructed nodes carry their children.
+ * Exported (2026-10-04) so the certificate chain builder can locate the
+ * signed bytes (tbsCertificate), the signature and the issuer's
+ * SubjectPublicKeyInfo for its browser-side signature check without a second
+ * DER parser. The decoder's own behaviour is unchanged.
+ */
+export interface Asn1Node {
   /** Full first (identifier) byte. */
   tag: number;
   /** 0 universal, 1 application, 2 context-specific, 3 private. */
@@ -342,8 +348,8 @@ function parseTlv(buf: Uint8Array, offset: number, depth: number): Asn1Node {
   return node;
 }
 
-/** Parse the whole buffer as a single top-level TLV (the Certificate SEQUENCE). */
-function parseDer(buf: Uint8Array): Asn1Node {
+/** Parse the whole buffer as a single top-level TLV (the Certificate SEQUENCE). Exported for the chain builder (see Asn1Node). */
+export function parseDer(buf: Uint8Array): Asn1Node {
   return parseTlv(buf, 0, 0);
 }
 
@@ -361,7 +367,7 @@ function bytesToHex(bytes: Uint8Array, separator = ""): string {
 }
 
 /** Decode an OBJECT IDENTIFIER's content bytes to its dotted-decimal form. */
-function decodeOid(content: Uint8Array): string {
+export function decodeOid(content: Uint8Array): string {
   if (content.length === 0) return "";
   const parts: number[] = [];
   const first = content[0];

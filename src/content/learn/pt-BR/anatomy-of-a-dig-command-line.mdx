@@ -1,0 +1,76 @@
+---
+slug: anatomy-of-a-dig-command-line
+title: "Anatomia de uma linha de comando do dig: como o dig lê o que você digita"
+summary: "O dig recebe um servidor depois de um @, opções com traço, um nome, um tipo, uma classe e opções de consulta com sinal de mais, em quase qualquer ordem, e preenche um padrão para tudo o que você deixa de fora. Este artigo percorre a linha da esquerda para a direita: quais palavras são posicionais e como o dig distingue um nome de um tipo, por que as opções com mais são sensíveis à ordem e duas delas são globais, como o transporte é decidido (UDP com nova tentativa por TCP, TCP para ANY e transferências, TLS e HTTPS nas suas próprias portas), quais chaves mudam bits do cabeçalho e quais viajam no registro OPT do EDNS, o que +trace e +nssearch fazem com a recursão, e por que o manual manda guardar um segredo TSIG num arquivo. Cada afirmação é do manual do BIND 9 ou de uma RFC, citada."
+concepts: ["dig", "dns", "linha de comando", "edns", "dnssec", "transferência de zona", "dns sobre tls", "dns sobre https", "tsig"]
+relatedTools: ["dig-command-builder", "dig-output-explainer"]
+relatedArticles: ["dig-query-options", "dig-trace-and-delegation", "edns-and-the-opt-pseudosection", "dns-message-header-and-flags"]
+category: networking
+order: 54
+status: reviewed
+updated: "2026-10-04"
+---
+
+O manual do BIND 9 dá a sinopse do dig numa linha: `dig [@servidor] [opções] [nome] [tipo] [classe] [opção-de-consulta...]`. Cinco tipos de palavra, todos opcionais. Rode `dig` sem nada e ele pede os registros NS da raiz. Tudo o que você acrescenta estreita isso, e a ordem importa menos do que as pessoas temem e mais do que esperam: os cinco tipos podem se misturar, mas as opções com sinal de mais se aplicam em sequência, e duas delas não podem ser revertidas depois de dadas. Este artigo percorre uma linha de comando do dig da esquerda para a direita, dizendo como o dig lê cada palavra e o que faz quando a palavra falta. O [montador de comandos dig](/tools/dig-command-builder) monta uma linha dessas a partir de um formulário e explica cada parte; o [explicador de saída do dig](/tools/dig-output-explainer) lê o que volta.
+
+## A quem perguntar: a palavra depois do @
+
+Uma palavra que começa com `@` nomeia o servidor. Pode ser um nome de host, um endereço IPv4 ou um endereço IPv6, escrito sem mais nada: `@2001:db8::53`, sem os colchetes que uma URL exigiria. Quando é um nome de host, o dig o resolve primeiro usando o resolvedor comum e depois consulta o endereço que obteve. Quando nenhum `@servidor` é dado, o dig tenta cada servidor listado no `/etc/resolv.conf`, um por vez, e, se nenhum servir, manda a consulta ao próprio host.
+
+A porta não faz parte dessa palavra. É a opção `-p`, e existe, diz o manual, para testar um servidor configurado para escutar numa porta fora do padrão. O padrão é 53, que a RFC 1035 atribui tanto a UDP quanto a TCP; os dois transportes cifrados mudam o padrão (abaixo).
+
+Duas outras opções moldam para onde a consulta vai. `-4` e `-6` restringem o dig a uma família de endereços, o que também filtra os servidores do resolv.conf que ele vai tentar. `-b endereço[#porta]` define o endereço de origem, que precisa ser um endereço da máquina, ou `0.0.0.0` ou `::`; é a opção a usar quando uma regra de firewall ou um host com várias interfaces faz da origem padrão a errada.
+
+## O que perguntar: nome, tipo, classe
+
+O nome é o nome a consultar. O tipo vem depois dele, ou com `-t`; quando nenhum tipo é dado, o dig consulta registros A. A classe vem por último, ou com `-c`; o padrão é IN, e as alternativas que o manual documenta são CH, de Chaosnet, e HS, de Hesiod. São os valores de TYPE e CLASS da RFC 1035 (A é 1, NS 2, MX 15, TXT 16; IN é 1, CH 3, HS 4), estendidos desde então pelo AAAA (RFC 3596) e pelo resto do registro da IANA, que também lista os tipos de consulta que não são tipos de registro: AXFR (252), IXFR (251) e `*` (255), que o dig escreve ANY.
+
+Aqui está a única ambiguidade real. O dig lê uma palavra solta tentando-a como `ixfr=N`, depois como tipo, depois como classe, e só então como nome; a ordem está no seu código-fonte, `bin/dig/dig.c`, e o manual aponta os dois casos em que ela morde: os nomes de classe IN e CH coincidem com os domínios de topo IN e CH. Os remédios são a opção `-q nome`, que nomeia a consulta explicitamente, as opções `-t` e `-c` para o tipo e a classe, ou escrever `IN.` e `CH.` com um ponto final. O mesmo vale para qualquer nome que por acaso seja um mnemônico de tipo: um host chamado `mx` ou `ns` tem de passar pelo `-q`.
+
+As consultas reversas pulam os três. `-x endereço` recebe um endereço IPv4 ou IPv6 e o dig monta o nome sozinho: os quatro octetos invertidos sob `in-addr.arpa` (RFC 1035, seção 3.5), ou trinta e dois nibbles invertidos sob `ip6.arpa` (RFC 3596, seção 2.5), com o tipo PTR e a classe IN. Nome, tipo e classe na mesma linha não são necessários.
+
+Duas palavras de tipo carregam gramática própria. `AXFR` pede a zona inteira; o dig a escreve como tipo, e o servidor a serve ou recusa. `ixfr=N` pede as mudanças desde o serial N, o serial da cópia que você tem, que é como a RFC 1995 define a transferência incremental. Uma palavra `TYPEnn`, com o número, pede qualquer tipo pelo seu código, e um tipo que o dig não conhece é impresso no formato de tipo desconhecido da RFC 3597.
+
+## As opções com mais, em ordem
+
+Tudo o que começa com `+` é uma opção de consulta. O manual as separa em três famílias: algumas ligam ou desligam bits no cabeçalho da consulta, algumas escolhem que partes da resposta são impressas, e algumas definem a estratégia de tempo limite e repetição. Um prefixo `no` nega (`+norecurse`), um `=valor` atribui (`+timeout=3`), e uma abreviação sem ambiguidade é aceita (`+cd` por `+cdflag`).
+
+Dois fatos sobre elas governam como uma linha é escrita. As opções de consulta são sensíveis à ordem: `+noall +answer` desliga todas as seções e depois religa a seção de resposta, e inverter as duas não deixa nada impresso. E duas opções são globais: `+short` e `+cmd` valem para todas as consultas da linha e não podem ser definidas globalmente e depois revertidas para uma consulta. As demais podem, porque o dig aceita várias consultas numa linha, cada uma com as suas opções, e um conjunto de opções globais escrito antes do primeiro nome vale para todas. O exemplo do próprio manual roda três consultas num comando: uma consulta ANY, uma consulta reversa e uma consulta NS, com `+qr` para todas e `+noqr` na última.
+
+## Qual transporte, decidido por você ou pelo dig
+
+O transporte padrão é UDP, e uma resposta UDP truncada (bit TC ligado) faz o dig tentar de novo por TCP; `+ignore` suprime essa nova tentativa e aceita a resposta truncada. Três casos mudam o padrão. Uma consulta do tipo ANY e uma consulta `ixfr=N` usam TCP por padrão. Um AXFR sempre usa TCP, o que a RFC 5936 também declara: uma transferência de zona é feita só por conexões TCP. `+tcp` (ou a grafia antiga `+vc`, de circuito virtual) força TCP para qualquer outra coisa.
+
+Duas opções mais novas saem da porta 53 de todo. `+tls` leva a consulta por DNS sobre TLS, e a porta padrão passa a ser 853, a porta que a RFC 7858 atribui. `+https` a leva por DNS sobre HTTPS (RFC 8484) num POST HTTP; a porta padrão é 443 e o pedido vai ao endpoint `/dns-query`, a menos que `+https=/outro/caminho` nomeie outro. Nenhuma das duas precisa de `+tcp`; as duas já correm dentro de uma conexão TCP.
+
+## Bits do cabeçalho e o registro OPT
+
+Algumas chaves ligam bits no cabeçalho de doze bytes que a RFC 1035 define. `+norecurse` limpa RD, recursão desejada, que o dig liga por padrão: um servidor consultado sem RD responde só com o que tem, que é a maneira de ver o que um servidor autoritativo de fato serve ou o que um resolvedor tem em cache. `+cd` liga CD, verificação desativada, pedindo a um resolvedor validador que entregue os dados sem validá-los (RFC 4035, seção 3.2.2). O bit AD, dados autênticos, o dig liga por padrão na consulta; numa resposta ele quer dizer que o servidor validou tudo o que devolveu (RFC 4035, seção 3.2.3).
+
+Outras chaves não têm bit de cabeçalho para ligar, porque são novas demais para o cabeçalho de 1987. Elas viajam no pseudo-registro OPT que a RFC 6891 acrescentou à seção adicional, o mecanismo de extensão chamado EDNS. O dig envia um registro OPT por padrão, com EDNS versão 0; `+noedns` o remove. O bit DNSSEC OK, DO, que `+dnssec` liga, é o primeiro dos flags estendidos do registro OPT (RFC 3225), e é o que faz um servidor incluir os registros RRSIG, DNSKEY, DS e NSEC (RFC 4034) na resposta. `+trace` também o liga, para emular o que um resolvedor envia. `+bufsize=B` define o tamanho de carga UDP que o registro OPT anuncia, de 0 a 65535 no dig; a RFC 6891 diz que valores abaixo de 512 devem ser tratados como 512 e sugere 4096 como ponto de partida, e os operadores por trás do DNS Flag Day 2020 fixaram 1232 como o tamanho mínimo seguro que evita fragmentação. `+nsid` acrescenta a opção que pede ao servidor que se identifique (RFC 5001), `+subnet` a opção de sub-rede do cliente (RFC 7871, em que um comprimento de prefixo 0 quer dizer não use o meu endereço), e o dig envia a opção COOKIE (RFC 7873) por padrão, que `+nocookie` remove. A consequência para uma linha de comando: `+noedns` ao lado de `+dnssec` ou `+bufsize` é uma contradição, porque o que essas opções pedem não tem onde ir.
+
+## Três opções que mudam quem responde
+
+`+trace` transforma o dig num resolvedor para uma consulta. Ele pergunta aos servidores da raiz, segue a delegação até os servidores do domínio de topo, segue a delegação seguinte e imprime cada passo. A recursão fica desligada enquanto faz isso, e, se um `@servidor` é dado, ele afeta só a consulta inicial pelos servidores de nomes da raiz. `+nssearch` acha os servidores autoritativos da zona que contém o nome e imprime o registro SOA que cada um tem, com os endereços dos servidores que não responderam; também desliga a recursão. `+norecurse`, como acima, pergunta a um servidor o que ele sabe. Com `+trace` ou `+nssearch` na linha, `+norecurse` não acrescenta nada.
+
+## Tempos, saída e o segredo que fica num arquivo
+
+`+timeout=T` espera T segundos por consulta, cinco por padrão, e um valor abaixo de 1 é silenciosamente ajustado para 1. `+tries=T` é o número total de tentativas, três por padrão, arredondado para 1 quando zero ou negativo; `+retry=T` conta as repetições depois da primeira tentativa, duas por padrão. Para a saída, `+short` imprime só os dados da resposta, um registro por linha, e `+identify` acrescenta o endereço e a porta do servidor que respondeu; `+noall +answer` imprime a seção de resposta por inteiro; `+multiline` imprime registros SOA e DNSKEY em várias linhas com comentários; `+ttlunits` imprime TTLs como 1h e 2d; `+yaml` imprime a troca inteira em YAML; `+qr` imprime também a consulta como foi enviada.
+
+Consultas assinadas, por fim. O TSIG assina uma consulta com um segredo compartilhado, e o dig recebe a chave de duas maneiras: `-k arquivo` a lê de um arquivo, e `-y [hmac:]nome:segredo` a recebe na linha de comando. O manual é incomumente direto sobre a segunda: só `-k` deve ser usado, porque com `-y` o segredo compartilhado é um argumento de linha de comando em texto claro, visível na saída do `ps` e no arquivo de histórico do shell. Um montador que oferece só `-k` está seguindo o manual, não sendo cauteloso por conta própria.
+
+## Fontes
+
+Cada afirmação sobre o comportamento do dig acima é do manual do BIND 9, e os fatos de protocolo são das RFCs, todos lidos em 2026-10-04:
+
+- [BIND 9 Administrator Reference Manual, Manual Pages: dig](https://bind9.readthedocs.io/en/latest/manpages.html#man-dig), a documentação "latest" (9.21)
+- [Fonte do BIND 9, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/main/bin/dig/dig.c): a ordem em que uma palavra solta é tentada (ixfr=, tipo, classe, nome) e o TCP por padrão para ANY e ixfr
+- [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035): valores de TYPE e CLASS, porta 53, IN-ADDR.ARPA, os bits do cabeçalho
+- [RFC 3596](https://www.rfc-editor.org/rfc/rfc3596): AAAA e IP6.ARPA
+- [RFC 6891](https://www.rfc-editor.org/rfc/rfc6891): EDNS(0) e as regras de tamanho de carga; [RFC 3225](https://www.rfc-editor.org/rfc/rfc3225): o bit DO
+- [RFC 4034](https://www.rfc-editor.org/rfc/rfc4034) e [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035): os registros DNSSEC, os bits CD e AD
+- [RFC 5936](https://www.rfc-editor.org/rfc/rfc5936) e [RFC 1995](https://www.rfc-editor.org/rfc/rfc1995): AXFR e IXFR; [RFC 3597](https://www.rfc-editor.org/rfc/rfc3597): tipos desconhecidos
+- [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) e [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484): DNS sobre TLS e DNS sobre HTTPS
+- [RFC 5001](https://www.rfc-editor.org/rfc/rfc5001), [RFC 7871](https://www.rfc-editor.org/rfc/rfc7871), [RFC 7873](https://www.rfc-editor.org/rfc/rfc7873): NSID, Client Subnet, Cookies
+- [IANA DNS Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml): o registro de RR TYPEs
+- [DNS Flag Day 2020](https://www.dnsflagday.net/2020/): a recomendação de 1232 bytes

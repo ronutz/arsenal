@@ -42,6 +42,46 @@
 import { decodeCertificate, X509DecodeError, type DecodedCertificate } from "../x509/compute";
 
 // ----------------------------------------------------------------------------
+// Sources
+// ----------------------------------------------------------------------------
+
+/** A source the manifest publishes: what, where, when read, used for what. */
+export interface Source {
+  // Stable id.
+  id: string;
+  // What it is.
+  label: string;
+  // Kind of source.
+  type: "reference" | "implementation" | "vendor-docs" | "vendor-kb" | "vendor-community";
+  // Where it is.
+  url: string;
+  // When it was read (ISO date).
+  access_date: string;
+  // What it was used for.
+  scope: string;
+}
+
+/** The day every source below was read. */
+const READ = "2026-10-04";
+
+/** Build a source record. */
+const src = (id: string, label: string, type: Source["type"], url: string, scope: string): Source => ({ id, label, type, url, access_date: READ, scope });
+
+/** Every source, in the order the manifest lists them. */
+export const SOURCES: Source[] = [
+  // The profile the chain is checked against.
+  src("rfc5280", "RFC 5280: Internet X.509 PKI Certificate and CRL Profile", "reference", "https://www.rfc-editor.org/rfc/rfc5280", "s4.2.1.1 the authority key identifier facilitates path construction and MAY be omitted on a self-signed certificate; s4.2.1.2 the subject key identifier MUST appear in CA certificates and equals the AKI of the certificates they issue, and applications are not required to verify that the identifiers match; s4.2.1.3 keyCertSign; s4.2.1.9 cA and pathLenConstraint (the number of non-self-issued intermediates that may follow; zero means none; the last certificate is not counted); s6.1 the path conditions (the subject of x is the issuer of x+1; the trust anchor is not part of the path; self-issued means the same name in subject and issuer) and s6.1.4 steps (k) to (n)"),
+  // How a TLS server is to send the chain.
+  src("rfc8446-4-4-2", "RFC 8446: TLS 1.3, section 4.4.2 Certificate", "reference", "https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2", "the sender's certificate MUST come first; each following certificate SHOULD directly certify the one immediately preceding it; a certificate that specifies a trust anchor MAY be omitted; implementations SHOULD be prepared for extraneous certificates and arbitrary orderings, the end-entity certificate excepted"),
+  // What is permitted in a publicly trusted certificate today.
+  src("cabf-br", "CA/Browser Forum Baseline Requirements for TLS Server Certificates, version 2.3.1 (cabforum/servercert, main)", "reference", "https://github.com/cabforum/servercert/blob/main/docs/BR.md", "s6.1.5 RSA moduli of at least 2048 bits and ECDSA on P-256, P-384 or P-521, no other algorithms or key sizes; the change log row sunsetting all remaining use of SHA-1 signatures in certificates and CRLs on 2026-09-15"),
+  // SHA-1 and MD5 for signatures.
+  src("rfc9155", "RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2", "reference", "https://www.rfc-editor.org/rfc/rfc9155", "MD5 and SHA-1 MUST NOT be used for digital signatures in TLS 1.2, and the note that the CA/Browser Forum has deprecated SHA-1 for certificate signatures"),
+  // The real chain the vectors carry.
+  src("letsencrypt-certificates", "Let's Encrypt: Chains of Trust", "reference", "https://letsencrypt.org/certificates/", "the hierarchy as of 2026-07-08: ISRG Root X1 and X2, the newer ISRG Root YE (cross-signed by X2) and YR (cross-signed by X1), the YE1/YE2 and YR1/YR2 intermediates, and the default chains ending at ISRG Root X1"),
+];
+
+// ----------------------------------------------------------------------------
 // Limits (ReDoS- and memory-safe parsing)
 // ----------------------------------------------------------------------------
 
@@ -111,6 +151,8 @@ export interface ChainCert {
   caIssuerUrls: string[];
   /** Set when this certificate's DER bytes equal an earlier input certificate's. */
   duplicateOf: number | null;
+  /** The certificate re-encoded as a canonical PEM block (64-column base64). */
+  pem: string;
 }
 
 /** How a certificate was linked to the issuer chosen for it. */
@@ -308,6 +350,7 @@ function summarise(index: number, d: DecodedCertificate): ChainCert {
     ocspUrls: d.extensions.revocation.ocspUrls,
     caIssuerUrls: d.extensions.revocation.caIssuerUrls,
     duplicateOf: null,
+    pem: toPem(d.der),
   };
 }
 

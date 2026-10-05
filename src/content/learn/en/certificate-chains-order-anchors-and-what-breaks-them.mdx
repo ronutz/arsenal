@@ -1,0 +1,90 @@
+---
+slug: certificate-chains-order-anchors-and-what-breaks-them
+title: "Certificate chains: the order, the anchor, and what breaks them"
+summary: "A server certificate is only the last link. How a client builds the path from the leaf to a root it trusts, why the order of the Certificate message matters and what TLS 1.3 relaxed, why the root is normally left out, how key identifiers and names link one certificate to the next, what pathLenConstraint, cA and keyCertSign forbid, why a cross-signed root appears in a chain as if it were an intermediate, and why the same chain works in one browser and fails in another. With RFC 5280, RFC 8446, the Baseline Requirements and a live Let's Encrypt chain."
+concepts: ["certificate-chain", "intermediate-certificate", "trust-anchor", "path-validation", "pathlenconstraint", "cross-signing", "authority-key-identifier", "tls-certificate-message"]
+relatedTools: ["cert-chain-builder", "x509", "csr-decoder"]
+relatedArticles: ["certificate-validation", "authority-information-access", "f5-ssl-cert-key-chain", "lets-encrypt", "x509-anatomy"]
+category: pki
+order: 4
+status: reviewed
+updated: "2026-10-04"
+---
+
+The certificate a server is proud of is the least important one in the handshake. The client already decided whom it trusts, years ago, when its operating system or browser shipped a store of root certificates; everything the server sends has to connect that root to the name in the address bar, link by link, and the handshake fails on the first link that is missing or wrong. Most certificate incidents that are not expiries are chain incidents: an intermediate not sent, sent in the wrong order, replaced by a sibling with the same name and a different key, or kept past the day its own issuer expired. This article is about the links. The [certificate chain builder](/tools/cert-chain-builder) does every step below on whatever you paste.
+
+## The path, as RFC 5280 defines it
+
+RFC 5280 describes validation as a walk along "a prospective certification path (a sequence of n certificates)" that has to satisfy four conditions: "for all x in \{1, ..., n-1\}, the subject of certificate x is the issuer of certificate x+1", "certificate 1 is issued by the trust anchor", "certificate n is the certificate to be validated", and every certificate "was valid at the time in question". Two details in that definition decide most arguments about chains.
+
+The first: the trust anchor is an input, not a link. "When the trust anchor is provided in the form of a self-signed certificate, this self-signed certificate is not included as part of the prospective certification path." The client brings the root; the server does not have to send it, and sending it changes nothing about trust. F5's own article on BIG-IP chain certificates says it plainly: "Putting the root CA certificate in the certificate bundle is optional, and will never cause the client to trust the root CA." A client that does not have the root in its store will not start trusting it because the server offered a copy.
+
+The second: the path is defined by names. The subject of each certificate is the issuer of the next. Key identifiers make the match unambiguous, and the next section is about them, but a chain is a chain of names first.
+
+## How one certificate finds its issuer
+
+Every certificate names its issuer in full, and when several certificates carry the same name (a CA that rolled its key, a CA with an old and a new cross-sign) the name is not enough. RFC 5280 gives two extensions for this. The Subject Key Identifier "MUST appear in all conforming CA certificates", and "the value of the subject key identifier MUST be the value placed in the key identifier field of the authority key identifier extension" of the certificates that CA issues. So a client that holds a leaf looks for the certificate whose SKI equals the leaf's AKI, and the match is exact even when two candidates share a name. The standard adds, in the same breath, that "applications are not required to verify that key identifiers match when performing certification path validation": the identifiers are there to find the issuer, not to replace the signature check that proves it.
+
+The two common ways of deriving a key identifier are both in section 4.2.1.2: the SHA-1 hash of the public key, or a four-bit type field followed by the low 60 bits of that hash. Neither is required; "other methods of generating unique numbers are also acceptable", which is why a key identifier is an opaque octet string to a validator and not something to recompute.
+
+When a leaf carries no AKI, or an issuer no SKI, the match falls back to names. Private public key infrastructure (PKI) deployments built by hand often end up there, and they still validate; the chain builder reports the link as made by name only, so you know which links would be ambiguous the day a CA rolls its key.
+
+## Why the root is left out, and why the order matters
+
+TLS 1.3 says how the chain travels. In the Certificate message, "the sender's certificate MUST come in the first CertificateEntry in the list. Each following certificate SHOULD directly certify the one immediately preceding it. Because certificate validation requires that trust anchors be distributed independently, a certificate that specifies a trust anchor MAY be omitted from the chain, provided that supported peers are known to possess any omitted certificates."
+
+The same section records what changed: "Prior to TLS 1.3, certificate_list ordering required each certificate to certify the one immediately preceding it; however, some implementations allowed some flexibility." Servers "sometimes send both a current and deprecated intermediate for transitional purposes, and others are simply configured incorrectly", and for compatibility "all implementations SHOULD be prepared to handle potentially extraneous certificates and arbitrary orderings from any TLS version, with the exception of the end-entity certificate which MUST be first." So a modern client will usually sort out a shuffled chain and ignore an extra certificate. Usually is the operative word: embedded clients, older Java runtimes and strict libraries still take the list as sent, and the leaf has to be first everywhere.
+
+Where the order is configured depends on the server, and the failure modes differ. nginx takes one file in which "the server certificate must appear before the chained certificates"; get it backwards and nginx fails to start with a key values mismatch, "because nginx has tried to use the private key with the bundle's first certificate instead of the server certificate". Apache httpd since 2.4.8 lets SSLCertificateFile "also include intermediate CA certificates, sorted from leaf to root", which "obsoletes SSLCertificateChainFile". BIG-IP keeps the leaf and the chain apart: the intermediates are imported as a certificate object of their own and selected as the Chain of the certificate and key in the Client SSL or Server SSL profile. The chain builder emits the ordered file both with and without the root, so whichever of these you are configuring, the order is already right.
+
+## What a validator checks on each CA, and what breaks
+
+Section 6.1.4 of RFC 5280 lists what a client verifies on every certificate that issues the next one, and three of its steps account for most of the chains that are complete and still invalid.
+
+**cA.** Step (k): "If certificate i is a version 3 certificate, verify that the basicConstraints extension is present and that cA is set to TRUE." Section 4.2.1.9 is blunter about why: "If the cA boolean is not asserted, then the keyCertSign bit in the key usage extension MUST NOT be asserted. If the basic constraints extension is not present in a version 3 certificate, or the extension is present but the cA boolean is not asserted, then the certified public key MUST NOT be used to verify certificate signatures." A certificate issued by a non-CA, however valid its signature, has no path.
+
+**keyCertSign.** Step (n): "If a key usage extension is present, verify that the keyCertSign bit is set." A CA certificate whose keyUsage says digitalSignature and nothing else cannot sign certificates in the eyes of a conforming client, and OpenSSL says exactly that: "key usage does not include certificate signing".
+
+**pathLenConstraint.** Steps (l) and (m) maintain a counter: "If the certificate was not self-issued, verify that max_path_length is greater than zero and decrement max_path_length by 1", then "If pathLenConstraint is present in the certificate and is less than max_path_length, set max_path_length to the value of pathLenConstraint." The field "gives the maximum number of non-self-issued intermediate certificates that may follow this certificate in a valid certification path", with the note that "the last certificate in the certification path is not an intermediate certificate, and is not included in this limit". An issuing CA constrained to pathlen 0 may issue leaves and nothing else; the day someone uses it to sign a sub-CA, every leaf under that sub-CA fails with path length constraint exceeded, and the leaf's own certificate is blameless. The counter skips self-issued certificates (same name in subject and issuer), which is how a CA renews its own certificate without consuming a step.
+
+Then the dates. Each certificate must be valid at the instant of validation, and that includes the intermediates. An intermediate that expires before the leaves it issued is a time bomb with a known date: the leaf is fine, the chain stops validating, and the fix is a renewed intermediate, which the CA normally publishes well in advance. The chain builder reports the date on which this happens for any pair where the issuer ends first.
+
+## Cross-signs, or why a root can look like an intermediate
+
+A new root is not trusted by anyone on the day it is generated; trust stores take years to update and devices in the field never do. So a CA has its new root certified by its old one: the same subject name and the same key as the new self-signed root, in a second certificate issued by the old root. A client that trusts only the old root sees a chain one link longer and is happy; a client that already trusts the new root ignores the extra certificate, or never receives it.
+
+Let's Encrypt's current hierarchy is the live example. Its certificates page lists two newer roots generated on September 3, 2025, ISRG Root YR (RSA) and ISRG Root YE (ECDSA), and says that "Root YE is cross-signed by ISRG Root X2, while Root YR is cross-signed by ISRG Root X1"; the RSA intermediates Let's Encrypt YR1 and YR2 are issued by Root YR, and the default chain for them "chains to ISRG Root X1". On 2026-10-04 the server valid-isrgrootx1.letsencrypt.org sent exactly that: the leaf, issued by YR1; YR1, issued by ISRG Root YR; and a certificate for ISRG Root YR issued by ISRG Root X1, valid from May 13, 2026. ISRG Root X1 itself was not sent, because it is the anchor and every client has it. To the chain builder that is a path of three with a trust anchor omitted; add the self-signed ISRG Root X1 and it reads complete, four certificates, root included. The cross-signed Root YR certificate is an intermediate in that path, which is what a cross-sign is: a root wearing an intermediate's clothes for the clients that do not know it yet.
+
+One detail the builder notes on that chain: YR1 was issued on September 3, 2025, and the cross-signed Root YR certificate it chains to starts on May 13, 2026. The subject predates the certificate of its issuer. Nothing in RFC 5280 forbids it, since validity is checked at the time of validation, not at the time of issuance, and a cross-sign is by nature issued later than the key it certifies; a validator that insisted on nested dates would reject half the internet.
+
+## When the same chain works in one browser and not another
+
+A server that forgets its intermediate does not fail everywhere, which is what makes the fault hard to see. Some clients fetch the missing issuer just in time from the caIssuers URL in the leaf's Authority Information Access extension. Firefox took a different route: it "preloads" intermediates from the Common CA Database maintained by the Mozilla root program, downloaded "once a day" with its other remote settings, a mechanism that "shipped to release on desktop platforms in Firefox 75", precisely because "sometimes, websites are set up incorrectly" and do not send the intermediate. Mozilla describes the alternative, used by other browsers, as a mechanism where "the user's browser then, in the background, connects to the CA and downloads the certificate just-in-time". Clients outside browsers, a curl in a container, a Java service, a payment terminal, usually do neither. So the bug report reads "works in Chrome, fails from the API server", and the server is the one that was right.
+
+The chain builder treats a missing issuer the way these clients do: it names the issuer the last certificate expects, by name and by key identifier, prints the caIssuers URL if the certificate carries one, and does not fetch it. If what is missing is a root your clients hold, the chain is the normal one to send; if it is an intermediate, every client that does not fetch will fail, and the fix is one more PEM block in the right place.
+
+## What the Baseline Requirements add
+
+Publicly trusted certificates have rules beyond RFC 5280, set by the CA/Browser Forum. Two of them show up in chains. Section 6.1.5 of the Baseline Requirements requires RSA moduli of "at least 2048 bits" and ECDSA keys on "the NIST P-256, NIST P-384 or NIST P-521 elliptic curve", with "no other algorithms or key sizes" permitted; a 1024-bit intermediate in a chain today is a private PKI relic or a mistake. And SHA-1 is gone: the Baseline Requirements' change log records the sunset of "all remaining use of SHA-1 signatures in Certificates and CRLs" (the certificate revocation lists included) effective 2026-09-15, and RFC 9155 notes that "the CA/Browser Forum (CABF) has also deprecated use of SHA-1 for use in certificate signatures". The one place a SHA-1 signature is harmless is on a self-signed root, whose signature no validator checks; the root is trusted, not verified.
+
+## Reading a chain in five questions
+
+1. Is the leaf first, and is it the only certificate nobody else in the set issues?
+2. Does each certificate's AKI equal the next one's SKI, or, where identifiers are missing, do the names match exactly?
+3. Is every issuer a CA (basicConstraints cA TRUE, keyCertSign set), and does every pathLenConstraint on the way down leave room for the intermediates below it?
+4. Will every certificate on the path still be valid on the day the leaf expires, or does an intermediate end first?
+5. Is the last certificate a root your clients actually hold, and if the root is missing, is it a root or an intermediate you forgot?
+
+The chain builder answers all five from the PEM, and then verifies each signature in your browser so the links are not only named but proven.
+
+## Sources
+
+- [RFC 5280: Internet X.509 Public Key Infrastructure Certificate and CRL Profile](https://www.rfc-editor.org/rfc/rfc5280) (read 2026-10-04): sections 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.1.9, 6.1 and 6.1.4
+- [RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3, section 4.4.2](https://www.rfc-editor.org/rfc/rfc8446#section-4.4.2) (read 2026-10-04): the certificate_list order and the optional trust anchor
+- [CA/Browser Forum: Baseline Requirements for TLS Server Certificates, version 2.3.1](https://github.com/cabforum/servercert/blob/main/docs/BR.md) (read 2026-10-04): section 6.1.5 and the change log
+- [RFC 9155: Deprecating MD5 and SHA-1 Signature Hashes in TLS 1.2 and DTLS 1.2](https://www.rfc-editor.org/rfc/rfc9155) (read 2026-10-04)
+- [Let's Encrypt: Chains of Trust](https://letsencrypt.org/certificates/) (read 2026-10-04): the hierarchy as of July 8, 2026
+- [nginx: Configuring HTTPS servers, SSL certificate chains](https://nginx.org/en/docs/http/configuring_https_servers.html) (read 2026-10-04)
+- [Apache HTTP Server 2.4: mod_ssl](https://httpd.apache.org/docs/2.4/mod/mod_ssl.html) (read 2026-10-04): SSLCertificateFile and SSLCertificateChainFile
+- [F5 K13302: Configure the BIG-IP system to use an SSL chain certificate](https://my.f5.com/manage/s/article/K13302) (updated 2025-11-26, read 2026-10-04)
+- [Mozilla: Intermediate CA Preloading](https://wiki.mozilla.org/Security/CryptoEngineering/Intermediate_Preloading) (read 2026-10-04)

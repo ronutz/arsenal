@@ -638,6 +638,94 @@
         }
       }
     },
+    "/bits-bytes": {
+      "get": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_bits_bytes",
+        "summary": "Bits, bytes and throughput",
+        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"size\":\"56 KiB\",\"rate\":\"56 kbit/s\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TLS & transport"
+        ],
+        "operationId": "run_bits_bytes_post",
+        "summary": "Bits, bytes and throughput (POST)",
+        "description": "A size in every unit of both conventions with the bit count written out (1.5 GB is 12 000 000 000 bits and 1.397 GiB; read the 1024 way it would be 7.37 % more), a rate in bits and bytes per second and per minute, hour and day, and any two of size, rate and time giving the third, with the protocol efficiency of TCP over Ethernet applied if you ask. The connection table answers for a modem, T1, E1 and every Ethernet speed at once. Exact arithmetic; nothing is rounded until it is printed. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: IEC 60027-2 / IEC 80000-13 (NIST), RFC 2544 App. C, ITU-T V.90, ITU-T G.704, IEEE 802.3-2022. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cable-run-planner": {
       "get": {
         "tags": [
@@ -690,6 +778,94 @@
         "operationId": "run_cable_run_planner_post",
         "summary": "Cable run planner (POST)",
         "description": "Speed, distance, environment, PoE in - every compliant cable and fiber option out, each citing the TIA-568 or 802.3 rule that governs it, with honest exclusions for the rest. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: ANSI/TIA-568 channel limits + IEEE 802.3 optic reaches; rules table pinned by golden vectors incl. exact-at-limit cases. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cert-chain-builder": {
+      "get": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_cert_chain_builder",
+        "summary": "Certificate chain builder",
+        "description": "Paste a leaf and its intermediates in any order and get the chain a server should send: the end entity first, each issuer after the certificate it signed, the root optional. Links are made by key identifier or by name, RFC 5280's rules are checked along the way (cA, keyCertSign, pathLenConstraint, validity, windows), missing and extra certificates are named, and each signature is verified in your browser. Nothing is fetched. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 5280, RFC 8446 s4.4.2, CA/B Forum BR 2.3.1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"text\":\"-----BEGIN CERTIFICATE-----\\n...\\n-----END CERTIFICATE-----\\n-----BEGIN CERTIFICATE-----\\n...\\n-----END CERTIFICATE-----\",\"now\":\"2026-10-04T12:00:00Z\"}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "PKI"
+        ],
+        "operationId": "run_cert_chain_builder_post",
+        "summary": "Certificate chain builder (POST)",
+        "description": "Paste a leaf and its intermediates in any order and get the chain a server should send: the end entity first, each issuer after the certificate it signed, the root optional. Links are made by key identifier or by name, RFC 5280's rules are checked along the way (cA, keyCertSign, pathLenConstraint, validity, windows), missing and extra certificates are named, and each signature is verified in your browser. Nothing is fetched. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: RFC 5280, RFC 8446 s4.4.2, CA/B Forum BR 2.3.1. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",
@@ -1904,6 +2080,94 @@
         "operationId": "run_diff_post",
         "summary": "Text Diff (POST)",
         "description": "Compare two blocks of text and see exactly what changed, line by line, with inline word-level highlighting on edited lines. Optionally ignore whitespace or case. Everything is computed in your browser; your text is never sent anywhere. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "requestBody": {
+          "required": true,
+          "description": "The tool input as a JSON object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dig-command-builder": {
+      "get": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_dig_command_builder",
+        "summary": "dig command builder",
+        "description": "Say what to look up, where to ask and how, and get one copy-pasteable dig command with every token explained, the combinations the manual calls redundant or contradictory flagged, and a summary of what the query will carry: transport, port, RD, DO, CD, EDNS and cookie. The inverse of the dig output explainer. Runs nothing; built in your browser from the BIND 9 manual and the DNS RFCs. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: BIND 9 dig manual, RFC 1035, RFC 3596, RFC 6891, RFC 3225, RFC 4034, RFC 4035, RFC 5936, RFC 1995, RFC 8482, RFC 7858, RFC 8484, IANA DNS Parameters. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "parameters": [
+          {
+            "name": "input",
+            "in": "query",
+            "required": true,
+            "description": "The tool input, as a JSON string.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "{\"name\":\"example.com\",\"server\":\"192.0.2.53\",\"type\":\"MX\",\"dnssec\":true,\"multiline\":true}"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The computed result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input is missing or could not be processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Networking & addressing"
+        ],
+        "operationId": "run_dig_command_builder_post",
+        "summary": "dig command builder (POST)",
+        "description": "Say what to look up, where to ask and how, and get one copy-pasteable dig command with every token explained, the combinations the manual calls redundant or contradictory flagged, and a summary of what the query will carry: transport, port, RD, DO, CD, EDNS and cookie. The inverse of the dig output explainer. Runs nothing; built in your browser from the BIND 9 manual and the DNS RFCs. The input is a JSON object: send it as the request body (POST) or as a JSON string (?input=). Standards: BIND 9 dig manual, RFC 1035, RFC 3596, RFC 6891, RFC 3225, RFC 4034, RFC 4035, RFC 5936, RFC 1995, RFC 8482, RFC 7858, RFC 8484, IANA DNS Parameters. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as a JSON object.",

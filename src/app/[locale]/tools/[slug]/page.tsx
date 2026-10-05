@@ -87,6 +87,12 @@ import CharsetEquivalencyTool from "@/components/CharsetEquivalencyTool";
 import { manifest as charsetEquivalencyManifest } from "@/lib/tools/charset-equivalency";
 import ChmodPermissionCalculatorTool from "@/components/ChmodPermissionCalculatorTool";
 import { manifest as chmodPermissionCalculatorManifest } from "@/lib/tools/chmod-permission-calculator";
+import CertChainBuilderTool from "@/components/CertChainBuilderTool";
+import { manifest as certChainBuilderManifest } from "@/lib/tools/cert-chain-builder";
+import BitsBytesTool from "@/components/BitsBytesTool";
+import { manifest as bitsBytesManifest } from "@/lib/tools/bits-bytes";
+import DigCommandBuilderTool from "@/components/DigCommandBuilderTool";
+import { manifest as digCommandBuilderManifest } from "@/lib/tools/dig-command-builder";
 import F5ReleaseCadenceCalendarTool from "@/components/F5ReleaseCadenceCalendarTool";
 import { manifest as f5ReleaseCadenceCalendarManifest } from "@/lib/tools/f5-release-cadence-calendar";
 import DiffTool from "@/components/DiffTool";
@@ -978,6 +984,18 @@ const TOOL_PAGES: Record<string, ToolPage> = {
   "charset-equivalency": {
     Component: CharsetEquivalencyTool,
     sources: charsetEquivalencyManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "bits-bytes": {
+    Component: BitsBytesTool,
+    sources: bitsBytesManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "dig-command-builder": {
+    Component: DigCommandBuilderTool,
+    sources: digCommandBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
+  },
+  "cert-chain-builder": {
+    Component: CertChainBuilderTool,
+    sources: certChainBuilderManifest.sources.map((s) => ({ id: s.id, label: s.label, url: s.url })),
   },
   "chmod-permission-calculator": {
     Component: ChmodPermissionCalculatorTool,

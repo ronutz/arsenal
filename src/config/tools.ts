@@ -64,6 +64,7 @@ export const tools: ToolEntry[] = [
   { id: "hmac", href: "/tools/hmac", category: "hashing", available: true },
   { id: "uuid", href: "/tools/uuid", category: "identifiers", available: true },
   { id: "x509", href: "/tools/x509", category: "pki", available: true },
+  { id: "cert-chain-builder", href: "/tools/cert-chain-builder", category: "pki", available: true },
   { id: "cert-renewal-planner", href: "/tools/cert-renewal-planner", category: "pki", available: true },
   { id: "csr-decoder", href: "/tools/csr-decoder", category: "pki", available: true },
   { id: "acme-dns01", href: "/tools/acme-dns01", category: "pki", available: true },
@@ -92,6 +93,7 @@ export const tools: ToolEntry[] = [
   { id: "f5os-tenant-config-explainer", sub: "f5os", href: "/tools/f5os-tenant-config-explainer", category: "operations", vendors: ["f5"], available: true },
   { id: "f5os-restconf-path-explainer", sub: "f5os", href: "/tools/f5os-restconf-path-explainer", category: "networking", vendors: ["f5"], available: true },
   { id: "dig-output-explainer", href: "/tools/dig-output-explainer", category: "networking", available: true },
+  { id: "dig-command-builder", href: "/tools/dig-command-builder", category: "networking", available: true },
   { id: "nslookup-output-explainer", href: "/tools/nslookup-output-explainer", category: "networking", available: true },
   { id: "secure-headers", href: "/tools/secure-headers", category: "security", available: true },
   { id: "saml-decoder", href: "/tools/saml-decoder", category: "identity", secondaryCategories: ["security"], vendors: ["ping"], vendorNeutral: true /* open standard; Ping-affiliated, not Ping-owned */, sub: "sso", available: true },
@@ -148,6 +150,7 @@ export const tools: ToolEntry[] = [
   { id: "f5-cipher-string-expander", sub: "ltm", href: "/tools/f5-cipher-string-expander", category: "transport", vendors: ["f5"], available: true },
   { id: "f5-ssl-profile-explainer", sub: "ltm", href: "/tools/f5-ssl-profile-explainer", category: "transport", vendors: ["f5"], available: true },
   { id: "mtu-mss", href: "/tools/mtu-mss", category: "networking", available: true },
+  { id: "bits-bytes", href: "/tools/bits-bytes", category: "networking", available: true },
   { id: "http-methods-comparison", href: "/tools/http-methods-comparison", category: "networking", available: true },
 
   { id: "http-status-code-explainer", href: "/tools/http-status-code-explainer", category: "networking", available: true },

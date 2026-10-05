@@ -1,0 +1,76 @@
+---
+slug: anatomy-of-a-dig-command-line
+title: "Anatomy of a dig command line: how dig reads what you type"
+summary: "dig takes a server after an @, options with a dash, a name, a type, a class and query options with a plus, in almost any order, and fills in a default for everything you leave out. This article walks the line from left to right: which words are positional and how dig tells a name from a type, why the plus options are order sensitive and two of them are global, how the transport is decided (UDP with a TCP retry, TCP for ANY and transfers, TLS and HTTPS on their own ports), which switches change header bits and which travel in the EDNS OPT record, what +trace and +nssearch do to recursion, and why the manual tells you to keep a TSIG secret in a file. Each statement is the BIND 9 manual's or an RFC's, cited."
+concepts: ["dig", "dns", "command line", "edns", "dnssec", "zone transfer", "dns over tls", "dns over https", "tsig"]
+relatedTools: ["dig-command-builder", "dig-output-explainer"]
+relatedArticles: ["dig-query-options", "dig-trace-and-delegation", "edns-and-the-opt-pseudosection", "dns-message-header-and-flags"]
+category: networking
+order: 54
+status: reviewed
+updated: "2026-10-04"
+---
+
+The BIND 9 manual gives dig's synopsis in one line: `dig [@server] [options] [name] [type] [class] [queryopt...]`. Five kinds of word, every one optional. Run `dig` with nothing at all and it asks for the NS records of the root. Everything you add narrows that, and the order matters less than people fear and more than they expect: the five kinds can be mixed, but the plus options apply in sequence, and two of them cannot be overridden once given. This article walks a dig command line from left to right, saying how dig reads each word and what it does when the word is missing. The [dig command builder](/tools/dig-command-builder) assembles such a line from a form and explains every token; the [dig output explainer](/tools/dig-output-explainer) reads what comes back.
+
+## Who to ask: the word after @
+
+A word beginning with `@` names the server. It may be a host name, an IPv4 address or an IPv6 address, written bare: `@2001:db8::53`, without the brackets a URL would need. When it is a host name, dig resolves it first using the ordinary resolver, then queries the address it got. When no `@server` is given, dig tries each server listed in `/etc/resolv.conf` in turn, and if none is usable it sends the query to the local host.
+
+The port is not part of that word. It is the `-p` option, and it exists, the manual says, to test a server configured to listen on a non-standard port. The default is 53, which RFC 1035 assigns for both UDP and TCP; the two encrypted transports change the default (below).
+
+Two more options shape where the query goes. `-4` and `-6` restrict dig to one address family, which also filters the resolv.conf servers it will try. `-b address[#port]` sets the source address, which must be an address of the machine, or `0.0.0.0` or `::`; it is the option to reach for when a firewall rule or a multihomed host makes the default source the wrong one.
+
+## What to ask: name, type, class
+
+The name is the owner name to look up. The type follows it, or comes with `-t`; when no type is given, dig looks up A records. The class comes last, or with `-c`; the default is IN, and the alternatives the manual documents are CH, for Chaosnet, and HS, for Hesiod. These are the TYPE and CLASS values of RFC 1035 (A is 1, NS 2, MX 15, TXT 16; IN is 1, CH 3, HS 4), extended since by AAAA (RFC 3596) and the rest of the IANA registry, which also lists the query types that are not record types: AXFR (252), IXFR (251) and `*` (255), which dig spells ANY.
+
+Here is the one real ambiguity. dig reads a bare word by trying it as `ixfr=N`, then as a type, then as a class, and only then as a name; the order is in its source, `bin/dig/dig.c`, and the manual points at the two cases where it bites: the IN and CH class names overlap with the IN and CH top-level domains. Its remedies are the `-q name` option, which names the query explicitly, the `-t` and `-c` options for the type and class, or writing `IN.` and `CH.` with a trailing dot. The same applies to any owner name that happens to be a type mnemonic: a host called `mx` or `ns` has to go through `-q`.
+
+Reverse lookups skip all three. `-x address` takes an IPv4 or IPv6 address and dig builds the name itself: the four octets reversed under `in-addr.arpa` (RFC 1035 section 3.5), or thirty-two reversed nibbles under `ip6.arpa` (RFC 3596 section 2.5), with the type set to PTR and the class to IN. Name, type and class on the same line are not needed.
+
+Two type words carry their own grammar. `AXFR` requests the whole zone; dig writes it as a type, the server either serves it or refuses. `ixfr=N` requests the changes since serial N, the serial of the copy you hold, which is how RFC 1995 defines the incremental transfer. A `TYPEnn` word, with the number, asks for any type by its code, and a type dig does not know is printed in RFC 3597's unknown format.
+
+## The plus options, in order
+
+Everything beginning with `+` is a query option. The manual sorts them in three families: some set or reset bits in the query header, some choose which parts of the answer are printed, and some set the timeout and retry strategy. A `no` prefix negates (`+norecurse`), a `=value` assigns (`+timeout=3`), and an unambiguous abbreviation is accepted (`+cd` for `+cdflag`).
+
+Two facts about them govern how a line is written. Query options are order sensitive: `+noall +answer` turns every section off and then the answer section back on, and reversing the two leaves nothing printed. And two options are global: `+short` and `+cmd` apply to every lookup on the line and cannot be set globally and then overridden for one query. The rest can, because dig accepts several queries on one line, each with its own options, and a set of global options written before the first name applies to all of them. The manual's own example runs three lookups in one command: an ANY query, a reverse lookup and an NS query, with `+qr` set for all and `+noqr` on the last.
+
+## Which transport, decided for you
+
+The default transport is UDP, and a truncated UDP answer (the TC bit set) makes dig retry over TCP; `+ignore` suppresses that retry and accepts the truncated answer. Three cases change the default. A query of type ANY and an `ixfr=N` query default to TCP. An AXFR always uses TCP, which RFC 5936 states as well: a zone transfer is done only over TCP connections. `+tcp` (or its old spelling `+vc`, for virtual circuit) forces TCP for anything else.
+
+Two newer options leave port 53 altogether. `+tls` carries the query over DNS over TLS, and the port defaults to 853, the port RFC 7858 assigns. `+https` carries it over DNS over HTTPS (RFC 8484) in an HTTP POST; the port defaults to 443 and the request goes to the endpoint `/dns-query` unless `+https=/other/path` names another. Neither needs `+tcp`; both run inside a TCP connection already.
+
+## Header bits and the OPT record
+
+Some switches set bits in the twelve-byte DNS header that RFC 1035 defines. `+norecurse` clears RD, recursion desired, which dig sets by default: a server asked without RD answers only from what it holds, which is the way to see what an authoritative server actually serves or what a resolver has cached. `+cd` sets CD, checking disabled, asking a validating resolver to hand over the data without validating it (RFC 4035 section 3.2.2). The AD bit, authentic data, dig sets by default in the query; in a response it means the server validated everything it returned (RFC 4035 section 3.2.3).
+
+Other switches have no header bit to set, because they are too new for the 1987 header. They travel in the OPT pseudo-record that RFC 6891 added to the additional section, the extension mechanism called EDNS. dig sends an OPT record by default, with EDNS version 0; `+noedns` removes it. The DNSSEC OK bit, DO, which `+dnssec` sets, is the first of the OPT record's extended flags (RFC 3225), and it is what makes a server include the RRSIG, DNSKEY, DS and NSEC records (RFC 4034) in its answer. `+trace` sets it too, to emulate what a resolver sends. `+bufsize=B` sets the UDP payload size the OPT record advertises, 0 to 65535 in dig; RFC 6891 says values under 512 must be treated as 512 and suggests 4096 as a starting point, and the operators behind DNS Flag Day 2020 settled on 1232 as the minimum safe size that avoids fragmentation. `+nsid` adds the option that asks the server to identify itself (RFC 5001), `+subnet` the client subnet option (RFC 7871, where a prefix length of 0 means do not use my address), and dig sends the COOKIE option (RFC 7873) by default, which `+nocookie` removes. The consequence for a command line: `+noedns` next to `+dnssec` or `+bufsize` is a contradiction, because the things those options ask for have nowhere to go.
+
+## Three options that change who answers
+
+`+trace` turns dig into a resolver for one query. It asks the root servers, follows the referral to the top-level domain's servers, follows the next referral, and prints each step. Recursion is disabled while it does so, and if an `@server` is given it affects only the initial query for the root name servers. `+nssearch` finds the authoritative servers of the zone containing the name and prints the SOA record each one holds, with the addresses of the servers that did not respond; it disables recursion too. `+norecurse`, as above, asks one server what it knows. With `+trace` or `+nssearch` on the line, `+norecurse` adds nothing.
+
+## Timers, output, and the secret that stays in a file
+
+`+timeout=T` waits T seconds per query, five by default, and a value under 1 is silently set to 1. `+tries=T` is the total number of attempts, three by default, rounded up to 1 when zero or negative; `+retry=T` counts the retries after the first attempt, two by default. For output, `+short` prints the answer data alone, one record per line, and `+identify` adds the address and port of the answering server; `+noall +answer` prints the answer section in full; `+multiline` prints SOA and DNSKEY records across lines with comments; `+ttlunits` prints TTLs as 1h and 2d; `+yaml` prints the whole exchange as YAML; `+qr` also prints the query as it was sent.
+
+Signed queries, finally. TSIG signs a query with a shared secret, and dig takes the key two ways: `-k keyfile` reads it from a file, and `-y [hmac:]name:secret` takes it on the command line. The manual is unusually direct about the second: only `-k` should be used, because with `-y` the shared secret is a command-line argument in clear text, visible in the output of `ps` and in the shell's history file. A builder that offers only `-k` is following the manual, not being cautious on its own account.
+
+## Sources
+
+Every statement about dig's behaviour above is the BIND 9 manual's, and the protocol facts are the RFCs', all read on 2026-10-04:
+
+- [BIND 9 Administrator Reference Manual, Manual Pages: dig](https://bind9.readthedocs.io/en/latest/manpages.html#man-dig), the "latest" (9.21) documentation
+- [BIND 9 source, bin/dig/dig.c](https://github.com/isc-projects/bind9/blob/main/bin/dig/dig.c): the order in which a bare word is tried (ixfr=, type, class, name) and the TCP default for ANY and ixfr
+- [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035): TYPE and CLASS values, port 53, IN-ADDR.ARPA, the header bits
+- [RFC 3596](https://www.rfc-editor.org/rfc/rfc3596): AAAA and IP6.ARPA
+- [RFC 6891](https://www.rfc-editor.org/rfc/rfc6891): EDNS(0) and the payload size rules; [RFC 3225](https://www.rfc-editor.org/rfc/rfc3225): the DO bit
+- [RFC 4034](https://www.rfc-editor.org/rfc/rfc4034) and [RFC 4035](https://www.rfc-editor.org/rfc/rfc4035): the DNSSEC records, the CD and AD bits
+- [RFC 5936](https://www.rfc-editor.org/rfc/rfc5936) and [RFC 1995](https://www.rfc-editor.org/rfc/rfc1995): AXFR and IXFR; [RFC 3597](https://www.rfc-editor.org/rfc/rfc3597): unknown types
+- [RFC 7858](https://www.rfc-editor.org/rfc/rfc7858) and [RFC 8484](https://www.rfc-editor.org/rfc/rfc8484): DNS over TLS and DNS over HTTPS
+- [RFC 5001](https://www.rfc-editor.org/rfc/rfc5001), [RFC 7871](https://www.rfc-editor.org/rfc/rfc7871), [RFC 7873](https://www.rfc-editor.org/rfc/rfc7873): NSID, Client Subnet, Cookies
+- [IANA DNS Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml): the RR TYPE registry
+- [DNS Flag Day 2020](https://www.dnsflagday.net/2020/): the 1232-byte recommendation

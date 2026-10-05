@@ -53,11 +53,23 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "op": "run_bigip_ltm_lb_simulator",
     "tag": "F5 BIG-IP LTM"
   },
+  "bits-bytes": {
+    "url": "https://ronutz.com/api/v1/bits-bytes",
+    "method": "GET",
+    "op": "run_bits_bytes",
+    "tag": "TLS & transport"
+  },
   "cable-run-planner": {
     "url": "https://ronutz.com/api/v1/cable-run-planner",
     "method": "GET",
     "op": "run_cable_run_planner",
     "tag": "Physical layer"
+  },
+  "cert-chain-builder": {
+    "url": "https://ronutz.com/api/v1/cert-chain-builder",
+    "method": "GET",
+    "op": "run_cert_chain_builder",
+    "tag": "PKI"
   },
   "cert-renewal-planner": {
     "url": "https://ronutz.com/api/v1/cert-renewal-planner",
@@ -142,6 +154,12 @@ export const API_ENDPOINTS: Record<string, ApiEndpoint> = {
     "method": "GET",
     "op": "run_diff",
     "tag": "Text & utilities"
+  },
+  "dig-command-builder": {
+    "url": "https://ronutz.com/api/v1/dig-command-builder",
+    "method": "GET",
+    "op": "run_dig_command_builder",
+    "tag": "Networking & addressing"
   },
   "dig-output-explainer": {
     "url": "https://ronutz.com/api/v1/dig-output-explainer",
