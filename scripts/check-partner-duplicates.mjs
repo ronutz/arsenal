@@ -250,6 +250,21 @@ if (sharedCopy.length) {
 // tell that from two unrelated problems.
 const DECLARED_OVERLAPS = new Map([
   [
+    "token:digital:dec|eeye-digital-security",
+    "Two distinct companies that share one English word. `dec` is Digital Equipment " +
+      "Corporation, the Maynard minicomputer maker of 1957; `eeye-digital-security` is " +
+      "eEye Digital Security, the Irvine vulnerability research company of 1998 that " +
+      "BeyondTrust bought in 2012. Nothing but the adjective is common to them. " +
+      "Declared 2026-10-06 when the eEye record was added at PRIME's request.",
+  ],
+  [
+    "token:labs:bell-labs-lucent-alcatel|grafana-labs|q1-labs",
+    "Three distinct companies that share the suffix 'Labs'. `bell-labs-lucent-alcatel` " +
+      "is the Bell Labs lineage; `q1-labs` is the Fredericton company behind QRadar, " +
+      "bought by IBM in 2011; `grafana-labs` is the 2014 company behind the Grafana " +
+      "dashboard. Declared 2026-10-06 when the latter two were added at PRIME's request.",
+  ],
+  [
     "stem:intel|intel-amd",
     "Two deliberate entries. `intel` is Intel as a vendor in the control plane - " +
       "x86, the first microprocessor, the network interface. `intel-amd` is a JOINT " +

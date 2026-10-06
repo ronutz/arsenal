@@ -276,6 +276,27 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   levelblue: "US", // Dallas; launched 6 May 2024 (LevelBlue newsroom, read 2026-10-06)
   trustwave: "US", // Chicago, 1995 (Wikipedia, read 2026-10-06)
   spiderlabs: "US", // Trustwave's team, Chicago (Trustwave, 2011, read 2026-10-06)
+  // PRIME's batch of 2026-10-06 (07:37, 07:57, 08:03, 08:42), each from the page cited on the record.
+  "q1-labs": "CA", // Fredericton, New Brunswick; a University of New Brunswick spinout (Entrevestor, 2011)
+  "tivoli-systems": "US", // Austin, Texas (Wikipedia: Tivoli Software)
+  "eeye-digital-security": "US", // Irvine, California (socaltech, 2012)
+  metageek: "US", // Boise, Idaho (ChannelE2E, 2022)
+  oscium: "US", // Oklahoma City (Wikipedia: Oscium; oscium.com/about)
+  auvik: "CA", // Waterloo, Ontario (auvik.com/about; ChannelE2E, 2022)
+  ekahau: "FI", // Helsinki; University of Helsinki and HIIT researchers (FCAI, 2018)
+  tamosoft: "NZ", // Christchurch (tamos.com/about)
+  "opennms-group": "US", // The OpenNMS Group; Morrisville, North Carolina at the 2020 sale, Lewisville, Texas today (NantHealth 8-K; opennms.com)
+  nagios: "US", // St. Paul, Minnesota (nagios.com/about)
+  zabbix: "LV", // Riga, Latvia (Wikipedia: Zabbix; zabbix.com/about says headquarters in Latvia)
+  // "grafana-labs" is deliberately ABSENT: founded as Raintank in 2014, and no page read on 2026-10-06 (grafana.com/about,
+  // Wikipedia: Grafana, TechCrunch 21 Aug 2024) names the founding country or city. The card renders without a flag, which is
+  // the honest reading until a page states it; a guess here would be exactly what this file's header forbids.
+  okta: "US", // San Francisco (Wikipedia: Okta, Inc.)
+  "hewlett-packard": "US", // Palo Alto, California (Wikipedia: Hewlett-Packard)
+  borland: "US", // Scotts Valley, California; the Danish Borland Ltd of 1981 preceded the 1983 US company (Wikipedia: Borland)
+  "ashton-tate": "US", // Torrance / Culver City, California (Wikipedia: Ashton-Tate)
+  // "nantucket" is deliberately ABSENT for the same reason: the Clipper article read on 2026-10-06 names Nantucket's founders,
+  // president and buyer but no country or city of founding. Add the flag when a page states it.
   getronics: "NL",
   cyberark: "IL",
   epi: "NL",

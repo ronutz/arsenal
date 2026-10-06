@@ -53,6 +53,56 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-06",
+    time: "12:00",
+    kind: "content",
+    title: "The AAA batch: RADIUS, TACACS+, 802.1X and the EAP methods, NTLM, LDAP, Active Directory, web authentication and accounting, with the authorization vocabulary and the AS/400",
+    body:
+      "Six explainers in English and Portuguese walk one 802.1X login through RADIUS packet by packet, a login and a command through the three TACACS+ exchanges of RFC 8907, the EAP methods side by side, the three NTLM messages, the web authentication proxy and the IETF's captive portal architecture, and accounting as a design of four record streams against NIST SP 800-53. Seventeen glossary entries are new (EAP, PEAP, EAP-TTLS, EAP-FAST, TEAP, EAP-MSCHAPv2, EAP-pwd, EAP-SIM and EAP-AKA, TACACS and XTACACS, MAB, RADIUS CoA, RadSec, WebAuth, AS/400, privilege creep, ABAC, separation of duties) and ten existing ones gain long sourced bodies (RADIUS, TACACS+, EAP-TLS, 802.1X, accounting, Active Directory, NTLM, LDAP, RBAC, least privilege), every fact read on the day from the RFC or vendor page cited on the entry. The IBM record gains the AS/400 paragraph.",
+    articles: ["radius-end-to-end", "tacacs-plus-device-administration", "802-1x-and-eap-methods", "ntlm-explained", "web-authentication-and-captive-portals", "accounting-who-did-what-and-when"],
+    links: [
+      { label: "RADIUS", href: "/glossary/radius" },
+      { label: "TACACS+", href: "/glossary/tacacs" },
+      { label: "EAP", href: "/glossary/eap" },
+      { label: "Accounting", href: "/glossary/accounting" },
+      { label: "Privilege creep", href: "/glossary/privilege-creep" },
+      { label: "AS/400", href: "/glossary/as-400" },
+      { label: "IBM on the industry record", href: "/industry/ibm" },
+    ],
+  },
+  {
+    date: "2026-10-06",
+    time: "10:30",
+    kind: "content",
+    title: "Twenty-two long glossary entries, from QRadar to Clipper, and the SolarWinds compromise told from the primary documents",
+    body:
+      "The glossary gains the products and operating systems whose makers joined the industry record this morning, each with a short definition, a hover-sized context and a long sourced body in English and Portuguese: QRadar, TamoGraph, HP OpenView, SolarWinds Orion, PRTG, MRTG, HP-UX, Solaris, SunOS, IRIX, AIX, VMS and OpenVMS, Nagios, Zabbix, Grafana, NetWare, the Novell certifications (CNA, CNE, CNI, Master CNE), Lotus Notes and Domino, Pascal, Turbo Pascal, dBASE and Clipper. A new Learn article tells the SolarWinds compromise from the company's own timeline, CrowdStrike's SUNSPOT analysis, FireEye's disclosure, CISA's directive, the 8-K, the White House attribution to the SVR, the SEC's 2023 charges and the 2024 ruling, and ends with what a practitioner should take from it.",
+    links: [
+      { label: "The SolarWinds compromise", href: "/learn/the-solarwinds-compromise" },
+      { label: "NetWare", href: "/glossary/netware" },
+      { label: "Lotus Notes and Domino", href: "/glossary/notes-and-domino" },
+      { label: "Novell certifications", href: "/glossary/novell-certifications" },
+      { label: "MRTG", href: "/glossary/mrtg" },
+      { label: "Glossary", href: "/glossary" },
+    ],
+  },
+  {
+    date: "2026-10-06",
+    time: "09:20",
+    kind: "content",
+    title: "Seventeen organisations join the industry record; Sun, SGI and DEC get their full stories; Novell's certifications",
+    body:
+      "New records, every fact read on the day from the page cited on the entry: Q1 Labs (QRadar, from Fredericton to IBM to the 2024 split between IBM and Palo Alto Networks), Tivoli Systems (the $800 million IBM purchase of 1996 and the brand's long afterlife), eEye Digital Security (Retina, and the .ida disclosure before Code Red), MetaGeek, Oscium and Auvik (the Wi-Spy tools and their two owners), Ekahau (from a University of Helsinki research group to Ookla and Accenture), TamoSoft (TamoGraph), The OpenNMS Group, Nagios, Zabbix, Grafana Labs, Okta (with the 2022 and 2023 breach record from Okta's own disclosure), Hewlett-Packard (the company itself, HP-UX and OpenView, to the 2015 split), Borland (Turbo Pascal to Micro Focus), Ashton-Tate (dBASE II and III) and Nantucket (Clipper). Sun Microsystems, Silicon Graphics and Digital Equipment Corporation, until now one-line entries, carry their stories: SunOS to Solaris and the Oracle purchase, IRIX and the two bankruptcies, VAX/VMS to OpenVMS on x86-64. Novell gains the CNI, CNE, CNA and Master CNE history from Novell's own 1996 and 1999 releases, with the two releases' disagreement on the CNE's launch year recorded rather than resolved.",
+    links: [
+      { label: "Q1 Labs", href: "/industry/q1-labs" },
+      { label: "Okta", href: "/industry/okta" },
+      { label: "Hewlett-Packard", href: "/industry/hewlett-packard" },
+      { label: "Borland", href: "/industry/borland" },
+      { label: "Sun Microsystems", href: "/industry/sun-microsystems" },
+      { label: "Novell", href: "/industry/novell" },
+    ],
+  },
+  {
+    date: "2026-10-06",
     time: "07:45",
     kind: "feature",
     title: "How to use ronutz; the Red Education page in six parts; Sentinel, Nessus and the quarantine",

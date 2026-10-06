@@ -113,7 +113,8 @@ const PARTNERS = path.join(ROOT, "src", "content", "vendors", "partners.ts");
 //                              still not NAMED by a citation, so it stays declared:
 //                              the declaration records a decision, not a gap.
 //                              silicon-graphics 1982 against the article's
-//                              9 November 1981, ruled 2026-10-02.
+//                              9 November 1981, ruled 2026-10-02; cleared on
+//                              2026-10-06 when a label named 1982 (see the list).
 //   SITE-DISAGREES-SOURCE (1)  the site states the year consistently and the
 //                              page it cites states a DIFFERENT one. Recorded
 //                              as a discrepancy rather than silently resolved,
@@ -160,8 +161,11 @@ const DECLARED = new Map([
 
   // NEITHER (0) - every year that nothing stated has now been researched
 
-  // RULED-OVER-SOURCE (1) - SITE-DISAGREES-SOURCE until PRIME ruled, 2026-10-02
-  ["silicon-graphics", { year: 1982, why: "RULED-OVER-SOURCE" }],
+  // RULED-OVER-SOURCE (0) - silicon-graphics was declared here from 2026-10-02 (PRIME's ruling that 1982 stands
+  // against the article's 9 November 1981) until 2026-10-06, when the Works written for the entry cited the
+  // same article's sentence that Clark LEFT STANFORD TO FOUND SGI IN 1982 beside its November 1981 founding
+  // date, so a label now names the year the site carries and the declaration became stale. Both figures
+  // remain on the record; the entry's body says which is which.
 
   // LINEAGE-ROOT (4)
   ["access-home-fleet", { year: 1987, why: "LINEAGE-ROOT" }],

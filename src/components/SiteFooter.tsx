@@ -140,9 +140,12 @@ export default async function SiteFooter() {
         </p>
         {/* Support row: since 2026-07-15 the line belongs to Red Education
             alone - the Buy Me a Coffee link moved to /contribute/tools, where
-            the support pitch actually lives (PRIME directive). Only the brand
-            name is colored (the <b> tag in the message) and the line ends
-            with a graduation cap. Points to the on-site profile/homage page
+            the support pitch actually lives (PRIME directive). Since
+            2026-10-06 (PRIME 12:02) the copy is the affiliation, "Rodolfo
+            Nützmann is a Senior Technical Instructor and Advisor at Red
+            Education", in all 16 message packs, replacing the booking pitch.
+            Only the brand name is colored (the <b> tag in the message) and
+            the line ends with a graduation cap. Points to the on-site profile/homage page
             (/red-education), which carries the lead-attributed outbound link
             - site-wide internal linking for the page (PRIME 2026-07-09). */}
         <p className="footer-support footer-built footer-redu">

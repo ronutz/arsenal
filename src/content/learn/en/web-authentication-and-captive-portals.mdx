@@ -1,0 +1,58 @@
+---
+slug: web-authentication-and-captive-portals
+title: "Web authentication and captive portals: the third door onto an authenticated port"
+summary: "How a switch or controller logs in a person whose device cannot do 802.1X: the web authentication proxy of Cisco's switch guide, the intercepted HTTP session and the login page, the policy downloaded on success, the fail and expired pages and the watch list, host detection by ARP and DHCP snooping, local against central web authentication, the HTTPS limit that is breaking interception everywhere, and the IETF's replacement for the trick, the captive portal architecture of RFC 8952 and the DHCP and router advertisement options of RFC 8910 that tell a device a portal exists instead of forging answers."
+concepts: ["web authentication", "webauth", "captive portal", "web authentication proxy", "local web authentication", "central web authentication", "rfc 8952", "rfc 8910", "dhcp option 114", "guest access", "authentication order"]
+relatedTools: []
+relatedArticles: ["802-1x-and-eap-methods", "radius-end-to-end", "nac-family-history", "dhcp-lease-lifecycle"]
+category: identity
+order: 236
+status: reviewed
+updated: "2026-10-06"
+---
+
+## Three doors, in order
+
+An authenticated port has three ways to open. 802.1X authenticates a device that has a supplicant, with a method chosen for the credential it holds. MAC Authentication Bypass admits a thing that has no supplicant, by its address, against a list. Web authentication is for the remaining case, a person on a device that has a browser but no supplicant configured for this network: a visitor, a contractor on a personal laptop, a student on a campus. The usual configuration tries the three in that order on each port, and this article is about the third. Cisco's Catalyst 9300 security configuration guide describes the feature, "known as web authentication proxy", as the way "to authenticate end users on host systems that do not run the IEEE 802.1x supplicant".
+
+## A man-in-the-middle run by the network, on purpose
+
+The design is an interception. The guide's Device Roles section says the switch "acts as an intermediary (proxy) between the client and the authentication server, requesting identity information from the client, verifying that information with the authentication server, and relaying a response to the client". The three roles are the client requesting access, the authentication server validating the identity, usually over RADIUS (Remote Authentication Dial-In User Service), and the switch controlling the port and performing the interception.
+
+Before anything can be intercepted the switch has to notice the host. The guide's Host Detection section lists the triggers on a Layer 2 interface: an ARP-based trigger, which "allows web-based authentication to detect hosts with a static IP address or a dynamic IP address"; dynamic ARP inspection; and DHCP snooping, where "web-based authentication is notified when the switch creates a DHCP-binding entry for the host". Session creation then checks the exception lists and any authorisation bypass, and activates the HTTP intercept access list for that host.
+
+## The login, step by step
+
+The guide's Authentication Process section is the sequence every hotel guest knows from the other side. "The user initiates an HTTP session." Then "the HTTP traffic is intercepted, and authorization is initiated. The switch sends the login page to the user." The user enters a username and password, and "the switch sends them to the authentication server". On success, "the switch downloads and activates the user's access policy from the authentication server" and sends a success page; the policy is whatever the RADIUS Access-Accept carried, typically a VLAN (virtual local area network) through the tunnel attributes or an access list by name. On failure, "the switch sends the login fail page. The user retries the login. If the maximum number of attempts fails, the switch sends the login expired page, and the host is placed in a watch list." The four pages, in the guide's Customizable Web Pages section, are Login, where the credentials are requested; Success; Fail; and Expire, shown when the login session has expired because of excessive login failures. A Local Web Authentication Banner can carry an organisation's text or a logo on the login page and on the result pop-ups, in a legacy and a new-style mode.
+
+The session ends the way it began, by the switch watching the host. The guide says "the switch reauthenticates a client when the host does not respond to an ARP probe on a Layer 2 interface, or when the host does not send any traffic within the idle timeout on a Layer 3 interface", and a Session-Timeout from the RADIUS server or a terminate action ends it too.
+
+## Local and central
+
+Two deployment shapes share the name. In local web authentication the switch or wireless controller serves the pages itself and talks to the RADIUS server directly, which is the flow above. In central web authentication the switch redirects the browser to a portal hosted on the policy engine, the engine authenticates the person, often with a sponsored guest account or a self-registration flow, and then changes the session's authorisation on the switch, which in practice means a RADIUS Change of Authorization. Central web authentication is the richer product and the one most guest systems use; it is also the one the next section's limit is about, because it depends on redirecting the first request.
+
+## The limit that is breaking interception
+
+The guide states it in a sentence: "HTTPS traffic interception for central web authentication redirect is not supported." A browser whose first request is to an HTTPS site cannot be redirected to a login page without presenting a certificate for a name the network does not own, which every browser now refuses with a warning; and most browsers' first request is HTTPS. The same is true of applications that pin their certificates and of clients using encrypted DNS. The interception that made web authentication work for twenty years is being closed as an attack, because it is indistinguishable from one. The captive portal entry on this site describes the user's experience of that decline; the design consequence is that an intercepting portal only reliably catches a browser that still makes a plain HTTP request, which is why operating systems started making one on purpose, a probe to a known address, to detect the situation.
+
+## The replacement: tell the device, do not trick it
+
+The IETF's response was to make the portal something the network announces. RFC 8952, Captive Portal Architecture, published in November 2020 by Larose, Dolson and Liu, describes five components: the user equipment, a provisioning service, a captive portal API server, an enforcement device and a captive portal signal. The provisioning service tells the device, when it joins the network, where the portal's API is; the device asks the API whether it is captive and where to go to be released; the enforcement device, the switch or controller, holds the session until the API says it is open. The architecture sets a rule that ends the old trick: "Solutions MUST NOT require the forging of responses from DNS or HTTP servers." It is equally clear about scope: it does not describe how a device negotiates unrestricted access, only how it learns that it must.
+
+RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements, published in September 2020 by Kumari and Kline, gives the provisioning service its vehicle. DHCPv4 option 114, DHCPv6 option 103 and IPv6 router advertisement option 37 carry a URI, and the RFC requires that it be the captive portal API endpoint defined by its companion RFC 8908. The document replaces an earlier RFC 7710 that had used DHCPv4 option 160, deprecated because devices in the field misbehaved with it. An operating system that implements RFC 8910 learns of the portal at the moment it receives an address, opens the portal in a sandboxed view, and needs no interception at all. Networks that provide the option and keep an intercepting portal for older clients get both populations through the door.
+
+## What to return, and what to keep separate
+
+The identity a portal establishes is a person's, usually a guest's, and the authorisation that follows should be a guest's: a VLAN or a filter that reaches the Internet and nothing internal, a session timeout that expires with the visit, and no access to the directory that authenticated them. Where the portal authenticates employees on unmanaged devices, the same rule holds more strongly, since the device has shown it is outside management. Accounting Start and Stop records for web-authenticated sessions carry the username and the station identifier like any other RADIUS session, and they are the record of who was on the guest network when, which is the question a venue is asked after an incident.
+
+## Where it fits
+
+The order on the port is the summary. 802.1X first, because it authenticates the device with a credential and derives keys for the link; MAC Authentication Bypass second, for the things on a list, with a restricted authorisation; web authentication third, for the people on devices that can do neither, with a guest's authorisation and, increasingly, the RFC 8910 option announced so that modern devices find the portal without being tricked. The 802.1X article covers the first two doors and the RADIUS article the server side of all three.
+
+## Sources
+
+- [Cisco Catalyst 9300 Series Switches, Security Configuration Guide, Cisco IOS XE Cupertino 17.9.x, Configuring Web-Based Authentication: the web authentication proxy definition, Device Roles, Host Detection, Session Creation, the Authentication Process, the four customizable pages, the Local Web Authentication Banner, reauthentication triggers, the HTTPS interception limit (read 2026-10-06)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-9/configuration_guide/sec/b_179_sec_9300_cg/configuring_web_based_authentication.html)
+- [RFC 8952, Captive Portal Architecture, Larose, Dolson, Liu, November 2020: the five components, provisioning by DHCP or router advertisement and the API, the rule against forging DNS or HTTP responses, the stated scope (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc8952)
+- [RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements (RAs), Kumari and Kline, September 2020: DHCPv4 option 114, DHCPv6 option 103, RA option 37, the API URI, the deprecated option 160 of RFC 7710 (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc8910)
+- [RFC 5176, Dynamic Authorization Extensions to RADIUS, January 2008: the Change of Authorization that central web authentication uses to open a session after the portal login (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc5176)
+- [RFC 3580, IEEE 802.1X RADIUS Usage Guidelines, September 2003: the tunnel attributes that place a web-authenticated session in a guest VLAN (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc3580)

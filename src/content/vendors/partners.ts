@@ -4559,6 +4559,11 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: Sun Microsystems - the infobox records the company founded 24 February 1982 and defunct 27 January 2010, fate acquired by Oracle Corporation", url: "https://en.wikipedia.org/wiki/Sun_Microsystems" },
+      // The Works (PRIME 07:57: "Solaris, Sun, SunOS"): the body below was written on 2026-10-06 from these pages.
+      { label: "Wikipedia: Sun Microsystems - founded on 24 February 1982 by Stanford graduate students Scott McNealy, Andy Bechtolsheim and Vinod Khosla, with Bill Joy of Berkeley joining soon after and counted as a founder; the name from the Stanford University Network; second after Apollo to specialise in workstations; profitable from its first quarter in July 1982; Bechtolsheim's Sun-1 on the 68000; SPARC from 1987 in the Sun-4, 64-bit SPARC V9 in 1995; NFS; John Gage's motto 'The Network is the Computer'; James Gosling's Java team; MySQL for $1 billion in 2008; Cray Business Systems Division, StorageTek and Innotek; Oracle announced 20 April 2009 at US$7.4 billion (US$5.6 billion net of cash and debt), European Commission approval 21 January 2010, completed 27 January 2010; 38,600 employees near the 2006 peak (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Sun_Microsystems" },
+      { label: "Wikipedia: SunOS - Sun's Unix from 1982; the SunOS name used for versions 1.0 to 4.1.4, BSD-based, with 5.0 and later based on System V Release 4 and marketed as Solaris; the 1987 AT&T and Sun collaboration that became SVR4; the 4 September 1991 announcement of the switch and the Solaris overbrand; 4.1.4 of September 1994 the last; shipped until 27 December 1998 and supported until 30 September 2003 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/SunOS" },
+      { label: "Wikipedia: Oracle Solaris - superseded SunOS in 1993; DTrace, ZFS and Time Slider originated in it; Solaris 2.1 for x86 in June 1993 and 2.4 in 1994 from one source base; OpenSolaris under the CDDL from June 2005, discontinued after the 2010 acquisition and forked as Illumos; renamed Oracle Solaris; 11.4 released in 2018 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Oracle_Solaris" },
+      { label: "Oracle 8-K exhibit 99.1, Redwood Shores, 27 January 2010: 'Oracle Completes Acquisition of Sun' (read 2026-10-06)", url: "https://www.sec.gov/Archives/edgar/data/1341439/000119312510015241/dex991.htm" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4570,7 +4575,13 @@ export const partnerVendors: PartnerVendor[] = [
     },
     tagline: "Four Stanford-orbit founders, SPARC, Solaris, Java - the dot in dot-com, absorbed by Oracle in 2010.",
     intro: "Sun packed more industry-shaping ideas into 28 years than most vendors manage in a century: the workstation, the network-first slogan it took the world decades to catch up with, NFS, SPARC, Solaris, and Java. Its 2010 end inside Oracle scattered a diaspora that still runs the industry - including the ForgeRock and Arista stories elsewhere in this section.",
-    body: ["From Andy Bechtolsheim's Stanford University Network workstation to Java running on billions of devices, Sun's arc is the arc of open systems itself - told in full in the profile below, with the bloodlines that lead out of it."],
+    body: [
+      "From Andy Bechtolsheim's Stanford University Network workstation to Java running on billions of devices, Sun's arc is the arc of open systems itself - told in full in the profile below, with the bloodlines that lead out of it.",
+      "The founding is a Stanford story with a Berkeley coda. On 24 February 1982 three Stanford graduate students, Scott McNealy, Andy Bechtolsheim and Vinod Khosla, founded the company around the workstation Bechtolsheim had designed for the Stanford University Network project, a Motorola 68000 machine with a memory management unit built to run Unix with virtual memory; the name is the network's initials. Bill Joy of Berkeley, a primary developer of the Berkeley Software Distribution, joined soon after and is counted as a founder. Sun was the second company, after Apollo Computer, to specialise in workstations, and it was profitable from its first quarter, in July 1982.",
+      "Its own operating system traced that Berkeley line. SunOS, from 1982, was BSD-based through version 4.1.4 of September 1994, and the name is normally used for those releases only. In 1987 AT&T and Sun announced they would merge BSD, System V and Xenix into System V Release 4, and on 4 September 1991 Sun announced that its next major release would move from the BSD-derived source to SVR4 under a new overbrand, Solaris: SunOS 4.1.1 was rebranded Solaris 1.0, and SunOS 5.0 became part of Solaris 2.0. Solaris superseded SunOS in 1993, reached x86 with 2.1 that June and a single SPARC and x86 source base with 2.4 in 1994, and later gave the industry DTrace and ZFS. Sun kept shipping SunOS 4.1.3 and 4.1.4 until 27 December 1998 and supported them until 30 September 2003.",
+      "SPARC, Sun's own RISC architecture, arrived in 1987 with the Sun-4 line and went 64-bit with SPARC V9 in 1995. NFS made file systems a network service; John Gage coined The Network is the Computer; James Gosling led the team that built Java; Jon Bosak led the XML specification at the W3C. Whitfield Diffie, Radia Perlman and Ivan Sutherland were on the payroll. In June 2005 Sun released most of Solaris under the CDDL as OpenSolaris, and in 2008 it paid $1 billion for MySQL.",
+      "The end was announced on 20 April 2009: Oracle would acquire Sun for US$7.4 billion, US$5.6 billion net of Sun's cash and debt. The European Commission opened an in-depth investigation on 3 September 2009, issued objections on 9 November and approved the deal on 21 January 2010, having satisfied itself that PostgreSQL was a credible alternative to MySQL; Oracle completed the acquisition on 27 January 2010. OpenSolaris was discontinued afterwards and forked as Illumos; Solaris became Oracle Solaris, and 11.4 followed in 2018. The company that had 38,600 employees near its 2006 peak closed as a line in an Oracle press release.",
+    ],
   },
   {
     slug: "silicon-graphics",
@@ -4581,14 +4592,28 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Silicon Graphics (Wikipedia): the infobox dates the company to 9 November 1981 in Mountain View, California", url: "https://en.wikipedia.org/wiki/Silicon_Graphics", sourceNote: "Fetched 2026-10-01. A DISCREPANCY, recorded rather than silently resolved. This page says 1981 and the label says only that, because a label states what the document establishes: writing \u201cone year earlier than the 1982 this entry carries\u201d into the label would have made check-vendor-founded-sources read 1982 as cited by a page that contradicts it, which is the same fault that narrowing the year test to labels was meant to end. The site states 1982 in three places: this entry\u2019s founded field and its profile twice (\u201cfounded 1982 by Jim Clark\u201d and year 1982). PRIME ruled on 2026-10-02 that 1982 stands, so both figures are on the record and the reader can see that the difference was examined rather than missed." },
       { label: "Silicon Graphics", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
+      // The Works (PRIME 07:57: "IRIX"): the body below was written on 2026-10-06 from these pages.
+      { label: "Wikipedia: Silicon Graphics - founded in Mountain View in November 1981 by James H. Clark, who left Stanford to found SGI in 1982 with seven graduate students and research staff; the Geometry Engine of Clark and Marc Hannah under ARPA contract; IRIS GL reformed as OpenGL in 1992 with an industry review board; an SGI Crimson in Jurassic Park in 1993; Cray Research bought for $740 million in February 1996; the Windows NT Visual Workstations and the Itanium move that damaged credibility; Chapter 11 on 8 May 2006, emergence on 17 October 2006; the 6 September 2006 end of the MIPS and IRIX line; Chapter 11 again on 1 April 2009 and the sale of substantially all assets to Rackable Systems, finalised 11 May 2009 for $42.5 million, Rackable taking the name Silicon Graphics International; Hewlett Packard Enterprise's acquisition in November 2016 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Silicon_Graphics" },
+      { label: "Wikipedia: IRIX - a portmanteau of IRIS and UNIX; System V with BSD extensions on MIPS; the IRIX name from release 3.0 in 1988 for the IRIS 4D line; XFS and OpenGL developed for it; final release 6.5.30 on 16 August 2006; the end of the MIPS and IRIX product lines announced 6 September 2006, production ended 29 December 2006, support ended December 2013 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/IRIX" },
+      { label: "Hewlett Packard Enterprise press release, Palo Alto, 1 November 2016: HPE completes the acquisition of SGI at $7.75 per share in cash; SGI 'a global leader in high performance solutions for compute, data analytics and data management' (read 2026-10-06)", url: "https://www.hpe.com/us/en/newsroom/press-release/2017/03/hewlett-packard-enterprise-completes-acquisition-of-sgi.html" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Silicon Graphics - the geometry of Hollywood",
     founded: 1982,
+    ended: {
+      year: 2016,
+      note: "Silicon Graphics, Inc. sold substantially all its assets to Rackable Systems in a sale finalised on 11 May 2009, and Rackable took the name Silicon Graphics International; Hewlett Packard Enterprise completed the acquisition of that company on 1 November 2016 at $7.75 a share, and the name ended there.",
+    },
     tagline: "Jim Clark's geometry engines rendered Jurassic Park and invented OpenGL; the name ended at HPE in 2016.",
     intro: "SGI built the machines that taught computers to see: geometry pipelines, IRIX on MIPS, and the purple workstations behind a decade of movie magic. Its fall is as instructive as its rise - commodity PCs ate the graphics market SGI created, and OpenGL outlived the company that wrote it.",
-    body: ["Founder Jim Clark left in 1994 to co-found Netscape; the company's Cray chapter, its two bankruptcies, and the 2016 HPE acquisition close the loop told in the profile below."],
+    body: [
+      "Founder Jim Clark left in 1994 to co-found Netscape; the company's Cray chapter, its two bankruptcies, and the 2016 HPE acquisition close the loop told in the profile below.",
+      "The machines began with the Geometry Engine that Clark and Marc Hannah had designed at Stanford under an ARPA contract, and Clark left his associate professorship in electrical engineering to found the company with seven Stanford graduate students and research staff, Kurt Akeley among them. The encyclopaedia dates the founding to November 1981 in Mountain View; this site carries 1982, the year Clark left Stanford, by a ruling recorded on the citation beside it. The graphics went out through a proprietary library, IRIS GL, until 1992, when SGI reformed it as OpenGL, licensed it cheaply to its own competitors and set up the OpenGL Architecture Review Board to keep the standard: the API outlived the company that wrote it.",
+      "IRIX was the operating system, its name a portmanteau of IRIS and UNIX, System V with BSD extensions on MIPS processors. SGI began using the name with release 3.0 in 1988 for the IRIS 4D line, and XFS, like OpenGL, was built for it before being ported to Linux. An SGI Crimson running the fsn three-dimensional file navigator appeared in Jurassic Park in 1993, which is the frame most people remember the company by. The last release, 6.5.30, came on 16 August 2006.",
+      "In February 1996 SGI bought Cray Research for $740 million. Then came the moves that, in the encyclopaedia's words, damaged its credibility: the Visual Workstations running Windows NT in the late 1990s, a financial disaster that shook customer confidence in the MIPS line, and the premature announcement of a migration from MIPS to Intel's Itanium, whose systems ran SUSE Linux rather than IRIX. A 2001 Computerworld review found IRIX in a critical state; MIPS and IRIX customers persuaded SGI to keep supporting the platform through 2006.",
+      "The end came in two bankruptcies. SGI filed for Chapter 11 on 8 May 2006 and emerged on 17 October 2006; on 6 September 2006 it announced the end of the MIPS and IRIX product lines, production ended on 29 December 2006 with final deliveries in March 2007, and support ran out in December 2013. On 1 April 2009 it filed again and sold substantially all its assets to Rackable Systems, a deal announced at $25 million and finalised on 11 May 2009 for $42.5 million, with Rackable adopting Silicon Graphics International as its name. Hewlett Packard Enterprise completed the acquisition of that company on 1 November 2016 at $7.75 a share, calling it a leader in high performance compute, data analytics and data management, and placing the Pleiades supercomputer at NASA Ames in its portfolio.",
+    ],
   },
   {
     slug: "xerox",
@@ -4626,14 +4651,27 @@ export const partnerVendors: PartnerVendor[] = [
     },
     sources: [
       { label: "Wikipedia: Digital Equipment Corporation - the infobox records the company founded 1957", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
+      // The Works (PRIME 07:57: "VMS"): the body below was written on 2026-10-06 from these pages.
+      { label: "Wikipedia: Digital Equipment Corporation - founded in 1957 by Ken Olsen and Harlan Anderson of MIT Lincoln Laboratory, who had watched students queue for the TX-0 while ignoring a faster IBM machine; $70,000 from American Research and Development for 70 per cent; a Civil War-era textile mill in Maynard, Massachusetts; the PDP-8 introduced on 22 March 1965; the PDP-11 of 1970; the VAX-11/780 announced October 1977 and released 1978; Olsen's 1977 remark that there was no reason for any individual to have a computer in his home; the first 10 Mbit/s Ethernet, VAXcluster, DECnet and LAT in 1984 and an estimated $2 billion taken from IBM; $14 billion in sales at the late-1980s peak; Olsen forced out in July 1992 and Robert Palmer the first chief executive; a $2.8 billion loss for fiscal 1992; the Alpha systems of 1992 running OpenVMS, DEC OSF/1 and Windows NT; StrongARM sold to Intel in 1997; the June 1998 acquisition by Compaq, then the largest merger in the computer industry's history; Compaq bought by Hewlett-Packard in May 2002 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
+      { label: "Wikipedia: OpenVMS - announced as VAX/VMS alongside the VAX-11/780 in 1977, with Dave Cutler, Dick Hustvedt and Peter Lipman as technical project leaders; renamed OpenVMS in July 1992 to signal open-systems standards and drop the VAX connection, the name first used with OpenVMS AXP V1.0 in November 1992; ported to Alpha, Itanium-based HPE Integrity servers and x86-64; developed and supported by VMS Software Inc. since 2014; the V9.0 Early Adopter's Kit for x86-64 in May 2020; clustering; customers in banking, healthcare, telecommunications and manufacturing (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/OpenVMS" },
     ],
     tags: ["vendor"],
     group: "other",
     name: "Digital Equipment Corporation - the minicomputer king",
     founded: 1957,
+    ended: {
+      year: 1998,
+      note: "Acquired by Compaq in June 1998, then the largest merger in the history of the computer industry; Compaq was itself bought by Hewlett-Packard in May 2002. VMS outlived both owners: OpenVMS has been developed and supported by VMS Software Inc. since 2014 and now runs on x86-64.",
+    },
     tagline: "Ken Olsen's PDP and VAX machines defined two decades of computing; DEC co-authored Ethernet and ended inside Compaq in 1998.",
     intro: "DEC took computing out of the glass house: the PDP-8 made computers departmental, the PDP-11 made them ubiquitous, and VAX/VMS made them an architecture empire. DEC also co-signed the DIX Ethernet standard with Intel and Xerox - the reason this industry cables the way it does.",
-    body: ["The profile traces Maynard's woolen mill to the $9.6 billion Compaq acquisition - then the largest in computer history - and the VMS-to-Windows-NT bloodline that followed the people out."],
+    body: [
+      "The profile traces Maynard's woolen mill to the $9.6 billion Compaq acquisition - then the largest in computer history - and the VMS-to-Windows-NT bloodline that followed the people out.",
+      "Ken Olsen and Harlan Anderson were engineers at MIT's Lincoln Laboratory who had noticed something odd: students queued for hours to use the stripped-down TX-0 while largely ignoring a faster IBM machine beside it. In 1957, finding the American business community hostile to computer companies, they took $70,000 from American Research and Development for 70 per cent of a company whose name avoided the word computer, and set up in a Civil War-era textile mill in Maynard, Massachusetts, where manufacturing space was cheap. The PDP-8 followed on 22 March 1965, the PDP-11 in 1970, and in October 1977 the VAX-11/780, the superminicomputer whose combination of features, price and marketing took the lead of its market almost as soon as it shipped in 1978. That same year Olsen said there was no reason for any individual to have a computer in his home.",
+      "VMS was announced with the VAX. VAX/VMS, Virtual Address eXtension and Virtual Memory System, came out of the Star and Starlet projects with Dave Cutler, Dick Hustvedt and Peter Lipman as technical leaders, and it is the operating system this record keeps returning to, because its people left twice: Cutler went on to Microsoft, where Windows NT was, in the encyclopaedia's phrase, made possible by former Digital engineers, and the system itself was renamed OpenVMS in July 1992 to signal POSIX and Unix compatibility and to drop the VAX from the name as the architecture changed underneath it. It was ported to Alpha, to the Itanium-based Integrity servers and, since VMS Software Inc. took over development and support in 2014, to x86-64, with the V9.0 early adopter kit shipping in May 2020. Banks, hospitals, telecommunications operators and manufacturers still run it.",
+      "Networking is why DEC is on this timeline at all. In 1984 the company launched its first 10 Mbit/s Ethernet, and with VAXcluster, DECnet and the LAT terminal servers it had a networked storage architecture that competed directly with IBM, taking an estimated $2 billion from it in the mid-1980s; DEC had co-signed the DIX Ethernet specification with Intel and Xerox, and Ethernet replaced Token Ring to become the dominant model in use today. At its late-1980s peak the company had $14 billion in sales and ranked among the most profitable in the United States.",
+      "The collapse was fast. Minicomputer sales fell, the VAX 9000 failed at the high end, and Olsen was forced out in July 1992, replaced by Robert Palmer, the first person to carry the title of chief executive in the company's 35 years; fiscal 1992 closed with a $2.8 billion loss. The Alpha processors of 1992, running OpenVMS, DEC OSF/1 and Windows NT, made inroads in the mid-1990s but too late; the StrongARM intellectual property went to Intel in a 1997 settlement. In June 1998 Compaq acquired DEC in what was then the largest merger in the computer industry's history, and found it had little idea what to do with its acquisitions; Compaq itself was bought by Hewlett-Packard in May 2002, which is where the Hewlett-Packard record on this timeline picks the lineage up.",
+    ],
   },
   {
     slug: "nokia",
@@ -4770,6 +4808,10 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Network World on Ray Noorda: he joined a company of 17 employees in 1983 and grew it to 12,000, with NetWare credited with more than 70 per cent market share in the 1990s; he coined the term coopetition for alliances among competitors that develop common standards to grow the overall market", url: "https://networkworld.com/article/2299634/remembering-novell-s-ray-noorda.html" },
       { label: "Silicon: Novell expanded share aggressively through the channel by selling its expensive Ethernet cards at cost, and before the arrival of Windows NT Server in 1993 claimed 90 per cent of the market for PC-based servers; from June 1993 it bought Unix System Laboratories from AT&T and in 1994 WordPerfect and Borland's Quattro Pro", url: "https://www.silicon.co.uk/networks/networks-management/tales-tech-history-novell-226163/2" },
       { label: "On the origin of NetWare: in 1983 the Superset team was assigned to build a CP/M disk-sharing system, was privately convinced CP/M was a doomed platform, and instead produced a file-sharing system for the newly introduced IBM-compatible PC; they wrote Snipes, a text-mode game, to test the network and demonstrate it", url: "https://academickids.com/encyclopedia/index.php/Novell_Netware" },
+      // PRIME 2026-10-06 08:21: "Mention the CNA, CNE and CNI certs." Novell's own releases, read that day.
+      { label: "Novell press release, BrainShare '96, Salt Lake City, 20 March 1996: 'Novell pioneered IT certification in 1986 with the Certified Novell Instructor (CNI) program'; 'Novell introduced the CNE in 1990, the Certified Novell Administrator (CNA) in 1992, and the Master CNE in 1995'; more than 4,000 CNIs, 82,000 CNEs, 93,000 CNAs and 6,500 Master CNEs; 1,450 Novell Authorized Education Centers; more than 1,000 Sylvan Prometric testing centres; the one millionth test in 1995 (read 2026-10-06)", url: "https://www.novell.com/news/press/archive/1996/03/pr96054.html" },
+      { label: "Novell press release, Orem, filed March 1999: a decade of the Certified Novell Engineer programme, 'the industry's first information technology (IT) certification', 'Introduced in 1989'; more than 150,000 CNEs worldwide; Master CNE, CNA, CNI and Certified Internet Professional; nearly one million Novell certifications granted or in progress; 15 years of BrainShare. The two releases disagree on the CNE's launch year, 1990 against 1989, and both are recorded (read 2026-10-06)", url: "https://www.novell.com/news/press/archive/1999/03/pr99026.html" },
+      { label: "Wikipedia: NetWare - initial release 1983; NetWare 286 of 1986 hardware-independent; NetWare 386 in 1989; NetWare 4 with NetWare Directory Services in 1993; NetWare 5 of October 1998 switching the core protocol to TCP/IP, with Eric Schmidt quoted that the market had spoken; the last service pack 6.5 SP8 in May 2009; Open Enterprise Server from March 2005 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/NetWare" },
     ],
     tags: ["vendor"],
     group: "other",
@@ -4784,6 +4826,8 @@ export const partnerVendors: PartnerVendor[] = [
       "One tactic deserves its own line, because it recurs from the other direction: Novell sold its own expensive Ethernet cards at cost, deliberately, to grow the installed base its software was sold into. Destroying the margin on the hardware to win the layer above is exactly what Intel would later do to the adapter market that 3Com lived on. Novell did it first, to itself, on purpose.",
       "Ray Noorda coined coopetition for alliances between competitors that grow a market before they divide it - which is a fair description of how a proprietary protocol became the default of corporate computing without a standards body behind it.",
       "The end did not come from a better network operating system. It came from the operating system absorbing the network: once file and print were in Windows, a separate product for them stopped being a category. The response was to buy a way onto the desktop - Unix System Laboratories in 1993, WordPerfect and Quattro Pro in 1994 - and to fight Microsoft where Microsoft was strongest. The portfolio wound through SUSE and a chain of owners to OpenText. What survives is not the software. It is the shape of the mistake, which is to defend a category after the category has moved.",
+      "The profession that grew up around the product had its own ladder, and Novell built it before anyone else. By the company's own account it pioneered IT certification in 1986 with the Certified Novell Instructor programme, the CNI; the Certified NetWare Engineer, the CNE, followed - Novell's 1996 release says 1990, its 1999 release says 1989, and both are on the record - then the Certified Novell Administrator, the CNA, in 1992 and the Master CNE in 1995. By March 1996 there were more than 4,000 CNIs, 82,000 CNEs, 93,000 CNAs and 6,500 Master CNEs, taught through 1,450 Novell Authorized Education Centers and tested at more than a thousand Sylvan Prometric centres, with the millionth test delivered in 1995; by 1999 Novell counted more than 150,000 CNEs and nearly a million certifications granted or in progress. The CNE was, for a decade, what a network career was built on, and the whole apparatus of vendor certification that this site's study guides serve descends from it.",
+      "NetWare's own arc is told in its glossary entry: the 1983 file-server idea, the hardware-independent NetWare 286 of 1986, NetWare 386 in 1989, the directory service in 1993, the switch of the core protocol to TCP/IP in NetWare 5 in October 1998 - Eric Schmidt's 'The market has spoken, and TCP/IP has won' - and the last service pack, 6.5 SP8, in May 2009, with Open Enterprise Server on SUSE Linux carrying the services on.",
     ],
   },
   {
@@ -4827,6 +4871,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "IBM's own account of the System/360: called IBM's five billion dollar gamble and a bet-the-business move, the family of mainframes introduced in 1964 unified a family of computers under a single architecture for the first time and established the first platform business model; before it, anyone buying a new computer system had to scrap their existing programs and start again", url: "https://www.ibm.com/history/system-360" },
       { label: "History of Computer Communications on the announcement of 7 April 1964: at an estimated cost of five billion dollars the System/360 traumatised IBM's customers and sent its competitors scrambling, an effect so cataclysmic as to preclude IBM from ever again introducing a computer system incompatible with its existing ones", url: "https://historyofcomputercommunications.info/section/2.22/The-IBM-System-360-and-the-Third-Generation-of-Computing-1964/" },
       { label: "IBM timeline: the System/360 announced 7 April 1964 as the first family of computers sharing the same software and peripherals; the IBM Personal Computer, Model 5150, introduced on 12 August 1981 at a base price of 1,565 dollars, its use of off-the-shelf components and open architecture enabling what followed", url: "https://www.thestreet.com/technology/history-of-ibm-company-timeline-milestones-facts" },
+      { label: "Wikipedia: IBM AS/400 - announced 21 June 1988 and released August 1988 from Rochester, Minnesota, as the successor to the System/36 and System/38; the Technology Independent Machine Interface; IMPI to PowerPC AS in 1995 and POWER4 in 2001; an estimated 111,000 installations by the end of 1990 and $14 billion of revenue that year, about 500,000 shipped by 1997; the renamings to iSeries, i5, System i and Power Systems (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/IBM_AS/400" },
+      { label: "Wikipedia: IBM i - OS/400 released 26 August 1988, renamed i5/OS in 2004 and IBM i in 2008; version 7.6 of 18 April 2025 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/IBM_i" },
     ],
     tags: ["vendor", "services"],
     group: "other",
@@ -4841,6 +4887,7 @@ export const partnerVendors: PartnerVendor[] = [
       "The consequence was permanent and is stated well by one historian: the effect was so complete that IBM could never again introduce a computer incompatible with its existing ones. Winning that way sets the terms of every later decision - compatibility stopped being a strategy and became an obligation.",
       "Seventeen years later the Personal Computer applied the same openness to a different problem, and the outcome inverted. Built quickly from off-the-shelf components with a published architecture, the 5150 of August 1981 created an enormous market and handed its economics to the supplier of the processor and the supplier of the operating system. The 360 made IBM the platform; the PC made IBM a manufacturer on somebody else's platform. The difference was who owned the parts that could not be substituted.",
       "The networking record follows the same shape. SNA defined how large estates communicated for a generation, and Token Ring was the better-engineered local network by most contemporary measures - deterministic under load, no collisions, predictable latency. It lost to Ethernet, which was cheaper and good enough, and which a company founded by its co-inventor made purchasable as a card. That is the catalogue's most repeated finding, and here it happened to the largest company in the industry.",
+      "Between the mainframe and the PC sits the machine that proved the compatibility principle a third time. The Application System/400, announced on 21 June 1988 and released that August from the Rochester, Minnesota laboratory as the successor to the System/36 and System/38, carried an architecture rather than a processor: the Technology Independent Machine Interface let applications be compiled once and translated below the interface, so that when the line moved from its 48-bit IMPI processors to 64-bit PowerPC-derived chips in 1995, and to POWER4 in 2001, the programs did not notice. An estimated 111,000 systems were installed by the end of 1990, when the line earned $14 billion, and about 500,000 had shipped by 1997; its operating system, OS/400 of 26 August 1988, became i5/OS in 2004 and IBM i in 2008, and in 2008 the hardware merged with the System p into Power Systems. IBM i 7.6 shipped on 18 April 2025. The AS/400 entry in the glossary carries the lineage in detail.",
       "What IBM did with the century is the part usually skipped: it survived. The services turnaround of the 1990s, the sale of the PC business, and the 2019 acquisition of Red Hat are one continuous decision to stop defending the thing being commoditised and go where the margin moved. Most companies in this section did not manage that once.",
     ],
   },
@@ -5886,6 +5933,572 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Trustwave (now on levelblue.com), 19 October 2022: the four SpiderLabs teams, 50+ blogs and advisories a year, dozens of vulnerabilities, Responder, SocialMapper, CrackQ (read 2026-10-06)", url: "https://www.levelblue.com/blogs/levelblue-blog/say-hello-to-spiderlabs-the-team-behind-trustwaves-security-product-offerings" },
       { label: "LevelBlue, Dallas, 19 August 2025: the Trustwave acquisition completed; SpiderLabs 'the elite Trustwave team' (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-trustwave-to-form-the-worlds-largest-managed-security-services-provider" },
       { label: "LevelBlue - About us: 'LevelBlue SpiderLabs', the elite global threat experts and intelligence (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
+    ],
+  },
+  // ---- Monitoring, management and identity: the batch PRIME asked for on 2026-10-06 (07:37, 07:57, 08:03, 08:42).
+  // Every fact below was read on 2026-10-06 from the page its citation names; nothing is from memory. Product
+  // names that are not companies (QRadar, OpenView, HP-UX, Solaris, SunOS, IRIX, AIX, VMS, MRTG, PRTG, Nagios,
+  // Zabbix, Grafana, NetWare, Turbo Pascal, dBase, Clipper) have their own glossary entries and link here. ----
+  {
+    // Q1 LABS - the company behind QRadar (PRIME 07:37: "QRadar"). A record for the maker, because the product
+    // has now had two owners and the glossary entry for QRadar needs somewhere to point.
+    slug: "q1-labs",
+    official: {
+      defunct: true,
+      successor: { label: "IBM, which acquired Q1 Labs in 2011 and still sells QRadar on premises; the QRadar SaaS assets went to Palo Alto Networks in 2024", url: "https://www.ibm.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Q1 Labs - QRadar",
+    founded: 2001,
+    ended: {
+      year: 2011,
+      note: "Acquired by IBM; the deal was announced on 4 October 2011 and completed on 26 October 2011, and Q1 Labs' chief executive became general manager of IBM's new Security Systems division. In September 2024 the QRadar SaaS assets passed to Palo Alto Networks, while QRadar on premises stayed with IBM.",
+    },
+    tagline: "A University of New Brunswick spinout whose security intelligence software became IBM QRadar, and then two products with two owners.",
+    intro:
+      "Q1 Labs was founded in Fredericton, New Brunswick, in 2001 as a spinout from the University of New Brunswick, and by the time IBM bought it in 2011 it was based in Waltham, Massachusetts, with a strong presence still in Fredericton. Its product, QRadar, was what the trade called security intelligence: log, threat and compliance management, with flow and event processors that read network and security events and network and application flow data, sold to 1,800 clients.",
+    body: [
+      "IBM announced the acquisition on 4 October 2011, financial terms undisclosed, and closed it on 26 October 2011. Q1 Labs' chief executive, Brendan Hannigan, became general manager of a newly formed IBM Security Systems division, which is a tell about what IBM was buying: not a product line to slot into an existing portfolio, but the centre of a new one.",
+      "Thirteen years later the product split. On 4 September 2024 Palo Alto Networks completed the acquisition of IBM's QRadar Software as a Service assets, offering eligible customers free migration to its Cortex XSIAM platform with IBM Consulting's help, while QRadar clients who wished to remain on the on-premises product continued to receive IBM features and support. One name, two owners, two futures: the cloud version became a migration path into a competitor's platform and the on-premises version stayed where it was.",
+      "The record keeps the company because the pattern recurs on this timeline. A regional university spinout builds the product a category needs, a giant buys it to found a division, and a decade later the product is worth more as a customer list than as code. The engineers in Fredericton who wrote the flow processors are the part of the story that the two press releases leave out.",
+    ],
+    sources: [
+      { label: "Entrevestor, 4 October 2011: a spinout from the University of New Brunswick, Q1 Labs was founded in Fredericton in 2001; now based in Waltham, Massachusetts, with a strong presence in Fredericton; bought by IBM for an undisclosed price (read 2026-10-06)", url: "https://entrevestor.com/blog/ibm_to_buy_q1_labs_in_2nd_nb_exit" },
+      { label: "TechCrunch, 4 October 2011: Massachusetts-based provider of security intelligence software; QRadar's log, threat and compliance management, flow and event processors; 1,800 clients; terms not disclosed, close expected in the fourth quarter; Brendan Hannigan to lead the new IBM Security Systems division (read 2026-10-06)", url: "https://techcrunch.com/2011/10/04/ibm-buys-network-security-intelligence-company-q1-labs/" },
+      { label: "Dark Reading, 26 October 2011: IBM completed the acquisition of Q1 Labs Inc., a privately held company based in Waltham, Mass.; Hannigan general manager of the Security Systems Division (read 2026-10-06)", url: "https://www.darkreading.com/cyber-risk/ibm-closes-on-acquisition-of-q1-labs" },
+      { label: "Palo Alto Networks 8-K exhibit 99.1, Santa Clara, 4 September 2024: completed the acquisition of IBM's QRadar SaaS assets; on-premises QRadar clients keep IBM features and support; free migration to Cortex XSIAM with IBM Consulting; IBM a preferred managed security services provider (read 2026-10-06)", url: "https://www.sec.gov/Archives/edgar/data/1327567/000132756724000026/ex991pressreleaseasofsepte.htm" },
+    ],
+  },
+  {
+    // TIVOLI SYSTEMS (PRIME 07:37: "Tivoli"). The company lived seven years; the brand lived twenty.
+    slug: "tivoli-systems",
+    official: {
+      defunct: true,
+      successor: { label: "IBM, which acquired Tivoli Systems on 1 March 1996 and ran the products as its Tivoli Software brand until the mid-2010s", url: "https://www.ibm.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Tivoli Systems - management for everybody else's machines",
+    founded: 1989,
+    ended: {
+      year: 1996,
+      note: "Acquired by IBM on 1 March 1996 for approximately $800 million ($716 million in net cash). The name survived as IBM's Tivoli Software brand from 2002 until IBM began phasing it out in 2013; by 2016 the products had been renamed.",
+    },
+    tagline: "Founded by IBM people told to manage only IBM machines; bought by IBM seven years later for $800 million.",
+    intro:
+      "Tivoli Systems was founded in Austin, Texas, in 1989 by Bob Fabbio, joined quickly by Peter Valdes, Todd Smith and Steve Marcie, all former IBM employees. Fabbio has said the purpose was to provide systems management across a diverse set of vendors' machines, having been directed at IBM to focus on IBM products only. The product was the Tivoli Management Environment, and it took the company to a NASDAQ listing in March 1995 under chief executive Frank Moss.",
+    body: [
+      "The exit came a year after the listing. IBM's quarterly report for the first three months of 1996 records that on 1 March 1996 it acquired all outstanding shares of Tivoli Systems for approximately $800 million, $716 million in net cash, and wrote off $417 million of the price as purchased in-process research and development: software still in development that had not reached technological feasibility. The company that left IBM to manage everyone's systems was bought back by IBM to do exactly that.",
+      "What followed is the longer story. At the start of 2002 Tivoli Systems became Tivoli Software, a brand inside IBM, and IBM grew the portfolio under it by development and acquisition - Micromuse's Netcool/OMNIbus arrived in February 2006 and became the suite's event management platform - to the point where Gartner credited IBM with the largest share of the IT operations management software market in 2012, at 18 per cent. The original Tivoli Management Framework, built on CORBA, had by then reached the end of its life as Secure Shell displaced CORBA and IBM promoted non-framework products.",
+      "In April 2013 IBM renamed the Tivoli Software division Cloud & Smarter Infrastructure, and the brand itself was phased out: Tivoli Storage Manager became IBM Spectrum Protect and Tivoli Workload Scheduler became IBM Workload Scheduler. A name that had meant enterprise systems management for a generation of administrators disappeared into a product hierarchy, which is the ordinary fate of an acquired brand and worth recording precisely because so many of the monitoring tools on this record - OpenNMS, Nagios, Zabbix, MRTG - were written by people who could not afford a framework like this one.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Tivoli_Software",
+    externalLabel: "Tivoli Software (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: Tivoli Software - Tivoli Systems Inc. founded in Austin, Texas in 1989 by Bob Fabbio, joined by Peter Valdes, Todd Smith and Steve Marcie, all former IBM employees; Fabbio's account of being directed to focus on IBM products; the Tivoli Management Environment; NASDAQ listing March 1995 under Frank Moss; merger into IBM 1996; Tivoli Software brand from 2002; Netcool/OMNIbus February 2006; Gartner 18 per cent in 2012; division renamed Cloud & Smarter Infrastructure April 2013; brand phased out by 2016 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Tivoli_Software" },
+      { label: "IBM Form 10-Q for the quarter ended 31 March 1996: on 1 March 1996 the company acquired all outstanding shares of Tivoli Systems Inc. for approximately $800 million ($716 million in net cash); $417 million allocated to purchased in-process research and development (read 2026-10-06)", url: "https://www.sec.gov/Archives/edgar/data/0000051143/000095011296001476/0000950112-96-001476.txt" },
+    ],
+  },
+  {
+    // EEYE DIGITAL SECURITY (PRIME 07:37). Retina, and the disclosure that preceded Code Red.
+    slug: "eeye-digital-security",
+    official: {
+      defunct: true,
+      successor: { label: "BeyondTrust, which acquired eEye in May 2012", url: "https://www.beyondtrust.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "eEye Digital Security - Retina, and the hole Code Red came through",
+    founded: 1998,
+    ended: {
+      year: 2012,
+      note: "Acquired by BeyondTrust, then of Carlsbad, California; announced 10 May 2012, financial terms not disclosed. Marc Maiffret became BeyondTrust's chief technology officer.",
+    },
+    tagline: "The Irvine company whose researchers found the IIS flaw that Code Red exploited in 2001, and whose Retina scanner ended up inside BeyondTrust.",
+    intro:
+      "eEye Digital Security was co-founded in Irvine, California, in 1998 by Marc Maiffret, and its product was Retina, the vulnerability management and analytics line that BeyondTrust bought in 2012. Its place in the record is a disclosure rather than a product: in June 2001 eEye published the .ida vulnerability in Microsoft's web server that the Code Red worm went on to exploit, and this site's article on the worm era carries eEye's own announcement of it.",
+    body: [
+      "The Register, reporting the sale in May 2012, called the .ida discovery Maiffret's chief claim to fame: the hole that Code Red, the first major Microsoft worm, exploited back in 2001, and which eEye's SecureIIS product was written to fix. The team that analysed the worm named it after the soft drink that kept them awake through the night, a detail this site's worm-era article keeps for the same reason it keeps the hole: the people who find the flaw and the people who write the exploit are usually not the same people, and the record should say which was which.",
+      "Maiffret left the company in 2007 for a three-year sabbatical and returned in 2010 with the title Chief Hacking Officer. eEye's investors were Openview Venture Partners, Bessemer Venture Partners and Insight Venture Partners, and the exit came on 10 May 2012, when Carlsbad-based BeyondTrust, then a developer of security and access control software, announced the acquisition with financial terms not disclosed. Maiffret became chief technology officer of the combined company.",
+      "The BeyondTrust record elsewhere on this timeline carries what happened next: eEye was one of three acquisitions that gave a privilege management company a vulnerability scanner and research team beside its core, before the 2018 combination with Bomgar. Retina is the product; the disclosure is why the name still comes up.",
+    ],
+    externalUrl: "https://www.beyondtrust.com",
+    externalLabel: "BeyondTrust",
+    sources: [
+      { label: "socaltech, 10 May 2012: Irvine-based eEye Digital Security, founded in 1998 by Marc Maiffret, maker of the Retina CS vulnerability management and analytics products, backed by Openview Venture Partners, Bessemer Venture Partners and Insight Venture Partners, acquired by Carlsbad-based BeyondTrust; financial terms not announced (read 2026-10-06)", url: "https://socaltech.com/beyondtrust_buys_eeye/s-0042643.html" },
+      { label: "The Register, 11 May 2012: eEye co-founded in 1998; Maiffret's discovery of the .ida hole later exploited by Code Red in 2001 and the SecureIIS product that fixed it; left in 2007 for a three-year sabbatical, returned in 2010 as Chief Hacking Officer; to become CTO of BeyondTrust post merger; terms not disclosed (read 2026-10-06)", url: "https://www.theregister.com/2012/05/11/beyondtrust_buys_eeye/" },
+    ],
+  },
+  {
+    // METAGEEK (PRIME 07:37: "Metageek"). Wi-Spy, inSSIDer, Chanalyzer; Boise; two owners since 2022.
+    slug: "metageek",
+    official: {
+      defunct: true,
+      successor: { label: "Oscium, which acquired the MetaGeek business from Auvik in October 2024 and now hosts its pages", url: "https://www.oscium.com" },
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "MetaGeek - Wi-Spy, inSSIDer and Chanalyzer",
+    founded: 2005,
+    ended: {
+      year: 2022,
+      note: "Acquired by Auvik in April 2022, terms not disclosed, and sold on to Oscium in October 2024; the tools continue under Oscium, and MetaGeek's own pages now redirect there.",
+    },
+    tagline: "A nights-and-weekends spectrum analyser from Boise that became the Wi-Fi field kit, then changed hands twice in two years.",
+    intro:
+      "MetaGeek was born in the summer of 2005, in founder Ryan Woodings' words, as a nights and weekends side project in Boise, Idaho. Shortly after shipping the first Wi-Spy he quit his day job and ran the company from a home office and living room for a year before renting space in a local tech incubator; by 2010 inSSIDer and the Wi-Spy DBx for 2.4 and 5 GHz spectrum analysis had established MetaGeek as an innovator in Wi-Fi tools, and Eye P.A. and Wi-Spy Air followed.",
+    body: [
+      "On 15 April 2022 Auvik, the Waterloo, Ontario network management company that had taken $250 million from Great Hill Partners the previous July, acquired MetaGeek for undisclosed terms. Woodings' own announcement put the logic in one line: the opportunity to merge MetaGeek's Wi-Fi expertise with Auvik's network management expertise.",
+      "Two and a half years later the tools moved again. On 7 October 2024 Oscium, the Oklahoma City maker of wireless test equipment, announced that it had acquired MetaGeek, with Bryan Lee, Oscium's president, leading the combined company, Brian Tuttle, MetaGeek's co-founder, returning to lead the software development side, and no financial details disclosed. Wi-Spy, inSSIDer and Chanalyzer sit today beside Oscium's own Nomad analyser, and metageek.com redirects to oscium.com.",
+      "The record keeps MetaGeek because of what the first Wi-Spy was: spectrum analysis, previously a bench instrument's job, in a device a field engineer could afford. Everything in the wireless survey trade that followed - the Ekahau Sidekick, the TamoGraph survey, the Nomad - inherits that move of the instrument from the lab to the laptop bag.",
+    ],
+    externalUrl: "https://www.oscium.com",
+    externalLabel: "Oscium",
+    sources: [
+      { label: "ChannelE2E, 15 April 2022: Auvik acquires MetaGeek, Boise, Idaho, founded 2005, maker of Wi-Fi network management and optimisation software; terms not disclosed; Auvik's $250 million from Great Hill Partners in July 2021; Waterloo, Ontario; quote from founder Ryan Woodings (read 2026-10-06)", url: "https://www.channele2e.com/news/auvik-acquires-wifi-network-optimization-company-metageek" },
+      { label: "MetaGeek founder's announcement 'MetaGeek joins Auvik', now hosted by Oscium: born in the summer of 2005 as a nights and weekends side project; the first Wi-Spy; home office then a local tech incubator; inSSIDer and Wi-Spy DBx by 2010; Eye P.A. and Wi-Spy Air; acquired by Auvik of Waterloo, Canada (read 2026-10-06)", url: "https://www.oscium.com/blog/metageek-joins-auvik/" },
+      { label: "Oscium press release, Oklahoma City, 7 October 2024: Oscium announces the acquisition of MetaGeek; Wi-Spy, inSSIDer and Chanalyzer; MetaGeek helping WLAN professionals since 2005; Bryan Lee, President of Oscium; Brian Tuttle co-founder; no financial details disclosed (read 2026-10-06)", url: "https://oscium.com/oscium-announces-acquisition-of-metageek-expanding-wireless-network-solutions-portfolio/" },
+      { label: "Oscium blog 'Oscium acquires MetaGeek to make Wi-Fi awesome': Brian Tuttle has returned to lead the software development side; terms not disclosed; 'over 16 years' at Oscium (read 2026-10-06)", url: "https://www.oscium.com/blog/oscium-acquires-metageek-to-make-wi-fi-awesome/" },
+    ],
+  },
+  {
+    // OSCIUM (PRIME 07:37). Test equipment for the field technician; owner of the MetaGeek tools since 2024.
+    slug: "oscium",
+    official: {
+      url: "https://www.oscium.com",
+      resources: [
+        { label: "Oscium - About", url: "https://oscium.com/about" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Oscium",
+    founded: 2010,
+    tagline: "Oklahoma City instruments for the field tech's tablet, and since 2024 the home of Wi-Spy, inSSIDer and Chanalyzer.",
+    intro:
+      "Oscium is an Oklahoma City hardware company founded in 2010 by two brothers, Matt Lee and Bryan Lee, making portable test tools for field technicians. In 2023 it released the Nomad, which it describes as an ultra-portable Wi-Fi 7 network analyser with four simultaneous radios, and in 2024, in its own words, its mission took its biggest step: it acquired MetaGeek, the team behind inSSIDer, Chanalyzer and Wi-Spy.",
+    body: [
+      "The MetaGeek purchase was announced from Oklahoma City on 7 October 2024, with Bryan Lee as president of Oscium leading the combined company and MetaGeek's co-founder Brian Tuttle returning to run the software side; financial details were not disclosed. Oscium said at the time that it had spent over sixteen years turning complex technology into tools that work better for everyone, and the MetaGeek pages now live on its site.",
+      "The reason a wireless instrument maker belongs on a networking record is the same reason MetaGeek does: the spectrum analyser and the Wi-Fi scanner stopped being bench equipment and became something an engineer carries to a site survey. Oscium's Nomad and the MetaGeek tools are the current form of that idea.",
+    ],
+    externalUrl: "https://oscium.com/about",
+    externalLabel: "Oscium - About",
+    acquisitions: [
+      { year: 2024, name: "MetaGeek", what: "Wi-Spy, inSSIDer and Chanalyzer, the Wi-Fi analysis tools founded in Boise in 2005; bought from Auvik, which had owned them since April 2022; terms not disclosed.", became: "Part of Oscium's wireless line beside the Nomad analyser; Brian Tuttle returned to lead software development.", sourceNote: "Oscium press release, 7 October 2024, and oscium.com/about (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: Oscium - an American hardware company producing portable tools for field techs, founded in 2010 by Matt Lee and Bryan Lee and headquartered in Oklahoma City (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Oscium" },
+      { label: "Oscium - About: founded in 2010 by two brothers; the Nomad (2023), an ultra-portable Wi-Fi 7 network analyser with four simultaneous radios; 'In 2024 that mission took its biggest step. Oscium acquired MetaGeek, the team behind inSSIDer, Chanalyzer, and Wi-Spy' (read 2026-10-06)", url: "https://oscium.com/about" },
+      { label: "Oscium press release, Oklahoma City, 7 October 2024: the MetaGeek acquisition; Bryan Lee, President of Oscium; Brian Tuttle co-founder of MetaGeek; 'over 16 years'; no financial details (read 2026-10-06)", url: "https://oscium.com/oscium-announces-acquisition-of-metageek-expanding-wireless-network-solutions-portfolio/" },
+    ],
+  },
+  {
+    // AUVIK (PRIME 07:37). Cloud network management for managed service providers; MetaGeek's owner 2022-2024.
+    slug: "auvik",
+    official: {
+      url: "https://www.auvik.com",
+      resources: [
+        { label: "Auvik - About", url: "https://www.auvik.com/about/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Auvik",
+    founded: 2011,
+    tagline: "Waterloo's cloud network management for MSPs: 100,000 networks, 12 million devices, and a $250 million cheque from Great Hill Partners.",
+    intro:
+      "Auvik was founded in 2011 by Alex Hoff, Marc Morin and David Yach and moved into its Waterloo, Ontario headquarters in 2018. It describes itself today as an AI-driven IT management platform that combines real-time infrastructure data with intelligent agents, and says it helps managed service providers and IT teams manage more than 100,000 networks worldwide and twelve million distinct devices.",
+    body: [
+      "The company's own history runs from 21 employees in 2013 to 305 in 2023. In 2018 it acquired Talaia and raised a CAD$20 million Series C; in 2021 Great Hill Partners invested US$250 million; in 2022 it bought MetaGeek, the Boise Wi-Fi tools company, and in 2024 Saaslio and Boardgent. Douglas Murray became chief executive and Mark Ralls president in 2024.",
+      "The MetaGeek chapter is the one this record follows most closely, because it ran both ways: Auvik acquired the Wi-Spy, inSSIDer and Chanalyzer tools in April 2022 and sold the business to Oscium in October 2024, so the wireless analysers that were briefly part of a cloud management platform are back with an instrument maker. The MetaGeek and Oscium records carry the detail.",
+      "Why a managed-service-provider tool is on a record built around enterprise networking: the MSP market is where network monitoring went when the enterprise frameworks of the Tivoli and OpenView era became too heavy for the organisations that most needed watching. Auvik, like the open source monitors elsewhere on this timeline, is an answer to the question of who watches the networks that cannot afford a network operations centre.",
+    ],
+    externalUrl: "https://www.auvik.com/about/",
+    externalLabel: "Auvik - About",
+    acquisitions: [
+      { year: 2018, name: "Talaia", what: "Listed on Auvik's own history for 2018, alongside a CAD$20 million Series C; the page read does not describe the product.", sourceNote: "auvik.com/about (read 2026-10-06)." },
+      { year: 2022, name: "MetaGeek", what: "The Boise Wi-Fi analysis tools Wi-Spy, inSSIDer and Chanalyzer, founded 2005; terms not disclosed.", became: "Sold to Oscium in October 2024.", sourceNote: "ChannelE2E, 15 April 2022, and auvik.com/about (read 2026-10-06)." },
+      { year: 2024, name: "Saaslio", what: "Listed on Auvik's own history for 2024; the page read does not describe the product.", sourceNote: "auvik.com/about (read 2026-10-06)." },
+      { year: 2024, name: "Boardgent", what: "Listed on Auvik's own history for 2024; the page read does not describe the product.", sourceNote: "auvik.com/about (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Auvik - About: founded in 2011 by Alex Hoff, Marc Morin and David Yach; moved into Waterloo headquarters 2018; CEO Douglas Murray and President Mark Ralls (2024); 21 employees in 2013 to 305 in 2023; more than 100,000 networks and 12 million distinct devices; Talaia and a CAD$20M Series C 2018, Great Hill Partners US$250M 2021, MetaGeek 2022, Saaslio and Boardgent 2024 (read 2026-10-06)", url: "https://www.auvik.com/about/" },
+      { label: "ChannelE2E, 15 April 2022: Auvik, Waterloo, Ontario, acquires MetaGeek of Boise; $250 million from Great Hill Partners in July 2021; terms not disclosed (read 2026-10-06)", url: "https://www.channele2e.com/news/auvik-acquires-wifi-network-optimization-company-metageek" },
+    ],
+  },
+  {
+    // EKAHAU (PRIME 07:37). Wi-Fi design software from a Helsinki research group; owned by Ookla since 2018.
+    slug: "ekahau",
+    official: {
+      url: "https://www.ekahau.com",
+      resources: [
+        { label: "Ekahau - Products", url: "https://www.ekahau.com/products/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Ekahau",
+    founded: 2000,
+    ended: {
+      year: 2018,
+      note: "Sold by Nexit Ventures to Ookla LLC, a Ziff Davis subsidiary, in October 2018, for a price the parties did not state and Helsingin Sanomat estimated at 100 to 130 million euros. The Ekahau products continue under Ookla, whose sale to Accenture was announced on 2 March 2026; the Ekahau site's footer now reads 'Ookla, LLC., an Accenture company'.",
+    },
+    tagline: "Wi-Fi design and survey software born in a University of Helsinki machine learning group, sold to Ookla in 2018 and carried into Accenture in 2026.",
+    intro:
+      "Ekahau was founded in 2000 by University of Helsinki researchers from the CoSCo group at the Helsinki Institute for Information Technology, among them Henry Tirri, Petri Myllymäki, Teemu Roos, Kimmo Valtonen, Tomi Silander, Petri Kontkanen, Antti Tuominen, Jussi Lahtinen and Hannes Wettig. By 2018 it was, in the words of the parties to its sale, the leading solution provider for enterprise wireless network design and troubleshooting, with 75 professionals, most of them in Finland.",
+    body: [
+      "In October 2018 Nexit Ventures sold Ekahau to Ookla LLC, the Speedtest company and a subsidiary of Ziff Davis. The price was not disclosed; Helsingin Sanomat estimated it at 100 to 130 million euros, and the Finnish Center for Artificial Intelligence recorded the deal as Finnish machine learning research behind an acclaimed acquisition.",
+      "The product line today, from Ekahau's own site: Ekahau Plan, Measure Pro and the Software Suite, the Sidekick 2 measurement device, AI Pro Online, Survey, Analyzer and Optimizer, with a training arm. The footer of that site read, on the day this entry was written, 'Ookla, LLC., an Accenture company': on 2 March 2026 Accenture announced from Barcelona that it would acquire Ookla from Ziff Davis, naming Speedtest, Downdetector, Ekahau and RootMetrics as the brands and declining to disclose terms.",
+      "The lineage is unusual for this record. The Finnish Center for Artificial Intelligence filed the sale under Finnish machine learning research behind an acclaimed acquisition, and the founders' names are a research group's roster rather than a field engineer's: of the three survey tools on this timeline, Ekahau is the one that began as university algorithms.",
+    ],
+    externalUrl: "https://www.ekahau.com",
+    externalLabel: "Ekahau",
+    sources: [
+      { label: "Finnish Center for Artificial Intelligence, 14 December 2018: Ekahau founded in 2000 by University of Helsinki and HIIT researchers of the CoSCo group (Henry Tirri, Petri Myllymäki, Teemu Roos, Kimmo Valtonen, Tomi Silander, Petri Kontkanen, Antti Tuominen, Jussi Lahtinen, Hannes Wettig); the leading solution provider for enterprise wireless network design and troubleshooting; bought by Ookla; Helsingin Sanomat's estimate of 100 to 130 million euros; 75 professionals, the majority in Finland (read 2026-10-06)", url: "https://fcai.fi/news/2018/12/14/finnish-machine-learning-research-behind-acclaimed-acquisition-deal" },
+      { label: "Reed Smith, October 2018: advised Nexit Ventures on the sale of Ekahau to Ookla LLC, a subsidiary of Ziff Davis; Ekahau 'the global leader in solutions for enterprise wireless network design and troubleshooting', Ookla 'the global leader in fixed broadband and mobile network testing applications, data and analysis'; no price (read 2026-10-06)", url: "https://www.reedsmith.com/en/news/2018/10/reed-smith-advises-nexit-ventures-on-the-sale-of-ekahau-to-ookla-llc" },
+      { label: "Tech Field Day, 12 October 2018: on the recent acquisition of Ekahau by Ookla (read 2026-10-06)", url: "https://techfieldday.com/2018/ookla-acquires-ekahau-future-wi-fi-design-speedy" },
+      { label: "Business Wire, Barcelona, 2 March 2026: Accenture to acquire Ookla from Ziff Davis; Speedtest, Downdetector, Ekahau and RootMetrics; terms not disclosed; subject to regulatory approvals (read 2026-10-06)", url: "https://www.businesswire.com/news/home/20260302099070/en/accenture-to-acquire-ookla-to-strengthen-network-intelligence-and-experience-with-data-and-ai-for-enterprises/" },
+      { label: "ekahau.com: products Ekahau Plan, Measure Pro, Software Suite, Sidekick 2, AI Pro Online, Survey, Analyzer, Optimizer; footer '© 2006-2026 Ookla, LLC., an Accenture company' (read 2026-10-06)", url: "https://www.ekahau.com/" },
+    ],
+  },
+  {
+    // TAMOSOFT (PRIME 07:37: "TamoGraph"). The company behind TamoGraph Site Survey, from Christchurch.
+    slug: "tamosoft",
+    official: {
+      url: "https://www.tamos.com",
+      resources: [
+        { label: "TamoGraph Site Survey", url: "https://www.tamos.com/products/wifi-site-survey/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "TamoSoft - TamoGraph",
+    founded: 1998,
+    tagline: "A privately held Christchurch company whose TamoGraph does passive, active and predictive Wi-Fi surveys on Windows and macOS.",
+    intro:
+      "TamoSoft Ltd is a privately held company founded in 1998 with headquarters in Christchurch, New Zealand, serving customers from over 100 countries. Its catalogue, in its own description, is a wireless site survey and RF modelling tool, a network monitor and packet analyser for wired networks, another for wireless 802.11 a/b/g/n/ac/ax/be networks, a design and planning tool for 4G LTE and 5G NR private cellular networks, and a utility for testing network performance.",
+    body: [
+      "TamoGraph Site Survey is the product most field engineers know the company by: Wi-Fi planning and site survey software for creating and maintaining reliable networks, with passive, active and predictive surveys (RF modelling), full support of 802.11be (Wi-Fi 7), 802.11ax (Wi-Fi 6 and 6E) and 802.11ac as well as the legacy standards, available for Windows 10, 11 and Server 2016 to 2022 and for macOS from Monterey to Tahoe.",
+      "It sits on this record beside Ekahau and the MetaGeek tools as one of the three ways the trade answers the same question - will the Wi-Fi work in this building before anybody installs it - and as the one that stayed independent. The company does not publish a history page, so the entry says what its own site says and no more.",
+    ],
+    externalUrl: "https://www.tamos.com/about/",
+    externalLabel: "TamoSoft - About",
+    sources: [
+      { label: "TamoSoft - About: founded in 1998; a privately held company with headquarters in Christchurch, New Zealand; customers from over 100 countries; the product lines described (read 2026-10-06)", url: "https://www.tamos.com/about/" },
+      { label: "TamoSoft - TamoGraph Site Survey: Wi-Fi planning and site survey software; passive, active and predictive surveys (RF modelling); full support of 802.11be, 802.11ax and 802.11ac plus legacy standards; Windows 10, 11, Server 2016 to 2022; macOS Monterey to Tahoe; TamoGraph 4.0 in the video tour (read 2026-10-06)", url: "https://www.tamos.com/products/wifi-site-survey/" },
+    ],
+  },
+  {
+    // THE OPENNMS GROUP (PRIME 07:57: "OpenNMS"). The project is from 1999; the company from 2004.
+    slug: "opennms-group",
+    official: {
+      url: "https://www.opennms.com",
+      resources: [
+        { label: "OpenNMS - About", url: "https://www.opennms.com/en/about/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "The OpenNMS Group - OpenNMS",
+    founded: 2004,
+    storyBegins: { year: 1999, company: "the OpenNMS project at PlatformWorks" },
+    ended: {
+      year: 2020,
+      note: "Acquired by NantHealth; the transaction closed on 22 July 2020, announced from Culver City on 27 July 2020 with no terms disclosed. OpenNMS continues as a NantHealth company with its own site.",
+    },
+    tagline: "One of the oldest open source network management platforms, started in 1999, with a company behind it since 2004 and NantHealth as owner since 2020.",
+    intro:
+      "OpenNMS is a free and open source network monitoring and management platform written in Java - fault management, performance data collection, service monitoring, event processing and topology mapping - started in July 1999 by Steve Giles, Brian Weaver and Luke Rindfuss at their company PlatformWorks and registered on SourceForge as project 4141 in March 2000, about two months after the project that became Nagios. The OpenNMS Group, the company that provides commercial support, training and the Meridian enterprise distribution, was founded in September 2004 by Tarus Balog, Matt Brozowski and David Hustace.",
+    body: [
+      "The project nearly died twice before the company existed. PlatformWorks was bought on 28 September 2000 by Atipa, a Kansas City Linux systems vendor that renamed itself Oculan in July 2001, and in September 2002 Oculan stopped supporting OpenNMS. Tarus Balog, then an Oculan employee, left to continue the project independently, and two years later founded The OpenNMS Group with Brozowski and Hustace. The Order of the Green Polo was set up shortly afterwards to govern the project separately from the commercial business.",
+      "Two release streams came out of that arrangement: Horizon, the community release with new features, and Meridian, the enterprise release with longer support cycles, both under the AGPLv3. The platform's own description of itself is the oldest claim in this category - the world's first fully open source enterprise-grade network service monitoring platform - and the awards list runs from LinuxWorld 2006 to InfoWorld's Best of Open Source in 2015.",
+      "On 22 July 2020 NantHealth closed its acquisition of The OpenNMS Group, then based in Morrisville, North Carolina, with David Hustace as chief executive, calling it the world's premier open source network management company with customers including three Fortune 100 companies; no terms were disclosed. The company's about page today gives an address in Lewisville, Texas, and NantHealth as parent. A healthcare technology company owning a network monitoring platform is an unusual pairing; the release describes the platform as serving healthcare, technology, finance and government customers.",
+    ],
+    externalUrl: "https://www.opennms.com/en/about/",
+    externalLabel: "OpenNMS - About",
+    sources: [
+      { label: "Wikipedia: OpenNMS - the project started in July 1999 by Steve Giles, Brian Weaver and Luke Rindfuss at PlatformWorks, registered on SourceForge as project 4141 in March 2000; PlatformWorks acquired by Atipa 28 September 2000, renamed Oculan July 2001; support ended September 2002; The OpenNMS Group founded September 2004 by Tarus Balog, Matt Brozowski and David Hustace; the Order of the Green Polo; Horizon and Meridian; AGPLv3; awards 2006 to 2015 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/OpenNMS" },
+      { label: "NantHealth 8-K exhibit 99.1, Culver City, 27 July 2020: NantHealth acquires OpenNMS; the transaction closed on 22 July 2020; based in Morrisville, NC; David Hustace CEO; three Fortune 100 customers; no terms (read 2026-10-06)", url: "https://www.sec.gov/Archives/edgar/data/1566469/000156646920000035/exhibit991072720.htm" },
+      { label: "OpenNMS - About: 'the world's first fully open source enterprise-grade network service monitoring platform'; founded 2004; Lewisville, Texas address; NantHealth as parent; Meridian (read 2026-10-06)", url: "https://www.opennms.com/en/about/" },
+    ],
+  },
+  {
+    // NAGIOS (PRIME 07:57). NetSaint 1999, the rename, the company in 2007, the forks.
+    slug: "nagios",
+    official: {
+      url: "https://www.nagios.com",
+      resources: [
+        { label: "Nagios - About", url: "https://www.nagios.com/about/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Nagios - NetSaint, Nagios Core and Nagios Enterprises",
+    founded: 2007,
+    storyBegins: { year: 1999, company: "NetSaint, Ethan Galstad's project" },
+    tagline: "Ethan Galstad's NetSaint of 1999 became Nagios in 2002 and a St. Paul company in 2007; its plugin model shaped a generation of monitoring.",
+    intro:
+      "Nagios is an open source network and infrastructure monitoring system that watches hosts, services and network devices and alerts when they fail and again when they recover. Ethan Galstad released it as NetSaint 0.0.1 on 14 March 1999 and renamed it Nagios in 2002 after the owners of a similarly named trademark raised a legal challenge; the new name is a recursive acronym, Nagios Ain't Gonna Insist On Sainthood, and 'agios' is the Greek for saint. Galstad founded Nagios Enterprises in 2007 in St. Paul, Minnesota, to provide commercial support and the proprietary Nagios XI.",
+    body: [
+      "The design is the thing to understand. Nagios Core does no monitoring itself: it schedules external programs, the plugins, each of which tests one service or resource and returns a status code, 0 for OK, 1 for warning, 2 for critical, 3 for unknown. Hundreds of community plugins exist, and that architecture is why the system spread: anybody who could write a script could monitor anything. Written in C, licensed under the GPLv2, it runs on Linux and other Unix systems.",
+      "Versions marked the arc: 2.0 in February 2006 with the Event Broker API, 3.0 in March 2008, 4.0 in September 2013 with worker processes for parallel checks. The commercial company's products are Nagios XI, Core, Log Server, Network Analyzer and Fusion.",
+      "The forks are part of the record too. In May 2009 a group of community developers forked Nagios as Icinga, citing slow development and insufficient response to patches; Icinga 2 in 2014 was a ground-up rewrite. On 16 January 2014 Nagios Enterprises redirected the nagios-plugins.org domain to a server it controlled without notifying the community plugin team, whose displaced maintainers continued as Monitoring Plugins. Shinken, Naemon and Checkmk are the other derivatives. A project that made monitoring a community craft then had to live with what a community does when it disagrees.",
+    ],
+    externalUrl: "https://www.nagios.com/about/",
+    externalLabel: "Nagios - About",
+    sources: [
+      { label: "Wikipedia: Nagios - NetSaint 0.0.1 released 14 March 1999 by Ethan Galstad; renamed Nagios in 2002 after a trademark challenge; the recursive acronym; plugin architecture and status codes; C and GPLv2; Nagios Enterprises founded 2007 with the proprietary Nagios XI; 2.0 February 2006, 3.0 March 2008, 4.0 September 2013; the Icinga fork of May 2009 and Icinga 2 in 2014; the 16 January 2014 nagios-plugins.org redirect and Monitoring Plugins; Shinken, Naemon, Checkmk (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Nagios" },
+      { label: "Nagios - About: 'Nagios began in 1999, when Ethan Galstad developed the open-source Nagios Core engine'; 'Ethan founded Nagios Enterprises in 2007 in St. Paul, Minnesota'; Nagios XI, Core, Log Server, Network Analyzer and Fusion (read 2026-10-06)", url: "https://www.nagios.com/about/" },
+    ],
+  },
+  {
+    // ZABBIX (PRIME 07:57). Created 2001, released 2004, company 2005, Riga.
+    slug: "zabbix",
+    official: {
+      url: "https://www.zabbix.com",
+      resources: [
+        { label: "Zabbix - About", url: "https://www.zabbix.com/about" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Zabbix",
+    founded: 2005,
+    storyBegins: { year: 2001, company: "Zabbix, Alexei Vladishev's internal monitoring tool" },
+    tagline: "Alexei Vladishev's internal tool of 2001 became a Riga company in 2005 and a monitoring platform with offices on four continents, free and open source throughout.",
+    intro:
+      "Zabbix is an open source monitoring platform for networks, servers, virtual machines and cloud services: it collects metrics over SNMP, IPMI, JMX and its own agents, stores them in a relational database and provides alerting, visualisation and reporting through a web front end. Alexei Vladishev started it in 2001 as an internal monitoring tool and released the first stable version, 1.0, in 2004; the company's own history says it began in 2005 with a small group of passionate individuals led by Vladishev, who remains chief executive and founder.",
+    body: [
+      "The company, Zabbix SIA, is headquartered in Latvia and has offices in the USA, Brazil, Mexico, Japan and France. Its own description of the model is one sentence: free and open source software backed by a mature, reliable vendor. The server and the original agent are written in C, a newer agent2 in Go, the web front end in PHP and a Java gateway handles JMX.",
+      "The version history is a map of what monitoring came to mean. 1.8 in December 2009 added auto-discovery and auto-registration of hosts; 2.0 in May 2012 the dashboard system and template inheritance; 3.0 in February 2016, the first long-term support release, encryption between agent and server and predictive triggers; 4.0 in October 2018 the Go agent with a plugin architecture; 5.0 LTS in May 2020 the monitoring proxy for distributed sites and SAML; 6.0 LTS in February 2022 high-availability clustering, Kubernetes monitoring and anomaly detection; 7.0 LTS in June 2024 browser-based synthetic monitoring and proxy load balancing, and a licence change from GPLv2 to AGPLv3.",
+      "Beside Nagios and OpenNMS on this record, Zabbix is the one that kept a single company and a single codebase from the start, and the one with an office in Brazil.",
+    ],
+    externalUrl: "https://www.zabbix.com/about",
+    externalLabel: "Zabbix - About",
+    sources: [
+      { label: "Zabbix - About: 'It began in 2005, with a small group of passionate individuals led by Alexei Vladishev'; Vladishev CEO and founder; offices in the USA, Brazil, Mexico, Japan and France, headquarters in Latvia; 'Our software is free and open source backed by a mature reliable vendor' (read 2026-10-06)", url: "https://www.zabbix.com/about" },
+      { label: "Wikipedia: Zabbix - created by Alexei Vladishev in 2001 as an internal tool, first stable version 1.0 in 2004; developed by Zabbix LLC (SIA Zabbix) of Riga, Latvia; C, Go, PHP and Java components; 1.8 December 2009, 2.0 May 2012, 3.0 February 2016, 4.0 October 2018, 5.0 May 2020, 6.0 February 2022, 7.0 June 2024 under AGPLv3 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Zabbix" },
+    ],
+  },
+  {
+    // GRAFANA LABS (PRIME 07:57: "Grafana"). The dashboard of December 2013/January 2014 and the company around it.
+    slug: "grafana-labs",
+    official: {
+      url: "https://grafana.com",
+      resources: [
+        { label: "Grafana Labs - About", url: "https://grafana.com/about/grafana-labs/" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Grafana Labs",
+    founded: 2014,
+    storyBegins: { year: 2013, company: "Grafana, Torkel Ödegaard's open source dashboard" },
+    tagline: "A dashboard side project of 2013 that became the open observability platform: $270 million at a $6 billion valuation in 2024.",
+    intro:
+      "Grafana Labs' own history begins in December 2013, when Torkel Ödegaard, looking for a better way to make data more accessible and interactive, created an open source dashboarding tool he called Grafana; it was released in January 2014, an outgrowth of his work on Graphite at Orbitz, with a user interface originally based on version 3 of Kibana. The company around it was founded in 2014 as Raintank and later took the product's name, which combines Graphite and Kibana; its co-founders are Raj Dutt, the chief executive, Ödegaard and Anthony Woods.",
+    body: [
+      "Grafana does not store the metrics, logs or traces it shows. It queries other systems - Prometheus, Graphite, InfluxDB and OpenTSDB for metrics, Loki and Elasticsearch for logs, Tempo, Jaeger and Zipkin for traces, the SQL databases - and combines the results in one panel, keeping only dashboards, users and alert state in a database of its own. That design is why it became the front end to everyone else's telemetry, and why the company could build Loki, Tempo, Mimir, Pyroscope, k6, Faro, Beyla and Alloy around it.",
+      "The money followed the adoption: $24 million in 2019, $50 million in 2020, $220 million in 2021 at a $3 billion valuation, and on 21 August 2024 a $270 million round led by Lightspeed at a valuation above $6 billion, by which point the company had passed $250 million in annual recurring revenue, 5,000 paying customers up from 2,000 in 2022, and 20 million users worldwide; its own site today says it is trusted by more than 10,000 customers. Acquisitions built the stack: Kausal in 2018, k6, Pace and Amixr in 2021, Pyroscope and Asserts.ai in 2023, TailCtrl in 2024 and LogLine in 2026.",
+      "In 2021 the licence moved from Apache 2.0 to the AGPLv3, the same move Zabbix made in 2024 and a cousin of the fight recorded on the Elastic entry. Grafana Cloud and Grafana Enterprise are the commercial forms. Of the monitoring companies on this record, this is the one that never sold a collector; it sold the screen.",
+    ],
+    externalUrl: "https://grafana.com/about/grafana-labs/",
+    externalLabel: "Grafana Labs - About",
+    acquisitions: [
+      { year: 2018, name: "Kausal", what: "Listed among Grafana Labs' acquisitions; the page read does not describe the product.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2021, name: "k6", what: "Load testing.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2021, name: "Pace", what: "Developer tooling.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2021, name: "Amixr", what: "Incident response.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2023, name: "Pyroscope", what: "Continuous profiling.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2023, name: "Asserts.ai", what: "AI-assisted observability.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2024, name: "TailCtrl", what: "Trace sampling.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+      { year: 2026, name: "LogLine", what: "Log querying.", sourceNote: "Wikipedia: Grafana (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Grafana Labs - About: 'In December 2013, looking for a better way to make data more accessible and interactive, Torkel Ödegaard created an open source dashboarding tool he called Grafana'; co-founders Raj Dutt (CEO), Torkel Ödegaard and Anthony Woods; trusted by over 10,000 customers; Loki, Mimir, Tempo, k6, Pyroscope, Faro, Beyla and Alloy (read 2026-10-06)", url: "https://grafana.com/about/grafana-labs/" },
+      { label: "Wikipedia: Grafana - released January 2014 by Torkel Ödegaard, an outgrowth of Graphite work at Orbitz, with a UI based on Kibana 3; Grafana Labs founded in 2014 as Raintank; the name combines Graphite and Kibana; $24M 2019, $50M 2020, $220M 2021 at $3B, $270M 2024 at $6B; AGPLv3 since 2021; acquisitions Kausal 2018, k6, Pace and Amixr 2021, Pyroscope and Asserts.ai 2023, TailCtrl 2024, LogLine 2026; the data sources and the LGTM stack (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Grafana" },
+      { label: "TechCrunch, 21 August 2024: Grafana Labs raises $270 million led by Lightspeed at a valuation above $6 billion, up from $3 billion in 2021; past $250 million in ARR; more than 5,000 paying customers up from 2,000 in 2022; 20 million users; almost ten years since the company was established (read 2026-10-06)", url: "https://techcrunch.com/2024/08/21/grafana-labs-is-now-valued-at-6b/" },
+    ],
+  },
+  {
+    // OKTA (PRIME 08:03). The identity provider as the perimeter, and the breaches that tested the claim.
+    slug: "okta",
+    official: {
+      url: "https://www.okta.com",
+      resources: [
+        { label: "Okta Security", url: "https://sec.okta.com" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Okta",
+    founded: 2009,
+    tagline: "Cloud identity for 10,000 organisations, the $6.5 billion Auth0 purchase, and the 2022 and 2023 breaches that showed what an identity provider's support desk is worth to an attacker.",
+    intro:
+      "Okta was co-founded in January 2009 in San Francisco as SaaSure Inc. by Todd McKinnon and Frederic Kerrest, who had worked together at Salesforce; it took the name Okta in 2010, from the meteorological unit for cloud cover. It sells identity and access management from the cloud: a single sign-on service for logging into other systems - the company claims one login for Gmail, Workday, Salesforce and Slack - API authentication services, and, since the Auth0 purchase, authentication for the builders of applications. McKinnon is still chief executive; the company reported $2.92 billion of revenue and 6,366 employees in 2026.",
+    body: [
+      "The financing and listing were conventional: $75 million in 2015 from Andreessen Horowitz, Greylock and Sequoia at a $1.2 billion valuation, an initial public offering on Nasdaq in 2017 at $17.00 a share raising $187 million, Sequoia the largest shareholder at 21.2 per cent, and over 100 million registered users reported by January 2019. On 3 May 2021 Okta completed its acquisition of Auth0 in a stock transaction valued at approximately $6.5 billion, announced that March, calling itself the leading independent identity provider trusted by more than 10,000 organisations. atSpoke followed in August 2021 for $90 million, Spera in December 2023, and Axiom Security, an identity-centric privileged access company, in September 2025.",
+      "The breaches are why this record is longer than the product list. On 22 March 2022 the Lapsus$ group posted screenshots from Okta's internal systems; Okta concluded that at most 366 customers may have been affected, and that the intrusion began on a computer used by one of its third-party customer support engineers. In December 2022 its source code was taken from its GitHub repository.",
+      "Then the support system itself. Okta's chief security officer, David Bradbury, set out the root cause on 3 November 2023: from 28 September to 17 October 2023 a threat actor used a service account stored in the customer support system to view files uploaded by 134 customers, less than one per cent of the base, and used session tokens from five of them to hijack sessions. The service account's username and password had been saved into an employee's personal Google account, which was signed in on the Chrome browser of an Okta-managed laptop. 1Password reported suspicious activity on 29 September and BeyondTrust on 2 October, supplying the decisive IP indicator on 13 October. Okta disabled the account, blocked personal Google profiles in Chrome on managed devices, added monitoring to the support system and bound administrator session tokens to network location. On 29 November 2023 it became known that the incident touched all users of the customer support system.",
+      "The lesson is structural rather than a verdict on one company. An identity provider's support desk receives the files that debug login problems, and those files carry the sessions of the customers' own administrators; whoever reads the support desk can become any of them. The protective measures Okta published are exactly the ones every customer of every identity provider now asks about, which is the sense in which the 2023 report did the industry a service. Beside this entry, CyberArk, BeyondTrust and SailPoint tell the privileged and identity governance sides of the same story.",
+    ],
+    externalUrl: "https://www.okta.com",
+    externalLabel: "Okta",
+    acquisitions: [
+      { year: 2021, name: "Auth0", price: "approximately $6.5 billion in stock", what: "Authentication for application builders; the closing release says Auth0 safeguards billions of login transactions each month. Announced in March 2021 and completed on 3 May 2021.", sourceNote: "Okta 8-K exhibit 99.1, 3 May 2021, and Wikipedia: Okta, Inc. (read 2026-10-06)." },
+      { year: 2021, name: "atSpoke", price: "$90 million", what: "Acquired in August 2021.", sourceNote: "Wikipedia: Okta, Inc. (read 2026-10-06)." },
+      { year: 2023, name: "Spera", price: "approximately $100 to 130 million", what: "A security firm acquired in December 2023.", sourceNote: "Wikipedia: Okta, Inc. (read 2026-10-06)." },
+      { year: 2025, name: "Axiom Security", what: "Identity-centric privileged access management for cloud, SaaS and database environments; completed September 2025.", became: "Integrated into Okta Privileged Access.", sourceNote: "Wikipedia: Okta, Inc. (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: Okta, Inc. - founded January 2009 as SaaSure Inc. in San Francisco by Todd McKinnon and Frederic Kerrest, renamed Okta in 2010 after the cloud-cover unit; $75M in 2015 at $1.2B; 2017 Nasdaq IPO at $17.00 raising $187M, Sequoia 21.2 per cent; 100 million registered users January 2019; Auth0 agreement March 2021, closed May 2021; atSpoke, Spera, Axiom Security; the Verkada camera intrusion of 9 March 2021; LAPSUS$ 22 March 2022 and the 366-customer ceiling; GitHub source code December 2022; the October 2023 support system breach and the 29 November 2023 disclosure; revenue US$2.92 billion and 6,366 employees in 2026 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Okta,_Inc." },
+      { label: "Okta 8-K exhibit 99.1, San Francisco, 3 May 2021: Okta completes the acquisition of Auth0, a stock transaction valued at approximately $6.5 billion; more than 10,000 organisations trust Okta; Todd McKinnon and Eugenio Pace quoted (read 2026-10-06)", url: "https://www.sec.gov/Archives/edgar/data/1660134/000119312521146823/d133101dex991.htm" },
+      { label: "Okta Security, David Bradbury, 3 November 2023: unauthorised access to the customer support case management system from 28 September to 17 October 2023; files of 134 customers; five session hijacks; the service account credentials saved in an employee's personal Google account on a managed laptop; reports from 1Password on 29 September and BeyondTrust on 2 and 13 October; the remediation steps (read 2026-10-06)", url: "https://sec.okta.com/articles/2023/11/unauthorized-access-oktas-support-case-management-system-root-cause/" },
+    ],
+  },
+  {
+    // HEWLETT-PACKARD (PRIME 07:37 "HP OpenView", 07:57 "HP-UX"). The company itself, 1939 to the 2015 split.
+    // The HPE Networking card carries the networking lineage (3Com, Aruba, Juniper); this one carries the
+    // computing company that HP-UX, the HP 9000 and OpenView belonged to, so those glossary entries have a home.
+    slug: "hewlett-packard",
+    official: {
+      defunct: true,
+      successor: { label: "HP Inc., the PC and printer business; the enterprise business became Hewlett Packard Enterprise, whose networking lineage is on the HPE Networking card", url: "https://www.hp.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Hewlett-Packard - the garage, the HP 9000 and the split",
+    founded: 1939,
+    ended: {
+      year: 2015,
+      note: "Split on 1 November 2015: the enterprise products and services business was spun off as Hewlett Packard Enterprise, and the personal computer and printer businesses became HP Inc. HP-UX, which ran the HP 9000 and Integrity lines, reached the end of support on 31 December 2025.",
+    },
+    tagline: "Founded in a Palo Alto garage in 1939; built the HP 9000 and HP-UX, OpenView and the LaserJet; merged with Compaq in 2002 and split in two in 2015.",
+    intro:
+      "Hewlett-Packard was founded by Bill Hewlett and David Packard in 1939 in a one-car garage in Palo Alto, California, formally established on 2 July 1939 after a first big contract in 1938 to supply oscillators for Walt Disney's Fantasia, and incorporated on 18 August 1947 with Packard as president. Instruments and calculators came first - the HP-35 of 1972 was the world's first handheld scientific calculator - then business computers with the HP 3000, Unix workstations and servers with the HP 9000 running HP-UX, and in 1984 both inkjet and laser printers for the desktop.",
+    body: [
+      "HP-UX is the thread that ties this record to the operating systems elsewhere in the glossary. Hewlett Packard Unix was based on System V, initially System III; the encyclopaedia's infobox dates its initial release to 1982 and its prose to 1984, a discrepancy recorded here rather than resolved. It ran the HP Integral PC and the HP 9000 Series 200, 300 and 400 on Motorola 68000 processors, the Series 500 on HP's own FOCUS architecture, then PA-RISC and finally Intel's Itanium in the Integrity servers; it was the first Unix to offer access control lists for files and among the first with a built-in logical volume manager. The last release, 11i v3, came on 22 May 2025, and following the discontinuation of Itanium, support ended on 31 December 2025.",
+      "OpenView was the management side. The foundational product was Network Node Manager, network monitoring software based on SNMP, and the family grew by purchase: Novadigm and its Radia suite in April 2004, Peregrine Systems in December 2005, Mercury Interactive in November 2006, Opsware. In 2007 the whole line was rebranded HP BTO Software under the HP Software Division and the OpenView name was phased out; HP Software passed to HPE at the split and was sold to Micro Focus in a merger completed on 1 September 2017.",
+      "The corporate arc: Agilent, the test and measurement business that was the company's origin, was spun off in 1999. On 3 September 2001 HP announced an agreement to merge with Compaq, and after a shareholder vote the merger became official on 3 May 2002, bringing with it the Digital Equipment Corporation that Compaq had bought in 1998. Electronic Data Systems followed under an agreement of 13 May 2008, lifting combined revenue to $118.4 billion and the company to ninth on the Fortune 500 in 2009; 3Com, Palm and 3PAR were all bought in 2010, Autonomy after them.",
+      "On 1 November 2015 Hewlett-Packard split into Hewlett Packard Enterprise, which took the enterprise products and services, and HP Inc., which took the personal computers and printers. The HPE Networking card on this timeline follows the networking half from 3Com and Aruba to the 2025 Juniper merger; this card ends where the name did.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Hewlett-Packard",
+    externalLabel: "Hewlett-Packard (Wikipedia)",
+    acquisitions: [
+      { year: 2002, name: "Compaq", what: "Agreement announced 3 September 2001; the merger became official on 3 May 2002 after a shareholder vote and the merged company launched on 7 May 2002. Compaq had itself acquired Digital Equipment Corporation in June 1998.", became: "HP's PC and industry-standard server business; the DEC and Compaq lines inside it.", sourceNote: "Wikipedia: Hewlett-Packard and Digital Equipment Corporation (read 2026-10-06)." },
+      { year: 2004, name: "Novadigm", what: "The Radia suite, folded into OpenView; April 2004.", sourceNote: "Wikipedia: HP OpenView (read 2026-10-06)." },
+      { year: 2005, name: "Peregrine Systems", what: "IT asset and service management software, integrated into OpenView; December 2005.", sourceNote: "Wikipedia: HP OpenView (read 2026-10-06)." },
+      { year: 2006, name: "Mercury Interactive", what: "Purchase completed November 2006 and its applications integrated into the OpenView family, after which the OpenView and Mercury names were phased out in favour of HP BTO Software.", sourceNote: "Wikipedia: HP OpenView (read 2026-10-06)." },
+      { year: 2008, name: "Electronic Data Systems", what: "Definitive agreement announced 13 May 2008; combined revenues of $118.4 billion that year and a Fortune 500 ranking of 9 in 2009.", sourceNote: "Wikipedia: Hewlett-Packard (read 2026-10-06)." },
+      { year: 2010, name: "3Com", what: "Networking; one of three 2010 purchases with Palm and 3PAR. The HPE Networking card tells the 3Com story.", sourceNote: "Wikipedia: Hewlett-Packard (read 2026-10-06)." },
+      { year: 2010, name: "Palm", what: "Acquired in 2010, with 3Com and 3PAR.", sourceNote: "Wikipedia: Hewlett-Packard (read 2026-10-06)." },
+      { year: 2010, name: "3PAR", what: "Acquired in 2010, with 3Com and Palm.", sourceNote: "Wikipedia: Hewlett-Packard (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: Hewlett-Packard - founded by Bill Hewlett and David Packard in 1939 in a one-car garage in Palo Alto; the 1938 Disney contract and the formal establishment on 2 July 1939; incorporated 18 August 1947; the HP-35 of 1972; the HP 3000; inkjet and laser printers 1984; Agilent 1999; the Compaq agreement of 3 September 2001 and the merger of 3 May 2002; EDS agreement 13 May 2008, $118.4 billion and Fortune 500 rank 9; 3Com, Palm and 3PAR 2010, then Autonomy; the split of 1 November 2015 into Hewlett Packard Enterprise and HP Inc. (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Hewlett-Packard" },
+      { label: "Wikipedia: HP-UX - Hewlett Packard Unix, System V (initially System III); the infobox's initial release of 1982 and the prose's 1984; the Integral PC, HP 9000 Series 200, 300, 400 and 500, PA-RISC and IA-64; first Unix with access control lists; latest release 2025.11iv3 of 22 May 2025; support ended 31 December 2025 following Itanium's discontinuation (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/HP-UX" },
+      { label: "Wikipedia: HP OpenView - the former name of HP's network and systems management family; Network Node Manager based on SNMP as the foundational product; Novadigm April 2004, Peregrine December 2005, Mercury Interactive November 2006, Opsware; rebranded HP BTO Software in 2007; HP Software to HPE and then Micro Focus, merger completed 1 September 2017 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/HP_OpenView" },
+      { label: "Wikipedia: Digital Equipment Corporation - DEC acquired by Compaq in June 1998, the largest merger in the computer industry's history at the time; Compaq bought by HP in May 2002 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Digital_Equipment_Corporation" },
+    ],
+  },
+  {
+    // BORLAND (PRIME 08:42). Turbo Pascal, Quattro Pro, Paradox, dBASE by purchase, Delphi; Inprise; Micro Focus.
+    slug: "borland",
+    official: {
+      defunct: true,
+      successor: { label: "OpenText, which acquired Micro Focus, Borland's owner since 2009, in 2023", url: "https://www.opentext.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Borland - Turbo Pascal and the Big Four years",
+    founded: 1983,
+    ended: {
+      year: 2009,
+      note: "Acquired by Micro Focus: announced 6 May 2009 at $75 million, approved by shareholders on 22 July 2009 at $1.50 a share and completed in late July 2009. Micro Focus was itself acquired by OpenText in 2023, which absorbed the Borland portfolio into its application delivery management division.",
+    },
+    tagline: "Sold a $49.95 Pascal compiler by mail order in 1983, made Forrester's Big Four, bought dBASE, shipped Delphi, renamed itself Inprise, and ended inside Micro Focus.",
+    intro:
+      "Borland International was founded in 1983 in California by Niels Jensen, Ole Henriksen, Mogens Glad and Philippe Kahn. The three Danes had started Borland Ltd in August 1981 to sell CP/M products such as Word Index, found at the CP/M-82 show in San Francisco that they needed an American company to reach the American market, and met Kahn, newly arrived in Silicon Valley from developing the Micral. Kahn was chairman, president and chief executive from the inception until 1995. The company was first headquartered in Scotts Valley, then Cupertino, then Austin.",
+    body: [
+      "The name has a story of its own. The American company was first called MIT, for Market In Time; a letter from the Massachusetts Institute of Technology prompted a rebrand, and on legal advice the founders took the name of a small bankrupt Irish customer, Borland. Its first product was Turbo Pascal, released in 1983 and developed by Anders Hejlsberg, whose compiler had been sold in Scandinavia as Compas Pascal. Kahn's idea was to package editor, compiler and everything needed to produce a program in one fast, cheap toolkit and sell it by direct mail for $49.95, bypassing retailers and resellers at a time when professional tools cost hundreds. Sidekick, an early terminate-and-stay-resident utility, followed in 1984; by 1985 the legend of Turbo Pascal had, in one reviewer's words, reached mythic proportions, and firms made plans in marketing meetings to become the next Borland.",
+      "Forrester Research counted Borland, with Analytica's Reflex database bought in 1985, among the Big Four of personal computer software beside Ashton-Tate, Lotus and Microsoft. Fiscal 1987 revenue was $29.2 million; that September Borland bought Ansa-Software and its Paradox database, and in 1989 it launched the Quattro Pro spreadsheet, which drew Lotus Development's copyright suit over look and feel, Lotus v. Borland. In September 1991 Borland bought Ashton-Tate in an all-stock transaction, bringing dBASE and InterBase into the house.",
+      "The Ashton-Tate merger was, by the encyclopaedia's account, a large part of the downfall: the portfolio was weak, with no provision for the GUI environment of Windows, almost all product lines were discontinued, consolidating duplicate offices was costly, and dBASE for Windows shipped so late that the developer community had moved on. Layoffs in 1993 were the third in five years. Kahn and the board disagreed on focus and he resigned in January 1995, the year Delphi 1, Hejlsberg's rapid application development environment, was launched. Hejlsberg later built C# and .NET at Microsoft.",
+      "In April 1998 Borland International announced it had become Inprise Corporation, a name so unlike the old one that many thought the company had gone out of business; the Borland name came back. On 8 February 2006 it announced the divestiture of its development tools division, Delphi, JBuilder and InterBase, to concentrate on application life-cycle management, formed the CodeGear subsidiary that November, and on 7 May 2008 sold CodeGear to Embarcadero Technologies for an expected $23 million plus $7 million in receivables. On 6 May 2009 Micro Focus announced it would buy what remained for $75 million, $1.50 a share, and completed the purchase in late July 2009. Micro Focus went to OpenText in 2023.",
+      "The lesson the record keeps is the one the price tag teaches. A compiler at $49.95 by mail order did to development tools what Novell's at-cost Ethernet cards did to networking hardware in the same decade: it made the professional's instrument cheap enough for the student, and the students became the profession. Pascal, Turbo Pascal and dBASE have their own glossary entries; Ashton-Tate and Nantucket, the Clipper company, their own records.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Borland",
+    externalLabel: "Borland (Wikipedia)",
+    acquisitions: [
+      { year: 1985, name: "Analytica", what: "The Reflex database; the engineering team, managed by Brad Silverberg and including Reflex co-founder Adam Bosworth, joined Borland.", sourceNote: "Wikipedia: Borland (read 2026-10-06)." },
+      { year: 1987, name: "Ansa-Software", what: "The Paradox database management tool, at version 2.0; Richard Schwartz, an Ansa co-founder, became Borland's CTO. September 1987.", sourceNote: "Wikipedia: Borland (read 2026-10-06)." },
+      { year: 1991, name: "Ashton-Tate", what: "dBASE and InterBase, in an all-stock transaction of September 1991. The portfolio proved weak for Windows and most lines were discontinued.", became: "dBASE for Windows, late; InterBase stayed with Borland until the 2006 CodeGear divestiture.", sourceNote: "Wikipedia: Borland (read 2026-10-06)." },
+      { year: 2006, name: "Segue Software", what: "Software test and quality tools; the planned acquisition was announced on 8 February 2006 as Borland turned to application life-cycle management.", sourceNote: "Wikipedia: Borland (read 2026-10-06)." },
+      { year: 2006, name: "Gauntlet Systems", what: "Screening of software under development for quality and security; announced 20 March 2006.", sourceNote: "Wikipedia: Borland (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: Borland - founded 1983 in California by Niels Jensen, Ole Henriksen, Mogens Glad and Philippe Kahn; Borland Ltd of August 1981; the MIT name and the Irish customer; Kahn chairman, president and CEO 1983 to 1995; Turbo Pascal 1983 by Anders Hejlsberg, Compas Pascal; Sidekick 1984; Analytica 1985 and Forrester's Big Four; fiscal 1987 $29.2 million; Ansa-Software and Paradox September 1987; Quattro Pro 1989 and the Lotus suit; Ashton-Tate September 1991, all stock; the merger's problems and the 1993 layoffs; Kahn's resignation January 1995; Delphi 1 1995; Inprise April 1998; CodeGear 2006 and its sale to Embarcadero 7 May 2008; Micro Focus 6 May 2009, $75 million, $1.50 a share, completed late July 2009; OpenText 2023 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Borland" },
+      { label: "Wikipedia: Turbo Pascal - released 20 November 1983; Anders Hejlsberg; sold by direct mail order for US$49.95 without retailers or resellers; Kahn's idea of an integrated toolkit at a low price; Blue Label Pascal and PolyPascal; Compas Pascal for CP/M; Hejlsberg the architect of every Turbo Pascal and the first three Delphi versions (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Turbo_Pascal" },
+    ],
+  },
+  {
+    // ASHTON-TATE (PRIME 08:42: "dBase II and III"). The company that sold Wayne Ratliff's Vulcan as dBASE.
+    slug: "ashton-tate",
+    official: {
+      defunct: true,
+      successor: { label: "Borland, which bought Ashton-Tate in 1991 and is itself now part of OpenText", url: "https://www.opentext.com" },
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Ashton-Tate - dBASE II and III",
+    founded: 1980,
+    ended: {
+      year: 1991,
+      note: "Sold to Borland in September 1991 in an all-stock transaction; defunct October 1991. The dBASE line continued under Borland and later owners.",
+    },
+    tagline: "A football-pool database written in 8080 assembly became dBASE II, 70 per cent of the microcomputer database market, and one of the Big Three; then dBASE IV shipped too early.",
+    intro:
+      "Ashton-Tate was founded in August 1980 by George Tate and Hal Lashlee, two software entrepreneurs who had already built three start-ups - a mail-order seller, a distributor and a retail chain - and who in 1981 discovered Vulcan, a database application that Martin Marietta programmer Wayne Ratliff had written in 1978, in Intel 8080 assembly language for CP/M, to help him pick football pools, modelled on JPLDIS, a Univac program from the Jet Propulsion Laboratory. They licensed it on a one-page agreement with generous royalties and sold it as dBASE II; Ashton was Tate's parrot, named after the fact, and the founders thought Ashton-Tate sounded better than Lashlee-Tate.",
+    body: [
+      "dBASE II cost $700 and came with an unusual guarantee: a crippled version to try and a sealed disk with the full one, returnable unopened within thirty days. It was ported to the IBM PC and shipped in September 1982, and as hard drives grew it became one of the first database products to sell in volume; by early 1984 InfoWorld reckoned Ashton-Tate the world's sixth-largest microcomputer software company on $35 million of 1983 sales, with dBASE II reportedly holding 70 per cent of the microcomputer database market, 150,000 copies sold, a catalogue of 700 applications written in its language and more than thirty books and courses teaching it. PC Magazine said the share would be the envy of Procter & Gamble or General Motors.",
+      "dBASE III was announced in May and shipped in July 1984, alongside Framework, the integrated office suite Forefront Corporation developed with Ashton-Tate's money; a company-wide convention aboard the Queen Mary in Long Beach presented them in early August. Days later, on 10 August 1984, George Tate died of a heart attack at forty. David Cole, the chairman and chief executive the founders had hired in 1981, resigned that October for Ziff-Davis, and Ed Esber, the marketer who had launched VisiCalc, took over; dBASE III 1.1 followed in November to fix the bugs in 1.0, and Ratliff, whose relationship with Esber was tumultuous, quit months later.",
+      "Esber's seven years were the most prosperous and the most controversial. dBASE III Plus was 63 per cent of fiscal 1987 revenue, a customer called it essentially a one-product company, and Esber admitted it was perceived as a technological laggard: dBASE, MultiMate and Framework were all acquisitions, and dBASE went 22 months without an update. dBASE IV 1.0 shipped in October 1988 to good reviews until users found the bugs; Esber conceded in August 1989 that it had shipped too early, and 1.1 did not arrive until July 1990. By then the xBase clones - FoxBASE+ and FoxPro, and Nantucket's Clipper compiler - had the developers.",
+      "Borland bought the company in September 1991 for stock, and in the same year Microsoft bought Fox Software and Computer Associates bought Nantucket: the three top xBase firms taken within twelve months. The Justice Department later required Borland to end its suit against Fox and let others use the dBASE language. The dBASE and Clipper glossary entries carry the language; this record carries the company that made a programming language out of a hobbyist's database and lost it to the people who compiled it better.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Ashton-Tate",
+    externalLabel: "Ashton-Tate (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: Ashton-Tate - founded August 1980 by George Tate and Hal Lashlee in Torrance, California; Wayne Ratliff's Vulcan of 1978 in 8080 assembly, modelled on JPLDIS; the 1981 licence and the parrot; the $700 price and the sealed-disk guarantee; the IBM PC port shipped September 1982; $35 million in 1983 and 70 per cent of the market; dBASE III announced May and shipped July 1984 with Framework; the Queen Mary convention; Tate's death on 10 August 1984; Cole's resignation and Ed Esber; dBASE III 1.1; Ratliff's departure; dBASE III Plus at 63 per cent of fiscal 1987; dBASE IV 1.0 October 1988, 1.1 July 1990; sold to Borland September 1991, defunct October 1991 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Ashton-Tate" },
+      { label: "Wikipedia: dBase - Vulcan for PTDOS 1978; the CP/M port that caught Ashton-Tate's attention in 1980; dBASE II and the IBM PC; dBASE III ported to Unix and VMS; the Big Three with Lotus and Microsoft; FoxBASE+, FoxPro and Clipper; the poor reception of dBASE IV; within one year Borland bought Ashton-Tate, Microsoft bought Fox Software and Computer Associates acquired Nantucket; the Justice Department and the xBase language; dBase LLC in 2022 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/DBase" },
+    ],
+  },
+  {
+    // NANTUCKET CORPORATION (PRIME 08:42: "Clipper"). The compiler that turned dBASE programs into DOS executables.
+    slug: "nantucket",
+    official: {
+      defunct: true,
+    },
+    tags: ["vendor"],
+    group: "other",
+    name: "Nantucket - Clipper",
+    founded: 1984,
+    ended: {
+      year: 1992,
+      note: "Sold to Computer Associates in 1992 for 190 million dollars; the product was renamed CA-Clipper and its last release, 5.3b, came on 20 May 1997.",
+    },
+    tagline: "The compiler that made dBASE III programs into standalone DOS applications; millions were built between 1985 and 1992, then the owner missed Windows.",
+    intro:
+      "Nantucket Corporation was started in 1984 by Barry ReBell on the management side and Brian Russell on the technical side, with Larry Heimendinger as president, to sell Clipper: a native-code compiler for dBASE III databases and programs, first released in 1985 as Nantucket Clipper Winter '84, dated 25 May 1985. Clipper's advantage over dBASE was that a program could be compiled and run on DOS as a standalone application, without the dBASE interpreter and without its interactive dot prompt.",
+    body: [
+      "Between 1985 and 1992 millions of Clipper applications were built, typically for small businesses managing clients and inventory; for many of them a Clipper application written to their needs was their first experience of software development, and banks and insurers used it for the systems too small for the mainframe and as a front end to the mainframe systems they had. The releases were named for seasons - Summer '85, Winter '85, Autumn '86, Summer '87 on 21 December 1987 - until Clipper 5.0 in 1990 and 5.01 in April 1991, by which point the language had absorbed elements of C and Pascal, object-oriented programming and the code block, a hybrid of dBASE macros and function pointers that made it far more powerful than the original.",
+      "In 1992 the company was sold to Computer Associates for 190 million dollars and the product became CA-Clipper: 5.20 in February 1993, 5.30 in June 1995, 5.3b on 20 May 1997, the final release. Under its new owner Clipper failed to make the transition from DOS to Windows, and almost no new commercial applications were written in it after 1995; Nantucket's Aspen project matured into CA-Visual Objects for Windows, and the developers moved to Visual Basic, Microsoft Access, Delphi and PowerBuilder, all strongly typed where the dBASE tradition was not. In November 1991 the New York Times had reported Nantucket's success in convincing Soviet developers that buying beat pirating: 2,000 copies sold there against 250,000 worldwide.",
+      "The language outlived the company twice over. Alaska Software's Xbase++ and FlagShip implement it commercially, and Harbour and xHarbour under the GPL, portable to Windows, Linux, Unix and macOS. Nantucket, with Ashton-Tate and Fox Software, was one of the three xBase firms bought within a year as the category peaked; the dBASE and Clipper glossary entries carry the language, and the Borland and Ashton-Tate records the rest of the family.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Clipper_(programming_language)",
+    externalLabel: "Clipper (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: Clipper (programming language) - Nantucket Corporation started in 1984 by Barry ReBell and Brian Russell, Larry Heimendinger president; first appeared 1985 (Winter '84, 25 May 1985); a native-code compiler for dBASE III; millions of applications 1985 to 1992; Summer '87 21 December 1987, 5.0 1990, 5.01 April 1991; sold to Computer Associates in 1992 for 190 million dollars, renamed CA-Clipper; CA-Clipper 5.20 February 1993, 5.30 June 1995, 5.3b 20 May 1997; the failed Windows transition and the successors; Aspen and CA-Visual Objects; the New York Times of November 1991 on Soviet sales; Xbase++, FlagShip, Harbour and xHarbour (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Clipper_(programming_language)" },
+      { label: "Wikipedia: dBase - within one year the three top xBase firms were acquired: Borland bought Ashton-Tate, Microsoft bought Fox Software and Computer Associates acquired Nantucket (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/DBase" },
     ],
   },
   // ---- Netcraft (PRIME, 2026-10-06 06:29: "Please add a rich industry entry for https://www.netcraft.com/").

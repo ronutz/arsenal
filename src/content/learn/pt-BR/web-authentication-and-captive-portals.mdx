@@ -1,0 +1,58 @@
+---
+slug: web-authentication-and-captive-portals
+title: "Autenticação web e portais cativos: a terceira porta para dentro de uma porta autenticada"
+summary: "Como um switch ou uma controladora faz o login de uma pessoa cujo dispositivo não consegue fazer 802.1X: o web authentication proxy do guia de switches da Cisco, a sessão HTTP interceptada e a página de login, a política baixada no sucesso, as páginas de falha e de expiração e a lista de observação, a detecção de hosts por ARP e DHCP snooping, autenticação web local contra central, o limite do HTTPS que está quebrando a interceptação em todo lugar e a substituição do truque pelo IETF, a arquitetura de portal cativo da RFC 8952 e as opções de DHCP e de anúncio de roteador da RFC 8910 que avisam ao dispositivo que um portal existe em vez de forjar respostas."
+concepts: ["web authentication", "webauth", "captive portal", "web authentication proxy", "local web authentication", "central web authentication", "rfc 8952", "rfc 8910", "dhcp option 114", "guest access", "authentication order"]
+relatedTools: []
+relatedArticles: ["802-1x-and-eap-methods", "radius-end-to-end", "nac-family-history", "dhcp-lease-lifecycle"]
+category: identity
+order: 236
+status: reviewed
+updated: "2026-10-06"
+---
+
+## Três portas, em ordem
+
+Uma porta autenticada tem três jeitos de abrir. O 802.1X autentica um dispositivo que tem suplicante, com um método escolhido pela credencial que ele porta. O MAC Authentication Bypass admite uma coisa sem suplicante, pelo endereço, contra uma lista. A autenticação web é para o caso restante, uma pessoa num dispositivo que tem navegador mas não tem suplicante configurado para esta rede: um visitante, um terceirizado num notebook pessoal, um estudante num campus. A configuração usual tenta as três nessa ordem em cada porta, e este artigo é sobre a terceira. O guia de configuração de segurança do Catalyst 9300 da Cisco descreve o recurso, conhecido como web authentication proxy, como o jeito de autenticar usuários finais em sistemas que não rodam o suplicante IEEE 802.1x.
+
+## Um intermediário operado pela rede, de propósito
+
+O projeto é uma interceptação. A seção Device Roles do guia diz que o switch age como intermediário (proxy) entre o cliente e o servidor de autenticação, pedindo informações de identidade ao cliente, verificando-as com o servidor de autenticação e repassando uma resposta ao cliente. Os três papéis são o cliente que pede acesso, o servidor de autenticação que valida a identidade, em geral por RADIUS (Remote Authentication Dial-In User Service), e o switch que controla a porta e executa a interceptação.
+
+Antes que qualquer coisa possa ser interceptada o switch precisa notar o host. A seção Host Detection do guia lista os gatilhos numa interface de camada 2: um gatilho baseado em ARP, que permite à autenticação web detectar hosts com endereço IP estático ou dinâmico; a inspeção dinâmica de ARP; e o DHCP snooping, em que a autenticação web é avisada quando o switch cria um vínculo DHCP para o host. A criação da sessão então confere as listas de exceção e qualquer dispensa de autorização, e ativa a lista de acesso de interceptação HTTP para aquele host.
+
+## O login, passo a passo
+
+A seção Authentication Process do guia é a sequência que todo hóspede de hotel conhece do outro lado. O usuário inicia uma sessão HTTP. Então o tráfego HTTP é interceptado e a autorização é iniciada, e o switch envia a página de login ao usuário. O usuário digita nome de usuário e senha, e o switch os envia ao servidor de autenticação. No sucesso, o switch baixa e ativa a política de acesso do usuário a partir do servidor de autenticação e envia uma página de sucesso; a política é o que o Access-Accept do RADIUS carregou, tipicamente uma VLAN (rede local virtual) pelos atributos de túnel ou uma lista de acesso pelo nome. Na falha, o switch envia a página de falha de login, o usuário tenta de novo e, se o número máximo de tentativas falha, o switch envia a página de login expirado e o host é colocado numa lista de observação. As quatro páginas, na seção de páginas personalizáveis do guia, são Login, em que as credenciais são pedidas; Success; Fail; e Expire, mostrada quando a sessão de login expirou por excesso de falhas. Um Local Web Authentication Banner pode carregar o texto ou um logotipo de uma organização na página de login e nas janelas de resultado, num modo legado e num modo novo.
+
+A sessão termina do jeito que começou, com o switch observando o host. O guia diz que o switch reautentica um cliente quando o host não responde a uma sonda ARP numa interface de camada 2, ou quando o host não envia tráfego algum dentro do tempo ocioso numa interface de camada 3, e um Session-Timeout vindo do servidor RADIUS ou uma ação de término também a encerram.
+
+## Local e central
+
+Duas formas de implantação compartilham o nome. Na autenticação web local o switch ou a controladora sem fio serve as páginas por conta própria e fala diretamente com o servidor RADIUS, que é o fluxo acima. Na autenticação web central o switch redireciona o navegador a um portal hospedado no motor de política, o motor autentica a pessoa, muitas vezes com uma conta de visitante patrocinada ou um fluxo de autocadastro, e então muda a autorização da sessão no switch, o que na prática significa um Change of Authorization do RADIUS. A autenticação web central é o produto mais rico e o que a maioria dos sistemas de visitantes usa; é também aquele a que se refere o limite da próxima seção, porque depende de redirecionar a primeira requisição.
+
+## O limite que está quebrando a interceptação
+
+O guia o declara numa frase: a interceptação de tráfego HTTPS para redirecionamento de autenticação web central não é suportada. Um navegador cuja primeira requisição é a um site HTTPS não pode ser redirecionado a uma página de login sem que se apresente um certificado para um nome que a rede não possui, o que todo navegador hoje recusa com um aviso; e a primeira requisição da maioria dos navegadores é HTTPS. O mesmo vale para aplicativos que fixam seus certificados e para clientes usando DNS cifrado. A interceptação que fez a autenticação web funcionar por vinte anos está sendo fechada como um ataque, porque é indistinguível de um. O verbete portal cativo deste site descreve a experiência do usuário nesse declínio; a consequência de projeto é que um portal interceptador só pega com confiabilidade um navegador que ainda faz uma requisição HTTP simples, e é por isso que os sistemas operacionais passaram a fazer uma de propósito, uma sonda a um endereço conhecido, para detectar a situação.
+
+## A substituição: avisar o dispositivo, não enganá-lo
+
+A resposta do IETF foi fazer do portal algo que a rede anuncia. A RFC 8952, Captive Portal Architecture, publicada em novembro de 2020 por Larose, Dolson e Liu, descreve cinco componentes: o equipamento do usuário, um serviço de provisionamento, um servidor da API do portal cativo, um dispositivo de imposição e um sinal de portal cativo. O serviço de provisionamento avisa ao dispositivo, quando ele entra na rede, onde está a API do portal; o dispositivo pergunta à API se está cativo e aonde ir para ser liberado; o dispositivo de imposição, o switch ou a controladora, segura a sessão até que a API diga que está aberta. A arquitetura estabelece uma regra que encerra o truque antigo: as soluções não devem exigir a falsificação de respostas de servidores DNS ou HTTP. Ela é igualmente clara sobre o escopo: não descreve como um dispositivo negocia acesso irrestrito, só como ele fica sabendo que precisa.
+
+A RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements, publicada em setembro de 2020 por Kumari e Kline, dá ao serviço de provisionamento seu veículo. A opção 114 do DHCPv4, a opção 103 do DHCPv6 e a opção 37 do anúncio de roteador IPv6 carregam uma URI, e a RFC exige que ela seja o ponto de acesso da API de portal cativo definida por sua companheira RFC 8908. O documento substitui uma RFC 7710 anterior que usava a opção 160 do DHCPv4, depreciada porque dispositivos em campo se comportaram mal com ela. Um sistema operacional que implementa a RFC 8910 fica sabendo do portal no momento em que recebe um endereço, abre o portal numa visualização isolada e não precisa de interceptação alguma. Redes que fornecem a opção e mantêm um portal interceptador para clientes antigos levam as duas populações pela porta.
+
+## O que devolver, e o que manter separado
+
+A identidade que um portal estabelece é a de uma pessoa, em geral um visitante, e a autorização que se segue deveria ser a de um visitante: uma VLAN ou um filtro que alcança a Internet e nada interno, um tempo de sessão que expira com a visita e nenhum acesso ao diretório que a autenticou. Onde o portal autentica funcionários em dispositivos não gerenciados, a mesma regra vale com mais força, já que o dispositivo mostrou estar fora da gestão. Os registros de contabilização Start e Stop das sessões autenticadas por web carregam o nome de usuário e o identificador de estação como qualquer outra sessão RADIUS, e são o registro de quem estava na rede de visitantes e quando, que é a pergunta que se faz a um local de eventos depois de um incidente.
+
+## Onde se encaixa
+
+A ordem na porta é o resumo. 802.1X primeiro, porque autentica o dispositivo com uma credencial e deriva chaves para o enlace; MAC Authentication Bypass em seguida, para as coisas numa lista, com autorização restrita; autenticação web por último, para as pessoas em dispositivos que não fazem nem um nem outro, com a autorização de um visitante e, cada vez mais, a opção da RFC 8910 anunciada para que dispositivos modernos encontrem o portal sem serem enganados. O artigo sobre 802.1X cobre as duas primeiras portas e o artigo sobre o RADIUS o lado do servidor das três.
+
+## Fontes
+
+- [Cisco Catalyst 9300 Series Switches, Security Configuration Guide, Cisco IOS XE Cupertino 17.9.x, Configuring Web-Based Authentication: a definição do web authentication proxy, Device Roles, Host Detection, Session Creation, o Authentication Process, as quatro páginas personalizáveis, o Local Web Authentication Banner, os gatilhos de reautenticação, o limite de interceptação de HTTPS (lido em 06/10/2026)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-9/configuration_guide/sec/b_179_sec_9300_cg/configuring_web_based_authentication.html)
+- [RFC 8952, Captive Portal Architecture, Larose, Dolson, Liu, novembro de 2020: os cinco componentes, o provisionamento por DHCP ou anúncio de roteador e a API, a regra contra a falsificação de respostas DNS ou HTTP, o escopo declarado (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc8952)
+- [RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements (RAs), Kumari e Kline, setembro de 2020: a opção 114 do DHCPv4, a opção 103 do DHCPv6, a opção 37 do RA, a URI da API, a opção 160 depreciada da RFC 7710 (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc8910)
+- [RFC 5176, Dynamic Authorization Extensions to RADIUS, janeiro de 2008: o Change of Authorization que a autenticação web central usa para abrir uma sessão depois do login no portal (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc5176)
+- [RFC 3580, IEEE 802.1X RADIUS Usage Guidelines, setembro de 2003: os atributos de túnel que colocam uma sessão autenticada por web numa VLAN de visitantes (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc3580)
