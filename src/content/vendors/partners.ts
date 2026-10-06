@@ -3251,7 +3251,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Extreme Networks",
     founded: 1996,
-    careerChapter: { slug: "extreme", years: "2013 - 2014" },
+    careerChapter: { slug: "extreme", years: "2013 - 2014, 2021 - present" },
     tagline: "Networking manufacturer of enterprise switching, wireless and cloud-managed network software.",
     intro:
       "Extreme Networks was founded in 1996 in Santa Clara by Gordon Stitt, Herb Schneider and Stephen Haddock, all from SynOptics, to build Gigabit Ethernet switches for the enterprise. Its early identity was hardware-led: purpose-built silicon, a single operating system, and a deliberately narrow product line at a time when competitors sold catalogues.",
@@ -3347,7 +3347,7 @@ export const partnerVendors: PartnerVendor[] = [
     group: "other",
     name: "Cisco Systems",
     founded: 1984,
-    careerChapter: { slug: "cisco", years: "2003 - 2008" },
+    careerChapter: { slug: "cisco", years: "1996 - 2008" },
     tagline: "Did not invent the router, but was the first to sell one that spoke everybody's protocol at once.",
     intro:
       "Leonard Bosack and Sandy Lerner founded Cisco in December 1984, having worked on connecting incompatible networks at Stanford. The name is the tail of San Francisco and the logo is the Golden Gate Bridge, which tells you the whole company began as a local problem.",

@@ -12009,7 +12009,9 @@
     },
     "approach": {
       "title": "How I teach",
-      "body": "I chose to specialize in training because it combines deep technical knowledge with the part of the work I enjoy most: explaining complex concepts simply. The strongest sessions connect each concept to the job the learner actually has to do, so the content has somewhere to land. Real-world examples, real labs, and a focus on understanding over memorization."
+      "body": "I chose to specialize in training because it combines deep technical knowledge with the part of the work I enjoy most: explaining complex concepts simply. The strongest sessions connect each concept to the job the learner actually has to do, so the content has somewhere to land. Real-world examples, real labs, and a focus on understanding over memorization.",
+      "short": "I chose to specialise in training because it joins deep technical knowledge to the part of the work I enjoy most: explaining complex concepts simply.",
+      "link": "How the courses are taught"
     },
     "cta": {
       "title": "Get in touch",
@@ -12059,7 +12061,38 @@
     "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security",
     "advise": {
       "title": "How I advise",
-      "body": "Thirty years of first-hand experience with decisions that carry business or mission consequences: which technology to adopt, what to enable, what to improve, and what the adoption will actually cost in practice rather than on the slide. What I bring to a board or a steering committee is a structured, methodical and neutral analysis - the diagnosis, the options, the cautions, the risks, and what each one would take to carry out. Neutral is the operative word: I hold authorized instructor status across four platforms and no sales quota on any of them, so the recommendation is not the product of a commission. The impact is for the business to tell, and I would rather be judged on that than on the deck."
+      "body": "Thirty years of first-hand experience with decisions that carry business or mission consequences: which technology to adopt, what to enable, what to improve, and what the adoption will actually cost in practice rather than on the slide. What I bring to a board or a steering committee is a structured, methodical and neutral analysis - the diagnosis, the options, the cautions, the risks, and what each one would take to carry out. Neutral is the operative word: I hold authorized instructor status across four platforms and no sales quota on any of them, so the recommendation is not the product of a commission. The impact is for the business to tell, and I would rather be judged on that than on the deck.",
+      "short": "Thirty years of first-hand experience with decisions that carry business or mission consequences, offered as advisory.",
+      "link": "What the advisory covers"
+    },
+    "identity": "I teach the networks and the security systems I spent two decades building, breaking and fixing, to the people who run them now.",
+    "doing": {
+      "title": "What I do now",
+      "build": {
+        "verb": "Build ronutz",
+        "what": "This site: tools that compute rather than guess, articles read from the vendors' own pages, and a record of the industry, all built in the open."
+      },
+      "teach": {
+        "verb": "Teach",
+        "what": "Official instructor-led training on the four platforms, virtual and on site, in any time zone."
+      },
+      "advise": {
+        "verb": "Advise",
+        "what": "Executive-level technical advisory for the decisions that carry business or mission consequences."
+      },
+      "speak": {
+        "verb": "Speak",
+        "what": "Talks and facilitation on networking, security and the craft of making complex things make sense."
+      }
+    },
+    "why": {
+      "title": "Why ronutz exists",
+      "body": "The tools I wanted while teaching did not exist in a form I could trust: calculators that compute instead of guessing, explanations that cite the vendor's own page, and a record of the industry I lived through that someone else can check. So I built them, in the open, from documentation read live, with nothing a reader types ever leaving the browser. The site is the classroom's companion, and it is free because the knowledge in it was never mine alone."
+    },
+    "how": {
+      "title": "How I work",
+      "body": "Five principles hold across the site and the teaching alike:",
+      "link": "How the site is built, in full"
     }
   },
   "endorsements": {
@@ -12318,7 +12351,7 @@
     },
     "era2020present": {
       "years": "2020 – present",
-      "title": "The instructor",
+      "title": "The teacher",
       "subtitle": "The teaching stops sharing the week with anything else: full-time, official, delivered globally, expanding platform by platform.",
       "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. The first year set the pace. Qualifying to teach an official course means attending it as a student, holding its certification, and then passing the instructor qualification; that year it was done six times, covering nine courses, followed by thirteen deliveries in thirty-three days, 264 hours in front of 51 students. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
       "s1Title": "Full-time, by vocation",
@@ -12394,7 +12427,7 @@
     },
     "cisco": {
       "name": "Cisco Systems",
-      "years": "2003 – 2008",
+      "years": "1996 – 2008",
       "tagline": "Keeping critical national infrastructure running, as the single point of contact for Brazil's federal customers.",
       "intro": "The Cisco story here actually begins in 1996, not 2003: the Cabletron years ran on Cisco routing sold as Cabletron-branded OEM (original equipment manufacturer) modules - the CRBRIM and its Cisco-IOS WAN routing siblings - installed, configured, optimized, and troubleshot daily until the YAGO-born SmartSwitch Router displaced them. Contracted through Cisco Professional Services in Brazil, this was the career at its most operationally demanding, where the work was less about any single technology and more about keeping critical systems running for customers who could not afford downtime.",
       "s1Title": "High-touch operations, 2003 to 2004",
@@ -12427,14 +12460,16 @@
     },
     "extreme": {
       "name": "Extreme Networks",
-      "years": "2013 – 2014",
-      "tagline": "Building RNP's metropolitan research networks, and the one vendor here that is also a platform taught today.",
+      "years": "2013 – 2014 · 2021 – present",
+      "tagline": "Building RNP's metropolitan research networks in 2013, and, since 2021, teaching the platform as an authorized instructor.",
       "intro": "This one closes a circle. Enterasys, the second half of the very first chapter of this career, was acquired by Extreme Networks in 2013, and the same year brought a return to that lineage from the other side: deploying Extreme in the field. Working through one of Brazil's first and best Extreme Networks partners, the work built metropolitan research networks for RNP, Brazil's National Education and Research Network.",
       "s1Title": "The RedeComep deployment, 2013 to 2014",
       "s1Body": "The project was the physical build-out of RNP's RedeComep program, Redes Comunitárias de Educação e Pesquisa, the initiative that gave Brazilian cities community-run metropolitan networks for education and research. Extreme nodes went in across Campinas and its region in São Paulo, the twin cities of Petrolina in Pernambuco and Juazeiro in Bahia, Marabá in Pará, and Castanhal in Pará. Each city's network was a long-distance metropolitan-area optical ring running EAPS, Extreme's Ethernet Automatic Protection Switching, the ring-resiliency protocol that keeps a fibre ring converged when a span fails, connecting RNP's point of presence to the federal and state higher-education and scientific-research institutions it served.",
       "s2Title": "EXOS training and knowledge transfer",
       "s2Body": "Installing the nodes was only half of it. The other half was making the local teams self-sufficient: delivering ExtremeXOS (EXOS) Switching and Routing training, and the knowledge transfer that goes with it, how their systems had been configured, how the whole thing worked, and how to manage, troubleshoot, and expand it once the deployment team had moved on. Handing over the ability to run and grow the network was the point.",
-      "certs": "Extreme Networks Certified Instructor. Extreme is one of the vendors in the instructor portfolio; the current authorizations are listed under Training. The work here, in 2013 to 2014, was field deployment and training delivery."
+      "certs": "Extreme Networks Certified Instructor: authorized to teach since March 2021 (the Credly badge was issued in 2024, a badge date rather than a start date); Extreme Certified Associate, Switching (2023); Extreme Certified Professional, Switching (2023 to 2026); Extreme Networks Certified Administrator, Extreme Switching (2026). The current authorizations are listed under Training. The work here spans two engagements: field deployment and training delivery in 2013 to 2014, and authorized instruction since 2021.",
+      "s3Title": "Authorized instructor, 2021 to present",
+      "s3Body": "The circle closed a second time, and earlier than any badge says. In March 2021 the authorized teaching of Extreme Networks began through TD SYNNEX, the Extreme Authorized Training Partner for Brazil: the Extreme Switching curriculum (Installation and Configuration, Advanced Configuration, Management, Troubleshooting) and the Campus EXOS Switching and Routing course of the Extreme Certified Specialist track. In May 2023 VERSIM, the Extreme Authorized Training Partner in Poland, added the EMEA and Americas deliveries. From late 2023, with the move to full-time teaching, the Extreme classes have been delivered only through Red Education, virtual and on site, in any time zone, and the tracks have grown with the platform: switching and fabric (EXOS, VOSS and SPB), ExtremeCloud SD-WAN from installation to troubleshooting, ExtremeCloud Edge, ExtremeCloud IQ API and automation, and the Cisco-to-Extreme conversion course. The 2023 certifications (Extreme Certified Associate and Professional, Switching) and the 2024 instructor badge on Credly came along the way; the teaching had been authorized for years by then. The catalogue and the current authorizations are on the training page."
     },
     "distribution": {
       "name": "FireEye, McAfee and Ixia",

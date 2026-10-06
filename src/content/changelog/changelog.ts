@@ -53,6 +53,31 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "20:30",
+    kind: "content",
+    title: "The career record: the Cisco chapter opens in 1996, and the Extreme chapter carries its second engagement, authorized instruction since 2021",
+    body:
+      "The Cisco card now starts where the work did, in 1996, with the Cisco routing sold as Cabletron OEM modules (the CRBRIM and its siblings) that the Cabletron years ran on; the chapter's text already said so, the card's years did not. The Extreme chapter gains a third section: the authorized teaching that began in March 2021 through TD SYNNEX, Versim from May 2023, Red Education only from late 2023, the 2023 certifications, the 2024 instructor badge (a badge date, not a start date), and the tracks taught today (switching and fabric, ExtremeCloud SD-WAN, ExtremeCloud Edge, API and automation), so the card reads 2013 to 2014 and 2021 to present, two engagements with the same lineage.",
+    links: [
+      { label: "The career record", href: "/industry/chapters" },
+      { label: "The Cisco chapter", href: "/industry/chapters/cisco" },
+      { label: "The Extreme chapter", href: "/industry/chapters/extreme" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "19:30",
+    kind: "feature",
+    title: "About, read as a person first: an identity line, what I do now, where it started, why ronutz exists, how I work",
+    body:
+      "The page opens with one sentence of identity under the job title, then four verbs with a door each (Build ronutz, Teach, Advise, Speak), then the origin story moved up to open the narrative, then why the site exists and the five principles it is built by, the same five the colophon states. The two notes under the platforms are one sentence each now, with the full accounts on the training and advisory pages where they belong. The third era of the story is The teacher.",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "Colophon", href: "/colophon" },
+    ],
+  },
+  {
+    date: "2026-10-05",
     time: "18:30",
     kind: "feature",
     title: "Learn, the second layer: what is new or revised, what is read most, where to start, and the tools each article names",

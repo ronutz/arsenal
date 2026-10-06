@@ -8736,6 +8736,19 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .hub-recent-date { font-size: 0.75rem; color: var(--text-tertiary); white-space: nowrap; }
 @media (max-width: 40rem) { .hub-recent-item { grid-template-columns: 1fr auto; } .hub-recent-item .hub-around-lede { grid-column: 1 / -1; } }
 
+/* ---- about, wave A (E19, E24, E25; 2026-10-05): the identity line, the four verbs, the five principles ---- */
+.about-now-section { padding-top: 0; }
+.about-identity { margin: 0.35rem 0 0.9rem; font-size: 1.25rem; line-height: 1.45; font-weight: 500; color: var(--text-primary); max-width: 40ch; text-wrap: balance; }
+.about-now-list { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.1rem; }
+.about-now-item { display: grid; grid-template-columns: 11rem 1fr; gap: 0.5rem 1rem; align-items: baseline; padding: 0.6rem 0; border-top: 1px solid var(--border-subtle); }
+.about-now-item:last-child { border-bottom: 1px solid var(--border-subtle); }
+.about-now-verb { font-weight: 700; color: var(--text-primary); text-decoration: none; }
+.about-now-verb:hover, .about-now-verb:focus-visible { color: var(--accent-primary); text-decoration: underline; }
+.about-now-what { color: var(--text-secondary); line-height: 1.55; }
+.about-principles { margin: 0.75rem 0 1rem; padding: 0 0 0 1.2rem; display: grid; gap: 0.3rem; color: var(--text-primary); font-weight: 600; }
+.about-principle { line-height: 1.5; }
+@media (max-width: 40rem) { .about-now-item { grid-template-columns: 1fr; gap: 0.2rem; } }
+
 /* ---- about, the evidence block (E31, 2026-10-05): the count under each card's lede ---- */
 .about-evidence-count { margin: 0.5rem 0 0; font-size: 0.75rem; letter-spacing: 0.04em; color: var(--text-secondary); }
 

@@ -93,6 +93,13 @@ const nextConfig = {
   // (Cloudflare Pages, Vercel, etc.). The Engine/Services split in canon means
   // dynamic server features (hosted API tools) live elsewhere later if needed.
   output: "export",
+  // 2026-10-05: the per-page generation limit, raised from Next's default of 60 s. On GitHub's two-vCPU runner the
+  // sixteen-locale export runs many workers at once, and a page starved of CPU by its neighbours "takes more than
+  // 60 seconds" without doing anything wrong: the deploy of 22:24 UTC died that way on /zh-Hans/stats, with
+  // /study-guides timing out in eight locales beside it. The root cause (the Learn loader re-parsing every MDX
+  // file per lookup) is fixed in src/lib/learn.ts; this is the margin so that a slow afternoon on the runner is
+  // a slow build rather than a failed one.
+  staticPageGenerationTimeout: 180,
 
   // Static export cannot use the Next.js image optimization server, so images
   // are served as-is. (We use few/no raster images; SVG and CSS do the work.)

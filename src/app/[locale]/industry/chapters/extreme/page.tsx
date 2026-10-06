@@ -40,7 +40,7 @@ export default async function Page({
       vendorKey="extreme"
       slug="extreme"
       hubKey="extreme"
-      sections={2}
+      sections={3}
     />
   );
 }

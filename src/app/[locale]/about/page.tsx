@@ -193,6 +193,8 @@ export default async function AboutPage({
   setRequestLocale(locale);
 
   const t = await getTranslations("about");
+  // The colophon's five principles, by key (E25): one source of truth for "How I work".
+  const tColophon = await getTranslations("colophon_page");
   // The era caption the marks carry in their alt text (same string the career chapters print).
   const tMarks = await getTranslations("partnerVendors");
   const era = (e: string) => tMarks("markEra", { era: e });
@@ -223,6 +225,9 @@ export default async function AboutPage({
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">Rodolfo Nützmann</h1>
             <p className="about-role">{t("role")}</p>
+            {/* E19 (SCOUT Round 1, wave A, 2026-10-05): the identity sentence the job title was carrying. ANVIL's
+                wording, proposed to PRIME; one line, first person, true to the three eras. */}
+            <p className="about-identity">{t("identity")}</p>
             <p className="page-hero-lede">{t("lede")}</p>
           </div>
         </section>
@@ -286,6 +291,41 @@ export default async function AboutPage({
           </div>
         </section>
 
+        {/* --- WHAT I DO NOW, WHERE IT STARTED, WHY RONUTZ EXISTS, HOW I WORK (wave A, 2026-10-05) ---
+             E24: four lines, Build ronutz / Teach / Advise / Speak, each a door. E22: the origin story promoted
+             to open the narrative (its text unchanged, its message keys unchanged). E21: why the site exists, in
+             the first person, assembled from the site's standing claims (compute never guess, sources read live,
+             nothing leaves the browser); flagged for PRIME's voice. E25: "How I work" reuses the colophon's five
+             principles by their message keys, so there is one source of truth, and links the colophon. */}
+        <section className="section about-now-section">
+          <div className="container section-narrow">
+            <h2 className="section-title">{t("doing.title")}</h2>
+            <ul className="about-now-list">
+              {(["build", "teach", "advise", "speak"] as const).map((k) => (
+                <li key={k} className="about-now-item">
+                  <Link href={k === "build" ? "/changelog" : k === "teach" ? "/training" : k === "advise" ? "/advisory" : "/speaking"} className="about-now-verb">{t(`doing.${k}.verb`)}</Link>
+                  <span className="about-now-what">{t(`doing.${k}.what`)}</span>
+                </li>
+              ))}
+            </ul>
+
+            <h2 className="section-title" style={{ marginTop: "3rem" }}>{t("origins.title")}</h2>
+            <p className="section-body">{t("origins.body")}</p>
+
+            <h2 className="section-title" style={{ marginTop: "3rem" }}>{t("why.title")}</h2>
+            <p className="section-body">{t("why.body")}</p>
+
+            <h2 className="section-title" style={{ marginTop: "3rem" }}>{t("how.title")}</h2>
+            <p className="section-body">{t("how.body")}</p>
+            <ul className="about-principles">
+              {(["p1", "p2", "p3", "p4", "p5"] as const).map((pk) => (
+                <li key={pk} className="about-principle">{tColophon(`${pk}Title`)}</li>
+              ))}
+            </ul>
+            <p className="section-body"><Link href="/colophon">{t("how.link")} <span aria-hidden="true">&#8594;</span></Link></p>
+          </div>
+        </section>
+
         {/* --- THE FOUR PLATFORMS (current authorized teaching) --- */}
         <section className="section section-accent">
           <div className="container">
@@ -326,7 +366,8 @@ export default async function AboutPage({
             <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
               {t("approach.title")}
             </h3>
-            <p className="section-body">{t("approach.body")}</p>
+            {/* E20 (2026-10-05): one sentence here; the account of how courses are taught lives on /training. */}
+            <p className="section-body">{t("approach.short")} <Link href="/training">{t("approach.link")} <span aria-hidden="true">&#8594;</span></Link></p>
 
             {/* HOW I ADVISE (PRIME 2026-09-05). Sits directly under "How I
                 teach" because the two are the same practice pointed at
@@ -337,7 +378,8 @@ export default async function AboutPage({
             <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
               {t("advise.title")}
             </h3>
-            <p className="section-body">{t("advise.body")}</p>
+            {/* E20 (2026-10-05): one sentence here; the advisory offer lives on /advisory. */}
+            <p className="section-body">{t("advise.short")} <Link href="/advisory">{t("advise.link")} <span aria-hidden="true">&#8594;</span></Link></p>
 
             {/* FEATURED ENDORSEMENT (PRIME 2026-09-06). Rendered from the
                 verbatim catalogue by record id, never as a copied string, so
@@ -404,11 +446,8 @@ export default async function AboutPage({
              subheading. */}
         <section className="section">
           <div className="container section-narrow">
-            <h2 className="section-title">{t("origins.title")}</h2>
-            <p className="section-body" style={{ marginBottom: "2.5rem" }}>
-              {t("origins.body")}
-            </p>
-
+            {/* "Where it started" MOVED UP (E22, 2026-10-05): it now opens the page's narrative, right after what
+                he does now, instead of sitting as a preface to the timeline. */}
             <h2 className="section-title">{t("path.title")}</h2>
             <p className="section-body" style={{ marginBottom: "2rem" }}>
               {t("path.intro")}

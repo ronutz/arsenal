@@ -68,17 +68,37 @@ export interface Article extends ArticleFrontmatter {
 const CONTENT_ROOT = path.join(process.cwd(), "src", "content", "learn");
 const SOURCE_LOCALE = "en";
 
-/** Read every .mdx in a directory into Article objects (empty if the dir is absent). */
+// ---------------------------------------------------------------------------
+// THE READ CACHE (2026-10-05). Every call to getArticle() used to re-read and
+// re-parse every MDX file of the locale (720 in English alone) just to find one
+// slug. A page that resolves a few hundred slugs, such as /study-guides with
+// its thirteen reading paths, therefore parsed several hundred thousand files,
+// and on GitHub's runner, sixteen locales at once, it crossed Next's 60-second
+// per-page limit: the deploy of 22:24 UTC died on "/zh-Hans/stats after 3
+// attempts" with /study-guides timing out in eight locales beside it. The
+// content does not change during a build, so each directory is read once per
+// process and each locale's merged list is assembled once. Callers get a fresh
+// array (they sort it), over shared, never-mutated Article objects.
+// ---------------------------------------------------------------------------
+const DIR_CACHE = new Map<string, Article[]>();
+const LOCALE_CACHE = new Map<string, Article[]>();
+
+/** Read every .mdx in a directory into Article objects (empty if the dir is absent), once per process. */
 function readArticlesFrom(dir: string): Article[] {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".mdx"))
-    .map((file) => {
-      const raw = fs.readFileSync(path.join(dir, file), "utf-8");
-      const { data, content } = matter(raw);
-      return { ...(data as ArticleFrontmatter), body: content };
-    });
+  const hit = DIR_CACHE.get(dir);
+  if (hit) return hit;
+  const list = !fs.existsSync(dir)
+    ? []
+    : fs
+        .readdirSync(dir)
+        .filter((f) => f.endsWith(".mdx"))
+        .map((file) => {
+          const raw = fs.readFileSync(path.join(dir, file), "utf-8");
+          const { data, content } = matter(raw);
+          return { ...(data as ArticleFrontmatter), body: content };
+        });
+  DIR_CACHE.set(dir, list);
+  return list;
 }
 
 /**
@@ -92,21 +112,37 @@ function readArticlesFrom(dir: string): Article[] {
  * in-tool panels, and the search index.
  */
 export function getAllArticles(locale: string = SOURCE_LOCALE): Article[] {
+  // The merged, sorted list per locale is assembled once; callers get a copy they may sort as they like.
+  const cached = LOCALE_CACHE.get(locale);
+  if (cached) return [...cached];
   const source = readArticlesFrom(path.join(CONTENT_ROOT, SOURCE_LOCALE));
+  let merged: Article[];
   if (locale === SOURCE_LOCALE) {
-    return source.sort((a, b) => a.title.localeCompare(b.title));
+    merged = [...source].sort((a, b) => a.title.localeCompare(b.title));
+  } else {
+    const bySlug = new Map<string, Article>(source.map((a) => [a.slug, a]));
+    for (const a of readArticlesFrom(path.join(CONTENT_ROOT, locale))) {
+      bySlug.set(a.slug, a); // localized article overrides the English one
+    }
+    // Stable, predictable order: by title.
+    merged = [...bySlug.values()].sort((a, b) => a.title.localeCompare(b.title));
   }
-  const bySlug = new Map<string, Article>(source.map((a) => [a.slug, a]));
-  for (const a of readArticlesFrom(path.join(CONTENT_ROOT, locale))) {
-    bySlug.set(a.slug, a); // localized article overrides the English one
-  }
-  // Stable, predictable order: by title.
-  return [...bySlug.values()].sort((a, b) => a.title.localeCompare(b.title));
+  LOCALE_CACHE.set(locale, merged);
+  return [...merged];
 }
 
-/** getArticle — one article by slug (English fallback), or null if missing. */
+/** getArticle — one article by slug (English fallback), or null if missing; a map lookup, not a scan. */
+const SLUG_CACHE = new Map<string, Map<string, Article>>();
+function slugMap(locale: string): Map<string, Article> {
+  const hit = SLUG_CACHE.get(locale);
+  if (hit) return hit;
+  const m = new Map(getAllArticles(locale).map((a) => [a.slug, a] as const));
+  SLUG_CACHE.set(locale, m);
+  return m;
+}
+
 export function getArticle(slug: string, locale: string = SOURCE_LOCALE): Article | null {
-  return getAllArticles(locale).find((a) => a.slug === slug) ?? null;
+  return slugMap(locale).get(slug) ?? null;
 }
 
 /** All article slugs (for generateStaticParams on the Learn article route). */
