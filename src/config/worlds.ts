@@ -68,6 +68,8 @@ export const WORLDS: readonly World[] = [
       { label: "map.learn", href: "/learn" },
       { label: "map.stories", href: "/stories" },
       { label: "map.guides", href: "/study-guides" },
+      // The open materials (milestone (m1), 2026-10-06): complete courses to download and teach from, beside the study guides.
+      { label: "map.materials", href: "/materials" },
       { label: "map.certs", href: "/certifications" },
       { label: "map.glossary", href: "/glossary" },
       { label: "map.practice", href: "/practice" },
@@ -124,7 +126,7 @@ export const WORLDS: readonly World[] = [
 /** The first route segments (below the locale) of each world; anything else is The project, a vendor hub is Explore. */
 const SEGMENT_WORLD: Record<string, WorldKey> = {
   tools: "use", dev: "use", api: "use", category: "use",
-  learn: "understand", glossary: "understand", "study-guides": "understand", certifications: "understand", stories: "understand", practice: "understand",
+  learn: "understand", glossary: "understand", "study-guides": "understand", certifications: "understand", stories: "understand", practice: "understand", materials: "understand",
   industry: "explore", "vendor-hubs": "explore", people: "explore", roles: "explore",
   training: "work", advisory: "work", speaking: "work", contact: "work",
 };

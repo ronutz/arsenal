@@ -18,8 +18,11 @@
 // read (src/lib/siteCounts.ts) and asserts, in every locale this build rendered
 // in full (en and pt-BR are authored; the others fall back to English copy),
 // that each page pairs each figure with the right noun:
-//   - the home directory and the user guide's map: the study guides row counts
-//     reading paths, the certification row counts certification guides;
+//   - the directory and the user guide's map: the study guides row counts
+//     reading paths, the certification row counts certification guides. Since
+//     2026-10-06 the directory is the footer on every page (read here on the
+//     home page, where the phrase rides beside the bare number for screen
+//     readers) and the full section on the colophon (PRIME's Option A);
 //   - the user guide's datasheet: one row per dataset;
 //   - Learn's index: the vendor-neutral figure with its noun, the platform
 //     figure beside it, and the two adding up to the site-wide total;
@@ -154,8 +157,9 @@ for (const locale of Object.keys(WORDS)) {
     if (textOf(file).includes(needle)) fail(`${locale}/${rel}: must not contain "${needle}" (${why})`);
   };
 
-  // 1. The home directory and the guide's map: each row's anchor carries its own dataset's figure and noun.
-  for (const rel of ["", "guide"]) {
+  // 1. The directory (the footer, read on the home page; the full section on the colophon, 2026-10-06) and the guide's
+  //    map: each row's anchor carries its own dataset's figure and noun.
+  for (const rel of ["", "colophon", "guide"]) {
     const file = page(rel);
     if (!fs.existsSync(file)) { fail(`${locale}/${rel || "(home)"}: page missing`); continue; }
     pagesChecked++;

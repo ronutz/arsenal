@@ -39,6 +39,8 @@ import fs from "node:fs";
 import path from "node:path";
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
+// The open materials registry (2026-10-06): one social card per material.
+import { MATERIALS } from "../src/content/materials/materials";
 
 const ROOT = process.cwd();
 const read = (p: string) => fs.readFileSync(path.join(ROOT, p), "utf8");
@@ -369,7 +371,9 @@ const STATIC_PAGES: { slug: string; title: Record<string, string>; tagline: Reco
   { slug: "glossary", title: { en: "Glossary", "pt-BR": "Glossário" }, tagline: { en: "Plain-language definitions for networking, security, and identity terms.", "pt-BR": "Definições em linguagem clara para termos de rede, segurança e identidade." } },
   { slug: "training", title: { en: "Instructor-led training", "pt-BR": "Treinamento com instrutor" }, tagline: { en: "Authorized F5, Fortinet, Netskope, and Extreme training by Rodolfo Nützmann at Red Education.", "pt-BR": "Treinamento oficial F5, Fortinet, Netskope e Extreme por Rodolfo Nützmann na Red Education." }, brand: true },
   { slug: "about", title: { en: "About", "pt-BR": "Sobre" }, tagline: { en: "Rodolfo Nützmann - senior technical instructor and the architect of ronutz.com.", "pt-BR": "Rodolfo Nützmann - instrutor técnico sênior e arquiteto do ronutz.com." }, brand: true },
-  { slug: "red-education", title: { en: "Red Education", "pt-BR": "Red Education" }, tagline: { en: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2023.", "pt-BR": "Um Centro de Treinamento Autorizado global - e a casa das aulas de Rodolfo Nützmann desde 2023." }, brand: true },
+  // The open materials index (milestone (m1), 2026-10-06); each material's own card is derived from the registry below.
+  { slug: "materials", title: { en: "Open materials", "pt-BR": "Materiais abertos" }, tagline: { en: "Complete trainings shared for anyone to use: slides, speaker notes, outline and licence.", "pt-BR": "Treinamentos completos compartilhados para qualquer pessoa usar: slides, notas do apresentador, programa e licença." } },
+  { slug: "red-education", title: { en: "Red Education", "pt-BR": "Red Education" }, tagline: { en: "A global Authorized Training Center - and the home of Rodolfo Nützmann's classroom since 2021.", "pt-BR": "Um Centro de Treinamento Autorizado global - e a casa das aulas de Rodolfo Nützmann desde 2021." }, brand: true }, // 2021, as the page's lede and its thanks say (teaching through Red from 2021, full-time from 2023); the card said 2023 until 2026-10-06
 ];
 
 const LOCALES = ["en", "pt-BR"];
@@ -412,6 +416,12 @@ function enumerateJobs(): Job[] {
         ? { dataUri: imgDataUri(path.join(ROOT, BRAND_PORTRAITS[p.slug].file)), mode: BRAND_PORTRAITS[p.slug].mode }
         : undefined;
       jobs.push({ kind: "page", slug: p.slug || "home", locale, ext: portrait ? "jpeg" : "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title: p.title[locale] ?? p.title.en, tagline: p.tagline[locale] ?? p.tagline.en, color: p.slug === "red-education" ? C.amber : C.cyan, portrait } });
+    }
+    // Each open material's datasheet (2026-10-06): its card is "materials-<slug>", titled and subtitled from the
+    // materials namespace, so a material added to the registry gets its card without an edit here.
+    for (const mat of MATERIALS) {
+      const mm = messages(locale).materials?.items?.[mat.slug] ?? messages("en").materials.items[mat.slug];
+      jobs.push({ kind: "page", slug: `materials-${mat.slug}`, locale, ext: "png", input: { eyebrow: EYEBROW.page[locale] ?? EYEBROW.page.en, locale, title: mm.title, tagline: mm.subtitle, color: C.cyan } });
     }
   }
   return jobs;

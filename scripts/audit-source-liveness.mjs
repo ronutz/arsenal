@@ -170,6 +170,11 @@ for (const root of ROOTS) {
         ...[...line.matchAll(/externalUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
         ...[...line.matchAll(/sourceUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
         ...[...line.matchAll(/blueprintSourceUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
+        // 2026-10-06, milestone (m1): an open material's licence deed (licenseUrl
+        // in src/content/materials/materials.ts, the CC0 1.0 deed today). The
+        // datasheet links it as the licence's own words, so a dead deed would be
+        // a dead citation; check-citation-fields.mjs caught the new key at build.
+        ...[...line.matchAll(/licenseUrl:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]),
         ...markdownTargets(line),
       ];
       // *** AND DELIBERATELY NOT THESE. *** `input`, `example`, `issuer`,

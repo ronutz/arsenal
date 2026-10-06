@@ -42,6 +42,9 @@ interface ContactFormCopy {
   speakingTemplate?: string;
   /** The same for the advisory route: the decision and the deadline. */
   advisoryTemplate?: string;
+  /** The course route (2026-10-06, from an open material's "taught live" call to action): the course, the group,
+   *  where and when, the outcome. Carries a literal "{course}" that the form fills from the link's course parameter. */
+  courseTemplate?: string;
 }
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -71,8 +74,15 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
     } else if (intent === "speaking" || intent === "other") {
       setTopic(copy.topicOther);
       if (intent === "speaking" && copy.speakingTemplate) setMessage((m) => m || copy.speakingTemplate || "");
+    } else if (intent === "course") {
+      // A class of an open material, taught live (2026-10-06): the "custom program for a team" topic, and the message
+      // opened with the course's name, taken from the link and cut at 120 characters (it lands in an editable field
+      // the reader sees and can change; nothing else reads it).
+      setTopic(copy.topicCustom);
+      const course = (new URLSearchParams(window.location.search).get("course") ?? "").slice(0, 120);
+      if (copy.courseTemplate) setMessage((m) => m || (copy.courseTemplate ?? "").replace("{course}", course));
     }
-  }, [copy.topicTraining, copy.topicAdvisory, copy.topicOther, copy.advisoryTemplate, copy.speakingTemplate]);
+  }, [copy.topicTraining, copy.topicCustom, copy.topicAdvisory, copy.topicOther, copy.advisoryTemplate, copy.speakingTemplate, copy.courseTemplate]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();

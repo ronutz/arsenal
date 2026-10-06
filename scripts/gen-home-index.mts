@@ -12,7 +12,10 @@
 //     title a reader recognises, so "Most read this week" shows names, not
 //     slugs; the stats rows carry paths only, by design (worker/stats.ts);
 //   - a pool to draw a random destination from for "Surprise me": companies,
-//     tools, articles, people, lore terms and certification guides.
+//     tools, articles, people, lore terms and certification guides, and since
+//     2026-10-06 (PRIME 16:39, the eight "Take me somewhere" pills) the roles
+//     of The Roles and the articles of The Practice, which also lets "Most
+//     read" name those pages instead of showing their paths.
 //
 // So this writes public/home-index.json at prebuild, read lazily by the two
 // client components (HomePopular on load, HomeRabbitHole on click), never
@@ -21,7 +24,7 @@
 // gitignored like public/og/: CI regenerates it on every build.
 //
 // Shape: { generatedAt, entries: [{ k, p, t: { en, "pt-BR"? } }] } where k is
-// the kind (tool | article | company | person | term | guide), p the English
+// the kind (tool | article | company | person | term | guide | role | practice), p the English
 // path without the locale prefix, t the titles. About 1,800 entries.
 // ============================================================================
 
@@ -33,6 +36,9 @@ import { tools } from "../src/config/tools";
 import { partnerVendors } from "../src/content/vendors/partners";
 import { GLOSSARY } from "../src/content/glossary/glossary";
 import { studyGuides } from "../src/content/certifications/study-guides";
+// The Roles and The Practice (2026-10-06): the registry and the MDX corpus their pages render from.
+import { ROLES } from "../src/lib/roles";
+import { getPracticeArticles } from "../src/lib/practice";
 
 /** Repository root. */
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -40,14 +46,16 @@ const TAG = "[gen-home-index]";
 
 /** One entry of the index. */
 interface Entry {
-  k: "tool" | "article" | "company" | "person" | "term" | "guide";
+  k: "tool" | "article" | "company" | "person" | "term" | "guide" | "role" | "practice";
   p: string;
   t: { en: string; "pt-BR"?: string };
 }
 
 /** The tool names come from the message packs (the registry holds structure only). */
 const en = JSON.parse(fs.readFileSync(path.join(ROOT, "src/i18n/messages/en.json"), "utf8")) as { tools: Record<string, { name?: string }>; glossary: { entries: Record<string, { def?: string }> } };
-const pt = JSON.parse(fs.readFileSync(path.join(ROOT, "src/i18n/messages/pt-BR.json"), "utf8")) as { tools: Record<string, { name?: string }> };
+const pt = JSON.parse(fs.readFileSync(path.join(ROOT, "src/i18n/messages/pt-BR.json"), "utf8")) as { tools: Record<string, { name?: string }>; roles: { entries: Record<string, { title?: string }> } };
+// The English role titles as The Roles prints them (the pack's own, which the registry's title mirrors).
+const enRoles = (en as unknown as { roles: { entries: Record<string, { title?: string }> } }).roles.entries;
 
 const entries: Entry[] = [];
 
@@ -85,6 +93,17 @@ for (const g of GLOSSARY) {
 // Certification guides: the official exam name (verbatim, language-neutral) with its code.
 for (const s of studyGuides) {
   entries.push({ k: "guide", p: `/certifications/${s.slug}/`, t: { en: `${s.examName} (${s.examCode})` } });
+}
+
+// Roles (2026-10-06): every position in The Roles, with its Portuguese title where the pack has one.
+for (const r of ROLES) {
+  entries.push({ k: "role", p: `/roles/${r.slug}/`, t: { en: enRoles[r.slug]?.title ?? r.title, "pt-BR": pt.roles.entries[r.slug]?.title } });
+}
+
+// The Practice (2026-10-06): every English article, with its Portuguese twin's title when the pair exists.
+const practicePt = new Map(getPracticeArticles("pt-BR").map((a) => [a.slug, a.title]));
+for (const a of getPracticeArticles("en")) {
+  entries.push({ k: "practice", p: `/practice/${a.slug}/`, t: { en: a.title, "pt-BR": practicePt.get(a.slug) } });
 }
 
 // Every entry must have an English title: an empty one would render as a bare arrow on the home page.

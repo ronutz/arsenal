@@ -25,8 +25,12 @@ export default function MachineTranslationNotice({
   ctaLabel: string;
   ctaHref: string;
 }) {
+  // data-pagefind-ignore (2026-10-06): the notice is chrome, like the header and the footer, and was being indexed
+  // as the first words of every Portuguese page, so a search excerpt near a page's title began "e pode conter
+  // erros. Ajude a melhorar." (seen while checking PRIME's search changes of that afternoon). It stays on the page;
+  // it leaves the index.
   return (
-    <aside className="mt-notice" role="note">
+    <aside className="mt-notice" role="note" data-pagefind-ignore>
       <div className="container mt-notice-inner">
         {/* A small "translate" glyph, decorative. */}
         <svg

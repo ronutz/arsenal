@@ -333,12 +333,15 @@ export interface PartnerVendor {
   note?: string;
 }
 
-// Verified Red Education award facts, reused across redu pages (2026-07-14).
+// Verified Red Education award facts, reused across redu pages (2026-07-14). The seat figure re-read 2026-10-06: the
+// home page now says "over 120,000 training seats" and the training-resources explainer "over 120,000 learners since
+// 2005"; the countries are July's reading and the rating was re-read the same day in Red Education's own course outline
+// ("4.9 / 5 Average learner rating across 5,000+ reviews").
 const REDU_AWARDS_GENERAL = [
   "Cybersecurity Excellence Awards 2025 - Best Cybersecurity Education Provider",
   "Cybersecurity Excellence Awards 2025 - Best Cybersecurity Certification Training",
   "Cybersecurity Excellence Awards 2025 - Cybersecurity Instructor Team of the Year",
-  "100,000+ students trained across 132 countries; 4.9-star average from 5,000+ reviews",
+  "120,000+ students trained across 132 countries; 4.9-star average from 5,000+ reviews",
 ];
 
 const REDU_SOURCES = [
@@ -1838,7 +1841,7 @@ export const partnerVendors: PartnerVendor[] = [
     tags: ["training", "services"],
     tagline: "Training is distributed the same way products are, and this is what that looks like.",
     intro:
-      "Daniel Storey was working at F5 Networks when they offered him a training role. He took it, spent a period delivering technical training across Asia Pacific, and concluded there was a business in doing it properly. Red Education was founded in Sydney in 2005. By its own account F5 was its first vendor and, at the start, its only one. Twenty years later it delivers vendor-accredited training across Asia Pacific, the Americas, Europe, India and the Middle East, and reports having passed 100,000 training seats.",
+      "Daniel Storey was working at F5 Networks when they offered him a training role. He took it, spent a period delivering technical training across Asia Pacific, and concluded there was a business in doing it properly. Red Education was founded in Sydney in 2005. By its own account F5 was its first vendor and, at the start, its only one. Twenty years later it delivers vendor-accredited training across Asia Pacific, the Americas, Europe, India and the Middle East, and reports more than 120,000 training seats.",
     body: [
       "The structural point is the one worth taking, and this timeline has been circling it for weeks. A vendor does not want to run a training operation in every country it sells into. Certifying instructors, maintaining lab equipment, scheduling classes in the right timezone and language, and doing it at a quality that reflects on the brand is a business in itself - and it is not the business of building the product. So vendors authorise partners to do it, on much the same logic that leads them to authorise distributors to hold stock and extend credit.",
       "Training is distributed. Once you see that, the shape of the industry makes more sense: an authorised training company is to a vendor's courseware roughly what a distributor is to its hardware, and the vendors it carries appear on its line card in the same way.",
@@ -1859,11 +1862,11 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Red Education - named a global authorised training partner by Extreme Networks; the same announcement records more than 80 instructors across multiple regions and time zones, an NPS of 84 and a 98 per cent customer satisfaction rating", url: "https://www.rededucation.com/extreme-networks-exclusive-global-training-partner/" },
       { label: "Red Education awards page - winner in the 2024 International Business Awards for Achievement in Corporate Social Responsibility, and in the Cybersecurity Solution category for a submission on closing the skills gap", url: "https://www.rededucation.com/awards/", sourceNote: "PRIME recalled an Avaya recognition. Red Education is a Global Authorised Training Partner for Avaya and delivers the full Avaya course range, but NO Avaya award was found in this search - only the partnership and course delivery. Recorded as absent rather than assumed." },
       { label: "Red Education's own twentieth-anniversary interview with founder Daniel Storey: working at F5 Networks when offered a training role, delivering across Asia Pacific, F5 as the first and only vendor at the start, the early years of boxes of hardware and flight schedules, and growth as more vendors sought a partner to represent them", url: "https://www.rededucation.com/red-education-is-20-daniel-storey-reflects-on-two-decades-of-building-a-global-business/" },
-      { label: "Red Education: vendor-accredited training delivered in classrooms, virtually or on site; over 100,000 training seats since 2005; regions across the Americas, Australasia, SAARC, ASEAN and EMEA", url: "https://www.rededucation.com/" },
+      { label: "Red Education: vendor-accredited training delivered in classrooms, virtually or on site; over 120,000 training seats since 2005 as read on 6 October 2026 (over 100,000 when first read in July); regions across the Americas, Australasia, SAARC, ASEAN and EMEA", url: "https://www.rededucation.com/" },
       { label: "Red Education about page: trainers described as seasoned IT professionals, many former vendor and large-customer technical staff, certified to high levels; lab equipment and materials provided", url: "https://www.rededucation.com/about-us/" },
       { label: "Red Education on LinkedIn: the vendor list including Palo Alto Networks, F5, Check Point, Nutanix, AWS, AlgoSec, EPI, Paessler, Arista, Fortinet, VMware, Red Hat, ForgeRock and Cisco; Check Point naming it Authorised Training Company of the Year at CPX 2024 in Bangkok", url: "https://au.linkedin.com/company/red-education" },
       { label: "CB Insights: founded 2005, headquartered in Sydney, New South Wales; the 2025 Gold Stevie Award for Global Partnership of the Year with Check Point, and a second Gold Stevie for achievement in certification programs", url: "https://www.cbinsights.com/company/red-education/" },
-      { label: "M&T Resources (2021) and Crunchbase: earlier seat figures of 75,000 and 85,000, which together with the current 100,000+ give the trajectory rather than a single snapshot", url: "https://www.crunchbase.com/organization/red-education", sourceNote: "Three seat figures from three dates are cited deliberately: a single number would read as a claim, while the sequence shows growth and dates itself." },
+      { label: "M&T Resources (2021) and Crunchbase: earlier seat figures of 75,000 and 85,000, which together with 100,000+ in July 2026 and 120,000+ in October 2026 give the trajectory rather than a single snapshot", url: "https://www.crunchbase.com/organization/red-education", sourceNote: "Three seat figures from three dates are cited deliberately: a single number would read as a claim, while the sequence shows growth and dates itself." },
     ],
   },
   {

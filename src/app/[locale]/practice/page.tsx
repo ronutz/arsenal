@@ -161,6 +161,13 @@ export default async function PracticeIndexPage({
               <p className="practice-part-jump">
                 <Link href="/roles">{t("rolesLink")}</Link>
               </p>
+              {/* RED EDUCATION'S CAREER-PATHS BOOKLET (PRIME 2026-10-06 16:17): the ladder behind this work, the functions and
+                  tasks of fourteen security roles; the link goes to its place on /red-education/. */}
+              <p className="redu-signpost">
+                {t.rich("reduSignpost", {
+                  link: (chunks) => <Link href="/red-education#career-paths" className="redu-inline-link">{chunks}</Link>,
+                })}
+              </p>
             </div>
           </section>
 

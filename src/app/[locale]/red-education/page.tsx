@@ -26,6 +26,19 @@
 //     training to 43 engineers at a global IT firm.
 // If any of these change, re-verify before editing - never update from memory.
 //
+// RE-READ 2026-10-06 (milestone (re1), PRIME 16:17 to 16:30): the learner figure
+// is now "over 120,000" (the home page: "over 120,000 training seats"; the
+// training-resources explainer: "over 120,000 learners since 2005"), and Red
+// Education has begun authoring its OWN courses: the FastTrack series (Course
+// 01 Open NGFW, "100% Red Education original IP"; Course 02 Network
+// Fundamentals for Security Practitioners, "original Red Education
+// courseware") and Palo Alto Networks On-Demand, all listed on its own-courses
+// home, /rededucation/. The courses and the Understanding Cyber Security
+// Career Paths booklet are featured after the booking block; every fact there
+// was read that day from the course pages, the three course outlines and both
+// booklets, kept in the private canon (canon/reference/rededucation-courses-
+// 20261006/). The Cisco explainer answered 404 that day and left the list.
+//
 // GUARDRAIL: the "Vendor authorizations" section is RED EDUCATION's list; the
 // "Rodolfo at Red Education" section is HIS list (F5, Fortinet, Netskope,
 // Extreme Networks - all four confirmed by PRIME as delivered through Red
@@ -98,6 +111,36 @@ const RED_EDUCATION_PS_URL = "https://www.rededucation.com/professional-services
 const CASE_STUDY_URL =
   "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/";
 
+// RED EDUCATION'S OWN COURSES (2026-10-06): the home of its own catalogue (PRIME 16:27: "is it's home") and the three
+// course pages (PRIME 16:26), each read that day. The names are the courses' own, proper nouns in every language; the
+// rest of each card is the pack's (redEducation.own.courses.<key>).
+const RED_EDUCATION_OWN_COURSES_URL = "https://www.rededucation.com/rededucation/";
+const OWN_COURSES: { key: string; name: string; url: string }[] = [
+  { key: "openNgfw", name: "Open NGFW: Next-Generation Firewall Foundational Training", url: "https://www.rededucation.com/coursesvender/openngfw-next-generation-firewall-training/" },
+  { key: "networkFundamentals", name: "Network Fundamentals for Security Practitioners", url: "https://www.rededucation.com/coursesvender/network-fundamentals-for-security-practitioners/" },
+  { key: "panOnDemand", name: "Palo Alto Networks On-Demand", url: "https://www.rededucation.com/coursesvender/palo-alto-networks-on-demand/" },
+];
+
+// THE CAREER-PATHS BOOKLET (2026-10-06): the flipbook on Red Education's account at its flipbook host, and the
+// booklet's page on rededucation.com, which is the one that carries attribution (attributeRedEducationUrl leaves other
+// hosts untouched, by design).
+const CAREER_BOOKLET_URL = "https://rededucation.aflip.in/98d9bed51f.html";
+const CAREER_PAGE_URL = "https://www.rededucation.com/course-explained/cyber-security-career-paths/";
+// The booklet's seven streams, with its entry point and its summit, each against the nearest roles in The Roles (slugs
+// of src/lib/roles.ts, titles from the roles pack). Read from the booklet's stream map (page 8) and its fourteen role
+// profiles (pages 10 to 56); the pairing is this site's reading, and the table says "the nearest roles", no more.
+const CAREER_STREAMS: { key: string; roles: string[] }[] = [
+  { key: "entry", roles: ["security-operations-analyst"] },
+  { key: "governance", roles: ["grc-analyst"] },
+  { key: "vulnerability", roles: ["vulnerability-analyst", "penetration-tester"] },
+  { key: "operations", roles: ["security-operations-analyst", "security-manager"] },
+  { key: "forensics", roles: ["digital-forensics-analyst"] },
+  { key: "incident", roles: ["incident-responder"] },
+  { key: "threat", roles: ["threat-intelligence-analyst"] },
+  { key: "design", roles: ["security-engineer", "security-architect"] },
+  { key: "top", roles: ["security-leader"] },
+];
+
 export async function generateMetadata({
   params,
 }: {
@@ -128,6 +171,8 @@ export default async function RedEducationPage({
   const since = (y: number) => tMarks("markSince", { year: y });
   const thisYear = new Date().getFullYear();
   const tNav = await getTranslations("nav");
+  // The Roles' own titles, for the career-paths table (2026-10-06).
+  const tRoles = await getTranslations("roles");
 
   // The lead-attributed outbound CTA (utm_campaign identifies this page).
   const reduUrl = redEducationUrl({ pageType: "red-education", locale, cta: "main-cta" });
@@ -191,6 +236,8 @@ export default async function RedEducationPage({
                   lands. */}
               <nav className="redu-links" aria-label={t("jumpLabel")}>
                 {[
+                  // Red Education's own courses (2026-10-06), first because they are new and they are its own.
+                  ["own-courses", "own.jump"],
                   ["why", "part.why.title"],
                   ["enables", "part.enables.title"],
                   ["my-work", "part.mywork.title"],
@@ -221,7 +268,8 @@ export default async function RedEducationPage({
               <p className="stats-headline">{t("figuresHeadline")}</p>
               <div className="stats-band-inner">
                 {([
-                  ["100,000+", "figuresLearners"],
+                  // "over 120,000" on rededucation.com, read 2026-10-06 (it was 100,000+ when first read in July).
+                  ["120,000+", "figuresLearners"],
                   ["2005", "figuresSince"],
                   ["5", "figuresRegions"],
                   ["15", "figuresVendors"],
@@ -242,6 +290,131 @@ export default async function RedEducationPage({
               <h2 className="redu-section-title">{t("ctaTitle")}</h2>
               <p className="redu-body"><ReduBrand linked={false}>{t("ctaBody")}</ReduBrand></p>
               
+            </div>
+          </section>
+          {/* RED EDUCATION'S OWN COURSES (PRIME 2026-10-06, 16:17: "feature the new authorial courses that Red Education is
+              starting to offer ... as a high-value-add educational resource coming from the experts trusted by many leading
+              technology vendors and innovators"; 16:26 and 16:27 the three course pages and their home; 16:29 the outlines).
+              Placed straight after the booking block, ahead of the six parts, because it is new and it is the one thing on
+              this page that is Red Education's own curriculum rather than a vendor's. Every fact below was read on 6 October
+              2026 from the course pages, the three outlines and the own-courses page (copies kept in the private canon); the
+              card summaries are written here, with one short quote of Red Education's own words. The three course links and
+              the courses home carry the page's attribution with the programme key "rededucation", so Red Education can tell
+              these referrals from the vendor ones. */}
+          <section id="own-courses" className="section section-accent">
+            <div className="container redu-container">
+              <p className="redu-own-eyebrow mono">{t("own.eyebrow")}</p>
+              <h2 className="redu-section-title">{t("own.title")}</h2>
+              <p className="redu-body"><ReduBrand linked={false}>{t("own.lede")}</ReduBrand></p>
+              <ul className="redu-own-list">
+                {OWN_COURSES.map((c) => {
+                  // The course page, attributed at render with this placement's context.
+                  const href = attributeRedEducationUrl(c.url, { vendor: "rededucation", pageType: "red-education", pageSlug: "own-courses", locale, cta: `own-course-${c.key}` });
+                  // The label/value pairs, as the pack states them for this course.
+                  const facts = t.raw(`own.courses.${c.key}.facts`) as [string, string][];
+                  return (
+                    <li key={c.key} className="redu-own-card">
+                      <p className="redu-own-series mono">{t(`own.courses.${c.key}.series`)}</p>
+                      {/* The course's own name, a proper noun in every language. */}
+                      <h3 className="redu-own-title">{c.name}</h3>
+                      <p className="redu-own-summary">{t(`own.courses.${c.key}.summary`)}</p>
+                      <dl className="redu-own-facts">
+                        {facts.map(([label, value]) => (
+                          <div className="redu-own-fact" key={label}>
+                            <dt>{label}</dt>
+                            <dd>{value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                      <p className="redu-own-link">
+                        <a href={href} target="_blank" rel={externalRel(c.url)} className="redu-inline-link">
+                          {t("own.courseLink")} &#8599;
+                        </a>
+                      </p>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="redu-body">{t("own.schedules")}</p>
+              <p className="redu-body">
+                <a
+                  href={attributeRedEducationUrl(RED_EDUCATION_OWN_COURSES_URL, { vendor: "rededucation", pageType: "red-education", pageSlug: "own-courses", locale, cta: "own-courses-home" })}
+                  target="_blank"
+                  rel={externalRel(RED_EDUCATION_OWN_COURSES_URL)}
+                  className="redu-inline-link"
+                >
+                  {t("own.allCourses")} &#8599;
+                </a>
+              </p>
+              <p className="redu-body">
+                {t.rich("own.alongside", {
+                  materials: (chunks) => <Link href="/materials/tcpip-concepts-and-ip-routing" className="redu-inline-link">{chunks}</Link>,
+                  practice: (chunks) => <Link href="/practice" className="redu-inline-link">{chunks}</Link>,
+                })}
+              </p>
+              <p className="vendor-note-body">{t("own.readOn")}</p>
+            </div>
+          </section>
+          {/* THE CAREER-PATHS BOOKLET (PRIME 2026-10-06, 16:17: "an excellent resource, quite complementary with two sections
+              of the site, The Practice but especially The Roles"; 16:30 its PDF). Read in full on 6 October 2026. The table
+              lines the booklet's seven streams up with the nearest security roles in The Roles; the role names on the right
+              come from The Roles' own pack, so a renamed role renames here. The booklet itself is a flipbook on Red
+              Education's account at a flipbook host (rededucation.aflip.in), which is not rededucation.com, so that link
+              carries no attribution; the booklet's page on rededucation.com does. */}
+          <section id="career-paths" className="section">
+            <div className="container redu-container">
+              <p className="redu-own-eyebrow mono">{t("career.eyebrow")}</p>
+              <h2 className="redu-section-title">{t("career.title")}</h2>
+              <p className="redu-body">{t("career.body")}</p>
+              <p className="redu-body">
+                {t.rich("career.complements", {
+                  roles: (chunks) => <Link href="/roles" className="redu-inline-link">{chunks}</Link>,
+                  practice: (chunks) => <Link href="/practice" className="redu-inline-link">{chunks}</Link>,
+                })}
+              </p>
+              <div className="redu-career-wrap">
+                <table className="redu-career-table">
+                  <caption className="sr-only">{t("career.tableCaption")}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t("career.tableStream")}</th>
+                      <th scope="col">{t("career.tableRoles")}</th>
+                      <th scope="col">{t("career.tableHere")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {CAREER_STREAMS.map((s) => (
+                      <tr key={s.key}>
+                        <th scope="row">{t(`career.streams.${s.key}.name`)}</th>
+                        <td>{t(`career.streams.${s.key}.roles`)}</td>
+                        <td>
+                          {s.roles.map((slug, i) => (
+                            <Fragment key={slug}>
+                              {i > 0 && ", "}
+                              <Link href={`/roles/${slug}`} className="redu-inline-link">{tRoles(`entries.${slug}.title`)}</Link>
+                            </Fragment>
+                          ))}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="redu-own-link">
+                <a href={CAREER_BOOKLET_URL} target="_blank" rel={externalRel(CAREER_BOOKLET_URL)} className="redu-inline-link">
+                  {t("career.read")} &#8599;
+                </a>
+                <span className="redu-own-sep" aria-hidden="true">&#183;</span>
+                <a
+                  href={attributeRedEducationUrl(CAREER_PAGE_URL, { pageType: "red-education", pageSlug: "career-paths", locale, cta: "career-paths" })}
+                  target="_blank"
+                  rel={externalRel(CAREER_PAGE_URL)}
+                  className="redu-inline-link"
+                >
+                  {t("career.page")} &#8599;
+                </a>
+              </p>
+              <p className="vendor-note-body">{t("career.readOn")}</p>
             </div>
           </section>
           {/* PART 1: why (G7). */}
@@ -357,7 +530,9 @@ export default async function RedEducationPage({
                   { slug: "fortinet-training-resources", label: "Fortinet", vendor: "fortinet", mine: true },
                   { slug: "ping-identity-training-resources", label: "Ping Identity", vendor: "ping", mine: false },
                   { slug: "zscaler-training-resources", label: "Zscaler", vendor: "zscaler", mine: false },
-                  { slug: "cisco-training-resources", label: "Cisco", vendor: "cisco", mine: false },
+                  // 2026-10-06: Cisco's explainer answered 404 and left Red Education's index; its own-courses
+                  // explainer joined it, so the list is still the index's ten.
+                  { slug: "red-education-training-resources", label: "Red Education Training", vendor: "rededucation", mine: false },
                   { slug: "check-point-training-resources", label: "Check Point", vendor: "checkpoint", mine: false },
                   { slug: "training-resources-palo-alto", label: "Palo Alto Networks", vendor: "palo-alto", mine: false },
                   { slug: "cyberark-training-resources", label: "CyberArk", vendor: "cyberark", mine: false },
@@ -644,6 +819,8 @@ export default async function RedEducationPage({
                   { key: "explainers", url: "https://www.rededucation.com/course-explained/" },
                   { key: "news", url: "https://www.rededucation.com/news/" },
                   { key: "professionalServices", url: RED_EDUCATION_PS_URL },
+                  // Red Education's own courses (2026-10-06): the catalogue the featured section is read from.
+                  { key: "ownCourses", url: RED_EDUCATION_OWN_COURSES_URL, vendor: "rededucation" },
                   { key: "case1", url: "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/", vendor: "fortinet" },
                   { key: "case2", url: "https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/", vendor: "f5" },
                 ].map((src) => {

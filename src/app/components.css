@@ -688,7 +688,17 @@
 .footer-world--explore { --world-accent: var(--color-success); }
 .footer-world--work { --world-accent: var(--accent-amber); }
 .footer-world--project { --world-accent: var(--color-neutral); }
-.footer-world-title { margin: 0 0 0.5rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); }
+.footer-world-title { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-primary); }
+/* The footer as the site's one directory (2026-10-06, PRIME's Option A at 16:45 and 16:49): the title and its line
+   above the five columns, each world's verb in the world's own accent under its title (the home page's former
+   section had them), and each destination's count as a bare number, right-aligned in tabular figures so the
+   columns read like a ledger rather than wrapping under their labels. */
+.footer-worlds-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.75rem; margin: 0 0 0.9rem; }
+.footer-worlds-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+.footer-worlds-lede { font-size: 0.82rem; color: var(--text-tertiary); }
+.footer-world-verb { margin: 0.1rem 0 0.55rem; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--world-accent); }
+.footer-world-item { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; min-width: 0; }
+.footer-world-count { flex: 0 0 auto; font-size: 0.72rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .footer-world-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.3rem; }
 .footer-world-link { font-size: 0.85rem; color: var(--text-secondary); text-decoration: none; }
 .footer-world-link:hover, .footer-world-link:focus-visible { color: var(--accent-primary); text-decoration: underline; }
@@ -1077,6 +1087,99 @@
   padding: 0.2rem 0.45rem;
   cursor: pointer;
   font-family: var(--font-mono);
+}
+/* The Clear button (PRIME 2026-10-06): beside Esc in the input row, in the prose face so it reads as a word and
+   not a key. Quiet until hovered or focused, when it takes the accent; dimmed, never hidden, while there is
+   nothing to clear, so its place is always the same. */
+.search-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.55rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.search-clear:hover:not(:disabled),
+.search-clear:focus-visible {
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+.search-clear:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* The dialog's footer (PRIME 2026-10-06): the remember-or-start-fresh switch, right-aligned under the results. The
+   track and thumb are drawn in CSS; the button carries role="switch" and aria-checked, so the state is announced
+   and not only painted. */
+.search-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.45rem 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.search-fresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+.search-fresh:hover {
+  color: var(--text-primary);
+}
+.search-fresh:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+.search-fresh-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.9rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background: var(--canvas-primary);
+  border: 1px solid var(--border-strong);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+.search-fresh-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0.12rem;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  transform: translateY(-50%);
+  transition: left 0.15s ease, background-color 0.15s ease;
+}
+.search-fresh--on .search-fresh-track {
+  background: color-mix(in srgb, var(--accent-primary) 25%, transparent);
+  border-color: var(--accent-primary);
+}
+.search-fresh--on .search-fresh-thumb {
+  left: calc(100% - 0.84rem);
+  background: var(--accent-primary);
+}
+@media (prefers-reduced-motion: reduce) {
+  .search-clear,
+  .search-fresh-track,
+  .search-fresh-thumb {
+    transition: none;
+  }
 }
 
 /* --- Results --- */
@@ -20584,3 +20687,136 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   border-radius: 10px;
   background: var(--surface-base);
 }
+
+/* ==========================================================================
+   OPEN MATERIALS (milestone (m1), 2026-10-06): the index of shared courses and
+   each material's datasheet. Tokens only, both themes through them; the
+   datasheet's "At a glance" reuses the guide's definition grid (.guide-datasheet).
+   Tables scroll inside their own wrapper so the page never scrolls sideways.
+   ========================================================================== */
+.materials-container { max-width: 62rem; }
+.materials-eyebrow { margin: 0 0 0.35rem; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary); }
+.materials-subtitle { margin: -0.25rem 0 0.9rem; font-size: 1.05rem; color: var(--text-secondary); text-wrap: balance; }
+.materials-lineage { max-width: 65ch; margin: 0 0 1.25rem; color: var(--text-secondary); line-height: 1.65; }
+.materials-note { max-width: 65ch; margin: 0 0 1.1rem; color: var(--text-secondary); line-height: 1.6; }
+.materials-inline-link { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 0.15em; }
+.materials-inline-link:hover { color: var(--text-primary); }
+
+/* The index: one card per material, the title link stretched over the card. */
+.materials-cards { list-style: none; margin: 1.5rem 0 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 26rem), 1fr)); }
+.materials-card { position: relative; display: flex; flex-direction: column; gap: 0.45rem; padding: 1.15rem 1.25rem; background: var(--surface-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); transition: border-color 0.15s ease; }
+.materials-card:hover, .materials-card:focus-within { border-color: var(--accent-primary); }
+.materials-card-title { margin: 0; font-size: 1.15rem; line-height: 1.3; text-wrap: balance; }
+.materials-card-title a { color: var(--text-primary); text-decoration: none; }
+.materials-card-title a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.materials-card-subtitle { margin: 0; color: var(--text-secondary); font-size: 0.92rem; }
+.materials-card-facts { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; margin: 0.2rem 0 0; font-size: 0.75rem; color: var(--text-tertiary); }
+.materials-card-cta { margin: 0.25rem 0 0; font-size: 0.85rem; font-weight: 600; color: var(--accent-primary); }
+
+/* The four files, one click each, in the opening section. */
+.materials-get { margin-top: 0.5rem; padding: 1rem 1.1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.materials-get-title { margin: 0 0 0.6rem; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); font-family: var(--font-mono); font-weight: 600; }
+.materials-get-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
+.materials-get-link { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; padding: 0.6rem 0.75rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); color: var(--text-primary); text-decoration: none; transition: border-color 0.15s ease; }
+.materials-get-link:hover, .materials-get-link:focus-visible { border-color: var(--accent-primary); }
+.materials-get-name { font-weight: 600; font-size: 0.9rem; }
+.materials-get-size { font-size: 0.75rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Who it is for: the learner and the instructor, side by side, stacked when narrow. */
+.materials-audience { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.materials-audience-card { margin: 0; padding: 1rem 1.15rem; border-left: 3px solid var(--accent-primary); background: var(--surface-base); color: var(--text-secondary); line-height: 1.6; }
+
+/* The outline and the objectives, by module. */
+.materials-module { margin-top: 1.5rem; }
+.materials-module-title { margin: 0 0 0.75rem; font-size: 1rem; color: var(--text-primary); }
+.materials-parts { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.materials-part { padding: 0.85rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.materials-part-head { margin: 0 0 0.2rem; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); }
+.materials-part-title { margin: 0 0 0.45rem; font-size: 1rem; color: var(--text-primary); }
+.materials-topics { margin: 0; padding-left: 1.15rem; color: var(--text-secondary); font-size: 0.9rem; line-height: 1.55; display: grid; gap: 0.2rem; }
+.materials-objectives { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.5rem; color: var(--text-secondary); line-height: 1.6; max-width: 72ch; }
+.materials-objectives strong { color: var(--text-primary); }
+
+/* The two tables: the 1999 to 2026 comparison and the files. */
+.materials-table-wrap { overflow-x: auto; margin: 0 0 1rem; }
+.materials-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 36rem; }
+.materials-table th, .materials-table td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border-subtle); }
+.materials-table thead th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; }
+.materials-table tbody th { color: var(--text-primary); font-weight: 600; }
+.materials-table td { color: var(--text-secondary); }
+.materials-file-edition { display: block; margin-top: 0.2rem; font-weight: 400; font-size: 0.8rem; color: var(--text-tertiary); }
+.materials-digest { font-family: var(--font-mono); font-size: 0.72rem; word-break: break-all; color: var(--text-secondary); user-select: all; }
+.materials-files td.mono { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.materials-file-actions { display: flex; flex-direction: column; gap: 0.3rem; white-space: nowrap; }
+
+/* The licence and the related reading. */
+.materials-licence { max-width: 65ch; margin: 0 0 0.75rem; color: var(--text-secondary); line-height: 1.65; }
+.materials-related { margin: 0; padding-left: 1.15rem; display: grid; gap: 0.35rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); column-gap: 1.5rem; }
+@media (prefers-reduced-motion: reduce) { .materials-card, .materials-get-link { transition: none; } }
+/* The study guides page's signpost to the open materials (2026-10-06). */
+.materials-signpost { max-width: 65ch; margin: 0.25rem 0 1.25rem; padding: 0.7rem 0.9rem; border-left: 3px solid var(--accent-primary); background: var(--surface-base); color: var(--text-secondary); line-height: 1.6; }
+/* "Want this course taught live?" (2026-10-06, PRIME): the offer beside the free material, in the site's accent. */
+.materials-live { margin-top: 1.5rem; padding: 1.25rem 1.35rem; border: 1px solid var(--accent-primary); border-radius: var(--radius-md); background: var(--surface-elevated); }
+.materials-live-title { margin: 0 0 0.5rem; font-size: 1.15rem; color: var(--text-primary); text-wrap: balance; }
+.materials-live-body { max-width: 68ch; margin: 0 0 0.85rem; color: var(--text-secondary); line-height: 1.65; }
+.materials-live-cta { margin: 0; }
+/* The call itself uses the house button (.btn .btn-primary). */
+/* The datasheet's slide images (PRIME 2026-10-06, 16:02: the deck's cover and "a few of the more interesting images").
+   The hero sets the text beside the cover from 60rem and stacks them below it. Every shot is a bordered link to the
+   full-size slide, at its true 16:9 ratio so nothing shifts while it loads; the caption carries the slide's own title
+   and, in the gallery, its number and part. The gallery's six items fill one, two or three columns evenly. */
+.materials-hero { display: grid; gap: 1.5rem; align-items: start; margin-bottom: 1.25rem; }
+@media (min-width: 60rem) { .materials-hero { grid-template-columns: minmax(0, 1fr) minmax(0, 24rem); } }
+.materials-hero-text > :last-child { margin-bottom: 0; }
+.materials-cover { margin: 0; }
+.materials-shot-figure { margin: 0; }
+.materials-shot-link { display: block; overflow: hidden; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); transition: border-color 0.15s ease; }
+.materials-shot-link:hover, .materials-shot-link:focus-visible { border-color: var(--accent-primary); }
+.materials-shot { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; }
+.materials-shot-caption { display: grid; gap: 0.15rem; margin-top: 0.5rem; font-size: 0.85rem; line-height: 1.45; color: var(--text-secondary); }
+.materials-shot-title { font-weight: 600; color: var(--text-primary); text-wrap: balance; }
+.materials-shot-meta { font-size: 0.72rem; letter-spacing: 0.02em; color: var(--text-tertiary); }
+.materials-gallery { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+@media (prefers-reduced-motion: reduce) { .materials-shot-link { transition: none; } }
+/* Red Education's own courses and the career-paths booklet on /red-education/ (2026-10-06, milestone (re1)). The
+   courses are cards in the page's narrow column, one under another: the series in the accent's mono, the course's own
+   name, the summary, then the facts as label/value rows (a two-column grid from 36rem, stacked on a phone). The booklet's
+   streams sit in a table that scrolls inside its own box on a phone, never the page. */
+.redu-own-eyebrow { margin: 0 0 0.35rem; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-primary); }
+.redu-own-list { list-style: none; margin: 1rem 0 1.25rem; padding: 0; display: grid; gap: 1rem; }
+.redu-own-card { padding: 1.1rem 1.2rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background: var(--surface-base); }
+.redu-own-series { margin: 0 0 0.3rem; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+.redu-own-title { margin: 0 0 0.5rem; font-size: 1.1rem; line-height: 1.3; color: var(--text-primary); text-wrap: balance; }
+.redu-own-summary { margin: 0 0 0.85rem; color: var(--text-secondary); line-height: 1.65; }
+.redu-own-facts { margin: 0 0 0.85rem; display: grid; gap: 0.45rem; }
+.redu-own-fact { display: grid; gap: 0.1rem 1rem; }
+@media (min-width: 36rem) { .redu-own-fact { grid-template-columns: 7rem minmax(0, 1fr); } }
+.redu-own-fact dt { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); padding-top: 0.15rem; }
+.redu-own-fact dd { margin: 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55; }
+.redu-own-link { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; }
+.redu-own-sep { color: var(--text-tertiary); }
+.redu-career-wrap { overflow-x: auto; margin: 0.25rem 0 1rem; }
+.redu-career-table { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: 0.88rem; }
+.redu-career-table th, .redu-career-table td { text-align: left; vertical-align: top; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--border-subtle); }
+.redu-career-table thead th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; }
+.redu-career-table tbody th { color: var(--text-primary); font-weight: 600; }
+.redu-career-table td { color: var(--text-secondary); }
+/* The signposts from The Roles (its "Who defends it" group) and The Practice to the booklet's place on /red-education/. */
+.redu-signpost { max-width: 65ch; margin: 0.25rem 0 1.1rem; padding: 0.7rem 0.9rem; border-left: 3px solid var(--redu-brand, var(--accent-primary)); background: var(--surface-base); color: var(--text-secondary); line-height: 1.6; }
+/* The home page's quick CIDR: the field and its Clear button as one group, so the button stays beside the field at
+   phone width (PRIME 2026-10-06 16:35); dimmed, not hidden, while the field is empty. */
+.quick-cidr-field { display: flex; align-items: center; gap: 0.5rem; flex: 1 1 16rem; max-width: 30rem; min-width: 0; }
+.quick-cidr-field .quick-cidr-input { flex: 1 1 auto; min-width: 0; max-width: none; }
+.quick-cidr-clear { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.35rem 0.7rem; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); background: transparent; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease; }
+.quick-cidr-clear:hover:not(:disabled), .quick-cidr-clear:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
+.quick-cidr-clear:disabled { opacity: 0.4; cursor: default; }
+@media (prefers-reduced-motion: reduce) { .quick-cidr-clear { transition: none; } }
+/* Below 26rem the button keeps only its cross, so a whole block such as 172.16.100.200/24 stays visible in the field. */
+@media (max-width: 26rem) { .quick-cidr-clear { padding: 0.35rem 0.6rem; } .quick-cidr-clear-word { display: none; } }
+/* And below 22rem (320 px phones) the field's type steps down a little, so the longest IPv4 block, 255.255.255.255/32,
+   still shows whole beside the cross (measured on 2026-10-06: 4 px short at 1.15rem). */
+@media (max-width: 22rem) { .quick-cidr-field .quick-cidr-input { font-size: 0.95rem; } }
+/* "Take me somewhere": the two kinds new to the pool (2026-10-06), in hues mixed from the palette's own tokens so they
+   stay apart from the six already taken (teal for a role, a muted rose for The Practice). */
+.happening-kind--role { --kind-color: color-mix(in srgb, var(--color-info) 50%, var(--color-success)); }
+.happening-kind--practice { --kind-color: color-mix(in srgb, var(--color-danger) 60%, var(--color-info)); }

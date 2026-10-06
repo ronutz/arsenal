@@ -153,7 +153,10 @@
       "contributeLede": "Como melhorar uma ferramenta, um artigo ou um verbete.",
       "stories": "Histórias",
       "storiesLede": "Os artigos que ligam outros artigos: o que os casos de falha têm em comum, o que uma requisição de fato atravessa, por que o mesmo defeito se repete.",
-      "storiesBadge": "{count} fios"
+      "storiesBadge": "{count} fios",
+      "materials": "Materiais abertos",
+      "materialsLede": "Treinamentos completos compartilhados para qualquer pessoa usar: slides, notas do apresentador, programa e licença.",
+      "materialsBadge": "{count, plural, one {# curso} other {# cursos}}"
     },
     "front": {
       "metaTitle": "ronutz · Ferramentas, conhecimento, história e prática de redes e segurança",
@@ -227,14 +230,16 @@
         "company": "Empresa",
         "person": "Pessoa",
         "term": "Termo",
-        "guide": "Guia"
+        "guide": "Guia",
+        "role": "Papel",
+        "practice": "Prática"
       },
       "surpriseTitle": "Leve-me a algum lugar",
-      "surpriseLede": "Uma porta aleatória para todo o acervo: uma empresa esquecida, uma ferramenta curiosa, um termo que ninguém diz em voz alta, uma pessoa que mudou a área.",
+      "surpriseLede": "Uma porta aleatória para todo o acervo: uma empresa com história, uma ferramenta curiosa, um termo que ninguém diz em voz alta, uma pessoa que mudou a área, uma carreira para explorar.",
       "surpriseMain": "Surpreenda-me",
       "surpriseTool": "uma ferramenta útil",
       "surpriseWeird": "algo estranho",
-      "surpriseCompany": "uma empresa esquecida",
+      "surpriseCompany": "uma empresa com história",
       "surpriseFailed": "A porta não abriu. Tente de novo.",
       "archiveLine": "O ancestral mais antigo daqui é de 2004:",
       "archiveTool": "a calculadora de bits e bytes, reconstruída",
@@ -298,7 +303,14 @@
       },
       "endorsementsBadge": "{count} na íntegra",
       "surpriseAgain": "Sortear outra",
-      "archiveClone": "o próprio site de 2004, navegável"
+      "archiveClone": "o próprio site de 2004, navegável",
+      "quickClear": "Limpar",
+      "quickClearLabel": "Limpar o bloco CIDR",
+      "surprisePerson": "uma pessoa que moldou a área",
+      "surpriseArticle": "algo para ler",
+      "surpriseGuide": "uma certificação para mirar",
+      "surpriseRole": "uma carreira para explorar",
+      "surprisePractice": "como o trabalho é feito"
     }
   },
   "tools": {
@@ -11933,7 +11945,7 @@
     "noTrackTitle": "Sem cookies, sem analytics de terceiros, e o que é contado no lugar",
     "noTrackBody": "Este site não usa cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), nem rede de publicidade, nem pixel de rastreamento de rede social, nem impressão digital de dispositivo. Nenhum script na página reporta nada sobre você.\n\nO que o site mantém é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. Dois registros separados são escritos, e eles são mantidos apartados de propósito, para que nenhum possa ser casado com o outro. O primeiro registra qual página foi servida, o idioma, o país de visita conforme a sua rede o informa, e se a requisição veio de uma pessoa ou de um rastreador conhecido. O segundo registra apenas um endereço de origem, quando o seu navegador envia um, e não carrega mais nada - nem página, nem país, nem correlação de tempo com o primeiro.\n\nSeu endereço IP nunca é gravado. O agente de usuário do seu navegador nunca é gravado; ele é lido apenas para decidir se a requisição veio de um rastreador, e o que fica guardado é uma categoria, como buscador ou ferramenta de monitoração. Nenhum identificador é usado, então não há visitante a perfilar, não há sessão a reconstruir, e não há nada a compartilhar.",
     "browserTitle": "O que é armazenado no seu navegador",
-    "browserBody": "Algumas coisas pequenas, todas no armazenamento local (local storage) do seu navegador, nenhuma delas jamais enviada a este site nem a ninguém, cada uma apagável pelo seu navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio puro possa levá-lo de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); a densidade em cartões ou lista que você escolheu em uma página de índice (ronutz:view:*); as últimas seis páginas que você abriu, para que a página inicial possa oferecê-las de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); e, em duas páginas da sala dev apenas, uma chave de movimento e uma pontuação de prática (ronutz-mb-motion, ronutz:subnet-drill:stats). Um único sinalizador de sessão (ronutz.privPreview) existe para a pré-visualização privada do autor de páginas não publicadas e nunca é definido para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
+    "browserBody": "Algumas coisas pequenas, todas no armazenamento local (local storage) do seu navegador, nenhuma delas jamais enviada a este site nem a ninguém, cada uma apagável pelo seu navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio puro possa levá-lo de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca abre vazia a cada vez (ronutz-search-fresh); a densidade em cartões ou lista que você escolheu em uma página de índice (ronutz:view:*); as últimas seis páginas que você abriu, para que a página inicial possa oferecê-las de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); e, em duas páginas da sala dev apenas, uma chave de movimento e uma pontuação de prática (ronutz-mb-motion, ronutz:subnet-drill:stats). Um único sinalizador de sessão (ronutz.privPreview) existe para a pré-visualização privada do autor de páginas não publicadas e nunca é definido para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e registros de servidor",
     "hostingBody": "O site é entregue por meio da Cloudflare, que fornece a sua hospedagem e a entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, atuando como provedora de hospedagem, processa dados básicos de conexão — incluindo o seu endereço IP e detalhes padrão da requisição — para entregar as páginas a você e proteger o site contra abuso e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR e das bases correspondentes dos Artigos 7 e 10 da LGPD). É retido apenas brevemente pela provedora e não é usado aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas funcionam no seu navegador",
@@ -11950,7 +11962,7 @@
     "rightsLgpd": "Se você está no Brasil, você possui os direitos previstos no Artigo 18 da LGPD e também pode contatar a Autoridade Nacional de Proteção de Dados (a ANPD).",
     "changesTitle": "Alterações neste aviso",
     "changesBody": "Se este aviso mudar, a versão revisada será publicada nesta página e a data abaixo será atualizada. Mudanças materiais não serão aplicadas retroativamente.",
-    "updated": "Última atualização: 30 de junho de 2026",
+    "updated": "Última atualização: 6 de outubro de 2026",
     "backHome": "Voltar para o início",
     "prefsTitle": "Tema, idioma e o que este site lembra",
     "prefsBody": "Suas preferências, sua trilha de leitura e os dois valores da sala dev são guardados apenas no localStorage deste navegador, no seu dispositivo; o tema é aplicado antes da primeira pintura na próxima visita. Não há cookie, não há conta e nenhum servidor jamais vê nada disso, o que também significa que nada disso pode seguir você: uma janela privada, os dados de site limpos, ou outro navegador ou dispositivo recomeçam nos padrões, por desenho. Seu idioma funciona em duas camadas: ele mora no próprio endereço (/en/ e /pt-BR/ são páginas diferentes, então favoritar ou compartilhar uma URL no seu idioma o mantém), e o último idioma que você usou também fica lembrado neste navegador, para que uma visita ao domínio puro chegue nele e não no padrão. Essa é a troca inteira: sem contas e sem rastreamento, preferências só podem morar onde você pode vê-las e apagá-las.",
@@ -12010,7 +12022,11 @@
       "project": "O projeto"
     },
     "sectionOnly": "Só em {name}",
-    "sectionClear": "Buscar em todo o site, não só em {name}"
+    "sectionClear": "Buscar em todo o site, não só em {name}",
+    "clear": "Limpar",
+    "clearLabel": "Limpar a busca e todos os filtros",
+    "freshLabel": "Zerar a cada abertura",
+    "freshTitle": "Ligado: a busca abre vazia, com todos os filtros limpos. Desligado: ela reabre com a sua última busca e os filtros."
   },
   "theme": {
     "label": "Tema",
@@ -13068,6 +13084,9 @@
         "title": "Outra coisa",
         "desc": "Se nada acima se encaixa, o formulário aceita qualquer assunto.",
         "cta": "Escreva"
+      },
+      "course": {
+        "template": "O curso: {course}\nA turma (quantas pessoas e de onde partem):\nPresencial ou virtual, e mais ou menos quando:\nO que devem ser capazes de fazer depois:"
       }
     }
   },
@@ -23099,7 +23118,7 @@
     "title": "Red Education",
     "lede": "Um Centro de Treinamento Autorizado global dos principais fabricantes de rede e segurança do mundo - e a casa das aulas de Rodolfo Nützmann desde 2021.",
     "whoTitle": "Quem são",
-    "whoBody1": "Fundada em 2005, a Red Education é uma empresa especializada em treinamento de TI e segurança cibernética que já treinou mais de 100.000 alunos em 132 países, com avaliação média de 4,9 estrelas em mais de 5.000 avaliações.",
+    "whoBody1": "Fundada em 2005, a Red Education é uma empresa especializada em treinamento de TI e segurança cibernética que já treinou mais de 120.000 alunos em 132 países, com avaliação média de 4,9 estrelas em mais de 5.000 avaliações.",
     "whoBody2": "Os treinamentos são ministrados por mais de 50 instrutores, muitos certificados em vários fabricantes, nos formatos presencial, virtual e in-company, em cinco regiões globais: Américas, Australásia, SAARC, ASEAN e EMEA.",
     "dnaTitle": "Visão e valores",
     "dnaIntro": "Nas palavras da própria Red Education.",
@@ -23209,7 +23228,7 @@
     "explainersTitle": "Os guias de curso que a Red Education publica",
     "explainersIntro": "A Red Education escreve um guia para cada plataforma em que treina: o que os cursos cobrem, aonde levam, e como se encaixam numa carreira. Dez estão publicados, e estes são todos, começando pelas plataformas que eu ensino. Valem a leitura antes de escolher um curso, porque falam mais de resultados do que uma ementa.",
     "explainersMine": "— plataforma que eu ministro",
-    "explainersGap": "Lido em 16 de agosto de 2026. Entre as plataformas que eu ministro, F5 e Extreme Networks não tinham guia publicado no momento da leitura; suas páginas de fabricante trazem a lista de cursos.",
+    "explainersGap": "Lido em 6 de outubro de 2026. Entre as plataformas que eu ministro, F5 e Extreme Networks não tinham guia publicado no momento da leitura; suas páginas de fabricante trazem a lista de cursos.",
     "jumpExplainers": "Guias de curso",
     "articlesTitle": "Sobre o que a Red Education escreve",
     "articlesIntro": "A Red Education mantém um blog sobre certificações, carreiras e o estado do treinamento em segurança. O índice deles é montado depois que a página carrega, então só o artigo em destaque pode ser linkado diretamente daqui; o resto está atrás do link do índice abaixo. Lido em 16 de agosto de 2026.",
@@ -23265,13 +23284,152 @@
       "news": "Índice de notícias e artigos",
       "case1": "Estudo de caso: treinamento Fortinet em escala para um líder global de TI",
       "case2": "Estudo de caso: treinamento de iRules do F5 BIG-IP",
-      "professionalServices": "Serviços profissionais"
+      "professionalServices": "Serviços profissionais",
+      "ownCourses": "Os cursos próprios da Red Education: a série FastTrack e sob demanda"
     },
     "sourcesNote": "Lidas e verificadas em 9 e 14 de julho, 6 e 16 de agosto e 6 de outubro de 2026; números citados como publicados nessas datas. Dois dos índices da Red Education são desenhados por script no navegador e não podem ser enumerados por busca, e é por isso que os estudos de caso e artigos listados são os que foram de fato lidos.",
     "psTitle": "Além do treinamento: serviços profissionais",
     "psBody": "A Red Education também mantém uma prática de serviços profissionais, executada por engenheiros certificados pelos fabricantes e por consultores vindos de fabricantes e de grandes clientes corporativos: instalações, atualizações de software e migrações para hardware novo, health checks, trabalho que vai do projeto detalhado ao suporte pós-migração e à transferência de conhecimento, engenheiros residentes no local e consultores sob demanda.",
     "psBoundary": "Essa prática é da Red Education, não minha: meu trabalho lá é ensino e consultoria. Quando uma decisão em que presto consultoria leva a uma implantação, a <adv>página de consultoria</adv> mostra onde a minha parte termina e quem poderia levar o trabalho adiante.",
-    "psLink": "A página de serviços profissionais da Red Education"
+    "psLink": "A página de serviços profissionais da Red Education",
+    "own": {
+      "jump": "Cursos próprios",
+      "eyebrow": "Novidade de 2026",
+      "title": "Os cursos próprios da Red Education",
+      "lede": "Há mais de vinte anos a Red Education ministra os cursos dos próprios fabricantes, com a autorização deles, por meio de instrutores que em boa parte vieram desses fabricantes e dos seus maiores clientes. Agora esses especialistas escrevem cursos próprios. A série FastTrack é material original da Red Education, concebido e ministrado pela Red Education para quem está no começo do trabalho: engenheiros júnior e aspirantes, administradores de sistemas migrando para segurança, qualquer pessoa nos três primeiros anos. Dois cursos FastTrack estão abertos, outros estão planejados, e um curso em vídeo sob demanda sobre Palo Alto Networks está ao lado deles.",
+      "courseLink": "O curso na Red Education",
+      "allCourses": "Todos os cursos próprios da Red Education",
+      "schedules": "Os cursos FastTrack acontecem em três agendas regionais: Américas, Europa e horário de Singapura, que também atende Austrália e Nova Zelândia, Ásia e Índia. Empresas podem pagar com ordem de compra, e turmas fechadas podem ser combinadas, conforme o curso.",
+      "alongside": "Para ler ao lado deles neste site: o <materials>curso aberto de TCP/IP</materials> destrincha a fundo os protocolos em que os dois cursos FastTrack se apoiam, e <practice>A Prática</practice> descreve o trabalho de triagem, evidência e escalonamento para o qual eles preparam.",
+      "readOn": "Lido em 6 de outubro de 2026 nas páginas dos cursos da Red Education, nas três ementas e nas respostas da sua página de cursos próprios.",
+      "courses": {
+        "openNgfw": {
+          "series": "Série FastTrack · Curso 01",
+          "summary": "Um primeiro curso para engenheiros que estão começando em firewalls e, nas palavras da Red Education, \"100% Red Education original IP\": propriedade intelectual inteiramente sua. Cada aluno monta, quebra e conserta um firewall de nova geração próprio, ao vivo, e pratica o método de trabalho em que os engenheiros seniores confiam: ler o chamado, conhecer o raio de impacto e o rollback antes de tocar em qualquer coisa, diagnosticar pelos logs e escalonar com evidências. As habilidades valem para qualquer plataforma de firewall.",
+          "facts": [
+            [
+              "Formato",
+              "Meio período, ao vivo e com instrutor: duas sessões de 120 minutos, em sequência"
+            ],
+            [
+              "Conteúdo",
+              "10 módulos e 5 laboratórios práticos, para no máximo 16 alunos"
+            ],
+            [
+              "Laboratório",
+              "Seu próprio firewall OPNsense com Zenarmor, e 7 dias de acesso ao lab pod"
+            ],
+            [
+              "Nível",
+              "Fundamental: cerca de 0 a 3 anos em funções de rede ou segurança, sem experiência prévia com firewall"
+            ],
+            [
+              "Inclui",
+              "Um material de apoio do curso e um guia de laboratório do aluno, um selo digital verificado pela Credly e a comunidade de ex-alunos REDiUP"
+            ]
+          ]
+        },
+        "networkFundamentals": {
+          "series": "Série FastTrack · Curso 02",
+          "summary": "Como uma conexão realmente viaja, ensinado como método e não como lista de fatos. Os alunos seguem uma conexão ao vivo do cliente, passando pela resolução de nomes, pelo gateway, pela tradução de endereços e pelo firewall, até o serviço; leem as evidências que DNS, DHCP, NAT e os logs de fluxo do firewall deixam para trás; dividem o problema ao meio até a falha não ter mais onde se esconder; e terminam com um escalonamento de cinco linhas que diz onde a conexão quebrou e por quê. Independente de fabricante, com endpoints Linux e um firewall, e falhas plantadas no laboratório de cada aluno.",
+          "facts": [
+            [
+              "Formato",
+              "Duas sessões virtuais ao vivo, com instrutor, de duas horas"
+            ],
+            [
+              "Conteúdo",
+              "12 módulos em duas sessões: conhecer o caminho, e depois as pistas que as falhas deixam"
+            ],
+            [
+              "Laboratório",
+              "Sua própria rede ao vivo por 7 dias, para seguir, diagnosticar e provar"
+            ],
+            [
+              "Nível",
+              "Fundamental: sem experiência prévia com redes"
+            ],
+            [
+              "Inclui",
+              "Um material de apoio com todos os slides e suas notas completas, e um selo digital verificado pela Credly"
+            ]
+          ]
+        },
+        "panOnDemand": {
+          "series": "Sob demanda",
+          "summary": "Quatro tópicos-chave de Palo Alto Networks em vídeo, apresentados por um instrutor certificado pela Palo Alto Networks, com experiência em grandes empresas: Firewall Essentials (EDU-210), Cortex XSIAM, Cortex XDR e a preparação para o exame. Pela descrição da própria Red Education, é uma visão geral dos tópicos para construir entendimento prático, e não um curso completo nem um programa de certificação: uma porta de entrada antes dos cursos oficiais, que a Red Education também ministra como parceira global de treinamento autorizada da Palo Alto Networks.",
+          "facts": [
+            [
+              "Formato",
+              "Vídeo sob demanda, no seu ritmo, no computador, no tablet ou no celular"
+            ],
+            [
+              "Conteúdo",
+              "3 horas em quatro tópicos: EDU-210 Firewall Essentials (1 h 15 min), Cortex XSIAM (30 min), Cortex XDR (55 min), preparação para o exame (32 min)"
+            ],
+            [
+              "Acesso",
+              "365 dias a partir da compra"
+            ],
+            [
+              "Nível",
+              "Não exige experiência com Palo Alto Networks; alguma familiaridade com redes e segurança ajuda"
+            ]
+          ]
+        }
+      }
+    },
+    "career": {
+      "eyebrow": "Leitura gratuita",
+      "title": "Understanding Cyber Security Career Paths",
+      "body": "Um livreto digital gratuito da Red Education, com sessenta páginas, escrito para quem está escolhendo um caminho em segurança cibernética, subindo nele ou mudando de carreira para ele. Ele mapeia a profissão em sete trilhas (governança, testes de vulnerabilidade, operações de segurança, forense, resposta a incidentes, análise de ameaças e design de segurança) que sobem do analista de segurança de nível associado, passando por funções de analista e de gerente, até o diretor de segurança da informação (CISO). Cada uma das suas catorze funções recebe uma descrição do cargo, as habilidades técnicas e as qualidades pessoais de que precisa, com a proficiência esperada em cada uma, e suas principais funções e tarefas. O livreto está em inglês.",
+      "complements": "Ele complementa duas partes deste site. <roles>Os Papéis</roles> descreve cada posição por dentro: pelo que responde, de quem recebe, a quem serve e como é medida. <practice>A Prática</practice> descreve como o trabalho em si é feito. O livreto acrescenta a escada: as habilidades de que cada degrau precisa, e em que nível. Suas trilhas se alinham assim aos papéis de segurança de Os Papéis:",
+      "tableCaption": "As trilhas do livreto ao lado dos papéis de segurança de Os Papéis",
+      "tableStream": "No livreto",
+      "tableRoles": "Suas funções",
+      "tableHere": "Os papéis mais próximos aqui",
+      "streams": {
+        "entry": {
+          "name": "Onde toda trilha começa",
+          "roles": "Analista de segurança, nível associado"
+        },
+        "governance": {
+          "name": "Governança",
+          "roles": "Analista de risco cibernético, gerente de risco cibernético"
+        },
+        "vulnerability": {
+          "name": "Testes de vulnerabilidade",
+          "roles": "Analista de testes de vulnerabilidade, gerente de avaliação de vulnerabilidades e testes de intrusão"
+        },
+        "operations": {
+          "name": "Operações de segurança",
+          "roles": "Analista de centro de operações de segurança, gerente de operações de segurança"
+        },
+        "forensics": {
+          "name": "Forense",
+          "roles": "Investigador forense, gerente de investigações forenses"
+        },
+        "incident": {
+          "name": "Resposta a incidentes",
+          "roles": "Investigador de incidentes, gerente de investigação de incidentes"
+        },
+        "threat": {
+          "name": "Análise de ameaças",
+          "roles": "Gerente de análise de ameaças"
+        },
+        "design": {
+          "name": "Design de segurança",
+          "roles": "Engenheiro de segurança sênior, arquiteto de segurança"
+        },
+        "top": {
+          "name": "Aonde toda trilha leva",
+          "roles": "Diretor de segurança da informação (CISO)"
+        }
+      },
+      "read": "Ler o livreto",
+      "page": "A página dele na Red Education",
+      "readOn": "Lido na íntegra em 6 de outubro de 2026."
+    }
   },
   "toolDocs": {
     "titleSuffix": "documentação",
@@ -23596,7 +23754,8 @@
         "title": "Plataformas de fabricantes",
         "lede": "O conjunto de um fabricante em ordem de leitura, feito para percorrer sua certificação a partir deste site."
       }
-    }
+    },
+    "materialsSignpost": "Um curso completo para baixar, estudar e ensinar: <link>TCP/IP: Conceitos e Roteamento IP</link>, {slides} slides com notas do apresentador, em português e em inglês, de uso livre."
   },
   "catDistribution": {
     "metaTitle": "Sistema Global de Distribuição de Gatos",
@@ -24076,7 +24235,8 @@
       "problemLede": "Digite o que está na sua frente; a busca olha só dentro deste acervo e lista as peças que falam dele.",
       "humanTitle": "O lado humano",
       "humanLede": "As duas partes sobre a pessoa que faz o trabalho: A Vida e O Ofício, onde o ciclo de vida deixa de ser um procedimento."
-    }
+    },
+    "reduSignpost": "Para a escada por trás deste trabalho, o livreto gratuito da Red Education Understanding Cyber Security Career Paths descreve as funções, as tarefas e as habilidades de catorze funções de segurança. <link>Veja onde ele encontra este site</link>."
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",
@@ -26839,7 +26999,8 @@
       "heldLede": "{count} destes papéis foram exercidos em primeira pessoa; os demais estão documentados a partir de fontes e de quem trabalhou ao lado."
     },
     "heldSectionTitle": "Exercidos em primeira pessoa",
-    "heldSectionLede": "Os papéis a partir dos quais este registro é escrito, com onde e quando, antes do diretório de todos eles."
+    "heldSectionLede": "Os papéis a partir dos quais este registro é escrito, com onde e quando, antes do diretório de todos eles.",
+    "reduSignpost": "Escolhendo ou subindo num caminho em segurança? O livreto gratuito da Red Education, Understanding Cyber Security Career Paths, mapeia catorze funções de segurança em sete trilhas, com as habilidades que cada degrau espera. <link>Veja como as trilhas dele se alinham aos papéis daqui</link>."
   },
   "people": {
     "title": "Pessoas",
@@ -27283,5 +27444,334 @@
     "closer": "Nada disso torna o registro completo, e não é para isso: torna cada afirmação nele rastreável até uma página que alguém pode abrir, numa data que alguém anotou. A cronologia, os capítulos e as pessoas são construídos nesses termos.",
     "backToIndustry": "Voltar à indústria",
     "correctionLink": "Envie uma correção"
+  },
+  "materials": {
+    "index": {
+      "eyebrow": "Materiais abertos",
+      "title": "Materiais abertos",
+      "lede": "Material de curso que Rodolfo Nützmann compartilha para qualquer pessoa usar: treinamentos completos com slides e notas do apresentador, livres para baixar, adaptar e ensinar. Cada um tem uma ficha técnica com o programa, os objetivos, os arquivos e a licença.",
+      "cardCta": "Abrir a ficha técnica",
+      "slidesBadge": "{count} slides",
+      "metaTitle": "Materiais abertos - ronutz.com",
+      "metaDescription": "Treinamentos completos que Rodolfo Nützmann compartilha para qualquer pessoa usar: slides, notas do apresentador, programa e licença, livres para baixar, adaptar e ensinar.",
+      "liveTitle": "Quer um curso ministrado ao vivo?",
+      "liveBody": "Cada material aqui é também um curso que o próprio Rodolfo Nützmann ministra: com instrutor, para equipes, presencial ou virtual, em português ou em inglês, por um veterano de campo com três décadas de estrada que ensina por ofício, com demonstrações reais e laboratórios práticos."
+    },
+    "labels": {
+      "atAGlance": "Visão geral",
+      "level": "Nível",
+      "format": "Formato",
+      "slides": "Slides",
+      "notes": "Notas do apresentador",
+      "languages": "Idiomas",
+      "edition": "Edição",
+      "firstTaught": "Ministrado pela primeira vez",
+      "licence": "Licença",
+      "price": "Preço",
+      "free": "Gratuito",
+      "whoFor": "Para quem é",
+      "outline": "Programa do curso",
+      "module": "Módulo {n}",
+      "part": "Parte {n}",
+      "slideRange": "slides {from} a {to}",
+      "frame": "Em volta das partes",
+      "objectives": "Objetivos de aprendizagem",
+      "thenNow": "De 1999 a 2026",
+      "topic": "Tema",
+      "in1999": "Em 1999",
+      "in2026": "Em 2026",
+      "downloads": "Downloads",
+      "language": "Idioma",
+      "file": "Arquivo",
+      "size": "Tamanho",
+      "sha256": "SHA-256",
+      "download": "Baixar",
+      "readOnline": "Ler online",
+      "learnMore": "Para ir além neste site",
+      "learnMoreLede": "Artigos da biblioteca Learn que ensinam o mesmo terreno com mais profundidade.",
+      "en": "Inglês (EUA)",
+      "pt-BR": "Português (Brasil)",
+      "pdf": "PDF",
+      "pptx": "PowerPoint (PPTX)",
+      "readersEdition": "Edição do leitor: os slides, para ler e imprimir",
+      "instructorsEdition": "Edição do instrutor: o deck editável com as notas do apresentador",
+      "getTheCourse": "Obter o curso",
+      "slidesValue": "{count} por edição, os mesmos slides nos dois idiomas",
+      "licenceValue": "CC0 1.0 Universal, uma dedicação ao domínio público",
+      "priceValue": "Gratuito, sem cadastro",
+      "mb": "{size} MB",
+      "moduleObjectives": "Módulo {n}",
+      "liveTitle": "Quer este curso ministrado ao vivo?",
+      "liveBody": "Rodolfo Nützmann ministra este curso como treinamento com instrutor para equipes, presencial ou virtual, em português ou em inglês: um veterano de campo com três décadas de estrada, que ensina por ofício, com demonstrações reais e laboratórios práticos que levam o assunto além dos slides.",
+      "liveCta": "Consultar sobre uma turma",
+      "lookInside": "Uma olhada por dentro",
+      "lookInsideLede": "{count} dos {slides} slides, escolhidos pelos diagramas. Cada um abre em tamanho real.",
+      "slide": "Slide {n}",
+      "coverCaption": "A capa, slide {n} de {slides}",
+      "openFull": "Abrir em tamanho real"
+    },
+    "items": {
+      "tcpip-concepts-and-ip-routing": {
+        "title": "TCP/IP: Conceitos e Roteamento IP",
+        "subtitle": "Um curso introdutório em dois módulos, edição 2026, em português do Brasil e em inglês",
+        "lede": "Um treinamento introdutório completo sobre como as inter-redes funcionam e como o IP encontra seu caminho por elas: de bridges, roteadores e algoritmos de roteamento, passando pela pilha TCP/IP, pelo endereçamento, pelo ARP e por um pacote acompanhado salto a salto, até RIP, EIGRP, OSPF, IS-IS e BGP-4, listas de acesso, IPv6, multicast, MPLS e VRRP. Cada um dos {slides} slides traz notas do apresentador, de modo que o curso pode ser ensinado a partir do deck, ou aprendido com ele, sem mais ninguém na sala.",
+        "lineage": "Baseado num curso que Rodolfo Nützmann ministrou pela primeira vez em março de 1999, e reconstruído em 2026: slides 16:9 com os diagramas redesenhados como formas nativas e editáveis, o conteúdo atualizado para a prática atual (CIDR no lugar das classes de endereço, EIGRP no lugar do IGRP, BGP-4, IPv6 como a RFC 8200 o define, PIM, VRRPv3), e os temas históricos mantidos pelo valor didático e marcados como HISTÓRICO.",
+        "level": "Introdutório, dos primeiros princípios aos protocolos de roteamento",
+        "format": "Slides (PDF) e deck editável com notas (PPTX)",
+        "notesValue": "Em todos os {count} slides, nos dois idiomas",
+        "languagesValue": "Português (Brasil) e inglês (EUA)",
+        "audienceLearners": "Quem aprende. Leia o PDF do começo ao fim, ou abra o PPTX no modo de apresentador e leia as notas como o comentário que o instrutor faria. Os objetivos no início de cada módulo e os resumos no fim dizem o que você deve ser capaz de explicar.",
+        "audienceInstructors": "Quem ensina. As notas foram escritas para dar aula: o que dizer em cada slide, o que perguntar à turma, onde estão as confusões comuns e o que mudou desde 1999. O deck é totalmente editável, inclusive os diagramas, e os slides finais listam as RFCs e as fontes por tema, para você se preparar antes de preparar uma turma.",
+        "frame": "Os slides 1 a 3 abrem o curso (o título, a agenda e a comparação de 1999 a 2026 abaixo); os slides 176 e 177 listam as RFCs e as fontes por tema; o slide 178 o encerra.",
+        "parts": {
+          "p1": {
+            "title": "Conceitos gerais de roteamento",
+            "topics": [
+              "Heterogeneidade e os componentes de uma inter-rede",
+              "Dispositivos de interconexão e o modelo OSI",
+              "Bridges e switches de camada 2, o domínio de broadcast e o Spanning Tree",
+              "Roteadores: fluxo de dados, vantagens e limitações",
+              "Protocolos roteáveis e não roteáveis",
+              "Endereçamento de rede contra endereçamento de enlace, e encapsulamento",
+              "Roteamento estático e dinâmico",
+              "Vetor de distância: métricas, contagem ao infinito, split horizon, poison reverse, hold-down e atualizações disparadas, com um exemplo resolvido",
+              "Estado de enlace: princípios, vantagens e os protocolos em uso",
+              "Sistemas autônomos"
+            ]
+          },
+          "p2": {
+            "title": "TCP/IP",
+            "topics": [
+              "Origem e governança do TCP/IP",
+              "A pilha comparada ao modelo OSI: camadas de aplicação, transporte e internet",
+              "O datagrama IPv4 em detalhe, números de protocolo e de porta, demultiplexação",
+              "Conversão de decimal para binário e o endereço IPv4",
+              "Endereçamento por classes (histórico), CIDR e endereços de uso especial",
+              "Sub-redes, a máscara de sub-rede e a comparação sob máscara",
+              "VLSM, com um plano de endereçamento para um /24"
+            ]
+          },
+          "p3": {
+            "title": "Comportamento do protocolo IP",
+            "topics": [
+              "Determinação de rota: local ou remoto, com o AND",
+              "Consulta ao gateway do próximo salto",
+              "ARP (RFC 826) passo a passo, para um host local e um remoto, com os pacotes de requisição e resposta",
+              "Proxy ARP, com um exemplo resolvido",
+              "O ARP em 2026: ARP gratuito, o cache, segurança e IPv6"
+            ]
+          },
+          "p4": {
+            "title": "IP em uma inter-rede roteada: exemplo completo",
+            "topics": [
+              "A topologia e a transferência de dados em seis passos, salto a salto",
+              "Nomes de host: do arquivo hosts ao DNS",
+              "Proxy ARP: padrões dos fabricantes"
+            ]
+          },
+          "p5": {
+            "title": "Protocolos de roteamento IP",
+            "topics": [
+              "RIP: origem, variantes e a mensagem do RIPv2",
+              "Distância administrativa",
+              "Do IGRP ao EIGRP: a métrica composta, o DUAL e o multicaminho",
+              "Redistribuição de rotas e seus riscos",
+              "OSPF: áreas, tipos de roteador, tipos de rede, Hello, adjacências, DR e BDR, LSAs e a LSDB, rotas inter-área e externas",
+              "OSPFv3 e IS-IS",
+              "Protocolos interiores contra exteriores, EGP, e os atributos e a seleção do melhor caminho do BGP-4"
+            ]
+          },
+          "p6": {
+            "title": "Controle de acesso IP",
+            "topics": [
+              "As ACLs no fluxo de processamento do roteador",
+              "Exemplos de ACL padrão: permitir a rede interna, negar um host, negar uma sub-rede",
+              "As ACLs em 2026: estendidas, nomeadas, IPv6 e firewalls stateful"
+            ]
+          },
+          "p7": {
+            "title": "Tópicos adicionais de roteamento IP",
+            "topics": [
+              "Tratamento de broadcast IP e o problema do DHCP",
+              "DHCP relay e broadcast direcionado",
+              "Endereços secundários",
+              "Interfaces não numeradas"
+            ]
+          },
+          "p8": {
+            "title": "IPv6: de 'IPng' a protocolo dominante",
+            "topics": [
+              "Do 'IPng' (1995) à RFC 8200 (2017)",
+              "As diferenças em relação ao IPv4, o cabeçalho e os cabeçalhos de extensão",
+              "Endereçamento: 128 bits, três tipos, sem broadcast; tipos e escopos",
+              "Neighbor Discovery e SLAAC",
+              "Roteamento, fluxos e classe de tráfego, segurança",
+              "Transição e coexistência entre IPv4 e IPv6"
+            ]
+          },
+          "p9": {
+            "title": "Multicast IP",
+            "topics": [
+              "Endereços multicast e seu mapeamento para endereços MAC",
+              "IGMP e MLD",
+              "Modo denso contra modo esparso e a verificação RPF",
+              "Protocolos de roteamento multicast, e o PIM-SM: o RP, a árvore compartilhada e a SPT",
+              "RSVP, e o que restou dele"
+            ]
+          },
+          "p10": {
+            "title": "MPLS e VRRP",
+            "topics": [
+              "Comutação por rótulos e sua terminologia",
+              "FIB, LIB e LFIB, com um exemplo",
+              "Aplicações do MPLS em 2026",
+              "VRRP: redundância de gateway padrão, com um exemplo de failover",
+              "O resumo do Módulo 2"
+            ]
+          }
+        },
+        "objectives": {
+          "m1": [
+            {
+              "title": "Vocabulário de interconexão",
+              "body": "Reconhecer os termos e conceitos básicos de inter-redes: enlaces LAN e WAN, dispositivos de interconexão, domínios de broadcast e de colisão."
+            },
+            {
+              "title": "Bridges e switches x roteadores",
+              "body": "Comparar a operação de bridges/switches de camada 2 e de roteadores, e entender o switching de camada 2 e de camada 3."
+            },
+            {
+              "title": "Protocolos roteáveis",
+              "body": "Descrever as propriedades de um protocolo roteável e situar historicamente os protocolos não roteáveis."
+            },
+            {
+              "title": "Vetor de distância",
+              "body": "Explicar o princípio de operação, a instabilidade inerente (convergência lenta) e as técnicas que a corrigem."
+            },
+            {
+              "title": "Estado de enlace",
+              "body": "Explicar os algoritmos SPF (Dijkstra), suas vantagens sobre vetor de distância e os protocolos que os implementam."
+            },
+            {
+              "title": "Sistemas autônomos",
+              "body": "Definir sistema autônomo e distinguir protocolos de roteamento interiores e exteriores."
+            }
+          ],
+          "m2": [
+            {
+              "title": "Características do TCP/IP",
+              "body": "Pilha de protocolos, datagrama IPv4, números de protocolo e de porta, endereçamento, sub-redes e VLSM, comunicação entre hosts, ARP e Proxy ARP."
+            },
+            {
+              "title": "Processo de roteamento IP",
+              "body": "Descrever em detalhe, passo a passo, o que acontece com um pacote entre a estação de origem e a de destino em uma inter-rede roteada."
+            },
+            {
+              "title": "RIP e EIGRP",
+              "body": "Lembrar os fundamentos do RIP (v1, v2, RIPng) e do EIGRP (métrica composta, DUAL, multicaminho) e o papel da distância administrativa."
+            },
+            {
+              "title": "Redistribuição e OSPF",
+              "body": "Discutir a redistribuição de rotas entre processos de roteamento e lembrar os princípios do OSPF (áreas, tipos de roteador, Hello, DR, LSAs)."
+            },
+            {
+              "title": "BGP-4",
+              "body": "Distinguir protocolos interiores e exteriores e descrever os fundamentos do BGP-4 (vetor de caminho, eBGP/iBGP, atributos)."
+            },
+            {
+              "title": "Controle de acesso",
+              "body": "Lembrar como listas de controle de acesso (ACLs) em roteadores filtram tráfego IP, e como evoluíram para firewalls stateful."
+            },
+            {
+              "title": "Tópicos de operação",
+              "body": "Tratamento de broadcasts (DHCP relay), endereços secundários, interfaces não numeradas, rotas estáticas e padrão."
+            },
+            {
+              "title": "IPv6 e tecnologias complementares",
+              "body": "Entender IPv6 (cabeçalho, endereçamento, ND/SLAAC, roteamento, transição), multicast IP (IGMP/MLD, PIM), RSVP, MPLS e VRRP."
+            }
+          ]
+        },
+        "thenNow": [
+          [
+            "Enlaces LAN",
+            "Ethernet 10/100, Token Ring, FDDI",
+            "Ethernet 1 G a 400 G, Wi-Fi 6/7; Token Ring e FDDI extintos"
+          ],
+          [
+            "Protocolos de rede",
+            "TCP/IP, IPX, AppleTalk, DECnet, SNA",
+            "Apenas IP (IPv4 e IPv6); os demais são legado"
+          ],
+          [
+            "Endereçamento IPv4",
+            "Classes A/B/C, sub-redes contíguas",
+            "CIDR/VLSM (RFC 4632); esgotamento do IPv4 (IANA 2011, LACNIC 2020); NAT e CGNAT"
+          ],
+          [
+            "IPv6",
+            "\"IPng\" em rascunho (RFC 1883)",
+            "RFC 8200 (2017); > 50 % dos acessos ao Google (mar/2026); Brasil ≈ 59 % (APNIC, out/2026)"
+          ],
+          [
+            "IGP",
+            "RIP, IGRP, OSPF",
+            "OSPFv2/v3, IS-IS, EIGRP (RFC 7868); RIP apenas em redes pequenas"
+          ],
+          [
+            "EGP",
+            "EGP em extinção, BGP-4 chegando",
+            "BGP-4 (RFC 4271) universal; ASN de 32 bits (RFC 6793)"
+          ],
+          [
+            "Multicast",
+            "DVMRP, MOSPF, MBone",
+            "PIM-SM/SSM (RFC 7761, RFC 4607), IGMPv3/MLDv2"
+          ],
+          [
+            "Redundância de gateway",
+            "VRRP recém-publicado (RFC 2338)",
+            "VRRPv3 (RFC 5798) para IPv4 e IPv6; HSRP"
+          ],
+          [
+            "Interconexão L2",
+            "Bridges, STP 802.1D",
+            "Switches multicamada, RSTP/MSTP, VLANs 802.1Q, EVPN"
+          ]
+        ],
+        "thenNowNote": "A comparação é o próprio slide 3 do curso, com os números que suas notas dizem ter sido verificados em outubro de 2026.",
+        "licenceBody": "Oferecido sob a CC0 1.0 Universal. Você pode copiar, modificar, traduzir, distribuir e ensinar com este curso, com fins comerciais ou não, sem pedir permissão.",
+        "licenceCourtesy": "O crédito a Rodolfo Nützmann é bem-vindo, nunca obrigatório. Como pede a declaração da CC0, não sugira endosso do autor ao usar o material.",
+        "licenceDeed": "Ler a declaração da CC0 1.0",
+        "metaDescription": "TCP/IP: Conceitos e Roteamento IP, um curso introdutório completo em dois módulos: {slides} slides com notas do apresentador, em português e em inglês, de uso livre sob CC0.",
+        "coverAlt": "O slide de capa do curso: TCP/IP: Conceitos e Roteamento IP, edição modernizada 2026 (pt-BR), de Rodolfo Nützmann, baseada no curso \"TCP/IP Concepts\" apresentado na Semana de Tecnologia em março de 1999.",
+        "gallery": {
+          "s26": {
+            "title": "O problema da convergência lenta (contagem ao infinito)",
+            "alt": "Diagrama: a rede A ligada ao roteador R1, com R2 e R3 em linha depois dele, a tabela de cada roteador para A embaixo (métrica 0 direta, 1 via R1, 2 via R2), os anúncios seguindo para fora e o anúncio de R3 de volta para R2 ignorado."
+          },
+          "s79": {
+            "title": "ARP, host local (3 de 6): ARP Request em broadcast",
+            "alt": "Diagrama: os hosts A (172.16.10.1) e B (172.16.10.200) e uma terceira estação C em um enlace Ethernet, sub-rede 172.16.10.0/24; o ARP Request de A atravessa todo o enlace, enviado ao endereço de broadcast FF-FF-FF-FF-FF-FF."
+          },
+          "s97": {
+            "title": "Passo 1: A envia o pacote inicial",
+            "alt": "Diagrama: o host A, em 172.16.25.0/24, envia ao roteador X a caminho do host B, em 172.16.27.0/24, passando pelo roteador W; embaixo, o quadro Ethernet (MAC de destino de X, MAC de origem de A, tipo 0x0800) e o pacote IP (TTL 64, protocolo 6, origem A, destino B), campo a campo."
+          },
+          "s121": {
+            "title": "Topologia OSPF: backbone e áreas",
+            "alt": "Diagrama: a área 0, o backbone, ligada por três roteadores de borda de área à área 1, à área 2 e a uma área stub n."
+          },
+          "s166": {
+            "title": "PIM-SM em operação: RP, árvore compartilhada e SPT",
+            "alt": "Diagrama: uma fonte atrás do roteador de primeiro salto R1 e um receptor atrás do roteador de último salto R4, o ponto de encontro acima deles e R3 no caminho mais curto abaixo, com os quatro passos numerados: o join na árvore compartilhada, o registro da fonte, o caminho nativo até o RP e a comutação para a árvore de caminho mais curto."
+          },
+          "s174": {
+            "title": "VRRP em operação: exemplo de failover",
+            "alt": "Diagrama: os roteadores R1 (prioridade 120, mestre) e R2 (prioridade 100, reserva) compartilham o roteador virtual 10 em 172.16.20.1, o gateway de quatro hosts na VLAN 20; R1 anuncia a cada segundo para 224.0.0.18 e, quando R1 falha, R2 assume o MAC virtual depois de cerca de três segundos."
+          }
+        }
+      }
+    }
   }
 }

@@ -170,6 +170,17 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
             <div className="container section-narrow">
               <h2 className="learn-card-title">{t(`groups.${group}.title`)}</h2>
               <p className="practice-part-card-note">{t(`groups.${group}.lede`)}</p>
+              {/* RED EDUCATION'S CAREER-PATHS BOOKLET (PRIME 2026-10-06 16:17: "quite complementary with two sections of
+                  the site, The Practice but especially The Roles"). In the security group only, where its fourteen roles
+                  live; the link goes to the booklet's place on /red-education/, where its streams are set against these
+                  roles and the booklet itself is one click further. */}
+              {group === "defends" && (
+                <p className="redu-signpost">
+                  {t.rich("reduSignpost", {
+                    link: (chunks) => <Link href="/red-education#career-paths" className="redu-inline-link">{chunks}</Link>,
+                  })}
+                </p>
+              )}
               <ul className="learn-grid">
                 {roles.map((r) => (
                   <li key={r.slug} className="learn-grid-item" data-role-entry>

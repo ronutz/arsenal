@@ -100,7 +100,16 @@ if (!fs.existsSync(BASE)) {
 // services with ONE contextual link to /professional-services/ (cta professional-services), and the same page
 // joins that page's "Official sources" list (cta official-source), because the block's facts are read from it.
 // A declared destination already; not a route into the course catalogue; not in the Learn corpus.
-const BASELINE_TOTAL = 116;
+// 116 -> 122 on 2026-10-06, deliberately (milestone (re1); PRIME 16:17: "we need to feature the new authorial courses
+// that Red Education is starting to offer"). /red-education/ gains "Red Education's own courses": ONE link per course
+// page (Open NGFW, Network Fundamentals for Security Practitioners, Palo Alto Networks On-Demand) and ONE to the
+// own-courses home (/rededucation/), all four with the programme key "rededucation"; the career-paths booklet's section
+// adds ONE to the booklet's page (/course-explained/cyber-security-career-paths/, already declared); and the official
+// sources list gains the own-courses home, ONE more. Six in all. In the explainers list the Cisco explainer, which
+// answered 404 on 2026-10-06 and left Red Education's own index, gives its place to /course-explained/red-education-
+// training-resources/, so that list stays at ten and its path swap is declared below. The booklet's flipbook lives at
+// rededucation.aflip.in, not rededucation.com, so it is outside this count by construction. Not in the Learn corpus.
+const BASELINE_TOTAL = 122;
 // The marker that identifies the footer affiliation link in built HTML: the
 // attribution parameters SiteFooter.tsx sets, in the order URLSearchParams writes
 // them (utm_content before utm_term).
@@ -147,7 +156,8 @@ const DECLARED_PATHS = new Set([
   "/cisco/",
   "/course-explained/",
   "/course-explained/check-point-training-resources/",
-  "/course-explained/cisco-training-resources/",
+  // 2026-10-06 (re1): Red Education's own-courses explainer, in the place of Cisco's (404 that day).
+  "/course-explained/red-education-training-resources/",
   "/course-explained/cyber-security-career-paths/",
   "/course-explained/cyberark-training-resources/",
   "/course-explained/fortinet-training-resources/",
@@ -156,6 +166,10 @@ const DECLARED_PATHS = new Set([
   "/course-explained/ping-identity-training-resources/",
   "/course-explained/training-resources-palo-alto/",
   "/course-explained/zscaler-training-resources/",
+  // 2026-10-06 (re1): Red Education's own courses, the course pages and their home.
+  "/coursesvender/network-fundamentals-for-security-practitioners/",
+  "/coursesvender/openngfw-next-generation-firewall-training/",
+  "/coursesvender/palo-alto-networks-on-demand/",
   "/cyberark/",
   "/epi/",
   "/extreme-networks-exclusive-global-training-partner/",
@@ -171,6 +185,7 @@ const DECLARED_PATHS = new Set([
   "/ping-identity/",
   "/professional-services/",
   "/red-education-is-20-daniel-storey-reflects-on-two-decades-of-building-a-global-business/",
+  "/rededucation/",
   "/red-education-wins-fortinet-atc-partner-of-the-year-apac-award/",
   "/tag/announcement/",
   "/team/rodolfo-nutzmann/",

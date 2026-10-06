@@ -28,8 +28,12 @@
 //      credibility line and four proof links; the career and role strips
 //      live on /about and /industry/chapters, one click away.
 //   8. Continue where you left off: local-only, shown only when there is one.
-//   9. Everything on ronutz: the complete directory, grouped into five worlds,
-//      compact, late, for the reader who already understands the place.
+//   9. (Until 2026-10-06) Everything on ronutz, the complete directory by the
+//      five worlds. It sat right above the footer's own directory, which read
+//      as an uneven duplicate (PRIME, 16:43); by his Option A (16:45) the
+//      footer is now the one directory on every page, with this section's
+//      verbs and counts (16:49), and the full section moved to the colophon
+//      (16:46). The page ends with "Continue", then the footer.
 //
 // EVERY NUMBER IS COUNTED FROM THE THING ITSELF at build time (D-63); nothing
 // here is typed. Client islands: the omnibox, the quick CIDR, the popular list,
@@ -55,8 +59,6 @@ import HomeSurpriseIntent from "@/components/HomeSurpriseIntent";
 import HomeRabbitHole from "@/components/HomeRabbitHole";
 import VendorMark from "@/components/VendorMark";
 import { VENDOR_FAMILIES, vendorColor } from "@/config/vendors";
-import { COURSE_COUNT } from "@/content/training/courses";
-import { WORLDS } from "@/config/worlds";
 import { CHANGELOG, type ChangelogEntry } from "@/content/changelog/changelog";
 import { getSiteCounts } from "@/lib/siteCounts";
 
@@ -96,18 +98,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // THE COUNTS, from the registries the pages render from (D-63), computed once in src/lib/siteCounts.ts so the
   // user guide's map of the site (G9, 2026-10-06) states the same figures beside the same five worlds.
   const counted = getSiteCounts(locale);
+  // The three the hero band counts up to, and the endorsements the trust strip's proof names. The directory's counts
+  // went with the directory (2026-10-06): the footer, the colophon and the guide read them from src/lib/worldCounts.ts.
   const toolCount = counted.tools;
   const articleCount = counted.articles;
   const industryCount = counted.industry;
-  const practiceCount = counted.practice;
-  const guideCount = counted.guides;
-  const hubCount = counted.hubs;
-  const glossaryCount = counted.glossary;
-  const careerCount = counted.career;
-  const roleCount = counted.roles;
-  const platformCount = counted.platforms;
   const endorsementCount = counted.endorsements;
-  const storyCount = counted.stories;
 
   // RECENTLY SHIPPED: the newest tool, the newest article, the newest improvement, read from the changelog.
   const newTool = latest(["tool"]);
@@ -130,31 +126,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     { key: "advisory", href: "/advisory", accent: "var(--accent-amber)" },
   ];
 
-  // THE FIVE WORLDS of the directory, from the shared registry (src/config/worlds.ts, wave 0: the footer, the human
-  // sitemap and the search's scope draw the same five). Each item keeps its map.* label; a count is attached by href
-  // where one is counted, in the words the home has always used. An entry marked home: false (the Blog, PRIME
-  // 2026-10-05 14:49) is left to the footer and the sitemap.
-  const counts: Record<string, string> = {
-    "/tools": t("map.toolsBadge", { count: toolCount }),
-    "/learn": t("map.learnBadge", { count: articleCount }),
-    "/stories": t("map.storiesBadge", { count: storyCount }),
-    // The study guides page leads with the curated reading paths; its count is theirs, not the certification guides'
-    // (SCOUT's adoption audit, 2026-10-06: the directory said "105 guides", the certification figure, for both rows).
-    "/study-guides": t("map.guidesBadge", { count: counted.readingPaths }),
-    "/certifications": t("map.certsBadge", { count: guideCount }),
-    "/glossary": t("map.glossaryBadge", { count: glossaryCount }),
-    "/practice": t("map.practiceBadge", { count: practiceCount }),
-    "/industry": t("map.industryBadge", { count: industryCount }),
-    "/vendor-hubs": t("map.hubsBadge", { count: hubCount }),
-    "/roles": t("map.rolesBadge", { count: roleCount }),
-    "/industry/chapters": t("map.careerBadge", { count: careerCount }),
-    "/training": t("map.trainingBadge", { count: COURSE_COUNT, vendors: platformCount }),
-    "/endorsements": t("front.endorsementsBadge", { count: endorsementCount }),
-  };
-  const worlds: { key: string; items: { label: string; href: string; count?: string }[] }[] = WORLDS.map((w) => ({
-    key: w.key,
-    items: w.items.filter((it) => it.home !== false).map((it) => ({ label: t(it.label), href: it.href, count: counts[it.href] })),
-  }));
 
   return (
     <>
@@ -358,29 +329,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         {/* --- 8. CONTINUE WHERE YOU LEFT OFF: local only, shown only when there is one --- */}
         <MessageSlice namespaces={["home.front"]}><HomeContinue /></MessageSlice>
 
-        {/* --- 9. EVERYTHING ON RONUTZ: the complete directory, five worlds, compact and late --- */}
-        <section className="section" id="everything">
-          <div className="container">
-            <h2 className="section-title">{t("front.everythingTitle")}</h2>
-            <p className="section-body">{t("front.everythingBody")}</p>
-            <div className="worlds">
-              {worlds.map((w) => (
-                <div key={w.key} className={`world world--${w.key}`}>
-                  <h3 className="world-title">{t(`front.world.${w.key}`)}</h3>
-                  <p className="world-verb mono">{t(`front.worldVerb.${w.key}`)}</p>
-                  <ul className="world-list">
-                    {w.items.map((it) => (
-                      <li key={it.href}>
-                        <Link href={it.href} className="world-link">{it.label}</Link>
-                        {it.count && <span className="world-count mono">{it.count}</span>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
       {/* --- FOOTER (shared component; single source of truth) --- */}

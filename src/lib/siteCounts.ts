@@ -31,6 +31,8 @@ import { TESTIMONIALS } from "@/content/testimonials/data";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 import { tools as TOOL_CONFIG } from "@/config/tools";
 import { isVendorArticle } from "@/lib/learn";
+// The open materials registry (milestone (m1), 2026-10-06).
+import { MATERIALS } from "@/content/materials/materials";
 
 /** The counts the directory, the footer and the guide state. */
 export interface SiteCounts {
@@ -54,6 +56,8 @@ export interface SiteCounts {
   articlesNeutral: number;
   /** Learn articles about a single vendor's platform, gathered on the vendor hubs. */
   articlesPlatform: number;
+  /** Open materials (complete courses shared under an open licence, /materials). */
+  materials: number;
   /** Vendor hubs (the vendor families). */
   hubs: number;
   /** Glossary entries. */
@@ -96,6 +100,7 @@ export function getSiteCounts(locale: string): SiteCounts {
     toolsPlatform: availableTools.length - generalTools.length,
     articlesNeutral: allArticles.length - platformArticles.length,
     articlesPlatform: platformArticles.length,
+    materials: MATERIALS.length,
     hubs: VENDOR_FAMILIES.length,
     glossary: GLOSSARY.length,
     people: GLOSSARY.filter((e) => e.person).length,

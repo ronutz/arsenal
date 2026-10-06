@@ -105,6 +105,25 @@
 /workers/*.mjs
   Content-Type: text/javascript; charset=utf-8
 
+# ---------------------------------------------------------------------------
+# The open materials (milestone (m1), 2026-10-06): the course files a datasheet
+# at /<locale>/materials/<slug>/ offers, the slides as PDF and the editable deck
+# with its speaker notes as PPTX. Types declared for the reason stated above
+# (nosniff: the browser will not infer one): the PDF opens in the browser's
+# reader, the PPTX downloads as the Office document it is. A day's cache: the
+# files can be replaced by a new edition, and the datasheet's SHA-256 (checked
+# against the files at every build) is how a reader tells one from the other.
+# ---------------------------------------------------------------------------
+
+/materials/*
+  Cache-Control: public, max-age=86400
+
+/materials/*.pdf
+  Content-Type: application/pdf
+
+/materials/*.pptx
+  Content-Type: application/vnd.openxmlformats-officedocument.presentationml.presentation
+
 # The earlier-sites archive renderings and the reproduced Flash bars (2026-10-05): static records, a day's cache.
 /archive/earlier-sites/*
   Cache-Control: public, max-age=86400

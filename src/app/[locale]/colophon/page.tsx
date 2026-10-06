@@ -5,6 +5,9 @@
 //
 // A characterful page documenting CONCORD (the one-human / three-AI process),
 // the seats (PRIME, ANVIL, SCOUT, PRISM), the build principles, and the stack.
+// Since 2026-10-06 it opens, after the hero, with "Everything on ronutz", the
+// full directory by the five worlds with its counts, moved here from the home
+// page at PRIME's suggestion (16:46): what the site holds, before how it is made.
 // Pairs with the "Built by Rodolfo Nützmann with CONCORD" footer (now linked
 // here). All facts accurate; tone distinctive but honest. Statically generated.
 // ============================================================================
@@ -14,6 +17,8 @@ import { Link } from "@/i18n/navigation";
 import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+// The full directory, moved here from the home page on 2026-10-06.
+import WorldsDirectory from "@/components/WorldsDirectory";
 
 /**
  * PAGE TITLE (2026-09-26). This route shipped with NO generateMetadata export
@@ -109,6 +114,11 @@ export default async function ColophonPage({
               </aside>
             </div>
           </section>
+
+          {/* EVERYTHING ON RONUTZ (2026-10-06, PRIME 16:46): the complete directory with its counts, what the site holds,
+              ahead of how it is made. Not at the end of the page, where it would sit on the footer's own directory as it
+              did on the home page. */}
+          <WorldsDirectory locale={locale} />
 
           {/* CONCORD */}
           <section className="section colophon-concord-section">

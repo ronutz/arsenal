@@ -30,6 +30,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
+// The open materials registry, for the signpost under the hero (2026-10-06).
+import { MATERIALS } from "@/content/materials/materials";
 import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
 import ReadingPathSections, {
   type PathGroup,
@@ -163,6 +165,21 @@ export default async function StudyGuidesPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* The open materials signpost (milestone (m1), 2026-10-06): a complete course to download sits beside the
+                  reading paths, so the page that guides study points to it. The title and slide count come from the
+                  registry's first material; the link opens its datasheet. */}
+              {MATERIALS[0] && (
+                <p className="materials-signpost">
+                  {t.rich("materialsSignpost", {
+                    slides: MATERIALS[0].slides,
+                    link: (chunks) => (
+                      <Link href={`/materials/${MATERIALS[0].slug}`} className="materials-inline-link">
+                        {chunks}
+                      </Link>
+                    ),
+                  })}
+                </p>
+              )}
             </div>
           </section>
 

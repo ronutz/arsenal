@@ -13,9 +13,16 @@
 // /tools/cidr; this is the smallest honest piece of it, computed by the same
 // pure engine (src/lib/tools/cidr/compute.ts), so the two cannot disagree.
 // Nothing is sent anywhere; there is nothing to send it to.
+//
+// CLEAR (PRIME 2026-10-06 16:35: "place a CLEAR button next to the user-input
+// field so the field's value is quickly cleared"): beside the field, in the same
+// group so it stays beside it at phone width; one click empties the field and
+// puts the caret back in it, ready for the reader's own block; dimmed, never
+// hidden, while the field is already empty. The example stays in the
+// placeholder, so an emptied field still shows what to type.
 // ============================================================================
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { cidrAnalyze, type SubnetAnalysis } from "@/lib/tools/cidr/compute";
@@ -29,6 +36,8 @@ export default function HomeQuickCidr() {
   const locale = useLocale();
   // The field; the result follows every keystroke.
   const [value, setValue] = useState(EXAMPLE);
+  // The field itself, so Clear can return the focus to it.
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // The analysis, or null while the text is not yet a valid block (no error prose: the page is a front door, not the tool).
   const result = useMemo<SubnetAnalysis | null>(() => {
@@ -43,18 +52,39 @@ export default function HomeQuickCidr() {
     <div className="quick-cidr">
       <div className="quick-cidr-row">
         <label className="quick-cidr-label" htmlFor="home-cidr">{t("quickLabel")}</label>
-        <input
-          id="home-cidr"
-          className="cidr-input mono quick-cidr-input"
-          type="text"
-          inputMode="decimal"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          spellCheck={false}
-          autoComplete="off"
-          placeholder={EXAMPLE}
-          aria-describedby="home-cidr-privacy"
-        />
+        <span className="quick-cidr-field">
+          <input
+            ref={inputRef}
+            id="home-cidr"
+            className="cidr-input mono quick-cidr-input"
+            type="text"
+            inputMode="decimal"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            spellCheck={false}
+            autoComplete="off"
+            placeholder={EXAMPLE}
+            aria-describedby="home-cidr-privacy"
+          />
+          {/* The visible word starts the accessible name (WCAG 2.5.3, label in name). */}
+          <button
+            type="button"
+            className="quick-cidr-clear"
+            onClick={() => {
+              // Empty the field, then hand it back to the reader.
+              setValue("");
+              inputRef.current?.focus();
+            }}
+            disabled={value === ""}
+            aria-label={t("quickClearLabel")}
+            title={t("quickClearLabel")}
+          >
+            <span aria-hidden="true">×</span>
+            {/* The word gives way to the cross alone on a narrow phone, where the field needs the room to show a
+                whole block (seen at 320 px on 2026-10-06); the accessible name above does not change. */}
+            <span className="quick-cidr-clear-word">{t("quickClear")}</span>
+          </button>
+        </span>
       </div>
       {/* The four answers, or a quiet prompt while the block is incomplete. */}
       {result ? (

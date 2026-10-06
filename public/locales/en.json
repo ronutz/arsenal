@@ -153,7 +153,10 @@
       "contributeLede": "How to improve a tool, an article, or an entry.",
       "stories": "Stories",
       "storiesLede": "The articles that connect other articles: what the failure cases have in common, what a request actually traverses, why the same bug keeps recurring.",
-      "storiesBadge": "{count} threads"
+      "storiesBadge": "{count} threads",
+      "materials": "Open materials",
+      "materialsLede": "Complete trainings shared for anyone to use: slides, speaker notes, outline and licence.",
+      "materialsBadge": "{count, plural, one {# course} other {# courses}}"
     },
     "front": {
       "metaTitle": "ronutz · Network & security tools, knowledge, history and practice",
@@ -227,14 +230,16 @@
         "company": "Company",
         "person": "Person",
         "term": "Term",
-        "guide": "Guide"
+        "guide": "Guide",
+        "role": "Role",
+        "practice": "Practice"
       },
       "surpriseTitle": "Take me somewhere",
-      "surpriseLede": "One random door into the whole corpus: a forgotten company, an odd tool, a term nobody says out loud, a person who changed the field.",
+      "surpriseLede": "One random door into the whole corpus: a company with a story, an odd tool, a term nobody says out loud, a person who changed the field, a career to explore.",
       "surpriseMain": "Surprise me",
       "surpriseTool": "a useful tool",
       "surpriseWeird": "something weird",
-      "surpriseCompany": "a forgotten company",
+      "surpriseCompany": "a company with a story",
       "surpriseFailed": "The door would not open. Try again.",
       "archiveLine": "The oldest ancestor here dates from 2004:",
       "archiveTool": "the bits-and-bytes calculator, rebuilt",
@@ -298,7 +303,14 @@
       },
       "endorsementsBadge": "{count} verbatim",
       "surpriseAgain": "Draw again",
-      "archiveClone": "the 2004 site itself, navigable"
+      "archiveClone": "the 2004 site itself, navigable",
+      "quickClear": "Clear",
+      "quickClearLabel": "Clear the CIDR block",
+      "surprisePerson": "a person who shaped the field",
+      "surpriseArticle": "something to read",
+      "surpriseGuide": "a certification to aim for",
+      "surpriseRole": "a career to explore",
+      "surprisePractice": "how the work gets done"
     }
   },
   "tools": {
@@ -11933,7 +11945,7 @@
     "noTrackTitle": "No cookies, no third-party analytics, and what is counted instead",
     "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records which page was served, the language, the visiting country as your network reports it, and whether the request came from a person or from a known crawler. The second records only a referring address, when your browser sends one, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent is never written; it is read only to decide whether the request came from a crawler, and the label kept is a category such as search engine or monitoring tool. No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
-    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); the cards-or-list density you chose on an index page (ronutz:view:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); and, on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
+    "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); and, on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
     "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). It is retained only briefly by the provider and is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
@@ -11950,7 +11962,7 @@
     "rightsLgpd": "If you are in Brazil, you hold the rights set out in Article 18 of the LGPD, and may also contact the national data protection authority (the ANPD).",
     "changesTitle": "Changes to this notice",
     "changesBody": "If this notice changes, the revised version will be published on this page and the date below will be updated. Material changes will not be applied retroactively.",
-    "updated": "Last updated: 30 June 2026",
+    "updated": "Last updated: 6 October 2026",
     "backHome": "Back to home",
     "prefsTitle": "Theme, language, and what this site remembers",
     "prefsBody": "Your preferences, your reading trail and the two dev-room values are stored only in this browser's localStorage, on your device; the theme is applied before first paint on your next visit. There is no cookie, no account, and no server that ever sees any of it, which also means none of it can follow you: a private window, cleared site data, or a different browser or device starts you back at the defaults by design. Your language works in two layers: it lives in the address itself (/en/ and /pt-BR/ are different pages, so bookmarking or sharing a URL in your language keeps it), and the last language you used is also remembered in this browser, so that a visit to the bare domain lands on it rather than on the default. That is the whole trade: with no accounts and no tracking, preferences can only live where you can see and delete them.",
@@ -12010,7 +12022,11 @@
       "project": "The project"
     },
     "sectionOnly": "Only in {name}",
-    "sectionClear": "Search everywhere, not only in {name}"
+    "sectionClear": "Search everywhere, not only in {name}",
+    "clear": "Clear",
+    "clearLabel": "Clear the search and every filter",
+    "freshLabel": "Reset each time it opens",
+    "freshTitle": "On: the search opens empty, with every filter cleared. Off: it reopens with your last search and filters."
   },
   "theme": {
     "label": "Theme",
@@ -13068,6 +13084,9 @@
         "title": "Something else",
         "desc": "If none of the above fits, the form takes anything.",
         "cta": "Just write"
+      },
+      "course": {
+        "template": "The course: {course}\nThe group (how many people, and where they start from):\nOn site or virtual, and roughly when:\nWhat they should be able to do afterwards:"
       }
     }
   },
@@ -23099,7 +23118,7 @@
     "title": "Red Education",
     "lede": "A global Authorized Training Center for the world's leading network and security vendors - and the home of Rodolfo Nützmann's classroom since 2021.",
     "whoTitle": "Who they are",
-    "whoBody1": "Founded in 2005, Red Education is a specialist IT and cyber security training company that has trained more than 100,000 students across 132 countries, holding a 4.9-star average rating from more than 5,000 reviews.",
+    "whoBody1": "Founded in 2005, Red Education is a specialist IT and cyber security training company that has trained more than 120,000 learners across 132 countries, holding a 4.9-star average rating from more than 5,000 reviews.",
     "whoBody2": "Training is delivered by more than 50 instructors, many certified across multiple vendors, in classroom, virtual, and on-site formats across five global regions: the Americas, Australasia, SAARC, ASEAN, and EMEA.",
     "dnaTitle": "Vision and values",
     "dnaIntro": "In Red Education's own words.",
@@ -23209,7 +23228,7 @@
     "explainersTitle": "The course explainers Red Education publishes",
     "explainersIntro": "Red Education writes an explainer for each platform it trains on: what the courses cover, what they lead to, and how they fit a career. Ten are published, and these are all of them, ordered with the platforms I teach first. Worth reading before you choose a course, because they say more about outcomes than a course outline does.",
     "explainersMine": "- a platform I deliver",
-    "explainersGap": "Read on 16 August 2026. Of the platforms I deliver, F5 and Extreme Networks have no explainer published at the time of reading; their vendor pages carry the course listings instead.",
+    "explainersGap": "Read on 6 October 2026. Of the platforms I deliver, F5 and Extreme Networks have no explainer published at the time of reading; their vendor pages carry the course listings instead.",
     "jumpExplainers": "Course explainers",
     "articlesTitle": "What Red Education writes about",
     "articlesIntro": "Red Education runs a blog on certifications, careers and the state of security training. Their index is drawn after the page loads, so only the featured article can be linked directly from here; the rest are behind the index link below. Read on 16 August 2026.",
@@ -23265,13 +23284,152 @@
       "news": "News and articles index",
       "case1": "Case study: Fortinet training at scale for a global IT leader",
       "case2": "Case study: F5 BIG-IP iRules training",
-      "professionalServices": "Professional services"
+      "professionalServices": "Professional services",
+      "ownCourses": "Red Education's own courses: the FastTrack series and on demand"
     },
     "sourcesNote": "Read and verified on 9 and 14 July, 6 and 16 August, and 6 October 2026; figures quoted as published on those dates. Two of Red Education's indexes are drawn by script in the browser and cannot be enumerated by fetching, which is why the case studies and articles listed are the ones that have actually been read.",
     "psTitle": "Beyond training: professional services",
     "psBody": "Red Education also runs a professional services practice, delivered by vendor-certified engineers and by consultants drawn from vendor and large-enterprise backgrounds: installations, software upgrades and migrations to new hardware, health checks, work that runs from detailed design through post-cutover support and knowledge transfer, resident on-site engineers, and consultants on demand.",
     "psBoundary": "That practice is Red Education's, not mine: my own work there is teaching and advisory. Where a decision I advise on leads to implementation, the <adv>advisory page</adv> sets out where my part ends and who could carry the work on.",
-    "psLink": "Red Education's professional services page"
+    "psLink": "Red Education's professional services page",
+    "own": {
+      "jump": "Its own courses",
+      "eyebrow": "New in 2026",
+      "title": "Red Education's own courses",
+      "lede": "For more than twenty years Red Education has taught the vendors' own courses under their authorisation, with instructors many of whom came from those vendors and from their largest customers. Now those experts write courses of their own. The FastTrack series is original Red Education courseware, designed and delivered by Red Education for people at the start of the work: junior and aspiring engineers, system administrators moving into security, anyone in their first three years. Two FastTrack courses are open, more are planned, and an on-demand video course on Palo Alto Networks sits beside them.",
+      "courseLink": "The course at Red Education",
+      "allCourses": "All of Red Education's own courses",
+      "schedules": "The FastTrack courses run on three regional schedules: Americas, Europe and Singapore time, which also covers Australia and New Zealand, Asia and India. Companies can pay by purchase order, and team bookings can be arranged, depending on the course.",
+      "alongside": "Read beside them on this site: the <materials>open TCP/IP course</materials> takes apart in depth the protocols both FastTrack courses lean on, and <practice>The Practice</practice> describes the triage, evidence and escalation work they train for.",
+      "readOn": "Read on 6 October 2026 from Red Education's course pages, its three course outlines and the answers on its own-courses page.",
+      "courses": {
+        "openNgfw": {
+          "series": "FastTrack series · Course 01",
+          "summary": "A first course for engineers new to firewalls and, in Red Education's words, \"100% Red Education original IP\". Every learner builds, breaks and fixes a live next-generation firewall of their own, and practises the operating method senior engineers rely on: read the ticket, know the blast radius and the rollback before touching anything, troubleshoot from the logs, and escalate with evidence. The skills transfer to any firewall platform.",
+          "facts": [
+            [
+              "Format",
+              "Half a day, live and instructor-led: two sessions of 120 minutes in one sitting"
+            ],
+            [
+              "Content",
+              "10 modules and 5 hands-on labs, for 16 learners at most"
+            ],
+            [
+              "Lab",
+              "Your own OPNsense firewall with Zenarmor, and 7 days of lab pod access"
+            ],
+            [
+              "Level",
+              "Foundational: roughly 0 to 3 years in network or security roles, no firewall experience assumed"
+            ],
+            [
+              "Included",
+              "A course companion and a student lab guide, a verified digital badge through Credly, and the REDiUP alumni community"
+            ]
+          ]
+        },
+        "networkFundamentals": {
+          "series": "FastTrack series · Course 02",
+          "summary": "How a connection actually travels, taught as a method rather than as a list of facts. Learners trace one live connection from the client through name resolution, the gateway, address translation and the firewall to the service; read the evidence that DNS, DHCP, NAT and the firewall's flow logs leave behind; halve the problem until the fault has nowhere left to hide; and finish with a five-line escalation that says where the connection broke and why. Vendor-neutral, on Linux endpoints and a firewall, with faults planted in each learner's own lab.",
+          "facts": [
+            [
+              "Format",
+              "Two live, instructor-led virtual sessions of two hours"
+            ],
+            [
+              "Content",
+              "12 modules in two sessions: knowing the path, then the clues failures leave"
+            ],
+            [
+              "Lab",
+              "Your own live network for 7 days, to trace, diagnose and prove"
+            ],
+            [
+              "Level",
+              "Foundational: no networking experience assumed"
+            ],
+            [
+              "Included",
+              "A course companion with every slide and its full notes, and a verified digital badge through Credly"
+            ]
+          ]
+        },
+        "panOnDemand": {
+          "series": "On demand",
+          "summary": "Four key Palo Alto Networks topics on video, presented by a Palo Alto Networks certified instructor with enterprise experience: Firewall Essentials (EDU-210), Cortex XSIAM, Cortex XDR and preparing for the exam. By Red Education's own description it is a topic overview to build practical understanding, not a complete training course or a certification programme: a way in before the official courses, which Red Education also teaches as a global authorised training partner for Palo Alto Networks.",
+          "facts": [
+            [
+              "Format",
+              "On-demand video, at your own pace, on a computer, tablet or phone"
+            ],
+            [
+              "Content",
+              "3 hours in four topics: EDU-210 Firewall Essentials (1 h 15 min), Cortex XSIAM (30 min), Cortex XDR (55 min), exam preparation (32 min)"
+            ],
+            [
+              "Access",
+              "365 days from purchase"
+            ],
+            [
+              "Level",
+              "No Palo Alto Networks experience needed; some networking and security familiarity helps"
+            ]
+          ]
+        }
+      }
+    },
+    "career": {
+      "eyebrow": "Free to read",
+      "title": "Understanding Cyber Security Career Paths",
+      "body": "A free digital booklet from Red Education, sixty pages long, written for people choosing a path in cyber security, climbing one, or changing careers into it. It maps the profession as seven streams (governance, vulnerability testing, security operations, forensics, incident response, threat analysis and security design) that rise from the associate-level security analyst through analyst and manager roles to the chief information security officer. Each of its fourteen roles gets a job description, the technical skills and personal qualities it needs with the proficiency expected at each, and its key functions and tasks.",
+      "complements": "It complements two parts of this site. <roles>The Roles</roles> describes each position from the inside: what it answers for, who it receives from, who it serves and how it is measured. <practice>The Practice</practice> describes how the work itself is done. The booklet adds the ladder: the skills each step needs, and how well. Its streams line up with the security roles in The Roles like this:",
+      "tableCaption": "The booklet's streams beside the security roles in The Roles",
+      "tableStream": "In the booklet",
+      "tableRoles": "Its roles",
+      "tableHere": "The nearest roles here",
+      "streams": {
+        "entry": {
+          "name": "Where every stream starts",
+          "roles": "Security analyst, associate level"
+        },
+        "governance": {
+          "name": "Governance",
+          "roles": "Cyber risk analyst, cyber risk manager"
+        },
+        "vulnerability": {
+          "name": "Vulnerability testing",
+          "roles": "Vulnerability testing analyst, vulnerability and penetration assessment manager"
+        },
+        "operations": {
+          "name": "Security operations",
+          "roles": "Security operations centre analyst, security operations manager"
+        },
+        "forensics": {
+          "name": "Forensics",
+          "roles": "Forensic investigator, forensics investigations manager"
+        },
+        "incident": {
+          "name": "Incident response",
+          "roles": "Incident investigator, incident investigations manager"
+        },
+        "threat": {
+          "name": "Threat analysis",
+          "roles": "Threat analysis manager"
+        },
+        "design": {
+          "name": "Security design",
+          "roles": "Senior security engineer, security architect"
+        },
+        "top": {
+          "name": "Where every stream leads",
+          "roles": "Chief information security officer"
+        }
+      },
+      "read": "Read the booklet",
+      "page": "Its page at Red Education",
+      "readOn": "Read in full on 6 October 2026."
+    }
   },
   "toolDocs": {
     "titleSuffix": "documentation",
@@ -23596,7 +23754,8 @@
         "title": "Vendor platforms",
         "lede": "One vendor's estate in reading order, built to walk its certification from this site."
       }
-    }
+    },
+    "materialsSignpost": "A complete course to download, study and teach from: <link>TCP/IP: Concepts and IP Routing</link>, {slides} slides with speaker notes, in English and Portuguese, free to use."
   },
   "catDistribution": {
     "metaTitle": "The Global Cat Distribution System",
@@ -24127,7 +24286,8 @@
       "problemLede": "Type what is in front of you; the search looks only inside this corpus and lists the pieces that speak to it.",
       "humanTitle": "The human side",
       "humanLede": "The two parts about the person doing the work: The Life and The Craft, where the lifecycle stops being a procedure."
-    }
+    },
+    "reduSignpost": "For the ladder behind this work, Red Education's free booklet Understanding Cyber Security Career Paths sets out the functions, tasks and skills of fourteen security roles. <link>See where it meets this site</link>."
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
@@ -26890,7 +27050,8 @@
       "heldLede": "{count} of these roles were held in first person; the rest are documented from sources and from people who worked alongside."
     },
     "heldSectionTitle": "Held in first person",
-    "heldSectionLede": "The roles this record is written from, with where and when, before the directory of all of them."
+    "heldSectionLede": "The roles this record is written from, with where and when, before the directory of all of them.",
+    "reduSignpost": "Choosing or climbing a security path? Red Education's free booklet, Understanding Cyber Security Career Paths, maps fourteen security roles in seven streams with the skills each step expects. <link>See how its streams line up with the roles here</link>."
   },
   "people": {
     "title": "People",
@@ -27334,5 +27495,334 @@
     "closer": "None of this makes the record complete, and it is not meant to: it makes every statement in it traceable to a page somebody can open, on a date somebody wrote down. The chronology, the chapters and the people are built on those terms.",
     "backToIndustry": "Back to the industry",
     "correctionLink": "Send a correction"
+  },
+  "materials": {
+    "index": {
+      "eyebrow": "Open materials",
+      "title": "Open materials",
+      "lede": "Course material Rodolfo Nützmann shares for anyone to use: complete trainings with their slides and speaker notes, free to download, adapt and teach with. Each has a datasheet with its outline, objectives, files and licence.",
+      "cardCta": "Open the datasheet",
+      "slidesBadge": "{count} slides",
+      "metaTitle": "Open materials - ronutz.com",
+      "metaDescription": "Complete trainings Rodolfo Nützmann shares for anyone to use: slides, speaker notes, outline and licence, free to download, adapt and teach with.",
+      "liveTitle": "Want a course taught live?",
+      "liveBody": "Every material here is also a class Rodolfo Nützmann teaches himself: instructor-led, for teams, on site or virtual, in English or Portuguese, by a field veteran of three decades who teaches for a living, with real demonstrations and hands-on labs."
+    },
+    "labels": {
+      "atAGlance": "At a glance",
+      "level": "Level",
+      "format": "Format",
+      "slides": "Slides",
+      "notes": "Speaker notes",
+      "languages": "Languages",
+      "edition": "Edition",
+      "firstTaught": "First taught",
+      "licence": "Licence",
+      "price": "Price",
+      "free": "Free",
+      "whoFor": "Who it is for",
+      "outline": "Course outline",
+      "module": "Module {n}",
+      "part": "Part {n}",
+      "slideRange": "slides {from} to {to}",
+      "frame": "Around the parts",
+      "objectives": "Learning objectives",
+      "thenNow": "From 1999 to 2026",
+      "topic": "Topic",
+      "in1999": "In 1999",
+      "in2026": "In 2026",
+      "downloads": "Downloads",
+      "language": "Language",
+      "file": "File",
+      "size": "Size",
+      "sha256": "SHA-256",
+      "download": "Download",
+      "readOnline": "Read online",
+      "learnMore": "Learn more on this site",
+      "learnMoreLede": "Articles that teach the same ground in more depth, from the Learn library.",
+      "en": "English (US)",
+      "pt-BR": "Portuguese (Brazil)",
+      "pdf": "PDF",
+      "pptx": "PowerPoint (PPTX)",
+      "readersEdition": "Reader's edition: the slides, for reading and printing",
+      "instructorsEdition": "Instructor's edition: the editable deck with the speaker notes",
+      "getTheCourse": "Get the course",
+      "slidesValue": "{count} per edition, the same slides in both languages",
+      "licenceValue": "CC0 1.0 Universal, a public-domain dedication",
+      "priceValue": "Free, no sign-up",
+      "mb": "{size} MB",
+      "moduleObjectives": "Module {n}",
+      "liveTitle": "Want this course taught live?",
+      "liveBody": "Rodolfo Nützmann teaches it as an instructor-led class for teams, on site or virtual, in English or Portuguese: a field veteran of three decades who teaches for a living, with real demonstrations and hands-on labs that take the subject past the slides.",
+      "liveCta": "Ask about a class",
+      "lookInside": "A look inside",
+      "lookInsideLede": "{count} of the {slides} slides, chosen for their diagrams. Each one opens at full size.",
+      "slide": "Slide {n}",
+      "coverCaption": "The cover, slide {n} of {slides}",
+      "openFull": "Open at full size"
+    },
+    "items": {
+      "tcpip-concepts-and-ip-routing": {
+        "title": "TCP/IP: Concepts and IP Routing",
+        "subtitle": "An introductory course in two modules, 2026 edition, in English and Brazilian Portuguese",
+        "lede": "A complete introductory training on how internetworks work and how IP finds its way across them: from bridges, routers and the routing algorithms, through the TCP/IP stack, addressing, ARP and a packet followed hop by hop, to RIP, EIGRP, OSPF, IS-IS and BGP-4, access lists, IPv6, multicast, MPLS and VRRP. Every one of the {slides} slides carries speaker notes, so the course can be taught from the deck, or learned from it, without anyone else in the room.",
+        "lineage": "Based on a course Rodolfo Nützmann first taught in March 1999, and rebuilt in 2026: 16:9 slides with the diagrams redrawn as native, editable shapes, the content updated to current practice (CIDR in place of address classes, EIGRP in place of IGRP, BGP-4, IPv6 as RFC 8200 defines it, PIM, VRRPv3), and the historical topics kept for their teaching value and marked LEGACY.",
+        "level": "Introductory, from first principles to the routing protocols",
+        "format": "Slides (PDF) and editable deck with notes (PPTX)",
+        "notesValue": "On all {count} slides, in both languages",
+        "languagesValue": "English (US) and Portuguese (Brazil)",
+        "audienceLearners": "Learners. Read the PDF straight through, or open the PPTX in presenter view and read the notes as the commentary the instructor would give. The objectives at the start of each module and the summaries at the end tell you what you should be able to explain.",
+        "audienceInstructors": "Instructors. The notes are written to be taught from: what to say on each slide, what to ask the class, where the common confusions are, and what changed since 1999. The deck is fully editable, the diagrams included, and the closing slides list the RFCs and sources by topic, so you can prepare yourself before you prepare a class.",
+        "frame": "Slides 1 to 3 open the course (the title, the agenda and the 1999 to 2026 comparison below); slides 176 and 177 list the RFCs and sources by topic; slide 178 closes it.",
+        "parts": {
+          "p1": {
+            "title": "General routing concepts",
+            "topics": [
+              "Heterogeneity and the components of an internetwork",
+              "Interconnection devices and the OSI model",
+              "Bridges and Layer 2 switches, the broadcast domain and Spanning Tree",
+              "Routers: data flow, advantages and limitations",
+              "Routable and nonroutable protocols",
+              "Network-layer against data-link addressing, and encapsulation",
+              "Static and dynamic routing",
+              "Distance vector: metrics, count to infinity, split horizon, poison reverse, hold-down and triggered updates, with a worked example",
+              "Link state: principles, advantages and the protocols in use",
+              "Autonomous systems"
+            ]
+          },
+          "p2": {
+            "title": "TCP/IP",
+            "topics": [
+              "Origin and governance of TCP/IP",
+              "The stack against the OSI model: application, transport and internet layers",
+              "The IPv4 datagram in detail, protocol and port numbers, demultiplexing",
+              "Decimal-to-binary conversion and the IPv4 address",
+              "Classful addressing (legacy), CIDR and special-purpose addresses",
+              "Subnets, the subnet mask and comparison under mask",
+              "VLSM, with an addressing plan for a /24"
+            ]
+          },
+          "p3": {
+            "title": "Internet Protocol behavior",
+            "topics": [
+              "Route determination: local or remote, with the AND",
+              "Next-hop gateway lookup",
+              "ARP (RFC 826) step by step, for a local and a remote host, with the request and reply packets",
+              "Proxy ARP, with a worked example",
+              "ARP in 2026: gratuitous ARP, the cache, security and IPv6"
+            ]
+          },
+          "p4": {
+            "title": "IP in a routed internetwork: a complete example",
+            "topics": [
+              "The topology and the six-step data transfer, hop by hop",
+              "Host names: from the hosts file to DNS",
+              "Proxy ARP: vendor defaults"
+            ]
+          },
+          "p5": {
+            "title": "IP routing protocols",
+            "topics": [
+              "RIP: origin, variants and the RIPv2 message",
+              "Administrative distance",
+              "From IGRP to EIGRP: the composite metric, DUAL and multipath",
+              "Route redistribution and its risks",
+              "OSPF: areas, router types, network types, Hello, adjacencies, DR and BDR, LSAs and the LSDB, inter-area and external routes",
+              "OSPFv3 and IS-IS",
+              "Interior against exterior protocols, EGP, and BGP-4 attributes and best-path selection"
+            ]
+          },
+          "p6": {
+            "title": "Controlling IP access",
+            "topics": [
+              "ACLs in the router's processing flow",
+              "Standard ACL examples: permit the internal network, deny a host, deny a subnet",
+              "ACLs in 2026: extended, named, IPv6 and stateful firewalls"
+            ]
+          },
+          "p7": {
+            "title": "Additional IP routing topics",
+            "topics": [
+              "IP broadcast handling and the DHCP problem",
+              "DHCP relay and directed broadcast",
+              "Secondary addresses",
+              "Unnumbered interfaces"
+            ]
+          },
+          "p8": {
+            "title": "IPv6: from 'IPng' to the dominant protocol",
+            "topics": [
+              "From 'IPng' (1995) to RFC 8200 (2017)",
+              "The differences from IPv4, the header and the extension headers",
+              "Addressing: 128 bits, three types, no broadcast; types and scopes",
+              "Neighbor Discovery and SLAAC",
+              "Routing, flows and traffic class, security",
+              "IPv4 and IPv6 transition and coexistence"
+            ]
+          },
+          "p9": {
+            "title": "IP multicast",
+            "topics": [
+              "Multicast addresses and their mapping to MAC addresses",
+              "IGMP and MLD",
+              "Dense against sparse mode and the RPF check",
+              "Multicast routing protocols, and PIM-SM: the RP, the shared tree and the SPT",
+              "RSVP, and what is left of it"
+            ]
+          },
+          "p10": {
+            "title": "MPLS and VRRP",
+            "topics": [
+              "Label switching and its terminology",
+              "FIB, LIB and LFIB, with an example",
+              "MPLS applications in 2026",
+              "VRRP: default gateway redundancy, with a failover example",
+              "The Module 2 summary"
+            ]
+          }
+        },
+        "objectives": {
+          "m1": [
+            {
+              "title": "Internetworking vocabulary",
+              "body": "Recognize the basic internetworking terms and concepts: LAN and WAN links, interconnection devices, broadcast and collision domains."
+            },
+            {
+              "title": "Bridges and switches versus routers",
+              "body": "Compare the operation of bridges/Layer 2 switches and routers, and understand Layer 2 and Layer 3 switching."
+            },
+            {
+              "title": "Routable protocols",
+              "body": "Describe the properties of a routable protocol and put nonroutable protocols in historical context."
+            },
+            {
+              "title": "Distance vector",
+              "body": "Explain the principle of operation, the inherent instability (slow convergence) and the techniques that correct it."
+            },
+            {
+              "title": "Link state",
+              "body": "Explain SPF (Dijkstra) algorithms, their advantages over distance vector and the protocols that implement them."
+            },
+            {
+              "title": "Autonomous systems",
+              "body": "Define autonomous system and distinguish interior from exterior routing protocols."
+            }
+          ],
+          "m2": [
+            {
+              "title": "Characteristics of TCP/IP",
+              "body": "Protocol stack, IPv4 datagram, protocol and port numbers, addressing, subnetting and VLSM, host-to-host communication, ARP and Proxy ARP."
+            },
+            {
+              "title": "The IP routing process",
+              "body": "Describe in detail, step by step, what happens to a packet between the source station and the destination station in a routed internetwork."
+            },
+            {
+              "title": "RIP and EIGRP",
+              "body": "Recall the fundamentals of RIP (v1, v2, RIPng) and of EIGRP (composite metric, DUAL, multipath) and the role of administrative distance."
+            },
+            {
+              "title": "Redistribution and OSPF",
+              "body": "Discuss route redistribution between routing processes and recall the principles of OSPF (areas, router types, Hello, DR, LSAs)."
+            },
+            {
+              "title": "BGP-4",
+              "body": "Distinguish interior from exterior protocols and describe the fundamentals of BGP-4 (path vector, eBGP/iBGP, attributes)."
+            },
+            {
+              "title": "Access control",
+              "body": "Recall how access control lists (ACLs) on routers filter IP traffic, and how they evolved into stateful firewalls."
+            },
+            {
+              "title": "Operational topics",
+              "body": "Broadcast handling (DHCP relay), secondary addresses, unnumbered interfaces, static and default routes."
+            },
+            {
+              "title": "IPv6 and complementary technologies",
+              "body": "Understand IPv6 (header, addressing, ND/SLAAC, routing, transition), IP multicast (IGMP/MLD, PIM), RSVP, MPLS and VRRP."
+            }
+          ]
+        },
+        "thenNow": [
+          [
+            "LAN links",
+            "Ethernet 10/100, Token Ring, FDDI",
+            "Ethernet 1G to 400G, Wi-Fi 6/7; Token Ring and FDDI extinct"
+          ],
+          [
+            "Network protocols",
+            "TCP/IP, IPX, AppleTalk, DECnet, SNA",
+            "IP only (IPv4 and IPv6); the rest is legacy"
+          ],
+          [
+            "IPv4 addressing",
+            "Classes A/B/C, contiguous subnets",
+            "CIDR/VLSM (RFC 4632); IPv4 exhaustion (IANA 2011, LACNIC 2020); NAT and CGNAT"
+          ],
+          [
+            "IPv6",
+            "\"IPng\" in draft (RFC 1883)",
+            "RFC 8200 (2017); > 50% of Google access (Mar 2026); Brazil ≈ 59% (APNIC, Oct 2026)"
+          ],
+          [
+            "IGP",
+            "RIP, IGRP, OSPF",
+            "OSPFv2/v3, IS-IS, EIGRP (RFC 7868); RIP only in small networks"
+          ],
+          [
+            "EGP",
+            "EGP on the way out, BGP-4 arriving",
+            "BGP-4 (RFC 4271) universal; 32-bit ASNs (RFC 6793)"
+          ],
+          [
+            "Multicast",
+            "DVMRP, MOSPF, MBone",
+            "PIM-SM/SSM (RFC 7761, RFC 4607), IGMPv3/MLDv2"
+          ],
+          [
+            "Gateway redundancy",
+            "VRRP just published (RFC 2338)",
+            "VRRPv3 (RFC 5798) for IPv4 and IPv6; HSRP"
+          ],
+          [
+            "Layer 2 interconnection",
+            "Bridges, STP 802.1D",
+            "Multilayer switches, RSTP/MSTP, 802.1Q VLANs, EVPN"
+          ]
+        ],
+        "thenNowNote": "The comparison is slide 3 of the course itself, with the figures its notes say were verified in October 2026.",
+        "licenceBody": "Offered under CC0 1.0 Universal. You can copy, modify, translate, distribute and teach with this course, commercially or not, without asking permission.",
+        "licenceCourtesy": "Credit to Rodolfo Nützmann is appreciated, never required. As the CC0 deed asks, do not imply endorsement by the author when you use the material.",
+        "licenceDeed": "Read the CC0 1.0 deed",
+        "metaDescription": "TCP/IP: Concepts and IP Routing, a complete introductory course in two modules: {slides} slides with speaker notes, in English and Portuguese, free to use under CC0.",
+        "coverAlt": "The course's cover slide: TCP/IP: Concepts and IP Routing, modernized 2026 edition (US English), by Rodolfo Nützmann, based on the \"TCP/IP Concepts\" course presented at Semana de Tecnologia in March 1999.",
+        "gallery": {
+          "s26": {
+            "title": "The slow convergence problem (count to infinity)",
+            "alt": "Diagram: network A attached to router R1, with R2 and R3 in a line beyond it, each router's table for A beneath it (metric 0 direct, 1 via R1, 2 via R2), advertisements flowing outwards and R3's advertisement back to R2 ignored."
+          },
+          "s79": {
+            "title": "ARP, local host (3 of 6): ARP Request in broadcast",
+            "alt": "Diagram: hosts A (172.16.10.1) and B (172.16.10.200) and a third station C on one Ethernet link, subnet 172.16.10.0/24; A's ARP request crosses the whole link, sent to the broadcast address FF-FF-FF-FF-FF-FF."
+          },
+          "s97": {
+            "title": "Step 1: A sends the initial packet",
+            "alt": "Diagram: host A on 172.16.25.0/24 sends to router X on its way to host B on 172.16.27.0/24 through router W; beneath, the Ethernet frame (destination MAC of X, source MAC of A, type 0x0800) and the IP packet (TTL 64, protocol 6, source A, destination B), field by field."
+          },
+          "s121": {
+            "title": "OSPF topology: backbone and areas",
+            "alt": "Diagram: area 0, the backbone, joined through three area border routers to area 1, area 2 and a stub area n."
+          },
+          "s166": {
+            "title": "PIM-SM in operation: RP, shared tree and SPT",
+            "alt": "Diagram: a source behind first-hop router R1 and a receiver behind last-hop router R4, the rendezvous point above them and R3 on the shortest path below, with the four steps numbered: the join to the shared tree, the source's registration, the native path to the RP and the switchover to the shortest-path tree."
+          },
+          "s174": {
+            "title": "VRRP in operation: a failover example",
+            "alt": "Diagram: routers R1 (priority 120, master) and R2 (priority 100, backup) share virtual router 10 at 172.16.20.1, the gateway of four hosts on VLAN 20; R1 advertises every second to 224.0.0.18, and when R1 fails, R2 takes over the virtual MAC after about three seconds."
+          }
+        }
+      }
+    }
   }
 }

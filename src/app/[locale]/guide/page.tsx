@@ -60,6 +60,7 @@ import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import { GUIDE_RECIPES } from "@/content/guide/recipes";
 import { WORLDS } from "@/config/worlds";
 import { getSiteCounts } from "@/lib/siteCounts";
+import { getWorldCountLabels } from "@/lib/worldCounts";
 
 export async function generateMetadata({
   params,
@@ -111,22 +112,9 @@ export default async function GuidePage({
   // home directory labels it (home.map.*, nav.*, or a literal) and carrying the count the home shows for it.
   const tHome = await getTranslations("home");
   const counted = getSiteCounts(locale);
-  const countFor: Record<string, string> = {
-    "/tools": tHome("map.toolsBadge", { count: counted.tools }),
-    "/learn": tHome("map.learnBadge", { count: counted.articles }),
-    "/stories": tHome("map.storiesBadge", { count: counted.stories }),
-    // Reading paths, the study guides page's own figure; the certification guides keep theirs on the next row (2026-10-06).
-    "/study-guides": tHome("map.guidesBadge", { count: counted.readingPaths }),
-    "/certifications": tHome("map.certsBadge", { count: counted.guides }),
-    "/glossary": tHome("map.glossaryBadge", { count: counted.glossary }),
-    "/practice": tHome("map.practiceBadge", { count: counted.practice }),
-    "/industry": tHome("map.industryBadge", { count: counted.industry }),
-    "/vendor-hubs": tHome("map.hubsBadge", { count: counted.hubs }),
-    "/roles": tHome("map.rolesBadge", { count: counted.roles }),
-    "/industry/chapters": tHome("map.careerBadge", { count: counted.career }),
-    "/training": tHome("map.trainingBadge", { count: counted.courses, vendors: counted.platforms }),
-    "/endorsements": tHome("front.endorsementsBadge", { count: counted.endorsements }),
-  };
+  // The count phrases by destination, from the table the footer and the colophon read too (src/lib/worldCounts.ts,
+  // 2026-10-06), so the guide's map cannot state a figure the footer contradicts.
+  const countFor = await getWorldCountLabels(locale);
   /** A world entry's label: "map.x" and "front.x" under home, "nav.x" under nav, "=Literal" as written. */
   const worldLabel = (label: string) =>
     label.startsWith("=") ? label.slice(1) : label.startsWith("nav.") ? tNav(label.slice(4)) : tHome(label);

@@ -3,7 +3,10 @@
 // ----------------------------------------------------------------------------
 // SITE FOOTER — the shared footer used on every page.
 //
-// Order: credits (-> /colophon) | grouped utility links (ideas + translations,
+// Order: the directory of the five worlds (since 2026-10-06 the site's one
+// directory: "Everything on ronutz", each world's coloured verb, each
+// destination's count as a bare number; PRIME's Option A, 16:45 and 16:49) |
+// credits (-> /colophon) | grouped utility links (ideas + translations,
 // then contact + legal) | the Red
 // Education training callout | the machine-readable row (monospace, a step
 // smaller) | and the build stamp last.
@@ -24,6 +27,8 @@ import LicenseBadges from "@/components/LicenseBadges";
 import ItemViews from "@/components/ItemViews";
 import { getLocale } from "next-intl/server";
 import { WORLDS } from "@/config/worlds";
+// The directory's counts by destination, shared with the colophon and the user guide (2026-10-06).
+import { getWorldCountLabels, getWorldCountNumbers } from "@/lib/worldCounts";
 import { attributeRedEducationUrl, externalRel, RED_EDUCATION_BASE } from "@/config/redEducation";
 
 export default async function SiteFooter() {
@@ -39,6 +44,12 @@ export default async function SiteFooter() {
   const tNav = await getTranslations("nav");
   /** A registry label key to its text: "map.x" under home, "nav.x" under nav, "footer.x" here, "=Literal" as is. */
   const label = (key: string) => key.startsWith("=") ? key.slice(1) : key.startsWith("nav.") ? tNav(key.slice(4)) : key.startsWith("footer.") ? t(key.slice(7)) : tHome(key);
+  // The counts beside the destinations (PRIME 2026-10-06 16:49: "use only the numbers for the items in the footer"):
+  // the bare number is what the eye reads; the phrase ("183 live", "28 courses across 4 vendors") is what a screen
+  // reader hears and what the pointer shows, so the number never stands alone without its noun.
+  const countNumbers = getWorldCountNumbers(locale);
+  const countLabels = await getWorldCountLabels(locale);
+  const nf = new Intl.NumberFormat(locale);
 
   return (
     // data-pagefind-ignore keeps the footer out of the search index: its Red
@@ -52,17 +63,39 @@ export default async function SiteFooter() {
             see components/ItemViews.tsx for why it locates itself. Renders
             nothing at all until it has a number. */}
         <ItemViews label={tStats("itemLabel")} locale={locale} />
-        {/* THE DIRECTORY BY THE FIVE WORLDS (wave 0, 2026-10-05; SCOUT G21): the same five columns as the home
-            page's "Everything on ronutz", from the shared registry, so every page ends with the way to every
-            system. Titles from the home copy, entries the primary ones only (the human sitemap lists the rest). */}
+        {/* THE DIRECTORY BY THE FIVE WORLDS (wave 0, 2026-10-05; SCOUT G21), from the shared registry, so every page ends
+            with the way to every system. Since 2026-10-06 (PRIME's Option A, 16:45) it is the site's ONE directory: the
+            home page's "Everything on ronutz" section, which sat right above it as an uneven duplicate, is gone (its full
+            form, with the count phrases, now lives on the colophon), and the footer carries what made that section worth
+            having: the title and its line, each world's coloured verb (16:49: "Compute, Read, Trace, Hire, About") and
+            each destination's count as a bare number. Titles and verbs from the home copy, entries the primary ones (the
+            human sitemap lists the rest). */}
+        <p className="footer-worlds-head">
+          <span className="footer-worlds-title">{tHome("front.everythingTitle")}</span>
+          <span className="footer-worlds-lede">{tHome("front.everythingBody")}</span>
+        </p>
         <nav className="footer-worlds" aria-label={t("directoryAria")}>
           {WORLDS.map((w) => (
             <div key={w.key} className={`footer-world footer-world--${w.key}`}>
               <p className="footer-world-title">{tHome(`front.world.${w.key}`)}</p>
+              {/* The world's verb, in the world's colour (the same accent as the rule above the column). */}
+              <p className="footer-world-verb mono">{tHome(`front.worldVerb.${w.key}`)}</p>
               <ul className="footer-world-list">
-                {w.items.map((it) => (
-                  <li key={it.href}><Link href={it.href} className="footer-world-link">{label(it.label)}</Link></li>
-                ))}
+                {w.items.map((it) => {
+                  // The destination's count, when it has one (Dev tools, Advisory, Speaking and About do not).
+                  const n = countNumbers[it.href];
+                  return (
+                    <li key={it.href} className="footer-world-item">
+                      <Link href={it.href} className="footer-world-link">{label(it.label)}</Link>
+                      {n !== undefined && (
+                        <span className="footer-world-count mono" title={countLabels[it.href]}>
+                          <span aria-hidden="true">{nf.format(n)}</span>
+                          <span className="sr-only">{countLabels[it.href]}</span>
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

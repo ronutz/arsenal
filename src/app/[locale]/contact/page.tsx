@@ -85,6 +85,8 @@ export default async function ContactPage({
     // G8: the prefilled questions for the advisory and speaking routes.
     advisoryTemplate: t("intents.advisory.template"),
     speakingTemplate: t("intents.speaking.template"),
+    // The course route's template, raw: its "{course}" is filled by the form from the link, not by ICU (2026-10-06).
+    courseTemplate: t.raw("intents.course.template") as string,
   };
   // G8 (SCOUT, adopted 2026-10-05): the five routes by intent, each a card above the form. Training is booked
   // through Red Education, so that card leaves the site (attributed, the standing rule); advisory, speaking and

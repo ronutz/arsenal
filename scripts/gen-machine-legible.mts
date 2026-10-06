@@ -354,7 +354,7 @@ if (TAGLINE) L.push(`> ${TAGLINE}`, "");
 const SC = getSiteCounts(SOURCE_LOCALE);
 const n = (x: number) => x.toLocaleString("en-US");
 L.push(
-  `The working site of Rodolfo Nützmann, Senior Technical Instructor and Advisor at Red Education: ${n(SC.tools)} deterministic network, security and identity tools that compute in your browser (nothing you type leaves it), ${n(SC.articles)} Learn articles grounded in vendors' own documentation and the standards, a glossary of ${n(SC.glossary)} entries, the industry's history in ${n(SC.industry)} organisation records, the practice of running and defending networks, and the training and advisory work it supports. Each tool and article below links to a clean Markdown version.`,
+  `The working site of Rodolfo Nützmann, Senior Technical Instructor and Advisor at Red Education: ${n(SC.tools)} deterministic network, security and identity tools that compute in your browser (nothing you type leaves it), ${n(SC.articles)} Learn articles grounded in vendors' own documentation and the standards, a glossary of ${n(SC.glossary)} entries, the industry's history in ${n(SC.industry)} organisation records, the practice of running and defending networks, open course material free to teach from, and the training and advisory work it supports. Each tool and article below links to a clean Markdown version.`,
   "",
 );
 
@@ -402,6 +402,12 @@ L.push(
   `- [Study guides](${ORIGIN}/${SOURCE_LOCALE}/study-guides): ${n(SC.readingPaths)} curated reading paths`,
   `- [Certification guides](${ORIGIN}/${SOURCE_LOCALE}/certifications): ${n(SC.guides)} exam guides mapped to the vendors' published blueprints`,
   `- [Vendor hubs](${ORIGIN}/${SOURCE_LOCALE}/vendor-hubs): one door per platform`,
+  // 2026-10-06 ((m1), (re1); SCOUT's ask that the machine-facing identity match the human one): the destinations that
+  // joined the site that day or were missing here, with derived counts.
+  `- [Open materials](${ORIGIN}/${SOURCE_LOCALE}/materials): ${n(SC.materials)} complete ${SC.materials === 1 ? "course" : "courses"} shared under CC0, slides with speaker notes, to download, study and teach from`,
+  `- [The Roles](${ORIGIN}/${SOURCE_LOCALE}/roles): ${n(SC.roles)} positions the industry is made of, each described from the inside`,
+  `- [Red Education](${ORIGIN}/${SOURCE_LOCALE}/red-education): the authorised training centre the author teaches for, with its own courses and its cyber security career-paths booklet`,
+  `- [Colophon](${ORIGIN}/${SOURCE_LOCALE}/colophon): how the site is built, and the complete directory of the five worlds with their counts`,
   `- [About](${ORIGIN}/${SOURCE_LOCALE}/about): background, credentials, and history`,
   `- [Training](${ORIGIN}/${SOURCE_LOCALE}/training): instructor-led course offerings`,
   `- [Advisory](${ORIGIN}/${SOURCE_LOCALE}/advisory): independent technical advisory for consequential technology decisions`,

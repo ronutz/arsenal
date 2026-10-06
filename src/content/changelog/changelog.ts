@@ -52,6 +52,60 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Milestone (re1): PRIME 2026-10-06 16:35 (the CIDR Clear), 16:39 (the pills), 16:43 to 16:49 (one directory: Option A,
+    // the colophon, the verbs and the bare numbers); the Portuguese excerpt fix found while checking search.
+    date: "2026-10-06",
+    time: "17:40",
+    kind: "feature",
+    title: "One directory on every page, eight ways to be surprised, and a Clear button for the CIDR check",
+    body:
+      "The home page's \"Everything on ronutz\" sat right above the footer's own directory, two uneven copies of one map. Now the footer is the directory on every page, with each world's verb in its colour and a count beside each destination, and the full section, with its count phrases, opens the colophon. \"Take me somewhere\" draws from eight pills instead of three: \"a company with a story\" replaces \"a forgotten company\", and a person, something to read, a certification, a career from The Roles and an article from The Practice join it. The home page's CIDR check gains a Clear button beside its field, and Portuguese search excerpts no longer begin with the translation notice.",
+    links: [
+      { label: "The colophon", href: "/colophon#everything" },
+      { label: "Take me somewhere", href: "/#surprise" },
+      { label: "The CIDR check", href: "/#cidr" },
+    ],
+  },
+  {
+    // Milestone (re1): PRIME 2026-10-06 16:17 to 16:30, the courses and the booklet on /red-education/.
+    date: "2026-10-06",
+    time: "17:35",
+    kind: "content",
+    title: "Red Education's own courses, and the career-paths booklet beside The Roles",
+    body:
+      "Red Education, which for more than twenty years has taught the vendors' own courses under their authorisation, now writes courses of its own, and its page here features them: the FastTrack series, with Open NGFW (build, break and fix a live next-generation firewall) and Network Fundamentals for Security Practitioners (trace a connection end to end and prove where it broke), and an on-demand video course on four Palo Alto Networks topics. Its free booklet, Understanding Cyber Security Career Paths, is featured too, with its seven streams of security roles set against the nearest roles in The Roles; The Roles and The Practice point back to it.",
+    links: [
+      { label: "Red Education's own courses", href: "/red-education#own-courses" },
+      { label: "The career-paths booklet", href: "/red-education#career-paths" },
+      { label: "The Roles", href: "/roles#defends" },
+    ],
+  },
+  {
+    // PRIME 2026-10-06, 16:04 (a toggle between reopening with the last search and always opening "reset") and 16:06
+    // ("a quick-to-find 'clear' button in the search box, to reset it").
+    date: "2026-10-06",
+    time: "16:40",
+    kind: "feature",
+    title: "Search: a Clear button, and a switch to open it empty every time",
+    body:
+      "The search box has a Clear button beside Esc that empties the query and every filter at once (the world, the section and the result types) and puts the cursor back in the field. A switch at the foot of the box chooses what reopening it does: keep the last search and its filters, as before, or start empty every time. The choice stays in this browser only, under a key the privacy page lists.",
+    links: [{ label: "Privacy", href: "/privacy" }],
+  },
+  {
+    // Milestone (m1), PRIME 13:36 (queue row 24), licence confirmed 15:51 ("CC0 with the kicker, as suggested"), the
+    // taught-live call to action at 15:59, the cover and the gallery of diagrams at 16:02.
+    date: "2026-10-06",
+    time: "16:30",
+    kind: "content",
+    title: "Open materials: TCP/IP: Concepts and IP Routing, a complete introductory course to download, study and teach from",
+    body:
+      "A new section for course material shared for anyone to use, opening with a two-module introduction to internetworking and IP routing: from bridges, routers and the routing algorithms, through the TCP/IP stack, addressing and ARP, to RIP, EIGRP, OSPF, IS-IS, BGP-4, IPv6, multicast, MPLS and VRRP. 178 slides in English and in Portuguese, every one with speaker notes written to be taught from, as a PDF to read and an editable deck for instructors. The datasheet opens beside the deck's own cover, shows six of its diagrams at full size a click away, and sets out the outline part by part with its slide ranges, the objectives, the course's own comparison of 1999 and 2026, every file with its size and SHA-256, and the licence: CC0, free to use, adapt and teach, with credit appreciated and never required. The course can also be taught live, with demonstrations and hands-on labs.",
+    links: [
+      { label: "Open materials", href: "/materials" },
+      { label: "The course datasheet", href: "/materials/tcpip-concepts-and-ip-routing" },
+    ],
+  },
+  {
     // Milestone (q), SCOUT's Round 1 adoption audit (REVIEW-chatgpt-round1-adoption-audit-20261006): the quick wins.
     date: "2026-10-06",
     time: "15:00",

@@ -9,9 +9,13 @@
 // so (an obscure company, an unusual tool, an article, a person, a strange
 // glossary term, a certification guide), with its kind named so the reader
 // knows what they are about to open, and the choice left to the reader: open
-// it, or draw again. Three narrower buttons do the same for one kind each ("a
-// useful tool", "something weird", "a forgotten company"), the review's own
-// words. The pool is public/home-index.json, fetched the first time a draw is
+// it, or draw again. Narrower buttons do the same for one kind each: three at
+// first ("a useful tool", "something weird", "a forgotten company", the
+// review's own words), eight since 2026-10-06 (PRIME 16:39: "a forgotten
+// company" can read as an insult to the contemporary companies it draws, so it
+// became "a company with a story"; and one pill for every kind in the pool,
+// The Roles and The Practice joining the pool that day). The pool is
+// public/home-index.json, fetched the first time a draw is
 // asked for and never before, so the home page pays nothing for the feature
 // until someone wants it. The sixth intent card at the top of the page asks
 // for a draw through the "ronutz:surprise" event and scrolls here, so the
@@ -27,11 +31,20 @@ import { Link } from "@/i18n/navigation";
 /** One index entry, as gen-home-index writes it. */
 interface Entry { k: string; p: string; t: { en: string; "pt-BR"?: string } }
 
-/** The three narrow buttons: a kind each. */
-const NARROW: { key: "tool" | "term" | "company"; label: "surpriseTool" | "surpriseWeird" | "surpriseCompany" }[] = [
+/** The kinds the pool holds (gen-home-index), each with its narrow button. */
+type Kind = "tool" | "term" | "company" | "person" | "article" | "guide" | "role" | "practice";
+
+/** The narrow buttons: a kind each, in the order a curious reader scans them (the three originals first). The labels
+ *  live under home.front (surprise*), the badge names under home.front.kind. */
+const NARROW: { key: Kind; label: string }[] = [
   { key: "tool", label: "surpriseTool" },
   { key: "term", label: "surpriseWeird" },
   { key: "company", label: "surpriseCompany" },
+  { key: "person", label: "surprisePerson" },
+  { key: "article", label: "surpriseArticle" },
+  { key: "guide", label: "surpriseGuide" },
+  { key: "role", label: "surpriseRole" },
+  { key: "practice", label: "surprisePractice" },
 ];
 
 /** The event the intent card dispatches to ask for a draw (bubbles from the document). */

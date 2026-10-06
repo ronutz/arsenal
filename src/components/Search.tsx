@@ -189,6 +189,9 @@ const FILTER_LABEL_KEY: Record<
  */
 const SEARCH_LOCALES = ["en", "pt-BR"];
 
+/** The local-storage key of the remember-or-start-fresh choice (listed on the privacy page). */
+const FRESH_KEY = "ronutz-search-fresh";
+
 export default function Search() {
   const t = useTranslations("search");
 
@@ -214,6 +217,15 @@ export default function Search() {
   // Shortcut hint: Mac users expect ⌘, everyone else Ctrl. Default to Ctrl (the
   // larger audience and a safe SSR default); corrected on mount for Mac.
   const [isMac, setIsMac] = useState(false);
+  // REMEMBER OR START FRESH (PRIME 2026-10-06 16:04: "the search box comes back with the previous search query and
+  // filters still set. can we have a toggle ... between this behavior, and the behavior of being always 'reset' when
+  // invoked?"). Off (the default, the behaviour so far): the dialog reopens with the last query, scope, section and
+  // kind filters. On: every opening starts empty, all filters cleared; a field that opens the dialog with its own
+  // text or world (the home omnibox, a hub's search) still applies it, since that is the reader's new search. The
+  // choice is this browser's only, in local storage under ronutz-search-fresh ("1" when on; removed when off), and
+  // the privacy page lists the key with the others. The ref lets the open handlers read it without re-binding.
+  const [fresh, setFresh] = useState(false);
+  const freshRef = useRef(false);
 
   const pagefindRef = useRef<PagefindApi | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -303,12 +315,62 @@ export default function Search() {
     setIsMac(/mac|iphone|ipad|ipod/i.test(p));
   }, []);
 
-  // Open search → load runtime + focus the input.
+  // The stored choice, read once on mount; a blocked or empty storage leaves the default (remember).
+  useEffect(() => {
+    try {
+      setFresh(window.localStorage.getItem(FRESH_KEY) === "1");
+    } catch {
+      /* storage unavailable: keep the default */
+    }
+  }, []);
+  useEffect(() => {
+    freshRef.current = fresh;
+  }, [fresh]);
+  const toggleFresh = useCallback(() => {
+    setFresh((prev) => {
+      const next = !prev;
+      try {
+        if (next) window.localStorage.setItem(FRESH_KEY, "1");
+        else window.localStorage.removeItem(FRESH_KEY);
+      } catch {
+        /* storage unavailable: the choice holds for this page only */
+      }
+      return next;
+    });
+  }, []);
+  // Everything a search carries between openings, back to its first state.
+  const resetSearch = useCallback(() => {
+    setQuery("");
+    setResults([]);
+    setFacet(null);
+    setTotal(0);
+    pendingRef.current = [];
+    setScope(null);
+    setSection(null);
+    setWorldCounts(null);
+    setEnabled(new Set<ResultKind>(FILTER_KINDS));
+  }, []);
+
+  // THE CLEAR BUTTON (PRIME 2026-10-06 16:06: "a quick-to-find 'clear' button in the search box, to reset it"). It
+  // sits in the input row beside Esc, always in the same place so the eye finds it, and is enabled whenever there is
+  // anything to clear: typed text, a world, a section, or a narrowed kind selection. One click empties all of it and
+  // puts the caret back in the field, ready for the next search; the remember-or-start-fresh choice is untouched.
+  const dirty = query !== "" || scope !== null || section !== null || enabled.size < FILTER_KINDS.length;
+  const clearSearch = useCallback(() => {
+    // Back to the first state of a search.
+    resetSearch();
+    // The reader cleared in order to type again: return the focus to the field.
+    inputRef.current?.focus();
+  }, [resetSearch]);
+
+  // Open search → (start fresh, if the reader chose it) load runtime + focus the input. The reset runs before the
+  // first await, so an opener's own presets, applied right after this call returns, land on the cleared state.
   const openSearch = useCallback(async () => {
+    if (freshRef.current) resetSearch();
     setOpen(true);
     await loadPagefind();
     requestAnimationFrame(() => inputRef.current?.focus());
-  }, [loadPagefind]);
+  }, [loadPagefind, resetSearch]);
 
   // Keyboard shortcut: Cmd/Ctrl+K opens search (a familiar power-user pattern).
   useEffect(() => {
@@ -506,6 +568,19 @@ export default function Search() {
                 autoComplete="off"
                 spellCheck={false}
               />
+              {/* Clear (2026-10-06): the visible word is the start of its accessible name (WCAG 2.5.3, label in
+                  name), and the name says that the filters go too. Disabled, not hidden, when there is nothing to
+                  clear, so it never moves and the row never reflows. */}
+              <button
+                type="button"
+                className="search-clear"
+                onClick={clearSearch}
+                disabled={!dirty}
+                aria-label={t("clearLabel")}
+                title={t("clearLabel")}
+              >
+                <span aria-hidden="true">×</span> {t("clear")}
+              </button>
               <button
                 type="button"
                 className="search-close"
@@ -623,6 +698,23 @@ export default function Search() {
               {!query.trim() && !unavailable && (
                 <p className="search-hint">{t("hint")}</p>
               )}
+            </div>
+            {/* The remember-or-start-fresh switch (2026-10-06): a switch role, so assistive technology announces on
+                and off; the title says what each position does. */}
+            <div className="search-footer">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fresh}
+                className={`search-fresh${fresh ? " search-fresh--on" : ""}`}
+                onClick={toggleFresh}
+                title={t("freshTitle")}
+              >
+                <span className="search-fresh-track" aria-hidden="true">
+                  <span className="search-fresh-thumb" />
+                </span>
+                {t("freshLabel")}
+              </button>
             </div>
           </div>
         </div>
