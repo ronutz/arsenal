@@ -39,7 +39,7 @@ export default async function Page({
     <CareerChapterPage
       vendorKey="tenable"
       slug="tenable"
-      sections={2}
+      sections={3}
     />
   );
 }

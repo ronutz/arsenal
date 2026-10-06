@@ -532,14 +532,17 @@ export default async function AboutPage({
               </li>
               {/* CYLK, 2020 to 2022 (PRIME, 2026-10-05 22:32: "add the logos and mentions regarding
                   CYLK in 2020 which were F5, Palo Alto Networks, Fortinet, Tenable, CyberArk, Corvil").
-                  The marks held in the registry for three of the six, each as of 2020 (F5's 2013 mark,
-                  Palo Alto Networks' 2020 mark, Fortinet's); Tenable, CyberArk and Corvil are named in
-                  the text and hold no mark yet, because a mark enters marks.ts only as a file PRIME has
-                  verified against the vendor's brand guidelines (the 2026-09-09 decision there). The
-                  years are the CV's: thirty-six months, 2020 to 2022. */}
+                  The marks as of 2020 for five of the six: F5's 2013 mark, Palo Alto Networks' 2020 mark,
+                  Fortinet's, and, since 2026-10-06 (PRIME: "fetch a CyberArk mark", "fetch and use Tenable's
+                  logo mark"), the Tenable and CyberArk marks the two vendors' own sites carried in 2020,
+                  pulled at PRIME's instruction with their provenance in marks.ts; and Corvil's own mark at its
+                  last year, 2019 (PRIME, 06:18: "Fetch Corvil's logo mark"), because Corvil's site had folded
+                  into Pico's by 2020 while the name on the work and on the CCA was still Corvil, the same
+                  reasoning as NetScreen's 2004 mark on the 2009 row. All six named companies now carry a mark.
+                  The years are the CV's: thirty-six months, 2020 to 2022. */}
               <li className="about-era">
                 <span className="about-era-years mono">2020 – 2022</span>
-                <span className="mark-row"><VendorMark vendor="f5" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={2020} eraLabel={era} since={since} compact /></span>
+                <span className="mark-row"><VendorMark vendor="f5" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="tenable" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="cyberark" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="corvil" year={2019} eraLabel={era} since={since} compact /></span>
                 <span className="about-era-where">Pre-sales and consulting · via CYLK</span>
                 <span className="about-era-what">{t("path.cylk2020")}</span>
               </li>
@@ -558,6 +561,21 @@ export default async function AboutPage({
                 <span className="about-era-teaching">
                   <span className="about-era-teaching-label">{t("path.teachingNow")}</span>
                   <span className="mark-row about-era-teaching-marks"><VendorMark vendor="f5" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="extreme" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="netskope" year={thisYear} eraLabel={era} since={since} compact /></span>
+                </span>
+                {/* PREPARING TO TEACH (PRIME, 2026-10-06 04:58: "after the section 'Currently teaching:' add
+                    'Preparing to teach:' followed by the current logos of vendors Check Point, Zscaler, Ping
+                    Identity, Palo Alto Networks' Idira (CyberArk)"; 05:34: "Use both Idira and CyberArk marks";
+                    05:44: "add the ForgeRock logo after the Ping Identity one"). Check Point, Zscaler and Ping
+                    Identity as PRIME verified them; ForgeRock's mark as of its last year (2023, when Ping
+                    Identity folded the brand into its own, which is why it follows Ping here); Idira's current
+                    wordmark and CyberArk's final one (2023 to 2026), both pulled from the vendors' own pages at
+                    PRIME's instruction, provenance in marks.ts. The row is the one forward-looking statement the
+                    site makes about these platforms; it states preparation and nothing about authorization in
+                    either direction. It supersedes, for this row only, the 2026-09-04 ruling recorded in
+                    scripts/check-authorization-claims.mjs, which records the change. */}
+                <span className="about-era-teaching about-era-teaching--preparing">
+                  <span className="about-era-teaching-label">{t("path.preparing")}</span>
+                  <span className="mark-row about-era-teaching-marks"><VendorMark vendor="checkpoint" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="zscaler" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="ping" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="forgerock" year={2023} eraLabel={era} since={since} compact /><VendorMark vendor="idira" year={thisYear} eraLabel={era} since={since} compact /><VendorMark vendor="cyberark" year={2026} eraLabel={era} since={since} compact /></span>
                 </span>
               </li>
             </ol>

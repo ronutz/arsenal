@@ -53,6 +53,47 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-06",
+    time: "07:45",
+    kind: "feature",
+    title: "How to use ronutz; the Red Education page in six parts; Sentinel, Nessus and the quarantine",
+    body:
+      "The user guide becomes How to use ronutz: the site in one minute, the five worlds with the counts the home page shows, then one section per surface, the tools, Learn, the study guides, the vendor hubs, the industry record, search and shortcuts, privacy and what stays on your device, each with where to start; the datasheet, the tool reference, the common tasks and the manual follow as before. The Red Education page now reads in six parts, in the order a reader deciding whether to train there needs them: why Red Education, what it enables, where the author's work fits, the bench, the case evidence, and the official sources, eleven of Red Education's own pages every fact on the page is read from; no fact changed. And one deployment of the Enterasys years is now told in two chapters: the LAN access control that admitted an end system only after a Nessus scan, with Dragon and the Automated Security Manager on the containment side, the record's first contact with Tenable's product, fourteen years before the pre-sales chapter, drawn from Enterasys's own 2008 whitepaper and the 2006 review of Sentinel 1.0. Five records join the industry chronology, every fact read today from the companies' own releases and filings: BeyondTrust (Symark, 1985, through the 2018 Bomgar combination that kept its name), Cybereason (2012 to 2025, now LevelBlue), LevelBlue (AT&T's security business spun out in May 2024, which bought Aon's cyber consultants, Trustwave and Cybereason within eighteen months), Trustwave (Chicago, 1995 to 2025, owned in turn by Singtel, a Chertoff fund and LevelBlue) and SpiderLabs, the research team that outlived its owners and sits undated because no document read states when it began.",
+    links: [
+      { label: "How to use ronutz", href: "/guide" },
+      { label: "LevelBlue", href: "/industry/levelblue" },
+      { label: "Red Education", href: "/red-education" },
+      { label: "Cabletron and Enterasys", href: "/industry/chapters/cabletron-enterasys" },
+      { label: "Tenable", href: "/industry/chapters/tenable" },
+    ],
+  },
+  {
+    date: "2026-10-06",
+    time: "05:45",
+    kind: "content",
+    title: "Preparing to teach, on the About timeline; five more marks in the registry; the era navigator accounts for an undated record",
+    body:
+      "The current entry of the About timeline gains a second line under Currently teaching: Preparing to teach, with the marks of Check Point, Zscaler, Ping Identity, ForgeRock, Idira and CyberArk. The row states preparation and nothing else. Six marks join the registry, each the vendor's own file with its provenance recorded: Idira's current wordmark; CyberArk's two, the hexagon design its sites carried through 2022 and the navy wordmark of 2023 to 2026, when the brand became Idira by Palo Alto Networks; Tenable's, as its site showed it in 2020 and as its press kit serves it today; Corvil's, as corvil.com showed it until Pico bought the company in 2019. The 2020 CYLK entry now carries the Tenable, CyberArk and Corvil marks beside F5, Palo Alto Networks and Fortinet. The CyberArk and Palo Alto Networks records state the acquisition from the filings, agreement July 2025, completion 11 February 2026, and the May 2026 relaunch as Idira. A new record for Netcraft, the company whose survey has counted the web's servers every month since 1995 and which now takes down a third of the world's phishing: founded 1994, incorporated 1987, both kept as the method requires, the 2023 investment and the FraudWatch acquisition, six sources. On the industry record, one organisation has no founding year in its sources (Sisco, of the market-reserve years); the era navigator now says so under its chips instead of placing the record in a decade it cannot assert, so the seven counts plus that line add up to the whole chronology.",
+    links: [
+      { label: "About", href: "/about" },
+      { label: "The industry record", href: "/industry" },
+      { label: "Netcraft", href: "/industry/netcraft" },
+    ],
+  },
+  {
+    date: "2026-10-06",
+    time: "05:40",
+    kind: "feature",
+    title: "Ways into the industry record: six entrances, an era navigator, three doors the data chose, People beside the companies, and how the research is done",
+    body:
+      "The chronology stays; before it come six ways in, each a filtered view with its own address: follow a company (the scoped search), follow a lineage (the records that carry typed acquisitions, an ending or a story that begins before the company), explore an era, the Brazilian ecosystem, where the author's own path crossed the industry, and the people. The era navigator cuts the timeline into seven eras that open at the site's own sourced milestones, from before the network to the platforms, each chip counting the stories that begin inside it and naming the milestones it opens at. Three doors are chosen by the data rather than by taste, the longest acquisition chain, the densest lineage that ended inside another company, and the densest Brazilian lineage, beside a Surprise me that opens one of the records at random. The people timeline gains five entrances of its own. And a new page, How the research is done, states the rules every entry follows, with the record's own examples, and names the build checks that enforce them.",
+    links: [
+      { label: "The industry record", href: "/industry" },
+      { label: "The people", href: "/people" },
+      { label: "How the research is done", href: "/industry/method" },
+    ],
+  },
+  {
+    date: "2026-10-06",
     time: "00:40",
     kind: "feature",
     title: "The tools page says its three floors, groups the index by intent, takes what you paste, and starts five workflows",

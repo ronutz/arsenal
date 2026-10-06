@@ -11220,6 +11220,91 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
   color: var(--text-primary);
 }
 
+/* 0. The map (G9, 2026-10-06): the five worlds as five columns that wrap, each a verb, a title and its
+   entries with the home's counts; the same information architecture as the home directory, in the guide's
+   quieter register. */
+.guide-map {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1.25rem 1.5rem;
+  margin-top: 1.25rem;
+}
+.guide-map-world {
+  min-width: 0;
+}
+.guide-map-world-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+}
+.guide-map-world-verb {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+.guide-map-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.guide-map-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.3rem;
+}
+.guide-map-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.guide-map-link:hover {
+  text-decoration: underline;
+}
+.guide-map-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+/* 0b. How each part works: stacked blocks like the manual's, each ending in its "Start with" line. */
+.guide-how {
+  margin-top: 1.75rem;
+  scroll-margin-top: 5rem;
+}
+.guide-how-h {
+  font-size: 1.1rem;
+  margin: 0 0 0.4rem;
+  color: var(--text-primary);
+}
+.guide-how-links {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.guide-how-start {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-right: 0.5rem;
+}
+.guide-how-link {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.guide-how-link:hover {
+  text-decoration: underline;
+}
+
 /* Footer CTA row: back-to-tools + Learn library, side by side, wrapping on
    narrow screens. */
 .guide-cta-row {
@@ -14317,6 +14402,42 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .redu-inline-link { color: var(--accent-primary); font-weight: 600; text-decoration: none; }
 .redu-inline-link:hover, .redu-inline-link:focus-visible { text-decoration: underline; text-underline-offset: 2px; }
+/* THE SIX PARTS of the Red Education page (G7, 2026-10-06): a numbered part header before each group of
+   sections, so the page reads as an argument rather than a stack of equal headings; the identity line
+   under the hero lede says what the page is in one sentence. */
+.redu-identity {
+  margin: 0.75rem 0 1rem;
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  max-width: 60ch;
+}
+.redu-part {
+  padding-top: 2.5rem;
+  scroll-margin-top: 4.5rem;
+}
+.redu-part-eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-primary);
+  margin: 0 0 0.25rem;
+}
+.redu-part-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+.redu-part-lede {
+  margin: 0;
+  color: var(--text-secondary);
+  max-width: 70ch;
+}
+.redu-source-url {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  word-break: break-all;
+}
 .redu-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; margin: 0.5rem 0 0; }
 .redu-tribute {
   margin: 0; padding: 1.5rem 1.6rem;
@@ -18806,6 +18927,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .about-era-teaching { display: block; margin-top: 0.75rem; }
 .about-era-teaching-label { display: block; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-tertiary); margin-bottom: 0.1rem; }
 .about-era-teaching-marks { margin-top: 0.35rem; }
+/* "Preparing to teach" (PRIME, 2026-10-06): a second label-and-marks block under the first, a little closer
+   to it than the first sits to the text above, so the two read as one list. */
+.about-era-teaching--preparing { margin-top: 0.5rem; }
 /* The advisory hero section and the two columns of the gap strip (rules the
    class guard asked for: each named class has one). */
 .advisory-hero { padding-block-end: clamp(2rem, 5vw, 3.5rem); }
@@ -20144,4 +20268,267 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .hub-workflow-step {
   /* One step of a chain: the tool, then its vendor alternatives on the same line when it forks. */
   line-height: 1.5;
+}
+
+/* ----------------------------------------------------------------------------
+   /industry, wave I of Round 1 (2026-10-06): the entrances before the
+   chronology (E9, E14, G3), the three doors the data chose and Surprise me
+   (E16), the era navigator's chips in the filter (E13), and the people page's
+   entrances (G3). The entrances borrow the hub's heading and lede classes; the
+   chips borrow the country toggles' geometry so the filter reads as one row of
+   controls.
+   -------------------------------------------------------------------------- */
+.industry-entrances {
+  margin: 0 0 2.5rem;
+}
+.industry-entrance-grid {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.85rem;
+}
+.industry-entrance {
+  /* One way in: a bordered card, title and one line, the whole card the link. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.95rem 1.05rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.industry-entrance:hover,
+.industry-entrance:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.industry-entrance--brazil {
+  /* The Brazilian entrance in the success green, the colour the explore world already uses. */
+  border-left-color: var(--color-success);
+}
+.industry-entrance-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.industry-entrance-lede {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.industry-entrance-all {
+  /* Browse all and the method link, on one line under the grid. */
+  margin: 1rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.92rem;
+}
+.industry-entrance-all-link,
+.industry-entrance-method {
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.industry-entrance-all-link:hover,
+.industry-entrance-method:hover,
+.industry-entrance-all-link:focus-visible,
+.industry-entrance-method:focus-visible {
+  text-decoration: underline;
+}
+.industry-doors {
+  margin-top: 1.75rem;
+}
+.industry-doors-title {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 0.6rem;
+}
+.industry-door-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+.industry-door {
+  /* One door: a kicker that says why the data chose it, the company, its tagline. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: transparent;
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.industry-door:hover,
+.industry-door:focus-visible {
+  border-color: var(--accent-primary);
+  border-style: solid;
+  background: var(--surface-base);
+}
+.industry-door--surprise {
+  /* The random door: the same card, the accent's tint, a question mark for a kicker. */
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+}
+.industry-door-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+.industry-door-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.industry-door-lede {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.timeline-filter-eras {
+  /* The era chips: a wrapping row like the country toggles, above them. */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0 0.4rem;
+}
+.timeline-filter-era {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface-elevated);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+.timeline-filter-era:hover {
+  border-color: color-mix(in srgb, var(--accent-primary) 55%, transparent);
+  color: var(--text-primary);
+}
+.timeline-filter-era:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+.timeline-filter-era[aria-pressed="true"] {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 16%, var(--surface-elevated));
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-primary) 45%, transparent);
+}
+.timeline-filter-era-years {
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+.timeline-filter-era-label {
+  font-weight: 600;
+}
+
+.people-entrances {
+  /* The five ways into the people timeline, above the filter. */
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+.people-entrance {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 0.85rem 1rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.people-entrance:hover,
+.people-entrance:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.people-entrance-title {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.people-entrance-lede {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.method-guards {
+  /* The guards on the method page: name in the mono face, meaning beside it. */
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.method-guard {
+  display: grid;
+  grid-template-columns: minmax(12rem, auto) 1fr;
+  gap: 0.25rem 1rem;
+  align-items: baseline;
+  font-size: 0.92rem;
+}
+@media (max-width: 640px) {
+  .method-guard { grid-template-columns: 1fr; }
+}
+.method-guard-name {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-primary);
+}
+.method-guard-what {
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.timeline-filter-era-anchors {
+  /* The pressed era's sourced milestones, one line under the chips. */
+  flex-basis: 100%;
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.timeline-filter-era-undated {
+  /* The records no era can hold (no dated start in the sources), one quiet line under the chips. */
+  flex-basis: 100%;
+  margin: 0.2rem 0 0;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+}
+.timeline-filter-era-anchor {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.timeline-filter-era-anchor:hover,
+.timeline-filter-era-anchor:focus-visible {
+  text-decoration: underline;
 }

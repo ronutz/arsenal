@@ -42,6 +42,13 @@ import { VENDOR_ORIGINS, countryLabel } from "@/content/vendors/origins";
 import CountryFlag from "@/components/CountryFlag";
 
 import TimelineFilter from "@/components/TimelineFilter";
+// Wave I of Round 1 (2026-10-06): the entrances before the chronology (E9), the Brazilian entrance (E14), the
+// era navigator (E13), the featured rabbit holes and "Surprise me" (E16), People under Industry (G3) and the
+// link to how the research is done (E18).
+import { INDUSTRY_ERAS } from "@/content/vendors/eras";
+import SurpriseMe from "@/components/SurpriseMe";
+import { GLOSSARY } from "@/content/glossary/glossary";
+import { MILESTONES } from "@/content/milestones/milestones";
 export async function generateMetadata({
   params,
 }: {
@@ -135,6 +142,9 @@ export default async function IndustryHubPage({
     // different relationships and were being rendered as one pill.
     isInside: boolean;
     isDirect: boolean;
+    /** E9's lineage cut: the record carries typed acquisitions, an ending or a story that begins before the
+     *  company; the data-lineage attribute the filter reads. */
+    hasLineage: boolean;
   };
 
   const fromPartners: TimelineEntry[] = partnerVendors
@@ -154,6 +164,7 @@ export default async function IndustryHubPage({
       // of page about a different subject.
       href: `/industry/${v.slug}`,
       tags: v.tags ?? [],
+      hasLineage: Boolean((v.acquisitions?.length ?? 0) > 0 || v.ended || v.storyBegins),
       isRedu: v.relationships?.includes("red-education-partner") ?? false,
       isInstructor: v.relationships?.includes("authorized-instructor") ?? false,
       // FIXED 2026-08-04 (PRIME spotted it on one card; it affected all
@@ -229,6 +240,7 @@ export default async function IndustryHubPage({
       partnerVendors
         .find((p) => p.slug === v.slug)
         ?.relationships?.includes("worked-with-directly") ?? false,
+    hasLineage: false,
   }));
 
   // DEDUPLICATED 2026-07-29. Step 4 converted all fifteen career vendors into
@@ -254,6 +266,45 @@ export default async function IndustryHubPage({
       ((a.storyBegins?.year ?? a.founded) ?? 9999) -
         ((b.storyBegins?.year ?? b.founded) ?? 9999) || a.name.localeCompare(b.name),
   );
+
+  // THE ENTRANCES' FIGURES (E9, E14, G3; 2026-10-06), counted from the same list the timeline renders.
+  const storyYear = (v: TimelineEntry) => v.storyBegins?.year ?? v.founded ?? 9999;
+  const nAll = lineageTimeline.length;
+  const nLineage = lineageTimeline.filter((v) => v.hasLineage).length;
+  const nBrazil = lineageTimeline.filter((v) => VENDOR_ORIGINS[v.slug] === "BR").length;
+  const nMine = lineageTimeline.filter((v) => v.isInside || v.isDirect || v.isCurrent || v.isWorksWith).length;
+  const nPeople = GLOSSARY.filter((e) => e.person).length;
+  // The eras with their anchors resolved to the milestones' titles and links, so a pressed era shows where it opens.
+  const eras = INDUSTRY_ERAS.map((e) => ({
+    key: e.key,
+    label: ti(`eras.${e.key}.title`),
+    from: e.from,
+    to: e.to,
+    anchors: e.anchors
+      .map((slug) => MILESTONES.find((m) => m.slug === slug))
+      .filter((m): m is NonNullable<typeof m> => Boolean(m))
+      .map((m) => ({ title: `${m.year}: ${m.title}`, href: `/${locale}/industry/milestones/#${m.slug}` })),
+  }));
+
+  // THE FEATURED RABBIT HOLES (E16), chosen by the data rather than by taste: the longest typed acquisition
+  // chain; the company whose record ends inside another with the densest lineage prose; and the Brazilian
+  // record with the densest lineage prose. Counted here at build time from partners.ts, so the three doors
+  // move when the data does. Lineage prose is counted by the verbs of ownership change in the body.
+  const lineageVerbs = /\b(acquired|acquisition|renamed|spun off|spin-off|merged|merger|bought|sold to|divested)\b/gi;
+  const density = (slug: string) => {
+    const pv = partnerVendors.find((p) => p.slug === slug);
+    const text = [pv?.intro ?? "", ...(pv?.body ?? [])].join(" ");
+    return (text.match(lineageVerbs) ?? []).length;
+  };
+  const chainLength = (slug: string) => partnerVendors.find((p) => p.slug === slug)?.acquisitions?.length ?? 0;
+  const longestChain = [...lineageTimeline].sort((a, b) => chainLength(b.slug) - chainLength(a.slug) || density(b.slug) - density(a.slug))[0];
+  const endedDensest = [...lineageTimeline].filter((v) => v.ended && v.slug !== longestChain?.slug).sort((a, b) => density(b.slug) - density(a.slug))[0];
+  const brazilDensest = [...lineageTimeline].filter((v) => VENDOR_ORIGINS[v.slug] === "BR" && v.slug !== longestChain?.slug && v.slug !== endedDensest?.slug).sort((a, b) => density(b.slug) - density(a.slug))[0];
+  const doors = [
+    longestChain ? { key: "chain", entry: longestChain, figure: chainLength(longestChain.slug) } : null,
+    endedDensest ? { key: "ended", entry: endedDensest, figure: endedDensest.ended?.year ?? 0 } : null,
+    brazilDensest ? { key: "brazil", entry: brazilDensest, figure: storyYear(brazilDensest) } : null,
+  ].filter((d): d is NonNullable<typeof d> => d !== null);
 
   return (
     <>
@@ -283,6 +334,78 @@ export default async function IndustryHubPage({
             <div style={{ marginBottom: "2.5rem" }}>
               <HubSearch scope="explore" label={ti("hubSearch.label")} placeholder={ti("hubSearch.placeholder")} examplesLabel={ti("hubSearch.examples")} examples={["Cabletron", "Bay Networks", "Juniper", "Netscreen", "Wellfleet", "3Com"]} />
             </div>
+
+            {/* FIVE ENTRANCES BEFORE THE CHRONOLOGY (E9, SCOUT, adopted 2026-10-06), the Brazilian one among them
+                (E14) and People beside them (G3): each is a filtered view of the timeline below WITH AN ADDRESS
+                (the filter reads ?mode=, ?country= and ?era= after mount), or a page of its own. Then "Browse all",
+                the three doors the data chose (E16) with "Surprise me", and the line that says how the research
+                is done (E18). Counts from the list the timeline renders. */}
+            <section className="industry-entrances" aria-labelledby="industry-entrances-title">
+              <h2 className="section-title hub-h2" id="industry-entrances-title">{ti("entrances.title")}</h2>
+              <p className="hub-lede">{ti("entrances.lede", { count: nAll })}</p>
+              <ul className="industry-entrance-grid">
+                <li>
+                  <a href="#hub-search-explore" className="industry-entrance">
+                    <span className="industry-entrance-title">{ti("entrances.company.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.company.lede")}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href={`/${locale}/industry/?mode=lineage#timeline`} className="industry-entrance">
+                    <span className="industry-entrance-title">{ti("entrances.lineage.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.lineage.lede", { count: nLineage })}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#eras" className="industry-entrance">
+                    <span className="industry-entrance-title">{ti("entrances.era.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.era.lede", { count: INDUSTRY_ERAS.length })}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href={`/${locale}/industry/?country=BR#timeline`} className="industry-entrance industry-entrance--brazil">
+                    <span className="industry-entrance-title">{ti("entrances.brazil.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.brazil.lede", { count: nBrazil })}</span>
+                  </a>
+                </li>
+                <li>
+                  <a href={`/${locale}/industry/?mode=career#timeline`} className="industry-entrance">
+                    <span className="industry-entrance-title">{ti("entrances.mine.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.mine.lede", { count: nMine })}</span>
+                  </a>
+                </li>
+                <li>
+                  <Link href="/people" className="industry-entrance">
+                    <span className="industry-entrance-title">{ti("entrances.people.title")}</span>
+                    <span className="industry-entrance-lede">{ti("entrances.people.lede", { count: nPeople })}</span>
+                  </Link>
+                </li>
+              </ul>
+              <p className="industry-entrance-all">
+                <a href="#timeline" className="industry-entrance-all-link">{ti("entrances.browseAll", { count: nAll })} &#8594;</a>
+                <Link href="/industry/method" className="industry-entrance-method">{ti("entrances.method")} &#8594;</Link>
+              </p>
+              {/* THE DOORS THE DATA CHOSE (E16) and a random one. */}
+              {doors.length > 0 && (
+                <div className="industry-doors">
+                  <h3 className="industry-doors-title">{ti("doors.title")}</h3>
+                  <ul className="industry-door-list">
+                    {doors.map((d) => (
+                      <li key={d.key}>
+                        <Link href={d.entry.href} className="industry-door">
+                          <span className="industry-door-kicker">{ti(`doors.${d.key}`, { n: d.figure })}</span>
+                          <span className="industry-door-name">{d.entry.name.split(/\s[-\u2013\u2014]\s/)[0]}</span>
+                          <span className="industry-door-lede">{d.entry.tagline}</span>
+                        </Link>
+                      </li>
+                    ))}
+                    <li>
+                      <SurpriseMe slugs={lineageTimeline.map((v) => v.slug)} locale={locale} label={ti("doors.surprise")} hint={ti("doors.surpriseHint", { count: nAll })} />
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </section>
 
             {/* TWO PATHS THROUGH THE RECORD (2026-10-05; SCOUT E15 and G10, wave I's cheapest pieces). Two quiet
                 cards, not a strip: "The chapters I lived" as an editorial path to /industry/chapters (the record
@@ -371,8 +494,16 @@ export default async function IndustryHubPage({
                 redu: tp("filterRedu"),
                 career: tp("filterCareer"),
                 teach: tp("filterTeach"),
+                lineage: tp("filterLineage"),
                 countryLabel: tp("filterCountryLabel"),
+                eraLabel: ti("eras.label"),
+                eraAnchors: ti("eras.anchors"),
+                /* Passed with the {n} placeholder intact: only the browser knows the count it measured, and
+                   the message is a plain template rather than ICU so the client can fill it without a
+                   formatter (ICU parity still holds: the key has no plural, just a number). */
+                eraUndated: ti("eras.undated", { n: "{n}" }),
               }}
+              eras={eras}
               /* Counts computed from the same map the cards render, so a chip
                  cannot claim a number the timeline then contradicts. */
               countries={Object.entries(
@@ -392,7 +523,7 @@ export default async function IndustryHubPage({
                 .sort((x, y) => x.code.localeCompare(y.code))}
             />
 
-            <ol className="vendor-timeline">
+            <ol className="vendor-timeline" id="timeline">
               {/* Filter chips. These lead to tag-filtered views of the same
                   data, which is how the distributor and reseller pages PRIME
                   asked for are built - as views rather than as lists somebody
@@ -426,6 +557,12 @@ export default async function IndustryHubPage({
                   /* The country filter reads this rather than re-deriving
                      it, so the chip and the card can never disagree. */
                   data-country={VENDOR_ORIGINS[v.slug] ?? ""}
+                  /* The story year the gutter shows, for the era navigator; the lineage flag for its cut. A record
+                     with no dated start (Sisco, whose founding year the sources do not give) carries no
+                     data-year at all, so the navigator counts it as undated rather than placing it in an era
+                     it cannot assert (the method page's rule on uncertain dates). */
+                  data-year={storyYear(v) === 9999 ? undefined : storyYear(v)}
+                  data-lineage={v.hasLineage ? "1" : "0"}
                 >
                   {/* The gutter marks the card's POSITION, which is where its
                       story starts - otherwise a card sorted at 1886 would be

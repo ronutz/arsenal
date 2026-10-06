@@ -54,20 +54,11 @@ import HomeContinue from "@/components/HomeContinue";
 import HomeSurpriseIntent from "@/components/HomeSurpriseIntent";
 import HomeRabbitHole from "@/components/HomeRabbitHole";
 import VendorMark from "@/components/VendorMark";
-import { STORY_SLUGS } from "@/content/learn/stories";
-import { CAREER_VENDORS } from "@/content/vendors/career";
-import { partnerVendors } from "@/content/vendors/partners";
-import { getPracticeArticles } from "@/lib/practice";
-import { studyGuides } from "@/content/certifications/study-guides";
-import { CATALOGUE } from "@/content/catalogue/catalogue";
-import { getAllArticles } from "@/lib/learn";
-import { ROLES } from "@/lib/roles";
 import { VENDOR_FAMILIES, vendorColor } from "@/config/vendors";
-import { GLOSSARY } from "@/content/glossary/glossary";
-import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
+import { COURSE_COUNT } from "@/content/training/courses";
 import { WORLDS } from "@/config/worlds";
 import { CHANGELOG, type ChangelogEntry } from "@/content/changelog/changelog";
-import { TESTIMONIALS } from "@/content/testimonials/data";
+import { getSiteCounts } from "@/lib/siteCounts";
 
 export async function generateMetadata({
   params,
@@ -102,19 +93,21 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   // The era caption for the Red Education mark on the Training card.
   const tMarks = await getTranslations("partnerVendors");
 
-  // THE COUNTS, from the registries the pages render from (D-63).
-  const toolCount = CATALOGUE.filter((tool) => tool.status === "live").length;
-  const articleCount = getAllArticles().length;
-  const industryCount = partnerVendors.length;
-  const practiceCount = getPracticeArticles(locale).length;
-  const guideCount = studyGuides.length;
-  const hubCount = VENDOR_FAMILIES.length;
-  const glossaryCount = GLOSSARY.length;
-  const careerCount = CAREER_VENDORS.length;
-  const roleCount = ROLES.length;
-  const platformCount = PLATFORMS.length;
-  const endorsementCount = TESTIMONIALS.length;
-  const storyCount = STORY_SLUGS.length;
+  // THE COUNTS, from the registries the pages render from (D-63), computed once in src/lib/siteCounts.ts so the
+  // user guide's map of the site (G9, 2026-10-06) states the same figures beside the same five worlds.
+  const counted = getSiteCounts(locale);
+  const toolCount = counted.tools;
+  const articleCount = counted.articles;
+  const industryCount = counted.industry;
+  const practiceCount = counted.practice;
+  const guideCount = counted.guides;
+  const hubCount = counted.hubs;
+  const glossaryCount = counted.glossary;
+  const careerCount = counted.career;
+  const roleCount = counted.roles;
+  const platformCount = counted.platforms;
+  const endorsementCount = counted.endorsements;
+  const storyCount = counted.stories;
 
   // RECENTLY SHIPPED: the newest tool, the newest article, the newest improvement, read from the changelog.
   const newTool = latest(["tool"]);

@@ -341,6 +341,122 @@ export const VENDOR_MARKS: VendorMark[] = [
       "scripts/check-authorization-claims.mjs, which enforces that in prose.",
   },
   {
+    vendor: "idira",
+    label: "Idira by Palo Alto Networks",
+    src: "/img/marks/idira-current.svg",
+    from: 2026,
+    to: null,
+    note:
+      "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (PRIME, 2026-10-06 05:15: 'search " +
+      "for and pull an eventual Idira logo mark, if there were one'). The file is " +
+      "the wordmark Palo Alto Networks serves as the header logo of its own Idira " +
+      "pages, https://www.paloaltonetworks.com/etc/clientlibs/clean/imgs/" +
+      "idira-logo-dark.svg (alt text 'idira logo'), fetched 2026-10-06, 1,545 " +
+      "bytes, image/svg+xml, an Adobe Illustrator export: true vector, black " +
+      "letters and the #265BFF symbol; the only edit is width and height " +
+      "attributes derived from the viewBox (92.6 x 22.8), which check-marks " +
+      "requires so an <img> can size the file. The light variant (white " +
+      "letters) was left out because the plate is white. Dated from 2026, the " +
+      "year the brand launched (SDxCentral, 13 May 2026): Idira is CyberArk " +
+      "after the Palo Alto Networks acquisition ('CyberArk, now Idira by Palo " +
+      "Alto Networks', paloaltonetworks.com/idira; cyberark.com itself redirects " +
+      "there, observed 2026-10-06). The usual verification by PRIME against the " +
+      "brand guidelines happens in his review of this change before it ships. " +
+      "This site claims NO Idira or CyberArk authorization.",
+  },
+  {
+    vendor: "cyberark",
+    label: "CyberArk",
+    src: "/img/marks/cyberark-hexagon-pre2023.svg",
+    from: 2020,
+    to: 2022,
+    note:
+      "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (PRIME, 2026-10-06 05:33 and 05:34: " +
+      "fetch a CyberArk mark; use both Idira and CyberArk marks). CyberArk's own " +
+      "header logo, https://www.cyberark.com/wp-content/uploads/2021/01/" +
+      "cyberark-logo-dark.svg, read from the Wayback Machine capture of " +
+      "cyberark.com of 9 March 2021 (the live site redirects to Idira since the " +
+      "acquisition): the hexagon in two blues and two greys with the wordmark in " +
+      "#231f20, true vector, 'Asset 1'. The same design, with a white wordmark, " +
+      "was the header of investors.cyberark.com in May 2020, so it is the mark " +
+      "the 2020 record meets; it was still the header in September 2022 and had " +
+      "given way to the navy wordmark by the December 2022 upload below. Dated " +
+      "2020 (the record) to 2022 (last attested); its adoption year is not " +
+      "established here. Only edit: width and height attributes from the viewBox, " +
+      "which check-marks requires. PRIME's verification against the brand " +
+      "guidelines happens in his review before this ships.",
+  },
+  {
+    vendor: "cyberark",
+    label: "CyberArk",
+    src: "/img/marks/cyberark-2023-2026.svg",
+    from: 2023,
+    to: 2026,
+    note:
+      "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (same instruction as above). CyberArk's " +
+      "final header logo, https://www.cyberark.com/wp-content/uploads/2022/12/" +
+      "cyberark-logo-v2.svg, read from the Wayback Machine capture of cyberark.com " +
+      "of 7 June 2023: the navy (#173159) wordmark with the gradient hexagon and, " +
+      "under it, the company's tagline in small type, exactly as the vendor served " +
+      "it, unmodified (this file already carries width and height). First attested " +
+      "by the December 2022 upload path, so dated from 2023, the first full year; " +
+      "ends 2026, when the brand became Idira by Palo Alto Networks (May 2026; see " +
+      "the idira entry). PRIME's verification in his review before this ships.",
+  },
+  {
+    vendor: "tenable",
+    label: "Tenable",
+    src: "/img/marks/tenable-2020.svg",
+    from: 2020,
+    to: 2020,
+    note:
+      "VENDOR-PUBLISHED ARTWORK, PULLED BY ANVIL (PRIME, 2026-10-06 05:34: 'also " +
+      "fetch and use Tenable's logo mark'). The inline header logo of tenable.com " +
+      "as captured by the Wayback Machine on 18 June 2020 ('Tenable Logo': the " +
+      "slate #445464 wordmark with the teal #00a6b4 polygon-and-circle device), " +
+      "true vector, taken verbatim from the page's own <svg>; only edit: width and " +
+      "height attributes from the viewBox. Attested in 2020, the year the record " +
+      "meets Tenable; its adoption and retirement years are not established here, " +
+      "so the era is the one attested year and the current mark below starts " +
+      "later. PRIME's verification in his review before this ships.",
+  },
+  {
+    vendor: "tenable",
+    label: "Tenable",
+    src: "/img/marks/tenable-current.svg",
+    from: 2026,
+    to: null,
+    note:
+      "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (same instruction). Tenable's own " +
+      "press logo, https://static.tenable.com/press/logos/TenableLogo_FullColor_RGB" +
+      ".svg, the file tenable.com names as its organisation logo in its structured " +
+      "data (fetched 2026-10-06, 2,927 bytes, image/svg+xml): the current wordmark " +
+      "and device in #192124, true vector; only edit: width and height attributes " +
+      "from the viewBox. Dated from the year this site's record of the current mark " +
+      "begins; the adoption year is not established here. This site claims NO " +
+      "Tenable authorization. PRIME's verification in his review before this ships.",
+  },
+  {
+    vendor: "corvil",
+    label: "Corvil",
+    src: "/img/marks/corvil.svg",
+    from: 2017,
+    to: 2019,
+    note:
+      "VENDOR-PUBLISHED FILE, PULLED BY ANVIL (PRIME, 2026-10-06 06:18: 'Fetch " +
+      "Corvil's logo mark and give this vendor the full career vendor treatment'). " +
+      "Corvil's own header logo, https://www.corvil.com/assets/img/logo.170830.svg, " +
+      "read from the Wayback Machine capture of corvil.com of 3 June 2019: the grey " +
+      "#565656 wordmark with the five-colour device, true vector, unmodified but " +
+      "for width and height attributes from the viewBox (check-marks requires " +
+      "them). Dated from the file's own stamp (170830, 30 August 2017) to 2019, the " +
+      "year Pico acquired the company; by June 2020 corvil.com answered with " +
+      "pico.net, so no later use of this mark by Corvil itself is attested. The " +
+      "2020 record (the CCA and the pre-sales work at CYLK) therefore shows this " +
+      "mark at its last year, the way the NetScreen rows do. PRIME's verification " +
+      "against the brand guidelines happens in his review before this ships.",
+  },
+  {
     vendor: "forgerock",
     label: "ForgeRock",
     src: "/img/marks/forgerock.png",

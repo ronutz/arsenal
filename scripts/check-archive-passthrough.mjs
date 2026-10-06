@@ -40,6 +40,13 @@ if (!/url\.pathname\.startsWith\("\/archive\/"\)/.test(worker) || !/env\.ASSETS\
   failures.push("worker/index.ts: the /archive/ exemption before the locale gate is missing.");
 }
 
+// Lock 3 (2026-10-06): a locale-prefixed archive path, the address the bug handed every reader who met it,
+// is sent back to the bare path rather than left as a 404. The branch tests the first segment against the
+// locale registry and redirects permanently.
+if (!/\/\^\\\/\(\[\^\/\]\+\)\\\/archive/.test(worker) || !/LOCALE_CODES\.includes\(archiveMatch\[1\]\)/.test(worker)) {
+  failures.push("worker/index.ts: the /<locale>/archive/... -> /archive/... redirect before the locale gate is missing.");
+}
+
 if (failures.length) {
   console.error(`\n[check-archive-passthrough] FAIL: ${failures.length} lock(s) missing.\n`);
   for (const f of failures) console.error(`  - ${f}`);
@@ -47,4 +54,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("[check-archive-passthrough] OK: /archive/* bypasses the Worker's locale gate (wrangler.jsonc and worker/index.ts).");
+console.log("[check-archive-passthrough] OK: /archive/* bypasses the Worker's locale gate (wrangler.jsonc and worker/index.ts); /<locale>/archive/... redirects to the bare path.");

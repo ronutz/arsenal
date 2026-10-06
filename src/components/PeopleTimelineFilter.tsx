@@ -70,6 +70,16 @@ export default function PeopleTimelineFilter({
   const [shown, setShown] = useState(total);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  /* PRESET FROM THE URL (G3, SCOUT, adopted 2026-10-06): the entrances above link here as
+     /people/?field=security,hacker-culture,crypto, so an entrance is a filtered view with an address. Read once
+     after mount, so the server render and the first client render agree; unknown fields are ignored. */
+  useEffect(() => {
+    const want = (new URLSearchParams(window.location.search).get("field") ?? "")
+      .split(",")
+      .filter((f) => fields.some((k) => k.key === f));
+    if (want.length) setSelected(new Set(want));
+  }, [fields]);
+
   const apply = useCallback(() => {
     const root = document.querySelector<HTMLElement>("[data-people-timeline]");
     if (!root) return;

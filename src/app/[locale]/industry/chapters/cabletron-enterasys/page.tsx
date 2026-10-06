@@ -39,7 +39,7 @@ export default async function Page({
     <CareerChapterPage
       vendorKey="cabletron"
       slug="cabletron-enterasys"
-      sections={7}
+      sections={8}
     />
   );
 }

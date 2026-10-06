@@ -2878,6 +2878,8 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Tenable Form S-1 (SEC, 29 June 2018), the IPO prospectus: “Tenable Network Security, Inc., our predecessor, was incorporated under the laws of the State of Delaware in 2002”, with Tenable Holdings incorporated in Delaware in October 2015, and the company describing its co-founder as the creator of Nessus", url: "https://www.sec.gov/Archives/edgar/data/1660280/000119312518209705/d548092ds1.htm", sourceNote: "Read 2026-09-27 and again 2026-09-30 by sessions that did not see each other’s work, which is why this one document was cited twice until the duplication was merged on 2026-10-01. It settles the YEAR and the state from the company itself and adds Delaware, which the entry did not have. It gives NO DAY, so it decides neither side of the 16 September against 4 October discrepancy recorded below, and 16 September 2002 stays in the copy uncited. Recorded here so the next reader does not fetch this document a third time." },
       { label: "TechCrunch, 5 September 2012 - a $50 million Series A from Accel Partners, described as the company's very first round of institutional funding after being bootstrapped, with the company founded in 2002 and Accel partner Ping Li having followed it for years because its products kept appearing across his portfolio", url: "https://techcrunch.com/2012/09/05/tenable-accel-series-a/", sourceNote: "Replaces a dead content-farm page (dcf-model.com now 301s to dcfanalyst.com, which 404s; confirmed 2026-09-27). It carries the round, the amount, the investor, the bootstrapped history and the founding YEAR. It does NOT carry the exact incorporation date of 16 September 2002, which stays in the copy; the Form S-1 cited alongside it does not carry the day either." },
       { label: "Alternative date of 4 October 2002 for incorporation, recorded as a discrepancy", url: "https://businessmodelcanvastemplate.com/blogs/brief-history/tenable-brief-history" },
+      { label: "Enterasys Network Access Control whitepaper, 2008 (document 0561-0708): Enterasys NAC assessed end systems 'by leveraging a network-based vulnerability assessment engine such Tenable Network Security's Nessus' (read 2026-10-06; the Cabletron and Enterasys chapter tells the deployment)", url: "https://scadahacker.com/library/Documents/Manuals/Enterasys%20-%20Network%20Access%20Control.pdf" },
+      { label: "IT Pro, 23 October 2006, review of Enterasys Sentinel 1.0: the endpoint scan carried out by a Nessus server on the access gateway's instruction (read 2026-10-06)", url: "https://www.itpro.com/96270/enterasys-sentinel-10" },
     ],
   },
   {
@@ -3402,12 +3404,29 @@ export const partnerVendors: PartnerVendor[] = [
       "The answer was App-ID: identify the application from the traffic itself rather than the port it arrived on, and write policy in those terms. That reframing is what the industry ended up calling the next-generation firewall, and every incumbent eventually shipped its own version - which is the clearest evidence the argument was correct.",
       "It went public in 2012 and passed Check Point in firewall revenue around 2014, roughly nine years after being founded by someone who had helped build Check Point's first products.",
       "Since then it has expanded by acquisition into endpoint, cloud security and security operations, and has been notably willing to buy categories rather than wait to build them - a pattern this timeline shows repeating in every generation of security vendor.",
+      "The largest of those purchases is the most recent: CyberArk, the privileged access company, announced in July 2025 at about $25 billion and completed on 11 February 2026, then relaunched as Idira by Palo Alto Networks in May 2026, which made identity security a pillar of the platform beside the firewall it was founded on.",
+    ],
+    // The CyberArk acquisition, typed (2026-10-06), so the lineage view and the CyberArk record's pointer
+    // to this page ("covered from the acquirer's side") both hold.
+    acquisitions: [
+      {
+        year: 2026,
+        name: "CyberArk",
+        price: "$45.00 in cash plus 2.2005 Palo Alto Networks shares per CyberArk share; about $25 billion when announced in July 2025",
+        what: "The privileged access management company founded in Israel in 1999, by then a full identity security platform; the largest security acquisition on record at announcement.",
+        became: "Idira by Palo Alto Networks, the identity security platform relaunched under that name in May 2026; cyberark.com redirects to it.",
+        founder: "Udi Mokady and Alon Cohen",
+        sourceNote: "Completion and consideration from the 8-K exhibit 99.1 of 11 February 2026; the announced enterprise value from the 8-K exhibit 99.2 of 30 July 2025; the rename from SDxCentral, 13 May 2026, and paloaltonetworks.com/idira (read 2026-10-06).",
+      },
     ],
     externalUrl: "https://en.wikipedia.org/wiki/Palo_Alto_Networks",
     externalLabel: "Palo Alto Networks",
     sources: [
       { label: "Wikipedia: Palo Alto Networks - founded 2005 by Nir Zuk, App-ID, the 2012 IPO", url: "https://en.wikipedia.org/wiki/Palo_Alto_Networks" },
       { label: "Wikipedia: Nir Zuk - Check Point, OneSecure, NetScreen and Juniper before founding Palo Alto Networks", url: "https://en.wikipedia.org/wiki/Nir_Zuk" },
+      { label: "Palo Alto Networks 8-K, exhibit 99.1, 11 February 2026: completion of the CyberArk acquisition (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1327567/000119312526045600/d40626dex991.htm" },
+      { label: "Palo Alto Networks 8-K, exhibit 99.2, 30 July 2025: agreement to acquire CyberArk at an enterprise value of approximately $25 billion (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1327567/000119312525168821/d67702dex992.htm" },
+      { label: "SDxCentral, 13 May 2026: Palo Alto Networks rebrands CyberArk with Idira platform release", url: "https://www.sdxcentral.com/news/palo-alto-networks-rebrands-cyberark-with-idira-platform-release/" },
     ],
   },
   {
@@ -3483,6 +3502,8 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [
       { label: "Wikipedia: Cabletron Systems - founded March 1983 by Robert Levine and Craig Benson, the 2000 four-way split into Enterasys, Riverstone, Aprisma and GNTS", url: "https://en.wikipedia.org/wiki/Cabletron_Systems" },
       { label: "Wikipedia: Enterasys Networks - the enterprise successor and the 2013 Extreme acquisition at $180M", url: "https://en.wikipedia.org/wiki/Enterasys_Networks" },
+      { label: "IT Pro, 23 October 2006, review of Enterasys Sentinel 1.0: Trusted Access Gateway and Manager, NetSight; 'the end point scan is carried out by the Nessus server as and when instructed'; a failed scan quarantines the client to remediation services (read 2026-10-06)", url: "https://www.itpro.com/96270/enterasys-sentinel-10" },
+      { label: "Enterasys Network Access Control whitepaper, 2008 (document 0561-0708; copy held at scadahacker.com): NAC Gateway, assessment 'by leveraging a network-based vulnerability assessment engine such Tenable Network Security's Nessus', quarantine redirect to a remediation page, Dragon IDS/IPS/NBAD and NetSight Automated Security Manager (read 2026-10-06)", url: "https://scadahacker.com/library/Documents/Manuals/Enterasys%20-%20Network%20Access%20Control.pdf" },
     ],
   },
   {
@@ -4059,6 +4080,11 @@ export const partnerVendors: PartnerVendor[] = [
       resources: [
         { label: "CyberArk Docs", url: "https://docs.cyberark.com" },
       ],
+      // The company no longer trades under this name (2026-10-06): the acquisition by Palo Alto Networks
+      // completed on 11 February 2026 and the brand became Idira by Palo Alto Networks in May 2026;
+      // cyberark.com itself now answers with a redirect to the Idira pages (observed 2026-10-06).
+      defunct: true,
+      successor: { label: "Idira by Palo Alto Networks (formerly CyberArk)", url: "https://www.paloaltonetworks.com/idira" },
     },
     // Red Education partner (Courses by Vendor nav + Australasia/SAARC/ASEAN menus). Verified against
     // rededucation.com 2026-08-06.
@@ -4068,12 +4094,17 @@ export const partnerVendors: PartnerVendor[] = [
     group: "redu",
     name: "CyberArk",
     founded: 1999,
+    ended: {
+      year: 2026,
+      note: "Acquired by Palo Alto Networks, completed 11 February 2026 ($45.00 in cash and 2.2005 Palo Alto Networks shares per CyberArk share); the brand became Idira by Palo Alto Networks in May 2026.",
+    },
     tagline: "Privileged access and identity security.",
     intro:
       "CyberArk defined the privileged-access-management category: vaulting, rotating, and brokering the credentials and secrets that hold the keys to everything else, extended over time into a full identity-security platform.",
     body: [
       "Red Education delivers CyberArk's official training track, with PAM administration courses running publicly across its Australasia, SAARC, and ASEAN schedules and available to the other regions on demand.",
-      "Founded in 1999 in Israel by Udi Mokady and Alon Cohen, CyberArk listed on NASDAQ in 2014 and became the reference vendor auditors name when they say privileged access. In February 2026 it became part of Palo Alto Networks in the largest security acquisition on record, a combination this site's Palo Alto Networks history page covers from the acquirer's side.",
+      "Founded in 1999 in Israel by Udi Mokady and Alon Cohen, CyberArk listed on NASDAQ in 2014 and became the reference vendor auditors name when they say privileged access. On 11 February 2026 it became part of Palo Alto Networks in the largest security acquisition on record, a combination this site's Palo Alto Networks history page covers from the acquirer's side.",
+      "In May 2026 the platform was relaunched as Idira by Palo Alto Networks, extending privileged access to machine identities and AI agents; the vendor's own pages put it in four words, CyberArk, now Idira, and cyberark.com redirects to them. The name CyberArk stays on this record because it is the name the work of 2020 was done under.",
     ],
     awards: [...REDU_AWARDS_GENERAL],
     externalUrl: "https://www.rededucation.com/cyberark/",
@@ -4081,6 +4112,9 @@ export const partnerVendors: PartnerVendor[] = [
     sources: [{ label: "Wikipedia: CyberArk - infobox records the company founded 1999", url: "https://en.wikipedia.org/wiki/CyberArk" }, 
       { label: "Red Education - CyberArk training", url: "https://www.rededucation.com/cyberark/" },
       { label: "Palo Alto Networks 10-Q (CyberArk acquisition completed Feb 2026)", url: "https://investors.paloaltonetworks.com/" },
+      { label: "Palo Alto Networks 8-K, exhibit 99.1, 11 February 2026: completion of the CyberArk acquisition, $45.00 in cash and 2.2005 shares per CyberArk share (SEC EDGAR)", url: "https://www.sec.gov/Archives/edgar/data/1327567/000119312526045600/d40626dex991.htm" },
+      { label: "Palo Alto Networks: Idira, 'CyberArk, now Idira by Palo Alto Networks' (read 2026-10-06; cyberark.com redirects here)", url: "https://www.paloaltonetworks.com/idira" },
+      { label: "SDxCentral, 13 May 2026: Palo Alto Networks rebrands CyberArk with Idira platform release", url: "https://www.sdxcentral.com/news/palo-alto-networks-rebrands-cyberark-with-idira-platform-release/" },
       ...REDU_SOURCES,
     ],
   },
@@ -5668,6 +5702,238 @@ export const partnerVendors: PartnerVendor[] = [
       { label: "Plantronics press release filed as Exhibit 99.1 to its Form 8-K, dated Santa Cruz, 2 July 2018: completed the acquisition of Polycom at a $2.0 billion enterprise value, consisting of approximately $1.638 billion in cash and 6.352 million Plantronics shares (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/0000914025/000091402518000038/ex991july2pressrelease.htm" },
       { label: "HP Inc. press release filed as Exhibit 99.1 to its Form 8-K, dated Palo Alto, 29 August 2022: completed the acquisition of Poly as an all-cash transaction of $40 per share, an enterprise value of approximately $3.3 billion inclusive of Poly's net debt; Poly described as video conferencing solutions, cameras, headsets, voice and software (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/47217/000095010322014548/dp178974_ex9901.htm" },
       { label: "HP - Poly video and voice solutions, formerly Polycom and Plantronics: \"Poly is now an HP product line\" (read 2026-10-05)", url: "https://www.hp.com/us-en/poly.html" },
+    ],
+  },
+  // ---- Five records PRIME asked for at 07:19 on 2026-10-06 ("rich industry entries for SailPoint, BeyondTrust,
+  // Qualys, Cybereason, LevelBlue, Trustwave, SpiderLabs"; SailPoint and Qualys already had theirs). No career tie
+  // and no training claim on any of them. Every fact read live on 2026-10-06 from the pages cited on each. ----
+  {
+    slug: "beyondtrust",
+    official: {
+      url: "https://www.beyondtrust.com",
+      resources: [
+        { label: "BeyondTrust - About", url: "https://www.beyondtrust.com/company" },
+      ],
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "BeyondTrust",
+    // The company is Symark, founded 1985, which bought the original BeyondTrust in 2009 and took its name
+    // (Wikipedia); the Bomgar combination of 2018 kept the name again.
+    founded: 1985,
+    tagline: "Founded as Symark in 1985, renamed for a company it bought in 2009, and merged into a company that took its name in 2018.",
+    intro:
+      "BeyondTrust sells privileged access management: the vaulting and brokering of administrative credentials, least-privilege enforcement on endpoints, and secure remote access for support desks and vendors. The company behind the name was founded in 1985 as Symark, by Bob Sommers and Doug Yarrow; in 2009 Symark acquired a company called BeyondTrust and rebranded itself under that name, and it is that line the record follows.",
+    body: [
+      "The product set was assembled by acquisition through the 2010s: Likewise Software in 2011, eEye Digital Security, the vulnerability management company, in May 2012, and Blackbird Group in December 2012, giving a privilege company a vulnerability scanner and an Active Directory toolset beside its core.",
+      "The decisive event is the 2018 combination. Bomgar, the remote-support company Joel Bomgaars had started as ExpertVNC in 2003, was bought by Francisco Partners in April 2018; on 13 September 2018 Bomgar announced it would acquire BeyondTrust from an affiliate of Veritas Capital and operate the combined company under the BeyondTrust name, headquartered in Atlanta with offices in Phoenix, more than 19,000 customers, and Bomgar's chief executive, Matt Dircks, at its head. The buyer took the name of the bought.",
+      "In December 2024 the company's remote support service was the path of a state-level intrusion: an API key for its Remote Support SaaS was stolen and used to reach the United States Treasury, which disclosed on 30 December 2024 that unclassified documents had been accessed. The incident put a privileged access vendor's own access in the headlines, which is the risk the category exists to manage.",
+      "Why it belongs in a networking record: privileged access is where the perimeter of the 1990s ended up. The administrator's password, the service account and the vendor's support tunnel are the credentials every later breach report names, and the companies that vault them, this one and the CyberArk line that became Idira, are the identity layer this site's security pages keep returning to.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/BeyondTrust",
+    externalLabel: "BeyondTrust (Wikipedia)",
+    acquisitions: [
+      { year: 2011, name: "Likewise Software", what: "Active Directory bridging for Unix, Linux and macOS; the authentication side of the portfolio.", sourceNote: "Wikipedia: BeyondTrust (read 2026-10-06)." },
+      { year: 2012, name: "eEye Digital Security", what: "Vulnerability management (Retina) and research; acquired in May 2012.", sourceNote: "Wikipedia: BeyondTrust (read 2026-10-06)." },
+      { year: 2012, name: "Blackbird Group", what: "Active Directory management and auditing; acquired in December 2012.", sourceNote: "Wikipedia: BeyondTrust (read 2026-10-06)." },
+      { year: 2018, name: "BeyondTrust acquired BY Bomgar, which took the BeyondTrust name", what: "Announced 13 September 2018: Bomgar, owned by Francisco Partners since April 2018, acquires BeyondTrust from an affiliate of Veritas Capital; the combined company operates as BeyondTrust from Atlanta, with more than 19,000 customers.", became: "The BeyondTrust of today: Bomgar's remote support beside Symark's privilege management, under the latter's name.", sourceNote: "Francisco Partners, press release of 13 September 2018 (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: BeyondTrust - founded 1985 as Symark by Bob Sommers and Doug Yarrow; Symark acquired BeyondTrust in 2009 and took the name; Bomgar (ExpertVNC, 2003) merged in 2018; Likewise 2011, eEye May 2012, Blackbird December 2012; headquarters Atlanta; the Treasury intrusion of 30 December 2024 (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/BeyondTrust" },
+      { label: "Francisco Partners, 13 September 2018, Atlanta and Phoenix: Bomgar announces the acquisition of BeyondTrust from Veritas Capital; combined company under the BeyondTrust name, 19,000+ customers, Matt Dircks to lead (read 2026-10-06)", url: "https://www.franciscopartners.com/news/bomgar-announces-acquisition-of-beyondtrust-to-expand-privileged-access-management-offerings" },
+      { label: "BeyondTrust - About: the company's own description and its chief executive, Janine Seebeck (read 2026-10-06)", url: "https://www.beyondtrust.com/company" },
+    ],
+  },
+  {
+    slug: "cybereason",
+    official: {
+      url: "https://www.cybereason.com",
+      // "Cybereason is now LevelBlue" (levelblue.com/company/about-us, read 2026-10-06); the Cybereason press
+      // pages redirect to LevelBlue's newsroom.
+      defunct: true,
+      successor: { label: "LevelBlue (Cybereason is now LevelBlue)", url: "https://www.levelblue.com/company/about-us" },
+    },
+    tags: ["vendor"],
+    group: "contemporary",
+    name: "Cybereason",
+    // Founded 2012 and incorporated in Delaware (Wikipedia's infobox and lead); one sentence of the same article
+    // says 2014, the year the Boston headquarters opened. Both kept, 2012 carried.
+    founded: 2012,
+    ended: {
+      year: 2025,
+      note: "Acquired by LevelBlue, announced 14 October 2025 and completed 25 November 2025; the brand folded into LevelBlue.",
+    },
+    tagline: "The endpoint detection company that found the NotPetya kill switch, raised more than $850 million, and ended inside a services company.",
+    intro:
+      "Cybereason was founded in 2012 by Lior Div and Yonatan Striem-Amit, incorporated in Delaware, and set up its headquarters in Boston in 2014. Its product was endpoint detection and response, later sold as extended detection and response, delivered as a platform and as a managed service; its research arm, Nocturnus, was the first to publish a vaccine for the NotPetya and Bad Rabbit outbreaks of 2017 and in 2019 reported Operation Soft Cell, a Chinese state espionage campaign against telecommunications providers.",
+    body: [
+      "The money was the story for a decade. SoftBank was the lead investor, Google Cloud's CapitalG put in $50 million in October 2021, and total funding passed $850 million; in February 2022 Reuters reported a planned listing at a $5 billion valuation, abandoned by October of that year, after which came successive layoffs and a headcount of about 950. Eric Gan, the chief executive who followed Div, resigned on 5 March 2025 amid a dispute with investors over funding, and Manish Narula took the role.",
+      "The ending came from the services side of the industry. On 14 October 2025 LevelBlue, the managed security provider spun out of AT&T, announced it would buy the company for its XDR, digital forensics and incident response and threat intelligence; the deal closed on 25 November 2025, with SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital becoming investors in LevelBlue as part of it. LevelBlue's site now says, in four words, Cybereason is now LevelBlue.",
+      "Why it belongs in a networking record: endpoint detection is where the network's visibility problem went after encryption closed the wire, and the fate of a well-funded product company, bought by a services company for the telemetry and the people, is the pattern of the 2020s this chronology keeps recording.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Cybereason",
+    externalLabel: "Cybereason (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: Cybereason - founded 2012 by Lior Div and Yonatan Striem-Amit (one sentence says 2014), incorporated in Delaware, Boston headquarters from 2014; Nocturnus and the NotPetya vaccine; Operation Soft Cell 2019; CapitalG $50 million October 2021; funding over $850 million; the abandoned 2022 listing; Gan's resignation 5 March 2025 and Narula; about 950 employees (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Cybereason" },
+      { label: "LevelBlue, 14 October 2025: LevelBlue to acquire Cybereason (XDR, DFIR, threat intelligence; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital backing the transaction) (read 2026-10-06)", url: "https://www.levelblue.com/blogs/levelblue-blog/levelblue-to-acquire-cybereason-strengthening-position-as-worlds-largest-pure-play-mssp/" },
+      { label: "LevelBlue, Dallas, 25 November 2025: LevelBlue completes the acquisition of Cybereason (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-cybereason-expanding-global-leadership-in-managed-detection-and-response-xdr-and-incident-response" },
+      { label: "LevelBlue - About us: 'Cybereason is now LevelBlue'; 'LevelBlue SpiderLabs' (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
+    ],
+  },
+  {
+    slug: "levelblue",
+    official: {
+      url: "https://www.levelblue.com",
+      resources: [
+        { label: "LevelBlue - Newsroom", url: "https://www.levelblue.com/newsroom/press-releases" },
+        { label: "LevelBlue - About us", url: "https://www.levelblue.com/company/about-us" },
+      ],
+    },
+    tags: ["services", "vendor"],
+    group: "contemporary",
+    name: "LevelBlue",
+    // Launched 6 May 2024 as a joint venture of AT&T and WillJam Ventures, from what had been AT&T Cybersecurity.
+    founded: 2024,
+    tagline: "AT&T's security services business, spun out in 2024, which bought Trustwave, Cybereason and Aon's cyber consultants inside eighteen months.",
+    intro:
+      "LevelBlue launched on 6 May 2024 at the RSA Conference as a standalone managed security services company, a joint venture between AT&T, which kept a minority stake and a board seat, and WillJam Ventures, whose managing partner Bob McCullen became chairman and chief executive. It began with what AT&T Cybersecurity had been: more than a thousand employees, four security operations centres and three network operations centres, the USM Anywhere platform and the Open Threat Exchange, which the launch release counted at 235,000 security professionals submitting more than 20 million threat indicators a day.",
+    body: [
+      "Then it bought, fast. On 1 August 2025 it completed the acquisition of Aon's cybersecurity and intellectual property litigation consulting groups; on 19 August 2025 it completed the acquisition of Trustwave, the Chicago managed security and SpiderLabs company, and called the result the world's largest pure-play managed security services provider; on 14 October 2025 it announced, and on 25 November 2025 completed, the acquisition of Cybereason, whose backers SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital became investors in LevelBlue; and on 27 January 2026 it announced a managed services partnership with Fortra that includes the acquisition of Fortra's Alert Logic managed detection and response business.",
+      "What those purchases assembled is a services company with other companies' research arms inside it: SpiderLabs now appears on LevelBlue's pages as LevelBlue SpiderLabs, Cybereason's platform as its XDR, and the Open Threat Exchange as its intelligence base. The company is run from Dallas.",
+      "Why it belongs in a networking record: the managed security provider is the form in which most organisations now consume network security, and this one is the current end of three lineages this record follows, AT&T's security business, Trustwave's twenty-year run from Chicago, and Cybereason's decade of venture funding.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/LevelBlue",
+    externalLabel: "LevelBlue (Wikipedia)",
+    acquisitions: [
+      { year: 2025, name: "Aon's cybersecurity and IP litigation consulting groups", what: "Completed 1 August 2025; the consulting practice that includes the former Stroz Friedberg expertise.", sourceNote: "LevelBlue newsroom, 1 August 2025 (read 2026-10-06)." },
+      { year: 2025, name: "Trustwave", what: "The Chicago managed security and SpiderLabs company, founded 1995; completed 19 August 2025, terms not disclosed.", became: "The core of the world's largest pure-play managed security services provider, by LevelBlue's description; SpiderLabs continues as LevelBlue SpiderLabs.", sourceNote: "LevelBlue, Dallas, 19 August 2025 (read 2026-10-06)." },
+      { year: 2025, name: "Cybereason", what: "XDR, digital forensics and incident response, threat intelligence; announced 14 October 2025, completed 25 November 2025, terms not disclosed; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital became investors in LevelBlue.", became: "LevelBlue's XDR and incident response; 'Cybereason is now LevelBlue'.", sourceNote: "LevelBlue, 14 October and 25 November 2025 (read 2026-10-06)." },
+      { year: 2026, name: "Fortra's Alert Logic managed detection and response business", what: "Announced 27 January 2026 inside a managed services partnership with Fortra; the record states the announcement, not a completion it has not read.", sourceNote: "LevelBlue newsroom, 27 January 2026 (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "LevelBlue, Dallas, Chicago and San Francisco, 6 May 2024: LevelBlue launches at RSA Conference as a joint venture of AT&T and WillJam Ventures; Bob McCullen chairman and CEO; 1,000+ employees, four SOCs, three NOCs; OTX 235,000+ professionals and 20+ million indicators a day (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-launches-at-rsa" },
+      { label: "Wikipedia: LevelBlue - launched as an independent business at the RSA Conference in 2024, a joint venture between AT&T and WillJam Ventures, formerly AT&T Cybersecurity (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/LevelBlue" },
+      { label: "LevelBlue, Dallas, 19 August 2025: LevelBlue completes the acquisition of Trustwave; SpiderLabs 'the elite Trustwave team' (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-trustwave-to-form-the-worlds-largest-managed-security-services-provider" },
+      { label: "LevelBlue, Dallas, 25 November 2025: LevelBlue completes the acquisition of Cybereason; SoftBank Corp., SoftBank Vision Fund 2 and Liberty Strategic Capital become investors (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-cybereason-expanding-global-leadership-in-managed-detection-and-response-xdr-and-incident-response" },
+      { label: "LevelBlue - press releases index: Aon's cybersecurity and IP litigation consulting groups completed 1 August 2025; Cybereason announced 14 October 2025; Fortra partnership and Alert Logic MDR acquisition announced 27 January 2026 (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases" },
+      { label: "LevelBlue - About us: 'the world's largest pure-play MSSP'; 'LevelBlue SpiderLabs'; 'Cybereason is now LevelBlue' (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
+    ],
+  },
+  {
+    slug: "trustwave",
+    official: {
+      url: "https://www.trustwave.com",
+      // trustwave.com/en-us/company/about-us/ answers with a redirect to levelblue.com/company/about-us (observed 2026-10-06).
+      defunct: true,
+      successor: { label: "LevelBlue (Trustwave acquired 19 August 2025; SpiderLabs continues as LevelBlue SpiderLabs)", url: "https://www.levelblue.com/company/about-us" },
+    },
+    tags: ["services", "vendor"],
+    group: "contemporary",
+    name: "Trustwave",
+    founded: 1995,
+    ended: {
+      year: 2025,
+      note: "Acquired by LevelBlue, completed 19 August 2025, after Singtel (2015, $810 million) and the MC² Security Fund (January 2024, $205 million) had owned it; trustwave.com now redirects to LevelBlue.",
+    },
+    tagline: "Thirty years of managed security from Chicago, owned in turn by a Singapore carrier, a Chertoff fund and a spun-out AT&T business.",
+    intro:
+      "Trustwave was founded in Chicago in 1995 and grew into a managed security services provider: managed detection and response, managed security services, database and email security, and for many years the payment card compliance business that made it the assessor behind a large share of the world's PCI validations. Its research, testing and incident response arm, SpiderLabs, has its own record on this site.",
+    body: [
+      "The ownership chain is the card. On 7 April 2015 Singtel, the Singapore carrier, announced the acquisition of Trustwave for $810 million, completed later that year, and ran it as its cyber security arm; in October 2021 Trustwave sold its PCI compliance business to Sysnet for $80 million; in January 2024 Singtel sold Trustwave to the MC² Security Fund, an affiliate of The Chertoff Group, for $205 million; and on 19 August 2025 LevelBlue completed its acquisition, terms undisclosed, calling the result the world's largest pure-play managed security services provider.",
+      "By October 2026 the company's own about page answers with a redirect to LevelBlue's, which is why the record marks the name as ended in 2025 while the people, the operations centres and SpiderLabs continue under the new owner.",
+      "Why it belongs in a networking record: Trustwave is the clearest case on this timeline of a security services company changing hands by region and by thesis, a carrier that wanted a security arm, a fund that wanted a platform, a services company that wanted scale, with the same Chicago operation underneath all three.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Trustwave_Holdings",
+    externalLabel: "Trustwave Holdings (Wikipedia)",
+    acquisitions: [
+      { year: 2015, name: "Trustwave acquired BY Singtel", price: "$810 million", what: "Announced 7 April 2015; Singtel's cyber security arm for the next nine years.", sourceNote: "Wikipedia: Trustwave Holdings (read 2026-10-06)." },
+      { year: 2024, name: "Trustwave acquired BY the MC² Security Fund (The Chertoff Group)", price: "$205 million", what: "Singtel's sale, January 2024.", sourceNote: "Wikipedia: Trustwave Holdings (read 2026-10-06)." },
+      { year: 2025, name: "Trustwave acquired BY LevelBlue", what: "Completed 19 August 2025, terms not disclosed.", became: "Part of LevelBlue; SpiderLabs as LevelBlue SpiderLabs.", sourceNote: "LevelBlue, Dallas, 19 August 2025 (read 2026-10-06)." },
+    ],
+    sources: [
+      { label: "Wikipedia: Trustwave Holdings - founded 1995 in Chicago; Singtel acquisition announced 7 April 2015 at $810 million; PCI business sold to Sysnet in October 2021 for $80 million; sold to the MC² Security Fund in January 2024 for $205 million; LevelBlue 19 August 2025; CEO Eric Harmon (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Trustwave_Holdings" },
+      { label: "LevelBlue, Dallas, 19 August 2025: LevelBlue completes the acquisition of Trustwave to form the world's largest pure-play managed security services provider (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-trustwave-to-form-the-worlds-largest-managed-security-services-provider" },
+      { label: "LevelBlue - About us, the page trustwave.com's about page redirects to: 'LevelBlue SpiderLabs' (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
+    ],
+  },
+  {
+    slug: "spiderlabs",
+    official: {
+      url: "https://www.levelblue.com/company/about-us",
+      resources: [
+        { label: "LevelBlue, 2022: Say hello to SpiderLabs, the team behind Trustwave's security product offerings", url: "https://www.levelblue.com/blogs/levelblue-blog/say-hello-to-spiderlabs-the-team-behind-trustwaves-security-product-offerings" },
+      ],
+    },
+    tags: ["services"],
+    group: "contemporary",
+    name: "SpiderLabs",
+    // No founding year: none of the Trustwave or LevelBlue pages read today states when the team was formed, and
+    // the earliest description read (trustwave.com/spiderLabs.php, Wayback capture of 6 January 2011) already
+    // describes it as established. The record says so rather than guess, and the card sits undated.
+    tagline: "Trustwave's research, testing and incident response team, carried under its own name through three owners.",
+    intro:
+      "SpiderLabs is the research, penetration testing, threat hunting and incident response team that Trustwave built and that LevelBlue now presents as LevelBlue SpiderLabs. It is not a company and never was; it is on this record because it is the part of Trustwave the industry knows by name, and because that name survived the owners.",
+    body: [
+      "Trustwave's own description of the team in January 2011 already reads as a mature practice: an advanced security team focused on forensics, ethical hacking and application security testing, with hundreds of forensic investigations and thousands of ethical hacking exercises behind it, a research team producing proof-of-concept tools, and members speaking at Black Hat, DEF CON, OWASP and SANS. A 2014 datasheet counted more than a hundred people across more than ten countries; a 2022 description organises them into four teams, Security Research, Security Testing, Threat Hunting, and Digital Forensics and Incident Response, publishing more than fifty blogs and advisories a year and disclosing dozens of vendor vulnerabilities, with tools such as Responder, SocialMapper and CrackQ released to the field.",
+      "When LevelBlue completed its acquisition of Trustwave on 19 August 2025 its release called SpiderLabs the elite Trustwave team providing threat research, intelligence and threat hunting, and LevelBlue's pages now carry the name as LevelBlue SpiderLabs. The founding year of the team is not stated in any document read for this record, and the card carries no year rather than an invented one.",
+      "Why it belongs in a networking record: the names that survive acquisitions are the ones with a reputation of their own, and a research team whose advisories, tools and reports were cited for two decades is the kind of unit a buyer keeps and a reader recognises.",
+    ],
+    externalUrl: "https://www.levelblue.com/blogs/levelblue-blog/say-hello-to-spiderlabs-the-team-behind-trustwaves-security-product-offerings",
+    externalLabel: "SpiderLabs, described by Trustwave (2022)",
+    sources: [
+      { label: "Trustwave, SpiderLabs - About Us (trustwave.com/spiderLabs.php, Wayback Machine capture of 6 January 2011): 'an advanced security team within Trustwave focused on forensics, ethical hacking, and application security testing'; hundreds of investigations, thousands of ethical hacking exercises (read 2026-10-06)", url: "https://web.archive.org/web/20110106015551/https://www.trustwave.com/spiderLabs.php" },
+      { label: "Trustwave SpiderLabs overview datasheet, 2014: penetration testing, incident response, forensics and threat intelligence; more than 100 people across more than 10 countries (read 2026-10-06)", url: "https://cdn.blueally.com/datasecurityworks/datasheets/tw-spiderlabs-overview.pdf" },
+      { label: "Trustwave (now on levelblue.com), 19 October 2022: the four SpiderLabs teams, 50+ blogs and advisories a year, dozens of vulnerabilities, Responder, SocialMapper, CrackQ (read 2026-10-06)", url: "https://www.levelblue.com/blogs/levelblue-blog/say-hello-to-spiderlabs-the-team-behind-trustwaves-security-product-offerings" },
+      { label: "LevelBlue, Dallas, 19 August 2025: the Trustwave acquisition completed; SpiderLabs 'the elite Trustwave team' (read 2026-10-06)", url: "https://www.levelblue.com/newsroom/press-releases/levelblue-completes-acquisition-of-trustwave-to-form-the-worlds-largest-managed-security-services-provider" },
+      { label: "LevelBlue - About us: 'LevelBlue SpiderLabs', the elite global threat experts and intelligence (read 2026-10-06)", url: "https://www.levelblue.com/company/about-us" },
+    ],
+  },
+  // ---- Netcraft (PRIME, 2026-10-06 06:29: "Please add a rich industry entry for https://www.netcraft.com/").
+  // No career tie and no training claim: a contemporary record of the company whose survey has counted the web's
+  // servers since 1995 and which now takes down a third of the world's phishing. Facts read live on 2026-10-06. ----
+  {
+    slug: "netcraft",
+    official: {
+      url: "https://www.netcraft.com",
+      resources: [
+        { label: "Netcraft - About us (the company's own timeline, 1995 to 2024)", url: "https://www.netcraft.com/company/about-us" },
+        { label: "Netcraft - News", url: "https://www.netcraft.com/company/news" },
+      ],
+    },
+    tags: ["vendor", "services"],
+    group: "contemporary",
+    name: "Netcraft",
+    // Founded 1994 by Mike Prettejohn (Wikipedia infobox); the legal person, Netcraft Ltd, company 02161164, was
+    // incorporated on 4 September 1987 (Companies House). The method page's rule: incorporation is not founding,
+    // and the record keeps both facts.
+    founded: 1994,
+    tagline: "The company that has counted the web's servers every month since 1995, and now takes down a third of the world's phishing.",
+    intro:
+      "Netcraft is a cybersecurity company founded in Bath, England, by Mike Prettejohn in 1994 and run from London since 2023. For most of the web's life it has been known for one monthly table: the Web Server Survey, released in 1995, which asks every hostname it can find what software answers, and so became the public record of what the web runs on, cited in every argument about web server market share since. The same crawling and classifying machinery, turned on criminals rather than on servers, became the business: detecting phishing sites, scams and fake apps and getting them taken off the internet.",
+    body: [
+      "The company's own timeline runs from the 1995 survey to the SSL Survey of 1996, a fraud detection service in 2004, a phishing feed in 2005 and the first takedowns in 2006, the first automated takedowns in 2013, machine-learning models from 2014, and in 2024 a conversational scam intelligence service. Today it states that it carries out a third of the world's phishing takedowns, with a median time from detection to removal of thirty-three minutes, and counts among its customers sixteen of the fifty largest banks and nine of the fifty largest governments.",
+      "It was privately held and unfunded for nearly three decades. On 18 July 2023 Spectrum Equity invested more than $100 million, the company's first outside capital, and Ryan Woodley became chief executive; the headquarters moved from Bath to London in the same year. On 12 September 2023 Netcraft bought FraudWatch International of Melbourne, an online brand protection company with a round-the-clock security operations centre, which gave it a base in Australia.",
+      "Netcraft Ltd, the legal person, was incorporated on 4 September 1987 and is registered at 63 Catherine Place, London, the address the site gives for its headquarters; the business the record describes began in 1994, and the card carries that year.",
+      "Why it belongs in a networking record: the Web Server Survey is the longest continuous public measurement of what the web runs on, and anyone who has argued about market share for Apache, IIS or nginx has cited it. The takedown business is the practical end of the same discipline this site teaches on its security pages: a phishing site is a DNS record, a certificate and a web server, and removing it means knowing who to ask and in what order.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Netcraft",
+    externalLabel: "Netcraft (Wikipedia)",
+    acquisitions: [
+      {
+        year: 2023,
+        name: "FraudWatch International",
+        what: "Online brand protection company of Melbourne, Australia, with a 24/7 security operations centre; phishing, social media impersonation, brand infringement and fake mobile apps. Terms not disclosed.",
+        became: "Netcraft's Australian operation.",
+        sourceNote: "Netcraft news, 12 September 2023; Wikipedia: Netcraft (read 2026-10-06).",
+      },
+    ],
+    sources: [
+      { label: "Wikipedia: Netcraft - infobox: founded 1994 by Mike Prettejohn, incorporated 4 September 1987, headquarters London; the monthly Web Server Survey since its inception; the 2023 Spectrum Equity investment and the FraudWatch International acquisition (read 2026-10-06)", url: "https://en.wikipedia.org/wiki/Netcraft" },
+      { label: "Companies House: NETCRAFT LTD, company 02161164, incorporated 4 September 1987, active, registered office 63 Catherine Place, London SW1E 6DY (read 2026-10-06)", url: "https://find-and-update.company-information.service.gov.uk/company/02161164" },
+      { label: "Netcraft - About us: the company timeline (1995 Web Server Survey, 1996 SSL Survey, 2004 fraud detection, 2005 phishing feed, 2006 takedowns, 2013 automated takedowns, 2014 machine learning, 2024 Conversational Scam Intelligence); a third of the world's phishing takedowns; 16 of the 50 largest banks (read 2026-10-06)", url: "https://www.netcraft.com/company/about-us" },
+      { label: "Netcraft - home page: 33% of global phishing attacks taken down, 33 minutes median takedown time, offices in London, Lehi (Utah) and Hawthorn (Victoria) (read 2026-10-06)", url: "https://www.netcraft.com/" },
+      { label: "Netcraft news, 18 July 2023: Spectrum Equity invests more than $100 million, the company's first funding; founder Mike Prettejohn; Ryan Woodley appointed CEO", url: "https://www.netcraft.com/company/news/netcraft-secures-funding" },
+      { label: "Netcraft news, 12 September 2023: Netcraft acquires FraudWatch International of Melbourne, online brand protection with a 24/7 SOC; terms not disclosed", url: "https://www.netcraft.com/company/news/netcraft-and-fraudwatch" },
     ],
   },
   {

@@ -270,6 +270,12 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
   kaspersky: "RU",
   "check-point": "IL",
   sophos: "GB",
+  netcraft: "GB", // Bath, England, 1994; London since 2023 (Wikipedia, Companies House, read 2026-10-06)
+  beyondtrust: "US", // Symark, 1985; Atlanta since the 2018 combination (Wikipedia, read 2026-10-06)
+  cybereason: "US", // incorporated in Delaware, 2012; Boston from 2014 (Wikipedia, read 2026-10-06)
+  levelblue: "US", // Dallas; launched 6 May 2024 (LevelBlue newsroom, read 2026-10-06)
+  trustwave: "US", // Chicago, 1995 (Wikipedia, read 2026-10-06)
+  spiderlabs: "US", // Trustwave's team, Chicago (Trustwave, 2011, read 2026-10-06)
   getronics: "NL",
   cyberark: "IL",
   epi: "NL",

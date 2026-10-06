@@ -12062,7 +12062,8 @@
       "lineagesLink": "Vendor lineages & acquisitions",
       "ironport": "Channel development and pre-sales technical consulting for IronPort's C-Series e-mail security appliances: late 2004 with IronPort's own São Paulo operation, then through 2005 with a Cisco and IronPort reseller, from RFPs and installation to customer support. IronPort was acquired by Cisco in 2007.",
       "teachingNow": "Currently teaching:",
-      "cylk2020": "Solutions consulting and pre-sales through CYLK, the São Paulo security integrator, while full-time instruction with its sister company InLearn began: F5 application delivery and security, Palo Alto Networks firewalls, Fortinet, Tenable vulnerability management, CyberArk privileged access and Corvil network analytics, as proofs of concept, designs and customer training. Three of the six hold a mark here; the other three are named, and each has its chapter in the career record."
+      "preparing": "Preparing to teach:",
+      "cylk2020": "Solutions consulting and pre-sales through CYLK, the São Paulo security integrator, while full-time instruction with its sister company InLearn began: F5 application delivery and security, Palo Alto Networks firewalls, Fortinet, Tenable vulnerability management, CyberArk privileged access and Corvil network analytics, as proofs of concept, designs and customer training. All six hold a mark here, and each has its chapter in the career record."
     },
     "origins": {
       "title": "Where it started",
@@ -12460,7 +12461,9 @@
       "s6Title": "Enterasys, 2005 to 2007",
       "s6Body": "Returning to the lineage as a services and support manager, the focus was the Secure Routing product line, with Enterasys as the regional focal point for Brazil. The work combined high-level customer support, complex troubleshooting, and escalation management, including the demanding escalations that came in from a key account, Petrobras in São Paulo, with localized product management alongside. The technical surface had grown to include network management, NAC and UAC, intrusion detection and prevention, and SIEM, across enterprise switching and routing. Enterasys was later acquired by Extreme Networks in 2013, closing a circle that connects this early work to a platform still taught today.",
       "s7Title": "The always-on superhighway",
-      "s7Body": "One thread from the Enterasys years deserves recording precisely, because it is easy to overstate. This was the height of policy-based networking, Enterasys built its Secure Networks architecture around role-based access and 802.1X, and the work sat in close, constant contact with the demanding world of contact-center networks and the Avaya and Cisco IP-telephony systems running on top of them. The familiarity ran deep, but it was familiarity from the network side. The role was never unified-communications engineering; it carried no telephony certification and no hands-on UC work. What it delivered instead was the layer all of that depends on: a secure, redundant, resilient, monitored, guaranteed always-on superhighway for voice and mission-critical traffic. Being clear about where that line sits is part of describing the work honestly."
+      "s7Body": "One thread from the Enterasys years deserves recording precisely, because it is easy to overstate. This was the height of policy-based networking, Enterasys built its Secure Networks architecture around role-based access and 802.1X, and the work sat in close, constant contact with the demanding world of contact-center networks and the Avaya and Cisco IP-telephony systems running on top of them. The familiarity ran deep, but it was familiarity from the network side. The role was never unified-communications engineering; it carried no telephony certification and no hands-on UC work. What it delivered instead was the layer all of that depends on: a secure, redundant, resilient, monitored, guaranteed always-on superhighway for voice and mission-critical traffic. Being clear about where that line sits is part of describing the work honestly.",
+      "s8Title": "Sentinel, Nessus and the quarantine",
+      "s8Body": "One deployment of those years connects two chapters of this record. Enterasys's LAN user access control, reviewed as Sentinel 1.0 in October 2006 and sold as Enterasys NAC after it, admitted an end system only after assessing it, and the assessment engine it called was Nessus, the scanner created by Renaud Deraison and by then Tenable Network Security's product: a Nessus server scanned the endpoint when the Trusted Access Gateway asked, a failed scan put the port into a quarantine policy that allowed nothing but the remediation web page, and a passing one released it. On the other side of the loop sat Enterasys's Dragon intrusion detection and prevention and the NetSight Automated Security Manager, which turned a detected event into a located source and an applied response. Deploying that solution for customers in Brazil, with Nessus doing the assessment, was this record's first contact with Tenable's product, fourteen years before the pre-sales chapter of 2020. The author recalls the Nessus part clearly and the Dragon part less so; the product descriptions here come from Enterasys's own 2008 NAC whitepaper and from the 2006 review of Sentinel 1.0, not from memory."
     },
     "juniper": {
       "name": "NetScreen and Juniper",
@@ -12713,7 +12716,9 @@
       "s1Body": "The engagements were vulnerability management, Tenable's whole business: scanning what an organisation actually has, ranking what is exposed, and showing a customer where to start. The two platforms of the day were Tenable.io, the cloud-managed service, and Tenable.sc, the on-premises console that grew out of SecurityCenter, and the work covered both: demonstrations and proofs of concept against the customer's own environment, the scoping of licences by asset count, and the architecture conversations about scanners, agents and where the data would live.",
       "s2Title": "The certifications, and what they were for",
       "s2Body": "Tenable's partner programme certifies three pre-sales roles per platform, engineer, integrator and architect, and 2020 produced all six, for Tenable.io and for Tenable.sc, plus the Certified Sales Associate. They were the admission ticket to run the engagements above rather than ornaments, and they lapsed in 2022 when the work had moved on; the record keeps them with their dates for that reason.",
-      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator and Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator and Architect. All 2020 to 2022. Listed with their evidence on the credentials page."
+      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator and Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator and Architect. All 2020 to 2022. Listed with their evidence on the credentials page.",
+      "s3Title": "Nessus, fourteen years earlier",
+      "s3Body": "The 2020 chapter was not the first time Tenable's product did work on this record. In the Enterasys years, 2005 to 2007, the LAN access control solution deployed for customers in Brazil, Sentinel and then Enterasys NAC, assessed every end system before admitting it, and the engine it called for the assessment was a Nessus server; a failed scan meant a quarantine policy and a remediation page, a passing one meant access. That deployment, with its containment side in Dragon and the NetSight Automated Security Manager, is told in the Cabletron and Enterasys chapter, with the Enterasys documents it is drawn from. Nessus had been Tenable's since the company was founded around it in 2002."
     },
     "cyberark": {
       "name": "CyberArk",
@@ -14470,14 +14475,15 @@
   },
   "guide": {
     "eyebrow": "User guide",
-    "title": "How to use this site",
-    "lede": "A practical guide to the site: what is here, how each tool works, which tools to reach for, the learning material that surrounds them, and how the site handles privacy, languages, and offline use. Everything computes locally in your browser.",
+    "title": "How to use ronutz",
+    "lede": "A practical guide to the whole site: the five worlds it is organised into, how each one works and where to start in it, then the reference material, the tools one line each, common tasks with the tools that get them done, and the manual for the features that cut across everything.",
     "tocAria": "Guide sections",
     "nav": {
       "datasheet": "At a glance",
       "quickref": "Tool reference",
       "usage": "Suggested usage",
-      "manual": "Manual"
+      "manual": "Manual",
+      "map": "The site in one minute"
     },
     "datasheetHeading": "At a glance",
     "datasheetIntro": "The essentials in one panel. These figures are generated from the site itself at build time, so they always match what is actually published.",
@@ -14496,7 +14502,11 @@
       "techValue": "Next.js, a statically exported progressive web app",
       "cost": "Price",
       "costValue": "Free to use; the first useful answer is never behind a paywall",
-      "glossary": "Glossary terms"
+      "glossary": "Glossary terms",
+      "guides": "Study guides",
+      "hubs": "Vendor hubs",
+      "industry": "Organisations on the industry record",
+      "people": "People on the timeline"
     },
     "quickrefHeading": "Tool reference",
     "quickrefIntro": "Every general-purpose tool, grouped by category. This list is generated from the live registry, so it is always complete. Tools tied to a specific vendor live on that vendor's page.",
@@ -14709,7 +14719,74 @@
     },
     "backToTools": "Browse all tools",
     "exploreLearn": "Explore the Learn library",
-    "appearsIn": "Appears in these workflows"
+    "appearsIn": "Appears in these workflows",
+    "mapHeading": "The site in one minute",
+    "mapIntro": "Everything on ronutz lives in one of five worlds, the same five the home page, the footer and the sitemap use. The counts are computed from the site itself when it is built, so they are the figures of the pages they point at.",
+    "howHeading": "How each part works",
+    "howIntro": "One section per surface: what it is for, how to use it, and the two or three places to start. The sections below this one are the reference: the datasheet, every tool on one line, the common tasks, and the manual.",
+    "howStart": "Start with:",
+    "how": {
+      "tools": {
+        "nav": "Tools",
+        "h": "The tools",
+        "p1": "Every tool computes in your browser and sends nothing anywhere: paste or type the input and the result appears, with an Example button that fills a known-good input and a Clear button beside it. The tools index opens three ways in: paste what you have, and the box lines up the tools that recognise the shape of what you pasted; choose by what you need to do (decode, understand, compute, build, check); or follow a workflow that takes one thing from tool to tool, a CIDR to a firewall rule, a certificate to the headers a browser enforces.",
+        "p2": "The index has three floors, stated on the page: the main floor, where every tool has a fixed shape and golden test vectors; the green room, for tools whose form is still settling; and the red room, the one place a tool can send your input out, to the official service named on screen, and only when you ask. Each tool has a documentation page, readable as a web page or as Markdown, and the same logic is described as an API with a machine-readable specification.",
+        "l1": "The tools index",
+        "l2": "Paste what you have",
+        "l3": "The API"
+      },
+      "learn": {
+        "nav": "Learn",
+        "h": "Learn",
+        "p1": "The Learn library is the explanation behind the tools: articles grouped by subject, in the same taxonomy the tools use, each citing the documentation it was written from and linking the tools that compute what it describes. The hub can be read two ways, Guided or Directory. Guided asks what you want to do (understand a subject, learn something in order from the start, prepare for an exam, have a platform's documentation read for you, find a definition fast) and sends you to the right door; Directory lists every article by subject in reading order.",
+        "p2": "Around the articles sit the Stories, longer pieces that argue a point; The Practice, about the work rather than the technology (triage, escalation, change, the human side); the Glossary, with a definition for every term the articles and tools use; and the People, the engineers and authors behind the protocols. In any article, the first mention of a technical term carries a dashed underline you can hover or tap for a short definition; that hint can be switched off in Settings.",
+        "l1": "The Learn hub",
+        "l2": "The glossary",
+        "l3": "The Practice"
+      },
+      "guides": {
+        "nav": "Study guides",
+        "h": "Study guides and certification guides",
+        "p1": "A study guide is a reading path: the articles to read, in order, with one sentence saying what you will understand at the end, grouped into families (protocols and foundations, identity and security, application delivery, vendor platforms). Each path opens on its first article, and every article in it links back to the path, so you can leave and return without losing your place.",
+        "p2": "The certification guides are the same material arranged against a vendor exam: the exam's own code and objectives, with the articles and tools that cover each objective. They are reading plans, not exam dumps; where an objective has no coverage yet the guide says so in its place, and a build check fails if one is left silent, which is how the gaps stay visible when the exams change.",
+        "l1": "The study guides",
+        "l2": "The certification guides"
+      },
+      "hubs": {
+        "nav": "Vendor hubs",
+        "h": "The vendor hubs",
+        "p1": "A vendor hub is one page per vendor family that gathers everything the site holds for it: the tools that decode or compute that vendor's formats, the articles grounded in its documentation, its place on the industry record and its lineage of acquisitions and renames. If you work on one platform all day, its hub is the page to bookmark.",
+        "p2": "Where the author teaches a vendor's official courses, the hub says so and links the training page, which routes to Red Education; where he does not, the hub says nothing about teaching, by rule. Naming a vendor on this site is never a claim of a relationship with it.",
+        "l1": "All the hubs",
+        "l2": "Training"
+      },
+      "industry": {
+        "nav": "Industry",
+        "h": "The industry record",
+        "p1": "The industry record is a chronology of the organisations that built networking and security, in the order their stories begin, each with its founding year, its sources and, where it applies, who bought whom and for how much. Six ways in sit before the list: follow a company, follow a lineage, explore an era, the Brazilian ecosystem, where the author's own path crossed it, and the people. Each is a filtered view with its own address, so it can be shared.",
+        "p2": "The career chapters are the author's own record, one chapter per company he worked inside or alongside, with the credentials of each; the people timeline runs from the voltaic pile to the present. A method page states the rules every entry follows (what counts as a source, what founded means, how an acquisition is recorded, what is done with an uncertain date) and names the build checks that enforce them. A correction route on the contact page is one click from every entry.",
+        "l1": "The industry record",
+        "l2": "The career chapters",
+        "l3": "How the research is done"
+      },
+      "search": {
+        "nav": "Search",
+        "h": "Search and shortcuts",
+        "p1": "The search field in the header, or Ctrl K, opens a dialog that searches tools, articles, guides and pages at once; the pills under the field narrow it to one kind. A hub's own field searches only that hub's world, and a section's field (The Practice, The Roles) only that section, with an Only in pill that one click widens again. Search runs in your browser against an index built with the site; no query leaves your device.",
+        "p2": "A handful of single-key shortcuts work on every page: press ? to see them, and rebind any of them in Settings. The human sitemap lists every page by world, for the times a map beats a search box.",
+        "l1": "Settings and shortcuts",
+        "l2": "The sitemap"
+      },
+      "privacy": {
+        "nav": "Privacy",
+        "h": "Privacy and what stays on your device",
+        "p1": "The site sets no cookies and runs no third-party analytics or trackers. Your theme, your language, your shortcut bindings, the glossary-hint preference and a short reading trail live in your browser's local storage, on your device only, and are never sent anywhere; clearing site data restores the defaults. The privacy page lists every key the site writes, by name, and what the server counts in aggregate.",
+        "p2": "The site is a progressive web app: once visited, your browser can keep it available, and because the tools compute locally they keep working offline. The stats page shows what is most read, from the aggregate counts; the colophon says how the site is built and what every number on it is computed from.",
+        "l1": "The privacy page",
+        "l2": "Stats",
+        "l3": "Colophon"
+      }
+    }
   },
   "disclaimer_page": {
     "metaTitle": "Disclaimer",
@@ -22938,7 +23015,50 @@
     "figuresLearners": "learners trained",
     "figuresSince": "training since",
     "figuresRegions": "global regions",
-    "figuresVendors": "vendors authorized"
+    "figuresVendors": "vendors authorized",
+    "identityLine": "The institution behind Rodolfo Nützmann's authorised training and his commercial professional engagements.",
+    "partsLabel": "Part {n}",
+    "jumpTribute": "A word of thanks",
+    "part": {
+      "why": {
+        "title": "Why Red Education",
+        "lede": "Who Red Education is in its own published figures and words: its scale and reach, the vision and values it states, and how it says it works."
+      },
+      "enables": {
+        "title": "What Red Education enables",
+        "lede": "The vendor authorisations Red Education holds, the recognition those vendors have given it, and the course explainers it publishes for each platform. This is Red Education's list; the author's own four platforms are named in the next part."
+      },
+      "mywork": {
+        "title": "Where my work fits",
+        "lede": "The four platforms Rodolfo Nützmann teaches through Red Education, the proof that is verifiable, and where to book."
+      },
+      "bench": {
+        "title": "The bench",
+        "lede": "The instructors as a team: the aggregate figures and the externally conferred awards, with no bios of colleagues."
+      },
+      "evidence": {
+        "title": "Case evidence",
+        "lede": "The engagements Red Education has published, two of them naming the author, and what the company writes about."
+      },
+      "sources": {
+        "title": "Official sources",
+        "lede": "Every fact on this page is read from Red Education's own pages, listed here so it can be checked. Nothing above comes from memory; when one of these pages changes, this page is re-verified before it is edited."
+      }
+    },
+    "sources": {
+      "home": "Red Education, home page",
+      "vendors": "Certifications, the complete vendor list",
+      "f5": "F5 training at Red Education",
+      "fortinet": "Fortinet training at Red Education",
+      "extreme": "Extreme Networks training at Red Education",
+      "netskope": "Netskope training at Red Education",
+      "culture": "About us, our culture",
+      "explainers": "Course explainers index",
+      "news": "News and articles index",
+      "case1": "Case study: Fortinet training at scale for a global IT leader",
+      "case2": "Case study: F5 BIG-IP iRules training"
+    },
+    "sourcesNote": "Read and verified on 9 and 14 July, 6 and 16 August 2026; figures quoted as published on those dates. Two of Red Education's indexes are drawn by script in the browser and cannot be enumerated by fetching, which is why the case studies and articles listed are the ones that have actually been read."
   },
   "toolDocs": {
     "titleSuffix": "documentation",
@@ -23039,7 +23159,8 @@
     "worksPill": "Works inside",
     "worksWithPill": "Works with",
     "markEra": "wordmark in use {era}",
-    "markSince": "since {year}"
+    "markSince": "since {year}",
+    "filterLineage": "With a lineage"
   },
   "industry": {
     "metaTitle": "Industry - corporate lineages of networking and security",
@@ -23063,6 +23184,77 @@
       "chaptersLede": "{count} of these companies I worked for or alongside, from 1996 on: the record read from the inside, in order.",
       "learningTitle": "Where the industry learns",
       "learningLede": "{count, plural, one {# company} other {# companies}} whose business is teaching this industry, and how that practice came to be."
+    },
+    "eras": {
+      "label": "Explore an era",
+      "before-the-network": {
+        "title": "Before the network",
+        "lede": "The telegraph, the telephone, the transistor, the integrated circuit and the modem: the companies founded here predate networking and built the parts it would be made of."
+      },
+      "the-packet-and-the-wire": {
+        "title": "The packet and the wire",
+        "lede": "From the first ARPANET links in 1969 to the day the ARPANET switched to TCP/IP, 1 January 1983: Ethernet, the TCP paper and DNS between them."
+      },
+      "routers-switches-and-the-reserve": {
+        "title": "Routers, switches and the reserve",
+        "lede": "The router and switch companies arrive: spanning tree in 1985, SNMP in 1988, the Ethernet switch in 1990; in Brazil the market reserve of 1984 decides who may build."
+      },
+      "the-web-and-the-firewall": {
+        "title": "The web and the firewall",
+        "lede": "The World Wide Web and the first commercial firewall, both 1991, then LDAP and the open signatures of 1998: the internet becomes a market and a threat surface at once."
+      },
+      "the-flood-and-the-rental": {
+        "title": "The flood and the rental",
+        "lede": "From the denial of service of February 2000 to the smartphone of 2007, through utility computing in 2006: scale becomes the problem, and the computer becomes something you rent."
+      },
+      "software-takes-the-network": {
+        "title": "Software takes the network",
+        "lede": "Control separated from forwarding in 2008, Stuxnet in 2010, containers in 2013, free certificates in 2015: the network becomes a program and so does the attack."
+      },
+      "platforms-and-the-things": {
+        "title": "Platforms and the things",
+        "lede": "From the Mirai botnet of 2016 to the conversational models of 2022 and today: the platform companies, the things on the network, and the machines that answer in prose."
+      },
+      "anchors": "Opened by:",
+      "undated": "{n} without a dated start, placed in no era: the sources give no founding year, and the record says so rather than guess."
+    },
+    "entrances": {
+      "title": "Ways into the record",
+      "lede": "{count} organisations, in the order their stories begin. Six ways in before the chronology, each a filtered view with its own address.",
+      "company": {
+        "title": "Follow a company",
+        "lede": "Type its name, or any name it has had; the search looks inside this record first."
+      },
+      "lineage": {
+        "title": "Follow a lineage",
+        "lede": "{count} records carry a typed chain: acquisitions, an ending inside another company, or a story that begins before the company itself."
+      },
+      "era": {
+        "title": "Explore an era",
+        "lede": "{count} eras, each opened by a sourced milestone, from before the network to the platforms."
+      },
+      "brazil": {
+        "title": "The Brazilian ecosystem",
+        "lede": "{count} Brazilian organisations, from the market reserve to the integrators and training centres of today: the genealogy few have written down."
+      },
+      "mine": {
+        "title": "Where my own path crossed it",
+        "lede": "{count} companies I worked inside, worked with, or work with now; the chapters tell the story from the inside."
+      },
+      "people": {
+        "title": "The people",
+        "lede": "Companies built the industry; {count} people did it. Pioneers, builders, breakers and the Brazilians among them."
+      },
+      "browseAll": "Browse all {count} organisations",
+      "method": "How the research is done"
+    },
+    "doors": {
+      "title": "Three doors the data chose",
+      "chain": "The longest chain: {n} acquisitions on one record",
+      "ended": "Ended inside another company in {n}, with the densest lineage",
+      "brazil": "The Brazilian record with the densest lineage, from {n}",
+      "surprise": "Surprise me with a company",
+      "surpriseHint": "One of {count}, chosen when you click."
     }
   },
   "sitemap": {
@@ -26509,7 +26701,30 @@
     "searchPlaceholder": "Type a name",
     "showing": "Showing '{shown}' of '{total}'",
     "clear": "Clear",
-    "none": "Nobody matches. Clear the search or pick another field."
+    "none": "Nobody matches. Clear the search or pick another field.",
+    "entrancesLabel": "Ways into the timeline",
+    "entrances": {
+      "pioneers": {
+        "title": "The pioneers of electricity",
+        "lede": "{count} people from the voltaic pile to the transistor, the physics every later entry stands on."
+      },
+      "computing": {
+        "title": "The builders of computing",
+        "lede": "{count} people who made the machine: the logic, the languages, the architectures."
+      },
+      "internet": {
+        "title": "The people who built the internet",
+        "lede": "{count} people from the first ARPANET link to the protocols the whole world now runs on."
+      },
+      "security": {
+        "title": "Security, cryptography and hacker culture",
+        "lede": "{count} people who broke things, protected things, and wrote the ciphers in between."
+      },
+      "brazil": {
+        "title": "Brazil",
+        "lede": "{count} Brazilians, from the national micros of the market reserve to the people building the internet here now."
+      }
+    }
   },
   "stats_page": {
     "eyebrow": "Statistics",
@@ -26849,5 +27064,60 @@
     "featureOpen": "Open the reconstruction",
     "featureFacts": "{pages, plural, one {# page} other {# pages}} · {assets, plural, one {# file} other {# files}} · rebuilt from the export of {exportDate}",
     "featureThumbAlt": "The reconstruction of {domain}, rendered {date}"
+  },
+  "industryMethod": {
+    "navLabel": "How the research is done",
+    "eyebrow": "Industry",
+    "title": "How the research is done",
+    "metaDescription": "What counts as a source in the industry record, how founding and acquisition dates are chosen, what happens when sources disagree, how current status is verified, how corrections arrive, and the build guards that enforce each rule.",
+    "lede": "The record states facts about several hundred real companies and people: when they began, who bought whom and for how much, whether they still exist. These are the rules every statement follows, with the record's own examples, and the checks that fail the build when a rule is broken.",
+    "sections": {
+      "sources": {
+        "title": "What counts as a source",
+        "p1": "Primary first. A company's own filings and the press releases filed with them (a Form 8-K exhibit is the company stating the date and the price under its own name), the company registry for a Brazilian company (the CNPJ record, with its constitution date), the vendor's own documentation for a product fact. Then the press of record, dated. Wikipedia is used as a map to primary sources and is cited as what it is, an encyclopaedia, with its infobox read on a given day.",
+        "p2": "Every entry lists its sources at its foot, with the date each was read, and every founding year on a card is named by one of them. A chat transcript is never a source: the build refuses a citation that points at one, because a conversation with a language model is not evidence of anything about a company.",
+        "p3": "Where an entry states something about Rodolfo Nützmann's own work with a company, the source is the portfolio: the dated CVs and the LinkedIn record, read in the order they were written, the earliest closest to the fact."
+      },
+      "founded": {
+        "title": "Founded, incorporated, and where a story begins",
+        "p1": "A card's founding year is the year its own named subject was founded, not its earliest ancestor's. Unisys was founded in 1986, even though its lineage reaches Burroughs in 1886; Riverstone in 2000, not Yago Systems in 1996. Three cards were wrong under the older rule and were corrected on 2 October 2026.",
+        "p2": "Where a card's story begins before its subject, the record says so in a separate field, and the timeline places the card where the story starts: CommScope was founded in 1976, and its card sits at 1961, where Superior Continental's Comm/Scope division begins, with the predecessor named beside the year. On a card that is explicitly a lineage of several companies, the year is the earliest company's and the card says whose it is.",
+        "p3": "Incorporation is not founding. A company registered in January 2004 may have been trading since 1992 under another legal person; the record keeps both facts and does not pick one."
+      },
+      "acquisitions": {
+        "title": "Acquisition dates and prices",
+        "p1": "An acquisition has at least two dates, announced and completed, and the record prefers the completion date from the filing that reports it, with the price as that filing states it: Plantronics completed Polycom on 2 July 2018 for an enterprise value of 2.0 billion dollars, HP completed Poly on 29 August 2022 at 40 dollars a share, CommScope completed Avaya's Connectivity Solutions effective 31 January 2004 for 250 million dollars in cash and about 1.8 million shares.",
+        "p2": "Where the sources give two prices, both are recorded and the disagreement is stated: Wikipedia's own citations give Arris at 7.4 and at 4.93 billion dollars. The record does not average, round or choose."
+      },
+      "uncertain": {
+        "title": "Uncertain dates",
+        "p1": "When sources disagree about a date, the disagreement is the fact. TDec registers in March 1992 and brands itself established 1993; InLearn was constituted in 2002 and presents itself as teaching since 2008; Tenable's incorporation is given as 16 September 2002 by most sources and 4 October by one. Each entry says so, in those words, rather than picking the tidier year.",
+        "p2": "A date the record cannot source is left out rather than estimated. A founding year with no citation on its own entry fails the build, which is why a few entries carry a declared reason in place of a year."
+      },
+      "status": {
+        "title": "Whether a company still exists",
+        "p1": "An entry carries an ending only when a sourced event ended the company's independent existence: absorbed, renamed away, or wound up, with the year and the note. Absent, the marker means still trading as far as the sources read say, not that the question was never asked.",
+        "p2": "These markers are set by review, never by pattern-matching the prose. A first attempt to derive them automatically from the timelines produced roughly thirty wrong answers out of forty-eight, because a sentence cannot be read for direction by a regular expression: a company acquiring and a company acquired look the same to one. The site's source-liveness run re-checks every cited link on a schedule and records what has moved."
+      },
+      "corrections": {
+        "title": "Corrections",
+        "p1": "A wrong date, a dead source, a company that has since been sold: the contact page has a route for it, and a correction that lands is recorded in the changelog with its source, so the record's history of being wrong is itself on the record.",
+        "p2": "The record also corrects itself against its author. Where the portfolio says one date and a badge says another, the portfolio wins and the badge is called what it is, a badge date; the chapters say so where it happened."
+      }
+    },
+    "guards": {
+      "title": "The checks that enforce the rules",
+      "lede": "Each rule above is a script that runs before every build and fails it when the rule is broken. Named here so a reader can tell an enforced rule from a stated intention.",
+      "check-sources": "Every industry entry cites at least one source; the number of uncited entries may only go down, and it is zero.",
+      "check-source-hosts": "No citation may point at a chat transcript.",
+      "check-vendor-founded-sources": "Every founding year on a card is named by a citation on that entry, a story that begins before the subject is dated earlier than its founding, and a lineage card says whose year it shows.",
+      "check-placeholder-sources": "A source label may not be an appeal to ubiquity, a bare 'documented', a field name with a number, or the entry's own name with a year.",
+      "check-person-year-sources": "Every year on a person's entry is named by a source.",
+      "check-partner-duplicates": "No two entries share a slug, and every overlap of names is declared with a reason.",
+      "check-citation-fields": "Every field that can carry a URL is known to the liveness audit, so no link escapes the re-check."
+    },
+    "closer": "None of this makes the record complete, and it is not meant to: it makes every statement in it traceable to a page somebody can open, on a date somebody wrote down. The chronology, the chapters and the people are built on those terms.",
+    "backToIndustry": "Back to the industry",
+    "correctionLink": "Send a correction"
   }
 }

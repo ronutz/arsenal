@@ -12062,7 +12062,8 @@
       "lineagesLink": "Linhagens e aquisições de fornecedores",
       "ironport": "Desenvolvimento de canal e consultoria técnica de pré-vendas para os appliances de segurança de e-mail C-Series da IronPort: no fim de 2004 com a própria operação da IronPort em São Paulo, e ao longo de 2005 com uma revenda Cisco e IronPort, de RFPs e instalação a suporte a clientes. A IronPort foi adquirida pela Cisco em 2007.",
       "teachingNow": "Ensinando atualmente:",
-      "cylk2020": "Consultoria de soluções e pré-venda pela CYLK, a integradora de segurança de São Paulo, enquanto começava a instrução em tempo integral na sua empresa-irmã InLearn: entrega e segurança de aplicações F5, firewalls Palo Alto Networks, Fortinet, gestão de vulnerabilidades Tenable, acesso privilegiado CyberArk e analítica de rede Corvil, em provas de conceito, projetos e treinamento de clientes. Três das seis têm marca aqui; as outras três estão nomeadas, e cada uma tem seu capítulo no registro de carreira."
+      "preparing": "Em preparação para ensinar:",
+      "cylk2020": "Consultoria de soluções e pré-venda pela CYLK, a integradora de segurança de São Paulo, enquanto começava a instrução em tempo integral na sua empresa-irmã InLearn: entrega e segurança de aplicações F5, firewalls Palo Alto Networks, Fortinet, gestão de vulnerabilidades Tenable, acesso privilegiado CyberArk e analítica de rede Corvil, em provas de conceito, projetos e treinamento de clientes. As seis têm marca aqui, e cada uma tem seu capítulo no registro de carreira."
     },
     "origins": {
       "title": "Onde tudo começou",
@@ -12460,7 +12461,9 @@
       "s6Title": "Enterasys, 2005 a 2007",
       "s6Body": "Voltando à linhagem como gerente de serviços e suporte, o foco era a linha de produtos Secure Routing, com a Enterasys como ponto focal regional para o Brasil. O trabalho combinava suporte a clientes de alto nível, diagnóstico complexo e gestão de escalonamento, incluindo os escalonamentos exigentes que chegavam de uma conta-chave, a Petrobras em São Paulo, com gestão de produto localizada em paralelo. A superfície técnica havia crescido para incluir gerência de rede, NAC e UAC, detecção e prevenção de intrusão, e SIEM, em switching e roteamento corporativos. A Enterasys foi depois adquirida pela Extreme Networks em 2013, fechando um círculo que conecta este trabalho inicial a uma plataforma ainda ensinada hoje.",
       "s7Title": "A superestrada sempre disponível",
-      "s7Body": "Um fio dos anos de Enterasys merece registro preciso, porque é fácil exagerar. Era o auge das redes baseadas em políticas, a Enterasys construiu sua arquitetura Secure Networks em torno de acesso por papel e 802.1X, e o trabalho ficava em contato próximo e constante com o mundo exigente das redes de contact center e dos sistemas de telefonia IP Avaya e Cisco que rodavam sobre elas. A familiaridade era profunda, mas era familiaridade pelo lado da rede. O papel nunca foi engenharia de comunicações unificadas; não trazia certificação de telefonia nem trabalho prático de UC. O que ele entregava, em vez disso, era a camada da qual tudo isso depende: uma superestrada segura, redundante, resiliente, monitorada e com disponibilidade garantida para voz e tráfego crítico. Ser claro sobre onde fica essa linha é parte de descrever o trabalho com honestidade."
+      "s7Body": "Um fio dos anos de Enterasys merece registro preciso, porque é fácil exagerar. Era o auge das redes baseadas em políticas, a Enterasys construiu sua arquitetura Secure Networks em torno de acesso por papel e 802.1X, e o trabalho ficava em contato próximo e constante com o mundo exigente das redes de contact center e dos sistemas de telefonia IP Avaya e Cisco que rodavam sobre elas. A familiaridade era profunda, mas era familiaridade pelo lado da rede. O papel nunca foi engenharia de comunicações unificadas; não trazia certificação de telefonia nem trabalho prático de UC. O que ele entregava, em vez disso, era a camada da qual tudo isso depende: uma superestrada segura, redundante, resiliente, monitorada e com disponibilidade garantida para voz e tráfego crítico. Ser claro sobre onde fica essa linha é parte de descrever o trabalho com honestidade.",
+      "s8Title": "Sentinel, Nessus e a quarentena",
+      "s8Body": "Uma implantação daqueles anos liga dois capítulos deste registro. O controle de acesso de usuários à LAN da Enterasys, resenhado como Sentinel 1.0 em outubro de 2006 e vendido depois como Enterasys NAC, só admitia um sistema final depois de avaliá-lo, e o motor de avaliação que ele chamava era o Nessus, o scanner criado por Renaud Deraison e àquela altura produto da Tenable Network Security: um servidor Nessus varria o endpoint quando o Trusted Access Gateway pedia, uma varredura reprovada colocava a porta numa política de quarentena que só permitia a página web de remediação, e uma aprovada a liberava. Do outro lado do ciclo ficavam a detecção e prevenção de intrusão Dragon, da Enterasys, e o NetSight Automated Security Manager, que transformavam um evento detectado em uma origem localizada e uma resposta aplicada. Implantar essa solução para clientes no Brasil, com o Nessus fazendo a avaliação, foi o primeiro contato deste registro com o produto da Tenable, catorze anos antes do capítulo de pré-vendas de 2020. O autor lembra com clareza da parte do Nessus e menos da parte do Dragon; as descrições do produto aqui vêm do whitepaper de NAC da própria Enterasys, de 2008, e da resenha do Sentinel 1.0 de 2006, não da memória."
     },
     "juniper": {
       "name": "NetScreen e Juniper",
@@ -12713,7 +12716,9 @@
       "s1Body": "Os engajamentos eram gestão de vulnerabilidades, o negócio inteiro da Tenable: varrer o que uma organização de fato tem, classificar o que está exposto e mostrar ao cliente por onde começar. As duas plataformas da época eram o Tenable.io, o serviço gerenciado em nuvem, e o Tenable.sc, o console local que nasceu do SecurityCenter, e o trabalho cobriu as duas: demonstrações e provas de conceito contra o ambiente do próprio cliente, o dimensionamento de licenças por contagem de ativos e as conversas de arquitetura sobre scanners, agentes e onde os dados ficariam.",
       "s2Title": "As certificações, e para que serviam",
       "s2Body": "O programa de parceiros da Tenable certifica três papéis de pré-venda por plataforma, engenheiro, integrador e arquiteto, e 2020 produziu os seis, para o Tenable.io e para o Tenable.sc, mais o Certified Sales Associate. Eram o bilhete de entrada para conduzir os engajamentos acima, não enfeites, e expiraram em 2022 quando o trabalho já havia seguido adiante; o registro as mantém com suas datas por essa razão.",
-      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator e Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator e Architect. Todas de 2020 a 2022. Listadas com suas evidências na página de credenciais."
+      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator e Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator e Architect. Todas de 2020 a 2022. Listadas com suas evidências na página de credenciais.",
+      "s3Title": "Nessus, catorze anos antes",
+      "s3Body": "O capítulo de 2020 não foi a primeira vez que o produto da Tenable trabalhou neste registro. Nos anos de Enterasys, 2005 a 2007, a solução de controle de acesso à LAN implantada para clientes no Brasil, Sentinel e depois Enterasys NAC, avaliava cada sistema final antes de admiti-lo, e o motor que ela chamava para a avaliação era um servidor Nessus; uma varredura reprovada significava uma política de quarentena e uma página de remediação, uma aprovada significava acesso. Essa implantação, com seu lado de contenção no Dragon e no NetSight Automated Security Manager, está contada no capítulo de Cabletron e Enterasys, com os documentos da Enterasys de que foi tirada. O Nessus era da Tenable desde que a empresa foi fundada em torno dele, em 2002."
     },
     "cyberark": {
       "name": "CyberArk",
@@ -14470,14 +14475,15 @@
   },
   "guide": {
     "eyebrow": "Guia de uso",
-    "title": "Como usar este site",
-    "lede": "Um guia prático do site: o que há aqui, como cada ferramenta funciona, quais usar em cada caso, o material de aprendizado que as acompanha e como o site lida com privacidade, idiomas e uso offline. Tudo é calculado localmente no seu navegador.",
+    "title": "Como usar o ronutz",
+    "lede": "Um guia prático do site inteiro: os cinco mundos em que ele se organiza, como cada um funciona e por onde começar, depois o material de referência, as ferramentas em uma linha cada, as tarefas comuns com as ferramentas que as resolvem, e o manual dos recursos que atravessam tudo.",
     "tocAria": "Seções do guia",
     "nav": {
       "datasheet": "Visão geral",
       "quickref": "Referência de ferramentas",
       "usage": "Sugestões de uso",
-      "manual": "Manual"
+      "manual": "Manual",
+      "map": "O site em um minuto"
     },
     "datasheetHeading": "Visão geral",
     "datasheetIntro": "O essencial em um só painel. Estes números são gerados a partir do próprio site no momento da compilação, então sempre refletem o que está de fato publicado.",
@@ -14496,7 +14502,11 @@
       "techValue": "Next.js, um progressive web app exportado de forma estática",
       "cost": "Preço",
       "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall",
-      "glossary": "Termos do glossário"
+      "glossary": "Termos do glossário",
+      "guides": "Guias de estudo",
+      "hubs": "Hubs de fabricantes",
+      "industry": "Organizações no registro da indústria",
+      "people": "Pessoas na linha do tempo"
     },
     "quickrefHeading": "Referência de ferramentas",
     "quickrefIntro": "Todas as ferramentas de uso geral, organizadas por categoria. Esta lista é gerada a partir do registro ativo, então está sempre completa. As ferramentas ligadas a um fabricante específico ficam na página desse fabricante.",
@@ -14709,7 +14719,74 @@
     },
     "backToTools": "Ver todas as ferramentas",
     "exploreLearn": "Explorar a biblioteca Learn",
-    "appearsIn": "Aparece nestes fluxos"
+    "appearsIn": "Aparece nestes fluxos",
+    "mapHeading": "O site em um minuto",
+    "mapIntro": "Tudo no ronutz vive em um de cinco mundos, os mesmos cinco que a página inicial, o rodapé e o mapa do site usam. As contagens são calculadas a partir do próprio site quando ele é construído, então são os números das páginas para as quais apontam.",
+    "howHeading": "Como cada parte funciona",
+    "howIntro": "Uma seção por superfície: para que serve, como usar e os dois ou três lugares por onde começar. As seções abaixo desta são a referência: a ficha técnica, cada ferramenta em uma linha, as tarefas comuns e o manual.",
+    "howStart": "Comece por:",
+    "how": {
+      "tools": {
+        "nav": "Ferramentas",
+        "h": "As ferramentas",
+        "p1": "Toda ferramenta calcula no seu navegador e não envia nada a lugar nenhum: cole ou digite a entrada e o resultado aparece, com um botão Exemplo que preenche uma entrada conhecida e um botão Limpar ao lado. O índice de ferramentas abre de três maneiras: cole o que você tem, e a caixa alinha as ferramentas que reconhecem a forma do que foi colado; escolha pelo que precisa fazer (decodificar, entender, calcular, construir, verificar); ou siga um fluxo de trabalho que leva uma coisa de ferramenta em ferramenta, um CIDR até uma regra de firewall, um certificado até os cabeçalhos que um navegador impõe.",
+        "p2": "O índice tem três andares, declarados na página: o andar principal, onde cada ferramenta tem forma fixa e vetores de teste de referência; a sala verde, para ferramentas cuja forma ainda está se assentando; e a sala vermelha, o único lugar onde uma ferramenta pode enviar sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você pede. Cada ferramenta tem uma página de documentação, legível como página web ou como Markdown, e a mesma lógica é descrita como uma API com especificação legível por máquina.",
+        "l1": "O índice de ferramentas",
+        "l2": "Cole o que você tem",
+        "l3": "A API"
+      },
+      "learn": {
+        "nav": "Aprender",
+        "h": "Aprender",
+        "p1": "A biblioteca Aprender é a explicação por trás das ferramentas: artigos agrupados por assunto, na mesma taxonomia das ferramentas, cada um citando a documentação de que foi escrito e ligando as ferramentas que calculam o que ele descreve. O hub pode ser lido de duas maneiras, Guiado ou Diretório. O Guiado pergunta o que você quer fazer (entender um assunto, aprender algo em ordem desde o início, preparar-se para um exame, ter a documentação de uma plataforma lida para você, achar uma definição rápido) e manda você à porta certa; o Diretório lista todos os artigos por assunto, em ordem de leitura.",
+        "p2": "Em volta dos artigos ficam as Histórias, textos mais longos que defendem um argumento; A Prática, sobre o trabalho e não sobre a tecnologia (triagem, escalonamento, mudança, o lado humano); o Glossário, com uma definição para cada termo que artigos e ferramentas usam; e as Pessoas, os engenheiros e autores por trás dos protocolos. Em qualquer artigo, a primeira menção de um termo técnico traz um sublinhado tracejado que você pode pairar ou tocar para uma definição curta; essa dica pode ser desligada em Configurações.",
+        "l1": "O hub Aprender",
+        "l2": "O glossário",
+        "l3": "A Prática"
+      },
+      "guides": {
+        "nav": "Guias de estudo",
+        "h": "Guias de estudo e guias de certificação",
+        "p1": "Um guia de estudo é um percurso de leitura: os artigos a ler, em ordem, com uma frase dizendo o que você vai entender ao final, agrupados em famílias (protocolos e fundamentos, identidade e segurança, entrega de aplicações, plataformas de fabricantes). Cada percurso abre no seu primeiro artigo, e cada artigo dele liga de volta ao percurso, para você sair e voltar sem perder o lugar.",
+        "p2": "Os guias de certificação são o mesmo material organizado contra um exame de fabricante: o código e os objetivos do próprio exame, com os artigos e ferramentas que cobrem cada objetivo. São planos de leitura, não despejos de prova; onde um objetivo ainda não tem cobertura, o guia diz isso no lugar dele, e uma verificação de build falha se algum fica em silêncio, e é assim que as lacunas ficam visíveis quando os exames mudam.",
+        "l1": "Os guias de estudo",
+        "l2": "Os guias de certificação"
+      },
+      "hubs": {
+        "nav": "Hubs de fabricantes",
+        "h": "Os hubs de fabricantes",
+        "p1": "Um hub de fabricante é uma página por família de fabricante que reúne tudo o que o site tem sobre ela: as ferramentas que decodificam ou calculam os formatos daquele fabricante, os artigos fundamentados na sua documentação, seu lugar no registro da indústria e sua linhagem de aquisições e renomeações. Se você trabalha em uma plataforma o dia inteiro, o hub dela é a página para guardar nos favoritos.",
+        "p2": "Onde o autor ministra os cursos oficiais de um fabricante, o hub diz isso e liga a página de treinamento, que encaminha à Red Education; onde não ministra, o hub não diz nada sobre ensino, por regra. Nomear um fabricante neste site nunca é afirmar uma relação com ele.",
+        "l1": "Todos os hubs",
+        "l2": "Treinamento"
+      },
+      "industry": {
+        "nav": "Indústria",
+        "h": "O registro da indústria",
+        "p1": "O registro da indústria é uma cronologia das organizações que construíram redes e segurança, na ordem em que suas histórias começam, cada uma com seu ano de fundação, suas fontes e, quando se aplica, quem comprou quem e por quanto. Seis portas de entrada ficam antes da lista: seguir uma empresa, seguir uma linhagem, explorar uma era, o ecossistema brasileiro, onde o caminho do próprio autor a cruzou, e as pessoas. Cada uma é uma vista filtrada com endereço próprio, que pode ser compartilhada.",
+        "p2": "Os capítulos de carreira são o registro do próprio autor, um capítulo por empresa em que trabalhou ou com a qual trabalhou, com as credenciais de cada uma; a linha do tempo das pessoas vai da pilha voltaica ao presente. Uma página de método declara as regras que toda entrada segue (o que conta como fonte, o que significa fundada, como uma aquisição é registrada, o que se faz com uma data incerta) e nomeia as verificações de build que as impõem. Uma rota de correção na página de contato está a um clique de cada entrada.",
+        "l1": "O registro da indústria",
+        "l2": "Os capítulos de carreira",
+        "l3": "Como a pesquisa é feita"
+      },
+      "search": {
+        "nav": "Busca",
+        "h": "Busca e atalhos",
+        "p1": "O campo de busca no cabeçalho, ou Ctrl K, abre um diálogo que busca ferramentas, artigos, guias e páginas de uma vez; as pílulas sob o campo o estreitam a um tipo. O campo próprio de um hub busca só o mundo daquele hub, e o campo de uma seção (A Prática, Os Papéis) só aquela seção, com uma pílula Só em que um clique alarga de novo. A busca roda no seu navegador contra um índice construído com o site; nenhuma consulta sai do seu dispositivo.",
+        "p2": "Um punhado de atalhos de uma tecla funciona em toda página: pressione ? para vê-los, e reatribua qualquer um deles em Configurações. O mapa do site lista cada página por mundo, para as vezes em que um mapa vale mais que uma caixa de busca.",
+        "l1": "Configurações e atalhos",
+        "l2": "O mapa do site"
+      },
+      "privacy": {
+        "nav": "Privacidade",
+        "h": "Privacidade e o que fica no seu dispositivo",
+        "p1": "O site não grava cookies e não roda análises nem rastreadores de terceiros. Seu tema, seu idioma, suas teclas de atalho, a preferência das dicas de glossário e uma trilha curta de leitura vivem no armazenamento local do seu navegador, só no seu dispositivo, e nunca são enviados a lugar nenhum; limpar os dados do site restaura os padrões. A página de privacidade lista cada chave que o site grava, pelo nome, e o que o servidor conta em agregado.",
+        "p2": "O site é um aplicativo web progressivo: uma vez visitado, seu navegador pode mantê-lo disponível, e como as ferramentas calculam localmente elas continuam funcionando off-line. A página de estatísticas mostra o que é mais lido, a partir das contagens agregadas; o colofão diz como o site é construído e de onde cada número nele é calculado.",
+        "l1": "A página de privacidade",
+        "l2": "Estatísticas",
+        "l3": "Colofão"
+      }
+    }
   },
   "disclaimer_page": {
     "metaTitle": "Aviso legal",
@@ -22938,7 +23015,50 @@
     "figuresLearners": "alunos formados",
     "figuresSince": "treinando desde",
     "figuresRegions": "regiões globais",
-    "figuresVendors": "fabricantes autorizados"
+    "figuresVendors": "fabricantes autorizados",
+    "identityLine": "A instituição por trás do treinamento autorizado de Rodolfo Nützmann e de seus engajamentos profissionais comerciais.",
+    "partsLabel": "Parte {n}",
+    "jumpTribute": "Uma palavra de agradecimento",
+    "part": {
+      "why": {
+        "title": "Por que a Red Education",
+        "lede": "Quem é a Red Education nos seus próprios números e palavras publicados: sua escala e alcance, a visão e os valores que declara, e como diz que trabalha."
+      },
+      "enables": {
+        "title": "O que a Red Education viabiliza",
+        "lede": "As autorizações de fabricantes que a Red Education detém, o reconhecimento que esses fabricantes lhe deram e os explicadores de cursos que publica para cada plataforma. Esta é a lista da Red Education; as quatro plataformas do próprio autor estão nomeadas na parte seguinte."
+      },
+      "mywork": {
+        "title": "Onde meu trabalho se encaixa",
+        "lede": "As quatro plataformas que Rodolfo Nützmann ensina por meio da Red Education, a prova que é verificável e onde reservar."
+      },
+      "bench": {
+        "title": "O time de instrutores",
+        "lede": "Os instrutores como equipe: os números agregados e os prêmios conferidos externamente, sem biografias de colegas."
+      },
+      "evidence": {
+        "title": "Evidência de casos",
+        "lede": "Os engajamentos que a Red Education publicou, dois deles nomeando o autor, e sobre o que a empresa escreve."
+      },
+      "sources": {
+        "title": "Fontes oficiais",
+        "lede": "Cada fato desta página é lido nas páginas da própria Red Education, listadas aqui para que possa ser conferido. Nada acima vem da memória; quando uma dessas páginas muda, esta página é verificada de novo antes de ser editada."
+      }
+    },
+    "sources": {
+      "home": "Red Education, página inicial",
+      "vendors": "Certificações, a lista completa de fabricantes",
+      "f5": "Treinamento F5 na Red Education",
+      "fortinet": "Treinamento Fortinet na Red Education",
+      "extreme": "Treinamento Extreme Networks na Red Education",
+      "netskope": "Treinamento Netskope na Red Education",
+      "culture": "Sobre nós, nossa cultura",
+      "explainers": "Índice dos explicadores de cursos",
+      "news": "Índice de notícias e artigos",
+      "case1": "Estudo de caso: treinamento Fortinet em escala para um líder global de TI",
+      "case2": "Estudo de caso: treinamento de iRules do F5 BIG-IP"
+    },
+    "sourcesNote": "Lidas e verificadas em 9 e 14 de julho e 6 e 16 de agosto de 2026; números citados como publicados nessas datas. Dois dos índices da Red Education são desenhados por script no navegador e não podem ser enumerados por busca, e é por isso que os estudos de caso e artigos listados são os que foram de fato lidos."
   },
   "toolDocs": {
     "titleSuffix": "documentação",
@@ -23039,7 +23159,8 @@
     "worksPill": "Trabalha dentro",
     "worksWithPill": "Trabalha com",
     "markEra": "marca em uso {era}",
-    "markSince": "desde {year}"
+    "markSince": "desde {year}",
+    "filterLineage": "Com linhagem"
   },
   "industry": {
     "metaTitle": "Indústria - linhagens corporativas de redes e segurança",
@@ -23063,6 +23184,77 @@
       "chaptersLede": "{count} destas empresas em que trabalhei ou com as quais trabalhei lado a lado, de 1996 em diante: o registro lido de dentro, em ordem.",
       "learningTitle": "Onde a indústria aprende",
       "learningLede": "{count, plural, one {# empresa} other {# empresas}} cujo negócio é ensinar esta indústria, e como essa prática surgiu."
+    },
+    "eras": {
+      "label": "Explore uma era",
+      "before-the-network": {
+        "title": "Antes da rede",
+        "lede": "O telégrafo, o telefone, o transistor, o circuito integrado e o modem: as empresas fundadas aqui antecedem as redes e construíram as peças de que elas seriam feitas."
+      },
+      "the-packet-and-the-wire": {
+        "title": "O pacote e o fio",
+        "lede": "Dos primeiros enlaces da ARPANET em 1969 ao dia em que a ARPANET passou ao TCP/IP, 1º de janeiro de 1983: Ethernet, o artigo do TCP e o DNS no meio do caminho."
+      },
+      "routers-switches-and-the-reserve": {
+        "title": "Roteadores, switches e a reserva",
+        "lede": "Chegam as empresas de roteadores e switches: spanning tree em 1985, SNMP em 1988, o switch Ethernet em 1990; no Brasil, a reserva de mercado de 1984 decide quem pode construir."
+      },
+      "the-web-and-the-firewall": {
+        "title": "A web e o firewall",
+        "lede": "A World Wide Web e o primeiro firewall comercial, ambos de 1991, depois o LDAP e as assinaturas abertas de 1998: a internet vira mercado e superfície de ataque ao mesmo tempo."
+      },
+      "the-flood-and-the-rental": {
+        "title": "A enchente e o aluguel",
+        "lede": "Da negação de serviço de fevereiro de 2000 ao smartphone de 2007, passando pela computação como utilidade em 2006: a escala vira o problema, e o computador vira algo que se aluga."
+      },
+      "software-takes-the-network": {
+        "title": "O software toma a rede",
+        "lede": "Controle separado do encaminhamento em 2008, Stuxnet em 2010, contêineres em 2013, certificados gratuitos em 2015: a rede vira um programa, e o ataque também."
+      },
+      "platforms-and-the-things": {
+        "title": "Plataformas e as coisas",
+        "lede": "Da botnet Mirai de 2016 aos modelos conversacionais de 2022 e a hoje: as empresas-plataforma, as coisas na rede e as máquinas que respondem em prosa."
+      },
+      "anchors": "Aberta por:",
+      "undated": "{n} sem início datado, em nenhuma era: as fontes não dão o ano de fundação, e o registro diz isso em vez de adivinhar."
+    },
+    "entrances": {
+      "title": "Portas de entrada no registro",
+      "lede": "{count} organizações, na ordem em que suas histórias começam. Seis portas antes da cronologia, cada uma uma visão filtrada com endereço próprio.",
+      "company": {
+        "title": "Siga uma empresa",
+        "lede": "Digite o nome, ou qualquer nome que ela já teve; a busca olha primeiro dentro deste registro."
+      },
+      "lineage": {
+        "title": "Siga uma linhagem",
+        "lede": "{count} registros carregam uma cadeia tipada: aquisições, um fim dentro de outra empresa, ou uma história que começa antes da própria empresa."
+      },
+      "era": {
+        "title": "Explore uma era",
+        "lede": "{count} eras, cada uma aberta por um marco com fonte, de antes da rede às plataformas."
+      },
+      "brazil": {
+        "title": "O ecossistema brasileiro",
+        "lede": "{count} organizações brasileiras, da reserva de mercado às integradoras e centros de treinamento de hoje: a genealogia que poucos escreveram."
+      },
+      "mine": {
+        "title": "Onde o meu caminho cruzou com ele",
+        "lede": "{count} empresas em que trabalhei por dentro, com que trabalhei ou com que trabalho hoje; os capítulos contam a história de dentro."
+      },
+      "people": {
+        "title": "As pessoas",
+        "lede": "Empresas construíram a indústria; {count} pessoas fizeram isso. Pioneiros, construtores, quebradores e os brasileiros entre eles."
+      },
+      "browseAll": "Percorra todas as {count} organizações",
+      "method": "Como a pesquisa é feita"
+    },
+    "doors": {
+      "title": "Três portas que os dados escolheram",
+      "chain": "A cadeia mais longa: {n} aquisições num só registro",
+      "ended": "Terminou dentro de outra empresa em {n}, com a linhagem mais densa",
+      "brazil": "O registro brasileiro com a linhagem mais densa, desde {n}",
+      "surprise": "Surpreenda-me com uma empresa",
+      "surpriseHint": "Uma entre {count}, escolhida quando você clica."
     }
   },
   "sitemap": {
@@ -26458,7 +26650,30 @@
     "searchPlaceholder": "Digite um nome",
     "showing": "Mostrando '{shown}' de '{total}'",
     "clear": "Limpar",
-    "none": "Ninguém corresponde. Limpe a busca ou escolha outro campo."
+    "none": "Ninguém corresponde. Limpe a busca ou escolha outro campo.",
+    "entrancesLabel": "Portas de entrada na linha do tempo",
+    "entrances": {
+      "pioneers": {
+        "title": "Os pioneiros da eletricidade",
+        "lede": "{count} pessoas da pilha voltaica ao transistor, a física sobre a qual todo verbete posterior se apoia."
+      },
+      "computing": {
+        "title": "Os construtores da computação",
+        "lede": "{count} pessoas que fizeram a máquina: a lógica, as linguagens, as arquiteturas."
+      },
+      "internet": {
+        "title": "As pessoas que construíram a internet",
+        "lede": "{count} pessoas do primeiro enlace da ARPANET aos protocolos em que o mundo inteiro roda agora."
+      },
+      "security": {
+        "title": "Segurança, criptografia e cultura hacker",
+        "lede": "{count} pessoas que quebraram coisas, protegeram coisas e escreveram as cifras no meio."
+      },
+      "brazil": {
+        "title": "Brasil",
+        "lede": "{count} brasileiros, dos micros nacionais da reserva de mercado às pessoas que constroem a internet aqui agora."
+      }
+    }
   },
   "stats_page": {
     "eyebrow": "Estatísticas",
@@ -26798,5 +27013,60 @@
     "featureOpen": "Abrir a reconstrução",
     "featureFacts": "{pages, plural, one {# página} other {# páginas}} · {assets, plural, one {# arquivo} other {# arquivos}} · reconstruído da exportação de {exportDate}",
     "featureThumbAlt": "A reconstrução de {domain}, renderizada em {date}"
+  },
+  "industryMethod": {
+    "navLabel": "Como a pesquisa é feita",
+    "eyebrow": "Indústria",
+    "title": "Como a pesquisa é feita",
+    "metaDescription": "O que conta como fonte no registro da indústria, como as datas de fundação e de aquisição são escolhidas, o que acontece quando as fontes discordam, como a situação atual é verificada, como as correções chegam, e as verificações de build que impõem cada regra.",
+    "lede": "O registro afirma fatos sobre algumas centenas de empresas e pessoas reais: quando começaram, quem comprou quem e por quanto, se ainda existem. Estas são as regras que toda afirmação segue, com os exemplos do próprio registro, e as verificações que derrubam o build quando uma regra é quebrada.",
+    "sections": {
+      "sources": {
+        "title": "O que conta como fonte",
+        "p1": "Fonte primária primeiro. Os próprios registros da empresa e os comunicados arquivados com eles (um anexo de Form 8-K é a empresa declarando a data e o preço em nome próprio), o registro de empresas para uma empresa brasileira (a ficha do CNPJ, com a data de constituição), a documentação do próprio fabricante para um fato de produto. Depois a imprensa de referência, datada. A Wikipédia é usada como mapa para fontes primárias e citada como o que é, uma enciclopédia, com a ficha lida num dado dia.",
+        "p2": "Todo verbete lista suas fontes ao pé, com a data em que cada uma foi lida, e todo ano de fundação num cartão é nomeado por uma delas. Uma transcrição de chat nunca é fonte: o build recusa uma citação que aponte para uma, porque uma conversa com um modelo de linguagem não é evidência de nada sobre uma empresa.",
+        "p3": "Onde um verbete afirma algo sobre o trabalho do próprio Rodolfo Nützmann com uma empresa, a fonte é o portfólio: os currículos datados e o registro do LinkedIn, lidos na ordem em que foram escritos, o mais antigo mais perto do fato."
+      },
+      "founded": {
+        "title": "Fundada, constituída, e onde uma história começa",
+        "p1": "O ano de fundação de um cartão é o ano em que o seu próprio sujeito nomeado foi fundado, não o do antepassado mais antigo. A Unisys foi fundada em 1986, embora sua linhagem alcance a Burroughs em 1886; a Riverstone em 2000, não a Yago Systems em 1996. Três cartões estavam errados sob a regra anterior e foram corrigidos em 2 de outubro de 2026.",
+        "p2": "Onde a história de um cartão começa antes do seu sujeito, o registro diz isso num campo separado, e a linha do tempo coloca o cartão onde a história começa: a CommScope foi fundada em 1976, e seu cartão fica em 1961, onde começa a divisão Comm/Scope da Superior Continental, com o antecessor nomeado ao lado do ano. Num cartão que é explicitamente uma linhagem de várias empresas, o ano é o da empresa mais antiga e o cartão diz de quem é.",
+        "p3": "Constituição não é fundação. Uma empresa registrada em janeiro de 2004 pode operar desde 1992 sob outra pessoa jurídica; o registro guarda os dois fatos e não escolhe um."
+      },
+      "acquisitions": {
+        "title": "Datas e preços de aquisições",
+        "p1": "Uma aquisição tem pelo menos duas datas, o anúncio e a conclusão, e o registro prefere a data de conclusão do documento que a relata, com o preço como esse documento o declara: a Plantronics concluiu a Polycom em 2 de julho de 2018 por um valor de empresa de 2,0 bilhões de dólares, a HP concluiu a Poly em 29 de agosto de 2022 a 40 dólares por ação, a CommScope concluiu a Connectivity Solutions da Avaya com efeito em 31 de janeiro de 2004 por 250 milhões de dólares em dinheiro e cerca de 1,8 milhão de ações.",
+        "p2": "Onde as fontes dão dois preços, ambos são registrados e a discordância é declarada: as próprias citações da Wikipédia dão a Arris a 7,4 e a 4,93 bilhões de dólares. O registro não faz média, não arredonda e não escolhe."
+      },
+      "uncertain": {
+        "title": "Datas incertas",
+        "p1": "Quando as fontes discordam sobre uma data, a discordância é o fato. A TDec registra-se em março de 1992 e apresenta-se como fundada em 1993; a InLearn foi constituída em 2002 e apresenta-se como ensinando desde 2008; a constituição da Tenable é dada como 16 de setembro de 2002 pela maioria das fontes e 4 de outubro por uma. Cada verbete diz isso, com essas palavras, em vez de escolher o ano mais arrumado.",
+        "p2": "Uma data que o registro não consegue documentar fica de fora em vez de ser estimada. Um ano de fundação sem citação no próprio verbete derruba o build, razão pela qual alguns verbetes carregam uma razão declarada no lugar de um ano."
+      },
+      "status": {
+        "title": "Se uma empresa ainda existe",
+        "p1": "Um verbete carrega um fim só quando um evento documentado encerrou a existência independente da empresa: absorvida, renomeada, ou encerrada, com o ano e a nota. Ausente, o marcador significa que ainda opera até onde dizem as fontes lidas, não que a pergunta nunca foi feita.",
+        "p2": "Esses marcadores são definidos por revisão, nunca por casamento de padrões na prosa. Uma primeira tentativa de derivá-los automaticamente das linhas do tempo produziu cerca de trinta respostas erradas em quarenta e oito, porque uma frase não pode ser lida quanto à direção por uma expressão regular: uma empresa adquirindo e uma empresa adquirida parecem iguais para ela. A verificação de vitalidade das fontes do site reconfere todos os links citados numa cadência e registra o que mudou."
+      },
+      "corrections": {
+        "title": "Correções",
+        "p1": "Uma data errada, uma fonte morta, uma empresa que foi vendida desde então: a página de contato tem uma rota para isso, e uma correção que vinga é registrada no changelog com sua fonte, de modo que a história do registro estar errado está ela mesma no registro.",
+        "p2": "O registro também se corrige contra o próprio autor. Onde o portfólio diz uma data e um selo diz outra, o portfólio vence e o selo é chamado do que é, uma data de selo; os capítulos dizem isso onde aconteceu."
+      }
+    },
+    "guards": {
+      "title": "As verificações que impõem as regras",
+      "lede": "Cada regra acima é um script que roda antes de todo build e o derruba quando a regra é quebrada. Nomeadas aqui para que o leitor distinga uma regra imposta de uma intenção declarada.",
+      "check-sources": "Todo verbete da indústria cita pelo menos uma fonte; o número de verbetes sem citação só pode diminuir, e é zero.",
+      "check-source-hosts": "Nenhuma citação pode apontar para uma transcrição de chat.",
+      "check-vendor-founded-sources": "Todo ano de fundação num cartão é nomeado por uma citação naquele verbete, uma história que começa antes do sujeito é datada antes da fundação, e um cartão de linhagem diz de quem é o ano que mostra.",
+      "check-placeholder-sources": "O rótulo de uma fonte não pode ser um apelo à ubiquidade, um 'documentado' seco, um nome de campo com um número, ou o próprio nome do verbete com um ano.",
+      "check-person-year-sources": "Todo ano no verbete de uma pessoa é nomeado por uma fonte.",
+      "check-partner-duplicates": "Dois verbetes não compartilham um slug, e toda sobreposição de nomes é declarada com uma razão.",
+      "check-citation-fields": "Todo campo que pode carregar uma URL é conhecido da auditoria de vitalidade, para que nenhum link escape da reconferência."
+    },
+    "closer": "Nada disso torna o registro completo, e não é para isso: torna cada afirmação nele rastreável até uma página que alguém pode abrir, numa data que alguém anotou. A cronologia, os capítulos e as pessoas são construídos nesses termos.",
+    "backToIndustry": "Voltar à indústria",
+    "correctionLink": "Envie uma correção"
   }
 }

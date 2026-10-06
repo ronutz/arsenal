@@ -48,6 +48,7 @@ import Header from "@/components/Header";
 import VendorMark from "@/components/VendorMark";
 import SiteFooter from "@/components/SiteFooter";
 import {
+  RED_EDUCATION_BASE,
   RED_EDUCATION_ALL_VENDORS,
   redEducationUrl,
   attributeRedEducationUrl,
@@ -175,24 +176,25 @@ export default async function RedEducationPage({
               {/* The company's mark, dated like every mark on the site (registry: src/content/vendors/marks.ts). */}
               <VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} />
 
-              {/* SECTION ANCHORS (PRIME 2026-08-16). The page is long and its
-                  sections answer different questions - who Red Education is,
-                  what they have published, who teaches there. A reader arriving
-                  from a search result or a shared link should be able to reach
-                  the part they came for, and each anchor is a stable address
-                  somebody else can link to. */}
+              {/* THE IDENTITY LINE (G7 of Round 1, SCOUT; built 2026-10-06): what this page is, in one sentence,
+                  before the figures: the institution behind the author's authorised training and his
+                  commercial professional engagements. */}
+              <p className="redu-identity">{t("identityLine")}</p>
+              {/* SECTION ANCHORS (PRIME 2026-08-16; restructured 2026-10-06, G7). The page is long and now
+                  reads in six parts, in the order a reader deciding whether to train here needs them: why
+                  Red Education, what it enables, where the author's work fits, the bench, the case evidence,
+                  the official sources. The older anchors (who, dna, articles, explainers, culture,
+                  authorizations, awards) stay on their sections, so every address somebody linked still
+                  lands. */}
               <nav className="redu-links" aria-label={t("jumpLabel")}>
                 {[
-                  ["who", "jumpWho"],
-                  ["dna", "jumpDna"],
-                  ["case-studies", "jumpCases"],
-                  ["articles", "jumpArticles"],
-                  ["explainers", "jumpExplainers"],
-                  ["culture", "jumpCulture"],
-                  ["the-bench", "jumpBench"],
-                  ["authorizations", "jumpAuth"],
-                  ["awards", "jumpAwards"],
-                  ["instructor", "jumpInstructor"],
+                  ["why", "part.why.title"],
+                  ["enables", "part.enables.title"],
+                  ["my-work", "part.mywork.title"],
+                  ["bench", "part.bench.title"],
+                  ["evidence", "part.evidence.title"],
+                  ["sources", "part.sources.title"],
+                  ["tribute", "jumpTribute"],
                 ].map(([id, key]) => (
                   <a key={id} href={`#${id}`} className="redu-inline-link">
                     {t(key)}
@@ -201,7 +203,6 @@ export default async function RedEducationPage({
               </nav>
             </div>
           </section>
-
           {/* CTA (top copy): PRIME 2026-07-17 - the booking block also opens the
               page so a visitor can act before reading. Same i18n keys and
               markup as the closing CTA section below; edit both together. */}
@@ -233,7 +234,6 @@ export default async function RedEducationPage({
               </div>
             </div>
           </section>
-
           <section id="training" className="section redu-cta-section">
             <div className="container redu-container">
               <h2 className="redu-section-title">{t("ctaTitle")}</h2>
@@ -241,16 +241,20 @@ export default async function RedEducationPage({
               
             </div>
           </section>
-
+          {/* PART 1: why (G7). */}
+          <div className="container redu-container redu-part" id="why">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 1 })}</p>
+            <h2 className="redu-part-title">{t("part.why.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.why.lede")}</ReduBrand></p>
+          </div>
           {/* Who they are: the verified scale + reach + formats. */}
           <section id="who" className="section">
             <div className="container redu-container">
-              <h2 className="redu-section-title">{t("whoTitle")}</h2>
+              <h3 className="redu-section-title">{t("whoTitle")}</h3>
               <p className="redu-body"><ReduBrand linked={false}>{t("whoBody1")}</ReduBrand></p>
               <p className="redu-body">{t("whoBody2")}</p>
             </div>
           </section>
-
           {/* Vision + values: Red Education's own stated vision and five company
               values, transcribed from the company's own materials (supplied by
               PRIME 2026-07-11). Their words, framed clearly as theirs; light
@@ -259,13 +263,13 @@ export default async function RedEducationPage({
               quotation of an Australian company's own value statement. */}
           <section id="dna" className="section section-accent">
             <div className="container redu-container">
-              <h2 className="redu-section-title">{t("dnaTitle")}</h2>
+              <h3 className="redu-section-title">{t("dnaTitle")}</h3>
               <p className="redu-body"><ReduBrand linked={false}>{t("dnaIntro")}</ReduBrand></p>
-              <h3 className="redu-awards-title">{t("visionTitle")}</h3>
+              <h4 className="redu-awards-title">{t("visionTitle")}</h4>
               <p className="redu-body">{t("visionBody1")}</p>
               <p className="redu-body">{t("visionBody2")}</p>
               <p className="redu-body">{t("visionBody3")}</p>
-              <h3 className="redu-awards-title">{t("valuesTitle")}</h3>
+              <h4 className="redu-awards-title">{t("valuesTitle")}</h4>
               <ul className="redu-awards">
                 {(["v1", "v2", "v3", "v4", "v5"] as const).map((k) => (
                   <li className="redu-award" key={k}>
@@ -275,142 +279,74 @@ export default async function RedEducationPage({
               </ul>
             </div>
           </section>
-
-          {/* Red Education's vendor authorizations + named recognitions. */}
-          <section id="case-studies" className="section">
+          <section id="culture" className="section section-accent">
             <div className="container redu-container">
-              {/* --- CASE STUDIES + THE BENCH (PRIME 2026-08-06) ---
-                   Red Education publishes selected engagements as case studies
-                   and names me in two. The summaries below are WRITTEN HERE,
-                   not reproduced: their pages carry "Copyright © Red Education
-                   All Rights Reserved", and attribution is not a licence. What
-                   is quoted is one sentence of the CLIENT's own words, which is
-                   short, attributed, and about the engagement rather than their
-                   copy. Both originals are linked prominently.
-
-                   Verified live 2026-08-06 with no-cache headers, after a
-                   previous fetch of a different Red Education page returned
-                   stale cached content that had in fact been taken down. */}
-              <h2 className="redu-section-title">{t("casesTitle")}</h2>
-              <p className="redu-body">{t("casesIntro")}</p>
-
-              {/* THE STUDIES AS FULL-WIDTH CARDS (PRIME 2026-08-16). Each one
-                  now carries its own title, its summary, its quote where the
-                  client gave one, and its own attributed link - instead of
-                  titles here and a list of links further down, which asked the
-                  reader to reassemble them.
-
-                  Two studies, because two are what has been verified. Red
-                  Education's case-study index is drawn by JavaScript and cannot
-                  be enumerated by fetching, so a third is known to exist and is
-                  not listed until it has been read. */}
-              {[
-                { key: "case1", vendor: "fortinet", quote: true,
-                  url: "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/" },
-                { key: "case2", vendor: "f5", quote: false,
-                  url: "https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/" },
-              ].map((c) => {
-                const href = attributeRedEducationUrl(c.url, {
-                  vendor: c.vendor,
-                  pageType: "red-education",
-                  pageSlug: "case-study",
-                  locale,
-                  cta: "case-study-source",
-                });
-                return (
-                  <article key={c.key} className="redu-case">
-                    <h3 className="redu-case-title">{t(`${c.key}Title`)}</h3>
-                    <p className="redu-body">{t(`${c.key}Body`)}</p>
-                    {c.quote && (
-                      <blockquote className="redu-quote">
-                        &ldquo;{t(`${c.key}Quote`)}&rdquo;
-                        <span className="redu-quote-attr">&mdash; {t(`${c.key}QuoteAttr`)}</span>
-                      </blockquote>
-                    )}
-                    <a href={href} target="_blank" rel={externalRel(href)} className="redu-case-link">
-                      {t(`${c.key}Link`)} &#8599;
-                    </a>
-                  </article>
-                );
-              })}
-
-              <p className="vendor-note-body">{t("casesRights")}</p>
-
-              {/* THE BENCH. Aggregate figures and externally conferred awards
-                  only - no individual bios. Red Education took its instructors
-                  page down in 2026, and republishing bios a company has removed
-                  is not ours to do. One colleague is named because his award is
-                  a matter of public record on Red Education's own site. */}
-              {/* ARTICLES (PRIME 2026-08-16). /news/ is CLIENT-RENDERED, like
-                  the case-study index and unlike /course-explained/: the fetch
-                  returns ONE article with a real href and three more as image
-                  alt text with no link.
-
-                  So this section is one article and the index, rather than a
-                  list assembled from titles nobody can address. The one that IS
-                  addressable happens to be about F5, which is a platform PRIME
-                  teaches - useful rather than convenient. */}
-            </div>
-          </section>
-
-          <section id="articles" className="section section-accent">
-            <div className="container redu-container">
-              <h2 className="redu-section-title">{t("articlesTitle")}</h2>
-              <p className="redu-body">{t("articlesIntro")}</p>
-              <article className="redu-case">
-                <h3 className="redu-case-title">{t("article1Title")}</h3>
-                <p className="redu-body">{t("article1Body")}</p>
-                <a
-                  href={attributeRedEducationUrl(
-                    "https://www.rededucation.com/f5-certification-career-pathways-salary-expectations/",
-                    { vendor: "f5", pageType: "red-education", pageSlug: "article", locale, cta: "article" },
-                  )}
-                  target="_blank"
-                  rel={externalRel("https://www.rededucation.com/f5-certification-career-pathways-salary-expectations/")}
-                  className="redu-case-link"
-                >
-                  {t("article1Link")} &#8599;
-                </a>
-              </article>
+              <h3 className="redu-section-title">{t("cultureTitle")}</h3>
+              <p className="redu-body">{t("cultureIntro")}</p>
+              <ul className="redu-facts">
+                {["c1","c2","c3","c4","c5","c6","c7","c8"].map((k) => (
+                  <li key={k}>
+                    <strong>{t(`culture.${k}.term`)}</strong> {t(`culture.${k}.body`)}
+                  </li>
+                ))}
+              </ul>
+              <blockquote className="redu-quote">
+                &ldquo;{t("cultureMotto")}&rdquo;
+                <span className="redu-quote-attr">&mdash; {t("cultureMottoAttr")}</span>
+              </blockquote>
               <p className="redu-body">
                 <a
-                  href={attributeRedEducationUrl("https://www.rededucation.com/news/", {
+                  href={attributeRedEducationUrl("https://www.rededucation.com/about-us/our-culture/", {
                     pageType: "red-education",
-                    pageSlug: "blog",
+                    pageSlug: "culture",
                     locale,
-                    cta: "blog-index",
+                    cta: "culture-source",
                   })}
                   target="_blank"
-                  rel={externalRel("https://www.rededucation.com/news/")}
+                  rel={externalRel("https://www.rededucation.com/about-us/our-culture/")}
                   className="redu-inline-link"
                 >
-                  {t("articlesIndexLink")} &#8599;
+                  {t("cultureLink")} &#8599;
                 </a>
               </p>
 
-              {/* PUBLISHED COURSE EXPLAINERS (PRIME 2026-08-16).
-                  Read from /course-explained/, fetched live: unlike the
-                  case-study index, that page IS server-rendered and lists its
-                  children with real hrefs, so all ten are here.
-
-                  Ordered with the platforms I teach first, because that is the
-                  order a reader of THIS page cares about.
-
-                  *** THE MARKER IS A DELIVERY CLAIM, NOT AN AUTHORIZATION ONE
-                  (PRIME, 2026-08-16). It was applied to Ping Identity and
-                  Zscaler, which he is AUTHORIZED on and does NOT yet teach. The
-                  standing rule is exact and I broke it: naming a vendor is one
-                  thing, claiming to train on it is another, and the delivered
-                  count stays at four platforms until PRIME says otherwise. *** The titles are Red
-                  Education's; the note under each says what it is, not what it
-                  says - nobody has read all ten, and a description of unread
-                  content would be a guess. */}
             </div>
           </section>
-
+          {/* PART 2: enables (G7). */}
+          <div className="container redu-container redu-part" id="enables">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 2 })}</p>
+            <h2 className="redu-part-title">{t("part.enables.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.enables.lede")}</ReduBrand></p>
+          </div>
+          <section id="authorizations" className="section section-accent">
+            <div className="container redu-container">
+              <h3 className="redu-section-title">{t("authTitle")}</h3>
+              <p className="redu-body"><ReduBrand linked={false}>{t("authIntro")}</ReduBrand></p>
+              <ul className="redu-vendor-list">
+                {RED_EDUCATION_VENDORS.map((v) =>
+                  v.href ? (
+                    <li key={v.name}>
+                      <Link href={v.href} className="redu-vendor-chip redu-vendor-chip--link">
+                        {v.name}
+                      </Link>
+                    </li>
+                  ) : (
+                    <li className="redu-vendor-chip" key={v.name}>
+                      {v.name}
+                    </li>
+                  ),
+                )}
+              </ul>
+              <h4 id="awards" className="redu-awards-title">{t("awardsTitle")}</h4>
+              <ul className="redu-awards">
+                <li className="redu-award">{t("awardF5")}</li>
+                <li className="redu-award">{t("awardFortinet")}</li>
+              </ul>
+            </div>
+          </section>
           <section id="explainers" className="section">
             <div className="container redu-container">
-              <h2 className="redu-section-title">{t("explainersTitle")}</h2>
+              <h3 className="redu-section-title">{t("explainersTitle")}</h3>
               <p className="redu-body">{t("explainersIntro")}</p>
               <ul className="redu-facts">
                 {[
@@ -456,96 +392,16 @@ export default async function RedEducationPage({
                   and says more in nine words than a paraphrase would. */}
             </div>
           </section>
-
-          <section id="culture" className="section section-accent">
-            <div className="container redu-container">
-              <h2 className="redu-section-title">{t("cultureTitle")}</h2>
-              <p className="redu-body">{t("cultureIntro")}</p>
-              <ul className="redu-facts">
-                {["c1","c2","c3","c4","c5","c6","c7","c8"].map((k) => (
-                  <li key={k}>
-                    <strong>{t(`culture.${k}.term`)}</strong> {t(`culture.${k}.body`)}
-                  </li>
-                ))}
-              </ul>
-              <blockquote className="redu-quote">
-                &ldquo;{t("cultureMotto")}&rdquo;
-                <span className="redu-quote-attr">&mdash; {t("cultureMottoAttr")}</span>
-              </blockquote>
-              <p className="redu-body">
-                <a
-                  href={attributeRedEducationUrl("https://www.rededucation.com/about-us/our-culture/", {
-                    pageType: "red-education",
-                    pageSlug: "culture",
-                    locale,
-                    cta: "culture-source",
-                  })}
-                  target="_blank"
-                  rel={externalRel("https://www.rededucation.com/about-us/our-culture/")}
-                  className="redu-inline-link"
-                >
-                  {t("cultureLink")} &#8599;
-                </a>
-              </p>
-
-            </div>
-          </section>
-
-          <section id="the-bench" className="section">
-            <div className="container redu-container">
-              <h2 className="redu-section-title">{t("benchTitle")}</h2>
-              <p className="redu-body">{t("benchIntro")}</p>
-              <ul className="redu-facts">
-                <li>{t("benchStat1")}</li>
-                <li>{t("benchStat2")}</li>
-                <li>{t("benchStat3")}</li>
-                <li>{t("benchStat4")}</li>
-                <li>{t("benchStat5")}</li>
-              </ul>
-              <h3 className="redu-awards-title">{t("benchAwardsTitle")}</h3>
-              <ul className="redu-awards">
-                <li className="redu-award">{t("benchAward1")}</li>
-                <li className="redu-award">{t("benchAward2")}</li>
-                <li className="redu-award">{t("benchAward3")}</li>
-                <li className="redu-award">{t("benchAward4")}</li>
-                <li className="redu-award">{t("benchAward5")}</li>
-              </ul>
-              <p className="redu-body">{t("benchColleague")}</p>
-
-            </div>
-          </section>
-
-          <section id="authorizations" className="section section-accent">
-            <div className="container redu-container">
-              <h2 className="redu-section-title">{t("authTitle")}</h2>
-              <p className="redu-body"><ReduBrand linked={false}>{t("authIntro")}</ReduBrand></p>
-              <ul className="redu-vendor-list">
-                {RED_EDUCATION_VENDORS.map((v) =>
-                  v.href ? (
-                    <li key={v.name}>
-                      <Link href={v.href} className="redu-vendor-chip redu-vendor-chip--link">
-                        {v.name}
-                      </Link>
-                    </li>
-                  ) : (
-                    <li className="redu-vendor-chip" key={v.name}>
-                      {v.name}
-                    </li>
-                  ),
-                )}
-              </ul>
-              <h3 id="awards" className="redu-awards-title">{t("awardsTitle")}</h3>
-              <ul className="redu-awards">
-                <li className="redu-award">{t("awardF5")}</li>
-                <li className="redu-award">{t("awardFortinet")}</li>
-              </ul>
-            </div>
-          </section>
-
+          {/* PART 3: mywork (G7). */}
+          <div className="container redu-container redu-part" id="my-work">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 3 })}</p>
+            <h2 className="redu-part-title">{t("part.mywork.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.mywork.lede")}</ReduBrand></p>
+          </div>
           {/* Rodolfo at Red Education: HIS four vendors + verifiable proof. */}
           <section id="instructor" className="section">
             <div className="container redu-container">
-              <h2 className="redu-section-title"><ReduBrand linked={false}>{t("rodolfoTitle")}</ReduBrand></h2>
+              <h3 className="redu-section-title"><ReduBrand linked={false}>{t("rodolfoTitle")}</ReduBrand></h3>
               <p className="redu-body"><ReduBrand linked={false}>{t("rodolfoBody")}</ReduBrand></p>
               <p className="redu-body">
                 <ReduBrand linked={false}>{t("caseStudyNote")}</ReduBrand>{" "}
@@ -568,7 +424,218 @@ export default async function RedEducationPage({
               </p>
             </div>
           </section>
+          {/* PART 4: bench (G7). */}
+          <div className="container redu-container redu-part" id="bench">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 4 })}</p>
+            <h2 className="redu-part-title">{t("part.bench.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.bench.lede")}</ReduBrand></p>
+          </div>
+          <section id="the-bench" className="section">
+            <div className="container redu-container">
+              <h3 className="redu-section-title">{t("benchTitle")}</h3>
+              <p className="redu-body">{t("benchIntro")}</p>
+              <ul className="redu-facts">
+                <li>{t("benchStat1")}</li>
+                <li>{t("benchStat2")}</li>
+                <li>{t("benchStat3")}</li>
+                <li>{t("benchStat4")}</li>
+                <li>{t("benchStat5")}</li>
+              </ul>
+              <h4 className="redu-awards-title">{t("benchAwardsTitle")}</h4>
+              <ul className="redu-awards">
+                <li className="redu-award">{t("benchAward1")}</li>
+                <li className="redu-award">{t("benchAward2")}</li>
+                <li className="redu-award">{t("benchAward3")}</li>
+                <li className="redu-award">{t("benchAward4")}</li>
+                <li className="redu-award">{t("benchAward5")}</li>
+              </ul>
+              <p className="redu-body">{t("benchColleague")}</p>
 
+            </div>
+          </section>
+          {/* PART 5: evidence (G7). */}
+          <div className="container redu-container redu-part" id="evidence">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 5 })}</p>
+            <h2 className="redu-part-title">{t("part.evidence.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.evidence.lede")}</ReduBrand></p>
+          </div>
+          {/* Red Education's vendor authorizations + named recognitions. */}
+          <section id="case-studies" className="section">
+            <div className="container redu-container">
+              {/* --- CASE STUDIES + THE BENCH (PRIME 2026-08-06) ---
+                   Red Education publishes selected engagements as case studies
+                   and names me in two. The summaries below are WRITTEN HERE,
+                   not reproduced: their pages carry "Copyright © Red Education
+                   All Rights Reserved", and attribution is not a licence. What
+                   is quoted is one sentence of the CLIENT's own words, which is
+                   short, attributed, and about the engagement rather than their
+                   copy. Both originals are linked prominently.
+
+                   Verified live 2026-08-06 with no-cache headers, after a
+                   previous fetch of a different Red Education page returned
+                   stale cached content that had in fact been taken down. */}
+              <h3 className="redu-section-title">{t("casesTitle")}</h3>
+              <p className="redu-body">{t("casesIntro")}</p>
+
+              {/* THE STUDIES AS FULL-WIDTH CARDS (PRIME 2026-08-16). Each one
+                  now carries its own title, its summary, its quote where the
+                  client gave one, and its own attributed link - instead of
+                  titles here and a list of links further down, which asked the
+                  reader to reassemble them.
+
+                  Two studies, because two are what has been verified. Red
+                  Education's case-study index is drawn by JavaScript and cannot
+                  be enumerated by fetching, so a third is known to exist and is
+                  not listed until it has been read. */}
+              {[
+                { key: "case1", vendor: "fortinet", quote: true,
+                  url: "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/" },
+                { key: "case2", vendor: "f5", quote: false,
+                  url: "https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/" },
+              ].map((c) => {
+                const href = attributeRedEducationUrl(c.url, {
+                  vendor: c.vendor,
+                  pageType: "red-education",
+                  pageSlug: "case-study",
+                  locale,
+                  cta: "case-study-source",
+                });
+                return (
+                  <article key={c.key} className="redu-case">
+                    <h4 className="redu-case-title">{t(`${c.key}Title`)}</h4>
+                    <p className="redu-body">{t(`${c.key}Body`)}</p>
+                    {c.quote && (
+                      <blockquote className="redu-quote">
+                        &ldquo;{t(`${c.key}Quote`)}&rdquo;
+                        <span className="redu-quote-attr">&mdash; {t(`${c.key}QuoteAttr`)}</span>
+                      </blockquote>
+                    )}
+                    <a href={href} target="_blank" rel={externalRel(href)} className="redu-case-link">
+                      {t(`${c.key}Link`)} &#8599;
+                    </a>
+                  </article>
+                );
+              })}
+
+              <p className="vendor-note-body">{t("casesRights")}</p>
+
+              {/* THE BENCH. Aggregate figures and externally conferred awards
+                  only - no individual bios. Red Education took its instructors
+                  page down in 2026, and republishing bios a company has removed
+                  is not ours to do. One colleague is named because his award is
+                  a matter of public record on Red Education's own site. */}
+              {/* ARTICLES (PRIME 2026-08-16). /news/ is CLIENT-RENDERED, like
+                  the case-study index and unlike /course-explained/: the fetch
+                  returns ONE article with a real href and three more as image
+                  alt text with no link.
+
+                  So this section is one article and the index, rather than a
+                  list assembled from titles nobody can address. The one that IS
+                  addressable happens to be about F5, which is a platform PRIME
+                  teaches - useful rather than convenient. */}
+            </div>
+          </section>
+          <section id="articles" className="section section-accent">
+            <div className="container redu-container">
+              <h3 className="redu-section-title">{t("articlesTitle")}</h3>
+              <p className="redu-body">{t("articlesIntro")}</p>
+              <article className="redu-case">
+                <h4 className="redu-case-title">{t("article1Title")}</h4>
+                <p className="redu-body">{t("article1Body")}</p>
+                <a
+                  href={attributeRedEducationUrl(
+                    "https://www.rededucation.com/f5-certification-career-pathways-salary-expectations/",
+                    { vendor: "f5", pageType: "red-education", pageSlug: "article", locale, cta: "article" },
+                  )}
+                  target="_blank"
+                  rel={externalRel("https://www.rededucation.com/f5-certification-career-pathways-salary-expectations/")}
+                  className="redu-case-link"
+                >
+                  {t("article1Link")} &#8599;
+                </a>
+              </article>
+              <p className="redu-body">
+                <a
+                  href={attributeRedEducationUrl("https://www.rededucation.com/news/", {
+                    pageType: "red-education",
+                    pageSlug: "blog",
+                    locale,
+                    cta: "blog-index",
+                  })}
+                  target="_blank"
+                  rel={externalRel("https://www.rededucation.com/news/")}
+                  className="redu-inline-link"
+                >
+                  {t("articlesIndexLink")} &#8599;
+                </a>
+              </p>
+
+              {/* PUBLISHED COURSE EXPLAINERS (PRIME 2026-08-16).
+                  Read from /course-explained/, fetched live: unlike the
+                  case-study index, that page IS server-rendered and lists its
+                  children with real hrefs, so all ten are here.
+
+                  Ordered with the platforms I teach first, because that is the
+                  order a reader of THIS page cares about.
+
+                  *** THE MARKER IS A DELIVERY CLAIM (PRIME, 2026-08-16). It was
+                  once applied to Ping Identity and Zscaler, which he does not
+                  teach; the standing rule is exact: naming a vendor is one
+                  thing, claiming to train on it is another, and the delivered
+                  count stays at four platforms until PRIME says otherwise. His
+                  relationship to those two is characterised nowhere on the site
+                  (GUARD 45), bar the one row PRIME ruled on 2026-10-06. *** The titles are Red
+                  Education's; the note under each says what it is, not what it
+                  says - nobody has read all ten, and a description of unread
+                  content would be a guess. */}
+            </div>
+          </section>
+          {/* PART 6: the official sources (G7). Every fact on this page is read from one of these pages on
+              the dates the header comment records (9 and 14 July, 6 and 16 August 2026); listing them here
+              is the reader's way to check, and the list is drawn from the same config and literals the page
+              links elsewhere, so a URL cannot differ between the two. Each outbound link carries the same
+              placement attribution as the rest of the page. */}
+          <div className="container redu-container redu-part" id="sources">
+            <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 6 })}</p>
+            <h2 className="redu-part-title">{t("part.sources.title")}</h2>
+            <p className="redu-part-lede"><ReduBrand linked={false}>{t("part.sources.lede")}</ReduBrand></p>
+          </div>
+          <section className="section section-accent">
+            <div className="container redu-container">
+              <ul className="redu-facts">
+                {[
+                  { key: "home", url: RED_EDUCATION_BASE },
+                  { key: "vendors", url: RED_EDUCATION_ALL_VENDORS },
+                  { key: "f5", url: "https://www.rededucation.com/f5-networks/", vendor: "f5" },
+                  { key: "fortinet", url: "https://www.rededucation.com/fortinet/", vendor: "fortinet" },
+                  { key: "extreme", url: "https://www.rededucation.com/extreme-networks/", vendor: "extreme" },
+                  { key: "netskope", url: "https://www.rededucation.com/netskope-training/", vendor: "netskope" },
+                  { key: "culture", url: "https://www.rededucation.com/about-us/our-culture/" },
+                  { key: "explainers", url: "https://www.rededucation.com/course-explained/" },
+                  { key: "news", url: "https://www.rededucation.com/news/" },
+                  { key: "case1", url: "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/", vendor: "fortinet" },
+                  { key: "case2", url: "https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/", vendor: "f5" },
+                ].map((src) => {
+                  const href = attributeRedEducationUrl(src.url, {
+                    vendor: src.vendor,
+                    pageType: "red-education",
+                    pageSlug: "official-source",
+                    locale,
+                    cta: "official-source",
+                  });
+                  return (
+                    <li key={src.key}>
+                      <a href={href} target="_blank" rel={externalRel(src.url)} className="redu-inline-link">
+                        {t(`sources.${src.key}`)}
+                      </a>{" "}
+                      <span className="redu-source-url mono">{src.url.replace("https://www.", "")}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className="vendor-note-body">{t("sourcesNote")}</p>
+            </div>
+          </section>
           {/* The tribute (Rodolfo's voice; draft, PRIME rewrites in i18n). */}
           <section id="tribute" className="section section-accent">
             <div className="container redu-container">
@@ -579,7 +646,6 @@ export default async function RedEducationPage({
               </blockquote>
             </div>
           </section>
-
           {/* CTA: the single lead-attributed outbound link + on-site catalog. */}
           <section className="section redu-cta-section">
             <div className="container redu-container">

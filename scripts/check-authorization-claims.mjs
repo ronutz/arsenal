@@ -50,6 +50,22 @@
  * If an authorization is genuinely obtained, remove the vendor from RESTRICTED
  * in the same change that adds the claim. The list is the record of what may
  * not be asserted, so editing it should be a deliberate act with a reason.
+ *
+ * POSTURE CHANGE, ONE ROW (PRIME, 2026-10-06 04:58)
+ * -------------------------------------------------
+ * PRIME's instruction: on /about, in the current entry of the timeline, after
+ * "Currently teaching:", add "Preparing to teach:" followed by the current
+ * marks of Check Point, Zscaler, Ping Identity and Palo Alto Networks' Idira
+ * (CyberArk). That is a forward-looking statement about two RESTRICTED vendors,
+ * the kind the 2026-09-04 ruling above forbade, and PRIME, who made that
+ * ruling, now asks for this one. The ruling is therefore superseded FOR THAT
+ * ROW ONLY: the label lives in the message key named in RULED_KEYS below and
+ * the marks sit beside it in src/app/[locale]/about/page.tsx. Everywhere else
+ * the posture stands unchanged, and it is tightened, not loosened, by the same
+ * change: "preparing to teach" and its Portuguese forms join the vocabulary,
+ * so the phrase cannot spread into prose near a restricted vendor's name
+ * without failing the build. The row states preparation; it still says
+ * nothing about authorization in either direction, and RESTRICTED is unchanged.
  */
 
 import fs from "node:fs";
@@ -73,9 +89,21 @@ const RELATIONSHIP = [
   // thing as "working towards" while sounding like a housekeeping note.
   "as they land", "as they arrive", "will be recorded", "once earned",
   "when i earn", "à medida que chegarem", "quando eu obtiver", "serão registradas",
+  // The 2026-10-06 row's own phrase, in both languages, so it stays confined to
+  // the one key PRIME ruled on (RULED_KEYS) and fails anywhere else near a
+  // restricted vendor's name.
+  "preparing to teach", "preparando para ensinar", "preparação para ensinar",
 ];
 
 const PROXIMITY = 220;
+
+// Message keys carrying a statement PRIME ruled on by name, with the date of the
+// ruling (see the header). The proximity and aspiration checks skip these exact
+// keys and nothing else; the sibling rule still reads them as claims, so a
+// restricted vendor named in a sibling key would still fail the build.
+const RULED_KEYS = new Map([
+  ["about.path.preparing", "PRIME 2026-10-06 04:58: 'Preparing to teach:' on the /about timeline"],
+]);
 
 // --- VENDOR-INDEPENDENT ASPIRATION CHECK -----------------------------------
 // PRIME, 2026-09-04: "no 'working towards' mention anywhere". The first version
@@ -87,6 +115,9 @@ const ASPIRATION = [
   "studying toward", "studying towards", "working toward", "working towards",
   "certifications will be recorded", "as they land; ",
   "estudando para c", "trabalhando para obter", "serão registradas na página",
+  // 2026-10-06: the ruled row's phrase (see RULED_KEYS); first-person use of it
+  // anywhere else is the aspiration this check exists to catch.
+  "preparing to teach", "preparando para ensinar", "preparação para ensinar",
 ];
 
 const problems = [];
@@ -168,6 +199,9 @@ for (const file of LOCALE_FILES) {
       return;
     }
     if (typeof node !== "string") return;
+    // A key PRIME ruled on by name is exempt from the per-string check (the
+    // sibling rule above has already read it as a claim).
+    if (RULED_KEYS.has(path)) return;
     const low = node.toLowerCase();
     for (const vendor of RESTRICTED) {
       let at = low.indexOf(vendor);
@@ -195,6 +229,8 @@ for (const file of LOCALE_FILES) {
       return;
     }
     if (typeof node !== "string") return;
+    // The ruled key (see RULED_KEYS) is the one place the phrase may stand.
+    if (RULED_KEYS.has(path)) return;
     const low = node.toLowerCase();
     // Only first-person aspiration counts. "study guides for people working
     // toward a certification" is about the READER and is exactly the sort of
@@ -233,5 +269,6 @@ if (problems.length) {
 }
 
 console.log(
-  `[check-authorization-claims] OK: no relationship claims for ${RESTRICTED.length} restricted vendor(s).`
+  `[check-authorization-claims] OK: no relationship claims for ${RESTRICTED.length} restricted vendor(s); ` +
+    `${RULED_KEYS.size} ruled key(s) exempt by name (${[...RULED_KEYS.keys()].join(", ")}).`
 );

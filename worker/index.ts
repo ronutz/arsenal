@@ -486,6 +486,20 @@ export default {
       return withQuoteHeader(await env.ASSETS.fetch(request));
     }
 
+    // ---- A locale-prefixed archive path: back to the bare one -----------------
+    // /<locale>/archive/... never existed, but every reader who met the 2026-10-05
+    // bug was redirected there, and the address survives in histories, bookmarks
+    // and PRIME's own report of it. Rather than a 404 for a URL the site itself
+    // produced, send it home permanently: /en/archive/sites/x/ -> /archive/sites/x/.
+    // Any registered locale code counts (stub locales included), the query string
+    // travels with it, and a path that is exactly "/<locale>/archive" gets the
+    // directory form. Added 2026-10-06 after the fix above went live.
+    const archiveMatch = /^\/([^/]+)\/archive(\/.*)?$/.exec(url.pathname);
+    if (archiveMatch && LOCALE_CODES.includes(archiveMatch[1])) {
+      const bare = `/archive${archiveMatch[2] ?? "/"}${url.search}`;
+      return Response.redirect(new URL(bare, url.origin).toString(), 301);
+    }
+
     // ---- Non-API path: the LOCALE GATE -------------------------------------
     const seg = url.pathname.split("/")[1] ?? "";
     const isLiveLocale = LIVE_LOCALE_CODES.includes(seg);

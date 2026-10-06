@@ -76,7 +76,16 @@ if (!fs.existsSync(BASE)) {
 // for), one attributed link to "/" with cta=broader-catalogue.
 // 103 since 2026-10-05: the contact page's training route (G8, routed by intent), one attributed link to the
 // all-vendor course index with cta=intent-training, beside the channel card that already pointed there.
-const BASELINE_TOTAL = 103;
+// 103 -> 114 on 2026-10-06, deliberately. G7 of Round 1 restructures /red-education/
+// into six parts and the sixth is "Official sources": the eleven Red Education
+// pages every fact on that page is read from (home, the certifications list, the
+// four platform pages the author teaches, the culture page, the explainers and
+// news indexes, the two case studies), each attributed like every other outbound
+// link. Ten of the eleven were already declared destinations; the explainers
+// INDEX (/course-explained/) is declared below with this change. They are a
+// verification aid, not routes into the catalogue, and the guard still catches a
+// 115th.
+const BASELINE_TOTAL = 114;
 
 // *** AND A COUNT CANNOT SEE A SWAP. *** The baseline above has an honest audit
 // trail - every increment from 86 is traced to the decision behind it - but it is
@@ -117,6 +126,7 @@ const DECLARED_PATHS = new Set([
   "/certifications/",
   "/checkpoint/",
   "/cisco/",
+  "/course-explained/",
   "/course-explained/check-point-training-resources/",
   "/course-explained/cisco-training-resources/",
   "/course-explained/cyber-security-career-paths/",

@@ -4,7 +4,19 @@
 // ============================================================================
 // src/app/[locale]/guide/page.tsx
 // ----------------------------------------------------------------------------
-// THE SITE USER GUIDE. Four parts, in order:
+// THE SITE USER GUIDE: "How to use ronutz" (G9 of Round 1, SCOUT's option A, built 2026-10-06: broaden the
+// tool manual to the whole site - tools, learn, study guides, vendor hubs, industry, search, privacy and local
+// behaviour). Six parts, in order:
+//
+//   0. THE MAP        — the site in one minute: the five worlds from src/config/worlds.ts (the same registry
+//                       the home directory, the footer and the human sitemap draw), each entry with the count
+//                       the home page shows, from src/lib/siteCounts.ts, so the guide and the home never
+//                       disagree about a number.
+//
+//   0b. HOW TO        — seven short sections, one per surface (tools, learn, study guides, vendor hubs, the
+//                       industry record, search and shortcuts, privacy and local behaviour): what it is, how
+//                       to use it, where to start. Prose from the "guide" namespace in both authored locales;
+//                       every link is a route that exists (check-internal-links fails the build otherwise).
 //
 //   1. DATASHEET      — at-a-glance facts. Every number is DERIVED at build time
 //                       from the authoritative sources (the catalogue for the
@@ -46,6 +58,8 @@ import { getAllArticles } from "@/lib/learn";
 import { getAllGlossaryEntries } from "@/content/glossary/glossary";
 import { TRANSLATED_LOCALE_COUNT } from "@/i18n/locales";
 import { GUIDE_RECIPES } from "@/content/guide/recipes";
+import { WORLDS } from "@/config/worlds";
+import { getSiteCounts } from "@/lib/siteCounts";
 
 export async function generateMetadata({
   params,
@@ -93,11 +107,56 @@ export default async function GuidePage({
       .map((tl) => ({ id: tl.id, href: tl.href, name: tTools(`${tl.id}.name`) })),
   })).filter((r) => r.steps.length > 0);
 
+  // THE MAP (G9): the five worlds and their entries from the shared registry, each entry labelled the way the
+  // home directory labels it (home.map.*, nav.*, or a literal) and carrying the count the home shows for it.
+  const tHome = await getTranslations("home");
+  const counted = getSiteCounts(locale);
+  const countFor: Record<string, string> = {
+    "/tools": tHome("map.toolsBadge", { count: counted.tools }),
+    "/learn": tHome("map.learnBadge", { count: counted.articles }),
+    "/stories": tHome("map.storiesBadge", { count: counted.stories }),
+    "/study-guides": tHome("map.guidesBadge", { count: counted.guides }),
+    "/certifications": tHome("map.certsBadge", { count: counted.guides }),
+    "/glossary": tHome("map.glossaryBadge", { count: counted.glossary }),
+    "/practice": tHome("map.practiceBadge", { count: counted.practice }),
+    "/industry": tHome("map.industryBadge", { count: counted.industry }),
+    "/vendor-hubs": tHome("map.hubsBadge", { count: counted.hubs }),
+    "/roles": tHome("map.rolesBadge", { count: counted.roles }),
+    "/industry/chapters": tHome("map.careerBadge", { count: counted.career }),
+    "/training": tHome("map.trainingBadge", { count: counted.courses, vendors: counted.platforms }),
+    "/endorsements": tHome("front.endorsementsBadge", { count: counted.endorsements }),
+  };
+  /** A world entry's label: "map.x" and "front.x" under home, "nav.x" under nav, "=Literal" as written. */
+  const worldLabel = (label: string) =>
+    label.startsWith("=") ? label.slice(1) : label.startsWith("nav.") ? tNav(label.slice(4)) : tHome(label);
+  const worlds = WORLDS.map((w) => ({
+    key: w.key,
+    title: tHome(`front.world.${w.key}`),
+    verb: tHome(`front.worldVerb.${w.key}`),
+    // Every entry, the footer's included (the home directory skips the Blog; a guide does not).
+    items: w.items.map((it) => ({ label: worldLabel(it.label), href: it.href, count: countFor[it.href] })),
+  }));
+
+  // HOW TO (G9): one block per surface. The prose is in messages; the links are routes, three at most each.
+  const how: { key: string; links: { href: string; label: string }[] }[] = [
+    { key: "tools", links: [{ href: "/tools", label: t("how.tools.l1") }, { href: "/tools#hub-paste-title", label: t("how.tools.l2") }, { href: "/api", label: t("how.tools.l3") }] },
+    { key: "learn", links: [{ href: "/learn", label: t("how.learn.l1") }, { href: "/glossary", label: t("how.learn.l2") }, { href: "/practice", label: t("how.learn.l3") }] },
+    { key: "guides", links: [{ href: "/study-guides", label: t("how.guides.l1") }, { href: "/certifications", label: t("how.guides.l2") }] },
+    { key: "hubs", links: [{ href: "/vendor-hubs", label: t("how.hubs.l1") }, { href: "/training", label: t("how.hubs.l2") }] },
+    { key: "industry", links: [{ href: "/industry", label: t("how.industry.l1") }, { href: "/industry/chapters", label: t("how.industry.l2") }, { href: "/industry/method", label: t("how.industry.l3") }] },
+    { key: "search", links: [{ href: "/settings", label: t("how.search.l1") }, { href: "/sitemap", label: t("how.search.l2") }] },
+    { key: "privacy", links: [{ href: "/privacy", label: t("how.privacy.l1") }, { href: "/stats", label: t("how.privacy.l2") }, { href: "/colophon", label: t("how.privacy.l3") }] },
+  ];
+
   // Datasheet rows: label + value. Counts are derived; the rest are facts.
   const datasheet: { label: string; value: string }[] = [
     { label: t("ds.tools"), value: String(liveToolCount) },
     { label: t("ds.categories"), value: String(categoryCount) },
     { label: t("ds.articles"), value: String(articleCount) },
+    { label: t("ds.guides"), value: String(counted.guides) },
+    { label: t("ds.hubs"), value: String(counted.hubs) },
+    { label: t("ds.industry"), value: String(counted.industry) },
+    { label: t("ds.people"), value: String(counted.people) },
     { label: t("ds.glossary"), value: String(glossaryCount) },
     { label: t("ds.languages"), value: String(localeCount) },
     { label: t("ds.compute"), value: t("ds.computeValue") },
@@ -137,11 +196,65 @@ export default async function GuidePage({
               <p className="page-hero-lede">{t("lede")}</p>
               {/* In-page nav to the four parts. */}
               <nav className="guide-toc" aria-label={t("tocAria")}>
+                <a href="#map" className="guide-toc-link">{t("nav.map")}</a>
+                {how.map((h) => (
+                  <a key={h.key} href={`#how-${h.key}`} className="guide-toc-link">{t(`how.${h.key}.nav`)}</a>
+                ))}
                 <a href="#datasheet" className="guide-toc-link">{t("nav.datasheet")}</a>
                 <a href="#quickref" className="guide-toc-link">{t("nav.quickref")}</a>
                 <a href="#usage" className="guide-toc-link">{t("nav.usage")}</a>
                 <a href="#manual" className="guide-toc-link">{t("nav.manual")}</a>
               </nav>
+            </div>
+          </section>
+
+          {/* 0. THE MAP: the five worlds, with the home's counts */}
+          <section id="map" className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("mapHeading")}</h2>
+              <p className="colophon-body">{t("mapIntro")}</p>
+              <div className="guide-map">
+                {worlds.map((w) => (
+                  <div className="guide-map-world" key={w.key}>
+                    <h3 className="guide-map-world-title">
+                      <span className="guide-map-world-verb mono">{w.verb}</span>
+                      {w.title}
+                    </h3>
+                    <ul className="guide-map-items">
+                      {w.items.map((it) => (
+                        <li className="guide-map-item" key={it.href}>
+                          <Link href={it.href} className="guide-map-link">{it.label}</Link>
+                          {it.count && <span className="guide-map-count mono">{it.count}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* 0b. HOW TO: one block per surface */}
+          <section id="how" className="section section-accent">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("howHeading")}</h2>
+              <p className="colophon-body">{t("howIntro")}</p>
+              {how.map((h) => (
+                <div className="guide-how" id={`how-${h.key}`} key={h.key}>
+                  <h3 className="guide-how-h">{t(`how.${h.key}.h`)}</h3>
+                  <p className="colophon-body">{t(`how.${h.key}.p1`)}</p>
+                  <p className="colophon-body">{t(`how.${h.key}.p2`)}</p>
+                  <p className="guide-how-links">
+                    <span className="guide-how-start mono">{t("howStart")}</span>
+                    {h.links.map((l, i) => (
+                      <span key={l.href}>
+                        {i > 0 && " · "}
+                        <Link href={l.href} className="guide-how-link">{l.label}</Link>
+                      </span>
+                    ))}
+                  </p>
+                </div>
+              ))}
             </div>
           </section>
 

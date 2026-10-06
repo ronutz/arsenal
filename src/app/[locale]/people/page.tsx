@@ -124,6 +124,30 @@ export default async function PeoplePage({
                 </p>
               </header>
 
+              {/* FIVE ENTRANCES OVER THE FILTERS (G3, SCOUT, adopted 2026-10-06): the pioneers of electricity, the
+                  builders of computing, the people who built the internet, security and hacker culture (with the
+                  cryptographers), and Brazil, each a filtered view with an address (?field=, read by the filter
+                  after mount); then the whole timeline, as it always was. Counts from the same list. */}
+              <ul className="people-entrances" aria-label={t("entrancesLabel")}>
+                {([
+                  { key: "pioneers", fields: ["electricity"] },
+                  { key: "computing", fields: ["computing"] },
+                  { key: "internet", fields: ["internet"] },
+                  { key: "security", fields: ["security", "hacker-culture", "crypto"] },
+                  { key: "brazil", fields: ["brazil"] },
+                ] as { key: string; fields: string[] }[]).map((en) => {
+                  const n = people.filter((p) => p.personField && en.fields.includes(p.personField)).length;
+                  if (n === 0) return null;
+                  return (
+                    <li key={en.key}>
+                      <a href={`/${locale}/people/?field=${en.fields.join(",")}#people-timeline`} className="people-entrance">
+                        <span className="people-entrance-title">{t(`entrances.${en.key}.title`)}</span>
+                        <span className="people-entrance-lede">{t(`entrances.${en.key}.lede`, { count: n })}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
               <PeopleTimelineFilter
                 fields={fields}
                 total={people.length}
@@ -136,7 +160,7 @@ export default async function PeoplePage({
                 noneLabel={t("none")}
               />
 
-              <section className="section" data-people-timeline>
+              <section className="section" data-people-timeline id="people-timeline">
                 {Array.from(eras.entries()).map(([decade, group]) => (
                   <div className="people-era" key={decade}>
                     <h2 className="people-decade">{t("decade", { decade })}</h2>
