@@ -96,7 +96,7 @@
 /en/about/vendors/arista/ /en/industry/arista/ 301
 /en/about/vendors/avaya/ /en/industry/avaya/ 301
 /en/about/vendors/aws/ /en/industry/aws/ 301
-/en/about/vendors/cyberark/ /en/industry/cyberark/ 301
+/en/about/vendors/cyberark/ /en/industry/chapters/cyberark/ 301
 /en/about/vendors/epi/ /en/industry/epi/ 301
 /en/about/vendors/microsoft/ /en/industry/microsoft/ 301
 /en/about/vendors/mobileiron/ /en/industry/mobileiron/ 301
@@ -181,7 +181,7 @@
 /pt-BR/about/vendors/arista/ /pt-BR/industry/arista/ 301
 /pt-BR/about/vendors/avaya/ /pt-BR/industry/avaya/ 301
 /pt-BR/about/vendors/aws/ /pt-BR/industry/aws/ 301
-/pt-BR/about/vendors/cyberark/ /pt-BR/industry/cyberark/ 301
+/pt-BR/about/vendors/cyberark/ /pt-BR/industry/chapters/cyberark/ 301
 /pt-BR/about/vendors/epi/ /pt-BR/industry/epi/ 301
 /pt-BR/about/vendors/microsoft/ /pt-BR/industry/microsoft/ 301
 /pt-BR/about/vendors/mobileiron/ /pt-BR/industry/mobileiron/ 301
@@ -492,6 +492,7 @@
 /:locale/about/vendors/cabletron-enterasys/  /:locale/industry/chapters/cabletron-enterasys/  301
 /:locale/about/vendors/check-point/  /:locale/industry/chapters/check-point/  301
 /:locale/about/vendors/cisco/  /:locale/industry/chapters/cisco/  301
+/:locale/about/vendors/cyberark/  /:locale/industry/chapters/cyberark/  301
 /:locale/about/vendors/extreme/  /:locale/industry/chapters/extreme/  301
 /:locale/about/vendors/f5/  /:locale/industry/chapters/f5/  301
 /:locale/about/vendors/fireeye-mcafee-ixia/  /:locale/industry/chapters/fireeye-mcafee-ixia/  301
@@ -503,6 +504,7 @@
 /:locale/about/vendors/ping-identity/  /:locale/industry/chapters/ping-identity/  301
 /:locale/about/vendors/pulse-secure/  /:locale/industry/chapters/pulse-secure/  301
 /:locale/about/vendors/riverstone/  /:locale/industry/chapters/riverstone/  301
+/:locale/about/vendors/tenable/  /:locale/industry/chapters/tenable/  301
 /:locale/about/vendors/zscaler/  /:locale/industry/chapters/zscaler/  301
 /:locale/about/history/  /:locale/about/  301
 /:locale/about/vendors/nutanix/  /:locale/industry/nutanix/  301

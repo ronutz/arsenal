@@ -12640,6 +12640,28 @@
         "global-crossing": "Treinamento técnico e operacional para o NOC em Cotia e em Buenos Aires. O currículo de 2014 nomeia a Global Crossing; os de 2012 e 2013, escritos depois que a Level 3 a adquiriu, nomeiam a Level 3."
       },
       "years": "{from} a {to}"
+    },
+    "tenable": {
+      "name": "Tenable",
+      "years": "2020",
+      "tagline": "Gestão de vulnerabilidades da cadeira de pré-venda, no ano em que a carreira virou para o ensino.",
+      "intro": "Um capítulo curto com lugar preciso na história. Ao longo de 2020 o trabalho passou pela CYLK, a integradora de segurança de São Paulo, como consultor sob demanda: apoio de pré-venda, provas de conceito, dimensionamento e precificação para as necessidades de segurança de clientes finais. CYLK e InLearn eram empresas irmãs no mesmo grupo na época, e a passagem para a instrução em tempo integral com a InLearn já estava em curso; estes foram os últimos engajamentos pontuais do praticante antes de o professor tomar a semana.",
+      "s1Title": "Tenable.io e Tenable.sc, pré-venda, 2020",
+      "s1Body": "Os engajamentos eram gestão de vulnerabilidades, o negócio inteiro da Tenable: varrer o que uma organização de fato tem, classificar o que está exposto e mostrar ao cliente por onde começar. As duas plataformas da época eram o Tenable.io, o serviço gerenciado em nuvem, e o Tenable.sc, o console local que nasceu do SecurityCenter, e o trabalho cobriu as duas: demonstrações e provas de conceito contra o ambiente do próprio cliente, o dimensionamento de licenças por contagem de ativos e as conversas de arquitetura sobre scanners, agentes e onde os dados ficariam.",
+      "s2Title": "As certificações, e para que serviam",
+      "s2Body": "O programa de parceiros da Tenable certifica três papéis de pré-venda por plataforma, engenheiro, integrador e arquiteto, e 2020 produziu os seis, para o Tenable.io e para o Tenable.sc, mais o Certified Sales Associate. Eram o bilhete de entrada para conduzir os engajamentos acima, não enfeites, e expiraram em 2022 quando o trabalho já havia seguido adiante; o registro as mantém com suas datas por essa razão.",
+      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator e Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator e Architect. Todas de 2020 a 2022. Listadas com suas evidências na página de credenciais."
+    },
+    "cyberark": {
+      "name": "CyberArk",
+      "years": "2020",
+      "tagline": "Acesso privilegiado da cadeira de pré-venda, no mesmo ano e na mesma cadeira da Tenable.",
+      "intro": "O gêmeo do capítulo Tenable: 2020, CYLK, a integradora de segurança de São Paulo, consultoria sob demanda para clientes finais enquanto a passagem para a instrução em tempo integral com a InLearn, empresa irmã da CYLK no mesmo grupo, estava em curso. Onde a Tenable era encontrar a exposição, a CyberArk era as contas que mais importam quando ela é encontrada.",
+      "s1Title": "Acesso privilegiado, pré-venda, 2020",
+      "s1Body": "O produto da CyberArk é segurança de acesso privilegiado: o cofre que guarda as credenciais das contas capazes de causar o maior dano, a rotação dessas credenciais para que ninguém tenha uma senha permanente, e as sessões intermediadas e gravadas pelas quais os administradores chegam aos sistemas. Os engajamentos eram de pré-venda: provas de conceito contra o parque do próprio cliente, dimensionamento pelo número e tipo de contas privilegiadas, e as conversas de projeto sobre onde fica o cofre, como as sessões são isoladas e o que é gravado.",
+      "s2Title": "As certificações, e para que serviam",
+      "s2Body": "O programa de parceiros da CyberArk certificava o engenheiro de pré-venda (CPE), o profissional de vendas (CSP) e o Trustee, sua credencial de entrada em acesso privilegiado, e 2020 produziu as três. Como o conjunto da Tenable, eram a condição para conduzir os engajamentos, e como aquele conjunto expiraram em 2022, quando a semana já pertencia à sala de aula; o registro as mantém com suas datas.",
+      "certs": "CyberArk Certified Pre-Sales Engineer (CPE); CyberArk Certified Sales Professional (CSP); CyberArk Certified Trustee. Todas de 2020 a 2022. Listadas com suas evidências na página de credenciais."
     }
   },
   "training": {

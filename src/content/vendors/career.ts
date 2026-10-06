@@ -56,6 +56,10 @@ export const CAREER_VENDORS: CareerVendor[] = [
   // The teaching-era chapters (PRIME directive 2026-07-15: career vendors
   // include ALL vendors to today). Chronological by first engagement:
   { slug: "f5", key: "f5", founded: 1996 },                     // certified 2015, instructor 2020
+  // PRIME 2026-10-05 21:19: the two 2020 point engagements at CYLK, while the move to full-time teaching with its
+  // sister company InLearn was under way; the certifications of 2020 are in src/content/certifications/data.ts.
+  { slug: "tenable", key: "tenable", founded: 2002 },           // pre-sales certifications 2020
+  { slug: "cyberark", key: "cyberark", founded: 1999 },         // pre-sales certifications 2020
   { slug: "fortinet", key: "fortinet", founded: 2000 },         // NSE ladder 2022, FCT 2024
   { slug: "netskope", key: "netskope", founded: 2012 },         // accreditations 2024, instructor 2025
   { slug: "ping-identity", key: "ping", founded: 2002, markVendors: ["ping", "forgerock"] },        // PingFederate Practitioner 2025

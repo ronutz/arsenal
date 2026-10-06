@@ -53,6 +53,19 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 export const CHANGELOG: ChangelogEntry[] = [
   {
     date: "2026-10-05",
+    time: "21:40",
+    kind: "content",
+    title: "Two chapters added to the career record: Tenable and CyberArk, the 2020 pre-sales engagements at CYLK",
+    body:
+      "The year the career turned to teaching had two point engagements that the record did not tell: vulnerability management with Tenable (Tenable.io and Tenable.sc, the six pre-sales certifications and the sales associate, all 2020) and privileged access with CyberArk (CPE, CSP and Trustee, 2020), both from the pre-sales chair at CYLK, the São Paulo security integrator whose sister company InLearn was where full-time instruction began. Each has its chapter, linked from its company's entry in the industry record, with the certifications and their dates.",
+    links: [
+      { label: "The career record", href: "/industry/chapters" },
+      { label: "The Tenable chapter", href: "/industry/chapters/tenable" },
+      { label: "The CyberArk chapter", href: "/industry/chapters/cyberark" },
+    ],
+  },
+  {
+    date: "2026-10-05",
     time: "20:30",
     kind: "content",
     title: "The career record: the Cisco chapter opens in 1996, and the Extreme chapter carries its second engagement, authorized instruction since 2021",

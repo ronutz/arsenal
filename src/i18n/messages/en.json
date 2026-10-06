@@ -12640,6 +12640,28 @@
         "global-crossing": "Technical and operational training for the NOC in Cotia and Buenos Aires. The 2014 résumé names Global Crossing; the 2012 and 2013 résumés, written after Level 3 acquired it, name Level 3."
       },
       "years": "{from} to {to}"
+    },
+    "tenable": {
+      "name": "Tenable",
+      "years": "2020",
+      "tagline": "Vulnerability management from the pre-sales chair, in the year the career turned to teaching.",
+      "intro": "A short chapter with a precise place in the story. Through 2020 the work ran through CYLK, the São Paulo security integrator, as an on-demand consultant: pre-sales support, proofs of concept, scoping and pricing for end customers' security needs. CYLK and InLearn were sister companies in the same group at the time, and the move to full-time instruction with InLearn was already under way; these were the last point engagements of the practitioner before the teacher took over the week.",
+      "s1Title": "Tenable.io and Tenable.sc, pre-sales, 2020",
+      "s1Body": "The engagements were vulnerability management, Tenable's whole business: scanning what an organisation actually has, ranking what is exposed, and showing a customer where to start. The two platforms of the day were Tenable.io, the cloud-managed service, and Tenable.sc, the on-premises console that grew out of SecurityCenter, and the work covered both: demonstrations and proofs of concept against the customer's own environment, the scoping of licences by asset count, and the architecture conversations about scanners, agents and where the data would live.",
+      "s2Title": "The certifications, and what they were for",
+      "s2Body": "Tenable's partner programme certifies three pre-sales roles per platform, engineer, integrator and architect, and 2020 produced all six, for Tenable.io and for Tenable.sc, plus the Certified Sales Associate. They were the admission ticket to run the engagements above rather than ornaments, and they lapsed in 2022 when the work had moved on; the record keeps them with their dates for that reason.",
+      "certs": "Tenable Certified Sales Associate (TCSA); Tenable.io Certified Pre-Sales Engineer, Integrator and Architect; Tenable.sc Certified Pre-Sales Engineer, Integrator and Architect. All 2020 to 2022. Listed with their evidence on the credentials page."
+    },
+    "cyberark": {
+      "name": "CyberArk",
+      "years": "2020",
+      "tagline": "Privileged access from the pre-sales chair, in the same year and the same chair as Tenable.",
+      "intro": "The twin of the Tenable chapter: 2020, CYLK, the São Paulo security integrator, on-demand consulting for end customers while the move to full-time instruction with InLearn, CYLK's sister company in the same group, was under way. Where Tenable was about finding the exposure, CyberArk was about the accounts that matter most when it is found.",
+      "s1Title": "Privileged access, pre-sales, 2020",
+      "s1Body": "CyberArk's product is privileged access security: the vault that holds the credentials of the accounts that can do the most damage, the rotation of those credentials so nobody holds a standing password, and the brokered, recorded sessions through which administrators reach the systems. The engagements were pre-sales: proofs of concept against the customer's own estate, scoping by the number and kind of privileged accounts, and the design conversations about where the vault sits, how sessions are isolated and what gets recorded.",
+      "s2Title": "The certifications, and what they were for",
+      "s2Body": "CyberArk's partner programme certified the pre-sales engineer (CPE), the sales professional (CSP) and the Trustee, its entry credential on privileged access, and 2020 produced all three. Like the Tenable set, they were the condition for running the engagements, and like that set they lapsed in 2022 once the week belonged to the classroom; the record keeps them with their dates.",
+      "certs": "CyberArk Certified Pre-Sales Engineer (CPE); CyberArk Certified Sales Professional (CSP); CyberArk Certified Trustee. All 2020 to 2022. Listed with their evidence on the credentials page."
     }
   },
   "training": {

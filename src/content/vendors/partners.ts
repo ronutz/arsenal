@@ -2855,6 +2855,7 @@ export const partnerVendors: PartnerVendor[] = [
         { label: "Tenable Docs", url: "https://docs.tenable.com" },
       ],
     },
+    careerChapter: { slug: "tenable", years: "2020" },
     tags: ["vendor"],
     group: "contemporary",
     name: "Tenable",
@@ -4058,6 +4059,7 @@ export const partnerVendors: PartnerVendor[] = [
     // Red Education partner (Courses by Vendor nav + Australasia/SAARC/ASEAN menus). Verified against
     // rededucation.com 2026-08-06.
     relationships: ["red-education-partner"],
+    careerChapter: { slug: "cyberark", years: "2020" },
     tags: ["vendor"],
     group: "redu",
     name: "CyberArk",
