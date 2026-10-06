@@ -71,6 +71,13 @@ export default async function StoriesPage({
   })).filter((g) => g.articles.length > 0);
 
   const total = groups.reduce((n, g) => n + g.articles.length, 0);
+  // G11 (SCOUT, adopted 2026-10-05): one LEAD SENTENCE per story rather than the whole summary, then a
+  // "Read the argument" call to action. The lead is the summary's first sentence, cut at the first
+  // terminal mark followed by a space; a summary without one is shown whole.
+  const lead = (summary: string): string => {
+    const m = /^(.+?[.!?])(?:\s|$)/.exec(summary);
+    return m ? m[1] : summary;
+  };
 
   return (
     <>
@@ -109,8 +116,13 @@ export default async function StoriesPage({
                         {a.title}
                       </Link>
                       {/* The article's own summary, not a second description
-                          written here - see the header of this file. */}
-                      <p className="story-summary">{a.summary}</p>
+                          written here - see the header of this file. Since
+                          2026-10-05 (G11) only its lead sentence, and the
+                          argument is one click away. */}
+                      <p className="story-summary">{lead(a.summary)}</p>
+                      <Link href={`/learn/${a.slug}`} className="story-cta">
+                        {t("readArgument")} →
+                      </Link>
                     </li>
                   ))}
                 </ul>

@@ -1,0 +1,341 @@
+{
+  "about": "The pool behind the random quote header (worker/index.ts, PRIME 2026-10-05 22:48). One entry is chosen per HTML response; the header NAME is the character's catchphrase or name, the VALUE a short line of theirs, in the tradition of slashdot.org's X-Fry, X-Bender and X-Lrrr. Rules, enforced by scripts/check-quote-headers.mjs: names are RFC 9110 field-name tokens starting with X-; values are printable ASCII (header values are not Unicode-safe), short, and famous enough to need no explanation; every entry names its character and its show, so the joke is attributed. Nothing here is a lyric, a monologue or anything longer than a line.",
+  "entries": [
+    {
+      "show": "Futurama",
+      "who": "Philip J. Fry",
+      "name": "X-Fry",
+      "quote": "Shut up and take my money!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Philip J. Fry",
+      "name": "X-Fry",
+      "quote": "I'm back, baby!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Bender Bending Rodriguez",
+      "name": "X-Bender",
+      "quote": "Bite my shiny metal ass!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Bender Bending Rodriguez",
+      "name": "X-Bender",
+      "quote": "Hooray, I'm useful!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Bender Bending Rodriguez",
+      "name": "X-Bender",
+      "quote": "Oh wait, you're serious. Let me laugh even harder."
+    },
+    {
+      "show": "Futurama",
+      "who": "Professor Hubert J. Farnsworth",
+      "name": "X-Farnsworth",
+      "quote": "Good news, everyone!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Professor Hubert J. Farnsworth",
+      "name": "X-Farnsworth",
+      "quote": "I don't want to live on this planet anymore."
+    },
+    {
+      "show": "Futurama",
+      "who": "Dr. John A. Zoidberg",
+      "name": "X-Zoidberg",
+      "quote": "Why not Zoidberg?"
+    },
+    {
+      "show": "Futurama",
+      "who": "Dr. John A. Zoidberg",
+      "name": "X-Zoidberg",
+      "quote": "Woop woop woop woop woop!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Hermes Conrad",
+      "name": "X-Hermes",
+      "quote": "Sweet lion of Zion!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Zapp Brannigan",
+      "name": "X-Zapp",
+      "quote": "Stop exploding, you cowards!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Kif Kroker",
+      "name": "X-Kif",
+      "quote": "*sigh*"
+    },
+    {
+      "show": "Futurama",
+      "who": "Lrrr, ruler of the planet Omicron Persei 8",
+      "name": "X-Lrrr",
+      "quote": "I am Lrrr, ruler of the planet Omicron Persei 8!"
+    },
+    {
+      "show": "Futurama",
+      "who": "Morbo",
+      "name": "X-Morbo",
+      "quote": "Windmills do not work that way! Goodnight!"
+    },
+    {
+      "show": "Futurama",
+      "who": "The Hypnotoad",
+      "name": "X-Hypnotoad",
+      "quote": "ALL GLORY TO THE HYPNOTOAD."
+    },
+    {
+      "show": "Futurama",
+      "who": "Bureaucrat Number 1.0",
+      "name": "X-Bureaucrat",
+      "quote": "You are technically correct, the best kind of correct."
+    },
+    {
+      "show": "Futurama",
+      "who": "Scruffy, the janitor",
+      "name": "X-Scruffy",
+      "quote": "Second."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Doh",
+      "quote": "D'oh!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Doh",
+      "quote": "Trying is the first step towards failure."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Doh",
+      "quote": "Operator! Give me the number for 911!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Mmm",
+      "quote": "Mmm... donuts."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Woo-Hoo",
+      "quote": "Woo-hoo!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Bart Simpson",
+      "name": "X-Cowabunga",
+      "quote": "Cowabunga!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Bart Simpson",
+      "name": "X-Eat-My-Shorts",
+      "quote": "Eat my shorts!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Bart Simpson",
+      "name": "X-Ay-Caramba",
+      "quote": "Ay, caramba!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Bart Simpson",
+      "name": "X-Bart",
+      "quote": "I didn't do it."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Bart Simpson",
+      "name": "X-Bart",
+      "quote": "Don't have a cow, man."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "C. Montgomery Burns",
+      "name": "X-Excellent",
+      "quote": "Excellent."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "C. Montgomery Burns",
+      "name": "X-Burns",
+      "quote": "Release the hounds!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "C. Montgomery Burns",
+      "name": "X-Burns",
+      "quote": "Ahoy-hoy!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Nelson Muntz",
+      "name": "X-Ha-Ha",
+      "quote": "Ha-ha!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Ned Flanders",
+      "name": "X-Okily-Dokily",
+      "quote": "Okily-dokily!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Ned Flanders",
+      "name": "X-Flanders",
+      "quote": "Hi-diddly-ho, neighborino!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Comic Book Guy",
+      "name": "X-Worst-Ever",
+      "quote": "Worst. Episode. Ever."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Dr. Nick Riviera",
+      "name": "X-Hi-Everybody",
+      "quote": "Hi, everybody!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Professor Frink",
+      "name": "X-Glavin",
+      "quote": "Glavin!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Milhouse Van Houten",
+      "name": "X-Milhouse",
+      "quote": "Everything's coming up Milhouse!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Ralph Wiggum",
+      "name": "X-Ralph",
+      "quote": "Me fail English? That's unpossible!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Ralph Wiggum",
+      "name": "X-Ralph",
+      "quote": "I'm in danger."
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Krusty the Clown",
+      "name": "X-Krusty",
+      "quote": "Hey hey!"
+    },
+    {
+      "show": "The Simpsons",
+      "who": "Homer Simpson",
+      "name": "X-Yoink",
+      "quote": "Yoink!"
+    },
+    {
+      "show": "South Park",
+      "who": "Randy Marsh",
+      "name": "X-Tegridy",
+      "quote": "Tegridy."
+    },
+    {
+      "show": "South Park",
+      "who": "Randy Marsh",
+      "name": "X-Randy",
+      "quote": "I thought this was America!"
+    },
+    {
+      "show": "South Park",
+      "who": "Chef",
+      "name": "X-Chef",
+      "quote": "Hello there, children!"
+    },
+    {
+      "show": "South Park",
+      "who": "Eric Cartman",
+      "name": "X-Authoritah",
+      "quote": "Respect my authoritah!"
+    },
+    {
+      "show": "South Park",
+      "who": "Eric Cartman",
+      "name": "X-Cartman",
+      "quote": "Screw you guys, I'm going home."
+    },
+    {
+      "show": "South Park",
+      "who": "Eric Cartman",
+      "name": "X-Big-Boned",
+      "quote": "I'm not fat, I'm big-boned!"
+    },
+    {
+      "show": "South Park",
+      "who": "Stan Marsh",
+      "name": "X-Stan",
+      "quote": "Oh my God, they killed Kenny!"
+    },
+    {
+      "show": "South Park",
+      "who": "Kenny McCormick",
+      "name": "X-Kenny",
+      "quote": "Mmph mmph mmph mmph!"
+    },
+    {
+      "show": "South Park",
+      "who": "Mr. Mackey",
+      "name": "X-Mmkay",
+      "quote": "Mmkay?"
+    },
+    {
+      "show": "South Park",
+      "who": "Timmy Burch",
+      "name": "X-Timmy",
+      "quote": "Timmy!"
+    },
+    {
+      "show": "South Park",
+      "who": "Towelie",
+      "name": "X-Towelie",
+      "quote": "Don't forget to bring a towel!"
+    },
+    {
+      "show": "South Park",
+      "who": "Butters Stotch",
+      "name": "X-Butters",
+      "quote": "Oh, hamburgers!"
+    },
+    {
+      "show": "South Park",
+      "who": "Jimmy Valmer",
+      "name": "X-Jimmy",
+      "quote": "Wow, what a great audience."
+    },
+    {
+      "show": "South Park",
+      "who": "The Underpants Gnomes",
+      "name": "X-Underpants-Gnomes",
+      "quote": "Phase 1: collect underpants. Phase 2: ? Phase 3: profit."
+    },
+    {
+      "show": "South Park",
+      "who": "Member Berries",
+      "name": "X-Member-Berries",
+      "quote": "'Member?"
+    }
+  ]
+}

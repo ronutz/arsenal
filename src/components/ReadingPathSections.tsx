@@ -53,6 +53,8 @@ export interface PathItem {
   lede: string;
   /** Precomputed "N articles" badge. */
   countBadge: string;
+  /** F5 (SCOUT, adopted 2026-10-05): the outcome sentence, "You will understand...", authored per path. */
+  outcome: string;
   steps: PathStep[];
   tools: PathTool[];
 }
@@ -72,6 +74,8 @@ export default function ReadingPathSections({
   hideContentsLabel,
   stepsLabel,
   practiceLabel,
+  outcomeLabel,
+  startLabel,
 }: {
   groups: PathGroup[];
   expandAllLabel: string;
@@ -82,6 +86,10 @@ export default function ReadingPathSections({
   hideContentsLabel: string;
   stepsLabel: string;
   practiceLabel: string;
+  /** The label before the outcome sentence ("You will understand"). */
+  outcomeLabel: string;
+  /** The start link's text ("Start the path"). */
+  startLabel: string;
 }) {
   // One open/closed flag per path id; every path starts COLLAPSED.
   const [open, setOpen] = useState<Record<string, boolean>>({});
@@ -127,6 +135,18 @@ export default function ReadingPathSections({
                     <span className="certhub-guide-code mono">{path.countBadge}</span>
                   </h4>
                   <p className="certhub-note-body">{path.lede}</p>
+                  {/* F5: the outcome sentence and the way in, visible without expanding. The start link
+                      opens the first article of the path; the syllabus below lists them all. */}
+                  <p className="reading-path-outcome">
+                    <strong>{outcomeLabel}:</strong> {path.outcome}
+                  </p>
+                  {path.steps.length > 0 && (
+                    <p className="reading-path-start">
+                      <Link href={`/learn/${path.steps[0].slug}`} className="reading-path-start-link">
+                        {startLabel} &#8594;
+                      </Link>
+                    </p>
+                  )}
 
                   {/* The toggle: title, badge and lede stay visible; the
                       syllabus and practice bench hide behind this. */}

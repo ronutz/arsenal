@@ -43,10 +43,14 @@ export const manifest = Object.freeze({
   ],
   inputDetectors: [
     {
-      // A dotted hostname that is not an IP address and carries no scheme/path.
+      // A dotted hostname that is not an IP address and carries no scheme/path, whose last label is letters
+      // only (a top-level domain), so a JWT or any other dotted token with digits in its last segment does not
+      // match. Tightened and moved from priority 2 to 30 on 2026-10-06, when the paste box of Round 1's E3 ran
+      // every detector for the first time and this one ranked a JWT above the JWT decoder: it is the broadest
+      // shape on the site and belongs after the specific ones.
       kind: "regex",
-      priority: 2,
-      pattern: "^(?!\\d{1,3}(?:\\.\\d{1,3}){3}$)(?!.*[\\s/:@])(?=.*\\.)[A-Za-z0-9*_.-]+$",
+      priority: 30,
+      pattern: "^(?!\\d{1,3}(?:\\.\\d{1,3}){3}$)(?!.*[\\s/:@])(?=.*\\.)[A-Za-z0-9*_.-]*\\.[A-Za-z]{2,63}$",
       example: "www.example.co.uk",
     },
   ],

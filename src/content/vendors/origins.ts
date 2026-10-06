@@ -73,14 +73,17 @@ export function flagFor(code: CountryCode): string {
  */
 export const COUNTRY_NAMES: Record<CountryCode, string> = {
   AE: "United Arab Emirates", // added 2026-10-05: the training clocks (Dubai row) carry a flag per row (PRIME)
+  AR: "Argentina", // added 2026-10-05 for the learning page footprints (Microcamp)
   AT: "Austria",
   AU: "Australia",
+  BG: "Bulgaria", // added 2026-10-05 for the learning page footprints (Versim)
   BR: "Brazil",
   CA: "Canada",
   CH: "Switzerland",
   CN: "China",
   DE: "Germany",
   DK: "Denmark", // added 2026-10-05: the Ørsted milestone (1820) carried DK with no name and no flag (PRIME)
+  ES: "Spain", // added 2026-10-05 for the learning page footprints (Microcamp)
   EU: "European Union", // not a country: the exceptionally reserved ISO 3166 code, used for the Central European Time row of the training clocks (2026-10-05)
   FI: "Finland",
   FR: "France",
@@ -92,15 +95,20 @@ export const COUNTRY_NAMES: Record<CountryCode, string> = {
   JP: "Japan",
   KR: "South Korea", // added 2026-10-05 for the training clocks (Seoul row)
   LV: "Latvia",
+  MX: "Mexico", // added 2026-10-05 for the learning page footprints (Udemy offices)
   NL: "Netherlands",
   NZ: "New Zealand", // added 2026-10-05 for the training clocks (Auckland row)
   PH: "Philippines", // added 2026-10-05 for the training clocks (Manila row)
+  PL: "Poland", // added 2026-10-05: Versim's origin had no name, so the timeline showed a bare PL
+  PT: "Portugal", // added 2026-10-05 for the learning page footprints (Microcamp)
   RU: "Russia",
   SE: "Sweden",
   SG: "Singapore", // added 2026-10-05 for the training clocks
   TH: "Thailand", // added 2026-10-05 for the training clocks (Bangkok row)
+  TR: "Turkey", // added 2026-10-05 for the learning page footprints (Udemy offices)
   TW: "Taiwan",
   US: "United States",
+  ZA: "South Africa", // added 2026-10-05 for the learning page footprints (Kryterion offices)
 };
 
 /** "BR" -> "BR (Brazil)". Falls back to the bare code if a name is missing. */
@@ -467,4 +475,22 @@ export const VENDOR_ORIGINS: Record<string, CountryCode> = {
 
   "tecnocomp": "BR",
 
+  // ---- Added 2026-10-05: the three entries written for the credentialed vendors that had none
+  // (PRIME 21:44 and 22:17), and the seven training entries of the learning page that never
+  // received an origin because they sit outside the industry timeline's guard. Each is the
+  // FOUNDING country, as the file's header defines origin; the entries' own sourced intros state
+  // them (Polycom: San Francisco; Corvil: Dublin; CommScope: Hickory, North Carolina; StartSe:
+  // Minas Gerais; Coursera: Stanford; Udemy: founded in Turkey by its founders' own account but
+  // incorporated and headquartered in San Francisco, recorded as US with that note; SANS: United
+  // States, 1989; Pluralsight: Farmington, Utah; edX: MIT and Harvard, Cambridge; Alura: São Paulo).
+  polycom: "US",
+  corvil: "IE",
+  commscope: "US",
+  startse: "BR",
+  coursera: "US",
+  udemy: "US", // see the note above: the founders began in Turkey; the company was formed in San Francisco (Wikipedia, read 2026-10-05)
+  "sans-institute": "US",
+  pluralsight: "US",
+  edx: "US",
+  alura: "BR",
 };

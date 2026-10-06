@@ -74,7 +74,14 @@
       "!/pagefind/*",
       "!/locales/*",
       "!/certs/*",
-      "!/vendor/*"
+      "!/vendor/*",
+      // The archive of the earlier sites (PROGRAMME-old-sites S1): static clones and captures under
+      // /archive/sites/<slug>/ and /archive/earlier-sites/, deliberately WITHOUT a locale segment, because
+      // the 2004 and 2013 sites had none. Found live on 2026-10-05 22:34 (PRIME): the Worker's locale gate
+      // was redirecting /archive/sites/ntz-com-br-2013/ to /en/archive/..., which does not exist, so every
+      // clone index answered 404 while its files sat in the bundle. Served from assets directly, like the
+      // other static trees above; worker/index.ts carries the same exemption as a belt-and-braces guard.
+      "!/archive/*"
     ],
 
     // Multi-page static site (NOT a single-page app): serve the branded

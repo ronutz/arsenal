@@ -8,7 +8,7 @@ relatedArticles: ["http-headers-anatomy", "http-status-codes-the-five-families",
 category: web
 order: 141
 status: reviewed
-updated: "2026-10-04"
+updated: "2026-10-05"
 ---
 
 Every HTTP response begins with a status line and a block of headers, and the headers the browser needs are a small, well-known set: the content type, the length, the caching rules, the security policy. Nothing stops a server from adding more. The protocol ignores a header it does not recognise, and a name beginning with `X-` was for decades the convention for a private one (RFC 6648 retired the convention in 2012 without retiring the headers). Into that unwatched space, operators have put things that are not protocol at all. This article collects the ones worth knowing, with the primary source for each, because the whole charm of the genre is that it is verifiable: run `curl -I` and there it is.
@@ -52,6 +52,8 @@ Any HTTP client that shows response headers will do. `curl -I https://example.co
 ## This site's own
 
 Since October 2026 every response from this site carries two lines in that tradition: `X-Clacks-Overhead: GNU Terry Pratchett`, because the tribute is worth joining and costs nothing, and a second header, `X-Collective`, whose value states a fact about how the site is made: good ideas are assimilated here, with their sources. The second is a joke about method, and the method is real; the changelog records where each adopted idea came from, and the colophon says so in plain words. Both headers are set in the static host's configuration, next to the security headers, so they are served with every page and every file. Resistance is futile; attribution is mandatory.
+
+Since 5 October 2026 there is a third line, and it changes with every request. Every HTML page from this site carries one header named after a character, with a line of theirs as its value: `X-Fry`, `X-Bender`, `X-Farnsworth`, `X-Hypnotoad` and `X-Lrrr` from Futurama, in Slashdot's own tradition; `X-Doh`, `X-Cowabunga`, `X-Eat-My-Shorts`, `X-Excellent`, `X-Okily-Dokily` and `X-Worst-Ever` from The Simpsons; `X-Tegridy`, `X-Chef`, `X-Authoritah`, `X-Mmkay`, `X-Timmy` and `X-Underpants-Gnomes` from South Park, among some forty-six names and fifty-six lines. The pool is a small JSON file in the repository, each entry naming its character and its show, and the line is chosen at random for each response by the edge Worker that serves the pages, which is why it appears on pages and not on stylesheets or images: a joke addressed to the people who run `curl -I` against things has no readers among the fonts. Ask twice and you get two different answers, which is the whole mechanism Slashdot had, rebuilt in forty lines. The pool is checked at build time for the one thing that matters: a header name must be a token and a value must be plain ASCII, or the joke would break the page it rides on.
 
 ## Sources
 

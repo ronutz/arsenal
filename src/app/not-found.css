@@ -35,6 +35,9 @@
 .nf-cpre-warn { color: #f59e0b; }
 .nf-cpre-err { color: #ff5555; }
 .nf-ctext { color: #d7def5; }
+/* The famous line and its explainer stacked (2026-10-05, PRIME: an explainer on every item). */
+.nf-cbody { display: flex; flex-direction: column; min-width: 0; }
+.nf-cnote { display: block; font-size: 0.7rem; line-height: 1.5; margin: 0.05rem 0 0.4rem; }
 .nf-bofh { width: 100%; max-width: 560px; text-align: left; background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.35); border-radius: 10px; padding: 0.85rem 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
 .nf-bofh-intro { margin: 0; font-size: 0.8rem; color: #9aa6cc; }
 .nf-bofh-link { color: #f59e0b; text-decoration: underline; text-underline-offset: 2px; }

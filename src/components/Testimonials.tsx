@@ -113,6 +113,26 @@ export default function Testimonials() {
     <div className="tm-root">
       {/* Filters + translate toggle */}
       <div className="tm-filters" role="group" aria-label={t("filterLabel")}>
+        {/* Kind of work FIRST (G5, 2026-10-05): the type of work is the primary organisation of the
+            record; source and language are the secondary filters below. Six chips plus "all"; the hint
+            says a card can carry more than one kind, so the counts across chips exceed the total. */}
+        <div className="tm-filter-group">
+          <span className="tm-filter-label">{t("kindFilter")}</span>
+          <div className="tm-filter-buttons">
+            {(["all", ...TESTIMONIAL_KINDS] as const).map((k) => (
+              <button
+                key={k}
+                type="button"
+                className={"tm-chip" + (kindFilter === k ? " tm-chip--active" : "")}
+                onClick={() => setKindFilter(k)}
+              >
+                {k === "all" ? t("all") : t(kindKey(k))}
+              </button>
+            ))}
+          </div>
+          <p className="tm-kind-hint">{t("kindHint")}</p>
+        </div>
+
         <div className="tm-filter-group">
           <span className="tm-filter-label">{t("sourceFilter")}</span>
           <div className="tm-filter-buttons">
@@ -145,24 +165,6 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Kind of work. Six chips plus "all"; the hint below says a card can
-            carry more than one kind, so the counts across chips exceed the total. */}
-        <div className="tm-filter-group">
-          <span className="tm-filter-label">{t("kindFilter")}</span>
-          <div className="tm-filter-buttons">
-            {(["all", ...TESTIMONIAL_KINDS] as const).map((k) => (
-              <button
-                key={k}
-                type="button"
-                className={"tm-chip" + (kindFilter === k ? " tm-chip--active" : "")}
-                onClick={() => setKindFilter(k)}
-              >
-                {k === "all" ? t("all") : t(kindKey(k))}
-              </button>
-            ))}
-          </div>
-          <p className="tm-kind-hint">{t("kindHint")}</p>
-        </div>
 
         {/* Translate-to-English toggle, shown only if there is anything to translate */}
         {HAS_TRANSLATABLE && (

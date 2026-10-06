@@ -74,7 +74,9 @@ if (!fs.existsSync(BASE)) {
 // 102 since 2026-10-04: the training page's call-out to Red Education's broader
 // catalogue (Model A, the personal catalogue, with the bridge the review asked
 // for), one attributed link to "/" with cta=broader-catalogue.
-const BASELINE_TOTAL = 102;
+// 103 since 2026-10-05: the contact page's training route (G8, routed by intent), one attributed link to the
+// all-vendor course index with cta=intent-training, beside the channel card that already pointed there.
+const BASELINE_TOTAL = 103;
 
 // *** AND A COUNT CANNOT SEE A SWAP. *** The baseline above has an honest audit
 // trail - every increment from 86 is traced to the decision behind it - but it is

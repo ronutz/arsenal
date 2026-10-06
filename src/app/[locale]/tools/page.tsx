@@ -11,6 +11,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ogImages } from "@/lib/og";
 import Header from "@/components/Header";
 import HubSearch from "@/components/HubSearch";
+// Step 3 of Round 1 (wave T, 2026-10-06): the paste box that runs every manifest's input detectors (E3), the
+// intents derived from the catalogue's posture verbs (E1), the five starter workflows (E4) and the three floors
+// stated in one paragraph (E5).
+import PasteWhatYouHave from "@/components/PasteWhatYouHave";
+import { WORKFLOWS } from "@/content/tools/workflows";
 import SiteFooter from "@/components/SiteFooter";
 import { Link } from "@/i18n/navigation";
 import { tools, toolCategories } from "@/config/tools";
@@ -66,6 +71,50 @@ export default async function ToolsPage({
     t(`categories.${a}`).localeCompare(t(`categories.${b}`), locale),
   );
 
+  // INTENTS (E1, SCOUT, adopted 2026-10-06): the guided layer groups the generic index by what the reader needs
+  // to DO, derived from each tool's catalogue posture rather than from a new field nobody remembers to set
+  // (D-74). The posture's first verb decides: decode and parse are "decode"; explain, reference, lookup,
+  // compare, map, classify, triage and translate are "understand"; compute, calculate, convert and transform
+  // are "compute"; build, generate and structure are "build"; validate, verify, lint, test and simulate are
+  // "check". A posture with no known verb falls to "understand", the catalogue's commonest posture.
+  const INTENTS = ["decode", "understand", "compute", "build", "check"] as const;
+  type Intent = (typeof INTENTS)[number];
+  const intentOf = (posture: string | undefined): Intent => {
+    const verb = (posture ?? "").toLowerCase().match(/[a-z]+/)?.[0] ?? "";
+    if (/^(decode|parse)$/.test(verb)) return "decode";
+    if (/^(compute|calculate|convert|transform)$/.test(verb)) return "compute";
+    if (/^(build|generate|structure)$/.test(verb)) return "build";
+    if (/^(validate|verify|lint|test|simulate)$/.test(verb)) return "check";
+    return "understand";
+  };
+  const intents = INTENTS.map((intent) => ({
+    intent,
+    tools: agnosticTools
+      .filter((tl) => intentOf(cat.get(tl.id)?.posture) === intent)
+      .sort((a, b) => t(`${a.id}.name`).localeCompare(t(`${b.id}.name`), locale)),
+  })).filter((g) => g.tools.length > 0);
+
+  // PASTE WHAT YOU HAVE (E3): every tool the page can link, generic index and hubs alike, by slug, with its
+  // localised name and page; the detectors run in the browser against the pasted text (see the component).
+  const pasteTargets = Object.fromEntries(
+    tools.filter((tl) => tl.available).map((tl) => [tl.id, { name: t(`${tl.id}.name`), href: `/${locale}${tl.href}/` }]),
+  );
+
+  // WORKFLOWS (E4): the five starter chains resolved against the registry; a slug that is not built is dropped
+  // from the chain here and reported by the guard, never shown as a dead link.
+  const builtById = new Map(tools.filter((tl) => tl.available).map((tl) => [tl.id, tl]));
+  const workflows = WORKFLOWS.map((w) => ({
+    id: w.id,
+    steps: w.steps
+      .filter((st) => builtById.has(st.slug))
+      .map((st) => ({
+        slug: st.slug,
+        name: t(`${st.slug}.name`),
+        href: builtById.get(st.slug)!.href,
+        alternatives: (st.alternatives ?? []).filter((a) => builtById.has(a)).map((a) => ({ slug: a, name: t(`${a}.name`), href: builtById.get(a)!.href })),
+      })),
+  }));
+
   // RECENTLY ADDED (E6): the newest tools, read from the changelog's "tool" entries (newest first, the array's
   // order), each tool once, those the generic index lists (vendor tools belong to their hubs), at most six. The
   // date shown is the entry's; nothing here is typed by hand.
@@ -101,6 +150,15 @@ export default async function ToolsPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* THE THREE FLOORS, stated once (E5, SCOUT, adopted 2026-10-06): the main floor, the green room and
+                  the red room, each named with what it promises, each a link to where it begins. */}
+              <p className="tools-floors">
+                {t.rich("hub.floors", {
+                  main: (chunks) => <a href="#directory" className="tools-floors-link">{chunks}</a>,
+                  green: (chunks) => <a href="#room-green" className="tools-floors-link tools-floors-link--green">{chunks}</a>,
+                  red: (chunks) => <a href="#room-red" className="tools-floors-link tools-floors-link--red">{chunks}</a>,
+                })}
+              </p>
               {/* The scoped search field (wave 0, 2026-10-05; SCOUT E2): opens the one dialog inside the Use world. */}
               <HubSearch scope="use" label={t("hubSearch.label")} placeholder={t("hubSearch.placeholder")} examplesLabel={t("hubSearch.examples")} examples={["CIDR", "JWT", "BIG-IP", "FortiGate", "syslog", "regex"]} />
               {/* Guided | Directory (E7): the same switch Learn has; Directory hides the guided layer below so the
@@ -153,6 +211,80 @@ export default async function ToolsPage({
                 <p className="learn-portal-lede">{tp("examsLede")}</p>
               </Link>
             </div>
+
+            {/* PASTE WHAT YOU HAVE (E3): the box that runs every manifest's input detectors over the pasted text
+                and offers the tools that recognise it. Nothing leaves the browser. */}
+            <section className="hub-paste" aria-labelledby="hub-paste-title">
+              <h2 className="section-title hub-h2" id="hub-paste-title">{t("hub.pasteTitle")}</h2>
+              <p className="hub-lede">{t("hub.pasteLede")}</p>
+              <PasteWhatYouHave
+                targets={pasteTargets}
+                label={t("hub.pasteLabel")}
+                placeholder={t("hub.pastePlaceholder")}
+                hint={t("hub.pasteHint")}
+                resultsLabel={t("hub.pasteResults")}
+                noMatch={t("hub.pasteNoMatch")}
+                clearLabel={t("hub.pasteClear")}
+              />
+            </section>
+
+            {/* BY WHAT YOU NEED TO DO (E1): the five intents, each a closed list of its tools with one line on the
+                posture it groups. Derived from the catalogue's posture verbs; see intentOf above. */}
+            <section className="hub-intents" aria-labelledby="hub-intents-title">
+              <h2 className="section-title hub-h2" id="hub-intents-title">{t("hub.intentsTitle")}</h2>
+              <p className="hub-lede">{t("hub.intentsLede")}</p>
+              <div className="hub-intent-grid">
+                {intents.map((g) => (
+                  <details key={g.intent} className="hub-intent" id={`intent-${g.intent}`}>
+                    <summary className="hub-intent-summary">
+                      <span className="hub-intent-title">{t(`hub.intents.${g.intent}.title`)}</span>
+                      <span className="hub-intent-count mono">{g.tools.length}</span>
+                    </summary>
+                    <p className="hub-intent-lede">{t(`hub.intents.${g.intent}.lede`)}</p>
+                    <ul className="hub-intent-list">
+                      {g.tools.map((tl) => (
+                        <li key={tl.id}>
+                          <Link href={tl.href} className="hub-intent-link">{t(`${tl.id}.name`)}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+            </section>
+
+            {/* WORKFLOWS (E4): five chains that follow one artefact from tool to tool; a forked step lists its
+                vendor alternatives. Started here, grows by data (src/content/tools/workflows.ts). */}
+            <section className="hub-workflows" aria-labelledby="hub-workflows-title">
+              <h2 className="section-title hub-h2" id="hub-workflows-title">{t("hub.workflowsTitle")}</h2>
+              <p className="hub-lede">{t("hub.workflowsLede")}</p>
+              <ul className="hub-workflow-list">
+                {workflows.map((w) => (
+                  <li key={w.id} className="hub-workflow">
+                    <h3 className="hub-workflow-title">{t(`hub.workflows.${w.id}.title`)}</h3>
+                    <p className="hub-workflow-lede">{t(`hub.workflows.${w.id}.lede`)}</p>
+                    <ol className="hub-workflow-steps">
+                      {w.steps.map((st) => (
+                        <li key={st.slug} className="hub-workflow-step">
+                          <Link href={st.href} className="hub-workflow-link">{st.name}</Link>
+                          {st.alternatives.length > 0 && (
+                            <span className="hub-workflow-alts">
+                              {" "}{t("hub.workflowsOr")}{" "}
+                              {st.alternatives.map((a, i) => (
+                                <span key={a.slug}>
+                                  {i > 0 && ", "}
+                                  <Link href={a.href} className="hub-workflow-link hub-workflow-link--alt">{a.name}</Link>
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
             {/* RECENTLY ADDED (E6): the newest tools with their dates, from the changelog. */}
             {recent.length > 0 && (

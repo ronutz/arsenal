@@ -3989,8 +3989,12 @@ export const partnerVendors: PartnerVendor[] = [
       ],
     },
     // Red Education partner (Courses by Vendor nav + every regional menu + course catalogue). Verified against
-    // rededucation.com 2026-08-06.
-    relationships: ["red-education-partner"],
+    // rededucation.com 2026-08-06. `worked-inside` added 2026-10-05: the June 2013 CV lists "AVAYA, São Paulo,
+    // since 2013: Professional Services Pre-Sales Consultant" and the April 2014 CV closes it at July 2013.
+    relationships: ["red-education-partner", "worked-inside"],
+    // The career chapter (PRIME 2026-10-05 22:17): inside Avaya's professional-services pre-sales in the first
+    // half of 2013, then its platforms from TDec's side; APSS-SME and APSS-UC, 2013 to 2014.
+    careerChapter: { slug: "avaya", years: "2013 - 2014" },
     tags: ["vendor"],
     group: "redu",
     name: "Avaya",
@@ -5626,6 +5630,121 @@ export const partnerVendors: PartnerVendor[] = [
     body: ["The founding entity is TDEC Inform\u00e1tica Ltda. (CNPJ 67.521.195/0001-96), registered in Cotia in March 1992 - a registration address rather than a place of work, which is a distinction worth keeping in a Brazilian corporate record; a later company, TDec Redes de Computadores Ltda. (CNPJ 06.093.568/0001-80), was opened in January 2004 and is the active legal person associated with the group today. A 2004 registration is not a 2004 founding, and the two are kept apart here. The founder is Jos\u00e9 Valter \u201cJunior\u201d T\u00e1vora de Castro."],
     externalUrl: "https://www.tdec.com.br/",
     externalLabel: "TDec Network Group",
+  },
+
+  // ---- Credentialed vendors that had no entry until 2026-10-05 (PRIME 21:44: "are there any others
+  // hidden? Polycom? Avaya? Others?"; 22:17: "Get The Works for the four"). Each is the company behind a
+  // credential on /about/credentials and links a career chapter. Facts read live on 2026-10-05. ----
+  {
+    slug: "polycom",
+    official: {
+      // The company no longer exists under its own name; Poly is an HP product line (hp.com, read 2026-10-05:
+      // "Poly is now an HP product line").
+      defunct: true,
+      successor: { label: "Poly, an HP product line (formerly Polycom and Plantronics)", url: "https://www.hp.com/us-en/poly.html" },
+    },
+    relationships: ["worked-with-directly"],
+    careerChapter: { slug: "polycom", years: "2014 - 2015" },
+    tags: ["vendor"],
+    group: "other",
+    name: "Polycom - the triangle on every conference table",
+    founded: 1990,
+    // Acquired by Plantronics on 2 July 2018; the combined company took the Poly name in 2019, and HP bought
+    // Poly on 29 August 2022. The name on the credentials ceased to be a company's name in 2019.
+    ended: { year: 2019, note: "acquired by Plantronics in July 2018 and folded into the Poly name in 2019; HP bought Poly in August 2022" },
+    tagline: "The company that put a triangular speakerphone on every conference table, bought by a headset maker, renamed, and bought again by HP.",
+    intro:
+      "Polycom was co-founded in 1990 by Brian L. Hinman and Jeffrey Rodman, colleagues from PictureTel, and moved from San Francisco to San Jose soon after. Its first product, in 1992, was the SoundStation: a triangular conference speakerphone with full-duplex audio, which is to say both ends could talk at once without the line clipping, and the shape became the emblem of a meeting room for a quarter of a century. The company grew from audio into video and was, for most of the 2000s and 2010s, the reference name in conference endpoints.",
+    body: [
+      "The video line came by acquisition and then by its own engineering. In January 1998 Polycom bought ViaVideo for 54 million dollars and with it the set-top video unit that became the ViewStation; in October 2001 it acquired PictureTel, the company its own founders had left. RealPresence followed, first as a desktop client and then as room systems, including the immersive RealPresence Experience of 2006. In 2017 the company had revenues of 1.1 billion dollars.",
+      "The ownership chain is the part that makes the card. In April 2016 Mitel agreed to buy Polycom for 1.96 billion dollars; in July the deal was dropped for an all-cash offer from Siris Capital, a New York private-equity firm, which took the company private for 1.7 billion. On 28 March 2018 Plantronics, the Santa Cruz headset maker, announced it would buy Polycom for about 2 billion dollars, and completed the acquisition on 2 July 2018: 1.638 billion dollars in cash and 6.352 million Plantronics shares. In 2019 the combined company renamed itself Poly.",
+      "Three years later it was bought again. HP announced the acquisition of Poly on 28 March 2022 and completed it on 29 August 2022, an all-cash transaction at 40 dollars a share, an enterprise value of about 3.3 billion dollars including Poly's net debt, describing Poly as video conferencing, cameras, headsets, voice and software. The Polycom name survives as a line in HP's catalogue and, on this site, as two 2014 credentials whose issuer no longer exists.",
+      "Why it belongs in a networking record: a video call is the application that exposes a badly built network fastest. Jitter, loss and a quality-of-service design that was never tested show up on a Polycom screen before they show up anywhere else, which is why an integrator's network engineer ended up certified on its endpoints.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/Polycom",
+    externalLabel: "Polycom (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: Polycom - co-founded in 1990 by Brian L. Hinman and Jeffrey Rodman, colleagues at PictureTel; started in San Francisco and soon moved to San Jose; first product the SoundStation in 1992, a triangular speakerphone with full-duplex audio; ViaVideo acquired in January 1998 for $54 million; PictureTel acquired in October 2001; the RealPresence Experience of 2006; the April 2016 Mitel agreement at $1.96 billion dropped in July 2016 for Siris Capital's all-cash offer of $1.7 billion; revenues of $1.1 billion in 2017; Plantronics announced 28 March 2018; the combined entity renamed Poly in 2019; HP announced 28 March 2022 (read 2026-10-05)", url: "https://en.wikipedia.org/wiki/Polycom" },
+      { label: "Plantronics press release filed as Exhibit 99.1 to its Form 8-K, dated Santa Cruz, 2 July 2018: completed the acquisition of Polycom at a $2.0 billion enterprise value, consisting of approximately $1.638 billion in cash and 6.352 million Plantronics shares (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/0000914025/000091402518000038/ex991july2pressrelease.htm" },
+      { label: "HP Inc. press release filed as Exhibit 99.1 to its Form 8-K, dated Palo Alto, 29 August 2022: completed the acquisition of Poly as an all-cash transaction of $40 per share, an enterprise value of approximately $3.3 billion inclusive of Poly's net debt; Poly described as video conferencing solutions, cameras, headsets, voice and software (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/47217/000095010322014548/dp178974_ex9901.htm" },
+      { label: "HP - Poly video and voice solutions, formerly Polycom and Plantronics: \"Poly is now an HP product line\" (read 2026-10-05)", url: "https://www.hp.com/us-en/poly.html" },
+    ],
+  },
+  {
+    slug: "corvil",
+    official: {
+      // Corvil continues as a Pico product: "Corvil Analytics is Pico's network-derived analytics platform
+      // for financial markets" (pico.net, read 2026-10-05).
+      defunct: true,
+      successor: { label: "Corvil Analytics, at Pico", url: "https://www.pico.net/corvil-analytics/" },
+    },
+    relationships: ["worked-with-directly"],
+    careerChapter: { slug: "corvil", years: "2020" },
+    tags: ["vendor"],
+    group: "other",
+    name: "Corvil - the microsecond, measured in Dublin",
+    founded: 2000,
+    ended: { year: 2019, note: "acquired by Pico in 2019; continues as Pico's Corvil Analytics" },
+    tagline: "A Dublin company that turned packet capture into the trading floor's own measurements, and sold itself to a New York infrastructure provider in 2019.",
+    intro:
+      "Corvil was founded in Dublin in 2000 by Professor John Lewis, three Telia employees and three Trinity College Dublin post-graduate students, and became the network data analytics company of electronic trading: appliances that capture a trading infrastructure's traffic without loss, decode the market-data and order protocols inside it, and report what happened to every order, tick and fill, and how long it took. Its customers were the exchanges and banks, NYSE, the London Stock Exchange, Nasdaq, the Moscow Exchange, Nomura, Thomson Reuters and Commerzbank among them, and it kept offices in New York, London, Tokyo, Toronto and Kraków.",
+    body: [
+      "The product is worth describing precisely, because it is the one corner of this catalogue where a network is measured in the currency of the application running on it. Where a conventional monitoring tool reports utilisation and errors, Corvil reports feed latency and gaps, tick-to-trade times and fill ratios, with the network symptoms behind them, retransmissions, congestion and round-trip times, at one-second resolution. A millisecond has a price on a trading floor, and the analytics were built to state it.",
+      "On 9 July 2019 Pico, a New York provider of data-centre infrastructure, exchange connectivity and cloud services for the financial markets, signed a definitive agreement to acquire Corvil, expecting to close within thirty days; by late July the parties expected early August, and neither disclosed terms, both being privately held. The combined company was to serve more than four hundred banks, exchanges, asset managers, fintech vendors and trading firms across five continents, and Corvil's chief executive, Donal Byrne, became its chief technology officer. Pico itself operates some thirty-five data-centre locations and is minority-owned by Goldman Sachs, JP Morgan, UBS and Wells Fargo.",
+      "Today the name survives as Corvil Analytics, described by Pico as its network-derived analytics platform for financial markets: lossless packet capture and deep protocol decoding at up to 200 gigabits per second sustained, metrics for every order, tick and fill across the trading lifecycle. The Dublin engineering that began as university research is now the measurement layer of a Wall Street infrastructure company, which is a long way to travel on the strength of knowing exactly when a packet arrived.",
+    ],
+    externalUrl: "https://www.pico.net/corvil-analytics/",
+    externalLabel: "Corvil Analytics at Pico",
+    sources: [
+      { label: "Wikipedia: Corvil - a network data analytics company based in Dublin, Ireland; founded 2000 in Dublin by Professor John Lewis, three Telia employees and three Trinity College Dublin post-graduate students; offices in New York, London, Tokyo, Toronto and Kraków; customers including NYSE, LSE, the Moscow Stock Exchange, Nasdaq, Nomura, Thomson Reuters and Commerzbank; chief executive Donal Byrne (read 2026-10-05)", url: "https://en.wikipedia.org/wiki/Corvil" },
+      { label: "Markets Media, 9 July 2019 - Pico signed a definitive agreement to acquire Corvil, a market leader in real-time analytics and machine intelligence for financial markets infrastructure; the combined company to serve over 400 banks, exchanges, asset managers, fintech vendors and trading firms across five continents; closing expected within 30 days (read 2026-10-05)", url: "https://www.marketsmedia.com/pico-to-acquire-corvil" },
+      { label: "FIA MarketVoice, 26 July 2019 - Pico, New York-based provider of data centre infrastructure and exchange connectivity with 35 global data centre locations, minority-owned by Goldman Sachs, JP Morgan, UBS and Wells Fargo, expected the Corvil acquisition to close in early August 2019; terms not disclosed, both companies privately owned; Corvil's analytics identify latency issues, optimise execution and enable compliance monitoring, with metrics such as fill ratios and tick-to-trade latencies; Donal Byrne to become chief technology officer of the combined entity (read 2026-10-05)", url: "https://www.fia.org/marketvoice/articles/corvil-deal-bring-increased-transparency-data-pico-clients" },
+      { label: "Pico - Corvil Analytics: \"Pico's network-derived analytics platform for financial markets\"; every order, tick and fill across the trading lifecycle; 1-second metrics for congestion, TCP retransmissions, round-trip times and errors; feed latency and gaps; up to 200Gbps sustained lossless capture and deep protocol decoding (read 2026-10-05)", url: "https://www.pico.net/corvil-analytics/" },
+    ],
+  },
+  {
+    slug: "commscope",
+    official: {
+      // After the January 2026 sale the CommScope name and SYSTIMAX belong to Amphenol: the site's footer reads
+      // "CommScope Technologies LLC, an Amphenol company" (commscope.com, read 2026-10-05).
+      url: "https://www.commscope.com",
+      resources: [
+        { label: "SYSTIMAX structured cabling (CommScope, an Amphenol company)", url: "https://www.commscope.com/" },
+      ],
+    },
+    relationships: ["worked-with-directly"],
+    careerChapter: { slug: "commscope", years: "1998 - 2000" },
+    tags: ["vendor"],
+    group: "other",
+    name: "CommScope - the cable house that bought Bell Labs' structured-cabling brand, and sold it again",
+    founded: 1976,
+    // The story opens with Superior Continental's Comm/Scope division of 1961, fifteen years before the
+    // company (PartnerVendor.storyBegins: the predecessor the card opens with, named).
+    storyBegins: { year: 1961, company: "Comm/Scope, a division of Superior Continental" },
+    // The listed company renamed itself Vistance Networks on 14 January 2026, two days after selling the
+    // Connectivity and Cable Solutions business, SYSTIMAX included, to Amphenol; the CommScope name went with
+    // the business. Either way, the company this card is named for stopped existing under that name in 2026.
+    ended: { year: 2026, note: "sold its Connectivity and Cable Solutions business, SYSTIMAX and the CommScope name included, to Amphenol on 12 January 2026; the listed parent became Vistance Networks on 14 January 2026" },
+    tagline: "Coaxial cable from Hickory, North Carolina, the SYSTIMAX structured-cabling brand bought from Avaya in 2004, and a 10.5 billion dollar sale to Amphenol in 2026.",
+    intro:
+      "CommScope began in 1961 as Comm/Scope, a division of Superior Continental that developed cable-television systems, and became a company in August 1976 when Frank Drendel and Jearld Leonhardt founded it in Hickory, North Carolina, having raised 5.1 million dollars. It spent the 1990s inside General Instrument and was spun off as a public company when General Instrument split in three in 1997. For the networking trade it matters for one acquisition above all: on 31 January 2004 it bought Avaya's Connectivity Solutions business, and with it SYSTIMAX, the structured-cabling system that began as Bell Laboratories' Premises Distribution System.",
+    body: [
+      "SYSTIMAX is the older story. In 1983 Bell Laboratories developed the first structured cabling system and called it a Premises Distribution System, a controlled architecture for voice, data and video wiring inside a building; in 1989 AT&T branded it the SYSTIMAX Structured Cabling System. The division went to Lucent Technologies when AT&T divested it in 1996, to Avaya when Lucent spun off its enterprise business in 2000, and to CommScope in 2004, for 250 million dollars in cash and about 1.8 million CommScope shares. Three owners in eight years, and the cabling in the walls of the buildings never noticed.",
+      "The company then bought its way into every layer of the plant. Andrew Corporation, the antenna and wireless-infrastructure maker, for 2.6 billion dollars in 2007; TE Connectivity's broadband network solutions division in 2015; Arris, with the Ruckus wireless and switching business inside it, completed on 4 April 2019, the price of which Wikipedia's own citations give as 7.4 and as 4.93 billion dollars, recorded here as a discrepancy. The home-networks business went to Vantiva in October 2023 for a quarter of Vantiva's shares.",
+      "Then it sold the part the trade knew it for. On 4 August 2025 Amphenol agreed to buy the Connectivity and Cable Solutions business, fibre and copper connectivity for data centres, communications networks and buildings, for 10.5 billion dollars in cash, a business with about 3.6 billion dollars of expected 2025 sales and more than fifteen thousand employees; the sale closed on 12 January 2026, Amphenol expecting the business to generate about 4.1 billion dollars in 2026 with some twenty thousand employees. Two days later the listed parent, by then headquartered in Richardson, Texas, renamed itself Vistance Networks, trading as VISN from 14 January 2026, keeping the access-network business, rebranded Aurora Networks, and Ruckus. The CommScope name and SYSTIMAX went with the sale: commscope.com now signs itself CommScope Technologies LLC, an Amphenol company. Ruckus, as its own entry records, was sold on to Belden in May 2026.",
+      "The lesson of the card is the one the structured-cabling credential on this site teaches. A building's cabling plant outlives every piece of equipment plugged into it and most of the companies that sold it: the SYSTIMAX plant certified in 1998 was designed under one owner, installed under another, warranted by a third and is now sold by a fourth, and the twisted pairs in the wall are the same.",
+    ],
+    externalUrl: "https://en.wikipedia.org/wiki/CommScope",
+    externalLabel: "CommScope (Wikipedia)",
+    sources: [
+      { label: "Wikipedia: CommScope - in 1961 Superior created a division called Comm/Scope, which developed CATV systems; Frank Drendel and Jearld Leonhardt founded CommScope in August 1976 after raising $5.1 million, in Hickory, North Carolina; in 1997 General Instrument split into three independent public companies, its cable operation spun off as CommScope; in 2004 CommScope acquired Avaya's Connectivity Solutions cabling unit and inherited the SYSTIMAX brand; Andrew Corporation acquired in June 2007 for $2.6 billion; TE Connectivity's Broadband Network Solutions division in 2015; Arris International completed on 4 April 2019 (cited at $7.4 billion and at $4.93 billion); home networks sold to Vantiva in October 2023 for a 25 percent stake; Amphenol agreed in August 2025 to buy the connectivity and cable business for $10.5 billion, completed 12 January 2026; the rest of the company adopted the Vistance Networks name; headquarters Richardson, Texas since November 2025 (read 2026-10-05)", url: "https://en.wikipedia.org/wiki/CommScope" },
+      { label: "CommScope blog, 5 January 2017, Top 10 CommScope innovations: structured cabling systems - \"In 1983, Bell Laboratories developed the first structured cabling system, which it called a Premises Distribution System (PDS)\"; branded SYSTIMAX Structured Cabling System (SYSTIMAX SCS) in 1989; \"The SYSTIMAX division was divested by AT&T into Lucent Technologies, then divested further into Avaya, and ultimately acquired by CommScope in 2004\" (read 2026-10-05)", url: "https://www.commscope.com/blog/2017/top-10-commscope-innovations-structured-cabling-systems/" },
+      { label: "CommScope press release filed with its Form 8-K, dated Hickory, 19 February 2004: effective 31 January 2004 CommScope completed the acquisition of substantially all of the assets of the Connectivity Solutions business from Avaya Inc., for $250 million in cash, subject to post-closing adjustments, and approximately 1.8 million shares of CommScope common stock; SYSTIMAX Solutions named as the new enterprise connectivity business (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/0001035884/000089534504000100/lhex99_1.txt" },
+      { label: "Amphenol press release filed as Exhibit 99.1 to its Form 8-K, dated Wallingford, Connecticut, 4 August 2025: a definitive agreement to acquire CommScope's Connectivity and Cable Solutions (CCS) business for $10.5 billion in cash; fibre-optic interconnect for data centres and IT, fibre and interconnect products for communications networks, building-infrastructure connectivity; expected 2025 sales of approximately $3.6 billion; more than 15,000 employees; closing expected in the first half of 2026 (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/820313/000110465925073344/tm2522435d1_ex99-1.htm" },
+      { label: "Amphenol press release filed as Exhibit 99.1 to its Form 8-K, dated Wallingford, Connecticut, 12 January 2026: completed the acquisition of CommScope's Connectivity and Cable Solutions (CCS) business; expected full-year 2026 sales of approximately $4.1 billion; approximately 20,000 CCS employees (read 2026-10-05)", url: "https://www.sec.gov/Archives/edgar/data/820313/000110465926002737/tm262701d1_ex99-1.htm" },
+      { label: "CommScope press release, Richardson, Texas, 12 January 2026 (Business Wire via Nasdaq): closing of the sale of the Connectivity and Cable Solutions segment to Amphenol; \"The Company will be renamed Vistance Networks effective January 14, 2026\"; COMM shares to trade as VISN on Nasdaq from 14 January 2026; the remaining segments Access Network Solutions, rebranded Aurora Networks, and RUCKUS Networks; chief executive Chuck Treadway (read 2026-10-05)", url: "https://www.nasdaq.com/press-release/commscope-completes-divestiture-connectivity-and-cable-solutions-segment-and-rebrands" },
+      { label: "commscope.com, read 2026-10-05: the footer signs \"CommScope Technologies LLC, an Amphenol company\"; SYSTIMAX is presented as the structured-cabling product line", url: "https://www.commscope.com/" },
+    ],
   },
 
   // ---- Training organisations of the instructor years (PRIME 2026-08-10).

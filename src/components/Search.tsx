@@ -202,6 +202,10 @@ export default function Search() {
   const [facet, setFacet] = useState<Record<ResultKind, number> | null>(null);
   // The scope: one world, or null for everywhere; and the per-world counts of the current query.
   const [scope, setScope] = useState<WorldKey | null>(null);
+  // Narrower than the scope: one section (its first path segment and its human name), set only by a section's
+  // own field (The Practice, The Roles; G1 and G2, 2026-10-05) and cleared by its pill. Applied as the index's
+  // "section" facet on every search while set.
+  const [section, setSection] = useState<{ key: string; label: string } | null>(null);
   const [worldCounts, setWorldCounts] = useState<Record<WorldKey, number> | null>(null);
   // How many hits the current query and kind selection have in all, and the not-yet-loaded ones for "show more".
   const [total, setTotal] = useState(0);
@@ -327,12 +331,16 @@ export default function Search() {
     // reader's words arrive in this dialog already typed; any other dispatcher opens it empty as before.
     const onOpen = (e: Event) => {
       openSearch();
-      const detail = (e as CustomEvent<{ query?: string; scope?: string }>).detail;
+      const detail = (e as CustomEvent<{ query?: string; scope?: string; section?: string; sectionLabel?: string }>).detail;
       const q = detail?.query;
       if (typeof q === "string" && q.trim()) setQuery(q);
       // A hub page's field presets its world; any other opener leaves the scope as the reader last set it.
       const sc = detail?.scope;
       if (typeof sc === "string" && (WORLD_KEYS as readonly string[]).includes(sc)) setScope(sc as WorldKey);
+      // A section's field presets the section too; any other opener clears it, so a stale "only in The
+      // Practice" never narrows a search started from the header.
+      const sec = detail?.section;
+      setSection(typeof sec === "string" && /^[a-z-]+$/.test(sec) ? { key: sec, label: typeof detail?.sectionLabel === "string" ? detail.sectionLabel : sec } : null);
     };
     window.addEventListener("ronutz:open-search", onOpen);
     return () => window.removeEventListener("ronutz:open-search", onOpen);
@@ -375,17 +383,20 @@ export default function Search() {
         // Narrow by kind in the index itself when the reader switched a pill off; every kind on = no filter.
         const narrowed = enabled.size < FILTER_KINDS.length;
         const kindFilter = narrowed ? { kind: { any: [...enabled] } } : {};
+        // The section, when a section's field opened the dialog, rides on every query below: the counts and
+        // the list are all "within The Practice" until the pill clears it.
+        const secFilter = section ? { section: section.key } : {};
         // 1. The query within the kind selection: its per-world counts feed the scope chips ("in addition to"
         //    the kind filter, or the plain counts when none is applied).
-        const base = await pf.search(q, narrowed ? { filters: kindFilter } : undefined);
+        const base = await pf.search(q, narrowed || section ? { filters: { ...kindFilter, ...secFilter } } : undefined);
         const sysCounts = base.filters?.system;
         // 2. The query within the scope alone: its per-kind counts feed the pills (within the world, over every
         //    kind). Without a scope the pills count the whole query: totalFilters when a kind filter is on
         //    ("instead of" it), filters otherwise.
-        const scoped = scope ? await pf.search(q, { filters: { system: scope } }) : null;
+        const scoped = scope ? await pf.search(q, { filters: { system: scope, ...secFilter } }) : null;
         const kindCounts = scoped ? scoped.filters?.kind : ((narrowed ? base.totalFilters?.kind : base.filters?.kind) ?? base.totalFilters?.kind);
         // 3. The list: both filters when both apply, else whichever response already has it.
-        const search = scope && narrowed ? await pf.search(q, { filters: { ...kindFilter, system: scope } }) : (scoped ?? base);
+        const search = scope && narrowed ? await pf.search(q, { filters: { ...kindFilter, system: scope, ...secFilter } }) : (scoped ?? base);
         const f: Record<ResultKind, number> | null = kindCounts
           ? { tool: kindCounts.tool ?? 0, article: kindCounts.article ?? 0, guide: kindCounts.guide ?? 0, page: kindCounts.page ?? 0 }
           : null;
@@ -415,7 +426,7 @@ export default function Search() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [query, open, enabled, scope, loadPagefind, loadPage]);
+  }, [query, open, enabled, scope, section, loadPagefind, loadPage]);
 
   /** "Show more": append the next page of the same result set. */
   const showMore = useCallback(async () => {
@@ -510,6 +521,15 @@ export default function Search() {
                 empty search stays uncluttered. */}
             {/* The scope: everywhere, or one of the five worlds, with the count of hits in each (wave 0). Shown
                 only when the index carries the system facet. */}
+            {/* The section pill (G1, G2): "Only in The Practice", one click to widen. Shown whenever a section
+                is set, hits or not, so a reader who sees nothing knows why. */}
+            {section && (
+              <div className="search-section-row">
+                <button type="button" className="search-section" onClick={() => setSection(null)} aria-label={t("sectionClear", { name: section.label })}>
+                  {t("sectionOnly", { name: section.label })} <span aria-hidden="true">×</span>
+                </button>
+              </div>
+            )}
             {!unavailable && anyHit && worldCounts && (
               <div className="search-scopes" role="group" aria-label={t("scopeLabel")}>
                 <button type="button" className={`search-scope${scope === null ? " search-scope--active" : ""}`} aria-pressed={scope === null} onClick={() => setScope(null)}>

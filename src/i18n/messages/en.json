@@ -11858,7 +11858,65 @@
       "recentTitle": "Recently added",
       "recentLede": "The newest tools, from the changelog, newest first.",
       "directoryTitle": "The complete index",
-      "directoryLede": "{count} tools in {categories} categories, every one of them listed below; jump to a category, show only some, or switch between cards and the list."
+      "directoryLede": "{count} tools in {categories} categories, every one of them listed below; jump to a category, show only some, or switch between cards and the list.",
+      "floors": "Three floors, one rule. <main>The main floor</main> is the catalogue: every tool with a manifest, golden vectors and a fixed shape, computing in your browser and nowhere else. <green>The green room</green> holds the tools whose form is still finding itself, same privacy, labelled as early. <red>The red room</red> is the one place a tool sends your input out, to the official service named on screen, and only when you press Ask.",
+      "pasteTitle": "Paste what you have",
+      "pasteLede": "A token, a header block, a log line, a certificate, a CIDR: paste it and the tools that recognise its shape line up, the surest first.",
+      "pasteLabel": "Paste what you have",
+      "pastePlaceholder": "eyJhbGciOi...   or   <34>1 2026-10-05T...   or   10.0.0.0/22   or   -----BEGIN CERTIFICATE-----",
+      "pasteHint": "Matched in your browser against each tool's own input patterns; nothing is stored or sent.",
+      "pasteResults": "Tools that recognise this",
+      "pasteNoMatch": "No tool recognises that shape yet. Try the intents below, or the complete index.",
+      "pasteClear": "Clear",
+      "intentsTitle": "By what you need to do",
+      "intentsLede": "The same index, grouped by the verb: what each tool does to what you give it.",
+      "intents": {
+        "decode": {
+          "title": "Decode something I have",
+          "lede": "Tools that take an artefact as it is, a token, a packet, a header, a string, and show what is inside it."
+        },
+        "understand": {
+          "title": "Understand how something works",
+          "lede": "Explainers, references and comparers: the thing laid out so a decision about it can be made."
+        },
+        "compute": {
+          "title": "Compute or convert",
+          "lede": "Arithmetic and conversion with the rules shown: addresses, timings, encodings, sizes."
+        },
+        "build": {
+          "title": "Build or generate",
+          "lede": "Tools that produce something to take away: a command, a policy, a plan, a configuration."
+        },
+        "check": {
+          "title": "Check, validate or simulate",
+          "lede": "Tools that answer yes or no, and show why: validators, linters, tests and simulators of a system's own order."
+        }
+      },
+      "workflowsTitle": "Workflows",
+      "workflowsLede": "Five chains that follow one thing from tool to tool. What the first shows is what the next takes. Started here; more arrive as data.",
+      "workflowsOr": "or, by vendor,",
+      "workflows": {
+        "cidr-to-rule": {
+          "title": "From a CIDR to a firewall rule",
+          "lede": "The range's arithmetic first, its IPv6 twin, then the order in which your firewall will actually evaluate the rule you write."
+        },
+        "jwt-to-policy": {
+          "title": "From a token to its claims to the flow",
+          "lede": "Decode the token, check its signature, then read the protocol and the flow that minted it."
+        },
+        "cert-to-csp": {
+          "title": "From a certificate to the headers a browser enforces",
+          "lede": "The certificate, the chain it needs, then the security headers and the Content Security Policy that sit on top."
+        },
+        "syslog-to-level": {
+          "title": "From a syslog line to a level every system can name",
+          "lede": "The message field by field, its PRI into facility and severity, then that severity on every other ladder."
+        },
+        "http-to-headers": {
+          "title": "From an HTTP message to the command that reproduces it",
+          "lede": "The message decoded, the status explained, the headers judged, then the curl that sends it again."
+        }
+      }
     }
   },
   "privacy_page": {
@@ -11950,7 +12008,9 @@
       "explore": "Explore",
       "work": "Work with me",
       "project": "The project"
-    }
+    },
+    "sectionOnly": "Only in {name}",
+    "sectionClear": "Search everywhere, not only in {name}"
   },
   "theme": {
     "label": "Theme",
@@ -12001,7 +12061,8 @@
       "vendorsLink": "The career record",
       "lineagesLink": "Vendor lineages & acquisitions",
       "ironport": "Channel development and pre-sales technical consulting for IronPort's C-Series e-mail security appliances: late 2004 with IronPort's own São Paulo operation, then through 2005 with a Cisco and IronPort reseller, from RFPs and installation to customer support. IronPort was acquired by Cisco in 2007.",
-      "teachingNow": "Currently teaching:"
+      "teachingNow": "Currently teaching:",
+      "cylk2020": "Solutions consulting and pre-sales through CYLK, the São Paulo security integrator, while full-time instruction with its sister company InLearn began: F5 application delivery and security, Palo Alto Networks firewalls, Fortinet, Tenable vulnerability management, CyberArk privileged access and Corvil network analytics, as proofs of concept, designs and customer training. Three of the six hold a mark here; the other three are named, and each has its chapter in the career record."
     },
     "origins": {
       "title": "Where it started",
@@ -12099,7 +12160,9 @@
     "eyebrow": "Endorsements",
     "title": "What people say, in their own words.",
     "intro": "{count} verbatim recommendations and reviews, spanning two decades of teaching and consulting. Nothing here is paraphrased or edited.",
-    "provenance": "Sourced from LinkedIn recommendations, Google reviews, and verified Red Education student reviews. Original wording and spelling are preserved exactly as written."
+    "provenance": "Sourced from LinkedIn recommendations, Google reviews, and verified Red Education student reviews. Original wording and spelling are preserved exactly as written.",
+    "byKindTitle": "By the kind of work described",
+    "byKindHint": "{count} endorsements, each kept verbatim. One entry can describe more than one kind of work, so the counts add up to more than the total. The filters below narrow by source and language as well."
   },
   "testimonials": {
     "filterLabel": "Filter testimonials",
@@ -12662,6 +12725,50 @@
       "s2Title": "The certifications, and what they were for",
       "s2Body": "CyberArk's partner programme certified the pre-sales engineer (CPE), the sales professional (CSP) and the Trustee, its entry credential on privileged access, and 2020 produced all three. Like the Tenable set, they were the condition for running the engagements, and like that set they lapsed in 2022 once the week belonged to the classroom; the record keeps them with their dates.",
       "certs": "CyberArk Certified Pre-Sales Engineer (CPE); CyberArk Certified Sales Professional (CSP); CyberArk Certified Trustee. All 2020 to 2022. Listed with their evidence on the credentials page."
+    },
+    "avaya": {
+      "name": "Avaya",
+      "years": "2013 – 2014",
+      "tagline": "Six months inside the vendor's professional-services pre-sales in São Paulo, then its platforms from the integrator's side.",
+      "intro": "A short chapter at a hinge of the story. The first half of 2013 was spent at Avaya in São Paulo as a professional-services pre-sales consultant, the vendor's own chair; from July 2013 the work moved to TDec Network Group, a São Paulo integrator of communication and security systems, where the same platforms were met from the other side of the table. The credentials of the chapter, two Avaya Professional Sales Specialist tracks earned in 2013, belong to both halves.",
+      "s1Title": "Professional services pre-sales at Avaya, January to July 2013",
+      "s1Body": "Avaya's professional-services organisation sells the work around the product: the design, migration, integration and support engagements that turn a platform order into a running communications estate. The pre-sales consultant's job is to scope that work: read the customer's telephony and contact-centre estate, match it to the Aura, IP Office and contact-centre lines, and write the services proposal that prices the engagement. It was the first time this career sat on the vendor side of unified communications rather than of networking, and the vocabulary of that world, call control, trunks, agents and queues, came from these months.",
+      "s2Title": "The integrator's side, from July 2013",
+      "s2Body": "TDec Network Group, where the next ten months were spent, described itself as an integrator of communication and security systems, and the Avaya platforms sat there inside a wider portfolio of switching, firewalls and management. The two APSS tracks earned in 2013, Small and Medium Enterprise Communications and Unified Communications, were the partner-programme credentials for positioning those platforms, and the April 2014 CV lists the Design Specialist track beside them. They expired in 2014, by which time the work had moved to Extreme's metropolitan networks and Palo Alto Networks' firewalls; the record keeps them with their dates.",
+      "certs": "Avaya Professional Sales Specialist, Small and Medium Enterprise Communications (APSS-SME); Avaya Professional Sales Specialist, Unified Communications (APSS-UC). Both 2013 to 2014. Listed with their evidence on the credentials page."
+    },
+    "polycom": {
+      "name": "Polycom",
+      "years": "2014 – 2015",
+      "tagline": "Video endpoints from the integrator's communications line, in 2014, when the maker of the triangular speakerphone was still a company of its own.",
+      "intro": "The smallest chapter in the record, kept for that reason: a career record that lists only its large chapters is a brochure. In 2014, in the TDec Network Group months, the integrator's communications line put Polycom video endpoints beside the Avaya voice platforms, and the two Polycom partner tracks for video endpoints, sales and technical, were taken that year. The credentials lapsed in 2015; the company that issued them stopped existing under that name in 2019.",
+      "s1Title": "Video endpoints, sales and technical tracks, 2014",
+      "s1Body": "Polycom's partner programme certified the people who positioned and installed its room and desktop video systems: the sales track covered the portfolio and its fit to a customer's rooms and network, the technical track the endpoint itself, its registration to the call-control platform, the bandwidth it needs and the network behaviour of real-time video. For an integrator whose other lines were switching and firewalls, that network behaviour was the point of contact: a video call is the application that exposes jitter, loss and an untested quality-of-service design faster than anything else on the estate, and the person who had built the network was the right one to make the call survive it.",
+      "s2Title": "What the record keeps, and what it does not",
+      "s2Body": "Two credentials with their dates, and the context that produced them. The portfolio documents of the time do not describe Polycom deployments by name, and this chapter does not invent them: the tracks were enablement for the integrator's communications line, taken in the same months as the Avaya credentials and the Extreme deployments told elsewhere in the record. The company's own story, from the first SoundStation of 1992 through Plantronics and Poly to HP, is on its industry page.",
+      "certs": "Polycom Video Endpoints: Sales Track (RPEOS100), with its certificate on the credentials page; Polycom Video Endpoints: Technical Track (RPEOT200). Both 2014 to 2015."
+    },
+    "corvil": {
+      "name": "Corvil",
+      "years": "2020",
+      "tagline": "Network analytics for trading floors, from the pre-sales chair at CYLK in 2020.",
+      "intro": "The third of the 2020 chapters, with Tenable and CyberArk: the year the work ran through CYLK, the São Paulo security integrator, as on-demand consulting while full-time instruction with InLearn, its sister company in the same group, was already under way. Corvil is the odd one of the three. It does not find exposures or guard accounts; it watches the wire of an electronic trading system and tells the operator, to the microsecond, what happened to every order, tick and fill.",
+      "s1Title": "Latency as a product, pre-sales, 2020",
+      "s1Body": "Corvil's appliances capture the traffic of a trading infrastructure without loss, decode the market-data and order protocols inside it, and turn the packets into the measurements the business runs on: feed latency and gaps, tick-to-trade times, fill ratios, and the network symptoms behind them, retransmissions, congestion and round-trip times, at one-second resolution. The pre-sales engagement is the conversation that follows: where the capture points sit, which protocols the estate speaks, what a millisecond costs the customer and who on the floor reads the dashboards. It is the one corner of this record where a network is measured in the currency of the application that runs on it.",
+      "s2Title": "The certification, and the company behind it",
+      "s2Body": "The Corvil Certified Administrator credential, earned in 2020, was the condition for running those conversations with the vendor's support behind them; it lapsed in 2022, when the week belonged to the classroom, and the record keeps it with its dates. The company itself had just changed hands: founded in Dublin in 2000 out of Trinity College research, with the exchanges and banks of New York, London and Tokyo as its customers, Corvil was acquired in 2019 by Pico, the New York financial-markets infrastructure provider, and continues as Pico's Corvil Analytics. Its story is on the industry page.",
+      "certs": "Corvil Certified Administrator (CCA), 2020 to 2022. Listed with its evidence on the credentials page."
+    },
+    "commscope": {
+      "name": "CommScope and SYSTIMAX",
+      "years": "1998 – 2000",
+      "tagline": "The structured cabling under every switch of the Cabletron years: certified on AT&T and Lucent's SYSTIMAX in 1998, a brand CommScope would own from 2004.",
+      "intro": "The earliest credential in the record, and the only one about the physical layer. In 1998, two years into the Cabletron Systems years of field engineering and instruction in São Paulo, the AT&T and Lucent SYSTIMAX Structured Cabling System Engineer certification was earned: the design and installation discipline for the copper and fibre plant that every hub, switch and router of that era plugged into. The brand had been Bell Laboratories' Premises Distribution System of 1983 and AT&T's SYSTIMAX SCS of 1989; by 1998 it belonged to Lucent, in 2000 it passed to Avaya, and in 2004 CommScope bought it, which is why the credentials page lists the issuer as CommScope.",
+      "s1Title": "Why a network engineer learned cabling, 1998",
+      "s1Body": "A Cabletron field engineer of the late 1990s spent as much time in wiring closets as at consoles. The MMAC hubs and SmartSwitch chassis were installed where a building's horizontal cabling terminated, and the faults that reached the vendor's engineer were as often a cross-connect, a run past its length or a bad termination as a configuration error. SYSTIMAX was one of the structured-cabling systems the enterprise buildings of the time were built on: a hierarchy of equipment rooms, backbone and horizontal cabling and work-area outlets, with rules for each, a design method and a warranty attached. Certifying on it meant being able to read a building's cabling design, specify what a new floor or a new chassis needed, and tell a customer which half of a problem was theirs.",
+      "s2Title": "Teaching the physical layer",
+      "s2Body": "The same years were the first teaching years, and structured cabling was the layer the Cabletron Internetworking Technologies classes started from: media, connectors, distances and the categories of twisted pair, before a single frame was switched. The 1998 credential gave that first module an authority it would not otherwise have had, and the habit of beginning at the cable plant stayed with the teaching. The credential expired in 2000, the year the chapter itself ended with the move to Riverstone Networks in California.",
+      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, 1998 to 2000, issued under a brand CommScope has owned since 2004 and sold to Amphenol in January 2026. Listed on the credentials page."
     }
   },
   "training": {
@@ -12923,7 +13030,41 @@
     "takedownHeading": "Content removal and corrections",
     "takedownBody": "If you hold rights in material published on this site and believe it should be removed, corrected, or attributed differently, write to the address above with the exact URL or URLs and, where you can, a short note on what the issue is. That context is genuinely useful rather than a formality: it lets a mistake be fixed properly across the whole site instead of one page at a time. Requests are reviewed promptly and in good faith.",
     "takedownLink": "Read the full disclaimer",
-    "translations": "Reading this site in one of the machine-translated languages and something is wrong? Corrections are welcome and small ones are the most useful."
+    "translations": "Reading this site in one of the machine-translated languages and something is wrong? Corrections are welcome and small ones are the most useful.",
+    "intentsTitle": "What brings you here?",
+    "intents": {
+      "training": {
+        "title": "Training",
+        "desc": "Authorized courses are booked through Red Education: the catalogue, dates and formats are theirs.",
+        "cta": "Browse the courses at Red Education",
+        "secondary": "What I teach, and how"
+      },
+      "advisory": {
+        "title": "Advisory",
+        "desc": "Bring the decision you have to make and the date you have to make it by; the rest is the conversation.",
+        "cta": "Write about an engagement",
+        "secondary": "How advisory works here",
+        "template": "The decision:\nThe deadline:\nWhat has already been tried or ruled out:"
+      },
+      "speaking": {
+        "title": "Speaking and off-site work",
+        "desc": "A talk, a workshop or a session on site: say the event, the audience, the date and what you want people to leave with.",
+        "cta": "Propose an event",
+        "secondary": "Past talks and formats",
+        "template": "The event:\nThe audience:\nThe date:\nWhat people should leave with:"
+      },
+      "correction": {
+        "title": "A correction",
+        "desc": "A wrong fact, a dead source, a tool giving the wrong answer, or something that should not be here at all.",
+        "cta": "Report it",
+        "secondary": "Other ways to help improve the site"
+      },
+      "other": {
+        "title": "Something else",
+        "desc": "If none of the above fits, the form takes anything.",
+        "cta": "Just write"
+      }
+    }
   },
   "certs": {
     "title": "Certifications & credentials",
@@ -13074,7 +13215,37 @@
     "downloadHeading": "Language packs",
     "referenceTag": "reference",
     "emailHeading": "Send your contribution",
-    "backHome": "Back to tools"
+    "backHome": "Back to tools",
+    "hubEyebrow": "Contribute",
+    "hubTitle": "Help improve ronutz",
+    "hubLede": "Five ways to make this site better, from a two-line correction to a pull request. Every one of them reaches a person, and every one that lands is recorded in the changelog with its source.",
+    "routes": {
+      "error": {
+        "title": "Report an error",
+        "desc": "A wrong fact, a broken page, a tool giving the wrong answer. Say where, and what you expected.",
+        "cta": "Report it"
+      },
+      "tool": {
+        "title": "Suggest a tool",
+        "desc": "Something that computes, never guesses, and belongs in the toolbox. The fit rule and the queue are on the ideas page.",
+        "cta": "Suggest it"
+      },
+      "source": {
+        "title": "Suggest a source or a correction",
+        "desc": "A better citation, a dead link, a date that is wrong, or content that should not be here at all.",
+        "cta": "Send it"
+      },
+      "translation": {
+        "title": "Improve a translation",
+        "desc": "Every language but English is a machine-made first draft. Download a pack, correct it, send it back.",
+        "cta": "See how"
+      },
+      "code": {
+        "title": "Contribute code",
+        "desc": "The site is open source under Apache-2.0 for code and CC BY 4.0 for content. Issues and pull requests are welcome.",
+        "cta": "Open the repository"
+      }
+    }
   },
   "admin": {
     "eyebrow": "Admin",
@@ -22564,7 +22735,21 @@
     "kindPageTitle": "Glossary: {kind}",
     "kindPageDescription": "{count} entries of kind {kind}, listed alphabetically.",
     "otherKinds": "Other kinds",
-    "browseByKind": "Browse by kind"
+    "browseByKind": "Browse by kind",
+    "entrances": {
+      "defineTitle": "I need a definition",
+      "defineLede": "Type the word; the filter narrows {count} entries as you go, by headword, expansion and alias.",
+      "jargonTitle": "Decode the jargon",
+      "jargonLede": "{count} acronyms, expressions and pieces of jargon: what the room means when it says it.",
+      "loreTitle": "Industry lore",
+      "loreLede": "{count} stories the industry tells about itself, each fact-checked against a primary source.",
+      "mistoldTitle": "Commonly mistold",
+      "mistoldLede": "{count} entries whose usual telling is wrong, flagged as disputed and corrected in their own context.",
+      "domainTitle": "Browse a domain",
+      "domainLede": "{count} domains, each with its own page: networking, security, the cloud, the trade itself.",
+      "mistoldSection": "Commonly mistold",
+      "mistoldSectionLede": "{count} entries carry the disputed marker: the story everybody repeats is not what the sources say. Each entry states the usual version and the correction."
+    }
   },
   "certGuides": {
     "title": "Certification study guides",
@@ -22908,55 +23093,68 @@
     "paths": {
       "bigip-fundamentals": {
         "title": "F5 BIG-IP end to end",
-        "lede": "Everything the retired 101, 201, 301A, and 301B blueprints listed, as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare the retired blueprints against the current ones."
+        "lede": "Everything the retired 101, 201, 301A, and 301B blueprints listed, as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare the retired blueprints against the current ones.",
+        "outcome": "You will understand how a BIG-IP carries, secures and reports on application traffic, from the networking floor it assumes through administration and high availability to the LTM craft of iRules, analytics and captures, and how the retired blueprints relate to the current ones."
       },
       "modern-identity": {
         "title": "Modern identity, from the token up",
-        "lede": "The open standards behind single sign-on, in dependency order: the JWT (JSON Web Token) itself, the signatures and JWKS (JSON Web Key Set) that make it verifiable, the OAuth 2.0 and PKCE (Proof Key for Code Exchange) flows that mint it, OIDC (OpenID Connect) on top, and TOTP/HOTP (time-based and HMAC-based one-time passwords) as the second factor."
+        "lede": "The open standards behind single sign-on, in dependency order: the JWT (JSON Web Token) itself, the signatures and JWKS (JSON Web Key Set) that make it verifiable, the OAuth 2.0 and PKCE (Proof Key for Code Exchange) flows that mint it, OIDC (OpenID Connect) on top, and TOTP/HOTP (time-based and HMAC-based one-time passwords) as the second factor.",
+        "outcome": "You will understand how a login becomes a token, how a signature and a key set make that token verifiable, how OAuth 2.0 with PKCE and OIDC mint and carry it, and where a one-time password enters as the second factor."
       },
       "tls-from-zero": {
         "title": "TLS from zero",
-        "lede": "TLS (Transport Layer Security) from the cipher suite string upward: what each part of a suite name means, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS (Datagram TLS), and QUIC relate as one family."
+        "lede": "TLS (Transport Layer Security) from the cipher suite string upward: what each part of a suite name means, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS (Datagram TLS), and QUIC relate as one family.",
+        "outcome": "You will understand what each part of a cipher suite name promises, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS and QUIC belong to one family."
       },
       "http-evolution": {
         "title": "HTTP, told forward",
-        "lede": "HTTP (the Hypertext Transfer Protocol) across its five versions - from the one-line GET of 1991 to HTTP/3 on QUIC - then the operational layer: forward and reverse proxies, HSTS (HTTP Strict Transport Security), and curl beyond the browser."
+        "lede": "HTTP (the Hypertext Transfer Protocol) across its five versions - from the one-line GET of 1991 to HTTP/3 on QUIC - then the operational layer: forward and reverse proxies, HSTS (HTTP Strict Transport Security), and curl beyond the browser.",
+        "outcome": "You will understand what each of HTTP's five versions changed, from the one-line GET of 1991 to HTTP/3 on QUIC, and how proxies, HSTS and curl sit on top of it in daily operation."
       },
       "regex-mastery": {
         "title": "Regular expressions, properly",
-        "lede": "The craft skill under log analysis and every parser: quantifiers and classes, groups and backreferences, anchors and boundaries, flags and modes - ending on catastrophic backtracking, the failure mode every production regex must avoid."
+        "lede": "The craft skill under log analysis and every parser: quantifiers and classes, groups and backreferences, anchors and boundaries, flags and modes - ending on catastrophic backtracking, the failure mode every production regex must avoid.",
+        "outcome": "You will understand how a regular expression engine matches, from classes and quantifiers to groups, backreferences, anchors and flags, and how to recognise and avoid the catastrophic backtracking that takes production systems down."
       },
       "pingfederate-administration": {
         "title": "PingFederate administration, end to end",
-        "lede": "The blueprint's assumed fundamentals first - the directory model and the Kerberos ticket machinery - then the ten product articles in teaching order, SCIM beside the provisioning stop, and the SSO flows to close. The reading spine behind the PFP-001 certification guide."
+        "lede": "The blueprint's assumed fundamentals first - the directory model and the Kerberos ticket machinery - then the ten product articles in teaching order, SCIM beside the provisioning stop, and the SSO flows to close. The reading spine behind the PFP-001 certification guide.",
+        "outcome": "You will understand the directory and Kerberos fundamentals the product assumes, then PingFederate itself in teaching order, provisioning with SCIM beside it, and the SSO flows that close the PFP-001 blueprint."
       },
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
-        "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture - with the three native tools to practice on."
+        "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture - with the three native tools to practice on.",
+        "outcome": "You will understand how traffic reaches the Zero Trust Exchange and how its policy brain is ordered: forwarding, firewall, TLS inspection, web and file controls, DLP and CASB, and ZPA's segments, policy and posture."
       },
       "netskope-sase": {
         "title": "Netskope SASE, End to End",
-        "lede": "The whole platform in reading order: architecture and NewEdge, every steering method, the client, TLS decryption, the two protection paths, CCI-driven policy, Private Access, Cloud Firewall, and the analytics layer - with the PAC and SAML tools to practice on. Built to walk the accreditation and certification domains from this site."
+        "lede": "The whole platform in reading order: architecture and NewEdge, every steering method, the client, TLS decryption, the two protection paths, CCI-driven policy, Private Access, Cloud Firewall, and the analytics layer - with the PAC and SAML tools to practice on. Built to walk the accreditation and certification domains from this site.",
+        "outcome": "You will understand the Netskope platform in reading order: NewEdge and the architecture, every steering method and the client, TLS decryption, the inline and API protection paths, CCI-driven policy, Private Access, Cloud Firewall and the analytics layer."
       },
       "ping-identity-platform": {
         "title": "The Ping Identity Platform",
-        "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub."
+        "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub.",
+        "outcome": "You will understand how the Ping estate fits together, from the PingOne map and the ForgeRock lineage that explains the product names to PingAccess policy, the PingDirectory data platform, DaVinci orchestration and the PingFederate core."
       },
       "checkpoint-security-administration": {
         "title": "Check Point security administration",
-        "lede": "The platform in the order the CCSA teaches it: the three-tier split first, because nothing else makes sense until you know the management server and the gateway are different machines with different jobs, then the rule base, then the layer semantics that catch everyone."
+        "lede": "The platform in the order the CCSA teaches it: the three-tier split first, because nothing else makes sense until you know the management server and the gateway are different machines with different jobs, then the rule base, then the layer semantics that catch everyone.",
+        "outcome": "You will understand the three-tier split of management server, gateway and console, the rule base built on it, and the layer semantics that decide which rule fires, in the order the CCSA teaches them."
       },
       "nginx-from-config-to-cache": {
         "title": "NGINX, from configuration to cache",
-        "lede": "In the order the confusions actually arrive: the configuration tree, then which location block wins, then what path the backend receives, then what gets cached and served to whom."
+        "lede": "In the order the confusions actually arrive: the configuration tree, then which location block wins, then what path the backend receives, then what gets cached and served to whom.",
+        "outcome": "You will understand how NGINX reads its configuration tree, which location block wins, what path the backend receives, and what is cached and served to whom."
       },
       "extreme-fabric-and-voss": {
         "title": "Extreme fabric and the two operating systems",
-        "lede": "ExtremeXOS for the configuration model, then why VOSS feels so different (it came from another company entirely), then Fabric Connect built up from IS-IS through I-SIDs to the resilience features."
+        "lede": "ExtremeXOS for the configuration model, then why VOSS feels so different (it came from another company entirely), then Fabric Connect built up from IS-IS through I-SIDs to the resilience features.",
+        "outcome": "You will understand the ExtremeXOS configuration model, why VOSS is a different operating system from a different company, and how Fabric Connect is built from IS-IS through I-SIDs to its resilience features."
       },
       "fortinet-fabric-and-operations": {
         "title": "Fortinet beyond the single firewall",
-        "lede": "What shows up once a FortiGate is not alone: inspection choices, the branch overlay, cloud integration, the SOC, and the operational technology edge."
+        "lede": "What shows up once a FortiGate is not alone: inspection choices, the branch overlay, cloud integration, the SOC, and the operational technology edge.",
+        "outcome": "You will understand what changes once a FortiGate is not alone: the inspection choices, the branch overlay, the cloud integration, the SOC and the operational technology edge."
       }
     },
     "expandAll": "Expand all",
@@ -22969,6 +23167,28 @@
       "short": "Short",
       "medium": "Medium",
       "deep": "Deep"
+    },
+    "outcomeLabel": "You will understand",
+    "startPath": "Start the path",
+    "familiesTitle": "Choose by subject",
+    "familiesLede": "Thirteen paths in four families. Each card below says what you will understand at the end and opens on the first article.",
+    "families": {
+      "foundations": {
+        "title": "Protocols and foundations",
+        "lede": "The layers everything else assumes: transport security, HTTP and the pattern language under every parser."
+      },
+      "identity": {
+        "title": "Identity and security",
+        "lede": "Who is asking, how that is proven, and the platforms that enforce the answer."
+      },
+      "delivery": {
+        "title": "Application delivery",
+        "lede": "The proxies in front of the application: balancing, caching, inspection, the configuration that decides."
+      },
+      "platforms": {
+        "title": "Vendor platforms",
+        "lede": "One vendor's estate in reading order, built to walk its certification from this site."
+      }
     }
   },
   "catDistribution": {
@@ -23489,7 +23709,18 @@
     "rolesBody": "Every article here describes work that somebody is employed to do. The Roles covers {count} of those positions - what each answers for, who it receives from, who it serves, and how it is measured.",
     "rolesLink": "Read The Roles",
     "toolsTitle": "Tools for this",
-    "toolsAria": "Tools that support this work"
+    "toolsAria": "Tools that support this work",
+    "entrances": {
+      "searchLabel": "Search The Practice",
+      "searchPlaceholder": "A problem, a word, a situation...",
+      "searchExamples": "Try",
+      "lifecycleTitle": "Follow the lifecycle",
+      "lifecycleLede": "{count} articles in the order the work happens: before the sale, when it breaks, what it yields, what comes after, the life and the craft.",
+      "problemTitle": "I have a problem now",
+      "problemLede": "Type what is in front of you; the search looks only inside this corpus and lists the pieces that speak to it.",
+      "humanTitle": "The human side",
+      "humanLede": "The two parts about the person doing the work: The Life and The Craft, where the lifecycle stops being a procedure."
+    }
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
@@ -26239,7 +26470,20 @@
           }
         }
       }
-    }
+    },
+    "entrances": {
+      "searchLabel": "Search the roles",
+      "searchPlaceholder": "A title, a team, a kind of work...",
+      "searchExamples": "Try",
+      "roleTitle": "Understand a role",
+      "roleLede": "{count} roles, grouped by where they sit in the value chain, each with what it is, what it is not, and how it is judged.",
+      "chainTitle": "Understand the value chain",
+      "chainLede": "The path a product takes, from the company that makes it to the person who teaches it, in {count} stations.",
+      "heldTitle": "The roles he held",
+      "heldLede": "{count} of these roles were held in first person; the rest are documented from sources and from people who worked alongside."
+    },
+    "heldSectionTitle": "Held in first person",
+    "heldSectionLede": "The roles this record is written from, with where and when, before the directory of all of them."
   },
   "people": {
     "title": "People",
@@ -26365,7 +26609,21 @@
     "schoolsTitle": "Schools and research institutes",
     "schoolsNote": "Institutions that grant degrees or run programmes rather than sell courses.",
     "restTitle": "Also tagged training",
-    "restNote": "Entries carrying the training tag that the sections above do not name."
+    "restNote": "Entries carrying the training tag that the sections above do not name.",
+    "geo": {
+      "hqLabel": "HQ",
+      "activeLabel": "Active",
+      "global": "Global",
+      "pendingNote": "Footprint pending research: the headquarters country is shown by default.",
+      "pendingShort": "footprint pending research, headquarters shown by default",
+      "sourcesTitle": "Where the headquarters and footprints come from",
+      "sourcesNote": "Each card's flag is the founding country, as on the industry timeline; the HQ and the activity line come from the pages below, read on the dates given. A dotted footprint with a question mark is a default, the headquarters country standing in until the footprint is researched.",
+      "regions": {
+        "latinAmerica": "Latin America",
+        "mercosur": "Mercosur",
+        "asiaPacific": "Asia Pacific"
+      }
+    }
   },
   "stories": {
     "title": "Stories the data in this site tells",
@@ -26386,7 +26644,8 @@
         "title": "The industry and the country",
         "lede": "Where the subject is not the technology but the business around it, and the place it was learned in."
       }
-    }
+    },
+    "readArgument": "Read the argument"
   },
   "urlAnatomy": {
     "scheme": "Scheme",

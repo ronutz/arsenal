@@ -21,6 +21,12 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { partnerVendors, storyStart } from "@/content/vendors/partners";
+// The flag and the footprint on every card (PRIME 2026-10-05 22:20): the founding country from
+// origins.ts, as on the industry timeline; the headquarters and the activity geography from
+// geography.ts, with the source of each published under the cards.
+import { VENDOR_ORIGINS, countryLabel } from "@/content/vendors/origins";
+import { LEARNING_GEOGRAPHY } from "@/content/vendors/geography";
+import CountryFlag from "@/components/CountryFlag";
 
 /** Section membership by slug. Order within a section is by founding year. */
 const SECTIONS: ReadonlyArray<{ key: string; slugs: readonly string[] }> = [
@@ -95,6 +101,42 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
                           {v.founded ? <span className="vendor-card-years mono">{v.founded}</span> : null}
                           <span className="vendor-card-name">{v.name.split(/\s[-\u2013\u2014]\s/)[0]}</span>
                           <span className="vendor-card-tagline">{v.tagline}</span>
+                          {/* Where it is and where it works (PRIME 2026-10-05 22:20). The flag is the
+                              founding country (origins.ts, the timeline's convention); the text is the
+                              headquarters today and the footprint: Global, the named countries and
+                              regions, or the headquarters country alone. A pending footprint, the
+                              headquarters by default, is marked and says so on hover. */}
+                          {(() => {
+                            const g = LEARNING_GEOGRAPHY[v.slug];
+                            const origin = VENDOR_ORIGINS[v.slug];
+                            if (!g) return null;
+                            const hqText = g.hq.city ? `${g.hq.city} · ${g.hq.country}` : countryLabel(g.hq.country);
+                            const scopeText =
+                              g.scope === "global"
+                                ? t("geo.global")
+                                : g.scope === "international"
+                                  ? [
+                                      ...(g.where?.countries ?? []).map((c) => countryLabel(c)),
+                                      ...(g.where?.regions ?? []).map((r) => t(`geo.regions.${r}`)),
+                                    ].join(" · ")
+                                  : countryLabel(g.hq.country);
+                            return (
+                              <span
+                                className={`vendor-card-geo${g.pending ? " vendor-card-geo--pending" : ""}`}
+                                data-scope={g.scope}
+                                title={g.pending ? t("geo.pendingNote") : undefined}
+                              >
+                                {origin ? <CountryFlag code={origin} /> : null}
+                                <span className="vendor-card-geo-hq">
+                                  <span className="vendor-card-geo-label">{t("geo.hqLabel")}</span> {hqText}
+                                </span>
+                                <span className="vendor-card-geo-scope">
+                                  <span className="vendor-card-geo-label">{t("geo.activeLabel")}</span> {scopeText}
+                                  {g.pending ? <span className="vendor-card-geo-pending-mark" aria-hidden="true"> ?</span> : null}
+                                </span>
+                              </span>
+                            );
+                          })()}
                         </Link>
                       </li>
                     ))}
@@ -102,6 +144,28 @@ export default async function LearningIndexPage({ params }: { params: Promise<{ 
                 </div>
               ),
             )}
+
+            {/* The sources of every headquarters and footprint above, published rather than kept
+                (PRIME's golden content standard: sources at the foot of every page). One line per
+                company, in the order of the sections; the pending rows say so. */}
+            <details className="learning-geo-sources">
+              <summary>{t("geo.sourcesTitle")}</summary>
+              <p className="learning-geo-sources-note">{t("geo.sourcesNote")}</p>
+              <ul>
+                {[...sections, { key: "rest", items: rest }].flatMap((s) => s.items).map((v) => {
+                  const g = LEARNING_GEOGRAPHY[v.slug];
+                  if (!g) return null;
+                  return (
+                    <li key={`geo-${v.slug}`}>
+                      <strong>{v.name.split(/\s[-\u2013\u2014]\s/)[0]}</strong>
+                      {g.pending ? <span className="learning-geo-pending"> ({t("geo.pendingShort")})</span> : null}
+                      {": "}
+                      <a href={g.source.url} target="_blank" rel="noopener noreferrer">{g.source.label}</a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </details>
           </div>
         </section>
       </main>

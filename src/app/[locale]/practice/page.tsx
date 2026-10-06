@@ -39,6 +39,10 @@ import {
 } from "@/lib/practice";
 
 import { ROLES } from "@/lib/roles";
+import type { CSSProperties } from "react";
+// G1 (SCOUT, adopted 2026-10-05): three entrances under the hero, and a search field scoped to this corpus
+// alone (the "section" facet, see SearchKind), so "I have a problem now" is one field rather than a tour.
+import HubSearch from "@/components/HubSearch";
 export async function generateMetadata({
   params,
 }: {
@@ -83,6 +87,47 @@ export default async function PracticeIndexPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+            </div>
+          </section>
+          {/* THREE ENTRANCES (G1, SCOUT, adopted 2026-10-05; no redesign): follow the lifecycle, which is the
+              spine below in its own order; I have a problem now, which is the search field scoped to these
+              sixty-four articles; and the human side, the two parts about the life and the craft. The field
+              presets the dialog to this section (the "section" facet), and the cards are anchors into the
+              page, so nothing here is a second copy of anything. */}
+          <section className="section practice-entrances">
+            <div className="container section-narrow">
+              <HubSearch
+                scope="understand"
+                section="practice"
+                sectionLabel={t("eyebrow")}
+                label={t("entrances.searchLabel")}
+                placeholder={t("entrances.searchPlaceholder")}
+                examplesLabel={t("entrances.searchExamples")}
+                examples={["RFP", "escalation", "change window", "handover", "on-call", "mentoring"]}
+              />
+              <div className="learn-portal-grid learn-portal-grid-wide" style={{ marginTop: "1.25rem" }}>
+                <a href="#practice-parts" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                  <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                  <p className="learn-portal-title">
+                    {t("entrances.lifecycleTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("entrances.lifecycleLede", { count: groups.reduce((n, g) => n + g.articles.length, 0) })}</p>
+                </a>
+                <a href="#hub-search-practice" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                  <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                  <p className="learn-portal-title">
+                    {t("entrances.problemTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("entrances.problemLede")}</p>
+                </a>
+                <a href="#part-life" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                  <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                  <p className="learn-portal-title">
+                    {t("entrances.humanTitle")} <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("entrances.humanLede")}</p>
+                </a>
+              </div>
             </div>
           </section>
 
@@ -165,7 +210,7 @@ export default async function PracticeIndexPage({
                   being one: a <summary> already owns the click, so a nested link
                   would fight it. The small arrow jumps to the same part in the
                   spine below, where the theses are. */}
-              <nav className="practice-part-nav" aria-label={t("title")}>
+              <nav className="practice-part-nav" id="practice-parts" aria-label={t("title")}>
                 {groups.map(({ part, articles }) => (
                   <details className="practice-part-details" key={part}>
                     <summary className="practice-part-summary">

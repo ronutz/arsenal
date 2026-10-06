@@ -52,6 +52,99 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    date: "2026-10-06",
+    time: "00:40",
+    kind: "feature",
+    title: "The tools page says its three floors, groups the index by intent, takes what you paste, and starts five workflows",
+    body:
+      "Four pieces of the Round 1 review for the toolbox. One paragraph under the lede names the three floors: the main floor, the green room and the red room, each with what it promises. Paste what you have: a box that runs every tool's own input patterns, 187 of them from 155 manifests, over whatever you paste, in the browser, and lines up the tools that recognise its shape, the surest first. By what you need to do: the same index grouped by the verb, decode, understand, compute, build, check, derived from each tool's catalogue posture. Workflows: five chains that follow one thing from tool to tool, from a CIDR to a firewall rule, from a token to its claims and its flow, from a certificate to the headers a browser enforces, from a syslog line to a level every system can name, from an HTTP message to the command that reproduces it; started here, growing by data.",
+    links: [{ label: "The toolbox", href: "/tools" }],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:50",
+    kind: "feature",
+    title: "Entrances for The Practice, The Roles and the Glossary, search scoped to a section, and the study guides as curricula",
+    body:
+      "The Practice opens with three ways in: follow the lifecycle, I have a problem now (a search field that looks only inside the sixty-four articles) and the human side. The Roles opens with understand a role, understand the value chain and the roles he held, the held roles listed with where and when before the directory, and its own scoped field. The Glossary foregrounds what makes it different: I need a definition, decode the jargon, industry lore, commonly mistold (the twenty-two entries flagged disputed, listed with their kinds) and browse a domain. The search index gains a section facet, so a section's field opens the dialog with an Only in pill that one click widens. The study guides gain a selection layer by subject family, protocols and foundations, identity and security, application delivery and vendor platforms, and every reading path now states what you will understand at the end and opens on its first article.",
+    links: [
+      { label: "The Practice", href: "/practice" },
+      { label: "The Roles", href: "/roles" },
+      { label: "The Glossary", href: "/glossary" },
+      { label: "Study guides", href: "/study-guides" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:45",
+    kind: "feature",
+    title: "Four pages aligned with the Round 1 review: Contact routed by intent, Contribute as Help improve ronutz, Endorsements by kind of work, Stories with a lead sentence each",
+    body:
+      "Contact opens with five routes, one per reason to write: training goes to Red Education, where the courses are booked; advisory and speaking arrive at the form with the topic set and the first questions prefilled (the decision and the deadline; the event, the audience, the date and the outcome); a correction goes to the correction section; anything else to the form, which is otherwise unchanged. Contribute becomes Help improve ronutz, five routes above the translations section: report an error, suggest a tool, suggest a source or a correction, improve a translation, contribute code. Endorsements is organised by the kind of work described, six counted entrances that open the record filtered, the kind filter now first and source and language second, every entry verbatim and nothing rated. Stories shows one lead sentence per story and a Read the argument link.",
+    links: [
+      { label: "Contact", href: "/contact" },
+      { label: "Help improve ronutz", href: "/contribute" },
+      { label: "Endorsements", href: "/endorsements" },
+      { label: "Stories", href: "/stories" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:30",
+    kind: "infra",
+    title: "The archive of the earlier sites is served again: /archive/* no longer passes through the locale gate",
+    body:
+      "The static clones of the 2004 and 2013 sites under /archive/sites/ carry no locale segment, because the originals had none; the edge Worker's locale gate was rewriting their index pages into /en/archive/... paths that exist nowhere, so the clones answered 404 while their files sat in the bundle. The archive tree is now served straight from the asset layer, with the same exemption inside the Worker as a second lock and a build guard that fails if either disappears.",
+    links: [
+      { label: "The earlier sites", href: "/about/earlier-sites" },
+      { label: "The 2013 site, in its frame", href: "/about/earlier-sites/ntz-com-br-2013" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:20",
+    kind: "feature",
+    title: "A random quote header on every page, after Slashdot's X-Fry, X-Bender and X-Lrrr",
+    body:
+      "Every HTML response now carries one extra header named after a character, with a line of theirs as its value, chosen at random per request: Futurama (X-Fry, X-Bender, X-Farnsworth, X-Hypnotoad, X-Lrrr and more), The Simpsons (X-Doh, X-Cowabunga, X-Eat-My-Shorts, X-Excellent, X-Okily-Dokily, X-Worst-Ever) and South Park (X-Tegridy, X-Chef, X-Authoritah, X-Mmkay, X-Timmy, X-Underpants-Gnomes), fifty-six lines under forty-six names. It joins X-Clacks-Overhead and X-Collective as the site's third header in that tradition; the Learn article on hidden headers documents all three, and a build guard keeps every name a valid token and every value plain ASCII.",
+    links: [
+      { label: "Hidden messages in HTTP headers", href: "/learn/hidden-messages-in-http-headers" },
+    ],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:10",
+    kind: "content",
+    title: "The 404 page explains every one of its famous errors",
+    body:
+      "The faux console on the not-found page already explained the teapot (RFC 2324) and the Borg line; now each line carries a one-clause explainer with its source: PC LOAD LETTER and the HP LaserJets, the keyboard the power-on self-test asks to press F1, Obi-Wan's mind trick, lp0 on fire and the printers that really did burn, SIGSEGV and the magnetic core in core dumped, and MS-DOS's Abort, Retry, Fail prompt.",
+    links: [{ label: "The headers article the Borg line points at", href: "/learn/hidden-messages-in-http-headers" }],
+  },
+  {
+    date: "2026-10-05",
+    time: "23:00",
+    kind: "feature",
+    title: "Where the industry learns: every card shows its flag, headquarters and footprint",
+    body:
+      "The thirty-seven training centres, certification bodies, platforms and schools on the learning page now carry a metadata line: the founding flag, the headquarters today and where the company works, Global, the named countries and regions, or the headquarters country alone. Three footprints are defaults pending research and are marked as such. The source of every headquarters and footprint is published under the cards, read on the dates given, and a build guard requires a row for every company tagged training.",
+    links: [{ label: "Where the industry learns", href: "/industry/learning" }],
+  },
+  {
+    date: "2026-10-05",
+    time: "22:50",
+    kind: "content",
+    title: "Four more chapters in the career record: Avaya, Polycom, Corvil and CommScope (SYSTIMAX); three new industry entries; the CYLK years on About",
+    body:
+      "The audit of the credentials against the record found four vendors certified on and never told. Avaya: the first half of 2013 inside the vendor's professional-services pre-sales in São Paulo, then its platforms from TDec's side, APSS-SME and APSS-UC. Polycom: the video-endpoint sales and technical tracks of 2014, from the same integrator's communications line. Corvil: the third 2020 pre-sales chapter at CYLK, network analytics for trading floors, the Corvil Certified Administrator. CommScope and SYSTIMAX: the structured-cabling engineer certification of 1998, the earliest credential in the record, under a brand that went from Bell Labs to AT&T, Lucent, Avaya, CommScope and, in January 2026, Amphenol. Polycom, Corvil and CommScope receive their own industry entries, every fact read live and cited; Avaya's existing entry links its chapter. About gains the CYLK row of 2020 to 2022 with the marks held for F5, Palo Alto Networks and Fortinet, and Tenable, CyberArk and Corvil named.",
+    links: [
+      { label: "The career record", href: "/industry/chapters" },
+      { label: "The Avaya chapter", href: "/industry/chapters/avaya" },
+      { label: "The Polycom chapter", href: "/industry/chapters/polycom" },
+      { label: "The Corvil chapter", href: "/industry/chapters/corvil" },
+      { label: "The CommScope and SYSTIMAX chapter", href: "/industry/chapters/commscope" },
+    ],
+  },
+  {
     date: "2026-10-05",
     time: "21:40",
     kind: "content",

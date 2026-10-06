@@ -82,7 +82,25 @@ export default async function ContactPage({
     successBody: t("successBody"),
     errorBody: t("errorBody"),
     required: t("formRequired"),
+    // G8: the prefilled questions for the advisory and speaking routes.
+    advisoryTemplate: t("intents.advisory.template"),
+    speakingTemplate: t("intents.speaking.template"),
   };
+  // G8 (SCOUT, adopted 2026-10-05): the five routes by intent, each a card above the form. Training is booked
+  // through Red Education, so that card leaves the site (attributed, the standing rule); advisory, speaking and
+  // "something else" arrive at the form with the topic preselected; a correction goes to the section below
+  // and, for a tool idea, to the ideas page. The form itself is unchanged.
+  const trainingUrl = attributeRedEducationUrl(
+    channels.find((c) => c.id === "training")?.url ?? "https://www.rededucation.com/",
+    { pageType: "contact", locale, cta: "intent-training" },
+  );
+  const intents: { id: string; href: string; external?: boolean; secondary?: { href: string; label: string } }[] = [
+    { id: "training", href: trainingUrl, external: true, secondary: { href: "/training", label: t("intents.training.secondary") } },
+    { id: "advisory", href: "/contact?intent=advisory#contact-form", secondary: { href: "/advisory", label: t("intents.advisory.secondary") } },
+    { id: "speaking", href: "/contact?intent=speaking#contact-form", secondary: { href: "/speaking", label: t("intents.speaking.secondary") } },
+    { id: "correction", href: "#correction", secondary: { href: "/contribute", label: t("intents.correction.secondary") } },
+    { id: "other", href: "/contact?intent=other#contact-form" },
+  ];
 
   return (
     <>
@@ -116,6 +134,44 @@ export default async function ContactPage({
             </div>
           )}
 
+          {/* Routed by intent (G8): five cards, one per reason to write. */}
+          <section className="section contact-intents-section">
+            <div className="container contact-container">
+              <h2 className="contact-section-label">{t("intentsTitle")}</h2>
+              <ul className="contact-intents">
+                {intents.map((i) => (
+                  <li key={i.id} className="contact-intent">
+                    {i.external ? (
+                      <a className="contact-intent-main" href={i.href} target="_blank" rel={externalRel(i.href)}>
+                        <span className="contact-intent-title">{t(`intents.${i.id}.title`)}</span>
+                        <span className="contact-intent-desc">{t(`intents.${i.id}.desc`)}</span>
+                        <span className="contact-intent-cta">{t(`intents.${i.id}.cta`)} →</span>
+                      </a>
+                    ) : i.href.startsWith("#") || i.href.startsWith("/contact?") ? (
+                      // Same-page destinations: a plain anchor, so the hash and the query reach the form as written
+                      // (the i18n Link would prefix the locale and the static page would reload anyway).
+                      <a className="contact-intent-main" href={i.href.startsWith("#") ? i.href : `/${locale}${i.href}`}>
+                        <span className="contact-intent-title">{t(`intents.${i.id}.title`)}</span>
+                        <span className="contact-intent-desc">{t(`intents.${i.id}.desc`)}</span>
+                        <span className="contact-intent-cta">{t(`intents.${i.id}.cta`)} →</span>
+                      </a>
+                    ) : (
+                      <Link className="contact-intent-main" href={i.href}>
+                        <span className="contact-intent-title">{t(`intents.${i.id}.title`)}</span>
+                        <span className="contact-intent-desc">{t(`intents.${i.id}.desc`)}</span>
+                        <span className="contact-intent-cta">{t(`intents.${i.id}.cta`)} →</span>
+                      </Link>
+                    )}
+                    {i.secondary ? (
+                      <Link className="contact-intent-secondary" href={i.secondary.href}>
+                        {i.secondary.label} →
+                      </Link>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
           {/* Form + channels */}
           <section className="section">
             <div className="container contact-container">
@@ -160,7 +216,7 @@ export default async function ContactPage({
 
           {/* Content removal / correction route (PRIME 2026-07-23). Pairs with
               the good-faith notice on every vendor-linked study guide. */}
-          <section className="section">
+          <section className="section" id="correction">
             <div className="container">
               <h2 className="contact-section-label">{t("takedownHeading")}</h2>
               <p className="colophon-body">

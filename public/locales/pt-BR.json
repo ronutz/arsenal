@@ -11858,7 +11858,65 @@
       "recentTitle": "Adicionadas recentemente",
       "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
       "directoryTitle": "O índice completo",
-      "directoryLede": "{count} ferramentas em {categories} categorias, todas listadas abaixo; pule para uma categoria, mostre só algumas ou alterne entre cartões e lista."
+      "directoryLede": "{count} ferramentas em {categories} categorias, todas listadas abaixo; pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
+      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, vetores de ouro e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar.",
+      "pasteTitle": "Cole o que você tem",
+      "pasteLede": "Um token, um bloco de cabeçalhos, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
+      "pasteLabel": "Cole o que você tem",
+      "pastePlaceholder": "eyJhbGciOi...   ou   <34>1 2026-10-05T...   ou   10.0.0.0/22   ou   -----BEGIN CERTIFICATE-----",
+      "pasteHint": "Comparado no seu navegador com os padrões de entrada de cada ferramenta; nada é guardado nem enviado.",
+      "pasteResults": "Ferramentas que reconhecem isto",
+      "pasteNoMatch": "Nenhuma ferramenta reconhece essa forma ainda. Tente as intenções abaixo, ou o índice completo.",
+      "pasteClear": "Limpar",
+      "intentsTitle": "Pelo que você precisa fazer",
+      "intentsLede": "O mesmo índice, agrupado pelo verbo: o que cada ferramenta faz com o que você entrega a ela.",
+      "intents": {
+        "decode": {
+          "title": "Decodificar algo que tenho",
+          "lede": "Ferramentas que tomam um artefato como está, um token, um pacote, um cabeçalho, uma string, e mostram o que há dentro."
+        },
+        "understand": {
+          "title": "Entender como algo funciona",
+          "lede": "Explicadores, referências e comparadores: a coisa exposta para que uma decisão sobre ela possa ser tomada."
+        },
+        "compute": {
+          "title": "Calcular ou converter",
+          "lede": "Aritmética e conversão com as regras à mostra: endereços, tempos, codificações, tamanhos."
+        },
+        "build": {
+          "title": "Construir ou gerar",
+          "lede": "Ferramentas que produzem algo para levar: um comando, uma política, um plano, uma configuração."
+        },
+        "check": {
+          "title": "Verificar, validar ou simular",
+          "lede": "Ferramentas que respondem sim ou não, e mostram por quê: validadores, linters, testes e simuladores da ordem própria de um sistema."
+        }
+      },
+      "workflowsTitle": "Fluxos de trabalho",
+      "workflowsLede": "Cinco cadeias que seguem uma mesma coisa de ferramenta em ferramenta. O que a primeira mostra é o que a próxima recebe. Começam aqui; outras chegam como dados.",
+      "workflowsOr": "ou, por fabricante,",
+      "workflows": {
+        "cidr-to-rule": {
+          "title": "De um CIDR a uma regra de firewall",
+          "lede": "A aritmética da faixa primeiro, sua gêmea IPv6, depois a ordem em que o seu firewall vai de fato avaliar a regra que você escrever."
+        },
+        "jwt-to-policy": {
+          "title": "De um token às suas claims e ao fluxo",
+          "lede": "Decodifique o token, confira a assinatura, depois leia o protocolo e o fluxo que o emitiram."
+        },
+        "cert-to-csp": {
+          "title": "De um certificado aos cabeçalhos que um navegador aplica",
+          "lede": "O certificado, a cadeia de que ele precisa, depois os cabeçalhos de segurança e a Content Security Policy que ficam por cima."
+        },
+        "syslog-to-level": {
+          "title": "De uma linha de syslog a um nível que todo sistema sabe nomear",
+          "lede": "A mensagem campo a campo, seu PRI em facility e severidade, depois essa severidade em todas as outras escadas."
+        },
+        "http-to-headers": {
+          "title": "De uma mensagem HTTP ao comando que a reproduz",
+          "lede": "A mensagem decodificada, o status explicado, os cabeçalhos julgados, depois o curl que a envia de novo."
+        }
+      }
     }
   },
   "privacy_page": {
@@ -11950,7 +12008,9 @@
       "explore": "Explorar",
       "work": "Trabalhe comigo",
       "project": "O projeto"
-    }
+    },
+    "sectionOnly": "Só em {name}",
+    "sectionClear": "Buscar em todo o site, não só em {name}"
   },
   "theme": {
     "label": "Tema",
@@ -12001,7 +12061,8 @@
       "vendorsLink": "O registro de carreira",
       "lineagesLink": "Linhagens e aquisições de fornecedores",
       "ironport": "Desenvolvimento de canal e consultoria técnica de pré-vendas para os appliances de segurança de e-mail C-Series da IronPort: no fim de 2004 com a própria operação da IronPort em São Paulo, e ao longo de 2005 com uma revenda Cisco e IronPort, de RFPs e instalação a suporte a clientes. A IronPort foi adquirida pela Cisco em 2007.",
-      "teachingNow": "Ensinando atualmente:"
+      "teachingNow": "Ensinando atualmente:",
+      "cylk2020": "Consultoria de soluções e pré-venda pela CYLK, a integradora de segurança de São Paulo, enquanto começava a instrução em tempo integral na sua empresa-irmã InLearn: entrega e segurança de aplicações F5, firewalls Palo Alto Networks, Fortinet, gestão de vulnerabilidades Tenable, acesso privilegiado CyberArk e analítica de rede Corvil, em provas de conceito, projetos e treinamento de clientes. Três das seis têm marca aqui; as outras três estão nomeadas, e cada uma tem seu capítulo no registro de carreira."
     },
     "origins": {
       "title": "Onde tudo começou",
@@ -12099,7 +12160,9 @@
     "eyebrow": "Depoimentos",
     "title": "O que as pessoas dizem, com suas próprias palavras.",
     "intro": "{count} recomendações e avaliações na íntegra, ao longo de duas décadas de ensino e consultoria. Nada aqui é parafraseado ou editado.",
-    "provenance": "Provenientes de recomendações do LinkedIn, avaliações do Google e avaliações verificadas de alunos da Red Education. A redação e a ortografia originais são preservadas exatamente como escritas."
+    "provenance": "Provenientes de recomendações do LinkedIn, avaliações do Google e avaliações verificadas de alunos da Red Education. A redação e a ortografia originais são preservadas exatamente como escritas.",
+    "byKindTitle": "Pelo tipo de trabalho descrito",
+    "byKindHint": "{count} recomendações, cada uma mantida literalmente. Uma entrada pode descrever mais de um tipo de trabalho, então as contagens somam mais do que o total. Os filtros abaixo também restringem por fonte e idioma."
   },
   "testimonials": {
     "filterLabel": "Filtrar depoimentos",
@@ -12662,6 +12725,50 @@
       "s2Title": "As certificações, e para que serviam",
       "s2Body": "O programa de parceiros da CyberArk certificava o engenheiro de pré-venda (CPE), o profissional de vendas (CSP) e o Trustee, sua credencial de entrada em acesso privilegiado, e 2020 produziu as três. Como o conjunto da Tenable, eram a condição para conduzir os engajamentos, e como aquele conjunto expiraram em 2022, quando a semana já pertencia à sala de aula; o registro as mantém com suas datas.",
       "certs": "CyberArk Certified Pre-Sales Engineer (CPE); CyberArk Certified Sales Professional (CSP); CyberArk Certified Trustee. Todas de 2020 a 2022. Listadas com suas evidências na página de credenciais."
+    },
+    "avaya": {
+      "name": "Avaya",
+      "years": "2013 – 2014",
+      "tagline": "Seis meses dentro da pré-venda de serviços profissionais do fabricante em São Paulo e, depois, as mesmas plataformas do lado do integrador.",
+      "intro": "Um capítulo curto numa dobradiça da história. O primeiro semestre de 2013 foi passado na Avaya, em São Paulo, como consultor de pré-venda de serviços profissionais, a cadeira do próprio fabricante; a partir de julho de 2013 o trabalho passou para a TDec Network Group, integradora paulistana de sistemas de comunicação e segurança, onde as mesmas plataformas foram encontradas do outro lado da mesa. As credenciais do capítulo, duas trilhas Avaya Professional Sales Specialist obtidas em 2013, pertencem às duas metades.",
+      "s1Title": "Pré-venda de serviços profissionais na Avaya, janeiro a julho de 2013",
+      "s1Body": "A organização de serviços profissionais da Avaya vende o trabalho em volta do produto: os projetos de desenho, migração, integração e suporte que transformam um pedido de plataforma num ambiente de comunicações em funcionamento. O trabalho do consultor de pré-venda é dimensionar esse serviço: ler o parque de telefonia e de contact center do cliente, encaixá-lo nas linhas Aura, IP Office e de contact center, e escrever a proposta de serviços que precifica o projeto. Foi a primeira vez que esta carreira sentou do lado do fabricante em comunicações unificadas, e não em redes, e o vocabulário desse mundo, controle de chamadas, troncos, agentes e filas, veio desses meses.",
+      "s2Title": "O lado do integrador, a partir de julho de 2013",
+      "s2Body": "A TDec Network Group, onde foram passados os dez meses seguintes, descrevia-se como integradora de sistemas de comunicação e segurança, e as plataformas Avaya estavam ali dentro de um portfólio mais amplo de switching, firewalls e gerência. As duas trilhas APSS obtidas em 2013, Small and Medium Enterprise Communications e Unified Communications, eram as credenciais do programa de parceiros para posicionar essas plataformas, e o currículo de abril de 2014 lista ao lado delas a trilha de Design Specialist. Expiraram em 2014, quando o trabalho já tinha passado às redes metropolitanas da Extreme e aos firewalls da Palo Alto Networks; o registro as guarda com suas datas.",
+      "certs": "Avaya Professional Sales Specialist, Small and Medium Enterprise Communications (APSS-SME); Avaya Professional Sales Specialist, Unified Communications (APSS-UC). Ambas de 2013 a 2014. Listadas com suas evidências na página de credenciais."
+    },
+    "polycom": {
+      "name": "Polycom",
+      "years": "2014 – 2015",
+      "tagline": "Terminais de vídeo da linha de comunicações do integrador, em 2014, quando a fabricante do viva-voz triangular ainda era uma empresa própria.",
+      "intro": "O menor capítulo do registro, mantido por isso mesmo: um registro de carreira que lista só os capítulos grandes é um folheto. Em 2014, nos meses da TDec Network Group, a linha de comunicações do integrador colocou terminais de vídeo Polycom ao lado das plataformas de voz Avaya, e as duas trilhas de parceiro Polycom para terminais de vídeo, comercial e técnica, foram feitas naquele ano. As credenciais caducaram em 2015; a empresa que as emitiu deixou de existir com esse nome em 2019.",
+      "s1Title": "Terminais de vídeo, trilhas comercial e técnica, 2014",
+      "s1Body": "O programa de parceiros da Polycom certificava quem posicionava e instalava seus sistemas de vídeo de sala e de mesa: a trilha comercial cobria o portfólio e seu encaixe nas salas e na rede do cliente; a técnica, o terminal em si, seu registro na plataforma de controle de chamadas, a banda de que precisa e o comportamento do vídeo em tempo real na rede. Para um integrador cujas outras linhas eram switching e firewalls, esse comportamento era o ponto de contato: uma chamada de vídeo é a aplicação que expõe jitter, perda e um desenho de qualidade de serviço nunca testado mais depressa do que qualquer outra coisa no parque, e quem tinha construído a rede era a pessoa certa para fazer a chamada sobreviver a ela.",
+      "s2Title": "O que o registro guarda, e o que não guarda",
+      "s2Body": "Duas credenciais com suas datas e o contexto que as produziu. Os documentos de portfólio da época não descrevem implantações Polycom pelo nome, e este capítulo não as inventa: as trilhas foram capacitação para a linha de comunicações do integrador, feitas nos mesmos meses das credenciais Avaya e das implantações Extreme contadas em outro ponto do registro. A história da própria empresa, do primeiro SoundStation de 1992 à Plantronics, à Poly e à HP, está na sua página na indústria.",
+      "certs": "Polycom Video Endpoints: Sales Track (RPEOS100), com o certificado na página de credenciais; Polycom Video Endpoints: Technical Track (RPEOT200). Ambas de 2014 a 2015."
+    },
+    "corvil": {
+      "name": "Corvil",
+      "years": "2020",
+      "tagline": "Analítica de rede para mesas de operação, da cadeira de pré-venda na CYLK em 2020.",
+      "intro": "O terceiro dos capítulos de 2020, com Tenable e CyberArk: o ano em que o trabalho correu pela CYLK, a integradora de segurança de São Paulo, como consultoria sob demanda enquanto a instrução em tempo integral na InLearn, sua empresa-irmã no mesmo grupo, já estava em curso. A Corvil é a diferente das três. Não encontra exposições nem guarda contas; observa o fio de um sistema de negociação eletrônica e diz ao operador, ao microssegundo, o que aconteceu com cada ordem, cada cotação e cada execução.",
+      "s1Title": "Latência como produto, pré-venda, 2020",
+      "s1Body": "Os appliances da Corvil capturam sem perda o tráfego de uma infraestrutura de negociação, decodificam os protocolos de market data e de ordens que vão dentro dele e transformam os pacotes nas medidas com que o negócio funciona: latência e lacunas do feed, tempos tick-to-trade, taxas de execução e, por trás delas, os sintomas de rede, retransmissões, congestionamento e tempos de ida e volta, com resolução de um segundo. O trabalho de pré-venda é a conversa que vem depois: onde ficam os pontos de captura, quais protocolos o ambiente fala, quanto custa um milissegundo ao cliente e quem, na mesa, lê os painéis. É o único canto deste registro em que uma rede é medida na moeda da aplicação que roda sobre ela.",
+      "s2Title": "A certificação, e a empresa por trás dela",
+      "s2Body": "A credencial Corvil Certified Administrator, obtida em 2020, foi a condição para conduzir essas conversas com o suporte do fabricante por trás; caducou em 2022, quando a semana já pertencia à sala de aula, e o registro a guarda com suas datas. A empresa em si acabara de mudar de mãos: fundada em Dublin em 2000 a partir de pesquisa do Trinity College, com as bolsas e os bancos de Nova York, Londres e Tóquio como clientes, a Corvil foi adquirida em 2019 pela Pico, provedora nova-iorquina de infraestrutura para os mercados financeiros, e continua como a Corvil Analytics da Pico. A história dela está na página da indústria.",
+      "certs": "Corvil Certified Administrator (CCA), de 2020 a 2022. Listada com sua evidência na página de credenciais."
+    },
+    "commscope": {
+      "name": "CommScope e SYSTIMAX",
+      "years": "1998 – 2000",
+      "tagline": "O cabeamento estruturado debaixo de cada switch dos anos Cabletron: certificado no SYSTIMAX da AT&T e da Lucent em 1998, uma marca que a CommScope passaria a ter a partir de 2004.",
+      "intro": "A credencial mais antiga do registro, e a única sobre a camada física. Em 1998, dois anos dentro dos anos de engenharia de campo e instrução na Cabletron Systems em São Paulo, foi obtida a certificação AT&T e Lucent SYSTIMAX Structured Cabling System Engineer: a disciplina de projeto e instalação da planta de cobre e fibra em que cada hub, switch e roteador daquela época se ligava. A marca tinha sido o Premises Distribution System dos Bell Laboratories, de 1983, e o SYSTIMAX SCS da AT&T, de 1989; em 1998 pertencia à Lucent, em 2000 passou à Avaya e em 2004 a CommScope a comprou, razão pela qual a página de credenciais lista a CommScope como emissora.",
+      "s1Title": "Por que um engenheiro de redes aprendeu cabeamento, 1998",
+      "s1Body": "Um engenheiro de campo da Cabletron no fim dos anos 1990 passava tanto tempo em salas de fiação quanto em consoles. Os hubs MMAC e os chassis SmartSwitch eram instalados onde terminava o cabeamento horizontal do prédio, e as falhas que chegavam ao engenheiro do fabricante eram tantas vezes um cross-connect, um lance além do comprimento ou uma terminação ruim quanto um erro de configuração. O SYSTIMAX era um dos sistemas de cabeamento estruturado sobre os quais os prédios corporativos da época tinham sido construídos: uma hierarquia de salas de equipamentos, cabeamento vertical e horizontal e tomadas de área de trabalho, com regras para cada parte, um método de projeto e uma garantia. Certificar-se nele significava saber ler o projeto de cabeamento de um prédio, especificar o que um andar novo ou um chassi novo exigia e dizer ao cliente qual metade de um problema era dele.",
+      "s2Title": "Ensinando a camada física",
+      "s2Body": "Os mesmos anos foram os primeiros anos de ensino, e o cabeamento estruturado era a camada por onde as turmas de Internetworking Technologies da Cabletron começavam: meios, conectores, distâncias e as categorias de par trançado, antes de um único quadro ser comutado. A credencial de 1998 deu a esse primeiro módulo uma autoridade que ele não teria de outro modo, e o hábito de começar pela planta de cabos ficou com o ensino. A credencial expirou em 2000, o ano em que o próprio capítulo terminou com a mudança para a Riverstone Networks, na Califórnia.",
+      "certs": "AT&T / Lucent SYSTIMAX Structured Cabling System Engineer, de 1998 a 2000, emitida sob uma marca que a CommScope tem desde 2004 e vendeu à Amphenol em janeiro de 2026. Listada na página de credenciais."
     }
   },
   "training": {
@@ -12923,7 +13030,41 @@
     "takedownHeading": "Remoção e correção de conteúdo",
     "takedownBody": "Se você detém direitos sobre material publicado neste site e entende que ele deve ser removido, corrigido ou atribuído de outra forma, escreva para o endereço acima informando a URL ou as URLs exatas e, quando possível, uma breve nota sobre qual é o problema. Esse contexto é genuinamente útil, e não uma formalidade: permite corrigir o erro direito, em todo o site, em vez de página por página. Os pedidos são analisados com rapidez e boa-fé.",
     "takedownLink": "Ler o aviso legal completo",
-    "translations": "Está lendo este site em um dos idiomas traduzidos por máquina e viu algo errado? Correções são bem-vindas, e as pequenas são as mais úteis."
+    "translations": "Está lendo este site em um dos idiomas traduzidos por máquina e viu algo errado? Correções são bem-vindas, e as pequenas são as mais úteis.",
+    "intentsTitle": "O que traz você aqui?",
+    "intents": {
+      "training": {
+        "title": "Treinamento",
+        "desc": "Os cursos autorizados são contratados pela Red Education: o catálogo, as datas e os formatos são deles.",
+        "cta": "Veja os cursos na Red Education",
+        "secondary": "O que eu ensino, e como"
+      },
+      "advisory": {
+        "title": "Consultoria",
+        "desc": "Traga a decisão que você precisa tomar e a data até a qual precisa tomá-la; o resto é a conversa.",
+        "cta": "Escreva sobre um projeto",
+        "secondary": "Como a consultoria funciona aqui",
+        "template": "A decisão:\nO prazo:\nO que já foi tentado ou descartado:"
+      },
+      "speaking": {
+        "title": "Palestras e trabalho presencial",
+        "desc": "Uma palestra, um workshop ou uma sessão no local: diga o evento, o público, a data e com o que as pessoas devem sair.",
+        "cta": "Proponha um evento",
+        "secondary": "Palestras e formatos anteriores",
+        "template": "O evento:\nO público:\nA data:\nCom o que as pessoas devem sair:"
+      },
+      "correction": {
+        "title": "Uma correção",
+        "desc": "Um fato errado, uma fonte morta, uma ferramenta dando a resposta errada, ou algo que não deveria estar aqui.",
+        "cta": "Relate",
+        "secondary": "Outras formas de ajudar a melhorar o site"
+      },
+      "other": {
+        "title": "Outra coisa",
+        "desc": "Se nada acima se encaixa, o formulário aceita qualquer assunto.",
+        "cta": "Escreva"
+      }
+    }
   },
   "certs": {
     "title": "Certificações e credenciais",
@@ -13107,7 +13248,37 @@
     "downloadHeading": "Pacotes de idioma",
     "referenceTag": "referência",
     "emailHeading": "Envie sua contribuição",
-    "backHome": "Voltar às ferramentas"
+    "backHome": "Voltar às ferramentas",
+    "hubEyebrow": "Contribua",
+    "hubTitle": "Ajude a melhorar o ronutz",
+    "hubLede": "Cinco maneiras de tornar este site melhor, de uma correção de duas linhas a um pull request. Todas chegam a uma pessoa, e cada uma que vinga é registrada no changelog com sua fonte.",
+    "routes": {
+      "error": {
+        "title": "Relate um erro",
+        "desc": "Um fato errado, uma página quebrada, uma ferramenta dando a resposta errada. Diga onde, e o que você esperava.",
+        "cta": "Relate"
+      },
+      "tool": {
+        "title": "Sugira uma ferramenta",
+        "desc": "Algo que calcula, nunca adivinha, e pertence à caixa de ferramentas. A regra de encaixe e a fila estão na página de ideias.",
+        "cta": "Sugira"
+      },
+      "source": {
+        "title": "Sugira uma fonte ou uma correção",
+        "desc": "Uma citação melhor, um link morto, uma data errada, ou conteúdo que não deveria estar aqui.",
+        "cta": "Envie"
+      },
+      "translation": {
+        "title": "Melhore uma tradução",
+        "desc": "Toda língua além do inglês é um primeiro rascunho feito por máquina. Baixe um pacote, corrija, envie de volta.",
+        "cta": "Veja como"
+      },
+      "code": {
+        "title": "Contribua com código",
+        "desc": "O site é código aberto sob Apache-2.0 para o código e CC BY 4.0 para o conteúdo. Issues e pull requests são bem-vindos.",
+        "cta": "Abra o repositório"
+      }
+    }
   },
   "api": {
     "title": "API",
@@ -22564,7 +22735,21 @@
     "kindPageTitle": "Glossário: {kind}",
     "kindPageDescription": "{count} verbetes do tipo {kind}, em ordem alfabética.",
     "otherKinds": "Outros tipos",
-    "browseByKind": "Navegar por tipo"
+    "browseByKind": "Navegar por tipo",
+    "entrances": {
+      "defineTitle": "Preciso de uma definição",
+      "defineLede": "Digite a palavra; o filtro estreita {count} verbetes enquanto você digita, por termo, expansão e apelido.",
+      "jargonTitle": "Decifre o jargão",
+      "jargonLede": "{count} siglas, expressões e jargões: o que a sala quer dizer quando diz.",
+      "loreTitle": "Folclore da indústria",
+      "loreLede": "{count} histórias que a indústria conta sobre si mesma, cada uma conferida contra uma fonte primária.",
+      "mistoldTitle": "Contadas errado",
+      "mistoldLede": "{count} verbetes cuja versão corrente está errada, marcados como disputados e corrigidos no próprio contexto.",
+      "domainTitle": "Navegue por domínio",
+      "domainLede": "{count} domínios, cada um com sua própria página: redes, segurança, a nuvem, o próprio ofício.",
+      "mistoldSection": "Contadas errado",
+      "mistoldSectionLede": "{count} verbetes carregam a marca de disputa: a história que todo mundo repete não é o que as fontes dizem. Cada verbete apresenta a versão corrente e a correção."
+    }
   },
   "certGuides": {
     "title": "Guias de estudo para certificação",
@@ -22908,55 +23093,68 @@
     "paths": {
       "bigip-fundamentals": {
         "title": "F5 BIG-IP de ponta a ponta",
-        "lede": "Tudo que os blueprints aposentados 101, 201, 301A e 301B listavam, como os artigos deste site em ordem de ensino: os fundamentos de rede que a trilha moderna presume (do OSI (Open Systems Interconnection) à VPN (virtual private network)), o arco completo de administração - de interfaces a alta disponibilidade aos fluxos de suporte que as provas novas descartaram - e o ofício de especialista LTM (Local Traffic Manager): iRules, analytics, capturas, SSL (Secure Sockets Layer) - fechando com os dois artigos que comparam os blueprints aposentados com os atuais."
+        "lede": "Tudo que os blueprints aposentados 101, 201, 301A e 301B listavam, como os artigos deste site em ordem de ensino: os fundamentos de rede que a trilha moderna presume (do OSI (Open Systems Interconnection) à VPN (virtual private network)), o arco completo de administração - de interfaces a alta disponibilidade aos fluxos de suporte que as provas novas descartaram - e o ofício de especialista LTM (Local Traffic Manager): iRules, analytics, capturas, SSL (Secure Sockets Layer) - fechando com os dois artigos que comparam os blueprints aposentados com os atuais.",
+        "outcome": "Você vai entender como um BIG-IP transporta, protege e relata o tráfego de aplicações, do piso de redes que ele pressupõe, passando pela administração e pela alta disponibilidade, até o ofício de LTM de iRules, análises e capturas, e como os blueprints aposentados se relacionam com os atuais."
       },
       "modern-identity": {
         "title": "Identidade moderna, do token para cima",
-        "lede": "Os padrões abertos por trás do single sign-on, em ordem de dependência: o próprio JWT (JSON Web Token), as assinaturas e o JWKS (JSON Web Key Set) que o tornam verificável, os fluxos OAuth 2.0 e PKCE (Proof Key for Code Exchange) que o emitem, o OIDC (OpenID Connect) por cima, e TOTP/HOTP (senhas de uso único por tempo e por HMAC) como segundo fator."
+        "lede": "Os padrões abertos por trás do single sign-on, em ordem de dependência: o próprio JWT (JSON Web Token), as assinaturas e o JWKS (JSON Web Key Set) que o tornam verificável, os fluxos OAuth 2.0 e PKCE (Proof Key for Code Exchange) que o emitem, o OIDC (OpenID Connect) por cima, e TOTP/HOTP (senhas de uso único por tempo e por HMAC) como segundo fator.",
+        "outcome": "Você vai entender como um login vira um token, como uma assinatura e um conjunto de chaves tornam esse token verificável, como OAuth 2.0 com PKCE e OIDC o emitem e carregam, e onde uma senha de uso único entra como segundo fator."
       },
       "tls-from-zero": {
         "title": "TLS do zero",
-        "lede": "TLS (Transport Layer Security) da string da cipher suite para cima: o que significa cada parte do nome de uma suite, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica, e como TLS 1.2, TLS 1.3, DTLS (Datagram TLS) e QUIC se relacionam como uma só família."
+        "lede": "TLS (Transport Layer Security) da string da cipher suite para cima: o que significa cada parte do nome de uma suite, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica, e como TLS 1.2, TLS 1.3, DTLS (Datagram TLS) e QUIC se relacionam como uma só família.",
+        "outcome": "Você vai entender o que cada parte do nome de uma suíte de cifras promete, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica e como TLS 1.2, TLS 1.3, DTLS e QUIC pertencem a uma só família."
       },
       "http-evolution": {
         "title": "HTTP, contado para a frente",
-        "lede": "O HTTP (Hypertext Transfer Protocol, o protocolo de transferência de hipertexto) nas suas cinco versões - do GET de uma linha de 1991 ao HTTP/3 sobre QUIC - e depois a camada operacional: proxies diretos e reversos, HSTS (HTTP Strict Transport Security) e o curl além do navegador."
+        "lede": "O HTTP (Hypertext Transfer Protocol, o protocolo de transferência de hipertexto) nas suas cinco versões - do GET de uma linha de 1991 ao HTTP/3 sobre QUIC - e depois a camada operacional: proxies diretos e reversos, HSTS (HTTP Strict Transport Security) e o curl além do navegador.",
+        "outcome": "Você vai entender o que cada uma das cinco versões do HTTP mudou, do GET de uma linha de 1991 ao HTTP/3 sobre QUIC, e como proxies, HSTS e curl se assentam sobre ele na operação diária."
       },
       "regex-mastery": {
         "title": "Expressões regulares, do jeito certo",
-        "lede": "A habilidade de ofício por baixo da análise de logs e de todo parser: quantificadores e classes, grupos e backreferences, âncoras e fronteiras, flags e modos - terminando no catastrophic backtracking, o modo de falha que toda regex em produção precisa evitar."
+        "lede": "A habilidade de ofício por baixo da análise de logs e de todo parser: quantificadores e classes, grupos e backreferences, âncoras e fronteiras, flags e modos - terminando no catastrophic backtracking, o modo de falha que toda regex em produção precisa evitar.",
+        "outcome": "Você vai entender como um motor de expressões regulares casa um padrão, de classes e quantificadores a grupos, retrorreferências, âncoras e flags, e como reconhecer e evitar o backtracking catastrófico que derruba sistemas em produção."
       },
       "pingfederate-administration": {
         "title": "Administração de PingFederate, de ponta a ponta",
-        "lede": "Primeiro os fundamentos que o blueprint presume - o modelo de diretório e a maquinaria de tickets do Kerberos - depois os dez artigos de produto em ordem didática, o SCIM ao lado da parada de provisionamento, e os fluxos de SSO para fechar. A espinha de leitura por trás do guia de certificação PFP-001."
+        "lede": "Primeiro os fundamentos que o blueprint presume - o modelo de diretório e a maquinaria de tickets do Kerberos - depois os dez artigos de produto em ordem didática, o SCIM ao lado da parada de provisionamento, e os fluxos de SSO para fechar. A espinha de leitura por trás do guia de certificação PFP-001.",
+        "outcome": "Você vai entender os fundamentos de diretório e Kerberos que o produto pressupõe, depois o próprio PingFederate em ordem didática, o provisionamento com SCIM ao lado e os fluxos de SSO que fecham o blueprint PFP-001."
       },
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
-        "lede": "Dos túneis e fundamentos ao cérebro completo de política: encaminhamento, ordem de firewall, inspeção TLS, controles web e de arquivos, DLP, CASB e os segmentos, política e postura do ZPA — com as três ferramentas nativas para praticar."
+        "lede": "Dos túneis e fundamentos ao cérebro completo de política: encaminhamento, ordem de firewall, inspeção TLS, controles web e de arquivos, DLP, CASB e os segmentos, política e postura do ZPA — com as três ferramentas nativas para praticar.",
+        "outcome": "Você vai entender como o tráfego chega ao Zero Trust Exchange e como o cérebro de políticas é ordenado: encaminhamento, firewall, inspeção TLS, controles de web e de arquivos, DLP e CASB, e os segmentos, a política e a postura do ZPA."
       },
       "netskope-sase": {
         "title": "Netskope SASE, de Ponta a Ponta",
-        "lede": "A plataforma inteira em ordem de leitura: arquitetura e NewEdge, cada método de direcionamento, o cliente, descriptografia TLS, os dois caminhos de proteção, política guiada por CCI, Private Access, Cloud Firewall e a camada de analytics - com as ferramentas de PAC e SAML para praticar. Feita para percorrer os domínios das acreditações e certificações a partir deste site."
+        "lede": "A plataforma inteira em ordem de leitura: arquitetura e NewEdge, cada método de direcionamento, o cliente, descriptografia TLS, os dois caminhos de proteção, política guiada por CCI, Private Access, Cloud Firewall e a camada de analytics - com as ferramentas de PAC e SAML para praticar. Feita para percorrer os domínios das acreditações e certificações a partir deste site.",
+        "outcome": "Você vai entender a plataforma Netskope em ordem de leitura: a NewEdge e a arquitetura, cada método de direcionamento e o cliente, a decriptação TLS, os caminhos de proteção inline e por API, a política guiada pelo CCI, o Private Access, o Cloud Firewall e a camada de análise."
       },
       "ping-identity-platform": {
         "title": "A Plataforma Ping Identity",
-        "lede": "Todo o parque Ping em ordem de leitura: o mapa da plataforma PingOne e a linhagem ForgeRock primeiro, para que cada nome de produto se resolva; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração DaVinci; fechando com a estante PingFederate - o núcleo autogerenciado de federação - na sua ordem de ensino estabelecida. A caminhada companheira dos guias Certified Professional no hub de certificações."
+        "lede": "Todo o parque Ping em ordem de leitura: o mapa da plataforma PingOne e a linhagem ForgeRock primeiro, para que cada nome de produto se resolva; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração DaVinci; fechando com a estante PingFederate - o núcleo autogerenciado de federação - na sua ordem de ensino estabelecida. A caminhada companheira dos guias Certified Professional no hub de certificações.",
+        "outcome": "Você vai entender como o conjunto Ping se encaixa, do mapa do PingOne e da linhagem ForgeRock que explica os nomes dos produtos à política do PingAccess, à plataforma de dados PingDirectory, à orquestração DaVinci e ao núcleo PingFederate."
       },
       "checkpoint-security-administration": {
         "title": "Administração de segurança Check Point",
-        "lede": "A plataforma na ordem em que o CCSA a ensina: primeiro a divisão em três camadas, porque nada mais faz sentido até você saber que o servidor de gerência e o gateway são máquinas diferentes com funções diferentes, depois a base de regras, depois a semântica de camadas que pega todo mundo."
+        "lede": "A plataforma na ordem em que o CCSA a ensina: primeiro a divisão em três camadas, porque nada mais faz sentido até você saber que o servidor de gerência e o gateway são máquinas diferentes com funções diferentes, depois a base de regras, depois a semântica de camadas que pega todo mundo.",
+        "outcome": "Você vai entender a divisão em três camadas entre servidor de gerência, gateway e console, a base de regras construída sobre ela e a semântica de camadas que decide qual regra dispara, na ordem em que a CCSA as ensina."
       },
       "nginx-from-config-to-cache": {
         "title": "NGINX, da configuração ao cache",
-        "lede": "Na ordem em que as confusões de fato chegam: a árvore de configuração, depois qual bloco location vence, depois que caminho o backend recebe, depois o que é cacheado e servido a quem."
+        "lede": "Na ordem em que as confusões de fato chegam: a árvore de configuração, depois qual bloco location vence, depois que caminho o backend recebe, depois o que é cacheado e servido a quem.",
+        "outcome": "Você vai entender como o NGINX lê sua árvore de configuração, qual bloco location vence, qual caminho o backend recebe e o que é armazenado em cache e servido a quem."
       },
       "extreme-fabric-and-voss": {
         "title": "Fabric da Extreme e os dois sistemas operacionais",
-        "lede": "ExtremeXOS para o modelo de configuração, depois por que o VOSS parece tão diferente (veio de outra empresa), depois o Fabric Connect construído do IS-IS aos I-SIDs até os recursos de resiliência."
+        "lede": "ExtremeXOS para o modelo de configuração, depois por que o VOSS parece tão diferente (veio de outra empresa), depois o Fabric Connect construído do IS-IS aos I-SIDs até os recursos de resiliência.",
+        "outcome": "Você vai entender o modelo de configuração do ExtremeXOS, por que o VOSS é um sistema operacional diferente, vindo de outra empresa, e como o Fabric Connect é construído do IS-IS, passando pelos I-SIDs, até os recursos de resiliência."
       },
       "fortinet-fabric-and-operations": {
         "title": "Fortinet além do firewall isolado",
-        "lede": "O que aparece quando um FortiGate não está sozinho: escolhas de inspeção, a malha da filial, integração com nuvem, o SOC, e a borda de tecnologia operacional."
+        "lede": "O que aparece quando um FortiGate não está sozinho: escolhas de inspeção, a malha da filial, integração com nuvem, o SOC, e a borda de tecnologia operacional.",
+        "outcome": "Você vai entender o que muda quando um FortiGate não está sozinho: as escolhas de inspeção, a sobreposição de filiais, a integração com a nuvem, o SOC e a borda de tecnologia operacional."
       }
     },
     "expandAll": "Expandir tudo",
@@ -22969,6 +23167,28 @@
       "short": "Curta",
       "medium": "Média",
       "deep": "Longa"
+    },
+    "outcomeLabel": "Você vai entender",
+    "startPath": "Comece a trilha",
+    "familiesTitle": "Escolha por assunto",
+    "familiesLede": "Treze trilhas em quatro famílias. Cada cartão abaixo diz o que você vai entender ao final e abre no primeiro artigo.",
+    "families": {
+      "foundations": {
+        "title": "Protocolos e fundamentos",
+        "lede": "As camadas que todo o resto pressupõe: segurança de transporte, HTTP e a linguagem de padrões sob todo analisador."
+      },
+      "identity": {
+        "title": "Identidade e segurança",
+        "lede": "Quem está pedindo, como isso se prova e as plataformas que aplicam a resposta."
+      },
+      "delivery": {
+        "title": "Entrega de aplicações",
+        "lede": "Os proxies na frente da aplicação: balanceamento, cache, inspeção, a configuração que decide."
+      },
+      "platforms": {
+        "title": "Plataformas de fabricantes",
+        "lede": "O conjunto de um fabricante em ordem de leitura, feito para percorrer sua certificação a partir deste site."
+      }
     }
   },
   "catDistribution": {
@@ -23438,7 +23658,18 @@
     "rolesBody": "Cada artigo aqui descreve um trabalho que alguém é empregado para fazer. Os Papéis cobre {count} dessas posições — pelo que cada uma responde, de quem recebe, a quem serve, e como é medida.",
     "rolesLink": "Ler Os Papéis",
     "toolsTitle": "Ferramentas para isto",
-    "toolsAria": "Ferramentas que apoiam este trabalho"
+    "toolsAria": "Ferramentas que apoiam este trabalho",
+    "entrances": {
+      "searchLabel": "Buscar na Prática",
+      "searchPlaceholder": "Um problema, uma palavra, uma situação...",
+      "searchExamples": "Experimente",
+      "lifecycleTitle": "Siga o ciclo de vida",
+      "lifecycleLede": "{count} artigos na ordem em que o trabalho acontece: antes da venda, quando quebra, o que rende, o que vem depois, a vida e o ofício.",
+      "problemTitle": "Tenho um problema agora",
+      "problemLede": "Digite o que está na sua frente; a busca olha só dentro deste acervo e lista as peças que falam dele.",
+      "humanTitle": "O lado humano",
+      "humanLede": "As duas partes sobre a pessoa que faz o trabalho: A Vida e O Ofício, onde o ciclo de vida deixa de ser um procedimento."
+    }
   },
   "contributeTools": {
     "translationsTitle": "Melhorar as traduções",
@@ -26188,7 +26419,20 @@
           }
         }
       }
-    }
+    },
+    "entrances": {
+      "searchLabel": "Buscar nos papéis",
+      "searchPlaceholder": "Um cargo, uma equipe, um tipo de trabalho...",
+      "searchExamples": "Experimente",
+      "roleTitle": "Entenda um papel",
+      "roleLede": "{count} papéis, agrupados por onde ficam na cadeia de valor, cada um com o que é, o que não é e como é avaliado.",
+      "chainTitle": "Entenda a cadeia de valor",
+      "chainLede": "O caminho que um produto percorre, da empresa que o fabrica à pessoa que o ensina, em {count} estações.",
+      "heldTitle": "Os papéis que ele exerceu",
+      "heldLede": "{count} destes papéis foram exercidos em primeira pessoa; os demais estão documentados a partir de fontes e de quem trabalhou ao lado."
+    },
+    "heldSectionTitle": "Exercidos em primeira pessoa",
+    "heldSectionLede": "Os papéis a partir dos quais este registro é escrito, com onde e quando, antes do diretório de todos eles."
   },
   "people": {
     "title": "Pessoas",
@@ -26314,7 +26558,21 @@
     "schoolsTitle": "Escolas e institutos de pesquisa",
     "schoolsNote": "Instituições que concedem diplomas ou conduzem programas, em vez de vender cursos.",
     "restTitle": "Também marcados como treinamento",
-    "restNote": "Verbetes com a tag de treinamento que as seções acima não nomeiam."
+    "restNote": "Verbetes com a tag de treinamento que as seções acima não nomeiam.",
+    "geo": {
+      "hqLabel": "Sede",
+      "activeLabel": "Atua em",
+      "global": "Global",
+      "pendingNote": "Abrangência pendente de pesquisa: o país da sede é mostrado por padrão.",
+      "pendingShort": "abrangência pendente de pesquisa, sede mostrada por padrão",
+      "sourcesTitle": "De onde vêm as sedes e as abrangências",
+      "sourcesNote": "A bandeira de cada cartão é o país de fundação, como na linha do tempo da indústria; a sede e a linha de atuação vêm das páginas abaixo, lidas nas datas indicadas. Uma abrangência pontilhada com ponto de interrogação é um padrão: o país da sede ocupa o lugar até que a abrangência seja pesquisada.",
+      "regions": {
+        "latinAmerica": "América Latina",
+        "mercosur": "Mercosul",
+        "asiaPacific": "Ásia-Pacífico"
+      }
+    }
   },
   "stories": {
     "title": "Histórias que os dados deste site contam",
@@ -26335,7 +26593,8 @@
         "title": "A indústria e o país",
         "lede": "Onde o assunto não é a tecnologia, e sim o negócio em torno dela e o lugar em que ela foi aprendida."
       }
-    }
+    },
+    "readArgument": "Leia o argumento"
   },
   "urlAnatomy": {
     "scheme": "Esquema",

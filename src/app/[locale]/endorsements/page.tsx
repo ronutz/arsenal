@@ -16,10 +16,15 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import Testimonials from "@/components/Testimonials";
 import {
+  TESTIMONIALS,
   TESTIMONIAL_COUNT,
   MACHINE_TRANSLATED_COUNT,
   testimonialSourceCounts,
 } from "@/content/testimonials/data";
+// G5 (SCOUT, adopted 2026-10-05): the record organised by the kind of work it describes. The kinds are
+// editorial classification kept apart from the verbatim data (kinds.ts); the counts here are computed
+// from them at build time, and each kind is an entrance that opens the list already filtered.
+import { TESTIMONIAL_KINDS, kindsOf } from "@/content/testimonials/kinds";
 
 import ReduBrand from "@/components/ReduBrand";
 // Dev-only reminder that machine translations need review. Renders nothing in
@@ -79,6 +84,14 @@ export default async function EndorsementsPage({
   const t = await getTranslations("endorsements");
   const tNav = await getTranslations("nav");
   const counts = testimonialSourceCounts();
+  // How many entries describe each kind of work. One entry can carry several kinds, so the sum exceeds the total;
+  // the hint under the row says so.
+  const tKinds = await getTranslations("testimonials");
+  const kindCounts = TESTIMONIAL_KINDS.map((k) => ({
+    kind: k,
+    count: TESTIMONIALS.filter((x) => kindsOf(x.id).includes(k)).length,
+  }));
+  const kindLabel = (k: string) => tKinds("kind" + k.charAt(0).toUpperCase() + k.slice(1));
 
   return (
     <>
@@ -101,6 +114,23 @@ export default async function EndorsementsPage({
               <ReduBrand>{t("provenance")}</ReduBrand>
             </p>
 
+            {/* By type (G5): the six kinds with their counts, each an entrance into the filtered list.
+                Plain anchors with the query string, since the static page reloads and the component reads
+                ?kind= on mount; verbatim text, no ratings, as the record's rule says. */}
+            <div className="endorse-kinds">
+              <h2 className="endorse-kinds-title">{t("byKindTitle")}</h2>
+              <ul className="endorse-kinds-list">
+                {kindCounts.map((k) => (
+                  <li key={k.kind}>
+                    <a className="endorse-kind" href={`/${locale}/endorsements?kind=${k.kind}`}>
+                      <span className="endorse-kind-count mono">{k.count}</span>
+                      <span className="endorse-kind-label">{kindLabel(k.kind)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="endorse-kinds-hint">{t("byKindHint", { count: TESTIMONIAL_COUNT })}</p>
+            </div>
             <ReviewReminder count={MACHINE_TRANSLATED_COUNT} />
 
             <div className="tm-mount">

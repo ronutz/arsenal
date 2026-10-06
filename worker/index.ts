@@ -50,8 +50,51 @@ import {
 import { record, type AnalyticsEnv } from "./analytics";
 import { handleStats, type StatsEnv } from "./stats";
 
+// The random quote header (PRIME 2026-10-05 22:48): the pool of character lines,
+// one of which rides on every HTML response in the tradition of slashdot.org's
+// X-Fry, X-Bender and X-Lrrr. Kept as JSON so the prebuild guard
+// (scripts/check-quote-headers.mjs) can validate names and values without a
+// TypeScript toolchain; wrangler bundles the import.
+import quoteHeaders from "./quote-headers.json";
+
 interface Env extends AnalyticsEnv, StatsEnv {
   ASSETS: { fetch(request: Request): Promise<Response> };
+}
+
+/** One line of the pool: the header name, its value and who said it where. */
+interface QuoteHeader {
+  show: string;
+  who: string;
+  name: string;
+  quote: string;
+}
+
+/** The pool, typed once; the JSON carries an `about` line and the entries. */
+const QUOTE_POOL: readonly QuoteHeader[] = (quoteHeaders as { entries: QuoteHeader[] }).entries;
+
+/**
+ * Add one random quote header to an HTML page response.
+ *
+ * WHY HERE AND NOT IN public/_headers. The static host's header file is fixed per
+ * path; a value chosen per request needs code, and the Worker already stands in
+ * front of every page (assets.run_worker_first). Only HTML pages get the line:
+ * the point is a joke to the people who run curl against the site, and
+ * stylesheets, fonts and images have no such readers. The two fixed tradition
+ * headers (X-Clacks-Overhead, X-Collective) stay in _headers; this is the third,
+ * and the Learn article on hidden headers documents all three.
+ *
+ * A Response's headers are immutable once it has been fetched, so the body is
+ * re-wrapped with the same status and a copy of the headers plus one line.
+ */
+function withQuoteHeader(res: Response): Response {
+  // Pages only: anything that is not HTML passes through untouched.
+  const type = res.headers.get("content-type") ?? "";
+  if (!type.includes("text/html") || QUOTE_POOL.length === 0) return res;
+  // Uniform choice per request; Math.random is plenty for a joke.
+  const pick = QUOTE_POOL[Math.floor(Math.random() * QUOTE_POOL.length)];
+  const out = new Response(res.body, res);
+  out.headers.set(pick.name, pick.quote);
+  return out;
 }
 
 // Permissive CORS: this is a public, read-only, side-effect-free compute API,
@@ -429,6 +472,20 @@ export default {
       }
     }
 
+    // ---- The archive of the earlier sites: NO locale gate --------------------
+    // /archive/sites/<slug>/ holds the static clones of the 2004 and 2013 sites and
+    // /archive/earlier-sites/ their captures (PROGRAMME-old-sites S1). They carry no
+    // locale segment on purpose: the originals had none, and their links are
+    // relative. Found live on 2026-10-05 (PRIME, 22:34): the gate below rewrote
+    // /archive/sites/ntz-com-br-2013/ into /en/archive/..., a path that exists
+    // nowhere, so the clone index answered 404 and its extensionless pages
+    // (assets strip ".html") looped through the same redirect. wrangler.jsonc now
+    // excludes /archive/* from run_worker_first, so this branch is normally never
+    // reached; it stays as the second lock on the same door.
+    if (url.pathname === "/archive" || url.pathname.startsWith("/archive/")) {
+      return withQuoteHeader(await env.ASSETS.fetch(request));
+    }
+
     // ---- Non-API path: the LOCALE GATE -------------------------------------
     const seg = url.pathname.split("/")[1] ?? "";
     const isLiveLocale = LIVE_LOCALE_CODES.includes(seg);
@@ -464,6 +521,7 @@ export default {
       /* analytics must never break page delivery */
     }
 
-    return env.ASSETS.fetch(request);
+    // The page itself, with the random quote header of the day's request on it.
+    return withQuoteHeader(await env.ASSETS.fetch(request));
   },
 };

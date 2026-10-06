@@ -44,11 +44,16 @@ export default function SearchKind() {
   const segments = useSelectedLayoutSegments();
   const kind = kindForSegments(segments);
   const world = routeWorld(segments);
-  // Two empty elements: nothing to read, nothing to see; only the facets for the indexer (one filter per element).
+  // A third facet, "section" (G1 and G2 of Round 1, 2026-10-05): the first path segment below the locale
+  // (practice, roles, glossary, learn, tools...; "home" on the home page), so a section's own search field
+  // can scope the dialog to that section alone, narrower than its world.
+  const section = segments[0] && !segments[0].startsWith("[") ? segments[0] : "home";
+  // Three empty elements: nothing to read, nothing to see; only the facets for the indexer (one filter per element).
   return (
     <>
       <span hidden data-pagefind-filter={`kind:${kind}`} data-search-kind={kind} />
       <span hidden data-pagefind-filter={`system:${world}`} data-search-system={world} />
+      <span hidden data-pagefind-filter={`section:${section}`} data-search-section={section} />
     </>
   );
 }

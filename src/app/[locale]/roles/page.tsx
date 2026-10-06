@@ -17,6 +17,9 @@ import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import SiteFooter from "@/components/SiteFooter";
 import type { CSSProperties } from "react";
+// G2 (SCOUT, adopted 2026-10-05): a search field scoped to the roles (the "section" facet) and three
+// entrances under the provenance chips; the held roles surfaced before the forty-three titles.
+import HubSearch from "@/components/HubSearch";
 export function generateStaticParams() {
   return LIVE_LOCALE_CODES.map((locale) => ({ locale }));
 }
@@ -92,6 +95,58 @@ export default async function RolesPage({ params }: { params: Promise<{ locale: 
             </Link>
           </p>
 
+          {/* THREE ENTRANCES AND THE SCOPED FIELD (G2, SCOUT, adopted 2026-10-05; the value-chain model
+              kept). Understand a role: the grouped directory below. Understand the value chain: the
+              overview article that walks a product from the maker to the teacher. The roles he held: the
+              section that follows, so the relationship comes before the titles. The field presets the
+              dialog to this section alone. */}
+          <HubSearch
+            scope="explore"
+            section="roles"
+            sectionLabel={t("eyebrow")}
+            label={t("entrances.searchLabel")}
+            placeholder={t("entrances.searchPlaceholder")}
+            examplesLabel={t("entrances.searchExamples")}
+            examples={["systems engineer", "TAC", "distributor", "instructor", "SOC", "pre-sales"]}
+          />
+          <div className="learn-portal-grid learn-portal-grid-wide" style={{ marginTop: "1.25rem", marginBottom: "1.5rem" }}>
+            <a href={`#${ROLE_GROUPS[0]}`} className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+              <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+              <p className="learn-portal-title">
+                {t("entrances.roleTitle")} <span className="learn-portal-arrow">&#8594;</span>
+              </p>
+              <p className="learn-portal-lede">{t("entrances.roleLede", { count: ROLES.length })}</p>
+            </a>
+            <Link href="/learn/the-path-a-product-takes" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+              <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+              <p className="learn-portal-title">
+                {t("entrances.chainTitle")} <span className="learn-portal-arrow">&#8594;</span>
+              </p>
+              <p className="learn-portal-lede">{t("entrances.chainLede", { count: ROLE_GROUPS.filter((g) => rolesInGroup(g).length > 0).length })}</p>
+            </Link>
+            <a href="#held" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-amber)" } as CSSProperties}>
+              <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+              <p className="learn-portal-title">
+                {t("entrances.heldTitle")} <span className="learn-portal-arrow">&#8594;</span>
+              </p>
+              <p className="learn-portal-lede">{t("entrances.heldLede", { count: counts.held })}</p>
+            </a>
+          </div>
+          {/* THE ROLES HE HELD, before the directory (G2: relationships surfaced before the titles). The
+              same amber as their cards below; each line is the role, where and when, from the role's own
+              provenance record. */}
+          <section className="roles-held" id="held" aria-labelledby="roles-held-title">
+            <h2 className="learn-card-title" id="roles-held-title">{t("heldSectionTitle")}</h2>
+            <p className="practice-part-card-note">{t("heldSectionLede")}</p>
+            <ul className="roles-held-list">
+              {ROLES.filter((r) => r.provenance.kind === "held").map((r) => (
+                <li key={r.slug} className="roles-held-item">
+                  <Link href={`/roles/${r.slug}`} className="roles-held-link">{r.title}</Link>
+                  <span className="roles-held-meta">{r.provenance.where}{r.provenance.when ? `, ${r.provenance.when}` : ""}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
           <RoleGroupFilter
             labels={{
               show: t("filterShow"),

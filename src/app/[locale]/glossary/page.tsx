@@ -28,6 +28,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
 import GlossaryFilter from "@/components/glossary/GlossaryFilter";
+import type { CSSProperties } from "react";
 
 export async function generateMetadata({
   params,
@@ -84,6 +85,13 @@ export default async function GlossaryIndexPage({
   const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
   const railLetters = [...ALPHABET, ...(groups.has("#") ? ["#"] : [])];
   const present = new Set(bucketKeys);
+  // G4 (SCOUT, adopted 2026-10-05): the counts behind the five entrances. "Commonly mistold" is the set of
+  // entries flagged disputed, each of which carries its correction in its own context (glossary.ts, lore
+  // accuracy); the jargon entrance counts the jargon, the acronyms and the expressions together, the three
+  // kinds that need decoding rather than defining.
+  const mistold = entries.filter((e) => e.disputed);
+  const jargonCount = entries.filter((e) => e.kind === "jargon" || e.kind === "acronym" || e.kind === "expression").length;
+  const loreCount = entries.filter((e) => e.kind === "lore").length;
 
   return (
     <>
@@ -103,13 +111,59 @@ export default async function GlossaryIndexPage({
             <h1 className="page-hero-title">{t("title")}</h1>
             <p className="page-hero-lede">{t("tagline")}</p>
             <p className="gloss-hero-count">{t("totalCount", { count: entries.length })}</p>
+            {/* FIVE ENTRANCES (G4, SCOUT, adopted 2026-10-05): what makes this glossary different, foregrounded.
+                I need a definition goes to the filter's own search field; decode the jargon to the jargon kind
+                page (acronyms and expressions sit beside it in the kind rail); industry lore to the lore kind
+                page; commonly mistold to the section below, the entries flagged disputed with their
+                corrections; browse a domain to the domain rail. The A to Z follows, as it always has. */}
+            <div className="learn-portal-grid learn-portal-grid-wide gloss-entrances">
+              <a href="#glossary-filter" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--accent-primary)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9679;</span>
+                <p className="learn-portal-title">{t("entrances.defineTitle")} <span className="learn-portal-arrow">&#8594;</span></p>
+                <p className="learn-portal-lede">{t("entrances.defineLede", { count: entries.length })}</p>
+              </a>
+              <Link href="/glossary/kind/jargon" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-warning)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9632;</span>
+                <p className="learn-portal-title">{t("entrances.jargonTitle")} <span className="learn-portal-arrow">&#8594;</span></p>
+                <p className="learn-portal-lede">{t("entrances.jargonLede", { count: jargonCount })}</p>
+              </Link>
+              <Link href="/glossary/kind/lore" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-success)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9670;</span>
+                <p className="learn-portal-title">{t("entrances.loreTitle")} <span className="learn-portal-arrow">&#8594;</span></p>
+                <p className="learn-portal-lede">{t("entrances.loreLede", { count: loreCount })}</p>
+              </Link>
+              <a href="#mistold" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-danger)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9651;</span>
+                <p className="learn-portal-title">{t("entrances.mistoldTitle")} <span className="learn-portal-arrow">&#8594;</span></p>
+                <p className="learn-portal-lede">{t("entrances.mistoldLede", { count: mistold.length })}</p>
+              </a>
+              <a href="#glossary-domains" className="learn-portal-card learn-portal-card-wide" style={{ "--note-accent": "var(--color-info)" } as CSSProperties}>
+                <span className="learn-portal-ornament" aria-hidden>&#9733;</span>
+                <p className="learn-portal-title">{t("entrances.domainTitle")} <span className="learn-portal-arrow">&#8594;</span></p>
+                <p className="learn-portal-lede">{t("entrances.domainLede", { count: domains.length })}</p>
+              </a>
+            </div>
+            {/* COMMONLY MISTOLD (G4): the entries flagged disputed, A to Z, each with its first context sentence,
+                which is where the correction lives. The flag is data; this list cannot drift from it. */}
+            <section className="gloss-mistold" id="mistold" aria-labelledby="gloss-mistold-title">
+              <h2 className="glossary-domain-rail-title" id="gloss-mistold-title">{t("entrances.mistoldSection")}</h2>
+              <p className="gloss-mistold-lede">{t("entrances.mistoldSectionLede", { count: mistold.length })}</p>
+              <ul className="gloss-mistold-list">
+                {mistold.map((e) => (
+                  <li key={e.slug} className="gloss-mistold-item">
+                    <Link href={`/glossary/${e.slug}`} className="gloss-mistold-link">{e.headword}</Link>
+                    <span className="gloss-mistold-kind mono">{t(`kinds.${e.kind}`)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
             {/* Addressable domain pages, above the client filter. The filter
                 needs the whole three-megabyte page downloaded before it can
                 narrow anything, and its result has no URL - so it cannot be
                 linked, shared or indexed. These links can. (PRIME 2026-09-14,
                 "findability needs improvements".) */}
-            <nav className="glossary-domain-rail-wrap" aria-label={t("browseByDomain")}>
+            <nav className="glossary-domain-rail-wrap" id="glossary-domains" aria-label={t("browseByDomain")}>
               <h2 className="glossary-domain-rail-title">{t("browseByDomain")}</h2>
               <ul className="glossary-domain-rail">
                 {domains.map((d) => (
@@ -138,6 +192,7 @@ export default async function GlossaryIndexPage({
               </ul>
             </nav>
 
+            <div id="glossary-filter">
             <GlossaryFilter
               domains={domains.map((d) => ({ key: d, label: t(`domains.${d}`) }))}
               kinds={kinds.map((k) => ({ key: k, label: t(`kinds.${k}`) }))}
@@ -151,6 +206,7 @@ export default async function GlossaryIndexPage({
               countTemplate={t("resultsCount", { count: 0 }).replace(/\d+/, "{count}")}
               noResultsLabel={t("noResults")}
             />
+            </div>
 
             {/* A-Z jump rail (signature). Present letters jump to their bucket;
                 empty letters are dimmed. The client filter dims letters whose

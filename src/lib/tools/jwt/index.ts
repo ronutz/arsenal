@@ -45,7 +45,10 @@ export const manifest = Object.freeze({
       // empty (alg:none). Linear, no nested quantifiers, so it is ReDoS-safe.
       kind: "regex",
       pattern: "^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]*$",
-      priority: 10,
+      // Priority 0 since 2026-10-06: three base64url segments are unmistakably a JWT, and the paste box of
+      // Round 1's E3 ranks by this number; at 10 the OIDC and PKCE tools, whose broader patterns also match a
+      // token, stood above the decoder written for it.
+      priority: 0,
       example:
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
     },

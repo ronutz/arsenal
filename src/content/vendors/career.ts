@@ -43,11 +43,18 @@ export interface CareerVendor {
 
 export const CAREER_VENDORS: CareerVendor[] = [
   { slug: "cabletron-enterasys", key: "cabletron", founded: 1983, markVendors: ["cabletron", "enterasys"] },
+  // PRIME 2026-10-05 22:17 ("The Works for the four"): the SYSTIMAX structured-cabling credential of 1998, earned
+  // in the Cabletron years; the brand is CommScope's since 2004, hence the chapter's company. No mark held.
+  { slug: "commscope", key: "commscope", founded: 1976 },       // SYSTIMAX structured cabling, certified 1998 to 2000
   { slug: "riverstone", key: "riverstone", founded: 1996 },
   { slug: "cisco", key: "cisco", founded: 1984 },
   { slug: "ironport", key: "ironport", founded: 2000 },
   { slug: "netscreen-juniper", key: "juniper", founded: 1996, markVendors: ["netscreen", "juniper"] },
   { slug: "extreme", key: "extreme", founded: 1996 },
+  // PRIME 2026-10-05 22:17: inside Avaya's professional-services pre-sales, January to July 2013, then TDec;
+  // the Polycom video-endpoint tracks of 2014 from the same integrator's communications line. No marks held.
+  { slug: "avaya", key: "avaya", founded: 2000 },               // professional services pre-sales 2013; APSS 2013 to 2014
+  { slug: "polycom", key: "polycom", founded: 1990 },           // video endpoints, sales and technical tracks, 2014 to 2015
   { slug: "fireeye-mcafee-ixia", key: "distribution", founded: 1987, markVendors: ["fireeye", "mcafee", "ixia"] },
   // Pulse Secure: distributed in the ScanSource year (PRIME 2026-07-16) - the
   // Neoteris/NetScreen/Juniper secure-access lineage as its own chapter.
@@ -60,6 +67,8 @@ export const CAREER_VENDORS: CareerVendor[] = [
   // sister company InLearn was under way; the certifications of 2020 are in src/content/certifications/data.ts.
   { slug: "tenable", key: "tenable", founded: 2002 },           // pre-sales certifications 2020
   { slug: "cyberark", key: "cyberark", founded: 1999 },         // pre-sales certifications 2020
+  // PRIME 2026-10-05 22:17: the third 2020 chapter at CYLK; the Corvil Certified Administrator of 2020 to 2022.
+  { slug: "corvil", key: "corvil", founded: 2000 },             // network analytics for trading, pre-sales 2020
   { slug: "fortinet", key: "fortinet", founded: 2000 },         // NSE ladder 2022, FCT 2024
   { slug: "netskope", key: "netskope", founded: 2012 },         // accreditations 2024, instructor 2025
   { slug: "ping-identity", key: "ping", founded: 2002, markVendors: ["ping", "forgerock"] },        // PingFederate Practitioner 2025

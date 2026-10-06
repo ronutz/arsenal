@@ -105,12 +105,40 @@ export default async function StudyGuidesPage({
       color: categoryColor(path.category),
       title: t(`paths.${path.id}.title`),
       lede: t(`paths.${path.id}.lede`),
+      // F5: the authored outcome sentence, "You will understand...", per path and locale.
+      outcome: t(`paths.${path.id}.outcome`),
       // The badge reads "Short · 5 articles": the depth word from the distribution, the count from the path.
       countBadge: t("articlesCountDepth", { depth: t(`depth.${depthOf(steps.length)}`), count: steps.length }),
       steps,
       tools,
     };
   });
+
+  // F5 (SCOUT, adopted 2026-10-05): the SELECTION LAYER by subject family, above the vendor grouping PRIME
+  // specified on 2026-07-24, which stays as the exhaustive layer. The family is editorial, by what each path
+  // teaches: foundations (TLS, HTTP, regular expressions), identity and security (the open standards and the
+  // identity and zero-trust platforms), application delivery (BIG-IP, NGINX) and vendor platforms (the rest).
+  // Each family card lists its paths as anchors to the cards below, so there is one card per path and no copy.
+  const FAMILY_OF: Record<string, "foundations" | "identity" | "delivery" | "platforms"> = {
+    "tls-from-zero": "foundations",
+    "http-evolution": "foundations",
+    "regex-mastery": "foundations",
+    "modern-identity": "identity",
+    "pingfederate-administration": "identity",
+    "ping-identity-platform": "identity",
+    "zscaler-zero-trust": "identity",
+    "netskope-sase": "identity",
+    "checkpoint-security-administration": "identity",
+    "bigip-fundamentals": "delivery",
+    "nginx-from-config-to-cache": "delivery",
+    "extreme-fabric-and-voss": "platforms",
+    "fortinet-fabric-and-operations": "platforms",
+  };
+  const FAMILIES = ["foundations", "identity", "delivery", "platforms"] as const;
+  const families = FAMILIES.map((f) => ({
+    key: f,
+    paths: resolvedPaths.filter((p) => (FAMILY_OF[p.id] ?? "platforms") === f).sort((a, b) => a.title.localeCompare(b.title, locale)),
+  })).filter((f) => f.paths.length > 0);
 
   const pathGroups: PathGroup[] = GROUP_ORDER.map((key) => ({
     key,
@@ -146,6 +174,30 @@ export default async function StudyGuidesPage({
               </div>
               <p className="certs-group-intro">{t("pathsLede")}</p>
 
+              {/* The selection layer (F5): four families, each naming its paths with a link to the path's card. */}
+              <div className="reading-path-families" aria-labelledby="reading-path-families-title">
+                <h3 className="reading-path-families-title" id="reading-path-families-title">{t("familiesTitle")}</h3>
+                <p className="reading-path-families-lede">{t("familiesLede")}</p>
+                <ul className="reading-path-family-grid">
+                  {families.map((f) => (
+                    <li key={f.key} className="reading-path-family">
+                      <h4 className="reading-path-family-title">{t(`families.${f.key}.title`)}</h4>
+                      <p className="reading-path-family-lede">{t(`families.${f.key}.lede`)}</p>
+                      <ul className="reading-path-family-paths">
+                        {f.paths.map((p) => (
+                          <li key={p.id}>
+                            <a href={`#${p.id}`} className="reading-path-family-link">
+                              <span className="category-dot" style={{ background: p.color }} aria-hidden />{" "}
+                              {p.title} <span className="certhub-guide-code mono">{p.countBadge}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               {/* Each path is a card; the wrapper owns the spacing between
                   cards (certhub-note has none - it was born a single note). */}
               {/* Reading paths are GROUPED and COLLAPSIBLE (PRIME 2026-07-24).
@@ -162,6 +214,8 @@ export default async function StudyGuidesPage({
                 hideContentsLabel={t("hideContents")}
                 stepsLabel={t("stepsLabel")}
                 practiceLabel={t("practiceLabel")}
+                outcomeLabel={t("outcomeLabel")}
+                startLabel={t("startPath")}
               />
             </div>
           </section>

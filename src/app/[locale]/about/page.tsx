@@ -530,6 +530,19 @@ export default async function AboutPage({
                 <span className="about-era-where">F5 Networks · Westcon / TD SYNNEX, Network1 / ScanSource</span>
                 <span className="about-era-what">{t("path.f5channel")}</span>
               </li>
+              {/* CYLK, 2020 to 2022 (PRIME, 2026-10-05 22:32: "add the logos and mentions regarding
+                  CYLK in 2020 which were F5, Palo Alto Networks, Fortinet, Tenable, CyberArk, Corvil").
+                  The marks held in the registry for three of the six, each as of 2020 (F5's 2013 mark,
+                  Palo Alto Networks' 2020 mark, Fortinet's); Tenable, CyberArk and Corvil are named in
+                  the text and hold no mark yet, because a mark enters marks.ts only as a file PRIME has
+                  verified against the vendor's brand guidelines (the 2026-09-09 decision there). The
+                  years are the CV's: thirty-six months, 2020 to 2022. */}
+              <li className="about-era">
+                <span className="about-era-years mono">2020 – 2022</span>
+                <span className="mark-row"><VendorMark vendor="f5" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="paloalto" year={2020} eraLabel={era} since={since} compact /><VendorMark vendor="fortinet" year={2020} eraLabel={era} since={since} compact /></span>
+                <span className="about-era-where">Pre-sales and consulting · via CYLK</span>
+                <span className="about-era-what">{t("path.cylk2020")}</span>
+              </li>
               <li className="about-era about-era--current">
                 <span className="about-era-years mono">2020 – {t("path.present")}</span>
                 {/* The current Red Education mark only (PRIME, 2026-10-05 02:36: "the 2020-present entry doesn't

@@ -19,9 +19,14 @@
 import { useCallback, useState } from "react";
 import type { WorldKey } from "@/config/worlds";
 
-export default function HubSearch({ scope, label, placeholder, examples, examplesLabel }: {
+export default function HubSearch({ scope, section, sectionLabel, label, placeholder, examples, examplesLabel }: {
   /** The world the dialog opens scoped to. */
   scope: WorldKey;
+  /** Narrower than the world: one section's first path segment ("practice", "roles"), when the field belongs
+   *  to a section rather than a hub (G1 and G2, 2026-10-05). The dialog filters by the section facet. */
+  section?: string;
+  /** The section's human name for the dialog's "only in" pill ("The Practice"). */
+  sectionLabel?: string;
   /** The field's accessible label ("Search the tools"). */
   label: string;
   /** The placeholder ("A protocol, a vendor, a problem..."). */
@@ -35,12 +40,12 @@ export default function HubSearch({ scope, label, placeholder, examples, example
   const [value, setValue] = useState("");
   // A fixed id per world (one hub field per page): useId's position-derived ids differed between the server
   // render and hydration on the industry page (React error 418, found 2026-10-05 in the pt-BR check).
-  const id = `hub-search-${scope}`;
+  const id = `hub-search-${section ?? scope}`;
 
-  /** Open the dialog with a query inside this hub's world. */
+  /** Open the dialog with a query inside this hub's world, and inside the section when the field has one. */
   const open = useCallback((query: string) => {
-    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query, scope } }));
-  }, [scope]);
+    window.dispatchEvent(new CustomEvent("ronutz:open-search", { detail: { query, scope, section, sectionLabel } }));
+  }, [scope, section, sectionLabel]);
 
   return (
     <div

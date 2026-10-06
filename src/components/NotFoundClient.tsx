@@ -38,17 +38,27 @@ const GURU: { code: string; meaning: string }[] = [
 // A short stack of other famous non-serious errors, accurately attributed.
 // dimHref turns the dim attribution into a link (PRIME 2026-07-17: RFC 2324
 // links to the datatracker, where §2.3.2 defines 418 inside HTCPCP/1.0).
+// Every line carries an explainer (PRIME 2026-10-05 22:36: "add an explainer to
+// each and every item"), one clause each, with the page the fact was read from
+// on 2026-10-05: Wikipedia for the folklore, the IETF datatracker for the RFC,
+// this site's own Learn article for the headers.
 const CONSOLE_ERRORS: { pre: string; tone: "info" | "warn" | "err"; text: string; dim?: string; dimHref?: string }[] = [
-  { pre: "418", tone: "info", text: "HTCPCP/1.0 - I'm a teapot: the server refuses to brew this page", dim: "RFC 2324", dimHref: "https://datatracker.ietf.org/doc/html/rfc2324.html" },
-  { pre: "!!", tone: "warn", text: "PC LOAD LETTER" },
-  { pre: "??", tone: "warn", text: "Keyboard not found. Press F1 to continue." },
-  { pre: ">_", tone: "info", text: "These aren't the droids you're looking for." },
-  { pre: "!!", tone: "warn", text: "lp0 on fire" },
-  { pre: "xx", tone: "err", text: "Segmentation fault (core dumped)" },
-  { pre: "??", tone: "warn", text: "Abort, Retry, Fail?" },
+  { pre: "418", tone: "info", text: "HTCPCP/1.0 - I'm a teapot: the server refuses to brew this page", dim: "RFC 2324, the April Fools' Hyper Text Coffee Pot Control Protocol of 1998; section 2.3.2 defines 418 for a teapot asked to brew coffee", dimHref: "https://datatracker.ietf.org/doc/html/rfc2324.html" },
+  // HP LaserJet II, III and 4 series: PC is the paper cassette, LETTER the paper size it wants.
+  { pre: "!!", tone: "warn", text: "PC LOAD LETTER", dim: "the HP LaserJet II, III and 4 asking for letter-size paper in the paper cassette (PC); Office Space (1999) made it a byword for an unreadable error", dimHref: "https://en.wikipedia.org/wiki/PC_LOAD_LETTER" },
+  // IBM PC power-on self-test: the 3xx error codes are the keyboard's.
+  { pre: "??", tone: "warn", text: "Keyboard not found. Press F1 to continue.", dim: "the PC's power-on self-test, whose 3xx codes report keyboard errors, halting to ask the missing keyboard for a key", dimHref: "https://en.wikipedia.org/wiki/Power-on_self-test" },
+  // Star Wars (1977): Obi-Wan Kenobi's mind trick on a stormtrooper at the Mos Eisley checkpoint.
+  { pre: ">_", tone: "info", text: "These aren't the droids you're looking for.", dim: "Obi-Wan Kenobi's mind trick on a stormtrooper, Star Wars (1977); the trooper repeats it and waves them through", dimHref: "https://en.wikipedia.org/wiki/Jedi_mind_trick" },
+  // The Unix line-printer driver; the message survives in the Linux kernel's lp.c.
+  { pre: "!!", tone: "warn", text: "lp0 on fire", dim: "the Unix line-printer driver's message when the printer reports an error it cannot read, from the years when a stalled printer really could ignite the paper; still in the Linux kernel's lp.c", dimHref: "https://en.wikipedia.org/wiki/Lp0_on_fire" },
+  // SIGSEGV, and the magnetic-core memory the word core still remembers.
+  { pre: "xx", tone: "err", text: "Segmentation fault (core dumped)", dim: "SIGSEGV, the Unix signal for touching memory the program may not; the core in core dumped is the magnetic-core memory of the 1950s to 1970s, named long after it was gone", dimHref: "https://en.wikipedia.org/wiki/Segmentation_fault" },
+  // The MS-DOS critical-error handler; Fail joined Abort, Retry and Ignore in DOS 3.3.
+  { pre: "??", tone: "warn", text: "Abort, Retry, Fail?", dim: "the MS-DOS critical-error prompt; Ignore was the third choice first, Fail arrived with DOS 3.3, and none of them led anywhere", dimHref: "https://en.wikipedia.org/wiki/Abort,_Retry,_Fail%3F" },
   // Added 2026-10-04 (PRIME): the collective has not reached this address yet. The dim link opens the
   // Learn article on tributes, jokes and job offers hidden in HTTP headers, this site's own included.
-  { pre: ">>", tone: "info", text: "Not assimilated yet. Resistance is futile; this address simply does not exist.", dim: "the overhead", dimHref: "/en/learn/hidden-messages-in-http-headers/" },
+  { pre: ">>", tone: "info", text: "Not assimilated yet. Resistance is futile; this address simply does not exist.", dim: "Star Trek's Borg, and this site's own hidden HTTP headers: the overhead", dimHref: "/en/learn/hidden-messages-in-http-headers/" },
 ];
 
 // English defaults double as the fallback for locales without a translated
@@ -175,16 +185,20 @@ export default function NotFoundClient({ pool, locales, msgs = {} }: { pool: Poo
         {CONSOLE_ERRORS.map((e, i) => (
           <div className="nf-cline" key={i}>
             <span className={`nf-cpre nf-cpre-${e.tone}`}>{e.pre}</span>
-            <span className="nf-ctext">{e.text}</span>
-            {e.dim ? (
-              e.dimHref ? (
-                <a className="nf-dim nf-dim-a" href={e.dimHref} target="_blank" rel="noopener noreferrer">
-                  {" "}{e.dim}
-                </a>
-              ) : (
-                <span className="nf-dim"> {e.dim}</span>
-              )
-            ) : null}
+            {/* The line and, under it, its explainer (2026-10-05): a column, so a
+                one-clause note never squeezes the famous line it explains. */}
+            <span className="nf-cbody">
+              <span className="nf-ctext">{e.text}</span>
+              {e.dim ? (
+                e.dimHref ? (
+                  <a className="nf-dim nf-dim-a nf-cnote" href={e.dimHref} target="_blank" rel="noopener noreferrer">
+                    {e.dim}
+                  </a>
+                ) : (
+                  <span className="nf-dim nf-cnote">{e.dim}</span>
+                )
+              ) : null}
+            </span>
           </div>
         ))}
       </div>

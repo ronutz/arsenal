@@ -8,7 +8,7 @@ relatedArticles: ["http-headers-anatomy", "http-status-codes-the-five-families",
 category: web
 order: 141
 status: reviewed
-updated: "2026-10-04"
+updated: "2026-10-05"
 ---
 
 Toda resposta HTTP começa com uma linha de status e um bloco de cabeçalhos, e os cabeçalhos de que o navegador precisa são um conjunto pequeno e conhecido: o tipo do conteúdo, o tamanho, as regras de cache, a política de segurança. Nada impede um servidor de acrescentar mais. O protocolo ignora um cabeçalho que não reconhece, e um nome começando com `X-` foi por décadas a convenção para um cabeçalho privado (a RFC 6648 aposentou a convenção em 2012 sem aposentar os cabeçalhos). Nesse espaço sem vigilância, operadores colocaram coisas que não são protocolo de forma alguma. Este artigo reúne as que valem conhecer, com a fonte primária de cada uma, porque todo o charme do gênero é ser verificável: rode `curl -I` e lá está.
@@ -52,6 +52,8 @@ Qualquer cliente HTTP que mostre cabeçalhos de resposta serve. `curl -I https:/
 ## Os deste site
 
 Desde outubro de 2026, toda resposta deste site carrega duas linhas nessa tradição: `X-Clacks-Overhead: GNU Terry Pratchett`, porque o tributo vale a adesão e não custa nada, e um segundo cabeçalho, `X-Collective`, cujo valor declara um fato sobre como o site é feito: boas ideias são assimiladas aqui, com suas fontes. O segundo é uma piada sobre método, e o método é real; o changelog registra de onde veio cada ideia adotada, e o colofão diz isso em palavras simples. Os dois cabeçalhos são definidos na configuração do host estático, ao lado dos cabeçalhos de segurança, então são servidos com toda página e todo arquivo. A resistência é inútil; a atribuição é obrigatória.
+
+Desde 5 de outubro de 2026 há uma terceira linha, e ela muda a cada requisição. Toda página HTML deste site carrega um cabeçalho com o nome de um personagem e uma frase dele como valor: `X-Fry`, `X-Bender`, `X-Farnsworth`, `X-Hypnotoad` e `X-Lrrr`, de Futurama, na tradição do próprio Slashdot; `X-Doh`, `X-Cowabunga`, `X-Eat-My-Shorts`, `X-Excellent`, `X-Okily-Dokily` e `X-Worst-Ever`, de Os Simpsons; `X-Tegridy`, `X-Chef`, `X-Authoritah`, `X-Mmkay`, `X-Timmy` e `X-Underpants-Gnomes`, de South Park, entre uns quarenta e seis nomes e cinquenta e seis frases. O conjunto é um pequeno arquivo JSON no repositório, cada entrada nomeando o personagem e a série, e a frase é sorteada a cada resposta pelo Worker de borda que serve as páginas, razão pela qual aparece nas páginas e não nas folhas de estilo ou nas imagens: uma piada endereçada a quem roda `curl -I` contra as coisas não tem leitores entre as fontes tipográficas. Pergunte duas vezes e receberá duas respostas diferentes, que é todo o mecanismo que o Slashdot tinha, refeito em quarenta linhas. O conjunto é verificado na compilação pela única coisa que importa: o nome de um cabeçalho precisa ser um token e o valor precisa ser ASCII puro, ou a piada quebraria a página em que viaja.
 
 ## Fontes
 

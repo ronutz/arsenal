@@ -94,7 +94,7 @@
 /en/about/vendors/altavista/ /en/industry/altavista/ 301
 /en/about/vendors/apache/ /en/industry/apache/ 301
 /en/about/vendors/arista/ /en/industry/arista/ 301
-/en/about/vendors/avaya/ /en/industry/avaya/ 301
+/en/about/vendors/avaya/ /en/industry/chapters/avaya/ 301
 /en/about/vendors/aws/ /en/industry/aws/ 301
 /en/about/vendors/cyberark/ /en/industry/chapters/cyberark/ 301
 /en/about/vendors/epi/ /en/industry/epi/ 301
@@ -179,7 +179,7 @@
 /pt-BR/about/vendors/altavista/ /pt-BR/industry/altavista/ 301
 /pt-BR/about/vendors/apache/ /pt-BR/industry/apache/ 301
 /pt-BR/about/vendors/arista/ /pt-BR/industry/arista/ 301
-/pt-BR/about/vendors/avaya/ /pt-BR/industry/avaya/ 301
+/pt-BR/about/vendors/avaya/ /pt-BR/industry/chapters/avaya/ 301
 /pt-BR/about/vendors/aws/ /pt-BR/industry/aws/ 301
 /pt-BR/about/vendors/cyberark/ /pt-BR/industry/chapters/cyberark/ 301
 /pt-BR/about/vendors/epi/ /pt-BR/industry/epi/ 301
@@ -505,6 +505,10 @@
 /:locale/about/vendors/pulse-secure/  /:locale/industry/chapters/pulse-secure/  301
 /:locale/about/vendors/riverstone/  /:locale/industry/chapters/riverstone/  301
 /:locale/about/vendors/tenable/  /:locale/industry/chapters/tenable/  301
+/:locale/about/vendors/avaya/  /:locale/industry/chapters/avaya/  301
+/:locale/about/vendors/polycom/  /:locale/industry/chapters/polycom/  301
+/:locale/about/vendors/corvil/  /:locale/industry/chapters/corvil/  301
+/:locale/about/vendors/commscope/  /:locale/industry/chapters/commscope/  301
 /:locale/about/vendors/zscaler/  /:locale/industry/chapters/zscaler/  301
 /:locale/about/history/  /:locale/about/  301
 /:locale/about/vendors/nutanix/  /:locale/industry/nutanix/  301

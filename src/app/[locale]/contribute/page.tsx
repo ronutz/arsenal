@@ -1,8 +1,13 @@
 // ============================================================================
 // src/app/[locale]/contribute/page.tsx
 // ----------------------------------------------------------------------------
-// CONTRIBUTE TRANSLATIONS PAGE.
+// HELP IMPROVE RONUTZ (G18, SCOUT, adopted 2026-10-05): the page opens with the
+// five ways a reader can contribute, each a card to its route (report an error;
+// suggest a tool; suggest a source or a correction; improve a translation;
+// contribute code), and the translations section that was the whole page keeps
+// its place below, anchored as #translations.
 //
+// THE TRANSLATIONS SECTION, as it was:
 // Where a reader who spots a bad machine translation can help fix it. It is the
 // target of the machine-translation notice bar (see MachineTranslationNotice).
 // Three things, localized into every live locale:
@@ -21,6 +26,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Header from "@/components/Header";
+import { Link } from "@/i18n/navigation";
 import SiteFooter from "@/components/SiteFooter";
 import ObfuscatedEmail from "@/components/ObfuscatedEmail";
 import { LIVE_LOCALES, DEFAULT_LOCALE } from "@/i18n/locales";
@@ -60,9 +66,46 @@ export default async function ContributePage({
       <main id="main">
         <section className="section">
           <div className="container contribute-container">
-            <p className="hero-eyebrow">{t("eyebrow")}</p>
-            <h1 className="page-hero-title">{t("title")}</h1>
-            <p className="page-hero-lede">{t("lede")}</p>
+            <p className="hero-eyebrow">{t("hubEyebrow")}</p>
+            <h1 className="page-hero-title">{t("hubTitle")}</h1>
+            <p className="page-hero-lede">{t("hubLede")}</p>
+
+            {/* The five routes (G18). Internal routes through the i18n Link; the repository is the one
+                external destination; the translations route stays on this page. */}
+            <ul className="contribute-routes">
+              {([
+                { id: "error", href: "/contact?intent=other#contact-form", plain: true },
+                { id: "tool", href: "/contribute/tools" },
+                { id: "source", href: "/contact#correction", plain: true },
+                { id: "translation", href: "#translations", plain: true },
+                { id: "code", href: "https://github.com/ronutz/arsenal", external: true },
+              ] as { id: string; href: string; plain?: boolean; external?: boolean }[]).map((r) => {
+                const inner = (
+                  <>
+                    <span className="contribute-route-title">{t(`routes.${r.id}.title`)}</span>
+                    <span className="contribute-route-desc">{t(`routes.${r.id}.desc`)}</span>
+                    <span className="contribute-route-cta">{t(`routes.${r.id}.cta`)} →</span>
+                  </>
+                );
+                return (
+                  <li key={r.id}>
+                    {r.external ? (
+                      <a className="contribute-route" href={r.href} target="_blank" rel="noopener noreferrer">{inner}</a>
+                    ) : r.plain ? (
+                      // A hash or a query must reach the destination as written, so these are plain anchors
+                      // with the locale prefixed by hand; a bare hash stays on this page.
+                      <a className="contribute-route" href={r.href.startsWith("#") ? r.href : `/${locale}${r.href}`}>{inner}</a>
+                    ) : (
+                      <Link className="contribute-route" href={r.href}>{inner}</Link>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+
+            {/* The translations section, as it was, now one route among five. */}
+            <h2 className="contribute-h2 contribute-section-title" id="translations">{t("title")}</h2>
+            <p className="contribute-body">{t("lede")}</p>
 
             {/* How it works */}
             <div className="contribute-block">

@@ -17180,6 +17180,20 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   line-height: 1.55;
   max-width: 62ch;
 }
+/* "Read the argument" under each story (G11, 2026-10-05): a quiet text link,
+   the same accent as the title so the two read as one destination. */
+.story-cta {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.story-cta:hover,
+.story-cta:focus-visible {
+  text-decoration: underline;
+}
 
 /* Attribution under a figure: smaller and quieter than the caption, because it
    is a legal requirement rather than something the reader came for - but it
@@ -19418,4 +19432,716 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 @media (max-width: 640px) {
   .hub-around-item { grid-template-columns: 1fr; gap: 0.15rem; }
   .hub-switch { justify-content: flex-start; flex-wrap: wrap; }
+}
+
+/* ----------------------------------------------------------------------------
+   /industry/learning: the flag, headquarters and footprint on every card
+   (PRIME 2026-10-05 22:20). One quiet metadata line under the tagline, the flag
+   first (founding country, the timeline's convention), then two labelled
+   values: the headquarters today and where the company works. A pending
+   footprint, the headquarters by default, is dotted and carries a question mark,
+   so a default never dresses as a researched fact. The sources sit under the
+   cards in a closed details element, one line per company.
+   -------------------------------------------------------------------------- */
+.vendor-card-geo {
+  /* Flex so the flag and the two values share one optical line and wrap as a group on a narrow card. */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+.vendor-card-geo-label {
+  /* The field name, recessive and in small caps, so the value reads first. */
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.vendor-card-geo-hq,
+.vendor-card-geo-scope {
+  /* Each value keeps its label on the same line. */
+  white-space: nowrap;
+}
+
+.vendor-card-geo--pending .vendor-card-geo-scope {
+  /* The default footprint: a dotted underline says "provisional" without a word. */
+  text-decoration: underline dotted;
+  text-underline-offset: 2px;
+}
+
+.vendor-card-geo-pending-mark {
+  /* The question mark beside a default footprint, accent-coloured so it is seen. */
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.learning-geo-sources {
+  /* The provenance list, closed by default, after the last section of cards. */
+  margin-top: 2.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  font-size: 0.85rem;
+}
+
+.learning-geo-sources > summary {
+  /* The one line a reader sees when the list is closed. */
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.learning-geo-sources-note {
+  /* What the list is and how a pending row is marked. */
+  margin: 0.75rem 0 0.5rem;
+  color: var(--text-secondary);
+}
+
+.learning-geo-sources ul {
+  /* One company per line, generous leading for long source labels. */
+  margin: 0;
+  padding-left: 1.1rem;
+  line-height: 1.6;
+}
+
+.learning-geo-pending {
+  /* The "pending research" marker on a default row. */
+  color: var(--accent-primary);
+}
+
+/* ----------------------------------------------------------------------------
+   /contact routed by intent (G8, SCOUT, adopted 2026-10-05): five cards above
+   the form, one per reason to write. They borrow the channel card's geometry so
+   the page reads as one family; the difference is that each card is a route,
+   with a title, one line on what to bring, and the call to action, plus an
+   optional second, quieter link to the page that explains the service.
+   -------------------------------------------------------------------------- */
+.contact-intents-section {
+  /* Tighter than a full section: it sits between the hero and the form. */
+  padding-top: 0;
+}
+.contact-intents {
+  /* Five cards; three to a row on a desktop, one on a phone. */
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.85rem;
+}
+.contact-intent {
+  /* A card and, under it, its secondary link. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.contact-intent-main {
+  /* The route itself: the channel card's padding, border and hover. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  padding: 0.95rem 1.05rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.contact-intent-main:hover,
+.contact-intent-main:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.contact-intent-title {
+  /* What the reader came for, in the page's own words. */
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.contact-intent-desc {
+  /* What to bring: one line, secondary ink. */
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.contact-intent-cta {
+  /* The verb, in the accent, at the foot of the card. */
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+.contact-intent-secondary {
+  /* The page that explains the service, as a quiet text link under the card. */
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding-left: 0.25rem;
+}
+.contact-intent-secondary:hover,
+.contact-intent-secondary:focus-visible {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+
+/* ----------------------------------------------------------------------------
+   /contribute as "Help improve ronutz" (G18, SCOUT, adopted 2026-10-05): five
+   route cards above the translations section, the contact intent cards' twin in
+   geometry so the two pages read as one family.
+   -------------------------------------------------------------------------- */
+.contribute-routes {
+  /* Five cards; wraps from three to one per row. */
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.85rem;
+}
+.contribute-route {
+  /* One route: title, what it is for, the verb. */
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 0.95rem 1.05rem;
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.contribute-route:hover,
+.contribute-route:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.contribute-route-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.contribute-route-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.contribute-route-cta {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+.contribute-section-title {
+  /* The translations heading, now a section under the routes: room above it. */
+  margin-top: 3rem;
+}
+
+/* ----------------------------------------------------------------------------
+   /endorsements organised by the kind of work (G5, SCOUT, adopted 2026-10-05):
+   a row of six counted entrances between the lede and the list, each opening
+   the record already filtered. Numbers in the mono face, labels beside them; no
+   stars, no scores, because the record is verbatim evidence, not a rating.
+   -------------------------------------------------------------------------- */
+.endorse-kinds {
+  margin: 1.25rem 0 1.5rem;
+}
+.endorse-kinds-title {
+  /* The row's heading, at label weight rather than section weight. */
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 0.6rem;
+}
+.endorse-kinds-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.endorse-kind {
+  /* One entrance: the count and the kind, in a bordered pill that lifts on hover. */
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--surface-base);
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.endorse-kind:hover,
+.endorse-kind:focus-visible {
+  border-color: var(--accent-primary);
+  background: var(--surface-elevated);
+}
+.endorse-kind-count {
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+.endorse-kind-label {
+  font-size: 0.9rem;
+}
+.endorse-kinds-hint {
+  /* One entry can describe several kinds, so the counts exceed the total; said once, here. */
+  margin: 0.6rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* ----------------------------------------------------------------------------
+   The search dialog's SECTION pill (G1 and G2, 2026-10-05): "Only in The
+   Practice ×", shown while a section's own field has narrowed the dialog to its
+   section. The scope chips' geometry, in the accent, with the cross that widens
+   the search again on click.
+   -------------------------------------------------------------------------- */
+.search-section-row {
+  padding: 0.75rem 1rem 0;
+}
+.search-section {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.3rem 0.6rem;
+  border-radius: var(--radius-sm, 6px);
+  cursor: pointer;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 55%, transparent);
+}
+.search-section:hover,
+.search-section:focus-visible {
+  background: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+}
+
+/* The Practice's entrances section (G1, 2026-10-05): the scoped field and the three portal cards sit tight
+   under the hero, so the section's own padding is halved. */
+.practice-entrances {
+  padding-top: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   The Roles: the held roles before the directory (G2, 2026-10-05). A compact
+   list, the amber of the held cards on its edge, the role as the link and the
+   place and years beside it in the secondary ink.
+   -------------------------------------------------------------------------- */
+.roles-held {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid var(--accent-amber);
+  background: color-mix(in srgb, var(--accent-amber) 7%, transparent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.roles-held-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.5rem 1.25rem;
+}
+.roles-held-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.92rem;
+}
+.roles-held-link {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.roles-held-link:hover,
+.roles-held-link:focus-visible {
+  color: var(--accent-amber);
+  text-decoration: underline;
+}
+.roles-held-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ----------------------------------------------------------------------------
+   The Glossary's entrances and the Commonly mistold section (G4, 2026-10-05).
+   The portal cards sit under the count; the mistold list is a bordered block in
+   the danger tint, each entry a link with its kind beside it in the mono face.
+   -------------------------------------------------------------------------- */
+.gloss-entrances {
+  margin: 1.25rem 0 1.75rem;
+}
+.gloss-mistold {
+  margin: 0 0 1.75rem;
+  padding: 1rem 1.15rem;
+  border-left: 3px solid var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, transparent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.gloss-mistold-lede {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.gloss-mistold-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.35rem 1.25rem;
+}
+.gloss-mistold-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+}
+.gloss-mistold-link {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.gloss-mistold-link:hover,
+.gloss-mistold-link:focus-visible {
+  color: var(--color-danger);
+  text-decoration: underline;
+}
+.gloss-mistold-kind {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ----------------------------------------------------------------------------
+   Study guides as curricula (F5, SCOUT, adopted 2026-10-05): the selection
+   layer by subject family above the grouped paths, and on every path card the
+   outcome sentence and the way in.
+   -------------------------------------------------------------------------- */
+.reading-path-families {
+  margin: 1.25rem 0 2rem;
+}
+.reading-path-families-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+.reading-path-families-lede {
+  margin: 0 0 0.9rem;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+.reading-path-family-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.85rem;
+}
+.reading-path-family {
+  /* One family: a bordered card with its paths as links inside. */
+  padding: 0.95rem 1.05rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+}
+.reading-path-family-title {
+  margin: 0 0 0.2rem;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+.reading-path-family-lede {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.reading-path-family-paths {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.reading-path-family-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.reading-path-family-link:hover,
+.reading-path-family-link:focus-visible {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+.reading-path-outcome {
+  /* The outcome sentence: the lede's size, the label in bold. */
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.reading-path-start {
+  margin: 0.45rem 0 0.25rem;
+}
+.reading-path-start-link {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.reading-path-start-link:hover,
+.reading-path-start-link:focus-visible {
+  text-decoration: underline;
+}
+
+
+/* ----------------------------------------------------------------------------
+   /tools, step 3 of Round 1 (2026-10-06): the three floors in one paragraph
+   (E5), the paste box (E3), the intents (E1) and the workflows (E4). The paste
+   box and the intents borrow the hub's lede and heading classes; the new rules
+   below are the pieces those did not have.
+   -------------------------------------------------------------------------- */
+.tools-floors {
+  /* The three floors: a quiet paragraph under the lede, each floor a coloured link. */
+  margin: 0.75rem 0 1.25rem;
+  max-width: 68ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.tools-floors-link {
+  color: var(--text-primary);
+  font-weight: 600;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.tools-floors-link--green { color: var(--color-success); }
+.tools-floors-link--red { color: var(--color-danger); }
+
+.hub-paste,
+.hub-intents,
+.hub-workflows {
+  /* The three guided blocks, spaced like the Recently added row. */
+  margin-top: 2rem;
+}
+.paste-box {
+  margin-top: 0.75rem;
+}
+.paste-box-label {
+  display: block;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.35rem;
+}
+.paste-box-input {
+  /* A short, wide field; the reader pastes, the matches appear under it. */
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+  background: var(--surface-base);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+.paste-box-input:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 1px;
+}
+.paste-box-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 0.35rem;
+}
+.paste-box-hint {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+.paste-box-clear {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+}
+.paste-box-results {
+  margin-top: 0.85rem;
+}
+.paste-box-results-title {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.paste-box-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.paste-box-item {
+  /* One match: the tool as a pill, its family beside it in the secondary ink. */
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background: var(--surface-base);
+}
+.paste-box-link {
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.paste-box-link:hover,
+.paste-box-link:focus-visible { text-decoration: underline; }
+.paste-box-family {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+.paste-box-nomatch {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+}
+
+.hub-intent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.hub-intent {
+  /* One intent: a closed details card; the summary shows the verb and the count. */
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  padding: 0.75rem 0.95rem;
+}
+.hub-intent-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+}
+.hub-intent-summary::-webkit-details-marker { display: none; }
+.hub-intent-title {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.hub-intent-count {
+  font-size: 0.8rem;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+.hub-intent-lede {
+  margin: 0.5rem 0 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.hub-intent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.3rem 0.9rem;
+}
+.hub-intent-link {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.hub-intent-link:hover,
+.hub-intent-link:focus-visible {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+
+.hub-workflow-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 0.85rem;
+}
+.hub-workflow {
+  /* One chain: a card with its title, its lede and the numbered steps. */
+  padding: 0.95rem 1.05rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+}
+.hub-workflow-title {
+  margin: 0 0 0.25rem;
+  font-size: 0.98rem;
+  font-weight: 700;
+}
+.hub-workflow-lede {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.hub-workflow-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+.hub-workflow-link {
+  font-weight: 600;
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.hub-workflow-link:hover,
+.hub-workflow-link:focus-visible {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+.hub-workflow-alts {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.hub-workflow-link--alt {
+  font-weight: 500;
+}
+.hub-workflow-step {
+  /* One step of a chain: the tool, then its vendor alternatives on the same line when it forks. */
+  line-height: 1.5;
 }

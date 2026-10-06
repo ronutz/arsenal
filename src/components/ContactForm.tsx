@@ -19,7 +19,7 @@
 // and a success state. No external form library, no tracking.
 // ============================================================================
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { contactEmail, contactFormEndpoint } from "@/config/contact";
 
 interface ContactFormCopy {
@@ -37,6 +37,11 @@ interface ContactFormCopy {
   successBody: string;
   errorBody: string;
   required: string;
+  /** The message template prefilled when a reader arrives from the speaking route (G8, 2026-10-05):
+   *  event, audience, date, outcome, each on its own line, for the reader to fill in. */
+  speakingTemplate?: string;
+  /** The same for the advisory route: the decision and the deadline. */
+  advisoryTemplate?: string;
 }
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -50,6 +55,24 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
   const [touched, setTouched] = useState(false);
 
   const valid = name.trim() && email.trim() && message.trim();
+
+  // ROUTED BY INTENT (G8, SCOUT, adopted 2026-10-05). The cards above the form
+  // link here as /contact?intent=<x>#contact-form; the intent preselects the
+  // topic and, for advisory and speaking, prefills the message with the
+  // questions those conversations start from. Read after mount, so the server
+  // render and the first client render agree (the static page cannot see the
+  // query string). An unknown or absent intent changes nothing.
+  useEffect(() => {
+    const intent = new URLSearchParams(window.location.search).get("intent");
+    if (intent === "training") setTopic(copy.topicTraining);
+    else if (intent === "advisory") {
+      setTopic(copy.topicAdvisory);
+      if (copy.advisoryTemplate) setMessage((m) => m || copy.advisoryTemplate || "");
+    } else if (intent === "speaking" || intent === "other") {
+      setTopic(copy.topicOther);
+      if (intent === "speaking" && copy.speakingTemplate) setMessage((m) => m || copy.speakingTemplate || "");
+    }
+  }, [copy.topicTraining, copy.topicAdvisory, copy.topicOther, copy.advisoryTemplate, copy.speakingTemplate]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -94,7 +117,7 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
   }
 
   return (
-    <form className="contact-form" onSubmit={handleSubmit} noValidate>
+    <form className="contact-form" id="contact-form" onSubmit={handleSubmit} noValidate>
       <div className="contact-field">
         <label htmlFor="cf-name" className="contact-label">
           {copy.name}

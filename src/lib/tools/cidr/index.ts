@@ -43,6 +43,14 @@ export type { VerifyReport } from "./golden-vectors";
  */
 export const manifest = Object.freeze({
   toolSlug: "cidr",
+  /** Input detectors (added 2026-10-06 with the paste box of Round 1's E3, which runs every manifest's
+   *  detectors; this one had none, so the commonest input on the site, an IPv4 prefix, matched nothing).
+   *  Priority 0: a dotted quad with a prefix length is unmistakably this tool's; a bare dotted quad at 20,
+   *  because other tools (the OUI lookup, the IPv6 tool) have claims on address-shaped text. */
+  inputDetectors: [
+    { kind: "regex", priority: 0, pattern: "^\\s*(25[0-5]|2[0-4]\\d|1?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|1?\\d?\\d)){3}\\s*/\\s*(3[0-2]|[12]?\\d)\\s*$", example: "10.0.0.0/22" },
+    { kind: "regex", priority: 20, pattern: "^\\s*(25[0-5]|2[0-4]\\d|1?\\d?\\d)(\\.(25[0-5]|2[0-4]\\d|1?\\d?\\d)){3}\\s*$", example: "192.168.10.37" },
+  ],
   /** The Learn article written for this tool. Added 2026-08-12: this manifest
    *  had no learnLinks key at all, so the tool page offered no route back into
    *  the explanation. The link is the tool's OWN article, which is guaranteed
