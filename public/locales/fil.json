@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Mga tool sa network at security na tumatakbo sa sarili mong makina, hindi sa cloud ng iba."
+    "tagline": "Mga tool, kaalaman, kasaysayan at praktika sa network at security"
   },
   "nav": {
     "tools": "Mga Tool",
@@ -889,7 +889,7 @@
     "backHome": "Bumalik sa home"
   },
   "footer": {
-    "redEducation": "Si Rodolfo Nützmann ay Senior Technical Instructor at Advisor sa <b>Red Education</b>",
+    "redEducation": "Si Rodolfo Nützmann ay <r>Senior Technical Instructor at Advisor</r> sa <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Ginawa ni Rodolfo Nützmann gamit ang CONCORD",
     "colophon": "Paano ito ginawa",

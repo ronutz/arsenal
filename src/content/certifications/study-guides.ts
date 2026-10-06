@@ -101,10 +101,18 @@ export interface StudyGuide {
    *  successor, and both change what someone should book. Names and dates are
    *  proper nouns and stay verbatim; the surrounding labels are localised. */
   retirement?: {
-    /** The exam version being withdrawn, exactly as Fortinet names it. */
+    /** The exam version being withdrawn, exactly as the vendor names it. */
     exam: string;
     /** Last day it can be sat, exactly as published. */
     until: string;
+    /** The same day as an ISO date (YYYY-MM-DD), so the page can compute whether it has passed. Added 2026-10-06
+     *  (SCOUT's Round 1 adoption audit, row 8: five notices dated in the past still read as future). The guard
+     *  scripts/check-dated-status.mts checks it against `until`. */
+    untilIso: string;
+    /** Whose retirement this is. "this-exam": the exam this guide maps is the one being withdrawn (after the date
+     *  the guide stays as a record of it). "previous-version": an earlier version of the exam is being withdrawn
+     *  and this guide maps its successor (after the date the notice is history and the card badge goes). */
+    scope: "this-exam" | "previous-version";
     /** The successor, or null when the page names none. */
     replacedBy: string | null;
   } | null;
@@ -1227,6 +1235,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "Check Point Certified Troubleshooting Expert R81.20 (CCTE)",
       until: "September 30, 2026",
+      untilIso: "2026-09-30",
+      // scope (2026-10-06): the guide maps 156-587, the R81.20 exam this notice withdraws.
+      scope: "this-exam",
       replacedBy: "156-588 - Check Point Certified Troubleshooting Expert - R82 (CCTE)",
     },
     examFacts: null,
@@ -1247,6 +1258,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "Check Point Certified Multi-Domain Security Management Specialist - R81 (CCMS)",
       until: "September 30, 2026",
+      untilIso: "2026-09-30",
+      // scope (2026-10-06): the guide maps 156-541, the R81 exam this notice withdraws.
+      scope: "this-exam",
       replacedBy: null,
     },
     examFacts: null,
@@ -1267,6 +1281,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "Check Point Certified VSX Specialist - R81 (CCVS)",
       until: "September 30, 2026",
+      untilIso: "2026-09-30",
+      // scope (2026-10-06): the guide maps 156-551, the R81 exam this notice withdraws.
+      scope: "this-exam",
       replacedBy: null,
     },
     examFacts: null,
@@ -13622,6 +13639,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "Fortinet NSE 5 - Secure Wireless LAN 7.4 Administrator",
       until: "August 31, 2026",
+      untilIso: "2026-08-31",
+      // scope (2026-10-06): the guide maps the 7.6 exam (product versions FortiGate 7.6, FortiAP 7.6); the 7.4 version is the one withdrawn.
+      scope: "previous-version",
       replacedBy: "Fortinet NSE 5 - Secure Wireless LAN 7.6 Administrator",
     },
     examFacts: {
@@ -13755,6 +13775,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "Fortinet NSE 5 - FortiSASE and SD-WAN 7.6 Core Administrator",
       until: "November 14, 2026",
+      untilIso: "2026-11-14",
+      // scope (2026-10-06): the guide maps the 7.6 Core Administrator exam (FortiSASE 25, FortiOS 7.6), the one withdrawn; its successor is the 26 version.
+      scope: "this-exam",
       replacedBy: "Fortinet NSE 5 - FortiSASE and SD-WAN 26 Core Administrator",
     },
     examFacts: {
@@ -15145,6 +15168,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "FCP - FortiClient EMS 7.2 Administrator",
       until: "October 31, 2025",
+      untilIso: "2025-10-31",
+      // scope (2026-10-06): the guide maps the EMS 7.4 exam; the FCP 7.2 version is the one withdrawn.
+      scope: "previous-version",
       replacedBy: "Fortinet NSE 6 - FortiClient EMS 7.4 Administrator",
     },
     examFacts: {
@@ -17232,6 +17258,9 @@ export const studyGuides: StudyGuide[] = [
     retirement: {
       exam: "FCSS - Public Cloud Security 7.6 Architect",
       until: "December 31, 2025",
+      untilIso: "2025-12-31",
+      // scope (2026-10-06): the guide maps the NSE 7 exam; the FCSS 7.6 version is the one withdrawn.
+      scope: "previous-version",
       replacedBy: "Fortinet NSE 7 - Public Cloud Security 7.6.4 Architect",
     },
     examFacts: {

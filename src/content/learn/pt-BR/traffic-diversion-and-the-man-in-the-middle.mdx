@@ -1,0 +1,93 @@
+---
+slug: traffic-diversion-and-the-man-in-the-middle
+title: "Desvio de tráfego e o homem no meio: a família, e o movimento que todas compartilham"
+summary: "Um mapa das maneiras de desviar o tráfego por onde ele não deveria passar, e a defesa que responde a cada uma. Todo método, do envenenamento de ARP numa LAN ao sequestro de BGP pela internet, é uma variação de um só movimento: tornar-se o caminho. Este artigo de abertura explica o princípio comum, organiza os métodos pela camada em que atuam e aponta para o passo a passo de cada um, com a mitigação padrão nomeada ao lado de cada ataque, porque a razão de entender um ataque num site de treinamento é reconhecê-lo e detê-lo."
+concepts: ["man-in-the-middle", "traffic diversion", "arp poisoning", "rogue dhcp", "rogue router advertisement", "dns cache poisoning", "icmp redirect", "llmnr spoofing", "wpad", "evil twin", "ssl stripping", "stp root takeover", "mac flooding", "vlan hopping", "bgp hijack", "ntlm relay"]
+relatedTools: []
+relatedArticles: ["arp-and-mac-addresses", "the-kaminsky-dns-flaw", "bgp-and-the-routing-chokepoint", "ntlm-explained", "ssl-forward-proxy-interception", "the-interception-tools"]
+category: security
+order: 259
+status: reviewed
+updated: "2026-10-06"
+---
+
+Uma rede entrega um pacote por uma cadeia de respostas pequenas e confiantes: qual endereço de hardware é dono deste IP, qual roteador é a saída, qual servidor é dono deste nome, qual caminho alcança aquela rede. Cada resposta é dada por um protocolo que, na maioria dos casos, foi projetado quando as pessoas no fio eram colegas, e não adversárias. O desvio de tráfego é a arte de dar uma dessas respostas de forma falsa, para que a vítima envie seu tráfego ao atacante em vez de ao próximo salto pretendido. Uma vez que o atacante detém o caminho, ele pode ler o que passa, alterá-lo ou descartá-lo. Essa posição é o homem no meio, e todo método desta série é uma maneira diferente de alcançá-la.
+
+Este artigo é o mapa. Ele explica o movimento que todos compartilham, organiza os métodos pela camada que exploram e aponta para o passo a passo de cada um. Cada entrada nomeia a defesa padrão ao lado do ataque, porque, num site de treinamento, o sentido de entender como algo é feito é reconhecê-lo numa captura e desligá-lo.
+
+<DiversionScene lang="pt-BR" />
+
+## O movimento, dito uma vez
+
+Normalmente dois lados trocam pacotes diretamente: seu dispositivo resolve o próximo salto e envia a ele, o próximo salto encaminha, e a resposta volta pelo mesmo caminho. Um desvio insere um terceiro nesse caminho. O atacante não quebra a criptografia, não adivinha uma senha nem explora um buffer; ele responde a uma pergunta de rotina antes do dono legítimo, ou de forma mais convincente, e a vítima atualiza o próprio estado (um cache ARP, uma rota padrão, uma resposta de resolvedor, uma tabela de rotas) para apontar ao atacante. Dali em diante a vítima coopera com a própria interceptação, em geral sem sintoma visível, porque um atacante competente encaminha o tráfego adiante para que a conversa continue funcionando.
+
+Duas consequências decorrem disso, e elas moldam toda defesa. Primeira, o ataque vive na confiança de um protocolo, não numa falha, então a correção quase nunca é um patch: é autenticação acrescentada em torno do protocolo (criptográfica, como no DNSSEC ou no HSTS) ou validação acrescentada pela infraestrutura (o switch ou o equipamento de primeiro salto conferindo as respostas, como na inspeção dinâmica de ARP ou no RA Guard). Segunda, como a vítima não mostra sintoma, a detecção é perceber a mudança de estado (o endereço MAC de um gateway que se moveu, um segundo dispositivo respondendo por um nome, um certificado que de repente é outro), e não perceber uma falha.
+
+## Organizados por onde atuam
+
+Os métodos se agrupam pela pergunta que respondem de forma falsa, que é também a camada em que ficam e o lugar a que a defesa pertence.
+
+| Método | Camada / pergunta | O que a resposta falsa faz | A defesa padrão |
+|---|---|---|---|
+| Envenenamento de ARP | Enlace: qual MAC é dono deste IP? | Associa o IP do gateway ao MAC do atacante nos caches ARP das vítimas | Dynamic ARP Inspection com DHCP snooping; entradas estáticas para hosts críticos |
+| MAC flooding | Enlace: encaminhamento do switch | Transborda a tabela MAC do switch, que passa a inundar quadros a todas as portas, inclusive a do atacante | Port security (limitar MACs aprendidos por porta) |
+| VLAN hopping | Enlace: pertencimento à VLAN | Alcança uma VLAN de que a porta não é membro, por switch spoofing (DTP) ou duplo tagging da VLAN nativa | Desligar o DTP, usar uma VLAN nativa não utilizada, podar os troncos |
+| DHCP falso | IP local: qual é meu gateway e resolvedor? | Entrega à vítima o atacante como gateway padrão e servidor DNS | DHCP snooping (confiar só na porta do servidor real) |
+| RA IPv6 falso | IP local: qual é meu gateway IPv6? | Anuncia o atacante como roteador IPv6 no enlace | RA Guard, SEND, filtragem na camada 2 (RFC 6105) |
+| Redirecionamento ICMP | IP local: há um primeiro salto melhor? | Diz ao host para rotear um destino pelo atacante | Rejeitar redirecionamentos que falham nas verificações da RFC 1122; desligar a aceitação |
+| LLMNR / NBT-NS / mDNS | Nome: quem é este nome não qualificado? | Responde por um nome que nenhum servidor DNS é dono, antes de qualquer outro | Desligar LLMNR e NetBIOS onde o DNS basta |
+| WPAD | Nome + proxy: onde está a config do proxy? | Fornece uma config de proxy que roteia o navegador pelo atacante | Definir o WPAD explicitamente ou desligar a autodetecção; os nomes wpad.tld hoje resolvem para loopback |
+| Envenenamento de cache DNS | Nome: qual o endereço deste domínio? | Planta um endereço falso no cache de um resolvedor | Validação DNSSEC; aleatorização de porta de origem e de ID de consulta (pós-Kaminsky) |
+| Evil twin | Associação sem fio: qual AP é esta rede? | Apresenta um ponto de acesso falso com o SSID real para que os clientes se associem a ele | WPA2/WPA3-Enterprise com validação do certificado do servidor; 802.11w |
+| Tomada de raiz do STP | Topologia de enlace: qual switch é a bridge raiz? | Reivindica a raiz do spanning tree para atrair o tráfego pelo switch do atacante | Root Guard e BPDU Guard nas portas de borda |
+| SSL stripping | Transporte: isto será HTTPS? | Mantém a vítima em HTTP em claro para que a subida ao TLS nunca aconteça | HSTS e HSTS preload; modo somente HTTPS (RFC 6797) |
+| NTLM relay | Identidade: quem está se autenticando? | Encaminha a autenticação da vítima a outro serviço como se fosse a vítima | Assinatura de SMB e LDAP, channel binding (EPA), restringir NTLM |
+| Sequestro de BGP | Área ampla: qual rede alcança este prefixo? | Anuncia o prefixo de outra pessoa para que a internet o roteie ao atacante | Validação de origem de rota por RPKI; filtragem de prefixos |
+
+O primeiro bloco é o conjunto de rede local, aquele que o atacante alcança por estar no mesmo segmento e aquele que um switch pode defender porque vê cada quadro. O conjunto de resolução de nomes explora as cadeias de contingência que um cliente percorre quando o DNS está lento ou ausente. O conjunto de transporte e identidade (SSL stripping, NTLM relay) não desvia pacote algum; ele pega carona num desvio que algum dos outros já criou e converte a posição do meio em texto em claro roubado ou num login roubado. O sequestro de BGP é o mesmo movimento na escala da internet inteira, sem switch que o defenda, e é por isso que sua resposta é criptográfica (RPKI) e por isso ele tem artigo próprio.
+
+## Por que os métodos de rede local são uma só família
+
+O envenenamento de ARP é o arquétipo, e a razão de os outros rimarem com ele. O Address Resolution Protocol da RFC 826 (David Plummer, novembro de 1982) mapeia um endereço IP a um endereço de hardware com uma requisição e uma resposta, e não tem noção de quem pode responder: um host armazena o par de endereços do remetente de qualquer resposta que veja, e sobrescreve uma entrada existente quando uma resposta nova chega. A RFC 5227, que padronizou os anúncios gratuitos que os hosts usam para reivindicar um endereço, diz a parte silenciosa em suas próprias Considerações de Segurança: "Um host malicioso pode enviar pacotes ARP fraudulentos na rede ... é fácil para um host responder a todas as requisições ARP com respostas dando o seu próprio endereço de hardware." O protocolo foi feito para a cooperação, e num segmento compartilhado a cooperação é uma suposição, não uma garantia.
+
+Todo outro método local é a mesma suposição em outro protocolo. O DHCP falso explora que um cliente aceita a configuração (seu gateway, seu resolvedor) de qualquer servidor DHCP que responda, e a RFC 2131 afirma com todas as letras que "servidores DHCP não autorizados podem ser facilmente montados" para enviar "roteadores falsos" e "servidores de nomes falsos". Os Router Advertisements IPv6 falsos exploram que um host adota um roteador padrão da origem de qualquer RA que ouça, o problema que a RFC 6104 foi escrita para descrever. Os redirecionamentos ICMP exploram que um host, a menos que verifique, atualiza sua rota para um destino pela palavra de uma mensagem de redirecionamento. LLMNR, NetBIOS e mDNS exploram que, quando o DNS não tem resposta, o cliente pergunta ao segmento inteiro e acredita na primeira réplica. Não são vulnerabilidades separadas a corrigir uma a uma; são uma era de projeto encontrando um segmento hostil, e as defesas são, por isso, uniformes: deixe a infraestrutura que vê cada quadro (o switch, o equipamento de primeiro salto) validar as respostas, e desligue os protocolos de contingência de que ninguém de fato precisa.
+
+## Por que as defesas se agrupam
+
+Leia a coluna da direita da tabela e três respostas se repetem, que é a coisa útil a levar.
+
+A primeira é **deixe o switch atestar o vínculo.** O DHCP snooping ensina ao switch em qual porta está o servidor DHCP real e constrói uma tabela do endereço que cada porta recebeu legitimamente; a Dynamic ARP Inspection então confere cada pacote ARP contra essa tabela e descarta os que mentem, que é o único controle que encerra o envenenamento de ARP numa rede gerenciada. O RA Guard faz o mesmo para os Router Advertisements IPv6. O switch é o lugar certo porque é o único equipamento que vê cada quadro do segmento e pode recusar os falsos na porta.
+
+A segunda é **desligue a contingência confiante.** LLMNR, NetBIOS, a autodetecção do WPAD e o DTP são conveniências de uma era mais amigável, cada um um protocolo que responde a uma pergunta de forma prestativa e sem prova. Numa rede moderna, em que o DNS, a configuração explícita de proxy e os troncos configurados à mão fazem os mesmos trabalhos, as contingências são pura superfície de ataque, e a mitigação é desligá-las, não defendê-las.
+
+A terceira é **autentique a própria coisa.** Onde a infraestrutura não pode atestar (o pacote cruza redes que ninguém controla em conjunto), a única resposta é criptográfica: HSTS para que um navegador recuse ser mantido em claro, DNSSEC para que um resolvedor distinga um registro forjado de um real, RPKI para que um roteador distinga um prefixo sequestrado de sua origem verdadeira, assinatura de SMB e LDAP (Lightweight Directory Access Protocol) para que uma autenticação retransmitida falhe na verificação de integridade. Essas são as defesas mais difíceis de implantar, e os membros que delas precisam (o furo de Kaminsky, o SSL stripping, o NTLM relay, o sequestro de BGP) são os de história mais longa.
+
+## Os membros desta série
+
+Cada um dos itens a seguir é, ou será, um passo a passo próprio. Os já escritos estão vinculados; os demais chegam com os marcos que cobrem seus protocolos, e este artigo de abertura é atualizado para vincular cada um à medida que chega.
+
+- **Envenenamento de ARP** numa LAN comutada: o arquétipo, passo a passo, e por que a Dynamic ARP Inspection o encerra. A base sobre a qual ele se apoia é [ARP e endereços MAC](/learn/arp-and-mac-addresses).
+- **MAC flooding e tomada de raiz do STP**: as duas maneiras de fazer o próprio switch carregar o tráfego pelo caminho errado, e as guardas de porta que as detêm.
+- **VLAN hopping** (do inglês virtual local area network): switch spoofing e duplo tagging, e a configuração de tronco que fecha os dois.
+- **DHCP falso e Router Advertisements IPv6 falsos**: entregar à vítima um gateway falso, e os recursos de snooping e guard que os respondem.
+- **Redirecionamentos ICMP e LLMNR/NBT-NS/mDNS**: os pequenos protocolos confiantes, e por que a correção costuma ser desligá-los.
+- **Envenenamento de cache DNS**: coberto em profundidade por [o furo de Kaminsky](/learn/the-kaminsky-dns-flaw), o verão em que a internet inteira corrigiu um só bug de uma vez.
+- **Evil twin e o caminho sem fio**: o ponto de acesso falso, lido ao lado de [KRACK e o handshake do Wi-Fi](/learn/krack-and-the-wifi-handshake) para o que o ar acrescenta.
+- **SSL stripping**: manter a vítima em claro, o ataque que o HSTS foi escrito para responder, e a maquinaria de interceptação de proxy a que ele se parece, em [interceptação por SSL forward proxy](/learn/ssl-forward-proxy-interception).
+- **NTLM relay**: encaminhar uma autenticação Windows a outro serviço, em [NTLM explicado](/learn/ntlm-explained).
+- **Sequestro de BGP** (do inglês Border Gateway Protocol): o mesmo movimento pela internet, em [BGP e o ponto de estrangulamento do roteamento](/learn/bgp-and-the-routing-chokepoint).
+
+Quando quiser ver qualquer um deles no fio, o artigo [as ferramentas de interceptação](/learn/the-interception-tools) cobre o lado da captura e da análise, que é onde o reconhecimento começa.
+
+## Fontes
+
+- [RFC 826, An Ethernet Address Resolution Protocol, David C. Plummer, novembro de 1982: a requisição e a resposta, a fusão do par do remetente no cache, a ausência de qualquer autenticação (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc826)
+- [RFC 5227, IPv4 Address Conflict Detection, Stuart Cheshire, julho de 2008: as sondas e os anúncios ARP, e as Considerações de Segurança sobre pacotes ARP fraudulentos (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc5227)
+- [RFC 2131, Dynamic Host Configuration Protocol, Droms, março de 1997: as Considerações de Segurança sobre servidores DHCP não autorizados enviando roteadores falsos e servidores de nomes falsos (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc2131)
+- [RFC 6104, Rogue IPv6 Router Advertisement Problem Statement, Chown e Venaas, fevereiro de 2011: o problema do RA falso e a lista de abordagens de mitigação (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc6104)
+- [RFC 6105, IPv6 Router Advertisement Guard, Levy-Abegnoli, Van de Velde, Mohacsi, fevereiro de 2011: a filtragem na camada 2 como complemento leve ao SEND (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc6105)
+- [RFC 1122, Requirements for Internet Hosts, outubro de 1989, seção 3.2.2.2: uma mensagem de redirecionamento DEVE ser descartada silenciosamente se o novo gateway não estiver na sub-rede conectada por onde ela chegou, ou se sua origem não for o gateway de primeiro salto atual (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 4795, Link-Local Multicast Name Resolution (LLMNR), Aboba, Thaler, Esibov, janeiro de 2007: a resolução de nomes por multicast e suas considerações de spoofing (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc4795)
+- [RFC 6797, HTTP Strict Transport Security (HSTS), Hodges, Jackson, Barth, novembro de 2012: o modelo de ameaça do atacante ativo e a vulnerabilidade de bootstrap que o HSTS responde (lida em 06/10/2026)](https://www.rfc-editor.org/rfc/rfc6797)
+- [Cisco Catalyst 9300 Security Configuration Guide, IOS XE 17.9, Dynamic ARP Inspection: validar o ARP contra a base de vínculos do DHCP snooping, portas confiáveis e não confiáveis, descartar e registrar pacotes inválidos (lida em 06/10/2026)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-9/configuration_guide/sec/b_179_sec_9300_cg/configuring_dynamic_arp_inspection.html)
+- [Wikipedia, ARP spoofing: o comportamento de cache sem estado e sem autenticação que torna o ataque possível, e o levantamento de defesas (lida em 06/10/2026)](https://en.wikipedia.org/wiki/ARP_spoofing)

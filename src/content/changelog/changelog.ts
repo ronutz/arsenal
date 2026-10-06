@@ -52,6 +52,33 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Milestone (q), SCOUT's Round 1 adoption audit (REVIEW-chatgpt-round1-adoption-audit-20261006): the quick wins.
+    date: "2026-10-06",
+    time: "15:00",
+    kind: "feature",
+    title: "Counts that say what they count, dates that turn on their own, and the whole site in its machine summaries",
+    body:
+      "An outside review of the live site found numbers that were generated correctly and labelled wrongly. The study guides row now counts the 13 reading paths instead of the 105 certification guides; the Learn index says its 419 articles are the vendor-neutral set and counts the 309 platform articles in the vendor hubs beside them; the Tools index says the same of its 87 general-purpose tools and the 96 platform tools; Speaking takes the industry record's size from the record. A build-time check now fails when a figure and its noun describe different datasets. Certification retirement notices follow the calendar: a last sitting day that has passed reads in the past tense, a notice about a previous version says that the guide maps its successor, and every guide names its vendor properly. The glossary no longer prints its empty-filter line in the page itself, the blog lists its posts as articles, the sitemap lists all eleven subject pages, the vendor hubs describe what they gather, the Red Education page gains its professional-services side, and llms.txt, the site description, the feed and the web manifest describe the whole site rather than its toolbox.",
+    links: [
+      { label: "Study guides", href: "/study-guides" },
+      { label: "The vendor-neutral index", href: "/learn#directory" },
+      { label: "The general-purpose index", href: "/tools#directory" },
+      { label: "Certification guides", href: "/certifications" },
+      { label: "Beyond training", href: "/red-education#professional-services" },
+      { label: "Sitemap", href: "/sitemap" },
+    ],
+  },
+  {
+    // Milestone (k1): the first article of the traffic-diversion series (queue row 21), with the Learn scene figure.
+    date: "2026-10-06",
+    time: "13:45",
+    kind: "content",
+    title: "The traffic-diversion series opens: the one move behind every man in the middle, fourteen methods side by side, and the defence for each",
+    body:
+      "An opener in English and Portuguese for a series on interception: every method, from ARP poisoning and rogue DHCP to WPAD, SSL stripping, NTLM relay and BGP hijacks, works by giving a false answer to a question a host asks or a better offer of a path, and the standard defences cluster the same way. A table sets the fourteen side by side with the layer each works at and the defence that answers it, from the RFCs and the vendors' guides, and a diagram shows the path before and after the diversion. The footer's affiliation line now names Red Education with a direct link.",
+    articles: ["traffic-diversion-and-the-man-in-the-middle"],
+  },
+  {
     date: "2026-10-06",
     time: "12:00",
     kind: "content",

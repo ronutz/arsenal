@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Herramientas de red y seguridad que se ejecutan en tu equipo, no en la nube de otra persona."
+    "tagline": "Herramientas, conocimiento, historia y práctica de redes y seguridad"
   },
   "nav": {
     "tools": "Herramientas",
@@ -889,7 +889,7 @@
     "backHome": "Volver al inicio"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann es Senior Technical Instructor y asesor en <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann es <r>Senior Technical Instructor y asesor</r> en <b>Red Education</b>",
     "privacy": "Privacidad",
     "builtWith": "Creado por Rodolfo Nützmann con CONCORD",
     "colophon": "Cómo se construyó esto",

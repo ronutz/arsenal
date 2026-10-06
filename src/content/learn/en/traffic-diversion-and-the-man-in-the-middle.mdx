@@ -1,0 +1,93 @@
+---
+slug: traffic-diversion-and-the-man-in-the-middle
+title: "Traffic diversion and the man in the middle: the family, and the one move they share"
+summary: "A map of the ways traffic is steered through somewhere it was not meant to go, and the defence that answers each. Every method, from ARP poisoning on a LAN to a BGP hijack across the internet, is a variation on one move: become the path. This opener explains the shared principle, sorts the methods by the layer they work at, and links to the detailed walkthrough for each, with the standard mitigation named beside every one, because the reason to understand an attack on a training site is to recognise and stop it."
+concepts: ["man-in-the-middle", "traffic diversion", "arp poisoning", "rogue dhcp", "rogue router advertisement", "dns cache poisoning", "icmp redirect", "llmnr spoofing", "wpad", "evil twin", "ssl stripping", "stp root takeover", "mac flooding", "vlan hopping", "bgp hijack", "ntlm relay"]
+relatedTools: []
+relatedArticles: ["arp-and-mac-addresses", "the-kaminsky-dns-flaw", "bgp-and-the-routing-chokepoint", "ntlm-explained", "ssl-forward-proxy-interception", "the-interception-tools"]
+category: security
+order: 259
+status: reviewed
+updated: "2026-10-06"
+---
+
+A network delivers a packet by a chain of small, trusting answers: which hardware address owns this IP, which router is the way out, which server owns this name, which path reaches that network. Each answer is given by a protocol that, in most cases, was designed when the people on the wire were colleagues rather than adversaries. Traffic diversion is the art of giving one of those answers falsely, so that the victim sends its traffic to the attacker instead of to the intended next hop. Once the attacker holds the path, it can read what passes, change it, or drop it. That position is the man in the middle, and every method in this series is a different way of reaching it.
+
+This article is the map. It explains the move they share, sorts the methods by the layer they exploit, and links to the detailed walkthrough for each. Every entry names the standard defence beside the attack, because on a training site the point of understanding how a thing is done is to recognise it in a capture and shut it off.
+
+<DiversionScene lang="en" />
+
+## The one move, stated once
+
+Normally two parties exchange packets directly: your device resolves the next hop and sends to it, the next hop forwards, and the reply comes back the same way. A diversion inserts a third party into that path. The attacker does not break the cryptography, guess a password, or exploit a buffer; it answers a routine question before the legitimate owner does, or more convincingly, and the victim updates its own state (an ARP cache, a default route, a resolver answer, a routing table) to point at the attacker. From then on the victim cooperates in its own interception, usually with no visible symptom, because a competent attacker forwards the traffic onward so the conversation still works.
+
+Two consequences follow, and they shape every defence. First, the attack lives in a protocol's trust, not in a flaw, so the fix is almost never a patch: it is authentication added around the protocol (cryptographic, as in DNSSEC or HSTS) or validation added by the infrastructure (the switch or the first-hop device checking the answers, as in dynamic ARP inspection or RA Guard). Second, because the victim shows no symptom, detection is about noticing the state change (a gateway's MAC address that moved, a second device answering for a name, a certificate that is suddenly different) rather than noticing a failure.
+
+## Sorted by where they work
+
+The methods group by the question they answer falsely, which is also the layer they sit at and the place the defence belongs.
+
+| Method | Layer / question | What the false answer does | The standard defence |
+|---|---|---|---|
+| ARP poisoning | Link: which MAC owns this IP? | Binds the gateway's IP to the attacker's MAC in victims' ARP caches | Dynamic ARP Inspection with DHCP snooping; static entries for critical hosts |
+| MAC flooding | Link: switch forwarding | Overflows the switch's MAC table so it floods frames to every port, including the attacker's | Port security (limit learned MACs per port) |
+| VLAN hopping | Link: VLAN membership | Reaches a VLAN the port is not in, via switch spoofing (DTP) or double tagging the native VLAN | Disable DTP, set an unused native VLAN, prune trunks |
+| Rogue DHCP | Local IP: what is my gateway and resolver? | Hands the victim the attacker as default gateway and DNS server | DHCP snooping (trust only the real server's port) |
+| Rogue IPv6 RA | Local IP: what is my IPv6 gateway? | Advertises the attacker as an on-link IPv6 router | RA Guard, SEND, layer-2 filtering (RFC 6105) |
+| ICMP redirect | Local IP: is there a better first hop? | Tells the host to route a destination via the attacker | Reject redirects that fail RFC 1122's source and subnet checks; disable acceptance |
+| LLMNR / NBT-NS / mDNS spoofing | Name: who is this unqualified name? | Answers a name no DNS server owns, before anyone else | Disable LLMNR and NetBIOS name service where DNS suffices |
+| WPAD | Name + proxy: where is the proxy config? | Supplies a proxy auto-config that routes the browser through the attacker | Define WPAD explicitly or disable proxy auto-detect; the wpad.tld names now resolve to loopback |
+| DNS cache poisoning | Name: what is the address for this domain? | Plants a false address in a resolver's cache | DNSSEC validation; source-port and query-ID randomisation (post-Kaminsky) |
+| Evil twin | Wireless association: which AP is this network? | Presents a rogue access point with the real SSID so clients associate to it | WPA2/WPA3-Enterprise with server-certificate validation; 802.11w |
+| STP root takeover | Link topology: which switch is the root bridge? | Claims the spanning-tree root so traffic is drawn through the attacker's switch | Root Guard and BPDU Guard on edge ports |
+| SSL stripping | Transport: will this be HTTPS? | Keeps the victim on plaintext HTTP so the upgrade to TLS never happens | HSTS and HSTS preload; HTTPS-only mode (RFC 6797) |
+| NTLM relay | Identity: who is authenticating? | Forwards the victim's authentication to a different service as the victim | SMB and LDAP signing, channel binding (EPA), restrict NTLM |
+| BGP hijack | Wide area: which network reaches this prefix? | Announces someone else's prefix so the internet routes it to the attacker | RPKI route origin validation; prefix filtering |
+
+The first block is the local-area set, the one an attacker reaches by being on the same segment, and the one a switch can defend because it sees every frame. The name-resolution set exploits the fallback chains a client walks when DNS is slow or absent. The transport and identity set (SSL stripping, NTLM relay) does not steer packets at all; it rides a diversion that one of the others already created, and converts the middle position into stolen plaintext or a stolen login. BGP hijack is the same move at the scale of the whole internet, with no switch to defend it, which is why its answer is cryptographic (RPKI) and why it has an article of its own.
+
+## Why the local-area methods are a single family
+
+ARP poisoning is the archetype, and the reason the others rhyme with it. The Address Resolution Protocol of RFC 826 (David Plummer, November 1982) maps an IP address to a hardware address with a request and a reply, and it has no notion of who may answer: a host caches the sender's address pair from any reply it sees, and overwrites an existing entry when a new reply arrives. RFC 5227, which standardised the gratuitous announcements hosts use to claim an address, says the quiet part in its own Security Considerations: "A malicious host may send fraudulent ARP packets on the network ... it is easy for a host to answer all ARP Requests with Replies giving its own hardware address." The protocol was built for cooperation, and on a shared segment cooperation is an assumption, not a guarantee.
+
+Every other local method is the same assumption in a different protocol. Rogue DHCP exploits that a client will take configuration (its gateway, its resolver) from whichever DHCP server answers, and RFC 2131 states plainly that "unauthorized DHCP servers may be easily set up" to send "spoof routers" and "spoof nameservers." Rogue IPv6 Router Advertisements exploit that a host adopts a default router from the source of any RA it hears, the problem RFC 6104 was written to describe. ICMP redirects exploit that a host will, unless it checks, update its route for a destination on the say-so of a redirect message. LLMNR, NetBIOS name service and mDNS exploit that when DNS has no answer, the client asks the whole segment and believes the first reply. These are not separate vulnerabilities to be patched one by one; they are one design era meeting one hostile segment, and the defences are correspondingly uniform: let the infrastructure that sees every frame (the switch, the first-hop device) validate the answers, and turn off the fallback protocols nobody actually needs.
+
+## Why the defences cluster
+
+Read the right-hand column of the table and three answers repeat, which is the useful thing to carry away.
+
+The first is **let the switch vouch for the binding.** DHCP snooping teaches the switch which port the real DHCP server is on and builds a table of the address each port was legitimately given; Dynamic ARP Inspection then checks every ARP packet against that table and drops the ones that lie, which is the single control that ends ARP poisoning on a managed network. RA Guard does the same for IPv6 Router Advertisements. The switch is the right place because it is the one device that sees every frame on the segment and can refuse the false ones at the port.
+
+The second is **turn off the trusting fallback.** LLMNR, NetBIOS name service, WPAD auto-detection and DTP are conveniences from a friendlier era, each of them a protocol that answers a question helpfully and without proof. On a modern network where DNS, explicit proxy configuration and manually configured trunks do the same jobs, the fallbacks are pure attack surface, and the mitigation is to disable them rather than to defend them.
+
+The third is **authenticate the thing itself.** Where the infrastructure cannot vouch (the packet crosses networks nobody jointly controls) the only answer is cryptographic: HSTS so a browser refuses to be kept on plaintext, DNSSEC so a resolver can tell a forged record from a real one, RPKI so a router can tell a hijacked prefix from its true origin, SMB and LDAP (Lightweight Directory Access Protocol) signing so a relayed authentication fails the integrity check. These are the harder defences to deploy, and the members that need them (the Kaminsky flaw, SSL stripping, NTLM relay, BGP hijack) are the ones whose stories are longest.
+
+## The members of this series
+
+Each of the following is, or will be, its own detailed walkthrough. The ones already written are linked; the rest arrive with the milestones that cover their protocols, and this opener is updated to link each as it lands.
+
+- **ARP poisoning** on a switched LAN: the archetype, step by step, and why Dynamic ARP Inspection ends it. The foundation it builds on is [ARP and MAC addresses](/learn/arp-and-mac-addresses).
+- **MAC flooding and STP root takeover**: the two ways to make a switch itself carry traffic the wrong way, and the port-level guards that stop them.
+- **VLAN hopping** (virtual local area network): switch spoofing and double tagging, and the trunk configuration that closes both.
+- **Rogue DHCP and rogue IPv6 Router Advertisements**: handing a victim a false gateway, and the snooping and guard features that answer them.
+- **ICMP redirects and LLMNR/NBT-NS/mDNS spoofing**: the small trusting protocols, and why the fix is usually to turn them off.
+- **DNS cache poisoning**: covered in depth by [the Kaminsky flaw](/learn/the-kaminsky-dns-flaw), the summer the whole internet patched one bug at once.
+- **Evil twin and the wireless path**: the rogue access point, read beside [KRACK and the Wi-Fi handshake](/learn/krack-and-the-wifi-handshake) for what the air adds.
+- **SSL stripping**: keeping a victim on plaintext, the attack HSTS was written to answer, and the proxy-interception machinery it resembles, in [SSL forward proxy interception](/learn/ssl-forward-proxy-interception).
+- **NTLM relay**: forwarding a Windows authentication to another service, in [NTLM explained](/learn/ntlm-explained).
+- **BGP hijack** (Border Gateway Protocol): the same move across the internet, in [BGP and the routing chokepoint](/learn/bgp-and-the-routing-chokepoint).
+
+When you want to see any of these on the wire, [the interception tools](/learn/the-interception-tools) article covers the capture and analysis side, which is where recognition begins.
+
+## Sources
+
+- [RFC 826, An Ethernet Address Resolution Protocol, David C. Plummer, November 1982: the request and reply, the sender-pair merge into the cache, the absence of any authentication (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc826)
+- [RFC 5227, IPv4 Address Conflict Detection, Stuart Cheshire, July 2008: ARP probes and announcements, and the Security Considerations on fraudulent ARP packets (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc5227)
+- [RFC 2131, Dynamic Host Configuration Protocol, Droms, March 1997: the Security Considerations on unauthorized DHCP servers sending spoof routers and spoof nameservers (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc2131)
+- [RFC 6104, Rogue IPv6 Router Advertisement Problem Statement, Chown and Venaas, February 2011: the rogue RA problem and the list of mitigation approaches (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc6104)
+- [RFC 6105, IPv6 Router Advertisement Guard, Levy-Abegnoli, Van de Velde, Mohacsi, February 2011: layer-2 filtering as a lightweight complement to SEND (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc6105)
+- [RFC 1122, Requirements for Internet Hosts, October 1989, section 3.2.2.2: a Redirect message SHOULD be silently discarded if the new gateway is not on the connected subnet it arrived through, or its source is not the current first-hop gateway (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 4795, Link-Local Multicast Name Resolution (LLMNR), Aboba, Thaler, Esibov, January 2007: the multicast name resolution and its spoofing considerations (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc4795)
+- [RFC 6797, HTTP Strict Transport Security (HSTS), Hodges, Jackson, Barth, November 2012: the active-attacker threat model and the bootstrap MITM vulnerability HSTS answers (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc6797)
+- [Cisco Catalyst 9300 Security Configuration Guide, IOS XE 17.9, Dynamic ARP Inspection: validating ARP against the DHCP snooping binding database, trusted and untrusted ports, dropping and logging invalid packets (read 2026-10-06)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-9/configuration_guide/sec/b_179_sec_9300_cg/configuring_dynamic_arp_inspection.html)
+- [Wikipedia, ARP spoofing: the stateless, unauthenticated cache behaviour that makes the attack possible, and the defence survey (read 2026-10-06)](https://en.wikipedia.org/wiki/ARP_spoofing)

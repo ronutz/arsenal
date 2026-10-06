@@ -21,6 +21,8 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// The subject keys, one rule for this page and the human sitemap (2026-10-06).
+import { subjectKeys } from "@/lib/subjects";
 import { routing } from "@/i18n/routing";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -37,18 +39,9 @@ import { vendorColor } from "@/config/vendors";
  * have at least one article. Keeps a page alive for a category even if it is
  * currently tool-only or article-only.
  */
+/** The subject keys, from the shared rule (src/lib/subjects.ts, moved there 2026-10-06 so the human sitemap lists the same set). */
 function categoryKeys(): string[] {
-  const set = new Set<string>();
-  // vendorNeutral tools are open-standard tools merely affiliated with a hub;
-  // they count as generic here (see the field doc in src/config/tools.ts).
-  for (const t of tools.filter((tool) => !(tool.vendors ?? []).length || tool.vendorNeutral)) {
-    set.add(t.category);
-    for (const c of t.secondaryCategories ?? []) set.add(c);
-  }
-  for (const group of getArticlesByCategory()) {
-    if (group.articles.length > 0) set.add(group.category);
-  }
-  return Array.from(set);
+  return subjectKeys();
 }
 
 export function generateStaticParams() {

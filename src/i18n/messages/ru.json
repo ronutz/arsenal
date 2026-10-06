@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Инструменты для сетей и безопасности, которые работают на вашей собственной машине, а не в чужом облаке."
+    "tagline": "Инструменты, знания, история и практика сетей и безопасности"
   },
   "nav": {
     "tools": "Инструменты",
@@ -889,7 +889,7 @@
     "backHome": "Вернуться на главную"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann — Senior Technical Instructor и советник в <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann — <r>Senior Technical Instructor и советник</r> в <b>Red Education</b>",
     "privacy": "Конфиденциальность",
     "builtWith": "Создано Rodolfo Nützmann с CONCORD",
     "colophon": "Как это было создано",

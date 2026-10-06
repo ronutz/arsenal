@@ -36,6 +36,8 @@ import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
+// The industry record's size, from the registry (2026-10-06), for the "Other subjects" paragraph.
+import { getSiteCounts } from "@/lib/siteCounts";
 
 import ReduBrand from "@/components/ReduBrand";
 export async function generateMetadata({
@@ -113,12 +115,15 @@ export default async function SpeakingPage({
 
           {/* Other subjects, pointing at the industry record. This is the one
               genuine differentiator available to a speaker with no video reel
-              yet: a hundred and sixty published company histories are evidence
-              that the material exists and has been researched. */}
+              yet: the published company histories are evidence that the
+              material exists and has been researched. The count is the
+              registry's own (2026-10-06, SCOUT's adoption audit row 7: the copy
+              said "more than a hundred and sixty" while the record held 364),
+              so it moves with the record instead of going stale in the copy. */}
           <section className="section">
             <div className="container section-narrow">
               <h2 className="section-title">{t("customTitle")}</h2>
-              <p className="section-body">{t("customBody")}</p>
+              <p className="section-body">{t("customBody", { count: getSiteCounts(locale).industry })}</p>
               <p className="section-cta">
                 <Link href="/industry" className="section-cta-link">
                   {t("customLink")} &rarr;

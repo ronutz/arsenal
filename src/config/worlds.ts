@@ -54,10 +54,10 @@ export const WORLDS: readonly World[] = [
       { label: "map.tools", href: "/tools" },
       { label: "map.dev", href: "/dev" },
     ],
+    // The three subject pages that sat here (Network, Security, Identity, a remnant of the old top navigation) left
+    // on 2026-10-06 (SCOUT's adoption audit, row 20: why three of eleven?). The human sitemap now lists all eleven
+    // subject pages in a block of their own, from src/lib/subjects.ts.
     more: [
-      { label: "nav.network", href: "/category/networking" },
-      { label: "nav.security", href: "/category/security" },
-      { label: "nav.identity", href: "/category/identity" },
       { label: "=API", href: "/api" },
       { label: "nav.devFun", href: "/dev/fun" },
     ],

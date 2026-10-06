@@ -17,6 +17,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeLocaliseLinks from "@/lib/rehypeLocaliseLinks";
 import BigipTimeline from "@/components/learn/BigipTimeline";
+// The traffic-diversion series figure (2026-10-06): the before/after man-in-the-middle principle.
+import DiversionScene from "@/components/learn/DiversionScene";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import { rehypeGlossaryHints } from "@/lib/rehypeGlossaryHints";
 import { getHintSurfaces } from "@/lib/glossaryHints";
@@ -162,7 +164,7 @@ export default async function ArticlePage({
                     rehypePlugins: [[rehypeGlossaryHints, getHintSurfaces()], [rehypeLocaliseLinks, locale]],
                   },
                 }}
-                components={{ BigipTimeline, GlossaryTerm }}
+                components={{ BigipTimeline, GlossaryTerm, DiversionScene }}
               />
             </div>
 

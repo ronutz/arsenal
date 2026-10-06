@@ -5009,6 +5009,12 @@ p.vendor-hub-strip { margin: -1rem 0 1.75rem; }
      screens the browser was breaking it as "...Red" / "Education". */
   white-space: nowrap;
 }
+/* Since 2026-10-06 (footer option B) the brand name is itself the external link
+   and the role phrase is the internal one, so the sentence has loose words
+   between two anchors. The paragraph takes the muted colour the single link had,
+   and the brand keeps its red on hover instead of taking the hover grey. */
+.footer-redu { color: color-mix(in srgb, var(--text-secondary) 67%, var(--text-tertiary) 33%); }
+.footer-redu a.brand:hover { color: var(--redu-brand); }
 
 /* Narrow screens: the coffee link and the Red Education callout no longer fit
    on one line (the pt-BR string is the longest and needs the most room), and
@@ -8760,6 +8766,17 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 
 /* ---- blog index: the honest status line under the intro (PRIME 2026-10-05, G17) ---- */
 .blog-status { margin: -0.25rem 0 1.25rem; font-size: 0.9rem; color: var(--text-secondary); }
+/* The blog index as articles (2026-10-06): the card look of the old link list, with the post as content. The title
+   link's ::after stretches over the card so the card stays one click target; the focus ring stays on the link. */
+.blog-list { list-style: none; display: grid; gap: 0.75rem; margin: 0; padding: 0; }
+.blog-entry { position: relative; display: flex; flex-direction: column; gap: 0.3rem; padding: 1rem 1.25rem; background: var(--surface-base); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); transition: border-color 0.15s ease; }
+.blog-entry:hover, .blog-entry:focus-within { border-color: var(--accent-primary); }
+.blog-entry-title { margin: 0; font-size: 1.05rem; font-weight: 600; line-height: 1.35; text-wrap: balance; }
+.blog-entry-title a { color: var(--accent-primary); text-decoration: none; }
+.blog-entry-title a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.blog-entry-meta { margin: 0; font-size: 0.85rem; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
+.blog-entry-lede { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
+@media (prefers-reduced-motion: reduce) { .blog-entry { transition: none; } }
 .blog-status a { color: inherit; text-decoration: underline; text-underline-offset: 0.15em; }
 
 /* ---- f5-dos-vector-explainer -------------------------------------------- */
@@ -15157,6 +15174,10 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 .sitemap-links { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
 .sitemap-link { color: var(--text-primary); text-decoration: none; }
 .sitemap-link:hover { color: var(--accent-primary); }
+/* By subject (2026-10-06): all eleven subject pages under the five worlds, in columns that wrap at phone width. */
+.sitemap-group--subjects { --world-accent: var(--border-strong); margin-top: 32px; }
+.sitemap-subjects-lede { margin: 0 0 10px; font-size: 13px; color: var(--text-tertiary); }
+.sitemap-links--subjects { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); column-gap: 28px; }
 .sitemap-xml-note { margin-top: 32px; font-size: 12px; }
 
 /* Career chip strip on /industry (Option B, 2026-07-16): the personal record
@@ -19061,6 +19082,11 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 @media (max-width: 22rem) {
   .ls-trigger-name { display: none; }
+  /* Two rows of destinations at 320 px in every authored language (2026-10-06, the acceptance pass of SCOUT's adoption
+     audit): measured in Portuguese, "Treinamentos Consultoria | Sobre" needed 290 px of a 288 px row and fell to a
+     third row; tighter group spacing below 22rem brings the second row to about 272 px. English already fit. */
+  .site-nav-group { gap: 0.25rem 0.7rem; }
+  .site-nav-group + .site-nav-group { margin-inline-start: 0.6rem; padding-inline-start: 0.6rem; }
 }
 
 /* ==========================================================================
@@ -19530,6 +19556,10 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 /* Section headings inside the hub: the page's section-title with air above. */
 .hub-h2 { margin-top: 2.75rem; }
 .hub-lede { margin: 0.35rem 0 1.1rem; max-width: 62ch; color: var(--text-secondary); line-height: 1.6; }
+/* A link inside a hub's lede reads as a link (2026-10-06: the Learn and Tools indexes name the vendor hubs that hold
+   what they do not list). Accent colour plus an underline, so colour is not the only signal. */
+.hub-lede a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: 0.15em; }
+.hub-lede a:hover { color: var(--text-primary); }
 .intent-grid--hub { margin-top: 1.1rem; }
 /* The subject browser: one card per subject, the category colour as the dot and the left rule. */
 .hub-subject-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: 0.75rem; }
@@ -20541,4 +20571,16 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .timeline-filter-era-anchor:hover,
 .timeline-filter-era-anchor:focus-visible {
   text-decoration: underline;
+}
+
+/* DiversionScene (Learn, traffic-diversion series opener, 2026-10-06): the
+   before/after man-in-the-middle figure. A quiet framed panel inside the
+   article body; the SVG scales with its viewBox, so the container only sets
+   the frame and the vertical rhythm. Tokens only, so it tracks every theme. */
+.diversion-scene {
+  margin: 1.75rem 0;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-base);
 }

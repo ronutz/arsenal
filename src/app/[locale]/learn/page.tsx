@@ -58,6 +58,8 @@ import MessageSlice from "@/components/MessageSlice";
 import { CHANGELOG } from "@/content/changelog/changelog";
 import { tools as toolRegistry } from "@/config/tools";
 import SiteFooter from "@/components/SiteFooter";
+// The shared named counts (2026-10-06): the platform-article figure the index's lede states beside its own.
+import { getSiteCounts } from "@/lib/siteCounts";
 
 export async function generateMetadata({
   params,
@@ -273,7 +275,17 @@ export default async function LearnIndexPage({
             {/* ---- THE DIRECTORY: the complete article index, explicitly named and counted (L9, L28). ---- */}
             <div className="hub-directory-head" id="directory">
               <h2 className="section-title hub-h2">{t("hub.directoryTitle")}</h2>
-              <p className="hub-lede">{t("hub.directoryLede", { count: articleCount, subjects: groups.length })}</p>
+              {/* The scope stated with the number (SCOUT's adoption audit, 2026-10-06, rows 4 and 22): this index holds the
+                  vendor-neutral articles; the ones about a single vendor's platform are counted beside them, from the same
+                  corpus split getArticlesByCategory applies, with the door to the hubs that gather them. */}
+              <p className="hub-lede">
+                {t.rich("hub.directoryLede", {
+                  count: articleCount,
+                  subjects: groups.length,
+                  platform: getSiteCounts(locale).articlesPlatform,
+                  hubs: (chunks) => <Link href="/vendor-hubs">{chunks}</Link>,
+                })}
+              </p>
             </div>
 
             {/* Sticky nav-utility bar (PRIME 2026-07-09): jump-to + show-only +

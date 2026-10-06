@@ -92,6 +92,9 @@ const RED_EDUCATION_VENDORS: { name: string; href?: string }[] = [
 
 // The public case study on rededucation.com that names Rodolfo (verified
 // 2026-07-09). Deep link keeps the referrer via externalRel.
+// Red Education's professional-services page (read 2026-10-06), linked from the "Beyond training" block and listed
+// among the official sources; the same destination the advisory page's implementation boundary links.
+const RED_EDUCATION_PS_URL = "https://www.rededucation.com/professional-services/";
 const CASE_STUDY_URL =
   "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/";
 
@@ -392,6 +395,33 @@ export default async function RedEducationPage({
                   and says more in nine words than a paraphrase would. */}
             </div>
           </section>
+          {/* BEYOND TRAINING (2026-10-06, SCOUT's Round 1 adoption audit, row 18): the professional-services side of
+              Red Education, which the advisory page already names as one option after a decision and which this page,
+              the institution's own, did not mention. Facts read on 2026-10-06 from rededucation.com/professional-services/
+              (the services, who delivers them), written here in this site's words; the boundary sentence says where
+              the author's own work ends. One attributed contextual link, the same destination the advisory page uses,
+              with this page's own placement in the attribution; the page also joins the official sources below. */}
+          <section id="professional-services" className="section section-accent">
+            <div className="container redu-container">
+              <h3 className="redu-section-title">{t("psTitle")}</h3>
+              <p className="redu-body"><ReduBrand linked={false}>{t("psBody")}</ReduBrand></p>
+              <p className="redu-body">
+                {t.rich("psBoundary", {
+                  adv: (chunks) => <Link href="/advisory#implementation" className="redu-inline-link">{chunks}</Link>,
+                })}
+              </p>
+              <p className="redu-body">
+                <a
+                  href={attributeRedEducationUrl(RED_EDUCATION_PS_URL, { pageType: "red-education", locale, cta: "professional-services" })}
+                  target="_blank"
+                  rel={externalRel(RED_EDUCATION_PS_URL)}
+                  className="redu-inline-link"
+                >
+                  {t("psLink")} &#8599;
+                </a>
+              </p>
+            </div>
+          </section>
           {/* PART 3: mywork (G7). */}
           <div className="container redu-container redu-part" id="my-work">
             <p className="redu-part-eyebrow mono">{t("partsLabel", { n: 3 })}</p>
@@ -613,6 +643,7 @@ export default async function RedEducationPage({
                   { key: "culture", url: "https://www.rededucation.com/about-us/our-culture/" },
                   { key: "explainers", url: "https://www.rededucation.com/course-explained/" },
                   { key: "news", url: "https://www.rededucation.com/news/" },
+                  { key: "professionalServices", url: RED_EDUCATION_PS_URL },
                   { key: "case1", url: "https://www.rededucation.com/case-studies/high-impact-fortinet-training-at-scale-for-global-it-leader/", vendor: "fortinet" },
                   { key: "case2", url: "https://www.rededucation.com/case-studies/enhancing-f5-big-ip-platform-capabilities-with-irules-training/", vendor: "f5" },
                 ].map((src) => {

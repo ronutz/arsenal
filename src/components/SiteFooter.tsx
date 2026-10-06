@@ -24,12 +24,16 @@ import LicenseBadges from "@/components/LicenseBadges";
 import ItemViews from "@/components/ItemViews";
 import { getLocale } from "next-intl/server";
 import { WORLDS } from "@/config/worlds";
+import { attributeRedEducationUrl, externalRel, RED_EDUCATION_BASE } from "@/config/redEducation";
 
 export default async function SiteFooter() {
   const t = await getTranslations("footer");
   const tBadges = await getTranslations("licenseBadges");
   const tStats = await getTranslations("stats_page");
   const locale = await getLocale();
+  // The footer's affiliation link to Red Education (option B, PRIME 2026-10-06 13:01): the root destination
+  // with the five-parameter attribution, pageType "footer" and cta "affiliation", built once per render.
+  const reduAffiliationHref = attributeRedEducationUrl(RED_EDUCATION_BASE, { pageType: "footer", locale, cta: "affiliation" });
   // The five worlds' titles and entry labels live with the home page's copy (home.front.world.*, home.map.*).
   const tHome = await getTranslations("home");
   const tNav = await getTranslations("nav");
@@ -144,17 +148,36 @@ export default async function SiteFooter() {
             2026-10-06 (PRIME 12:02) the copy is the affiliation, "Rodolfo
             Nützmann is a Senior Technical Instructor and Advisor at Red
             Education", in all 16 message packs, replacing the booking pitch.
-            Only the brand name is colored (the <b> tag in the message) and
-            the line ends with a graduation cap. Points to the on-site profile/homage page
-            (/red-education), which carries the lead-attributed outbound link
-            - site-wide internal linking for the page (PRIME 2026-07-09). */}
+            Since 2026-10-06 13:01 (PRIME, option B of the footer decision) the
+            sentence carries TWO links: the role phrase (the <r> tag in the
+            message) goes to the on-site profile page /red-education, and the
+            brand name (the <b> tag) is a followed external link to
+            rededucation.com, attributed at render time like every other Red
+            Education link (pageType "footer", cta "affiliation", so analytics
+            can tell the site-wide affiliation apart from the page CTAs) and
+            with externalRel so the referrer is sent. One brand-anchor link per
+            page, no CTA, no superlatives: an affiliation statement, which is
+            the form Google's own linking guidance treats as a regular link. The
+            line still ends with a graduation cap. */}
         <p className="footer-support footer-built footer-redu">
-          <Link href="/red-education" className="footer-built-link">
-            {t.rich("redEducation", {
-              b: (chunks) => <span className="brand">{chunks}</span>,
-            })}
-            {"\u00A0🎓"}
-          </Link>
+          {t.rich("redEducation", {
+            r: (chunks) => (
+              <Link href="/red-education" className="footer-built-link">
+                {chunks}
+              </Link>
+            ),
+            b: (chunks) => (
+              <a
+                href={reduAffiliationHref}
+                target="_blank"
+                rel={externalRel(reduAffiliationHref)}
+                className="footer-built-link brand"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
+          {"\u00A0🎓"}
         </p>
 
         {/* QUIET TRAILING LINE - one dimmed closing row: the build stamp

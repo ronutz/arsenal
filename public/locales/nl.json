@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Netwerk- en beveiligingstools die op jouw machine draaien, niet in de cloud van iemand anders."
+    "tagline": "Netwerk- en beveiligingstools, kennis, geschiedenis en praktijk"
   },
   "nav": {
     "tools": "Tools",
@@ -889,7 +889,7 @@
     "backHome": "Terug naar home"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann is Senior Technical Instructor en adviseur bij <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann is <r>Senior Technical Instructor en adviseur</r> bij <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Gebouwd door Rodolfo Nützmann met CONCORD",
     "colophon": "Hoe dit is gebouwd",

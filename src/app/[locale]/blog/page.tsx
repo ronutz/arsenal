@@ -87,20 +87,27 @@ export default async function BlogIndexPage({
               })}
             </p>
 
+            {/* The posts as content, not as a list of links (2026-10-06, SCOUT's Round 1 adoption audit, row "Blog"):
+                each entry used to be one link wrapping title, date and summary, a shape text extractors read as
+                navigation and drop, which is how an outside crawler reported "twelve pieces so far" over an empty
+                page. Now each post is an article: its title a heading that carries the link, the date in a <time>,
+                the summary as plain text. The title link stretches over the card (CSS ::after), so the whole card
+                stays one click target while the words stay readable as words. */}
             {posts.length === 0 ? (
               <p className="ztc-empty">{t("empty")}</p>
             ) : (
-              <ul className="article-related-list">
+              <ul className="blog-list">
                 {posts.map((p) => (
                   <li key={p.slug}>
-                    <Link href={`/blog/${p.slug}`} className="article-related-link">
-                      <span className="article-related-link-title">{p.title}</span>
-                      <span className="article-related-link-summary">
+                    <article className="blog-entry">
+                      <h2 className="blog-entry-title">
+                        <Link href={`/blog/${p.slug}`}>{p.title}</Link>
+                      </h2>
+                      <p className="blog-entry-meta">
                         <time dateTime={p.date}>{fmt.format(new Date(`${p.date}T12:00:00Z`))}</time>
-                        {" - "}
-                        {p.summary}
-                      </span>
-                    </Link>
+                      </p>
+                      <p className="blog-entry-lede">{p.summary}</p>
+                    </article>
                   </li>
                 ))}
               </ul>

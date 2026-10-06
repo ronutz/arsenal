@@ -304,10 +304,20 @@ export default async function ToolsPage({
             )}
           </div>
 
-          {/* THE COMPLETE INDEX, named and counted (E7): the directory layer begins here. */}
+          {/* THE GENERAL-PURPOSE INDEX, named and counted (E7): the directory layer begins here. Renamed from "The complete
+              index" on 2026-10-06 (SCOUT's adoption audit, rows 5 and 22): it lists the general-purpose tools, so the lede
+              states that scope and counts the platform tools beside it (every available tool this index does not list),
+              with the door to the vendor hubs where they live. */}
           <div className="container certs-container hub-directory-head" id="directory">
             <h2 className="section-title hub-h2">{t("hub.directoryTitle")}</h2>
-            <p className="hub-lede">{t("hub.directoryLede", { count: agnosticTools.length, categories: categories.length })}</p>
+            <p className="hub-lede">
+              {t.rich("hub.directoryLede", {
+                count: agnosticTools.length,
+                categories: categories.length,
+                platform: tools.filter((tl) => tl.available).length - agnosticTools.length,
+                hubs: (chunks) => <Link href="/vendor-hubs">{chunks}</Link>,
+              })}
+            </p>
           </div>
 
 

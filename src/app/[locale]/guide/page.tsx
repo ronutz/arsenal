@@ -115,7 +115,8 @@ export default async function GuidePage({
     "/tools": tHome("map.toolsBadge", { count: counted.tools }),
     "/learn": tHome("map.learnBadge", { count: counted.articles }),
     "/stories": tHome("map.storiesBadge", { count: counted.stories }),
-    "/study-guides": tHome("map.guidesBadge", { count: counted.guides }),
+    // Reading paths, the study guides page's own figure; the certification guides keep theirs on the next row (2026-10-06).
+    "/study-guides": tHome("map.guidesBadge", { count: counted.readingPaths }),
     "/certifications": tHome("map.certsBadge", { count: counted.guides }),
     "/glossary": tHome("map.glossaryBadge", { count: counted.glossary }),
     "/practice": tHome("map.practiceBadge", { count: counted.practice }),
@@ -153,6 +154,9 @@ export default async function GuidePage({
     { label: t("ds.tools"), value: String(liveToolCount) },
     { label: t("ds.categories"), value: String(categoryCount) },
     { label: t("ds.articles"), value: String(articleCount) },
+    // Two rows where there was one (2026-10-06): the reading paths and the certification guides are different
+    // datasets, and the row once labelled "Study guides" carried the certification figure.
+    { label: t("ds.paths"), value: String(counted.readingPaths) },
     { label: t("ds.guides"), value: String(counted.guides) },
     { label: t("ds.hubs"), value: String(counted.hubs) },
     { label: t("ds.industry"), value: String(counted.industry) },

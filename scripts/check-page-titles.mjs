@@ -47,9 +47,12 @@ if (!fs.existsSync(BASE)) {
 // same root cause this guard's header describes; the 2026-08-16 fix reached the
 // index routes and never came back for these.
 //
-// Two remain, and both are correct:
+// Two remained, and both were correct:
 //   /                          the homepage, where the site IS the subject
 //   /dev/other/serial-console  a dev route, not public surface
+// One remains since 2026-10-06: the serial-console redirect stub reached the sunset PRIME set for it (2026-10-01,
+// "should not last forever") and was deleted with milestone (q), which also ended its title's one collision: the
+// site-wide default title became the home's identity line that day, so the stub and the homepage briefly shared it.
 //
 // Titles come from keys that already existed in en.json and pt-BR.json, so both
 // authored locales resolve. No ogImages() was added: none of these slugs is in
@@ -67,7 +70,6 @@ if (!fs.existsSync(BASE)) {
 // change, and the total is still two.
 const DECLARED_DEFAULT = new Map([
   ["/", "The homepage, where the site itself IS the subject. Since 2026-10-05 it sets its own title (home.front.metaTitle, 'ronutz · Network & security tools, knowledge, history and practice', PRIME's decision 4 of 05/10), which shares the 'ronutz · Network' opening this guard keys on by design: a title that starts with the site name is the right one here and a fallback anywhere else."],
-  ["/dev/other/serial-console", "A dev route, not public surface. Nothing competes with it for search intent."],
 ]);
 
 

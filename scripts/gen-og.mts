@@ -446,7 +446,7 @@ async function siteWide() {
   const jobs = enumerateJobs();
   let written = 0, skipped = 0;
   // Default fallback card (kind "page", slug "default"), always PNG.
-  await render("default", { eyebrow: EYEBROW.page.en, locale: "en", title: "ronutz.com", tagline: "Network, security, and identity tools that compute, never guess.", color: C.cyan }, OG_DIR);
+  await render("default", { eyebrow: EYEBROW.page.en, locale: "en", title: "ronutz.com", tagline: "Network & security tools, knowledge, history and practice." /* the site identity line since 2026-10-06 (SCOUT adoption audit row 19); the toolbox line was the old default */, color: C.cyan }, OG_DIR);
   for (const job of jobs) {
     const r = await renderJob(job, manifest);
     if (r === "written") {
@@ -602,7 +602,7 @@ async function samples() {
       eyebrow: EYEBROW.page.en,
       locale: "en",
       title: "ronutz.com",
-      tagline: "Network, security, and identity tools that compute, never guess.",
+      tagline: "Network & security tools, knowledge, history and practice." /* the site identity line since 2026-10-06 (SCOUT adoption audit row 19); the toolbox line was the old default */,
       color: C.cyan,
     },
     outDir,

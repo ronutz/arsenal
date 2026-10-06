@@ -30,6 +30,8 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 import { tools } from "../src/config/tools";
+// The shared, registry-derived counts (2026-10-06), the same figures the home page and the user guide state.
+import { getSiteCounts } from "../src/lib/siteCounts";
 import { LIVE_LOCALES } from "../src/i18n/locales";
 
 /** BCP-47 codes of the locales actually built (each is also its URL segment). */
@@ -319,7 +321,8 @@ const rss: string[] = [
   '<?xml version="1.0" encoding="UTF-8"?>',
   '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
   "  <channel>",
-  `    <title>${xml(SITE_NAME)} — Learn</title>`,
+  // A middle dot, not an em dash (D-55; 2026-10-06): the channel title is public English text.
+  `    <title>${xml(SITE_NAME)} · Learn</title>`,
   `    <link>${ORIGIN}/${SOURCE_LOCALE}/learn</link>`,
   `    <description>${xml(TAGLINE)}</description>`,
   "    <language>en</language>",
@@ -345,8 +348,13 @@ fs.writeFileSync(path.join(OUT, "feed.xml"), rss.filter((l) => l !== "").join("\
 // ---- 4. llms.txt ---------------------------------------------------------
 const L: string[] = [`# ${SITE_NAME}.com`, ""];
 if (TAGLINE) L.push(`> ${TAGLINE}`, "");
+// The site as it is now, not only its toolbox (2026-10-06, SCOUT's Round 1 adoption audit, row 19: "make the
+// machine-readable identity agree with the human-facing one"). Every figure comes from the shared counts the home
+// page and the user guide state (src/lib/siteCounts.ts), so this paragraph cannot drift from the pages.
+const SC = getSiteCounts(SOURCE_LOCALE);
+const n = (x: number) => x.toLocaleString("en-US");
 L.push(
-  "Deterministic network, security, and identity tools that run locally in your browser, alongside in-depth Learn articles. Each tool and article links to a clean Markdown version below.",
+  `The working site of Rodolfo Nützmann, Senior Technical Instructor and Advisor at Red Education: ${n(SC.tools)} deterministic network, security and identity tools that compute in your browser (nothing you type leaves it), ${n(SC.articles)} Learn articles grounded in vendors' own documentation and the standards, a glossary of ${n(SC.glossary)} entries, the industry's history in ${n(SC.industry)} organisation records, the practice of running and defending networks, and the training and advisory work it supports. Each tool and article below links to a clean Markdown version.`,
   "",
 );
 
@@ -384,10 +392,21 @@ L.push(
   "## More",
   "",
   ...hubVendors.map(
-    (v) => `- [${v.toUpperCase()} vendor hub](${ORIGIN}/${SOURCE_LOCALE}/${v}/): every ${v.toUpperCase()} tool and article on one page`,
+    // Display names from the English pack ("Check Point", "Ping Identity"), not the upper-cased keys (2026-10-06).
+    (v) => `- [${I18N.en.tools?.vendors?.[v] ?? v} vendor hub](${ORIGIN}/${SOURCE_LOCALE}/${v}/): the ${I18N.en.tools?.vendors?.[v] ?? v} tools, articles and certification material, through one door`,
   ),
+  // The rest of the site (2026-10-06): the destinations a reader of the human site would find, with derived counts.
+  `- [Industry](${ORIGIN}/${SOURCE_LOCALE}/industry): the industry record, ${n(SC.industry)} organisations with their lineages, and the people who built it`,
+  `- [The Practice](${ORIGIN}/${SOURCE_LOCALE}/practice): running and defending networks, from before it breaks to after it is over`,
+  `- [Glossary](${ORIGIN}/${SOURCE_LOCALE}/glossary): ${n(SC.glossary)} terms, acronyms, jargon and industry lore`,
+  `- [Study guides](${ORIGIN}/${SOURCE_LOCALE}/study-guides): ${n(SC.readingPaths)} curated reading paths`,
+  `- [Certification guides](${ORIGIN}/${SOURCE_LOCALE}/certifications): ${n(SC.guides)} exam guides mapped to the vendors' published blueprints`,
+  `- [Vendor hubs](${ORIGIN}/${SOURCE_LOCALE}/vendor-hubs): one door per platform`,
   `- [About](${ORIGIN}/${SOURCE_LOCALE}/about): background, credentials, and history`,
   `- [Training](${ORIGIN}/${SOURCE_LOCALE}/training): instructor-led course offerings`,
+  `- [Advisory](${ORIGIN}/${SOURCE_LOCALE}/advisory): independent technical advisory for consequential technology decisions`,
+  `- [Speaking](${ORIGIN}/${SOURCE_LOCALE}/speaking): talks on networking, security and the industry's history`,
+  `- [Changelog](${ORIGIN}/${SOURCE_LOCALE}/changelog): what changed on the site, dated`,
   `- [Learn RSS feed](${ORIGIN}/feed.xml): most recent articles`,
   // The Importance Meter is UNLISTED in the site's own navigation - nothing
   // links to it - but PRIME asked for it to appear in the machine-readable

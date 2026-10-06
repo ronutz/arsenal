@@ -48,9 +48,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "vendorsHome" });
+  // The hub names come from the hub registry, joined the locale's way, so the description lists every hub there is
+  // (2026-10-06: the typed list named six of the eight hubs). Intl.ListFormat is the platform's list joiner.
+  const tVendors = await getTranslations({ locale, namespace: "tools" });
+  const names = new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(
+    VENDOR_FAMILIES.map((fam) => tVendors(`vendors.${fam.key}`)),
+  );
   return {
     title: t("metaTitle"),
-    description: t("metaDescription"),
+    description: t("metaDescription", { count: VENDOR_FAMILIES.length, names }),
   };
 }
 

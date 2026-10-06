@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "在您自己的设备上运行的网络与安全工具，而非别人的云端。"
+    "tagline": "网络与安全的工具、知识、历史与实践"
   },
   "nav": {
     "tools": "工具",
@@ -889,7 +889,7 @@
     "backHome": "返回首页"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann 是 <b>Red Education</b> 的高级技术讲师兼顾问",
+    "redEducation": "Rodolfo Nützmann 是 <b>Red Education</b> 的<r>高级技术讲师兼顾问</r>",
     "privacy": "隐私",
     "builtWith": "由 Rodolfo Nützmann 使用 CONCORD 打造",
     "colophon": "如何打造",

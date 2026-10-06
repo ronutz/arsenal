@@ -18,6 +18,8 @@
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
+import { retirementState, type RetirementState } from "@/lib/retirement";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
@@ -55,6 +57,14 @@ export default async function CertificationsHubPage({
   const t = await getTranslations("certGuides");
   const tNav = await getTranslations("nav");
   const tVendors = await getTranslations("vendors");
+  // The badge text of a retirement notice on the build day (src/lib/retirement.ts; 2026-10-06): the scope and the
+  // state pick the words, the date stays verbatim as the vendor published it.
+  const retirementBadge = (scope: "this-exam" | "previous-version", state: RetirementState, until: string): string | null =>
+    scope === "this-exam"
+      ? `${t(state === "passed" ? "retiredLabel" : "retiringLabel")} ${until}`
+      : state === "upcoming"
+        ? `${t("previousUntilLabel")} ${until}`
+        : null;
 
   // -- Build the hub's vendor->certification->guide tree server-side, with
   //    every display string resolved here so the client component owns only
@@ -96,7 +106,6 @@ export default async function CertificationsHubPage({
       standaloneLabel: t("standaloneTrackLabel"),
       prerequisites: cert.prerequisites ?? [],
       prerequisitesLabel: t("prerequisitesLabel"),
-      retiringLabel: t("retiringLabel"),
       // The vendor's own page for THIS certification. Stored since the model
       // was written and never rendered until now, which meant a reader had no
       // one-click way to check the requirements against the source.
@@ -114,6 +123,13 @@ export default async function CertificationsHubPage({
           // are not yet sittable without opening each guide.
           availabilityNote: guide.availabilityNote ?? null,
           retirement: guide.retirement ?? null,
+          // The retirement badge, computed on the build day (2026-10-06, SCOUT's adoption audit row 8): "Retiring
+          // <date>" while this guide's own exam can still be sat, "Retired <date>" once that day has passed;
+          // "Previous version until <date>" while an earlier version is being withdrawn and this guide maps the
+          // successor, and nothing once that day has passed, because the guide itself is current.
+          retirementBadge: guide.retirement
+            ? retirementBadge(guide.retirement.scope, retirementState(guide.retirement.untilIso), guide.retirement.until)
+            : null,
           badge: guide.status === "preparing" ? t("inPreparation") : t("objectivesCount", { count: n }),
           cta: t("openGuide"),
         };

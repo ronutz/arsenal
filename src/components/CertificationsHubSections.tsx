@@ -28,6 +28,8 @@ export interface HubGuide {
   /** Set when a version of this exam is being withdrawn (PRIME 2026-07-26).
    *  Shown on the card because a deadline changes what to book. */
   retirement?: { exam: string; until: string; replacedBy: string | null } | null;
+  /** The card's retirement badge, worded and dated by the page on the build day (2026-10-06); null when none applies. */
+  retirementBadge?: string | null;
   cta: string;
 }
 
@@ -49,7 +51,6 @@ export interface HubCert {
   standaloneLabel?: string;
   prerequisites?: string[];
   prerequisitesLabel?: string;
-  retiringLabel?: string;
   /** The vendor's own page for this certification, so requirements can be
    *  checked against the source rather than trusted to this site. */
   sourceUrl?: string | null;
@@ -256,9 +257,9 @@ export default function CertificationsHubSections({
                                     {cert.standaloneLabel}
                                   </p>
                                 )}
-                                {guide.retirement && (
+                                {guide.retirementBadge && (
                                   <p className="certhub-guide-badge certhub-guide-badge--prep">
-                                    {cert.retiringLabel} {guide.retirement.until}
+                                    {guide.retirementBadge}
                                   </p>
                                 )}
                                 {guide.availabilityNote && (

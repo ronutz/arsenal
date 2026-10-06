@@ -20,7 +20,8 @@
 // context of its own — same pattern as CategoryFilter / ToolVendorFilter.
 //
 // The result count and the empty-state line are updated live so a fully
-// filtered page never looks broken.
+// filtered page never looks broken. Since 2026-10-06 the empty-state line is
+// rendered only when a filter leaves nothing, never in the static HTML.
 // ============================================================================
 "use client";
 
@@ -104,9 +105,8 @@ export default function GlossaryFilter({
         railItem?.classList.toggle("is-empty", anyVisible === 0);
       }
     }
-    // Reveal the empty-state line only when nothing matches.
-    const empty = document.querySelector<HTMLElement>("[data-glossary-empty]");
-    if (empty) empty.classList.toggle("is-visible", shown === 0);
+    // The empty-state line is rendered by React from `visible` (below), so it only exists in the document when a
+    // filter leaves nothing; the count drives both the live status and that line.
     setVisible(shown);
   }, [domain, kind, query]);
 
@@ -234,10 +234,16 @@ export default function GlossaryFilter({
         )}
       </p>
 
-      {/* Empty state (revealed by CSS when the list has no visible rows). */}
-      <p className="gloss-empty" data-glossary-empty>
-        {noResultsLabel}
-      </p>
+      {/* Empty state, rendered only when the active filter leaves no row (visible === 0). It used to be in the
+          server-rendered HTML at all times, hidden by CSS until JavaScript decided, so text browsers, screen readers
+          and machine readers met "No entries match those filters." above 1,762 entries (SCOUT's Round 1 adoption
+          audit, 2026-10-06, row 6). On the server and before the first filter pass, visible is null: nothing renders.
+          role="status" announces it when it appears. */}
+      {visible === 0 && (
+        <p className="gloss-empty is-visible" data-glossary-empty role="status">
+          {noResultsLabel}
+        </p>
+      )}
     </div>
   );
 }

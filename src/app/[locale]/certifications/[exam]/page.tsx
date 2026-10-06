@@ -21,6 +21,8 @@
 
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+// Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
+import { retirementState } from "@/lib/retirement";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -77,8 +79,14 @@ export default async function StudyGuidePage({
   // The certification this exam belongs to (for the "Part of ..." line).
   const cert = getCertifications().find((c) => c.key === guide.certification);
 
-  // Vendor label for the disclaimer (proper display name; F5 kept uppercase).
-  const vendorLabel = guide.vendor === "f5" ? "F5" : guide.vendor;
+  // Vendor label for the disclaimer and the retirement notice: the vendor's display name from the same message map
+  // the vendor hubs use ("Check Point", "Fortinet", "Ping Identity"). Until 2026-10-06 only F5 was mapped and every
+  // other guide printed its raw key ("endorsed by checkpoint", "fortinet's own certification portal"), found while
+  // checking SCOUT's adoption audit; the key stays the fallback for a vendor the map does not know.
+  const tTools = await getTranslations("tools");
+  const vendorLabel = tTools.has(`vendors.${guide.vendor}`) ? tTools(`vendors.${guide.vendor}`) : guide.vendor;
+  // Where the retirement notice stands on the build day (src/lib/retirement.ts), when the guide carries one.
+  const retirementNow = guide.retirement ? retirementState(guide.retirement.untilIso) : null;
 
   return (
     <>
@@ -165,19 +173,36 @@ export default async function StudyGuidePage({
               {guide.retirement && (
             /* A retiring exam has a deadline and usually a successor, and
                both change what a candidate should book. Names and dates
-               stay verbatim; only the surrounding words are localised. */
+               stay verbatim; only the surrounding words are localised.
+               Since 2026-10-06 the words follow the build day and the
+               notice's scope (src/lib/retirement.ts): a date that has
+               passed is told in the past tense, and a notice about a
+               PREVIOUS version says that this guide maps the successor,
+               instead of reading as if this guide's exam were the one
+               going away (SCOUT's adoption audit, row 8). */
             <section className="section section-accent">
               <div className="container certs-container">
                 <p className="cidr-privacy">
                   <strong>
-                    {t("retirementNotice", {
-                      exam: guide.retirement.exam,
-                      until: guide.retirement.until,
-                    })}
+                    {guide.retirement.scope === "previous-version"
+                      ? t(retirementNow === "passed" ? "retirementPreviousPastNotice" : "retirementPreviousNotice", {
+                          exam: guide.retirement.exam,
+                          until: guide.retirement.until,
+                        })
+                      : t(retirementNow === "passed" ? "retirementPastNotice" : "retirementNotice", {
+                          exam: guide.retirement.exam,
+                          until: guide.retirement.until,
+                        })}
                   </strong>
                   {guide.retirement.replacedBy
-                    ? ` ${t("retirementReplacedBy", { exam: guide.retirement.replacedBy })}`
-                    : ` ${t("retirementNoReplacement")}`}
+                    ? ` ${
+                        guide.retirement.scope === "previous-version"
+                          ? t("retirementMapsSuccessor", { exam: guide.retirement.replacedBy })
+                          : retirementNow === "passed"
+                            ? t("retirementSuccessorIs", { exam: guide.retirement.replacedBy })
+                            : t("retirementReplacedBy", { exam: guide.retirement.replacedBy })
+                      }`
+                    : ` ${t("retirementNoReplacement", { vendor: vendorLabel })}`}
                 </p>
               </div>
             </section>

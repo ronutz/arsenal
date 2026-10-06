@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Network and security tools that run on your machine, not someone else's cloud."
+    "tagline": "Network & security tools, knowledge, history and practice"
   },
   "nav": {
     "tools": "Tools",
@@ -133,7 +133,7 @@
       "reduLede": "The global authorized training centre my courses are delivered through, and the story of how it got there.",
       "hubsBadge": "{count} vendor hubs",
       "glossaryBadge": "{count} entries",
-      "guidesBadge": "{count} guides",
+      "guidesBadge": "{count, plural, one {# reading path} other {# reading paths}}",
       "trainingBadge": "{count} courses across {vendors} vendors",
       "careerBadge": "{count} chapters",
       "rolesBadge": "{count} positions",
@@ -240,14 +240,14 @@
       "archiveTool": "the bits-and-bytes calculator, rebuilt",
       "archiveSites": "the earlier sites",
       "platformsTitle": "Browse by platform",
-      "platformsBody": "One door per vendor: the tools, articles, glossary terms and certification material for that platform, gathered in one place.",
+      "platformsBody": "One door per vendor: the tools, articles and certification material for that platform, with its reading path and industry record where they exist, gathered in one place.",
       "platformsAll": "All vendor hubs",
       "workTitle": "Work with me",
       "workBody": "When the problem leaves the browser. Three ways, each with its own page and its own terms.",
       "work": {
         "trainingVerb": "Train",
         "trainingTitle": "Training",
-        "trainingBody": "Authorized instructor-led courses across four platforms, taught from engineering practice rather than from the slide deck.",
+        "trainingBody": "Authorized instructor-led courses across four platforms, built on decades of engineering practice.",
         "trainingVia": "delivered through Red Education",
         "trainingCta": "Courses, schedules and what to expect",
         "advisoryVerb": "Decide",
@@ -11857,8 +11857,8 @@
       "switchDirectory": "Directory",
       "recentTitle": "Recently added",
       "recentLede": "The newest tools, from the changelog, newest first.",
-      "directoryTitle": "The complete index",
-      "directoryLede": "{count} tools in {categories} categories, every one of them listed below; jump to a category, show only some, or switch between cards and the list.",
+      "directoryTitle": "The general-purpose index",
+      "directoryLede": "{count} general-purpose tools in {categories} categories, every one of them listed below; the {platform, plural, one {# tool built for a single vendor's platform is} other {# tools built for a single vendor's platform are}} in the <hubs>vendor hubs</hubs>. Jump to a category, show only some, or switch between cards and the list.",
       "floors": "Three floors, one rule. <main>The main floor</main> is the catalogue: every tool with a manifest, golden vectors and a fixed shape, computing in your browser and nowhere else. <green>The green room</green> holds the tools whose form is still finding itself, same privacy, labelled as early. <red>The red room</red> is the one place a tool sends your input out, to the official service named on screen, and only when you press Ask.",
       "pasteTitle": "Paste what you have",
       "pasteLede": "A token, a header block, a log line, a certificate, a CIDR: paste it and the tools that recognise its shape line up, the surest first.",
@@ -11866,7 +11866,7 @@
       "pastePlaceholder": "eyJhbGciOi...   or   <34>1 2026-10-05T...   or   10.0.0.0/22   or   -----BEGIN CERTIFICATE-----",
       "pasteHint": "Matched in your browser against each tool's own input patterns; nothing is stored or sent.",
       "pasteResults": "Tools that recognise this",
-      "pasteNoMatch": "No tool recognises that shape yet. Try the intents below, or the complete index.",
+      "pasteNoMatch": "No tool recognises that shape yet. Try the intents below, or the general-purpose index.",
       "pasteClear": "Clear",
       "intentsTitle": "By what you need to do",
       "intentsLede": "The same index, grouped by the verb: what each tool does to what you give it.",
@@ -11959,7 +11959,7 @@
   },
   "footer": {
     "guide": "Guide",
-    "redEducation": "Rodolfo Nützmann is a Senior Technical Instructor and Advisor at <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann is a <r>Senior Technical Instructor and Advisor</r> at <b>Red Education</b>",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
     "api": "API reference",
@@ -12123,7 +12123,7 @@
     "metaTitle": "Rodolfo Nützmann - thirty years in enterprise networking and security",
     "advise": {
       "title": "How I advise",
-      "body": "Thirty years of first-hand experience with decisions that carry business or mission consequences: which technology to adopt, what to enable, what to improve, and what the adoption will actually cost in practice rather than on the slide. What I bring to a board or a steering committee is a structured, methodical and neutral analysis - the diagnosis, the options, the cautions, the risks, and what each one would take to carry out. Neutral is the operative word: I hold authorized instructor status across four platforms and no sales quota on any of them, so the recommendation is not the product of a commission. The impact is for the business to tell, and I would rather be judged on that than on the deck.",
+      "body": "Thirty years of first-hand experience with decisions that carry business or mission consequences: which technology to adopt, what to enable, what to improve, and what the adoption will actually cost in practice rather than on the slide. What I bring to a board or a steering committee is a structured, methodical and independent analysis - the diagnosis, the options, the cautions, the risks, and what each one would take to carry out. Independent is the operative word: I hold authorized instructor status across four platforms and no sales quota on any of them, so the recommendation is not the product of a commission. The impact is for the business to tell, and I would rather be judged on that than on the deck.",
       "short": "Thirty years of first-hand experience with decisions that carry business or mission consequences, offered as advisory.",
       "link": "What the advisory covers"
     },
@@ -12144,12 +12144,12 @@
       },
       "speak": {
         "verb": "Speak",
-        "what": "Talks and facilitation on networking, security and the craft of making complex things make sense."
+        "what": "Talks on networking, security and the craft of making complex things make sense."
       }
     },
     "why": {
       "title": "Why ronutz exists",
-      "body": "The tools I wanted while teaching did not exist in a form I could trust: calculators that compute instead of guessing, explanations that cite the vendor's own page, and a record of the industry I lived through that someone else can check. So I built them, in the open, from documentation read live, with nothing a reader types ever leaving the browser. The site is the classroom's companion, and it is free because the knowledge in it was never mine alone."
+      "body": "The tools I wanted while teaching did not exist in a form I could trust: calculators that compute instead of guessing, explanations that cite the vendor's own page, and a record of the industry I lived through that someone else can check. So I built them, in the open, from documentation read live, with nothing a reader types ever leaving the browser. The site began as the classroom's companion and grew into a workbench, a knowledge base and a record of the industry; it is free because the knowledge in it was never mine alone."
     },
     "how": {
       "title": "How I work",
@@ -13513,7 +13513,7 @@
           "verb": "prepare"
         },
         "platform": {
-          "q": "I work on a platform and need its documentation read for me",
+          "q": "I work with a specific platform",
           "label": "Vendor hubs",
           "verb": "learn a platform"
         },
@@ -13562,8 +13562,8 @@
           "lede": "Every article links the tools that compute what it explains; the tools link back."
         }
       },
-      "directoryTitle": "Complete article index",
-      "directoryLede": "All {count, plural, one {# article} other {# articles}}, grouped by {subjects, plural, one {# subject} other {# subjects}} and listed in each subject's reading order. Jump to a subject, filter, switch to the list, or search Learn above.",
+      "directoryTitle": "The vendor-neutral index",
+      "directoryLede": "All {count, plural, one {# vendor-neutral article} other {# vendor-neutral articles}}, grouped by {subjects, plural, one {# subject} other {# subjects}} and listed in each subject's reading order; the {platform, plural, one {# article} other {# articles}} about a single vendor's platform live in the <hubs>vendor hubs</hubs>. Jump to a subject, filter, switch to the list, or search Learn above.",
       "freshTitle": "New and revised",
       "freshNew": "New",
       "freshRevised": "Revised",
@@ -14503,10 +14503,11 @@
       "cost": "Price",
       "costValue": "Free to use; the first useful answer is never behind a paywall",
       "glossary": "Glossary terms",
-      "guides": "Study guides",
+      "guides": "Certification guides",
       "hubs": "Vendor hubs",
       "industry": "Organisations on the industry record",
-      "people": "People on the timeline"
+      "people": "People on the timeline",
+      "paths": "Reading paths"
     },
     "quickrefHeading": "Tool reference",
     "quickrefIntro": "Every general-purpose tool, grouped by category. This list is generated from the live registry, so it is always complete. Tools tied to a specific vendor live on that vendor's page.",
@@ -15239,14 +15240,14 @@
     "crumb": "Vendors",
     "eyebrow": "vendor hubs",
     "title": "Vendor hubs",
-    "lede": "One home for the vendors this site is built around. Each hub gathers every tool and every article for that vendor in one place - tools that compute locally in your browser, articles grounded in the vendor's own documentation.",
+    "lede": "Everything on ronutz for a platform, gathered through one door: its tools, computing locally in your browser, and its articles, grounded in the vendor's own documentation, with the certification guides, reading paths and industry record where they exist.",
     "toolsLabel": "tools",
     "articlesLabel": "articles",
     "openHub": "Open hub",
     "comingSoon": "Hub opens with its first tool",
-    "note": "Each hub is the single place that gathers everything the site holds for a vendor: the tools, grouped by product family, and the full article library for that vendor, on one page. The same hubs are reachable from the strip on the Tools and Learn listings.",
+    "note": "Each hub is the single place that gathers what the site holds for a vendor: the tools, grouped by product family; the full article library for that vendor; and, where they exist, the certification guides, a reading path, the career chapter and the vendor's industry record, on one page. The same hubs are reachable from the strip on the Tools and Learn listings.",
     "metaTitle": "Vendor hubs - ronutz.com",
-    "metaDescription": "The vendor hubs on ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler, and Ping Identity, each gathering every tool and article for that vendor on one page.",
+    "metaDescription": "The {count} vendor hubs on ronutz.com, one per platform ({names}): the tools, articles and certification material for each, through one door.",
     "blurbs": {
       "f5": "BIG-IP and the wider F5 estate: traffic management, DNS, application security, access, and F5 Distributed Cloud. The deepest hub on the site.",
       "fortinet": "The Fortinet Security Fabric: FortiGate and FortiOS, SASE, secure operations, application security, and the FortiGuard services.",
@@ -23075,9 +23076,16 @@
     "retiringLabel": "Retiring",
     "retirementNotice": "{exam} can be sat until {until}.",
     "retirementReplacedBy": "It is replaced by {exam}.",
-    "retirementNoReplacement": "Fortinet's page does not name a replacement.",
+    "retirementNoReplacement": "{vendor}'s page does not name a replacement.",
     "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently.",
-    "standaloneTrackLabel": "Outside the certification path"
+    "standaloneTrackLabel": "Outside the certification path",
+    "retiredLabel": "Retired",
+    "previousUntilLabel": "Previous version until",
+    "retirementPastNotice": "{exam} could be sat until {until}, a date now past; this guide stays as a record of it.",
+    "retirementSuccessorIs": "Its successor is {exam}.",
+    "retirementPreviousNotice": "The previous version, {exam}, can be sat until {until}.",
+    "retirementPreviousPastNotice": "The previous version, {exam}, could be sat until {until}, a date now past.",
+    "retirementMapsSuccessor": "This guide maps its successor, {exam}."
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -23256,9 +23264,14 @@
       "explainers": "Course explainers index",
       "news": "News and articles index",
       "case1": "Case study: Fortinet training at scale for a global IT leader",
-      "case2": "Case study: F5 BIG-IP iRules training"
+      "case2": "Case study: F5 BIG-IP iRules training",
+      "professionalServices": "Professional services"
     },
-    "sourcesNote": "Read and verified on 9 and 14 July, 6 and 16 August 2026; figures quoted as published on those dates. Two of Red Education's indexes are drawn by script in the browser and cannot be enumerated by fetching, which is why the case studies and articles listed are the ones that have actually been read."
+    "sourcesNote": "Read and verified on 9 and 14 July, 6 and 16 August, and 6 October 2026; figures quoted as published on those dates. Two of Red Education's indexes are drawn by script in the browser and cannot be enumerated by fetching, which is why the case studies and articles listed are the ones that have actually been read.",
+    "psTitle": "Beyond training: professional services",
+    "psBody": "Red Education also runs a professional services practice, delivered by vendor-certified engineers and by consultants drawn from vendor and large-enterprise backgrounds: installations, software upgrades and migrations to new hardware, health checks, work that runs from detailed design through post-cutover support and knowledge transfer, resident on-site engineers, and consultants on demand.",
+    "psBoundary": "That practice is Red Education's, not mine: my own work there is teaching and advisory. Where a decision I advise on leads to implementation, the <adv>advisory page</adv> sets out where my part ends and who could carry the work on.",
+    "psLink": "Red Education's professional services page"
   },
   "toolDocs": {
     "titleSuffix": "documentation",
@@ -23468,7 +23481,9 @@
     "gAbout": "About and career",
     "gSite": "Site and meta",
     "toolsCount": "{count} deterministic tools, all local-compute",
-    "xmlNote": "Machine-readable: sitemap.xml"
+    "xmlNote": "Machine-readable: sitemap.xml",
+    "subjectsTitle": "By subject",
+    "subjectsLede": "Each subject's page gathers its tools, articles and glossary terms."
   },
   "studyGuidesIndex": {
     "eyebrow": "Study guides",
@@ -23846,13 +23861,13 @@
     "offerSpecTitle": "Specification and RFP authoring",
     "offerSpecBody": "Writing what to ask for. A specification or request for proposal that describes the outcome precisely enough to be scored fairly - and closes the gaps a supplier would otherwise be free to interpret in their own favour. Most bad procurement is decided at this stage rather than at the bid.",
     "offerAssessTitle": "Independent assessment of a proposal",
-    "offerAssessBody": "A neutral second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
+    "offerAssessBody": "An independent second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
     "offerSelectTitle": "Technology and vendor selection",
     "offerSelectBody": "Stay or move, consolidate or keep two, on-premises or as a service. A defined question, the trade-offs stated in the terms of the organisation rather than the vendor's, and a defensible answer with the reasoning attached - so the decision survives the person who made it.",
     "offerPostmortemTitle": "Post-incident review",
     "offerPostmortemBody": "Not incident response - the review afterwards, when the fire is out and somebody has to give an honest account of what happened and what would prevent it recurring. Written to be read by people who were not there, and without the search for someone to blame that makes most such documents useless.",
     "independenceTitle": "What independent means here, exactly",
-    "independenceBody": "Independence is a property of the analysis, and it is worth stating precisely rather than broadly.\n\nThe analysis is written by me and carries my name. I hold current instructor authorizations across four vendors' platforms and sell none of them: no sales quota, no resale margin, no referral commission and no implementation award attached to the technology the analysis favours. There is no version of this engagement that pays me more if you buy one thing rather than another, and if the honest answer is that your incumbent is right, that is the answer. You can verify each authorization independently, which is the point of naming them.\n\nWhat is not claimed is commercial independence from every company in the ecosystem. Engagements are contracted and invoiced through Red Education, which sells authorized training and professional services across several vendors' platforms. Where either is a candidate for what follows a decision, the document says so in plain words, and the choice of who does that work stays yours.\n\nCommercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and knowing exactly what that context is, on both sides of the table, is part of what you are paying for. It also means the review is not a weapon against suppliers: a supplier confident in its proposal can suggest the review itself, because a proposal that holds up under independent scrutiny is easier for its customer to approve, and one that does not is cheaper to fix before deployment than after.",
+    "independenceBody": "Independence is a property of the analysis, and it is worth stating precisely rather than broadly.\n\nThe analysis is written by me and carries my name. I hold current instructor authorizations across four vendors' platforms, and I do not personally sell or resell the technologies being evaluated: no sales quota, no resale margin, no referral commission and no implementation award attached to the technology the analysis favours. There is no version of this engagement that pays me more if you buy one thing rather than another, and if the honest answer is that your incumbent is right, that is the answer. You can verify each authorization independently, which is the point of naming them.\n\nWhat is not claimed is commercial independence from every company in the ecosystem. Engagements are contracted and invoiced through Red Education, which sells authorized training and professional services across several vendors' platforms. Where either is a candidate for what follows a decision, the document says so in plain words, and the choice of who does that work stays yours.\n\nCommercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and knowing exactly what that context is, on both sides of the table, is part of what you are paying for. It also means the review is not a weapon against suppliers: a supplier confident in its proposal can suggest the review itself, because a proposal that holds up under independent scrutiny is easier for its customer to approve, and one that does not is cheaper to fix before deployment than after.",
     "howTitle": "How an engagement runs",
     "howStep1": "A conversation about the decision you are facing, at no charge, to establish whether I am the right person for it.",
     "howStep2": "A written scope: the question, the deliverable, the dates and the fee. Fixed price per engagement rather than by the hour. For a post-incident review, the scope also says which kind of review it is.",
@@ -23884,14 +23899,14 @@
     "offerEstateBody": "An inventory that becomes a map: what is connected, what each thing actually does, what depends on it, and which parts nobody can currently explain. Named a review rather than an audit, because audit carries assurance meaning this does not claim. Most estates contain something load-bearing that no one has looked at in years.",
     "offersLede": "One offer, stated plainly, for the decision that has consequences.",
     "offerExecutiveTitle": "Executive-level technical advisory for mission-critical decisions",
-    "offerExecutiveBody": "For the board, the steering committee or the executive who has to commit to a direction on technology adoption, digital transformation, or enabling and improving a service - and who needs the technical reality of that decision stated by someone with nothing to sell. The deliverable is a structured, methodical and neutral analysis: the diagnosis, the options with their trade-offs, the cautions, the risks, and what each path would actually take to carry out. Written to be circulated and defended internally, not presented and forgotten. What it does not include is a recommendation shaped by a commission, because there is no commission - I hold authorized instructor status across four platforms and a sales quota on none of them. The impact is for the business to tell.",
+    "offerExecutiveBody": "For the board, the steering committee or the executive who has to commit to a direction on technology adoption, digital transformation, or enabling and improving a service - and who needs the technical reality of that decision stated by someone with no stake in which technology wins. The deliverable is a structured, methodical and independent analysis: the diagnosis, the options with their trade-offs, the cautions, the risks, and what each path would actually take to carry out. Written to be circulated and defended internally, not presented and forgotten. What it does not include is a recommendation shaped by a commission, because there is no commission - I hold authorized instructor status across four platforms and a sales quota on none of them. The impact is for the business to tell.",
     "secondaryTitle": "Speaking",
     "recordTitle": "Where this comes from, in the client's words",
     "recordBody": "I spent the first twenty-four years of my career, from 1996 to 2020, doing this work for leading organisations across many segments: financial institutions, government agencies, service providers of every sort, large multinational conglomerates in commerce and services, and industry across a wide range. Delivered, been responsible for, overseen, collaborated on, led and taken part in, many times over, from inside vendors, distributors and integrators. These engagements are no longer what I sell. They are what the advice above is made of.",
     "earnTitle": "What I will not do",
     "earnBody": "I will not tell you what to do before I understand your situation, and the first conversation exists to establish whether I can be useful at all, including the answer that I cannot, or that the question is better put to someone else. An advisor who is certain before they have listened is selling something. If the honest answer is that your existing supplier is right, that is the answer you will get in writing, and it will be the most valuable sentence in the document.",
     "problemTitle": "The problem this exists for",
-    "problemBody": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first. The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Much of what reaches the table is drawn by someone with a quota behind it, and every reference is chosen; some of it comes from internal teams, open-source communities and engineers with no transaction attached, and the first job is knowing which is which. Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and the internal team, who may be excellent, is being asked to referee a game where they only see one side's playbook.\n\nThat is the gap this practice exists to close, and nothing more. Not to replace the team, not to run the project, and not to become another supplier with a diagram: to put an independent, experienced technical reading in front of the people who have to sign, in time for it to change the decision rather than explain it afterwards.",
+    "problemBody": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first. The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Much of what reaches the table comes from parties with a commercial interest in the outcome, and every reference is chosen; some of it comes from internal teams, open-source communities and engineers with no transaction attached, and the first job is knowing which is which. Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and the internal team, who may be excellent, is being asked to referee a game where they only see one side's playbook.\n\nThat is the gap this practice exists to close, and nothing more. Not to replace the team, not to run the project, and not to become another supplier with a diagram: to put an independent, experienced technical reading in front of the people who have to sign, in time for it to change the decision rather than explain it afterwards.",
     "positioning": "A deeply technical senior advisor, brought into difficult infrastructure and security decisions when executive consulting is not technical enough and engineering consulting is not independent enough. Judgement on decisions that have not yet been made, at the level where they are actually taken.",
     "metaTitle": "Independent technical advisory for network and security decisions · Rodolfo Nützmann",
     "metaDescription": "Independent technical judgement before you commit to an architecture, supplier, platform or budget: a written decision analysis by Rodolfo Nützmann.",
@@ -23914,7 +23929,7 @@
     "shape1Title": "Decision review",
     "shape1Question": "Should we approve this architecture, or this proposal?",
     "shape1Output": "A decision memorandum.",
-    "shape1Body": "A neutral second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
+    "shape1Body": "An independent second reading of a supplier's quotation and diagram, in writing: what is actually being proposed, what it leaves out, what it assumes about the environment it will land in, and which questions to put back before anything is signed.",
     "shape2Title": "Comparative assessment",
     "shape2Question": "Which of these approaches, or vendors, fits us?",
     "shape2Output": "An options and trade-off analysis.",
@@ -24000,7 +24015,7 @@
     "problemCard1Title": "The pace",
     "problemCard1Body": "Organisations are being asked to make decisions about technology that their own business models did not prepare them to make, at a pace that does not allow the expertise to be hired and grown in-house first.",
     "problemCard2Title": "The material in the room",
-    "problemCard2Body": "The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Much of what reaches the table is drawn by someone with a quota behind it, and every reference is chosen; some of it comes from internal teams, open-source communities and engineers with no transaction attached, and the first job is knowing which is which.",
+    "problemCard2Body": "The result is familiar: the decision gets made from the material supplied by the people selling into it, because that is the only material in the room. Much of what reaches the table comes from parties with a commercial interest in the outcome, and every reference is chosen; some of it comes from internal teams, open-source communities and engineers with no transaction attached, and the first job is knowing which is which.",
     "problemCard3Title": "The referee",
     "problemCard3Body": "Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and the internal team, who may be excellent, is being asked to referee a game where they only see one side's playbook.",
     "problemGapLead": "That is the gap this practice exists to close, and nothing more.",
@@ -24013,7 +24028,7 @@
     "indepLead": "Independence is a property of the analysis, and it is worth stating precisely rather than broadly.",
     "indepClaimedLabel": "Claimed",
     "indepClaimedTitle": "Independence of the analysis",
-    "indepClaimedBody": "The analysis is written by me and carries my name. I hold current instructor authorizations across four vendors' platforms and sell none of them. There is no version of this engagement that pays me more if you buy one thing rather than another, and if the honest answer is that your incumbent is right, that is the answer. You can verify each authorization independently, which is the point of naming them.",
+    "indepClaimedBody": "The analysis is written by me and carries my name. I hold current instructor authorizations across four vendors' platforms, and I do not personally sell or resell the technologies being evaluated. There is no version of this engagement that pays me more if you buy one thing rather than another, and if the honest answer is that your incumbent is right, that is the answer. You can verify each authorization independently, which is the point of naming them.",
     "indepNoneLead": "Attached to the technology the analysis favours:",
     "indepNone1": "no sales quota",
     "indepNone2": "no resale margin",
@@ -24040,7 +24055,7 @@
     "talk2Sub": "Field stories",
     "talk2Body": "Tales that could have been lived, witnessed or overheard on the road as a field engineer. Any resemblance to real events or persons is entirely coincidental. For audiences who have done the work and will recognise themselves, and for those who have not and should know what it is like.",
     "customTitle": "Other subjects",
-    "customBody": "The industry history on this site runs to more than a hundred and sixty company records, and much of it has never been said out loud. If an event needs a talk on a specific era, technology lineage, or the way a particular market actually formed, that is a conversation worth having.",
+    "customBody": "The industry history on this site runs to {count} company records, and much of it has never been said out loud. If an event needs a talk on a specific era, technology lineage, or the way a particular market actually formed, that is a conversation worth having.",
     "customLink": "The industry record",
     "notTitle": "One thing this is not",
     "notBody": "This is not training. Courses, workshops and certification preparation are delivered through Red Education and are booked there, not here. A conference talk and a training day are different things with different audiences, and mixing them serves neither.",

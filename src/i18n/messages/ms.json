@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Alat rangkaian dan keselamatan yang berjalan pada mesin anda sendiri, bukan pada awan orang lain."
+    "tagline": "Alat, pengetahuan, sejarah dan amalan rangkaian dan keselamatan"
   },
   "nav": {
     "tools": "Alat",
@@ -889,7 +889,7 @@
     "backHome": "Kembali ke laman utama"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann ialah Senior Technical Instructor dan Penasihat di <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann ialah <r>Senior Technical Instructor dan Penasihat</r> di <b>Red Education</b>",
     "privacy": "Privasi",
     "builtWith": "Dibina oleh Rodolfo Nützmann dengan CONCORD",
     "colophon": "Cara ia dibina",

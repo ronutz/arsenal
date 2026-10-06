@@ -138,7 +138,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     "/tools": t("map.toolsBadge", { count: toolCount }),
     "/learn": t("map.learnBadge", { count: articleCount }),
     "/stories": t("map.storiesBadge", { count: storyCount }),
-    "/study-guides": t("map.guidesBadge", { count: guideCount }),
+    // The study guides page leads with the curated reading paths; its count is theirs, not the certification guides'
+    // (SCOUT's adoption audit, 2026-10-06: the directory said "105 guides", the certification figure, for both rows).
+    "/study-guides": t("map.guidesBadge", { count: counted.readingPaths }),
     "/certifications": t("map.certsBadge", { count: guideCount }),
     "/glossary": t("map.glossaryBadge", { count: glossaryCount }),
     "/practice": t("map.practiceBadge", { count: practiceCount }),

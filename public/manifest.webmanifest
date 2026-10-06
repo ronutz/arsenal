@@ -1,7 +1,7 @@
 {
-  "name": "ronutz · Network and security toolbox",
+  "name": "ronutz · Network & security tools, knowledge, history and practice",
   "short_name": "ronutz",
-  "description": "A privacy-first network and security toolbox. Subnet math, DNS and email diagnostics, certificate inspection, and more, computed locally in your browser.",
+  "description": "Network and security tools that compute in your browser, a technical knowledge base read from the vendors' own documentation, the industry's history and the practice of running networks, by Rodolfo Nützmann.",
   "lang": "en",
   "start_url": "/en/",
   "scope": "/",

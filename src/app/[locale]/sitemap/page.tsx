@@ -18,6 +18,8 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { tools } from "@/config/tools";
 import { WORLDS } from "@/config/worlds";
+// The subject pages, one rule shared with /category/<key> (2026-10-06).
+import { subjectKeys } from "@/lib/subjects";
 
 export async function generateMetadata({
   params,
@@ -65,6 +67,13 @@ export default async function SitemapPage({
     ],
   }));
 
+  // The subject pages, labelled from the tools namespace's category names (the label set tools, Learn and the subject
+  // pages share), sorted the locale's way.
+  const tTools = await getTranslations("tools");
+  const subjects = subjectKeys()
+    .map((key) => ({ key, label: tTools(`categories.${key}`) }))
+    .sort((a, b) => a.label.localeCompare(b.label, locale));
+
   return (
     <>
       <a href="#main" className="skip-link" data-pagefind-ignore>{tNav("skipToContent")}</a>
@@ -88,6 +97,20 @@ export default async function SitemapPage({
                   </ul>
                 </div>
               ))}
+            </div>
+            {/* BY SUBJECT (2026-10-06, SCOUT's adoption audit row 20): every subject page, from the rule that generates
+                them (src/lib/subjects.ts), sorted by the localised label. A subject page gathers one category's tools,
+                articles and glossary terms; listing all eleven replaces the three the "Use" world used to carry. */}
+            <div className="sitemap-group sitemap-group--subjects">
+              <h2 className="sitemap-group-title">{t("subjectsTitle")}</h2>
+              <p className="sitemap-subjects-lede">{t("subjectsLede")}</p>
+              <ul className="sitemap-links sitemap-links--subjects">
+                {subjects.map((s) => (
+                  <li key={s.key}>
+                    <Link href={`/category/${s.key}`} className="sitemap-link">{s.label}</Link>
+                  </li>
+                ))}
+              </ul>
             </div>
             {/* The machine door: the generated XML sitemap (plain anchor, static file). */}
             <p className="sitemap-xml-note mono">

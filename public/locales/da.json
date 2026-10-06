@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Netværks- og sikkerhedsværktøjer, der kører på din egen maskine, ikke i en andens sky."
+    "tagline": "Netværks- og sikkerhedsværktøjer, viden, historie og praksis"
   },
   "nav": {
     "tools": "Værktøjer",
@@ -889,7 +889,7 @@
     "backHome": "Tilbage til forsiden"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann er Senior Technical Instructor og rådgiver hos <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann er <r>Senior Technical Instructor og rådgiver</r> hos <b>Red Education</b>",
     "privacy": "Privatliv",
     "builtWith": "Bygget af Rodolfo Nützmann med CONCORD",
     "colophon": "Hvordan det her blev bygget",

@@ -85,7 +85,26 @@ if (!fs.existsSync(BASE)) {
 // INDEX (/course-explained/) is declared below with this change. They are a
 // verification aid, not routes into the catalogue, and the guard still catches a
 // 115th.
-const BASELINE_TOTAL = 114;
+// 2026-10-06 13:01, PRIME's footer decision (option B): the footer's affiliation
+// sentence carries ONE followed brand-anchor link to rededucation.com on every
+// page, attributed with pageType "footer" and cta "affiliation". That is a
+// site-level affiliation statement, not a page CTA, and it is checked on its own
+// below (exactly one per page, destination "/", attribution complete) instead of
+// through this baseline, which would otherwise rise and fall with the page
+// count and could no longer see a swap. It is also EXEMPT from the Learn hard
+// zero by PRIME's decision: the rule keeps commercial calls to action out of the
+// corpus, and an affiliation line in the chrome of every page is not one. A
+// second Red Education link on a Learn page still fails.
+// 114 -> 116 on 2026-10-06, deliberately (SCOUT's Round 1 adoption audit, row 18, and the three-tier link
+// portfolio of its footer turn): /red-education/ gains a "Beyond training" block on Red Education's professional
+// services with ONE contextual link to /professional-services/ (cta professional-services), and the same page
+// joins that page's "Official sources" list (cta official-source), because the block's facts are read from it.
+// A declared destination already; not a route into the course catalogue; not in the Learn corpus.
+const BASELINE_TOTAL = 116;
+// The marker that identifies the footer affiliation link in built HTML: the
+// attribution parameters SiteFooter.tsx sets, in the order URLSearchParams writes
+// them (utm_content before utm_term).
+const FOOTER_AFFILIATION = /utm_content=footer&(?:amp;)?utm_term=[a-z0-9._-]+\.affiliation/;
 
 // *** AND A COUNT CANNOT SEE A SWAP. *** The baseline above has an honest audit
 // trail - every increment from 86 is traced to the decision behind it - but it is
@@ -175,20 +194,45 @@ const LINK = /href="https:\/\/www\.rededucation\.com\/[^"]*utm_source/g;
 const LINK_URL = /href="(https:\/\/www\.rededucation\.com\/[^"]*utm_source[^"]*)"/g;
 
 let total = 0;
+let pages = 0;
+// Pages whose footer affiliation link is missing, doubled or pointing anywhere but the root.
+const footerProblems = [];
 const inLearn = [];
 // path -> the routes that link to it, so a finding names where to look.
 const foundPaths = new Map();
 for (const file of walk(BASE)) {
   const route = "/" + path.relative(BASE, path.dirname(file)).split(path.sep).join("/");
   const html = fs.readFileSync(file, "utf8");
-  const n = (html.match(LINK) ?? []).length;
+  // Split the page's attributed links into the footer affiliation (checked on
+  // its own) and the rest (the baseline, the Learn rule, the declared paths).
+  const urls = [...html.matchAll(LINK_URL)].map((m) => m[1]);
+  const footerLinks = urls.filter((u) => FOOTER_AFFILIATION.test(u));
+  const others = urls.filter((u) => !FOOTER_AFFILIATION.test(u));
+  // The affiliation link lives in the site footer, so the check applies only to
+  // pages that actually render the footer. A handful of bare routes (the three
+  // title-less dev/admin pages that check-page-titles also exempts) ship without
+  // the chrome; they have no footer and so are not expected to carry the link.
+  const hasFooter = html.includes("<footer");
+  if (hasFooter) {
+    pages += 1;
+    if (footerLinks.length !== 1) footerProblems.push(`${route} (${footerLinks.length})`);
+    for (const u of footerLinks) {
+      let p;
+      try { p = new URL(u.replace(/&amp;/g, "&")).pathname; } catch { p = "(malformed)"; }
+      if (p !== "/") footerProblems.push(`${route} -> ${p}`);
+    }
+  } else if (footerLinks.length > 0) {
+    // A footerless page should not be emitting the footer affiliation link at all.
+    footerProblems.push(`${route} (footerless, ${footerLinks.length})`);
+  }
+  const n = others.length;
   if (n === 0) continue;
   total += n;
   if (route === "/learn" || route.startsWith("/learn/")) inLearn.push(`${route} (${n})`);
-  for (const m of html.matchAll(LINK_URL)) {
+  for (const u of others) {
     let p;
     try {
-      p = new URL(m[1].replace(/&amp;/g, "&")).pathname;
+      p = new URL(u.replace(/&amp;/g, "&")).pathname;
     } catch {
       continue; // A malformed href is not a destination; the count already has it.
     }
@@ -201,6 +245,12 @@ const undeclaredPaths = [...foundPaths.keys()].filter((p) => !DECLARED_PATHS.has
 const unseenPaths = [...DECLARED_PATHS].filter((p) => !foundPaths.has(p));
 
 const problems = [];
+if (footerProblems.length > 0) {
+  problems.push(
+    `${footerProblems.length} page(s) without exactly one footer affiliation link to the Red Education root:\n        ` +
+    footerProblems.slice(0, 10).join("\n        "),
+  );
+}
 if (inLearn.length > 0) {
   problems.push(
     `${inLearn.length} Learn page(s) carry a Red Education link. The Learn corpus stays clear of commercial links:\n        ` +
@@ -242,6 +292,7 @@ if (unseenPaths.length > 0) {
 
 console.log(
   `[check-red-education-links] OK: ${total} attributed link(s) (baseline ${BASELINE_TOTAL}) across ` +
-  `${foundPaths.size} declared destination(s) of ${DECLARED_PATHS.size}; Learn corpus clear.` +
+  `${foundPaths.size} declared destination(s) of ${DECLARED_PATHS.size}; Learn corpus clear; ` +
+  `footer affiliation link present once on all ${pages} page(s).` +
   (total < BASELINE_TOTAL ? ` LOWER - drop BASELINE_TOTAL to ${total}.` : ""),
 );

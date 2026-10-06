@@ -6,7 +6,7 @@
   },
   "site": {
     "name": "ronutz",
-    "tagline": "Ferramentas de rede e segurança que rodam na sua máquina, não na nuvem de outra pessoa."
+    "tagline": "Ferramentas, conhecimento, história e prática de redes e segurança"
   },
   "nav": {
     "tools": "Ferramentas",
@@ -23,7 +23,7 @@
     "primaryAria": "Principal",
     "home": "Início",
     "breadcrumb": "Trilha de navegação",
-    "vendors": "Fornecedores",
+    "vendors": "Fabricantes",
     "industry": "Indústria",
     "network": "Redes",
     "security": "Segurança",
@@ -133,7 +133,7 @@
       "reduLede": "O centro de treinamento autorizado global através do qual meus cursos são entregues, e a história de como chegou lá.",
       "hubsBadge": "{count} hubs de fabricantes",
       "glossaryBadge": "{count} verbetes",
-      "guidesBadge": "{count} guias",
+      "guidesBadge": "{count, plural, one {# trilha de leitura} other {# trilhas de leitura}}",
       "trainingBadge": "{count} cursos de {vendors} fabricantes",
       "careerBadge": "{count} capítulos",
       "rolesBadge": "{count} posições",
@@ -240,14 +240,14 @@
       "archiveTool": "a calculadora de bits e bytes, reconstruída",
       "archiveSites": "os sites anteriores",
       "platformsTitle": "Navegue por plataforma",
-      "platformsBody": "Uma porta por fabricante: as ferramentas, os artigos, os termos do glossário e o material de certificação daquela plataforma, reunidos em um só lugar.",
+      "platformsBody": "Uma porta por fabricante: as ferramentas, os artigos e o material de certificação daquela plataforma, com a trilha de leitura e o registro da indústria onde existem, reunidos em um só lugar.",
       "platformsAll": "Todos os hubs de fabricantes",
       "workTitle": "Trabalhe comigo",
       "workBody": "Quando o problema sai do navegador. Três caminhos, cada um com a própria página e os próprios termos.",
       "work": {
         "trainingVerb": "Treinar",
         "trainingTitle": "Treinamentos",
-        "trainingBody": "Cursos autorizados com instrutor em quatro plataformas, ensinados a partir da prática de engenharia, e não do slide.",
+        "trainingBody": "Cursos autorizados com instrutor em quatro plataformas, construídos sobre décadas de prática de engenharia.",
         "trainingVia": "ministrados pela Red Education",
         "trainingCta": "Cursos, agenda e o que esperar",
         "advisoryVerb": "Decidir",
@@ -11857,8 +11857,8 @@
       "switchDirectory": "Diretório",
       "recentTitle": "Adicionadas recentemente",
       "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
-      "directoryTitle": "O índice completo",
-      "directoryLede": "{count} ferramentas em {categories} categorias, todas listadas abaixo; pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
+      "directoryTitle": "O índice de uso geral",
+      "directoryLede": "{count} ferramentas de uso geral em {categories} categorias, todas listadas abaixo; {platform, plural, one {a # ferramenta feita para a plataforma de um único fabricante está} other {as # ferramentas feitas para a plataforma de um único fabricante estão}} nos <hubs>hubs de fabricantes</hubs>. Pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
       "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, vetores de ouro e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar.",
       "pasteTitle": "Cole o que você tem",
       "pasteLede": "Um token, um bloco de cabeçalhos, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
@@ -11866,7 +11866,7 @@
       "pastePlaceholder": "eyJhbGciOi...   ou   <34>1 2026-10-05T...   ou   10.0.0.0/22   ou   -----BEGIN CERTIFICATE-----",
       "pasteHint": "Comparado no seu navegador com os padrões de entrada de cada ferramenta; nada é guardado nem enviado.",
       "pasteResults": "Ferramentas que reconhecem isto",
-      "pasteNoMatch": "Nenhuma ferramenta reconhece essa forma ainda. Tente as intenções abaixo, ou o índice completo.",
+      "pasteNoMatch": "Nenhuma ferramenta reconhece essa forma ainda. Tente as intenções abaixo, ou o índice de uso geral.",
       "pasteClear": "Limpar",
       "intentsTitle": "Pelo que você precisa fazer",
       "intentsLede": "O mesmo índice, agrupado pelo verbo: o que cada ferramenta faz com o que você entrega a ela.",
@@ -11959,7 +11959,7 @@
   },
   "footer": {
     "guide": "Guia",
-    "redEducation": "Rodolfo Nützmann é Instrutor Técnico Sênior e Consultor na <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann é <r>Instrutor Técnico Sênior e Consultor</r> na <b>Red Education</b>",
     "builtWith": "Feito por Rodolfo Nützmann com CONCORD",
     "colophon": "Como isto foi construído",
     "feedback": "Contato",
@@ -12123,7 +12123,7 @@
     "metaTitle": "Rodolfo Nützmann - trinta anos em redes e segurança corporativa",
     "advise": {
       "title": "Como eu assessoro",
-      "body": "Trinta anos de experiência direta com decisões que carregam consequência para o negócio ou para a missão: que tecnologia adotar, o que habilitar, o que melhorar, e quanto a adoção vai de fato custar na prática, e não no slide. O que levo a um conselho ou a um comitê diretor é uma análise estruturada, metódica e neutra - o diagnóstico, as opções, as cautelas, os riscos, e o que cada caminho exigiria para ser executado. Neutra é a palavra que importa: sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma delas, então a recomendação não é produto de comissão. O impacto quem diz é o negócio, e prefiro ser julgado por ele do que pela apresentação.",
+      "body": "Trinta anos de experiência direta com decisões que carregam consequência para o negócio ou para a missão: que tecnologia adotar, o que habilitar, o que melhorar, e quanto a adoção vai de fato custar na prática, e não no slide. O que levo a um conselho ou a um comitê diretor é uma análise estruturada, metódica e independente - o diagnóstico, as opções, as cautelas, os riscos, e o que cada caminho exigiria para ser executado. Independente é a palavra que importa: sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma delas, então a recomendação não é produto de comissão. O impacto quem diz é o negócio, e prefiro ser julgado por ele do que pela apresentação.",
       "short": "Trinta anos de experiência em primeira mão com decisões que carregam consequências de negócio ou de missão, oferecidos como consultoria.",
       "link": "O que a consultoria cobre"
     },
@@ -12144,12 +12144,12 @@
       },
       "speak": {
         "verb": "Falo",
-        "what": "Palestras e facilitação sobre redes, segurança e o ofício de fazer coisas complexas fazerem sentido."
+        "what": "Palestras sobre redes, segurança e o ofício de fazer coisas complexas fazerem sentido."
       }
     },
     "why": {
       "title": "Por que o ronutz existe",
-      "body": "As ferramentas que eu queria enquanto ensinava não existiam numa forma em que eu pudesse confiar: calculadoras que calculam em vez de chutar, explicações que citam a página do próprio fabricante e um registro da indústria que vivi que outra pessoa possa conferir. Então eu as construí, às claras, a partir de documentação lida ao vivo, sem que nada que o leitor digite saia do navegador. O site é o companheiro da sala de aula, e é gratuito porque o conhecimento nele nunca foi só meu."
+      "body": "As ferramentas que eu queria enquanto ensinava não existiam numa forma em que eu pudesse confiar: calculadoras que calculam em vez de chutar, explicações que citam a página do próprio fabricante e um registro da indústria que vivi que outra pessoa possa conferir. Então eu as construí, às claras, a partir de documentação lida ao vivo, sem que nada que o leitor digite saia do navegador. O site nasceu como companheiro da sala de aula e cresceu até virar uma bancada de trabalho, uma base de conhecimento e um registro da indústria; é gratuito porque o conhecimento nele nunca foi só meu."
     },
     "how": {
       "title": "Como trabalho",
@@ -13513,7 +13513,7 @@
           "verb": "preparar"
         },
         "platform": {
-          "q": "Trabalho com uma plataforma e preciso da documentação dela lida por mim",
+          "q": "Trabalho com uma plataforma específica",
           "label": "Hubs de fabricantes",
           "verb": "aprender uma plataforma"
         },
@@ -13562,8 +13562,8 @@
           "lede": "Cada artigo vincula as ferramentas que calculam o que ele explica; as ferramentas vinculam de volta."
         }
       },
-      "directoryTitle": "Índice completo de artigos",
-      "directoryLede": "{count, plural, one {Todo # artigo} other {Todos os # artigos}}, agrupados em {subjects, plural, one {# assunto} other {# assuntos}} e listados na ordem de leitura de cada assunto. Pule para um assunto, filtre, mude para a lista ou busque em Aprender acima.",
+      "directoryTitle": "O índice independente de fabricante",
+      "directoryLede": "{count, plural, one {Todo # artigo independente de fabricante} other {Todos os # artigos independentes de fabricante}}, agrupados em {subjects, plural, one {# assunto} other {# assuntos}} e listados na ordem de leitura de cada assunto; {platform, plural, one {o # artigo} other {os # artigos}} sobre a plataforma de um único fabricante ficam nos <hubs>hubs de fabricantes</hubs>. Pule para um assunto, filtre, mude para a lista ou busque em Aprender acima.",
       "freshTitle": "Novos e revisados",
       "freshNew": "Novo",
       "freshRevised": "Revisado",
@@ -14503,10 +14503,11 @@
       "cost": "Preço",
       "costValue": "Uso gratuito; a primeira resposta útil nunca fica atrás de um paywall",
       "glossary": "Termos do glossário",
-      "guides": "Guias de estudo",
+      "guides": "Guias de certificação",
       "hubs": "Hubs de fabricantes",
       "industry": "Organizações no registro da indústria",
-      "people": "Pessoas na linha do tempo"
+      "people": "Pessoas na linha do tempo",
+      "paths": "Trilhas de leitura"
     },
     "quickrefHeading": "Referência de ferramentas",
     "quickrefIntro": "Todas as ferramentas de uso geral, organizadas por categoria. Esta lista é gerada a partir do registro ativo, então está sempre completa. As ferramentas ligadas a um fabricante específico ficam na página desse fabricante.",
@@ -15236,17 +15237,17 @@
     }
   },
   "vendorsHome": {
-    "crumb": "Fornecedores",
-    "eyebrow": "hubs de fornecedores",
-    "title": "Hubs de fornecedores",
-    "lede": "Um lar único para os fornecedores em torno dos quais este site é construído. Cada hub reúne todas as ferramentas e todos os artigos de um fornecedor em um só lugar — ferramentas que computam localmente no seu navegador, artigos fundamentados na documentação do próprio fornecedor.",
+    "crumb": "Fabricantes",
+    "eyebrow": "hubs de fabricantes",
+    "title": "Hubs de fabricantes",
+    "lede": "Tudo o que o ronutz tem sobre uma plataforma, reunido por uma única porta: suas ferramentas, que calculam localmente no seu navegador, e seus artigos, fundamentados na documentação do próprio fabricante, com os guias de certificação, as trilhas de leitura e o registro da indústria onde existem.",
     "toolsLabel": "ferramentas",
     "articlesLabel": "artigos",
     "openHub": "Abrir hub",
     "comingSoon": "O hub abre com a sua primeira ferramenta",
-    "note": "Cada hub é o único lugar que reúne tudo o que o site tem para um fornecedor: as ferramentas, agrupadas por família de produto, e a biblioteca completa de artigos daquele fornecedor, em uma só página. Os mesmos hubs são alcançáveis pela faixa nas listagens de Ferramentas e Aprender.",
-    "metaTitle": "Hubs de fornecedores - ronutz.com",
-    "metaDescription": "Os hubs de fornecedores em ronutz.com: F5, Fortinet, Netskope, Extreme Networks, Zscaler e Ping Identity, cada um reunindo todas as ferramentas e artigos daquele fornecedor em uma página.",
+    "note": "Cada hub é o único lugar que reúne o que o site tem para um fabricante: as ferramentas, agrupadas por família de produto; a biblioteca completa de artigos daquele fabricante; e, onde existem, os guias de certificação, uma trilha de leitura, o capítulo de carreira e o registro do fabricante na indústria, em uma só página. Os mesmos hubs são alcançáveis pela faixa nas listagens de Ferramentas e Aprender.",
+    "metaTitle": "Hubs de fabricantes - ronutz.com",
+    "metaDescription": "Os {count} hubs de fabricantes do ronutz.com, um por plataforma ({names}): as ferramentas, os artigos e o material de certificação de cada um, por uma única porta.",
     "blurbs": {
       "f5": "BIG-IP e o ecossistema F5 mais amplo: gerência de tráfego, DNS, segurança de aplicações, acesso e F5 Distributed Cloud. O hub mais profundo do site.",
       "fortinet": "O Fortinet Security Fabric: FortiGate e FortiOS, SASE, operações seguras, segurança de aplicações e os serviços FortiGuard.",
@@ -23075,9 +23076,16 @@
     "retiringLabel": "Em descontinuação",
     "retirementNotice": "O {exam} pode ser prestado até {until}.",
     "retirementReplacedBy": "Ele é substituído pelo {exam}.",
-    "retirementNoReplacement": "A página da Fortinet não nomeia um substituto.",
+    "retirementNoReplacement": "A página da {vendor} não nomeia um substituto.",
     "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma.",
-    "standaloneTrackLabel": "Fora do caminho de certificação"
+    "standaloneTrackLabel": "Fora do caminho de certificação",
+    "retiredLabel": "Descontinuado",
+    "previousUntilLabel": "Versão anterior até",
+    "retirementPastNotice": "O {exam} podia ser prestado até {until}, data que já passou; este guia fica como registro dele.",
+    "retirementSuccessorIs": "O sucessor é o {exam}.",
+    "retirementPreviousNotice": "A versão anterior, {exam}, pode ser prestada até {until}.",
+    "retirementPreviousPastNotice": "A versão anterior, {exam}, podia ser prestada até {until}, data que já passou.",
+    "retirementMapsSuccessor": "Este guia mapeia a sucessora, {exam}."
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -23256,9 +23264,14 @@
       "explainers": "Índice dos explicadores de cursos",
       "news": "Índice de notícias e artigos",
       "case1": "Estudo de caso: treinamento Fortinet em escala para um líder global de TI",
-      "case2": "Estudo de caso: treinamento de iRules do F5 BIG-IP"
+      "case2": "Estudo de caso: treinamento de iRules do F5 BIG-IP",
+      "professionalServices": "Serviços profissionais"
     },
-    "sourcesNote": "Lidas e verificadas em 9 e 14 de julho e 6 e 16 de agosto de 2026; números citados como publicados nessas datas. Dois dos índices da Red Education são desenhados por script no navegador e não podem ser enumerados por busca, e é por isso que os estudos de caso e artigos listados são os que foram de fato lidos."
+    "sourcesNote": "Lidas e verificadas em 9 e 14 de julho, 6 e 16 de agosto e 6 de outubro de 2026; números citados como publicados nessas datas. Dois dos índices da Red Education são desenhados por script no navegador e não podem ser enumerados por busca, e é por isso que os estudos de caso e artigos listados são os que foram de fato lidos.",
+    "psTitle": "Além do treinamento: serviços profissionais",
+    "psBody": "A Red Education também mantém uma prática de serviços profissionais, executada por engenheiros certificados pelos fabricantes e por consultores vindos de fabricantes e de grandes clientes corporativos: instalações, atualizações de software e migrações para hardware novo, health checks, trabalho que vai do projeto detalhado ao suporte pós-migração e à transferência de conhecimento, engenheiros residentes no local e consultores sob demanda.",
+    "psBoundary": "Essa prática é da Red Education, não minha: meu trabalho lá é ensino e consultoria. Quando uma decisão em que presto consultoria leva a uma implantação, a <adv>página de consultoria</adv> mostra onde a minha parte termina e quem poderia levar o trabalho adiante.",
+    "psLink": "A página de serviços profissionais da Red Education"
   },
   "toolDocs": {
     "titleSuffix": "documentação",
@@ -23459,7 +23472,7 @@
   },
   "sitemap": {
     "metaTitle": "Mapa do site - todas as seções do ronutz.com",
-    "metaDescription": "Um mapa legível do ronutz.com: ferramentas, artigos do Learn, o glossário, hubs de fornecedores, treinamento, as linhagens da indústria e o registro de carreira.",
+    "metaDescription": "Um mapa legível do ronutz.com: ferramentas, artigos do Learn, o glossário, hubs de fabricantes, treinamento, as linhagens da indústria e o registro de carreira.",
     "title": "Mapa do site",
     "lede": "Todas as seções deste site em uma página. A versão legível por máquinas vive em sitemap.xml; esta é a humana.",
     "gTools": "Ferramentas e referência",
@@ -23468,7 +23481,9 @@
     "gAbout": "Sobre e carreira",
     "gSite": "Site e meta",
     "toolsCount": "{count} ferramentas determinísticas, todas com cálculo local",
-    "xmlNote": "Legível por máquinas: sitemap.xml"
+    "xmlNote": "Legível por máquinas: sitemap.xml",
+    "subjectsTitle": "Por assunto",
+    "subjectsLede": "A página de cada assunto reúne suas ferramentas, seus artigos e seus termos do glossário."
   },
   "studyGuidesIndex": {
     "eyebrow": "Guias de estudo",
@@ -23795,13 +23810,13 @@
     "offerSpecTitle": "Especificação e redação de RFP",
     "offerSpecBody": "Escrever o que pedir. Uma especificação ou edital que descreva o resultado com precisão suficiente para ser pontuado com justiça - e que feche as brechas que um fornecedor de outro modo ficaria livre para interpretar a favor dele. A má contratação costuma ser decidida nesta etapa, e não na proposta.",
     "offerAssessTitle": "Avaliação independente de proposta",
-    "offerAssessBody": "Uma segunda leitura neutra da cotação e do diagrama de um fornecedor, por escrito: o que está de fato sendo proposto, o que ficou de fora, o que se supõe sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
+    "offerAssessBody": "Uma segunda leitura independente da cotação e do diagrama de um fornecedor, por escrito: o que está de fato sendo proposto, o que ficou de fora, o que se supõe sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
     "offerSelectTitle": "Seleção de tecnologia e de fornecedor",
     "offerSelectBody": "Ficar ou mudar, consolidar ou manter dois, local ou como serviço. Uma pergunta definida, os compromissos ditos nos termos da organização e não nos do fabricante, e uma resposta defensável com o raciocínio anexado - para a decisão sobreviver a quem a tomou.",
     "offerPostmortemTitle": "Análise pós-incidente",
     "offerPostmortemBody": "Não é resposta a incidente - é a revisão depois, quando o fogo acabou e alguém precisa dar uma conta honesta do que aconteceu e do que impediria a repetição. Escrita para ser lida por quem não estava lá, e sem a procura por um culpado que torna inúteis quase todos esses documentos.",
     "independenceTitle": "O que independente quer dizer aqui, exatamente",
-    "independenceBody": "Independência é uma propriedade da análise, e vale a pena dizê-la com precisão em vez de em termos amplos.\n\nA análise é escrita por mim e leva o meu nome. Tenho autorização vigente de instrutor nas plataformas de quatro fabricantes e não vendo nenhuma delas: nenhuma cota de vendas, nenhuma margem de revenda, nenhuma comissão de indicação e nenhuma premiação por implantação atrelada à tecnologia que a análise favoreça. Não existe versão desta contratação que me pague mais se você comprar uma coisa em vez de outra, e se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.\n\nO que não se afirma é independência comercial de toda empresa do ecossistema. As contratações são firmadas e faturadas através da Red Education, que vende treinamento autorizado e serviços profissionais nas plataformas de vários fabricantes. Onde qualquer um dos dois for candidato ao que vem depois de uma decisão, o documento diz isso com todas as letras, e a escolha de quem faz esse trabalho continua sendo sua.\n\nInteresse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e saber exatamente qual é esse contexto, dos dois lados da mesa, é parte do que você está pagando. Isso também significa que a revisão não é uma arma contra fornecedores: um fornecedor confiante na sua proposta pode sugerir a revisão ele mesmo, porque uma proposta que resiste ao escrutínio independente é mais fácil de aprovar pelo cliente, e uma que não resiste sai mais barato de corrigir antes da implantação do que depois.",
+    "independenceBody": "Independência é uma propriedade da análise, e vale a pena dizê-la com precisão em vez de em termos amplos.\n\nA análise é escrita por mim e leva o meu nome. Tenho autorização vigente de instrutor nas plataformas de quatro fabricantes, e não vendo nem revendo pessoalmente as tecnologias avaliadas: nenhuma cota de vendas, nenhuma margem de revenda, nenhuma comissão de indicação e nenhuma premiação por implantação atrelada à tecnologia que a análise favoreça. Não existe versão desta contratação que me pague mais se você comprar uma coisa em vez de outra, e se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.\n\nO que não se afirma é independência comercial de toda empresa do ecossistema. As contratações são firmadas e faturadas através da Red Education, que vende treinamento autorizado e serviços profissionais nas plataformas de vários fabricantes. Onde qualquer um dos dois for candidato ao que vem depois de uma decisão, o documento diz isso com todas as letras, e a escolha de quem faz esse trabalho continua sendo sua.\n\nInteresse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e saber exatamente qual é esse contexto, dos dois lados da mesa, é parte do que você está pagando. Isso também significa que a revisão não é uma arma contra fornecedores: um fornecedor confiante na sua proposta pode sugerir a revisão ele mesmo, porque uma proposta que resiste ao escrutínio independente é mais fácil de aprovar pelo cliente, e uma que não resiste sai mais barato de corrigir antes da implantação do que depois.",
     "howTitle": "Como funciona uma contratação",
     "howStep1": "Uma conversa sobre a decisão que você tem pela frente, sem custo, para estabelecer se sou a pessoa certa para ela.",
     "howStep2": "Um escopo por escrito: a pergunta, a entrega, as datas e o valor. Preço fechado por contratação, não por hora. Numa análise pós-incidente, o escopo também diz que tipo de revisão ela é.",
@@ -23833,14 +23848,14 @@
     "offerEstateBody": "Um inventário que vira mapa: o que está conectado, o que cada coisa de fato faz, o que depende dela, e que partes ninguém consegue explicar hoje. Chamado de revisão e não de auditoria, porque auditoria carrega sentido de asseguração que isto não reivindica. Quase todo parque tem algo que sustenta o resto e que ninguém olha há anos.",
     "offersLede": "Uma oferta, dita com clareza, para a decisão que tem consequência.",
     "offerExecutiveTitle": "Assessoria técnica de nível executivo para decisões de missão crítica",
-    "offerExecutiveBody": "Para o conselho, o comitê diretor ou o executivo que precisa se comprometer com uma direção de adoção de tecnologia, transformação digital, ou habilitação e melhoria de serviço - e que precisa da realidade técnica daquela decisão dita por alguém sem nada a vender. A entrega é uma análise estruturada, metódica e neutra: o diagnóstico, as opções com seus compromissos, as cautelas, os riscos, e o que cada caminho de fato exigiria para ser executado. Escrita para circular e ser defendida internamente, e não para ser apresentada e esquecida. O que ela não inclui é recomendação moldada por comissão, porque não há comissão - sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma. O impacto quem diz é o negócio.",
+    "offerExecutiveBody": "Para o conselho, o comitê diretor ou o executivo que precisa se comprometer com uma direção de adoção de tecnologia, transformação digital, ou habilitação e melhoria de serviço - e que precisa da realidade técnica daquela decisão dita por alguém sem interesse em qual tecnologia vence. A entrega é uma análise estruturada, metódica e independente: o diagnóstico, as opções com seus compromissos, as cautelas, os riscos, e o que cada caminho de fato exigiria para ser executado. Escrita para circular e ser defendida internamente, e não para ser apresentada e esquecida. O que ela não inclui é recomendação moldada por comissão, porque não há comissão - sou instrutor autorizado em quatro plataformas e não tenho cota de vendas em nenhuma. O impacto quem diz é o negócio.",
     "secondaryTitle": "Palestras",
     "recordTitle": "De onde isso vem, nas palavras dos clientes",
     "recordBody": "Passei os primeiros vinte e quatro anos de carreira, de 1996 a 2020, fazendo este trabalho para organizações líderes de muitos segmentos: instituições financeiras, órgãos de governo, provedores de serviço de todo tipo, grandes conglomerados multinacionais de comércio e serviços, e indústria numa faixa ampla. Entreguei, fui responsável, supervisionei, colaborei, liderei e participei, muitas vezes, de dentro de fabricantes, distribuidores e integradores. Estes trabalhos não são mais o que eu vendo. São aquilo de que a assessoria acima é feita.",
     "earnTitle": "O que eu não farei",
     "earnBody": "Não vou dizer o que fazer antes de entender a sua situação, e a primeira conversa existe para estabelecer se posso ser útil, inclusive a resposta de que não posso, ou de que a pergunta é melhor endereçada a outra pessoa. Um assessor que já tem certeza antes de ter ouvido está vendendo alguma coisa. Se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta que você receberá por escrito, e será a frase mais valiosa do documento.",
     "problemTitle": "O problema para o qual isto existe",
-    "problemBody": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes. O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Boa parte do que chega à mesa é desenhada por alguém com uma cota atrás, e toda referência é escolhida a dedo; parte vem de times internos, de comunidades de código aberto e de engenheiros sem transação nenhuma por trás, e a primeira tarefa é saber qual é qual. Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e o time interno, que pode ser excelente, está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.\n\nÉ essa a lacuna que esta prática existe para fechar, e nada além. Não para substituir o time, não para tocar o projeto, e não para virar mais um fornecedor com um diagrama: para pôr uma leitura técnica independente e experiente diante de quem tem de assinar, a tempo de mudar a decisão em vez de explicá-la depois.",
+    "problemBody": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes. O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Boa parte do que chega à mesa vem de partes com interesse comercial no resultado, e toda referência é escolhida a dedo; parte vem de times internos, de comunidades de código aberto e de engenheiros sem transação nenhuma por trás, e a primeira tarefa é saber qual é qual. Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e o time interno, que pode ser excelente, está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.\n\nÉ essa a lacuna que esta prática existe para fechar, e nada além. Não para substituir o time, não para tocar o projeto, e não para virar mais um fornecedor com um diagrama: para pôr uma leitura técnica independente e experiente diante de quem tem de assinar, a tempo de mudar a decisão em vez de explicá-la depois.",
     "positioning": "Um assessor sênior profundamente técnico, chamado para decisões difíceis de infraestrutura e segurança quando a consultoria executiva não é técnica o bastante e a consultoria de engenharia não é independente o bastante. Julgamento sobre decisões que ainda não foram tomadas, no nível em que elas de fato se tomam.",
     "metaTitle": "Assessoria técnica independente para decisões de rede e segurança · Rodolfo Nützmann",
     "metaDescription": "Julgamento técnico independente antes de você se comprometer com uma arquitetura, um fornecedor, uma plataforma ou um orçamento: uma análise de decisão por escrito, por Rodolfo Nützmann.",
@@ -23863,7 +23878,7 @@
     "shape1Title": "Revisão de decisão",
     "shape1Question": "Devemos aprovar esta arquitetura, ou esta proposta?",
     "shape1Output": "Um memorando de decisão.",
-    "shape1Body": "Uma segunda leitura neutra do orçamento e do diagrama de um fornecedor, por escrito: o que de fato está sendo proposto, o que fica de fora, o que se presume sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
+    "shape1Body": "Uma segunda leitura independente do orçamento e do diagrama de um fornecedor, por escrito: o que de fato está sendo proposto, o que fica de fora, o que se presume sobre o ambiente em que aquilo vai cair, e que perguntas devolver antes de assinar qualquer coisa.",
     "shape2Title": "Avaliação comparativa",
     "shape2Question": "Qual destas abordagens, ou destes fornecedores, serve para nós?",
     "shape2Output": "Uma análise de opções e compromissos.",
@@ -23949,7 +23964,7 @@
     "problemCard1Title": "O ritmo",
     "problemCard1Body": "Organizações estão sendo obrigadas a tomar decisões sobre tecnologia para as quais o próprio modelo de negócio delas não as preparou, num ritmo que não permite contratar e formar essa competência internamente antes.",
     "problemCard2Title": "O material na sala",
-    "problemCard2Body": "O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Boa parte do que chega à mesa é desenhada por alguém com uma cota atrás, e toda referência é escolhida a dedo; parte vem de times internos, de comunidades de código aberto e de engenheiros sem transação nenhuma por trás, e a primeira tarefa é saber qual é qual.",
+    "problemCard2Body": "O resultado é conhecido: a decisão é tomada a partir do material fornecido por quem vende para ela, porque é o único material na sala. Boa parte do que chega à mesa vem de partes com interesse comercial no resultado, e toda referência é escolhida a dedo; parte vem de times internos, de comunidades de código aberto e de engenheiros sem transação nenhuma por trás, e a primeira tarefa é saber qual é qual.",
     "problemCard3Title": "O árbitro",
     "problemCard3Body": "Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e o time interno, que pode ser excelente, está sendo posto para arbitrar um jogo em que só vê o manual de um dos lados.",
     "problemGapLead": "É essa a lacuna que esta prática existe para fechar, e nada além.",
@@ -23962,7 +23977,7 @@
     "indepLead": "Independência é uma propriedade da análise, e vale a pena dizê-la com precisão em vez de em termos amplos.",
     "indepClaimedLabel": "O que se afirma",
     "indepClaimedTitle": "Independência da análise",
-    "indepClaimedBody": "A análise é escrita por mim e leva o meu nome. Tenho autorização vigente de instrutor nas plataformas de quatro fabricantes e não vendo nenhuma delas. Não existe versão desta contratação que me pague mais se você comprar uma coisa em vez de outra, e se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.",
+    "indepClaimedBody": "A análise é escrita por mim e leva o meu nome. Tenho autorização vigente de instrutor nas plataformas de quatro fabricantes, e não vendo nem revendo pessoalmente as tecnologias avaliadas. Não existe versão desta contratação que me pague mais se você comprar uma coisa em vez de outra, e se a resposta honesta for que o seu fornecedor atual está certo, é essa a resposta. Cada autorização pode ser verificada de forma independente, que é o motivo de eu nomeá-las.",
     "indepNoneLead": "Atrelado à tecnologia que a análise favoreça:",
     "indepNone1": "nenhuma cota de vendas",
     "indepNone2": "nenhuma margem de revenda",
@@ -23989,7 +24004,7 @@
     "talk2Sub": "Causos de campo",
     "talk2Body": "Histórias e causos que poderiam ter sido vividos, presenciados ou ouvidos durante as andanças de um engenheiro de campo. Qualquer semelhança com fatos ou pessoas reais terá sido mera coincidência. Para plateias que fizeram esse trabalho e vão se reconhecer, e para as que não fizeram e deveriam saber como é.",
     "customTitle": "Outros temas",
-    "customBody": "O histórico da indústria neste site reúne mais de cento e sessenta registros de empresas, e boa parte disso nunca foi dita em voz alta. Se um evento precisa de uma palestra sobre uma época específica, uma linhagem de tecnologia, ou a forma como determinado mercado de fato se constituiu, vale conversar.",
+    "customBody": "O histórico da indústria neste site reúne {count} registros de empresas, e boa parte disso nunca foi dita em voz alta. Se um evento precisa de uma palestra sobre uma época específica, uma linhagem de tecnologia, ou a forma como determinado mercado de fato se constituiu, vale conversar.",
     "customLink": "O registro da indústria",
     "notTitle": "Uma coisa que isto não é",
     "notBody": "Isto não é treinamento. Cursos, workshops e preparação para certificação são entregues através da Red Education e são contratados lá, não aqui. Uma palestra de evento e um dia de treinamento são coisas diferentes, com plateias diferentes, e misturar as duas não serve a nenhuma delas.",
