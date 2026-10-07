@@ -1,7 +1,7 @@
 ---
 slug: gslb-two-tier-pool-then-member
-title: "GSLB em dois níveis: o wide IP escolhe um pool, o pool escolhe um servidor"
-summary: "O mal-entendido mais comum sobre o BIG-IP DNS é tratar o balanceamento global como uma única decisão. São duas: um wide IP primeiro seleciona um pool, e então esse pool seleciona um servidor virtual - e cada nível pode usar um método diferente. Percorrendo a decisão de dois níveis com um exemplo prático."
+title: "GSLB em dois níveis: o wide IP escolhe o pool, e o pool escolhe o servidor"
+summary: "O equívoco mais comum sobre o BIG-IP DNS é tratar o balanceamento global como uma decisão só. São duas: primeiro o wide IP escolhe um pool, depois esse pool escolhe um virtual server, e cada nível pode usar um método diferente. A decisão em dois níveis, passo a passo, com um exemplo prático."
 concepts: ["gslb", "bigip dns", "gtm", "wide ip", "pool", "níveis de balanceamento", "topology", "global availability"]
 relatedTools: ["bigip-dns-gslb-simulator"]
 relatedArticles: ["gtm-load-balancing-methods", "gtm-topology-records-and-longest-match"]
@@ -11,65 +11,65 @@ status: reviewed
 updated: "2026-07-19"
 ---
 
-Quando alguém diz "o BIG-IP DNS balanceia a requisição", costuma imaginar uma única escolha: uma lista de servidores, um deles selecionado. Essa imagem está errada de um jeito que causa confusão real, porque o balanceamento global de carga (GSLB (global server load balancing)) são duas decisões empilhadas uma sobre a outra, e as duas podem se comportar de formas completamente diferentes.
+Quando alguém diz que "o BIG-IP DNS balanceia a requisição", em geral imagina uma escolha só: uma lista de servidores e um deles selecionado. Essa imagem está errada, e o erro causa confusão de verdade, porque o GSLB (global server load balancing, o balanceamento global de carga entre servidores) são duas decisões, uma em cima da outra, e as duas podem se comportar de formas completamente diferentes.
 
-Eis o formato real. Um wide IP - o nome totalmente qualificado que um cliente resolve, como `www.example.com` - não aponta para endereços diretamente. Ele aponta para **pools**. Cada pool contém **servidores virtuais** (tipicamente os virtual servers do LTM que ficam na frente da aplicação real em cada site). Quando uma requisição DNS chega, o BIG-IP DNS primeiro escolhe um pool, e só então escolhe um servidor virtual dentro desse pool para retornar como resposta. Dois níveis, duas seleções.
+Na prática, a estrutura é esta. Um wide IP, que é o nome completo que o cliente resolve, como `www.example.com`, não aponta direto para endereços. Ele aponta para **pools**. Cada pool contém **virtual servers** (normalmente os virtual servers do LTM que ficam na frente da aplicação de verdade, em cada site). Quando chega uma requisição DNS, o BIG-IP DNS primeiro escolhe um pool e só depois escolhe, dentro desse pool, o virtual server que vai na resposta. Dois níveis, duas escolhas.
 
-## Origens: o único mecanismo global de direcionamento era um nome
+## Origens: o único jeito de direcionar o tráfego globalmente era o nome
 
-O balanceamento global existe porque não há como direcionar um usuário a um sítio de dentro da rede. O anycast influencia qual instância de um endereço um pacote alcança, mas é decisão de roteamento tomada pelos roteadores de outras pessoas, e ela muda sem pedir licença. A única alavanca que o dono de uma aplicação controla de forma confiável é a resposta dada quando alguém pergunta por um nome.
+O balanceamento global existe porque não há como, de dentro da rede, mandar um usuário para um determinado site. O anycast até influencia qual instância de um endereço o pacote vai alcançar, mas essa é uma decisão de roteamento tomada pelos roteadores dos outros, e ela muda sem pedir licença. O único controle confiável que o dono da aplicação tem é a resposta dada quando alguém pergunta por um nome.
 
-Então a técnica virou: responder à consulta [DNS](/glossary/dns) de forma diferente conforme quem perguntou e o que está saudável. É esse o mecanismo inteiro, e toda limitação abaixo decorre de ter escolhido um sistema de nomes como controle de tráfego.
+Daí veio a técnica: responder à consulta [DNS](/glossary/dns) de um jeito diferente conforme quem perguntou e o que está saudável. O mecanismo é só isso, e todas as limitações descritas abaixo vêm de ter escolhido um sistema de nomes para controlar o tráfego.
 
-Os dois níveis existem pela mesma razão de qualquer hierarquia - a primeira decisão é sobre sítios e a segunda sobre servidores, e misturá-las numa lista só torna as duas mais difíceis de raciocinar.
+Os dois níveis existem pelo mesmo motivo de qualquer hierarquia: a primeira decisão é sobre sites e a segunda é sobre servidores, e misturar as duas numa lista só deixa as duas mais difíceis de entender.
 
 ## Nível um: o wide IP escolhe um pool
 
-O wide IP tem seu próprio método de balanceamento que governa a seleção de pool, e os pools são considerados na ordem em que estão listados. Quatro métodos estáticos se aplicam aqui:
+O wide IP tem um método de balanceamento próprio, que define a escolha do pool, e os pools são avaliados na ordem em que aparecem na lista. Aqui valem quatro métodos estáticos:
 
-**Round Robin** alterna entre os pools disponíveis de forma uniforme. Ao longo de muitas requisições, cada pool recebe uma fatia igual.
+O **Round Robin** passa pelos pools disponíveis em rodízio, de forma igual. Ao longo de muitas requisições, cada pool recebe a mesma fatia.
 
-**Ratio** pondera os pools. Atribua ao pool das Américas um ratio de 2 e ao pool da EMEA um ratio de 1, e cerca de dois terços das requisições vão para as Américas.
+O **Ratio** dá pesos aos pools. Se o pool das Américas tiver ratio 2 e o pool da EMEA tiver ratio 1, cerca de dois terços das requisições vão para as Américas.
 
-**Global Availability** não é realmente "balanceamento": ele envia toda requisição ao *primeiro pool disponível na lista*, e só passa ao próximo pool quando o primeiro cai. É uma ordem de prioridade, útil para failover de site ativo/reserva. Um pool conta como disponível se puder responder por qualquer um dos seus métodos configurados.
+O **Global Availability** nem é balanceamento de verdade: ele manda toda requisição para o *primeiro pool disponível da lista* e só passa para o próximo pool quando o primeiro cai. É uma ordem de prioridade, útil para failover entre um site ativo e um site em standby. Um pool conta como disponível se conseguir responder por qualquer um dos métodos configurados nele.
 
-**Topology** roteia por proximidade: compara a localização do cliente (via registros de topologia) com a de cada pool e envia a requisição ao pool que casa. Clientes europeus caem no pool da UE, os demais no pool das Américas - o padrão clássico de direcionamento geográfico.
+O **Topology** decide por proximidade: compara a localização do cliente (pelos topology records, os registros de topologia) com a localização de cada pool e manda a requisição para o pool que corresponde. Clientes da Europa caem no pool da UE e todos os outros no pool das Américas: é o padrão clássico de direcionamento geográfico.
 
-## Nível dois: o pool escolhe um servidor virtual
+## Nível dois: o pool escolhe um virtual server
 
-Uma vez escolhido um pool, esse pool executa *seu próprio* método para selecionar um servidor virtual entre seus membros. Ele tem as mesmas opções estáticas - Round Robin, Ratio, Global Availability, Topology - além de uma cascata de três níveis própria: um método **preferencial**, um **alternado** (que precisa ser estático) se o preferencial não puder responder, e um **fallback** se o alternado também não puder.
+Depois que o pool é escolhido, ele roda o *seu próprio* método para escolher um virtual server entre os membros. Ele tem as mesmas opções estáticas (Round Robin, Ratio, Global Availability, Topology) e, além disso, uma sequência própria de três métodos: um **preferred** (o preferencial), um **alternate** (o alternativo, que precisa ser estático), usado quando o preferred não consegue responder, e um **fallback**, usado quando nem o alternate consegue.
 
-O ponto crucial é que os dois níveis são independentes. Um wide IP pode selecionar pools por Topology enquanto cada pool seleciona seu servidor virtual por Ratio. Essa combinação é extremamente comum: *direcione o cliente para a região mais próxima, e dentro dessa região dê mais peso ao data center maior.* Uma decisão é geográfica, a seguinte é baseada em capacidade, e elas se compõem.
+O ponto principal é que os dois níveis são independentes. Um wide IP pode escolher os pools por Topology enquanto cada pool escolhe o virtual server por Ratio. Essa combinação é muito comum: *mandar o cliente para a região mais próxima e, dentro dessa região, dar mais peso ao data center maior.* Uma decisão é geográfica, a outra é por capacidade, e as duas se combinam.
 
 ## Um exemplo prático
 
-Digamos que `www.example.com` tem dois pools. O wide IP usa **Topology**; o cliente está na UE.
+Imagine que `www.example.com` tem dois pools. O wide IP usa **Topology**, e o cliente está na UE.
 
-- `pool-americas` (região na), membros `vs-sfo` e `vs-nyc`, método de pool Round Robin.
-- `pool-emea` (região eu), membros `vs-lon` (ratio 3) e `vs-fra` (ratio 1), método de pool Ratio.
+- `pool-americas` (região na), membros `vs-sfo` e `vs-nyc`, método do pool Round Robin.
+- `pool-emea` (região eu), membros `vs-lon` (ratio 3) e `vs-fra` (ratio 1), método do pool Ratio.
 
-Nível um: o Topology compara o cliente da UE com cada pool. `pool-emea` casa (maior pontuação), então **todas** as requisições vão para lá; `pool-americas` não recebe nada. Nível dois: dentro de `pool-emea`, o Ratio 3:1 divide o tráfego - `vs-lon` fica com três quartos, `vs-fra` com um quarto. De 100 requisições: 0 para as Américas, 75 para Londres, 25 para Frankfurt.
+No nível um, o Topology compara o cliente da UE com cada pool. O `pool-emea` corresponde (maior pontuação), então **todas** as requisições vão para ele, e o `pool-americas` não recebe nada. No nível dois, dentro do `pool-emea`, o Ratio 3:1 divide o tráfego: o `vs-lon` fica com três quartos e o `vs-fra` com um quarto. De 100 requisições: 0 para as Américas, 75 para Londres e 25 para Frankfurt.
 
-Mude apenas o método do wide IP para Round Robin e o quadro se inverte no nível um: agora as 100 requisições se dividem 50/50 entre os pools independentemente da localização do cliente, e as 50 do pool da UE ainda se dividem 3:1 em 37/38 e 12/13. Os mesmos pools, os mesmos membros, uma resposta completamente diferente - porque a decisão de nível um mudou.
+Agora troque só o método do wide IP para Round Robin, e o cenário se inverte no nível um: as 100 requisições se dividem 50/50 entre os pools, não importa onde o cliente esteja, e as 50 do pool da UE continuam se dividindo 3:1, em 37/38 e 12/13. Os mesmos pools, os mesmos membros e uma resposta completamente diferente, porque a decisão do nível um mudou.
 
 ## O que o mecanismo não consegue fazer
 
-**Ele não vê o usuário, vê um resolvedor.** A decisão se baseia em de onde veio a consulta, que é o endereço do resolvedor recursivo, e não o do cliente. Um usuário num resolvedor público pode ser direcionado ao continente errado, e a extensão de sub-rede que deveria corrigir isso não é enviada nem honrada universalmente.
+**Ele não enxerga o usuário, enxerga um resolver.** A decisão se baseia na origem da consulta, que é o endereço do resolver recursivo, e não o do cliente. Um usuário que usa um resolver público pode ser mandado para o continente errado, e a extensão de sub-rede criada para corrigir isso não é enviada nem respeitada em todo lugar.
 
-**Ele não move uma conexão estabelecida.** O direcionamento por DNS decide onde uma sessão começa. Depois que o cliente conectou, a resposta é irrelevante até ele resolver de novo - e é por isso que o tempo de comutação é limitado pela expiração do cache, e não pelo intervalo da verificação de saúde.
+**Ele não move uma conexão já estabelecida.** O direcionamento por DNS decide onde uma sessão começa. Depois que o cliente se conectou, a resposta não importa mais até ele resolver o nome de novo; é por isso que o tempo de failover depende de quando o cache expira, e não do intervalo do health check.
 
-**O tempo de vida é uma sugestão.** Resolvedores, navegadores e aplicações cacheiam, e alguns ignoram valores curtos de propósito. Um registro de trinta segundos não significa comutação em trinta segundos; significa a comutação mais rápida que se pode esperar, sem garantia.
+**O time to live (TTL) é só uma recomendação.** Resolvers, navegadores e aplicações fazem cache, e alguns ignoram de propósito os valores curtos. Um registro de trinta segundos não significa failover em trinta segundos; significa o failover mais rápido que você pode esperar, sem nenhuma garantia.
 
-**Saúde é inferida à distância.** O monitor diz que o servidor virtual respondeu de onde o monitor está. Usuários em outro lugar podem estar tendo experiência completamente diferente, e um sítio que está de pé, porém lento, em geral continua passando.
+**A saúde é avaliada à distância.** O monitor diz que o virtual server respondeu a partir do ponto onde o monitor está. Usuários em outros lugares podem estar tendo uma experiência completamente diferente, e um site que está no ar, mas lento, normalmente continua passando no teste.
 
-## Onde isso deixa o projeto
+## O que isso significa para o projeto
 
-O enquadramento honesto é que o arranjo de dois níveis é bom para decidir **onde uma nova sessão deve começar**, e que tudo referente a continuidade pertence a outro lugar - à aplicação, ao comportamento de repetição do cliente, e ao estado que precisa existir em mais de um lugar se um sítio for ser perdido.
+Para ser honesto, o arranjo em dois níveis é bom para decidir **onde uma sessão nova deve começar**, e tudo o que diz respeito a continuidade fica em outro lugar: na aplicação, no jeito como o cliente tenta de novo e no estado que precisa existir em mais de um lugar, caso um site venha a ser perdido.
 
-E é por isso que a versão séria desta conversa nunca é sobre o método de balanceamento. É sobre se o dado está nos dois lugares, se o segundo sítio aguenta a carga quando ficar sozinho, e por quanto tempo a organização aceita ficar inconsistente enquanto os dois se reconciliam. O direcionamento é a parte fácil.
+Por isso, a conversa séria sobre esse assunto nunca é sobre o método de balanceamento. É sobre os dados estarem ou não nos dois lugares, sobre o segundo site aguentar ou não a carga quando ficar sozinho e sobre quanto tempo a organização aceita ficar inconsistente enquanto os dois sites se reconciliam. Direcionar o tráfego é a parte fácil.
 
-## Os métodos dinâmicos, e a honestidade sobre eles
+## Os métodos dinâmicos e a honestidade sobre eles
 
-Os dois níveis também oferecem métodos *dinâmicos* - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops e outros - que roteiam por métricas de desempenho ao vivo que os agentes big3d medem de cada data center. Eles são poderosos em produção, mas não podem ser reproduzidos offline: não há resposta fixa sem sondas ao vivo. Uma ferramenta que afirma simulá-los está adivinhando. O **simulador GSLB do BIG-IP DNS** cobre os métodos estáticos de forma determinística e, para os dinâmicos, avisa com franqueza que o resultado depende de métricas ao vivo em vez de fabricar uma distribuição - a mesma disciplina que mantém honesta qualquer "ferramenta que computa, nunca adivinha".
+Os dois níveis também oferecem métodos *dinâmicos* (Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops e outros), que decidem com base em métricas de desempenho em tempo real, medidas pelos agentes big3d em cada data center. Em produção eles são poderosos, mas não dá para reproduzi-los offline: sem as medições ao vivo, não existe resposta fixa. Uma ferramenta que diz simular esses métodos está chutando. O **simulador de GSLB do BIG-IP DNS** cobre os métodos estáticos de forma determinística e, nos dinâmicos, avisa com clareza que o resultado depende de métricas ao vivo, em vez de inventar uma distribuição. É a mesma disciplina que mantém honesta qualquer "ferramenta que computa, nunca adivinha".
 
-Abra o simulador, monte a topologia de dois pools acima e mude um método de cada vez. Observar o nível de pool e o nível de membro se moverem de forma independente é a maneira mais rápida de internalizar que GSLB não é uma decisão, mas duas.
+Abra o simulador, monte a topologia de dois pools do exemplo e mude um método de cada vez. Ver o nível dos pools e o nível dos membros mudarem de forma independente é o jeito mais rápido de fixar que GSLB não é uma decisão, mas duas.

@@ -1,7 +1,7 @@
 ---
 slug: ja3-to-ja4-fingerprinting
-title: "A impressão digital que quebrou, e a que seu próprio autor escreveu para substituí-la"
-summary: "O Chrome passou a embaralhar suas extensões TLS em 2023 e o JA3 parou de identificar o Chrome. A correção veio da mesma pessoa que escreveu o JA3, e o motivo de funcionar cabe numa palavra: ordenado."
+title: "O fingerprint que quebrou e o que o próprio autor escreveu para substituí-lo"
+summary: "O Chrome passou a embaralhar as extensões TLS em 2023, e o JA3 deixou de identificar o Chrome. A correção veio da mesma pessoa que criou o JA3, e o motivo de ela funcionar cabe numa palavra: ordenado."
 concepts: ["ja3", "ja4", "fingerprinting tls", "clienthello", "permutação de extensões", "grease", "cipher stunting", "alpn", "detecção de bots", "ossificação"]
 relatedTools: ["ja3-tls-fingerprint", "ja4-fingerprint-decoder", "http-header-order-fingerprint", "user-agent-entropy-analyzer"]
 relatedArticles: ["sse-five-vendors-one-decision"]
@@ -11,56 +11,56 @@ status: reviewed
 updated: "2026-09-17"
 ---
 
-Antes de um único byte de tráfego cifrado se mover, o cliente já disse bastante sobre si. O ClientHello do TLS (transport layer security) viaja em texto claro e lista cipher suites, extensões e curvas na ordem em que a biblioteca subjacente resolve arrumá-las. Um navegador, um script Python e um programa em Go não estão tentando parecer diferentes. Eles são compilados contra implementações diferentes com padrões diferentes, e isso aparece.
+Antes que um único byte de tráfego criptografado circule, o cliente já contou muita coisa sobre si mesmo. O ClientHello do TLS (transport layer security) trafega em texto claro e lista as cipher suites (os conjuntos de cifras), as extensões e as curvas do jeito que a biblioteca por baixo resolver organizá-las. Um navegador, um script Python e um programa em Go não estão tentando parecer diferentes. Eles são linkados com implementações diferentes, que têm padrões diferentes, e isso aparece.
 
-O JA3, publicado pela Salesforce em 2017, transformou isso numa string só: cinco campos do ClientHello, concatenados e resumidos em MD5. Trinta e dois caracteres dizendo qual pilha você era.
+O JA3, publicado pela Salesforce em 2017, transformou isso numa única string: cinco campos do ClientHello, concatenados e passados por um hash MD5. Trinta e dois caracteres que diziam qual era a sua stack.
 
 Funcionou por uns seis anos.
 
-## O que o quebrou, e por que o motivo importa
+## O que causou a quebra, e por que o motivo importa
 
-Um dos cinco campos era a **ordem** em que as extensões apareciam. Essa ordem nunca foi especificada por ninguém. Era o que a biblioteca fazia, um desempate arbitrário que por acaso variava entre implementações, e acrescentava poder de separação por acidente.
+Um dos cinco campos era a **ordem** em que as extensões apareciam. Essa ordem nunca foi definida por ninguém. Era simplesmente o que a biblioteca fazia, um critério de desempate arbitrário que por acaso variava de uma implementação para outra e que, sem ninguém planejar, ajudava a distinguir os clientes.
 
-Em 2023 o Chrome passou a permutá-la a cada conexão.
+Em 2023, o Chrome passou a embaralhar essa ordem a cada conexão.
 
-O motivo merece ser dito com precisão, porque costuma ser contado como medida anti-fingerprinting e isso é só metade. A motivação principal era **anti-ossificação**: impedir que servidores e middleboxes fixassem suposições sobre uma ordem imutável, que é como a internet acumula infraestrutura que quebra quando qualquer coisa muda. A especificação do TLS 1.3 permite qualquer ordem de extensões, com uma exceção: `pre_shared_key` precisa ser enviada por último. O Chrome estava fazendo o ecossistema exercitar uma liberdade que o padrão já concedia, para que essa liberdade continuasse funcionando.
+Vale explicar o motivo com precisão, porque ele costuma ser contado como uma medida contra o fingerprinting (a identificação do cliente por uma espécie de impressão digital), e isso é só metade da história. A motivação principal era a **anti-ossificação**: impedir que servidores e middleboxes fixassem no código suposições sobre uma ordem imutável, que é como a internet vai acumulando infraestrutura que quebra quando qualquer coisa muda. A especificação do TLS 1.3 permite qualquer ordem de extensões, com uma exceção: `pre_shared_key` precisa ser enviada por último. O Chrome estava fazendo o ecossistema exercitar uma liberdade que o padrão já dava, para que essa liberdade continuasse funcionando.
 
-Resistência a fingerprinting foi efeito colateral bem-vindo, não a finalidade inteira.
+A resistência ao fingerprinting foi um efeito colateral bem-vindo, e não o propósito todo.
 
-A implantação correu pelos Chrome 108 e 109 e estava marcada para o 110. A Fastly observou o efeito na própria rede e publicou os números: o JA3 dominante do Chrome, `cd08e31494f9531f560d64c695473da9`, despencou a partir de **20 de janeiro de 2023**. Com cerca de quinze extensões permutáveis, o espaço é da ordem de quinze fatorial, algo como um trilhão de arranjos. A conclusão deles foi que toda conexão usando o recurso produziria, na prática, um JA3 único.
+A mudança foi liberada ao longo das versões 108 e 109 do Chrome e estava programada para a 110. A Fastly acompanhou o efeito na própria rede e publicou os números: o valor JA3 dominante do Chrome, `cd08e31494f9531f560d64c695473da9`, despencou a partir de **20 de janeiro de 2023**. Com cerca de quinze extensões que podem trocar de posição, o espaço é de aproximadamente quinze fatorial, algo na casa de um trilhão de arranjos. A conclusão da Fastly foi que, na prática, toda conexão que usasse o recurso geraria um JA3 único.
 
-Uma impressão digital única por conexão não é impressão digital. É número aleatório.
+Um fingerprint que é único a cada conexão não é um fingerprint. É um número aleatório.
 
-Atacantes já vinham fazendo uma versão deliberada da mesma coisa, chamada cipher stunting: embaralhar a ordem das cifras justamente para escapar de detecção baseada em JA3. O Chrome fez por razões de princípio e quebrou a técnica de forma muito mais completa.
+Atacantes já vinham fazendo uma versão proposital da mesma coisa, chamada cipher stunting: embaralhar a ordem das cifras justamente para escapar da detecção baseada em JA3. O Chrome fez isso por princípio e quebrou a técnica de um jeito muito mais completo.
 
 ## A correção, do mesmo autor
 
-O JA4 chegou em 2023 pela FoxIO, liderada por John Althouse, que tinha sido um dos autores originais do JA3. O detalhe não é curiosidade. A pessoa mais bem posicionada para dizer o que o JA3 errou era quem o construiu, e o que ele mudou aponta exatamente onde estava a fragilidade.
+O JA4 chegou em 2023, criado pela FoxIO, liderada por John Althouse, que tinha sido um dos autores originais do JA3. Esse detalhe não é curiosidade. Quem estava em melhor posição para dizer onde o JA3 errou era quem o construiu, e o que ele mudou mostra exatamente onde estava a fragilidade.
 
-**A mudança central cabe numa palavra: ordenado.** Cipher suites e extensões são ordenadas pelos seus valores numéricos antes do hash. Reordená-las deixa de alterar qualquer coisa, então a permutação do Chrome para de importar e o cipher stunting para de funcionar no mesmo movimento.
+**A mudança central cabe numa palavra: ordenado.** As cipher suites e as extensões são ordenadas pelos seus valores numéricos antes do hash. Mudar a ordem delas não altera mais nada e, de uma só vez, a permutação do Chrome deixa de importar e o cipher stunting deixa de funcionar.
 
-Ordenar descarta informação, e aceitar essa perda foi decisão consciente. O raciocínio da FoxIO é que aplicações e bibliotecas escolhem uma **lista** distintiva de cifras muito mais do que uma **ordenação** distintiva dela, então o conjunto carrega quase todo o poder de identificação e a ordem carregava sobretudo ruído. A evidência disso são os seis anos em que o JA3 funcionou: ele se apoiava no conjunto, com a ordem como bônus que ninguém tinha garantido.
+Ordenar descarta informação, e aceitar essa perda foi uma decisão consciente. O raciocínio da FoxIO é que aplicações e bibliotecas escolhem uma **lista** de cifras característica com muito mais frequência do que uma **ordem** característica para essa lista; logo, o conjunto carrega quase todo o poder de identificação, e a ordem carregava basicamente ruído. A prova disso são os seis anos em que o JA3 funcionou: ele se apoiava no conjunto, e a ordem era um bônus que ninguém tinha garantido.
 
-Três outras escolhas valem conhecer:
+Outras três escolhas valem a pena conhecer:
 
-**Valores GREASE são removidos.** São code points reservados definidos na RFC 8701 que os navegadores enviam exatamente para impedir que middleboxes ossifiquem contra campos não reconhecidos. Eles rodam. Removê-los antes do hash faz com que uma versão do Chrome que troque a seleção de GREASE não invalide toda impressão digital armazenada.
+**Os valores GREASE são removidos.** São code points reservados, de mentira, definidos na RFC 8701, que os navegadores enviam justamente para impedir que middleboxes ossifiquem diante de campos que não reconhecem. E eles mudam com o tempo. Removê-los antes do hash faz com que uma versão do Chrome que renove a sua seleção de GREASE não invalide todos os fingerprints armazenados.
 
-**Os algoritmos de assinatura mantêm a ordem original.** Tendo ordenado todo o resto, o JA4 anexa a lista de algoritmos de assinatura sem ordenar. É ali que parte da unicidade perdida na ordenação é recuperada, e é troca pensada, não descuido.
+**Os algoritmos de assinatura mantêm a ordem original.** Depois de ordenar todo o resto, o JA4 acrescenta a lista de algoritmos de assinatura sem ordenar. É ali que se recupera parte da capacidade de distinguir clientes que se perdeu com a ordenação, e isso é uma troca pensada, não um descuido.
 
-**O resultado é parcialmente legível.** Onde o JA3 dá um MD5 opaco, uma string JA4 abre com campos que um humano lê direto: o transporte e a versão do TLS, se há indicação de nome de servidor, quantas cifras e extensões existem, e o primeiro protocolo negociado. Um analista consegue perceber bastante antes de consultar qualquer tabela, que é uma utilidade diferente da de um hash que não significa nada até ser pesquisado.
+**O resultado é em parte legível.** Enquanto o JA3 entrega um MD5 opaco, uma string JA4 começa com campos que uma pessoa lê diretamente: o transporte e a versão do TLS, se o server name indication está presente, quantas cifras e extensões existem e o primeiro protocolo negociado. Um analista consegue concluir bastante coisa antes de consultar qualquer tabela de lookup, e isso é uma utilidade de outro tipo, comparada a um hash que não significa nada até ser comparado com valores conhecidos.
 
 ## Por que este sinal é diferente dos outros
 
-Todo o resto do fingerprinting de cliente acontece na página. Leitura de canvas, enumeração de fontes, peculiaridades de temporização: tudo roda depois que existe um documento, o que significa que código de página pode interceptar, sobrescrever ou mentir a respeito.
+Todo o resto do fingerprinting de cliente acontece na página. Leitura de canvas, enumeração de fontes, peculiaridades de timing: tudo isso roda depois que existe um documento, o que significa que o código da página pode interceptar esses dados, sobrescrevê-los ou mentir sobre eles.
 
-O ClientHello é enviado pela pilha de rede no instante em que o socket abre. Ainda não existe documento, nem janela, nem script. Quando algum código de disfarce poderia rodar, o handshake já saiu e, se o servidor se importou, já foi julgado.
+O ClientHello é enviado pela stack de rede no instante em que o socket abre. Ainda não existe documento, nem janela, nem script. Quando algum código de disfarce (stealth) conseguiria rodar, o handshake já saiu e, se o servidor estava prestando atenção, já foi julgado.
 
-É por isso que uma divergência é sinal tão forte. Uma requisição cujo cabeçalho diz Chrome, carregando um handshake que casa com a biblioteca requests do Python, não é ambígua. Mudar uma impressão digital TLS significa trocar ou reconfigurar a própria biblioteca TLS, que é outra ordem de esforço em relação a ajustar uma string de user agent.
+É por isso que uma divergência é um sinal tão forte. Uma requisição cujo header (cabeçalho) diz Chrome, mas que traz um handshake igual ao da biblioteca requests do Python, não deixa dúvida. Mudar um fingerprint TLS significa trocar ou reconfigurar a própria biblioteca TLS, um esforço de outra ordem de grandeza em comparação com mudar uma string de user agent.
 
-## O que levar disso na prática
+## O que levar disso para a prática
 
-**Confira a data de qualquer orientação que cite um hash JA3 específico.** Uma lista de bloqueio construída sobre valores JA3 exatos se degrada, porque os navegadores legítimos dos quais ela foi derivada não produzem mais valores estáveis. Material escrito antes de 2023 descreve um mundo que acabou em janeiro daquele ano.
+**Confira a data de qualquer recomendação que cite um hash JA3 específico.** Uma lista de bloqueio montada com valores JA3 exatos vai perdendo a validade, porque os navegadores legítimos a partir dos quais ela foi criada já não produzem valores estáveis. Material escrito antes de 2023 descreve um mundo que acabou em janeiro daquele ano.
 
-**Não leia uma impressão digital sozinha.** As quatro ferramentas ligadas a este artigo existem para serem usadas juntas: o handshake TLS, a ordem dos cabeçalhos HTTP, e o quanto o user agent alegado é de fato comum. Cada uma é fraca isolada e fortes em combinação, porque um cliente que mente precisa mentir de forma consistente em todas, e a maioria não consegue.
+**Não avalie um fingerprint isoladamente.** As quatro ferramentas ligadas a este artigo existem para ser usadas juntas: o handshake TLS, a ordem dos headers HTTP e o quanto o user agent declarado é de fato comum. Cada sinal é fraco sozinho e forte em combinação, porque um cliente que mente precisa mentir de forma consistente em todos eles, e a maioria não faz isso.
 
-**Espere que isto se mova de novo.** O JA3 durou seis anos e foi desfeito por uma mudança feita por motivos alheios e inteiramente legítimos. Nada torna o JA4 permanente. Ele é mais durável porque depende do conjunto e não do arranjo, e conjuntos mudam mais devagar que ordenações, mas uma técnica construída sobre observar o que os clientes por acaso fazem estará sempre à mercê de clientes decidirem fazer outra coisa.
+**Espere que isso mude de novo.** O JA3 durou seis anos e foi derrubado por uma mudança feita por motivos que nada tinham a ver com ele, e totalmente legítimos. Nada no JA4 o torna permanente. Ele é mais durável porque depende do conjunto, e não da ordem, e conjuntos mudam mais devagar do que ordens; mas uma técnica baseada em observar o que os clientes por acaso fazem vai estar sempre à mercê de os clientes decidirem fazer outra coisa.

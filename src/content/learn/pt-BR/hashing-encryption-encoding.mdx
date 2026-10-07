@@ -53,10 +53,10 @@ O erro clássico é recorrer à coluna errada. Guardar senhas com codificação 
 Este artigo abre a série **Hashes e HMAC**. Suas duas perguntas (é reversível, precisa de chave) situam o hash entre os vizinhos; as partes então constroem o hash a partir das suas garantias até a escolha da função, e acrescentam a chave que faz o HMAC, da sua construção à verificação segura e ao seu uso na assinatura de requisições de API.
 
 1. **[Hash criptográfico: SHA-256 e a família SHA-2](/learn/hashing)**. O que uma função de hash garante, as propriedades que a tornam criptográfica e por que um resumo não é criptografia.
-2. **[Por Que Hashes Criptográficos São de Mão Única](/learn/why-hashes-are-one-way)**. Resistência à pré-imagem, e por que reverter um hash é sempre uma busca, nunca uma inversão.
+2. **[Por que hashes criptográficos são de mão única](/learn/why-hashes-are-one-way)**. Resistência à pré-imagem, e por que reverter um hash é sempre uma busca, nunca uma inversão.
 3. **[Colisões, resistência à pré-imagem e o limite do aniversário](/learn/hash-collisions)**. As três propriedades de segurança, por que colisões importam e a aritmética do aniversário que define a força real.
-4. **[Escolhendo um hash: MD5, SHA-1, SHA-2, SHA-3 e BLAKE](/learn/hash-function-families)**. MD5, SHA-1, SHA-2, SHA-3 e BLAKE: quais estão quebradas, quais são seguras e como escolher.
+4. **[Como escolher um hash: MD5, SHA-1, SHA-2, SHA-3 e BLAKE](/learn/hash-function-families)**. MD5, SHA-1, SHA-2, SHA-3 e BLAKE: quais estão quebradas, quais são seguras e como escolher.
 5. **[HMAC: hash com chave para autenticação de mensagens](/learn/hmac)**. Por que um hash simples prova integridade mas não autenticidade, e como uma chave secreta resolve isso.
 6. **[Por que HMAC, e não hash(chave + mensagem)](/learn/why-hmac)**. O ataque de extensão de comprimento que quebra hash(chave + mensagem), e a construção aninhada que o derrota.
-7. **[Verificando um HMAC com segurança: tempo constante e repetição](/learn/verifying-hmac)**. Por que comparar com == vaza tempo, e por que uma assinatura válida sozinha não impede uma repetição.
-8. **[Autenticando requisições de API com HMAC](/learn/hmac-api-signing)**. Como um segredo compartilhado permite a um servidor confiar numa requisição que não viu ser feita, com a proteção contra repetição no lugar.
+7. **[Como verificar um HMAC com segurança: tempo constante e repetição](/learn/verifying-hmac)**. Por que comparar com == vaza tempo, e por que uma assinatura válida sozinha não impede uma repetição.
+8. **[Como autenticar requisições de API com HMAC](/learn/hmac-api-signing)**. Como um segredo compartilhado permite a um servidor confiar numa requisição que não viu ser feita, com a proteção contra repetição no lugar.

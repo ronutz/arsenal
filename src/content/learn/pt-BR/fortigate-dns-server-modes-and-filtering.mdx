@@ -1,7 +1,7 @@
 ---
 slug: fortigate-dns-server-modes-and-filtering
-title: "FortiGate como servidor DNS: quatro modos, e onde o filtro se aplica"
-summary: "Um FortiGate pode retransmitir DNS, responder da própria base ou resolver desde a raiz. Os quatro modos se comportam de formas diferentes sob falha, e o perfil de filtro de DNS não se aplica a todos eles - que é a configuração que parece protegida e não está."
+title: "FortiGate como servidor DNS: os quatro modos e onde o filtro vale"
+summary: "Um FortiGate pode repassar as consultas DNS, responder a partir da própria base ou resolver sozinho, desde a raiz. Os quatro modos se comportam de formas diferentes quando algo falha, e o profile de DNS filter não se aplica a todos eles. É a configuração que parece protegida e não está."
 concepts: ["fortinet", "dns", "dns-filtering", "rpz", "doh"]
 relatedTools: []
 relatedArticles: ["dns-blocklists-and-response-policy", "choosing-a-public-dns-resolver", "dns-record-types-in-answers"]
@@ -11,48 +11,48 @@ status: reviewed
 updated: "2026-09-27"
 ---
 
-## Quatro modos, e não são variações de uma mesma coisa
+## Quatro modos, e não são variações da mesma coisa
 
-Um FortiGate pode servir DNS numa interface, e o modo decide o que ele faz com uma consulta recebida:
+O FortiGate pode atender DNS numa interface, e o modo define o que ele faz com cada consulta que recebe:
 
-- **Forward to System DNS** (`forward-only` na CLI) o torna um **retransmissor**. As consultas vão para os servidores DNS configurados no sistema. Ele mesmo não responde nada.
-- **Recursive** consulta primeiro a **própria base de DNS** do FortiGate e encaminha ao sistema o que não tiver.
-- **Non-recursive** responde **apenas** pela base local. Um nome que não esteja nela não é resolvido.
-- **Resolver**, acrescentado no FortiOS 7.6.0, faz a resolução completa sozinho - falando com raiz, TLD e autoritativos diretamente, em vez de entregar a consulta a um resolvedor externo.
+- **Forward to System DNS** (`forward-only` na CLI) transforma o FortiGate num **relay**, que só repassa as consultas. Elas seguem para os servidores DNS definidos nas configurações de sistema. Ele mesmo não responde nada.
+- **Recursive** consulta primeiro a **base DNS do próprio FortiGate** e encaminha para os servidores DNS do sistema tudo o que não estiver nela.
+- **Non-recursive** responde **só** com o que está na base local. Um nome que não estiver lá simplesmente não é resolvido.
+- **Resolver**, incluído no FortiOS 7.6.0, faz sozinho a resolução completa: conversa direto com os servidores raiz, de TLD e autoritativos, em vez de passar a consulta para um resolver externo.
 
-Os nomes convidam a supor que diferem por grau. **Eles diferem por quem responde no fim**, que é outra pergunta e é a que importa quando algo quebra.
+Pelos nomes, a tendência é achar que a diferença entre eles é só de grau. **A diferença está em quem dá a resposta no fim**, e essa é outra pergunta: justamente a que importa quando algo quebra.
 
-## *** O FILTRO NÃO SE APLICA A TODOS OS MODOS ***
+## *** O FILTRO NÃO VALE PARA TODOS OS MODOS ***
 
-A documentação da Fortinet diz claramente: um perfil de filtro de DNS pode ser aplicado aos modos **Recursive** e **Forward to System DNS**.
+A documentação da Fortinet diz com todas as letras: um profile de DNS filter (o perfil de filtragem de DNS) pode ser aplicado aos modos **Recursive** e **Forward to System DNS**.
 
-**Non-recursive não está nessa lista.**
+**O Non-recursive não está nessa lista.**
 
-Então um FortiGate em modo não recursivo com `dnsfilter-profile` definido é um equipamento carregando uma política de filtragem que não filtra. A configuração está lá, o perfil existe, a interface mostra o perfil anexado — **e nenhuma classificação de categoria é consultada, porque a consulta nunca sai do caminho da base local.**
+Ou seja, um FortiGate em modo non-recursive com `dnsfilter-profile` configurado é um equipamento com uma política de filtragem que não filtra nada. A configuração está lá, o profile existe, a GUI mostra o profile associado, **e nenhum rating de categoria é consultado, porque a consulta nunca sai do caminho da base local.**
 
-Nada reporta isso. Não há erro, não há linha de log dizendo que o perfil foi ignorado, e o painel não tem o que mostrar porque nada foi avaliado. **É exatamente o formato de falha que o resto deste site não para de encontrar: um controle configurado, visível na configuração ativa, e inerte.**
+Nada avisa sobre isso. Não há erro, não há linha de log dizendo que o profile foi ignorado, e o dashboard não tem nada para mostrar, porque nada foi avaliado. **É exatamente o tipo de falha que o resto deste site não para de encontrar: um controle configurado, visível na running config e inerte.**
 
-**Confira o modo antes de confiar no perfil.** É uma linha: `config system dns-server`, e o modo é o campo acima do filtro.
+**Confira o modo antes de confiar no profile.** É uma linha só: `config system dns-server`, e o modo é o campo logo acima do filtro.
 
-## Por que existe o modo Resolver
+## Por que o modo Resolver existe
 
-A razão declarada no material da própria Fortinet vale ser conhecida, porque é restrição operacional e não preferência de recurso: resolver diretamente **evita limites impostos por resolvedores externos**, que podem limitar consultas por segundo.
+Vale conhecer o motivo que a própria Fortinet dá no material de lançamento, porque é uma limitação operacional, e não uma questão de preferência por um recurso: resolver direto **evita os limites impostos por resolvers externos**, que podem restringir o número de consultas por segundo.
 
-Um firewall fazendo DNS para uma rede grande é um único cliente disparando um número enorme de consultas ao resolvedor público ou do provedor para onde encaminha. Do lado daquele resolvedor, parece um host muito movimentado — e limites de taxa se aplicam a hosts. **O modo Resolver remove o intermediário que estava limitando você.**
+Um firewall que faz o DNS de uma rede grande é um único cliente disparando uma quantidade enorme de consultas para o resolver público, ou do provedor, para onde ele encaminha. Do lado desse resolver, aquilo parece um único host muito ocupado, e os rate limits são aplicados por host. **O modo Resolver elimina o intermediário que estava limitando você.**
 
-O custo é que o FortiGate passa a carregar a recursão inteira: hints de raiz, a latência de percorrer a hierarquia num cache miss, e o próprio cache virando algo cujo tamanho e comportamento importam.
+O preço é que o FortiGate passa a fazer todo o trabalho de recursão: os root hints, a latência de percorrer a hierarquia a cada cache miss e o próprio cache, que vira algo cujo tamanho e comportamento passam a importar.
 
-## A base, e os dois tipos de zona local
+## A base DNS e os dois tipos de zona local
 
-A base de DNS guarda zonas locais e pode ser **primária** — cada registro mantido à mão — ou **secundária**, tomando o conteúdo de uma fonte externa.
+A base DNS guarda zonas locais, e cada uma pode ser **primária** (todos os registros mantidos à mão) ou **secundária**, recebendo o conteúdo de uma fonte externa.
 
-O caso primário é o que acumula dívida em silêncio. Registros criados para uma migração ou um laboratório permanecem depois de o motivo ter ido embora, e um FortiGate respondendo autoritativamente por um nome que mudou é um problema de resolução visível só de trás daquele firewall. **O nome funciona em todo lugar, menos dentro da sua própria rede**, o que inverte a direção habitual de uma reclamação de DNS e manda a investigação para fora.
+O caso primário é o que vai acumulando dívida técnica sem ninguém perceber. Registros criados para uma migração ou para um laboratório continuam lá depois que o motivo deixou de existir, e um FortiGate respondendo com autoridade por um nome que mudou de lugar cria um problema de resolução que só aparece para quem está atrás daquele firewall. **O nome funciona em todo lugar, menos dentro da sua própria rede**, o que inverte a direção habitual de uma reclamação de DNS e faz a investigação procurar o problema lá fora.
 
-## DNS cifrado no próprio equipamento
+## DNS criptografado no próprio equipamento
 
-Versões recentes do FortiOS expõem configurações de **DoH, DoH3 e DoQ** no servidor DNS, com certificado tomado da configuração do servidor DNS e recaindo na do web proxy.
+As versões recentes do FortiOS têm configurações de **DoH, DoH3 e DoQ** no servidor DNS, usando o certificado definido na configuração do servidor DNS e, como fallback, o do web proxy.
 
-Isso fecha um ciclo que vale nomear. DNS cifrado costuma ser discutido como **aquilo que derrota a política da rede** - um cliente escolhendo o próprio resolvedor por HTTPS. Um firewall que oferece DNS cifrado ele mesmo está oferecendo a privacidade sem a perda de controle: **o transporte fica protegido e a política continua valendo, porque o resolvedor é o que a rede opera.**
+Isso fecha um ciclo que vale a pena apontar. Normalmente, o DNS criptografado aparece na conversa como **aquilo que derruba a política da rede**: um cliente que escolhe o próprio resolver por HTTPS. Um firewall que oferece ele mesmo o DNS criptografado entrega a privacidade sem a perda de controle: **o transporte fica protegido e a política continua valendo, porque o resolver é aquele que a própria rede opera.**
 
 ## Fontes
 

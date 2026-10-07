@@ -1,7 +1,7 @@
 ---
 slug: http-from-the-request-line
-title: "HTTP, a partir da linha de requisição: o que uma mensagem significa e como ela viaja"
-summary: "Toda troca HTTP são duas mensagens, uma requisição e uma resposta, e desde junho de 2022 o padrão as descreve em duas camadas: o que uma mensagem significa (métodos, códigos de status, campos de cabeçalho), definido uma vez para todas as versões, e como os seus bytes viajam, definido para cada versão separadamente. O mapa da série sobre HTTP: qual artigo lê qual parte de uma mensagem, e em que ordem."
+title: "HTTP a partir da linha de requisição: o que uma mensagem quer dizer e como ela viaja"
+summary: "Toda troca HTTP tem duas mensagens, uma requisição e uma resposta, e desde junho de 2022 o padrão descreve essas mensagens em duas camadas: o que a mensagem significa (métodos, códigos de status, campos de header), definido uma única vez para todas as versões, e como os bytes dela trafegam, definido separadamente para cada versão. É o mapa da série sobre HTTP: qual artigo lê qual parte da mensagem, e em que ordem."
 concepts: ["http", "http semantics", "request", "response", "http methods", "status codes", "http headers", "cookies", "proxies", "http versions", "index"]
 relatedTools: ["http-methods-comparison", "curl-command-explainer"]
 relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-versions-09-to-3", "http-message-framing-content-length-and-chunked", "http-query-method"]
@@ -11,46 +11,46 @@ status: reviewed
 updated: "2026-10-06"
 ---
 
-O HTTP parece uma longa lista de coisas para aprender: os métodos, dezenas de códigos de status, um registro extenso de campos de cabeçalho, cookies, proxies, cinco versões. Ele é menor do que a lista. Toda troca é uma requisição e uma resposta, e cada item da lista ou é uma parte dessas duas mensagens, ou é uma maneira de transportá-las.
+O HTTP parece uma lista enorme de coisas para aprender: os métodos, dezenas de códigos de status, um registro extenso de campos de header (cabeçalho), cookies, proxies, cinco versões. Na verdade, ele é menor do que essa lista. Toda troca é uma requisição e uma resposta, e cada item da lista ou é uma parte dessas duas mensagens, ou é uma forma de transportá-las.
 
 ## Uma troca, duas mensagens
 
-O padrão resume o protocolo inteiro numa frase: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection", ou seja, um protocolo de requisição e resposta, sem estado, para trocar mensagens por uma conexão (RFC 9110, seção 3.3). Um cliente envia uma requisição: um método que diz o que ele quer que seja feito, o alvo sobre o qual quer que seja feito, campos de cabeçalho que qualificam o pedido e, às vezes, um corpo. O servidor responde com um código de status que diz como foi, campos de cabeçalho próprios e, normalmente, um corpo.
+O padrão resume o protocolo inteiro numa frase: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, seção 3.3), ou seja, um protocolo de requisição e resposta, stateless (sem estado), que troca mensagens por uma conexão. O cliente envia uma requisição: um método, que diz o que ele quer que seja feito; o alvo, sobre o qual isso deve ser feito; campos de header que detalham o pedido; e, às vezes, um corpo. O servidor responde com um código de status, que diz como foi, campos de header próprios e, normalmente, um corpo.
 
-Essa também é a ordem em que vale aprender. Leia uma requisição de cima para baixo, como um servidor lê: a linha de requisição (o método e o alvo), depois os campos, depois o corpo e o ponto em que ele termina. Leia a resposta da mesma maneira: o status, depois os campos. A série segue essa ordem e, em seguida, passa às camadas em volta das mensagens.
+Essa também é a ordem certa para aprender. Leia a requisição de cima para baixo, do jeito que o servidor lê: a linha de requisição (a request line, com o método e o alvo), depois os campos, depois o corpo e o ponto em que ele termina. Leia a resposta do mesmo jeito: o status, depois os campos. A série segue essa ordem e depois passa para as camadas em volta das mensagens.
 
 ## Duas camadas desde junho de 2022
 
-Durante a maior parte da sua vida, o padrão do HTTP/1.1 misturava dois tipos de regra. Umas dizem o que uma mensagem significa: o que um GET promete, o que um 304 obriga um cache a fazer, para que serve o campo Host. Outras dizem como uma mensagem é disposta em bytes: linhas de texto que terminam num retorno de carro e numa quebra de linha, e um tamanho ou uma codificação em blocos (chunked) que mostra onde o corpo termina.
+Durante a maior parte da sua história, o padrão do HTTP/1.1 misturava dois tipos de regra. Umas dizem o que a mensagem significa: o que um GET promete, o que um 304 obriga um cache a fazer, para que serve o campo Host. Outras dizem como a mensagem é organizada em bytes: linhas de texto que terminam com um carriage return e um line feed, e um tamanho ou uma codificação chunked que mostra onde o corpo termina.
 
-Em junho de 2022, a Internet Engineering Task Force (IETF) republicou o HTTP com os dois tipos separados. A RFC 9110, HTTP Semantics, define os aspectos do protocolo que são compartilhados por todas as versões: os métodos, os códigos de status, os campos. Cada versão tem então um documento próprio para o fio: a RFC 9112 para as mensagens de texto do HTTP/1.1, a RFC 9113 para os quadros binários e os fluxos multiplexados do HTTP/2, e a RFC 9114 para o HTTP/3, que roda sobre o transporte QUIC em vez do TCP.
+Em junho de 2022, a Internet Engineering Task Force (IETF) republicou o HTTP com os dois tipos de regra separados. A RFC 9110, HTTP Semantics, "defines aspects of the protocol that are shared by all versions", ou seja, reúne o que vale para todas as versões: os métodos, os códigos de status, os campos. Cada versão tem, então, um documento próprio para o formato em que a mensagem trafega: a RFC 9112 para as mensagens de texto do HTTP/1.1, a RFC 9113 para os frames binários e os streams multiplexados do HTTP/2, e a RFC 9114 para o HTTP/3, que roda sobre o transporte QUIC em vez do TCP.
 
-A separação é a ideia mais útil da série. Um 404 significa a mesma coisa no HTTP/1.1 e no HTTP/3, e um GET faz as mesmas promessas nos dois; o que muda é como são enquadrados os bytes que os carregam. Quando algo quebra, pergunte em qual camada quebrou. Um servidor que responde 403 a uma requisição que deveria permitir tem um problema de significado. Dois equipamentos que discordam sobre onde uma mensagem termina têm um problema de enquadramento, e é nessa discordância que mora o request smuggling.
+Essa separação é a ideia mais útil da série. Um 404 significa a mesma coisa no HTTP/1.1 e no HTTP/3, e um GET faz as mesmas promessas nos dois; o que muda é o framing (a forma como os bytes que carregam tudo isso são delimitados). Quando algo quebra, pergunte em que camada quebrou. Um servidor que responde 403 a uma requisição que deveria aceitar tem um problema de significado. Dois equipamentos que discordam sobre onde uma mensagem termina têm um problema de framing, e é exatamente nessa discordância que vive o request smuggling.
 
 ## O que o HTTP deixa para os outros
 
-O HTTP não guarda estado, por projeto: cada requisição vale por si, e o servidor não lhe deve memória alguma da anterior. O estado foi acrescentado por cima. Um servidor define um cookie com o campo de cabeçalho Set-Cookie e o navegador o devolve com o campo Cookie, nas requisições que o escopo do cookie permite (RFC 6265).
+O HTTP é stateless de propósito: cada requisição vale por si, e o servidor não tem obrigação nenhuma de lembrar da anterior. O estado foi acrescentado por cima. O servidor grava um cookie com o header Set-Cookie, e o navegador o devolve com o header Cookie, nas requisições que o escopo do cookie permite (RFC 6265).
 
-O caminho também raramente é direto. O padrão prevê intermediários que atendem às requisições por uma cadeia de conexões e nomeia três formas comuns: proxy, gateway e túnel (RFC 9110, seção 3.7). Quase tudo o que um operador mantém entre um navegador e um servidor é um deles, um forward proxy na borda do escritório ou um reverse proxy na frente dos servidores, e cada um lê, e pode reescrever, as mensagens que repassa.
+O caminho também raramente é direto. "HTTP enables the use of intermediaries to satisfy requests through a chain of connections", e o padrão cita três formas comuns desses intermediários: proxy, gateway e túnel (RFC 9110, seção 3.7). Quase tudo o que um operador mantém entre o navegador e o servidor é um deles, seja um forward proxy na borda do escritório, seja um reverse proxy na frente dos servidores, e cada um lê, e pode reescrever, as mensagens que repassa.
 
 ## O método mais novo
 
-A lista de métodos cresceu em junho de 2026. A RFC 10008 define o QUERY: como no POST, a entrada da consulta vai no conteúdo da requisição, e não na URI; mesmo assim, uma requisição QUERY é segura em relação ao recurso de destino e é idempotente. Uma busca grande demais para caber num endereço agora pode ir como corpo e, ainda assim, ser repetida, e ter a resposta guardada em cache, como acontece com um GET.
+A lista de métodos cresceu em junho de 2026. A RFC 10008 define o QUERY: "As with POST, the input to the query operation is passed as the content of the request rather than as part of the request URI"; mesmo assim, "QUERY requests are safe with regard to the target resource" e "QUERY requests are idempotent". Na prática, uma busca grande demais para caber num endereço agora pode ir no corpo da requisição e, ainda assim, ser repetida e ter a resposta guardada em cache, como acontece com um GET.
 
 ## Esta série, em ordem
 
-Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela, depois um epílogo.
+Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela e, por fim, um epílogo.
 
-1. **[Ler uma requisição HTTP crua, e transformá-la de volta em algo executável](/learn/raw-http-requests-and-how-to-replay-them)**. A mensagem como ela realmente chega, linha de requisição, campos e corpo, e as três armadilhas ao reproduzi-la.
-2. **[Métodos HTTP: Os Verbos da Web](/learn/http-methods-the-verbs)**. A primeira palavra da linha de requisição, e as duas propriedades, segura e idempotente, sobre as quais caches, novas tentativas e crawlers agem.
-3. **[Códigos de Status HTTP: As Cinco Famílias](/learn/http-status-codes-the-five-families)**. O primeiro dígito da resposta faz a maior parte do trabalho; depois, os códigos que um operador realmente encontra.
-4. **[Cabeçalhos HTTP: A Anatomia dos Metadados](/learn/http-headers-anatomy)**. Os campos que as duas mensagens carregam: os seus quatro papéis, o campo Host e a divisão entre fim a fim e salto a salto.
-5. **[Cookies HTTP: Estado Sobre um Protocolo Sem Estado](/learn/http-cookies-state-over-stateless)**. Dois campos de cabeçalho que dão memória a um protocolo sem estado, e as regras de quando o bilhete viaja.
-6. **[Onde uma mensagem HTTP/1.1 termina: Content-Length, chunked e as oito regras](/learn/http-message-framing-content-length-and-chunked)**. A camada de enquadramento: como um receptor sabe onde uma mensagem para e a próxima começa, e o que o smuggling explora.
-7. **[Proxies HTTP: Forward vs Reverse, Explícito vs Transparente](/learn/http-proxy-forward-and-reverse)**. Os intermediários: para qual lado um proxy trabalha, se o cliente sabe que ele está ali, e os campos que registram a sua passagem.
-8. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: Cinco Versões do Protocolo da Web](/learn/http-versions-09-to-3)**. Os mesmos significados transportados de cinco maneiras, de um GET de uma linha a fluxos multiplexados sobre QUIC.
-9. **[HTTP QUERY: a leitura que finalmente carrega um corpo](/learn/http-query-method)**. O método mais novo: o que ele resolve, como as suas respostas vão para o cache e o que cada camada da infraestrutura precisa verificar.
-10. **[Mensagens escondidas em cabeçalhos HTTP: tributos, piadas e vagas de emprego no overhead](/learn/hidden-messages-in-http-headers)**. Um epílogo: o que as pessoas escreveram nos campos que quase ninguém lê.
+1. **[Requisição HTTP crua: como ler e transformar de volta em algo que roda](/learn/raw-http-requests-and-how-to-replay-them)**. A mensagem como ela chega de verdade, com linha de requisição, campos e corpo, e as três armadilhas na hora de reproduzi-la.
+2. **[Métodos HTTP: os verbos da web](/learn/http-methods-the-verbs)**. A primeira palavra da linha de requisição e as duas propriedades, safe (segura) e idempotente, que caches, retries e crawlers levam em conta para agir.
+3. **[Códigos de status HTTP: as cinco famílias](/learn/http-status-codes-the-five-families)**. O primeiro dígito da resposta já diz quase tudo; depois vêm os códigos que um operador encontra de fato.
+4. **[Headers HTTP: a anatomia dos metadados](/learn/http-headers-anatomy)**. Os campos que as duas mensagens carregam: os quatro papéis que eles cumprem, o campo Host e a divisão entre fim a fim (end-to-end) e hop by hop.
+5. **[Cookies HTTP: estado sobre um protocolo sem estado](/learn/http-cookies-state-over-stateless)**. Dois campos de header que dão memória a um protocolo stateless, e as regras que dizem quando o cookie vai junto.
+6. **[Onde uma mensagem HTTP/1.1 termina: Content-Length, chunked e as oito regras](/learn/http-message-framing-content-length-and-chunked)**. A camada de framing: como o receptor sabe onde uma mensagem acaba e a próxima começa, e o que o smuggling explora.
+7. **[Proxies HTTP: forward ou reverse, explícito ou transparente](/learn/http-proxy-forward-and-reverse)**. Os intermediários: para qual lado o proxy trabalha, se o cliente sabe que ele está ali e os campos que registram a passagem dele.
+8. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: cinco versões do protocolo da web](/learn/http-versions-09-to-3)**. Os mesmos significados transportados de cinco formas, de um GET de uma linha só a streams multiplexados sobre QUIC.
+9. **[HTTP QUERY: a leitura que finalmente carrega um corpo](/learn/http-query-method)**. O método mais novo: o que ele resolve, como as respostas dele vão para o cache e o que cada camada da infraestrutura precisa verificar.
+10. **[Mensagens escondidas em headers HTTP: homenagens, piadas e vagas de emprego no overhead](/learn/hidden-messages-in-http-headers)**. Um epílogo: o que as pessoas escreveram nos campos que quase ninguém lê.
 
 ## Fontes
 

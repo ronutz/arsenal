@@ -868,7 +868,7 @@
     "controllerTitle": "谁负责",
     "controllerBody": "这是 Rodolfo Nützmann 的个人网站（ronutz.com）。如有任何隐私问题，或要行使下文所述的任何权利，请写信至 {email}。请求由 Rodolfo Nützmann 作为数据控制者直接处理。",
     "browserTitle": "您的浏览器中存储了什么",
-    "browserBody": "只有一件小事：您所选的视觉主题，保存在您浏览器的本地存储（local storage）中，以便本站在您下次访问时能够记住它。这是一项便利设置，留在您自己的设备上，绝不会发送到本站或任何其他人，并且可随时通过您的浏览器清除。您设备上不会存储有关您的任何其他数据。",
+    "browserBody": "几件小事，全部保存在您浏览器的本地存储（local storage）中，从不发送到本站或任何其他人，并且每一项都可随时通过您的浏览器清除：您的视觉主题（ronutz-theme）；您上次使用的语言，以便不带路径的域名能把您带回该语言（ronutz-lang）；是否显示术语提示（ronutz-glossary-hints）；您重新绑定的键盘快捷键（ronutz-shortcuts）；搜索框是否每次打开时都为空（ronutz-search-fresh）；您在索引页上选择的卡片或列表视图（ronutz:view:*）；您在“学习”和“工具”页面上选择的“Guided”或“Directory”阅读方式（ronutz:hub:*）；您最近打开的六个页面，以便首页在“Continue where you left off”下再次提供它们，并附有一个清除它们的按钮（ronutz:recent:v1）；以及，仅在 /dev 下的两个页面上，一个动画开关和一个练习分数（ronutz-mb-motion、ronutz:subnet-drill:stats）。一个仅限会话的标志（ronutz.privPreview）用于作者私下预览未发布的页面，从不会为读者设置。您设备上不会存储有关您的任何其他数据。",
     "hostingTitle": "托管与服务器日志",
     "hostingBody": "本站通过 Cloudflare 交付，由其提供托管与内容分发。与任何网站一样，加载页面意味着您的设备连接到服务器，而 Cloudflare 作为托管提供商，会处理基本的连接数据，包括您的 IP 地址和标准请求详情，以便向您交付页面并保护本站免受滥用和攻击。此处理对于运营和保护本站是必要的（根据 GDPR 第 6(1)(f) 条的正当利益，以及 LGPD 第 7 和第 10 条的相应依据）。它仅由提供商短暂保留，且在此不用于识别或追踪您。",
     "toolsTitle": "工具在您的浏览器中运行",

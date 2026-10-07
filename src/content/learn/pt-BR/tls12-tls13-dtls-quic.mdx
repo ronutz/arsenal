@@ -103,14 +103,14 @@ Este artigo abre a série **TLS e as suítes de cifra**. Ele mapeia os quatro fo
 
 1. **[Por que dizemos SSL quando queremos dizer TLS?](/learn/why-we-say-ssl-when-we-mean-tls)**. O SSL da Netscape, a mudança de nome para TLS em 1999 e por que o mercado ainda vende certificados SSL.
 2. **[Diffie-Hellman explicado sem matemática](/learn/diffie-hellman-for-everyone)**. Dois desconhecidos combinam um segredo numa sala em que todo mundo escuta: a troca de chaves, sem a matemática.
-3. **[Sigilo de encaminhamento e a troca de chaves](/learn/forward-secrecy)**. O que a forward secrecy garante, por que o transporte de chave com RSA estático não oferece essa garantia e como o ECDHE e o DHE oferecem.
+3. **[Forward secrecy e a troca de chaves](/learn/forward-secrecy)**. O que a forward secrecy garante, por que o transporte de chave com RSA estático não oferece essa garantia e como o ECDHE e o DHE oferecem.
 4. **[Anatomia de uma suíte de cifra TLS](/learn/cipher-suite-anatomy)**. O que uma cipher suite nomeia, lida peça por peça, e o code point de dois bytes por trás de cada nome.
 5. **[Como ler nomes de suítes de cifra: IANA, OpenSSL e GnuTLS](/learn/cipher-suite-naming)**. A mesma suite com os nomes da IANA, do OpenSSL e do GnuTLS, e o que significa a coluna Recommended.
 6. **[Famílias de cifras: o mapa de trabalho](/learn/cipher-families)**. Bloco e fluxo, AES e ChaCha20, RSA, curvas elípticas e (EC)DHE: as famílias com que uma suite é montada.
-7. **[AEAD vs CBC: por que o modo importa](/learn/aead-vs-cbc)**. O AES-GCM contra o CBC com HMAC separado, os padding oracles que acabaram com o MAC-then-encrypt e a contrapartida que o AEAD mantém.
+7. **[AEAD vs CBC: por que o modo de operação faz diferença](/learn/aead-vs-cbc)**. O AES-GCM contra o CBC com HMAC separado, os padding oracles que acabaram com o MAC-then-encrypt e a contrapartida que o AEAD mantém.
 8. **[Suítes de cifra do TLS 1.3: o que mudou](/learn/tls13-cipher-suites)**. Por que uma suite do TLS 1.3 nomeia apenas uma cifra e um hash, e para onde foram a troca de chaves e a autenticação.
 9. **[Quais palavras-chave de cifra TLS são seguras e quais não são](/learn/tls-cipher-security-keywords)**. A lista curta de palavras-chave que decide se uma cipher string é endurecida (hardened) ou perigosa.
 10. **[Quais suítes de cifras usar: o livro-razão de veredictos](/learn/which-cipher-suites-to-use)**. O veredito, nível por nível: o que usar hoje, o que sobrevive em nichos e o que é proibido, e por qual RFC.
 11. **[Os ataques nomeados ao TLS, 2011-2023: o que cada um quebrou, e o que o protocolo removeu por causa dele](/learn/the-named-tls-attacks)**. Do BEAST ao Terrapin: o que cada ataque com nome próprio quebrou entre 2011 e 2023 e o que o protocolo removeu por causa dele.
 12. **[TLS de entrada: offload, bridging e passthrough no reverse proxy](/learn/tls-reverse-proxy-inbound)**. Offload, bridging e passthrough: as três maneiras de um reverse proxy tratar uma sessão de entrada, e o que cada uma sacrifica.
-13. **[SSL forward proxy: como funciona a interceptação de TLS de saída e o que a quebra](/learn/ssl-forward-proxy-interception)**. O man-in-the-middle controlado da inspeção de saída: o certificado forjado, a CA privada e o que quebra a interceptação.
+13. **[SSL forward proxy: como funciona a interceptação de TLS de saída e o que a faz falhar](/learn/ssl-forward-proxy-interception)**. O man-in-the-middle controlado da inspeção de saída: o certificado forjado, a CA privada e o que quebra a interceptação.

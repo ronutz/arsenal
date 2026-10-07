@@ -1,0 +1,12 @@
+{
+  "src/content/learn/en/f5-clientssl-vs-serverssl.mdx": 2,
+  "src/content/learn/en/quantum-threat-to-cryptography.mdx": 1,
+  "src/content/learn/pt-BR/dns-family-history.mdx": 2,
+  "src/content/learn/pt-BR/f5-clientssl-vs-serverssl.mdx": 2,
+  "src/content/learn/pt-BR/ipv6-addressing.mdx": 4,
+  "src/content/learn/pt-BR/irules-style-guide-explained.mdx": 2,
+  "src/content/learn/pt-BR/load-balancing-what-actually-decides-where-a-request-goes.mdx": 1,
+  "src/content/learn/pt-BR/quantum-threat-to-cryptography.mdx": 1,
+  "src/content/learn/pt-BR/reading-a-curl-command.mdx": 3,
+  "src/content/learn/pt-BR/reading-a-dns-answer.mdx": 11
+}

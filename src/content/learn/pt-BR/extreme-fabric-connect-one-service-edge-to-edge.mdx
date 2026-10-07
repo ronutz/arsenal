@@ -1,7 +1,7 @@
 ---
 slug: extreme-fabric-connect-one-service-edge-to-edge
 title: "Extreme Fabric Connect: um serviço, de borda a borda"
-summary: "Nove artigos sobre a fabric da Extreme, lidos na ordem em que um serviço passa a existir: qual sistema operacional, o que as palavras significam, o que a fabric é, como os nós se conhecem, como um serviço viaja pelo backbone, por que o multicast não precisa de configuração, como a borda pede o que precisa, e como a borda é ligada em dupla sem spanning tree. O fato organizador é aquele sobre o qual a fabric é construída - um serviço é provisionado na borda, não troncado salto a salto."
+summary: "Nove artigos sobre a fabric da Extreme, na ordem em que um serviço passa a existir: qual sistema operacional usar, o que significam os termos, o que é a fabric, como os nós se conhecem, como um serviço atravessa o backbone, por que o multicast não precisa de configuração, como a borda pede o que precisa e como a borda ganha dual-homing sem spanning tree. A ideia que organiza tudo é a mesma sobre a qual a fabric foi construída: o serviço é provisionado na borda, e não levado em trunk de hop em hop."
 concepts: ["extreme networks", "fabric connect", "spbm", "voss", "exos", "i-sid", "fabric attach", "smlt", "index"]
 relatedTools: []
 relatedArticles: ["voss-fabric-connect-spbm", "spb-fabric-vocabulary", "voss-i-sid-and-vsns", "voss-vs-exos"]
@@ -11,67 +11,67 @@ status: reviewed
 updated: "2026-09-09"
 ---
 
-Para por que o multicast é caro em todo lugar em que a fabric não está, leia **[o que custa não inundar](/learn/multicast-what-it-costs-to-not-flood)** junto com o passo seis.
+Para entender por que o multicast custa caro em qualquer rede sem fabric, leia **[o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood)** junto com o passo seis.
 
 ## Por que esta ordem
 
-Uma rede de campus tradicional se entende enlace a enlace: uma VLAN existe neste switch, é troncada para aquele, é roteada no terceiro. Cada salto é um lugar em que a configuração precisa concordar com o salto anterior, e cada parada é um lugar em que não concordou.
+Uma rede de campus tradicional se entende link a link: uma VLAN existe neste switch, segue em trunk até aquele e é roteada no terceiro. Cada hop (cada passagem de um equipamento para o seguinte) é um ponto em que a configuração precisa bater com a do hop anterior, e cada queda é um ponto em que ela não bateu.
 
-Uma fabric se entende ao contrário. O núcleo é um transporte que carrega serviços opacos, os serviços são definidos uma vez na borda, e o meio não sabe nem se importa com o que eles são. Quase tudo o que confunde na fabric da Extreme ao primeiro contato deixa de confundir quando essa inversão é aceita - então esta página lê os nove artigos na ordem em que um *serviço* passa a existir, da escolha do sistema operacional ao momento em que um dispositivo de borda é ligado em dupla a ela.
+Uma fabric se entende ao contrário. O core (o núcleo da rede) é um transporte que leva serviços opacos, os serviços são definidos uma única vez na borda, e o meio do caminho não sabe nem quer saber o que eles são. Quase tudo o que confunde na fabric da Extreme no primeiro contato deixa de confundir quando você aceita essa inversão. Por isso, esta página percorre os nove artigos na ordem em que um *serviço* passa a existir, da escolha do sistema operacional até o momento em que um equipamento de borda é ligado à fabric em dual-homing (conectado a dois switches ao mesmo tempo).
 
 ## 1. Qual sistema operacional
 
-**[VOSS contra EXOS](/learn/voss-vs-exos)** - a Extreme entrega hardware universal que inicializa ou um sistema de Ethernet tradicional com linha de comando familiar, ou um sistema nativo de fabric construído em torno dos conceitos abaixo. A decisão é por switch e é a primeira decisão, porque tudo depois dela difere.
+**[VOSS versus EXOS](/learn/voss-vs-exos)**: a Extreme vende hardware universal que dá boot ou num sistema operacional de Ethernet tradicional, com uma linha de comando familiar, ou num sistema nativo de fabric, construído em torno dos conceitos abaixo. A escolha é feita switch a switch e é a primeira decisão, porque tudo o que vem depois muda conforme ela.
 
-**[Os nomes universais de sistema](/learn/extreme-universal-os-names)** - os dois sistemas foram renomeados em alguns hardwares e não em outros, enquanto os arquivos de imagem e os menus de boot mantiveram os nomes antigos. Vale ler antes de uma primeira atualização, e a segunda metade - o que trocar de persona faz com uma configuração - importa mais que a nomenclatura.
+**[Os nomes dos sistemas operacionais universais](/learn/extreme-universal-os-names)**: os dois sistemas mudaram de nome em parte do hardware e em outra parte não, enquanto os arquivos de imagem e os menus de boot continuaram com os nomes antigos. Vale ler antes do primeiro upgrade, e a segunda metade do artigo, sobre o que a troca de persona faz com uma configuração, importa mais do que a questão dos nomes.
 
-**[Como a configuração do ExtremeXOS é estruturada](/learn/how-extremexos-config-is-structured)** - para o lado tradicional: sem submodos de interface, cada linha um comando imperativo autocontido começando com um verbo. Quem chega dos outros grandes fabricantes vai achar o formato estranho e, depois de uma hora, difícil de largar.
+**[Como a configuração do ExtremeXOS é estruturada](/learn/how-extremexos-config-is-structured)**: o lado tradicional. Não há submodos de interface, e cada linha é um comando imperativo completo em si mesmo, que começa com um verbo. Quem vem dos outros grandes fabricantes vai achar o formato estranho e, depois de uma hora, vai ter dificuldade de largar.
 
-## 2. O que as palavras significam
+## 2. O que significam os termos
 
-**[O vocabulário da fabric](/learn/spb-fabric-vocabulary)** - I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN. Qual é serviço, qual é transporte, e qual é um papel que um switch desempenha, mais o único fato que torna o resto óbvio. Leia isto antes de qualquer coisa abaixo; os demais artigos usam os termos sem reexplicá-los.
+**[O vocabulário da fabric](/learn/spb-fabric-vocabulary)**: I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN. O que é serviço, o que é transporte e o que é um papel que o switch assume, mais o único fato que deixa todo o resto óbvio. Leia este antes de qualquer outro abaixo; os demais artigos usam os termos sem explicá-los de novo.
 
-## 3. O que a fabric é
+## 3. O que é a fabric
 
-**[Fabric Connect e SPBM](/learn/voss-fabric-connect-spbm)** - Shortest Path Bridging MAC, IEEE 802.1aq: um plano de controle IS-IS e um plano de dados MAC-in-MAC, e por que colapsar o núcleo num único protocolo remove a pilha de camadas de spanning tree, troncos e roteamento que um campus carrega de outro modo.
+**[Fabric Connect e SPBM](/learn/voss-fabric-connect-spbm)**: Shortest Path Bridging MAC, IEEE 802.1aq. Um plano de controle IS-IS e um plano de dados MAC-in-MAC, e por que reduzir o core a um único protocolo elimina as camadas sobrepostas de spanning tree, trunking e roteamento que um campus teria de carregar de outra forma.
 
 ## 4. Como os nós se conhecem
 
-**[IS-IS e apelidos](/learn/voss-isis-and-nicknames)** - um único plano de controle de estado de enlace, rodando apenas nos enlaces de fabric. Cada nó tem um apelido de 20 bits que precisa ser único na fabric, e seu identificador de sistema deriva o MAC de backbone com que o plano de dados encapsula. Um apelido duplicado é o equivalente na fabric de um endereço IP duplicado, e é a primeira coisa a conferir quando dois nós não se enxergam.
+**[IS-IS e nicknames](/learn/voss-isis-and-nicknames)**: um único plano de controle link-state, que roda só nos links de fabric. Cada nó tem um nickname (o apelido do nó) de 20 bits, que precisa ser único em toda a fabric, e o seu identificador de sistema (system ID) define o MAC de backbone que o plano de dados usa para encapsular. Um nickname duplicado é, na fabric, o equivalente a um endereço IP duplicado, e é a primeira coisa a verificar quando dois nós não se enxergam.
 
-## 5. Como um serviço viaja pelo backbone
+## 5. Como um serviço atravessa o backbone
 
-**[I-SIDs e VSNs](/learn/voss-i-sid-and-vsns)** - o identificador de serviço de 24 bits, e as três coisas que viajam nele: uma VSN de camada 2, uma VSN de camada 3 e IP Shortcuts. É o artigo que torna a inversão concreta: o serviço é provisionado no switch de borda, o backbone o carrega sem saber o que é, e não há configuração de tronco por salto para errar.
+**[I-SIDs e VSNs](/learn/voss-i-sid-and-vsns)**: o identificador de serviço de 24 bits e as três coisas que ele carrega: uma VSN de camada 2, uma VSN de camada 3 e os IP Shortcuts. É o artigo que torna a inversão concreta: o serviço é provisionado no switch de borda, o backbone o transporta sem saber o que ele é, e não existe configuração de trunk hop a hop para dar errado.
 
 ## 6. Por que o multicast não precisa de configuração
 
-**[Endereços de multicast são calculados, não aprendidos](/learn/spbm-multicast-addresses-are-computed-not-learned)** - um endereço de grupo de backbone nunca é aprendido nem configurado. É montado a partir do apelido do nó raiz e do I-SID do serviço, e é por isso que todo nó chega à mesma resposta de forma independente, e por que o multicast na fabric dispensa os pontos de encontro e as regras de inundação de que precisa em todo outro lugar.
+**[Endereços de multicast são calculados, não aprendidos](/learn/spbm-multicast-addresses-are-computed-not-learned)**: um endereço de grupo de backbone nunca é aprendido nem configurado. Ele é montado a partir do nickname do nó raiz e do I-SID do serviço, e é por isso que cada nó chega sozinho à mesma resposta, e por isso que o multicast na fabric dispensa os rendezvous points e as regras de flooding de que ele precisa em qualquer outra rede.
 
 ## 7. Como a borda pede o que precisa
 
-**[Fabric Attach](/learn/voss-fabric-attach)** - um dispositivo de borda sinaliza o serviço que quer, e a fabric provisiona o I-SID automaticamente. Os papéis de servidor, proxy e cliente, e como a sinalização viaja sobre LLDP (Link Layer Discovery Protocol). É aqui que um switch de acesso, um ponto de acesso ou um telefone entra num serviço sem que ninguém toque na fabric.
+**[Fabric Attach](/learn/voss-fabric-attach)**: um equipamento de borda sinaliza o serviço que quer, e a fabric provisiona o I-SID automaticamente. Os papéis de servidor, proxy e cliente, e como a sinalização é transportada pelo LLDP (Link Layer Discovery Protocol). É aqui que um switch de acesso, um access point ou um telefone entra num serviço sem que ninguém mexa na fabric.
 
-## 8. Como a borda é feita resiliente
+## 8. Como a borda ganha resiliência
 
-**[SMLT e IST virtual](/learn/voss-smlt-and-vist)** - o Split MultiLink Trunking liga um dispositivo de borda em dupla a um par de switches com enlaces ativo-ativo e sem spanning tree, e o tronco entre switches que mantém o par coerente corre *através* da fabric e não por um cabo dedicado. Leia por último, porque supõe tudo o que está acima.
+**[SMLT e IST virtual](/learn/voss-smlt-and-vist)**: o Split MultiLink Trunking faz o dual-homing de um equipamento de borda a um par de switches, com links ativo-ativo e sem spanning tree, e o inter-switch trunk, que mantém o par coerente, passa *pela* fabric, e não por um cabo dedicado. Leia por último, porque ele pressupõe tudo o que vem antes.
 
 ## O hábito que esta sequência ensina
 
-**Ache a camada em que o problema mora.** Uma falha de rede tradicional se diagnostica salto a salto porque a configuração é salto a salto. Uma falha de fabric está quase sempre em um de três lugares: o nó não consegue entrar (passo 4 - apelidos, adjacência IS-IS nos enlaces de fabric), o serviço não está provisionado na borda que precisa dele (passo 5, ou passo 7 se o Fabric Attach deveria ter feito isso), ou a ligação dupla da borda está inconsistente (passo 8). Percorrer a sequência é mais rápido que traçar o caminho, porque numa fabric não há caminho a traçar - só um serviço que ou existe nas duas bordas ou não existe.
+**Descubra em que camada está o problema.** Numa rede tradicional, a falha se diagnostica hop a hop porque a configuração é feita hop a hop. Numa fabric, a falha quase sempre está num de três lugares: o nó não consegue entrar na fabric (passo 4: nicknames, adjacência IS-IS nos links de fabric), o serviço não está provisionado na borda que precisa dele (passo 5, ou passo 7 se o Fabric Attach deveria ter feito isso), ou o dual-homing da borda está inconsistente (passo 8). Seguir a sequência é mais rápido do que rastrear o caminho, porque numa fabric não há caminho para rastrear: há só um serviço que existe nas duas bordas, ou não existe.
 
-Para onde este projeto se situa na história mais longa do switch, veja a [linhagem de bridges e switches](/learn/bridge-switch-family-history).
+Para situar essa arquitetura na história mais longa do switch, veja a [linhagem de bridges e switches](/learn/bridge-switch-family-history).
 
 ## Esta série, em ordem
 
-Este artigo abre a série **Extreme Fabric Connect, um serviço de borda a borda**. Ele lê a fabric na ordem em que um serviço passa a existir; as partes são esses artigos na mesma ordem, começando pelo sistema operacional que um switch carrega e terminando no equipamento de borda ligado a dois deles.
+Este artigo abre a série **Extreme Fabric Connect, um serviço de borda a borda**. A série percorre a fabric na ordem em que um serviço passa a existir; as partes são esses mesmos artigos, na mesma ordem, começando pelo sistema operacional com que o switch dá boot e terminando no equipamento de borda ligado a dois deles.
 
-1. **[VOSS vs EXOS: Dois Sistemas Operacionais da Extreme](/learn/voss-vs-exos)**. Hardware universal que carrega um sistema Ethernet tradicional ou um nativo de fabric, e onde os dois se interligam.
-2. **[Switch Engine, Fabric Engine e os switches que ficaram com os nomes antigos](/learn/extreme-universal-os-names)**. Switch Engine e Fabric Engine, o hardware que ficou com os nomes antigos e os arquivos de imagem que nunca mudaram.
-3. **[Como uma configuração ExtremeXOS é estruturada](/learn/how-extremexos-config-is-structured)**. Sem sub-modos: cada linha é um comando completo que começa com um verbo.
-4. **[O vocabulário do SPB, organizado](/learn/spb-fabric-vocabulary)**. I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN: qual é serviço, qual é transporte e qual é papel.
-5. **[Fabric Connect e SPBM: Por Que o VOSS Aposenta o Spanning Tree](/learn/voss-fabric-connect-spbm)**. Shortest Path Bridging com plano de controle IS-IS e plano de dados MAC-in-MAC, e por que o spanning tree se aposenta.
-6. **[IS-IS, Nicknames e B-MACs: O Plano de Controle do VOSS](/learn/voss-isis-and-nicknames)**. O IS-IS só nos enlaces de fabric, o nickname de nó que precisa ser único e o MAC de backbone.
-7. **[O I-SID: Como o VOSS Substitui a Extensão de VLANs](/learn/voss-i-sid-and-vsns)**. Serviços provisionados na borda em vez de VLANs estendidas salto a salto: o I-SID e os serviços de camada 2 e de camada 3.
-8. **[Multicast SPBM: o endereço é aritmética, não consulta](/learn/spbm-multicast-addresses-are-computed-not-learned)**. Um endereço de grupo de backbone nunca é aprendido nem configurado: é montado a partir de um nickname e de um I-SID.
-9. **[Fabric Attach: Provisionando a Borda Automaticamente (Onde o VOSS Encontra o EXOS)](/learn/voss-fabric-attach)**. Um equipamento de borda sinaliza o serviço de que precisa e a fabric o provisiona: os papéis de servidor, proxy e cliente.
-10. **[SMLT e vIST: Dual-Homing de uma Borda de Fabric](/learn/voss-smlt-and-vist)**. O dual-homing de um equipamento de borda a um par de switches, com enlaces ativos nos dois e sem spanning tree.
+1. **[VOSS vs EXOS: dois sistemas operacionais da Extreme](/learn/voss-vs-exos)**. Hardware universal que dá boot num sistema operacional de Ethernet tradicional ou num nativo de fabric, e onde os dois se interligam.
+2. **[Switch Engine, Fabric Engine e os switches que ficaram com os nomes antigos](/learn/extreme-universal-os-names)**. O Switch Engine e o Fabric Engine, o hardware que manteve os nomes antigos e os arquivos de imagem que nunca mudaram.
+3. **[Como uma configuração ExtremeXOS é estruturada](/learn/how-extremexos-config-is-structured)**. Sem submodos: cada linha é um comando completo, que começa com um verbo.
+4. **[O vocabulário do SPB, organizado](/learn/spb-fabric-vocabulary)**. I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN: o que é serviço, o que é transporte e o que é papel.
+5. **[Fabric Connect e SPBM: por que o VOSS aposenta o spanning tree](/learn/voss-fabric-connect-spbm)**. Shortest Path Bridging com plano de controle IS-IS e plano de dados MAC-in-MAC, e por que o spanning tree sai de cena.
+6. **[IS-IS, nicknames e B-MACs: o plano de controle do VOSS](/learn/voss-isis-and-nicknames)**. O IS-IS só nos links de fabric, o nickname do nó, que precisa ser único, e o MAC de backbone.
+7. **[O I-SID: como o VOSS substitui a extensão de VLANs](/learn/voss-i-sid-and-vsns)**. Serviços provisionados na borda em vez de VLANs levadas em trunk hop a hop: o I-SID e os serviços de camada 2 e de camada 3.
+8. **[Multicast SPBM: o endereço é aritmética, não consulta](/learn/spbm-multicast-addresses-are-computed-not-learned)**. Um endereço de grupo de backbone nunca é aprendido nem configurado: ele é montado a partir de um nickname e de um I-SID.
+9. **[Fabric Attach: como provisionar a borda automaticamente (onde o VOSS encontra o EXOS)](/learn/voss-fabric-attach)**. Um equipamento de borda sinaliza o serviço de que precisa e a fabric o provisiona: os papéis de servidor, proxy e cliente.
+10. **[SMLT e vIST: dual-homing de uma borda de fabric](/learn/voss-smlt-and-vist)**. O dual-homing de um equipamento de borda a um par de switches, com links ativos nos dois e sem spanning tree.

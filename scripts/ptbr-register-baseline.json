@@ -977,10 +977,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/aead-vs-cbc.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/ajax-fetch-and-xhr.mdx": {
       "J": 2,
       "I": 0
@@ -1029,10 +1025,6 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/bigip-apm-sso-methods.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/bigip-cookie-disclosure.mdx": {
       "J": 1,
       "I": 0
@@ -1051,10 +1043,6 @@
     },
     "src/content/learn/pt-BR/bigip-inplace-upgrade-and-64bit.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bigip-interfaces-trunks-vlans-selfips.mdx": {
-      "J": 3,
       "I": 0
     },
     "src/content/learn/pt-BR/bigip-l4-protocol-profiles.mdx": {
@@ -1129,10 +1117,6 @@
       "J": 0,
       "I": 1
     },
-    "src/content/learn/pt-BR/choosing-a-persistence-method.mdx": {
-      "J": 1,
-      "I": 0
-    },
     "src/content/learn/pt-BR/choosing-a-public-dns-resolver.mdx": {
       "J": 14,
       "I": 0
@@ -1185,10 +1169,6 @@
       "J": 3,
       "I": 0
     },
-    "src/content/learn/pt-BR/cvss-severity-bands-and-limits.mdx": {
-      "J": 0,
-      "I": 1
-    },
     "src/content/learn/pt-BR/ddos-what-actually-absorbs-an-attack.mdx": {
       "J": 3,
       "I": 0
@@ -1213,16 +1193,8 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/edns-and-the-opt-pseudosection.mdx": {
-      "J": 5,
-      "I": 0
-    },
     "src/content/learn/pt-BR/email-authentication-spf-dkim-dmarc.mdx": {
       "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/extreme-fabric-connect-one-service-edge-to-edge.mdx": {
-      "J": 11,
       "I": 0
     },
     "src/content/learn/pt-BR/f5-apm-saml-federation.mdx": {
@@ -1238,7 +1210,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/f5-distributed-cloud-one-request-end-to-end.mdx": {
-      "J": 7,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/f5-ethernet-trailer.mdx": {
@@ -1301,20 +1273,12 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/fortiedr-architecture-and-deployment.mdx": {
-      "J": 7,
-      "I": 0
-    },
     "src/content/learn/pt-BR/fortiedr-threat-hunting-forensics-and-investigation.mdx": {
       "J": 0,
       "I": 1
     },
     "src/content/learn/pt-BR/fortigate-acme-certificate-automation.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/fortigate-dns-server-modes-and-filtering.mdx": {
-      "J": 6,
       "I": 0
     },
     "src/content/learn/pt-BR/fortigate-initial-configuration-and-operation-modes.mdx": {
@@ -1362,7 +1326,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/fortinet-soc-architecture-and-adversary-behaviour.mdx": {
-      "J": 2,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/fortios-cli-grammar.mdx": {
@@ -1377,10 +1341,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/fortiswitch-fortilink-provisioning-and-topologies.mdx": {
-      "J": 5,
-      "I": 0
-    },
     "src/content/learn/pt-BR/fortiswitch-vlans-stp-ports-and-qos.mdx": {
       "J": 1,
       "I": 0
@@ -1389,19 +1349,7 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/gre-tunnels-fundamentals.mdx": {
-      "J": 6,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/gslb-two-tier-pool-then-member.mdx": {
-      "J": 5,
-      "I": 1
-    },
     "src/content/learn/pt-BR/gtm-load-balancing-methods.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/gtm-topology-records-and-longest-match.mdx": {
       "J": 1,
       "I": 0
     },
@@ -1445,10 +1393,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/hsts-and-https.mdx": {
-      "J": 8,
-      "I": 0
-    },
     "src/content/learn/pt-BR/html-forms-and-request-encoding.mdx": {
       "J": 3,
       "I": 0
@@ -1458,7 +1402,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/http-from-the-request-line.mdx": {
-      "J": 11,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/http-headers-anatomy.mdx": {
@@ -1573,10 +1517,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/ja3-to-ja4-fingerprinting.mdx": {
-      "J": 2,
-      "I": 0
-    },
     "src/content/learn/pt-BR/jwk-parameters-and-thumbprints.mdx": {
       "J": 1,
       "I": 0
@@ -1613,10 +1553,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/lets-encrypt.mdx": {
-      "J": 3,
-      "I": 0
-    },
     "src/content/learn/pt-BR/lora-and-lpwan.mdx": {
       "J": 1,
       "I": 0
@@ -1629,20 +1565,12 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/map-the-path-before-you-troubleshoot.mdx": {
-      "J": 6,
-      "I": 0
-    },
     "src/content/learn/pt-BR/market-window-networking.mdx": {
       "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/mars-climate-orbiter-and-the-boundary.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/mojibake-and-code-pages.mdx": {
-      "J": 5,
       "I": 0
     },
     "src/content/learn/pt-BR/mpls-primer.mdx": {
@@ -1665,10 +1593,6 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/nslookup-interactive-mode.mdx": {
-      "J": 6,
-      "I": 0
-    },
     "src/content/learn/pt-BR/nslookup-record-types.mdx": {
       "J": 1,
       "I": 0
@@ -1686,7 +1610,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/obsolescence.mdx": {
-      "J": 4,
+      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/ocsp-must-staple.mdx": {
@@ -1721,10 +1645,6 @@
       "J": 0,
       "I": 1
     },
-    "src/content/learn/pt-BR/peer-to-peer-evolution.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/phrack-2600-and-the-hacker-manifesto.mdx": {
       "J": 3,
       "I": 0
@@ -1740,10 +1660,6 @@
     "src/content/learn/pt-BR/pingfederate-authentication-policies.mdx": {
       "J": 0,
       "I": 1
-    },
-    "src/content/learn/pt-BR/pingfederate-endpoints-map.mdx": {
-      "J": 3,
-      "I": 0
     },
     "src/content/learn/pt-BR/pingfederate-log-files.mdx": {
       "J": 1,
@@ -1761,10 +1677,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/public-suffix.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/python-as-a-network-engineers-calculator.mdx": {
       "J": 8,
       "I": 0
@@ -1777,10 +1689,6 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/raw-http-requests-and-how-to-replay-them.mdx": {
-      "J": 11,
-      "I": 0
-    },
     "src/content/learn/pt-BR/reading-a-bigip-capture.mdx": {
       "J": 2,
       "I": 0
@@ -1789,12 +1697,8 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/reading-a-fortigate-sniffer-trace.mdx": {
-      "J": 5,
-      "I": 0
-    },
     "src/content/learn/pt-BR/reading-a-syslog-message-field-by-field.mdx": {
-      "J": 8,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/reading-dig-output.mdx": {
@@ -1818,7 +1722,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/routing-tables-and-default-gateway.mdx": {
-      "J": 16,
+      "J": 15,
       "I": 0
     },
     "src/content/learn/pt-BR/saml-assertions-and-conditions.mdx": {
@@ -1882,7 +1786,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/tacacs-plus-device-administration.mdx": {
-      "J": 8,
+      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/tcp-connection-lifecycle.mdx": {
@@ -1919,10 +1823,6 @@
     },
     "src/content/learn/pt-BR/the-ethernet-frame-field-by-field.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/the-family-histories.mdx": {
-      "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/the-formats-in-between.mdx": {
@@ -1989,24 +1889,12 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/uuid.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/verifying-a-jwt-with-jwks.mdx": {
-      "J": 10,
-      "I": 0
-    },
     "src/content/learn/pt-BR/virtualization-family-history.mdx": {
       "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/vlans-and-8021q-trunking.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/voss-fabric-connect-spbm.mdx": {
-      "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/voss-isis-and-nicknames.mdx": {
@@ -2045,10 +1933,6 @@
       "J": 3,
       "I": 0
     },
-    "src/content/learn/pt-BR/xc-matcher-case-sensitivity-and-transformers.mdx": {
-      "J": 8,
-      "I": 0
-    },
     "src/content/learn/pt-BR/zdx-score-anatomy-and-probes.mdx": {
       "J": 6,
       "I": 0
@@ -2058,10 +1942,6 @@
       "I": 0
     },
     "src/content/learn/pt-BR/zscaler-casb-and-saas-security.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/zscaler-client-connector-profiles.mdx": {
       "J": 0,
       "I": 1
     },

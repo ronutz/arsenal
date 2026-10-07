@@ -52,6 +52,26 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Row 59, the second worst-first wave (PRIME 2026-10-07 06:56): forty more Portuguese articles in natural Brazilian Portuguese.
+    date: "2026-10-07",
+    time: "12:37",
+    kind: "i18n",
+    title: "Forty more articles in natural Brazilian Portuguese, and series lists that print their parts' titles",
+    body:
+      "The Portuguese edition of forty more Learn articles, the next that read most like a translation of the English, is rewritten the way a Brazilian instructor writes: natural sentences, the jargon Brazilian engineers say in English kept in English with a Portuguese gloss where it helps, titles and headings in Portuguese sentence case, quotations of standards in their own English words. The facts, figures, links and sources are unchanged. In the Portuguese articles that open a series, 150 entries of the series list printed an earlier title of the part, or the current one in English-style capitals; each now prints the part's title as the part itself writes it, and a check keeps the lists in step when a title changes.",
+    articles: ["aead-vs-cbc", "bigip-apm-sso-methods", "bigip-interfaces-trunks-vlans-selfips", "choosing-a-persistence-method", "cvss-severity-bands-and-limits", "edns-and-the-opt-pseudosection", "extreme-fabric-connect-one-service-edge-to-edge", "f5-distributed-cloud-one-request-end-to-end", "f5xc-lb-algorithms-and-persistence", "fallback-persistence-and-match-across", "fortiedr-architecture-and-deployment", "fortigate-dns-server-modes-and-filtering", "fortiswitch-fortilink-provisioning-and-topologies", "forward-secrecy", "gre-tunnels-fundamentals", "gslb-two-tier-pool-then-member", "gtm-topology-records-and-longest-match", "hsts-and-https", "http-from-the-request-line", "ja3-to-ja4-fingerprinting", "lets-encrypt", "map-the-path-before-you-troubleshoot", "mojibake-and-code-pages", "netskope-client-deployment", "nslookup-interactive-mode", "obsolescence", "peer-to-peer-evolution", "pingfederate-endpoints-map", "public-suffix", "raw-http-requests-and-how-to-replay-them", "reading-a-fortigate-sniffer-trace", "reading-a-syslog-message-field-by-field", "tacacs-plus-device-administration", "the-family-histories", "uuid", "verifying-a-jwt-with-jwks", "voss-fabric-connect-spbm", "xc-matcher-case-sensitivity-and-transformers", "zscaler-client-connector-profiles", "zscaler-zero-trust-exchange-architecture"],
+  },
+  {
+    // Row 65 (PRIME 2026-10-07 12:07): the privacy page's list of what the site stores names every value.
+    date: "2026-10-07",
+    time: "12:37",
+    kind: "content",
+    title: "Privacy: the list of what stays in your browser names the Guided or Directory choice",
+    body:
+      "The privacy page lists every value the site keeps in your browser and ends by saying nothing else is stored. One was missing: the Guided or Directory reading you choose on the Learn and Tools pages, remembered so they open the way you left them (ronutz:hub:*). It is now on the list. In the fourteen languages other than English and Portuguese, the page still described the first version of the list, the visual theme alone; it now lists everything, as the English does.",
+    links: [{ label: "Privacy", href: "/privacy" }],
+  },
+  {
     // Row 62 (PRIME 2026-10-07 09:47): SCOUT's Round 1 re-run, adopted.
     date: "2026-10-07",
     time: "11:36",

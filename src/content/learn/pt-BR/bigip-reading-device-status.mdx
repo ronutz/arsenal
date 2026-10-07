@@ -37,15 +37,15 @@ O objetivo de netstat do blueprint é um teste de alfabetização Linux com sota
 
 Este artigo abre a série **Diagnóstico e operação do BIG-IP**. Ele nomeia as superfícies em que um equipamento informa a sua condição; as partes vão da leitura à captura e à entrega: as estatísticas e os logs, depois o tcpdump e os metadados que o TMM escreve numa captura, depois as evidências que você envia ao suporte ou guarda para si (o snapshot, os testes de hardware, o backup) e, por fim, o que vigia o equipamento quando você não está olhando.
 
-1. **[Lendo estatísticas do BIG-IP](/learn/reading-bigip-statistics)**. Por que uma resposta de estatísticas chega em três envelopes, as metades alta e baixa de um contador, e por que uma amostra nunca é uma taxa.
-2. **[Os Arquivos de Log do BIG-IP: um Mapa do /var/log](/learn/bigip-log-files-map)**. Qual log responde qual pergunta: objetos de tráfego, quem entrou, quem mudou o quê, e a escada de severidade.
+1. **[Como ler estatísticas do BIG-IP](/learn/reading-bigip-statistics)**. Por que uma resposta de estatísticas chega em três envelopes, as metades alta e baixa de um contador, e por que uma amostra nunca é uma taxa.
+2. **[Os arquivos de log do BIG-IP: um mapa do /var/log](/learn/bigip-log-files-map)**. Qual log responde qual pergunta: objetos de tráfego, quem entrou, quem mudou o quê, e a escada de severidade.
 3. **[tcpdump no BIG-IP: como ele difere do tcpdump padrão](/learn/bigip-tcpdump-syntax)**. O mesmo binário do tcpdump, mas interfaces que não são placas de rede: a interface especial 0.0 e os sufixos exclusivos da F5.
-4. **[Capturando com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety)**. Limitar a captura, vigiar o disco, escolher o detalhe: capturar num equipamento que está carregando tráfego real.
+4. **[Como capturar com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety)**. Limitar a captura, vigiar o disco, escolher o detalhe: capturar num equipamento que está carregando tráfego real.
 5. **[O que o BIG-IP escreve dentro da sua captura](/learn/f5-ethernet-trailer)**. O que o TMM sabia sobre cada pacote, escrito depois dele: slot, TMM, virtual server, IDs de fluxo, a causa do reset, até segredos de TLS.
-6. **[Lendo uma captura do BIG-IP: o trailer da F5 no Wireshark](/learn/reading-a-bigip-capture)**. O dissector f5ethtrailer transformando esses bytes extras em campos legíveis no Wireshark.
+6. **[Como ler uma captura do BIG-IP: o trailer da F5 no Wireshark](/learn/reading-a-bigip-capture)**. O dissector f5ethtrailer transformando esses bytes extras em campos legíveis no Wireshark.
 7. **[Níveis de detalhe da TMM e peer flows (:n, :nn, :nnn, :p)](/learn/tmm-detail-and-peer-flows)**. Os sufixos :n, :nn, :nnn e :p, quanto metadado cada um anexa, e capturar os dois lados de uma conexão.
-8. **[qkview e iHealth: o Fluxo do Retrato de Suporte](/learn/bigip-qkview-and-ihealth)**. O autorretrato de diagnóstico do equipamento, enviado ao iHealth e lido pelas suas heurísticas.
-9. **[EUD: Diagnóstico de Hardware do BIG-IP Antes do RMA](/learn/bigip-eud-hardware-diagnostics)**. A bateria de testes offline de memória, armazenamento, sensores e interfaces, rodada antes de abrir uma autorização de devolução de mercadoria (RMA).
-10. **[Arquivos UCS: o Backup do BIG-IP Que Contém Tudo](/learn/bigip-ucs-archives)**. O backup completo do equipamento, incluindo as chaves privadas que as pessoas esquecem, e como criá-lo e restaurá-lo.
-11. **[Alerting Customizado no BIG-IP: Traps SNMP, E-mail e Syslog Remoto](/learn/bigip-custom-alerting)**. O pipeline de alertas que vigia o fluxo de logs, e alertas próprios por trap SNMP, e-mail ou syslog remoto.
+8. **[qkview e iHealth: o fluxo do retrato de suporte](/learn/bigip-qkview-and-ihealth)**. O autorretrato de diagnóstico do equipamento, enviado ao iHealth e lido pelas suas heurísticas.
+9. **[EUD: diagnóstico de hardware do BIG-IP antes do RMA](/learn/bigip-eud-hardware-diagnostics)**. A bateria de testes offline de memória, armazenamento, sensores e interfaces, rodada antes de abrir uma autorização de devolução de mercadoria (RMA).
+10. **[Arquivos UCS: o backup do BIG-IP que contém tudo](/learn/bigip-ucs-archives)**. O backup completo do equipamento, incluindo as chaves privadas que as pessoas esquecem, e como criá-lo e restaurá-lo.
+11. **[Alerting customizado no BIG-IP: traps SNMP, e-mail e syslog remoto](/learn/bigip-custom-alerting)**. O pipeline de alertas que vigia o fluxo de logs, e alertas próprios por trap SNMP, e-mail ou syslog remoto.
 12. **[AVR: Application Visibility and Reporting no BIG-IP](/learn/bigip-avr-analytics)**. A análise no próprio equipamento que transforma tráfego em latência por virtual server, member, URL e código de resposta.

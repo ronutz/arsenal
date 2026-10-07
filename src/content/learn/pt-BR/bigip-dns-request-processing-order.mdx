@@ -42,9 +42,9 @@ Juntando tudo, o profile DNS de um listener se lê como uma frase que declara um
 Este artigo abre a série **BIG-IP DNS e balanceamento global**. A ordem de processamento explica a maioria das surpresas; as partes seguintes acompanham o caminho do GSLB dentro dessa ordem: como o sistema descobre o que está no ar, as duas decisões que levam a uma resposta, a cadeia que existe dentro da segunda, os registros de topologia que dão pontos aos candidatos e as response policy zones que transformam o cache num controle.
 
 1. **[Como o iQuery conecta o BIG-IP DNS ao resto da rede](/learn/how-iquery-connects-bigip-dns)**. O protocolo XML, o gtmd e o big3d, as conexões de longa duração e a confiança por certificado que formam a malha (o mesh).
-2. **[GSLB em dois níveis: o wide IP escolhe um pool, o pool escolhe um servidor](/learn/gslb-two-tier-pool-then-member)**. O balanceamento global como duas decisões: o wide IP escolhe um pool, depois o pool escolhe um virtual server.
+2. **[GSLB em dois níveis: o wide IP escolhe o pool, e o pool escolhe o servidor](/learn/gslb-two-tier-pool-then-member)**. O balanceamento global como duas decisões: o wide IP escolhe um pool, depois o pool escolhe um virtual server.
 3. **[Load balancing no BIG-IP DNS: o wide IP, o pool e a cadeia de três passos](/learn/gtm-load-balancing-methods)**. A cadeia preferred, alternate e fallback dentro do pool, e as regras em que as pessoas tropeçam.
-4. **[Registros de topologia do GTM: Longest Match é uma ordenação, não a escolha](/learn/gtm-topology-records-and-longest-match)**. O longest match é uma ordenação, não a escolha: o primeiro registro que bate dá a pontuação do candidato, e os seguintes ficam sombreados.
+4. **[Registros de topologia do GTM: o Longest Match ordena, não escolhe](/learn/gtm-topology-records-and-longest-match)**. O longest match é uma ordenação, não a escolha: o primeiro registro que bate dá a pontuação do candidato, e os seguintes ficam sombreados.
 5. **[DNS como motor de política: multi-RPZ no BIG-IP 21.1](/learn/bigip-dns-multi-rpz)**. Várias response policy zones num único cache, avaliadas por precedência e transferidas com segurança: o DNS como motor de política.
 
 ## Fontes

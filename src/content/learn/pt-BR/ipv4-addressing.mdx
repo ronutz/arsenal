@@ -45,14 +45,14 @@ Para ver como qualquer endereço se situa dentro de seu bloco, seu endereço de 
 
 Este artigo abre a série **Endereçamento IPv4 e sub-redes**. Com os 32 bits expostos, a série constrói a habilidade em ordem: o prefixo, a divisão de uma rede, sub-redes desiguais e uma atribuição completa resolvida do início ao fim, sobreposições e lacunas, a recombinação das rotas, e depois as faixas que não são públicas e a tradução de endereços que fez um endereço público servir milhares.
 
-1. **[Notação CIDR explicada](/learn/cidr-notation)**. O que a barra em 192.168.1.0/24 significa, e como um comprimento de prefixo define um bloco de endereços.
-2. **[Fundamentos de sub-redes](/learn/subnetting-basics)**. Dividir uma rede em redes menores, e por que tomar bits de host emprestados é o truque inteiro.
-3. **[VLSM: dividindo um bloco em sub-redes desiguais](/learn/vlsm)**. Recortar um bloco em sub-redes de tamanhos diferentes sem desperdício, e a regra do maior primeiro.
-4. **[Uma atribuição VLSM, resolvida do início ao fim](/learn/vlsm-worked-example)**. Uma atribuição completa para uma rede realista: dimensionar, ordenar, atribuir e contabilizar o que sobra.
+1. **[Como funciona a notação CIDR](/learn/cidr-notation)**. O que a barra em 192.168.1.0/24 significa, e como um comprimento de prefixo define um bloco de endereços.
+2. **[Fundamentos de subnetting](/learn/subnetting-basics)**. Dividir uma rede em redes menores, e por que tomar bits de host emprestados é o truque inteiro.
+3. **[VLSM: como dividir um bloco em sub-redes de tamanhos diferentes](/learn/vlsm)**. Recortar um bloco em sub-redes de tamanhos diferentes sem desperdício, e a regra do maior primeiro.
+4. **[Uma alocação com VLSM, resolvida do começo ao fim](/learn/vlsm-worked-example)**. Uma atribuição completa para uma rede realista: dimensionar, ordenar, atribuir e contabilizar o que sobra.
 5. **[Sobreposições e lacunas de sub-redes](/learn/subnet-overlap-and-gaps)**. Quando prefixos se sobrepõem ou um contém o outro, por que o casamento do prefixo mais longo torna algumas sobreposições deliberadas, e como achar as lacunas.
 6. **[Sumarização de rotas](/learn/route-summarization)**. Uma rota no lugar de muitas, a atribuição alinhada de que ela depende e o buraco negro de sumarizar um espaço que não é seu.
 7. **[Supernetting e agregação de rotas](/learn/supernetting-and-aggregation)**. A regra de alinhamento que decide se dois blocos se fundem, e a agregação exata contra um supernet que cobre tudo.
 8. **[Espaço de endereços IPv4 privados e a RFC 1918](/learn/private-address-space)**. As três faixas da RFC 1918, por que não são roteadas na internet e os outros blocos especiais.
-9. **[Faixas de IP Privadas, Reservadas e Públicas](/learn/private-vs-public-ip-ranges)**. O mapa completo de que um filtro de SSRF precisa: privado, loopback, link-local, NAT de operadora, documentação e público.
-10. **[NAT Explicado: Origem, Destino, e Por Que a Internet Ainda Funciona](/learn/nat-explained)**. O NAT de origem deixa milhares de hosts dividirem um endereço, o NAT de destino publica um serviço: como os dois reescrevem pacotes em trânsito.
-11. **[CGNAT: o que quebra quando mil assinantes dividem um endereço](/learn/cgnat-address-sharing-and-attribution)**. A ponte para o IPv6 que virou permanente: o que o CGNAT muda no que os clientes podem rodar e em quem leva a culpa.
+9. **[Faixas de IP privadas, reservadas e públicas](/learn/private-vs-public-ip-ranges)**. O mapa completo de que um filtro de SSRF precisa: privado, loopback, link-local, NAT de operadora, documentação e público.
+10. **[NAT explicado: origem, destino, e por que a internet ainda funciona](/learn/nat-explained)**. O NAT de origem deixa milhares de hosts dividirem um endereço, o NAT de destino publica um serviço: como os dois reescrevem pacotes em trânsito.
+11. **[CGNAT: o que quebra quando mil assinantes dividem o mesmo endereço](/learn/cgnat-address-sharing-and-attribution)**. A ponte para o IPv6 que virou permanente: o que o CGNAT muda no que os clientes podem rodar e em quem leva a culpa.

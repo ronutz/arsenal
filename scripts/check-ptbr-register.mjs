@@ -244,6 +244,8 @@ function titleCaseWords(h) {
     const { w, pre } = words[i];
     // After a colon, a question mark, an exclamation or a full stop: a new start, any capital allowed.
     if (/[:?!.]/.test(pre || "")) continue;
+    // A path segment ("/Users", "/Groups"): an address as the protocol writes it, not a word of the title (2026-10-07).
+    if (/\/$/.test(pre || "")) continue;
     // Only a word capitalised the Title Case way: one capital, then lower case.
     if (!/^[A-ZÀ-Ý][a-zà-ÿ]+$/.test(w)) continue;
     // Ordinary: written in lower case in the prose at least three times, never capitalised mid-sentence.

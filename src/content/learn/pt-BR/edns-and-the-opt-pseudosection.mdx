@@ -1,7 +1,7 @@
 ---
 slug: edns-and-the-opt-pseudosection
 title: "O EDNS e a pseudo-seção OPT"
-summary: "A pseudo-seção OPT não é um registro e não é algo que você consultou: é metadado do EDNS(0) que o dig mostra perto do topo de uma resposta. Ela carrega o tamanho do payload UDP, a flag DO que solicita DNSSEC e opções como COOKIE, e explica silenciosamente toda uma classe de falhas de resolução."
+summary: "A pseudo-seção OPT não é um registro, nem algo que você consultou: são metadados do EDNS(0) que o dig mostra perto do topo da resposta. Ela carrega o tamanho de payload UDP, a flag DO, que pede DNSSEC, e opções como COOKIE, e explica, sem alarde, toda uma classe de falhas de resolução."
 concepts: ["edns", "opt", "udp payload", "do flag", "cookie", "fragmentation", "rfc 6891"]
 relatedTools: ["dig-output-explainer"]
 relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig"]
@@ -11,32 +11,32 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-O DNS clássico tinha um limite de 512 bytes para respostas em UDP e nenhum espaço no cabeçalho para novas opções. O EDNS(0), definido na RFC 6891, resolve os dois problemas adicionando um pseudo-registro do tipo OPT. O dig o imprime como seu próprio bloco:
+O DNS clássico tinha um limite de 512 bytes para respostas em UDP e nenhum espaço no header (cabeçalho) para opções novas. O EDNS(0), definido na RFC 6891, resolve os dois problemas com um pseudo-registro do tipo OPT. O dig mostra esse registro num bloco separado:
 
 ```
 ;; OPT PSEUDOSECTION:
 ; EDNS: version: 0, flags: do; udp: 1232
 ```
 
-Ele é chamado de pseudo-seção porque OPT não é dado real de zona. Existe apenas no fio para carregar parâmetros do EDNS, então nunca aparece em um arquivo de zona e você nunca consulta por ele diretamente.
+O nome é pseudo-seção porque o OPT não é um dado real de zona. Ele só existe na mensagem que trafega pela rede, para levar os parâmetros do EDNS; por isso, nunca aparece num arquivo de zona, e você nunca faz uma consulta direta por ele.
 
-## O que os campos significam
+## O que cada campo significa
 
-**version** é a versão do EDNS, na prática sempre `0`. **udp** é a maior resposta UDP que quem envia está disposto a receber, anunciada para que o respondente possa enviar respostas maiores sem cair para TCP. Resolvedores modernos costumam anunciar `1232` bytes, um valor deliberadamente conservador escolhido para ficar abaixo do ponto em que a fragmentação IP tende a causar problemas. **flags** carrega os bits de flag do EDNS; o que você verá é `do`, DNSSEC OK, que é como um cliente diz "me envie também os registros DNSSEC".
+**version** é a versão do EDNS, que na prática é sempre `0`. **udp** é o tamanho da maior resposta UDP que quem envia aceita receber; esse valor é anunciado para que quem responde possa mandar respostas maiores sem precisar recorrer ao TCP. Os resolvers modernos costumam anunciar `1232` bytes, um valor conservador de propósito, escolhido para ficar abaixo do ponto em que a fragmentação IP costuma dar problema. **flags** traz os bits de flag do EDNS; a que você vai ver é a `do`, de DNSSEC OK, que é o jeito de o cliente dizer "me mande também os registros DNSSEC".
 
-Abaixo da linha do EDNS, o dig pode imprimir outras opções como `COOKIE` (um token leve contra spoofing) ou `NSID` (um identificador de servidor). Elas são informativas e variam por resolvedor.
+Abaixo da linha do EDNS, o dig pode mostrar outras opções, como `COOKIE` (um token leve contra spoofing) ou `NSID` (um identificador do servidor). Elas são só informativas e variam de um resolver para outro.
 
-## Por que isso importa no diagnóstico
+## Por que isso importa no troubleshooting
 
-O EDNS é onde vivem várias falhas confusas. Se uma resposta grande somada a um tamanho UDP grande anunciado produz um pacote UDP fragmentado que um firewall ou um caminho quebrado descarta, a consulta parece travar ou falhar mesmo que o servidor tenha respondido. É exatamente por isso que o tamanho anunciado tendeu a diminuir para valores como 1232: respostas menores cabem em um pacote e sobrevivem a mais caminhos. Quando você vê `SERVFAIL` intermitente em nomes com respostas grandes (muitos endereços, ou assinaturas DNSSEC), a linha OPT e o tamanho UDP são o primeiro lugar para olhar, e forçar TCP com `+tcp` é uma forma rápida de confirmar isso.
+É no EDNS que mora a causa de várias falhas confusas. Se uma resposta grande, somada a um tamanho UDP anunciado grande, gera um pacote UDP fragmentado, e um firewall ou um caminho com defeito descarta esse pacote, a consulta parece travar ou falhar, mesmo que o servidor tenha respondido. É exatamente por isso que o tamanho anunciado foi caindo para valores como 1232: respostas menores cabem num pacote só e passam por mais caminhos. Quando aparecer `SERVFAIL` intermitente em nomes com respostas grandes (muitos endereços ou assinaturas DNSSEC), a linha OPT e o tamanho UDP são o primeiro lugar para olhar, e forçar TCP com `+tcp` é um jeito rápido de confirmar.
 
-A flag `do` se liga diretamente ao DNSSEC: sem ela, um resolvedor não retornará os registros de assinatura, então se você está tentando inspecionar DNSSEC e não vê nenhum, verifique se a linha OPT mostra `do` definido.
+A flag `do` está ligada diretamente ao DNSSEC: sem ela, o resolver não devolve os registros de assinatura. Então, se você está tentando inspecionar o DNSSEC e não aparece nenhum desses registros, confira se a linha OPT mostra a `do` ligada.
 
 
-## O tamanho de buffer é uma promessa que a rede pode não cumprir
+## O tamanho do buffer é uma promessa que a rede pode não cumprir
 
-O registro OPT anuncia o tamanho de resposta UDP que o cliente aceita — normalmente 1232 ou 4096 bytes. **Anunciar não é o mesmo que receber.**
+O registro OPT anuncia o tamanho máximo de resposta UDP que o cliente aceita, normalmente 1232 ou 4096 bytes. **Anunciar não é a mesma coisa que receber.**
 
-Uma resposta maior que o MTU do caminho é fragmentada, e muitos middleboxes e firewalls descartam fragmentos IP sem avisar. A consulta sai, o servidor responde, a resposta nunca chega, e o resolvedor espera um timeout que vai atribuir ao servidor.
+Uma resposta maior que a MTU do caminho é fragmentada, e muitos middleboxes e firewalls descartam fragmentos IP sem nenhum aviso. A consulta sai, o servidor responde, a resposta nunca chega, e o resolver fica esperando um timeout que depois vai pôr na conta do servidor.
 
-**É por isso que o DNS "estar lento" tantas vezes não é lentidão.** É uma resposta grande falhando em silêncio e um cliente esperando uma retentativa. O indício é que consultas pequenas funcionam perfeitamente e as de DNSSEC ou TXT não — porque são as que crescem.
+**É por isso que, tantas vezes, o DNS "lento" não está lento coisa nenhuma.** É uma resposta grande falhando em silêncio e um cliente esperando a hora de uma nova tentativa. O sinal é que as consultas pequenas funcionam perfeitamente e os lookups de DNSSEC ou TXT não, porque são essas as respostas que crescem.

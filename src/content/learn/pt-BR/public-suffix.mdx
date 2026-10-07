@@ -1,7 +1,7 @@
 ---
 slug: public-suffix
 title: "Sufixos públicos e o domínio registrado (eTLD+1)"
-summary: "O que são um sufixo público (eTLD) e um domínio registrado (eTLD+1), por que você não pode calculá-los pegando os dois últimos rótulos, como o algoritmo da Public Suffix List os resolve, e onde a fronteira importa: limites de emissão de certificados, cookies e same-site."
+summary: "O que são o sufixo público (eTLD) e o domínio registrado (eTLD+1), por que não dá para calculá-los pegando os dois últimos rótulos do nome, como o algoritmo da Public Suffix List chega à resposta e onde essa fronteira faz diferença: nos limites de emissão de certificados, nos cookies e no same-site."
 concepts: ["public-suffix", "etld", "registered-domain", "cookies", "same-site", "certificate-rate-limits"]
 relatedTools: ["public-suffix", "acme-dns01"]
 relatedArticles: ["lets-encrypt", "acme-protocol"]
@@ -11,65 +11,65 @@ status: reviewed
 updated: "2026-07-07"
 ---
 
-## Origens: um defeito de navegador que não tinha correção limpa
+## Origens: um bug de navegador que não tinha solução limpa
 
-A Public Suffix List existe por causa de um problema de segurança que ninguém conseguia resolver direito. Um navegador precisa decidir se um site pode gravar um cookie legível por outro, e a resposta honesta exige saber onde começa o controle de uma organização sobre um nome.
+A Public Suffix List nasceu de um problema de segurança que ninguém conseguia resolver direito. O navegador precisa decidir se um site pode gravar um cookie que outro site vai conseguir ler e, para responder isso com honestidade, é preciso saber onde começa o controle de uma organização sobre um nome.
 
-Essa fronteira não está no DNS. Não existe tipo de registro que diga "abaixo deste ponto, donos diferentes". O `com` vende para qualquer um, o `co.uk` vende para qualquer um, o `github.io` dá um subdomínio a qualquer usuário com conta, e para o protocolo os três parecem exatamente iguais a qualquer outro rótulo. Regras de cookie baseadas em contar rótulos falhavam nas duas direções: permissivas demais no `co.uk`, onde um site poderia gravar cookie para todas as empresas britânicas de uma vez, e restritivas demais em outros lugares.
+Essa fronteira não está no DNS. Não existe tipo de registro que diga "abaixo deste ponto, donos diferentes". O `com` vende nomes para qualquer um, o `co.uk` também, o `github.io` dá um subdomínio para qualquer usuário que tenha conta e, para o protocolo, os três são rótulos (labels, os trechos do nome separados por pontos) como quaisquer outros. Por isso, as regras de cookie baseadas em contar rótulos erravam para os dois lados: eram permissivas demais no `co.uk`, onde um site conseguia gravar um cookie para todas as empresas britânicas de uma vez, e restritivas demais em outros casos.
 
-A Mozilla começou a manter uma lista em meados dos anos 2000 para corrigir o comportamento de cookies, e a lista escapou do propósito original quase de imediato. Hoje o mesmo arquivo decide política de emissão de certificado, verificação de same-site, escopo de permissão e como a analítica agrupa tráfego - o que é muita carga para um arquivo de texto mantido por voluntários, e essa fragilidade é parte do assunto, e não um comentário lateral.
+A Mozilla começou a manter uma lista em meados dos anos 2000 para corrigir o comportamento dos cookies, e a lista passou a servir para outras coisas quase de imediato. Hoje o mesmo arquivo define a política de emissão de certificados, as verificações de same-site, o escopo de permissões e o jeito como as ferramentas de analytics agrupam o tráfego. É muita responsabilidade para um arquivo de texto mantido por voluntários, e essa fragilidade faz parte do assunto; não é um detalhe à parte.
 
-## O que ela é, de fato
+## O que ela é, na prática
 
-Uma lista de sufixos sob os quais qualquer pessoa pode registrar um nome, de modo que o rótulo imediatamente à esquerda de um sufixo listado é a menor unidade que uma organização controla. Essa unidade é o **domínio registrável**, ou eTLD+1.
+É uma lista de sufixos sob os quais qualquer pessoa pode registrar um nome. Assim, o rótulo logo à esquerda de um sufixo da lista é a menor unidade que uma organização controla. Essa unidade é o **domínio registrável**, ou eTLD+1.
 
-Duas propriedades surpreendem. Ela **não** é uma lista de domínios de topo: tem milhares de entradas, a maioria mais profunda que um rótulo. E **não** é uma especificação com documento numerado por trás; é um arquivo curado, com processo de submissão, o que significa que a fronteira imposta por um navegador é um artefato mantido, e não um fato derivado.
+Duas características costumam surpreender. A lista **não** é uma relação de domínios de topo: tem milhares de entradas, e a maioria delas tem mais de um rótulo. E **não** é uma especificação com um documento numerado por trás; é um arquivo mantido por curadoria, com um processo para pedir inclusão. Ou seja, a fronteira que o navegador aplica é algo que alguém mantém, e não um fato que se deduz.
 
-## O problema com "os dois últimos rótulos"
+## O problema dos "dois últimos rótulos"
 
-É tentador supor que a parte registrada de um nome de host são apenas seus dois últimos rótulos. Para `www.example.com` isso funciona: o domínio registrado é `example.com`. Mas para `www.example.co.uk` está errado. Aqui `.co.uk` é um sufixo público, então o domínio registrado é `example.co.uk`, com três rótulos de profundidade. Não há padrão na string que informe isso. A única forma de saber que `.co.uk` se comporta como um domínio de topo enquanto `.example.com` não, é consultar uma lista de quais sufixos são públicos. Essa lista é a [Public Suffix List](https://publicsuffix.org/) (PSL), e a [ferramenta de domínio registrado](/tools/public-suffix) resolve nomes contra ela.
+É tentador supor que a parte registrada de um hostname são só os dois últimos rótulos. Com `www.example.com` isso funciona: o domínio registrado é `example.com`. Mas com `www.example.co.uk` dá errado. Aqui, `.co.uk` é um sufixo público, então o domínio registrado é `example.co.uk`, com três rótulos. Nada na string indica isso. O único jeito de saber que `.co.uk` se comporta como um domínio de topo e `.example.com` não é consultar uma lista dos sufixos que são públicos. Essa lista é a [Public Suffix List](https://publicsuffix.org/) (PSL), e a [ferramenta de domínio registrado](/tools/public-suffix) analisa os nomes com base nela.
 
 ## Duas definições
 
-Um **sufixo público**, também chamado de domínio de topo efetivo ou **eTLD**, é um sufixo sob o qual o público pode registrar nomes diretamente. `com`, `co.uk`, `github.io` e `s3.amazonaws.com` são todos sufixos públicos. Um **domínio registrado**, ou **eTLD+1**, é um sufixo público mais exatamente um rótulo à sua esquerda: o menor nome que alguém pode de fato possuir. `example.com` e `example.co.uk` são domínios registrados; `co.uk` não é, porque ninguém registra o próprio `co.uk`.
+Um **sufixo público**, também chamado de effective top-level domain (domínio de topo efetivo) ou **eTLD**, é um sufixo sob o qual qualquer pessoa pode registrar nomes diretamente. `com`, `co.uk`, `github.io` e `s3.amazonaws.com` são todos sufixos públicos. Um **domínio registrado**, ou **eTLD+1**, é um sufixo público mais exatamente um rótulo à esquerda dele: o nome mais curto que alguém pode de fato ter. `example.com` e `example.co.uk` são domínios registrados; `co.uk` não é, porque ninguém registra o próprio `co.uk`.
 
 ## O algoritmo
 
-Resolver um nome contra a lista segue um procedimento pequeno e exato. Você procura regras que casem com o host, onde os rótulos de uma regra precisam ser iguais aos rótulos do host, da direita para a esquerda, e um rótulo `*` em uma regra casa com qualquer rótulo único. Entre as correspondências, uma **regra de exceção** (escrita com um `!` no início) sempre vence; caso contrário, vence a regra com **mais rótulos**. Se a vencedora for uma regra de exceção, seu rótulo mais à esquerda é descartado. O sufixo público é o que a regra vencedora casa, e o domínio registrado é esse sufixo mais um rótulo. Se nada casar, apenas o rótulo mais à direita é tratado como o sufixo.
+Analisar um nome com base na lista segue um procedimento curto e exato. Você procura as regras que batem com o host: os rótulos da regra precisam ser iguais aos do host, comparando da direita para a esquerda, e um rótulo `*` na regra vale por qualquer rótulo, desde que seja um só. Entre as regras que batem, uma **regra de exceção** (escrita com um `!` na frente) sempre vence; se não houver exceção, vence a regra com **mais rótulos**. Se a vencedora for uma regra de exceção, descarta-se o rótulo mais à esquerda dela. O sufixo público é o trecho que a regra vencedora cobre, e o domínio registrado é esse sufixo mais um rótulo. Se nenhuma regra bater, só o rótulo mais à direita é tratado como sufixo.
 
-Dois tipos de regra fazem a diferença em relação ao casamento ingênuo. Um **curinga** como `*.ck` significa que todo `algo.ck` é um sufixo público, então `foo.bar.ck` é registrável mas `bar.ck` não é. Uma **exceção** como `!www.ck` recorta um único nome de volta, então `www.ck` é registrável mesmo que o curinga o tivesse engolido.
+Dois tipos de regra fazem a diferença em relação a uma comparação ingênua. Um **wildcard** como `*.ck` quer dizer que todo `algo.ck` é um sufixo público; então `foo.bar.ck` é registrável, mas `bar.ck` não é. Uma **exceção** como `!www.ck` tira um único nome de dentro do wildcard; então `www.ck` é registrável, mesmo que o wildcard, sozinho, o tivesse engolido.
 
 ## ICANN e PRIVATE
 
-A lista é dividida em duas seções, e a distinção não é cosmética. A seção **ICANN** (Corporação da Internet para Atribuição de Nomes e Números, do inglês Internet Corporation for Assigned Names and Numbers) contém sufixos operados por registros: essa é a fronteira que os navegadores aplicam para decisões de segurança. A seção **PRIVATE** contém sufixos que empresas adicionaram porque distribuem subdomínios a terceiros, como `github.io`, `*.compute.amazonaws.com` ou várias plataformas de hospedagem de aplicações. As duas podem dar respostas diferentes. Sob a lista completa, `alice.github.io` é seu próprio domínio registrado, que é exatamente o que o GitHub quer: o site Pages de um usuário não deve ser same-site com o de outro. Apenas sob as regras ICANN, o domínio registrado é `github.io`. Qual interpretação está correta depende da pergunta que você está fazendo, então a ferramenta reporta ambas sempre que uma regra PRIVATE é o que decidiu o resultado.
+A lista tem duas seções, e a divisão não é só de fachada. A seção **ICANN** (Internet Corporation for Assigned Names and Numbers) reúne os sufixos operados pelos registros de domínio (os registries): é essa a fronteira que os navegadores aplicam nas decisões de segurança. A seção **PRIVATE** reúne sufixos que empresas incluíram porque distribuem subdomínios para terceiros, como `github.io`, `*.compute.amazonaws.com` ou várias plataformas de hospedagem de aplicações. As duas podem dar respostas diferentes. Com a lista completa, `alice.github.io` é um domínio registrado por si só, e é exatamente isso que o GitHub quer: o site do Pages de um usuário não deve ser same-site com o de outro. Só com as regras da seção ICANN, o domínio registrado é `github.io`. Qual das duas leituras está certa depende da pergunta que você está fazendo; por isso, a ferramenta mostra as duas sempre que quem decidiu o resultado foi uma regra da seção PRIVATE.
 
-## Por que existe a seção PRIVATE, e o que ela muda
+## Por que a seção PRIVATE existe e o que ela muda
 
-O arquivo tem duas divisões. A seção **ICANN** cobre sufixos de registro - a hierarquia comum de domínios. A seção **PRIVATE** é onde organizações acrescentam os próprios nomes, e a inclusão é a pedido.
+O arquivo tem duas partes. A seção **ICANN** cobre os sufixos dos registries, ou seja, a hierarquia normal de domínios. A seção **PRIVATE** é onde as organizações incluem os próprios nomes, e a inclusão é feita a pedido.
 
-A razão é hospedagem de subdomínio. Se uma plataforma dá a cada cliente `cliente.plataforma-exemplo.com`, então, sem uma entrada, todos esses clientes dividem uma origem de cookie e um balde de limite de emissão de certificado. Um inquilino pode gravar cookie legível por outro, o que é falha real de isolamento entre pessoas que são estranhas entre si. Acrescentar o sufixo à PRIVATE transforma cada inquilino no próprio domínio registrável, e é essa a correção.
+O motivo é a hospedagem em subdomínios. Se uma plataforma dá a cada cliente um `cliente.plataforma-exemplo.com`, então, sem uma entrada na lista, todos esses clientes dividem a mesma origem de cookies e a mesma cota de rate limit para certificados. Um tenant (cada cliente da plataforma) consegue gravar cookies que outro tenant lê, e isso é uma falha real de isolamento entre pessoas que nem se conhecem. Incluir o sufixo na seção PRIVATE transforma cada tenant num domínio registrável próprio, e é isso que resolve o problema.
 
-Isso também tem consequências que o solicitante talvez não queira. Ser um sufixo público significa que a plataforma não pode mais gravar cookie entre os próprios inquilinos, e muda como as autoridades certificadoras tratam pedidos curinga e limites de taxa. A entrada não é de graça, e é por isso que a lista tem processo de revisão, e não botão de envio.
+Isso também traz consequências que quem pediu a inclusão talvez não queira. Ser um sufixo público significa que a plataforma não consegue mais gravar um cookie que valha para todos os seus tenants, e muda o jeito como as autoridades certificadoras tratam pedidos de certificado wildcard e os rate limits. A entrada tem um custo, e é por isso que a lista tem um processo de revisão, e não um botão de upload.
 
-## O que quebra
+## O que dá errado
 
-**Desatualização.** O consumidor que importa não é a lista, e sim a cópia compilada dentro de um navegador, de uma biblioteca ou de um appliance. Um sufixo novo só vale onde o arquivo foi atualizado, então o comportamento difere por versão de cliente - e um equipamento raramente atualizado pode carregar uma fronteira de anos atrás.
+**Lista desatualizada.** O que vale não é a lista em si, e sim a cópia compilada dentro de um navegador, de uma biblioteca ou de um appliance. Um sufixo novo só passa a valer onde o arquivo foi atualizado, então o comportamento muda de uma versão de cliente para outra, e um equipamento que quase nunca é atualizado pode estar usando uma fronteira com anos de atraso.
 
-**Tratá-la como autoridade sobre propriedade.** Ela diz onde o registro é aberto, e não quem é dono do quê. Dois nomes sob o mesmo domínio registrável costumam ser a mesma organização; costumam não é sempre, e decisões de segurança apoiadas nessa suposição herdam a lacuna.
+**Tratar a lista como autoridade sobre quem é dono de cada nome.** Ela diz onde o registro está aberto, não quem é dono de quê. Dois nomes sob o mesmo domínio registrável costumam ser da mesma organização; mas "costumam" não é "sempre", e as decisões de segurança baseadas nessa suposição herdam essa brecha.
 
-**Embutir o arquivo e esquecê-lo.** A falha é silenciosa: cookies com escopo ligeiramente errado, um pedido de certificado recusado por um motivo que ninguém reproduz, e nada registra "sua lista de sufixos públicos está velha".
+**Copiar o arquivo para dentro do projeto e esquecer dele.** A falha é silenciosa: os cookies ficam com o escopo um pouco errado, um pedido de certificado é recusado por um motivo que ninguém consegue reproduzir, e nenhum log avisa que "sua lista de sufixos públicos está velha".
 
-**Supor que existe especificação.** O comportamento difere entre implementações, sobretudo em curingas e regras de exceção, e não há teste de conformidade a que recorrer.
+**Supor que existe uma especificação.** O comportamento varia de uma implementação para outra, principalmente com wildcards e regras de exceção, e não existe teste de conformidade a que recorrer.
 
 ## Onde a fronteira aparece, por categoria
 
-- **Navegadores** - escopo de cookie, aplicação de same-site, agrupamento de permissões, e a parte da barra de endereço que alguns navegadores destacam.
-- **Autoridades certificadoras** - limites de taxa e política de emissão costumam ser contados por domínio registrável, e é por isso que os inquilinos de uma plataforma dividem um balde até o sufixo ser listado.
-- **Ferramental de segurança** - agrupar consultas DNS, heurísticas de phishing que comparam um domínio registrável com um parecido, e qualquer controle que precise dizer "mesma organização".
-- **Analítica e publicidade**, que precisam da mesma fronteira pela mesma razão que os navegadores, e é por isso que a lista é discretamente importante em termos comerciais.
+- **Navegadores**: escopo de cookies, aplicação do same-site, agrupamento de permissões e o trecho da barra de endereços que alguns navegadores destacam.
+- **Autoridades certificadoras**: rate limits e política de emissão costumam ser contados por domínio registrável, e é por isso que os tenants de uma plataforma dividem a mesma cota até o sufixo entrar na lista.
+- **Ferramentas de segurança**: agrupamento de consultas DNS, heurísticas de phishing que comparam um domínio registrável com um nome parecido, e qualquer controle que precise dizer "mesma organização".
+- **Analytics e publicidade**, que precisam da mesma fronteira pelo mesmo motivo que os navegadores; é por isso que a lista tem, sem alarde, uma importância comercial grande.
 
-O que levar daqui é que uma fronteira com essa consequência não tem protocolo por trás. É um arquivo mantido, e sua exatidão depende de pessoas submeterem entradas e de cada consumidor manter a cópia fresca.
+O que fica é que uma fronteira com tanto impacto não tem nenhum protocolo por trás. É um arquivo mantido por pessoas, e a precisão dele depende de quem envia as entradas e de cada sistema que usa a lista manter a própria cópia atualizada.
 
 ## Onde a fronteira é usada
 
-Três sistemas se apoiam no domínio registrado, e errá-lo causa bugs reais e confusos. **Limites de emissão de certificados**: a Let's Encrypt contabiliza novos certificados contra o domínio registrado, então todos os subdomínios de um site compartilham um único orçamento semanal (veja [Let's Encrypt](/learn/lets-encrypt)). Equipes que emitem um certificado separado por subdomínio muitas vezes se surpreendem ao atingir o limite. **Cookies**: um site não pode definir um cookie para um sufixo público como `co.uk`, porque isso deixaria um site ler os cookies de outro em todo o sufixo; a fronteira do domínio registrado é o que o navegador verifica. **Same-site e CSRF**: se dois URLs contam como same-site, o que rege o envio de cookies e algumas proteções cross-origin, é decidido na fronteira do domínio registrado usando a PSL. Nos três casos a regra é a mesma, e a [ferramenta de domínio registrado](/tools/public-suffix) mostra precisamente onde essa linha cai para qualquer nome.
+Três sistemas dependem do domínio registrado, e errar nesse ponto causa bugs reais e difíceis de entender. **Rate limits de certificados**: a Let's Encrypt conta os certificados novos por domínio registrado, então todos os subdomínios de um site dividem uma única cota semanal (veja [Let's Encrypt](/learn/lets-encrypt)). Equipes que emitem um certificado separado para cada subdomínio muitas vezes se surpreendem ao bater no limite. **Cookies**: um site não pode gravar um cookie para um sufixo público como `co.uk`, porque isso deixaria um site ler os cookies de outro em todo o sufixo; o que o navegador verifica é justamente a fronteira do domínio registrado. **Same-site e CSRF**: saber se duas URLs contam como same-site, o que define o envio de cookies e algumas proteções cross-origin, é uma decisão tomada na fronteira do domínio registrado, com base na PSL. Nos três casos a regra é a mesma, e a [ferramenta de domínio registrado](/tools/public-suffix) mostra exatamente onde fica essa linha para qualquer nome.

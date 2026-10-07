@@ -1,7 +1,7 @@
 ---
 slug: aead-vs-cbc
-title: "AEAD vs CBC: por que o modo importa"
-summary: "A diferença prática entre uma cifra AEAD como o AES-GCM e uma cifra CBC mais antiga com um HMAC separado, os ataques de oráculo de preenchimento que mataram o MAC-then-encrypt, e a única troca que o AEAD ainda pede."
+title: "AEAD vs CBC: por que o modo de operação faz diferença"
+summary: "A diferença prática entre uma cifra AEAD, como o AES-GCM, e uma cifra CBC mais antiga com um HMAC separado; os ataques de padding oracle que enterraram o MAC-then-encrypt; e o único trade-off que o AEAD ainda exige de você."
 concepts: ["aead", "gcm", "cbc", "mac", "padding oracle", "chacha20"]
 relatedTools: ["cipher"]
 relatedArticles: ["cipher-suite-anatomy", "tls13-cipher-suites", "forward-secrecy", "cipher-suite-naming"]
@@ -11,86 +11,86 @@ status: reviewed
 updated: "2026-09-27"
 ---
 
-## Origens: cifragem e autenticação eram problemas separados
+## Origens: criptografia e autenticação eram problemas separados
 
-Durante quase toda a prática criptográfica, confidencialidade e integridade foram desenhadas de forma independente. Uma cifra escondia a mensagem; um **MAC** - código de autenticação de mensagem - provava que ela não fora alterada. Combinar os dois ficava a cargo de quem desenhava o protocolo, e havia três formas óbvias:
+Durante a maior parte da história da criptografia aplicada, confidencialidade e integridade foram projetadas de forma independente. A cifra escondia a mensagem; o **MAC** (message authentication code, o código de autenticação de mensagem) provava que ela não tinha sido alterada. Juntar as duas coisas ficava por conta de quem projetava o protocolo, e havia três jeitos óbvios de fazer isso:
 
-- **Cifrar e depois autenticar** (encrypt-then-MAC) - cifrar e então autenticar o texto cifrado. Comprovadamente sólido.
-- **Autenticar e depois cifrar** (MAC-then-encrypt) - autenticar o texto claro e então cifrar os dois. O que o SSL e o TLS escolheram.
-- **Cifrar e autenticar em paralelo** - fazer os dois sobre o texto claro, de forma independente. O que o SSH escolheu.
+- **Encrypt-then-MAC**: primeiro criptografa, depois autentica o texto cifrado (ciphertext). Tem prova formal de segurança.
+- **MAC-then-encrypt**: primeiro autentica o texto claro (plaintext), depois criptografa os dois juntos. Foi a escolha do SSL e do TLS.
+- **Encrypt-and-MAC**: faz as duas coisas sobre o texto claro, de forma independente. Foi a escolha do SSH.
 
-Só o primeiro é seguro em geral, e a indústria escolheu os outros dois. A razão de a escolha importar levou uma década de ataques para ficar óbvia: no MAC-then-encrypt, **o receptor precisa decifrar antes de conseguir verificar**, então ele está processando bytes controlados pelo atacante antes de saber se são autênticos. Todo ataque de oráculo de preenchimento mora nessa fresta.
+Só a primeira é segura em qualquer situação, e a indústria foi justamente nas outras duas. Levou uma década de ataques para ficar claro por que essa escolha importava: no MAC-then-encrypt, **o receptor precisa descriptografar antes de poder verificar**, ou seja, ele processa bytes controlados pelo atacante antes de saber se são autênticos. Todo ataque de padding oracle explora exatamente essa brecha.
 
-O registro é específico:
+O histórico é bem concreto:
 
-- **O resultado de oráculo de preenchimento de 2002** mostrou que vazar se o preenchimento era válido vaza texto claro, um byte por vez.
-- O **BEAST (2011)** explorou vetores de inicialização previsíveis no encadeamento CBC do TLS 1.0.
-- O **Lucky 13 (2013)** extraiu texto claro da diferença de *tempo* entre preenchimento válido e inválido - então até implementações que devolviam mensagens de erro idênticas vazavam pelo tempo que levavam para falhar.
-- O **POODLE (2014)** usou o preenchimento subespecificado do SSL 3.0 para forçar um rebaixamento e ler bytes.
+- **O resultado de 2002 sobre padding oracle** mostrou que, se o sistema deixa escapar se o padding (o preenchimento que completa o último bloco) era válido ou não, ele acaba entregando o texto claro, um byte de cada vez.
+- O **BEAST (2011)** explorou os vetores de inicialização previsíveis do encadeamento CBC no TLS 1.0.
+- O **Lucky 13 (2013)** extraiu texto claro da diferença de *tempo* entre um padding válido e um inválido; com isso, até as implementações que devolviam mensagens de erro idênticas vazavam informação pelo tempo que levavam para falhar.
+- O **POODLE (2014)** forçava um downgrade para o SSL 3.0 e explorava o padding mal especificado dessa versão para ler bytes.
 
-Cada correção deixou o código mais delicado: verificações de preenchimento em tempo constante são genuinamente difíceis de escrever, e um único retorno antecipado reintroduz o vazamento. O padrão é a lição de verdade - **uma construção que exige cuidado de todo implementador vai, uma hora, encontrar um que não teve.**
+Cada correção deixou o código mais delicado: verificar o padding em tempo constante é realmente difícil de programar, e um único return antecipado traz o vazamento de volta. A verdadeira lição está nesse padrão: **uma construção que exige cuidado de todo implementador, mais cedo ou mais tarde, vai cair na mão de um que não teve esse cuidado.**
 
 ## O que o AEAD mudou
 
-O **AEAD** - cifragem autenticada com dados associados - torna a combinação parte da primitiva, e não do protocolo. Uma chave, uma chamada, uma saída, e a decifragem **falha como unidade**: ou a etiqueta verifica e você recebe texto claro, ou não verifica e você não recebe nada para processar.
+O **AEAD** (authenticated encryption with associated data, ou criptografia autenticada com dados associados) coloca essa combinação dentro da própria primitiva, em vez de deixá-la a cargo do protocolo. Uma chave, uma chamada, uma saída, e a descriptografia **falha como um todo**: ou a tag de autenticação confere e você recebe o texto claro, ou não confere e você não recebe nada para processar.
 
-A metade dos "dados associados" importa e costuma ser pulada: ela autentica cabeçalhos que precisam estar visíveis mas não podem ser alterados - tipo de registro, versão, número de sequência -, amarrando a carga cifrada ao seu contexto. Sem isso, um atacante pode deixar o texto cifrado intacto e trocar o envelope em volta.
+A parte dos "dados associados" é importante e muitas vezes passa batido: ela autentica headers (cabeçalhos) que precisam ficar visíveis, mas não podem ser alterados, como o tipo, a versão e o número de sequência do registro (o record do TLS), e assim amarra o payload (a carga útil) criptografado ao seu contexto. Sem isso, o atacante pode deixar o texto cifrado intacto e trocar o envelope em volta dele.
 
 As duas construções dominantes:
 
-- **AES-GCM** - modo contador com um autenticador em corpo de Galois. Muito rápido onde os processadores trazem instruções de AES e de multiplicação sem carry, que é quase todo hardware de servidor.
-- **ChaCha20-Poly1305** - uma cifra de fluxo com autenticador separado, desenhada para implementação em software em tempo constante. Mais rápida onde não há instruções de AES, que é boa parte do mundo móvel e embarcado.
+- **AES-GCM**: modo contador (counter mode) com um autenticador baseado em corpo de Galois. É muito rápido onde o processador tem instruções de AES e de multiplicação sem carry (carry-less multiply), o que inclui quase todo o hardware de servidor.
+- **ChaCha20-Poly1305**: uma cifra de fluxo (stream cipher) com um autenticador separado, projetada para ser implementada em software com tempo constante. É mais rápida onde não há instruções de AES, o que vale para boa parte do mundo móvel e embarcado.
 
-O TLS 1.3 removeu do protocolo toda suíte não AEAD - não depreciou, removeu -, e é por isso que sua lista de cifras tem cinco entradas em vez de centenas.
+O TLS 1.3 tirou do protocolo todas as cipher suites (as suítes de cifras) que não são AEAD: não marcou como obsoletas, removeu de vez. É por isso que a lista de cifras dele tem cinco entradas, e não centenas.
 
-## Duas formas de cifrar um registro
+## Duas formas de criptografar um registro
 
-Depois que um handshake TLS acordou as chaves, cada registro de dados da aplicação precisa ser ao mesmo tempo cifrado, para que um bisbilhoteiro não possa lê-lo, e autenticado, para que um atacante não possa adulterá-lo. Há duas grandes formas de uma suíte de cifra fazer isso, e o token de modo no nome da suíte diz qual delas.
+Depois que o handshake TLS define as chaves, cada registro com dados da aplicação precisa ser criptografado, para que ninguém que esteja escutando a conexão consiga ler, e autenticado, para que nenhum atacante consiga adulterar. Uma cipher suite pode fazer isso de dois jeitos, e o trecho do nome que indica o modo diz qual deles ela usa.
 
-Uma cifra **AEAD** (criptografia autenticada com dados associados, do inglês authenticated encryption with associated data), como AES-GCM, AES-CCM ou ChaCha20-Poly1305 - sendo o AES o Advanced Encryption Standard e o CCM o seu modo Counter with CBC-MAC - faz as duas tarefas em uma única primitiva. Você lhe dá o texto claro e alguns dados associados, e ela devolve o texto cifrado mais uma etiqueta de autenticação. A decifração verifica a etiqueta e os dados juntos, e falha como uma só operação se algo foi alterado.
+Uma cifra **AEAD** (authenticated encryption with associated data), como AES-GCM, AES-CCM ou ChaCha20-Poly1305 (o AES é o Advanced Encryption Standard, e o CCM é o modo Counter with CBC-MAC dele), faz as duas tarefas numa única primitiva. Você entrega o texto claro e os dados associados, e ela devolve o texto cifrado mais uma tag de autenticação. Na descriptografia, a tag e os dados são verificados juntos e, se algo foi alterado, tudo falha numa operação só.
 
-Uma cifra **CBC** (encadeamento de blocos de cifra, do inglês cipher block chaining) faz apenas a cifragem. Para obter integridade, a suíte a combina com um HMAC separado (código de autenticação de mensagem baseado em hash, do inglês hash-based message authentication code), nomeado pelo hash final na suíte (por exemplo, o `SHA` em `TLS_RSA_WITH_AES_128_CBC_SHA`). As duas operações são amarradas pelo protocolo, e a ordem em que acontecem acaba importando enormemente.
+Uma cifra **CBC** (cipher block chaining, o encadeamento de blocos) só faz a criptografia. Para ter integridade, a suíte junta essa cifra com um HMAC (hash-based message authentication code) separado, indicado pelo hash no final do nome da suíte (por exemplo, o `SHA` em `TLS_RSA_WITH_AES_128_CBC_SHA`). Quem encaixa as duas operações é o protocolo, e a ordem em que elas acontecem faz uma diferença enorme.
 
 ## Por que o MAC-then-encrypt deu errado
 
-O TLS originalmente usava MAC-then-encrypt (sendo o MAC o código de autenticação de mensagem, do inglês message authentication code): calcular o HMAC sobre o texto claro, anexá-lo, preencher o resultado até um limite de bloco e então cifrar tudo com CBC. O problema é que o receptor precisa decifrar e remover o preenchimento antes de poder verificar o MAC, então preenchimento malformado e um MAC ruim são detectados em estágios diferentes. Um atacante que consiga ver se um registro falhou no preenchimento ou no MAC — seja por uma mensagem de erro ou apenas pelo tempo de resposta — aprende um bit sobre o texto claro por tentativa. Repetido, esse bit se torna a mensagem inteira.
+Originalmente, o TLS usava MAC-then-encrypt (MAC é o message authentication code): calcular o HMAC sobre o texto claro, anexar o resultado, completar com padding até fechar o bloco e, por fim, criptografar tudo com CBC. O problema é que o receptor precisa descriptografar e remover o padding antes de conferir o MAC, então um padding malformado e um MAC errado são detectados em etapas diferentes. Se o atacante consegue ver se um registro falhou no padding ou no MAC, seja por uma mensagem de erro, seja só pelo tempo de resposta, ele descobre um bit do texto claro a cada tentativa. Repetindo o processo, esse bit vira a mensagem inteira.
 
-Isso é um oráculo de preenchimento, e não é teórico. Uma série de ataques ao longo dos anos, incluindo BEAST, Lucky13 e POODLE, todos exploraram a proteção de registros CBC no TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção subjacente continuava produzindo novas variantes. A lição que a indústria tirou foi parar de usá-la.
+Isso é um padding oracle, e não é teoria. Uma série de ataques ao longo dos anos, como BEAST, Lucky13 e POODLE, explorou a proteção CBC dos registros do TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção de base continuava gerando variantes novas. A conclusão da indústria foi parar de usá-la.
 
-## Por que o AEAD é o padrão agora
+## Por que o AEAD virou o padrão
 
-O AEAD remove a classe inteira de problema. Não há etapa de preenchimento separada para sondar nem estágio de MAC separado para cronometrar, porque verificação e decifração são uma operação que ou tem sucesso ou falha. O TLS 1.3 leva isso à conclusão lógica e permite apenas cifras AEAD; suítes CBC simplesmente não fazem parte do TLS 1.3. No TLS 1.2 as duas existem, e é por isso que o decodificador marca uma suíte CBC-com-HMAC-SHA1 como fraca mesmo quando a cifra é AES.
+O AEAD acaba com essa classe inteira de problemas. Não existe uma etapa de padding separada para o atacante sondar, nem uma etapa de MAC separada para ele cronometrar, porque verificação e descriptografia são uma operação só, que ou dá certo, ou falha. O TLS 1.3 leva isso até o fim e só permite cifras AEAD; suítes CBC simplesmente não fazem parte do TLS 1.3. No TLS 1.2 as duas convivem, e é por isso que o decodificador marca como fraca uma suíte CBC com HMAC-SHA1, mesmo quando a cifra é AES.
 
-Quando você vê `GCM`, `CCM` ou `POLY1305` no nome de uma suíte, está olhando para AEAD. Quando vê `CBC`, está olhando para a construção mais antiga, e em um serviço moderno isso deveria ser, no máximo, um recurso de contingência.
+Se o nome da suíte tem `GCM`, `CCM` ou `POLY1305`, você está olhando para AEAD. Se tem `CBC`, é a construção antiga, e num serviço moderno ela deveria ser, no máximo, um fallback.
 
-## A obrigação que o AEAD carrega: nunca repetir um nonce
+## A obrigação que vem com o AEAD: nunca repetir um nonce
 
-O AEAD troca a classe do oráculo de preenchimento por uma exigência afiada. **Um par de chave e nonce nunca pode ser reutilizado.** No AES-GCM a consequência é severa e merece ser dita sem rodeio: repetir um nonce sob a mesma chave vaza o XOR dos dois textos claros *e* permite recuperar a subchave de autenticação, o que deixa o atacante forjar mensagens depois. Isso não é degradação; é quebra.
+O AEAD troca a classe dos padding oracles por uma única exigência, que não perdoa. **Um mesmo par de chave e nonce (o número que só pode ser usado uma vez) nunca pode ser reutilizado.** No AES-GCM a consequência é grave, e vale dizer com todas as letras: repetir um nonce com a mesma chave vaza o XOR dos dois textos claros *e* permite recuperar a subchave de autenticação, o que deixa o atacante forjar mensagens dali em diante. Isso não é perda parcial de segurança; é quebra.
 
-Onde isso dá errado na prática:
+Onde isso costuma dar errado na prática:
 
-- **Nonces aleatórios de 96 bits em volume muito alto**, onde colisões de aniversário deixam de ser teóricas. Foi isso que motivou o XChaCha20 e o AES-GCM-SIV, que toleram reúso muito melhor.
-- **Contadores que reiniciam**, tipicamente depois da restauração de uma máquina virtual, do retorno de um snapshot, ou de um dispositivo que volta com o mesmo material de chave.
-- **Desenhos sem estado** em que dois nós compartilham uma chave e escolhem nonces de forma independente.
+- **Nonces aleatórios de 96 bits em volume muito alto**, quando as colisões do paradoxo do aniversário deixam de ser teóricas. Foi isso que motivou o XChaCha20 e o AES-GCM-SIV, que toleram muito melhor a reutilização.
+- **Contadores que reiniciam**, normalmente depois do restore de uma VM, do rollback de um snapshot ou de um dispositivo que volta a funcionar com o mesmo material de chave.
+- **Arquiteturas stateless**, em que dois nós compartilham uma chave e cada um escolhe os nonces por conta própria.
 
-O TLS 1.3 evita tudo isso derivando o nonce do número de sequência em vez de transmiti-lo, então o reúso não acontece sem uma falha de protocolo. Quem constrói a própria camada de registro precisa resolver isso de propósito.
+O TLS 1.3 evita tudo isso porque deriva o nonce do número de sequência, em vez de transmiti-lo; assim, só há reutilização se houver uma falha no próprio protocolo. Quem constrói a própria camada de registros precisa resolver isso de forma consciente.
 
-**O tamanho do registro é a outra troca.** Cada registro carrega uma etiqueta - 16 bytes nas duas construções dominantes -, então muitos registros pequenos custam proporcionalmente mais overhead que poucos grandes, enquanto registros grandes acrescentam latência, porque nada é entregue até o registro inteiro verificar.
+**O outro trade-off é o tamanho do registro.** Cada registro carrega uma tag, de 16 bytes nas duas construções dominantes; então muitos registros pequenos custam, em proporção, mais overhead do que poucos registros grandes, e registros grandes aumentam a latência, porque nada é entregue enquanto o registro inteiro não for verificado.
 
 ## Onde a escolha aparece na prática
 
-- **Bibliotecas TLS** escolhem a lista padrão de suítes, e as versões modernas fizeram do AEAD a única opção que vale ter.
-- **Cifragem de disco e de volume** com frequência usa modos que preservam comprimento em vez de AEAD, porque um setor não pode crescer para acomodar uma etiqueta - razão genuína para se ver construções não AEAD em sistemas atuais.
-- **Cifragem no nível da aplicação** - libsodium, Tink, SDKs de gerência de chaves em nuvem -, onde a orientação honesta é usar uma biblioteca que administre nonces, em vez de montar primitivas.
-- **Protocolos com camada de registro própria** - QUIC, WireGuard, SSH - todos hoje baseados em AEAD, todos derivando nonces de contadores exatamente pela razão acima.
+- **Bibliotecas TLS** definem a lista padrão de suítes, e nas versões modernas o AEAD virou a única opção que vale a pena.
+- **Criptografia de disco e de volume** muitas vezes usa modos que preservam o tamanho dos dados, e não AEAD, porque um setor não pode crescer para caber uma tag; esse é um motivo legítimo para ainda existirem construções sem AEAD em sistemas atuais.
+- **Criptografia na camada de aplicação** (libsodium, Tink, SDKs de gerenciamento de chaves das nuvens), em que a orientação honesta é usar uma biblioteca que cuide dos nonces, em vez de montar as primitivas na mão.
+- **Protocolos com camada de registros própria** (QUIC, WireGuard, SSH): hoje todos usam AEAD, e todos derivam os nonces de contadores, exatamente pelo motivo explicado acima.
 
-A regra que sobrevive a qualquer contexto: **use AEAD, deixe uma biblioteca ser dona do nonce, e trate qualquer desenho em que você escolhe nonces como um que precisa de revisão.**
+A regra que vale em qualquer contexto: **use AEAD, deixe o nonce por conta de uma biblioteca e trate qualquer projeto em que você mesmo escolhe os nonces como algo que precisa de revisão.**
 
-## A troca que o AEAD ainda pede
+## O trade-off que o AEAD ainda exige
 
-O AEAD não é livre de arestas; ele apenas as desloca. Toda cifragem AEAD precisa de um nonce, um número usado uma única vez, e a segurança do GCM (Galois/Counter Mode) em particular desmorona se o mesmo nonce for reutilizado com a mesma chave. O TLS gerencia os nonces para você com um contador por conexão, então isso é um perigo para sistemas que constroem seu próprio enquadramento, e não para o TLS em si, mas é a razão pela qual os projetos AEAD se importam tanto com a construção de nonces.
+O AEAD não elimina os pontos delicados; só muda o lugar deles. Toda criptografia AEAD precisa de um nonce, um número usado uma única vez, e a segurança do GCM (Galois/Counter Mode), em especial, desmorona se o mesmo nonce for reutilizado com a mesma chave. O TLS gerencia os nonces para você com um contador por conexão; então o perigo está nos sistemas que montam o próprio framing das mensagens, e não no TLS em si. Mas é por esse motivo que os projetos com AEAD se preocupam tanto com a forma de gerar os nonces.
 
-A outra troca é o comprimento da etiqueta de autenticação. As suítes padrão de GCM e Poly1305 usam uma etiqueta de 16 bytes. As suítes `CCM_8` truncam isso para 8 bytes para economizar sobrecarga em enlaces restritos, o que enfraquece de forma mensurável a integridade. É por isso que `TLS_AES_128_CCM_8_SHA256` é uma suíte AEAD de TLS 1.3 real que a IANA (a Autoridade para Atribuição de Números da Internet, do inglês Internet Assigned Numbers Authority) ainda assim se recusa a marcar como recomendada: o modo é moderno, mas a etiqueta curta é um compromisso que a internet em geral não precisa fazer.
+O outro trade-off é o tamanho da tag de autenticação. As suítes padrão de GCM e Poly1305 usam uma tag de 16 bytes. As suítes `CCM_8` cortam a tag para 8 bytes, para economizar overhead em links de baixa capacidade, e isso enfraquece a integridade de forma mensurável. É por isso que a `TLS_AES_128_CCM_8_SHA256` é uma suíte AEAD legítima do TLS 1.3 que a IANA (Internet Assigned Numbers Authority) ainda assim não marca como recomendada: o modo é moderno, mas a tag curta é uma concessão que a internet em geral não precisa fazer.
 
 ## Fontes
 

@@ -1,7 +1,7 @@
 ---
 slug: uuid
-title: "UUIDs: v4 aleatório e v7 ordenado por tempo"
-summary: "Como um identificador de 128 bits permanece único sem uma autoridade central, e por que o v7 está se tornando o padrão para chaves de banco de dados."
+title: "UUIDs: o v4 aleatório e o v7 ordenado por tempo"
+summary: "Como um identificador de 128 bits continua único sem nenhuma autoridade central, e por que o v7 está virando o padrão para chaves de banco de dados."
 concepts: ["uuid", "guid", "uuidv4", "uuidv7", "identifiers", "time-ordered"]
 relatedTools: ["uuid"]
 relatedArticles: ["uuid-versions", "uuid-database-keys", "sortable-id-formats", "uuid-collisions"]
@@ -13,35 +13,35 @@ updated: "2026-08-10"
 
 ## O que é um UUID
 
-Um UUID (Universally Unique Identifier, também chamado de GUID) é um valor de 128 bits usado para rotular algo, uma linha, uma requisição, um arquivo, sem coordenar com mais ninguém. A promessa no nome é que dois UUIDs gerados de forma independente são, para todos os efeitos práticos, nunca iguais. Isso permite que serviços separados, dispositivos offline e processos paralelos cunhem identificadores que não colidirão quando os dados forem mais tarde mesclados, sem um alocador central distribuindo números.
+Um UUID (Universally Unique Identifier, também chamado de GUID) é um valor de 128 bits usado para identificar alguma coisa, seja uma linha, uma requisição ou um arquivo, sem precisar combinar nada com ninguém. A promessa está no nome: dois UUIDs gerados de forma independente, para todos os efeitos práticos, nunca são iguais. Isso permite que serviços separados, dispositivos offline e processos paralelos gerem identificadores que não vão colidir quando os dados forem juntados mais tarde, sem um alocador central distribuindo números.
 
-Um UUID é escrito como 32 dígitos hexadecimais em cinco grupos separados por hífen: `8-4-4-4-12`, por exemplo `550e8400-e29b-41d4-a716-446655440000`. Duas posições específicas não são aleatórias: um nibble de **versão** identifica como o UUID foi gerado, e um campo de **variante** marca o padrão de layout (o moderno sendo RFC 4122 / RFC 9562).
+Um UUID é escrito como 32 dígitos hexadecimais, em cinco grupos separados por hífen: `8-4-4-4-12`, por exemplo `550e8400-e29b-41d4-a716-446655440000`. Duas posições específicas não são aleatórias: um nibble (meio byte) de **versão** indica como o UUID foi gerado, e um campo de **variante** marca o padrão de layout (o atual é o da RFC 4122 / RFC 9562).
 
 ## Versão 4: aleatória
 
-De longe a forma mais comum, a **versão 4** é quase inteiramente aleatória: 122 dos 128 bits vêm de uma fonte aleatória segura, com os bits restantes fixos para marcar a versão e a variante. Com tanta entropia, a chance de dois UUIDs v4 colidirem é desprezível para qualquer volume realista de identificadores.
+A forma de longe mais comum, a **versão 4**, é quase toda aleatória: 122 dos 128 bits vêm de uma fonte aleatória segura, e os bits restantes ficam fixos para marcar a versão e a variante. Com tanta entropia, a chance de dois UUIDs v4 colidirem é desprezível para qualquer volume realista de identificadores.
 
-Sua fraqueza não é a unicidade, mas a **ordenação**. Como os valores v4 são aleatórios, inserções consecutivas se espalham por todo o espaço de chaves. Quando um UUID v4 é usado como chave primária de banco de dados, essa aleatoriedade luta contra o índice B-tree: novas linhas caem em lugares arbitrários, prejudicando a localidade de cache e fragmentando o índice ao longo do tempo.
+O ponto fraco dela não é a unicidade, e sim a **ordenação**. Como os valores v4 são aleatórios, inserções consecutivas se espalham por todo o espaço de chaves. Quando um UUID v4 é usado como chave primária num banco de dados, essa aleatoriedade trabalha contra o índice B-tree: as linhas novas caem em lugares arbitrários, o que prejudica a localidade de cache e fragmenta o índice com o tempo.
 
 ## Versão 7: ordenada por tempo
 
-A **versão 7**, padronizada na RFC 9562 (2024), foi projetada para corrigir exatamente isso. Ela coloca um **carimbo de tempo Unix de 48 bits em milissegundos** nos bits mais significativos, seguido por bits aleatórios para unicidade dentro do mesmo milissegundo. Como o carimbo de tempo vem na frente, os UUIDs v7 **ordenam-se na ordem de criação** quando comparados como texto ou bytes.
+A **versão 7**, padronizada na RFC 9562 (2024), foi criada para resolver exatamente isso. Ela coloca nos bits mais significativos um **timestamp Unix de 48 bits em milissegundos** (um carimbo de data e hora), seguido de bits aleatórios que garantem a unicidade dentro do mesmo milissegundo. Como o timestamp vem na frente, os UUIDs v7 **ficam em ordem de criação** quando comparados como texto ou como bytes.
 
-Essa única propriedade torna o v7 uma chave primária muito melhor: novas linhas se anexam perto do fim do índice em vez de se espalhar, restaurando a localidade que as chaves inteiras sequenciais desfrutam, mantendo a unicidade descentralizada de um UUID. Um valor v7 também carrega seu próprio horário de criação, que você pode ler diretamente daqueles bits iniciais, a [ferramenta UUID](/tools/uuid) faz isso quando você inspeciona um.
+Essa propriedade, sozinha, faz do v7 uma chave primária muito melhor: as linhas novas entram perto do fim do índice em vez de se espalhar, o que devolve a localidade que as chaves inteiras sequenciais têm, sem perder a unicidade descentralizada de um UUID. Um valor v7 também carrega o seu próprio horário de criação, que dá para ler direto daqueles bits iniciais; a [ferramenta de UUID](/tools/uuid) faz isso quando você inspeciona um valor.
 
-## As outras versões, brevemente
+## As outras versões, em resumo
 
-Para completar: a **versão 1** combina um carimbo de tempo com o endereço MAC (controle de acesso ao meio, do inglês media access control) da máquina geradora, o que vaza a identidade do hardware e o horário de criação e, assim, levanta preocupações de privacidade. As **versões 3 e 5** são baseadas em nome, elas fazem hash de um namespace mais um nome (com MD5 e SHA-1 respectivamente) para produzir um UUID determinístico, útil quando a mesma entrada deve sempre mapear para o mesmo identificador. A **versão 6** reordena os campos da versão 1 para serem ordenáveis, mas para novos sistemas o v7 é a escolha recomendada ordenada por tempo.
+Para completar: a **versão 1** combina um timestamp com o endereço MAC (media access control) da máquina que gerou o UUID, o que expõe a identidade do hardware e o horário de criação e, por isso, levanta questões de privacidade. As **versões 3 e 5** são baseadas em nome: elas aplicam um hash a um namespace mais um nome (com MD5 e SHA-1, respectivamente) para produzir um UUID determinístico, útil quando a mesma entrada precisa gerar sempre o mesmo identificador. A **versão 6** reorganiza os campos da versão 1 para que fiquem ordenáveis, mas, para sistemas novos, a escolha recomendada com ordenação por tempo é o v7.
 
 ## Qual escolher
 
-Recorra ao **v4** quando você só precisa de um identificador aleatório e opaco e a ordenação não importa. Recorra ao **v7** quando o UUID for uma chave de banco de dados ou qualquer outra coisa que se beneficie de ordenar por horário de criação, o que é cada vez mais a recomendação padrão. A [ferramenta UUID](/tools/uuid) gera ambos e decodifica a versão, a variante e o carimbo de tempo embutido de qualquer UUID que você colar, inteiramente no seu navegador.
+Use o **v4** quando você só precisa de um identificador aleatório e opaco e a ordem não importa. Use o **v7** quando o UUID for uma chave de banco de dados, ou qualquer outra coisa que ganhe com a ordenação por horário de criação, que é cada vez mais a recomendação padrão. A [ferramenta de UUID](/tools/uuid) gera os dois e decodifica a versão, a variante e o timestamp embutido de qualquer UUID que você colar, tudo dentro do seu navegador.
 
 ## Esta série, em ordem
 
-Este artigo abre a série **Identificadores: UUIDs e parentes**. Ele compara as duas versões entre as quais a maioria dos sistemas escolhe; as partes completam a família, fazem a aritmética da colisão, medem o custo de uma chave aleatória num índice e põem os outros formatos ordenáveis ao lado do UUIDv7.
+Este artigo abre a série **Identificadores: UUIDs e parentes**. Ele compara as duas versões entre as quais a maioria dos sistemas escolhe; as partes seguintes completam a família, fazem as contas da colisão, medem o custo de uma chave aleatória num índice e colocam os outros formatos ordenáveis lado a lado com o UUIDv7.
 
-1. **[Versões de UUID explicadas: v1 até v8](/learn/uuid-versions)**. A família inteira, da v1 à v8, e como os bits de versão e de variante são lidos.
-2. **[UUIDs vão colidir? Probabilidade e o limite do aniversário](/learn/uuid-collisions)**. Quantos bits aleatórios um UUID realmente tem, o limite do aniversário e quando um UUID determinístico é a melhor escolha.
-3. **[UUIDs como chaves de banco de dados: v4, v7 e localidade de índice](/learn/uuid-database-keys)**. UUIDs contra inteiros autoincrementais, e por que chaves v4 aleatórias deixam um índice silenciosamente mais lento.
-4. **[ULID, KSUID, Snowflake e outros IDs ordenáveis](/learn/sortable-id-formats)**. ULID, KSUID e Snowflake, como cada um é construído e quanto do seu propósito o UUIDv7 agora cobre.
+1. **[Versões de UUID: o que muda da v1 à v8](/learn/uuid-versions)**. A família inteira, da v1 à v8, e como se leem os bits de versão e de variante.
+2. **[UUIDs vão colidir? Probabilidade e o limite do aniversário](/learn/uuid-collisions)**. Quantos bits aleatórios um UUID tem de verdade, o limite do aniversário e quando um UUID determinístico é a melhor escolha.
+3. **[UUIDs como chaves de banco de dados: v4, v7 e localidade de índice](/learn/uuid-database-keys)**. UUIDs versus inteiros com autoincremento, e por que chaves v4 aleatórias deixam um índice mais lento sem ninguém perceber.
+4. **[ULID, KSUID, Snowflake e outros IDs ordenáveis](/learn/sortable-id-formats)**. ULID, KSUID e Snowflake, como cada um é montado e quanto do papel deles o UUIDv7 já cobre.

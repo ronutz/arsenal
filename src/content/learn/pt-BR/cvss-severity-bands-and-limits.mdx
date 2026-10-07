@@ -1,7 +1,7 @@
 ---
 slug: cvss-severity-bands-and-limits
-title: "Faixas de severidade do CVSS, e o que a pontuação não diz"
-summary: "O número de 0 a 10 é mapeado para cinco faixas qualitativas, de Nenhuma a Crítica. Esse mapeamento é útil para triagem, mas uma pontuação Base do CVSS mede severidade, não risco. Ela não diz nada sobre uma falha estar sendo explorada, quão valioso é o ativo, ou quais controles você tem. Tratar o número base como uma fila de prioridade é a forma mais comum de as equipes usarem mal o CVSS."
+title: "Faixas de severidade do CVSS e o que o score não diz"
+summary: "O número de 0 a 10 corresponde a cinco faixas qualitativas, de Nenhuma a Crítica. Essa divisão ajuda na triagem, mas o score Base do CVSS mede severidade, não risco. Ele não diz nada sobre a falha estar sendo explorada, sobre o valor do ativo ou sobre os controles que você tem. Usar o número Base como fila de prioridade é o jeito mais comum de as equipes usarem mal o CVSS."
 concepts: ["cvss", "severidade", "faixas qualitativas", "risco", "epss"]
 relatedTools: ["cvss-vector-decoder"]
 relatedArticles: ["how-cvss-scoring-works", "cvss-temporal-and-environmental", "cvss-v3-vs-v4"]
@@ -11,38 +11,38 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-O CVSS define uma escala qualitativa para que uma pontuação numérica possa ser falada em palavras. As faixas são fixas:
+O CVSS (Common Vulnerability Scoring System) define uma escala qualitativa para que um score numérico possa ser expresso em palavras. As faixas são fixas:
 
-- **Nenhuma**: 0.0
-- **Baixa**: 0.1 a 3.9
-- **Média**: 4.0 a 6.9
-- **Alta**: 7.0 a 8.9
-- **Crítica**: 9.0 a 10.0
+- **Nenhuma** (None): 0.0
+- **Baixa** (Low): 0.1 a 3.9
+- **Média** (Medium): 4.0 a 6.9
+- **Alta** (High): 7.0 a 8.9
+- **Crítica** (Critical): 9.0 a 10.0
 
-Esses limites fazem parte da especificação, então uma pontuação de 6.9 é Média e 7.0 é Alta, mesmo sendo quase o mesmo número. Essa borda nítida vale a pena lembrar quando uma pontuação fica perto de um limite.
+Esses limites fazem parte da especificação; por isso, um score de 6.9 cai na faixa Média e um de 7.0 cai na Alta, mesmo sendo praticamente o mesmo número. Vale lembrar desse corte seco quando um score estiver perto de um limite.
 
 ## Severidade não é risco
 
-A coisa mais importante a entender sobre uma pontuação Base do CVSS (Sistema Comum de Pontuação de Vulnerabilidades, do inglês Common Vulnerability Scoring System) é o que ela deliberadamente deixa de fora. A base mede a **severidade intrínseca** de uma falha sob uma premissa razoável de pior caso. Ela não mede o seu risco. Em particular, a pontuação Base não sabe nada sobre:
+O mais importante para entender o score Base do CVSS é saber o que ele deixa de fora de propósito. O Base mede a **severidade intrínseca** de uma falha, partindo de um cenário de pior caso razoável. Ele não mede o seu risco. Em especial, o score Base não sabe nada sobre:
 
-- **Exploração na prática.** Se uma exploração existe ou está sendo usada ativamente é uma questão Temporal ou de inteligência de ameaças. Um esforço separado da FIRST.org (Fórum de Equipes de Resposta a Incidentes e Segurança, do inglês Forum of Incident Response and Security Teams), o EPSS (Sistema de Pontuação de Previsão de Exploração, do inglês Exploit Prediction Scoring System), estima a probabilidade de exploração e é uma entrada melhor para essa dimensão.
-- **Valor do ativo.** Uma falha Crítica em uma máquina de teste descartável e em um sistema de pagamento compartilham o mesmo número base. Apenas a pontuação Ambiental, ou o seu próprio contexto de ativos, as distingue.
-- **Controles compensatórios.** Uma mitigação apenas de rede, uma regra de WAF (web application firewall), ou o fato de um serviço ser inacessível pela internet não muda a base em nada.
+- **Exploração no mundo real (in the wild).** Saber se existe um exploit, ou se ele está sendo usado ativamente, é uma questão da métrica Temporal ou de inteligência de ameaças. Uma iniciativa separada da FIRST.org (Forum of Incident Response and Security Teams), o EPSS (Exploit Prediction Scoring System), estima a probabilidade de exploração e é uma entrada melhor para essa dimensão.
+- **Valor do ativo.** Uma falha Crítica numa máquina de teste descartável e a mesma falha num sistema de pagamentos têm o mesmo número Base. Só o score Ambiental (Environmental), ou o contexto dos seus próprios ativos, diferencia as duas.
+- **Controles compensatórios.** Uma mitigação só de rede, uma regra de WAF (web application firewall) ou o fato de o serviço não ser acessível pela internet não mudam em nada o Base.
 
 ## Como usar bem as faixas
 
-As faixas são boas para triagem grosseira e para comunicação, e Crítica realmente merece atenção. Mas ordenar um backlog puramente por pontuação Base decrescente vai levar você a falhas acessíveis porém inofensivas antes de falhas silenciosas e de alto valor. Uma ordem mais defensável combina a severidade Base com a probabilidade de exploração (por exemplo o EPSS ou catálogos de vulnerabilidades exploradas conhecidas) e com o seu próprio valor de ativos e controles, que é exatamente o que a pontuação Temporal e Ambiental existem para capturar. O número Base é onde a priorização começa, não onde termina.
+As faixas servem bem para uma triagem por alto e para a comunicação, e uma falha Crítica merece mesmo atenção. Mas ordenar o backlog só pelo score Base, do maior para o menor, vai levar você a falhas acessíveis, porém inofensivas, antes das falhas discretas e de alto valor. Uma ordem mais fácil de defender combina a severidade Base com a probabilidade de exploração (por exemplo, o EPSS ou os catálogos de vulnerabilidades sabidamente exploradas) e com o valor dos seus ativos e os seus controles, que é exatamente o que as métricas Temporal e Ambiental existem para capturar. O número Base é onde a priorização começa, não onde ela termina.
 
 
-## O que as faixas fazem com uma política de correção
+## O que as faixas fazem com uma política de patches
 
-Uma regra como *"todos os Críticos em sete dias"* transforma uma escala de severidade em um prazo, e a escala nunca foi feita para carregar isso. Duas consequências seguem, e ambas aparecem em qualquer parque grande.
+Uma regra como *"todas as Críticas em sete dias"* transforma uma escala de severidade num prazo, e a escala nunca foi feita para isso. Daí vêm duas consequências, e as duas aparecem em qualquer parque grande.
 
-**Um 9.0 num sistema que ninguém alcança de lugar nenhum não é mais urgente que um 7.5 na sua porta de entrada pública** — mas a política diz que é, então o trabalho vai primeiro para o lugar errado.
+**Um 9.0 num sistema que ninguém consegue alcançar de lugar nenhum não é mais urgente do que um 7.5 na sua porta de entrada pública**, mas a política diz que é, e aí o trabalho vai primeiro para o lugar errado.
 
-**E a borda afiada vira alavanca.** Quando 6.9 significa "próximo trimestre" e 7.0 significa "esta semana", a discussão deixa de ser sobre a falha e passa a ser sobre as métricas que produzem o número.
+**E o corte seco entre as faixas vira instrumento de pressão.** Quando 6.9 significa "próximo trimestre" e 7.0 significa "esta semana", a discussão deixa de ser sobre a falha e passa a ser sobre as métricas que geram o número.
 
-A correção prática não é uma escala melhor. É uma segunda entrada: **se a coisa está de fato sendo explorada.** O [catálogo de vulnerabilidades exploradas conhecidas da CISA](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) existe exatamente porque *alguém está usando isto hoje* responde a uma pergunta diferente de *quão ruim seria*.
+A correção prática não é uma escala melhor. É uma segunda entrada: **saber se a falha está de fato sendo explorada.** O [catálogo Known Exploited Vulnerabilities da CISA](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) existe justamente porque *alguém está usando isto hoje?* responde a uma pergunta diferente de *quão grave isso seria?*.
 
 ## Fontes
 
