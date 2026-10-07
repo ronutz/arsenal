@@ -1,0 +1,85 @@
+---
+slug: route-redistribution
+title: "Route redistribution and the loops it invites"
+summary: "Redistribution is a router announcing in one routing protocol the routes it learned from another, or from its own static and connected routes. Every network with more than one protocol needs it, and it is the commonest way to build a routing loop by configuration. What the standard requires, why metrics have to be invented on the way in, how administrative distance turns two redistribution points into a feedback loop, and the fixes that work: filters, tags, one-way redistribution and a default route, read from RFC 1812, the OSPF and RIP specifications and Cisco's own examples."
+concepts: ["route redistribution", "mutual redistribution", "default metric", "route tag", "route map", "distribute list", "ospf external route", "e1", "e2", "administrative distance", "routing loop", "suboptimal routing", "asbr"]
+relatedTools: []
+relatedArticles: ["static-routes-and-longest-match", "dynamic-routing-compared", "ospf-primer", "bgp-primer", "route-summarization"]
+category: networking
+order: 344
+status: reviewed
+updated: "2026-10-07"
+---
+
+A network rarely runs one routing protocol. The branch offices speak one, the data centre another, BGP faces the internet, and static routes fill the gaps. Redistribution is the router at the boundary taking routes it learned one way and announcing them another way. Cisco lists the usual reasons: "Organizations can deploy different protocols for varied purposes, such as BGP for internet routes and OSPF for internal networks", and in mergers "Networks with disparate protocols need to interoperate during integration" ([Cisco, routing protocol redistribution](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/8606-redist.html)). It lists the risks in the same breath, first among them "Routing Loops: Misconfigurations can lead to loops, degrading network performance" (as above).
+
+## What the standard asks of a router
+
+The requirements for IPv4 routers, RFC 1812 (June 1995), make the exchange a duty and its dangers the router's problem: "Routers MUST be able to exchange routing information between separate IP interior routing protocols, if independent IP routing processes can run in the same router. Routers MUST provide some mechanism for avoiding routing loops when routers are configured for bi-directional exchange of routing information between two separate interior routing processes. Routers MUST provide some priority mechanism for choosing routes from independent routing processes" ([RFC 1812, section 7.6](https://www.rfc-editor.org/rfc/rfc1812#section-7.6)). The priority mechanism is what vendors call administrative distance or route preference, the subject of the [article on static routes and longest match](/learn/static-routes-and-longest-match).
+
+The same document sets the default: "Routers MUST NOT by default redistribute routing data they do not themselves use, trust or otherwise consider valid" (RFC 1812, section 7.1.1). Cisco's implementation follows the first half literally. "The rules for redistribution on a Cisco router dictate that the redistributed route be present in the routing table. It is not sufficient that the route be present in the routing topology or database" (Cisco, as above). A router redistributes what it installed, under the protocol that installed it: in Cisco's example, a static route redistributed into the Enhanced Interior Gateway Routing Protocol (EIGRP) is not passed on when EIGRP is redistributed into the Routing Information Protocol (RIP) on the same router, because the route in the table is the static one, and the "static route is not redistributed into RIP because it never got entered into the EIGRP routing table" (as above).
+
+## Every redistributed route needs a new metric
+
+A route crossing between protocols cannot keep its metric, because the units differ. RFC 1812 says so: "Different IGPs use different metrics, requiring some translation technique when introducing information from one protocol into another protocol with a different form of metric". It names two techniques: in the static or reachability approach, the mere existence of a route in one protocol generates an advertisement in the other "with a given metric"; in the translation or tabular approach, the old metric is converted "through use of either a function (such as adding a constant) or a table lookup" (RFC 1812, section 7.6). Cisco's configuration takes the first approach: the operator gives the number, for one redistribution at a time or once for all with the `default-metric` command. Cisco states the rule plainly: "When routes are redistributed, you must define a metric for a protocol that the route that receives can understand", and the protocols differ in what they need and what they assume (Cisco, routing protocol redistribution):
+
+| Into | Metric to give | What to know |
+|---|---|---|
+| RIP | Hop count; 16 is unreachable | A metric of 10 lets the route travel only five more hops |
+| OSPF | Cost | 20 for redistributed routes, 1 for routes from BGP |
+| EIGRP | Five values: bandwidth, delay, reliability, load and maximum transmission unit (MTU) | Setting a `default-metric` is the recommended practice |
+| IS-IS (Intermediate System to Intermediate System) | 1 to 63 | No default-metric option; 0 if none is given |
+
+RIP shows the dilemma in its smallest form. "If you define a metric of 10 for redistributed routes, these routes are only advertised to routers up to 5 hops away, at which point the metric (hop count) exceeds 15"; a metric of 1 lets the route go everywhere, but "this can increase the possibility of routing loops if there are multiple redistribution points and if a router learns about the network with a better metric from the redistribution point than from the original source" (as above). The metric must be "neither too high, which prevents the route from advertisement to all the routers, or too low, which leads to routing loops when there are multiple redistribution points" (as above).
+
+### OSPF's two kinds of external route
+
+OSPF marks redistributed routes as external and gives them one of two metric types. "Type 1 external metrics are expressed in the same units as OSPF interface cost", so the internal distance to the redistributing router is added; "Type 2 external metrics are an order of magnitude larger; any Type 2 metric is considered greater than the cost of any path internal to the AS", and among type 2 routes "The AS boundary router advertising the smallest external metric is chosen, regardless of the internal distance to the AS boundary router" ([RFC 2328, section 2.3](https://www.rfc-editor.org/rfc/rfc2328#section-2.3)). "Both Type 1 and Type 2 external metrics can be present in the AS at the same time. In that event, Type 1 external metrics always take precedence" (as above). In Cisco's own example output, a route redistributed from EIGRP appears in OSPF as `O E2 10.10.1.0/24 [110/20]`: type 2, administrative distance 110, metric 20 (Cisco, routing protocol redistribution). With two exits redistributing the same prefix as type 2 at the same metric, the external metric cannot tell them apart, and RFC 2328's tie-break is the internal distance: "When several equal-cost Type 2 routes exist, the internal distance to the advertising routers is used to break the tie" (as above).
+
+## Where the loops come from
+
+RFC 1812 names the root cause in one sentence: "Bi-directional exchange of routing information is dangerous without control mechanisms to limit feedback. This is the same problem that distance vector routing protocols must address with the split horizon technique and that EGP addresses with the third-party rule" (section 7.6). A route redistributed out of a domain at one router can come back into that domain at another, now looking like a route the second domain owns. Cisco puts the mechanism down to the priority rule itself: "Administrative distances help with route selection among different routing protocols, but they can cause problems for redistribution. These problems can be in the form of routing loops, convergence problems, or inefficient routing" (Cisco, routing protocol redistribution).
+
+Take the classic case, two routers redistributing between a RIP domain and an OSPF domain, using the defaults Cisco publishes. Router A and router B both connect the two domains and both redistribute RIP into OSPF. A network N lives in the RIP domain.
+
+1. A learns N from RIP, at administrative distance 120, installs it and redistributes it into OSPF as an external route.
+2. B learns N twice: from RIP at 120, and from OSPF, as A's external route, at 110. On a Cisco router the OSPF copy wins, because 110 is lower, and B now sends N's traffic across the OSPF domain to A instead of into the RIP domain beside it.
+3. B no longer has a RIP route for N in its table, so it no longer redistributes N; the network depends on A alone without anyone having chosen that.
+
+The numbers decide the outcome, and they differ by vendor. On Junos the defaults are the other way round: RIP at 100, OSPF external routes at 150 ([Juniper, route preference values](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)), so B would keep its RIP route. The same design can behave one way with one vendor's defaults and another way with another's, which is what RFC 1812 meant when it warned that administrative preference "can easily be misused to create routing loops" ([RFC 1812, section 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.4)).
+
+Mutual redistribution, both directions at two points, closes the circle. If A and B also redistribute OSPF into RIP, B announces N back into the RIP domain as the OSPF route it now holds, with whatever metric it was given; Cisco's example, whose two redistribution points are R2 and R5, warns that a router in the original domain can then "learn the network from R2 or R5 with a better metric than from the original source". Where it does, RIP routers send N's traffic towards B, B sends it across the OSPF domain to A, and A sends it back into the RIP domain, where it can go round again. Even without a loop, the paths go wrong: in Cisco's second example a router "can end up preferring the less desirable path through R5 instead of going through R1 to reach the network" (Cisco, routing protocol redistribution).
+
+## The fixes that work
+
+Cisco reduces every remedy to one principle: "You can avoid these problems if you never announce the information originally received from routing process X back into routing process X" (Cisco, routing protocol redistribution). RFC 1812 lists the means: loops "can be avoided explicitly through use of tables or lists of permitted/denied routes or implicitly through use of a split horizon rule, a no-third-party rule, or a route tagging mechanism", and "Vendors are encouraged to use implicit techniques where possible to make administration easier for network operators" (section 7.6).
+
+**Filter by prefix.** Cisco's first example, with OSPF and EIGRP meeting at two routers, stops the feedback with a distribute list on each of them that refuses to learn a network of the OSPF domain back through EIGRP: "the routers are told that they must not learn network 192.168.1.0/24 through the EIGRP updates they receive on the specified interface. Therefore, the only knowledge these routers have for network 192.168.1.0/24 is through OSPF from R1" (Cisco, as above). It works, and it has to be maintained for every prefix as the network changes.
+
+**Tag at the border, and filter by tag.** The method Cisco calls "preferable" uses "route-maps to set tags for various routes, allowing routing processes to redistribute based on these tags" (as above). In its example, each redistributing router sets tag 77 on routes it carries from OSPF into EIGRP and tag 88 on routes it carries from EIGRP into OSPF, and refuses to carry a route tagged 88 back into EIGRP or one tagged 77 back into OSPF. A route can cross the border once and never return, whatever its prefix. The protocols were built to carry such marks: RIP version 2's Route Tag exists "to provide a method of separating 'internal' RIP routes (routes for networks within the RIP routing domain) from 'external' RIP routes, which may have been imported from an EGP or another IGP" ([RFC 2453, section 4.2](https://www.rfc-editor.org/rfc/rfc2453#section-4.2)), and every OSPF external route carries "A 32-bit field attached to each external route. This is not used by the OSPF protocol itself" ([RFC 2328, appendix A.4.5](https://www.rfc-editor.org/rfc/rfc2328#appendix-A.4.5)), free for exactly this use.
+
+**Redistribute in one direction, and send a default the other way.** Most feedback needs a route to travel both ways. RFC 1812's own example of a router between leaf networks and a backbone does not redistribute the backbone into the leaves at all: "Since each of the leaf networks has only one path in and out, the router can simply send a default route to them. It advertises the leaf networks to the main network" (section 7.5.2). Where a domain has a single way out, a default route is simpler than any filter.
+
+**Carry only what is needed.** "Unfiltered redistribution can inadvertently propagate incorrect or undesired routes" (Cisco, routing protocol redistribution), and a route map that matches a list of prefixes lets a router "selectively redistribute a single static route" rather than all of them (as above). Summarising, the subject of the [article on route summarisation](/learn/route-summarization), reduces how many routes there are to carry across.
+
+**Mind the BGP border.** On Cisco routers, "By default, only EBGP-learned information is a candidate for redistribution into Interior Gateway Protocol (IGP) when the redistribute bgp command is issued", internal BGP routes need an explicit command, and "precautions must be taken in order to avoid loops within the Autonomous System when IBGP routes are redistributed into IGP" (as above).
+
+## Checking a redistribution design
+
+The routing table shows the facts. In Cisco's output, a route redistributed into EIGRP appears as `D EX` at distance 170 and a route redistributed into OSPF as `O E2` at 110; the detail view of a single route shows its tag, as in "distance 170, metric 258816 Tag 77, type external" (Cisco, routing protocol redistribution). Three questions catch the usual problems before production does: on each redistributing router, which protocol does the table use for prefixes from the other domain; does any route carry the tag of the domain it is now in; and does traffic for a prefix take the same path after one redistribution point fails as it did before. A traceroute from each side, with each border router shut in turn, answers the last.
+
+## What to remember
+
+- Redistribution announces in one protocol what was installed from another; a router passes on what is in its table, not what is in a protocol's database.
+- Every redistributed route needs a metric the receiving protocol understands, and the choice decides how far it travels and how it competes.
+- OSPF external routes are type 1 (internal cost added) or type 2 (external metric only); type 1 always wins over type 2.
+- Two redistribution points plus administrative distance make feedback: a border router can prefer the other border's export over the original route.
+- Fix it with tags that stop a route returning, prefix filters, one-way redistribution with a default route, and only the routes that are needed; test by failing each border router.
+
+## Sources
+
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: section 7.6 on inter-routing-protocol exchange, 7.1.1 on what may be redistributed, 7.5.2 on default routes for leaf networks, 5.2.4.4 on preferences and loops (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812)
+- [RFC 2328, OSPF Version 2, April 1998: type 1 and type 2 external metrics, the external route tag (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 2453, RIP Version 2, November 1998: the route tag (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2453)
+- [Cisco, Configure Routing Protocol Redistribution, document 8606, revision of 22 November 2024: metrics by protocol, the table rule, the mutual redistribution examples, distribute lists and tags (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/8606-redist.html)
+- [Juniper Networks, Junos OS, Understanding Route Preference Values (Administrative Distance): RIP 100, OSPF external 150 (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)

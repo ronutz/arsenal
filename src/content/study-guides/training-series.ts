@@ -140,6 +140,98 @@ export const TRAINING_SERIES: TrainingSeries[] = [
       },
     ],
   },
+  {
+    // NetFun II, addressing and routing: layer 3. The curriculum plan's section 3, module by module; eight parts are named
+    // in their places until they are written: four owed by milestone (d), four by (e). The three new routing articles of
+    // NF-2b (2026-10-07) stand where NF-2a named them (PLAN-nf2-netfun-ii-20261007).
+    id: "netfun-2",
+    curriculum: "netfun",
+    level: 2,
+    category: "networking",
+    prerequisites: ["netfun-1"],
+    modules: [
+      {
+        // IPv4 addressing: the address, the mask, subnets by hand, VLSM, summarisation, and private space.
+        id: "m1",
+        parts: [
+          { slug: "ipv4-addressing" },
+          { slug: "subnetting-basics" },
+          { slug: "cidr-notation" },
+          { slug: "vlsm" },
+          { slug: "vlsm-worked-example" },
+          { slug: "supernetting-and-aggregation" },
+          { slug: "route-summarization" },
+          { slug: "subnet-overlap-and-gaps" },
+          { slug: "private-address-space" },
+          { slug: "private-vs-public-ip-ranges" },
+        ],
+        tools: ["cidr"],
+      },
+      {
+        // IPv6: the address and its shorthand, how a host configures itself, subnetting, neighbours, the transition.
+        id: "m2",
+        parts: [
+          { slug: "ipv6-addressing" },
+          { slug: "ipv6-address-configuration" },
+          { slug: "ipv6-subnetting" },
+          { slug: "ipv6-neighbor-discovery" },
+          { slug: "ipv6-transition" },
+        ],
+        tools: ["ipv6"],
+      },
+      {
+        // Getting an address and a name: DHCP and its family (milestone (d) owes four parts), then DNS read field by field
+        // (milestone (e) owes four more).
+        id: "m3",
+        parts: [
+          { slug: "dhcp-lease-lifecycle" },
+          { planned: "bootp-and-dhcp-options" },
+          { slug: "dhcp-option-43-discovery" },
+          { planned: "dhcp-relay-agent" },
+          { planned: "pxe-and-network-boot" },
+          { planned: "tftp" },
+          { slug: "dns-family-history" },
+          { slug: "reading-a-dns-answer" },
+          { slug: "dns-message-header-and-flags" },
+          { slug: "dns-record-types-in-answers" },
+          { slug: "authoritative-vs-non-authoritative-answers" },
+          { slug: "choosing-a-public-dns-resolver" },
+          { slug: "reading-dig-output" },
+          { slug: "anatomy-of-a-dig-command-line" },
+          { planned: "dns-zone-transfers-and-notify" },
+          { planned: "dnssec-end-to-end" },
+          { planned: "encrypted-dns-dot-doh-doq" },
+          { planned: "anycast" },
+        ],
+        tools: ["dhcp-option-43", "dig-command-builder", "dig-output-explainer", "nslookup-output-explainer"],
+      },
+      {
+        // Routing: the table and the default gateway, how a router chooses, the protocols that fill the table, and the
+        // services that live beside them.
+        id: "m4",
+        parts: [
+          { slug: "routing-tables-and-default-gateway" },
+          { slug: "static-routes-and-longest-match" },
+          { slug: "router-family-history" },
+          { slug: "icmp-ping-and-traceroute" },
+          { slug: "nat-explained" },
+          { slug: "cgnat-address-sharing-and-attribution" },
+          { slug: "first-hop-redundancy-vrrp-and-hsrp" },
+          { slug: "bfd-when-a-link-is-up-and-dead" },
+          { slug: "dynamic-routing-compared" },
+          { slug: "dijkstra-and-the-twenty-minute-algorithm" },
+          { slug: "ospf-primer" },
+          { slug: "isis-primer" },
+          { slug: "bgp-primer" },
+          { slug: "route-redistribution" },
+          { slug: "bgp-and-the-routing-chokepoint" },
+          { slug: "mpls-primer" },
+          { slug: "multicast-what-it-costs-to-not-flood" },
+        ],
+        tools: ["flow-path-reasoner"],
+      },
+    ],
+  },
 ];
 
 /** Every written article of a series, in reading order. */

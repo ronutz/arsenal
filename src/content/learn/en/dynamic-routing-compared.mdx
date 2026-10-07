@@ -1,0 +1,103 @@
+---
+slug: dynamic-routing-compared
+title: "Dynamic routing compared: distance vector, link state and path vector"
+summary: "Every dynamic routing protocol answers the same question, where to send a packet next, and the families differ in what each router is told and what it works out for itself. Distance-vector routers trade their tables with their neighbours; link-state routers flood a map and each computes its own tree; path-vector routers carry the list of networks a route has crossed; EIGRP's DUAL refines distance vector until it is loop-free at every instant. What each knows, how each keeps loops out, how fast each recovers, and where RIP, OSPF, IS-IS, BGP and EIGRP sit, read from their RFCs."
+concepts: ["dynamic routing", "distance vector", "link state", "path vector", "rip", "ospf", "is-is", "bgp", "eigrp", "dual", "counting to infinity", "split horizon", "poisoned reverse", "triggered updates", "convergence", "igp", "egp"]
+relatedTools: []
+relatedArticles: ["static-routes-and-longest-match", "route-redistribution", "ospf-primer", "isis-primer", "bgp-primer", "dijkstra-and-the-twenty-minute-algorithm", "bfd-when-a-link-is-up-and-dead"]
+category: networking
+order: 343
+status: reviewed
+updated: "2026-10-07"
+---
+
+A static route is an instruction; a dynamic routing protocol is a conversation. Routers tell each other what they can reach, and change their answers when a link fails or a new network appears. The requirements for IPv4 routers, RFC 1812 (June 1995), list what an interior protocol should achieve: "(1) Respond quickly to changes in the internal topology of an AS", "(2) Provide a mechanism such that circuit flapping does not cause continuous routing updates", "(3) Provide quick convergence to loop-free routing", "(4) Utilize minimal bandwidth", "(5) Provide equal cost routes to enable load-splitting" and "(6) Provide a means for authentication of routing updates" ([RFC 1812, section 7.2.1](https://www.rfc-editor.org/rfc/rfc1812#section-7.2.1)). The families below are different answers to the same list, and each pays for its strengths somewhere else.
+
+## Inside and between
+
+RFC 1812 draws the first line: "Interior gateway protocols (IGPs) are used to distribute routing information within an AS (i.e., intra-AS routing). Exterior gateway protocols are used to exchange routing information among ASs (i.e., inter-AS routing)" (RFC 1812, section 7.1). An autonomous system (AS) is a network under one administration, and the [BGP primer](/learn/bgp-primer) covers it. In 1995 the RFC saw two kinds of interior protocol: "Current IGPs used in the internet today are characterized as either being based on a distance-vector or a link-state algorithm" (as above). Between autonomous systems, BGP brought a third, path vector, and Cisco's EIGRP a refinement of the first.
+
+## Distance vector: tell your neighbours what you know
+
+The Routing Information Protocol (RIP) is the textbook case: "RIP is a routing protocol based on the Bellman-Ford (or distance vector) algorithm" ([RFC 2453](https://www.rfc-editor.org/rfc/rfc2453)). Each router keeps "a table with an entry for every possible destination in the system", holding "the distance D to the destination, and the first router G on the route to that network"; it periodically sends that table to every neighbour; and when a neighbour's update arrives, it adds the cost of the link it came over and adopts any destination that is now closer (RFC 2453, section 3.4). A router knows how far each destination is and which neighbour to hand the packet to. It does not know the path beyond that neighbour.
+
+The idea is older than the internet. RFC 2453 traces it to Bellman's equation and to Ford and Fulkerson, notes that "The basic algorithms used by this protocol were used in computer routing as early as 1969 in the ARPANET", and that "the specific ancestry of this protocol is within the Xerox network protocols": the Gateway Information Protocol of Xerox's PUP, the Routing Information Protocol of Xerox Network Systems (XNS), and then `routed`, the Berkeley Unix program from which RIP's packet formats come (RFC 2453, section 3.1). RIP was first written down as RFC 1058 by C. Hedrick of Rutgers University in June 1988 ([RFC 1058](https://www.rfc-editor.org/rfc/rfc1058)); version 2, which carries subnet masks, is RFC 2453 of November 1998, Internet Standard 56.
+
+RIP's numbers are small and fixed. Every router "sends an update message to all its neighbors once every 30 seconds"; if a neighbour falls silent for 180 seconds, the routes through it are marked invalid; and "16 is used" as "infinity", the metric that means unreachable, which limits RIP "to networks whose longest path (the network's diameter) is 15 hops" (RFC 2453, sections 3.2 and 3.4.1). The specification is candid about its scope: "RIP was designed to work as an IGP in moderate-size AS's. It is not intended for use in more complex environments" (section 3.1).
+
+## Counting to infinity
+
+The weakness of distance vector is that a router believes what its neighbours say about routes they may have learned from it. Take two routers, B and C, with a network N behind C. C reaches N at metric 1 and B, through C, at metric 2. N's link at C fails. If B's next periodic update reaches C before C's news reaches B, C hears "N at 2" from B and adopts it at 3, through B. B's route to N goes through C, and RIP's rule is that an update from the router a route already uses is believed "even if it is larger than the old one" (section 3.4), so B moves to 4, then C to 5, and so on:
+
+| After | C's metric for N | B's metric for N |
+|---|---|---|
+| The failure, before any update | unreachable | 2, through C |
+| C hears B | 3, through B | 2 |
+| B hears C | 3 | 4, through C |
+| C hears B | 5 | 4 |
+| B hears C | 5 | 6 |
+| ... until | 16, unreachable | 16, unreachable |
+
+The packets for N meanwhile bounce between B and C. RFC 2453 calls the pattern "mutual deception" and the slow climb "counting to infinity", and explains why infinity is only 16: "the choice of infinity is a tradeoff between network size and speed of convergence in case counting to infinity happens" (sections 3.4.2 and 3.4.3).
+
+Three fixes make it rare rather than impossible. **Split horizon**: "The 'simple split horizon' scheme omits routes learned from one neighbor in updates sent to that neighbor", so B would never tell C about N. **Poisoned reverse**: it "includes such routes in updates, but sets their metrics to infinity", an explicit "not through me". **Triggered updates**: a router whose metric changes sends an update "almost immediately, even if it is not yet time for one of the regular update message" (sections 3.4.3 and 3.4.4). The first two stop loops between two routers, not three: "A may believe it has a route through B, B through C, and C through A. Split horizon cannot stop such a loop". Triggered updates race the periodic ones, and the RFC's last word is that "counting to infinity is still possible" (section 3.4.4). RFC 1812 made the minimum mandatory: a RIP implementation "MUST implement split horizon" and "SHOULD implement Split horizon with poisoned reverse" (RFC 1812, appendix F.2).
+
+## Link state: give everyone the map
+
+Open Shortest Path First (OSPF) took the other road on purpose: "The OSPF protocol is based on link-state or SPF technology. This is a departure from the Bellman-Ford base used by traditional TCP/IP internet routing protocols" ([RFC 2328, section 1](https://www.rfc-editor.org/rfc/rfc2328#section-1)). Instead of distances, each router describes only itself, its links and its neighbours, and "distributes its local state throughout the Autonomous System by flooding"; the result is that "Each participating router has an identical database". Then "All routers run the exact same algorithm, in parallel. From the link-state database, each router constructs a tree of shortest paths with itself as root" (RFC 2328, section 1.1). The algorithm is Dijkstra's, and the [article on Dijkstra](/learn/dijkstra-and-the-twenty-minute-algorithm) tells how it was worked out in twenty minutes on a café terrace.
+
+Because every router computes its own routes from the whole map, no router depends on a neighbour's conclusions, and the rumour that drives counting to infinity has nowhere to start. OSPF "quickly detects topological changes in the AS (such as router interface failures) and calculates new loop-free routes after a period of convergence", a period that "is short and involves a minimum of routing traffic" (section 1.1). The price is that every router holds the map and runs the computation itself, and the cure for size is hierarchy: areas, whose topology "is hidden from the rest of the Autonomous System", which "enables a significant reduction in routing traffic" (as above). The [OSPF primer](/learn/ospf-primer) covers areas and costs.
+
+IS-IS is the same family from the OSI world. RFC 1812 gives its formal title, "Intermediate System to Intermediate System Routeing Exchange Protocol", spelling and all, and says it "is based on a link-state (SPF) routing algorithm and shares all the advantages for this class of protocols" (RFC 1812, section 7.2.3). RFC 1195, by R. Callon of Digital Equipment Corporation in December 1990, adapted it so that it "may be used as an interior gateway protocol (IGP) to support TCP/IP as well as OSI" ([RFC 1195](https://www.rfc-editor.org/rfc/rfc1195)); the [IS-IS primer](/learn/isis-primer) explains where it still runs.
+
+The IETF of 1995 left no doubt about its preference: "A router that implements any routing protocol (other than static routes) MUST IMPLEMENT OSPF" (RFC 1812, section 7.2.1). The same document's requirements for filtering routing information "apply only to non-SPF-based protocols" (section 7.5); in link state, every router in an area holds the same database by design.
+
+## Path vector: carry the path, not just the distance
+
+Between autonomous systems, a distance is not enough: an operator needs to know whose networks a route crosses. The Border Gateway Protocol (BGP) "uses an algorithm that is neither a pure distance vector algorithm or a pure link state algorithm. Instead, it uses a modified distance vector algorithm, referred to as a 'Path Vector' algorithm", which "uses path information to avoid traditional distance vector problems" ([RFC 4274, section 2.2](https://www.rfc-editor.org/rfc/rfc4274#section-2.2)). The name was chosen to echo the older one: "The term 'path-vector protocol' bears an intentional similarity to the term 'distance-vector protocol'" ([RFC 1322](https://www.rfc-editor.org/rfc/rfc1322)).
+
+Each BGP route carries "the list of Autonomous Systems (ASes) that reachability information traverses", enough for "constructing a graph of AS connectivity for this reachability, from which routing loops may be pruned" ([RFC 4271, section 1](https://www.rfc-editor.org/rfc/rfc4271#section-1)). The loop test is mechanical: "AS loop detection is done by scanning the full AS path (as specified in the AS_PATH attribute), and checking that the autonomous system number of the local system does not appear in the AS path" (RFC 4271, section 9.1.2). A route that has already passed through the router's own AS is excluded from selection, so the counting that plagues distance vector never starts.
+
+What BGP chooses is a matter of policy rather than distance: its decision process "selects routes for subsequent advertisement by applying the policies in the local Policy Information Base (PIB)" (section 9.1), and an AS "advertises to its neighbor ASs only those routes that it itself uses" (RFC 1812, section 7.3.2.1). It is also deliberately unhurried: after the first exchange, "a pair of BGP routers exchanges only the changes to that information" (RFC 4274, section 2.2), and the suggested minimum interval between advertisements for the same destination is 30 seconds to an external peer and 5 seconds to an internal one (RFC 4271, section 10). The [BGP primer](/learn/bgp-primer) covers its attributes, and the [article on BGP's trust problem](/learn/bgp-and-the-routing-chokepoint) what happens when an AS announces what is not true.
+
+## DUAL: distance vector without the loops
+
+The Enhanced Interior Gateway Routing Protocol (EIGRP) kept the distance-vector model and removed its central flaw. Its specification, the informational RFC 7868 of May 2016, "Cisco's Enhanced Interior Gateway Routing Protocol (EIGRP)", describes it as "a routing protocol based on Distance Vector technology" whose algorithm is DUAL, the Diffusing Update Algorithm from research at SRI International ([RFC 7868](https://www.rfc-editor.org/rfc/rfc7868)). DUAL's promise is strong: it "guarantees that each constructed path is loop free at every instant including periods of topology changes and network reconvergence" (section 3).
+
+The mechanism is a test applied before believing a neighbour. A neighbour meets the feasibility condition "if the neighbor's RD is less than this router's Feasible Distance": its reported distance is shorter than the best this router has had, so its path cannot lead back through this router. Such a neighbour is a feasible successor, "providing a guaranteed loop-free path" (section 2.2). While a feasible successor offers the best remaining path, the route stays usable; only when none does must the router "coordinate with its neighbors in the search for the new loop-free least-total-cost path" (section 3.2), and even then only routers affected by the change take part: "Routers that are not affected by topology changes are not involved in the recalculation" (section 3).
+
+## Side by side
+
+| Family | Protocols | What a router hears | What it computes | How loops are kept out |
+|---|---|---|---|---|
+| Distance vector | RIP (RFC 2453) | Each neighbour's distance to every destination | The shortest distance and the first hop, by adding the link's cost | Split horizon, poisoned reverse, triggered updates; infinity at 16 bounds the count |
+| Link state | OSPF (RFC 2328), IS-IS (RFC 1195) | Every router's own links, flooded through the area | A shortest-path tree with itself as root | Every router computes from the same database |
+| Path vector | BGP (RFC 4271) | Routes paired with the list of autonomous systems crossed | The preferred route by attributes and local policy | A route that lists the router's own AS is rejected |
+| DUAL | EIGRP (RFC 7868) | Neighbours' distances | Successors and feasible successors | The feasibility condition |
+
+## How fast each one notices
+
+A protocol cannot react to a failure it has not noticed. RIP's default is slow by design: implementations "MUST by default wait six times the update interval before invalidating a route" (RFC 1812, appendix F.2), 180 seconds at RIP's 30-second interval, before any counting starts. Link-state protocols flood a change to every router in the area, and each recomputes; EIGRP's specification claims that "The convergence time with DUAL rivals that of any other existing routing protocol" (RFC 7868, section 3); and BGP trades speed for stability with its advertisement intervals. All of them depend on noticing the failure in the first place, which is the problem the [article on BFD](/learn/bfd-when-a-link-is-up-and-dead) takes up.
+
+When a router runs more than one of these, their answers for the same prefix are compared by administrative distance, explained in the [article on static routes and longest match](/learn/static-routes-and-longest-match); passing routes from one protocol into another is redistribution, which has [its own article](/learn/route-redistribution) and its own loops.
+
+## What to remember
+
+- Interior protocols route inside one administration; BGP routes between them.
+- Distance vector: routers share distances with neighbours and know only the next hop; RIP updates every 30 seconds and counts to 16.
+- Counting to infinity is the price of believing neighbours; split horizon, poisoned reverse and triggered updates make it rare, not impossible.
+- Link state: every router floods its own links and computes the whole tree itself; OSPF and IS-IS scale with areas and levels.
+- Path vector: BGP carries the list of autonomous systems and rejects routes that already contain its own.
+- EIGRP's DUAL accepts a backup path only when the feasibility condition proves it loop-free.
+
+## Sources
+
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 7.1 to 7.5 on interior and exterior protocols, appendix F.2 on RIP (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812)
+- [RFC 1058, Routing Information Protocol, C. Hedrick, June 1988 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1058)
+- [RFC 2453, RIP Version 2, November 1998, STD 56: the algorithm, its ancestry, timers, infinity, split horizon and triggered updates (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2453)
+- [RFC 2328, OSPF Version 2, April 1998, STD 54: link state, flooding, the shortest-path tree, areas (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 1195, Use of OSI IS-IS for Routing in TCP/IP and Dual Environments, December 1990 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1195)
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), January 2006: AS path, loop detection, decision process, timers (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4271)
+- [RFC 4274, BGP-4 Protocol Analysis, January 2006: the path-vector algorithm and incremental updates (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4274)
+- [RFC 1322, A Unified Approach to Inter-Domain Routing, May 1992: the name path vector (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1322)
+- [RFC 7868, Cisco's Enhanced Interior Gateway Routing Protocol (EIGRP), May 2016: DUAL, the feasibility condition, feasible successors (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc7868)

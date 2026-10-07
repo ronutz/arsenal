@@ -12862,7 +12862,7 @@
     },
     "envTitle": "Remote training environments",
     "envBody1": "Live online classes (vILT) run on Zoom by preference, with Google Meet and Microsoft Teams equally supported when a customer's platform policy calls for it.",
-    "envBody2": "Hands-on labs are delivered through Red Education's lab infrastructure, and through platforms such as CloudShare, Skytap, ReadyTech Axis, and Amazon WorkSpaces - whichever the official lab environment for each course is.",
+    "envBody2": "Hands-on labs are delivered through Red Education's lab infrastructure, and through platforms such as CloudShare, Kyndryl Cloud Uplift (formerly Skytap), ReadyTech Axis, and Amazon WorkSpaces - whichever the official lab environment for each course is.",
     "navTitle": "Where to go next",
     "navLede": "The course catalogue, the certifications these courses prepare for, and the free material you can read before deciding anything.",
     "navCatalog": "The course catalogue",
@@ -12936,7 +12936,7 @@
     "worldCountries": "Countries delivered to so far",
     "worldCountriesList": "Australia, New Zealand, Singapore, Malaysia, Indonesia, Thailand, Vietnam, the Philippines, China, Japan, India and Bangladesh; the United Kingdom, the Netherlands, Belgium, Germany, Austria, Switzerland, Italy, Poland, Sweden, Finland and Norway; the United Arab Emirates and Ghana; Brazil, Argentina, Chile, Peru, Colombia, Panama and Mexico; Canada and the United States.",
     "platformsDeliveryTitle": "Platforms used in delivery",
-    "platformsDeliveryBody": "Live remote classes run on Zoom by preference, with Microsoft Teams and Google Meet equally supported when a customer's platform policy calls for it. Hands-on labs run in the official lab environment for each course: Red Education's own lab infrastructure, CloudShare, Skytap, ReadyTech Axis or Amazon WorkSpaces, whichever the curriculum specifies.",
+    "platformsDeliveryBody": "Live remote classes run on Zoom by preference, with Microsoft Teams and Google Meet equally supported when a customer's platform policy calls for it. Hands-on labs run in the official lab environment for each course: Red Education's own lab infrastructure, CloudShare, Kyndryl Cloud Uplift (formerly Skytap), ReadyTech Axis or Amazon WorkSpaces, whichever the curriculum specifies.",
     "behindTitle": "The platform behind the class",
     "behindBody": "I work full time for Red Education, a global Authorized Training Center, and every piece of technical education described on this page, training delivery and content development, workshops, bootcamps, knowledge transfers and enablement sessions, is delivered through it. That is an advantage rather than a boundary: Red Education brings the vendor authorizations, the lab infrastructure, the scheduling and regional coverage, public and private classes, account management, and a bench of more than fifty instructors for the requirements one person cannot cover.",
     "behindAsk": "When you request a class, ask for me by name. Instructor allocation stays with Red Education and depends on schedule, region and authorization, so the request is for my availability rather than a guarantee of it.",
@@ -23908,6 +23908,43 @@
             "vlans-and-8021q": "VLANs and 802.1Q trunking: tagged, untagged, native and voice",
             "spanning-tree": "Spanning tree in one article: why a blocked port is the feature",
             "link-aggregation-lacp": "Link aggregation and LACP"
+          }
+        },
+        "netfun-2": {
+          "short": "NetFun II",
+          "title": "Network Fundamentals II: addressing and routing",
+          "lede": "Layer 3, from the address on an interface to the path a packet takes across the internet: IPv4 subnetting and summarisation, IPv6, how a host gets its address and finds a name with DHCP and DNS, and how routers choose, from the routing table and the longest match to OSPF, IS-IS, BGP and MPLS.",
+          "outcome": "you will be able to design an address plan, read a routing table, and explain why a packet went where it went.",
+          "modules": {
+            "m1": {
+              "title": "IPv4 addressing",
+              "outcome": "Subnet any block by hand, size subnets with VLSM, summarise routes, and tell private address space from public."
+            },
+            "m2": {
+              "title": "IPv6",
+              "outcome": "Read and shorten an IPv6 address, plan IPv6 subnets, and explain how a host configures itself and finds its neighbours."
+            },
+            "m3": {
+              "title": "Getting an address and a name",
+              "outcome": "Follow a DHCP lease from discovery to renewal, read a DNS answer field by field, and say which server is authoritative for a name."
+            },
+            "m4": {
+              "title": "Routing",
+              "outcome": "Read a routing table, predict which route wins and why, and explain what OSPF, IS-IS and BGP each decide."
+            }
+          },
+          "planned": {
+            "bootp-and-dhcp-options": "BOOTP and DHCP options: what a client asks for, and what it is told",
+            "dhcp-relay-agent": "The DHCP relay agent: one server for many subnets",
+            "pxe-and-network-boot": "PXE and network boot",
+            "tftp": "TFTP: the simplest file transfer, and where it still runs",
+            "dns-zone-transfers-and-notify": "Zone transfers and NOTIFY",
+            "dnssec-end-to-end": "DNSSEC end to end",
+            "encrypted-dns-dot-doh-doq": "DoT, DoH and DoQ compared",
+            "anycast": "Anycast: one address in many places",
+            "static-routes-and-longest-match": "Static routes, longest prefix match and administrative distance: how a router chooses between answers",
+            "dynamic-routing-compared": "Dynamic routing compared: distance vector, link state and path vector",
+            "route-redistribution": "Route redistribution and the loops it invites"
           }
         }
       }

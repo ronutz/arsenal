@@ -12862,7 +12862,7 @@
     },
     "envTitle": "Ambientes de treinamento remoto",
     "envBody1": "As turmas ao vivo online (vILT) acontecem preferencialmente pelo Zoom, com Google Meet e Microsoft Teams igualmente atendidos quando a política de plataforma do cliente exigir.",
-    "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Skytap, ReadyTech Axis e Amazon WorkSpaces — seja qual for o ambiente de laboratório oficial de cada curso.",
+    "envBody2": "Os laboratórios práticos são entregues através da infraestrutura de laboratório da Red Education, e através de plataformas como CloudShare, Kyndryl Cloud Uplift (antiga Skytap), ReadyTech Axis e Amazon WorkSpaces — seja qual for o ambiente de laboratório oficial de cada curso.",
     "navTitle": "Para onde ir agora",
     "navLede": "O catálogo de cursos, as certificações para as quais estes cursos preparam, e o material gratuito que você pode ler antes de decidir qualquer coisa.",
     "navCatalog": "O catálogo de cursos",
@@ -12936,7 +12936,7 @@
     "worldCountries": "Países atendidos até agora",
     "worldCountriesList": "Austrália, Nova Zelândia, Cingapura, Malásia, Indonésia, Tailândia, Vietnã, Filipinas, China, Japão, Índia e Bangladesh; Reino Unido, Países Baixos, Bélgica, Alemanha, Áustria, Suíça, Itália, Polônia, Suécia, Finlândia e Noruega; Emirados Árabes Unidos e Gana; Brasil, Argentina, Chile, Peru, Colômbia, Panamá e México; Canadá e Estados Unidos.",
     "platformsDeliveryTitle": "Plataformas usadas na entrega",
-    "platformsDeliveryBody": "As turmas remotas ao vivo acontecem preferencialmente pelo Zoom, com Microsoft Teams e Google Meet igualmente atendidos quando a política de plataforma do cliente exigir. Os laboratórios práticos rodam no ambiente de laboratório oficial de cada curso: a infraestrutura de laboratório da própria Red Education, CloudShare, Skytap, ReadyTech Axis ou Amazon WorkSpaces, o que o currículo especificar.",
+    "platformsDeliveryBody": "As turmas remotas ao vivo acontecem preferencialmente pelo Zoom, com Microsoft Teams e Google Meet igualmente atendidos quando a política de plataforma do cliente exigir. Os laboratórios práticos rodam no ambiente de laboratório oficial de cada curso: a infraestrutura de laboratório da própria Red Education, CloudShare, Kyndryl Cloud Uplift (antiga Skytap), ReadyTech Axis ou Amazon WorkSpaces, o que o currículo especificar.",
     "behindTitle": "A plataforma por trás da turma",
     "behindBody": "Trabalho em tempo integral para a Red Education, um Centro de Treinamento Autorizado global, e toda a educação técnica descrita nesta página, entrega de treinamentos e desenvolvimento de conteúdo, workshops, bootcamps, transferências de conhecimento e sessões de capacitação, é entregue através dela. Isso é uma vantagem, não uma fronteira: a Red Education traz as autorizações dos fabricantes, a infraestrutura de laboratório, a agenda e a cobertura regional, turmas abertas e fechadas, gestão de contas, e um time de mais de cinquenta instrutores para as necessidades que uma pessoa só não cobre.",
     "behindAsk": "Ao solicitar uma turma, peça por mim pelo nome. A alocação de instrutor fica com a Red Education e depende de agenda, região e autorização, então o pedido é pela minha disponibilidade, não uma garantia dela.",
@@ -23908,6 +23908,43 @@
             "vlans-and-8021q": "VLANs e trunking 802.1Q: com tag, sem tag, nativa e de voz",
             "spanning-tree": "Spanning tree num só artigo: por que uma porta bloqueada é o recurso",
             "link-aggregation-lacp": "Agregação de enlaces e LACP"
+          }
+        },
+        "netfun-2": {
+          "short": "NetFun II",
+          "title": "Fundamentos de Redes II: endereçamento e roteamento",
+          "lede": "A camada 3, do endereço numa interface ao caminho que um pacote faz pela internet: sub-redes e sumarização IPv4, o IPv6, como um host obtém o seu endereço e encontra um nome com DHCP e DNS, e como os roteadores escolhem, da tabela de roteamento e do maior prefixo ao OSPF, ao IS-IS, ao BGP e ao MPLS.",
+          "outcome": "você vai conseguir desenhar um plano de endereçamento, ler uma tabela de roteamento e explicar por que um pacote foi para onde foi.",
+          "modules": {
+            "m1": {
+              "title": "Endereçamento IPv4",
+              "outcome": "Dividir qualquer bloco em sub-redes à mão, dimensionar sub-redes com VLSM, sumarizar rotas e distinguir o espaço de endereços privado do público."
+            },
+            "m2": {
+              "title": "IPv6",
+              "outcome": "Ler e abreviar um endereço IPv6, planejar sub-redes IPv6 e explicar como um host se configura sozinho e encontra os seus vizinhos."
+            },
+            "m3": {
+              "title": "Obter um endereço e um nome",
+              "outcome": "Acompanhar uma concessão DHCP da descoberta à renovação, ler uma resposta DNS campo a campo e dizer qual servidor é autoritativo para um nome."
+            },
+            "m4": {
+              "title": "Roteamento",
+              "outcome": "Ler uma tabela de roteamento, prever qual rota vence e por quê, e explicar o que o OSPF, o IS-IS e o BGP decidem cada um."
+            }
+          },
+          "planned": {
+            "bootp-and-dhcp-options": "BOOTP e opções DHCP: o que um cliente pede e o que ouve de volta",
+            "dhcp-relay-agent": "O agente de retransmissão DHCP: um servidor para muitas sub-redes",
+            "pxe-and-network-boot": "PXE e boot pela rede",
+            "tftp": "TFTP: a transferência de arquivos mais simples, e onde ela ainda roda",
+            "dns-zone-transfers-and-notify": "Transferências de zona e NOTIFY",
+            "dnssec-end-to-end": "DNSSEC de ponta a ponta",
+            "encrypted-dns-dot-doh-doq": "DoT, DoH e DoQ comparados",
+            "anycast": "Anycast: um endereço em muitos lugares",
+            "static-routes-and-longest-match": "Rotas estáticas, maior prefixo e distância administrativa: como um roteador escolhe entre respostas",
+            "dynamic-routing-compared": "Roteamento dinâmico comparado: vetor de distância, estado de enlace e vetor de caminho",
+            "route-redistribution": "Redistribuição de rotas e os loops que ela convida"
           }
         }
       }

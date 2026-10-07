@@ -277,6 +277,15 @@ const DECLARED_OVERLAPS = new Map([
     "The same overlap as the slug-stem entry above, seen by the name-token rule " +
       "instead. Both entries are named for Intel because both are about Intel.",
   ],
+  [
+    "token:kyndryl:kyndryl|skytap",
+    "Two deliberate entries, a company and a product it bought. `kyndryl` is the 2021 " +
+      "IBM infrastructure-services spin-off; `skytap` is the 2006 Seattle lab and " +
+      "environment platform Kyndryl acquired in 2024 and now offers as Kyndryl Cloud " +
+      "Uplift, whose record name carries the new name with 'formerly Skytap'. The record " +
+      "is about the laboratory platform, not the services company. Declared 2026-10-07 " +
+      "with the rename (PRIME 04:18, row 46).",
+  ],
 ]);
 
 if (failures.length) {

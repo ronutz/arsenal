@@ -52,6 +52,37 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // (ky) PRIME 2026-10-07 04:18: Skytap is now Kyndryl Cloud Uplift.
+    date: "2026-10-07",
+    time: "04:24",
+    kind: "content",
+    title: "Skytap is now Kyndryl Cloud Uplift",
+    body:
+      "The lab platform Skytap, acquired by Kyndryl in 2024, is now Kyndryl Cloud Uplift: skytap.com leads to Kyndryl's page for it, and its documentation carries the new name. The training page names it so, and its industry record is brought up to date with sources read on the day, the two Skytap pages it cited now redirecting to Kyndryl's.",
+    links: [{ label: "Kyndryl Cloud Uplift on the industry record", href: "/industry/skytap" }, { label: "Training", href: "/training" }],
+  },
+  {
+    // Milestone NF-2b of the student level-up (PRIME 2026-10-06 18:24): the three new NetFun II routing articles.
+    date: "2026-10-07",
+    time: "04:16",
+    kind: "content",
+    title: "Three routing articles for NetFun II: how a router chooses, the dynamic protocols compared, and redistribution",
+    body:
+      "Static routes, longest prefix match and administrative distance, with the floating route that never installs; distance vector, link state, path vector and DUAL side by side, from counting to infinity to the AS path; and route redistribution, from the metric a route needs at the border to the feedback that two border routers create and the tags that stop it. Each is read from the RFCs and the vendors' own documentation, cited with the date it was read. NetFun II's routing module now has all 17 parts written.",
+    articles: ["static-routes-and-longest-match", "dynamic-routing-compared", "route-redistribution"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // Milestone NF-2a of the student level-up (PRIME 2026-10-06 18:24): NetFun II switched on.
+    date: "2026-10-07",
+    time: "03:29",
+    kind: "feature",
+    title: "NetFun II on the study guides: addressing and routing",
+    body:
+      "The second training series follows NetFun I: Network Fundamentals II, addressing and routing. Four modules, IPv4 addressing, IPv6, getting an address and a name, and routing, take a student from the address on an interface to the path a packet takes across the internet: 39 articles today, with the tools to practise on, and eleven more named in their places while they are written.",
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
     // Milestone NF-1d of the student level-up (PRIME 2026-10-06 18:24): the NetFun I terms in the glossary.
     date: "2026-10-07",
     time: "02:41",

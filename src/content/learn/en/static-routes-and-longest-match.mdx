@@ -1,0 +1,116 @@
+---
+slug: static-routes-and-longest-match
+title: "Static routes, longest prefix match and administrative distance: how a router chooses between answers"
+summary: "A router often holds several answers for one packet, and three rules decide between them at two different moments: the metric chooses the best path inside one protocol, administrative distance chooses which source to believe when two offer the same prefix, and longest prefix match chooses, packet by packet, the most specific of the routes that were installed. With static routes, floating backups, recursive next hops and the failover that silently does not happen, read from RFC 1812 and the vendors' own documents."
+concepts: ["static route", "longest prefix match", "administrative distance", "route preference", "floating static route", "recursive lookup", "rib", "fib", "metric", "ecmp", "default route", "blackhole route"]
+relatedTools: ["cidr", "fortigate-route-selection-explainer"]
+relatedArticles: ["routing-tables-and-default-gateway", "dynamic-routing-compared", "route-redistribution", "fortigate-routing-and-sdwan-selection", "route-summarization", "cidr-notation"]
+category: networking
+order: 342
+status: reviewed
+updated: "2026-10-07"
+---
+
+A router rarely has just one answer. A packet's destination can fall inside a /24, a /16, a /8 and the default route all at once; the same /24 can be offered by OSPF, by BGP and by a static route somebody typed years ago. Three rules settle it, and most routing confusion comes from applying them in the wrong order or at the wrong moment: the **metric** chooses within one protocol, **administrative distance** chooses between sources, and **longest prefix match** chooses, for each packet, among the routes that survived both.
+
+## Two moments: installing a route and using it
+
+Cisco describes three processes behind a router's table: the routing processes that run the protocols, "The routing table itself, which accepts information from the routing processes and also replies to requests for information from the forwarding process", and "The forwarding process, which requests information from the routing table to make a packet forwarding decision" ([Cisco, route selection](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/8651-21.html)). The first two build the table; the third uses it.
+
+The three rules belong to different moments. The metric and administrative distance decide what is installed in the routing information base (RIB); longest prefix match decides, packet by packet, which installed route is used, from the forwarding information base (FIB) built out of it. Cisco's page on administrative distance, revised in July 2026, says it plainly: "Longest prefix match is not part of route installation; it is applied later during packet forwarding", and "AD and routing metrics are not evaluated during forwarding" ([Cisco, administrative distance](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/15986-admin-distance.html)). The installation sequence it gives runs the other way round from this article: each protocol first picks its best path by its own metric, the table compares the protocols' candidates for the same prefix by administrative distance, and the winner is installed only if its next hop can be reached.
+
+## Longest prefix match, as the standard writes it
+
+The requirements for IPv4 routers, RFC 1812 (June 1995), describe the lookup as a filter. It "starts out with a set of candidate routes that consists of the entire contents of the FIB", then applies "Pruning Rules" that discard routes until one remains; "If the set ever becomes empty, the packet is discarded because the destination is unreachable" ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.3)). The rules "MUST be (conceptually) applied to the FIB in the order that they are presented":
+
+1. **Basic match** keeps only the routes whose prefix contains the destination. For a packet to 10.144.2.5 it "would discard a route to net 128.12.0.0/16 but would retain any routes to the network prefixes 10.0.0.0/8 and 10.144.0.0/16, and any default routes".
+2. **Longest match** keeps, of those, the ones with the longest prefix. With 10.144.2.0/24, 10.144.0.0/16 and 10.0.0.0/8 in the table, "this rule would keep only the first (10.144.2.0/24) because its prefix length is longest".
+3. **Weak TOS** prefers routes for the packet's type of service; the RFC makes this one optional.
+4. **Best metric** compares what is left, but only between routes from the same routing domain.
+5. **Vendor policy**, which the RFC admits "is sort of a catch-all to make up for the fact that the previously listed rules are often inadequate to choose from the possible routes".
+
+Put generally, a host route wins first, then network prefixes, which "are selected in order of decreasing prefix length", and last the default route, which "is by definition the route whose prefix length is zero" (RFC 1812, as above). One table makes it concrete. Take a router holding 10.144.2.0/24, 10.144.0.0/16, 10.0.0.0/8 and the default route 0.0.0.0/0:
+
+| Destination | Routes that contain it | Route used |
+|---|---|---|
+| 10.144.2.5 | /24, /16, /8, default | 10.144.2.0/24 |
+| 10.144.9.1 | /16, /8, default | 10.144.0.0/16 |
+| 10.200.0.1 | /8, default | 10.0.0.0/8 |
+| 198.51.100.7 | default | 0.0.0.0/0 |
+
+Without the default route, the last packet would match nothing, and RFC 1812 says "the packet MUST be discarded and an appropriate ICMP error generated", a destination unreachable message. The [CIDR calculator](/tools/cidr) shows the range of addresses any prefix covers.
+
+Longest match does not care which protocol a route came from. Cisco's example installs three routes from three protocols at once: 192.168.32.0/26 from EIGRP (Enhanced Interior Gateway Routing Protocol), 192.168.32.0/24 from RIP (Routing Information Protocol) and 192.168.32.0/19 from OSPF. Because "each of these routes has a different prefix length (subnet mask), they are considered different destinations, and they can all be installed in the routing table". A packet to 192.168.32.1 follows the /26; a packet to 192.168.32.100, outside the /26, follows the RIP /24, although RIP has the highest administrative distance of the three. "Longer prefixes are always preferred over shorter ones when forwarding a packet" (Cisco, route selection).
+
+## Administrative distance: which source to believe
+
+When two sources offer exactly the same prefix, longest match cannot choose, and their metrics cannot be compared: an OSPF cost and a RIP hop count are different units. RFC 1812 suggested the answer as one form of vendor policy, an "administrative preference" with a value "in the range [0..255], with zero being the most preferred and 254 being the least preferred", in which "255 is a special value that means that the route should never be used" ([RFC 1812, section 5.2.4.4](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.4)).
+
+Cisco calls it administrative distance (AD): "AD is a value used to rank the trustworthiness of routing information sources", and "AD is used only when multiple routing sources advertise the same destination prefix". It never leaves the router: "AD is a local value and is not advertised in routing updates" (Cisco, administrative distance). Juniper calls it route preference, "a value from 0 through 4,294,967,295", and adds that "This concept is called administrative distance by some vendors" ([Juniper, route preference values](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)). The defaults differ more than most people expect:
+
+| Route source | Cisco IOS (AD) | Junos OS (preference) |
+|---|---|---|
+| Directly connected | 0 | 0 |
+| Static | 1 | 5 |
+| OSPF | 110 | 10 internal, 150 external |
+| IS-IS (Intermediate System to Intermediate System) | 115 | 15 or 18 internal (level 1 or 2), 160 or 165 external |
+| RIP | 120 | 100 |
+| BGP | 20 external, 200 internal | 170 |
+| EIGRP | 90 internal, 170 external | not in the table |
+
+The BGP row is where the two disagree in practice, and Juniper says so itself: "some vendors assign a distance of 110 to OSPF routes. This is higher than the EBGP distance of 20", so such a router prefers an external BGP route over the same prefix in OSPF, while "In the same scenario, Junos OS chooses the OSPF route" (Juniper, as above). A network of mixed vendors can therefore make different choices for the same prefix on different routers.
+
+Changing the defaults is possible and risky. RFC 1812 warned in 1995 that administrative preference "is not safe in that it can easily be misused to create routing loops", because nothing checks that neighbours were configured consistently. Cisco's 2026 text agrees: "An inconsistent AD design can cause asymmetric routing, suboptimal routing, routing loops, or traffic black holes", and "There are no general guidelines to assign administrative distances because each network has varied requirements" (Cisco, administrative distance).
+
+On Cisco equipment, each route in `show ip route` carries both numbers: "the values in brackets use the format [administrative distance/metric]", so [90/1] is a route with "an administrative distance of 90 and a protocol metric of 1" (as above). On Linux, `ip route` gives a route a metric, also called preference, "an arbitrary 32bit number, where routes with lower values are preferred", and records in a protocol field who installed it ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)). A FortiGate adds a second number, priority, which works after distance; the [FortiGate routing article](/learn/fortigate-routing-and-sdwan-selection) and its [route selection explainer](/tools/fortigate-route-selection-explainer) walk through it.
+
+## The metric: the tie-break inside one protocol
+
+Within one protocol, the metric decides. RFC 1812's best-metric rule applies only "If route.domain is equal for the two routes", that is, between routes from the same routing domain, and Cisco puts it the same way: "If there are multiple paths to the same destination from a single routing protocol, then the multiple paths would have the same administrative distance and the best path is selected based on the metrics" (Cisco, route selection). Each protocol measures differently, which is the reason administrative distance exists at all; the [comparison of the dynamic protocols](/learn/dynamic-routing-compared) shows what each one counts.
+
+When the metrics are equal, a router may keep several routes and share traffic between them. OSPF's specification says that "When several equal-cost routes to a destination exist, traffic is distributed equally among them" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328#section-1.1)), and Cisco's installation sequence allows that "multiple equal cost routes can be selected" where Equal-Cost Multi-Path (ECMP) is supported (Cisco, administrative distance). RFC 1812 is more guarded: "a wise implementor who implements load-splitting will also provide a way for the network manager to disable it" ([RFC 1812, section 5.2.4.5](https://www.rfc-editor.org/rfc/rfc1812#section-5.2.4.5)).
+
+## Static routes
+
+"Static routing provides a means of explicitly defining the next hop from a router for a particular destination" ([RFC 1812, section 7.4](https://www.rfc-editor.org/rfc/rfc1812#section-7.4)). Cisco lists the two usual reasons: static routes "are often used when there is no dynamic route to the destination IP address, or to override the dynamically learned route" ([Cisco, next hop for static routes](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)). With an administrative distance of 1 on Cisco and a preference of 5 on Junos, a static route beats every dynamic protocol by default.
+
+### Next hop, exit interface, or both
+
+A static route can name a next-hop address, an exit interface, or both, and the choice matters. A route that names only an Ethernet interface tells the router that every destination it covers is directly attached, so "a router performs Address Resolution Protocol (ARP) on the Ethernet for every destination the router finds through the default route"; with many destinations that "can cause high processor use and a very large ARP cache (along with memory allocation failures)" (Cisco, next hop for static routes). A route that names only a next-hop address needs a second lookup: "If the route uses a next-hop IP address, the router performs recursive lookup, also called route recursion, to resolve the outgoing interface", and "If the next hop cannot be resolved, the route is not installed in the routing table" (Cisco, administrative distance). Cisco's advice is to give both: "Cisco highly recommends you specify the outbound interface and the next hop IP address when static routes are configured", with the interface alone acceptable on a point-to-point link (Cisco, next hop for static routes).
+
+### Floating static routes, and the failover that does not happen
+
+A static route with a deliberately high distance is a backup. "A floating static route is configured with an administrative distance higher than the primary route, so it is used only when the primary route is removed from the routing table" (Cisco, administrative distance). Cisco's example backs up an OSPF route (110) with `ip route 10.0.0.0 255.255.255.0 172.16.1.200 250`: the static route stays out of the table while OSPF knows the prefix, and appears as [250/0] when OSPF loses it. RFC 1812 described the same idea with metrics, a primary static route over one interface and a secondary one over another, "with failover to the alternate path if the interface for the primary route fails" (RFC 1812, section 7.4).
+
+The trap is in the recursion. In a second Cisco example, a router has a primary static route to a LAN through 10.10.10.2 over one serial link, a floating static route at distance 250 through the other link, and an unrelated static route for 10.0.0.0/8. When the primary link is shut, the backup never appears: the primary route stays, "because static routes are recursive in nature", and its next hop "10.10.10.2 is successfully recursed to (to 192.168.10.2) through the static route 10.0.0.0/8, which is present in the routing table" (Cisco, next hop for static routes). The LAN's traffic now follows the 10.0.0.0/8 route towards the internet link, and the host's ping and traceroute stop working. Naming the exit interface fixes it, because a route bound to an interface is "inserted into the routing table only when the interface is active" (as above), so the primary leaves with its link and the floating route can take its place. Any floating route deserves a test by actually failing the primary path.
+
+### Routes that go nowhere on purpose
+
+Some static routes exist to drop traffic. Linux names three kinds: an unreachable route, where "Packets are discarded and the ICMP message host unreachable is generated"; a blackhole route, where "Packets are discarded silently"; and a prohibit route, which answers with "communication administratively prohibited" (ip-route(8)). The same page holds a warning for anyone who adds routes by hand: without a protocol named, "ip assumes protocol boot (i.e. it assumes the route was added by someone who doesn't understand what they are doing)", and of boot routes it says "If a routing daemon starts, it will purge all of them". A route meant to stay is marked `proto static`, which the page describes as "installed by the administrator to override dynamic routing". In `ip route`, the default route is written `default`, the page's shorthand for 0/0 in IPv4 and ::/0 in IPv6.
+
+## The whole decision, once
+
+Put the three rules together on one router. OSPF offers 10.1.0.0/16 at distance 110, a floating static route covers the same /16 at 250, RIP offers 10.1.5.0/24 at 120, and a static default route points to the internet.
+
+- **Installation:** for 10.1.0.0/16, OSPF (110) beats the floating static route (250), which stays out of the table; the RIP /24 and the default route have no competitor for their prefixes and are installed.
+- **A packet to 10.1.5.9:** it matches the /24, the /16 and the default; the /24 is longest, so it goes the RIP way, whatever RIP's distance.
+- **A packet to 10.1.9.9:** it matches the /16 and the default; it follows OSPF.
+- **OSPF loses the /16:** the floating static route is installed, provided its next hop resolves, and 10.1.9.9 now follows it; 10.1.5.9 is unaffected.
+
+## What to remember
+
+- Two moments: metric and administrative distance decide what is installed; longest prefix match decides which installed route each packet uses.
+- Administrative distance compares sources only for the same prefix, never overrides a longer match, is local to the router, and has different defaults on Cisco and Junos.
+- A static route with a next hop is installed only if that next hop resolves, and it stays for as long as any route reaches that next hop.
+- A floating static route is a backup by distance; test it by failing the primary, and name the exit interface so the primary can actually leave.
+- Without a default route, a packet that matches nothing is dropped with an ICMP unreachable message.
+
+## Sources
+
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 5.2.4.3 to 5.2.4.5 (the pruning rules, administrative preference, load splitting) and 7.4 (static routing) (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812)
+- [RFC 2328, OSPF Version 2, April 1998: equal-cost routes (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [Cisco, Understand Administrative Distance, document 15986, revision of 20 July 2026: installation sequence, recursion, default values, floating static routes (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/15986-admin-distance.html)
+- [Cisco, Configure Route Selection for Routers, document 8651, 17 January 2024: the three processes, prefix lengths as different destinations (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/ip/enhanced-interior-gateway-routing-protocol-eigrp/8651-21.html)
+- [Cisco, Configure a Next Hop IP Address for Static Routes, document 118263, 10 July 2023: interface-only routes, the floating route that never installs (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/dial-access/floating-static-route/118263-technote-nexthop-00.html)
+- [Juniper Networks, Junos OS, Understanding Route Preference Values (Administrative Distance): default preferences (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/bgp/topics/topic-map/local-preference.html)
+- [Linux, ip-route(8), iproute2 manual page, man7.org copy of 4 August 2026: metric, route types, protocol field (read 2026-10-07)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
