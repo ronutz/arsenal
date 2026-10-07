@@ -96,3 +96,21 @@ A quick orientation for captures and configs. A browser fetching a page speaks T
 ## See it on the wire
 
 The fastest way to make all four concrete is to read an annotated real connection, byte by byte. Michael Driscoll's Illustrated series does exactly that, one page per protocol: [The Illustrated TLS 1.2 Connection](https://tls12.xargs.org/), [The Illustrated TLS 1.3 Connection](https://tls13.xargs.org/), [The Illustrated DTLS Connection](https://dtls.xargs.org/), and [The Illustrated QUIC Connection](https://quic.xargs.org/). Every record of a live handshake is shown with every field explained - the ideal companion to the specifications themselves.
+
+## This series, in order
+
+This article opens the series **TLS and the cipher suites**. It maps the four shapes the handshake takes today; the parts go inside it in order: the name everyone still uses, the key exchange and the secrecy it buys, the cipher suite read piece by piece and family by family, the configuration verdict, the named attacks that shaped it, and the two places a proxy steps into the session.
+
+1. **[Why Do We Say SSL When We Mean TLS?](/learn/why-we-say-ssl-when-we-mean-tls)**. Netscape's SSL, the 1999 rename to TLS, and why the industry still sells SSL certificates.
+2. **[Diffie-Hellman explained without the mathematics](/learn/diffie-hellman-for-everyone)**. Two strangers agree a secret in a room where everyone listens: the key exchange, without the mathematics.
+3. **[Forward Secrecy and the Key Exchange](/learn/forward-secrecy)**. What forward secrecy buys, why static RSA key transport lacks it, and how ECDHE and DHE provide it.
+4. **[Anatomy of a TLS Cipher Suite](/learn/cipher-suite-anatomy)**. What a suite names, read piece by piece, and the two-byte code point behind every name.
+5. **[Reading Cipher Suite Names: IANA, OpenSSL, and GnuTLS](/learn/cipher-suite-naming)**. The same suite under IANA, OpenSSL and GnuTLS names, and what the Recommended column means.
+6. **[Cipher Families: The Working Map](/learn/cipher-families)**. Block and stream, AES and ChaCha20, RSA, elliptic curves and (EC)DHE: the families a suite is assembled from.
+7. **[AEAD vs CBC: Why the Mode Matters](/learn/aead-vs-cbc)**. AES-GCM against CBC with a separate HMAC, the padding oracles that ended MAC-then-encrypt, and the trade-off AEAD keeps.
+8. **[TLS 1.3 Cipher Suites: What Changed](/learn/tls13-cipher-suites)**. Why a TLS 1.3 suite names only a cipher and a hash, and where the key exchange and authentication went.
+9. **[Which TLS Cipher Keywords Are Safe, and Which Are Not](/learn/tls-cipher-security-keywords)**. The short list of keywords that decide whether a cipher string is hardened or dangerous.
+10. **[Which Cipher Suites to Use: The Verdict Ledger](/learn/which-cipher-suites-to-use)**. The verdict, tier by tier: what to run today, what survives in niches, and what is forbidden and by which RFC.
+11. **[The named TLS attacks, 2011-2023: what each one broke, and what the protocol removed because of it](/learn/the-named-tls-attacks)**. BEAST to Terrapin: what each named attack broke between 2011 and 2023, and what the protocol removed because of it.
+12. **[Inbound TLS: Offload, Bridging, and Passthrough at the Reverse Proxy](/learn/tls-reverse-proxy-inbound)**. Offload, bridging and passthrough: the three ways a reverse proxy handles an inbound session, and what each trades.
+13. **[SSL Forward Proxy: How Outbound TLS Interception Works and What Breaks It](/learn/ssl-forward-proxy-interception)**. The controlled man in the middle of outbound inspection: the forged certificate, the private CA, and what breaks it.

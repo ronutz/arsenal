@@ -34,3 +34,15 @@ Organizações com um proxy local ou appliance de borda podem **encadeá-lo** ao
 Projetos reais fazem camadas. Um formato clássico: túneis de localidade carregam o site (cobrindo o ingerenciável), o ZCC cobre dispositivos gerenciados onde quer que estejam, e a lógica de PAC trata as exceções - com o ZCC configurado para perceber quando está *numa* rede tunelada e ajustar seu comportamento para que o tráfego não seja encaminhado duas vezes. Essa consciência de dentro-da-rede/fora-da-rede é exatamente o que [a detecção de rede confiável nos perfis do Client Connector](/learn/zscaler-client-connector-profiles) existe para automatizar, e é onde o encaminhamento deixa de ser quatro métodos separados e vira um projeto coerente.
 
 O resumo do operador: escolha por domínio de cobertura, não por moda - dispositivos que você gerencia recebem o agente, sites que você possui recebem túneis, navegadores que você apenas influencia recebem PAC, bordas que você já opera podem encadear - e torne as costuras explícitas, porque toda lacuna de encaminhamento é uma lacuna de inspeção disfarçada.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Zscaler Internet Access**. Um proxy em nuvem só protege o que chega a ele, então a série começa pela decisão de encaminhamento; as partes seguem então uma requisição pelas políticas do ZIA na ordem em que agem (de onde ela vem, se é decifrada, quais sites e aplicações, quais portas, quais arquivos e que dados) e terminam nos campos de log que registram tudo isso.
+
+1. **[Localidades e Sublocalidades: Ensinando à Nuvem Onde Ficam os Seus Sites](/learn/zia-locations-and-sublocations)**. Um site que a plataforma reconhece pelos túneis ou pelos endereços de saída, e a política por site que esse reconhecimento libera.
+2. **[Inspeção TLS no ZIA: a Política, os Bypasses e a Conta](/learn/zia-ssl-inspection-policy-and-bypasses)**. A interceptação de forward proxy rodando como política: inspecionar ou não, os bypasses e quanto eles custam.
+3. **[URL Filtering e Cloud App Control: Duas Políticas, Uma Regra de Precedência](/learn/zia-url-filtering-and-cloud-app-control)**. Destinos julgados por categoria e aplicações por identidade: duas políticas e a única regra de precedência entre elas.
+4. **[Cloud Firewall do ZIA: a Ordem das Regras É o Jogo Inteiro](/learn/zia-cloud-firewall-rule-order)**. Uma máquina de first-match com uma regra padrão impossível de apagar no fim: a ordem das regras é o jogo inteiro.
+5. **[File Type Control e Cloud Sandbox: os Dois Juízes do Download](/learn/zia-file-type-control-and-sandbox)**. Dois juízes para cada download: que tipos de arquivo podem passar, e o que um arquivo desconhecido faz quando roda.
+6. **[Data Loss Prevention no ZIA: Dicionários, Engines e os Tiers de Fingerprint](/learn/zia-dlp-engines-dictionaries-edm-idm)**. Dicionários com confiança e proximidade, motores que os combinam e os níveis de impressão digital para dados exatos e indexados.
+7. **[Campos de Log do ZIA: O Vocabulário em Que as Investigações São Escritas](/learn/zia-web-and-firewall-log-fields)**. Os campos de que um feed de log é feito, e qual deles carrega o que uma investigação precisa.

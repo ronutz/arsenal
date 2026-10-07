@@ -69,3 +69,24 @@ The recovery path when access is lost is console access over the serial port, wh
 ## What an exam candidate should be able to state cold
 
 Factory state: known internal address, DHCP on internal, blank admin password, no policies and therefore no traffic. NAT mode routes and is the default; transparent mode bridges at layer 2 with a single management IP, and switching between them erases the configuration. VDOMs give independent policy and routing tables with a management VDOM for the device's own traffic, and every command becomes context-sensitive. Administrative access is controlled per interface by protocol and per account by trusted host, and the console is the recovery path.
+
+## This series, in order
+
+This article opens the series **FortiGate administration**. The first decisions against a factory-fresh unit are the hardest to change later; the parts follow an administrator from there in the order the work comes: the CLI, then policy and translation and why a rule did not fire, the two tools that show a packet's path, routing, inspection, identity, tunnels, redundancy and logging, and finally the features found at a deployment's edges.
+
+1. **[The FortiOS CLI verb that quietly deletes things](/learn/fortios-cli-grammar)**. config, edit, set, next, end: a small grammar with three traps, one of which quietly deletes things.
+2. **[FortiGate Firewall Policies and NAT: Matching Order, SNAT, and DNAT](/learn/fortigate-firewall-policy-and-nat)**. Policies evaluated top to bottom with the first match winning, and source and destination translation inside them.
+3. **[Why your FortiGate rule did not fire](/learn/fortigate-policy-order)**. Why a narrower rule below a broader one never fires, and the policy ID that is not the order.
+4. **[Reading a FortiGate debug flow](/learn/fortigate-debug-flow)**. The diagnose debug flow sequence as a recipe: why its order matters, and why the cleanup matters more.
+5. **[Reading a FortiGate Packet Sniffer Trace](/learn/reading-a-fortigate-sniffer-trace)**. The five positional arguments of the packet sniffer, and how to read what it prints.
+6. **[FortiGate Routing and SD-WAN: Route Selection Order and Rule Evaluation](/learn/fortigate-routing-and-sdwan-selection)**. Policy routes before the routing table, the most specific route first, and how software-defined WAN rules choose a path.
+7. **[FortiGate Security Profiles: Antivirus, IPS, and Application Control](/learn/fortigate-security-profiles-flow-vs-proxy)**. Antivirus, intrusion prevention system and application control profiles, and what each can see in flow or proxy mode.
+8. **[FortiGate SSL Inspection: Certificate vs Deep Inspection](/learn/fortinet-ssl-inspection-modes)**. Certificate inspection reads only the name and certificate; deep inspection decrypts, with everything that implies.
+9. **[FortiGate Firewall Authentication and FSSO: Identity in a Policy](/learn/fortigate-authentication-and-fsso)**. A user instead of an address in a policy: active authentication, and single sign-on fed by the directory.
+10. **[FortiGate IPsec VPN: Phase 1, Phase 2, and Redundant Topologies](/learn/fortigate-ipsec-vpn-topologies)**. Virtual private network tunnels in two phases, knowing which one failed, and mesh, hub-and-spoke and redundant designs.
+11. **[FortiGate FGCP High Availability: Active-Passive, Active-Active, and Failover](/learn/fortigate-fgcp-ha-clustering)**. Two or more units under FGCP: the override-sensitive election, session sync, and failover.
+12. **[FortiGate Logging and Diagnostics: Where Logs Go and How to Find a Problem](/learn/fortigate-logging-and-diagnostics)**. The log destinations and what each keeps, and why a policy that does not log leaves nothing to investigate.
+13. **[FortiGate Traffic Shaping and QoS: Guaranteeing Bandwidth That Is Already Full](/learn/fortigate-traffic-shaping-and-qos)**. Shaping only matters on a congested link: it decides who suffers when there is not enough.
+14. **[FortiGate as a DNS server: four modes, and where the filter applies](/learn/fortigate-dns-server-modes-and-filtering)**. Relay, local database or full resolver: four DNS modes, how each fails, and where the DNS filter applies.
+15. **[Carrier-Scale NAT, MAP-E, Domain Fronting, and WCCP](/learn/fortigate-carrier-nat-and-specialised-traffic)**. Carrier-scale translation, MAP-E, domain fronting and WCCP: the features at the edges of a deployment.
+16. **[ACME on FortiGate: a built-in client for the box's own certificate](/learn/fortigate-acme-certificate-automation)**. The built-in ACME client that obtains and renews the FortiGate's own certificate, and its requirements.

@@ -62,3 +62,14 @@ When a device lands on your desk, read the languages in this order, because each
 Read the license first. It says what the device is, which modules are active, and which software range it is permitted to run. Then read the service check date, because if the license needs reactivating before any upgrade, that conversation with procurement starts today, not on the change night. Then read the configuration, which says what the device does; this is where the time goes, and it is the part that the license and the dates have now put in context. Then read the API paths, because the automation you will write against the device speaks two grammars and you need to know which layer each script is talking to. Read the calendar last, because it turns everything above into a plan with dates on it.
 
 Six tools, five languages, one device. The device was always going to tell you all of this. The point of the six is that you no longer have to already know how to listen.
+
+## This series, in order
+
+This article opens the series **What a BIG-IP says about itself**. It maps the five languages and the order to read them in when a device lands on your desk; the parts are the articles that read each one.
+
+1. **[The Anatomy of a bigip.conf File](/learn/anatomy-of-bigip-conf)**. Module, component, type, name and a braced body: the one shape every object in the configuration follows.
+2. **[Reading an iControl REST path](/learn/icontrol-rest-paths)**. Why iControl REST URLs carry tildes, how module, collection, partition and folder are laid out, and the query options that shrink the answer.
+3. **[Reading an F5OS RESTCONF path](/learn/f5os-restconf-paths)**. RESTCONF over YANG instead of iControl REST: the module prefix, the containers, the list keys and the two ports it answers on.
+4. **[Anatomy of a BIG-IP License File](/learn/bigip-license-file-anatomy)**. The licence file section by section: which modules are licensed, the throughput and session limits, and whether an upgrade will load.
+5. **[The BIG-IP Service Check Date, and Why an Upgrade Can Refuse to Load](/learn/bigip-service-check-date)**. The version's License Check Date against the licence's Service Check Date, and why an upgraded system can boot and quietly refuse its configuration.
+6. **[F5's faster release cadence: monthly hardened releases and security notifications](/learn/f5-monthly-release-cadence)**. From quarterly to monthly: hardened releases on the third Wednesday, security notifications a month later, and what that changes in patching.

@@ -44,3 +44,13 @@ A quick rule of thumb: Base64 for compactness, Base32 for typing, hex for readin
 ## Try them
 
 The [codec tool](/tools/base64) runs all four. Paste any text, switch the codec, and compare the output side by side, with decoding for each, entirely in your browser.
+
+## This series, in order
+
+This article opens the series **Base16, Base32, Base64**. It sets the encodings side by side; the parts take each alphabet in order of size, from two characters per byte to four characters for every three bytes, and end where Base64 is actually met.
+
+1. **[Hexadecimal encoding (Base16), explained](/learn/hex-encoding)**. Two characters per byte: why hex is the default way to print raw bytes.
+2. **[Base32, explained](/learn/base32)**. A case-insensitive, unambiguous alphabet bought with size, and where it appears: TOTP secrets, onion addresses, DNS.
+3. **[Base64 and Base64URL, explained](/learn/base64)**. Three bytes to four characters, why padding exists, and what the URL-safe variant changes.
+4. **[Base64URL and the URL-safe alphabet](/learn/base64url)**. The two characters that change for JWTs and PKCE, and what happens to the padding.
+5. **[Where Base64 shows up: data URIs, MIME, PEM, and Basic auth](/learn/base64-in-practice)**. Data URIs, MIME, PEM and Basic auth: where binary is wrapped in text, and why Base64 in a header is not encryption.

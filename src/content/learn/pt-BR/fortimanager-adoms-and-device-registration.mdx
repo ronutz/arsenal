@@ -64,3 +64,10 @@ Os comuns, e o que os distingue:
 ## O que quem vai prestar o exame precisa saber de cor
 
 O FortiManager mantém seu próprio banco com a configuração de cada equipamento e instala a partir dele. Fora de sincronia significa que as duas cópias diferem; importar puxa do equipamento, instalar envia para ele, e escolher errado descarta trabalho. ADOMs delimitam equipamentos, políticas e objetos, e carregam uma versão de firmware que deve coincidir com a dos equipamentos neles. Objetos do banco global e políticas de cabeçalho e rodapé são atribuídos aos ADOMs, com cabeçalhos acima e rodapés abaixo das políticas do próprio ADOM. Revisões são criadas na instalação, podem ser comparadas e revertidas, e uma reversão afeta o banco até você instalar.
+
+## Esta série, em ordem
+
+Este artigo abre a série **FortiManager**. Sua única relação (a cópia que o gerente guarda de cada equipamento é o que é instalado) explica o resto; as duas partes acompanham uma mudança do pacote ao equipamento e de volta pelos logs quando ela falha.
+
+1. **[Pacotes de políticas, instalações e modo workspace no FortiManager](/learn/fortimanager-policy-packages-and-installs)**. Um conjunto de políticas instalado em um ou mais equipamentos, a prévia de instalação que vale ler e o modo workspace.
+2. **[Scripts, histórico de revisões e investigação de instalações no FortiManager](/learn/fortimanager-scripts-revisions-and-troubleshooting)**. O log de instalação, o histórico de revisões e o status de sincronização: os três lugares em que uma mudança que falhou se explica.

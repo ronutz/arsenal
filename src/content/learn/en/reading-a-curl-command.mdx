@@ -27,3 +27,14 @@ A curl command's flags can appear in any order, which means **the sequence on th
 The order that matters is the request's own: **method, then URL, then headers, then body, then what happens to the response.** Reconstructing the command that way turns a long line into four short questions, and makes the missing piece obvious: a `-d` with no content type, an `-H` that duplicates something curl sets anyway, a redirect flag that changes what the whole thing does.
 
 **A command you cannot restate in that order is one you have not finished reading**, which matters most when the command came from somebody else and you are about to run it.
+
+## This series, in order
+
+This article opens the series **curl, flag by flag**. It shows how the shell splits the line before curl sees it; the parts then read the request the command builds, in the order it is assembled (method, body, headers and credentials), check its security posture, translate it for the browser, and end with everything curl speaks besides HTTP.
+
+1. **[How curl Infers the HTTP Method](/learn/curl-method-inference)**. Why a body implies POST, -I implies HEAD and -G forces GET, and why an explicit -X always wins.
+2. **[curl Data Flags and the Content-Type Trap](/learn/curl-data-flags-and-content-type)**. The ways to attach a body, and the trap: -d sends form encoding, not JSON.
+3. **[Headers, Authentication, and Cookies in curl](/learn/curl-headers-auth-and-cookies)**. -H, -u, a bearer token as a plain header, and -b and -c for cookies: everything that identifies the request.
+4. **[curl Flags That Change Security Posture](/learn/curl-security-flags)**. -k, plain http and credentials in the URL: the flags worth reading before a command is run or shared.
+5. **[Translating curl to fetch()](/learn/curl-to-fetch)**. The same request in the browser's fetch(), and the differences that need care: form Content-Type, cookies, TLS checks.
+6. **[The 27 Protocols curl Speaks](/learn/curl-protocols-beyond-http)**. FTP, SFTP, SMB, SMTP, IMAP, MQTT, LDAP (Lightweight Directory Access Protocol) and the relics: the 27 URL schemes curl speaks today.

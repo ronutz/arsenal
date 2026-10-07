@@ -7,6 +7,11 @@
 // compiled to React via next-mdx-remote (RSC variant). Related tools and
 // "read next" articles render from the article's frontmatter — the same
 // cross-linking metadata the in-tool panels use.
+//
+// SERIES (milestone LS-0, 2026-10-06): an article that opens or belongs to a
+// series (src/content/learn/series.ts) carries the series rail under its
+// summary (where it sits, and the contents) and, after its body, the previous
+// and next written articles of the series.
 // ============================================================================
 
 import { notFound } from "next/navigation";
@@ -32,6 +37,8 @@ import Header from "@/components/Header";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { populatedVendors } from "@/config/vendors";
 import SiteFooter from "@/components/SiteFooter";
+// The series rail (LS-0): renders nothing for an article in no series.
+import SeriesRail from "@/components/learn/SeriesRail";
 
 /** Pre-generate every article page for every locale at build time. */
 export function generateStaticParams() {
@@ -135,6 +142,8 @@ export default async function ArticlePage({
             />
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
+            {/* Where this article sits in its series, and the series' contents (LS-0). */}
+            <SeriesRail slug={slug} locale={locale} placement="top" />
             {(locale === "en" || locale === "pt-BR") && (
               <p className="doc-md-link">
                 <a href={`/${locale}/learn/${slug}.md`}>
@@ -175,6 +184,9 @@ export default async function ArticlePage({
                 <ShareControl title={article.title} />
               </div>
             </MessageSlice>
+
+            {/* The series' previous and next written articles, before the looser read-next list (LS-0). */}
+            <SeriesRail slug={slug} locale={locale} placement="bottom" />
 
             {/* Read-next: related articles from frontmatter. */}
             {related.length > 0 && (

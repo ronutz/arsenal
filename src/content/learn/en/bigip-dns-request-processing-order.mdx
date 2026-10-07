@@ -37,6 +37,16 @@ The local BIND instance earns its place at the end of the line: it is the slowes
 
 Put together, a listener's DNS profile reads like a sentence about intent. GSLB enabled, DNS Express enabled, no cache, no BIND, Unhandled Query Action Drop: a hardened authoritative front. GSLB disabled, transparent cache, pool assigned: a caching forwarder. Resolver cache with validation: a recursive resolver for internal clients. When behavior does not match intent, walk the [K14510](https://my.f5.com/manage/s/article/K14510) line from the top, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, and find which machine answered out of turn. The [GSLB decision-flow explainer](/tools/f5-gslb-decision-flow) picks up the story at the wide IP step, and the [iQuery article](/learn/how-iquery-connects-bigip-dns) covers how the GSLB brain learns the health it decides with.
 
+## This series, in order
+
+This article opens the series **BIG-IP DNS and global load balancing**. Its processing order explains most surprises; the parts follow the GSLB path through it: how the system learns what is alive, the two decisions an answer takes, the chain inside the second one, the topology records that score candidates, and the response policy zones that make the cache a control.
+
+1. **[How iQuery Connects BIG-IP DNS to the Rest of the Network](/learn/how-iquery-connects-bigip-dns)**. The XML protocol, gtmd and big3d, the long-lived connections and the certificate trust that make up the mesh.
+2. **[GSLB in Two Tiers: The Wide IP Picks a Pool, the Pool Picks a Server](/learn/gslb-two-tier-pool-then-member)**. Global load balancing as two decisions: the wide IP picks a pool, then the pool picks a virtual server.
+3. **[BIG-IP DNS Load Balancing: the Wide IP, the Pool, and the Three-Step Chain](/learn/gtm-load-balancing-methods)**. The preferred, alternate and fallback chain inside the pool, and the rules people trip over in it.
+4. **[GTM Topology Records: Longest Match Is a Sort, Not the Pick](/learn/gtm-topology-records-and-longest-match)**. Longest match is a sort, not the pick: the first matching record scores a candidate and later ones are shadowed.
+5. **[DNS as a Policy Engine: Multi-RPZ in BIG-IP 21.1](/learn/bigip-dns-multi-rpz)**. Many response policy zones on one cache, evaluated by precedence and transferred securely: DNS as a policy engine.
+
 ## Sources
 
 The answering order above is F5's own, set out in two support articles that walk the query path step by step. Both sit behind the my.f5.com sign-in, so a reader without an account will see a login page rather than the text.

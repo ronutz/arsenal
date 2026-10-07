@@ -57,3 +57,15 @@ A JWT is **signed, not encrypted** (encryption is a separate standard, JWE). It 
 A signed JWT is also **not easily revocable on its own.** Because the claims live inside the token and verification needs no server lookup, a token stays valid until it expires even if you would like to cancel it sooner. The practical answer is short lifetimes plus a separate mechanism (a refresh token, a revocation list, or token introspection) when immediate revocation is required.
 
 The [JWT tool](/tools/jwt) decodes a token's header and claims, reads its expiry and timing in plain language, and verifies an HS256, HS384, or HS512 signature against a secret you paste, all in your browser. The token and secret are never sent anywhere.
+
+## This series, in order
+
+This article opens the series **JWT and JWKS**. It takes a token apart and separates decoding from verifying; the parts supply everything verification needs, in order: the algorithm, the key and its parameters, the published key set and its rotation, the strict sequence from kid to signature, and the failures that come from skipping a step or trusting the token's own header.
+
+1. **[JWT signing algorithms: HMAC, RSA, and ECDSA](/learn/jwt-signing-algorithms)**. Why the alg header matters, symmetric against asymmetric signing, and how to choose between HMAC, RSA and ECDSA.
+2. **[JWK Key Types: RSA, EC, OKP, and oct](/learn/jwk-key-types)**. The kty field and the four key types that cover almost everything: RSA, EC, OKP and oct.
+3. **[JWK Parameters and Thumbprints](/learn/jwk-parameters-and-thumbprints)**. What a key is for and how it is named: kid, use, and the computed RFC 7638 thumbprint.
+4. **[JWKS and Key Rotation: How Providers Publish Their Keys](/learn/jwks-and-key-rotation)**. The key set a provider publishes so anyone can verify its tokens, and how keys are rotated without breaking them.
+5. **[Verifying a JWT with a JWKS: From kid to Signature](/learn/verifying-a-jwt-with-jwks)**. The short, strict sequence: read the header, find the key by kid, confirm the algorithm, check the signature.
+6. **[JWT security pitfalls: alg:none, key confusion, and missing checks](/learn/jwt-security)**. alg:none, key confusion and missing claim checks: the handful of mistakes, and the validation a verifier owes.
+7. **[JWT Algorithm Confusion Attacks](/learn/jwt-algorithm-confusion)**. Trusting the token's own algorithm: accepting none, or verifying RS256 as HS256 with the public key as the secret.

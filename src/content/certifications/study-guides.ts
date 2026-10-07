@@ -185,6 +185,11 @@ export interface Certification {
   renewalNote: string | null;
   /** Public link to the certification's official description. */
   sourceUrl: string | null;
+  /** Other names a candidate may know this credential or its exams by: the exams or titles it replaced, verbatim as
+   *  the vendor named them (R1-b1, 2026-10-06, SCOUT's Round 1 adoption audit row 10: "old and new names"). Searched
+   *  by the hub's filter and listed on each guide page as "Also known as"; never shown as the current name. Only
+   *  names this file already records with a source go here; the re-verification batches (R1-b3) add the rest. */
+  aliases?: readonly string[];
 }
 
 // ---------------------------------------------------------------------------
@@ -479,6 +484,9 @@ export const certifications: Certification[] = [
     ],
     renewalNote:
       "An existing F5-CA, BIG-IP can be renewed by passing the recertification exam (F5CABR), or by passing all five exams again.",
+    // The two exams the five F5CAB exams replaced, as this file's header records them from F5 Education Services
+    // (support.education.f5.com, article 37607208476059, verified 2026-07-09): 101 retired on 2025-04-30.
+    aliases: ["101", "Application Delivery Fundamentals", "201", "TMOS Administration"],
     sourceUrl:
       "https://support.education.f5.com/hc/en-us/articles/37607208476059-What-is-the-F5-Certified-Administrator-BIG-IP-F5-CA-BIG-IP-certification",
   },

@@ -116,3 +116,16 @@ Say this part plainly, because the marketing does not.
 Zero trust is a good principle badly served by its vocabulary. The principle, decide per request rather than per location, is right, and the industry would be healthier if it were discussed as **an architecture with trade-offs** rather than a product with a badge.
 
 The trade-off is the one that runs through [this whole site](/learn/the-chokepoints-of-the-internet): you have not eliminated trust, you have concentrated it somewhere newer and more visible. That is usually an improvement, because concentrated trust can be monitored, versioned and audited in a way that ambient network trust never could. But it is a relocation, and the first question about any relocated dependency is what happens when it fails.
+
+## This series, in order
+
+This article opens the series **Zero trust, SSE and the proxy**. It separates a principle, a way of publishing applications and a purchasing category; the parts open up the security service edge itself: what converged means mechanically, how five vendors decide whether a flow passes, how traffic reaches the proxy and who it belongs to, and the engines that judge it (isolation, detonation, data loss prevention and its tuning).
+
+1. **[What single-pass actually means](/learn/sse-single-pass-architecture)**. One decryption instead of four, pillars against cross-cutting engines, and why DLP is not a pillar.
+2. **[Five SSE Vendors, One Decision, Five Different Answers](/learn/sse-five-vendors-one-decision)**. Zscaler, Netskope, F5 Distributed Cloud, FortiSASE and Prisma Access: one question, five architectures.
+3. **[How a PAC File Chooses a Proxy](/learn/how-a-pac-file-chooses-a-proxy)**. FindProxyForURL, the return-string grammar, and how a browser decides between direct and a proxy for every request.
+4. **[How a Proxy Knows Who You Are: User Authentication Methods Inline](/learn/proxy-user-authentication-methods)**. Policy per user means an identity on every flow, including the ones that cannot log in: the four methods.
+5. **[Browser Isolation: When You Cannot Trust the Page, Move the Browser](/learn/browser-isolation-fundamentals)**. Stop asking whether a page is safe: the real browser runs in a disposable container and the endpoint receives a rendering.
+6. **[Sandbox Detonation: Judging a File by What It Does](/learn/sandbox-detonation-fundamentals)**. Signatures recognise malware that has been seen; a sandbox convicts what has not, by watching it run.
+7. **[Data Loss Prevention: How Machines Recognize Secrets](/learn/dlp-fundamentals)**. Patterns, dictionaries, exact data matching and fingerprints: the four ways a machine recognises a secret.
+8. **[DLP tuning: the argument is almost always about a checksum](/learn/dlp-checksums-and-why-the-rule-did-not-fire)**. A predefined identifier is a pattern plus a validation, and the validation (Luhn and its kin) is where the surprises live.

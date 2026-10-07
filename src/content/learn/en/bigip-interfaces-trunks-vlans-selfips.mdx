@@ -32,3 +32,24 @@ Which VLAN, route, and egress address traffic uses is a routing decision: destin
 ## Status cascades
 
 The chain is also a failure model. Interface down: trunk degrades or dies; a VLAN whose last carrier died takes its self-IPs with it; routes via those self-IPs stop resolving; monitors sourced from them go dark, marking healthy servers down. Compare interface status first, then walk upward - the dependencies of interfaces, trunks, VLANs, and self-IPs, in exactly the blueprint's order.
+
+## This series, in order
+
+This article opens the series **BIG-IP foundations, from interface to pool member**. It lays the dependency chain from interface to self-IP that everything else stands on; the parts first finish the box (segmentation, management access, the services it relies on), then follow one connection in the order the BIG-IP handles it, and end with how the platform spreads that work across cores and carves itself into guests.
+
+1. **[Route Domains: Layer 3 Segmentation Inside One BIG-IP](/learn/bigip-route-domains)**. A separate routing table with an ID, so tenants with overlapping address spaces share one device: the percent-sign notation and strict isolation.
+2. **[Management Access on BIG-IP: the Management IP, Port Lockdown, and Access Lists](/learn/bigip-management-access-port-lockdown)**. The two doors into a BIG-IP: the management address, and what port lockdown really permits on a self-IP.
+3. **[The System Services Behind a Healthy BIG-IP: DNS, NTP, SNMP, Syslog](/learn/bigip-system-services)**. DNS, NTP, SNMP and remote syslog: four small configurations with an outsized blast radius.
+4. **[How a BIG-IP Virtual Server Works](/learn/how-a-virtual-server-works)**. The front door: the listening address and port, the profile stack, persistence, the pool member and the source translation.
+5. **[BIG-IP Virtual Server Types, and What Each One Actually Does](/learn/ltm-virtual-server-types)**. From a full proxy that terminates and re-originates connections to a packet-by-packet forwarder: what each type actually does.
+6. **[Profiles on a Virtual Server](/learn/bigip-profiles-on-a-virtual-server)**. Protocol, application, SSL and persistence profiles stacked into the behaviour of one virtual server, and how they inherit.
+7. **[BIG-IP Pools and Load-Balancing Methods](/learn/bigip-pools-and-load-balancing)**. The pool of backend members, and the split between static methods and the dynamic ones that react to load.
+8. **[BIG-IP Load-Balancing Methods, and What Each One Weighs](/learn/ltm-load-balancing-methods)**. The documented methods along two axes: whether they react to live state at all, and what exactly they weigh.
+9. **[Where Do the Requests Go? Simulating BIG-IP LTM Distribution](/learn/bigip-ltm-request-distribution)**. From the rule to the outcome: why Ratio is a full cycle, and how priority group activation leaves members idle.
+10. **[How LTM Health Monitors Decide Up or Down](/learn/ltm-health-monitors)**. Send and receive strings, interval and timeout, and where the monitor is attached: how fast a failure is noticed.
+11. **[BIG-IP Persistence Methods, and What Each Keys On](/learn/ltm-persistence-methods)**. Cookie, source address, SSL session or an iRule value: what each method keys on, and where each one breaks.
+12. **[SNAT and the Return-Traffic Problem](/learn/bigip-snat-and-return-traffic)**. Why the member's reply must come back through the BIG-IP, and how SNAT makes it.
+13. **[OneConnect: Reuse Is a Grouping Problem, and SNAT Rewrites the Groups](/learn/bigip-oneconnect-connection-reuse)**. Idle server-side connections handed to the next eligible request, the source mask that defines eligible, and what SNAT does to the groups.
+14. **[Protocol Profiles: Living TCP, Frozen TCP, and the Two Fast Paths](/learn/bigip-l4-protocol-profiles)**. Living TCP profiles, the frozen legacy trio, and the two fast paths that trade the full proxy for speed.
+15. **[CMP: The Cores You Paid For, and the iRule Lines That Give Them Back](/learn/bigip-cmp-clustered-multiprocessing)**. One TMM per core, the demoted virtual server that runs everything on one, and static:: as the cure.
+16. **[vCMP: Hosts, Guests, and How Resources Are Carved](/learn/bigip-vcmp)**. One platform carved into independent guests: the host and guest model, the lifecycle, and how cores drive memory.

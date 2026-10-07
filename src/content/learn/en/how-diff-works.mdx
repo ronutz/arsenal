@@ -51,3 +51,14 @@ A diff finds *an* alignment, not *the* alignment. When several alignments are eq
 This is why a diff can look bewildering after a refactor that moved a block: **the tool has no concept of "moved"**. A relocated function is a deletion in one place and an insertion in another, and if the block resembles its neighbours the alignment may cut it in a place no human would.
 
 **A confusing diff is usually a sign the comparison is being asked the wrong question**, not that the change is bad. Diffing at word level, ignoring whitespace, or comparing against a different base often turns unreadable output into an obvious one: the change did not alter, only the alignment did.
+
+## This series, in order
+
+This article opens the series **Diffs, merges and Git**. The longest common subsequence above is the engine; the parts move from reading its output, through the cases where it looks wrong or too coarse, to the three-way merge, and end with the version-control system and the platform that made diffs the unit of collaboration.
+
+1. **[Reading a diff](/learn/reading-a-diff)**. The markers, both sides' line numbers, inline highlighting, and what ignoring whitespace or case really changes.
+2. **[Minimal Edits: Why a Diff Can Look Wrong](/learn/diff-minimal-edits)**. Why the smallest edit is not unique, and how that makes a diff split a moved block or blame the wrong lines.
+3. **[Word and Character Level Diffs](/learn/diff-word-and-character-level)**. When a line diff is too coarse, and how word and character diffs show the exact change.
+4. **[Three-Way Diffs and Merge Conflicts](/learn/diff-three-way-and-merge-conflicts)**. The common ancestor that makes automatic merging possible, and how to read and resolve conflict markers.
+5. **[Git: the content-addressed database wearing a version-control suit](/learn/git)**. What Git stores (snapshots, not diffs), why a branch is a 41-byte pointer, and the three areas behind the confusing commands.
+6. **[GitHub: the pull request was the product](/learn/github)**. How a 2008 web application turned the emailed patch into the pull request, and became the largest code host without owning the protocol.

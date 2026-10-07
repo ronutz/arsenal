@@ -40,3 +40,14 @@ A ordem não é trivialidade — ela dita quais dados estão disponíveis e quan
 ## Um mapa, não o território
 
 [Explicador da ordem de eventos de iRules](/tools/f5-irules-event-order) modela a ordem documentada para um virtual server Standard (full-proxy), que cobre a grande maioria dos casos de uso de BIG-IP LTM - Local Traffic Manager. O conjunto exato também depende de módulos: BIG-IP Zero Trust Access (antigo BIG-IP APM - Access Policy Manager), F5 AWAF - Advanced WAF (antigo BIG-IP ASM - Application Security Manager) e outros adicionam seus próprios eventos. Também depende de a sua iRule coletar dados explicitamente. Use-a para raciocinar sobre *onde* no fluxo a sua lógica deve viver, e depois confirme contra uma configuração real para qualquer coisa incomum.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Eventos de iRules e o ciclo de vida da conexão**. Ele percorre os eventos na ordem em que uma conexão os dispara; as partes respondem às perguntas que essa ordem levanta: qual lado do proxy um evento enxerga, por que um evento pode não existir num virtual server, o que o handshake acrescenta, qual de várias regras roda primeiro, e como escolher o evento antes de escolher os comandos.
+
+1. **[Lado Cliente vs Lado Servidor em iRules](/learn/irule-clientside-vs-serverside)**. Um proxy completo mantém duas conexões, e o mesmo comando devolve coisas diferentes em cada lado.
+2. **[O Que Faz um Evento Disparar: Provisionamento e Perfis](/learn/irule-events-modules-and-profiles)**. Um evento só existe quando o seu módulo está provisionado e o seu perfil está anexado, e alguns precisam de um terceiro ingrediente.
+3. **[FastL4 vs Standard: Quais Eventos de iRule Você Tem](/learn/irule-fastl4-vs-standard-events)**. Os eventos ricos do proxy TCP completo contra o caminho rápido que abre mão da maioria deles de propósito.
+4. **[Eventos de Handshake SSL em iRules](/learn/irule-ssl-handshake-events)**. Os eventos em volta do handshake TLS, e o evento do ClientHello que torna possível a seleção por SNI.
+5. **[Prioridade de iRule e Múltiplas Regras](/learn/irule-priority-and-event-order)**. Quando várias iRules escutam o mesmo evento, a prioridade decide qual roda primeiro.
+6. **[Escrevendo uma iRule: A Ordem em Que as Perguntas Vêm](/learn/writing-irules-that-behave)**. Evento primeiro, comandos em segundo, custo em terceiro: por que o desempenho é a última pergunta e não a primeira.

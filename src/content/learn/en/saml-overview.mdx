@@ -41,6 +41,15 @@ Receiving an assertion is not the same as trusting it. A correct SP verifies the
 
 A decoder helps you see what is inside a message so you can reason about these checks. It does not perform them. Reading the structure is the first step; verifying the signature against a real key, in the SP, is what actually establishes trust.
 
+## This series, in order
+
+This article opens the series **SAML**. It follows one sign-on from the service provider to the identity provider and back; the parts then slow down on each piece: how the messages travel and who starts the flow, what the assertion says and what a service provider must check, how the signature protects it, and the proxy that puts SAML in front of an application that never spoke it.
+
+1. **[SAML Bindings and SP vs IdP Initiation](/learn/saml-bindings-and-sso-initiation)**. HTTP-Redirect against HTTP-POST, and a flow started at the service provider against one started at the identity provider.
+2. **[Inside a SAML Assertion: Subject, Conditions, and Audience](/learn/saml-assertions-and-conditions)**. Subject and NameID, the bearer confirmation checks, the validity window, and the audience restriction.
+3. **[SAML Signatures and XML-DSig](/learn/saml-signatures)**. XML Signature in a SAML message: the algorithms, why SHA-1 is weak, and signing the Response against signing the Assertion.
+4. **[The SAML Proxy: Inserting an Identity Layer into a Session](/learn/saml-proxy-explained)**. A proxy in the sign-on flow rather than the packet path: it forces authentication against an identity provider before the session passes.
+
 ## Sources
 
 SAML 2.0 is an OASIS Standard with a ratification date, so the version and the year above are checkable against the document itself.

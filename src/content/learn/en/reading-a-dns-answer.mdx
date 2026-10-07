@@ -72,3 +72,23 @@ The [Kaminsky flaw](/learn/the-kaminsky-dns-flaw) is what happens when a cached,
 ## The habit
 
 Read the answer top to bottom, once, before forming a theory. Who answered, whether authoritatively, what the flags say, then the records, then the TTLs. The [500-mile email](/learn/the-500-mile-email) was solved by someone who looked at a layer nobody was reporting on; a DNS problem is usually solved by someone who looks at a *line* nobody was reading. For the longer story of how the system came to work this way, see the [DNS lineage](/learn/dns-family-history).
+
+## This series, in order
+
+This article opens the series **DNS, read from the answer**. It reads one answer from the top, line by line, and points to the article behind each line; the parts below are those articles in the same order: the two tools' output, who answered, the header and the OPT section, the records, the failures, then asking precisely, walking the delegation, reverse lookups, DNSSEC, and the choice between the two tools.
+
+1. **[Reading dig Output From Top to Bottom](/learn/reading-dig-output)**. dig's fixed shape, from the version line to the query statistics, block by block.
+2. **[Reading nslookup Output](/learn/reading-nslookup-output)**. The Server and Address header, the Non-authoritative marker, and the per-type prose that follows.
+3. **[Authoritative vs Non-Authoritative Answers](/learn/authoritative-vs-non-authoritative-answers)**. What the Non-authoritative answer marker means, why it is usually fine, and how to get an authoritative answer.
+4. **[The DNS Header: Opcode, Status, and Flags](/learn/dns-message-header-and-flags)**. Opcode, status and the seven single-bit flags (qr, aa, tc, rd, ra, ad, cd) that say who answered and how.
+5. **[EDNS and the OPT Pseudo-Section](/learn/edns-and-the-opt-pseudosection)**. The OPT pseudo-section: the UDP payload size, the DO bit that asks for DNSSEC, and options such as cookies.
+6. **[Reading the Records in a dig Answer](/learn/dns-record-types-in-answers)**. The five columns of every record, then the rdata of A, CNAME, MX, SOA, SRV, CAA and the others you meet.
+7. **[How nslookup Prints Each Record Type](/learn/nslookup-record-types)**. How nslookup labels each record in prose instead of columns, the multi-line SOA block included.
+8. **[nslookup Errors and What They Mean](/learn/nslookup-errors-explained)**. NXDOMAIN, SERVFAIL, REFUSED and timeouts: the code after ** server can't find is the diagnosis.
+9. **[Anatomy of a dig command line: how dig reads what you type](/learn/anatomy-of-a-dig-command-line)**. How dig reads a server, flags, a name, a type, a class and plus options in almost any order, and the defaults it fills in.
+10. **[dig Query Options and Output Control](/learn/dig-query-options)**. The options used every day, from @server and -t to +short and the ones that trim the output.
+11. **[nslookup Interactive Mode](/learn/nslookup-interactive-mode)**. The interactive prompt: switching resolvers, changing the record type, turning on debug output.
+12. **[Following Delegation with dig +trace](/learn/dig-trace-and-delegation)**. Resolving from the root down, hop by hop, the way the internet actually does it.
+13. **[Reverse DNS Lookups with nslookup](/learn/reverse-dns-lookups-with-nslookup)**. PTR records under in-addr.arpa and ip6.arpa, and how nslookup builds the reverse name for you.
+14. **[DNSSEC Records in dig Output](/learn/dnssec-records-in-dig)**. RRSIG, DNSKEY, DS and NSEC: how they chain from the root to a zone, and what the ad flag certifies.
+15. **[nslookup vs dig: Which to Use](/learn/nslookup-vs-dig)**. The same answer in both tools, and a simple rule for which to reach for.

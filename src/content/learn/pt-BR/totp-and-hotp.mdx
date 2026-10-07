@@ -65,3 +65,11 @@ Relógios derivam, então validadores aceitam códigos de passos de tempo vizinh
 É uma melhora de três vezes nas chances do atacante por tentativa, permanentemente, em troca de tolerar uma deriva que um cliente bem cuidado raramente tem. Uma janela generosa parece gentileza com o usuário e, do outro lado, lê-se como desconto.
 
 **Mantenha a janela em ±1 passo e ponha a defesa real na taxa de tentativas.** Adivinhar seis dígitos só é difícil enquanto adivinhar for lento — **o comprimento do código trabalha muito menos que o bloqueio.**
+
+## Esta série, em ordem
+
+Este artigo abre a série **Códigos de uso único e passkeys**. Ele mostra o motor que HOTP e TOTP compartilham; as partes acompanham a vida de um código (como o segredo chega ao app, como o servidor aceita um código sem aceitar uma repetição) e terminam na autenticação que não pode ser lida em voz alta e retransmitida.
+
+1. **[Provisionando autenticadores: URIs otpauth e QR codes](/learn/totp-provisioning-uris-and-qr)**. O URI otpauth, geralmente um QR code, que leva o segredo e seus parâmetros para um app autenticador.
+2. **[Validando senhas de uso único: desvio, janelas e repetição](/learn/validating-totp-codes)**. Desvio de relógio, a janela de aceitação, reutilização e limitação de tentativas: cada uma uma troca entre usabilidade e segurança.
+3. **[Passkeys: por que este MFA é diferente do MFA que segue falhando](/learn/passkeys-and-phishing-resistant-authentication)**. Tudo o que um usuário consegue ler em voz alta pode ser retransmitido em tempo real; por que as passkeys são outro tipo de autenticação multifator.

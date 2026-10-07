@@ -76,3 +76,10 @@ This is the argument for hybrid deployment stated better than any risk assessmen
 - **Hardware and device vendors**, the slowest layer, and the one where the harvest-now problem is least fixable.
 
 The honest summary: the algorithms are chosen and standardised, hybrid key exchange is already carrying real traffic, and the difficult part is not cryptography but inventory: knowing where the old algorithms are, in an estate nobody documented for that question.
+
+## This series, in order
+
+This article opens the series **Post-quantum cryptography**. It separates what Shor's algorithm breaks from what Grover's merely weakens; the two parts follow the answer from the standards to the wire.
+
+1. **[The NIST Post-Quantum Standards: ML-KEM, ML-DSA, and SLH-DSA](/learn/nist-pqc-standards)**. FIPS 203, 204 and 205: ML-KEM for key establishment, ML-DSA and SLH-DSA for signatures, and why there are two of those.
+2. **[Hybrid key exchange in TLS: what X25519MLKEM768 does on the wire](/learn/hybrid-key-exchange-in-tls)**. X25519MLKEM768: a classical curve and ML-KEM in one key-exchange group, so that a break of either leaves the session secure.

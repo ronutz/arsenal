@@ -2,31 +2,63 @@
 slug: osi-model-in-practice
 title: "The OSI Model in Practice: Mapping Real Traffic to Seven Layers"
 summary: "The Open Systems Interconnection model earns its place not as trivia but as a shared address system for problems: a MAC address is Layer 2, an IP address Layer 3, a TCP or UDP port Layer 4, and the application on top. How to map real artifacts to layers, where the model bends against TCP/IP reality, and why troubleshooting conversations go faster when everyone points at the same floor."
-concepts: ["osi model", "layers", "tcp/ip", "fundamentals", "networking", "encapsulation"]
+concepts: ["osi model", "layers", "tcp/ip", "fundamentals", "networking", "encapsulation", "iso/iec 7498-1", "x.200", "rfc 1122", "protocol data unit"]
 relatedTools: []
-relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-versions-09-to-3"]
+relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-versions-09-to-3", "the-protocol-wars", "ethernet-physical-layers", "the-ethernet-frame-field-by-field"]
 category: networking
 order: 160
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-07"
 ---
 
-The Open Systems Interconnection (OSI) model is a seven-layer map of how network communication is organized, and the retired F5 fundamentals exam asked for exactly the practical half of it: given an artifact, name the layer. That skill survives every curriculum change because it is how engineers give each other addresses inside a problem.
+The Open Systems Interconnection (OSI) model is a seven-layer map of how network communication is organised, and the retired F5 fundamentals exam asked for exactly the practical half of it: given an artifact, name the layer. That skill survives every curriculum change because it is how engineers give each other addresses inside a problem.
+
+## Where the seven layers come from
+
+The model is a standard, not folklore. ISO publishes it as ISO/IEC 7498-1:1994, the Basic Reference Model, which "was last reviewed and confirmed in 2000. Therefore this version remains current" ([ISO](https://www.iso.org/standard/20269.html)); the ITU-T publishes it as Recommendation X.200, approved in July 1994 and in force ([ITU-T](https://www.itu.int/rec/T-REC-X.200-199407-I/en)). It was written as the architecture of a complete protocol suite that governments and carriers backed and the internet outran, a story told in [the protocol wars](/learn/the-protocol-wars). The protocols mostly lost; the map stayed, because it gives every function a floor to stand on.
 
 ## The seven floors, with their artifacts
 
-Layer 1, physical: cables, fiber, radio, the electrical or optical signal itself - and its failure modes, a damaged cable or a duplex mismatch. Layer 2, data link: Ethernet frames and Media Access Control (MAC) addresses; switches live here. Layer 3, network: Internet Protocol (IP) addresses and routing; routers live here. Layer 4, transport: the Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP), and the port numbers that name conversations. Layers 5 and 6, session and presentation: rarely named in practice - encryption and encoding concerns get discussed here when they are discussed at all. Layer 7, application: the Hypertext Transfer Protocol (HTTP), the Domain Name System (DNS), and everything users actually asked for.
+Layer 1, physical: cables, fibre, radio, the electrical or optical signal itself, and its failure modes, a damaged cable or a [duplex mismatch](/learn/ethernet-physical-layers). Layer 2, data link: [Ethernet frames](/learn/the-ethernet-frame-field-by-field) and Media Access Control (MAC) addresses; switches live here. Layer 3, network: Internet Protocol (IP) addresses and routing; routers live here. Layer 4, transport: the Transmission Control Protocol (TCP) and the User Datagram Protocol (UDP), and the port numbers that name conversations. Layers 5 and 6, session and presentation: rarely named in practice; encryption and encoding concerns get discussed here when they are discussed at all. Layer 7, application: the Hypertext Transfer Protocol (HTTP), the Domain Name System (DNS), and everything users actually asked for.
 
 The exam-style mapping is a reflex worth drilling: MAC address, Layer 2. IP address, Layer 3. TCP or UDP port, Layer 4. The application protocol, Layer 7. A virtual server listening on an address and port spans 3 and 4; a proxy making decisions on HTTP headers is working at 7.
 
+## The internet's own layering: four layers, not seven
+
+The protocols that won were never designed against the seven floors. RFC 1122, the host requirements of October 1989, lists four: application, transport, internet and link ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122.html), section 1.1.3). Its link layer is the protocol a host must implement "to communicate on its directly-connected network", and of the top it says: "The application layer of the Internet suite essentially combines the functions of the top two layers", presentation and application, "of the OSI reference model". So when an engineer says "Layer 7", they mean the internet's application layer; when they say "Layer 2", they mean whatever link the host is on; and layers 5 and 6 have no protocol of their own in the internet suite to point at.
+
+| OSI layer | Internet layer (RFC 1122) | What you capture |
+|---|---|---|
+| 7, 6, 5 | Application | HTTP, DNS, TLS records |
+| 4 | Transport | TCP segments, UDP datagrams |
+| 3 | Internet | IP datagrams, ICMP |
+| 2 | Link | Ethernet frames, ARP |
+| 1 | (not a layer of the suite) | signals, light, radio |
+
 ## Encapsulation: why the layers stack
 
-Each layer wraps the one above: application data goes inside a TCP segment, the segment inside an IP packet, the packet inside an Ethernet frame. Reading a packet capture is literally peeling this onion, outermost header first - which is why capture tools print frame, then IP, then TCP, then payload, in that order. When a device rewrites one layer and leaves the others alone - a router swapping Layer 2 headers hop by hop while the Layer 3 addresses ride through - the model is what makes that behavior predictable rather than mysterious.
+Each layer wraps the one above: application data goes inside a TCP segment, the segment inside an IP datagram, the datagram inside an Ethernet frame. RFC 1122 even gives each wrapper its name: a segment is "a TCP header followed by application data"; an IP datagram "consists of an IP header followed by transport layer data"; a packet is "the unit of data passed across the interface between the internet layer and the link layer"; and a frame "consists of a link-layer header followed by a packet" (RFC 1122, section 1.3.3). Reading a packet capture is peeling those wrappers, outermost first, which is why capture tools print frame, then IP, then TCP, then payload, in that order. When a device rewrites one layer and leaves the others alone (a router swapping Layer 2 headers hop by hop while the Layer 3 addresses ride through), the model is what makes that behaviour predictable rather than mysterious.
+
+## One request, floor by floor
+
+Watch one request touch the floors in order. A browser asked for `https://example.com` first needs an address, so it sends a Domain Name System query, a Layer 7 message that travels in UDP to the server's port: "Messages sent using UDP user server port 53 (decimal)" ([RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.html)). If the resolver sits on another network, the query must go through the default gateway, so before it leaves, the host resolves the gateway's MAC address with ARP, a Layer 2 exchange. The answer gives the browser an IP address, Layer 3, and the scheme gives it a port: for https, "TCP port 443 (the reserved port for HTTP over TLS) is the default" ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)), Layer 4. Then come a TCP handshake, a TLS handshake and the HTTP request itself, three conversations stacked on one connection.
+
+When the page does not load, each step is a question with a floor attached. No ARP entry for the gateway is a Layer 2 answer; a DNS timeout is a Layer 7 symptom that may have a Layer 3 cause; a connection reset right after the TLS hello sits somewhere between 4 and 7. Asking which step failed is asking which floor to stand on.
 
 ## Where the model bends
 
-The real internet runs on the TCP/IP suite, which never had seven layers; sessions and presentation blur into applications, and plenty of technology refuses to sit still - a load balancer terminating Transport Layer Security (TLS) and re-encrypting touches 4 through 7 in one motion, and tunnels put entire stacks inside Layer 4 payloads. The model is a vocabulary, not a law. Use it the way working engineers do: "the problem is below Layer 3" rules out applications and DNS in one sentence, and "it fails only at Layer 7" tells the network team they are probably off the hook.
+The model is a vocabulary, not a law, and plenty of technology refuses to sit still on one floor. A load balancer terminating Transport Layer Security (TLS) and re-encrypting touches 4 through 7 in one motion. Tunnels put entire stacks inside other stacks: VXLAN, in RFC 7348's own title, is "A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks", carrying Ethernet frames inside UDP to port 4789 ([RFC 7348](https://www.rfc-editor.org/rfc/rfc7348.html)), so a capture shows Layer 2 above Layer 4. The internet's architects have been blunter still: RFC 3439 has a section titled "Layering Considered Harmful", because strict layering means "the optimization of each layer has to be done separately" ([RFC 3439](https://www.rfc-editor.org/rfc/rfc3439.html), December 2002). None of that makes the map useless; it means the floors describe functions, and one box can perform several.
 
 ## The habit that pays
 
-When troubleshooting, name the highest layer you have proven good and the lowest layer you have proven bad; the fault lives between them. Link light and interface counters clear Layer 1; [ARP resolution](/learn/arp-and-mac-addresses) clears 2; a reply to ping clears 3; a [completed TCP handshake](/learn/tcp-connection-lifecycle) clears 4; after that, the conversation belongs to the application. That one habit converts the seven layers from an exam answer into a triage instrument.
+Use the model the way working engineers do: "the problem is below Layer 3" rules out applications and DNS in one sentence, and "it fails only at Layer 7" tells the network team they are probably off the hook. When troubleshooting, name the highest layer you have proven good and the lowest layer you have proven bad; the fault lives between them. Link light and interface counters clear Layer 1; [ARP resolution](/learn/arp-and-mac-addresses) clears 2; a reply to ping clears 3; a [completed TCP handshake](/learn/tcp-connection-lifecycle) clears 4; after that, the conversation belongs to the application. That one habit converts the seven layers from an exam answer into a triage instrument.
+
+## Sources
+
+- [ISO/IEC 7498-1:1994, the Basic Reference Model: published November 1994, last reviewed and confirmed in 2000 (read 2026-10-07)](https://www.iso.org/standard/20269.html)
+- [ITU-T Recommendation X.200, Basic Reference Model: the basic model, approved 1 July 1994, in force (read 2026-10-07)](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, October 1989: sections 1.1.3 (the four layers) and 1.3.3 (segment, datagram, packet, frame) (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122.html)
+- [RFC 1035, Domain Names: Implementation and Specification, November 1987: section 4.2, server port 53 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035.html)
+- [RFC 9110, HTTP Semantics, June 2022: section 4.2.2, port 443 for https (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 7348, VXLAN: A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks, August 2014 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc7348.html)
+- [RFC 3439, Some Internet Architectural Guidelines and Philosophy, December 2002: section 3, Layering Considered Harmful (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3439.html)

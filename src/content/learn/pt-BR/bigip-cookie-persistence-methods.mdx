@@ -40,3 +40,12 @@ Um registro de persistência é uma promessa de continuar mandando o cliente par
 O que acontece em seguida depende de configuração, não de intuição. A conexão pode ser rebalanceada ou pode ser recusada, e a diferença entre esses dois desfechos durante um incidente é a diferença entre serviço degradado e indisponibilidade para um subconjunto de usuários que não entende por que todos os outros estão bem.
 
 **Teste a falha, não o recurso.** Persistência funcionando é fácil de observar; persistência liberando corretamente quando um membro cai é o comportamento que importa, e é o que ninguém verifica até virar carga.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Cookies de persistência do BIG-IP**. Ele trata das quatro maneiras de o cookie chegar lá e das configurações de profile em volta dele; as partes então leem o próprio cookie, decodificam os seus quatro formatos, pesam o que ele revela e fecham o vazamento.
+
+1. **[Cookies de Persistência do BIG-IP: O Que São e Por Que Vazam](/learn/f5-bigip-persistence-cookies)**. Por que um BIG-IP insere um cookie BIGipServer, o que o valor codifica e por que a forma padrão entrega um endereço e uma porta internos.
+2. **[As Quatro Codificações de Cookie do BIG-IP, Byte a Byte](/learn/bigip-cookie-formats)**. As quatro codificações sem criptografia, cada uma com uma decodificação resolvida: bytes de endereço invertidos, porta com bytes trocados, route domains, IPv6.
+3. **[O Que um Cookie do BIG-IP Conta a um Atacante](/learn/bigip-cookie-disclosure)**. Um caso clássico de divulgação de informação: endereços internos, portas, tamanho do pool e route domains, e como os scanners os colhem.
+4. **[Fechando o Vazamento: Criptografia de Cookie no BIG-IP](/learn/bigip-cookie-encryption)**. Criptografar o cookie, como fica o valor criptografado e as opções de hash e de nome ao lado dele.

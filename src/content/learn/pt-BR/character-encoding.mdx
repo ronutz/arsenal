@@ -39,3 +39,13 @@ Esse último ponto é a surpresa comum: **um caractere nem sempre é um byte.** 
 Isso importa para o Base64 porque **o Base64 opera sobre bytes, não caracteres.** Para codificar uma string em Base64, a string precisa primeiro ser transformada em bytes por uma codificação de caracteres, e essa codificação é essencialmente sempre o UTF-8. Codifique o mesmo caractere com um esquema diferente e você obtém bytes diferentes, e portanto Base64 diferente. Então o fluxo completo para texto é: caracteres viram bytes (UTF-8), depois bytes viram texto seguro (Base64). Ao decodificar, você reverte ambos os passos.
 
 A [ferramenta Base64](/tools/base64) codifica texto como bytes UTF-8 antes de codificar em Base64, e sinaliza quando um resultado decodificado não é UTF-8 válido, tudo no seu navegador.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Caracteres, bytes e Unicode**. Ele traça a linha entre um caractere e os bytes que o carregam; as partes seguem essa linha dos primeiros 128 códigos ao Unicode inteiro, e depois às duas maneiras como o texto dá errado no caminho: embaralhado, ou escondendo alguma coisa.
+
+1. **[ASCII: os 128 códigos, e por que a tabela é desenhada assim](/learn/ascii-the-128-codes)**. Sete bits dispostos em oito colunas: por que maiúscula e minúscula diferem em um bit, para que serviam os 33 controles e quais ainda agem.
+2. **[Unicode: pontos de código, planos, nomes e propriedades](/learn/unicode-code-points-and-properties)**. 1.114.112 pontos de código em dezessete planos, seus nomes e propriedades, e por que o mesmo emoji mede 1, 2 ou 4 conforme quem conta.
+3. **[UTF-8, UTF-16 e UTF-32, byte por byte](/learn/utf-8-and-utf-16-byte-by-byte)**. Os bytes de cada codificação num dump hexadecimal, as sequências que um decodificador troca por U+FFFD e a marca de ordem de bytes.
+4. **[Mojibake: por que café vira cafÃ©, e como recuperar o texto](/learn/mojibake-and-code-pages)**. Por que café vira cafÃ©, as trocas clássicas de charset e como desfazer o estrago quando ele pode ser desfeito.
+5. **[Caracteres escondidos e sósias: o que uma linha de texto pode esconder](/learn/hidden-and-lookalike-characters)**. Caracteres de largura zero, controles bidirecionais, sósias cirílicos e aspas tipográficas: o que cada um esconde e como encontrá-lo.

@@ -32,3 +32,20 @@ The Traffic Management Shell (TMSH) reports everything the graphical surfaces sh
 ## The socket layer: netstat and service status
 
 The blueprint's netstat objective is a Linux literacy check with a BIG-IP accent. `netstat -pan` (or the modern `ss` equivalent) lists sockets with owning processes; filtering for LISTEN answers "which services are up and on which ports." The inference direction matters: given output showing a listener on Transmission Control Protocol (TCP) 443 owned by httpd, you conclude the configuration utility is up; a listener on 22 is sshd; 4353 is the device-to-device management channel. Conversely, "is the service listening on this port" is answered by the presence or absence of the row. Pair it with `tmsh show sys service` for the daemon-status view, and you can distinguish active from inactive elements of the delivery stack without leaving the shell - which is precisely what the exam scenario asks.
+
+## This series, in order
+
+This article opens the series **BIG-IP troubleshooting and operations**. It names the surfaces a device reports its condition on; the parts go from reading to capturing to handing over: the statistics and the logs, then tcpdump and the metadata TMM writes into a capture, then the evidence you send to support or keep for yourself (the snapshot, the hardware tests, the backup), and finally what watches the box when you are not looking.
+
+1. **[Reading BIG-IP statistics](/learn/reading-bigip-statistics)**. Why a stats response arrives in three envelopes, the high and low halves of a counter, and why one sample is never a rate.
+2. **[The BIG-IP Log Files: a Map of /var/log](/learn/bigip-log-files-map)**. Which log answers which question: traffic objects, who got in, who changed what, and the severity ladder.
+3. **[BIG-IP tcpdump: How It Differs from Standard tcpdump](/learn/bigip-tcpdump-syntax)**. The same tcpdump binary, but interfaces that are not NICs: the special 0.0 interface and the F5-only suffixes.
+4. **[Capturing Safely on a Production BIG-IP](/learn/bigip-tcpdump-safety)**. Bounding the capture, watching the disk, choosing the detail: capturing on a box that is carrying live traffic.
+5. **[What the BIG-IP writes into your capture](/learn/f5-ethernet-trailer)**. What TMM knew about each packet, written after it: slot, TMM, virtual server, flow IDs, the reset cause, even TLS secrets.
+6. **[Reading a BIG-IP Capture: The F5 Trailer in Wireshark](/learn/reading-a-bigip-capture)**. The f5ethtrailer dissector turning those extra bytes into readable fields in Wireshark.
+7. **[TMM Detail Levels and Peer Flows (:n, :nn, :nnn, :p)](/learn/tmm-detail-and-peer-flows)**. The colon suffixes :n, :nn, :nnn and :p, how much metadata each attaches, and capturing both sides of a connection.
+8. **[qkview and iHealth: the Support Snapshot Workflow](/learn/bigip-qkview-and-ihealth)**. The device's diagnostic self-portrait, uploaded to iHealth and read through its heuristics.
+9. **[EUD: BIG-IP Hardware Diagnostics Before You RMA](/learn/bigip-eud-hardware-diagnostics)**. The offline test battery for memory, storage, sensors and interfaces, run before opening a return merchandise authorization (RMA).
+10. **[UCS Archives: the BIG-IP Backup That Contains Everything](/learn/bigip-ucs-archives)**. The full-device backup, including the private keys people forget, and how to create and restore it.
+11. **[Custom Alerting on BIG-IP: SNMP Traps, Email, and Remote Syslog](/learn/bigip-custom-alerting)**. The alerting pipeline that watches the log stream, and custom alerts by SNMP trap, email or remote syslog.
+12. **[AVR: Application Visibility and Reporting on BIG-IP](/learn/bigip-avr-analytics)**. The on-box analytics that turn traffic into latency by virtual server, member, URL and response code.

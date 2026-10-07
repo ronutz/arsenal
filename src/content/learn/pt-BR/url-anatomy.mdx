@@ -34,3 +34,16 @@ O caminho identifica o recurso no host: `/path/to/page`. É uma sequência de se
 ## Lendo-as separadamente
 
 O valor de ver uma URL dividida nessas partes nomeadas é que erros sutis se tornam óbvios. Uma senha escondida no userinfo, uma porta não padrão, um host que na verdade é um endereço IP, um parâmetro enterrado em uma query longa: todos eles se destacam quando a URL é decomposta. O inspetor de URL faz exatamente essa decomposição, fielmente e sem normalizar a URL, então o que você vê é o que a URL realmente diz.
+
+## Esta série, em ordem
+
+Este artigo abre a série **URLs, lidas com exatidão**. Com as cinco partes nomeadas, a série lê o resto da gramática em ordem (os nomes da coisa, o escape, a query, a resolução, os hosts internacionais, onde um domínio é registrado) e termina com os truques que dependem de um leitor que não lê com essa exatidão.
+
+1. **[URI, URL, URN: Qual É Mesmo a Diferença?](/learn/uri-url-urn-whats-the-difference)**. Identificar, localizar, nomear: o que as três siglas significam numa especificação e numa conversa.
+2. **[Codificação por porcentagem (codificação de URL), explicada](/learn/percent-encoding)**. Por que uma URL escreve alguns caracteres como %XX, quais podem ficar como estão e como isso difere do Base64.
+3. **[Query Strings: Parâmetros, Sinais de Mais e Chaves Repetidas](/learn/query-strings)**. Separadores, o sinal de mais que às vezes significa espaço, chaves repetidas e por que nenhum padrão único as governa.
+4. **[URLs relativas e como elas resolvem](/learn/relative-urls-and-resolution)**. Como um navegador completa um link relativo contra a sua base, e o que ./, ../ e uma barra inicial fazem.
+5. **[Codificação de URL e Hosts Internacionalizados](/learn/url-encoding-and-idn)**. Codificação por porcentagem para caminhos e queries, punycode para nomes de host, e por que hosts internacionalizados servem ao phishing.
+6. **[Sufixos públicos e o domínio registrado (eTLD+1)](/learn/public-suffix)**. O sufixo público e o domínio registrado (eTLD+1), por que os dois últimos rótulos são a resposta errada e onde isso decide cookies e certificados.
+7. **[URLs enganosas: lendo além dos truques](/learn/deceptive-urls)**. O truque do userinfo, os parâmetros de redirecionamento e os caracteres sósias, e o único hábito que encontra o host real.
+8. **[Truques de Ofuscação de Endereço IP](/learn/ip-address-obfuscation-tricks)**. Um endereço escrito em decimal, octal, hexadecimal ou IPv6 mapeado de IPv4, e por que um filtro precisa decodificar em vez de comparar strings.

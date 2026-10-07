@@ -17,12 +17,25 @@
 // guardrail in src/content/certifications/study-guides.ts).
 //
 // Statically generated: one page per locale per study-guide slug.
+//
+// STATUS, EARLIER NAMES, LAST CHECK (R1-b1, 2026-10-06; SCOUT's Round 1
+// adoption audit rows 8, 10 and 23): the metadata row now opens with the
+// guide's status on the build day (src/lib/certStatus.ts), lists the names the
+// record holds for the exam's earlier versions or the exams its certification
+// replaced, and the header closes with the day the record was last checked
+// against the vendor's official sources (src/content/certifications/
+// verification.ts), turning amber with a warning once it is older than
+// FRESHNESS_DAYS.
 // ============================================================================
 
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
 import { retirementState } from "@/lib/retirement";
+// The navigator's rules (R1-b1): status as data, and how fresh the record's last check is.
+import { guideStatus, freshness, FRESHNESS_DAYS, type GuideStatus } from "@/lib/certStatus";
+// The day each record was last checked against the vendor's official sources.
+import { getGuideVerification } from "@/content/certifications/verification";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
@@ -87,6 +100,29 @@ export default async function StudyGuidePage({
   const vendorLabel = tTools.has(`vendors.${guide.vendor}`) ? tTools(`vendors.${guide.vendor}`) : guide.vendor;
   // Where the retirement notice stands on the build day (src/lib/retirement.ts), when the guide carries one.
   const retirementNow = guide.retirement ? retirementState(guide.retirement.untilIso) : null;
+  // The guide's status on the build day, in the reader's words (R1-b1).
+  const status: GuideStatus = guideStatus(guide);
+  const statusWords: Record<GuideStatus, string> = {
+    current: t("statusCurrent"),
+    transitioning: t("statusTransitioning"),
+    preparing: t("statusPreparing"),
+    retired: t("statusRetired"),
+  };
+  // The names a candidate may know this exam by: the certification's recorded earlier names, and the earlier version a
+  // retirement notice names when this guide maps its successor (never the successor of a retiring exam, which is
+  // another exam). Deduplicated, in that order.
+  const alsoKnownAs = [
+    ...new Set([
+      ...(cert?.aliases ?? []),
+      ...(guide.retirement?.scope === "previous-version" ? [guide.retirement.exam] : []),
+    ]),
+  ];
+  // The record's last check against the vendor's sources, its date in the reader's language, and whether it is stale.
+  const verification = getGuideVerification(guide.slug);
+  const checkedDate = verification
+    ? new Date(`${verification.on}T00:00:00Z`).toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+    : null;
+  const checkedStale = verification ? freshness(verification.on) === "stale" : false;
 
   return (
     <>
@@ -113,8 +149,22 @@ export default async function StudyGuidePage({
                 </p>
               )}
 
-              {/* Metadata row: target version + blueprint source. */}
+              {/* Metadata row: status, target version, exam facts, blueprint source. */}
               <ul className="certguide-meta">
+                {/* The status first: it decides whether the rest is worth booking against (R1-b1). */}
+                <li>
+                  <span className="certguide-meta-label">{t("statusLabel")}:</span>{" "}
+                  <span className={`certguide-status certguide-status--${status}`} data-status={status}>
+                    {statusWords[status]}
+                  </span>
+                </li>
+                {/* Earlier names, when the record holds any. */}
+                {alsoKnownAs.length > 0 && (
+                  <li>
+                    <span className="certguide-meta-label">{t("alsoKnownAs")}:</span>{" "}
+                    <span className="certguide-meta-value">{alsoKnownAs.join(" · ")}</span>
+                  </li>
+                )}
                 <li>
                   <span className="certguide-meta-label">{t("targetsLabel")}:</span>{" "}
                   <span className="certguide-meta-value">
@@ -161,6 +211,14 @@ export default async function StudyGuidePage({
 
               {guide.examFacts?.note && (
                 <p className="certguide-partof">{guide.examFacts.note}</p>
+              )}
+
+              {/* The record's last check against the vendor's sources (R1-b1); amber, with the reason, once stale. */}
+              {verification && checkedDate && (
+                <p className={`certguide-checked${checkedStale ? " certguide-checked--stale" : ""}`}>
+                  {t("checkedOn", { vendor: vendorLabel, date: checkedDate })}
+                  {checkedStale ? ` ${t("checkedStale", { days: FRESHNESS_DAYS })}` : ""}
+                </p>
               )}
 
               {/* Disclaimer (every guide). */}

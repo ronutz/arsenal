@@ -36,3 +36,12 @@ Para completar: a **versão 1** combina um carimbo de tempo com o endereço MAC 
 ## Escolhendo uma
 
 Recorra ao **v4** quando você só precisa de um identificador aleatório e opaco e a ordenação não importa. Recorra ao **v7** quando o UUID for uma chave de banco de dados ou qualquer outra coisa que se beneficie de ordenar por horário de criação, o que é cada vez mais a recomendação padrão. A [ferramenta UUID](/tools/uuid) gera ambos e decodifica a versão, a variante e o carimbo de tempo embutido de qualquer UUID que você colar, inteiramente no seu navegador.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Identificadores: UUIDs e parentes**. Ele compara as duas versões entre as quais a maioria dos sistemas escolhe; as partes completam a família, fazem a aritmética da colisão, medem o custo de uma chave aleatória num índice e põem os outros formatos ordenáveis ao lado do UUIDv7.
+
+1. **[Versões de UUID explicadas: v1 até v8](/learn/uuid-versions)**. A família inteira, da v1 à v8, e como os bits de versão e de variante são lidos.
+2. **[UUIDs vão colidir? Probabilidade e o limite do aniversário](/learn/uuid-collisions)**. Quantos bits aleatórios um UUID realmente tem, o limite do aniversário e quando um UUID determinístico é a melhor escolha.
+3. **[UUIDs como chaves de banco de dados: v4, v7 e localidade de índice](/learn/uuid-database-keys)**. UUIDs contra inteiros autoincrementais, e por que chaves v4 aleatórias deixam um índice silenciosamente mais lento.
+4. **[ULID, KSUID, Snowflake e outros IDs ordenáveis](/learn/sortable-id-formats)**. ULID, KSUID e Snowflake, como cada um é construído e quanto do seu propósito o UUIDv7 agora cobre.

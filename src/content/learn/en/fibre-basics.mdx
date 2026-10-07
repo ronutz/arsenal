@@ -1,0 +1,136 @@
+---
+slug: fibre-basics
+title: "Fibre basics: multimode and single-mode, the grades and their colours, connectors and polarity, the loss budget, and why dirt is the first suspect"
+summary: "Optical fibre carries Ethernet's longer and faster links. The two kinds of fibre and why a wide core limits reach; the OM and OS grades and the jacket colours that tell them apart; how far one optic reaches on each grade; LC, SC and MPO connectors; flat and angled end faces and why they must never be mated; transmit-to-receive polarity; the loss budget worked through with real numbers; dirt, inspection and cleaning; the light you cannot see; and the readings the optic reports about itself."
+concepts: ["optical fibre", "multimode fibre", "single-mode fibre", "modal dispersion", "om3", "om4", "om5", "os2", "fibre colour codes", "lc connector", "sc connector", "mpo connector", "apc", "upc", "fibre polarity", "loss budget", "link loss margin", "fibre inspection", "fibre cleaning", "digital optical monitoring"]
+relatedTools: ["cable-run-planner"]
+relatedArticles: ["ethernet-physical-layers", "structured-cabling", "transceiver-family-history", "gpon-how-one-fiber-serves-a-neighborhood", "submarine-cables-and-the-physical-internet"]
+category: networking
+order: 341
+status: reviewed
+updated: "2026-10-07"
+---
+
+Copper carries Ethernet over the last hundred metres to a desk; fibre carries most links that are longer or faster than that. A fibre is a strand of glass with a core, where the light travels, inside a cladding that keeps it there. Almost everything practical about fibre follows from two things: the size of that core, and how clean the two faces are wherever one fibre meets another.
+
+## Two kinds of fibre
+
+The Fiber Optic Association (FOA) divides fibre by its core. Multimode fibre (MMF) has "a larger core (almost always 50 or 62.5 microns)"; single-mode fibre (SMF) has "a core diameter of 8-10 microns", and both sit inside a cladding 125 microns across ([FOA, optical fiber](https://www.thefoa.org/tech/ref/basic/fiber.html)). A real data sheet is more exact: Corning's SMF-28 Ultra gives a mode field diameter of 9.2 ± 0.4 µm at 1310 nm, in a cladding of 125.0 ± 0.7 µm ([Corning, SMF-28 Ultra](https://www.corning.com/media/worldwide/coc/documents/Fiber/product-information-sheets/PI-1424-AEN.pdf)).
+
+The wide core is multimode's convenience and its limit. Light travels down it along many paths, or modes, of slightly different lengths, so a pulse spreads as it goes, and the faster the signal, the sooner the spreading pulses blur into each other. The FOA puts it plainly: multimode capacity "is limited by two separate components of dispersion: modal and chromatic". Single-mode fibre "shrinks the core down so small that the light can only travel in one ray or mode", and "since there is only one mode, there is no problem with modal dispersion" (FOA, as above). That is why multimode's reach is counted in tens or hundreds of metres and single-mode's in kilometres.
+
+The light differs too. Short-reach multimode optics work at 850 nm, as Cisco's 10GBASE-SR module does ([Cisco, SFP+ data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)); single-mode is used "with laser sources at 1310 and 1550 nm" (FOA). The ITU-T (the International Telecommunication Union's standardisation sector) defines the ordinary single-mode fibre in Recommendation G.652, a fibre with its "zero-dispersion wavelength around 1310 nm", and a bend-insensitive family in G.657, whose Category A fibres are compliant with G.652 ([ITU-T G.652](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.652-202408-I!!SUM-HTM-E.htm); [ITU-T G.657](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.657-202408-I!!SUM-HTM-E.htm)).
+
+## The grades, and the colours that tell them apart
+
+Cabling standards grade fibre with short designations. The FOA's guide traces the multimode line: 62.5/125 fibre is "now called OM1"; 50/125 fibre is "OM2 standard"; "OM3 or laser-optimized 50/125 fiber" is "considered by most to be the best choice for multimode applications"; "OM4 fiber is a higher bandwidth fiber for 10G+ networks"; and "OM5 is wideband multimode fiber optimized for wavelength division multiplexing with VCSELs in the 850-950nm range" (FOA, as above), VCSELs being vertical-cavity surface-emitting lasers, and Fluke Networks gives the range as "846 to 953 nm" ([Fluke Networks, OM5](https://www.flukenetworks.com/blog/cabling-chronicles/what-is-the-deal-with-om5)). For single-mode, OS1 is "a designation of TIA-568 for SM fiber cabled for premises use that has higher attenuation - 1dB/km", and OS2 is "SM fiber cabled for outdoor use" (FOA), TIA-568 being the cabling standard of the Telecommunications Industry Association (TIA).
+
+The jacket colour says which grade is in your hand. TIA-598 sets the codes "which most manufacturers adopt and reference" ([FOA, colour codes](https://www.thefoa.org/tech/ColCodes.htm)), and the same optic reaches very different distances on each grade:
+
+| Grade | Fibre | Jacket colour | Cisco 10GBASE-SR reach |
+|---|---|---|---|
+| OM1 | multimode, 62.5 µm core | orange | 33 m |
+| OM2 | multimode, 50 µm | orange | 82 m |
+| OM3 | multimode, 50 µm, laser-optimised | aqua | 300 m |
+| OM4 | multimode, 50 µm, higher bandwidth | aqua | 400 m |
+| OM5 | multimode, 50 µm, wideband | lime green | not listed |
+| OS1, OS2 | single-mode | yellow | not applicable: SR is a multimode optic |
+
+The colours are from the FOA's table of TIA-598; the reaches from Cisco's data sheet, which also lists the core sizes (Cisco, SFP+ data sheet). One local variation is worth knowing: when OM4 arrived it stayed aqua, but "the European market introduced a new violet color for OM4", "known as Heather Violet in the UK and Erika Violet throughout much of mainland Europe" ([Belden, 2013](https://www.belden.com/blog/differentiating-between-om3-and-om4)). OM5 is, in Fluke Networks' words, "a version of the OM4 fiber with additional bandwidth characterization at 953 nm" (Fluke Networks, OM5).
+
+## Parallel optics
+
+As speeds rose, multimode went parallel, several fibres side by side. Cisco's 100GBASE-SR4 module uses an MPO-12 connector at 850 nm and reaches 70 m on OM3 and 100 m on OM4 ([Cisco, 100G data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)); of the connector's twelve positions, the early 40GBASE-SR4 and 100GBASE-SR4 applications "used only 8 fibers: 4 transmitting and 4 receiving" ([Fluke Networks, MPO polarity](https://www.flukenetworks.com/blog/cabling-chronicles/getting-12-and-8-fiber-polarity-right)). Cisco's 400G SR8 module moves to an "MPO-16 APC MMF" connector, with the same 70 and 100 metres ([Cisco, 400G data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-743172.html)). How those names are built is the subject of [Ethernet physical layers](/learn/ethernet-physical-layers).
+
+## Connectors: SC, LC and MPO
+
+Three connector families cover most of what a network engineer handles. The FOA's identification guide describes them: "SC is a snap-in connector also with a 2.5 mm ferrule"; "LC is a small form factor connector that uses a 1.25 mm ferrule, half the size of the SC"; and "MPO is a 12 fiber connector for ribbon cable, often called an array connector" ([FOA, connector identifier](https://www.thefoa.org/tech/connID.htm)). Even the last one's name is unsettled: the FOA says "MPO means multi-position optical", while Fluke Networks expands it as multi-fiber push on (Fluke Networks, MPO polarity); and the SR8 module above uses a sixteen-fibre version. The duplex LC is the usual face of a pluggable optic: Cisco's 10GBASE-SR and 10GBASE-LR modules both take a "Dual LC/PC connector" (Cisco, SFP+ data sheet).
+
+## Flat and angled end faces
+
+Where two fibres meet, their end faces touch, and the polish decides how much light bounces back towards the transmitter. The common polish is UPC (ultra physical contact) ([Fluke Networks, APC connectors, 2014](https://www.flukenetworks.com/knowledge-base/optifiber/angled-physical-contact-connectors-apc-optifiber)). APC (angled physical contact) tilts the face: "The endface of an APC connector is slanted 8 degrees", and "the slight angle causes reflected light to be absorbed into the cladding, thereby reducing back reflections in the fiber core" ([Fluke Networks, what is an APC connector](https://www.flukenetworks.com/blog/cabling-chronicles/101-series-what-apc-connector-and-how-do-i-test-it)). EXFO's inspection reference gives the targets: "less than −50 dB reflectance if UPC, less than −65 dB if APC" ([EXFO, fiber inspection](https://www.exfo.com/en/resources/technical-documentation/reference-posters/fiber-inspection)). On single-mode, ordinary connectors are blue and APC connectors green (FOA, colour codes).
+
+The rule that follows has no exceptions: "UPC and APC connectors cannot be mated. Not only will the fiber cores not line up and cause very poor performance, but if you try to mate the two, you can cause damage to the endface" (Fluke Networks, what is an APC connector). Even a mixed pair that seems to work loses the point of the angle: "the anti-reflectance characteristics are nullified" (Fluke Networks, APC connectors). Angled faces are not a single-mode monopoly, either: the SR8 module above is multimode and APC.
+
+## Polarity: transmit meets receive
+
+A duplex link has two fibres, and each must run from a transmitter at one end to a receiver at the other. Fluke Networks states the rule, "A link's transmit signal (Tx) must match its corresponding receiver (Rx) at the other end", and adds that "the TIA-568.3-E standard recommends an A-B polarity scenario for duplex patch cords to maintain proper polarity" ([Fluke Networks, fiber polarity](https://www.flukenetworks.com/blog/cabling-chronicles/b-c-s-fiber-polarity)). ICC's version is the one to remember on site: "The Tx (B) should always connect to the Rx (A), regardless of how many patch panel adapters or cable segments are in the channel" ([ICC, duplex jumper polarity](https://icc.com/help-article/polarities-duplex-fiber-jumpers)).
+
+Parallel optics multiply the problem across twelve or sixteen positions, and the industry answers with three polarity methods. Method A "uses Type A straight-through MPO trunk cables with a key-up connector on one end and a key-down connector on the other"; Method B "uses Type B reversed MPO trunk cables, which feature key-up connectors on both ends"; Method C "uses Type C cross-over MPO trunk cables that flip the pairs" (Fluke Networks, MPO polarity). Sources do not agree on which duplex cords to call straight-through and which crossover, so check positions, not labels: A at one end, B at the other.
+
+## The loss budget
+
+Every optical link lives on a budget. The FOA defines it as "the amount of fiber optic cable plant loss that a datalink (transmitter to receiver) can tolerate in order to operate properly" ([FOA, loss budget](https://www.thefoa.org/tech/lossbudg.htm)). Optical power is measured in dBm, decibels relative to one milliwatt, and every loss in dB, so the arithmetic is subtraction and addition. The FOA's worked example is a 200-metre multimode link at 850 nm:
+
+| Item | Value |
+|---|---|
+| Transmitter output | −13 dBm |
+| Receiver sensitivity | −21 dBm |
+| Budget: the difference | 8 dB |
+| Fibre: 0.2 km × 3 dB/km | 0.6 dB |
+| Connections: 3 × 0.3 dB | 0.9 dB |
+| One splice | 0.3 dB |
+| Total link loss | 1.8 dB |
+| Margin: 8 − 1.8 | 6.2 dB |
+
+"The Link Loss Margin should be greater than approximately 3 dB to allow for link degradation over time" (FOA, as above).
+
+Those are typical values. The cabling standard's maxima are harsher: in ANSI/TIA/EIA-568-C.3, as Fluke Networks tabulates them, 0.75 dB per mated connector pair, 0.3 dB per splice, 3.5 dB per km for multimode at 850 nm, and for single-mode 1.0 dB per km inside premises and 0.5 dB per km in outside plant ([Fluke Networks, loss budget](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)). Worked with those ceilings, the same link costs 0.7 + 2.25 + 0.3 = 3.25 dB and keeps 4.75 dB of margin. Real single-mode glass does far better than its ceiling: Corning specifies SMF-28 Ultra at no more than 0.32 dB per km at 1310 nm and 0.18 at 1550 (Corning, as above). On a short link like this one the connections cost more than the fibre, which is why the next section matters.
+
+## Dirt, the first suspect
+
+Fluke Networks says it without hedging: "the number one cause of fiber network issues and failures is contaminated connectors" ([Fluke Networks, cleaning best practices](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)). EXFO's poster carries the same line, "No.1 cause of network failures is contaminated connectors", crediting NTT-Advanced Technology Research (EXFO, as above), and a survey commissioned by Fluke Networks is still quoted for its figure: "Contaminated endfaces were the cause of fiber links failing 85 percent of the time" ([Cabling Installation & Maintenance, 2014](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)). The particles are tiny and the cores tinier: "A 1-micrometer dust particle on a single-mode core can block up to 1% of the light (a 0.05dB loss)" ([Cisco, inspection and cleaning](https://www.cisco.com/c/en/us/support/docs/optical/synchronous-digital-hierarchy-sdh/51834-cleanfiber2.html)).
+
+The procedure is look, clean, look again. VIAVI's slogan is "Inspect Before You Connect" ([VIAVI, fiber inspection](https://www.viavisolutions.com/en-uk/what-fiber-inspection)); Cisco's instruction, "Always inspect and clean the connectors before you make a connection" (Cisco, as above); Fluke Networks' golden rule, "ALWAYS inspect, clean and inspect again" (Fluke Networks, cleaning best practices). What passes is set by IEC 61300-3-35, the International Electrotechnical Commission (IEC) standard for "Visual inspection of fibre optic connectors and fibre-stub transceivers", in its third edition since 2022 ([IEC](https://webstore.iec.ch/en/publication/64254)), and its criteria have been stricter for single-mode: under the earlier edition, "a multimode fiber can have a 2 μm scratch in the core and still pass inspection, while a singlemode fiber would not" ([Fluke Networks, scratches, 2018](https://flukenetworks.com/blog/cabling-chronicles/your-fiber-end-face-scratch)).
+
+How to clean is where the experts differ. EXFO's advice: "Dry cleaning using a mechanical cleaner is recommended as the first step. If, after two dry cleaning attempts, soil is still present on the connector, try hybrid cleaning" (EXFO). Fluke Networks prefers composite wipes with solvent, which it says "eliminates the issue of static charge" that dry wiping can leave (Fluke Networks, cleaning best practices). Cisco's procedure wipes in isopropyl alcohol and then, "Immediately repeat the figure 8 wiping action on the dry section of wipe to remove any residual alcohol" (Cisco, as above). All three agree on what matters most: look before and after.
+
+## The light you cannot see
+
+"Your eye cannot see many of the wavelengths used in fiber optics because the eye is sensitive to light in the blue to red region of the spectrum while fiber optic systems operate in the infrared" ([FOA, safety](https://www.foa.org/tech/ref/safety/safe.html)). Cisco's warning heads its cleaning procedure: "Invisible laser radiation might be emitted from disconnected fibers or connectors. Do not stare into beams or view directly with optical instruments" (Cisco, as above). The FOA's rule for the field is to measure before looking, "Before working on any fiber, test it with a power meter to see if power is present", because on a live fibre "a microscope will focus virtually all the light back into the eye"; and some links, video systems at 1550 nm and long-distance links with dense wavelength division multiplexing, run "as much as 100 times more" power than other communications systems (FOA, safety).
+
+## What the optic reports about itself
+
+Most pluggable optics measure themselves. The Specification for Management Interface for SFP+, SFF-8472 (revision 12.5a, January 2026), reserves an address for it: "2-wire serial bus address 1010001X (A2h) is used to access measurements of transceiver temperature, internally measured supply voltage, TX bias current, TX output power, received optical power" ([SNIA, SFF-8472](https://members.snia.org/document/dl/25916)). The feature is digital optical monitoring (DOM), and not every module supports it (Cisco, SFP+ data sheet). On Cisco IOS the readings appear with `show interface transceiver` ([Cisco Community, DOM](https://community.cisco.com/t5/networking-knowledge-base/digital-optical-monitoring-dom/ta-p/3120342)); on Junos, `show interfaces diagnostics optics <interface-name>` reports input and output optical power, temperature, laser bias current and supply voltage, each checked against thresholds that log a warning when crossed ([Juniper, digital optical monitoring](https://www.juniper.net/documentation/us/en/software/junos/chassis/topics/concept/digital-optical-monitoring.html)). Received power set against the receiver's sensitivity from the data sheet is the loss budget measured instead of estimated, so a shrinking margin can be watched rather than discovered.
+
+## What to remember
+
+- Multimode: a 50 or 62.5 µm core, 850 nm, reach limited by modal dispersion. Single-mode: an 8 to 10 µm core, 1310 and 1550 nm, kilometres.
+- Colours: OM1 and OM2 orange, OM3 and OM4 aqua (OM4 violet in much of Europe), OM5 lime green, single-mode yellow. One 10GBASE-SR optic reaches 33 m on OM1 and 400 m on OM4.
+- SC has a 2.5 mm ferrule, LC 1.25 mm; MPO carries 12 or 16 fibres for parallel optics.
+- Green means APC. Never mate APC with UPC.
+- Transmit meets receive: A at one end, B at the other.
+- Budget is transmitter output minus receiver sensitivity; keep more than about 3 dB of margin.
+- Inspect, clean, inspect again; and never look into a fibre that might be live.
+
+## Sources
+
+- [The Fiber Optic Association, reference guide: optical fiber, OM and OS grades, modal dispersion (read 2026-10-07)](https://www.thefoa.org/tech/ref/basic/fiber.html)
+- [Corning, SMF-28 Ultra optical fiber, product information PI-1424, July 2025 (read 2026-10-07)](https://www.corning.com/media/worldwide/coc/documents/Fiber/product-information-sheets/PI-1424-AEN.pdf)
+- [ITU-T Recommendation G.652, August 2024 (read 2026-10-07)](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.652-202408-I!!SUM-HTM-E.htm)
+- [ITU-T Recommendation G.657, August 2024 (read 2026-10-07)](https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.657-202408-I!!SUM-HTM-E.htm)
+- [Fluke Networks, what is the deal with OM5, 19 April 2017 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/what-is-the-deal-with-om5)
+- [The Fiber Optic Association, fiber optic colour codes, TIA-598 (read 2026-10-07)](https://www.thefoa.org/tech/ColCodes.htm)
+- [Cisco, 10GBASE SFP+ modules data sheet, updated 6 October 2026: SFP-10G-SR reach per grade, connectors (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html)
+- [Belden, differentiating between OM3 and OM4, 11 September 2013 (read 2026-10-07)](https://www.belden.com/blog/differentiating-between-om3-and-om4)
+- [Cisco, 100G QSFP data sheet, updated 6 October 2026: 100GBASE-SR4 (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)
+- [Fluke Networks, getting 12- and 8-fiber polarity right, 6 January 2026 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/getting-12-and-8-fiber-polarity-right)
+- [Cisco, 400G data sheet, updated 3 March 2026: SR8 on MPO-16 APC (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-743172.html)
+- [The Fiber Optic Association, connector identifier: SC, LC, MPO (read 2026-10-07)](https://www.thefoa.org/tech/connID.htm)
+- [Fluke Networks, angled physical contact connectors and OptiFiber, 31 March 2014 (read 2026-10-07)](https://www.flukenetworks.com/knowledge-base/optifiber/angled-physical-contact-connectors-apc-optifiber)
+- [Fluke Networks, 101 series: what is an APC connector, 11 October 2018 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/101-series-what-apc-connector-and-how-do-i-test-it)
+- [EXFO, fiber inspection reference poster (read 2026-10-07)](https://www.exfo.com/en/resources/technical-documentation/reference-posters/fiber-inspection)
+- [Fluke Networks, the A, B, C's of fiber polarity, 12 November 2025 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/b-c-s-fiber-polarity)
+- [ICC, polarities of duplex fiber jumpers, 11 June 2026 (read 2026-10-07)](https://icc.com/help-article/polarities-duplex-fiber-jumpers)
+- [The Fiber Optic Association, loss budget: definition, worked example, margin (read 2026-10-07)](https://www.thefoa.org/tech/lossbudg.htm)
+- [Fluke Networks, loss budget calculation, 3 March 2014: ANSI/TIA/EIA-568-C.3 maxima (read 2026-10-07)](https://www.flukenetworks.com/knowledge-base/simplifiber-pro/loss-budget-calculation-simplifiber-pro)
+- [Fluke Networks, best practices for cleaning your fiber, 17 December 2015 (read 2026-10-07)](https://www.flukenetworks.com/blog/cabling-chronicles/best-practices-cleaning-your-fiber-cleaning)
+- [Cabling Installation & Maintenance, 4 March 2014: the 85 percent figure (read 2026-10-07)](https://cablinginstall.com/design-install/article/16476571/paper-emphasizes-both-the-importance-and-ease-of-fiber-inspection-and-cleaning)
+- [Cisco, inspection and cleaning procedures for fiber-optic connections, document 51834, updated 30 November 2016 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/optical/synchronous-digital-hierarchy-sdh/51834-cleanfiber2.html)
+- [VIAVI, what is fiber inspection (read 2026-10-07)](https://www.viavisolutions.com/en-uk/what-fiber-inspection)
+- [IEC 61300-3-35 edition 3.0, 16 September 2022 (read 2026-10-07)](https://webstore.iec.ch/en/publication/64254)
+- [Fluke Networks, your fiber end face scratch, 21 February 2018 (read 2026-10-07)](https://flukenetworks.com/blog/cabling-chronicles/your-fiber-end-face-scratch)
+- [The Fiber Optic Association, fiber optic safety rules (read 2026-10-07)](https://www.foa.org/tech/ref/safety/safe.html)
+- [SNIA, SFF-8472 Specification for Management Interface for SFP+, revision 12.5a, 16 January 2026 (read 2026-10-07)](https://members.snia.org/document/dl/25916)
+- [Cisco Community, digital optical monitoring (DOM), 2011, edited 2017 (read 2026-10-07)](https://community.cisco.com/t5/networking-knowledge-base/digital-optical-monitoring-dom/ta-p/3120342)
+- [Juniper Networks, digital optical monitoring (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/chassis/topics/concept/digital-optical-monitoring.html)

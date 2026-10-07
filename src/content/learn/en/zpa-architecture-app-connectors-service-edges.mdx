@@ -32,3 +32,10 @@ The job description has a deliberate omission: for Private Access, the Service E
 ## Reading it as an operator
 
 The two-legs habit from the platform article sharpens here into three: user to Service Edge, App Connector to Service Edge, and connector to application - [three TCP realities](/learn/tcp-connection-lifecycle), each with its own failure modes. Access denied is policy at the Central Authority; connected-but-nothing-loads points at the connector-to-application leg or the connector's DNS; slow-for-one-user is that user's Microtunnel path, not the application. And capacity planning is horizontal by doctrine: connectors deploy in groups, more than one per location, because updates and failures are absorbed by peers - the same add-another-node philosophy the whole Exchange runs on, applied at the application's doorstep.
+
+## This series, in order
+
+This article opens the series **Zscaler Private Access**. Its architecture (the user and the connector both dialling out) is what makes the rest possible; the two parts name the applications and write the policy, then troubleshoot it.
+
+1. **[ZPA App Segments and Access Policy: Naming Applications, Then Earning Them](/learn/zpa-app-segments-and-access-policy)**. App segments, segment groups, server groups and the access policy: naming applications, then earning them.
+2. **[ZPA Access Troubleshooting: Policy, Health, or DNS - Pick the Right Suspect](/learn/zpa-access-troubleshooting)**. Policy, health or DNS: the three suspect families for an intermittent private-app failure.

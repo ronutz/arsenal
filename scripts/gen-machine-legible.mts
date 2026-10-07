@@ -411,7 +411,7 @@ L.push(
   `- [About](${ORIGIN}/${SOURCE_LOCALE}/about): background, credentials, and history`,
   `- [Training](${ORIGIN}/${SOURCE_LOCALE}/training): instructor-led course offerings`,
   `- [Advisory](${ORIGIN}/${SOURCE_LOCALE}/advisory): independent technical advisory for consequential technology decisions`,
-  `- [Speaking](${ORIGIN}/${SOURCE_LOCALE}/speaking): talks on networking, security and the industry's history`,
+  `- [Speaking](${ORIGIN}/${SOURCE_LOCALE}/speaking): talks on where the technology industry came from and on the people who work in it, with formats and booking`,
   `- [Changelog](${ORIGIN}/${SOURCE_LOCALE}/changelog): what changed on the site, dated`,
   `- [Learn RSS feed](${ORIGIN}/feed.xml): most recent articles`,
   // The Importance Meter is UNLISTED in the site's own navigation - nothing

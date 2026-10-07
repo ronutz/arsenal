@@ -20811,6 +20811,11 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .quick-cidr-clear:hover:not(:disabled), .quick-cidr-clear:focus-visible { border-color: var(--accent-primary); color: var(--accent-primary); }
 .quick-cidr-clear:disabled { opacity: 0.4; cursor: default; }
 @media (prefers-reduced-motion: reduce) { .quick-cidr-clear { transition: none; } }
+/* The quick CIDR's answer area (2026-10-06, PRIME 17:46): one live region holding either the hint, which answers
+   every keystroke, or the four facts. A hint that names something wrong (an octet over 255, a prefix over 32, a
+   stray character) takes the warning colour, so the eye tells "keep going" from "that cannot work". */
+.quick-cidr-out { min-height: 1.5rem; }
+.quick-cidr-waiting--wrong { color: var(--color-warning); }
 /* Below 26rem the button keeps only its cross, so a whole block such as 172.16.100.200/24 stays visible in the field. */
 @media (max-width: 26rem) { .quick-cidr-clear { padding: 0.35rem 0.6rem; } .quick-cidr-clear-word { display: none; } }
 /* And below 22rem (320 px phones) the field's type steps down a little, so the longest IPv4 block, 255.255.255.255/32,
@@ -20820,3 +20825,1435 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
    stay apart from the six already taken (teal for a role, a muted rose for The Practice). */
 .happening-kind--role { --kind-color: color-mix(in srgb, var(--color-info) 50%, var(--color-success)); }
 .happening-kind--practice { --kind-color: color-mix(in srgb, var(--color-danger) 60%, var(--color-info)); }
+
+/* ==========================================================================
+   SPEAKING, /speaking (milestone (s1), 2026-10-06: option B, PRIME's answers
+   of 17:54). Semantic tokens only; the page reuses the learn-card pattern for
+   the talks and adds the hero facts, the tracks, the rows of terms and lines
+   (formats, the three-way difference, "Beyond the talk") and the audiences.
+   ========================================================================== */
+
+/* The hero's three facts: label above value, as many columns as fit, one on a phone; a rule above separates them
+   from the lede. */
+.speaking-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: 0.75rem 1.5rem;
+  margin: 1.5rem 0 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--border-subtle);
+}
+/* One fact: the browser's default dd indent removed. */
+.speaking-fact {
+  margin: 0;
+}
+/* The fact's label, small capitals in the mono face, as on the advisory shapes. */
+.speaking-fact-label {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* The fact itself. */
+.speaking-fact-value {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+/* The hero's two buttons, a little apart from the facts. */
+.speaking-hero-actions {
+  margin-top: 1.5rem;
+}
+
+/* The two tracks: side by side when there is room, one column on a phone. */
+.speaking-tracks {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+}
+/* A track card: title, what it is about, who it is for, then its talk at the foot. */
+.speaking-track {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+}
+/* The track's name. */
+.speaking-track-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+/* What the track is about. */
+.speaking-track-body {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+/* Who it is for: the line an organiser scans for. */
+.speaking-track-for {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+/* The track's talk, pinned to the foot of the card so both cards end level. */
+.speaking-track-talk {
+  margin: auto 0 0;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.95rem;
+}
+/* "The talk", as a label. */
+.speaking-track-talk-label {
+  margin-right: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* The talk's title, a link down to its card. */
+.speaking-track-talk a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* A talk card: reached from its track by anchor, so it clears the sticky header. */
+.speaking-talk {
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* The talk's track, above its title. */
+.speaking-talk-track {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Formats and the three-way difference: a term and its line, as rows. */
+.speaking-formats {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+/* One row. */
+.speaking-format {
+  padding: 0.9rem 1.15rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+}
+/* The format's name (also used by "Beyond the talk"). */
+.speaking-format-term {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* A name that is a link (Training, Advisory) keeps the term's colour, underlined. */
+.speaking-format-term a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+/* The format's line (also used by "Beyond the talk"). */
+.speaking-format-body {
+  display: block;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+/* The format that belongs to Advisory: dashed and unfilled, so it reads as a pointer, not an offer of this page. */
+.speaking-format--elsewhere {
+  border-style: dashed;
+  background: transparent;
+}
+/* The pointer itself. */
+.speaking-format-link {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+/* The three-way difference: the same rows, a little more room under the section's lede. */
+.speaking-differ {
+  margin-top: 1rem;
+}
+
+/* "Audiences", under the formats. */
+.speaking-subtitle {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* The audiences, as chips that wrap. */
+.speaking-audiences {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+}
+/* One audience. */
+.speaking-audience {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent-primary) 40%, var(--border-subtle));
+  background: color-mix(in srgb, var(--accent-primary) 9%, transparent);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+/* The three links to the work behind the talks, in a row that wraps. */
+.speaking-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+/* "Beyond the talk": quieter than the formats, a plain list with a thin rule at the left of each item. */
+.speaking-beyond {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+/* One shape beyond the talk. */
+.speaking-beyond-item {
+  padding: 0.15rem 0 0.15rem 1rem;
+  border-left: 2px solid var(--border-subtle);
+}
+/* The invitation under it. */
+.speaking-beyond-cta {
+  margin: 1.25rem 0 0;
+  color: var(--text-secondary);
+}
+/* Its link. */
+.speaking-beyond-cta a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* ==========================================================================
+   ADVISORY: the featured executive-briefings card (milestone (s1), PRIME
+   2026-10-06 17:54: "feature executive briefings in the advisory section").
+   Full width under the seven shapes, tinted with the amber the shapes use for
+   what comes back, and an anchor target for /speaking.
+   ========================================================================== */
+.advisory-briefing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 1.4rem 1.6rem;
+  border: 1px solid color-mix(in srgb, var(--accent-amber) 45%, var(--border-subtle));
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--accent-amber) 6%, var(--surface-elevated));
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* "Before the decision reaches the table". */
+.advisory-briefing-eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-amber);
+}
+/* The card's title, one step larger than a shape's. */
+.advisory-briefing-title {
+  font-size: 1.2rem;
+}
+/* How a briefing differs from a talk, and the link to Speaking. */
+.advisory-briefing-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+/* The link reads as a link, as the speaking note's does. */
+.advisory-briefing-note a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* ==========================================================================
+   THE CERTIFICATION NAVIGATOR (R1-b1 and b2, 2026-10-06; SCOUT's Round 1
+   adoption audit rows 8, 10 and 23). On /certifications: the find field, the
+   retired switch, the count and the legend above the vendors. On each guide:
+   the status pill in the metadata row and the line saying when the record was
+   last checked against the vendor's sources. Semantic tokens only.
+   ========================================================================== */
+
+/* The toolbar: a panel of its own above the vendor cards. */
+.certhub-filter {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+}
+/* The toolbar's section sits close to the notes above it. */
+.certhub-filter-section {
+  padding-bottom: 0;
+}
+/* "By name, by code, or by an earlier name": the label, visible, above the field. */
+.certhub-filter-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+/* The field and its Clear button on one line that wraps on a narrow phone. */
+.certhub-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+/* The field takes the room the button leaves. */
+.certhub-filter-input {
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+/* Clear dims, never hides, when there is nothing to clear (the house rule of the other Clear buttons). */
+.certhub-filter-clear:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+/* The retired switch: a checkbox and its words, aligned. */
+.certhub-filter-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+/* The checkbox in the accent colour. */
+.certhub-filter-switch input {
+  accent-color: var(--accent-primary);
+}
+/* "89 of 105 exam guides", in tabular figures so the line does not jitter as it changes. */
+.certhub-filter-count {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+/* Nothing matches: said plainly, in the warning colour. */
+.certhub-filter-empty {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--color-warning);
+}
+/* The offer of the retired matches: a link-styled button. */
+.certhub-filter-more {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  cursor: pointer;
+}
+/* The legend: each badge as it appears on the cards, then what it means; wraps into columns. */
+.certhub-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 0.45rem 1.25rem;
+  margin: 0.35rem 0 0;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border-subtle);
+}
+/* One badge and its meaning, side by side. */
+.certhub-legend-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+}
+/* The badge in the legend keeps its shape and does not shrink. */
+.certhub-legend-item dt {
+  flex: 0 0 auto;
+}
+/* The meaning. */
+.certhub-legend-body {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+/* The status pill in a guide's metadata row: neutral when current, amber while in transition or in preparation,
+   muted once retired. */
+.certguide-status {
+  display: inline-block;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* Current: the accent, quietly. */
+.certguide-status--current {
+  border-color: color-mix(in srgb, var(--accent-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+}
+/* In transition and in preparation: amber, as the hub's badges are. */
+.certguide-status--transitioning,
+.certguide-status--preparing {
+  color: var(--accent-amber);
+  border-color: color-mix(in srgb, var(--accent-amber) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-amber) 10%, transparent);
+}
+/* Retired: muted. */
+.certguide-status--retired {
+  color: var(--text-tertiary);
+}
+/* When the record was last checked against the vendor's sources. */
+.certguide-checked {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+/* Past the freshness threshold: amber, with the reason in the sentence. */
+.certguide-checked--stale {
+  color: var(--accent-amber);
+}
+
+/* Found while checking the navigator at 390 px (2026-10-06): a vendor's collapse row put its count badge ("15
+   certifications, 15 exam guides") on the same line as the vendor's name and ran 72 px past a phone's screen. The row
+   now wraps, so the badge drops under the name when the line is full, and the badge may break across lines. */
+.certhub-cert-row {
+  flex-wrap: wrap;
+}
+/* The badge inside a collapse row: allowed to wrap, never wider than the row. */
+.certhub-cert-row .certs-badge {
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* ==========================================================================
+   THE SLIDE PRESENTER, /materials/<slug>/present (milestone (m2), 2026-10-06;
+   PRIME 19:21: "presenting the slides on the site through the browser, without
+   the need to download ... controls for full screen, next and previous slide").
+   Semantic tokens throughout; the one literal is the presenter's own backdrop,
+   black, the convention of every projector, declared once as a custom property.
+   ========================================================================== */
+
+/* The page around the presenter: a little tighter than a normal section. */
+.presenter-page .presenter-title {
+  margin-bottom: 0.4rem;
+}
+/* What the page is, and the way back to the datasheet. */
+.presenter-lede {
+  max-width: 70ch;
+  margin: 0 0 1.25rem;
+  color: var(--text-secondary);
+}
+
+/* The presenter: the slide, the progress, the controls, then the panels. */
+.presenter {
+  --presenter-backdrop: #000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+/* The slide's frame keeps 16:9 before the image arrives, so nothing below jumps. */
+.presenter-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--presenter-backdrop);
+  cursor: pointer;
+  /* Sideways swipes are ours; vertical scrolling and pinch zoom stay the browser's. */
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+}
+/* The slide fills its frame without distortion. */
+.presenter-slide {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+/* The progress through the deck: a thin line under the slide. */
+.presenter-progress {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--border-subtle);
+  overflow: hidden;
+}
+/* How far along, in the accent. */
+.presenter-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-primary);
+  transition: width 0.2s ease;
+}
+/* The controls: three groups that wrap on a phone. */
+.presenter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+}
+/* A group of controls kept together. */
+.presenter-bar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+/* Every presenter button: the site's quiet button, tall enough for a finger. */
+.presenter-btn,
+.presenter-lang {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+/* Hover and keyboard focus: the accent border. */
+.presenter-btn:hover:not(:disabled),
+.presenter-lang:hover,
+.presenter-btn:focus-visible,
+.presenter-lang:focus-visible {
+  border-color: var(--accent-primary);
+}
+/* A control at its end (the first slide's Previous, the last slide's Next): dimmed, still there. */
+.presenter-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+/* A switch that is on (notes shown, full screen, the deck in use). */
+.presenter-btn[aria-pressed="true"],
+.presenter-lang[aria-pressed="true"],
+.presenter-btn[aria-expanded="true"] {
+  border-color: var(--accent-primary);
+  background: color-mix(in srgb, var(--accent-primary) 14%, var(--surface-elevated));
+}
+/* Next is the button pressed most: the accent's fill. */
+.presenter-btn--next:not(:disabled) {
+  border-color: var(--accent-primary);
+}
+/* "12 / 178", in tabular figures so the bar does not shift as the number grows. */
+.presenter-count {
+  min-width: 5.5rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+}
+/* The deck's language: two buttons joined. */
+.presenter-langs {
+  display: inline-flex;
+  gap: 0;
+}
+/* The joined buttons share their middle border. */
+.presenter-langs .presenter-lang:first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.presenter-langs .presenter-lang:last-child {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+}
+/* Go to a slide: a short number field and its button. */
+.presenter-goto {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+/* The number field: room for three digits. */
+.presenter-goto-input {
+  width: 4.5rem;
+  min-height: 2.5rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+/* Where the slide sits in the course. */
+.presenter-where {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+/* The contents: every slide by title, grouped by part, in a scrolling panel. */
+.presenter-contents {
+  display: grid;
+  gap: 0.9rem;
+  max-height: min(60vh, 34rem);
+  overflow-y: auto;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+}
+/* Closed: out of the layout (the attribute would lose to `display: grid` above without this). */
+.presenter-contents[hidden] {
+  display: none;
+}
+/* "Module 2". */
+.presenter-contents-module {
+  margin: 0 0 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* A part's heading, with its slide range. */
+.presenter-contents-head {
+  margin: 0.2rem 0 0.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* "slides 4 to 41". */
+.presenter-contents-range {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+/* The slides of a part. */
+.presenter-contents-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.1rem;
+}
+/* One slide: number and title, a full-width button. */
+.presenter-contents-slide {
+  display: flex;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.3rem 0.45rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+/* Hover and focus. */
+.presenter-contents-slide:hover,
+.presenter-contents-slide:focus-visible {
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+/* The slide on screen. */
+.presenter-contents-slide.is-current {
+  background: color-mix(in srgb, var(--accent-primary) 14%, transparent);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+/* The slide's number, aligned. */
+.presenter-contents-n {
+  flex: 0 0 2.2rem;
+  text-align: right;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The speaker notes. */
+.presenter-notes {
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  max-width: 100%;
+}
+/* "Speaker notes". */
+.presenter-notes-title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* One paragraph of notes, at reading width. */
+.presenter-notes-para {
+  margin: 0 0 0.6rem;
+  max-width: 75ch;
+  line-height: 1.65;
+  color: var(--text-primary);
+}
+/* Loading, error, none. */
+.presenter-notes-state {
+  margin: 0;
+  color: var(--text-tertiary);
+}
+/* The keys and the licence under the presenter. */
+.presenter-keys,
+.presenter-licence {
+  margin: 1rem 0 0;
+  max-width: 80ch;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+
+/* FULL SCREEN, by the browser's API (:fullscreen) or by covering the window (.is-covering): the slide as large as the
+   screen allows, the controls over its foot, the panels over the slide. */
+.presenter.is-fullscreen,
+.presenter.is-covering {
+  position: relative;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  gap: 0;
+  background: var(--presenter-backdrop);
+}
+/* Covering the window, where the API is missing (an iPhone's Safari). */
+.presenter.is-covering {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+}
+/* The page behind a covering presenter does not scroll. */
+html.presenter-covering,
+html.presenter-covering body {
+  overflow: hidden;
+}
+/* The slide fills the screen; the frame's border and radius go. */
+.presenter.is-fullscreen .presenter-stage,
+.presenter.is-covering .presenter-stage {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+}
+/* The controls float over the slide's foot. */
+.presenter.is-fullscreen .presenter-bar,
+.presenter.is-covering .presenter-bar {
+  position: absolute;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(96%, 64rem);
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-base) 88%, transparent);
+  transition: opacity 0.3s ease;
+}
+/* The progress line at the very bottom; the part line is not needed over the slide. */
+.presenter.is-fullscreen .presenter-progress,
+.presenter.is-covering .presenter-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 0;
+}
+.presenter.is-fullscreen .presenter-where,
+.presenter.is-covering .presenter-where {
+  display: none;
+}
+/* The panels open over the slide, above the controls. */
+.presenter.is-fullscreen .presenter-contents,
+.presenter.is-covering .presenter-contents,
+.presenter.is-fullscreen .presenter-notes,
+.presenter.is-covering .presenter-notes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(96%, 64rem);
+  bottom: 5.5rem;
+  max-height: 45vh;
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--surface-base) 94%, transparent);
+}
+/* Resting: the controls and the cursor step aside until the pointer moves. */
+.presenter.is-idle .presenter-bar {
+  opacity: 0;
+  pointer-events: none;
+}
+.presenter.is-idle .presenter-stage {
+  cursor: none;
+}
+/* On a phone the button words give way to the arrows, so the bar fits one line. */
+@media (max-width: 30rem) {
+  .presenter-btn-word {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+/* No slide-in effects for a reader who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .presenter-progress-fill,
+  .presenter.is-fullscreen .presenter-bar,
+  .presenter.is-covering .presenter-bar {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   THE DOORS TO THE OPEN MATERIALS (milestone (m2), PRIME 19:21): the card on
+   Learn, Training and the study guides; the one-sentence line on the
+   certification hub; the Present link on the materials index card.
+   ========================================================================== */
+/* The card: the cover beside the words, stacked on a phone. */
+.materials-door {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  gap: 1rem 1.4rem;
+  align-items: center;
+  margin: 1.25rem 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+}
+/* One column below 40rem: the cover above the words. */
+@media (max-width: 40rem) {
+  .materials-door {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* The cover: a 16:9 thumbnail with the slide's own white. */
+.materials-door-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+/* The words. */
+.materials-door-text {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+/* "Open course material". */
+.materials-door-eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+/* The course's name, linking its datasheet. */
+.materials-door-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.materials-door-title a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.materials-door-title a:hover,
+.materials-door-title a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+/* The line written for this page. */
+.materials-door-body {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 70ch;
+}
+/* The two buttons, wrapping on a phone. */
+.materials-door-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.3rem 0 0;
+}
+/* The one-sentence door. */
+.materials-door-line {
+  max-width: 75ch;
+  margin: 0.5rem 0 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+/* Its Present link keeps to one line. */
+.materials-door-line-present {
+  white-space: nowrap;
+}
+/* The materials index card's Present link sits above the card's stretched link, so it can be clicked on its own. */
+.materials-card-present {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  margin-top: 0.35rem;
+}
+/* The datasheet's Present button, above the download list. */
+.materials-present-cta {
+  margin: 0 0 0.9rem;
+}
+/* A part's "Present this part" link in the outline. */
+.materials-part-present {
+  display: inline-block;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+/* ==========================================================================
+   LEARN SERIES (milestone LS-0 of the student level-up, 2026-10-06): the rail
+   under an article's summary, the next/previous block after its body, and the
+   series index at /learn/series. Semantic tokens only.
+   ========================================================================== */
+
+/* The rail: a quiet panel under the summary, saying where the article sits. */
+.series-rail {
+  margin: 1rem 0 1.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+}
+/* "Series · Part 3 of 11 in ..." */
+.series-rail-where {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+/* The kicker before it. */
+.series-rail-kicker {
+  margin-right: 0.35rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+/* The link back to the opener. */
+.series-rail-opener {
+  color: var(--accent-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  white-space: nowrap;
+}
+/* The contents, behind the browser's own disclosure. */
+.series-rail-contents {
+  margin-top: 0.5rem;
+}
+/* "The series: 11 parts", the disclosure's handle. */
+.series-rail-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* The parts, numbered by the registry (planned ones included). */
+.series-rail-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+}
+/* One part: its number, title and marker on one baseline (the smaller marker otherwise rides high). The row never
+   wraps: a long title wraps inside its own box, beside its number (LS-1a, 2026-10-06). */
+.series-rail-item {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  gap: 0 0.35rem;
+  color: var(--text-secondary);
+}
+/* The title takes the room left by the number and may wrap; the marker keeps its own width. */
+.series-rail-item > a,
+.series-rail-item > span:not(.series-rail-n):not(.series-rail-planned) {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.series-rail-item > .series-rail-planned {
+  flex: 0 0 auto;
+}
+/* Its number. */
+.series-rail-n {
+  flex: 0 0 1.6rem;
+  text-align: right;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+/* A written part links. */
+.series-rail-item a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 0.15em;
+}
+/* The article on the page. */
+.series-rail-item.is-current {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+/* A planned part: named, quieter. */
+.series-rail-item.is-planned {
+  color: var(--text-tertiary);
+}
+/* "in preparation". */
+.series-rail-planned {
+  font-size: 0.8rem;
+  color: var(--accent-amber);
+}
+
+/* After the body: the previous and next written articles, and all the series. */
+.series-next {
+  margin: 2rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+}
+/* The series' name above the two links. */
+.series-next-kicker {
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* Previous on the left, next on the right; stacked on a phone. */
+.series-next-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0.75rem;
+}
+/* One neighbour: a card with its direction and its title. */
+.series-next-link {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-elevated);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.series-next-link:hover,
+.series-next-link:focus-visible {
+  border-color: var(--accent-primary);
+}
+/* The previous one reads from the left, the next one aligns right on a wide screen. */
+.series-next-link--prev {
+  text-align: left;
+}
+.series-next-link--next {
+  text-align: right;
+}
+/* "Next, part 4". */
+.series-next-dir {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+/* The neighbour's title. */
+.series-next-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.35;
+}
+/* "All the series". */
+.series-next-all {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+}
+.series-next-all a {
+  color: var(--accent-primary);
+}
+
+/* The index: one card per series. */
+.series-index {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+/* A series: name, lede, count, start, parts. */
+.series-card {
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-elevated);
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* The series' name. */
+.series-card-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  text-wrap: balance;
+}
+/* What it is about. */
+.series-card-lede {
+  margin: 0 0 0.4rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 75ch;
+}
+/* "4 of 11 parts written". */
+.series-card-count {
+  margin: 0 0 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+/* "Start here: <opener>". */
+.series-card-opener {
+  margin: 0 0 0.75rem;
+}
+/* The parts list, a little looser than in the rail. */
+.series-card-list {
+  gap: 0.3rem;
+}
+
+/* ==========================================================================
+   LEARN SERIES INDEX, GROUPED (milestone LS-1a of the student level-up,
+   2026-10-06): forty series under seven subjects, each with a chip at the top,
+   its cards side by side on a wide screen, the way in naming the opener, the
+   parts behind the browser's own disclosure. Semantic tokens only.
+   ========================================================================== */
+
+/* The line of numbers under the lede: series, subjects, articles. */
+.series-index-stats {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+/* One chip per subject, jumping to its section. */
+.series-index-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.series-index-groups a {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+.series-index-groups a:hover,
+.series-index-groups a:focus-visible {
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+/* One subject: its heading and its cards. */
+.series-group {
+  margin-top: 2.25rem;
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* The subject's name and how many series it holds. */
+.series-group-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.9rem;
+  font-size: 1.35rem;
+}
+.series-group-count {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+/* The cards of one subject side by side on a wide screen, one column on a phone. */
+.series-group .series-index {
+  margin-top: 0;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  align-items: start;
+}
+/* The way into a series: a quiet panel naming the opener. */
+.series-card-start {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+}
+.series-card-start:hover,
+.series-card-start:focus-visible {
+  border-color: var(--accent-primary);
+}
+/* "Start here". */
+.series-card-start-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+/* The opener's title. */
+.series-card-start-title {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.35;
+}
+/* The parts, behind the disclosure. */
+.series-card-parts {
+  margin-top: 0.25rem;
+}
+.series-card-parts-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   LEARN SERIES INDEX, IN TWO HALVES (milestone LS-1b of the student level-up,
+   2026-10-06): the subjects, then the vendors whose platforms have series of
+   their own. Each half has a named row of chips at the top and, in the body, a
+   rule, its heading and one sentence. Semantic tokens only.
+   ========================================================================== */
+
+/* A row of chips with the half's name before it, in a fixed column so both rows' chips start at the same edge and a
+   long row wraps beside its name, not under it; on a phone the name sits above its chips. */
+.series-index-jump {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.4rem 0.75rem;
+  margin-top: 1rem;
+}
+@media (max-width: 40rem) {
+  .series-index-jump {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* The second row sits closer to the first: the two read as one control. */
+.series-index-jump + .series-index-jump {
+  margin-top: 0.6rem;
+}
+/* The half's name: a quiet uppercase label. */
+.series-index-jump-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+/* Inside a row the chip list carries no margin of its own. */
+.series-index-jump .series-index-groups {
+  margin: 0;
+}
+/* One half of the index: opened by a rule across the page. */
+.series-part {
+  margin-top: 2.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* The half's heading, a step above its groups' headings. */
+.series-part-title {
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+/* One sentence on what the half holds. */
+.series-part-lede {
+  max-width: 65ch;
+  margin: 0.35rem 0 0;
+  color: var(--text-secondary);
+}
+/* The first group of a half follows its sentence a little closer than groups follow each other. */
+.series-part > .series-group:first-of-type {
+  margin-top: 1.5rem;
+}
+
+/* ==========================================================================
+   TRAINING SERIES on /study-guides (milestone NF-1 of the student level-up,
+   2026-10-06): one card per series, its badge and level, its outcome and way
+   in, then its modules in order, each outcome visible and its parts behind the
+   browser's own disclosure. The parts' list reuses the Learn series' rail list
+   (numbers, planned marks). Semantic tokens only.
+   ========================================================================== */
+
+/* The cards, one column: a series is long and reads top to bottom. */
+.training-series-list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+/* One series: the reading-path card's border and tint, with more room inside. */
+.training-card {
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 5%, var(--surface-base));
+  padding: 1.15rem 1.25rem 1.25rem;
+  scroll-margin-top: var(--sticky-anchor-offset);
+}
+/* The badge: the short name, then the level, as one quiet pill. */
+.training-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+.training-badge-name {
+  color: var(--note-accent, var(--accent-primary));
+  font-weight: 600;
+}
+.training-badge-level {
+  color: var(--text-tertiary);
+}
+/* The series' title and lede. */
+.training-card-title {
+  margin: 0.6rem 0 0;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+.training-card-lede {
+  max-width: 70ch;
+  margin: 0.4rem 0 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+/* What the series leaves a student able to do: the reading paths' outcome style, its own class so the two lists
+   are never counted together. */
+.training-outcome {
+  max-width: 75ch;
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+/* The way in: the first written article. */
+.training-start {
+  margin: 0.45rem 0 0.25rem;
+}
+.training-start-link {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.training-start-link:hover,
+.training-start-link:focus-visible {
+  text-decoration: underline;
+}
+/* The prerequisites and the counts: small print under the outcome. */
+.training-card-meta {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+}
+/* The modules: numbered by their own heading, so the list carries no markers. */
+.training-modules {
+  display: grid;
+  gap: 1rem;
+  margin: 1.1rem 0 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--border-subtle);
+  list-style: none;
+}
+/* One module: its heading, outcome, parts and tools. */
+.training-module {
+  min-width: 0;
+}
+.training-module-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.6rem;
+  margin: 0;
+  font-size: 1.05rem;
+}
+/* "Module 1", and how many parts the module holds. */
+.training-module-n {
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--note-accent, var(--accent-primary));
+}
+.training-module-count {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+/* What the module leaves a student able to do: visible without opening anything. */
+.training-module-outcome {
+  max-width: 70ch;
+  margin: 0.3rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+/* The parts, behind the disclosure. */
+.training-module-parts {
+  margin-top: 0.35rem;
+}
+.training-module-parts-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.training-module-list {
+  margin-top: 0.4rem;
+}
+/* The tools to practise on, or the line saying none fits yet. */
+.training-module-tools {
+  margin: 0.35rem 0 0;
+  font-size: 0.88rem;
+  color: var(--text-tertiary);
+}

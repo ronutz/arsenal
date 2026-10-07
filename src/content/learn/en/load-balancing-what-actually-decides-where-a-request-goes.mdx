@@ -126,3 +126,16 @@ It is, by construction, in the path of everything. That makes it the highest-val
 - **Globally**, DNS-based or [anycast](/glossary/anycast) distribution moves the decision upstream, and inherits DNS caching, so traffic keeps arriving somewhere for as long as the record's lifetime, no matter what you change.
 
 The single most useful habit: **watch per-member metrics, not the pool average.** The average is designed to look healthy while one member quietly serves errors fast enough to attract more traffic than the ones doing real work.
+
+## This series, in order
+
+This article opens the series **Load balancing and persistence**. Its four questions (who is alive, who gets this request, must this client return to the same place, what happens on failure) organise the parts: the virtual server and the TCP proxy that do the work, then persistence chosen, broken behind NAT, layered with a fallback and kept across a failover, then the same decision made globally in two tiers, and finally how the industry was built against a forecast of ten customers.
+
+1. **[How a BIG-IP Virtual Server Works](/learn/how-a-virtual-server-works)**. The front door of a BIG-IP: the listener, the profile stack, persistence, the pool member and the source translation.
+2. **[The TCP Proxy: What a Layer 4 Middlebox Does and Does Not See](/learn/tcp-proxy-layer-4)**. Two independent TCP flows spliced at layer 4: what a proxy rewrites, pools and cannot see.
+3. **[Choosing a Persistence Method (and Its Failure Modes)](/learn/choosing-a-persistence-method)**. Source affinity or a cookie, and the well-known way each one fails.
+4. **[Source-Address Persistence and the Mega-Proxy Problem](/learn/source-address-persistence-and-mega-proxy)**. Pinning a client by its IP, and how large NATs make many clients look like one.
+5. **[Fallback Persistence and the Match-Across Settings](/learn/fallback-persistence-and-match-across)**. A primary and a fallback method, and the three match-across settings that decide how widely a record is shared.
+6. **[Persistence Mirroring Across an HA Pair](/learn/persistence-mirroring-and-ha)**. Why a standby that takes over connections still forgets client-to-member mappings unless they were mirrored.
+7. **[GSLB in Two Tiers: The Wide IP Picks a Pool, the Pool Picks a Server](/learn/gslb-two-tier-pool-then-member)**. Global server load balancing as two decisions: the wide IP picks a pool, then the pool picks a server.
+8. **[Load Balancers and ADCs: Built Against the Market Sizing](/learn/adc-family-history)**. Ten customers in the world, a Netscape webmaster estimated in 1995; the industry that was built anyway.

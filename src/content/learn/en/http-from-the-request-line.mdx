@@ -1,0 +1,62 @@
+---
+slug: http-from-the-request-line
+title: "HTTP, from the request line: what a message means, and how it travels"
+summary: "Every HTTP exchange is two messages, a request and a response, and since June 2022 the standard describes them in two layers: what a message means (methods, status codes, header fields), defined once for every version, and how its bytes travel, defined for each version on its own. The map of the HTTP series: which article reads which part of a message, and in what order."
+concepts: ["http", "http semantics", "request", "response", "http methods", "status codes", "http headers", "cookies", "proxies", "http versions", "index"]
+relatedTools: ["http-methods-comparison", "curl-command-explainer"]
+relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-versions-09-to-3", "http-message-framing-content-length-and-chunked", "http-query-method"]
+category: networking
+order: 334
+status: reviewed
+updated: "2026-10-06"
+---
+
+HTTP looks like a long list of things to learn: the methods, dozens of status codes, a long registry of header fields, cookies, proxies, five versions. It is smaller than the list. Every exchange is one request and one response, and every item on the list is either a part of those two messages or a way of carrying them.
+
+## One exchange, two messages
+
+The standard puts the whole protocol in one sentence: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, section 3.3). A client sends a request: a method that says what it wants done, the target it wants it done to, header fields that qualify the request, and sometimes a body. The server answers with a status code that says how it went, header fields of its own, and usually a body.
+
+That is also the order in which to learn it. Read a request from the top, the way a server does: the request line (the method and the target), then the fields, then the body and the point where it ends. Read the response the same way: the status, then its fields. The series follows that order, then turns to the layers around the messages.
+
+## Two layers since June 2022
+
+For most of its life the standard for HTTP/1.1 mixed two kinds of rule. Some say what a message means: what a GET promises, what a 304 obliges a cache to do, what the Host field is for. Others say how a message is laid out as bytes: text lines that end in a carriage return and a line feed, and a length or a chunked coding that shows where the body stops.
+
+In June 2022 the Internet Engineering Task Force (IETF) republished HTTP with the two kinds separated. RFC 9110, HTTP Semantics, "defines aspects of the protocol that are shared by all versions": the methods, the status codes, the fields. Each version then has a document of its own for the wire: RFC 9112 for the text messages of HTTP/1.1, RFC 9113 for the binary frames and multiplexed streams of HTTP/2, and RFC 9114 for HTTP/3, which runs over the QUIC transport instead of TCP.
+
+The split is the most useful idea in the series. A 404 means the same thing over HTTP/1.1 and over HTTP/3, and a GET makes the same promises in both; what differs is how the bytes that carry them are framed. When something breaks, ask which layer it broke in. A server that answers 403 to a request it should allow has a problem of meaning. Two devices that disagree about where a message ends have a problem of framing, and that disagreement is where request smuggling lives.
+
+## What HTTP leaves to others
+
+HTTP is stateless by design: each request stands on its own, and the server owes it no memory of the last one. State was added on top. A server sets a cookie with the Set-Cookie header field and the browser returns it with the Cookie field, on the requests the cookie's scope allows (RFC 6265).
+
+The path is rarely direct either. "HTTP enables the use of intermediaries to satisfy requests through a chain of connections", and the standard names three common forms: proxy, gateway and tunnel (RFC 9110, section 3.7). Most of what an operator runs between a browser and a server is one of them, a forward proxy at the office's edge or a reverse proxy in front of the servers, and each one reads, and may rewrite, the messages it relays.
+
+## The newest method
+
+The list of methods grew in June 2026. RFC 10008 defines QUERY: "As with POST, the input to the query operation is passed as the content of the request rather than as part of the request URI", yet "QUERY requests are safe with regard to the target resource" and "QUERY requests are idempotent". A search too large to fit in an address can now be sent as a body and still be retried, and its response cached, the way a GET's can.
+
+## This series, in order
+
+Ten parts: the message read from the top, then the layers around it, then a coda.
+
+1. **[Reading a raw HTTP request, and turning it back into something you can run](/learn/raw-http-requests-and-how-to-replay-them)**. The message as it actually arrives, request line, fields and body, and the three traps in replaying one.
+2. **[HTTP Methods: The Verbs of the Web](/learn/http-methods-the-verbs)**. The first word of the request line, and the two properties, safe and idempotent, that caches, retries and crawlers act on.
+3. **[HTTP Status Codes: The Five Families](/learn/http-status-codes-the-five-families)**. The first digit of the answer does most of the work; then the codes an operator actually meets.
+4. **[HTTP Headers: The Anatomy of the Metadata](/learn/http-headers-anatomy)**. The fields both messages carry: their four working roles, the Host field, and the split between end to end and hop by hop.
+5. **[HTTP Cookies: State Over a Stateless Protocol](/learn/http-cookies-state-over-stateless)**. Two header fields that give a stateless protocol a memory, and the rules for when the note travels.
+6. **[Where an HTTP/1.1 message ends: Content-Length, chunked, and the eight rules](/learn/http-message-framing-content-length-and-chunked)**. The framing layer: how a receiver knows where one message stops and the next begins, and what smuggling exploits.
+7. **[HTTP Proxies: Forward vs Reverse, Explicit vs Transparent](/learn/http-proxy-forward-and-reverse)**. The intermediaries: which side a proxy works for, whether the client knows it is there, and the fields that record its passage.
+8. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: Five Versions of the Web's Protocol](/learn/http-versions-09-to-3)**. The same meanings carried five ways, from a one-line GET to multiplexed streams over QUIC.
+9. **[HTTP QUERY: the read that finally carries a body](/learn/http-query-method)**. The newest method: what it fixes, how its responses are cached, and what every layer of infrastructure must check.
+10. **[Hidden messages in HTTP headers: tributes, jokes and job offers in the overhead](/learn/hidden-messages-in-http-headers)**. A coda: what people have written into the fields almost nobody reads.
+
+## Sources
+
+- [RFC 9110, HTTP Semantics (STD 97), June 2022: the abstract (the aspects "shared by all versions"), section 3.3 (a stateless request/response protocol) and section 3.7 (intermediaries: proxy, gateway, tunnel) (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9112, HTTP/1.1 (STD 99), June 2022: the message syntax and framing of version 1.1 (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9112)
+- [RFC 9113, HTTP/2, June 2022: "an optimized expression of the semantics" of HTTP; obsoletes RFC 7540 and RFC 8740 (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9113)
+- [RFC 9114, HTTP/3, June 2022: HTTP over the QUIC transport (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9114)
+- [RFC 6265, HTTP State Management Mechanism, April 2011: the Cookie and Set-Cookie header fields (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc6265)
+- [RFC 10008, The HTTP QUERY Method, June 2026: section 1 (the query passed as the request's content), section 2 (safe and idempotent) and section 2.7 (the response is cacheable) (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc10008)

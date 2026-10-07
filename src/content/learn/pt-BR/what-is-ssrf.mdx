@@ -37,3 +37,11 @@ SSRF importa por *de onde a requisição vem*, não pelo que ela busca. **O serv
 É por isso que o impacto é tão variável e tão subestimado na triagem. A mesma falha é uma curiosidade numa rede plana com serviços autenticados, e um comprometimento completo numa rede que terceirizou o controle de acesso para a topologia.
 
 **Classifique a falha pelo que a sua rede interna presume sobre chamadores internos**, não pelo que o endpoint vulnerável aparenta fazer. O endpoint é a porta; as premissas atrás dela são a razão de a porta importar.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Server-side request forgery (SSRF)**. Ele explica por que uma requisição que parte de dentro da rede do servidor alcança o que o atacante não alcança; as partes ampliam o ataque (outros esquemas), nomeiam o seu alvo mais valioso (os metadados de nuvem) e terminam na defesa que se sustenta.
+
+1. **[Esquemas de URL Perigosos em SSRF](/learn/dangerous-url-schemes)**. file, gopher, dict e ftp: como um buscador que aceita qualquer esquema deixa um atacante ler arquivos ou falar bytes brutos com Redis e SMTP.
+2. **[Endpoints de Metadados de Nuvem e SSRF](/learn/cloud-metadata-endpoints-and-ssrf)**. O serviço de metadados link-local que entrega as credenciais de uma instância, e as defesas no estilo IMDSv2.
+3. **[Defendendo-se de SSRF com Allow-Lists](/learn/ssrf-defenses-allowlists)**. Uma allow-list dos destinos pretendidos, resolver antes de confiar e reverificar após redirecionamentos, e por que block-lists perdem.

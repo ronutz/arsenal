@@ -1,0 +1,122 @@
+---
+slug: spanning-tree-in-one-article
+title: "Spanning tree in one article: why a blocked port is the feature, and how RSTP and MSTP made it fast"
+summary: "Redundant links between switches make loops, and Ethernet has nothing in its header to stop a frame circling forever. The Spanning Tree Protocol solves it by electing a root and blocking every port the tree does not need. The election, the costs and the timers, the 30 to 50 seconds classic STP took to recover, the handshake that made RSTP fast, the regions and instances of MSTP, Cisco's per-VLAN variants and guards, and the engineer who wrote the algorithm's abstract as a poem."
+concepts: ["spanning tree", "stp", "rstp", "mstp", "bpdu", "root bridge", "bridge id", "root port", "designated port", "path cost", "broadcast storm", "edge port", "portfast", "bpdu guard", "root guard", "pvst+", "radia perlman"]
+relatedTools: []
+relatedArticles: ["bridge-switch-family-history", "vlans-and-8021q-trunking", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "link-aggregation-and-lacp"]
+category: networking
+order: 338
+status: reviewed
+updated: "2026-10-07"
+---
+
+Two links between two switches are better than one: if a cable fails, the other carries on. They are also a loop, and at layer 2 a loop is not a performance problem but an outage. The Spanning Tree Protocol (STP) exists to let a network be built with redundant links and still behave as if it had none, by switching off, on purpose, every link the network does not need at the moment. The blocked port that puzzles people on a new switch is not a fault. It is the protocol doing its job.
+
+## Why a loop is fatal at layer 2
+
+An IP packet carries a time-to-live (TTL) counter that each router lowers by one, so a packet caught in a routing loop dies after a bounded number of hops. An Ethernet frame has nothing like it: "Ethernet frames do not have a time to live (TTL) attribute, like IP packets" ([Cisco Networking Academy, Scaling Networks](https://ptgmedia.pearsoncmg.com/images/9781587133282/downloads/9781587133282%20_chapter_2.pdf)). A broadcast that enters a loop is copied out of every port, comes back, and is copied again, until the result is a broadcast storm, "so many broadcast frames caught in a Layer 2 loop that all available bandwidth is consumed". The switches suffer too: "Instability in the content of the MAC address table results from copies of the same frame being received on different ports" (same source), so the switch keeps relearning where each address lives and sends unicast frames the wrong way.
+
+The 1985 paper that introduced the algorithm names the problem in five words: "congestion caused by infinitely circulating packets" ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). Cisco's troubleshooting guide names the cause just as plainly, and it is the reason the blocked port matters: a bridging loop "still comes from a port that can block, but instead forwards traffic" ([Cisco, troubleshooting STP](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10556-16.html)).
+
+## The algorithm in four decisions
+
+Every switch running spanning tree takes part in the same calculation, and the result is a tree: one path, and only one, from any switch to any other.
+
+1. **Elect a root.** "The bridge with the lowest bridge ID is elected as the root bridge" ([Juniper, spanning tree overview](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)). The bridge ID is a two-byte priority followed by the switch's MAC (media access control) address; on Cisco's Catalyst 9300, the priority is "a 4-bit priority value and a 12-bit extended system ID value equal to the VLAN ID", configurable from 0 to 61440 "in increments of 4096; the default is 32768", and when priorities tie, the lowest MAC address wins ([Cisco, configuring STP](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_spanning_tree_protocol.html)). Left at the defaults, the root is simply whichever switch has the lowest MAC address, chosen by accident rather than by design. Setting the priority on purpose is the first thing any design does.
+2. **Each other switch picks a root port**: the one port that "provides the best path (lowest cost)" to the root (Cisco, as above).
+3. **Each segment picks a designated port**: "A forwarding port elected for every switched LAN segment" (Cisco, as above), the port on that segment closest to the root.
+4. **Everything else blocks.** "All paths that are not needed to reach the root switch from anywhere in the switched network are placed in the spanning-tree blocking mode" (Cisco, as above).
+
+## Path cost: how "closest" is counted
+
+"Best path" means the lowest sum of port costs on the way to the root, and the costs depend on link speed. Two scales are in use. The original 802.1D values were small integers; the later, 32-bit values of 802.1t-2001 scale to much faster links ([Extreme Networks, port path costs](https://community.extremenetworks.com/t5/faqs/spanning-tree-algorithm-port-path-costs/m-p/41162)).
+
+| Link speed | Short cost (802.1D-1998) | Long cost (802.1t) |
+|---|---|---|
+| 10 Mb/s | 100 | 2,000,000 |
+| 100 Mb/s | 19 | 200,000 |
+| 1 Gb/s | 4 | 20,000 |
+| 10 Gb/s | 2 | 2,000 |
+
+The short values are as Cisco's academy text and Juniper give them ("a 100-Mbps link has a default path cost of 19, a 1000-Mbps link has a default path cost of 4", [Juniper](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html); one Extreme table gives 99 rather than 100 for 10 Mb/s); the long values are from the defaults table of Cisco's Catalyst 9300 guide. Which scale a switch uses by default depends on the platform and the release, so the rule is simple: in a mixed network, set every switch to the same method, or two switches will disagree about which path is cheaper.
+
+## Bridge protocol data units, timers and the old 30 to 50 seconds
+
+Switches exchange the information in BPDUs (bridge protocol data units). In classic STP the root sends configuration messages and the others relay them, with three timers whose defaults are a hello time of 2 seconds, a forward delay of 15 seconds and a maximum age of 20 seconds (Cisco, configuring STP). A port does not jump from blocking to forwarding: it moves through listening and learning first, and "the forward delay is the time spent in the listen and learn state" ([Cisco, STP timers](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/19120-122.html)).
+
+That caution is what made classic spanning tree slow. When a switch's own link to the root fails, "the recovery takes up to 30 seconds", two forward delays ([Cisco, UplinkFast](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10575-51.html)); when the failure is elsewhere and has to be noticed by information aging out, the wait is "the max_age value (20 seconds) plus twice the fw_delay value (2x15 seconds)", "50 seconds with the default parameters" ([Cisco, BackboneFast](https://bxin.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/12014-18.pdf)). Half a minute of silence for one failed cable is a long outage for anything a network carries today.
+
+## RSTP: the same tree, built by handshake
+
+The Rapid Spanning Tree Protocol (RSTP), IEEE 802.1w, keeps the tree and replaces the waiting. It was "Incorporated into 802.1D-2004" ([IEEE 802.1w](https://grouper.ieee.org/groups/802/1/pages/802.1w.html)), and Arista's documentation states the consequence: "Standard 802.1D-2004 incorporates RSTP and obsoletes STP" ([Arista, spanning tree](https://www.arista.com/en/um-eos/eos-spanning-tree-protocol)). Cisco's explanation of RSTP is the clearest account of what changed ([Cisco, understanding RSTP](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html)):
+
+- **Roles.** "The blocking port role is split into the backup and alternate port roles." An alternate port is a ready-made second path to the root, receiving "more useful BPDUs from another bridge"; a backup port is a redundant link to the same segment, receiving them "from the same bridge it is on".
+- **States.** "The 802.1D disabled, blocking, and listening states are merged into a unique 802.1w discarding state." There are three: discarding, learning, forwarding.
+- **A handshake instead of timers.** A designated port that wants to forward "sets the proposal bit on the BPDUs it sends out"; the neighbour makes sure its own ports cannot form a loop and answers with an agreement, and "once p0 receives that agreement, it can immediately transition to the forwarding state." Juniper sums it up as "a handshake mechanism based on point-to-point links instead of the timer-based process used by STP" ([Juniper](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)).
+- **Edge ports.** A port facing a host goes straight to forwarding, and the moment it receives a BPDU it "immediately loses edge port status", because a BPDU means a switch is there.
+- **Hellos as keepalives.** Every switch now sends hellos, and "if hellos are not received three consecutive times, protocol information can be immediately aged out."
+
+The limit is worth knowing: RSTP "can only achieve rapid transition to the forwarding state on edge ports and on point-to-point links", and the link type comes from the duplex: "A port that operates in full-duplex is assumed to be point-to-point, while a half-duplex port is considered as a shared port by default." Where it applies, recovery is "sometimes in the order of a few hundred milliseconds" (Cisco, understanding RSTP).
+
+## MSTP: many VLANs, a few trees
+
+With VLANs (virtual LANs), a single tree for the whole network wastes links: the blocked uplink carries nothing for any VLAN. The Multiple Spanning Tree Protocol (MSTP), IEEE 802.1s, "maps multiple VLANs into a spanning tree instance, with each instance having a spanning tree topology independent of other spanning tree instances" ([Juniper, MSTP](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-configuring-mstp.html)), so one group of VLANs can block the left uplink and another the right. The amendment of 2002 was folded into IEEE 802.1Q's 2003 edition ([IEEE SA, 802.1s](https://standards.ieee.org/ieee/802.1s/1042/)).
+
+MSTP works in regions, and a region is defined by agreement: "All switches in an MST region must have the same name, revision, and VLAN-to-instance map" ([Arista](https://www.arista.com/en/um-eos/eos-spanning-tree-protocol)). Cisco gives the sizes, a 32-byte name, a two-byte revision and a 4096-element table, and the consequence of any difference: "If for any reason two switches differ on one or more configuration attribute, the switches are part of different regions" ([Cisco, understanding MSTP](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24248-147.html)). Seen from outside, "the entire region appears as one virtual bridge"; inside it, the IST (internal spanning tree) is "an RSTP instance that extends the CST inside the MST region", and the CIST (common and internal spanning tree) connects regions to each other and to switches running plain RSTP or STP (Cisco, as above; [Juniper, MSTP](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-configuring-mstp.html)). Because one changed VLAN mapping splits a region, MSTP configuration is planned once and pushed to every switch identically.
+
+## Cisco's per-VLAN variants, and the guards
+
+Cisco runs a tree per VLAN by default: PVST+ (per-VLAN spanning tree plus) is "based on the IEEE 802.1D standard and Cisco proprietary extensions", and Rapid PVST+, "a Cisco enhancement of RSTP that uses PVST+", is "the default STP mode" on the Catalyst 9300 (Cisco, configuring STP; Cisco Networking Academy, as above). Around the protocol sit features that protect it from the network's edge:
+
+- **PortFast** "immediately transitions an access or trunk port from the blocking state directly to the forwarding state" ([Cisco, PortFast and BPDU Guard](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10586-65.html)); it is Cisco's name for what the standard calls an edge port.
+- **BPDU Guard**: if a PortFast port receives a BPDU, "the switch immediately shuts the port down by placing it in the errdisable state" (same source), so a switch plugged in under a desk cannot join the tree.
+- **Root Guard** "ensures that the port on which root guard is enabled is the designated port" ([Cisco, Root Guard](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10588-74.html)): a superior BPDU arriving there blocks the port instead of moving the root. The IEEE model has the same control as restrictedRole ([IEEE 802.1Q RSTP YANG](https://grouper.ieee.org/groups/802/1/files/public/YANGs/ieee802-dot1q-rstp.yang)).
+- **Loop Guard** moves a port that stops receiving BPDUs "into the STP loop-inconsistent blocking state" rather than letting it forward ([Cisco, Loop Guard](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol-stp-8021d/218321-configure-stp-with-loop-guard-and-bpdu-s.html)).
+
+Older Cisco features that sped classic STP up, UplinkFast and BackboneFast, are no longer needed: "RSTP natively includes most of the Cisco proprietary enhancements to the 802.1D spanning tree, such as BackboneFast, UplinkFast, and PortFast" (Cisco, understanding RSTP).
+
+## Where the standard lives now
+
+There is no separate spanning tree standard any more. "IEEE Std 802.1D-2004 was superseded by IEEE Std 802.1Q-2014", which "merged IEEE Std 802.1D with IEEE Std 802.1Q in order to create a single bridging standard" ([IEEE 802.1, 2021](https://grouper.ieee.org/groups/802/1/files/public/docs2021/maint-parsons-802.1D_withdrawal_status-0721-v01.pdf)). RSTP and MSTP are specified in Clause 13 of 802.1Q ([IEEE 802.1Q MSTP YANG](https://grouper.ieee.org/groups/802/1/files/public/YANGs/ieee802-dot1q-mstp.yang)), whose current edition is 802.1Q-2022 ([IEEE 802.1 maintenance](https://1.ieee802.org/maintenance/p802-1q-rev/)).
+
+## The engineer and the poem
+
+The algorithm is the work of Radia Perlman, at Digital Equipment Corporation, whose paper on it was published in 1985 ([Perlman, 1985](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)). The abstract is a poem, "Algorhyme", which opens "I think that I shall never see / A graph more lovely than a tree" ([Heidelberg Laureate Forum](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)). In her own words: "I spent the remainder of the week working on the poem, which is the abstract of the paper" ([LACNIC, 2019](https://blog.lacnic.net/en?p=11775)). The Internet Hall of Fame inducted her in 2014 for designing "the spanning tree algorithm that transformed Ethernet" ([Internet Hall of Fame](https://www.internethalloffame.org/inductee/radia-perlman/)). The story of bridges and switches around her work is told in [one idea, solved twice](/learn/bridge-switch-family-history).
+
+## What to remember
+
+- Ethernet frames have no TTL, so a loop circulates forever; spanning tree prevents loops by blocking.
+- Lowest bridge ID is root; every other switch has one root port; every segment one designated port; the rest block. Set the root's priority on purpose.
+- Classic STP took 30 to 50 seconds to recover; RSTP's proposal and agreement can converge in a few hundred milliseconds on point-to-point links and edge ports.
+- MSTP maps groups of VLANs to a few trees; a region is name plus revision plus mapping, identical on every switch.
+- Protect the edge: edge ports (PortFast) with BPDU Guard toward hosts, Root Guard where the root must never be.
+
+## Sources
+
+- [Cisco Networking Academy, Scaling Networks Companion Guide, Cisco Press, 2014 (ISBN 978-1-58713-328-2), chapter 2: no TTL, broadcast storms, MAC table instability, Perlman at DEC, Rapid PVST+, the short path costs (read 2026-10-07)](https://ptgmedia.pearsoncmg.com/images/9781587133282/downloads/9781587133282%20_chapter_2.pdf)
+- [Radia Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN, Digital Equipment Corporation, 1985 ACM (read 2026-10-07)](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)
+- [Cisco, Troubleshoot STP issues on Catalyst switches, document 10556 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10556-16.html)
+- [Juniper Networks, spanning tree protocols overview: root election, RSTP handshake (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-overview.html)
+- [Cisco, Catalyst 9300 IOS XE 17.12, configuring spanning tree protocol, 28 July 2023: bridge ID, priorities, port roles, timers, path cost defaults, PVST+ (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_spanning_tree_protocol.html)
+- [Juniper Networks, Junos 13.1, interface cost: the 802.1D short costs (read 2026-10-07)](https://juniper.net/documentation/en_US/junos13.1/topics/concept/layer-2-services-stp-guidelines-statement-interface-cost.html)
+- [Extreme Networks community, spanning tree port path costs, 3 December 2013: 802.1t long costs (read 2026-10-07)](https://community.extremenetworks.com/t5/faqs/spanning-tree-algorithm-port-path-costs/m-p/41162)
+- [Cisco, understanding and tuning STP timers, document 19120 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/19120-122.html)
+- [Cisco, understanding and configuring UplinkFast, document 10575: the 30-second recovery (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10575-51.html)
+- [Cisco, understanding and configuring BackboneFast, document 12014: the 50-second recovery (read 2026-10-07)](https://bxin.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/12014-18.pdf)
+- [IEEE 802.1w page: incorporated into 802.1D-2004 (read 2026-10-07)](https://grouper.ieee.org/groups/802/1/pages/802.1w.html)
+- [Arista Networks, EOS 4.36.2F, spanning tree protocol: 802.1D-2004 obsoletes STP, MST regions (read 2026-10-07)](https://www.arista.com/en/um-eos/eos-spanning-tree-protocol)
+- [Cisco, Understand Rapid Spanning Tree Protocol (802.1w), document 24062, 9 February 2023: roles, states, proposal and agreement, link type (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html)
+- [Juniper Networks, configuring MSTP: instances, CIST (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/stp-l2/topics/topic-map/spanning-tree-configuring-mstp.html)
+- [IEEE Standards Association, IEEE 802.1s-2002, incorporated into 802.1Q-2003 (read 2026-10-07)](https://standards.ieee.org/ieee/802.1s/1042/)
+- [Cisco, Understand the Multiple Spanning Tree Protocol (802.1s), document 24248, 15 August 2024 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24248-147.html)
+- [Cisco, PortFast and BPDU Guard, document 10586 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10586-65.html)
+- [Cisco, Root Guard enhancement, document 10588 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10588-74.html)
+- [Cisco, configure STP with Loop Guard and BPDU skew detection, document 218321 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol-stp-8021d/218321-configure-stp-with-loop-guard-and-bpdu-s.html)
+- [IEEE 802.1, ieee802-dot1q-rstp YANG module, revision 2025-02-04: restrictedRole (read 2026-10-07)](https://grouper.ieee.org/groups/802/1/files/public/YANGs/ieee802-dot1q-rstp.yang)
+- [IEEE 802.1, ieee802-dot1q-mstp YANG module, revision 2025-02-04: Clause 13 of 802.1Q (read 2026-10-07)](https://grouper.ieee.org/groups/802/1/files/public/YANGs/ieee802-dot1q-mstp.yang)
+- [IEEE 802.1, 802.1D withdrawal status, 12 July 2021 (read 2026-10-07)](https://grouper.ieee.org/groups/802/1/files/public/docs2021/maint-parsons-802.1D_withdrawal_status-0721-v01.pdf)
+- [IEEE 802.1 maintenance, P802.1Q revision: published as IEEE Std 802.1Q-2022 (read 2026-10-07)](https://1.ieee802.org/maintenance/p802-1q-rev/)
+- [Heidelberg Laureate Forum newsroom, The Internet Chronicles, part 7: the opening couplet of Algorhyme (read 2026-10-07)](https://www.newsroom.hlf-foundation.org/blog/article/the-internet-chronicles-part-7-of-12-the-tree-the-internet-grows-on/)
+- [LACNIC blog, interview with Radia Perlman, 30 May 2019 (read 2026-10-07)](https://blog.lacnic.net/en?p=11775)
+- [Internet Hall of Fame, Radia Perlman, inducted 2014 (read 2026-10-07)](https://www.internethalloffame.org/inductee/radia-perlman/)

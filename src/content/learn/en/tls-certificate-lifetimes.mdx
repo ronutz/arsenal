@@ -34,3 +34,14 @@ The operational consequence is the whole point. An organization that renews a ce
 ## What the planner shows
 
 Enter a certificate's issue and expiry dates and the planner reports its validity length, the phase its issuance date falls under, whether that length is within the cap, the renewal frequency it implies, and a recommended renew-by date. It runs entirely in your browser and models publicly trusted TLS certificates; the [public-vs-private article](/learn/public-vs-private-pki) explains why internal PKI (public key infrastructure) plays by different rules, and the companion tool, the [X.509 inspector](/tools/x509), decodes the certificate bytes themselves.
+
+## This series, in order
+
+This article opens the series **Certificate lifetimes and renewal**. The 47-day schedule above sets the pace; the parts work out what it means in practice: how validity is measured, when to renew, how long a proof of control can be reused, which certificates the schedule binds at all, and the protocol and the free CA that automate the rest.
+
+1. **[Certificate validity windows: notBefore, notAfter, and renewal lead time](/learn/certificate-validity-windows)**. notBefore and notAfter, how a lifetime is measured against the cap, and why validity is not time remaining.
+2. **[Renewing before expiry: lead time, ACME, and ARI](/learn/renewing-before-expiry)**. Why late renewal causes outages, how ACME and ARI automate and steer it, and a lead time that leaves room to retry.
+3. **[DCV and SII reuse: the validation cadence behind the renewal cadence](/learn/dcv-and-sii-reuse)**. How long proofs of domain control and of identity can be reused, falling to 10 days by 2029, and why that reshapes renewal.
+4. **[Public vs private PKI: which certificates SC-081v3 governs](/learn/public-vs-private-pki)**. The schedule binds publicly trusted certificates only: what separates public from private PKI, and why internal CAs are exempt.
+5. **[ACME: how certificates issue and renew themselves](/learn/acme-protocol)**. The account, the order, the three challenge types and the finalize step: issuance automated end to end.
+6. **[Let's Encrypt: the free CA and its rate limits](/learn/lets-encrypt)**. The free CA, why its certificates are short-lived, and how its rate limits work (and why ARI renewals are exempt).

@@ -32,3 +32,20 @@ A tese de zero trust vive no modelo de conexão do ZPA mais do que em qualquer o
 ## Lendo a arquitetura como um operador
 
 Três hábitos decorrem. Primeiro, identidade é a tabela de roteamento: a política pende de quem e do que conectou, então a integração de identidade é infraestrutura, não acessório. Segundo, o Service Edge é o ponto de observação: ao diagnosticar, pense em duas pernas - origem até o Edge, Edge até o destino - porque é literalmente assim que a conexão existe. Terceiro, fronteiras de criptografia são decisões de política: o que o Exchange pode decifrar ele pode inspecionar; [o que ele não deve decifrar](/learn/zia-ssl-inspection-policy-and-bypasses) ele só consegue julgar por fora. Cada artigo seguinte desta série é uma dessas consequências examinada de perto.
+
+## Esta série, em ordem
+
+Este artigo abre a série **O Zero Trust Exchange da Zscaler**. Ele põe ZIA, ZPA e ZDX numa mesma central; as partes acompanham a plataforma de fora para dentro e de volta: como o tráfego chega, como o endpoint decide e como diagnosticá-lo, o que o estado do dispositivo acrescenta, a visão do SaaS, a nota de experiência, os logs e quem mudou o quê, os relatórios que a liderança lê, e três cenários que juntam tudo: um alerta de exfiltração, uma plataforma que muda sozinha e uma fusão.
+
+1. **[Tipos de Túnel Zscaler: Z-Tunnel, GRE e IPsec, Com os Números](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec)**. Z-Tunnel para dispositivos, GRE e IPsec para sites: três túneis que não são intercambiáveis, com os números.
+2. **[Perfis do Client Connector: Onde o Endpoint Decide Como Encaminhar](/learn/zscaler-client-connector-profiles)**. Dois documentos de profundidade: o perfil de encaminhamento decide como o tráfego sai do dispositivo em cada estado de rede.
+3. **[Troubleshooting do Client Connector: o Menu de Diagnóstico e as Quatro Primeiras Verificações](/learn/troubleshooting-zcc-connectivity)**. Os estados de conexão, os logs exportados e as quatro primeiras verificações quando um usuário não consegue navegar.
+4. **[Postura e Confiança do Dispositivo: Deixando o Estado do Dispositivo Votar](/learn/zscaler-posture-profiles-and-device-trust)**. A identidade diz quem pergunta; a postura diz a partir de quê: as condições do dispositivo votando nas decisões de acesso.
+5. **[CASB no Exchange: Inline, Fora de Banda, e a Postura do Próprio SaaS](/learn/zscaler-casb-and-saas-security)**. O cloud access security broker como dois pontos de vista: inline sobre dados em movimento, fora de banda sobre dados em repouso.
+6. **[O Score ZDX: O Que os Probes Medem e Como o Número É Feito](/learn/zdx-score-anatomy-and-probes)**. Como se forma uma nota de 1 a 100: o que medem as sondas web e as sondas de caminho.
+7. **[Nanolog, NSS, Cloud NSS e LSS: Tirando os Logs de Lá](/learn/zscaler-nanolog-nss-and-log-streaming)**. O armazenamento de logs do lado da nuvem e os três caminhos de entrega que trazem os logs para casa.
+8. **[O Audit Log de Administradores: Quem Mudou o Quê, De Onde, Com Que Resultado](/learn/zscaler-admin-audit-logs)**. Toda ação administrativa, pelo console ou pela API, como um registro de quem mudou o quê, de onde e com que resultado.
+9. **[Relatórios e Sumários Executivos: Transformando o Nanolog em Frases Que a Liderança Lê](/learn/zscaler-reports-and-executive-summaries)**. A camada de relatórios entre o fluxo bruto de logs e o slide da diretoria.
+10. **[O Alerta de Exfiltração: Um Passo a Passo do Sinal à Resposta de Postura](/learn/zscaler-exfiltration-response-posture)**. Um alerta de suspeita de exfiltração percorrido do sinal à resposta de postura: a série convergindo num cenário.
+11. **[Atualizações e Gestão de Mudanças: Operando Mudança numa Plataforma Que Também Muda Sozinha](/learn/zscaler-platform-updates-and-change-management)**. Três fluxos de mudança (a nuvem do fornecedor, a sua frota de agentes, a sua política) e só dois deles agendados por você.
+12. **[Fusões e Aquisições no Exchange: Acesso no Dia Um Sem Fundir Redes](/learn/zscaler-mergers-and-acquisitions)**. Acesso no primeiro dia para as pessoas de uma empresa adquirida, sem fundir as redes.

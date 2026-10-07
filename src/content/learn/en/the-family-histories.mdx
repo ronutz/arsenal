@@ -1,0 +1,57 @@
+---
+slug: the-family-histories
+title: "The family histories: twenty-three technologies, each read from its first day"
+summary: "Twenty-three of the technologies a network and its security are built from, from the transceiver to the web application firewall, each told as a family history: the dated moment it began and the people in it, the argument that decided what it became, what it did to jobs and practices, and where it goes. How the histories are told, what to look for in each, and an order to read them in."
+concepts: ["history", "family history", "technology lineage", "networking history", "security history", "industry", "index"]
+relatedTools: []
+relatedArticles: ["the-industry-from-inside", "firewall-family-history", "router-family-history", "pki-family-history"]
+category: networking
+order: 335
+status: reviewed
+updated: "2026-10-06"
+---
+
+Every device an operator runs belongs to a family older than the product on the rack. A load balancer is the latest member of a line that began with a conversation in late 1995; a firewall descends from an argument that ran for roughly six years among people at three organisations; the certificates a browser checks go back to an undergraduate thesis of May 1978. The family explains what the manual never does: why a feature has the name it has, why two vendors put the same function in different places, and why a design nobody would choose today is still the one everybody runs.
+
+## How each history is told
+
+The twenty-three histories share one frame, so they can be read side by side and compared.
+
+- **A first day.** Each opens on a dated moment and the people in it, often someone the usual account leaves out: a professor who could not lay cable between islands, an engineer who wrote the answer to the loop problem as a poem, a graduate student handed the naming problem of a whole network.
+- **The argument.** Each follows what the technology became and why: the dispute that decided its market, the generations that came after, and, where the record allows, who should be credited for what.
+- **The consequences.** Each closes on what the technology did to jobs and practices and where it goes next; sixteen of the twenty-three also trace the companies, then and now.
+- **The sources.** Each ends with its sources, most of them named with the fact they support, so a date or an attribution can be checked against the document it came from.
+
+Read one for its facts and it is a good story. Read three or four and the patterns start to show: a protocol built as a stopgap that outlives its replacement, an idea that was right too early, and more than once, a security model added long after the thing it protects was already everywhere.
+
+## How to read one critically
+
+A history is a set of claims about dates, names and causes, and each one can be checked. Three questions do most of the work. Who says so: a specification, a paper or a company's own filing outweighs a retrospective interview. When they said it: an account written at the time outweighs one written after the outcome was known. Does anyone disagree: a contested attribution should be stated as contested, not settled by whoever told the story last. The rules the site's industry record follows for the same questions, and the checks that enforce them, are set out in [How the research is done](/industry/method).
+
+## This series, in order
+
+The network from the wire up, then what runs on it, then security from the mathematics outward. Any one can be read alone; in this order, each history meets the ones before it.
+
+1. **[Transceivers: The Ridiculed Paper, and the Part of the Network You Can Hold](/learn/transceiver-family-history)**. A 1966 paper ridiculed for blaming the losses in optical fibre on impurities rather than physics, and the part of the network you can hold in one hand.
+2. **[Bridges and Switches: One Idea, Solved Twice](/learn/bridge-switch-family-history)**. The loop problem solved in a single night in December 1985, and the same function put in silicon, one port at a time, in 1990.
+3. **[The Router: From Gateway to Commodity, and the Names Left Out](/learn/router-family-history)**. Reinvented at least four times without its job changing once (read a destination, choose a next hop, forward), and the names the usual account leaves out.
+4. **[Local, Wide and the Words That Stopped Meaning Distance](/learn/network-scopes-family-history)**. Local and wide were never about distance but about who owned the link and what a byte cost to move, and the protocols that still encode the difference.
+5. **[Wireless: The Islands Problem, and the Protocol Given Away](/learn/wireless-family-history)**. Computers on four islands that no cable could join, a way of transmitting that simply dealt with the collisions, and a protocol placed in the public domain.
+6. **[DNS: A File Maintained During Business Hours](/learn/dns-family-history)**. Before 1983, a name on the network meant a telephone call and a shared file updated in business hours; then a graduate student was handed the problem.
+7. **[Time: The Dependency Nobody Lists](/learn/ntp-family-history)**. The protocol that keeps the internet's clocks, by the man who also designed the first modern software router, and fragments of its 1985 code still running.
+8. **[Load Balancers and ADCs: Built Against the Market Sizing](/learn/adc-family-history)**. Ten customers in the world with a load-balancing problem, by one estimate in late 1995, the first load balancer four months later, and the rename to application delivery controller.
+9. **[Virtualisation: Solved in 1967, Forgotten, Then Proved Impossible, Then Done Anyway](/learn/virtualization-family-history)**. A working hypervisor shipped in January 1967, forgotten, then shown impossible on the dominant processor, then done anyway.
+10. **[Software-Defined Networking: A Protest That Became a Product Category](/learn/sdn-family-history)**. A research protest against networks that could no longer change, which within seven years had a foundation, a billion-dollar acquisition and a product category.
+11. **[Observability: The Temporary Protocol That Outlived Its Replacement](/learn/observability-family-history)**. A protocol published in 1988 as a simple stopgap, authenticated by a password sent in the clear, that became the way the world watches its networks.
+12. **[Test and Measurement: The Family That Checks the Others](/learn/test-measurement-family-history)**. The family that checks the others' claims, which began in 1982 as an internal engineering tool nobody meant to sell.
+13. **[Encryption: The Standard, the Suspicion, and What the Suspicion Got Wrong](/learn/encryption-family-history)**. The Data Encryption Standard of November 1977, the suspicion about what the National Security Agency did to it, and the answer that took seventeen years to emerge.
+14. **[PKI: An Undergraduate Thesis, and a Trust Model Nobody Would Design Today](/learn/pki-family-history)**. An undergraduate thesis of May 1978 that named the certificate and the revocation list, and the public key infrastructure that grew around it.
+15. **[The Hardware Security Module: The Man Who Invented Both Halves](/learn/hsm-family-history)**. Mohamed Atalla, behind both halves: the MOSFET at Bell Labs and, years later, the hardware security module.
+16. **[Identity: The L in LDAP Is an Argument](/learn/identity-family-history)**. From password files to X.500 and Kerberos: a good data model nobody could deploy, and the Lightweight Directory Access Protocol of July 1993 that threw most of it away.
+17. **[Email: A Side Project That Became the Identity Layer](/learn/email-family-history)**. A side project assembled from a messaging tool and a file-transfer program, a specification that let the sender shown differ from the sender, and thirty years of bolting authentication on.
+18. **[The Firewall: Birth, Generations, and What Comes After the Perimeter](/learn/firewall-family-history)**. Argued into existence by people at three organisations who agreed only that a network needed a place to say no; then the generations, and the honest attribution.
+19. **[Intrusion Detection: The Discipline Built on Reading the Logs](/learn/ids-ips-family-history)**. Intrusion detection began in 1980 as auditing a computer's records, became a real-time model, moved onto the wire in 1990 and was given away in 1998.
+20. **[Network Access Control: The Idea That Was Right Too Early, Twice](/learn/nac-family-history)**. Network access control, invented in 1984 for the device you dialled into and built to make people authenticate less, and right too early twice.
+21. **[The Web Application Firewall: Bought by Auditors, Blamed by Engineers](/learn/waf-family-history)**. The first web application firewall and the first web application scanner came from the same company; then the open source, the vocabulary and the compliance that made it a purchase.
+22. **[Denial of Service: The Keynote Interrupted by Its Own Subject](/learn/ddos-family-history)**. A keynote on denial of service in February 2000, emptied by the attack under way, and the pattern of attacking a dependency instead of the target.
+23. **[SAST and DAST: Two Lineages, One Budget Line](/learn/sast-dast-family-history)**. Static application security testing and dynamic application security testing, sold as a pair, descend from different places: lint at Bell Labs in 1978, and the attack tooling of the late 1990s.

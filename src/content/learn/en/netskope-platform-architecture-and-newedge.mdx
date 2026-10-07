@@ -28,3 +28,15 @@ The NSK300 blueprint names "the various microservices of the Netskope Security C
 ## Two data paths, one policy brain
 
 The final piece of the picture is the split the whole platform rests on, and it gets [its own article](/learn/netskope-realtime-vs-api-protection): **inline real-time protection** proxies traffic as it happens (the [steering methods](/learn/netskope-steering-methods) exist to deliver traffic into it, and [TLS interception](/learn/netskope-inline-tls-decryption) exists so it can see), while **API-enabled protection** connects out-of-band to managed SaaS tenants and inspects what is already at rest. Same policy vocabulary, same DLP engine, different vantage points - and knowing which path sees what is, reliably, where Netskope exam questions and Netskope production incidents both begin.
+
+## This series, in order
+
+This article opens the series **Netskope, one platform and two data paths**. The one picture behind every exam domain is the map; the parts follow traffic onto the platform (the steering choices and the client that carries identity), through the inline proxy and the second vantage point beside it, out to what the web gateway does not cover, and back to the evidence it leaves.
+
+1. **[Choosing how traffic reaches the service edge](/learn/netskope-steering-methods)**. Client, IPsec, GRE, explicit proxy or chaining: each changes what the edge can know, not only how packets arrive.
+2. **[Netskope Client Deployment: Enrollment, Identity, and the Tunnel](/learn/netskope-client-deployment)**. The steering method that carries identity: getting the software on, enrolling the user, and the tunnel.
+3. **[Netskope: Cloud Forward Proxy and Inline TLS Decryption](/learn/netskope-inline-tls-decryption)**. A forward proxy in the cloud rather than on a box at your edge, and the decryption that lets it see.
+4. **[Real-time vs API Protection: The Two Vantage Points of a Security Cloud](/learn/netskope-realtime-vs-api-protection)**. Inline protection over data in motion and API protection over data at rest: the platform's deepest design decision.
+5. **[Netskope Cloud Firewall: Egress Control for Everything That Isn't Web](/learn/netskope-cloud-firewall)**. Egress control for everything that is not web, the traffic a web gateway lets go direct.
+6. **[Netskope Private Access: ZTNA Instead of the VPN](/learn/netskope-private-access-npa)**. A zero trust network access service in place of the virtual private network, with lightweight publishers beside the applications.
+7. **[Netskope Events and Advanced Analytics: From Traffic to Evidence](/learn/netskope-advanced-analytics)**. Every monitoring objective resolves to one underlying event stream, and the analytics built on it.

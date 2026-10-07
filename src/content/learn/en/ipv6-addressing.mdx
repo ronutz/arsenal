@@ -76,3 +76,12 @@ Reverse lookups (address to name) for IPv6 live under the **ip6.arpa** domain. T
 ## A note on what the tool does
 
 The IPv6 tool is a deterministic, local calculator. It parses, canonicalizes, classifies, and computes, all in your browser, with no lookup against the live network. It tells you what an address **is** structurally. It does not tell you whether that address is reachable, allocated, or in use, which are separate questions that require querying the network or a registry.
+
+## This series, in order
+
+This article opens the series **IPv6**. It covers the address itself; the parts follow a host onto a network in the order it meets each piece: the subnet it lands in, the way it gets an address, the neighbour discovery that replaces ARP, and the transition machinery that lets it reach the IPv4 world.
+
+1. **[IPv6 subnetting and the /64 boundary](/learn/ipv6-subnetting)**. Structure rather than scarcity: why a subnet is almost always a /64, and how prefix delegation hands out space.
+2. **[How IPv6 hosts get addresses: SLAAC and DHCPv6](/learn/ipv6-address-configuration)**. From link-local up: router advertisements, SLAAC, privacy addresses and DHCPv6.
+3. **[Neighbor Discovery: how IPv6 replaces ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 and multicast instead of broadcast ARP: the five Neighbor Discovery messages.
+4. **[Running IPv6 and IPv4 together: dual-stack and translation](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 and the IPv4-embedded addresses that bridge the two families.

@@ -30,3 +30,13 @@ Turning a Unix timestamp into a calendar date needs no clock and no network: it 
 Unix time beat the alternatives for boringly practical reasons: it is compact (one number), trivially comparable, lexically irrelevant (no string parsing to compare two instants), and unambiguous (no "is this 3 PM in London or Tokyo?"). The cost is that the raw number is unreadable to humans (`1700000000` means nothing at a glance), which is the entire reason date formats and converters exist.
 
 Two subtleties are worth knowing before you trust a raw timestamp: which **unit** it is in (seconds, milliseconds, or smaller), and the fact that Unix time quietly **ignores leap seconds**. Both have their own articles.
+
+## This series, in order
+
+This article opens the series **Time as computers count it**. The integer above is where every timestamp starts; the parts follow it outwards: the units it hides, the leap seconds it skips, the year a 32-bit counter runs out, the text formats it is written in, and the arithmetic that time zones make dishonest.
+
+1. **[Seconds, Milliseconds, Microseconds, Nanoseconds: Telling Epoch Units Apart](/learn/epoch-units-seconds-to-nanoseconds)**. Seconds, milliseconds, microseconds or nanoseconds: how to tell them apart from the size of the number.
+2. **[Why Unix Time Ignores Leap Seconds](/learn/unix-time-and-leap-seconds)**. Why Unix time pretends every day has 86,400 seconds, and why that is the right trade for civil time.
+3. **[The Year 2038 Problem](/learn/the-year-2038-problem)**. The second a signed 32-bit counter overflows, 2038-01-19T03:14:07Z, and why the fix is simply a wider integer.
+4. **[ISO 8601, RFC 3339, and the HTTP Date](/learn/iso-8601-and-rfc-3339)**. The broad standard, its strict internet profile and the HTTP date, the formats a timestamp is written back in.
+5. **[Time Arithmetic and Time Zones: Exact Durations, Honest Meetings](/learn/time-arithmetic-and-time-zones)**. Why plus one month has no exact answer, what ISO 8601 durations promise, and the daylight saving trap.

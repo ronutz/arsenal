@@ -26,3 +26,16 @@ Dois detalhes de apoio completam a leitura. Métricas desempatam prefixos de mes
 ## O gateway padrão: a entrada de último recurso
 
 A rota padrão - destino 0.0.0.0/0 - casa com tudo e, pela regra do prefixo mais longo, perde para tudo que seja mais específico, que é exatamente o desenho: ela responde só quando nenhuma outra responde. Num host final, a configuração de gateway padrão é essa rota; o host manda todo tráfego fora da sub-rede para um roteador e deixa o mundo roteado assumir dali. O propósito, como o blueprint aposentado formulava, é simples de dizer e fácil de subestimar: é o único endereço que fica entre um host e toda rede de que ele nunca ouviu falar. Quando está errado, o sintoma é preciso - tráfego na sub-rede funciona perfeitamente, todo o resto morre no primeiro salto - e reconhecer essa assinatura economiza uma hora culpando a camada errada.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Roteamento**. O casamento do prefixo mais longo decide toda escolha de encaminhamento; as partes mostram de onde vêm as entradas da tabela (os protocolos link-state dentro de uma rede, o BGP entre redes e a confiança que falta a ele), como o núcleo encaminha sem uma tabela completa e os três problemas que o roteamento sozinho não resolve: perceber depressa um enlace morto, um gateway que não pode falhar e um fluxo para muitos receptores.
+
+1. **[OSPF: o mapa, a matemática e a área 0](/learn/ospf-primer)**. Todo roteador recebe o mapa inteiro e roda Dijkstra sobre ele: inundação, áreas e a regra do backbone, custo.
+2. **[IS-IS: o protocolo de roteamento escondido sob a internet](/learn/isis-primer)**. O gêmeo link-state do OSPF vindo do mundo OSI, que roda os backbones das operadoras que a maioria dos engenheiros nunca nomeia.
+3. **[BGP: como a internet decide para onde o tráfego vai](/learn/bgp-primer)**. Sistemas autônomos, a ideia de path-vector e os atributos: como a internet decide para onde o tráfego vai.
+4. **[BGP: o exercício de confiança sobre o qual a internet inteira está de pé](/learn/bgp-and-the-routing-chokepoint)**. Um protocolo sem forma embutida de distinguir um anúncio verdadeiro de um falso, e os sequestros que vieram disso.
+5. **[MPLS: rótulos, pilhas e o núcleo livre de BGP](/learn/mpls-primer)**. O Multiprotocol Label Switching em três movimentos (empurrar, trocar, retirar): como os rótulos livram o núcleo das tabelas de roteamento e isolam milhares de clientes de rede privada virtual.
+6. **[BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead)**. Detecção em milissegundos em vez de dezenas de segundos, para a falha em que a interface continua no ar.
+7. **[Redundância de primeiro salto: VRRP, HSRP e o gateway que é uma ficção](/learn/first-hop-redundancy-vrrp-and-hsrp)**. Um host conhece um gateway e não consegue trocar: VRRP e HSRP fazem do gateway um papel, não um roteador.
+8. **[Multicast: o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood)**. Uma cópia em vez de milhares, paga em estado, e modos de falha que não são os esperados.

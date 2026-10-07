@@ -52,6 +52,136 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Milestone NF-1d of the student level-up (PRIME 2026-10-06 18:24): the NetFun I terms in the glossary.
+    date: "2026-10-07",
+    time: "02:41",
+    kind: "content",
+    title: "The NetFun I terms in the glossary: nine new entries, sixteen long explanations",
+    body:
+      "The glossary now has the words NetFun I teaches: new entries for the OSI model, the OUI, the EtherType, the FCS, auto-negotiation, the native VLAN, the BPDU, RSTP and link aggregation, and the long explanation added to sixteen entries that had only a definition, from the MAC address, the switch and the router to duplex mismatch, the two kinds of fibre and the RFC. Each points to the NetFun I articles that teach it.",
+    links: [{ label: "Glossary", href: "/glossary" }, { label: "NetFun I", href: "/study-guides#netfun-1" }],
+  },
+  {
+    // Milestone NF-1c of the student level-up (PRIME 2026-10-06 18:24): NetFun I's four short articles enriched.
+    date: "2026-10-07",
+    time: "01:57",
+    kind: "content",
+    title: "Four NetFun I articles rewritten in full: the OUI, the OSI model, switch, router and firewall, and ARP",
+    body:
+      "The four shortest parts of NetFun I now stand beside the new ones, each about twice its old length and sourced: who sells the prefixes and how to read the two bits before the vendor, and why a randomised address has none; where the seven layers come from, the internet's own four, and one request traced floor by floor; what a switch learns, floods and forgets, what a router changes in every packet, and what a firewall can be; and the ARP packet field by field, the rule that makes gratuitous ARP and ARP poisoning work, proxy ARP, and what IPv6 uses instead.",
+    articles: ["what-is-an-oui", "osi-model-in-practice", "network-devices-switch-router-firewall", "arp-and-mac-addresses"],
+    links: [{ label: "NetFun I", href: "/study-guides#netfun-1" }],
+  },
+  {
+    // Milestone NF-1b of the student level-up (PRIME 2026-10-06 18:24): the six new NetFun I articles.
+    date: "2026-10-07",
+    time: "01:15",
+    kind: "content",
+    title: "Six new articles complete NetFun I: the frame, VLANs, spanning tree, link aggregation, the physical layers and fibre",
+    body:
+      "The six parts NetFun I named in their places are written: the Ethernet frame field by field, VLANs and 802.1Q trunking, spanning tree in one article, link aggregation and LACP, the Ethernet physical layers from 10BASE-T to 400GBASE, and fibre basics from the core to the loss budget. Each is read from the standards and the vendors' own documentation, cited with the date it was read. The series now has 28 articles in four modules, none still in preparation.",
+    articles: ["the-ethernet-frame-field-by-field", "vlans-and-8021q-trunking", "spanning-tree-in-one-article", "link-aggregation-and-lacp", "ethernet-physical-layers", "fibre-basics"],
+    links: [{ label: "NetFun I", href: "/study-guides#netfun-1" }],
+  },
+  {
+    // Milestone NF-1a of the student level-up (PRIME 2026-10-06 18:24): the training series, NetFun I switched on.
+    date: "2026-10-07",
+    time: "00:03",
+    kind: "feature",
+    title: "Training series on the study guides, starting with NetFun I",
+    body:
+      "The study guides open with training series: the fundamentals in order, level by level, each series in modules that say what you will be able to do at their end, list their articles in reading order and name the tools to practise on. NetFun I, from bits to the LAN, is the first: four modules from the layer model to Wi-Fi, 22 articles today and six more named in their places while they are written.",
+    links: [{ label: "Study guides", href: "/study-guides" }],
+  },
+  {
+    // Milestone LS-1c of the student level-up (PRIME 2026-10-06 12:34 and 18:24): the two openers written new.
+    date: "2026-10-06",
+    time: "23:59",
+    kind: "content",
+    title: "Two new series openers: HTTP, and the family histories",
+    body:
+      "Two new articles open two new series. HTTP, from the request line, maps the protocol in its two layers, what a message means and how it travels, and leads through ten articles from the raw request to QUERY. The family histories gathers twenty-three technology histories, from the transceiver to the web application firewall, explains how each is told and how to read one critically, and gives an order to read them in. Seventy series in all.",
+    articles: ["http-from-the-request-line", "the-family-histories"],
+    links: [{ label: "Article series", href: "/learn/series" }],
+  },
+  {
+    // Milestone LS-1b of the student level-up (PRIME 2026-10-06 12:34 and 18:24): the sweep of the vendor families.
+    date: "2026-10-06",
+    time: "23:59",
+    kind: "feature",
+    title: "29 vendor series: F5, Fortinet, Check Point, Zscaler, Netskope, Ping and Extreme",
+    body:
+      "The vendor articles are now read in series too: F5 Distributed Cloud one request end to end, the BIG-IP from interface to pool member, its SSL profiles, DNS, high availability, troubleshooting and Advanced WAF, the iRules events and their Tcl, Check Point from the three tiers to the upgrade, FortiGate administration and Fortinet security operations, PingFederate, the Zscaler exchange with ZIA and ZPA, Netskope and the Extreme fabric: 258 articles in 29 series. The series index lists each vendor after the subjects.",
+    links: [{ label: "Article series", href: "/learn/series" }],
+  },
+  {
+    // Milestone LS-1a of the student level-up (PRIME 2026-10-06 12:34 and 18:24): the sweep of the vendor-neutral library.
+    date: "2026-10-06",
+    time: "23:30",
+    kind: "feature",
+    title: "38 new article series, from IPv4 to JWT",
+    body:
+      "The vendor-neutral library is now read in series: IPv4 addressing and subnetting, routing, DNS read from the answer, TLS and the cipher suites, certificates, hashes and HMAC, SAML, OAuth and OpenID Connect, JWT, the formats in between and 28 more, 266 articles in all. Every article in a series says where it sits and links the parts before and after it, and every opener ends with the series in order, one line per part. The series index groups them by subject.",
+    links: [{ label: "Article series", href: "/learn/series" }],
+  },
+  {
+    // Milestone LS-0 of the student level-up: PRIME 2026-10-06 12:34 (every article in a series, with an opener) and 18:24.
+    date: "2026-10-06",
+    time: "21:30",
+    kind: "feature",
+    title: "Article series: read a subject in order",
+    body:
+      "Learn articles can now belong to a series: an opener that maps the subject, then the parts in reading order. Every article in a series says where it sits (part 3 of 11), opens the series' contents with one click, and ends with the previous and the next part. Parts not yet written are already named and marked in preparation, so a series shows its whole shape from the first day. The first series is traffic diversion and the man in the middle; the series index lists them all.",
+    links: [{ label: "Article series", href: "/learn/series" }],
+  },
+  {
+    // Milestone (m2): PRIME 2026-10-06 19:21, the slides presented in the browser and the doors to /materials.
+    date: "2026-10-06",
+    time: "20:30",
+    kind: "feature",
+    title: "Present the TCP/IP course in your browser, and find it from Learn, Training and the study guides",
+    body:
+      "The open course TCP/IP: Concepts and IP Routing can now be presented on the site, with nothing to download: every slide in English and in Portuguese, sharp in full screen, with Previous and Next, the arrows, Space and the F key, a swipe on a phone, a counter you can type a slide number into, the contents by part, and each slide's own speaker notes one click away. Every slide has its own address, so a teacher can send a student straight to it. The course now has a door on the Learn hub, on Training, on the study guides and on the certification guides, and each part of its outline opens the presenter at its first slide.",
+    links: [
+      { label: "Present the course", href: "/materials/tcpip-concepts-and-ip-routing/present" },
+      { label: "Open materials", href: "/materials" },
+    ],
+  },
+  {
+    // Milestone R1-b1/b2: SCOUT's Round 1 adoption audit rows 8, 10 and 23 (PLAN-round1-closeout-20261006), PRIME's go of
+    // 15:50 ("Certification work is a go").
+    date: "2026-10-06",
+    time: "20:00",
+    kind: "feature",
+    title: "Certification guides you can find by any name, with retired exams out of the way",
+    body:
+      "The certification study guides now open with a find field: type an exam's name, its code or a name it used to have (101 finds the F5-CA exams that replaced it) and every vendor narrows at once, opening wherever a match is. Retired exams, which can no longer be booked, stay out of the list until you ask for them, a legend says what each badge means, and the setting travels in the address, so a filtered list can be shared. Each guide now states its status (current, in transition, in preparation or retired) and the day its record was last checked against the vendor's official sources, turning amber once that is more than 120 days ago.",
+    links: [{ label: "Certification study guides", href: "/certifications" }],
+  },
+  {
+    // Milestone (s1): PRIME 2026-10-06 17:54, option B of the Speaking options and his answers to the six questions.
+    date: "2026-10-06",
+    time: "19:05",
+    kind: "content",
+    title: "Speaking, rebuilt around two tracks",
+    body:
+      "The Speaking page now says what the talks are about before listing them: Technology, industry and change, and Humans behind the peripherals, the people side of a technical life. It names the formats that work, from a conference talk to a fireside conversation, and the audiences; points to the work an organiser can read before booking; sets Speaking beside Training and Advisory; and, more quietly, says what can go beyond a talk. Executive briefings are featured on the Advisory page, where work for one organisation belongs, and every booking button opens the contact form ready for an event.",
+    links: [
+      { label: "Speaking", href: "/speaking" },
+      { label: "Executive briefings", href: "/advisory#executive-briefings" },
+    ],
+  },
+  {
+    // Milestone (re2): PRIME 2026-10-06 17:46 ("nothing changes as one types - only after hitting ENTER").
+    date: "2026-10-06",
+    time: "18:15",
+    kind: "feature",
+    title: "The home page's CIDR check answers every keystroke",
+    body:
+      "The answer used to appear only on the keystroke that completed a block, so for a dozen keystrokes nothing reacted. A line under the field now responds to every one: what to type next, or why the text cannot become a block (a number over 255, a prefix over 32). A one-digit prefix of 1, 2 or 3 waits a moment before answering, so typing /24 no longer flashes a /2 on the way, and Enter completes a bare address as that single host.",
+    links: [{ label: "The CIDR check", href: "/#cidr" }],
+  },
+  {
     // Milestone (re1): PRIME 2026-10-06 16:35 (the CIDR Clear), 16:39 (the pills), 16:43 to 16:49 (one directory: Option A,
     // the colophon, the verbs and the bare numbers); the Portuguese excerpt fix found while checking search.
     date: "2026-10-06",

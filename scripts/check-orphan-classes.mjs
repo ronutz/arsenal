@@ -45,6 +45,12 @@ const CSS_DIR = path.join(OUT, "_next", "static", "css");
 const AUTHORED = [
   "people-", "glossary-", "tool-", "learn-", "industry-", "milestone-",
   "vendor-", "profile-", "study-", "path-", "cert-", "timeline-",
+  // The Speaking page's family, from milestone (s1) of 2026-10-06.
+  "speaking-",
+  // The Learn series rail and index, from milestone LS-0 of 2026-10-06.
+  "series-",
+  // The training series on /study-guides, from milestone NF-1 of 2026-10-06.
+  "training-",
 ];
 
 function walk(dir, acc = []) {

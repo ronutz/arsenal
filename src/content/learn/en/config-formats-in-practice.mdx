@@ -26,3 +26,12 @@ YAML optimizes for the person editing the file. It allows comments, which lets a
 ## When converting helps
 
 Because the two formats describe the same data, moving between them is a practical, everyday operation. You might take a JSON declaration that a tool emitted and convert it to YAML to read it more easily, comment on it, or drop it into a templating system that expects YAML. You might take a YAML manifest and convert it to JSON to post to an API, feed to a schema validator, or embed in code. The conversion preserves the structure and values; what it cannot preserve are the format-specific extras, the comments on the YAML side and nothing on the JSON side, which is why a converter that tells you what it dropped is more trustworthy than one that silently changes the data.
+
+## This series, in order
+
+This article opens the series **YAML and configuration files**. It explains why the split between JSON and YAML follows who writes the file; the parts then take YAML's own behaviour one feature at a time, each a classic source of a configuration that means something other than what was typed.
+
+1. **[JSON vs YAML: What Converts Cleanly and What Does Not](/learn/json-vs-yaml)**. What converts cleanly between the two and what does not: comments, anchors, multiple documents, YAML-only types.
+2. **[YAML Type Coercion and the Norway Problem](/learn/yaml-type-coercion)**. How YAML guesses the type of an unquoted value, and why NO becomes false and a version string becomes a number.
+3. **[YAML Block Scalars and Multiline Strings](/learn/yaml-block-scalars)**. Literal and folded multiline strings, the chomping indicators, and why an embedded certificate comes out mangled.
+4. **[YAML Anchors, Aliases, and Merge Keys](/learn/yaml-anchors-and-aliases)**. Defining a value once and reusing it, the merge key, what conversion to JSON does to them, and the expansion attack they allow.

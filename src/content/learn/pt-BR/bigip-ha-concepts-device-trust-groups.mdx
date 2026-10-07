@@ -30,3 +30,11 @@ A distinção favorita das provas é traffic group versus HA group. Um HA group 
 ## Como os três se relacionam
 
 Leia a pilha de baixo para cima: o device trust torna a comunicação possível, o device group sync-failover define o conjunto que compartilha configuração e dever, e os traffic groups definem quais endereços estão ativos onde. Quando um blueprint pergunta por que a alta disponibilidade se perdeu, a resposta quase sempre é uma quebra numa camada que cascateia para cima - confiança quebrada por desvio de relógio, sync falhando no grupo, ou um traffic group incapaz de migrar porque o próximo dispositivo ativo está indisponível. O artigo companheiro sobre [estados e operações de failover](/learn/bigip-failover-states-and-operations) cobre as partes móveis.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Alta disponibilidade no BIG-IP**. Ele separa os três objetos fáceis de confundir; as partes tratam então do que eles compartilham (a configuração, e quando ela sincroniza), de como passam o controle (os estados de failover) e da única coisa que um failover perde se não tiver sido espelhada.
+
+1. **[Config Sync no BIG-IP: Quando Sincronizar, e Por Que Falha](/learn/bigip-config-sync)**. Sincronização manual contra automática, a leitura do status de sync e a lista curta de motivos pelos quais ela falha.
+2. **[Failover no BIG-IP: Estados, Forçamento e Network Failover](/learn/bigip-failover-states-and-operations)**. Active, standby, offline e forced offline: a máquina de estados, como forçar cada um e o network failover por unicast ou multicast.
+3. **[Espelhamento de persistência em um par HA](/learn/persistence-mirroring-and-ha)**. A persistência vive na memória da unidade ativa; sem espelhamento, um failover rebalanceia os clientes no meio da sessão.

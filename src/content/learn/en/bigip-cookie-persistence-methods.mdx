@@ -40,3 +40,12 @@ A persistence record is a promise to keep sending a client to the same member, a
 What happens next depends on configuration rather than intuition. The connection may be re-balanced, or it may be refused, and the difference between those two outcomes during an incident is the difference between a degraded service and an outage for a subset of users who cannot understand why everyone else is fine.
 
 **Test the failure, not the feature.** Persistence working is easy to observe; persistence releasing correctly when a member fails is the behaviour that matters, and it is the one nobody checks until it is load-bearing.
+
+## This series, in order
+
+This article opens the series **BIG-IP persistence cookies**. It covers the four ways the cookie gets there and the profile settings around it; the parts then read the cookie itself, decode its four formats, weigh what it discloses and close the leak.
+
+1. **[BIG-IP Persistence Cookies: What They Are and Why They Leak](/learn/f5-bigip-persistence-cookies)**. Why a BIG-IP inserts a BIGipServer cookie, what the value encodes, and why the default form hands out an internal address and port.
+2. **[The Four BIG-IP Cookie Encodings, Byte by Byte](/learn/bigip-cookie-formats)**. The four unencrypted encodings, each with a worked decode: reversed address bytes, a byte-swapped port, route domains, IPv6.
+3. **[What a BIG-IP Cookie Tells an Attacker](/learn/bigip-cookie-disclosure)**. A textbook information disclosure: internal addresses, ports, pool size and route domains, and how scanners harvest them.
+4. **[Closing the Leak: BIG-IP Cookie Encryption](/learn/bigip-cookie-encryption)**. Encrypting the cookie, what the encrypted value looks like, and the hashing and naming options beside it.

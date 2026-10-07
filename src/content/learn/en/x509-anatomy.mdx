@@ -121,3 +121,18 @@ A certificate **fingerprint** is simply a cryptographic hash of the certificate'
 This is the single most important idea, and it mirrors the same caution that applies to JSON Web Tokens. Reading a certificate's fields tells you what it *claims*. It does not tell you that the claim is *true*. Full validation is a separate, heavier process: checking that the signature chains to a trusted root, that none of the certificates in the chain are expired or revoked, that the name you connected to is in the SAN, and that the key usages permit what you are doing.
 
 A certificate decoder, including this one, is an inspection and learning instrument. It shows you precisely what an issuer asserted and how it was encoded. Treat the output as a faithful reading of the document, not as a verdict on whether to trust it.
+
+## This series, in order
+
+This article opens the series **Certificates: the object and its trust**. Having taken a certificate apart byte by byte, the series follows it through its life (the file it is stored in, the request that creates it, the validation and chain building a client performs, the pointers and revocation that can cancel it) and ends with the trust model itself: who is allowed to vouch, what happened when one of them broke, and how the design came to be.
+
+1. **[PEM, DER, and the certificate file formats](/learn/certificate-formats)**. PEM, DER, and what .crt, .pem, .pfx and .p12 files really hold.
+2. **[Certificate signing requests and how certificates are issued](/learn/certificate-signing-request)**. What a CSR contains, why the private key never leaves your machine, and how a CA validates and issues.
+3. **[How certificate validation actually works](/learn/certificate-validation)**. The steps a client runs: build the chain, check signatures and dates, match the name, enforce the constraints.
+4. **[Certificate chains: the order, the anchor, and what breaks them](/learn/certificate-chains-order-anchors-and-what-breaks-them)**. From the leaf to a trusted root: the order of the chain, what TLS 1.3 relaxed, why the root is left out, and the faults that break it.
+5. **[Authority Information Access: The OCSP and CA Issuers URLs](/learn/authority-information-access)**. The two pointers in the AIA extension: where to ask about revocation (OCSP) and where to fetch the issuer (CA Issuers).
+6. **[Certificate revocation: CRL, OCSP, and short-lived certificates](/learn/certificate-revocation)**. CRL, OCSP and short-lived certificates: why cancelling a certificate before expiry works poorly, and what replaces it.
+7. **[OCSP Must-Staple: Closing the Soft-Fail Gap](/learn/ocsp-must-staple)**. The soft-fail gap in live OCSP checks, and how stapling and the Must-Staple flag close it, at an operational price.
+8. **[Certificate authorities: the padlock is a list of people you have never met](/learn/the-certificate-authority-chokepoint)**. A few hundred organisations, any of which can issue a certificate for any name: the design, and how it has failed.
+9. **[2011: the year the trust anchors broke](/learn/rsa-and-diginotar-2011)**. The year the trust anchors broke: the RSA SecurID breach and the certificate authority that issued 531 fraudulent certificates.
+10. **[PKI: An Undergraduate Thesis, and a Trust Model Nobody Would Design Today](/learn/pki-family-history)**. From the 1978 undergraduate thesis that named the certificate to a trust model nobody would design today.

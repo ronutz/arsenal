@@ -26,3 +26,14 @@ O JSON é mais estrito do que os literais de objeto JavaScript com os quais se p
 ## Por que um validador aponta uma localização
 
 Como a gramática é tão rígida, todo erro tem uma localização precisa: o parser sabe exatamente qual caractere violou qual regra. Um bom validador reporta não apenas que o documento é inválido mas onde, por linha e coluna, e qual caminho estrutural ele estava lendo no momento. Esse caminho, escrito como um JSON Pointer, transforma um vago "erro de sintaxe" em "o valor em /users/2/email está malformado", que é a diferença entre minutos e segundos de depuração. O formatador analisa contra essa gramática e reporta falhas exatamente assim.
+
+## Esta série, em ordem
+
+Este artigo abre a série **JSON, exatamente**. A gramática acima é o formato inteiro; as partes abaixo são os pontos em que ele encontra parsers reais, na ordem em que um documento os encontra: suas strings, seus números, suas chaves, os dialetos tolerantes, seus bytes quando são assinados e sua tradução para YAML.
+
+1. **[Escapes de string e Unicode em JSON](/learn/json-string-escapes)**. Os caracteres que uma string precisa escapar, `\uXXXX` para qualquer outro, e o par substituto de que um emoji precisa.
+2. **[Números JSON e a Armadilha da Precisão](/learn/json-numbers-and-precision)**. Por que um número sobrevive à gramática e não ao parser: inteiros grandes e decimais exatos perdidos para o float de 64 bits.
+3. **[Chaves Duplicadas em JSON: Legais, Perigosas e Dignas de Detecção](/learn/json-duplicate-keys)**. Legal na sintaxe, indefinida no significado: como parsers discordam sobre uma chave repetida, e por que isso pode ser um problema de segurança.
+4. **[Vírgulas finais, comentários e a família JSON5](/learn/json-comments-and-trailing-commas)**. O que JSONC e JSON5 permitem e o JSON não, e como um editor tolerante produz um arquivo que uma ferramenta estrita rejeita.
+5. **[Formatação, minificação e JSON canônico](/learn/json-formatting-and-canonical)**. O espaço em branco não muda nada até os bytes serem assinados ou hasheados; o JSON canônico faz do mesmo dado a mesma string.
+6. **[JSON vs YAML: O Que Converte Limpo e o Que Não Converte](/learn/json-vs-yaml)**. Todo documento JSON é YAML; o que converte limpo no sentido contrário e o que não tem equivalente em JSON. A ponte para a série de YAML.

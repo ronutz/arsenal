@@ -60,3 +60,18 @@ A fabric is understood the other way round. The core is a transport that carries
 **Find the layer where the problem lives.** A traditional network fault is diagnosed hop by hop because the configuration is hop by hop. A fabric fault is almost always in one of three places: the node cannot join (step 4 - nicknames, IS-IS adjacency on fabric links), the service is not provisioned at the edge that needs it (step 5, or step 7 if Fabric Attach should have done it), or the edge's dual-homing is inconsistent (step 8). Working the sequence is faster than tracing the path, because in a fabric there is no path to trace - only a service that either exists at both edges or does not.
 
 For where this design sits in the longer history of the switch, see the [bridge and switch lineage](/learn/bridge-switch-family-history).
+
+## This series, in order
+
+This article opens the series **Extreme Fabric Connect, one service edge to edge**. It reads the fabric in the order a service comes into being; the parts are those articles in the same order, beginning with the operating system a switch boots and ending with the edge device attached to two of them.
+
+1. **[VOSS vs EXOS: Two Extreme Operating Systems](/learn/voss-vs-exos)**. Universal hardware that boots either a traditional Ethernet OS or a fabric-native one, and where the two interconnect.
+2. **[Switch Engine, Fabric Engine, and the switches that kept the old names](/learn/extreme-universal-os-names)**. Switch Engine and Fabric Engine, the hardware that kept the old names, and the image files that never changed.
+3. **[How an ExtremeXOS Config Is Structured](/learn/how-extremexos-config-is-structured)**. No sub-modes: every line a self-contained command that begins with a verb.
+4. **[The SPB vocabulary, sorted](/learn/spb-fabric-vocabulary)**. I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN: which is a service, which is transport and which is a role.
+5. **[Fabric Connect and SPBM: Why VOSS Retires Spanning Tree](/learn/voss-fabric-connect-spbm)**. Shortest Path Bridging with an IS-IS control plane and a MAC-in-MAC data plane, and why spanning tree retires.
+6. **[IS-IS, Nicknames, and B-MACs: The VOSS Control Plane](/learn/voss-isis-and-nicknames)**. IS-IS on fabric links only, the node nickname that must be unique, and the backbone MAC.
+7. **[The I-SID: How VOSS Replaces VLAN Stretching](/learn/voss-i-sid-and-vsns)**. Services provisioned at the edge instead of VLANs trunked hop by hop: the I-SID and the Layer 2 and Layer 3 services.
+8. **[SPBM multicast: the address is arithmetic, not a lookup](/learn/spbm-multicast-addresses-are-computed-not-learned)**. A backbone group address is never learned or configured: it is assembled from a nickname and an I-SID.
+9. **[Fabric Attach: Auto-Provisioning the Edge (Where VOSS Meets EXOS)](/learn/voss-fabric-attach)**. An edge device signals the service it needs and the fabric provisions it: the server, proxy and client roles.
+10. **[SMLT and vIST: Dual-Homing a Fabric Edge](/learn/voss-smlt-and-vist)**. Dual-homing an edge device to a pair of switches with active links on both and no spanning tree.

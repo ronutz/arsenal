@@ -21,6 +21,10 @@
 // the course's own slide 3; every file with its size and SHA-256; the licence
 // in plain words; and the Learn articles that teach the same ground.
 //
+// PRESENT (milestone (m2), 2026-10-06; PRIME 19:21): "Present the slides" heads
+// the files block, and every part of the outline opens the presenter at its
+// first slide (/materials/<slug>/present#slide-N).
+//
 // Facts and figures come from the registry (src/content/materials/materials.ts,
 // measured from the files and re-verified by scripts/check-materials.mjs at
 // every build); the words from the "materials" namespace, en and pt-BR. Course
@@ -158,6 +162,12 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
             </div>
             <div className="materials-get">
               <h2 className="materials-get-title">{t("labels.getTheCourse")}</h2>
+              {/* Present first: the course in the browser, nothing to download (m2). */}
+              <p className="materials-present-cta">
+                <Link href={`/materials/${slug}/present`} className="btn btn-primary">
+                  {t("door.present")} &rarr;
+                </Link>
+              </p>
               <ul className="materials-get-list">
                 {files.map((f) => (
                   <li key={f.path}>
@@ -284,6 +294,10 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
                           {t("labels.part", { n: p.n })} · {t("labels.slideRange", { from: p.slides[0], to: p.slides[1] })}
                         </p>
                         <h4 className="materials-part-title">{p.title}</h4>
+                        {/* The part in the presenter, from its first slide (m2). */}
+                        <Link href={`/materials/${slug}/present#slide-${p.slides[0]}`} className="materials-part-present">
+                          {t("present.presentPart")} &rarr;
+                        </Link>
                         <ul className="materials-topics">
                           {p.topics.map((topic) => (
                             <li key={topic}>{topic}</li>

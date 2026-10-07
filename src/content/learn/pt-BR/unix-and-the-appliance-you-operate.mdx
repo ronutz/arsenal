@@ -59,6 +59,19 @@ O momento é a parte historicamente decisiva. O Unix livre com a posição jurí
 
 **E as habilidades genéricas são as duráveis.** Certificações de fabricante expiram e linhas de produto são descontinuadas - este catálogo é em boa parte um registro disso. A capacidade de ler um log, seguir um processo, filtrar uma captura e raciocinar sobre um sistema de arquivos não expira, porque é o mesmo trabalho desde que um grupo de pessoas nos Bell Labs quis rodar um jogo sobre voar até os planetas.
 
+## Esta série, em ordem
+
+Este artigo abre a série **O Unix de quem opera**. Ele mostra o sistema de arquivos, o shell, o syslog e o cron por baixo de um balanceador ou de um firewall; as partes primeiro ensinam as peças que quem opera toca todo dia (o terminal e o shell, os bits de permissão, o agendador, os scripts que conduzem ferramentas interativas) e depois contam de onde veio o Unix de hoje: o kernel de hobby, as famílias de distribuição, os sistemas que nasceram dele e as licenças que o tornaram possível.
+
+1. **[Terminal, shell, TTY, console](/learn/terminal-shell-tty-console)**. Quatro palavras para quatro coisas diferentes, e por que Ctrl+C mata o seu comando mas não o seu shell.
+2. **[Modos de arquivo, lidos como o kernel os lê: octal, simbólico e os três bits que quase todo mundo pula](/learn/file-modes-octal-symbolic-and-the-special-bits)**. Um modo tem doze bits, não nove: de onde vem o 755, e os bits setuid, setgid e sticky que quase todos pulam.
+3. **[cron: cinco campos que rodam as tarefas do mundo](/learn/cron-the-schedule-language)**. Cinco colunas de números e asteriscos, a regra do OU que pega quase todo mundo, e por que 0 e 7 são o mesmo dia.
+4. **[Scripts Expect, lidos devagar: spawn, expect, send e os erros entre eles](/learn/expect-scripts-explained)**. spawn, expect, send e interact: conduzindo programas interativos desde 1990, e os erros entre os verbos.
+5. **[Linux: o kernel de hobby que comeu o mundo](/learn/linux-the-kernel-that-ate-the-world)**. Só um hobby, disse o autor em 1991; hoje roda servidores, celulares, roteadores, carros e todo supercomputador do topo.
+6. **[As famílias de distribuições Linux: o que de fato as separa](/learn/the-linux-distribution-families)**. O mesmo kernel e as mesmas ferramentas, então as diferenças estão no gerenciador de pacotes, no modelo de versões e no suporte.
+7. **[O que nasceu do Linux: celulares, roteadores, contêineres e a pergunta de licença que cada um responde](/learn/what-grew-out-of-linux)**. Android, ChromeOS, OpenWrt, as builds dentro dos carros e a indústria de contêineres: Linux em formas muito diferentes, e a pergunta de licença que cada um responde.
+8. **[Open source, e os dois sentidos de free](/learn/open-source-and-the-meaning-of-free)**. As quatro liberdades, a mudança de nome de 1998 que criou o open source, copyleft contra permissiva, e free no sentido de preço.
+
 ## Fontes
 
 - [Textbook of Linux, história do Unix e do Linux: o Unix original foi escrito em assembly de PDP-7, portado para o PDP-11 em 1971, e em 1973 Ritchie reescreveu a maior parte em C, linguagem que projetara em parte para isso; sistemas operacionais sempre tinham sido escritos em assembly porque desempenho importava e supunha-se que linguagens de alto nível fossem ineficientes demais; os primeiros artigos na Communications of the ACM tornaram o sistema famoso; a AT&T estava sob um acordo de 1956 que a proibia de entrar no negócio de computadores, então o Unix não podia ser vendido comercialmente](https://www.textbookoflinux.com/chapter/history.html)

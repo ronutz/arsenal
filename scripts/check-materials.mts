@@ -25,13 +25,17 @@
 //      2026-10-06 16:02) exist as WebP for every language the material ships,
 //      at the size the registry records, the slides inside the deck and in
 //      order, each with its caption and alt text in both packs. These images
-//      are listed files too, so the orphan check accepts them and no others.
+//      are listed files too, so the orphan check accepts them and no others;
+//   7. the presenter's deck (milestone (m2), 2026-10-06): for every language,
+//      one WebP per slide at the deck's recorded size, and the deck manifest
+//      with one entry per slide, numbered in order, each with a title and (the
+//      registry says every slide has notes) its notes. Listed files too.
 // ============================================================================
 
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
-import { MATERIALS, slideImagePath } from "../src/content/materials/materials";
+import { MATERIALS, slideImagePath, deckImageBase, deckManifestPath } from "../src/content/materials/materials";
 
 const ROOT = process.cwd();
 const TAG = "[check-materials]";
@@ -66,6 +70,9 @@ const listed = new Set<string>();
 let files = 0;
 // Slide images verified (the cover and the gallery, per language).
 let images = 0;
+// Presenter images and manifests verified (every slide, per language).
+let deckImages = 0;
+let manifests = 0;
 for (const m of MATERIALS) {
   // 1. Files: present, sized and digested as recorded.
   for (const f of m.files) {
@@ -137,6 +144,35 @@ for (const m of MATERIALS) {
       images++;
     }
   }
+  // 7. The presenter's deck: every slide's image at the deck size, and the manifest that names and annotates them.
+  for (const lang of new Set(m.files.map((f) => f.lang))) {
+    for (let n = 1; n <= m.slides; n++) {
+      const rel = `${deckImageBase(m, lang)}${String(n).padStart(3, "0")}.webp`;
+      listed.add(rel);
+      const disk = path.join(ROOT, "public", rel);
+      if (!fs.existsSync(disk)) { fail(`${m.slug}: ${rel} is missing from public/`); continue; }
+      const size = webpSize(fs.readFileSync(disk));
+      if (!size) fail(`${m.slug}: ${rel} is not a WebP image`);
+      else if (size.width !== m.deck.width || size.height !== m.deck.height) fail(`${m.slug}: ${rel} is ${size.width}x${size.height}, the deck is ${m.deck.width}x${m.deck.height}`);
+      deckImages++;
+    }
+    const mrel = deckManifestPath(m, lang);
+    listed.add(mrel);
+    const mdisk = path.join(ROOT, "public", mrel);
+    if (!fs.existsSync(mdisk)) { fail(`${m.slug}: ${mrel} is missing from public/`); continue; }
+    let man: { slides?: { n?: number; title?: unknown; notes?: unknown }[] } = {};
+    try { man = JSON.parse(fs.readFileSync(mdisk, "utf8")); } catch { fail(`${m.slug}: ${mrel} is not JSON`); continue; }
+    const slides = Array.isArray(man.slides) ? man.slides : [];
+    if (slides.length !== m.slides) fail(`${m.slug}: ${mrel} lists ${slides.length} slides, the deck has ${m.slides}`);
+    slides.forEach((s, i) => {
+      if (s.n !== i + 1) fail(`${m.slug}: ${mrel} entry ${i + 1} is numbered ${s.n}`);
+      if (typeof s.title !== "string" || !s.title.trim()) fail(`${m.slug}: ${mrel} slide ${i + 1} has no title`);
+      const notesOk = Array.isArray(s.notes) && s.notes.every((p) => typeof p === "string");
+      if (!notesOk) fail(`${m.slug}: ${mrel} slide ${i + 1} has malformed notes`);
+      else if (m.notesSlides === m.slides && (s.notes as string[]).length === 0) fail(`${m.slug}: ${mrel} slide ${i + 1} has no notes, the registry says every slide has them`);
+    });
+    manifests++;
+  }
 }
 
 // 1b. Orphans: a file under public/materials/ that no material lists.
@@ -152,4 +188,4 @@ if (problems.length) {
   for (const p of problems) console.error(`  - ${p}`);
   process.exit(1);
 }
-console.log(`${TAG} OK: ${MATERIALS.length} material(s), ${files} file(s) matching their recorded sizes and SHA-256, ${images} slide image(s) present at their recorded size, parts contiguous, licence deeds canonical, related articles and copy present in en and pt-BR.`);
+console.log(`${TAG} OK: ${MATERIALS.length} material(s), ${files} file(s) matching their recorded sizes and SHA-256, ${images} slide image(s) present at their recorded size, ${deckImages} presenter image(s) and ${manifests} deck manifest(s) complete, parts contiguous, licence deeds canonical, related articles and copy present in en and pt-BR.`);

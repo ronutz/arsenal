@@ -61,3 +61,14 @@ Paste a full response (the status line plus headers) or just a block of headers.
 ## What this does not check
 
 The analyzer reads a response. It does not see request headers (such as `Origin` or the `Sec-Fetch-*` set), because those are sent by the browser, not returned by the server. It does not evaluate your TLS configuration, certificate, or cipher suites; those are separate concerns with their own tools. And it cannot tell whether a permissive setting is a real problem or an intentional choice for a public, credential-free endpoint. It flags the posture and explains the trade-off; the decision about intent is yours.
+
+## This series, in order
+
+This article opens the series **The browser's security headers**. It explains why headers are a layer on top of secure code and which carry the most weight; the parts take those headers one at a time, from the transport up: HTTPS itself, the session cookie, cross-origin reads, the script policy (twice: directive by directive, then as the browser parses it), and framing.
+
+1. **[HSTS and HTTPS Enforcement](/learn/hsts-and-https)**. How Strict-Transport-Security closes the downgrade window, what max-age, includeSubDomains and preload each do, and the mistakes that disable it.
+2. **[Cookie Security Flags](/learn/cookie-security-flags)**. Secure, HttpOnly and SameSite, why SameSite=None needs Secure, and the __Host- and __Secure- prefixes.
+3. **[CORS Explained: The Border Control of the Browser](/learn/cors-explained)**. The same-origin policy is the wall and CORS is the door: simple requests, preflights, and what OPTIONS is for.
+4. **[Content Security Policy, Directive by Directive](/learn/content-security-policy)**. A CSP directive by directive: default-src, what unsafe-inline and unsafe-eval give away, nonces, hashes and report-only.
+5. **[A Content Security Policy, read the way the browser reads it](/learn/content-security-policy-read-by-the-specification)**. The algorithm a browser uses to read a CSP header, and the exact steps where most broken policies quietly fail.
+6. **[Clickjacking and Frame Control](/learn/clickjacking-and-framing)**. How framing enables clickjacking, X-Frame-Options against frame-ancestors, and why ALLOW-FROM is obsolete.

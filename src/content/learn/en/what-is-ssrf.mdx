@@ -37,3 +37,11 @@ SSRF matters because of *where the request comes from*, not what it fetches. **T
 That is why the impact is so variable and so often underestimated in triage. The same flaw is a curiosity on a flat network with authenticated services, and a full compromise on a network that outsourced its access control to topology.
 
 **Rate the flaw by what your internal network assumes about internal callers**, not by what the vulnerable endpoint appears to do. The endpoint is the door; the assumptions behind it are the reason the door matters.
+
+## This series, in order
+
+This article opens the series **Server-side request forgery**. It explains why a request that starts inside the server's network reaches what the attacker cannot; the parts widen the attack (other schemes), name its most valuable target (cloud metadata) and end with the defence that holds.
+
+1. **[Dangerous URL Schemes in SSRF](/learn/dangerous-url-schemes)**. file, gopher, dict and ftp: how a fetcher that accepts any scheme lets an attacker read files or speak raw bytes to Redis and SMTP.
+2. **[Cloud Metadata Endpoints and SSRF](/learn/cloud-metadata-endpoints-and-ssrf)**. The link-local metadata service that hands out an instance's credentials, and the IMDSv2-style defences.
+3. **[Defending Against SSRF with Allow-Lists](/learn/ssrf-defenses-allowlists)**. An allow-list of intended destinations, resolving before trusting and re-checking after redirects, and why block-lists lose.

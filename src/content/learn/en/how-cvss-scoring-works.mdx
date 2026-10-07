@@ -54,6 +54,16 @@ Two analysts scoring the same flaw honestly can differ by more than a severity b
 
 **Publish the vector, always, and treat a score without one as an opinion in numeric clothing.** The equation's precision is real and it is a precision about the inputs, not about the vulnerability.
 
+## This series, in order
+
+This article opens the series **CVSS**. It shows the formula's two halves, exploitability and impact; the parts read the input (the vector string and its eight base metrics), the adjustments that move the score after publication, the bands it is reported in and the limits of what it measures, and what the versions changed.
+
+1. **[Reading a CVSS Vector String](/learn/cvss-vector-string-format)**. The version prefix and the metric:value pairs, read directly instead of trusting a rendered score.
+2. **[The CVSS Base Metrics, Explained](/learn/cvss-base-metrics-explained)**. Four exploitability metrics and four impact metrics, and what each one asks about the flaw.
+3. **[CVSS Temporal and Environmental Scores](/learn/cvss-temporal-and-environmental)**. Temporal metrics can only lower the score as facts emerge; environmental metrics re-score it for one organisation.
+4. **[CVSS Severity Bands, and What the Score Does Not Tell You](/learn/cvss-severity-bands-and-limits)**. None to Critical, useful for triage, and why a base score measures severity rather than risk.
+5. **[CVSS v3.0, v3.1, and v4.0: What Changed](/learn/cvss-v3-vs-v4)**. v3.0 and v3.1 share a formula and differ in rounding; v4.0, released in 2023, is a larger change.
+
 ## Sources
 
 Every formula and metric group above comes from FIRST's own specification, which is the normative definition of the score rather than a description of it.

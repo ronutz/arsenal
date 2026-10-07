@@ -76,3 +76,17 @@ And the signature, verified against the issuer's published keys, with the key ro
 ## Telling them apart in practice
 
 When you have a token in hand and are not sure which it is, a few signals help. If it decodes as a JWT with iss, sub, aud, exp, and iat, and the audience is your client identifier, it is an ID token; the [OIDC decoder](/tools/oidc) will recognize it and interpret the claims. An access token may be opaque (not a JWT at all), or it may be a JWT whose audience is a resource server and whose claims describe scopes and permissions rather than user identity. The presence of the openid scope in the original request is what caused an ID token to be issued in the first place. When in doubt, decode the token and look at the audience and the claims: they tell you what the token is for, and therefore how it should be used.
+
+## This series, in order
+
+This article opens the series **OAuth and OpenID Connect**. It separates the two jobs that are constantly confused; the parts build OAuth first (the code flow, who can keep a secret, PKCE, the tokens, the grant to pick) and then the identity layer on top of it (what OpenID Connect adds, its flow, the claims a relying party checks, and how a provider describes itself).
+
+1. **[The OAuth 2.0 authorization code flow](/learn/oauth-code-flow)**. The four roles, the redirect and the exchange, and why the code is swapped for a token on the back channel.
+2. **[Public vs confidential clients, and where PKCE fits](/learn/oauth-client-types)**. Whether a client can keep a secret decides its security model, and why single-page and mobile apps are public clients.
+3. **[PKCE: securing the OAuth authorization code flow](/learn/pkce)**. The interception attack PKCE defeats, the verifier and the challenge, and why S256 is mandatory.
+4. **[Access tokens, refresh tokens, and ID tokens](/learn/oauth-tokens)**. Access, refresh and ID tokens, what each is for, and the real bug of sending one where another belongs.
+5. **[OAuth flows: choosing the grant in 2026](/learn/oauth-choosing-the-grant)**. Code with PKCE for people, client credentials for machines, the device grant for televisions, and why the implicit grant is retired.
+6. **[OpenID Connect: An Identity Layer on OAuth 2.0](/learn/oidc-overview)**. The identity layer: the ID token at its centre, the relying party and provider roles, and why an ID token is a JWT.
+7. **[The OIDC Authorization Code Flow](/learn/oidc-authorization-code-flow)**. How an app receives an ID token: the login at the provider, the short-lived code, the back-channel exchange.
+8. **[The ID Token Claims, and What a Relying Party Checks](/learn/id-token-claims)**. iss, sub, aud, exp and iat, the nonce that stops replay, azp, acr and amr: what a relying party checks.
+9. **[OIDC Discovery: The openid-configuration Document](/learn/oidc-discovery)**. The .well-known/openid-configuration document: endpoints, jwks_uri, signing algorithms, learned automatically.

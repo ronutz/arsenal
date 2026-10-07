@@ -34,3 +34,16 @@ The path identifies the resource on the host: `/path/to/page`. It is a sequence 
 ## Reading them apart
 
 The value of seeing a URL split into these named parts is that subtle mistakes become obvious. A password hiding in the userinfo, a non-default port, a host that is really an IP address, a parameter buried in a long query: all of them stand out once the URL is decomposed. The URL inspector does exactly this decomposition, faithfully and without normalizing the URL, so what you see is what the URL actually says.
+
+## This series, in order
+
+This article opens the series **URLs, read exactly**. With the five parts named, the series reads the rest of the grammar in order (the names for the thing, the escaping, the query, resolution, international hosts, where a domain is registered) and ends with the tricks that rely on a reader not reading that exactly.
+
+1. **[URI, URL, URN: What's Actually the Difference?](/learn/uri-url-urn-whats-the-difference)**. Identify, locate, name: what the three acronyms mean in a specification and in conversation.
+2. **[Percent-encoding (URL encoding), explained](/learn/percent-encoding)**. Why a URL writes some characters as %XX, which ones are safe as they are, and how it differs from Base64.
+3. **[Query Strings: Parameters, Plus Signs, and Repeated Keys](/learn/query-strings)**. Separators, the plus sign that sometimes means a space, repeated keys, and why no single standard governs them.
+4. **[Relative URLs and How They Resolve](/learn/relative-urls-and-resolution)**. How a browser completes a relative link against its base, and what ./, ../ and a leading slash do.
+5. **[URL Encoding and Internationalized Hosts](/learn/url-encoding-and-idn)**. Percent-encoding for paths and queries, punycode for host names, and why internationalised hosts serve phishing.
+6. **[Public suffixes and the registered domain (eTLD+1)](/learn/public-suffix)**. The public suffix and the registered domain (eTLD+1), why the last two labels are the wrong answer, and where it decides cookies and certificates.
+7. **[Deceptive URLs: Reading Past the Tricks](/learn/deceptive-urls)**. The userinfo trick, redirect parameters and lookalike characters, and the one habit that finds the real host.
+8. **[IP Address Obfuscation Tricks](/learn/ip-address-obfuscation-tricks)**. One address written in decimal, octal, hex or IPv4-mapped IPv6, and why a filter must decode rather than match strings.

@@ -36,3 +36,12 @@ Por padrão, os quantificadores são **gulosos**: pegam o máximo que conseguem 
 As âncoras correspondem a uma posição, não a um caractere. `^` é o início da string (ou o início de uma linha com a flag `m`), `$` é o fim e `\b` é um limite de palavra — a junção entre um caractere de palavra e um não caractere de palavra. Envolver um padrão em `^...$` força a correspondência com a entrada *inteira*, que é exatamente o que você quer ao validar um campo completo em vez de encontrar um fragmento dentro dele.
 
 Cole qualquer um desses no [Kit de Regex](/tools/regex) para ver as correspondências se acenderem enquanto você digita, e depois leia sobre [grupos e retrorreferências](/learn/regex-groups-and-backreferences) para capturar e reutilizar as partes que você corresponde.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Expressões regulares**. Classes e quantificadores respondem às duas perguntas que todo padrão faz; as partes acrescentam posição, captura e lookaround, as flags que mudam como o padrão inteiro é lido e, por fim, o backtracking que transforma uma string curta numa negação de serviço.
+
+1. **[Âncoras e limites em regex](/learn/regex-anchors-and-boundaries)**. Casar uma posição em vez de um caractere: ^, $, limites de palavra e como o modo multilinha os muda.
+2. **[Grupos, Retrorreferências e Lookarounds em Regex](/learn/regex-groups-and-backreferences)**. Capturar, nomear e reutilizar o que casou, e olhar antes ou depois sem consumir nada.
+3. **[Flags e modos em regex](/learn/regex-flags-and-modes)**. Maiúsculas, multilinha, dot-all e modo estendido: como uma flag faz o mesmo padrão casar outra coisa.
+4. **[Backtracking Catastrófico e ReDoS](/learn/regex-catastrophic-backtracking)**. Por que alguns padrões inocentes levam uma eternidade numa string curta, como isso vira ReDoS e como escrever padrões que não podem fazê-lo.

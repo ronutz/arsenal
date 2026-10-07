@@ -34,3 +34,15 @@ Organizations with an on-premises proxy or edge appliance can **chain** it to ZI
 Real designs layer these. A classic shape: location tunnels carry the site (covering the unmanageable), ZCC covers managed devices wherever they roam, and PAC logic handles the exceptions - with ZCC configured to notice when it is *on* a tunneled network and adjust its behavior so traffic is not forwarded twice. That on-network/off-network awareness is exactly what [trusted-network detection in the Client Connector profiles](/learn/zscaler-client-connector-profiles) exists to automate, and it is where forwarding stops being four separate methods and becomes one coherent design.
 
 The operator's summary: pick per coverage domain, not per fashion - devices you manage get the agent, sites you own get tunnels, browsers you merely influence get PAC, edges you already run can chain - and make the seams explicit, because every forwarding gap is an inspection gap wearing a disguise.
+
+## This series, in order
+
+This article opens the series **Zscaler Internet Access**. A cloud proxy only protects what reaches it, so the series starts with the forwarding decision; the parts then follow a request through ZIA's policies in the order they act (where it comes from, whether it is decrypted, which sites and applications, which ports, which files and what data) and end with the log fields that record all of it.
+
+1. **[Locations and Sublocations: Teaching the Cloud Where Your Sites Are](/learn/zia-locations-and-sublocations)**. A site the platform recognises by its tunnels or egress addresses, and the per-site policy that recognition unlocks.
+2. **[TLS Inspection in ZIA: The Policy, the Bypasses, and the Bill](/learn/zia-ssl-inspection-policy-and-bypasses)**. The forward-proxy interception run as policy: inspect or do not inspect, the bypasses, and what they cost.
+3. **[URL Filtering and Cloud App Control: Two Policies, One Precedence Rule](/learn/zia-url-filtering-and-cloud-app-control)**. Destinations judged by category and applications by identity: two policies and the one precedence rule between them.
+4. **[ZIA Cloud Firewall: Rule Order Is the Whole Ballgame](/learn/zia-cloud-firewall-rule-order)**. A first-match machine with an undeletable default rule at the bottom: rule order is the whole ballgame.
+5. **[File Type Control and Cloud Sandbox: The Download's Two Judges](/learn/zia-file-type-control-and-sandbox)**. Two judges for every download: which kinds of file may move at all, and what an unknown file does when run.
+6. **[ZIA Data Loss Prevention: Dictionaries, Engines, and the Fingerprint Tiers](/learn/zia-dlp-engines-dictionaries-edm-idm)**. Dictionaries with confidence and proximity, engines that combine them, and the fingerprint tiers for exact and indexed data.
+7. **[ZIA Log Fields: The Vocabulary Investigations Are Written In](/learn/zia-web-and-firewall-log-fields)**. The fields a log feed is built from, and which one carries what an investigation needs.

@@ -60,3 +60,18 @@ Uma fabric se entende ao contrário. O núcleo é um transporte que carrega serv
 **Ache a camada em que o problema mora.** Uma falha de rede tradicional se diagnostica salto a salto porque a configuração é salto a salto. Uma falha de fabric está quase sempre em um de três lugares: o nó não consegue entrar (passo 4 - apelidos, adjacência IS-IS nos enlaces de fabric), o serviço não está provisionado na borda que precisa dele (passo 5, ou passo 7 se o Fabric Attach deveria ter feito isso), ou a ligação dupla da borda está inconsistente (passo 8). Percorrer a sequência é mais rápido que traçar o caminho, porque numa fabric não há caminho a traçar - só um serviço que ou existe nas duas bordas ou não existe.
 
 Para onde este projeto se situa na história mais longa do switch, veja a [linhagem de bridges e switches](/learn/bridge-switch-family-history).
+
+## Esta série, em ordem
+
+Este artigo abre a série **Extreme Fabric Connect, um serviço de borda a borda**. Ele lê a fabric na ordem em que um serviço passa a existir; as partes são esses artigos na mesma ordem, começando pelo sistema operacional que um switch carrega e terminando no equipamento de borda ligado a dois deles.
+
+1. **[VOSS vs EXOS: Dois Sistemas Operacionais da Extreme](/learn/voss-vs-exos)**. Hardware universal que carrega um sistema Ethernet tradicional ou um nativo de fabric, e onde os dois se interligam.
+2. **[Switch Engine, Fabric Engine e os switches que ficaram com os nomes antigos](/learn/extreme-universal-os-names)**. Switch Engine e Fabric Engine, o hardware que ficou com os nomes antigos e os arquivos de imagem que nunca mudaram.
+3. **[Como uma configuração ExtremeXOS é estruturada](/learn/how-extremexos-config-is-structured)**. Sem sub-modos: cada linha é um comando completo que começa com um verbo.
+4. **[O vocabulário do SPB, organizado](/learn/spb-fabric-vocabulary)**. I-SID, B-VLAN, B-MAC, BEB, BCB, L2VSN, L3VSN: qual é serviço, qual é transporte e qual é papel.
+5. **[Fabric Connect e SPBM: Por Que o VOSS Aposenta o Spanning Tree](/learn/voss-fabric-connect-spbm)**. Shortest Path Bridging com plano de controle IS-IS e plano de dados MAC-in-MAC, e por que o spanning tree se aposenta.
+6. **[IS-IS, Nicknames e B-MACs: O Plano de Controle do VOSS](/learn/voss-isis-and-nicknames)**. O IS-IS só nos enlaces de fabric, o nickname de nó que precisa ser único e o MAC de backbone.
+7. **[O I-SID: Como o VOSS Substitui a Extensão de VLANs](/learn/voss-i-sid-and-vsns)**. Serviços provisionados na borda em vez de VLANs estendidas salto a salto: o I-SID e os serviços de camada 2 e de camada 3.
+8. **[Multicast SPBM: o endereço é aritmética, não consulta](/learn/spbm-multicast-addresses-are-computed-not-learned)**. Um endereço de grupo de backbone nunca é aprendido nem configurado: é montado a partir de um nickname e de um I-SID.
+9. **[Fabric Attach: Provisionando a Borda Automaticamente (Onde o VOSS Encontra o EXOS)](/learn/voss-fabric-attach)**. Um equipamento de borda sinaliza o serviço de que precisa e a fabric o provisiona: os papéis de servidor, proxy e cliente.
+10. **[SMLT e vIST: Dual-Homing de uma Borda de Fabric](/learn/voss-smlt-and-vist)**. O dual-homing de um equipamento de borda a um par de switches, com enlaces ativos nos dois e sem spanning tree.

@@ -1,0 +1,108 @@
+---
+slug: link-aggregation-and-lacp
+title: "Link aggregation and LACP: several links that act as one, and the protocol that keeps them honest"
+summary: "A link aggregation group bundles parallel Ethernet links into one logical link for more bandwidth and for resilience. Where the standard came from (802.3ad, then 802.1AX), how LACP lets both ends agree before a single frame is sent, the fast and slow timers, why static bundles are risky, why one flow never goes faster than one member link, the rules members must follow, multi-chassis bundles, and the Linux bonding modes."
+concepts: ["link aggregation", "lag", "lacp", "802.1ax", "802.3ad", "etherchannel", "port-channel", "bond", "lacpdu", "actor", "partner", "load balancing hash", "mlag", "vpc", "drni", "linux bonding"]
+relatedTools: []
+relatedArticles: ["spanning-tree-in-one-article", "vlans-and-8021q-trunking", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall"]
+category: networking
+order: 339
+status: reviewed
+updated: "2026-10-07"
+---
+
+One cable between two switches is a single point of failure and a ceiling on bandwidth. Two cables are a loop, which spanning tree will dutifully block, leaving one of them idle. Link aggregation is the way out of that choice: several parallel links become one logical link, so both carry traffic, and the loss of one is a reduction in capacity rather than an outage.
+
+## What a link aggregation group is
+
+The IEEE standard puts it in one sentence: parallel full-duplex links are "aggregated together to form a Link Aggregation Group (LAG), such that a MAC Client can treat the LAG as if it were a single link" ([IEEE 802.1AX-2020](https://1.ieee802.org/tsn/802-1ax-rev/)). Juniper names the two benefits: it "effectively increases the uplink bandwidth", and "if one member link fails, the LAG continues to carry traffic over the remaining links" ([Juniper, aggregated Ethernet](https://www.juniper.net/documentation/us/en/software/junos/interfaces-ethernet-switches/topics/topic-map/switches-interface-aggregated.html)).
+
+Every vendor has its own word for the same thing. Arista lists "link aggregation groups (LAGs, also called channel groups or port channels)" ([Arista, port channels and LACP](https://www.arista.com/en/um-eos/eos-port-channels-and-lacp)); Cisco calls it an EtherChannel or port-channel, Juniper an aggregated Ethernet interface, and Linux a bond. They are the same idea, and they interoperate when both ends speak the standard protocol.
+
+## From 802.3ad to 802.1AX
+
+Link aggregation was first standardised as IEEE 802.3ad, approved "at the March 2000 IEEE Standards Board meeting" ([IEEE 802.3ad](https://www.ieee802.org/3/ad/index.html)). It later moved out of the Ethernet standard: the 2007 project request says the protocol "defined in Clause 43 will be separated out into this new standard" ([P802.1AX PAR, 2007](https://www.ieee802.org/1/files/public/docs2007/new-p802-1ax-draft-par.pdf)), and IEEE 802.1AX-2008 was approved in September 2008 ([IEEE 802.3ax/ay](https://grouper.ieee.org/groups/802/3/axay/index.html)). The current edition, 802.1AX-2020, was approved on 30 January 2020 (IEEE 802.1AX-2020, as above), and a 2025 amendment, 802.1AXdz, adds YANG data models for configuration ([IEEE 802.1AXdz](https://1.ieee802.org/tsn/802-1axdz/)). Much vendor documentation still says "802.3ad"; it means the same protocol.
+
+## LACP: both ends agree first
+
+The Link Aggregation Control Protocol (LACP) is what makes a bundle safe: the two ends exchange LACPDUs (LACP data units) and only bundle links they both agree on. "Within LACP, the local end of a child link is known as the actor and the remote end of the link is known as the partner" ([Juniper, LACP](https://juniper.net/documentation/us/en/software/junos/interfaces-security-devices/topics/topic-map/security-interface-config-lacp.html)).
+
+Each end runs in one of two modes. An active port "starts negotiations with other ports by sending LACP packets"; a passive port "responds to LACP packets that it receives, but does not start LACP packet negotiation", which means "a port in the passive mode cannot form an EtherChannel with another port that is also in the passive mode because neither port starts LACP negotiation" ([Cisco, configuring EtherChannels](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_etherchannels.html)). Active on at least one end, and preferably both, is the rule.
+
+What the two ends agree on is identity. Each side has a system ID, "LACP system priority and the switch or stack MAC address", where "numerically lower values have higher priority"; the system with the better ID then "decides which ports are active and which are hot standby, based on its values for port priority and port number" (Cisco, as above). Ports join the same bundle only when the actor's system ID and key and the partner's system ID and key all match ([HPE Aruba, LACP](https://arubanetworking.hpe.com/techdocs/Archived/AOS-8/ArubaOS_8.11.2_Web_Help/Content/arubaos-solutions/lacp/lacp-over.htm)). That is the protection: a cable plugged into the wrong switch carries a different partner system ID and is simply left out of the bundle.
+
+LACP belongs to the IEEE's "slow protocols", which share EtherType 0x8809, "Slow Protocols (Link Aggregation, OAM, etc.)" ([IANA, IEEE 802 Numbers](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)), and the IEEE lists the multicast address 01-80-C2-00-00-02 as the "IEEE 802.3 Slow_Protocols_Multicast address" used by 802.1AX ([IEEE SA, group MAC addresses](https://saforms.ieee.org/products-programs/regauth/grpmac/public)).
+
+## Fast and slow, and three missed messages
+
+LACP sends its messages at one of two rates, once a second or once every 30 seconds. The Linux bonding driver describes the setting as a request to the partner: "Request partner to transmit LACPDUs every 30 seconds" or "every 1 second", and "the default is slow" ([Linux kernel, bonding](https://docs.kernel.org/networking/bonding.html)). A link is declared down after three intervals without a message: "The short timeout period is 3 seconds and the long timeout period is 90 seconds" ([Extreme Networks, SLX-OS LACP](https://documentation.extremenetworks.com/slxos/SW/20xx/l2config/GUID-67DF739B-2115-4055-92BE-D1DB02F72B70.shtml)); Arista describes the same as "a default timeout of 30 seconds and a failure tolerance of three" ([Arista](https://www.arista.com/en/um-eos/eos-port-channels-and-lacp)).
+
+Defaults differ between vendors, which matters when two of them meet. Cisco's Catalyst 9300 can change "from the default rate (30 seconds) to the fast rate (1 second)" (Cisco, configuring EtherChannels), while on Juniper's security devices "by default, the actor and partner transmit link aggregation control PDUs every second" (Juniper, LACP). With the slow rate, a member whose far end has failed silently, without the light going out, can keep receiving traffic for up to 90 seconds; the fast rate cuts that to three.
+
+## Static bundles, and why LACP is safer
+
+Most equipment can also bundle links without LACP. Cisco calls it mode on: "a usable EtherChannel exists only when the devices at both ends of the link are configured in the on mode", and the warning follows at once: "If the group is misconfigured, packet loss or spanning-tree loops can occur" (Cisco, configuring EtherChannels). HPE Aruba explains why: in a static LAG, "Link failure is not detected as there is no keep alive PDU communication between the devices", and "a misconfiguration on one side can cause much trouble and be difficult to troubleshoot, because no signaling takes place between the two peers" ([HPE Aruba, AOS-CX LAG modes](https://arubanetworking.hpe.com/techdocs/AOS-CX/10.17/HTML/link_aggregation/Content/Chp_LAG/lin-agg-mod.htm)). Unless a device cannot speak LACP, use it.
+
+## How traffic is spread: one flow, one link
+
+A LAG does not split frames across its members. The switch reduces "part of the binary pattern that is formed from the addresses in the frame to a numerical value that selects one of the links in the channel" (Cisco, configuring EtherChannels): a hash of the addresses picks the member. "The algorithm is deterministic; if you use the same addresses and session information, you always hash to the same port in the channel. This method prevents out-of-order packet delivery" ([Cisco, EtherChannel load balancing](https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html)).
+
+Three consequences follow, and all three surprise people:
+
+- **One flow never exceeds one member's speed.** A single file copy over a bundle of four 10 Gb/s links still moves at 10 Gb/s at most. Linux's documentation is explicit: with its layer 3 and 4 hash, "a single connection will not span multiple slaves" (Linux kernel, bonding). Only Linux's round-robin mode spreads one stream over several links, by sending packets in turn and accepting that they may arrive out of order.
+- **The spread is uneven with few flows.** A handful of large flows can land on the same member while another sits idle; Cisco notes that for the hash it describes, "you can only achieve perfect load balancing, even with random addresses, if you have two, four, or eight ports in the port channel" (Cisco, EtherChannel load balancing).
+- **Each end decides for its own traffic.** "Slave selection for outgoing traffic is done according to the transmit hash policy" (Linux kernel, bonding): the switch hashes what it sends, the server hashes what it sends, and the two choices are independent. Including IP addresses and ports in the hash (Linux's layer2+3 and layer3+4 policies) gives it more to work with than MAC addresses alone, which are the Linux default.
+
+## The rules every member follows
+
+Members must be alike. Cisco: "Configure all ports in an EtherChannel to operate at the same speeds and duplex modes", and "all ports in an EtherChannel must be assigned to the same VLAN or they must be configured as trunk port" (Cisco, configuring EtherChannels). Juniper: "All the interfaces must have the same speed and be in full-duplex mode" (Juniper, aggregated Ethernet). The number of members is a platform limit, not a protocol one: the Catalyst 9300 takes 16 LACP members, but "only eight LACP links can be active at one time; the remaining eight links are placed in hot-standby mode" (Cisco, as above); Juniper's maximum runs from 8 to 128 depending on the platform (Juniper, as above).
+
+## Bundles across two switches
+
+A bundle whose members end on two different switches removes the last single point of failure, the switch itself, and every vendor offers one: Cisco's vPC "allows links that are physically connected to two different Cisco Nexus 9000 Series devices to appear as a single port channel to a third device" ([Cisco, vPC](https://www.cisco.com/c/en/us/support/docs/switches/nexus-9000-series-switches/218333-understand-and-configure-nexus-9000-vpc.html)); Arista's MLAG "supports LAGs across paired Arista switches" (Arista, as above); HPE Aruba's VSX "binds two AOS-CX switches of the same model type to operate as one device for layer 2" ([HPE Aruba, VSX](https://arubanetworking.hpe.com/techdocs/AOS-CX/10.17/HTML/vsx/Content/Chp_Start/ben-vsx-10.htm)); Juniper's EVPN (Ethernet virtual private network) multihoming, ESI-LAG, does it across an EVPN fabric ([Juniper, EVPN LAG](https://www.juniper.net/documentation/us/en/software/nce/evpn-lag-multihoming-guide/topics/concept/evpn-lag-guide-introduction.html)). The device at the other end sees an ordinary LACP partner. These are vendor features; the standard's own version is DRNI (Distributed Resilient Network Interconnect), which 802.1AX describes as links among "one to three nodes in a network and one to three nodes in another, separately administered, network" (IEEE 802.1AX-2020).
+
+## On a server: the Linux bonding modes
+
+Linux offers seven bonding modes, and only one of them is the standard protocol (Linux kernel, bonding):
+
+| Mode | What it does |
+|---|---|
+| balance-rr (0) | Sends packets "in sequential order from the first available slave through the last"; the only mode in which one flow uses several links |
+| active-backup (1) | "Only one slave in the bond is active"; another takes over only on failure. Needs nothing from the switch |
+| balance-xor (2) | Chooses the link by the transmit hash policy |
+| broadcast (3) | "Transmits everything on all slave interfaces" |
+| 802.3ad (4) | "IEEE 802.3ad Dynamic link aggregation": LACP |
+| balance-tlb (5) | Spreads outgoing traffic; "does not require any special switch support" |
+| balance-alb (6) | balance-tlb plus receive balancing for IPv4 |
+
+The kernel's wording is the old "slave"; the configuration still uses it. The practical rule is in the same document: "the balance-rr, balance-xor and broadcast modes generally require that the switch have the appropriate ports grouped together", and 802.3ad needs the switch to run LACP. Active-backup is the safe choice when the switch side cannot be configured at all.
+
+## What to remember
+
+- A LAG makes parallel links one logical link: more bandwidth, and a failed member costs capacity, not connectivity.
+- Use LACP, active on both ends; static bundles fail silently.
+- A flow hashes to one member: no single transfer goes faster than one link, and few flows spread unevenly.
+- Members must match in speed, duplex and VLAN configuration; the member count is a platform limit.
+- Multi-chassis bundles (vPC, MLAG, VSX, ESI-LAG) are vendor features; DRNI is the standard's version.
+
+## Sources
+
+- [IEEE 802.1AX-2020, Link Aggregation, project page: the LAG definition, approval on 30 January 2020, DRNI (read 2026-10-07)](https://1.ieee802.org/tsn/802-1ax-rev/)
+- [IEEE 802.1AXdz-2025, YANG for link aggregation (read 2026-10-07)](https://1.ieee802.org/tsn/802-1axdz/)
+- [IEEE 802.3ad task force page: approval in March 2000 (read 2026-10-07)](https://www.ieee802.org/3/ad/index.html)
+- [IEEE P802.1AX project authorisation request, 17 January 2007: link aggregation separated from 802.3 Clause 43 (read 2026-10-07)](https://www.ieee802.org/1/files/public/docs2007/new-p802-1ax-draft-par.pdf)
+- [IEEE 802.3ax/ay page: approval of 802.1AX-2008 in September 2008 (read 2026-10-07)](https://grouper.ieee.org/groups/802/3/axay/index.html)
+- [Juniper Networks, aggregated Ethernet interfaces on switches: benefits, requirements, limits (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/junos/interfaces-ethernet-switches/topics/topic-map/switches-interface-aggregated.html)
+- [Juniper Networks, LACP on security devices: actor and partner, default rate (read 2026-10-07)](https://juniper.net/documentation/us/en/software/junos/interfaces-security-devices/topics/topic-map/security-interface-config-lacp.html)
+- [Arista Networks, EOS 4.36.2F, port channels and LACP, 3 September 2026: names, timeout, MLAG (read 2026-10-07)](https://www.arista.com/en/um-eos/eos-port-channels-and-lacp)
+- [Cisco, Catalyst 9300 IOS XE 17.12, configuring EtherChannels, 28 July 2023: LACP modes, system ID and priorities, rates, mode on, member rules and limits (read 2026-10-07)](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_etherchannels.html)
+- [Cisco, EtherChannel load balancing, document 12023, 30 November 2023 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/etherchannel/12023-4.html)
+- [HPE Aruba Networking, ArubaOS 8.11, LACP overview: which ports form one LAG (read 2026-10-07)](https://arubanetworking.hpe.com/techdocs/Archived/AOS-8/ArubaOS_8.11.2_Web_Help/Content/arubaos-solutions/lacp/lacp-over.htm)
+- [HPE Aruba Networking, AOS-CX 10.17, link aggregation modes: the risks of static LAGs (read 2026-10-07)](https://arubanetworking.hpe.com/techdocs/AOS-CX/10.17/HTML/link_aggregation/Content/Chp_LAG/lin-agg-mod.htm)
+- [Extreme Networks, SLX-OS 20.1.1, LACP timeouts (read 2026-10-07)](https://documentation.extremenetworks.com/slxos/SW/20xx/l2config/GUID-67DF739B-2115-4055-92BE-D1DB02F72B70.shtml)
+- [The Linux kernel, Linux Ethernet bonding driver HOWTO: modes, LACP rate, transmit hash policies (read 2026-10-07)](https://docs.kernel.org/networking/bonding.html)
+- [IANA, IEEE 802 Numbers: EtherType 0x8809, slow protocols (read 2026-10-07)](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)
+- [IEEE Standards Association, public listing of group MAC addresses: 01-80-C2-00-00-02 (read 2026-10-07)](https://saforms.ieee.org/products-programs/regauth/grpmac/public)
+- [Cisco, understand and configure Nexus 9000 vPC, 15 July 2025 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/switches/nexus-9000-series-switches/218333-understand-and-configure-nexus-9000-vpc.html)
+- [HPE Aruba Networking, AOS-CX 10.17, VSX (read 2026-10-07)](https://arubanetworking.hpe.com/techdocs/AOS-CX/10.17/HTML/vsx/Content/Chp_Start/ben-vsx-10.htm)
+- [Juniper Networks, EVPN LAG multihoming guide (read 2026-10-07)](https://www.juniper.net/documentation/us/en/software/nce/evpn-lag-multihoming-guide/topics/concept/evpn-lag-guide-introduction.html)

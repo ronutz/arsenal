@@ -36,3 +36,12 @@ By default quantifiers are **greedy**: they grab as much as they can and only gi
 Anchors match a position rather than a character. `^` is the start of the string (or the start of a line with the `m` flag), `$` is the end, and `\b` is a word boundary: the seam between a word character and a non-word character. Wrapping a pattern in `^...$` forces it to match the *entire* input, which is exactly what you want when validating a whole field rather than finding a fragment inside it.
 
 Paste any of these into the [Regex Toolkit](/tools/regex) to watch the matches light up as you type, then read on about [groups and backreferences](/learn/regex-groups-and-backreferences) to capture and reuse the parts you match.
+
+## This series, in order
+
+This article opens the series **Regular expressions**. Classes and quantifiers answer the two questions every pattern asks; the parts add position, capture and lookaround, the flags that change how the whole pattern reads, and finally the backtracking that turns a short string into a denial of service.
+
+1. **[Regex Anchors and Boundaries](/learn/regex-anchors-and-boundaries)**. Matching a position rather than a character: ^, $, word boundaries, and how multiline mode changes them.
+2. **[Regex Groups, Backreferences, and Lookarounds](/learn/regex-groups-and-backreferences)**. Capturing, naming and reusing what matched, and looking before or after without consuming anything.
+3. **[Regex Flags and Modes](/learn/regex-flags-and-modes)**. Case, multiline, dot-all and extended mode: how one flag makes the same pattern match something else.
+4. **[Catastrophic Backtracking and ReDoS](/learn/regex-catastrophic-backtracking)**. Why some innocent patterns take forever on a short string, how that becomes ReDoS, and how to write patterns that cannot.

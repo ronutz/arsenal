@@ -39,3 +39,13 @@ That last point is the common surprise: **one character is not always one byte.*
 This matters for Base64 because **Base64 operates on bytes, not characters.** To Base64-encode a string, the string must first be turned into bytes with a character encoding, and that encoding is essentially always UTF-8. Encode the same character with a different scheme and you get different bytes, and therefore different Base64. So the full pipeline for text is: characters become bytes (UTF-8), then bytes become safe text (Base64). When you decode, you reverse both steps.
 
 The [Base64 tool](/tools/base64) encodes text as UTF-8 bytes before Base64-encoding, and flags when a decoded result is not valid UTF-8, all in your browser.
+
+## This series, in order
+
+This article opens the series **Characters, bytes and Unicode**. It draws the line between a character and the bytes that carry it; the parts follow that line from the first 128 codes to the whole of Unicode, then to the two ways text goes wrong in transit: garbled, or hiding something.
+
+1. **[ASCII: the 128 codes, and why the table is laid out that way](/learn/ascii-the-128-codes)**. Seven bits laid out in eight columns: why case is one bit, what the 33 controls were for, and which still act.
+2. **[Unicode: code points, planes, names and properties](/learn/unicode-code-points-and-properties)**. 1,114,112 code points in seventeen planes, their names and properties, and why the same emoji measures 1, 2 or 4 depending on who counts.
+3. **[UTF-8, UTF-16 and UTF-32, byte by byte](/learn/utf-8-and-utf-16-byte-by-byte)**. Each encoding's bytes in a hex dump, the sequences a decoder replaces with U+FFFD, and the byte order mark.
+4. **[Mojibake: why café turns into cafÃ©, and how to get it back](/learn/mojibake-and-code-pages)**. Why café turns into cafÃ©, the classic charset mix-ups, and how to undo the damage when it can be undone.
+5. **[Hidden and lookalike characters: what a line of text can hide](/learn/hidden-and-lookalike-characters)**. Zero-width characters, bidirectional controls, Cyrillic lookalikes and typographic quotes: what each hides and how to find it.

@@ -261,8 +261,8 @@
         "advisoryCta": "Como funciona um engajamento",
         "speakingVerb": "Ouvir",
         "speakingTitle": "Palestras",
-        "speakingBody": "Palestras e sessões para equipes, conferências e salas de aula, sobre a tecnologia e sobre as pessoas que trabalham com ela.",
-        "speakingCta": "Temas e sessões anteriores"
+        "speakingBody": "Palestras para conferências, eventos corporativos e encontros de equipe, sobre a tecnologia e sobre as pessoas que trabalham com ela.",
+        "speakingCta": "Palestras, formatos e contratação"
       },
       "trustTitle": "Por que confiar",
       "trust": {
@@ -310,7 +310,15 @@
       "surpriseArticle": "algo para ler",
       "surpriseGuide": "uma certificação para mirar",
       "surpriseRole": "uma carreira para explorar",
-      "surprisePractice": "como o trabalho é feito"
+      "surprisePractice": "como o trabalho é feito",
+      "quickHintEmpty": "Digite um bloco IPv4, como 10.0.0.0/8.",
+      "quickHintAddress": "Continue: quatro números de 0 a 255, separados por pontos.",
+      "quickHintPrefix": "Agora o prefixo: /8, /16, /24, qualquer tamanho de 0 a 32. Ou tecle Enter para este endereço único.",
+      "quickHintPrefixLength": "O tamanho do prefixo, de 0 a 32.",
+      "quickHintPrefixRange": "Um prefixo vai de /0 a /32, então /{prefix} não pode ser um.",
+      "quickHintOctet": "Cada número vai de 0 a 255, então {octet} não pode ser um.",
+      "quickHintShape": "Isso não pode virar um bloco IPv4: quatro números de 0 a 255 separados por pontos, depois uma barra e um prefixo, como 192.168.1.0/24.",
+      "quickHintSettling": "Lendo o prefixo…"
     }
   },
   "tools": {
@@ -12998,7 +13006,9 @@
       }
     },
     "ctaSpeaking": "Procurando uma palestra para conferência ou uma sessão interna em vez de um curso?",
-    "ctaSpeakingLink": "Veja Palestras"
+    "ctaSpeakingLink": "Veja Palestras",
+    "navMaterials": "Material de curso aberto",
+    "navMaterialsLede": "Um curso introdutório completo de minha autoria, slides e notas do apresentador, livre para apresentar no navegador, baixar e ensinar."
   },
   "contact": {
     "title": "Entre em contato",
@@ -13069,10 +13079,10 @@
       },
       "speaking": {
         "title": "Palestras e trabalho presencial",
-        "desc": "Uma palestra, um workshop ou uma sessão no local: diga o evento, o público, a data e com o que as pessoas devem sair.",
+        "desc": "Uma palestra, um painel ou uma sessão para o seu time: diga o evento, o público, a data e com o que as pessoas devem sair.",
         "cta": "Proponha um evento",
-        "secondary": "Palestras e formatos anteriores",
-        "template": "O evento:\nO público:\nA data:\nCom o que as pessoas devem sair:"
+        "secondary": "As palestras e os formatos",
+        "template": "O evento:\nA organização:\nOnde e quando:\nO público (quem e quantas pessoas):\nCom o que as pessoas devem sair:\nFormato e duração:\nVai ser gravado ou transmitido?"
       },
       "correction": {
         "title": "Uma correção",
@@ -13540,6 +13550,11 @@
           "q": "Preciso de uma definição, rápido",
           "label": "O glossário",
           "verb": "consultar"
+        },
+        "course": {
+          "q": "Quero um curso inteiro, com slides e notas",
+          "label": "Material de curso aberto",
+          "verb": "fazer um curso"
         }
       },
       "modeCount": {
@@ -13547,7 +13562,8 @@
         "path": "{count, plural, one {# trilha de leitura} other {# trilhas de leitura}}",
         "certification": "{count, plural, one {# guia} other {# guias}}, {objectives, plural, one {# objetivo mapeado} other {# objetivos mapeados}}",
         "platform": "{count, plural, one {# hub} other {# hubs}}",
-        "lookup": "{count, plural, one {# termo} other {# termos}}"
+        "lookup": "{count, plural, one {# termo} other {# termos}}",
+        "course": "{count, plural, one {# curso} other {# cursos}}, {slides} slides"
       },
       "subjectsTitle": "Navegar por assunto",
       "subjectsLede": "{count, plural, one {# artigo} other {# artigos}} em {subjects, plural, one {# assunto} other {# assuntos}}, a mesma taxonomia das ferramentas. A página de um assunto reúne seus artigos, ferramentas e termos do glossário; a seta pula para o bloco dele no índice abaixo.",
@@ -13579,6 +13595,10 @@
         "tools": {
           "label": "As ferramentas",
           "lede": "Cada artigo vincula as ferramentas que calculam o que ele explica; as ferramentas vinculam de volta."
+        },
+        "series": {
+          "label": "Séries de artigos",
+          "lede": "Assuntos contados em ordem, a abertura primeiro, com as partes por vir já nomeadas."
         }
       },
       "directoryTitle": "O índice independente de fabricante",
@@ -13587,7 +13607,7 @@
       "freshNew": "Novo",
       "freshRevised": "Revisado",
       "popularTitle": "Mais lidos nesta semana",
-      "startTitle": "Começando agora? Três lugares por onde entrar",
+      "startTitle": "Começando agora? Quatro lugares por onde entrar",
       "start": {
         "fundamentals": {
           "label": "Comece pelo assunto redes",
@@ -13600,10 +13620,15 @@
         "problem": {
           "label": "Algo está quebrado agora",
           "lede": "A Prática: triagem, método de incidente e a leitura de uma mudança, escritos para o momento em que são necessários."
+        },
+        "course": {
+          "label": "Faça o curso aberto de TCP/IP",
+          "lede": "Um curso introdutório completo, {slides} slides com notas do apresentador, dos conceitos de roteamento a IPv6, multicast, MPLS e VRRP; apresente no navegador."
         }
       },
       "rowTools": "Ferramentas:"
-    }
+    },
+    "portalSeriesCount": "{count, plural, one {# série} other {# séries}}"
   },
   "meetingBingo": {
     "metaTitle": "Bingo de Reunião",
@@ -14741,7 +14766,7 @@
     "exploreLearn": "Explorar a biblioteca Learn",
     "appearsIn": "Aparece nestes fluxos",
     "mapHeading": "O site em um minuto",
-    "mapIntro": "Tudo no ronutz vive em um de cinco mundos, os mesmos cinco que a página inicial, o rodapé e o mapa do site usam. As contagens são calculadas a partir do próprio site quando ele é construído, então são os números das páginas para as quais apontam.",
+    "mapIntro": "Tudo no ronutz vive em um de cinco mundos, os mesmos cinco que o rodapé de cada página, o colofão e o mapa do site usam. As contagens são calculadas a partir do próprio site quando ele é construído, então são os números das páginas para as quais apontam.",
     "howHeading": "Como cada parte funciona",
     "howIntro": "Uma seção por superfície: para que serve, como usar e os dois ou três lugares por onde começar. As seções abaixo desta são a referência: a ficha técnica, cada ferramenta em uma linha, as tarefas comuns e o manual.",
     "howStart": "Comece por:",
@@ -16013,7 +16038,8 @@
       },
       "mac-address": {
         "def": "O endereço de hardware que identifica uma interface de rede em uma rede local.",
-        "context": "Um endereço MAC é o identificador de 48 bits gravado (ou atribuído) a uma placa de rede, usado para entregar quadros no segmento local; sua primeira metade, o OUI, identifica o fabricante. Diferente de um endereço IP, não roteia entre redes, é estritamente local."
+        "context": "Um endereço MAC é o identificador de 48 bits gravado (ou atribuído) a uma placa de rede, usado para entregar quadros no segmento local; sua primeira metade, o OUI, identifica o fabricante. Diferente de um endereço IP, não roteia entre redes, é estritamente local.",
+        "depth": "Um endereço MAC tem 48 bits, que a IEEE hoje chama de EUI-48; as suas diretrizes de registro declaram obsoleto o nome antigo, MAC-48. Dois bits do primeiro octeto mudam o sentido do resto: o mais baixo diz se o endereço é de uma interface ou de um grupo, o seguinte se ele veio de um bloco comprado ou foi definido localmente por software. Só um endereço universal e individual tem um fabricante por trás dos três primeiros octetos, o OUI.\n\nEssa distinção pesa mais a cada ano. Celulares e notebooks entram hoje em cada rede Wi-Fi com um endereço aleatório e administrado localmente, por padrão no Android desde a versão 10 e nos dispositivos Apple desde o iOS 14, então um mesmo dispositivo mostra um MAC diferente em cada rede, e nenhum deles indica um fabricante. Endereços de grupo são, na maioria, calculados, não atribuídos: o broadcast é todo em uns, o multicast IPv4 cai em 01-00-5E, o multicast IPv6 em 33-33.\n\nUm endereço MAC nunca sai do seu enlace. Todo roteador reescreve o quadro, então o endereço numa captura é o do último salto, e o que liga um endereço IP a ele no segmento local é o ARP."
       },
       "merkle-tree": {
         "def": "Uma árvore de hashes que permite verificar com eficiência se um item pertence a um grande conjunto.",
@@ -16874,7 +16900,8 @@
       },
       "csma-cd": {
         "def": "A etiqueta de canal da Ethernet clássica: escute antes de falar, fale só quando o fio estiver em silêncio, e se duas estações colidirem mesmo assim, pare, sinalize e tente de novo após um recuo aleatório.",
-        "context": "Metcalfe e Boggs descreveram o esquema no artigo de julho de 1976 na CACM sobre a Ethernet, e o IEEE 802.3 o padronizou: a estação sente a portadora, transmite quando o meio está ocioso, continua escutando enquanto envia e, ao detectar colisão, emite um sinal de jam para que todos percebam, esperando então um intervalo aleatório escolhido por backoff exponencial binário antes de tentar de novo. O quadro mínimo de 64 bytes existe por causa dele, dimensionado para que uma transmissão dure ao menos uma ida e volta pelo segmento máximo e as colisões sejam sempre detectadas a tempo. É também o lado perdedor da grande discussão dos anos 1980 com a vez determinística do Token Ring. A Ethernet comutada full-duplex aposentou a contenção por completo, então o CSMA/CD sobrevive no enquadramento, no tamanho mínimo de quadro e nas provas."
+        "context": "Metcalfe e Boggs descreveram o esquema no artigo de julho de 1976 na CACM sobre a Ethernet, e o IEEE 802.3 o padronizou: a estação sente a portadora, transmite quando o meio está ocioso, continua escutando enquanto envia e, ao detectar colisão, emite um sinal de jam para que todos percebam, esperando então um intervalo aleatório escolhido por backoff exponencial binário antes de tentar de novo. O quadro mínimo de 64 bytes existe por causa dele, dimensionado para que uma transmissão dure ao menos uma ida e volta pelo segmento máximo e as colisões sejam sempre detectadas a tempo. É também o lado perdedor da grande discussão dos anos 1980 com a vez determinística do Token Ring. A Ethernet comutada full-duplex aposentou a contenção por completo, então o CSMA/CD sobrevive no enquadramento, no tamanho mínimo de quadro e nas provas.",
+        "depth": "Em full duplex, todo o esquema fica desligado. A nota de troubleshooting da Cisco põe os dois mundos lado a lado: num segmento compartilhado, em half duplex, 'Collisions are not bad; they are essential to correct Ethernet operation', enquanto 'In full-duplex Ethernet, collision detection is disabled'.\n\nO que sobrevive na operação é a colisão tardia. Uma colisão 'detected by a station after it has sent the 512th bit of its frame' conta como tardia, porque a essa altura toda estação já deveria ter ouvido o quadro; a Cisco lista como causas habituais o cabeamento incorreto, hubs demais e placas de rede com defeito. Numa rede comutada moderna, um contador de colisões tardias que se move quase sempre quer dizer outra coisa: uma ponta do enlace está em half duplex e a outra em full, o descompasso de duplex."
       },
       "csma-ca": {
         "def": "A etiqueta de canal do Wi-Fi: um rádio não consegue ouvir uma colisão enquanto transmite, então as estações trabalham para evitá-las de antemão com esperas, recuo aleatório e confirmação quadro a quadro.",
@@ -17014,7 +17041,8 @@
       },
       "duplex-mismatch": {
         "def": "Uma ponta em full duplex, a outra em half: o link funciona, devagar e com colisões tardias - a clássica causa raiz do 'a rede está estranha' dos anos 2000.",
-        "context": "Geralmente nasce de um lado fixado à mão e o outro autonegociando; o lado em autonegociação cai para half."
+        "context": "Geralmente nasce de um lado fixado à mão e o outro autonegociando; o lado em autonegociação cai para half.",
+        "depth": "O mecanismo é o recurso de reserva da autonegociação. Uma porta configurada para negociar que não ouve nada de um vizinho de velocidade fixa usa a detecção paralela, que consegue perceber a velocidade pelo sinal mas, nas palavras do laboratório da Universidade de New Hampshire, 'can never parallel detect to a full duplex link', e então assume half duplex. Fixe uma ponta em 100 full, deixe a outra em automático, e você construiu o descompasso de propósito.\n\nOs sintomas se dividem por lado. A ponta em half duplex vê colisões tardias e um 'rapid increase of FCS and alignment errors', porque a ponta em full duplex transmite sem esperar a vez; a ponta em full duplex conta runts. O enlace continua de pé e testes pequenos passam, então a falha se esconde até a carga chegar.\n\nA regra é sobre pares: as duas pontas em autonegociação, ou as duas fixadas nos mesmos valores. O conselho da Cisco é deixar a autonegociação ligada nos dispositivos compatíveis com a 802.3u, e do 1000BASE-T em diante a negociação é obrigatória de qualquer jeito."
       },
       "poe": {
         "def": "Power over Ethernet: o switch alimenta energia pelo próprio cabo de dados, dispensando tomada para telefones, câmeras e access points.",
@@ -17023,7 +17051,8 @@
       },
       "sfp": {
         "def": "Small Form-factor Pluggable: o módulo intercambiável que dá à porta do switch seu meio físico - cobre ou fibra, curto alcance ou longa distância.",
-        "context": "SFP+ carrega 10G, QSFP agrupa quatro pistas; a porta é um soquete, o transceiver é a decisão."
+        "context": "SFP+ carrega 10G, QSFP agrupa quatro pistas; a porta é um soquete, o transceiver é a decisão.",
+        "depth": "Um SFP é um contrato tanto quanto um módulo: um formato de gaiola, uma interface elétrica e uma interface de gerenciamento que deixam qualquer módulo compatível ocupar qualquer porta compatível. O lado do gerenciamento é a especificação SFF-8472, cujo segundo endereço, o A2h, 'is used to access measurements of transceiver temperature, internally measured supply voltage, TX bias current, TX output power, received optical power'. Isso é o monitoramento óptico digital, lido no Cisco IOS com 'show interface transceiver' e no Junos com 'show interfaces diagnostics optics'.\n\nA leitura que vale aprender é a potência recebida. Comparada com a sensibilidade do receptor no datasheet do módulo, ela é o orçamento de perdas do enlace medido em vez de estimado, então um enlace cuja margem está encolhendo mostra isso ali antes de começar a perder quadros. Nem todo módulo suporta o diagnóstico; o datasheet diz quais."
       },
       "lldp": {
         "def": "Link Layer Discovery Protocol: vizinhos se apresentam no cabo - equipamento, porta, capacidades - transformando 'o que há do outro lado?' num comando show.",
@@ -19789,7 +19818,8 @@
       },
       "ietf": {
         "def": "O corpo que padroniza os protocolos da internet, abertamente, como RFCs.",
-        "context": "A Internet Engineering Task Force trabalha por 'consenso aproximado e código rodando': grupos de trabalho abertos produzem Internet-Drafts que amadurecem em RFCs - TCP, HTTP, TLS, DNS e quase todo protocolo que as ferramentas deste site decodificam. Qualquer um pode participar; não há taxa de associação. Opera ao lado da IANA (registros) e do RFC Editor (publicação), e seus documentos são as fontes primárias que este site referencia por preferência."
+        "context": "A Internet Engineering Task Force trabalha por 'consenso aproximado e código rodando': grupos de trabalho abertos produzem Internet-Drafts que amadurecem em RFCs - TCP, HTTP, TLS, DNS e quase todo protocolo que as ferramentas deste site decodificam. Qualquer um pode participar; não há taxa de associação. Opera ao lado da IANA (registros) e do RFC Editor (publicação), e seus documentos são as fontes primárias que este site referencia por preferência.",
+        "depth": "O lema veio de uma palestra plenária. A RFC 7282, sobre consenso no IETF, abre com ele: 'We reject: kings, presidents and voting. We believe in: rough consensus and running code', atribuído a Dave Clark na vigésima quarta reunião do IETF, em 1992. A mesma RFC explica a prática por trás dele: 'We don't vote in the IETF'; 'Rough consensus is achieved when all issues are addressed, but not necessarily accommodated'; e 'Humming should be the start of a conversation, not the end'.\n\nO resultado é a série de RFCs, na trilha de padrões que a RFC 6410 reduziu a dois níveis, Proposed Standard e Internet Standard. O código funcionando é a outra metade do lema: pela RFC 2026, uma especificação só chegava ao nível intermediário quando existiam 'at least two independent and interoperable implementations from different code bases', a prova de que ela pode de fato ser seguida."
       },
       "cloud-security-alliance": {
         "def": "O corpo da indústria que define como a segurança de nuvem é avaliada e atestada.",
@@ -19931,7 +19961,8 @@
       },
       "802-1q": {
         "def": "O padrão IEEE que acrescenta uma tag de VLAN a um quadro Ethernet - o motivo de um enlace físico poder carregar muitas LANs virtuais.",
-        "context": "O 802.1Q insere no cabeçalho Ethernet uma tag de quatro bytes com um VLAN ID de 12 bits (4.094 utilizáveis) e um campo de prioridade. Um enlace com tag entre switches é um trunk; portas de acesso sem tag colocam um dispositivo numa única VLAN. É a base da segmentação em redes comutadas, e vive no grupo de trabalho 802.1, o braço de arquitetura da família 802."
+        "context": "O 802.1Q insere no cabeçalho Ethernet uma tag de quatro bytes com um VLAN ID de 12 bits (4.094 utilizáveis) e um campo de prioridade. Um enlace com tag entre switches é um trunk; portas de acesso sem tag colocam um dispositivo numa única VLAN. É a base da segmentação em redes comutadas, e vive no grupo de trabalho 802.1, o braço de arquitetura da família 802.",
+        "depth": "A tag tem quatro octetos inseridos depois do endereço de origem: o identificador 0x8100, que a IANA lista como Customer VLAN Tag Type, depois três bits de prioridade (o PCP), um bit que marca o quadro como descartável (o DEI, antes chamado CFI), e o identificador de VLAN de 12 bits. Dos seus 4.096 valores, dois ficam de fora: o 0 marca um quadro que só carrega prioridade, e o 4095 é reservado, o que deixa as VLANs de 1 a 4094.\n\nA norma cresceu muito além da tag. A IEEE 802.1Q-2022, a edição ativa, especifica o funcionamento de MAC Bridges e VLAN Bridges e absorveu a 802.1D. O vocabulário dela não é o dos fabricantes: uma porta tem um member set e um untagged set, e um PVID, a VLAN em que um quadro sem tag é colocado, 1 por padrão.\n\nRedes de provedores empilham uma segunda tag na frente da primeira, com identificador próprio, 0x88A8, introduzida pela 802.1ad em 2005 e depois incorporada à 802.1Q."
       },
       "802-1x": {
         "def": "Controle de acesso à rede baseado em porta - o padrão IEEE que faz uma porta de switch ou access point autenticar antes de encaminhar tráfego.",
@@ -20051,15 +20082,18 @@
       },
       "single-mode-fiber": {
         "def": "A fibra de longa distância: um núcleo tão estreito que a luz viaja num caminho só - distância medida em dezenas de quilômetros, não centenas de metros.",
-        "context": "O núcleo de ~9 mícrons da fibra monomodo admite um único modo de propagação, eliminando a dispersão modal que limita a multimodo, então os lances vão de enlaces de campus a cabos intercontinentais. Padronizada como OS1/OS2, geralmente de jaqueta amarela, e acionada por ópticas a laser que historicamente custavam mais que as da multimodo - uma diferença que encolheu o bastante para muitas obras novas simplesmente escolherem monomodo em tudo."
+        "context": "O núcleo de ~9 mícrons da fibra monomodo admite um único modo de propagação, eliminando a dispersão modal que limita a multimodo, então os lances vão de enlaces de campus a cabos intercontinentais. Padronizada como OS1/OS2, geralmente de jaqueta amarela, e acionada por ópticas a laser que historicamente custavam mais que as da multimodo - uma diferença que encolheu o bastante para muitas obras novas simplesmente escolherem monomodo em tudo.",
+        "depth": "O núcleo da fibra monomodo é tão pequeno, de 8 a 10 mícrons, que a luz só consegue seguir um caminho por ele, e com um só modo não há dispersão modal; os seus limites passam a ser a atenuação e a dispersão cromática, e é por isso que ela leva quilômetros. A fibra monomodo comum é a ITU-T G.652, com o seu 'zero-dispersion wavelength around 1310 nm'; a família G.657 é resistente a curvaturas, e as suas fibras de Categoria A são compatíveis com a G.652.\n\nOs módulos trabalham em 1310 e 1550 nm. As normas de cabeamento a classificam como OS1, cabeada para instalações internas com atenuação de até 1 dB por km, e OS2, cabeada para uso externo; uma fibra atual como a SMF-28 Ultra da Corning é especificada em no máximo 0,32 dB por km em 1310 nm e 0,18 em 1550.\n\nOs conectores trazem o polimento na cor: azul para a face plana UPC, verde para a face angulada APC, e os dois nunca devem ser acoplados."
       },
       "multimode-fiber": {
         "def": "A fibra de curto alcance de prédios e data centers - núcleo largo, ópticas mais baratas, distâncias de centenas de metros.",
-        "context": "O núcleo de 50 mícrons da multimodo (62,5 na OM1 legada) carrega muitos caminhos de luz ao mesmo tempo; o espalhamento deles (dispersão modal) é o que limita a distância conforme as velocidades sobem. Os graus OM1 a OM5 marcam a progressão - OM3 e OM4 (aqua) são os cavalos de batalha otimizados a laser para 10-100 Gb/s dentro das instalações, a OM5 (verde-lima) acrescenta suporte de banda larga para curto alcance multi-comprimento-de-onda. A troca contra a monomodo é clássica: transceptores mais baratos, alcance menor."
+        "context": "O núcleo de 50 mícrons da multimodo (62,5 na OM1 legada) carrega muitos caminhos de luz ao mesmo tempo; o espalhamento deles (dispersão modal) é o que limita a distância conforme as velocidades sobem. Os graus OM1 a OM5 marcam a progressão - OM3 e OM4 (aqua) são os cavalos de batalha otimizados a laser para 10-100 Gb/s dentro das instalações, a OM5 (verde-lima) acrescenta suporte de banda larga para curto alcance multi-comprimento-de-onda. A troca contra a monomodo é clássica: transceptores mais baratos, alcance menor.",
+        "depth": "A Fiber Optic Association dá os tamanhos de núcleo, 'almost always 50 or 62.5 microns', dentro de uma casca de 125 mícrons. Um núcleo tão largo admite muitos modos, caminhos de comprimentos um pouco diferentes, então um pulso se espalha enquanto viaja, e quanto mais rápido o sinal, menor a distância antes que os pulsos se confundam. Os graus acompanham essa luta contra o espalhamento: um mesmo módulo 10GBASE-SR da Cisco alcança 33 m em OM1, 82 m em OM2, 300 m em OM3 e 400 m em OM4, sempre em 850 nm.\n\nAcima de 10 Gb/s, a velocidade veio tanto de fibras em paralelo quanto de luz mais rápida: o 100GBASE-SR4 usa quatro pistas em cada sentido num conector MPO, e o SR8 de 400G usa oito pares, os dois até cerca de 100 m em OM4. A OM5 é, nas palavras da Fluke Networks, 'a version of the OM4 fiber with additional bandwidth characterization at 953 nm', para multiplexação por comprimento de onda em alcance curto.\n\nA capa diz o grau: laranja para OM1 e OM2, aqua para OM3 e OM4 (violeta para a OM4 em boa parte da Europa), verde-limão para a OM5."
       },
       "transceiver": {
         "def": "O módulo plugável que dá personalidade à porta do switch - cobre ou fibra, curto ou longo alcance, uma linhagem do GBIC ao OSFP.",
-        "context": "Em vez de fixar a óptica na fabricação, as portas recebem plugáveis padronizados: o GBIC parrudo cedeu ao SFP, depois SFP+ (10G), SFP28 (25G), os quad-lane QSFP+ / QSFP28 (40/100G), e QSFP-DD e OSFP em 400G e além. A escolha do módulo - SR, LR, DAC twinax, cobre RJ45 - decide meio e distância; o form factor decide o que cabe na porta. Os jogos de trava de fornecedor sobre ópticas de terceiros 'não suportadas' são uma discussão permanente da indústria."
+        "context": "Em vez de fixar a óptica na fabricação, as portas recebem plugáveis padronizados: o GBIC parrudo cedeu ao SFP, depois SFP+ (10G), SFP28 (25G), os quad-lane QSFP+ / QSFP28 (40/100G), e QSFP-DD e OSFP em 400G e além. A escolha do módulo - SR, LR, DAC twinax, cobre RJ45 - decide meio e distância; o form factor decide o que cabe na porta. Os jogos de trava de fornecedor sobre ópticas de terceiros 'não suportadas' são uma discussão permanente da indústria.",
+        "depth": "O transceptor é onde a camada física de uma porta de fato mora. Um switch construído com gaiolas vazias deixa o meio e o alcance por conta do módulo: multimodo de alcance curto em 850 nm, monomodo de alcance longo em 1310, cobre em par trançado ou um cabo de conexão direta. Os nomes do IEEE dizem qual: no 10GBASE-SR, BASE é banda base, S é comprimento de onda curto e R a codificação embaralhada 64B/66B; no 100GBASE-SR4, o 4 final conta as pistas em fibras paralelas.\n\nO alcance pertence ao par, módulo e fibra, nunca ao módulo sozinho. O mesmo módulo 10GBASE-SR que cobre 400 m de OM4 cobre 33 m de OM1, e um módulo LR é especificado para fibra monomodo, não para multimodo. É por isso que a troca de um transceptor é a primeira suspeita depois de uma mudança de cabeamento, e o diagnóstico do próprio módulo, a sua potência transmitida e recebida, são os primeiros números a ler."
       },
       "media-converter": {
         "def": "A caixinha que traduz um meio físico em outro - classicamente Ethernet de cobre para fibra e de volta.",
@@ -21962,7 +21996,8 @@
       },
       "rfc": {
         "def": "A série numerada de documentos em que os protocolos da internet são especificados - chamada de pedido de comentários porque o primeiro autor não tinha autoridade para declarar padrão.",
-        "context": "Nem toda RFC é padrão: a série carrega padrões propostos, notas informativas, boas práticas correntes, experimentos e piadas de primeiro de abril, e o status importa mais que o número. Qualquer pessoa as lê de graça, que é a diferença em relação à maioria dos organismos de padronização e parte da razão de existirem implementações. A convenção de discutir uma especificação em público antes de fixá-la é a prática que o nome preserva, e é por isso que números de RFC são citados em comentário de código na indústria inteira."
+        "context": "Nem toda RFC é padrão: a série carrega padrões propostos, notas informativas, boas práticas correntes, experimentos e piadas de primeiro de abril, e o status importa mais que o número. Qualquer pessoa as lê de graça, que é a diferença em relação à maioria dos organismos de padronização e parte da razão de existirem implementações. A convenção de discutir uma especificação em público antes de fixá-la é a prática que o nome preserva, e é por isso que números de RFC são citados em comentário de código na indústria inteira.",
+        "depth": "A série começou em 7 de abril de 1969 com a RFC 1, 'Host Software', de Steve Crocker, uma nota sobre o software dos hosts da ARPANET, não uma norma. É o status de uma RFC, não o número, que diz o que ela é. A RFC 2026 (BCP 9, outubro de 1996) definiu a trilha de padrões em três níveis e nomeou os documentos fora dela: 'Experimental', 'Informational' e 'Historic'; a RFC 6410 (outubro de 2011) reduziu a trilha a dois, então hoje uma especificação é 'Proposed Standard' ou 'Internet Standard'. A Best Current Practice, a subsérie BCP, foi 'designed to be a way to standardize practices and the results of community deliberations'.\n\nO status de uma RFC pode mudar depois da publicação, de Proposed Standard para Internet Standard ou de Informational para Historic, e o RFC Editor publica a lista dessas mudanças. Ler uma RFC direito significa olhar o cabeçalho primeiro: os documentos que ela atualiza ou torna obsoletos e, na sua página de informações, os que depois a atualizaram ou a tornaram obsoleta. Um protocolo descrito por uma RFC obsoleta está descrito em algum lugar mais novo."
       },
       "circuit-switching": {
         "def": "Reservar um caminho dedicado de ponta a ponta durante toda a conversa, esteja ou não algo sendo enviado por ele.",
@@ -21998,7 +22033,8 @@
       },
       "firewall": {
         "def": "Um equipamento ou função que decide qual tráfego pode passar entre redes, aplicando uma política numa fronteira.",
-        "context": "O nome vem da parede construída para impedir que o fogo se espalhe entre partes de um prédio, e a metáfora carrega a suposição que envelheceu pior: a de que existe um dentro e um fora. Isso era verdade quando uma organização tinha um gateway, e deixou de ser com nuvem, trabalho remoto e tráfego entre máquinas que nunca toca o perímetro. A função não virou inútil; ela se multiplicou e se mudou, para hosts, hipervisores, malhas de serviço e política de nuvem, que é o que segmentação e confiança zero de fato descrevem. O aviso de quem escreveu o primeiro livro continua valendo: um parque em que o firewall é o único componente seguro é um parque que os atacantes contornam, em vez de atravessar."
+        "context": "O nome vem da parede construída para impedir que o fogo se espalhe entre partes de um prédio, e a metáfora carrega a suposição que envelheceu pior: a de que existe um dentro e um fora. Isso era verdade quando uma organização tinha um gateway, e deixou de ser com nuvem, trabalho remoto e tráfego entre máquinas que nunca toca o perímetro. A função não virou inútil; ela se multiplicou e se mudou, para hosts, hipervisores, malhas de serviço e política de nuvem, que é o que segmentação e confiança zero de fato descrevem. O aviso de quem escreveu o primeiro livro continua valendo: um parque em que o firewall é o único componente seguro é um parque que os atacantes contornam, em vez de atravessar.",
+        "depth": "A diretriz do NIST define firewalls como 'devices or programs that control the flow of network traffic between networks or hosts employing differing security postures', e o seu catálogo de tecnologias mostra o quanto a palavra se estica: filtragem de pacotes, inspeção com estado, firewalls de aplicação, gateways de proxy de aplicação e servidores proxy dedicados, e em volta deles redes privadas virtuais, controle de acesso à rede, gestão unificada de ameaças e firewalls de aplicação web.\n\nDuas dessas pesam mais no trabalho diário. Um firewall com estado 'keeps track of each connection in a state table', então uma resposta é aceita porque o seu pedido foi. Um proxy divide a conversa e, nas palavras do NIST, cada tentativa bem-sucedida 'actually results in the creation of two separate connections': uma do cliente até o proxy, outra do proxy até o destino real, e é por isso que uma captura de cada lado mostra uma conversa diferente.\n\nQuando uma conexão nunca se estabelece e nada registra erro algum, o descarte silencioso de um firewall é um dos primeiros lugares para olhar: por definição, um pacote descartado não responde nada."
       },
       "packet-filter": {
         "def": "A filtragem mais simples: decidir sobre cada pacote de forma independente, por endereços, protocolo e portas, sem memória do que veio antes.",
@@ -22014,15 +22050,18 @@
       },
       "router": {
         "def": "Um equipamento que encaminha pacotes entre redes escolhendo um próximo salto numa tabela de rotas.",
-        "context": "A decisão é por pacote e puramente local: um roteador não conhece o caminho, só o próximo passo, e a jornada do pacote é a soma de escolhas independentes feitas por máquinas que nunca se coordenam. É por isso que o traceroute mostra um caminho que pode não ser o do próximo pacote, e por que problemas de roteamento costumam ser assimétricos - a ida e a volta são decididas por equipamentos diferentes, com tabelas diferentes."
+        "context": "A decisão é por pacote e puramente local: um roteador não conhece o caminho, só o próximo passo, e a jornada do pacote é a soma de escolhas independentes feitas por máquinas que nunca se coordenam. É por isso que o traceroute mostra um caminho que pode não ser o do próximo pacote, e por que problemas de roteamento costumam ser assimétricos - a ida e a volta são decididas por equipamentos diferentes, com tabelas diferentes.",
+        "depth": "A RFC 1812, os requisitos para roteadores IPv4, descreve o passo de encaminhamento numa frase: o roteador 'generally removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission'. A modificação é o tempo de vida (TTL): todo roteador o decrementa e descarta o datagrama quando ele chega a zero, então um loop de roteamento, ao contrário de um loop de comutação, se extingue sozinho, e o traceroute funciona provocando exatamente esses descartes, um salto de cada vez.\n\nO que um roteador não muda por conta própria são os endereços IP de origem e de destino. Eles sobrevivem de ponta a ponta, a menos que algo os traduza, e é por isso que uma captura no servidor mostra o endereço do cliente só quando nenhuma tradução de endereços de rede fica no meio, e por isso os endereços MAC dos dois lados nunca batem."
       },
       "switch": {
         "def": "Um equipamento que encaminha quadros dentro de uma rede aprendendo quais endereços vivem em qual porta.",
-        "context": "Ele aprende observando: todo quadro que chega ensina onde está o remetente, e o que ainda não foi aprendido é inundado por todas as portas. Esse único comportamento explica quase tudo o que o operador vê - uma rede que funciona antes de a tabela encher, tráfego aparecendo onde não devia durante mudança de topologia, e a razão de um laço ser catastrófico, e não apenas desperdício, já que quadros inundados se multiplicam sem nada para pará-los."
+        "context": "Ele aprende observando: todo quadro que chega ensina onde está o remetente, e o que ainda não foi aprendido é inundado por todas as portas. Esse único comportamento explica quase tudo o que o operador vê - uma rede que funciona antes de a tabela encher, tráfego aparecendo onde não devia durante mudança de topologia, e a razão de um laço ser catastrófico, e não apenas desperdício, já que quadros inundados se multiplicam sem nada para pará-los.",
+        "depth": "Tudo o que um switch faz decorre de uma tabela e de três hábitos. Ele lê o endereço de origem de cada quadro que chega e anota a porta por onde entrou (aprendizado); envia um quadro para um endereço ainda não aprendido por todas as outras portas (inundação); e esquece uma entrada que ficou em silêncio, depois de 300 segundos por padrão numa bridge do Linux (envelhecimento). Com VLANs, a tabela usa duas chaves, o endereço e a VLAN, e assim um único switch guarda várias redes de Camada 2 separadas.\n\nEsses hábitos explicam as falhas. Uma tabela recém-apagada inunda tudo até reaprender, e é por isso que uma mudança de topologia põe tráfego por um instante nas portas erradas. Um loop é letal porque um quadro inundado não leva contador de saltos e circula até que algo quebre o loop, que é o trabalho do spanning tree. E uma tabela enchida de propósito com endereços de origem falsos deixa o switch inundando como um hub para quem estiver escutando, que é o que o port security existe para impedir."
       },
       "bridge": {
         "def": "Um equipamento que une dois segmentos de rede na camada 2, encaminhando apenas os quadros que precisam atravessar.",
-        "context": "A ponte é a ancestral do comutador, e a palavra sobrevive onde a dele não sobrevive: a árvore de extensão ainda elege uma ponte raiz, e a virtualização ainda chama de ponte um comutador em software. O propósito original era cortar um domínio de colisão ao meio mantendo um domínio de difusão, que é exatamente o que uma porta de comutador moderno faz por porta - a ideia não sumiu, ela se multiplicou."
+        "context": "A ponte é a ancestral do comutador, e a palavra sobrevive onde a dele não sobrevive: a árvore de extensão ainda elege uma ponte raiz, e a virtualização ainda chama de ponte um comutador em software. O propósito original era cortar um domínio de colisão ao meio mantendo um domínio de difusão, que é exatamente o que uma porta de comutador moderno faz por porta - a ideia não sumiu, ela se multiplicou.",
+        "depth": "Nas normas, a bridge nunca saiu de cena. A IEEE 802.1Q, cuja edição ativa é a 802.1Q-2022, especifica o funcionamento de MAC Bridges e VLAN Bridges, e absorveu a antiga norma de bridging, a 802.1D, cujo conteúdo hoje vive dentro dela. No vocabulário da norma, um switch é uma bridge com muitas portas.\n\nA palavra também sobrevive no software. A bridge do kernel do Linux é um dispositivo que 'connects two or more network segments and operates at the data link layer (Layer 2)' e encaminha de forma transparente, e é ela que liga máquinas virtuais e contêineres a uma rede física. Quando um diagrama de hipervisor mostrar uma bridge, leia como um switch que por acaso mora no kernel.\n\nO spanning tree ainda elege uma root bridge, e todo switch nele carrega um bridge ID feito de uma prioridade e de um endereço MAC, o que mantém o nome mais antigo da família na tela de todo engenheiro de Camada 2."
       },
       "gateway": {
         "def": "O endereço para o qual um host envia quando o destino não está na própria rede - e, de forma mais geral, qualquer equipamento que traduz entre dois sistemas.",
@@ -22090,7 +22129,8 @@
       },
       "duplex": {
         "def": "Se um enlace carrega tráfego nos dois sentidos ao mesmo tempo, ou precisa se revezar.",
-        "context": "Enlaces comutados modernos são full duplex e o ajuste quase não é pensado - até haver descompasso, com uma ponta negociando full e a outra supondo half. O resultado é a falha mais enganosa de redes: o enlace está de pé, pings pequenos passam, e a vazão desaba sob carga com erros subindo, porque um lado transmite enquanto o outro acredita ter havido colisão. Ela sobrevive como reflexo de diagnóstico justamente por parecer qualquer coisa menos o que é."
+        "context": "Enlaces comutados modernos são full duplex e o ajuste quase não é pensado - até haver descompasso, com uma ponta negociando full e a outra supondo half. O resultado é a falha mais enganosa de redes: o enlace está de pé, pings pequenos passam, e a vazão desaba sob carga com erros subindo, porque um lado transmite enquanto o outro acredita ter havido colisão. Ela sobrevive como reflexo de diagnóstico justamente por parecer qualquer coisa menos o que é.",
+        "depth": "A Ethernet nasceu half duplex por necessidade: num meio compartilhado só uma estação podia transmitir, e a detecção de colisão decidia quem ia em seguida. O full duplex virou norma em 1997, com a IEEE 802.3x, que acrescentou um 'full duplex mode of operation on a speed-independent basis' com controle de fluxo por pausa. Ele precisa de um enlace com só duas pontas, o que a comutação proporcionou, e nele a detecção de colisão simplesmente fica desligada.\n\nDe 10 Gb/s em diante, a pergunta desapareceu: toda força-tarefa desde a 802.3ae escreveu o mesmo objetivo, 'Support full-duplex operation only'. O duplex hoje é uma propriedade dos enlaces de cobre de 10, 100 e 1000 Mb/s e da autonegociação que os configura, e é ali que ele ainda dá errado."
       },
       "checksum": {
         "def": "Um valor pequeno computado a partir dos dados para que o receptor perceba corrupção acidental - detecção, e não correção, e não proteção.",
@@ -22146,7 +22186,8 @@
       },
       "trunk": {
         "def": "Um enlace que carrega várias VLANs de uma vez, etiquetando cada quadro para que a outra ponta saiba a qual rede ele pertence.",
-        "context": "O tronco é onde a segmentação é aplicada e onde ela é desfeita em silêncio com mais frequência. Uma porta configurada para carregar todas as VLANs por padrão entrega o parque inteiro a partir de um cabo, e um descompasso de VLAN nativa entre dois comutadores funde silenciosamente duas redes que o diagrama diz separadas. Os dois são defeitos de configuração, e não de protocolo, e é por isso que revisões de segmentação olham as listas de permissão dos troncos antes de olhar regras de firewall."
+        "context": "O tronco é onde a segmentação é aplicada e onde ela é desfeita em silêncio com mais frequência. Uma porta configurada para carregar todas as VLANs por padrão entrega o parque inteiro a partir de um cabo, e um descompasso de VLAN nativa entre dois comutadores funde silenciosamente duas redes que o diagrama diz separadas. Os dois são defeitos de configuração, e não de protocolo, e é por isso que revisões de segmentação olham as listas de permissão dos troncos antes de olhar regras de firewall.",
+        "depth": "A palavra quer dizer duas coisas diferentes em duas plataformas comuns. Num switch Cisco, um trunk é um enlace que carrega várias VLANs com tags 802.1Q. Num F5 BIG-IP, um trunk é agregação de enlaces: na referência da própria F5, 'Link Aggregation allows multiple physical links to be treated as one logical link. It is also referred to as trunking', com o LACP disponível, mas desligado por padrão. Leia a plataforma antes de ler a palavra.\n\nNum trunk com tags, a VLAN nativa é a exceção: a regra da Cisco é que um pacote cuja VLAN coincide com a VLAN nativa da porta 'is sent untagged; otherwise, the device sends the packet with a tag'. A VLAN nativa é a 1 por padrão na Cisco e no AOS-CX da Aruba, e a Cisco avisa que, se as duas pontas discordarem, 'spanning-tree loops might result'.\n\nA lista de proteção é curta e conhecida: levar só as VLANs necessárias, mover a VLAN nativa para um ID sem uso ou colocar tag nela, e desligar a negociação de trunk nas portas voltadas para hosts."
       },
       "pat": {
         "def": "Traduzir muitos endereços privados para um endereço público reescrevendo também as portas - o que a maioria das pessoas quer dizer ao falar NAT.",
@@ -23020,6 +23061,51 @@
         "def": "O Application System/400 da IBM, o computador de médio porte anunciado em junho de 1988 e lançado naquele agosto, cujo sistema operacional e cuja arquitetura sobrevivem hoje como IBM i nos Power Systems: um armazenamento de nível único, uma interface de máquina baseada em objetos e um banco de dados relacional integrado que mantêm aplicações de quarenta anos rodando em hardware atual.",
         "context": "O AS/400 foi o sistema Silverlake, construído por uma equipe à margem da estrutura em IBM Rochester, Minnesota, batizada com o nome de um lago da cidade e oficialmente em curso desde dezembro de 1985, depois que o projeto Fort Knox, que tentava unificar as linhas de médio porte da empresa, falhou; a IBM o anunciou em 21 de junho de 1988 com mais de 1.000 pacotes de software e o lançou em agosto como sucessor do System/36 e do System/38. Seu sistema operacional, o OS/400, descende do do System/38 e foi lançado em 26 de agosto de 1988; virou i5/OS em 2004 e IBM i em 2008, com o i de integrado. A arquitetura é a razão de a linha ainda existir: a Technology Independent Machine Interface apresenta às aplicações um conjunto de instruções independente de plataforma, traduzido para código nativo abaixo dela, de modo que quando a IBM trocou os processadores IMPI de 48 bits por chips de 64 bits derivados do PowerPC em 1995 as aplicações não perceberam, e de novo quando o POWER4 chegou em 2001. No fim de 1990 havia cerca de 111.000 sistemas instalados e a linha faturou 14 bilhões de dólares naquele ano; cerca de 500.000 tinham sido entregues até 1997. O hardware virou eServer iSeries em 2000, System i em 2006 e, em 2008, parte dos IBM Power Systems; o IBM i 7.6 saiu em 18 de abril de 2025.",
         "depth": "O AS/400 é o computador que provou que uma arquitetura pode sobreviver a cada peça de hardware em que rodou. O Application System/400 da IBM, no relato da enciclopédia, foi uma família de computadores de médio porte anunciada em junho de 1988, em 21 de junho como o sistema Silverlake, com mais de 1.000 pacotes de software disponíveis no lançamento, e entregue em agosto daquele ano como sucessor do System/36 e do System/38. Ele saiu de IBM Rochester, em Minnesota, onde uma equipe à margem da estrutura, batizada com o nome do Silver Lake da cidade, trabalhava oficialmente desde dezembro de 1985, depois que o Fort Knox, a tentativa da empresa desde 1982 de consolidar as linhas System/36, System/38, 8100, Series/1 e 4300 num único processador baseado no 801, havia falhado. Os números que vieram depois explicam por que o nome ainda tem peso: cerca de 111.000 instalações no fim de 1990 e receita anual de 14 bilhões de dólares naquele ano, 250.000 sistemas em 1994 e cerca de 500.000 entregues até 1997.\n\nA ideia por baixo é a Technology Independent Machine Interface, a TIMI, herdada do System/38. As aplicações são compiladas para um conjunto de instruções independente de plataforma e traduzidas para o código nativo do processador abaixo dessa interface, de modo que o processador pode mudar sem que as aplicações sejam recompiladas ou sequer saibam. O artigo registra a prova. As primeiras máquinas usavam os processadores CISC IMPI de 48 bits da linhagem do System/38; em 1995 a IBM levou a linha para processadores de 64 bits derivados do PowerPC, a família RS64, seguindo a proposta de Frank Soltis de 1991, feita a pedido de Jack Kuehler, de adotar uma variante do PowerPC para o AS/400 depois que um projeto interno fora cancelado; o POWER4 veio em 2001, depois o POWER5 e o POWER6; e ao longo de tudo isso as aplicações escritas para a máquina de 1988 continuaram rodando. Poucas plataformas podem dizer o mesmo atravessando uma mudança de tamanho de palavra e de conjunto de instruções, e é por isso que tanto do estoque, dos bancos e das fábricas do mundo ainda roda nessa linha.\n\nO sistema operacional carrega a outra metade do projeto. O OS/400, lançado em 26 de agosto de 1988, é descrito no artigo sobre o IBM i como uma evolução do Control Program Facility do System/38 com camadas de compatibilidade para o SSP do System/36 e para o AIX; ele expõe a Machine Interface para independência de hardware, usa endereçamento baseado em objetos sobre um armazenamento de nível único, em que memória e disco formam um único espaço de endereços e toda coisa no sistema é um objeto tipado, e integra um banco de dados relacional tão intimamente que o banco não é um produto instalado no sistema, e sim uma propriedade dele. Foi rebatizado i5/OS em 2004, quando o hardware virou eServer i5, e IBM i em 2008, com o i de integrado. As correções chegam como PTFs, program temporary fixes; o software de código aberto chega por pacotes RPM e YUM; e o protocolo de terminal da tela verde é o TN5250, e é por isso que esse número aparece em regras de firewall de empresas que nunca compraram um terminal.\n\nOs nomes do hardware mudaram com o marketing da IBM. O AS/400 Advanced Series veio em 1994 e o AS/400e em 1997; em 2000 a linha virou eServer iSeries, compartilhando o processador POWER4 com o pSeries; em 2004, eServer i5; em 2006, System i; e em 2008 a IBM consolidou o System i e o System p nos IBM Power Systems, de modo que o IBM i e o AIX passaram a compartilhar uma mesma linha de hardware. A ficha do artigo do AS/400 registra a linha original como descontinuada em 30 de setembro de 2013, o que é uma afirmação sobre o nome e não sobre a plataforma: o IBM i 7.6 foi lançado em 18 de abril de 2025, e o RS/6000, anunciado em fevereiro de 1990 como concorrente interno, virou o irmão com quem ele hoje compartilha hardware.\n\nPara quem lê este glossário, o AS/400 fica ao lado do AIX, do OpenVMS e dos Unix como uma das plataformas corporativas de vida longa que um engenheiro de redes encontra em vez de administrar: o host por trás de uma sessão TN5250, o sistema cujos jobs em lote definem a janela de manutenção, a caixa no canto do data center que não pode ser corrigida no cronograma do projeto porque ela é o negócio. O registro da IBM na seção de indústria carrega o lado da empresa nessa história."
+      },
+      "osi-model": {
+        "def": "O modelo de referência de sete camadas da comunicação em rede, do sinal físico na camada 1 à aplicação na camada 7.",
+        "context": "Uma norma, não folclore: a ISO/IEC 7498-1:1994 e a ITU-T X.200, as duas ainda em vigor. Os seus protocolos perderam para o TCP/IP, mas a sua numeração virou o vocabulário da área para dizer onde mora um problema.",
+        "depth": "A arquitetura da própria internet nunca teve sete camadas. A RFC 1122, os requisitos de host de 1989, lista quatro, aplicação, transporte, internet e enlace, e diz que a sua camada de aplicação 'essentially combines the functions of the top two layers' do modelo OSI, apresentação e aplicação. A camada de sessão não tem protocolo próprio na suíte da internet para onde apontar.\n\nO que sobreviveu foi o mapa. 'Camada 2' quer dizer o enlace e os seus quadros, 'Camada 3' o pacote IP e o roteamento, 'Camada 4' o TCP e o UDP e as suas portas, 'Camada 7' a aplicação; os números deixam um time de rede e um time de aplicação concordarem numa frase sobre qual metade de um problema é de quem. O mapa se dobra onde um dispositivo faz vários trabalhos, um balanceador terminando TLS ou um túnel levando Camada 2 dentro de UDP, e é por isso que os engenheiros usam as camadas como vocabulário, não como lei."
+      },
+      "oui": {
+        "def": "O prefixo de 24 bits que a IEEE Registration Authority atribui a uma organização, formando a primeira metade dos endereços MAC que ela emite.",
+        "context": "Um bloco MA-L traz um OUI e 2^24 endereços; os blocos menores MA-M e MA-S dividem os seus primeiros 24 bits com outros compradores, então uma consulta de 24 bits não consegue dizer quem é o dono.",
+        "depth": "As diretrizes da IEEE definem o OUI como 'a 24-bit (three octet) sequence' e vendem espaço de endereços em três tamanhos: um MA-L dá 2^24 identificadores EUI-48 a partir de um OUI atribuído; um MA-M dá 2^20 e 'does not include an OUI assignment'; um MA-S dá 2^12 a partir de um prefixo de 36 bits. As atribuições são públicas e pesquisáveis, e é assim que uma consulta transforma um prefixo numa empresa.\n\nAntes de ler um OUI como fabricante, leia os dois bits mais baixos do primeiro octeto. Se o bit de grupo estiver ligado, o endereço é multicast ou broadcast; se o bit local estiver ligado, o endereço foi definido por software, e os bits onde estaria um OUI não querem dizer nada. Os endereços de Wi-Fi aleatorizados, o padrão nos celulares atuais, são locais por definição, então o resultado honesto de consultar um deles é nenhum fabricante."
+      },
+      "ethertype": {
+        "def": "O campo de dois octetos depois dos endereços de um quadro Ethernet que diz qual protocolo vai dentro: 0x0800 para IPv4, 0x86DD para IPv6, 0x0806 para ARP.",
+        "context": "Valores de 0x0600 para cima são tipos; valores até 1500 são um comprimento, a leitura IEEE 802.3 do mesmo campo. Quem os atribui é a IEEE Registration Authority; a IANA mantém uma lista dos que a internet usa.",
+        "depth": "Um campo, dois sentidos, decididos por um limite. A RFC 9542 enuncia a regra pelo lado da internet: EtherTypes são 'equal to or larger than 0x0600', e um comprimento precisa ficar abaixo de 0x5DD 'or it could be mistaken as an EtherType'. A Ethernet DIX original usava o campo como tipo; a IEEE 802.3 primeiro o usou como comprimento e depois aceitou as duas leituras.\n\nO tipo também é como um quadro anuncia uma tag. Uma tag de VLAN começa com 0x8100, que a IANA lista como 'Customer VLAN Tag Type (C-Tag, formerly called the Q-Tag)', e redes de provedores usam 0x88A8 para a tag externa de um par empilhado; quem recebe e encontra qualquer uma delas lê o EtherType verdadeiro quatro octetos depois. O LLDP é 0x88CC, e os slow protocols que levam o LACP são 0x8809. Quando uma captura mostra um EtherType que ela não decodifica, o protocolo dentro é um que a ferramenta não conhece, não um quadro quebrado."
+      },
+      "fcs": {
+        "def": "A soma de verificação de quatro octetos no fim de um quadro Ethernet, um CRC-32 que quem recebe recalcula para detectar corrupção.",
+        "context": "Um quadro que falha nela é descartado sem aviso; o único vestígio é um contador de erros de FCS ou CRC na porta que recebeu.",
+        "depth": "A verificação cobre o quadro do endereço de destino até o fim do preenchimento e deixa de fora o preâmbulo, o delimitador de início e ela mesma: nas palavras de um fabricante, o MAC 'computes the CRC32 over the frame bytes that include the source address, destination address, length, data, and pad'. Como um switch que acrescenta ou retira uma tag de VLAN muda esses bytes, ele recalcula o FCS quando o quadro sai.\n\nA Ethernet não retransmite um quadro que falhou; o que roda acima dela, normalmente o TCP, percebe a perda e se recupera, devagar. Então um contador de FCS subindo é um sintoma de camada física lido na Camada 2: um cabo danificado, um conector de fibra sujo, um módulo óptico falhando, ruído elétrico. A documentação de contadores da Cisco acrescenta a causa clássica que não é física, observando que erros de FCS 'can also indicate a duplex mismatch', e no lado half duplex de um enlace descompassado eles sobem com a carga."
+      },
+      "auto-negotiation": {
+        "def": "A troca em que duas portas Ethernet de par trançado anunciam as suas velocidades e modos de duplex e acertam o melhor que têm em comum.",
+        "context": "Definida na Cláusula 28 da IEEE 802.3 e levada em rajadas de pulsos de enlace. Opcional em 10 e 100 Mb/s, obrigatória do 1000BASE-T em diante.",
+        "depth": "A Cisco a descreve como 'an optional function of the IEEE 802.3u Fast Ethernet standard that enables devices to automatically exchange information over a link about speed and duplex abilities'. A informação viaja em rajadas de Fast Link Pulses, que o laboratório da Universidade de New Hampshire descreve como 'simply a sequence of 10BASE-T Normal Link Pulses', enviadas a cada 16 ms, com 8 a mais ou a menos.\n\nDo Gigabit em cobre em diante, ela deixou de ser opcional: uma interpretação do IEEE confirma que 'selecting 1000BASE-T mode of operation still requires that Auto-Negotiation be used', porque é na negociação que as duas pontas também acertam qual delas comanda o relógio. Fibra de velocidade fixa em geral nem negocia a velocidade.\n\nO seu ponto fraco é um vizinho que não negocia. O lado que negocia recorre então à detecção paralela, que percebe a velocidade pelo sinal mas nunca o full duplex, e assume half: a origem da maioria dos descompassos de duplex. Deixe as duas pontas em automático, ou fixe as duas."
+      },
+      "native-vlan": {
+        "def": "A VLAN cujos quadros atravessam um trunk 802.1Q sem tag, e na qual uma porta de trunk coloca todo quadro sem tag que recebe.",
+        "context": "A VLAN 1 por padrão na Cisco e no AOS-CX da Aruba. Duas pontas que discordam fundem duas VLANs; o nome que a própria norma dá à ideia é o PVID da porta.",
+        "depth": "A regra da Cisco para a saída de um trunk é a definição em ação: 'If a packet has a VLAN ID that is the same as the outgoing port native VLAN ID, the packet is sent untagged; otherwise, the device sends the packet with a tag.' Na entrada, um quadro sem tag vai para a VLAN nativa. Se as duas pontas de um trunk discordam sobre qual VLAN é essa, o tráfego de uma VLAN chega em outra, e a Cisco avisa que 'spanning-tree loops might result'.\n\nA VLAN nativa também é a dobradiça de um ataque clássico. Um quadro com duas tags, a externa igual à VLAN nativa do trunk, que é também a VLAN de acesso do próprio atacante, perde essa tag externa no primeiro switch e atravessa o trunk para a VLAN da tag interna. O guia de projeto de campus da Cisco dá a resposta padrão: 'Assign the native VLAN to an unused ID or use the Tagged Native VLAN option to avoid VLAN hopping.' Muitos switches também conseguem colocar tag na VLAN nativa, o que elimina de vez a exceção sem tag."
+      },
+      "bpdu": {
+        "def": "O quadro que os switches do spanning tree trocam para eleger uma root bridge e decidir quais portas encaminham e quais bloqueiam.",
+        "context": "Enviado para o endereço de grupo das bridges, 01-80-C2-00-00-00, a cada dois segundos por padrão a partir da root. Um BPDU chegando numa porta voltada para um host é um sinal de alerta, que o BPDU Guard transforma numa porta desligada.",
+        "depth": "Os BPDUs levam tudo o que a eleição precisa: o bridge ID de quem envia, uma prioridade e um endereço MAC, o ID da bridge que ele acredita ser a root e o seu custo até ela. Vence o menor bridge ID; a prioridade padrão da Cisco é 32768, ajustável de 0 a 61440 em passos de 4096. A root envia BPDUs de configuração a cada intervalo de hello, 2 segundos por padrão, e os outros switches os repassam, então um switch que para de ouvi-los sabe que a topologia mudou.\n\nComo um BPDU pode alegar qualquer coisa, uma porta voltada para usuários nunca deveria aceitar um. O BPDU Guard da Cisco 'shuts the port down by placing it in the errdisable state' quando um BPDU chega numa porta configurada para dispositivos finais, o que impede que um switch perdido, ou um quadro forjado, vença a eleição. Na versão rápida do protocolo, os BPDUs também servem de keepalive: três hellos perdidos e a informação de um vizinho expira na hora."
+      },
+      "rstp": {
+        "def": "A versão rápida do spanning tree, a IEEE 802.1w, que converge em instantes por um handshake em vez de esperar temporizadores.",
+        "context": "Incorporado à 802.1D-2004, que tornou o protocolo original obsoleto. O Rapid PVST+ da Cisco roda uma instância de RSTP por VLAN.",
+        "depth": "O spanning tree clássico espera: uma porta passa por listening e learning em atrasos de encaminhamento de 15 segundos, e uma falha indireta pode levar 50 segundos com os temporizadores padrão. O RSTP troca a maior parte da espera por uma conversa entre vizinhos: um switch 'sets the proposal bit on the BPDUs it sends out', e quando a outra ponta responde com um acordo a porta pode passar a encaminhar na hora, o que a Cisco situa 'sometimes in the order of a few hundred milliseconds'.\n\nO handshake só funciona onde dois switches ficam frente a frente, então o RSTP anda rápido em enlaces ponto a ponto e nas portas de borda, as voltadas para hosts, que vão direto para o encaminhamento e perdem essa condição no instante em que chega um BPDU. Ele também renomeia os papéis: a antiga porta bloqueada vira alternate (um caminho reserva até a root por outro switch) ou backup (um segundo enlace para o mesmo segmento), e os estados disabled, blocking e listening se fundem num só, discarding."
+      },
+      "link-aggregation": {
+        "def": "Vários enlaces Ethernet paralelos agrupados para que as duas pontas os tratem como um enlace lógico, para ter mais capacidade e resiliência.",
+        "context": "IEEE 802.1AX hoje, 802.3ad antes dela; EtherChannel ou port channel na Cisco, aggregated Ethernet na Juniper, bond no Linux, trunk na F5. O LACP é o protocolo que a negocia.",
+        "depth": "A definição da própria norma é o objetivo dela: os enlaces são 'aggregated together to form a Link Aggregation Group (LAG), such that a MAC Client can treat the LAG as if it were a single link'. O spanning tree enxerga um enlace só e não bloqueia nada; se um membro falha, o grupo continua levando tráfego pelos demais.\n\nDuas regras surpreendem. Todo membro precisa combinar: a Cisco pede a mesma velocidade e o mesmo duplex em todas as portas, e as mesmas configurações de VLAN ou de trunk. E um fluxo nunca anda mais rápido do que um membro, porque os quadros são distribuídos por um hash determinístico de endereços e portas, então uma conversa fica num só enlace para manter os pacotes em ordem; um grupo de quatro enlaces de um gigabit atende muitos fluxos a quatro gigabits e uma transferência grande a um.\n\nMonte o grupo com LACP, não de forma estática: um grupo estático não percebe um membro que falha em silêncio, e uma divergência entre as duas pontas é, nas palavras da Aruba, 'difficult to troubleshoot, because no signaling takes place between the two peers'."
       }
     },
     "totalCount": "{count} termos",
@@ -23086,7 +23172,7 @@
     "goodFaithBody": "Estes guias são materiais de estudo independentes, montados a partir de conteúdo publicamente disponível: blueprints de exame publicados, documentação oficial de produto e catálogos de treinamento dos fabricantes. Nomes de produtos, códigos de exame e marcas pertencem a seus titulares e são usados apenas para identificar o assunto ensinado. Este site não é afiliado a nenhum fabricante aqui citado nem endossado por ele. Se você detém direitos sobre material publicado nesta página e entende que ele deve ser removido ou corrigido, envie a URL exata e uma breve nota sobre o problema pela página de contato; os pedidos são analisados com rapidez e boa-fé.",
     "goodFaithLink": "Ler o aviso legal completo",
     "vendorsHeading": "Fabricantes cobertos",
-    "vendorCount": "{certs} certificações, {guides} guias de exame",
+    "vendorCount": "{certs, plural, one {# certificação} other {# certificações}}, {guides, plural, one {# guia de exame} other {# guias de exame}}",
     "requiresOne": "Obtida ao ser aprovado em qualquer um destes {count} exames.",
     "prerequisitesLabel": "Pré-requisitos",
     "requirementLabel": "Como obter",
@@ -23104,7 +23190,27 @@
     "retirementSuccessorIs": "O sucessor é o {exam}.",
     "retirementPreviousNotice": "A versão anterior, {exam}, pode ser prestada até {until}.",
     "retirementPreviousPastNotice": "A versão anterior, {exam}, podia ser prestada até {until}, data que já passou.",
-    "retirementMapsSuccessor": "Este guia mapeia a sucessora, {exam}."
+    "retirementMapsSuccessor": "Este guia mapeia a sucessora, {exam}.",
+    "statusLabel": "Situação",
+    "statusCurrent": "Atual",
+    "statusTransitioning": "Em transição",
+    "statusPreparing": "Em preparação",
+    "statusRetired": "Descontinuado",
+    "alsoKnownAs": "Também conhecido como",
+    "checkedOn": "Conferido com as fontes oficiais da {vendor} em {date}.",
+    "checkedStale": "Isso foi há mais de {days} dias: o fabricante pode ter mudado algo desde então, então confirme na página oficial antes de agendar.",
+    "filterTitle": "Encontre um exame",
+    "filterLabel": "Pelo nome, pelo código ou por um nome anterior",
+    "filterPlaceholder": "FortiOS, F5CAB3, 156-215.82, 101…",
+    "filterClear": "Limpar",
+    "filterShowRetired": "Mostrar exames descontinuados ({count})",
+    "filterShown": "{shown} de {total} guias de exame",
+    "filterNoMatch": "Nenhum guia de exame corresponde a “{query}”.",
+    "filterNoMatchRetired": "Mostrar os {count} guias descontinuados que correspondem",
+    "legendRetiring": "a última data para prestar o exame foi publicada; agende antes dela",
+    "legendPrevious": "uma versão anterior ainda pode ser prestada; este guia mapeia a sucessora",
+    "legendPreparing": "o blueprint ainda está sendo mapeado; a página oficial está no link",
+    "legendRetired": "o exame não pode mais ser prestado; o guia fica como registro"
   },
   "trainingCta": {
     "eyebrow": "Treinamento com instrutor",
@@ -23755,7 +23861,57 @@
         "lede": "O conjunto de um fabricante em ordem de leitura, feito para percorrer sua certificação a partir deste site."
       }
     },
-    "materialsSignpost": "Um curso completo para baixar, estudar e ensinar: <link>TCP/IP: Conceitos e Roteamento IP</link>, {slides} slides com notas do apresentador, em português e em inglês, de uso livre."
+    "materialsSignpost": "Um curso completo para baixar, estudar e ensinar: <link>TCP/IP: Conceitos e Roteamento IP</link>, {slides} slides com notas do apresentador, em português e em inglês, de uso livre.",
+    "training": {
+      "title": "Séries de formação",
+      "lede": "Os fundamentos em ordem, um nível de cada vez. Cada série é um conjunto de módulos; cada módulo diz o que você vai conseguir fazer ao fim dele, lista os seus artigos em ordem de leitura e indica as ferramentas para praticar. Os artigos ainda em redação aparecem nomeados nos seus lugares.",
+      "level": "Nível {level}",
+      "outcomeLabel": "Ao fim:",
+      "noPrerequisites": "Sem pré-requisitos: comece por aqui.",
+      "prerequisites": "Antes desta: {list}.",
+      "counts": "{modules, plural, one {# módulo} other {# módulos}} · {written, plural, one {# artigo} other {# artigos}}",
+      "plannedCount": "{count, plural, one {mais # em preparação} other {mais # em preparação}}",
+      "start": "Comece a série",
+      "module": "Módulo {n}",
+      "moduleCount": "{count, plural, one {# parte} other {# partes}}",
+      "parts": "As partes",
+      "planned": "em preparação",
+      "toolless": "Para ler, não para praticar: nenhuma ferramenta do site trabalha nesta camada ainda.",
+      "items": {
+        "netfun-1": {
+          "short": "NetFun I",
+          "title": "Fundamentos de Redes I: dos bits à LAN",
+          "lede": "As camadas 1 e 2, das unidades em que uma rede conta ao quadro que um switch encaminha: o modelo de camadas e os órgãos que escrevem os padrões, cobre, fibra e rádio, o quadro Ethernet e os seus endereços, VLANs, spanning tree e agregação de enlaces, e o Wi-Fi como camadas 1 e 2.",
+          "outcome": "você vai conseguir ler um quadro, explicar o que um switch faz com ele e dizer em que camada está uma falha.",
+          "modules": {
+            "m1": {
+              "title": "O mapa e as unidades",
+              "outcome": "Situar um protocolo no modelo de camadas, contar em bits e bytes sem misturar os dois tipos de quilo e saber que órgão escreve qual padrão."
+            },
+            "m2": {
+              "title": "Camada 1, o caminho físico",
+              "outcome": "Acompanhar um sinal pelo cobre, pela fibra e pelo rádio, do armário de cabeamento à última milha e ao fundo do mar, e dizer pelo que a camada física pode e não pode ser culpada."
+            },
+            "m3": {
+              "title": "Camada 2, quadros e comutação",
+              "outcome": "Ler um quadro Ethernet e os endereços que ele carrega, dizer o que um switch, uma ponte e um roteador decidem cada um, e explicar VLANs, spanning tree e agregação de enlaces."
+            },
+            "m4": {
+              "title": "O sem fio como camadas 1 e 2",
+              "outcome": "Explicar o que o Wi-Fi muda nas duas primeiras camadas: as suas gerações, o handshake que um ataque já quebrou e o controle de acesso por porta com o 802.1X."
+            }
+          },
+          "planned": {
+            "ethernet-physical-layers": "Camadas físicas do Ethernet, do 10BASE-T ao 400GBASE: nomenclatura, autonegociação e duplex",
+            "fibre-basics": "Fundamentos de fibra: monomodo e multimodo, conectores e o orçamento óptico",
+            "ethernet-frame": "O quadro Ethernet, campo a campo",
+            "vlans-and-8021q": "VLANs e trunking 802.1Q: com tag, sem tag, nativa e de voz",
+            "spanning-tree": "Spanning tree num só artigo: por que uma porta bloqueada é o recurso",
+            "link-aggregation-lacp": "Agregação de enlaces e LACP"
+          }
+        }
+      }
+    }
   },
   "catDistribution": {
     "metaTitle": "Sistema Global de Distribuição de Gatos",
@@ -23997,7 +24153,7 @@
     "exclusion5Term": "Desenvolvimento de material de curso",
     "exclusion5Body": "Isso eu não ofereço. Slides, guias de laboratório, notas do instrutor e avaliação são um ofício separado, contratado com escopo e condições próprias, e não são tempo de consultoria. Dizer se um curso deve existir é trabalho que eu faço. Escrever o curso não é.",
     "offerSpeakingTitle": "Palestras",
-    "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente — além de um pouco de futurologia sobre para onde caminham os papéis profissionais e o próprio trabalho. Palestras prontas, e temas sob medida mediante combinação.",
+    "offerSpeakingBody": "Palestras em eventos, keynotes e sessões internas sobre de onde veio esta indústria, como era estar dentro dela e como isso se compara com o presente. Palestras prontas, e temas sob medida mediante combinação.",
     "advisorEyebrow": "Seu assessor",
     "advisorBody": "Trinta anos do lado de quem fornece em redes e segurança corporativa, por dentro de fabricantes, de revendas e distribuidores de valor agregado, de casas de consultoria, e em engajamentos diretos com o cliente: implantando, sustentando, operando e ensinando o que essas empresas vendem, em vez de vender. É essa a base inteira da assessoria: meu trabalho era fazer aquilo funcionar depois, então sempre tive de conviver com a resposta. A análise é minha e leva o meu nome; como uma contratação é feita está dito com clareza mais abaixo nesta página. As credenciais, o histórico de carreira e o que clientes e alunos dizem estão a um clique, porque afirmação que não se pode conferir não vale a pena fazer.",
     "advisorLinkCreds": "Credenciais",
@@ -24090,7 +24246,7 @@
     "psTitle": "Quando a decisão leva à implantação",
     "psBody": "Meu papel nestas contratações é de assessoria: reviso, questiono, analiso e documento a decisão, e não forneço pessoalmente a implantação, o serviço gerenciado nem o suporte operacional que podem vir depois. Isso não significa que a contratação termine sem um caminho prático adiante. A Red Education mantém uma capacidade de Serviços Profissionais, entregue pelos seus engenheiros certificados pelos fabricantes: instalações, atualizações e migrações de software e de hardware, health checks, transferência de conhecimento, engenheiros residentes no local e consultores sob demanda. Trabalho na Red Education em tempo integral e, onde o trabalho que vem depois de uma decisão é trabalho que a Red Education faz, é lá que vou propor que ele seja feito: conheço as pessoas que o fazem e acredito no compromisso da empresa com a qualidade e com a satisfação do cliente. A escolha continua sendo sua, incluindo o seu parceiro atual, o seu time interno ou outro prestador. O que não se move é a análise: onde os serviços profissionais da Red Education estiverem sendo considerados para o trabalho seguinte, a contratação diz isso explicitamente, e o documento permanece no mérito técnico, nas restrições, nos riscos e nos requisitos da decisão, e não na criação de trabalho de implantação para quem quer que seja, Red Education incluída.",
     "psLink": "Serviços Profissionais da Red Education",
-    "speakingNote": "Também disponível para palestras em conferências e sessões executivas, que têm página própria.",
+    "speakingNote": "Procurando uma palestra em vez de consultoria? As palestras têm página própria:",
     "speakingLink": "Palestras",
     "memoOutline1": "A pergunta executiva",
     "memoOutline2": "Situação atual",
@@ -24147,7 +24303,14 @@
     "indepNotClaimedBody": "As contratações são firmadas e faturadas através da Red Education, que vende treinamento autorizado e serviços profissionais nas plataformas de vários fabricantes. Onde qualquer um dos dois for candidato ao que vem depois de uma decisão, o documento diz isso com todas as letras, e a escolha de quem faz esse trabalho continua sendo sua.",
     "indepPracticeLabel": "Na prática",
     "indepPracticeTitle": "Contexto, dos dois lados da mesa",
-    "indepPracticeBody": "Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e saber exatamente qual é esse contexto, dos dois lados da mesa, é parte do que você está pagando. Isso também significa que a revisão não é uma arma contra fornecedores: um fornecedor confiante na sua proposta pode sugerir a revisão ele mesmo, porque uma proposta que resiste ao escrutínio independente é mais fácil de aprovar pelo cliente, e uma que não resiste sai mais barato de corrigir antes da implantação do que depois."
+    "indepPracticeBody": "Interesse comercial não invalida competência. Ele muda o contexto em que uma recomendação deve ser avaliada, e saber exatamente qual é esse contexto, dos dois lados da mesa, é parte do que você está pagando. Isso também significa que a revisão não é uma arma contra fornecedores: um fornecedor confiante na sua proposta pode sugerir a revisão ele mesmo, porque uma proposta que resiste ao escrutínio independente é mais fácil de aprovar pelo cliente, e uma que não resiste sai mais barato de corrigir antes da implantação do que depois.",
+    "briefingEyebrow": "Antes de a decisão chegar à mesa",
+    "briefingTitle": "Briefings executivos",
+    "briefingQuestion": "O que essa mudança significa para nós, e o que ela vai exigir de nós?",
+    "briefingOutput": "Um briefing a portas fechadas para a liderança, e um resumo escrito para guardar.",
+    "briefingBody": "Para um conselho, um comitê executivo ou um comitê diretor que precisa ver uma mudança de tecnologia nos termos da própria organização antes que ela chegue como decisão: o que ela é, o que muda aqui, quais decisões vai trazer e quais perguntas vale fazer aos fornecedores. A adoção de SASE, uma consolidação de fornecedores, a modernização de um data center, uma grande migração de plataforma. Preparado para uma única organização, com a mesma independência de todo engajamento desta página.",
+    "briefingNotTalk": "Não é palestra: uma palestra é escrita para uma plateia; um briefing, para uma organização e para as decisões dela. Palestras para conferências, eventos corporativos e encontros de equipe têm página própria:",
+    "briefingNotTalkLink": "Palestras"
   },
   "speaking": {
     "eyebrow": "Palestras",
@@ -24168,8 +24331,69 @@
     "notTitle": "Uma coisa que isto não é",
     "notBody": "Isto não é treinamento. Cursos, workshops e preparação para certificação são entregues através da Red Education e são contratados lá, não aqui. Uma palestra de evento e um dia de treinamento são coisas diferentes, com plateias diferentes, e misturar as duas não serve a nenhuma delas.",
     "bookTitle": "Contratação",
-    "bookBody": "A primeira mensagem útil diz qual é o evento, a data, o público e mais ou menos quanto tempo você quer. Cachê, viagem e direitos de gravação são acordados antes de qualquer confirmação.",
-    "bookButton": "Entrar em contato"
+    "bookBody": "Escreva diretamente para mim sobre qualquer evento. A primeira mensagem útil diz o evento e a organização, onde e quando, quem é o público e mais ou menos quantas pessoas, o tema ou com o que as pessoas devem sair, o formato e a duração, e se haverá gravação ou transmissão. Viagem e direitos de gravação são acordados antes de qualquer confirmação.",
+    "bookButton": "Proponha um evento",
+    "heroCta": "Proponha um evento",
+    "heroCtaTalks": "Veja as palestras",
+    "factLanguageLabel": "Idioma",
+    "factLanguage": "Português ou inglês",
+    "factEventsLabel": "Eventos",
+    "factEvents": "Conferências, eventos corporativos, encontros de equipe e sessões internas",
+    "factTravelLabel": "Viagens",
+    "factTravel": "Bem-vindas, e combinadas como parte da contratação",
+    "tracksTitle": "Duas trilhas",
+    "tracksLede": "Dois tipos de palestra, para dois momentos de um evento.",
+    "track1Title": "Tecnologia, indústria e mudança",
+    "track1Body": "De onde veio esta indústria, como os mercados dela se formaram, as grandes transições, e como tudo isso parecia visto de dentro.",
+    "track1For": "Para conferências, eventos de liderança e comunidades técnicas.",
+    "track2Title": "Humanos por trás dos periféricos",
+    "track2Body": "As pessoas que mantêm a tecnologia funcionando: causos de campo, a ligação às três da manhã, as viagens, equipes sob pressão, e aprender a rir da indústria. Reconhecimento, humor e experiência compartilhada, e não terapia nem frases motivacionais.",
+    "track2For": "Para off-sites, kickoffs, encontros de parceiros e eventos de equipe.",
+    "trackTalkLabel": "A palestra",
+    "formatsTitle": "Formatos e públicos",
+    "format1Term": "Palestra em conferência",
+    "format1Body": "Uma palestra preparada, ajustada ao espaço da programação.",
+    "format2Term": "Sessão interna",
+    "format2Body": "Para uma empresa ou um time que queira uma voz de fora por uma hora.",
+    "format3Term": "Eventos de parceiros e de mercado",
+    "format3Body": "Encontros de parceiros, eventos de canal e kickoffs.",
+    "format4Term": "Painéis e debates mediados",
+    "format4Body": "Um lugar no painel, ou uma conversa conduzida por um mediador.",
+    "format5Term": "Bate-papo no palco",
+    "format5Body": "Uma conversa no palco com um apresentador, com as perguntas da plateia.",
+    "briefingTerm": "Briefing executivo",
+    "briefingBody": "Uma sessão a portas fechadas para um conselho ou uma diretoria, construída em torno de uma organização e das decisões dela, é trabalho de consultoria, não palestra.",
+    "briefingLink": "Briefings executivos, na Consultoria",
+    "audiencesTitle": "Públicos",
+    "audience1": "Profissionais de tecnologia",
+    "audience2": "Profissionais de redes e segurança",
+    "audience3": "Fabricantes e canais",
+    "audience4": "Lideranças de engenharia",
+    "audience5": "Líderes de negócio diante de mudanças tecnológicas",
+    "audience6": "Estudantes e quem está no começo da carreira",
+    "audience7": "Plateias corporativas mistas",
+    "customEvidence": "Por trás de cada palestra há trabalho que você pode ler antes: o registro da indústria, o histórico de carreira e os artigos do Learn.",
+    "customLinkCareer": "O histórico de carreira",
+    "customLinkLearn": "Os artigos do Learn",
+    "differTitle": "Palestras, Treinamentos e Consultoria",
+    "differLede": "Três coisas diferentes, para três necessidades diferentes.",
+    "differSpeakingTerm": "Palestras",
+    "differSpeakingBody": "Perspectiva, conversa e memória, para uma plateia.",
+    "differTrainingTerm": "Treinamentos",
+    "differTrainingBody": "Capacidade: cursos, workshops técnicos e preparação para certificação, ministrados pela Red Education e contratados lá, não aqui.",
+    "differAdvisoryTerm": "Consultoria",
+    "differAdvisoryBody": "Julgamento sobre uma decisão real, para uma organização, briefings executivos incluídos.",
+    "differNote": "Uma palestra não traz recomendação para a sua organização, nem consultoria disfarçada de palestra.",
+    "beyondTitle": "Além da palestra",
+    "beyondLede": "Alguns encontros querem mais do que uma hora de escuta. Seletivamente, a segunda trilha também vai além:",
+    "beyond1Term": "Descompressão e conexão",
+    "beyond1Body": "Uma palestra que abre um off-site ou fecha um trimestre difícil, para um time rir junto do próprio trabalho.",
+    "beyond2Term": "Sessões facilitadas para equipes",
+    "beyond2Body": "A sala participa: olha para a forma como trabalha, resolve alguma coisa e sai com um resultado.",
+    "beyond3Term": "Off-sites desenhados em torno do grupo",
+    "beyond3Body": "Construídos a partir do que o time precisa, às vezes com outros facilitadores ou especialistas criativos.",
+    "beyondCtaLead": "Planejando algo menos convencional?",
+    "beyondCtaLink": "Conte sobre o time e sobre o que você quer que a sala viva."
   },
   "practice": {
     "navLabel": "A Prática",
@@ -27772,6 +27996,388 @@
           }
         }
       }
+    },
+    "present": {
+      "metaTitle": "Apresentar: {title}",
+      "metaDescription": "Todos os {slides} slides de {title} no seu navegador, com as notas do apresentador, tela cheia e controles pelo teclado. Nada para baixar.",
+      "crumb": "Apresentar",
+      "eyebrow": "Apresentar os slides",
+      "lede": "Todos os {slides} slides, com as notas do apresentador, no seu navegador: nada para baixar, e nada sai dele.",
+      "aboutLink": "Sobre o curso e os downloads",
+      "region": "Os slides de {title}",
+      "previous": "Anterior",
+      "next": "Próximo",
+      "counter": "{n} / {total}",
+      "announce": "Slide {n} de {total}: {title}",
+      "goTo": "Ir para o slide número",
+      "goButton": "Ir",
+      "contents": "Sumário",
+      "notes": "Notas",
+      "fullscreen": "Tela cheia",
+      "exitFullscreen": "Sair da tela cheia",
+      "deckLanguage": "Slides em",
+      "deckName": {
+        "en": "English",
+        "pt-BR": "Português"
+      },
+      "opening": "Abertura",
+      "closing": "Encerramento",
+      "module": "Módulo {n}",
+      "part": "Parte {n}",
+      "partRange": "slides {start} a {end}",
+      "notesTitle": "Notas do apresentador",
+      "notesLoading": "Carregando as notas…",
+      "notesError": "Não foi possível carregar as notas aqui; o PPTX na página do curso traz todas elas.",
+      "notesEmpty": "Este slide não tem notas.",
+      "keys": "Teclas: ← e → (ou Espaço) avançam e voltam, Home e End vão ao primeiro e ao último slide, F é tela cheia, N as notas, C o sumário, Esc fecha.",
+      "licence": "CC0 1.0: apresente em uma turma, um meetup ou uma empresa, modifique, compartilhe; o crédito é bem-vindo, nunca obrigatório.",
+      "licenceLink": "A licença",
+      "presentPart": "Apresentar esta parte"
+    },
+    "door": {
+      "eyebrow": "Material de curso aberto",
+      "present": "Apresentar os slides",
+      "about": "Sobre o curso e os downloads",
+      "lede": {
+        "learn": "Um curso introdutório completo em dois módulos, {slides} slides com notas do apresentador, dos conceitos de roteamento que sustentam tudo até IPv6, multicast, MPLS e VRRP. Livre para usar e para ensinar: apresente aqui no navegador ou faça o download.",
+        "training": "Antes de uma turma, ou depois dela: um curso introdutório completo de minha autoria, {slides} slides com notas do apresentador, livre para usar e para ensinar. Apresente no navegador ou faça o download.",
+        "studyGuides": "Comece pelos fundamentos: um curso introdutório completo, {slides} slides com notas do apresentador, dos conceitos de roteamento que sustentam tudo até IPv6, multicast, MPLS e VRRP. Apresente aqui no navegador ou faça o download."
+      },
+      "line": {
+        "certifications": "Antes do exame de um fabricante, os fundamentos: <link>{title}</link>, um curso aberto de {slides} slides com notas do apresentador."
+      }
     }
+  },
+  "learnSeries": {
+    "indexTitle": "Séries de artigos",
+    "indexLede": "Assuntos contados em ordem: uma abertura que mapeia o terreno, depois as partes, cada uma um artigo próprio. As partes ainda por escrever já têm nome, então cada série mostra sua forma inteira desde o início.",
+    "kicker": "Série",
+    "opens": "Abre a série <strong>{series}</strong>.",
+    "partOf": "Parte {n} de {total} da série <strong>{series}</strong>.",
+    "toOpener": "Comece pela abertura",
+    "contents": "A série: {total, plural, one {# parte} other {# partes}}",
+    "planned": "em preparação",
+    "railLabel": "A série {series}",
+    "previous": "Anterior, parte {n}",
+    "next": "Próxima, parte {n}",
+    "backToOpener": "De volta à abertura",
+    "allSeries": "Todas as séries",
+    "count": "{written} de {total, plural, one {# parte escrita} other {# partes escritas}}",
+    "startHere": "Comece aqui",
+    "items": {
+      "traffic-diversion": {
+        "title": "Desvio de tráfego e o homem no meio",
+        "lede": "Todas as maneiras de desviar o tráfego por onde ele não deveria passar, do envenenamento de ARP numa LAN ao sequestro de BGP pela internet, cada uma com a defesa que a responde.",
+        "planned": {
+          "arpPoisoning": "Envenenamento de ARP numa LAN comutada",
+          "macFloodingStp": "MAC flooding e tomada de raiz do STP",
+          "vlanHopping": "VLAN hopping: switch spoofing e duplo tagging",
+          "rogueDhcpRa": "DHCP falso e Router Advertisements IPv6 falsos",
+          "icmpLlmnr": "Redirecionamentos ICMP e LLMNR, NBT-NS e mDNS",
+          "evilTwin": "Evil twin e o caminho sem fio",
+          "sslStripping": "SSL stripping e HSTS"
+        }
+      },
+      "formats-in-between": {
+        "title": "Os formatos do meio",
+        "lede": "JSON, YAML, XML, codificações de texto, Base64, URLs, carimbos de tempo, identificadores e diffs, lidos como uma habilidade só: pôr significado em caracteres para que a outra ponta tire o mesmo significado."
+      },
+      "json": {
+        "title": "JSON, exatamente",
+        "lede": "O formato como um parser estrito o lê: seis tipos e algumas regras, depois cada ponto em que dois parsers podem discordar honestamente sobre o mesmo documento."
+      },
+      "yaml": {
+        "title": "YAML e arquivos de configuração",
+        "lede": "Por que pipelines e orquestração são escritos em YAML, e as três coisas que o YAML faz e o JSON nunca faz: adivinhar tipos, dobrar linhas e reutilizar valores."
+      },
+      "xml": {
+        "title": "XML e seus riscos",
+        "lede": "A leitura de um documento parte por parte, as regras que um parser impõe primeiro, os namespaces e as construções que não são elementos, depois os recursos de entidade que transformam um parser numa superfície de ataque."
+      },
+      "text": {
+        "title": "Caracteres, bytes e Unicode",
+        "lede": "Por que um caractere não é um byte: a tabela ASCII, os pontos de código do Unicode, os bytes que UTF-8 e UTF-16 escrevem, e o que dá errado quando as duas pontas os leem de forma diferente."
+      },
+      "two-alphabets": {
+        "title": "Os dois alfabetos",
+        "lede": "As letras gregas e os algarismos romanos que todo engenheiro lê sem ter aprendido: de onde veio cada símbolo, e depois os próprios sistemas."
+      },
+      "base-encodings": {
+        "title": "Base16, Base32, Base64",
+        "lede": "Escrever bytes arbitrários como texto: os alfabetos, quanto cada um custa em tamanho e legibilidade, e onde cada um aparece."
+      },
+      "urls": {
+        "title": "URLs, lidas com exatidão",
+        "lede": "As cinco partes de que toda URL é feita, como os caracteres são escapados dentro delas, como um link relativo se resolve e os disfarces que um link hostil veste."
+      },
+      "time": {
+        "title": "O tempo como os computadores o contam",
+        "lede": "Um inteiro desde 1970, as unidades em que é escrito, os segundos bissextos que ignora, o ano em que transborda, os formatos de texto em que vira e a aritmética que os calendários tornam difícil."
+      },
+      "identifiers": {
+        "title": "Identificadores: UUIDs e parentes",
+        "lede": "Como um identificador de 128 bits permanece único sem ninguém o emitir, as oito versões, a chance de uma colisão, o que chaves aleatórias fazem a um banco de dados e as alternativas ordenáveis."
+      },
+      "diff": {
+        "title": "Diffs, merges e Git",
+        "lede": "O que um diff de fato calcula, como ler um, por que às vezes ele culpa as linhas erradas, a terceira entrada que torna o merge possível e as ferramentas construídas sobre tudo isso."
+      },
+      "regex": {
+        "title": "Expressões regulares",
+        "lede": "O que casar e quantas vezes, onde um casamento pode ficar, o que os parênteses capturam e afirmam, as flags que mudam tudo e os padrões que nunca terminam."
+      },
+      "hashing": {
+        "title": "Hashes e HMAC",
+        "lede": "O que um hash criptográfico garante e por que ele não pode ser revertido, as propriedades que o medem, quais funções ainda são seguras e como uma chave transforma um hash em prova de quem enviou uma mensagem."
+      },
+      "passwords": {
+        "title": "Guardando senhas",
+        "lede": "Por que um hash rápido é a ferramenta errada para senhas: as duas formas de um atacante reverter um hash, o salt e a aritmética que respondem a cada uma, as funções lentas feitas para isso e a escolha a fazer."
+      },
+      "certificates": {
+        "title": "Certificados: o objeto e a confiança",
+        "lede": "O que um certificado contém e os arquivos em que viaja, como é solicitado e emitido, como um cliente o valida e monta sua cadeia, como é revogado e o modelo de confiança que já falhou em público."
+      },
+      "certificate-lifecycle": {
+        "title": "Validade e renovação de certificados",
+        "lede": "O cronograma que leva os certificados TLS públicos de 398 dias para 47, os dois carimbos de tempo que definem a validade, a antecedência da renovação e o ARI, a reutilização cada vez menor da validação e a automação que torna tudo suportável."
+      },
+      "tls": {
+        "title": "TLS e as suítes de cifra",
+        "lede": "Uma família de handshake em quatro formas, a troca de chaves que dá o sigilo de encaminhamento, como ler uma suíte de cifra e quais usar, os ataques que podaram o protocolo e onde um proxy o termina."
+      },
+      "post-quantum": {
+        "title": "Criptografia pós-quântica",
+        "lede": "O que um computador quântico quebraria e o que não quebraria, os três padrões que o NIST finalizou em 2024 e a troca de chaves híbrida que a web já usa."
+      },
+      "fingerprinting": {
+        "title": "Impressões digitais do que um cliente emite",
+        "lede": "O que uma conexão anuncia antes de qualquer dado fluir (o SYN do TCP, o User-Agent, a ordem dos cabeçalhos, o ClientHello do TLS) e como JA3 e JA4 transformam o handshake numa identidade."
+      },
+      "web-security-headers": {
+        "title": "Os cabeçalhos de segurança do navegador",
+        "lede": "Os cabeçalhos de resposta que dizem a um navegador como proteger uma página: a exigência de HTTPS, as flags de cookie, a porta do CORS no muro da mesma origem, a Content Security Policy e o controle de enquadramento."
+      },
+      "ssrf": {
+        "title": "Server-side request forgery (SSRF)",
+        "lede": "Fazer um servidor buscar um destino escolhido pelo atacante: os esquemas além do HTTP, o serviço de metadados de nuvem que é o prêmio e a defesa por allow-list que resiste à ofuscação."
+      },
+      "curl": {
+        "title": "curl, flag por flag",
+        "lede": "Ler um comando curl como o shell e o curl o leem: o método que ele implica, o corpo e seu Content-Type, cabeçalhos, autenticação e cookies, as flags que enfraquecem a segurança, a tradução para fetch() e os 27 protocolos além do HTTP."
+      },
+      "nginx": {
+        "title": "NGINX, da configuração ao diagnóstico",
+        "lede": "A árvore de configuração e de quem é o worker, como um location é escolhido, o que o proxy_pass envia, o que o cache guarda e serve, como os limites realmente contam, como funciona um reload e o servidor contra o qual o NGINX foi escrito."
+      },
+      "dns": {
+        "title": "DNS, lido a partir da resposta",
+        "lede": "Uma resposta de DNS lida de cima com dig e nslookup: quem respondeu e com que autoridade, o cabeçalho e suas flags, os registros, os erros, e as opções, rastreamentos e assinaturas que perguntam com precisão."
+      },
+      "dns-infrastructure": {
+        "title": "O DNS como infraestrutura",
+        "lede": "Como um arquivo mantido em horário comercial virou o sistema de nomes da internet, e as maneiras como esse sistema é envenenado, tomado como certo, escolhido e usado como controle."
+      },
+      "ipv4": {
+        "title": "Endereçamento IPv4 e sub-redes",
+        "lede": "Os 32 bits por trás de um quad pontilhado, o prefixo que define um bloco, sub-redes do básico a um plano VLSM resolvido, sumarização e agregação, as faixas especiais e o NAT que esticou o espaço."
+      },
+      "ipv6": {
+        "title": "IPv6",
+        "lede": "O endereço de 128 bits e como escrevê-lo, por que uma sub-rede é quase sempre um /64, como os hosts se configuram sozinhos, o multicast que substituiu o ARP e como IPv6 e IPv4 rodam lado a lado."
+      },
+      "routing": {
+        "title": "Roteamento",
+        "lede": "Como um pacote escolhe o próximo salto, os protocolos internos que desenham o mapa, o externo que roda a internet e confia em todo anúncio, os rótulos no núcleo, a detecção rápida de falhas, o gateway redundante e o multicast."
+      },
+      "tunnels": {
+        "title": "Túneis e VPNs",
+        "lede": "O que um túnel protege e o que não protege, o envelope simples, o cifrado e negociado, o pequeno, a aritmética de bytes que todo túnel deve e a VPN de acesso remoto que está sendo aposentada."
+      },
+      "load-balancing": {
+        "title": "Balanceamento de carga e persistência",
+        "lede": "As quatro perguntas que todo balanceador responde, o virtual server e o proxy de camada 4 que as carregam, a persistência e seus modos de falha, o balanceamento global em dois níveis e como o mercado começou."
+      },
+      "syslog": {
+        "title": "Syslog",
+        "lede": "Uma mensagem syslog lida campo a campo: o PRI que junta facility e severity, as 24 facilities e as 8 severities, os dois formatos de mensagem, os três transportes, os padrões que os dispositivos de rede escolhem e como outros sistemas contam os níveis de log."
+      },
+      "saml": {
+        "title": "SAML",
+        "lede": "Single sign-on no navegador com SAML 2.0: os provedores de identidade e de serviço, os bindings e quem inicia o fluxo, o que uma asserção contém e o que é verificado, como ela é assinada e o proxy que insere identidade numa sessão."
+      },
+      "oauth-oidc": {
+        "title": "OAuth e OpenID Connect",
+        "lede": "Autorização e autenticação separadas: o fluxo de código do OAuth, os tipos de cliente e o PKCE, os três tokens, o grant a escolher, depois a camada de identidade que o OpenID Connect acrescenta, seu ID token, suas claims e seu documento de descoberta."
+      },
+      "jwt": {
+        "title": "JWT e JWKS",
+        "lede": "Os três segmentos de um token e por que decodificar não é verificar, os algoritmos de assinatura, as chaves que assinam e como os provedores as publicam e rotacionam, a sequência de verificação e os erros que transformam um verificador numa máquina de falsificação."
+      },
+      "one-time-codes": {
+        "title": "Códigos de uso único e passkeys",
+        "lede": "Como um segredo compartilhado vira um código curto, como um autenticador é provisionado, o que um servidor precisa tolerar e recusar ao verificar um código, e por que as passkeys resistem ao phishing que derrota os códigos."
+      },
+      "unix": {
+        "title": "O Unix de quem opera",
+        "lede": "O Unix por baixo da interface de gerência de todo equipamento: terminal, shell e TTY, modos de arquivo, cron, Expect, e a história do Linux, suas famílias, o que nasceu dele e os dois sentidos de free."
+      },
+      "zero-trust": {
+        "title": "Zero trust, SSE e o proxy",
+        "lede": "O que zero trust, ZTNA e SASE significam sem o marketing, o que single-pass significa mecanicamente, como cinco fabricantes respondem à mesma pergunta e os motores lá dentro: o arquivo PAC, a identidade do usuário no proxy, o isolamento de navegador, a sandbox e o DLP."
+      },
+      "cvss": {
+        "title": "CVSS",
+        "lede": "Como uma string de vetor curta vira uma severidade de 0 a 10: a leitura do vetor, as oito métricas base, os ajustes temporais e ambientais, as faixas e o que a pontuação não diz, e o que mudou na v4.0."
+      },
+      "f5xc": {
+        "title": "F5 Distributed Cloud, uma requisição de ponta a ponta",
+        "lede": "O F5 Distributed Cloud na ordem em que uma requisição o encontra: o site entrando na malha, o listener e a rota, o origin e sua persistência, o TLS, a service policy que a permite, o rate limit, o inventário de API, o evento de segurança e os perigos de configuração."
+      },
+      "bigip-self-description": {
+        "title": "O que um BIG-IP diz sobre si mesmo",
+        "lede": "As cinco linguagens em que um BIG-IP se descreve: a gramática de configuração, dois esquemas de endereço de API, o arquivo de licença, as datas que decidem se ele pode ser atualizado e o calendário de lançamentos da F5."
+      },
+      "bigip-versions": {
+        "title": "Versões e upgrades do BIG-IP e do F5OS",
+        "lede": "Do primeiro controlador BIG-IP até hoje: por que os números de versão saltam, upgrade contra update, a reativação de licença que salva um upgrade que falhou, as mudanças de operação e de acesso da linha mais nova e a plataforma F5OS por baixo."
+      },
+      "bigip-foundations": {
+        "title": "Fundamentos do BIG-IP, da interface ao pool member",
+        "lede": "O BIG-IP que um aluno encontra primeiro: a cadeia de camada 2 e 3, os route domains, as duas portas de entrada, os serviços de sistema, depois uma conexão pelo virtual server, seus profiles, o pool e seu método, a saúde, a persistência, o caminho de volta, o reuso, os perfis de protocolo e os núcleos e guests por baixo."
+      },
+      "bigip-ha": {
+        "title": "Alta disponibilidade no BIG-IP",
+        "lede": "Device trust, device groups e traffic groups, depois o config sync, os estados de failover e como forçá-los, e os registros de persistência que um standby precisa receber antes de assumir."
+      },
+      "bigip-troubleshooting": {
+        "title": "Diagnóstico e operação do BIG-IP",
+        "lede": "Como um BIG-IP informa a sua condição: as superfícies de status e as estatísticas, os arquivos de log, o tcpdump num equipamento cujas interfaces não são placas de rede, o trailer da F5 e o que o Wireshark faz com ele, o snapshot de suporte, o diagnóstico de hardware, os backups, os alertas e a análise no próprio equipamento."
+      },
+      "bigip-ssl": {
+        "title": "Profiles SSL e cifras no BIG-IP",
+        "lede": "Qual lado da sessão cada profile SSL controla, o certificado, a chave e a cadeia que ele vincula, as versões de protocolo que oferece, a string de cifras, as regras, os grupos e a ordem, o sigilo de encaminhamento, a renegociação e o stapling, o TLS mútuo, a troca de chaves pós-quântica, o ACME e o SSL Orchestrator."
+      },
+      "bigip-cookies": {
+        "title": "Cookies de persistência do BIG-IP",
+        "lede": "Como um cookie de persistência do BIG-IP entra numa resposta, o que o seu valor codifica byte a byte, o que ele conta a um atacante e como criptografá-lo."
+      },
+      "bigip-dns": {
+        "title": "BIG-IP DNS e balanceamento global",
+        "lede": "Qual de seis atendentes responde a uma consulta, como o iQuery diz ao BIG-IP DNS o que está no ar, o balanceamento global como duas decisões com uma cadeia de três passos dentro, os registros de topologia e o resolvedor como motor de política."
+      },
+      "bigip-automation": {
+        "title": "O toolchain de automação do BIG-IP",
+        "lede": "Declarações em vez de comandos: o onboarding do equipamento, a descrição das aplicações, o envio do que ele observa e os templates que vieram antes e depois."
+      },
+      "bigip-network-security": {
+        "title": "Segurança de rede no BIG-IP",
+        "lede": "Os postos de controle por que um pacote passa num BIG-IP antes que qualquer aplicação o veja: packet filters, os contextos do firewall de rede, a proteção contra SYN flood e a política que decide quais conexões morrem quando a tabela enche."
+      },
+      "bigip-apm": {
+        "title": "BIG-IP APM",
+        "lede": "Onde a access policy guarda o que aprendeu, os métodos de single sign-on e o raio de impacto de um objeto ruim, e o APM como SAML proxy nos dois papéis."
+      },
+      "awaf": {
+        "title": "BIG-IP Advanced WAF",
+        "lede": "Uma política de web application firewall lida como template mais ajustes, depois o que ela impõe e quando, como analisa payloads e empilha políticas, rastreia sessões e mascara respostas, enxerga através da evasão, distingue navegadores de bots e absorve inundações na camada de aplicação, e como fazer a triagem de um bloqueio sem envenenar a política."
+      },
+      "irule-events": {
+        "title": "Eventos de iRules e o ciclo de vida da conexão",
+        "lede": "Quando uma iRule roda: a ordem fixa dos eventos ao longo de uma conexão, os dois lados do proxy completo, o que faz um evento existir, os eventos de que um caminho rápido abre mão, os eventos do handshake TLS, a prioridade entre várias regras e a ordem das perguntas na hora de escrever uma."
+      },
+      "irules-tcl": {
+        "title": "O Tcl dentro das iRules",
+        "lede": "A linguagem em que uma iRule é escrita, lida pelo próprio guia de estilo da F5: comparações e números, strings e os comandos que as cortam, ramificação e consultas, laços, procedimentos, o namespace que mantém todos os núcleos ocupados, desempenho e o iRules LX."
+      },
+      "checkpoint": {
+        "title": "Check Point, das três camadas ao upgrade",
+        "lede": "A plataforma que separa onde a política é escrita de onde ela é imposta: sessões e publicação, a rule base e suas camadas, a tradução de endereços e sua falha silenciosa, identidade, inspeção HTTPS, prevenção de ameaças, túneis site a site, logs e eventos, alta disponibilidade da gerência, clusters e upgrades."
+      },
+      "fortigate": {
+        "title": "Administração do FortiGate",
+        "lede": "Um FortiGate do estado de fábrica às bordas: a CLI e suas armadilhas, políticas, tradução de endereços e sua ordem, o debug flow e o sniffer, roteamento e SD-WAN, perfis de segurança e inspeção SSL, identidade, IPsec, cluster, logs, shaping, DNS, NAT em escala de operadora e ACME."
+      },
+      "fortinet-secops": {
+        "title": "Operações de segurança da Fortinet",
+        "lede": "Um centro de operações de segurança lido como perguntas em vez de produtos: o analisador que guarda e relata, o motor de correlação e sua base, a plataforma de orquestração e seus playbooks, a detecção no endpoint e na rede, a deception e a superfície de ataque vista de fora."
+      },
+      "fortimail": {
+        "title": "FortiMail",
+        "lede": "Segurança de e-mail no FortiMail: o modo de operação que decide todo o resto, as políticas em camadas e o antispam, a segurança de conteúdo, o arquivamento e a criptografia baseada em identidade, e a proteção das plataformas de e-mail em nuvem."
+      },
+      "fortimanager": {
+        "title": "FortiManager",
+        "lede": "Gerência central em que a base de dados é a fonte da verdade: domínios administrativos e registro, pacotes de política e suas instalações, e onde olhar quando uma mudança não chega."
+      },
+      "fortiswitch": {
+        "title": "FortiSwitch",
+        "lede": "Um switch gerenciado por um FortiGate: provisionamento e topologias do FortiLink, as VLANs, o spanning tree, as portas e o QoS do dia a dia, e a segurança de porta e o diagnóstico."
+      },
+      "fortiap": {
+        "title": "FortiAP",
+        "lede": "Sem fio gerenciado por um FortiGate: o controlador integrado e os perfis de que uma frota é feita, a autenticação e o segmento em que um cliente cai, e o diagnóstico do que os usuários de fato relatam."
+      },
+      "pingfederate": {
+        "title": "PingFederate, da instalação ao upgrade",
+        "lede": "A vida de um servidor PingFederate: o que ele precisa antes de o pacote ser extraído, os arquivos que o controlam, as duas famílias de portas, quem o administra, os data stores, adapters e políticas de autenticação, as expressões OGNL, os logs, os hábitos operacionais e o upgrade."
+      },
+      "ping-platform": {
+        "title": "A plataforma de identidade da Ping",
+        "lede": "O que o PingOne é por trás dos nomes de produto, a orquestração de identidade numa tela, o modelo de políticas do PingAccess, a plataforma de dados PingDirectory e a linhagem que dá ao catálogo dois de tudo."
+      },
+      "zscaler": {
+        "title": "O Zero Trust Exchange da Zscaler",
+        "lede": "Um proxy onde antes ficava o perímetro: os túneis e o Client Connector que chegam a ele, a postura do dispositivo, o cloud access security broker, a nota de experiência, os logs e relatórios que saem dele e os cenários em que a plataforma justifica a sua arquitetura."
+      },
+      "zia": {
+        "title": "Zscaler Internet Access",
+        "lede": "O proxy em nuvem para o tráfego de internet: como o tráfego chega a ele, as localidades, a inspeção TLS e seus bypasses, o filtro de URL e o controle de aplicações em nuvem, a ordem de regras do firewall, o controle de tipos de arquivo e a sandbox, a prevenção de perda de dados e os campos de log em que as investigações são escritas."
+      },
+      "zpa": {
+        "title": "Zscaler Private Access",
+        "lede": "Aplicações privadas alcançadas sem expô-las: duas chamadas de saída e um intermediário no meio, o vocabulário que nomeia as aplicações e conquista o acesso a elas, e os três suspeitos quando o acesso falha."
+      },
+      "netskope": {
+        "title": "Netskope, uma plataforma e dois caminhos de dados",
+        "lede": "Uma nuvem de segurança sobre uma rede privada, inspecionando o tráfego de duas maneiras: o encaminhamento e o cliente, a decifração TLS inline, a proteção em tempo real contra a proteção via API, o firewall em nuvem para tudo o que não é web, o acesso privado e os eventos e análises que transformam tráfego em evidência."
+      },
+      "extreme-fabric": {
+        "title": "Extreme Fabric Connect, um serviço de borda a borda",
+        "lede": "A fabric da Extreme na ordem em que um serviço passa a existir: os dois sistemas operacionais e seus nomes, o modelo de configuração, o vocabulário, a própria fabric, o plano de controle, o identificador de serviço, o multicast sem configuração, a borda que pede o que precisa e o dual-homing."
+      },
+      "http": {
+        "title": "HTTP, da linha de requisição ao QUERY",
+        "lede": "Uma troca HTTP lida de cima para baixo: a requisição crua, os métodos, os códigos de status, os campos de cabeçalho, os cookies, onde uma mensagem termina, os proxies no caminho, as cinco versões, o método mais novo e o que as pessoas escondem no overhead."
+      },
+      "family-histories": {
+        "title": "As histórias das famílias",
+        "lede": "Vinte e três tecnologias de que a rede e a sua segurança são feitas, cada uma contada desde o primeiro dia: a rede a partir do fio, o que roda sobre ela, depois a segurança da matemática para fora."
+      }
+    },
+    "parts": "As partes",
+    "groupCount": "{count, plural, one {# série} other {# séries}}",
+    "indexStats": "{series, plural, one {# série} other {# séries}} em {subjects, plural, one {# assunto} other {# assuntos}} e {vendors, plural, one {# fabricante} other {# fabricantes}}; {articles, plural, one {# artigo} other {# artigos}} em ordem de leitura.",
+    "groups": {
+      "network": "Redes",
+      "crypto": "Criptografia e certificados",
+      "web": "A web e o HTTP",
+      "identity": "Identidade e autenticação",
+      "security": "Segurança",
+      "formats": "Formatos, texto e codificações",
+      "operations": "Operações",
+      "history": "História",
+      "f5": "F5",
+      "fortinet": "Fortinet",
+      "checkpoint": "Check Point",
+      "zscaler": "Zscaler",
+      "netskope": "Netskope",
+      "ping": "Ping Identity",
+      "extreme": "Extreme Networks"
+    },
+    "bySubject": "Por assunto",
+    "bySubjectLede": "O terreno em que toda plataforma se apoia: protocolos, criptografia, a web, identidade, formatos e as ferramentas do operador.",
+    "byVendor": "Por fabricante",
+    "byVendorLede": "A plataforma de um fabricante por vez: o seu próprio modelo e o seu próprio vocabulário, em ordem de leitura."
   }
 }

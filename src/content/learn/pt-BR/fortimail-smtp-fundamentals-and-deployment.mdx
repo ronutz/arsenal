@@ -80,3 +80,11 @@ Algumas configurações determinam se sua implantação é boa cidadã e se vira
 ## O que quem vai prestar o exame precisa saber de cor
 
 O envelope SMTP roteia a mensagem e é o que as políticas casam; o cabeçalho é o que o usuário vê, e os dois podem legitimamente diferir, que é o que a falsificação de nome de exibição explora. Rejeitar no RCPT TO é mais barato e mais seguro que aceitar e descartar, porque um retorno a um remetente forjado faz de você parte do problema. O modo gateway faz do FortiMail o MX à frente do seu servidor, o transparente o insere sem mudar endereçamento, e o servidor substitui o servidor de e-mail. Domínios protegidos definem o que significam entrada e saída, e a verificação de destinatário evita aceitar e-mail para endereços inexistentes.
+
+## Esta série, em ordem
+
+Este artigo abre a série **FortiMail**. O modo de operação escolhido primeiro decide o que o equipamento pode fazer; as partes acompanham uma mensagem por ele: as camadas de política que admitem ou recusam a sessão, os controles de conteúdo e a criptografia depois que ela é aceita, e a segunda camada para o e-mail já filtrado na nuvem.
+
+1. **[Políticas e antispam no FortiMail: controle de acesso, políticas de IP e filtragem de sessão](/learn/fortimail-policies-session-filtering-and-antispam)**. O modelo de política em camadas, e qual camada age quando, o que explica por que uma mensagem foi permitida ou recusada.
+2. **[Segurança de conteúdo, arquivamento e criptografia no FortiMail, incluindo IBE](/learn/fortimail-content-security-encryption-and-ibe)**. O que uma mensagem aceita pode conter, quem pode lê-la e como funciona a criptografia baseada em identidade.
+3. **[FortiMail Workspace Security: proteger o Microsoft 365 e o Google Workspace](/learn/fortimail-workspace-security-and-policies)**. Proteger o Microsoft 365 e o Google Workspace conectando-se pela própria plataforma, e por que uma segunda camada precisa se justificar.

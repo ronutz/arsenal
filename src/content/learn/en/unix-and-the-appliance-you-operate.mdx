@@ -59,6 +59,19 @@ The timing is the historically decisive part. The free Unix with the clearest le
 
 **And the generic skills are the durable ones.** Vendor certifications expire and product lines are discontinued - this catalogue is substantially a record of that. The ability to read a log, follow a process, filter a capture and reason about a filesystem does not, because it has been the same job since a group of people at Bell Labs wanted to run a game about flying to the planets.
 
+## This series, in order
+
+This article opens the series **The operator's Unix**. It shows the filesystem, shell, syslog and cron underneath a load balancer or a firewall; the parts first teach the pieces an operator touches every day (the terminal and the shell, the permission bits, the scheduler, the scripts that drive interactive tools) and then tell where today's Unix came from: the hobby kernel, its distribution families, the systems that grew out of it, and the licences that made it possible.
+
+1. **[Terminal, shell, TTY, console](/learn/terminal-shell-tty-console)**. Four words for four different things, and why Ctrl+C kills your command but not your shell.
+2. **[File modes, read the way the kernel reads them: octal, symbolic, and the three bits most people skip](/learn/file-modes-octal-symbolic-and-the-special-bits)**. A mode is twelve bits, not nine: where 755 comes from, and the setuid, setgid and sticky bits most people skip.
+3. **[cron: five fields that run the world's chores](/learn/cron-the-schedule-language)**. Five columns of numbers and stars, the OR rule that catches almost everyone, and why 0 and 7 are the same day.
+4. **[Expect scripts, read slowly: spawn, expect, send and the mistakes between them](/learn/expect-scripts-explained)**. spawn, expect, send and interact: driving interactive programs since 1990, and the mistakes between the verbs.
+5. **[Linux: the hobby kernel that ate the world](/learn/linux-the-kernel-that-ate-the-world)**. Just a hobby, its author said in 1991; it now runs servers, phones, routers, cars and every top supercomputer.
+6. **[The Linux distribution families: what actually separates them](/learn/the-linux-distribution-families)**. The same kernel and the same tools, so the differences are in the package manager, the release model and the support.
+7. **[What grew out of Linux: phones, routers, containers and the licence question each one answers](/learn/what-grew-out-of-linux)**. Android, ChromeOS, OpenWrt, the builds inside cars and the container industry: Linux in very different forms, and the licence question each answers.
+8. **[Open source, and the two meanings of free](/learn/open-source-and-the-meaning-of-free)**. The four freedoms, the 1998 rebrand that created open source, copyleft against permissive, and free as in price.
+
 ## Sources
 
 - [Textbook of Linux, a history of Unix and Linux: the original Unix was written in PDP-7 assembly, ported to the PDP-11 in 1971, and in 1973 Ritchie rewrote most of it in C, a language he had designed partly for the purpose; operating systems had always been written in assembly because performance mattered and high-level languages were thought too inefficient; the early papers in the Communications of the ACM made the system famous; AT&T was under a 1956 consent decree that forbade it from entering the computer business, so Unix could not be sold commercially](https://www.textbookoflinux.com/chapter/history.html)

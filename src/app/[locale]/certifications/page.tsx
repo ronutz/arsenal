@@ -15,16 +15,29 @@
 // See the ethics guardrail in src/content/certifications/study-guides.ts: these
 // guides map PUBLISHED blueprint objectives to learning resources and never
 // contain exam questions or dumps. Statically generated per locale.
+//
+// THE NAVIGATOR (R1-b1 and b2, 2026-10-06; SCOUT's Round 1 adoption audit rows
+// 8, 10 and 23; PLAN-round1-closeout-20261006): each guide's status is derived
+// here on the build day (src/lib/certStatus.ts: current, in transition, in
+// preparation, retired) and handed to the client component with a folded
+// search text (vendor, certification name and code, the certification's earlier
+// names, exam code and name, the versions a retirement notice names, the exam's
+// official note), so the hub filters in place: retired exams hidden until the
+// reader asks for them, and a find field that narrows every vendor at once.
 // ============================================================================
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 // Retirement dates as behaviour (2026-10-06): whether a notice's last sitting day has passed on the build day.
 import { retirementState, type RetirementState } from "@/lib/retirement";
+// The navigator (R1-b1/b2): status as data, and the folding both sides of the search use.
+import { guideStatus, foldForSearch, type GuideStatus } from "@/lib/certStatus";
 import { ogImages } from "@/lib/og";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import TrainingCta from "@/components/TrainingCta";
+// The door to the open course material, in one sentence (milestone (m2), 2026-10-06).
+import MaterialsDoor from "@/components/MaterialsDoor";
 import CertificationsHubSections, {
   type HubVendorGroup,
 } from "@/components/CertificationsHubSections";
@@ -65,6 +78,14 @@ export default async function CertificationsHubPage({
       : state === "upcoming"
         ? `${t("previousUntilLabel")} ${until}`
         : null;
+
+  // The four statuses in the reader's words (R1-b1).
+  const statusLabel: Record<GuideStatus, string> = {
+    current: t("statusCurrent"),
+    transitioning: t("statusTransitioning"),
+    preparing: t("statusPreparing"),
+    retired: t("statusRetired"),
+  };
 
   // -- Build the hub's vendor->certification->guide tree server-side, with
   //    every display string resolved here so the client component owns only
@@ -114,7 +135,28 @@ export default async function CertificationsHubPage({
       renewalNote: cert.renewalNote,
       guides: getGuidesForCertification(cert.key).map((guide) => {
         const n = objectiveCount(guide);
+        // The guide's status on the build day (R1-b1).
+        const status: GuideStatus = guideStatus(guide);
         return {
+          status,
+          statusLabel: statusLabel[status],
+          // Everything a candidate might type to find this exam, folded once here so the browser only compares.
+          search: foldForSearch(
+            [
+              tVendors(`${g.vendor}.name`),
+              cert.name,
+              cert.code,
+              ...(cert.aliases ?? []),
+              guide.examCode,
+              guide.examName,
+              guide.retirement?.exam,
+              guide.retirement?.replacedBy,
+              guide.examFacts?.note,
+              guide.targetVersion,
+            ]
+              .filter(Boolean)
+              .join(" "),
+          ),
           slug: guide.slug,
           examCode: guide.examCode,
           examName: guide.examName,
@@ -151,10 +193,37 @@ export default async function CertificationsHubPage({
             <div className="container certs-container">
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* Before a vendor's exam, the fundamentals (m2): the open course, one sentence and the presenter. */}
+              <MaterialsDoor locale={locale} context="certifications" variant="line" />
             </div>
           </section>
 
-          {/* Study philosophy + ethics stance */}
+          {/* Vendors in hub order; certifications collapsible (PRIME 2026-07-21). */}
+          <CertificationsHubSections
+            groups={groups}
+            expandAllLabel={t("expandAll")}
+            collapseAllLabel={t("collapseAll")}
+            vendorsHeading={t("vendorsHeading")}
+            filter={{
+              title: t("filterTitle"),
+              label: t("filterLabel"),
+              placeholder: t("filterPlaceholder"),
+              clear: t("filterClear"),
+              showRetired: t.raw("filterShowRetired") as string,
+              shown: t.raw("filterShown") as string,
+              noMatch: t.raw("filterNoMatch") as string,
+              noMatchRetired: t.raw("filterNoMatchRetired") as string,
+              legend: [
+                { label: t("retiringLabel"), body: t("legendRetiring") },
+                { label: t("previousUntilLabel"), body: t("legendPrevious") },
+                { label: t("inPreparation"), body: t("legendPreparing") },
+                { label: t("retiredLabel"), body: t("legendRetired") },
+              ],
+            }}
+          />
+
+          {/* Study philosophy + ethics stance. MOVED below the vendors on 2026-10-06 (R1-b2): three tall notes held the
+              find field a screen down on a laptop; here they explain what the reader has just used. */}
           <section className="section">
             <div className="container certs-container certhub-notes">
               <div className="certhub-note">
@@ -175,14 +244,6 @@ export default async function CertificationsHubPage({
               </div>
             </div>
           </section>
-
-          {/* Vendors in hub order; certifications collapsible (PRIME 2026-07-21). */}
-          <CertificationsHubSections
-            groups={groups}
-            expandAllLabel={t("expandAll")}
-            collapseAllLabel={t("collapseAll")}
-            vendorsHeading={t("vendorsHeading")}
-          />
 
           {/* Instructor-led training CTA (subtle): high-intent candidates can
               learn these live with an authorized instructor at Red Education. */}

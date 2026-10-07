@@ -30,3 +30,13 @@ Transformar um timestamp Unix em uma data de calendário não precisa de relógi
 O tempo Unix venceu as alternativas por razões tediosamente práticas: é compacto (um número), trivialmente comparável, irrelevante lexicalmente (sem análise de strings para comparar dois instantes) e inequívoco (sem "isto é 15h em Londres ou em Tóquio?"). O custo é que o número bruto é ilegível para humanos — `1700000000` não significa nada à primeira vista — que é toda a razão pela qual formatos de data e conversores existem.
 
 Vale conhecer duas sutilezas antes de confiar em um timestamp bruto: em qual **unidade** ele está (segundos, milissegundos ou menor) e o fato de que o tempo Unix silenciosamente **ignora os segundos bissextos**. Ambos têm seus próprios artigos.
+
+## Esta série, em ordem
+
+Este artigo abre a série **O tempo como os computadores o contam**. O inteiro acima é onde todo timestamp começa; as partes o seguem para fora: as unidades que ele esconde, os segundos bissextos que pula, o ano em que um contador de 32 bits se esgota, os formatos de texto em que é escrito e a aritmética que os fusos horários tornam desonesta.
+
+1. **[Segundos, Milissegundos, Microssegundos, Nanossegundos: Distinguindo Unidades de Época](/learn/epoch-units-seconds-to-nanoseconds)**. Segundos, milissegundos, microssegundos ou nanossegundos: como distingui-los pelo tamanho do número.
+2. **[Por Que o Tempo Unix Ignora os Segundos Bissextos](/learn/unix-time-and-leap-seconds)**. Por que o tempo Unix finge que todo dia tem 86.400 segundos, e por que essa é a troca certa para o tempo civil.
+3. **[O Problema do Ano 2038](/learn/the-year-2038-problem)**. O segundo em que um contador de 32 bits com sinal transborda, 2038-01-19T03:14:07Z, e por que a correção é apenas um inteiro maior.
+4. **[ISO 8601, RFC 3339 e a Data HTTP](/learn/iso-8601-and-rfc-3339)**. O padrão amplo, seu perfil estrito para a internet e a data HTTP, os formatos em que um timestamp volta a ser escrito.
+5. **[Aritmética de tempo e fusos horários: durações exatas, reuniões honestas](/learn/time-arithmetic-and-time-zones)**. Por que mais um mês não tem resposta exata, o que as durações ISO 8601 prometem e a armadilha do horário de verão.

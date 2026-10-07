@@ -2,31 +2,63 @@
 slug: osi-model-in-practice
 title: "O Modelo OSI na Prática: Mapeando Tráfego Real em Sete Camadas"
 summary: "O modelo Open Systems Interconnection ganha seu lugar não como trivia, mas como um sistema de endereços compartilhado para problemas: um endereço MAC é Camada 2, um endereço IP é Camada 3, uma porta TCP ou UDP é Camada 4, e a aplicação vem por cima. Como mapear artefatos reais em camadas, onde o modelo se dobra diante da realidade TCP/IP, e por que conversas de troubleshooting andam mais rápido quando todos apontam para o mesmo andar."
-concepts: ["osi model", "layers", "tcp/ip", "fundamentals", "networking", "encapsulation"]
+concepts: ["osi model", "layers", "tcp/ip", "fundamentals", "networking", "encapsulation", "iso/iec 7498-1", "x.200", "rfc 1122", "protocol data unit"]
 relatedTools: []
-relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-versions-09-to-3"]
+relatedArticles: ["arp-and-mac-addresses", "tcp-connection-lifecycle", "http-versions-09-to-3", "the-protocol-wars", "ethernet-physical-layers", "the-ethernet-frame-field-by-field"]
 category: networking
 order: 160
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-07"
 ---
 
 O modelo Open Systems Interconnection (OSI) é um mapa de sete camadas de como a comunicação de rede se organiza, e a prova aposentada de fundamentos da F5 pedia exatamente a metade prática dele: dado um artefato, nomeie a camada. Essa habilidade sobrevive a toda mudança de currículo porque é assim que engenheiros dão endereços uns aos outros dentro de um problema.
 
+## De onde vêm as sete camadas
+
+O modelo é uma norma, não folclore. A ISO o publica como ISO/IEC 7498-1:1994, o Basic Reference Model, que "was last reviewed and confirmed in 2000. Therefore this version remains current" ([ISO](https://www.iso.org/standard/20269.html)); o ITU-T o publica como a Recomendação X.200, aprovada em julho de 1994 e em vigor ([ITU-T](https://www.itu.int/rec/T-REC-X.200-199407-I/en)). Ele foi escrito como a arquitetura de uma suíte de protocolos completa, que governos e operadoras apoiaram e que a internet deixou para trás, uma história contada em [a guerra dos protocolos](/learn/the-protocol-wars). Os protocolos em geral perderam; o mapa ficou, porque dá a cada função um andar onde ficar.
+
 ## Os sete andares, com seus artefatos
 
-Camada 1, física: cabos, fibra, rádio, o sinal elétrico ou óptico em si - e seus modos de falha, um cabo danificado ou uma divergência de duplex. Camada 2, enlace: quadros Ethernet e endereços Media Access Control (MAC); switches moram aqui. Camada 3, rede: endereços Internet Protocol (IP) e roteamento; roteadores moram aqui. Camada 4, transporte: o Transmission Control Protocol (TCP) e o User Datagram Protocol (UDP), e os números de porta que nomeiam conversas. Camadas 5 e 6, sessão e apresentação: raramente nomeadas na prática - preocupações de criptografia e codificação são discutidas aqui, quando são. Camada 7, aplicação: o Hypertext Transfer Protocol (HTTP), o Domain Name System (DNS) e tudo que os usuários de fato pediram.
+Camada 1, física: cabos, fibra, rádio, o sinal elétrico ou óptico em si, e seus modos de falha, um cabo danificado ou um [descompasso de duplex](/learn/ethernet-physical-layers). Camada 2, enlace: [quadros Ethernet](/learn/the-ethernet-frame-field-by-field) e endereços Media Access Control (MAC); switches moram aqui. Camada 3, rede: endereços Internet Protocol (IP) e roteamento; roteadores moram aqui. Camada 4, transporte: o Transmission Control Protocol (TCP) e o User Datagram Protocol (UDP), e os números de porta que nomeiam conversas. Camadas 5 e 6, sessão e apresentação: raramente nomeadas na prática; preocupações de criptografia e codificação são discutidas aqui, quando são. Camada 7, aplicação: o Hypertext Transfer Protocol (HTTP), o Domain Name System (DNS) e tudo o que os usuários de fato pediram.
 
 O mapeamento em estilo de prova é um reflexo que vale treinar: endereço MAC, Camada 2. Endereço IP, Camada 3. Porta TCP ou UDP, Camada 4. O protocolo de aplicação, Camada 7. Um virtual server escutando num endereço e porta atravessa a 3 e a 4; um proxy decidindo por cabeçalhos HTTP trabalha na 7.
 
+## As camadas da própria internet: quatro, não sete
+
+Os protocolos que venceram nunca foram desenhados sobre os sete andares. A RFC 1122, os requisitos de host de outubro de 1989, lista quatro camadas: aplicação, transporte, internet e enlace ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122.html), seção 1.1.3). A sua camada de enlace é o protocolo que um host precisa implementar "to communicate on its directly-connected network", e sobre o topo ela diz: "The application layer of the Internet suite essentially combines the functions of the top two layers", apresentação e aplicação, "of the OSI reference model". Então, quando um engenheiro diz "Camada 7", ele quer dizer a camada de aplicação da internet; quando diz "Camada 2", quer dizer o enlace em que o host está; e as camadas 5 e 6 não têm protocolo próprio na suíte da internet para onde apontar.
+
+| Camada OSI | Camada da internet (RFC 1122) | O que você captura |
+|---|---|---|
+| 7, 6, 5 | Aplicação | HTTP, DNS, registros TLS |
+| 4 | Transporte | segmentos TCP, datagramas UDP |
+| 3 | Internet | datagramas IP, ICMP |
+| 2 | Enlace | quadros Ethernet, ARP |
+| 1 | (não é uma camada da suíte) | sinais, luz, rádio |
+
 ## Encapsulamento: por que as camadas empilham
 
-Cada camada embrulha a de cima: dados de aplicação vão dentro de um segmento TCP, o segmento dentro de um pacote IP, o pacote dentro de um quadro Ethernet. Ler uma captura de pacotes é literalmente descascar essa cebola, cabeçalho mais externo primeiro - por isso as ferramentas imprimem quadro, depois IP, depois TCP, depois payload, nessa ordem. Quando um dispositivo reescreve uma camada e deixa as outras em paz - um roteador trocando os cabeçalhos de Camada 2 salto a salto enquanto os endereços de Camada 3 atravessam - o modelo é o que torna esse comportamento previsível em vez de misterioso.
+Cada camada embrulha a de cima: dados de aplicação vão dentro de um segmento TCP, o segmento dentro de um datagrama IP, o datagrama dentro de um quadro Ethernet. A RFC 1122 dá até nome a cada embrulho: um segmento é "a TCP header followed by application data"; um datagrama IP "consists of an IP header followed by transport layer data"; um pacote é "the unit of data passed across the interface between the internet layer and the link layer"; e um quadro "consists of a link-layer header followed by a packet" (RFC 1122, seção 1.3.3). Ler uma captura de pacotes é descascar esses embrulhos, o mais externo primeiro, e é por isso que as ferramentas imprimem quadro, depois IP, depois TCP, depois a carga útil, nessa ordem. Quando um dispositivo reescreve uma camada e deixa as outras em paz (um roteador trocando os cabeçalhos de Camada 2 salto a salto enquanto os endereços de Camada 3 atravessam), o modelo é o que torna esse comportamento previsível em vez de misterioso.
+
+## Um pedido, andar por andar
+
+Acompanhe um pedido passando pelos andares em ordem. Um navegador a quem se pede `https://example.com` precisa primeiro de um endereço, então envia uma consulta ao Domain Name System, uma mensagem de Camada 7 que viaja em UDP até a porta do servidor: "Messages sent using UDP user server port 53 (decimal)" ([RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.html)). Se o resolvedor está em outra rede, a consulta precisa passar pelo gateway padrão, então, antes de ela sair, o host descobre o endereço MAC do gateway com o ARP, uma troca de Camada 2. A resposta dá ao navegador um endereço IP, Camada 3, e o esquema lhe dá uma porta: para https, "TCP port 443 (the reserved port for HTTP over TLS) is the default" ([RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html)), Camada 4. Depois vêm um handshake TCP, um handshake TLS e o pedido HTTP em si, três conversas empilhadas numa só conexão.
+
+Quando a página não carrega, cada passo é uma pergunta com um andar associado. Nenhuma entrada ARP para o gateway é uma resposta de Camada 2; um timeout de DNS é um sintoma de Camada 7 que pode ter causa na Camada 3; um reset logo depois do hello do TLS está em algum ponto entre a 4 e a 7. Perguntar qual passo falhou é perguntar em que andar ficar.
 
 ## Onde o modelo se dobra
 
-A internet real roda sobre a suíte TCP/IP, que nunca teve sete camadas; sessão e apresentação se dissolvem nas aplicações, e muita tecnologia se recusa a ficar parada - um balanceador terminando Transport Layer Security (TLS) e recifrando toca da 4 à 7 num movimento só, e túneis colocam pilhas inteiras dentro de payloads de Camada 4. O modelo é um vocabulário, não uma lei. Use-o como os engenheiros em atividade usam: "o problema está abaixo da Camada 3" descarta aplicações e DNS numa frase, e "só falha na Camada 7" avisa ao time de rede que provavelmente está fora da mira.
+O modelo é um vocabulário, não uma lei, e muita tecnologia se recusa a ficar parada num andar só. Um balanceador terminando Transport Layer Security (TLS) e recifrando toca da 4 à 7 num movimento só. Túneis colocam pilhas inteiras dentro de outras pilhas: o VXLAN, no próprio título da RFC 7348, é "A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks", e carrega quadros Ethernet dentro de UDP até a porta 4789 ([RFC 7348](https://www.rfc-editor.org/rfc/rfc7348.html)), então uma captura mostra Camada 2 acima da Camada 4. Os arquitetos da internet foram ainda mais diretos: a RFC 3439 tem uma seção intitulada "Layering Considered Harmful", porque a separação estrita em camadas significa que "the optimization of each layer has to be done separately" ([RFC 3439](https://www.rfc-editor.org/rfc/rfc3439.html), dezembro de 2002). Nada disso torna o mapa inútil; quer dizer que os andares descrevem funções, e uma caixa pode exercer várias.
 
 ## O hábito que paga
 
-No troubleshooting, nomeie a camada mais alta que você provou boa e a mais baixa que provou ruim; a falha mora entre as duas. Luz de link e contadores de interface liberam a Camada 1; a [resolução ARP](/learn/arp-and-mac-addresses) libera a 2; uma resposta ao ping libera a 3; um [handshake TCP completo](/learn/tcp-connection-lifecycle) libera a 4; dali em diante, a conversa pertence à aplicação. Esse único hábito converte as sete camadas de resposta de prova em instrumento de triagem.
+Use o modelo como os engenheiros em atividade usam: "o problema está abaixo da Camada 3" descarta aplicações e DNS numa frase, e "só falha na Camada 7" avisa ao time de rede que provavelmente está fora da mira. No troubleshooting, nomeie a camada mais alta que você provou boa e a mais baixa que provou ruim; a falha mora entre as duas. Luz de link e contadores de interface liberam a Camada 1; a [resolução ARP](/learn/arp-and-mac-addresses) libera a 2; uma resposta ao ping libera a 3; um [handshake TCP completo](/learn/tcp-connection-lifecycle) libera a 4; dali em diante, a conversa pertence à aplicação. Esse único hábito converte as sete camadas de resposta de prova em instrumento de triagem.
+
+## Fontes
+
+- [ISO/IEC 7498-1:1994, o Basic Reference Model: publicada em novembro de 1994, revisada e confirmada pela última vez em 2000 (lida em 2026-10-07)](https://www.iso.org/standard/20269.html)
+- [Recomendação ITU-T X.200, Basic Reference Model: the basic model, aprovada em 1º de julho de 1994, em vigor (lida em 2026-10-07)](https://www.itu.int/rec/T-REC-X.200-199407-I/en)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, outubro de 1989: seções 1.1.3 (as quatro camadas) e 1.3.3 (segmento, datagrama, pacote, quadro) (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122.html)
+- [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: seção 4.2, a porta 53 do servidor (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035.html)
+- [RFC 9110, HTTP Semantics, junho de 2022: seção 4.2.2, a porta 443 do https (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110.html)
+- [RFC 7348, VXLAN: A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks, agosto de 2014 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc7348.html)
+- [RFC 3439, Some Internet Architectural Guidelines and Philosophy, dezembro de 2002: seção 3, Layering Considered Harmful (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3439.html)

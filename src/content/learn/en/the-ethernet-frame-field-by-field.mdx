@@ -1,0 +1,122 @@
+---
+slug: the-ethernet-frame-field-by-field
+title: "The Ethernet frame, field by field: preamble to FCS, the 802.1Q tag, and the sizes that matter"
+summary: "Every Ethernet frame is the same short sequence of fields: a preamble to wake the receiver, two addresses, one field that is either a length or a type, the payload, and a checksum. What each field holds, why the minimum is 64 octets and the maximum 1518, where the 802.1Q tag goes and what it carries, and why jumbo frames are not in the standard."
+concepts: ["ethernet frame", "preamble", "start frame delimiter", "mac address", "ethertype", "802.1q tag", "frame check sequence", "crc-32", "minimum frame size", "runt", "giant", "envelope frame", "jumbo frames", "interpacket gap"]
+relatedTools: ["oui-lookup", "mtu-mss"]
+relatedArticles: ["arp-and-mac-addresses", "what-is-an-oui", "jumbo-frames", "osi-model-in-practice", "bridge-switch-family-history"]
+category: networking
+order: 336
+status: reviewed
+updated: "2026-10-07"
+---
+
+Almost everything a local network does is carried in Ethernet frames, and every frame has the same shape. Learn the shape once and a packet capture, a switch's error counters and an MTU (maximum transmission unit) problem all become readable: each of them is a statement about one of a handful of fields.
+
+## The fields, in the order they cross the wire
+
+The IEEE 802.3 working group's own overview lays the frame out as a short sequence ([Law, IEEE 802.3, 2011](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)):
+
+| Field | Octets | What it is for |
+|---|---|---|
+| Preamble | 7 | Alternating ones and zeros that let the receiver lock on to the signal |
+| Start frame delimiter (SFD) | 1 | Marks where the frame proper begins |
+| Destination address | 6 | Who the frame is for |
+| Source address | 6 | Who sent it |
+| 802.1Q tag (optional) | 4 | The VLAN (virtual LAN) and priority, when present |
+| Length/Type | 2 | Either the payload's length or the protocol inside it |
+| Payload (MAC client data) | 46 to 1500 | The packet being carried, padded if short |
+| Frame check sequence (FCS) | 4 | A checksum over the frame |
+
+Juniper's documentation gives the same sizes field by field: a preamble of "7 octets of alternating 0s and 1s", "a 1-octet start-of-frame delimiter", two 6-octet addresses, a 2-octet length/type field and a 4-octet field "that contains the calculated CRC value" ([Juniper](https://juniper.net/documentation/software/jseries/junos93/jseries-config-guide-basic/ethernet-frames.html)). The sizes people quote for a frame (64, 1518, 1522) count from the destination address to the FCS, as the arithmetic shows: 6 + 6 + 2 + 46 + 4 = 64, and 6 + 6 + 2 + 1500 + 4 = 1518. The preamble and SFD are not part of them.
+
+## Preamble and start frame delimiter
+
+The preamble exists for the receiver's benefit, not the sender's: a run of alternating bits gives the receiving circuitry a regular signal to synchronise to before any information arrives. The start frame delimiter is one more octet whose pattern breaks the rhythm; Cisco's troubleshooting guide notes that it "ends with 2 consecutive 1 bits" ([Cisco, Troubleshooting Ethernet](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)). Everything after those two ones is the frame.
+
+## Two addresses, and the two bits that matter most
+
+Each address is a 48-bit MAC (media access control) address. The IEEE Registration Authority's guidelines describe the structure: the first three octets of a universally administered address are the OUI (organizationally unique identifier), a 24-bit block assigned to an organisation, usually the manufacturer, and two bits in the first octet change what the whole address means ([IEEE RA guidelines](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)):
+
+- the least significant bit of the first octet is the I/G (individual/group) bit: 0 for one station, 1 for a group (multicast or broadcast);
+- the next bit is the U/L (universal/local) bit: 0 for an address assigned under an IEEE block, 1 for one assigned locally.
+
+The address of all ones, FF-FF-FF-FF-FF-FF, means every station on the network: broadcast. Because Ethernet sends each octet least significant bit first ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)) and the destination's first octet goes first, the I/G bit is the very first bit of the address on the wire: before anything else, it says whether the frame is for one station or for a group. The [OUI lookup](/tools/oui-lookup) on this site reads the first three octets back to the manufacturer they were assigned to.
+
+## Length or Type: one field, two meanings
+
+The two octets after the addresses (or after the tag) do two different jobs, decided by their value. Values at or above 0x0600 (1536) are an EtherType, naming the protocol in the payload; values at or below 0x05DC (1500) are a length; the few values in between are left undefined ([Seifert, IEEE 802.1 archive, 1996](https://grouper.ieee.org/groups/802/1/files/public/docs1996/d96n062.txt); [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)). EtherTypes are assigned by the IEEE Registration Authority, and IANA (the Internet Assigned Numbers Authority) keeps a public copy of the ones the internet's protocols use ([IANA, IEEE 802 Numbers](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)):
+
+| EtherType | Protocol |
+|---|---|
+| 0x0800 | IPv4 |
+| 0x0806 | ARP (Address Resolution Protocol) |
+| 0x86DD | IPv6 |
+| 0x8100 | 802.1Q customer VLAN tag (the C-tag) |
+| 0x88A8 | 802.1Q service VLAN tag (the S-tag of provider bridging) |
+| 0x8847 | MPLS (Multiprotocol Label Switching) |
+| 0x88CC | LLDP (Link Layer Discovery Protocol) |
+
+The double meaning is history. The Ethernet that came before the IEEE standard, known as DIX Ethernet after Digital, Intel and Xerox, put a type in this field; the original IEEE 802.3 put a length there and identified the protocol inside the payload with an 802.2 LLC (logical link control) header ([Cisco, Troubleshooting Ethernet](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html); [RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)). Carrying IP that way needs LLC plus a SNAP (subnetwork access protocol) header, eight more octets, which is where the 1492 of some MTU settings comes from: 1518 minus 18 octets of header and trailer minus 8 ([RFC 1042](https://www.rfc-editor.org/rfc/rfc1042.html)). IP over ordinary Ethernet uses the type form, with 0x0800 in this field ([RFC 894](https://www.rfc-editor.org/rfc/rfc894.html)).
+
+## The payload and its floor
+
+The payload is the packet being carried: an IP packet, an ARP message, anything with a type. It may not be shorter than 46 octets. A shorter packet is "padded (with octets of zero)" to reach the minimum, and that padding "is not part of the IP packet and is not included in the total length field of the IP header" ([RFC 894](https://www.rfc-editor.org/rfc/rfc894.html)). The receiver knows where the real packet ends from the packet's own length field, not from the frame. The ceiling is 1500 octets of payload, which is why 1500 is the MTU of ordinary Ethernet; the [MTU and MSS calculator](/tools/mtu-mss) works forward from that number.
+
+## The 802.1Q tag
+
+A frame that belongs to a VLAN on a trunk carries four extra octets "between the Source Address and Type/Length fields" ([Cisco, 802.1Q frame format](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)):
+
+- the TPID (tag protocol identifier), 0x8100, sits exactly where the Length/Type field would be, so a receiver reading that position knows a tag follows;
+- three bits of PCP (priority code point), the 802.1p priority;
+- one bit of DEI (drop eligible indicator), which marks a frame as eligible to be dropped when there is congestion. Older documents call this bit CFI (canonical format indicator); 802.1Q-2011 replaced CFI with DEI for customer tags ([Haddock, IEEE 802.1, 2013](https://www.ieee802.org/1/files/public/docs2013/new-tsn-haddock-flow-metering-in-Q-0113-v01.pdf));
+- twelve bits of VID (VLAN identifier). VID 0 means the tag carries only a priority, 4095 is reserved, so the usable VLANs are 1 to 4094 ([Microsoft, 802.1Q tag](https://learn.microsoft.com/en-us/previous-versions/windows/hardware/network/ff564233(v=vs.85)); [Huawei, QinQ frame format](https://support.huawei.com/enterprise/en/doc/EDOC1100174721/e4e9d43e/qinq-frame-format)).
+
+The original Length/Type field follows the tag. Because the frame's contents have changed, a switch that adds or removes a tag "recomputes the FCS on the modified frame" (Cisco, as above), and the largest tagged frame grows by four octets to 1522.
+
+## The frame check sequence
+
+The last four octets are a 32-bit cyclic redundancy check (CRC-32) computed by the sender over the destination address, source address, length/type, data and pad, and not over the preamble or start frame delimiter ([Intel, FCS insertion](https://intel.com/content/www/us/en/docs/programmable/683600/current/frame-check-sequence-crc-32-insertion-38432.html)). The receiver computes it again; a mismatch means at least one bit changed in transit and the frame is discarded. An FCS error counter that keeps rising on a port is a physical-layer clue (a cable, a connector, a duplex mismatch), not a protocol one.
+
+## The sizes: 64, 1518, 1522, 2000
+
+- **64 octets minimum.** IEEE 802.3 calls it minFrameSize, "512 bits (64 octets)" ([Frazier, IEEE 802.3z, 1996](https://www.ieee802.org/3/z/public/presentations/nov1996/HFcarext.pdf)). On shared, half-duplex Ethernet a sender had to still be transmitting when news of a collision could reach it from the far end of the network, so the frame had to last at least one slot time: Cisco describes the slot time as "based on the round-trip time that it takes to send a 64-byte frame the maximum length of an Ethernet LAN", and a collision noticed after the 512th bit is a late collision ([Cisco, collisions](https://www.cisco.com/c/en/us/support/docs/interfaces-modules/port-adapters/12768-eth-collisions.html)). That reasoning belongs to 10 and 100 Mb/s; for half-duplex gigabit, the 802.3z work proposed a slot time of 4096 bit times with carrier extension instead (Frazier, as above). A frame shorter than 64 octets is a runt.
+- **1518 octets maximum, untagged.** Six plus six plus two octets of header, 1500 of payload, four of FCS. Larger is a giant ([Cisco, Troubleshooting Ethernet](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)).
+- **1522 octets, tagged.** The 1518 plus the four-octet 802.1Q tag ([Cisco, 802.1Q](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)).
+- **2000 octets, envelope frames.** IEEE 802.3as-2006 raised the maximum frame to 2000 octets for frames that carry more encapsulation, while keeping the payload at 1500 ([P802.3as report, 2005](https://www.ieee802.org/3/minutes/mar05/0305_as_close_report.pdf); [Daines, 2005](https://grouper.ieee.org/groups/802/1/files/public/docs2005/3as-daines-status-0705.pdf)). The task force itself warned that "some compliant implementations may not correctly handle envelope frames larger than 1518 octets".
+
+Jumbo frames, with payloads well beyond 1500 octets, are none of these. The 802.3 chair's overview says plainly "Jumbo frames not supported", and the Ethernet Alliance wrote that "there is no industry standard that defines the size of a Jumbo frame" ([Law, 2011](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf); [Ethernet Alliance, 2009](https://ethernetalliance.org/resource/ethernet-jumbo-frames/)). They work only where every device on the path has been configured for the same size, which is the subject of [the jumbo frames article](/learn/jumbo-frames).
+
+## The gap between frames, and what a line can carry
+
+Frames do not touch. After each one the sender stays silent for a minimum interpacket gap of 96 bit times ([IEEE 802.3 interpretation](https://www.ieee802.org/3/interp/interp-1-1109.pdf)), twelve octets' worth, and every frame is preceded by its eight octets of preamble and delimiter. Nokia's QoS guide puts the per-frame overhead at about "12 + 8 = 20 bytes" ([Nokia](https://infocenter.nokia.com/public/7210SAS229R1A/topic/com.nokia.TMS-QoS/overview-ai9j6k6y3v.html)).
+
+That overhead is why a link cannot carry its nominal bit rate as payload, and why small frames cost the most. A minimum frame occupies 64 + 8 + 12 = 84 octet-times on the wire, 672 bits; at 1 Gb/s that is at most 1,000,000,000 / 672, about 1.49 million frames a second, the figure behind "line rate" claims for small packets. At 1518 octets the same arithmetic gives 1538 octet-times per frame and about 81,000 frames a second, almost all of it payload.
+
+## What to remember
+
+- The frame is preamble and delimiter, two addresses, an optional tag, Length/Type, payload, FCS. The frame sizes people quote start at the destination address.
+- The first bit of the destination address says unicast or group; FF-FF-FF-FF-FF-FF is broadcast.
+- A Length/Type of 0x0600 or more is a protocol; 0x0800 is IPv4, 0x86DD IPv6, 0x8100 a VLAN tag.
+- 64 is the floor because of collisions on shared media; 1518 is the ceiling untagged, 1522 tagged; jumbo frames are a convention, not a standard.
+- FCS errors point at the physical layer.
+
+## Sources
+
+- [David Law, IEEE 802.3 overview, IEEE 802 workshop, March 2011: the frame layout, the 1518, 1522 and 2000 octet maxima, "Jumbo frames not supported" (read 2026-10-07)](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)
+- [Juniper Networks, J-series configuration guide, Ethernet frames: field sizes, 64 to 1518 octets (read 2026-10-07)](https://juniper.net/documentation/software/jseries/junos93/jseries-config-guide-basic/ethernet-frames.html)
+- [Cisco, Troubleshooting Ethernet, 4 April 2008: the SFD, slot time, runts and giants, type versus length (read 2026-10-07)](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1904.html)
+- [IEEE Registration Authority, guidelines for EUI, OUI and CID, updated 1 April 2022: the I/G and U/L bits, the OUI, broadcast (read 2026-10-07)](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, April 2024: EtherType threshold, bit order, DIX (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9542.html)
+- [Rich Seifert, on the IEEE 802.3x draft, IEEE 802.1 archive, 18 April 1996: the Length and Type ranges (read 2026-10-07)](https://grouper.ieee.org/groups/802/1/files/public/docs1996/d96n062.txt)
+- [IANA, IEEE 802 Numbers, last updated 3 November 2024: EtherType assignments (read 2026-10-07)](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)
+- [RFC 894, A Standard for the Transmission of IP Datagrams over Ethernet Networks, April 1984: type 0x0800, the 46-octet minimum, zero padding (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc894.html)
+- [RFC 1042, IP over IEEE 802 networks, February 1988: LLC and SNAP, the 1492 figure (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1042.html)
+- [Cisco, 802.1Q frame format, document 17056: the tag's position and fields, 1522 bytes, FCS recomputed (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/8021q/17056-741-4.html)
+- [Stephen Haddock, IEEE 802.1, January 2013: DEI replacing CFI in 802.1Q-2011 (read 2026-10-07)](https://www.ieee802.org/1/files/public/docs2013/new-tsn-haddock-flow-metering-in-Q-0113-v01.pdf)
+- [Intel, frame check sequence (CRC-32) insertion, user guide 683600, 31 May 2024: what the CRC covers (read 2026-10-07)](https://intel.com/content/www/us/en/docs/programmable/683600/current/frame-check-sequence-crc-32-insertion-38432.html)
+- [Howard Frazier, carrier extension proposal, IEEE P802.3z, 11 November 1996: minFrameSize 512 bits, the gigabit slot time (read 2026-10-07)](https://www.ieee802.org/3/z/public/presentations/nov1996/HFcarext.pdf)
+- [Cisco, Troubleshooting Ethernet Collisions, document 12768: the 512-bit collision window, late collisions (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/interfaces-modules/port-adapters/12768-eth-collisions.html)
+- [IEEE P802.3as task force close report, March 2005, and the 802.3as status of July 2005: envelope frames of 2000 octets, the 1500-octet data field (read 2026-10-07)](https://www.ieee802.org/3/minutes/mar05/0305_as_close_report.pdf)
+- [IEEE 802.3 interpretation 1-11/09: the 96-bit interpacket gap (read 2026-10-07)](https://www.ieee802.org/3/interp/interp-1-1109.pdf)
+- [Ethernet Alliance, Ethernet Jumbo Frames, November 2009 (read 2026-10-07)](https://ethernetalliance.org/resource/ethernet-jumbo-frames/)

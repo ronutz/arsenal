@@ -24,3 +24,15 @@ From BIG-IP 12.0 the card also carries the support lifecycle: the End of Softwar
 Two things on the timeline are worth calling out. First, from BIG-IP 12.0 (2015) F5 adopted the alternating model that still holds: a Major Release (x.0.0) followed by a Long-Term Stability Release (x.1.0) that most sites actually run. Second, the version numbers jump straight from 17 to 21. That gap is not a mistake and it is not skipped for superstition: 18 through 20 belonged to BIG-IP Next, a separate re-architecture that F5 has since discontinued (the final BIG-IP Next 20.3 reached end of life on 30 April 2025), choosing instead to modernize the TMOS line and resume it at 21.0.
 
 The dates here are year-level on purpose. The release dates for 12.0 and later come from F5's own release records ([K33062581](https://my.f5.com/manage/s/article/K33062581), the TMOS Software Release Date Information, and [K9412](https://my.f5.com/manage/s/article/K9412), the BIG-IP release matrix); the 2004 origin of TMOS comes from F5's company history; and the intermediate branches that are now end-of-life carry their widely documented release year. Nothing here is read from a live system.
+
+## This series, in order
+
+This article opens the series **BIG-IP and F5OS versions and upgrades**. Its timeline shows where each version sits; the parts take the practical questions in order: whether you are upgrading or updating, what to do when an upgraded box will not load its configuration, what the newest line changed in operations and in access, and the F5OS layer the newer hardware runs underneath.
+
+1. **[BIG-IP Upgrade vs Update: Why the Distinction Decides Whether the License Date Is Checked](/learn/bigip-upgrade-vs-update)**. Which part of the version number changes decides whether the service check date is enforced at all.
+2. **[Recovering a BIG-IP That Won't Load Its Config After an Upgrade](/learn/bigip-license-reactivation)**. The upgraded box that boots but never loads its configuration, and the reactivation that resets the date.
+3. **[The BIG-IP 21.x Ops Story: In-Place Upgrades, a 64-Bit Control Plane, and BigD at Scale](/learn/bigip-inplace-upgrade-and-64bit)**. In-place upgrades with a dry run, a 64-bit control plane, and a monitoring daemon built for scale.
+4. **[BIG-IP 21.x: what changed, and why there is no version 18, 19, or 20](/learn/bigip-21x-whats-new)**. Why three version numbers were skipped, the lifecycle rules to check first, and a themed tour of what the new line delivers.
+5. **[Access and Identity in BIG-IP 21.1: DCR, Native SAML, and IPsec Comes Home](/learn/bigip-21x-access-identity)**. Dynamic client registration, native SAML through the system browser, and IPsec tunnels in the Edge Client.
+6. **[F5OS 2.0 From the Tenant's Seat: Cloud-Init, Per-Port RRDAG, and Q-in-Q](/learn/f5os-2-0-whats-new)**. The platform release the newest BIG-IP assumes, seen from the tenant's seat: cloud-init, per-port RRDAG and Q-in-Q.
+7. **[The three states an F5OS tenant can be in](/learn/f5os-tenant-lifecycle)**. Configured, provisioned, deployed: the three tenant states, and why changing vCPU or memory means going backwards.

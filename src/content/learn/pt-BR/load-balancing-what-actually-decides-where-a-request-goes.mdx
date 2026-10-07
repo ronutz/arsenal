@@ -126,3 +126,16 @@ Ele está, por construção, no caminho de tudo. Isso o torna o lugar de maior v
 - **Globalmente**, distribuição por DNS ou [anycast](/glossary/anycast) move a decisão para cima - e herda o cache de DNS, então o tráfego segue chegando a algum lugar pelo tempo de vida do registro, não importa o que você mude.
 
 O hábito mais útil de todos: **olhe métricas por membro, não a média do pool.** A média é feita para parecer saudável enquanto um membro serve erros em silêncio, rápido o bastante para atrair mais tráfego que os que estão fazendo trabalho de verdade.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Balanceamento de carga e persistência**. Suas quatro perguntas (quem está vivo, quem recebe esta requisição, este cliente precisa voltar ao mesmo lugar, o que acontece na falha) organizam as partes: o virtual server e o proxy TCP que fazem o trabalho, depois a persistência escolhida, quebrada atrás de NAT, combinada com um fallback e mantida através de um failover, depois a mesma decisão tomada globalmente em dois níveis e, por fim, como a indústria foi construída contra uma previsão de dez clientes.
+
+1. **[Como Funciona um Virtual Server do BIG-IP](/learn/how-a-virtual-server-works)**. A porta de entrada de um BIG-IP: o listener, a pilha de perfis, a persistência, o membro do pool e a tradução de origem.
+2. **[O Proxy TCP: O Que um Middlebox de Camada 4 Vê e o Que Não Vê](/learn/tcp-proxy-layer-4)**. Dois fluxos TCP independentes emendados na camada 4: o que um proxy reescreve, agrupa e não consegue ver.
+3. **[Escolhendo um Método de Persistência (e Seus Modos de Falha)](/learn/choosing-a-persistence-method)**. Afinidade por origem ou cookie, e a maneira bem conhecida como cada um falha.
+4. **[Persistência por endereço de origem e o problema do mega-proxy](/learn/source-address-persistence-and-mega-proxy)**. Prender um cliente pelo seu IP, e como NATs grandes fazem muitos clientes parecerem um só.
+5. **[Fallback de Persistência e as Configurações Match-Across](/learn/fallback-persistence-and-match-across)**. Um método primário e um de fallback, e as três configurações match-across que decidem quão longe um registro é compartilhado.
+6. **[Espelhamento de persistência em um par HA](/learn/persistence-mirroring-and-ha)**. Por que um standby que assume as conexões ainda esquece os mapeamentos de cliente para membro, a menos que tenham sido espelhados.
+7. **[GSLB em dois níveis: o wide IP escolhe um pool, o pool escolhe um servidor](/learn/gslb-two-tier-pool-then-member)**. O balanceamento global (global server load balancing) como duas decisões: o wide IP escolhe um pool, depois o pool escolhe um servidor.
+8. **[Balanceadores e ADCs: construídos contra o tamanho do mercado](/learn/adc-family-history)**. Dez clientes no mundo, estimou um webmaster da Netscape em 1995; a indústria que foi construída mesmo assim.

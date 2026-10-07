@@ -68,6 +68,18 @@ export interface MaterialImages {
   height: number;
 }
 
+/** The presenter's deck (milestone (m2), 2026-10-06; PRIME 19:21: "Can we allow presenting the slides on the site
+ *  through the browser, without the need to download?"): every slide of each language's PDF rendered at 144 dpi
+ *  (pdftoppm, 960 x 540 pt to 1920 x 1080 px) and stored as WebP at quality 80 under
+ *  public/<material dir>/deck/<lang>/<NNN>.webp, beside that language's manifest, deck.json: every slide's number,
+ *  its title (the slide's title placeholder) and its speaker notes, read from the PPTX package. The presenter page
+ *  reads the titles at build time; the notes are fetched by the browser only when the reader opens them. */
+export interface MaterialDeck {
+  /** Pixel size of every deck image (they are rendered alike). */
+  width: number;
+  height: number;
+}
+
 /** One shared material. */
 export interface Material {
   /** URL slug: /materials/<slug>. Copy at materials.items.<slug>. */
@@ -94,6 +106,8 @@ export interface Material {
   relatedArticles: string[];
   /** The cover and the gallery slides shown on the datasheet. */
   images: MaterialImages;
+  /** The presenter's deck: every slide, per language (milestone (m2)). */
+  deck: MaterialDeck;
 }
 
 /** The materials, newest first. */
@@ -190,6 +204,9 @@ export const MATERIALS: Material[] = [
     // the frame and packet headers (97), OSPF's backbone and areas (121), PIM-SM's shared tree and switchover (166),
     // and a VRRP failover (174). The same slide numbers in both languages: the two decks share their layouts.
     images: { cover: 1, gallery: [26, 79, 97, 121, 166, 174], width: 1280, height: 720 },
+    // All 178 slides of each language at 1920 x 1080 for the presenter (2026-10-06, (m2)): sharp on a 1080p projector,
+    // about 62 KB a slide on average (10.8 MB for the English deck, 11.4 MB for the Portuguese).
+    deck: { width: 1920, height: 1080 },
   },
 ];
 
@@ -198,6 +215,21 @@ export function slideImagePath(m: Material, lang: string, slide: number): string
   // The material's directory is the one its files live in, so a material moved moves its images with it.
   const dir = m.files[0].path.slice(0, m.files[0].path.lastIndexOf("/"));
   return `${dir}/slides/${lang}-slide-${String(slide).padStart(3, "0")}.webp`;
+}
+
+/** The material's directory: the one its files live in, so a material moved moves everything with it. */
+function materialDir(m: Material): string {
+  return m.files[0].path.slice(0, m.files[0].path.lastIndexOf("/"));
+}
+
+/** The presenter's image folder for one language, ending in a slash: a slide is `${base}${NNN}.webp`. */
+export function deckImageBase(m: Material, lang: string): string {
+  return `${materialDir(m)}/deck/${lang}/`;
+}
+
+/** The presenter's manifest for one language (every slide's title and notes). */
+export function deckManifestPath(m: Material, lang: string): string {
+  return `${materialDir(m)}/deck/${lang}/deck.json`;
 }
 
 /** Look one material up by slug. */

@@ -58,6 +58,8 @@ import MessageSlice from "@/components/MessageSlice";
 import { attributeRedEducationUrl, externalRel } from "@/config/redEducation";
 
 import ReduBrand from "@/components/ReduBrand";
+// The door to the open course material (milestone (m2), 2026-10-06).
+import MaterialsDoor from "@/components/MaterialsDoor";
 export async function generateMetadata({
   params,
 }: {
@@ -196,6 +198,15 @@ export default async function TrainingLandingPage({
                   <a href={redCatalogueUrl} rel={externalRel(redCatalogueUrl)} target="_blank" className="btn btn-secondary">{t("redCatalogueCta")} <span aria-hidden="true">&#8599;</span></a>
                 </p>
               </div>
+            </div>
+          </section>
+
+          {/* THE OPEN COURSE MATERIAL (milestone (m2); PRIME 2026-10-06 19:21: the doors to /materials "more easily
+              findable, in the Learn and Training sections"): right after the catalogue, for the reader who wants to
+              start before a class or to keep going after one. */}
+          <section className="section">
+            <div className="container teach-container">
+              <MaterialsDoor locale={locale} context="training" />
             </div>
           </section>
 
@@ -422,6 +433,23 @@ export default async function TrainingLandingPage({
                     <span className="learn-portal-arrow">&#8594;</span>
                   </p>
                   <p className="learn-portal-lede">{t("navCertsLede")}</p>
+                </Link>
+                {/* THE OPEN COURSE MATERIAL (m2): free, like the cards after it, and a whole course rather than an article. */}
+                <Link
+                  href="/materials"
+                  className="learn-portal-card"
+                  style={
+                    { "--note-accent": "var(--color-info)" } as CSSProperties
+                  }
+                >
+                  <span className="learn-portal-ornament" aria-hidden>
+                    &#9654;
+                  </span>
+                  <p className="learn-portal-title">
+                    {t("navMaterials")}{" "}
+                    <span className="learn-portal-arrow">&#8594;</span>
+                  </p>
+                  <p className="learn-portal-lede">{t("navMaterialsLede")}</p>
                 </Link>
                 <Link
                   href="/learn"

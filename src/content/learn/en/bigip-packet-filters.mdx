@@ -46,3 +46,11 @@ As of version 16 there is a second object called a packet filter: `security pack
 ## Reading yours
 
 The [packet-filter explainer](/tools/f5-packet-filter-explainer) walks a pasted rule list with exactly the semantics above, flags shadowed rules deterministically, and simulates a packet through the walk with a three-state evaluator that stops honestly when an expression leaves its BPF subset. The expressions themselves are tcpdump's language; the [tcpdump builder](/tools/f5-bigip-tcpdump-builder) speaks it fluently, and pcap-filter(7) remains the grammar's home.
+
+## This series, in order
+
+This article opens the series **Network security on the BIG-IP**. Packet filters are the first checkpoint; the parts follow the packet inward through the network firewall's contexts, then turn to the two ways a flood is absorbed: answering SYNs without keeping state, and choosing what to throw overboard when the connection table is full.
+
+1. **[AFM Contexts: Accept Is a Ticket to the Next Checkpoint](/learn/bigip-afm-contexts-and-rule-processing)**. Global, route domain, then virtual server or self-IP: an accept is a ticket to the next checkpoint.
+2. **[SYN Flood Protection on BIG-IP: Cookies, Thresholds, and Who Answers First](/learn/bigip-syn-flood-protection)**. The SYN cookie that encodes state in the sequence number, and the layers that decide who answers first.
+3. **[Connection Eviction Policies: What BIG-IP Throws Overboard, and When](/learn/bigip-connection-eviction-policies)**. The finite connection table, the watermarks that trigger eviction, and what the policy throws overboard first.

@@ -51,3 +51,14 @@ Um diff encontra *um* alinhamento, não *o* alinhamento. Quando vários alinhame
 É por isso que um diff fica desconcertante depois de uma refatoração que moveu um bloco: **a ferramenta não tem o conceito de "movido"**. Uma função realocada é uma remoção num lugar e uma inserção em outro, e se o bloco parece com os vizinhos o alinhamento pode cortá-lo onde nenhum humano cortaria.
 
 **Um diff confuso normalmente indica que a comparação está sendo feita com a pergunta errada**, não que a mudança está ruim. Comparar em nível de palavra, ignorar espaços em branco ou usar outra base transforma uma saída ilegível em uma óbvia — a mudança não mudou, só o alinhamento.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Diffs, merges e Git**. A maior subsequência comum acima é o motor; as partes vão da leitura do que ele produz, passando pelos casos em que ele parece errado ou grosseiro demais, ao merge de três vias, e terminam no sistema de controle de versão e na plataforma que fizeram do diff a unidade da colaboração.
+
+1. **[Como ler um diff](/learn/reading-a-diff)**. Os marcadores, os números de linha dos dois lados, o destaque dentro da linha e o que ignorar espaços ou maiúsculas realmente muda.
+2. **[Edições mínimas: por que um diff pode parecer errado](/learn/diff-minimal-edits)**. Por que a menor edição não é única, e como isso faz um diff partir um bloco movido ou culpar as linhas erradas.
+3. **[Diffs em nível de palavra e de caractere](/learn/diff-word-and-character-level)**. Quando um diff de linha é grosseiro demais, e como diffs de palavra e de caractere mostram a mudança exata.
+4. **[Diffs de três vias e conflitos de merge](/learn/diff-three-way-and-merge-conflicts)**. O ancestral comum que torna possível o merge automático, e como ler e resolver os marcadores de conflito.
+5. **[Git: o banco endereçado por conteúdo vestindo terno de controle de versão](/learn/git)**. O que o Git guarda (snapshots, não diffs), por que uma branch é um ponteiro de 41 bytes e as três áreas por trás dos comandos confusos.
+6. **[GitHub: o pull request era o produto](/learn/github)**. Como uma aplicação web de 2008 transformou o patch por e-mail no pull request e se tornou o maior hospedeiro de código sem ser dono do protocolo.

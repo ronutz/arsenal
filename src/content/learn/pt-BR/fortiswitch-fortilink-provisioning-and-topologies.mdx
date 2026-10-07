@@ -66,3 +66,10 @@ Na ordem que resolve a maioria dos casos:
 ## O que quem vai prestar o exame precisa saber de cor
 
 O FortiLink faz do FortiGate o controlador de switches, então o switch é configurado a partir do firewall e mudanças diretas nele tendem a ser sobrescritas. O provisionamento é interface FortiLink, descoberta, autorização, e então envio da configuração, e um switch não autorizado fica visível e não gerenciado. As topologias vão de camada única a duas camadas, MCLAG para conexão dupla, e empilhamento para economizar portas ao custo de dependência. Multi-inquilino usa VLANs mapeadas a VDOMs, então a separação é configuração e não hardware. Quando o FortiLink falha, verifique o papel da porta primeiro, depois a autorização, depois a compatibilidade de firmware.
+
+## Esta série, em ordem
+
+Este artigo abre a série **FortiSwitch**. Depois que o FortiLink faz do FortiGate o controlador, o switch passa a fazer parte dele; as duas partes tratam do trabalho que vem depois: a configuração do dia a dia, e proteger as portas e tirar informação do switch.
+
+1. **[VLANs, spanning tree, portas e QoS no FortiSwitch](/learn/fortiswitch-vlans-stp-ports-and-qos)**. VLANs criadas no FortiGate, configurações de porta e prevenção de loops, cada uma com o detalhe que pega as pessoas.
+2. **[Segurança de portas, antispoofing e diagnóstico no FortiSwitch](/learn/fortiswitch-port-security-and-diagnostics)**. Quais dispositivos podem usar uma porta, se um dispositivo pode reivindicar um endereço que não é seu, e como tirar respostas do switch.

@@ -1,0 +1,127 @@
+---
+slug: ethernet-physical-layers
+title: "Ethernet physical layers, from 10BASE-T to 400GBASE: naming, auto-negotiation, duplex, and the mismatch that cripples a link"
+summary: "Ethernet is one frame format over dozens of physical layers, from 10 Mb/s on telephone-grade copper to 400 Gb/s on parallel fibre. How to read a name like 100GBASE-SR4, the amendments that brought each speed, what copper needs to reach 100 metres, how bits become signals, why full duplex ended collisions, what auto-negotiation settles, and how one side fixed at full duplex while the other negotiates produces the classic duplex mismatch."
+concepts: ["ethernet phy", "10base-t", "1000base-t", "10gbase-t", "100gbase-sr4", "phy naming", "baseband", "twisted pair cabling", "auto-negotiation", "parallel detection", "full duplex", "half duplex", "duplex mismatch", "late collision", "pam4", "64b/66b"]
+relatedTools: ["cable-run-planner", "bits-bytes"]
+relatedArticles: ["structured-cabling", "fibre-basics", "the-ethernet-frame-field-by-field", "transceiver-family-history", "bits-bytes-and-the-two-kinds-of-kilo"]
+category: networking
+order: 340
+status: reviewed
+updated: "2026-10-07"
+---
+
+"Ethernet" names one thing at the top and dozens at the bottom. Every Ethernet link carries the same frames, but the physical layer underneath (the PHY: the cable, the light or electrical signal, the way bits are coded onto it) has been reinvented for each new speed and medium. A 1 Gb/s link on copper and a 100 Gb/s link on fibre share almost nothing below the frame. Knowing which PHY is in play explains what cable a link needs, how far it can reach, and why it sometimes comes up at the wrong speed.
+
+## Reading the name
+
+IEEE 802.3 names its physical layers in a compact code, and David Law, who chaired the working group, has written the key down ([Law, IEEE 802.3, 2009](https://ieee802.org/3/hssg/email/msg01702.html)):
+
+- the number is the speed: 10, 100, 1000, 10G, 100G, 400G;
+- **BASE** means baseband: one signal on the medium, not several modulated carriers;
+- the letters after the hyphen describe the medium and the coding: **T** for twisted pair; **X** for block coding taken from another standard (4B/5B, 8B/10B); **R** for "scrambled coding (64B66B)"; for fibre, **S**, **L** and **E** for short, long and extra-long wavelength (850, 1310 and 1550 nanometres);
+- a final number counts lanes: "where the data rate is 10Gb/s or more the number (m) represents the number lanes, the absence of a number indicating single lane operation".
+
+A later list from the same author gives the fibre letters reach classes too, S for about 100 m, L for 10 km, E for 40 km, and adds D, "parallel single mode (500m)", and F, "fiber (2 km)" ([Law, PHY names, 2015](https://www.ieee802.org/3/cb/public/jan16/PHY_names_1115.pdf)). So 100GBASE-SR4 reads as 100 Gb/s, baseband, short-reach multimode fibre, four lanes; and indeed Cisco's data sheet describes its 100GBASE-SR4 module as "100m over OM4 MMF" with an MPO connector ([Cisco, 100G QSFP data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)).
+
+## A short history in amendments
+
+Each speed arrived as an amendment to IEEE 802.3, approved on a date the task force pages still record:
+
+| Amendment | Approved | What it brought |
+|---|---|---|
+| 802.3i | 28 September 1990 | 10BASE-T, 10 Mb/s on twisted pair |
+| 802.3u | 1995 | 100BASE-T, Fast Ethernet |
+| 802.3x | 20 March 1997 | Full duplex and pause flow control |
+| 802.3z | July 1998 | Gigabit Ethernet on fibre (1000BASE-X) |
+| 802.3ab | June 1999 | 1000BASE-T, Gigabit on twisted pair |
+| 802.3ae | June 2002 | 10 Gigabit Ethernet on fibre |
+| 802.3an | 8 June 2006 | 10GBASE-T |
+| 802.3ba | June 2010 | 40 and 100 Gigabit Ethernet |
+| 802.3by | 30 June 2016 | 25 Gigabit Ethernet |
+| 802.3bs | 6 December 2017 | 200 and 400 Gigabit Ethernet |
+| 802.3df | 16 February 2024 | 800 Gigabit Ethernet |
+
+The dates are from each task force's page ([802.3i](https://standards.ieee.org/ieee/802.3i/1068/), [802.3z](https://www.ieee802.org/3/z/index.html), [802.3ab](https://www.ieee802.org/3/ab/index.html), [802.3ae](https://www.ieee802.org/3/ae/index.html), [802.3an](https://www.ieee802.org/3/an/index.html), [802.3ba](https://www.ieee802.org/3/ba/index.html), [802.3by](https://www.ieee802.org/3/by/index.html), [802.3bs](https://www.ieee802.org/3/bs/index.html), [802.3df](https://www.ieee802.org/3/df/index.html), [802.3x](https://standards.ieee.org/ieee/802.3x/1082/)); 802.3u's year is from the working group's own overview ([Law, 2011](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)).
+
+## Copper: 100 metres, and the category that gets you there
+
+Every twisted-pair PHY from 10BASE-T to 10GBASE-T aims at the same 100-metre reach, the length of a horizontal run in a structured cabling plant; what changes is the cable it needs.
+
+| PHY | Cable | Reach |
+|---|---|---|
+| 10BASE-T | "Category 3 or Category 5 UTP" | "100 m (328 ft.)" ([Cisco, Ethernet basics](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/46792-ethbase.html)) |
+| 100BASE-TX | two pairs of Category 5 | 100 m ([Law, 2011](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)) |
+| 1000BASE-T | all four pairs of Category 5 | "100 meters of Category 5 balanced cabling" ([802.3ab tutorial, 1998](https://www.ieee802.org/3/tutorial/march98/mick_170398.pdf)) |
+| 10GBASE-T | Category 6A (55 m on unshielded Category 6) | "up to 100 meters" ([Cisco, 10GBASE-T white paper](https://www3-realm.cisco.com/en/US/prod/collateral/switches/ps5718/ps6021/white_paper_c11-609513.pdf)) |
+
+For new installations, Fluke Networks' advice is plain: a new cabling system "should be at least category 5e ANSI/TIA-568-C" ([Fluke Networks](https://www.flukenetworks.com/knowledge-base/application-or-standards-articles-copper/1000base-t-over-category-5)). How a plant is laid out to keep every run inside its 100 metres is the subject of [structured cabling](/learn/structured-cabling), and the [cable run planner](/tools/cable-run-planner) does the arithmetic.
+
+## How bits become signals
+
+A PHY's other job is coding: turning a stream of bits into a signal the medium can carry and the receiver can recover. The codes changed with every generation:
+
+- **Manchester coding** for 10BASE-T: "10Base-T uses Manchester encoding" ([UNH-IOL](https://www.iol.unh.edu/sites/default/files/knowledgebase/ethernet/10basetmau.pdf)), a transition in every bit, simple and wasteful.
+- **4B/5B and MLT-3** for 100BASE-TX: the encoder "converts 4-bit (4B) nibble data generated by the MAC into 5-bit (5B) code-groups", and a three-level MLT-3 signal carries them ([Texas Instruments, DP83822 data sheet](https://www.ti.com/document-viewer/lit/html/SNLS505G/GUID-3C55A2C7-780A-44DB-BC52-C0653D0E6F52)).
+- **PAM-5 on four pairs** for 1000BASE-T: five signal levels, and "each pair a full duplex channel supporting effective data rate of 250Mbp/s in both directions simultaneously" ([802.3ab tutorial](https://www.ieee802.org/3/tutorial/march98/mick_170398.pdf)). Gigabit on copper sends and receives on the same pairs at once.
+- **8B/10B and 64B/66B**: the X and R of the names above. 64B/66B is the coding of the BASE-R family; it is not universal at 10 Gb/s, since 10GBASE-T, the copper PHY, codes differently.
+- **PAM-4**: as lanes passed 25 Gb/s, Ethernet "transitioned from non-return-to-zero (NRZ) used for 25Gb/s per lane to four level Pulse-amplitude modulation (PAM-4) for 50 Gb/s per lane and above" ([Ethernet Alliance, 2022 roadmap](https://ethernetalliance.org/wp-content/uploads/2022/03/Ethernet-Roadmap2022-Final.pdf)): two bits per symbol instead of one.
+
+## Fibre, and speed in lanes
+
+On fibre the names describe reach and wavelength. The working group's overview lists 1000BASE-SX at 220 or 550 metres on multimode fibre, 1000BASE-LX at 5 km, 10GBASE-SR at up to 300 m on multimode, 10GBASE-LR at 10 km and 10GBASE-ER at 40 km on single-mode ([Law, 2011](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)). Above 10 Gb/s, speed comes from lanes as much as from faster signals: 40GBASE-SR4 runs "4 lanes, 850 nm MMF" ([Cisco, 40G QSFP](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-660083.html)); 400G modules use eight multimode pairs at up to 100 m (SR8, which the IEEE objective describes as "400 Gb/s operation over 8 pairs of MMF with lengths up to at least 100m") or four wavelengths on one single-mode pair to 2 km (FR4) ([IEEE 802.3cm objectives](https://www.ieee802.org/3/cm/Adopted_Objectives_NGMMF_01_08mar18.pdf); [IEEE 802.3cu objectives](https://www.ieee802.org/3/cu/Objectives_Approved_Sept_2019.pdf); [Cisco, 400G data sheet](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-743172.html)). The fibre itself, its grades and connectors and its loss budget, is the subject of [fibre basics](/learn/fibre-basics).
+
+## Full duplex, and the end of collisions
+
+The original Ethernet was a shared medium: one station transmitted at a time, collisions were detected and resolved, and half duplex was the only mode. On that medium, Cisco reminds readers, "collisions are not bad; they are essential to correct Ethernet operation" ([Cisco, collisions](https://www.cisco.com/c/en/us/support/docs/interfaces-modules/port-adapters/12768-eth-collisions.html)). Switching gave each link to two stations only, and 802.3x, approved in 1997, added "full duplex mode of operation on a speed-independent basis" with "pause-based flow control" ([IEEE 802.3x](https://standards.ieee.org/ieee/802.3x/1082/)). "In full-duplex Ethernet, collision detection is disabled" (Cisco, collisions). Gigabit Ethernet still defined half duplex on paper, but from 10 Gb/s on, every task force wrote the same objective: "Support full-duplex operation only" ([IEEE 802.3ae objectives](https://www.ieee802.org/3/ae/objectives.pdf)).
+
+## Auto-negotiation
+
+Twisted-pair Ethernet settles speed and duplex automatically. Cisco describes it as "an optional function of the IEEE 802.3u Fast Ethernet standard that enables devices to automatically exchange information over a link about speed and duplex abilities" ([Cisco, auto-negotiation](https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html)). It is defined in Clause 28 and carried by Fast Link Pulses: "An FLP burst is simply a sequence of 10BASE-T Normal Link Pulses", sent every "16ms +/- 8ms" ([UNH-IOL, Clause 28](https://www.iol.unh.edu/services/testing/ethernet/knowledgebase/Clause_28_Auto-Negotiation.pdf)), and its base page also advertises pause ability for flow control ([IEEE 802.3bz ad hoc, 2015](https://www.ieee802.org/3/NGEBASET/public/archadhoc/Kim_AutoNegotiation_v2_2015_4_14c.pdf)).
+
+From Gigabit on copper, it is no longer optional. The standard says "All 1000BASE-T PHYs shall provide support for Auto-Negotiation (Clause 28)", and an IEEE interpretation confirms that "selecting 1000BASE-T mode of operation still requires that Auto-Negotiation be used", because negotiation is also where the two ends settle the MASTER-SLAVE relationship, "necessary for establishing the timing control of each PHY" ([IEEE 802.3 interpretation 2-07/05](https://grouper.ieee.org/groups/802/3/interp/interp-2-0705.pdf)). The task force behind 2.5GBASE-T and 5GBASE-T proposed the same rule for them ([IEEE 802.3bz ad hoc, 2015](https://www.ieee802.org/3/NGEBASET/public/archadhoc/Kim_AutoNegotiation_v2_2015_4_14c.pdf)), and auto-negotiation support was an objective of 10GBASE-T from the start ([IEEE 802.3an objectives](https://www.ieee802.org/3/an/objectives.pdf)). Fibre is different: in 1000BASE-X "speed selection is not possible through Auto-negotiation" (interpretation, as above), and some 10 Gb/s fibre adapters "do not support Auto_Negotiation mode because they only work at one speed" ([IBM](https://www.ibm.com/docs/ssw_aix_72/performance/adapter_speed_duplex_mode_settings.html)).
+
+## Parallel detection, and the duplex mismatch
+
+The classic fault comes from one side negotiating and the other not. A port set to auto that hears no negotiation from its neighbour falls back on parallel detection, "an auto-negotiating device's means to establish links with non-negotiating, fixed speed devices": it can tell the speed from the signal, but "a device can never parallel detect to a full duplex link" ([UNH-IOL](https://www.iol.unh.edu/services/testing/ethernet/knowledgebase/Clause_28_Auto-Negotiation.pdf)). So it assumes half duplex. Cisco's table of combinations shows the result: one end fixed at "100 Mbps, Full-duplex", the other at "AUTO", which settles at "100 Mbps, Half-duplex", and the comment "Duplex Mismatch" ([Cisco, document 17053](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/17053-46.html)).
+
+A mismatched link does not fail; it limps. "The late collision is seen on the half-duplex side. As the half-duplex side transmits, the full duplex side does not wait its turn and transmits simultaneously", and the counters fill with a "rapid increase of FCS and alignment errors on the half-duplex side, and runts on the full-duplex port" ([Cisco, auto-negotiation](https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html)). The symptoms Cisco lists are "slow performance, intermittent connectivity, data link errors, and other issues" (document 17053), worst under load, which is why the fault can go unnoticed for months on a lightly used port.
+
+The fix is a rule about both ends, never one: "Always set both sides of the connection to auto-negotiate speed/duplex or set the speed/duplex manually on both sides" ([Cisco, document 12027](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/12027-53.html)), and Cisco's current advice is "to leave auto-negotiation on for those devices compliant with 802.3u" (Cisco, auto-negotiation). Hard-setting one end and leaving the other on auto is the one configuration that is guaranteed to go wrong.
+
+## What to remember
+
+- Read the name: speed, BASE, medium and coding letters, lane count. 100GBASE-SR4 is short-reach multimode, four lanes.
+- Twisted pair reaches 100 metres at every speed; the cable category is what changes, Category 6A for 10GBASE-T.
+- Full duplex ended collisions; from 10 Gb/s on, Ethernet is full duplex only.
+- Auto-negotiation is mandatory for Gigabit and faster on copper. Fibre at a fixed speed does not negotiate it.
+- Duplex mismatch: one end fixed, the other auto. Late collisions and FCS errors on the half-duplex side, runts on the full-duplex side. Configure both ends the same way.
+
+## Sources
+
+- [David Law, IEEE 802.3, PHY nomenclature letters, 12 July 2009 (read 2026-10-07)](https://ieee802.org/3/hssg/email/msg01702.html)
+- [David Law, past PHY naming, IEEE 802.3, 2015: reach letters including D and F (read 2026-10-07)](https://www.ieee802.org/3/cb/public/jan16/PHY_names_1115.pdf)
+- [David Law, IEEE 802.3 overview, IEEE 802 workshop, March 2011: amendments, PHY reaches (read 2026-10-07)](https://grouper.ieee.org/groups/802/minutes/2011-March/802%20workshop/IEEE_802d3_Law_V1p1.pdf)
+- [IEEE task force and standards pages for 802.3i, 802.3x, 802.3z, 802.3ab, 802.3ae, 802.3an, 802.3ba, 802.3by, 802.3bs and 802.3df: approval dates (read 2026-10-07)](https://www.ieee802.org/3/ba/index.html)
+- [Cisco, 100G QSFP transceiver data sheet, updated 6 October 2026: 100GBASE-SR4, LR4, DR (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-736282.html)
+- [Cisco, 40G QSFP data sheet: 40GBASE-SR4 (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-660083.html)
+- [Cisco, 400G data sheet, updated 3 March 2026: DR4, FR4, SR8 modules (read 2026-10-07)](https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/datasheet-c78-743172.html)
+- [IEEE 802.3cm objectives, March 2018, and IEEE 802.3cu objectives, September 2019 (read 2026-10-07)](https://www.ieee802.org/3/cm/Adopted_Objectives_NGMMF_01_08mar18.pdf)
+- [Cisco, Ethernet technologies, document 46792: 10BASE-T cabling and reach (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/46792-ethbase.html)
+- [IEEE 802.3ab tutorial, March 1998: 1000BASE-T over Category 5, PAM-5, four pairs in both directions (read 2026-10-07)](https://www.ieee802.org/3/tutorial/march98/mick_170398.pdf)
+- [Fluke Networks, 1000BASE-T over Category 5, 27 January 2014 (read 2026-10-07)](https://www.flukenetworks.com/knowledge-base/application-or-standards-articles-copper/1000base-t-over-category-5)
+- [Cisco, 10GBASE-T white paper C11-609513-02, December 2012 (read 2026-10-07)](https://www3-realm.cisco.com/en/US/prod/collateral/switches/ps5718/ps6021/white_paper_c11-609513.pdf)
+- [UNH-IOL, 10BASE-T MAU: Manchester encoding (read 2026-10-07)](https://www.iol.unh.edu/sites/default/files/knowledgebase/ethernet/10basetmau.pdf)
+- [Texas Instruments, DP83822 data sheet: 4B/5B and MLT-3 (read 2026-10-07)](https://www.ti.com/document-viewer/lit/html/SNLS505G/GUID-3C55A2C7-780A-44DB-BC52-C0653D0E6F52)
+- [Ethernet Alliance, 2022 Ethernet Roadmap: from NRZ to PAM-4 (read 2026-10-07)](https://ethernetalliance.org/wp-content/uploads/2022/03/Ethernet-Roadmap2022-Final.pdf)
+- [Cisco, Troubleshooting Ethernet Collisions, document 12768 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/interfaces-modules/port-adapters/12768-eth-collisions.html)
+- [IEEE Standards Association, IEEE 802.3x-1997: full duplex and pause (read 2026-10-07)](https://standards.ieee.org/ieee/802.3x/1082/)
+- [IEEE 802.3ae objectives, July 2001: full-duplex operation only (read 2026-10-07)](https://www.ieee802.org/3/ae/objectives.pdf)
+- [Cisco, Configure and Verify Ethernet 10/100/1000Mb Half/Full Duplex Auto-Negotiation, document 10561, 6 November 2025 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html)
+- [UNH-IOL, Clause 28 Auto-Negotiation: FLP bursts, parallel detection (read 2026-10-07)](https://www.iol.unh.edu/services/testing/ethernet/knowledgebase/Clause_28_Auto-Negotiation.pdf)
+- [IEEE 802.3bz ad hoc, auto-negotiation, 14 April 2015: pause bits, 2.5GBASE-T and 5GBASE-T (read 2026-10-07)](https://www.ieee802.org/3/NGEBASET/public/archadhoc/Kim_AutoNegotiation_v2_2015_4_14c.pdf)
+- [IEEE 802.3 interpretation 2-07/05: auto-negotiation required for 1000BASE-T; 1000BASE-X (read 2026-10-07)](https://grouper.ieee.org/groups/802/3/interp/interp-2-0705.pdf)
+- [IEEE 802.3an objectives, September 2003 (read 2026-10-07)](https://www.ieee802.org/3/an/objectives.pdf)
+- [IBM, AIX, adapter speed and duplex mode settings (read 2026-10-07)](https://www.ibm.com/docs/ssw_aix_72/performance/adapter_speed_duplex_mode_settings.html)
+- [Cisco, document 17053: speed and duplex combinations, duplex mismatch (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/17053-46.html)
+- [Cisco, document 12027: error counters, the rule for both ends (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/12027-53.html)

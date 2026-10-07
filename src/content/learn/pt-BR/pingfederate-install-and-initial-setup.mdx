@@ -42,3 +42,18 @@ Versões recentes também oferecem conectar o ambiente ao **PingOne** durante a 
 ## O que "instalado" deveria significar
 
 Uma instalação terminada é mais que um processo rodando. O checklist que separa instalado de pronto-para-produção: a versão da JVM documentada, o serviço configurado para subir no boot sob a conta dedicada, as portas 9999 e 9031 alcançáveis exatamente pelas redes que devem alcançá-las, a licença importada e sua expiração conhecida, as credenciais do primeiro admin guardadas direito, e a base URL confirmada como o nome que aparecerá em toda conversa com parceiros daqui em diante. As duas próximas paradas deste caminho: os [arquivos de inicialização](/learn/pingfederate-startup-files) que controlam como o servidor roda, e o [playbook de upgrade](/learn/pingfederate-upgrade-playbook) para quando esta versão deixar de ser a atual.
+
+## Esta série, em ordem
+
+Este artigo abre a série **PingFederate, da instalação ao upgrade**. Ele leva um servidor dos requisitos ao assistente de configuração; as partes acompanham o mesmo servidor pela vida: como ele inicia e onde moram os seus endpoints, quem pode administrá-lo, como os usuários são autenticados (stores, validadores e adapters, políticas, expressões), o que os seus logs respondem, os hábitos que o mantêm sem sustos e como ele é atualizado.
+
+1. **[Os Arquivos de Inicialização do PingFederate: Quem Controla o Quê](/learn/pingfederate-startup-files)**. Os lançadores, o run.properties para portas e o papel no cluster, as opções de heap: os arquivos que decidem como o servidor roda.
+2. **[O Mapa de Endpoints do PingFederate: Porta Admin, Porta de Runtime e o Que Mora Onde](/learn/pingfederate-endpoints-map)**. Endpoints administrativos na porta do console, endpoints de runtime na porta do engine, e o que mora onde.
+3. **[Quem Administra o PingFederate: Contas Nativas, Papéis e Login do Console via LDAP](/learn/pingfederate-admin-access-and-rbac)**. Contas nativas, os papéis que dividem o poder e o login do console pelo Lightweight Directory Access Protocol.
+4. **[Data Stores do PingFederate: LDAP e JDBC, Definidos Uma Vez, Usados em Todo Lugar](/learn/pingfederate-data-stores)**. Conexões de diretório e de banco de dados definidas uma vez e usadas em todo lugar, com hosts de failover e transporte cifrado.
+5. **[Como Usuários Provam Quem São: PCVs e os Cinco Adapters](/learn/pingfederate-authentication-adapters)**. Os validadores de credenciais de senha como camada reutilizável de verificação, depois os cinco adapters que o exame nomeia.
+6. **[Políticas de Autenticação do PingFederate: Árvores, Seletores e o Contrato no Fim](/learn/pingfederate-authentication-policies)**. Árvores de política com fontes e seletores, ramos Fail e Success, e o contrato no fim.
+7. **[Expressões OGNL no PingFederate: mapeamentos, critérios e por que escrever é um papel à parte](/learn/pingfederate-ognl-expressions)**. Expressões em mapeamentos de atributos e critérios de emissão: um mapeamento devolve um valor, um critério verdadeiro ou falso.
+8. **[Os Arquivos de Log do PingFederate: Qual Responde Qual Pergunta](/learn/pingfederate-log-files)**. Qual log responde qual pergunta: a aplicação, quem mudou o quê e as transações.
+9. **[Higiene Operacional do PingFederate: Licença, Notificações e o Arquivo de Configuração](/learn/pingfederate-operational-hygiene)**. A licença e sua expiração, os publicadores de notificação e o arquivo de configuração.
+10. **[Atualizando o PingFederate: O Utilitário, o Merge e a Ordem no Cluster](/learn/pingfederate-upgrade-playbook)**. O utilitário de upgrade que leva a configuração adiante, o merge e a ordem em que um cluster é atualizado.

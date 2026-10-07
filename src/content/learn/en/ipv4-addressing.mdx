@@ -40,3 +40,19 @@ Not every address is an ordinary host address. Several ranges are reserved for s
 These reserved ranges are not just trivia. A tool that fetches a user-supplied address must refuse to reach private, loopback, and link-local ranges, or it can be tricked into making requests against internal systems it should never touch, a class of attack called server-side request forgery. Knowing which ranges are internal is the first step in defending against it. This is exactly why the network-touching tools on this site check a resolved address against these ranges before ever connecting.
 
 To see how any address sits inside its block, its network address, broadcast address, and the usable range around it, try the [CIDR calculator](/learn), which computes all of it locally in your browser.
+
+## This series, in order
+
+This article opens the series **IPv4 addressing and subnetting**. With the 32 bits laid out, the series builds the skill in order: the prefix, dividing a network, unequal subnets and a full allocation worked end to end, overlaps and gaps, combining routes back up, then the ranges that are not public and the address translation that made one public address serve thousands.
+
+1. **[CIDR notation explained](/learn/cidr-notation)**. What the slash in 192.168.1.0/24 means, and how a prefix length defines a block of addresses.
+2. **[Subnetting basics](/learn/subnetting-basics)**. Dividing one network into smaller ones, and why borrowing host bits is the whole trick.
+3. **[VLSM: splitting a block into unequal subnets](/learn/vlsm)**. Carving one block into subnets of different sizes without waste, and the largest-first rule.
+4. **[A VLSM allocation, worked end to end](/learn/vlsm-worked-example)**. A full allocation for a realistic network: sizing, sorting, assigning, and accounting for what is left.
+5. **[Subnet overlaps and gaps](/learn/subnet-overlap-and-gaps)**. When prefixes overlap or contain one another, why longest-prefix match makes some overlaps deliberate, and finding the gaps.
+6. **[Route summarization](/learn/route-summarization)**. One route in place of many, the aligned allocation it depends on, and the black hole of summarising space you do not own.
+7. **[Supernetting and route aggregation](/learn/supernetting-and-aggregation)**. The alignment rule that decides whether two blocks merge, and exact aggregation against a covering supernet.
+8. **[Private IPv4 address space and RFC 1918](/learn/private-address-space)**. The three RFC 1918 ranges, why they are not routed on the internet, and the other special blocks.
+9. **[Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges)**. The full map an SSRF filter needs: private, loopback, link-local, carrier-grade NAT, documentation, and public.
+10. **[NAT Explained: Source, Destination, and Why the Internet Still Works](/learn/nat-explained)**. Source NAT lets thousands of hosts share one address, destination NAT publishes a service: how both rewrite packets in flight.
+11. **[CGNAT: what breaks when a thousand subscribers share one address](/learn/cgnat-address-sharing-and-attribution)**. The bridge to IPv6 that became permanent: what CGNAT changes for what customers can run and for who gets blamed.

@@ -87,6 +87,10 @@ export default async function MaterialsIndexPage({ params }: { params: Promise<{
                     <span>{c.license}</span>
                   </p>
                   <p className="materials-card-cta">{t("index.cardCta")} &rarr;</p>
+                  {/* Present the slides straight from the card (m2); above the card's own link, so it is its own click. */}
+                  <Link href={`/materials/${c.slug}/present`} className="btn btn-primary materials-card-present">
+                    {t("door.present")}
+                  </Link>
                 </li>
               ))}
             </ul>

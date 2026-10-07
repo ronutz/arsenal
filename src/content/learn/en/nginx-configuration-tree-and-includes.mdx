@@ -65,3 +65,14 @@ Two things follow. The name is how other directives refer to the same region, so
 ## What a learner should be able to state cold
 
 NGINX reads `nginx.conf` and everything else arrives through `include`, which pastes file contents in place, so a fragment that is not included is not read at all. Directives are legal only in their documented contexts and inherit downward per directive rather than as a group. The master process runs as root to bind privileged ports and open logs, while workers drop to the `user` account and are what actually reads content, which is why a clean start followed by a 403 is a worker-permission question and not a root one. Shared memory zones exist so workers share counters instead of each enforcing a limit alone; they are named so directives can refer to the same region, and sized finitely, so a full zone starts evicting.
+
+## This series, in order
+
+This article opens the series **NGINX, from configuration to troubleshooting**. It settles which file wins and which user runs what; the parts follow a request through the configuration (the location chosen, the URI sent upstream, the cache, the limits), then the reload and the first checks when something breaks, and end with Apache httpd, the problem NGINX was built to solve.
+
+1. **[NGINX location matching: why the block you expected is not the one that ran](/learn/nginx-location-matching-order)**. The fixed five-step order NGINX uses to choose a location, and the one step where the file's order matters.
+2. **[The NGINX proxy_pass trailing slash: one character that decides what your backend receives](/learn/nginx-proxy-pass-uri-rewriting)**. The trailing slash on proxy_pass: one character that decides whether the matched prefix is replaced.
+3. **[NGINX caching: what gets stored, what gets served, and the gap where user data leaks](/learn/nginx-proxy-cache-what-gets-stored)**. Storing and serving are different questions, and the gap between them where one user's data reaches another.
+4. **[Limiting requests, connections and bandwidth in NGINX: leaky buckets and the burst that surprises people](/learn/nginx-limiting-connections-and-rate)**. Three limits, three directives, one leaky bucket, and the burst behaviour that surprises people.
+5. **[Reloading NGINX without dropping traffic, and the first four things to check when it breaks](/learn/nginx-reload-signals-and-first-troubleshooting)**. Why a reload is not a restart, and the first four things to check, each in the log that answers it.
+6. **[Apache httpd: the server that ran the web, and the problem that produced NGINX](/learn/apache-httpd-and-what-nginx-was-written-against)**. How patches to an abandoned server came to run the web, and the architecture that struggled under 2000s traffic.

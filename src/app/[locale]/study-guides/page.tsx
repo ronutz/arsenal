@@ -1,9 +1,15 @@
 // ============================================================================
 // src/app/[locale]/study-guides/page.tsx
 // ----------------------------------------------------------------------------
-// THE STUDY GUIDES PAGE - the Learn-side umbrella over the site's two study
+// THE STUDY GUIDES PAGE - the Learn-side umbrella over the site's study
 // systems, and the page the human sitemap's "Study guides" link lands on:
 //
+//   0. TRAINING SERIES (milestone NF-1, 2026-10-06; src/content/study-guides/
+//      training-series.ts, rendered by components/study-guides/
+//      TrainingSeriesSection): the fundamentals curriculum level by level,
+//      NetFun I first, each series in modules with outcomes, parts and tools.
+//      First on the page: a student arrives for this. Guarded by
+//      scripts/check-training-series.mjs.
 //   1. CURATED READING PATHS (src/content/study-guides/reading-paths.ts):
 //      ordered walks through the Learn library, each pairing its articles
 //      (titles resolved live from the article registry, so a rename can never
@@ -32,6 +38,10 @@ import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 // The open materials registry, for the signpost under the hero (2026-10-06).
 import { MATERIALS } from "@/content/materials/materials";
+// The door card (milestone (m2), 2026-10-06), in place of the one-line signpost of (m1).
+import MaterialsDoor from "@/components/MaterialsDoor";
+// The training series (milestone NF-1, 2026-10-06), rendered before the reading paths.
+import TrainingSeriesSection from "@/components/study-guides/TrainingSeriesSection";
 import { readingPathVendor, READING_PATH_VENDOR_KEYS } from "@/lib/reading-path-vendors";
 import ReadingPathSections, {
   type PathGroup,
@@ -165,23 +175,15 @@ export default async function StudyGuidesPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
-              {/* The open materials signpost (milestone (m1), 2026-10-06): a complete course to download sits beside the
-                  reading paths, so the page that guides study points to it. The title and slide count come from the
-                  registry's first material; the link opens its datasheet. */}
-              {MATERIALS[0] && (
-                <p className="materials-signpost">
-                  {t.rich("materialsSignpost", {
-                    slides: MATERIALS[0].slides,
-                    link: (chunks) => (
-                      <Link href={`/materials/${MATERIALS[0].slug}`} className="materials-inline-link">
-                        {chunks}
-                      </Link>
-                    ),
-                  })}
-                </p>
-              )}
+              {/* The open course material (milestone (m1), 2026-10-06, as a one-line signpost; since (m2), PRIME 19:21: the
+                  doors to /materials "more easily findable ... in study guides as well", the door card): the course's
+                  cover, its name, and Present the slides beside the datasheet. */}
+              {MATERIALS[0] && <MaterialsDoor locale={locale} context="studyGuides" />}
             </div>
           </section>
+
+          {/* 0. The training series - the fundamentals curriculum, level by level (NF-1). */}
+          <TrainingSeriesSection locale={locale} />
 
           {/* 1. Curated reading paths - the topic-first, exam-free syllabi. */}
           <section className="section" id="reading-paths">

@@ -73,6 +73,17 @@ A RFC 6587 é Historic por desígnio; descreve o que foi observado, e seus autor
 
 Se o texto depois do PRI não é `1 ` seguido de um timestamp, o parser tenta a RFC 3164 §4.1: TIMESTAMP como `Mmm dd hh:mm:ss`, com a regra de que "If the day of the month is less than 10, then it MUST be represented as a space and then the number", então `Oct  5` tem dois espaços; HOSTNAME, que "will contain the hostname, as it knows itself. If it does not have a hostname, then it will contain its own IP address"; e TAG, "a string of ABNF alphanumeric characters that MUST NOT exceed 32 characters", terminada pelo primeiro caractere não alfanumérico, e é por isso que `sshd[1234]:` produz TAG `sshd` e CONTENT `[1234]: ...`. Não há ano nem fuso, e o parser diz isso em vez de inventá-los. Quando até esse cabeçalho está ausente, aplica-se a §4.3: o receptor trata tudo depois do PRI como a mensagem, e o parser rotula a linha de acordo.
 
+## Esta série, em ordem
+
+Este artigo abre a série **Syslog**. Ele lê uma mensagem moderna do primeiro colchete ao texto livre e diz de onde vem cada regra; as partes tratam das peças na ordem em que a mensagem as carrega (o PRI, sua facility e sua severity, o formato que vem depois), depois de como a mensagem viaja, do que os dispositivos de rede põem nela e de como a escala do syslog se compara a todas as outras escadas de log.
+
+1. **[O PRI do Syslog: Um Número, Dois Significados](/learn/syslog-pri-facility-severity)**. Um número entre sinais de menor e maior, dois significados: a aritmética que junta uma facility e uma severity no PRI.
+2. **[Facilities e Severities do Syslog, Explicadas](/learn/syslog-facilities-and-severities)**. As 8 severities como escala de urgência, e as 24 facilities, algumas úteis e outras sobras do Unix.
+3. **[Formatos de mensagem syslog: RFC 3164 vs RFC 5424](/learn/syslog-message-formats)**. O RFC 3164, frouxo e sem ano, contra o RFC 5424, preciso e estruturado, e como saber qual você tem.
+4. **[Como o syslog viaja: UDP, TCP e TLS](/learn/syslog-transport)**. UDP, TCP ou TLS, e se uma mensagem pode ser perdida, reordenada ou lida em trânsito.
+5. **[Syslog em Dispositivos de Rede: Qual Facility Faz o Quê](/learn/syslog-on-network-devices)**. Firewalls, balanceadores e switches registram nas facilities locais, cada fabricante com o seu padrão.
+6. **[Níveis de log entre sistemas: uma escala, muitas escadas](/learn/log-levels-across-systems-one-ladder-many-rungs)**. O syslog conta para baixo a partir de 0, o Python sobe de dez em dez, Log4j e Windows à sua maneira: uma escala, muitas escadas.
+
 ## Fontes
 
 - [RFC 5424, The Syslog Protocol, seção 6, Syslog Message Format](https://www.rfc-editor.org/rfc/rfc5424#section-6) (lida em 05/10/2026): o ABNF, a regra do zero à esquerda do PRI, VERSION, as regras do timestamp, os limites dos campos, dados estruturados e seus escapes, a BOM, as linhas de 480 e 2048 octetos, os exemplos da §6.5, os SD-IDs registrados da §7

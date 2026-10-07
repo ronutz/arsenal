@@ -44,3 +44,13 @@ Uma regra prática: Base64 para compacidade, Base32 para digitar, hex para ler, 
 ## Experimente
 
 A [ferramenta de códec](/tools/base64) executa as quatro. Cole qualquer texto, troque a codificação, e compare a saída lado a lado, com decodificação para cada uma, completamente no seu navegador.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Base16, Base32, Base64**. Ele põe as codificações lado a lado; as partes tratam de cada alfabeto em ordem de tamanho, de dois caracteres por byte a quatro caracteres a cada três bytes, e terminam onde o Base64 é de fato encontrado.
+
+1. **[Codificação hexadecimal (Base16), explicada](/learn/hex-encoding)**. Dois caracteres por byte: por que o hexadecimal é a forma padrão de imprimir bytes brutos.
+2. **[Base32, explicado](/learn/base32)**. Um alfabeto sem ambiguidades e insensível a maiúsculas, pago com tamanho, e onde ele aparece: segredos TOTP, endereços onion, DNS.
+3. **[Base64 e Base64URL, explicados](/learn/base64)**. Três bytes em quatro caracteres, por que existe o preenchimento e o que a variante segura para URL muda.
+4. **[Base64URL e o alfabeto seguro para URLs](/learn/base64url)**. Os dois caracteres que mudam para JWTs e PKCE, e o que acontece com o preenchimento.
+5. **[Onde o Base64 aparece: data URIs, MIME, PEM e Basic auth](/learn/base64-in-practice)**. Data URIs, MIME, PEM e Basic auth: onde binário é embrulhado em texto, e por que Base64 num cabeçalho não é criptografia.

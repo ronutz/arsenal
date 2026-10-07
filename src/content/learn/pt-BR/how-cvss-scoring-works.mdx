@@ -54,6 +54,16 @@ Dois analistas pontuando a mesma falha honestamente podem divergir mais que uma 
 
 **Publique o vetor, sempre, e trate uma pontuação sem ele como opinião vestida de número.** A precisão da equação é real e é uma precisão sobre as entradas, não sobre a vulnerabilidade.
 
+## Esta série, em ordem
+
+Este artigo abre a série **CVSS**. Ele mostra as duas metades da fórmula, explorabilidade e impacto; as partes leem a entrada (a string de vetor e suas oito métricas base), os ajustes que movem a pontuação depois da publicação, as faixas em que ela é relatada e os limites do que ela mede, e o que as versões mudaram.
+
+1. **[Lendo uma String de Vetor CVSS](/learn/cvss-vector-string-format)**. O prefixo de versão e os pares métrica:valor, lidos diretamente em vez de confiar numa pontuação renderizada.
+2. **[As Métricas Base do CVSS, Explicadas](/learn/cvss-base-metrics-explained)**. Quatro métricas de explorabilidade e quatro de impacto, e o que cada uma pergunta sobre a falha.
+3. **[Pontuações Temporal e Ambiental do CVSS](/learn/cvss-temporal-and-environmental)**. As métricas temporais só podem baixar a pontuação conforme os fatos surgem; as ambientais a recalculam para uma organização.
+4. **[Faixas de Severidade do CVSS, e o Que a Pontuação Não Diz](/learn/cvss-severity-bands-and-limits)**. De None a Critical, úteis para a triagem, e por que uma pontuação base mede severidade e não risco.
+5. **[CVSS v3.0, v3.1 e v4.0: O Que Mudou](/learn/cvss-v3-vs-v4)**. v3.0 e v3.1 compartilham a fórmula e diferem no arredondamento; a v4.0, lançada em 2023, é uma mudança maior.
+
 ## Fontes
 
 Cada fórmula e grupo de métricas acima vem da especificação da própria FIRST, que é a definição normativa da nota, não uma descrição dela.

@@ -64,3 +64,10 @@ The common ones, and what distinguishes them:
 ## What an exam candidate should be able to state cold
 
 FortiManager holds its own database of each device's configuration and installs from it. Out of sync means the two copies differ; import pulls from the device, install pushes to it, and choosing wrongly discards work. ADOMs scope devices, policies and objects, and carry a firmware version that should match the devices in them. Global database objects and header/footer policies are assigned down to ADOMs, with headers above and footers below the ADOM's own policies. Revisions are created on install, can be compared and reverted, and reverting affects the database until you install.
+
+## This series, in order
+
+This article opens the series **FortiManager**. Its one relationship (the manager's copy of each device is what gets installed) explains the rest; the two parts follow a change from the package to the device and back through the logs when it fails.
+
+1. **[FortiManager Policy Packages, Installs, and Workspace Mode](/learn/fortimanager-policy-packages-and-installs)**. A set of policies installed to one or more devices, the install preview worth reading, and workspace mode.
+2. **[FortiManager Scripts, Revision History, and Troubleshooting Installs](/learn/fortimanager-scripts-revisions-and-troubleshooting)**. The install log, the revision history and the sync status: the three places a failed change explains itself.

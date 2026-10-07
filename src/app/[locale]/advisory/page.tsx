@@ -48,6 +48,15 @@
 // Advisory signals judgement, scoped and scheduled. The boundary section says
 // so in words, and now also says where implementation can go afterwards.
 //
+// EXECUTIVE BRIEFINGS, FEATURED (2026-10-06, milestone (s1); PRIME, 17:54:
+// panels, fireside and executive briefings are wanted on Speaking "as long as
+// you feature executive briefings in the advisory section"). A briefing is
+// built for one organisation and its decisions, so it is advisory work: one
+// full-width card under the seven shapes, anchored at #executive-briefings
+// for /speaking, saying in one line how it differs from a talk. The closing
+// speaking note no longer offers "executive speaking", which was the
+// opposite of this.
+//
 // WHAT IS STILL DELIBERATELY ABSENT: training and enablement of every kind.
 // All education flows through Red Education, and the page says so.
 //
@@ -326,6 +335,23 @@ export default async function AdvisoryPage({
                   </li>
                 ))}
               </ul>
+              {/* EXECUTIVE BRIEFINGS (2026-10-06, see the header): set apart from the seven shapes, full width, with
+                  the shapes' question and answer rows, its own anchor for /speaking, and the line on how a briefing
+                  differs from a talk. */}
+              <div className="advisory-briefing" id="executive-briefings">
+                <p className="advisory-briefing-eyebrow">{t("briefingEyebrow")}</p>
+                <h3 className="advisory-shape-title advisory-briefing-title">{t("briefingTitle")}</h3>
+                <div className="advisory-shape-row">
+                  <span className="advisory-shape-label">{t("shapeQuestionLabel")}</span>
+                  <span className="advisory-shape-question">{t("briefingQuestion")}</span>
+                  <span className="advisory-shape-label">{t("shapeOutputLabel")}</span>
+                  <span className="advisory-shape-output">{t("briefingOutput")}</span>
+                </div>
+                <p className="advisory-shape-body">{t("briefingBody")}</p>
+                <p className="advisory-briefing-note">
+                  {t("briefingNotTalk")} <Link href="/speaking">{t("briefingNotTalkLink")}</Link>
+                </p>
+              </div>
             </div>
           </section>
 

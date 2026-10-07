@@ -69,3 +69,17 @@ The transferable questions are short, and they are the same for all of them:
 - **Would a second implementation agree?** Duplicate keys, timestamp precision, whitespace in a block scalar, a normalised URL - if two parsers can differ, a filter and its target can differ.
 - **What expands?** Anchors, entities, includes, escapes. Anything that makes a document larger on the way in is a resource question before it is a correctness question.
 - **And what is in the file that is not the data?** Comments, processing instructions, byte-order marks, trailing whitespace. Each has been the whole of somebody's outage.
+
+## This series, in order
+
+This article opens the series **The formats in between**, which gathers the format series into the one skill this map describes. Each part below opens a series of its own: read the map first, then follow whichever format is in front of you.
+
+1. **[The JSON Grammar: Six Types and a Few Strict Rules](/learn/json-grammar)**. Opens *JSON, exactly*: six types and a few strict rules, then the places where two parsers can honestly disagree.
+2. **[JSON and YAML in Practice: APIs, Declarations, and Orchestration](/learn/config-formats-in-practice)**. Opens *YAML and configuration files*: why APIs speak JSON while pipelines are written in YAML, and what YAML does on its own.
+3. **[Reading XML Structure](/learn/reading-xml-structure)**. Opens *XML and its hazards*: the parts of a document, then namespaces, entities and the attacks they allow.
+4. **[Bytes, code points, and UTF-8](/learn/character-encoding)**. Opens *Characters, bytes and Unicode*: why a character is not a byte, and how text survives the trip between systems.
+5. **[Base16, Base32, Base64, and percent-encoding compared](/learn/text-encodings-compared)**. Opens *Base16, Base32, Base64*: writing arbitrary bytes as text, and what each alphabet costs.
+6. **[The Anatomy of a URL](/learn/url-anatomy)**. Opens *URLs, read exactly*: the five parts of every URL, then encoding, resolution and the tricks played with them.
+7. **[What Unix Time Actually Is](/learn/unix-time-explained)**. Opens *Time as computers count it*: one integer since 1970, then units, leap seconds, 2038 and the written formats.
+8. **[UUIDs: random v4 and time-ordered v7](/learn/uuid)**. Opens *Identifiers: UUIDs and their kin*: how 128 bits stay unique without a registry, and which version suits a database key.
+9. **[How text diff works](/learn/how-diff-works)**. Opens *Diffs, merges and Git*: the longest common subsequence, then reading a diff, merge conflicts and the tools built on them.

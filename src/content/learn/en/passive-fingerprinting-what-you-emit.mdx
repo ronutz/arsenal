@@ -38,3 +38,11 @@ This is the exact same idea as JA3, which fingerprints a TLS client by the order
 Notice the thread running through all three layers: the power is not in any single fingerprint but in the *contradiction between them*. A stack that says Linux, a User-Agent that says Windows, and a header order that says curl cannot all describe the same honest client. Each layer is hard to forge on its own; forging all of them consistently, at the same time, is harder still. That is why layered passive fingerprinting is the backbone of bot detection - and why understanding it is the first step to reasoning honestly about what anonymity on the network can and cannot mean.
 
 All three tools here are decode-and-explain only. You paste a signature, a string, or a header block you already hold; nothing is read from your own browser, and nothing is sent anywhere. The aim is to show you the surface a tracker reads - not to read it.
+
+## This series, in order
+
+This article opens the series **Fingerprinting what a client emits**. It reads the three layers a client gives away without being asked; the parts take the richest of them, the TLS ClientHello, from JA3 through the change that broke it to the JA4 that replaced it.
+
+1. **[Passive TLS Fingerprinting: JA3, GREASE, and the Churn That Led to JA4](/learn/passive-tls-fingerprinting-ja3)**. How JA3 hashes versions, ciphers and extensions, why GREASE must be stripped, and the churn that followed.
+2. **[The Fingerprint That Broke, and the One Its Author Wrote to Replace It](/learn/ja3-to-ja4-fingerprinting)**. Chrome shuffled its extensions in 2023 and JA3 stopped working; the replacement, from the same author, works because it sorts.
+3. **[What Is a JA4 TLS Fingerprint?](/learn/what-is-a-ja4-tls-fingerprint)**. How a ClientHello becomes a stable JA4, and what a JA4 can and cannot tell you.

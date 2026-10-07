@@ -36,3 +36,12 @@ For completeness: **version 1** combines a timestamp with the generating machine
 ## Choosing one
 
 Reach for **v4** when you just need a random, opaque identifier and ordering does not matter. Reach for **v7** when the UUID will be a database key or anything else that benefits from sorting by creation time, which is increasingly the default recommendation. The [UUID tool](/tools/uuid) generates both and decodes the version, variant, and embedded timestamp of any UUID you paste, entirely in your browser.
+
+## This series, in order
+
+This article opens the series **Identifiers: UUIDs and their kin**. It compares the two versions most systems choose between; the parts complete the family, do the collision arithmetic, measure the cost of a random key in an index, and set the other sortable formats beside UUIDv7.
+
+1. **[UUID versions explained: v1 through v8](/learn/uuid-versions)**. The whole family from v1 to v8, and how the version and variant bits are read.
+2. **[Will UUIDs collide? Probability and the birthday bound](/learn/uuid-collisions)**. How many random bits a UUID really has, the birthday bound, and when a deterministic UUID is the better choice.
+3. **[UUIDs as database keys: v4, v7, and index locality](/learn/uuid-database-keys)**. UUIDs against auto-increment integers, and why random v4 keys quietly slow an index down.
+4. **[ULID, KSUID, Snowflake, and other sortable IDs](/learn/sortable-id-formats)**. ULID, KSUID and Snowflake, how each is built, and how much of their purpose UUIDv7 now covers.

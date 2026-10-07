@@ -31,6 +31,14 @@ Três detalhes na documentação do DO causam mais casos de suporte do que seu t
 
 O explicador é deliberadamente um explicador de estrutura e verificador de sanidade, não um validador completo de JSON-Schema. A F5 publica o schema DO completo, e o jeito pretendido de validar cada propriedade é apontar seu editor para ele, o VS Code verifica uma declaração contra o schema enquanto você digita. Uma declaração que lê limpo aqui ainda pode ser rejeitada pelo DO por uma propriedade que o [Explicador e validador de declaração DO](/tools/do-explainer-validator) não modela, então trate o explicador como a primeira passada rápida que nomeia cada classe, agrupa o onboarding e pega as armadilhas documentadas, e trate o schema publicado como a palavra final. Como toda ferramenta aqui, ela roda inteiramente no navegador e nunca contata um BIG-IP ou um BIG-IQ.
 
+## Esta série, em ordem
+
+Este artigo abre a série **O toolchain de automação do BIG-IP**. O Declarative Onboarding põe o equipamento na rede; as partes tratam das outras duas extensões do toolchain (a que configura aplicações e a que observa) e terminam nos templates, a maneira mais antiga e a mais nova de transformar um punhado de objetos numa aplicação gerenciada.
+
+1. **[Anatomia de uma declaração AS3: da classe AS3 até o Pool](/learn/as3-declaration-anatomy)**. Uma árvore JSON em termos de tenant e aplicação, lida de cima para baixo do envelope da requisição até o pool.
+2. **[Telemetry Streaming: A Extensão do Automation Toolchain que Observa em Vez de Configurar](/learn/bigip-telemetry-streaming-ts)**. A extensão que observa em vez de configurar: o que ela coleta e para onde envia.
+3. **[Implantando Aplicações com Templates: iApps e FAST](/learn/bigip-iapps-and-fast)**. Os iApps e o que o strict updates protege, e como o FAST moderniza os templates de forma declarativa.
+
 ## Fontes
 
 O padrão que mudou sem aviso está registrado no próprio histórico de revisões da F5 para a versão que o alterou, e é a entrada a reler antes de um upgrade.

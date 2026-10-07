@@ -47,3 +47,16 @@ Encryption transforms data so that only someone holding the right key can transf
 The purpose decides the tool. Need data to survive transport as text? Encode it. Need to verify integrity or compare without storing the original? Hash it. Need to keep data secret from anyone without the key? Encrypt it.
 
 The classic mistake is reaching for the wrong column. Storing passwords with plain encoding (reversible by anyone) or even plain encryption (one stolen key exposes everything) is far weaker than a purpose-built password hash, which is covered in its own article. The [Hash tool](/tools/hash) and the [Base64 tool](/tools/base64) let you watch hashing and encoding behave differently on the same input, the digest never reverses, the Base64 always does.
+
+## This series, in order
+
+This article opens the series **Hashes and HMAC**. Its two questions (is it reversible, does it need a key) place hashing among its neighbours; the parts then build the hash up from its guarantees to the choice of function, and add the key that makes HMAC, from its construction to its safe verification and its use in signing API requests.
+
+1. **[Cryptographic hashing: SHA-256 and the SHA-2 family](/learn/hashing)**. What a hash function guarantees, the properties that make it cryptographic, and why a digest is not encryption.
+2. **[Why Cryptographic Hashes Are One-Way](/learn/why-hashes-are-one-way)**. Preimage resistance, and why reversing a hash is always a search, never an inversion.
+3. **[Collisions, preimage resistance, and the birthday bound](/learn/hash-collisions)**. The three security properties, why collisions matter, and the birthday arithmetic that sets the real strength.
+4. **[Choosing a hash: MD5, SHA-1, SHA-2, SHA-3, and BLAKE](/learn/hash-function-families)**. MD5, SHA-1, SHA-2, SHA-3 and BLAKE: which are broken, which are safe, and how to choose.
+5. **[HMAC: keyed hashing for message authentication](/learn/hmac)**. Why a plain hash proves integrity but not authenticity, and how a secret key fixes that.
+6. **[Why HMAC, and not hash(key + message)](/learn/why-hmac)**. The length-extension attack that breaks hash(key + message), and the nested construction that defeats it.
+7. **[Verifying an HMAC safely: constant-time and replay](/learn/verifying-hmac)**. Why comparing with == leaks timing, and why a valid signature alone does not stop a replay.
+8. **[Authenticating API requests with HMAC](/learn/hmac-api-signing)**. How a shared secret lets a server trust a request it did not see being made, with replay protection in place.

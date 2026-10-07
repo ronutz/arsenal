@@ -26,3 +26,16 @@ Two supporting details complete the reading. Metrics break ties between equal-le
 ## The default gateway: the entry of last resort
 
 The default route - destination 0.0.0.0/0 - matches everything, and by the longest-match rule loses to everything more specific, which is exactly the design: it answers only when nothing else does. On an end host, the default gateway setting is this route; the host sends all off-subnet traffic to one router and lets the routed world take it from there. The purpose, as the retired blueprint phrased it, is simple to state and easy to underappreciate: it is the single address that stands between a host and every network it has never heard of. When it is wrong, the symptom is precise - on-subnet traffic works perfectly, everything else dies at the first hop - and recognizing that signature saves an hour of blaming the wrong layer.
+
+## This series, in order
+
+This article opens the series **Routing**. Longest-prefix match decides every forwarding choice; the parts show where the table's entries come from (the link-state protocols inside a network, BGP between networks and the trust it lacks), how the core forwards without a full table, and the three problems routing alone does not solve: noticing a dead link quickly, a gateway that cannot fail, and one stream for many receivers.
+
+1. **[OSPF: the map, the math, and area 0](/learn/ospf-primer)**. Every router gets the whole map and runs Dijkstra on it: flooding, areas and the backbone rule, cost.
+2. **[IS-IS: the routing protocol hiding under the internet](/learn/isis-primer)**. OSPF's link-state twin from the OSI world, which runs the carrier backbones most engineers never name.
+3. **[BGP: how the internet decides where traffic goes](/learn/bgp-primer)**. Autonomous systems, the path-vector idea and the attributes: how the internet decides where traffic goes.
+4. **[BGP: the trust fall the whole internet is standing on](/learn/bgp-and-the-routing-chokepoint)**. A protocol with no built-in way to tell a true announcement from a false one, and the hijacks that followed.
+5. **[MPLS: labels, stacks, and the BGP-free core](/learn/mpls-primer)**. Multiprotocol Label Switching in three moves (push, swap, pop): how labels free the core from routing tables and isolate thousands of virtual private network customers.
+6. **[BFD: when a link is up and dead at the same time](/learn/bfd-when-a-link-is-up-and-dead)**. Detection in milliseconds instead of tens of seconds, for the failure where the interface stays up.
+7. **[First-hop redundancy: VRRP, HSRP, and the gateway that is a fiction](/learn/first-hop-redundancy-vrrp-and-hsrp)**. A host knows one gateway and cannot fail over: VRRP and HSRP make the gateway a role, not a router.
+8. **[Multicast: what it costs to not flood](/learn/multicast-what-it-costs-to-not-flood)**. One copy instead of thousands, paid for in state, and failure modes that are not the expected ones.

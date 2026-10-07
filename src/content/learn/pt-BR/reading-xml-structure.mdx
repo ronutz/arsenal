@@ -35,3 +35,14 @@ Além de elementos e atributos há três construções especiais, comentários, 
 XML tem ordem de documento, e ela é significativa: elementos irmãos são uma sequência, não um conjunto. **Dois documentos com os mesmos elementos em ordem diferente são documentos diferentes**, exatamente o oposto da intuição que as chaves de objeto do JSON constroem.
 
 Isso tem uma consequência prática em assinatura e comparação. **A canonicalização existe porque dois documentos XML logicamente idênticos podem diferir byte a byte** — ordem de atributos, espaços em branco, declarações de namespace — e uma assinatura cobre bytes. É por isso que a verificação de assinatura XML é sutil de um jeito que a de JSON não é, e por que um documento que "parece igual" pode falhar na verificação por motivos invisíveis num diff.
+
+## Esta série, em ordem
+
+Este artigo abre a série **XML e seus riscos**. Depois que cada parte de um documento tem nome, a série passa do que um parser exige, pelo vocabulário e pelas construções que confundem quem lê, até as declarações de entidade que deixam um documento atacar o parser que o lê.
+
+1. **[XML bem formado vs válido](/learn/xml-well-formedness)**. A linha de base que um parser impõe antes de tudo (uma raiz, tags correspondidas, atributos entre aspas), e como a validade difere.
+2. **[Namespaces XML explicados](/learn/xml-namespaces-explained)**. Dois vocabulários, um nome de elemento: o prefixo é um atalho local e a URI é a identidade.
+3. **[CDATA, comentários e instruções de processamento](/learn/cdata-comments-and-processing-instructions)**. As três coisas num documento que não são elementos, e para que serve cada uma.
+4. **[XXE e entidades externas](/learn/xxe-and-external-entities)**. Como uma entidade externa faz um parser ler arquivos locais ou fazer requisições, e a correção direta: recusar o DOCTYPE.
+5. **[Billion laughs e expansão de entidades](/learn/billion-laughs-and-entity-expansion)**. Entidades que se multiplicam até um documento minúsculo encher a memória, e como limitar ou recusar isso.
+6. **[XXE e Por Que um Parser SAML Rejeita DOCTYPE](/learn/xxe-and-xml-security)**. Os dois ataques rastreados até a DTD, e por que um decodificador SAML reforçado rejeita qualquer DOCTYPE em vez de interpretá-lo com cuidado.

@@ -40,3 +40,14 @@ The order is not trivia: it dictates what data is available when. `HTTP::header`
 ## A map, not the territory
 
 [iRules event-order explainer](/tools/f5-irules-event-order) models the documented order for a Standard (full-proxy) virtual server, which covers the vast majority of BIG-IP LTM - Local Traffic Manager use cases. The exact set also depends on modules: BIG-IP Zero Trust Access (formerly BIG-IP APM - Access Policy Manager), F5 AWAF - Advanced WAF (formerly BIG-IP ASM - Application Security Manager), and others add their own events. It also depends on whether your iRule explicitly collects data. Use it to reason about *where* in the flow your logic should live, then confirm against a real configuration for anything unusual.
+
+## This series, in order
+
+This article opens the series **iRules events and the connection lifecycle**. It walks the events in the order a connection fires them; the parts answer the questions that order raises: which side of the proxy an event sees, why an event may not exist on a given virtual server, what the handshake adds, which of several rules runs first, and how to choose the event before choosing the commands.
+
+1. **[Client Side vs Server Side in iRules](/learn/irule-clientside-vs-serverside)**. A full proxy holds two connections, and the same command returns different things on each side.
+2. **[What Makes an Event Fire: Provisioning and Profiles](/learn/irule-events-modules-and-profiles)**. An event exists only when its module is provisioned and its profile is attached, and some need a third ingredient.
+3. **[FastL4 vs Standard: Which iRule Events You Get](/learn/irule-fastl4-vs-standard-events)**. The full TCP proxy's rich events against the fast path that deliberately gives most of them up.
+4. **[iRule SSL Handshake Events](/learn/irule-ssl-handshake-events)**. The events around the TLS handshake, and the ClientHello event that makes selection by SNI possible.
+5. **[iRule Priority and Multiple Rules](/learn/irule-priority-and-event-order)**. When several iRules listen for the same event, priority decides which runs first.
+6. **[Writing an iRule: The Order the Questions Come In](/learn/writing-irules-that-behave)**. Event first, commands second, cost third: why performance is the last question and not the first.

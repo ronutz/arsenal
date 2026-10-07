@@ -80,3 +80,11 @@ A few settings determine whether your deployment is a good citizen and whether i
 ## What an exam candidate should be able to state cold
 
 The SMTP envelope routes the message and is what policies match; the header is what the user sees, and the two may legitimately differ, which is what display-name spoofing exploits. Rejecting at RCPT TO is cheaper and safer than accepting then discarding, because a bounce to a forged sender makes you part of the problem. Gateway mode makes FortiMail the MX in front of your server, transparent mode inserts it without changing addressing, and server mode replaces the mail server entirely. Protected domains define what inbound and outbound mean, and recipient verification prevents accepting mail for addresses that do not exist.
+
+## This series, in order
+
+This article opens the series **FortiMail**. The operation mode chosen first decides what the appliance can do; the parts follow a message through it: the policy layers that admit or refuse the session, the content controls and encryption once it is accepted, and the second layer for mail already filtered in the cloud.
+
+1. **[FortiMail Policies and Antispam: Access Control, IP Policies, and Session Filtering](/learn/fortimail-policies-session-filtering-and-antispam)**. The layered policy model, and which layer acts when, which explains why a message was allowed or refused.
+2. **[FortiMail Content Security, Archiving, and Encryption Including IBE](/learn/fortimail-content-security-encryption-and-ibe)**. What an accepted message may contain, who may read it, and how identity-based encryption works.
+3. **[FortiMail Workspace Security: Protecting Microsoft 365 and Google Workspace](/learn/fortimail-workspace-security-and-policies)**. Protecting Microsoft 365 and Google Workspace by connecting through the platform, and why a second layer must justify itself.

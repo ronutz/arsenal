@@ -1,0 +1,62 @@
+---
+slug: http-from-the-request-line
+title: "HTTP, a partir da linha de requisição: o que uma mensagem significa e como ela viaja"
+summary: "Toda troca HTTP são duas mensagens, uma requisição e uma resposta, e desde junho de 2022 o padrão as descreve em duas camadas: o que uma mensagem significa (métodos, códigos de status, campos de cabeçalho), definido uma vez para todas as versões, e como os seus bytes viajam, definido para cada versão separadamente. O mapa da série sobre HTTP: qual artigo lê qual parte de uma mensagem, e em que ordem."
+concepts: ["http", "http semantics", "request", "response", "http methods", "status codes", "http headers", "cookies", "proxies", "http versions", "index"]
+relatedTools: ["http-methods-comparison", "curl-command-explainer"]
+relatedArticles: ["raw-http-requests-and-how-to-replay-them", "http-versions-09-to-3", "http-message-framing-content-length-and-chunked", "http-query-method"]
+category: networking
+order: 334
+status: reviewed
+updated: "2026-10-06"
+---
+
+O HTTP parece uma longa lista de coisas para aprender: os métodos, dezenas de códigos de status, um registro extenso de campos de cabeçalho, cookies, proxies, cinco versões. Ele é menor do que a lista. Toda troca é uma requisição e uma resposta, e cada item da lista ou é uma parte dessas duas mensagens, ou é uma maneira de transportá-las.
+
+## Uma troca, duas mensagens
+
+O padrão resume o protocolo inteiro numa frase: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection", ou seja, um protocolo de requisição e resposta, sem estado, para trocar mensagens por uma conexão (RFC 9110, seção 3.3). Um cliente envia uma requisição: um método que diz o que ele quer que seja feito, o alvo sobre o qual quer que seja feito, campos de cabeçalho que qualificam o pedido e, às vezes, um corpo. O servidor responde com um código de status que diz como foi, campos de cabeçalho próprios e, normalmente, um corpo.
+
+Essa também é a ordem em que vale aprender. Leia uma requisição de cima para baixo, como um servidor lê: a linha de requisição (o método e o alvo), depois os campos, depois o corpo e o ponto em que ele termina. Leia a resposta da mesma maneira: o status, depois os campos. A série segue essa ordem e, em seguida, passa às camadas em volta das mensagens.
+
+## Duas camadas desde junho de 2022
+
+Durante a maior parte da sua vida, o padrão do HTTP/1.1 misturava dois tipos de regra. Umas dizem o que uma mensagem significa: o que um GET promete, o que um 304 obriga um cache a fazer, para que serve o campo Host. Outras dizem como uma mensagem é disposta em bytes: linhas de texto que terminam num retorno de carro e numa quebra de linha, e um tamanho ou uma codificação em blocos (chunked) que mostra onde o corpo termina.
+
+Em junho de 2022, a Internet Engineering Task Force (IETF) republicou o HTTP com os dois tipos separados. A RFC 9110, HTTP Semantics, define os aspectos do protocolo que são compartilhados por todas as versões: os métodos, os códigos de status, os campos. Cada versão tem então um documento próprio para o fio: a RFC 9112 para as mensagens de texto do HTTP/1.1, a RFC 9113 para os quadros binários e os fluxos multiplexados do HTTP/2, e a RFC 9114 para o HTTP/3, que roda sobre o transporte QUIC em vez do TCP.
+
+A separação é a ideia mais útil da série. Um 404 significa a mesma coisa no HTTP/1.1 e no HTTP/3, e um GET faz as mesmas promessas nos dois; o que muda é como são enquadrados os bytes que os carregam. Quando algo quebra, pergunte em qual camada quebrou. Um servidor que responde 403 a uma requisição que deveria permitir tem um problema de significado. Dois equipamentos que discordam sobre onde uma mensagem termina têm um problema de enquadramento, e é nessa discordância que mora o request smuggling.
+
+## O que o HTTP deixa para os outros
+
+O HTTP não guarda estado, por projeto: cada requisição vale por si, e o servidor não lhe deve memória alguma da anterior. O estado foi acrescentado por cima. Um servidor define um cookie com o campo de cabeçalho Set-Cookie e o navegador o devolve com o campo Cookie, nas requisições que o escopo do cookie permite (RFC 6265).
+
+O caminho também raramente é direto. O padrão prevê intermediários que atendem às requisições por uma cadeia de conexões e nomeia três formas comuns: proxy, gateway e túnel (RFC 9110, seção 3.7). Quase tudo o que um operador mantém entre um navegador e um servidor é um deles, um forward proxy na borda do escritório ou um reverse proxy na frente dos servidores, e cada um lê, e pode reescrever, as mensagens que repassa.
+
+## O método mais novo
+
+A lista de métodos cresceu em junho de 2026. A RFC 10008 define o QUERY: como no POST, a entrada da consulta vai no conteúdo da requisição, e não na URI; mesmo assim, uma requisição QUERY é segura em relação ao recurso de destino e é idempotente. Uma busca grande demais para caber num endereço agora pode ir como corpo e, ainda assim, ser repetida, e ter a resposta guardada em cache, como acontece com um GET.
+
+## Esta série, em ordem
+
+Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela, depois um epílogo.
+
+1. **[Ler uma requisição HTTP crua, e transformá-la de volta em algo executável](/learn/raw-http-requests-and-how-to-replay-them)**. A mensagem como ela realmente chega, linha de requisição, campos e corpo, e as três armadilhas ao reproduzi-la.
+2. **[Métodos HTTP: Os Verbos da Web](/learn/http-methods-the-verbs)**. A primeira palavra da linha de requisição, e as duas propriedades, segura e idempotente, sobre as quais caches, novas tentativas e crawlers agem.
+3. **[Códigos de Status HTTP: As Cinco Famílias](/learn/http-status-codes-the-five-families)**. O primeiro dígito da resposta faz a maior parte do trabalho; depois, os códigos que um operador realmente encontra.
+4. **[Cabeçalhos HTTP: A Anatomia dos Metadados](/learn/http-headers-anatomy)**. Os campos que as duas mensagens carregam: os seus quatro papéis, o campo Host e a divisão entre fim a fim e salto a salto.
+5. **[Cookies HTTP: Estado Sobre um Protocolo Sem Estado](/learn/http-cookies-state-over-stateless)**. Dois campos de cabeçalho que dão memória a um protocolo sem estado, e as regras de quando o bilhete viaja.
+6. **[Onde uma mensagem HTTP/1.1 termina: Content-Length, chunked e as oito regras](/learn/http-message-framing-content-length-and-chunked)**. A camada de enquadramento: como um receptor sabe onde uma mensagem para e a próxima começa, e o que o smuggling explora.
+7. **[Proxies HTTP: Forward vs Reverse, Explícito vs Transparente](/learn/http-proxy-forward-and-reverse)**. Os intermediários: para qual lado um proxy trabalha, se o cliente sabe que ele está ali, e os campos que registram a sua passagem.
+8. **[HTTP/0.9 vs 1.0 vs 1.1 vs 2 vs 3: Cinco Versões do Protocolo da Web](/learn/http-versions-09-to-3)**. Os mesmos significados transportados de cinco maneiras, de um GET de uma linha a fluxos multiplexados sobre QUIC.
+9. **[HTTP QUERY: a leitura que finalmente carrega um corpo](/learn/http-query-method)**. O método mais novo: o que ele resolve, como as suas respostas vão para o cache e o que cada camada da infraestrutura precisa verificar.
+10. **[Mensagens escondidas em cabeçalhos HTTP: tributos, piadas e vagas de emprego no overhead](/learn/hidden-messages-in-http-headers)**. Um epílogo: o que as pessoas escreveram nos campos que quase ninguém lê.
+
+## Fontes
+
+- [RFC 9110, HTTP Semantics (STD 97), junho de 2022: o resumo (os aspectos "shared by all versions"), a seção 3.3 (um protocolo de requisição e resposta sem estado) e a seção 3.7 (intermediários: proxy, gateway, túnel) (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9112, HTTP/1.1 (STD 99), junho de 2022: a sintaxe e o enquadramento das mensagens da versão 1.1 (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9112)
+- [RFC 9113, HTTP/2, junho de 2022: "an optimized expression of the semantics" do HTTP; torna obsoletas a RFC 7540 e a RFC 8740 (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9113)
+- [RFC 9114, HTTP/3, junho de 2022: o HTTP sobre o transporte QUIC (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9114)
+- [RFC 6265, HTTP State Management Mechanism, abril de 2011: os campos de cabeçalho Cookie e Set-Cookie (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc6265)
+- [RFC 10008, The HTTP QUERY Method, junho de 2026: a seção 1 (a consulta passada como conteúdo da requisição), a seção 2 (segura e idempotente) e a seção 2.7 (a resposta pode ir para o cache) (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc10008)

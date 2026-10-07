@@ -65,3 +65,11 @@ Clocks drift, so validators accept codes from adjacent time steps. **Every step 
 That is a threefold improvement in an attacker's odds per attempt, permanently, in exchange for tolerating drift that a well-run client rarely has. A generous window feels like kindness to users and reads, from the other side, as a discount.
 
 **Keep the window at ±1 step and put the real defence on attempt rate.** Guessing six digits is only hard while guessing is slow: **the code length is doing much less work than the lockout is.**
+
+## This series, in order
+
+This article opens the series **One-time codes and passkeys**. It shows the engine shared by HOTP and TOTP; the parts follow a code's life (how the secret reaches the app, how the server accepts a code without accepting a replay) and end with the authentication that cannot be read out and relayed.
+
+1. **[Provisioning Authenticators: otpauth URIs and QR Codes](/learn/totp-provisioning-uris-and-qr)**. The otpauth URI, usually a QR code, that carries the secret and its parameters into an authenticator app.
+2. **[Validating one-time passwords: drift, windows, and replay](/learn/validating-totp-codes)**. Clock drift, the acceptance window, reuse and throttling: each a trade between usability and security.
+3. **[Passkeys: why this MFA is different from the MFA that keeps failing](/learn/passkeys-and-phishing-resistant-authentication)**. Anything a user can read out can be relayed in real time; why passkeys are a different kind of multi-factor authentication.

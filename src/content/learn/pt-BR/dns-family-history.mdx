@@ -83,6 +83,15 @@ O trabalho veio do SRI, do ISI e de Berkeley, e nenhum dos três o comercializou
 
 **E a propriedade fundadora continua valendo.** Quarenta anos depois, o sistema faz o que um aluno de pós especificou em cem páginas: delegar autoridade, cachear a resposta, deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais de 1983 na internet segue rodando sem modificação, e a razão disso tem menos a ver com o protocolo do que com a decisão de DAR a autoridade em vez de segurá-la.
 
+## Esta série, em ordem
+
+Este artigo abre a série **O DNS como infraestrutura**. Ele conta como o DNS surgiu; as partes se voltam para o sistema como ele é: a falha que deixava tomar um domínio inteiro em segundos, o que aconteceria se a raiz apagasse ou mentisse, o que você escolhe quando escolhe um resolvedor público e o resolvedor usado como controle de segurança.
+
+1. **[A falha de Kaminsky: o verão em que oitenta fabricantes corrigiram o mesmo defeito no mesmo dia](/learn/the-kaminsky-dns-flaw)**. 2008: a fraqueza conhecida que se revelou capaz de tomar domínios inteiros, e o dia em que oitenta fabricantes a corrigiram juntos.
+2. **[O que acontece se a raiz do DNS apagar - ou começar a mentir](/learn/what-happens-if-the-dns-root-goes-dark)**. Cerca de dois dias de delegações em cache se a raiz silenciar, e o caso muito pior de uma raiz que mente.
+3. **[Resolvedores DNS públicos: o que você está de fato escolhendo](/learn/choosing-a-public-dns-resolver)**. Cloudflare, Google, Quad9 e OpenDNS diferem menos em velocidade do que em política: o que cada um faz com as suas consultas.
+4. **[Listas de bloqueio DNS: RPZ, classificação e o custo de uma resposta recusada](/learn/dns-blocklists-and-response-policy)**. Feeds de RPZ, classificações de fabricantes e o custo de uma resposta recusada: o controle de segurança mais barato que existe.
+
 ## Fontes
 
 - [ACM Software System Award de 2019 a Paul Mockapetris: a comunidade dependia de um arquivo hosts.txt gerido centralmente, atualizado à mão pelo SRI e distribuído diariamente; ele assinou sozinho as RFCs 882 e 883 em 1983, desenvolveu a primeira implementação de servidor, o Jeeves, e a implantou no ISI e no SRI para os servidores raiz iniciais](https://awards.acm.org/award-recipients/mockapetris_3342151)

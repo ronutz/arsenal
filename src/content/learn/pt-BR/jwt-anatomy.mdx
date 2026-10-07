@@ -57,3 +57,15 @@ Um JWT é **assinado, não criptografado** (a criptografia é um padrão separad
 Um JWT assinado também **não é facilmente revogável por si só.** Como as claims vivem dentro do token e a verificação não precisa de consulta ao servidor, um token permanece válido até expirar, mesmo que você queira cancelá-lo antes. A resposta prática é tempos de vida curtos mais um mecanismo separado (um token de atualização, uma lista de revogação ou introspecção de token) quando a revogação imediata é exigida.
 
 A [ferramenta JWT](/tools/jwt) decodifica o cabeçalho e as claims de um token, lê sua expiração e seu tempo em linguagem clara, e verifica uma assinatura HS256, HS384 ou HS512 contra um segredo que você cola, tudo no seu navegador. O token e o segredo nunca são enviados a lugar algum.
+
+## Esta série, em ordem
+
+Este artigo abre a série **JWT e JWKS**. Ele desmonta um token e separa decodificar de verificar; as partes fornecem tudo de que a verificação precisa, em ordem: o algoritmo, a chave e seus parâmetros, o conjunto de chaves publicado e sua rotação, a sequência estrita do kid à assinatura, e as falhas que vêm de pular um passo ou de confiar no próprio cabeçalho do token.
+
+1. **[Algoritmos de assinatura de JWT: HMAC, RSA e ECDSA](/learn/jwt-signing-algorithms)**. Por que o cabeçalho alg importa, assinatura simétrica contra assimétrica, e como escolher entre HMAC, RSA e ECDSA.
+2. **[Tipos de Chave JWK: RSA, EC, OKP e oct](/learn/jwk-key-types)**. O campo kty e os quatro tipos de chave que cobrem quase tudo: RSA, EC, OKP e oct.
+3. **[Parâmetros e thumbprints de JWK](/learn/jwk-parameters-and-thumbprints)**. Para que serve uma chave e como ela é nomeada: kid, use e o thumbprint calculado da RFC 7638.
+4. **[JWKS e Rotação de Chaves: Como os Provedores Publicam suas Chaves](/learn/jwks-and-key-rotation)**. O conjunto de chaves que um provedor publica para que qualquer um verifique seus tokens, e como as chaves são rotacionadas sem quebrá-los.
+5. **[Verificando um JWT com um JWKS: do kid à Assinatura](/learn/verifying-a-jwt-with-jwks)**. A sequência curta e estrita: ler o cabeçalho, achar a chave pelo kid, confirmar o algoritmo, checar a assinatura.
+6. **[Armadilhas de segurança em JWT: alg:none, confusão de chave e verificações ausentes](/learn/jwt-security)**. alg:none, confusão de chave e verificações de claims ausentes: o punhado de erros, e a validação que um verificador deve fazer.
+7. **[Ataques de confusão de algoritmo em JWT](/learn/jwt-algorithm-confusion)**. Confiar no algoritmo do próprio token: aceitar none, ou verificar RS256 como HS256 usando a chave pública como segredo.

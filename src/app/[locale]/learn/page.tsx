@@ -31,6 +31,8 @@
 
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { STORY_GROUPS, STORY_SLUGS } from "@/content/learn/stories";
+// The article series (LS-0, 2026-10-06), for their door among the areas around Learn.
+import { LEARN_SERIES } from "@/content/learn/series";
 import { ogImages } from "@/lib/og";
 import { getArticle, getArticlesByCategory, getArticleVendors } from "@/lib/learn";
 import type { CSSProperties } from "react";
@@ -38,6 +40,8 @@ import { GLOSSARY } from "@/content/glossary/glossary";
 import { partnerVendors } from "@/content/vendors/partners";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
 import { studyGuides, objectiveCount } from "@/content/certifications/study-guides";
+// The open course material (milestone (m2), 2026-10-06): its count and its slides for the sixth way to learn.
+import { MATERIALS } from "@/content/materials/materials";
 import FamilyChip from "@/components/FamilyChip";
 import { articleCategories, categoryColor } from "@/config/categoryColors";
 import { Link } from "@/i18n/navigation";
@@ -126,16 +130,22 @@ export default async function LearnIndexPage({
   const toolName = (id: string) => (toolRegistry.some((tl) => tl.id === id && tl.available) ? tTools(`${id}.name`) : null);
   // People in the glossary, the count on the People row.
   const peopleCount = GLOSSARY.filter((e) => e.person).length;
-  // THE FIVE LEARNING MODES (SCOUT L4): a question, a destination, a verb, a count where one is counted.
+  // THE SIX LEARNING MODES (SCOUT L4; the sixth, the open course, since (m2)): a question, a destination, a verb, a count
+  // where one is counted.
   const modes: { key: string; href: string; accent: string; count: string }[] = [
     { key: "subject", href: "#subjects", accent: "var(--accent-primary)", count: t("hub.modeCount.subject", { count: articleCount, subjects: groups.length }) },
     { key: "path", href: "/study-guides", accent: "var(--color-warning)", count: t("hub.modeCount.path", { count: READING_PATHS.length }) },
     { key: "certification", href: "/certifications", accent: "var(--color-success)", count: t("hub.modeCount.certification", { count: studyGuides.length, objectives: totalObjectives }) },
     { key: "platform", href: "/vendor-hubs", accent: "var(--accent-secondary)", count: t("hub.modeCount.platform", { count: VENDOR_FAMILIES.length }) },
     { key: "lookup", href: "/glossary", accent: "var(--accent-amber)", count: t("hub.modeCount.lookup", { count: GLOSSARY.length }) },
+    // The sixth (milestone (m2); PRIME 2026-10-06 19:21: the doors to /materials "more easily findable, in the Learn ...
+    // sections"): a whole course, slides and notes, to present in the browser or download.
+    { key: "course", href: "/materials", accent: "var(--color-info)", count: t("hub.modeCount.course", { count: MATERIALS.length, slides: MATERIALS.reduce((n, m) => n + m.slides, 0) }) },
   ];
   // THE CONTEXTUAL AREAS (SCOUT L6, L7): around Learn, lower and quieter.
   const around: { key: string; href: string; count: string }[] = [
+    // The article series first among the areas around Learn (LS-0): subjects told in order, opener first.
+    { key: "series", href: "/learn/series", count: t("portalSeriesCount", { count: LEARN_SERIES.length }) },
     { key: "practice", href: "/practice", count: t("portalPracticeCount", { count: practiceCount }) },
     { key: "roles", href: "/roles", count: t("portalRolesCount", { count: ROLES.length }) },
     { key: "people", href: "/people", count: t("portalPeopleCount", { count: peopleCount }) },
@@ -231,6 +241,13 @@ export default async function LearnIndexPage({
               <div className="hub-start">
                 <h2 className="section-title hub-h2">{t("hub.startTitle")}</h2>
                 <ul className="hub-around-list">
+                  {/* The open course first (m2): a beginner's most complete start, from the routing concepts up. */}
+                  {MATERIALS[0] && (
+                    <li className="hub-around-item">
+                      <Link href={`/materials/${MATERIALS[0].slug}`} className="hub-around-link">{t("hub.start.course.label")}</Link>
+                      <span className="hub-around-lede">{t("hub.start.course.lede", { slides: MATERIALS[0].slides })}</span>
+                    </li>
+                  )}
                   {(["fundamentals", "exam", "problem"] as const).map((k) => (
                     <li key={k} className="hub-around-item">
                       <Link href={k === "fundamentals" ? "/category/networking" : k === "exam" ? "/certifications" : "/practice"} className="hub-around-link">{t(`hub.start.${k}.label`)}</Link>

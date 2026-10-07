@@ -121,3 +121,18 @@ Uma **impressão digital** (fingerprint) de certificado é simplesmente um hash 
 Esta é a única ideia mais importante, e ela espelha a mesma cautela que se aplica aos JSON Web Tokens. Ler os campos de um certificado lhe diz o que ele *afirma*. Não lhe diz que a afirmação é *verdadeira*. A validação completa é um processo separado e mais pesado: checar que a assinatura encadeia até uma raiz confiável, que nenhum dos certificados na cadeia está expirado ou revogado, que o nome ao qual você se conectou está no SAN, e que os usos da chave permitem o que você está fazendo.
 
 Um decodificador de certificados, este incluído, é um instrumento de inspeção e aprendizado. Ele lhe mostra precisamente o que um emissor afirmou e como foi codificado. Trate a saída como uma leitura fiel do documento, não como um veredito sobre confiar nele ou não.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Certificados: o objeto e a confiança**. Depois de desmontar um certificado byte a byte, a série o acompanha pela vida (o arquivo em que é guardado, a requisição que o cria, a validação e a montagem de cadeia que um cliente faz, os ponteiros e a revogação que podem cancelá-lo) e termina no próprio modelo de confiança: quem tem permissão para atestar, o que aconteceu quando um deles quebrou e como o desenho chegou a ser o que é.
+
+1. **[PEM, DER e os formatos de arquivo de certificado](/learn/certificate-formats)**. PEM, DER e o que arquivos .crt, .pem, .pfx e .p12 realmente contêm.
+2. **[Requisições de assinatura de certificado e como certificados são emitidos](/learn/certificate-signing-request)**. O que uma CSR contém, por que a chave privada nunca deixa a sua máquina e como uma CA valida e emite.
+3. **[Como a validação de certificados de fato funciona](/learn/certificate-validation)**. Os passos que um cliente executa: montar a cadeia, checar assinaturas e datas, casar o nome, impor as restrições.
+4. **[Cadeias de certificados: a ordem, a âncora e o que as quebra](/learn/certificate-chains-order-anchors-and-what-breaks-them)**. Da folha a uma raiz confiável: a ordem da cadeia, o que o TLS 1.3 relaxou, por que a raiz fica de fora e as falhas que a quebram.
+5. **[Authority Information Access: As URLs de OCSP e CA Issuers](/learn/authority-information-access)**. Os dois ponteiros da extensão AIA: onde perguntar sobre revogação (OCSP) e onde buscar o emissor (CA Issuers).
+6. **[Revogação de certificados: CRL, OCSP e certificados de vida curta](/learn/certificate-revocation)**. A lista de revogação de certificados (CRL), o OCSP e os certificados de vida curta: por que cancelar um certificado antes da expiração funciona mal, e o que o substitui.
+7. **[OCSP Must-Staple: Fechando a Brecha do Soft-Fail](/learn/ocsp-must-staple)**. A brecha do soft-fail nas checagens OCSP ao vivo, e como o stapling e a flag Must-Staple a fecham, a um preço operacional.
+8. **[Autoridades certificadoras: o cadeado é uma lista de gente que você nunca conheceu](/learn/the-certificate-authority-chokepoint)**. Algumas centenas de organizações, qualquer uma capaz de emitir um certificado para qualquer nome: o desenho, e como ele falhou.
+9. **[2011: o ano em que as âncoras de confiança quebraram](/learn/rsa-and-diginotar-2011)**. O ano em que as âncoras de confiança quebraram: a invasão da RSA SecurID e a autoridade certificadora que emitiu 531 certificados fraudulentos.
+10. **[PKI: uma monografia de graduação, e um modelo de confiança que ninguém projetaria hoje](/learn/pki-family-history)**. Da monografia de graduação de 1978 que nomeou o certificado a um modelo de confiança que ninguém projetaria hoje.

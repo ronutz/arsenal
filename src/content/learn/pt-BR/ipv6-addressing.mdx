@@ -76,3 +76,12 @@ Buscas reversas (endereço para nome) para IPv6 vivem sob o domínio **ip6.arpa*
 ## Uma nota sobre o que a ferramenta faz
 
 A ferramenta IPv6 é uma calculadora determinística e local. Ela analisa, canoniza, classifica, e computa, tudo no seu navegador, sem nenhuma busca contra a rede ao vivo. Ela lhe diz o que um endereço **é** estruturalmente. Ela não lhe diz se aquele endereço é alcançável, alocado, ou em uso, que são perguntas separadas que requerem consultar a rede ou um registro.
+
+## Esta série, em ordem
+
+Este artigo abre a série **IPv6**. Ele trata do próprio endereço; as partes acompanham um host entrando numa rede na ordem em que ele encontra cada peça: a sub-rede em que cai, a forma como obtém um endereço, a descoberta de vizinhos que substitui o ARP e a maquinaria de transição que o deixa alcançar o mundo IPv4.
+
+1. **[Sub-redes IPv6 e a fronteira /64](/learn/ipv6-subnetting)**. Estrutura em vez de escassez: por que uma sub-rede é quase sempre um /64, e como a delegação de prefixos distribui espaço.
+2. **[Como hosts IPv6 obtêm endereços: SLAAC e DHCPv6](/learn/ipv6-address-configuration)**. Do link-local para cima: anúncios de roteador, SLAAC, endereços de privacidade e DHCPv6.
+3. **[Descoberta de Vizinhos: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 e multicast em vez do ARP por broadcast: as cinco mensagens da Descoberta de Vizinhos.
+4. **[Rodando IPv6 e IPv4 juntos: dual-stack e tradução](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 e os endereços com IPv4 embutido que fazem a ponte entre as duas famílias.

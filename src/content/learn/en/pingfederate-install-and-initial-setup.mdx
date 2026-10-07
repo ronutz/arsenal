@@ -42,3 +42,18 @@ Recent releases also offer to connect the environment to **PingOne** during setu
 ## What "installed" should mean
 
 A finished installation is more than a running process. The checklist that separates installed from production-ready: the JVM version documented, the service configured to start on boot under the dedicated account, ports 9999 and 9031 reachable from exactly the networks that should reach them, the license imported and its expiry known, the first admin's credentials stored properly, and the base URL confirmed as the name that will appear in every partner conversation from now on. The next two stops on this path: the [startup files](/learn/pingfederate-startup-files) that control how the server runs, and the [upgrade playbook](/learn/pingfederate-upgrade-playbook) for when this version is no longer the current one.
+
+## This series, in order
+
+This article opens the series **PingFederate, installed to upgraded**. It takes a server from its requirements through the setup wizard; the parts follow the same server through its life: how it starts and where its endpoints live, who may administer it, how users are authenticated (stores, validators and adapters, policies, expressions), what its logs answer, the habits that keep it boring, and how it is upgraded.
+
+1. **[The PingFederate Startup Files: Who Controls What](/learn/pingfederate-startup-files)**. The launchers, run.properties for ports and the clustered role, the heap options: the files that decide how the server runs.
+2. **[The PingFederate Endpoints Map: Admin Port, Runtime Port, and What Lives Where](/learn/pingfederate-endpoints-map)**. Administrative endpoints on the console port, runtime endpoints on the engine port, and what lives where.
+3. **[Who Administers PingFederate: Native Accounts, Roles, and Console Login via LDAP](/learn/pingfederate-admin-access-and-rbac)**. Native accounts, the roles that divide power, and console login through the Lightweight Directory Access Protocol.
+4. **[PingFederate Data Stores: LDAP and JDBC, Defined Once, Used Everywhere](/learn/pingfederate-data-stores)**. Directory and database connections defined once and used everywhere, with failover hosts and encrypted transport.
+5. **[How Users Prove Who They Are: PCVs and the Five Adapters](/learn/pingfederate-authentication-adapters)**. Password credential validators as the reusable checking layer, then the five adapters the exam names.
+6. **[PingFederate Authentication Policies: Trees, Selectors, and the Contract at the End](/learn/pingfederate-authentication-policies)**. Policy trees of sources and selectors, Fail and Success branches, and the contract at the end.
+7. **[PingFederate OGNL Expressions: Mappings, Criteria, and Why Authoring Is Its Own Role](/learn/pingfederate-ognl-expressions)**. Expressions in attribute mappings and issuance criteria: a mapping returns a value, a criterion true or false.
+8. **[The PingFederate Log Files: Which One Answers Which Question](/learn/pingfederate-log-files)**. Which log answers which question: the application, who changed what, and the transactions.
+9. **[PingFederate Operational Hygiene: License, Notifications, and the Configuration Archive](/learn/pingfederate-operational-hygiene)**. The licence and its expiry, notification publishers, and the configuration archive.
+10. **[Upgrading PingFederate: The Utility, the Merge, and the Cluster Order](/learn/pingfederate-upgrade-playbook)**. The upgrade utility that carries the configuration across, the merge, and the order a cluster is upgraded in.

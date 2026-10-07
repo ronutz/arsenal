@@ -27,3 +27,14 @@ As flags de um comando curl podem aparecer em qualquer ordem, o que significa qu
 A ordem que importa é a da própria requisição: **método, depois URL, depois cabeçalhos, depois corpo, depois o que acontece com a resposta.** Reconstruir o comando assim transforma uma linha longa em quatro perguntas curtas e torna óbvia a peça que falta — um `-d` sem tipo de conteúdo, um `-H` que duplica algo que o curl já define, uma flag de redirecionamento que muda o que a coisa toda faz.
 
 **Um comando que você não consegue reenunciar nessa ordem é um comando que você não terminou de ler** — o que mais importa quando ele veio de outra pessoa e você está prestes a executá-lo.
+
+## Esta série, em ordem
+
+Este artigo abre a série **curl, flag por flag**. Ele mostra como o shell divide a linha antes de o curl vê-la; as partes então leem a requisição que o comando monta, na ordem em que ela é montada (método, corpo, cabeçalhos e credenciais), verificam sua postura de segurança, traduzem-na para o navegador e terminam com tudo o que o curl fala além do HTTP.
+
+1. **[Como o curl infere o método HTTP](/learn/curl-method-inference)**. Por que um corpo implica POST, -I implica HEAD e -G força GET, e por que um -X explícito sempre vence.
+2. **[Sinalizadores de dados do curl e a armadilha do Content-Type](/learn/curl-data-flags-and-content-type)**. As formas de anexar um corpo, e a armadilha: -d envia codificação de formulário, não JSON.
+3. **[Cabeçalhos, autenticação e cookies no curl](/learn/curl-headers-auth-and-cookies)**. -H, -u, um token bearer como cabeçalho comum, e -b e -c para cookies: tudo o que identifica a requisição.
+4. **[Sinalizadores do curl que mudam a postura de segurança](/learn/curl-security-flags)**. -k, http puro e credenciais na URL: as flags que vale ler antes de rodar ou compartilhar um comando.
+5. **[Traduzindo curl para fetch()](/learn/curl-to-fetch)**. A mesma requisição no fetch() do navegador, e as diferenças que exigem cuidado: Content-Type de formulário, cookies, verificação TLS.
+6. **[Os 27 protocolos que o curl fala](/learn/curl-protocols-beyond-http)**. FTP, SFTP, SMB, SMTP, IMAP, MQTT, LDAP (Lightweight Directory Access Protocol) e as relíquias: os 27 esquemas de URL que o curl fala hoje.

@@ -65,3 +65,14 @@ Duas coisas decorrem. O nome é como outras diretivas se referem à mesma regiã
 ## O que quem estuda precisa saber de cor
 
 O NGINX lê o `nginx.conf` e todo o resto chega por `include`, que cola o conteúdo no lugar, então um fragmento não incluído não é lido de forma alguma. Diretivas só são legais nos contextos documentados e herdam para baixo por diretiva, e não como grupo. O processo master roda como root para associar portas privilegiadas e abrir logs, enquanto os workers caem para a conta `user` e são eles que leem o conteúdo, e é por isso que uma subida limpa seguida de 403 é questão de permissão do worker, não do root. Zonas de memória compartilhada existem para que os workers compartilhem contadores em vez de cada um aplicar um limite sozinho; são nomeadas para que as diretivas se refiram à mesma região, e finitas, então uma zona cheia começa a descartar.
+
+## Esta série, em ordem
+
+Este artigo abre a série **NGINX, da configuração ao diagnóstico**. Ele resolve qual arquivo vence e qual usuário roda o quê; as partes seguem uma requisição pela configuração (o location escolhido, a URI enviada ao backend, o cache, os limites), depois o reload e as primeiras verificações quando algo quebra, e terminam no Apache httpd, o problema que o NGINX foi construído para resolver.
+
+1. **[Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou](/learn/nginx-location-matching-order)**. A ordem fixa de cinco passos que o NGINX usa para escolher um location, e o único passo em que a ordem do arquivo importa.
+2. **[A barra final do proxy_pass no NGINX: um caractere que decide o que seu backend recebe](/learn/nginx-proxy-pass-uri-rewriting)**. A barra final do proxy_pass: um caractere que decide se o prefixo casado é substituído.
+3. **[Cache no NGINX: o que é armazenado, o que é servido, e a brecha por onde dados de usuário vazam](/learn/nginx-proxy-cache-what-gets-stored)**. Armazenar e servir são perguntas diferentes, e a brecha entre elas por onde os dados de um usuário chegam a outro.
+4. **[Limitar requisições, conexões e banda no NGINX: baldes furados e o burst que surpreende](/learn/nginx-limiting-connections-and-rate)**. Três limites, três diretivas, um balde furado, e o comportamento do burst que surpreende.
+5. **[Recarregar o NGINX sem derrubar tráfego, e as primeiras quatro coisas a conferir quando quebra](/learn/nginx-reload-signals-and-first-troubleshooting)**. Por que um reload não é um restart, e as primeiras quatro coisas a conferir, cada uma no log que a responde.
+6. **[Apache httpd: o servidor que rodava a web, e o problema que produziu o NGINX](/learn/apache-httpd-and-what-nginx-was-written-against)**. Como remendos a um servidor abandonado passaram a rodar a web, e a arquitetura que sofreu com o tráfego dos anos 2000.

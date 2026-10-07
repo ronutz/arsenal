@@ -106,6 +106,23 @@ when HTTP_REQUEST priority 500 {
 
 The [iRules style checker](/tools/f5-irules-style-checker) reads a pasted iRule against these rules, the two points from the comment thread and a real Tcl 8.4 parse, and names the rule behind each finding. Its "Pasted from a word processor" and "An invisible character" presets show R1 at work. The [if / switch / class builder](/tools/f5-irules-conditional-builder) writes decisions in this style from the start, and the [expression lab](/tools/f5-irules-expression-lab) shows `==` and `eq` side by side.
 
+## This series, in order
+
+This article opens the series **The Tcl inside iRules**. The style guide's twenty rules, grouped by what they protect, are the map; the parts teach the language underneath them in order: how values compare and how numbers are read, how strings are built and taken apart, how a rule chooses among many values, the loops that block a single-threaded TMM, reusable procedures, the static namespace, measuring cost, and the Node.js process an iRule can call.
+
+1. **[iRules comparisons: == versus eq, precedence, and the quiet fallback to text](/learn/irules-expression-operators)**. == compares numbers when it can and text when it cannot, while eq always compares text.
+2. **[Numbers in iRules: octal, hexadecimal, and why 08 is not a number](/learn/irules-tcl-number-notation)**. A leading zero means octal: why 010 is eight and 08 is not a number at all.
+3. **[Building strings in iRules: quotes, braces, append, concat and lists](/learn/irules-building-strings)**. Quotes substitute, braces do not, brackets run a command: the three rules behind almost every surprise.
+4. **[Tcl string commands in iRules: indexes, map, match, compare and trim](/learn/irules-string-commands)**. Indexes, map, match, compare and trim, and the one rule people get wrong in each.
+5. **[findstr, substr and getfield: what F5 documents, and what it leaves open](/learn/irules-findstr-substr-getfield)**. F5's three commands for cutting a piece out of a value, what the documentation says and what it leaves open.
+6. **[scan in iRules: taking values apart without regular expressions](/learn/irules-scan-command)**. Taking values apart without a regular expression, and why its result counts conversions rather than matches.
+7. **[iRules: choosing between if, switch, class match, and static arrays](/learn/irules-branching-and-lookups)**. Chained if, switch, a data group with class match, or a static array: choosing how to match one value against many.
+8. **[Loops and lists in iRules, and why they block](/learn/irules-loops-and-lists)**. foreach, for and while, and why a large loop per request stalls the connection it runs in.
+9. **[iRules procedures: reusable code with proc and call](/learn/irules-procedures-proc-and-call)**. Code defined once with proc and called from anywhere, including from iRules attached to nothing.
+10. **[iRules, CMP, and the static:: namespace](/learn/irules-cmp-and-static-namespace)**. How one global variable demotes a virtual server to a single core, and static:: as the cure.
+11. **[iRules performance: cycles, timing, and the runtime calculator](/learn/irules-performance-and-timing)**. The bytecode inside TMM, what the timing command measures, and why average cycles is the number to trust.
+12. **[iRules LX, explained: what runs where when Tcl calls Node.js](/learn/irules-lx-explained)**. A Node.js process beside the microkernel, called from Tcl, and what runs where.
+
 ## Sources
 
 The rules and the replies are quoted from the guide's page; the security, warning, size, priority and table details come from the F5 pages it relies on; every Tcl behaviour was reproduced in Tcl 8.4.6. All read on 2026-10-03.

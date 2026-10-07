@@ -4339,6 +4339,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "Request for Comments",
     aliases: ["Request for Comments"],
     relatedTerms: ["ietf", "steve-crocker", "jon-postel"],
+    sources: [{ label: "RFC 1 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc1.html" }, { label: "RFC 2026, BCP 9: the Internet standards process (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc2026.html" }, { label: "RFC 6410 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc6410.html" }],
+    relatedArticles: ["the-rfc-series"],
   },
   {
     slug: "circuit-switching",
@@ -4420,6 +4422,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["cyber-security", "enterprise-networking"],
     aliases: ["ngfw"],
     relatedTerms: ["packet-filter", "stateful-inspection", "dmz", "bastion-host"],
+    sources: [{ label: "NIST SP 800-41 Rev. 1 (read 2026-10-07)", href: "https://csrc.nist.gov/pubs/sp/800/41/r1/final" }],
+    relatedArticles: ["network-devices-switch-router-firewall"],
   },
   {
     slug: "packet-filter",
@@ -4452,6 +4456,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["routing"],
     relatedTerms: ["ip", "packet", "bgp"],
+    sources: [{ label: "RFC 1812, Requirements for IP Version 4 Routers (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc1812.html" }],
+    relatedArticles: ["network-devices-switch-router-firewall"],
   },
   {
     slug: "switch",
@@ -4460,6 +4466,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["layer 2 switch"],
     relatedTerms: ["mac-address", "ethernet", "spanning-tree"],
+    sources: [{ label: "Linux bridge(8) (read 2026-10-07)", href: "https://man7.org/linux/man-pages/man8/bridge.8.html" }, { label: "Linux kernel, Ethernet bridging (read 2026-10-07)", href: "https://docs.kernel.org/networking/bridge.html" }],
+    relatedArticles: ["network-devices-switch-router-firewall", "bridge-switch-family-history"],
   },
   {
     slug: "bridge",
@@ -4468,6 +4476,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["bridging"],
     relatedTerms: ["switch", "spanning-tree", "ethernet"],
+    sources: [{ label: "IEEE 802.1Q-2022 (read 2026-10-07)", href: "https://standards.ieee.org/ieee/802.1Q/10323/" }, { label: "Linux kernel, Ethernet bridging (read 2026-10-07)", href: "https://docs.kernel.org/networking/bridge.html" }],
+    relatedArticles: ["bridge-switch-family-history", "network-devices-switch-router-firewall"],
   },
   {
     slug: "gateway",
@@ -4605,6 +4615,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["half duplex", "full duplex"],
     relatedTerms: ["ethernet", "csma-cd", "packet-loss"],
+    sources: [{ label: "IEEE 802.3x-1997 (read 2026-10-07)", href: "https://standards.ieee.org/ieee/802.3x/1082/" }, { label: "IEEE 802.3ae objectives (read 2026-10-07)", href: "https://www.ieee802.org/3/ae/objectives.pdf" }],
+    relatedArticles: ["ethernet-physical-layers"],
   },
   {
     slug: "checksum",
@@ -4710,6 +4722,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["repeater"],
     relatedTerms: ["switch", "ethernet", "duplex"],
+    relatedArticles: ["network-devices-switch-router-firewall"],
   },
   {
     slug: "trunk",
@@ -4718,6 +4731,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["802.1q", "tagged port"],
     relatedTerms: ["vlan", "switch"],
+    sources: [{ label: "F5 tmsh reference, net trunk (read 2026-10-07)", href: "https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/net/net_trunk.html" }, { label: "Cisco Catalyst 9300, Configuring VLAN Trunks (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html" }],
+    relatedArticles: ["vlans-and-8021q-trunking", "link-aggregation-and-lacp"],
   },
   {
     slug: "pat",
@@ -5961,7 +5976,7 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "Maximum Transmission Unit",
     aliases: ["mtu", "jumbo frame"],
     relatedTools: ["mtu-mss"],
-    relatedArticles: ["tunnel-overhead-mtu-and-mss"],
+    relatedArticles: ["tunnel-overhead-mtu-and-mss", "the-ethernet-frame-field-by-field", "jumbo-frames"],
     relatedTerms: ["mss", "path-mtu-discovery"],
   },
   {
@@ -6669,7 +6684,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "Internet Engineering Task Force",
     aliases: ["ietf", "rfc process", "internet-draft"],
     relatedTerms: ["iana"],
-    sources: [{ label: "IETF (official)", href: "https://www.ietf.org" }, { label: "RFC Editor", href: "https://www.rfc-editor.org" }],
+    sources: [{ label: "IETF (official)", href: "https://www.ietf.org" }, { label: "RFC Editor", href: "https://www.rfc-editor.org" }, { label: "RFC 7282, On Consensus and Humming in the IETF (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc7282.html" }, { label: "RFC 6410 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc6410.html" }],
+    relatedArticles: ["the-rfc-series"],
   },
   {
     slug: "cloud-security-alliance",
@@ -6720,8 +6736,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     expansion: "IEEE 802.1Q (VLAN tagging)",
     aliases: ["802.1q", "dot1q", "vlan tag", "vlan trunking"],
     relatedTerms: ["vlan", "ethernet", "stp", "ieee"],
-    relatedArticles: ["ieee-802-working-groups"],
-    sources: [{ label: "IEEE 802.1 Working Group (official)", href: "https://1.ieee802.org" }],
+    relatedArticles: ["ieee-802-working-groups", "vlans-and-8021q-trunking", "the-ethernet-frame-field-by-field"],
+    sources: [{ label: "IEEE 802.1 Working Group (official)", href: "https://1.ieee802.org" }, { label: "IANA, IEEE 802 Numbers: EtherTypes (read 2026-10-07)", href: "https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml" }, { label: "IEEE 802.1Q-2022 (read 2026-10-07)", href: "https://standards.ieee.org/ieee/802.1Q/10323/" }, { label: "RFC 4363: VLAN IDs 0 and 4095 not permitted (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc4363.txt" }],
   },
   {
     slug: "802-1x",
@@ -7024,6 +7040,8 @@ const GLOSSARY_PART_1: GlossaryEntry[] = [
     aliases: ["mac address", "hardware address", "physical address", "OUI"],
     relatedTools: ["oui-lookup"],
     relatedTerms: ["unicast"],
+    sources: [{ label: "IEEE RA, Guidelines for Use of EUI, OUI and CID (read 2026-10-07)", href: "https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID" }, { label: "RFC 9542 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc9542.html" }, { label: "RFC 9724: randomized and changing MAC addresses (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc9724.html" }],
+    relatedArticles: ["what-is-an-oui", "arp-and-mac-addresses", "the-ethernet-frame-field-by-field"],
   },
 
   // ============================ BATCH 2 (top-up toward ~150) ================
@@ -8869,6 +8887,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
       alt: "Diagram of the 1973 Ethernet concept: a single shared coaxial bus labelled THE ETHER, with five stations each tapping in through a transceiver, 50-ohm terminators at both ends, and a frame travelling along the bus carrying destination, source, type, data, and CRC fields. Original diagram after Bob Metcalfe's 1973 Ethernet concept.",
       caption: "One shared medium, many stations: the 1973 Ethernet concept. Original diagram after Bob Metcalfe's concept.",
     },
+    relatedArticles: ["the-ethernet-frame-field-by-field", "ethernet-physical-layers"],
   },
   {
     slug: "cap-theorem",
@@ -9163,6 +9182,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: ["Internet protocol suite", "DoD model"],
     relatedTerms: ["ip", "udp"],
     sources: [{ label: "RFC 793 - Transmission Control Protocol", href: "https://datatracker.ietf.org/doc/html/rfc793" }, { label: "RFC 801 - NCP/TCP Transition Plan (the flag day)", href: "https://www.rfc-editor.org/rfc/rfc801.html" }],
+    relatedArticles: ["osi-model-in-practice"],
   },
   {
     slug: "ip",
@@ -9261,6 +9281,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     relatedTerms: ["ethernet", "csma-cd", "kalpana"],
     sources: [{ label: "Collision domain - Wikipedia", href: "https://en.wikipedia.org/wiki/Collision_domain" }],
+    relatedArticles: ["ethernet-physical-layers"],
   },
   {
     slug: "bum",
@@ -9278,7 +9299,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     expansion: "Carrier Sense Multiple Access with Collision Detection",
     relatedTerms: ["ethernet", "collision-domain", "csma-ca", "token-ring"],
-    sources: [{ label: "Metcalfe and Boggs, 'Ethernet: Distributed Packet Switching for Local Computer Networks' (CACM, July 1976)", href: "https://dl.acm.org/doi/10.1145/360248.360253" }, { label: "Carrier-sense multiple access with collision detection - Wikipedia", href: "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_detection" }],
+    sources: [{ label: "Metcalfe and Boggs, 'Ethernet: Distributed Packet Switching for Local Computer Networks' (CACM, July 1976)", href: "https://dl.acm.org/doi/10.1145/360248.360253" }, { label: "Carrier-sense multiple access with collision detection - Wikipedia", href: "https://en.wikipedia.org/wiki/Carrier-sense_multiple_access_with_collision_detection" }, { label: "Cisco, Troubleshooting Ethernet Collisions (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/interfaces-modules/port-adapters/12768-eth-collisions.html" }],
+    relatedArticles: ["ethernet-physical-layers"],
   },
   {
     slug: "csma-ca",
@@ -9340,6 +9362,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: [],
     relatedTools: ["voss-fabric-id"],
     relatedTerms: ["trunk-port", "spanning-tree", "port-security", "802-1q"],
+    relatedArticles: ["vlans-and-8021q-trunking"],
   },
   {
     slug: "trunk-port",
@@ -9348,6 +9371,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: [],
     relatedTerms: ["vlan", "lacp"],
+    relatedArticles: ["vlans-and-8021q-trunking"],
   },
   {
     slug: "spanning-tree",
@@ -9356,6 +9380,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: [],
     relatedTerms: ["vlan", "broadcast-storm", "mac-flapping"],
+    relatedArticles: ["spanning-tree-in-one-article"],
   },
   {
     slug: "arp",
@@ -9363,7 +9388,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     kind: "acronym",
     domains: ["enterprise-networking"],
     aliases: [],
-    relatedArticles: ["arp-and-mac-addresses"],
+    relatedArticles: ["arp-and-mac-addresses", "the-ethernet-frame-field-by-field"],
     relatedTerms: ["mac-address", "dhcp"],
   },
   {
@@ -9423,6 +9448,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: [],
     relatedTerms: ["trunk-port", "ecmp"],
+    relatedArticles: ["link-aggregation-and-lacp"],
   },
   {
     slug: "vrrp",
@@ -9546,7 +9572,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: ["jumbo frame", "jumbos", "9000 MTU"],
     relatedTools: ["mtu-mss"],
-    relatedArticles: ["jumbo-frames"],
+    relatedArticles: ["jumbo-frames", "the-ethernet-frame-field-by-field"],
     relatedTerms: ["mtu", "mss", "path-mtu-discovery", "baby-giant", "goodput"],
   },
   {
@@ -9556,6 +9582,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking", "it-support"],
     aliases: [],
     relatedTerms: ["collision", "csma-cd"],
+    sources: [{ label: "UNH-IOL, Clause 28 Auto-Negotiation (read 2026-10-07)", href: "https://www.iol.unh.edu/services/testing/ethernet/knowledgebase/Clause_28_Auto-Negotiation.pdf" }, { label: "Cisco, Ethernet auto-negotiation, document 10561 (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html" }],
+    relatedArticles: ["ethernet-physical-layers"],
   },
   {
     slug: "poe",
@@ -9572,6 +9600,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     domains: ["enterprise-networking"],
     aliases: [],
     relatedTerms: ["dark-fiber", "transceiver", "multimode-fiber", "single-mode-fiber"],
+    sources: [{ label: "SNIA SFF-8472 (read 2026-10-07)", href: "https://members.snia.org/document/dl/25916" }, { label: "Juniper, digital optical monitoring (read 2026-10-07)", href: "https://www.juniper.net/documentation/us/en/software/junos/chassis/topics/concept/digital-optical-monitoring.html" }],
+    relatedArticles: ["fibre-basics", "transceiver-family-history"],
   },
   {
     slug: "lldp",
@@ -9936,6 +9966,7 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     aliases: ["utp", "unshielded twisted pair", "twisted pair"],
     relatedTerms: ["shielded-twisted-pair", "cable-categories", "rj45", "ethernet", "eia-tia"],
     sources: [{ label: "TIA (ANSI/TIA-568 family)", href: "https://tiaonline.org" }],
+    relatedArticles: ["ethernet-physical-layers", "structured-cabling"],
   },
   {
     slug: "shielded-twisted-pair",
@@ -10002,6 +10033,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Single-mode optical fiber (OS1/OS2)",
     aliases: ["single-mode", "smf", "os2", "9 micron"],
     relatedTerms: ["multimode-fiber", "transceiver", "dark-fiber"],
+    sources: [{ label: "FOA, optical fiber (read 2026-10-07)", href: "https://www.thefoa.org/tech/ref/basic/fiber.html" }, { label: "ITU-T G.652 (read 2026-10-07)", href: "https://www.itu.int/dms_pubrec/itu-t/rec/g/T-REC-G.652-202408-I!!SUM-HTM-E.htm" }, { label: "Corning SMF-28 Ultra (read 2026-10-07)", href: "https://www.corning.com/media/worldwide/coc/documents/Fiber/product-information-sheets/PI-1424-AEN.pdf" }],
+    relatedArticles: ["fibre-basics"],
   },
   {
     slug: "multimode-fiber",
@@ -10011,6 +10044,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Multimode optical fiber (OM1-OM5)",
     aliases: ["multimode", "mmf", "om3", "om4", "om5"],
     relatedTerms: ["single-mode-fiber", "transceiver", "media-converter"],
+    sources: [{ label: "FOA, optical fiber (read 2026-10-07)", href: "https://www.thefoa.org/tech/ref/basic/fiber.html" }, { label: "Cisco 10GBASE SFP+ data sheet (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" }, { label: "FOA, colour codes (read 2026-10-07)", href: "https://www.thefoa.org/tech/ColCodes.htm" }],
+    relatedArticles: ["fibre-basics"],
   },
   {
     slug: "transceiver",
@@ -10020,6 +10055,8 @@ const GLOSSARY_PART_2: GlossaryEntry[] = [
     expansion: "Pluggable transceiver form factors (GBIC to SFP, QSFP, OSFP)",
     aliases: ["transceiver", "gbic", "sfp+", "qsfp", "qsfp-dd", "osfp", "pluggable optics"],
     relatedTerms: ["sfp", "single-mode-fiber", "multimode-fiber", "media-converter"],
+    sources: [{ label: "Cisco 10GBASE SFP+ data sheet (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/products/collateral/interfaces-modules/transceiver-modules/data_sheet_c78-455693.html" }, { label: "David Law, IEEE 802.3, PHY nomenclature (read 2026-10-07)", href: "https://ieee802.org/3/hssg/email/msg01702.html" }],
+    relatedArticles: ["fibre-basics", "transceiver-family-history", "ethernet-physical-layers"],
   },
   {
     slug: "media-converter",
@@ -12475,6 +12512,7 @@ const GLOSSARY_PART_3: GlossaryEntry[] = [
     aliases: ["stp"],
     relatedTerms: [],
     sources: [{ label: "IEEE 802.1D", href: "https://standards.ieee.org/ieee/802.1D/3387/" }],
+    relatedArticles: ["spanning-tree-in-one-article"],
   },
   {
     slug: "tps",
@@ -16835,6 +16873,103 @@ const GLOSSARY_PART_4: GlossaryEntry[] = [
     relatedTerms: ["least-privilege", "rbac", "abac", "privilege-creep", "accounting", "change-management", "audit-trail"],
     relatedArticles: ["accounting-who-did-what-and-when"],
     sources: [{ label: "NIST CSRC glossary, separation of duty (from NIST SP 800-192): no user given enough privileges to misuse the system alone, the paycheck example, static enforcement by conflicting roles and dynamic enforcement at access time (read 2026-10-06)", href: "https://csrc.nist.gov/glossary/term/separation_of_duty" }, { label: "NIST SP 800-53 Rev. 5 control catalogue, OSCAL edition 5.2.0: AC-5 Separation of Duties, abuse of authorized privileges and malevolent activity without collusion, dividing functions, access control and audit administered by different people, enforcement through AC-2 account management (read 2026-10-06)", href: "https://github.com/usnistgov/oscal-content/blob/main/nist.gov/SP800-53/rev5/json/NIST_SP-800-53_rev5_catalog.json" }, { label: "Saltzer and Schroeder, The Protection of Information in Computer Systems (Communications of the ACM 17(7), July 1974, per the web edition read): design principle (e), separation of privilege, the mechanism that requires two keys, credited to Needham 1973 (read 2026-10-06)", href: "https://www.cs.virginia.edu/~evans/cs551/saltzer/" }],
+  },
+  // ------------------- 2026-10-07 NF-1d: the NetFun I terms the glossary lacked ----
+  {
+    slug: "osi-model",
+    headword: "OSI model",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    expansion: "Open Systems Interconnection Basic Reference Model (ISO/IEC 7498-1, ITU-T X.200)",
+    aliases: ["osi", "osi reference model", "seven-layer model", "iso/iec 7498-1", "x.200"],
+    relatedArticles: ["osi-model-in-practice", "the-protocol-wars"],
+    relatedTerms: ["tcp-ip", "ethernet", "router", "switch"],
+    sources: [{ label: "ISO/IEC 7498-1:1994 (read 2026-10-07)", href: "https://www.iso.org/standard/20269.html" }, { label: "ITU-T Recommendation X.200 (read 2026-10-07)", href: "https://www.itu.int/rec/T-REC-X.200-199407-I/en" }, { label: "RFC 1122, section 1.1.3 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc1122.html" }],
+  },
+  {
+    slug: "oui",
+    headword: "OUI",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Organizationally Unique Identifier",
+    aliases: ["organizationally unique identifier", "ma-l", "ma-m", "ma-s", "vendor prefix", "manufacturer prefix"],
+    relatedTools: ["oui-lookup"],
+    relatedArticles: ["what-is-an-oui", "the-ethernet-frame-field-by-field"],
+    relatedTerms: ["mac-address", "ethernet"],
+    sources: [{ label: "IEEE RA, Guidelines for Use of EUI, OUI and CID (read 2026-10-07)", href: "https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID" }, { label: "IEEE Registration Authority (read 2026-10-07)", href: "https://standards.ieee.org/products-programs/regauth/" }],
+  },
+  {
+    slug: "ethertype",
+    headword: "EtherType",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    aliases: ["ether type", "ethernet type field", "type field", "0x0800", "0x86dd", "0x0806", "0x8100"],
+    relatedArticles: ["the-ethernet-frame-field-by-field", "vlans-and-8021q-trunking"],
+    relatedTerms: ["ethernet", "802-1q", "arp"],
+    sources: [{ label: "IANA, IEEE 802 Numbers (read 2026-10-07)", href: "https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml" }, { label: "IEEE RA, EtherType (read 2026-10-07)", href: "https://standards.ieee.org/products-programs/regauth/ethertype/" }, { label: "RFC 9542 (read 2026-10-07)", href: "https://www.rfc-editor.org/rfc/rfc9542.html" }],
+  },
+  {
+    slug: "fcs",
+    headword: "FCS",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Frame Check Sequence",
+    aliases: ["frame check sequence", "ethernet crc", "crc-32", "fcs errors", "crc errors"],
+    relatedArticles: ["the-ethernet-frame-field-by-field", "ethernet-physical-layers"],
+    relatedTerms: ["ethernet", "duplex-mismatch"],
+    sources: [{ label: "Intel, frame check sequence (CRC-32) insertion (read 2026-10-07)", href: "https://intel.com/content/www/us/en/docs/programmable/683600/current/frame-check-sequence-crc-32-insertion-38432.html" }, { label: "Cisco, document 12027, error counters (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/switches/catalyst-6500-series-switches/12027-53.html" }],
+  },
+  {
+    slug: "auto-negotiation",
+    headword: "auto-negotiation",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    aliases: ["autonegotiation", "autoneg", "nway", "clause 28", "parallel detection", "flp burst"],
+    relatedArticles: ["ethernet-physical-layers"],
+    relatedTerms: ["duplex", "duplex-mismatch", "utp"],
+    sources: [{ label: "Cisco, document 10561 (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html" }, { label: "UNH-IOL, Clause 28 Auto-Negotiation (read 2026-10-07)", href: "https://www.iol.unh.edu/services/testing/ethernet/knowledgebase/Clause_28_Auto-Negotiation.pdf" }, { label: "IEEE 802.3 interpretation 2-07/05 (read 2026-10-07)", href: "https://grouper.ieee.org/groups/802/3/interp/interp-2-0705.pdf" }],
+  },
+  {
+    slug: "native-vlan",
+    headword: "native VLAN",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    aliases: ["untagged vlan", "pvid", "port vlan id", "vlan 1"],
+    relatedArticles: ["vlans-and-8021q-trunking"],
+    relatedTerms: ["vlan", "802-1q", "trunk", "trunk-port"],
+    sources: [{ label: "Cisco Catalyst 9300, Configuring VLAN Trunks (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/vlan/b_1712_vlan_9300_cg/configuring_vlan_trunks.html" }, { label: "Cisco, Campus Network High Availability Design Guide (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/solutions/Enterprise/Campus/HA_campus_DG/hacampusdg.html" }],
+  },
+  {
+    slug: "bpdu",
+    headword: "BPDU",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Bridge Protocol Data Unit",
+    aliases: ["bridge protocol data unit", "configuration bpdu", "bpdu guard", "01-80-c2-00-00-00"],
+    relatedArticles: ["spanning-tree-in-one-article"],
+    relatedTerms: ["stp", "spanning-tree", "rstp", "bridge"],
+    sources: [{ label: "Cisco Catalyst 9300, Configuring Spanning Tree Protocol (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_spanning_tree_protocol.html" }, { label: "Cisco, PortFast and BPDU Guard, document 10586 (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/10586-65.html" }, { label: "IEEE RA, standard group MAC addresses (read 2026-10-07)", href: "https://saforms.ieee.org/products-programs/regauth/grpmac/public" }],
+  },
+  {
+    slug: "rstp",
+    headword: "RSTP",
+    kind: "acronym",
+    domains: ["enterprise-networking"],
+    expansion: "Rapid Spanning Tree Protocol (IEEE 802.1w)",
+    aliases: ["rapid spanning tree", "rapid spanning tree protocol", "802.1w", "rapid pvst+"],
+    relatedArticles: ["spanning-tree-in-one-article"],
+    relatedTerms: ["stp", "spanning-tree", "bpdu"],
+    sources: [{ label: "Cisco, Understand Rapid Spanning Tree Protocol (802.1w), document 24062 (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/support/docs/lan-switching/spanning-tree-protocol/24062-146.html" }, { label: "IEEE 802.1w (read 2026-10-07)", href: "https://grouper.ieee.org/groups/802/1/pages/802.1w.html" }],
+  },
+  {
+    slug: "link-aggregation",
+    headword: "link aggregation",
+    kind: "term",
+    domains: ["enterprise-networking"],
+    aliases: ["lag", "link aggregation group", "port channel", "etherchannel", "bond", "bonding", "802.1ax", "802.3ad", "aggregated ethernet"],
+    relatedArticles: ["link-aggregation-and-lacp"],
+    relatedTerms: ["lacp", "trunk", "trunk-port"],
+    sources: [{ label: "IEEE 802.1AX-2020 (read 2026-10-07)", href: "https://1.ieee802.org/tsn/802-1ax-rev/" }, { label: "Cisco Catalyst 9300, Configuring EtherChannels (read 2026-10-07)", href: "https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst9300/software/release/17-12/configuration_guide/lyr2/b_1712_lyr2_9300_cg/configuring_etherchannels.html" }, { label: "Linux bonding driver HOWTO (read 2026-10-07)", href: "https://docs.kernel.org/networking/bonding.html" }],
   },
 ];
 

@@ -76,3 +76,17 @@ O **SAML** segue difundido em ambientes corporativos e de educação, e a escolh
 ## Distinguindo-os na prática
 
 Quando você tem um token em mãos e não sabe ao certo qual é, alguns sinais ajudam. Se ele decodifica como um JWT com iss, sub, aud, exp e iat, e a audiência é o seu identificador de cliente, é um ID token; o [decodificador OIDC](/tools/oidc) o reconhecerá e interpretará as claims. Um access token pode ser opaco (não um JWT de forma alguma), ou pode ser um JWT cuja audiência é um servidor de recursos e cujas claims descrevem escopos e permissões em vez de identidade do usuário. A presença do escopo openid na requisição original é o que fez com que um ID token fosse emitido em primeiro lugar. Na dúvida, decodifique o token e olhe a audiência e as claims: elas dizem para que o token serve, e portanto como ele deve ser usado.
+
+## Esta série, em ordem
+
+Este artigo abre a série **OAuth e OpenID Connect**. Ele separa os dois trabalhos constantemente confundidos; as partes constroem primeiro o OAuth (o fluxo de código, quem consegue guardar um segredo, o PKCE, os tokens, o grant a escolher) e depois a camada de identidade sobre ele (o que o OpenID Connect acrescenta, seu fluxo, as claims que uma relying party verifica e como um provedor se descreve).
+
+1. **[O fluxo de código de autorização do OAuth 2.0](/learn/oauth-code-flow)**. Os quatro papéis, o redirecionamento e a troca, e por que o código é trocado por um token no canal de retaguarda.
+2. **[Clientes públicos vs confidenciais, e onde o PKCE se encaixa](/learn/oauth-client-types)**. Se um cliente consegue guardar um segredo decide seu modelo de segurança, e por que aplicações de página única e móveis são clientes públicos.
+3. **[PKCE: protegendo o fluxo de código de autorização do OAuth](/learn/pkce)**. O ataque de interceptação que o PKCE derrota, o verifier e o challenge, e por que o S256 é obrigatório.
+4. **[Tokens de acesso, tokens de atualização e tokens de ID](/learn/oauth-tokens)**. Tokens de acesso, de atualização e de ID, para que serve cada um, e o defeito real de mandar um onde cabe outro.
+5. **[Fluxos OAuth: escolhendo o grant em 2026](/learn/oauth-choosing-the-grant)**. Código com PKCE para pessoas, client credentials para máquinas, o device grant para televisores, e por que o grant implicit foi aposentado.
+6. **[OpenID Connect: Uma Camada de Identidade sobre o OAuth 2.0](/learn/oidc-overview)**. A camada de identidade: o ID token no centro, os papéis de relying party e de provedor, e por que um ID token é um JWT.
+7. **[O fluxo authorization code do OIDC](/learn/oidc-authorization-code-flow)**. Como uma aplicação recebe um ID token: o login no provedor, o código de vida curta, a troca no canal de retaguarda.
+8. **[As Claims do ID Token, e o Que uma Relying Party Verifica](/learn/id-token-claims)**. iss, sub, aud, exp e iat, o nonce que impede a repetição, azp, acr e amr: o que uma relying party verifica.
+9. **[OIDC Discovery: O Documento openid-configuration](/learn/oidc-discovery)**. O documento .well-known/openid-configuration: endpoints, jwks_uri, algoritmos de assinatura, aprendidos automaticamente.

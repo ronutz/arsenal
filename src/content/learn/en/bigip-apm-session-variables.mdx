@@ -26,3 +26,10 @@ That contract creates the layer's classic trap. session.logon.last.password and 
 ## Your own variables, and the two debug surfaces
 
 The layer is writable too. Assign to session.custom.anything in a Variable Assign and APM creates the container automatically, the word after session becoming the folder in the report, the lab's own demonstration closing the loop by reading it back as `%{session.custom.mynewvar}` in a message box. When a policy misbehaves, the honest first move is to look at what the session actually holds, and there are two surfaces for it. The Current Sessions report shows every variable for a session, with the lab's operational footnote that variables display for active sessions only, which is exactly why its troubleshooting pattern parks a message box mid-policy to hold the session open while you read. And the CLI's sessiondump command does the same from the shell, a specific session's variables with the sid argument, everything at once with allkeys. If the variables the downstream feature reads are empty or wrong at those surfaces, no amount of configuration on the feature itself will save it, which is the quiet thesis of this whole layer: APM debugging is session-variable reading.
+
+## This series, in order
+
+This article opens the series **BIG-IP APM**. Session variables are where every access-policy action leaves its results; the two parts use them: single sign-on to the application behind, and federation with an identity provider in front.
+
+1. **[APM SSO Methods: One Bad Object Can Dim the Whole Session](/learn/bigip-apm-sso-methods)**. Eight SSO methods, and the stated blast radius: one misconfigured object can disable SSO for the whole session.
+2. **[F5 BIG-IP APM as a SAML Proxy: SP and IdP Modes](/learn/f5-apm-saml-federation)**. APM as a SAML service provider in front of an application, or as the identity provider itself.

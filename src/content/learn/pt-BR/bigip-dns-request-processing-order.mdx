@@ -37,6 +37,16 @@ A instância local do BIND merece seu lugar no fim da fila: é o respondedor mai
 
 No conjunto, o perfil DNS de um listener se lê como uma frase sobre intenção. GSLB habilitado, DNS Express habilitado, sem cache, sem BIND, Unhandled Query Action em Drop: uma fachada autoritativa endurecida. GSLB desabilitado, cache transparent, pool atribuído: um encaminhador com cache. Cache resolver com validação: um resolvedor recursivo para clientes internos. Quando o comportamento não bate com a intenção, percorra a fila do [K14510](https://my.f5.com/manage/s/article/K14510) do topo, iRules, DNSSEC, wide IPs, DNS Express, cache, BIND, pool, e descubra qual atendente respondeu fora de hora. O [explicador do fluxo de decisão GSLB](/tools/f5-gslb-decision-flow) retoma a história no passo do wide IP, e o [artigo sobre iQuery](/learn/how-iquery-connects-bigip-dns) cobre como o cérebro do GSLB aprende a saúde com que decide.
 
+## Esta série, em ordem
+
+Este artigo abre a série **BIG-IP DNS e balanceamento global**. Sua ordem de processamento explica a maioria das surpresas; as partes seguem o caminho do GSLB por ela: como o sistema descobre o que está vivo, as duas decisões que uma resposta toma, a cadeia dentro da segunda, os registros de topologia que pontuam os candidatos e as response policy zones que fazem do cache um controle.
+
+1. **[Como o iQuery Conecta o BIG-IP DNS ao Resto da Rede](/learn/how-iquery-connects-bigip-dns)**. O protocolo XML, gtmd e big3d, as conexões de longa duração e a confiança por certificado que formam a malha.
+2. **[GSLB em dois níveis: o wide IP escolhe um pool, o pool escolhe um servidor](/learn/gslb-two-tier-pool-then-member)**. O balanceamento global como duas decisões: o wide IP escolhe um pool, depois o pool escolhe um virtual server.
+3. **[Load Balancing no BIG-IP DNS: o Wide IP, o Pool e a Cadeia de Três Passos](/learn/gtm-load-balancing-methods)**. A cadeia preferred, alternate e fallback dentro do pool, e as regras em que as pessoas tropeçam nela.
+4. **[Registros de Topologia do GTM: Longest Match É uma Ordenação, Não a Escolha](/learn/gtm-topology-records-and-longest-match)**. O longest match é uma ordenação, não a escolha: o primeiro registro que casa pontua um candidato e os seguintes ficam sombreados.
+5. **[DNS como motor de política: multi-RPZ no BIG-IP 21.1](/learn/bigip-dns-multi-rpz)**. Muitas response policy zones num único cache, avaliadas por precedência e transferidas com segurança: o DNS como motor de política.
+
 ## Fontes
 
 A ordem de resposta acima é da própria F5, exposta em dois artigos de suporte que percorrem o caminho da consulta passo a passo. Ambos ficam atrás do login do my.f5.com, de modo que quem não tem conta verá uma página de acesso em vez do texto.

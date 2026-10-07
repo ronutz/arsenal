@@ -2,29 +2,64 @@
 slug: network-devices-switch-router-firewall
 title: "Switch, Router, Firewall: Who Does What on the Path"
 summary: "Three device roles carry most of every network diagram: switches forward frames inside a Layer 2 domain, routers move packets between networks, and firewalls decide what is allowed to pass. The function and purpose of each, how an application delivery controller relates to all three, and how to read a network diagram without getting lost."
-concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology"]
+concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology", "forwarding database", "mac learning", "ttl", "stateful inspection", "application proxy"]
 relatedTools: []
-relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips"]
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips", "vlans-and-8021q-trunking", "spanning-tree-in-one-article", "bridge-switch-family-history"]
 category: networking
 order: 161
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-07"
 ---
 
-Every network diagram is a sentence built from a small vocabulary, and three words carry most of the grammar. The retired F5 fundamentals exam asked candidates to explain the function and purpose of a router, a firewall, and a switch, and to interpret network diagrams - a pairing that makes sense, because you cannot read the diagram until you know what each box does to traffic.
+Every network diagram is a sentence built from a small vocabulary, and three words carry most of the grammar. The retired F5 fundamentals exam asked candidates to explain the function and purpose of a router, a firewall and a switch, and to interpret network diagrams, a pairing that makes sense: you cannot read the diagram until you know what each box does to traffic.
 
 ## The switch: forwarding inside a network
 
-A switch operates at Layer 2, forwarding Ethernet frames between ports based on Media Access Control (MAC) addresses. It learns which address lives behind which port by watching source addresses, floods frames whose destination it has not learned yet, and keeps a broadcast domain - a Virtual Local Area Network (VLAN) - stitched together. The purpose is local delivery: many devices, one network, frames arriving only where they belong. When a diagram shows servers hanging off a box that fans out into many short lines, that box is a switch, and everything on it shares a subnet unless VLANs say otherwise.
+A switch operates at Layer 2, forwarding Ethernet frames between ports by their Media Access Control (MAC) addresses. Its memory is a forwarding database, the FDB, and the Linux bridge's documentation describes its three habits plainly, the first two per-port flags that are on by default ([Linux bridge(8)](https://man7.org/linux/man-pages/man8/bridge.8.html)):
+
+- **Learning.** The port option "Controls whether a given port will learn MAC addresses from received traffic or not": the switch reads the source address of every frame and notes the port it arrived on.
+- **Flooding.** It "Controls whether unicast traffic for which there is no FDB entry will be flooded towards this given port": a frame for an address not yet learned goes out of every port but the one it came in on.
+- **Ageing.** An entry is kept for "the time a MAC address will be kept in the FDB after a packet has been received from that address"; on Linux the default is 300 seconds, "(300 * USER_HZ)" in the kernel's notation ([Linux kernel, Ethernet bridging](https://docs.kernel.org/networking/bridge.html)).
+
+With VLANs the lookup takes two keys: a VLAN-aware bridge forwards "based on their destination MAC address and VLAN tag (both must match)" (Linux kernel, as above), which is how one switch holds several separate Layer 2 networks; [VLANs and 802.1Q](/learn/vlans-and-8021q-trunking) is the long version. Flooding is also why loops are lethal at Layer 2: a frame flooded around a ring has nothing to stop it, which is the problem [spanning tree](/learn/spanning-tree-in-one-article) exists to solve.
+
+The purpose is local delivery: many devices, one network, frames arriving only where they belong. When a diagram shows servers hanging off a box that fans out into many short lines, that box is a switch, and everything on it shares a subnet unless VLANs say otherwise. How the switch grew out of the bridge is in [bridges and switches](/learn/bridge-switch-family-history).
 
 ## The router: forwarding between networks
 
-A router operates at Layer 3, forwarding Internet Protocol (IP) packets between different networks based on a [routing table](/learn/routing-tables-and-default-gateway). Each hop rewrites the Layer 2 framing while carrying the Layer 3 addresses through - the packet keeps its source and destination IP end to end, but changes its MAC clothing at every router. The purpose is reachability: connecting subnets, sites, and the internet itself. On a diagram, the router is the box where subnets change - one side 10.1.0.0/24, the other 10.2.0.0/24 - and its address on each segment is what hosts there call the default gateway.
+A router operates at Layer 3. RFC 1812, the requirements for IPv4 routers, puts the role in one line: "In the Internet model, constituent networks are connected together by IP datagram forwarders which are called routers or IP routers" ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812.html), June 1995, section 2.2.3). It forwards by a [routing table](/learn/routing-tables-and-default-gateway), and the same document describes what happens to each datagram on the way through: the router "generally removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission" (section 1). The packet keeps its source and destination IP addresses end to end, but changes its MAC clothing at every router.
+
+The modification has a purpose. Every router decrements the time-to-live, and one of the characteristics RFC 1812 lists is that a router "Drops datagrams whose time-to-live fields have reached zero" (section 2.3): a routing loop, unlike a switching loop, burns itself out. On a diagram the router is the box where subnets change (one side 10.1.0.0/24, the other 10.2.0.0/24), and its address on each segment is what hosts there call the default gateway.
 
 ## The firewall: deciding what may pass
 
-A firewall enforces policy on traffic crossing it: which sources may reach which destinations on which ports, classically, and in modern next-generation form, which applications, users, and content. Where the switch asks "where does this go" and the router asks "which way is that", the firewall asks "should this be allowed at all". Its natural home on a diagram is a boundary - between the internet and everything, between user networks and data center, between application tiers - and the arrow through it is the diagram's way of saying a policy decision happens here.
+NIST's guideline gives the definition: "Firewalls are devices or programs that control the flow of network traffic between networks or hosts employing differing security postures" ([NIST SP 800-41 Rev. 1](https://csrc.nist.gov/pubs/sp/800/41/r1/final), September 2009). Where the switch asks "where does this go" and the router asks "which way is that", the firewall asks "should this be allowed at all", and the guideline's chapter on technologies shows how far the answer has grown ([NIST SP 800-41 Rev. 1, PDF](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf), section 2.1):
+
+- **Packet filtering**, rule by rule on addresses, protocols and ports, each packet judged alone.
+- **Stateful inspection**, which "keeps track of each connection in a state table", so a reply is allowed because its request was.
+- **Application firewalls**, which look inside the protocol a port carries.
+- **Application-proxy gateways**, where "Each successful connection attempt actually results in the creation of two separate connections", one from the client to the proxy and another from the proxy to the real destination.
+- The family around them, which the same chapter also covers: dedicated proxy servers, virtual private networking, network access control, unified threat management, web application firewalls and firewalls for virtual infrastructures.
+
+Its natural home on a diagram is a boundary: between the internet and everything, between user networks and the data centre, between application tiers. The arrow through it is the diagram's way of saying a policy decision happens here.
 
 ## Reading the diagram
 
-With the three roles fixed, interpretation is mechanical. Follow a client-to-server flow left to right: each switch is a local hop inside one subnet; each router is a subnet boundary and a routing decision; each firewall is a policy gate that can silently be the reason a connection never establishes. An application delivery controller like a BIG-IP sits in the same picture as a special case of all three at once - it switches and routes within [its own interfaces and VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), it applies policy like a firewall, and it additionally terminates and remakes connections, which no plain switch, router, or firewall does. Knowing that distinction is what lets you predict, from the diagram alone, where an address changes, where a packet can be dropped by policy, and where a capture will show two connections instead of one.
+With the three roles fixed, interpretation is mechanical. Follow a client-to-server flow left to right: each switch is a local hop inside one subnet; each router is a subnet boundary and a routing decision; each firewall is a policy gate that can silently be the reason a connection never establishes. Real boxes often combine roles, which is why a good diagram draws functions rather than products.
+
+An application delivery controller like a BIG-IP sits in the same picture as a special case of all three at once. It switches and routes within [its own interfaces and VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), it applies policy like a firewall, and it terminates and remakes connections, the same two-connection shape as the application proxy above, which no plain switch or router does. Knowing that distinction is what lets you predict, from the diagram alone, where an address changes, where a packet can be dropped by policy, and where a capture will show two connections instead of one.
+
+| Box | Layer | Decides by | What it changes | A loop or a mistake looks like |
+|---|---|---|---|---|
+| Switch | 2 | destination MAC and VLAN | nothing in the frame | a broadcast storm |
+| Router | 3 | destination IP and the routing table | the Layer 2 header and the TTL | packets expiring in transit |
+| Firewall | 3 to 7 | policy and connection state | nothing; addresses if it translates; the whole connection if it proxies | a connection that never completes |
+| Application delivery controller | 2 to 7 | virtual server, pool and policy | addresses, ports, often the whole connection | two captures that do not match |
+
+## Sources
+
+- [Linux bridge(8), iproute2: per-port learning and flooding, the forwarding database (read 2026-10-07)](https://man7.org/linux/man-pages/man8/bridge.8.html)
+- [The Linux kernel documentation, Ethernet bridging: FDB ageing time and its default, VLAN filtering, STP (read 2026-10-07)](https://docs.kernel.org/networking/bridge.html)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 1, 2.2.3 and 2.3 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812.html)
+- [NIST SP 800-41 Rev. 1, Guidelines on Firewalls and Firewall Policy, 28 September 2009: the definition (read 2026-10-07)](https://csrc.nist.gov/pubs/sp/800/41/r1/final)
+- [NIST SP 800-41 Rev. 1, full text: section 2.1, firewall technologies (read 2026-10-07)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf)

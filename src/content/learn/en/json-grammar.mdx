@@ -26,3 +26,14 @@ JSON is stricter than the JavaScript object literals it resembles, and the diffe
 ## Why a validator points to a location
 
 Because the grammar is so rigid, every error has a precise location: the parser knows exactly which character violated which rule. A good validator reports not just that the document is invalid but where, by line and column, and which structural path it was reading at the time. That path, written as a JSON Pointer, turns a vague "syntax error" into "the value at /users/2/email is malformed," which is the difference between minutes and seconds of debugging. The formatter parses against this grammar and reports failures exactly that way.
+
+## This series, in order
+
+This article opens the series **JSON, exactly**. The grammar above is the whole format; the parts below are the places where it meets real parsers, in the order a document meets them: its strings, its numbers, its keys, the tolerant dialects, its bytes when they are signed, and its translation into YAML.
+
+1. **[JSON String Escapes and Unicode](/learn/json-string-escapes)**. The characters a string must escape, `\uXXXX` for any other, and the surrogate pair an emoji needs.
+2. **[JSON Numbers and the Precision Trap](/learn/json-numbers-and-precision)**. Why a number survives the grammar and not the parser: large integers and exact decimals lost to the 64-bit float.
+3. **[Duplicate Keys in JSON: Legal, Dangerous, and Worth Catching](/learn/json-duplicate-keys)**. Legal in the syntax, undefined in meaning: how parsers disagree about a repeated key, and why that can be a security bug.
+4. **[Trailing Commas, Comments, and the JSON5 Family](/learn/json-comments-and-trailing-commas)**. What JSONC and JSON5 allow that JSON does not, and how a tolerant editor produces a file a strict tool rejects.
+5. **[Formatting, Minifying, and Canonical JSON](/learn/json-formatting-and-canonical)**. Whitespace changes nothing until the bytes are signed or hashed; canonical JSON makes the same data the same string.
+6. **[JSON vs YAML: What Converts Cleanly and What Does Not](/learn/json-vs-yaml)**. Every JSON document is YAML; what converts cleanly the other way, and what has no JSON equivalent. The bridge to the YAML series.

@@ -2,29 +2,64 @@
 slug: network-devices-switch-router-firewall
 title: "Switch, Roteador, Firewall: Quem Faz o Quê no Caminho"
 summary: "Três papéis de dispositivo carregam a maior parte de qualquer diagrama de rede: switches encaminham quadros dentro de um domínio de Camada 2, roteadores movem pacotes entre redes, e firewalls decidem o que pode passar. A função e o propósito de cada um, como um application delivery controller se relaciona com os três, e como ler um diagrama de rede sem se perder."
-concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology"]
+concepts: ["switch", "router", "firewall", "network devices", "fundamentals", "network diagrams", "topology", "forwarding database", "mac learning", "ttl", "stateful inspection", "application proxy"]
 relatedTools: []
-relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips"]
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-interfaces-trunks-vlans-selfips", "vlans-and-8021q-trunking", "spanning-tree-in-one-article", "bridge-switch-family-history"]
 category: networking
 order: 161
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-07"
 ---
 
-Todo diagrama de rede é uma frase construída com um vocabulário pequeno, e três palavras carregam a maior parte da gramática. A prova aposentada de fundamentos da F5 pedia para explicar a função e o propósito de um roteador, de um firewall e de um switch, e para interpretar diagramas de rede - um pareamento que faz sentido, porque não se lê o diagrama sem saber o que cada caixa faz com o tráfego.
+Todo diagrama de rede é uma frase construída com um vocabulário pequeno, e três palavras carregam a maior parte da gramática. A prova aposentada de fundamentos da F5 pedia para explicar a função e o propósito de um roteador, de um firewall e de um switch, e para interpretar diagramas de rede, um pareamento que faz sentido: não se lê o diagrama sem saber o que cada caixa faz com o tráfego.
 
 ## O switch: encaminhamento dentro de uma rede
 
-Um switch opera na Camada 2, encaminhando quadros Ethernet entre portas com base em endereços Media Access Control (MAC). Ele aprende qual endereço vive atrás de qual porta observando os endereços de origem, inunda quadros cujo destino ainda não aprendeu, e mantém costurado um domínio de broadcast - uma Virtual Local Area Network (VLAN). O propósito é a entrega local: muitos dispositivos, uma rede, quadros chegando só onde pertencem. Quando um diagrama mostra servidores pendurados numa caixa que se abre em muitas linhas curtas, a caixa é um switch, e tudo nela compartilha uma sub-rede, a menos que VLANs digam o contrário.
+Um switch opera na Camada 2, encaminhando quadros Ethernet entre portas pelos seus endereços Media Access Control (MAC). A sua memória é uma base de encaminhamento, a FDB (forwarding database), e a documentação da bridge do Linux descreve os seus três hábitos com clareza, os dois primeiros como opções por porta, ligadas por padrão ([bridge(8) do Linux](https://man7.org/linux/man-pages/man8/bridge.8.html)):
+
+- **Aprendizado.** A opção de porta "Controls whether a given port will learn MAC addresses from received traffic or not": o switch lê o endereço de origem de cada quadro e anota a porta por onde ele chegou.
+- **Inundação.** Ela "Controls whether unicast traffic for which there is no FDB entry will be flooded towards this given port": um quadro para um endereço ainda não aprendido sai por todas as portas, menos a de entrada.
+- **Envelhecimento.** Uma entrada é mantida por "the time a MAC address will be kept in the FDB after a packet has been received from that address"; no Linux o padrão é de 300 segundos, "(300 * USER_HZ)" na notação do kernel ([kernel do Linux, Ethernet bridging](https://docs.kernel.org/networking/bridge.html)).
+
+Com VLANs, a busca usa duas chaves: uma bridge que entende VLANs encaminha "based on their destination MAC address and VLAN tag (both must match)" (kernel do Linux, a mesma), e é assim que um único switch guarda várias redes de Camada 2 separadas; [VLANs e 802.1Q](/learn/vlans-and-8021q-trunking) é a versão longa. A inundação também explica por que loops são letais na Camada 2: um quadro inundado em volta de um anel não tem nada que o pare, e esse é o problema que o [spanning tree](/learn/spanning-tree-in-one-article) existe para resolver.
+
+O propósito é a entrega local: muitos dispositivos, uma rede, quadros chegando só onde pertencem. Quando um diagrama mostra servidores pendurados numa caixa que se abre em muitas linhas curtas, a caixa é um switch, e tudo nela compartilha uma sub-rede, a menos que VLANs digam o contrário. Como o switch nasceu da bridge está em [bridges e switches](/learn/bridge-switch-family-history).
 
 ## O roteador: encaminhamento entre redes
 
-Um roteador opera na Camada 3, encaminhando pacotes Internet Protocol (IP) entre redes diferentes com base numa [tabela de roteamento](/learn/routing-tables-and-default-gateway). Cada salto reescreve a moldura de Camada 2 enquanto carrega os endereços de Camada 3 - o pacote mantém origem e destino IP de ponta a ponta, mas troca de roupa MAC em cada roteador. O propósito é alcançabilidade: conectar sub-redes, sites e a própria internet. No diagrama, o roteador é a caixa onde as sub-redes mudam - um lado 10.1.0.0/24, o outro 10.2.0.0/24 - e o endereço dele em cada segmento é o que os hosts dali chamam de gateway padrão.
+Um roteador opera na Camada 3. A RFC 1812, os requisitos para roteadores IPv4, resume o papel numa linha: "In the Internet model, constituent networks are connected together by IP datagram forwarders which are called routers or IP routers" ([RFC 1812](https://www.rfc-editor.org/rfc/rfc1812.html), junho de 1995, seção 2.2.3). Ele encaminha por uma [tabela de roteamento](/learn/routing-tables-and-default-gateway), e o mesmo documento descreve o que acontece com cada datagrama no caminho: o roteador "generally removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission" (seção 1). O pacote mantém origem e destino IP de ponta a ponta, mas troca de roupa MAC em cada roteador.
+
+A modificação tem um propósito. Todo roteador decrementa o tempo de vida, o TTL (time to live), e uma das características que a RFC 1812 lista é que um roteador "Drops datagrams whose time-to-live fields have reached zero" (seção 2.3): um loop de roteamento, ao contrário de um loop de comutação, se extingue sozinho. No diagrama, o roteador é a caixa onde as sub-redes mudam (um lado 10.1.0.0/24, o outro 10.2.0.0/24), e o endereço dele em cada segmento é o que os hosts dali chamam de gateway padrão.
 
 ## O firewall: decidindo o que pode passar
 
-Um firewall impõe política ao tráfego que o cruza: quais origens podem alcançar quais destinos em quais portas, classicamente, e na forma moderna de próxima geração, quais aplicações, usuários e conteúdos. Onde o switch pergunta "para onde isso vai" e o roteador pergunta "qual o caminho até lá", o firewall pergunta "isso deveria passar?". Seu lar natural no diagrama é uma fronteira - entre a internet e todo o resto, entre redes de usuários e data center, entre camadas de aplicação - e a seta que o atravessa é o jeito de o diagrama dizer que uma decisão de política acontece aqui.
+A diretriz do NIST dá a definição: "Firewalls are devices or programs that control the flow of network traffic between networks or hosts employing differing security postures" ([NIST SP 800-41 Rev. 1](https://csrc.nist.gov/pubs/sp/800/41/r1/final), setembro de 2009). Onde o switch pergunta "para onde isso vai" e o roteador pergunta "qual o caminho até lá", o firewall pergunta "isso deveria passar?", e o capítulo da diretriz sobre tecnologias mostra o quanto a resposta cresceu ([NIST SP 800-41 Rev. 1, PDF](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf), seção 2.1):
+
+- **Filtragem de pacotes**, regra a regra sobre endereços, protocolos e portas, cada pacote julgado sozinho.
+- **Inspeção com estado**, que "keeps track of each connection in a state table", de modo que uma resposta é aceita porque o seu pedido foi.
+- **Firewalls de aplicação**, que olham dentro do protocolo que uma porta carrega.
+- **Gateways de proxy de aplicação**, em que "Each successful connection attempt actually results in the creation of two separate connections", uma do cliente até o proxy e outra do proxy até o destino real.
+- A família em volta deles, que o mesmo capítulo também cobre: servidores proxy dedicados, redes privadas virtuais, controle de acesso à rede, gestão unificada de ameaças, firewalls de aplicação web e firewalls para infraestruturas virtuais.
+
+O seu lugar natural no diagrama é uma fronteira: entre a internet e todo o resto, entre redes de usuários e o data center, entre camadas de aplicação. A seta que o atravessa é o jeito de o diagrama dizer que uma decisão de política acontece aqui.
 
 ## Lendo o diagrama
 
-Com os três papéis fixados, a interpretação vira mecânica. Siga um fluxo cliente-servidor da esquerda para a direita: cada switch é um salto local dentro de uma sub-rede; cada roteador é uma fronteira de sub-rede e uma decisão de roteamento; cada firewall é um portão de política que pode, em silêncio, ser a razão de uma conexão nunca se estabelecer. Um application delivery controller como o BIG-IP entra na mesma cena como caso especial dos três ao mesmo tempo - ele comuta e roteia dentro das [próprias interfaces e VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), aplica política como um firewall, e adicionalmente termina e refaz conexões, o que nenhum switch, roteador ou firewall puro faz. Conhecer essa distinção é o que permite prever, só pelo diagrama, onde um endereço muda, onde um pacote pode ser descartado por política, e onde uma captura mostrará duas conexões em vez de uma.
+Com os três papéis fixados, a interpretação vira mecânica. Siga um fluxo cliente-servidor da esquerda para a direita: cada switch é um salto local dentro de uma sub-rede; cada roteador é uma fronteira de sub-rede e uma decisão de roteamento; cada firewall é um portão de política que pode, em silêncio, ser a razão de uma conexão nunca se estabelecer. Caixas reais muitas vezes combinam papéis, e é por isso que um bom diagrama desenha funções, não produtos.
+
+Um application delivery controller como o BIG-IP entra na mesma cena como caso especial dos três ao mesmo tempo. Ele comuta e roteia dentro das [próprias interfaces e VLANs](/learn/bigip-interfaces-trunks-vlans-selfips), aplica política como um firewall, e termina e refaz conexões, a mesma forma de duas conexões do proxy de aplicação acima, o que nenhum switch ou roteador puro faz. Conhecer essa distinção é o que permite prever, só pelo diagrama, onde um endereço muda, onde um pacote pode ser descartado por política, e onde uma captura mostrará duas conexões em vez de uma.
+
+| Caixa | Camada | Decide por | O que ela muda | Um loop ou um erro se parece com |
+|---|---|---|---|---|
+| Switch | 2 | MAC de destino e VLAN | nada no quadro | uma tempestade de broadcast |
+| Roteador | 3 | IP de destino e a tabela de roteamento | o cabeçalho de Camada 2 e o TTL | pacotes expirando no caminho |
+| Firewall | 3 a 7 | política e estado da conexão | nada; endereços, se traduz; a conexão inteira, se é proxy | uma conexão que nunca se completa |
+| Application delivery controller | 2 a 7 | virtual server, pool e política | endereços, portas, muitas vezes a conexão inteira | duas capturas que não batem |
+
+## Fontes
+
+- [bridge(8) do Linux, iproute2: aprendizado e inundação por porta, a base de encaminhamento (lida em 2026-10-07)](https://man7.org/linux/man-pages/man8/bridge.8.html)
+- [Documentação do kernel do Linux, Ethernet bridging: tempo de envelhecimento da FDB e o seu padrão, filtragem por VLAN, STP (lida em 2026-10-07)](https://docs.kernel.org/networking/bridge.html)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 1, 2.2.3 e 2.3 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1812.html)
+- [NIST SP 800-41 Rev. 1, Guidelines on Firewalls and Firewall Policy, 28 de setembro de 2009: a definição (lida em 2026-10-07)](https://csrc.nist.gov/pubs/sp/800/41/r1/final)
+- [NIST SP 800-41 Rev. 1, texto completo: seção 2.1, tecnologias de firewall (lida em 2026-10-07)](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-41r1.pdf)

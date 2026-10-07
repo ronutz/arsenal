@@ -35,3 +35,14 @@ Beyond elements and attributes there are three special constructs, comments, CDA
 XML has document order, and it is significant: sibling elements are a sequence, not a set. **Two documents with the same elements in a different order are different documents**, which is exactly the opposite of the intuition JSON object keys build.
 
 That has a practical edge in signing and comparison. **Canonicalisation exists because two logically identical XML documents can differ byte for byte** (attribute order, whitespace, namespace declarations), and a signature covers bytes. This is why XML signature verification is subtle in a way that JSON signing is not, and why a document that "looks the same" can fail verification for reasons invisible in a diff.
+
+## This series, in order
+
+This article opens the series **XML and its hazards**. Once each part of a document has a name, the series moves from what a parser insists on, through the vocabulary and constructs that confuse readers, to the entity declarations that let a document attack the parser reading it.
+
+1. **[Well-Formed vs Valid XML](/learn/xml-well-formedness)**. The baseline a parser enforces before anything else (one root, matched tags, quoted attributes), and how validity differs.
+2. **[XML Namespaces Explained](/learn/xml-namespaces-explained)**. Two vocabularies, one element name: the prefix is a local shorthand and the URI is the identity.
+3. **[CDATA, Comments, and Processing Instructions](/learn/cdata-comments-and-processing-instructions)**. The three things in a document that are not elements, and what each one is for.
+4. **[XXE and External Entities](/learn/xxe-and-external-entities)**. How an external entity makes a parser read local files or make requests, and the blunt fix: refuse the DOCTYPE.
+5. **[Billion Laughs and Entity Expansion](/learn/billion-laughs-and-entity-expansion)**. Entities that multiply each other until a tiny document fills memory, and how to cap or refuse it.
+6. **[XXE and Why a SAML Parser Rejects DOCTYPE](/learn/xxe-and-xml-security)**. Both attacks traced to the DTD, and why a hardened SAML decoder rejects any DOCTYPE instead of parsing it carefully.

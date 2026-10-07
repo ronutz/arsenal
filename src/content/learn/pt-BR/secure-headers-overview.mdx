@@ -61,3 +61,14 @@ Cole uma resposta completa (a linha de status mais os cabeçalhos) ou apenas um 
 ## O que isto não verifica
 
 O analisador lê uma resposta. Ele não vê cabeçalhos de requisição (como `Origin` ou o conjunto `Sec-Fetch-*`), porque esses são enviados pelo navegador, não retornados pelo servidor. Ele não avalia a sua configuração de TLS, certificado ou cipher suites; esses são temas separados, com ferramentas próprias. E ele não consegue dizer se uma configuração permissiva é um problema real ou uma escolha intencional para um endpoint público e sem credenciais. Ele sinaliza a postura e explica o trade-off; a decisão sobre a intenção é sua.
+
+## Esta série, em ordem
+
+Este artigo abre a série **Os cabeçalhos de segurança do navegador**. Ele explica por que os cabeçalhos são uma camada sobre o código seguro e quais têm mais peso; as partes tratam desses cabeçalhos um de cada vez, do transporte para cima: o próprio HTTPS, o cookie de sessão, as leituras entre origens, a política de scripts (duas vezes: diretiva por diretiva, depois como o navegador a interpreta) e o enquadramento.
+
+1. **[HSTS e a Exigência de HTTPS](/learn/hsts-and-https)**. Como o Strict-Transport-Security fecha a janela de downgrade, o que max-age, includeSubDomains e preload fazem, e os erros que o desativam.
+2. **[Flags de Segurança de Cookies](/learn/cookie-security-flags)**. Secure, HttpOnly e SameSite, por que SameSite=None exige Secure e os prefixos __Host- e __Secure-.
+3. **[CORS Explicado: O Controle de Fronteira do Navegador](/learn/cors-explained)**. A same-origin policy é o muro e o CORS é a porta: requisições simples, preflights e para que serve o OPTIONS.
+4. **[Content Security Policy, Diretiva por Diretiva](/learn/content-security-policy)**. Uma CSP diretiva por diretiva: default-src, o que unsafe-inline e unsafe-eval entregam, nonces, hashes e report-only.
+5. **[Uma Content Security Policy, lida como o navegador a lê](/learn/content-security-policy-read-by-the-specification)**. O algoritmo que um navegador usa para ler um cabeçalho CSP, e os passos exatos em que a maioria das políticas quebradas falha em silêncio.
+6. **[Clickjacking e Controle de Enquadramento](/learn/clickjacking-and-framing)**. Como o enquadramento permite o clickjacking, X-Frame-Options contra frame-ancestors, e por que ALLOW-FROM é obsoleto.

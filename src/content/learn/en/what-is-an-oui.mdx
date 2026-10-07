@@ -2,36 +2,64 @@
 slug: what-is-an-oui
 title: "What Is an OUI, and How MAC Addresses Are Assigned"
 summary: "How a MAC address is structured, what the OUI (the manufacturer prefix) is and who hands it out, the difference between universally and locally administered addresses, and why a randomized Wi-Fi MAC has no vendor at all."
-concepts: ["oui", "mac address", "ieee registration authority", "unicast vs multicast", "locally administered", "eui-48"]
+concepts: ["oui", "mac address", "ieee registration authority", "unicast vs multicast", "locally administered", "eui-48", "ma-l", "ma-m", "ma-s", "cid", "slap", "mac randomization"]
 relatedTools: ["oui-lookup"]
-relatedArticles: ["arp-and-mac-addresses"]
+relatedArticles: ["arp-and-mac-addresses", "the-ethernet-frame-field-by-field", "first-hop-redundancy-vrrp-and-hsrp", "multicast-what-it-costs-to-not-flood"]
 category: networking
 order: 30
 status: reviewed
-updated: "2026-07-10"
+updated: "2026-10-07"
 ---
+
+Every Ethernet frame carries two hardware addresses, and half of each one is a name that was bought. The other half is a serial number its owner stamped on a device, or, more and more often, a number a phone made up a moment ago so that nobody could follow it. Reading which kind of address is in front of you takes two bits and one lookup.
 
 ## The shape of a MAC address
 
-A MAC-48 (or EUI-48) address is 48 bits, six octets, usually shown as hex separated by colons or hyphens (`00:1b:54:11:22:33`), or in Cisco's convention as three dot-separated groups (`001b.5411.2233`). It splits cleanly in half: the first three octets are the OUI, and the last three are assigned by the manufacturer to individual devices.
+A MAC (media access control) address is 48 bits, six octets, usually written as hex separated by colons or hyphens (`00:1b:54:11:22:33`), or in Cisco's convention as three dot-separated groups (`001b.5411.2233`). The IEEE's own name for it is EUI-48, and its registration guidelines retire the older one: "the term EUI-48 is now used for both uses, and the term MAC-48 identifier is now obsolete" ([IEEE RA guidelines](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)). In the commonest case the address splits cleanly in half: the first three octets are the OUI (organizationally unique identifier), and the last three are assigned by the manufacturer to individual devices.
 
-## The OUI, and who assigns it
+## Who hands out the prefixes
 
-The OUI - Organizationally Unique Identifier - is a 24-bit prefix the IEEE Registration Authority sells to a manufacturer. Buy an OUI (an MA-L block) and you own roughly 16.7 million addresses to stamp onto your hardware. The IEEE publishes the assignments, which is why a lookup can turn `00:1b:54` into the company that registered it. There are also smaller blocks - MA-M (a 28-bit prefix, about a million addresses) and MA-S (36-bit, about 4,096) - for vendors that do not need a full OUI.
+The IEEE Registration Authority sells the prefixes, in three sizes. Its guidelines define the OUI as "a 24-bit (three octet) sequence" and give each product's yield in EUI-48 identifiers (IEEE RA guidelines):
+
+| Product | Prefix | EUI-48 identifiers |
+|---|---|---|
+| MA-L (large) | an OUI, 24 bits | 2^24, about 16.8 million |
+| MA-M (medium) | 28 bits, no OUI of its own | 2^20, about 1 million |
+| MA-S (small) | an OUI-36, 36 bits | 2^12, 4,096 |
+
+The fourth product is not an address block at all: a CID (company ID) is "a unique 24-bit identifier that cannot be used to generate EUI-48 or EUI-64 values" ([IEEE Registration Authority](https://standards.ieee.org/products-programs/regauth/)); it marks addresses in the local space, below. The assignments are public and searchable at the Registration Authority, which is why a lookup can turn `00:1b:54` into the company that registered it. It also explains a trap: an MA-M or MA-S block shares its first 24 bits with other buyers, so a lookup that reads only those 24 bits cannot name its owner.
 
 ## Two bits hiding in the first octet
 
-Before you read the OUI as a vendor, two bits in the very first octet tell you whether that reading even makes sense:
+Before you read the OUI as a vendor, two bits in the very first octet tell you whether that reading makes sense. The I/G bit, the least significant bit of the first octet, "indicates either an individual address (I/G=0) or group address (I/G=1)"; the U/L bit, the next one up, "indicates universal (U/L=0) or local (U/L=1) administration of the address" (IEEE RA guidelines). Ethernet sends each octet lowest-order bit first, "the reverse of the IETF's ordering" ([RFC 9542](https://www.rfc-editor.org/rfc/rfc9542.html)), so the I/G bit is the first bit of a destination address that reaches the wire.
 
-- The **I/G bit** (the least significant bit of the first octet) marks unicast (0) versus multicast (1). Multicast MACs address a group; the classic example is `01:00:5e`, which carries IPv4 multicast.
-- The **U/L bit** (the next bit up) marks universally administered (0) versus locally administered (1). A universally administered address came from an OUI and is globally unique; a locally administered one was set by software and belongs to no manufacturer.
+The hex gives both bits away in the second digit. A 2, 6, A or E there means a locally administered unicast address; 3, 7, B or F, a local group address; an odd digit, any group address.
 
-An easy tell: if the second hex digit of the address is 2, 6, A, or E, the U/L bit is set and the address is locally administered.
+Group addresses are mostly computed, not assigned. All ones, `ff:ff:ff:ff:ff:ff`, is broadcast. IPv4 multicast maps onto the IANA block: "An IP host group address is mapped to an Ethernet multicast address by placing the low-order 23-bits of the IP address into the low-order 23 bits of the Ethernet multicast address 01-00-5E-00-00-00" ([RFC 1112](https://www.rfc-editor.org/rfc/rfc1112.html)), so 224.0.0.251 travels to `01:00:5e:00:00:fb`. IPv6 multicast goes to an address "whose first two octets are the value 3333 hexadecimal and whose last four octets are the last four octets" of the IPv6 destination ([RFC 2464](https://www.rfc-editor.org/rfc/rfc2464.html)), so ff02::1 becomes `33:33:00:00:00:01`. IANA holds an OUI of its own, 00-00-5E, and the virtual router address of VRRP, `00-00-5E-00-01-xx`, comes from it (RFC 9542): the one MAC in a [first-hop redundancy](/learn/first-hop-redundancy-vrrp-and-hsrp) pair that belongs to no manufacturer and still is universal.
+
+## The local half of the address space
+
+A locally administered address came from software or from an administrator, not from a block: "local network administrators can assign any addresses with the X bit a one", the X bit being the U/L bit (RFC 9542). Since IEEE 802c-2017 that space has a plan, the SLAP (Structured Local Address Plan), which splits it in four by the next two bits, Y and Z: administratively assigned (Y=0, Z=0), extended local (Y=0, Z=1), reserved (Y=1, Z=0) and standard assigned (Y=1, Z=1) (RFC 9542). The extended local quadrant is where a CID lives: in a CID, "the M, X, Y, and Z bits have the values 0, 1, 0, and 1, respectively" (IEEE RA guidelines). Anything that needs addresses without buying a block can take them from local space, provided they stay unique on the network that sees them.
 
 ## Why so many MACs now have no vendor
 
-Locally administered addresses used to be niche - a hypervisor minting NICs for virtual machines, a link-aggregation group presenting a single address. Then privacy changed the default. Phones and laptops now use a randomized, locally administered MAC for each Wi-Fi network they join, precisely so the address cannot be tied back to a device or a manufacturer. Look one of those up and the honest answer is that there is no vendor: the OUI bits are random, not an assignment. A tool that returned a "manufacturer" for a randomized MAC would be inventing one.
+Privacy moved the default. A universal address follows its device everywhere: "Since universally administered MAC addresses are by definition globally unique, when a device uses this MAC address over a shared medium to transmit data", especially over the air, "it is relatively easy to track this device by simple medium observation" ([RFC 9724](https://www.rfc-editor.org/rfc/rfc9724.html), March 2025). The answer was the local bit: random addresses "decouple the globally unique identifier from the device" (RFC 9724).
+
+The operating systems took it up one by one. Apple devices use "a different Wi-Fi address for each network" from iOS 14, iPadOS 14 and watchOS 7; from iOS 18, iPadOS 18, macOS Sequoia 15, watchOS 11 and visionOS 2 the setting can be off, fixed, or rotating, which changes the address every two weeks ([Apple](https://support.apple.com/en-us/102509)). On Android, "For devices running Android 10 or higher, the framework uses a randomized MAC address by default", derived per network and kept until a factory reset, and from Android 12 it can be re-randomized at new connections under conditions Android documents ([Android Open Source Project](https://source.android.com/docs/core/connect/wifi-mac-randomization-behavior)).
+
+Look one of those addresses up and the honest answer is that there is no vendor: the bits where an OUI would be are random, not an assignment. A tool that returned a manufacturer for a randomized MAC would be inventing one, which is why the [OUI lookup](/tools/oui-lookup) reports the two bits with every answer and calls a locally administered address what it is: no vendor.
 
 ## Where this is useful
 
-Reading a MAC's vendor is everyday network work: identifying what is plugged into a switch port from its address, spotting a rogue or unexpected device, recognizing virtualization (VMware, Xen, and VirtualBox all have well-known OUIs), or sanity-checking that the thing you think you are talking to is the brand you expect. Reading the two bits first keeps you from chasing a vendor for an address that, by design, has none.
+Reading a MAC's vendor is everyday network work: identifying what is plugged into a switch port from its address, spotting an unexpected device, recognising virtualisation by its hypervisor's prefix, or checking that the thing you are talking to is the brand you expect. Reading the two bits first keeps you from chasing a vendor for an address that, by design, has none; [the Ethernet frame](/learn/the-ethernet-frame-field-by-field) shows where both addresses sit, and [ARP](/learn/arp-and-mac-addresses) shows how a host learns the one it needs.
+
+## Sources
+
+- [IEEE Registration Authority, Guidelines for Use of EUI, OUI and CID, updated 1 April 2022: OUI, MA-L, MA-M, MA-S, CID, the I/G and U/L bits, MAC-48 obsolete (read 2026-10-07)](https://standards-support.ieee.org/hc/en-us/articles/4888705676564-Guidelines-for-Use-of-Extended-Unique-Identifier-EUI-Organizationally-Unique-Identifier-OUI-and-Company-ID-CID)
+- [IEEE Registration Authority, products and the public assignment search (read 2026-10-07)](https://standards.ieee.org/products-programs/regauth/)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, April 2024: bit order on the wire, IANA's OUI, the SLAP quadrants (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9542.html)
+- [RFC 1112, Host Extensions for IP Multicasting, August 1989: section 6.4, the 01-00-5E mapping (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1112.html)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, December 1998: section 7, the 33-33 mapping (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2464.html)
+- [RFC 9724, State of Affairs for Randomized and Changing Media Access Control (MAC) Addresses, March 2025 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9724.html)
+- [Apple, Use private Wi-Fi addresses on Apple devices, published 5 December 2025 (read 2026-10-07)](https://support.apple.com/en-us/102509)
+- [Android Open Source Project, MAC randomization behavior, updated 13 July 2026 (read 2026-10-07)](https://source.android.com/docs/core/connect/wifi-mac-randomization-behavior)

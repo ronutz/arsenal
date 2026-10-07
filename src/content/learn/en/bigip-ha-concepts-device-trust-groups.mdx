@@ -30,3 +30,11 @@ The exam-favorite distinction is traffic groups versus HA groups. An HA group is
 ## How the three relate
 
 Read the stack bottom-up: device trust makes communication possible, the sync-failover device group defines the set of devices that share configuration and duty, and traffic groups define which addresses are active where. When a blueprint asks why high availability was lost, the answer is almost always a break in one layer that cascades upward - trust broken by time skew, sync failing across the group, or a traffic group unable to fail over because its next-active device is unavailable. The companion article on [failover states and operations](/learn/bigip-failover-states-and-operations) covers the moving parts.
+
+## This series, in order
+
+This article opens the series **BIG-IP high availability**. It separates the three objects that are easy to conflate; the parts then cover what they share (configuration, and when it syncs), how they hand over (the failover states), and the one thing a failover loses unless it was mirrored.
+
+1. **[Config Sync on BIG-IP: When to Sync, and Why It Fails](/learn/bigip-config-sync)**. Manual against automatic sync, reading the sync status, and the short list of reasons it fails.
+2. **[Failover on BIG-IP: States, Forcing, and Network Failover](/learn/bigip-failover-states-and-operations)**. Active, standby, offline and forced offline: the state machine, forcing each one, and unicast or multicast network failover.
+3. **[Persistence Mirroring Across an HA Pair](/learn/persistence-mirroring-and-ha)**. Persistence lives in the active unit's memory; without mirroring, a failover rebalances clients mid-session.

@@ -106,6 +106,23 @@ when HTTP_REQUEST priority 500 {
 
 O [verificador de estilo de iRules](/tools/f5-irules-style-checker) lê um iRule colado segundo estas regras, os dois pontos dos comentários do guia e uma análise real de sintaxe Tcl 8.4, e indica a regra por trás de cada apontamento. Os exemplos "Colado de um editor de texto" e "Um caractere invisível" mostram a R1 em ação. O [construtor de if / switch / class](/tools/f5-irules-conditional-builder) já escreve as decisões neste estilo, e o [laboratório de expressões](/tools/f5-irules-expression-lab) mostra `==` e `eq` lado a lado.
 
+## Esta série, em ordem
+
+Este artigo abre a série **O Tcl dentro das iRules**. As vinte regras do guia de estilo, agrupadas pelo que protegem, são o mapa; as partes ensinam a linguagem por baixo delas em ordem: como os valores se comparam e como os números são lidos, como as strings são montadas e desmontadas, como uma regra escolhe entre muitos valores, os laços que bloqueiam um TMM de thread única, os procedimentos reutilizáveis, o namespace static, a medição de custo e o processo Node.js que uma iRule pode chamar.
+
+1. **[Comparações em iRules: == versus eq, precedência e a volta silenciosa para texto](/learn/irules-expression-operators)**. == compara números quando consegue e texto quando não, enquanto eq compara sempre texto.
+2. **[Números em iRules: octal, hexadecimal, e por que 08 não é um número](/learn/irules-tcl-number-notation)**. Um zero à esquerda significa octal: por que 010 é oito e 08 não é número algum.
+3. **[Montando strings em iRules: aspas, chaves, append, concat e listas](/learn/irules-building-strings)**. Aspas substituem, chaves não, colchetes rodam um comando: as três regras por trás de quase toda surpresa.
+4. **[Comandos string do Tcl em iRules: índices, map, match, compare e trim](/learn/irules-string-commands)**. Índices, map, match, compare e trim, e a regra que as pessoas erram em cada um.
+5. **[findstr, substr e getfield: o que a F5 documenta e o que deixa em aberto](/learn/irules-findstr-substr-getfield)**. Os três comandos da F5 para recortar um pedaço de um valor, o que a documentação diz e o que deixa em aberto.
+6. **[scan em iRules: desmontando valores sem expressões regulares](/learn/irules-scan-command)**. Desmontar valores sem expressão regular, e por que o seu resultado conta conversões e não casamentos.
+7. **[iRules: escolhendo entre if, switch, class match e arrays static](/learn/irules-branching-and-lookups)**. if encadeado, switch, um data group com class match ou um array static: como comparar um valor com muitos.
+8. **[Laços e listas em iRules, e por que eles bloqueiam](/learn/irules-loops-and-lists)**. foreach, for e while, e por que um laço grande por requisição trava a conexão em que roda.
+9. **[Procedimentos em iRules: código reutilizável com proc e call](/learn/irules-procedures-proc-and-call)**. Código definido uma vez com proc e chamado de qualquer lugar, inclusive de iRules não anexadas a nada.
+10. **[iRules, CMP e o namespace static::](/learn/irules-cmp-and-static-namespace)**. Como uma única variável global rebaixa um virtual server a um só núcleo, e o static:: como cura.
+11. **[Desempenho de iRules: ciclos, timing e a calculadora de runtime](/learn/irules-performance-and-timing)**. O bytecode dentro do TMM, o que o comando timing mede e por que a média de ciclos é o número em que confiar.
+12. **[iRules LX, explicado: o que roda onde quando o Tcl chama o Node.js](/learn/irules-lx-explained)**. Um processo Node.js ao lado do microkernel, chamado a partir do Tcl, e o que roda onde.
+
 ## Fontes
 
 As regras e as respostas são citadas da página do guia; os detalhes de segurança, do alerta, de tamanho, de prioridade e de table vêm das páginas da F5 em que ele se apoia; todo comportamento de Tcl foi reproduzido no Tcl 8.4.6. Tudo lido em 2026-10-03.

@@ -2,13 +2,13 @@
 slug: arp-and-mac-addresses
 title: "ARP e Endereços MAC: Como o IP Encontra a Ethernet"
 summary: "Todo pacote numa rede local é entregue por endereço MAC, e o ARP é o serviço de diretório que mapeia um IP para um deles. O mapeamento um-para-um, a leitura da saída do ARP para provar que a resolução funcionou, o gratuitous ARP, e o MAC masquerading - o truque de failover que faz um endereço se mover sem que os switches percebam."
-concepts: ["arp", "mac address", "layer 2", "fundamentals", "gratuitous arp", "mac masquerade", "default gateway"]
+concepts: ["arp", "mac address", "layer 2", "fundamentals", "gratuitous arp", "mac masquerade", "default gateway", "rfc 826", "arp cache", "arp probe", "arp announcement", "proxy arp", "neighbor discovery"]
 relatedTools: []
-relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-failover-states-and-operations"]
+relatedArticles: ["osi-model-in-practice", "routing-tables-and-default-gateway", "bigip-failover-states-and-operations", "what-is-an-oui", "the-ethernet-frame-field-by-field", "traffic-diversion-and-the-man-in-the-middle"]
 category: networking
 order: 162
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-07"
 ---
 
 Um endereço Internet Protocol (IP) leva um pacote através de redes; um endereço Media Access Control (MAC) leva um quadro através da sala. O Address Resolution Protocol (ARP) é o mecanismo pequeno e antigo que conecta os dois, e a prova aposentada de fundamentos da F5 mantinha três habilidades sobre ele: dizer que serviço o ARP fornece, verificar pela saída que a resolução funcionou, e explicar o MAC masquerading. As três continuam pagando o próprio salário diariamente.
@@ -17,18 +17,60 @@ A primeira metade de todo endereço de hardware é um prefixo registrado; **[o q
 
 ## O serviço que o ARP fornece
 
-Quando um host precisa enviar para um IP na própria sub-rede, ele difunde uma pergunta - quem tem este IP - e o dono responde com seu endereço MAC. Quem perguntou guarda a resposta na tabela ARP: um mapeamento um-para-um de IP para MAC, envelhecido com o tempo e renovado sob demanda. Para destinos fora da sub-rede, o host não faz ARP para o destino; faz ARP para o [gateway padrão](/learn/routing-tables-and-default-gateway) e entrega o pacote ali - por isso um gateway errado aparece como entrada ARP para o roteador errado, não como mensagem de erro de roteamento.
+Quando um host precisa enviar para um IP na própria sub-rede, ele difunde uma pergunta, quem tem este IP, e o dono responde com o seu endereço MAC. Quem perguntou guarda a resposta na tabela ARP: um mapeamento um-para-um de IP para MAC, envelhecido com o tempo e renovado sob demanda. Para destinos fora da sub-rede, o host não faz ARP para o destino; faz ARP para o [gateway padrão](/learn/routing-tables-and-default-gateway) e entrega o pacote ali, e é por isso que um gateway errado aparece como entrada ARP para o roteador errado, não como mensagem de erro de roteamento.
 
-Um endereço MAC tem 48 bits, escritos como seis pares hexadecimais; a primeira metade é o Organizationally Unique Identifier do fabricante, a segunda é o dispositivo. Válido significa bem formado e, num segmento real, único - dois reclamantes para um MAC é uma falha distinta e feia.
+O protocolo é a RFC 826, "An Ethernet Address Resolution Protocol", de David C. Plummer, novembro de 1982 ([RFC 826](https://www.rfc-editor.org/rfc/rfc826.html)). O seu pacote é curto, e todos os campos continuam em uso; os números são dos registros da IANA ([IANA, parâmetros do ARP](https://www.iana.org/assignments/arp-parameters/arp-parameters.xhtml); [IANA, EtherTypes](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)):
+
+| Campo (RFC 826) | Tamanho | Para IPv4 sobre Ethernet |
+|---|---|---|
+| ar$hrd, espaço de endereços de hardware | 16 bits | 1, que a IANA ainda lista como "Ethernet (10Mb)" |
+| ar$pro, espaço de endereços de protocolo | 16 bits | 0x0800, IPv4 |
+| ar$hln, ar$pln, os dois comprimentos de endereço | 8 bits cada | 6 e 4 |
+| ar$op, o código de operação | 16 bits | 1 "REQUEST" ou 2 "REPLY" |
+| ar$sha, ar$spa | 6 e 4 octetos | o MAC e o IP de quem envia |
+| ar$tha, ar$tpa | 6 e 4 octetos | o MAC e o IP do alvo (o MAC é o que um pedido pergunta) |
+
+O ARP vai direto no [quadro Ethernet](/learn/the-ethernet-frame-field-by-field), sob o seu próprio EtherType, 0x0806, "Address Resolution Protocol (ARP)" na lista da IANA. Uma regra da RFC 826 explica boa parte do que vem a seguir: quem recebe verifica primeiro se já conhece o remetente, e "If the pair &lt;protocol type, sender protocol address&gt; is already in my translation table, update the sender hardware address field of the entry with the new information in the packet", antes mesmo de olhar o código de operação. Os requisitos de host acrescentam um freio: "A mechanism to prevent ARP flooding (repeatedly sending an ARP Request for the same IP address, at a high rate) MUST be included. The recommended maximum rate is 1 per second per destination" ([RFC 1122](https://www.rfc-editor.org/rfc/rfc1122.html), seção 2.3.2.1).
+
+Um endereço MAC tem 48 bits, escritos como seis pares hexadecimais; a primeira metade é o Organizationally Unique Identifier do fabricante, a segunda é o dispositivo. Válido significa bem formado e, num segmento real, único: dois reclamantes para um MAC é uma falha distinta e feia.
 
 ## Provando que a resolução funcionou
 
-Dada a saída de um comando ARP ou um diagrama, a resolução sucedeu se o IP alvo aparece com um MAC resolvido - uma entrada completa. Uma entrada incompleta, ou o IP ausente após tentativa de tráfego, significa que a pergunta foi feita e ninguém respondeu: sub-rede errada, host caído, ou uma VLAN que não alcança o host de verdade. Este é o posto de checagem de Camada 2 em qualquer caminhada de conectividade: antes de culpar roteamento ou firewalls, confirme que a entrada ARP do próximo salto está completa. Num BIG-IP, a mesma checagem vale para a visão do dispositivo sobre membros de pool e gateways.
+Dada a saída de um comando ARP ou um diagrama, a resolução teve sucesso se o IP alvo aparece com um MAC resolvido, uma entrada completa. Uma entrada incompleta, ou o IP ausente depois de uma tentativa de tráfego, significa que a pergunta foi feita e ninguém respondeu: sub-rede errada, host fora do ar, ou uma VLAN que não alcança o host de verdade. Este é o posto de checagem de Camada 2 em qualquer caminhada de conectividade: antes de culpar roteamento ou firewalls, confirme que a entrada ARP do próximo salto está completa. Num BIG-IP, a mesma checagem vale para a visão do dispositivo sobre membros de pool e gateways.
+
+Os comandos mudam; a leitura, não. No Windows, `arp -a` "Displays the current ARP entries by querying the protocol data" ([Microsoft Learn, arp](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/arp)). No Linux, `ip neigh` mostra cada entrada com o seu estado ([ip-neighbour(8)](https://man7.org/linux/man-pages/man8/ip-neighbour.8.html)): reachable, "valid until the reachability timeout expires"; stale, "valid but suspicious", a ser conferida na próxima vez que for usada; incomplete, "has not (yet) been validated/resolved"; e failed, "max number of probes exceeded without success". Uma entrada failed para o gateway é uma resposta de Camada 2 para uma pergunta que parecia ser de roteamento.
 
 ## Gratuitous ARP: anunciando a si mesmo
 
-Um gratuitous ARP é um anúncio não solicitado - um host difundindo o próprio mapeamento IP-para-MAC sem que ninguém pergunte. Seu propósito é correção de cache: todos no segmento atualizam a entrada imediatamente. É o mecanismo que faz a mudança de endereço IP funcionar: quando um endereço flutuante migra de um dispositivo para outro num failover, o novo dono envia gratuitous ARPs para que switches e vizinhos encaminhem para a nova porta.
+Um gratuitous ARP é um anúncio não solicitado: um host difundindo o próprio mapeamento IP-para-MAC sem que ninguém pergunte. O seu propósito é a correção de cache, e a regra de mesclagem da RFC 826 é o que o faz funcionar: todos no segmento que já têm uma entrada para aquele endereço a atualizam na hora. É o mecanismo que faz a mudança de endereço IP funcionar: quando um endereço flutuante migra de um dispositivo para outro num failover, o novo dono envia gratuitous ARPs para que switches e vizinhos encaminhem para a nova porta, e não para a antiga.
 
-## MAC masquerading: mover-se sem se mover
+A RFC 5227 deu depois nomes precisos aos pacotes ([RFC 5227](https://www.rfc-editor.org/rfc/rfc5227.html), julho de 2008). Um ARP Probe é "an ARP Request packet, broadcast on the local link, with an all-zero 'sender IP address'", enviado para conferir se um endereço está livre antes de usá-lo; um ARP Announcement é o mesmo pacote "except that both the sender and target IP address fields contain the IP address being announced". Sobre o nome antigo, ela é direta: "What Stevens describes as Gratuitous ARP is the exact same packet that this document refers to by the more descriptive term 'ARP Announcement.'"
 
-O gratuitous ARP atualiza vizinhos, mas alguns ambientes respondem devagar ou filtram os anúncios. O MAC masquerading remove o problema: o traffic group flutuante carrega um endereço MAC virtual que se move com ele, de modo que após um [failover](/learn/bigip-failover-states-and-operations) o mapeamento IP-para-MAC não muda nunca - o mesmo MAC simplesmente aparece em outra porta do switch, que aprende no primeiro quadro. Os caches ARP dos vizinhos permanecem válidos porque nada do que guardaram se moveu. O blueprint aposentado pedia o propósito do MAC masquerading, e é este, numa frase: tornar a migração de um endereço invisível na Camada 2, para que a velocidade do failover deixe de depender da rapidez com que todos os outros renovam suas tabelas.
+## Proxy ARP: respondendo por outro
+
+Um roteador também pode responder por hosts que não estão no segmento. A RFC 1027, de outubro de 1987, descreve o truque para hosts que não entendiam sub-redes: "The gateway can then respond for host B, saying that the network address for host B is that of the gateway itself. Host A will see this reply, cache it, and send future IP packets for host B to the gateway" ([RFC 1027](https://www.rfc-editor.org/rfc/rfc1027.html)). Ele ainda aparece: uma entrada ARP cujo MAC é o do roteador, para um endereço IP que não é o do roteador, é o proxy ARP em ação.
+
+## Nada no pacote prova quem o enviou
+
+Olhe a tabela de novo: não há campo para prova. Qualquer host pode responder a qualquer pedido, ou anunciar qualquer mapeamento sem ser perguntado, e a regra de mesclagem faz os vizinhos acreditarem. Isso é todo o envenenamento de ARP, o arquétipo das formas de desviar tráfego e o ponto de partida da [série sobre desvio de tráfego](/learn/traffic-diversion-and-the-man-in-the-middle), junto com os recursos de switch que acabam com ele.
+
+## MAC masquerading: mudar sem sair do lugar
+
+O gratuitous ARP atualiza os vizinhos, mas alguns ambientes respondem devagar ou filtram as atualizações. O MAC masquerading elimina o problema: o traffic group flutuante carrega um endereço MAC próprio, que a referência de comandos da F5 descreve como a opção `mac` do traffic group, "Specifies a MAC address for the traffic group" ([referência tmsh da F5, cm traffic-group](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html)). Depois de um [failover](/learn/bigip-failover-states-and-operations), o mapeamento IP-para-MAC nem muda: o mesmo MAC simplesmente aparece numa outra porta de switch, que os switches aprendem a partir do primeiro quadro. Os caches ARP dos vizinhos continuam válidos porque nada do que eles guardaram se moveu. O blueprint aposentado pedia para explicar o propósito do MAC masquerading, e ele cabe numa frase: tornar a migração de um endereço invisível na Camada 2, para que a velocidade do failover deixe de depender de quão rápido todos os outros atualizam as próprias tabelas.
+
+## O IPv6 não tem ARP
+
+O IPv6 resolve endereços com o Neighbor Discovery, e a RFC 4861 diz o que ele substituiu: "The IPv6 Neighbor Discovery protocol corresponds to a combination of the IPv4 protocols Address Resolution Protocol, ICMP Router Discovery, and ICMP Redirect" ([RFC 4861](https://www.rfc-editor.org/rfc/rfc4861.html), setembro de 2007). O seu cache de vizinhos usa os mesmos estados que o Linux mostra para o ARP, incomplete, reachable, stale, delay e probe, então a leitura acima vale também ali.
+
+## Fontes
+
+- [RFC 826, An Ethernet Address Resolution Protocol, David C. Plummer, novembro de 1982: o pacote e a regra de mesclagem (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc826.html)
+- [IANA, Address Resolution Protocol (ARP) Parameters, atualizado em 19 de maio de 2023: tipo de hardware 1, códigos 1 e 2 (lida em 2026-10-07)](https://www.iana.org/assignments/arp-parameters/arp-parameters.xhtml)
+- [IANA, IEEE 802 Numbers, atualizado em 3 de novembro de 2024: EtherTypes 0x0800 e 0x0806 (lida em 2026-10-07)](https://www.iana.org/assignments/ieee-802-numbers/ieee-802-numbers.xhtml)
+- [RFC 1122, Requirements for Internet Hosts: Communication Layers, outubro de 1989: seção 2.3.2.1, o limite de taxa do ARP (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122.html)
+- [Microsoft Learn, arp, atualizado em 15 de agosto de 2025 (lida em 2026-10-07)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/arp)
+- [ip-neighbour(8) do Linux: os estados dos vizinhos (lida em 2026-10-07)](https://man7.org/linux/man-pages/man8/ip-neighbour.8.html)
+- [RFC 5227, IPv4 Address Conflict Detection, julho de 2008: ARP Probe, ARP Announcement (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc5227.html)
+- [RFC 1027, Using ARP to Implement Transparent Subnet Gateways, outubro de 1987 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1027.html)
+- [Referência tmsh da F5, cm traffic-group: a opção mac (lida em 2026-10-07)](https://clouddocs.f5.com/cli/tmsh-reference/latest/modules/cm/cm_traffic-group.html)
+- [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), setembro de 2007 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4861.html)

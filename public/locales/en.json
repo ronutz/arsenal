@@ -261,8 +261,8 @@
         "advisoryCta": "How an engagement works",
         "speakingVerb": "Listen",
         "speakingTitle": "Speaking",
-        "speakingBody": "Talks and sessions for teams, conferences and classrooms, on the technology and on the people who work with it.",
-        "speakingCta": "Topics and past sessions"
+        "speakingBody": "Talks for conferences, company events and team gatherings, on the technology and on the people who work with it.",
+        "speakingCta": "Talks, formats and booking"
       },
       "trustTitle": "Why trust this",
       "trust": {
@@ -310,7 +310,15 @@
       "surpriseArticle": "something to read",
       "surpriseGuide": "a certification to aim for",
       "surpriseRole": "a career to explore",
-      "surprisePractice": "how the work gets done"
+      "surprisePractice": "how the work gets done",
+      "quickHintEmpty": "Type an IPv4 block, such as 10.0.0.0/8.",
+      "quickHintAddress": "Keep going: four numbers from 0 to 255, separated by dots.",
+      "quickHintPrefix": "Now the prefix: /8, /16, /24, any length from 0 to 32. Or press Enter for this single address.",
+      "quickHintPrefixLength": "The prefix length, from 0 to 32.",
+      "quickHintPrefixRange": "A prefix runs from /0 to /32, so /{prefix} cannot be one.",
+      "quickHintOctet": "Each number runs from 0 to 255, so {octet} cannot be one.",
+      "quickHintShape": "That cannot become an IPv4 block: four numbers from 0 to 255 separated by dots, then a slash and a prefix, like 192.168.1.0/24.",
+      "quickHintSettling": "Reading the prefix…"
     }
   },
   "tools": {
@@ -12998,7 +13006,9 @@
       }
     },
     "ctaSpeaking": "Looking for a conference talk or an internal session rather than a course?",
-    "ctaSpeakingLink": "See Speaking"
+    "ctaSpeakingLink": "See Speaking",
+    "navMaterials": "Open course material",
+    "navMaterialsLede": "A complete introductory course of mine, slides and speaker notes, free to present in your browser, to download and to teach from."
   },
   "contact": {
     "title": "Get in touch",
@@ -13069,10 +13079,10 @@
       },
       "speaking": {
         "title": "Speaking and off-site work",
-        "desc": "A talk, a workshop or a session on site: say the event, the audience, the date and what you want people to leave with.",
+        "desc": "A talk, a panel or a session for your team: say the event, the audience, the date and what you want people to leave with.",
         "cta": "Propose an event",
-        "secondary": "Past talks and formats",
-        "template": "The event:\nThe audience:\nThe date:\nWhat people should leave with:"
+        "secondary": "The talks and the formats",
+        "template": "The event:\nThe organisation:\nWhere and when:\nThe audience (who, and how many):\nWhat people should leave with:\nFormat and length:\nRecorded or streamed?"
       },
       "correction": {
         "title": "A correction",
@@ -13540,6 +13550,11 @@
           "q": "I need a definition, fast",
           "label": "The glossary",
           "verb": "look up"
+        },
+        "course": {
+          "q": "I want a whole course, slides and notes",
+          "label": "Open course material",
+          "verb": "take a course"
         }
       },
       "modeCount": {
@@ -13547,7 +13562,8 @@
         "path": "{count, plural, one {# reading path} other {# reading paths}}",
         "certification": "{count, plural, one {# guide} other {# guides}}, {objectives, plural, one {# objective} other {# objectives}} mapped",
         "platform": "{count, plural, one {# hub} other {# hubs}}",
-        "lookup": "{count, plural, one {# term} other {# terms}}"
+        "lookup": "{count, plural, one {# term} other {# terms}}",
+        "course": "{count, plural, one {# course} other {# courses}}, {slides} slides"
       },
       "subjectsTitle": "Browse by subject",
       "subjectsLede": "{count, plural, one {# article} other {# articles}} in {subjects, plural, one {# subject} other {# subjects}}, the same taxonomy as the tools. A subject's page gathers its articles, tools and glossary terms; the arrow jumps to its block in the index below.",
@@ -13579,6 +13595,10 @@
         "tools": {
           "label": "The tools",
           "lede": "Every article links the tools that compute what it explains; the tools link back."
+        },
+        "series": {
+          "label": "Article series",
+          "lede": "Subjects told in order, opener first, with the parts still to come already named."
         }
       },
       "directoryTitle": "The vendor-neutral index",
@@ -13587,7 +13607,7 @@
       "freshNew": "New",
       "freshRevised": "Revised",
       "popularTitle": "Most read this week",
-      "startTitle": "New here? Three places to start",
+      "startTitle": "New here? Four places to start",
       "start": {
         "fundamentals": {
           "label": "Start with the networking subject",
@@ -13600,10 +13620,15 @@
         "problem": {
           "label": "Something is broken right now",
           "lede": "The Practice: triage, incident method and the reading of a change, written for the moment it is needed."
+        },
+        "course": {
+          "label": "Take the open TCP/IP course",
+          "lede": "A complete introductory course, {slides} slides with speaker notes, from routing concepts to IPv6, multicast, MPLS and VRRP; present it in your browser."
         }
       },
       "rowTools": "Tools:"
-    }
+    },
+    "portalSeriesCount": "{count, plural, one {# series} other {# series}}"
   },
   "meetingBingo": {
     "metaTitle": "Meeting Bingo",
@@ -14741,7 +14766,7 @@
     "exploreLearn": "Explore the Learn library",
     "appearsIn": "Appears in these workflows",
     "mapHeading": "The site in one minute",
-    "mapIntro": "Everything on ronutz lives in one of five worlds, the same five the home page, the footer and the sitemap use. The counts are computed from the site itself when it is built, so they are the figures of the pages they point at.",
+    "mapIntro": "Everything on ronutz lives in one of five worlds, the same five the footer of every page, the colophon and the sitemap use. The counts are computed from the site itself when it is built, so they are the figures of the pages they point at.",
     "howHeading": "How each part works",
     "howIntro": "One section per surface: what it is for, how to use it, and the two or three places to start. The sections below this one are the reference: the datasheet, every tool on one line, the common tasks, and the manual.",
     "howStart": "Start with:",
@@ -16013,7 +16038,8 @@
       },
       "mac-address": {
         "def": "The hardware address that identifies a network interface on a local network.",
-        "context": "A MAC address is the 48-bit identifier burned into (or assigned to) a network card, used to deliver frames on the local segment; its first half, the OUI, identifies the manufacturer. Unlike an IP address it does not route across networks, it is strictly local."
+        "context": "A MAC address is the 48-bit identifier burned into (or assigned to) a network card, used to deliver frames on the local segment; its first half, the OUI, identifies the manufacturer. Unlike an IP address it does not route across networks, it is strictly local.",
+        "depth": "A MAC address is 48 bits, which the IEEE now calls an EUI-48; its registration guidelines declare the older name, MAC-48, obsolete. Two bits of the first octet change what the rest means: the lowest says whether the address is one interface or a group, the next whether it came from a purchased block or was set locally by software. Only a universal, individual address has a manufacturer behind its first three octets, the OUI.\n\nThat distinction matters more every year. Phones and laptops now join each Wi-Fi network with a random, locally administered address, by default on Android since version 10 and on Apple devices since iOS 14, so one device shows a different MAC on every network and none of them names a vendor. Group addresses are mostly computed rather than assigned: broadcast is all ones, IPv4 multicast maps into 01-00-5E, IPv6 multicast into 33-33.\n\nA MAC address never leaves its link. Every router rewrites the frame, so the address in a capture is the last hop's, and what connects an IP address to it on the local segment is ARP."
       },
       "merkle-tree": {
         "def": "A tree of hashes that lets you verify one item belongs to a large set efficiently.",
@@ -16874,7 +16900,8 @@
       },
       "csma-cd": {
         "def": "Classic Ethernet's channel etiquette: listen before you talk, talk only when the wire is quiet, and if two stations collide anyway, stop, jam, and retry after a random backoff.",
-        "context": "Metcalfe and Boggs described the scheme in their July 1976 CACM paper on Ethernet, and IEEE 802.3 standardized it: a station senses the carrier, transmits when idle, keeps listening while sending, and on detecting a collision emits a jam signal so everyone notices, then waits a random interval chosen by binary exponential backoff before trying again. The 64-byte minimum frame exists for it, sized so a transmission lasts at least one round trip across the maximum segment and collisions are always detected in time. It is also the losing side of the great 1980s argument with Token Ring's deterministic turn-taking. Switched, full-duplex Ethernet retired the contention entirely, so CSMA/CD survives in the framing, the minimum frame size, and the exams."
+        "context": "Metcalfe and Boggs described the scheme in their July 1976 CACM paper on Ethernet, and IEEE 802.3 standardized it: a station senses the carrier, transmits when idle, keeps listening while sending, and on detecting a collision emits a jam signal so everyone notices, then waits a random interval chosen by binary exponential backoff before trying again. The 64-byte minimum frame exists for it, sized so a transmission lasts at least one round trip across the maximum segment and collisions are always detected in time. It is also the losing side of the great 1980s argument with Token Ring's deterministic turn-taking. Switched, full-duplex Ethernet retired the contention entirely, so CSMA/CD survives in the framing, the minimum frame size, and the exams.",
+        "depth": "In full duplex the whole scheme is switched off. Cisco's troubleshooting note puts the two worlds side by side: on a shared, half-duplex segment 'Collisions are not bad; they are essential to correct Ethernet operation', while 'In full-duplex Ethernet, collision detection is disabled'.\n\nWhat survives in operations is the late collision. A collision 'detected by a station after it has sent the 512th bit of its frame' counts as late, because by then every station should already have heard the frame; Cisco lists the usual causes as incorrect cabling, too many hubs and faulty network cards. On a modern switched network, a late-collision counter that moves almost always means one thing instead: one end of the link is running half duplex and the other full, the duplex mismatch."
       },
       "csma-ca": {
         "def": "Wi-Fi's channel etiquette: a radio cannot hear a collision while it is transmitting, so stations work to avoid collisions up front with waits, random backoff, and per-frame acknowledgements.",
@@ -17014,7 +17041,8 @@
       },
       "duplex-mismatch": {
         "def": "One end at full duplex, the other at half: the link works, slowly and with late collisions - the classic 'network is weird' root cause of the 2000s.",
-        "context": "Usually born from one side hard-coded and the other autonegotiating; the autoneg side falls back to half."
+        "context": "Usually born from one side hard-coded and the other autonegotiating; the autoneg side falls back to half.",
+        "depth": "The mechanism is auto-negotiation's fallback. A port set to negotiate that hears nothing from a fixed-speed neighbour uses parallel detection, which can sense the speed from the signal but, in the University of New Hampshire lab's words, 'can never parallel detect to a full duplex link', so it assumes half duplex. Fix one end at 100 full, leave the other on auto, and you have built the mismatch on purpose.\n\nThe symptoms split by side. The half-duplex end sees late collisions and a 'rapid increase of FCS and alignment errors', because the full-duplex end transmits without waiting its turn; the full-duplex end counts runts. The link stays up and small tests pass, so the fault hides until load arrives.\n\nThe rule is about pairs: both ends on auto-negotiation, or both fixed to the same values. Cisco's advice is to leave auto-negotiation on for devices compliant with 802.3u, and from 1000BASE-T on, negotiation is mandatory anyway."
       },
       "poe": {
         "def": "Power over Ethernet: the switch feeds power down the data cable, so phones, cameras, and access points need no outlet.",
@@ -17023,7 +17051,8 @@
       },
       "sfp": {
         "def": "Small Form-factor Pluggable: the swappable module that gives a switch port its physical medium - copper or fiber, short reach or long haul.",
-        "context": "SFP+ carries 10G, QSFP bundles four lanes; the port is a socket, the transceiver is the decision."
+        "context": "SFP+ carries 10G, QSFP bundles four lanes; the port is a socket, the transceiver is the decision.",
+        "depth": "An SFP is a contract as much as a module: a cage shape, an electrical interface and a management interface that let any compliant optic fill any compliant port. The management side is the specification SFF-8472, whose second address, A2h, 'is used to access measurements of transceiver temperature, internally measured supply voltage, TX bias current, TX output power, received optical power'. That is digital optical monitoring, read on Cisco IOS with 'show interface transceiver' and on Junos with 'show interfaces diagnostics optics'.\n\nThe reading worth learning is received power. Set against the receiver sensitivity in the module's data sheet, it is the link's loss budget measured instead of estimated, so a link whose margin is shrinking shows it there before it starts dropping frames. Not every module supports the diagnostics; the data sheet says which."
       },
       "lldp": {
         "def": "Link Layer Discovery Protocol: neighbors introduce themselves on the wire - device, port, capabilities - turning 'what is on the other end?' into a show command.",
@@ -19789,7 +19818,8 @@
       },
       "ietf": {
         "def": "The body that standardizes the internet's protocols, in the open, as RFCs.",
-        "context": "The Internet Engineering Task Force works by 'rough consensus and running code': open working groups produce Internet-Drafts that mature into RFCs - TCP, HTTP, TLS, DNS, and nearly every protocol this site's tools decode. Anyone can participate; there is no membership fee. It operates alongside IANA (registries) and the RFC Editor (publication), and its documents are the primary sources this site links by preference."
+        "context": "The Internet Engineering Task Force works by 'rough consensus and running code': open working groups produce Internet-Drafts that mature into RFCs - TCP, HTTP, TLS, DNS, and nearly every protocol this site's tools decode. Anyone can participate; there is no membership fee. It operates alongside IANA (registries) and the RFC Editor (publication), and its documents are the primary sources this site links by preference.",
+        "depth": "The motto came from a plenary talk. RFC 7282, on consensus in the IETF, opens with it: 'We reject: kings, presidents and voting. We believe in: rough consensus and running code', attributed to Dave Clark at the twenty-fourth IETF meeting in 1992. The same RFC explains the practice behind it in its section titles: 'We don't vote in the IETF'; 'Rough consensus is achieved when all issues are addressed, but not necessarily accommodated'; and 'Humming should be the start of a conversation, not the end'.\n\nThe output is the RFC series, on the standards track that RFC 6410 reduced to two levels, Proposed Standard and Internet Standard. Running code is the other half of the motto: under RFC 2026, a specification reached the middle level only once 'at least two independent and interoperable implementations from different code bases' existed, the test that it can actually be followed."
       },
       "cloud-security-alliance": {
         "def": "The industry body that defines how cloud security is assessed and attested.",
@@ -19931,7 +19961,8 @@
       },
       "802-1q": {
         "def": "The IEEE standard that adds a VLAN tag to an Ethernet frame - the reason one physical link can carry many virtual LANs.",
-        "context": "802.1Q inserts a four-byte tag carrying a 12-bit VLAN ID (4,094 usable) and a priority field into the Ethernet header. A tagged link between switches is a trunk; untagged access ports drop a device into a single VLAN. It is the foundation of segmentation on switched networks, and it lives in the 802.1 working group, the architecture arm of the 802 family."
+        "context": "802.1Q inserts a four-byte tag carrying a 12-bit VLAN ID (4,094 usable) and a priority field into the Ethernet header. A tagged link between switches is a trunk; untagged access ports drop a device into a single VLAN. It is the foundation of segmentation on switched networks, and it lives in the 802.1 working group, the architecture arm of the 802 family.",
+        "depth": "The tag is four octets inserted after the source address: the identifier 0x8100, which IANA lists as the Customer VLAN Tag Type, then three bits of priority (the PCP), one bit marking the frame drop-eligible (the DEI, once called CFI), and the 12-bit VLAN identifier. Of its 4,096 values two are kept out: 0 marks a frame that carries only a priority, and 4095 is reserved, which leaves VLANs 1 to 4094.\n\nThe standard has grown far past the tag. IEEE 802.1Q-2022, the active edition, specifies the operation of MAC Bridges and VLAN Bridges and has absorbed 802.1D. Its own vocabulary is not the vendors': a port has a member set and an untagged set, and a PVID, the VLAN an untagged frame is placed in, 1 by default.\n\nProvider networks stack a second tag in front of the first, with its own identifier, 0x88A8, introduced by 802.1ad in 2005 and since folded into 802.1Q."
       },
       "802-1x": {
         "def": "Port-based network access control - the IEEE standard that makes a switch port or access point authenticate before it forwards traffic.",
@@ -20051,15 +20082,18 @@
       },
       "single-mode-fiber": {
         "def": "The long-haul fiber: a core so narrow light travels one path - distance measured in tens of kilometers, not hundreds of meters.",
-        "context": "Single-mode fiber's ~9-micron core admits a single propagation mode, eliminating the modal dispersion that limits multimode, so runs stretch from campus links to intercontinental cables. Standardized as OS1/OS2, usually yellow-jacketed, and driven by laser optics that historically cost more than multimode's - a gap that has narrowed enough that many new builds simply choose single-mode everywhere."
+        "context": "Single-mode fiber's ~9-micron core admits a single propagation mode, eliminating the modal dispersion that limits multimode, so runs stretch from campus links to intercontinental cables. Standardized as OS1/OS2, usually yellow-jacketed, and driven by laser optics that historically cost more than multimode's - a gap that has narrowed enough that many new builds simply choose single-mode everywhere.",
+        "depth": "Single-mode fibre's core is so small, 8 to 10 microns, that light can travel only one way down it, and with one mode there is no modal dispersion; its limits are attenuation and chromatic dispersion instead, which is why it carries kilometres. The ordinary single-mode fibre is ITU-T G.652, with its 'zero-dispersion wavelength around 1310 nm'; the G.657 family is bend-insensitive, and its Category A fibres comply with G.652.\n\nOptics run at 1310 and 1550 nm. Cabling standards grade it OS1, cabled for premises with attenuation of up to 1 dB per km, and OS2, cabled for outdoor use; a current fibre such as Corning's SMF-28 Ultra is specified at no more than 0.32 dB per km at 1310 nm and 0.18 at 1550.\n\nThe connectors carry the polish in their colour: blue for the flat UPC face, green for the angled APC face, and the two must never be mated."
       },
       "multimode-fiber": {
         "def": "The short-reach fiber of buildings and data centers - a wide core, cheaper optics, distances of hundreds of meters.",
-        "context": "Multimode's 50-micron core (62.5 in legacy OM1) carries many light paths at once; their spread (modal dispersion) is what caps distance as speeds rise. Grades OM1 through OM5 mark the progression - OM3 and OM4 (aqua) are the laser-optimized workhorses for 10-100 Gb/s inside facilities, OM5 (lime) adds wideband support for multi-wavelength short reach. The trade against single-mode is classic: cheaper transceivers, shorter reach."
+        "context": "Multimode's 50-micron core (62.5 in legacy OM1) carries many light paths at once; their spread (modal dispersion) is what caps distance as speeds rise. Grades OM1 through OM5 mark the progression - OM3 and OM4 (aqua) are the laser-optimized workhorses for 10-100 Gb/s inside facilities, OM5 (lime) adds wideband support for multi-wavelength short reach. The trade against single-mode is classic: cheaper transceivers, shorter reach.",
+        "depth": "The Fiber Optic Association gives the core sizes, 'almost always 50 or 62.5 microns', inside a 125-micron cladding. A core that wide admits many modes, paths of slightly different lengths, so a pulse spreads as it travels, and the faster the signal the shorter the distance before pulses blur. The grades track the fight against that spreading: one Cisco 10GBASE-SR module reaches 33 m on OM1, 82 m on OM2, 300 m on OM3 and 400 m on OM4, all at 850 nm.\n\nAbove 10 Gb/s, speed came from parallel fibres as much as from faster light: 100GBASE-SR4 uses four lanes each way on an MPO connector, and 400G SR8 uses eight pairs, both to about 100 m on OM4. OM5 is, in Fluke Networks' words, 'a version of the OM4 fiber with additional bandwidth characterization at 953 nm', for short-reach wavelength multiplexing.\n\nThe jacket says the grade: orange for OM1 and OM2, aqua for OM3 and OM4 (violet for OM4 in much of Europe), lime green for OM5."
       },
       "transceiver": {
         "def": "The pluggable module that gives a switch port its personality - copper or fiber, short reach or long, one lineage from GBIC to OSFP.",
-        "context": "Instead of fixing the optics at manufacture, ports take standardized pluggables: the chunky GBIC gave way to the SFP, then SFP+ (10G), SFP28 (25G), the quad-lane QSFP+ / QSFP28 (40/100G), and QSFP-DD and OSFP at 400G and beyond. The module choice - SR, LR, DAC twinax, RJ45 copper - decides medium and distance; the form factor decides what fits the port. Vendor lock-in games on 'unsupported' third-party optics are a running industry argument."
+        "context": "Instead of fixing the optics at manufacture, ports take standardized pluggables: the chunky GBIC gave way to the SFP, then SFP+ (10G), SFP28 (25G), the quad-lane QSFP+ / QSFP28 (40/100G), and QSFP-DD and OSFP at 400G and beyond. The module choice - SR, LR, DAC twinax, RJ45 copper - decides medium and distance; the form factor decides what fits the port. Vendor lock-in games on 'unsupported' third-party optics are a running industry argument.",
+        "depth": "The transceiver is where a port's physical layer actually lives. A switch built with empty cages leaves the medium and the reach to the module: short-reach multimode at 850 nm, long-reach single-mode at 1310, copper over twisted pair, or a direct-attach cable. The IEEE's names say which: in 10GBASE-SR, BASE is baseband, S short wavelength and R the scrambled 64B/66B coding; in 100GBASE-SR4, the final 4 counts lanes on parallel fibre.\n\nReach belongs to the pair, module and fibre, never to the module alone. The same 10GBASE-SR module that covers 400 m of OM4 covers 33 m of OM1, and an LR module is specified for single-mode fibre, not multimode. That is why a transceiver swap is the first suspect after a cabling change, and the module's own diagnostics, its transmitted and received power, are the first numbers to read."
       },
       "media-converter": {
         "def": "The small box that translates one physical medium to another - classically copper Ethernet to fiber and back.",
@@ -21962,7 +21996,8 @@
       },
       "rfc": {
         "def": "The numbered document series in which internet protocols are specified - named a request for comments because the first author had no authority to declare a standard.",
-        "context": "Not every RFC is a standard: the series carries proposed standards, informational notes, best current practice, experiments and April Fools jokes, and the status matters more than the number. Anyone can read them for free, which is the difference from most standards bodies and part of why implementations exist. The convention that a specification is discussed in public before it is fixed is the practice the name preserves, and it is why RFC numbers are cited in code comments across the industry."
+        "context": "Not every RFC is a standard: the series carries proposed standards, informational notes, best current practice, experiments and April Fools jokes, and the status matters more than the number. Anyone can read them for free, which is the difference from most standards bodies and part of why implementations exist. The convention that a specification is discussed in public before it is fixed is the practice the name preserves, and it is why RFC numbers are cited in code comments across the industry.",
+        "depth": "The series began on 7 April 1969 with RFC 1, 'Host Software', by Steve Crocker, a note about the ARPANET's host software rather than a standard. The status of an RFC, not its number, says what it is. RFC 2026 (BCP 9, October 1996) set the standards track at three levels and named the documents off the track: 'Experimental', 'Informational' and 'Historic'; RFC 6410 (October 2011) cut the track to two, so a specification is now a 'Proposed Standard' or an 'Internet Standard'. Best Current Practice, the BCP subseries, is 'designed to be a way to standardize practices and the results of community deliberations'.\n\nThe status of an RFC can change after publication, from Proposed Standard to Internet Standard or from Informational to Historic, and the RFC Editor publishes the list of those changes. Reading one well means checking its header first: the documents it updates or obsoletes, and, on its info page, the ones that have since updated or obsoleted it. A protocol described by an obsoleted RFC is described somewhere newer."
       },
       "circuit-switching": {
         "def": "Reserving a dedicated path end to end for the duration of a conversation, whether or not anything is being sent on it.",
@@ -21998,7 +22033,8 @@
       },
       "firewall": {
         "def": "A device or function that decides which traffic may pass between networks, enforcing a policy at a boundary.",
-        "context": "The name is borrowed from a wall built to stop fire spreading between parts of a building, and the metaphor carries the assumption that has aged worst: that there is an inside and an outside. It was true when an organisation had one gateway, and it stopped being true with cloud, remote work and machine-to-machine traffic that never touches the perimeter. The function did not become useless; it multiplied and moved, into hosts, hypervisors, service meshes and cloud policy, which is what segmentation and zero trust are actually describing. The warning from the people who wrote the first book still applies: an estate where the firewall is the only secure component is one attackers go around rather than through."
+        "context": "The name is borrowed from a wall built to stop fire spreading between parts of a building, and the metaphor carries the assumption that has aged worst: that there is an inside and an outside. It was true when an organisation had one gateway, and it stopped being true with cloud, remote work and machine-to-machine traffic that never touches the perimeter. The function did not become useless; it multiplied and moved, into hosts, hypervisors, service meshes and cloud policy, which is what segmentation and zero trust are actually describing. The warning from the people who wrote the first book still applies: an estate where the firewall is the only secure component is one attackers go around rather than through.",
+        "depth": "NIST's guideline defines firewalls as 'devices or programs that control the flow of network traffic between networks or hosts employing differing security postures', and its catalogue of technologies shows how far the word stretches: packet filtering, stateful inspection, application firewalls, application-proxy gateways and dedicated proxy servers, and around them virtual private networking, network access control, unified threat management and web application firewalls.\n\nTwo of those matter most in daily work. A stateful firewall 'keeps track of each connection in a state table', so a reply is admitted because its request was. A proxy splits the conversation, and in NIST's words each successful attempt 'actually results in the creation of two separate connections': one from the client to the proxy, another from the proxy to the real destination, which is why a capture on either side shows a different conversation.\n\nWhen a connection never establishes and nothing logs an error, a firewall's silent drop is one of the first places to look: by design, a dropped packet answers nothing."
       },
       "packet-filter": {
         "def": "The simplest filtering: decide on each packet independently, by addresses, protocol and ports, with no memory of what came before.",
@@ -22014,15 +22050,18 @@
       },
       "router": {
         "def": "A device that forwards packets between networks by choosing a next hop from a routing table.",
-        "context": "The decision is per packet and purely local: a router does not know the path, only the next step, and the packet's journey is the sum of independent choices made by machines that never coordinate. That is why traceroute shows a path that may not be the path the next packet takes, and why routing problems are often asymmetric - the way out and the way back are decided by different devices with different tables."
+        "context": "The decision is per packet and purely local: a router does not know the path, only the next step, and the packet's journey is the sum of independent choices made by machines that never coordinate. That is why traceroute shows a path that may not be the path the next packet takes, and why routing problems are often asymmetric - the way out and the way back are decided by different devices with different tables.",
+        "depth": "RFC 1812, the requirements for IPv4 routers, describes the forwarding step in one sentence: the router 'generally removes the Link Layer header a message was received with, modifies the IP header, and replaces the Link Layer header for retransmission'. The modification is the time-to-live: every router decrements it and drops the datagram when it reaches zero, so a routing loop, unlike a switching loop, burns itself out, and traceroute works by provoking exactly those drops one hop at a time.\n\nWhat a router does not change on its own is the source and destination IP address. Those survive end to end unless something translates them, which is why a capture at the server shows the client's address only when no network address translation stands between them, and why the MAC addresses on either side never match at all."
       },
       "switch": {
         "def": "A device that forwards frames within a network by learning which addresses live on which port.",
-        "context": "It learns by watching: every frame that arrives teaches it where the sender is, and anything it has not learned yet is flooded to every port. That single behaviour explains most of what operators see - a network that works before the table populates, traffic appearing where it should not during a topology change, and the reason a loop is catastrophic rather than merely wasteful, since flooded frames multiply with nothing to stop them."
+        "context": "It learns by watching: every frame that arrives teaches it where the sender is, and anything it has not learned yet is flooded to every port. That single behaviour explains most of what operators see - a network that works before the table populates, traffic appearing where it should not during a topology change, and the reason a loop is catastrophic rather than merely wasteful, since flooded frames multiply with nothing to stop them.",
+        "depth": "Everything a switch does follows from one table and three habits. It reads the source address of each arriving frame and records the port it came in on (learning); it sends a frame for an address it has not learned out of every other port (flooding); and it forgets an entry that has gone quiet, after 300 seconds by default on a Linux bridge (ageing). With VLANs the table takes two keys, the address and the VLAN, so one switch holds several separate Layer 2 networks.\n\nThose habits explain the failures. A table that has just been cleared floods everything until it relearns, which is why a topology change briefly puts traffic on the wrong ports. A loop is lethal because a flooded frame carries no hop count and circulates until something breaks the loop, which is the job spanning tree does. And a table deliberately overfilled with fake source addresses leaves the switch flooding like a hub to anyone listening, which is what port security exists to stop."
       },
       "bridge": {
         "def": "A device that joins two network segments at layer 2, forwarding only the frames that need to cross.",
-        "context": "The bridge is the switch's ancestor and the word survives where the switch's does not: spanning tree still elects a root bridge, and virtualisation still calls a software switch a bridge. The original purpose was to cut a collision domain in half while keeping one broadcast domain, which is exactly what a modern switch port does per port - the idea did not go away, it multiplied."
+        "context": "The bridge is the switch's ancestor and the word survives where the switch's does not: spanning tree still elects a root bridge, and virtualisation still calls a software switch a bridge. The original purpose was to cut a collision domain in half while keeping one broadcast domain, which is exactly what a modern switch port does per port - the idea did not go away, it multiplied.",
+        "depth": "In the standards the bridge never went away. IEEE 802.1Q, whose active edition is 802.1Q-2022, specifies the operation of MAC Bridges and VLAN Bridges, and it has absorbed the old bridging standard, 802.1D, whose content now lives inside it. In the standard's vocabulary a switch is a bridge with many ports.\n\nThe word also survives in software. The Linux kernel's bridge is a device that 'connects two or more network segments and operates at the data link layer (Layer 2)' and forwards transparently, and it is what connects virtual machines and containers to a physical network. When a hypervisor diagram shows a bridge, read it as a switch that happens to live in the kernel.\n\nSpanning tree still elects a root bridge, and every switch in it carries a bridge ID made of a priority and a MAC address, which keeps the oldest name in the family on every Layer 2 engineer's screen."
       },
       "gateway": {
         "def": "The address a host sends to when the destination is not on its own network - and, more generally, any device that translates between two systems.",
@@ -22090,7 +22129,8 @@
       },
       "duplex": {
         "def": "Whether a link can carry traffic in both directions at once, or must take turns.",
-        "context": "Modern switched links are full duplex and the setting is rarely thought about - until a mismatch, where one end negotiates full and the other assumes half. The result is the most misleading fault in networking: the link is up, small pings succeed, and throughput collapses under load with rising errors, because one side transmits while the other believes a collision occurred. It survives as a diagnostic reflex precisely because it looks like anything except what it is."
+        "context": "Modern switched links are full duplex and the setting is rarely thought about - until a mismatch, where one end negotiates full and the other assumes half. The result is the most misleading fault in networking: the link is up, small pings succeed, and throughput collapses under load with rising errors, because one side transmits while the other believes a collision occurred. It survives as a diagnostic reflex precisely because it looks like anything except what it is.",
+        "depth": "Ethernet began half duplex by necessity: on a shared medium only one station could transmit, and collision detection settled who went next. Full duplex became standard in 1997 with IEEE 802.3x, which added a 'full duplex mode of operation on a speed-independent basis' with pause-based flow control. It needs a link with only two ends, which switching provided, and on it collision detection is simply switched off.\n\nFrom 10 Gb/s on, the question disappeared: every task force since 802.3ae has written the same objective, 'Support full-duplex operation only'. Duplex is now a property of 10, 100 and 1000 Mb/s copper links and of the auto-negotiation that sets them, which is where it still goes wrong."
       },
       "checksum": {
         "def": "A small value computed from data so a receiver can notice accidental corruption - detection, not correction, and not protection.",
@@ -22146,7 +22186,8 @@
       },
       "trunk": {
         "def": "A link that carries several VLANs at once, tagging each frame so the far end knows which network it belongs to.",
-        "context": "The trunk is where segmentation is enforced and where it is most often quietly undone. A port configured to carry every VLAN by default hands an attacker the whole estate from one cable, and a native VLAN mismatch between two switches silently merges two networks the diagram says are separate. Both are configuration rather than protocol defects, which is why segmentation reviews look at trunk allow-lists before they look at firewall rules."
+        "context": "The trunk is where segmentation is enforced and where it is most often quietly undone. A port configured to carry every VLAN by default hands an attacker the whole estate from one cable, and a native VLAN mismatch between two switches silently merges two networks the diagram says are separate. Both are configuration rather than protocol defects, which is why segmentation reviews look at trunk allow-lists before they look at firewall rules.",
+        "depth": "The word means two different things on two common platforms. On a Cisco switch a trunk is a link carrying many VLANs with 802.1Q tags. On an F5 BIG-IP a trunk is link aggregation: in F5's own reference, 'Link Aggregation allows multiple physical links to be treated as one logical link. It is also referred to as trunking', with LACP available but disabled by default. Read the platform before you read the word.\n\nOn a tagged trunk, the native VLAN is the exception: Cisco's rule is that a packet whose VLAN matches the port's native VLAN 'is sent untagged; otherwise, the device sends the packet with a tag'. The native VLAN is 1 by default on Cisco and on Aruba's AOS-CX, and Cisco warns that if the two ends disagree, 'spanning-tree loops might result'.\n\nThe hardening list is short and well known: carry only the VLANs needed, move the native VLAN to an unused ID or tag it, and switch trunk negotiation off on ports that face hosts."
       },
       "pat": {
         "def": "Translating many private addresses onto one public address by also rewriting ports - what most people mean when they say NAT.",
@@ -23020,6 +23061,51 @@
         "def": "IBM's Application System/400, the midrange computer announced in June 1988 and released that August, whose operating system and architecture survive today as IBM i on Power Systems: a single-level store, an object-based machine interface and an integrated relational database that have kept forty-year-old applications running on current hardware.",
         "context": "The AS/400 was the Silverlake system, built by a skunkworks at IBM Rochester, Minnesota, named after a lake in the town and officially under way from December 1985 after the company-wide Fort Knox project to unify its midrange lines had failed; IBM announced it on 21 June 1988 with more than 1,000 software packages and released it in August as the successor to the System/36 and System/38. Its operating system, OS/400, descends from the System/38's and was released on 26 August 1988; it became i5/OS in 2004 and IBM i in 2008, the i standing for integrated. The architecture is the reason the line still exists: the Technology Independent Machine Interface presents applications with a platform-independent instruction set that is translated to native code below it, so that when IBM replaced the 48-bit IMPI processors with 64-bit PowerPC-derived chips in 1995 the applications did not notice, and again when POWER4 arrived in 2001. By the end of 1990 an estimated 111,000 systems were installed and the line earned $14 billion that year; about 500,000 had shipped by 1997. The hardware was renamed AS/400e in 1997, eServer iSeries in 2000, eServer i5 in 2004 and System i in 2006, and in 2008 it merged with the System p into IBM Power Systems. IBM i 7.6 shipped on 18 April 2025, with RPM and YUM packaging for open-source software and TN5250 still carrying the green screens.",
         "depth": "The AS/400 is the computer that proved an architecture could outlive every piece of hardware it ran on. IBM's Application System/400, in the encyclopaedia's account, was a family of midrange computers announced in June 1988, on 21 June as the Silverlake system with more than 1,000 software packages available at launch, and released in August of that year as the successor to the System/36 and the System/38. It came out of IBM Rochester, in Minnesota, where a skunkworks named for Silver Lake in the town had been officially at work since December 1985 after Fort Knox, the company's attempt from 1982 to consolidate the System/36, System/38, 8100, Series/1 and 4300 lines on a single 801-based processor, had failed. The numbers that followed explain why the name still carries weight: an estimated 111,000 installations by the end of 1990 and annual revenue of $14 billion that year, 250,000 systems by 1994 and about 500,000 shipped by 1997.\n\nThe idea underneath is the Technology Independent Machine Interface, TIMI, inherited from the System/38. Applications are compiled to a platform-independent instruction set and translated to the processor's native code below that interface, so that the processor can change without the applications being recompiled or even knowing. The article records the proof. The first machines used the 48-bit CISC IMPI processors of the System/38 lineage; in 1995 IBM moved the line to 64-bit PowerPC-derived processors, the RS64 family, following Frank Soltis's 1991 proposal, made at Jack Kuehler's request, to adopt a PowerPC variant for the AS/400 after an in-house design had been cancelled; POWER4 followed in 2001, then POWER5 and POWER6; and through all of it the applications written for the 1988 machine kept running. Few platforms can make that claim across a change of word size and instruction set, and it is the reason so much of the world's inventory, banking and manufacturing still runs on this line.\n\nThe operating system carries the other half of the design. OS/400, released on 26 August 1988, is described in the IBM i article as an evolution of the System/38's Control Program Facility with compatibility layers for the System/36's SSP and for AIX; it exposes the Machine Interface for hardware independence, uses object-based addressing on a single-level store, in which memory and disk form one address space and every thing on the system is a typed object, and integrates a relational database so tightly that the database is not a product installed on the system but a property of it. It was renamed i5/OS in 2004, when the hardware became the eServer i5, and IBM i in 2008, \"the i standing for integrated\". Fixes arrive as PTFs, program temporary fixes; open-source software arrives through RPM packages and YUM; and the terminal protocol of the green screen is TN5250, which is why that number appears in firewall rules at companies that have never bought a terminal.\n\nThe hardware's names changed with IBM's marketing. The AS/400 Advanced Series came in 1994 and the AS/400e in 1997; in 2000 the line became the eServer iSeries, sharing the POWER4 processor with the pSeries; in 2004 the eServer i5; in 2006 the System i; and in 2008 IBM consolidated the System i and the System p into IBM Power Systems, so that IBM i and AIX share one hardware line. The infobox of the AS/400 article records the original line as discontinued on 30 September 2013, which is a statement about the name rather than the platform: IBM i 7.6 was released on 18 April 2025, and the RS/6000, announced in February 1990 as an internal competitor, became the sibling it now shares hardware with.\n\nFor a reader of this glossary the AS/400 sits beside AIX, OpenVMS and the Unixes as one of the long-lived enterprise platforms a network engineer meets rather than administers: the host behind a TN5250 session, the system whose batch jobs define the maintenance window, the box in the corner of the data centre that cannot be patched on the project's timetable because it is the business. IBM's industry record carries the company's side of the story."
+      },
+      "osi-model": {
+        "def": "The seven-layer reference model of network communication, from the physical signal at layer 1 to the application at layer 7.",
+        "context": "A standard, not folklore: ISO/IEC 7498-1:1994 and ITU-T X.200, both still in force. Its protocols lost to TCP/IP, but its numbering became the industry's vocabulary for saying where a problem lives.",
+        "depth": "The internet's own architecture never had seven layers. RFC 1122, the host requirements of 1989, lists four, application, transport, internet and link, and says its application layer 'essentially combines the functions of the top two layers' of the OSI model, presentation and application. Session has no protocol of its own in the internet suite to point at.\n\nWhat survived is the map. 'Layer 2' means the link and its frames, 'Layer 3' the IP packet and routing, 'Layer 4' TCP and UDP and their ports, 'Layer 7' the application; the numbers let a network team and an application team agree in one sentence on which half of a problem is whose. The map bends wherever one device does several jobs, a load balancer terminating TLS or a tunnel carrying Layer 2 inside UDP, which is why engineers use the layers as a vocabulary rather than a law."
+      },
+      "oui": {
+        "def": "The 24-bit prefix the IEEE Registration Authority assigns to an organisation, forming the first half of the MAC addresses it issues.",
+        "context": "An MA-L block brings an OUI and 2^24 addresses; the smaller MA-M and MA-S blocks share their first 24 bits with other buyers, so a 24-bit lookup cannot name their owner.",
+        "depth": "The IEEE's guidelines define the OUI as 'a 24-bit (three octet) sequence' and sell address space in three sizes: an MA-L gives 2^24 EUI-48 identifiers from an assigned OUI; an MA-M gives 2^20 and 'does not include an OUI assignment'; an MA-S gives 2^12 from a 36-bit prefix. The assignments are public and searchable, which is how a lookup turns a prefix into a company.\n\nBefore reading an OUI as a vendor, read the two lowest bits of the first octet. If the group bit is set, the address is multicast or broadcast; if the local bit is set, the address was set by software, and the bits where an OUI would be mean nothing. Randomised Wi-Fi addresses, the default on current phones, are local by design, so the honest result of looking one up is no vendor at all."
+      },
+      "ethertype": {
+        "def": "The two-octet field after an Ethernet frame's addresses that names the protocol inside: 0x0800 for IPv4, 0x86DD for IPv6, 0x0806 for ARP.",
+        "context": "Values of 0x0600 and above are types; values up to 1500 are a length, the IEEE 802.3 reading of the same field. The IEEE Registration Authority assigns them; IANA keeps a list of those the internet uses.",
+        "depth": "One field, two meanings, settled by a threshold. RFC 9542 states the rule from the internet's side: EtherTypes are 'equal to or larger than 0x0600', and a length must stay below 0x5DD 'or it could be mistaken as an EtherType'. The original DIX Ethernet used the field as a type; IEEE 802.3 first used it as a length and later accepted both readings.\n\nThe type is also how a frame announces a tag. A VLAN tag begins with 0x8100, which IANA lists as the 'Customer VLAN Tag Type (C-Tag, formerly called the Q-Tag)', and provider networks use 0x88A8 for the outer tag of a stacked pair; a receiver that finds either reads the real EtherType four octets later. LLDP is 0x88CC, and the slow protocols that carry LACP are 0x8809. When a capture shows an EtherType it cannot decode, the protocol inside is one the tool does not know, not a broken frame."
+      },
+      "fcs": {
+        "def": "The four-octet checksum at the end of an Ethernet frame, a CRC-32 the receiver recomputes to detect corruption.",
+        "context": "A frame that fails it is dropped without a word; the only trace is an FCS or CRC error counter on the receiving port.",
+        "depth": "The check covers the frame from the destination address to the end of the padding and leaves out the preamble, the start delimiter and itself: in one vendor's words, the MAC 'computes the CRC32 over the frame bytes that include the source address, destination address, length, data, and pad'. Because a switch that adds or removes a VLAN tag changes those bytes, it recomputes the FCS as the frame leaves.\n\nEthernet does not retransmit a failed frame; whatever runs above it, usually TCP, notices the loss and recovers, slowly. So a rising FCS counter is a physical-layer symptom read at Layer 2: a damaged cable, a dirty fibre connector, a failing optic, electrical noise. Cisco's counter documentation adds the classic non-physical cause, noting that FCS errors 'can also indicate a duplex mismatch', and on the half-duplex side of a mismatched link they climb with load."
+      },
+      "auto-negotiation": {
+        "def": "The exchange in which two twisted-pair Ethernet ports advertise their speeds and duplex modes and settle on the best they share.",
+        "context": "Defined in Clause 28 of IEEE 802.3 and carried in bursts of link pulses. Optional at 10 and 100 Mb/s, mandatory from 1000BASE-T on.",
+        "depth": "Cisco describes it as 'an optional function of the IEEE 802.3u Fast Ethernet standard that enables devices to automatically exchange information over a link about speed and duplex abilities'. The information travels in Fast Link Pulse bursts, which the University of New Hampshire's lab describes as 'simply a sequence of 10BASE-T Normal Link Pulses', sent every 16 ms, give or take 8.\n\nFrom Gigabit on copper it stopped being optional: an IEEE interpretation confirms that 'selecting 1000BASE-T mode of operation still requires that Auto-Negotiation be used', because negotiation is also where the two ends settle which one is the clock master. Fibre at a fixed speed usually does not negotiate speed at all.\n\nIts weak point is a neighbour that does not negotiate. The negotiating side then falls back on parallel detection, which can sense speed from the signal but never full duplex, so it settles on half: the origin of most duplex mismatches. Leave both ends on auto, or fix both."
+      },
+      "native-vlan": {
+        "def": "The VLAN whose frames cross an 802.1Q trunk without a tag, and into which a trunk port places any untagged frame it receives.",
+        "context": "VLAN 1 by default on Cisco and on Aruba's AOS-CX. Two ends that disagree merge two VLANs; the standard's own name for the idea is the port's PVID.",
+        "depth": "Cisco's rule for a trunk's egress is the definition at work: 'If a packet has a VLAN ID that is the same as the outgoing port native VLAN ID, the packet is sent untagged; otherwise, the device sends the packet with a tag.' On the way in, an untagged frame is assigned to the native VLAN. If the two ends of a trunk disagree about which VLAN that is, traffic from one VLAN arrives in another, and Cisco warns that 'spanning-tree loops might result'.\n\nThe native VLAN is also the hinge of a classic attack. A frame with two tags, the outer one matching the trunk's native VLAN, which is also the attacker's own access VLAN, loses that outer tag at the first switch and crosses the trunk into the VLAN of the inner one. Cisco's campus design guide gives the standard answer: 'Assign the native VLAN to an unused ID or use the Tagged Native VLAN option to avoid VLAN hopping.' Many switches can tag the native VLAN too, which removes the untagged exception altogether."
+      },
+      "bpdu": {
+        "def": "The frame spanning tree switches exchange to elect a root bridge and decide which ports forward and which block.",
+        "context": "Sent to the bridge group address 01-80-C2-00-00-00, every two seconds by default from the root. A BPDU arriving on a port that faces a host is a warning sign, which BPDU Guard turns into a shut port.",
+        "depth": "BPDUs carry everything the election needs: the sender's bridge ID, a priority and a MAC address, the ID of the bridge it believes is root, and its cost to reach it. The lowest bridge ID wins; Cisco's default priority is 32768, settable from 0 to 61440 in steps of 4096. The root sends configuration BPDUs every hello interval, 2 seconds by default, and the other switches relay them, so a switch that stops hearing them knows the topology has changed.\n\nBecause a BPDU can claim to be anything, a port that faces users should never accept one. Cisco's BPDU Guard 'shuts the port down by placing it in the errdisable state' when a BPDU arrives on a port configured for end devices, which stops a stray switch, or a crafted frame, from winning the election. In the rapid version of the protocol, BPDUs also work as keepalives: three missed hellos and a neighbour's information ages out at once."
+      },
+      "rstp": {
+        "def": "The rapid version of spanning tree, IEEE 802.1w, which converges in moments by handshake instead of waiting out timers.",
+        "context": "Incorporated into 802.1D-2004, which obsoleted the original protocol. Cisco's Rapid PVST+ runs one RSTP instance per VLAN.",
+        "depth": "Classic spanning tree waits: a port moves through listening and learning on 15-second forward delays, and an indirect failure can take 50 seconds with default timers. RSTP replaces most of the waiting with an exchange between neighbours: a switch 'sets the proposal bit on the BPDUs it sends out', and once the other end answers with an agreement the port can move to forwarding at once, which Cisco puts 'sometimes in the order of a few hundred milliseconds'.\n\nThe handshake only works where two switches face each other, so RSTP moves quickly on point-to-point links and on edge ports, the ports facing hosts, which go straight to forwarding and lose that status the moment a BPDU arrives. It also renames the roles: the old blocking port becomes an alternate (a backup path to the root through another switch) or a backup (a second link to the same segment), and the disabled, blocking and listening states merge into one, discarding."
+      },
+      "link-aggregation": {
+        "def": "Several parallel Ethernet links grouped so that both ends treat them as one logical link, for more capacity and for resilience.",
+        "context": "IEEE 802.1AX today, 802.3ad before it; EtherChannel or port channel at Cisco, aggregated Ethernet at Juniper, a bond on Linux, a trunk on F5. LACP is the protocol that negotiates it.",
+        "depth": "The standard's own definition is the point of it: links are 'aggregated together to form a Link Aggregation Group (LAG), such that a MAC Client can treat the LAG as if it were a single link'. Spanning tree sees one link and blocks nothing; if a member fails, the group keeps carrying traffic on the rest.\n\nTwo rules surprise people. Every member must match: Cisco asks for the same speed and duplex on all ports, and the same VLAN or trunk settings. And a single flow never runs faster than one member, because frames are spread by a deterministic hash of addresses and ports, so a conversation stays on one link to keep its packets in order; a group of four one-gigabit links serves many flows at four gigabits and one large transfer at one.\n\nBuild it with LACP rather than statically: a static group cannot notice a member that fails silently, and a mismatch between the two ends is, in Aruba's words, 'difficult to troubleshoot, because no signaling takes place between the two peers'."
       }
     },
     "totalCount": "{count} terms",
@@ -23086,7 +23172,7 @@
     "goodFaithBody": "These guides are independent study aids built from publicly available material: published exam blueprints, official product documentation, and vendor training catalogues. Product names, exam codes, and trademarks belong to their owners and are used only to identify the subject being taught. This site is not affiliated with or endorsed by any vendor named here. If you hold rights in material published on this page and believe it should be removed or corrected, please send the exact URL and a short note on the issue through the contact page; requests are reviewed promptly and in good faith.",
     "goodFaithLink": "Read the full disclaimer",
     "vendorsHeading": "Vendors covered",
-    "vendorCount": "{certs} certifications, {guides} exam guides",
+    "vendorCount": "{certs, plural, one {# certification} other {# certifications}}, {guides, plural, one {# exam guide} other {# exam guides}}",
     "requiresOne": "Earned by passing any one of these {count} exams.",
     "prerequisitesLabel": "Prerequisites",
     "requirementLabel": "How to earn it",
@@ -23104,7 +23190,27 @@
     "retirementSuccessorIs": "Its successor is {exam}.",
     "retirementPreviousNotice": "The previous version, {exam}, can be sat until {until}.",
     "retirementPreviousPastNotice": "The previous version, {exam}, could be sat until {until}, a date now past.",
-    "retirementMapsSuccessor": "This guide maps its successor, {exam}."
+    "retirementMapsSuccessor": "This guide maps its successor, {exam}.",
+    "statusLabel": "Status",
+    "statusCurrent": "Current",
+    "statusTransitioning": "In transition",
+    "statusPreparing": "In preparation",
+    "statusRetired": "Retired",
+    "alsoKnownAs": "Also known as",
+    "checkedOn": "Checked against {vendor}'s official sources on {date}.",
+    "checkedStale": "That was more than {days} days ago: the vendor may have changed something since, so confirm on the official page before booking.",
+    "filterTitle": "Find an exam",
+    "filterLabel": "By name, by code, or by an earlier name",
+    "filterPlaceholder": "FortiOS, F5CAB3, 156-215.82, 101…",
+    "filterClear": "Clear",
+    "filterShowRetired": "Show retired exams ({count})",
+    "filterShown": "{shown} of {total} exam guides",
+    "filterNoMatch": "No exam guide matches “{query}”.",
+    "filterNoMatchRetired": "Show the {count} retired guides that match",
+    "legendRetiring": "a last sitting day is published; book before it",
+    "legendPrevious": "an earlier version can still be sat; this guide maps its successor",
+    "legendPreparing": "the blueprint is still being mapped; the official page is linked",
+    "legendRetired": "the exam can no longer be sat; the guide stays as a record"
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
@@ -23755,7 +23861,57 @@
         "lede": "One vendor's estate in reading order, built to walk its certification from this site."
       }
     },
-    "materialsSignpost": "A complete course to download, study and teach from: <link>TCP/IP: Concepts and IP Routing</link>, {slides} slides with speaker notes, in English and Portuguese, free to use."
+    "materialsSignpost": "A complete course to download, study and teach from: <link>TCP/IP: Concepts and IP Routing</link>, {slides} slides with speaker notes, in English and Portuguese, free to use.",
+    "training": {
+      "title": "Training series",
+      "lede": "Fundamentals in order, one level at a time. Each series is a set of modules; each module says what you will be able to do at its end, lists its articles in reading order and names the tools to practise on. Articles still being written are named in their places.",
+      "level": "Level {level}",
+      "outcomeLabel": "At the end:",
+      "noPrerequisites": "No prerequisites: start here.",
+      "prerequisites": "Before this: {list}.",
+      "counts": "{modules, plural, one {# module} other {# modules}} · {written, plural, one {# article} other {# articles}}",
+      "plannedCount": "{count, plural, one {# more in preparation} other {# more in preparation}}",
+      "start": "Start the series",
+      "module": "Module {n}",
+      "moduleCount": "{count, plural, one {# part} other {# parts}}",
+      "parts": "The parts",
+      "planned": "in preparation",
+      "toolless": "Read, not practised: no tool on the site works at this layer yet.",
+      "items": {
+        "netfun-1": {
+          "short": "NetFun I",
+          "title": "Network Fundamentals I: from bits to the LAN",
+          "lede": "Layers 1 and 2, from the units a network counts in to the frame a switch forwards: the layer model and the bodies that write the standards, copper, fibre and radio, the Ethernet frame and its addresses, VLANs, spanning tree and link aggregation, and Wi-Fi as layers 1 and 2.",
+          "outcome": "you will be able to read a frame, explain what a switch does with it, and say which layer a fault is on.",
+          "modules": {
+            "m1": {
+              "title": "The map and the units",
+              "outcome": "Place a protocol on the layer model, count in bits and bytes without mixing the two kinds of kilo, and know which body writes which standard."
+            },
+            "m2": {
+              "title": "Layer 1, the physical path",
+              "outcome": "Follow a signal through copper, fibre and radio, from the wiring closet to the last mile and the sea floor, and say what the physical layer can and cannot be blamed for."
+            },
+            "m3": {
+              "title": "Layer 2, frames and switching",
+              "outcome": "Read an Ethernet frame and the addresses in it, say what a switch, a bridge and a router each decide, and explain VLANs, spanning tree and link aggregation."
+            },
+            "m4": {
+              "title": "Wireless as layers 1 and 2",
+              "outcome": "Explain what Wi-Fi changes at the first two layers: its generations, the handshake an attack once broke, and port-based access control with 802.1X."
+            }
+          },
+          "planned": {
+            "ethernet-physical-layers": "Ethernet physical layers, from 10BASE-T to 400GBASE: naming, auto-negotiation and duplex",
+            "fibre-basics": "Fibre basics: single-mode and multimode, connectors and the optical budget",
+            "ethernet-frame": "The Ethernet frame, field by field",
+            "vlans-and-8021q": "VLANs and 802.1Q trunking: tagged, untagged, native and voice",
+            "spanning-tree": "Spanning tree in one article: why a blocked port is the feature",
+            "link-aggregation-lacp": "Link aggregation and LACP"
+          }
+        }
+      }
+    }
   },
   "catDistribution": {
     "metaTitle": "The Global Cat Distribution System",
@@ -24048,7 +24204,7 @@
     "exclusion5Term": "Course material development",
     "exclusion5Body": "I do not offer this. Slides, lab guides, speaker notes and assessment are a separate craft, commissioned on its own scope and its own terms, and it is not advisory time. Telling you whether a course should exist is work I will do. Writing the course is not.",
     "offerSpeakingTitle": "Speaking engagements",
-    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now - plus a little futurology about where the professional roles and the work itself are heading. Prepared talks, and custom subjects by arrangement.",
+    "offerSpeakingBody": "Conference talks, keynotes, and internal sessions on where this industry came from, what it was like to be in it, and how that compares with now. Prepared talks, and custom subjects by arrangement.",
     "advisorEyebrow": "Your advisor",
     "advisorBody": "Thirty years on the supply side of enterprise networking and security, from inside vendors, value-added resellers and distributors, consulting practices, and direct engagements with the customer: implementing, supporting, deploying and teaching what those companies sell, rather than selling it. That is the whole basis of the advice: my job was to make the thing work afterwards, so I have always had to live with the answer. The analysis is mine and it carries my name; how an engagement is contracted is stated plainly further down this page. The credentials, the career record and what past clients and students say are a click away, because a claim you cannot check is not worth making.",
     "advisorLinkCreds": "Credentials",
@@ -24141,7 +24297,7 @@
     "psTitle": "When the decision leads to implementation",
     "psBody": "My role in these engagements is advisory: I review, challenge, analyse and document the decision, and I do not personally provide the implementation, managed service or operational support that may follow. That does not mean the engagement ends without a practical path forward. Red Education maintains a Professional Services capability, delivered by its vendor-certified engineers: installations, software and hardware upgrades and migrations, health checks, knowledge transfer, resident on-site engineers and consultants on demand. I work for Red Education full time, and where the work that follows a decision is work Red Education does, that is where I will propose it be done: I know the people who do it, and I believe in the company's commitment to quality and to the customer's satisfaction. The choice remains yours, your existing partner, your internal team or another provider included. What does not move is the analysis: where Red Education's professional services are being considered for the downstream work, the engagement says so explicitly, and the document stays on the technical merits, constraints, risks and requirements of the decision rather than on creating implementation work for anyone, Red Education included.",
     "psLink": "Red Education Professional Services",
-    "speakingNote": "Also available for conference and executive speaking, which has its own page.",
+    "speakingNote": "Looking for a talk rather than advice? Talks have their own page:",
     "speakingLink": "Speaking",
     "memoOutline1": "The executive question",
     "memoOutline2": "Current state",
@@ -24198,7 +24354,14 @@
     "indepNotClaimedBody": "Engagements are contracted and invoiced through Red Education, which sells authorized training and professional services across several vendors' platforms. Where either is a candidate for what follows a decision, the document says so in plain words, and the choice of who does that work stays yours.",
     "indepPracticeLabel": "In practice",
     "indepPracticeTitle": "Context, on both sides of the table",
-    "indepPracticeBody": "Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and knowing exactly what that context is, on both sides of the table, is part of what you are paying for. It also means the review is not a weapon against suppliers: a supplier confident in its proposal can suggest the review itself, because a proposal that holds up under independent scrutiny is easier for its customer to approve, and one that does not is cheaper to fix before deployment than after."
+    "indepPracticeBody": "Commercial interest does not invalidate expertise. It does change the context in which a recommendation should be evaluated, and knowing exactly what that context is, on both sides of the table, is part of what you are paying for. It also means the review is not a weapon against suppliers: a supplier confident in its proposal can suggest the review itself, because a proposal that holds up under independent scrutiny is easier for its customer to approve, and one that does not is cheaper to fix before deployment than after.",
+    "briefingEyebrow": "Before the decision reaches the table",
+    "briefingTitle": "Executive briefings",
+    "briefingQuestion": "What does this shift mean for us, and what will it ask of us?",
+    "briefingOutput": "A closed-door briefing for the leadership team, and a short written brief to keep.",
+    "briefingBody": "For a board, an executive committee or a steering group that needs a technology shift set out in the organisation's own terms before it arrives as a decision: what it is, what it changes here, which decisions it will bring, and the questions worth putting to suppliers. A move to SASE, a vendor consolidation, a data-centre modernisation, a major platform migration. Prepared for one organisation, with the same independence as every engagement on this page.",
+    "briefingNotTalk": "Not a talk: a talk is written for an audience, a briefing for one organisation and its decisions. Talks for conferences, company events and team gatherings have their own page:",
+    "briefingNotTalkLink": "Speaking"
   },
   "speaking": {
     "eyebrow": "Speaking",
@@ -24219,8 +24382,69 @@
     "notTitle": "One thing this is not",
     "notBody": "This is not training. Courses, workshops and certification preparation are delivered through Red Education and are booked there, not here. A conference talk and a training day are different things with different audiences, and mixing them serves neither.",
     "bookTitle": "Booking",
-    "bookBody": "The useful first message says the event, the date, the audience and roughly how long you want. Fees, travel and recording rights are agreed before anything is confirmed.",
-    "bookButton": "Get in touch"
+    "bookBody": "Write to me directly about any event. The useful first message says the event and the organisation, where and when, who the audience is and roughly how many, the subject or what people should leave with, the format and its length, and whether it will be recorded or streamed. Travel and recording rights are agreed before anything is confirmed.",
+    "bookButton": "Propose an event",
+    "heroCta": "Propose an event",
+    "heroCtaTalks": "See the talks",
+    "factLanguageLabel": "Language",
+    "factLanguage": "English or Portuguese",
+    "factEventsLabel": "Events",
+    "factEvents": "Conferences, company events, team gatherings and internal sessions",
+    "factTravelLabel": "Travel",
+    "factTravel": "Welcome, and arranged as part of the booking",
+    "tracksTitle": "Two tracks",
+    "tracksLede": "Two kinds of talk, for two kinds of moment in an event.",
+    "track1Title": "Technology, industry and change",
+    "track1Body": "Where this industry came from, how its markets formed, the great transitions, and what they looked like from the inside.",
+    "track1For": "For conferences, leadership events and technical communities.",
+    "track2Title": "Humans behind the peripherals",
+    "track2Body": "The people who keep technology running: field stories, the call at three in the morning, the travel, teams under pressure, and learning to laugh at the industry. Recognition, humour and shared experience, rather than therapy or motivational slogans.",
+    "track2For": "For off-sites, kickoffs, partner gatherings and team events.",
+    "trackTalkLabel": "The talk",
+    "formatsTitle": "Formats and audiences",
+    "format1Term": "Conference talk",
+    "format1Body": "A prepared talk, fitted to the programme's slot.",
+    "format2Term": "Internal session",
+    "format2Body": "For a company or a team that wants an outside voice for an hour.",
+    "format3Term": "Partner and industry events",
+    "format3Body": "Partner gatherings, channel events and kickoffs.",
+    "format4Term": "Panels and moderated discussions",
+    "format4Body": "A seat on the panel, or a conversation led by a moderator.",
+    "format5Term": "Fireside conversation",
+    "format5Body": "A conversation on stage with a host, with the audience's questions.",
+    "briefingTerm": "Executive briefing",
+    "briefingBody": "A closed-door session for a board or a leadership team, built around one organisation and its decisions, is advisory work rather than a talk.",
+    "briefingLink": "Executive briefings, under Advisory",
+    "audiencesTitle": "Audiences",
+    "audience1": "Technology professionals",
+    "audience2": "Networking and security practitioners",
+    "audience3": "Vendors and channel partners",
+    "audience4": "Engineering leadership",
+    "audience5": "Business leaders facing technological change",
+    "audience6": "Students and people early in their careers",
+    "audience7": "Mixed corporate audiences",
+    "customEvidence": "Behind every talk is work you can read first: the industry record, the career record, and the articles in Learn.",
+    "customLinkCareer": "The career record",
+    "customLinkLearn": "The articles in Learn",
+    "differTitle": "Speaking, Training and Advisory",
+    "differLede": "Three different things, for three different needs.",
+    "differSpeakingTerm": "Speaking",
+    "differSpeakingBody": "Perspective, discussion and memory, for an audience.",
+    "differTrainingTerm": "Training",
+    "differTrainingBody": "Capability: courses, technical workshops and certification preparation, delivered through Red Education and booked there, not here.",
+    "differAdvisoryTerm": "Advisory",
+    "differAdvisoryBody": "Judgement on a real decision, for one organisation, executive briefings included.",
+    "differNote": "A talk carries no recommendation for your organisation, and no consulting dressed up as a talk.",
+    "beyondTitle": "Beyond the talk",
+    "beyondLede": "Some gatherings want more than an hour of listening. Selectively, the second track also goes further:",
+    "beyond1Term": "Decompression and connection",
+    "beyond1Body": "A talk that opens an off-site or closes a hard quarter, so a team laughs at the work together.",
+    "beyond2Term": "Facilitated team sessions",
+    "beyond2Body": "The room takes part: it looks at how it works, works through something, and leaves with an outcome.",
+    "beyond3Term": "Off-sites designed around the group",
+    "beyond3Body": "Built from what the team needs, sometimes with other facilitators or creative specialists.",
+    "beyondCtaLead": "Planning something less conventional?",
+    "beyondCtaLink": "Tell me about the team, and what you want the room to experience."
   },
   "practice": {
     "navLabel": "The Practice",
@@ -27823,6 +28047,388 @@
           }
         }
       }
+    },
+    "present": {
+      "metaTitle": "Present: {title}",
+      "metaDescription": "All {slides} slides of {title} in your browser, with their speaker notes, full screen and keyboard controls. Nothing to download.",
+      "crumb": "Present",
+      "eyebrow": "Present the slides",
+      "lede": "All {slides} slides, with their speaker notes, in your browser: nothing to download, and nothing leaves it.",
+      "aboutLink": "About the course and the downloads",
+      "region": "The slides of {title}",
+      "previous": "Previous",
+      "next": "Next",
+      "counter": "{n} / {total}",
+      "announce": "Slide {n} of {total}: {title}",
+      "goTo": "Go to slide number",
+      "goButton": "Go",
+      "contents": "Contents",
+      "notes": "Notes",
+      "fullscreen": "Full screen",
+      "exitFullscreen": "Leave full screen",
+      "deckLanguage": "Slides in",
+      "deckName": {
+        "en": "English",
+        "pt-BR": "Português"
+      },
+      "opening": "Opening",
+      "closing": "Closing",
+      "module": "Module {n}",
+      "part": "Part {n}",
+      "partRange": "slides {start} to {end}",
+      "notesTitle": "Speaker notes",
+      "notesLoading": "Loading the notes…",
+      "notesError": "The notes could not be loaded here; the PPTX on the course's page carries every one of them.",
+      "notesEmpty": "This slide has no notes.",
+      "keys": "Keys: ← and → (or Space) move, Home and End jump to the first and last slide, F is full screen, N the notes, C the contents, Esc closes.",
+      "licence": "CC0 1.0: present it in a class, a meetup or a company, change it, share it; credit is appreciated, never required.",
+      "licenceLink": "The licence",
+      "presentPart": "Present this part"
+    },
+    "door": {
+      "eyebrow": "Open course material",
+      "present": "Present the slides",
+      "about": "About the course and the downloads",
+      "lede": {
+        "learn": "A complete introductory course in two modules, {slides} slides with speaker notes, from the routing concepts underneath it all to IPv6, multicast, MPLS and VRRP. Free to use and to teach from: present it here in your browser, or download it.",
+        "training": "Before a class, or after one: a complete introductory course of mine, {slides} slides with speaker notes, free to use and to teach from. Present it in your browser, or download it.",
+        "studyGuides": "Start with the fundamentals: a complete introductory course, {slides} slides with speaker notes, from the routing concepts underneath it all to IPv6, multicast, MPLS and VRRP. Present it here in your browser, or download it."
+      },
+      "line": {
+        "certifications": "Before a vendor's exam, the fundamentals: <link>{title}</link>, an open course of {slides} slides with speaker notes."
+      }
     }
+  },
+  "learnSeries": {
+    "indexTitle": "Article series",
+    "indexLede": "Subjects told in order: an opener that maps the ground, then the parts, each an article of its own. Parts still to be written are named, so every series shows its whole shape from the start.",
+    "kicker": "Series",
+    "opens": "Opens the series <strong>{series}</strong>.",
+    "partOf": "Part {n} of {total} in <strong>{series}</strong>.",
+    "toOpener": "Start from the opener",
+    "contents": "The series: {total, plural, one {# part} other {# parts}}",
+    "planned": "in preparation",
+    "railLabel": "The series {series}",
+    "previous": "Previous, part {n}",
+    "next": "Next, part {n}",
+    "backToOpener": "Back to the opener",
+    "allSeries": "All the series",
+    "count": "{written} of {total, plural, one {# part} other {# parts}} written",
+    "startHere": "Start here",
+    "items": {
+      "traffic-diversion": {
+        "title": "Traffic diversion and the man in the middle",
+        "lede": "Every way traffic is steered through somewhere it was not meant to go, from ARP poisoning on a LAN to a BGP hijack across the internet, each with the defence that answers it.",
+        "planned": {
+          "arpPoisoning": "ARP poisoning on a switched LAN",
+          "macFloodingStp": "MAC flooding and STP root takeover",
+          "vlanHopping": "VLAN hopping: switch spoofing and double tagging",
+          "rogueDhcpRa": "Rogue DHCP and rogue IPv6 Router Advertisements",
+          "icmpLlmnr": "ICMP redirects and LLMNR, NBT-NS and mDNS spoofing",
+          "evilTwin": "The evil twin and the wireless path",
+          "sslStripping": "SSL stripping and HSTS"
+        }
+      },
+      "formats-in-between": {
+        "title": "The formats in between",
+        "lede": "JSON, YAML, XML, text encodings, Base64, URLs, timestamps, identifiers and diffs, read as one skill: putting meaning into characters so that the other end takes out the same meaning."
+      },
+      "json": {
+        "title": "JSON, exactly",
+        "lede": "The format as a strict parser reads it: six types and a few rules, then every place where two parsers can honestly disagree about the same document."
+      },
+      "yaml": {
+        "title": "YAML and configuration files",
+        "lede": "Why pipelines and orchestration are written in YAML, and the three things YAML does that JSON never does: guess types, fold lines and reuse values."
+      },
+      "xml": {
+        "title": "XML and its hazards",
+        "lede": "Reading a document part by part, the rules a parser enforces first, namespaces and the constructs that are not elements, then the entity features that turn a parser into an attack surface."
+      },
+      "text": {
+        "title": "Characters, bytes and Unicode",
+        "lede": "Why a character is not a byte: ASCII's table, Unicode's code points, the bytes UTF-8 and UTF-16 lay down, and what goes wrong when two ends read them differently."
+      },
+      "two-alphabets": {
+        "title": "The two alphabets",
+        "lede": "The Greek letters and Roman numerals every engineer reads without being taught: where each symbol came from, and then the two systems themselves."
+      },
+      "base-encodings": {
+        "title": "Base16, Base32, Base64",
+        "lede": "Writing arbitrary bytes as text: the alphabets, what each costs in size and readability, and where each one turns up."
+      },
+      "urls": {
+        "title": "URLs, read exactly",
+        "lede": "The five parts every URL is built from, how characters are escaped inside them, how a relative link resolves, and the disguises a hostile link wears."
+      },
+      "time": {
+        "title": "Time as computers count it",
+        "lede": "One integer since 1970, the units it is written in, the leap seconds it ignores, the year it overflows, the text formats it becomes, and the arithmetic that calendars make hard."
+      },
+      "identifiers": {
+        "title": "Identifiers: UUIDs and their kin",
+        "lede": "How a 128-bit identifier stays unique with nobody issuing it, the eight versions, the odds of a collision, what random keys do to a database, and the sortable alternatives."
+      },
+      "diff": {
+        "title": "Diffs, merges and Git",
+        "lede": "What a diff actually computes, how to read one, why it sometimes blames the wrong lines, the third input that makes merging possible, and the tools built on all of it."
+      },
+      "regex": {
+        "title": "Regular expressions",
+        "lede": "What to match and how many, where a match may sit, what parentheses capture and assert, the flags that change everything, and the patterns that never finish."
+      },
+      "hashing": {
+        "title": "Hashes and HMAC",
+        "lede": "What a cryptographic hash guarantees and why it cannot be reversed, the properties that measure it, which functions are still safe, and how a key turns a hash into proof of who sent a message."
+      },
+      "passwords": {
+        "title": "Storing passwords",
+        "lede": "Why a fast hash is the wrong tool for passwords: the two ways an attacker reverses a hash, the salt and the arithmetic that answer each, the slow functions built for the job, and the choice to make."
+      },
+      "certificates": {
+        "title": "Certificates: the object and its trust",
+        "lede": "What a certificate holds and the files it travels in, how it is requested and issued, how a client validates it and builds its chain, how it is revoked, and the trust model that has failed in public."
+      },
+      "certificate-lifecycle": {
+        "title": "Certificate lifetimes and renewal",
+        "lede": "The schedule that takes public TLS certificates from 398 days to 47, the two timestamps that define validity, renewal lead time and ARI, the shrinking reuse of validation, and the automation that makes it bearable."
+      },
+      "tls": {
+        "title": "TLS and the cipher suites",
+        "lede": "One handshake family in four shapes, the key exchange that gives forward secrecy, how to read a cipher suite and which to run, the attacks that pruned the protocol, and where a proxy terminates it."
+      },
+      "post-quantum": {
+        "title": "Post-quantum cryptography",
+        "lede": "What a quantum computer would break and what it would not, the three standards NIST finalised in 2024, and the hybrid key exchange the web already runs."
+      },
+      "fingerprinting": {
+        "title": "Fingerprinting what a client emits",
+        "lede": "What a connection announces before any data flows (the TCP SYN, the User-Agent, the order of the headers, the TLS ClientHello) and how JA3 and JA4 turn the handshake into an identity."
+      },
+      "web-security-headers": {
+        "title": "The browser's security headers",
+        "lede": "The response headers that tell a browser how to protect a page: HTTPS enforcement, cookie flags, the CORS door in the same-origin wall, Content Security Policy, and frame control."
+      },
+      "ssrf": {
+        "title": "Server-side request forgery",
+        "lede": "Making a server fetch a destination of the attacker's choosing: the schemes beyond HTTP, the cloud metadata service that is the prize, and the allow-list defence that survives obfuscation."
+      },
+      "curl": {
+        "title": "curl, flag by flag",
+        "lede": "Reading a curl command the way the shell and curl read it: the method it implies, the body and its Content-Type, headers, authentication and cookies, the flags that weaken security, the translation to fetch(), and the 27 protocols beyond HTTP."
+      },
+      "nginx": {
+        "title": "NGINX, from configuration to troubleshooting",
+        "lede": "The configuration tree and who owns the worker, how a location is chosen, what proxy_pass sends, what the cache stores and serves, how limits really count, how a reload works, and the server NGINX was written against."
+      },
+      "dns": {
+        "title": "DNS, read from the answer",
+        "lede": "One DNS answer read from the top with dig and nslookup: who replied and with what authority, the header and its flags, the records, the errors, and the options, traces and signatures that ask precisely."
+      },
+      "dns-infrastructure": {
+        "title": "DNS as infrastructure",
+        "lede": "How a file maintained during business hours became the internet's naming system, and the ways that system is poisoned, depended on, chosen and used as a control."
+      },
+      "ipv4": {
+        "title": "IPv4 addressing and subnetting",
+        "lede": "The 32 bits behind a dotted quad, the prefix that defines a block, subnetting from the basics to a worked VLSM plan, summarisation and aggregation, the special ranges, and the NAT that stretched the space."
+      },
+      "ipv6": {
+        "title": "IPv6",
+        "lede": "The 128-bit address and how to write it, why a subnet is almost always a /64, how hosts configure themselves, the multicast that replaced ARP, and how IPv6 and IPv4 run side by side."
+      },
+      "routing": {
+        "title": "Routing",
+        "lede": "How a packet picks its next hop, the interior protocols that draw the map, the exterior one that runs the internet and trusts every announcement, labels in the core, fast failure detection, the redundant gateway, and multicast."
+      },
+      "tunnels": {
+        "title": "Tunnels and VPNs",
+        "lede": "What a tunnel protects and what it does not, the plain envelope, the negotiated encrypted one, the small one, the byte arithmetic every tunnel owes, and the remote-access VPN being retired."
+      },
+      "load-balancing": {
+        "title": "Load balancing and persistence",
+        "lede": "The four questions every load balancer answers, the virtual server and the layer 4 proxy that carry them, persistence and its failure modes, global load balancing in two tiers, and how the market began."
+      },
+      "syslog": {
+        "title": "Syslog",
+        "lede": "A syslog message read field by field: the PRI that packs facility and severity, the 24 facilities and 8 severities, the two message formats, the three transports, the defaults network devices choose, and how other systems count log levels."
+      },
+      "saml": {
+        "title": "SAML",
+        "lede": "Browser single sign-on with SAML 2.0: the identity and service providers, the bindings and who starts the flow, what an assertion holds and what is checked, how it is signed, and the proxy that inserts identity into a session."
+      },
+      "oauth-oidc": {
+        "title": "OAuth and OpenID Connect",
+        "lede": "Authorisation and authentication told apart: the OAuth code flow, client types and PKCE, the three tokens, the grant to choose, then the identity layer OpenID Connect adds, its ID token, its claims and its discovery document."
+      },
+      "jwt": {
+        "title": "JWT and JWKS",
+        "lede": "The three segments of a token and why decoding is not verifying, the signing algorithms, the keys that sign them and how providers publish and rotate them, the verification sequence, and the mistakes that turn a verifier into a forgery machine."
+      },
+      "one-time-codes": {
+        "title": "One-time codes and passkeys",
+        "lede": "How a shared secret becomes a short code, how an authenticator is provisioned, what a server must tolerate and refuse when it checks one, and why passkeys resist the phishing that defeats codes."
+      },
+      "unix": {
+        "title": "The operator's Unix",
+        "lede": "The Unix underneath every appliance's management interface: terminal, shell and TTY, file modes, cron, Expect, and the story of Linux, its families, what grew out of it, and the two meanings of free."
+      },
+      "zero-trust": {
+        "title": "Zero trust, SSE and the proxy",
+        "lede": "What zero trust, ZTNA and SASE mean without the marketing, what single-pass means mechanically, how five vendors answer the same question, and the engines inside: the PAC file, user identity on the proxy, browser isolation, sandboxing and DLP."
+      },
+      "cvss": {
+        "title": "CVSS",
+        "lede": "How a short vector string becomes a severity from 0 to 10: reading the vector, the eight base metrics, the temporal and environmental adjustments, the bands and what the score does not say, and what changed in v4.0."
+      },
+      "f5xc": {
+        "title": "F5 Distributed Cloud, one request end to end",
+        "lede": "F5 Distributed Cloud in the order a request meets it: the site joining the fabric, the listener and the route, the origin and its persistence, TLS, the service policy that allows it, the rate limit, the API inventory, the security event, and the configuration hazards."
+      },
+      "bigip-self-description": {
+        "title": "What a BIG-IP says about itself",
+        "lede": "The five languages a BIG-IP describes itself in: its configuration grammar, two API address schemes, its licence file, the dates that decide whether it may upgrade, and F5's release calendar."
+      },
+      "bigip-versions": {
+        "title": "BIG-IP and F5OS versions and upgrades",
+        "lede": "From the first BIG-IP controller to today: why the version numbers jump, upgrade against update, the licence reactivation that rescues a failed upgrade, the newest line's operations and access changes, and the F5OS platform underneath."
+      },
+      "bigip-foundations": {
+        "title": "BIG-IP foundations, from interface to pool member",
+        "lede": "The BIG-IP a student meets first: the layer 2 and 3 chain, route domains, the two ways in, the system services, then a connection through the virtual server, its profiles, the pool and its method, health, persistence, the return path, reuse, the protocol profiles, and the cores and guests underneath."
+      },
+      "bigip-ha": {
+        "title": "BIG-IP high availability",
+        "lede": "Device trust, device groups and traffic groups, then config sync, the failover states and how to force them, and the persistence records a standby must receive before it takes over."
+      },
+      "bigip-troubleshooting": {
+        "title": "BIG-IP troubleshooting and operations",
+        "lede": "How a BIG-IP tells you its condition: the status surfaces and statistics, the log files, tcpdump on a box whose interfaces are not NICs, the F5 trailer and what Wireshark makes of it, the support snapshot, hardware diagnostics, backups, alerting and on-box analytics."
+      },
+      "bigip-ssl": {
+        "title": "BIG-IP SSL profiles and ciphers",
+        "lede": "Which side of the session each SSL profile owns, the certificate, key and chain it binds, the protocol versions it offers, the cipher string, rules, groups and order, forward secrecy, renegotiation and stapling, mutual TLS, post-quantum key exchange, ACME, and SSL Orchestrator."
+      },
+      "bigip-cookies": {
+        "title": "BIG-IP persistence cookies",
+        "lede": "How a BIG-IP persistence cookie gets into a response, what its value encodes byte by byte, what it tells an attacker, and how to encrypt it."
+      },
+      "bigip-dns": {
+        "title": "BIG-IP DNS and global load balancing",
+        "lede": "Which of six answering machines replies to a query, how iQuery tells BIG-IP DNS what is up, global load balancing as two decisions with a three-step chain inside, topology records, and the resolver as a policy engine."
+      },
+      "bigip-automation": {
+        "title": "The BIG-IP automation toolchain",
+        "lede": "Declarations instead of commands: onboarding the device, describing the applications, streaming what it observes, and the templates that came before and after."
+      },
+      "bigip-network-security": {
+        "title": "Network security on the BIG-IP",
+        "lede": "The checkpoints a packet passes on a BIG-IP before any application sees it: packet filters, the network firewall's contexts, SYN flood protection, and the policy that decides which connections die when the table fills."
+      },
+      "bigip-apm": {
+        "title": "BIG-IP APM",
+        "lede": "Where the access policy keeps what it learned, the single sign-on methods and the blast radius of one bad object, and APM as a SAML proxy in both roles."
+      },
+      "awaf": {
+        "title": "BIG-IP Advanced WAF",
+        "lede": "A web application firewall policy read as a template plus adjustments, then what it enforces and when, how it parses payloads and layers policies, tracks sessions and masks responses, sees through evasion, tells browsers from bots and absorbs application-layer floods, and how to triage a block without poisoning the policy."
+      },
+      "irule-events": {
+        "title": "iRules events and the connection lifecycle",
+        "lede": "When an iRule runs: the fixed order of events through a connection, the two sides of the full proxy, what makes an event exist at all, the events a fast path gives up, the TLS handshake events, priority among several rules, and the order of the questions when you write one."
+      },
+      "irules-tcl": {
+        "title": "The Tcl inside iRules",
+        "lede": "The language an iRule is written in, read through F5's own style guide: comparisons and numbers, strings and the commands that cut them, branching and lookups, loops, procedures, the namespace that keeps every core busy, performance, and iRules LX."
+      },
+      "checkpoint": {
+        "title": "Check Point, from the three tiers to the upgrade",
+        "lede": "The platform that separates where policy is written from where it is enforced: sessions and publishing, the rule base and its layers, address translation and its silent failure, identity, HTTPS inspection, threat prevention, site-to-site tunnels, logging and events, management high availability, clustering and upgrades."
+      },
+      "fortigate": {
+        "title": "FortiGate administration",
+        "lede": "A FortiGate from its factory state to its edges: the CLI and its traps, policies, address translation and their order, debug flow and the sniffer, routing and SD-WAN, security profiles and SSL inspection, identity, IPsec, clustering, logging, shaping, DNS, carrier-scale NAT and ACME."
+      },
+      "fortinet-secops": {
+        "title": "Fortinet security operations",
+        "lede": "A security operations centre read as questions rather than products: the analyser that stores and reports, the correlation engine and its database, the orchestration platform and its playbooks, endpoint and network detection, deception, and the attack surface seen from outside."
+      },
+      "fortimail": {
+        "title": "FortiMail",
+        "lede": "Mail security on FortiMail: the operation mode that decides everything else, the layered policies and antispam, content security, archiving and identity-based encryption, and protecting the cloud mail platforms."
+      },
+      "fortimanager": {
+        "title": "FortiManager",
+        "lede": "Central management where the database is the source of truth: administrative domains and registration, policy packages and their installs, and where to look when a change does not land."
+      },
+      "fortiswitch": {
+        "title": "FortiSwitch",
+        "lede": "A switch managed by a FortiGate: FortiLink provisioning and topologies, the VLANs, spanning tree, ports and QoS of the daily work, and port security and diagnostics."
+      },
+      "fortiap": {
+        "title": "FortiAP",
+        "lede": "Wireless managed by a FortiGate: the integrated controller and the profiles a fleet is built from, authentication and the segment a client lands in, and troubleshooting what users actually report."
+      },
+      "pingfederate": {
+        "title": "PingFederate, installed to upgraded",
+        "lede": "A PingFederate server's life: what it needs before the archive is unpacked, the files that control it, the two port families, who administers it, the data stores, adapters and authentication policies, OGNL expressions, the logs, the operational habits, and the upgrade."
+      },
+      "ping-platform": {
+        "title": "The Ping identity platform",
+        "lede": "What PingOne is behind its product names, identity orchestration on a canvas, the PingAccess policy model, the PingDirectory data platform, and the lineage that gives the catalogue two of everything."
+      },
+      "zscaler": {
+        "title": "The Zscaler Zero Trust Exchange",
+        "lede": "A proxy where the perimeter used to be: the tunnels and the Client Connector that reach it, device posture, the cloud access security broker, the experience score, the logs and reports that come out of it, and the scenarios where the platform earns its architecture."
+      },
+      "zia": {
+        "title": "Zscaler Internet Access",
+        "lede": "The cloud proxy for internet traffic: how traffic reaches it, locations, TLS inspection and its bypasses, URL filtering and cloud app control, the firewall's rule order, file type control and the sandbox, data loss prevention, and the log fields investigations are written in."
+      },
+      "zpa": {
+        "title": "Zscaler Private Access",
+        "lede": "Private applications reached without exposing them: two outbound calls and a broker in the middle, the vocabulary that names applications and earns access to them, and the three suspects when access fails."
+      },
+      "netskope": {
+        "title": "Netskope, one platform and two data paths",
+        "lede": "A security cloud on a private network, inspecting traffic two ways: steering and the client, inline TLS decryption, real-time against API protection, the cloud firewall for everything that is not web, private access, and the events and analytics that turn traffic into evidence."
+      },
+      "extreme-fabric": {
+        "title": "Extreme Fabric Connect, one service edge to edge",
+        "lede": "Extreme's fabric in the order a service comes into existence: the two operating systems and their names, the configuration model, the vocabulary, the fabric itself, the control plane, the service identifier, multicast without configuration, the edge that asks for what it needs, and dual-homing."
+      },
+      "http": {
+        "title": "HTTP, from the request line to QUERY",
+        "lede": "One HTTP exchange read from the top: the raw request, the methods, the status codes, the header fields, cookies, where a message ends, the proxies in the path, the five versions, the newest method, and what people hide in the overhead."
+      },
+      "family-histories": {
+        "title": "The family histories",
+        "lede": "Twenty-three technologies the network and its security are built from, each told from its first day: the network from the wire up, what runs on it, then security from the mathematics outward."
+      }
+    },
+    "parts": "The parts",
+    "groupCount": "{count, plural, one {# series} other {# series}}",
+    "indexStats": "{series, plural, one {# series} other {# series}} across {subjects, plural, one {# subject} other {# subjects}} and {vendors, plural, one {# vendor} other {# vendors}}; {articles, plural, one {# article} other {# articles}} in reading order.",
+    "groups": {
+      "network": "Networking",
+      "crypto": "Cryptography and certificates",
+      "web": "The web and HTTP",
+      "identity": "Identity and authentication",
+      "security": "Security",
+      "formats": "Formats, text and encodings",
+      "operations": "Operations",
+      "history": "History",
+      "f5": "F5",
+      "fortinet": "Fortinet",
+      "checkpoint": "Check Point",
+      "zscaler": "Zscaler",
+      "netskope": "Netskope",
+      "ping": "Ping Identity",
+      "extreme": "Extreme Networks"
+    },
+    "bySubject": "By subject",
+    "bySubjectLede": "The ground every platform stands on: protocols, cryptography, the web, identity, formats and the operator's tools.",
+    "byVendor": "By vendor",
+    "byVendorLede": "One vendor's platform at a time: its own model and its own vocabulary, in reading order."
   }
 }

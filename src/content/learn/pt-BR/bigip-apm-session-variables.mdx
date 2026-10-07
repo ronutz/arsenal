@@ -26,3 +26,10 @@ Esse contrato cria a armadilha clássica da camada. session.logon.last.password 
 ## Suas próprias variáveis, e as duas superfícies de depuração
 
 A camada também é gravável. Atribua a session.custom.qualquercoisa em um Variable Assign e o APM cria o contêiner automaticamente, a palavra depois de session virando a pasta no relatório, com a demonstração do próprio laboratório fechando o ciclo ao lê-la de volta como `%{session.custom.mynewvar}` em uma message box. Quando uma policy se comporta mal, o primeiro movimento honesto é olhar o que a sessão realmente contém, e há duas superfícies para isso. O relatório de Current Sessions mostra toda variável de uma sessão, com a nota operacional do laboratório de que variáveis aparecem apenas para sessões ativas, que é exatamente por que seu padrão de troubleshooting estaciona uma message box no meio da policy para segurar a sessão aberta enquanto você lê. E o comando sessiondump da CLI faz o mesmo do shell, as variáveis de uma sessão específica com o argumento sid, tudo de uma vez com allkeys. Se as variáveis que o recurso rio abaixo lê estão vazias ou erradas nessas superfícies, nenhuma configuração no recurso em si vai salvar, que é a tese silenciosa dessa camada inteira: depurar APM é ler variáveis de sessão.
+
+## Esta série, em ordem
+
+Este artigo abre a série **BIG-IP APM**. As variáveis de sessão são onde toda ação da access policy deixa os seus resultados; as duas partes as usam: o single sign-on para a aplicação atrás, e a federação com um provedor de identidade na frente.
+
+1. **[Métodos SSO do APM: Um Objeto Ruim Pode Apagar a Sessão Inteira](/learn/bigip-apm-sso-methods)**. Oito métodos de SSO, e o raio de impacto declarado: um objeto mal configurado pode desativar o SSO da sessão inteira.
+2. **[F5 BIG-IP APM como SAML Proxy: Modos SP e IdP](/learn/f5-apm-saml-federation)**. O APM como provedor de serviço SAML na frente de uma aplicação, ou como o próprio provedor de identidade.

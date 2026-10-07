@@ -32,3 +32,20 @@ The zero-trust claim lives in ZPA's connection model more than anywhere else: a 
 ## Reading the architecture like an operator
 
 Three habits follow. First, identity is the routing table: policy hangs off who and what connected, so the identity integration is infrastructure, not an accessory. Second, the Service Edge is the vantage point: when troubleshooting, think in two legs - source to Edge, Edge to destination - because that is literally how the connection exists. Third, encryption boundaries are policy decisions: what the Exchange may decrypt it can inspect; [what it must not decrypt](/learn/zia-ssl-inspection-policy-and-bypasses) it can only pass judgment on from the outside. Every later article in this series is one of these consequences examined closely.
+
+## This series, in order
+
+This article opens the series **The Zscaler Zero Trust Exchange**. It places ZIA, ZPA and ZDX on one switchboard; the parts follow the platform from the outside in and back out: how traffic gets there, how the endpoint decides and how to troubleshoot it, what the device's state contributes, the SaaS view, the experience score, the logs and who changed what, the reports leadership reads, and three scenarios that bring it together: an exfiltration alert, a platform that changes itself, and a merger.
+
+1. **[Zscaler Tunnel Types: Z-Tunnel, GRE, and IPsec, With the Numbers](/learn/zscaler-tunnel-types-z-tunnel-gre-ipsec)**. Z-Tunnel for devices, GRE and IPsec for sites: three tunnels that are not interchangeable, with the numbers.
+2. **[Client Connector Profiles: Where the Endpoint Decides How to Forward](/learn/zscaler-client-connector-profiles)**. Two documents deep: the forwarding profile decides how traffic leaves the device in each network state.
+3. **[Troubleshooting Client Connector: The Diagnostics Menu and the First Four Checks](/learn/troubleshooting-zcc-connectivity)**. The connection states, the exported logs and the first four checks when a user cannot get online.
+4. **[Posture and Device Trust: Letting the Device's State Vote](/learn/zscaler-posture-profiles-and-device-trust)**. Identity says who is asking; posture says from what: device conditions voting in access decisions.
+5. **[CASB in the Exchange: Inline, Out-of-Band, and the Posture of SaaS Itself](/learn/zscaler-casb-and-saas-security)**. The cloud access security broker as two vantage points: inline over data in motion, out of band over data at rest.
+6. **[The ZDX Score: What the Probes Measure and How the Number Is Made](/learn/zdx-score-anatomy-and-probes)**. How a score from 1 to 100 is made: what the web probes and the path probes measure.
+7. **[Nanolog, NSS, Cloud NSS, and LSS: Getting the Logs Out](/learn/zscaler-nanolog-nss-and-log-streaming)**. The cloud-side log store and the three delivery paths that bring the logs home.
+8. **[The Administrator Audit Log: Who Changed What, From Where, With What Outcome](/learn/zscaler-admin-audit-logs)**. Every administrative action, from the console or the API, as a record of who changed what, from where, with what outcome.
+9. **[Reports and Executive Summaries: Turning the Nanolog Into Sentences Leadership Reads](/learn/zscaler-reports-and-executive-summaries)**. The reporting layer between the raw log stream and the board slide.
+10. **[The Exfiltration Alert: A Walkthrough From Signal to Posture Answer](/learn/zscaler-exfiltration-response-posture)**. A suspected exfiltration alert walked from the signal to the posture answer: the series converging on one scenario.
+11. **[Updates and Change Management: Running Change on a Platform That Also Changes Itself](/learn/zscaler-platform-updates-and-change-management)**. Three change streams (the vendor's cloud, your agent fleet, your policy) and only two of them yours to schedule.
+12. **[Mergers and Acquisitions on the Exchange: Day-One Access Without Merging Networks](/learn/zscaler-mergers-and-acquisitions)**. Day-one access for an acquired company's people without merging the networks.

@@ -66,3 +66,10 @@ In the order that resolves most cases:
 ## What an exam candidate should be able to state cold
 
 FortiLink makes the FortiGate the switch controller, so the switch is configured from the firewall and direct changes on it are liable to be overwritten. Provisioning is FortiLink interface, discovery, authorization, then configuration push, and an unauthorized switch is visible but unmanaged. Topologies run single tier, two tier, MCLAG for dual-homing, and stacking to save ports at the cost of dependency. Multi-tenancy uses VLANs mapped to VDOMs, so separation is configuration rather than hardware. When FortiLink fails, check the port role first, then authorization, then firmware compatibility.
+
+## This series, in order
+
+This article opens the series **FortiSwitch**. Once FortiLink makes the FortiGate the controller, the switch becomes part of it; the two parts cover the work that follows: the daily configuration, and securing the ports and getting information out.
+
+1. **[FortiSwitch VLANs, Spanning Tree, Ports, and QoS](/learn/fortiswitch-vlans-stp-ports-and-qos)**. VLANs created on the FortiGate, port settings and loop prevention, each with the one detail that catches people.
+2. **[FortiSwitch Port Security, Antispoofing, and Getting Information Out of the Switch](/learn/fortiswitch-port-security-and-diagnostics)**. Which devices may use a port, whether a device may claim an address it does not own, and how to get answers out of the switch.
