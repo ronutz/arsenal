@@ -74,6 +74,8 @@ export default async function ContactPage({
     topicTraining: t("topicTraining"),
     topicCustom: t("topicCustom"),
     topicAdvisory: t("topicAdvisory"),
+    // The speaking topic (PRIME 2026-10-07 04:48).
+    topicSpeaking: t("topicSpeaking"),
     topicOther: t("topicOther"),
     message: t("formMessage"),
     send: t("formSend"),
@@ -122,7 +124,7 @@ export default async function ContactPage({
                   channel from booking/consulting: point it to the ideas page. */}
               <p className="contact-feedback">
                 {t("feedbackNote")}{" "}
-                <Link href="/contribute/tools">{t("feedbackLink")}</Link>.
+                <Link href="/contribute/ideas">{t("feedbackLink")}</Link>.
               </p>
             </div>
           </section>
@@ -229,14 +231,15 @@ export default async function ContactPage({
           </section>
         </article>
         {/* Translations pointer (PRIME 2026-08-06). A mention rather than a
-            section: the substance lives on /contribute/tools, and somebody on
+            section: the substance lives on /contribute#translations (until 2026-10-07 this pointed at the ideas page
+            by mistake), and somebody on
             the contact page is already looking for a way to reach me. */}
         <section className="section">
           <div className="container section-narrow">
             <p className="section-body">{t("translations")}</p>
             <p className="section-cta">
-              <Link href="/contribute/tools" className="section-cta-link">
-                /contribute/tools &rarr;
+              <Link href="/contribute#translations" className="section-cta-link">
+                /contribute &rarr;
               </Link>
             </p>
           </div>

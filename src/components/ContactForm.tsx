@@ -29,6 +29,8 @@ interface ContactFormCopy {
   topicTraining: string;
   topicCustom: string;
   topicAdvisory: string;
+  /** "Speaking engagement" (PRIME 2026-10-07 04:48): the topic ?intent=speaking selects. */
+  topicSpeaking: string;
   topicOther: string;
   message: string;
   send: string;
@@ -71,9 +73,13 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
     else if (intent === "advisory") {
       setTopic(copy.topicAdvisory);
       if (copy.advisoryTemplate) setMessage((m) => m || copy.advisoryTemplate || "");
-    } else if (intent === "speaking" || intent === "other") {
+    } else if (intent === "speaking") {
+      // Speaking has its own topic since 2026-10-07 (PRIME 04:48); the event questions still open the message.
+      setTopic(copy.topicSpeaking);
+      if (copy.speakingTemplate) setMessage((m) => m || copy.speakingTemplate || "");
+    } else if (intent === "other") {
+      // Anything else: the catch-all topic and an empty message.
       setTopic(copy.topicOther);
-      if (intent === "speaking" && copy.speakingTemplate) setMessage((m) => m || copy.speakingTemplate || "");
     } else if (intent === "course") {
       // A class of an open material, taught live (2026-10-06): the "custom program for a team" topic, and the message
       // opened with the course's name, taken from the link and cut at 120 characters (it lands in an editable field
@@ -82,7 +88,7 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
       const course = (new URLSearchParams(window.location.search).get("course") ?? "").slice(0, 120);
       if (copy.courseTemplate) setMessage((m) => m || (copy.courseTemplate ?? "").replace("{course}", course));
     }
-  }, [copy.topicTraining, copy.topicCustom, copy.topicAdvisory, copy.topicOther, copy.advisoryTemplate, copy.speakingTemplate, copy.courseTemplate]);
+  }, [copy.topicTraining, copy.topicCustom, copy.topicAdvisory, copy.topicSpeaking, copy.topicOther, copy.advisoryTemplate, copy.speakingTemplate, copy.courseTemplate]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -169,6 +175,8 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
           <option>{copy.topicTraining}</option>
           <option>{copy.topicCustom}</option>
           <option>{copy.topicAdvisory}</option>
+          {/* Speaking engagement (PRIME 2026-10-07 04:48), after advisory and before the catch-all. */}
+          <option>{copy.topicSpeaking}</option>
           <option>{copy.topicOther}</option>
         </select>
       </div>

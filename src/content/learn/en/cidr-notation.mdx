@@ -1,21 +1,29 @@
 ---
 slug: cidr-notation
 title: "CIDR notation explained"
-summary: "What the slash in 192.168.1.0/24 actually means, and how a prefix length defines a block of IP addresses."
-concepts: ["cidr", "subnetting", "ipv4", "prefix-length"]
+summary: "What the slash in 192.168.1.0/24 actually means, and how a prefix length defines a block of IP addresses: the three problems that ended classful addressing (RFC 4632), the notation as the standard defines it, every common prefix with its mask and size, the network and broadcast addresses and the two exceptions, why aggregation was the point, and the same slash in IPv6."
+concepts: ["cidr", "classless inter-domain routing", "prefix length", "subnet mask", "network address", "broadcast address", "classful addressing", "route aggregation", "rfc 4632", "/31", "/32", "ipv6 prefix"]
 relatedTools: ["cidr"]
 relatedArticles: ["subnetting-basics", "ipv4-addressing", "ipv6-subnetting", "private-address-space", "vlsm", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
 category: networking
 order: 3
 status: reviewed
-updated: "2026-06-23"
+updated: "2026-10-07"
 ---
 
 ## The problem CIDR solves
 
 Every device on an IP network needs an address. In IPv4, that address is 32 bits, usually written as four numbers from 0 to 255 separated by dots, like `192.168.1.10`. The hard question is never "what is one address" but "how do I describe a *range* of addresses that belong together", a single office, a subnet, a customer allocation. **CIDR (Classless Inter-Domain Routing) notation** is the compact way to write that range.
 
-CIDR stands for Classless Inter-Domain Routing. The "classless" part matters: older addressing forced ranges into fixed sizes (the old Class A, B, and C blocks). CIDR removed that rigidity and let a range be *any* power-of-two size, which is why it is the standard today.
+The "classless" part is the history. IPv4 started with three fixed sizes of network, classes A, B and C, and by the early 1990s they were failing in three ways at once. The CIDR specification lists them: "Exhaustion of the Class B network address space", because "Class C, with a maximum of 254 host addresses, is too small, whereas Class B, which allows up to 65534 host addresses, is too large for most organizations"; "Growth of routing tables in Internet routers beyond the ability of current software, hardware, and people to effectively manage"; and "Eventual exhaustion of the 32-bit IPv4 address space". The first two were expected to "become critical sometime between 1993 and 1995" ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632)).
+
+CIDR was published in September 1993 as RFC 1518 and RFC 1519, and restated in 2006 as RFC 4632, after "more than twelve years" of deployment. Its aim was modest and exact: "to slow the growth of global routing tables and to reduce the rate of consumption of IPv4 address space". It "did not and does not attempt to solve the third problem", the exhaustion of IPv4 itself, for which it meant only to buy time "while progress is made on a longer-term solution" (RFC 4632, sections 1 and 2).
+
+## From classes to prefixes
+
+The change is one idea: say explicitly how many bits are the network, instead of letting the first bits of the address imply it. As the specification defines it, "In CIDR notation, a prefix is shown as a 4-octet quantity, just like a traditional IPv4 address or network number, followed by the '/' (slash) character, followed by a decimal value between 0 and 32 that describes the number of significant bits" (RFC 4632, section 3.1). The old classes fit into it as special cases: "the legacy 'Class B' network 172.16.0.0, with an implied network mask of 255.255.0.0, is defined as the prefix 172.16.0.0/16" (as above).
+
+What the slash buys is freedom of size: "Where formerly only three network sizes were available, prefixes may be defined to describe any power of two-sized block of between one and 2^32 end system addresses" (as above).
 
 ## Reading the slash
 
@@ -32,6 +40,29 @@ Change the prefix and the block size changes with it. A smaller prefix means *mo
 
 Each step of one in the prefix length **halves or doubles** the block. That single rule is the whole intuition.
 
+## Every common prefix, with its mask
+
+The prefix length and the dotted subnet mask say the same thing: a mask has as many leading 1 bits as the prefix length, then zeros. Devices still ask for one or the other, so both are worth reading at sight.
+
+| Prefix | Mask | Addresses | Usable hosts |
+|---|---|---|---|
+| /8 | 255.0.0.0 | 16,777,216 | 16,777,214 |
+| /16 | 255.255.0.0 | 65,536 | 65,534 |
+| /20 | 255.255.240.0 | 4,096 | 4,094 |
+| /22 | 255.255.252.0 | 1,024 | 1,022 |
+| /23 | 255.255.254.0 | 512 | 510 |
+| /24 | 255.255.255.0 | 256 | 254 |
+| /25 | 255.255.255.128 | 128 | 126 |
+| /26 | 255.255.255.192 | 64 | 62 |
+| /27 | 255.255.255.224 | 32 | 30 |
+| /28 | 255.255.255.240 | 16 | 14 |
+| /29 | 255.255.255.248 | 8 | 6 |
+| /30 | 255.255.255.252 | 4 | 2 |
+| /31 | 255.255.255.254 | 2 | 2, on a point-to-point link |
+| /32 | 255.255.255.255 | 1 | 1, a single host |
+
+The last octet of a mask can only take nine values (0, 128, 192, 224, 240, 248, 252, 254, 255), because the 1 bits must be contiguous. A mask such as `255.255.255.200` is not a valid CIDR mask at all.
+
 ## Network, broadcast, and usable hosts
 
 Within most blocks, two addresses are special and not assignable to a host:
@@ -43,11 +74,36 @@ So a `/24` has 256 total addresses but **254 usable** for actual hosts. The "usa
 
 Two edge cases break this pattern, both deliberately:
 
-- A **/31** (RFC 3021) is used for point-to-point links between two routers. It has only 2 addresses and, by design, both are usable, there is no room for a separate network and broadcast address, and none is needed for a link with exactly two ends.
+- A **/31** is used for point-to-point links between two routers. RFC 3021 introduced it "to halve the amount of address space assigned to point-to-point links", and on such a link "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)): there is no room for a separate network and broadcast address, and none is needed for a link with exactly two ends.
 - A **/32** is a single address, a host route. It describes exactly one machine.
+
+## Why aggregation was the point
+
+The notation is the visible half of CIDR; aggregation is the reason for it. Because a prefix can be any power-of-two size, one short prefix can stand for many longer ones, and a router that once needed a route per network needs one route per block. RFC 4632 puts it bluntly: "The only commonly understood method for reducing routing state on a packet-switched network is through aggregation of information." For a customer of a single provider it is simple: "No explicit route is needed for the end site; the service provider advertises a single aggregate route for the larger block" (RFC 4632, section 4.1).
+
+That is the same arithmetic as subnetting run in the other direction: shorten the prefix and the block covers its neighbours. [Supernetting and aggregation](/learn/supernetting-and-aggregation) and [route summarisation](/learn/route-summarization) work through it, and the [article on longest prefix match](/learn/static-routes-and-longest-match) shows how a router chooses when a short aggregate and a longer, more specific route both match.
+
+## The same slash in IPv6
+
+IPv6 kept the notation. "The text representation of IPv6 address prefixes is similar to the way IPv4 address prefixes are written in Classless Inter-Domain Routing (CIDR) notation", written `ipv6-address/prefix-length`, where the prefix length "is a decimal value specifying how many of the leftmost contiguous bits of the address comprise the prefix" ([RFC 4291, section 2.3](https://www.rfc-editor.org/rfc/rfc4291)). Only the scale changes: 128 bits instead of 32, and since most unicast "Interface IDs are required to be 64 bits long" (RFC 4291, section 2.5.1), an ordinary IPv6 subnet is a /64. [IPv6 subnetting](/learn/ipv6-subnetting) covers it.
 
 ## Why this is worth understanding
 
-Prefix length governs how networks are designed, how routes are summarized, and how address space is handed out. When you see `10.0.0.0/8` in a routing table or `0.0.0.0/0` as a default route, you are reading the same notation: a base address plus a prefix length that says how much of it is fixed. The arithmetic never changes, only the numbers.
+Prefix length governs how networks are designed, how routes are summarised, and how address space is handed out. When you see `10.0.0.0/8` in a routing table or `0.0.0.0/0` as a default route, you are reading the same notation: a base address plus a prefix length that says how much of it is fixed. The arithmetic never changes, only the numbers.
 
-You can try any block in the [CIDR calculator](/learn) to see its network address, broadcast address, mask, and usable host count computed instantly, entirely in your browser.
+You can try any block in the [CIDR calculator](/tools/cidr) to see its network address, broadcast address, mask, and usable host count computed instantly, entirely in your browser.
+
+## What to remember
+
+- A CIDR prefix is an address plus the number of leading bits that are fixed; the rest number the hosts.
+- CIDR replaced the three classes in 1993 to slow routing-table growth and address consumption, not to end IPv4 exhaustion.
+- Each step in prefix length halves or doubles the block; a mask has as many leading 1 bits as the prefix length.
+- An ordinary block loses two addresses to network and broadcast; a /31 link keeps both, a /32 is one host.
+- Aggregation, one short prefix standing for many long ones, is what CIDR was for; IPv6 writes prefixes the same way.
+
+## Sources
+
+- [RFC 4632, Classless Inter-domain Routing (CIDR), August 2006: the three problems, the notation, aggregation (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4632)
+- [RFC 1519, the original CIDR specification, September 1993 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1519)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, December 2000 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 4291, IP Version 6 Addressing Architecture, February 2006: section 2.3, prefix notation (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4291)

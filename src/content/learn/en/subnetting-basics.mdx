@@ -1,21 +1,45 @@
 ---
 slug: subnetting-basics
 title: "Subnetting basics"
-summary: "How to divide one network into smaller subnets, and why borrowing host bits is the whole trick."
-concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+summary: "How to divide one network into smaller subnets, and why borrowing host bits is the whole trick: where subnets came from (RFC 950, 1985), the mask and the one decision a host makes with it, finding the subnet, broadcast and host range of any address, the old rule against subnet zero and why it is gone, and the two prefixes that break the pattern on purpose."
+concepts: ["subnetting", "subnet mask", "prefix length", "network address", "broadcast address", "subnet zero", "all-ones subnet", "block size", "classful addressing", "rfc 950", "/31", "/32"]
 relatedTools: ["cidr"]
 relatedArticles: ["cidr-notation", "ipv4-addressing", "ipv6-subnetting", "vlsm", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-06-23"
+updated: "2026-10-07"
 ---
 
 ## What subnetting is for
 
 A single large network is rarely what you want. Subnetting is the practice of taking one block of addresses and splitting it into several smaller blocks, **subnets**, each of which can be a separate broadcast domain, security boundary, or physical segment. A campus might give each building its own subnet; a cloud account might give each tier of an application its own.
 
+The reasons have not changed since the practice was standardised. The 1985 specification lists them in plain terms: "Different technologies" on one site; the "Limits of technologies", because "Most LAN technologies impose limits, based on electrical parameters, on the number of hosts connected, and on the total length of the cable"; and "Network congestion", because "It is possible for a small subset of the hosts on a LAN to monopolize most of the bandwidth" ([RFC 950, section 1](https://www.rfc-editor.org/rfc/rfc950)). Replace the cable limits with the size of a broadcast domain and a firewall policy, and the list still describes a modern network.
+
 The mechanism is simpler than it is usually made to sound: **subnetting borrows bits from the host portion and adds them to the network portion.**
+
+## Where subnets came from
+
+IPv4 began with three fixed sizes. "There are three formats or classes of internet addresses": class A with 7 bits of network and 24 of "local address", class B with 14 and 16, class C with 21 and 8 ([RFC 791, September 1981](https://www.rfc-editor.org/rfc/rfc791)). An organisation got a network number, and every host on every cable in it shared that one number.
+
+That did not survive the first large campuses. Jeffrey Mogul of Stanford proposed internet subnets in October 1984 ([RFC 917](https://www.rfc-editor.org/rfc/rfc917)), and the standard followed in August 1985 as RFC 950, by Mogul and J. Postel of ISI, "based on RFC-917". It describes the change as a third level: "The original view of the Internet universe was a two-level hierarchy", the internet and its networks, and organisations "have added a third level to the interpretation of Internet addresses. In this view, a given Internet network is divided into a collection of subnets" (RFC 950, section 1).
+
+RFC 950 weighed five ways of marking which bits are the subnet and chose a mask: "we choose the address-mask scheme: it is the most flexible scheme, yet costs no more to implement than any other". Two details of that first version have since changed. It allowed subnet bits anywhere, since "they need not be adjacent in the address", while recommending "that the subnet bits be contiguous and located as the most significant bits of the local address"; and it assumed one subnet size per network, "the width of the &lt;subnet-number&gt; field is constant for a given network" (RFC 950, section 2.1). Contiguous masks became universal, written today as a prefix length, and the one-size rule gave way to [variable-length subnetting](/learn/vlsm).
+
+## The mask, and the decision a host makes with it
+
+A host uses its mask for one decision on every packet: is the destination on my own subnet, or do I hand it to a router? The host requirements spell out the test. The mask "is a 32-bit mask that selects the network number and subnet number fields"; "If the IP destination address bits extracted by the address mask match the IP source address bits extracted by the same mask, then the destination is on the corresponding connected network, and the datagram is to be transmitted directly to the destination host"; "If not, then the destination is accessible only through a gateway" ([RFC 1122, section 3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122)).
+
+Take a host at `192.168.1.70/26` (mask `255.255.255.192`). Its own address, masked, is `192.168.1.64`.
+
+| Destination | Destination, masked | Same as 192.168.1.64? | The host sends it |
+|---|---|---|---|
+| 192.168.1.100 | 192.168.1.64 | Yes | Directly, after resolving its MAC address |
+| 192.168.1.130 | 192.168.1.128 | No | To its default gateway |
+| 8.8.8.8 | 8.8.8.0 | No | To its default gateway |
+
+A wrong mask breaks exactly this decision. A host whose mask is too short for its subnet can still reach the internet, but not the servers in the next subnet: it believes they are local, sends Address Resolution Protocol (ARP) requests that nobody on its own segment answers, and never asks the router, unless the router happens to answer for them with proxy ARP.
 
 ## Borrowing bits
 
@@ -32,6 +56,17 @@ Suppose you need four separate subnets instead of one. Four is 2², so you need 
 
 Notice the pattern: each subnet is 64 addresses wide, so each one starts on a multiple of 64. That "starts on a multiple of its size" rule is how valid subnet boundaries are found. A block must begin on an address that is a multiple of its own size, or it is not a valid CIDR (Classless Inter-Domain Routing) block.
 
+## Finding the subnet of any address
+
+The same rule answers the most common question in practice: given an address and a prefix, which subnet is it in? Work in the octet where the mask stops being 255.
+
+1. **Write the mask.** `/20` is `255.255.240.0`: the first two octets are fixed, and the third is where the subnet boundary falls.
+2. **Find the block size** in that octet: 256 minus the mask's value there. Here 256 − 240 = **16**, so subnets start at 0, 16, 32, 48 and so on in the third octet.
+3. **Find the multiple at or below the address.** For `172.16.45.200/20`, the third octet is 45, which lies between 32 and 47.
+4. **Read off the answer.** The subnet is `172.16.32.0/20`; its broadcast is the last address before the next block, `172.16.47.255`; hosts run from `172.16.32.1` to `172.16.47.254`, which is 2¹² − 2 = 4,094 usable addresses.
+
+The [CIDR calculator](/tools/cidr) does the same arithmetic for any address and prefix, and is a quick way to check an answer worked by hand.
+
 ## The trade-off
 
 Every bit you borrow for the network halves the hosts per subnet:
@@ -46,8 +81,38 @@ Every bit you borrow for the network halves the hosts per subnet:
 
 More subnets means fewer hosts in each. Network design is largely choosing where on this curve to sit: enough subnets for your segments, enough hosts in each for the devices that live there, with some room to grow.
 
+## Subnet zero and the all-ones subnet
+
+Older textbooks, and some exams, subtract two subnets as well as two addresses. That comes from RFC 950, which held that "the values of all zeros and all ones in the subnet field should not be assigned to actual (physical) subnets" (RFC 950, section 2.1). The reason was ambiguity under classful addressing: the first subnet of `172.16.0.0/16` has the same address as the network itself, and the last shares its broadcast address. Cisco's note on the subject explains that the use of subnet zero "was discouraged because of the confusion inherent with a network and a subnet with indistinguishable addresses" ([Cisco, subnet zero and the all-ones subnet](https://www.cisco.com/c/en/us/support/docs/ip/dynamic-address-allocation-resolution/13711-40.html)).
+
+The rule is gone. A 1995 table of subnet sizes already includes both, following the "practice for using all definable subnets", and says of the old exclusion: "This practice is obsolete! Modern software will be able to utilize all definable networks" ([RFC 1878](https://www.rfc-editor.org/rfc/rfc1878)). Cisco routers have had "ip subnet-zero enabled by default" since IOS 12.0, and "Currently, the use of subnet zero and the all-ones subnet is generally accepted, and most vendors support their use" (Cisco, as above). Four /26 subnets of a /24 means four, not two.
+
+## Two reserved addresses, and two exceptions
+
+Within an ordinary subnet, the first address (all host bits 0) names the subnet and the last (all host bits 1) is its broadcast, so a block of 2ⁿ addresses has 2ⁿ − 2 hosts. Two prefixes break the pattern on purpose:
+
+- **/31, for point-to-point links.** A link between two routers needs two addresses, yet a /30 spends four on it. RFC 3021 proposed "to halve the amount of address space assigned to point-to-point links (common throughout the Internet infrastructure) by allowing the use of 31-bit subnet masks", and on such a link "the two addresses above MUST be interpreted as host addresses" ([RFC 3021, December 2000](https://www.rfc-editor.org/rfc/rfc3021)).
+- **/32, a single address**, used for host routes and loopback interfaces: one address, one machine.
+
 ## Variable-length subnetting
 
-Subnets within the same parent do not all have to be the same size. **Variable-length subnet masking (VLSM)** lets you carve a large subnet for the segment that needs many hosts and small subnets for point-to-point links, all from the same parent block. The only rules are the constant ones: each subnet is a power of two in size, and each begins on a multiple of its size so the blocks never overlap.
+Subnets within the same parent do not all have to be the same size, whatever RFC 950 assumed. OSPF (Open Shortest Path First), for one, carries a mask with every route, so "Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328)). **Variable-length subnet masking (VLSM)** lets you carve a large subnet for the segment that needs many hosts and small subnets for point-to-point links, all from the same parent block. The only rules are the constant ones: each subnet is a power of two in size, and each begins on a multiple of its size so the blocks never overlap. [VLSM](/learn/vlsm) explains the method and [a worked allocation](/learn/vlsm-worked-example) runs it end to end.
 
-The [CIDR calculator](/learn) shows the exact range, boundaries, and usable host count for any prefix, which makes checking a subnet plan a matter of typing in each block.
+## What to remember
+
+- Subnetting borrows host bits for the network: each bit borrowed doubles the subnets and halves their size.
+- A subnet starts on a multiple of its own size; the block size in the interesting octet is 256 minus the mask's value there.
+- A host compares its own address and the destination under its mask; equal means direct delivery, different means the gateway.
+- Subnet zero and the all-ones subnet are usable; the rule against them is obsolete.
+- An ordinary subnet has 2ⁿ − 2 hosts; a /31 link has two, a /32 one.
+
+## Sources
+
+- [RFC 791, Internet Protocol, September 1981: the three address classes (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc791)
+- [RFC 917, Internet Subnets, J. Mogul, October 1984 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc917)
+- [RFC 950, Internet Standard Subnetting Procedure, J. Mogul and J. Postel, August 1985: the motivation, the address mask, subnet zero (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc950)
+- [RFC 1122, Requirements for Internet Hosts, October 1989: section 3.3.1.1, the local/remote decision (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 1878, Variable Length Subnet Table for IPv4, December 1995: all definable subnets (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1878)
+- [RFC 2328, OSPF Version 2, April 1998: variable length subnetting (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, December 2000 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [Cisco, Configure Subnet Zero and All-Ones Subnet, document 13711, 7 February 2023 (read 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/ip/dynamic-address-allocation-resolution/13711-40.html)

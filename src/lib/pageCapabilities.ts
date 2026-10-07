@@ -153,3 +153,33 @@ export function subscribeLetterShortcuts(fn: () => void): () => void {
   letterListeners.add(fn);
   return () => letterListeners.delete(fn);
 }
+
+// ============================================================================
+// EVERY SITE SHORTCUT OFF (row 55, PRIME 2026-10-07 06:19)
+// ---------------------------------------------------------------------------
+// The slide presenter's keys are the point of its page: F is full screen there, and the site's own F (to /dev/fun)
+// took the reader away instead. PRIME: "Disable all other key shortcuts in the slides presentation page." A page
+// whose keys are its purpose sets this while it is mounted, and the shortcut layer stands down entirely: letters,
+// digits, "/", "?" and "."; Search's Ctrl/Cmd+K stands down too. Unlike the letter suppression above, nothing
+// is kept. Escape is untouched: each popup still closes itself.
+// ============================================================================
+
+let siteShortcutsSuppressed = false;
+const siteShortcutListeners = new Set<() => void>();
+
+/** Called by a page that owns the keyboard (the slide presenter) on mount, and again with false on unmount. */
+export function setSiteShortcutsSuppressed(v: boolean): void {
+  siteShortcutsSuppressed = v;
+  siteShortcutListeners.forEach((fn) => fn());
+}
+
+/** Whether the site's shortcuts are off on the page shown. Read at the moment of each key. */
+export function areSiteShortcutsSuppressed(): boolean {
+  return siteShortcutsSuppressed;
+}
+
+/** Be told when a page switches the site's shortcuts off or back on (Search hides its Ctrl K badge). */
+export function subscribeSiteShortcuts(fn: () => void): () => void {
+  siteShortcutListeners.add(fn);
+  return () => siteShortcutListeners.delete(fn);
+}

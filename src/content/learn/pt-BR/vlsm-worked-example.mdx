@@ -1,41 +1,41 @@
 ---
 slug: vlsm-worked-example
 title: "Uma atribuição VLSM, resolvida do início ao fim"
-summary: "Uma atribuição completa de sub-redes de comprimento variável para uma rede realista: dimensionar cada segmento, ordenar do maior para o menor, atribuir os endereços reais e contabilizar o espaço que sobra."
-concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+summary: "Uma atribuição completa de sub-redes de comprimento variável para uma rede realista: dimensionar cada segmento, ordenar do maior para o menor, atribuir os endereços reais, conferir que cada bloco está na sua fronteira, contabilizar o que sobra como blocos que ainda podem ser usados, o mesmo plano com enlaces /31, o que acontece na ordem errada, a única rota que alcança tudo, e a discard route que impede que os endereços livres fiquem em loop."
+concepts: ["vlsm", "subnetting", "address planning", "largest first", "subnet mask", "utilisation", "/31", "route summarisation", "discard route", "cidr"]
 relatedTools: ["cidr"]
 relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-07"
 ---
 
 ## O cenário
 
-Você recebe `172.16.0.0/22` e precisa encaixar quatro segmentos dentro:
+Você recebeu `172.16.0.0/22` e precisa encaixar quatro segmentos nele:
 
 - **Vendas**: 500 hosts
 - **Engenharia**: 200 hosts
 - **Enlace A**: um enlace ponto a ponto entre roteadores, 2 hosts
 - **Enlace B**: um segundo enlace ponto a ponto, 2 hosts
 
-Um `/22` contém 1024 endereços (`172.16.0.0` a `172.16.3.255`). As regras conceituais são cobertas em [VLSM](/learn/vlsm); aqui as percorremos até o fim.
+Um `/22` tem 1.024 endereços (`172.16.0.0` a `172.16.3.255`). As regras conceituais estão em [VLSM](/learn/vlsm); aqui elas são aplicadas até o fim.
 
 ## Passo 1: dimensionar cada segmento
 
-Encontre o menor bloco que contém cada quantidade de hosts, lembrando dos dois endereços reservados (rede e broadcast) em todo bloco comum:
+Ache o menor bloco que comporta cada número de hosts, lembrando os dois endereços reservados (rede e broadcast) de cada bloco comum:
 
 - 500 hosts precisam de 9 bits de host (2⁹ − 2 = 510 utilizáveis), um `/23`.
 - 200 hosts precisam de 8 bits de host (254 utilizáveis), um `/24`.
 - 2 hosts precisam de 2 bits de host (2 utilizáveis), um `/30`.
 - 2 hosts precisam de outro `/30`.
 
-Arredonde para a próxima potência de dois: 500 não cabe em um `/24` (254 utilizáveis), então pega um `/23`.
+Arredonde para a próxima potência de dois: 500 não cabem num `/24` (254 utilizáveis), então ficam com um `/23`. Antes de seguir, confira se o total cabe: 512 + 256 + 4 + 4 = 776 endereços, contra 1.024 no bloco pai.
 
 ## Passo 2: ordenar do maior para o menor
 
-Ordene os segmentos por tamanho de bloco, o maior primeiro, para que cada um aterrisse em um limite limpo:
+Ordene os segmentos pelo tamanho do bloco, do maior para o menor, para que cada um caia numa fronteira limpa:
 
 1. Vendas, `/23` (512 endereços)
 2. Engenharia, `/24` (256)
@@ -44,21 +44,79 @@ Ordene os segmentos por tamanho de bloco, o maior primeiro, para que cada um ate
 
 ## Passo 3: atribuir os endereços
 
-Atribua nessa ordem, cada bloco começando onde o anterior terminou:
+Aloque nessa ordem, cada bloco começando onde o anterior terminou:
 
-```
-/23  172.16.0.0  – .1.255   (510 utilizáveis)  ← Vendas
-/24  172.16.2.0  – .2.255   (254 utilizáveis)  ← Engenharia
-/30  172.16.3.0  – .3.3     (2 utilizáveis)    ← Enlace A
-/30  172.16.3.4  – .3.7     (2 utilizáveis)    ← Enlace B
-```
+| Segmento | Bloco | Máscara | Primeiro host | Último host | Broadcast | Utilizáveis |
+|---|---|---|---|---|---|---|
+| Vendas | 172.16.0.0/23 | 255.255.254.0 | 172.16.0.1 | 172.16.1.254 | 172.16.1.255 | 510 |
+| Engenharia | 172.16.2.0/24 | 255.255.255.0 | 172.16.2.1 | 172.16.2.254 | 172.16.2.255 | 254 |
+| Enlace A | 172.16.3.0/30 | 255.255.255.252 | 172.16.3.1 | 172.16.3.2 | 172.16.3.3 | 2 |
+| Enlace B | 172.16.3.4/30 | 255.255.255.252 | 172.16.3.5 | 172.16.3.6 | 172.16.3.7 | 2 |
 
-Vendas preenche a primeira metade do bloco. Engenharia pega o `/24` seguinte. Os dois enlaces entre roteadores pegam quatro endereços cada no início do `/24` final.
+Vendas ocupa a primeira metade do bloco. Engenharia fica com o `/24` seguinte. Os dois enlaces entre roteadores ficam com quatro endereços cada no começo do último `/24`.
 
-## Passo 4: contabilizar o que sobra
+## Passo 4: conferir cada fronteira
 
-Os quatro segmentos usam 512 + 256 + 4 + 4 = 776 endereços, deixando 248 livres, de `172.16.3.8` a `172.16.3.255`. Isso é 75.8% de utilização, com uma cauda contígua de espaço livre para o próximo enlace ou uma sub-rede pequena, ainda alinhada para uma futura sumarização.
+Um bloco só é válido se começa num múltiplo do seu próprio tamanho. Conte cada início como um deslocamento a partir do primeiro endereço do bloco pai:
+
+- Vendas começa no deslocamento 0, múltiplo de 512.
+- Engenharia começa no deslocamento 512 (`172.16.2.0`), múltiplo de 256.
+- O Enlace A começa no deslocamento 768 (`172.16.3.0`), múltiplo de 4; o Enlace B em 772, também múltiplo de 4.
+
+Nenhum se sobrepõe, porque cada um começa onde o anterior terminou. É essa a propriedade que o maior primeiro garante: tudo o que foi colocado antes de um bloco é uma potência de dois maior, então o total acumulado é sempre múltiplo do tamanho seguinte.
+
+## Passo 5: contabilizar o que sobra
+
+Os quatro segmentos usam 776 endereços e deixam 248 livres, de `172.16.3.8` a `172.16.3.255`: 75,8% de utilização. Uma faixa livre só serve como blocos que começam nas suas próprias fronteiras, então escreva a sobra assim:
+
+| Bloco livre | Endereços | Comporta |
+|---|---|---|
+| 172.16.3.8/29 | 8 | até 6 hosts |
+| 172.16.3.16/28 | 16 | até 14 hosts |
+| 172.16.3.32/27 | 32 | até 30 hosts |
+| 172.16.3.64/26 | 64 | até 62 hosts |
+| 172.16.3.128/25 | 128 | até 126 hosts |
+
+8 + 16 + 32 + 64 + 128 = 248, então a sobra inteira está contada. O próximo segmento de até 126 hosts vai no `/25`; um de 200 hosts já não cabe em lugar nenhum do bloco pai, por mais endereços livres que o total mostre.
+
+## O mesmo plano com enlaces /31
+
+Em enlaces ponto a ponto entre roteadores, um `/31` comporta as duas pontas: a RFC 3021 permite "the use of 31-bit subnet masks" nesses enlaces, onde "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)). Com o Enlace A em `172.16.3.0/31` e o Enlace B em `172.16.3.2/31`, o plano usa 772 endereços em vez de 776, e a sobra passa a ser `172.16.3.4/30`, `.8/29`, `.16/28`, `.32/27`, `.64/26` e `.128/25`: 252 endereços. As duas pontas de cada enlace precisam suportar isso, então confira o equipamento de cada lado antes de numerar um enlace assim.
+
+## O que a ordem errada faz
+
+Aloque os mesmos quatro segmentos do menor para o maior, cada um começando onde o anterior terminou, e o método dá errado assim que chega o primeiro bloco grande:
+
+1. O Enlace A em `172.16.0.0/30`, o Enlace B em `172.16.0.4/30`.
+2. Vendas, um `/23`, não pode começar em `172.16.0.8`: o seu início precisa ser múltiplo de 512, então ele pula para `172.16.2.0`, deixando para trás de `172.16.0.8` a `172.16.1.255`.
+3. Engenharia começaria onde Vendas termina, em `172.16.4.0`, que fica fora do bloco pai.
+
+O espaço para Engenharia existe, em `172.16.1.0/24`, dentro da faixa pulada, mas só voltando para procurá-lo, e num plano maior é desse vaivém que vêm as sobreposições e os fragmentos encalhados. O maior primeiro nunca precisa dele.
+
+## Uma rota para tudo
+
+Como todos os segmentos saíram de um mesmo bloco pai, o resto da rede alcança os quatro com uma única rota, `172.16.0.0/22`. Essa é a recompensa por manter um local dentro de um bloco, e ela só vale enquanto todas as sub-redes ficarem dentro dele: os artigos sobre [sumarização de rotas](/learn/route-summarization) e [superredes e agregação](/learn/supernetting-and-aggregation) levam a ideia adiante.
+
+## O que o roteador do site faz com a sumarização
+
+No roteador do próprio site, o plano vira rotas. Os quatro segmentos aparecem como redes diretamente conectadas, `172.16.0.0/23`, `172.16.2.0/24`, `172.16.3.0/30` e `172.16.3.4/30`, e o roteador anuncia para o resto da rede uma única rota sumarizada, `172.16.0.0/22`. Essa rota também precisa existir no roteador que a anuncia, apontando para lugar nenhum: é a discard route (rota de descarte). A especificação do CIDR faz disso uma regra: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes" ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632)).
+
+Um pacote para `172.16.3.200`, um endereço livre dentro do bloco, mostra por quê. O resto da rede manda esse pacote para o site, porque o /22 cobre o endereço. No roteador do site nenhum segmento corresponde a ele; sem a discard route, o melhor match que sobra é a rota padrão (default route) do site, que aponta de volta para o resto da rede, onde o /22 devolve o pacote na mesma hora. O pacote fica em loop entre os dois roteadores até o TTL (time to live) chegar a zero. A regra existe exatamente para esse caso: a discard route "is necessary to prevent forwarding loops when some addresses covered by the aggregate are not reachable" (como acima), e a especificação observa que ela costuma ser configurada como uma rota discard, ou null, para a sumarização (RFC 4632, seção 5.2). Os endereços em uso não são afetados: um pacote para `172.16.2.10` continua chegando à Engenharia, porque o /24 é um prefixo mais longo que o /22 e vence pelo longest match. Como um roteador escolhe entre rotas que se sobrepõem é o assunto de [rotas estáticas e o prefixo mais longo](/learn/static-routes-and-longest-match).
 
 ## Conferir seu trabalho
 
-Esta é exatamente a atribuição que a [calculadora CIDR](/#cidr) produz no modo VLSM: informe `172.16.0.0/22` como bloco pai e as quatro quantidades de hosts, e ela devolve as mesmas redes, máscaras, faixas e a cifra de 75.8% de utilização, calculada inteiramente no seu navegador. Se um segmento não couber, ele é listado separadamente em vez de ser descartado silenciosamente.
+Esta é exatamente a atribuição que a [calculadora CIDR](/tools/cidr) produz no modo VLSM: informe `172.16.0.0/22` como bloco pai e os quatro números de hosts, e ela devolve as mesmas redes, máscaras, faixas e o número de 75,8% de utilização, calculados inteiramente no seu navegador. Se um segmento não couber, ele aparece listado à parte, em vez de sumir em silêncio.
+
+## Para lembrar
+
+- Confira o total primeiro: são os tamanhos dos blocos, não os números de hosts, que precisam caber no bloco pai.
+- O maior primeiro, com cada bloco começando onde o anterior terminou, mantém cada bloco na sua fronteira sem vaivém.
+- O espaço livre só vale tanto quanto os blocos alinhados em que ele se divide; um total grande pode não ter lugar para uma única sub-rede grande.
+- Enlaces ponto a ponto /31 economizam dois endereços cada onde as duas pontas os suportam.
+- Tudo o que está dentro de um bloco pai é alcançável por uma única rota.
+- O roteador que anuncia a sumarização descarta o que só bate com a rota sumarizada: os endereços livres dentro dela param ali, em vez de ficar em loop.
+
+## Fontes
+
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 4632, Classless Inter-domain Routing (CIDR), agosto de 2006: prefixos como blocos de potência de dois, agregação (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4632)

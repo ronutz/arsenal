@@ -145,7 +145,7 @@ export default async function RoadmapPage({ params }: { params: Promise<{ locale
           <div className="container section-narrow">
             <h2 className="section-title">{t("ideaTitle")}</h2>
             <p className="section-body">{t("ideaBody")}</p>
-            <Link href="/contribute/tools" className="roadmap-idea-cta">
+            <Link href="/contribute/ideas" className="roadmap-idea-cta">
               {t("ideaCta")}
               <span aria-hidden="true"> →</span>
             </Link>

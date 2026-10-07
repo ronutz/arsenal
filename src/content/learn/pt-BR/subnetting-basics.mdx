@@ -1,42 +1,77 @@
 ---
 slug: subnetting-basics
 title: "Fundamentos de sub-redes"
-summary: "Como dividir uma rede em sub-redes menores, e por que tomar emprestado bits de host é todo o truque."
-concepts: ["subnetting", "cidr", "ipv4", "network-design"]
+summary: "Como dividir uma rede em sub-redes menores, e por que tomar emprestados bits de host é todo o truque: de onde vieram as sub-redes (RFC 950, 1985), a máscara e a única decisão que um host toma com ela, como achar a sub-rede, o broadcast e a faixa de hosts de qualquer endereço, a velha regra contra a sub-rede zero e por que ela caiu, e os dois prefixos que quebram o padrão de propósito."
+concepts: ["subnetting", "subnet mask", "prefix length", "network address", "broadcast address", "subnet zero", "all-ones subnet", "block size", "classful addressing", "rfc 950", "/31", "/32"]
 relatedTools: ["cidr"]
 relatedArticles: ["cidr-notation", "ipv4-addressing", "ipv6-subnetting", "vlsm", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
 category: networking
 order: 2
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-07"
 ---
 
 ## Para que servem as sub-redes
 
-Uma única rede grande raramente é o que você quer. A divisão em sub-redes (subnetting) é a prática de tomar um bloco de endereços e dividi-lo em vários blocos menores, **sub-redes**, cada uma das quais pode ser um domínio de broadcast separado, uma fronteira de segurança, ou um segmento físico. Um campus pode dar a cada prédio sua própria sub-rede; uma conta de nuvem pode dar a cada camada de uma aplicação a sua.
+Uma única rede grande raramente é o que você quer. Dividir em sub-redes é pegar um bloco de endereços e reparti-lo em vários blocos menores, as **sub-redes**, cada uma podendo ser um domínio de broadcast, uma fronteira de segurança ou um segmento físico à parte. Um campus pode dar a cada prédio a sua sub-rede; uma conta de nuvem pode dar a cada camada de uma aplicação a sua.
 
-O mecanismo é mais simples do que costuma soar: **a divisão em sub-redes toma emprestado bits da porção de host e os adiciona à porção de rede.**
+Os motivos não mudaram desde que a prática foi padronizada. A especificação de 1985 os lista com todas as letras: "Different technologies" num mesmo local; os "Limits of technologies", porque "Most LAN technologies impose limits, based on electrical parameters, on the number of hosts connected, and on the total length of the cable"; e "Network congestion", porque "It is possible for a small subset of the hosts on a LAN to monopolize most of the bandwidth" ([RFC 950, seção 1](https://www.rfc-editor.org/rfc/rfc950)). Troque os limites do cabo pelo tamanho de um domínio de broadcast e por uma política de firewall, e a lista ainda descreve uma rede moderna.
+
+O mecanismo é mais simples do que costuma parecer: **dividir em sub-redes é tomar bits emprestados da parte de host e somá-los à parte de rede.**
+
+## De onde vieram as sub-redes
+
+O IPv4 começou com três tamanhos fixos. "There are three formats or classes of internet addresses": a classe A com 7 bits de rede e 24 de "local address", a classe B com 14 e 16, a classe C com 21 e 8 ([RFC 791, setembro de 1981](https://www.rfc-editor.org/rfc/rfc791)). Uma organização recebia um número de rede, e todos os hosts de todos os cabos dela dividiam esse único número.
+
+Isso não sobreviveu aos primeiros campi grandes. Jeffrey Mogul, de Stanford, propôs as sub-redes da internet em outubro de 1984 ([RFC 917](https://www.rfc-editor.org/rfc/rfc917)), e o padrão veio em agosto de 1985 como a RFC 950, de Mogul e J. Postel, do ISI, "based on RFC-917". Ela descreve a mudança como um terceiro nível: "The original view of the Internet universe was a two-level hierarchy", a internet e as suas redes, e as organizações "have added a third level to the interpretation of Internet addresses. In this view, a given Internet network is divided into a collection of subnets" (RFC 950, seção 1).
+
+A RFC 950 pesou cinco maneiras de marcar quais bits são a sub-rede e escolheu uma máscara: "we choose the address-mask scheme: it is the most flexible scheme, yet costs no more to implement than any other". Dois detalhes dessa primeira versão mudaram depois. Ela permitia bits de sub-rede em qualquer posição, já que "they need not be adjacent in the address", embora recomendasse "that the subnet bits be contiguous and located as the most significant bits of the local address"; e supunha um único tamanho de sub-rede por rede, "the width of the &lt;subnet-number&gt; field is constant for a given network" (RFC 950, seção 2.1). As máscaras contíguas viraram regra, escritas hoje como um comprimento de prefixo, e a regra do tamanho único deu lugar às [sub-redes de comprimento variável](/learn/vlsm).
+
+## A máscara, e a decisão que um host toma com ela
+
+Um host usa a sua máscara para uma decisão em cada pacote: o destino está na minha própria sub-rede, ou eu o entrego a um roteador? Os requisitos para hosts descrevem o teste. A máscara "is a 32-bit mask that selects the network number and subnet number fields"; "If the IP destination address bits extracted by the address mask match the IP source address bits extracted by the same mask, then the destination is on the corresponding connected network, and the datagram is to be transmitted directly to the destination host"; "If not, then the destination is accessible only through a gateway" ([RFC 1122, seção 3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122)).
+
+Pense num host em `192.168.1.70/26` (máscara `255.255.255.192`). O seu próprio endereço, mascarado, é `192.168.1.64`.
+
+| Destino | Destino mascarado | Igual a 192.168.1.64? | O host o envia |
+|---|---|---|---|
+| 192.168.1.100 | 192.168.1.64 | Sim | Diretamente, depois de descobrir o endereço MAC |
+| 192.168.1.130 | 192.168.1.128 | Não | Ao seu gateway padrão |
+| 8.8.8.8 | 8.8.8.0 | Não | Ao seu gateway padrão |
+
+Uma máscara errada quebra justamente essa decisão. Um host cuja máscara é curta demais para a sua sub-rede ainda alcança a internet, mas não os servidores da sub-rede vizinha: ele acha que eles são locais, manda requisições do Address Resolution Protocol (ARP) que ninguém no seu segmento responde, e nunca pergunta ao roteador, a não ser que o roteador responda por eles com proxy ARP.
 
 ## Tomando bits emprestados
 
-Comece com `192.168.1.0/24`. O prefixo é 24, então 8 bits estão livres para hosts, dando um bloco de 256 endereços.
+Comece com `192.168.1.0/24`. O prefixo é 24, então sobram 8 bits para hosts, o que dá um bloco de 256 endereços.
 
 Suponha que você precise de quatro sub-redes separadas em vez de uma. Quatro é 2², então você precisa de **mais 2 bits de rede**. Tome-os emprestados do lado de host: o prefixo cresce de /24 para /26.
 
-- `/26` fixa 26 bits, deixa 6 livres → 64 endereços por sub-rede.
-- Quatro dessas sub-redes ladrilham o /24 original exatamente:
+- `/26` fixa 26 bits e deixa 6 livres → 64 endereços por sub-rede.
+- Quatro dessas sub-redes cobrem o /24 original exatamente:
   - `192.168.1.0/26`, endereços .0 a .63
   - `192.168.1.64/26`, endereços .64 a .127
   - `192.168.1.128/26`, endereços .128 a .191
   - `192.168.1.192/26`, endereços .192 a .255
 
-Note o padrão: cada sub-rede tem 64 endereços de largura, então cada uma começa em um múltiplo de 64. Aquela regra de "começa em um múltiplo de seu tamanho" é como as fronteiras válidas de sub-rede são encontradas. Um bloco deve começar em um endereço que é um múltiplo de seu próprio tamanho, ou não é um bloco CIDR (Roteamento entre Domínios sem Classe, do inglês Classless Inter-Domain Routing) válido.
+Repare no padrão: cada sub-rede tem 64 endereços de largura, então cada uma começa num múltiplo de 64. Essa regra, "começa num múltiplo do próprio tamanho", é como se acham as fronteiras válidas de sub-rede. Um bloco precisa começar num endereço que seja múltiplo do seu próprio tamanho, ou não é um bloco CIDR (Classless Inter-Domain Routing) válido.
+
+## Como achar a sub-rede de qualquer endereço
+
+A mesma regra responde à pergunta mais comum na prática: dado um endereço e um prefixo, em que sub-rede ele está? Trabalhe no octeto em que a máscara deixa de ser 255.
+
+1. **Escreva a máscara.** `/20` é `255.255.240.0`: os dois primeiros octetos são fixos, e o terceiro é onde cai a fronteira da sub-rede.
+2. **Ache o tamanho do bloco** nesse octeto: 256 menos o valor da máscara ali. Aqui, 256 − 240 = **16**, então as sub-redes começam em 0, 16, 32, 48 e assim por diante no terceiro octeto.
+3. **Ache o múltiplo igual ou abaixo do endereço.** Para `172.16.45.200/20`, o terceiro octeto é 45, que fica entre 32 e 47.
+4. **Leia a resposta.** A sub-rede é `172.16.32.0/20`; o seu broadcast é o último endereço antes do bloco seguinte, `172.16.47.255`; os hosts vão de `172.16.32.1` a `172.16.47.254`, ou seja, 2¹² − 2 = 4.094 endereços utilizáveis.
+
+A [calculadora CIDR](/tools/cidr) faz a mesma conta para qualquer endereço e prefixo, e é um jeito rápido de conferir uma resposta feita à mão.
 
 ## O compromisso
 
-Cada bit que você toma emprestado para a rede divide pela metade os hosts por sub-rede:
+Cada bit emprestado para a rede corta pela metade os hosts por sub-rede:
 
-| Prefixo | Sub-redes de um /24 | Endereços cada | Hosts utilizáveis cada |
+| Prefixo | Sub-redes de um /24 | Endereços em cada | Hosts utilizáveis em cada |
 |---|---|---|---|
 | /24 | 1 | 256 | 254 |
 | /25 | 2 | 128 | 126 |
@@ -44,10 +79,40 @@ Cada bit que você toma emprestado para a rede divide pela metade os hosts por s
 | /27 | 8 | 32 | 30 |
 | /28 | 16 | 16 | 14 |
 
-Mais sub-redes significa menos hosts em cada. O design de rede é em grande parte escolher onde nessa curva se situar: sub-redes suficientes para seus segmentos, hosts suficientes em cada para os dispositivos que vivem ali, com algum espaço para crescer.
+Mais sub-redes significa menos hosts em cada uma. Projetar uma rede é, em boa parte, escolher onde ficar nessa curva: sub-redes suficientes para os seus segmentos, hosts suficientes em cada uma para os equipamentos que vivem ali, com alguma folga para crescer.
 
-## Divisão em sub-redes de comprimento variável
+## A sub-rede zero e a sub-rede de todos os bits em 1
 
-As sub-redes dentro do mesmo pai não precisam todas ter o mesmo tamanho. **O mascaramento de sub-rede de comprimento variável (VLSM)** lhe permite talhar uma sub-rede grande para o segmento que precisa de muitos hosts e sub-redes pequenas para enlaces ponto a ponto, tudo a partir do mesmo bloco pai. As únicas regras são as constantes: cada sub-rede é uma potência de dois em tamanho, e cada uma começa em um múltiplo de seu tamanho de modo que os blocos nunca se sobrepõem.
+Livros antigos, e algumas provas, descontam duas sub-redes além dos dois endereços. Isso vem da RFC 950, segundo a qual "the values of all zeros and all ones in the subnet field should not be assigned to actual (physical) subnets" (RFC 950, seção 2.1). O motivo era a ambiguidade do endereçamento por classes: a primeira sub-rede de `172.16.0.0/16` tem o mesmo endereço da própria rede, e a última divide com ela o endereço de broadcast. A nota da Cisco sobre o assunto explica que o uso da sub-rede zero "was discouraged because of the confusion inherent with a network and a subnet with indistinguishable addresses" ([Cisco, sub-rede zero e sub-rede de todos os bits em 1](https://www.cisco.com/c/en/us/support/docs/ip/dynamic-address-allocation-resolution/13711-40.html)).
 
-A [calculadora CIDR](/learn) mostra a faixa exata, fronteiras, e contagem de hosts utilizáveis para qualquer prefixo, o que torna a verificação de um plano de sub-rede uma questão de digitar cada bloco.
+A regra caiu. Uma tabela de tamanhos de sub-rede de 1995 já inclui as duas, seguindo a "practice for using all definable subnets", e diz da velha exclusão: "This practice is obsolete! Modern software will be able to utilize all definable networks" ([RFC 1878](https://www.rfc-editor.org/rfc/rfc1878)). Os roteadores Cisco têm "ip subnet-zero enabled by default" desde o IOS 12.0, e "Currently, the use of subnet zero and the all-ones subnet is generally accepted, and most vendors support their use" (Cisco, como acima). Quatro sub-redes /26 de um /24 são quatro, não duas.
+
+## Dois endereços reservados, e duas exceções
+
+Dentro de uma sub-rede comum, o primeiro endereço (todos os bits de host em 0) nomeia a sub-rede e o último (todos os bits de host em 1) é o seu broadcast, então um bloco de 2ⁿ endereços tem 2ⁿ − 2 hosts. Dois prefixos quebram o padrão de propósito:
+
+- **/31, para enlaces ponto a ponto.** Um enlace entre dois roteadores precisa de dois endereços, e um /30 gasta quatro com ele. A RFC 3021 propôs "to halve the amount of address space assigned to point-to-point links (common throughout the Internet infrastructure) by allowing the use of 31-bit subnet masks", e num enlace assim "the two addresses above MUST be interpreted as host addresses" ([RFC 3021, dezembro de 2000](https://www.rfc-editor.org/rfc/rfc3021)).
+- **/32, um único endereço**, usado em rotas de host e em interfaces de loopback: um endereço, uma máquina.
+
+## Sub-redes de comprimento variável
+
+As sub-redes de um mesmo bloco pai não precisam ter todas o mesmo tamanho, apesar do que a RFC 950 supunha. O OSPF (Open Shortest Path First), por exemplo, leva uma máscara em cada rota, de modo que "Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328)). O **VLSM** (variable-length subnet masking, máscaras de comprimento variável) permite recortar uma sub-rede grande para o segmento que tem muitos hosts e sub-redes pequenas para enlaces ponto a ponto, tudo do mesmo bloco pai. As únicas regras são as de sempre: cada sub-rede tem como tamanho uma potência de dois, e cada uma começa num múltiplo do seu tamanho, para que os blocos nunca se sobreponham. O artigo sobre [VLSM](/learn/vlsm) explica o método, e [uma atribuição resolvida](/learn/vlsm-worked-example) o aplica do início ao fim.
+
+## Para lembrar
+
+- Dividir em sub-redes é tomar bits de host para a rede: cada bit emprestado dobra o número de sub-redes e corta o tamanho de cada uma pela metade.
+- Uma sub-rede começa num múltiplo do próprio tamanho; o tamanho do bloco no octeto que interessa é 256 menos o valor da máscara ali.
+- Um host compara o seu endereço e o do destino sob a sua máscara; iguais significa entrega direta, diferentes significa o gateway.
+- A sub-rede zero e a de todos os bits em 1 podem ser usadas; a regra contra elas está obsoleta.
+- Uma sub-rede comum tem 2ⁿ − 2 hosts; um enlace /31 tem dois, um /32 tem um.
+
+## Fontes
+
+- [RFC 791, Internet Protocol, setembro de 1981: as três classes de endereço (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc791)
+- [RFC 917, Internet Subnets, J. Mogul, outubro de 1984 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc917)
+- [RFC 950, Internet Standard Subnetting Procedure, J. Mogul e J. Postel, agosto de 1985: a motivação, a máscara de endereço, a sub-rede zero (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc950)
+- [RFC 1122, Requirements for Internet Hosts, outubro de 1989: seção 3.3.1.1, a decisão entre local e remoto (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1122)
+- [RFC 1878, Variable Length Subnet Table for IPv4, dezembro de 1995: todas as sub-redes definíveis (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1878)
+- [RFC 2328, OSPF Version 2, abril de 1998: sub-redes de comprimento variável (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [Cisco, Configure Subnet Zero and All-Ones Subnet, documento 13711, 7 de fevereiro de 2023 (lida em 2026-10-07)](https://www.cisco.com/c/en/us/support/docs/ip/dynamic-address-allocation-resolution/13711-40.html)

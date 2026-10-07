@@ -15,7 +15,7 @@
 // the translation: the Red Education line authors <b>Red Education</b> and we
 // map that tag to a brand-colored span; the line ends with a graduation-cap
 // emoji rather than an arrow. (The Buy Me a Coffee link that used to share
-// this row moved to /contribute/tools on 2026-07-15, taking its monochrome
+// this row moved to /contribute/tools (now /contribute/ideas) on 2026-07-15, taking its monochrome
 // U+FE0E cup with it - the support pitch and the support link now live
 // together.)
 // ============================================================================
@@ -138,12 +138,12 @@ export default async function SiteFooter() {
               earlier left their separators behind - a link and its separator
               are one unit and have to be removed together. */}
           <span className="footer-sep" aria-hidden="true">&#183;</span>
-          <Link href="/contribute/tools" className="footer-contribute-link">
+          <Link href="/contribute/ideas" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>
           <span className="footer-sep" aria-hidden="true">&#183;</span>
           {/* "Improve the translations" MOVED OUT of the footer (PRIME
-              2026-08-06) to /contribute/tools, where it sits beside the other
+              2026-08-06) to the contribute pages, where it sits beside the other
               ways to contribute, with a pointer from /contact. A footer link is
               seen by everybody and acted on by almost nobody; the contribute
               page is read by the few people actually considering it. */}
@@ -176,7 +176,7 @@ export default async function SiteFooter() {
           </Link>
         </p>
         {/* Support row: since 2026-07-15 the line belongs to Red Education
-            alone - the Buy Me a Coffee link moved to /contribute/tools, where
+            alone - the Buy Me a Coffee link moved to /contribute/ideas, where
             the support pitch actually lives (PRIME directive). Since
             2026-10-06 (PRIME 12:02) the copy is the affiliation, "Rodolfo
             Nützmann is a Senior Technical Instructor and Advisor at Red

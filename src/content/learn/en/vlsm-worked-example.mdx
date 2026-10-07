@@ -1,14 +1,14 @@
 ---
 slug: vlsm-worked-example
 title: "A VLSM allocation, worked end to end"
-summary: "A full variable-length subnet allocation for a realistic network: sizing each segment, sorting largest-first, assigning the actual addresses, and accounting for the space left over."
-concepts: ["vlsm", "subnetting", "cidr", "worked-example", "ipv4"]
+summary: "A full variable-length subnet allocation for a realistic network: sizing each segment, sorting largest-first, assigning the actual addresses, checking that every block sits on its boundary, accounting for the space left over as blocks you can still use, the same plan with /31 links, what happens in the wrong order, the single route that reaches all of it, and the discard route that keeps its unused addresses from looping."
+concepts: ["vlsm", "subnetting", "address planning", "largest first", "subnet mask", "utilisation", "/31", "route summarisation", "discard route", "cidr"]
 relatedTools: ["cidr"]
 relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-07"
 ---
 
 ## The scenario
@@ -20,7 +20,7 @@ You are given `172.16.0.0/22` and have to fit four segments inside it:
 - **Link A**: a point-to-point router link, 2 hosts
 - **Link B**: a second point-to-point link, 2 hosts
 
-A `/22` holds 1024 addresses (`172.16.0.0` to `172.16.3.255`). The conceptual rules are covered in [VLSM](/learn/vlsm); here we run them all the way through.
+A `/22` holds 1,024 addresses (`172.16.0.0` to `172.16.3.255`). The conceptual rules are covered in [VLSM](/learn/vlsm); here we run them all the way through.
 
 ## Step 1: size each segment
 
@@ -31,7 +31,7 @@ Find the smallest block that holds each host count, remembering the two reserved
 - 2 hosts needs 2 host bits (2 usable), a `/30`.
 - 2 hosts needs another `/30`.
 
-Round up to the next power of two: 500 does not fit a `/24` (254 usable), so it takes a `/23`.
+Round up to the next power of two: 500 does not fit a `/24` (254 usable), so it takes a `/23`. Before going on, check that the total fits at all: 512 + 256 + 4 + 4 = 776 addresses, against 1,024 in the parent.
 
 ## Step 2: sort largest first
 
@@ -46,19 +46,77 @@ Order the segments by block size, biggest first, so each lands on a clean bounda
 
 Allocate in that order, each block starting where the previous one ended:
 
-```
-/23  172.16.0.0  – .1.255   (510 usable)  ← Sales
-/24  172.16.2.0  – .2.255   (254 usable)  ← Engineering
-/30  172.16.3.0  – .3.3     (2 usable)    ← Link A
-/30  172.16.3.4  – .3.7     (2 usable)    ← Link B
-```
+| Segment | Block | Mask | First host | Last host | Broadcast | Usable |
+|---|---|---|---|---|---|---|
+| Sales | 172.16.0.0/23 | 255.255.254.0 | 172.16.0.1 | 172.16.1.254 | 172.16.1.255 | 510 |
+| Engineering | 172.16.2.0/24 | 255.255.255.0 | 172.16.2.1 | 172.16.2.254 | 172.16.2.255 | 254 |
+| Link A | 172.16.3.0/30 | 255.255.255.252 | 172.16.3.1 | 172.16.3.2 | 172.16.3.3 | 2 |
+| Link B | 172.16.3.4/30 | 255.255.255.252 | 172.16.3.5 | 172.16.3.6 | 172.16.3.7 | 2 |
 
 Sales fills the first half of the block. Engineering takes the next `/24`. The two router links take four addresses each at the start of the final `/24`.
 
-## Step 4: account for what is left
+## Step 4: check every boundary
 
-The four segments use 512 + 256 + 4 + 4 = 776 addresses, leaving 248 free, from `172.16.3.8` to `172.16.3.255`. That is 75.8% utilization, with a contiguous tail of free space for the next link or a small subnet, still aligned for future summarization.
+A block is valid only if it starts on a multiple of its own size. Count each start as an offset from the parent's first address:
+
+- Sales starts at offset 0, a multiple of 512.
+- Engineering starts at offset 512 (`172.16.2.0`), a multiple of 256.
+- Link A starts at offset 768 (`172.16.3.0`), a multiple of 4; Link B at 772, also a multiple of 4.
+
+None overlaps, because each starts where the previous one ended. This is the property largest-first guarantees: everything placed before a block is a larger power of two, so the running total is always a multiple of the next size.
+
+## Step 5: account for what is left
+
+The four segments use 776 addresses, leaving 248 free, from `172.16.3.8` to `172.16.3.255`: 75.8% utilisation. A free range is only useful as blocks that start on their own boundaries, so write the tail that way:
+
+| Free block | Addresses | Fits |
+|---|---|---|
+| 172.16.3.8/29 | 8 | up to 6 hosts |
+| 172.16.3.16/28 | 16 | up to 14 hosts |
+| 172.16.3.32/27 | 32 | up to 30 hosts |
+| 172.16.3.64/26 | 64 | up to 62 hosts |
+| 172.16.3.128/25 | 128 | up to 126 hosts |
+
+8 + 16 + 32 + 64 + 128 = 248, so the whole tail is accounted for. The next segment of up to 126 hosts goes in the `/25`; one of 200 hosts no longer fits anywhere in the parent, however many free addresses the total shows.
+
+## The same plan with /31 links
+
+On point-to-point links between routers, a `/31` holds both ends: RFC 3021 allows "the use of 31-bit subnet masks" on such links, where "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)). With Link A at `172.16.3.0/31` and Link B at `172.16.3.2/31`, the plan uses 772 addresses instead of 776, and the free tail becomes `172.16.3.4/30`, `.8/29`, `.16/28`, `.32/27`, `.64/26` and `.128/25`: 252 addresses. Both ends of each link must support it, so check the equipment at each end before numbering a link this way.
+
+## What the wrong order does
+
+Allocate the same four segments smallest first, each starting where the last ended, and the method goes wrong as soon as the first large block arrives:
+
+1. Link A at `172.16.0.0/30`, Link B at `172.16.0.4/30`.
+2. Sales, a `/23`, cannot start at `172.16.0.8`: its start must be a multiple of 512, so it jumps to `172.16.2.0`, skipping `172.16.0.8` to `172.16.1.255`.
+3. Engineering would start where Sales ends, at `172.16.4.0`, which is outside the parent.
+
+The space for Engineering exists, at `172.16.1.0/24` inside the skipped range, but only by going back to find it, and in a larger plan that backtracking is where overlaps and stranded fragments come from. Largest first never needs it.
+
+## One route for all of it
+
+Because every segment came out of one parent, the rest of the network reaches all four with a single route, `172.16.0.0/22`. That is the reward for keeping a site inside one block, and it holds only while every subnet stays inside it: [route summarisation](/learn/route-summarization) and [supernetting and aggregation](/learn/supernetting-and-aggregation) take the idea further.
+
+## What the site's router does with the summary
+
+On the site's own router the plan becomes routes. The four segments are directly connected, `172.16.0.0/23`, `172.16.2.0/24`, `172.16.3.0/30` and `172.16.3.4/30`, and the router announces the summary, `172.16.0.0/22`, to the rest of the network. The summary also needs a route on the router that announces it, and that route leads nowhere. The CIDR specification makes this a rule: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes" ([RFC 4632, section 5.1](https://www.rfc-editor.org/rfc/rfc4632)).
+
+A packet for `172.16.3.200`, in the free tail, shows why. The rest of the network sends it to the site, because the /22 covers it. At the site's router no segment matches it, so without a discard route the best match left is the site's default route, which points back to the rest of the network, where the /22 sends the packet straight back; it circles between the two routers until its time to live runs out. The rule exists for exactly this case: the discard route "is necessary to prevent forwarding loops when some addresses covered by the aggregate are not reachable" (as above), and the specification notes that it is usually put in place as a discard, or null, route for the summary (RFC 4632, section 5.2). The allocated addresses are not affected: a packet for `172.16.2.10` still reaches Engineering, because the /24 is a longer match than the /22. How a router chooses between overlapping routes is the subject of [static routes and longest prefix match](/learn/static-routes-and-longest-match).
 
 ## Checking your work
 
-This is exactly the allocation the [CIDR calculator](/#cidr) produces in VLSM mode: enter `172.16.0.0/22` as the parent and the four host counts, and it returns the same networks, masks, ranges, and the 75.8% utilization figure, computed entirely in your browser. If a segment does not fit, it is listed separately rather than silently dropped.
+This is exactly the allocation the [CIDR calculator](/tools/cidr) produces in VLSM mode: enter `172.16.0.0/22` as the parent and the four host counts, and it returns the same networks, masks, ranges, and the 75.8% utilisation figure, computed entirely in your browser. If a segment does not fit, it is listed separately rather than silently dropped.
+
+## What to remember
+
+- Check the total first: the blocks' sizes, not the host counts, must fit the parent.
+- Largest first, each block starting where the last ended, keeps every block on its boundary without backtracking.
+- Free space is only as useful as the aligned blocks it splits into; a big enough total can still have no room for one large subnet.
+- /31 point-to-point links save two addresses each where both ends support them.
+- Everything inside one parent is reachable by one route.
+- The router that announces the summary discards what matches only the summary, so unused addresses inside it end there instead of looping.
+
+## Sources
+
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, December 2000 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 4632, Classless Inter-domain Routing (CIDR), August 2006: prefixes as power-of-two blocks, aggregation (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4632)

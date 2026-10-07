@@ -1,5 +1,6 @@
 // ============================================================================
-// src/app/[locale]/contribute/tools/page.tsx
+// src/app/[locale]/contribute/ideas/page.tsx (until 2026-10-07 /contribute/tools; PRIME 04:47 moved it to the
+// address its title already used, and public/_redirects answers the old one with a 301)
 // ----------------------------------------------------------------------------
 // SHARE AN IDEA PAGE.
 //
@@ -39,7 +40,7 @@ export async function generateMetadata({
   return { title: t("title") };
 }
 
-export default async function ContributeToolsPage({
+export default async function ContributeIdeasPage({
   params,
 }: {
   params: Promise<{ locale: string }>;

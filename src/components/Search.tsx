@@ -54,6 +54,8 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { tools } from "@/config/tools";
 import { WORLD_KEYS, type WorldKey } from "@/config/worlds";
+// Row 55 (2026-10-07): a page that owns the keyboard (the slide presenter) switches Ctrl/Cmd+K off with the rest.
+import { areSiteShortcutsSuppressed, subscribeSiteShortcuts } from "@/lib/pageCapabilities";
 
 // Minimal shapes for the parts of the Pagefind API we use (it ships no types).
 // What result.data() resolves to: the page URL, the highlighted excerpt, and the
@@ -217,6 +219,14 @@ export default function Search() {
   // Shortcut hint: Mac users expect ⌘, everyone else Ctrl. Default to Ctrl (the
   // larger audience and a safe SSR default); corrected on mount for Mac.
   const [isMac, setIsMac] = useState(false);
+  // Whether the page shown has switched the site's shortcuts off (the slide presenter, row 55): then Ctrl/Cmd+K is
+  // not answered there, and the trigger does not show it. Synced on mount and on every change.
+  const [siteKeysOff, setSiteKeysOff] = useState(false);
+  useEffect(() => {
+    const sync = () => setSiteKeysOff(areSiteShortcutsSuppressed());
+    sync();
+    return subscribeSiteShortcuts(sync);
+  }, []);
   // REMEMBER OR START FRESH (PRIME 2026-10-06 16:04: "the search box comes back with the previous search query and
   // filters still set. can we have a toggle ... between this behavior, and the behavior of being always 'reset' when
   // invoked?"). Off (the default, the behaviour so far): the dialog reopens with the last query, scope, section and
@@ -375,7 +385,8 @@ export default function Search() {
   // Keyboard shortcut: Cmd/Ctrl+K opens search (a familiar power-user pattern).
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      // Not on a page that owns the keyboard (row 55): there the chord is the browser's again.
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k" && !areSiteShortcutsSuppressed()) {
         e.preventDefault();
         openSearch();
       }
@@ -536,7 +547,8 @@ export default function Search() {
           <path d="M21 21l-4.3-4.3" />
         </svg>
         <span className="search-trigger-text">{t("label")}</span>
-        <kbd className="search-trigger-kbd mono">{isMac ? "⌘K" : "Ctrl K"}</kbd>
+        {/* The chord, shown only where it works (row 55: not on a page that switched the shortcuts off). */}
+        {!siteKeysOff && <kbd className="search-trigger-kbd mono">{isMac ? "⌘K" : "Ctrl K"}</kbd>}
       </button>
 
       {/* Search overlay */}

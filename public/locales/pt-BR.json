@@ -13021,6 +13021,7 @@
     "topicTraining": "Treinamento oficial",
     "topicCustom": "Programa sob medida para equipe",
     "topicAdvisory": "Assessoria executiva",
+    "topicSpeaking": "Convite para palestra",
     "topicOther": "Outro assunto",
     "formMessage": "Sua mensagem",
     "formSend": "Enviar mensagem",
@@ -27769,12 +27770,15 @@
       "lookInsideLede": "{count} dos {slides} slides, escolhidos pelos diagramas. Cada um abre em tamanho real.",
       "slide": "Slide {n}",
       "coverCaption": "A capa, slide {n} de {slides}",
-      "openFull": "Abrir em tamanho real"
+      "openFull": "Abrir em tamanho real",
+      "viewerClose": "Fechar",
+      "viewerPrevious": "Slide anterior",
+      "viewerNext": "Próximo slide"
     },
     "items": {
       "tcpip-concepts-and-ip-routing": {
         "title": "TCP/IP: Conceitos e Roteamento IP",
-        "subtitle": "Um curso introdutório em dois módulos, edição 2026, em português do Brasil e em inglês",
+        "subtitle": "Um curso introdutório em dois módulos, ministrado pela primeira vez em 1999 e atualizado para esta edição de 2026, em português do Brasil e em inglês",
         "lede": "Um treinamento introdutório completo sobre como as inter-redes funcionam e como o IP encontra seu caminho por elas: de bridges, roteadores e algoritmos de roteamento, passando pela pilha TCP/IP, pelo endereçamento, pelo ARP e por um pacote acompanhado salto a salto, até RIP, EIGRP, OSPF, IS-IS e BGP-4, listas de acesso, IPv6, multicast, MPLS e VRRP. Cada um dos {slides} slides traz notas do apresentador, de modo que o curso pode ser ensinado a partir do deck, ou aprendido com ele, sem mais ninguém na sala.",
         "lineage": "Baseado num curso que Rodolfo Nützmann ministrou pela primeira vez em março de 1999, e reconstruído em 2026: slides 16:9 com os diagramas redesenhados como formas nativas e editáveis, o conteúdo atualizado para a prática atual (CIDR no lugar das classes de endereço, EIGRP no lugar do IGRP, BGP-4, IPv6 como a RFC 8200 o define, PIM, VRRPv3), e os temas históricos mantidos pelo valor didático e marcados como HISTÓRICO.",
         "level": "Introdutório, dos primeiros princípios aos protocolos de roteamento",
@@ -28067,6 +28071,17 @@
       "notesError": "Não foi possível carregar as notas aqui; o PPTX na página do curso traz todas elas.",
       "notesEmpty": "Este slide não tem notas.",
       "keys": "Teclas: ← e → (ou Espaço) avançam e voltam, Home e End vão ao primeiro e ao último slide, F é tela cheia, N as notas, C o sumário, Esc fecha.",
+      "keysTitle": "Teclas",
+      "kbdSpace": "Espaço",
+      "keyPrevious": "slide anterior",
+      "keyNext": "próximo slide",
+      "keyEnds": "primeiro e último slide",
+      "keyFullscreen": "tela cheia",
+      "keyNotes": "notas do apresentador",
+      "keyContents": "sumário",
+      "keyEscape": "fecha o sumário e sai da tela cheia",
+      "keysNote": "Aqui só estas teclas funcionam: os outros atalhos do site ficam desligados enquanto os slides estão abertos.",
+      "keysTouch": "Numa tela de toque, deslize o slide para o lado para passar de um slide a outro.",
       "licence": "CC0 1.0: apresente em uma turma, um meetup ou uma empresa, modifique, compartilhe; o crédito é bem-vindo, nunca obrigatório.",
       "licenceLink": "A licença",
       "presentPart": "Apresentar esta parte"

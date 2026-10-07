@@ -127,21 +127,24 @@ export const MATERIALS: Material[] = [
     // without asking permission." Credit is requested as a courtesy on the page.
     license: "CC0-1.0",
     licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+    // The English files changed once after publication (2026-10-07, row 52 of PRIME's requests): the cover's
+    // subtitle names the 1999 event in English, Technology Week, on slide 1 of the PPTX and page 1 of the PDF; nothing
+    // else in either file, hence the new sizes and fingerprints. The Portuguese files keep Semana de Tecnologia.
     files: [
       {
         lang: "en",
         format: "pdf",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pdf",
-        bytes: 1780890,
-        sha256: "b9c7806b81194f631002338bc49b1fb6703ca677e2f121e74d7738218083d4ac",
+        bytes: 1328802,
+        sha256: "bc8c5c4b0f4afebb994cd52fed2e4c0de4b798c9b49eb6cdef414851a2fc02d9",
         pages: 178,
       },
       {
         lang: "en",
         format: "pptx",
         path: "/materials/tcpip-concepts-and-ip-routing/TCPIP_Concepts_and_IP_Routing_2026_enUS.pptx",
-        bytes: 813428,
-        sha256: "70b1eae036f52375d3ab7fdb4bc69b0a0379151bf9b7e63a220a7d9367493b1a",
+        bytes: 795073,
+        sha256: "994c9e0fa69c9f89aab613d988a51bece0d4ad8329547b12afe6299190950552",
         pages: 178,
       },
       {

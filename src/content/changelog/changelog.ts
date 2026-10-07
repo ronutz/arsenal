@@ -52,6 +52,118 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // NF-2e1b (2026-10-07): the worked VLSM allocation follows its plan onto the site's router.
+    date: "2026-10-07",
+    time: "06:58",
+    kind: "content",
+    title: "The worked VLSM allocation, on the router: the summary and its discard route",
+    body:
+      "NetFun II's worked allocation now follows the plan onto the site's router: the four connected routes, the summary the router announces, and the discard route RFC 4632 requires for that summary, shown with a packet for an unused address that would otherwise circle between two routers until its time to live runs out.",
+    articles: ["vlsm-worked-example"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // Row 57 (PRIME 2026-10-07 06:47): the Portuguese OSI article in natural Brazilian Portuguese, jargon in English.
+    date: "2026-10-07",
+    time: "06:58",
+    kind: "content",
+    title: "The OSI model in practice, rewritten in natural Brazilian Portuguese",
+    body:
+      "The Portuguese edition of the OSI article read as a literal rendering of the English: English images carried over, and jargon translated that Brazilian engineers say in English. It is rewritten the way a Brazilian instructor would write it, with the technical terms in English (frame, payload, header, hop, default gateway, handshake, troubleshooting) and a Portuguese gloss where it helps. The facts, the quotations of the standards and the sources are unchanged.",
+    articles: ["osi-model-in-practice"],
+  },
+  {
+    // Row 56 (PRIME 2026-10-07 06:41): the open course material at the foot of the study guides.
+    date: "2026-10-07",
+    time: "06:58",
+    kind: "content",
+    title: "Study guides: the open course material at the foot of the page",
+    body:
+      "On the study guides page, the card for the open TCP/IP course sat right under the page's title, where it read as part of the study guides themselves. It now closes the page, after the certification guides.",
+    links: [{ label: "Study guides", href: "/study-guides" }],
+  },
+  {
+    // Row 55 (PRIME 2026-10-07 06:19): the presenter's keys shown, every other shortcut off on its page.
+    date: "2026-10-07",
+    time: "06:58",
+    kind: "feature",
+    title: "Presenting a course: the keys on show, and no other shortcuts in the way",
+    body:
+      "On the page that presents a course's slides in the browser, the keys are now listed above the slide as key caps: the arrows, Page Up and Page Down and the space bar to move, Home and End for the first and last slide, F for full screen, N for the speaker notes, C for the contents and Esc to close. And on that page they are the only keys that work: the site-wide shortcuts, which sent F to /dev/fun instead of full screen, are off while the slides are open and back on every other page. On a touch screen the hint is the swipe.",
+    links: [{ label: "Present TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing/present" }],
+  },
+  {
+    // Milestone NF-2e, first batch, of the student level-up (PRIME 2026-10-06 18:24): NetFun II's addressing basics.
+    date: "2026-10-07",
+    time: "06:14",
+    kind: "content",
+    title: "NetFun II's addressing basics rewritten: subnetting, CIDR notation, VLSM and the worked allocation",
+    body:
+      "Four of the series' first articles, written when the site was young, are rewritten in full and sourced: where subnets came from and the decision a host makes with its mask; the three problems that ended classful addressing, every common prefix with its mask, and why aggregation was the point; why variable-length subnets needed protocols that carry masks, and why largest first is arithmetic; and the worked allocation checked boundary by boundary, with /31 links and the wrong order shown. Each reads its facts from the RFCs, from RFC 791 to RFC 4632, cited with the date read.",
+    articles: ["subnetting-basics", "cidr-notation", "vlsm", "vlsm-worked-example"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // (c4b), found 2026-10-07: two phone fixes, the search row (live too) and the course page's width ((c4)'s CSS).
+    date: "2026-10-07",
+    time: "06:14",
+    kind: "feature",
+    title: "Two fixes for phones: the search's Clear and Esc, and the course page's width",
+    body:
+      "On a phone, the search field would not shrink below its natural width, so it pushed the Clear and Esc buttons out of the search box, where they were cut off; the field now gives way and both buttons stay in the row. And the open course's page no longer scrolls sideways on a phone: text meant for screen readers in its downloads table was escaping the table's scrolling frame.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // (c4b), row 52 (PRIME 2026-10-07 04:53): the English files' cover names the 1999 event in English.
+    date: "2026-10-07",
+    time: "06:14",
+    kind: "content",
+    title: "The English course files say Technology Week on the cover",
+    body:
+      "The cover slide of the English edition of TCP/IP: Concepts and IP Routing now reads \"presented at Technology Week, March 1999\" in the PowerPoint file, on the first page of the PDF and in the pictures of that slide on the course page and in the browser presentation; the Portuguese edition keeps Semana de Tecnologia. Nothing else in the files changed, but the two English files have new sizes and SHA-256 fingerprints, listed on the course page.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Row 54 (PRIME 2026-10-07 05:09): the slides of A look inside open over the page.
+    date: "2026-10-07",
+    time: "05:15",
+    kind: "feature",
+    title: "A look inside: slides open over the page",
+    body:
+      "On an open material's page, a click on a slide in A look inside now shows it over the page instead of opening the image on a page of its own. A click anywhere, Escape or the close button puts it away, and the arrow keys step through the slides. A slide still opens on its own in a new tab with the usual modifier keys, or without JavaScript.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Row 49 (PRIME 2026-10-07 04:47): the ideas page at the address its title uses.
+    date: "2026-10-07",
+    time: "05:15",
+    kind: "content",
+    title: "The ideas page moves to /contribute/ideas",
+    body:
+      "Share an idea, the page for bug reports, corrections, feature requests and new tools, now lives at the address its title and its links already used; the old /contribute/tools answers with a permanent redirect. The translations pointer on Contact now leads to the translations section of the contribute page, where translations are handled.",
+    links: [{ label: "Share an idea", href: "/contribute/ideas" }, { label: "Improve a translation", href: "/contribute#translations" }],
+  },
+  {
+    // Row 51 (PRIME 2026-10-07 04:50): the course's subtitle says when it was first taught.
+    date: "2026-10-07",
+    time: "05:15",
+    kind: "content",
+    title: "TCP/IP: Concepts and IP Routing, first taught in 1999",
+    body:
+      "The open course's subtitle now says where it comes from: an introductory course in two modules, first taught in 1999 and updated for this 2026 edition, in English and Brazilian Portuguese. In English, the 1999 event now goes by its English name, Technology Week.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Row 50 (PRIME 2026-10-07 04:48): speaking gets its own topic on the contact form.
+    date: "2026-10-07",
+    time: "05:15",
+    kind: "feature",
+    title: "Speaking engagement on the contact form",
+    body:
+      "The contact form's \"What's this about\" menu has a Speaking engagement topic, between Executive advisory and Something else. Arriving from a speaking link selects it and opens the message with the questions an event starts from: the event, the organisation, where and when, the audience, what people should leave with, format and length.",
+    links: [{ label: "Contact", href: "/contact" }, { label: "Speaking", href: "/speaking" }],
+  },
+  {
     // (ky) PRIME 2026-10-07 04:18: Skytap is now Kyndryl Cloud Uplift.
     date: "2026-10-07",
     time: "04:24",
@@ -4407,7 +4519,7 @@ export const CHANGELOG: ChangelogEntry[] = [
     time: "10:35",
     kind: "content",
     title: "On building new tools, easier to read",
-    links: [{ label: "Contributing a tool", href: "/contribute/tools" }],
+    links: [{ label: "Contributing a tool", href: "/contribute/ideas" }],
     body:
       "The funding story on the contribute page is the same text, now set for comfortable reading: a short intro, the three seats as a compact list, the infrastructure line, and the monthly total on its own line so the number is easy to find. Not a word changed in English or Portuguese, only the presentation.",
   },

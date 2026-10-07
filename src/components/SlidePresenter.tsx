@@ -32,11 +32,18 @@
 //   - AN ADDRESS PER SLIDE: #slide-12 (and ?deck=pt-BR when the deck is not the
 //     page's language), read on arrival and kept current without adding history
 //     entries, so a teacher can send a student straight to a slide.
+//   - THE KEYBOARD IS THE PRESENTER'S (row 55, PRIME 2026-10-07 06:19: "Disable
+//     all other key shortcuts in the slides presentation page"): while it is
+//     mounted the site-wide shortcuts are off (F went to /dev/fun instead of
+//     full screen), and they come back when the reader leaves. The page lists
+//     the keys above the slide.
 // Every string comes in as props from the page (the "materials" namespace), so
 // this client component needs no message namespace of its own.
 // ============================================================================
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+// Row 55: the site's own shortcuts stand down while the presenter is on the page.
+import { setSiteShortcutsSuppressed } from "@/lib/pageCapabilities";
 
 /** One language's deck: its slide titles (index 0 is slide 1), where its images live, and its manifest. */
 export interface PresenterDeck {
@@ -301,6 +308,12 @@ export default function SlidePresenter({
       window.removeEventListener("keydown", wake);
     };
   }, [fullscreen]);
+
+  // ---- The keyboard is the presenter's: the site's shortcuts off while it is mounted, back on when it leaves ----
+  useEffect(() => {
+    setSiteShortcutsSuppressed(true);
+    return () => setSiteShortcutsSuppressed(false);
+  }, []);
 
   // ---- The keys ----
   useEffect(() => {

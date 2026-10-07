@@ -120,6 +120,37 @@ export default async function MaterialPresentPage({ params }: { params: Promise<
                 {t("present.aboutLink")}
               </Link>
             </p>
+            {/* The keys (row 55, PRIME 2026-10-07 06:19: "show the available hotkeys to the users so they get to know
+                about them"): above the slide, where a reader sees them on arrival, as key caps. On this page they are
+                the only keys the site answers; a touch screen without a mouse gets the swipe instead (CSS). */}
+            <div className="presenter-keymap">
+              <p className="presenter-keymap-title mono" id="presenter-keymap-title">{t("present.keysTitle")}</p>
+              <ul className="presenter-keymap-list" aria-labelledby="presenter-keymap-title">
+                <li>
+                  <kbd>←</kbd> <kbd>PgUp</kbd> <kbd>Shift</kbd>+<kbd>{t("present.kbdSpace")}</kbd> {t("present.keyPrevious")}
+                </li>
+                <li>
+                  <kbd>→</kbd> <kbd>PgDn</kbd> <kbd>{t("present.kbdSpace")}</kbd> {t("present.keyNext")}
+                </li>
+                <li>
+                  <kbd>Home</kbd> <kbd>End</kbd> {t("present.keyEnds")}
+                </li>
+                <li>
+                  <kbd>F</kbd> {t("present.keyFullscreen")}
+                </li>
+                <li>
+                  <kbd>N</kbd> {t("present.keyNotes")}
+                </li>
+                <li>
+                  <kbd>C</kbd> {t("present.keyContents")}
+                </li>
+                <li>
+                  <kbd>Esc</kbd> {t("present.keyEscape")}
+                </li>
+              </ul>
+              <p className="presenter-keymap-note">{t("present.keysNote")}</p>
+              <p className="presenter-keymap-touch">{t("present.keysTouch")}</p>
+            </div>
             <SlidePresenter
               decks={decks}
               initialLang={initialLang}
@@ -150,8 +181,6 @@ export default async function MaterialPresentPage({ params }: { params: Promise<
                 notesEmpty: t("present.notesEmpty"),
               }}
             />
-            {/* The keys, for the reader who wants to present without the mouse. */}
-            <p className="presenter-keys">{t("present.keys")}</p>
             {/* The licence in one line: the reader may present this anywhere. */}
             <p className="presenter-licence">
               {t("present.licence")}{" "}

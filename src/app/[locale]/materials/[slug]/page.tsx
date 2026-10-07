@@ -32,6 +32,8 @@
 // for machines.
 // ============================================================================
 
+// The viewer that opens a gallery slide over the page (PRIME 2026-10-07 05:09).
+import SlideViewer from "@/components/SlideViewer";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -257,6 +259,11 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
                 </li>
               ))}
             </ul>
+            {/* Row 54: a plain click on a slide opens it over the page; the links still work without JavaScript. */}
+            <SlideViewer
+              containerId="inside"
+              labels={{ close: t("labels.viewerClose"), previous: t("labels.viewerPrevious"), next: t("labels.viewerNext") }}
+            />
           </div>
         </section>
 

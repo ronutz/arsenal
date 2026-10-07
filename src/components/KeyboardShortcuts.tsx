@@ -48,6 +48,7 @@ import {
   subscribePageCapabilities,
   areLetterShortcutsSuppressed,
   subscribeLetterShortcuts,
+  areSiteShortcutsSuppressed,
   type PageCapabilitySet,
   type PageCapability,
 } from "@/lib/pageCapabilities";
@@ -294,6 +295,12 @@ export default function KeyboardShortcuts({ labels }: KeyboardShortcutsProps) {
         return;
       }
       if (isEditable(e.target) || isEditable(document.activeElement)) return;
+
+      // A page whose own keys are its purpose (the slide presenter) switches this whole layer off while it is
+      // mounted: letters, digits and punctuation alike, "." included (row 55, PRIME 2026-10-07: "Disable all other
+      // key shortcuts in the slides presentation page"). Read at the moment of the key, so arriving and leaving
+      // take effect at once; popups opened before (above) still close with Escape.
+      if (areSiteShortcutsSuppressed()) return;
 
       // T-DOT: "." opens the page-context panel - but only when the current page
       // registered capabilities. On a page that declares none, "." stays inert so

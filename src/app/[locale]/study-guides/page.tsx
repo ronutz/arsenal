@@ -36,7 +36,7 @@ import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { ogImages } from "@/lib/og";
 import { READING_PATHS } from "@/content/study-guides/reading-paths";
-// The open materials registry, for the signpost under the hero (2026-10-06).
+// The open materials registry, for the door card at the foot of the page (under the hero until 2026-10-07).
 import { MATERIALS } from "@/content/materials/materials";
 // The door card (milestone (m2), 2026-10-06), in place of the one-line signpost of (m1).
 import MaterialsDoor from "@/components/MaterialsDoor";
@@ -175,10 +175,6 @@ export default async function StudyGuidesPage({
               <p className="hero-eyebrow">{t("eyebrow")}</p>
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
-              {/* The open course material (milestone (m1), 2026-10-06, as a one-line signpost; since (m2), PRIME 19:21: the
-                  doors to /materials "more easily findable ... in study guides as well", the door card): the course's
-                  cover, its name, and Present the slides beside the datasheet. */}
-              {MATERIALS[0] && <MaterialsDoor locale={locale} context="studyGuides" />}
             </div>
           </section>
 
@@ -257,6 +253,19 @@ export default async function StudyGuidesPage({
               </p>
             </div>
           </section>
+
+          {/* 3. The open course material (milestone (m1), 2026-10-06, as a one-line signpost; since (m2), PRIME 19:21:
+              the doors to /materials "more easily findable ... in study guides as well", the door card): the course's
+              cover, its name, and Present the slides beside the datasheet. Under the hero until 2026-10-07, when PRIME
+              found it read as part of the study guides' own title (row 56, 06:41: "Move it to the very bottom of the
+              page"); it closes the page now, in a section of its own. */}
+          {MATERIALS[0] && (
+            <section className="section" id="open-materials">
+              <div className="container certs-container">
+                <MaterialsDoor locale={locale} context="studyGuides" />
+              </div>
+            </section>
+          )}
         </article>
       </main>
 

@@ -13021,6 +13021,7 @@
     "topicTraining": "Official training",
     "topicCustom": "Custom program for a team",
     "topicAdvisory": "Executive advisory",
+    "topicSpeaking": "Speaking engagement",
     "topicOther": "Something else",
     "formMessage": "Your message",
     "formSend": "Send message",
@@ -27820,12 +27821,15 @@
       "lookInsideLede": "{count} of the {slides} slides, chosen for their diagrams. Each one opens at full size.",
       "slide": "Slide {n}",
       "coverCaption": "The cover, slide {n} of {slides}",
-      "openFull": "Open at full size"
+      "openFull": "Open at full size",
+      "viewerClose": "Close",
+      "viewerPrevious": "Previous slide",
+      "viewerNext": "Next slide"
     },
     "items": {
       "tcpip-concepts-and-ip-routing": {
         "title": "TCP/IP: Concepts and IP Routing",
-        "subtitle": "An introductory course in two modules, 2026 edition, in English and Brazilian Portuguese",
+        "subtitle": "An introductory course in two modules, first taught in 1999 and updated for this 2026 edition, in English and Brazilian Portuguese",
         "lede": "A complete introductory training on how internetworks work and how IP finds its way across them: from bridges, routers and the routing algorithms, through the TCP/IP stack, addressing, ARP and a packet followed hop by hop, to RIP, EIGRP, OSPF, IS-IS and BGP-4, access lists, IPv6, multicast, MPLS and VRRP. Every one of the {slides} slides carries speaker notes, so the course can be taught from the deck, or learned from it, without anyone else in the room.",
         "lineage": "Based on a course Rodolfo Nützmann first taught in March 1999, and rebuilt in 2026: 16:9 slides with the diagrams redrawn as native, editable shapes, the content updated to current practice (CIDR in place of address classes, EIGRP in place of IGRP, BGP-4, IPv6 as RFC 8200 defines it, PIM, VRRPv3), and the historical topics kept for their teaching value and marked LEGACY.",
         "level": "Introductory, from first principles to the routing protocols",
@@ -28056,7 +28060,7 @@
         "licenceCourtesy": "Credit to Rodolfo Nützmann is appreciated, never required. As the CC0 deed asks, do not imply endorsement by the author when you use the material.",
         "licenceDeed": "Read the CC0 1.0 deed",
         "metaDescription": "TCP/IP: Concepts and IP Routing, a complete introductory course in two modules: {slides} slides with speaker notes, in English and Portuguese, free to use under CC0.",
-        "coverAlt": "The course's cover slide: TCP/IP: Concepts and IP Routing, modernized 2026 edition (US English), by Rodolfo Nützmann, based on the \"TCP/IP Concepts\" course presented at Semana de Tecnologia in March 1999.",
+        "coverAlt": "The course's cover slide: TCP/IP: Concepts and IP Routing, modernized 2026 edition (US English), by Rodolfo Nützmann, based on the \"TCP/IP Concepts\" course presented at Technology Week in March 1999.",
         "gallery": {
           "s26": {
             "title": "The slow convergence problem (count to infinity)",
@@ -28118,6 +28122,17 @@
       "notesError": "The notes could not be loaded here; the PPTX on the course's page carries every one of them.",
       "notesEmpty": "This slide has no notes.",
       "keys": "Keys: ← and → (or Space) move, Home and End jump to the first and last slide, F is full screen, N the notes, C the contents, Esc closes.",
+      "keysTitle": "Keys",
+      "kbdSpace": "Space",
+      "keyPrevious": "previous slide",
+      "keyNext": "next slide",
+      "keyEnds": "first and last slide",
+      "keyFullscreen": "full screen",
+      "keyNotes": "speaker notes",
+      "keyContents": "contents",
+      "keyEscape": "closes the contents and leaves full screen",
+      "keysNote": "Only these keys work here: the site's other shortcuts are off while the slides are open.",
+      "keysTouch": "On a touch screen, swipe the slide sideways to move from one slide to the next.",
       "licence": "CC0 1.0: present it in a class, a meetup or a company, change it, share it; credit is appreciated, never required.",
       "licenceLink": "The licence",
       "presentPart": "Present this part"

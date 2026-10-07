@@ -523,3 +523,9 @@
 # lives there - the freed name was taken by the tool the name describes. The
 # redirect existed for one day and check-redirect-shadowing caught it the moment
 # the new page appeared, which is exactly the case that guard was written for.
+
+# The ideas page moved from /contribute/tools to /contribute/ideas (PRIME 2026-10-07 04:47): the address it had
+# since 2026-07-15 described one of the things it takes, while its title, "Share an idea", and every link to it
+# already said ideas. Both forms, with and without the trailing slash, in every locale.
+/:locale/contribute/tools/  /:locale/contribute/ideas/  301
+/:locale/contribute/tools  /:locale/contribute/ideas/  301

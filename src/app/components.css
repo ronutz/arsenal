@@ -1066,6 +1066,10 @@
 }
 .search-input {
   flex: 1;
+  /* min-width: 0 lets the field shrink below its intrinsic width (242 px at this size), so on a phone Clear and Esc
+     stay in the row instead of being pushed out of the dialog and cut off (found 2026-10-07 at 320 and 390 px, live
+     as well as in the build). */
+  min-width: 0;
   background: transparent;
   border: none;
   color: var(--text-primary);
@@ -20737,8 +20741,11 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .materials-objectives { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.5rem; color: var(--text-secondary); line-height: 1.6; max-width: 72ch; }
 .materials-objectives strong { color: var(--text-primary); }
 
-/* The two tables: the 1999 to 2026 comparison and the files. */
-.materials-table-wrap { overflow-x: auto; margin: 0 0 1rem; }
+/* The two tables: the 1999 to 2026 comparison and the files. The wrapper scrolls a wide table sideways on a phone.
+   position: relative makes the wrapper the containing block of the screen-reader text inside the table (the
+   absolutely positioned .sr-only spans of the files table), so its overflow clips them; without it they escaped to
+   the page and made the whole page scroll sideways at 390 px (516 px wide, found by row 54's phone check, 2026-10-07). */
+.materials-table-wrap { position: relative; overflow-x: auto; margin: 0 0 1rem; }
 .materials-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 36rem; }
 .materials-table th, .materials-table td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border-subtle); }
 .materials-table thead th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; }
@@ -20778,6 +20785,25 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
 .materials-shot-meta { font-size: 0.72rem; letter-spacing: 0.02em; color: var(--text-tertiary); }
 .materials-gallery { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
 @media (prefers-reduced-motion: reduce) { .materials-shot-link { transition: none; } }
+/* The slide viewer (row 54, PRIME 2026-10-07 05:09): a slide of "A look inside" over the page. The dialog fills the
+   viewport and is transparent; the backdrop dims the page; a click anywhere closes it. The buttons are fixed to the
+   viewport's corners and edges, and on a phone the two arrows sit at the bottom, under the slide. */
+.slide-viewer { border: 0; padding: 0; margin: 0; width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; background: transparent; color: var(--text-primary); overflow: hidden; }
+.slide-viewer[open] { display: grid; place-items: center; }
+.slide-viewer::backdrop { background: color-mix(in srgb, var(--canvas-primary) 90%, transparent); backdrop-filter: blur(3px); }
+.slide-viewer-figure { margin: 0; display: grid; gap: 0.75rem; justify-items: center; padding: 4rem 1rem 5rem; max-width: 100%; cursor: zoom-out; }
+.slide-viewer-img { display: block; width: auto; height: auto; max-width: min(92vw, 100rem); max-height: 74dvh; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--surface-base); }
+.slide-viewer-caption { display: grid; gap: 0.2rem; max-width: 48rem; text-align: center; font-size: 0.9rem; line-height: 1.45; }
+.slide-viewer-title { font-weight: 600; text-wrap: balance; }
+.slide-viewer-meta { font-size: 0.75rem; color: var(--text-secondary); }
+.slide-viewer-close, .slide-viewer-nav { position: fixed; display: grid; place-items: center; width: 2.75rem; height: 2.75rem; padding: 0; border: 1px solid var(--border-strong); border-radius: 50%; background: var(--surface-elevated); color: var(--text-primary); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+.slide-viewer-close { top: 1rem; right: 1rem; }
+.slide-viewer-nav { top: 50%; transform: translateY(-50%); }
+.slide-viewer-prev { left: 1rem; }
+.slide-viewer-next { right: 1rem; }
+.slide-viewer-close:hover, .slide-viewer-nav:hover { border-color: var(--accent-primary); color: var(--accent-hover); }
+.slide-viewer-close:focus-visible, .slide-viewer-nav:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+@media (max-width: 40rem) { .slide-viewer-nav { top: auto; bottom: 1rem; transform: none; } }
 /* Red Education's own courses and the career-paths booklet on /red-education/ (2026-10-06, milestone (re1)). The
    courses are cards in the page's narrow column, one under another: the series in the accent's mono, the course's own
    name, the summary, then the facts as label/value rows (a two-column grid from 36rem, stacked on a phone). The booklet's
@@ -21517,8 +21543,71 @@ main[data-hub-view="directory"] .hub-directory-head { margin-top: 1.5rem; }
   margin: 0;
   color: var(--text-tertiary);
 }
-/* The keys and the licence under the presenter. */
-.presenter-keys,
+/* The keys above the presenter (row 55, 2026-10-07): key caps in a wrapping row, the note under them. Where there
+   is no hover and the pointer is coarse (a phone, a tablet without a mouse), the swipe hint replaces them. */
+.presenter-keymap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.presenter-keymap-title {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.presenter-keymap-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+}
+.presenter-keymap-list li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+/* A key cap: the mono face, a hairline with a heavier foot. */
+.presenter-keymap kbd {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  color: var(--text-primary);
+}
+.presenter-keymap-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+.presenter-keymap-touch {
+  display: none;
+  margin: 0;
+}
+@media (hover: none) and (pointer: coarse) {
+  .presenter-keymap-title,
+  .presenter-keymap-list,
+  .presenter-keymap-note {
+    display: none;
+  }
+  .presenter-keymap-touch {
+    display: block;
+  }
+}
+/* The licence under the presenter. */
 .presenter-licence {
   margin: 1rem 0 0;
   max-width: 80ch;

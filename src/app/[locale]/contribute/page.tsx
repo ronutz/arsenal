@@ -75,7 +75,7 @@ export default async function ContributePage({
             <ul className="contribute-routes">
               {([
                 { id: "error", href: "/contact?intent=other#contact-form", plain: true },
-                { id: "tool", href: "/contribute/tools" },
+                { id: "tool", href: "/contribute/ideas" },
                 { id: "source", href: "/contact#correction", plain: true },
                 { id: "translation", href: "#translations", plain: true },
                 { id: "code", href: "https://github.com/ronutz/arsenal", external: true },

@@ -1,14 +1,14 @@
 ---
 slug: vlsm
 title: "VLSM: splitting a block into unequal subnets"
-summary: "How to carve one address block into subnets of different sizes without wasting space, and the largest-first rule that keeps it tidy."
-concepts: ["vlsm", "subnetting", "cidr", "prefix-length", "ipv4"]
+summary: "How to carve one address block into subnets of different sizes without wasting space, and the largest-first rule that keeps it tidy: why the first subnetting standard forbade it, which routing protocols made it possible, how to size each subnet, why placing the largest blocks first keeps every one on its boundary, and how to leave room to grow and to summarise."
+concepts: ["vlsm", "variable-length subnet masking", "subnetting", "prefix length", "largest first", "address planning", "classless routing", "rip-2", "ospf", "route summarisation", "/31"]
 relatedTools: ["cidr"]
 relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
 category: networking
 order: 4
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-07"
 ---
 
 ## The problem with equal subnets
@@ -16,6 +16,12 @@ updated: "2026-06-27"
 Classic subnetting splits a block into pieces of one fixed size. That is simple, but it is wasteful when your needs differ. If one segment has 100 hosts and another is a two-router link with 2, giving both a `/26` (62 usable) fails the first and squanders 60 addresses on the second. **VLSM**, variable-length subnet masking, fixes this by letting each subnet use the prefix length that fits its own need, all carved from the same parent block.
 
 The only thing that makes VLSM more involved than fixed subnetting is order: you must place the **largest subnets first**, or you will strand addresses and create overlaps.
+
+## Why it was not always allowed
+
+The first subnetting standard assumed one size per network. In RFC 950 (1985), "the width of the &lt;subnet-number&gt; field is constant for a given network" ([RFC 950, section 2.1](https://www.rfc-editor.org/rfc/rfc950)): every subnet of a network had the same mask, so a router could apply one mask to the whole network.
+
+Variable sizes need something the early protocols did not have: a mask carried with every route. Version 1 of RIP (the Routing Information Protocol) sent addresses without masks, and its successor's specification calls that "a particularly serious problem for routers since they need a subnet mask to know how to determine a route" ([RFC 2453, section 2](https://www.rfc-editor.org/rfc/rfc2453)); RIP version 2 added a Subnet Mask field to every route entry (section 4.3). OSPF (Open Shortest Path First) carried masks from the start: "Each route distributed by OSPF has a destination and mask. Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328)). The rule follows: VLSM works only where every router learns its routes from a protocol that carries the mask, or from static routes that state it.
 
 ## Sizing each subnet
 
@@ -25,26 +31,52 @@ Start from the host count each segment needs, then find the smallest block that 
 - 50 hosts needs 6 host bits (62 usable), a `/26`.
 - 25 hosts needs 5 host bits (30 usable), a `/27`.
 - 10 hosts needs 4 host bits (14 usable), a `/28`.
-- A 2-host point-to-point link is a `/30` (2 usable), or a `/31` under RFC 3021.
+- A 2-host point-to-point link is a `/30` (2 usable), or a `/31`, which RFC 3021 allows on point-to-point links, where "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)).
 
-Always round up to the next power of two. A segment of 100 hosts does not fit in a `/26` (62), so it takes the next size, a `/25`.
+Always round up to the next power of two. A segment of 100 hosts does not fit in a `/26` (62), so it takes the next size, a `/25`. Count the growth you expect, too: a segment of 60 hosts today fits a `/26` with two addresses to spare, and no room to grow.
 
 ## Carving from the block, largest first
 
 Suppose you own `192.168.10.0/24` and need the five subnets above. Allocate in descending size, each starting on its natural boundary:
 
 ```
-/25  192.168.10.0   – .127   (126 usable)  ← 100-host segment
-/26  192.168.10.128 – .191   (62 usable)   ← 50-host segment
-/27  192.168.10.192 – .223   (30 usable)   ← 25-host segment
-/28  192.168.10.224 – .239   (14 usable)   ← 10-host segment
-/30  192.168.10.240 – .243   (2 usable)    ← router link
+/25  192.168.10.0   to .127   (126 usable)  100-host segment
+/26  192.168.10.128 to .191   (62 usable)   50-host segment
+/27  192.168.10.192 to .223   (30 usable)   25-host segment
+/28  192.168.10.224 to .239   (14 usable)   10-host segment
+/30  192.168.10.240 to .243   (2 usable)    router link
 ```
 
-Each block begins exactly where the previous one ends, and `192.168.10.244` onward is still free for later growth. Had you allocated the `/30` first, the `/25` would no longer have a clean boundary to land on, which is the whole reason for the largest-first rule.
+Each block begins exactly where the previous one ends, and `192.168.10.244` onward is still free for later growth.
+
+Why largest first works is arithmetic, not convention. Every block must start on a multiple of its own size. When the blocks go in descending order, everything placed before a block is made of larger (or equal) powers of two, so the address where the previous block ended is always a multiple of the next block's size: 128 is a multiple of 64, 128 + 64 = 192 is a multiple of 32, 224 of 16, 240 of 4. No block ever has to skip ahead.
+
+Reverse the order and the skipping starts. Place the `/30` at `192.168.10.0` first: the `/25` cannot start at `.4`, because 4 is not a multiple of 128, so it must jump to `.128`. The addresses from `.4` to `.127` are now a hole that only smaller blocks can fill, and the `/26`, `/27` and `/28` have to be fitted back into it by hand. With a parent block that is exactly full, the wrong order can leave no room at all for the last subnet even though the sizes add up.
+
+## Leaving room to grow and to summarise
+
+Two habits make a VLSM plan last:
+
+- **Keep free space in aligned blocks.** The tail `192.168.10.244` to `.255` above is 12 addresses, but as blocks it is a `/30` (`.244`), a `/29` (`.248`): no larger subnet fits there. If you expect a /27 later, reserve one now rather than hoping a gap opens.
+- **Keep related subnets inside one summarisable block.** If every subnet of a site comes out of one parent prefix, the rest of the network needs a single route for the whole site. Scattering a site's subnets across the address plan throws that away. [Route summarisation](/learn/route-summarization) covers the arithmetic, and [subnet overlap and gaps](/learn/subnet-overlap-and-gaps) how to find the mistakes.
 
 ## Why it matters
 
-VLSM is how real networks conserve address space and keep allocations aligned so routes can be summarized cleanly. The arithmetic is the same prefix-length math as a single subnet, applied repeatedly: fix more bits to make a block smaller, and keep each block on a power-of-two boundary.
+VLSM is how real networks conserve address space and keep allocations aligned so routes can be summarised cleanly. The arithmetic is the same prefix-length math as a single subnet, applied repeatedly: fix more bits to make a block smaller, and keep each block on a power-of-two boundary. [A worked allocation](/learn/vlsm-worked-example) runs a full plan from requirements to the last free address.
 
-You can check any allocation in the [CIDR calculator](/#cidr), which shows each block's network and broadcast addresses, mask, and usable host count instantly and entirely in your browser.
+You can check any allocation in the [CIDR calculator](/tools/cidr), which shows each block's network and broadcast addresses, mask, and usable host count instantly and entirely in your browser.
+
+## What to remember
+
+- VLSM gives each subnet the prefix its own host count needs, all from one parent block.
+- It needs routes that carry their masks: RIP version 2, OSPF and the protocols after them, or static routes; RIP version 1 cannot.
+- Size each subnet by rounding hosts plus two up to a power of two, and plan for growth.
+- Place the largest blocks first: every block then starts exactly where the last one ended, on its own boundary.
+- Keep a site's subnets inside one summarisable prefix, and keep free space in aligned blocks.
+
+## Sources
+
+- [RFC 950, Internet Standard Subnetting Procedure, August 1985: one subnet size per network (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc950)
+- [RFC 2453, RIP Version 2, November 1998: why RIP-1 could not carry subnets, the Subnet Mask field (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2453)
+- [RFC 2328, OSPF Version 2, April 1998: a mask with every route, variable length subnetting (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, December 2000 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)

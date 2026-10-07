@@ -150,10 +150,8 @@ const DECLARED_EN = new Map([
     "Frequency band ranges: 300 kHz-3 MHz and 300 MHz-3 GHz."]],
   ["src/content/learn/en/the-brazilian-hacker-scene.mdx", [1,
     "Sao Paulo-Campinas axis: a compound of two proper nouns, where a hyphen would read as a single hyphenated place name."]],
-  ["src/content/learn/en/vlsm-worked-example.mdx", [4,
-    "Aligned address ranges in a fenced subnet table. Rewriting them as hyphens would break the column alignment that makes the table readable."]],
-  ["src/content/learn/en/vlsm.mdx", [5,
-    "Same as vlsm-worked-example: aligned address ranges in a fenced subnet table."]],
+  // vlsm-worked-example.mdx (4) and vlsm.mdx (5) left this list on 2026-10-07: their NF-2e1 rewrites write the
+  // ranges of their subnet tables with "to", so neither carries an unspaced en dash any more.
   ["src/content/tool-docs/en/cron-expression-explainer.md", [1,
     "Month and weekday name ranges, JAN-DEC and SUN-SAT, as cron writes them."]],
 ]);
