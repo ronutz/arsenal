@@ -70,6 +70,10 @@ Which is why the serious version of this conversation is never about the load-ba
 
 ## The dynamic methods, and honesty about them
 
-Both tiers also offer *dynamic* methods - Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops, and others - that route by live performance metrics the big3d agents measure from each data center. These are powerful in production but cannot be reproduced offline: there is no fixed answer without live probes. A tool that claims to simulate them is guessing. The **BIG-IP DNS GSLB simulator** covers the static methods deterministically and, for the dynamic ones, tells you plainly that the outcome depends on live metrics rather than fabricating a distribution - the same discipline that keeps any "tool that computes, never guesses" honest.
+Only the pool tier offers *dynamic* methods - Quality of Service, Completion Rate, Round Trip Time, Hops, and others - that route by live performance metrics the big3d agents measure from each data center. These are powerful in production but cannot be reproduced offline: there is no fixed answer without live probes. A tool that claims to simulate them is guessing. The **BIG-IP DNS GSLB simulator** covers the static methods deterministically and, for the dynamic ones, tells you plainly that the outcome depends on live metrics rather than fabricating a distribution - the same discipline that keeps any "tool that computes, never guesses" honest.
 
 Load the simulator, build the two-pool topology above, and change one method at a time. Watching the pool tier and the member tier move independently is the fastest way to internalize that GSLB is not one decision but two.
+
+## Sources
+
+- [F5, BIG-IP DNS: Load Balancing, version 15.0.0 (applies to 15.0.0 to 21.0.0), Global Server Load Balancing: no dynamic method is available for wide IP load balancing; among the dynamic methods, Round Trip Time and Hops (read 2026-10-07)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)

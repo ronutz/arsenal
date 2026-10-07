@@ -55,7 +55,7 @@ Uma cifra **CBC** (cipher block chaining, o encadeamento de blocos) só faz a cr
 
 Originalmente, o TLS usava MAC-then-encrypt (MAC é o message authentication code): calcular o HMAC sobre o texto claro, anexar o resultado, completar com padding até fechar o bloco e, por fim, criptografar tudo com CBC. O problema é que o receptor precisa descriptografar e remover o padding antes de conferir o MAC, então um padding malformado e um MAC errado são detectados em etapas diferentes. Se o atacante consegue ver se um registro falhou no padding ou no MAC, seja por uma mensagem de erro, seja só pelo tempo de resposta, ele descobre um bit do texto claro a cada tentativa. Repetindo o processo, esse bit vira a mensagem inteira.
 
-Isso é um padding oracle, e não é teoria. Uma série de ataques ao longo dos anos, como BEAST, Lucky13 e POODLE, explorou a proteção CBC dos registros do TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção de base continuava gerando variantes novas. A conclusão da indústria foi parar de usá-la.
+Isso é um padding oracle, e não é teoria. Uma série de ataques ao longo dos anos, como BEAST, Lucky 13 e POODLE, explorou a proteção CBC dos registros do TLS. Cada um foi corrigido com código de tempo constante cada vez mais delicado, mas a construção de base continuava gerando variantes novas. A conclusão da indústria foi parar de usá-la.
 
 ## Por que o AEAD virou o padrão
 
@@ -69,7 +69,7 @@ O AEAD troca a classe dos padding oracles por uma única exigência, que não pe
 
 Onde isso costuma dar errado na prática:
 
-- **Nonces aleatórios de 96 bits em volume muito alto**, quando as colisões do paradoxo do aniversário deixam de ser teóricas. Foi isso que motivou o XChaCha20 e o AES-GCM-SIV, que toleram muito melhor a reutilização.
+- **Nonces aleatórios de 96 bits em volume muito alto**, quando as colisões do paradoxo do aniversário deixam de ser teóricas. Foi isso que motivou o XChaCha20, cujo nonce de 192 bits torna uma colisão muito menos provável, e o AES-GCM-SIV, que tolera muito melhor a reutilização.
 - **Contadores que reiniciam**, normalmente depois do restore de uma VM, do rollback de um snapshot ou de um dispositivo que volta a funcionar com o mesmo material de chave.
 - **Arquiteturas stateless**, em que dois nós compartilham uma chave e cada um escolhe os nonces por conta própria.
 
@@ -82,7 +82,7 @@ O TLS 1.3 evita tudo isso porque deriva o nonce do número de sequência, em vez
 - **Bibliotecas TLS** definem a lista padrão de suítes, e nas versões modernas o AEAD virou a única opção que vale a pena.
 - **Criptografia de disco e de volume** muitas vezes usa modos que preservam o tamanho dos dados, e não AEAD, porque um setor não pode crescer para caber uma tag; esse é um motivo legítimo para ainda existirem construções sem AEAD em sistemas atuais.
 - **Criptografia na camada de aplicação** (libsodium, Tink, SDKs de gerenciamento de chaves das nuvens), em que a orientação honesta é usar uma biblioteca que cuide dos nonces, em vez de montar as primitivas na mão.
-- **Protocolos com camada de registros própria** (QUIC, WireGuard, SSH): hoje todos usam AEAD, e todos derivam os nonces de contadores, exatamente pelo motivo explicado acima.
+- **Protocolos com camada de registros própria** (QUIC, WireGuard, SSH): hoje todos usam AEAD por padrão, e todos derivam os nonces de contadores, exatamente pelo motivo explicado acima, embora o SSH ainda ofereça AES-CTR com um MAC separado.
 
 A regra que vale em qualquer contexto: **use AEAD, deixe o nonce por conta de uma biblioteca e trate qualquer projeto em que você mesmo escolhe os nonces como algo que precisa de revisão.**
 
@@ -99,3 +99,7 @@ O comportamento de protocolo descrito acima é normativo, e os dois ataques que 
 - [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 - toda suíte não-AEAD removida do protocolo](https://www.rfc-editor.org/rfc/rfc8446.html)
 - [RFC 5246, TLS 1.2 - onde as suítes CBC-com-HMAC ainda existem](https://www.rfc-editor.org/rfc/rfc5246.html)
 - [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) e POODLE (CVE-2014-3566) nas palavras da própria IETF](https://www.rfc-editor.org/rfc/rfc7457.html)
+- [RFC 8452, AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption, abril de 2019: nenhuma falha catastrófica quando um nonce se repete (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc8452)
+- [draft-irtf-cfrg-xchacha-03, XChaCha, janeiro de 2020, um draft expirado: um nonce de 192 bits, com probabilidade muito menor de reuso (lida em 07/10/2026)](https://datatracker.ietf.org/doc/draft-irtf-cfrg-xchacha/)
+- [Möller, Duong e Kotowicz, This POODLE Bites: Exploiting The SSL 3.0 Fallback, setembro de 2014: o fallback forçado para o SSL 3.0 e, depois, o padding CBC não determinístico dessa versão (lida em 07/10/2026)](https://www.openssl.org/~bodo/ssl-poodle.pdf)
+- [Manual do OpenBSD, ssh_config(5), 20 de setembro de 2026: as Ciphers padrão, chacha20-poly1305 e AES-GCM primeiro, depois aes128-ctr, aes192-ctr e aes256-ctr (lida em 07/10/2026)](https://man.openbsd.org/ssh_config.5)

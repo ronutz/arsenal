@@ -886,23 +886,19 @@
       "I": 0
     },
     "messages:guide": {
-      "J": 7,
+      "J": 3,
       "I": 0
     },
     "messages:history": {
       "J": 2,
       "I": 1
     },
-    "messages:learnSeries": {
-      "J": 11,
-      "I": 0
-    },
     "messages:lineages": {
       "J": 1,
       "I": 0
     },
     "messages:materials": {
-      "J": 11,
+      "J": 6,
       "I": 0
     },
     "messages:meetingBingo": {
@@ -931,10 +927,6 @@
     },
     "messages:settings_page": {
       "J": 1,
-      "I": 0
-    },
-    "messages:studyGuidesIndex": {
-      "J": 6,
       "I": 0
     },
     "messages:tools": {
@@ -990,7 +982,7 @@
       "I": 0
     },
     "src/content/learn/pt-BR/authoritative-vs-non-authoritative-answers.mdx": {
-      "J": 5,
+      "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/awaf-client-side-signals-and-challenges.mdx": {
@@ -1591,10 +1583,6 @@
     },
     "src/content/learn/pt-BR/nginx-proxy-cache-what-gets-stored.mdx": {
       "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/nslookup-record-types.mdx": {
-      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/nslookup-vs-dig.mdx": {

@@ -52,6 +52,26 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Row 59, the pack's Portuguese, wave P1a (PRIME 2026-10-07 06:56): the interface strings people meet first.
+    date: "2026-10-07",
+    time: "14:34",
+    kind: "i18n",
+    title: "The Portuguese interface in natural Brazilian Portuguese, first wave",
+    body:
+      "The Portuguese text people meet first was read string by string and, where it read as a translation, rewritten the way a Brazilian instructor writes: the navigation, footer and search, the home page, Learn, the user guide, the study guides index, Training, Materials, the article series, Contact and the sitemap. 448 strings changed; the rest already read well. Along the way the rewrite fixed slips the literal translation had left: words dropped or given another sense (a planned part about spoofing named only the protocols spoofed; real-time versus API protection read as one protecting against the other), a verb that did not agree with its subject, headings led by a gerund, titles in English-style capitals, and dashes the site does not use. The site's own names stay as the navigation shows them.",
+    links: [{ label: "Guide", href: "/guide" }, { label: "Study guides", href: "/study-guides" }],
+  },
+  {
+    // The English-edition corrections (2026-10-07): the errors the Portuguese sweep's writers flagged, checked against their sources.
+    date: "2026-10-07",
+    time: "13:48",
+    kind: "content",
+    title: "Corrections to 55 articles, each checked against its source",
+    body:
+      "While rewriting the Portuguese edition, the writers flagged sentences where the English itself looked wrong. Each was checked against its source on the day, and the ones that were wrong are corrected in both languages: counts that did not match their own lists, dates (the talk that exposed the Kaminsky DNS flaw was on 6 August 2008; FIPS 46 was published on 15 January 1977), RFC section numbers and quotations put back in the RFCs' own words, and a few technical slips (the four forms of an HTTP request-target, what the AD bit and the Non-authoritative marker mean, where PPPoE sits). Where an article keeps a list of sources, the source behind each correction is added to it with the date it was read. Three flags turned out to be wrong, and those sentences stay as they were.",
+    articles: ["accounting-who-did-what-and-when", "adc-family-history", "aead-vs-cbc", "anatomy-of-a-dig-command-line", "authoritative-vs-non-authoritative-answers", "bigip-dns-request-processing-order", "bigip-interfaces-trunks-vlans-selfips", "bigip-route-domains", "bridge-switch-family-history", "cidr-notation", "dijkstra-and-the-twenty-minute-algorithm", "dns-record-types-in-answers", "dnssec-records-in-dig", "encryption-family-history", "extreme-fabric-connect-one-service-edge-to-edge", "f5-distributed-cloud-one-request-end-to-end", "first-hop-redundancy-vrrp-and-hsrp", "fortisoar-architecture-and-data-model", "gpon-how-one-fiber-serves-a-neighborhood", "gslb-two-tier-pool-then-member", "gtm-load-balancing-methods", "hsts-and-https", "http-from-the-request-line", "http-headers-anatomy", "hybrid-key-exchange-in-tls", "ja3-to-ja4-fingerprinting", "jumbo-frames", "lets-encrypt", "nslookup-record-types", "obsolescence", "passive-fingerprinting-what-you-emit", "peer-to-peer-evolution", "raw-http-requests-and-how-to-replay-them", "reading-a-curl-command", "reading-a-dns-answer", "reading-a-syslog-message-field-by-field", "reading-dig-output", "reading-nslookup-output", "route-redistribution", "router-family-history", "sdn-family-history", "spanning-tree-in-one-article", "tacacs-plus-device-administration", "tcp-proxy-layer-4", "the-500-mile-email", "the-family-histories", "the-kaminsky-dns-flaw", "tls-reverse-proxy-inbound", "transceiver-family-history", "tunnel-overhead-mtu-and-mss", "virtualization-family-history", "vlsm-worked-example", "voss-fabric-connect-spbm", "what-happens-if-the-dns-root-goes-dark", "xc-service-policy-predicates-and-logic"],
+  },
+  {
     // Row 59, the second worst-first wave (PRIME 2026-10-07 06:56): forty more Portuguese articles in natural Brazilian Portuguese.
     date: "2026-10-07",
     time: "12:37",

@@ -32,7 +32,7 @@ Um **registro** é uma instância: um alerta, um incidente.
 
 Os **campos** guardam os valores de um registro. Eles têm tipo, e o tipo importa mais do que parece: um campo picklist (lista de seleção) restringe a entrada a valores conhecidos, e é isso que permite usá-lo em condições de playbook e no agrupamento dos dashboards (os painéis). Um campo de texto guardando o que deveria ser uma picklist é o motivo mais comum para um dashboard não conseguir resumir alguma coisa.
 
-Os **relacionamentos** ligam registros de módulos diferentes. Um incidente se relaciona com os alertas que o originaram, com os ativos envolvidos, com os indicadores observados e com as tarefas atribuídas. É isso que diferencia uma plataforma SOAR (security orchestration) de uma fila de chamados: o relacionamento pode ser consultado, então "mostre todo incidente que envolveu este ativo no último trimestre" é uma pergunta que o sistema sabe responder.
+Os **relacionamentos** ligam registros de módulos diferentes. Um incidente se relaciona com os alertas que o originaram, com os ativos envolvidos, com os indicadores observados e com as tarefas atribuídas. É isso que diferencia uma plataforma SOAR (orquestração, automação e resposta de segurança) de uma fila de chamados: o relacionamento pode ser consultado, então "mostre todo incidente que envolveu este ativo no último trimestre" é uma pergunta que o sistema sabe responder.
 
 ## Correlação entre módulos
 
@@ -63,3 +63,7 @@ Os widgets consultam o mesmo modelo de dados, e isso fecha o ciclo: um campo pic
 ## O que o candidato à prova precisa saber de cor
 
 A implantação pode ser em nó único, em HA ou distribuída e multi-tenant, e, no último caso, a pergunta decisiva é se os dados podem sair do tenant. Módulos guardam registros, registros têm campos com tipo, e relacionamentos ligam registros de módulos diferentes; os relacionamentos podem ser consultados e são eles que permitem a correlação e a deduplicação. O tipo do campo importa, porque picklists podem ser agrupadas em condições de playbook e em dashboards, e texto livre não. O controle de acesso define tanto o que você pode fazer em cada módulo quanto quais registros você pode ver, e esse segundo eixo é a fronteira entre tenants.
+
+## Fontes
+
+- [Fortinet, What Is SOAR?: SOAR significa security orchestration, automation, and response (orquestração, automação e resposta de segurança) (lida em 07/10/2026)](https://www.fortinet.com/resources/cyberglossary/what-is-soar)

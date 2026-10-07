@@ -70,6 +70,10 @@ Por isso, a conversa séria sobre esse assunto nunca é sobre o método de balan
 
 ## Os métodos dinâmicos e a honestidade sobre eles
 
-Os dois níveis também oferecem métodos *dinâmicos* (Quality of Service, Completion Rate, Round-Trip Time, Fewest Hops e outros), que decidem com base em métricas de desempenho em tempo real, medidas pelos agentes big3d em cada data center. Em produção eles são poderosos, mas não dá para reproduzi-los offline: sem as medições ao vivo, não existe resposta fixa. Uma ferramenta que diz simular esses métodos está chutando. O **simulador de GSLB do BIG-IP DNS** cobre os métodos estáticos de forma determinística e, nos dinâmicos, avisa com clareza que o resultado depende de métricas ao vivo, em vez de inventar uma distribuição. É a mesma disciplina que mantém honesta qualquer "ferramenta que computa, nunca adivinha".
+Só o nível de pool oferece métodos *dinâmicos* (Quality of Service, Completion Rate, Round Trip Time, Hops e outros), que decidem com base em métricas de desempenho em tempo real, medidas pelos agentes big3d em cada data center. Em produção eles são poderosos, mas não dá para reproduzi-los offline: sem as medições ao vivo, não existe resposta fixa. Uma ferramenta que diz simular esses métodos está chutando. O **simulador de GSLB do BIG-IP DNS** cobre os métodos estáticos de forma determinística e, nos dinâmicos, avisa com clareza que o resultado depende de métricas ao vivo, em vez de inventar uma distribuição. É a mesma disciplina que mantém honesta qualquer "ferramenta que computa, nunca adivinha".
 
 Abra o simulador, monte a topologia de dois pools do exemplo e mude um método de cada vez. Ver o nível dos pools e o nível dos membros mudarem de forma independente é o jeito mais rápido de fixar que GSLB não é uma decisão, mas duas.
+
+## Fontes
+
+- [F5, BIG-IP DNS: Load Balancing, versão 15.0.0 (vale da 15.0.0 à 21.0.0), Global Server Load Balancing: nenhum método dinâmico está disponível no balanceamento de wide IP; entre os dinâmicos, Round Trip Time e Hops (lida em 07/10/2026)](https://techdocs.f5.com/en-us/bigip-15-0-0/big-ip-dns-load-balancing/global-server-load-balancing.html)

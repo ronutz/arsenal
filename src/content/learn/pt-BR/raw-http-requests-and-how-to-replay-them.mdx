@@ -23,7 +23,7 @@ Content-Type: application/json
 {"name":"Alice"}
 ```
 
-Existem três formas de request target (o alvo da requisição), e vale saber diferenciá-las, porque são elas que decidem o que um tradutor consegue fazer com a mensagem. A **origin-form** (a forma de origem) é a mais comum: só o caminho. A **absolute-form** traz a URL inteira e é o que um cliente envia para um proxy. A **asterisk-form** é um `*` sozinho, usado com `OPTIONS` para perguntar algo sobre o servidor, e não sobre um recurso.
+Existem quatro formas de request target (o alvo da requisição), e vale saber diferenciá-las, porque são elas que decidem o que um tradutor consegue fazer com a mensagem. A **origin-form** (a forma de origem) é a mais comum: só o caminho. A **absolute-form** traz a URL inteira e é o que um cliente envia para um proxy. A **authority-form** é só host e porta, usada com `CONNECT` para indicar o destino de um túnel. A **asterisk-form** é um `*` sozinho, usado com `OPTIONS` para perguntar algo sobre o servidor, e não sobre um recurso.
 
 ## A URL não está na mensagem
 
@@ -60,3 +60,7 @@ Se a mensagem traz `Transfer-Encoding: chunked`, o body que você vê não é o 
 3. Veja se o body é chunked ou tem o tamanho declarado, e se o tamanho declarado é verdadeiro.
 4. Mascare as credenciais antes que a requisição saia da sua máquina, em qualquer formato.
 5. Traduza e depois rode o resultado contra um alvo de teste, e não contra produção, porque uma requisição repetida faz de novo o que a original fez, inclusive qualquer gravação de dados.
+
+## Fontes
+
+- [RFC 9112, HTTP/1.1 (STD 99), junho de 2022: a seção 3.2, as quatro formas de request-target, e a seção 3.2.3, a authority-form do CONNECT (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc9112)

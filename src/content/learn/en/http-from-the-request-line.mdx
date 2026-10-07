@@ -15,7 +15,7 @@ HTTP looks like a long list of things to learn: the methods, dozens of status co
 
 ## One exchange, two messages
 
-The standard puts the whole protocol in one sentence: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, section 3.3). A client sends a request: a method that says what it wants done, the target it wants it done to, header fields that qualify the request, and sometimes a body. The server answers with a status code that says how it went, header fields of its own, and usually a body.
+The standard puts the whole protocol in one sentence: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, section 3.4). A client sends a request: a method that says what it wants done, the target it wants it done to, header fields that qualify the request, and sometimes a body. The server answers with a status code that says how it went, header fields of its own, and usually a body.
 
 That is also the order in which to learn it. Read a request from the top, the way a server does: the request line (the method and the target), then the fields, then the body and the point where it ends. Read the response the same way: the status, then its fields. The series follows that order, then turns to the layers around the messages.
 
@@ -54,7 +54,7 @@ Ten parts: the message read from the top, then the layers around it, then a coda
 
 ## Sources
 
-- [RFC 9110, HTTP Semantics (STD 97), June 2022: the abstract (the aspects "shared by all versions"), section 3.3 (a stateless request/response protocol) and section 3.7 (intermediaries: proxy, gateway, tunnel) (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9110, HTTP Semantics (STD 97), June 2022: the abstract (the aspects "shared by all versions"), section 3.4 (a stateless request/response protocol) and section 3.7 (intermediaries: proxy, gateway, tunnel) (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110)
 - [RFC 9112, HTTP/1.1 (STD 99), June 2022: the message syntax and framing of version 1.1 (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9112)
 - [RFC 9113, HTTP/2, June 2022: "an optimized expression of the semantics" of HTTP; obsoletes RFC 7540 and RFC 8740 (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9113)
 - [RFC 9114, HTTP/3, June 2022: HTTP over the QUIC transport (read 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9114)

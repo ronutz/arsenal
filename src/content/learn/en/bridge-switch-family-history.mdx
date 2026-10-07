@@ -1,7 +1,7 @@
 ---
 slug: bridge-switch-family-history
 title: "Bridges and Switches: One Idea, Solved Twice"
-summary: "The bridge and the switch are the same idea forty years apart, and the story runs through two people who are rarely mentioned together. Radia Perlman solved the loop problem at Digital in a single night in December 1985 and wrote the answer as a twelve-line poem. Kalpana put the same function in silicon per port in 1990 and sold the result to Cisco four years later. Along the way: why Perlman says the whole thing grew out of an industry mistake, why the switch replaced the hub without anyone calling it a security improvement, and what happens to a layer that has been declared finished several times."
+summary: "The bridge and the switch are the same idea a few years apart, and the story runs through two people who are rarely mentioned together. Radia Perlman solved the loop problem at Digital in a single night in the mid-1980s and wrote the answer as a twelve-line poem. Kalpana put the same function in silicon per port in 1990 and sold the result to Cisco four years later. Along the way: why Perlman says the whole thing grew out of an industry mistake, why the switch replaced the hub without anyone calling it a security improvement, and what happens to a layer that has been declared finished several times."
 concepts: ["bridge", "switch", "spanning tree", "stp", "ethernet", "layer 2", "history"]
 relatedTools: []
 relatedArticles: ["firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation", "tcp-proxy-layer-4"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-Bridges and switches are usually taught as two devices. They are one idea, implemented twice with thirty years of silicon in between, and the second implementation was so much cheaper that it erased the first from the vocabulary while keeping every one of its problems.
+Bridges and switches are usually taught as two devices. They are one idea, implemented twice a few years apart, and the second implementation was so much cheaper that it erased the first from the vocabulary while keeping every one of its problems.
 
 ## The mistake that created the whole field
 
@@ -19,11 +19,11 @@ Radia Perlman's own account of why bridges exist is the best starting point, and
 
 That something was the **bridge**: a device that listens to every frame and forwards it onto its other ports. It works precisely because it demands nothing of the endpoints. **The entire layer 2 world exists as a workaround for an assumption made early and never retracted**, and every difficulty in it since - flooding, loops, broadcast domains, the constant tension between one big flat network and many small ones - descends from that.
 
-## December 1985: a problem thought unsolvable
+## The mid-1980s: a problem thought unsolvable
 
 Redundancy is what makes a network reliable and it is also what makes a bridged network fatal. Two paths between two bridges means a frame can circulate, and because a bridged frame has no hop count to expire, it circulates forever, multiplying at every junction until the network drowns in copies of itself.
 
-A manager at Digital gave Radia Perlman that problem, considering it probably unsolvable. She went home, woke in the night with the solution formed, and wrote the specification the next morning - along with a twelve-line poem describing it completely and correctly. The paper, in 1985, was **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
+A manager at Digital gave Radia Perlman that problem, considering it probably unsolvable. She went home, woke in the night with the solution formed, and wrote the specification early the next week - along with a twelve-line poem describing it completely and correctly. The paper, in 1985, was **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
 
 The algorithm elects a root, computes least-cost paths to it, and disables every link that is not on the resulting tree. Redundant links stay physically connected and logically idle until something fails. Digital shipped it in its two-port Ethernet bridge, and the IEEE adopted it as **802.1D in 1990**. Rapid spanning tree followed as 802.1w in 2001, and Perlman herself later designed TRILL to let Ethernet use the links spanning tree switches off.
 
@@ -80,3 +80,5 @@ The bridge era belonged to Digital, and to the companies in this catalogue that 
 - [IPWatchdog on the spanning tree protocol, DEC's two-port bridge, and IEEE 802.1D in 1990](https://ipwatchdog.com/2016/02/04/spanning-tree-protocol-internet-routing/)
 - [Kalpana, Inc.: founded 1990 in Sunnyvale by Vinod Bhardwaj and Larry Blair, the seven-port EtherSwitch, EtherChannel, and the 1994 Cisco acquisition](https://en.wikipedia.org/wiki/Kalpana,_Inc.)
 - [Cisco Catalyst: the 3000 series from Kalpana and the 1700, 1900 and 2800 series from Grand Junction](https://en.wikipedia.org/wiki/Cisco_Catalyst)
+- [Radia Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN, ACM SIGCOMM Computer Communication Review, September 1985, pages 44 to 53 (read 2026-10-07)](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)
+- [LACNIC blog, interview with Radia Perlman, 30 May 2019: the request on a Friday, the solution that night, the specification written on the Monday and Tuesday after (read 2026-10-07)](https://blog.lacnic.net/en?p=11775)

@@ -1,7 +1,7 @@
 ---
 slug: reading-a-dns-answer
 title: "Reading a DNS answer: the line you skipped is the diagnosis"
-summary: "Fourteen articles on dig and nslookup, arranged as a single answer read from the top: who actually replied, whether they were authoritative or repeating a cache, what the flags admit, what the OPT line is doing there, what the records say, what a failure code means, and how to walk the delegation yourself when the resolver's answer cannot be trusted. Most DNS misdiagnoses are not a misunderstanding of DNS. They are a line that was not read."
+summary: "Fifteen articles on dig and nslookup, arranged as a single answer read from the top: who actually replied, whether they were authoritative or repeating a cache, what the flags admit, what the OPT line is doing there, what the records say, what a failure code means, and how to walk the delegation yourself when the resolver's answer cannot be trusted. Most DNS misdiagnoses are not a misunderstanding of DNS. They are a line that was not read."
 concepts: ["dns", "dig", "nslookup", "authoritative", "delegation", "edns", "dnssec", "troubleshooting", "index"]
 relatedTools: []
 relatedArticles: ["reading-dig-output", "authoritative-vs-non-authoritative-answers", "dig-trace-and-delegation", "the-kaminsky-dns-flaw"]
@@ -27,7 +27,7 @@ So this page arranges the tooling articles as one answer, read from the first li
 
 ## Line two: whether they were authoritative
 
-**[Authoritative versus non-authoritative answers](/learn/authoritative-vs-non-authoritative-answers)** - the marker that nslookup prints and the flag that dig shows mean the reply came from a resolver's cache rather than from a server that holds the zone. It can be correct and stale at the same time. When a change "has not propagated," this is the line to look at first, and the article explains why the fix is usually to ask the authority directly rather than to wait.
+**[Authoritative versus non-authoritative answers](/learn/authoritative-vs-non-authoritative-answers)** - the marker that nslookup prints and the flag that dig shows mean the reply came from a resolver, usually out of its cache, rather than from a server that holds the zone. It can be correct and stale at the same time. When a change "has not propagated," this is the line to look at first, and the article explains why the fix is usually to ask the authority directly rather than to wait.
 
 The [Kaminsky flaw](/learn/the-kaminsky-dns-flaw) is what happens when a cached, non-authoritative answer is the *wrong* one and nothing in the resolver can tell; the line that says "non-authoritative" is the reason the distinction was worth an industry-wide emergency patch.
 

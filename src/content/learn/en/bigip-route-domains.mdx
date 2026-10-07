@@ -19,7 +19,7 @@ Addresses in a non-default domain carry a percent suffix: `10.1.1.1%2` is 10.1.1
 
 ## Membership and isolation
 
-VLANs are assigned to route domains, and everything on a VLAN inherits its domain. Each domain keeps its own routing table and its own default route. Strict isolation is the toggle that decides whether a domain is a wall or a fence: strict (the default) forbids cross-domain forwarding entirely; relaxing it permits traffic to cross into a parent domain when no local route matches. Parent domains create exactly that hierarchy - a child domain can fall back to the parent's routes, useful when tenants share a common services segment while keeping their own space private.
+VLANs are assigned to route domains, and everything on a VLAN inherits its domain. Each domain keeps its own routing table and its own default route. Strict isolation is the toggle that decides whether a domain is a wall or a fence: strict (the default) allows forwarding from a domain only to its specified parent; disabling it, on both the sending and the receiving domain, lets traffic cross to any route domain on the system. Parent domains create exactly that hierarchy - a child domain can fall back to the parent's routes, useful when tenants share a common services segment while keeping their own space private.
 
 ## Where it connects to administration
 
@@ -28,3 +28,7 @@ Route domains pair naturally with administrative partitions: a partition can car
 ## Explaining the functionality, exam-style
 
 The LTM blueprint asks for one thing here: explain what route domains do. The compact answer: they provide independent routing instances within one device, identified by numeric ID and the percent notation, giving address-space isolation for overlapping networks, per-tenant default routes, and controlled sharing through parent domains and the strict-isolation setting. If you can also spot the missing `%ID` in a scenario configuration, you are ahead of the question.
+
+## Sources
+
+- [F5, BIG-IP TMOS: Routing Administration 14.1.0, About strict isolation: when enabled, the default, forwarding goes from a route domain to its specified parent only; when disabled on both domains, to any route domain (read 2026-10-07)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-tmos-routing-administration-14-1-0/route-domains/traffic-forwarding-across-route-domains/about-strict-isolation.html)

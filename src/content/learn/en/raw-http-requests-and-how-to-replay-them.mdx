@@ -23,7 +23,7 @@ Content-Type: application/json
 {"name":"Alice"}
 ```
 
-Three forms of request target exist and they are worth telling apart, because they decide what a translator can do with the message. **Origin-form** is the common one, a path only. **Absolute-form** carries the whole URL and is what a client sends to a proxy. **Asterisk-form** is a bare `*`, used with `OPTIONS` to ask about the server rather than a resource.
+Four forms of request target exist and they are worth telling apart, because they decide what a translator can do with the message. **Origin-form** is the common one, a path only. **Absolute-form** carries the whole URL and is what a client sends to a proxy. **Authority-form** is a host and port only, used with `CONNECT` to name the destination of a tunnel. **Asterisk-form** is a bare `*`, used with `OPTIONS` to ask about the server rather than a resource.
 
 ## The URL is not in the message
 
@@ -60,3 +60,7 @@ If the message carries `Transfer-Encoding: chunked`, the body you can see is not
 3. Note whether the body is chunked or length-declared, and whether the declared length is true.
 4. Redact credentials before the request leaves your machine in any form.
 5. Translate, then run the result against a test target rather than production, because a replayed request repeats whatever the original did, including the write.
+
+## Sources
+
+- [RFC 9112, HTTP/1.1 (STD 99), June 2022: section 3.2, the four forms of request-target, and section 3.2.3, authority-form for CONNECT (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9112)

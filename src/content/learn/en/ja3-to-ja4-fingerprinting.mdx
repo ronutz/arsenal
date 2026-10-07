@@ -47,7 +47,7 @@ Three further choices are worth knowing:
 
 **Signature algorithms keep their original order.** Having sorted everything else, JA4 appends the signature algorithm list unsorted. That is where some of the uniqueness lost to sorting is recovered, and it is a considered trade rather than an oversight.
 
-**The result is partly readable.** Where JA3 gives an opaque MD5, a JA4 string opens with fields a human can read directly: the transport and TLS version, whether server name indication is present, how many ciphers and extensions there are, and the first negotiated protocol. An analyst can tell a great deal before consulting any lookup table, which is a different kind of usefulness from a hash that means nothing until matched.
+**The result is partly readable.** Where JA3 gives an opaque MD5, a JA4 string opens with fields a human can read directly: the transport and TLS version, whether server name indication is present, how many ciphers and extensions there are, and the first and last characters of the first application protocol the client offers. An analyst can tell a great deal before consulting any lookup table, which is a different kind of usefulness from a hash that means nothing until matched.
 
 ## Why this signal is unlike the others
 
@@ -64,3 +64,7 @@ That is why a mismatch is such a strong signal. A request whose header says Chro
 **Do not read one fingerprint alone.** The four tools this article links to exist to be used together: the TLS handshake, the order of the HTTP headers, and how common the claimed user agent actually is. Each is weak alone and they are strong in combination, because a client that is lying has to lie consistently across all of them, and most do not.
 
 **Expect this to move again.** JA3 lasted six years and was undone by a change made for unrelated and entirely legitimate reasons. Nothing about JA4 makes it permanent. It is more durable because it depends on the set rather than the arrangement, and sets change more slowly than orderings, but a technique built on observing what clients happen to do will always be at the mercy of clients deciding to do something else.
+
+## Sources
+
+- [FoxIO, JA4 technical details: the first and last characters of the first ALPN value the client offers in the ClientHello (read 2026-10-07)](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)

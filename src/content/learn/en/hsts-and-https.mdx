@@ -43,8 +43,12 @@ The preload list is a set of hosts hard-coded into browsers as HTTPS-only, so th
 
 ## Configuration mistakes that disable it
 
-The recurring failures are quiet because the header is present but not doing its job. A `max-age` of `0` left in place after testing disables the policy. A very low `max-age` lets it lapse between visits. Omitting `includeSubDomains` leaves subdomains exposed. Setting the header only on the HTTPS site but serving the `preload` directive without meeting the preload requirements is harmless but pointless. And, importantly, HSTS only takes effect once the browser has seen it over a valid HTTPS connection, so it must be sent on the secure responses, not buried somewhere the browser never reaches over HTTPS.
+The recurring failures are quiet because the header is present but not doing its job. A `max-age` of `0` left in place after testing disables the policy. A very low `max-age` lets it lapse between visits. Omitting `includeSubDomains` leaves subdomains exposed. Serving the `preload` directive without meeting the preload requirements is harmless but pointless. And, importantly, HSTS only takes effect once the browser has seen it over a valid HTTPS connection, so it must be sent on the secure responses, not buried somewhere the browser never reaches over HTTPS.
 
 ## Where HSTS sits in the stack
 
 HSTS removes a transport-level attack class: the forced downgrade to plain HTTP. It pairs naturally with the `Secure` flag on cookies, which keeps cookies off any plain-HTTP request in the first place (see [cookie security flags](/learn/cookie-security-flags)), and with a Content-Security-Policy that controls what runs once the page loads. None of these substitutes for the others; together they cover transport, session, and content.
+
+## Sources
+
+- [RFC 6797, HTTP Strict Transport Security (HSTS), November 2012: section 7.2, an HSTS host does not send the header over non-secure transport (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc6797)

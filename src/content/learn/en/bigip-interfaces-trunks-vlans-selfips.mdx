@@ -1,7 +1,7 @@
 ---
 slug: bigip-interfaces-trunks-vlans-selfips
 title: "From Interface to Self-IP: BIG-IP Layer 2 and 3 Dependencies"
-summary: "Interfaces aggregate into trunks, trunks and interfaces carry VLANs tagged or untagged, VLANs anchor self-IPs, and routes choose the egress - a dependency chain where status cascades downward. Reading it fluently answers half the connectivity questions on the administration blueprint."
+summary: "Interfaces aggregate into trunks, trunks and interfaces carry VLANs tagged or untagged, VLANs anchor self-IPs, and routes choose the egress - a dependency chain where status cascades upward. Reading it fluently answers half the connectivity questions on the administration blueprint."
 concepts: ["f5", "big-ip", "interfaces", "trunks", "vlans", "self-ip", "tagged", "untagged", "routing", "lacp"]
 relatedTools: ["cidr"]
 relatedArticles: ["bigip-route-domains", "bigip-management-access-port-lockdown", "bigip-snat-and-return-traffic"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-07-21"
 ---
 
-BIG-IP networking is a strict dependency chain: physical interfaces at the bottom, then trunks, then Virtual Local Area Networks (VLANs), then self-IPs, then routes. Each layer exists on the one below, status flows downward, and traffic decisions read the chain upward. The blueprint asks you to explain the relationships and their status and statistics, which rewards walking the chain deliberately.
+BIG-IP networking is a strict dependency chain: physical interfaces at the bottom, then trunks, then Virtual Local Area Networks (VLANs), then self-IPs, then routes. Each layer exists on the one below, status flows upward, and traffic decisions read the chain downward. The blueprint asks you to explain the relationships and their status and statistics, which rewards walking the chain deliberately.
 
 ## Interfaces and trunks
 

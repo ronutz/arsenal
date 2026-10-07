@@ -35,7 +35,7 @@ Dois métodos especiais a mais pertencem a essa parte da história. Drop Packet 
 
 ## Os métodos dinâmicos, e o dynamic-ratio
 
-A família dinâmica lê medições: Round Trip Time, Completion Rate e Fewest Hops medem o caminho entre um data center e o LDNS solicitante; CPU, Kilobytes/Second, Least Connections e Packet Rate leem estatísticas do lado servidor; Quality of Service combina fatores ponderados em uma pontuação, usando os coeficientes `qos-*` do pool (padrões: rtt 50, capacidade de link 30, hit ratio 5, kilobytes/segundo 3, packet rate 1, o resto 0), com empates caindo em Round Robin.
+A família dinâmica lê medições: Round Trip Time, Completion Rate e Hops medem o caminho entre um data center e o LDNS solicitante; CPU, Kilobytes/Second, Least Connections e Packet Rate leem estatísticas do lado servidor; Quality of Service combina fatores ponderados em uma pontuação, usando os coeficientes `qos-*` do pool (padrões: rtt 50, capacidade de link 30, hit ratio 5, kilobytes/segundo 3, packet rate 1, o resto 0), com empates caindo em Round Robin.
 
 Por padrão um método dinâmico é vencedor-leva-tudo: o único membro com a melhor métrica recebe o tráfego. A opção `dynamic-ratio` do pool muda a aritmética, e o exemplo do manual torna isso concreto: com round trip times de 50 e 100 microssegundos e dynamic-ratio desabilitado, toda requisição vai ao membro mais rápido; habilitado, os valores viram razões e o membro mais rápido apenas responde duas vezes mais. A referência tmsh delimita a opção a oito modos (completion-rate, fewest-hops, kilobytes-per-second, least-connections, lowest-round-trip-time, quality-of-service, virtual-server-capacity, virtual-server-score); habilitada sob qualquer outro, não tem efeito documentado.
 

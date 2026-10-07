@@ -1,7 +1,7 @@
 ---
 slug: extreme-fabric-connect-one-service-edge-to-edge
 title: "Extreme Fabric Connect: um serviço, de borda a borda"
-summary: "Nove artigos sobre a fabric da Extreme, na ordem em que um serviço passa a existir: qual sistema operacional usar, o que significam os termos, o que é a fabric, como os nós se conhecem, como um serviço atravessa o backbone, por que o multicast não precisa de configuração, como a borda pede o que precisa e como a borda ganha dual-homing sem spanning tree. A ideia que organiza tudo é a mesma sobre a qual a fabric foi construída: o serviço é provisionado na borda, e não levado em trunk de hop em hop."
+summary: "Dez artigos sobre a fabric da Extreme, na ordem em que um serviço passa a existir: qual sistema operacional usar, o que significam os termos, o que é a fabric, como os nós se conhecem, como um serviço atravessa o backbone, por que o multicast não precisa de configuração, como a borda pede o que precisa e como a borda ganha dual-homing sem spanning tree. A ideia que organiza tudo é a mesma sobre a qual a fabric foi construída: o serviço é provisionado na borda, e não levado em trunk de hop em hop."
 concepts: ["extreme networks", "fabric connect", "spbm", "voss", "exos", "i-sid", "fabric attach", "smlt", "index"]
 relatedTools: []
 relatedArticles: ["voss-fabric-connect-spbm", "spb-fabric-vocabulary", "voss-i-sid-and-vsns", "voss-vs-exos"]
@@ -17,7 +17,7 @@ Para entender por que o multicast custa caro em qualquer rede sem fabric, leia *
 
 Uma rede de campus tradicional se entende link a link: uma VLAN existe neste switch, segue em trunk até aquele e é roteada no terceiro. Cada hop (cada passagem de um equipamento para o seguinte) é um ponto em que a configuração precisa bater com a do hop anterior, e cada queda é um ponto em que ela não bateu.
 
-Uma fabric se entende ao contrário. O core (o núcleo da rede) é um transporte que leva serviços opacos, os serviços são definidos uma única vez na borda, e o meio do caminho não sabe nem quer saber o que eles são. Quase tudo o que confunde na fabric da Extreme no primeiro contato deixa de confundir quando você aceita essa inversão. Por isso, esta página percorre os nove artigos na ordem em que um *serviço* passa a existir, da escolha do sistema operacional até o momento em que um equipamento de borda é ligado à fabric em dual-homing (conectado a dois switches ao mesmo tempo).
+Uma fabric se entende ao contrário. O core (o núcleo da rede) é um transporte que leva serviços opacos, os serviços são definidos uma única vez na borda, e o meio do caminho não sabe nem quer saber o que eles são. Quase tudo o que confunde na fabric da Extreme no primeiro contato deixa de confundir quando você aceita essa inversão. Por isso, esta página percorre os dez artigos na ordem em que um *serviço* passa a existir, da escolha do sistema operacional até o momento em que um equipamento de borda é ligado à fabric em dual-homing (conectado a dois switches ao mesmo tempo).
 
 ## 1. Qual sistema operacional
 

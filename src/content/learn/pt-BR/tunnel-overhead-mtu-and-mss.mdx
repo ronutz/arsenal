@@ -15,7 +15,7 @@ Pense no túnel como um passageiro dentro de um envelope: o envelope também pes
 
 ## Origens: por que existe um limite máximo
 
-O limite de 1.500 bytes de payload (a carga útil) da Ethernet não é uma lei da física. Ele saiu de um meio-termo de engenharia dos anos 1970: memória para buffer era cara, e uma estação que transmite um frame (quadro) muito longo ocupa sozinha um meio compartilhado. Um teto resolvia as duas coisas, porque limitava o custo e limitava quanto tempo as outras estações teriam de esperar. O número durou mais do que os motivos que o criaram e virou a constante em torno da qual o resto da internet foi ajustado.
+O limite de 1.500 bytes de payload (a carga útil) da Ethernet não é uma lei da física. Ele saiu de um meio-termo de engenharia de 1980: memória para buffer era cara, e uma estação que transmite um frame (quadro) muito longo ocupa sozinha um meio compartilhado. Um teto resolvia as duas coisas, porque limitava o custo e limitava quanto tempo as outras estações teriam de esperar. O número durou mais do que os motivos que o criaram e virou a constante em torno da qual o resto da internet foi ajustado.
 
 O IP foi projetado para atravessar links com limites diferentes, então precisava de uma resposta para o pacote que não cabe. **O IPv4 escolheu a fragmentação**: qualquer roteador podia dividir um pacote, e o destino o remonta. Funciona, e três décadas de experiência operacional mostraram o preço:
 
@@ -61,9 +61,9 @@ Cada camada de envelope tira a sua parte dos mesmos 1.500 bytes. São valores ap
 - **Header IPv4**: 20 bytes; **header IPv6**: 40, e é por isso que um túnel que cabia sobre IPv4 pode não caber sobre IPv6.
 - **Header TCP**: 20 bytes, mais com opções como timestamps e selective acknowledgement (a confirmação seletiva).
 - **Tag de VLAN**: 4 bytes por tag; **VXLAN**: cerca de 50 bytes no total, contando os headers externos.
-- **GRE**: de 4 a 8 bytes; **PPPoE**: 8, e é por isso que tantos links de banda larga ficam em 1.492.
+- **GRE**: de 4 a 16 bytes; **PPPoE**: 8, e é por isso que tantos links de banda larga ficam em 1.492.
 - **IPsec**: varia bastante com o modo e a cifra, em geral de 50 a 80 bytes; o modo túnel acrescenta um segundo header IP.
-- **WireGuard**: cerca de 60 bytes, e é por isso que a recomendação usual para ele é 1.420.
+- **WireGuard**: cerca de 60 bytes sobre IPv4 e 80 sobre IPv6, e é por isso que a recomendação usual para ele é 1.420.
 
 Daí vêm duas consequências. **Os encapsulamentos se somam**: um projeto de VXLAN sobre IPsec paga os dois. E **a perda é assimétrica**: a pilha de quem envia não sabe nada do túnel no meio do caminho, então a conta de bytes tem de ser feita onde o encapsulamento acontece.
 
@@ -85,3 +85,9 @@ O checklist que resolve a maior parte desses casos:
 ## O hábito na prática
 
 As orientações para encaminhar tráfego à nuvem deixam esse hábito bem concreto: a documentação de túneis da Zscaler (verificada em 2026-07-21) manda o operador configurar a MTU do túnel com o **menor valor entre a MTU do appliance e a MTU medida do caminho** e, se mesmo assim aparecer problema, voltar para **1.400**. Folga conservadora vale mais do que máximo teórico: é a experiência de campo resumida numa frase. O checklist completo, para qualquer túnel, em qualquer lugar: conheça o overhead do seu envelope, subtraia esse valor da menor MTU do caminho, configure o túnel com o resultado, faça o clamping do MSS nesse valor menos 40 e deixe o PMTUD como rede de proteção, não como a peça que sustenta tudo. Frames maiores mudam os números, mas não o método: os [jumbo frames](/learn/jumbo-frames) só mudam o teto de lugar.
+
+## Fontes
+
+- [The Ethernet, A Local Area Network: Data Link Layer and Physical Layer Specifications, Version 1.0 (DIX), setembro de 1980: um campo de dados de 46 a 1500 octetos (lida em 07/10/2026)](https://ieeemilestones.ethw.org/w/images/3/31/Ref5_DIX_Ethernet_V1.0_1980.pdf)
+- [wireguard-tools, wg-quick para Linux: o MTU da interface é o MTU do caminho menos 80, a partir de 1500 quando nenhum é encontrado (lida em 07/10/2026)](https://git.zx2c4.com/wireguard-tools/tree/src/wg-quick/linux.bash)
+- [RFC 2890, Key and Sequence Number Extensions to GRE, setembro de 2000: os campos opcionais de quatro bytes Key e Sequence Number, além do header da RFC 2784 e do checksum opcional (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc2890)

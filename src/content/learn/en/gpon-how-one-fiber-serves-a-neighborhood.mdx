@@ -17,7 +17,7 @@ Most broadband technologies put electronics between you and the provider: a cabi
 
 Fibre to the home was technically possible for decades before it was affordable. The obstacle was never the glass; it was that giving every subscriber a dedicated fibre back to the exchange meant a port, a laser and a strand per customer, which is a cost that scales linearly with take-up in exactly the way a telephone company cannot fund.
 
-**Passive optical networking** is the answer to that economics problem, and its defining choice is in the middle word. The splitter between the exchange and the homes has **no power, no electronics and nothing to fail**: it divides incoming light among its outputs and combines what comes back. One expensive port at the exchange is shared by many homes, and the shared plant needs no cabinet, no rectifier and no maintenance visit.
+**Passive optical networking** is the answer to that economics problem, and its defining choice is in the first word. The splitter between the exchange and the homes has **no power, no electronics and nothing to fail**: it divides incoming light among its outputs and combines what comes back. One expensive port at the exchange is shared by many homes, and the shared plant needs no cabinet, no rectifier and no maintenance visit.
 
 The lineage is standardised and worth knowing, because installed networks span all of it:
 
@@ -55,7 +55,7 @@ The asymmetry - 2.488 down, 1.244 up - was a deliberate bet on traffic patterns 
 
 Every optical link lives on a power budget: the transmitter launches so many dB of light, the receiver needs so many to hear, and everything in between spends the difference. GPON class B+ optics, the common case, budget about 28 dB end to end.
 
-Splitters are the big spenders. Every 1:2 division costs about 3 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 18 dB on splitting alone. The fiber itself takes about 0.35 dB per kilometer at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
+Splitters are the big spenders. Every 1:2 division costs about 3.5 dB - half the light, by definition, plus a little loss - so a 1:64 tree spends roughly 21 dB on splitting alone. The fiber itself takes about 0.35 dB per kilometer at GPON's wavelengths, each connector 0.3 dB or so, each fusion splice a few hundredths. Add it up and a 1:64 split at 20 km arrives near the edge of the budget - which is exactly the design point of the standard.
 
 This arithmetic is the ISP technician's daily reality. A dirty connector that eats 2 dB, a drop cable bent past its radius, one bad mechanical splice: any of these can push a marginal leaf over the line, and the failure looks like mystery packet loss rather than darkness. The OTDR - the Optical Time-Domain Reflectometer - exists to turn that mystery into a distance: fire a pulse, read the reflections, and the trace shows how many meters out the budget is leaking.
 
@@ -100,3 +100,4 @@ Every line rate and generation named above is an ITU-T Recommendation with a num
 - [ITU-T G.984.2, GPON Physical Media Dependent layer - the recommendation whose Appendix III is titled for 2.488 Gbit/s downstream, 1.244 Gbit/s upstream](https://www.itu.int/rec/T-REC-G.984.2/en)
 - [ITU-T G.987.1, 10-Gigabit-capable passive optical networks (XG-PON): General requirements](https://www.itu.int/rec/T-REC-G.987.1/en)
 - [ITU-T G.9807.1, 10-Gigabit-capable symmetric passive optical network (XGS-PON)](https://www.itu.int/rec/T-REC-G.9807.1/en)
+- [SENKO, PLC splitter module 2mm type (compact): maximum insertion loss 17.5 dB for 1x32 and 21.6 dB for 1x64, connectors included (read 2026-10-07)](https://www.senko.com/product/plc-splitter-module-2mm-type-compact)

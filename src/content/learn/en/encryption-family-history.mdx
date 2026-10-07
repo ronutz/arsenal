@@ -1,7 +1,7 @@
 ---
 slug: encryption-family-history
 title: "Encryption: The Standard, the Suspicion, and What the Suspicion Got Wrong"
-summary: "Civilian cryptography has a founding document and a founding argument. The document is the Data Encryption Standard, issued in November 1977 from a cipher IBM built on Horst Feistel's Lucifer. The argument is what the National Security Agency did to it - and the answer, which took seventeen years to emerge, is that the agency made the algorithm stronger against an attack nobody outside knew existed while shortening the key. This is the family history: from a filename too long for an operating system, through the crypto wars, to a standards process that now runs in the open because of what that suspicion cost."
+summary: "Civilian cryptography has a founding document and a founding argument. The document is the Data Encryption Standard, issued in January 1977 from a cipher IBM built on Horst Feistel's Lucifer. The argument is what the National Security Agency did to it - and the answer, which took seventeen years to emerge, is that the agency made the algorithm stronger against an attack nobody outside knew existed while shortening the key. This is the family history: from a filename too long for an operating system, through the crypto wars, to a standards process that now runs in the open because of what that suspicion cost."
 concepts: ["encryption", "des", "aes", "lucifer", "public key", "crypto wars", "history"]
 relatedTools: []
 relatedArticles: ["quantum-threat-to-cryptography", "security-through-obscurity", "tls12-tls13-dtls-quic"]
@@ -25,7 +25,7 @@ The IBM team included Feistel, Walter Tuchman, Don Coppersmith, Alan Konheim, Ca
 
 ## 1975 to 1977: the standard and the accusation
 
-The proposal was published in the Federal Register on **17 March 1975**, public comment was invited, and two open workshops followed in 1976. The bureau issued it as **FIPS 46 on 23 November 1977**.
+The proposal was published in the Federal Register on **17 March 1975**, public comment was invited, and two open workshops followed in 1976. The bureau issued it as **FIPS 46 on 15 January 1977**.
 
 The agency had worked with the bureau throughout, evaluated the algorithm and recommended changes, which IBM made. Two suspicions followed immediately and dominated the field for two decades: that a trapdoor had been inserted, and that the **56-bit** key had been deliberately shortened so the agency could read the traffic. Whitfield Diffie and Martin Hellman published *Exhaustive Cryptanalysis of the NBS Data Encryption Standard* in June 1977, arguing the key was too short for the computing power that was coming.
 
@@ -76,7 +76,8 @@ The other durable practice is **not writing your own**. Kerckhoffs said in 1883 
 ## Sources
 
 - [Data Encryption Standard: developed at IBM from Feistel's Lucifer, published in the Federal Register on 17 March 1975, with the design team including Feistel, Tuchman, Coppersmith, Konheim, Meyer, Matyas, Adler, Grossman, Notz, Smith and Tuckerman](https://en.wikipedia.org/wiki/Data_Encryption_Standard)
-- [NIST cyber history on cryptography: the 1972 study, the solicitations of 15 May 1973 and 27 August 1974, the 1976 public workshops, the issue of FIPS 46 on 23 November 1977, and the trapdoor and key-length controversies](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
+- [NIST cyber history on cryptography: the 1972 study, the solicitations of 15 May 1973 and 27 August 1974, the 1976 public workshops, and the trapdoor and key-length controversies](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
 - [Lucifer (cipher): first published 1971 with key sizes up to 128 bits; the National Security Agency reduced the key to 56 bits and the block to 64 and made the cipher resistant to differential cryptanalysis, then known only to IBM and the agency; the name was a pun on Demon, truncated from Demonstration because the operating system could not handle the longer name](https://en.wikipedia.org/wiki/Lucifer_(cipher))
 - [Communications of the ACM on designing cryptography for the new century: the agency's unwillingness to design a public cryptosystem, the 1997 competition, the 1996 argument for ninety bits, and NIST settling on a 128-bit minimum](https://cacm.acm.org/opinion/technical-opinion-designing-cryptography-for-the-new-century/)
 - [The Electronic Frontier Foundation and distributed.net breaking a DES key in 22 hours and 15 minutes in January 1999](https://www.tech-faq.com/des.html)
+- [NIST CSRC, FIPS 46, Data Encryption Standard (DES): date published 15 January 1977, withdrawn on 22 January 1988 (read 2026-10-07)](https://csrc.nist.gov/pubs/fips/46/final)

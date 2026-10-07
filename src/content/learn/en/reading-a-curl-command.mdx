@@ -17,14 +17,14 @@ Quoting matters because bodies and headers contain spaces and special characters
 
 Options come in short and long forms. Short flags are one dash and a letter (`-X`, `-H`, `-d`); long flags are two dashes and a word (`--request`, `--header`, `--data`). Short flags can be clustered: `-sSL` is `-s -S -L`. A flag that takes a value can have the value attached with no space, so `-XPOST` means `-X POST`, which trips up quick readers.
 
-Anything that is not an option and not an option's value is the URL. curl adds `https://` when the scheme is missing.
+Anything that is not an option and not an option's value is the URL. When the scheme is missing, curl guesses it: it defaults to HTTP, and assumes FTP for a host that starts with `ftp.`.
 
 
 ## Read it in the order the request is built, not the order it was typed
 
 A curl command's flags can appear in any order, which means **the sequence on the page has nothing to do with the sequence of what happens.** Reading left to right is reading the author's typing habits.
 
-The order that matters is the request's own: **method, then URL, then headers, then body, then what happens to the response.** Reconstructing the command that way turns a long line into four short questions, and makes the missing piece obvious: a `-d` with no content type, an `-H` that duplicates something curl sets anyway, a redirect flag that changes what the whole thing does.
+The order that matters is the request's own: **method, then URL, then headers, then body, then what happens to the response.** Reconstructing the command that way turns a long line into five short questions, and makes the missing piece obvious: a `-d` with no content type, an `-H` that duplicates something curl sets anyway, a redirect flag that changes what the whole thing does.
 
 **A command you cannot restate in that order is one you have not finished reading**, which matters most when the command came from somebody else and you are about to run it.
 
@@ -38,3 +38,7 @@ This article opens the series **curl, flag by flag**. It shows how the shell spl
 4. **[curl Flags That Change Security Posture](/learn/curl-security-flags)**. -k, plain http and credentials in the URL: the flags worth reading before a command is run or shared.
 5. **[Translating curl to fetch()](/learn/curl-to-fetch)**. The same request in the browser's fetch(), and the differences that need care: form Content-Type, cookies, TLS checks.
 6. **[The 27 Protocols curl Speaks](/learn/curl-protocols-beyond-http)**. FTP, SFTP, SMB, SMTP, IMAP, MQTT, LDAP (Lightweight Directory Access Protocol) and the relics: the 27 URL schemes curl speaks today.
+
+## Sources
+
+- [curl, the manual: a URL without a scheme makes curl guess the protocol, defaulting to HTTP and assuming FTP for hostnames that start with ftp. (read 2026-10-07)](https://curl.se/docs/manpage.html)

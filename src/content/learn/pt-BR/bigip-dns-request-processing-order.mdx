@@ -1,6 +1,6 @@
 ---
 slug: bigip-dns-request-processing-order
-title: "Uma consulta, seis atendentes: a ordem de processamento do BIG-IP DNS"
+title: "Uma consulta, sete atendentes: a ordem de processamento do BIG-IP DNS"
 summary: "Uma consulta DNS que chega a um listener do BIG-IP pode ser respondida por iRules, pelo processamento DNSSEC, por um wide IP de GSLB, pelo DNS Express, por um cache DNS, pelo BIND local ou por um pool de servidores DNS reais. A F5 documenta uma precedência rígida entre eles, e a maioria das surpresas no BIG-IP DNS, do registro que responde quando você esperava o GSLB ao Rapid Response que deixa o BIND mudo, se explica quando você lê essa ordem do jeito certo."
 concepts: ["big-ip dns", "gtm", "f5", "dns express", "dns cache", "bind", "listener", "unhandled query action"]
 relatedTools: ["f5-gslb-decision-flow", "f5-iquery-protocol-explainer"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Um BIG-IP DNS não é um único servidor DNS. É uma porta de entrada, o listener (o endereço em que o BIG-IP escuta as consultas DNS), e atrás dela até meia dúzia de atendentes diferentes esperam numa fila documentada: as iRules, o processamento DNSSEC, os wide IPs de GSLB (global server load balancing, o balanceamento global de servidores), o DNS Express, um de três tipos de cache DNS, a instância local do BIND e, por último, um pool de servidores DNS reais. Toda consulta percorre essa fila em ordem, e quem responde é o primeiro atendente capaz de responder. Quase todo mistério do tipo "por que recebi ESSA resposta" no BIG-IP DNS desaparece quando você sabe essa fila de cor.
+Um BIG-IP DNS não é um único servidor DNS. É uma porta de entrada, o listener (o endereço em que o BIG-IP escuta as consultas DNS), e atrás dela até sete atendentes diferentes esperam numa fila documentada: as iRules, o processamento DNSSEC, os wide IPs de GSLB (global server load balancing, o balanceamento global de servidores), o DNS Express, um de três tipos de cache DNS, a instância local do BIND e, por último, um pool de servidores DNS reais. Toda consulta percorre essa fila em ordem, e quem responde é o primeiro atendente capaz de responder. Quase todo mistério do tipo "por que recebi ESSA resposta" no BIG-IP DNS desaparece quando você sabe essa fila de cor.
 
 ## Quem responde e quem resolve
 

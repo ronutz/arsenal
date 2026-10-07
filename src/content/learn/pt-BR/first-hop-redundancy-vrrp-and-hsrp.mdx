@@ -23,7 +23,7 @@ Duas linhas de solução foram tentadas, e uma delas perdeu:
 
 A segunda abordagem venceu e deu origem a três protocolos:
 
-- **HSRP (Cisco, 1998, RFC 2281)**: o primeiro a ser amplamente adotado, e proprietário; a RFC é informational (informativa), publicada para descrever o protocolo, e não para padronizá-lo.
+- **HSRP (Cisco, patenteado em 1995, RFC 2281 em 1998)**: o primeiro a ser amplamente adotado, e proprietário; a RFC é informational (informativa), publicada para descrever o protocolo, e não para padronizá-lo.
 - **VRRP (RFC 2338 em 1998, hoje RFC 5798, que cobre IPv4 e IPv6)**: o padrão do IETF, multivendor e tão parecido com o HSRP que a posição da Cisco sobre a patente foi um assunto quente durante a padronização.
 - **GLBP (Cisco)**, que acrescenta load sharing (divisão de carga) respondendo às requisições ARP com MACs virtuais diferentes, de modo que os hosts da mesma sub-rede se distribuem entre os gateways, em vez de usarem todos o mesmo.
 
@@ -73,7 +73,7 @@ Um roteador que perdeu o uplink, ou a adjacência de roteamento, ou a capacidade
 
 **O tracking de interface e de objeto** é o recurso que decide se o projeto é de verdade. Um roteador cujo uplink caiu continua respondendo na LAN e segue tranquilamente como master, fazendo forwarding de tráfego para lugar nenhum. O tracking baixa a prioridade dele quando o uplink ou a rota monitorada desaparece, e o papel passa para um roteador que ainda tem caminho. **Redundância sem tracking é um grupo que faz failover no evento que ele tinha menos chance de enfrentar, a morte do roteador, e não no evento que ele vai encontrar de fato.**
 
-**A autenticação** existia nas primeiras versões do VRRP, mas se concluiu que ela não trazia segurança real contra um atacante dentro do segmento, e ela foi removida na RFC 5798. O controle que funciona de verdade é o acesso ao segmento, e não um segredo compartilhado.
+**A autenticação** existia nas primeiras versões do VRRP, mas se concluiu que ela não trazia segurança real contra um atacante dentro do segmento, e ela foi removida na RFC 3768. O controle que funciona de verdade é o acesso ao segmento, e não um segredo compartilhado.
 
 ## As falhas e como elas aparecem
 
@@ -93,3 +93,8 @@ Um roteador que perdeu o uplink, ou a adjacência de roteamento, ou a capacidade
 ## O que levar daqui
 
 **Redundância que nunca foi testada com uma falha provocada de propósito é só uma configuração, não uma capacidade.** O teste que vale a pena não é desligar um roteador, porque esse é o caso fácil e normalmente funciona. **É derrubar o uplink e deixar o roteador ligado**, porque é para esse cenário que o tracking existe, e é nele que um par nunca testado descobre que não tem tracking nenhum.
+
+## Fontes
+
+- [RFC 3768, Virtual Router Redundancy Protocol (VRRP), abril de 2004: a seção 13, as mudanças em relação à RFC 2338, entre elas "Removed authentication methods from VRRP" (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc3768)
+- [RFC 2281, Cisco Hot Standby Router Protocol (HSRP), março de 1998: um protocolo já implantado, e a patente americana 5.473.599, de 5 de dezembro de 1995 (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc2281)

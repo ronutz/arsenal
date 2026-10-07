@@ -39,7 +39,7 @@ headers:
 
 The two header entries are combined with AND: the request must carry a matching `partner-name` **and** a matching `User-Agent`. But inside the `User-Agent` matcher, the two values are OR: either user-agent string satisfies it.
 
-A related trap is that a single header value string is matched literally, commas included. If you write one `exact_values` entry of `"GOOGLE,BING"` expecting it to mean two partners, it will only match a header whose value is literally the eight characters `GOOGLE,BING`. To match either, you need two entries in `exact_values`, not one comma-joined string.
+A related trap is that a single header value string is matched literally, commas included. If you write one `exact_values` entry of `"GOOGLE,BING"` expecting it to mean two partners, it will only match a header whose value is literally the eleven characters `GOOGLE,BING`. To match either, you need two entries in `exact_values`, not one comma-joined string.
 
 ## Presence, absence, and inversion
 

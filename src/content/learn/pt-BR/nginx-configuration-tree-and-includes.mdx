@@ -68,7 +68,7 @@ O NGINX lê o `nginx.conf` e todo o resto chega por `include`, que cola o conte�
 
 ## Esta série, em ordem
 
-Este artigo abre a série **NGINX, da configuração ao diagnóstico**. Ele resolve qual arquivo vence e qual usuário roda o quê; as partes seguem uma requisição pela configuração (o location escolhido, a URI enviada ao backend, o cache, os limites), depois o reload e as primeiras verificações quando algo quebra, e terminam no Apache httpd, o problema que o NGINX foi construído para resolver.
+Este artigo abre a série **NGINX, da configuração ao troubleshooting**. Ele resolve qual arquivo vence e qual usuário roda o quê; as partes seguem uma requisição pela configuração (o location escolhido, a URI enviada ao backend, o cache, os limites), depois o reload e as primeiras verificações quando algo quebra, e terminam no Apache httpd, o problema que o NGINX foi construído para resolver.
 
 1. **[Correspondência de location no NGINX: por que o bloco que você esperava não foi o que rodou](/learn/nginx-location-matching-order)**. A ordem fixa de cinco passos que o NGINX usa para escolher um location, e o único passo em que a ordem do arquivo importa.
 2. **[A barra final do proxy_pass no NGINX: um caractere que decide o que seu backend recebe](/learn/nginx-proxy-pass-uri-rewriting)**. A barra final do proxy_pass: um caractere que decide se o prefixo casado é substituído.

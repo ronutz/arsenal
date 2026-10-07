@@ -32,7 +32,7 @@ A **record** is one instance: one alert, one incident.
 
 **Fields** hold the values on a record. They have types, and the type matters more than it looks: a picklist field constrains input to known values, which is what makes it usable in playbook conditions and dashboard grouping. A text field holding what should have been a picklist is the most common reason a dashboard cannot summarise something.
 
-**Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR (security orchestration) platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
+**Relationships** connect records across modules. An incident relates to the alerts that raised it, the assets involved, the indicators observed, the tasks assigned. This is the part that distinguishes a SOAR (security orchestration, automation and response) platform from a ticket queue: the relationship is queryable, so "show me every incident touching this asset in the last quarter" is a question the system can answer.
 
 ## Correlation across modules
 
@@ -63,3 +63,7 @@ Widgets query the same data model, which closes the loop: a field that is a pick
 ## What an exam candidate should be able to state cold
 
 Deployment is single node, HA, or distributed and multi-tenant, and the deciding question for the last is whether data may leave the tenant. Modules hold records, records have typed fields, and relationships connect records across modules; relationships are queryable and are what enable correlation and deduplication. Field type matters, because picklists can be grouped in playbook conditions and dashboards while free text cannot. Access control governs both what you may do per module and which records you may see, and the second is the tenant boundary.
+
+## Sources
+
+- [Fortinet, What Is SOAR?: SOAR stands for security orchestration, automation, and response (read 2026-10-07)](https://www.fortinet.com/resources/cyberglossary/what-is-soar)

@@ -43,8 +43,12 @@ A lista de preload é um conjunto de hosts gravados no código dos navegadores c
 
 ## Erros de configuração que desativam o HSTS
 
-As falhas que se repetem passam despercebidas, porque o header está lá, mas não está fazendo o trabalho dele. Um `max-age` de `0` esquecido depois de um teste desativa a política. Um `max-age` muito baixo deixa a política expirar entre uma visita e outra. Deixar de fora o `includeSubDomains` expõe os subdomínios. Definir o header só no site HTTPS, mas servir a diretiva `preload` sem cumprir os requisitos do preload, não causa dano, mas também não serve para nada. E, ponto importante, o HSTS só passa a valer depois que o navegador recebe o header por uma conexão HTTPS válida; por isso, ele precisa ir nas respostas seguras, e não ficar escondido em algum lugar que o navegador nunca acessa por HTTPS.
+As falhas que se repetem passam despercebidas, porque o header está lá, mas não está fazendo o trabalho dele. Um `max-age` de `0` esquecido depois de um teste desativa a política. Um `max-age` muito baixo deixa a política expirar entre uma visita e outra. Deixar de fora o `includeSubDomains` expõe os subdomínios. Servir a diretiva `preload` sem cumprir os requisitos do preload não causa dano, mas também não serve para nada. E, ponto importante, o HSTS só passa a valer depois que o navegador recebe o header por uma conexão HTTPS válida; por isso, ele precisa ir nas respostas seguras, e não ficar escondido em algum lugar que o navegador nunca acessa por HTTPS.
 
 ## Onde o HSTS se encaixa na pilha
 
 O HSTS elimina uma classe de ataque no nível do transporte: o downgrade forçado para HTTP puro. Ele combina naturalmente com a flag `Secure` nos cookies, que, para começo de conversa, impede que os cookies sigam em qualquer requisição em HTTP puro (veja [flags de segurança de cookies](/learn/cookie-security-flags)), e com uma Content-Security-Policy, que controla o que roda depois que a página carrega. Nenhum desses mecanismos substitui os outros; juntos, eles cobrem transporte, sessão e conteúdo.
+
+## Fontes
+
+- [RFC 6797, HTTP Strict Transport Security (HSTS), novembro de 2012: a seção 7.2, um host HSTS não envia o header em transporte não seguro (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc6797)

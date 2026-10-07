@@ -27,7 +27,7 @@ To keep a free service fair, Let's Encrypt caps issuance. The limits are enforce
 - **300 new orders per account every 3 hours**, refilling at one order every 36 seconds.
 - **5 certificates per exact set of identifiers every 7 days.** Requesting the identical name set over and over, often from reinstalling or wiping a client during troubleshooting, is the usual way to hit this, and it refills slowly.
 - **Authorization failures per identifier per account**, capped at 5 per hour, to stop a misconfigured client from hammering validation. A separate consecutive-failure limit eventually pauses a name that keeps failing until you unpause it.
-- **Account registration and per-IP request limits** on top, enforced at the load balancer.
+- **Account registration and per-IP request limits** on top; the per-IP request limits are enforced at the load balancers.
 
 Because these change over time, the [Let's Encrypt rate-limits page](https://letsencrypt.org/docs/rate-limits/) is the authoritative source for the current numbers.
 
@@ -46,3 +46,7 @@ Let's Encrypt runs a separate staging environment with far higher limits and an 
 ## The chain and the roots
 
 Current Let's Encrypt certificates chain to ISRG's own roots: **ISRG Root X1** (RSA) and **ISRG Root X2** (ECDSA), both now trusted directly by browsers and operating systems, with rotating intermediates in between. Earlier on, Let's Encrypt leaned on a cross-signature from IdenTrust's older root so that clients would trust it before ISRG's roots were widely distributed; modern clients no longer need that path. You can inspect any issued certificate, including its chain pointers, with the [certificate decoder](/tools/x509), and compute the dns-01 record for issuance with the [ACME dns-01 tool](/tools/acme-dns01).
+
+## Sources
+
+- [Let's Encrypt, Rate Limits (last updated 5 August 2026): the per-endpoint overall request limits apply per IP address and are enforced by the load balancers (read 2026-10-07)](https://letsencrypt.org/docs/rate-limits/)

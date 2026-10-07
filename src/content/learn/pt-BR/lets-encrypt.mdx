@@ -27,7 +27,7 @@ Para manter justo um serviço gratuito, o Let's Encrypt limita a emissão. Os ra
 - **300 pedidos novos por conta a cada 3 horas**, com recomposição de um pedido a cada 36 segundos.
 - **5 certificados por conjunto exato de identificadores a cada 7 dias.** Pedir o mesmo conjunto de nomes várias vezes seguidas, muitas vezes porque o cliente foi reinstalado ou apagado durante um troubleshooting, é o jeito mais comum de bater nesse limite, e ele se recompõe devagar.
 - **Falhas de autorização por identificador, por conta**, limitadas a 5 por hora, para impedir que um cliente mal configurado fique martelando a validação. Um limite separado, de falhas consecutivas, acaba pausando um nome que continua falhando, até você reativá-lo.
-- **Limites de registro de conta e de requisições por IP**, além dos anteriores, aplicados no load balancer.
+- **Limites de registro de conta e de requisições por IP**, além dos anteriores; os limites de requisições por IP são aplicados nos load balancers.
 
 Como esses valores mudam com o tempo, a fonte oficial para os números atuais é a [página de rate limits do Let's Encrypt](https://letsencrypt.org/docs/rate-limits/).
 
@@ -46,3 +46,7 @@ O Let's Encrypt mantém um ambiente de staging separado, com limites muito mais 
 ## A cadeia e as raízes
 
 Os certificados atuais do Let's Encrypt encadeiam até as raízes da própria ISRG: **ISRG Root X1** (RSA) e **ISRG Root X2** (ECDSA), as duas hoje confiáveis diretamente para navegadores e sistemas operacionais, com certificados intermediários que se revezam no meio da cadeia. No começo, o Let's Encrypt dependia de uma assinatura cruzada (cross-sign) da raiz mais antiga da IdenTrust, para que os clientes confiassem nele antes de as raízes da ISRG estarem amplamente distribuídas; os clientes modernos não precisam mais desse caminho. Você pode inspecionar qualquer certificado emitido, inclusive os ponteiros da cadeia, com o [decodificador de certificados](/tools/x509), e calcular o registro dns-01 para a emissão com a [ferramenta ACME dns-01](/tools/acme-dns01).
+
+## Fontes
+
+- [Let's Encrypt, Rate Limits (atualizada em 5 de agosto de 2026): os limites gerais de requisições por endpoint valem por endereço IP e são aplicados pelos load balancers (lida em 07/10/2026)](https://letsencrypt.org/docs/rate-limits/)

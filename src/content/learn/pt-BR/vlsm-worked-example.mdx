@@ -63,7 +63,7 @@ Um bloco só é válido se começa num múltiplo do próprio tamanho. Conte o in
 - Engenharia começa no offset 512 (`172.16.2.0`), múltiplo de 256.
 - O Link A começa no offset 768 (`172.16.3.0`), múltiplo de 4; o Link B, no 772, também múltiplo de 4.
 
-Nenhum bloco se sobrepõe a outro, porque cada um começa onde o anterior terminou. É isso que a alocação do maior para o menor garante: tudo o que veio antes de um bloco é uma potência de dois maior, então o total acumulado é sempre múltiplo do tamanho seguinte.
+Nenhum bloco se sobrepõe a outro, porque cada um começa onde o anterior terminou. É isso que a alocação do maior para o menor garante: tudo o que veio antes de um bloco é uma potência de dois maior (ou igual), então o total acumulado é sempre múltiplo do tamanho seguinte.
 
 ## Passo 5: contabilizar a sobra
 

@@ -61,7 +61,7 @@ O tamanho do prefixo e a máscara de sub-rede em notação decimal pontuada dize
 | /31 | 255.255.255.254 | 2 | 2, num link ponto a ponto |
 | /32 | 255.255.255.255 | 1 | 1, um único host |
 
-O último octeto de uma máscara só pode ter nove valores (0, 128, 192, 224, 240, 248, 252, 254, 255), porque os bits 1 precisam ser contíguos. Uma máscara como `255.255.255.200` simplesmente não é uma máscara CIDR válida.
+Qualquer octeto de uma máscara só pode ter nove valores (0, 128, 192, 224, 240, 248, 252, 254, 255), porque os bits 1 precisam ser contíguos. Uma máscara como `255.255.255.200` simplesmente não é uma máscara CIDR válida.
 
 ## Rede, broadcast e hosts utilizáveis
 

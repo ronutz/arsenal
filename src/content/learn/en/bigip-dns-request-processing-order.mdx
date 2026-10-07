@@ -1,6 +1,6 @@
 ---
 slug: bigip-dns-request-processing-order
-title: "One Query, Six Answering Machines: the BIG-IP DNS Processing Order"
+title: "One Query, Seven Answering Machines: the BIG-IP DNS Processing Order"
 summary: "A DNS query arriving at a BIG-IP listener can be answered by iRules, DNSSEC processing, a GSLB wide IP, DNS Express, a DNS cache, local BIND, or a pool of real DNS servers. F5 documents a strict precedence among them, and most surprises in BIG-IP DNS, from the record that answers when you expected GSLB to Rapid Response silencing BIND, come down to reading that order correctly."
 concepts: ["big-ip dns", "gtm", "f5", "dns express", "dns cache", "bind", "listener", "unhandled query action"]
 relatedTools: ["f5-gslb-decision-flow", "f5-iquery-protocol-explainer"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind which up to half a dozen different answering machines wait in a documented line: iRules, DNSSEC processing, GSLB (global server load balancing) wide IPs, DNS Express, one of three kinds of DNS cache, the local BIND instance, and finally a pool of real DNS servers. Every query walks that line in order and the first machine that can answer, answers. Nearly every "why did I get THIS response" mystery in BIG-IP DNS dissolves once you can recite the line.
+A BIG-IP DNS box is not one DNS server. It is a front door, the listener, behind which up to seven different answering machines wait in a documented line: iRules, DNSSEC processing, GSLB (global server load balancing) wide IPs, DNS Express, one of three kinds of DNS cache, the local BIND instance, and finally a pool of real DNS servers. Every query walks that line in order and the first machine that can answer, answers. Nearly every "why did I get THIS response" mystery in BIG-IP DNS dissolves once you can recite the line.
 
 ## The responders and the resolvers
 

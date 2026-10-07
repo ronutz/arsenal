@@ -31,8 +31,12 @@ A flag `ad` (Authentic Data) no header (cabeçalho) é o veredito do resolver: q
 
 ## A flag AD diz o que outra pessoa concluiu
 
-O `ad` numa resposta significa que **o resolver que você consultou** validou a cadeia. Não significa que a resposta é assinada, nem que você validou alguma coisa.
+O `ad` numa resposta significa que **o resolver que você consultou** validou a cadeia. Não traz uma assinatura que você possa conferir, nem significa que você validou alguma coisa.
 
 Entre esse resolver e a sua aplicação existe um caminho que talvez você não controle. **Uma resposta forjada com o bit AD ligado é idêntica a uma resposta validada** para qualquer coisa que confie na flag sem validar; é por isso que o bit só tem valor num canal confiável até um resolver em que você confia.
 
 Se a validação importa para você, valide: usar `+dnssec` e conferir o RRSIG você mesmo responde à sua pergunta. **A flag AD responde à pergunta de outra pessoa.**
+
+## Fontes
+
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, março de 2005: a seção 3.2.3, um servidor só liga o bit AD quando considera a resposta autêntica (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc4035)

@@ -412,9 +412,9 @@ export const MILESTONES: Milestone[] = [
     strand: "digital",
     countries: ["US"],
     who: "IBM, the National Bureau of Standards and the National Security Agency",
-    what: "A block cipher published as a federal standard on 23 November 1977, developed from Horst Feistel's Lucifer after the government asked the public for a design it was unwilling to build itself.",
+    what: "A block cipher published as a federal standard on 15 January 1977, developed from Horst Feistel's Lucifer after the government asked the public for a design it was unwilling to build itself.",
     why: "Civilian cryptography starts here. The agency's changes shortened the key, exactly as critics said - and also made the cipher resistant to an attack technique the academic world would not rediscover for seventeen years. The suspicion was half right and half exactly backwards, and the open competition that replaced it in 2001 was designed so nobody would have to take anyone's word again.",
-    sources: [{ label: "NIST cyber history on cryptography: the 1973 and 1974 solicitations, the 1976 public workshops and the issue of FIPS 46 on 23 November 1977", url: "https://csrc.nist.gov/nist-cyber-history/cryptography/chapter" }],
+    sources: [{ label: "NIST cyber history on cryptography: the 1973 and 1974 solicitations and the 1976 public workshops", url: "https://csrc.nist.gov/nist-cyber-history/cryptography/chapter" }, { label: "NIST CSRC, FIPS 46, Data Encryption Standard: date published 15 January 1977", url: "https://csrc.nist.gov/pubs/fips/46/final" }],
   },
   {
     slug: "domain-name-system",

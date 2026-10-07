@@ -15,7 +15,7 @@ nslookup is the DNS query tool most people meet first, and its output has a simp
 
 ## The layout
 
-A normal lookup looks like this:
+A normal lookup looks like this (example.com's IPv4 addresses on 7 October 2026; they change, so yours may differ):
 
 ```
 Server:		1.1.1.1
@@ -23,12 +23,14 @@ Address:	1.1.1.1#53
 
 Non-authoritative answer:
 Name:	example.com
-Address: 93.184.216.34
+Address: 104.20.23.154
+Name:	example.com
+Address: 172.66.147.243
 ```
 
 The first two lines are the header, and they describe the **resolver**, not the answer. `Server:` is the DNS server nslookup asked, and the `Address:` right below it is that server's address with its port (`#53`). This trips people up constantly: the first Address line is the resolver you queried, not the address you looked up.
 
-After a blank line comes the answer. The `Non-authoritative answer:` marker, when present, tells you the result came from the resolver's cache rather than straight from a server authoritative for the zone. Then the records themselves: for an address lookup, a `Name:` line followed by one or more `Address:` lines (an IPv6 answer is on an Address line too, told apart by its colons).
+After a blank line comes the answer. The `Non-authoritative answer:` marker, when present, tells you the result came from a resolver, usually out of its cache, rather than straight from a server authoritative for the zone: nslookup prints it whenever the reply's AA (authoritative answer) bit is clear. Then the records themselves: for an address lookup, a `Name:` line followed by one or more `Address:` lines (an IPv6 answer is on an Address line too, told apart by its colons).
 
 ## Where to look first
 
@@ -44,3 +46,8 @@ Before the answer, `nslookup` prints which server it asked. **That line is the m
 A resolver changed by DHCP, a VPN (virtual private network) that installed its own, a container inheriting a different `resolv.conf`: each produces answers that are correct for a resolver nobody meant to consult. **The answer is not wrong; the question went somewhere unexpected**, and the output looks entirely normal.
 
 **Read the server line before the answer.** When two machines disagree about a name, it is more often the resolver than the record.
+
+## Sources
+
+- [RFC 1035, Domain Names: Implementation and Specification, November 1987: section 4.1.1, the AA (authoritative answer) bit (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035)
+- [Google Public DNS, DNS-over-HTTPS JSON API: example.com, type A, 104.20.23.154 and 172.66.147.243 (read 2026-10-07)](https://dns.google/resolve?name=example.com&type=A)

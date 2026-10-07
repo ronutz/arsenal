@@ -61,7 +61,7 @@ The prefix length and the dotted subnet mask say the same thing: a mask has as m
 | /31 | 255.255.255.254 | 2 | 2, on a point-to-point link |
 | /32 | 255.255.255.255 | 1 | 1, a single host |
 
-The last octet of a mask can only take nine values (0, 128, 192, 224, 240, 248, 252, 254, 255), because the 1 bits must be contiguous. A mask such as `255.255.255.200` is not a valid CIDR mask at all.
+Every octet of a mask can only take nine values (0, 128, 192, 224, 240, 248, 252, 254, 255), because the 1 bits must be contiguous. A mask such as `255.255.255.200` is not a valid CIDR mask at all.
 
 ## Network, broadcast, and usable hosts
 

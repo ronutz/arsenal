@@ -23,7 +23,7 @@ A jumbo frame is any Ethernet frame carrying more than 1500 bytes of payload. In
 
 Why roughly nine thousand? It is comfortably larger than the 8-KiB (kibibyte) application blocks common in storage and NFS (Network File System) workloads with headers to spare, while staying safely inside the coverage of Ethernet's 32-bit FCS (Frame Check Sequence) error detection, which weakens as frames grow. Switch datasheets usually quote a system MTU of 9216 bytes - that is not a competing jumbo size but headroom: room for a 9000-byte payload plus VLAN (Virtual Local Area Network) tags, MPLS (Multiprotocol Label Switching) labels, and other header shims.
 
-Which points at a distinction that resolves most MTU confusion. Encapsulations that ride *inside* the IP payload - PPPoE (Point-to-Point Protocol over Ethernet), GRE (Generic Routing Encapsulation), VXLAN (Virtual Extensible LAN) - shrink the usable inner MTU. Layer 2 shims - VLAN tags, MPLS labels - ride in the *frame header* and do not touch the IP MTU at all; they grow the frame instead. A single 802.1Q tag turns a full 1518-byte frame into a 1522-byte **baby giant**: payload unchanged, header grown. Jumbo frames grow the payload itself; baby giants grow only the wrapper.
+Which points at a distinction that resolves most MTU confusion. Encapsulations that ride *inside* the Ethernet payload - PPPoE (Point-to-Point Protocol over Ethernet), GRE (Generic Routing Encapsulation), VXLAN (Virtual Extensible LAN) - shrink the usable inner MTU. Layer 2 shims - VLAN tags, MPLS labels - ride in the *frame header* and do not touch the IP MTU at all; they grow the frame instead. A single 802.1Q tag turns a full 1518-byte frame into a 1522-byte **baby giant**: payload unchanged, header grown. Jumbo frames grow the payload itself; baby giants grow only the wrapper.
 
 ## What jumbos actually buy
 
@@ -50,3 +50,7 @@ Overlay networks are where jumbo arithmetic becomes daily work. VXLAN wraps the 
 Configuration is an exercise in agreement, inside-out: switches and routers first (frame headroom and interface MTU), then hosts, one L2 domain at a time - never "the whole network" in one change. Then verify with a ping that forbids fragmentation at full size. On Linux: `ping -M do -s 8972 <target>`; on Windows: `ping -f -l 8972 <target>`. The magic number 8972 is just 9000 minus 20 bytes of IPv4 header minus 8 of ICMP echo header - if that succeeds and 8973 fails, your path MTU is exactly 9000 and you have proven it end to end. And know where to stop: anything internet-facing stays at 1500, because the public path is the one L2-and-L3 chain you will never control.
 
 The arithmetic in this article - inner MTUs, MSS values, frame sizes, underlay requirements, the efficiency pair - is exactly what the MTU / MSS calculator computes from any link MTU and encapsulation stack you give it.
+
+## Sources
+
+- [RFC 2516, A Method for Transmitting PPP Over Ethernet (PPPoE), February 1999: section 4, the Ethernet payload for PPPoE (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2516)

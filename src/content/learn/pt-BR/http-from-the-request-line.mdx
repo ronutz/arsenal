@@ -15,7 +15,7 @@ O HTTP parece uma lista enorme de coisas para aprender: os métodos, dezenas de 
 
 ## Uma troca, duas mensagens
 
-O padrão resume o protocolo inteiro numa frase: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, seção 3.3), ou seja, um protocolo de requisição e resposta, stateless (sem estado), que troca mensagens por uma conexão. O cliente envia uma requisição: um método, que diz o que ele quer que seja feito; o alvo, sobre o qual isso deve ser feito; campos de header que detalham o pedido; e, às vezes, um corpo. O servidor responde com um código de status, que diz como foi, campos de header próprios e, normalmente, um corpo.
+O padrão resume o protocolo inteiro numa frase: "HTTP is a stateless request/response protocol for exchanging 'messages' across a connection" (RFC 9110, seção 3.4), ou seja, um protocolo de requisição e resposta, stateless (sem estado), que troca mensagens por uma conexão. O cliente envia uma requisição: um método, que diz o que ele quer que seja feito; o alvo, sobre o qual isso deve ser feito; campos de header que detalham o pedido; e, às vezes, um corpo. O servidor responde com um código de status, que diz como foi, campos de header próprios e, normalmente, um corpo.
 
 Essa também é a ordem certa para aprender. Leia a requisição de cima para baixo, do jeito que o servidor lê: a linha de requisição (a request line, com o método e o alvo), depois os campos, depois o corpo e o ponto em que ele termina. Leia a resposta do mesmo jeito: o status, depois os campos. A série segue essa ordem e depois passa para as camadas em volta das mensagens.
 
@@ -54,7 +54,7 @@ Dez partes: a mensagem lida de cima para baixo, depois as camadas em volta dela 
 
 ## Fontes
 
-- [RFC 9110, HTTP Semantics (STD 97), junho de 2022: o resumo (os aspectos "shared by all versions"), a seção 3.3 (um protocolo de requisição e resposta sem estado) e a seção 3.7 (intermediários: proxy, gateway, túnel) (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9110)
+- [RFC 9110, HTTP Semantics (STD 97), junho de 2022: o resumo (os aspectos "shared by all versions"), a seção 3.4 (um protocolo de requisição e resposta sem estado) e a seção 3.7 (intermediários: proxy, gateway, túnel) (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc9110)
 - [RFC 9112, HTTP/1.1 (STD 99), junho de 2022: a sintaxe e o enquadramento das mensagens da versão 1.1 (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9112)
 - [RFC 9113, HTTP/2, junho de 2022: "an optimized expression of the semantics" do HTTP; torna obsoletas a RFC 7540 e a RFC 8740 (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9113)
 - [RFC 9114, HTTP/3, junho de 2022: o HTTP sobre o transporte QUIC (lida em 2026-10-06)](https://www.rfc-editor.org/rfc/rfc9114)

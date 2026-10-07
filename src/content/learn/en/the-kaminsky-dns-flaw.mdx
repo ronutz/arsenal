@@ -15,7 +15,7 @@ updated: "2026-09-08"
 
 Cache poisoning was not a new idea in 2008. Everyone who worked on DNS (Domain Name System) understood the shape of it: a resolver asks an authoritative server a question and accepts the first answer that matches, and matching meant one thing - a sixteen-bit transaction identifier, sixty-five thousand five hundred and thirty-six possibilities. An attacker who could guess it and reply faster than the real server won. Papers had been written about it. It was regarded as difficult, slow, and largely theoretical.
 
-Two things made it worse than the arithmetic suggested and nobody had put them together. Many implementations sent their queries from a **fixed source port**, so the only unknown really was the transaction identifier. And a failed attempt was expensive: guess wrong, the real answer arrives, the record is cached, and the attacker must wait for the time-to-live to expire before trying again - possibly a day.
+Two things decided how bad it really was, and nobody had put them together. Many implementations sent their queries from a **fixed source port**, so the only unknown really was the transaction identifier. And a failed attempt was expensive: guess wrong, the real answer arrives, the record is cached, and the attacker must wait for the time-to-live to expire before trying again - possibly a day.
 
 Dan Kaminsky, then director of penetration testing at IOActive, found the way around the waiting.
 
@@ -43,7 +43,7 @@ This is worth being precise about, because it is a pattern practitioners meet co
 
 ## The embargo, and the thing embargoes cannot solve
 
-The plan was that the patch would ship on 8 July and Kaminsky would explain the mechanism at Black Hat on 7 August, giving the internet a month to update before anyone knew what they were updating against. The talk happened; the room was full to the floor.
+The plan was that the patch would ship on 8 July and Kaminsky would explain the mechanism at Black Hat on 7 August, giving the internet a month to update before anyone knew what they were updating against. The talk happened on 6 August, a day earlier than announced and the first day of the briefings; the room was full to the floor.
 
 But the month did not stay quiet, and the reason is structural rather than anyone's fault. **A patch is a description of the vulnerability.** Anyone competent can compare the new code with the old and work backwards to what it prevents. The [Conficker retrospective](/learn/the-worm-era) makes the same point from Microsoft's side, and the [Juniper backdoor](/learn/there-is-no-perfect-code) is its sharpest illustration - researchers extracted the hardcoded password within six hours of the patch being public. An embargo protects the interval before the fix exists. Once the fix ships, the clock the defender is racing is set by whoever reads diffs fastest.
 
@@ -67,3 +67,4 @@ But the month did not stay quiet, and the reason is structural rather than anyon
 - [On the coordinated response: vendors collaborated with Kaminsky and other industry experts on a plan to patch the flaw and simultaneously released the patch on 8 July 2008](https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/10834066)
 - [On the fix and its limits: resolvers were patched to support the best practices of RFC 5452 - randomising fields including source port and transaction ID, validating them in responses, and applying bailiwick checks - which made DNS resilient to off-path cache poisoning; later work developed new attacks using side channels and fragmentation](https://arxiv.org/pdf/2205.05439)
 - [Wikipedia, Dan Kaminsky: 7 February 1979 to 23 April 2021; director of penetration testing at IOActive; known for the 2008 DNS cache poisoning vulnerability and for showing the Sony rootkit had infected at least 568,000 computers; named by ICANN in June 2010 as one of the Trusted Community Representatives for the DNSSEC root; the New York Times labelled him an internet security savior and a digital Paul Revere](https://en.wikipedia.org/wiki/Dan_Kaminsky)
+- [Black Hat USA 2008, Briefings schedule: Day One, August 6, 2008, 11:15 to 12:30, Dan Kaminsky, Black Ops 2008: Its The End Of The Cache As We Know It (read 2026-10-07)](https://www.blackhat.com/html/bh-usa-08/bh-usa-08-schedule.html)

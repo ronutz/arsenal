@@ -14,10 +14,10 @@ updated: "2026-08-10"
 Inside the ANSWER, AUTHORITY, and ADDITIONAL sections, every line is one resource record with the same five columns:
 
 ```
-example.com.		3600	IN	A	93.184.216.34
+example.com.		3600	IN	A	104.20.23.154
 ```
 
-That is **name** (`example.com.`), **TTL** in seconds (`3600`, how long it may be cached), **class** (`IN` for Internet, essentially always), **type** (`A`), and **rdata** (`93.184.216.34`, the type-specific payload). Question records are the exception: they start with a `;`, carry no TTL, and have no rdata, because a question only names what you asked.
+That is **name** (`example.com.`), **TTL** in seconds (`3600`, how long it may be cached), **class** (`IN` for Internet, essentially always), **type** (`A`), and **rdata** (`104.20.23.154`, the type-specific payload). Question records are the exception: they start with a `;`, carry no TTL, and have no rdata, because a question only names what you asked.
 
 ## The types you meet, and their rdata
 

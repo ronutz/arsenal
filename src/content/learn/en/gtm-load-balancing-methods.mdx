@@ -35,7 +35,7 @@ Two more special methods belong to this part of the story. Drop Packet does noth
 
 ## The dynamic methods, and dynamic-ratio
 
-The dynamic family reads measurements: Round Trip Time, Completion Rate and Fewest Hops measure the path between a data center and the requesting LDNS; CPU, Kilobytes/Second, Least Connections and Packet Rate read server-side statistics; Quality of Service blends weighted factors into one score, using the pool's `qos-*` coefficients (defaults: rtt 50, link capacity 30, hit ratio 5, kilobytes/second 3, packet rate 1, the rest 0), with ties falling to Round Robin.
+The dynamic family reads measurements: Round Trip Time, Completion Rate and Hops measure the path between a data center and the requesting LDNS; CPU, Kilobytes/Second, Least Connections and Packet Rate read server-side statistics; Quality of Service blends weighted factors into one score, using the pool's `qos-*` coefficients (defaults: rtt 50, link capacity 30, hit ratio 5, kilobytes/second 3, packet rate 1, the rest 0), with ties falling to Round Robin.
 
 By default a dynamic method is winner-take-all: the single member with the best metric receives the traffic. The pool's `dynamic-ratio` option changes the arithmetic, and the manual's example makes it concrete: with round trip times of 50 and 100 microseconds and dynamic-ratio disabled, every request goes to the faster member; enabled, the values become ratios and the faster member merely answers twice as often. The tmsh reference scopes the option to eight modes (completion-rate, fewest-hops, kilobytes-per-second, least-connections, lowest-round-trip-time, quality-of-service, virtual-server-capacity, virtual-server-score); enabled under anything else, it has no documented effect.
 

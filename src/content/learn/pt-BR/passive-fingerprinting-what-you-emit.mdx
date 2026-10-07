@@ -17,7 +17,7 @@ Vale entender isso por dois motivos. Primeiro, porque esse é o núcleo honesto 
 
 ## Camada 1: a pilha TCP/IP (p0f)
 
-O primeiro pacote de qualquer conexão, o SYN, está cheio de pistas. O TTL inicial, o tamanho da janela TCP, a ordem exata das opções TCP, pequenas peculiaridades nos headers (cabeçalhos) IP e TCP: nada disso pode ser configurado pela aplicação, e tudo isso muda de um sistema operacional para outro e de uma versão de kernel para outra. A ferramenta p0f, escrita originalmente por Michal Zalewski há duas décadas, lê esses campos nos pacotes que um host emite e os compara com uma base de pilhas conhecidas. Ela nunca envia um probe (um pacote de sondagem); só observa. É isso que a torna passiva, e invisível.
+O primeiro pacote de qualquer conexão, o SYN, está cheio de pistas. O TTL inicial, o tamanho da janela TCP, a ordem exata das opções TCP, pequenas peculiaridades nos headers (cabeçalhos) IP e TCP: nada disso pode ser configurado pela aplicação, e tudo isso muda de um sistema operacional para outro e de uma versão de kernel para outra. A ferramenta p0f, escrita originalmente por Michal Zalewski em 2000, lê esses campos nos pacotes que um host emite e os compara com uma base de pilhas conhecidas. Ela nunca envia um probe (um pacote de sondagem); só observa. É isso que a torna passiva, e invisível.
 
 O campo mais útil de todos é o TTL inicial. Como cada roteador no caminho decrementa o TTL, um valor que chega perto de 64 quase certamente saiu com 64, o padrão do Linux, do macOS, do BSD e do Android. O Windows começa com 128. Alguns equipamentos de rede usam 255. O **explicador de assinaturas p0f** decodifica a assinatura completa, de oito campos, e explica cada campo, mas é no TTL que está a parte mais interessante: quando o TTL da pilha de um pacote diz Linux e o User-Agent que vai por cima diz Windows, você está olhando para um proxy ou para um NAT (tradução de endereços de rede). O pacote carrega o kernel do intermediário, e não o do cliente. Essa contradição não tem como ser forjada na camada de aplicação, e é exatamente por isso que se confia nela.
 
@@ -31,7 +31,7 @@ O **analisador de entropia de User-Agent** quebra uma string colada nesses token
 
 Esta é a mais sutil. Mesmo que todos os valores dos headers fossem falsificados com perfeição, a *ordem* em que o cliente envia os headers já é, ela mesma, um fingerprint. O Chromium envia os headers numa sequência característica, o Firefox em outra, o curl e a biblioteca requests do Python nas suas próprias ordens, enxutas. A sequência está gravada no código do cliente e sobrevive intacta à falsificação dos valores.
 
-É exatamente a mesma ideia do JA3, que identifica um cliente TLS pela ordem das cifras e das extensões no ClientHello, só que levada do handshake (o aperto de mão) do TLS para a requisição HTTP. A ferramenta de **fingerprint pela ordem dos headers HTTP** classifica um bloco de headers colado comparando a sequência com a de clientes conhecidos e procurando headers que só navegadores enviam, como o Sec-Fetch e o Sec-CH-UA. Uma requisição com o User-Agent do Chrome, mas com a ordem de quatro headers do curl, não é uma requisição do Chrome; é um script fantasiado, e é a ordem dos headers que o denuncia. Os serviços de detecção de bots e os WAFs (web application firewalls) se baseiam exatamente nisso.
+É exatamente a mesma ideia do JA3, que identifica um cliente TLS pela ordem das cifras e das extensões no ClientHello, só que levada do handshake (o aperto de mão) do TLS para a requisição HTTP. A ferramenta de **fingerprint pela ordem dos headers HTTP** classifica um bloco de headers colado comparando a sequência com a de clientes conhecidos e procurando headers que só navegadores enviam, como o Sec-Fetch e o Sec-CH-UA. Uma requisição com o User-Agent do Chrome, mas com a ordem de três headers do curl, não é uma requisição do Chrome; é um script fantasiado, e é a ordem dos headers que o denuncia. Os serviços de detecção de bots e os WAFs (web application firewalls) se baseiam exatamente nisso.
 
 ## Por que tudo gira em torno da contradição
 
@@ -41,8 +41,13 @@ As três ferramentas daqui só decodificam e explicam. Você cola uma assinatura
 
 ## Esta série, em ordem
 
-Este artigo abre a série **Impressões digitais do que um cliente emite**. Ele percorre as três camadas que um cliente entrega sem ninguém perguntar; as partes da série tratam da mais rica delas, o ClientHello do TLS, do JA3, passando pela mudança que o quebrou, até o JA4, que o substituiu.
+Este artigo abre a série **Fingerprinting do que um cliente emite**. Ele percorre as três camadas que um cliente entrega sem ninguém perguntar; as partes da série tratam da mais rica delas, o ClientHello do TLS, do JA3, passando pela mudança que o quebrou, até o JA4, que o substituiu.
 
 1. **[Fingerprinting TLS passivo: JA3, GREASE, e o churn que levou ao JA4](/learn/passive-tls-fingerprinting-ja3)**. Como o JA3 faz o hash das versões, das cifras e das extensões, por que o GREASE precisa ser removido, e a instabilidade (o churn) que veio depois.
 2. **[O fingerprint que quebrou e o que o próprio autor escreveu para substituí-lo](/learn/ja3-to-ja4-fingerprinting)**. O Chrome passou a embaralhar as suas extensões em 2023 e o JA3 parou de funcionar; o substituto, do mesmo autor, funciona porque ordena as extensões.
 3. **[O que é um fingerprint TLS JA4?](/learn/what-is-a-ja4-tls-fingerprint)**. Como um ClientHello vira um JA4 estável, e o que um JA4 pode e não pode dizer a você.
+
+## Fontes
+
+- [Everything curl, Verbose: uma requisição padrão do curl envia Host, User-Agent e Accept (lida em 07/10/2026)](https://ec.haxx.se/usingcurl/verbose/)
+- [p0f v3, Michal Zalewski: a ideia do p0f data de 10 de junho de 2000 (lida em 07/10/2026)](https://lcamtuf.coredump.cx/p0f3/)

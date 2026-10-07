@@ -1,7 +1,7 @@
 ---
 slug: reading-a-dns-answer
 title: "Como ler uma resposta de DNS: o diagnóstico está na linha que você pulou"
-summary: "Quatorze artigos sobre dig e nslookup, organizados como uma única resposta lida de cima para baixo: quem de fato respondeu, se a resposta veio da autoridade ou de um cache, o que as flags revelam, o que a linha OPT está fazendo ali, o que dizem os registros, o que significa um código de falha e como seguir a delegação por conta própria quando não dá para confiar na resposta do resolver. A maioria dos diagnósticos errados de DNS não vem de não entender o DNS. Vem de uma linha que ninguém leu."
+summary: "Quinze artigos sobre dig e nslookup, organizados como uma única resposta lida de cima para baixo: quem de fato respondeu, se a resposta veio da autoridade ou de um cache, o que as flags revelam, o que a linha OPT está fazendo ali, o que dizem os registros, o que significa um código de falha e como seguir a delegação por conta própria quando não dá para confiar na resposta do resolver. A maioria dos diagnósticos errados de DNS não vem de não entender o DNS. Vem de uma linha que ninguém leu."
 concepts: ["dns", "dig", "nslookup", "authoritative", "delegation", "edns", "dnssec", "troubleshooting", "index"]
 relatedTools: []
 relatedArticles: ["reading-dig-output", "authoritative-vs-non-authoritative-answers", "dig-trace-and-delegation", "the-kaminsky-dns-flaw"]
@@ -27,7 +27,7 @@ Por isso, esta página organiza os artigos sobre as ferramentas como se fossem u
 
 ## Segunda linha: a resposta é autoritativa?
 
-**[Respostas autoritativas e não autoritativas](/learn/authoritative-vs-non-authoritative-answers)**: o aviso que o nslookup imprime e o que o dig mostra nas flags indicam que a resposta veio do cache de um resolver, e não de um servidor que hospeda a zona. Uma resposta assim pode estar certa e desatualizada ao mesmo tempo. Quando uma mudança "ainda não propagou", esta é a primeira linha a olhar, e o artigo explica por que a solução, em geral, é perguntar direto à autoridade em vez de esperar.
+**[Respostas autoritativas e não autoritativas](/learn/authoritative-vs-non-authoritative-answers)**: o aviso que o nslookup imprime e o que o dig mostra nas flags indicam que a resposta veio de um resolver, quase sempre do cache dele, e não de um servidor que hospeda a zona. Uma resposta assim pode estar certa e desatualizada ao mesmo tempo. Quando uma mudança "ainda não propagou", esta é a primeira linha a olhar, e o artigo explica por que a solução, em geral, é perguntar direto à autoridade em vez de esperar.
 
 A [falha de Kaminsky](/learn/the-kaminsky-dns-flaw) é o que acontece quando uma resposta não autoritativa, tirada do cache, é a resposta *errada* e nada no resolver consegue perceber isso; a linha que diz "Non-authoritative" é o motivo de essa distinção ter justificado um patch de emergência na indústria inteira.
 

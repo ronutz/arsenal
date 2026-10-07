@@ -1,7 +1,7 @@
 ---
 slug: encryption-family-history
 title: "Cifragem: o padrão, a suspeita, e o que a suspeita errou"
-summary: "A criptografia civil tem um documento fundador e uma discussão fundadora. O documento é o Data Encryption Standard, emitido em novembro de 1977 a partir de uma cifra que a IBM construiu sobre o Lucifer de Horst Feistel. A discussão é o que a National Security Agency fez com ele - e a resposta, que levou dezessete anos para aparecer, é que a agência tornou o algoritmo mais forte contra um ataque que ninguém de fora conhecia, ao mesmo tempo que encurtou a chave. Esta é a história da família: de um nome de arquivo longo demais para um sistema operacional, passando pelas guerras da criptografia, até um processo de padronização que hoje roda aberto por causa do que aquela suspeita custou."
+summary: "A criptografia civil tem um documento fundador e uma discussão fundadora. O documento é o Data Encryption Standard, emitido em janeiro de 1977 a partir de uma cifra que a IBM construiu sobre o Lucifer de Horst Feistel. A discussão é o que a National Security Agency fez com ele - e a resposta, que levou dezessete anos para aparecer, é que a agência tornou o algoritmo mais forte contra um ataque que ninguém de fora conhecia, ao mesmo tempo que encurtou a chave. Esta é a história da família: de um nome de arquivo longo demais para um sistema operacional, passando pelas guerras da criptografia, até um processo de padronização que hoje roda aberto por causa do que aquela suspeita custou."
 concepts: ["encryption", "des", "aes", "lucifer", "public key", "crypto wars", "history"]
 relatedTools: []
 relatedArticles: ["quantum-threat-to-cryptography", "security-through-obscurity", "tls12-tls13-dtls-quic"]
@@ -25,7 +25,7 @@ O time da IBM incluía Feistel, Walter Tuchman, Don Coppersmith, Alan Konheim, C
 
 ## 1975 a 1977: o padrão e a acusação
 
-A proposta foi publicada no Federal Register em **17 de março de 1975**, o comentário público foi convidado, e dois seminários abertos aconteceram em 1976. O bureau a emitiu como **FIPS 46 em 23 de novembro de 1977**.
+A proposta foi publicada no Federal Register em **17 de março de 1975**, o comentário público foi convidado, e dois seminários abertos aconteceram em 1976. O bureau a emitiu como **FIPS 46 em 15 de janeiro de 1977**.
 
 A agência tinha trabalhado com o bureau o tempo todo, avaliou o algoritmo e recomendou mudanças, que a IBM fez. Duas suspeitas vieram na sequência e dominaram a área por duas décadas: a de que uma porta dos fundos tinha sido inserida, e a de que a chave de **56 bits** tinha sido encurtada de propósito para que a agência pudesse ler o tráfego. Whitfield Diffie e Martin Hellman publicaram *Exhaustive Cryptanalysis of the NBS Data Encryption Standard* em junho de 1977, argumentando que a chave era curta demais para o poder computacional que estava chegando.
 
@@ -76,7 +76,8 @@ A outra prática duradoura é **não escrever a sua**. Kerckhoffs disse em 1883 
 ## Fontes
 
 - [Data Encryption Standard: desenvolvido na IBM a partir do Lucifer de Feistel, publicado no Federal Register em 17 de março de 1975, com o time de projeto incluindo Feistel, Tuchman, Coppersmith, Konheim, Meyer, Matyas, Adler, Grossman, Notz, Smith e Tuckerman](https://en.wikipedia.org/wiki/Data_Encryption_Standard)
-- [História cibernética do NIST sobre criptografia: o estudo de 1972, as solicitações de 15 de maio de 1973 e 27 de agosto de 1974, os seminários públicos de 1976, a emissão do FIPS 46 em 23 de novembro de 1977, e as controvérsias da porta dos fundos e do tamanho de chave](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
+- [História cibernética do NIST sobre criptografia: o estudo de 1972, as solicitações de 15 de maio de 1973 e 27 de agosto de 1974, os seminários públicos de 1976 e as controvérsias da porta dos fundos e do tamanho de chave](https://csrc.nist.gov/nist-cyber-history/cryptography/chapter)
 - [Lucifer (cifra): publicado pela primeira vez em 1971 com chaves de até 128 bits; a National Security Agency reduziu a chave para 56 bits e o bloco para 64 e tornou a cifra resistente à criptanálise diferencial, então conhecida apenas pela IBM e pela agência; o nome era trocadilho com Demon, abreviado de Demonstration porque o sistema operacional não aguentava o nome mais longo](https://en.wikipedia.org/wiki/Lucifer_(cipher))
 - [Communications of the ACM sobre projetar criptografia para o novo século: a recusa da agência em projetar um criptossistema público, a competição de 1997, o argumento de 1996 pelos noventa bits, e o NIST fixando o mínimo em 128 bits](https://cacm.acm.org/opinion/technical-opinion-designing-cryptography-for-the-new-century/)
 - [A Electronic Frontier Foundation e o distributed.net quebrando uma chave DES em 22 horas e 15 minutos em janeiro de 1999](https://www.tech-faq.com/des.html)
+- [NIST CSRC, FIPS 46, Data Encryption Standard (DES): publicado em 15 de janeiro de 1977, retirado em 22 de janeiro de 1988 (lida em 07/10/2026)](https://csrc.nist.gov/pubs/fips/46/final)

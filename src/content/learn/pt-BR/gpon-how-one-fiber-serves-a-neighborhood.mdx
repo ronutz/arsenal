@@ -55,7 +55,7 @@ A assimetria, 2,488 no downstream e 1,244 no upstream, foi uma aposta deliberada
 
 Todo link óptico trabalha com um orçamento de potência (power budget): o transmissor lança tantos dB de luz, o receptor precisa de tantos para enxergar o sinal, e tudo o que fica no meio gasta a diferença. A óptica GPON classe B+, a mais comum, tem um orçamento de cerca de 28 dB de ponta a ponta.
 
-Quem mais gasta são os splitters. Cada divisão 1:2 custa cerca de 3 dB (metade da luz, por definição, mais uma pequena perda), então uma árvore 1:64 gasta uns 18 dB só com a divisão. A fibra em si consome cerca de 0,35 dB por quilômetro nos comprimentos de onda do GPON; cada conector, uns 0,3 dB; cada emenda por fusão, alguns centésimos. Somando tudo, uma divisão 1:64 a 20 km chega perto do limite do orçamento, e esse é exatamente o ponto de projeto da norma.
+Quem mais gasta são os splitters. Cada divisão 1:2 custa cerca de 3,5 dB (metade da luz, por definição, mais uma pequena perda), então uma árvore 1:64 gasta uns 21 dB só com a divisão. A fibra em si consome cerca de 0,35 dB por quilômetro nos comprimentos de onda do GPON; cada conector, uns 0,3 dB; cada emenda por fusão, alguns centésimos. Somando tudo, uma divisão 1:64 a 20 km chega perto do limite do orçamento, e esse é exatamente o ponto de projeto da norma.
 
 Essa conta faz parte do dia a dia do técnico de provedor. Um conector sujo que come 2 dB, um cabo drop dobrado além do raio mínimo de curvatura, uma emenda mecânica malfeita: qualquer um desses problemas pode levar para fora do orçamento uma folha da árvore que já estava no limite, e a falha aparece como perda de pacotes sem explicação, e não como falta de luz. O OTDR (Optical Time-Domain Reflectometer, reflectômetro óptico no domínio do tempo) existe para transformar esse mistério numa distância: ele dispara um pulso, lê as reflexões, e o traço mostra a quantos metros está o ponto onde o orçamento está vazando.
 
@@ -100,3 +100,4 @@ Cada taxa de linha e geração citada acima é uma Recomendação ITU-T com núm
 - [ITU-T G.984.2, camada Physical Media Dependent do GPON - a recomendação cujo Apêndice III leva no título 2,488 Gbit/s de descida e 1,244 Gbit/s de subida](https://www.itu.int/rec/T-REC-G.984.2/en)
 - [ITU-T G.987.1, 10-Gigabit-capable passive optical networks (XG-PON): General requirements](https://www.itu.int/rec/T-REC-G.987.1/en)
 - [ITU-T G.9807.1, 10-Gigabit-capable symmetric passive optical network (XGS-PON)](https://www.itu.int/rec/T-REC-G.9807.1/en)
+- [SENKO, PLC splitter module 2mm type (compact): perda de inserção máxima de 17,5 dB para 1x32 e 21,6 dB para 1x64, conectores incluídos (lida em 07/10/2026)](https://www.senko.com/product/plc-splitter-module-2mm-type-compact)

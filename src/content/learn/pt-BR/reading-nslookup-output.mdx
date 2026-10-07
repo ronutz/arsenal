@@ -15,7 +15,7 @@ O nslookup é a ferramenta de consulta DNS que quase todo mundo conhece primeiro
 
 ## O layout da saída
 
-Uma consulta normal fica assim:
+Uma consulta normal fica assim (os endereços IPv4 do example.com em 7 de outubro de 2026; eles mudam, então os seus podem ser outros):
 
 ```
 Server:		1.1.1.1
@@ -23,12 +23,14 @@ Address:	1.1.1.1#53
 
 Non-authoritative answer:
 Name:	example.com
-Address: 93.184.216.34
+Address: 104.20.23.154
+Name:	example.com
+Address: 172.66.147.243
 ```
 
 As duas primeiras linhas são o header (cabeçalho) e descrevem o **resolver** (o servidor DNS que faz a consulta por você), não a resposta. `Server:` é o servidor DNS que o nslookup consultou, e o `Address:` logo abaixo é o endereço desse servidor, com a porta (`#53`). Isso confunde as pessoas o tempo todo: a primeira linha Address é o resolver que você consultou, não o endereço que você procurou.
 
-Depois de uma linha em branco vem a resposta. O aviso `Non-authoritative answer:`, quando aparece, indica que o resultado veio do cache do resolver, e não direto de um servidor autoritativo para a zona. Em seguida vêm os registros: numa consulta de endereço, uma linha `Name:` seguida de uma ou mais linhas `Address:` (uma resposta IPv6 também aparece numa linha Address, e você a reconhece pelos dois-pontos).
+Depois de uma linha em branco vem a resposta. O aviso `Non-authoritative answer:`, quando aparece, indica que o resultado veio de um resolver, quase sempre do cache dele, e não direto de um servidor autoritativo para a zona: o nslookup imprime essa linha sempre que o bit AA (authoritative answer) da resposta está desligado. Em seguida vêm os registros: numa consulta de endereço, uma linha `Name:` seguida de uma ou mais linhas `Address:` (uma resposta IPv6 também aparece numa linha Address, e você a reconhece pelos dois-pontos).
 
 ## Onde olhar primeiro
 
@@ -44,3 +46,8 @@ Antes da resposta, o `nslookup` mostra qual servidor ele consultou. **Essa é a 
 Um resolver trocado pelo DHCP, uma VPN (virtual private network, rede privada virtual) que instalou o seu próprio resolver, um container que herdou outro `resolv.conf`: cada um desses casos produz respostas corretas, só que de um resolver que ninguém queria consultar. **A resposta não está errada; a pergunta é que foi parar num lugar inesperado**, e a saída parece absolutamente normal.
 
 **Leia a linha do servidor antes da resposta.** Quando duas máquinas discordam sobre um nome, o culpado é mais vezes o resolver do que o registro.
+
+## Fontes
+
+- [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: a seção 4.1.1, o bit AA (authoritative answer) (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc1035)
+- [Google Public DNS, API JSON de DNS over HTTPS: example.com, tipo A, 104.20.23.154 e 172.66.147.243 (lida em 07/10/2026)](https://dns.google/resolve?name=example.com&type=A)

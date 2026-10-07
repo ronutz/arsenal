@@ -14,10 +14,10 @@ updated: "2026-08-10"
 Dentro das seções ANSWER, AUTHORITY e ADDITIONAL, cada linha é um resource record com as mesmas cinco colunas:
 
 ```
-example.com.		3600	IN	A	93.184.216.34
+example.com.		3600	IN	A	104.20.23.154
 ```
 
-Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo pode ficar em cache), **classe** (`IN` para Internet, essencialmente sempre), **tipo** (`A`) e **rdata** (`93.184.216.34`, o payload específico do tipo). Os registros de pergunta são a exceção: começam com `;`, não carregam TTL e não têm rdata, porque uma pergunta apenas nomeia o que você pediu.
+Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo pode ficar em cache), **classe** (`IN` para Internet, essencialmente sempre), **tipo** (`A`) e **rdata** (`104.20.23.154`, o payload específico do tipo). Os registros de pergunta são a exceção: começam com `;`, não carregam TTL e não têm rdata, porque uma pergunta apenas nomeia o que você pediu.
 
 ## Os tipos que você encontra, e seu rdata
 

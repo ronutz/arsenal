@@ -1,7 +1,7 @@
 ---
 slug: authoritative-vs-non-authoritative-answers
 title: "Respostas autoritativas vs não autoritativas"
-summary: "O marcador Non-authoritative answer no nslookup significa que o resultado veio do cache de um resolvedor, não de um servidor que de fato mantém a zona. Este artigo explica a diferença, por que ela normalmente não é problema, e como obter uma resposta autoritativa quando você precisa."
+summary: "O marcador Non-authoritative answer no nslookup significa que o resultado veio de um resolver, quase sempre do cache dele, não de um servidor que de fato mantém a zona. Este artigo explica a diferença, por que ela normalmente não é problema, e como obter uma resposta autoritativa quando você precisa."
 concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup"]
 relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
@@ -30,7 +30,7 @@ Se você precisa da verdade atual, contorne o cache e pergunte a um servidor aut
 
 ## Autoritativo é sobre procedência, não sobre acerto
 
-Uma resposta autoritativa vem de um servidor que guarda a zona; uma não autoritativa vem de um cache. **Nenhum dos rótulos diz que a resposta está certa.**
+Uma resposta autoritativa vem de um servidor que guarda a zona; uma não autoritativa vem de um resolver, quase sempre do cache dele. **Nenhum dos rótulos diz que a resposta está certa.**
 
 Um servidor autoritativo pode servir uma zona editada errado há uma hora e responder com total confiança. Uma resposta em cache pode estar perfeitamente correta e apenas velha. As palavras descrevem **de onde o dado veio**, e correção é outra pergunta, que o protocolo não responde.
 

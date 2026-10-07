@@ -63,7 +63,7 @@ A block is valid only if it starts on a multiple of its own size. Count each sta
 - Engineering starts at offset 512 (`172.16.2.0`), a multiple of 256.
 - Link A starts at offset 768 (`172.16.3.0`), a multiple of 4; Link B at 772, also a multiple of 4.
 
-None overlaps, because each starts where the previous one ended. This is the property largest-first guarantees: everything placed before a block is a larger power of two, so the running total is always a multiple of the next size.
+None overlaps, because each starts where the previous one ended. This is the property largest-first guarantees: everything placed before a block is a larger (or equal) power of two, so the running total is always a multiple of the next size.
 
 ## Step 5: account for what is left
 

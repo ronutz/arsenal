@@ -1,7 +1,7 @@
 ---
 slug: bridge-switch-family-history
 title: "Bridges e switches: a mesma ideia, resolvida duas vezes"
-summary: "A bridge e o switch são a mesma ideia, com quarenta anos de distância, e a história passa por duas pessoas que raramente são citadas juntas. Radia Perlman resolveu o problema dos loops na Digital numa única noite de dezembro de 1985 e escreveu a resposta na forma de um poema de doze linhas. A Kalpana colocou a mesma função em silício, em cada porta, em 1990, e vendeu o resultado para a Cisco quatro anos depois. No caminho: por que Perlman diz que tudo isso nasceu de um erro da indústria, por que o switch substituiu o hub sem que ninguém chamasse isso de ganho de segurança e o que acontece com uma camada que já foi dada como encerrada várias vezes."
+summary: "A bridge e o switch são a mesma ideia, com poucos anos de distância, e a história passa por duas pessoas que raramente são citadas juntas. Radia Perlman resolveu o problema dos loops na Digital numa única noite, em meados dos anos 1980, e escreveu a resposta na forma de um poema de doze linhas. A Kalpana colocou a mesma função em silício, em cada porta, em 1990, e vendeu o resultado para a Cisco quatro anos depois. No caminho: por que Perlman diz que tudo isso nasceu de um erro da indústria, por que o switch substituiu o hub sem que ninguém chamasse isso de ganho de segurança e o que acontece com uma camada que já foi dada como encerrada várias vezes."
 concepts: ["bridge", "switch", "spanning tree", "stp", "ethernet", "layer 2", "history"]
 relatedTools: []
 relatedArticles: ["firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation", "tcp-proxy-layer-4"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-Bridges (pontes) e switches costumam ser ensinados como dois equipamentos diferentes. Na verdade, são uma ideia só, implementada duas vezes, com trinta anos de evolução do silício entre uma e outra, e a segunda implementação ficou tão mais barata que apagou a primeira do vocabulário, mas herdou todos os problemas dela.
+Bridges (pontes) e switches costumam ser ensinados como dois equipamentos diferentes. Na verdade, são uma ideia só, implementada duas vezes, com poucos anos entre uma e outra, e a segunda implementação ficou tão mais barata que apagou a primeira do vocabulário, mas herdou todos os problemas dela.
 
 ## O erro que criou toda essa área
 
@@ -19,11 +19,11 @@ O melhor ponto de partida é a explicação da própria Radia Perlman para a exi
 
 A solução foi a **bridge**: um equipamento que escuta todos os frames (quadros) e os encaminha pelas suas outras portas. Ela funciona justamente porque não exige nada dos endpoints. **O mundo inteiro da camada 2 existe para contornar uma suposição feita bem no começo e nunca corrigida**, e todas as dificuldades que vieram depois nascem daí: o flooding (o envio de um frame por todas as portas), os loops, os domínios de broadcast e a tensão constante entre uma rede grande e plana e várias redes pequenas.
 
-## Dezembro de 1985: um problema considerado insolúvel
+## Meados dos anos 1980: um problema considerado insolúvel
 
 A redundância é o que torna uma rede confiável, e é também o que mata uma rede feita com bridges. Com dois caminhos entre duas bridges, um frame pode ficar circulando, e, como o frame encaminhado por uma bridge não tem um contador de hops (de passagens por equipamento) que expire, ele circula para sempre, multiplicando-se a cada bifurcação até a rede se afogar em cópias dele mesmo.
 
-Um gerente da Digital passou esse problema para Radia Perlman, achando que provavelmente não tinha solução. Ela foi para casa, acordou no meio da noite com a resposta pronta e escreveu a especificação na manhã seguinte, junto com um poema de doze linhas que descreve a solução de forma completa e correta. O artigo saiu em 1985: **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
+Um gerente da Digital passou esse problema para Radia Perlman, achando que provavelmente não tinha solução. Ela foi para casa, acordou no meio da noite com a resposta pronta e escreveu a especificação no começo da semana seguinte, junto com um poema de doze linhas que descreve a solução de forma completa e correta. O artigo saiu em 1985: **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
 
 O algoritmo elege uma raiz (root), calcula os caminhos de menor custo até ela e desativa todos os links que não fazem parte da árvore resultante. Os links redundantes continuam conectados fisicamente, mas ficam parados, do ponto de vista lógico, até alguma coisa falhar. A Digital colocou o algoritmo na sua bridge Ethernet de duas portas, e o IEEE o adotou como **802.1D em 1990**. Depois veio o rapid spanning tree, o 802.1w, em 2001, e mais tarde a própria Perlman projetou o TRILL para que a Ethernet pudesse usar os links que o spanning tree desliga.
 
@@ -80,3 +80,5 @@ A era da bridge pertenceu à Digital e às empresas deste catálogo que constru�
 - [IPWatchdog sobre o spanning tree, a ponte de duas portas da DEC, e o IEEE 802.1D em 1990](https://ipwatchdog.com/2016/02/04/spanning-tree-protocol-internet-routing/)
 - [Kalpana, Inc.: fundada em 1990 em Sunnyvale por Vinod Bhardwaj e Larry Blair, o EtherSwitch de sete portas, o EtherChannel, e a aquisição pela Cisco em 1994](https://en.wikipedia.org/wiki/Kalpana,_Inc.)
 - [Cisco Catalyst: a série 3000 vinda da Kalpana e as séries 1700, 1900 e 2800 da Grand Junction](https://en.wikipedia.org/wiki/Cisco_Catalyst)
+- [Radia Perlman, An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN, ACM SIGCOMM Computer Communication Review, setembro de 1985, páginas 44 a 53 (lida em 07/10/2026)](https://prl.khoury.northeastern.edu/img/p-sigcomm-1985.pdf)
+- [Blog do LACNIC, entrevista com Radia Perlman, 30 de maio de 2019: o pedido numa sexta-feira, a solução naquela noite, a especificação escrita na segunda e na terça seguintes (lida em 07/10/2026)](https://blog.lacnic.net/en?p=11775)

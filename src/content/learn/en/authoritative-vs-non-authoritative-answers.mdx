@@ -1,7 +1,7 @@
 ---
 slug: authoritative-vs-non-authoritative-answers
 title: "Authoritative vs Non-Authoritative Answers"
-summary: "The Non-authoritative answer marker in nslookup means the result came from a resolver's cache, not from a server that actually holds the zone. This explains the difference, why it is usually fine, and how to get an authoritative answer when you need one."
+summary: "The Non-authoritative answer marker in nslookup means the result came from a resolver, usually out of its cache, not from a server that actually holds the zone. This explains the difference, why it is usually fine, and how to get an authoritative answer when you need one."
 concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup"]
 relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
@@ -30,7 +30,7 @@ If you need the current truth, bypass the cache and ask an authoritative server 
 
 ## Authoritative is about provenance, not accuracy
 
-An authoritative answer comes from a server holding the zone; a non-authoritative one comes from a cache. **Neither label says the answer is right.**
+An authoritative answer comes from a server holding the zone; a non-authoritative one comes from a resolver, usually out of its cache. **Neither label says the answer is right.**
 
 An authoritative server can serve a zone that was edited wrongly an hour ago and answer with complete confidence. A cached answer can be perfectly correct and merely old. The words describe **where the data came from**, and correctness is a separate question the protocol does not answer.
 

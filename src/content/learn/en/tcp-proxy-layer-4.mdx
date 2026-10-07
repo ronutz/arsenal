@@ -64,4 +64,8 @@ Because there is no cookie and no header to key on, stickiness at layer 4 is usu
 
 ## Where you meet TCP proxies
 
-Any load balancer or ADC running in a fast Layer 4 mode is a TCP proxy. On F5 BIG-IP, for example, the FastL4 profile drives a lightweight Layer 4 path (with hardware acceleration on supported platforms) for exactly the cases where you want throughput and connection handling without Layer 7 parsing; a Standard virtual server, by contrast, engages the full TCP proxy and can layer HTTP and TLS processing on top. Cloud load balancers expose the same split as "network" (Layer 4) versus "application" (Layer 7) load balancers. The pattern is identical everywhere: decide whether you need to see the application, and if you do not, stay at Layer 4 where it is cheapest and most general.
+A load balancer or ADC in a Layer 4 mode is a TCP proxy only when that mode terminates the connection, and a fast Layer 4 mode may not. On F5 BIG-IP, for example, the FastL4 profile drives a lightweight, packet-by-packet Layer 4 path (with hardware acceleration on supported platforms) for exactly the cases where you want throughput and connection handling without Layer 7 parsing; a Standard virtual server, by contrast, engages the full TCP proxy and can layer HTTP and TLS processing on top. Cloud load balancers expose the same split as "network" (Layer 4) versus "application" (Layer 7) load balancers. The pattern is identical everywhere: decide whether you need to see the application, and if you do not, stay at Layer 4 where it is cheapest and most general.
+
+## Sources
+
+- [F5 DevCentral, Lori MacVittie, Back to Basics: The Many Modes of Proxies, 9 December 2013: in the Performance Layer 4 mode the proxy forwards after the handshake instead of acting as an endpoint as a full proxy does (read 2026-10-07)](https://community.f5.com/kb/technicalarticles/back-to-basics-the-many-modes-of-proxies/288587)

@@ -15,7 +15,7 @@ A tunnel is a passenger inside an envelope, and envelopes have weight. The path,
 
 ## Origins: why a maximum exists at all
 
-Ethernet's 1,500-byte payload limit is not a law of physics. It came from a 1970s engineering compromise: buffer memory was expensive, and a station transmitting a very long frame monopolises a shared medium, so a ceiling bounded both cost and the delay other stations would wait. That number outlived its reasons and became the constant the rest of the internet is fitted around.
+Ethernet's 1,500-byte payload limit is not a law of physics. It came from a 1980 engineering compromise: buffer memory was expensive, and a station transmitting a very long frame monopolises a shared medium, so a ceiling bounded both cost and the delay other stations would wait. That number outlived its reasons and became the constant the rest of the internet is fitted around.
 
 IP was designed to cross links with different limits, so it needed an answer for a packet that does not fit. **IPv4 chose fragmentation**: any router could split a packet, and the destination reassembles. It works, and three decades of operational experience found the costs:
 
@@ -61,9 +61,9 @@ Every layer of envelope takes its cut from the same 1,500. Approximate, and wort
 - **IPv4 header** 20 bytes; **IPv6 header** 40, which is the reason a tunnel that fitted over IPv4 may not over IPv6.
 - **TCP header** 20 bytes, more with options such as timestamps and selective acknowledgement.
 - **VLAN tag** 4 bytes per tag; **VXLAN** roughly 50 bytes total including its outer headers.
-- **GRE** 4 to 8 bytes; **PPPoE** 8, which is why so many broadband links land at 1,492.
+- **GRE** 4 to 16 bytes; **PPPoE** 8, which is why so many broadband links land at 1,492.
 - **IPsec** varies widely with mode and cipher, commonly 50 to 80 bytes; tunnel mode adds a second IP header.
-- **WireGuard** roughly 60 bytes, which is why 1,420 is its usual recommendation.
+- **WireGuard** roughly 60 bytes over IPv4 and 80 over IPv6, which is why 1,420 is its usual recommendation.
 
 Two consequences follow. **Encapsulations stack**, so a VXLAN-over-IPsec design pays both. And **the loss is asymmetric**: the sender's stack knows nothing of the tunnel in the middle, so the byte math must be applied where the encapsulation happens.
 
@@ -85,3 +85,9 @@ The checklist that resolves most of these:
 ## The worked habit
 
 Cloud-forwarding guidance makes the habit concrete: Zscaler's tunnel documentation (verified 2026-07-21) tells operators to set the tunnel MTU to the **lower of the appliance MTU and the measured path MTU**, and, when trouble appears anyway, to fall back to **1,400** - conservative headroom beating theoretical maxima, which is field wisdom in one sentence. The full pre-flight, for any tunnel anywhere: know your envelope's overhead, subtract it from the smallest MTU on the path, set the tunnel there, clamp MSS to that minus 40, and let PMTUD be a safety net instead of a load-bearing wall. Larger frames change the numbers but not the method - [jumbo frames](/learn/jumbo-frames) simply move the ceiling.
+
+## Sources
+
+- [The Ethernet, A Local Area Network: Data Link Layer and Physical Layer Specifications, Version 1.0 (DIX), September 1980: a data field of 46 to 1500 octets (read 2026-10-07)](https://ieeemilestones.ethw.org/w/images/3/31/Ref5_DIX_Ethernet_V1.0_1980.pdf)
+- [wireguard-tools, wg-quick for Linux: the interface MTU is the path MTU minus 80, from 1500 when none is found (read 2026-10-07)](https://git.zx2c4.com/wireguard-tools/tree/src/wg-quick/linux.bash)
+- [RFC 2890, Key and Sequence Number Extensions to GRE, September 2000: the optional four-byte Key and Sequence Number fields, on top of RFC 2784's header and its optional checksum (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2890)

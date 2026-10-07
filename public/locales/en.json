@@ -28434,7 +28434,7 @@
       },
       "bigip-dns": {
         "title": "BIG-IP DNS and global load balancing",
-        "lede": "Which of six answering machines replies to a query, how iQuery tells BIG-IP DNS what is up, global load balancing as two decisions with a three-step chain inside, topology records, and the resolver as a policy engine."
+        "lede": "Which of seven answering machines replies to a query, how iQuery tells BIG-IP DNS what is up, global load balancing as two decisions with a three-step chain inside, topology records, and the resolver as a policy engine."
       },
       "bigip-automation": {
         "title": "The BIG-IP automation toolchain",

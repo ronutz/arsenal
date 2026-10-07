@@ -26,7 +26,7 @@ The record is specific:
 - **The 2002 padding-oracle result** showed that leaking whether padding was valid leaks plaintext, one byte at a time.
 - **BEAST (2011)** exploited predictable initialisation vectors in TLS 1.0's CBC chaining.
 - **Lucky 13 (2013)** extracted plaintext from the *timing* difference between valid and invalid padding, so even implementations that returned identical error messages leaked through how long they took to fail.
-- **POODLE (2014)** used SSL 3.0's underspecified padding to force a downgrade and read bytes.
+- **POODLE (2014)** forced a downgrade to SSL 3.0, then used its underspecified padding to read bytes.
 
 Each fix made the code more delicate: constant-time padding checks are genuinely hard to write, and a single early return reintroduces the leak. The pattern is the real lesson: **a construction that requires every implementer to be careful will eventually meet one who is not.**
 
@@ -55,7 +55,7 @@ A **CBC** cipher (cipher block chaining) does only encryption. To get integrity,
 
 TLS originally used MAC-then-encrypt (MAC being the message authentication code): compute the HMAC over the plaintext, append it, pad the result to a block boundary, then encrypt the whole thing with CBC. The problem is that the receiver has to decrypt and remove padding before it can check the MAC, so malformed padding and a bad MAC are detected at different stages. An attacker who can see whether a record failed on padding or on the MAC, whether by an error message or just by timing, learns one bit about the plaintext per probe. Repeated, that bit becomes the whole message.
 
-This is a padding oracle, and it is not theoretical. A series of attacks over the years, including BEAST, Lucky13, and POODLE, all exploited CBC record protection in TLS. Each one was patched with increasingly delicate constant-time code, but the underlying construction kept producing new variants. The lesson the industry drew was to stop using it.
+This is a padding oracle, and it is not theoretical. A series of attacks over the years, including BEAST, Lucky 13, and POODLE, all exploited CBC record protection in TLS. Each one was patched with increasingly delicate constant-time code, but the underlying construction kept producing new variants. The lesson the industry drew was to stop using it.
 
 ## Why AEAD is the default now
 
@@ -69,7 +69,7 @@ AEAD trades the padding-oracle class for one sharp requirement. **A key and nonc
 
 Where that goes wrong in practice:
 
-- **Random 96-bit nonces at very high volume**, where birthday collisions stop being theoretical. This is what motivated XChaCha20 and AES-GCM-SIV, which tolerate reuse far better.
+- **Random 96-bit nonces at very high volume**, where birthday collisions stop being theoretical. This is what motivated XChaCha20, whose 192-bit nonce makes a collision far less likely, and AES-GCM-SIV, which tolerates reuse far better.
 - **Counters that reset**, typically after a VM restore, a snapshot rollback, or a device that resumes with the same key material.
 - **Stateless designs** where two nodes share a key and independently pick nonces.
 
@@ -82,7 +82,7 @@ TLS 1.3 avoids all of it by deriving the nonce from the sequence number rather t
 - **TLS libraries** pick the default suite list, and modern versions have made AEAD the only option worth having.
 - **Disk and volume encryption** frequently uses length-preserving modes rather than AEAD, because a sector cannot grow to hold a tag, a genuine reason to see non-AEAD constructions in current systems.
 - **Application-level encryption** (libsodium, Tink, cloud key-management SDKs) where the honest guidance is to use a library that manages nonces rather than assembling primitives.
-- **Protocols with their own record layers** (QUIC, WireGuard, SSH) are all now AEAD-based, all deriving nonces from counters for exactly the reason above.
+- **Protocols with their own record layers** (QUIC, WireGuard, SSH) now use AEAD by default, all deriving nonces from counters for exactly the reason above, though SSH still offers AES-CTR with a separate MAC.
 
 The rule that survives every context: **use AEAD, let a library own the nonce, and treat any design where you choose nonces yourself as one that needs review.**
 
@@ -99,3 +99,7 @@ The protocol behaviour described above is normative, and the two attacks that dr
 - [RFC 8446, The Transport Layer Security (TLS) Protocol Version 1.3 - every non-AEAD suite pruned from the protocol](https://www.rfc-editor.org/rfc/rfc8446.html)
 - [RFC 5246, TLS 1.2 - where the CBC-with-HMAC suites still live](https://www.rfc-editor.org/rfc/rfc5246.html)
 - [RFC 7457, Summarizing Known Attacks on TLS and DTLS - BEAST (CVE-2011-3389) and POODLE (CVE-2014-3566) in the IETF's own words](https://www.rfc-editor.org/rfc/rfc7457.html)
+- [RFC 8452, AES-GCM-SIV: Nonce Misuse-Resistant Authenticated Encryption, April 2019: no catastrophic failure when a nonce is repeated (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc8452)
+- [draft-irtf-cfrg-xchacha-03, XChaCha, January 2020, an expired draft: a 192-bit nonce with a much lower probability of nonce misuse (read 2026-10-07)](https://datatracker.ietf.org/doc/draft-irtf-cfrg-xchacha/)
+- [Möller, Duong and Kotowicz, This POODLE Bites: Exploiting The SSL 3.0 Fallback, September 2014: the forced fallback to SSL 3.0, then its non-deterministic CBC padding (read 2026-10-07)](https://www.openssl.org/~bodo/ssl-poodle.pdf)
+- [OpenBSD manual, ssh_config(5), 20 September 2026: the default Ciphers, chacha20-poly1305 and AES-GCM first, then aes128-ctr, aes192-ctr and aes256-ctr (read 2026-10-07)](https://man.openbsd.org/ssh_config.5)

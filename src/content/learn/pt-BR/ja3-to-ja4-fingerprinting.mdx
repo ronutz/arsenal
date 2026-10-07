@@ -47,7 +47,7 @@ Outras três escolhas valem a pena conhecer:
 
 **Os algoritmos de assinatura mantêm a ordem original.** Depois de ordenar todo o resto, o JA4 acrescenta a lista de algoritmos de assinatura sem ordenar. É ali que se recupera parte da capacidade de distinguir clientes que se perdeu com a ordenação, e isso é uma troca pensada, não um descuido.
 
-**O resultado é em parte legível.** Enquanto o JA3 entrega um MD5 opaco, uma string JA4 começa com campos que uma pessoa lê diretamente: o transporte e a versão do TLS, se o server name indication está presente, quantas cifras e extensões existem e o primeiro protocolo negociado. Um analista consegue concluir bastante coisa antes de consultar qualquer tabela de lookup, e isso é uma utilidade de outro tipo, comparada a um hash que não significa nada até ser comparado com valores conhecidos.
+**O resultado é em parte legível.** Enquanto o JA3 entrega um MD5 opaco, uma string JA4 começa com campos que uma pessoa lê diretamente: o transporte e a versão do TLS, se o server name indication está presente, quantas cifras e extensões existem e o primeiro e o último caractere do primeiro protocolo de aplicação (valor de ALPN) que o cliente oferece. Um analista consegue concluir bastante coisa antes de consultar qualquer tabela de lookup, e isso é uma utilidade de outro tipo, comparada a um hash que não significa nada até ser comparado com valores conhecidos.
 
 ## Por que este sinal é diferente dos outros
 
@@ -64,3 +64,7 @@ O ClientHello é enviado pela stack de rede no instante em que o socket abre. Ai
 **Não avalie um fingerprint isoladamente.** As quatro ferramentas ligadas a este artigo existem para ser usadas juntas: o handshake TLS, a ordem dos headers HTTP e o quanto o user agent declarado é de fato comum. Cada sinal é fraco sozinho e forte em combinação, porque um cliente que mente precisa mentir de forma consistente em todos eles, e a maioria não faz isso.
 
 **Espere que isso mude de novo.** O JA3 durou seis anos e foi derrubado por uma mudança feita por motivos que nada tinham a ver com ele, e totalmente legítimos. Nada no JA4 o torna permanente. Ele é mais durável porque depende do conjunto, e não da ordem, e conjuntos mudam mais devagar do que ordens; mas uma técnica baseada em observar o que os clientes por acaso fazem vai estar sempre à mercê de os clientes decidirem fazer outra coisa.
+
+## Fontes
+
+- [FoxIO, JA4 technical details: o primeiro e o último caractere do primeiro valor de ALPN que o cliente oferece no ClientHello (lida em 07/10/2026)](https://github.com/FoxIO-LLC/ja4/blob/main/technical_details/JA4.md)

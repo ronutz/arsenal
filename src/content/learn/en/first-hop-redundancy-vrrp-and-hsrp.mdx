@@ -23,7 +23,7 @@ Two families of answer were tried, and one of them lost:
 
 The second approach won, and produced three protocols:
 
-- **HSRP (Cisco, 1998, RFC 2281)**: the first widely deployed, and proprietary; the RFC is informational, published to describe it rather than to standardise it.
+- **HSRP (Cisco, patented 1995, RFC 2281 in 1998)**: the first widely deployed, and proprietary; the RFC is informational, published to describe it rather than to standardise it.
 - **VRRP (RFC 2338 in 1998, now RFC 5798 covering IPv4 and IPv6)**: the IETF standard, multi-vendor, and close enough to HSRP that Cisco's patent position was a live topic during its standardisation.
 - **GLBP (Cisco)**, which adds load sharing by answering ARP requests with different virtual MAC addresses, so hosts on the same subnet are distributed across gateways rather than all using one.
 
@@ -73,7 +73,7 @@ That is what interface and object tracking exist for: decrementing the priority 
 
 **Interface and object tracking** is the feature that decides whether the design is real. A router whose uplink has failed still answers on the LAN and will happily remain master while forwarding traffic nowhere. Tracking lowers its priority when the tracked uplink or route disappears, handing the role to a router that still has a path. **Redundancy without tracking is a group that fails over for the one event it was least likely to face, the router dying, and not for the one it will actually meet.**
 
-**Authentication** was in early VRRP, was found to add no real security against an attacker on the segment, and was removed in RFC 5798. The honest control is segment access, not a shared secret.
+**Authentication** was in early VRRP, was found to add no real security against an attacker on the segment, and was removed in RFC 3768. The honest control is segment access, not a shared secret.
 
 ## The failure modes, and what they look like
 
@@ -93,3 +93,8 @@ That is what interface and object tracking exist for: decrementing the priority 
 ## What to take away
 
 **Redundancy that has not been tested by failing on purpose is a configuration, not a capability.** The specific test worth doing is not powering off a router, since that is the easy case and it usually works. **It is failing the uplink while leaving the router running**, because that is the scenario tracking exists for and the one where an untested pair discovers it has none.
+
+## Sources
+
+- [RFC 3768, Virtual Router Redundancy Protocol (VRRP), April 2004: section 13, the changes from RFC 2338, among them "Removed authentication methods from VRRP" (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3768)
+- [RFC 2281, Cisco Hot Standby Router Protocol (HSRP), March 1998: an existing deployed protocol, and US Patent 5,473,599 of 5 December 1995 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2281)

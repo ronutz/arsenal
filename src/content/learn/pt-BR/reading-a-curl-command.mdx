@@ -17,14 +17,14 @@ As aspas importam porque o corpo (body) e os headers da requisição têm espaç
 
 As opções têm uma forma curta e uma longa. As flags curtas são um traço e uma letra (`-X`, `-H`, `-d`); as longas são dois traços e uma palavra (`--request`, `--header`, `--data`). Flags curtas podem ser agrupadas: `-sSL` é o mesmo que `-s -S -L`. Uma flag que recebe valor pode vir com o valor colado, sem espaço, então `-XPOST` significa `-X POST`, o que engana quem lê com pressa.
 
-O que não é opção nem valor de opção é a URL. Se o esquema estiver faltando, o curl acrescenta `https://`.
+O que não é opção nem valor de opção é a URL. Se o esquema estiver faltando, o curl tenta adivinhar: o padrão é HTTP, e ele assume FTP para um host que começa com `ftp.`.
 
 
 ## Leia na ordem em que a requisição é montada, não na ordem em que foi digitada
 
 As flags de um comando curl podem aparecer em qualquer ordem, e isso quer dizer que **a sequência escrita na linha não tem nada a ver com a sequência do que acontece.** Ler da esquerda para a direita é ler os hábitos de digitação de quem escreveu o comando.
 
-A ordem que importa é a da própria requisição: **método, depois URL, depois headers, depois corpo, depois o que acontece com a resposta.** Remontar o comando nessa ordem transforma uma linha comprida em quatro perguntas curtas e deixa evidente a peça que falta: um `-d` sem Content-Type, um `-H` que repete algo que o curl já define sozinho, uma flag de redirecionamento que muda o que o comando inteiro faz.
+A ordem que importa é a da própria requisição: **método, depois URL, depois headers, depois corpo, depois o que acontece com a resposta.** Remontar o comando nessa ordem transforma uma linha comprida em cinco perguntas curtas e deixa evidente a peça que falta: um `-d` sem Content-Type, um `-H` que repete algo que o curl já define sozinho, uma flag de redirecionamento que muda o que o comando inteiro faz.
 
 **Se você não consegue recontar o comando nessa ordem, é porque ainda não terminou de lê-lo**, e isso importa principalmente quando o comando veio de outra pessoa e você está prestes a executá-lo.
 
@@ -38,3 +38,7 @@ Este artigo abre a série **curl, flag por flag**. Ele mostra como o shell quebr
 4. **[Flags do curl que mudam a postura de segurança](/learn/curl-security-flags)**. -k, http sem criptografia e credenciais na URL: as flags que vale ler antes de rodar ou compartilhar um comando.
 5. **[Como traduzir curl para fetch()](/learn/curl-to-fetch)**. A mesma requisição no fetch() do navegador, e as diferenças que pedem cuidado: o Content-Type de formulário, os cookies, a verificação de TLS.
 6. **[Os 27 protocolos que o curl fala](/learn/curl-protocols-beyond-http)**. FTP, SFTP, SMB, SMTP, IMAP, MQTT, LDAP (Lightweight Directory Access Protocol) e as relíquias: os 27 esquemas de URL que o curl fala hoje.
+
+## Fontes
+
+- [curl, o manual: numa URL sem esquema, o curl adivinha o protocolo, com HTTP como padrão e FTP para hosts que começam com ftp. (lida em 07/10/2026)](https://curl.se/docs/manpage.html)

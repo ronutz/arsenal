@@ -29,10 +29,10 @@ O dig imprime todo registro nas mesmas cinco colunas. O nslookup faz algo difere
 O SOA é o ponto fora da curva, porque é o único tipo que o nslookup quebra em várias linhas. O campo `mail addr` é uma caixa postal com o primeiro ponto substituindo o `@`, e o `minimum` também serve como TTL (tempo de vida, do inglês time to live) de cache negativo, então ele governa por quanto tempo uma resposta de "não existe" da zona é lembrada. Se você quiser os mesmos campos dispostos da maneira clássica, o dig os imprime em uma única linha de registro SOA.
 
 
-## "Non-authoritative answer" é sobre cache, não sobre correção
+## "Non-authoritative answer" é sobre a origem, não sobre correção
 
 A linha que mais confunde é a impressa antes da maioria das respostas.
 
-Ela **não** significa que a resposta é duvidosa. Significa que a resposta veio do **cache** de um resolvedor, e não de um servidor autoritativo para aquela zona. Uma resposta em cache normalmente está correta e é sempre mais rápida.
+Ela **não** significa que a resposta é duvidosa. Significa que a resposta veio de um resolver, quase sempre do **cache** dele, e não de um servidor autoritativo para aquela zona. Uma resposta em cache normalmente está correta e é sempre mais rápida.
 
-O motivo de isso importar operacionalmente é o tempo: **logo depois de uma mudança de DNS, uma resposta não autoritativa é exatamente a resposta velha contra a qual você não quer testar.** Consulte o servidor autoritativo diretamente — `server` no modo interativo — e o rótulo desaparece junto com a dúvida.
+O motivo de isso importar operacionalmente é o tempo: **logo depois de uma mudança de DNS, uma resposta não autoritativa é exatamente a resposta velha contra a qual você não quer testar.** Consulte o servidor autoritativo diretamente, com `server` no modo interativo, e o rótulo desaparece junto com a dúvida.

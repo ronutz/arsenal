@@ -19,7 +19,7 @@ Endereços fora do domínio padrão levam um sufixo com sinal de porcentagem: `1
 
 ## Associação e isolamento
 
-As VLANs são atribuídas a route domains, e tudo o que está numa VLAN herda o domínio dela. Cada domínio tem a própria tabela de roteamento e a própria rota padrão. O strict isolation é a opção que decide se o domínio fica totalmente fechado ou se deixa passar algum tráfego: ligado (o padrão), ele proíbe qualquer forwarding entre domínios; desligado, permite que o tráfego passe para um domínio pai quando nenhuma rota local corresponde ao destino. Os domínios pai criam exatamente essa hierarquia: um domínio filho pode recorrer às rotas do pai, o que é útil quando os tenants compartilham um segmento de serviços comuns, mas mantêm privado o próprio espaço.
+As VLANs são atribuídas a route domains, e tudo o que está numa VLAN herda o domínio dela. Cada domínio tem a própria tabela de roteamento e a própria rota padrão. O strict isolation é a opção que decide se o domínio fica totalmente fechado ou se deixa passar algum tráfego: ligado (o padrão), ele só permite forwarding do domínio para o domínio pai especificado; desligado, tanto no domínio de origem quanto no de destino, permite que o tráfego passe para qualquer route domain do sistema. Os domínios pai criam exatamente essa hierarquia: um domínio filho pode recorrer às rotas do pai, o que é útil quando os tenants compartilham um segmento de serviços comuns, mas mantêm privado o próprio espaço.
 
 ## A ligação com a administração
 
@@ -28,3 +28,7 @@ Route domains combinam naturalmente com as partições administrativas: uma part
 ## Como explicar o recurso na prova
 
 O blueprint de LTM (a lista oficial de objetivos da prova) pede uma coisa só aqui: explicar o que os route domains fazem. A resposta curta: eles criam instâncias de roteamento independentes dentro de um único equipamento, identificadas por um ID numérico e pela notação com porcentagem, e com isso oferecem isolamento do espaço de endereçamento para redes sobrepostas, rotas padrão por tenant e compartilhamento controlado por meio dos domínios pai e da opção strict isolation. Se você ainda perceber o `%ID` faltando numa configuração de cenário, está um passo à frente da questão.
+
+## Fontes
+
+- [F5, BIG-IP TMOS: Routing Administration 14.1.0, About strict isolation: ligado, o padrão, o forwarding vai de um route domain só para o pai especificado; desligado nos dois domínios, para qualquer route domain (lida em 07/10/2026)](https://techdocs.f5.com/en-us/bigip-14-1-0/big-ip-tmos-routing-administration-14-1-0/route-domains/traffic-forwarding-across-route-domains/about-strict-isolation.html)

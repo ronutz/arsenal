@@ -13,11 +13,11 @@ updated: "2026-07-11"
 
 ## The core is the problem
 
-A traditional switched network keeps the core loop-free with spanning tree, which means blocking links to break loops, and it layers protocol on protocol to deliver services: 802.1Q trunks for VLANs, maybe MPLS (Multiprotocol Label Switching) or VXLAN with BGP for virtualization, plus something to move multicast. Each layer is another thing to design, provision at every hop, and troubleshoot. VOSS - Extreme's **Fabric Connect** - was built to collapse that.
+A traditional switched network keeps the core loop-free with spanning tree, which means blocking links to break loops, and it layers protocol on protocol to deliver services: 802.1Q trunks for VLANs, maybe MPLS (Multiprotocol Label Switching) or VXLAN with BGP for virtualization, plus something to move multicast. Each layer is another thing to design, provision at every hop, and troubleshoot. Extreme's **Fabric Connect**, which runs on the VOSS operating system, was built to collapse that.
 
 ## What Fabric Connect is
 
-Fabric Connect is Extreme's implementation of **Shortest Path Bridging MAC**, or **SPBM**, standardized as **IEEE 802.1aq** (with IP extensions in IETF RFC 6329). It has a long heritage from ex-Nortel and Avaya, who were early and thorough SPBM implementers. The idea is to reduce the core to a single Ethernet-based link-state protocol that provides all virtualization services in one integrated model, instead of a stack of overlays.
+Fabric Connect is Extreme's implementation of **Shortest Path Bridging MAC**, or **SPBM**, standardized as **IEEE 802.1aq** (with IS-IS extensions in IETF RFC 6329). It has a long heritage from ex-Nortel and Avaya, who were early and thorough SPBM implementers. The idea is to reduce the core to a single Ethernet-based link-state protocol that provides all virtualization services in one integrated model, instead of a stack of overlays.
 
 Two pieces make that work:
 
@@ -35,3 +35,9 @@ The switches at the boundary of the fabric are **Backbone Edge Bridges (BEBs)**;
 ## Where to go next
 
 The unit of service on the edge is the **I-SID** (Individual Service Identifier), covered in the companion article on I-SIDs and VSNs. The control plane - IS-IS, node nicknames, and B-MACs - is covered in the article on the VOSS control plane. The fabric-identifier tool decodes the I-SIDs, nicknames, and B-MACs you will meet along the way.
+
+## Sources
+
+- [RFC 6329, IS-IS Extensions Supporting IEEE 802.1aq Shortest Path Bridging, April 2012 (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc6329)
+- [Extreme Networks, Network Virtualization Using Extreme Fabric Connect, NN48500-649 Rev. 03, August 2019: Fabric Connect is based on the Shortest Path Bridging protocol (read 2026-10-07)](https://documentation.extremenetworks.com/TCG-TSG/NN48500-649_Network_Virtualization_using_Extreme_Fabric_Connect.pdf)
+- [Extreme Networks, VOSS v9.1 User Guide: VSP Operating System Software (VOSS) (read 2026-10-07)](https://documentation.extremenetworks.com/VOSS%20v9.1%20User%20Guide/GUID-0E35FFED-1156-4870-9119-F7CA5AB64523.shtml)

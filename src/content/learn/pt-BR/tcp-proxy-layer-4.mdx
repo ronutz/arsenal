@@ -64,4 +64,8 @@ Como não há cookie nem header para usar como chave, a persistência (a stickin
 
 ## Onde você encontra proxies TCP
 
-Qualquer load balancer ou ADC rodando num modo rápido de camada 4 é um proxy TCP. No F5 BIG-IP, por exemplo, o profile FastL4 usa um caminho leve de camada 4 (com aceleração em hardware nas plataformas que suportam) exatamente para os casos em que você quer throughput e tratamento de conexões sem parsing de camada 7; já um virtual server do tipo Standard usa o full proxy TCP e pode empilhar processamento de HTTP e de TLS por cima. Os load balancers de nuvem expõem a mesma divisão como load balancers "de rede" (camada 4) e "de aplicação" (camada 7). O padrão é o mesmo em todo lugar: decida se você precisa ver a aplicação e, se não precisar, fique na camada 4, onde tudo é mais barato e mais genérico.
+Um load balancer ou ADC num modo de camada 4 só é um proxy TCP quando esse modo termina a conexão, e um modo rápido de camada 4 pode não terminar. No F5 BIG-IP, por exemplo, o profile FastL4 usa um caminho leve de camada 4, que trata pacote a pacote (com aceleração em hardware nas plataformas que suportam) exatamente para os casos em que você quer throughput e tratamento de conexões sem parsing de camada 7; já um virtual server do tipo Standard usa o full proxy TCP e pode empilhar processamento de HTTP e de TLS por cima. Os load balancers de nuvem expõem a mesma divisão como load balancers "de rede" (camada 4) e "de aplicação" (camada 7). O padrão é o mesmo em todo lugar: decida se você precisa ver a aplicação e, se não precisar, fique na camada 4, onde tudo é mais barato e mais genérico.
+
+## Fontes
+
+- [F5 DevCentral, Lori MacVittie, Back to Basics: The Many Modes of Proxies, 9 de dezembro de 2013: no modo Performance Layer 4, o proxy encaminha depois do handshake em vez de ser uma ponta da conexão, como um full proxy (lida em 07/10/2026)](https://community.f5.com/kb/technicalarticles/back-to-basics-the-many-modes-of-proxies/288587)
