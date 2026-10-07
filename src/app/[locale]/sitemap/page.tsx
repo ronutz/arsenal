@@ -17,7 +17,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { tools } from "@/config/tools";
-import { WORLDS } from "@/config/worlds";
+import { WORLDS, PROJECT_GROUPS } from "@/config/worlds";
 // The subject pages, one rule shared with /category/<key> (2026-10-06).
 import { subjectKeys } from "@/lib/subjects";
 
@@ -88,13 +88,29 @@ export default async function SitemapPage({
               {groups.map((g) => (
                 <div className={`sitemap-group sitemap-group--${g.key}`} key={g.key}>
                   <h2 className="sitemap-group-title">{g.title} <span className="sitemap-group-verb mono">{g.verb}</span></h2>
-                  <ul className="sitemap-links">
-                    {g.links.map((l) => (
-                      <li key={l.href}>
-                        <Link href={l.href} className="sitemap-link">{l.label}</Link>
-                      </li>
-                    ))}
-                  </ul>
+                  {g.key === "project" ? (
+                    /* The project world in three groups (row 62): About and evidence, The site, Policies and controls. */
+                    (["evidence", "site", "policies"] as const).map((sub) => (
+                      <div key={sub} className="sitemap-subgroup">
+                        <h3 className="sitemap-subgroup-title">{t(`sub${sub[0].toUpperCase()}${sub.slice(1)}`)}</h3>
+                        <ul className="sitemap-links">
+                          {g.links.filter((l) => (PROJECT_GROUPS[l.href] ?? "site") === sub).map((l) => (
+                            <li key={l.href}>
+                              <Link href={l.href} className="sitemap-link">{l.label}</Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))
+                  ) : (
+                    <ul className="sitemap-links">
+                      {g.links.map((l) => (
+                        <li key={l.href}>
+                          <Link href={l.href} className="sitemap-link">{l.label}</Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               ))}
             </div>

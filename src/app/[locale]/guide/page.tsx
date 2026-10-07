@@ -129,8 +129,9 @@ export default async function GuidePage({
   // HOW TO (G9): one block per surface. The prose is in messages; the links are routes, three at most each.
   const how: { key: string; links: { href: string; label: string }[] }[] = [
     { key: "tools", links: [{ href: "/tools", label: t("how.tools.l1") }, { href: "/tools#hub-paste-title", label: t("how.tools.l2") }, { href: "/api", label: t("how.tools.l3") }] },
-    { key: "learn", links: [{ href: "/learn", label: t("how.learn.l1") }, { href: "/glossary", label: t("how.learn.l2") }, { href: "/practice", label: t("how.learn.l3") }] },
-    { key: "guides", links: [{ href: "/study-guides", label: t("how.guides.l1") }, { href: "/certifications", label: t("how.guides.l2") }] },
+    // The article series and the training series (row 62, 2026-10-07): the reading-in-order surfaces the Guide had not named.
+    { key: "learn", links: [{ href: "/learn", label: t("how.learn.l1") }, { href: "/learn/series", label: t("how.learn.l4") }, { href: "/glossary", label: t("how.learn.l2") }, { href: "/practice", label: t("how.learn.l3") }] },
+    { key: "guides", links: [{ href: "/study-guides#training-series", label: t("how.guides.l3") }, { href: "/study-guides", label: t("how.guides.l1") }, { href: "/certifications", label: t("how.guides.l2") }] },
     { key: "hubs", links: [{ href: "/vendor-hubs", label: t("how.hubs.l1") }, { href: "/training", label: t("how.hubs.l2") }] },
     { key: "industry", links: [{ href: "/industry", label: t("how.industry.l1") }, { href: "/industry/chapters", label: t("how.industry.l2") }, { href: "/industry/method", label: t("how.industry.l3") }] },
     { key: "search", links: [{ href: "/settings", label: t("how.search.l1") }, { href: "/sitemap", label: t("how.search.l2") }] },
@@ -236,6 +237,8 @@ export default async function GuidePage({
                   <h3 className="guide-how-h">{t(`how.${h.key}.h`)}</h3>
                   <p className="colophon-body">{t(`how.${h.key}.p1`)}</p>
                   <p className="colophon-body">{t(`how.${h.key}.p2`)}</p>
+                  {/* A third paragraph where a surface needs one (row 62: the five ways to read in order). */}
+                  {t.has(`how.${h.key}.p3`) && <p className="colophon-body">{t(`how.${h.key}.p3`)}</p>}
                   <p className="guide-how-links">
                     <span className="guide-how-start mono">{t("howStart")}</span>
                     {h.links.map((l, i) => (

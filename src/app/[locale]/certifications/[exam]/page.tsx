@@ -288,12 +288,14 @@ export default async function StudyGuidePage({
             /* -------- Published state: blueprint sections + objectives -------- */
             <>
               {guide.sourceCaveat === "course-objectives" && (
-                /* Fortinet has not published an exam blueprint for this one, so
+                /* The vendor has not published an exam blueprint for this one, so
                    these come from the COURSE page. Same material, different
-                   artifact — say which, rather than let a reader assume. */
+                   artifact: say which, rather than let a reader assume. The
+                   vendor is the record's own (row 62, 2026-10-07: the Check Point
+                   PenTesting guides used to say "Fortinet's course page"). */
                 <section className="section section-accent">
                   <div className="container certs-container">
-                    <p className="cidr-privacy">{t("sourceCaveatCourse")}</p>
+                    <p className="cidr-privacy">{t("sourceCaveatCourse", { vendor: vendorLabel })}</p>
                   </div>
                 </section>
               )}
@@ -303,7 +305,7 @@ export default async function StudyGuidePage({
                    silently reconstructing text Fortinet never published. */
                 <section className="section">
                   <div className="container certs-container">
-                    <p className="cidr-privacy">{t("sourceCaveatTruncated")}</p>
+                    <p className="cidr-privacy">{t("sourceCaveatTruncated", { vendor: vendorLabel })}</p>
                   </div>
                 </section>
               )}

@@ -31,6 +31,8 @@ export function getWorldCountNumbers(locale: string): Record<string, number> {
   return {
     "/tools": c.tools,
     "/learn": c.articles,
+    // The article series (row 62): the number of series, not of their articles.
+    "/learn/series": c.series,
     "/stories": c.stories,
     // The study guides page leads with the curated reading paths, so its count is theirs (SCOUT's audit, 2026-10-06).
     "/study-guides": c.readingPaths,
@@ -56,6 +58,7 @@ export async function getWorldCountLabels(locale: string): Promise<Record<string
   return {
     "/tools": t("map.toolsBadge", { count: n["/tools"] }),
     "/learn": t("map.learnBadge", { count: n["/learn"] }),
+    "/learn/series": t("map.seriesBadge", { count: n["/learn/series"] }),
     "/stories": t("map.storiesBadge", { count: n["/stories"] }),
     "/study-guides": t("map.guidesBadge", { count: n["/study-guides"] }),
     "/materials": t("map.materialsBadge", { count: n["/materials"] }),

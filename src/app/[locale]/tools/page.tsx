@@ -73,18 +73,31 @@ export default async function ToolsPage({
 
   // INTENTS (E1, SCOUT, adopted 2026-10-06): the guided layer groups the generic index by what the reader needs
   // to DO, derived from each tool's catalogue posture rather than from a new field nobody remembers to set
-  // (D-74). The posture's first verb decides: decode and parse are "decode"; explain, reference, lookup,
-  // compare, map, classify, triage and translate are "understand"; compute, calculate, convert and transform
-  // are "compute"; build, generate and structure are "build"; validate, verify, lint, test and simulate are
-  // "check". A posture with no known verb falls to "understand", the catalogue's commonest posture.
+  // (D-74). REVISED 2026-10-07 (row 62, SCOUT's re-run: one tool under Check was a smell): the posture's verbs are
+  // read in order and the first one that names a job decides, so "format / validate" and "order / validate" are
+  // checks, where the first verb alone sent both to Understand, the catch-all. Words that name no job (export, rank,
+  // flag, rate, score, highlight, sequence, correlate, declare, order, format, reveal, compress, crack, and the
+  // parenthesised notes) are skipped; a posture with no job verb at all falls to "understand".
   const INTENTS = ["decode", "understand", "compute", "build", "check"] as const;
   type Intent = (typeof INTENTS)[number];
+  /** The verbs that name a job, each with the intent it puts a tool under. */
+  const VERB_INTENT: Record<string, Intent> = {
+    // Take an artefact apart and show what is inside it.
+    decode: "decode", parse: "decode", encode: "decode", inspect: "decode",
+    // Arithmetic and conversion with the rules shown.
+    compute: "compute", calculate: "compute", convert: "compute", transform: "compute", expand: "compute", translate: "compute",
+    // Produce something to take away.
+    build: "build", generate: "build", structure: "build", collect: "build", plan: "build",
+    // Answer yes or no, and show why.
+    validate: "check", verify: "check", lint: "check", test: "check", simulate: "check", evaluate: "check", grade: "check",
+    analyze: "check", compare: "check", match: "check", classify: "check", gate: "check",
+    // Lay the thing out so a decision about it can be made.
+    explain: "understand", reference: "understand", look: "understand", lookup: "understand", map: "understand",
+    triage: "understand", demonstrate: "understand", model: "understand", run: "understand",
+  };
   const intentOf = (posture: string | undefined): Intent => {
-    const verb = (posture ?? "").toLowerCase().match(/[a-z]+/)?.[0] ?? "";
-    if (/^(decode|parse)$/.test(verb)) return "decode";
-    if (/^(compute|calculate|convert|transform)$/.test(verb)) return "compute";
-    if (/^(build|generate|structure)$/.test(verb)) return "build";
-    if (/^(validate|verify|lint|test|simulate)$/.test(verb)) return "check";
+    // Every word of the posture, in order; the first job verb decides.
+    for (const verb of (posture ?? "").toLowerCase().match(/[a-z]+/g) ?? []) if (VERB_INTENT[verb]) return VERB_INTENT[verb];
     return "understand";
   };
   const intents = INTENTS.map((intent) => ({

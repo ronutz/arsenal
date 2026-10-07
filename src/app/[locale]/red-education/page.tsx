@@ -238,8 +238,12 @@ export default async function RedEducationPage({
                 {[
                   // Red Education's own courses (2026-10-06), first because they are new and they are its own.
                   ["own-courses", "own.jump"],
+                  // The career-paths booklet and the professional services, in page order (row 62, 2026-10-07: SCOUT
+                  // asked for both to be reachable from the top).
+                  ["career-paths", "jumpCareerPaths"],
                   ["why", "part.why.title"],
                   ["enables", "part.enables.title"],
+                  ["professional-services", "jumpProfessionalServices"],
                   ["my-work", "part.mywork.title"],
                   ["bench", "part.bench.title"],
                   ["evidence", "part.evidence.title"],

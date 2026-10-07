@@ -52,6 +52,46 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Row 62 (PRIME 2026-10-07 09:47): SCOUT's Round 1 re-run, adopted.
+    date: "2026-10-07",
+    time: "11:36",
+    kind: "content",
+    title: "Local-first, said the same way everywhere",
+    body:
+      "The home page, the tools index, the privacy page, the colophon, the user guide and the contribute page each said, in their own words, that every tool runs in your browser and sends nothing anywhere, while the tools index itself describes the red room, where a tool asks a live official service when you press Ask. They now say one thing: the catalogue computes in your browser, and the red room is the declared exception, naming the service it asks and sending nothing until you ask. A build check keeps an unscoped claim from coming back, in English and in Portuguese.",
+    links: [{ label: "Privacy", href: "/privacy" }, { label: "The red room", href: "/dev/out" }],
+  },
+  {
+    // Row 62 (PRIME 2026-10-07 09:47): SCOUT's Round 1 re-run, adopted.
+    date: "2026-10-07",
+    time: "11:36",
+    kind: "feature",
+    title: "Article series in the site's map, and the five ways to read in order",
+    body:
+      "The article series, seventy subjects told in order from an opener through their parts, join Understand in the home directory, the footer and the sitemap, with their count. The user guide names them and the training series, and says how the five ways to read in order differ: a training series, an article series, a reading path, a certification guide and a story.",
+    links: [{ label: "Article series", href: "/learn/series" }, { label: "User guide", href: "/guide" }],
+  },
+  {
+    // Row 62 (PRIME 2026-10-07 09:47): SCOUT's Round 1 re-run, adopted.
+    date: "2026-10-07",
+    time: "11:36",
+    kind: "feature",
+    title: "The tools index sorts by what a tool is for, not by the first word of its description",
+    body:
+      "The tools grouped by what you need to do were sorted by the first verb of each tool's posture, which left one tool under Check and sent validators, graders and comparers to Understand. The sort now reads the posture's verbs in order and lets the first one that names a job decide: Check now holds nine tools, among them the header and CSP graders, the JSON validator, the diff and the certificate chain builder.",
+    links: [{ label: "Tools", href: "/tools" }],
+  },
+  {
+    // Row 62 (PRIME 2026-10-07 09:47): SCOUT's Round 1 re-run, adopted.
+    date: "2026-10-07",
+    time: "11:36",
+    kind: "feature",
+    title: "Smaller fixes from the Round 1 re-run",
+    body:
+      "The Check Point PenTesting guides no longer say their objectives come from Fortinet's course page: the caveat names the record's own vendor, and a build check keeps every certification guide's prose to its own vendor. The training page's card that opens The Roles is labelled The Roles, not Career. The user guide no longer offers to have a platform's documentation read for you. The vendor hubs' opening line lists everything a hub gathers. The sitemap's project world is split into About and evidence, The site, and Policies and controls. Red Education's page links its career-paths booklet and its professional services from the top. The contribute page explains the three floors a tool can live on.",
+    links: [{ label: "Sitemap", href: "/sitemap" }, { label: "Contribute", href: "/contribute/ideas" }],
+  },
+  {
     // Row 63 (PRIME 2026-10-07 10:30): the course cover opens the presenter.
     date: "2026-10-07",
     time: "10:32",

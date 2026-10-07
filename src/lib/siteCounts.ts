@@ -33,6 +33,8 @@ import { tools as TOOL_CONFIG } from "@/config/tools";
 import { isVendorArticle } from "@/lib/learn";
 // The open materials registry (milestone (m1), 2026-10-06).
 import { MATERIALS } from "@/content/materials/materials";
+// The Learn series registry, for the article series' count in the five worlds (row 62, 2026-10-07).
+import { LEARN_SERIES } from "@/content/learn/series";
 
 /** The counts the directory, the footer and the guide state. */
 export interface SiteCounts {
@@ -76,6 +78,8 @@ export interface SiteCounts {
   endorsements: number;
   /** Stories. */
   stories: number;
+  /** Article series: subjects told in order, opener first (/learn/series). */
+  series: number;
 }
 
 /** Count everything once for the given locale (only The Practice is per locale). */
@@ -110,5 +114,6 @@ export function getSiteCounts(locale: string): SiteCounts {
     courses: COURSE_COUNT,
     endorsements: TESTIMONIALS.length,
     stories: STORY_SLUGS.length,
+    series: LEARN_SERIES.length,
   };
 }

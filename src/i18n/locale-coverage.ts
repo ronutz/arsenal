@@ -9,11 +9,11 @@ export const LOCALE_COVERAGE: Record<string, number> = {
   "en": 1,
   "es": 0.0646,
   "fil": 0.0639,
-  "fr": 0.0654,
-  "it": 0.0654,
+  "fr": 0.0653,
+  "it": 0.0653,
   "ms": 0.0639,
   "nb": 0.0639,
-  "nl": 0.0654,
+  "nl": 0.0653,
   "pl": 0.0639,
   "pt-BR": 0.9979,
   "ru": 0.0639,
@@ -23,4 +23,4 @@ export const LOCALE_COVERAGE: Record<string, number> = {
 };
 
 /** English keys counted at generation time (the denominator). */
-export const LOCALE_COVERAGE_DENOMINATOR = 19204;
+export const LOCALE_COVERAGE_DENOMINATOR = 19214;

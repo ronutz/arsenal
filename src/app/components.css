@@ -22639,3 +22639,16 @@ html.presenter-covering body {
   outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
 }
+
+/* The sitemap's project world in three groups (row 62, 2026-10-07): a small heading over each group. */
+.sitemap-subgroup + .sitemap-subgroup {
+  margin-top: 0.85rem;
+}
+.sitemap-subgroup-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}

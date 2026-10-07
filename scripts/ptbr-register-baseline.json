@@ -27,7 +27,7 @@
     },
     "messages:devOut": {
       "J": 1,
-      "I": 2
+      "I": 1
     },
     "messages:earlierSites": {
       "J": 10,
@@ -886,7 +886,7 @@
       "I": 0
     },
     "messages:guide": {
-      "J": 8,
+      "J": 7,
       "I": 0
     },
     "messages:history": {
@@ -919,7 +919,7 @@
     },
     "messages:privacy_page": {
       "J": 1,
-      "I": 1
+      "I": 0
     },
     "messages:redEducation": {
       "J": 2,

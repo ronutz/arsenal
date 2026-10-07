@@ -102,6 +102,8 @@
       "toolsLede": "Deterministic calculators and explainers for networks, security and identity. They compute in your browser and send nothing anywhere.",
       "toolsBadge": "{count} live",
       "learn": "Learn",
+      "series": "Article series",
+      "seriesBadge": "{count, plural, one {# series} other {# series}}",
       "learnLede": "Technical articles on the protocols and products behind the tools, written to be read rather than skimmed.",
       "learnBadge": "{count} articles",
       "industry": "Industry",
@@ -266,8 +268,8 @@
       },
       "trustTitle": "Why trust this",
       "trust": {
-        "local": "Runs on your machine",
-        "localBody": "Every tool computes in your browser. No upload, no logging, no account.",
+        "local": "Local-first",
+        "localBody": "The catalogue's tools compute in your browser: no upload, no logging, no account. The red room's few live lookups name the service they ask, and send nothing until you press Ask.",
         "sourced": "Sourced, with dates",
         "sourcedBody": "Technical claims cite vendor documentation and standards, each with the date it was read.",
         "open": "Open source",
@@ -3001,7 +3003,7 @@
       "clear": "Clear"
     },
     "learnHeading": "Learn the concepts",
-    "lede": "Small, fast, privacy-first utilities that run entirely in your browser. Nothing you type is sent anywhere.",
+    "lede": "Small, fast, privacy-first utilities. The catalogue computes in your browser and sends nothing anywhere; the one exception is the red room, where a tool asks the official service it names, and only when you press Ask.",
     "nslookup-output-explainer": {
       "name": "nslookup output explainer",
       "blurb": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere.",
@@ -11897,7 +11899,7 @@
         },
         "understand": {
           "title": "Understand how something works",
-          "lede": "Explainers, references and comparers: the thing laid out so a decision about it can be made."
+          "lede": "Explainers, references and models: the thing laid out so a decision about it can be made."
         },
         "compute": {
           "title": "Compute or convert",
@@ -11909,7 +11911,7 @@
         },
         "check": {
           "title": "Check, validate or simulate",
-          "lede": "Tools that answer yes or no, and show why: validators, linters, tests and simulators of a system's own order."
+          "lede": "Tools that answer yes or no, and show why: validators, graders, testers, comparers and simulators of a system's own order."
         }
       },
       "workflowsTitle": "Workflows",
@@ -11946,7 +11948,7 @@
     "shortTitle": "The short version",
     "short1": "This site sets no cookies, uses no advertising, and contains no third-party trackers or fingerprinting. Nothing follows you across the web. It does count requests at the server, in aggregate, and that counting is described in full below.",
     "short2": "It does not sell, share, or build profiles of its visitors, and it asks you for nothing in order to read it.",
-    "short3": "The interactive tools run entirely in your browser. What you paste or type into them stays on your device and is not transmitted anywhere.",
+    "short3": "The catalogue's interactive tools run entirely in your browser: what you paste or type into them stays on your device. The one exception is the red room (/dev/out), whose tools send a query, when you press Ask, straight from your browser to the official service they name; nothing goes to this site's servers.",
     "short4": "Only four things involve data at all, and each is explained below: a handful of preferences and one short reading trail saved in your own browser, the standard connection logs that every website visit creates at the hosting layer, the aggregate request counts this site keeps at the server, and any message you choose to send by email.",
     "controllerTitle": "Who is responsible",
     "controllerBody": "This is the personal website of Rodolfo Nützmann (ronutz.com). For any privacy question, or to exercise any of the rights described below, write to {email}. Enquiries are handled directly by Rodolfo Nützmann, as the data controller.",
@@ -11957,7 +11959,7 @@
     "hostingTitle": "Hosting and server logs",
     "hostingBody": "The site is delivered through Cloudflare, which provides its hosting and content delivery. As with any website, loading a page means your device connects to a server, and Cloudflare, acting as the hosting provider, processes basic connection data, including your IP address and standard request details, in order to deliver the pages to you and to protect the site against abuse and attack. This processing is necessary to operate and secure the site (a legitimate interest under GDPR Article 6(1)(f), and the corresponding bases under LGPD Articles 7 and 10). It is retained only briefly by the provider and is not used here to identify or track you.",
     "toolsTitle": "The tools run in your browser",
-    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. A separate programmatic interface (an API) is offered for automation and integrations; by design it is stateless and logs none of the queries or request bodies sent to it.",
+    "toolsBody": "The decoders and calculators on this site, for JWTs, IP addresses, certificates and the rest, compute entirely within your browser. The values you enter are processed on your own device and are never sent to a server. The one exception is the red room (/dev/out), whose tools exist to ask a live service: when you press Ask, your query goes from your browser directly to the official service named on screen, a domain registry for example, and this site's servers never see it. The programmatic interface (an API) documented on this site follows the same rule, stateless and logging no query or request body; ronutz.com does not serve it.",
     "contactTitle": "If you contact me",
     "contactBody": "The contact form does not submit to any server. Instead it opens a pre-filled message in your own email application, which you then send yourself from your own account, so nothing passes through a third party. If you do write, whether through the form or directly, I receive the information you include, such as your name, email address and message, and use it only to reply to you. I keep it only for as long as needed to deal with your enquiry, do not use it for marketing, and do not share it.",
     "intlTitle": "Processing outside your country",
@@ -12877,7 +12879,7 @@
     "navGlossaryLede": "Every term used across the courses and the writing, defined once and cross-referenced. Useful mid-course and useful afterwards.",
     "disclaimerTitle": "Before you read further",
     "disclaimerBody": "I work full time for Red Education. All the technical education work described on this page - training delivery and content development, workshops, bootcamps, knowledge transfers and enablement sessions - is delivered solely through Red Education. I will be happy to help you work out what your organisation needs and put you in touch with the right person to handle the request.",
-    "navCareer": "Career",
+    "navCareer": "The Roles",
     "navCareerLede": "What the jobs behind these courses actually are - what each role is accountable for, what it is measured on, and which roles sit next to it.",
     "metaTitle": "Authorized F5, Fortinet, Extreme Networks and Netskope training, taught from engineering practice",
     "metaDescription": "Official instructor-led courses on F5, Fortinet, Extreme Networks and Netskope, delivered worldwide through Red Education in English or Brazilian Portuguese by an instructor whose classroom is informed by three decades of engineering practice.",
@@ -13171,9 +13173,9 @@
     "principlesTitle": "How it was made",
     "principlesBody": "A few principles held throughout, and they are visible if you know where to look.",
     "p1Title": "Compute, never guess",
-    "p1Body": "The tools on this site calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate. What runs in your browser, stays in your browser. The oldest of them have a lineage: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout were already on nutzmann.net in 2004 and on ntz.com.br in 2013, and the Internet Archive still has them.",
+    "p1Body": "The catalogue's tools calculate answers locally and deterministically. They do not call a server with your input, and they do not approximate: what runs in your browser stays in your browser. The red room is the declared exception, a few tools whose job is to ask a live service, and they say so before you press Ask. The oldest tools have a lineage: a bits-and-bytes calculator, an IP addressing calculator and a cabling pinout were already on nutzmann.net in 2004 and on ntz.com.br in 2013, and the Internet Archive still has them.",
     "p2Title": "Open at the core",
-    "p2Body": "The deterministic logic each tool runs is the whole of the tool. There is no hidden server step, no account, and nothing about your use of a tool is reported anywhere. Everything runs in your browser.",
+    "p2Body": "The deterministic logic each catalogue tool runs is the whole of the tool. There is no hidden server step, no account, and nothing about your use of a tool is reported anywhere. Everything on the main floor runs in your browser.",
     "p3Title": "Documented by construction",
     "p3Body": "Every part of the codebase is commented and documented, not as an afterthought but as a standing rule. The build is meant to be legible, to its maintainer and to anyone who inherits it.",
     "p4Title": "Built to last and to travel",
@@ -13213,7 +13215,7 @@
     "redblueLabel": "Red and blue",
     "redblueBody": "The same decode-and-explain that lets a red-teamer read a captured token lets a blue-teamer understand what their own stack is emitting. The platform deliberately sits on the analysis side of that line: it identifies, decodes, converts, and explains, and it stops short of forging, injecting, or defeating controls. That boundary is a design decision, not an oversight; these tools exist to teach and to diagnose, not to weaponize.",
     "localLabel": "Local and deterministic",
-    "localBody": "Everything runs in the browser. The tool calls a pure function: given the same input it returns the same output, holds no state, and sends nothing to a server. No cookies and no third-party analytics; the site's own aggregate request counting is set out in full on the Privacy page.",
+    "localBody": "Every catalogue tool runs in the browser. It calls a pure function: given the same input it returns the same output, holds no state, and sends nothing to a server. The red room's tools are the declared exception, live lookups that name the service they ask. No cookies and no third-party analytics; the site's own aggregate request counting is set out in full on the Privacy page.",
     "thanksTitle": "Special thanks",
     "limitsTitle": "The ceiling, stated plainly",
     "limitsBody1": "This site runs as a single Cloudflare Worker serving static assets, and that platform has hard, published limits worth being honest about. A Worker version may carry at most 20,000 static files on the free plan and 100,000 on the paid plan (raised from 20,000 in September 2025, and only when deploying with Wrangler 4.34 or newer), with no single file over 25 MiB. Requests for static assets themselves are free and unlimited; only invocations of the Worker script, such as the API, are metered.",
@@ -13317,7 +13319,7 @@
   },
   "api": {
     "title": "API",
-    "lede": "The tools on this site run in your browser and keep your data on your device. Each one is also built to run as a small, deterministic HTTP API, the programmatic counterpart to the browser tools. That API is fully implemented and documented here, but this site does not serve it. The reference below is a specification browser, not a live endpoint.",
+    "lede": "The catalogue's tools run in your browser and keep your data on your device. Each one is also built to run as a small, deterministic HTTP API, the programmatic counterpart to the browser tools. That API is fully implemented and documented here, but this site does not serve it. The reference below is a specification browser, not a live endpoint.",
     "privacyTitle": "What this means for your data",
     "privacyBody": "By design, the API would receive only the input you send it, compute a result, and return it: stateless, logging no query values or request bodies. Since the API is not served here, nothing you enter on this page is sent anywhere; the try-it panels below only show you the request you would make.",
     "engineTitle": "The same engine as the browser",
@@ -13360,19 +13362,19 @@
   "contributeIdeas": {
     "eyebrow": "Ideas welcome",
     "title": "Share an idea",
-    "lede": "This toolbox is built to grow, and the clearest signal for where it should go comes from the people using it. Found a bug, a mistake, or an inaccuracy? Want a tool that isn't here yet? See a better way to handle something, or a result you'd word differently? Send it, every kind of input is welcome.",
+    "lede": "ronutz is built to grow, and the clearest signal for where it should go comes from the people using it. Found a bug, a mistake, or an inaccuracy? Want a tool that isn't here yet? See a better way to handle something, or a result you'd word differently? Send it, every kind of input is welcome.",
     "sendTitle": "What you can send",
     "sendBody": "Bugs, mistakes, and inaccuracies of any kind: a tool that misbehaves, a wrong result, an error in a Learn article, or anything that simply looks off. Feature requests for tools that already exist. Ideas for new tools the toolbox should have. Corrections and additions to the Learn articles, like a clearer explanation, a better source, or a topic that is missing. Or simply a different angle on a problem. Rough is fine; a sentence is enough to start a conversation.",
     "toolTitle": "If you're proposing a new tool",
     "toolBody": "Tools here are small, self-describing modules: a manifest that says what the tool is and where its correctness comes from, one pure function that does the work, and a set of golden vectors, the fixed input-and-output pairs that prove it. A good fit computes locally and deterministically (the same input always yields the same output, with no clock, network, or randomness in the result), keeps anything sensitive on the device, and pins its correctness to a cited source such as an RFC rather than to opinion. You don't need to build any of that to propose one: just describe what it should compute, an example, and the source it rests on.",
-    "fitRule": "One simple test decides it. Every tool here runs entirely in your browser and sends nothing anywhere, so a new tool has to be something a computer can work out just from what you type, by following a fixed, published rule. If it needs to go online, look something up live, sign you in, or remember you, it does not belong here.",
+    "fitRule": "One test decides which floor a tool belongs on. The main floor holds tools a computer can work out just from what you type, by following a fixed, published rule, entirely in your browser. The green room takes tools that run the same way but whose form is still settling. The red room is for the rare tool whose whole job is to ask a live service, a domain registry for example: it names the official service on screen and sends nothing until you press Ask. Anything that needs to sign you in or remember you fits none of them.",
     "fitYes": "Fits:",
     "fitYesBody": "decoding or explaining something you paste in (a token, a certificate, a config, command output), converting between formats, calculating from a standard or formula, or generating from a rule, like a UUID, a hash, or a command line.",
     "fitNo": "Does not fit:",
-    "fitNoBody": "anything that has to go online or check something live (testing a real website, querying a live DNS server, scanning an address), anything that needs an account, a login, or saved data, or anything whose answer is not fixed by a published standard.",
+    "fitNoBody": "anything that needs an account, a login, or saved data; anything that probes or scans a system that is not yours; or anything whose answer is not fixed by a published standard. A live lookup (querying a live DNS server, asking a registry who holds a domain) does not fit the main floor, but may fit the red room, under its rules.",
     "fitUnsure": "Not sure which side your idea falls on? Send it anyway and say what it should do. I will tell you honestly whether it fits, and why.",
     "emailTitle": "How to reach me",
-    "emailBody": "Email is the channel. Tell me what you found or what you'd like, with enough detail to act on: an example, a link, the exact wording, whatever fits. If it makes the toolbox better, it gets built.",
+    "emailBody": "Email is the channel. Tell me what you found or what you'd like, with enough detail to act on: an example, a link, the exact wording, whatever fits. If it makes the site better, it gets built.",
     "emailLabel": "Email",
     "backToTools": "Back to the toolbox",
     "roadmapCheck": "It's worth checking the roadmap first, to see what's already planned or shipped and avoid duplicates:",
@@ -13466,7 +13468,7 @@
   },
   "vendorHub": {
     "eyebrow": "vendor hub",
-    "lede": "Everything on ronutz.com for {vendor}, in one place: every tool, grouped by family, followed by every article. Tools compute locally in your browser; articles are grounded in vendor documentation.",
+    "lede": "Everything on ronutz.com for {vendor}, through one door: its tools, grouped by family, and its articles, and where they exist its certification guides, a reading path, the career chapter, the industry record and the lineage. Tools compute locally in your browser; articles are grounded in vendor documentation.",
     "toolsHeading": "Tools",
     "learnHeading": "Articles",
     "read": "Read",
@@ -14736,7 +14738,7 @@
       },
       "privacy": {
         "h": "Privacy and themes",
-        "b": "Tools run entirely in your browser, so the data you enter is not transmitted anywhere by default. Your theme choice is remembered on your device only. Your language is carried in the page address rather than stored. The Privacy page explains exactly what is and is not kept."
+        "b": "The catalogue's tools run entirely in your browser, so the data you enter is not transmitted anywhere; the red room's tools, the one exception, send a query only when you press Ask, and only to the official service they name. Your theme choice is remembered on your device only. Your language is carried in the page address rather than stored. The Privacy page explains exactly what is and is not kept."
       },
       "api": {
         "h": "The API",
@@ -14775,7 +14777,7 @@
       "tools": {
         "nav": "Tools",
         "h": "The tools",
-        "p1": "Every tool computes in your browser and sends nothing anywhere: paste or type the input and the result appears, with an Example button that fills a known-good input and a Clear button beside it. The tools index opens three ways in: paste what you have, and the box lines up the tools that recognise the shape of what you pasted; choose by what you need to do (decode, understand, compute, build, check); or follow a workflow that takes one thing from tool to tool, a CIDR to a firewall rule, a certificate to the headers a browser enforces.",
+        "p1": "Every tool in the catalogue computes in your browser and sends nothing anywhere: paste or type the input and the result appears, with an Example button that fills a known-good input and a Clear button beside it. The tools index opens three ways in: paste what you have, and the box lines up the tools that recognise the shape of what you pasted; choose by what you need to do (decode, understand, compute, build, check); or follow a workflow that takes one thing from tool to tool, a CIDR to a firewall rule, a certificate to the headers a browser enforces.",
         "p2": "The index has three floors, stated on the page: the main floor, where every tool has a fixed shape and golden test vectors; the green room, for tools whose form is still settling; and the red room, the one place a tool can send your input out, to the official service named on screen, and only when you ask. Each tool has a documentation page, readable as a web page or as Markdown, and the same logic is described as an API with a machine-readable specification.",
         "l1": "The tools index",
         "l2": "Paste what you have",
@@ -14784,19 +14786,22 @@
       "learn": {
         "nav": "Learn",
         "h": "Learn",
-        "p1": "The Learn library is the explanation behind the tools: articles grouped by subject, in the same taxonomy the tools use, each citing the documentation it was written from and linking the tools that compute what it describes. The hub can be read two ways, Guided or Directory. Guided asks what you want to do (understand a subject, learn something in order from the start, prepare for an exam, have a platform's documentation read for you, find a definition fast) and sends you to the right door; Directory lists every article by subject in reading order.",
-        "p2": "Around the articles sit the Stories, longer pieces that argue a point; The Practice, about the work rather than the technology (triage, escalation, change, the human side); the Glossary, with a definition for every term the articles and tools use; and the People, the engineers and authors behind the protocols. In any article, the first mention of a technical term carries a dashed underline you can hover or tap for a short definition; that hint can be switched off in Settings.",
+        "p1": "The Learn library is the explanation behind the tools: articles grouped by subject, in the same taxonomy the tools use, each citing the documentation it was written from and linking the tools that compute what it describes. The hub can be read two ways, Guided or Directory. Guided asks what you want to do (understand a subject, learn something in order from the start, prepare for an exam, work with a particular platform, find a definition fast) and sends you to the right door; Directory lists every article by subject in reading order.",
+        "p2": "Around the articles sit the Article series, subjects told in order from an opener through their parts; the Stories, longer pieces that argue a point; The Practice, about the work rather than the technology (triage, escalation, change, the human side); the Glossary, with a definition for every term the articles and tools use; and the People, the engineers and authors behind the protocols. In any article, the first mention of a technical term carries a dashed underline you can hover or tap for a short definition; that hint can be switched off in Settings.",
         "l1": "The Learn hub",
         "l2": "The glossary",
-        "l3": "The Practice"
+        "l3": "The Practice",
+        "l4": "Article series"
       },
       "guides": {
         "nav": "Study guides",
         "h": "Study guides and certification guides",
         "p1": "A study guide is a reading path: the articles to read, in order, with one sentence saying what you will understand at the end, grouped into families (protocols and foundations, identity and security, application delivery, vendor platforms). Each path opens on its first article, and every article in it links back to the path, so you can leave and return without losing your place.",
         "p2": "The certification guides are the same material arranged against a vendor exam: the exam's own code and objectives, with the articles and tools that cover each objective. They are reading plans, not exam dumps; where an objective has no coverage yet the guide says so in its place, and a build check fails if one is left silent, which is how the gaps stay visible when the exams change.",
+        "p3": "The page opens with the training series: fundamentals in order, one level at a time, each a set of modules with a stated outcome, its parts in reading order and the tools to practise on, and a page of its own that starts it. That makes five ways to read in order, each with its own job: a training series takes one level of a curriculum, module by module; an article series tells one subject from its opener through its parts; a reading path gathers published articles toward one understanding; a certification guide maps one exam's objectives to the articles that cover them; a story argues one case across several pieces.",
         "l1": "The study guides",
-        "l2": "The certification guides"
+        "l2": "The certification guides",
+        "l3": "The training series"
       },
       "hubs": {
         "nav": "Vendor hubs",
@@ -15218,7 +15223,7 @@
         "port43": "Legacy WHOIS (port 43)",
         "notices": "Registry notices"
       },
-      "bootstrapNote": "Registry routing is deterministic: it walks vendored snapshots of the four IANA RDAP bootstrap files (RFC 9224), vendored {vendored}; the dns table's own publication stamp is {dns}. The live answer, by design, is not deterministic - that is why this tool lives in the green room.",
+      "bootstrapNote": "Registry routing is deterministic: it walks vendored snapshots of the four IANA RDAP bootstrap files (RFC 9224), vendored {vendored}; the dns table's own publication stamp is {dns}. The live answer, by design, is not deterministic, which is why this tool lives in the red room.",
       "errors": {
         "empty": "Enter a domain, an IP address, or an AS number.",
         "format": "Could not read that as a domain, IP address, or AS number.",
@@ -23178,12 +23183,12 @@
     "prerequisitesLabel": "Prerequisites",
     "requirementLabel": "How to earn it",
     "officialPage": "Official certification page",
-    "sourceCaveatTruncated": "Note on this blueprint: Fortinet's own exam page publishes a Tasks column whose entries are truncated or blank, so the objectives below are transcribed from the Details column beside them, grouped under the published section headings and weightings. Verified against a fresh fetch.",
+    "sourceCaveatTruncated": "Note on this blueprint: {vendor}'s own exam page publishes a Tasks column whose entries are truncated or blank, so the objectives below are transcribed from the Details column beside them, grouped under the published section headings and weightings. Verified against a fresh fetch.",
     "retiringLabel": "Retiring",
     "retirementNotice": "{exam} can be sat until {until}.",
     "retirementReplacedBy": "It is replaced by {exam}.",
     "retirementNoReplacement": "{vendor}'s page does not name a replacement.",
-    "sourceCaveatCourse": "These objectives come from Fortinet's course page for this product, not from an exam blueprint: Fortinet has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently.",
+    "sourceCaveatCourse": "These objectives come from {vendor}'s course page for this product, not from an exam blueprint: {vendor} has not published one for this exam yet. The material is what the course teaches, and an exam blueprint may organise or weight it differently.",
     "standaloneTrackLabel": "Outside the certification path",
     "retiredLabel": "Retired",
     "previousUntilLabel": "Previous version until",
@@ -23353,6 +23358,8 @@
     "identityLine": "The institution behind Rodolfo Nützmann's authorised training and his commercial professional engagements.",
     "partsLabel": "Part {n}",
     "jumpTribute": "A word of thanks",
+    "jumpCareerPaths": "Career paths",
+    "jumpProfessionalServices": "Professional services",
     "part": {
       "why": {
         "title": "Why Red Education",
@@ -23748,14 +23755,17 @@
     "toolsCount": "{count} deterministic tools, all local-compute",
     "xmlNote": "Machine-readable: sitemap.xml",
     "subjectsTitle": "By subject",
-    "subjectsLede": "Each subject's page gathers its tools, articles and glossary terms."
+    "subjectsLede": "Each subject's page gathers its tools, articles and glossary terms.",
+    "subEvidence": "About and evidence",
+    "subSite": "The site",
+    "subPolicies": "Policies and controls"
   },
   "studyGuidesIndex": {
     "eyebrow": "Study guides",
     "title": "Study guides",
     "lede": "Two ways to study here, and they answer different questions. Curated reading paths follow a technology rather than an exam: read the Learn library in teaching order, with the tools to practise on as you go. Certification study guides live on their own page and do the opposite - they start from a vendor's published exam blueprint and map it objective by objective.",
     "pathsTitle": "Curated reading paths",
-    "pathsLede": "A path is a syllabus with no exam behind it. Nothing here is organised around a certification blueprint or scored against one: the order is the order the subject makes sense in, chosen so each article earns the next. Read straight through, or stop when you have what you came for. Everything computes locally and nothing is paywalled.",
+    "pathsLede": "A path is a syllabus with no exam behind it. Nothing here is organised around a certification blueprint or scored against one: the order is the order the subject makes sense in, chosen so each article earns the next. Read straight through, or stop when you have what you came for. The tools they link compute in your browser, and nothing is paywalled.",
     "certTitle": "Certification study guides",
     "certLede": "These are the exam-shaped ones, and they live on the certifications page. Each follows a vendor's own published blueprint objective by objective, tying every objective to the articles that teach it, the tools that exercise it, and the manual pages that remain the source of truth.",
     "certAllCta": "All certifications and guides",

@@ -66,6 +66,9 @@ export const WORLDS: readonly World[] = [
     key: "understand",
     items: [
       { label: "map.learn", href: "/learn" },
+      // The article series (row 62, 2026-10-07: SCOUT found 70 series and 556 articles in reading order missing from the
+      // five worlds): subjects told in order, opener first. Not in the navbar.
+      { label: "map.series", href: "/learn/series" },
       { label: "map.stories", href: "/stories" },
       { label: "map.guides", href: "/study-guides" },
       // The open materials (milestone (m1), 2026-10-06): complete courses to download and teach from, beside the study guides.
@@ -122,6 +125,14 @@ export const WORLDS: readonly World[] = [
     ],
   },
 ];
+
+/** THE PROJECT WORLD'S GROUPS on the human sitemap (row 62, 2026-10-07, SCOUT: the world mixed identity and evidence
+ *  with the site's own operations and its policies). Keyed by href; an href not listed falls in "site". The footer and
+ *  the home directory keep the five worlds as they are. */
+export const PROJECT_GROUPS: Record<string, "evidence" | "site" | "policies"> = {
+  "/about": "evidence", "/about/credentials": "evidence", "/endorsements": "evidence", "/red-education": "evidence",
+  "/license": "policies", "/privacy": "policies", "/disclaimer": "policies", "/stats": "policies", "/settings": "policies",
+};
 
 /** The first route segments (below the locale) of each world; anything else is The project, a vendor hub is Explore. */
 const SEGMENT_WORLD: Record<string, WorldKey> = {

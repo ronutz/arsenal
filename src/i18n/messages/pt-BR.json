@@ -102,6 +102,8 @@
       "toolsLede": "Calculadoras e explicadores determinísticos para redes, segurança e identidade. Calculam no seu navegador e não enviam nada a lugar nenhum.",
       "toolsBadge": "{count} no ar",
       "learn": "Aprender",
+      "series": "Séries de artigos",
+      "seriesBadge": "{count, plural, one {# série} other {# séries}}",
       "learnLede": "Artigos técnicos sobre os protocolos e produtos por trás das ferramentas, escritos para serem lidos, e não folheados.",
       "learnBadge": "{count} artigos",
       "industry": "Indústria",
@@ -266,8 +268,8 @@
       },
       "trustTitle": "Por que confiar",
       "trust": {
-        "local": "Roda na sua máquina",
-        "localBody": "Cada ferramenta calcula no seu navegador. Sem envio, sem registro, sem conta.",
+        "local": "Local-first",
+        "localBody": "As ferramentas do catálogo calculam no seu navegador: sem envio, sem registro, sem conta. As poucas consultas ao vivo da sala vermelha dizem qual serviço consultam e não enviam nada até você apertar Perguntar.",
         "sourced": "Com fontes e datas",
         "sourcedBody": "As afirmações técnicas citam a documentação dos fabricantes e as normas, cada uma com a data em que foi lida.",
         "open": "Código aberto",
@@ -3001,7 +3003,7 @@
       "clear": "Limpar"
     },
     "learnHeading": "Aprenda os conceitos",
-    "lede": "Utilitários pequenos, rápidos e que respeitam a privacidade, rodando inteiramente no seu navegador. Nada do que você digita é enviado a lugar nenhum.",
+    "lede": "Utilitários pequenos, rápidos e que respeitam a sua privacidade. O catálogo calcula no seu navegador e não envia nada a lugar nenhum; a única exceção é a sala vermelha, onde uma ferramenta consulta o serviço oficial que ela indica, e só quando você aperta Perguntar.",
     "nslookup-output-explainer": {
       "name": "explicador de saída do nslookup",
       "blurb": "Cole a saída real do nslookup e obtenha um detalhamento decodificado e explicado: o resolvedor usado, se a resposta é autoritativa, cada registro (com breakdown de campos de MX / SRV / SOA) e quaisquer falhas. Analisado inteiramente no seu navegador, nada é resolvido nem enviado a lugar algum.",
@@ -11897,7 +11899,7 @@
         },
         "understand": {
           "title": "Entender como algo funciona",
-          "lede": "Explicadores, referências e comparadores: a coisa exposta para que uma decisão sobre ela possa ser tomada."
+          "lede": "Explicadores, referências e modelos: a coisa exposta para que uma decisão sobre ela possa ser tomada."
         },
         "compute": {
           "title": "Calcular ou converter",
@@ -11909,7 +11911,7 @@
         },
         "check": {
           "title": "Verificar, validar ou simular",
-          "lede": "Ferramentas que respondem sim ou não, e mostram por quê: validadores, linters, testes e simuladores da ordem própria de um sistema."
+          "lede": "Ferramentas que respondem sim ou não, e mostram por quê: validadores, avaliadores, testadores, comparadores e simuladores da ordem própria de um sistema."
         }
       },
       "workflowsTitle": "Fluxos de trabalho",
@@ -11946,7 +11948,7 @@
     "shortTitle": "A versão curta",
     "short1": "Este site não usa cookies, não usa publicidade e não contém rastreadores de terceiros nem impressão digital de dispositivo. Nada segue você pela web. Ele conta requisições no servidor, de forma agregada, e essa contagem está descrita por inteiro abaixo.",
     "short2": "Ele não vende, compartilha nem cria perfis de seus visitantes, e não pede nada de você para que você o leia.",
-    "short3": "As ferramentas interativas funcionam inteiramente no seu navegador. O que você cola ou digita nelas permanece no seu dispositivo e não é transmitido a lugar nenhum.",
+    "short3": "As ferramentas interativas do catálogo funcionam inteiramente no seu navegador: o que você cola ou digita nelas fica no seu dispositivo. A única exceção é a sala vermelha (/dev/out), cujas ferramentas enviam uma consulta, quando você aperta Perguntar, direto do seu navegador ao serviço oficial que indicam; nada vai para os servidores deste site.",
     "short4": "Apenas quatro coisas envolvem dados, e cada uma está explicada abaixo: um punhado de preferências e uma pequena trilha de leitura salvas no seu próprio navegador, os registros de conexão padrão que toda visita a um site cria na camada de hospedagem, as contagens agregadas de requisição que este site mantém no servidor, e qualquer mensagem que você escolha enviar por e-mail.",
     "controllerTitle": "Quem é o responsável",
     "controllerBody": "Este é o site pessoal de Rodolfo Nützmann (ronutz.com). Para qualquer questão de privacidade, ou para exercer qualquer dos direitos descritos abaixo, escreva para {email}. As solicitações são tratadas diretamente por Rodolfo Nützmann, na condição de controlador dos dados.",
@@ -11957,7 +11959,7 @@
     "hostingTitle": "Hospedagem e registros de servidor",
     "hostingBody": "O site é entregue por meio da Cloudflare, que fornece a sua hospedagem e a entrega de conteúdo. Como em qualquer site, carregar uma página significa que o seu dispositivo se conecta a um servidor, e a Cloudflare, atuando como provedora de hospedagem, processa dados básicos de conexão — incluindo o seu endereço IP e detalhes padrão da requisição — para entregar as páginas a você e proteger o site contra abuso e ataques. Esse tratamento é necessário para operar e proteger o site (legítimo interesse, nos termos do Artigo 6(1)(f) do GDPR e das bases correspondentes dos Artigos 7 e 10 da LGPD). É retido apenas brevemente pela provedora e não é usado aqui para identificar ou rastrear você.",
     "toolsTitle": "As ferramentas funcionam no seu navegador",
-    "toolsBody": "Os decodificadores e calculadoras deste site — para JWTs, endereços IP, certificados e o restante — computam inteiramente dentro do seu navegador. Os valores que você insere são processados no seu próprio dispositivo e nunca são enviados a um servidor. Uma interface programática separada (uma API) é oferecida para automação e integrações; por design, ela não mantém estado e não registra nenhuma das consultas ou corpos de requisição enviados a ela.",
+    "toolsBody": "Os decodificadores e calculadoras deste site, para JWTs, endereços IP, certificados e o resto, calculam inteiramente dentro do seu navegador. Os valores que você digita são processados no seu próprio dispositivo e nunca são enviados a um servidor. A única exceção é a sala vermelha (/dev/out), cujas ferramentas existem para consultar um serviço ao vivo: quando você aperta Perguntar, a sua consulta vai do seu navegador direto ao serviço oficial indicado na tela, um registro de domínios, por exemplo, e os servidores deste site nunca a veem. A interface programática (uma API) documentada neste site segue a mesma regra, sem estado e sem registrar consultas nem corpos de requisição; o ronutz.com não a serve.",
     "contactTitle": "Se você entrar em contato",
     "contactBody": "O formulário de contato não envia dados a nenhum servidor. Em vez disso, ele abre uma mensagem pré-preenchida no seu próprio aplicativo de e-mail, que você então envia a partir da sua própria conta, de modo que nada passa por terceiros. Se você escrever, seja pelo formulário ou diretamente, eu recebo as informações que você incluir, como o seu nome, endereço de e-mail e mensagem, e as uso apenas para responder a você. Eu as guardo apenas pelo tempo necessário para tratar a sua solicitação, não as uso para marketing e não as compartilho.",
     "intlTitle": "Tratamento fora do seu país",
@@ -12877,7 +12879,7 @@
     "navGlossaryLede": "Cada termo usado nos cursos e nos textos, definido uma vez e com referências cruzadas. Útil durante o curso e útil depois dele.",
     "disclaimerTitle": "Antes de continuar a ler",
     "disclaimerBody": "Trabalho em tempo integral para a Red Education. Todo o trabalho de educação técnica descrito nesta página - entrega de treinamentos e desenvolvimento de conteúdo, workshops, bootcamps, transferências de conhecimento e sessões de capacitação - é realizado exclusivamente por meio da Red Education. Terei prazer em ajudar você a identificar o que a sua organização precisa e colocá-lo em contato com a pessoa certa para tratar do pedido.",
-    "navCareer": "Carreira",
+    "navCareer": "Os Papéis",
     "navCareerLede": "O que são, de fato, os cargos por trás destes cursos - do que cada papel responde, por que é medido, e quais papéis ficam ao lado dele.",
     "metaTitle": "Treinamento autorizado F5, Fortinet, Extreme Networks e Netskope, ensinado a partir da prática de engenharia",
     "metaDescription": "Cursos oficiais conduzidos por instrutor em F5, Fortinet, Extreme Networks e Netskope, entregues no mundo todo através da Red Education, em inglês ou português do Brasil, por um instrutor cuja sala de aula é informada por três décadas de prática de engenharia.",
@@ -13171,7 +13173,7 @@
     "principlesTitle": "Como foi feito",
     "principlesBody": "Alguns princípios valeram do início ao fim, e são visíveis se você souber onde olhar.",
     "p1Title": "Calcular, nunca chutar",
-    "p1Body": "As ferramentas deste site calculam respostas de forma local e determinística. Elas não chamam um servidor com a sua informação, e não aproximam. O que roda no seu navegador, fica no seu navegador. As mais antigas têm linhagem: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e uma pinagem de cabeamento já estavam no nutzmann.net em 2004 e no ntz.com.br em 2013, e o Internet Archive ainda as guarda.",
+    "p1Body": "As ferramentas do catálogo calculam respostas de forma local e determinística. Elas não chamam um servidor com a sua informação e não aproximam: o que roda no seu navegador fica no seu navegador. A sala vermelha é a exceção declarada, umas poucas ferramentas cujo trabalho é consultar um serviço ao vivo, e elas avisam antes de você apertar Perguntar. As ferramentas mais antigas têm linhagem: uma calculadora de bits e bytes, uma calculadora de endereçamento IP e uma pinagem de cabeamento já estavam no nutzmann.net em 2004 e no ntz.com.br em 2013, e o Internet Archive ainda as guarda.",
     "p2Title": "Aberto no núcleo",
     "p3Title": "Documentado por construção",
     "p3Body": "Cada parte do código é comentada e documentada, não como algo deixado para depois, mas como regra permanente. A build é feita para ser legível, para quem a mantém e para qualquer um que a herde.",
@@ -13212,9 +13214,9 @@
     "redblueLabel": "Vermelho e azul",
     "redblueBody": "A mesma decodificação-e-explicação que permite a um red-teamer ler um token capturado permite a um blue-teamer entender o que a própria stack está emitindo. A plataforma fica deliberadamente do lado da análise dessa linha: ela identifica, decodifica, converte e explica, e não chega a forjar, injetar ou derrotar controles. Essa fronteira é uma decisão de projeto, não um descuido; estas ferramentas existem para ensinar e diagnosticar, não para servir de arma.",
     "localLabel": "Local e determinístico",
-    "localBody": "Tudo roda no navegador. A ferramenta chama uma função pura: dada a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada para servidor. Sem cookies e sem analytics de terceiros; a contagem agregada de requisições do próprio site está descrita por inteiro na página de Privacidade.",
+    "localBody": "Toda ferramenta do catálogo roda no navegador. Ela chama uma função pura: dada a mesma entrada, devolve a mesma saída, não guarda estado e não manda nada para servidor. As ferramentas da sala vermelha são a exceção declarada, consultas ao vivo que dizem qual serviço consultam. Sem cookies e sem analytics de terceiros; a contagem agregada de requisições do próprio site está descrita por inteiro na página de Privacidade.",
     "thanksTitle": "Agradecimentos especiais",
-    "p2Body": "A lógica determinística que cada ferramenta roda é a ferramenta inteira. Não há passo escondido em servidor, não há conta, e nada sobre o seu uso de uma ferramenta é reportado a lugar nenhum. Tudo roda no seu navegador.",
+    "p2Body": "A lógica determinística que cada ferramenta do catálogo roda é a ferramenta inteira. Não há passo escondido em servidor, não há conta, e nada sobre o seu uso de uma ferramenta é reportado a lugar nenhum. Tudo no andar principal roda no seu navegador.",
     "limitsTitle": "O teto, dito com clareza",
     "limitsBody1": "Este site roda como um único Cloudflare Worker servindo arquivos estáticos, e essa plataforma tem limites rígidos e publicados que merecem honestidade. Uma versão de Worker pode carregar no máximo 20.000 arquivos estáticos no plano gratuito e 100.000 no plano pago (elevado de 20.000 em setembro de 2025, e somente ao publicar com o Wrangler 4.34 ou mais novo), com nenhum arquivo acima de 25 MiB. As requisições aos próprios arquivos estáticos são gratuitas e ilimitadas; apenas as invocações do script do Worker, como a API, são medidas.",
     "limitsBody2": "Esses números importam porque esta arquitetura multiplica conteúdo de propósito. Cada página renderizada é publicada como cerca de três arquivos: seu HTML, o payload de navegação do framework e um fragmento do índice de busca, em todos os dezesseis idiomas, e as páginas em inglês e português ainda ganham gêmeas em Markdown legível por máquina. Na prática, uma ferramenta custa cerca de cinquenta arquivos e uma ferramenta com seu artigo companheiro cerca de cem, então o site atual está um pouco acima de dezoito mil arquivos. Sob o teto do plano pago, isso deixa espaço para centenas de ferramentas a mais; o build é medido contra esses limites e, se um dia a caixa de ferramentas realmente superar um único Worker, o caminho de expansão já está traçado: dividir rotas entre Workers adicionais, cada um com sua própria cota, e por fim armazenamento de objetos sem limite algum de contagem.",
@@ -13317,7 +13319,7 @@
   },
   "api": {
     "title": "API",
-    "lede": "As ferramentas deste site rodam no seu navegador e mantêm seus dados no seu dispositivo. Cada uma também foi feita para rodar como uma pequena API HTTP determinística, a contraparte programática das ferramentas do navegador. Essa API está totalmente implementada e documentada aqui, mas este site não a serve. A referência abaixo é um navegador de especificação, não um endpoint ao vivo.",
+    "lede": "As ferramentas do catálogo rodam no seu navegador e mantêm seus dados no seu dispositivo. Cada uma também foi feita para rodar como uma pequena API HTTP determinística, a contraparte programática das ferramentas do navegador. Essa API está totalmente implementada e documentada aqui, mas este site não a serve. A referência abaixo é um navegador de especificação, não um endpoint ao vivo.",
     "privacyTitle": "O que isso significa para os seus dados",
     "privacyBody": "Por concepção, a API receberia apenas a entrada que você enviar, calcularia um resultado e o devolveria: sem estado, sem registrar valores de consulta ou corpos de requisição. Como a API não é servida aqui, nada do que você digitar nesta página é enviado a lugar nenhum; os painéis de teste abaixo apenas mostram a requisição que você faria.",
     "engineTitle": "O mesmo motor do navegador",
@@ -13374,19 +13376,19 @@
   "contributeIdeas": {
     "eyebrow": "Ideias bem-vindas",
     "title": "Compartilhe uma ideia",
-    "lede": "Este conjunto de ferramentas foi feito para crescer, e o sinal mais claro de para onde ele deve ir vem de quem o usa. Encontrou um bug, um erro ou uma imprecisão? Quer uma ferramenta que ainda não existe aqui? Viu uma forma melhor de resolver algo, ou um resultado que você redigiria de outro jeito? Envie; todo tipo de contribuição é bem-vindo.",
+    "lede": "O ronutz foi feito para crescer, e o sinal mais claro de para onde ele deve ir vem de quem o usa. Encontrou um bug, um erro ou uma imprecisão? Quer uma ferramenta que ainda não existe aqui? Viu um jeito melhor de resolver algo, ou um resultado que você escreveria de outro jeito? Mande; toda contribuição é bem-vinda.",
     "sendTitle": "O que você pode enviar",
     "sendBody": "Bugs, erros e imprecisões de qualquer tipo: uma ferramenta que se comporta mal, um resultado errado, um equívoco em um artigo do Learn, ou qualquer coisa que simplesmente pareça estranha. Pedidos de recursos para ferramentas que já existem. Ideias de novas ferramentas que o conjunto deveria ter. Correções e acréscimos aos artigos do Learn, como uma explicação mais clara, uma fonte melhor, ou um tópico que está faltando. Ou simplesmente um ângulo diferente sobre um problema. Pode vir bruto; uma frase já basta para começar uma conversa.",
     "toolTitle": "Se você está propondo uma nova ferramenta",
     "toolBody": "As ferramentas aqui são módulos pequenos e autodescritivos: um manifesto que diz o que a ferramenta é e de onde vem a sua correção, uma função pura que faz o trabalho, e um conjunto de vetores de referência (golden vectors), os pares fixos de entrada e saída que a comprovam. Uma boa candidata calcula localmente e de forma determinística (a mesma entrada sempre produz a mesma saída, sem relógio, rede ou aleatoriedade no resultado), mantém tudo que é sensível no dispositivo, e ancora a sua correção em uma fonte citada, como uma RFC, e não em opinião. Você não precisa construir nada disso para propor uma: basta descrever o que ela deve calcular, um exemplo, e a fonte em que se baseia.",
-    "fitRule": "Um teste simples decide. Toda ferramenta aqui roda inteiramente no seu navegador e não envia nada para lugar nenhum, então uma nova ferramenta precisa ser algo que um computador consiga resolver apenas a partir do que você digita, seguindo uma regra fixa e publicada. Se precisar acessar a internet, consultar algo ao vivo, fazer login ou lembrar de você, não tem lugar aqui.",
+    "fitRule": "Um teste decide em que andar uma ferramenta fica. O andar principal guarda ferramentas que um computador consegue resolver só a partir do que você digita, seguindo uma regra fixa e publicada, inteiramente no seu navegador. A sala verde recebe ferramentas que rodam do mesmo jeito, mas cuja forma ainda está se definindo. A sala vermelha é para a ferramenta rara cujo trabalho inteiro é consultar um serviço ao vivo, um registro de domínios, por exemplo: ela indica o serviço oficial na tela e não envia nada até você apertar Perguntar. O que precisa fazer login ou lembrar de você não cabe em nenhum deles.",
     "fitYes": "Encaixa:",
     "fitYesBody": "decodificar ou explicar algo que você cola (um token, um certificado, uma config, a saída de um comando), converter entre formatos, calcular a partir de um padrão ou fórmula, ou gerar a partir de uma regra, como um UUID, um hash ou uma linha de comando.",
     "fitNo": "Não encaixa:",
-    "fitNoBody": "qualquer coisa que precise acessar a internet ou verificar algo ao vivo (testar um site real, consultar um servidor DNS ao vivo, escanear um endereço), qualquer coisa que precise de conta, login ou dados salvos, ou qualquer coisa cuja resposta não seja determinada por um padrão publicado.",
+    "fitNoBody": "qualquer coisa que precise de conta, login ou dados salvos; qualquer coisa que sonde ou escaneie um sistema que não é seu; ou qualquer coisa cuja resposta não seja determinada por um padrão publicado. Uma consulta ao vivo (perguntar a um servidor DNS ao vivo, perguntar a um registro quem detém um domínio) não cabe no andar principal, mas pode caber na sala vermelha, sob as regras dela.",
     "fitUnsure": "Não tem certeza de que lado a sua ideia cai? Envie mesmo assim e diga o que ela deveria fazer. Vou te dizer com sinceridade se encaixa, e por quê.",
     "emailTitle": "Como falar comigo",
-    "emailBody": "O e-mail é o canal. Conte o que você encontrou ou o que gostaria, com detalhes suficientes para agir: um exemplo, um link, a redação exata, o que fizer sentido. Se tornar o conjunto de ferramentas melhor, será construído.",
+    "emailBody": "O e-mail é o canal. Conte o que você encontrou ou o que gostaria, com detalhes suficientes para agir: um exemplo, um link, a redação exata, o que fizer sentido. Se deixar o site melhor, será construído.",
     "emailLabel": "E-mail",
     "backToTools": "Voltar para as ferramentas",
     "roadmapCheck": "Vale consultar o roadmap primeiro, para ver o que já está planejado ou publicado e evitar duplicatas:",
@@ -13466,7 +13468,7 @@
   },
   "vendorHub": {
     "eyebrow": "hub do fabricante",
-    "lede": "Tudo que existe no ronutz.com para {vendor}, em um só lugar: todas as ferramentas, agrupadas por família, seguidas de todos os artigos. As ferramentas computam localmente no seu navegador; os artigos são fundamentados na documentação do fabricante.",
+    "lede": "Tudo o que o ronutz.com tem sobre {vendor}, por uma porta só: as ferramentas, agrupadas por família, e os artigos, e, onde existem, os guias de certificação, uma trilha de leitura, o capítulo de carreira, o registro da indústria e a linhagem. As ferramentas calculam localmente no seu navegador; os artigos se apoiam na documentação do fabricante.",
     "toolsHeading": "Ferramentas",
     "learnHeading": "Artigos",
     "read": "Ler",
@@ -14736,7 +14738,7 @@
       },
       "privacy": {
         "h": "Privacidade e temas",
-        "b": "As ferramentas rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum por padrão. A escolha de tema é lembrada apenas no seu dispositivo. O idioma fica no endereço da página, e não é armazenado. A página de Privacidade explica exatamente o que é e o que não é guardado."
+        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum; as da sala vermelha, a única exceção, enviam uma consulta só quando você aperta Perguntar, e só ao serviço oficial que indicam. A escolha de tema é lembrada apenas no seu dispositivo. O idioma fica no endereço da página, e não é armazenado. A página de Privacidade explica exatamente o que é e o que não é guardado."
       },
       "api": {
         "h": "A API",
@@ -14775,7 +14777,7 @@
       "tools": {
         "nav": "Ferramentas",
         "h": "As ferramentas",
-        "p1": "Toda ferramenta calcula no seu navegador e não envia nada a lugar nenhum: cole ou digite a entrada e o resultado aparece, com um botão Exemplo que preenche uma entrada conhecida e um botão Limpar ao lado. O índice de ferramentas abre de três maneiras: cole o que você tem, e a caixa alinha as ferramentas que reconhecem a forma do que foi colado; escolha pelo que precisa fazer (decodificar, entender, calcular, construir, verificar); ou siga um fluxo de trabalho que leva uma coisa de ferramenta em ferramenta, um CIDR até uma regra de firewall, um certificado até os cabeçalhos que um navegador impõe.",
+        "p1": "Toda ferramenta do catálogo calcula no seu navegador e não envia nada a lugar nenhum: cole ou digite a entrada e o resultado aparece, com um botão Exemplo que preenche uma entrada conhecida e um botão Limpar ao lado. O índice de ferramentas abre de três maneiras: cole o que você tem, e a caixa alinha as ferramentas que reconhecem a forma do que foi colado; escolha pelo que precisa fazer (decodificar, entender, calcular, construir, verificar); ou siga um fluxo de trabalho que leva uma coisa de ferramenta em ferramenta, um CIDR até uma regra de firewall, um certificado até os headers que um navegador impõe.",
         "p2": "O índice tem três andares, declarados na página: o andar principal, onde cada ferramenta tem forma fixa e vetores de teste de referência; a sala verde, para ferramentas cuja forma ainda está se assentando; e a sala vermelha, o único lugar onde uma ferramenta pode enviar sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você pede. Cada ferramenta tem uma página de documentação, legível como página web ou como Markdown, e a mesma lógica é descrita como uma API com especificação legível por máquina.",
         "l1": "O índice de ferramentas",
         "l2": "Cole o que você tem",
@@ -14784,19 +14786,22 @@
       "learn": {
         "nav": "Aprender",
         "h": "Aprender",
-        "p1": "A biblioteca Aprender é a explicação por trás das ferramentas: artigos agrupados por assunto, na mesma taxonomia das ferramentas, cada um citando a documentação de que foi escrito e ligando as ferramentas que calculam o que ele descreve. O hub pode ser lido de duas maneiras, Guiado ou Diretório. O Guiado pergunta o que você quer fazer (entender um assunto, aprender algo em ordem desde o início, preparar-se para um exame, ter a documentação de uma plataforma lida para você, achar uma definição rápido) e manda você à porta certa; o Diretório lista todos os artigos por assunto, em ordem de leitura.",
-        "p2": "Em volta dos artigos ficam as Histórias, textos mais longos que defendem um argumento; A Prática, sobre o trabalho e não sobre a tecnologia (triagem, escalonamento, mudança, o lado humano); o Glossário, com uma definição para cada termo que artigos e ferramentas usam; e as Pessoas, os engenheiros e autores por trás dos protocolos. Em qualquer artigo, a primeira menção de um termo técnico traz um sublinhado tracejado que você pode pairar ou tocar para uma definição curta; essa dica pode ser desligada em Configurações.",
+        "p1": "A biblioteca Aprender é a explicação por trás das ferramentas: artigos agrupados por assunto, na mesma taxonomia das ferramentas, cada um citando a documentação de que foi escrito e ligando as ferramentas que calculam o que ele descreve. O hub pode ser lido de duas maneiras, Guiado ou Diretório. O Guiado pergunta o que você quer fazer (entender um assunto, aprender algo em ordem desde o início, preparar-se para um exame, trabalhar com uma plataforma específica, achar uma definição rápido) e manda você à porta certa; o Diretório lista todos os artigos por assunto, em ordem de leitura.",
+        "p2": "Em volta dos artigos ficam as Séries de artigos, assuntos contados em ordem, de uma abertura até as partes; as Histórias, textos mais longos que defendem um argumento; A Prática, sobre o trabalho e não sobre a tecnologia (triagem, escalonamento, mudança, o lado humano); o Glossário, com uma definição para cada termo que artigos e ferramentas usam; e as Pessoas, os engenheiros e autores por trás dos protocolos. Em qualquer artigo, a primeira menção de um termo técnico traz um sublinhado tracejado que você pode pairar ou tocar para uma definição curta; essa dica pode ser desligada em Configurações.",
         "l1": "O hub Aprender",
         "l2": "O glossário",
-        "l3": "A Prática"
+        "l3": "A Prática",
+        "l4": "Séries de artigos"
       },
       "guides": {
         "nav": "Guias de estudo",
         "h": "Guias de estudo e guias de certificação",
         "p1": "Um guia de estudo é um percurso de leitura: os artigos a ler, em ordem, com uma frase dizendo o que você vai entender ao final, agrupados em famílias (protocolos e fundamentos, identidade e segurança, entrega de aplicações, plataformas de fabricantes). Cada percurso abre no seu primeiro artigo, e cada artigo dele liga de volta ao percurso, para você sair e voltar sem perder o lugar.",
         "p2": "Os guias de certificação são o mesmo material organizado contra um exame de fabricante: o código e os objetivos do próprio exame, com os artigos e ferramentas que cobrem cada objetivo. São planos de leitura, não despejos de prova; onde um objetivo ainda não tem cobertura, o guia diz isso no lugar dele, e uma verificação de build falha se algum fica em silêncio, e é assim que as lacunas ficam visíveis quando os exames mudam.",
+        "p3": "A página abre com as séries de formação: fundamentos em ordem, um nível de cada vez, cada série um conjunto de módulos com um objetivo declarado, as partes em ordem de leitura e as ferramentas para praticar, e uma página própria que a começa. São, então, cinco jeitos de ler em ordem, cada um com o seu papel: uma série de formação percorre um nível de um currículo, módulo por módulo; uma série de artigos conta um assunto da abertura até as partes; uma trilha de leitura reúne artigos publicados em direção a um entendimento; um guia de certificação mapeia os objetivos de um exame para os artigos que os cobrem; uma história defende um argumento ao longo de vários textos.",
         "l1": "Os guias de estudo",
-        "l2": "Os guias de certificação"
+        "l2": "Os guias de certificação",
+        "l3": "As séries de formação"
       },
       "hubs": {
         "nav": "Hubs de fabricantes",
@@ -15218,7 +15223,7 @@
         "port43": "WHOIS legado (porta 43)",
         "notices": "Avisos do registro"
       },
-      "bootstrapNote": "O roteamento de registros é determinístico: percorre snapshots embarcados dos quatro arquivos de bootstrap RDAP da IANA (RFC 9224), embarcados em {vendored}; o carimbo de publicação da própria tabela dns é {dns}. A resposta ao vivo, por design, não é determinística — por isso esta ferramenta vive na sala verde.",
+      "bootstrapNote": "O roteamento de registros é determinístico: percorre snapshots embarcados dos quatro arquivos de bootstrap RDAP da IANA (RFC 9224), embarcados em {vendored}; a data de publicação da própria tabela dns é {dns}. A resposta ao vivo, por natureza, não é determinística, e é por isso que esta ferramenta fica na sala vermelha.",
       "errors": {
         "empty": "Informe um domínio, um endereço IP ou um número de AS.",
         "format": "Não foi possível interpretar isso como domínio, endereço IP ou número de AS.",
@@ -23178,12 +23183,12 @@
     "prerequisitesLabel": "Pré-requisitos",
     "requirementLabel": "Como obter",
     "officialPage": "Página oficial da certificação",
-    "sourceCaveatTruncated": "Nota sobre este blueprint: a própria página do exame da Fortinet publica uma coluna Tasks cujas entradas estão truncadas ou vazias, então os objetivos abaixo são transcritos da coluna Details ao lado delas, agrupados sob os títulos de seção e os pesos publicados. Verificado contra uma busca nova.",
+    "sourceCaveatTruncated": "Nota sobre este blueprint: a própria página do exame de {vendor} publica uma coluna Tasks cujas entradas estão truncadas ou vazias, então os objetivos abaixo são transcritos da coluna Details ao lado delas, agrupados sob os títulos de seção e os pesos publicados. Verificado contra uma busca nova.",
     "retiringLabel": "Em descontinuação",
     "retirementNotice": "O {exam} pode ser prestado até {until}.",
     "retirementReplacedBy": "Ele é substituído pelo {exam}.",
     "retirementNoReplacement": "A página da {vendor} não nomeia um substituto.",
-    "sourceCaveatCourse": "Estes objetivos vêm da página do curso da Fortinet para este produto, e não de um blueprint de exame: a Fortinet ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma.",
+    "sourceCaveatCourse": "Estes objetivos vêm da página do curso de {vendor} para este produto, e não de um blueprint de exame: {vendor} ainda não publicou um para este exame. O material é o que o curso ensina, e um blueprint de exame pode organizá-lo ou ponderá-lo de outra forma.",
     "standaloneTrackLabel": "Fora do caminho de certificação",
     "retiredLabel": "Descontinuado",
     "previousUntilLabel": "Versão anterior até",
@@ -23353,6 +23358,8 @@
     "identityLine": "A instituição por trás do treinamento autorizado de Rodolfo Nützmann e de seus engajamentos profissionais comerciais.",
     "partsLabel": "Parte {n}",
     "jumpTribute": "Uma palavra de agradecimento",
+    "jumpCareerPaths": "Trilhas de carreira",
+    "jumpProfessionalServices": "Serviços profissionais",
     "part": {
       "why": {
         "title": "Por que a Red Education",
@@ -23748,14 +23755,17 @@
     "toolsCount": "{count} ferramentas determinísticas, todas com cálculo local",
     "xmlNote": "Legível por máquinas: sitemap.xml",
     "subjectsTitle": "Por assunto",
-    "subjectsLede": "A página de cada assunto reúne suas ferramentas, seus artigos e seus termos do glossário."
+    "subjectsLede": "A página de cada assunto reúne suas ferramentas, seus artigos e seus termos do glossário.",
+    "subEvidence": "Sobre e evidências",
+    "subSite": "O site",
+    "subPolicies": "Políticas e controles"
   },
   "studyGuidesIndex": {
     "eyebrow": "Guias de estudo",
     "title": "Guias de estudo",
     "lede": "Duas formas de estudar aqui, e elas respondem perguntas diferentes. As trilhas de leitura seguem uma tecnologia, e não uma prova: percorra a biblioteca Learn em ordem didática, com as ferramentas para praticar pelo caminho. Os guias de estudo de certificação ficam em página própria e fazem o oposto - partem do blueprint publicado pelo fabricante e o mapeiam objetivo por objetivo.",
     "pathsTitle": "Trilhas de leitura curadas",
-    "pathsLede": "Uma trilha é um currículo sem prova por trás. Nada aqui é organizado em torno de um blueprint de certificação nem avaliado por um: a ordem é a ordem em que o assunto faz sentido, escolhida para que cada artigo prepare o seguinte. Leia de ponta a ponta, ou pare quando tiver o que veio buscar. Tudo computa localmente e nada fica atrás de paywall.",
+    "pathsLede": "Uma trilha é um currículo sem prova por trás. Nada aqui é organizado em torno de um blueprint de certificação nem avaliado por um: a ordem é a ordem em que o assunto faz sentido, escolhida para que cada artigo prepare o seguinte. Leia de ponta a ponta, ou pare quando tiver o que veio buscar. As ferramentas ligadas a elas calculam no seu navegador, e nada fica atrás de paywall.",
     "certTitle": "Guias de estudo de certificação",
     "certLede": "Estes são os que têm formato de prova, e ficam na página de certificações. Cada um segue o blueprint publicado pelo próprio fabricante, objetivo por objetivo, ligando cada objetivo aos artigos que o ensinam, às ferramentas que o exercitam, e às páginas de manual que seguem sendo a fonte da verdade.",
     "certAllCta": "Todas as certificações e guias",
