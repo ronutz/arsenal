@@ -1,6 +1,6 @@
 ---
 slug: how-a-virtual-server-works
-title: "Como Funciona um Virtual Server do BIG-IP"
+title: "Como funciona um virtual server do BIG-IP"
 summary: "Um virtual server é a porta de entrada de um BIG-IP. Ele vincula um IP e uma porta de escuta, aplica uma pilha de perfis, decide a persistência, escolhe um membro do pool e traduz o endereço de origem em direção ao backend. Ler essas partes em ordem mostra exatamente como uma conexão será tratada."
 concepts: ["virtual server", "ltm", "balanceamento de carga", "perfis", "snat", "f5"]
 relatedTools: ["f5-tmsh-config-explainer"]
@@ -29,6 +29,6 @@ Depois que o tráfego é analisado, o virtual decide para onde enviá-lo. Um per
 
 A última decisão é qual endereço de origem o backend enxerga. O bloco `source-address-translation` controla isso. Com `automap` ou um SNAT pool, o BIG-IP substitui o IP de origem do cliente por um dos seus próprios, de modo que o tráfego de retorno volta naturalmente por ele. Com `type none`, o membro do pool enxerga o IP real do cliente, o que às vezes é exigido para registro ou geolocalização, mas força a rota padrão do membro, ou uma rota específica, a apontar de volta para o BIG-IP. Errar nisso é uma causa clássica de roteamento assimétrico, em que as requisições chegam mas as respostas nunca retornam.
 
-## Lendo como um caminho
+## O virtual server como um caminho
 
 Em conjunto, um virtual server descreve um caminho: um cliente alcança o `destination`, a pilha de perfis analisa e possivelmente descriptografa a conexão, a persistência e o pool selecionam um membro, e a tradução de origem reescreve a origem de saída. O [explicador de configuração tmsh](/tools/f5-tmsh-config-explainer) dispõe esses campos e destaca os que têm mais chance de surpreender, como uma porta HTTPS sem perfil client-SSL ou uma configuração de SNAT igual a none. Para a gramática em que esses objetos são escritos, veja [a anatomia de um arquivo bigip.conf](/learn/anatomy-of-bigip-conf).

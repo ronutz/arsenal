@@ -31,6 +31,6 @@ Dentro de `blocking-settings`, cada violação carrega suas próprias flags de b
 
 Há uma segunda forma de uma política acabar sem conseguir bloquear. `enablePassiveMode` associa a política a um virtual server Performance L4 (FastL4), onde o tráfego é analisado mas não é modificado de forma alguma. Uma política passiva inspeciona e registra, mas não consegue rejeitar uma requisição em linha, não importa o que o `enforcementMode` diga.
 
-## Lendo na prática
+## Como ler uma política na prática
 
 Ao inspecionar uma política, resolva a postura de enforcement antes de qualquer outra coisa. Se o `enforcementMode` for `transparent`, trate todo "block" que você vê abaixo dele como aspiracional, não ativo. O caminho seguro de migração é deliberado: rode em transparent enquanto elimina falsos positivos, confirme que as violações que importam estão configuradas para bloquear, e só então mude para blocking, de modo que a virada passe a impor exatamente o que você já validou.

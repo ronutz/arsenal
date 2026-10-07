@@ -1,6 +1,6 @@
 ---
 slug: epoch-units-seconds-to-nanoseconds
-title: "Segundos, Milissegundos, Microssegundos, Nanossegundos: Distinguindo Unidades de Época"
+title: "Segundos, milissegundos, microssegundos, nanossegundos: como distinguir unidades de época"
 summary: "O mesmo instante pode ser escrito como 1700000000, 1700000000000 ou maior, dependendo de o timestamp contar segundos, milissegundos, microssegundos ou nanossegundos. Confundi-los é um bug clássico. Quase sempre dá para saber qual é qual pela magnitude do número."
 concepts: ["unix time", "milliseconds", "nanoseconds", "epoch", "precision"]
 relatedTools: ["epoch"]
@@ -26,7 +26,7 @@ A convenção depende de onde o timestamp veio. O `date +%s` do shell Unix, a ma
 
 Confundir unidades é um dos bugs de timestamp mais comuns, e ele falha de forma barulhenta. Passe um valor em milissegundos para algo que espera segundos e você aterrissa cerca de 50.000 anos no futuro. Passe um valor em segundos para algo que espera milissegundos e seu evento "recente" colapsa de volta para perto de 1970. Nenhum dos dois é sutil quando você vê a data — que é exatamente por que converter e *olhar* o resultado é a forma mais rápida de pegar o erro.
 
-## Distinguindo pelo tamanho
+## Como distingui-las pelo tamanho
 
 Para qualquer timestamp da era atual você lê a unidade direto da magnitude, porque cada unidade é três ordens de grandeza maior que a anterior:
 

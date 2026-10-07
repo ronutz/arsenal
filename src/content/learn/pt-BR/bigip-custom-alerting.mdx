@@ -1,6 +1,6 @@
 ---
 slug: bigip-custom-alerting
-title: "Alerting Customizado no BIG-IP: Traps SNMP, E-mail e Syslog Remoto"
+title: "Alerting customizado no BIG-IP: traps SNMP, e-mail e syslog remoto"
 summary: "O pipeline de alertas observa o fluxo de logs e age nas correspondências: os alertas embutidos vêm no alert.conf, os seus pertencem ao user_alert.conf. Definir um alerta customizado, os três mecanismos de entrega, escolher os níveis de log de tráfego local, e disparar alertas de teste de propósito com o logger."
 concepts: ["f5", "big-ip", "alerting", "snmp trap", "user_alert.conf", "alertd", "syslog", "email", "oid"]
 relatedTools: []
@@ -27,6 +27,6 @@ Duas cautelas operacionais merecem lugar em qualquer texto: o `user_alert.conf` 
 
 Um alerta só casa com mensagem que foi registrada, o que faz dos níveis de logging de tráfego local parte do desenho do alerting. O sistema permite definir a severidade mínima registrada por área de atividade de tráfego local - a escada padrão de emergency a debug descrita no [mapa dos arquivos de log](/learn/bigip-log-files-map). Suba um nível para silenciar ruído e você pode silenciar justamente a mensagem que seu alerta casa; as duas configurações precisam ser desenhadas juntas.
 
-## Disparando alertas para teste
+## Como disparar alertas para teste
 
 Alerta não testado é esperança. Como o pipeline é dirigido por log, você o exercita ponta a ponta sem ferir nada: o utilitário `logger` injeta uma mensagem arbitrária no fluxo, então escrever uma linha contendo sua string de correspondência dispara o alerta exatamente como o evento real dispararia - trap enviado, e-mail entregue, syslog remetido. Teste após definir, e reteste após upgrades; o "explicar como disparar alertas customizados para fins de teste" do blueprint pede precisamente essa técnica.

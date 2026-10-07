@@ -6,7 +6,7 @@ RCA é a sigla de root cause analysis — a análise de causa raiz: a revisão e
 
 Esta ferramenta nunca aponta uma causa-raiz. É esse o ponto dela. Um RCA é escrito por pessoas a partir de evidências, em uma revisão de verdade; ela dá a estrutura desse trabalho organizando os candidatos e a evidência que cada um exigiria, para que nada seja esquecido e nenhuma conclusão seja precipitada. Um fator só é mostrado como confirmado quando você marca o controle "marcar confirmado" dele, e sempre é atribuído a você, nunca afirmado pela ferramenta. Ela não atribui culpa, não faz conexões de rede, não pede credenciais e não substitui nem uma revisão pós-incidente nem um RCA do fornecedor. As notas em texto livre fluem apenas para o esqueleto exportado; nunca influenciam quais regras disparam.
 
-## Como o esqueleto é montado — e como é verificado
+## Como o esqueleto é montado e como é verificado
 
 A linha do tempo é ordenada pela posição que você dá a cada evento; o motor não lê relógio algum. Os intervalos entre marcos são relatados como o número de eventos entre dois marcos, não como tempo de relógio, que a ferramenta não tem como saber. Cada domínio de fator contribuinte que você observa vira um candidato; a linha do tempo pode acrescentar outros (uma mudança na linha do tempo adiciona o candidato de mudança recente; um intervalo longo até a detecção adiciona o candidato de lacuna de monitoramento e uma nota estrutural). Todo candidato carrega evidências tanto de confirmação quanto de descarte, porque um esqueleto honesto mostra como fechar uma questão de qualquer um dos lados. O painel "Por que estes candidatos?" lista cada regra que disparou com o seu motivo, de modo que a estrutura é auditável, não oracular.
 

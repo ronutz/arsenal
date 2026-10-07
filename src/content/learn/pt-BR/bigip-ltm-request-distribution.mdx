@@ -1,6 +1,6 @@
 ---
 slug: bigip-ltm-request-distribution
-title: "Para Onde Vão as Requisições? Simulando a Distribuição do BIG-IP LTM"
+title: "Para onde vão as requisições? Simulação da distribuição do BIG-IP LTM"
 summary: "Um nome de método te diz a regra; a distribuição te diz o resultado. Isto cobre como o BIG-IP LTM de fato espalha N requisições entre os membros do pool: por que o Ratio é um ciclo completo e não uma porcentagem, como o priority group activation deixa tiers mais baixos em standby visível, como o Least Sessions usa a contagem de registros de persistência (e volta para Round Robin sob persistência de cookie), e por que os métodos dinâmicos - Fastest, Observed, Predictive, Dynamic Ratio - não podem ser simulados a partir da configuração."
 concepts: ["load balancing", "round robin", "ratio", "least connections", "least sessions", "priority group activation", "persistence", "f5 big-ip ltm"]
 relatedTools: ["bigip-ltm-lb-simulator"]
@@ -31,6 +31,6 @@ O Least Sessions é o único método cuja entrada é a própria persistência. E
 
 Round Robin, Ratio, Least Connections, e Least Sessions podem ser simulados porque tudo que eles precisam é ou configuração ou uma cifra de carga que você pode declarar. Fastest, Observed, Predictive, e Dynamic Ratio não podem, e vale ser claro sobre o porquê em vez de fingir. Esses métodos decidem a partir de medições de runtime ao vivo: tempos de resposta, contagens de conexão amostradas a cada segundo, se o desempenho de um membro está subindo ou descendo, métricas puxadas por SNMP (Protocolo Simples de Gerenciamento de Rede, do inglês Simple Network Management Protocol). Nada disso está na configuração de um pool, e tudo isso muda continuamente. Uma ferramenta que produzisse uma distribuição fixa para "Observed" estaria inventando as próprias medições das quais o método depende. A atitude honesta é nomear o que esses métodos precisam e parar por aí.
 
-## Lendo uma simulação
+## Como ler uma simulação
 
 Uma distribuição é um ponto de partida para uma pergunta, não uma garantia sobre produção. Ela te diz o que a regra configurada faz com uma dada carga, o que é suficiente para pegar os erros que importam: um ratio que está invertido, um tier de prioridade que está silenciosamente pegando tráfego, uma escolha de persistência que está discretamente voltando para Round Robin. Rode os números para o N que te importa, olhe quais membros estão ativos e quais estão em standby, e verifique que o formato bate com a sua intenção. O pool vai fazer em produção o que a regra diz - a simulação só te deixa ver a regra antes do tráfego ver.

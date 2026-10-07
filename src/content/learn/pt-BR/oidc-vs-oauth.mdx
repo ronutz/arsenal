@@ -1,6 +1,6 @@
 ---
 slug: oidc-vs-oauth
-title: "OIDC vs OAuth 2.0: Autenticação vs Autorização"
+title: "OIDC vs OAuth 2.0: autenticação vs autorização"
 summary: "Por que o OAuth 2.0 é sobre autorização e o OpenID Connect é sobre autenticação, a diferença entre um access token e um ID token, por que usar OAuth puro como mecanismo de login é um antipadrão conhecido, e como saber qual token é qual."
 concepts: ["oauth 2.0", "openid connect", "authentication", "authorization", "access token", "id token", "scopes"]
 relatedTools: ["oidc", "jwt"]
@@ -73,7 +73,7 @@ O **logout por canal frontal e por canal traseiro** é a parte que a maioria das
 
 O **SAML** segue difundido em ambientes corporativos e de educação, e a escolha entre os dois costuma ser institucional, e não técnica: SAML onde a contraparte é uma federação corporativa estabelecida, OIDC onde os clientes são aplicativos móveis e APIs modernas. Os dois autenticam; diferem em codificação, em transporte e em quanto envolvem o navegador.
 
-## Distinguindo-os na prática
+## Como distingui-los na prática
 
 Quando você tem um token em mãos e não sabe ao certo qual é, alguns sinais ajudam. Se ele decodifica como um JWT com iss, sub, aud, exp e iat, e a audiência é o seu identificador de cliente, é um ID token; o [decodificador OIDC](/tools/oidc) o reconhecerá e interpretará as claims. Um access token pode ser opaco (não um JWT de forma alguma), ou pode ser um JWT cuja audiência é um servidor de recursos e cujas claims descrevem escopos e permissões em vez de identidade do usuário. A presença do escopo openid na requisição original é o que fez com que um ID token fosse emitido em primeiro lugar. Na dúvida, decodifique o token e olhe a audiência e as claims: elas dizem para que o token serve, e portanto como ele deve ser usado.
 

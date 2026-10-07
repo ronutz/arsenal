@@ -43,7 +43,7 @@ Um web application firewall e o servidor de origem precisam concordar sobre o qu
 
 Multiple decoding é a única subviolação com um botão de ajuste. No schema declarativo ela carrega `maxDecodingPasses`, que o schema limita entre **2 e 5**, com um padrão documentado de **3**. Cada passe adicional desembrulha mais uma camada de codificação: um valor codificado em percent duas vezes precisa de pelo menos dois passes para revelar seus caracteres reais, e um atacante que codifica três vezes está apostando que seu decodificador para cedo. Elevar a contagem de passes detecta aninhamento mais profundo a um pequeno custo de processamento; definir um valor fora do intervalo de 2 a 5 é rejeitado.
 
-## Lendo isso numa política
+## Como isso aparece numa política
 
 Numa política declarativa do BIG-IP Advanced WAF, essas configurações vivem no array `evasions` dentro de `blocking-settings`. Cada entrada nomeia uma subviolação no seu `description` e carrega um booleano `enabled`:
 

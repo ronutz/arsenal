@@ -1,7 +1,7 @@
 ---
 slug: dig-query-options
-title: "Opções de consulta e controle de saída do dig"
-summary: "O verdadeiro poder do dig está em suas opções: escolher qual servidor perguntar, o tipo de registro e exatamente quanto da resposta imprimir. Este artigo cobre o punhado que você realmente usará todo dia, de @servidor e -t a +short e a combinação +noall +answer que reduz o dig a apenas os registros."
+title: "Opções de consulta do dig e como controlar a saída"
+summary: "O poder de verdade do dig está nas opções: escolher a qual servidor perguntar, o tipo de registro e exatamente quanto da resposta mostrar. O artigo cobre as poucas que você vai usar todo dia, do @servidor e do -t ao +short e à combinação +noall +answer, que deixa na saída do dig só os registros."
 concepts: ["dig", "dns", "query options", "short", "troubleshooting"]
 relatedTools: ["dig-output-explainer", "dig-command-builder"]
 relatedArticles: ["reading-dig-output", "dig-trace-and-delegation", "nslookup-vs-dig"]
@@ -11,32 +11,31 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Por padrão o dig imprime a mensagem DNS inteira, que é exatamente o que você quer ao fazer troubleshooting e muito mais do que você quer ao escrever scripts. Algumas opções cobrem quase todos os casos.
+Por padrão, o dig mostra a mensagem DNS inteira, o que é exatamente o que você quer num troubleshooting e muito mais do que você quer num script. Umas poucas opções resolvem quase todos os casos.
 
-## Escolhendo o que perguntar
+## Como escolher o que perguntar
 
-- **`dig example.com`** consulta um registro A usando o resolvedor do seu sistema.
-- **`-t TIPO`** (ou apenas colocar o tipo na linha) muda o tipo de registro: `dig -t MX example.com`, ou `dig example.com AAAA`. Tipos comuns são A, AAAA, MX, NS, TXT, SOA, CNAME e ANY.
-- **`@servidor`** pergunta a um servidor específico em vez do seu resolvedor padrão: `dig @1.1.1.1 example.com`, ou `dig @ns1.example.com example.com` para ir direto a um servidor autoritativo.
-- **`-x ENDEREÇO`** faz uma consulta reversa, construindo o nome in-addr.arpa para você: `dig -x 93.184.216.34`.
+- **`dig example.com`** consulta um registro A usando o resolver (o servidor DNS recursivo) configurado no seu sistema.
+- **`-t TIPO`** (ou simplesmente o tipo escrito na linha de comando) muda o tipo de registro: `dig -t MX example.com` ou `dig example.com AAAA`. Os tipos mais comuns são A, AAAA, MX, NS, TXT, SOA, CNAME e ANY.
+- **`@servidor`** pergunta a um servidor específico, em vez do seu resolver padrão: `dig @1.1.1.1 example.com`, ou `dig @ns1.example.com example.com` para ir direto a um servidor autoritativo.
+- **`-x ENDEREÇO`** faz uma consulta reversa e monta o nome in-addr.arpa para você: `dig -x 93.184.216.34`.
 
-## Controlando a saída
+## Como controlar a saída
 
-- **`+short`** reduz a resposta a apenas os valores essenciais, um por linha. `dig +short example.com` imprime só o endereço. Esta é a opção para usar em scripts.
-- **`+noall +answer`** é o meio-termo: suprime todas as seções exceto a answer, então você vê os registros de fato com seus TTLs e tipos, mas nenhum ruído de header, question ou stats. Muita gente cria um alias para isso.
-- **`+norecurse`** (ou `+norec`) pede ao servidor para não recursar, então você vê apenas o que aquele servidor sabe localmente. Enviado a um servidor autoritativo, mostra o dado autoritativo; enviado a um resolvedor, mostra apenas o que já está em cache.
-- **`+tcp`** força a consulta por TCP em vez de UDP, útil quando uma resposta UDP voltou truncada (a flag tc).
-- **`+dnssec`** pede os registros DNSSEC (RRSIG e companhia) e define o bit DO, para que você possa ver as assinaturas.
+- **`+short`** reduz a resposta aos valores essenciais, um por linha. `dig +short example.com` mostra só o endereço. É a opção certa para usar em scripts.
+- **`+noall +answer`** é o meio-termo: esconde todas as seções, menos a answer, e assim você vê os registros de verdade, com os TTLs e os tipos, sem nada do ruído de header, question e stats. Muita gente cria um alias para isso.
+- **`+norecurse`** (ou `+norec`) pede ao servidor que não faça recursão, e assim você vê só o que aquele servidor sabe localmente. Mandada a um servidor autoritativo, ela mostra os dados autoritativos; mandada a um resolver, mostra só o que já está em cache.
+- **`+tcp`** força a consulta por TCP em vez de UDP, o que ajuda quando uma resposta por UDP voltou truncada (a flag tc).
+- **`+dnssec`** pede os registros DNSSEC (o RRSIG e companhia) e liga o bit DO, para você poder ver as assinaturas.
 
-## Combinando-as
+## Como combinar as opções
 
-As opções se compõem. `dig @1.1.1.1 example.com MX +short` pergunta ao resolvedor da Cloudflare pelos registros MX e imprime apenas os valores. `dig example.com +noall +answer +dnssec` mostra os registros da answer mais suas assinaturas e nada mais. Comece pela saída completa padrão quando estiver diagnosticando, e recorra a `+short` ou `+noall +answer` quando souber exatamente o que quer ver. Para seguir o caminho de resolução a partir da raiz em vez de confiar em um resolvedor, veja o artigo companheiro sobre `+trace`.
-
+As opções podem ser combinadas. `dig @1.1.1.1 example.com MX +short` pergunta ao resolver da Cloudflare pelos registros MX e mostra só os valores. `dig example.com +noall +answer +dnssec` mostra os registros da answer com as assinaturas, e mais nada. Quando estiver diagnosticando, comece pela saída completa padrão e passe para `+short` ou `+noall +answer` quando já souber exatamente o que quer ver. Para seguir o caminho da resolução a partir da raiz, em vez de confiar num resolver, veja o artigo complementar sobre `+trace`.
 
 ## A opção que muda o que você está testando
 
-`@servidor` parece uma conveniência e é a flag mais consequente da lista. **Ela ignora o resolvedor do sistema por completo** e pergunta direto ao servidor nomeado.
+O `@servidor` parece só uma conveniência, mas é a flag com mais consequências da lista. **Ela ignora completamente o resolver do sistema** e pergunta direto ao servidor indicado.
 
-Isso a torna a ferramenta certa para *"esta zona está correta"* e a errada para *"a resolução funciona aqui"*, porque uma consulta a `@8.8.8.8` não prova nada sobre o resolvedor que suas aplicações realmente usam — seu cache, seus forwarders, suas regras de acesso, ou se o host sequer o alcança.
+Por isso ela é a ferramenta certa para *"esta zona está correta?"* e a ferramenta errada para *"a resolução funciona aqui?"*, porque uma consulta a `@8.8.8.8` não prova nada sobre o resolver que as suas aplicações usam de fato: o cache dele, os forwarders dele, as regras de acesso dele, nem se o host consegue sequer chegar até ele.
 
-**Pergunte sem `@` primeiro.** Se funcionar, a resolução está bem. Se falhar e o `@` funcionar, você já localizou a falha no seu próprio caminho de resolução — mais do que a maioria das investigações consegue no primeiro minuto.
+**Pergunte sem `@` primeiro.** Se funcionar, a resolução está bem. Se falhar e o `@` funcionar, você já localizou a falha: ela está no caminho até o seu próprio resolver, e isso é mais do que a maior parte dos troubleshootings consegue no primeiro minuto.

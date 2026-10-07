@@ -1,6 +1,6 @@
 ---
 slug: dhcp-option-43-discovery
-title: "Como um Ponto de Acesso Encontra Sua Controladora"
+title: "Como um ponto de acesso encontra sua controladora"
 summary: "A DHCP option 43 é um número de opção escondendo quatro codificações incompatíveis, porque a RFC 2132 define o recipiente e deixa o conteúdo a cargo de cada fabricante. A falha é silenciosa: o AP inicia, recebe endereço e nunca se registra."
 concepts: ["dhcp", "option 43", "option 60", "vendor class identifier", "capwap", "lwapp", "controladora sem fio", "tlv", "option 138"]
 relatedTools: ["dhcp-option-43"]
@@ -49,7 +49,7 @@ O que se vê é um AP no ar, respondendo a ping, endereçado corretamente e ause
 
 É esse o argumento para gerar o valor em vez de digitá-lo: não que a aritmética seja difícil, mas que o resultado de errar se parece exatamente com um problema de rede.
 
-## Lendo um valor de volta
+## Como decodificar um valor a olho
 
 A estrutura é regular o bastante para decodificar a olho. Tome o primeiro byte como subopção, o segundo como comprimento, e confira se os bytes restantes batem com esse comprimento. Depois olhe o valor. Se os bytes estiverem todos nas faixas `30`–`39` e `2e`, você está vendo dígitos e pontos em ASCII, o que indica codificação no estilo Ruckus. Se forem bytes arbitrários e houver exatamente quatro por endereço, é binário, o que indica Cisco ou UniFi.
 

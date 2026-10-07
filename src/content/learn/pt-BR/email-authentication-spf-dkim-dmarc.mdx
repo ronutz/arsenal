@@ -21,7 +21,7 @@ O remendo é confuso por uma razão estrutural: **uma mensagem tem dois endereç
 
 Guarde essa distinção e os três registros deixam de ser siglas intercambiáveis.
 
-## SPF — quais servidores podem enviar
+## SPF: quais servidores podem enviar
 
 O **SPF (Sender Policy Framework)** é um registro DNS que lista os endereços autorizados a enviar e-mail por um domínio. O servidor receptor compara o endereço que conectou com a lista e obtém aprovação ou reprovação.
 
@@ -29,7 +29,7 @@ O que ele confere é o **remetente de envelope**, e não o From visível. Esse �
 
 Seus limites práticos merecem ser conhecidos antes de você depender dele. A avaliação é limitada a **dez consultas DNS**, e cada `include:` de um provedor grande consome várias, então registros inchados falham em silêncio em vez de falhar alto. E **encaminhamento quebra**: quando um destinatário encaminha a mensagem, o servidor que encaminha não está na sua lista, então o SPF reprova sem que ninguém tenha errado.
 
-## DKIM — a mensagem foi alterada, e por quem
+## DKIM: se a mensagem foi alterada, e por quem
 
 O **DKIM (DomainKeys Identified Mail)** assina cabeçalhos selecionados e o corpo com uma chave privada; a chave pública fica no DNS. O receptor verifica a assinatura e aprende que um domínio específico assumiu responsabilidade pela mensagem e que as partes assinadas não foram modificadas em trânsito.
 
@@ -37,7 +37,7 @@ Como a assinatura viaja com a mensagem, o DKIM **sobrevive a encaminhamento simp
 
 Duas observações operacionais: chaves precisam de rotação como qualquer material criptográfico, e a etiqueta opcional de comprimento de corpo permite que a assinatura cubra só o começo do corpo, o que deixa acrescentar conteúdo abaixo de uma assinatura válida. Não use.
 
-## DMARC — o que amarra tudo
+## DMARC: o que amarra tudo
 
 O **DMARC (Domain-based Message Authentication, Reporting and Conformance)** acrescenta a peça que faltava: **alinhamento**. Ele exige que um resultado aprovado de SPF ou DKIM pertença ao *mesmo domínio que o leitor vê no campo From*. Essa é a proteção de verdade, e nem SPF nem DKIM a fornecem sozinhos.
 

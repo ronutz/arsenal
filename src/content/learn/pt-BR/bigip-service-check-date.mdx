@@ -27,7 +27,7 @@ A mesma comparação roda novamente em toda inicialização subsequente, não ap
 
 Um limite importante: essa trava se aplica apenas a uma atualização (upgrade), ou seja, uma mudança no número de versão major ou minor. Mover-se entre releases de manutenção ou point releases dentro do mesmo branch é um update, e nenhuma verificação de service check date acontece então. O artigo complementar sobre [upgrade versus update](/learn/bigip-upgrade-vs-update) cobre essa distinção por completo.
 
-## Encontrando as datas você mesmo
+## Como encontrar as datas você mesmo
 
 Para ler a Service Check Date de um sistema em execução, olhe no arquivo de licença:
 
@@ -44,6 +44,6 @@ tmsh show sys license | grep "Service Check Date"
 
 Para ler a License Check Date da versão em que você está, verifique o `/etc/version_date`, ou consulte qualquer versão na tabela [K7727](https://my.f5.com/manage/s/article/K7727) da F5. Note que a "Licensed Date" que você também pode ver no arquivo de licença é um campo diferente, de uso interno da F5, e não é usado para esta verificação.
 
-## Planejando em torno disso
+## Como planejar em torno disso
 
 A regra prática é simples: antes de atualizar, confirme que a Service Check Date da licença é igual ou posterior à License Check Date da versão de destino. Se for anterior, reative a licença primeiro, como descrito em [recuperando de um problema de service check date](/learn/bigip-license-reactivation). A [ferramenta de service check date do F5](/tools/f5-service-check-date) faz essa comparação para você: informe uma versão para ver a data que ela exige, ou informe uma service check date para ver a versão mais recente que ela permite. Como sempre, confirme na [K7727](https://my.f5.com/manage/s/article/K7727) ou no `/etc/version_date` do sistema de destino antes de uma mudança em produção.

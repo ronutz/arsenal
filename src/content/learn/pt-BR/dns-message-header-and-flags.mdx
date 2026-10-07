@@ -43,7 +43,7 @@ Sete flags podem aparecer, e cada uma é um único bit:
 
 Os quatro números após as flags são as contagens de registros das seções QUESTION, ANSWER, AUTHORITY e ADDITIONAL. Elas devem bater com o que você conta em cada seção; uma divergência é sinal de que a mensagem foi truncada ou corrompida.
 
-## Lendo tudo junto
+## O que a combinação revela
 
 A combinação conta uma história. `qr aa` com uma resposta é um servidor autoritativo entregando dados de zona diretamente. `qr rd ra` com uma resposta é um resolvedor recursivo retornando um resultado (possivelmente em cache). `qr rd ra` com status `NXDOMAIN` e um SOA em AUTHORITY é um resolvedor dizendo que o nome realmente não existe e por quanto tempo ele vai lembrar disso. `qr rd` sem `ra` significa que você pediu a um servidor para recursar que não vai, o que costuma aparecer como `REFUSED`.
 

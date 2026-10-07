@@ -1,0 +1,2165 @@
+{
+  "note": "Row 59 register ratchet: counts may only go down (scripts/check-ptbr-register.mjs).",
+  "counts": {
+    "messages:about": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:bossScreens": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:certGuides": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:colophon_page": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:devFun": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:devOther": {
+      "J": 2,
+      "I": 1
+    },
+    "messages:devOut": {
+      "J": 1,
+      "I": 2
+    },
+    "messages:earlierSites": {
+      "J": 10,
+      "I": 0
+    },
+    "messages:glossary.entries.802-1q": {
+      "J": 5,
+      "I": 0
+    },
+    "messages:glossary.entries.802-1x": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.802-3": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.accounting": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.ada-lovelace": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.adc": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.aead": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.aix": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.anycast": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.archive-formats": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.arp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.arp-poisoning": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ascii": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.atm": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.baby-giant": {
+      "J": 8,
+      "I": 0
+    },
+    "messages:glossary.entries.beb": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.bind": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.blockchain": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.bpdu": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.bridge": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.broadcast": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.broadcast-storm": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.bum": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.cache-control": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.cache-poisoning": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.carrier-hotel": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.cgnat": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.chain-of-custody": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.cipher-suite": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.cname": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.compliance": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.cookie-banner": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.cors-preflight": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.csma-ca": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.csma-cd": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.csp": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.dan-kaminsky": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.darpa": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.data-in-transit": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.data-pbx": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.default-route": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.deflate": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.der": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.dhcp-snooping": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.dns": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.dns-filtering": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.dnskey": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.dnssec": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.do-not-track": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.doh": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.dpi": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.dry": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.dual-stack": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.easter-egg-header": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.ecs": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.edns": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.eigrp": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.end-to-end-encryption": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.es256": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.etag": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ethernet": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.ethertype": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.fcs": {
+      "J": 5,
+      "I": 0
+    },
+    "messages:glossary.entries.five-hundred-mile-email": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.five-tuple": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.fragmentation": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.frame-relay": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.freak": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.gateway": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.geneve": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.goodput": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.goto-considered-harmful": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.gre": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.gslb": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.handshake": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.hdlc": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.hs256": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.hsts": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.http2": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.hub": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.hypervisor": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.igmp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.imds": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.imp": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.inter-frame-gap": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:glossary.entries.ip": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.its-always-dns": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.ja3": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.jude-milhon": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.jumbo-frames": {
+      "J": 8,
+      "I": 0
+    },
+    "messages:glossary.entries.jwks": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.jws": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.jwt": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.kalpana": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.kanban": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.kerberos": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.knight-capital": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.l2tp": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.l4-vs-l7-load-balancing": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.lb": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ldaps": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ldns": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.line-rate": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.link-aggregation": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.link-local": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.load-balancing": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mab": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mac-address": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.marco-civil-da-internet": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.meet-me-room": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mesh-wifi": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mime": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mpls": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.msrdp": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.mss": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.mtu": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.multi-tenancy": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.multihost-to-host": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.native-vlan": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.network-topology": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.newedge": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.node-split": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.noisy-neighbor": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.norad": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.nsec": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ntlm": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.nvgre": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.off-by-one": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.onion-routing": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.open-graph": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.osi-model": {
+      "J": 2,
+      "I": 1
+    },
+    "messages:glossary.entries.packet": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.packet-filter": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.path-mtu-discovery": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.paul-baran": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.peering": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.pem": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.pop": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.port-mirroring": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.pppoe": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.principle-of-least-astonishment": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.promiscuous-mode": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.propagation": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.ptp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.public-vs-private-subnet": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.rack": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.replay-attack": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.reverse-proxy": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.rfc": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.rfc-2544": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.rfc-6214": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.rip": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:glossary.entries.robert-taylor": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.router": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.rpz": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.rs256": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.separation-of-duties": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.sfp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.shellshock": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.sid": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.sidecar": {
+      "J": 0,
+      "I": 1
+    },
+    "messages:glossary.entries.single-pane-of-glass": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.slaac": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.slip": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.snat": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.sni": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.soa": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.source-port-logging": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.spaghetti-code": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.spanning-tree": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.spbm": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.ssl-inspection": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.stateful-inspection": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.switch": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:glossary.entries.syslog": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.tacacs": {
+      "J": 5,
+      "I": 0
+    },
+    "messages:glossary.entries.tacacs-xtacacs": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.tcp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.testing-in-production": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.the-evil-bit": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.the-first-emoticon": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.the-first-spam": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.the-konami-code": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.the-leap-second": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.tls": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.tor": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.trunk": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.trunk-port": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.ttl": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:glossary.entries.udp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.ulid": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.user-agent": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.utc": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.uucp": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.vip": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.virtual-appliance": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.vlan": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.vrf": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.vrrp": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.vxlan": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.wheelers-law": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.wire-speed": {
+      "J": 5,
+      "I": 0
+    },
+    "messages:glossary.entries.wlan": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.wpa3": {
+      "J": 3,
+      "I": 0
+    },
+    "messages:glossary.entries.x-clacks-overhead": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:glossary.entries.x-fry-x-bender": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.x-hacker": {
+      "J": 7,
+      "I": 0
+    },
+    "messages:glossary.entries.x-hi-human": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.x-nananana-batcache": {
+      "J": 4,
+      "I": 0
+    },
+    "messages:glossary.entries.x25": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.year-2038-problem": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:glossary.entries.zero-one-infinity": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:glossary.entries.zia": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:guide": {
+      "J": 8,
+      "I": 0
+    },
+    "messages:history": {
+      "J": 2,
+      "I": 1
+    },
+    "messages:learnSeries": {
+      "J": 11,
+      "I": 0
+    },
+    "messages:lineages": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:materials": {
+      "J": 11,
+      "I": 0
+    },
+    "messages:meetingBingo": {
+      "J": 0,
+      "I": 2
+    },
+    "messages:megaBrain": {
+      "J": 0,
+      "I": 2
+    },
+    "messages:milestones": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:privacy_page": {
+      "J": 1,
+      "I": 1
+    },
+    "messages:redEducation": {
+      "J": 2,
+      "I": 0
+    },
+    "messages:roles": {
+      "J": 3,
+      "I": 2
+    },
+    "messages:settings_page": {
+      "J": 1,
+      "I": 0
+    },
+    "messages:studyGuidesIndex": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:tools": {
+      "J": 195,
+      "I": 2
+    },
+    "messages:vendors": {
+      "J": 6,
+      "I": 0
+    },
+    "messages:vendorsHome": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/advisory/pt-BR/decision-memorandum.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/blog/pt-BR/both-ends-of-the-escalation.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/blog/pt-BR/schrems-iii-seen-from-sao-paulo.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/blog/pt-BR/the-only-seat-with-no-preference.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/blog/pt-BR/the-switch-lineage-from-inside-a-company-that-split.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/accounting-who-did-what-and-when.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/adc-family-history.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/aead-vs-cbc.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ajax-fetch-and-xhr.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/anatomy-of-a-dig-command-line.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ascii-the-128-codes.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/authoritative-vs-non-authoritative-answers.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/awaf-client-side-signals-and-challenges.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/awaf-declarative-policy-structure.mdx": {
+      "J": 1,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/base64-in-practice.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/base64.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bfd-when-a-link-is-up-and-dead.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-21x-access-identity.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/bigip-21x-whats-new.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-afm-contexts-and-rule-processing.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-apm-sso-methods.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-cookie-disclosure.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-declarative-onboarding-do.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/bigip-dns-multi-rpz.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-http-query-method.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-inplace-upgrade-and-64bit.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-interfaces-trunks-vlans-selfips.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-l4-protocol-profiles.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-license-file-anatomy.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-persistence-cookies.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-snat-and-return-traffic.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-syn-flood-protection.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-system-services.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-tcpdump-safety.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-tcpdump-syntax.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-ucs-archives.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/bigip-vcmp.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bigip-zero-or-one.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/bits-bytes-and-the-two-kinds-of-kilo.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/blast-radius-thinking-before-you-change-anything.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/capture-points-before-packets.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/certificate-formats.mdx": {
+      "J": 1,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/certificate-validation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/certificate-validity-windows.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/choosing-a-password-hash.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/choosing-a-persistence-method.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/choosing-a-public-dns-resolver.mdx": {
+      "J": 14,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/clickjacking-and-framing.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/cloud-metadata-endpoints-and-ssrf.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/content-security-policy-read-by-the-specification.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/content-security-policy.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/cookie-security-flags.mdx": {
+      "J": 1,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/cors-explained.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-data-flags-and-content-type.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-headers-auth-and-cookies.mdx": {
+      "J": 10,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-method-inference.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-protocols-beyond-http.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-security-flags.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/curl-to-fetch.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/cvss-severity-bands-and-limits.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/ddos-what-actually-absorbs-an-attack.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/decided-in-advance.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/dhcp-lease-lifecycle.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/digital-transformation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/dns-message-header-and-flags.mdx": {
+      "J": 7,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/dns-record-types-in-answers.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/edns-and-the-opt-pseudosection.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/email-authentication-spf-dkim-dmarc.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/extreme-fabric-connect-one-service-edge-to-edge.mdx": {
+      "J": 11,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-apm-saml-federation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-ca-vs-retired-101-201.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-cipher-string-syntax.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-distributed-cloud-one-request-end-to-end.mdx": {
+      "J": 7,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-ethernet-trailer.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-ssl-orchestrator-topologies.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5-tls13-vs-tls12-ciphers.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/f5os-2-0-whats-new.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5os-restconf-paths.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5xc-domain-matching-and-listener-logic.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/f5xc-openapi-and-api-inventory.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/f5xc-origin-pool-anatomy.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fault-isolation-first-hour.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiadc-application-delivery-and-load-balancing.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiadc-security-dns-and-troubleshooting.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiappsec-advanced-protection-and-availability.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiappsec-cloud-waf-and-managed-delivery.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiddos-policies-proxies-and-operations.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortideceptor-deployment-and-incident-analysis.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiedr-architecture-and-deployment.mdx": {
+      "J": 7,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiedr-threat-hunting-forensics-and-investigation.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/fortigate-acme-certificate-automation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortigate-dns-server-modes-and-filtering.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortigate-initial-configuration-and-operation-modes.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortimail-content-security-encryption-and-ibe.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortimail-policies-session-filtering-and-antispam.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortimail-smtp-fundamentals-and-deployment.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortimail-workspace-security-and-policies.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortimanager-adoms-and-device-registration.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortinac-isolation-access-control-and-onboarding.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortindr-cloud-architecture-detections-and-events.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortindr-cloud-iql-hunting-and-integration.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortinet-cloud-automation-caas-and-native-integration.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortinet-sd-branch-and-overlay-fabric.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortinet-soc-architecture-and-adversary-behaviour.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortios-cli-grammar.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortirecon-attack-surface-and-digital-risk.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortisoar-playbooks-jinja-and-connectors.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiswitch-fortilink-provisioning-and-topologies.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiswitch-vlans-stp-ports-and-qos.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/fortiweb-deployment-policies-and-delivery.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/gre-tunnels-fundamentals.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/gslb-two-tier-pool-then-member.mdx": {
+      "J": 5,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/gtm-load-balancing-methods.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/gtm-topology-records-and-longest-match.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hacking-in-the-20th-century.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hash-function-families.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/hashing-encryption-encoding.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hidden-assumptions-in-an-architecture-diagram.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hidden-messages-in-http-headers.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hmac.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/how-a-webassembly-tool-works.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/how-extremexos-config-is-structured.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/how-systems-fail.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/how-xc-service-policies-match.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/hsts-and-https.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/html-forms-and-request-encoding.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-cookies-state-over-stateless.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-from-the-request-line.mdx": {
+      "J": 11,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-headers-anatomy.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-message-framing-content-length-and-chunked.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-methods-the-verbs.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-query-method.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/http-status-codes-the-five-families.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/icmp-ping-and-traceroute.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/id-token-claims.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/identity-family-history.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/incident-to-escalation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/internet-chokepoints.mdx": {
+      "J": 0,
+      "I": 2
+    },
+    "src/content/learn/pt-BR/internet-shutdowns-and-kill-switches.mdx": {
+      "J": 2,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/ipsec-and-ike-fundamentals.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ipv6-address-configuration.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/ipv6-neighbor-discovery.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ipv6-transition.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irule-event-order-explained.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irule-fastl4-vs-standard-events.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irule-priority-and-event-order.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-branching-and-lookups.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-building-strings.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-findstr-substr-getfield.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-loops-and-lists.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/irules-lx-explained.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-procedures-proc-and-call.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-style-guide-explained.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/irules-tcl-number-notation.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/isis-primer.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/iso-8601-and-rfc-3339.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ja3-to-ja4-fingerprinting.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/jwk-parameters-and-thumbprints.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/jwks-and-key-rotation.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/jwt-algorithm-confusion.mdx": {
+      "J": 2,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/jwt-security.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/jwt-signing-algorithms.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/kerberos-and-spnego.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/knight-capital-and-the-rollback-that-made-it-worse.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/krack-and-the-wifi-handshake.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/leo-satellite-constellations.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/lets-encrypt.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/lora-and-lpwan.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ltm-health-monitors.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ltm-persistence-methods.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/map-the-path-before-you-troubleshoot.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/market-window-networking.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/mars-climate-orbiter-and-the-boundary.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/mojibake-and-code-pages.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/mpls-primer.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/nat-explained.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/network-scopes-family-history.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/network-segmentation-from-vlans-to-microsegmentation.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/nginx-proxy-cache-what-gets-stored.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/nslookup-interactive-mode.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/nslookup-record-types.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/nslookup-vs-dig.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ntlm-explained.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ntp-family-history.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/obsolescence.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ocsp-must-staple.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ognl-injection-in-waf-logs.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/oidc-authorization-code-flow.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/oidc-discovery.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/oidc-overview.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/openid-connect.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/osi-model-in-practice.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/password-hashing.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/peer-to-peer-evolution.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/phrack-2600-and-the-hacker-manifesto.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingaccess-policy-model.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingfederate-admin-access-and-rbac.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingfederate-authentication-policies.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/pingfederate-endpoints-map.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingfederate-log-files.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingfederate-upgrade-playbook.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/pingone-davinci-orchestration.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/proving-a-change-worked.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/public-suffix.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/python-as-a-network-engineers-calculator.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/quantum-threat-to-cryptography.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/radius-end-to-end.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/raw-http-requests-and-how-to-replay-them.mdx": {
+      "J": 11,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reading-a-bigip-capture.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reading-a-diff.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reading-a-fortigate-sniffer-trace.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reading-a-syslog-message-field-by-field.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reading-dig-output.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/reflections-on-trusting-trust.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/review-a-network-architecture-before-approving-it.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/root-cause-is-a-verb-not-a-noun.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/route-summarization.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/routing-tables-and-default-gateway.mdx": {
+      "J": 16,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/saml-assertions-and-conditions.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/saml-proxy-explained.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/satan-and-the-tool-release-argument.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/schrems-ii-and-where-data-may-live.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/sdn-family-history.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/siem-and-detection-engineering.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/spb-fabric-vocabulary.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/spbm-multicast-addresses-are-computed-not-learned.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/sse-single-pass-architecture.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ssl-forward-proxy-interception.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/ssrf-defenses-allowlists.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/subnet-overlap-and-gaps.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/syslog-facilities-and-severities.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/syslog-on-network-devices.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/tac-cases-that-get-triaged-fast.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/tacacs-plus-device-administration.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/tcp-connection-lifecycle.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/test-measurement-family-history.mdx": {
+      "J": 7,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/text-encodings-compared.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-500-mile-email.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-brazil-thread.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-certificate-authority-chokepoint.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-chokepoints-of-the-internet.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-disclosure-record.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-ethernet-frame-field-by-field.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-family-histories.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-formats-in-between.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-industry-from-inside.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-interception-tools.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-interpreter-problem.mdx": {
+      "J": 7,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-kaminsky-dns-flaw.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-named-tls-attacks.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-silk-road-and-the-operator-who-leaked.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-target-breach.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/the-worm-era.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/therac-25-and-defence-in-depth.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/tor-and-onion-routing.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/traffic-diversion-and-the-man-in-the-middle.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/troubleshooting-zcc-connectivity.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/unix-and-the-appliance-you-operate.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/uri-url-urn-whats-the-difference.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/uuid-database-keys.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/uuid.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/verifying-a-jwt-with-jwks.mdx": {
+      "J": 10,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/virtualization-family-history.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/vlans-and-8021q-trunking.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/voss-fabric-connect-spbm.mdx": {
+      "J": 4,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/voss-isis-and-nicknames.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/vpn-fundamentals.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/what-a-page-head-declares-and-who-reads-it.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/what-is-a-ja4-tls-fingerprint.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/what-is-an-algorithm.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/wireguard-the-small-tunnel.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/wireshark-and-the-capture-stack.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/writing-irules-that-behave.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/x509-anatomy.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/xc-matcher-case-sensitivity-and-transformers.mdx": {
+      "J": 8,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/zdx-score-anatomy-and-probes.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/zpa-access-troubleshooting.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/zscaler-casb-and-saas-security.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/zscaler-client-connector-profiles.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/learn/pt-BR/zscaler-nanolog-nss-and-log-streaming.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/learn/pt-BR/zscaler-platform-updates-and-change-management.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/practice/pt-BR/baselines-knowing-what-normal-looks-like.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/bisection.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/cannot-touch-it.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/configuration-diffing-and-version-control.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/designing-for-three-in-the-morning.mdx": {
+      "J": 5,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/evidence-that-convinces-next-quarter.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/hindsight-makes-it-look-inevitable.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/layer-by-layer.mdx": {
+      "J": 2,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/not-your-problem.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/practice/pt-BR/opening-a-vendor-case.mdx": {
+      "J": 0,
+      "I": 1
+    },
+    "src/content/practice/pt-BR/packet-capture-discipline.mdx": {
+      "J": 6,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/problem-report-intake.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/reading-a-design-you-did-not-write.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/reproducing-the-irreproducible.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/stops-before-you-find-it.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/symptom-and-cause.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/the-customer-who-is-furious-and-correct.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/the-scripts-worth-keeping.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/triage-and-severity.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/what-to-capture-before-you-know.mdx": {
+      "J": 3,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/what-vendor-support-can-and-cannot-do.mdx": {
+      "J": 1,
+      "I": 0
+    },
+    "src/content/practice/pt-BR/when-the-instruments-agree.mdx": {
+      "J": 1,
+      "I": 0
+    }
+  }
+}

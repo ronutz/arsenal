@@ -1,7 +1,7 @@
 ---
 slug: dns-blocklists-and-response-policy
-title: "Listas de bloqueio DNS: RPZ, classificação e o custo de uma resposta recusada"
-summary: "Bloquear um domínio no resolvedor é o controle de segurança mais barato que existe, e por isso todo fabricante vende um. Como funcionam os feeds RPZ, o que uma classificação de DNS de fabricante realmente classifica, os dois modos de falha que ninguém prevê, e por que o bloqueio que não se vê é pior que o visível."
+title: "Listas de bloqueio no DNS: RPZ, classificação de domínios e o custo de uma resposta recusada"
+summary: "Bloquear um domínio no resolver é o controle de segurança mais barato que existe, e por isso todo fabricante vende um. Como funcionam os feeds de RPZ, o que a classificação de DNS de um fabricante avalia de fato, os dois modos de falha que ninguém planeja e por que o bloqueio que você não vê é pior do que o que você vê."
 concepts: ["rpz", "dns", "egress-filtering"]
 relatedTools: []
 relatedArticles: ["choosing-a-public-dns-resolver", "bigip-dns-multi-rpz", "dns-record-types-in-answers"]
@@ -11,88 +11,88 @@ status: reviewed
 updated: "2026-08-11"
 ---
 
-## Origens: bloquear no resolvedor chegou por acaso
+## Origem: o bloqueio chegou ao resolver por acaso
 
-O bloqueio no resolvedor começou como defesa contra spam. As primeiras listas amplamente usadas eram **listas de bloqueio em DNS** no sentido literal: o servidor de e-mail consultava um nome em formato especial, e uma resposta significava que o endereço estava listado. A técnica vem do trabalho de meados dos anos 1990 que virou a Realtime Blackhole List do MAPS, e seu formato foi escolhido por uma razão - todo servidor de e-mail já falava DNS, então uma lista distribuída como DNS não exigia software novo em lugar nenhum.
+O bloqueio no resolver (o servidor DNS que faz as consultas em nome dos clientes) começou como defesa contra spam. As primeiras listas de uso amplo eram **listas de bloqueio em DNS** no sentido literal: o servidor de e-mail consultava um nome montado num formato especial, e, se viesse uma resposta, o endereço estava na lista. A técnica vem do trabalho de meados dos anos 1990 que deu origem à Realtime Blackhole List do MAPS, e o formato foi escolhido por um motivo só: todo servidor de e-mail já falava DNS, então uma lista distribuída por DNS não exigia software novo em lugar nenhum.
 
-Duas linhagens cresceram dali:
+Daí nasceram duas linhagens:
 
-**Listas de reputação consultadas na hora da mensagem**, ainda a espinha dorsal da filtragem de e-mail.
+**Listas de reputação consultadas a cada mensagem**, que até hoje são a base da filtragem de e-mail.
 
-**Política no resolvedor recursivo**, em que o resolvedor que responde às consultas comuns do cliente é também o lugar onde um nome pode ser recusado. As **Response Policy Zones** foram introduzidas em 2010 por Paul Vixie e Vernon Schryver, e a decisão de projeto que as espalhou foi a mesma que espalhou as listas originais: **a política é entregue como uma zona DNS comum**, então ela transfere, atualiza e escala usando a maquinaria que todo operador já roda.
+**Política no resolver recursivo**: o mesmo resolver que responde às consultas comuns do cliente é também o ponto onde um nome pode ser recusado. As **Response Policy Zones** foram apresentadas em 2010 por Paul Vixie e Vernon Schryver, e o que fez com que elas se espalhassem foi a mesma decisão de projeto que espalhou as listas originais: **a política é distribuída como uma zona DNS comum**, então ela é transferida, atualizada e escala com os mesmos mecanismos que todo operador já tem rodando.
 
-A herança incômoda é que as duas são mecanismos de censura cuja legitimidade vem inteiramente de quem os opera e por quê. A mesma transferência de zona que bloqueia um domínio de phishing para os funcionários de uma empresa é, em outra jurisdição, como um governo bloqueia um site de notícias - e é por isso que essa técnica aparece também no artigo sobre [desligamentos de internet](/learn/internet-shutdowns-and-kill-switches).
+A herança incômoda é que as duas são mecanismos de censura, e a legitimidade delas depende inteiramente de quem as opera e com que objetivo. A mesma transferência de zona que bloqueia um domínio de phishing para os funcionários de uma empresa é, em outra jurisdição, o jeito como um governo bloqueia um site de notícias; é por isso que essa técnica aparece também no artigo sobre [desligamentos de internet](/learn/internet-shutdowns-and-kill-switches), e não só neste.
 
-## Por que o resolvedor é onde bloquear sai mais barato
+## Por que bloquear no resolver sai mais barato
 
-Toda conexão a um host nomeado começa por uma consulta, então o resolvedor fica **antes** de o tráfego existir. Recusar ali custa uma consulta e impede que a conexão seja sequer tentada — sem sessão para inspecionar, sem certificado para interceptar, sem porta para casar, e funciona igual para um protocolo do qual ninguém escreveu um analisador.
+Toda conexão a um host identificado por um nome começa com uma consulta DNS, e por isso o resolver fica **antes** de o tráfego existir. Recusar ali custa uma consulta e impede que a conexão chegue a ser tentada: não há sessão para inspecionar, certificado para interceptar nem porta para casar com uma regra, e funciona do mesmo jeito com um protocolo para o qual ninguém escreveu um parser.
 
-É por isso que o controle é reinventado sob nomes diferentes: response policy zones, filtragem de DNS, camada DNS do secure web gateway, DNS protetivo. **São um mecanismo com vários nomes de produto.**
+É por isso que esse controle vive sendo reinventado com outros nomes: response policy zones, DNS filtering, camada DNS do secure web gateway, protective DNS. **É um mecanismo só, com vários nomes de produto.**
 
-## RPZ: uma lista de bloqueio entregue como zona
+## RPZ: uma lista de bloqueio distribuída como zona
 
-A especificação de **Response Policy Zone**, escrita por Vixie e Schryver, tem uma premissa realmente engenhosa: distribuir a lista **como uma zona DNS**, para que o maquinário de transferência de zona já existente a movimente. O assinante configura um feed como configuraria qualquer zona secundária, e as atualizações chegam por IXFR segundos depois da publicação.
+A especificação da **Response Policy Zone**, escrita por Vixie e Schryver, parte de uma ideia realmente engenhosa: distribuir a lista de bloqueio **como uma zona DNS**, para que o mecanismo de transferência de zona que já existe se encarregue de levá-la. Quem assina um feed o configura como configuraria qualquer zona secundária, e as atualizações chegam por IXFR (transferência incremental de zona) poucos segundos depois de publicadas.
 
-Uma regra emparelha um **gatilho** com uma **ação**. O gatilho pode ser o nome consultado, o endereço na resposta, o endereço do próprio cliente ou o servidor de nomes envolvido. As ações incluem NXDOMAIN, redirecionamento para um jardim murado e deixar passar sem alteração — esta última sendo a lista de permissão, que importa mais do que parece.
+Cada regra combina um **gatilho** (trigger) com uma **ação** (action). O gatilho pode ser o nome consultado, o endereço que vem na resposta, o endereço do próprio cliente ou o servidor de nomes envolvido. Entre as ações estão o NXDOMAIN, o redirecionamento para um walled garden (jardim murado) e deixar a consulta passar intacta; esta última faz o papel de whitelist (lista de liberação), e importa mais do que parece.
 
-**As implementações diferem em quanto da especificação honram.** Uma plataforma que reduz toda ação a "NXDOMAIN ou jardim murado" está aplicando a política dela ao feed de outra pessoa, e os autores do feed fizeram distinções que estão sendo descartadas. Vale saber antes de supor que uma regra fez o que dizia.
+**As implementações não respeitam a especificação na mesma medida.** Uma plataforma que reduz toda ação a "NXDOMAIN ou jardim murado" está aplicando a política dela ao feed de outra pessoa, e as distinções que os autores do feed fizeram estão sendo jogadas fora. Vale saber disso antes de supor que uma regra fez o que dizia fazer.
 
-## O que uma classificação de DNS de fabricante classifica de fato
+## O que a classificação de DNS de um fabricante avalia de fato
 
-Vários fabricantes — o filtro de DNS da Fortinet entre eles — resolvem um nome e o conferem contra uma **classificação por categoria** em vez de uma lista simples de permitir ou negar: malware, phishing, recém-registrado, estacionado, e as categorias comuns de conteúdo.
+Vários fabricantes, entre eles a Fortinet com o seu filtro de DNS, resolvem o nome e o comparam com uma **classificação por categoria**, em vez de uma simples lista de permitir ou negar: malware, phishing, recém-registrado, estacionado (parked) e as categorias comuns de conteúdo.
 
-Duas coisas sobre classificações merecem ser guardadas.
+Sobre classificações, vale guardar duas coisas.
 
-**Uma classificação é um julgamento sobre um domínio num momento.** Domínios recém-registrados são uma categoria justamente porque a idade é um sinal utilizável quando não se sabe mais nada — e uma empresa legítima registrando um domínio novo é idêntica a um atacante fazendo o mesmo, nos primeiros dias de vida daquele nome.
+**Uma classificação é um julgamento sobre um domínio num determinado momento.** Os domínios recém-registrados formam uma categoria justamente porque a idade é um sinal útil quando não se sabe mais nada; e, nos primeiros dias de vida do domínio, uma empresa legítima que registra um domínio novo fica idêntica a um atacante que faz o mesmo.
 
-**E a classificação é, ela própria, uma consulta.** O filtro pergunta a um serviço de classificação sobre o nome, o que significa que esse serviço vê suas consultas e que o filtro depende de alcançá-lo. O que um equipamento faz quando o serviço está inalcançável — falhar aberto, falhar fechado, ou servir do cache — é a configuração mais importante do recurso, e costuma ficar num padrão que ninguém escolheu deliberadamente.
+**E a classificação é, ela mesma, uma consulta.** O filtro pergunta sobre o nome a um serviço de classificação; isso quer dizer que esse serviço vê as suas consultas e que o filtro depende de conseguir alcançá-lo. O que o equipamento faz quando o serviço de classificação está inacessível (liberar, o chamado fail open; bloquear, o fail closed; ou responder com o que está no cache) é a configuração mais importante do recurso, e quase sempre fica num valor padrão que ninguém escolheu de propósito.
 
 ## Os dois modos de falha
 
-**Um bloqueio que parece falha de rede.** NXDOMAIN para um domínio bloqueado é indistinguível, do lado da aplicação, de um domínio que não existe. O usuário relata "o site está fora", o suporte testa de uma rede com outro resolvedor e vê funcionando, e a investigação vai para o lugar errado. **Um redirecionamento para jardim murado custa um aviso de certificado HTTPS e diz a verdade**; NXDOMAIN é silencioso e mente por omissão.
+**Um bloqueio que parece falha de rede.** Do lado da aplicação, um NXDOMAIN para um domínio bloqueado é indistinguível de um domínio que não existe. O usuário avisa que "o site caiu", o helpdesk testa a partir de uma rede com outro resolver, vê tudo funcionando, e a investigação vai para o lugar errado. **Um redirecionamento para o walled garden custa um aviso de certificado no HTTPS, mas diz a verdade**; o NXDOMAIN fica calado e mente por omissão.
 
-**Um bloqueio que nunca dispara.** Um dispositivo que usa o próprio resolvedor, ou DNS sobre HTTPS com um serviço da escolha dele, nunca pergunta ao resolvedor que guarda a política. O painel mostra um filtro funcionando perfeitamente sobre as consultas que recebeu, e as que nunca chegaram não estão em gráfico nenhum.
+**Um bloqueio que nunca dispara.** Um dispositivo que usa o próprio resolver, ou DNS over HTTPS com um serviço que ele mesmo escolheu, nunca pergunta nada ao resolver que tem a política. O dashboard mostra um filtro funcionando perfeitamente nas consultas que recebeu, e as consultas que nunca chegaram não aparecem em gráfico nenhum.
 
-**As duas falhas são silenciosas e falham em direções opostas** — uma bloqueia algo e parece indisponibilidade, a outra não bloqueia nada e parece sucesso.
+**As duas falhas são silenciosas e erram em direções opostas**: uma bloqueia alguma coisa e parece uma queda; a outra não bloqueia nada e parece sucesso.
 
-## O que a política de fato consegue dizer
+## O que a política consegue expressar
 
-Uma regra de RPZ pode disparar por mais que o nome consultado, e os tipos de gatilho são a parte útil:
+Uma regra de RPZ pode disparar por outras coisas além do nome consultado, e é nos tipos de gatilho que está a parte útil:
 
-- **O nome consultado** em si, o caso comum.
-- **O endereço da resposta**, de modo que um nome que resolve para uma rede reconhecidamente ruim é pego mesmo sendo novo.
-- **O nome ou o endereço do servidor de nomes**, que pega uma operação de hospedagem inteira em vez de um domínio - o gatilho de maior alavancagem e o mais propenso a bloquear demais.
+- **O próprio nome consultado**, o caso mais comum.
+- **O endereço da resposta**: um nome que resolve para uma rede sabidamente maliciosa é pego mesmo que o nome seja novo.
+- **O nome ou o endereço do servidor de nomes**, que pega uma operação de hospedagem inteira, e não um domínio só; é o gatilho de maior alcance e o que tem mais chance de bloquear demais.
 - **O endereço do próprio cliente**, para que a política mude conforme quem pergunta.
 
 E as ações disponíveis:
 
-- **NXDOMAIN**, afirmando que o nome não existe.
-- **NODATA**, afirmando que existe, sem registros daquele tipo.
-- **Redirecionamento para um jardim murado**, a única ação capaz de dizer ao usuário o que aconteceu.
-- **DROP**, sem resposta nenhuma, o que para o cliente parece rede quebrada.
-- **PASSTHRU**, uma liberação explícita que sobrepõe uma regra mais ampla - o mecanismo que torna as exceções administráveis.
+- **NXDOMAIN**, que afirma que o nome não existe.
+- **NODATA**, que afirma que o nome existe, mas sem registros daquele tipo.
+- **Redirecionamento para um walled garden**, a única ação capaz de contar ao usuário o que aconteceu.
+- **DROP**, que não responde nada, o que para o cliente parece uma rede com defeito.
+- **PASSTHRU**, uma liberação explícita que passa por cima de uma regra mais ampla; é o mecanismo que torna as exceções administráveis.
 
-A escolha entre elas é decisão de experiência do usuário disfarçada de técnica. O NXDOMAIN é honesto com o protocolo e silencioso com a pessoa, que vê uma falha inexplicável e liga para a central de serviços. Uma página de bloqueio custa infraestrutura e evita essa ligação, e também quebra tudo que não seja navegador.
+Escolher entre elas é uma decisão de experiência do usuário disfarçada de decisão técnica. O NXDOMAIN é honesto com o protocolo e mudo para a pessoa, que vê uma falha sem explicação e liga para o service desk. Uma página de redirecionamento custa infraestrutura e evita essa ligação, mas também quebra tudo o que não for navegador.
 
-## Onde isso deixa de funcionar
+## Onde o bloqueio deixa de funcionar
 
-**DNS cifrado.** Um dispositivo usando DNS sobre HTTPS até um resolvedor público nunca pergunta nada ao seu resolvedor, então a política não é aplicada. É esse o fato operacional central do bloqueio por resolvedor hoje, e as respostas são todas imperfeitas: bloquear os pontos conhecidos, usar política de plataforma para desligar o recurso, ou aceitar que o controle agora vale só para dispositivos gerenciados.
+**DNS criptografado.** Um dispositivo que usa DNS over HTTPS com um resolver público nunca pergunta nada ao seu resolver, e a política não é aplicada. Esse é hoje o fato operacional central do bloqueio no resolver, e todas as respostas a ele são imperfeitas: bloquear os endpoints conhecidos, desligar o recurso por política da plataforma ou aceitar que o controle agora só vale para dispositivos gerenciados.
 
-**Resolvedores fixos no código.** Appliances e aplicações que já vêm com endereço de resolvedor público ignoram o que a rede entrega, a menos que a rede intercepte a porta 53 de vez.
+**Resolver fixo no código (hard-coded).** Appliances e aplicações que já vêm com o endereço de um resolver público ignoram o que a rede entrega a eles, a menos que a rede intercepte de vez a porta 53.
 
-**O bloqueio não é a proteção.** Um nome recusado não remove malware de um host; remove uma das saídas dele. Tratar a contagem de bloqueios como métrica de segurança mede com que frequência algo já estava errado.
+**O bloqueio não é a proteção.** Um nome recusado não remove o malware do host; só tira dele uma das rotas de saída. Usar a contagem de bloqueios como métrica de segurança é medir quantas vezes alguma coisa já estava errada.
 
-**Bloquear demais tem forma conhecida.** Dispare pelo servidor de nomes e você derruba todos os clientes daquele provedor de hospedagem, inclusive os legítimos. É a falha que transforma um controle de segurança em incidente de disponibilidade, e a razão de o PASSTHRU existir.
+**O excesso de bloqueio tem um padrão.** Se o gatilho for o servidor de nomes, você derruba todos os clientes daquele provedor de hospedagem, inclusive os legítimos. É essa a falha que transforma um controle de segurança num incidente de disponibilidade, e é por causa dela que o PASSTHRU existe.
 
 ## O ecossistema, por categoria
 
-- **Software de resolvedor** - BIND, Unbound, PowerDNS e Knot, em que o RPZ é recurso do resolvedor que você já opera.
-- **Filtragem comercial de DNS** - Cisco Umbrella, Cloudflare Gateway, DNSFilter, Zscaler e outros, vendidos como resolvedor gerenciado com feed classificado e relatórios anexados.
-- **Feeds de reputação e de ameaça**, incluindo as listas de linhagem de e-mail, como a Spamhaus, e os feeds categorizados de web que os fabricantes licenciam uns dos outros com mais frequência do que os clientes imaginam - e é por isso que dois produtos costumam concordar, e também errar do mesmo jeito.
-- **Resolvedores públicos com política** - as variantes filtradas operadas por grandes provedores, que põem o mesmo controle na mão de uma casa, e não de uma empresa.
+- **Software de resolver**: BIND, Unbound, PowerDNS e Knot, em que o RPZ é um recurso do próprio resolver que você já usa.
+- **Serviços comerciais de filtragem de DNS**: Cisco Umbrella, Cloudflare Gateway, DNSFilter, Zscaler e outros, vendidos como um resolver gerenciado que já vem com um feed classificado e relatórios.
+- **Feeds de reputação e de ameaças**, incluindo as listas que vêm da linhagem do e-mail, como a Spamhaus, e os feeds de web por categoria que os fabricantes licenciam uns dos outros com mais frequência do que os clientes imaginam; é por isso que dois produtos muitas vezes concordam, e também por isso que muitas vezes erram do mesmo jeito.
+- **Resolvers públicos com política**: as versões filtradas que grandes provedores operam, que colocam o mesmo controle nas mãos de uma família, e não de uma empresa.
 
-A pergunta de compra não é o tamanho do feed. É **com que rapidez um falso positivo pode ser revertido**, porque é esse número que decide se a equipe confia no controle o bastante para deixá-lo aplicando.
+Na hora de comprar, a pergunta não é o tamanho do feed. É **com que rapidez um falso positivo pode ser revertido**, porque é esse número que decide se a equipe confia no controle o bastante para deixá-lo bloqueando de verdade.
 
 ## O que levar daqui
 
-**Bloquear no resolvedor tem alta alavancagem e baixa visibilidade.** Aplica-se a todo dispositivo da rede sem agente algum, e não produz quase nenhuma evidência de estar funcionando corretamente. Seja o que for que você implante, as duas perguntas a responder antes de importar são **o que acontece quando o feed ou o serviço de classificação fica inalcançável** e **como um usuário bloqueado descobre que foi bloqueado.**
+**O bloqueio no resolver tem grande alcance e pouca visibilidade.** Vale para todo dispositivo da rede, sem agente nenhum, e quase não deixa evidência de que está funcionando direito. Seja qual for a solução que você implantar, as duas perguntas a responder antes do dia em que isso fizer diferença são **o que acontece quando o feed ou o serviço de classificação fica inacessível** e **como um usuário bloqueado descobre que foi bloqueado.**

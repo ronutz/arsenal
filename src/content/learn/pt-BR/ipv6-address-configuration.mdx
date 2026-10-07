@@ -28,7 +28,7 @@ Para obter um endereço globalmente roteável, o host escuta por Anúncios de Ro
 
 Com ambas as flags desligadas, o host usa autoconfiguração sem estado pura. É por isso que a atribuição de endereço IPv6 é uma negociação entre o que o roteador anuncia e o que o host escolhe, em vez de um único servidor distribuindo concessões.
 
-## SLAAC: construindo seu próprio endereço
+## SLAAC: o host monta o próprio endereço
 
 A Autoconfiguração de Endereço sem Estado (Stateless Address Autoconfiguration, RFC 4862) é o mecanismo que um host usa para formar seu próprio endereço: tome o prefixo /64 do anúncio e anexe um identificador de interface de 64 bits. Esta é toda a razão pela qual uma sub-rede deve ser um /64 (veja o artigo de [sub-redes](/learn/ipv6-subnetting)). Nenhum servidor rastreia a atribuição, que é o que "sem estado" significa.
 
@@ -40,7 +40,7 @@ O identificador de interface pode ser formado de várias maneiras, e isto tem co
 
 Os sistemas operacionais modernos tipicamente usam um endereço estável para conexões de entrada e um endereço temporário rotativo para as de saída, que é por que uma única interface mostra múltiplos endereços globais.
 
-## Detecção de Endereço Duplicado
+## Detecção de endereço duplicado
 
 Antes de um host realmente usar qualquer endereço que tenha formado, ele roda a Detecção de Endereço Duplicado (Duplicate Address Detection): ele envia uma Solicitação de Vizinho (Neighbor Solicitation) para seu próprio endereço tentativo e espera. Se alguém responder, o endereço já está em uso e não deve ser reivindicado. O DAD (Detecção de Endereço Duplicado, do inglês Duplicate Address Detection) é um seguro barato de que a autoconfiguração não produz colisões, e ele se apoia nas mesmas mensagens de descoberta de vizinhos descritas no artigo companheiro.
 

@@ -1,6 +1,6 @@
 ---
 slug: f5xc-tls-security-levels-explained
-title: "Níveis de Segurança TLS do F5XC Decodificados: O Que High/Medium/Low Negociam, e Por Que Seu Scanner Sinaliza um Load Balancer"
+title: "Níveis de segurança TLS do F5XC decodificados: o que High/Medium/Low negociam, e por que seu scanner sinaliza um load balancer"
 summary: "Os três níveis TLS predefinidos do XC mais o Custom, por que Default é o nível High (mínimo TLS 1.2), como as listas de ciphers são cumulativas, por que um scanner reporta TLS 1.0/1.1 no Medium ou Low, e por que os ciphers RSA estáticos do nível Low são sinalizados como fracos."
 concepts: ["tls", "cipher suites", "forward secrecy", "tls security level", "f5 distributed cloud", "ssl scanner"]
 relatedTools: ["f5xc-tls-security-level-mapper"]
@@ -31,6 +31,6 @@ Esta é a primeira de duas perguntas que a F5 responde em um artigo dedicado. Se
 
 A segunda pergunta. Se um scanner reporta ciphers fracos, quase sempre são as **suites RSA estáticas que o nível Low adiciona**. O key exchange RSA estático não fornece forward secrecy, o que todo scanner moderno rebaixa independentemente do cipher simétrico. Se você está em Low por causa de um cliente legado e um scanner está insatisfeito, essas suites RSA são o motivo ([K000148079](https://my.f5.com/manage/s/article/K000148079)).
 
-## Escolhendo um nível
+## Como escolher um nível
 
 Para uma postura moderna, fique em **High** (o padrão) - é TLS 1.2 e 1.3 com ciphers AEAD com forward secrecy, e com HSTS adicionado ele ganha um A ou A+ nos avaliadores TLS públicos. Desça para Medium ou Low apenas por uma exigência específica de cliente legado, e saiba exatamente o que você está reabilitando: protocolos antigos no Medium, e ciphers sem forward secrecy no Low. O mapeador complementar mostra as versões e a lista de ciphers exatas para qualquer nível, e diz a quais níveis um dado cipher pertence quando você está lendo um scan.

@@ -67,7 +67,7 @@ O montador de cadeia trata um emissor faltante do jeito que esses clientes trata
 
 Certificados de confiança pública têm regras além da RFC 5280, definidas pelo CA/Browser Forum. Duas delas aparecem em cadeias. A seção 6.1.5 dos Baseline Requirements exige módulos RSA de "pelo menos 2048 bits" e chaves ECDSA nas "curvas elípticas NIST P-256, NIST P-384 ou NIST P-521", com "nenhum outro algoritmo ou tamanho de chave" permitido; um intermediário de 1024 bits numa cadeia de hoje é uma relíquia de PKI privada ou um erro. E o SHA-1 acabou: o registro de alterações dos Baseline Requirements anota o encerramento de "todo uso remanescente de assinaturas SHA-1 em Certificados e CRLs" (CRL é a lista de revogação de certificados) com efeito em 2026-09-15, e a RFC 9155 observa que "o CA/Browser Forum (CABF) também descontinuou o uso de SHA-1 em assinaturas de certificados". O único lugar em que uma assinatura SHA-1 é inofensiva é numa raiz autoassinada, cuja assinatura nenhum validador confere; a raiz é confiada, não verificada.
 
-## Lendo uma cadeia em cinco perguntas
+## Cinco perguntas para ler uma cadeia
 
 1. O certificado final vem primeiro, e é o único certificado que ninguém mais no conjunto emite?
 2. O AKI de cada certificado é igual ao SKI do seguinte ou, onde faltam identificadores, os nomes correspondem exatamente?

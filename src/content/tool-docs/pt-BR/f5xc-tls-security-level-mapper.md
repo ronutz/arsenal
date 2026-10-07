@@ -10,6 +10,6 @@ As listas de ciphers são transcritas verbatim da Referência TLS da F5. Duas co
 
 Duas perguntas de campo aparecem o tempo todo, e a ferramenta responde as duas. Se um scanner reporta **TLS 1.0 ou 1.1 habilitado**, o load balancer está em **Medium ou Low** - esses níveis são mínimo TLS 1.0. O nível Default/High é mínimo TLS 1.2, então ele não apresenta os protocolos antigos (K000148226). Se um scanner reporta **ciphers fracos**, quase sempre são as **suites RSA estáticas que o nível Low adiciona** - elas não têm forward secrecy, que é exatamente o que um scanner rebaixa (K000148079).
 
-## Lendo as anotações
+## O que as anotações significam
 
 Todo cipher é marcado com seu key exchange (TLS 1.3, ECDHE-ECDSA, ECDHE-RSA ou RSA), se ele fornece forward secrecy (PFS) e uma nota de força. As suites ECDHE são PFS; as suites RSA estáticas não são. TLS 1.3 e as suites AEAD (GCM / ChaCha20) são fortes; as suites CBC-SHA são médias; as suites RSA estáticas são fracas.

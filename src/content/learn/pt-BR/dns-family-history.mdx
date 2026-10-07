@@ -1,7 +1,7 @@
 ---
 slug: dns-family-history
 title: "DNS: um arquivo mantido em horário comercial"
-summary: "Antes de 1983, conseguir um endereço na rede significava telefonar para Elizabeth Feinler no SRI, que acrescentava você a um arquivo distribuído pela equipe a todos os hosts umas duas vezes por semana - em horário comercial, feriados excluídos. Jon Postel entregou o problema a um aluno de pós-graduação, que leu as propostas existentes, escreveu a própria, e assinou sozinho a especificação do sistema que hoje resolve trilhões de consultas por dia. Esta é a história da família: o arquivo, o projeto, a segurança que ficou de fora, e como um sistema de nomes virou o ponto de controle mais conveniente da internet."
+summary: "Antes de 1983, para ter um endereço na rede era preciso ligar para Elizabeth Feinler, no SRI, que incluía você num arquivo que a equipe distribuía para todos os hosts umas duas vezes por semana, em horário comercial, exceto nos feriados. Jon Postel passou o problema para um aluno de pós-graduação, que leu as propostas que já existiam, escreveu a sua própria e assinou sozinho a especificação do sistema que hoje resolve trilhões de consultas por dia. Esta é a história da família do DNS: o arquivo, o projeto, a segurança que ficou de fora e como um sistema de nomes virou o ponto de controle mais conveniente da internet."
 concepts: ["dns", "hosts.txt", "mockapetris", "bind", "dnssec", "history"]
 relatedTools: []
 relatedArticles: ["identity-family-history", "pki-family-history", "choosing-a-public-dns-resolver"]
@@ -11,86 +11,86 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-O sistema de nomes da internet começou como um arquivo de texto, e a restrição que matou o arquivo é a mais humana deste catálogo inteiro.
+O sistema de nomes da internet começou como um arquivo de texto, e o que acabou com esse arquivo foi a limitação mais humana de todo este catálogo.
 
 ## Antes: um telefonema e um arquivo de texto
 
-**Elizabeth Feinler** e a equipe dela no Network Information Center do SRI mantinham o **HOSTS.TXT**, arquivo central que mapeava nomes para endereços. Para entrar na rede você contatava o NIC, eles o acrescentavam, e a equipe distribuía o arquivo atualizado a todos os hosts umas duas vezes por semana.
+**Elizabeth Feinler** e a equipe dela no Network Information Center (NIC) do SRI mantinham o **HOSTS.TXT**, um arquivo central que associava nomes a endereços. Quem queria entrar na rede falava com o NIC, a equipe fazia a inclusão, e o arquivo atualizado seguia para todos os hosts umas duas vezes por semana.
 
-O sistema funcionava e tinha um limite que nenhuma engenharia contornava: **Feinler e os colegas trabalhavam em horário comercial e tiravam feriado.** Uma rede que precisa estar sempre disponível não pode ter um sistema de nomes que fecha às cinco da tarde. Isso é ótimo equilíbrio entre vida e trabalho e é modelo operacional impossível, e é o exemplo mais claro deste catálogo de uma arquitetura técnica forçada por restrição humana, e não computacional.
+O sistema funcionava, mas tinha um limite que nenhuma engenharia conseguia contornar: **Feinler e os colegas trabalhavam em horário comercial e tiravam folga nos feriados.** Uma rede que precisa estar sempre disponível não pode depender de um sistema de nomes que fecha às cinco da tarde. Como equilíbrio entre vida pessoal e trabalho, ótimo; como modelo de operação, impossível. É o exemplo mais claro deste catálogo de uma arquitetura técnica imposta por uma limitação humana, e não computacional.
 
-O outro limite era aritmético. Cada host novo significava uma edição manual e uma redistribuição inteira, então o custo crescia com o quadrado da utilidade da rede.
+O outro limite era de aritmética. Cada host novo exigia uma edição manual e uma redistribuição completa do arquivo, então o custo crescia com o quadrado da utilidade da rede.
 
-## 1983: o aluno de pós e a tarefa
+## 1983: o aluno de pós-graduação e a tarefa
 
-**Paul Mockapetris** entrou no ISI em 1978 como aluno de pós-graduação, num time de cerca de vinte pessoas supervisionado por **Jon Postel**. Um dia, no relato dele mesmo, Postel entrou na sala e perguntou se ele gostaria de trabalhar no problema de nomeação de domínios - especificamente, conciliar as cinco propostas existentes para melhorar o sistema de nomes.
+**Paul Mockapetris** entrou no ISI em 1978 como aluno de pós-graduação, numa equipe de umas vinte pessoas sob a supervisão de **Jon Postel**. Segundo o relato do próprio Mockapetris, um dia Postel entrou na sala dele e perguntou se ele queria trabalhar no problema dos nomes de domínio; mais exatamente, conciliar as cinco propostas que já existiam para melhorar o sistema de nomes.
 
-Ele as leu e escreveu a própria. As **RFCs 882 e 883**, publicadas em novembro de 1983, **assinadas por ele sozinho**, descrevendo o Domain Name System e o protocolo de consulta dele - projeto que a ACM depois chamou de ousado e desarmantemente simples, ao lhe dar o Software System Award em 2019.
+Ele leu todas e, em vez de conciliá-las, escreveu a sua. Assim nasceram as **RFCs 882 e 883**, publicadas em novembro de 1983 e **assinadas só por ele**, que descrevem o Domain Name System e o seu protocolo de consulta. Em 2019, ao lhe dar o Software System Award, a ACM chamou esse projeto de ousado e de uma simplicidade desconcertante.
 
-Ele também escreveu a primeira implementação, um servidor chamado **Jeeves**, rodando em máquinas DEC Tops-20 no ISI e no Network Information Center do SRI, o que forneceu o primeiro serviço operacional estável. O **BIND** veio logo depois, escrito por alunos de pós em Berkeley sob financiamento da DARPA.
+Ele também escreveu a primeira implementação, um servidor chamado **Jeeves**, que rodava em máquinas DEC Tops-20 no ISI e no NIC do SRI e que ofereceu o primeiro serviço estável em produção. O **BIND** veio logo depois, escrito por alunos de pós-graduação de Berkeley com financiamento da DARPA.
 
-A especificação foi revista nas RFCs 1034 e 1035, em 1987, e são esses os documentos definitivos. As cem páginas originais desde então ganharam a companhia de mais de duzentas outras RFCs.
+A especificação foi revista em 1987, nas RFCs 1034 e 1035, que continuam sendo os documentos de referência. Desde então, mais de duzentas outras RFCs se somaram às cem páginas originais.
 
-## O que o projeto fez, de fato
+## O que o projeto realmente fez
 
-O movimento foi de **uma autoridade** para **autoridade delegada**. Em vez de um arquivo central, cada organização opera o próprio pedaço do espaço de nomes nos próprios servidores, e qualquer um no mundo pode consultá-lo.
+A grande mudança foi sair de **uma autoridade única** para a **autoridade delegada**. Em vez de um arquivo central, cada organização opera o seu pedaço do namespace (o espaço de nomes) nos seus próprios servidores, e qualquer pessoa no mundo pode consultá-lo.
 
-Três propriedades decorrem disso, e as três seguem sendo a razão de aquilo funcionar:
+Daí vêm três propriedades, e são as três que, até hoje, fazem o sistema funcionar:
 
-**Delegação.** A raiz não precisa conhecer os seus nomes de host; precisa saber quem conhece. A autoridade para em cada fronteira e a carga se distribui com a estrutura.
+**Delegação.** A raiz não precisa conhecer os seus hostnames; precisa saber quem conhece. A autoridade termina em cada fronteira, e a carga se distribui junto com a estrutura.
 
-**Cache.** As respostas carregam um tempo de vida, então um nome popular é resolvido uma vez e reaproveitado muitas. Sem cache o sistema teria falhado numa fração da escala atual, e o valor de tempo de vida é o número mais consequente que a maioria dos engenheiros define sem pensar.
+**Cache.** Cada resposta tem um prazo de validade, então um nome popular é resolvido uma vez e reaproveitado muitas vezes. Sem cache, o sistema teria quebrado com uma fração do tamanho que tem hoje, e o TTL (time to live, a validade da resposta) é o número de maior impacto que a maioria dos engenheiros configura sem pensar.
 
-**Nomes para qualquer coisa.** A descrição do próprio Mockapetris é que aquilo foi criado para as pessoas usarem nomes para qualquer coisa - e os tipos de registro acrescentados desde então, carregando roteamento de correio, texto, localização de serviço, chaves e restrições de certificado, são todos consequência dessa generalidade.
+**Nomes para qualquer coisa.** Segundo a descrição do próprio Mockapetris, o sistema foi criado para que as pessoas pudessem usar nomes para qualquer coisa. Os tipos de registro que surgiram depois, com roteamento de e-mail, texto, localização de serviços, chaves e restrições de certificado, são todos consequência dessa generalidade.
 
 ## A parte que ficou de fora
 
-O DNS foi projetado para uma rede em que os participantes eram conhecidos e amplamente confiáveis, e ele **não tem autenticação no projeto original**. Um resolvedor acredita na resposta que recebe.
+O DNS foi projetado para uma rede em que os participantes eram conhecidos e, em geral, confiáveis, e **o projeto original não tem autenticação nenhuma**. O resolver acredita na resposta que recebe.
 
-Tudo o que é difícil desde então descende disso. Envenenamento de cache funciona porque uma resposta que parece certa é aceita. O **DNSSEC** existe para assinar registros e levou décadas para chegar a implantação parcial, porque exige uma cadeia de cooperação da raiz até cada zona e dá dor operacional a quem implanta enquanto o benefício vai para todos os outros - que é a economia padrão das melhorias de segurança na internet e a razão padrão de elas emperrarem.
+Todas as dificuldades que vieram depois nascem daí. O cache poisoning (envenenamento de cache) funciona porque uma resposta que parece certa é aceita. O **DNSSEC** existe para assinar os registros e levou décadas para chegar a uma implantação parcial: ele exige uma cadeia de cooperação da raiz até cada zona, e quem implanta fica com a dor de cabeça operacional enquanto o benefício vai para todos os outros. Essa é a lógica econômica clássica das melhorias de segurança na internet, e o motivo clássico de elas empacarem.
 
-O **DNS sobre TLS e sobre HTTPS** respondeu a outro problema - não se a resposta é verdadeira, mas quem mais consegue ver a pergunta - e a adoção deles foi rápida justamente porque um navegador ou um sistema operacional pode ligá-los unilateralmente. **A correção que uma parte sozinha consegue implantar vence; a que exige cooperação de todos espera.** Vale dizer isso como regra geral, porque ela prevê quais melhorias de segurança vingam melhor que qualquer avaliação de mérito técnico.
+O **DNS over TLS e o DNS over HTTPS** resolveram outro problema: não se a resposta é verdadeira, mas quem mais consegue ver a pergunta. E foram adotados mais depressa justamente porque um navegador ou um sistema operacional pode ativá-los por conta própria. **A correção que uma parte consegue implantar sozinha vence; a que depende da cooperação de todos fica esperando.** Vale guardar isso como regra geral, porque ela prevê, melhor do que qualquer avaliação de mérito técnico, quais melhorias de segurança vão dar certo.
 
-## De nomes a controle
+## De sistema de nomes a ponto de controle
 
-Um resolvedor vê todo nome que um dispositivo pede, antes de qualquer conexão. Isso o tornou três coisas para as quais ele nunca foi projetado.
+O resolver vê cada nome que um dispositivo pede, antes de qualquer conexão acontecer. Por isso, ele virou três coisas para as quais nunca foi projetado.
 
-**Controle de segurança.** Recuse resolver, e a conexão nunca acontece - que é a premissa inteira do mercado de resolvedores, e a razão de OpenDNS, NextDNS, Infoblox e EfficientIP venderem a partir dessa posição.
+**Um controle de segurança.** Basta não resolver o nome, e a conexão nunca acontece. Essa é toda a premissa do mercado de resolvers, e é por isso que [OpenDNS, NextDNS, Infoblox e EfficientIP](/learn/adc-family-history) vendem a partir dessa posição.
 
-**Ponto de vigilância.** O registro de consultas é um registro de intenção, e é por isso que transporte cifrado virou argumento de privacidade, e não questão técnica.
+**Um ponto de vigilância.** O log de consultas é um registro de intenções, e é por isso que a criptografia no transporte virou um argumento de privacidade, e não uma questão técnica.
 
-**Instrumento de censura.** Bloquear na camada de nomes é a forma mais barata de filtragem em escala nacional disponível, não exige cooperação do site bloqueado, e é usada por governos de todo o espectro político.
+**Um instrumento de censura.** Bloquear na camada de nomes é a forma mais barata de filtragem em escala nacional, não exige nenhuma cooperação do site bloqueado e é usada por governos de todo o espectro político.
 
-**Um sistema de nomes construído sobre confiança entre pesquisadores virou o ponto de controle mais conveniente da internet**, e nenhum desses três usos exigiu mudar o protocolo. Exigiu apenas estar no caminho da pergunta.
+**Um sistema de nomes construído sobre a confiança entre pesquisadores virou o ponto de controle mais conveniente da internet**, e nenhum desses três usos exigiu qualquer mudança no protocolo. Bastou estar no caminho da pergunta.
 
 ## Cargos e práticas
 
-O DNS produz poucos papéis dedicados e aparece em toda análise séria de queda. O reflexo profissional que ele criou é diagnóstico: confira a resolução primeiro, porque um nome que resolve para o lugar errado produz sintomas indistinguíveis de uma dúzia de outras falhas.
+O DNS gera poucos cargos dedicados, mas aparece no post-mortem de toda queda séria. O reflexo profissional que ele criou é de diagnóstico: verifique primeiro a resolução de nomes, porque um nome que resolve para o lugar errado produz sintomas impossíveis de distinguir dos de uma dúzia de outras falhas.
 
-As práticas dele são reconhecíveis. **Disciplina de tempo de vida** antes de uma migração, baixando os valores com antecedência para que a mudança se propague quando importa. **Mudança de zona sob revisão**, porque registro errado é queda sem mensagem de erro. **Horizonte dividido e a confusão dele**, em que respostas internas e externas diferem e alguém acaba depurando a errada. E **higiene de registrador e registro** - expiração de domínio e comprometimento de conta de registrador são quedas que qualidade nenhuma de infraestrutura evita.
+As práticas que ele criou são fáceis de reconhecer. **Disciplina com o TTL** antes de uma migração: baixar os valores com antecedência para que a mudança se propague a tempo, na hora em que importa. **Mudanças de zona com revisão**, porque um registro errado é uma queda sem mensagem de erro. **O split-horizon e a confusão que ele traz**: as respostas internas e externas são diferentes, e cedo ou tarde alguém investiga a resposta errada. E **o cuidado com o registrar e o registry**: domínio expirado e conta comprometida no registrar são quedas que nenhuma qualidade de infraestrutura evita.
 
 ## As empresas
 
-O trabalho veio do SRI, do ISI e de Berkeley, e nenhum dos três o comercializou. O Internet Systems Consortium carrega o BIND; os operadores da raiz e dos domínios de topo são mistura de instituições, empresas e governos; e o mercado comercial são registradores, provedores de autoritativo gerenciado, os fabricantes de DDI e os resolvedores públicos.
+O trabalho saiu do SRI, do ISI e de Berkeley, e nenhum dos três o transformou em produto. O Internet Systems Consortium mantém o BIND; quem opera a raiz e os domínios de topo é uma mistura de instituições, empresas e governos; e o mercado comercial é formado pelos registrars, pelos provedores de DNS autoritativo gerenciado, pelos fabricantes de DDI e pelos resolvers públicos.
 
-## Para onde vai
+## Para onde o DNS está indo
 
-**A resolução está centralizando.** Um punhado de resolvedores públicos hoje responde uma fatia enorme das consultas do mundo, o que melhora desempenho e privacidade diante do provedor local enquanto cria exatamente a concentração que o projeto distribuído existia para evitar.
+**A resolução está se centralizando.** Hoje, um punhado de resolvers públicos responde a uma fatia enorme das consultas do mundo. Isso melhora o desempenho e a privacidade em relação ao provedor local, mas cria exatamente a concentração que o projeto distribuído foi feito para evitar.
 
-**A cifragem mudou a pergunta, não a resposta.** Transporte cifrado esconde a consulta da rede e a entrega a um operador de resolvedor, então a confiança não some - ela se muda de lugar, e escolher resolvedor virou decisão significativa, e não padrão de fábrica.
+**A criptografia mudou a pergunta de lugar, mas não a respondeu.** O transporte criptografado esconde a consulta da rede e a entrega a quem opera o resolver; a confiança não desaparece, só muda de lugar. Por isso, escolher um resolver virou uma decisão importante, e não mais uma configuração padrão.
 
-**O registro está virando transportador de uso geral.** Vinculação de serviço, restrições de certificado, parâmetros de ECH e registros de texto para verificação - cada vez mais, o jeito de um sistema dizer a outro como alcançá-lo com segurança é um registro DNS.
+**O registro DNS está virando um veículo de uso geral.** Service binding, restrições de certificado, os parâmetros do Encrypted Client Hello (ECH) e registros TXT de verificação: cada vez mais, o jeito de um sistema dizer a outro como chegar até ele com segurança é um registro DNS.
 
-**E a propriedade fundadora continua valendo.** Quarenta anos depois, o sistema faz o que um aluno de pós especificou em cem páginas: delegar autoridade, cachear a resposta, deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais de 1983 na internet segue rodando sem modificação, e a razão disso tem menos a ver com o protocolo do que com a decisão de DAR a autoridade em vez de segurá-la.
+**E o princípio fundador continua valendo.** Quarenta anos depois, o sistema faz o que um aluno de pós-graduação especificou em cem páginas: delegar a autoridade, guardar a resposta em cache e deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais da internet de 1983 continua rodando sem modificações, e, se o DNS continua, o motivo tem menos a ver com o protocolo do que com a decisão de ceder a autoridade em vez de guardá-la para si.
 
-## Esta série, em ordem
+## Os artigos desta série, em ordem
 
-Este artigo abre a série **O DNS como infraestrutura**. Ele conta como o DNS surgiu; as partes se voltam para o sistema como ele é: a falha que deixava tomar um domínio inteiro em segundos, o que aconteceria se a raiz apagasse ou mentisse, o que você escolhe quando escolhe um resolvedor público e o resolvedor usado como controle de segurança.
+Este artigo abre a série **O DNS como infraestrutura** e conta como o DNS surgiu. As partes seguintes tratam do sistema como ele é hoje: a falha que permitia tomar um domínio inteiro em segundos, o que aconteceria se a raiz saísse do ar ou começasse a mentir, o que você está escolhendo quando escolhe um resolver público e o resolver usado como controle de segurança.
 
-1. **[A falha de Kaminsky: o verão em que oitenta fabricantes corrigiram o mesmo defeito no mesmo dia](/learn/the-kaminsky-dns-flaw)**. 2008: a fraqueza conhecida que se revelou capaz de tomar domínios inteiros, e o dia em que oitenta fabricantes a corrigiram juntos.
-2. **[O que acontece se a raiz do DNS apagar - ou começar a mentir](/learn/what-happens-if-the-dns-root-goes-dark)**. Cerca de dois dias de delegações em cache se a raiz silenciar, e o caso muito pior de uma raiz que mente.
-3. **[Resolvedores DNS públicos: o que você está de fato escolhendo](/learn/choosing-a-public-dns-resolver)**. Cloudflare, Google, Quad9 e OpenDNS diferem menos em velocidade do que em política: o que cada um faz com as suas consultas.
-4. **[Listas de bloqueio DNS: RPZ, classificação e o custo de uma resposta recusada](/learn/dns-blocklists-and-response-policy)**. Feeds de RPZ, classificações de fabricantes e o custo de uma resposta recusada: o controle de segurança mais barato que existe.
+1. **[A falha de Kaminsky: o verão em que oitenta fabricantes corrigiram o mesmo bug no mesmo dia](/learn/the-kaminsky-dns-flaw)**. 2008: a fraqueza conhecida que acabou se revelando capaz de tomar domínios inteiros, e o dia em que oitenta fabricantes lançaram a correção ao mesmo tempo.
+2. **[O que acontece se a raiz do DNS sair do ar, ou começar a mentir](/learn/what-happens-if-the-dns-root-goes-dark)**. Cerca de dois dias de delegações em cache se a raiz ficar muda, e o caso muito pior de uma raiz que mente.
+3. **[Resolvers DNS públicos: o que você está escolhendo de verdade](/learn/choosing-a-public-dns-resolver)**. Cloudflare, Google, Quad9 e OpenDNS diferem menos em velocidade do que em política: o que cada um faz com as suas consultas.
+4. **[Listas de bloqueio no DNS: RPZ, classificações e o custo de uma resposta recusada](/learn/dns-blocklists-and-response-policy)**. Feeds de RPZ, as classificações dos fabricantes e o custo de uma resposta recusada: o controle de segurança mais barato que existe.
 
 ## Fontes
 

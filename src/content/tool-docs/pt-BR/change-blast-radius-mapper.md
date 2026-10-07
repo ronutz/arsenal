@@ -6,7 +6,7 @@ Descreva o que você está mudando por meio de um pequeno formulário estruturad
 
 Esta ferramenta não tem conhecimento da sua topologia real. Ela mapeia categorias a partir do que você descreve, não os seus servidores e enlaces específicos. Ela mapeia o que poderia ser afetado; nunca afirma o que vai quebrar. Não aprova uma mudança, não faz conexões de rede, não pede credenciais e não substitui nem uma análise de impacto real nem uma revisão de mudança. O mapa que ela produz é um convite a confirmar as especificidades contra o seu ambiente real, para que nada em uma camada seja esquecido. As notas em texto livre fluem apenas para a avaliação exportada; nunca influenciam quais regras disparam.
 
-## Como o mapa é montado — e como é verificado
+## Como o mapa é montado e como é verificado
 
 Cada regra é um predicado puro sobre a entrada estruturada; ao disparar, ela adiciona itens de categoria afetada (cada um pertencente a uma camada fixa), opcionalmente um fator de risco e opcionalmente medidas de contenção. Um item puxado por várias regras ainda aparece uma única vez, ordenado pela primeira regra que o adicionou; as camadas são sempre emitidas na mesma ordem concêntrica, de modo que o mapa se lê do alvo para fora. A camada do alvo sempre tem o objeto que está sendo mudado e o estado que o seu backup precisa capturar; as outras camadas se preenchem a partir da co-localização, do caminho do tráfego, dos dependentes, da redundância, do alcance de usuários e do tipo de alvo. A faixa aproximada é derivada do risco de maior severidade que disparou. O painel "Por que este mapa?" lista cada regra que disparou com o seu motivo, de modo que o mapa é auditável, não oracular.
 

@@ -1,6 +1,6 @@
 ---
 slug: dhcp-lease-lifecycle
-title: "DHCP: o Ciclo de Vida do Lease por Trás do Endereçamento Automático"
+title: "DHCP: o ciclo de vida do lease por trás do endereçamento automático"
 summary: "O Dynamic Host Configuration Protocol distribui endereços, gateways e resolvedores para que hosts cheguem configurados em vez de em branco. A troca discover-offer-request-acknowledge, o que um lease significa e como funciona a renovação, os relays que carregam pedidos entre sub-redes, e as assinaturas de falha - incluindo o endereço autoatribuído que diz que nenhum servidor respondeu."
 concepts: ["dhcp", "lease", "dora", "fundamentals", "dhcp relay", "addressing", "apipa"]
 relatedTools: []
@@ -21,7 +21,7 @@ Um host recém-chegado difunde um discover - não tem endereço, então broadcas
 
 Um lease é uma promessa com relógio. Na metade do prazo, o host pede em silêncio a renovação ao mesmo servidor - unicast agora, já que tem endereço - e normalmente a vida continua invisível. Se o servidor sumiu, o host tenta com mais força e mais amplitude conforme a expiração se aproxima; se o lease de fato caduca, o endereço é devolvido e o host volta ao discover. Duas verdades operacionais seguem. Leases curtos deixam os pools ágeis e as falhas visíveis; leases longos deixam as redes calmas e as quedas de servidor sobreviváveis. E um host que continua funcionando durante uma queda do DHCP não é prova de saúde - é um lease que ainda não expirou, um pavio queimando em silêncio.
 
-## Relays: cruzando a fronteira da sub-rede
+## Relays: como cruzar a fronteira da sub-rede
 
 A descoberta é broadcast, e broadcasts param nos roteadores - então ou cada sub-rede hospeda um servidor, ou os roteadores rodam um DHCP relay: a função que recebe o broadcast local e o encaminha, em unicast, ao servidor real, marcando de qual sub-rede veio, para que o servidor escolha do pool certo. Quando uma sub-rede inteira deixa de receber endereços enquanto as outras recebem, a configuração de relay no roteador daquela sub-rede é o primeiro suspeito.
 

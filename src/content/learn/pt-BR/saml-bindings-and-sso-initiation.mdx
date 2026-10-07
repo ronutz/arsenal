@@ -26,7 +26,7 @@ Um **binding** é a regra de transporte para uma mensagem SAML. Dois dominam o S
 - O **HTTP-Redirect** carrega a mensagem na URL: o XML é comprimido com deflate, codificado em base64, e URL-encoded em um parâmetro de query, e então o navegador é redirecionado. É compacto mas limitado em tamanho, o que serve ao pequeno `AuthnRequest`.
 - O **HTTP-POST** carrega a mensagem em um formulário HTML de auto-submit: o XML codificado em base64 fica em um campo oculto e um trecho de JavaScript o envia ao destino. Não há limite prático de tamanho, que é por que o **Response** carregando a assertion, que é grande e assinada, quase sempre usa POST.
 
-## Lendo um fluxo
+## Como ler um fluxo
 
 Juntando, um login SP-initiated típico é: o SP monta um `AuthnRequest` e o envia via HTTP-Redirect; o usuário se autentica; o IdP retorna um `Response` assinado via HTTP-POST ao assertion consumer service do SP. Quando você decodifica uma mensagem SAML e quer saber o que está vendo, o binding diz de onde ela veio, parâmetros estilo redirect apontam para uma requisição, um corpo de formulário POSTado aponta para uma resposta, e se foi iniciado por SP ou por IdP diz se uma requisição correlacionadora deveria existir afinal.
 

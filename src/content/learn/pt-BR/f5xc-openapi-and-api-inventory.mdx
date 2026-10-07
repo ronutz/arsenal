@@ -1,6 +1,6 @@
 ---
 slug: f5xc-openapi-and-api-inventory
-title: "A Spec OpenAPI como o Inventário de API do XC: Paths, Auth e a Sombra"
+title: "A spec OpenAPI como o inventário de API do XC: paths, auth e a sombra"
 summary: "O XC API Protection é um modelo de segurança positivo construído a partir de uma spec OpenAPI (2.0 ou 3.0.x): os paths e métodos da spec viram o inventário de API que dirige a validação, e endpoints não documentados são Shadow APIs. Isto cobre por que a spec é a fonte da verdade, como o API Discovery gera uma a partir do tráfego, como resolver autenticação corretamente (global vs por operação, e o override público de lista vazia), e por que endpoints com parâmetro de path são a superfície de Broken Object Level Authorization."
 concepts: ["openapi", "swagger", "api inventory", "positive security", "shadow api", "broken object level authorization", "f5 distributed cloud"]
 relatedTools: ["f5xc-api-path-explainer"]
@@ -23,7 +23,7 @@ A razão pela qual o inventário importa é que o XC impõe um modelo de seguran
 
 A lacuna nesse modelo é a API que você esqueceu de documentar. Um endpoint que está ativo mas ausente da sua spec é uma Shadow API - o projeto OWASP a arquiva sob Improper Assets Management - e ela é desprotegida precisamente porque o inventário não sabe que ela existe. O XC aborda isso da direção oposta com o API Discovery, que observa o tráfego real, faz engenharia reversa do schema do que vê, e gera uma spec OpenAPI que você pode baixar como JSON, revisar, editar, e reimportar. Essa spec gerada é o mesmo tipo de documento que você escreveria à mão, o que significa que a mesma leitura se aplica: cheque quais endpoints ela achou, quais métodos, e se algum deles te surpreende.
 
-## Lendo auth da forma que a spec quer dizer
+## Como ler auth da forma que a spec quer dizer
 
 A parte mais mal lida de uma spec OpenAPI é a autenticação, porque ela é expressa em dois lugares. Uma spec pode declarar um requisito de segurança global que se aplica a toda operação, e qualquer operação pode sobrescrevê-lo. A sutileza que confunde as pessoas é o override vazio: uma operação cujo security é uma lista vazia é explicitamente pública, e ela permanece pública mesmo em uma API onde todo o resto precisa de um token. Então você não pode julgar se um endpoint está protegido olhando a operação sozinha - você tem que resolver o security da própria operação contra o default global, e tratar uma lista vazia como um opt-out deliberado. Um endpoint que está sem autenticação por descuido e um que está sem autenticação por design parecem idênticos até você resolvê-los corretamente.
 

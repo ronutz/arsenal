@@ -21,7 +21,7 @@ Um cliente ACME primeiro cria uma **conta**, identificada por uma **chave de con
 
 Para obter um certificado, o cliente envia um **newOrder** listando os **identificadores** que deseja, os nomes DNS do certificado. A CA responde com uma **autorização** por identificador, cada uma ainda pendente. Uma autorização é a CA dizendo "prove que controla este nome, e aqui estão as formas pelas quais você pode fazê-lo." O pedido não avança até que toda autorização esteja válida.
 
-## Provando o controle: os três desafios
+## Como provar o controle: os três desafios
 
 Cada autorização oferece um ou mais **desafios**, e o cliente escolhe um. Os três tipos padrão partem todos da mesma ideia, uma **autorização de chave** (key authorization) que amarra o desafio à chave da sua conta:
 

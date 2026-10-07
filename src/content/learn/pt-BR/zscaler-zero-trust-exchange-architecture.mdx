@@ -1,6 +1,6 @@
 ---
 slug: zscaler-zero-trust-exchange-architecture
-title: "O Zscaler Zero Trust Exchange: um Proxy Onde Ficava o Perímetro"
+title: "O Zscaler Zero Trust Exchange: um proxy onde ficava o perímetro"
 summary: "A plataforma da Zscaler não é um firewall na nuvem - é um proxy globalmente distribuído que termina cada conexão, inspeciona o que consegue ver, e só então conecta adiante. Onde ZIA, ZPA e ZDX se encaixam nessa central telefônica, o que um Public Service Edge realmente faz, e por que conectar-ao-app-não-à-rede é a frase arquitetural que explica todo o resto."
 concepts: ["zscaler", "zero trust exchange", "proxy", "service edge", "zia", "zpa", "zdx", "architecture"]
 relatedTools: ["zscaler-tunnel-chooser"]
@@ -29,7 +29,7 @@ Os nomes de produto são assentos na mesma central. O **Zscaler Internet Access 
 
 A tese de zero trust vive no modelo de conexão do ZPA mais do que em qualquer outro lugar: um usuário é conectado a *uma aplicação para a qual está autorizado*, nunca colocado *numa rede*. Não existe um interior plano para atravessar lateralmente, porque não existe interior - só fios intermediados, por sessão. Uma [VPN (rede privada virtual)](/learn/vpn-fundamentals) estende a rede até o usuário; o Exchange inverte isso, não estendendo nada e intermediando tudo.
 
-## Lendo a arquitetura como um operador
+## Leia a arquitetura como um operador
 
 Três hábitos decorrem. Primeiro, identidade é a tabela de roteamento: a política pende de quem e do que conectou, então a integração de identidade é infraestrutura, não acessório. Segundo, o Service Edge é o ponto de observação: ao diagnosticar, pense em duas pernas - origem até o Edge, Edge até o destino - porque é literalmente assim que a conexão existe. Terceiro, fronteiras de criptografia são decisões de política: o que o Exchange pode decifrar ele pode inspecionar; [o que ele não deve decifrar](/learn/zia-ssl-inspection-policy-and-bypasses) ele só consegue julgar por fora. Cada artigo seguinte desta série é uma dessas consequências examinada de perto.
 

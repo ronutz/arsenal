@@ -29,7 +29,7 @@ Isso faz da família HMAC uma boa opção quando a **mesma parte** emite e verif
 
 Entre RSA e ECDSA, o compromisso é tamanho e velocidade: as chaves e assinaturas ECDSA são muito menores para segurança equivalente, enquanto o RSA é mais antigo e tem suporte mais universal. O `EdDSA` (Ed25519) é uma alternativa moderna e rápida ganhando adoção.
 
-## Escolhendo
+## Como escolher
 
 - **Uma parte assina e verifica, ou um segredo já é compartilhado** → HMAC (HS256). Simples e rápido.
 - **Um assinante, muitos verificadores independentes** → assimétrico (RS256 ou ES256). A chave pública pode ser distribuída livremente; só o detentor da chave privada pode assinar.

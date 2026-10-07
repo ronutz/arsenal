@@ -1,7 +1,7 @@
 ---
 slug: router-family-history
 title: "O roteador: de gateway a commodity, e os nomes que ficaram de fora"
-summary: "O roteador foi reinventado pelo menos quatro vezes e a função dele nunca mudou: ler um destino, escolher um próximo salto, encaminhar. Esta é a história da família - os IMPs de 1969, o primeiro roteador IP de verdade escrito na BBN por Virginia Strazisar em 1975 e 1976, o roteador multiprotocolo inventado duas vezes de forma independente em 1981 em Stanford e no MIT, a caixa azul que virou a Cisco, e a longa descida de hardware especializado para software em máquina de uso geral. Inclusive por que as duas pessoas que resolveram os problemas iniciais mais difíceis das camadas 2 e 3 raramente são nomeadas."
+summary: "O roteador já foi reinventado pelo menos quatro vezes, e a função dele nunca mudou: ler o destino, escolher o next hop (o próximo salto) e encaminhar. Esta é a história da família: os IMPs de 1969; o primeiro roteador IP de verdade, escrito na BBN por Virginia Strazisar em 1975 e 1976; o roteador multiprotocolo, inventado duas vezes, de forma independente, em 1981, em Stanford e no MIT; a caixa azul que virou a Cisco; e a longa passagem do hardware especializado para o software rodando em máquinas de uso geral. E também por que as duas pessoas que resolveram os problemas mais difíceis do começo das camadas 2 e 3 quase nunca são lembradas."
 concepts: ["router", "routing", "imp", "gateway", "multiprotocol", "bgp", "history"]
 relatedTools: []
 relatedArticles: ["bridge-switch-family-history", "firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation"]
@@ -11,68 +11,68 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-O roteador é o equipamento menos mudado das redes. Ler um destino, consultar uma tabela, escolher um próximo salto, encaminhar, decrementar, repetir. Tudo sobre onde isso acontece, com que velocidade e quem constrói foi refeito várias vezes; a função não saiu do lugar.
+De todos os equipamentos de rede, o roteador é o que menos mudou. Ele lê o destino, consulta uma tabela, escolhe o next hop (o próximo salto), encaminha, decrementa o TTL e repete. Onde isso acontece, com que velocidade e quem fabrica o equipamento, tudo isso já foi refeito várias vezes; a função em si não saiu do lugar.
 
-## 1969: o gateway antes do nome
+## 1969: o gateway antes de ter esse nome
 
-A primeira geração do que hoje chamamos de roteador foram os **Interface Message Processors**, construídos pela BBN para a ARPANET e entregues a partir de 1969. Cada um era um minicomputador Honeywell com cerca de seis mil palavras de software, monitorando o estado da rede além de encaminhar, e cada um custava por volta de 82.200 dólares - número que vale ser lido ao lado do preço de um roteador doméstico hoje.
+A primeira geração do que hoje chamamos de roteador foram os **Interface Message Processors** (IMPs), que a BBN construiu para a ARPANET e entregou a partir de 1969. Cada IMP era um minicomputador Honeywell rodando um software de cerca de seis mil palavras de memória, que monitorava o estado da rede além de encaminhar o tráfego, e cada um custava por volta de 82.200 dólares. Vale comparar esse valor com o preço de um roteador doméstico hoje.
 
-O IMP encaminhava dentro de UMA rede. O que ainda não existia era um equipamento capaz de encaminhar ENTRE redes que não compartilhavam projeto, que é a definição de fato de roteador e a razão de a palavra gateway ter vindo primeiro.
+O IMP encaminhava o tráfego dentro de uma única rede. O que ainda não existia era um equipamento capaz de encaminhar *entre* redes de projetos diferentes, e é exatamente isso que define um roteador. Foi também por isso que o primeiro nome usado foi gateway.
 
-## 1975 a 1976: o primeiro roteador IP de verdade, e o nome que ninguém sabe
+## 1975 a 1976: o primeiro roteador IP de verdade e o nome que ninguém conhece
 
-Dentro do esforço de interconexão da DARPA, **Virginia Strazisar**, na BBN, escreveu o primeiro roteador IP de verdade - então chamado de gateway - implementando os novos protocolos TCP/IP. Ao fim de 1976, três roteadores baseados em PDP-11 rodavam no protótipo experimental da internet.
+Dentro do projeto de internetworking (a interconexão de redes) da DARPA, **Virginia Strazisar**, da BBN, escreveu o primeiro roteador IP de verdade, que na época se chamava gateway, implementando os novos protocolos TCP/IP. No fim de 1976, três roteadores baseados no PDP-11 já estavam rodando no protótipo experimental da internet.
 
-Essa é a origem do equipamento que esta indústria inteira vende, e o nome é quase desconhecido. Ponha ao lado do artigo anterior desta série: o problema dos laços, que torna redes em ponte sobreviventes, foi resolvido por Radia Perlman, e o primeiro roteador de interconexão foi escrito por Virginia Strazisar. **Os dois mecanismos fundacionais das camadas 2 e 3 foram construídos por mulheres cujos nomes a maioria dos profissionais não consegue dizer**, enquanto as empresas que comercializaram o trabalho delas são conhecidas por todo mundo. Isso é fato sobre atribuição, e não sobre engenharia, e vale dizer uma vez, com clareza, num catálogo que nomeia pessoas.
+É daí que vem o equipamento que a indústria inteira vende, e quase ninguém conhece esse nome. Compare com o artigo anterior desta série: o problema dos loops, cuja solução permite que uma rede com bridges sobreviva, foi resolvido por Radia Perlman, e o primeiro roteador de interconexão de redes foi escrito por Virginia Strazisar. **Os dois mecanismos que estão na base das camadas 2 e 3 foram criados por mulheres cujo nome a maioria dos profissionais não sabe dizer**, enquanto as empresas que comercializaram o trabalho delas são conhecidas por todo mundo. Isso diz algo sobre quem leva o crédito, e não sobre engenharia, e vale dizer uma vez, com todas as letras, num catálogo que cita pessoas pelo nome.
 
-A demonstração de quatro redes de 1977 - ARPANET, SATNET, Ethernet e rádio por pacotes interconectados - é o que aquele trabalho tornou possível, e é o momento em que interconectar redes deixou de ser proposta.
+A demonstração de 1977, com quatro redes interligadas (ARPANET, SATNET, Ethernet e packet radio, a rede de rádio por pacotes), foi o que esse trabalho tornou possível, e foi nesse momento que a interconexão de redes deixou de ser só uma proposta.
 
 ## 1981: inventado duas vezes, de forma independente, no mesmo ano
 
-Os primeiros roteadores **multiprotocolo** foram criados de forma independente em 1981 por **William Yeager**, em Stanford, e **Noel Chiappa**, no MIT. Os dois sobre PDP-11. Nenhum sabia o que o outro fazia.
+Os primeiros roteadores **multiprotocolo** foram criados em 1981, de forma independente, por **William Yeager**, em Stanford, e por **Noel Chiappa**, no MIT. Os dois rodavam em PDP-11, e nenhum dos dois sabia o que o outro estava fazendo.
 
-Esta é a terceira vez que invenção simultânea e independente aparece neste catálogo - depois de Baran e Davies chegando separadamente à comutação por pacotes, e de Liskov e Oki alcançando a replicação com carimbo de visão ao mesmo tempo que o Paxos. O padrão é consistente o bastante para ser nomeado: **quando as restrições são compartilhadas e as ferramentas são as mesmas, a resposta chega a várias pessoas de uma vez**, e a discussão sobre quem foi primeiro costuma ser menos interessante que o fato de o problema ter ficado solúvel.
+É a terceira vez que uma invenção simultânea e independente aparece neste catálogo. Antes, Baran e Davies chegaram cada um por conta própria à comutação de pacotes (packet switching), e Liskov e Oki chegaram à view-stamped replication na mesma época do Paxos. O padrão se repete o bastante para merecer um nome: **quando as restrições são as mesmas e as ferramentas também, a resposta aparece para várias pessoas ao mesmo tempo**, e a briga sobre quem chegou primeiro costuma ser menos interessante do que o fato de que o problema tinha passado a ter solução.
 
-Multiprotocolo importava porque o mundo ainda não era IP. Um campus rodava AppleTalk, DECnet, IP, o IPX da Novell e protocolos da Xerox ao mesmo tempo, e um equipamento que falasse só um era inútil. Roteadores modernos que tratam IPv4 e IPv6 são tecnicamente multiprotocolo e bem mais simples do que aquelas máquinas eram.
+Ser multiprotocolo fazia diferença porque o mundo ainda não era todo IP. Um campus rodava AppleTalk, DECnet, IP, o IPX da Novell e os protocolos da Xerox, tudo ao mesmo tempo, e um equipamento que falasse só um deles não servia para nada. Os roteadores modernos, que tratam IPv4 e IPv6, também são multiprotocolo, tecnicamente, mas fazem algo bem mais simples do que aquelas máquinas faziam.
 
-## 1984: a caixa azul vira empresa
+## 1984: a caixa azul que virou empresa
 
-Em Stanford, Leonard Bosack dirigia as instalações de computação do departamento de ciência da computação e Sandy Lerner dirigia as da escola de negócios. Eram casados, e os computadores da universidade não conversavam entre si. A **caixa azul** construída para ligar as redes do campus, rodando software originalmente escrito por Yeager, funcionou - e funcionou também em outras universidades.
+Em Stanford, Leonard Bosack cuidava dos computadores do departamento de ciência da computação, e Sandy Lerner, dos computadores da escola de pós-graduação em negócios. Os dois eram casados, e os computadores da universidade não conversavam entre si. A **caixa azul** (a blue box) montada para interligar as redes do campus, rodando um software escrito originalmente por Yeager, funcionou, e funcionou também em outras universidades.
 
-Bosack e Lerner licenciaram e melhoraram o software do Yeager e fundaram a **Cisco** em 1984, tirando o nome de San Francisco. A empresa que definiria as redes por quarenta anos começou como dois funcionários de universidade comercializando software escrito por um colega para resolver um problema do próprio campus.
+Bosack e Lerner licenciaram o software de Yeager, melhoraram o código e fundaram a **Cisco** em 1984; o nome veio de San Francisco. A empresa que ia definir a área de redes por quarenta anos começou com dois funcionários de universidade vendendo um software que um colega tinha escrito para resolver um problema do próprio campus.
 
-A BBN, que tinha construído os IMPs e empregava a Strazisar, também produziu roteadores iniciais e tinha toda vantagem inicial possível. Rivais mais ágeis a ultrapassaram. É a mesma lição que a entrada dela neste catálogo carrega: a organização que inventa algo frequentemente não é a que vende, e empreiteira de pesquisa e empresa de produto são animais diferentes, com metabolismos diferentes.
+A BBN, que tinha construído os IMPs e onde Strazisar trabalhava, também fabricou roteadores nos primeiros anos e começou com todas as vantagens possíveis. Mesmo assim, concorrentes mais ágeis passaram à frente dela. É a mesma lição que o verbete da própria BBN neste catálogo traz: quem inventa uma coisa muitas vezes não é quem a vende, e uma empresa contratada para fazer pesquisa e uma empresa de produtos são organizações de natureza diferente, que funcionam em ritmos diferentes.
 
-## Evolução
+## Como o roteador evoluiu
 
-- **Encaminhamento em software sobre hardware de uso geral**, de 1969 até o início dos anos 1990. Todo pacote tratado pelo processador.
-- **Encaminhamento em hardware**, de meados dos anos 1990. Circuitos dedicados fazendo consulta na velocidade do enlace, porque software não acompanhava a fibra.
-- **Comutação de camada 3**, fim dos anos 1990. A mesma função de novo, num chassi de comutador, o que encerrou a história conveniente de que rotear era lento por natureza e comutar rápido por natureza.
-- **Silício de mercado**, a partir dos anos 2000. Chips de encaminhamento comprados de um punhado de fornecedores em vez de projetados em casa, o que transformou diferenciação em questão de software.
-- **Desagregação**, a partir dos anos 2010. Plano de controle separado do plano de encaminhamento; sistema operacional de rede vendido à parte do hardware; roteadores em software sobre servidor comum movendo tráfego a velocidades que uma década antes exigiriam chassi.
-- **O roteador de nuvem**, que é uma tabela de rotas configurada por uma interface e nunca vista, rodando no hardware de outra pessoa.
+- **Forwarding em software, sobre hardware de uso geral**, de 1969 até o início dos anos 1990. O encaminhamento de cada pacote passava pelo processador.
+- **Forwarding em hardware**, a partir de meados dos anos 1990. Circuitos dedicados, os ASICs, fazendo o lookup em line rate (na velocidade máxima da interface), porque o software não conseguia acompanhar a fibra.
+- **Switching de camada 3**, no fim dos anos 1990. A mesma função de novo, agora num chassi de switch, o que acabou com a história conveniente, contada pela própria indústria, de que o roteamento era lento por natureza e o switching, rápido por natureza.
+- **Merchant silicon** (chips de mercado), a partir dos anos 2000. Chips de forwarding comprados de um punhado de fornecedores, em vez de projetados pelo próprio fabricante, o que fez da diferenciação uma questão de software.
+- **Desagregação**, a partir dos anos 2010. O control plane (plano de controle) separado do forwarding plane (plano de encaminhamento); o sistema operacional de rede vendido à parte do hardware; roteadores em software, rodando em servidores comuns, movendo tráfego em velocidades que uma década antes exigiriam um chassi.
+- **O roteador de nuvem**, que é uma tabela de roteamento que você configura por uma interface e nunca vê, rodando no hardware de terceiros.
 
-## Os cargos e as práticas
+## As profissões e as práticas
 
-O roteador criou o engenheiro de redes como profissão distinta, e por duas décadas as trilhas de certificação que definiram essa profissão foram construídas em torno dele. Veio junto um vocabulário inteiro de prática: **projeto de protocolo de roteamento**, **convergência** como algo medido em segundos que importam, **sumarização de rotas**, **traceroute como reflexo de diagnóstico**, e o fato operacional permanente de que a decisão de um roteador é **local** - ele sabe o próximo salto, não o caminho -, que é a razão de falhas de roteamento serem tão assimétricas e tão difíceis de enxergar de uma ponta só.
+Foi o roteador que transformou o engenheiro de redes numa profissão própria, e durante duas décadas as trilhas de certificação que definiam essa profissão foram construídas em torno dele. Junto com ele veio todo um vocabulário de trabalho: o **projeto de protocolos de roteamento**; a **convergência**, medida em segundos, e segundos que fazem diferença; a **sumarização de rotas**; o **traceroute como reflexo de diagnóstico**; e um fato da operação que nunca deixa de valer: a decisão de um roteador é **local**. Ele conhece o next hop, não o caminho inteiro, e é por isso que as falhas de roteamento são tantas vezes assimétricas e tão difíceis de enxergar a partir de uma ponta só.
 
-Ele também produziu a dependência não declarada mais consequente da indústria. O **Border Gateway Protocol** segura a internet inteira sobre uma base de intenção anunciada e filtragem manual, e todo grande incidente de roteamento desde então é a mesma história: alguém anunciou algo que não devia, e uma parte suficiente da internet acreditou.
+O roteador também deu origem à dependência mais importante, e menos declarada, de toda a indústria. O **Border Gateway Protocol** (BGP) mantém a internet inteira de pé sobre uma base de intenções anunciadas e filtros manuais, e todo grande incidente de roteamento desde então conta a mesma história: alguém anunciou o que não devia, e uma parte grande o bastante da internet acreditou.
 
 ## As empresas
 
-O mercado inicial foi BBN, Proteon - cujo p4200 de 1986 rodava sobre código do Chiappa e que produziu o OSPF -, Wellfleet e Cisco. A consolidação removeu quase todas: a Wellfleet virou Bay Networks e depois Nortel, a Proteon se dissolveu, e a Cisco ficou com o mercado.
+No começo, o mercado era da BBN, da Proteon (cujo p4200, de 1986, rodava o código de Chiappa, e de onde saiu o OSPF), da Wellfleet e da Cisco. A consolidação eliminou quase todas: a Wellfleet foi incorporada à Bay Networks e depois à Nortel, a Proteon deixou de existir e a Cisco ficou com o mercado.
 
-Hoje são Cisco, Juniper agora dentro da HPE, Arista, Nokia, Huawei, MikroTik na ponta de baixo, e os sistemas operacionais de rede abertos - além dos maiores operadores de todos, os provedores de nuvem e as redes de conteúdo, que constroem os próprios e publicam artigos sobre eles em vez de vendê-los.
+Hoje o mercado é da Cisco, da Juniper (agora dentro da HPE), da Arista, da Nokia, da Huawei, da MikroTik, no segmento de entrada, e dos sistemas operacionais de rede abertos. E há os maiores operadores de todos, os provedores de nuvem e as redes de conteúdo, que constroem os próprios roteadores e publicam artigos técnicos sobre eles, em vez de vendê-los.
 
-## Para onde vai
+## O que vem pela frente
 
-**Encaminhar está voltando a ser software.** Desvio de núcleo, planos de dados programáveis e eBPF trouxeram o tratamento de pacote de volta a processadores de uso geral, em velocidades que tornam o hardware dedicado opcional para muitos papéis. A roda deu uma volta completa.
+**O forwarding está voltando a ser software.** Kernel bypass (processar os pacotes sem passar pelo kernel), data planes (planos de dados) programáveis e eBPF trouxeram o tratamento de pacotes de volta para processadores de uso geral, em velocidades que tornam o hardware dedicado opcional em muitas funções. A roda deu uma volta completa.
 
-**O plano de controle está se separando da caixa.** Cálculo centralizado de caminhos, com marca de rede definida por software ou de roteamento por segmento, tira a decisão do equipamento que a executa - o que é mudança em onde mora o risco operacional, mais do que no que a rede faz.
+**O control plane está se separando da caixa.** O cálculo centralizado de caminhos, seja com o nome de software-defined networking, seja com o de segment routing, tira a decisão do equipamento que a executa. Isso muda mais o lugar onde fica o risco operacional do que aquilo que a rede faz.
 
-**Roteamento está virando serviço.** Para a maioria das organizações, o roteamento interessante hoje acontece dentro de um provedor de nuvem ou de uma sobreposição de rede definida por software, configurado por uma interface, com o equipamento físico reduzido a transporte.
+**O roteamento está virando serviço.** Na maioria das organizações, o roteamento que interessa hoje acontece dentro de um provedor de nuvem ou num overlay de SD-WAN (software-defined wide area network), configurado por uma interface, e o equipamento físico fica reduzido a transporte.
 
-**E o núcleo segue ossificado.** O roteamento entre domínios ainda roda sobre um protocolo desenhado quando os operadores se conheciam, e toda proposta de protegê-lo direito esbarra no fato de que nenhuma parte sozinha pode obrigar o resto da internet a adotar coisa alguma. O equipamento foi refeito quatro vezes; o acordo entre equipamentos quase não foi tocado.
+**E o núcleo continua engessado.** O roteamento entre domínios ainda depende de um protocolo projetado quando todos os operadores se conheciam, e toda proposta para protegê-lo de verdade esbarrou no mesmo fato: ninguém, sozinho, consegue obrigar o resto da internet a adotar coisa alguma. O equipamento foi refeito quatro vezes; o acordo entre os equipamentos quase não mudou.
 
 ## Fontes
 

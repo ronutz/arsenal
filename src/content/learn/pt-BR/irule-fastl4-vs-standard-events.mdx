@@ -1,6 +1,6 @@
 ---
 slug: irule-fastl4-vs-standard-events
-title: "FastL4 vs Standard: Quais Eventos de iRule Você Tem"
+title: "FastL4 vs Standard: quais eventos de iRule você tem"
 summary: "Um virtual server Standard é um proxy TCP completo e expõe o conjunto rico de eventos de iRule L7 e SSL. Um virtual server FastL4 é um caminho rápido baseado em pacotes, otimizado para throughput, e deliberadamente abre mão da maioria desses eventos. Escolher o perfil é escolher quais eventos existem."
 concepts: ["fastl4", "standard virtual server", "full proxy", "irules", "performance", "f5"]
 relatedTools: ["f5-irules-event-order"]
@@ -27,6 +27,6 @@ Um virtual server **FastL4** é feito para throughput bruto. Ele processa o trá
 
 Você ainda tem eventos básicos de conexão, mas os ganchos L7 (Camada 7, a camada de aplicação) e SSL dos quais uma iRule HTTP depende simplesmente não existem. Especificar um desses eventos em um virtual server FastL4 não é um erro; o evento apenas nunca dispara — uma forma confusa de descobrir a incompatibilidade.
 
-## Escolhendo deliberadamente
+## Uma escolha deliberada
 
 O trade-off é throughput contra visibilidade. FastL4 é a escolha certa para balanceamento L4 (Camada 4, a camada de transporte) de alto volume em que você não precisa tocar no conteúdo da aplicação. No momento em que você precisa ler um cabeçalho, direcionar por SNI ou rodar qualquer lógica HTTP ou SSL, você precisa de um virtual server Standard. [Explicador da ordem de eventos de iRules](/tools/f5-irules-event-order) modela a sequência Standard; quando a opção FastL4 está ligada, trate as linhas HTTP e SSL como não aplicáveis, porque em um virtual server FastL4 real esses eventos nunca disparariam.

@@ -1,6 +1,6 @@
 ---
 slug: ltm-persistence-methods
-title: "Métodos de Persistência do BIG-IP e em Que Cada Um se Baseia"
+title: "Métodos de persistência do BIG-IP e em que cada um se baseia"
 summary: "O BIG-IP oferece vários métodos de persistência, e a única coisa que têm em comum é o objetivo: enviar um cliente que retorna ao mesmo membro do pool. Aquilo em que cada um se baseia, cookie, endereço de origem, ID de sessão SSL ou um valor extraído por iRule, decide onde cada um se encaixa e onde cada um falha."
 concepts: ["persistência", "ltm", "balanceamento de carga", "cookie", "f5", "sessão"]
 relatedTools: ["f5-persistence-method-explainer"]
@@ -33,7 +33,7 @@ A persistência universal é a opção flexível: uma expressão de iRule extrai
 
 Dois métodos existem para protocolos específicos. A persistência **MSRDP** (Protocolo de Área de Trabalho Remota da Microsoft, do inglês Microsoft Remote Desktop Protocol) rastreia sessões de Microsoft Remote Desktop para que um cliente que reconecta retorne ao mesmo host de sessão. A persistência **SIP** (Protocolo de Iniciação de Sessão, do inglês Session Initiation Protocol) baseia-se em um cabeçalho SIP, por padrão o Call-ID, para que todas as mensagens de uma chamada cheguem ao mesmo servidor. Cada um faz sentido apenas para seu protocolo.
 
-## Lendo-os em uma configuração
+## Como ler os métodos em uma configuração
 
 O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) identifica cada perfil de persistência em uma configuração, nomeia seu método e lista os campos que importam. O próximo passo é decidir qual método se encaixa em uma dada aplicação, abordado em [escolhendo um método de persistência](/learn/choosing-a-persistence-method), e entender como um primário e um fallback funcionam juntos, abordado em [fallback de persistência e match-across](/learn/fallback-persistence-and-match-across).
 

@@ -1,7 +1,7 @@
 ---
 slug: wireless-family-history
-title: "Sem fio: o problema das ilhas, e o protocolo que foi doado"
-summary: "Em 1968, um professor no Havaí precisava conectar computadores em quatro ilhas e não podia passar cabo pelo Pacífico. A resposta - deixar as estações transmitirem quando tiverem algo a enviar e lidar com as colisões - entrou em operação em junho de 1971, foi posta em domínio público porque não existia escritório para comercializá-la, e hoje está embaixo do Wi-Fi, das redes móveis, do cabo e da Ethernet. Esta é a história da família, inclusive a decisão regulatória que importou mais que qualquer protocolo e a falha de cifragem que ensinou à indústria a lição mais cara dela."
+title: "Wireless: o problema das ilhas e o protocolo que virou domínio público"
+summary: "Em 1968, um professor no Havaí precisava ligar computadores espalhados por quatro ilhas e não tinha como passar cabo pelo Pacífico. A solução foi deixar cada estação transmitir sempre que tivesse algo a enviar e lidar com as colisões quando acontecessem. Essa solução entrou em operação em junho de 1971, foi colocada em domínio público porque não havia um escritório para comercializá-la e hoje está na base do Wi-Fi, das redes móveis, do cabo e da Ethernet. Esta é a história da família, incluindo a decisão regulatória que pesou mais que qualquer protocolo e a falha de criptografia que deu à indústria a sua lição mais cara."
 concepts: ["wireless", "aloha", "802.11", "wi-fi", "wep", "csma", "history"]
 relatedTools: []
 relatedArticles: ["bridge-switch-family-history", "encryption-family-history", "transceiver-family-history"]
@@ -11,73 +11,73 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-O [artigo de pontes e comutadores](/learn/bridge-switch-family-history) deste catálogo trata a Ethernet como o ponto de partida das redes locais. Não é. O método de acesso da Ethernet foi emprestado de uma rede de rádio construída porque alguém não conseguia passar cabo por um oceano.
+O [artigo sobre bridges e switches](/learn/bridge-switch-family-history) deste catálogo trata a Ethernet como o ponto de partida das redes locais. Não é. A Ethernet pegou emprestado o método de acesso de uma rede de rádio, construída porque alguém não tinha como passar um cabo pelo oceano.
 
-## 1968 a 1971: a restrição era geografia
+## De 1968 a 1971: o obstáculo era a geografia
 
-O trabalho começou em setembro de 1968 na Universidade do Havaí, sob **Norman Abramson** e **Franklin Kuo**, com Thomas Gaarder, Shu Lin, Wesley Peterson e Ned Weldon. O objetivo era conectar usuários em Oahu e nas outras ilhas a um computador central de tempo compartilhado usando equipamento de rádio comercial barato.
+O trabalho começou em setembro de 1968, na Universidade do Havaí, sob a liderança de **Norman Abramson** e **Franklin Kuo**, com Thomas Gaarder, Shu Lin, Wesley Peterson e Ned Weldon. O objetivo era ligar usuários de Oahu e das outras ilhas a um computador central de tempo compartilhado (time-sharing), usando equipamento comercial de rádio de baixo custo.
 
-O enquadramento do problema por Abramson merece ser citado em substância: a atitude do time era a de que a rede telefônica existente, usada por todo mundo na época, era **a abordagem errada**.
+Vale reproduzir a essência de como Abramson enxergava o problema: para a equipe, a rede telefônica existente, que todo mundo usava na época, era **a abordagem errada**.
 
-A **ALOHAnet** entrou em operação em junho de 1971 - a primeira demonstração pública de uma rede de pacotes sem fio, ligando sete computadores em quatro ilhas por UHF experimental a 9.600 bits por segundo, com uma estação base chamada Menehune e o primeiro terminal remoto na casa do próprio Abramson, a cerca de um quilômetro e meio. As frequências vieram dos militares, porque o regulador tinha rejeitado o pedido original.
+A **ALOHAnet** entrou em operação em junho de 1971. Foi a primeira demonstração pública de uma rede de dados por pacotes sem fio: sete computadores em quatro ilhas, ligados por UHF experimental a 9.600 bits por segundo, com uma estação base chamada Menehune e o primeiro terminal remoto instalado na casa do próprio Abramson, a cerca de um quilômetro e meio de distância. As frequências foram cedidas pelos militares, porque o órgão regulador tinha negado o pedido original.
 
-## A ideia, e por que ela não era óbvia
+## A ideia e por que ela não era óbvia
 
-Rádio é inerentemente um meio de difusão: todo mundo escuta tudo. O primeiro problema difícil em rádio por pacotes era, portanto, como arbitrar o acesso a um canal compartilhado.
+Rádio é, por natureza, um meio de broadcast (difusão): todo mundo escuta tudo. Por isso, o primeiro problema difícil do rádio por pacotes (packet radio) era controlar o acesso a um canal compartilhado.
 
-O **acesso aleatório ALOHA** respondeu com algo perto da insolência: transmita quando tiver dado, detecte as colisões, e tente de novo. Sem coordenação, sem agenda, sem mestre.
+O **acesso aleatório do ALOHA** (random access) resolveu isso com uma ousadia quase insolente: transmita sempre que tiver dados, detecte as colisões e tente de novo. Sem coordenação, sem horário marcado, sem estação mestre.
 
-Isso parece óbvio hoje e não era. Como um relato diz com clareza, não era óbvio para Abramson nem para nenhum dos outros principais pesquisadores de computação do mundo na época - porque toda a arte anterior era **circuito**, e a suposição por baixo de circuito é que o acesso precisa ser arranjado de antemão.
+Hoje isso parece óbvio, mas na época não era. Como diz sem rodeios um dos relatos, não era óbvio nem para Abramson nem para nenhum outro grande pesquisador de computação do mundo naquele momento, porque tudo o que existia antes se baseava em **circuitos**, e a premissa por trás de um circuito é que o acesso precisa ser combinado com antecedência.
 
-## A linha até a Ethernet
+## O caminho até a Ethernet
 
-**Robert Metcalfe creditou o ALOHA pelo trabalho dele na Ethernet e no CSMA/CD.** Os refinamentos posteriores de Kleinrock ao acesso ao canal levaram Metcalfe à detecção de portadora, e a rede experimental dele no Xerox PARC rodava a 2,94 megabits sobre cabo coaxial.
+**Robert Metcalfe deu ao ALOHA o crédito pelo seu trabalho na Ethernet e no CSMA/CD.** Os aperfeiçoamentos que Kleinrock fez depois no acesso ao canal levaram Metcalfe ao carrier sense (a detecção de portadora), e a rede experimental que ele montou no Xerox PARC rodava a 2,94 megabits em cabo coaxial.
 
-Então a sequência é o inverso do que se ensina. **A rede sem fio veio primeiro e a com fio pegou emprestado o método de acesso dela**, e a razão de a Ethernet ter colisões é ter herdado o comportamento de um meio em que colisão é inevitável. O [comutador](/learn/bridge-switch-family-history) depois as removeu do mundo cabeado, e o sem fio nunca conseguiu, porque não dá para dar a cada estação o próprio pedaço de ar.
+Ou seja, a ordem dos fatos é o contrário do que se costuma ensinar. **A rede sem fio veio primeiro, e a rede cabeada pegou dela o método de acesso.** Se a Ethernet chegou a ter colisões, foi porque herdou o comportamento de um meio em que colisão é inevitável. Mais tarde, o [switch](/learn/bridge-switch-family-history) eliminou as colisões do mundo cabeado; o wireless nunca conseguiu fazer o mesmo, porque não dá para dar a cada estação um pedaço de ar só dela.
 
-## A tecnologia foi doada
+## A tecnologia foi entregue de graça
 
-Em 1971 a Universidade do Havaí não tinha escritório para ajudar pesquisadores a comercializar o trabalho, **então a tecnologia foi posta em domínio público.**
+Em 1971, a Universidade do Havaí não tinha um escritório para ajudar os pesquisadores a comercializar o que produziam, **então a tecnologia foi colocada em domínio público.**
 
-Esse acidente de estrutura institucional é um dos fatos mais consequentes deste catálogo. O método de acesso embaixo do Wi-Fi, da telefonia móvel, dos modems a cabo e da Ethernet não teve dono desde o começo, e é por isso que cada uma dessas indústrias pôde construir sobre ele sem negociar. A avaliação posterior do próprio Abramson - de que aquilo está em toda parte, no Wi-Fi, no celular, na Ethernet e no cabo, e superou as expectativas mais loucas dele - é a avaliação de alguém que nunca cobrou por aquilo.
+Esse acaso institucional é um dos fatos com mais consequências em todo este catálogo. O método de acesso que está na base do Wi-Fi, da telefonia móvel, dos cable modems e da Ethernet nunca teve dono, e é por isso que cada uma dessas indústrias pôde construir em cima dele sem negociar nada com ninguém. Anos depois, o próprio Abramson avaliou que a tecnologia está em toda parte, no Wi-Fi, no celular, na Ethernet e no cabo, e que superou as suas expectativas mais otimistas. É a avaliação de alguém que nunca cobrou nada por ela.
 
-## 1985: o regulador faz a coisa decisiva
+## 1985: o órgão regulador dá o passo decisivo
 
-A história técnica é conhecida e a história regulatória é o que de fato viabilizou a indústria. Em 1985 o regulador norte-americano abriu as **faixas industrial, científica e médica** para uso sem licença.
+A história técnica é bem conhecida, mas foi a história regulatória que de fato tornou essa indústria possível. Em 1985, o órgão regulador dos Estados Unidos liberou para uso sem licença as **faixas industrial, científica e médica** (as faixas ISM).
 
-Espectro sem licença significa que qualquer um pode construir e vender um rádio sem pedir permissão, e é a razão de existir um mercado sem fio. **A decisão mais importante da história do Wi-Fi foi tomada por um regulador, e não por um engenheiro** - o mesmo formato da decisão Carterfone na [entrada da Paradyne](/industry/paradyne), em que uma indústria apareceu no espaço que uma decisão jurídica criou.
+Espectro sem licença quer dizer que qualquer um pode fabricar e vender um rádio sem pedir autorização, e é por isso que existe um mercado wireless. **A decisão mais importante da história do Wi-Fi foi tomada por um órgão regulador, e não por um engenheiro.** É o mesmo padrão da decisão Carterfone, contada no [verbete da Paradyne](/industry/paradyne): uma indústria inteira surgiu no espaço que uma decisão jurídica abriu.
 
-Ela também fixou o problema permanente da tecnologia. Sem licença significa compartilhado com todo mundo, inclusive fornos de micro-ondas e cada vizinho, e é por isso que interferência é restrição de projeto, e não defeito.
+Essa decisão também deixou para a tecnologia um problema permanente. Sem licença quer dizer compartilhado com todo mundo, inclusive com fornos de micro-ondas e com cada vizinho, e é por isso que interferência é uma restrição de projeto, e não um defeito.
 
 ## WEP: a lição mais cara da indústria
 
-O 802.11 chegou em 1997 com o **Wired Equivalent Privacy**, e ele foi quebrado por completo em poucos anos, por ataques ao uso da cifra de fluxo e ao tratamento dos vetores de inicialização.
+O 802.11 chegou em 1997 com o **Wired Equivalent Privacy** (WEP), que em poucos anos foi quebrado por completo, com ataques que exploravam o jeito como ele usava a cifra de fluxo (stream cipher) e como tratava os vetores de inicialização.
 
-A falha não estava na cifra. Estava em como o protocolo a usava - o desfecho clássico contra o qual o [artigo de cifragem](/learn/encryption-family-history) adverte, e a demonstração canônica de por que se diz a profissionais para não montarem as próprias construções criptográficas, independentemente da habilidade. O WPA foi remendo sobre hardware que não podia ser trocado; WPA2 em 2004 e WPA3 em 2018 foram as respostas de verdade.
+A falha não estava na cifra, e sim no jeito como o protocolo a usava. É o desfecho clássico contra o qual o [artigo sobre criptografia](/learn/encryption-family-history) alerta, e o exemplo de manual de por que se diz aos profissionais que não montem as próprias construções criptográficas, por mais competentes que sejam. O WPA foi uma adaptação feita em cima de um hardware que não podia ser trocado; as respostas de verdade foram o WPA2, em 2004, e o WPA3, em 2018.
 
-O legado operacional é maior que o técnico. **O WEP ensinou a uma geração que a segurança de uma rede sem fio é propriedade da configuração dela, e não da existência dela**, e a prática de tratar o segmento sem fio como não confiável - autenticando na camada de rede em vez de confiar no rádio - vem daí.
+O legado operacional é maior que o técnico. **O WEP ensinou a uma geração inteira que a segurança de uma rede sem fio depende de como ela está configurada, e não do simples fato de ela existir.** A prática de tratar o segmento wireless como não confiável, autenticando na camada de rede em vez de confiar no rádio, nasceu aí.
 
-## Cargos e práticas
+## Carreiras e práticas
 
-O sem fio produziu uma especialidade com propriedade incomum: o trabalho dela é físico de um jeito que nada mais nesta série é. Um levantamento é uma caminhada com um instrumento, e cobertura é afirmação sobre um prédio, e não sobre um equipamento.
+O wireless criou uma especialidade com uma característica incomum: o trabalho é físico de um jeito que nenhum outro tema desta série é. Um site survey (o levantamento em campo) é uma caminhada com um instrumento na mão, e cobertura é uma afirmação sobre um prédio, e não sobre um equipamento.
 
-As práticas são concretas. **Levantamento antes de implantar e validação depois**, porque previsão e medição discordam. **Planejamento de canal**, porque o recurso escasso é espectro, e não banda. **Comportamento do cliente**, já que as decisões de roaming são tomadas por dispositivos que a rede não controla - a frustração que define a disciplina. E **capacidade por número de clientes, e não por vazão**, porque meio compartilhado degrada com a quantidade de quem fala.
+As práticas são bem concretas. **Site survey antes da implantação e validação depois**, porque previsão e medição não batem. **Planejamento de canais**, porque o recurso escasso é o espectro, e não a banda. **Comportamento dos clientes**, já que as decisões de roaming são tomadas por dispositivos que a rede não controla, e essa é a frustração que define a área. E **capacidade calculada pelo número de clientes, e não pelo throughput**, porque um meio compartilhado piora à medida que aumenta o número de estações querendo falar.
 
-A verdade diagnóstica recorrente é que a maioria das reclamações de sem fio não é problema de sem fio. São problemas de autenticação, de endereçamento ou de rede acima, vividos por um usuário que estava de pé na hora.
+No diagnóstico, uma verdade se repete: a maioria das reclamações de wireless não é problema de wireless. São problemas de autenticação, de endereçamento ou de algo mais adiante na rede (upstream), percebidos por um usuário que, naquela hora, estava em pé.
 
 ## As empresas
 
-A pesquisa era de uma universidade e foi doada. O mercado que veio depois é Cisco com Meraki, HPE com Aruba, Juniper com Mist, Ubiquiti, Extreme, Ruckus dentro da CommScope, e Fortinet e outras vendendo pontos de acesso como extensão de plataforma de segurança - o que é, em si, prova de onde esta família foi parar: **o ponto de acesso virou ponto de imposição de política, e o fabricante de sem fio virou fabricante de segurança.**
+A pesquisa foi de uma universidade e foi entregue de graça. O mercado que veio depois é formado pela Cisco com a Meraki, a HPE com a Aruba, a Juniper com a Mist, a Ubiquiti, a Extreme, a Ruckus dentro da CommScope, e pela Fortinet e outras que vendem access points (pontos de acesso) como extensão de uma plataforma de segurança. Isso, por si só, mostra onde esta família foi parar: **o access point virou um ponto de aplicação de políticas, e o fabricante de wireless virou fabricante de segurança.**
 
-## Para onde vai
+## O que vem pela frente
 
-**Espectro segue sendo a história.** Cada geração é sobretudo sobre acesso a mais espectro, ou sobre usar melhor o que existe - canais mais largos, mais fluxos espaciais, escalonamento melhor - e a abertura dos seis gigahertz importou mais para implantação real que a maioria dos recursos de protocolo.
+**O espectro continua sendo o centro da história.** Cada geração gira, sobretudo, em torno de conseguir mais espectro ou de usar melhor o que já existe (canais mais largos, mais spatial streams, um escalonamento melhor das transmissões), e a abertura da faixa de seis gigahertz pesou mais nas implantações reais do que a maioria dos recursos de protocolo.
 
-**Determinismo é a ambição atual.** Escalonar transmissões em vez de disputar o meio é tentativa de desfazer a suposição fundadora do ALOHA, cinquenta anos depois, para cargas que não toleram latência variável.
+**A ambição atual é o determinismo.** Escalonar as transmissões em vez de disputar o meio é uma tentativa de desfazer, cinquenta anos depois, a premissa original do ALOHA, para workloads que não toleram latência variável.
 
-**Celular privativo compete pelo mesmo trabalho.** Tecnologia móvel licenciada e de licença compartilhada em ambiente corporativo é resposta direta ao problema de interferência que o espectro sem licença cria.
+**A rede celular privada concorre pelo mesmo papel.** Tecnologia móvel com espectro licenciado ou de licença compartilhada, dentro das empresas, é uma resposta direta ao problema de interferência que o espectro sem licença cria.
 
-**E a troca fundadora não mudou.** O time de Abramson aceitou colisões em troca de não precisar de coordenação, e toda tecnologia sem fio desde então compra desempenho recolocando coordenação. O que fez a ideia se espalhar foi ela não precisar de permissão - de regulador, de controlador central ou de dono de patente - e essa continua sendo a propriedade que decide quais tecnologias sem fio são adotadas e quais ficam na especificação.
+**E a troca que deu origem a tudo não mudou.** A equipe de Abramson aceitou as colisões em troca de não precisar de coordenação, e desde então toda tecnologia sem fio ganhou desempenho colocando a coordenação de volta. O que fez a ideia se espalhar foi não precisar da permissão de ninguém, nem de órgão regulador, nem de controladora central, nem de dono de patente, e essa ainda é a característica que decide quais tecnologias wireless são adotadas e quais ficam só na especificação.
 
 ## Fontes
 

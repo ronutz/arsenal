@@ -1,7 +1,7 @@
 ---
 slug: ssl-forward-proxy-interception
-title: "SSL Forward Proxy: Como Funciona a Interceptação de TLS de Saída e o Que a Quebra"
-summary: "Para inspecionar tráfego de saída criptografado, um forward proxy realiza um man-in-the-middle controlado: ele termina a sessão TLS do usuário, abre a sua própria para o servidor real, e forja um certificado para aquele servidor assinado por uma CA privada em que os próprios dispositivos da organização confiam. Este artigo explica a mecânica, o modelo de confiança que o torna seguro (e perigoso), e por que pinning, HSTS e TLS mútuo o derrotam."
+title: "SSL forward proxy: como funciona a interceptação de TLS de saída e o que a faz falhar"
+summary: "Para inspecionar o tráfego de saída criptografado, o forward proxy faz um man-in-the-middle controlado: termina a sessão TLS do usuário, abre a sua própria sessão até o servidor real e forja um certificado para esse servidor, assinado por uma CA privada em que os dispositivos da própria organização confiam. Este artigo explica a mecânica, o modelo de confiança que torna isso seguro (e perigoso) e por que o pinning, o HSTS e o TLS mútuo derrotam a interceptação."
 concepts: ["ssl forward proxy", "interceptacao tls", "man in the middle", "forja de certificado", "ca privada", "certificate pinning", "hsts", "inspecao de saida", "seguranca"]
 relatedTools: ["x509", "cipher"]
 relatedArticles: ["tls-reverse-proxy-inbound", "http-proxy-forward-and-reverse", "certificate-validation", "hsts-and-https"]
@@ -11,88 +11,88 @@ status: reviewed
 updated: "2026-07-06"
 ---
 
-A maior parte do tráfego de saída que deixa uma organização hoje é criptografada por TLS, o que é bom para a privacidade e ruim para uma equipe de segurança que precisa ver o que seus usuários estão enviando e recebendo. O malware esconde seu comando e controle em HTTPS; a exfiltração de dados anda pelos mesmos canais criptografados do trabalho legítimo. Um forward proxy que apenas tunela HTTPS (via método CONNECT) pode registrar o nome de host de destino mas não pode ver dentro. Para inspecionar o conteúdo, o proxy precisa descriptografá-lo, e descriptografar uma sessão projetada para ser confidencial de ponta a ponta significa se tornar um man-in-the-middle deliberado e autorizado. É isso que um SSL forward proxy faz.
+Hoje, a maior parte do tráfego que sai de uma organização é criptografada com TLS, o que é bom para a privacidade e ruim para a equipe de segurança, que precisa ver o que os usuários estão enviando e recebendo. O malware esconde o seu tráfego de comando e controle dentro do HTTPS, e a exfiltração de dados usa os mesmos canais criptografados do trabalho legítimo. Um forward proxy que só faz túnel do HTTPS (pelo método CONNECT) consegue registrar o hostname de destino, mas não enxerga o que vai dentro. Para inspecionar o conteúdo, o proxy precisa descriptografá-lo, e descriptografar uma sessão feita para ser confidencial de ponta a ponta significa virar, de propósito e com autorização, um man-in-the-middle (alguém no meio da conversa). É isso que um SSL forward proxy faz.
 
-## Origens: o ponto de inspeção deixou de enxergar
+## Origens: o ponto de inspeção ficou cego
 
-A inspeção de conteúdo nasceu onde o tráfego era legível. Um proxy dos anos 1990 conseguia ler uma URL, um cabeçalho e um corpo porque quase nada era cifrado, e uma indústria inteira de filtragem web, varredura de antivírus e prevenção de vazamento foi construída sobre essa premissa.
+A inspeção de conteúdo nasceu numa época em que o tráfego era legível. Nos anos 1990, um proxy conseguia ler a URL, o header (o cabeçalho) e o corpo da mensagem porque quase nada era criptografado, e uma indústria inteira de filtragem web, varredura antivírus e prevenção de vazamento de dados foi construída sobre essa premissa.
 
-Então a cifragem virou padrão. A mudança não foi uma decisão, foram três, cada uma removendo mais visibilidade que a anterior: autoridades certificadoras passaram a emitir sem custo a partir de 2015, os navegadores começaram a marcar HTTP puro como inseguro, e o [TLS 1.3](/learn/tls12-tls13-dtls-quic) cifrou a maior parte do aperto de mão, inclusive o certificado. O tráfego que antes era aberto a qualquer equipamento no caminho ficou opaco, e a indústria de inspeção teve duas opções: perder a visibilidade, ou terminar a sessão.
+Depois, a criptografia virou o padrão. Não foi uma decisão, foram três, e cada uma tirou mais visibilidade que a anterior: as autoridades certificadoras passaram a emitir certificados de graça a partir de 2015, os navegadores começaram a marcar o HTTP puro como inseguro, e o [TLS 1.3](/learn/tls12-tls13-dtls-quic) passou a criptografar a maior parte do handshake (o aperto de mão), inclusive o certificado. O tráfego que antes ficava aberto para qualquer equipamento no caminho ficou opaco, e a indústria de inspeção ficou com duas opções: perder a visibilidade ou terminar a sessão.
 
-O **proxy SSL de saída** é a segunda opção, e vale dizer sem rodeio o que ele é: uma máquina no meio, deliberada e autorizada. A técnica é idêntica à do ataque; só a posse das chaves e o consentimento da organização fazem dela outra coisa.
+O **SSL forward proxy** é a segunda opção, e vale dizer claramente o que ele é: uma máquina no meio do caminho (machine-in-the-middle), deliberada e autorizada. A técnica é idêntica à do ataque; só a posse das chaves e o consentimento da organização fazem dela outra coisa.
 
-## Como funciona, e a peça que as pessoas esquecem
+## Como funciona, e a peça que muita gente esquece
 
-A mecânica são duas sessões e um certificado forjado. O proxy termina a sessão TLS do cliente, apresentando um certificado que ele mesmo emite para o nome de destino, e abre a própria sessão TLS adiante, até o servidor real. Entre as duas, ele guarda texto em claro.
+A mecânica se resume a duas sessões e um certificado forjado. O proxy termina a sessão TLS do cliente, apresentando um certificado que ele mesmo emite para o hostname de destino, e abre a sua própria sessão TLS até o servidor real. Entre as duas sessões, ele tem o tráfego em texto claro.
 
-Para o cliente não reclamar, a **autoridade emissora do proxy precisa estar instalada como confiável** em todo dispositivo. É essa a peça que decide o desenho inteiro, e é compromisso maior do que parece. A organização não está acrescentando um certificado; está acrescentando uma autoridade capaz de emitir certificado válido para **qualquer nome da internet**, e instalando-a em cada notebook e celular que administra. Quem controlar essa chave privada consegue se passar por qualquer coisa diante daqueles dispositivos.
+Para o cliente não reclamar, a **CA emissora do proxy precisa estar instalada como confiável** em todos os dispositivos. É essa peça que define o desenho inteiro, e ela é um compromisso maior do que parece. A organização não está acrescentando um certificado; está acrescentando uma autoridade capaz de emitir um certificado válido para **qualquer nome da internet**, e instalando essa autoridade em cada notebook e cada celular que administra. Quem controlar essa chave privada consegue se passar por qualquer destino diante desses dispositivos.
 
-Duas consequências decorrem, e as duas são estruturais, e não operacionais.
+Daí vêm duas consequências, e as duas são estruturais, não operacionais.
 
-**O proxy guarda texto em claro de tudo.** Sessão de banco, portal de saúde, e-mail pessoal. O equipamento passa a ver o que nada mais na rede via, o que o torna o alvo de maior valor do parque e aquele cujos logs carregam o material mais sensível.
+**O proxy tem tudo em texto claro.** Sessões de banco, portais de saúde, e-mail pessoal. O equipamento passa a ver o que nada mais na rede conseguia ver, e isso faz dele o alvo mais valioso do parque e o equipamento cujos logs guardam o material mais sensível.
 
-**O cliente para de validar a internet e passa a validar você.** Depois da interceptação, o certificado que o navegador confere é o seu. Se o proxy validar mal o certificado de cima - vencido, autoassinado, com nome errado, revogado -, o cliente não tem como saber, porque nunca o vê. Um equipamento de interceptação frouxo para cima rebaixou todo mundo atrás dele, enquanto lhes mostra um cadeado.
+**O cliente para de validar a internet e passa a validar você.** Depois da interceptação, o certificado que o navegador confere é o seu. Se o proxy for frouxo na validação do certificado upstream (o do servidor real), aceitando um certificado vencido, autoassinado, com o nome errado ou revogado, o cliente não tem como saber, porque nunca vê esse certificado. Um equipamento de interceptação frouxo do lado upstream rebaixou a segurança de todos os usuários atrás dele, e continua mostrando um cadeado para eles.
 
 ## A mecânica: duas sessões e um certificado forjado
 
-Divida a interceptação em passos. O navegador de um usuário tenta alcançar `https://example.com`. O forward proxy, ficando inline ou configurado como o proxy do navegador, intercepta a conexão. Ele então faz duas coisas ao mesmo tempo:
+Vamos dividir a interceptação em passos. O navegador de um usuário tenta acessar `https://example.com`. O forward proxy, instalado inline ou configurado como proxy do navegador, intercepta a conexão. Aí ele faz duas coisas ao mesmo tempo:
 
-Primeiro, ele age como cliente para o servidor real: abre sua própria sessão TLS de saída para `example.com`, valida o certificado real do servidor contra seu armazenamento de confiança como qualquer cliente faria, e estabelece uma sessão criptografada com a origem. É assim que o proxy vê a verdadeira identidade do servidor e obtém o conteúdo real.
+Primeiro, ele age como cliente do servidor real: abre a sua própria sessão TLS de saída até `example.com`, valida o certificado verdadeiro do servidor contra o seu trust store (o repositório de certificados confiáveis), como qualquer cliente faria, e estabelece uma sessão criptografada com a origem. É assim que o proxy vê a identidade real do servidor e obtém o conteúdo de verdade.
 
-Segundo, ele age como servidor para o usuário: não pode apresentar o certificado real de `example.com`, porque não tem a chave privada de `example.com`. Em vez disso, ele **gera um novo certificado para `example.com` na hora** e o assina com sua própria autoridade certificadora. Ele tipicamente copia os campos de identidade do certificado real do servidor (o subject e os subject-alternative-names que acabou de observar na perna de saída) para o certificado forjado, de modo que o nome corresponda ao que o usuário pediu. O navegador do usuário recebe esse certificado recém-emitido, o verifica, e, crucialmente, precisa decidir se confia nele.
+Segundo, ele age como servidor para o usuário: não pode apresentar o certificado real de `example.com`, porque não tem a chave privada de `example.com`. Em vez disso, **gera na hora um certificado novo para `example.com`** e o assina com a sua própria autoridade certificadora. Normalmente ele copia os campos de identidade do certificado real (o subject e os subject-alternative-names que acabou de ver na conexão de saída) para o certificado forjado, para que o nome bata com o que o usuário pediu. O navegador do usuário recebe esse certificado recém-emitido, confere o certificado e (este é o ponto crucial) precisa decidir se confia nele.
 
-Agora o proxy detém as duas sessões. Ele descriptografa o que o usuário envia, inspeciona e aplica política (filtragem web, antivírus, prevenção de perda de dados, detecção de ameaças), então recriptografa e encaminha ao servidor, e faz o inverso para as respostas. O usuário vê um cadeado e um certificado válido; o servidor vê um cliente normal. No meio, o proxy vê tudo em texto claro.
+Agora o proxy controla as duas sessões. Ele descriptografa o que o usuário envia, inspeciona e aplica as políticas (filtragem web, antivírus, prevenção de vazamento de dados, detecção de ameaças), criptografa de novo e encaminha ao servidor, e faz o caminho inverso com as respostas. O usuário vê um cadeado e um certificado válido; o servidor vê um cliente normal. No meio, o proxy vê tudo em texto claro.
 
-## O modelo de confiança: por que é seguro, e por que é perigoso
+## O modelo de confiança: por que é seguro e por que é perigoso
 
-Todo o esquema se sustenta ou cai em uma coisa: o navegador precisa confiar na CA do proxy. Um certificado forjado para `example.com` é, criptograficamente, indistinguível da forja de um atacante a menos que o assinante seja confiável. O que torna a interceptação corporativa legítima em vez de um ataque é que a organização instala sua CA privada nos armazenamentos de confiança dos dispositivos que gerencia, por group policy, MDM (gerenciamento de dispositivos móveis, do inglês mobile device management) ou uma imagem de provisionamento. Como esses dispositivos foram avisados de antemão para confiar nessa CA, os certificados forjados validam de forma limpa e nenhum aviso aparece.
+O esquema inteiro depende de uma coisa só: o navegador precisa confiar na CA do proxy. Do ponto de vista criptográfico, um certificado forjado para `example.com` é indistinguível da falsificação de um atacante, a não ser que quem o assinou seja confiável. O que torna a interceptação corporativa legítima, e não um ataque, é que a organização instala a sua CA privada nos trust stores dos dispositivos que administra, por group policy, por MDM (mobile device management, o gerenciamento de dispositivos móveis) ou por uma imagem de provisionamento. Como esses dispositivos foram configurados de antemão para confiar nessa CA, os certificados forjados validam sem erro e nenhum aviso aparece.
 
-Esse mesmo fato é por que a interceptação é poderosa e por que é arriscada. Ela funciona apenas em dispositivos gerenciados onde a CA foi instalada; um dispositivo não gerenciado ou pessoal que nunca confiou na CA mostrará um aviso de certificado em todo site interceptado, que é exatamente o comportamento pretendido de um navegador detectando um man-in-the-middle. E a CA do proxy agora é uma das chaves mais sensíveis da organização: qualquer um que a roube pode forjar um certificado confiável para qualquer site para qualquer um desses dispositivos. A interceptação também concentra texto claro para toda a população de usuários em um ponto, então o próprio proxy se torna um alvo de alto valor e, em muitas jurisdições, uma obrigação legal e de privacidade (algumas categorias de tráfego, como bancário e de saúde, são comumente isentas de descriptografia exatamente por essa razão).
+É esse mesmo fato que torna a interceptação poderosa e arriscada ao mesmo tempo. Ela só funciona nos dispositivos gerenciados em que a CA foi instalada; um dispositivo pessoal ou não gerenciado, que nunca passou a confiar na CA, vai mostrar um aviso de certificado em todo site interceptado, e é exatamente isso que se espera de um navegador que detecta um man-in-the-middle. Além disso, a CA do proxy passa a ser uma das chaves mais sensíveis da organização: quem roubá-la pode forjar, para qualquer um desses dispositivos, um certificado confiável de qualquer site. A interceptação também concentra num único ponto o texto claro de todos os usuários, então o próprio proxy vira um alvo valioso e, em muitas jurisdições, uma obrigação legal e de privacidade (algumas categorias de tráfego, como o de bancos e o de saúde, costumam ficar fora da descriptografia exatamente por isso).
 
-## O que quebra, e por que isso não é erro de configuração
+## O que quebra, e por que não é erro de configuração
 
-A interceptação falha contra defesas desenhadas justamente para notá-la, e é por isso que a lista de exceções é permanente, e não temporária.
+A interceptação falha diante de defesas criadas justamente para percebê-la, e é por isso que a lista de exceções é permanente, e não provisória.
 
-**Fixação de certificado (pinning).** Uma aplicação que embarca o certificado ou a chave pública esperada recusa qualquer outra, inclusive o seu proxy legítimo. Aplicativos de banco, vários mensageiros, canais de atualização de software e muitos agentes de dispositivo fixam de propósito. Não existe configuração que faça a fixação aceitar uma autoridade de interceptação; ou a aplicação é excluída, ou ela não funciona.
+**Certificate pinning.** Uma aplicação que já vem com o certificado ou a chave pública esperada recusa qualquer outro, inclusive o do seu proxy legítimo. Aplicativos de banco, vários mensageiros, canais de atualização de software e muitos agentes instalados nos dispositivos fazem pinning de propósito. Não existe configuração que faça o pinning aceitar uma CA de interceptação: ou a aplicação fica fora da interceptação, ou ela não funciona.
 
-**TLS mútuo.** Quando o servidor exige certificado de cliente, o proxy não tem a chave privada do cliente e não consegue completar o aperto de mão no lugar dele.
+**TLS mútuo.** Quando o servidor exige um certificado de cliente, o proxy não tem a chave privada do cliente e não consegue completar o handshake no lugar dele.
 
-**Encrypted Client Hello.** O sinal em claro que restava num aperto de mão moderno é o nome do servidor, e o ECH o remove. Política que depende de ler o nome de destino antes de decidir se intercepta perde a entrada.
+**Encrypted Client Hello.** Num handshake moderno, o último sinal que ainda vai em texto claro é o nome do servidor, e o ECH remove esse sinal. Uma política que depende de ler o nome de destino para decidir se intercepta ou não fica sem a sua informação de entrada.
 
-**Pós-quântico e trocas de chave novas.** Todo equipamento de interceptação precisa suportar o que as pontas negociam. A troca híbrida chegou aos navegadores antes de chegar à maioria dos middleboxes, e o modo de falha é um aperto de mão que simplesmente para de funcionar pelo proxy, e funciona direto.
+**Pós-quântico e novas trocas de chave.** Todo equipamento de interceptação precisa suportar o que as pontas negociam. A troca de chaves híbrida chegou aos navegadores antes de chegar à maioria dos middleboxes, e a falha aparece assim: o handshake simplesmente para de funcionar através do proxy, mas funciona na conexão direta.
 
-**QUIC.** É UDP, cifrado ponta a ponta, e a maioria dos parques de interceptação lida com ele bloqueando e forçando o retorno a TCP - o que funciona até a aplicação não ter retorno.
+**QUIC.** É UDP, criptografado de ponta a ponta, e a maioria dos ambientes com interceptação lida com ele bloqueando o QUIC e forçando o fallback para TCP, o que funciona até aparecer uma aplicação que não tem fallback.
 
-**Categorias legais e regulatórias.** Tráfego de saúde, financeiro e jurídico é excluído em muitas jurisdições, e a exclusão é exigência de conformidade, e não preferência.
+**Categorias legais e regulatórias.** Em muitas jurisdições, o tráfego de saúde, financeiro e jurídico fica excluído, e essa exclusão é exigência de compliance, não preferência.
 
-## Operando com honestidade
+## Como operar com honestidade
 
-- **Publique a prática.** Usuários e reguladores devem saber que o tráfego é inspecionado, que categoria é excluída, e quem pode ler os logs. É decisão de governança tratada como ajuste de firewall.
-- **Contorne por destino, e não por esperança.** Mantenha a lista de exclusões como registro, com donos e datas de revisão, como qualquer [exceção de política](/learn/network-segmentation-from-vlans-to-microsegmentation).
-- **Proteja a chave emissora como uma raiz.** Em hardware, com acesso controlado, com log, e com caminho ensaiado de revogação e reinscrição - porque trocá-la significa tocar em cada dispositivo administrado.
-- **Valide para cima com rigor**, e derrube a sessão em vez de repassar um certificado fraco. Os usuários atrás do proxy não têm outra defesa.
-- **Meça o custo.** Terminar e recifrar é caro, e a interceptação é o recurso que mais transforma um appliance de segurança no gargalo do caminho - que é o [lado da disponibilidade da troca](/learn/security-versus-availability) enunciado em hardware.
+- **Torne a prática pública.** Usuários e reguladores devem saber que o tráfego é inspecionado, qual categoria fica de fora e quem pode ler os logs. Isso é uma decisão de governança que muita gente trata como se fosse uma configuração de firewall.
+- **Faça bypass por destino, e não na base da esperança.** Mantenha a lista de exclusões como um registro formal, com responsáveis e datas de revisão, do mesmo jeito que qualquer [exceção de política](/learn/network-segmentation-from-vlans-to-microsegmentation).
+- **Proteja a chave emissora como a de uma CA raiz.** Em hardware, com acesso controlado e com log, e com um processo já ensaiado de revogação e de re-enrollment dos dispositivos, porque trocar essa chave significa mexer em todos os dispositivos gerenciados.
+- **Valide o lado upstream com rigor**, e derrube a sessão em vez de deixar passar um certificado fraco. Os usuários atrás do proxy não têm outra defesa.
+- **Meça o custo.** Terminar e criptografar de novo custa caro em processamento, e a interceptação é o recurso que mais vezes transforma um appliance de segurança no gargalo do caminho; é o [lado da disponibilidade nessa troca](/learn/security-versus-availability), traduzido em hardware.
 
 ## O cenário, por categoria
 
-- **Gateways web seguros em nuvem** - Zscaler, Netskope, Cloudflare, Cisco Umbrella. A interceptação acontece na borda do provedor, o que move o texto em claro para a infraestrutura de outra pessoa e faz da lista de exclusões dela parte da sua política.
-- **Firewalls de próxima geração** - Palo Alto, Fortinet, Check Point e outros, terminando no perímetro, onde o parque ainda tem um.
-- **Plataformas dedicadas de decifragem** - F5, A10, Gigamon e similares, que decifram uma vez e alimentam várias ferramentas de inspeção com o mesmo texto em claro, para que a operação cara aconteça uma só vez.
-- **Agentes em endpoint**, que veem o texto em claro dentro do dispositivo antes de ele ser cifrado, e portanto não precisam interceptar - a abordagem que cresce à medida que a interceptação de rede perde terreno.
+- **Secure web gateways na nuvem**: Zscaler, Netskope, Cloudflare, Cisco Umbrella. A interceptação acontece na borda do provedor, o que leva o texto claro para a infraestrutura de outra empresa e faz da lista de exclusões dela parte da sua política.
+- **Firewalls de próxima geração**: Palo Alto, Fortinet, Check Point e outros, que terminam o TLS no perímetro, onde o ambiente ainda tem um.
+- **Plataformas dedicadas de descriptografia**: F5, A10, Gigamon e similares, que descriptografam uma vez e alimentam várias ferramentas de inspeção com o mesmo texto claro, para que a operação cara aconteça uma vez só.
+- **Agentes no endpoint** (no próprio dispositivo do usuário), que veem o texto claro dentro do dispositivo, antes de qualquer criptografia, e por isso não precisam interceptar nada: é a abordagem que cresce à medida que a interceptação na rede perde terreno.
 
-Vale dizer a direção da maré: a cada ano, mais tráfego resiste à interceptação na rede, e mais inspeção migra para o endpoint. Um programa construído inteiramente sobre decifragem de rede está construindo sobre uma superfície que encolhe.
+Vale deixar clara a tendência: a cada ano, mais tráfego resiste à interceptação na rede, e mais inspeção migra para o endpoint. Um programa de segurança construído só sobre a descriptografia na rede está apoiado numa superfície que encolhe.
 
-## O que derrota a interceptação, por projeto
+## O que foi projetado para derrotar a interceptação
 
-Vários mecanismos de segurança web existem precisamente para detectar ou prevenir um man-in-the-middle, e eles não distinguem um atacante hostil de um proxy corporativo autorizado. Eles quebram a interceptação, e entender por quê é essencial para operar uma.
+Vários mecanismos de segurança web existem justamente para detectar ou impedir um man-in-the-middle, e eles não distinguem um atacante hostil de um proxy corporativo autorizado. Eles quebram a interceptação, e entender por quê é essencial para quem opera um proxy desses.
 
-O **certificate pinning** é o mais forte. Uma aplicação com pinning é distribuída com o certificado ou a chave pública específicos que espera do seu servidor embutidos, e rejeita qualquer outro, mesmo um "válido" assinado por uma CA confiável. Como o certificado forjado é assinado pela CA do proxy e não pela chave real do servidor, uma aplicação com pinning recusa a conexão de imediato. Aplicativos móveis, atualizadores de software e alguns clientes de nuvem fazem pinning, e é por isso que implantações de interceptação mantêm listas de bypass para destinos com pinning: as únicas opções são isentar aquele tráfego da descriptografia ou quebrar o aplicativo.
+O **certificate pinning** é o mais forte. Uma aplicação com pinning já vem com o certificado ou a chave pública que espera do seu servidor embutidos no código, e rejeita qualquer outro, mesmo um "válido", assinado por uma CA confiável. Como o certificado forjado é assinado pela CA do proxy, e não pela chave real do servidor, a aplicação com pinning recusa a conexão na hora. Aplicativos móveis, atualizadores de software e alguns clientes de nuvem fazem pinning, e é por isso que quem implanta interceptação mantém listas de bypass para os destinos com pinning: as únicas opções são tirar esse tráfego da descriptografia ou quebrar o aplicativo.
 
-O **HSTS** (HTTP Strict Transport Security) endurece o navegador contra downgrade e contra clicar-para-passar-o-aviso para sites que o afirmaram, e sites com HSTS pré-carregado não podem ser alcançados de forma alguma se o certificado não validar; combinado com pinning, torna alguns destinos efetivamente não interceptáveis.
+O **HSTS** (HTTP Strict Transport Security) protege o navegador contra o downgrade e impede o usuário de clicar para ignorar o aviso nos sites que o declararam, e os sites com HSTS pré-carregado (preload) ficam simplesmente inacessíveis se o certificado não validar; junto com o pinning, isso torna alguns destinos, na prática, impossíveis de interceptar.
 
-O **TLS mútuo** quebra a interceptação pela outra direção: se o servidor de destino exige um certificado de cliente, o proxy, parado no meio, não detém a chave de cliente do usuário e não pode completar o handshake com o servidor. Como no TLS mútuo de entrada, a resolução usual é fazer bypass da descriptografia para esses destinos.
+O **TLS mútuo** quebra a interceptação pelo outro lado: se o servidor de destino exige um certificado de cliente, o proxy, que está no meio, não tem a chave de cliente do usuário e não consegue completar o handshake com o servidor. Como no TLS mútuo de entrada, a saída de costume é fazer bypass da descriptografia para esses destinos.
 
-O resultado prático é que um SSL forward proxy nunca inspeciona tudo. Uma implantação real é uma política de inspecionar-por-padrão mais um conjunto cuidadosamente mantido de exceções para tráfego com pinning, com autenticação mútua e legalmente protegido. O artigo sobre TLS de entrada cobre o caso espelhado, um reverse proxy terminando tráfego para servidores que a organização *de fato* possui, onde nenhuma forja é necessária porque o proxy legitimamente detém o certificado.
+Na prática, um SSL forward proxy nunca inspeciona tudo. Uma implantação real é uma política de inspecionar por padrão, mais um conjunto de exceções mantido com cuidado para o tráfego com pinning, com autenticação mútua e com proteção legal. O artigo sobre TLS de entrada trata do caso espelhado: um reverse proxy que termina o tráfego de servidores que a organização *de fato* possui, onde não é preciso forjar nada, porque o proxy tem o certificado legitimamente.
 
 ## Fontes
 

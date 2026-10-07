@@ -95,7 +95,7 @@ O ataque precisa de dois analisadores em fila, um front end e um back end, que a
 
 Mais duas linhas no mesmo espírito. "A server or client that receives an HTTP/1.0 message containing a Transfer-Encoding header field MUST treat the message as if the framing is faulty, even if a Content-Length is present, and close the connection after processing the message": o HTTP/1.0 nunca teve Transfer-Encoding, então um analisador HTTP/1.0 usaria Content-Length e discordaria de todos os outros. E a dobra de linha obsoleta, um valor de campo continuado na linha seguinte por indentação, deve ser rejeitada ou substituída por espaços, porque um analisador que não dobra vê uma linha nova e sem nome onde outro vê uma continuação.
 
-## Lendo uma colagem
+## Como ler uma mensagem colada
 
 Uma captura ou um log é texto, e texto já passou por pelo menos um programa que pode tê-lo reescrito. A RFC 9112, seção 2.2, é tolerante de propósito: "a recipient MAY recognize a single LF as a line terminator and ignore any preceding CR", e um servidor "SHOULD ignore at least one empty line (CRLF) received prior to the request-line". O decodificador segue as duas e as anota em vez de contá-las contra a mensagem. Um CR solto, por outro lado, um carriage return sem line feed, é um que a especificação não perdoa: um receptor "MUST consider that element to be invalid or replace each bare CR with SP before processing".
 

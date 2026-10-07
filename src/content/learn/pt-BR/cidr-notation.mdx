@@ -1,7 +1,7 @@
 ---
 slug: cidr-notation
-title: "Notação CIDR explicada"
-summary: "O que a barra em 192.168.1.0/24 de fato significa, e como um comprimento de prefixo define um bloco de endereços IP: os três problemas que acabaram com o endereçamento por classes (RFC 4632), a notação como o padrão a define, cada prefixo comum com a sua máscara e o seu tamanho, os endereços de rede e de broadcast e as duas exceções, por que a agregação era o objetivo, e a mesma barra no IPv6."
+title: "Como funciona a notação CIDR"
+summary: "O que a barra em 192.168.1.0/24 quer dizer de verdade e como o tamanho do prefixo define um bloco de endereços IP: os três problemas que acabaram com o endereçamento classful (RFC 4632), a notação como o padrão a define, os prefixos mais comuns com a máscara e o tamanho de cada um, os endereços de rede e de broadcast e as duas exceções, por que a agregação era o objetivo e a mesma barra no IPv6."
 concepts: ["cidr", "classless inter-domain routing", "prefix length", "subnet mask", "network address", "broadcast address", "classful addressing", "route aggregation", "rfc 4632", "/31", "/32", "ipv6 prefix"]
 relatedTools: ["cidr"]
 relatedArticles: ["subnetting-basics", "ipv4-addressing", "ipv6-subnetting", "private-address-space", "vlsm", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
@@ -13,36 +13,36 @@ updated: "2026-10-07"
 
 ## O problema que o CIDR resolve
 
-Todo dispositivo numa rede IP precisa de um endereço. No IPv4, esse endereço tem 32 bits, normalmente escritos como quatro números de 0 a 255 separados por pontos, como `192.168.1.10`. A pergunta difícil nunca é "o que é um endereço", e sim "como descrevo uma *faixa* de endereços que andam juntos": um escritório, uma sub-rede, uma alocação de cliente. A **notação CIDR (Classless Inter-Domain Routing)** é o jeito compacto de escrever essa faixa.
+Todo equipamento numa rede IP precisa de um endereço. No IPv4, esse endereço tem 32 bits e costuma ser escrito como quatro números de 0 a 255, separados por pontos, como `192.168.1.10`. A pergunta difícil nunca é "o que é um endereço", e sim "como eu descrevo uma *faixa* de endereços que andam juntos": um escritório, uma sub-rede, o bloco alocado a um cliente. A **notação CIDR (Classless Inter-Domain Routing)** é o jeito compacto de escrever essa faixa.
 
-O "classless", sem classes, é a história. O IPv4 começou com três tamanhos fixos de rede, as classes A, B e C, e no começo dos anos 1990 elas falhavam de três jeitos ao mesmo tempo. A especificação do CIDR os lista: "Exhaustion of the Class B network address space", porque "Class C, with a maximum of 254 host addresses, is too small, whereas Class B, which allows up to 65534 host addresses, is too large for most organizations"; "Growth of routing tables in Internet routers beyond the ability of current software, hardware, and people to effectively manage"; e "Eventual exhaustion of the 32-bit IPv4 address space". Esperava-se que os dois primeiros ficassem críticos "sometime between 1993 and 1995" ([RFC 4632, seção 2](https://www.rfc-editor.org/rfc/rfc4632)).
+O "classless" (sem classes) do nome tem uma razão histórica. O IPv4 começou com três tamanhos fixos de rede, as classes A, B e C, e, no começo dos anos 1990, esse esquema estava falhando em três frentes ao mesmo tempo. A especificação do CIDR lista as três: "Exhaustion of the Class B network address space", porque "Class C, with a maximum of 254 host addresses, is too small, whereas Class B, which allows up to 65534 host addresses, is too large for most organizations"; "Growth of routing tables in Internet routers beyond the ability of current software, hardware, and people to effectively manage"; e "Eventual exhaustion of the 32-bit IPv4 address space". A expectativa era de que as duas primeiras ficassem críticas "sometime between 1993 and 1995" ([RFC 4632, seção 2](https://www.rfc-editor.org/rfc/rfc4632)).
 
-O CIDR foi publicado em setembro de 1993 como as RFCs 1518 e 1519, e reescrito em 2006 como a RFC 4632, depois de "more than twelve years" de uso. O seu objetivo era modesto e preciso: "to slow the growth of global routing tables and to reduce the rate of consumption of IPv4 address space". Ele "did not and does not attempt to solve the third problem", o esgotamento do próprio IPv4, para o qual só pretendia ganhar tempo "while progress is made on a longer-term solution" (RFC 4632, seções 1 e 2).
+O CIDR saiu em setembro de 1993, nas RFCs 1518 e 1519, e foi republicado em 2006 como a RFC 4632, depois de "more than twelve years" em uso. O objetivo era modesto e bem definido: "to slow the growth of global routing tables and to reduce the rate of consumption of IPv4 address space". O CIDR "did not and does not attempt to solve the third problem", o esgotamento do próprio IPv4; para esse, a ideia era só ganhar tempo "while progress is made on a longer-term solution" (RFC 4632, seções 1 e 2).
 
 ## Das classes aos prefixos
 
-A mudança é uma ideia só: dizer explicitamente quantos bits são a rede, em vez de deixar que os primeiros bits do endereço o impliquem. Como a especificação a define, "In CIDR notation, a prefix is shown as a 4-octet quantity, just like a traditional IPv4 address or network number, followed by the '/' (slash) character, followed by a decimal value between 0 and 32 that describes the number of significant bits" (RFC 4632, seção 3.1). As velhas classes cabem nela como casos particulares: "the legacy 'Class B' network 172.16.0.0, with an implied network mask of 255.255.0.0, is defined as the prefix 172.16.0.0/16" (como acima).
+A mudança se resume a uma ideia: dizer explicitamente quantos bits são de rede, em vez de deixar que os primeiros bits do endereço indiquem isso. Nas palavras da especificação, "In CIDR notation, a prefix is shown as a 4-octet quantity, just like a traditional IPv4 address or network number, followed by the '/' (slash) character, followed by a decimal value between 0 and 32 that describes the number of significant bits" (RFC 4632, seção 3.1). As classes antigas entram nesse esquema como casos particulares: "the legacy 'Class B' network 172.16.0.0, with an implied network mask of 255.255.0.0, is defined as the prefix 172.16.0.0/16" (mesma fonte).
 
-O que a barra traz é liberdade de tamanho: "Where formerly only three network sizes were available, prefixes may be defined to describe any power of two-sized block of between one and 2^32 end system addresses" (como acima).
+O que a barra traz é liberdade de tamanho: "Where formerly only three network sizes were available, prefixes may be defined to describe any power of two-sized block of between one and 2^32 end system addresses" (mesma fonte).
 
-## Lendo a barra
+## Como ler a barra
 
-Um bloco CIDR se escreve `192.168.1.0/24`. A parte depois da barra, o **comprimento do prefixo**, é o número mais importante de todos. Ele diz: *os primeiros N bits do endereço são fixos, e o resto pode variar.*
+Um bloco CIDR tem esta cara: `192.168.1.0/24`. O que vem depois da barra, o **tamanho do prefixo** (prefix length), é o número mais importante de todos. Ele diz o seguinte: *os primeiros N bits do endereço são fixos, e o resto pode variar.*
 
-- `/24` significa que os primeiros 24 bits são a parte fixa de rede. Os 8 bits restantes (32 − 24) identificam os hosts.
-- 8 bits livres dão 2⁸ = 256 combinações possíveis, então `192.168.1.0/24` descreve os 256 endereços de `192.168.1.0` a `192.168.1.255`.
+- `/24` quer dizer que os primeiros 24 bits são fixos: são a parte de rede. Os 8 bits que sobram (32 − 24) identificam cada host.
+- 8 bits livres dão 2⁸ = 256 combinações, então `192.168.1.0/24` descreve os 256 endereços de `192.168.1.0` a `192.168.1.255`.
 
-Mude o prefixo e o tamanho do bloco muda junto. Um prefixo menor significa *mais* bits livres e um bloco *maior*:
+Mudou o prefixo, muda o tamanho do bloco. Um prefixo menor significa *mais* bits livres e um bloco *maior*:
 
 - `/16` fixa 16 bits e deixa 16 livres → 65.536 endereços.
 - `/25` fixa 25 bits e deixa 7 livres → 128 endereços.
 - `/30` fixa 30 bits e deixa 2 livres → 4 endereços.
 
-Cada passo de um no comprimento do prefixo **corta pela metade ou dobra** o bloco. Essa regra única é toda a intuição.
+Cada unidade a mais no tamanho do prefixo **corta o bloco pela metade**, e cada unidade a menos **dobra o bloco**. Essa regra, sozinha, resume toda a intuição.
 
-## Cada prefixo comum, com a sua máscara
+## Os prefixos mais comuns, com as máscaras
 
-O comprimento do prefixo e a máscara de sub-rede em pontos dizem a mesma coisa: uma máscara tem tantos bits 1 no início quanto o comprimento do prefixo, e depois zeros. Os equipamentos ainda pedem uma ou outra, então vale a pena ler as duas de cara.
+O tamanho do prefixo e a máscara de sub-rede em notação decimal pontuada dizem a mesma coisa: a máscara começa com tantos bits 1 quanto o tamanho do prefixo, e o resto é zero. Os equipamentos ainda pedem um formato ou outro, então vale a pena saber ler os dois de cara.
 
 | Prefixo | Máscara | Endereços | Hosts utilizáveis |
 |---|---|---|---|
@@ -58,48 +58,48 @@ O comprimento do prefixo e a máscara de sub-rede em pontos dizem a mesma coisa:
 | /28 | 255.255.255.240 | 16 | 14 |
 | /29 | 255.255.255.248 | 8 | 6 |
 | /30 | 255.255.255.252 | 4 | 2 |
-| /31 | 255.255.255.254 | 2 | 2, num enlace ponto a ponto |
+| /31 | 255.255.255.254 | 2 | 2, num link ponto a ponto |
 | /32 | 255.255.255.255 | 1 | 1, um único host |
 
-Um octeto de máscara só pode ter nove valores (0, 128, 192, 224, 240, 248, 252, 254, 255), porque os bits 1 precisam ser contíguos. Uma máscara como `255.255.255.200` simplesmente não é uma máscara CIDR válida.
+O último octeto de uma máscara só pode ter nove valores (0, 128, 192, 224, 240, 248, 252, 254, 255), porque os bits 1 precisam ser contíguos. Uma máscara como `255.255.255.200` simplesmente não é uma máscara CIDR válida.
 
 ## Rede, broadcast e hosts utilizáveis
 
-Na maioria dos blocos, dois endereços são especiais e não podem ser dados a um host:
+Na maioria dos blocos, dois endereços são especiais e não podem ser atribuídos a um host:
 
-- O **endereço de rede** é o primeiro endereço do bloco, com todos os bits de host em 0 (`192.168.1.0` num `/24`). Ele nomeia o próprio bloco.
-- O **endereço de broadcast** é o último, com todos os bits de host em 1 (`192.168.1.255`). O tráfego enviado a ele chega a todos os hosts do bloco.
+- O **endereço de rede** é o primeiro endereço do bloco, com todos os bits de host em 0 (`192.168.1.0` num `/24`). É ele que identifica o próprio bloco.
+- O **endereço de broadcast** é o último, com todos os bits de host em 1 (`192.168.1.255`). O tráfego enviado para ele chega a todos os hosts do bloco.
 
-Então um `/24` tem 256 endereços no total, mas **254 utilizáveis** por hosts de verdade. O número de "hosts utilizáveis" é só o total menos esses dois endereços reservados.
+Por isso, um `/24` tem 256 endereços no total, mas só **254 utilizáveis** por hosts de verdade. O número de "hosts utilizáveis" é simplesmente o total menos esses dois endereços reservados.
 
-Dois casos fogem desse padrão, ambos de propósito:
+Dois casos especiais fogem desse padrão, e de propósito:
 
-- Um **/31** é usado em enlaces ponto a ponto entre dois roteadores. A RFC 3021 o criou "to halve the amount of address space assigned to point-to-point links", e num enlace assim "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)): não há espaço para endereços de rede e de broadcast separados, e um enlace com exatamente duas pontas não precisa deles.
-- Um **/32** é um único endereço, uma rota de host. Ele descreve exatamente uma máquina.
+- O **/31** é usado em links ponto a ponto entre dois roteadores. A RFC 3021 criou esse prefixo "to halve the amount of address space assigned to point-to-point links", e, num link desses, "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)): não sobra espaço para endereços de rede e de broadcast separados, e um link com exatamente duas pontas não precisa deles.
+- O **/32** é um único endereço, uma rota de host. Ele descreve exatamente uma máquina.
 
 ## Por que a agregação era o objetivo
 
-A notação é a metade visível do CIDR; a agregação é a razão dele. Como um prefixo pode ter qualquer tamanho que seja potência de dois, um prefixo curto pode representar muitos prefixos mais longos, e um roteador que antes precisava de uma rota por rede passa a precisar de uma rota por bloco. A RFC 4632 diz isso sem rodeios: "The only commonly understood method for reducing routing state on a packet-switched network is through aggregation of information." Para o cliente de um único provedor é simples: "No explicit route is needed for the end site; the service provider advertises a single aggregate route for the larger block" (RFC 4632, seção 4.1).
+A notação é a parte visível do CIDR; a agregação é a razão de ele existir. Como um prefixo pode ter qualquer tamanho que seja potência de dois, um prefixo curto pode representar muitos prefixos mais longos, e um roteador que antes precisava de uma rota para cada rede passa a precisar de uma rota para cada bloco. A RFC 4632 diz isso sem rodeios: "The only commonly understood method for reducing routing state on a packet-switched network is through aggregation of information." Para o cliente de um único provedor, é simples: "No explicit route is needed for the end site; the service provider advertises a single aggregate route for the larger block" (RFC 4632, seção 4.1).
 
-É a mesma conta da divisão em sub-redes, feita no sentido contrário: encurte o prefixo e o bloco cobre os vizinhos. Os artigos sobre [superredes e agregação](/learn/supernetting-and-aggregation) e [sumarização de rotas](/learn/route-summarization) trabalham isso, e o [artigo sobre o prefixo mais longo](/learn/static-routes-and-longest-match) mostra como um roteador escolhe quando um agregado curto e uma rota mais longa e mais específica correspondem ao mesmo destino.
+É a mesma conta do subnetting, feita no sentido contrário: encurte o prefixo e o bloco passa a cobrir os vizinhos. Os artigos sobre [supernetting e agregação](/learn/supernetting-and-aggregation) e sobre [sumarização de rotas](/learn/route-summarization) fazem essa conta passo a passo, e o [artigo sobre longest prefix match](/learn/static-routes-and-longest-match), a regra do prefixo mais longo, mostra como o roteador escolhe quando uma rota agregada curta e uma rota mais longa, mais específica, batem com o mesmo destino.
 
 ## A mesma barra no IPv6
 
-O IPv6 manteve a notação. "The text representation of IPv6 address prefixes is similar to the way IPv4 address prefixes are written in Classless Inter-Domain Routing (CIDR) notation", escrita `ipv6-address/prefix-length`, em que o comprimento do prefixo "is a decimal value specifying how many of the leftmost contiguous bits of the address comprise the prefix" ([RFC 4291, seção 2.3](https://www.rfc-editor.org/rfc/rfc4291)). Só muda a escala: 128 bits em vez de 32, e como na maioria dos endereços unicast "Interface IDs are required to be 64 bits long" (RFC 4291, seção 2.5.1), uma sub-rede IPv6 comum é um /64. O artigo sobre [sub-redes IPv6](/learn/ipv6-subnetting) trata disso.
+O IPv6 manteve a notação. "The text representation of IPv6 address prefixes is similar to the way IPv4 address prefixes are written in Classless Inter-Domain Routing (CIDR) notation", na forma `ipv6-address/prefix-length`, em que o tamanho do prefixo "is a decimal value specifying how many of the leftmost contiguous bits of the address comprise the prefix" ([RFC 4291, seção 2.3](https://www.rfc-editor.org/rfc/rfc4291)). Só muda a escala: são 128 bits em vez de 32, e, como na maioria dos endereços unicast "Interface IDs are required to be 64 bits long" (RFC 4291, seção 2.5.1), uma sub-rede IPv6 comum é um /64. O artigo sobre [subnetting no IPv6](/learn/ipv6-subnetting) trata disso.
 
-## Por que isto vale a pena entender
+## Por que vale a pena entender isso
 
-O comprimento do prefixo governa como as redes são projetadas, como as rotas são sumarizadas e como o espaço de endereços é distribuído. Quando você vê `10.0.0.0/8` numa tabela de roteamento ou `0.0.0.0/0` como rota padrão, está lendo a mesma notação: um endereço base mais um comprimento de prefixo que diz quanto dele é fixo. A conta nunca muda, só os números.
+O tamanho do prefixo define como as redes são projetadas, como as rotas são sumarizadas e como o espaço de endereços é distribuído. Quando você vê `10.0.0.0/8` numa tabela de roteamento, ou `0.0.0.0/0` como rota padrão (default route), está lendo a mesma notação: um endereço base mais um tamanho de prefixo que diz quanto desse endereço é fixo. A conta nunca muda; só mudam os números.
 
-Você pode testar qualquer bloco na [calculadora CIDR](/tools/cidr) e ver o endereço de rede, o de broadcast, a máscara e o número de hosts utilizáveis calculados na hora, inteiramente no seu navegador.
+Dá para testar qualquer bloco na [calculadora CIDR](/tools/cidr) e ver, na hora, o endereço de rede, o de broadcast, a máscara e o número de hosts utilizáveis, tudo calculado dentro do seu navegador.
 
 ## Para lembrar
 
-- Um prefixo CIDR é um endereço mais o número de bits iniciais que são fixos; o resto numera os hosts.
-- O CIDR substituiu as três classes em 1993 para frear o crescimento das tabelas de rotas e o consumo de endereços, não para acabar com o esgotamento do IPv4.
-- Cada passo no comprimento do prefixo corta pela metade ou dobra o bloco; uma máscara tem tantos bits 1 no início quanto o comprimento do prefixo.
-- Um bloco comum perde dois endereços para rede e broadcast; um enlace /31 fica com os dois, um /32 é um único host.
-- A agregação, um prefixo curto valendo por muitos longos, era a finalidade do CIDR; o IPv6 escreve prefixos do mesmo jeito.
+- Um prefixo CIDR é um endereço mais o número de bits iniciais que ficam fixos; os bits restantes numeram os hosts.
+- O CIDR substituiu as três classes em 1993 para frear o crescimento das tabelas de roteamento e o consumo de endereços, e não para resolver o esgotamento do IPv4.
+- Cada unidade a mais no prefixo corta o bloco pela metade, e cada unidade a menos dobra o bloco; a máscara começa com tantos bits 1 quanto o tamanho do prefixo.
+- Um bloco comum perde dois endereços, o de rede e o de broadcast; um link /31 aproveita os dois, e um /32 é um único host.
+- A agregação, um prefixo curto valendo por muitos longos, era a razão de ser do CIDR; o IPv6 escreve os prefixos do mesmo jeito.
 
 ## Fontes
 

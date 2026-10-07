@@ -63,6 +63,11 @@ async function RailBlock({ slug, locale, placement, place }: { slug: string; loc
     return { n: i + 1, title: t(`items.${series.id}.planned.${p.planned}`), href: null as string | null, current: false };
   });
   const opener = getArticle(series.opener, locale);
+  // The written articles in reading order (the opener first), and the one after this article: the top shows it too,
+  // so an opener reached by "Start here" leads on at once (row 58, 2026-10-07), not only at the end of the page.
+  const writtenTop = [{ slug: series.opener, n: 0 }, ...series.parts.flatMap((p, i) => ("slug" in p ? [{ slug: p.slug, n: i + 1 }] : []))];
+  const hereTop = writtenTop.findIndex((w) => w.slug === slug);
+  const nextTop = hereTop >= 0 && hereTop < writtenTop.length - 1 ? writtenTop[hereTop + 1] : null;
 
   if (placement === "top") {
     return (
@@ -82,6 +87,13 @@ async function RailBlock({ slug, locale, placement, place }: { slug: string; loc
             </>
           )}
         </p>
+        {nextTop && (
+          <p className="series-rail-next">
+            <Link href={`/learn/${nextTop.slug}`}>
+              {t("topNext", { n: nextTop.n, title: getArticle(nextTop.slug, locale)?.title ?? nextTop.slug })} &rarr;
+            </Link>
+          </p>
+        )}
         <details className="series-rail-contents">
           <summary className="series-rail-summary">{t("contents", { total })}</summary>
           <ol className="series-rail-list">

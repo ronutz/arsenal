@@ -1,6 +1,6 @@
 ---
 slug: routing-tables-and-default-gateway
-title: "Tabelas de Roteamento e o Gateway Padrão: Como um Pacote Escolhe o Próximo Salto"
+title: "Tabelas de roteamento e o gateway padrão: como um pacote escolhe o próximo salto"
 summary: "Por que uma rota é necessária, o que é um salto, e a regra do longest prefix match que decide qual entrada da tabela vence - trabalhada como a prova aposentada de fundamentos pedia: dado um destino e uma tabela de roteamento, identifique a rota a ser usada. Mais a rota padrão, a entrada que responde quando nenhuma outra responde."
 concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop"]
 relatedTools: ["cidr"]
@@ -17,7 +17,7 @@ Um host entrega diretamente só na própria sub-rede; todo o resto precisa de um
 
 A entrega Internet Protocol (IP) é local à sub-rede: se o destino compartilha minha rede, eu o resolvo com [ARP](/learn/arp-and-mac-addresses) e entrego o quadro eu mesmo. Se não compartilha, preciso de um roteador disposto a levar o pacote para mais perto - e o roteador precisa da mesma decisão para o próprio passo seguinte. Cada entrega roteador-a-roteador é um salto; um caminho é uma corrente de saltos, cada um uma decisão nova, tomada da tabela daquele roteador. O time to live existe precisamente porque saltos podem entrar em loop quando tabelas discordam; o [artigo de ICMP](/learn/icmp-ping-and-traceroute) mostra como o traceroute transforma esse contador num mapa do caminho.
 
-## Lendo a tabela: o prefixo mais longo vence
+## Como ler a tabela: o prefixo mais longo vence
 
 Uma tabela de roteamento é uma lista de destinos - redes com comprimentos de prefixo - cada um pareado com um próximo salto ou uma interface de saída. Dado um pacote, o roteador seleciona a entrada mais específica que casa: o prefixo mais longo que contém o destino. Essa única regra resolve todo cenário de prova e todo cenário real. Destino 10.1.2.7 contra uma tabela com 10.0.0.0/8, 10.1.0.0/16 e 10.1.2.0/24: as três contêm o endereço; /24 é o mais longo; essa rota vence. A [ferramenta CIDR](/tools/cidr) torna instantâneas as checagens de contenção enquanto o instinto se forma, e a [sumarização de rotas](/learn/route-summarization) é a mesma lógica rodando ao contrário - anunciar deliberadamente prefixos mais curtos para manter tabelas pequenas.
 

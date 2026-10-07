@@ -23,7 +23,7 @@ Quando você consulta um resolvedor recursivo e ele responde a partir desse cach
 
 Para consultas do dia a dia, uma resposta não autoritativa é exatamente o que você quer: é rápida, e o TTL a mantém fresca o suficiente. O cache é a razão inteira de o DNS escalar. Você só se importa com a distinção quando o cache pode estar desatualizado, que é precisamente quando você acabou de mudar um registro e está esperando o mundo se atualizar.
 
-## Obtendo uma resposta autoritativa
+## Como obter uma resposta autoritativa
 
 Se você precisa da verdade atual, contorne o cache e pergunte a um servidor autoritativo diretamente. Encontre os servidores de nomes da zona (uma consulta NS), depois consulte um deles: no nslookup, execute `server ns1.example.com.` e então o nome; no dig, use `dig @ns1.example.com example.com`. A resposta virá sem o marcador não autoritativo (e no dig, com a flag `aa` definida), dizendo que você está olhando para a própria zona, e não para a cópia em cache de alguém.
 

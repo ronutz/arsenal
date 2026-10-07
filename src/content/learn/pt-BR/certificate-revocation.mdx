@@ -21,7 +21,7 @@ A resposta original é a Lista de Revogação de Certificados (Certificate Revoc
 
 O problema é tamanho e frescor. Uma CA movimentada pode acumular listas enormes, então baixar e analisar uma CRL em cada conexão é impraticável, e uma lista em cache fica obsoleta até a próxima publicação. CRLs ainda são usadas, cada vez mais em formas comprimidas e pré-processadas que os navegadores enviam a si mesmos, mas como uma checagem por conexão elas escalam mal.
 
-## OCSP: perguntando sobre um certificado
+## OCSP: a consulta sobre um certificado
 
 O Online Certificate Status Protocol, RFC 6960, pretendia consertar o problema de tamanho ao deixar um cliente perguntar sobre um único certificado em vez de baixar a lista inteira. O cliente envia o serial do certificado a um OCSP responder e recebe de volta um "good", "revoked" ou "unknown" assinado.
 

@@ -19,7 +19,7 @@ Para o modo lido, a página mostra os quatro dígitos octais e a string de dez c
 - **Regra do GNU para diretórios.** Quando a base é um diretório, um modo numérico de até quatro dígitos preserva os bits set-user-ID e set-group-ID da base, como o chmod(1) declara: "para diretórios o chmod preserva os bits set-user-ID e set-group-ID a menos que você especifique explicitamente o contrário". Escrever `00755`, `-6000` ou `=755` os limpa, e o rastro nomeia a regra quando ela se aplicou.
 - **Modos numéricos com operador** (`=755`, `+111`, `-022`) são lidos como o GNU os lê: definir exatamente, acrescentar, remover.
 
-## Lendo os bits especiais
+## Como ler os bits especiais
 
 | Bit | Valor | Num arquivo | Num diretório |
 |---|---|---|---|

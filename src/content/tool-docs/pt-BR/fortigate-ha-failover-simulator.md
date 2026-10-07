@@ -31,7 +31,7 @@ Isso importa porque "FGT-B é a primária" é um fato, e "com o override habilit
 
 Quando alternar o override não mudaria nada, ela também diz — o que elimina uma linha inteira de investigação numa frase.
 
-## Lendo os outros desfechos
+## O que os outros desfechos significam
 
 **Decidido por interfaces monitoradas** significa que a saúde das interfaces resolveu antes de qualquer outra coisa ser consultada. Corrija a interface caída e a comparação segue adiante.
 

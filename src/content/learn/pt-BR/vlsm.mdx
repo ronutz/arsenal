@@ -1,7 +1,7 @@
 ---
 slug: vlsm
-title: "VLSM: dividindo um bloco em sub-redes desiguais"
-summary: "Como recortar um bloco de endereços em sub-redes de tamanhos diferentes sem desperdiçar espaço, e a regra do maior primeiro que mantém tudo organizado: por que o primeiro padrão de sub-redes o proibia, quais protocolos de roteamento o tornaram possível, como dimensionar cada sub-rede, por que pôr os maiores blocos primeiro mantém cada um na sua fronteira, e como deixar espaço para crescer e para sumarizar."
+title: "VLSM: como dividir um bloco em sub-redes de tamanhos diferentes"
+summary: "Como recortar um bloco de endereços em sub-redes de tamanhos diferentes sem desperdiçar espaço, e a regra de alocar do maior para o menor, que mantém tudo organizado: por que o primeiro padrão de subnetting proibia isso, que protocolos de roteamento tornaram isso possível, como dimensionar cada sub-rede, por que alocar primeiro os blocos maiores mantém cada um alinhado ao seu limite e como deixar espaço para crescer e para sumarizar."
 concepts: ["vlsm", "variable-length subnet masking", "subnetting", "prefix length", "largest first", "address planning", "classless routing", "rip-2", "ospf", "route summarisation", "/31"]
 relatedTools: ["cidr"]
 relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
@@ -11,33 +11,33 @@ status: reviewed
 updated: "2026-10-07"
 ---
 
-## O problema com sub-redes iguais
+## O problema das sub-redes do mesmo tamanho
 
-A divisão clássica em sub-redes reparte um bloco em pedaços de um único tamanho. Isso é simples, mas desperdiça quando as necessidades são diferentes. Se um segmento tem 100 hosts e outro é um enlace entre dois roteadores com 2, dar um `/26` (62 utilizáveis) aos dois não atende o primeiro e joga fora 60 endereços no segundo. O **VLSM**, variable-length subnet masking (máscaras de comprimento variável), resolve isso deixando cada sub-rede usar o comprimento de prefixo que serve à sua própria necessidade, tudo recortado do mesmo bloco pai.
+O subnetting clássico divide um bloco em pedaços de um tamanho só. É simples, mas desperdiça endereços quando as necessidades são diferentes. Se um segmento tem 100 hosts e outro é um link entre dois roteadores, com 2 hosts, dar um `/26` (62 utilizáveis) para cada um não atende o primeiro e joga fora 60 endereços no segundo. O **VLSM**, variable-length subnet masking (máscara de tamanho variável), resolve isso: cada sub-rede usa o tamanho de prefixo que atende à sua própria necessidade, e todas saem do mesmo bloco pai.
 
-A única coisa que torna o VLSM mais trabalhoso do que a divisão fixa é a ordem: você precisa colocar **as maiores sub-redes primeiro**, ou vai deixar endereços encalhados e criar sobreposições.
+A única coisa que deixa o VLSM mais trabalhoso do que o subnetting de tamanho fixo é a ordem: você tem de alocar **as maiores sub-redes primeiro**; senão, vai deixar endereços ilhados e criar sobreposições.
 
-## Por que nem sempre foi permitido
+## Por que isso nem sempre foi permitido
 
-O primeiro padrão de sub-redes supunha um único tamanho por rede. Na RFC 950 (1985), "the width of the &lt;subnet-number&gt; field is constant for a given network" ([RFC 950, seção 2.1](https://www.rfc-editor.org/rfc/rfc950)): todas as sub-redes de uma rede tinham a mesma máscara, e um roteador podia aplicar uma só máscara à rede inteira.
+O primeiro padrão de subnetting partia do princípio de que cada rede teria um só tamanho de sub-rede. Na RFC 950 (1985), "the width of the &lt;subnet-number&gt; field is constant for a given network" ([RFC 950, seção 2.1](https://www.rfc-editor.org/rfc/rfc950)): todas as sub-redes de uma rede tinham a mesma máscara, e o roteador podia aplicar uma única máscara à rede inteira.
 
-Tamanhos variáveis precisam de algo que os primeiros protocolos não tinham: uma máscara levada junto com cada rota. A versão 1 do RIP (Routing Information Protocol) mandava endereços sem máscara, e a especificação da sua sucessora chama isso de "a particularly serious problem for routers since they need a subnet mask to know how to determine a route" ([RFC 2453, seção 2](https://www.rfc-editor.org/rfc/rfc2453)); o RIP versão 2 acrescentou um campo Subnet Mask a cada entrada de rota (seção 4.3). O OSPF (Open Shortest Path First) levou máscaras desde o começo: "Each route distributed by OSPF has a destination and mask. Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328)). A regra decorre daí: o VLSM só funciona onde cada roteador aprende as suas rotas de um protocolo que leva a máscara, ou de rotas estáticas que a declaram.
+Tamanhos variáveis exigem algo que os primeiros protocolos não tinham: a máscara indo junto com cada rota. A versão 1 do RIP (Routing Information Protocol) mandava os endereços sem máscara, e a especificação da versão seguinte chama isso de "a particularly serious problem for routers since they need a subnet mask to know how to determine a route" ([RFC 2453, seção 2](https://www.rfc-editor.org/rfc/rfc2453)); o RIP versão 2 incluiu um campo Subnet Mask em cada entrada de rota (seção 4.3). O OSPF (Open Shortest Path First) leva a máscara desde o início: "Each route distributed by OSPF has a destination and mask. Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328)). Daí sai a regra: o VLSM só funciona quando todos os roteadores aprendem as rotas por um protocolo que leva a máscara, ou por rotas estáticas que informam a máscara.
 
-## Dimensionando cada sub-rede
+## Como dimensionar cada sub-rede
 
-Comece pelo número de hosts de que cada segmento precisa e ache o menor bloco que o comporta, lembrando que dois endereços de cada bloco comum são reservados (rede e broadcast):
+Comece pelo número de hosts de que cada segmento precisa e ache o menor bloco que comporta esse número, sem esquecer que, em todo bloco comum, dois endereços são reservados (o de rede e o de broadcast):
 
-- 100 hosts precisam de 7 bits de host (2⁷ − 2 = 126 utilizáveis), um `/25`.
-- 50 hosts precisam de 6 bits de host (62 utilizáveis), um `/26`.
-- 25 hosts precisam de 5 bits de host (30 utilizáveis), um `/27`.
-- 10 hosts precisam de 4 bits de host (14 utilizáveis), um `/28`.
-- Um enlace ponto a ponto de 2 hosts é um `/30` (2 utilizáveis), ou um `/31`, que a RFC 3021 permite em enlaces ponto a ponto, onde "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)).
+- 100 hosts pedem 7 bits de host (2⁷ − 2 = 126 utilizáveis): um `/25`.
+- 50 hosts pedem 6 bits de host (62 utilizáveis): um `/26`.
+- 25 hosts pedem 5 bits de host (30 utilizáveis): um `/27`.
+- 10 hosts pedem 4 bits de host (14 utilizáveis): um `/28`.
+- Um link ponto a ponto, com 2 hosts, é um `/30` (2 utilizáveis) ou um `/31`, que a RFC 3021 permite em links ponto a ponto, onde "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)).
 
-Arredonde sempre para a próxima potência de dois. Um segmento de 100 hosts não cabe num `/26` (62), então fica com o tamanho seguinte, um `/25`. Conte também o crescimento que você espera: um segmento de 60 hosts hoje cabe num `/26` com dois endereços sobrando, e nenhum espaço para crescer.
+Arredonde sempre para cima, até a próxima potência de dois. Um segmento de 100 hosts não cabe num `/26` (62), então fica com o tamanho seguinte, um `/25`. Leve em conta também o crescimento que você espera: um segmento que hoje tem 60 hosts cabe num `/26` com dois endereços de sobra, mas sem espaço para crescer.
 
-## Recortando do bloco, do maior primeiro
+## Como recortar o bloco, do maior para o menor
 
-Suponha que você tenha `192.168.10.0/24` e precise das cinco sub-redes acima. Aloque em ordem decrescente de tamanho, cada uma começando na sua fronteira natural:
+Suponha que você tenha o bloco `192.168.10.0/24` e precise das cinco sub-redes acima. Aloque em ordem decrescente de tamanho, com cada uma começando no seu limite natural:
 
 ```
 /25  192.168.10.0   a .127   (126 utilizáveis)  segmento de 100 hosts
@@ -47,32 +47,32 @@ Suponha que você tenha `192.168.10.0/24` e precise das cinco sub-redes acima. A
 /30  192.168.10.240 a .243   (2 utilizáveis)    enlace entre roteadores
 ```
 
-Cada bloco começa exatamente onde o anterior termina, e de `192.168.10.244` em diante ainda está livre para crescer depois.
+Cada bloco começa exatamente onde o anterior termina, e tudo a partir de `192.168.10.244` continua livre para crescer depois.
 
-Por que o maior primeiro funciona é aritmética, não convenção. Todo bloco precisa começar num múltiplo do seu próprio tamanho. Quando os blocos vão em ordem decrescente, tudo o que foi colocado antes de um bloco é feito de potências de dois maiores (ou iguais), então o endereço onde o bloco anterior terminou é sempre múltiplo do tamanho do bloco seguinte: 128 é múltiplo de 64, 128 + 64 = 192 é múltiplo de 32, 224 de 16, 240 de 4. Nenhum bloco precisa pular adiante.
+A alocação do maior para o menor funciona por causa da aritmética, não por convenção. Todo bloco precisa começar num múltiplo do próprio tamanho. Quando os blocos vão em ordem decrescente, tudo o que veio antes de um bloco é feito de potências de dois maiores (ou iguais), e por isso o endereço em que o bloco anterior terminou é sempre múltiplo do tamanho do bloco seguinte: 128 é múltiplo de 64; 128 + 64 = 192 é múltiplo de 32; 224, de 16; e 240, de 4. Nenhum bloco precisa pular para a frente.
 
-Inverta a ordem e os pulos começam. Ponha o `/30` em `192.168.10.0` primeiro: o `/25` não pode começar em `.4`, porque 4 não é múltiplo de 128, então ele precisa pular para `.128`. Os endereços de `.4` a `.127` viram um buraco que só blocos menores podem preencher, e o `/26`, o `/27` e o `/28` têm de ser encaixados de volta nele à mão. Com um bloco pai exatamente cheio, a ordem errada pode não deixar lugar nenhum para a última sub-rede, mesmo que os tamanhos somem certo.
+Inverta a ordem e os pulos começam. Coloque primeiro o `/30` em `192.168.10.0`: o `/25` não pode começar em `.4`, porque 4 não é múltiplo de 128, e tem de pular para `.128`. Os endereços de `.4` a `.127` viram um buraco que só blocos menores conseguem preencher, e o `/26`, o `/27` e o `/28` têm de ser encaixados de volta nesse buraco, à mão. Se o bloco pai estiver exatamente cheio, a ordem errada pode não deixar lugar nenhum para a última sub-rede, mesmo que a soma dos tamanhos feche.
 
-## Deixando espaço para crescer e para sumarizar
+## Como deixar espaço para crescer e para sumarizar
 
-Dois hábitos fazem um plano VLSM durar:
+Dois hábitos fazem um plano de VLSM durar:
 
-- **Mantenha o espaço livre em blocos alinhados.** A sobra de `192.168.10.244` a `.255` acima tem 12 endereços, mas em blocos ela é um `/30` (`.244`) e um `/29` (`.248`): nenhuma sub-rede maior cabe ali. Se você espera um /27 mais tarde, reserve-o agora em vez de torcer para que abra um espaço.
-- **Mantenha sub-redes relacionadas dentro de um bloco sumarizável.** Se todas as sub-redes de um local saem de um mesmo prefixo pai, o resto da rede precisa de uma única rota para o local inteiro. Espalhar as sub-redes de um local pelo plano de endereços joga isso fora. A [sumarização de rotas](/learn/route-summarization) cobre a conta, e o artigo sobre [sobreposições e lacunas de sub-redes](/learn/subnet-overlap-and-gaps), como achar os erros.
+- **Mantenha o espaço livre em blocos alinhados.** A sobra de `192.168.10.244` a `.255`, no exemplo acima, tem 12 endereços, mas, em blocos, ela é um `/30` (`.244`) e um `/29` (`.248`): nenhuma sub-rede maior cabe ali. Se você espera precisar de um /27 mais tarde, reserve esse bloco agora, em vez de torcer para que apareça um espaço.
+- **Mantenha sub-redes relacionadas dentro de um bloco que possa ser sumarizado.** Se todas as sub-redes de um site saem de um mesmo prefixo pai, o resto da rede precisa de uma única rota para o site inteiro. Espalhar as sub-redes de um site pelo plano de endereçamento joga essa vantagem fora. O artigo sobre [sumarização de rotas](/learn/route-summarization) mostra a conta, e o artigo sobre [sobreposição e buracos entre sub-redes](/learn/subnet-overlap-and-gaps), como achar os erros.
 
 ## Por que isso importa
 
-O VLSM é como redes reais economizam espaço de endereços e mantêm as alocações alinhadas para que as rotas possam ser sumarizadas de forma limpa. A conta é a mesma do comprimento de prefixo de uma única sub-rede, aplicada várias vezes: fixe mais bits para fazer um bloco menor, e mantenha cada bloco numa fronteira de potência de dois. [Uma atribuição resolvida](/learn/vlsm-worked-example) aplica um plano completo, dos requisitos ao último endereço livre.
+É com VLSM que as redes de verdade economizam espaço de endereços e mantêm as alocações alinhadas, para que as rotas possam ser sumarizadas de forma limpa. A conta é a mesma do tamanho de prefixo de uma única sub-rede, repetida várias vezes: fixe mais bits para ter um bloco menor e mantenha cada bloco alinhado a um limite de potência de dois. [Um exemplo resolvido](/learn/vlsm-worked-example) percorre um plano completo, dos requisitos até o último endereço livre.
 
-Você pode conferir qualquer alocação na [calculadora CIDR](/tools/cidr), que mostra o endereço de rede e o de broadcast, a máscara e o número de hosts utilizáveis de cada bloco na hora, inteiramente no seu navegador.
+Dá para conferir qualquer alocação na [calculadora CIDR](/tools/cidr), que mostra na hora, para cada bloco, o endereço de rede, o de broadcast, a máscara e o número de hosts utilizáveis, tudo dentro do seu navegador.
 
 ## Para lembrar
 
-- O VLSM dá a cada sub-rede o prefixo de que o seu próprio número de hosts precisa, tudo de um mesmo bloco pai.
-- Ele precisa de rotas que levem as suas máscaras: RIP versão 2, OSPF e os protocolos que vieram depois, ou rotas estáticas; o RIP versão 1 não consegue.
-- Dimensione cada sub-rede arredondando os hosts mais dois para uma potência de dois, e planeje o crescimento.
-- Ponha os maiores blocos primeiro: cada bloco começa então exatamente onde o anterior terminou, na sua própria fronteira.
-- Mantenha as sub-redes de um local dentro de um prefixo sumarizável, e o espaço livre em blocos alinhados.
+- O VLSM dá a cada sub-rede o prefixo de que o seu número de hosts precisa, e todas saem de um mesmo bloco pai.
+- Ele exige rotas que levem a máscara junto: RIP versão 2, OSPF e os protocolos que vieram depois, ou rotas estáticas; o RIP versão 1 não serve.
+- Para dimensionar cada sub-rede, some dois ao número de hosts e arredonde para cima, até uma potência de dois; e planeje o crescimento.
+- Aloque primeiro os blocos maiores: assim, cada bloco começa exatamente onde o anterior terminou, alinhado ao seu próprio limite.
+- Mantenha as sub-redes de um site dentro de um prefixo que possa ser sumarizado, e o espaço livre em blocos alinhados.
 
 ## Fontes
 

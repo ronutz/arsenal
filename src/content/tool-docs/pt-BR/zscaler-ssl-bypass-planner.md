@@ -14,7 +14,7 @@ Um ativo por linha, quatro campos separados por barra vertical; linhas começand
 
 `pinned` marca uma aplicação com certificate pinning (ela não aceita um certificado regenerado sob a CA de inspeção e falha fechada sob interceptação). `regulated` marca uma categoria de governança que política ou lei exige manter selada. `agent` marca um caminho que o Zscaler Client Connector controla.
 
-## Lendo o plano
+## Como ler o plano
 
 O resumo conta os vereditos; os cartões percorrem o raciocínio de cada ativo; a nota de ordenação carrega a doutrina de que as exceções Do Not Inspect pertencem à ordem alta, acima do corpo de Inspect, porque as regras da política SSL avaliam em ordem crescente com primeira correspondência. Quando todos os ativos inspecionam, não há livro-razão de bypass nem dívida de salvaguardas - e o plano diz isso.
 

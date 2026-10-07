@@ -1,6 +1,6 @@
 ---
 slug: cipher-suite-naming
-title: "Lendo nomes de suítes de cifra: IANA, OpenSSL e GnuTLS"
+title: "Como ler nomes de suítes de cifra: IANA, OpenSSL e GnuTLS"
 summary: "Por que a mesma suíte de cifra tem três nomes diferentes e um ponto de código de dois bytes, como traduzir entre as convenções da IANA, do OpenSSL e do GnuTLS, e o que a coluna Recommended da IANA, com Y, N e D, realmente significa."
 concepts: ["iana", "openssl", "gnutls", "cipher suite", "code point", "recommended"]
 relatedTools: ["cipher"]
@@ -34,7 +34,7 @@ O nome **GnuTLS** mantém o prefixo `TLS_` e os sublinhados mas, como o OpenSSL,
 
 É exatamente essa incompatibilidade que faz as pessoas acharem que dois sistemas discordam quando configuraram a mesma suíte. Um decodificador que aceita qualquer um dos nomes, além do ponto de código bruto, elimina a adivinhação ao mostrar todos eles de uma vez.
 
-## Lendo um ponto de código
+## Como ler um ponto de código
 
 Um ponto de código de suíte de cifra são dois bytes, escritos de várias formas que significam o mesmo número:
 
@@ -52,6 +52,6 @@ O registro da IANA tem uma coluna Recommended com três valores, e eles são fá
 
 `D` é o forte. Significa que a suíte é desaconselhada e não deveria, ou não deve, ser usada, dependendo da situação. Famílias inteiras passaram para `D` à medida que o IETF as descontinua, incluindo as suítes de RSA estático e, mais recentemente, as suítes `DHE` de campo finito. Uma suíte pode ser criptograficamente sólida e ainda assim ser marcada como `D` por razões de ecossistema, e é por isso que o decodificador mostra a marca da IANA ao lado de sua própria leitura de segurança, em vez de fundir as duas em um único veredito. As duas respondem a perguntas diferentes: a construção é sólida, e o processo de padronização ainda quer que você a use?
 
-## Juntando tudo
+## Tudo junto
 
 Para identificar uma suíte desconhecida, cole qualquer forma que você tenha — um nome IANA, um nome OpenSSL ou um ponto de código — no decodificador. Ele resolve a suíte contra uma cópia embutida do registro da IANA, mostra os outros nomes, decompõe a suíte em suas partes e combina uma avaliação de segurança baseada em regras com a recomendação oficial da IANA. Os artigos complementares explicam as próprias partes: a anatomia geral, a escolha entre AEAD e CBC, o sigilo de encaminhamento e o que o TLS 1.3 mudou.

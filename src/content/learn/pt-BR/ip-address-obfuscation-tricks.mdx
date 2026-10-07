@@ -1,6 +1,6 @@
 ---
 slug: ip-address-obfuscation-tricks
-title: "Truques de Ofuscação de Endereço IP"
+title: "Truques de ofuscação de endereço IP"
 summary: "Um endereço IP pode ser escrito de muitas formas: decimal simples, octal, hexadecimal, forma abreviada e IPv6 mapeado em IPv4. Cada forma volta a apontar para o mesmo endereço, e é assim que atacantes passam um alvo interno por um filtro que só bloqueia a grafia decimal pontuada. Por isso verificações de SSRF precisam decodificar, não comparar texto."
 concepts: ["inet_aton", "ip decimal", "octal", "hexadecimal", "ipv4-mapped"]
 relatedTools: ["ssrf-url-classifier"]
@@ -17,7 +17,7 @@ updated: "2026-08-10"
 
 **Decimal**: um endereço é apenas um número de 32 bits, então `127.0.0.1` pode ser escrito como o inteiro único `2130706433`. **Hexadecimal**: o mesmo valor é `0x7f000001`, e cada octeto também pode ser hex, como em `0x7f.0x0.0x0.0x1`. **Octal**: um zero à esquerda torna o octeto octal, então `0177.0.0.1` é `127.0.0.1` porque `0177` em octal é `127`. **Forma abreviada**: com menos de quatro partes, a última parte preenche os octetos restantes, então `127.1` expande para `127.0.0.1`.
 
-## Misturando e IPv6
+## Notações misturadas e IPv6
 
 Essas notações podem ser misturadas em um único endereço, combinando partes octal, hex e decimal. O IPv6 adiciona outra rota: um endereço mapeado em IPv4 como `::ffff:127.0.0.1` embute o loopback IPv4 dentro de um literal IPv6, e algumas pilhas o seguem direto até `127.0.0.1`.
 
@@ -30,7 +30,7 @@ Toda forma acima resolve para o mesmo endereço interno, mas cada uma é uma str
 O movimento confiável é analisar o host até seu valor numérico e classificar esse valor contra as faixas reservadas, exatamente como o [Classificador de URL para SSRF](/tools/ssrf-url-classifier) faz. Uma vez que `2130706433`, `0x7f000001` e `127.1` são todos reduzidos ao mesmo número de 32 bits, todos caem em `127.0.0.0/8` e são sinalizados juntos. A normalização remove a liberdade do atacante de reescrever o alvo.
 
 
-## Interprete, depois julgue — nunca compare texto
+## Interprete, depois julgue: nunca compare texto
 
 A lição sob todas as grafias é uma regra: **uma blocklist que compara strings está comparando a coisa errada.** `127.0.0.1`, `2130706433`, `0177.0.0.1` e `127.1` são quatro textos e um endereço, e o parser lá adiante vai concordar sobre o endereço muito depois de a sua checagem ter discordado sobre o texto.
 

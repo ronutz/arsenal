@@ -1,6 +1,6 @@
 ---
 slug: bigip-cmp-clustered-multiprocessing
-title: "CMP: Os Núcleos Que Você Pagou, e as Linhas de iRule Que os Devolvem"
+title: "CMP: os núcleos que você pagou, e as linhas de iRule que os devolvem"
 summary: "O clustered multiprocessing roda um TMM por núcleo e espalha os fluxos entre eles. Um virtual server rebaixado roda tudo no TMM0. A lista de rebaixamento é curta e documentada: variáveis globais acima de tudo, com static:: como cura, mais duas armadilhas por TMM (chaves em RULE_INIT, perfis de estatísticas) que não rebaixam mas quebram premissas em silêncio."
 concepts: ["cmp", "tmm", "clustered multiprocessing", "irules", "f5", "desempenho", "ltm policy"]
 relatedTools: ["f5-irules-command-context", "f5-irules-vs-ltm-policy"]

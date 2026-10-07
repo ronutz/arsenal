@@ -38,7 +38,7 @@ Um modelo que tratasse "nada casou" como um deny implícito único estaria errad
 
 As duas podem ser alteradas para registrar log ou aplicar perfis de segurança, o que vale a pena: tráfego que chega às regras padrão é tráfego que nenhuma regra previu.
 
-## Escrevendo uma base de regras para a ferramenta
+## Como escrever uma base de regras para a ferramenta
 
 Uma regra por linha. A camada vem primeiro, de propósito: é justamente o que esta ferramenta existe para revelar, e uma gramática que permitisse omitir deixaria você esquecer exatamente aquilo que veio conferir.
 

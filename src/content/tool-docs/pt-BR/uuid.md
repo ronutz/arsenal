@@ -13,7 +13,7 @@ Um UUID é um identificador de 128 bits, escrito como 32 dígitos hexadecimais n
 
 A versão 7 é nova na RFC 9562, a especificação de 2024 que atualizou e tornou obsoleta a RFC 4122 original.
 
-## Inspecionando um UUID
+## Como inspecionar um UUID
 
 Cole qualquer UUID e a ferramenta o analisa sem gerar nada: ela confirma o formato, lê a versão e a variante nas suas posições fixas e, para um UUID versão 7, decodifica o carimbo de tempo de 48 bits embutido de volta para uma data. Essa última parte é o truque útil: um id versão 7 carrega discretamente o momento em que foi criado, então você pode ler o horário de criação de um registro direto da sua chave.
 

@@ -1,6 +1,6 @@
 ---
 slug: voss-fabric-attach
-title: "Fabric Attach: Provisionando a Borda Automaticamente (Onde o VOSS Encontra o EXOS)"
+title: "Fabric Attach: como provisionar a borda automaticamente (onde o VOSS encontra o EXOS)"
 summary: "Como o Fabric Attach permite que um dispositivo de borda sinalize o serviço de que precisa para que a fabric provisione o I-SID automaticamente, os papéis FA Server / Proxy / Client, como ele usa o LLDP, e como um switch EXOS se conecta a uma fabric VOSS sem rodar SPBM."
 concepts: ["extreme", "fabric attach", "fa server", "fa proxy", "fa client", "lldp", "i-sid", "zero touch", "exos"]
 relatedTools: ["voss-fabric-id"]
@@ -31,6 +31,6 @@ O FA usa o **LLDP**. O Server descobre os vizinhos FA por meio de TLVs específi
 
 Um switch EXOS se conecta a uma fabric VOSS como um FA Proxy ou Client. No lado do EXOS você habilita o Fabric Attach no uplink - opcionalmente com uma chave de autenticação - e adiciona as VLANs de acesso a esse uplink; o FA Server do VOSS então provisiona os I-SIDs correspondentes na fabric. Esta é a maneira padrão e suportada de trazer uma borda EXOS de Ethernet tradicional para uma fabric VOSS **sem rodar SPBM ou IS-IS no próprio switch EXOS**. Estender o roteamento IP através da fronteira é um assunto separado, tratado pela redistribuição de OSPF, BGP ou RIP no IS-IS da fabric.
 
-## Verificando
+## Como verificar
 
 No lado do VOSS, `show fa`, `show fa elements` e `show fa agent` mostram o estado do serviço FA, os elementos descobertos e seus tipos, a VLAN e o I-SID que cada um recebeu, e o resultado da autenticação. Essas saídas são a forma mais rápida de confirmar que um switch de borda se conectou e que a fabric provisionou o serviço que você esperava.

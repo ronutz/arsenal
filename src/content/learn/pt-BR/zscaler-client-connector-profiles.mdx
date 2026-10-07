@@ -1,6 +1,6 @@
 ---
 slug: zscaler-client-connector-profiles
-title: "Perfis do Client Connector: Onde o Endpoint Decide Como Encaminhar"
+title: "Perfis do Client Connector: onde o endpoint decide como encaminhar"
 summary: "O comportamento do Zscaler Client Connector tem dois documentos de profundidade: o forwarding profile decide como o tráfego sai do dispositivo em cada estado de rede, e o app profile decide a política de plataforma - bypasses, arquivos PAC, certificados. Os três estados de rede, os critérios de rede confiável que alternam entre eles, por que DNS vence resolução de hostname na detecção, e a mecânica de bypass que mantém VPNs e apps com pinning vivos."
 concepts: ["zscaler", "client connector", "zcc", "forwarding profile", "app profile", "trusted network", "z-tunnel", "bypass"]
 relatedTools: ["zcc-forwarding-decision-explainer"]
@@ -27,6 +27,6 @@ O app profile é onde vive a realidade por plataforma. Seu recurso operacionalme
 
 Bypasses por processo e por aplicação estendem a ideia ao software que jamais tolerará um proxy inline - agentes com certificate pinning sendo os moradores clássicos dessa lista, por razões que [os padrões do artigo de identidade](/learn/proxy-user-authentication-methods) e a história da inspeção TLS tornam previsíveis.
 
-## Lendo um problema de ZCC como um operador
+## Leia um problema de ZCC como um operador
 
 A ordem de depuração decorre da arquitetura: primeiro, *em que estado de rede o agente acredita estar* (o sensor), depois *que ação de encaminhamento o perfil atribui a esse estado* (o encanamento), depois *quais bypasses tocaram este destino* (as exceções), e só então o túnel em si. A maioria dos chamados de "o agente quebrou" é um dos três primeiros - um critério de detecção que oscilou, um estado mapeado para uma ação que ninguém revisitou, ou uma lista de bypass com uma entrada a mais. Os perfis são documentos pequenos; a disciplina é saber qual deles é dono do sintoma.

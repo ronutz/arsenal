@@ -49,7 +49,7 @@ A maioria dos modos dinâmicos vem em dois escopos, e o sufixo importa. Um modo 
 
 O [K6406](https://my.f5.com/manage/s/article/K6406) a declara como uma nota, mas ela explica metade das surpresas em campo: members configurados com ratio precisam referenciar um método de balanceamento de ratio para que os ratios se apliquem. Pesos de ratio sob Least Connections não fazem nada. A única exceção é o Ratio Least Connections, que consome ratios por definição.
 
-## Lendo um pool de verdade
+## Como ler um pool de verdade
 
 Duas configurações de pool moldam qualquer modo escolhido. **slow-ramp-time** reconduz um member recém-recuperado gradualmente à sua fatia plena de tráfego novo, e combina melhor com Least Connections pela razão das zero conexões acima. **min-active-members** arma a ativação por priority group: o tráfego fica confinado ao grupo de maior prioridade enquanto pelo menos esse número de members estiver ativo, sendo ativo um member que está up e abaixo do seu connection limit. Members podem carregar valores de priority-group o dia inteiro, mas com min-active-members no padrão 0, nenhum limiar de ativação está em vigor.
 

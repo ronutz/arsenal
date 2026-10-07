@@ -1,6 +1,6 @@
 ---
 slug: netskope-cloud-firewall
-title: "Netskope Cloud Firewall: Controle de Saída para Tudo que Não É Web"
+title: "Netskope Cloud Firewall: controle de saída para tudo que não é web"
 summary: "Um secure web gateway inspeciona as portas 80 e 443 - e o resto do tráfego saindo das máquinas dos seus usuários dá de ombros e vai direto. O Cloud Firewall fecha essa lacuna: firewall-as-a-service para todas as portas e protocolos de saída, com regras escritas em usuários, grupos, aplicações e FQDNs em vez de IPs de origem, entregue pelo mesmo client e pelos mesmos túneis que direcionam o tráfego web. O que ele cobre, como seu modelo de política difere da caixa que substitui, e por que 'steer all traffic' é o interruptor que o liga."
 concepts: ["netskope", "cloud firewall", "fwaas", "egress", "non-web", "ports", "protocols", "policy"]
 relatedTools: []
@@ -13,7 +13,7 @@ updated: "2026-07-21"
 
 Os dois blueprints da trilha de administrador arquivam o Cloud Firewall sob "security controls", e sua razão de existir é uma frase de contabilidade honesta: um [secure web gateway](/learn/netskope-platform-architecture-and-newedge) governa protocolos web, e empresas emitem muito mais que web - DNS para terceiros, SSH para shells de nuvem, SMTP de software mal-comportado, clientes de banco, portas de aplicações próprias, e o que quer que o malware da vez prefira precisamente *porque* não é a porta 443. No appliance da filial, o firewall cobria tudo isso no perímetro. Mova a segurança para a nuvem sem uma camada de firewall, e o restante não-web simplesmente vai direto, sem governo. O **Cloud Firewall (CFW)** é a camada firewall-as-a-service da plataforma exatamente para esse restante: tráfego de saída, todas as portas e protocolos.
 
-## Levando o tráfego até lá: o pré-requisito de steering
+## Como levar o tráfego até lá: o pré-requisito de steering
 
 A dependência a internalizar primeiro, porque decide implantações reais: o CFW governa só o que chega a ele, e steering só-web não lhe manda nada. O [Netskope Client](/learn/netskope-client-deployment) precisa rodar em **steering de todo o tráfego** (ou o site precisa encaminhar por [túneis GRE/IPsec](/learn/netskope-steering-methods)) para fluxos não-web sequer transitarem pela nuvem. Essa única escolha de configuração é o interruptor prático - e a primeira checagem quando uma política de firewall "não funciona": em steering só-web, o tráfego que ela deveria governar nunca saiu do prédio pela Netskope.
 

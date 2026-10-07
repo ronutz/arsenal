@@ -28,7 +28,7 @@ Tome o é, U+00E9. Os seus onze bits são `00011 101001`, então ele vira `110 0
 
 Daí saem três propriedades, e a RFC 3629 as lista. Texto ASCII já é UTF-8, byte por byte. "US-ASCII octet values do not appear otherwise" (valores de bytes US-ASCII não aparecem de outra forma), então procurar `/` ou `"` em UTF-8 nunca encontra parte de um caractere mais longo. E o primeiro byte de uma sequência dá o seu comprimento, então quem cai em qualquer ponto do fluxo encontra onde começa o próximo caractere.
 
-## Lendo UTF-8 num dump hexadecimal
+## Como ler UTF-8 num dump hexadecimal
 
 O primeiro byte de um caractere diz o que você está vendo:
 
@@ -87,7 +87,7 @@ O UTF-8 não tem ordem de bytes a marcar, mas EF BB BF, que é U+FEFF em UTF-8, 
 
 O UTF-32 escreve cada ponto de código como uma unidade de 32 bits, big- ou little-endian, com as marcas 00 00 FE FF e FF FE 00 00. É o mais simples dos três, e o WHATWG Encoding Standard não o define: um navegador não consegue decodificá-lo, e a detecção de marcas de ordem de bytes dele só conhece as marcas do UTF-8 e do UTF-16.
 
-## Lendo um dump você mesmo
+## Um roteiro para ler um dump por conta própria
 
 - **Ache os primeiros bytes.** No UTF-8 eles dão o comprimento de cada caractere; 80 a BF só continuam um.
 - **Conte os zeros.** Um byte sim, um não, zero significa UTF-16 (zeros em segundo lugar: little-endian); três bytes em quatro significa UTF-32.

@@ -6,7 +6,7 @@ Descreva uma mudança planejada por meio de seis campos estruturados — tipo de
 
 Esta ferramenta estrutura e sequencia; ela nunca aprova uma mudança e nunca executa nada. Não faz conexões de rede, não pede credenciais nem segredos, e não substitui o processo de aprovação de mudança nem a revisão de produção. O runbook que ela monta é uma proposta para revisar e adaptar ao seu próprio ambiente e aos seus padrões — quem executa e assina é uma pessoa. As notas em texto livre (resumo, detalhe da mudança, responsável pelo retorno) fluem apenas para o runbook exportado; nunca influenciam quais regras disparam, de modo que o comportamento do motor permanece totalmente determinístico.
 
-## Como o runbook é montado — e como é verificado
+## Como o runbook é montado e como é verificado
 
 Cada regra é um predicado puro sobre a entrada estruturada; ao disparar, ela puxa um conjunto de passos (cada um pertencente a uma fase fixa) e, opcionalmente, um fator de risco. Um passo referenciado por várias regras ainda aparece uma única vez, ordenado pela primeira regra que o puxou; as fases em si são sempre emitidas na mesma ordem operacional, então o runbook se lê de cima a baixo como um de verdade. Toda mudança recebe uma espinha de base (delimite o escopo, faça o baseline, confirme a aprovação, aplique, verifique contra o baseline, observe, defina um gatilho de rollback, encerre), e as especificidades se somam a partir do tipo de mudança, da reversibilidade, do ambiente, do raio de impacto, da janela e do preset. O painel "Por que estes passos?" lista cada regra que disparou com o seu motivo, de modo que o plano é auditável, não oracular.
 

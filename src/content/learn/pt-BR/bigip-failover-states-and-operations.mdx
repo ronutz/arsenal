@@ -1,6 +1,6 @@
 ---
 slug: bigip-failover-states-and-operations
-title: "Failover no BIG-IP: Estados, Forçamento e Network Failover"
+title: "Failover no BIG-IP: estados, forçamento e network failover"
 summary: "Active, standby, offline e forced offline são estados precisos com regras precisas. Este artigo percorre a máquina de estados do failover, a diferença entre forçar standby e forçar offline, network failover unicast versus multicast, e onde olhar quando acontece um failover que ninguém pediu."
 concepts: ["f5", "big-ip", "failover", "active standby", "force offline", "network failover", "unicast", "multicast", "high availability"]
 relatedTools: []
@@ -23,6 +23,6 @@ A detecção de failover é baseada em heartbeat. Pares de hardware historicamen
 
 A detecção interage com os failsafes. VLAN failsafe monitora tráfego numa VLAN e pode disparar failover quando o segmento silencia; gateway failsafe pinga um roteador acima; o watchdog do sistema faz failover quando daemons críticos param de responder. Cada um é causa legítima de um failover que parece espontâneo.
 
-## Diagnosticando um failover que ninguém pediu
+## Como diagnosticar um failover que ninguém pediu
 
 Quando um failover acontece inesperadamente, a sequência de registro está nos [arquivos de log](/learn/bigip-log-files-map). O `/var/log/ltm` carrega as transições de estado e a razão da decisão - heartbeat perdido, failsafe disparado, daemon reiniciado. Correlacione os timestamps nos dois dispositivos: a visão do par sobre o mesmo minuto normalmente distingue "o ativo morreu" de "o standby parou de ouvi-lo", problemas muito diferentes. Estatísticas de interface e o caminho do heartbeat merecem atenção cedo, porque a causa mais comum de failover surpresa não é falha da aplicação, e sim interrupção na rede que carrega os heartbeats - um switch reiniciado, um membro de trunk oscilando, ou uma mudança de port lockdown que silenciou a porta de failover. O [artigo de acesso de gerenciamento](/learn/bigip-management-access-port-lockdown) cobre o lado do port lockdown dessa história.

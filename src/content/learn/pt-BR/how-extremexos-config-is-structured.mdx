@@ -26,7 +26,7 @@ Como nada é aninhado, cada linha se sustenta sozinha. `configure vlan engineeri
 
 A espinha dorsal da maioria das configurações de switch são VLANs e associação de portas, e o EXOS as constrói em três passos. Primeiro `create vlan engineering tag 100` cria a VLAN e lhe dá uma tag 802.1Q. Depois `configure vlan engineering add ports 1:1, 1:2, 1:3 tagged` adiciona portas a ela. A escolha entre `tagged` e `untagged` é a importante. Uma porta tagged carrega a tag 802.1Q da VLAN no quadro e pode pertencer a muitas VLANs ao mesmo tempo, que é como se constrói um trunk. Uma porta untagged não carrega tag e pode pertencer a apenas uma VLAN; como toda porta começa a vida na VLAN chamada Default, você precisa remover uma porta untagged da Default antes de poder adicioná-la untagged a outra VLAN. As portas são escritas como slot:porta em switches empilhados e modulares (1:1 é slot 1, porta 1; 2:24 é slot 2, porta 24) e como números simples em um switch stand-alone.
 
-## Tornando uma VLAN roteada
+## Como tornar uma VLAN roteada
 
 Dê a uma VLAN um endereço IP com `configure vlan engineering ipaddress 10.1.1.1/24` e ela se torna uma interface de Camada 3. Esse único comando não torna o switch um roteador, porém. O roteamento entre interfaces fica desligado até você também emitir `enable ipforwarding`. Esta é uma armadilha comum: uma configuração com várias VLANs com IP mas sem a linha ipforwarding não passará tráfego entre elas. Vale a pena verificar isso explicitamente, e é por isso que a ferramenta correspondente sinaliza exatamente essa situação.
 

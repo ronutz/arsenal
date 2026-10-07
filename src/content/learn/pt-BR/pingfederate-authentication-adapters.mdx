@@ -1,6 +1,6 @@
 ---
 slug: pingfederate-authentication-adapters
-title: "Como Usuários Provam Quem São: PCVs e os Cinco Adapters"
+title: "Como usuários provam quem são: PCVs e os cinco adapters"
 summary: "O kit de autenticação do PingFederate que o exame nomeia: Password Credential Validators como a camada reutilizável de verificação de senha, e então os cinco adapters e o padrão de integração que cada um encarna - HTML Form para login interativo, HTTP Basic para o desafio 401, Kerberos para SSO silencioso de desktop, OpenToken para o handoff via integration kit e Reference ID para o back-channel sem agente."
 concepts: ["ping", "pingfederate", "adapters", "pcv", "html form adapter", "kerberos", "spnego", "opentoken", "reference id"]
 relatedTools: []
@@ -29,6 +29,6 @@ Um adapter é como o PingFederate de fato autentica um usuário - ou recebe um u
 
 **Reference ID Adapter** - o padrão sem agente. Sem agente, sem parsing de token na aplicação: o PingFederate e a aplicação trocam uma **referência** de vida curta por uma API segura de back-channel de depósito e retirada, e a referência se resgata pelos atributos do usuário, servidor a servidor. O trabalho da aplicação encolhe para uma chamada autenticada de back-channel - exatamente o ponto quando instalar um agente é impossível ou indesejado.
 
-## Escolhendo, e o que vem depois
+## A escolha, e o que vem depois
 
 A lógica de seleção comprime bem: humanos numa página → HTML Form; API ou basic auth legado → HTTP Basic; desktops de domínio, zero prompts → Kerberos; aplicação com integration kit → OpenToken; aplicação sem agente → Reference ID. Adapters autenticam - mas qual adapter cada usuário encontra, em que ordem, com quais fallbacks, é trabalho das [políticas de autenticação](/learn/pingfederate-authentication-policies), onde estes blocos viram árvores.

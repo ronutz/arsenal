@@ -1,6 +1,6 @@
 ---
 slug: f5xc-origin-pool-anatomy
-title: "A Anatomia de um Origin Pool do XC: Tipos de Origin, Seleção de Endpoint e TLS para o Origin"
+title: "A anatomia de um origin pool do XC: tipos de origin, seleção de endpoint e TLS para o origin"
 summary: "O que um origin pool contém, as formas de nomear um origin (IP/DNS público, on-site com um locator, K8s/Consul, virtual network, custom endpoint), por que um origin aparece uma vez por Regional Edge, a regra da porta automática (443 com TLS, senão 80), as configurações de TLS para o origin, e por que pesos e prioridades ficam na referência do pool em uma rota, não nos servers."
 concepts: ["origin pool", "origin server", "endpoint selection", "tls to origin", "service discovery", "f5 distributed cloud"]
 relatedTools: ["f5xc-origin-pool-explainer"]
@@ -35,7 +35,7 @@ A conexão do XC até seu origin é separada do TLS voltado ao cliente no load b
 
 Se você veio procurando pesos ou prioridades por origin no pool, você não vai achar, e isso é de propósito. Dentro de um pool os origins são um conjunto plano, distribuído pelo algoritmo do pool. Pesos e prioridades pertencem à referência do pool em uma rota ou nos pools default do load balancer, onde cada entrada é um pool mais um peso mais uma prioridade. É assim que você faz tráfego ponderado ou blue-green entre pools - na rota, não dentro do pool.
 
-## Lendo um rápido
+## Como ler um origin pool rapidamente
 
 Um spec de origin pool é compacto mas as partes importantes estão espalhadas - as chaves oneof do origin, o sub-objeto de TLS, a escolha de porta. A ferramenta complementar decodifica tudo de uma vez: o tipo e endereço de cada origin, a porta e o algoritmo e a seleção de endpoint, os health checks, e o quadro completo de TLS para o origin, com o caso de pular verificação sinalizado. Isso transforma "com o que este pool de fato se conecta, e como" em um relance.
 

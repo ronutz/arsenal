@@ -35,7 +35,7 @@ Um ISP tipicamente delega um /48 ou /56 a um cliente, que então atribui /64s a 
 
 Como o IPv6 é escrito em hex e cada dígito hex tem 4 bits (um nibble), prefixos que caem em uma fronteira de 4 bits são muito mais fáceis de ler e gerenciar. Um /48, /52, /56, /60, e /64 todos terminam limpamente entre dígitos hex, então a porção de sub-rede se alinha com caracteres inteiros no endereço. Criar sub-redes de um /48 em /52s lhe dá 16 blocos distinguidos por um único dígito hex; indo para /56 dá 256 blocos através de dois dígitos. Permanecer em fronteiras de nibble mantém seu plano de endereçamento legível, que importa mais no IPv6 do que espremer o último bit jamais poderia.
 
-## Contando sub-redes e endereços
+## Como contar sub-redes e endereços
 
 A aritmética é direta. O número de sub-redes /64 dentro de um prefixo mais curto é 2 elevado à diferença nos comprimentos de prefixo: um /48 contém 2^(64-48) = 2^16 = 65.536 sub-redes. O número de endereços dentro de qualquer /64 é 2^(128-64) = 2^64. A ferramenta relata tanto a contagem de endereços para um prefixo quanto a faixa utilizável, e os números ficam grandes rapidamente, que é exatamente o ponto: a escassez não é mais uma restrição em torno da qual você projeta.
 

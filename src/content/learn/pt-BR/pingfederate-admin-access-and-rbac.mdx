@@ -1,6 +1,6 @@
 ---
 slug: pingfederate-admin-access-and-rbac
-title: "Quem Administra o PingFederate: Contas Nativas, Papéis e Login do Console via LDAP"
+title: "Quem administra o PingFederate: contas nativas, papéis e login do console via LDAP"
 summary: "O modelo de acesso administrativo: contas nativas e o conjunto de papéis que divide o poder - User Admin, Admin, Expression Admin, Auditor e o papel criptográfico - mais como a autenticação do console migra de contas nativas para um diretório LDAP via run.properties e ldap.properties, com grupos do diretório mapeados nos mesmos papéis."
 concepts: ["ping", "pingfederate", "rbac", "administrative accounts", "roles", "ldap", "console authentication", "ognl"]
 relatedTools: []
@@ -21,7 +21,7 @@ O conjunto de papéis para saber de cor:
 
 Papéis combinam conforme a função: um administrador de trabalho tipicamente tem Admin mais o que as atribuições exigirem, enquanto as separações que importam - expressões, custódia de chaves, gestão de contas - permanecem atribuíveis de propósito em vez de empacotadas por padrão.
 
-## Movendo o login do console para o LDAP
+## Como mover o login do console para o LDAP
 
 Contas nativas escalam mal além de um punhado de humanos: senhas vivem em mais um lugar, entradas e saídas de pessoas viram limpeza no console, e o diretório que já governa todo o resto não governa nada aqui. Por isso a autenticação do console é **plugável**, e apontá-la para o LDAP (Lightweight Directory Access Protocol) é o movimento padrão.
 

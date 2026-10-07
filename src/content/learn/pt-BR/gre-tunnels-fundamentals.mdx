@@ -1,6 +1,6 @@
 ---
 slug: gre-tunnels-fundamentals
-title: "Túneis GRE: o Envelope Mais Simples do Networking"
+title: "Túneis GRE: o envelope mais simples do networking"
 summary: "O Generic Routing Encapsulation coloca um pacote dentro de outro e não pede mais nada do caminho - sem criptografia, sem autenticação, apenas um envelope com endereço de entrega. Por que essa simplicidade é o ponto: a anatomia de 24 bytes, o que o GRE consegue carregar que o roteamento puro não consegue, a questão dos keepalives, e a troca que o projetista aceita ao escolher GRE em vez de um túnel cifrado."
 concepts: ["gre", "tunnel", "encapsulation", "overhead", "protocol 47", "fundamentals"]
 relatedTools: ["zscaler-tunnel-chooser"]
@@ -33,7 +33,7 @@ Ser stateless também significa que o GRE não avisa quando cai. O protocolo de 
 
 Nada disso é defeito. A criptografia de uma [VPN (rede privada virtual)](/learn/vpn-fundamentals) custa ciclos, estado e complexidade; o GRE não gasta nada disso, e é por isso que roteadores o encaminham em line rate no hardware e por isso ele continua sendo a resposta padrão quando o requisito é "carregue isto até lá" em vez de "esconda isto de todo mundo".
 
-## Escolhendo GRE, num exemplo prático
+## A escolha do GRE, num exemplo prático
 
 Serviços de segurança em nuvem que recebem tráfego encaminhado tornam a troca concreta. O serviço Internet Access da Zscaler aceita tráfego de localidades por GRE ou IPsec, e sua orientação publicada (verificada em 2026-07-21) captura a decisão clássica: um túnel GRE é suportado até **1 Gbps** - mas apenas **250 Mbps** se os endereços internos do endpoint do túnel passarem por source NAT, porque o serviço balanceia carga usando esses endereços internos e o [NAT](/learn/nat-explained) os colapsa. Precisa de mais de um gigabit? Adicione túneis com endereços públicos de origem diferentes - dois primários e dois de backup para 2 Gbps. As precondições do GRE são igualmente clássicas: um endereço público de saída estático e um dispositivo que fale o protocolo; onde qualquer um dos dois falta, a alternativa cifrada assume - e é aí que [IPsec e IKE](/learn/ipsec-and-ike-fundamentals) continuam a história.
 

@@ -1,6 +1,6 @@
 ---
 slug: bigip-oneconnect-connection-reuse
-title: "OneConnect: Reuso É um Problema de Agrupamento, e o SNAT Reescreve os Grupos"
+title: "OneConnect: reuso é um problema de agrupamento, e o SNAT reescreve os grupos"
 summary: "O OneConnect estaciona conexões ociosas do lado servidor e as entrega à próxima requisição elegível. A source mask define elegível, de 0.0.0.0 compartilhando entre todos os clientes a uma máscara de host mantendo o reuso por cliente. A pegadinha que ambos os artigos K declaram: o SNAT traduz primeiro, a máscara vê apenas o endereço traduzido, então um endereço SNAT significa um grupo."
 concepts: ["oneconnect", "reuso de conexão", "source mask", "snat", "f5", "ltm", "tmm"]
 relatedTools: ["f5-oneconnect-source-mask"]
@@ -31,6 +31,6 @@ O resto do profile delimita o ciclo de vida do pool, com padrões conforme a ref
 
 A opção limit-type merece seu próprio parágrafo porque o manual lhe dá um. Com none, o padrão histórico, requisições em voo contam para os limites de conexão do pool member e podem existir mais conexões TCP do que requisições em voo, particularmente, nota a página, com SNAT pools e máscaras estreitas. Com idle, conexões ociosas são derrubadas conforme o limite é atingido, com breve ultrapassagem possível durante a troca. E strict honra o limite sem exceções, o que significa que conexões ociosas bloqueiam novas até expirarem mesmo quando poderiam ter sido reusadas; o próprio manual diz que isso não é recomendado fora de casos muito especiais com timeouts de expiração curtos. Quando a referência do fabricante desaconselha uma configuração com a própria voz, acredite.
 
-## Lendo um profile em uma passada
+## Como ler um profile em uma passada
 
 Dado um stanza, as perguntas em ordem: o que a máscara agrupa, e o SNAT está reescrevendo as entradas antes de a máscara vê-las; a aplicação é segura quanto à identidade da conexão sob esse agrupamento, ou precisa de X-Forwarded-For; os limites de idade, reuso e tamanho servem ao tráfego; e o limit-type é algo além de none por uma razão documentada. O explicador roda essa passada mecanicamente, com padrões preenchidos e alertas onde o próprio manual os colocou.

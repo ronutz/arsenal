@@ -21,7 +21,7 @@ O detalhe é que o menor conjunto de edições frequentemente não é único. Qu
 - **Divide uma seção movida.** Mova um bloco de código e um diff de linha não vê um movimento algum; ele vê uma remoção em um lugar e uma inserção em outro, às vezes quebrada em pedaços que se alinham com linhas correspondentes não relacionadas.
 - **Anexa linhas em branco ou boilerplate de forma estranha.** Linhas repetidas como linhas em branco ou `}` são intercambiáveis para o algoritmo, então ele pode agrupá-las de um jeito que parece estranho.
 
-## Lendo mesmo assim
+## Como ler o diff mesmo assim
 
 Nada disso significa que o diff está errado; é uma explicação mínima correta, apenas não a que corresponde ao seu modelo mental da edição. A solução não é brigar com ele, mas lê-lo como "uma forma válida de ir de A a B". Quando um diff parece estranho, uma visão de palavra ou caractere frequentemente torna a mudança real óbvia, e para código movido, comparar os dois blocos diretamente é mais claro do que confiar no alinhamento. A lição é que um diff descreve uma transformação entre dois estados, não a história de como você chegou lá.
 

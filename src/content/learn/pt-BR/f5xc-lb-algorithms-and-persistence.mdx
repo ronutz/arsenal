@@ -1,6 +1,6 @@
 ---
 slug: f5xc-lb-algorithms-and-persistence
-title: "Algoritmos de Load Balancing e Persistência do XC, para Quem Vem do BIG-IP"
+title: "Algoritmos de load balancing e persistência do XC, para quem vem do BIG-IP"
 summary: "No BIG-IP o método de load balancing e o profile de persistência são dois botões separados; no XC são um só. Por que os algoritmos de consistent-hashing (Source IP, Cookie, Ring Hash) SÃO o método de persistência, o que você pode fazer hash, quando usar os algoritmos non-hash, e como o Load Balancer Override dá persistência por rota."
 concepts: ["load balancing", "persistence", "consistent hashing", "ring hash", "origin pool", "f5 distributed cloud"]
 relatedTools: ["f5xc-lb-algorithm-chooser"]
@@ -35,6 +35,6 @@ Se a aplicação é stateless, você não quer um algoritmo de hash de forma alg
 
 Às vezes um pool serve vários domínios ou rotas que precisam de persistência diferente. É para isso que o Load Balancer Override serve: defina o algoritmo do pool como Load Balancer Override, e então, nas Advanced Options da rota do HTTP load balancer, use o Load Balancing Control para escolher stickiness por Cookie ou Source IP por rota ou por domínio. É o único lugar em que o XC deixa você separar a decisão de persistência do pool e empurrá-la para a rota, do jeito que profiles de persistência por virtual server funcionam no BIG-IP.
 
-## Escolhendo um
+## Qual escolher
 
 A versão curta: stateless, carga uniforme - Round Robin. Stateless mas requisições desiguais ou longas - Least Active Request. Grudento por IP do cliente - Source IP Stickiness, a menos que seus clientes se escondam atrás de um IP compartilhado. Grudento por cookie - Cookie Based Stickiness. Grudento por um token de sessão em um header - Ring Hash com uma hash policy custom. Persistência diferente por rota - Load Balancer Override. O seletor complementar percorre essas perguntas e te entrega o algoritmo, o equivalente no BIG-IP e os cuidados; um seletor de método do BIG-IP está a caminho para o lado a lado.

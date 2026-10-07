@@ -1,6 +1,6 @@
 ---
 slug: http-methods-the-verbs
-title: "Métodos HTTP: Os Verbos da Web"
+title: "Métodos HTTP: os verbos da web"
 summary: "GET, HEAD, POST, PUT, DELETE, PATCH, OPTIONS, TRACE, CONNECT - e agora QUERY. O que cada método promete, por que 'safe' e 'idempotente' são as duas propriedades que de fato importam (para caches, retentativas, proxies e crawlers), por que formulários HTML só aprenderam dois verbos, e como ler a alma de uma API pelos métodos que ela aceita."
 concepts: ["http", "methods", "get", "post", "put", "delete", "patch", "idempotent", "safe", "query"]
 relatedTools: ["http-methods-comparison", "curl-command-explainer"]
@@ -25,6 +25,6 @@ Toda requisição HTTP abre com um verbo, e esse verbo é um contrato: ele diz a
 
 Uma surpresa recorrente: formulários HTML submetem com GET ou POST, ponto - os verbos mais ricos pertencem a APIs chamadas por código. Essa restrição moldou uma geração de frameworks de servidor (cabeçalhos de method-override, campos `_method`) e é metade da razão de o POST ter virado o verbo universal de "faça algo". A outra metade é inércia, [sobre a qual este site já escreveu com outra fantasia](/learn/why-we-say-ssl-when-we-mean-tls). Como formulários codificam o que enviam é [artigo próprio](/learn/html-forms-and-request-encoding).
 
-## Lendo uma API pelos verbos
+## Como ler uma API pelos verbos
 
 A habilidade prática: a disciplina de métodos de uma API conta a alma dela. Semântica estrita de recursos (GET lê, PUT substitui, PATCH edita, DELETE remove, POST cria-sob) sinaliza um projeto que você pode cachear, retentar e raciocinar; tudo-é-POST sinaliza RPC vestindo HTTP como transporte - não errado, mas outro contrato, em que *você* agora carrega a contabilidade de idempotência que os verbos carregariam por você. De um jeito ou de outro, a linha do verbo é a primeira linha - da requisição, e da análise.

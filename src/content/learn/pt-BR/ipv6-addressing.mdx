@@ -1,7 +1,7 @@
 ---
 slug: ipv6-addressing
-title: "Entendendo o endereçamento IPv6"
-summary: "Como um endereço IPv6 de 128 bits é estruturado e escrito, as regras para comprimi-lo canonicamente, o que os tipos de endereço e escopos significam, e como identificadores de interface e DNS reverso funcionam."
+title: "Como funciona o endereçamento IPv6"
+summary: "Como é a estrutura de um endereço IPv6 de 128 bits e como ele é escrito, as regras para chegar à forma comprimida canônica, o que significam os tipos e os escopos de endereço e como funcionam o identificador de interface e o DNS reverso."
 concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
 relatedTools: ["ipv6"]
 relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
@@ -13,75 +13,75 @@ updated: "2026-08-10"
 
 ## Por que o IPv6 existe
 
-O IPv4 tem cerca de 4,3 bilhões de endereços (2^32). Isso parecia inesgotável nos anos 1980 e está agora há muito esgotado nos registros. O IPv6, definido para endereçamento na RFC 4291, alarga o endereço de 32 bits para **128 bits**, que são 2^128 endereços, um número grande o bastante para que a escassez deixe de ser a restrição de design. O efeito prático é que as sub-redes se tornam enormes e truques de conservação de endereços como o NAT (tradução de endereços de rede, do inglês network address translation) não são mais necessários para conectividade básica.
+O IPv4 tem cerca de 4,3 bilhões de endereços (2^32). Nos anos 1980, isso parecia não ter fim; hoje, o estoque livre dos registros de endereços acabou faz tempo. O IPv6, cujo endereçamento é definido na RFC 4291, aumenta o endereço de 32 para **128 bits**, ou seja, 2^128 endereços, um número tão grande que a falta de endereços deixa de ditar o projeto da rede. Na prática, as sub-redes ficam enormes, e truques para economizar endereços, como o NAT (network address translation, a tradução de endereços de rede), deixam de ser necessários para a conectividade básica.
 
 ## A estrutura de 128 bits
 
-Um endereço IPv6 tem 128 bits, escrito como **oito grupos de quatro dígitos hexadecimais** separados por dois-pontos. Cada grupo é um valor de 16 bits:
+Um endereço IPv6 tem 128 bits e é escrito como **oito grupos de quatro dígitos hexadecimais**, separados por dois-pontos. Cada grupo representa 16 bits:
 
 ```
 2001:0db8:0000:0000:0008:0800:200c:417a
 ```
 
-Essa forma totalmente escrita é a representação **expandida**. Por ser longa e cheia de zeros, a forma de texto tem regras de compressão.
+Essa é a forma **expandida**, com tudo escrito por extenso. Como ela é longa e cheia de zeros, a escrita tem regras de compressão.
 
-## Escrevendo um endereço: as regras de compressão
+## Como escrever um endereço: as regras de compressão
 
-Duas regras encurtam o texto, e a RFC 5952 torna o resultado canônico (um endereço, uma grafia preferida):
+São duas regras para encurtar o texto, e a RFC 5952 torna o resultado canônico (cada endereço passa a ter uma única forma preferida de escrita):
 
-- **Suprima zeros à esquerda** em cada grupo: `0db8` torna-se `db8`, `0000` torna-se `0`.
-- **Substitua uma sequência de grupos consecutivos todos-zero por `::`**. O duplo dois-pontos pode aparecer **no máximo uma vez**, e ele representa um ou mais grupos de 16 bits de zeros. Quando existem várias sequências de igual comprimento, a primeira é comprimida.
+- **Tire os zeros à esquerda** de cada grupo: `0db8` vira `db8`, e `0000` vira `0`.
+- **Troque uma sequência de grupos consecutivos só de zeros por `::`**. Esses dois-pontos duplos podem aparecer **no máximo uma vez** e representam um ou mais grupos de 16 bits zerados. Se houver várias sequências com o mesmo tamanho, comprime-se a primeira.
 
-Aplicar ambas ao endereço acima dá sua forma canônica:
+Com as duas regras aplicadas ao endereço acima, chegamos à forma canônica:
 
 ```
 2001:db8::8:800:200c:417a
 ```
 
-A RFC 5952 adiciona algumas regras finais para que as ferramentas concordem: os dígitos hex são minúsculos, e `::` não é usado para "comprimir" um único grupo de zeros (isso não encurtaria nada significativo). A ferramenta IPv6 mostra tanto a forma comprimida canônica quanto a forma totalmente expandida lado a lado, para que você possa ver exatamente o que `::` representa.
+A RFC 5952 acrescenta algumas regras de acabamento para que todas as ferramentas escrevam o endereço do mesmo jeito: os dígitos hexadecimais ficam em minúsculas, e o `::` não é usado para "comprimir" um único grupo de zeros (não economizaria nada que valesse a pena). A ferramenta IPv6 mostra lado a lado a forma canônica comprimida e a forma expandida completa, para você ver exatamente o que o `::` está substituindo.
 
-Um caso especial: um endereço pode carregar uma cauda **IPv4 embutida** em seus últimos 32 bits, escrita em decimal pontilhado. A mais comum é a forma **IPv4-mapeada**, onde a RFC 5952 recomenda a notação mista `::ffff:192.0.2.128` em vez de hex puro.
+Um caso especial: os últimos 32 bits de um endereço podem trazer um **IPv4 embutido**, escrito na notação decimal com pontos. O caso mais comum é o endereço **IPv4 mapeado**, para o qual a RFC 5952 recomenda a notação mista `::ffff:192.0.2.128` em vez de hexadecimal puro.
 
-## Prefixos e aritmética de prefixo
+## Prefixos e o cálculo de prefixos
 
-Como o CIDR do IPv4, um prefixo IPv6 é escrito `endereço/comprimento`, onde o comprimento conta os bits de rede iniciais:
+Como no CIDR do IPv4, um prefixo IPv6 é escrito como `endereço/comprimento`, em que o comprimento é a quantidade de bits de rede, contados a partir do início do endereço:
 
 ```
 2001:db8::/64
 ```
 
-Um `/64` significa que os primeiros 64 bits são a rede e os 64 restantes são o identificador de interface. `/64` é o tamanho padrão para uma única LAN, e ele sozinho contém 2^64 endereços, cerca de 18 quintilhões. A ferramenta computa o endereço de rede (primeiro), o último endereço, e a contagem para qualquer prefixo que você lhe der, mascarando os bits de host para zero para achar a rede mesmo se você digitou um endereço com bits de host definidos.
+Um `/64` quer dizer que os primeiros 64 bits são a rede e os 64 restantes são o identificador de interface (interface ID). O `/64` é o tamanho padrão de uma LAN, e uma única rede desse tamanho já comporta 2^64 endereços, cerca de 18 quintilhões. Para qualquer prefixo que você informar, a ferramenta calcula o endereço de rede (o primeiro), o último endereço e a quantidade de endereços; ela zera os bits de host para achar a rede, mesmo que você tenha digitado um endereço com bits de host diferentes de zero.
 
 ## Tipos de endereço e escopos
 
-Os bits altos de um endereço o colocam em uma categoria. Os mais importantes, da RFC 4291 e do registro IANA:
+Os primeiros bits de um endereço definem a categoria dele. As mais importantes, segundo a RFC 4291 e o registro da IANA:
 
-- **Unicast global (2000::/3)** é o espaço público roteável, o equivalente IPv6 de um endereço IPv4 público.
-- **Único local, ou ULA (fc00::/7)** é o espaço de uso privado (RFC 4193), análogo à RFC 1918 no IPv4. Ele não é roteado na internet pública.
-- **Unicast link-local (fe80::/10)** é válido apenas em um único enlace e é configurado automaticamente em toda interface IPv6. Os roteadores nunca o encaminham. Seu escopo é o enlace local.
-- **Multicast (ff00::/8)** endereça um grupo em vez de um único host. Um campo de escopo dentro do endereço diz quão longe ele alcança: interface-local, link-local, admin-local, site-local, organization-local, ou global. Por exemplo `ff02::1` é o grupo todos-os-nós link-local.
-- **Loopback (::1/128)** é o equivalente IPv6 de 127.0.0.1, e o **endereço não especificado (::/128)** significa "nenhum endereço", usado como espaço reservado durante a configuração.
-- **Documentação (2001:db8::/32)** é reservado pela RFC 3849 para exemplos e escrita, que é por que quase todo exemplo IPv6 que você vê, incluindo o canônico na própria RFC 4291, o usa.
+- **Global unicast (2000::/3)** é o espaço público roteável, o equivalente IPv6 de um endereço IPv4 público.
+- **Unique local, ou ULA (fc00::/7)**, é o espaço de uso privado (RFC 4193), o equivalente da RFC 1918 no IPv4. Esse espaço não é roteado na internet pública.
+- **Link-local unicast (fe80::/10)** só vale dentro de um único link e é configurado automaticamente em toda interface IPv6. Os roteadores nunca encaminham esse tráfego; o escopo dele é o link local.
+- **Multicast (ff00::/8)** se destina a um grupo, e não a um único host. Um campo de escopo dentro do próprio endereço diz até onde ele chega: interface-local, link-local, admin-local, site-local, organization-local ou global. Por exemplo, `ff02::1` é o grupo all-nodes (todos os nós) de escopo link-local.
+- **Loopback (::1/128)** é o equivalente IPv6 do 127.0.0.1, e o **endereço não especificado (::/128)** significa "nenhum endereço": ele fica no lugar do endereço enquanto a configuração não termina.
+- **Documentação (2001:db8::/32)** é um bloco reservado pela RFC 3849 para exemplos e textos técnicos; é por isso que quase todo exemplo de IPv6 que você encontra, inclusive o exemplo clássico da própria RFC 4291, usa esse bloco.
 
-A ferramenta IPv6 relata o tipo correspondente e o prefixo específico que ela correspondeu, mais o escopo para endereços multicast e link-local.
+A ferramenta IPv6 informa o tipo do endereço e o prefixo exato em que ele se encaixou, além do escopo, no caso de endereços multicast e link-local.
 
-## Identificadores de interface e EUI-64
+## O identificador de interface e o EUI-64
 
-Em um `/64` típico, os 64 bits inferiores são o **identificador de interface**. Uma forma histórica de construí-lo era o **EUI-64 modificado** (RFC 4291, Apêndice A): tome o endereço MAC de 48 bits, insira os bytes `ff:fe` no meio, e inverta o sétimo bit (o bit universal/local). Isso fazia o id de interface derivável do endereço de hardware. Quando a ferramenta vê o revelador `ff:fe` no meio do id de interface, ela inverte o processo e lhe mostra o MAC original. Sistemas modernos frequentemente preferem identificadores de interface randomizados ou de privacidade em vez disso, precisamente porque derivar o id de um MAC vaza o endereço de hardware.
+Num `/64` típico, os 64 bits finais formam o **identificador de interface**. Uma das formas tradicionais de montá-lo era o **EUI-64 modificado** (RFC 4291, Apêndice A): pegue o endereço MAC de 48 bits, insira os bytes `ff:fe` no meio e inverta o sétimo bit (o bit universal/local). Assim, o interface ID podia ser calculado a partir do endereço de hardware. Quando a ferramenta encontra o `ff:fe` no meio do interface ID, que denuncia esse método, ela faz o caminho inverso e mostra o MAC original. Os sistemas modernos costumam preferir interface IDs aleatórios ou de privacidade, justamente porque derivar o ID do MAC expõe o endereço de hardware.
 
 ## DNS reverso: ip6.arpa
 
-Buscas reversas (endereço para nome) para IPv6 vivem sob o domínio **ip6.arpa**. O endereço é expandido aos seus 32 nibbles hex, esses nibbles são invertidos, e cada um torna-se um rótulo. Então `2001:db8::1` torna-se um nome terminando em `...8.b.d.0.1.0.0.2.ip6.arpa`. A ferramenta gera esse nome para qualquer endereço, que é o valor exato que você colocaria em um registro `PTR`.
+No IPv6, as consultas reversas (de endereço para nome) ficam sob o domínio **ip6.arpa**. O endereço é expandido para os seus 32 nibbles, os dígitos hexadecimais; a ordem desses nibbles é invertida, e cada um vira um label (rótulo) do nome. Assim, `2001:db8::1` vira um nome terminado em `...8.b.d.0.1.0.0.2.ip6.arpa`. A ferramenta gera esse nome para qualquer endereço, e ele é exatamente o valor que você colocaria num registro `PTR`.
 
-## Uma nota sobre o que a ferramenta faz
+## O que a ferramenta faz e o que ela não faz
 
-A ferramenta IPv6 é uma calculadora determinística e local. Ela analisa, canoniza, classifica, e computa, tudo no seu navegador, sem nenhuma busca contra a rede ao vivo. Ela lhe diz o que um endereço **é** estruturalmente. Ela não lhe diz se aquele endereço é alcançável, alocado, ou em uso, que são perguntas separadas que requerem consultar a rede ou um registro.
+A ferramenta IPv6 é uma calculadora determinística, que roda localmente. Ela interpreta o endereço, coloca na forma canônica, classifica e calcula, tudo no seu navegador, sem fazer nenhuma consulta à rede real. Ela diz o que um endereço **é**, do ponto de vista da estrutura. Ela não diz se o endereço está alcançável, se foi alocado ou se está em uso: essas são outras perguntas, e para respondê-las é preciso consultar a rede ou um registro de endereços.
 
-## Esta série, em ordem
+## Os artigos desta série, em ordem
 
-Este artigo abre a série **IPv6**. Ele trata do próprio endereço; as partes acompanham um host entrando numa rede na ordem em que ele encontra cada peça: a sub-rede em que cai, a forma como obtém um endereço, a descoberta de vizinhos que substitui o ARP e a maquinaria de transição que o deixa alcançar o mundo IPv4.
+Este artigo abre a série **IPv6** e trata do endereço em si. As partes seguintes acompanham um host que chega a uma rede, na ordem em que ele encontra cada peça: a sub-rede em que ele cai, a forma como ele obtém um endereço, o neighbor discovery (a descoberta de vizinhos), que substitui o ARP, e os mecanismos de transição que permitem que ele alcance o mundo IPv4.
 
-1. **[Sub-redes IPv6 e a fronteira /64](/learn/ipv6-subnetting)**. Estrutura em vez de escassez: por que uma sub-rede é quase sempre um /64, e como a delegação de prefixos distribui espaço.
-2. **[Como hosts IPv6 obtêm endereços: SLAAC e DHCPv6](/learn/ipv6-address-configuration)**. Do link-local para cima: anúncios de roteador, SLAAC, endereços de privacidade e DHCPv6.
-3. **[Descoberta de Vizinhos: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 e multicast em vez do ARP por broadcast: as cinco mensagens da Descoberta de Vizinhos.
-4. **[Rodando IPv6 e IPv4 juntos: dual-stack e tradução](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 e os endereços com IPv4 embutido que fazem a ponte entre as duas famílias.
+1. **[Sub-redes IPv6 e o limite do /64](/learn/ipv6-subnetting)**. O que manda é a estrutura, não a escassez: por que uma sub-rede é quase sempre um /64 e como a delegação de prefixos (prefix delegation) distribui o espaço de endereços.
+2. **[Como os hosts IPv6 obtêm endereço: SLAAC e DHCPv6](/learn/ipv6-address-configuration)**. Começando pelo link-local: router advertisements (os anúncios do roteador), SLAAC, endereços de privacidade e DHCPv6.
+3. **[Neighbor Discovery: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 e multicast no lugar do ARP por broadcast: as cinco mensagens do Neighbor Discovery.
+4. **[IPv6 e IPv4 lado a lado: dual-stack e tradução](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 e os endereços com IPv4 embutido, que ligam as duas famílias.

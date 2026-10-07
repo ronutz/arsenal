@@ -37,7 +37,7 @@ A convergência do BGP se mede em segundos a minutos, e isso horroriza quem cres
 
 O BGP clássico acredita no que lhe contam. Se uma rede anuncia um prefixo que não é dela - por engano (um route leak de digitação) ou por desígnio (um hijack) - os vizinhos que aceitarem o anúncio mandarão tráfego para lá. Os incidentes famosos - um provedor paquistanês derrubando o YouTube do mundo inteiro por acidente em 2008, roubos de criptomoeda via prefixos de DNS sequestrados - são todos essa única falha. A resposta moderna é o **RPKI**: declarações criptográficas de qual AS pode originar qual prefixo, permitindo aos roteadores descartar anúncios inválidos. A validação de origem já é corrente entre operadoras sérias; a validação de caminho segue sendo a fronteira mais difícil e lenta. Ao avaliar um provedor, "vocês descartam RPKI-inválidos?" é uma pergunta que separa rápido o joio do trigo.
 
-## Lendo BGP como praticante
+## Como um praticante lê o BGP
 
 O modelo mental prático: uma rota BGP é uma promessa com rastro documental. Ao olhar uma rota, leia-a como uma frase - *este prefixo, aprendido daquele vizinho, cruzando estes sistemas autônomos, preferido por causa deste atributo*. Agregação é o motivo de a tabela ter só cerca de um milhão de rotas em vez de bilhões: as redes anunciam blocos CIDR sumarizados, não cada sub-rede (a aritmética de prefixos por trás disso é exatamente o que a ferramenta de CIDR deste site computa). E quando algo quebra do lado internet da sua borda, as três primeiras perguntas são sempre as mesmas: o prefixo ainda está anunciado, o AS-path está são, e a política de alguém mudou hoje de manhã.
 

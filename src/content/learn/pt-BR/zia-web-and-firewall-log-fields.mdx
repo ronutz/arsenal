@@ -1,6 +1,6 @@
 ---
 slug: zia-web-and-firewall-log-fields
-title: "Campos de Log do ZIA: O Vocabulário em Que as Investigações São Escritas"
+title: "Campos de log do ZIA: o vocabulário em que as investigações são escritas"
 summary: "Um feed de log do ZIA é um template de campos que você escolhe - %s{login}, %s{csip}, %s{action} - e saber qual campo carrega o quê é a diferença entre um log e uma resposta. A divisão de trabalho web-versus-firewall, os campos com prefixo de ofuscação que pseudonimizam identidade, a regra de hex-encoding que mantém URLs hostis interpretáveis, e a sutileza do tier Standard em que sessões permitidas logam em agregado enquanto bloqueios logam por sessão."
 concepts: ["zscaler", "zia", "log fields", "nss feed", "web log", "firewall log", "obfuscation", "siem"]
 relatedTools: ["zscaler-firewall-rule-order-simulator"]
@@ -21,6 +21,6 @@ O **Web Log** fala em transações: quem (`login`, departamento, localidade), bu
 
 Primeira, os **campos de ofuscação**: campos selecionados existem num gêmeo preservador de privacidade com prefixo `o` - a contraparte ofuscada de um campo de IP de origem emite uma string aleatória em vez do endereço - então um feed pode nascer pseudônimo por construção, para consumidores que precisam de padrões sem identidades. Segunda, o **hex-encoding de URLs**: qualquer byte de URL igual ou abaixo de 0x20, ou igual ou acima de 0x7F, é codificado como %HH antes de o log partir, porque uma URL contendo uma quebra de linha crua é um ataque de parser contra o seu SIEM, e o serviço a desarma na origem. Terceira - a que gera surpresas de planejamento de capacidade - na **assinatura Standard do Firewall, sessões permitidas são logadas em agregado** enquanto **sessões bloqueadas logam individualmente e em detalhe**: menos registros para o grosso permitido, fidelidade total onde a política disse não. O volume de um feed de firewall, portanto, acompanha a sua taxa de *bloqueio* tanto quanto o seu tráfego, e uma observação de "nossos logs de firewall são minúsculos" pode significar exatamente que a política raramente bloqueia.
 
-## Projetando um feed como um operador
+## Projete um feed como um operador
 
 O ofício é escolher campos para as perguntas que você de fato fará às 2 da manhã. O esqueleto de que quase toda investigação precisa: tempo, usuário, identidade do dispositivo, IP de origem do cliente, destino, a ação, e *o rótulo da regra que a produziu* - porque "bloqueado" sem o nome da regra manda você [de volta ao console para reproduzir a ordem da política à mão](/learn/zia-cloud-firewall-rule-order). Contagens de bytes nas duas direções transformam o firewall log num instrumento de exfiltração. E o template de campos é por feed, o que significa que o projeto certo costuma ser *vários* feeds: um feed enxuto de alertas em tempo real, um feed de investigação em fidelidade total, um feed ofuscado de analytics - o mesmo Nanolog, três frases, cada uma escrita para o seu leitor. A sintaxe de entregar essas frases - servidores, feeds, limites e semântica de falha - é [o assunto inteiro do próximo artigo](/learn/zscaler-nanolog-nss-and-log-streaming).

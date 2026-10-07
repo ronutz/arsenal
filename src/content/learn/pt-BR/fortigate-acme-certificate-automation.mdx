@@ -25,7 +25,7 @@ O limite mais definidor de todos é o nome do certificado. O FortiOS preenche o 
 
 Como o FortiGate prova a posse evoluiu. Versões mais novas do FortiOS suportam dois tipos de desafio: **TLS-ALPN-01** na TCP/443 e **HTTP-01** na TCP/80, com o TLS-ALPN-01 como padrão. O TLS-ALPN-01, definido na RFC 8737, faz o FortiGate apresentar um certificado autoassinado especial carregando um `acmeIdentifier` e o SAN (Nome Alternativo do Titular, do inglês Subject Alternative Name) correto durante um handshake TLS na 443; como esse certificado é deliberadamente incomum, scanners de segurança frequentemente o sinalizam, o que a Fortinet observa ser esperado. O HTTP-01, como o "s" ausente no nome sugere, responde por HTTP puro na porta 80. Por padrão a porta 80 redireciona para a 443, e se a 443 já estiver em uso pelo daemon HTTPS, o daemon ACME recai para o desafio HTTP-01 na 80. Versões mais antigas do FortiOS ofereciam apenas o caminho HTTP-01 na porta 80, e é por isso que os pré-requisitos de interface foram originalmente escritos em torno dessa porta.
 
-## Configurando
+## Como configurar
 
 Na GUI, o fluxo é curto. Em System, Certificates, você cria um certificado e escolhe Use Let's Encrypt (em versões anteriores, um Local Certificate importado com Type definido como Automated e ACME service definido como Let's Encrypt). Você define um nome de certificado, que é o que o resto da configuração referencia, um Domain igual ao FQDN público do FortiGate, e um Email, que a Fortinet observa não ser de fato usado durante a inscrição. Você então seleciona a interface ACME. A Let's Encrypt provisiona o certificado, ele aparece na lista Local Certificates, e você aponta System, Settings, HTTPS server certificate para ele.
 

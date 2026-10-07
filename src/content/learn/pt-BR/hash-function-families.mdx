@@ -1,6 +1,6 @@
 ---
 slug: hash-function-families
-title: "Escolhendo um hash: MD5, SHA-1, SHA-2, SHA-3 e BLAKE"
+title: "Como escolher um hash: MD5, SHA-1, SHA-2, SHA-3 e BLAKE"
 summary: "Quais funções de hash ainda são seguras, quais estão quebradas, quais são seus tamanhos de saída e como escolher a certa."
 concepts: ["sha-256", "sha-3", "md5", "sha-1", "blake3", "hashing"]
 relatedTools: ["hash"]
@@ -26,7 +26,7 @@ Um hash criptográfico mapeia qualquer entrada para uma impressão digital de ta
 - **SHA-3** (Keccak) é um padrão mais novo construído sobre um design interno completamente diferente (uma construção de esponja) do SHA-2. SHA3-256 e SHA3-512 oferecem segurança comparável e existem em parte como uma proteção: se uma fraqueza fosse encontrada no SHA-2, é improvável que o SHA-3 a compartilhe. Ele também é imune por design ao problema de extensão de comprimento que afeta o SHA-2.
 - **BLAKE2 e BLAKE3** são hashes modernos e muito rápidos com forte segurança. O BLAKE3 em particular é feito para paralelizar, o que o torna atraente quando você faz hash de grandes volumes de dados e quer velocidade sem abrir mão da segurança.
 
-## Escolhendo um
+## Qual escolher
 
 Um guia rápido de decisão:
 

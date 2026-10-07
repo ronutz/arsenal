@@ -1,6 +1,6 @@
 ---
 slug: zscaler-tunnel-types-z-tunnel-gre-ipsec
-title: "Tipos de Túnel Zscaler: Z-Tunnel, GRE e IPsec, Com os Números"
+title: "Tipos de túnel Zscaler: Z-Tunnel, GRE e IPsec, com os números"
 summary: "Três túneis levam tráfego ao Zero Trust Exchange, e eles não são intercambiáveis: o Z-Tunnel do Client Connector para dispositivos, GRE e IPsec para localidades. Os números de capacidade publicados - 1 Gbps, a penalidade de 250 Mbps sob NAT, 400 Mbps por IP de origem - os formatos de expansão que a própria documentação usa, o padrão de HA, e o hábito de MTU que mantém os três saudáveis."
 concepts: ["zscaler", "z-tunnel", "gre", "ipsec", "capacity", "mtu", "dtls", "forwarding"]
 relatedTools: ["zscaler-tunnel-chooser"]
@@ -33,7 +33,7 @@ A comparação honesta, então, não é "qual é melhor", e sim "quais restriç�
 
 Cada um destes é um envelope, e [envelopes cobram bytes](/learn/tunnel-overhead-mtu-and-mss). A orientação de campo da Zscaler é o mesmo hábito que aquele artigo ensina: defina a MTU do túnel como o menor entre a MTU do appliance e a MTU medida do caminho, recue para **1400** quando o problema aparecer mesmo assim, e faça clamping do MSS do TCP para combinar - porque a assinatura de uma MTU de túnel errada (handshakes passam, dados de verdade travam) parece um problema do Zscaler e nunca é.
 
-## Escolhendo, deterministicamente
+## Uma escolha determinística
 
 A decisão inteira - eliminações, número por túnel, contagens mínimas de primários e backups - é mecânica uma vez nomeadas as restrições, e é por isso que ela é [uma ferramenta deste site](/tools/zscaler-tunnel-chooser): seis respostas entram, a recomendação dimensionada sai, cada passo e fonte exibidos. O resumo em formato de prova que ela codifica: criptografia, IP dinâmico ou dispositivo sem GRE significam IPsec a 400 por IP de origem; caso contrário GRE a 1000 (250 sob NAT dos endpoints internos); primários por divisão com teto; backups espelham os primários em outro data center.
 

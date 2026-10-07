@@ -39,6 +39,8 @@ import { populatedVendors } from "@/config/vendors";
 import SiteFooter from "@/components/SiteFooter";
 // The series rail (LS-0): renders nothing for an article in no series.
 import SeriesRail from "@/components/learn/SeriesRail";
+// The training series around the article (row 58, 2026-10-07): renders nothing for an article in no training series.
+import TrainingRail from "@/components/study-guides/TrainingRail";
 
 /** Pre-generate every article page for every locale at build time. */
 export function generateStaticParams() {
@@ -142,6 +144,8 @@ export default async function ArticlePage({
             />
             <h1 className="article-title">{article.title}</h1>
             <p className="article-summary">{article.summary}</p>
+            {/* Where this article sits in its training series: module, part, progress, the next part (row 58). */}
+            <TrainingRail slug={slug} locale={locale} placement="top" />
             {/* Where this article sits in its series, and the series' contents (LS-0). */}
             <SeriesRail slug={slug} locale={locale} placement="top" />
             {(locale === "en" || locale === "pt-BR") && (
@@ -176,6 +180,10 @@ export default async function ArticlePage({
                 components={{ BigipTimeline, GlossaryTerm, DiversionScene }}
               />
             </div>
+
+            {/* The training series' way on, before anything that leads elsewhere: the next part as the main
+                button, the end of a module or of the series announced (row 58). */}
+            <TrainingRail slug={slug} locale={locale} placement="bottom" />
 
             {/* End-of-read share (A1 nested provider: the share namespace only),
                 at the natural moment a reader finishes the article. */}

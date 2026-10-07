@@ -147,8 +147,11 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
                 <p className="materials-lineage">{t(`${k}.lineage`)}</p>
               </div>
               <figure className="materials-cover">
-                {/* The full-size slide is the link target; the image's alt text names the link. */}
-                <a href={coverSrc} className="materials-shot-link" title={t("labels.openFull")}>
+                {/* The cover is the way into the presenter (row 63, PRIME 2026-10-07 10:30: "go to present the slides
+                    when selecting the course cover thumbnail"), in place of the Present button the box below carried.
+                    It never links its own image file (row 60, 08:31: a bare image sends the reader off the page for
+                    nothing). The link is named for what it does; the image keeps its description. */}
+                <Link href={`/materials/${slug}/present`} className="materials-shot-link materials-cover-link" aria-label={t("door.present")}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     className="materials-shot"
@@ -158,18 +161,14 @@ export default async function MaterialDatasheetPage({ params }: { params: Promis
                     alt={t(`${k}.coverAlt`)}
                     decoding="async"
                   />
-                </a>
-                <figcaption className="materials-shot-caption">{t("labels.coverCaption", { n: m.images.cover, slides: m.slides })}</figcaption>
+                </Link>
+                {/* The caption says what the cover does (row 63), where it used to say which slide it is. */}
+                <figcaption className="materials-shot-caption">{t("labels.coverPresent")}</figcaption>
               </figure>
             </div>
             <div className="materials-get">
               <h2 className="materials-get-title">{t("labels.getTheCourse")}</h2>
-              {/* Present first: the course in the browser, nothing to download (m2). */}
-              <p className="materials-present-cta">
-                <Link href={`/materials/${slug}/present`} className="btn btn-primary">
-                  {t("door.present")} &rarr;
-                </Link>
-              </p>
+              {/* The Present button that stood here (m2) gave way to the cover itself (row 63, PRIME 2026-10-07 10:30). */}
               <ul className="materials-get-list">
                 {files.map((f) => (
                   <li key={f.path}>

@@ -1,6 +1,6 @@
 ---
 slug: reading-a-syslog-message-field-by-field
-title: "Lendo uma mensagem syslog campo a campo: o que um parser verifica, e de onde vem cada regra"
+title: "Como ler uma mensagem syslog campo a campo: o que um parser verifica, e de onde vem cada regra"
 summary: "Uma mensagem RFC 5424 são sete campos de cabeçalho, um bloco de dados estruturados e uma cauda de texto livre, e cada um deles tem uma regra que um parser pode testar: a regra do zero à esquerda do PRI, o T e o Z maiúsculos do timestamp, o APP-NAME de 48 caracteres, os escapes dentro dos dados estruturados, a marca de ordem de bytes que anuncia UTF-8, as linhas de 480 e 2048 octetos e as duas maneiras de enquadrar uma mensagem em TCP. Lido nas próprias RFCs, com o parser que aplica cada regra enquanto você avança."
 concepts: ["syslog", "rfc 5424", "rfc 3164", "structured data", "octet counting", "framing", "parsing", "logging"]
 relatedTools: ["syslog-message-parser", "syslog-pri-decoder"]

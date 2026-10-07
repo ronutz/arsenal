@@ -1,6 +1,6 @@
 ---
 slug: zpa-architecture-app-connectors-service-edges
-title: "Arquitetura do ZPA: Duas Chamadas de Saída e um Broker no Meio"
+title: "Arquitetura do ZPA: duas chamadas de saída e um broker no meio"
 summary: "O Zscaler Private Access não expõe nada: o usuário disca para fora, um App Connector ao lado da aplicação disca para fora, e um Service Edge costura os dois num Microtunnel por aplicação. Os componentes - App Connectors, Public e Private Service Edges, a Central Authority - o modelo de TLS de dentro para fora que torna os apps invisíveis, e por que o broker nunca inspeciona os dados que carrega."
 concepts: ["zscaler", "zpa", "app connector", "service edge", "microtunnel", "ztna", "inside-out", "central authority"]
 relatedTools: []
@@ -29,7 +29,7 @@ Service Edges vêm em duas implantações com um só trabalho. Os **Public Servi
 
 A descrição do cargo tem uma omissão deliberada: para o Private Access, o Service Edge **não inspeciona os dados** que fluem pelos Microtunnels que ele intermedia - o fabricante declara o contraste com o ZIA com todas as letras, e o emparelha com a postura operacional de que Service Edges mantêm dados de pacote apenas em memória e nunca gravam em disco, transmitindo os logs de transação para o Log Streaming Service. O broker conecta e aplica *acesso*; ele não é um ponto de inspeção de conteúdo. Proteção de conteúdo para aplicações privadas é uma camada separada e explícita (o AppProtection da Zscaler), adicionada onde o projeto exige em vez de presumida.
 
-## Lendo como um operador
+## Leia o ZPA como um operador
 
 O hábito das duas pernas do artigo da plataforma afia-se aqui em três: usuário até o Service Edge, App Connector até o Service Edge, e connector até a aplicação - [três realidades TCP](/learn/tcp-connection-lifecycle), cada uma com seus próprios modos de falha. Acesso negado é política na Central Authority; conectado-mas-nada-carrega aponta para a perna connector-aplicação ou para o DNS do connector; lento-para-um-usuário é o caminho do Microtunnel daquele usuário, não a aplicação. E o planejamento de capacidade é horizontal por doutrina: connectors são implantados em grupos, mais de um por localidade, porque atualizações e falhas são absorvidas pelos pares - a mesma filosofia de adicionar-outro-nó que o Exchange inteiro pratica, aplicada à porta da aplicação.
 

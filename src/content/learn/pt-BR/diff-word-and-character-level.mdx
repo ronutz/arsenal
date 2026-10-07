@@ -13,7 +13,7 @@ updated: "2026-08-10"
 
 O diff clássico trabalha com linhas inteiras. Se você muda uma palavra em um parágrafo, um diff de linha mostra a linha antiga inteira como removida e a linha nova inteira como adicionada, e deixa você localizar a diferença de fato a olho. Para código isso normalmente está bom. Para prosa, linhas longas de configuração, ou uma correção de um caractere, é frustrante.
 
-## Dando zoom
+## Zoom dentro da linha
 
 Um diff em **nível de palavra** primeiro alinha as linhas alteradas, depois as compara de novo na granularidade de palavras, destacando apenas as palavras que diferem. Um diff em **nível de caractere** vai ainda mais fino, marcando os caracteres exatos que mudaram. Ambos mantêm o texto inalterado da linha visível, então uma correção como mudar `recieve` para `receive` mostra apenas essas duas letras se movendo em vez de a frase inteira piscar.
 

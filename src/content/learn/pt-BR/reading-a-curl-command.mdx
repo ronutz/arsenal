@@ -1,7 +1,7 @@
 ---
 slug: reading-a-curl-command
-title: "Lendo um comando curl"
-summary: "Um comando curl é um comando de shell: a palavra curl, um conjunto de opções e uma URL. Lê-lo é ver como o shell primeiro divide a linha (aspas, contrabarras, continuações de linha) e depois como o curl lê sinalizadores curtos, longos e agrupados."
+title: "Como ler um comando curl"
+summary: "Um comando curl é um comando de shell: a palavra curl, um conjunto de opções e uma URL. Para lê-lo, é preciso ver primeiro como o shell quebra a linha (aspas, barras invertidas, continuações de linha) e depois como o curl lê as flags curtas, longas e agrupadas."
 concepts: ["curl", "aspas de shell", "sinalizadores de linha de comando", "requisições http"]
 relatedTools: ["curl-command-explainer"]
 relatedArticles: ["curl-data-flags-and-content-type", "curl-method-inference", "curl-headers-auth-and-cookies"]
@@ -11,30 +11,30 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Um comando curl tem três partes: o nome do programa (`curl`), zero ou mais opções e uma URL de destino. Antes de o curl vê-las, o shell divide a linha em palavras e remove uma camada de aspas.
+Um comando curl tem três partes: o nome do programa (`curl`), zero ou mais opções e uma URL de destino. Antes que o curl veja qualquer uma delas, o shell quebra a linha em palavras e remove uma camada de aspas.
 
-As aspas importam porque corpos e cabeçalhos contêm espaços e caracteres especiais. Aspas simples são literais: tudo entre elas é passado sem alteração, e por isso corpos JSON costumam ser envolvidos em aspas simples. Aspas duplas permitem que o shell expanda variáveis e interprete algumas sequências de escape. Uma contrabarra no fim da linha é uma continuação de linha, unindo a linha seguinte, que é como o "Copiar como cURL" gera comandos legíveis em várias linhas.
+As aspas importam porque o corpo (body) e os headers da requisição têm espaços e caracteres especiais. Aspas simples são literais: tudo o que está entre elas passa intacto, e por isso corpos em JSON costumam vir entre aspas simples. Aspas duplas deixam o shell expandir variáveis e interpretar alguns escapes com barra invertida (backslash). Uma barra invertida no fim da linha é uma continuação de linha: ela junta a linha seguinte à atual, e é assim que a opção "Copy as cURL" ("Copiar como cURL", nas interfaces em português) gera comandos legíveis em várias linhas.
 
-As opções vêm em formas curta e longa. Sinalizadores curtos são um traço e uma letra (`-X`, `-H`, `-d`); os longos são dois traços e uma palavra (`--request`, `--header`, `--data`). Sinalizadores curtos podem ser agrupados: `-sSL` é `-s -S -L`. Um sinalizador que recebe um valor pode tê-lo anexado sem espaço, então `-XPOST` significa `-X POST`, o que confunde leituras apressadas.
+As opções têm uma forma curta e uma longa. As flags curtas são um traço e uma letra (`-X`, `-H`, `-d`); as longas são dois traços e uma palavra (`--request`, `--header`, `--data`). Flags curtas podem ser agrupadas: `-sSL` é o mesmo que `-s -S -L`. Uma flag que recebe valor pode vir com o valor colado, sem espaço, então `-XPOST` significa `-X POST`, o que engana quem lê com pressa.
 
-Tudo que não é uma opção nem o valor de uma opção é a URL. O curl acrescenta `https://` quando o esquema está ausente.
+O que não é opção nem valor de opção é a URL. Se o esquema estiver faltando, o curl acrescenta `https://`.
 
 
-## Leia na ordem em que a requisição é construída, não na ordem em que foi digitada
+## Leia na ordem em que a requisição é montada, não na ordem em que foi digitada
 
-As flags de um comando curl podem aparecer em qualquer ordem, o que significa que **a sequência na página não tem relação com a sequência do que acontece.** Ler da esquerda para a direita é ler os hábitos de digitação do autor.
+As flags de um comando curl podem aparecer em qualquer ordem, e isso quer dizer que **a sequência escrita na linha não tem nada a ver com a sequência do que acontece.** Ler da esquerda para a direita é ler os hábitos de digitação de quem escreveu o comando.
 
-A ordem que importa é a da própria requisição: **método, depois URL, depois cabeçalhos, depois corpo, depois o que acontece com a resposta.** Reconstruir o comando assim transforma uma linha longa em quatro perguntas curtas e torna óbvia a peça que falta — um `-d` sem tipo de conteúdo, um `-H` que duplica algo que o curl já define, uma flag de redirecionamento que muda o que a coisa toda faz.
+A ordem que importa é a da própria requisição: **método, depois URL, depois headers, depois corpo, depois o que acontece com a resposta.** Remontar o comando nessa ordem transforma uma linha comprida em quatro perguntas curtas e deixa evidente a peça que falta: um `-d` sem Content-Type, um `-H` que repete algo que o curl já define sozinho, uma flag de redirecionamento que muda o que o comando inteiro faz.
 
-**Um comando que você não consegue reenunciar nessa ordem é um comando que você não terminou de ler** — o que mais importa quando ele veio de outra pessoa e você está prestes a executá-lo.
+**Se você não consegue recontar o comando nessa ordem, é porque ainda não terminou de lê-lo**, e isso importa principalmente quando o comando veio de outra pessoa e você está prestes a executá-lo.
 
-## Esta série, em ordem
+## A série, na ordem
 
-Este artigo abre a série **curl, flag por flag**. Ele mostra como o shell divide a linha antes de o curl vê-la; as partes então leem a requisição que o comando monta, na ordem em que ela é montada (método, corpo, cabeçalhos e credenciais), verificam sua postura de segurança, traduzem-na para o navegador e terminam com tudo o que o curl fala além do HTTP.
+Este artigo abre a série **curl, flag por flag**. Ele mostra como o shell quebra a linha antes de o curl vê-la; os artigos seguintes leem a requisição que o comando monta, na ordem em que ela é montada (método, corpo, headers e credenciais), avaliam a postura de segurança dela, traduzem o comando para o navegador e terminam com tudo o que o curl fala além do HTTP.
 
-1. **[Como o curl infere o método HTTP](/learn/curl-method-inference)**. Por que um corpo implica POST, -I implica HEAD e -G força GET, e por que um -X explícito sempre vence.
-2. **[Sinalizadores de dados do curl e a armadilha do Content-Type](/learn/curl-data-flags-and-content-type)**. As formas de anexar um corpo, e a armadilha: -d envia codificação de formulário, não JSON.
-3. **[Cabeçalhos, autenticação e cookies no curl](/learn/curl-headers-auth-and-cookies)**. -H, -u, um token bearer como cabeçalho comum, e -b e -c para cookies: tudo o que identifica a requisição.
-4. **[Sinalizadores do curl que mudam a postura de segurança](/learn/curl-security-flags)**. -k, http puro e credenciais na URL: as flags que vale ler antes de rodar ou compartilhar um comando.
-5. **[Traduzindo curl para fetch()](/learn/curl-to-fetch)**. A mesma requisição no fetch() do navegador, e as diferenças que exigem cuidado: Content-Type de formulário, cookies, verificação TLS.
+1. **[Como o curl infere o método HTTP](/learn/curl-method-inference)**. Por que um corpo implica POST, -I implica HEAD e -G força GET, e por que um -X explícito sempre prevalece.
+2. **[Flags de dados do curl e a armadilha do Content-Type](/learn/curl-data-flags-and-content-type)**. As formas de incluir um corpo na requisição, e a armadilha: -d envia os dados codificados como formulário, não como JSON.
+3. **[Headers, autenticação e cookies no curl](/learn/curl-headers-auth-and-cookies)**. -H, -u, um bearer token enviado como header comum, e -b e -c para cookies: tudo o que identifica a requisição.
+4. **[Flags do curl que mudam a postura de segurança](/learn/curl-security-flags)**. -k, http sem criptografia e credenciais na URL: as flags que vale ler antes de rodar ou compartilhar um comando.
+5. **[Como traduzir curl para fetch()](/learn/curl-to-fetch)**. A mesma requisição no fetch() do navegador, e as diferenças que pedem cuidado: o Content-Type de formulário, os cookies, a verificação de TLS.
 6. **[Os 27 protocolos que o curl fala](/learn/curl-protocols-beyond-http)**. FTP, SFTP, SMB, SMTP, IMAP, MQTT, LDAP (Lightweight Directory Access Protocol) e as relíquias: os 27 esquemas de URL que o curl fala hoje.

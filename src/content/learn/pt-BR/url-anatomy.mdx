@@ -1,6 +1,6 @@
 ---
 slug: url-anatomy
-title: "A Anatomia de uma URL"
+title: "A anatomia de uma URL"
 summary: "Toda URL é construída a partir do mesmo punhado de partes definidas pela RFC 3986: esquema, autoridade (userinfo, host, porta), caminho, query e fragmento. O que cada parte significa, como um parser as distingue e onde os limites realmente caem."
 concepts: ["url", "uri", "rfc 3986", "scheme", "authority", "host", "path", "query", "fragment"]
 relatedTools: ["url-inspector"]
@@ -31,7 +31,7 @@ Se a URL tem uma barra dupla após o esquema, o que vem em seguida até a próxi
 
 O caminho identifica o recurso no host: `/path/to/page`. É uma sequência de segmentos separados por barras, e um inspetor pode listar esses segmentos individualmente. A query, introduzida por um ponto de interrogação, carrega parâmetros: `q=hello&lang=en`. Sua estrutura interna é uma convenção que merece o próprio artigo sobre [query strings](/learn/query-strings). O fragmento, introduzido por uma cerquilha, aponta dentro do recurso: `section`. O fragmento é especial em um aspecto importante: ele é tratado inteiramente pelo cliente e nunca é enviado ao servidor, e por isso é um bom lugar para manter dados que você não quer nos logs do servidor.
 
-## Lendo-as separadamente
+## Por que ler as partes separadamente
 
 O valor de ver uma URL dividida nessas partes nomeadas é que erros sutis se tornam óbvios. Uma senha escondida no userinfo, uma porta não padrão, um host que na verdade é um endereço IP, um parâmetro enterrado em uma query longa: todos eles se destacam quando a URL é decomposta. O inspetor de URL faz exatamente essa decomposição, fielmente e sem normalizar a URL, então o que você vê é o que a URL realmente diz.
 

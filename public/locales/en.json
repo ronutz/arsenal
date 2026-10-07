@@ -23948,6 +23948,61 @@
             "route-redistribution": "Route redistribution and the loops it invites"
           }
         }
+      },
+      "rail": {
+        "label": "{series}: where this article sits",
+        "position": "Module {module} of {modules}, <strong>{title}</strong> · part {part} of {parts}",
+        "progress": "Part {n} of the {total} written parts of the series",
+        "map": "The series map",
+        "next": "Next: {title}",
+        "parts": "The parts of module {n}",
+        "partOf": "Part {part} of {parts}"
+      },
+      "next": {
+        "label": "Continue {series}",
+        "next": "Next · module {module}, part {part}",
+        "previous": "Previous: {title}",
+        "moduleDone": "That ends module {n}. Next comes module {next}: <strong>{title}</strong>.",
+        "practise": "Practise this module on:",
+        "seriesEnd": "This is the last part of {series} written so far.",
+        "nextLevel": "Next level: <link>{series}</link>."
+      },
+      "startPage": {
+        "metaTitle": "{title} - Training series",
+        "eyebrow": "Training series · {short} · level {level}",
+        "begin": "Begin: part 1, {title}",
+        "howTitle": "How the series works",
+        "how1": "Read the parts in order. Each one builds on the ones before it, and every part's page shows where you are in the series and what comes next.",
+        "how2": "Each module ends with a stated outcome: what you will be able to do once you have read it.",
+        "how3": "Practise on the tools each module names. They run in your browser, with nothing to install.",
+        "how4": "Parts still being written are named in their places, so the series shows its whole shape from the start.",
+        "mapTitle": "The series, module by module",
+        "after": "When you finish: <link>{series}</link>, the next level.",
+        "before": "Before this series: <link>{series}</link>."
+      },
+      "more": "About the series, its outcome, what to read first and its modules",
+      "curriculumCount": "{count, plural, one {# series} other {# series}}",
+      "curricula": {
+        "netfun": {
+          "name": "NetFun",
+          "title": "Network Fundamentals"
+        },
+        "secfun": {
+          "name": "SecFun",
+          "title": "Security Fundamentals"
+        },
+        "srefun": {
+          "name": "SRE-Fun",
+          "title": "Operations and reliability"
+        },
+        "appfun": {
+          "name": "AppFun",
+          "title": "Applications and the web"
+        },
+        "devfun": {
+          "name": "DevFun",
+          "title": "Development fundamentals"
+        }
       }
     }
   },
@@ -27821,6 +27876,7 @@
       "lookInsideLede": "{count} of the {slides} slides, chosen for their diagrams. Each one opens at full size.",
       "slide": "Slide {n}",
       "coverCaption": "The cover, slide {n} of {slides}",
+      "coverPresent": "Click on the cover to present the deck",
       "openFull": "Open at full size",
       "viewerClose": "Close",
       "viewerPrevious": "Previous slide",
@@ -28163,6 +28219,7 @@
     "railLabel": "The series {series}",
     "previous": "Previous, part {n}",
     "next": "Next, part {n}",
+    "topNext": "Next, part {n}: {title}",
     "backToOpener": "Back to the opener",
     "allSeries": "All the series",
     "count": "{written} of {total, plural, one {# part} other {# parts}} written",

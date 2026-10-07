@@ -1,6 +1,6 @@
 ---
 slug: reading-a-fortigate-sniffer-trace
-title: "Lendo uma captura do sniffer do FortiGate"
+title: "Como ler uma captura do sniffer do FortiGate"
 summary: "O comando diagnose sniffer packet do FortiGate reúne cinco argumentos posicionais em uma linha: interface, filtro, verbosidade, contagem e formato de horário. Este artigo explica o que cada argumento faz, o que os seis níveis de verbosidade realmente imprimem, por que uma captura às vezes não mostra nada (remoção da tag de VLAN e offload em hardware) e como transformar a saída em um pcap para o Wireshark."
 concepts: ["fortinet", "fortigate", "fortios", "sniffer de pacotes", "diagnose sniffer packet", "captura de pacotes", "diagnostico", "pcap"]
 relatedTools: ["fortios-sniffer-builder", "fortigate-session-table-explainer"]
@@ -50,7 +50,7 @@ A primeira é a remoção da tag de VLAN, já mencionada: em `any` e em interfac
 
 A segunda, e a surpresa mais comum, é o offload em hardware. Em modelos de FortiGate com processadores de rede (NP) ou um system-on-chip, sessões estabelecidas são descarregadas para o ASIC e não passam mais pela CPU, então o sniffer do kernel simplesmente não consegue vê-las. Se uma sessão deveria estar fluindo mas o sniffer está silencioso, desabilite temporariamente o offload na política de firewall correspondente com `set auto-asic-offload disable`, reproduza e reabilite depois. Isto é um passo de diagnóstico, não uma configuração permanente.
 
-## Transformando a captura em um pcap
+## Como transformar a captura em um pcap
 
 Ler hexadecimal em um terminal só ajuda até certo ponto. Capture na verbosidade 3 ou 6 (para o quadro Ethernet completo estar presente), copie a saída e passe-a pelo script Perl `fgt2eth.pl` da Fortinet, que converte o texto do sniffer em um arquivo `.pcap` que você pode abrir no Wireshark. A partir daí você tem a decodificação completa de protocolos, o follow-stream e a filtragem que um terminal não oferece.
 

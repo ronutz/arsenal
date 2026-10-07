@@ -1,6 +1,6 @@
 ---
 slug: irules-scan-command
-title: "scan em iRules: desmontando valores sem expressões regulares"
+title: "scan em iRules: como desmontar valores sem expressões regulares"
 summary: "A própria referência da F5 recomenda comandos de string como scan no lugar de expressões regulares. scan é curto e rápido, mas o resultado conta conversões e não casamentos, -1 e 0 significam coisas diferentes, e o Tcl 8.4.6 guarda inteiros por meio de um int em C de 32 bits. Veja como ler um formato e as verificações que tornam um scan confiável."
 concepts: ["irules", "tcl", "f5", "scan", "parsing"]
 relatedTools: ["f5-irules-scan-explainer", "f5-irules-string-extract"]
@@ -13,7 +13,7 @@ updated: "2026-10-03"
 
 A página de referência da F5 para o operador `matches_regex` traz uma observação curta: é mais eficiente usar um comando de string do que uma expressão regular, e a maioria dos casos pode ser resolvida com `string match` ou `scan`. O `scan` desmonta um valor usando um formato, como o `sscanf` do C, e guarda os pedaços em variáveis. Os iRules rodam o Tcl 8.4.6 (F5 K6091), então o `scan` descrito aqui é o dele.
 
-## Lendo um formato
+## Como ler um formato
 
 Um formato é uma sequência de três tipos de diretiva:
 

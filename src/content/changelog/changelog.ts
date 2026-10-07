@@ -52,6 +52,97 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Row 63 (PRIME 2026-10-07 10:30): the course cover opens the presenter.
+    date: "2026-10-07",
+    time: "10:32",
+    kind: "feature",
+    title: "Click the course cover to present the deck",
+    body:
+      "On an open material's page, the cover beside the title is now the way into the presenter: a click on it opens the slides in the browser, and its caption says so. It takes the place of the Present the slides button that stood above the downloads.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Row 59, the first worst-first wave (PRIME 2026-10-07 06:56): forty Portuguese articles in natural Brazilian Portuguese.
+    date: "2026-10-07",
+    time: "10:27",
+    kind: "i18n",
+    title: "Forty more articles in natural Brazilian Portuguese, and the sources quoted in their own words",
+    body:
+      "The Portuguese edition of forty more Learn articles, the ones that read most like a translation of the English, is rewritten the way a Brazilian instructor writes: natural sentences, the jargon Brazilian engineers say in English kept in English with a Portuguese gloss where it helps, titles and headings in Portuguese sentence case. The facts, figures, links and sources are unchanged. In ten articles the sources section had quoted its sources in Portuguese; those quotations are back in the sources' own English words. The Portuguese history of DNS regains the link to the history of the application delivery controllers that its English edition has.",
+    articles: ["accounting-who-did-what-and-when", "adc-family-history", "bigip-ai-mcp", "bigip-dns-request-processing-order", "bigip-route-domains", "dig-query-options", "dig-trace-and-delegation", "dns-blocklists-and-response-policy", "dnssec-records-in-dig", "enforcing-forward-secrecy-on-f5", "fortidlp-architecture-and-deployment", "fortisoar-architecture-and-data-model", "hidden-messages-in-http-headers", "hmac-api-signing", "http-headers-anatomy", "http-proxy-forward-and-reverse", "http-versions-09-to-3", "hybrid-key-exchange-in-tls", "jwt-anatomy", "load-balancing-what-actually-decides-where-a-request-goes", "nac-family-history", "nslookup-errors-explained", "passive-fingerprinting-what-you-emit", "reading-a-curl-command", "reading-nslookup-output", "secure-headers-overview", "sortable-id-formats", "ssl-forward-proxy-interception", "tcp-proxy-layer-4", "the-500-mile-email", "the-kaminsky-dns-flaw", "tls-reverse-proxy-inbound", "tls12-tls13-dtls-quic", "traffic-diversion-and-the-man-in-the-middle", "tunnel-overhead-mtu-and-mss", "uuid-versions", "voss-i-sid-and-vsns", "what-happens-if-the-dns-root-goes-dark", "xc-service-policy-predicates-and-logic", "zia-traffic-forwarding-methods"],
+  },
+  {
+    // Row 61 follow-up (2026-10-07): the curriculum heading shows that it folds.
+    date: "2026-10-07",
+    time: "10:27",
+    kind: "feature",
+    title: "Study guides: the curriculum heading shows that it folds",
+    body:
+      "The NetFun heading over the training series folded when clicked but showed no sign that it could, unlike the series cards under it. It now carries a small triangle that turns down while the curriculum is open.",
+    links: [{ label: "Study guides", href: "/study-guides" }],
+  },
+  {
+    // Row 59, the titles pass (PRIME 2026-10-07 06:56): Portuguese titles and headings in Brazilian sentence case.
+    date: "2026-10-07",
+    time: "09:20",
+    kind: "i18n",
+    title: "Portuguese titles and headings in Brazilian sentence case",
+    body:
+      "496 Portuguese titles and headings across the Learn articles, the tool documentation, the practice pieces and the blog lose the English habit of capitalising every word. The ones that opened with a gerund, the English -ing, or carried one right after a colon, are reworded the way Brazilian titles read: Como configurar, not Configurando. The dashes in headings are gone. Product and feature names keep their capitals. The articles themselves follow in the full rewrite, the series first.",
+  },
+  {
+    // Row 61 (PRIME 2026-10-07 08:41): the training series grouped by curriculum, collapsible.
+    date: "2026-10-07",
+    time: "09:20",
+    kind: "feature",
+    title: "Study guides: the training series grouped by curriculum, and each one collapsible",
+    body:
+      "The training series on the study guides page now sit under their curriculum, NetFun for now and SecFun, SRE-Fun, AppFun and DevFun as their series arrive, each curriculum a section that folds away. Each series shows a one-glance head, its badge, title, size and Start the series, with what it is about, its outcome, what to read first and its modules one click below. Expand all and Collapse all work over the whole section.",
+    links: [{ label: "Study guides", href: "/study-guides" }],
+  },
+  {
+    // Row 60 (PRIME 2026-10-07 08:31): the course cover no longer links to its image file.
+    date: "2026-10-07",
+    time: "09:20",
+    kind: "feature",
+    title: "The course cover is a picture, not a link",
+    body:
+      "On an open material's page, the cover slide beside the title used to link to its own image file, which took the reader off the page to a bare picture. It is now just the picture. The slides of A look inside still open over the page.",
+    links: [{ label: "TCP/IP: Concepts and IP Routing", href: "/materials/tcpip-concepts-and-ip-routing" }],
+  },
+  {
+    // Row 59, second batch (PRIME 2026-10-07 06:56): NetFun II's longer articles in natural Brazilian Portuguese.
+    date: "2026-10-07",
+    time: "08:11",
+    kind: "i18n",
+    title: "NetFun II's longer articles in natural Brazilian Portuguese",
+    body:
+      "The Portuguese edition of NetFun II's sixteen longer articles, on addressing, DNS and routing, is rewritten the way a Brazilian instructor writes: natural sentences instead of a literal rendering of the English, the jargon Brazilian engineers say in English kept in English (frame, payload, header, hop, handshake, troubleshooting), with a Portuguese gloss where it helps, titles and headings in Portuguese sentence case, and the quotations of standards and sources back in their own English words where the earlier edition had translated them. The facts, figures, links and sources are unchanged; the shorter parts follow in the same register as they are enriched.",
+    articles: ["anatomy-of-a-dig-command-line", "bgp-and-the-routing-chokepoint", "cgnat-address-sharing-and-attribution", "cidr-notation", "dijkstra-and-the-twenty-minute-algorithm", "dns-family-history", "dynamic-routing-compared", "first-hop-redundancy-vrrp-and-hsrp", "ipv6-addressing", "reading-a-dns-answer", "route-redistribution", "router-family-history", "static-routes-and-longest-match", "subnetting-basics", "vlsm-worked-example", "vlsm"],
+    links: [{ label: "NetFun II", href: "/study-guides/netfun-2" }],
+  },
+  {
+    // Row 59, first batch (PRIME 2026-10-07 06:56): NetFun I's Portuguese rewritten in natural Brazilian Portuguese.
+    date: "2026-10-07",
+    time: "08:10",
+    kind: "i18n",
+    title: "NetFun I in natural Brazilian Portuguese",
+    body:
+      "The Portuguese edition of every NetFun I article is rewritten the way a Brazilian instructor writes: natural sentences instead of a literal rendering of the English, the jargon Brazilian engineers say in English kept in English (frame, payload, header, hop, handshake, troubleshooting), with a Portuguese gloss where it helps, titles and headings in Portuguese sentence case, and the quotations of standards and sources back in their own English words where the earlier edition had translated them. The facts, figures, links and sources are unchanged.",
+    articles: ["802-1x-and-eap-methods", "arp-and-mac-addresses", "bits-bytes-and-the-two-kinds-of-kilo", "bridge-switch-family-history", "ethernet-physical-layers", "fibre-basics", "gpon-how-one-fiber-serves-a-neighborhood", "how-networking-inherited-two-alphabets", "ieee-802-working-groups", "jumbo-frames", "krack-and-the-wifi-handshake", "last-mile-evolution-pots-to-fiber", "link-aggregation-and-lacp", "network-devices-switch-router-firewall", "network-scopes-family-history", "radio-spectrum", "spanning-tree-in-one-article", "structured-cabling", "submarine-cables-and-the-physical-internet", "the-ethernet-frame-field-by-field", "the-protocol-wars", "the-rfc-series", "transceiver-family-history", "vlans-and-8021q-trunking", "what-is-an-oui", "wireless-family-history", "wireless-networking-from-802-11-to-wifi-7"],
+    links: [{ label: "NetFun I", href: "/study-guides/netfun-1" }],
+  },
+  {
+    // Row 58 (PRIME 2026-10-07 06:52): every "Start the series" a strong start.
+    date: "2026-10-07",
+    time: "08:10",
+    kind: "feature",
+    title: "Training series: a start page each, and the series around every part",
+    body:
+      "Start the series used to open a series' first article and leave the student there. Each training series now has its own page, which is where Start the series leads: what you will be able to do at the end, what to read first, how the series works, the whole map module by module, and one button to begin with part 1. Every part's article now carries the series around it: at the top, the module and the part with a bar of progress and the next part; at the end, before any other link, the next part as the main button, the end of a module announced with its tools to practise on, and the next level when the series ends. The article series on Learn show their next part at the top as well.",
+    links: [{ label: "NetFun I", href: "/study-guides/netfun-1" }, { label: "NetFun II", href: "/study-guides/netfun-2" }],
+  },
+  {
     // NF-2e1b (2026-10-07): the worked VLSM allocation follows its plan onto the site's router.
     date: "2026-10-07",
     time: "06:58",

@@ -1,7 +1,7 @@
 ---
 slug: bridge-switch-family-history
-title: "Pontes e comutadores: uma ideia, resolvida duas vezes"
-summary: "A ponte e o comutador são a mesma ideia com quarenta anos de distância, e a história passa por duas pessoas que raramente são citadas juntas. Radia Perlman resolveu o problema dos laços na Digital numa única noite de dezembro de 1985 e escreveu a resposta como um poema de doze linhas. A Kalpana pôs a mesma função em silício, uma porta por dispositivo, em 1990, e vendeu o resultado para a Cisco quatro anos depois. No caminho: por que Perlman diz que tudo isso nasceu de um erro da indústria, por que o comutador substituiu o hub sem ninguém chamar aquilo de melhoria de segurança, e o que acontece com uma camada declarada encerrada várias vezes."
+title: "Bridges e switches: a mesma ideia, resolvida duas vezes"
+summary: "A bridge e o switch são a mesma ideia, com quarenta anos de distância, e a história passa por duas pessoas que raramente são citadas juntas. Radia Perlman resolveu o problema dos loops na Digital numa única noite de dezembro de 1985 e escreveu a resposta na forma de um poema de doze linhas. A Kalpana colocou a mesma função em silício, em cada porta, em 1990, e vendeu o resultado para a Cisco quatro anos depois. No caminho: por que Perlman diz que tudo isso nasceu de um erro da indústria, por que o switch substituiu o hub sem que ninguém chamasse isso de ganho de segurança e o que acontece com uma camada que já foi dada como encerrada várias vezes."
 concepts: ["bridge", "switch", "spanning tree", "stp", "ethernet", "layer 2", "history"]
 relatedTools: []
 relatedArticles: ["firewall-family-history", "network-segmentation-from-vlans-to-microsegmentation", "tcp-proxy-layer-4"]
@@ -11,67 +11,67 @@ status: reviewed
 updated: "2026-09-03"
 ---
 
-Pontes e comutadores costumam ser ensinados como dois equipamentos. São uma ideia só, implementada duas vezes com trinta anos de silício no meio, e a segunda implementação foi tão mais barata que apagou a primeira do vocabulário mantendo todos os problemas dela.
+Bridges (pontes) e switches costumam ser ensinados como dois equipamentos diferentes. Na verdade, são uma ideia só, implementada duas vezes, com trinta anos de evolução do silício entre uma e outra, e a segunda implementação ficou tão mais barata que apagou a primeira do vocabulário, mas herdou todos os problemas dela.
 
-## O erro que criou o campo inteiro
+## O erro que criou toda essa área
 
-A explicação da própria Radia Perlman para a existência das pontes é o melhor ponto de partida, e não é lisonjeira para a indústria. Quando a Ethernet foi introduzida, diz ela, a indústria cometeu o erro de achar que a Ethernet era *a rede*, em vez de um enlace numa rede. As aplicações foram escritas supondo que tudo era uma Ethernet só. Elas não punham nos pacotes a informação de endereçamento que um roteador precisaria, então roteadores não conseguiam encaminhar entre Ethernets - e algo tinha de juntar os segmentos sem exigir que alguém reescrevesse o software.
+O melhor ponto de partida é a explicação da própria Radia Perlman para a existência das bridges, e essa explicação não é nada lisonjeira para a indústria. Segundo Perlman, quando a Ethernet surgiu, a indústria cometeu o erro de achar que a Ethernet era *a rede*, e não um link dentro de uma rede. As aplicações foram escritas supondo que tudo estava numa Ethernet só. Elas não colocavam nos pacotes a informação de endereçamento de que um roteador precisaria, então os roteadores não conseguiam encaminhar o tráfego de uma Ethernet para outra, e era preciso alguma coisa que juntasse os segmentos sem obrigar ninguém a reescrever o software.
 
-Esse algo foi a **ponte**: um equipamento que escuta todo quadro e o encaminha para as demais portas. Ela funciona justamente por não exigir nada das pontas. **O mundo inteiro da camada 2 existe como contorno de uma suposição feita cedo e nunca retirada**, e toda dificuldade dele desde então - inundação, laços, domínios de difusão, a tensão permanente entre uma rede plana grande e várias pequenas - descende disso.
+A solução foi a **bridge**: um equipamento que escuta todos os frames (quadros) e os encaminha pelas suas outras portas. Ela funciona justamente porque não exige nada dos endpoints. **O mundo inteiro da camada 2 existe para contornar uma suposição feita bem no começo e nunca corrigida**, e todas as dificuldades que vieram depois nascem daí: o flooding (o envio de um frame por todas as portas), os loops, os domínios de broadcast e a tensão constante entre uma rede grande e plana e várias redes pequenas.
 
-## Dezembro de 1985: um problema tido como insolúvel
+## Dezembro de 1985: um problema considerado insolúvel
 
-Redundância é o que torna uma rede confiável e é também o que torna uma rede em ponte fatal. Dois caminhos entre duas pontes significam que um quadro pode circular, e como quadro em ponte não tem contador de saltos para expirar, ele circula para sempre, multiplicando-se em cada junção até a rede se afogar em cópias de si mesma.
+A redundância é o que torna uma rede confiável, e é também o que mata uma rede feita com bridges. Com dois caminhos entre duas bridges, um frame pode ficar circulando, e, como o frame encaminhado por uma bridge não tem um contador de hops (de passagens por equipamento) que expire, ele circula para sempre, multiplicando-se a cada bifurcação até a rede se afogar em cópias dele mesmo.
 
-Um gerente da Digital deu esse problema a Radia Perlman, considerando-o provavelmente insolúvel. Ela foi para casa, acordou de noite com a solução formada, e escreveu a especificação na manhã seguinte - junto de um poema de doze linhas que descreve o protocolo de forma completa e correta. O artigo, de 1985, é **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
+Um gerente da Digital passou esse problema para Radia Perlman, achando que provavelmente não tinha solução. Ela foi para casa, acordou no meio da noite com a resposta pronta e escreveu a especificação na manhã seguinte, junto com um poema de doze linhas que descreve a solução de forma completa e correta. O artigo saiu em 1985: **An Algorithm for Distributed Computation of a Spanning Tree in an Extended LAN**.
 
-O algoritmo elege uma raiz, calcula os caminhos de menor custo até ela, e desativa todo enlace que não esteja na árvore resultante. Enlaces redundantes ficam fisicamente conectados e logicamente ociosos até algo falhar. A Digital o embarcou na sua ponte Ethernet de duas portas, e o IEEE o adotou como **802.1D em 1990**. O spanning tree rápido veio como 802.1w em 2001, e a própria Perlman depois desenhou o TRILL para que a Ethernet pudesse usar os enlaces que o spanning tree desliga.
+O algoritmo elege uma raiz (root), calcula os caminhos de menor custo até ela e desativa todos os links que não fazem parte da árvore resultante. Os links redundantes continuam conectados fisicamente, mas ficam parados, do ponto de vista lógico, até alguma coisa falhar. A Digital colocou o algoritmo na sua bridge Ethernet de duas portas, e o IEEE o adotou como **802.1D em 1990**. Depois veio o rapid spanning tree, o 802.1w, em 2001, e mais tarde a própria Perlman projetou o TRILL para que a Ethernet pudesse usar os links que o spanning tree desliga.
 
-Duas coisas sobre ela merecem ser ditas sem rodeio. Ela não recebeu royalties, e por anos o protocolo foi creditado a outros. E ela não gosta de ser chamada de mãe da internet - preferiria que as pessoas entendessem qual era o problema e o que a solução fez. A explicação dela para o próprio trabalho ter sido subestimado vale carregar: seus projetos eram tão enganosamente simples que as pessoas supunham que os problemas tinham sido fáceis, enquanto outros, que produziam projetos complicados e tecnicamente frágeis, descritos de um jeito que ninguém entendia, eram considerados gênios.
+Duas coisas sobre ela merecem ser ditas com todas as letras. Ela não recebeu royalties, e durante anos o protocolo foi creditado a outras pessoas. E ela não gosta de ser chamada de mãe da internet: prefere que as pessoas entendam qual era o problema e o que a solução fez. Vale guardar a explicação que ela dá para o trabalho dela ter sido subestimado: seus projetos eram tão enganosamente simples que as pessoas achavam que os problemas tinham sido fáceis, enquanto outros, que produziam projetos complicados e falhos, descritos de um jeito que ninguém entendia, eram considerados gênios.
 
-## 1990: a mesma função, em silício, por porta
+## 1990: a mesma função, em silício, em cada porta
 
-Uma ponte unia dois ou três segmentos. Tudo num segmento continuava dividindo o fio, continuava colidindo, continuava vendo o tráfego de todo mundo.
+Uma bridge unia dois ou três segmentos. Tudo o que estava num mesmo segmento continuava dividindo o mesmo fio, continuava sofrendo colisões e continuava vendo o tráfego de todo mundo.
 
-A **Kalpana**, fundada em Sunnyvale em 1990 por Vinod Bhardwaj e Larry Blair - batizada com o nome da esposa de Bhardwaj, que significa *imaginação* em sânscrito -, lançou o **EtherSwitch** de sete portas, o primeiro comutador Ethernet multiportas, seguido do EPS-1500 de quinze portas. A ideia era uma ponte com uma porta por dispositivo, em vez de uma porta por segmento. Os quadros iam só para onde precisavam ir.
+A **Kalpana**, fundada em Sunnyvale em 1990 por Vinod Bhardwaj e Larry Blair (o nome é o da esposa de Bhardwaj e significa *imaginação* em sânscrito), lançou o **EtherSwitch** de sete portas, o primeiro switch Ethernet multiporta, e depois o EPS-1500, de quinze portas. A ideia era uma bridge com uma porta para cada equipamento, em vez de uma porta para cada segmento. Os frames iam só para onde precisavam ir.
 
-As consequências foram maiores que a descrição sugere. Cada dispositivo passou a ter a taxa cheia do enlace, e não uma fração dela. As colisões sumiram, que é o que tornou o full duplex possível. A Ethernet pôde escalar a velocidades que o meio compartilhado nunca teria suportado, e é por isso que a transição para Fast Ethernet e depois Gigabit foi direta. A Kalpana também inventou o **EtherChannel**, agregando enlaces em paralelo para mais banda entre comutadores, que o IEEE padronizou como 802.3ad em 2000.
+As consequências foram maiores do que a descrição sugere. Cada equipamento passou a ter a velocidade cheia do link, e não uma fatia dela. As colisões sumiram, e foi isso que tornou o full duplex possível. A Ethernet pôde crescer para velocidades que o meio compartilhado nunca teria suportado, e é por isso que a transição para Fast Ethernet e depois para Gigabit foi simples. A Kalpana também inventou o **EtherChannel**, que usa vários links em paralelo para ter mais banda entre switches, e que o IEEE depois padronizou como 802.3ad, em 2000.
 
-E uma consequência que ninguém vendeu: num hub, capturar era trivial, porque toda estação via tudo. Num comutador, não era. **A comutação foi uma melhoria de segurança relevante que a indústria vendeu puramente como atualização de desempenho**, e as portas de espelhamento e os taps de que a monitoração hoje depende existem para desfazer isso de propósito.
+E houve uma consequência que ninguém usou como argumento de venda: num hub, capturar tráfego era trivial, porque todas as estações viam tudo. Num switch, não. **O switching foi um ganho de segurança importante que a indústria vendeu só como melhoria de desempenho**, e as portas de espelhamento (mirror) e os taps, dos quais o monitoramento depende hoje, existem justamente para desfazer isso de propósito.
 
-A Cisco comprou a Kalpana em 1994, junto de Grand Junction e Crescendo, e as combinou na linha Catalyst - a série 3000 vinda da Kalpana, e as 1700, 1900 e 2800 da Grand Junction. O enquadramento da Cisco na época era que roteamento de camada 3 e comutação de camada 2 eram funções complementares de inteligências diferentes: roteamento lento e complexo, comutação rápida e simples. Essa distinção moldou as linhas de produto e os cargos da indústria pela década inteira.
+A Cisco comprou a Kalpana em 1994, junto com a Grand Junction e a Crescendo, e juntou as três na linha Catalyst: a série 3000 veio da Kalpana, e as séries 1700, 1900 e 2800, da Grand Junction. O discurso da Cisco na época era que o roteamento de camada 3 e o switching de camada 2 eram funções complementares, com níveis diferentes de inteligência: o roteamento era lento e complexo, e o switching, rápido e simples. Essa divisão moldou as linhas de produto e os cargos da indústria durante a década inteira.
 
-## Evolução, e as discussões que voltam
+## A evolução e as discussões que sempre voltam
 
-- **Ponte transparente**, meados dos anos 1980. Aprende escutando, inunda o que não conhece.
-- **Spanning tree**, 1985, padronizado em 1990. Um caminho ativo, redundância guardada.
-- **Comutação**, 1990. Ponte por porta em hardware; o hub desaparece.
-- **Redes locais virtuais (VLANs)**, padronizadas como 802.1Q em 1998. Um comutador físico apresentando várias redes lógicas, que é onde a segmentação começa como disciplina.
-- **Comutação de camada 3**, do fim dos anos 1990. Roteamento em velocidade de hardware, o que encerrou em silêncio o enquadramento de lento e complexo.
-- **Malhas de data center**, a partir de 2010. TRILL, SPB e depois folha-espinha com roteamento na borda, todas desenhadas para escapar do fato de que o spanning tree desperdiça enlaces de propósito.
-- **Sobreposições**, VXLAN e afins. Uma rede de camada 2 construída sobre uma de camada 3, que é a indústria admitindo que as aplicações nunca deixaram de supor uma Ethernet plana.
+- **Transparent bridging** (a bridge transparente), meados dos anos 1980. Aprende escutando o tráfego e faz flooding do que não conhece.
+- **Spanning tree**, 1985, padronizado em 1990. Um único caminho ativo, com a redundância guardada de reserva.
+- **Switching**, 1990. Bridging em cada porta, feito em hardware; o hub desaparece.
+- **Redes locais virtuais (VLANs)**, padronizadas como 802.1Q em 1998. Um único switch físico apresentando várias redes lógicas, e é aí que a segmentação começa como disciplina.
+- **Switching de camada 3**, a partir do fim dos anos 1990. Roteamento na velocidade do hardware, o que acabou, sem alarde, com o discurso da Cisco de que rotear era lento e complexo.
+- **Fabrics de data center** (malhas de switches), a partir de cerca de 2010. TRILL, SPB e depois a topologia leaf-and-spine com roteamento na borda, todos projetados para escapar do fato de que o spanning tree desperdiça links de propósito.
+- **Overlays**, como o VXLAN e companhia. Uma rede de camada 2 construída em cima de uma rede de camada 3, ou seja, a indústria admitindo que as aplicações nunca deixaram de supor uma Ethernet única e plana.
 
-Esse último ponto é a piada recorrente. O erro que Perlman apontou - tratar a Ethernet como a rede - foi diagnosticado quarenta anos atrás, e o data center moderno gasta esforço considerável recriando uma ilusão de camada 2 plana sobre uma malha roteada, porque as aplicações continuam esperando isso.
+Esse último ponto é a piada que sempre volta. O erro que Perlman apontou, tratar a Ethernet como se fosse a rede, foi diagnosticado quarenta anos atrás, e o data center moderno gasta um esforço considerável para recriar a ilusão de uma camada 2 plana em cima de uma fabric roteada, porque as aplicações continuam esperando por isso.
 
-## Os cargos e hábitos que ficaram
+## Os cargos e os hábitos que o switching deixou
 
-A comutação criou a maior família de cargos técnicos de redes. A maioria das trilhas de certificação começa aqui por um motivo: o comutador é onde a carreira começa, porque é o equipamento que a organização tem em maior número e onde o erro é mais sobrevivível.
+O switching criou a maior família de cargos técnicos da área de redes. A maioria das trilhas de certificação começa por aqui, e não é por acaso: o switch é onde a carreira começa, porque é o equipamento que a empresa tem em maior quantidade e onde é mais fácil sobreviver a um erro.
 
-As práticas que vieram junto ainda são reconhecíveis. **Projeto de VLAN** como primeiro ato de segmentação. **Listas de permissão em tronco**, que decidem se aquela segmentação é real. **Segurança de porta e 802.1X**, que é autenticação chegando a uma camada projetada para confiar em qualquer coisa que se conecte. **Documentação de cabo e porta**, eternamente desatualizada. E o **medo de spanning tree** - cautela profissional específica, presente em todo operador que já viu um laço derrubar um sítio, e a razão de uma das quedas graves mais comuns em rede corporativa ainda ser alguém conectando duas portas que não deviam ter sido conectadas.
+As práticas que vieram junto continuam fáceis de reconhecer. O **design de VLANs**, como primeiro passo da segmentação. As **allow-lists de trunk** (as listas de VLANs permitidas em cada trunk), que decidem se essa segmentação é real. O **port security e o 802.1X**, que são a autenticação chegando a uma camada projetada para confiar em qualquer coisa que se ligue a ela. A **documentação de cabos e portas**, sempre desatualizada. E o **medo do spanning tree**: uma cautela profissional bem específica, presente em todo operador que já viu um loop derrubar um site inteiro, e um medo justificado, porque uma das quedas graves mais comuns em redes corporativas continua sendo alguém ligar duas portas que não deviam ter sido ligadas.
 
 ## As empresas
 
-A era da ponte pertenceu à Digital e às empresas deste catálogo que construíram o mercado em volta. A era da comutação começou com Kalpana e Grand Junction e foi consolidada quase imediatamente dentro da Cisco. Hoje o mercado é Cisco, Arista, Juniper, HPE via Aruba, Extreme Networks, Huawei, e os fabricantes de caixa branca vendendo hardware com o sistema operacional desacoplado - que é o desenvolvimento mais interessante, porque separa o comutador do software dele pela primeira vez desde que a função foi inventada.
+A era da bridge pertenceu à Digital e às empresas deste catálogo que construíram o mercado em torno dela. A era do switching começou com a Kalpana e a Grand Junction e foi absorvida quase de imediato pela Cisco. Hoje o mercado é formado por Cisco, Arista, Juniper, HPE (por meio da Aruba), Extreme Networks, Huawei e pelos fabricantes de white box (switches de hardware genérico), que vendem o hardware separado do sistema operacional. Esse é o movimento mais interessante, porque separa o switch do seu software pela primeira vez desde que a função foi inventada.
 
-## Para onde vai
+## O que vem pela frente
 
-**A distinção está se dissolvendo.** Um comutador moderno roteia, filtra, cifra e aplica política. Chamá-lo de equipamento de camada 2 é descrever uma função entre várias, e as categorias de prova sobreviveram à arquitetura.
+**A distinção está desaparecendo.** Um switch moderno roteia, filtra, criptografa e aplica política. Chamá-lo de equipamento de camada 2 é descrever uma função entre várias, e as categorias das provas continuaram existindo depois que a arquitetura mudou.
 
-**A malha está virando a unidade.** Ninguém mais configura comutador de data center individualmente; descreve-se a malha pretendida e controladores a renderizam. Isso move a habilidade da configuração de equipamento para intenção e verificação - e move o modo de falha junto.
+**A fabric está virando a unidade.** Ninguém mais configura um switch de data center individualmente: descreve-se a fabric desejada, e os controladores cuidam de implementá-la. Isso desloca a habilidade da configuração de equipamentos para a definição da intenção (intent) e a verificação, e muda junto o jeito como as coisas dão errado.
 
-**O silício está consolidando.** A maioria dos comutadores da maioria dos fabricantes usa silício de mercado de um punhado de fornecedores, o que torna a diferenciação uma questão de software e explica por que tanta discussão de fabricante hoje é sobre sistema operacional e automação, e não sobre encaminhamento.
+**O mercado de silício está se concentrando.** A maioria dos switches da maioria dos fabricantes hoje usa merchant silicon (chips de mercado) de um punhado de fornecedores, o que transforma a diferenciação numa questão de software e explica por que tanta discussão entre fabricantes hoje gira em torno de sistema operacional e automação, e não de forwarding.
 
-**E a camada continua se recusando a morrer.** A camada 2 foi declarada encerrada por toda geração desde que rotear ficou barato, e continua aí, porque as aplicações seguem sendo escritas por gente que supõe que a rede é uma coisa plana - que é exatamente a suposição que Perlman identificou nos anos 1980, ainda gerando trabalho quarenta anos depois.
+**E a camada continua se recusando a morrer.** Desde que rotear ficou barato, cada geração declarou o fim da camada 2, e ela continua aí, porque as aplicações continuam sendo escritas por gente que supõe que a rede é uma coisa só, plana. É exatamente a suposição que Perlman identificou nos anos 1980, e ela continua gerando trabalho quarenta anos depois.
 
 ## Fontes
 

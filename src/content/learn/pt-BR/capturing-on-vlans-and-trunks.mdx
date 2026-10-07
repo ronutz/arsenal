@@ -1,6 +1,6 @@
 ---
 slug: capturing-on-vlans-and-trunks
-title: "Capturando em VLANs, self-IPs e trunks"
+title: "Como capturar em VLANs, self-IPs e trunks"
 summary: "0.0 captura em todas as interfaces da TMM, mas às vezes você quer restringir a captura a um segmento. O BIG-IP permite indicar uma VLAN, um self-IP ou outros especificadores de interface no lugar de 0.0, e cada escolha muda o que você vê."
 concepts: ["tcpdump", "f5", "big-ip", "vlan", "self-ip", "trunk", "tmm"]
 relatedTools: ["f5-bigip-tcpdump-builder"]
@@ -29,7 +29,7 @@ Um self-IP é o endereço do próprio BIG-IP em uma VLAN. Capturar com escopo de
 
 Como os dois-pontos introduzem o sufixo de detalhe da TMM, um nome de interface não pode conter dois-pontos no BIG-IP. Se o nome da sua VLAN entrar em conflito, o padrão seguro é colocar entre aspas os nomes qualificados por partição, para que o shell e o tcpdump enxerguem o limite pretendido, e manter o sufixo de detalhe fora das aspas.
 
-## Escolhendo o escopo
+## Como escolher o escopo
 
 Recorra a `0.0` primeiro, porque é a visão mais completa e a menos propensa a perder um fluxo. Restrinja a uma VLAN ou self-IP quando `0.0` for volume demais em um dispositivo ocupado, ou quando a pergunta for especificamente sobre um segmento. Em todos os casos, mantenha um filtro no comando para que o arquivo fique limitado, como descrito em [capturando com segurança em um BIG-IP de produção](/learn/bigip-tcpdump-safety).
 

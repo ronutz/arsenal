@@ -23948,6 +23948,61 @@
             "route-redistribution": "Redistribuição de rotas e os loops que ela convida"
           }
         }
+      },
+      "rail": {
+        "label": "{series}: onde este artigo fica na série",
+        "position": "Módulo {module} de {modules}, <strong>{title}</strong> · parte {part} de {parts}",
+        "progress": "Parte {n} das {total} partes já escritas da série",
+        "map": "O mapa da série",
+        "next": "Próxima: {title}",
+        "parts": "As partes do módulo {n}",
+        "partOf": "Parte {part} de {parts}"
+      },
+      "next": {
+        "label": "Continuar a série {series}",
+        "next": "Próxima · módulo {module}, parte {part}",
+        "previous": "Anterior: {title}",
+        "moduleDone": "Aqui termina o módulo {n}. Em seguida vem o módulo {next}: <strong>{title}</strong>.",
+        "practise": "Pratique este módulo com:",
+        "seriesEnd": "Esta é a última parte já escrita da série {series}.",
+        "nextLevel": "Próximo nível: <link>{series}</link>."
+      },
+      "startPage": {
+        "metaTitle": "{title} - Séries de formação",
+        "eyebrow": "Série de formação · {short} · nível {level}",
+        "begin": "Começar: parte 1, {title}",
+        "howTitle": "Como a série funciona",
+        "how1": "Leia as partes em ordem. Cada uma se apoia nas anteriores, e a página de cada parte mostra onde você está na série e o que vem depois.",
+        "how2": "Cada módulo termina com um objetivo declarado: o que você vai conseguir fazer depois de lê-lo.",
+        "how3": "Pratique com as ferramentas que cada módulo indica. Elas rodam no seu navegador, sem nada para instalar.",
+        "how4": "As partes ainda em preparação aparecem com o nome no lugar delas, então a série mostra a forma completa desde o começo.",
+        "mapTitle": "A série, módulo por módulo",
+        "after": "Quando terminar: <link>{series}</link>, o próximo nível.",
+        "before": "Antes desta série: <link>{series}</link>."
+      },
+      "more": "Sobre a série, o objetivo, o que ler antes e os módulos",
+      "curriculumCount": "{count, plural, one {# série} other {# séries}}",
+      "curricula": {
+        "netfun": {
+          "name": "NetFun",
+          "title": "Fundamentos de redes"
+        },
+        "secfun": {
+          "name": "SecFun",
+          "title": "Fundamentos de segurança"
+        },
+        "srefun": {
+          "name": "SRE-Fun",
+          "title": "Operação e confiabilidade"
+        },
+        "appfun": {
+          "name": "AppFun",
+          "title": "Aplicações e a web"
+        },
+        "devfun": {
+          "name": "DevFun",
+          "title": "Fundamentos de desenvolvimento"
+        }
       }
     }
   },
@@ -27770,6 +27825,7 @@
       "lookInsideLede": "{count} dos {slides} slides, escolhidos pelos diagramas. Cada um abre em tamanho real.",
       "slide": "Slide {n}",
       "coverCaption": "A capa, slide {n} de {slides}",
+      "coverPresent": "Clique na capa para apresentar os slides",
       "openFull": "Abrir em tamanho real",
       "viewerClose": "Fechar",
       "viewerPrevious": "Slide anterior",
@@ -28112,6 +28168,7 @@
     "railLabel": "A série {series}",
     "previous": "Anterior, parte {n}",
     "next": "Próxima, parte {n}",
+    "topNext": "Próxima, parte {n}: {title}",
     "backToOpener": "De volta à abertura",
     "allSeries": "Todas as séries",
     "count": "{written} de {total, plural, one {# parte escrita} other {# partes escritas}}",

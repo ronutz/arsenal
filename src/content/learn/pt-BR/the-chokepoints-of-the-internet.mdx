@@ -19,7 +19,7 @@ O que existe, em vez disso, são lugares onde um número enorme de partes indepe
 
 Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fato é, o que quebra e em quanto tempo, quem conseguiria causar, e o que dá para fazer.
 
-## 1. Nomeação — [a raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark)
+## 1. Nomeação: [a raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark)
 
 **O que é.** Treze identidades de servidor operadas por doze organizações, servindo um arquivo pequeno e assinado que diz quais servidores são autoritativos para cada domínio de topo.
 
@@ -29,7 +29,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **Resposta.** Replicar. A zona é pública e assinada, então você pode guardar uma cópia local verificada e parar de depender dos servidores quanto a disponibilidade.
 
-## 2. Roteamento — [o BGP (Border Gateway Protocol)](/learn/bgp-and-the-routing-chokepoint)
+## 2. Roteamento: [o BGP (Border Gateway Protocol)](/learn/bgp-and-the-routing-chokepoint)
 
 **O que é.** Setenta e cinco mil redes contando umas às outras o que alcançam, sobre a premissa de que os participantes não mentem.
 
@@ -39,7 +39,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **Resposta.** Assinar as afirmações. A validação de origem por [RPKI](/glossary/rpki) e a higiene do [MANRS](/glossary/manrs) fecham a versão grosseira; a validação de caminho segue quase sem implantação.
 
-## 3. Físico — [os cabos submarinos](/learn/submarine-cables-and-the-physical-internet)
+## 3. Físico: [os cabos submarinos](/learn/submarine-cables-and-the-physical-internet)
 
 **O que é.** Algumas centenas de cabos carregando essencialmente todo o tráfego intercontinental, terminando num número bem menor de [estações de pouso](/glossary/landing-station).
 
@@ -49,7 +49,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **Resposta.** Comprar caminhos de fato separados, e conferir se dividem a mesma praia. É o ponto com menos respostas espertas e mais respostas caras.
 
-## 4. Confiança — [as autoridades certificadoras](/learn/the-certificate-authority-chokepoint)
+## 4. Confiança: [as autoridades certificadoras](/learn/the-certificate-authority-chokepoint)
 
 **O que é.** Uma lista plana de mais de cem organizações, qualquer uma das quais pode emitir um certificado válido para qualquer nome.
 
@@ -59,7 +59,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **Resposta.** A melhor ideia desta série: não mais confiança, e sim exposição pública. A [Transparência de Certificados](/glossary/certificate-transparency) torna a emissão observável, e os [registros CAA](/glossary/caa-record) estreitam a lista às autoridades que você escolheu.
 
-## 5. Concentração — [monocultura de nuvem e CDN (rede de distribuição de conteúdo)](/learn/cloud-and-cdn-monoculture)
+## 5. Concentração: [monocultura de nuvem e CDN (rede de distribuição de conteúdo)](/learn/cloud-and-cdn-monoculture)
 
 **O que é.** Nada disso é projeto. É o agregado de milhões de decisões racionais de compra, produzindo um domínio de falha compartilhado que ninguém comprou.
 
@@ -69,7 +69,7 @@ Este guia cobre seis. Para cada um, as mesmas quatro perguntas: o que ele de fat
 
 **Resposta.** É o único ponto que você consegue mover de forma significativa sozinho. Conheça seu grafo de dependências, tire dependência de fornecedor único onde for barato, projete para degradação — e lembre que [diversidade é propriedade do grafo, não da nota fiscal](/glossary/correlated-failure).
 
-## 6. Autoridade — [os desligamentos](/learn/internet-shutdowns-and-kill-switches)
+## 6. Autoridade: [os desligamentos](/learn/internet-shutdowns-and-kill-switches)
 
 **O que é.** Condições de licença e um telefonema a um punhado de operadoras.
 

@@ -1,7 +1,7 @@
 ---
 slug: network-scopes-family-history
-title: "Local, longa distância, e as palavras que deixaram de significar distância"
-summary: "A distinção entre rede local e rede de longa distância nunca foi realmente sobre geografia. Era sobre quem era dono do enlace e quanto custava mover um byte, e todo protocolo escrito antes de mais ou menos 1995 codifica uma suposição sobre de que lado dessa linha ele iria rodar. Esta é a história da família do escopo de rede - por que as categorias foram inventadas, por que VLANs e sobreposições as quebraram, e por que uma indústria que passou trinta anos insistindo que o perímetro era um lugar hoje usa a palavra local para dizer confiável."
+title: "LAN, WAN e as palavras que deixaram de significar distância"
+summary: "A diferença entre rede local e WAN nunca foi, de fato, uma questão de geografia. O que importava era quem era dono do link e quanto custava transportar um byte, e todo protocolo escrito antes de 1995, mais ou menos, traz embutida uma suposição sobre o lado dessa linha em que ia rodar. Esta é a história da família do escopo de rede: por que as categorias foram inventadas, por que as VLANs e os overlays quebraram essas categorias e por que um setor que passou trinta anos insistindo que o perímetro era um lugar hoje usa a palavra local para dizer confiável."
 concepts: ["lan", "wan", "man", "wlan", "vlan", "overlay", "history"]
 relatedTools: []
 relatedArticles: ["bridge-switch-family-history", "router-family-history", "sdn-family-history", "identity-family-history"]
@@ -11,73 +11,73 @@ status: reviewed
 updated: "2026-09-04"
 ---
 
-Quase todo curso de redes abre com o mesmo diagrama: local, metropolitana, longa distância, desenhadas como círculos concêntricos de tamanho crescente. É recurso didático razoável e descrição ruim do que as palavras um dia significaram.
+Quase todo curso de redes começa com o mesmo diagrama: LAN, MAN e WAN, desenhadas como círculos concêntricos, do menor para o maior. Como recurso didático, funciona; como descrição do que essas palavras chegaram a significar, é ruim.
 
 ## A distinção era econômica, e não geográfica
 
-Rede local é aquela em que **o cabo é seu**. Esse único fato produz todo o resto: banda não custa nada por byte, a latência é pequena o bastante para ignorar, e dá para acrescentar capacidade comprando equipamento em vez de renegociar contrato.
+Uma rede local, a LAN, é aquela em que **o cabo é seu**. Desse único fato sai todo o resto: a banda não custa nada por byte, a latência é tão pequena que dá para ignorar, e você aumenta a capacidade comprando equipamento, e não renegociando contrato.
 
-Rede de longa distância é aquela em que **outra pessoa é dona do circuito e cobra por ele**. A banda é tarifada, a latência é fixada pela geografia e pela velocidade da luz, e uma falha pode acontecer dentro de infraestrutura que você não tem permissão de inspecionar.
+Uma WAN (wide area network, a rede de longa distância) é aquela em que **o circuito é de terceiros, e eles cobram de você por ele**. A banda é tarifada, a latência depende da geografia e da velocidade da luz, e uma falha pode acontecer dentro de uma infraestrutura que você não tem permissão para inspecionar.
 
-A metropolitana fica entre as duas porque a economia dela fica: uma universidade ou um grupo hospitalar com fibra pela cidade tem um enlace que não é de graça nem cobrado por byte.
+A rede metropolitana, a MAN, fica no meio do caminho porque a economia dela também fica: uma universidade ou um grupo de hospitais com fibra espalhada pela cidade tem um link que não é de graça, mas também não é cobrado por byte.
 
-**Todo protocolo carrega uma suposição sobre de que lado dessa linha vai rodar.** Protocolo tagarela, que pergunta e espera, era ótimo num andar e desastroso sobre linha dedicada. A indústria inteira de otimização de longa distância - compressão, cache, deduplicação, aceleração de protocolo - existe porque software escrito para um lado da linha foi implantado no outro.
+**Todo protocolo traz embutida uma suposição sobre o lado dessa linha em que vai rodar.** Protocolos chatty (tagarelas), que perguntam e ficam esperando a resposta, funcionavam bem dentro de um andar do prédio e eram um desastre numa linha dedicada. A indústria inteira de otimização de WAN (compressão, cache, deduplicação, aceleração de protocolo) existe porque software escrito para um lado da linha acabou instalado no outro.
 
-## Para que as categorias serviam de fato
+## Para que as categorias serviam, na prática
 
-Escopo nunca foi só descrição. Era **fronteira administrativa**, e é essa a parte que importava na prática.
+O escopo nunca foi só uma descrição. Ele era **uma fronteira administrativa**, e era essa a parte que importava na prática.
 
-Dentro da rede local havia um dono, um plano de endereçamento, um conjunto de políticas e um time para chamar. Numa longa distância havia contratos, pontos de demarcação, janelas de mudança de terceiros e uma relação de suporte. Modelos de segurança foram construídos sobre essa divisão sem ninguém decidir: **dentro era confiável porque dentro era ADMINISTRADO, e não porque fosse seguro.**
+Dentro da rede local, havia um dono, um plano de endereçamento, um conjunto de políticas e uma equipe para acionar. Na WAN, havia contratos, pontos de demarcação, janelas de mudança dos outros e uma relação de suporte. Os modelos de segurança foram construídos em cima dessa divisão sem que ninguém tivesse decidido isso: **dentro era confiável porque dentro era administrado, e não porque dentro fosse seguro.**
 
-Essa suposição sobreviveu décadas porque era em boa medida verdadeira, e produziu o modelo de perímetro que o [artigo de firewall](/learn/firewall-family-history) traça do outro lado.
+Essa suposição durou décadas porque era verdadeira na maior parte das vezes, e foi dela que nasceu o modelo de perímetro que o [artigo sobre firewalls](/learn/firewall-family-history) conta pelo outro lado.
 
 ## 1998: a primeira palavra a perder o sentido
 
-A rede local virtual, padronizada como 802.1Q, fez um comutador físico apresentar várias redes lógicas. A partir daquele momento **local deixou de ser propriedade do fio**. Duas máquinas no mesmo rack podiam estar em redes diferentes, e duas máquinas em prédios diferentes podiam estar na mesma.
+A rede local virtual, a VLAN, padronizada como 802.1Q, fez um único switch físico apresentar várias redes lógicas. A partir dali, **local deixou de ser uma propriedade do fio**. Duas máquinas no mesmo rack podiam estar em redes diferentes, e duas máquinas em prédios diferentes podiam estar na mesma rede.
 
-É aqui que a segmentação começa como disciplina, e onde o vocabulário começa a derivar. Uma VLAN não é uma rede local menor; é a decisão de que certo tráfego deve ficar separado, expressa num equipamento que antes expressava geografia.
+É aí que a segmentação começa como disciplina, e é aí que o vocabulário começa a mudar de sentido. Uma VLAN não é uma rede local menor; é a decisão de manter certo tráfego separado, expressa num equipamento que antes expressava geografia.
 
-## A sobreposição termina o serviço
+## O overlay termina o serviço
 
-Então a sobreposição cortou a última ligação entre a palavra e o mundo. VXLAN, GENEVE e parentes carregam uma rede de camada 2 sobre uma roteada, de modo que um domínio de difusão pode abranger data centers em continentes diferentes.
+Depois veio o overlay (uma rede montada por cima de outra), que cortou a última ligação entre a palavra e o mundo físico. O VXLAN, o GENEVE e seus parentes transportam uma rede de camada 2 através de uma rede roteada, e assim um domínio de broadcast pode se estender por data centers em continentes diferentes.
 
-O [artigo de pontes e comutadores](/learn/bridge-switch-family-history) nota a ironia e ela cabe aqui também: Perlman identificou o erro fundador como tratar a Ethernet como *a rede*, e não como um enlace, e o data center moderno gasta esforço real de engenharia recriando exatamente essa ilusão sobre uma malha roteada - porque as aplicações seguem sendo escritas por gente que supõe que a rede é uma coisa plana.
+O [artigo sobre bridges e switches](/learn/bridge-switch-family-history) comenta uma ironia que também cabe aqui: Perlman apontou como erro de origem tratar o Ethernet como *a rede*, e não como um link, e o data center moderno gasta um esforço de engenharia considerável para recriar exatamente essa ilusão em cima de um fabric roteado, porque as aplicações continuam sendo escritas por gente que supõe que a rede é uma coisa só, plana.
 
-**A rede de baixo é para onde os pacotes vão e a de cima é onde está o significado**, e uma falha na primeira aparece na segunda como outra coisa completamente diferente. É esse o preço da abstração, e quem paga é quem está com o telefone de plantão.
+**O underlay (a rede de baixo) é por onde os pacotes passam, e o overlay é onde está o significado**, e uma falha no primeiro aparece no segundo como uma coisa completamente diferente. Esse é o preço da abstração, e quem paga é quem está de plantão.
 
-## O sem fio é a exceção que nunca coube
+## O wireless, a exceção que nunca se encaixou
 
-Uma rede local sem fio é rede local no endereçamento e outra coisa inteiramente no comportamento, por uma razão que o [artigo de sem fio](/learn/wireless-family-history) traça até 1971: o comutador removeu as colisões do mundo cabeado e nada as remove do ar.
+Uma rede local sem fio, a WLAN, é uma rede local no endereçamento e outra coisa completamente diferente no comportamento, por um motivo que o [artigo sobre wireless](/learn/wireless-family-history) leva de volta a 1971: o switch acabou com as colisões no mundo cabeado, e nada consegue acabar com elas no ar.
 
-Então a capacidade cai com o número de quem fala, e não com a distância. O roaming é decidido por clientes que a rede não controla. A interferência vem de vizinhos e eletrodomésticos que ninguém administra. Chamar aquilo de rede local é correto quanto ao plano de endereços e enganoso quanto a tudo que um operador precisa planejar.
+Por isso, a capacidade cai conforme aumenta o número de dispositivos falando, e não com a distância. O roaming é decidido por clientes que a rede não controla. A interferência vem dos vizinhos e de eletrodomésticos que ninguém administra. Chamar isso de rede local está certo quanto ao plano de endereçamento e engana quanto a tudo o que um operador precisa planejar.
 
-## Para onde as palavras foram
+## Para onde foram as palavras
 
-Três pressões esvaziaram por completo o sentido geográfico.
+Três pressões acabaram de vez com o sentido geográfico.
 
-**Nuvem.** Uma sub-rede na região de um provedor é administrada por você, endereçada como rede local, e fisicamente longe de você. Ela é chamada de local porque você a controla.
+**Nuvem.** Uma sub-rede na região de um provedor é administrada por você, endereçada como uma rede local e, fisicamente, não está nem perto de você. Ela é chamada de local porque você a controla.
 
-**Trabalho remoto.** A pessoa está em casa, a aplicação está na região de um provedor, e nenhum dos dois está dentro de coisa alguma. O tráfego que definia a longa distância - filial para matriz - hoje é minoria do que existe.
+**Trabalho remoto.** A pessoa está em casa, a aplicação está na região de um provedor, e nenhuma das duas está dentro de coisa nenhuma. O tráfego que definia a WAN, o da filial para a matriz, hoje é minoria.
 
-**Cifragem em toda parte.** Quando o transporte é confidencial por padrão, a pergunta sobre por qual fio ele passou importa muito menos, o que remove uma das últimas razões práticas de a distinção ser estrutural.
+**Criptografia em tudo.** Quando o transporte é confidencial por padrão, saber de quem é o fio por onde o tráfego passou importa muito menos do que antes, e isso tira uma das últimas razões práticas que davam peso à distinção.
 
-O que substituiu isso foi **identidade e política**, que é onde o [artigo de identidade](/learn/identity-family-history) e o [de SDN](/learn/sdn-family-history) desembocam. A pergunta moderna não é onde um dispositivo está, e sim o que ele é, quem o usa e o que ele pode alcançar - e confiança zero é, tirado o marketing, a admissão formal de que dentro nunca foi propriedade de segurança.
+O que entrou no lugar foi **identidade e política**, que é onde chegam tanto o [artigo sobre identidade](/learn/identity-family-history) quanto o [artigo sobre SDN](/learn/sdn-family-history). A pergunta hoje não é onde um dispositivo está, e sim o que ele é, quem está usando e o que ele tem permissão para alcançar; e o zero trust, tirando o marketing, é a admissão formal de que estar dentro nunca foi uma propriedade de segurança.
 
 ## Cargos e práticas
 
-As categorias ainda organizam a profissão mesmo já não organizando a rede. Certificações são estruturadas em volta delas, times são nomeados por elas, e orçamentos são divididos ao longo da linha entre o enlace que você tem e o que você aluga.
+As categorias ainda organizam a profissão, mesmo que já não organizem a rede. As certificações são estruturadas em torno delas, as equipes levam o nome delas, e os orçamentos são divididos pela linha que separa o link que é seu do link que você aluga.
 
-As práticas que sobrevivem são as ligadas à economia, e não à geografia. **Saber quanto custa um byte em cada caminho**, porque essa continua sendo a diferença de verdade. **Saber a quem ligar**, já que a fronteira administrativa sobreviveu à física. **Projetar para a latência que existe**, e não para a desejada, porque a velocidade da luz é a única restrição deste artigo que nunca se moveu.
+As práticas que sobrevivem são as ligadas à economia, e não à geografia. **Saber quanto custa um byte em cada caminho**, porque essa continua sendo a diferença real. **Saber quem acionar**, já que a fronteira administrativa durou mais do que a física. **Projetar para a latência que você tem**, e não para a que gostaria de ter, porque a velocidade da luz é a única restrição deste artigo que nunca mudou.
 
-E a prática que vale guardar por mais tempo: **quando alguém disser local, pergunte se quer dizer próximo, barato ou confiável** - porque a palavra hoje faz os três trabalhos e a resposta muda o projeto.
+E a prática que vale guardar por mais tempo: **quando alguém disser local, pergunte se quer dizer perto, barato ou confiável**, porque hoje a palavra faz os três papéis, e a resposta muda o projeto.
 
-## Para onde vai
+## O que vem pela frente
 
-**Escopo está virando rótulo de política.** Os sistemas cada vez mais descrevem alcançabilidade em termos de identidade de carga e de intenção, com o caminho físico como detalhe de implementação que o operador nunca nomeia.
+**O escopo está virando um rótulo de política.** Cada vez mais, os sistemas descrevem quem alcança o quê em termos de identidade do workload e de intenção, e o caminho físico vira um detalhe de implementação que o operador nem chega a mencionar.
 
-**A economia está convergindo, e não se igualando.** Cobrança de tráfego entre regiões mantém viva uma versão do velho cálculo de longa distância dentro da nuvem, então a distinção que começou com linha dedicada sobrevive como taxa de saída.
+**A economia está convergindo, mas não se igualando.** A cobrança pelo tráfego entre regiões mantém viva, dentro da nuvem, uma versão da velha conta da WAN, e assim a distinção que começou com as linhas dedicadas sobrevive como taxa de egress (o tráfego de saída).
 
-**E uma coisa de fato não mudou.** A luz continua lenta, distância continua custando milissegundos, e abstração nenhuma revogou isso. Toda arquitetura que trata um recurso remoto como se fosse local uma hora encontra uma ida e volta que não consegue esconder - que é a mesma lição que os primeiros projetistas de longa distância aprenderam, chegando por outro caminho.
+**E uma coisa realmente não mudou.** A luz continua lenta, a distância continua custando milissegundos, e nenhuma abstração revogou isso. Toda arquitetura que trata um recurso remoto como se fosse local acaba esbarrando, mais cedo ou mais tarde, num round trip (o tempo de ida e volta) que não consegue esconder, e essa é a mesma lição que os primeiros projetistas de WAN aprenderam, só que chegando por outro caminho.
 
 ## Fontes
 

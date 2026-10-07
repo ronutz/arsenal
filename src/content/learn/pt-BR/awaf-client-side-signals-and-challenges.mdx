@@ -43,6 +43,6 @@ Cada um destes está fundamentado na própria documentação da F5, e cada um af
 - **Aplicações móveis não conseguem rodar o JavaScript.** É para isso que existe o F5 Anti-Bot Mobile SDK (software development kit): ele valida a própria aplicação móvel, por meio de uma integração de parceiro, em vez de injetar JavaScript, para que clientes móveis não sejam bloqueados indevidamente.
 - **Iframes cross-domain quebram os desafios.** Se uma página carrega um iframe de um domínio diferente com os desafios habilitados, o desafio pode falhar; a F5 documenta isso (bug ID 519612), e a correção envolve as configurações de cross-domain request mais uma iRule para que o desafio rode na página principal.
 
-## Lendo de volta
+## O que os event logs mostram
 
 Quando isso está ligado, os event logs de Bot Defense mostram a ação de verificação, o status do desafio e o DeviceID atribuído a cada cliente, para que você veja exatamente qual sinal classificou uma dada requisição. Essa visibilidade é o ponto: o JavaScript injetado transforma um opaco "isto é um bot?" em uma decisão pontuada e registrada.

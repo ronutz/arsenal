@@ -56,7 +56,7 @@ TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
 **Hash de MAC ou PRF** é o último token - sendo o MAC o código de autenticação de mensagem (do inglês message authentication code) e o PRF a função pseudoaleatória (do inglês pseudorandom function). Em uma suíte CBC é o hash HMAC (código de autenticação de mensagem baseado em hash, do inglês hash-based message authentication code) que autentica cada registro. Em uma suíte AEAD a cifra já fornece integridade, então o hash final em vez disso nomeia o PRF que o handshake usa para derivar chaves (`SHA256` ou `SHA384`).
 
-## Lendo no sentido inverso
+## Como ler uma suíte no sentido inverso
 
 Depois que você conhece a gramática, consegue ler qualquer suíte de TLS 1.2 de trás para frente num relance. `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384` é Diffie-Hellman efêmero de campo finito para troca de chaves, RSA para autenticação, AES com chave de 256 bits no modo GCM, e SHA-384 como PRF do handshake. Como o GCM é AEAD, não há MAC separado.
 
@@ -74,7 +74,7 @@ GnuTLS:  TLS_ECDHE_RSA_AES_128_GCM_SHA256
 
 O nome IANA é o padrão do registro. O OpenSSL usa hifens, descarta o `WITH` e escreve `AES128` como um único token, e é por isso que uma configuração do OpenSSL e uma captura de pacotes podem parecer discordar quando nomeiam a mesma suíte. O decodificador aceita as três formas, além do ponto de código bruto, e mostra as outras.
 
-## Escolhendo, e o que de fato importa
+## A escolha, e o que de fato importa
 
 A ordem de importância na prática é o inverso da atenção que cada parte recebe:
 

@@ -2,7 +2,7 @@
 
 Cole a saída de um comando `nslookup` e a ferramenta a decodifica em um detalhamento estruturado e explicado: qual resolvedor respondeu, se a resposta foi autoritativa, cada registro com seus campos discriminados e qualquer falha reportada. Ela analisa apenas o texto; nada é resolvido e nada é enviado a lugar algum.
 
-## Lendo o layout do nslookup
+## Como ler o layout do nslookup
 
 O `nslookup` imprime as respostas DNS em um layout solto, em forma de prosa, bem diferente do `dig`, e esse layout carrega um significado que vale explicitar. Toda resposta começa com um cabeçalho **Server** e **Address** que nomeia o resolvedor consultado. Uma linha com **Non-authoritative answer:** indica que a resposta veio de um cache, e não de um servidor responsável pela zona; sua ausência, em uma consulta direta, implica uma resposta autoritativa. Quando uma consulta falha, o nslookup imprime uma linha como `** server can't find NAME: NXDOMAIN`, e a ferramenta destaca essa falha e o que o status significa.
 

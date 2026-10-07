@@ -1,6 +1,6 @@
 ---
 slug: json-duplicate-keys
-title: "Chaves Duplicadas em JSON: Legais, Perigosas e Dignas de Detecção"
+title: "Chaves duplicadas em JSON: legais, perigosas e dignas de detecção"
 summary: "A sintaxe JSON permite que a mesma chave apareça mais de uma vez em um objeto, mas a especificação não diz o que isso significa. Parsers diferentes resolvem isso de formas diferentes, o que torna chaves duplicadas uma fonte silenciosa de bugs e até de problemas de segurança."
 concepts: ["json", "duplicate keys", "rfc 8259", "interoperability", "security", "validation"]
 relatedTools: ["json-formatter"]
@@ -23,6 +23,6 @@ Como o padrão não exige uma resolução, as implementações fizeram suas pró
 
 Essa discordância não é apenas desorganizada; ela já foi a raiz de vulnerabilidades reais. Quando dois componentes em um pipeline analisam o mesmo JSON com regras diferentes de chave duplicada, um atacante pode forjar uma mensagem que um componente lê de um jeito e outro lê do jeito oposto. Uma requisição que uma camada de validação vê como `{"amount": 10}` e uma camada de processamento vê como `{"amount": 10000}` é um exemplo clássico desse tipo de ataque de confusão de parser. Em qualquer lugar onde o JSON cruza uma fronteira de confiança e é analisado mais de uma vez, chaves duplicadas são um risco.
 
-## Detectando-as cedo
+## Como detectá-las cedo
 
 Como chaves duplicadas nunca levantam um erro normal de análise, elas são invisíveis a menos que uma ferramenta vá procurá-las. O formatador procura: ele percorre cada objeto e reporta cada chave repetida junto com o caminho JSON Pointer onde ela ocorre, então uma duplicata enterrada no fundo de um documento grande aparece imediatamente. A saída formatada mantém o último valor, acompanhando o parser mais comum, mas o aviso é a parte importante, porque diz que o documento é ambíguo antes que essa ambiguidade vire o incidente de alguém.

@@ -17,7 +17,7 @@ Um hash criptográfico prova **integridade**: se o resumo ainda coincide, os dad
 
 O HMAC fecha essa lacuna. Ele é um **código de autenticação de mensagem**: um valor que prova que uma mensagem não foi adulterada e veio de alguém que possui uma chave secreta compartilhada. O verificador recalcula o HMAC com a mesma chave; se coincidir, a mensagem é autêntica.
 
-## Adicionando uma chave, da forma certa
+## Como adicionar uma chave, da forma certa
 
 A ideia óbvia, apenas fazer hash da chave e da mensagem juntas como `hash(chave + mensagem)`, é sutilmente insegura. Muitas funções de hash (incluindo a família SHA-2) são construídas sobre uma construção vulnerável a um **ataque de extensão de comprimento**: conhecendo `hash(chave + mensagem)` e o comprimento do segredo, um atacante pode calcular um hash válido para `chave + mensagem + extra` sem nunca conhecer a chave. Isso lhe permitiria forjar uma mensagem estendida e ainda válida.
 

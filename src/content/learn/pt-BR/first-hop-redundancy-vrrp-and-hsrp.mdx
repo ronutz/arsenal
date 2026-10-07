@@ -1,7 +1,7 @@
 ---
 slug: first-hop-redundancy-vrrp-and-hsrp
-title: "Redundância de primeiro salto: VRRP, HSRP e o gateway que é uma ficção"
-summary: "Um host conhece um gateway padrão e não sabe fazer failover. VRRP e HSRP resolvem isso fazendo o endereço do gateway pertencer a um papel, não a um roteador. Como funcionam, por que a escolha do protocolo importa menos do que se pensa, e os modos de falha que tornam um par redundante pior que um roteador só."
+title: "Redundância de first hop: VRRP, HSRP e o gateway que é uma ficção"
+summary: "Um host conhece um único default gateway e não sabe fazer failover. O VRRP e o HSRP resolvem isso fazendo o endereço do gateway pertencer a um papel, e não a um roteador. Como eles funcionam, por que a escolha do protocolo importa menos do que se pensa e as falhas que tornam um par redundante pior do que um roteador sozinho."
 concepts: ["vrrp", "arp", "bfd", "stp"]
 relatedTools: []
 relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
@@ -11,85 +11,85 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-## Origens: o protocolo que não dava para mudar
+## A origem: o protocolo que não dava para mudar
 
-O problema é antigo e estrutural. Um host aprende um gateway padrão, por configuração ou por concessão, e não tem noção de um segundo. Se aquele roteador morre, o host segue mandando para um endereço que ninguém responde. Toda outra camada da rede podia ser redundante; o gateway único do host não podia, porque consertá-lo teria exigido mudar todo sistema operacional do planeta.
+O problema é antigo e está na estrutura da rede. Um host aprende um único default gateway (o gateway padrão), configurado à mão ou recebido num lease do DHCP, e não tem a menor noção de que poderia existir um segundo. Se esse roteador morre, o host continua mandando tráfego para um endereço que ninguém mais atende. Todas as outras camadas da rede podiam ganhar redundância; o gateway único do host, não, porque corrigir isso exigiria mudar todos os sistemas operacionais do planeta.
 
-Duas famílias de resposta foram tentadas, e uma delas perdeu:
+Duas linhas de solução foram tentadas, e uma delas perdeu:
 
-**Deixar o host mais esperto.** O ICMP Router Discovery e, depois, os Router Advertisements do IPv6 deixam hosts aprenderem roteadores dinamicamente. Funciona, e no IPv4 nunca chegou a tempo - a base instalada já presumia um gateway estático. Vale notar que o **IPv6 em boa medida resolveu isso no host**, com roteadores se anunciando e hosts mantendo vários padrões, e é por isso que redundância de primeiro salto é um problema com formato de IPv4.
+**Deixar o host mais esperto.** O ICMP Router Discovery e, mais tarde, os Router Advertisements do IPv6 permitem que os hosts descubram os roteadores dinamicamente. Funciona, mas no IPv4 nunca chegou a tempo: a base instalada já partia do princípio de que havia um único gateway estático. Vale notar que **o IPv6 resolveu boa parte disso no próprio host**, com os roteadores se anunciando e os hosts guardando vários default gateways, e é por isso que a redundância de first hop é principalmente um problema do mundo IPv4.
 
-**Mentir para o host.** Dar o endereço do gateway a quem estiver vivo naquele momento. O host nunca aprende nada; o endereço simplesmente continua respondendo.
+**Mentir para o host.** Entregar o endereço do gateway ao roteador que estiver vivo no momento. O host nunca fica sabendo de nada; o endereço simplesmente continua respondendo.
 
-A segunda abordagem venceu, e produziu três protocolos:
+A segunda abordagem venceu e deu origem a três protocolos:
 
-- **HSRP (Cisco, 1998, RFC 2281)** - o primeiro amplamente implantado, e proprietário; a RFC é informacional, publicada para descrevê-lo, não para padronizá-lo.
-- **VRRP (RFC 2338 em 1998, hoje RFC 5798, cobrindo IPv4 e IPv6)** - o padrão do IETF, multifabricante, e próximo o bastante do HSRP para que a posição de patente da Cisco fosse assunto vivo durante a padronização.
-- **GLBP (Cisco)** - que acrescenta divisão de carga respondendo a requisições ARP com endereços MAC virtuais diferentes, de modo que hosts da mesma sub-rede se distribuem entre gateways em vez de usarem todos um só.
+- **HSRP (Cisco, 1998, RFC 2281)**: o primeiro a ser amplamente adotado, e proprietário; a RFC é informational (informativa), publicada para descrever o protocolo, e não para padronizá-lo.
+- **VRRP (RFC 2338 em 1998, hoje RFC 5798, que cobre IPv4 e IPv6)**: o padrão do IETF, multivendor e tão parecido com o HSRP que a posição da Cisco sobre a patente foi um assunto quente durante a padronização.
+- **GLBP (Cisco)**, que acrescenta load sharing (divisão de carga) respondendo às requisições ARP com MACs virtuais diferentes, de modo que os hosts da mesma sub-rede se distribuem entre os gateways, em vez de usarem todos o mesmo.
 
-A terminologia difere e o mecanismo não: o HSRP tem roteador ativo e de espera, o VRRP tem mestre e reservas, o GLBP tem um gateway virtual ativo com encaminhadores. **Quem entende um desenho entende os três.**
+A terminologia muda, mas o mecanismo é o mesmo: o HSRP tem roteadores active e standby (ativo e reserva), o VRRP tem um master e backups, e o GLBP tem um active virtual gateway com forwarders. **Quem entende o desenho de um entende os três.**
 
-## O host é a parte que não dá para consertar
+## O host é a parte que não tem conserto
 
-Todo dispositivo numa sub-rede é configurado com um endereço de gateway padrão, e **não tem mecanismo para mudar de ideia.** Se aquele endereço parar de responder, o host não procura outro. Continua enviando para um endereço que não está mais lá até alguém reconfigurá-lo ou reiniciá-lo.
+Todo equipamento de uma sub-rede é configurado com um único endereço de default gateway, e **não tem nenhum mecanismo para mudar de ideia.** Se esse endereço para de responder, o host não procura outro. Ele continua mandando tráfego para um endereço que não está mais lá, até alguém reconfigurá-lo ou reiniciá-lo.
 
-Não é um defeito que alguém vá corrigir, porque está em um bilhão de dispositivos, a maioria dos quais nunca será atualizada. **Então a redundância precisa acontecer do lado da rede, invisivelmente, sem que o host seja informado de nada.**
+Não é um defeito que alguém vá corrigir, porque ele está em um bilhão de equipamentos, e a maioria deles nunca vai ser atualizada. **Então a redundância tem de acontecer do lado da rede, de forma invisível, sem que o host seja avisado de nada.**
 
-Protocolos de redundância de primeiro salto fazem exatamente isso: transformam o endereço do gateway num **papel** que um roteador detém por vez, e movem o papel em vez do endereço.
+Os protocolos de redundância de first hop fazem exatamente isso: transformam o endereço do gateway num **papel**, que um roteador de cada vez assume, e o que muda de lugar é o papel, não o endereço.
 
-## Os dois endereços se movem, e o segundo é o ponto
+## Os dois endereços mudam de lugar, e o segundo é o que importa
 
-O IP virtual é a metade óbvia. A metade que faz aquilo funcionar é o **endereço MAC virtual**.
+O virtual IP (o IP virtual) é a metade óbvia. A metade que faz tudo funcionar é o **virtual MAC**, o endereço MAC virtual.
 
-Um host que vinha falando com seu gateway tem uma entrada de cache ARP mapeando o IP do gateway para um MAC. Se o failover mudasse apenas a titularidade do IP, todo host do segmento continuaria enviando quadros para o MAC do roteador antigo até sua entrada ARP envelhecer — **tipicamente minutos, o que é uma eternidade numa indisponibilidade e é exatamente a janela que ninguém contabiliza.**
+Um host que já vinha conversando com o gateway tem no cache ARP uma entrada que associa o IP do gateway a um MAC. Se o failover (a troca para o roteador reserva) só mudasse o dono do IP, todos os hosts do segmento continuariam mandando frames para o MAC do roteador antigo até a entrada ARP expirar: **normalmente, minutos, o que é uma eternidade durante uma queda e é justamente a janela que ninguém leva em conta.**
 
-Então o roteador em espera assume o mesmo MAC virtual e o anuncia, para que os switches reaprendam atrás de qual porta ele vive. **O cache ARP do host continua correto porque nada do que ele sabe mudou.** É por isso que o failover pode ser sub-segundo para um host que nunca foi avisado de nada.
+Então o roteador standby assume o mesmo virtual MAC e o anuncia, para que os switches reaprendam em que porta ele está. **O cache ARP do host continua certo porque nada do que ele sabe mudou.** É por isso que, para um host que nunca foi avisado de nada, o failover pode levar menos de um segundo.
 
-## VRRP contra HSRP importa menos que a terceira pergunta
+## A escolha entre VRRP e HSRP importa menos do que a terceira pergunta
 
-O HSRP é da Cisco, o VRRP é o padrão do IETF, e há uma razão real para preferir VRRP num ambiente multifabricante. Fora isso, **as diferenças operacionais são menores que a quantidade de discussão que atraem** — os dois elegem um roteador ativo por prioridade, os dois usam um par de endereços virtuais, os dois fazem preempção se configurados para isso.
+O HSRP é da Cisco, o VRRP é o padrão do IETF, e existe um motivo real para preferir o VRRP num ambiente com vários fabricantes. Fora isso, **as diferenças operacionais são menores do que a quantidade de discussão que elas geram**: os dois elegem um roteador ativo por prioridade, os dois usam um par de endereços virtuais e os dois fazem preempt (o roteador de maior prioridade toma o papel de volta), se estiverem configurados para isso.
 
-**A pergunta que de fato decide se o par funciona não é nenhuma das duas: o que o roteador considera uma falha?**
+**A pergunta que decide de verdade se o par funciona não tem a ver com nenhum dos dois protocolos: o que o roteador considera uma falha?**
 
-Um roteador que perdeu o uplink, ou sua adjacência de roteamento, ou a capacidade de alcançar qualquer coisa além do segmento, continua perfeitamente capaz de vencer uma eleição e responder ARP. **Ele está presente, está saudável pela própria medida, e é um buraco negro para todo host que confia nele.**
+Um roteador que perdeu o uplink, ou a adjacência de roteamento, ou a capacidade de alcançar qualquer coisa além do segmento, continua perfeitamente capaz de ganhar uma eleição e de responder ARP. **Ele está presente, está saudável pelos próprios critérios e é um buraco negro para todo host que confia nele.**
 
-É para isso que existe o rastreamento de interfaces e objetos — reduzir a prioridade quando aquilo de que o gateway é gateway se torna inalcançável. **Um par de redundância de primeiro salto sem rastreamento são dois roteadores concordando sobre qual dos dois vai absorver o seu tráfego**, e falha exatamente na situação para a qual foi instalado.
+É para isso que existe o tracking (monitoramento) de interfaces e de objetos: baixar a prioridade quando fica inalcançável aquilo que está *do outro lado* do gateway. **Um par de redundância de first hop sem tracking são só dois roteadores combinando qual dos dois vai engolir o seu tráfego**, e ele falha justamente na situação para a qual foi instalado.
 
-## Os modos de falha que vale conhecer
+## As falhas que vale a pena conhecer
 
-**Os dois roteadores ativos.** Se os roteadores não se escutam mas ambos alcançam os hosts, cada um conclui que deve estar ativo. Dois equipamentos passam a responder pelo mesmo IP e MAC no mesmo segmento, e os switches veem o MAC virtual se mudando de porta continuamente. **O sintoma não é indisponibilidade — é intermitente, dependente de direção, e parece problema de switching**, que é para onde a investigação vai primeiro.
+**Os dois roteadores ativos.** Se os roteadores não se escutam, mas os dois alcançam os hosts, cada um conclui que deve ser o ativo. Agora há dois equipamentos respondendo pelo mesmo IP e pelo mesmo MAC no mesmo segmento, e os switches veem o virtual MAC pulando de uma porta para outra o tempo todo. **O sintoma não é uma queda. É um problema intermitente, que depende do sentido do tráfego e parece problema de switching**, e é para lá que a investigação vai primeiro.
 
-**Preempção durante um enlace instável.** Um roteador que se recupera e reivindica o papel ativo na hora devolve o tráfego de um lado para o outro enquanto o enlace subjacente estabiliza. Cada transição é breve e o agregado é um serviço que ninguém consegue usar. **Atraso na preempção não é firula de ajuste fino.**
+**Preempt com um link em flapping (caindo e voltando).** Um roteador que se recupera e retoma na hora o papel de ativo vai jogar o tráfego de um lado para o outro enquanto o link não se estabiliza. Cada troca é rápida, mas o conjunto é um serviço que ninguém consegue usar. **O delay de preempt não é um detalhe de ajuste fino.**
 
-**Caminhos assimétricos através de um firewall.** Com o gateway ativo num roteador e o tráfego de retorno roteado pelo outro, um equipamento com estado no caminho vê metade de uma conversa e a descarta. É a forma mais comum de uma mudança de primeiro salto virar incidente de aplicação sem relação óbvia com roteamento.
+**Caminhos assimétricos passando por um firewall.** Com o gateway ativo num roteador e o tráfego de volta roteado pelo outro, um equipamento stateful (que guarda o estado das conexões) no caminho vê só metade da conversa e a descarta. Esse é o jeito mais comum de uma mudança no first hop virar um incidente de aplicação sem nenhuma relação aparente com roteamento.
 
-## A mecânica que vale conhecer com precisão
+## A mecânica que vale conhecer a fundo
 
-**Os dois endereços se movem juntos.** O grupo é dono de um IP virtual e de um MAC virtual - o VRRP usa `00:00:5E:00:01:{grupo}`, o HSRP `00:00:0C:07:AC:{grupo}`. A troca move os dois, então o cache ARP do host continua válido e nada precisa ser reaprendido. É esse o truque inteiro, e é por isso que uma comutação pode ser invisível para um host que nunca percebe.
+**Os dois endereços se movem juntos.** O grupo é dono de um virtual IP e de um virtual MAC: o VRRP usa `00:00:5E:00:01:{grupo}`, e o HSRP, `00:00:0C:07:AC:{grupo}`. O failover leva os dois, então o cache ARP do host continua válido e nada precisa ser reaprendido. O truque é só esse, e é por isso que um failover pode passar despercebido por um host que nunca nota nada.
 
-**Eleição e preempção.** Maior prioridade vence; empate se resolve pelo endereço. A **preempção** decide se um roteador que se recupera retoma o papel, e é aí que mora a maior parte da surpresa operacional: ligada por padrão no VRRP, desligada por padrão no HSRP. Um roteador que volta de manutenção, toma o papel e reinicia de novo produz duas quedas em vez de uma - e é por isso que existe atraso de preempção, e por que ele deve ser maior que o tempo de convergência do protocolo de roteamento.
+**Eleição e preempt.** Vence a maior prioridade; em caso de empate, decide o endereço. O **preempt** define se um roteador que volta retoma o papel, e é aí que mora a maior parte das surpresas na operação: ele vem ligado por padrão no VRRP e desligado por padrão no HSRP. Um roteador que volta da manutenção, toma o papel e depois reinicia de novo provoca duas quedas em vez de uma. É por isso que existe o delay de preempt, e também por isso ele deve ser maior do que o tempo que o protocolo de roteamento leva para convergir.
 
-**Temporizadores de hello e de espera** determinam a velocidade da comutação. Padrões em segundos significam segundos de buraco negro; temporizadores abaixo de um segundo detectam mais rápido e deixam o par vulnerável a comutações falsas sempre que o plano de controle fica brevemente ocupado. A resposta madura não é temporizador agressivo, e sim o **BFD** - um protocolo leve, feito para detectar vivacidade - conduzindo a comutação.
+**Os timers de hello e de hold** determinam a velocidade do failover. Valores padrão na casa dos segundos significam segundos de buraco negro; timers abaixo de um segundo detectam mais rápido, mas deixam o par sujeito a failovers falsos sempre que o control plane (plano de controle) fica ocupado por um instante. A resposta madura não são timers agressivos, e sim deixar que o **BFD**, um protocolo leve, criado especificamente para verificar se o outro lado está vivo, comande o failover.
 
-**O rastreamento de interface e de objeto** é o recurso que decide se o desenho é real. Um roteador cujo uplink caiu continua respondendo na LAN e permanecerá mestre alegremente, encaminhando tráfego para lugar nenhum. O rastreamento baixa a prioridade dele quando o uplink ou a rota monitorada some, passando o papel a quem ainda tem caminho. **Redundância sem rastreamento é um grupo que comuta para o único evento que dificilmente enfrentará - o roteador morrer - e não para o que vai encontrar de fato.**
+**O tracking de interface e de objeto** é o recurso que decide se o projeto é de verdade. Um roteador cujo uplink caiu continua respondendo na LAN e segue tranquilamente como master, fazendo forwarding de tráfego para lugar nenhum. O tracking baixa a prioridade dele quando o uplink ou a rota monitorada desaparece, e o papel passa para um roteador que ainda tem caminho. **Redundância sem tracking é um grupo que faz failover no evento que ele tinha menos chance de enfrentar, a morte do roteador, e não no evento que ele vai encontrar de fato.**
 
-**A autenticação** existia no VRRP inicial, concluiu-se que não acrescentava segurança real contra um atacante já no segmento, e foi removida na RFC 5798. O controle honesto é o acesso ao segmento, não um segredo compartilhado.
+**A autenticação** existia nas primeiras versões do VRRP, mas se concluiu que ela não trazia segurança real contra um atacante dentro do segmento, e ela foi removida na RFC 5798. O controle que funciona de verdade é o acesso ao segmento, e não um segredo compartilhado.
 
-## Os modos de falha, e como eles aparecem
+## As falhas e como elas aparecem
 
-- **Os dois roteadores ativos.** O caminho dos hellos quebrou enquanto ambos estão vivos - uma VLAN bloqueada, um multicast filtrado, um problema de MTU no enlace entre eles. Os dois são donos do endereço virtual, o ARP oscila entre dois MACs, e o tráfego quebra de forma intermitente, parecendo defeito físico.
-- **Comutação que não volta de forma limpa**, por configurações de preempção diferentes entre o par.
-- **Assimetria silenciosa**, em que o reserva tem filtragem ou política diferente e tudo funciona até o dia em que ele assume. Paridade de configuração entre membros faz parte do desenho, não é detalhe posterior.
-- **Serviços com estado atrás de uma comutação sem estado.** O VRRP move um endereço; não move o estado de conexões de firewall. Um par de firewalls precisa da própria sincronização de estado, e misturar as duas ideias produz uma comutação que reconecta tudo de uma vez.
+- **Os dois roteadores ativos.** O caminho dos hellos quebrou com os dois roteadores vivos: uma VLAN bloqueada, um multicast filtrado, um problema de MTU no link entre os dois. Os dois se consideram donos do endereço virtual, o ARP fica alternando entre dois MACs, e o tráfego falha de forma intermitente, de um jeito que parece defeito físico.
+- **Failover que não faz o failback direito**, porque a configuração de preempt é diferente nos dois roteadores do par.
+- **Assimetria silenciosa**: o standby tem uma configuração de filtros ou de políticas diferente, e tudo funciona até o dia em que ele assume. Manter a configuração igual em todos os membros faz parte do projeto, e não é um detalhe para depois.
+- **Serviços stateful atrás de um failover stateless.** O VRRP move um endereço; ele não move o estado das conexões do firewall. Um par de firewalls precisa da própria sincronização de estado, e misturar as duas ideias gera um failover que faz todas as conexões serem refeitas ao mesmo tempo.
 
-## Onde isso fica em relação às alternativas
+## Como isso se compara às alternativas
 
-- **Agrupamento de chassi e empilhamento** - chassi virtual, stacking, MLAG -, em que dois equipamentos se apresentam como um, e o gateway nunca se move. Mais capaz e mais acoplado: um plano de controle compartilhado também é uma falha compartilhada.
-- **Gateway anycast em fabrics** - EVPN e desenhos similares, em que cada folha é dona do mesmo endereço de gateway, e o conceito de reserva desaparece.
-- **Ambientes de nuvem**, em que o gateway é da própria plataforma e nada disso é exposto. A pergunta equivalente ali é se uma entrada de tabela de rotas ou um endereço flutuante se move, e com que rapidez.
+- **Clustering de chassi e de stack** (virtual chassis, stacking, MLAG), em que dois equipamentos se apresentam como um só, e o gateway nem precisa mudar de lugar. É mais capaz e mais acoplado: um control plane compartilhado também é uma falha compartilhada.
+- **Anycast gateway em fabrics**: EVPN e desenhos parecidos, em que todo leaf é dono do mesmo endereço de gateway, e a ideia de standby deixa de existir.
+- **Ambientes de nuvem**, em que o gateway é da própria plataforma e nada disso fica exposto. Lá, a pergunta equivalente é se uma entrada da tabela de rotas ou um endereço flutuante muda de lugar, e com que rapidez.
 
-**Fabricantes, por categoria.** O VRRP está disponível em Cisco, Juniper, Arista, Nokia, Fortinet, MikroTik, e em implementações Linux como o Keepalived, que é o que coloca o mesmo mecanismo sob uma grande quantidade de balanceadores e firewalls. HSRP e GLBP seguem Cisco. A regra prática num parque misto: **padronize em VRRP, a menos que um recurso de fabricante único justifique o aprisionamento**, e confirme que as faixas de MAC virtual não colidem com outra coisa.
+**Fabricantes, por categoria.** O VRRP está disponível em Cisco, Juniper, Arista, Nokia, Fortinet e MikroTik, e em implementações para Linux como o Keepalived, que é o que coloca esse mesmo mecanismo por baixo de um grande número de load balancers e firewalls. HSRP e GLBP continuam sendo da Cisco. A regra prática num parque com vários fabricantes: **padronize no VRRP, a menos que um recurso exclusivo de um fabricante compense o lock-in (a dependência de um único fornecedor)**, e confirme que as faixas de virtual MAC não estão colidindo com mais nada.
 
 ## O que levar daqui
 
-**Redundância que não foi testada falhando de propósito é uma configuração, não uma capacidade.** E o teste que vale não é desligar um roteador — esse é o caso fácil e normalmente funciona. **É derrubar o uplink deixando o roteador ligado**, porque é o cenário para o qual o rastreamento existe e aquele em que um par não testado descobre que não tem nenhum.
+**Redundância que nunca foi testada com uma falha provocada de propósito é só uma configuração, não uma capacidade.** O teste que vale a pena não é desligar um roteador, porque esse é o caso fácil e normalmente funciona. **É derrubar o uplink e deixar o roteador ligado**, porque é para esse cenário que o tracking existe, e é nele que um par nunca testado descobre que não tem tracking nenhum.

@@ -1,6 +1,6 @@
 ---
 slug: gtm-load-balancing-methods
-title: "Load Balancing no BIG-IP DNS: o Wide IP, o Pool e a Cadeia de Três Passos"
+title: "Load balancing no BIG-IP DNS: o wide IP, o pool e a cadeia de três passos"
 summary: "Uma resposta GSLB é decidida duas vezes: o wide IP escolhe um pool, e o pool escolhe um membro através de uma cadeia preferred, alternate e fallback. A cadeia carrega as regras em que as pessoas tropeçam: o alternate só pode ser estático, o fallback ignora disponibilidade de propósito, e None cascateia até um agregado via BIND."
 concepts: ["gslb", "gtm", "big-ip dns", "f5", "wide ip", "load balancing", "topology"]
 relatedTools: ["f5-gslb-decision-flow", "f5-topology-longest-match"]

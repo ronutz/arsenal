@@ -1,6 +1,6 @@
 ---
 slug: bigip-packet-filters
-title: "Packet Filters: O Checkpoint Antes de Tudo, e a Chave Que Vem Desligada"
+title: "Packet filters: o checkpoint antes de tudo, e a chave que vem desligada"
 summary: "Packet filters do BIG-IP são uma política de acesso baseada em BPF sobre o tráfego de entrada, avaliada como uma lista global única em ordem ascendente, primeira correspondência terminal vence. A chave mestra vem desabilitada, exceções trusted superam qualquer regra que você escreva, ARP e os ICMPs importantes passam direto por padrão, conexões estabelecidas são invisíveis para ela, e a porta de gerenciamento nunca a encontra. E mais: a partir da v16 existe um segundo objeto, sem relação, usando o mesmo nome."
 concepts: ["packet filters", "bpf", "tcpdump", "f5", "big-ip", "segurança de rede", "tmos"]
 relatedTools: ["f5-packet-filter-explainer"]
@@ -43,7 +43,7 @@ Uma nota de leitura cuidadosa sobre o próprio capítulo: sua prosa definicional
 
 A partir da versão 16 existe um segundo objeto chamado packet filter: `security packet-filter policy`, um mecanismo do lado BIG-IP AFM - Advanced Firewall Manager para filtrar extension headers de IPv6, com suas próprias regras, seu próprio logging, e nenhuma relação com a lista `net packet-filter` que este artigo descreve. Dois objetos, um nome, módulos diferentes, trabalhos diferentes. Quando um colega diz packet filter em um sistema v16+, vale uma pergunta de esclarecimento.
 
-## Lendo os seus
+## Como ler os seus packet filters
 
 O [explicador de packet filters](/tools/f5-packet-filter-explainer) caminha por uma lista de regras colada com exatamente a semântica acima, sinaliza regras sombreadas deterministicamente, e simula um pacote pela caminhada com um avaliador de três estados que para honestamente quando uma expressão sai do seu subconjunto de BPF. As expressões em si são a linguagem do tcpdump; o [construtor de tcpdump](/tools/f5-bigip-tcpdump-builder) a fala fluentemente, e o pcap-filter(7) continua sendo a casa da gramática.
 

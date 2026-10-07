@@ -35,7 +35,7 @@ A seção 6 define sete seletores de atributo. `[att]` é presença. `[att=val]`
 
 Quatro deles compartilham uma regra que derruba quem monta um valor dinamicamente: a string vazia não casa com nada. Para `~=`, "if val is the empty string, it will never represent anything", e a mesma frase se repete para os três operadores de substring (6.2). `[class~=""]` e `[href^=""]` são seletores válidos que não casam com elemento algum, o que não é o que um programador espera de "começa com a string vazia".
 
-## Contando irmãos
+## A contagem de irmãos
 
 As pseudoclasses estruturais de árvore (seção 13) contam filhos. `:nth-child(An+B)` "represents elements that are among An+Bth elements from the list composed of their inclusive siblings", com índice a partir de 1; `2n+1` e `odd` são o primeiro, o terceiro, o quinto; `-n+3` são os três primeiros; `n+2` é tudo a partir do segundo. O Level 4 acrescenta a forma `of S`: `:nth-child(2 of .k)` é o segundo irmão *entre os que casam com `.k`*, o que não é `.k:nth-child(2)`, o segundo irmão se ele também for `.k`. A especificação explicita o padrão: "If S is omitted, it defaults to *|*". As formas tipadas (`:nth-of-type()`, `:first-of-type`, `:only-of-type`) contam só os irmãos do mesmo tipo de elemento e não aceitam `of S`.
 

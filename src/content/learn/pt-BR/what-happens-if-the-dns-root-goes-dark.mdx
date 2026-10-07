@@ -1,7 +1,7 @@
 ---
 slug: what-happens-if-the-dns-root-goes-dark
-title: "O que acontece se a raiz do DNS apagar - ou começar a mentir"
-summary: "Desligue as treze identidades de servidor raiz e a internet segue funcionando por uns dois dias, e então se desfia em ordem alfabética conforme as delegações em cache expiram. O cenário bem mais perigoso é uma raiz que continua no ar e responde diferente, porque o DNSSEC vai assinar a nova realidade com toda a fidelidade. Aqui está a linha do tempo real da falha, o que sobrevive, o que dá para fazer hoje, e por que toda raiz alternativa fracassou."
+title: "O que acontece se a raiz do DNS sair do ar, ou começar a mentir"
+summary: "Desligue as treze identidades de servidor raiz e a internet continua funcionando por uns dois dias; depois, vai se desfazendo em ordem alfabética, à medida que as delegações em cache expiram. O cenário bem mais perigoso é uma raiz que continua no ar e passa a responder outra coisa, porque o DNSSEC vai assinar fielmente essa nova realidade. A seguir: a linha do tempo real da falha, o que sobrevive, o que dá para fazer hoje e por que todas as raízes alternativas fracassaram."
 concepts: ["dns", "root servers", "resilience", "dnssec", "internet governance"]
 relatedTools: []
 relatedArticles: ["the-chokepoints-of-the-internet", "dns-record-types-in-answers", "cloudflare", "akamai"]
@@ -11,74 +11,74 @@ status: reviewed
 updated: "2026-08-29"
 ---
 
-## O que a raiz de fato é
+## O que é a raiz, afinal
 
-Existem **treze identidades de servidor raiz**, de A a M, operadas por doze organizações independentes - universidades, órgãos de governo, entidades sem fins lucrativos e empresas, espalhadas por jurisdições. Treze é um artefato de protocolo, não uma contagem de máquinas: era o número de servidores cujos endereços cabiam numa única resposta não fragmentada no desenho original. Atrás desses treze endereços há bem mais de mil instâncias físicas pelo mundo, alcançáveis por **anycast**, de modo que a cópia mais próxima responde a você.
+Existem **treze identidades de servidor raiz** (os root servers), de A a M, operadas por doze organizações independentes: universidades, órgãos de governo, entidades sem fins lucrativos e empresas, espalhadas por várias jurisdições. O número treze vem do protocolo, não da quantidade de máquinas: no projeto original, era o número de servidores cujos endereços cabiam numa única resposta sem fragmentação. Por trás desses treze endereços há bem mais de mil instâncias físicas pelo mundo, alcançáveis por **anycast**, e quem responde a você é a cópia mais próxima.
 
-O que elas servem é pequeno e sem graça: a **zona raiz**, um arquivo de cerca de mil e quinhentas delegações que diz quais servidores de nome são autoritativos para `.com`, `.br`, `.org`, `.uk` e todo o resto dos domínios de topo. A raiz não sabe onde mora o `example.com`. Ela sabe a quem perguntar sobre `.com`.
+O que esses servidores entregam é pequeno e sem graça: a **zona raiz**, um arquivo com cerca de mil e quinhentas delegações que diz quais servidores de nomes são autoritativos para `.com`, `.br`, `.org`, `.uk` e todos os outros domínios de topo (os TLDs). A raiz não sabe onde fica o `example.com`. Ela sabe a quem perguntar sobre o `.com`.
 
-Dois fatos sobre esse arquivo decidem tudo o que vem abaixo. Ele é **publicado, e qualquer um pode baixá-lo**. E é **assinado com DNSSEC**, então uma cópia pode ser verificada como genuína sem perguntar nada a servidor raiz nenhum.
+Dois fatos sobre esse arquivo determinam tudo o que vem a seguir. Ele é **publicado, e qualquer um pode baixá-lo**. E é **assinado com DNSSEC**, então dá para confirmar que uma cópia é autêntica sem perguntar nada a nenhum servidor raiz.
 
-## Cenário um: todas apagam
+## Cenário um: todos saem do ar
 
-Suponha que toda instância raiz pare de responder ao mesmo tempo - um desligamento coordenado, um ataque coordenado, ou uma ordem a doze organizações de uma vez.
+Imagine que todas as instâncias da raiz parem de responder ao mesmo tempo, seja por um desligamento coordenado, por um ataque coordenado ou por uma ordem dada a doze organizações de uma vez.
 
-**Horas 0 a 24: quase nada acontece.** Resolvedores recursivos não consultam a raiz para consultas comuns. Eles guardam em cache a delegação de cada domínio de topo, e esses registros carregam um **tempo de vida de dois dias**. Seu resolvedor já sabe quais servidores respondem por `.com`, e vai seguir usando-os. O tráfego flui, o e-mail entrega, ninguém percebe.
+**Da hora 0 à hora 24: quase nada acontece.** Os resolvers recursivos não vão até a raiz nas consultas do dia a dia. Eles guardam em cache a delegação de cada domínio de topo, e esses registros vêm com um **TTL (time-to-live) de dois dias**. O seu resolver já sabe quais servidores respondem pelo `.com` e vai continuar usando esses servidores. O tráfego segue normal, os e-mails são entregues e ninguém percebe nada.
 
-**Do segundo dia em diante: o desfiar começa, um domínio de topo por vez.** Conforme cada delegação em cache expira, o resolvedor tenta renová-la, precisa da raiz para isso, e falha. Se `.com` ou `.br` morre antes de `.io` é questão de quando cada resolvedor renovou por último - então a falha não é global e simultânea, e sim irregular e confusa, diferente em cada rede, o que é operacionalmente muito pior que uma queda limpa.
+**Do segundo dia em diante: as coisas começam a se desfazer, um domínio de topo de cada vez.** À medida que cada delegação em cache expira, o resolver tenta renová-la, precisa da raiz para isso e não consegue. Se o `.com` ou o `.br` cai antes do `.io`, isso depende de quando cada resolver fez a última renovação. Por isso a falha não é global nem simultânea: é irregular e confusa, diferente em cada rede, o que, do ponto de vista operacional, é muito pior do que uma queda limpa.
 
-**Primeira semana: a nomeação está quebrada, o roteamento está bem.** Esta é a distinção crucial. Pacotes continuam se movendo. Um endereço digitado como IP cru ainda conecta. Conexões longas já estabelecidas continuam de pé. O que morre é a capacidade de *transformar um nome em endereço para qualquer coisa que não esteja em cache* - e como essencialmente todo software usa nomes, o efeito prático é uma internet que roteia perfeitamente e não acha nada.
+**Primeira semana: os nomes param de funcionar, o roteamento continua normal.** Essa é a distinção que importa. Os pacotes continuam trafegando. Um endereço IP digitado direto ainda conecta. As conexões longas que já estavam abertas continuam de pé. O que morre é a capacidade de *transformar um nome em endereço para qualquer coisa que ainda não esteja em cache*. E como praticamente todo software usa nomes, o efeito prático é uma internet que roteia perfeitamente e não encontra nada.
 
-O que quebra, mais ou menos nesta ordem: entrega de e-mail para domínios não familiares, emissão e renovação de certificados (as validações são baseadas em nome), canais de atualização de software, APIs de provedores de nuvem, serviços federados, e tudo que faz descoberta de serviço por nome. O que segue funcionando: redes internas com resolvedores e zonas próprias, tudo que estiver em cache, tudo endereçado por IP, e conteúdo já entregue.
+O que quebra, mais ou menos nesta ordem: a entrega de e-mail novo para domínios desconhecidos, a emissão e a renovação de certificados (as validações se baseiam em nomes), os canais de atualização de software, as APIs dos provedores de nuvem, os serviços federados e tudo o que faz descoberta de serviços por nome. O que continua funcionando: redes internas com resolvers e zonas próprios, tudo o que já estiver em cache, tudo o que for acessado por IP e o conteúdo que já foi entregue.
 
-**Mitigações que retardariam isso:** resolvedores que implementam **entrega de respostas vencidas** seguem devolvendo registros expirados quando não conseguem renová-los, o que converte uma falha dura em uma degradação, por quanto tempo se tolerar. Esse comportamento é padronizado exatamente para essa classe de evento.
+**Mitigações que atrasariam esse processo:** os resolvers que implementam **stale-answer serving** (servir respostas vencidas) continuam entregando registros expirados quando não conseguem renová-los. Com isso, uma falha total vira uma degradação, que dura enquanto alguém aceitar conviver com ela. Esse comportamento foi padronizado justamente para esse tipo de evento.
 
-## Cenário dois: a raiz responde, e diz não
+## Cenário dois: a raiz responde, e diz que não
 
-Agora a versão que deveria preocupar mais. Os servidores raiz continuam no ar, alcançáveis, respondendo rápido - e se recusam a delegar. As respostas para domínios de topo inteiros voltam como *este nome não existe*.
+Agora, a versão que deveria preocupar mais. Os servidores raiz continuam no ar, alcançáveis, respondendo rápido, e se recusam a delegar. As respostas para domínios de topo inteiros voltam dizendo *este nome não existe*.
 
 Isso é pior por três motivos.
 
-**É rápido.** Não há espera por um temporizador de dois dias. O resolvedor pergunta, recebe uma resposta negativa, guarda em cache e para de tentar. O cache negativo na raiz é de um dia por vez, renovado a cada nova negativa.
+**É rápido.** Não existe um timer de dois dias para esperar. O resolver pergunta, recebe uma resposta negativa, guarda essa resposta em cache e para de tentar. Na raiz, o cache negativo vale por um dia, e é renovado a cada nova negativa.
 
-**É autenticado.** A zona raiz é assinada com DNSSEC, e o DNSSEC assina negativas também - uma prova de inexistência é um registro assinado como qualquer outro. Um resolvedor validante conferiria a assinatura em *este domínio de topo não existe*, a acharia criptograficamente perfeita, e a aplicaria. **O DNSSEC protege você de alguém que finja ser a raiz. Ele não oferece nada contra a própria raiz.** A validação autentica a origem, não a verdade.
+**É autenticado.** A zona raiz é assinada com DNSSEC, e o DNSSEC também assina as negativas: uma prova de inexistência é um registro assinado como qualquer outro. Um resolver que faz validação conferiria a assinatura de *este domínio de topo não existe*, veria que ela é criptograficamente perfeita e aplicaria o resultado. **O DNSSEC protege você contra alguém que se passe pela raiz. Contra a própria raiz, ele não oferece nada.** A validação autentica a origem, não a verdade.
 
-**É negável.** Uma queda parece um ataque. Uma delegação removida em silêncio parece um ato administrativo, e a discussão sobre se foi legítima acontece depois que o tráfego já parou.
+**É fácil de negar.** Uma queda tem cara de ataque. Uma delegação retirada em silêncio tem cara de ato administrativo, e a discussão sobre se ela foi legítima só acontece depois que o tráfego já parou.
 
-O mesmo mecanismo tem uma versão menor e real: um domínio de topo pode ser removido ou reatribuído por governança, e não por ataque, e o efeito operacional sobre quem o usa é idêntico ao de uma queda direcionada.
+O mesmo mecanismo existe numa versão menor, e real: um domínio de topo pode ser retirado ou passado para outro operador por uma decisão de governança, sem ataque nenhum, e o efeito operacional para quem usa esse domínio é idêntico ao de uma queda direcionada.
 
-## Quem de fato conseguiria fazer qualquer um dos dois
+## Quem conseguiria, na prática, fazer uma coisa ou outra
 
-A resposta honesta é que os dois cenários são difíceis, e a dificuldade é institucional antes de técnica.
+A resposta honesta é que os dois cenários são difíceis, e a dificuldade é mais institucional do que técnica.
 
-Mudar o que a raiz diz exige que o **operador das funções IANA** (a Public Technical Identifiers, sob a ICANN desde a transição de custódia de 2016, que a tirou do governo americano) aprove a mudança, que o **mantenedor da zona raiz** a publique, e que a zona seja assinada numa **cerimônia de chaves** - um ritual filmado, auditado e com várias partes e testemunhas externas, feito para que nenhuma pessoa sozinha altere a âncora de confiança da raiz. Desligar os servidores exige que doze organizações em vários países obedeçam ao mesmo tempo.
+Para mudar o que a raiz diz, o **operador das funções da IANA** (a Public Technical Identifiers, ligada à ICANN desde a transição de 2016, que tirou a supervisão das mãos do governo americano) precisa aprovar a mudança, o **mantenedor da zona raiz** (o root zone maintainer) precisa publicá-la e a zona precisa ser assinada numa **cerimônia de chaves** (a key ceremony): um ritual filmado, auditado, com várias partes e testemunhas externas, feito para que nenhuma pessoa, sozinha, consiga alterar a âncora de confiança (o trust anchor) da raiz. Já para desligar os servidores, doze organizações em vários países teriam de obedecer ao mesmo tempo.
 
-Isso não é garantia. É um desenho em que o custo da coação é alto e público, e em que os participantes são diversos o bastante para que a obediência silenciosa seja improvável. Vale notar que as raízes já foram atacadas diretamente - as grandes tentativas de negação de serviço em 2002 e 2007 degradaram algumas letras sem quebrar a resolução, porque anycast mais redundância deixaram capacidade sobrando. **DDoS (negação de serviço distribuída) contra a raiz já foi tentado e não funcionou.** Coagir quem assina a zona é a ameaça mais plausível, e é a única que o anycast não resolve.
+Isso não é garantia. É um arranjo em que o custo da coerção é alto e público, e em que os participantes são diversos o bastante para tornar improvável uma obediência silenciosa. Vale notar que as raízes já foram atacadas diretamente: as grandes tentativas de negação de serviço de 2002 e 2007 degradaram algumas letras sem quebrar a resolução, porque o anycast, somado à redundância, garantiu que sobrasse capacidade suficiente. **DDoS (distributed denial of service, a negação de serviço distribuída) contra a raiz já foi tentado e não funcionou.** Coagir as pessoas que assinam a zona é a ameaça mais plausível, e contra ela o anycast não ajuda.
 
 ## O que dá para fazer hoje
 
-Esta é a parte que a maioria não sabe: **dá para parar de depender dos servidores raiz quanto a disponibilidade, agora, sem pedir permissão a ninguém.**
+Esta é a parte que pouca gente conhece: **dá para deixar de depender dos servidores raiz para ter disponibilidade, agora mesmo, sem pedir permissão a ninguém.**
 
-A zona raiz é pública. Um resolvedor pode manter uma **cópia local da zona raiz inteira**, renová-la periodicamente e responder consultas de raiz a partir de si mesmo - prática padronizada na RFC 7706 e em sua sucessora, a RFC 8806, e suportada pelas implementações comuns de resolvedor. Como a zona é assinada com DNSSEC, uma cópia mantida localmente é verificável: você não está confiando na cópia, está conferindo-a contra a âncora de confiança.
+A zona raiz é pública. Um resolver pode manter uma **cópia local da zona raiz inteira**, atualizá-la de tempos em tempos e responder ele mesmo às consultas à raiz. Essa prática foi padronizada na RFC 7706 e na sua sucessora, a RFC 8806, e as implementações de resolver mais comuns têm suporte a ela. Como a zona é assinada com DNSSEC, dá para verificar a cópia local: você não está confiando na cópia, está conferindo a cópia contra a âncora de confiança.
 
-O efeito é que uma queda da raiz deixa de importar para seus usuários, e some também um vazamento de privacidade, já que seu resolvedor para de contar a um terceiro o domínio de topo de cada consulta que erra o cache. O custo é uma transferência periódica e a disciplina de mantê-la fresca.
+O efeito é que uma queda da raiz deixa de afetar os seus usuários. E ainda some um vazamento de privacidade, porque o seu resolver para de contar a terceiros o domínio de topo de cada consulta que não estava em cache. O custo é uma transferência periódica e a disciplina de manter a cópia atualizada.
 
-A lição mais ampla passa longe do DNS: **quando a dependência é um conjunto de dados público e assinado, replique-o e verifique-o localmente.** Disponibilidade e autenticidade são problemas separáveis, e a raiz é o exemplo mais limpo que existe de um sistema em que o segundo está resolvido bem o bastante para se contornar o primeiro.
+A lição vale para muito além do DNS: **quando a dependência é um conjunto de dados público e assinado, replique os dados e verifique a cópia localmente.** Disponibilidade e autenticidade são problemas separáveis, e a raiz é o exemplo mais claro que existe de um sistema em que o segundo está tão bem resolvido que dá para contornar o primeiro.
 
-## Por que raízes alternativas seguem fracassando
+## Por que as raízes alternativas sempre fracassam
 
-A resposta óbvia - rodar outra raiz - já foi tentada repetidas vezes e nunca funcionou, por um motivo que vale entender.
+A resposta óbvia, montar outra raiz, já foi tentada várias vezes e nunca funcionou, por um motivo que vale a pena entender.
 
-A **AlterNIC**, nos anos noventa, chegou a sequestrar tráfego destinado ao registro oficial para fazer seu ponto, o que resultou em condenação criminal e não em mudança de política. A **Open Root Server Network** rodou por anos uma alternativa europeia sobre o argumento de que a raiz não deveria estar sob a jurisdição de um governo só. A **OpenNIC** ainda hoje oferece domínios de topo extras. Mais recentemente, sistemas de nomes em blockchain propuseram substituir a raiz inteira por um registro distribuído.
+A **AlterNIC**, nos anos noventa, chegou a sequestrar o tráfego destinado ao registro oficial para marcar posição, e o resultado foi uma condenação criminal, não uma mudança de política. A **Open Root Server Network** manteve por anos uma alternativa europeia, com o argumento de que a raiz não deveria ficar sob a jurisdição de um único governo. A **OpenNIC** ainda hoje oferece domínios de topo extras. Mais recentemente, sistemas de nomes baseados em blockchain propuseram trocar a raiz inteira por um ledger, um registro distribuído.
 
-Todos batem na mesma pedra: **um nome precisa significar a mesma coisa para todo mundo, ou não é um nome.** Se o seu resolvedor e o meu discordam sobre a quem pertence `.example`, então um link, um endereço de e-mail e um certificado deixam de ser portáveis entre nós, e a propriedade que faz da internet uma rede única desaparece. O Internet Architecture Board pôs isso por escrito na RFC 2826 - o argumento técnico pela raiz única - e três décadas de tentativas não o falsificaram.
+Todos esbarram no mesmo obstáculo: **um nome precisa significar a mesma coisa para todo mundo, senão não é um nome.** Se o seu resolver e o meu discordam sobre a quem pertence o `.example`, um link, um endereço de e-mail e um certificado deixam de valer da mesma forma para nós dois, e some a propriedade que faz da internet uma rede única. O Internet Architecture Board registrou isso na RFC 2826, o argumento técnico a favor de uma raiz única, e três décadas de tentativas não conseguiram desmenti-lo.
 
-O que arma a tensão real, e ela não se resolve por engenharia. Uma raiz única é tecnicamente necessária e politicamente desconfortável: significa que um processo de governança, por mais multissetorial que seja, senta no topo da nomeação do mundo. Toda alternativa séria ou recria esse ponto de estrangulamento sob outra administração, ou fragmenta o espaço de nomes e destrói justamente o que se pretendia defender.
+É aí que aparece a tensão de verdade, e ela não se resolve com engenharia. Uma raiz única é tecnicamente necessária e politicamente desconfortável: significa que um único processo de governança, por mais multissetorial que seja, fica no topo dos nomes do mundo inteiro. Toda alternativa séria ou recria esse ponto de estrangulamento sob outra administração, ou fragmenta o espaço de nomes e destrói justamente aquilo que queria defender.
 
-## A versão curta
+## Em resumo
 
-- Desligar a raiz é sobrevivível e lento: uns dois dias de folga, e então um desfiar irregular, resolvedor a resolvedor.
-- Transformar a raiz em mentirosa é rápido, autenticado pela mesma criptografia que protege você, e muito mais difícil de contestar.
-- O roteamento sobrevive aos dois; **a nomeação é a camada frágil**, e quase todo software depende dela.
-- A zona raiz ser pública e assinada é a saída de emergência: replique-a localmente e a questão de disponibilidade quase desaparece.
-- Nenhuma raiz alternativa resolveu o problema político sem quebrar o técnico, porque um espaço de nomes só funciona se for singular.
+- Dá para sobreviver a uma raiz desligada, e o estrago é lento: cerca de dois dias de folga e, depois, um desmanche irregular, de resolver em resolver.
+- Fazer a raiz mentir é rápido, vem autenticado pela mesma criptografia que protege você e é muito mais difícil de contestar.
+- O roteamento sobrevive aos dois cenários; **a camada frágil é a dos nomes**, e quase todo software depende dela.
+- O fato de a zona raiz ser pública e assinada é a saída de emergência: replique a zona localmente e a questão da disponibilidade praticamente desaparece.
+- Nenhuma raiz alternativa resolveu o problema político sem quebrar o técnico, porque um espaço de nomes só funciona se for único.

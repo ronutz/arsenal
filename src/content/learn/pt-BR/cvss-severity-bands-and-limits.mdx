@@ -1,6 +1,6 @@
 ---
 slug: cvss-severity-bands-and-limits
-title: "Faixas de Severidade do CVSS, e o Que a Pontuação Não Diz"
+title: "Faixas de severidade do CVSS, e o que a pontuação não diz"
 summary: "O número de 0 a 10 é mapeado para cinco faixas qualitativas, de Nenhuma a Crítica. Esse mapeamento é útil para triagem, mas uma pontuação Base do CVSS mede severidade, não risco. Ela não diz nada sobre uma falha estar sendo explorada, quão valioso é o ativo, ou quais controles você tem. Tratar o número base como uma fila de prioridade é a forma mais comum de as equipes usarem mal o CVSS."
 concepts: ["cvss", "severidade", "faixas qualitativas", "risco", "epss"]
 relatedTools: ["cvss-vector-decoder"]
@@ -29,7 +29,7 @@ A coisa mais importante a entender sobre uma pontuação Base do CVSS (Sistema C
 - **Valor do ativo.** Uma falha Crítica em uma máquina de teste descartável e em um sistema de pagamento compartilham o mesmo número base. Apenas a pontuação Ambiental, ou o seu próprio contexto de ativos, as distingue.
 - **Controles compensatórios.** Uma mitigação apenas de rede, uma regra de WAF (web application firewall), ou o fato de um serviço ser inacessível pela internet não muda a base em nada.
 
-## Usando bem as faixas
+## Como usar bem as faixas
 
 As faixas são boas para triagem grosseira e para comunicação, e Crítica realmente merece atenção. Mas ordenar um backlog puramente por pontuação Base decrescente vai levar você a falhas acessíveis porém inofensivas antes de falhas silenciosas e de alto valor. Uma ordem mais defensável combina a severidade Base com a probabilidade de exploração (por exemplo o EPSS ou catálogos de vulnerabilidades exploradas conhecidas) e com o seu próprio valor de ativos e controles, que é exatamente o que a pontuação Temporal e Ambiental existem para capturar. O número Base é onde a priorização começa, não onde termina.
 

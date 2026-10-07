@@ -1,6 +1,6 @@
 ---
 slug: f5xc-domain-matching-and-listener-logic
-title: "Como o XC Decide Qual Load Balancer Vence um Hostname: Listener Logic, Wildcards e o Apex"
+title: "Como o XC decide qual load balancer vence um hostname: listener logic, wildcards e o apex"
 summary: "A advertise policy estreita uma requisição a um IP e porta; dentro dela, o XC escolhe o match de domínio mais específico (exato vence wildcard). O hostname vem do SNI (HTTPS) ou do header Host (HTTP). Um Default load balancer por advertise policy pega o que não deu match. Wildcards são matches de sufixo que não cobrem o apex, certificados wildcard cobrem um único label, e misturar um wildcard com seu apex entre LBs de certificado automático é um perigo."
 concepts: ["domain matching", "listener logic", "sni", "wildcard", "apex", "default load balancer", "advertise policy", "f5 distributed cloud"]
 relatedTools: ["f5xc-domain-sni-match-resolver"]
@@ -39,6 +39,6 @@ Um domínio wildcard casa subdomínios por sufixo: *.domain.com cobre app.domain
 
 Algumas configurações são ativamente perigosas. A F5 desaconselha colocar tanto um wildcard (*.example.com) quanto seu apex (example.com) em load balancers diferentes quando você usa certificados automáticos - o provisionamento de certificado colide. Dois load balancers reivindicando o mesmo domínio exato, ou dois Defaults em uma advertise policy, são configurações erradas que a plataforma não pode resolver silenciosamente. E um empate ambíguo - dois matches igualmente específicos - significa que o resultado não é algo em que você deveria confiar.
 
-## Vendo resolver
+## Como ver a resolução acontecer
 
 As regras são simples isoladamente mas interagem quando você tem vários load balancers e uma mistura de domínios exatos e wildcard. O resolvedor complementar pega seus load balancers e um hostname de teste e mostra o vencedor, o segundo colocado, e cada perigo do conjunto de uma vez - então em vez de rastrear a lógica à mão, você vê app-b.domain.com pousar no LB exato e other.domain.com cair para o wildcard.

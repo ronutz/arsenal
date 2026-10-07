@@ -68,7 +68,7 @@ Os caracteres de desenho de caixas nas duas últimas linhas (├ é U+251C) são
 
 Os mainframes usam EBCDIC, em que as letras nem são contíguas: no IBM 037, de A a I são C1 a C9, de J a R são D1 a D9, de S a Z são E2 a E9, os dígitos são F0 a F9 e o espaço é 40. "HELLO, World" em IBM 037 é `C8 C5 D3 D3 D6 6B 40 E6 96 99 93 84`, e lido como Latin-1 vira ÈÅÓÓÖk@æ seguido de quatro controles invisíveis. Um @ onde deveria haver cada espaço é a marca do EBCDIC.
 
-## Recuperando o texto
+## Como recuperar o texto
 
 Um mojibake pode ser desfeito quando a leitura errada não perdeu nada: codifique o texto embaralhado de volta com o charset que o leu errado, o que devolve os bytes originais, e decodifique esses bytes com o charset certo. O windows-1252, como o padrão do WHATWG o define, mapeia todo byte para um caractere, então UTF-8 lido errado como windows-1252 por um navegador sempre pode ser recuperado. Duas coisas fazem isso falhar:
 
@@ -79,7 +79,7 @@ Desfazer uma leitura errada de UTF-8 vem com uma verificação: os bytes precisa
 
 O modo **Consertar mojibake** do conversor tenta os dois, diz que tipo de evidência tem, desfaz até três rodadas de codificação dupla e marca com U+FFFD o que não pôde ser recuperado.
 
-## Evitando
+## Como evitar
 
 - **Use UTF-8 e diga isso.** O padrão do WHATWG é direto: "Authors must use the UTF-8 encoding and must use its (ASCII case-insensitive) 'utf-8' label to identify it." (autores devem usar a codificação UTF-8 e o rótulo "utf-8" para identificá-la). Envie o charset no cabeçalho Content-Type, onde nenhum caractere copiado consegue quebrá-lo, e também num `<meta charset>`.
 - **Converta uma vez, na borda.** A codificação dupla acontece onde duas camadas convertem. Decida qual delas converte.

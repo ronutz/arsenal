@@ -24,7 +24,7 @@ Lê um script [Expect](/glossary/expect) e o explica apenas a partir do texto: o
 - **E18, `set timeout` dentro de um procedimento sem `global timeout` (nota):** "variables written are always in the local scope (unless a "global" command has been issued)", então o valor vale só para os expects daquele procedimento.
 - **Sintaxe:** onde o analisador Tcl 8.4 para (uma chave faltando, aspas não fechadas), com a mensagem do próprio Tcl; os comandos anteriores continuam explicados.
 
-## Lendo a saída
+## Como ler a saída
 
 O resumo diz se o Tcl lê o script inteiro, conta os achados, nomeia os programas iniciados, dá o timeout em vigor no primeiro `expect` (a opção `-timeout`, depois um valor definido no mesmo procedimento, depois o `set timeout` do script, senão o padrão) e diz se o script termina em `interact`, espera `eof` ou nunca espera o programa terminar. A tabela do diálogo emparelha cada `expect` sobre o processo com o `send` que o responde; um valor mascarado ali é um segredo que o script digitou em claro. Os padrões aparecem sob cada `expect` com o seu estilo de casamento (glob por padrão, `-re`, `-ex`, `-nocase`) e as palavras-chave `eof`, `timeout`, `full_buffer`, `null` e `default` com o que cada uma significa.
 

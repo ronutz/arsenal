@@ -1,6 +1,6 @@
 ---
 slug: fallback-persistence-and-match-across
-title: "Fallback de Persistência e as Configurações Match-Across"
+title: "Fallback de persistência e as configurações match-across"
 summary: "Um virtual server pode carregar dois métodos de persistência, um primário e um fallback usado quando o primário não encontra registro, e três configurações match-across que decidem quão amplamente um registro de persistência é compartilhado. Ambos são fáceis de configurar errado de formas que só aparecem sob carga."
 concepts: ["persistência", "fallback", "match-across", "ltm", "f5", "virtual server"]
 relatedTools: ["f5-persistence-method-explainer"]
@@ -27,7 +27,7 @@ A primeira das três configurações de compartilhamento, Match Across Services,
 
 Match Across Virtual Servers é mais amplo: mantém um cliente no mesmo node independentemente de qual virtual hospeda a conexão, mesmo entre endereços virtuais diferentes. Match Across Pools é ainda mais amplo, e o mais perigoso: permite que o BIG-IP use qualquer pool que contenha um dado registro de persistência, o que significa que o tráfego pode ser direcionado a um pool diferente daquele que o virtual server especifica. A F5 documenta isso explicitamente como um aviso, porque pode enviar clientes para algum lugar que a configuração não pretendia obviamente. Habilite as configurações mais amplas apenas quando a topologia genuinamente exigir persistência compartilhada, e confirme que os virtuals e pools envolvidos contêm os mesmos membros.
 
-## Lendo a cadeia
+## Como ler a cadeia de persistência
 
 Como essas configurações interagem, lê-las a olho nu entre vários perfis e virtuals é propenso a erros. O [explicador de métodos de persistência](/tools/f5-persistence-method-explainer) dispõe o primário e o fallback de cada virtual junto com as observações que se aplicam, e mostra as configurações match-across em cada perfil com o que elas fazem. Para os próprios métodos, veja [métodos de persistência do BIG-IP](/learn/ltm-persistence-methods); para escolher entre eles, veja [escolhendo um método de persistência](/learn/choosing-a-persistence-method).
 

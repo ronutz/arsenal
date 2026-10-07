@@ -14,6 +14,6 @@ O valor do registro não é arbitrário; a CA o recalcula a partir da chave da s
 
 O thumbprint da RFC 7638 é calculado somente sobre os membros públicos obrigatórios da chave: para uma chave EC, a curva e as coordenadas x e y; para uma chave RSA, o módulo e o expoente. Sua chave privada nunca é necessária para calcular o registro, então você deve colar apenas o JWK público. Se uma chave completa for colada, seus campos privados são ignorados e nunca exibidos.
 
-## Usando
+## Como usar
 
 Informe o token do desafio e a chave da sua conta e, opcionalmente, o domínio para ver o nome completo do registro. Publique o valor retornado como um registro TXT em `_acme-challenge.<domínio>`, aguarde a propagação e deixe seu cliente ACME continuar. O mesmo token e a mesma chave sempre produzem o mesmo valor, então você pode conferir o que seu cliente está publicando contra o que esta ferramenta calcula.

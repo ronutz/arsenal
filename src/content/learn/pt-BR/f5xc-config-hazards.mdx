@@ -1,6 +1,6 @@
 ---
 slug: f5xc-config-hazards
-title: "Perigos Comuns de Configuração do XC que um Linter Pode Pegar"
+title: "Perigos comuns de configuração do XC que um linter pode pegar"
 summary: "Objetos do XC aceitam configurações que são válidas mas operacionalmente erradas. Isto percorre os perigos que um linter de objeto único pode sinalizar: skip-verification, texto puro, SNI desabilitado e health checks ausentes no origin pool; no-WAF, listeners HTTP puros, redirect de HTTP para HTTPS ausente, WAF desabilitado por rota, sombreamento de rota catch-all, e wildcard+apex no load balancer; e um WAF deixado em modo de monitoramento - além de por que a severidade é um priorizador, não um veredito, e os limites de ler um objeto por vez."
 concepts: ["configuration linting", "origin pool", "http load balancer", "waf", "route shadowing", "tls to origin", "f5 distributed cloud"]
 relatedTools: ["f5xc-object-linter"]

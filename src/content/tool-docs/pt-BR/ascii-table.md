@@ -30,7 +30,7 @@ Ele tem quatro partes:
 
 Sete ou oito dígitos binários sozinhos são lidos como bits, porque é isso que uma sequência de 0 e 1 desse tamanho quase sempre é. Um número decimal mais longo, como `1000`, é lido como decimal e cai fora do ASCII.
 
-## Lendo um código
+## Como ler um código
 
 - **Números.** Decimal, hexadecimal, octal, sete bits e o byte completo. O bit mais alto do byte é 0: a RFC 20 colocou o ASCII de 7 bits "in an 8 bit byte whose high order bit is always 0" (num byte de 8 bits cujo bit mais alto é sempre 0).
 - **Coluna/linha.** A RFC 20 dá nome a cada posição por coluna e linha: `K` é `4/11`. A coluna são os bits b7 b6 b5 e a linha são b4 b3 b2 b1, então 4/11 é 100 1011.

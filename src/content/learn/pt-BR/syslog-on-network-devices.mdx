@@ -1,6 +1,6 @@
 ---
 slug: syslog-on-network-devices
-title: "Syslog em Dispositivos de Rede: Qual Facility Faz o Quê"
+title: "Syslog em dispositivos de rede: qual facility faz o quê"
 summary: "Firewalls, balanceadores de carga e switches quase sempre registram nas facilities locais, mas cada fabricante escolhe um padrão diferente. Saber que o FortiGate usa local7 por padrão, o Cisco ASA usa local4 e o F5 BIG-IP usa local0 transforma uma parede de números de PRI em um mapa de qual caixa disse o quê."
 concepts: ["syslog", "fortigate", "cisco", "facility", "dispositivos de rede"]
 relatedTools: ["syslog-pri-decoder"]
@@ -24,7 +24,7 @@ Alguns padrões valem a pena memorizar:
 
 Estes são convenções e pontos de partida, não leis: cada um desses dispositivos permite mudar a facility, e em um ambiente bem administrado você frequentemente o faz, justamente para que cada plataforma caia em uma facility distinta e possa ser roteada separadamente no coletor.
 
-## Colocando em prática
+## Como colocar em prática
 
 É aqui que decodificar um PRI (valor de prioridade, do inglês priority value) compensa operacionalmente. Suponha que um coletor central mostre uma rajada de mensagens `<189>`. Decodifique: 189 dividido por 8 é 23 com resto 5, então isso é `local7` na severity 5 (notice). Em uma rede onde o FortiGate é dono de `local7`, isso imediatamente restringe a fonte a um FortiGate, em um nível de notice rotineiro. Mude a atribuição de facility por plataforma e o PRI sozinho diz tanto a classe do dispositivo quanto a urgência antes de você ler uma única palavra do corpo da mensagem.
 

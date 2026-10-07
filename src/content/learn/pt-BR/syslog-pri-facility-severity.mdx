@@ -1,6 +1,6 @@
 ---
 slug: syslog-pri-facility-severity
-title: "O PRI do Syslog: Um Número, Dois Significados"
+title: "O PRI do syslog: um número, dois significados"
 summary: "Toda mensagem de syslog começa com um PRI, um número entre colchetes angulares que empacota uma facility e uma severity em um único valor. A fórmula é pequena e a aritmética é fácil depois que você a vê: PRI é igual a facility vezes oito mais severity."
 concepts: ["syslog", "pri", "facility", "severity", "rfc5424"]
 relatedTools: ["syslog-pri-decoder"]
@@ -38,6 +38,6 @@ Pegue `<134>`, o padrão mais comum que você verá. Divida: 134 dividido por 8 
 
 No fio, o PRI vem entre colchetes angulares e fica bem no início da mensagem, imediatamente seguido pelo dígito de versão na RFC 5424. A faixa válida é de 0 a 191, porque a maior facility é 23 e a maior severity é 7, e 23 vezes 8 mais 7 é 191. Uma pequena regra pega muita gente: zeros à esquerda não são permitidos, então uma mensagem de kernel com severity 0 é escrita `<0>`, nunca `<00>`, e o único PRI que pode começar com zero é o próprio valor zero.
 
-## Lendo e escrevendo na hora
+## Como ler e escrever o PRI na hora
 
 O [decodificador de PRI syslog](/tools/syslog-pri-decoder) faz essa aritmética nos dois sentidos: cole um PRI e ele separa a facility e a severity com seus nomes, ou escolha uma facility e uma severity e ele dá o PRI e sua forma entre colchetes. Para aprender o que cada facility e severity significa, veja [facilities e severities do syslog](/learn/syslog-facilities-and-severities); para ver quais delas seus dispositivos usam, veja [syslog em dispositivos de rede](/learn/syslog-on-network-devices).

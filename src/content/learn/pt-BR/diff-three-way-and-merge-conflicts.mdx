@@ -13,7 +13,7 @@ updated: "2026-08-10"
 
 Um diff de duas vias compara a versão A com a versão B. Ele consegue mostrar que uma linha difere, mas não consegue dizer *quem* a mudou, porque não tem ponto de referência. Essa limitação é exatamente o que desmorona quando duas pessoas editam o mesmo arquivo.
 
-## Adicionando o ancestral
+## Como adicionar o ancestral
 
 Um diff de **três vias** recebe três insumos: as duas versões editadas e seu **ancestral** comum, a versão da qual ambas partiram. Com o ancestral como referência, a lógica de merge consegue raciocinar sobre cada mudança:
 
@@ -23,7 +23,7 @@ Um diff de **três vias** recebe três insumos: as duas versões editadas e seu 
 
 É por isso que o controle de versão consegue fazer merge da maioria das mudanças sem perguntar: a maioria das edições toca regiões diferentes, e o ancestral torna isso demonstrável.
 
-## Lendo um conflito
+## A anatomia de um conflito
 
 Quando um merge não consegue decidir, ele escreve ambas as versões no arquivo, entre marcadores:
 

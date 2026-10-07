@@ -1,6 +1,6 @@
 ---
 slug: f5xc-rate-limiting-explained
-title: "Como o Rate Limiting do F5XC Realmente Conta: Leaky Bucket, Burst, Bloqueio e Overshoot"
+title: "Como o rate limiting do F5XC realmente conta: leaky bucket, burst, bloqueio e overshoot"
 summary: "Por que [1, Seconds, 60] e [1, Minutes, 1] são o mesmo limite, como o leaky bucket e o multiplicador de burst realmente se comportam, a armadilha da mitigação em que Disabled não é desligado, por que a contagem distribuída pode ultrapassar o limite, e por que regras de API em camadas são por primeira correspondência."
 concepts: ["rate limiting", "leaky bucket", "burst multiplier", "http 429", "mitigation action", "f5 distributed cloud"]
 relatedTools: ["f5xc-rate-limit-calculator"]
@@ -39,6 +39,6 @@ A contagem é distribuída. O XC impõe nos Regional Edges e entre proxies, cada
 
 Para o rate limiting de API você pode empilhar regras de Server URL e regras de API endpoint. Elas são avaliadas **por primeira correspondência, na ordem em que você as configura** - então uma regra ampla colocada acima de uma específica vai ofuscá-la. Coloque as regras específicas primeiro.
 
-## Juntando tudo
+## Tudo junto
 
 A calculadora complementar recebe uma configuração de Number / Per Period / Periods / Burst Multiplier / Mitigation e mostra a taxa normalizada, o teto de burst, quando os 429 começam, como um bloqueio de Block se comporta e essas ressalvas - para que você possa raciocinar sobre um rate limiter antes de implantá-lo, em vez de descobrir o comportamento dele em produção.

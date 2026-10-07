@@ -1,6 +1,6 @@
 ---
 slug: bigip-management-access-port-lockdown
-title: "Acesso de Gerenciamento no BIG-IP: Management IP, Port Lockdown e Listas de Acesso"
+title: "Acesso de gerenciamento no BIG-IP: management IP, port lockdown e listas de acesso"
 summary: "Duas portas levam para dentro de um BIG-IP: a interface de gerenciamento dedicada e os self-IPs das VLANs de tráfego. Este artigo cobre configurar e encontrar o endereço de gerenciamento, o que o port lockdown de fato permite num self-IP, as listas de acesso do httpd e do sshd, e como diagnosticar os clássicos casos de management IP inalcançável."
 concepts: ["f5", "big-ip", "management ip", "port lockdown", "self-ip", "sshd", "httpd", "acl", "administrative access"]
 relatedTools: []
@@ -27,6 +27,6 @@ Todo self-IP carrega uma configuração de port lockdown que decide quais servi�
 
 Independentes do port lockdown, os dois daemons administrativos mantêm suas próprias listas: a do httpd controla quais endereços de origem alcançam o utilitário de configuração por Hypertext Transfer Protocol Secure (HTTPS), e a do sshd controla o Secure Shell (SSH). Elas se aplicam também à interface de gerenciamento - fato que transforma "identificar a lista de acesso HTTP/SSH ao management IP" de pegadinha em item de checklist. Quando um colega alcança a tela de login e você não, compare os endereços de origem contra essas listas antes de culpar a rede.
 
-## Restringindo além: partições e papéis
+## Como restringir ainda mais: partições e papéis
 
 Limitar de onde os administradores conectam é metade da história; limitar o que podem fazer uma vez dentro pertence aos user roles e às partições administrativas, cobertos com o material de autenticação. A versão curta para esta página: partições delimitam quais objetos uma conta vê e toca, papéis delimitam os verbos, e ambos se compõem com as restrições de rede acima em defesa em profundidade.

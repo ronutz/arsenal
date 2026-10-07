@@ -1,6 +1,6 @@
 ---
 slug: zscaler-admin-audit-logs
-title: "O Audit Log de Administradores: Quem Mudou o Quê, De Onde, Com Que Resultado"
+title: "O audit log de administradores: quem mudou o quê, de onde, com que resultado"
 summary: "O ZIA registra toda ação de admin - console e API igualmente - como um registro de auditoria de anatomia precisa: timestamp, ação, categoria e subcategoria, recurso, admin, IP do cliente, interface, resultado e um diff de antes/depois. O bloqueio de cinco-falhas-num-minuto que se escreve no próprio log, a janela de retenção de seis meses, como a trilha flui para um SIEM, e como lê-la em busca de escalada de privilégios."
 concepts: ["zscaler", "zia", "audit log", "change record", "privilege escalation", "compliance", "api", "admin"]
 relatedTools: ["incident-timeline-rca-builder"]
@@ -25,6 +25,6 @@ Dois comportamentos documentados fazem do audit log um instrumento de segurança
 
 O console guarda audit logs por **até seis meses** - longo o bastante para a maioria das investigações, curto o bastante para que regimes de conformidade com memória mais longa precisem exportar a trilha enquanto está quente. Isso é um problema resolvido na mesma arquitetura de todo o resto: o log de Admin Audit é um dos tipos de feed documentados na [família de streaming de logs do ZIA](/learn/zscaler-nanolog-nss-and-log-streaming), então a trilha de mudanças pode fluir continuamente ao SIEM (security information and event management) ao lado dos logs de tráfego, onde a retenção vira a sua política em vez da do console.
 
-## Lendo como um operador
+## Leia o audit log como um operador
 
 Três hábitos fazem o log pagar o próprio sustento. Depois de todo incidente cuja história inclui "a política se comportou diferente do esperado", o audit log é a primeira parada, não a última - [uma regra que parou de corresponder](/learn/zia-cloud-firewall-rule-order) geralmente tem um registro de mudança com um nome, e correlacionar horários de mudança com o início dos sintomas é [a disciplina de linha do tempo](/learn/fault-isolation-first-hour) aplicada às próprias mãos. Antes de toda reunião de controle de mudanças, a visão de diff é a verdade de campo do que de fato foi entregue, diga o que disser o ticket. E no calendário, o filtro Interface: API merece uma revisão periódica própria - o comportamento da frota de automação deriva em silêncio, e este é o único lugar onde não consegue derivar invisível.

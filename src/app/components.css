@@ -22265,7 +22265,16 @@ html.presenter-covering body {
   line-height: 1.55;
   color: var(--text-secondary);
 }
-/* The way in: the first written article. */
+/* The series' title leads to the series' own page (row 58): the heading's colour, underlined on hover. */
+.training-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+.training-card-title a:hover,
+.training-card-title a:focus-visible {
+  text-decoration: underline;
+}
+/* The way in: the series' own page (row 58; the first written article until then). */
 .training-start {
   margin: 0.45rem 0 0.25rem;
 }
@@ -22345,4 +22354,288 @@ html.presenter-covering body {
   margin: 0.35rem 0 0;
   font-size: 0.88rem;
   color: var(--text-tertiary);
+}
+
+/* ==========================================================================
+   A TRAINING SERIES AROUND ITS ARTICLES, AND ITS OWN PAGE (row 58, PRIME
+   2026-10-07: every "Start the series" a strong start). The rail under an
+   article's summary (where it sits, the progress, the next part, the module's
+   parts), the way on right after the body (the next part as the main button,
+   a module's end announced), and the series page (the start box, how it works,
+   the map). The series' accent comes in as --note-accent. Semantic tokens only.
+   ========================================================================== */
+
+/* The rail under the summary: a tinted band with the series' accent on its left edge. */
+.training-rail {
+  margin: 1rem 0 1.25rem;
+  padding: 0.8rem 1rem 0.85rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 6%, var(--surface-base));
+}
+.training-rail-where {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+/* The series and its level, as a quiet pill. */
+.training-rail-badge {
+  display: inline-block;
+  margin-right: 0.35rem;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: var(--note-accent, var(--accent-primary));
+  font-weight: 600;
+}
+/* How far into the series' written parts: a thin bar. */
+.training-rail-progress {
+  height: 4px;
+  margin: 0.6rem 0 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 15%, var(--surface-base));
+  overflow: hidden;
+}
+.training-rail-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--note-accent, var(--accent-primary));
+}
+/* The series page and the next part. */
+.training-rail-links {
+  margin: 0.55rem 0 0;
+  font-size: 0.9rem;
+}
+.training-rail-map,
+.training-rail-next {
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.training-rail-map:hover,
+.training-rail-map:focus-visible,
+.training-rail-next:hover,
+.training-rail-next:focus-visible {
+  text-decoration: underline;
+}
+/* The module's parts, behind the disclosure. */
+.training-rail-parts {
+  margin-top: 0.45rem;
+}
+.training-rail-parts-summary {
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+/* The way on, right after the body: before the share, the Learn series' links and the read-next list. */
+.training-next {
+  margin: 2rem 0 1.5rem;
+  padding: 1rem 1.1rem 1.05rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 6%, var(--surface-base));
+}
+.training-next-kicker {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--note-accent, var(--accent-primary));
+}
+/* A module's end, announced, and its tools. */
+.training-next-module,
+.training-next-tools {
+  margin: 0.55rem 0 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+/* The next part: the main button of the page's end. */
+.training-next-main {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.8rem 0 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: var(--surface-base);
+  text-decoration: none;
+}
+.training-next-main:hover,
+.training-next-main:focus-visible {
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 10%, var(--surface-base));
+}
+.training-next-dir {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+}
+.training-next-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+/* The end of the series, and the next level. */
+.training-next-end {
+  margin: 0.8rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+/* The way back: the previous part and the series page. */
+.training-next-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+}
+.training-next-prev,
+.training-next-map {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+.training-next-prev:hover,
+.training-next-prev:focus-visible,
+.training-next-map:hover,
+.training-next-map:focus-visible {
+  text-decoration: underline;
+}
+
+/* The series page: the start box, the button, how it works, the map. */
+.training-start-box {
+  max-width: 75ch;
+  margin: 1.25rem 0 0;
+  padding: 1rem 1.15rem 1.15rem;
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--note-accent, var(--accent-primary));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--note-accent, var(--accent-primary)) 5%, var(--surface-base));
+}
+.training-start-cta {
+  margin: 0.9rem 0 0;
+}
+.training-start-h2 {
+  margin-top: 2rem;
+}
+.training-start-how {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 75ch;
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.training-start-map {
+  margin-top: 0.75rem;
+}
+.training-start-after {
+  margin: 1.5rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+/* The Learn series rail's next part, at the top. */
+.series-rail-next {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+/* The series page's lede keeps a reading width, and its Begin button is the page's one large action (row 58). */
+.training-start-page .page-hero-lede {
+  max-width: 72ch;
+}
+.training-begin {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+}
+
+/* ==========================================================================
+   THE TRAINING SERIES, GROUPED AND COLLAPSIBLE (row 61, PRIME 2026-10-07:
+   "as we expect to have many, please allow collapsing of individual items ...
+   and of the sections"). A disclosure per curriculum, open by default; each
+   series card's head always shown, its body behind its own disclosure; the
+   reading paths' Expand all / Collapse all buttons over the section.
+   ========================================================================== */
+.details-toggle-all {
+  margin: 0.75rem 0 0;
+}
+/* One curriculum: its name, its title and how many series it has, as the summary line. */
+.training-curriculum {
+  margin: 1.25rem 0 0;
+}
+.training-curriculum-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.65rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  cursor: pointer;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.training-curriculum-name {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+}
+.training-curriculum-title {
+  color: var(--text-primary);
+}
+.training-curriculum-count {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+/* A card's body: the lede, the outcome, the prerequisites and the modules, behind the card's disclosure. */
+.training-card-more {
+  margin-top: 0.55rem;
+}
+.training-card-more-summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.training-card-more[open] > .training-card-lede {
+  margin-top: 0.6rem;
+}
+
+/* The curriculum's own disclosure marker (row 61 follow-up, 2026-10-07): the summary is a flex row, which hides the
+   browser's triangle, so the heading folded on a click with nothing saying it could. A small triangle of its own, turned
+   down while the curriculum is open; no motion for readers who ask for none. */
+.training-curriculum-summary {
+  list-style: none;
+}
+.training-curriculum-summary::-webkit-details-marker {
+  display: none;
+}
+.training-curriculum-summary::before {
+  content: "\25B8";
+  display: inline-block;
+  margin-right: 0.15rem;
+  color: var(--text-tertiary);
+  transition: transform 0.15s ease;
+}
+.training-curriculum[open] > .training-curriculum-summary::before {
+  transform: rotate(90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .training-curriculum-summary::before {
+    transition: none;
+  }
+}
+
+/* The cover as the way into the presenter (row 63, PRIME 2026-10-07 10:30): the gallery's frame (materials-shot-link),
+   with the focus ring a keyboard user needs to see where the link is. */
+.materials-cover-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
 }

@@ -1,6 +1,6 @@
 ---
 slug: reading-xml-structure
-title: "Lendo a estrutura do XML"
+title: "Como ler a estrutura do XML"
 summary: "XML é uma árvore de elementos construída a partir de um punhado de partes: uma declaração opcional, elementos com atributos, texto e algumas construções especiais. Uma vez que você consegue nomear cada parte e ver como elas se aninham, ler um documento desconhecido de cima a baixo vira rotina em vez de um jogo de adivinhação."
 concepts: ["xml", "elements", "attributes", "tree", "declaration"]
 relatedTools: ["xml-decoder"]
@@ -21,7 +21,7 @@ O corpo são **elementos**. Um elemento é uma tag de abertura, algum conteúdo 
 
 Elementos carregam **atributos** na sua tag de abertura, como pares de nome e valor entre aspas: `<book id="bk101" lang="en">`. Atributos descrevem o elemento; os valores são sempre entre aspas. Entre as tags fica o **conteúdo de texto**, o dado de fato: o `Guia XML` dentro do title.
 
-## Lendo de cima a baixo
+## A leitura de cima a baixo
 
 Para ler um documento, comece na raiz e caminhe para dentro. Cada tag de abertura abre um ramo; sua tag de fechamento correspondente o fecha; a indentação normalmente espelha a profundidade do aninhamento. Faça três perguntas a cada elemento: como ele se chama, quais atributos carrega, e o que contém, seja texto ou mais elementos. Isso basta para reconstruir a forma inteira.
 

@@ -1,6 +1,6 @@
 ---
 slug: tls-cipher-security-keywords
-title: "Quais Palavras-Chave de Cifra TLS São Seguras e Quais Não São"
+title: "Quais palavras-chave de cifra TLS são seguras e quais não são"
 summary: "A diferença entre uma cipher string robusta e uma perigosa é um punhado de palavras-chave. A forward secrecy vem de ECDHE e DHE; os riscos vêm de RC4, 3DES, SSLv3, EXPORT, NULL e DH anônimo. Conhecer a lista curta permite ler a segurança de uma cipher string num relance."
 concepts: ["tls", "cifra", "forward secrecy", "rc4", "3des", "segurança", "f5"]
 relatedTools: ["f5-cipher-string-expander"]
@@ -35,6 +35,6 @@ A forma segura de proibi-las é o operador `!`, que as exclui permanentemente. U
 
 As palavras-chave de protocolo controlam tudo acima delas. `TLSv1_2` e `TLSv1_3` são atuais e seguras. `TLSv1` (TLS 1.0) e `TLSv1_1` estão obsoletas e agora falham na maioria das verificações de conformidade, e `SSLv3` (vulnerável ao POODLE) e `SSLv2` estão mortas há muito tempo. Permitir uma versão de protocolo antiga reabre classes inteiras de suites fracas, então desabilitá-las é muitas vezes a mudança isolada de maior impacto em uma cipher string.
 
-## Lendo a postura num relance
+## A postura num relance
 
 O [explicador de cipher string do F5](/tools/f5-cipher-string-expander) aplica exatamente essa lente: relata se a forward secrecy está presente, lista as palavras-chave fracas que uma string habilita e credita as palavras-chave fracas que ela exclui explicitamente. Para a gramática em que essas palavras-chave se inserem, veja [lendo uma cipher string do F5](/learn/f5-cipher-string-syntax); para como o F5 as empacota em rules reutilizáveis, veja [cipher rules e groups do F5](/learn/f5-cipher-rules-and-groups).

@@ -54,7 +54,7 @@ Dois formatos PKCS empacotam múltiplos objetos juntos:
 
 Chaves privadas têm seu próprio pequeno zoológico. O **PKCS#1** (`RSA PRIVATE KEY`) é o formato original só-RSA. O **SEC1** (`EC PRIVATE KEY`) é o equivalente para chaves de curva elíptica. O **PKCS#8** (`PRIVATE KEY`, opcionalmente `ENCRYPTED PRIVATE KEY`) é o invólucro moderno, neutro quanto a algoritmo, que pode conter qualquer um, e é o que a maioria das ferramentas atuais emite. Um decodificador de certificados nunca precisa da chave privada, e você nunca deve colar uma chave privada em uma ferramenta que você não controla; a ferramenta X.509 é para certificados, que são públicos por design.
 
-## Convertendo entre eles
+## Como converter entre eles
 
 Por a estrutura interna ser idêntica, a conversão é sem perdas e rotineira. Com OpenSSL, PEM para DER é `openssl x509 -in cert.pem -outform der -out cert.der`, e o inverso troca as formas de in e out. Construir um PKCS#12 a partir de um certificado e uma chave separados é `openssl pkcs12 -export -in cert.pem -inkey key.pem -out bundle.pfx`. Nenhum destes muda o certificado em si; eles apenas o reembalam.
 

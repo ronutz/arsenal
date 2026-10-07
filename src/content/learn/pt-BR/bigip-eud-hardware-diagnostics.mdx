@@ -1,6 +1,6 @@
 ---
 slug: bigip-eud-hardware-diagnostics
-title: "EUD: Diagnóstico de Hardware do BIG-IP Antes do RMA"
+title: "EUD: diagnóstico de hardware do BIG-IP antes do RMA"
 summary: "A suíte End User Diagnostics é a bateria de testes offline para o hardware BIG-IP - memória, armazenamento, sensores, interfaces - rodando da sua própria imagem de boot, com o sistema operacional fora do caminho. O impacto de executá-la, os requisitos, como dar boot nela e coletar a saída, e onde ela se encaixa entre uma suspeita e uma autorização de devolução."
 concepts: ["f5", "big-ip", "eud", "hardware diagnostics", "rma", "platform", "troubleshooting"]
 relatedTools: []
@@ -21,7 +21,7 @@ O EUD é uma imagem diagnóstica independente: uma bateria de testes de hardware
 
 Três requisitos práticos decidem se a tarde corre bem. Só hardware: o EUD testa plataformas físicas; edições virtuais não têm sensores a sondar nem EUD a rodar. Acesso a console: a suíte é conduzida pelo console serial - terminal server, ou laptop e cabo - porque a imagem diagnóstica não está rodando sua pilha de gerenciamento. E imagem atual: a versão do EUD precisa casar com a plataforma; imagens acompanham a plataforma e são atualizadas como pacotes baixáveis da F5, então pré-posicionar a versão certa faz parte de preparar a janela.
 
-## Dando boot e coletando a saída
+## Como dar boot e coletar a saída
 
 A suíte é acionada no boot - interrompendo a inicialização e selecionando a imagem de diagnóstico no menu de boot, pelo console - e dali conduz um menu de testes: rodar todos, ou selecionar subsistemas quando se persegue uma suspeita específica. A coleta é o passo que as pessoas improvisam mal sob pressão, então decida antes: capture a própria sessão de console - todo emulador de terminal grava em arquivo - e recupere o relatório que o EUD escreve ao concluir, resumindo aprovado e reprovado por teste. Esse artefato é a entrega. Um chamado de suporte que abre com "teste de memória do EUD falhou, log anexo" e um [qkview](/learn/bigip-qkview-and-ihealth) de antes da queda é um chamado que pula inteira a fase do tem-certeza.
 

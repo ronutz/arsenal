@@ -1,7 +1,7 @@
 ---
 slug: nslookup-errors-explained
-title: "Erros do nslookup e o que significam"
-summary: "Quando uma consulta falha, o nslookup imprime uma linha como ** server can't find NAME: CODE. O código é o diagnóstico inteiro. Este artigo cobre NXDOMAIN, SERVFAIL, REFUSED e timeouts, o que cada um diz, e a primeira coisa a verificar para cada."
+title: "Erros do nslookup e o que eles significam"
+summary: "Quando uma consulta falha, o nslookup imprime uma linha como ** server can't find NAME: CODE. O código é o diagnóstico inteiro. Este artigo explica NXDOMAIN, SERVFAIL, REFUSED e os timeouts, o que cada um diz e a primeira coisa a verificar em cada caso."
 concepts: ["nslookup", "nxdomain", "servfail", "refused", "timeout", "troubleshooting"]
 relatedTools: ["nslookup-output-explainer"]
 relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
@@ -11,7 +11,7 @@ status: reviewed
 updated: "2026-08-10"
 ---
 
-Um nslookup que falha não imprime uma resposta. Ele imprime uma única linha, e o código no final diz o que deu errado:
+Quando o nslookup falha, ele não imprime uma resposta. Ele imprime uma única linha, e o código no final diz o que deu errado:
 
 ```
 ** server can't find example.com: NXDOMAIN
@@ -19,24 +19,24 @@ Um nslookup que falha não imprime uma resposta. Ele imprime uma única linha, e
 
 ## Os códigos
 
-- **NXDOMAIN** (domínio inexistente): o nome realmente não existe. Se você esperava que existisse, verifique um erro de digitação, um registro ausente ou uma delegação que nunca foi configurada. Isto é uma resposta, não um problema de rede: um servidor lhe disse que o nome não está lá.
-- **SERVFAIL** (falha do servidor): o servidor não conseguiu concluir a consulta. Na prática isso aponta para uma delegação quebrada, uma falha de validação DNSSEC ou um servidor autoritativo upstream que deu timeout. Tente outro resolvedor: se um resolvedor dá SERVFAIL e outro responde, o problema provavelmente é DNSSEC ou um caminho quebrado específico, e não o nome em si.
-- **REFUSED**: o servidor recusou-se a responder, quase sempre por razões de política, como uma lista de controle de acesso que não inclui você, ou um resolvedor que não oferece recursão para o seu endereço. Verifique se você tem permissão para usar o resolvedor que está consultando.
-- **timed out** / **no servers could be reached**: o nslookup nunca recebeu resposta. Isto é um problema de conectividade, não uma resposta DNS: o endereço do resolvedor está errado ou inacessível, um firewall está descartando a porta 53, ou o servidor está fora do ar. Confirme o endereço do resolvedor e se você consegue alcançá-lo.
+- **NXDOMAIN** (non-existent domain, domínio inexistente): o nome realmente não existe. Se você esperava que ele existisse, procure um erro de digitação, um registro que está faltando ou uma delegação que nunca foi configurada. Isso é uma resposta, e não um problema de rede: um servidor disse a você que o nome não está lá.
+- **SERVFAIL** (server failure, falha do servidor): o servidor não conseguiu concluir a consulta. Na prática, isso aponta para uma delegação quebrada, uma falha na validação DNSSEC ou um servidor autoritativo upstream que deu timeout. Tente outro resolver (o servidor DNS recursivo que você consulta): se um resolver devolve SERVFAIL e outro responde, o problema provavelmente é o DNSSEC ou um caminho específico com defeito, e não o nome em si.
+- **REFUSED**: o servidor se recusou a responder, quase sempre por política, por exemplo uma lista de controle de acesso que não inclui você, ou um resolver que não oferece recursão para o seu endereço. Confira se você tem permissão para usar o resolver que está consultando.
+- **timed out** / **no servers could be reached**: o nslookup nunca recebeu resposta. Isso é um problema de conectividade, e não uma resposta do DNS: o endereço do resolver está errado ou inalcançável, um firewall está descartando a porta 53, ou o servidor está fora do ar. Confirme o endereço do resolver e se você consegue mesmo alcançá-lo.
 
-## Lendo a distinção
+## A distinção que importa
 
-A separação útil é entre uma **resposta que diz não** e **nenhuma resposta**. NXDOMAIN e NODATA são o servidor lhe dizendo algo definitivo, então a correção está na zona ou na consulta. SERVFAIL, REFUSED e timeouts são o servidor falhando em lhe dar uma resposta utilizável, então a correção está no resolvedor, no caminho ou na delegação. Saber qual dos dois você está vendo aponta imediatamente para a metade certa do problema.
+A divisão útil é entre uma **resposta que diz não** e **nenhuma resposta**. NXDOMAIN e NODATA são o servidor dizendo algo definitivo, então a correção está na zona ou na consulta. SERVFAIL, REFUSED e timeouts são o servidor deixando de dar uma resposta utilizável, então a correção está no resolver, no caminho ou na delegação. Saber qual dos dois casos você tem na frente já aponta para a metade certa do problema.
 
 
-## SERVFAIL e REFUSED são acusações diferentes
+## SERVFAIL e REFUSED apontam culpados diferentes
 
-Parecem iguais e culpam partes diferentes.
+Os dois parecem iguais, mas culpam partes diferentes.
 
-**REFUSED** significa que o servidor entendeu e recusou — você não tem permissão de perguntar. Isso é política: um resolvedor recursivo que só atende a própria rede, ou um servidor autoritativo que não faz recursão para você. **Nada está quebrado.**
+**REFUSED** significa que o servidor entendeu o pedido e recusou: você não tem permissão para perguntar. Isso é política: um resolver recursivo que só atende a própria rede, ou um servidor autoritativo que não faz recursão para você. **Nada está quebrado.**
 
-**SERVFAIL** significa que o servidor tentou e não conseguiu terminar. Timeouts upstream, uma delegação quebrada ou validação DNSSEC falhando caem todos aqui. **Algo está quebrado, e normalmente não na caixa que você perguntou.**
+**SERVFAIL** significa que o servidor tentou e não conseguiu terminar. Timeouts upstream, uma delegação quebrada ou uma falha na validação DNSSEC, tudo isso cai aqui. **Alguma coisa está quebrada, e normalmente não no servidor que você consultou.**
 
-## E não faça script em cima do código de saída
+## E não use o código de saída em scripts
 
-Muitas builds do `nslookup` saem com **0 mesmo para NXDOMAIN**. Um script que testa `if nslookup ...` pode concluir que um nome resolve quando a ferramenta acabou de dizer a um humano que não. **Interprete a saída, ou use uma ferramenta com códigos de saída confiáveis.**
+Muitas versões do `nslookup` saem com **0 mesmo em caso de NXDOMAIN**. Um script de shell que testa `if nslookup ...` pode concluir que um nome resolve quando a ferramenta acabou de dizer a um humano que não resolve. **Faça o parsing da saída, ou use uma ferramenta com códigos de saída confiáveis.**

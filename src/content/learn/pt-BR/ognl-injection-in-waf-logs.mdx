@@ -1,6 +1,6 @@
 ---
 slug: ognl-injection-in-waf-logs
-title: "Lendo OGNL num log de WAF: o que a carga pretendia fazer"
+title: "Como ler OGNL num log de WAF: o que a carga pretendia fazer"
 summary: "Uma carga OGNL num log tem duas metades que vale distinguir: algo que tenta desligar o sandbox de expressões e algo que tenta executar um comando. Com as duas, é tentativa de exploração. Só com a segunda, normalmente é um scanner percorrendo uma lista. Sem nenhuma das duas, é sondagem verificando se a entrada é avaliada - e essa resposta decide se qualquer outra coisa da lista teria chance."
 concepts: ["ognl", "struts", "linguagem de expressão", "injeção", "waf", "rce", "cve-2017-5638", "cve-2018-11776", "segurança", "análise de log"]
 relatedTools: ["ognl-injection-decoder", "url-inspector", "base64"]

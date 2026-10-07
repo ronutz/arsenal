@@ -1,7 +1,7 @@
 ---
 slug: the-kaminsky-dns-flaw
-title: "A falha de Kaminsky: o verão em que oitenta fabricantes corrigiram o mesmo defeito no mesmo dia"
-summary: "Em 2008 um pesquisador percebeu que uma fraqueza conhecida do DNS era muito pior do que qualquer um calculara - não um jeito de envenenar um registro, mas um jeito de tomar um domínio inteiro em segundos, repetidamente. O que veio depois foi a maior correção coordenada que a internet já tentara, um conserto que comprou entropia e não certeza, e um lembrete de que publicar uma correção também publica a vulnerabilidade."
+title: "A falha de Kaminsky: o verão em que oitenta fabricantes corrigiram o mesmo bug no mesmo dia"
+summary: "Em 2008, um pesquisador percebeu que uma fraqueza já conhecida do DNS era muito mais grave do que se calculava: ela não servia só para envenenar um registro, mas para tomar um domínio inteiro em segundos, quantas vezes o atacante quisesse. Veio então o maior patch coordenado que a internet já tinha tentado, uma correção que trouxe mais entropia, e não certeza, e um lembrete de que publicar um patch também é publicar a vulnerabilidade."
 concepts: ["dns cache poisoning", "kaminsky", "transaction id", "source port randomisation", "dnssec", "coordinated disclosure", "bailiwick"]
 relatedTools: []
 relatedArticles: ["dns-family-history", "dnssec-records-in-dig", "there-is-no-perfect-code", "the-worm-era"]
@@ -11,51 +11,51 @@ status: reviewed
 updated: "2026-09-08"
 ---
 
-## O que já se sabia, e o que não
+## O que já se sabia e o que ainda não se sabia
 
-Envenenamento de cache não era ideia nova em 2008. Todo mundo que trabalhava com DNS (Domain Name System) entendia o formato: um resolvedor faz uma pergunta a um servidor autoritativo e aceita a primeira resposta que casa, e casar significava uma coisa - um identificador de transação de dezesseis bits, sessenta e cinco mil quinhentas e trinta e seis possibilidades. Um atacante que adivinhasse e respondesse mais rápido que o servidor real vencia. Artigos tinham sido escritos sobre isso. Era considerado difícil, lento e em larga medida teórico.
+Envenenamento de cache (cache poisoning) não era novidade em 2008. Quem trabalhava com DNS (Domain Name System) conhecia o mecanismo: o resolver (o servidor DNS recursivo) faz uma pergunta a um servidor autoritativo e aceita a primeira resposta que bater com ela. E o que decidia se a resposta batia era uma coisa só: o transaction ID, um identificador de transação de dezesseis bits, ou seja, sessenta e cinco mil quinhentas e trinta e seis possibilidades. Quem conseguisse adivinhar esse número e responder antes do servidor verdadeiro ganhava. Já havia artigos publicados sobre isso, e o ataque era visto como difícil, lento e, em boa parte, teórico.
 
-Duas coisas o tornavam pior do que a aritmética sugeria, e ninguém as juntara. Muitas implementações mandavam suas consultas de uma **porta de origem fixa**, então a única incógnita era realmente o identificador de transação. E uma tentativa fracassada era cara: errou, a resposta verdadeira chega, o registro entra em cache, e o atacante precisa esperar o tempo de vida expirar para tentar de novo - possivelmente um dia.
+Havia dois detalhes que tornavam o problema pior do que a conta sugeria, e ninguém tinha ligado um ao outro. Muitas implementações mandavam as consultas de uma **porta de origem fixa**, e aí a única incógnita era mesmo o transaction ID. E cada tentativa errada custava caro: o atacante errava, a resposta verdadeira chegava, o registro ia para o cache, e era preciso esperar o TTL (time-to-live) expirar para tentar de novo, o que podia levar um dia.
 
-Dan Kaminsky, então diretor de teste de invasão da IOActive, achou como contornar a espera.
+Dan Kaminsky, na época diretor de pentest (testes de invasão) da IOActive, descobriu como escapar dessa espera.
 
 ## O truque
 
-Em vez de atacar `www.exemplo.com`, peça ao resolvedor `aaaa1.exemplo.com` - um nome que não existe e portanto não pode estar em cache. O resolvedor não tem escolha senão ir perguntar. Agora corra com ele. E, decisivamente, ponha na resposta forjada não só uma resposta para aquele nome sem sentido, mas uma **delegação**: registros de autoridade nomeando o servidor do atacante como servidor de nomes do domínio inteiro, com os registros de cola para alcançá-lo.
+Em vez de atacar `www.exemplo.com`, peça ao resolver `aaaa1.exemplo.com`, um nome que não existe e, portanto, não pode estar no cache. O resolver não tem saída: precisa ir perguntar. Aí começa a corrida. E o ponto decisivo é este: a resposta forjada não leva só uma resposta para esse nome sem sentido, mas uma **delegação**, isto é, registros de autoridade que apontam o servidor do atacante como servidor de nomes do domínio inteiro, junto com os glue records (registros de cola) para chegar até ele.
 
-Perder a corrida não custa nada, porque o nome era lixo. Tente de novo imediatamente com `aaaa2`, `aaaa3`, tão rápido quanto o enlace permitir. Vença uma vez e o resolvedor guarda em cache não um registro, mas o servidor do atacante como autoridade da zona inteira - todo nome sob ela, enquanto a delegação viver.
+Se perder a corrida, não custa nada, porque o nome era descartável. É só tentar de novo na mesma hora, com `aaaa2`, `aaaa3`, tão rápido quanto o link permitir. Basta ganhar uma vez: o resolver guarda no cache não um registro, mas o servidor do atacante como autoridade da zona inteira, com todos os nomes dentro dela, enquanto a delegação valer.
 
-É essa a descoberta inteira, e ela converte um ataque lento e incerto num que funciona em segundos. Tudo o que a internet faz repousa sobre nomes resolverem corretamente: tráfego web, roteamento de correio, atualizações de software, e o e-mail de redefinição de senha que autentica a maioria das contas. Kaminsky levou aquilo a Paul Vixie, cuja avaliação relatada foi a de que tudo no universo digital ia ter de ser corrigido.
+A descoberta se resume a isso, e ela transforma um ataque lento e incerto em um ataque que dá certo em segundos. Tudo o que a internet faz depende de nomes resolvidos corretamente: o tráfego web, o roteamento de e-mail, as atualizações de software e o e-mail de reset de senha, que é o que autentica a maioria das contas. Kaminsky levou o achado a Paul Vixie, que, segundo os relatos, avaliou que tudo no universo digital ia precisar de patch.
 
 ## 8 de julho de 2008
 
-O que veio depois não tinha precedente. Kaminsky foi ao Departamento de Segurança Interna e a executivos da Cisco e da Microsoft. Uma reunião secreta foi convocada. Fabricantes que competiam entre si, e cujas implementações não compartilhavam nada além do protocolo, foram informados de uma falha que nenhum deles podia consertar sozinho - porque um resolvedor corrigido conversando com infraestrutura não corrigida continua exposto, e o ponto inteiro do DNS é que os resolvedores de todos falam com os servidores de todos.
+O que veio depois não tinha precedente. Kaminsky procurou o Departamento de Segurança Interna dos Estados Unidos e executivos da Cisco e da Microsoft, e uma reunião secreta foi organizada. Fabricantes concorrentes, cujas implementações só tinham em comum o protocolo, foram informados de uma falha que nenhum deles conseguiria corrigir sozinho. Isso porque um resolver corrigido que conversa com uma infraestrutura sem patch continua exposto, e a razão de ser do DNS é justamente que os resolvers de todo mundo conversam com os servidores de todo mundo.
 
-Em 8 de julho de 2008, mais de oitenta fabricantes lançaram correções simultaneamente. O aviso trazia o CVE-2008-1447 e a nota de vulnerabilidade VU#800113 do CERT. O boletim do próprio Internet Systems Consortium para o BIND listava toda versão afetada - que era, na prática, todas - e dizia algo que vale citar pela franqueza: o DNSSEC é a única solução completa, e as versões novas oferecem maior resiliência ao ataque.
+Em 8 de julho de 2008, mais de oitenta fabricantes publicaram seus patches ao mesmo tempo. O advisory (o alerta de segurança) trazia o CVE-2008-1447 e a nota de vulnerabilidade VU#800113 do CERT. O boletim do próprio Internet Systems Consortium para o BIND listava todas as versões afetadas (na prática, todas) e dizia uma coisa que vale citar pela franqueza: o DNSSEC é a única solução completa, e as versões novas oferecem maior resiliência ao ataque.
 
-**Resiliência, não imunidade.** Essa escolha de palavra é a parte honesta do episódio inteiro.
+**Resiliência, não imunidade.** A escolha dessa palavra é a parte honesta de todo o episódio.
 
-## O que o conserto de fato comprou
+## O que o patch realmente fez
 
-A correção foi a aleatorização da porta de origem. Em vez de perguntar de uma porta previsível, um resolvedor escolhe uma aleatória para cada consulta, e o atacante agora precisa adivinhar tanto o identificador de transação quanto a porta - uns trinta e dois bits em vez de dezesseis. Isso não torna a forjadura impossível. Torna-a umas sessenta e cinco mil vezes mais difícil, o que converte um ataque de segundos num que leva tempo bastante para ser notado.
+O patch foi a aleatorização da porta de origem (source port randomisation). Em vez de consultar de uma porta previsível, o resolver sorteia uma porta diferente para cada consulta, e o atacante passa a ter de adivinhar o transaction ID e também a porta: uns trinta e dois bits, em vez de dezesseis. Isso não torna a falsificação impossível, mas a deixa umas sessenta e cinco mil vezes mais difícil, e um ataque que levava segundos passa a levar tempo suficiente para alguém perceber.
 
-Vale ser preciso aqui, porque é um padrão que os profissionais encontram o tempo todo e frequentemente leem errado. A correção não consertou o protocolo. O DNS ainda autentica uma resposta por seus campos casarem com uma pergunta, o que não é autenticação em nenhum sentido criptográfico. O que a correção fez foi elevar o custo. O conserto de verdade é o DNSSEC, que assina os registros de modo que uma resposta forjada falha na validação por melhor que adivinhe - e a adoção do DNSSEC segue parcial quase duas décadas depois, que é por que o [artigo sobre DNSSEC](/learn/dnssec-records-in-dig) deste site fala em conferir e não em supor.
+Vale ser preciso aqui, porque esse é um padrão que quem trabalha na área encontra o tempo todo e muitas vezes interpreta mal. O patch não consertou o protocolo. O DNS continua aceitando uma resposta como autêntica só porque os campos dela batem com a pergunta, e isso não é autenticação em nenhum sentido criptográfico. O que o patch fez foi aumentar o custo. O conserto de verdade é o DNSSEC, que assina os registros, de modo que uma resposta forjada falha na validação por mais que o atacante acerte nos palpites. Só que a adoção do DNSSEC continua parcial quase duas décadas depois, e por isso o [artigo sobre DNSSEC](/learn/dnssec-records-in-dig) deste site fala em verificar, e não em supor.
 
-## O embargo, e o que embargos não resolvem
+## O embargo, e o que nenhum embargo resolve
 
-O plano era que a correção saísse em 8 de julho e Kaminsky explicasse o mecanismo na Black Hat em 7 de agosto, dando à internet um mês para atualizar antes de alguém saber contra o quê. A palestra aconteceu; a sala estava cheia até o chão.
+O plano era publicar o patch em 8 de julho e deixar para Kaminsky explicar o mecanismo na Black Hat, em 7 de agosto. Assim a internet teria um mês para se atualizar antes que alguém soubesse contra o que estava se protegendo. A palestra aconteceu, com a sala lotada e gente sentada até no chão.
 
-Mas o mês não ficou quieto, e a razão é estrutural, não culpa de ninguém. **Uma correção é uma descrição da vulnerabilidade.** Qualquer pessoa competente compara o código novo com o velho e trabalha de trás para frente até o que ele impede. A [retrospectiva do Conficker](/learn/the-worm-era) faz o mesmo ponto pelo lado da Microsoft, e a [porta dos fundos da Juniper](/learn/there-is-no-perfect-code) é sua ilustração mais afiada - pesquisadores extraíram a senha embutida em seis horas depois de a correção ser pública. Um embargo protege o intervalo antes de o conserto existir. Uma vez que o conserto sai, o relógio que o defensor está correndo é acertado por quem lê diferenças de código mais rápido.
+Mas o mês não foi tranquilo, e o motivo é estrutural, não culpa de ninguém. **Um patch é uma descrição da vulnerabilidade.** Qualquer pessoa competente compara o código novo com o antigo e deduz, de trás para frente, o que ele impede. A [retrospectiva do Conficker](/learn/the-worm-era) mostra a mesma coisa do lado da Microsoft, e o [backdoor da Juniper](/learn/there-is-no-perfect-code) é o exemplo mais claro: pesquisadores extraíram a senha hardcoded (gravada no próprio código) no máximo seis horas depois de o patch se tornar público. Um embargo protege o intervalo antes de a correção existir. Depois que ela sai, o defensor está numa corrida contra quem lê diffs mais rápido.
 
-## O que um profissional deve tirar disso
+## O que levar disso para o dia a dia
 
-**Aleatorização é custo, não fronteira.** Todo controle descrito em bits de entropia está comprando tempo. Muitas vezes é a troca certa, e deveria ser entendida como troca, especialmente quando o número de bits foi escolhido décadas atrás para uma rede de outro tamanho.
+**Aleatorização é custo, não barreira.** Todo controle medido em bits de entropia só está ganhando tempo. Muitas vezes essa é a troca certa, mas ela precisa ser entendida como troca, principalmente quando o número de bits foi definido décadas atrás, para uma rede de outro tamanho.
 
-**O resolvedor que você opera é o que importa.** A falha estava nos resolvedores, não nos servidores autoritativos, e a exposição pertencia a quem operasse o serviço recursivo - que é por que a pergunta de [qual resolvedor público escolher](/learn/choosing-a-public-dns-resolver) é uma pergunta de segurança e não só de latência.
+**O resolver que você opera é o que importa.** A falha estava nos resolvers, não nos servidores autoritativos, e o risco era de quem operava o serviço recursivo. Por isso a [escolha de um resolver público](/learn/choosing-a-public-dns-resolver) é uma questão de segurança, e não só de latência.
 
-**Coordenação nessa escala é possível e é rara.** Oitenta fabricantes corrigindo uma falha de protocolo num único dia aconteceu porque alguém passou meses organizando aquilo em sigilo, e porque a alternativa era visivelmente catastrófica. É o modelo que a indústria cita, e não foi repetido muitas vezes nessa escala.
+**Coordenação nessa escala é possível, mas é rara.** Oitenta fabricantes corrigiram uma falha de protocolo no mesmo dia porque alguém passou meses organizando tudo em sigilo, e porque a alternativa era claramente catastrófica. É o modelo que a indústria cita, e poucas vezes ele se repetiu nessa escala.
 
-**E a pessoa importou.** Kaminsky achou, escolheu coordenar em vez de publicar, e passou os anos seguintes no conserto e não no achado - a ICANN o nomeou um dos representantes de confiança da comunidade para a raiz do DNSSEC em 2010. Morreu em abril de 2021, aos quarenta e dois anos. O New York Times o chamara de um Paul Revere digital, o que é floreado e, pelo registro daquele verão, não é errado.
+**E a pessoa fez diferença.** Kaminsky encontrou a falha, preferiu coordenar a correção a publicar a descoberta, e passou os anos seguintes dedicado à solução, e não ao achado: em 2010, a ICANN o escolheu como um dos trusted community representatives (representantes de confiança da comunidade) da raiz do DNSSEC. Ele morreu em abril de 2021, aos quarenta e dois anos. O New York Times chegou a chamá-lo de Paul Revere digital, um elogio exagerado no estilo, mas que, pelo que ele fez naquele verão, não está errado.
 
 ## Fontes
 

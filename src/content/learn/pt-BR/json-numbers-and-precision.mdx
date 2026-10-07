@@ -1,6 +1,6 @@
 ---
 slug: json-numbers-and-precision
-title: "Números JSON e a Armadilha da Precisão"
+title: "Números JSON e a armadilha da precisão"
 summary: "O JSON não impõe limite ao tamanho ou à precisão de um número, mas a maioria dos parsers converte silenciosamente todo número para um float de 64 bits. Essa incompatibilidade corrompe silenciosamente inteiros grandes e decimais exatos, e por isso um formatador deveria preservar os dígitos originais."
 concepts: ["json", "numbers", "ieee 754", "precision", "floating point", "big integers"]
 relatedTools: ["json-formatter"]
@@ -23,6 +23,6 @@ Um float de precisão dupla tem 52 bits de fração, o que lhe dá cerca de quin
 
 Esta não é uma preocupação teórica. Identificadores de banco de dados e IDs do tipo snowflake do Twitter rotineiramente excedem 2 elevado a 53, então um ID de 19 dígitos passado por uma biblioteca JSON descuidada pode voltar alterado em uma ou duas unidades no final, apontando para o registro errado. Valores monetários armazenados como decimais podem derivar por uma fração de centavo, o que é inaceitável em dados financeiros. As defesas padrão são carregar tais valores como strings, ou usar um parser que os preserve, justamente porque a conversão padrão para float é com perda.
 
-## Preservando o literal
+## Como preservar o literal
 
 A abordagem segura para uma ferramenta que reformata JSON é nunca converter um número para float. O formatador mantém cada número exatamente como o seu texto literal original e o emite sem alteração, então reformatar um documento com um ID de 20 dígitos ou um decimal de alta precisão retorna os mesmos dígitos com que você começou. Formatar e minificar mudam o espaçamento ao redor de um número, nunca o número em si. Quando você precisa saber se um valor está em risco, a regra prática é simples: qualquer inteiro além de cerca de dezesseis dígitos, ou qualquer decimal onde o valor exato importa, deve ser tratado como algo que um parser ingênuo vai arredondar.

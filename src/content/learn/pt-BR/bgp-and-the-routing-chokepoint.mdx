@@ -1,7 +1,7 @@
 ---
 slug: bgp-and-the-routing-chokepoint
-title: "BGP: o exercício de confiança sobre o qual a internet inteira está de pé"
-summary: "O protocolo que decide para onde seu tráfego vai não tem como saber se um anúncio é verdadeiro. Por décadas a defesa foi que os operadores perceberiam - e em geral perceberam, horas depois, quando um país já tinha perdido o YouTube ou uma rede de pagamentos já havia sido silenciosamente desviada por outro continente. O que quebra, em quanto tempo, quem conseguiria fazer, e por que a correção que existe está só metade implantada."
+title: "BGP: o voto de confiança que sustenta a internet inteira"
+summary: "O protocolo que decide para onde vai o seu tráfego não tem nenhum mecanismo próprio para saber se um anúncio é verdadeiro. Durante décadas, a defesa foi confiar que os operadores iam perceber, e na maioria das vezes eles perceberam, só que horas depois, quando um país já tinha ficado sem YouTube ou uma rede de pagamentos já tinha sido desviada, sem alarde, por outro continente. O que quebra, com que rapidez, quem conseguiria fazer isso e por que a correção que existe está implantada só pela metade."
 concepts: ["bgp", "routing", "hijacking", "rpki", "resilience"]
 relatedTools: []
 relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare"]
@@ -11,54 +11,54 @@ status: reviewed
 updated: "2026-08-29"
 ---
 
-## O que o protocolo de fato é
+## O que é o protocolo, afinal
 
-A internet são cerca de setenta e cinco mil redes independentes - sistemas autônomos - que concordam em carregar o tráfego umas das outras. O **BGP (Border Gateway Protocol)** é como elas contam umas às outras quais endereços conseguem alcançar. Uma rede anuncia "eu alcanço este bloco de endereços", os vizinhos repassam, e cada roteador monta um retrato do mundo a partir do que lhe disseram.
+A internet é formada por cerca de setenta e cinco mil redes independentes, os sistemas autônomos (autonomous systems, ou AS), que aceitam transportar o tráfego umas das outras. O **BGP (Border Gateway Protocol)** é o jeito como elas contam umas às outras quais endereços conseguem alcançar. Uma rede anuncia "eu alcanço este bloco de endereços", os vizinhos repassam o anúncio, e cada roteador monta a sua visão do mundo a partir do que ouviu.
 
-A premissa do desenho está enunciada com clareza na história do protocolo: os participantes se conhecem e não vão mentir. Não existe mecanismo nativo para verificar se um anúncio é legítimo. Se você reivindicar um bloco de endereços que não é seu, seus vizinhos vão acreditar, e os vizinhos deles também - e o tráfego segue o anúncio mais específico, então uma reivindicação mais precisa vence a do dono real.
+A premissa do projeto aparece com todas as letras na história do protocolo: os participantes se conhecem e não vão mentir. Não existe nenhum mecanismo nativo para verificar se um anúncio é legítimo. Se você disser que um bloco de endereços é seu, sem ser, os seus vizinhos vão acreditar, e os vizinhos deles também; e, como o tráfego segue o anúncio mais específico, um anúncio mais preciso ganha do anúncio do dono verdadeiro.
 
-Este é o ponto de estrangulamento. Não um componente que se possa desligar, e sim um acordo que se pode abusar.
+É aí que está o ponto de estrangulamento: não num componente que alguém possa desligar, mas num acordo de que alguém pode abusar.
 
-## O que quebra, e em quanto tempo
+## O que quebra e com que rapidez
 
-**Segundos a minutos, não dias.** Diferente de uma [falha da raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark), em que o cache compra dois dias, uma rota ruim se propaga na velocidade do plano de controle. Um sequestro fica globalmente visível em minutos.
+**Segundos ou minutos, não dias.** Ao contrário de uma [falha na raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark), em que o cache garante dois dias de folga, uma rota errada se propaga na velocidade do plano de controle. Um hijack, o sequestro de um prefixo, fica visível no mundo inteiro em minutos.
 
-**O raio de explosão depende de quem aceita.** Se uma rede pequena faz um anúncio falso e seu provedor de trânsito filtra, nada acontece. Se o provedor aceita e reanuncia, o dano escala com a importância desse provedor. É por isso que o mesmo erro pode ser invisível num dia e continental no outro: a variável não é o erro, é a disciplina de filtragem de quem o ouviu.
+**O tamanho do estrago depende de quem aceita o anúncio.** Se uma rede pequena faz um anúncio falso e o provedor upstream dela filtra, nada acontece. Se o upstream aceita e reanuncia, o estrago cresce na proporção da importância desse provedor. É por isso que o mesmo erro pode passar despercebido num dia e atingir um continente inteiro no outro: o que muda não é o erro, é o rigor de filtragem de quem recebeu o anúncio.
 
-O padrão histórico vem em três sabores:
+O histórico mostra três tipos de caso:
 
-**Vazamentos acidentais.** Uma rede reanuncia a um provedor rotas que aprendeu de outro, e de repente afirma ser o melhor caminho para boa parte da internet que ela não tem como carregar. O tráfego despenca ali e morre. Os casos mais famosos foram erros de configuração comuns, em operadoras pequenas que por instantes viraram o centro da internet.
+**Route leaks acidentais.** Uma rede reanuncia para um provedor as rotas que aprendeu de outro e, de repente, passa a se apresentar como o melhor caminho para grandes pedaços da internet, com um tráfego que ela não tem a menor condição de transportar. O tráfego chega em massa e é descartado. Os casos mais famosos foram erros de configuração comuns, em operadoras pequenas que, por alguns instantes, viraram o centro da internet.
 
-**Censura que escapa.** Uma tentativa de bloquear um serviço internamente, implementada anunciando uma rota falsa dentro do país, e depois vazada para fora por um provedor que não filtrou - tirando o serviço do ar para boa parte do mundo, em vez de para um país.
+**Censura que vaza.** Para bloquear um serviço dentro de um país, alguém anuncia internamente uma rota falsa, e um provedor que não filtra deixa esse anúncio vazar para fora; resultado: o serviço sai do ar para boa parte do mundo, e não só para aquele país.
 
-**Interceptação deliberada.** A versão perigosa. O tráfego é desviado, atravessado e devolvido, então o destino continua funcionando e ninguém nota o continente extra. Já foi usada para colher tráfego de provedores de pagamento e de serviços de criptomoeda, e o roubo acontece nos minutos antes de alguém reagir.
+**Interceptação deliberada.** É a versão perigosa. O tráfego é desviado, passa por quem desviou e é devolvido ao caminho, então o destino continua funcionando e ninguém percebe o continente a mais no trajeto. Esse método já foi usado para capturar tráfego de provedores de pagamento e de serviços de criptomoeda, e o roubo acontece nos minutos que se passam até alguém reagir.
 
-## Quem conseguiria fazer
+## Quem conseguiria fazer isso
 
-Qualquer um que opere um sistema autônomo e tenha um vizinho que não filtra - um grupo bem maior do que a maioria imagina. Isso inclui provedores regionais pequenos, empresas de hospedagem, e qualquer entidade que tenha obtido um número de sistema autônomo, legitimamente ou não.
+Qualquer um que opere um sistema autônomo e tenha um vizinho que não filtra, e esse grupo é bem maior do que a maioria imagina. Ele inclui pequenos provedores regionais, empresas de hospedagem e qualquer entidade que tenha conseguido um número de AS, de forma legítima ou não.
 
-Atores estatais têm mais opções: uma operadora nacional pode moldar o que o próprio país enxerga, e uma operadora que seja grande provedora de trânsito pode afetar o que outros países enxergam. Mas o enquadramento honesto não é o de que isso exige um Estado. **A maioria dos grandes incidentes do registro foram erros**, e o mesmo mecanismo que permite a uma configuração digitada errado derrubar um serviço permite a uma deliberada roubar tráfego.
+Atores estatais têm mais opções: uma operadora nacional pode moldar o que o próprio país enxerga, e uma operadora que seja um grande provedor de trânsito pode afetar o que outros países enxergam. Mas, para ser honesto, não é preciso um Estado para isso. **A maioria dos grandes incidentes registrados foi erro**, e o mesmo mecanismo que permite que um erro de digitação na configuração derrube um serviço permite que uma configuração feita de propósito roube tráfego.
 
 ## A correção que existe
 
-A **RPKI (Resource Public Key Infrastructure)** amarra criptografia à titularidade de endereços. O detentor de um bloco publica uma **ROA (Route Origin Authorisation)** assinada dizendo qual sistema autônomo pode originá-lo, e roteadores que validam conferem os anúncios contra essas assinaturas e descartam os inválidos.
+O **RPKI (Resource Public Key Infrastructure)** associa a titularidade dos endereços a uma prova criptográfica. O detentor de um bloco de endereços publica um **ROA (Route Origin Authorisation)** assinado, dizendo qual sistema autônomo pode originar aquele bloco, e os roteadores que fazem a validação comparam os anúncios com essas assinaturas e descartam os inválidos.
 
-Isso funciona, está implantado pelas grandes redes de nuvem e de conteúdo e por uma fatia crescente dos provedores de trânsito, e reduziu visivelmente o impacto de sequestros que antes teriam ido a global. O **MANRS** (Mutually Agreed Norms for Routing Security) é o acordo que o acompanha sobre comportamento mínimo: filtre seus clientes, não deixe sair endereço de origem forjado, mantenha seus dados de roteamento corretos.
+Isso funciona: o RPKI já está implantado nas grandes redes de nuvem e de conteúdo e numa parcela crescente dos provedores de trânsito, e reduziu de forma visível o impacto de hijacks que antes teriam se espalhado pelo mundo. O **MANRS** (Mutually Agreed Norms for Routing Security) é o acordo que acompanha o RPKI e define o comportamento mínimo esperado: filtre os seus clientes, não deixe sair tráfego com endereço de origem forjado e mantenha os seus dados de roteamento corretos.
 
-Seus limites merecem ser enunciados com a mesma clareza do seu valor. A RPKI valida **origem** - quem pode anunciar um prefixo - e não o **caminho**. Um atacante que reivindique um caminho plausível para um prefixo cuja origem real ele não consegue forjar ainda tem espaço para trabalhar. Validação de caminho existe como desenho e está quase sem implantação. E validar só protege você se as redes entre você e a origem também validarem: um registro assinado não ajuda em nada se a rede que carrega seu tráfego o ignora.
+Os limites do RPKI precisam ser ditos com a mesma clareza que o valor dele. O RPKI valida a **origem** (quem pode anunciar um prefixo), e não o **caminho**. Um atacante que não consegue falsificar a origem real de um prefixo ainda tem margem para agir, anunciando um caminho plausível até esse prefixo. A validação de caminho existe no papel, mas quase não foi implantada. E a validação só protege você se as redes entre você e a origem do anúncio também validarem: um registro assinado não adianta nada se a rede que transporta o seu tráfego o ignora.
 
-## O que dá para fazer de fato
+## O que dá para fazer na prática
 
-A lista do operador é curta e chata, que é característico de tudo que funciona.
+O checklist do operador é curto e sem graça, o que é típico de tudo o que funciona.
 
-- **Publique ROAs para o seu espaço de endereços.** Custa uma tarde no seu registro regional e permite que todos os outros descartem falsificações dos seus prefixos.
-- **Valide nos seus próprios roteadores**, para que anúncios ruins não alcancem o seu tráfego.
-- **Filtre seus clientes por prefixo**, não por confiança. Os maiores incidentes envolveram alguém aceitando um anúncio que não tinha por que aceitar.
-- **Monitore os seus prefixos.** Serviços públicos de looking glass e de monitoração de rotas avisam quando outra pessoa anuncia o seu espaço; descobrir por um cliente é pior.
-- **Cifre em trânsito e autentique os pontos.** Interceptação é bem menos útil contra tráfego cifrado cujos certificados estão sendo conferidos - e é por isso que transparência de certificados e segurança de transporte moderna fazem parte da história de roteamento.
+- **Publique ROAs para o seu espaço de endereços.** Isso custa uma tarde no seu registro regional e permite que todo mundo descarte anúncios falsificados dos seus prefixos.
+- **Faça a validação nos seus próprios roteadores**, para que anúncios inválidos não afetem o seu tráfego.
+- **Filtre os seus clientes por prefixo**, e não por confiança. Todos os maiores incidentes envolveram alguém que aceitou um anúncio que não tinha por que aceitar.
+- **Monitore os seus próprios prefixos.** Serviços públicos de looking glass e de monitoramento de rotas avisam quando alguém anuncia o seu espaço; descobrir pelo cliente é pior.
+- **Criptografe o tráfego em trânsito e autentique os endpoints.** Interceptar tráfego criptografado, com os certificados sendo verificados, adianta bem menos; é por isso que a certificate transparency e a segurança de transporte moderna também fazem parte da história do roteamento.
 
-## Onde isto entra na série
+## Onde este artigo entra na série
 
-O ponto de estrangulamento do DNS é sobre **nomeação** e é protegido por uma assinatura que se pode verificar offline. Roteamento é diferente de um jeito que vale enunciar: não há raiz para copiar, não há zona para guardar localmente, e não há afirmação criptográfica de que um caminho é real. A internet move seus pacotes porque setenta e cinco mil organizações em geral dizem a verdade umas às outras e em geral filtram seus vizinhos.
+O ponto de estrangulamento da raiz do DNS diz respeito a **nomes** e é protegido por uma assinatura que você pode verificar offline. O roteamento é diferente, e vale dizer como: não há uma raiz para copiar, nem uma zona para manter localmente, nem uma garantia criptográfica de que um caminho é real. A internet entrega os seus pacotes porque setenta e cinco mil organizações, em geral, dizem a verdade umas às outras e, em geral, filtram os seus vizinhos.
 
-Esse arranjo se sustenta há três décadas, o que é tranquilizador ou alarmante dependendo do dia. A resposta de engenharia não é substituí-lo, e sim seguir estreitando o que uma mentira não filtrada consegue realizar - e a distância de implantação entre as redes que fazem isso e as que não fazem é o estado real da segurança de roteamento na internet.
+Esse arranjo se sustenta há três décadas, o que é tranquilizador ou alarmante, dependendo do dia. A resposta da engenharia não é substituí-lo, e sim continuar reduzindo o estrago que uma mentira sem filtro consegue fazer; e a distância entre as redes que já fazem isso e as que ainda não fazem é o retrato real da segurança do roteamento na internet.

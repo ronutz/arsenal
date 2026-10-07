@@ -1,6 +1,6 @@
 ---
 slug: zdx-score-anatomy-and-probes
-title: "O Score ZDX: O Que os Probes Medem e Como o Número É Feito"
+title: "O score ZDX: o que os probes medem e como o número é feito"
 summary: "O Zscaler Digital Experience transforma experiência de usuário num score de 1 a 100, e a anatomia é precisa: Web Probes medindo Page Fetch Time, DNS Time, Server Response Time e Availability; probes CloudPath medindo o caminho de rede salto a salto; probes a cada cinco minutos; o menor score da hora virando o score da hora; scores de grupo fazendo a média do pior de cada usuário. O que cada métrica significa, a análise automática de causa raiz da faixa Poor, e o que a Zscaler não publica sobre a fórmula."
 concepts: ["zscaler", "zdx", "web probe", "cloudpath", "page fetch time", "dns time", "server response time", "availability", "score"]
 relatedTools: ["zdx-score-factor-explainer"]
@@ -25,6 +25,6 @@ A mecânica documentada recompensa memória exata. Os probes rodam **a cada cinc
 
 A Zscaler documenta os fatores, a cadência de probes, a regra do menor-da-hora e as faixas - e **não** publica a fórmula composta exata que transforma métricas brutas no valor de 1 a 100. Esta série trata isso como [as regras de honestidade](/learn/zscaler-zero-trust-exchange-architecture) exigem: os fatores e a semântica acima têm fonte; qualquer afirmação sobre pesos precisos de métrica seria invenção, e a ferramenta companheira se recusa a inventar - ela classifica e explica o que a documentação fundamenta, e diz isso. Duas calibragens documentadas moram na mesma gaveta: métricas recuperadas via API podem diferir do dashboard por uma margem pequena, porque os agregados usam funções aproximadas por desempenho, e a telemetria carrega um atraso estimado de cerca de vinte minutos - o score é quase em tempo real, não instantâneo.
 
-## Lendo o score como um operador
+## Leia o score como um operador
 
 A anatomia dita a ordem de leitura. Um score baixo é um convite, não um veredito: abra o usuário, separe métricas web de métricas de caminho, e deixe a divisão de trabalho apontar - DNS Time inchando é uma conversa com o resolvedor; Server Response Time subindo com caminho limpo é problema da aplicação; perda num salto específico é [uma conversa de rede com endereço](/learn/map-the-path-before-you-troubleshoot). E lembre do pessimismo ao reportar para cima: um score horário é os *piores* cinco minutos da hora - que é exatamente o que um usuário lembra do seu dia, e exatamente por que o número é construído assim.

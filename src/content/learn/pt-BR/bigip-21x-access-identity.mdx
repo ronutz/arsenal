@@ -29,7 +29,7 @@ O próprio túnel ganha um segundo transporte: o 21.1 adiciona túneis Access IP
 
 Três itens menores completam a camada. Políticas de acesso per-session ganham o HTTP Connector, antes uma capacidade per-request, então uma política pode chamar um serviço HTTP externo durante o estabelecimento da sessão e usar a resposta em decisões de autenticação e autorização, com o modelo de configuração agora limpo em objetos de Transport, Request e Agent. O motor de reescrita de JavaScript do Portal Access salta de ES6 para ES13, então aplicações web modernas atravessam o rewriter sem cirurgia manual de URLs. A inspeção de endpoint chega ao Ubuntu ARM64 (clients 7.2.7+, EPSEC 1988+), estendendo a checagem de postura a uma plataforma que existe cada vez mais em mesas reais. E o logging do Windows Edge Client fica ajustável por connectivity profile, com o nível de log do servidor podendo sobrepor o do cliente quando definido abaixo de DEBUG.
 
-## Lendo a direção
+## Para onde tudo aponta
 
 Cada item aponta para o mesmo lado: autenticação delegada a onde ela é mais forte (o navegador do sistema, o autenticador de plataforma), matrícula automatizada onde humanos eram o gargalo (DCR), escolha de transporte restaurada (IPsec ao lado do SSL-VPN) e o motor de políticas alcançando para fora (HTTP Connector). Para as variáveis de sessão e a mecânica de SSO (single sign-on) que tudo isso aciona no fim, a [referência de variáveis de sessão](/tools/f5-apm-session-variable-reference) e o [explicador de SSO](/tools/f5-apm-sso-explainer) continuam de onde as release notes param, e a [visão geral do 21.x](/learn/bigip-21x-whats-new) guarda o contexto completo.
 

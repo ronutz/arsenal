@@ -20,7 +20,7 @@ Escrever uma string multilinha em JSON significa uma linha com escapes `\\n`. O 
 
 A diferença é fácil de confundir: use o estilo folded para um script e cada linha se junta em uma só, quebrando-o.
 
-## Fazendo o chomping da quebra de linha final
+## Como fazer o chomping da quebra de linha final
 
 Depois do `|` ou `>` você pode adicionar um **indicador de chomping** para a quebra de linha final: o padrão (clip) mantém uma única quebra de linha final, `-` (strip) a remove, e `+` (keep) preserva todas as linhas em branco finais. Então `|-` te dá o bloco sem quebra de linha no fim, o que importa quando o valor é comparado byte a byte, como uma chave ou um token.
 

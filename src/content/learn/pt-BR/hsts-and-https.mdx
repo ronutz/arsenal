@@ -1,6 +1,6 @@
 ---
 slug: hsts-and-https
-title: "HSTS e a Exigência de HTTPS"
+title: "HSTS e a exigência de HTTPS"
 summary: "Como o Strict-Transport-Security fecha a janela de downgrade para HTTP, o que max-age, includeSubDomains e preload fazem, a brecha de confiança no primeiro uso que o preload remove e os erros de configuração que silenciosamente o desativam."
 concepts: ["hsts", "https", "tls", "downgrade", "preload", "includeSubDomains"]
 relatedTools: ["secure-headers"]
@@ -17,7 +17,7 @@ Servir um site por HTTPS é necessário, mas não suficiente. A brecha é a prim
 
 `Strict-Transport-Security` (HSTS) diz ao navegador para nunca mais usar HTTP puro para este host. Depois que o navegador viu o cabeçalho uma vez, ele reescreve toda requisição `http://` para `https://` por conta própria, antes que qualquer coisa vá para a rede, por todo o tempo que a política durar. A janela de downgrade se fecha.
 
-## Lendo o cabeçalho
+## Como ler o cabeçalho
 
 Um valor forte típico tem esta cara:
 

@@ -1,7 +1,7 @@
 ---
 slug: fortidlp-architecture-and-deployment
-title: "FortiDLP: arquitetura, agentes e saber onde seus dados de fato estão"
-summary: "Prevenção de perda de dados só funciona onde consegue enxergar. O FortiDLP põe um agente no endpoint para observar dados no ponto de uso, e não apenas em trânsito, e integra com plataformas SaaS para ver dados que nunca tocam sua rede. Entender qual ponto de observação cobre o quê é a diferença entre cobertura e a aparência dela."
+title: "FortiDLP: arquitetura, agentes e como saber onde os seus dados estão de verdade"
+summary: "DLP (data loss prevention) só funciona onde consegue enxergar. O FortiDLP coloca um agente no endpoint para observar os dados no ponto de uso, e não só em trânsito, e se integra a plataformas SaaS para ver dados que nunca passam pela sua rede. Entender o que cada ponto de observação cobre é o que separa a cobertura real da simples aparência de cobertura."
 concepts: ["fortinet", "fortidlp", "prevenção de perda de dados", "agente", "inquilino", "integração saas", "endpoint", "ativo", "nó", "atividade de usuário"]
 relatedTools: []
 sub: fortidlp
@@ -12,46 +12,46 @@ status: reviewed
 updated: "2026-07-26"
 ---
 
-A prevenção de perda de dados tradicional observava a fronteira da rede. Isso funcionava quando os dados saíam pela rede e a rede era sua. Nenhuma das duas premissas se sustenta hoje, e é por isso que o FortiDLP coloca seu ponto de observação no endpoint e nas plataformas SaaS.
+O DLP (data loss prevention) tradicional vigiava o perímetro da rede. Isso funcionava quando os dados saíam pela rede e a rede era sua. Hoje nenhuma das duas premissas vale, e é por isso que o FortiDLP coloca o seu ponto de observação no endpoint (o computador ou dispositivo do usuário) e nas plataformas SaaS.
 
 ## De onde ele observa
 
-O **agente de endpoint** vê os dados no ponto de uso: um arquivo sendo copiado para um pendrive, colado num navegador, enviado a uma conta pessoal de nuvem, ou impresso. Crucialmente, ele vê isso antes da criptografia, e é isso que permite a um agente de endpoint responder perguntas que um sensor de rede não responde. Tráfego para uma aplicação SaaS é TLS no fio; no endpoint é um arquivo sendo anexado.
+O **agente de endpoint** vê os dados no ponto de uso: um arquivo sendo copiado para um pendrive, colado num navegador, enviado para uma conta pessoal de nuvem ou impresso. O ponto crucial é que ele vê isso antes da criptografia, e é isso que permite a um agente de endpoint responder perguntas que um sensor de rede não consegue. Na rede, o tráfego para uma aplicação SaaS é TLS; no endpoint, é um arquivo sendo anexado.
 
-A **integração SaaS** conecta à API da própria plataforma e vê o que está armazenado e compartilhado ali. Isso cobre o caso em que os dados nunca passam por um endpoint gerenciado por você: um arquivo compartilhado diretamente entre duas contas de nuvem, ou um terceiro recebendo acesso a um documento.
+A **integração SaaS** se conecta à API da própria plataforma e vê o que está armazenado e compartilhado lá. Isso cobre o caso em que os dados nunca passam por um endpoint gerenciado por você: um arquivo compartilhado direto entre duas contas de nuvem, ou um terceiro que recebe acesso a um documento.
 
-Os dois são complementares, e não redundantes, e a lacuna entre eles merece ser nomeada: um equipamento não gerenciado acessando uma plataforma SaaS é visível à integração e não ao agente, e um equipamento gerenciado manipulando arquivos locais é visível ao agente e não à integração. Cobertura é a união, e saber qual metade falta para um dado caminho é o que torna uma implantação honesta.
+As duas abordagens se complementam, não são redundantes, e vale dar nome à lacuna entre elas: um dispositivo não gerenciado que acessa uma plataforma SaaS aparece para a integração, mas não para o agente; e um dispositivo gerenciado que mexe em arquivos locais aparece para o agente, mas não para a integração. A cobertura é a união das duas, e saber qual metade está faltando em cada caminho é o que torna uma implantação honesta.
 
-## Inquilinos e estrutura
+## Tenants e estrutura
 
-Um **inquilino** é o contêiner de nível mais alto: políticas, dados, usuários e administradores. Para a maioria das organizações há um. Para um provedor de serviços ou um grupo com entidades genuinamente separadas, a tenência é a fronteira de separação, e como em todo produto multi-inquilino aqui, a atribuição é controle de segurança, e não decisão de arquivamento.
+Um **tenant** (inquilino) é o contêiner de nível mais alto: políticas, dados, usuários e administradores. A maioria das organizações tem um só. Para um provedor de serviços, ou para um grupo com empresas realmente separadas, o tenant é a fronteira de separação e, como em todos os outros produtos multi-tenant tratados aqui, decidir a que tenant cada coisa pertence é um controle de segurança, e não uma simples questão de organização.
 
-Dentro de um inquilino, os objetos com que se trabalha são:
+Dentro de um tenant, os objetos com que você trabalha são:
 
-**Ativos** — os endpoints rodando agentes.
-**Nós** — os componentes que formam a implantação.
-**Usuários** — as pessoas a quem a atividade é atribuída, que é o que transforma um evento de "um arquivo se moveu" em "alguém moveu um arquivo".
+**Assets** (ativos): os endpoints que rodam o agente.
+**Nodes** (nós): os componentes que formam a implantação.
+**Usuários**: as pessoas a quem a atividade é atribuída, e é isso que transforma um evento de "um arquivo se moveu" em "alguém moveu um arquivo".
 
-## Implantar agentes
+## Como implantar os agentes
 
-A implantação de agentes é distribuição de software comum, e as considerações que causam problema são as conhecidas de todo outro produto de endpoint desta pilha.
+Implantar agentes é distribuição de software comum, e os pontos que dão problema são os mesmos já conhecidos de todos os outros produtos de endpoint deste portfólio.
 
-**Registro importa mais que instalação.** Um agente instalado que não se registrou no inquilino não tem política. Está presente, consome recursos, e não protege nada.
+**Registrar importa mais do que instalar.** Um agente instalado que não se registrou no tenant não tem política. Ele está lá, consome recursos e não protege nada.
 
-**Lacunas de cobertura são o risco real.** Um parque com noventa por cento de cobertura de agentes tem um caminho de dez por cento para dados saírem sem observação, e as pessoas com maior chance de estarem nesses dez por cento são as de equipamentos não gerenciados ou incomuns. O inventário de ativos responde isso e vale ser lido com regularidade, e não na época da auditoria.
+**As lacunas de cobertura são o risco de verdade.** Um parque com noventa por cento de cobertura de agentes tem um caminho de dez por cento por onde os dados podem sair sem que ninguém veja, e quem tem mais chance de estar nesses dez por cento são justamente as pessoas com dispositivos não gerenciados ou fora do comum. O inventário de assets responde a essa pergunta, e vale a pena consultá-lo com regularidade, não só na época da auditoria.
 
-**Diferenças de plataforma existem.** As capacidades variam por sistema operacional, e presumir paridade num parque misto produz política aplicada em alguns endpoints e não em outros, sem sinal óbvio de que isso está acontecendo.
+**Existem diferenças entre plataformas.** Os recursos variam conforme o sistema operacional, e supor que tudo funciona igual num parque misto gera uma política que é aplicada em alguns endpoints e em outros não, sem nenhum sinal claro de que isso está acontecendo.
 
 ## Atividade e comportamento do usuário
 
-O FortiDLP registra o que os usuários fazem com dados, e esse registro tem dois usos que devem ser mantidos separados.
+O FortiDLP registra o que os usuários fazem com os dados, e esse registro tem dois usos que devem ser mantidos separados.
 
-O primeiro é **detecção**: uma atividade casou com uma política e algo deve acontecer.
+O primeiro é a **detecção**: uma atividade bateu com uma política, e alguma coisa precisa acontecer.
 
-O segundo é **contexto**: entender como é o normal para um usuário ou papel, para que atividade incomum possa ser reconhecida como incomum. Um usuário que rotineiramente lida com centenas de registros de clientes não faz nada notável ao abrir um; um usuário que nunca os toca baixando o conjunto inteiro, sim.
+O segundo é o **contexto**: entender o que é normal para um usuário ou para uma função, para que uma atividade fora do comum possa ser reconhecida como tal. Um usuário que lida o tempo todo com centenas de registros de clientes não está fazendo nada de especial ao abrir um deles; já um usuário que nunca mexe nesses registros e baixa todos eles, está.
 
-Esse segundo uso é o que separa uma implantação moderna de DLP (data loss prevention) de um motor de regras produzindo ruído, e depende inteiramente de ter histórico suficiente para saber qual era o normal.
+Esse segundo uso é o que separa uma implantação moderna de DLP de um motor de regras que só gera ruído, e ele depende inteiramente de haver histórico suficiente para saber o que era normal.
 
-## O que quem vai prestar o exame precisa saber de cor
+## O que quem vai fazer a prova precisa saber de cor
 
-O agente de endpoint observa dados no ponto de uso, antes da criptografia, e é por isso que enxerga o que um sensor de rede não enxerga. A integração SaaS cobre dados que nunca tocam um endpoint gerenciado, e as duas juntas definem a cobertura — saber qual metade falta para um caminho é o que torna a implantação honesta. Inquilinos são a fronteira de separação; ativos são endpoints com agente; a atividade é atribuída a usuários. Um agente instalado e não registrado não tem política, e cobertura abaixo de total significa que existe um caminho não observado.
+O agente de endpoint observa os dados no ponto de uso, antes da criptografia, e é por isso que enxerga o que um sensor de rede não enxerga. A integração SaaS cobre os dados que nunca passam por um endpoint gerenciado, e as duas juntas definem a cobertura: saber qual metade falta em cada caminho é o que torna a implantação honesta. Os tenants são a fronteira de separação; os assets são os endpoints com agente; a atividade é atribuída a usuários. Um agente instalado e não registrado não tem política, e uma cobertura de agentes que não seja total significa que existe um caminho sem observação.

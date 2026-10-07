@@ -4,7 +4,7 @@ Lê HTML (um documento inteiro ou um fragmento) com o mesmo parser que os navega
 
 O parser é o parse5, o parser de HTML conforme à especificação usado pelo jsdom, pelo Cheerio e pelo compilador do Angular, executado com posições no código e com a chamada de erros de análise ligada, e com a flag de scripting desligada (como o DOMParser analisa). Nada é executado, buscado ou renderizado. A API hospedada roda o mesmo código e devolve a mesma árvore.
 
-## Lendo a árvore
+## Como ler a árvore
 
 - Um **ponto** na coluna das linhas marca um nó sem posição no código: o parser o criou. A especificação: "Omitting an element's start tag in the situations described below does not mean the element is not present; it is implied, but it is still there." html, head, body e tbody são os habituais.
 - **fim suprido** marca um elemento cuja tag de fechamento não está no código. Para 19 elementos a especificação permite isso (13.1.2.4 Optional tags: html, head, body, li, dt, dd, p, rt, rp, optgroup, option, colgroup, caption, thead, tbody, tfoot, tr, td, th); para qualquer outro significa que a tag de fechamento faltou ou que outra tag o fechou antes, e o achado D13 diz qual.

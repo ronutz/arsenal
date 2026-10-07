@@ -14,6 +14,6 @@ A F5 divide os requisitos em duas gerações de site. O workflow do Secure Mesh 
 
 A matriz de portas e protocolos é transcrita da referência: registro e atualizações em TCP 443, conectividade com Regional Edges em TCP 80 e 443 com IPsec opcional em UDP 4500 (o tunelamento SSL é suportado como fallback) e o NTP do RE em UDP 123, DNS fornecido pela F5 em TCP/UDP 53, e NTP fornecido pela F5 em UDP 123. A porta 65500 é reservada para acesso à UI e API local e não é uma regra de egress. Os blocos de regras opcionais cobrem clusters multi-node, Site Mesh Group (IPsec: UDP 500, UDP 4500 e ESP), DC Cluster Group (IP-in-IP em UDP 6080) e AWS Cloud Connect (GRE, protocolo IP 47).
 
-## Verificando
+## Como verificar
 
 O script gerado usa o comando de serviceability curl-host do CE contra cada domínio no seu allowlist, seguindo o método documentado de troubleshooting de registro da F5, para que você possa confirmar a partir do próprio nó que cada endpoint está acessível antes de abrir um chamado.

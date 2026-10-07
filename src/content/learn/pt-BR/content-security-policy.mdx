@@ -1,6 +1,6 @@
 ---
 slug: content-security-policy
-title: "Content Security Policy, Diretiva por Diretiva"
+title: "Content Security Policy, diretiva por diretiva"
 summary: "Como a CSP funciona como controle contra cross-site scripting e injeção: a forma de uma política, por que default-src importa, o que 'unsafe-inline' e 'unsafe-eval' entregam, como nonces e hashes permitem código inline específico com segurança e para que serve o modo report-only."
 concepts: ["csp", "xss", "default-src", "script-src", "frame-ancestors", "nonce", "hash", "report-only"]
 relatedTools: ["secure-headers", "csp-evaluator"]
@@ -77,7 +77,7 @@ Ambos deixam você manter código inline específico e ainda recusar o código i
 
 Duas diretivas menores fecham brechas reais. `object-src 'none'` bloqueia conteúdo de plugins legados, como objetos Flash e Java, que são um vetor de injeção histórico. `base-uri 'self'` (ou `'none'`) impede que uma tag `<base>` injetada reescreva onde as URLs relativas da página são resolvidas, o que um atacante pode usar para redirecionar carregamentos de script. Ambas são baratas de adicionar e valem a pena.
 
-## Report-Only: testando uma política
+## Report-Only: como testar uma política
 
 `Content-Security-Policy-Report-Only` aplica uma política sem reforçá-la: o navegador relata o que teria bloqueado, mas não bloqueia nada. É assim que você implanta ou aperta uma política em um site em produção sem quebrá-lo. A ressalva importante é que o report-only não protege a página. Se você publicar apenas o cabeçalho report-only e nenhuma `Content-Security-Policy` aplicada, você tem monitoramento, não uma defesa, e o analisador marca esse caso como fraqueza.
 

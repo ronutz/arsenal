@@ -1,6 +1,6 @@
 ---
 slug: awaf-data-guard-response-masking
-title: "Data Guard: mascarando dados sensíveis nas respostas"
+title: "Data Guard: como mascarar dados sensíveis nas respostas"
 summary: "O Data Guard é a proteção do lado da resposta do Advanced WAF. Ele examina as respostas do servidor em busca de informações sensíveis, como números de cartão de crédito, números de Seguro Social dos EUA e padrões personalizados, e as mascara antes que cheguem ao cliente. Diferente da maioria das verificações de WAF, que inspecionam a requisição, o Data Guard protege o que vaza para fora."
 concepts: ["f5", "awaf", "waf", "asm", "data guard", "response masking", "sensitive data", "security", "bigip"]
 relatedTools: ["f5-awaf-declarative-policy-explainer"]
@@ -29,7 +29,7 @@ Em uma política declarativa, a seção fica assim:
 
 `enabled` liga o recurso; `creditCardNumbers` e `usSocialSecurityNumbers` alternam os detectores integrados; `customPatterns` carrega suas próprias expressões. O Data Guard também pode ser delimitado para se aplicar a, ou ser ignorado em, uma lista específica de URLs.
 
-## Lendo em uma política
+## Como ele aparece em uma política
 
 Como uma política declarativa é um delta sobre o seu template, uma seção `data-guard` ausente significa que o padrão do template se aplica, não que o mascaramento está desligado. Somente um `"enabled": false` explícito indica que o mascaramento foi deliberadamente desativado nesta política. Essa distinção é um achado real: "Data Guard não mencionado" e "Data Guard desligado" são dois estados diferentes, e apenas o segundo é uma decisão tomada pelo autor da política.
 

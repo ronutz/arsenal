@@ -1,6 +1,6 @@
 ---
 slug: reading-bigip-statistics
-title: "Lendo estatísticas do BIG-IP"
+title: "Como ler estatísticas do BIG-IP"
 summary: "Por que uma resposta de stats do iControl REST vem envolvida em três invólucros, o que significam as metades high e low de um contador, e por que uma única amostra nunca pode dar uma taxa."
 concepts: ["icontrol-rest", "bigip", "statistics", "counters", "monitoring"]
 relatedTools: ["icontrol-rest-stats-decoder", "icontrol-rest-path-explainer"]
@@ -69,7 +69,7 @@ contador em vez da sua derivada.
 O mesmo vale para `status.availabilityState`: ele diz o estado **agora**, não há
 quanto tempo está assim.
 
-## Lendo uma na prática
+## Uma leitura na prática
 
 Busque o endpoint `/stats` do objeto, ache os invólucros e leia os nomes. A
 nomenclatura é consistente o bastante para ser previsível — `clientside.` e

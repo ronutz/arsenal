@@ -31,7 +31,7 @@ A mesma versão permite que o API Security do Advanced WAF consuma arquivos Open
 
 O logging remoto de segurança de aplicação ganha um formato: Splunk Key-Value Pairs Extended, que enriquece os eventos com um elemento XML violation_details trazendo contexto adicional da violação, enquanto o formato existente é renomeado para Splunk Key-Value Pairs Basic. A letra miúda operacional é uma porta de mão única: configurações que usam o formato Extended não carregam em versões que não o suportam, então um UCS ou config sync que viaje para trás em versão não pode levar perfis de logging Extended.
 
-## Lendo a versão como um movimento só
+## A versão vista como um movimento só
 
 Junte os três itens e a história de WAF do 21.1 é sobre encontrar o tráfego onde ele está indo: o transporte que os clientes estão adotando (HTTP/3), o formato de contrato que os times de API estão escrevendo (OpenAPI 3.1) e o nível de detalhe de SIEM (security information and event management) que os analistas vivem pedindo (key-value Extended). A [visão geral do 21.x](/learn/bigip-21x-whats-new) situa isso ao lado do outro item de destaque do WAF na versão, a proteção do protocolo MCP, que o [aprofundamento de IA e MCP](/learn/bigip-ai-mcp) cobre por completo.
 

@@ -2,7 +2,7 @@
 
 Monta um comando `diagnose sniffer packet` do FortiGate a partir das suas partes, ou decodifica um comando existente explicando cada argumento, tudo sem tocar em um equipamento. O sniffer embutido do FortiOS é a primeira ferramenta que a maioria das pessoas usa quando um pacote não chega onde deveria, e sua linha de comando reúne cinco argumentos posicionais em uma única linha. Esta ferramenta monta essa linha para você e a lê de volta, argumento por argumento. Roda inteiramente no seu navegador e é fundamentada na documentação do próprio sniffer da Fortinet e na referência de CLI.
 
-## Montando um comando
+## Como montar um comando
 
 Escolha uma interface (ou `any` para todas), opcionalmente um host, uma porta e um protocolo, e então um nível de verbosidade, uma contagem de pacotes e um formato de horário. A ferramenta monta o comando exato:
 
@@ -12,7 +12,7 @@ diagnose sniffer packet <interface> <'filtro'> <verbose> <count> <tsformat>
 
 O filtro que você monta é mostrado entre aspas simples, do jeito que o FortiOS espera uma expressão estilo BPF com várias palavras, e um `host` mais um `proto` são unidos com `and`. Quando nenhuma parte do filtro está definida, é usada a palavra `none`, que captura tudo na interface. Cada argumento é explicado ao lado do comando, e as armadilhas comuns são sinalizadas enquanto você monta.
 
-## Decodificando um comando
+## Como decodificar um comando
 
 Cole um comando como `diagnose sniffer packet any 'host 10.1.1.1 and tcp port 443' 4 0 l` e cada um dos cinco argumentos é lido de volta: a interface (e se `any` significa uma captura cooked do Linux que oculta o cabeçalho Ethernet real), o filtro e o que ele casa, o nível de verbosidade e exatamente o que ele imprime, a contagem de pacotes e o formato de horário. A forma abreviada `diag sniff packet` também é aceita, e um comando com a contagem ou o horário finais omitidos ainda é decodificado, porque esses argumentos são opcionais no equipamento.
 

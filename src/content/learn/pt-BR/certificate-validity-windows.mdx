@@ -23,7 +23,7 @@ O *período de validade* do certificado é simplesmente o intervalo de `notBefor
 
 São dois números diferentes, e confundi-los causa muita confusão. A *validade* é fixada no instante em que o certificado é emitido e nunca muda. O *tempo restante* encolhe a cada dia e depende do que é "agora". Um certificado de 90 dias emitido há 80 dias ainda é um certificado de 90 dias, mas restam apenas 10. O planejador mantém os dois estritamente separados: o tamanho da validade vem do núcleo determinístico que depende apenas das duas datas, enquanto a linha "dias até expirar" é uma conveniência calculada a partir do relógio do seu próprio dispositivo e claramente identificada como tal.
 
-## Escolhendo uma antecedência para a renovação
+## Como escolher uma antecedência para a renovação
 
 Renovar no último segundo é como surgem as quedas: uma renovação que falha precisa de folga para tentar de novo antes que o certificado antigo morra. A convenção comum, usada por ferramentas como o certbot, é renovar quando resta cerca de um terço do tempo de vida, ou com uma margem fixa de aproximadamente 30 dias, o que vier primeiro. O planejador aplica uma versão dessa regra, mais ou menos um terço da validade, limitado a 30 dias, e informa uma data concreta para renovar, para que você tenha um alvo em vez de uma intenção vaga. Para um certificado de 90 dias isso é uma antecedência de 30 dias; para um certificado de 47 dias são cerca de 16 dias, que é toda a folga que um certificado tão curto oferece.
 

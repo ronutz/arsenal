@@ -16,7 +16,7 @@ A segurança dos navegadores modernos é, em boa parte, opcional por meio de cab
 
 A segurança de um cookie vive em seus atributos, e a ferramenta os verifica contra a especificação atual de cookies (RFC 6265bis): **Secure** (enviado apenas por HTTPS), **HttpOnly** (oculto do JavaScript, o que reduz o roubo via cross-site scripting) e **SameSite** (que limita o envio entre sites e mitiga CSRF). Ela também reconhece os prefixos de nome `__Host-` e `__Secure-`, que impõem algumas dessas propriedades pelo próprio nome.
 
-## Lendo a nota
+## Como interpretar a nota
 
 O objetivo da nota é priorização: ela diz não só o que está presente, mas o que falta ou está fraco, e por que cada cabeçalho importa, para que você corrija primeiro as lacunas de maior impacto. As verificações seguem o conjunto recomendado do OWASP e as especificações subjacentes, e não a opinião de uma única ferramenta.
 

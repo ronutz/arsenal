@@ -1,7 +1,7 @@
 ---
 slug: radio-spectrum
-title: "O espectro de rádio: quais frequências vão até onde, e por quê"
-summary: "Por que um sinal de ondas curtas cruza um oceano com 100 watts enquanto seu Wi-Fi sofre para atravessar uma parede. As faixas de VLF a EHF, os três modos de propagação que explicam quase tudo, e a troca que governa todo o rádio: alcance ou capacidade, nunca os dois."
+title: "O espectro de rádio: até onde vai cada frequência, e por quê"
+summary: "Por que um sinal de ondas curtas atravessa um oceano com 100 watts, enquanto o seu Wi-Fi mal passa por uma parede. As faixas de VLF a EHF, os três modos de propagação que explicam quase tudo e o trade-off que define todo o rádio: alcance ou capacidade, nunca os dois."
 concepts: ["wifi", "lora"]
 relatedTools: []
 relatedArticles: ["amateur-radio"]
@@ -11,86 +11,86 @@ status: reviewed
 updated: "2026-07-23"
 ---
 
-## Origens: por que o espectro é administrado
+## Origens: por que alguém precisa administrar o espectro
 
-O rádio começou sem regulação, e a consequência chegou rápido: transmissores interferiam uns nos outros, e interferência no mar custou vidas. A resposta foi internacional - um arcabouço de tratado acordado em conferências a partir de 1906 -, e é por isso que o espectro é um dos pouquíssimos domínios técnicos coordenados por tratado, e não por consenso da indústria.
+O rádio nasceu sem regulação nenhuma, e o resultado não demorou: um transmissor interferia no outro, e no mar essa interferência custou vidas. A resposta veio em escala internacional, com regras fixadas por tratado e negociadas em conferências que começaram em 1906. É por isso que o espectro é uma das pouquíssimas áreas técnicas coordenadas por tratado, e não por consenso da indústria.
 
-A **UIT** aloca internacionalmente e divide o mundo em três regiões com alocações diferentes; os reguladores nacionais - Anatel no Brasil, FCC nos Estados Unidos, Ofcom no Reino Unido e seus equivalentes - atribuem dentro desse arcabouço. É por isso que um equipamento legal num país não é automaticamente legal em outro, e por que os produtos carregam certificação por região.
+A **UIT** (a ITU) faz a alocação das faixas no plano internacional e divide o mundo em três regiões, cada uma com as suas alocações. Dentro dessas regras, os reguladores nacionais (a Anatel no Brasil, a FCC nos Estados Unidos, o Ofcom no Reino Unido e os órgãos equivalentes de outros países) fazem a atribuição das frequências. Por isso um equipamento permitido num país não é automaticamente permitido em outro, e por isso os equipamentos têm certificação por região.
 
-As **faixas ISM** são a exceção que produziu o mundo sem fio moderno. Reservadas originalmente a equipamentos industriais, científicos e médicos - a alocação de 2,4 GHz existe em parte porque fornos de micro-ondas são ruidosos ali -, viraram o espaço não licenciado onde qualquer um pode transmitir sob regras de potência e comportamento. Wi-Fi, Bluetooth, telefonia sem fio e um número enorme de sensores moram lá **porque ninguém precisa pedir permissão**, e o preço dessa liberdade é que ninguém pode reclamar de interferência.
+As **faixas ISM** são a exceção que deu origem ao mundo wireless de hoje. No começo, elas foram reservadas para equipamentos industriais, científicos e médicos (a faixa de 2,4 GHz existe, em parte, porque o forno de micro-ondas faz muito ruído nessa frequência) e acabaram virando o espaço não licenciado, onde qualquer equipamento pode transmitir, desde que cumpra regras de potência e de comportamento. Wi-Fi, Bluetooth, telefone sem fio e uma quantidade enorme de sensores estão lá **porque ninguém precisa pedir permissão**, e o preço dessa liberdade é que também ninguém pode reclamar de interferência.
 
-Essa troca - exclusividade licenciada contra liberdade não licenciada - é o enquadramento mais útil do assunto inteiro. Uma faixa licenciada custa dinheiro e dá proteção legal contra interferência; uma faixa não licenciada é gratuita e não dá nenhuma.
+Esse trade-off, exclusividade com licença de um lado e liberdade sem licença do outro, é a chave mais útil para entender o assunto inteiro. Uma faixa licenciada custa dinheiro e dá proteção legal contra interferência; uma faixa não licenciada é de graça e não dá proteção nenhuma.
 
-## Uma troca governa tudo
+## Um trade-off que decide tudo
 
-Frequências baixas viajam longe e carregam pouco. Frequências altas carregam quantidades enormes e param no primeiro obstáculo. Quase toda decisão de projeto em rádio, da comunicação com submarinos ao 5G, é uma posição tomada sobre essa troca.
+Frequências baixas vão longe e carregam pouca informação. Frequências altas carregam muita informação e param no primeiro obstáculo. Quase toda decisão de projeto em rádio, da comunicação com submarinos ao 5G, é uma escolha de onde ficar nesse trade-off.
 
-A razão é física. Um comprimento de onda longo se difrata em volta de morros, prédios e da curvatura da Terra; um curto se comporta cada vez mais como luz, e é por isso que você vê a sombra projetada por uma parede e por que seu Wi-Fi tem o mesmo problema. Enquanto isso, a largura de banda — o espaço disponível para carregar informação — escala com a frequência, então é nas faixas altas que mora a capacidade.
+O motivo é físico. Um comprimento de onda longo sofre difração e contorna morros, prédios e a curvatura da Terra; um comprimento de onda curto se comporta cada vez mais como a luz. É por isso que uma parede faz sombra, e o seu Wi-Fi sofre do mesmo problema. Já a largura de banda, que é o espaço disponível para transportar informação, cresce com a frequência, e por isso a capacidade está nas faixas altas.
 
 ## Os três modos de propagação
 
-Quase todo o comportamento decorre de qual dos três modos domina.
+Quase todo o comportamento do sinal depende de qual desses três modos predomina.
 
-A **onda terrestre** segue a superfície da Terra, acompanhando o terreno. Domina abaixo de cerca de 2 MHz. É por isso que emissoras AM cobrem uma região de forma confiável de dia e de noite, e por que frequências muito baixas alcançam submarinos submersos.
+A **onda terrestre** (ground wave) acompanha a superfície da Terra, rente ao terreno. Ela predomina abaixo de uns 2 MHz. É por causa dela que as rádios AM cobrem uma região com confiabilidade, de dia e de noite, e que frequências muito baixas chegam até submarinos submersos.
 
-A **onda ionosférica** é a interessante. Entre cerca de 2 e 30 MHz, sinais lançados para cima são refratados pela **ionosfera** e curvados de volta à Terra, a centenas ou milhares de quilômetros. Podem refletir no solo e subir de novo — **multi-hop** — e cruzar oceanos. Isso não é metáfora: uma estação de HF com 100 watts numa antena de fio pode ser ouvida em outro continente, o que nenhuma potência em 2,4 GHz conseguirá.
+A **onda ionosférica** (sky wave) é a mais interessante. Entre uns 2 e 30 MHz, o sinal que sobe é refratado pela **ionosfera** e volta para a Terra a centenas ou milhares de quilômetros de distância. Ele pode bater no solo e subir de novo, num caminho **multi-hop**, e assim atravessar oceanos. Não é força de expressão: uma estação de HF com 100 watts numa antena de fio pode ser ouvida em outro continente, coisa que nenhuma potência em 2,4 GHz consegue.
 
-A **visada direta** assume acima de aproximadamente 30 MHz. O sinal vai até onde você enxerga, limitado pelo horizonte, e é por isso que antenas de VHF e UHF são montadas o mais alto possível e por que obstruções importam tanto.
+Acima de uns 30 MHz, quem manda é a **visada direta** (line of sight). O sinal vai até onde a vista alcança, limitado pelo horizonte. Por isso as antenas de VHF e UHF ficam o mais alto possível, e por isso qualquer obstrução pesa tanto.
 
-A ionosfera não é constante, e é aí que está toda a textura da operação em HF. Ela muda entre dia e noite, com as estações do ano, e ao longo do **ciclo solar** de cerca de onze anos: no máximo solar a ionosfera fica mais carregada, sustenta frequências mais altas, e abrem-se caminhos de longa distância simplesmente indisponíveis no mínimo solar. Ocasionalmente o **E esporádico** ou o **duto troposférico** produzem propagação muito além das regras normais, e é por isso que operadores ainda se surpreendem.
+A ionosfera não é constante, e operar em HF é justamente conviver com essa variação. Ela muda do dia para a noite, com as estações do ano e ao longo do **ciclo solar**, de cerca de onze anos: no máximo solar, a ionosfera fica mais carregada, sustenta frequências mais altas e abre rotas de longa distância que simplesmente não existem no mínimo solar. De vez em quando, a **E esporádica** (sporadic E) ou o **duto troposférico** (tropospheric ducting) levam o sinal muito além do que as regras normais de propagação preveem, e é por isso que os operadores ainda se surpreendem.
 
 ## As faixas
 
-**VLF, 3–30 kHz.** Comprimentos de onda de dezenas de quilômetros. Penetra água do mar, então é usada para comunicação com submarinos submersos, além de navegação e sinais de tempo. As taxas de dados são quase cômicas — poucos caracteres por segundo — mas alcança lugares que nada mais alcança.
+**VLF, 3–30 kHz.** Comprimentos de onda de dezenas de quilômetros. O sinal penetra na água do mar, por isso é usado na comunicação com submarinos submersos e em alguns sinais de navegação e de hora. As taxas de dados são quase ridículas, poucos caracteres por segundo, mas o VLF chega a lugares aonde nada mais chega.
 
-**LF, 30–300 kHz.** Onda terrestre de longa distância. Estações de sinal horário que disciplinam relógios radiocontrolados vivem aqui, junto com navegação marítima e, em partes do mundo, radiodifusão em ondas longas.
+**LF, 30–300 kHz.** Onda terrestre de longa distância. Aqui ficam as estações de sinal horário que acertam os relógios radiocontrolados, além de parte da navegação marítima e, em algumas regiões do mundo, a radiodifusão em ondas longas.
 
-**MF, 300 kHz–3 MHz.** A faixa de radiodifusão AM fica aqui. Onda terrestre de dia; à noite, quando a camada D absorvente da ionosfera se dissipa, a onda ionosférica deixa emissoras AM distantes chegarem de centenas de quilômetros. Quem já pegou uma estação distante no rádio do carro à noite observou a ionosfera diretamente.
+**MF, 300 kHz–3 MHz.** É a faixa das rádios AM. De dia, a propagação é por onda terrestre; à noite, quando a camada D da ionosfera, que absorve o sinal, se dissipa, a onda ionosférica traz emissoras AM de centenas de quilômetros de distância. Quem já pegou uma rádio distante no carro, à noite, viu a ionosfera em ação.
 
-**HF, 3–30 MHz.** Ondas curtas. É a faixa da radiodifusão internacional, das comunicações marítimas e aeronáuticas de longa distância, e da maior parte do DX de radioamador. A onda ionosférica torna possível o contato mundial com equipamento modesto, e a desvantagem é a mesma que a vantagem: as condições variam constantemente, e a frequência que funcionou de manhã pode estar morta à tarde. Aqui também fica o **CB**, perto dos 27 MHz, no topo da faixa.
+**HF, 3–30 MHz.** Ondas curtas. É a faixa da radiodifusão internacional, das comunicações marítimas e aeronáuticas de longa distância e da maior parte do DX dos radioamadores, os contatos a grande distância. A onda ionosférica permite falar com o mundo inteiro usando equipamento modesto, e a desvantagem é a própria vantagem: as condições mudam o tempo todo, e a frequência que funcionou de manhã pode estar morta à tarde. No alto da faixa, perto dos 27 MHz, também fica o **CB**, a faixa do cidadão.
 
-**VHF, 30–300 MHz.** Radiodifusão FM, controle de tráfego aéreo, rádio marítimo, televisão antiga e uso intenso de repetidoras de radioamador. Majoritariamente visada direta, em geral confiável, e amplamente imune ao drama ionosférico abaixo dela — embora no máximo solar as frequências mais baixas de VHF ocasionalmente propaguem a longa distância mesmo assim.
+**VHF, 30–300 MHz.** Rádio FM, controle de tráfego aéreo, rádio marítimo, a televisão mais antiga e muitas repetidoras de radioamador. A propagação é quase toda por visada direta, em geral confiável e pouco afetada pelas oscilações da ionosfera que mexem com as faixas de baixo, embora, no máximo solar, as frequências mais baixas do VHF às vezes cheguem longe mesmo assim.
 
-**UHF, 300 MHz–3 GHz.** Onde a vida moderna acontece: telefonia móvel, Wi-Fi em 2,4 GHz, Bluetooth, GPS, a maior parte da televisão, e repetidoras de radioamador. Largura de banda suficiente para taxas de dados reais, antenas pequenas, e prédios que bloqueiam sinal de forma convincente. O **duto troposférico** — inversões de temperatura aprisionando sinais numa camada refrativa — ocasionalmente leva UHF muito além do horizonte.
+**UHF, 300 MHz–3 GHz.** É onde acontece a vida moderna: telefonia celular, Wi-Fi em 2,4 GHz, Bluetooth, GPS, a maior parte da televisão e repetidoras de radioamador. Tem banda suficiente para taxas de dados de verdade, antenas pequenas e prédios que bloqueiam o sinal para valer. O **duto troposférico**, em que inversões de temperatura prendem o sinal numa camada que o refrata, de vez em quando leva o UHF muito além do horizonte.
 
-**SHF, 3–30 GHz.** Enlaces de satélite, radar, backhaul por micro-ondas, Wi-Fi em 5 e 6 GHz. Capacidade enorme, visada direta estrita, e a chuva começa a importar como atenuador.
+**SHF, 3–30 GHz.** Links de satélite, radar, backhaul por micro-ondas, Wi-Fi em 5 e 6 GHz. Capacidade enorme, propagação só em visada direta, e a chuva começa a pesar como fator de atenuação.
 
-**EHF, 30–300 GHz.** Ondas milimétricas, incluindo as faixas altas do 5G. Capacidade extraordinária a distâncias muito curtas, bloqueada por quase tudo, inclusive folhagem e corpos humanos, e é por isso que o 5G milimétrico exige implantação densa de pequenas células em vez de torres altas.
+**EHF, 30–300 GHz.** Ondas milimétricas (mmWave), inclusive as faixas altas do 5G. Capacidade extraordinária em distâncias muito curtas, com um sinal que quase tudo bloqueia, até folhagem e o corpo humano. Por isso o 5G em ondas milimétricas precisa de uma implantação densa de small cells, e não de torres altas.
 
-## Onde ficam as coisas familiares
+## Onde ficam as tecnologias do dia a dia
 
-As **faixas ISM** — industrial, científica e médica — são as alocações isentas de licença que tornaram possível o sem-fio de consumo. Wi-Fi e Bluetooth dividem 2,4 GHz com fornos de micro-ondas e muita coisa mais, e é exatamente por isso que a faixa é congestionada; as faixas de Wi-Fi em 5 e 6 GHz oferecem mais espaço e menos alcance, precisamente como a troca prevê. O **LoRa** faz a aposta oposta, usando alocações ISM abaixo de 1 GHz e taxas de dados muito baixas para obter quilômetros de alcance e anos de bateria de um sensor — uma escolha deliberada de alcance sobre capacidade.
+As **faixas ISM** (industrial, científica e médica) são as alocações isentas de licença que tornaram possível o wireless de consumo. Wi-Fi e Bluetooth dividem os 2,4 GHz com o forno de micro-ondas e muita coisa mais, e é exatamente por isso que essa faixa vive congestionada; as faixas de Wi-Fi em 5 e 6 GHz oferecem mais espaço e menos alcance, bem como o trade-off prevê. O **LoRa** faz a aposta contrária: usa alocações ISM abaixo de 1 GHz e taxas de dados muito baixas para tirar de um sensor quilômetros de alcance e anos de bateria, uma escolha deliberada de alcance em vez de capacidade.
 
-O celular abrange faixas baixas para cobertura e altas para capacidade na mesma rede, que é a troca administrada em vez de resolvida: a faixa baixa alcança a borda rural, a alta atende ao quarteirão denso.
+O celular combina, numa mesma rede, faixas baixas para cobertura e faixas altas para capacidade. É o trade-off administrado, não resolvido: a faixa baixa alcança as áreas rurais mais distantes, e a faixa alta atende o quarteirão lotado da cidade.
 
 ## O que os números significam na prática
 
-**A banda é de onde vem a capacidade.** O resultado de Shannon amarra a taxa alcançável à largura de banda e à relação sinal-ruído, e a leitura prática é que frequências mais altas são atraentes porque simplesmente há mais espaço lá em cima - um canal de 100 MHz em 6 GHz é banal, e impossível em 900 MHz, onde a faixa inteira é mais estreita que isso.
+**A capacidade vem da largura de banda.** O teorema de Shannon relaciona a taxa que se consegue atingir com a largura de banda e com a relação sinal-ruído, e a leitura prática é que as frequências mais altas atraem porque lá em cima simplesmente há mais espaço: um canal de 100 MHz em 6 GHz é coisa comum, e em 900 MHz é impossível, porque a faixa inteira é mais estreita que isso.
 
-**A atenuação sobe com a frequência**, e a interação com obstáculos é o que decide a implantação. A perda no espaço livre cresce com a frequência, mas o efeito mais marcante dentro de prédios é o material: em 2,4 GHz uma parede de gesso é perda modesta, em 60 GHz ela é praticamente opaca, e em comprimentos milimétricos até folhagem e chuva importam. É por isso que planejar cobertura é função do material da construção tanto quanto da distância.
+**A atenuação aumenta com a frequência**, e o que decide a implantação é a interação do sinal com os obstáculos. A perda no espaço livre cresce com a frequência, mas, em ambiente interno, o efeito mais forte vem do material: em 2,4 GHz, uma parede de drywall causa uma perda modesta; em 60 GHz, ela é praticamente opaca; e, em comprimentos de onda milimétricos, até folhagem e chuva fazem diferença. Por isso, o planejamento de cobertura depende tanto do material da construção quanto da distância.
 
-**Piso de ruído e ciclo de trabalho** decidem o que de fato funciona em faixas compartilhadas. A operação não licenciada está sujeita a limites de potência e, em muitas regiões, a escutar antes de transmitir e a limites de ciclo de trabalho - e é por isso que um equipamento legal não é automaticamente um equipamento que consegue tempo de ar.
+**O piso de ruído (noise floor) e o duty cycle** decidem o que de fato funciona nas faixas compartilhadas. A operação sem licença tem limites de potência e, em muitas regiões, regras de listen-before-talk (escutar antes de transmitir) e de duty cycle, a fração do tempo em que o equipamento pode transmitir. Por isso, estar dentro da lei não garante a um equipamento o seu airtime, o tempo de transmissão no ar.
 
-## Onde cada faixa é de fato usada
+## Onde cada faixa é usada de verdade
 
-- **Abaixo de 1 GHz** - longo alcance, boa penetração, taxas pequenas. LoRaWAN, Sigfox, Z-Wave, medição de utilidades, e a razão de a cobertura rural ser construída em faixas baixas.
-- **2,4 GHz** - o compromisso global: disponível em quase todo lugar, lotada de Wi-Fi, Bluetooth, fornos e todo o resto, com [apenas três canais Wi-Fi sem sobreposição](/learn/wireless-networking-from-802-11-to-wifi-7).
-- **5 GHz** - muito mais espectro, alcance menor, e partes compartilhadas com radar, e é por isso que os equipamentos precisam detectar radar e desocupar o canal.
-- **6 GHz** - aberta recentemente para uso não licenciado em muitas jurisdições e não em todas, sem equipamentos legados dentro, que é o atrativo inteiro.
-- **Faixas celulares** - licenciadas e leiloadas, com faixas baixas para cobertura, médias para o equilíbrio, e ondas milimétricas para capacidade em áreas densas a alcance muito curto.
-- **Ondas milimétricas e acima** - banda enorme, comportamento de linha de visada, e desvanecimento por chuva como entrada de projeto, e não nota de rodapé.
+- **Abaixo de 1 GHz**: longo alcance, boa penetração, taxas de dados baixas. LoRaWAN, Sigfox, Z-Wave, os medidores das concessionárias, e o motivo de a cobertura rural ser feita com faixas baixas.
+- **2,4 GHz**: o meio-termo global. Está disponível em quase todo lugar, lotada de Wi-Fi, Bluetooth, fornos de micro-ondas e todo o resto, e tem [só três canais de Wi-Fi que não se sobrepõem](/learn/wireless-networking-from-802-11-to-wifi-7).
+- **5 GHz**: muito mais espectro, menos alcance e trechos compartilhados com radar; por isso os equipamentos precisam detectar radar e liberar o canal.
+- **6 GHz**: aberta há pouco tempo para uso sem licença em muitos países, mas não em todos, e ainda sem nenhum equipamento legado; esse é justamente o atrativo.
+- **Faixas de celular**: licenciadas e leiloadas, com faixas baixas para cobertura, médias para equilibrar as duas coisas e ondas milimétricas para dar capacidade em áreas densas, a distâncias muito curtas.
+- **Ondas milimétricas e acima**: largura de banda enorme, comportamento de visada direta e o rain fade, a atenuação pela chuva, tratado como dado de projeto, e não como nota de rodapé.
 
-## Quem opera no espectro, por categoria
+## Quem atua no espectro, por categoria
 
-- **Reguladores** - a UIT internacionalmente, e órgãos nacionais como Anatel, FCC e Ofcom, que decidem o que pode ser transmitido onde e com que potência. Em espectro, o regulador é ator mais consequente que qualquer fabricante.
-- **Operadoras licenciadas** - móveis e de radiodifusão, cujas licenças são ativos adquiridos em leilão e cujas reclamações de interferência têm força legal.
-- **Fabricantes de equipamento não licenciado** - Wi-Fi, Bluetooth e curto alcance, competindo dentro de regras que não podem mudar.
-- **Organismos de norma e certificação** - o IEEE para os padrões de rádio, a Wi-Fi Alliance e o Bluetooth SIG para as marcas de interoperabilidade, e os regimes nacionais de certificação que decidem se um equipamento pode sequer ser vendido.
+- **Reguladores**: a UIT, no plano internacional, e órgãos nacionais como a Anatel, a FCC e o Ofcom, que decidem o que pode ser transmitido, onde e com que potência. No espectro, o regulador pesa mais do que qualquer fabricante.
+- **Operadores licenciados**: operadoras de celular e emissoras de rádio e TV, cujas licenças são ativos comprados em leilão e cujas reclamações de interferência têm força legal.
+- **Fabricantes de equipamentos não licenciados**: empresas de Wi-Fi, Bluetooth e rádios de curto alcance, que competem dentro de regras que não podem mudar.
+- **Órgãos de padronização e certificação**: o IEEE, para os padrões de rádio; a Wi-Fi Alliance e o Bluetooth SIG, para os selos de interoperabilidade; e os regimes nacionais de certificação, que decidem se um equipamento pode sequer ser vendido.
 
-A consequência prática para quem projeta com rádio: **a restrição costuma ser regulatória, e não física**. A faixa determina a potência, a potência determina o alcance, e o regulador determina a faixa.
+A consequência prática para quem projeta com rádio: **a limitação costuma ser regulatória, não física**. A faixa define a potência, a potência define o alcance, e o regulador define a faixa.
 
-## Por que vale saber disso
+## Por que vale a pena saber isso
 
-Se você entende a troca, quase todo comportamento de rádio deixa de ser misterioso. Seu Wi-Fi sofre com paredes porque 2,4 GHz se comporta como luz. Um radioamador em 20 metros fala com o Japão com a potência de uma lâmpada porque a ionosfera é um espelho naquela frequência. Seu telefone funciona dentro de casa numa faixa baixa e fica rápido na rua numa faixa alta. O 5G milimétrico é espantoso na esquina onde está a célula e sumiu um prédio depois.
+Quem entende esse trade-off deixa de achar misterioso quase tudo o que o rádio faz. O seu Wi-Fi sofre com as paredes porque 2,4 GHz se comporta como luz. Um radioamador na faixa de 20 metros fala com o Japão usando a potência de uma lâmpada porque, nessa frequência, a ionosfera funciona como um espelho. O seu celular funciona dentro de casa numa faixa baixa e fica rápido na rua numa faixa alta. O 5G em ondas milimétricas impressiona na esquina onde está a célula e some um prédio depois.
 
-Nada disso é arbitrário. É uma troca só, feita repetidamente, em cada faixa.
+Nada disso é arbitrário. É sempre o mesmo trade-off, repetido em todas as faixas.

@@ -1,6 +1,6 @@
 ---
 slug: how-cvss-scoring-works
-title: "Como Funciona a Pontuação CVSS"
+title: "Como funciona a pontuação CVSS"
 summary: "O CVSS transforma uma string de vetor curta em um número de severidade de 0 a 10 usando uma fórmula fixa. A pontuação Base é construída a partir de duas subpontuações: Explorabilidade (quão acessível e fácil é a falha) e Impacto (quão grave é o resultado). Todo o resto refina essa base. Isso é aritmética, não opinião, e por isso uma calculadora reproduz exatamente qualquer pontuação publicada."
 concepts: ["cvss", "pontuação de vulnerabilidade", "pontuação base", "explorabilidade", "impacto"]
 relatedTools: ["cvss-vector-decoder"]
@@ -33,7 +33,7 @@ O **Impacto** mede quão grave é um ataque bem-sucedido. Começa por uma subpon
 
 Essa subpontuação é então convertida em um valor de Impacto de um modo que depende do **Escopo** (descrito no artigo sobre métricas base).
 
-## Juntando tudo
+## Tudo junto
 
 Se a subpontuação de impacto for zero, toda a pontuação Base é zero: uma vulnerabilidade sem impacto em confidencialidade, integridade ou disponibilidade recebe 0.0 por mais acessível que seja. Caso contrário, a pontuação Base combina as duas subpontuações e arredonda para cima com uma casa decimal:
 

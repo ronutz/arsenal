@@ -1,6 +1,6 @@
 ---
 slug: bigip-config-sync
-title: "Config Sync no BIG-IP: Quando Sincronizar, e Por Que Falha"
+title: "Config Sync no BIG-IP: quando sincronizar, e por que falha"
 summary: "O config sync mantém os membros de um device group com a mesma configuração - quando você mandar, na direção que você mandar. Este artigo cobre sync manual versus automático, a leitura do status, a disciplina recomendada e a lista curta de causas-raiz por trás de quase toda falha de sincronização."
 concepts: ["f5", "big-ip", "config sync", "device group", "cmi", "sync status", "high availability"]
 relatedTools: ["f5-tmsh-config-explainer"]
@@ -17,7 +17,7 @@ A sincronização de configuração, config sync para os íntimos, é o mecanism
 
 No sync manual, o administrador seleciona o device group e sincroniza de um dispositivo para o grupo (empurrar minhas mudanças). O sync automático propaga as mudanças conforme são feitas. A maioria das equipes de operação mantém o manual precisamente porque ele transforma um erro de digitação num incidente de um dispositivo, e não do grupo inteiro. O sync pode ser incremental - só as mudanças desde o último - ou completo, e o sistema recua para uma carga completa quando o estado incremental não é confiável.
 
-## Lendo o status
+## Como ler o status de sync
 
 O status colorido na interface resume o grupo: In Sync significa que todos concordam; Changes Pending nomeia o dispositivo com configuração mais nova; Awaiting Initial Sync significa que um membro nunca recebeu a configuração do grupo; Sync Failure significa tentativa feita e rejeitada. O TMSH dá o mesmo retrato com `show cm sync-status`, e comparar os timestamps de configuração entre dispositivos - que o blueprint cita explicitamente - identifica quem está à frente. O painel de detalhes nomeia o objeto exato que falhou ao carregar, e é aí que o diagnóstico começa.
 
