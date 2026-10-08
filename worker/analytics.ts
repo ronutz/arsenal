@@ -16,7 +16,8 @@
  * So the design is DISJOINT DATASETS. Each request may produce up to two rows,
  * in separate datasets, and no row carries a field from another's subject:
  *
- *   PAGEVIEWS  path, locale, country, bot-class      - never a referrer
+ *   PAGEVIEWS  path, locale, country, bot-class,     - never a referrer
+ *              device, response status
  *   REFERRERS  referring URL only                    - never a path, never a
  *                                                      country, never a bot
  *                                                      class, never a time
@@ -282,12 +283,21 @@ export function classifyClient(request: Request): string {
  * Record one request. Fire-and-forget by design: writeDataPoint returns
  * immediately and the runtime flushes in the background, so this adds no
  * latency to the response and must never be awaited.
+ *
+ * THE STATUS (2026-10-07, PRIME: the stats were "counting 404"). The Worker now
+ * calls this AFTER the page has been looked up, and passes the response's
+ * status, written as blob6 ("200", "304", "404", ...). The people panels count
+ * only 200 and 304 (a page served, or a cached copy revalidated); the stats
+ * page groups the 404s by what they were looking for (worker/probes.ts). Rows
+ * written before this carry an empty blob6, and worker/stats.ts judges them by
+ * path instead.
  */
 export function record(
   request: Request,
   url: URL,
   locale: string,
-  env: AnalyticsEnv
+  env: AnalyticsEnv,
+  status: number
 ): void {
   if (request.method !== "GET") return;
   for (const re of IGNORED) if (re.test(url.pathname)) return;
@@ -303,7 +313,8 @@ export function record(
     // rows written before 2026-09-06.
     const device = botClass === "human" ? classifyDevice(request) : "";
     env.PAGEVIEWS.writeDataPoint({
-      blobs: [url.pathname, locale, country, botClass, device],
+      // blob6: the response's status, from 2026-10-07 (empty on older rows).
+      blobs: [url.pathname, locale, country, botClass, device, String(status)],
       doubles: [1],
       // Sampling key is the PATH. Never a visitor identifier.
       indexes: [url.pathname],
@@ -313,8 +324,9 @@ export function record(
   // ---- Row 2: the referrer, alone. ---------------------------------------
   // Written only for human traffic: a crawler's referrer says nothing about
   // where readers come from, and including it would corrupt the one report
-  // this row exists to produce.
-  if (env.REFERRERS && botClass === "human") {
+  // this row exists to produce. And only when a page was served (2026-10-07):
+  // a referrer on a request that ended in a 404 led nobody to anything.
+  if (env.REFERRERS && botClass === "human" && (status === 200 || status === 304)) {
     const raw = request.headers.get("referer");
     if (raw) {
       let host = "";

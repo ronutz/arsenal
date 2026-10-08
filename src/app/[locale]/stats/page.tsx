@@ -11,6 +11,11 @@
 // The panels are client-fetched from /api/stats/* (same Worker, same origin,
 // no third party). Referrers are aggregated to the host by the endpoint, so
 // full referring URLs never reach this page - see worker/stats.ts.
+//
+// 2026-10-07: the panels count only pages served, and the requests for
+// addresses the site does not have get a panel of their own (StatsMissing,
+// inside StatsPanels). That panel formats ICU plurals on the client, so its
+// messages ride a MessageSlice of stats_page.missing, not the strings below.
 // ============================================================================
 
 import type { Metadata } from "next";
@@ -19,6 +24,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import StatsPanels from "@/components/StatsPanels";
+// The nested provider that carries stats_page.missing to the panel that needs it (A1 message slicing).
+import MessageSlice from "@/components/MessageSlice";
 import { LIVE_LOCALES } from "@/i18n/locales";
 import { COUNTRY_NAMES } from "@/content/vendors/origins";
 
@@ -138,12 +145,15 @@ export default async function StatsPage({
 
         <section className="section section-accent">
           <div className="container">
-            <StatsPanels
-              strings={strings}
-              localeNames={Object.fromEntries(LIVE_LOCALES.map((l) => [l.code, l.nativeName]))}
-              countryNames={COUNTRY_NAMES}
-              locale={locale}
-            />
+            {/* stats_page.missing reaches StatsMissing (rendered inside StatsPanels) through this slice. */}
+            <MessageSlice namespaces={["stats_page.missing"]}>
+              <StatsPanels
+                strings={strings}
+                localeNames={Object.fromEntries(LIVE_LOCALES.map((l) => [l.code, l.nativeName]))}
+                countryNames={COUNTRY_NAMES}
+                locale={locale}
+              />
+            </MessageSlice>
           </div>
         </section>
       </main>

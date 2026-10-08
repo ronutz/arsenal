@@ -36,6 +36,9 @@
  * "not configured" response rather than failing obscurely.
  */
 
+// The families of requests for pages that do not exist, and the legacy predicate for rows without a status (2026-10-07).
+import { LEGACY_NOT_A_PAGE, PROBE_FAMILIES, probeFamily, type ProbeFamily } from "./probes";
+
 export interface StatsEnv {
   /** Cloudflare account ID that owns the datasets. Secret. */
   CF_ACCOUNT_ID?: string;
@@ -125,6 +128,30 @@ const PRE_LABEL = "unverified:before-classifier";
 /** The people-only filter every human panel uses. */
 const HUMAN = `(blob4 = 'human' AND NOT ${PRE_CLASSIFIER})`;
 
+// ---------------------------------------------------------------------------
+// WHAT "SERVED" MEANS, AND FROM WHEN (2026-10-07)
+// PRIME: "They don't even belong in the category they're being shown in now as
+// they are NOT pages served to people - you seem to be counting 404". The
+// Worker counted a request before it looked the page up. From the deploy that
+// introduced this rule, blob6 holds the response's status (worker/analytics.ts)
+// and a page served is a 200, or a 304 (a cached copy revalidated). Rows
+// written before hold an empty blob6; they count as served unless their path
+// is one worker/probes.ts recognises as not a page, a read-time rule like the
+// classifier date above, because Analytics Engine rows cannot be edited. Every
+// panel below counts only what was served; the requests that were not are the
+// "missing" route's, grouped by what they were looking for.
+// ---------------------------------------------------------------------------
+/** A page served: 200 or 304, or an older row whose path is a page. */
+const SERVED = `(blob6 IN ('200', '304') OR (blob6 = '' AND NOT ${LEGACY_NOT_A_PAGE}))`;
+/** A request for a page that does not exist: a 404, or an older row whose path is not a page. */
+const MISSING = `(blob6 = '404' OR (blob6 = '' AND ${LEGACY_NOT_A_PAGE}))`;
+/** The people panels' filter: a person, served a page. */
+const PEOPLE = `(${HUMAN} AND ${SERVED})`;
+/** The "missing" route lists this many addresses per family, the most requested first (the counts cover all). */
+const PATHS_PER_FAMILY = 8;
+/** An address longer than this is cut, with an ellipsis, before it is listed. */
+const PATH_SHOWN_MAX = 96;
+
 // ----------------------------------------------------------------------------
 // REFERRER SOURCE FLOOR (defined 2026-09-09; the routes had used it since
 // 2026-09-06 without it ever being declared).
@@ -190,7 +217,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${HUMAN}
+             WHERE ${since} AND ${PEOPLE}
              GROUP BY path ORDER BY views DESC LIMIT 100`
           ),
         });
@@ -208,9 +235,9 @@ export async function handleStats(
         // shape as the timeline route, filtered to one path.
         const [rows, days] = await Promise.all([
           query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS}
-                      WHERE ${since} AND ${HUMAN} AND blob1 = '${safe}'`),
+                      WHERE ${since} AND ${PEOPLE} AND blob1 = '${safe}'`),
           query(env, `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
-                      FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN} AND blob1 = '${safe}'
+                      FROM ${PAGEVIEWS} WHERE ${since} AND ${PEOPLE} AND blob1 = '${safe}'
                       GROUP BY day ORDER BY day ASC LIMIT 400`),
         ]);
         const first = rows[0] as { views?: string } | undefined;
@@ -232,8 +259,8 @@ export async function handleStats(
         // 'human' to its own row so it is visible, not deleted.
         const [rows, polluted] = await Promise.all([
           query(env, `SELECT blob4 AS client, ${VIEWS} FROM ${PAGEVIEWS}
-                      WHERE ${since} GROUP BY client ORDER BY views DESC`),
-          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS} WHERE ${since} AND ${PRE_CLASSIFIER}`),
+                      WHERE ${since} AND ${SERVED} GROUP BY client ORDER BY views DESC`),
+          query(env, `SELECT ${VIEWS} FROM ${PAGEVIEWS} WHERE ${since} AND ${PRE_CLASSIFIER} AND ${SERVED}`),
         ]);
         const p = Number((polluted[0] as { views?: string } | undefined)?.views ?? 0);
         const out = (rows as Array<{ client: string; views: string }>).map((r) =>
@@ -308,7 +335,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN}
+             FROM ${PAGEVIEWS} WHERE ${since} AND ${PEOPLE}
              GROUP BY day ORDER BY day ASC LIMIT 400`
           ),
         });
@@ -322,7 +349,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob5 AS device, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${HUMAN} AND blob5 != ''
+             WHERE ${since} AND ${PEOPLE} AND blob5 != ''
              GROUP BY device ORDER BY views DESC LIMIT 5`
           ),
         });
@@ -340,10 +367,64 @@ export async function handleStats(
         const rows = (await query(
           env,
           `SELECT toStartOfInterval(timestamp, INTERVAL '1' DAY) AS day, blob4 AS client, ${VIEWS}
-           FROM ${PAGEVIEWS} WHERE ${since} AND (blob4 != 'human' OR ${PRE_CLASSIFIER})
+           FROM ${PAGEVIEWS} WHERE ${since} AND (blob4 != 'human' OR ${PRE_CLASSIFIER}) AND ${SERVED}
            GROUP BY day, client ORDER BY day ASC LIMIT 4000`
         )) as Array<{ day: string; client: string; views: string }>;
         return json({ rows: rows.map((r) => (r.client === "human" ? { ...r, client: PRE_LABEL } : r)) });
+      }
+
+      // ---- Requests for pages that do not exist (2026-10-07) --------------
+      // Every client, people and automation alike: a probe is a probe, whatever
+      // the classifier made of it. Grouped by what each was looking for
+      // (worker/probes.ts), the most-requested family first and the honest
+      // misses last; within a family, the most-requested path first. Paths are
+      // as recorded, with the language the Worker's redirect adds to an address
+      // that has none (/wp-json/ arrives as /en/wp-json/); the page shows them
+      // as text, never as links.
+      case "missing": {
+        const rows = (await query(
+          env,
+          `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
+           WHERE ${since} AND ${MISSING}
+           GROUP BY path ORDER BY views DESC LIMIT 2000`
+        )) as Array<{ path?: string; views?: string }>;
+        // One bucket per family, in the order the rows arrive (already most-requested first).
+        const groups = new Map<ProbeFamily, { views: number; paths: Array<{ path: string; views: number }> }>();
+        for (const r of rows) {
+          const path = String(r.path ?? "");
+          const views = Number(r.views ?? 0);
+          const id = probeFamily(path);
+          const g = groups.get(id) ?? { views: 0, paths: [] };
+          g.views += views;
+          g.paths.push({ path, views });
+          groups.set(id, g);
+        }
+        // Families by their total, the misses last whatever their size; the family order is the tie-break.
+        const rank = (id: ProbeFamily) => (id === "misses" ? PROBE_FAMILIES.length : PROBE_FAMILIES.findIndex((f) => f.id === id));
+        // A list of addresses anyone can add to by asking for one is a public noticeboard, so the response
+        // carries only the most-requested few of each family (a one-off request cannot put text on the
+        // page), each cut to a readable length; the counts still cover every address in the family.
+        const families = [...groups.entries()]
+          .map(([id, g]) => ({
+            id,
+            views: g.views,
+            // How many distinct addresses the family holds, all of them counted.
+            addresses: g.paths.length,
+            // The most-requested few, already in order, each cut at PATH_SHOWN_MAX characters.
+            paths: g.paths.slice(0, PATHS_PER_FAMILY).map((p) => ({
+              path: p.path.length > PATH_SHOWN_MAX ? `${p.path.slice(0, PATH_SHOWN_MAX - 1)}…` : p.path,
+              views: p.views,
+            })),
+          }))
+          .sort((a, b) => (a.id === "misses" ? 1 : 0) - (b.id === "misses" ? 1 : 0) || b.views - a.views || rank(a.id) - rank(b.id));
+        return json({
+          window: url.searchParams.get("window") ?? "30d",
+          sampled: true,
+          // Every request and every distinct address in the window, not only the ones listed.
+          total: families.reduce((n, f) => n + f.views, 0),
+          addresses: rows.length,
+          families,
+        });
       }
 
       // ---- Every page people read in the window --------------------------
@@ -356,7 +437,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${HUMAN}
+             WHERE ${since} AND ${PEOPLE}
              GROUP BY path ORDER BY views DESC LIMIT 6000`
           ),
         });
@@ -370,7 +451,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT toStartOfInterval(timestamp, INTERVAL '1' HOUR) AS hour, ${VIEWS}
-             FROM ${PAGEVIEWS} WHERE ${since} AND ${HUMAN}
+             FROM ${PAGEVIEWS} WHERE ${since} AND ${PEOPLE}
              GROUP BY hour ORDER BY hour ASC LIMIT 2500`
           ),
         });
@@ -381,7 +462,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob3 AS country, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${HUMAN}
+             WHERE ${since} AND ${PEOPLE}
              GROUP BY country ORDER BY views DESC LIMIT 100`
           ),
         });
@@ -391,7 +472,7 @@ export async function handleStats(
           rows: await query(
             env,
             `SELECT blob2 AS locale, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${HUMAN}
+             WHERE ${since} AND ${PEOPLE}
              GROUP BY locale ORDER BY views DESC`
           ),
         });
@@ -400,7 +481,7 @@ export async function handleStats(
         return json(
           {
             error: "not_found",
-            routes: ["pages", "item", "clients", "referrers", "sources", "timeline", "devices", "crawlers", "paths", "hourly", "countries", "locales"],
+            routes: ["pages", "item", "clients", "referrers", "sources", "timeline", "devices", "crawlers", "paths", "missing", "hourly", "countries", "locales"],
           },
           404
         );

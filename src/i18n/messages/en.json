@@ -11953,7 +11953,7 @@
     "controllerTitle": "Who is responsible",
     "controllerBody": "This is the personal website of Rodolfo Nützmann (ronutz.com). For any privacy question, or to exercise any of the rights described below, write to {email}. Enquiries are handled directly by Rodolfo Nützmann, as the data controller.",
     "noTrackTitle": "No cookies, no third-party analytics, and what is counted instead",
-    "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records which page was served, the language, the visiting country as your network reports it, and whether the request came from a person or from a known crawler. The second records only a referring address, when your browser sends one, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent is never written; it is read only to decide whether the request came from a crawler, and the label kept is a category such as search engine or monitoring tool. No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
+    "noTrackBody": "This site sets no cookies of any kind. It uses no third-party analytics service (such as Google Analytics or Plausible), no advertising network, no social-media tracking pixels, and no device fingerprinting. No script on the page reports anything about you.\n\nWhat the site does keep is a count, made at its own server as it answers each request. Two separate records are written, and they are deliberately kept apart so that neither can be matched to the other. The first records the address asked for and whether a page was found there, the language, the visiting country as your network reports it, whether the request came from a person or from a known crawler, and, for a person, the coarse class of device (phone or tablet, desktop or laptop, or other). The second records only a referring address, when your browser sends one and a page was served, and carries nothing else at all - no page, no country, no time correlation with the first.\n\nYour IP address is never written. Your browser's user agent and the network your connection comes from are never written either; they are read only to decide whether the request came from a person or a crawler (a browser on a cloud or hosting provider's network counts as a machine) and, for a person, which class of device sent it, and what is kept is a label such as \"search engine\", \"monitoring tool\" or \"phone or tablet\". No identifier of any kind is used, so there is no visitor to profile, no session to reconstruct, and nothing to share.",
     "browserTitle": "What is stored in your browser",
     "browserBody": "A few small things, all in your browser's local storage, none of them ever sent to this site or to anyone else, each clearable through your browser at any time: your visual theme (ronutz-theme); the language you last used, so the bare domain can send you back to it (ronutz-lang); whether glossary hints are shown (ronutz-glossary-hints); any keyboard shortcuts you rebound (ronutz-shortcuts); whether the search box starts empty each time you open it (ronutz-search-fresh); the cards-or-list density you chose on an index page (ronutz:view:*); the Guided or Directory reading you chose on the Learn and Tools pages (ronutz:hub:*); the last six pages you opened, so the home page can offer them again under \"Continue where you left off\", with a button that forgets them (ronutz:recent:v1); and, on two dev-room pages only, a motion switch and a practice score (ronutz-mb-motion, ronutz:subnet-drill:stats). One session-only flag (ronutz.privPreview) exists for the author's private preview of unpublished pages and is never set for a reader. Nothing else about you is stored on your device.",
     "hostingTitle": "Hosting and server logs",
@@ -27439,7 +27439,7 @@
     "eyebrow": "Statistics",
     "title": "What was read, not who read it",
     "metaDescription": "The aggregate request counts ronutz.com keeps at its own server: pages served, humans versus crawlers by family, referring hosts, countries and languages. No cookies, no third-party analytics, no visitor identifiers.",
-    "whatIsCounted": "Counted passively at the edge; nothing that could point to a reader is stored or correlated. A request counts as a person only when it came from a browser on a network that is not a cloud or hosting provider - a check that began on 7 September 2026, so people are counted from that day and earlier requests are shown as unverified. What is counted and what is never written is set out in full on the",
+    "whatIsCounted": "Counted passively at the edge; nothing that could point to a reader is stored or correlated. A request counts as a person only when it came from a browser on a network that is not a cloud or hosting provider - a check that began on 7 September 2026, so people are counted from that day and earlier requests are shown as unverified. A request counts as a page read only when a page was served; requests for addresses that do not exist are listed on their own, at the end. What is counted and what is never written is set out in full on the",
     "privacyLink": "Privacy page",
     "windowLabel": "Time window",
     "window_24h": "24 hours",
@@ -27471,7 +27471,7 @@
     "timelineNote": "Counts requests from people, one per page served, grouped by UTC day. People means every request not matched as automation and not arriving from a datacenter network. Counting began on 5 September 2026, so the series starts there.",
     "col_day": "Day",
     "pagesNote": "Counts requests from people, one per page served, for every page read in the window - the same population as the day-by-day series, so the totals agree. Grouped by the language of the page; the fifteen most-read per language are listed.",
-    "clientsNote": "Every request, sorted into people and families of automation: search crawlers, AI crawlers, monitors, link previewers, tools, and clients that could not be verified. A browser arriving from a cloud or hosting provider's network counts as unverified, not as a person; so does every request from before that check existed, which is the 'before-classifier' line.",
+    "clientsNote": "Every request for a page that exists, sorted into people and families of automation: search crawlers, AI crawlers, monitors, link previewers, tools, and clients that could not be verified. A browser arriving from a cloud or hosting provider's network counts as unverified, not as a person; so does every request from before that check existed, which is the 'before-classifier' line. Requests for addresses that do not exist are at the end of the page.",
     "countriesNote": "Counts requests from people by the country of the connection, as Cloudflare reports it. Nothing finer than the country is recorded.",
     "localesNote": "Counts requests from people by the language version of the page served.",
     "panelDevices": "Phones and desktops",
@@ -27516,7 +27516,74 @@
     "wd_4": "Thursday",
     "wd_5": "Friday",
     "wd_6": "Saturday",
-    "pagesTotal": "'{requests}' requests across '{pages}' pages in the window"
+    "pagesTotal": "'{requests}' requests across '{pages}' pages in the window",
+    "missing": {
+      "title": "Requests for pages that do not exist",
+      "note": "Every request for an address that does not exist, from people and automation alike, grouped by what it was looking for. Most come from scanners that try the known flaws of WordPress and other software on every site they reach; each gets the not-found page (a 404) and nothing else, and none is counted in the panels above. Each group lists its eight most requested addresses as recorded, with the language added to an address that has none (/wp-json/ arrives as /en/wp-json/), as text and never as links.",
+      "count": "{requests, plural, one {# request} other {# requests}} for {addresses, plural, one {# address} other {# addresses}}",
+      "legacy": "Requests counted before each answer's status (200, 404) was recorded are recognised by their address instead, so a few may still sit in the panels above until they leave the window.",
+      "sourcesRead": "Sources, read {date}:",
+      "error": "This panel could not be loaded.",
+      "colAddress": "Address",
+      "families": {
+        "wp-batch": {
+          "title": "WordPress: the wp2shell chain",
+          "what": "WordPress's REST API batch endpoint, which runs several API calls in one request, is the way into \"wp2shell\": CVE-2026-63030, a flaw in the batch endpoint, chained with CVE-2026-60137, an SQL injection, lets anyone run code on WordPress 6.9.0 to 6.9.4 and 7.0.0 to 7.0.1. Fixed in 6.9.5 and 7.0.2; disclosed on 17 July 2026 and in CISA's catalogue of exploited vulnerabilities since 21 July. The prefixes look for WordPress installed in a subfolder."
+        },
+        "wp-plugin": {
+          "title": "WordPress plugin: Gravity SMTP",
+          "what": "CVE-2026-4020: the Gravity SMTP plugin, up to version 2.1.4, answers this address without checking who is asking, and the answer is a system report that can include the API keys and tokens set in the plugin. Fixed in 2.1.5."
+        },
+        "wp-rest": {
+          "title": "WordPress: the REST API's index and its pages",
+          "what": "A WordPress site answers /wp-json/ with its API's routes and /wp-json/wp/v2/pages with its published pages: asking confirms WordPress and lists its content."
+        },
+        "wp-core": {
+          "title": "WordPress itself",
+          "what": "WordPress's own folders (wp-admin, wp-includes with the libraries it bundles, wp-content with uploads, plugins and themes), its usual install folders and its feed address. Asking confirms WordPress and looks for a folder that lists its files: an open uploads folder hands over everything ever uploaded."
+        },
+        "secrets": {
+          "title": "Secrets and source code in a published folder",
+          "what": "Files that belong in a developer's folder and reach the web only when a server publishes the wrong one: a .git folder (the site's source and history, with any password ever committed), .aws/credentials (AWS access keys), the Antigravity CLI's OAuth token, shell and interpreter histories (every command typed, passwords on the command line included) and macOS's .DS_Store."
+        },
+        "frameworks": {
+          "title": "Framework endpoints that reveal configuration",
+          "what": "Spring Boot Actuator's env and configprops (the application's environment and settings), the Yii 2 debugger (request data, headers, sessions and environment variables, meant for localhost only), Magento's version page and the Kubernetes API server's /healthz."
+        },
+        "platforms": {
+          "title": "Other platforms' folders",
+          "what": "Folder names that give away other software: Drupal, Joomla, OpenCart, Magento, cPanel's sign-in and more. Naming the platform is the first step before trying its known flaws."
+        },
+        "backdoors": {
+          "title": "Backdoors someone else may have left",
+          "what": "By their names, hidden ways back in that an intruder leaves behind: a web shell (a page that runs commands on the server) and a remote-code-execution component. The scanner checks whether another attacker got in first. No published advisory names these exact addresses; this reading is the site's own."
+        },
+        "logins": {
+          "title": "Admin and sign-in pages",
+          "what": "Any admin or sign-in page to try passwords on."
+        },
+        "exposure": {
+          "title": "Folders that should not be public",
+          "what": "Common folder names and forgotten copies of a site (staging, new), asked for in the hope that the server lists their files. /.well-known/ is the standard home of a site's metadata (RFC 8615); asking for the folder itself looks for a listing."
+        },
+        "ipfs": {
+          "title": "IPFS: looking for an open gateway",
+          "what": "The address form of an IPFS gateway, /ipfs/ followed by a content identifier. Asked of an ordinary website, it finds servers that fetch and serve any IPFS content on request, which IPFS itself calls prone to abuse: the content then appears under the gateway's name."
+        },
+        "ai": {
+          "title": "AI services",
+          "what": "Agents looking for an MCP server, through which an AI assistant uses a site's tools (the specification's example endpoint is /mcp; no standard discovery address exists yet), and requests for /v1/models, the call that lists the models of a server speaking OpenAI's API."
+        },
+        "crawlers": {
+          "title": "Careers, jobs and shop pages (not attacks)",
+          "what": "Careers and jobs pages, the usual targets of job-board crawlers, and shop and trade sign-up pages, which bots look for to register accounts or post spam. This reading of the names is the site's own."
+        },
+        "misses": {
+          "title": "Honest misses",
+          "what": "Addresses that moved (the old /contribute/tools), pages that never existed, and links mistyped somewhere else on the web."
+        }
+      }
+    }
   },
   "learning_page": {
     "eyebrow": "Industry",

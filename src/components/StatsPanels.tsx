@@ -19,9 +19,17 @@
  *
  * Full referring URLs are aggregated to the host by the endpoint; this
  * component has nothing finer to render even if it asked.
+ *
+ * PAGES SERVED, AND THE REST (2026-10-07, PRIME: "you seem to be counting
+ * 404"). Every panel here now counts only pages that were served (the Worker
+ * records each request's status; worker/stats.ts filters on it). The requests
+ * for addresses the site does not have are StatsMissing's, rendered after the
+ * grid with its own fetch, for the same window.
  */
 
 import { useEffect, useMemo, useState } from "react";
+// The requests for pages that do not exist, grouped and explained (2026-10-07).
+import StatsMissing from "@/components/StatsMissing";
 
 type Row = Record<string, string | number>;
 type PanelKind = "ranked" | "timeline" | "countries" | "locales" | "referrers" | "pages" | "devices"
@@ -338,6 +346,15 @@ export default function StatsPanels({
           })}
         </div>
       )}
+
+      {/* The requests for addresses the site does not have: mounted from the start so its fetch runs alongside
+          the others, shown only once the grid above is ready (it never appears first and then jumps). */}
+      <StatsMissing
+        win={win}
+        ready={state === "ok"}
+        locale={locale}
+        labels={{ requests: strings.col_views, noData: strings.noData }}
+      />
 
       <p className="stats-sampled">{strings.sampledNote}</p>
     </div>

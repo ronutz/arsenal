@@ -525,17 +525,23 @@ export default {
       return Response.redirect(new URL(dest, url.origin).toString(), 301);
     }
 
-    // Count the page view. Fire-and-forget: see worker/analytics.ts for why
-    // this is two disjoint rows rather than one wide one, and for the list of
-    // things that are never written. Wrapped so a collection fault can never
-    // affect the response.
+    // The page itself, looked up FIRST (2026-10-07): the count needs to know
+    // whether a page was served. Until then the request was counted before the
+    // lookup, so a scanner's /en/wp-json/batch/v1/ was counted as a page read
+    // and only then answered 404 (PRIME: "you seem to be counting 404").
+    const page = await env.ASSETS.fetch(request);
+
+    // Count the request with the status it got. Fire-and-forget: see
+    // worker/analytics.ts for why this is two disjoint rows rather than one
+    // wide one, and for the list of things that are never written. Wrapped so
+    // a collection fault can never affect the response.
     try {
-      record(request, url, url.pathname.split("/")[1] ?? "", env);
+      record(request, url, url.pathname.split("/")[1] ?? "", env, page.status);
     } catch {
       /* analytics must never break page delivery */
     }
 
-    // The page itself, with the random quote header of the day's request on it.
-    return withQuoteHeader(await env.ASSETS.fetch(request));
+    // The page, with the random quote header of the day's request on it.
+    return withQuoteHeader(page);
   },
 };

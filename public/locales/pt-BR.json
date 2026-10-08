@@ -11953,7 +11953,7 @@
     "controllerTitle": "Quem é o responsável",
     "controllerBody": "Este é o site pessoal de Rodolfo Nützmann (ronutz.com). Para qualquer questão de privacidade, ou para exercer qualquer dos direitos descritos abaixo, escreva para {email}. As solicitações são tratadas diretamente por Rodolfo Nützmann, na condição de controlador dos dados.",
     "noTrackTitle": "Sem cookies, sem analytics de terceiros, e o que é contado no lugar",
-    "noTrackBody": "Este site não usa cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), nem rede de publicidade, nem pixel de rastreamento de rede social, nem impressão digital de dispositivo. Nenhum script na página reporta nada sobre você.\n\nO que o site mantém é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. Dois registros separados são escritos, e eles são mantidos apartados de propósito, para que nenhum possa ser casado com o outro. O primeiro registra qual página foi servida, o idioma, o país de visita conforme a sua rede o informa, e se a requisição veio de uma pessoa ou de um rastreador conhecido. O segundo registra apenas um endereço de origem, quando o seu navegador envia um, e não carrega mais nada - nem página, nem país, nem correlação de tempo com o primeiro.\n\nSeu endereço IP nunca é gravado. O agente de usuário do seu navegador nunca é gravado; ele é lido apenas para decidir se a requisição veio de um rastreador, e o que fica guardado é uma categoria, como buscador ou ferramenta de monitoração. Nenhum identificador é usado, então não há visitante a perfilar, não há sessão a reconstruir, e não há nada a compartilhar.",
+    "noTrackBody": "Este site não usa cookies de nenhum tipo. Não usa serviço de analytics de terceiros (como Google Analytics ou Plausible), nem rede de publicidade, nem pixel de rastreamento de rede social, nem impressão digital de dispositivo. Nenhum script na página reporta nada sobre você.\n\nO que o site mantém é uma contagem, feita no próprio servidor enquanto ele responde a cada requisição. Dois registros separados são escritos, e eles são mantidos apartados de propósito, para que nenhum possa ser casado com o outro. O primeiro registra o endereço pedido e se havia uma página nele, o idioma, o país de visita conforme a sua rede o informa, se a requisição veio de uma pessoa ou de um rastreador conhecido e, no caso de uma pessoa, a classe grosseira do dispositivo (celular ou tablet, computador ou outro). O segundo registra apenas um endereço de origem, quando o seu navegador envia um e uma página foi servida, e não carrega mais nada - nem página, nem país, nem correlação de tempo com o primeiro.\n\nSeu endereço IP nunca é gravado. O agente de usuário do seu navegador e a rede de onde vem a sua conexão também nunca são gravados; eles são lidos apenas para decidir se a requisição veio de uma pessoa ou de um rastreador (um navegador na rede de um provedor de nuvem ou hospedagem conta como máquina) e, no caso de uma pessoa, que classe de dispositivo a enviou, e o que fica guardado é um rótulo, como \"buscador\", \"ferramenta de monitoração\" ou \"celular ou tablet\". Nenhum identificador é usado, então não há visitante a perfilar, não há sessão a reconstruir, e não há nada a compartilhar.",
     "browserTitle": "O que é armazenado no seu navegador",
     "browserBody": "Algumas coisas pequenas, todas no armazenamento local (local storage) do seu navegador, nenhuma delas jamais enviada a este site nem a ninguém, cada uma apagável pelo seu navegador a qualquer momento: o tema visual (ronutz-theme); o último idioma que você usou, para que o domínio puro possa levá-lo de volta a ele (ronutz-lang); se as dicas do glossário aparecem (ronutz-glossary-hints); os atalhos de teclado que você remapeou (ronutz-shortcuts); se a caixa de busca abre vazia a cada vez (ronutz-search-fresh); a densidade em cartões ou lista que você escolheu em uma página de índice (ronutz:view:*); a leitura Guiada ou Diretório que você escolheu nas páginas Aprender e Ferramentas (ronutz:hub:*); as últimas seis páginas que você abriu, para que a página inicial possa oferecê-las de novo em \"Continue de onde parou\", com um botão que as esquece (ronutz:recent:v1); e, em duas páginas da sala dev apenas, uma chave de movimento e uma pontuação de prática (ronutz-mb-motion, ronutz:subnet-drill:stats). Um único sinalizador de sessão (ronutz.privPreview) existe para a pré-visualização privada do autor de páginas não publicadas e nunca é definido para um leitor. Nada mais sobre você é armazenado no seu dispositivo.",
     "hostingTitle": "Hospedagem e registros de servidor",
@@ -27388,7 +27388,7 @@
     "eyebrow": "Estatísticas",
     "title": "O que foi lido, não quem leu",
     "metaDescription": "As contagens agregadas de requisição que o ronutz.com mantém no próprio servidor: páginas servidas, pessoas e rastreadores por família, sites de origem, países e idiomas. Sem cookies, sem analytics de terceiros, sem identificador de visitante.",
-    "whatIsCounted": "Contado passivamente na borda; nada que possa apontar para um leitor é gravado ou correlacionado. Uma requisição conta como pessoa só quando veio de um navegador numa rede que não é de provedor de nuvem ou hospedagem - uma verificação que começou em 7 de setembro de 2026, então pessoas são contadas a partir desse dia e requisições anteriores aparecem como não verificadas. O que é contado e o que nunca é gravado está descrito por inteiro na",
+    "whatIsCounted": "Contado passivamente na borda; nada que possa apontar para um leitor é gravado ou correlacionado. Uma requisição conta como pessoa só quando veio de um navegador numa rede que não é de provedor de nuvem ou hospedagem - uma verificação que começou em 7 de setembro de 2026, então pessoas são contadas a partir desse dia e requisições anteriores aparecem como não verificadas. Uma requisição só conta como página lida quando uma página foi servida; as requisições de endereços que não existem aparecem à parte, no fim. O que é contado e o que nunca é gravado está descrito por inteiro na",
     "privacyLink": "página de Privacidade",
     "windowLabel": "Janela de tempo",
     "window_24h": "24 horas",
@@ -27420,7 +27420,7 @@
     "timelineNote": "Conta requisições de pessoas, uma por página servida, agrupadas por dia UTC. Pessoas significa toda requisição não identificada como automação e não vinda de uma rede de datacenter. A contagem começou em 5 de setembro de 2026, então a série começa ali.",
     "col_day": "Dia",
     "pagesNote": "Conta requisições de pessoas, uma por página servida, para toda página lida na janela - a mesma população da série diária, então os totais batem. Agrupado pelo idioma da página; as quinze mais lidas por idioma são listadas.",
-    "clientsNote": "Toda requisição, separada em pessoas e famílias de automação: rastreadores de busca, rastreadores de IA, monitores, pré-visualizadores de link, ferramentas, e clientes que não puderam ser verificados. Um navegador que chega da rede de um provedor de nuvem ou hospedagem conta como não verificado, não como pessoa; o mesmo vale para toda requisição anterior a essa verificação, que é a linha 'before-classifier'.",
+    "clientsNote": "Toda requisição de uma página que existe, separada em pessoas e famílias de automação: rastreadores de busca, rastreadores de IA, monitores, pré-visualizadores de link, ferramentas, e clientes que não puderam ser verificados. Um navegador que chega da rede de um provedor de nuvem ou hospedagem conta como não verificado, não como pessoa; o mesmo vale para toda requisição anterior a essa verificação, que é a linha 'before-classifier'. As requisições de endereços que não existem ficam no fim da página.",
     "countriesNote": "Conta requisições de pessoas pelo país da conexão, conforme a Cloudflare o informa. Nada mais fino que o país é registrado.",
     "localesNote": "Conta requisições de pessoas pela versão de idioma da página servida.",
     "panelDevices": "Celulares e computadores",
@@ -27465,7 +27465,74 @@
     "wd_4": "Quinta",
     "wd_5": "Sexta",
     "wd_6": "Sábado",
-    "pagesTotal": "'{requests}' requisições em '{pages}' páginas na janela"
+    "pagesTotal": "'{requests}' requisições em '{pages}' páginas na janela",
+    "missing": {
+      "title": "Requisições de páginas que não existem",
+      "note": "Toda requisição de um endereço que não existe, de pessoas e de automação, agrupada pelo que procurava. A maioria vem de scanners, programas que testam as falhas conhecidas do WordPress e de outros softwares em todo site que encontram; cada uma recebe a resposta de página não encontrada (um 404) e nada mais, e nenhuma entra nos painéis acima. Cada grupo lista os oito endereços mais pedidos como foram registrados, com o idioma acrescentado a um endereço sem idioma (/wp-json/ chega como /en/wp-json/), como texto e nunca como link.",
+      "count": "{requests, plural, one {# requisição} other {# requisições}} para {addresses, plural, one {# endereço} other {# endereços}}",
+      "legacy": "As requisições contadas antes de o status de cada resposta (200, 404) passar a ser registrado são reconhecidas pelo endereço, então algumas ainda podem aparecer nos painéis acima até saírem da janela.",
+      "sourcesRead": "Fontes, lidas em {date}:",
+      "error": "Não foi possível carregar este painel.",
+      "colAddress": "Endereço",
+      "families": {
+        "wp-batch": {
+          "title": "WordPress: a cadeia wp2shell",
+          "what": "O endpoint de batch da API REST do WordPress, que executa várias chamadas da API em um só pedido, é a porta de entrada do \"wp2shell\": a CVE-2026-63030, uma falha nesse endpoint, encadeada com a CVE-2026-60137, uma SQL injection (comandos injetados no banco de dados), permite que qualquer pessoa execute código no WordPress 6.9.0 a 6.9.4 e 7.0.0 a 7.0.1. A correção saiu nas versões 6.9.5 e 7.0.2; a falha foi divulgada em 17 de julho de 2026 e está no catálogo de vulnerabilidades exploradas da CISA desde 21 de julho. Os prefixos procuram o WordPress instalado em uma subpasta."
+        },
+        "wp-plugin": {
+          "title": "Plugin do WordPress: Gravity SMTP",
+          "what": "CVE-2026-4020: o plugin Gravity SMTP, até a versão 2.1.4, responde a este endereço sem verificar quem pergunta, e a resposta é um relatório do sistema que pode incluir as chaves de API e os tokens configurados no plugin. A correção saiu na versão 2.1.5."
+        },
+        "wp-rest": {
+          "title": "WordPress: o índice da API REST e as páginas",
+          "what": "Um site WordPress responde a /wp-json/ com as rotas da sua API e a /wp-json/wp/v2/pages com as páginas publicadas: perguntar confirma o WordPress e lista o conteúdo."
+        },
+        "wp-core": {
+          "title": "O próprio WordPress",
+          "what": "As pastas do próprio WordPress (wp-admin, wp-includes com as bibliotecas que ele traz, wp-content com uploads, plugins e temas), as pastas de instalação de costume e o endereço do feed. Perguntar confirma o WordPress e procura uma pasta que liste os arquivos: uma pasta de uploads aberta entrega tudo o que já foi enviado."
+        },
+        "secrets": {
+          "title": "Segredos e código-fonte em uma pasta publicada",
+          "what": "Arquivos que pertencem à pasta de um desenvolvedor e só chegam à web quando um servidor publica a pasta errada: uma pasta .git (o código e o histórico do site, com qualquer senha que já tenha sido gravada nele), .aws/credentials (chaves de acesso da AWS), o token OAuth da Antigravity CLI, históricos de shell e de interpretadores (cada comando digitado, inclusive senhas passadas na linha de comando) e o .DS_Store do macOS."
+        },
+        "frameworks": {
+          "title": "Endpoints de frameworks que revelam configuração",
+          "what": "O env e o configprops do Spring Boot Actuator (o ambiente e as configurações da aplicação), o debugger do Yii 2 (dados de requisição, headers, sessões e variáveis de ambiente, feito para uso só em localhost), a página de versão do Magento e o /healthz do API server do Kubernetes."
+        },
+        "platforms": {
+          "title": "Pastas de outras plataformas",
+          "what": "Nomes de pastas que entregam outros softwares: Drupal, Joomla, OpenCart, Magento, o login do cPanel e outros. Identificar a plataforma é o primeiro passo antes de testar as falhas conhecidas dela."
+        },
+        "backdoors": {
+          "title": "Backdoors que outra pessoa pode ter deixado",
+          "what": "Pelos nomes, acessos escondidos que um invasor deixa para voltar: um web shell (uma página que executa comandos no servidor) e um componente de execução remota de código. O scanner verifica se outro atacante já entrou. Nenhum boletim publicado cita exatamente estes endereços; esta leitura é do próprio site."
+        },
+        "logins": {
+          "title": "Páginas de administração e de login",
+          "what": "Qualquer página de administração ou de login para testar senhas."
+        },
+        "exposure": {
+          "title": "Pastas que não deveriam ser públicas",
+          "what": "Nomes comuns de pastas e cópias esquecidas de um site (staging, new), pedidos na esperança de que o servidor liste os arquivos. O /.well-known/ é o lugar padrão dos metadados de um site (RFC 8615); pedir a própria pasta procura uma listagem."
+        },
+        "ipfs": {
+          "title": "IPFS: em busca de um gateway aberto",
+          "what": "O formato de endereço de um gateway IPFS, /ipfs/ seguido de um identificador de conteúdo. Perguntado a um site comum, encontra servidores que buscam e servem qualquer conteúdo do IPFS sob demanda, algo que o próprio IPFS diz estar sujeito a abuso: o conteúdo passa a aparecer com o nome do gateway."
+        },
+        "ai": {
+          "title": "Serviços de IA",
+          "what": "Agentes que procuram um servidor MCP, pelo qual um assistente de IA usa as ferramentas de um site (o exemplo de endpoint da especificação é /mcp; ainda não existe um endereço padrão de descoberta), e pedidos de /v1/models, a chamada que lista os modelos de um servidor que fala a API da OpenAI."
+        },
+        "crawlers": {
+          "title": "Páginas de carreiras, vagas e loja (não são ataques)",
+          "what": "Páginas de carreiras e de vagas, alvo comum de rastreadores de sites de emprego, e páginas de loja e de cadastro de revenda, que bots procuram para criar contas ou postar spam. Esta leitura dos nomes é do próprio site."
+        },
+        "misses": {
+          "title": "Erros honestos",
+          "what": "Endereços que mudaram (o antigo /contribute/tools), páginas que nunca existiram e links digitados errado em algum outro lugar da web."
+        }
+      }
+    }
   },
   "learning_page": {
     "eyebrow": "Indústria",

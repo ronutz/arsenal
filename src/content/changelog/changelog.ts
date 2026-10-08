@@ -52,6 +52,26 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // PRIME 2026-10-07 21:06: "Can you categorize them, show the url and besides or below explain what attack that is a scan for?"
+    date: "2026-10-07",
+    time: "21:48",
+    kind: "feature",
+    title: "Requests for pages that do not exist, grouped and explained",
+    body:
+      "A new panel closes the statistics page with the requests for addresses that do not exist, grouped by what each was looking for: the WordPress batch endpoint behind the wp2shell chain, the Gravity SMTP plugin's unprotected system report, .git folders and cloud keys published by mistake, framework pages that reveal configuration, open IPFS gateways, AI services and more. Each group says what the scan is for, with its sources, and lists its eight most requested addresses as text, never as links.",
+    links: [{ label: "Statistics", href: "/stats" }],
+  },
+  {
+    // PRIME 2026-10-07 21:06: "They don't even belong in the category they're being shown in now as they are NOT pages served to people - you seem to be counting 404"
+    date: "2026-10-07",
+    time: "21:48",
+    kind: "infra",
+    title: "The statistics count only pages that were served",
+    body:
+      "Requests for addresses that do not exist were being counted as pages read: the counter ran before the page was looked up, so a scanner asking for a WordPress address was counted first and answered with a 404 after. The counter now runs after the lookup and records whether a page was found; every panel counts only pages served, and for the days before, requests are recognised by their address. A redirect that only adds the closing slash to an address is no longer counted as a read either: the page it leads to is. The privacy page now lists the status among what the count records, and says what your browser's user agent and network are read for.",
+    links: [{ label: "Statistics", href: "/stats" }, { label: "Privacy", href: "/privacy" }],
+  },
+  {
     // The About Run Review (PRIME 2026-10-07 19:40): his thirteen answers on the review page, applied.
     date: "2026-10-07",
     time: "20:00",

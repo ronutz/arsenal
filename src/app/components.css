@@ -17277,6 +17277,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
   word-break: break-all; padding-right: 1rem;
 }
 .stats-num { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-primary); }
+/* The numeric column's header over its numbers (2026-10-07): every th.stats-num asked for the right edge and the
+ * header rule above, more specific, kept it on the left, away from the figures it heads. */
+.stats-table th.stats-num { text-align: right; }
 .stats-sampled {
   font-size: 0.82rem; color: var(--text-tertiary); margin-top: 1.5rem;
   max-width: 62ch; line-height: 1.6;
@@ -17420,6 +17423,36 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .item-views-spark polyline { fill: none; stroke: var(--color-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
 .stats-panel-total { margin: -0.4rem 0 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+
+/* Stats, the "requests for pages that do not exist" panel (2026-10-07; StatsMissing.tsx). One group per row: its
+ * explanation beside its addresses on a wide screen, above them on a narrow one. The addresses are monospaced text
+ * (never links); the small print uses the secondary token, because the tertiary one is for large text only. */
+.stats-missing { margin-top: 1.25rem; }
+.stats-probes { display: grid; border-bottom: 1px solid var(--border-subtle); }
+.stats-probe {
+  display: grid; gap: 0.75rem 1.75rem;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  padding: 1.1rem 0; border-top: 1px solid var(--border-subtle);
+}
+.stats-probe-text { min-width: 0; }
+.stats-probe-title { font-size: 0.95rem; margin: 0 0 0.25rem; color: var(--text-primary); text-wrap: balance; }
+.stats-probe-count {
+  margin: 0 0 0.6rem; font-family: var(--font-mono); font-size: 0.78rem;
+  color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+.stats-probe-what { font-size: 0.86rem; line-height: 1.55; color: var(--text-secondary); margin: 0 0 0.6rem; max-width: 62ch; }
+.stats-probe-sources { font-size: 0.78rem; line-height: 1.5; color: var(--text-secondary); margin: 0; }
+.stats-probe-sources a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; }
+.stats-probe-sources a:hover, .stats-probe-sources a:focus-visible { color: var(--text-primary); }
+.stats-probe-table { align-self: start; }
+.stats-probe-path { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); background: none; padding: 0; }
+.stats-missing-legacy {
+  font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); max-width: 72ch;
+  margin: 0; padding-top: 0.9rem;
+}
+@media (max-width: 760px) {
+  .stats-probe { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* --- /stories: the stitcher list ------------------------------------------
    A reading list, not a card grid: these are long-form articles and the
