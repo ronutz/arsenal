@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Le formateur",
-    "role": "Formateur technique principal",
+    "role": "Senior Technical Instructor et conseiller chez Red Education",
     "lede": "Formations réseau et sécurité dispensées par un praticien qui a passé sa carrière du côté de la mise en œuvre, pas seulement des diapositives. Basé à São Paulo, enseignant dans le monde entier, en portugais et en anglais.",
     "now": {
       "title": "Ce que je fais aujourd'hui",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – aujourd'hui",
-      "title": "Le formateur",
-      "subtitle": "Formation technique à temps plein, dispensée dans le monde entier, s'étendant plateforme par plateforme.",
+      "title": "Le formateur & conseiller",
+      "subtitle": "Une formation officielle à temps plein, dispensée dans le monde entier, et à côté, le conseil sur les décisions qui ont des conséquences.",
       "intro": "En 2020, un fil présent toute la carrière est devenu l'étoffe entière. Après deux décennies où l'enseignement accompagnait chaque rôle, la formation est devenue le travail lui-même : à temps plein, officielle, certifiée, dispensée à des professionnels et des équipes à travers le monde. Ce qui rend cette ère distincte, ce n'est pas seulement l'orientation, mais l'expansion délibérée et datée à travers les plateformes, chacune ajoutée par-dessus une profonde expérience de praticien plutôt qu'à sa place.",
       "s1Title": "À temps plein, par vocation",
       "s1Body": "Depuis 2020, le travail consiste à dispenser des formations officielles animées par un formateur, à distance et en présentiel, en portugais et en anglais, à des publics du monde entier. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil. Les nationalités brésilienne et allemande, ainsi qu'une autorisation de voyage vers les États-Unis et le Royaume-Uni, rendent cette portée mondiale concrète : une éligibilité sans restriction à travailler dans l'Union européenne et le Mercosur, et la liberté d'aller là où se trouve la salle de classe.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Les formations que je dispense",
     "title": "Les plateformes, enseignées par quelqu'un qui les a exploitées.",
     "intro": "Formations officielles et certifiées animées par un formateur, couvrant {courses} cours sur les plateformes au cœur des réseaux et de la sécurité modernes. Chaque cours est dispensé par un formateur agréé, avec des décennies de mise en œuvre pratique derrière l'enseignement.",
-    "courseCount": "{count} cours",
+    "courseCount": "{count, plural, one {# cours} other {# cours}}",
     "since": "depuis",
     "representativeNote": "Ce catalogue est représentatif, non exhaustif. Les noms des cours, les durées et les contenus reflètent les informations publiques actuelles et sont affinés à partir des fiches techniques officielles.",
     "allPlatforms": "Toutes les plateformes",
@@ -1136,7 +1136,7 @@
       "firewalls": "pare-feu",
       "webCloudSecurity": "sécurité web et cloud"
     },
-    "coursesHeading": "{count} cours",
+    "coursesHeading": "{count, plural, one {# cours} other {# cours}}",
     "duration": "Durée",
     "delivery": "Format",
     "deliveryValue": "À distance ou en présentiel",

@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Der Trainer",
-    "role": "Leitender Technischer Trainer",
+    "role": "Senior Technical Instructor und Advisor bei Red Education",
     "lede": "Netzwerk- und Sicherheitsschulungen, geliefert von einem Praktiker, der seine Laufbahn auf der Umsetzungsseite verbracht hat, nicht nur bei den Folien. Ansässig in São Paulo, weltweit unterrichtend, auf Portugiesisch und Englisch.",
     "now": {
       "title": "Was ich heute mache",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – heute",
-      "title": "Der Trainer",
-      "subtitle": "Technische Vollzeitschulung, weltweit geliefert, Plattform für Plattform erweitert.",
+      "title": "Der Trainer & Berater",
+      "subtitle": "Offizielle Vollzeitschulung, weltweit gehalten, und daneben Beratung bei den Entscheidungen, die Folgen haben.",
       "intro": "2020 wurde aus einem die ganze Laufbahn durchziehenden Faden das ganze Gewebe. Nach zwei Jahrzehnten, in denen Schulung jede Rolle begleitete, wurde Schulung zur Arbeit selbst: Vollzeit, offiziell, zertifizierte Unterweisung für Fachleute und Teams auf der ganzen Welt. Was diese Epoche besonders macht, ist nicht nur der Fokus, sondern die bewusste, datierte Erweiterung über Plattformen hinweg, jede auf tiefer Praktikererfahrung aufbauend statt an ihrer Stelle.",
       "s1Title": "Vollzeit, aus Berufung",
       "s1Body": "Seit 2020 besteht die Arbeit darin, offizielle, von Trainern geleitete Schulungen zu liefern, aus der Ferne und vor Ort, auf Portugiesisch und Englisch, für Zielgruppen rund um den Globus. Die Lieferung reicht bis nach Australien, Singapur, Indien, Mitteleuropa, in die Vereinigten Staaten und nach Brasilien. Brasilianische und deutsche Staatsbürgerschaft, zusammen mit Reisegenehmigung für die Vereinigten Staaten und das Vereinigte Königreich, machen diese globale Reichweite praktikabel: uneingeschränkte Arbeitsberechtigung in der Europäischen Union und im Mercosur und die Freiheit, dorthin zu gehen, wo der Schulungsraum ist.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Schulungen, die ich liefere",
     "title": "Die Plattformen, unterrichtet von jemandem, der sie betrieben hat.",
     "intro": "Offizielle, zertifizierte, von Trainern geleitete Schulungen über {courses} Kurse zu den Plattformen im Zentrum moderner Vernetzung und Sicherheit. Jeder Kurs wird von einem autorisierten Trainer geliefert, mit jahrzehntelanger praktischer Umsetzung hinter der Schulung.",
-    "courseCount": "{count} Kurse",
+    "courseCount": "{count, plural, one {# Kurs} other {# Kurse}}",
     "since": "seit",
     "representativeNote": "Dieser Katalog ist repräsentativ, nicht erschöpfend. Kursnamen, Dauern und Inhalte spiegeln aktuelle öffentliche Informationen wider und werden aus offiziellen Datenblättern verfeinert.",
     "allPlatforms": "Alle Plattformen",
@@ -1136,7 +1136,7 @@
       "firewalls": "Firewalls",
       "webCloudSecurity": "Web- und Cloud-Sicherheit"
     },
-    "coursesHeading": "{count} Kurse",
+    "coursesHeading": "{count, plural, one {# Kurs} other {# Kurse}}",
     "duration": "Dauer",
     "delivery": "Lieferform",
     "deliveryValue": "Virtuell oder vor Ort",

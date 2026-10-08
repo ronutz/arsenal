@@ -115,13 +115,17 @@ export default async function GuidePage({
   // The count phrases by destination, from the table the footer and the colophon read too (src/lib/worldCounts.ts,
   // 2026-10-06), so the guide's map cannot state a figure the footer contradicts.
   const countFor = await getWorldCountLabels(locale);
-  /** A world entry's label: "map.x" and "front.x" under home, "nav.x" under nav, "=Literal" as written. */
+  /** A world entry's label: "map.x" and "front.x" under home, "nav.x" under nav, "footer.x" under footer, "=Literal" as written. */
+  // The footer's own labels too (2026-10-07: the Site Guide, "footer.guide", became a primary entry of The project).
+  const tFooter = await getTranslations("footer");
   const worldLabel = (label: string) =>
-    label.startsWith("=") ? label.slice(1) : label.startsWith("nav.") ? tNav(label.slice(4)) : tHome(label);
+    label.startsWith("=") ? label.slice(1) : label.startsWith("nav.") ? tNav(label.slice(4)) : label.startsWith("footer.") ? tFooter(label.slice(7)) : tHome(label);
   const worlds = WORLDS.map((w) => ({
     key: w.key,
     title: tHome(`front.world.${w.key}`),
     verb: tHome(`front.worldVerb.${w.key}`),
+    // The project's verb is the site's name (2026-10-07, a13), shown as written, not in small capitals.
+    verbAsWritten: w.verbAsWritten === true,
     // Every entry, the footer's included (the home directory skips the Blog; a guide does not).
     items: w.items.map((it) => ({ label: worldLabel(it.label), href: it.href, count: countFor[it.href] })),
   }));
@@ -210,7 +214,7 @@ export default async function GuidePage({
                 {worlds.map((w) => (
                   <div className="guide-map-world" key={w.key}>
                     <h3 className="guide-map-world-title">
-                      <span className="guide-map-world-verb mono">{w.verb}</span>
+                      <span className={`guide-map-world-verb mono${w.verbAsWritten ? " verb-as-written" : ""}`}>{w.verb}</span>
                       {w.title}
                     </h3>
                     <ul className="guide-map-items">

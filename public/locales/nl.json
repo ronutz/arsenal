@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "De trainer",
-    "role": "Senior technisch trainer",
+    "role": "Senior Technical Instructor en adviseur bij Red Education",
     "lede": "Netwerk- en beveiligingstrainingen, gegeven door een vakman die zijn loopbaan aan de implementatiekant heeft doorgebracht, niet alleen bij de slides. Gevestigd in São Paulo, wereldwijd lesgevend, in het Portugees en Engels.",
     "now": {
       "title": "Wat ik nu doe",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – heden",
-      "title": "De trainer",
-      "subtitle": "Voltijdse technische training, wereldwijd geleverd, platform voor platform uitbreidend.",
+      "title": "De trainer & adviseur",
+      "subtitle": "Officiële voltijdse training, wereldwijd gegeven, en daarnaast advies over de beslissingen die gevolgen hebben.",
       "intro": "In 2020 werd een rode draad die de hele loopbaan liep het hele weefsel. Na twee decennia waarin lesgeven elke rol vergezelde, werd training het werk zelf: voltijds, officieel, gecertificeerd onderwijs gegeven aan professionals en teams over de hele wereld. Wat dit tijdperk onderscheidt is niet alleen de focus, maar de bewuste, gedateerde uitbreiding over platforms heen, elk toegevoegd bovenop diepe vakmanervaring in plaats van in plaats daarvan.",
       "s1Title": "Voltijds, uit roeping",
       "s1Body": "Sinds 2020 bestaat het werk uit het geven van officiële door een trainer geleide training, op afstand en in persoon, in het Portugees en Engels, aan doelgroepen over de hele wereld. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië. De Braziliaanse en Duitse nationaliteit, samen met reistoestemming voor de Verenigde Staten en het Verenigd Koninkrijk, maken die wereldwijde reikwijdte praktisch: onbeperkte gerechtigdheid om te werken in de Europese Unie en de Mercosur, en de vrijheid om te gaan waar het leslokaal is.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Trainingen die ik geef",
     "title": "De platforms, onderwezen door iemand die ze heeft gedraaid.",
     "intro": "Officiële, gecertificeerde, door een trainer geleide training over {courses} cursussen op de platforms in het hart van moderne netwerken en beveiliging. Elke cursus wordt gegeven door een geautoriseerde trainer, met decennia hands-on implementatie achter het onderwijs.",
-    "courseCount": "{count} cursussen",
+    "courseCount": "{count, plural, one {# cursus} other {# cursussen}}",
     "since": "sinds",
     "representativeNote": "Deze catalogus is representatief, niet uitputtend. Cursusnamen, duur en inhoud weerspiegelen actuele openbare informatie en zijn verfijnd op basis van officiële datasheets.",
     "allPlatforms": "Alle platforms",
@@ -1136,7 +1136,7 @@
       "firewalls": "firewalls",
       "webCloudSecurity": "web- en cloudbeveiliging"
     },
-    "coursesHeading": "{count} cursussen",
+    "coursesHeading": "{count, plural, one {# cursus} other {# cursussen}}",
     "duration": "Duur",
     "delivery": "Vorm",
     "deliveryValue": "Virtueel of in persoon",

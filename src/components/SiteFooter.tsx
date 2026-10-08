@@ -78,8 +78,9 @@ export default async function SiteFooter() {
           {WORLDS.map((w) => (
             <div key={w.key} className={`footer-world footer-world--${w.key}`}>
               <p className="footer-world-title">{tHome(`front.world.${w.key}`)}</p>
-              {/* The world's verb, in the world's colour (the same accent as the rule above the column). */}
-              <p className="footer-world-verb mono">{tHome(`front.worldVerb.${w.key}`)}</p>
+              {/* The world's verb, in the world's colour (the same accent as the rule above the column); The project's is
+                  the site's name, "ronutz.com" (2026-10-07, a13), and keeps its own case. */}
+              <p className={`footer-world-verb mono${w.verbAsWritten ? " verb-as-written" : ""}`}>{tHome(`front.worldVerb.${w.key}`)}</p>
               <ul className="footer-world-list">
                 {w.items.map((it) => {
                   // The destination's count, when it has one (Dev tools, Advisory, Speaking and About do not).
@@ -131,13 +132,9 @@ export default async function SiteFooter() {
             documented, but the API is not served from this site (its page
             explains why). */}
         <p className="footer-contribute">
-          <Link href="/guide" className="footer-contribute-link">
-            {t("guide")}
-          </Link>
-          {/* ONE separator, not three. Removing the Blog and Glossary links
-              earlier left their separators behind - a link and its separator
-              are one unit and have to be removed together. */}
-          <span className="footer-sep" aria-hidden="true">&#183;</span>
+          {/* The Guide left this row on 2026-10-07 with its separator (a link and its separator are one unit): it is
+              the Site Guide in The project's column since PRIME's 20:15 message, and a footer that names a page twice
+              in two places reads as two pages. */}
           <Link href="/contribute/ideas" className="footer-contribute-link">
             {t("contributeTools")}
           </Link>

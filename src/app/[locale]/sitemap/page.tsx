@@ -17,7 +17,7 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { tools } from "@/config/tools";
-import { WORLDS, PROJECT_GROUPS } from "@/config/worlds";
+import { WORLDS, PROJECT_GROUPS, sitemapOrder } from "@/config/worlds";
 // The subject pages, one rule shared with /category/<key> (2026-10-06).
 import { subjectKeys } from "@/lib/subjects";
 
@@ -50,13 +50,15 @@ export default async function SitemapPage({
   const tFooter = await getTranslations("footer");
   /** A registry label key to its text (see src/config/worlds.ts for the key forms). */
   const label = (key: string) => key.startsWith("=") ? key.slice(1) : key.startsWith("nav.") ? tNav(key.slice(4)) : key.startsWith("footer.") ? tFooter(key.slice(7)) : tHome(key);
-  const groups: { key: string; title: string; verb: string; links: { href: string; label: string }[] }[] = WORLDS.map((w) => ({
+  const groups: { key: string; title: string; verb: string; verbAsWritten: boolean; links: { href: string; label: string }[] }[] = WORLDS.map((w) => ({
     key: w.key,
     title: tHome(`front.world.${w.key}`),
     verb: tHome(`front.worldVerb.${w.key}`),
+    // The project's verb is the site's name (2026-10-07, a13), shown as written rather than in small capitals.
+    verbAsWritten: w.verbAsWritten === true,
     links: [
-      ...w.items.map((it) => ({ href: it.href, label: label(it.label) })),
-      ...w.more.map((it) => ({ href: it.href, label: label(it.label) })),
+      // The primary entries and the sitemap-only ones, each of those beside the entry it names (src/config/worlds.ts).
+      ...sitemapOrder(w).map((it) => ({ href: it.href, label: label(it.label) })),
       // The reconstructed earlier sites, under The project after the earlier-sites inventory (2026-10-05).
       ...(w.key === "project"
         ? [
@@ -87,10 +89,11 @@ export default async function SitemapPage({
             <div className="sitemap-groups">
               {groups.map((g) => (
                 <div className={`sitemap-group sitemap-group--${g.key}`} key={g.key}>
-                  <h2 className="sitemap-group-title">{g.title} <span className="sitemap-group-verb mono">{g.verb}</span></h2>
+                  <h2 className="sitemap-group-title">{g.title} <span className={`sitemap-group-verb mono${g.verbAsWritten ? " verb-as-written" : ""}`}>{g.verb}</span></h2>
                   {g.key === "project" ? (
-                    /* The project world in three groups (row 62): About and evidence, The site, Policies and controls. */
-                    (["evidence", "site", "policies"] as const).map((sub) => (
+                    /* The project world in groups (row 62): The site, Policies and controls. The third, About and evidence,
+                       moved with its pages to Work with me on 2026-10-07 (a13). */
+                    (["site", "policies"] as const).map((sub) => (
                       <div key={sub} className="sitemap-subgroup">
                         <h3 className="sitemap-subgroup-title">{t(`sub${sub[0].toUpperCase()}${sub.slice(1)}`)}</h3>
                         <ul className="sitemap-links">

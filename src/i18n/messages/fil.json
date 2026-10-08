@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instructor",
-    "role": "Senior Technical Instructor",
+    "role": "Senior Technical Instructor at Advisor sa Red Education",
     "lede": "Pagsasanay sa network at security, inihahatid ng isang practitioner na ginugol ang malaking bahagi ng kaniyang karera sa panig ng implementasyon, hindi lamang sa harap ng mga slide. Nakabase sa São Paulo, nagtuturo sa buong mundo, sa Portuges at Ingles.",
     "now": {
       "title": "Ano ang ginagawa ko ngayon",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – ngayon",
-      "title": "Ang Instructor",
-      "subtitle": "Full-time na technical training, inihahatid sa buong mundo, lumalago platform-by-platform.",
+      "title": "Ang Instructor & Advisor",
+      "subtitle": "Full-time na opisyal na pagtuturo sa buong mundo, at kasabay nito ang advisory sa mga desisyong may mabigat na kahihinatnan.",
       "intro": "Noong 2020, ang sinulid na umaabot sa buong karera ay naging buong tela. Pagkatapos ng dalawampung taon na ang pagtuturo ay kasama sa bawat papel, ang pagsasanay mismo ang naging trabaho: full-time, opisyal, certified na pagtuturo para sa mga propesyonal at koponan sa buong mundo. Ang nagbubukod sa panahong ito ay hindi lamang ang pokus nito kundi ang sinadya at may petsang paglawak sa mga platform, bawat isa ay idinagdag sa ibabaw ng malalim na karanasan sa field, hindi bilang kapalit nito.",
       "s1Title": "Full-time, handa sa deployment",
       "s1Body": "Mula 2020, ang trabaho ay maghatid ng instructor-led na opisyal na pagsasanay, online at harapan, sa Portuges at Ingles, sa mga kalahok sa buong mundo. Umaabot ang paghahatid sa Australia, Singapore, India, Central Europe, Estados Unidos, at Brazil. Ang dobleng pagkamamamayan, Brazilian at German, kasama ang travel clearance sa Estados Unidos at United Kingdom, ang gumagawang praktikal sa pandaigdigang abot na ito: walang restriksiyong karapatang magtrabaho sa European Union at Mercosur, at ang kalayaang pumunta kung nasaan ang silid-aralan.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Mga kursong itinuturo ko",
     "title": "Mga platform, itinuturo ng taong gumamit mismo ng mga ito.",
     "intro": "Opisyal, certified, instructor-led na pagsasanay sa mga platform sa kaibuturan ng modernong networking at security, sa {courses} na kurso. Bawat kurso ay inihahatid ng isang awtorisadong instructor na may mga dekada ng hands-on na karanasan sa implementasyon sa likod ng pagtuturo.",
-    "courseCount": "{count} na kurso",
+    "courseCount": "{count, plural, one {# kurso} other {# na kurso}}",
     "since": "mula",
     "representativeNote": "Ang catalog na ito ay kinatawan, hindi kabuuan. Ang mga pamagat, tagal, at nilalaman ng kurso ay sumasalamin sa kasalukuyang pampublikong impormasyon at pinipino ayon sa opisyal na mga deskripsyon.",
     "allPlatforms": "Lahat ng platform",
@@ -1136,7 +1136,7 @@
       "firewalls": "firewalls",
       "webCloudSecurity": "web at cloud security"
     },
-    "coursesHeading": "{count} na kurso",
+    "coursesHeading": "{count, plural, one {# kurso} other {# na kurso}}",
     "duration": "Tagal",
     "delivery": "Paghahatid",
     "deliveryValue": "Virtual o harapan",

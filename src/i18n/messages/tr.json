@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Eğitmen",
-    "role": "Kıdemli Teknik Eğitmen",
+    "role": "Red Education bünyesinde Senior Technical Instructor ve Danışman",
     "lede": "Kariyerinin çoğunu sadece slaytların önünde değil, uygulama tarafında geçirmiş bir uygulayıcı tarafından sunulan ağ ve güvenlik eğitimi. São Paulo merkezli, dünya genelinde, Portekizce ve İngilizce öğretiyor.",
     "now": {
       "title": "Şu an ne yapıyorum",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – şimdi",
-      "title": "Eğitmen",
-      "subtitle": "Tam zamanlı teknik eğitim, dünya genelinde sunuluyor, platform platform büyüyor.",
+      "title": "Eğitmen & Danışman",
+      "subtitle": "Dünya genelinde verilen tam zamanlı resmi eğitim ve yanında sonuç doğuran kararlar üzerine danışmanlık.",
       "intro": "2020'de, tüm kariyer boyunca uzanan çizgi, kumaşın tamamı oldu. Öğretimin yirmi yıl boyunca her role eşlik etmesinin ardından, eğitim işin kendisi oldu: dünya genelindeki profesyoneller ve ekipler için tam zamanlı, resmi, sertifikalı öğretim. Bu dönemi ayıran sadece odağı değil, aynı zamanda platformlar arasında kasıtlı ve tarihli genişlemesidir; her biri derin saha deneyiminin yerine değil, üzerine eklenmiştir.",
       "s1Title": "Tam zamanlı, göreve hazır",
       "s1Body": "2020'den beri iş, eğitmen liderliğindeki resmi eğitimleri, çevrimiçi ve yüz yüze, Portekizce ve İngilizce, dünya genelindeki katılımcılara sunmaktır. Sunum Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, Amerika Birleşik Devletleri'ne ve Brezilya'ya ulaşır. Brezilya ve Almanya vatandaşlığı, ABD ile İngiltere'ye seyahat izinleriyle birlikte, bu küresel erişimi pratik kılar: Avrupa Birliği ve Mercosur'da sınırsız çalışma hakkı ve katılımcıların bulunduğu yere gitme özgürlüğü.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Verdiğim kurslar",
     "title": "Platformlar, onları bizzat kullanmış biri tarafından öğretiliyor.",
     "intro": "Modern ağ ve güvenliğin çekirdeğindeki platformlarda, {courses} kurs boyunca resmi, sertifikalı, eğitmen liderliğindeki eğitim. Her kurs, öğretimin ardında onlarca yıllık uygulamalı uygulama deneyimi olan yetkili bir eğitmen tarafından sunulur.",
-    "courseCount": "{count} kurs",
+    "courseCount": "{count, plural, other {# kurs}}",
     "since": "şu tarihten beri",
     "representativeNote": "Bu katalog temsilidir, kapsayıcı değil. Kurs başlıkları, süreleri ve içerikleri güncel kamuya açık bilgileri yansıtır ve resmi açıklamalara göre düzenlenir.",
     "allPlatforms": "Tüm platformlar",
@@ -1136,7 +1136,7 @@
       "firewalls": "güvenlik duvarları",
       "webCloudSecurity": "web ve bulut güvenliği"
     },
-    "coursesHeading": "{count} kurs",
+    "coursesHeading": "{count, plural, other {# kurs}}",
     "duration": "Süre",
     "delivery": "Sunum",
     "deliveryValue": "Sanal veya yüz yüze",

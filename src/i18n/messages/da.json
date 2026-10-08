@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instruktøren",
-    "role": "Senior teknisk instruktør",
+    "role": "Senior Technical Instructor og rådgiver hos Red Education",
     "lede": "Undervisning i netværk og sikkerhed, leveret af en fagperson, der har tilbragt karrieren på implementeringssiden, ikke kun ved slidesene. Baseret i São Paulo, underviser i hele verden, på portugisisk og engelsk.",
     "now": {
       "title": "Hvad jeg laver nu",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – i dag",
-      "title": "Instruktøren",
-      "subtitle": "Teknisk undervisning på fuld tid, leveret i hele verden, som vokser platform for platform.",
+      "title": "Instruktøren & rådgiveren",
+      "subtitle": "Officiel undervisning på fuld tid, leveret i hele verden, og ved siden af rådgivning om de beslutninger, der har konsekvenser.",
       "intro": "I 2020 blev en tråd, der havde løbet gennem hele karrieren, til hele vævet. Efter to årtier, hvor undervisningen fulgte hver rolle, blev undervisningen selve arbejdet: fuldtid, officiel, certificeret undervisning leveret til fagfolk og teams over hele verden. Det, der kendetegner denne epoke, er ikke kun fokus, men den bevidste, daterede ekspansion gennem platformene, hver tilføjet oven på dyb felterfaring i stedet for i stedet for den.",
       "s1Title": "Fuld tid, af kald",
       "s1Body": "Siden 2020 har arbejdet bestået i at levere officiel, instruktørledet undervisning, på afstand og på stedet, på portugisisk og engelsk, for publikum over hele verden. Leveringen når Australien, Singapore, Indien, Centraleuropa, USA og Brasilien. Det brasilianske og tyske statsborgerskab, sammen med rejseautorisation til USA og Storbritannien, gør den globale rækkevidde praktisk: ubegrænset ret til at arbejde i Den Europæiske Union og Mercosur samt friheden til at tage hen, hvor undervisningslokalet er.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Kurser, jeg leverer",
     "title": "Platformene, undervist af en, der har kørt dem.",
     "intro": "Officiel, certificeret instruktørledet undervisning over {courses} kurser på de platforme i hjertet af moderne netværk og sikkerhed. Hvert kursus leveres af en autoriseret instruktør, med årtiers praktisk implementering bag undervisningen.",
-    "courseCount": "{count} kurser",
+    "courseCount": "{count, plural, one {# kursus} other {# kurser}}",
     "since": "siden",
     "representativeNote": "Dette katalog er repræsentativt, ikke udtømmende. Kursusnavne, varigheder og indhold afspejler aktuel offentlig information og er forfinet ud fra officielle datablade.",
     "allPlatforms": "Alle platforme",
@@ -1136,7 +1136,7 @@
       "firewalls": "firewalls",
       "webCloudSecurity": "web- og cloudsikkerhed"
     },
-    "coursesHeading": "{count} kurser",
+    "coursesHeading": "{count, plural, one {# kursus} other {# kurser}}",
     "duration": "Varighed",
     "delivery": "Levering",
     "deliveryValue": "Virtuelt eller på stedet",

@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instruktor",
-    "role": "Starszy instruktor techniczny",
+    "role": "Senior Technical Instructor i doradca w Red Education",
     "lede": "Szkolenia z sieci i bezpieczeństwa prowadzone przez praktyka, który spędził karierę po stronie wdrożeń, a nie tylko przy slajdach. Z siedzibą w São Paulo, ucząc na całym świecie, po portugalsku i angielsku.",
     "now": {
       "title": "Czym się teraz zajmuję",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – obecnie",
-      "title": "Instruktor",
-      "subtitle": "Szkolenia techniczne na pełen etat, prowadzone na całym świecie, rozszerzające się platforma po platformie.",
+      "title": "Instruktor & doradca",
+      "subtitle": "Oficjalne szkolenia na pełen etat, prowadzone na całym świecie, a obok nich doradztwo przy decyzjach, które niosą konsekwencje.",
       "intro": "W 2020 roku nić obecna przez całą karierę stała się całą tkaniną. Po dwóch dekadach, w których nauczanie towarzyszyło każdej roli, szkolenia stały się samą pracą: na pełen etat, oficjalne, certyfikowane nauczanie prowadzone dla profesjonalistów i zespołów na całym świecie. To, co wyróżnia tę epokę, to nie tylko skupienie, ale świadoma, datowana ekspansja przez platformy, z których każda została dodana na bazie głębokiego doświadczenia w terenie, a nie zamiast niego.",
       "s1Title": "Pełen etat, z powołania",
       "s1Body": "Od 2020 roku praca polega na prowadzeniu oficjalnych szkoleń z instruktorem, zdalnie i stacjonarnie, po portugalsku i angielsku, dla odbiorców na całym świecie. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii. Obywatelstwo brazylijskie i niemieckie, wraz z autoryzacją podróży do Stanów Zjednoczonych i Wielkiej Brytanii, czynią ten globalny zasięg praktycznym: nieograniczone prawo do pracy w Unii Europejskiej i Mercosur oraz wolność udania się tam, gdzie jest sala wykładowa.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Szkolenia, które prowadzę",
     "title": "Platformy, nauczane przez kogoś, kto je obsługiwał.",
     "intro": "Oficjalne, certyfikowane szkolenia z instruktorem w {courses} kursach na platformach w sercu nowoczesnych sieci i bezpieczeństwa. Każdy kurs jest prowadzony przez autoryzowanego instruktora, z dekadami praktycznych wdrożeń za nauczaniem.",
-    "courseCount": "{count} kursów",
+    "courseCount": "{count, plural, one {# kurs} few {# kursy} many {# kursów} other {# kursu}}",
     "since": "od",
     "representativeNote": "Ten katalog jest reprezentatywny, nie wyczerpujący. Nazwy kursów, czasy trwania i treści odzwierciedlają aktualne informacje publiczne i są dopracowane na podstawie oficjalnych kart danych.",
     "allPlatforms": "Wszystkie platformy",
@@ -1136,7 +1136,7 @@
       "firewalls": "zaporami sieciowymi",
       "webCloudSecurity": "bezpieczeństwem web i chmury"
     },
-    "coursesHeading": "{count} kursów",
+    "coursesHeading": "{count, plural, one {# kurs} few {# kursy} many {# kursów} other {# kursu}}",
     "duration": "Czas trwania",
     "delivery": "Forma",
     "deliveryValue": "Wirtualnie lub stacjonarnie",

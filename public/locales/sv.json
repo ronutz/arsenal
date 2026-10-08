@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instruktören",
-    "role": "Senior teknisk instruktör",
+    "role": "Senior Technical Instructor och rådgivare på Red Education",
     "lede": "Utbildning inom nätverk och säkerhet, hållen av en yrkesperson som har tillbringat karriären på implementeringssidan, inte bara vid bildspelen. Baserad i São Paulo, undervisar i hela världen, på portugisiska och engelska.",
     "now": {
       "title": "Vad jag gör nu",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – i dag",
-      "title": "Instruktören",
-      "subtitle": "Teknisk utbildning på heltid, levererad i hela världen, som växer plattform för plattform.",
+      "title": "Instruktören & rådgivaren",
+      "subtitle": "Officiell undervisning på heltid, levererad i hela världen, och vid sidan av den rådgivning om de beslut som får konsekvenser.",
       "intro": "År 2020 blev en tråd som löpt genom hela karriären hela väven. Efter två decennier där undervisningen följde varje roll blev utbildningen själva arbetet: heltid, officiell, certifierad undervisning hållen för yrkespersoner och team över hela världen. Det som utmärker den här epoken är inte bara fokus, utan den medvetna, daterade expansionen genom plattformarna, var och en tillagd ovanpå djup fälterfarenhet i stället för i dess ställe.",
       "s1Title": "Heltid, av kallelse",
       "s1Body": "Sedan 2020 har arbetet bestått i att hålla officiell, instruktörsledd utbildning, på distans och på plats, på portugisiska och engelska, för publik över hela världen. Leveransen når Australien, Singapore, Indien, Centraleuropa, USA och Brasilien. Det brasilianska och tyska medborgarskapet, tillsammans med reseauktorisation för USA och Storbritannien, gör den globala räckvidden praktisk: obegränsad rätt att arbeta i Europeiska unionen och Mercosur, och friheten att åka dit klassrummet finns.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Kurser jag håller",
     "title": "Plattformarna, undervisade av någon som har kört dem.",
     "intro": "Officiell, certifierad och instruktörsledd utbildning över {courses} kurser på de plattformarna i hjärtat av modern nätverk och säkerhet. Varje kurs hålls av en auktoriserad instruktör, med decennier av praktisk implementering bakom undervisningen.",
-    "courseCount": "{count} kurser",
+    "courseCount": "{count, plural, one {# kurs} other {# kurser}}",
     "since": "sedan",
     "representativeNote": "Den här katalogen är representativ, inte uttömmande. Kursnamn, längder och innehåll speglar aktuell offentlig information och är förfinade utifrån officiella datablad.",
     "allPlatforms": "Alla plattformar",
@@ -1136,7 +1136,7 @@
       "firewalls": "brandväggar",
       "webCloudSecurity": "webb- och molnsäkerhet"
     },
-    "coursesHeading": "{count} kurser",
+    "coursesHeading": "{count, plural, one {# kurs} other {# kurser}}",
     "duration": "Längd",
     "delivery": "Leverans",
     "deliveryValue": "Virtuell eller på plats",

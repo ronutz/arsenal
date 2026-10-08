@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "L'istruttore",
-    "role": "Istruttore tecnico senior",
+    "role": "Senior Technical Instructor e advisor presso Red Education",
     "lede": "Formazione su reti e sicurezza tenuta da chi ha trascorso la carriera sul fronte dell'implementazione, non solo sulle slide. Con base a São Paulo, insegnando in tutto il mondo, in portoghese e inglese.",
     "now": {
       "title": "Cosa faccio adesso",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – oggi",
-      "title": "L'istruttore",
-      "subtitle": "Formazione tecnica a tempo pieno, offerta in tutto il mondo, in espansione piattaforma dopo piattaforma.",
+      "title": "L'istruttore & consulente",
+      "subtitle": "Formazione ufficiale a tempo pieno, erogata in tutto il mondo, e accanto la consulenza sulle decisioni che hanno conseguenze.",
       "intro": "Nel 2020, un filo presente per tutta la carriera diventò l'intero tessuto. Dopo due decenni in cui l'insegnamento accompagnò ogni ruolo, la formazione diventò il lavoro stesso: a tempo pieno, ufficiale, istruzione certificata offerta a professionisti e team in tutto il mondo. Ciò che distingue questa epoca non è solo il focus, ma l'espansione deliberata e datata attraverso le piattaforme, ciascuna aggiunta sopra una profonda esperienza sul campo, e non al suo posto.",
       "s1Title": "A tempo pieno, per vocazione",
       "s1Body": "Dal 2020, il lavoro è consistito nel tenere formazione ufficiale condotta da istruttore, da remoto e in presenza, in portoghese e inglese, per platee di tutto il mondo. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile. Le cittadinanze brasiliana e tedesca, insieme all'autorizzazione di viaggio per gli Stati Uniti e il Regno Unito, rendono pratica quella portata globale: idoneità senza restrizioni a lavorare nell'Unione Europea e nel Mercosur, e la libertà di andare dove si trova l'aula.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Corsi che tengo",
     "title": "Le piattaforme, insegnate da chi le ha messe in funzione.",
     "intro": "Formazione ufficiale, certificata e condotta da istruttore, su {courses} corsi nelle piattaforme al centro delle reti e della sicurezza moderne. Ogni corso è tenuto da un istruttore autorizzato, con decenni di implementazione pratica dietro l'insegnamento.",
-    "courseCount": "{count} corsi",
+    "courseCount": "{count, plural, one {# corso} other {# corsi}}",
     "since": "dal",
     "representativeNote": "Questo catalogo è rappresentativo, non esaustivo. Nomi dei corsi, durate e contenuti riflettono le informazioni pubbliche attuali e sono affinati a partire dai datasheet ufficiali.",
     "allPlatforms": "Tutte le piattaforme",
@@ -1136,7 +1136,7 @@
       "firewalls": "firewall",
       "webCloudSecurity": "sicurezza web e cloud"
     },
-    "coursesHeading": "{count} corsi",
+    "coursesHeading": "{count, plural, one {# corso} other {# corsi}}",
     "duration": "Durata",
     "delivery": "Erogazione",
     "deliveryValue": "Virtuale o in presenza",

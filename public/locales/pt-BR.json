@@ -301,7 +301,7 @@
         "understand": "ler",
         "explore": "rastrear",
         "work": "contratar",
-        "project": "sobre"
+        "project": "ronutz.com"
       },
       "endorsementsBadge": "{count} na íntegra",
       "surpriseAgain": "Sortear de novo",
@@ -11881,7 +11881,7 @@
       "recentLede": "As ferramentas mais novas, a partir do changelog, da mais recente para a mais antiga.",
       "directoryTitle": "O índice de uso geral",
       "directoryLede": "{count} ferramentas de uso geral em {categories} categorias, todas listadas abaixo; {platform, plural, one {a # ferramenta feita para a plataforma de um único fabricante está} other {as # ferramentas feitas para a plataforma de um único fabricante estão}} nos <hubs>hubs de fabricantes</hubs>. Pule para uma categoria, mostre só algumas ou alterne entre cartões e lista.",
-      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, vetores de ouro e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar.",
+      "floors": "Três andares, uma regra. <main>O andar principal</main> é o catálogo: toda ferramenta com manifesto, golden vectors (vetores de referência) e forma fixa, calculando no seu navegador e em nenhum outro lugar. <green>A sala verde</green> guarda as ferramentas cuja forma ainda está se encontrando, mesma privacidade, rotuladas como iniciais. <red>A sala vermelha</red> é o único lugar em que uma ferramenta envia sua entrada para fora, ao serviço oficial nomeado na tela, e só quando você aperta Perguntar.",
       "pasteTitle": "Cole o que você tem",
       "pasteLede": "Um token, um bloco de cabeçalhos, uma linha de log, um certificado, um CIDR: cole e as ferramentas que reconhecem a forma se alinham, a mais certa primeiro.",
       "pasteLabel": "Cole o que você tem",
@@ -11980,7 +11980,7 @@
     "shortcutsBody": "O site tem alguns atalhos de tecla única para navegação rápida, ativos em todas as páginas. Pressione b para a tecla do chefe, que esconde o que você está lendo atrás de uma convincente aplicação de trabalho dos anos 1980 até você pressionar qualquer tecla ou clicar; t vai para o índice de Ferramentas; l para o índice de Aprender; m abre o console do Mega Brain; e z abre o Buzzword Bingo. Eles são deliberadamente inertes sempre que você está digitando: se o foco está em um campo de texto, uma caixa de colar, um campo de busca, ou qualquer área editável, a tecla pertence àquele campo e o atalho não faz nada, então nada do que você digita é jamais engolido. Eles também são ignorados quando uma tecla modificadora está pressionada, então as combinações do seu próprio navegador, como Ctrl+T para uma nova aba, nunca são sobrepostas. Os atalhos rodam inteiramente no seu navegador, não adicionam rastreamento algum, e são puramente uma conveniência que você pode ignorar."
   },
   "footer": {
-    "guide": "Guia",
+    "guide": "Guia do site",
     "redEducation": "Rodolfo Nützmann é <r>Instrutor Técnico Sênior e Consultor</r> na <b>Red Education</b>",
     "builtWith": "Feito por Rodolfo Nützmann com CONCORD",
     "colophon": "Como isto foi construído",
@@ -12045,7 +12045,7 @@
   },
   "about": {
     "eyebrow": "Sobre mim",
-    "role": "Instrutor técnico sênior",
+    "role": "Instrutor técnico sênior e consultor na Red Education",
     "lede": "Treinamentos de rede e segurança ministrados por um profissional que passou metade de uma carreira de trinta anos no lado prático — implementação e resolução de problemas — e a outra metade estudando, projetando e ensinando comunicações de rede resilientes e seguras.",
     "now": {
       "title": "O que eu faço",
@@ -12113,6 +12113,9 @@
       "route3Q": "Precisa de alguém para falar sobre isso?",
       "route3Label": "Palestras"
     },
+    "practical": {
+      "title": "Informações práticas"
+    },
     "credibility": {
       "certsEyebrow": "Verificado",
       "certsTitle": "Certificações",
@@ -12153,7 +12156,9 @@
       "short": "Trinta anos de experiência em primeira mão com decisões que carregam consequências de negócio ou de missão, oferecidos como consultoria.",
       "link": "O que a consultoria cobre"
     },
-    "identity": "Ensino as redes e os sistemas de segurança que passei duas décadas construindo, quebrando e consertando, às pessoas que os operam hoje.",
+    "identity": "Explico sistemas complexos, ensino as pessoas que os operam e ajudo organizações a refletir sobre decisões de tecnologia que trazem consequências.",
+    "availability": "São Paulo · português e inglês · atuação no mundo todo",
+    "quoteCount": "Um de {count} depoimentos, na íntegra",
     "doing": {
       "title": "O que faço hoje",
       "build": {
@@ -12162,7 +12167,8 @@
       },
       "teach": {
         "verb": "Ensino",
-        "what": "Treinamentos oficiais com instrutor nas quatro plataformas, virtuais e presenciais, em qualquer fuso horário."
+        "what": "Treinamentos oficiais com instrutor nas quatro plataformas, virtuais e presenciais, em qualquer fuso horário.",
+        "platforms": "Cursos oficiais de F5, Fortinet, Extreme Networks e Netskope."
       },
       "advise": {
         "verb": "Aconselho",
@@ -12170,7 +12176,7 @@
       },
       "speak": {
         "verb": "Falo",
-        "what": "Palestras sobre redes, segurança e o ofício de fazer coisas complexas fazerem sentido."
+        "what": "Palestras e sessões facilitadas sobre redes, segurança e o ofício de fazer coisas complexas fazerem sentido."
       }
     },
     "why": {
@@ -12441,8 +12447,8 @@
     },
     "era2020present": {
       "years": "2020 – atual",
-      "title": "O professor",
-      "subtitle": "O ensino deixa de dividir a semana com qualquer outra coisa: tempo integral, oficial, ministrado para o mundo todo, expandindo plataforma a plataforma.",
+      "title": "O professor & consultor",
+      "subtitle": "Ensino oficial em tempo integral, ministrado para o mundo todo, e ao lado dele a consultoria nas decisões que trazem consequências.",
       "intro": "Em 2020, um fio presente por toda a carreira virou o tecido inteiro. Depois de duas décadas em que o ensino acompanhou cada cargo, o treinamento virou o trabalho em si: em tempo integral, oficial, instrução certificada entregue a profissionais e equipes no mundo todo. O primeiro ano deu o tom. Habilitar-se a ministrar um curso oficial exige assistir a ele como aluno, ter a certificação correspondente e então passar pela qualificação de instrutor; naquele ano isso foi feito seis vezes, cobrindo nove cursos, seguidas de treze turmas em trinta e três dias, 264 horas diante de 51 alunos. O que distingue esta era não é só o foco, mas a expansão deliberada e datada entre plataformas, cada uma somada sobre experiência profunda de campo, e não no lugar dela.",
       "s1Title": "Tempo integral, por vocação",
       "s1Body": "Desde 2020, o trabalho tem sido ministrar treinamento oficial conduzido por instrutor, remoto e presencial, em português e inglês, para audiências do mundo todo. A entrega alcança Austrália, Singapura, Índia, Europa Central, Estados Unidos e Brasil. As cidadanias brasileira e alemã, somadas à autorização de viagem para os Estados Unidos e o Reino Unido, tornam esse alcance global prático: elegibilidade irrestrita para trabalhar na União Europeia e no Mercosul, e a liberdade de ir até onde a sala de aula estiver.",
@@ -12806,7 +12812,7 @@
     "eyebrow": "Treinamentos que ministro",
     "title": "Plataformas ensinadas por quem já as operou.",
     "intro": "Treinamento oficial e certificado, com instrutor, em {courses} cursos sobre as plataformas que estão no centro das redes e da segurança modernas. Todo curso é ministrado por um instrutor autorizado, com décadas de implementação prática por trás do que ensina.",
-    "courseCount": "{count} cursos",
+    "courseCount": "{count, plural, one {# curso} other {# cursos}}",
     "since": "desde",
     "representativeNote": "Este catálogo é uma amostra representativa, não uma lista completa. Nomes, durações e conteúdos dos cursos refletem as informações públicas atuais e são refinados com base nos datasheets oficiais.",
     "allPlatforms": "Todas as plataformas",
@@ -12817,7 +12823,7 @@
       "firewalls": "firewalls",
       "webCloudSecurity": "segurança web e em nuvem"
     },
-    "coursesHeading": "{count} cursos",
+    "coursesHeading": "{count, plural, one {# curso} other {# cursos}}",
     "duration": "Duração",
     "delivery": "Modalidade",
     "deliveryValue": "Virtual ou presencial",
@@ -14738,7 +14744,7 @@
       },
       "privacy": {
         "h": "Privacidade e temas",
-        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum; as da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar, e só para o serviço oficial que indicam. A escolha de tema fica salva apenas no seu dispositivo. O idioma vai no próprio endereço da página, em vez de ser armazenado. A página de Privacidade explica exatamente o que é e o que não é guardado."
+        "b": "As ferramentas do catálogo rodam inteiramente no seu navegador, então os dados que você digita não são transmitidos a lugar nenhum; as da sala vermelha, a única exceção, só enviam uma consulta quando você aperta Perguntar, e só para o serviço oficial que indicam. O tema, o último idioma que você usou e algumas outras preferências ficam salvos só no seu navegador e nunca são enviados. A página de Privacidade cita cada um pelo nome e diz exatamente o que é e o que não é guardado."
       },
       "api": {
         "h": "A API",
@@ -23776,67 +23782,67 @@
       "bigip-fundamentals": {
         "title": "F5 BIG-IP de ponta a ponta",
         "lede": "Tudo o que os blueprints descontinuados 101, 201, 301A e 301B listavam, nos artigos deste site e em ordem didática: os fundamentos de rede que a nova trilha de certificação pressupõe, do OSI (Open Systems Interconnection) à VPN (virtual private network); toda a administração, das interfaces à alta disponibilidade e às rotinas de suporte que as provas novas deixaram de fora; e o ofício do especialista em LTM (Local Traffic Manager): iRules, analytics, capturas e SSL (Secure Sockets Layer). A trilha fecha com os dois artigos que comparam os blueprints descontinuados com os atuais.",
-        "outcome": "Você vai entender como um BIG-IP transporta, protege e gera relatórios sobre o tráfego de aplicações, da base de redes que ele pressupõe, passando pela administração e pela alta disponibilidade, até o ofício do especialista em LTM, com iRules, analytics e capturas, e como os blueprints descontinuados se relacionam com os atuais."
+        "outcome": "você vai entender como um BIG-IP transporta, protege e gera relatórios sobre o tráfego de aplicações, da base de redes que ele pressupõe, passando pela administração e pela alta disponibilidade, até o ofício do especialista em LTM, com iRules, analytics e capturas, e como os blueprints descontinuados se relacionam com os atuais."
       },
       "modern-identity": {
         "title": "Identidade moderna, do token para cima",
         "lede": "Os padrões abertos por trás do single sign-on, em ordem de dependência: o próprio JWT (JSON Web Token), as assinaturas e o JWKS (JSON Web Key Set) que o tornam verificável, os fluxos OAuth 2.0 e PKCE (Proof Key for Code Exchange) que o emitem, o OIDC (OpenID Connect) por cima, e TOTP/HOTP (senhas de uso único por tempo e por HMAC) como segundo fator.",
-        "outcome": "Você vai entender como um login vira um token, como uma assinatura e um conjunto de chaves tornam esse token verificável, como OAuth 2.0 com PKCE e OIDC o emitem e carregam, e onde uma senha de uso único entra como segundo fator."
+        "outcome": "você vai entender como um login vira um token, como uma assinatura e um conjunto de chaves tornam esse token verificável, como OAuth 2.0 com PKCE e OIDC o emitem e carregam, e onde uma senha de uso único entra como segundo fator."
       },
       "tls-from-zero": {
         "title": "TLS do zero",
         "lede": "O TLS (Transport Layer Security), da string da cipher suite para cima: o que significa cada parte do nome de uma cipher suite, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica e como TLS 1.2, TLS 1.3, DTLS (Datagram TLS) e QUIC se relacionam como uma só família.",
-        "outcome": "Você vai entender o que cada parte do nome de uma cipher suite promete, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica e como TLS 1.2, TLS 1.3, DTLS e QUIC pertencem a uma só família."
+        "outcome": "você vai entender o que cada parte do nome de uma cipher suite promete, o que o TLS 1.3 removeu e por quê, como funciona a troca de chaves híbrida pós-quântica e como TLS 1.2, TLS 1.3, DTLS e QUIC pertencem a uma só família."
       },
       "http-evolution": {
         "title": "HTTP, do começo até hoje",
         "lede": "O HTTP (Hypertext Transfer Protocol) nas suas cinco versões, do GET de uma linha de 1991 ao HTTP/3 sobre QUIC; depois, a camada operacional: o forward proxy e o proxy reverso, o HSTS (HTTP Strict Transport Security) e o curl além do navegador.",
-        "outcome": "Você vai entender o que cada uma das cinco versões do HTTP mudou, do GET de uma linha de 1991 ao HTTP/3 sobre QUIC, e como proxies, HSTS e curl funcionam sobre ele no dia a dia da operação."
+        "outcome": "você vai entender o que cada uma das cinco versões do HTTP mudou, do GET de uma linha de 1991 ao HTTP/3 sobre QUIC, e como proxies, HSTS e curl funcionam sobre ele no dia a dia da operação."
       },
       "regex-mastery": {
         "title": "Expressões regulares, do jeito certo",
         "lede": "A habilidade de ofício por trás da análise de logs e de todo parser: quantificadores e classes, grupos e backreferences, âncoras e limites, flags e modos, terminando no backtracking catastrófico, o modo de falha que toda regex em produção precisa evitar.",
-        "outcome": "Você vai entender como um motor de expressões regulares casa um padrão, de classes e quantificadores a grupos, backreferences, âncoras e flags, e como reconhecer e evitar o backtracking catastrófico que derruba sistemas em produção."
+        "outcome": "você vai entender como um motor de expressões regulares casa um padrão, de classes e quantificadores a grupos, backreferences, âncoras e flags, e como reconhecer e evitar o backtracking catastrófico que derruba sistemas em produção."
       },
       "pingfederate-administration": {
         "title": "Administração do PingFederate, de ponta a ponta",
         "lede": "Primeiro, os fundamentos que o blueprint pressupõe (o modelo de diretório e a mecânica de tickets do Kerberos); depois, os dez artigos sobre o produto em ordem didática, com o SCIM ao lado da etapa de provisionamento; e, para fechar, os fluxos de SSO. É a espinha dorsal de leitura por trás do guia de certificação PFP-001.",
-        "outcome": "Você vai entender os fundamentos de diretório e Kerberos que o produto pressupõe, depois o próprio PingFederate em ordem didática, o provisionamento com SCIM ao lado e os fluxos de SSO que fecham o blueprint PFP-001."
+        "outcome": "você vai entender os fundamentos de diretório e Kerberos que o produto pressupõe, depois o próprio PingFederate em ordem didática, o provisionamento com SCIM ao lado e os fluxos de SSO que fecham o blueprint PFP-001."
       },
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
         "lede": "Dos túneis e fundamentos até todo o cérebro de políticas: encaminhamento, ordem das regras do firewall, inspeção TLS, controles de web e de arquivos, DLP, CASB e os segmentos, a política e a postura do ZPA, com as três ferramentas nativas para praticar.",
-        "outcome": "Você vai entender como o tráfego chega ao Zero Trust Exchange e como o cérebro de políticas é ordenado: encaminhamento, firewall, inspeção TLS, controles de web e de arquivos, DLP e CASB, e os segmentos, a política e a postura do ZPA."
+        "outcome": "você vai entender como o tráfego chega ao Zero Trust Exchange e como o cérebro de políticas é ordenado: encaminhamento, firewall, inspeção TLS, controles de web e de arquivos, DLP e CASB, e os segmentos, a política e a postura do ZPA."
       },
       "netskope-sase": {
         "title": "Netskope SASE, de ponta a ponta",
         "lede": "A plataforma inteira em ordem de leitura: a arquitetura e a NewEdge, cada método de steering (como o tráfego chega ao service edge), o Netskope Client, a descriptografia TLS, os dois caminhos de proteção, a política baseada no CCI, o Private Access, o Cloud Firewall e a camada de analytics, com as ferramentas de PAC e SAML para praticar. A trilha foi feita para percorrer, a partir deste site, os domínios das acreditações e das certificações.",
-        "outcome": "Você vai entender a plataforma Netskope em ordem de leitura: a NewEdge e a arquitetura, cada método de steering e o Netskope Client, a descriptografia TLS, os caminhos de proteção inline e por API, a política baseada no CCI, o Private Access, o Cloud Firewall e a camada de analytics."
+        "outcome": "você vai entender a plataforma Netskope em ordem de leitura: a NewEdge e a arquitetura, cada método de steering e o Netskope Client, a descriptografia TLS, os caminhos de proteção inline e por API, a política baseada no CCI, o Private Access, o Cloud Firewall e a camada de analytics."
       },
       "ping-identity-platform": {
         "title": "A plataforma Ping Identity",
         "lede": "Todo o portfólio Ping em ordem de leitura: primeiro o mapa da plataforma PingOne e a linhagem ForgeRock, para que cada nome de produto faça sentido; depois a política do PingAccess, a plataforma de dados PingDirectory e a orquestração do DaVinci; e, para fechar, os artigos de PingFederate (o núcleo de federação autogerenciado), na ordem didática já estabelecida. É a leitura que acompanha os guias Certified Professional na página de Certificações.",
-        "outcome": "Você vai entender como o portfólio Ping se encaixa, do mapa do PingOne e da linhagem ForgeRock que explica os nomes dos produtos à política do PingAccess, à plataforma de dados PingDirectory, à orquestração do DaVinci e ao núcleo PingFederate."
+        "outcome": "você vai entender como o portfólio Ping se encaixa, do mapa do PingOne e da linhagem ForgeRock que explica os nomes dos produtos à política do PingAccess, à plataforma de dados PingDirectory, à orquestração do DaVinci e ao núcleo PingFederate."
       },
       "checkpoint-security-administration": {
         "title": "Administração de segurança Check Point",
         "lede": "A plataforma na ordem em que o CCSA a ensina: primeiro a divisão three-tier (em três níveis), porque nada mais faz sentido enquanto você não souber que o servidor de gerência e o gateway são máquinas diferentes, com funções diferentes; depois a base de regras; depois a semântica das camadas da política, que pega todo mundo.",
-        "outcome": "Você vai entender a divisão three-tier entre servidor de gerência, gateway e console, a base de regras construída sobre ela e a semântica das camadas que decide qual regra dispara, na ordem em que o CCSA os ensina."
+        "outcome": "você vai entender a divisão three-tier entre servidor de gerência, gateway e console, a base de regras construída sobre ela e a semântica das camadas que decide qual regra dispara, na ordem em que o CCSA os ensina."
       },
       "nginx-from-config-to-cache": {
         "title": "NGINX, da configuração ao cache",
         "lede": "Na ordem em que as dúvidas aparecem na prática: a árvore de configuração, depois qual bloco location vence, depois qual caminho o backend recebe, depois o que é cacheado e servido a quem.",
-        "outcome": "Você vai entender como o NGINX lê sua árvore de configuração, qual bloco location vence, qual caminho o backend recebe e o que é cacheado e servido a quem."
+        "outcome": "você vai entender como o NGINX lê sua árvore de configuração, qual bloco location vence, qual caminho o backend recebe e o que é cacheado e servido a quem."
       },
       "extreme-fabric-and-voss": {
         "title": "Fabric da Extreme e os dois sistemas operacionais",
         "lede": "O ExtremeXOS para o modelo de configuração; depois, por que o VOSS parece outro mundo (ele veio de uma empresa completamente diferente); depois, o Fabric Connect, montado a partir do IS-IS, passando pelos I-SIDs, até os recursos de resiliência.",
-        "outcome": "Você vai entender o modelo de configuração do ExtremeXOS, por que o VOSS é um sistema operacional diferente, vindo de outra empresa, e como o Fabric Connect é construído do IS-IS, passando pelos I-SIDs, até os recursos de resiliência."
+        "outcome": "você vai entender o modelo de configuração do ExtremeXOS, por que o VOSS é um sistema operacional diferente, vindo de outra empresa, e como o Fabric Connect é construído do IS-IS, passando pelos I-SIDs, até os recursos de resiliência."
       },
       "fortinet-fabric-and-operations": {
         "title": "Fortinet além do firewall isolado",
         "lede": "O que aparece quando um FortiGate não está sozinho: as escolhas de inspeção, o overlay das filiais, a integração com a nuvem, o SOC e a borda de tecnologia operacional.",
-        "outcome": "Você vai entender o que muda quando um FortiGate não está sozinho: as escolhas de inspeção, o overlay das filiais, a integração com a nuvem, o SOC e a borda de tecnologia operacional."
+        "outcome": "você vai entender o que muda quando um FortiGate não está sozinho: as escolhas de inspeção, o overlay das filiais, a integração com a nuvem, o SOC e a borda de tecnologia operacional."
       }
     },
     "expandAll": "Expandir tudo",
@@ -23850,10 +23856,10 @@
       "medium": "Média",
       "deep": "Longa"
     },
-    "outcomeLabel": "Você vai entender",
+    "outcomeLabel": "Ao fim",
     "startPath": "Comece a trilha",
     "familiesTitle": "Escolha por assunto",
-    "familiesLede": "Treze trilhas em quatro famílias. Cada cartão abaixo diz o que você vai entender ao final e abre no primeiro artigo.",
+    "familiesLede": "Quatro famílias e as trilhas de cada uma. Cada cartão abaixo diz o que você vai entender ao final e abre no primeiro artigo.",
     "families": {
       "foundations": {
         "title": "Protocolos e fundamentos",

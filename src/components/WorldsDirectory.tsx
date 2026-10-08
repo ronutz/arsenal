@@ -44,7 +44,8 @@ export default async function WorldsDirectory({ locale }: { locale: string }) {
           {WORLDS.map((w) => (
             <div key={w.key} className={`world world--${w.key}`}>
               <h3 className="world-title">{tHome(`front.world.${w.key}`)}</h3>
-              <p className="world-verb mono">{tHome(`front.worldVerb.${w.key}`)}</p>
+              {/* The project's verb is the site's name (2026-10-07, a13), shown as written, not in small capitals. */}
+              <p className={`world-verb mono${w.verbAsWritten ? " verb-as-written" : ""}`}>{tHome(`front.worldVerb.${w.key}`)}</p>
               <ul className="world-list">
                 {w.items.map((it) => (
                   <li key={it.href}>

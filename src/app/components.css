@@ -8850,7 +8850,6 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 @media (max-width: 40rem) { .hub-recent-item { grid-template-columns: 1fr auto; } .hub-recent-item .hub-around-lede { grid-column: 1 / -1; } }
 
 /* ---- about, wave A (E19, E24, E25; 2026-10-05): the identity line, the four verbs, the five principles ---- */
-.about-now-section { padding-top: 0; }
 .about-identity { margin: 0.35rem 0 0.9rem; font-size: 1.25rem; line-height: 1.45; font-weight: 500; color: var(--text-primary); max-width: 40ch; text-wrap: balance; }
 .about-now-list { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.1rem; }
 .about-now-item { display: grid; grid-template-columns: 11rem 1fr; gap: 0.5rem 1rem; align-items: baseline; padding: 0.6rem 0; border-top: 1px solid var(--border-subtle); }
@@ -8861,6 +8860,22 @@ a.roadmap-stat:hover { border-color: var(--accent-primary); }
 .about-principles { margin: 0.75rem 0 1rem; padding: 0 0 0 1.2rem; display: grid; gap: 0.3rem; color: var(--text-primary); font-weight: 600; }
 .about-principle { line-height: 1.5; }
 @media (max-width: 40rem) { .about-now-item { grid-template-columns: 1fr; gap: 0.2rem; } }
+
+/* ---- about, the About Run Review (PRIME 2026-10-07): the availability line, the doors inside Teach and Advise, the
+   quote's count, the door from the eras, Practicalities ---- */
+/* The six fact cards no longer sit between the hero and What I do now, so the section opens with a gap of its own
+   instead of the cards' bottom padding (it was 0 while the cards were there). */
+.about-now-section { padding-top: clamp(1.25rem, 3vw, 2rem); }
+/* a04: one quiet line under the identity, where the six cards were: place, languages, reach. */
+.about-availability { margin: 0; font-size: 0.85rem; letter-spacing: 0.03em; color: var(--text-secondary); }
+/* a06, a07: the platforms line and the doors, on a line of their own under the activity's sentence. */
+.about-now-more { display: block; margin-top: 0.3rem; color: var(--text-secondary); }
+/* a10: the count under the featured quote, a door to every endorsement. */
+.about-quote-count { margin: 0.75rem 0 0; font-size: 0.8rem; letter-spacing: 0.03em; }
+/* a12: the door from the three eras to the career record. */
+.about-history-door { margin-top: 1rem; }
+/* a05: Practicalities closes the page after the call to action; its cards are the old fact cards, three of them. */
+.about-practical-section { border-bottom: none; }
 
 /* ---- about, the evidence block (E31, 2026-10-05): the count under each card's lede ---- */
 .about-evidence-count { margin: 0.5rem 0 0; font-size: 0.75rem; letter-spacing: 0.04em; color: var(--text-secondary); }
@@ -22652,3 +22667,12 @@ html.presenter-covering body {
   text-transform: uppercase;
   color: var(--text-tertiary);
 }
+
+/* ---- the five worlds: a verb that is a name (2026-10-07, About Run Review a13) ----
+   The project's verb is the site's own domain, "ronutz.com". The other worlds' verbs are words set in small capitals;
+   a domain keeps its case, so wherever a world's verb is drawn (the footer, the colophon's directory, the guide's map,
+   the human sitemap) the transform is lifted for it. The compound selectors outrank each base rule. */
+.footer-world-verb.verb-as-written,
+.world-verb.verb-as-written,
+.guide-map-world-verb.verb-as-written,
+.sitemap-group-verb.verb-as-written { text-transform: none; letter-spacing: 0.04em; }

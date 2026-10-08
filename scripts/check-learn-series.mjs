@@ -29,6 +29,12 @@
 //   6. every opener's body links every written part of its series, in English
 //      and in Portuguese: the opener is the series' map, and a part that lands
 //      without the opener pointing at it is a part a reader of the map misses.
+//   7. every opener names its reading-order section the one way the site does,
+//      "## This series, in order" and "## Esta série, em ordem" (2026-10-07:
+//      the Portuguese article waves had reworded it in six openers, found by
+//      check-ls1a run in Portuguese after pack wave P1a). One declared
+//      exception, in both languages alike: the traffic-diversion opener, whose
+//      section lists the members of a family of attacks.
 // It reports, without failing: the series, their written and planned parts.
 // Reads the registry as text, like the other content guards, so it runs in the
 // prebuild chain before anything is compiled.
@@ -151,6 +157,21 @@ for (const s of series) {
   }
 }
 
+// 7. The reading-order section's heading, the same words in every opener of a language (the declared exception aside).
+const ORDER_HEADING = { en: "## This series, in order", "pt-BR": "## Esta série, em ordem" };
+// The traffic-diversion opener lists its series as the members of one family of attacks ("The members of this series",
+// "Os ataques desta série"), in both languages since it was written (2026-10-06); its section is not a reading order.
+const ORDER_HEADING_EXEMPT = new Set(["traffic-diversion-and-the-man-in-the-middle"]);
+for (const s of series) {
+  if (ORDER_HEADING_EXEMPT.has(s.opener)) continue;
+  for (const loc of ["en", "pt-BR"]) {
+    if (!exists(s.opener, loc)) continue;
+    // The heading as a whole line, so a longer heading that starts with the same words does not pass for it.
+    const lines = readFileSync(ROUTES[loc].get(s.opener), "utf8").split("\n").map((l) => l.trim());
+    if (!lines.includes(ORDER_HEADING[loc])) errors.push(`${s.id}: the ${loc} opener ${s.opener} does not head its reading order "${ORDER_HEADING[loc]}"`);
+  }
+}
+
 if (!series.length) errors.push("no series could be read from src/content/learn/series.ts (has its layout changed?)");
 if (errors.length) {
   console.error(`[check-learn-series] FAIL: ${errors.length} problem(s)`);
@@ -160,4 +181,4 @@ if (errors.length) {
 const written = series.reduce((n, s) => n + 1 + s.parts.filter((x) => x.kind === "slug").length, 0);
 const planned = series.reduce((n, s) => n + s.parts.filter((x) => x.kind === "planned").length, 0);
 const groupsUsed = new Set(series.map((s) => s.group)).size;
-console.log(`[check-learn-series] OK: ${series.length} series in ${groupsUsed} group(s); ${written} written article(s) in both languages, ${planned} planned part(s) named in both packs; no opener twice, no part twice in a series, every opener linking its written parts.`);
+console.log(`[check-learn-series] OK: ${series.length} series in ${groupsUsed} group(s); ${written} written article(s) in both languages, ${planned} planned part(s) named in both packs; no opener twice, no part twice in a series, every opener linking its written parts and heading its reading order the site's way (${ORDER_HEADING_EXEMPT.size} declared exception).`);

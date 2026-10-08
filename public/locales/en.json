@@ -301,7 +301,7 @@
         "understand": "read",
         "explore": "trace",
         "work": "hire",
-        "project": "about"
+        "project": "ronutz.com"
       },
       "endorsementsBadge": "{count} verbatim",
       "surpriseAgain": "Draw again",
@@ -11980,7 +11980,7 @@
     "shortcutsBody": "The site has a handful of single-key shortcuts for quick navigation, active on every page. Press b for the boss key, which hides whatever you are reading behind a convincing 1980s work application until you press any key or click; t jumps to the Tools index; l to the Learn index; m opens the Mega Brain console; and z opens Buzzword Bingo. These are deliberately inert whenever you are typing: if the focus is in a text field, a paste box, a search input, or any editable area, the keystroke belongs to that field and the shortcut does nothing, so nothing you type is ever swallowed. They are also ignored when a modifier key is held, so your browser's own combinations such as Ctrl+T for a new tab are never shadowed. The shortcuts run entirely in your browser, add no tracking, and are purely a convenience you can ignore."
   },
   "footer": {
-    "guide": "Guide",
+    "guide": "Site Guide",
     "redEducation": "Rodolfo Nützmann is a <r>Senior Technical Instructor and Advisor</r> at <b>Red Education</b>",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
@@ -12045,7 +12045,7 @@
   },
   "about": {
     "eyebrow": "About me",
-    "role": "Senior Technical Instructor",
+    "role": "Senior Technical Instructor and Advisor at Red Education",
     "lede": "Network and security training, delivered by a professional who has spent half of a thirty-year career on the hands-on side - implementation and troubleshooting - and the other half studying, designing, and teaching resilient, secure network communications.",
     "now": {
       "title": "What I do",
@@ -12113,6 +12113,9 @@
       "route3Q": "Need someone to talk about it?",
       "route3Label": "Speaking"
     },
+    "practical": {
+      "title": "Practicalities"
+    },
     "credibility": {
       "certsEyebrow": "Verified",
       "certsTitle": "Certifications",
@@ -12153,7 +12156,9 @@
       "short": "Thirty years of first-hand experience with decisions that carry business or mission consequences, offered as advisory.",
       "link": "What the advisory covers"
     },
-    "identity": "I teach the networks and the security systems I spent two decades building, breaking and fixing, to the people who run them now.",
+    "identity": "I explain complex systems, teach the people who operate them, and help organisations reason through consequential technology decisions.",
+    "availability": "São Paulo · Portuguese and English · work delivered globally",
+    "quoteCount": "One of {count} endorsements, verbatim",
     "doing": {
       "title": "What I do now",
       "build": {
@@ -12162,7 +12167,8 @@
       },
       "teach": {
         "verb": "Teach",
-        "what": "Official instructor-led training on the four platforms, virtual and on site, in any time zone."
+        "what": "Official instructor-led training on the four platforms, virtual and on site, in any time zone.",
+        "platforms": "Official courses on F5, Fortinet, Extreme Networks and Netskope."
       },
       "advise": {
         "verb": "Advise",
@@ -12170,7 +12176,7 @@
       },
       "speak": {
         "verb": "Speak",
-        "what": "Talks on networking, security and the craft of making complex things make sense."
+        "what": "Talks and facilitated sessions on networking, security and the craft of making complex things make sense."
       }
     },
     "why": {
@@ -12441,8 +12447,8 @@
     },
     "era2020present": {
       "years": "2020 – present",
-      "title": "The teacher",
-      "subtitle": "The teaching stops sharing the week with anything else: full-time, official, delivered globally, expanding platform by platform.",
+      "title": "The teacher & advisor",
+      "subtitle": "Full-time official teaching delivered globally, and beside it advisory on the decisions that carry consequences.",
       "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. The first year set the pace. Qualifying to teach an official course means attending it as a student, holding its certification, and then passing the instructor qualification; that year it was done six times, covering nine courses, followed by thirteen deliveries in thirty-three days, 264 hours in front of 51 students. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
       "s1Title": "Full-time, by vocation",
       "s1Body": "Since 2020, the work has been delivering official instructor-led training, remotely and in person, in Portuguese and English, to audiences around the globe. The delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil. Brazilian and German citizenship, together with travel clearance to the United States and the United Kingdom, make that global reach practical: unrestricted eligibility to work across the European Union and Mercosur, and the freedom to go where the classroom is.",
@@ -12806,7 +12812,7 @@
     "eyebrow": "Training I deliver",
     "title": "Platforms taught by someone who has run them.",
     "intro": "Official, certified instructor-led training across {courses} courses on the platforms at the center of modern networking and security. Every course is delivered by an authorized instructor with decades of hands-on implementation behind the teaching.",
-    "courseCount": "{count} courses",
+    "courseCount": "{count, plural, one {# course} other {# courses}}",
     "since": "since",
     "representativeNote": "This catalog is representative, not exhaustive. Course names, durations, and content reflect current public information and are refined from official datasheets.",
     "allPlatforms": "All platforms",
@@ -12817,7 +12823,7 @@
       "firewalls": "firewalls",
       "webCloudSecurity": "web and cloud security"
     },
-    "coursesHeading": "{count} courses",
+    "coursesHeading": "{count, plural, one {# course} other {# courses}}",
     "duration": "Duration",
     "delivery": "Delivery",
     "deliveryValue": "Virtual or in person",
@@ -14738,7 +14744,7 @@
       },
       "privacy": {
         "h": "Privacy and themes",
-        "b": "The catalogue's tools run entirely in your browser, so the data you enter is not transmitted anywhere; the red room's tools, the one exception, send a query only when you press Ask, and only to the official service they name. Your theme choice is remembered on your device only. Your language is carried in the page address rather than stored. The Privacy page explains exactly what is and is not kept."
+        "b": "The catalogue's tools run entirely in your browser, so the data you enter is not transmitted anywhere; the red room's tools, the one exception, send a query only when you press Ask, and only to the official service they name. Your theme, the language you last used and a few other preferences are remembered in your browser only and never sent anywhere. The Privacy page names each of them and says exactly what is and is not kept."
       },
       "api": {
         "h": "The API",
@@ -23776,67 +23782,67 @@
       "bigip-fundamentals": {
         "title": "F5 BIG-IP end to end",
         "lede": "Everything the retired 101, 201, 301A, and 301B blueprints listed, as this site's articles in teaching order: the networking fundamentals the modern track assumes (OSI (Open Systems Interconnection) to VPN (virtual private network)), the full administration arc from interfaces to high availability to the support workflows the new exams dropped, and the LTM (Local Traffic Manager) specialist craft - iRules, analytics, captures, SSL (Secure Sockets Layer) - closing with the two articles that compare the retired blueprints against the current ones.",
-        "outcome": "You will understand how a BIG-IP carries, secures and reports on application traffic, from the networking floor it assumes through administration and high availability to the LTM craft of iRules, analytics and captures, and how the retired blueprints relate to the current ones."
+        "outcome": "you will understand how a BIG-IP carries, secures and reports on application traffic, from the networking floor it assumes through administration and high availability to the LTM craft of iRules, analytics and captures, and how the retired blueprints relate to the current ones."
       },
       "modern-identity": {
         "title": "Modern identity, from the token up",
         "lede": "The open standards behind single sign-on, in dependency order: the JWT (JSON Web Token) itself, the signatures and JWKS (JSON Web Key Set) that make it verifiable, the OAuth 2.0 and PKCE (Proof Key for Code Exchange) flows that mint it, OIDC (OpenID Connect) on top, and TOTP/HOTP (time-based and HMAC-based one-time passwords) as the second factor.",
-        "outcome": "You will understand how a login becomes a token, how a signature and a key set make that token verifiable, how OAuth 2.0 with PKCE and OIDC mint and carry it, and where a one-time password enters as the second factor."
+        "outcome": "you will understand how a login becomes a token, how a signature and a key set make that token verifiable, how OAuth 2.0 with PKCE and OIDC mint and carry it, and where a one-time password enters as the second factor."
       },
       "tls-from-zero": {
         "title": "TLS from zero",
         "lede": "TLS (Transport Layer Security) from the cipher suite string upward: what each part of a suite name means, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS (Datagram TLS), and QUIC relate as one family.",
-        "outcome": "You will understand what each part of a cipher suite name promises, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS and QUIC belong to one family."
+        "outcome": "you will understand what each part of a cipher suite name promises, what TLS 1.3 removed and why, how hybrid post-quantum key exchange works, and how TLS 1.2, TLS 1.3, DTLS and QUIC belong to one family."
       },
       "http-evolution": {
         "title": "HTTP, told forward",
         "lede": "HTTP (the Hypertext Transfer Protocol) across its five versions - from the one-line GET of 1991 to HTTP/3 on QUIC - then the operational layer: forward and reverse proxies, HSTS (HTTP Strict Transport Security), and curl beyond the browser.",
-        "outcome": "You will understand what each of HTTP's five versions changed, from the one-line GET of 1991 to HTTP/3 on QUIC, and how proxies, HSTS and curl sit on top of it in daily operation."
+        "outcome": "you will understand what each of HTTP's five versions changed, from the one-line GET of 1991 to HTTP/3 on QUIC, and how proxies, HSTS and curl sit on top of it in daily operation."
       },
       "regex-mastery": {
         "title": "Regular expressions, properly",
         "lede": "The craft skill under log analysis and every parser: quantifiers and classes, groups and backreferences, anchors and boundaries, flags and modes - ending on catastrophic backtracking, the failure mode every production regex must avoid.",
-        "outcome": "You will understand how a regular expression engine matches, from classes and quantifiers to groups, backreferences, anchors and flags, and how to recognise and avoid the catastrophic backtracking that takes production systems down."
+        "outcome": "you will understand how a regular expression engine matches, from classes and quantifiers to groups, backreferences, anchors and flags, and how to recognise and avoid the catastrophic backtracking that takes production systems down."
       },
       "pingfederate-administration": {
         "title": "PingFederate administration, end to end",
         "lede": "The blueprint's assumed fundamentals first - the directory model and the Kerberos ticket machinery - then the ten product articles in teaching order, SCIM beside the provisioning stop, and the SSO flows to close. The reading spine behind the PFP-001 certification guide.",
-        "outcome": "You will understand the directory and Kerberos fundamentals the product assumes, then PingFederate itself in teaching order, provisioning with SCIM beside it, and the SSO flows that close the PFP-001 blueprint."
+        "outcome": "you will understand the directory and Kerberos fundamentals the product assumes, then PingFederate itself in teaching order, provisioning with SCIM beside it, and the SSO flows that close the PFP-001 blueprint."
       },
       "zscaler-zero-trust": {
         "title": "Zscaler Zero Trust Exchange",
         "lede": "From tunnels and fundamentals to the full policy brain: forwarding, firewall order, TLS inspection, web and file controls, DLP, CASB, and ZPA's segments, policy, and posture - with the three native tools to practice on.",
-        "outcome": "You will understand how traffic reaches the Zero Trust Exchange and how its policy brain is ordered: forwarding, firewall, TLS inspection, web and file controls, DLP and CASB, and ZPA's segments, policy and posture."
+        "outcome": "you will understand how traffic reaches the Zero Trust Exchange and how its policy brain is ordered: forwarding, firewall, TLS inspection, web and file controls, DLP and CASB, and ZPA's segments, policy and posture."
       },
       "netskope-sase": {
         "title": "Netskope SASE, End to End",
         "lede": "The whole platform in reading order: architecture and NewEdge, every steering method, the client, TLS decryption, the two protection paths, CCI-driven policy, Private Access, Cloud Firewall, and the analytics layer - with the PAC and SAML tools to practice on. Built to walk the accreditation and certification domains from this site.",
-        "outcome": "You will understand the Netskope platform in reading order: NewEdge and the architecture, every steering method and the client, TLS decryption, the inline and API protection paths, CCI-driven policy, Private Access, Cloud Firewall and the analytics layer."
+        "outcome": "you will understand the Netskope platform in reading order: NewEdge and the architecture, every steering method and the client, TLS decryption, the inline and API protection paths, CCI-driven policy, Private Access, Cloud Firewall and the analytics layer."
       },
       "ping-identity-platform": {
         "title": "The Ping Identity Platform",
         "lede": "The whole Ping estate in reading order: the PingOne platform map and the ForgeRock lineage first, so every product name resolves; then PingAccess policy, the PingDirectory data platform, and DaVinci orchestration; closing with the PingFederate shelf - the self-managed federation core - in its established teaching order. The companion walk to the Certified Professional guides on the certifications hub.",
-        "outcome": "You will understand how the Ping estate fits together, from the PingOne map and the ForgeRock lineage that explains the product names to PingAccess policy, the PingDirectory data platform, DaVinci orchestration and the PingFederate core."
+        "outcome": "you will understand how the Ping estate fits together, from the PingOne map and the ForgeRock lineage that explains the product names to PingAccess policy, the PingDirectory data platform, DaVinci orchestration and the PingFederate core."
       },
       "checkpoint-security-administration": {
         "title": "Check Point security administration",
         "lede": "The platform in the order the CCSA teaches it: the three-tier split first, because nothing else makes sense until you know the management server and the gateway are different machines with different jobs, then the rule base, then the layer semantics that catch everyone.",
-        "outcome": "You will understand the three-tier split of management server, gateway and console, the rule base built on it, and the layer semantics that decide which rule fires, in the order the CCSA teaches them."
+        "outcome": "you will understand the three-tier split of management server, gateway and console, the rule base built on it, and the layer semantics that decide which rule fires, in the order the CCSA teaches them."
       },
       "nginx-from-config-to-cache": {
         "title": "NGINX, from configuration to cache",
         "lede": "In the order the confusions actually arrive: the configuration tree, then which location block wins, then what path the backend receives, then what gets cached and served to whom.",
-        "outcome": "You will understand how NGINX reads its configuration tree, which location block wins, what path the backend receives, and what is cached and served to whom."
+        "outcome": "you will understand how NGINX reads its configuration tree, which location block wins, what path the backend receives, and what is cached and served to whom."
       },
       "extreme-fabric-and-voss": {
         "title": "Extreme fabric and the two operating systems",
         "lede": "ExtremeXOS for the configuration model, then why VOSS feels so different (it came from another company entirely), then Fabric Connect built up from IS-IS through I-SIDs to the resilience features.",
-        "outcome": "You will understand the ExtremeXOS configuration model, why VOSS is a different operating system from a different company, and how Fabric Connect is built from IS-IS through I-SIDs to its resilience features."
+        "outcome": "you will understand the ExtremeXOS configuration model, why VOSS is a different operating system from a different company, and how Fabric Connect is built from IS-IS through I-SIDs to its resilience features."
       },
       "fortinet-fabric-and-operations": {
         "title": "Fortinet beyond the single firewall",
         "lede": "What shows up once a FortiGate is not alone: inspection choices, the branch overlay, cloud integration, the SOC, and the operational technology edge.",
-        "outcome": "You will understand what changes once a FortiGate is not alone: the inspection choices, the branch overlay, the cloud integration, the SOC and the operational technology edge."
+        "outcome": "you will understand what changes once a FortiGate is not alone: the inspection choices, the branch overlay, the cloud integration, the SOC and the operational technology edge."
       }
     },
     "expandAll": "Expand all",
@@ -23850,10 +23856,10 @@
       "medium": "Medium",
       "deep": "Deep"
     },
-    "outcomeLabel": "You will understand",
+    "outcomeLabel": "At the end",
     "startPath": "Start the path",
     "familiesTitle": "Choose by subject",
-    "familiesLede": "Thirteen paths in four families. Each card below says what you will understand at the end and opens on the first article.",
+    "familiesLede": "Four families, and the paths in each. Each card below says what you will understand at the end and opens on the first article.",
     "families": {
       "foundations": {
         "title": "Protocols and foundations",

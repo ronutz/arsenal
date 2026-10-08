@@ -6,10 +6,9 @@
 // SOURCING & EVIDENCE-GATING (per canon guardrails):
 //   Every factual claim here traces to a verified project-knowledge source
 //   (the CVs, the LinkedIn Profile.pdf, the Professional Experience timeline,
-//   the F5/Extreme/Fortinet/Netskope certificates). Where the canon IA wants
-//   content the files do NOT substantiate, it is marked with a GAP flag that
-//   renders ONLY in development (a visible banner), never in production — so
-//   Rodolfo can see exactly what needs his input without shipping a TODO.
+//   the F5/Extreme/Fortinet/Netskope certificates). The dev-only GAP flag that
+//   marked unsubstantiated copy left on 2026-10-07 with its last use, the
+//   platforms section the About Run Review folded into What I do now.
 //
 //   Guardrails actively applied (NOT copied from the older CVs, which violate
 //   them): "Rodolfo Nützmann" never "Rod"; "since 1996" not "30+ years"; FOUR
@@ -19,7 +18,13 @@
 //   here (they are verbatim-only and belong in their own reviewed component).
 //
 // All visible copy is localized via getTranslations (English base + fallback).
-// This is a server component (static). The GAP banner is dev-only.
+// This is a server component (static).
+//
+// THE ORDER (About Run Review, PRIME 2026-10-07 19:40, a12 with a08 declined):
+// the name, the job line, the identity and the availability line; What I do
+// now; Where it started; Why ronutz exists; How I work; the quote and the
+// count; The path here (kept: PRIME declined a08); The History with the door to
+// the career record; Inspect the record; Get in touch; Practicalities.
 // ============================================================================
 
 import type { CSSProperties } from "react";
@@ -38,29 +43,6 @@ import { CREDENTIAL_COUNT } from "@/content/certifications/data";
 import { PLATFORMS, COURSE_COUNT } from "@/content/training/courses";
 import { getAllPosts } from "@/lib/blog";
 import { OLD_SITE_CLONES } from "@/content/about/old-sites";
-
-// Dev-only gap flag. In production (NODE_ENV === "production") it renders
-// nothing, so no TODO ever ships. In dev it shows a visible amber note.
-function Gap({ note }: { note: string }) {
-  if (process.env.NODE_ENV === "production") return null;
-  return (
-    <span
-      style={{
-        display: "inline-block",
-        background: "rgba(245,158,11,0.15)",
-        border: "1px solid rgba(245,158,11,0.5)",
-        color: "#f59e0b",
-        fontSize: "0.75rem",
-        padding: "0.15rem 0.5rem",
-        borderRadius: "6px",
-        margin: "0.25rem 0",
-        fontFamily: "var(--font-mono)",
-      }}
-    >
-      GAP: {note}
-    </span>
-  );
-}
 
 export async function generateMetadata({
   params,
@@ -87,11 +69,12 @@ const ERAS = [
 ] as const;
 
 /* --- FACT MARKS (PRIME 2026-09-09) ---
-   Each of the six fact cards carries a small schematic mark drawn from that
-   card's own content: a coordinate crosshair for where he lives, two stacked
-   documents for two citizenships, a stamp impression for travel permits, a
-   meridian with clock hands for "globally, any time zone", four speech strokes
-   for four languages, and a decision fork for the advisory offer.
+   Each fact card carries a small schematic mark drawn from that card's own
+   content: two stacked documents for two citizenships, a stamp impression for
+   travel permits, four speech strokes for four languages. (There were six cards
+   under the hero until the About Run Review, 2026-10-07; the three that stayed
+   are the Practicalities that close the page, and the crosshair, the meridian
+   and the decision fork left with the cards they drew.)
 
    Deliberately line work rather than icon-set glyphs: this is an instructor's
    site and the visual vernacular is the diagram, not the pictogram.
@@ -104,15 +87,6 @@ const ERAS = [
    Decorative only: the card already states the fact in text, in sixteen
    locales, so the mark is aria-hidden and adds nothing for a screen reader. */
 const FACT_MARKS: Record<string, React.ReactNode> = {
-  // Based in - a coordinate crosshair over a curved horizon. São Paulo is a
-  // point on a globe, so the mark is the way a point on a globe is written.
-  based: (
-    <>
-      <path d="M4 30a24 24 0 0 1 48 0" />
-      <path d="M28 8v44M6 30h44" />
-      <circle cx="28" cy="30" r="7" />
-    </>
-  ),
   // Citizenships - two documents, one behind the other. Two, not one, because
   // the fact is that there are two and they are separate.
   citizenships: (
@@ -132,16 +106,6 @@ const FACT_MARKS: Record<string, React.ReactNode> = {
       <path d="M14 24h12M30 34h12" />
     </>
   ),
-  // Teaches - a meridian arc with clock hands at the centre. "Globally, in any
-  // time zone" is two facts and this is both of them in one figure.
-  teaches: (
-    <>
-      <circle cx="28" cy="28" r="20" />
-      <path d="M8 28h40" />
-      <path d="M28 8c7 6 7 34 0 40-7-6-7-34 0-40Z" />
-      <path d="M28 28V17M28 28l9 6" />
-    </>
-  ),
   // Languages - four speech strokes at four sizes, one per language, ordered
   // the way the card orders them: native first, then fluent, then the two in
   // progress. The count is the content.
@@ -152,24 +116,12 @@ const FACT_MARKS: Record<string, React.ReactNode> = {
       <path d="M14 44h10M30 48h8" />
     </>
   ),
-  // Offers - a decision fork. Advisory work is one situation entering and
-  // several courses of action leaving, with one of them chosen; the marked
-  // branch is the recommendation.
-  offers: (
-    <>
-      <path d="M6 28h14" />
-      <circle cx="24" cy="28" r="4" />
-      <path d="M28 28h8l6-14h10M28 28h8l6 14h10" />
-      <path d="M28 28h22" />
-      <circle cx="52" cy="28" r="3" />
-    </>
-  ),
 };
 
 /**
  * One decorative schematic mark for a fact card.
  *
- * @param name - key into FACT_MARKS; must match one of the six cards.
+ * @param name - key into FACT_MARKS; must match one of the three cards.
  */
 function FactMark({ name }: { name: keyof typeof FACT_MARKS }) {
   return (
@@ -219,84 +171,34 @@ export default async function AboutPage({
           on .section globally, because the instruction was about /about and a
           global change would have re-spaced every page on the site. */}
       <main id="main" className="about-tight">
-        {/* --- HERO --- */}
+        {/* --- HERO (About Run Review, PRIME 2026-10-07 19:40) ---
+             The name, the job line (a01: the footer's words since 06/10), the identity sentence (a02: PRIME's own
+             words) and one availability line (a04). The opening paragraph that used to follow the identity is gone
+             (a03): the three eras further down tell the thirty years it summarised. The six fact cards that sat under
+             the hero are gone from here too (a04): the three that are logistics (citizenships, travel permits,
+             languages) close the page as Practicalities (a05), and what "Teaches" and "Offers" said is in What I do
+             now. */}
         <section className="about-hero">
           <div className="container">
             <p className="hero-eyebrow">{t("eyebrow")}</p>
             <h1 className="page-hero-title">Rodolfo Nützmann</h1>
             <p className="about-role">{t("role")}</p>
-            {/* E19 (SCOUT Round 1, wave A, 2026-10-05): the identity sentence the job title was carrying. ANVIL's
-                wording, proposed to PRIME; one line, first person, true to the three eras. */}
+            {/* E19 (SCOUT Round 1, wave A, 2026-10-05), worded by PRIME in the review (a02). */}
             <p className="about-identity">{t("identity")}</p>
-            <p className="page-hero-lede">{t("lede")}</p>
+            {/* a04: where he is, the two working languages, and that the work reaches anywhere. */}
+            <p className="about-availability mono">{t("availability")}</p>
           </div>
         </section>
 
-        {/* --- THE FACTS ---
-             "What I do now" (heading and body) MOVED TO /training on 2026-08-06
-             at PRIME's instruction: the text describes how courses are taught,
-             which is a question a reader has on the training page and not one
-             they arrived at the biography with.
-
-             The facts below did NOT move, because they are biographical rather
-             than pedagogical - where he is, what he teaches, which languages.
-             They kept their `now.*` message keys so the move needed no
-             retranslation in sixteen locales.
-
-             They now render WITHOUT a heading, directly under the hero, because
-             the heading that used to introduce them has gone and inventing a
-             replacement was not asked for. Read as hero metadata, which is what
-             they are. */}
-        <section className="section about-facts-section">
-          <div className="container section-narrow">
-            {/* CARD ORDER (PRIME 2026-09-05): Based in, Citizenships, Travel
-                permits, Teaches, Languages, Offers. The order answers a reader's
-                questions in the sequence they arise - where is he, what is he
-                entitled to, can he come here, what does he do, in what language,
-                and what else is on offer. Citizenships and travel permits are
-                two different facts and are kept apart: one is status, the other
-                is the practical ability to appear somewhere next month. */}
-            <ul className="about-facts">
-              <li className="about-fact">
-                <FactMark name="based" />
-                <span className="about-fact-label">{t("now.basedLabel")}</span>
-                <span className="about-fact-value">{t("now.basedValue")}</span>
-              </li>
-              <li className="about-fact">
-                <FactMark name="citizenships" />
-                <span className="about-fact-label">{t("now.citizenshipsLabel")}</span>
-                <span className="about-fact-value">{t("now.citizenshipsValue")}</span>
-              </li>
-              <li className="about-fact">
-                <FactMark name="permits" />
-                <span className="about-fact-label">{t("now.permitsLabel")}</span>
-                <span className="about-fact-value">{t("now.permitsValue")}</span>
-              </li>
-              <li className="about-fact">
-                <FactMark name="teaches" />
-                <span className="about-fact-label">{t("now.teachesLabel")}</span>
-                <span className="about-fact-value">{t("now.teachesValue")}</span>
-              </li>
-              <li className="about-fact">
-                <FactMark name="languages" />
-                <span className="about-fact-label">{t("now.languagesLabel")}</span>
-                <span className="about-fact-value">{t("now.languagesValue")}</span>
-              </li>
-              <li className="about-fact">
-                <FactMark name="offers" />
-                <span className="about-fact-label">{t("now.offersLabel")}</span>
-                <span className="about-fact-value">{t("now.offersValue")}</span>
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        {/* --- WHAT I DO NOW, WHERE IT STARTED, WHY RONUTZ EXISTS, HOW I WORK (wave A, 2026-10-05) ---
-             E24: four lines, Build ronutz / Teach / Advise / Speak, each a door. E22: the origin story promoted
-             to open the narrative (its text unchanged, its message keys unchanged). E21: why the site exists, in
-             the first person, assembled from the site's standing claims (compute never guess, sources read live,
-             nothing leaves the browser); flagged for PRIME's voice. E25: "How I work" reuses the colophon's five
-             principles by their message keys, so there is one source of truth, and links the colophon. */}
+        {/* --- WHAT I DO NOW, WHERE IT STARTED, WHY RONUTZ EXISTS, HOW I WORK, THE QUOTE (wave A, 2026-10-05;
+             About Run Review, 2026-10-07) ---
+             E24: four lines, Build ronutz / Teach / Advise / Speak, each a door. Since the review, Teach carries the
+             one line the platform cards used to fill (a06) and the door to how the courses are taught, and Advise the
+             door to what the advisory covers (a07): the sections "The platforms, taught in depth", "How I teach" and
+             "How I advise" are folded into these two lines. Speak names the facilitated sessions again (a11), which
+             Speaking has carried since (s1). E22: the origin story opens the narrative. E21: why the site exists.
+             E25: "How I work" reuses the colophon's five principles by their message keys. a10: the one broad quote,
+             with the count of the endorsements it comes from, closes the block. */}
         <section className="section about-now-section">
           <div className="container section-narrow">
             <h2 className="section-title">{t("doing.title")}</h2>
@@ -304,7 +206,22 @@ export default async function AboutPage({
               {(["build", "teach", "advise", "speak"] as const).map((k) => (
                 <li key={k} className="about-now-item">
                   <Link href={k === "build" ? "/changelog" : k === "teach" ? "/training" : k === "advise" ? "/advisory" : "/speaking"} className="about-now-verb">{t(`doing.${k}.verb`)}</Link>
-                  <span className="about-now-what">{t(`doing.${k}.what`)}</span>
+                  <span className="about-now-what">
+                    {t(`doing.${k}.what`)}
+                    {/* a06, a07: the four platforms in one line, and the door to how the courses are taught. */}
+                    {k === "teach" && (
+                      <span className="about-now-more">
+                        {t("doing.teach.platforms")}{" "}
+                        <Link href="/training">{t("approach.link")} <span aria-hidden="true">&#8594;</span></Link>
+                      </span>
+                    )}
+                    {/* a07: the door to what the advisory covers. */}
+                    {k === "advise" && (
+                      <span className="about-now-more">
+                        <Link href="/advisory">{t("advise.link")} <span aria-hidden="true">&#8594;</span></Link>
+                      </span>
+                    )}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -323,69 +240,11 @@ export default async function AboutPage({
               ))}
             </ul>
             <p className="section-body"><Link href="/colophon">{t("how.link")} <span aria-hidden="true">&#8594;</span></Link></p>
-          </div>
-        </section>
 
-        {/* --- THE FOUR PLATFORMS (current authorized teaching) --- */}
-        <section className="section section-accent">
-          <div className="container">
-            <h2 className="section-title">{t("platforms.title")}</h2>
-            <p className="section-body" style={{ marginBottom: "2rem" }}>
-              {t("platforms.body")}
-            </p>
-            <ul className="about-platforms">
-              <li className="about-platform">
-                <VendorMark vendor="f5" year={thisYear} eraLabel={era} since={since} compact />
-                <span className="about-platform-name">F5</span>
-                <span className="about-platform-detail">{t("platforms.f5")}</span>
-              </li>
-              <li className="about-platform">
-                <VendorMark vendor="fortinet" year={thisYear} eraLabel={era} since={since} compact />
-                <span className="about-platform-name">Fortinet</span>
-                <span className="about-platform-detail">{t("platforms.fortinet")}</span>
-              </li>
-              <li className="about-platform">
-                <VendorMark vendor="extreme" year={thisYear} eraLabel={era} since={since} compact />
-                <span className="about-platform-name">Extreme Networks</span>
-                <span className="about-platform-detail">{t("platforms.extreme")}</span>
-              </li>
-              <li className="about-platform">
-                <VendorMark vendor="netskope" year={thisYear} eraLabel={era} since={since} compact />
-                <span className="about-platform-name">Netskope</span>
-                <span className="about-platform-detail">{t("platforms.netskope")}</span>
-              </li>
-            </ul>
-
-            {/* "How I teach" MOVED HERE (PRIME 2026-08-06), inside the
-                platforms section and after the cards. It reads as the answer
-                to the question the cards raise: having just listed four
-                platforms taught in depth, the obvious next thought is how.
-                Kept as an h3 inside this section rather than an h2 of its own,
-                because it is now subordinate to the platforms heading rather
-                than a peer of it. */}
-            <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
-              {t("approach.title")}
-            </h3>
-            {/* E20 (2026-10-05): one sentence here; the account of how courses are taught lives on /training. */}
-            <p className="section-body">{t("approach.short")} <Link href="/training">{t("approach.link")} <span aria-hidden="true">&#8594;</span></Link></p>
-
-            {/* HOW I ADVISE (PRIME 2026-09-05). Sits directly under "How I
-                teach" because the two are the same practice pointed at
-                different audiences: one explains a platform to the people who
-                will run it, the other explains a decision to the people who
-                will own it. Kept as a peer h3 rather than its own section, so
-                the page does not imply these are separate careers. */}
-            <h3 className="vendor-note-title" style={{ marginTop: "2.5rem" }}>
-              {t("advise.title")}
-            </h3>
-            {/* E20 (2026-10-05): one sentence here; the advisory offer lives on /advisory. */}
-            <p className="section-body">{t("advise.short")} <Link href="/advisory">{t("advise.link")} <span aria-hidden="true">&#8594;</span></Link></p>
-
-            {/* FEATURED ENDORSEMENT (PRIME 2026-09-06). Rendered from the
-                verbatim catalogue by record id, never as a copied string, so
-                the site's one-source rule for testimonials holds. It sits
-                beside "How I advise" because it is an endorsement of
-                judgement, which is what advisory sells. */}
+            {/* THE QUOTE AND THE COUNT (a10). The featured endorsement (PRIME 2026-09-06) is rendered from the verbatim
+                catalogue by record id, never as a copied string, so the site's one-source rule for testimonials holds.
+                It sat beside "How I advise"; with that section folded it closes this block, and the line under it says
+                how many endorsements it was chosen from, counted from the same catalogue, and opens them all. */}
             {(() => {
               const q = TESTIMONIALS.find((x) => x.id === "75");
               if (!q) return null;
@@ -406,7 +265,9 @@ export default async function AboutPage({
                 </figure>
               );
             })()}
-            <Gap note="Expand teaching-philosophy copy with Rodolfo's own words if desired (current text is from the verified bio only)." />
+            <p className="about-quote-count mono">
+              <Link href="/endorsements">{t("quoteCount", { count: TESTIMONIALS.length })} <span aria-hidden="true">&#8594;</span></Link>
+            </p>
           </div>
         </section>
 
@@ -615,6 +476,11 @@ export default async function AboutPage({
                 </li>
               ))}
             </ol>
+            {/* THE DOOR TO THE CAREER RECORD (About Run Review a12, PRIME 2026-10-07): the three eras end on the place
+                where every chapter of the record is told vendor by vendor. */}
+            <p className="section-body about-history-door">
+              <Link href="/industry/chapters">{t("credibility.recordTitle")} <span aria-hidden="true">&#8594;</span></Link>
+            </p>
 
             {/* Four cards where three buttons used to be (PRIME 2026-07-27).
                 Certifications and endorsements moved down from the top of the
@@ -765,6 +631,35 @@ export default async function AboutPage({
                 {t("cta.statsButton")}
               </Link>
             </div>
+          </div>
+        </section>
+
+        {/* --- PRACTICALITIES (About Run Review a05, PRIME 2026-10-07) ---
+             The three facts a reader who has to book or travel needs, and nobody else: citizenships, travel permits,
+             the full list of languages. They led the page as hero cards until the review; here they close it, after
+             the way to get in touch, where an organiser or a training buyer looks for them. Same cards, same marks,
+             same message keys (now.*), so nothing needed retranslating. Citizenships and travel permits stay two
+             facts: one is status, the other the practical ability to appear somewhere next month. */}
+        <section className="section about-practical-section">
+          <div className="container section-narrow">
+            <h2 className="section-title">{t("practical.title")}</h2>
+            <ul className="about-facts">
+              <li className="about-fact">
+                <FactMark name="citizenships" />
+                <span className="about-fact-label">{t("now.citizenshipsLabel")}</span>
+                <span className="about-fact-value">{t("now.citizenshipsValue")}</span>
+              </li>
+              <li className="about-fact">
+                <FactMark name="permits" />
+                <span className="about-fact-label">{t("now.permitsLabel")}</span>
+                <span className="about-fact-value">{t("now.permitsValue")}</span>
+              </li>
+              <li className="about-fact">
+                <FactMark name="languages" />
+                <span className="about-fact-label">{t("now.languagesLabel")}</span>
+                <span className="about-fact-value">{t("now.languagesValue")}</span>
+              </li>
+            </ul>
           </div>
         </section>
       </main>

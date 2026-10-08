@@ -52,6 +52,37 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The About Run Review (PRIME 2026-10-07 19:40): his thirteen answers on the review page, applied.
+    date: "2026-10-07",
+    time: "20:00",
+    kind: "content",
+    title: "About, rebuilt from the review",
+    body:
+      "About now opens with the name, the job line (Senior Technical Instructor and Advisor at Red Education), one sentence on what the work is and one line on where it reaches. The six fact cards under it are gone: citizenships, travel permits and the full list of languages close the page as Practicalities, and what the other cards said is in What I do now, where the four platforms, how the courses are taught and what the advisory covers are now one line and two doors, and Speak names facilitated sessions again. The one featured endorsement follows How I work, with the number of endorsements it was chosen from. The path here stays, and the third era is now The teacher & advisor.",
+    links: [{ label: "About", href: "/about" }, { label: "The teacher & advisor", href: "/about/2020-present" }],
+  },
+  {
+    // The About Run Review, a13 (PRIME's own version), and his 20:15 message: the about-me pages join Work with me, the
+    // site's own pages join The project's column, the Guide becomes the Site Guide.
+    date: "2026-10-07",
+    time: "20:00",
+    kind: "content",
+    title: "Work with me now starts with who you would be working with",
+    body:
+      "In the footer, the sitemap, the colophon's directory, the guide's map and the search filters, About, the endorsements and the career record now open Work with me, Credentials sits beside the career record on the sitemap, and Red Education closes the list. The project is the site itself and says so: its subtitle is ronutz.com, and its column lists the Site Guide, the colophon, the changelog and the roadmap beside the Blog and Contribute.",
+    links: [{ label: "Sitemap", href: "/sitemap" }, { label: "Colophon", href: "/colophon" }],
+  },
+  {
+    // What pack wave P1a's checks and its writers' flags found, each checked against the code and the pages.
+    date: "2026-10-07",
+    time: "20:00",
+    kind: "content",
+    title: "Small corrections the Portuguese review turned up",
+    body:
+      "Course counts on the Training pages now take each language's plural: Russian and Polish had printed the form for five for Netskope's two courses. The guide no longer says your language is not stored; it is kept in your browser, as the privacy page lists. The study paths no longer print \"You will understand\" twice. Six Portuguese articles name their reading-order section the way the other sixty-three do, and a guard now holds it. The Portuguese tools page says golden vectors one way, glossed.",
+    links: [{ label: "Training", href: "/training" }, { label: "Study guides", href: "/study-guides" }],
+  },
+  {
     // Row 59, the pack's Portuguese, wave P1a (PRIME 2026-10-07 06:56): the interface strings people meet first.
     date: "2026-10-07",
     time: "14:34",

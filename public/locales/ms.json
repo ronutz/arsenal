@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Jurulatih",
-    "role": "Jurulatih Teknikal Kanan",
+    "role": "Senior Technical Instructor dan Penasihat di Red Education",
     "lede": "Latihan rangkaian dan keselamatan yang dibawa oleh seorang pengamal yang menghabiskan kerjayanya di pihak pelaksanaan, bukan hanya di hadapan slaid. Berpangkalan di São Paulo, mengajar di seluruh dunia, dalam bahasa Portugis dan Inggeris.",
     "now": {
       "title": "Apa yang saya lakukan sekarang",
@@ -1034,8 +1034,8 @@
     },
     "era2020present": {
       "years": "2020 – sekarang",
-      "title": "Jurulatih",
-      "subtitle": "Latihan teknikal sepenuh masa, disampaikan ke seluruh dunia, berkembang platform demi platform.",
+      "title": "Jurulatih & Penasihat",
+      "subtitle": "Pengajaran rasmi sepenuh masa ke seluruh dunia, dan di sampingnya nasihat tentang keputusan yang membawa akibat.",
       "intro": "Pada 2020, benang yang menjalar di seluruh kerjaya menjadi keseluruhan kain. Selepas dua dekad dengan pengajaran mengiringi setiap peranan, latihan menjadi kerja itu sendiri: pengajaran sepenuh masa, rasmi dan diperakui untuk profesional dan pasukan di seluruh dunia. Yang membezakan era ini bukan sahaja tumpuannya, tetapi pengembangan yang disengajakan dan bertarikh merentasi platform, setiap satu ditambah di atas pengalaman lapangan yang mendalam, bukan sebagai gantinya.",
       "s1Title": "Sepenuh masa, atas panggilan",
       "s1Body": "Sejak 2020, kerjanya ialah menyampaikan latihan rasmi yang dipimpin jurulatih, dalam talian dan secara bersemuka, dalam bahasa Portugis dan Inggeris, untuk khalayak di seluruh dunia. Penyampaian mencapai Australia, Singapura, India, Eropah Tengah, Amerika Syarikat dan Brazil. Kewarganegaraan Brazil dan Jerman, bersama kebenaran perjalanan ke AS dan UK, menjadikan capaian global ini praktikal: hak tanpa had untuk bekerja di Kesatuan Eropah dan Mercosur, serta kebebasan untuk pergi ke tempat khalayak berada.",
@@ -1125,7 +1125,7 @@
     "eyebrow": "Kursus yang saya sampaikan",
     "title": "Platform, diajar oleh seseorang yang telah mengendalikannya.",
     "intro": "Latihan rasmi, diperakui dan dipimpin jurulatih merentasi {courses} kursus pada platform di teras rangkaian dan keselamatan moden. Setiap kursus disampaikan oleh jurulatih yang diberi kuasa, dengan berdekad-dekad pelaksanaan praktikal di sebalik pengajaran.",
-    "courseCount": "{count} kursus",
+    "courseCount": "{count, plural, other {# kursus}}",
     "since": "sejak",
     "representativeNote": "Katalog ini mewakili, bukan menyeluruh. Tajuk kursus, tempoh dan kandungan mencerminkan maklumat awam semasa dan diperhalusi berdasarkan huraian rasmi.",
     "allPlatforms": "Semua platform",
@@ -1136,7 +1136,7 @@
       "firewalls": "firewall",
       "webCloudSecurity": "keselamatan web dan awan"
     },
-    "coursesHeading": "{count} kursus",
+    "coursesHeading": "{count, plural, other {# kursus}}",
     "duration": "Tempoh",
     "delivery": "Penyampaian",
     "deliveryValue": "Maya atau bersemuka",
