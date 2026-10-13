@@ -35,8 +35,9 @@ type FamilyId = (typeof PROBE_FAMILY_IDS)[number];
 /** One group in the route's answer: its requests, its distinct addresses, and the most-requested few. */
 type Family = { id: string; views: number; addresses: number; paths: Array<{ path: string; views: number }> };
 
-/** The route's answer, the fields this panel reads. */
-type Missing = { total: number; addresses: number; families: Family[] };
+/** The route's answer, the fields this panel reads (cut and limit since 2026-10-13: whether the list stopped at the
+ *  Worker's row limit, and that limit; an older Worker sends neither, read as not cut). */
+type Missing = { total: number; addresses: number; families: Family[]; cut?: boolean; limit?: number };
 
 /** A response id as a family the page can explain; an unknown one reads as an honest miss (the Worker and the
  *  page deploy together, so this is a guard, not a path anyone should take). */
@@ -147,10 +148,12 @@ export default function StatsMissing({
 
   return (
     <section className="stats-panel stats-missing" aria-labelledby="stats-missing-title">
-      {/* The panel's title, what it counts, and the window's totals over every address, listed or not. */}
+      {/* The panel's title, what it counts, and the window's totals over every address read, listed or not (every
+          address in the window unless the Worker's list was cut, which the count line then says). */}
       <h3 id="stats-missing-title" className="stats-panel-title">{t("title")}</h3>
       <p className="stats-panel-note">{t("note")}</p>
-      <p className="stats-panel-total">{t("count", { requests: data.total, addresses: data.addresses })}</p>
+      {/* A list the Worker cut at its limit counts the most requested addresses only, and says so (2026-10-13). */}
+      <p className="stats-panel-total">{t(data.cut === true ? "countCut" : "count", { requests: data.total, addresses: data.addresses })}</p>
 
       {data.families.length === 0 ? (
         // An empty window says so, like the other panels.

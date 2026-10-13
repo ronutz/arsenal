@@ -889,7 +889,7 @@
     "backHome": "Retour à l'accueil"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann est <r>Senior Technical Instructor et conseiller</r> chez <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann est <r>Senior Technical Instructor</r> chez <b>Red Education</b>",
     "privacy": "Confidentialité",
     "builtWith": "Conçu par Rodolfo Nützmann avec CONCORD",
     "colophon": "Comment cela a été conçu",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Le formateur",
-    "role": "Senior Technical Instructor et conseiller chez Red Education",
+    "role": "Senior Technical Instructor chez Red Education",
     "lede": "Formations réseau et sécurité dispensées par un praticien qui a passé sa carrière du côté de la mise en œuvre, pas seulement des diapositives. Basé à São Paulo, enseignant dans le monde entier, en portugais et en anglais.",
     "now": {
       "title": "Ce que je fais aujourd'hui",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron et Enterasys, 1996 à 2000",
       "s1Body": "La carrière formelle a commencé en 1996 chez Cabletron Systems, alors un fournisseur de premier plan d'équipements réseau basé à Rochester, dans le New Hampshire. Pendant quatre ans et demi, le rôle a couvert l'ingénierie terrain et le support après-vente, l'ingénierie systèmes et l'avant-vente, et, à partir de 1997, la formation certifiée. Le sujet était le LAN et le WAN d'entreprise de l'époque : commutateurs, routeurs, Wi-Fi et WLAN, gestion de réseau, NAC et UAC, et pare-feu à inspection avec état. En 2000, Cabletron s'est réorganisée en quatre entreprises, et la partie que cette carrière a touchée est devenue Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 à 2002",
-      "s2Body": "Le chapitre suivant s'est déroulé en Californie. Riverstone Networks, une émanation de Cabletron construisant des équipements de réseau métropolitain, a entraîné un déménagement à Santa Clara avec un visa de travail H1-B1. Le rôle était ingénieur support produit de niveau III et coordinateur de gestion des connaissances : escalade technique de troisième niveau, reproduction de scénarios clients en laboratoire, tests de régression et vérification de bogues, et construction de la base de connaissances sur laquelle s'appuyait le reste du support. Les technologies étaient l'épine dorsale du monde opérateur et métro du début des années 2000 : Gigabit Ethernet, MPLS, commutation et routage métropolitains, et BGP. Cette période a aussi produit un jalon formel : dans le cadre de la procédure de visa, une évaluation aux États-Unis en 2001 a reconnu un parcours éducatif équivalent à une licence en informatique et une licence en administration des affaires.",
+      "s2Body": "Le chapitre suivant s'est déroulé en Californie. Riverstone Networks, une émanation de Cabletron construisant des équipements de réseau métropolitain, a entraîné un déménagement à Santa Clara, d'abord avec un transfert intra-entreprise L-1, puis, en 2001 et 2002, avec un visa de travail H-1B. Le rôle était ingénieur support produit de niveau III et coordinateur de gestion des connaissances : escalade technique de troisième niveau, reproduction de scénarios clients en laboratoire, tests de régression et vérification de bogues, et construction de la base de connaissances sur laquelle s'appuyait le reste du support. Les technologies étaient l'épine dorsale du monde opérateur et métro du début des années 2000 : Gigabit Ethernet, MPLS, commutation et routage métropolitains, et BGP. Cette période a aussi produit un jalon formel : dans le cadre de la procédure de visa, une évaluation aux États-Unis en 2001 a reconnu un parcours éducatif équivalent à une licence en informatique et une licence en administration des affaires.",
       "s3Title": "Cisco Systems, Brasília, 2003 à 2004",
       "s3Body": "De retour au Brésil et sous contrat via Cisco Professional Services, le rôle s'est déplacé vers la relation client dans sa forme la plus exigeante. En tant que responsable des opérations à fort contact et point de contact unique, le travail était la gestion de la satisfaction client après-vente pour deux des plus grandes entités fédérales du Brésil, SERPRO, l'agence de traitement des données du gouvernement, et ECT-Correios, la poste nationale. La surface technique était constituée de commutateurs et routeurs Catalyst, de pare-feu PIX, et d'équilibreurs de charge CSS, CSM et ACE, mais le véritable travail était la gestion de l'escalade et le maintien du bon fonctionnement d'une infrastructure nationale critique.",
       "s4Title": "Enterasys à nouveau, puis Juniper, 2005 à 2010",
@@ -1038,7 +1038,7 @@
       "subtitle": "Une formation officielle à temps plein, dispensée dans le monde entier, et à côté, le conseil sur les décisions qui ont des conséquences.",
       "intro": "En 2020, un fil présent toute la carrière est devenu l'étoffe entière. Après deux décennies où l'enseignement accompagnait chaque rôle, la formation est devenue le travail lui-même : à temps plein, officielle, certifiée, dispensée à des professionnels et des équipes à travers le monde. Ce qui rend cette ère distincte, ce n'est pas seulement l'orientation, mais l'expansion délibérée et datée à travers les plateformes, chacune ajoutée par-dessus une profonde expérience de praticien plutôt qu'à sa place.",
       "s1Title": "À temps plein, par vocation",
-      "s1Body": "Depuis 2020, le travail consiste à dispenser des formations officielles animées par un formateur, à distance et en présentiel, en portugais et en anglais, à des publics du monde entier. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil. Les nationalités brésilienne et allemande, ainsi qu'une autorisation de voyage vers les États-Unis et le Royaume-Uni, rendent cette portée mondiale concrète : une éligibilité sans restriction à travailler dans l'Union européenne et le Mercosur, et la liberté d'aller là où se trouve la salle de classe.",
+      "s1Body": "Depuis 2020, le travail consiste à dispenser des formations officielles animées par un formateur, à distance et en présentiel, en portugais et en anglais, à des publics du monde entier. La prestation atteint l'Australie, Singapour, l'Inde, l'Europe centrale, les États-Unis et le Brésil. Les nationalités brésilienne et allemande, ainsi qu'un visa valide pour les États-Unis, rendent cette portée mondiale concrète : le droit de voyager, de vivre et de travailler dans l'Union européenne et partout où un passeport allemand ou brésilien est accepté sans visa, et la liberté d'aller là où se trouve la salle de classe.",
       "s2Title": "F5, depuis le début",
       "s2Body": "F5 est l'ancre depuis le début de cette ère, s'appuyant sur un travail avec BIG-IP qui remonte à plus d'une décennie. Le curriculum agréé couvre l'intégralité du catalogue BIG-IP animé par un formateur : Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, développement d'iRules, automatisation et dépannage, allant de cours d'une journée à quatre jours. Parallèlement à l'enseignement s'ajoute un complément pratique : des environnements de laboratoire F5 BIG-IP gérés, pour que la pratique ait toujours un lieu réel où se dérouler.",
       "s3Title": "L'expansion, plateforme par plateforme",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Deux ans à Santa Clara, à la lisière des réseaux opérateurs et métropolitains.",
-      "intro": "Le seul chapitre de cette carrière entièrement situé hors du Brésil. Riverstone Networks, un fournisseur d'équipements de réseau métropolitain basé à Santa Clara, en Californie, a entraîné un déménagement aux États-Unis avec un visa de travail H1-B1. Riverstone avait sa propre lignée inhabituelle : à l'origine une entreprise nommée Yago, rachetée par Cabletron vers 1998, puis réapparue comme entreprise indépendante par une scission en 2001. Elle a ensuite été rachetée par Alcatel-Lucent en 2006.",
+      "intro": "Le seul chapitre de cette carrière entièrement situé hors du Brésil. Riverstone Networks, un fournisseur d'équipements de réseau métropolitain basé à Santa Clara, en Californie, a entraîné un déménagement aux États-Unis, d'abord avec un transfert intra-entreprise L-1, puis, en 2001 et 2002, avec un visa de travail H-1B. Riverstone avait sa propre lignée inhabituelle : à l'origine une entreprise nommée Yago, rachetée par Cabletron vers 1998, puis réapparue comme entreprise indépendante par une scission en 2001. Elle a ensuite été rachetée par Alcatel-Lucent en 2006.",
       "s1Title": "Support de niveau III et gestion des connaissances",
       "s1Body": "Le rôle portait deux titres sur deux ans : ingénieur support produit et coordinateur de gestion des connaissances. En tant que spécialiste du support technique de niveau III, le travail était l'escalade de troisième niveau, la reproduction de scénarios clients en laboratoire, les tests de régression et la vérification de bogues. En tant que coordinateur de gestion des connaissances, il s'agissait de construire et d'organiser la base de connaissances sur laquelle s'appuyait le reste du support, parallèlement au soutien au marketing produit et à la formation interne. C'était le travail de support technique le plus approfondi de la carrière, au niveau où les problèmes les plus difficiles remontent.",
       "s2Title": "Le monde des réseaux métropolitains",
       "s2Body": "Les technologies étaient l'épine dorsale de l'ère opérateur et métro du début des années 2000 : Gigabit Ethernet, MPLS, commutation et routage métropolitains, et routage IP étendu, y compris BGP. Travailler au support de troisième niveau du fournisseur signifiait voir comment ces systèmes se comportaient aux limites, dans des conditions qui ne surgissent qu'en production à grande échelle. Cela a aussi délivré une formation formelle : formation aux concepts, fonctionnalités et configuration de Riverstone, et formation à l'identification des problèmes de support client et aux procédures d'escalade.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Évaluation d'équivalence éducative aux États-Unis reconnaissant un parcours équivalent à une licence en informatique et une licence en administration des affaires, achevée en 2001 dans le cadre de la procédure de visa H1-B1.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Évaluation d'équivalence éducative aux États-Unis reconnaissant un parcours équivalent à une licence en informatique et une licence en administration des affaires, achevée en 2001 dans le cadre de la procédure de visa H-1B.",
       "lineageTitle": "La lignée d'entreprise",
       "lineageDesc": "Riverstone Networks a débuté comme une entreprise nommée Yago, a été rachetée par Cabletron Systems vers 1998, a réapparu comme entreprise indépendante par une scission en 2001, et a été rachetée par Alcatel-Lucent en 2006."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Normes et cadres",
     "standardsLede": "Chaque outil ici met en œuvre une spécification publiée, pas une supposition. Les décodeurs et les calculateurs sont bâtis sur les documents qui définissent leurs formats et arrimés aux vecteurs de test que ces documents publient, de sorte que chaque réponse est vérifiée par rapport à la source de vérité et non par rapport à elle-même.",
     "specsLabel": "Les spécifications",
-    "specsBody": "Les JSON Web Tokens suivent la RFC 7519, avec les signatures et algorithmes dans les RFC 7515 et 7518 ; PKCE est la RFC 7636 ; Base64 et ses variantes sont la RFC 4648 ; les UUID sont la RFC 9562 (qui a rendu obsolète la RFC 4122 en 2024 et fournit ses propres vecteurs de test) ; HMAC est la RFC 2104, sur la famille SHA normalisée dans FIPS 180-4 et FIPS 202 ; les certificats X.509 sont la RFC 5280 ; IPv4 et la notation CIDR sont la RFC 4632 ; l'adressage IPv6 et sa forme textuelle canonique sont les RFC 4291 et RFC 5952 ; et le décodeur de cipher suites s'appuie sur le registre officiel IANA TLS Cipher Suites, recoupé avec les spécifications de TLS 1.3 et 1.2 (RFC 8446 et 5246), les règles de mise à jour du registre qui fixent la colonne “Recommended” (RFC 8447) et l'interdiction de RC4 (RFC 7465). Là où un registre fait autorité, ses données sont intégrées directement plutôt que ressaisies.",
+    "specsBody": "Les JSON Web Tokens suivent la RFC 7519, avec les signatures et algorithmes dans les RFC 7515 et 7518 ; PKCE est la RFC 7636 ; Base64 et ses variantes sont la RFC 4648 ; les UUID sont la RFC 9562 (qui a rendu obsolète la RFC 4122 en 2024 et fournit ses propres vecteurs de test) ; HMAC est la RFC 2104, sur la famille SHA normalisée dans FIPS 180-4 et FIPS 202 ; les certificats X.509 sont la RFC 5280 ; IPv4 est la RFC 791 et la notation CIDR la RFC 4632 ; l'adressage IPv6 et sa forme textuelle canonique sont les RFC 4291 et RFC 5952 ; et le décodeur de cipher suites s'appuie sur le registre officiel IANA TLS Cipher Suites, recoupé avec les spécifications de TLS 1.3 et 1.2 (RFC 8446 et 5246), les règles de mise à jour du registre qui fixent la colonne “Recommended” (RFC 8447) et l'interdiction de RC4 (RFC 7465). Là où un registre fait autorité, ses données sont intégrées directement plutôt que ressaisies.",
     "vectorsLabel": "Vecteurs de référence",
     "vectorsBody": "Chaque outil est livré avec un jeu de vecteurs de référence : des entrées connues associées à des sorties dont l'exactitude est connue, tirées des RFC et des organismes de normalisation pertinents. Ils s'exécutent à chaque build, de sorte qu'un remaniement qui modifie discrètement une réponse fait échouer le build au lieu d'être publié.",
     "owaspLabel": "OWASP",
@@ -1373,7 +1373,7 @@
   "contribute": {
     "eyebrow": "Traductions",
     "title": "Aidez à améliorer les traductions",
-    "lede": "Toutes les langues ici autres que l'anglais sont une première ébauche réalisée par machine. Si vous parlez l'une d'elles et remarquez quelque chose d'incorrect ou de maladroit, vos corrections sont les bienvenues. Voici comment les envoyer.",
+    "lede": "Le portugais brésilien est ici rédigé avec l'IA et relu progressivement ; toutes les autres langues que l'anglais sont une première ébauche réalisée par machine. Si vous parlez l'une d'elles et remarquez quelque chose d'incorrect ou de maladroit, vos corrections sont les bienvenues. Voici comment les envoyer.",
     "howTitle": "Comment contribuer",
     "howBody": "L'anglais est la source de référence, et toutes les autres langues en sont traduites, des erreurs sont donc possibles. Chaque pack de langue est un seul fichier texte de phrases étiquetées. Téléchargez celui que vous voulez améliorer, ne changez que le texte après chaque étiquette et laissez les étiquettes et tout ce qui se trouve entre accolades exactement tel quel. Envoyez ensuite le fichier modifié par e-mail en précisant la langue. Chaque envoi est relu à la main.",
     "downloadHeading": "Packs de langue",
@@ -1449,7 +1449,7 @@
     "complete": "Automatique, complète",
     "partial": "Automatique, en cours",
     "explainTitle": "Comment les traductions sont marquées",
-    "explainBody": "L'anglais et le portugais brésilien sont rédigés et relus par une personne. La plupart des autres langues sont traduites automatiquement et signalées selon leur avancement : ambre une fois qu'une langue couvre tout le site, jaune tant que le contenu plus récent est encore en anglais et en cours de rattrapage. Les langues marquées en rouge n'ont pas encore de traduction et sont affichées en anglais pour le moment. Les pages traduites automatiquement portent aussi un court avis, et vous êtes invité à les améliorer.",
+    "explainBody": "L'anglais est la source : rédigé avec l'IA et publié seulement quand une personne décide qu'il doit l'être. Le portugais brésilien est lui aussi rédigé avec l'IA et relu progressivement ; les autres langues sont traduites automatiquement. Chaque langue est signalée selon son avancement : bleu une fois qu'elle couvre tout le site, jaune tant que le contenu plus récent est encore en anglais et en cours de rattrapage, rouge tant qu'elle n'a pas de traduction et s'affiche en anglais pour le moment. Toutes les langues sauf l'anglais portent un court avis, et vous êtes invité à les améliorer.",
     "stub": "Pas encore traduit"
   },
   "changelog": {
@@ -1534,7 +1534,7 @@
     "bingoSub": "La tradition veut que vous placiez maintenant le mot bingo dans la réunion, l'air de rien.",
     "shuffling": "mélange des buzzwords…",
     "creditLinkLabel": "Le buzzword bingo",
-    "creditRest": " est une fière tradition de bureau : inventé chez Silicon Graphics en 1993 par Tom Davis et immortalisé par un strip de Dilbert en 1994.",
+    "creditRest": " est une fière tradition de bureau : baptisé chez Silicon Graphics début 1993 par Tom Davis et Seth Katz, et immortalisé par un strip de Dilbert en 1994.",
     "devFunTitle": "Retour à /dev/fun",
     "types": {
       "videocall": {

@@ -31,7 +31,8 @@
 // Training, About, the contact form and the footer link here too.
 //
 // WHY THIS IS A SEPARATE PAGE FROM /advisory still holds: the two prepared
-// talks, "A Revolução da Tecnologia" and "Hard Work, Hard Party", are not
+// talks, "The Technology Revolution" ("A Revolução da Tecnologia" in
+// Portuguese) and "Hard Work, Hard Party", are not
 // technical; the buyer is an event organiser or a team lead, not an
 // infrastructure manager with a decision to make. The talks are recorded in
 // the project material as "Temas especiais" with exactly the framing used
@@ -59,11 +60,24 @@ import ReduBrand from "@/components/ReduBrand";
 /** The contact form's speaking route: the topic preselected and the event template prefilled (ContactForm). */
 const BOOK_HREF = "/contact?intent=speaking#contact-form";
 
-/** The two tracks, each with its prepared talk and that talk's anchor on this page. */
+/** The two tracks, each with its prepared talk. */
 const TRACKS = [
-  { key: "track1", talk: "talk1", anchor: "a-revolucao-da-tecnologia" },
-  { key: "track2", talk: "talk2", anchor: "hard-work-hard-party" },
+  { key: "track1", talk: "talk1" },
+  { key: "track2", talk: "talk2" },
 ] as const;
+
+/** A talk's anchor on this page, made from its title in the page's own language (2026-10-13, row 71, PRIME: "WHY are
+ *  you naming a talk using PORTUGUESE in the ENGLISH LANGUAGE SECTION???"): "The Technology Revolution" anchors as
+ *  #the-technology-revolution on the English page, "A Revolução da Tecnologia" as #a-revolucao-da-tecnologia on the
+ *  Portuguese one. Lower case, accents dropped, anything else between words a single hyphen. */
+function anchorOf(title: string): string {
+  return title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
 /** The formats a booking can take, in the order an organiser meets them; the briefing follows, pointing to Advisory. */
 const FORMATS = [1, 2, 3, 4, 5] as const;
@@ -139,14 +153,14 @@ export default async function SpeakingPage({
               <h2 className="section-title">{t("tracksTitle")}</h2>
               <p className="section-body">{t("tracksLede")}</p>
               <ul className="speaking-tracks">
-                {TRACKS.map(({ key, talk, anchor }) => (
+                {TRACKS.map(({ key, talk }) => (
                   <li key={key} className="speaking-track">
                     <h3 className="speaking-track-title">{t(`${key}Title`)}</h3>
                     <p className="speaking-track-body">{t(`${key}Body`)}</p>
                     <p className="speaking-track-for">{t(`${key}For`)}</p>
                     <p className="speaking-track-talk">
                       <span className="speaking-track-talk-label">{t("trackTalkLabel")}</span>{" "}
-                      <a href={`#${anchor}`}>{t(`${talk}Title`)}</a>
+                      <a href={`#${anchorOf(t(`${talk}Title`))}`}>{t(`${talk}Title`)}</a>
                     </p>
                   </li>
                 ))}
@@ -154,16 +168,17 @@ export default async function SpeakingPage({
             </div>
           </section>
 
-          {/* The talks. Two, presented as equals: they suit different moments rather than different budgets. Both
-              keep their Portuguese titles in every locale, as named works; the subtitle carries the sense. Each card
-              names its track and carries the anchor the track links to. */}
+          {/* The talks. Two, presented as equals: they suit different moments rather than different budgets. Each
+              is titled in the page's own language (row 71, 2026-10-13: the English page had kept the Portuguese title,
+              "Wrong call there, mate"); "Hard Work, Hard Party" is English in PRIME's own Portuguese material too, so it
+              reads the same in both. Each card names its track and carries the anchor the track links to. */}
           <section className="section" id="talks">
             <div className="container">
               <h2 className="section-title">{t("talksTitle")}</h2>
               {/* learn-card pattern again - reuse rather than new classes. */}
               <ul className="learn-grid">
-                {TRACKS.map(({ key, talk, anchor }) => (
-                  <li key={talk} className="learn-grid-item speaking-talk" id={anchor}>
+                {TRACKS.map(({ key, talk }) => (
+                  <li key={talk} className="learn-grid-item speaking-talk" id={anchorOf(t(`${talk}Title`))}>
                     <div className="learn-card">
                       <p className="speaking-talk-track mono">{t(`${key}Title`)}</p>
                       <h3 className="learn-card-title">{t(`${talk}Title`)}</h3>

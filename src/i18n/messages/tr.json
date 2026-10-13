@@ -889,7 +889,7 @@
     "backHome": "Ana sayfaya dön"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann, <b>Red Education</b> bünyesinde <r>Senior Technical Instructor ve Danışmandır</r>",
+    "redEducation": "Rodolfo Nützmann, <b>Red Education</b> bünyesinde <r>Senior Technical Instructor</r> olarak görev yapıyor",
     "privacy": "Gizlilik",
     "builtWith": "Rodolfo Nützmann tarafından CONCORD ile yapıldı",
     "colophon": "Nasıl yapıldı",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Eğitmen",
-    "role": "Red Education bünyesinde Senior Technical Instructor ve Danışman",
+    "role": "Red Education bünyesinde Senior Technical Instructor",
     "lede": "Kariyerinin çoğunu sadece slaytların önünde değil, uygulama tarafında geçirmiş bir uygulayıcı tarafından sunulan ağ ve güvenlik eğitimi. São Paulo merkezli, dünya genelinde, Portekizce ve İngilizce öğretiyor.",
     "now": {
       "title": "Şu an ne yapıyorum",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron ve Enterasys, 1996'dan 2000'e",
       "s1Body": "Resmi kariyer 1996'da, o zaman New Hampshire, Rochester merkezli önemli bir ağ ekipmanı satıcısı olan Cabletron Systems'de başladı. Dört buçuk yıl boyunca bu rol, saha mühendisliği ve satış sonrası destek, sistem mühendisliği ve satış öncesi ile 1997'den itibaren sertifikalı eğitimi kapsadı. Tema, o dönemin kurumsal LAN ve WAN ağlarıydı: anahtarlar, yönlendiriciler, Wi-Fi ve WLAN, ağ yönetimi, NAC ve UAC ve durum denetimli güvenlik duvarları. 2000'de Cabletron dört şirkete yeniden yapılandı ve bu kariyerle ilgili kısım Enterasys Networks oldu.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000'den 2002'ye",
-      "s2Body": "Sonraki bölüm California'da geçti. Cabletron'dan ayrılan ve metropol ağları için ekipman üreten bir şirket olan Riverstone Networks, H1-B1 çalışma vizesiyle Santa Clara'ya taşınmak demekti. Rol, üçüncü seviye ürün destek mühendisi ve bilgi yönetimi koordinatörüydü: üçüncü seviye teknik yükseltme, laboratuvarda müşteri senaryolarını yeniden üretmek, regresyon testi ve hata doğrulama ve geri kalan desteği besleyen bir bilgi tabanı kurmak. Teknoloji, iki binli yılların başındaki operatör ve metropol dünyasının bel kemiğiydi: Gigabit Ethernet, MPLS, metropol anahtarlama ve yönlendirme ve BGP. Bu dönem ayrıca resmi bir başarı getirdi: vize sürecinin bir parçası olarak, 2001'deki bir ABD değerlendirmesi, bilgisayar bilimi lisans derecesi ve işletme lisans derecesine eşdeğer bir eğitimi kabul etti.",
+      "s2Body": "Sonraki bölüm California'da geçti. Cabletron'dan ayrılan ve metropol ağları için ekipman üreten bir şirket olan Riverstone Networks, önce şirket içi L-1 transferiyle, ardından 2001 ve 2002'de H-1B çalışma vizesiyle Santa Clara'ya taşınmak demekti. Rol, üçüncü seviye ürün destek mühendisi ve bilgi yönetimi koordinatörüydü: üçüncü seviye teknik yükseltme, laboratuvarda müşteri senaryolarını yeniden üretmek, regresyon testi ve hata doğrulama ve geri kalan desteği besleyen bir bilgi tabanı kurmak. Teknoloji, iki binli yılların başındaki operatör ve metropol dünyasının bel kemiğiydi: Gigabit Ethernet, MPLS, metropol anahtarlama ve yönlendirme ve BGP. Bu dönem ayrıca resmi bir başarı getirdi: vize sürecinin bir parçası olarak, 2001'deki bir ABD değerlendirmesi, bilgisayar bilimi lisans derecesi ve işletme lisans derecesine eşdeğer bir eğitimi kabul etti.",
       "s3Title": "Cisco Systems, Brasília, 2003'ten 2004'e",
       "s3Body": "Brezilya'ya dönüp Cisco Professional Services üzerinden çalışırken rol, en zorlu haliyle müşteri ilişkilerine kaydı. Yüksek temaslı operasyon yöneticisi ve tek temas noktası olarak iş, Brezilya'nın en büyük iki federal kuruluşu için satış sonrası müşteri memnuniyetini yönetmekti: hükümet veri işleme kurumu SERPRO ve ulusal posta ECT-Correios. Teknik yüzey, Catalyst anahtarlar ve yönlendiriciler, PIX güvenlik duvarları ve CSS, CSM ve ACE yük dengeleyicilerdi; ama asıl iş, yükseltme yönetimi ve kritik ulusal altyapıyı çalışır tutmaktı.",
       "s4Title": "Yeniden Enterasys, ardından Juniper, 2005'ten 2010'a",
@@ -1038,7 +1038,7 @@
       "subtitle": "Dünya genelinde verilen tam zamanlı resmi eğitim ve yanında sonuç doğuran kararlar üzerine danışmanlık.",
       "intro": "2020'de, tüm kariyer boyunca uzanan çizgi, kumaşın tamamı oldu. Öğretimin yirmi yıl boyunca her role eşlik etmesinin ardından, eğitim işin kendisi oldu: dünya genelindeki profesyoneller ve ekipler için tam zamanlı, resmi, sertifikalı öğretim. Bu dönemi ayıran sadece odağı değil, aynı zamanda platformlar arasında kasıtlı ve tarihli genişlemesidir; her biri derin saha deneyiminin yerine değil, üzerine eklenmiştir.",
       "s1Title": "Tam zamanlı, göreve hazır",
-      "s1Body": "2020'den beri iş, eğitmen liderliğindeki resmi eğitimleri, çevrimiçi ve yüz yüze, Portekizce ve İngilizce, dünya genelindeki katılımcılara sunmaktır. Sunum Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, Amerika Birleşik Devletleri'ne ve Brezilya'ya ulaşır. Brezilya ve Almanya vatandaşlığı, ABD ile İngiltere'ye seyahat izinleriyle birlikte, bu küresel erişimi pratik kılar: Avrupa Birliği ve Mercosur'da sınırsız çalışma hakkı ve katılımcıların bulunduğu yere gitme özgürlüğü.",
+      "s1Body": "2020'den beri iş, eğitmen liderliğindeki resmi eğitimleri, çevrimiçi ve yüz yüze, Portekizce ve İngilizce, dünya genelindeki katılımcılara sunmaktır. Sunum Avustralya'ya, Singapur'a, Hindistan'a, Orta Avrupa'ya, Amerika Birleşik Devletleri'ne ve Brezilya'ya ulaşır. Brezilya ve Almanya vatandaşlığı, geçerli bir ABD vizesiyle birlikte, bu küresel erişimi pratik kılar: Avrupa Birliği'nde ve Alman ya da Brezilya pasaportunun vizesiz kabul edildiği her yerde seyahat etme, yaşama ve çalışma hakkı ve katılımcıların bulunduğu yere gitme özgürlüğü.",
       "s2Title": "F5, en baştan",
       "s2Body": "F5, on yıldan fazla geriye uzanan BIG-IP çalışmasının üzerine kurulu olarak, bu dönemin başından beri çıpadır. Yetkili program, eğitmen liderliğindeki tüm BIG-IP kataloğunu kapsar: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules geliştirme, otomasyon ve sorun giderme; bir günden dört güne kadar kurslar. Eğitime, uygulamalı bir tamamlayıcı eşlik eder: yönetilen bir F5 BIG-IP laboratuvar ortamı, böylece eğitimin her zaman gerçek bir yapacağı yer olur.",
       "s3Title": "Genişleme, platform platform",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Santa Clara'da iki yıl, operatör ve metropol ağlarının ön cephesinde.",
-      "intro": "Bu kariyerin tamamen Brezilya dışında geçen tek bölümü. California, Santa Clara merkezli, metropol ağları için ekipman üreten bir şirket olan Riverstone Networks, H1-B1 çalışma vizesiyle ABD'ye taşınmak demekti. Riverstone'un olağandışı bir soyu vardı: aslında Yago adlı bir şirketti, 1998 dolaylarında Cabletron tarafından satın alındı ve 2001'de bir ayrışmayla yeniden bağımsız bir şirket olarak ortaya çıktı. Daha sonra 2006'da Alcatel-Lucent tarafından satın alındı.",
+      "intro": "Bu kariyerin tamamen Brezilya dışında geçen tek bölümü. California, Santa Clara merkezli, metropol ağları için ekipman üreten bir şirket olan Riverstone Networks, önce şirket içi L-1 transferiyle, ardından 2001 ve 2002'de H-1B çalışma vizesiyle ABD'ye taşınmak demekti. Riverstone'un olağandışı bir soyu vardı: aslında Yago adlı bir şirketti, 1998 dolaylarında Cabletron tarafından satın alındı ve 2001'de bir ayrışmayla yeniden bağımsız bir şirket olarak ortaya çıktı. Daha sonra 2006'da Alcatel-Lucent tarafından satın alındı.",
       "s1Title": "Üçüncü seviye destek ve bilgi yönetimi",
       "s1Body": "Bu rolün iki yıl boyunca iki unvanı vardı: ürün destek mühendisi ve bilgi yönetimi koordinatörü. Üçüncü seviye teknik destek uzmanı olarak iş, üçüncü seviye yükseltme, laboratuvarda müşteri senaryolarını yeniden üretmek, regresyon testi ve hata doğrulamaydı. Bilgi yönetimi koordinatörü olarak ise, geri kalan desteği besleyen bir bilgi tabanı kurmak ve düzenlemek, buna ürün pazarlama desteği ve dahili eğitim de eşlik ediyordu. Bu, kariyerdeki en derin teknik destek işiydi; en zorlu sorunları alan seviyede.",
       "s2Title": "Metropol ağlarının dünyası",
       "s2Body": "Teknoloji, iki binli yılların başındaki operatör ve metropol çağının bel kemiğiydi: Gigabit Ethernet, MPLS, metropol anahtarlama ve yönlendirme ve BGP dahil küresel IP yönlendirme. Üçüncü seviye satıcı desteğinde çalışmak, bu sistemlerin kenarlarında nasıl davrandığını görmek demekti; yalnızca büyük ölçekli üretimde ortaya çıkan koşullarda. Ayrıca resmi eğitim getirdi: Riverstone kavramları, özellikleri ve yapılandırması üzerine eğitim ve müşteri desteğinde sorun tanıma ile yükseltme prosedürleri üzerine eğitim.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. ABD eğitim denklik değerlendirmesi; bilgisayar bilimi lisans derecesi ve işletme lisans derecesine eşdeğer bir eğitimi kabul eder, 2001'de H1-B1 vize sürecinin bir parçası olarak tamamlandı.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. ABD eğitim denklik değerlendirmesi; bilgisayar bilimi lisans derecesi ve işletme lisans derecesine eşdeğer bir eğitimi kabul eder, 2001'de H-1B vize sürecinin bir parçası olarak tamamlandı.",
       "lineageTitle": "Kurumsal soy",
       "lineageDesc": "Riverstone Networks, Yago adlı bir şirket olarak başladı, 1998 dolaylarında Cabletron Systems tarafından satın alındı, 2001'de bir ayrışmayla yeniden bağımsız bir şirket olarak ortaya çıktı ve 2006'da Alcatel-Lucent tarafından satın alındı."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Standartlar ve çerçeveler",
     "standardsLede": "Buradaki her araç bir tahmini değil, yayımlanmış bir spesifikasyonu uygular. Kod çözücüler ve hesaplayıcılar, biçimlerini tanımlayan belgeler üzerine inşa edilir ve bu belgelerin yayımladığı test vektörlerine sabitlenir, böylece her yanıt kendisine karşı değil doğruluk kaynağına karşı doğrulanır.",
     "specsLabel": "Spesifikasyonlar",
-    "specsBody": "JSON Web Tokens, RFC 7519'u izler; imzalar ve algoritmalar RFC 7515 ve 7518'dedir; PKCE, RFC 7636'dır; Base64 ve türevleri RFC 4648'dir; UUID'ler RFC 9562'dir (2024'te RFC 4122'yi yürürlükten kaldırmış ve kendi test vektörlerini içerir); HMAC, FIPS 180-4 ve FIPS 202'de standartlaştırılan SHA ailesi üzerinde RFC 2104'tür; X.509 sertifikaları RFC 5280'dir; IPv4 ve CIDR gösterimi RFC 4632'dir; IPv6 adreslemesi ve kanonik metin biçimi RFC 4291 ve RFC 5952'dir; ve cipher suite kod çözücüsü, resmi IANA TLS Cipher Suites kaydına dayanır; TLS 1.3 ve 1.2 spesifikasyonlarıyla (RFC 8446 ve 5246), “Recommended” sütununu belirleyen kayıt güncelleme kurallarıyla (RFC 8447) ve RC4 yasağıyla (RFC 7465) çapraz kontrol edilir. Bir kaydın otorite olduğu yerde verileri yeniden yazılmak yerine doğrudan gömülür.",
+    "specsBody": "JSON Web Tokens, RFC 7519'u izler; imzalar ve algoritmalar RFC 7515 ve 7518'dedir; PKCE, RFC 7636'dır; Base64 ve türevleri RFC 4648'dir; UUID'ler RFC 9562'dir (2024'te RFC 4122'yi yürürlükten kaldırmış ve kendi test vektörlerini içerir); HMAC, FIPS 180-4 ve FIPS 202'de standartlaştırılan SHA ailesi üzerinde RFC 2104'tür; X.509 sertifikaları RFC 5280'dir; IPv4 RFC 791'dir, CIDR gösterimi ise RFC 4632'dir; IPv6 adreslemesi ve kanonik metin biçimi RFC 4291 ve RFC 5952'dir; ve cipher suite kod çözücüsü, resmi IANA TLS Cipher Suites kaydına dayanır; TLS 1.3 ve 1.2 spesifikasyonlarıyla (RFC 8446 ve 5246), “Recommended” sütununu belirleyen kayıt güncelleme kurallarıyla (RFC 8447) ve RC4 yasağıyla (RFC 7465) çapraz kontrol edilir. Bir kaydın otorite olduğu yerde verileri yeniden yazılmak yerine doğrudan gömülür.",
     "vectorsLabel": "Referans vektörleri",
     "vectorsBody": "Her araç bir referans vektörü kümesiyle gelir: ilgili RFC'lerden ve standardizasyon kuruluşlarından alınan, bilinen doğru çıktılarla eşleştirilmiş bilinen girdiler. Her derlemede çalışırlar, böylece bir yanıtı sessizce değiştiren bir yeniden düzenleme yayımlanmak yerine derlemeyi başarısız kılar.",
     "owaspLabel": "OWASP",
@@ -1340,7 +1340,7 @@
   "contribute": {
     "eyebrow": "Çeviriler",
     "title": "Çevirileri iyileştirmeye yardım et",
-    "lede": "Buradaki İngilizce dışındaki her dil, makine tarafından yapılmış bir ilk taslaktır. Bunlardan birini konuşuyorsan ve yanlış ya da hantal bir şey fark edersen, düzeltmelerin gerçekten çok hoş karşılanır. İşte bunları gönderme yolu.",
+    "lede": "Buradaki Brezilya Portekizcesi yapay zekâ ile yazılır ve zamanla gözden geçirilir; İngilizce dışındaki diğer her dil, makine tarafından yapılmış bir ilk taslaktır. Bunlardan birini konuşuyorsan ve yanlış ya da hantal bir şey fark edersen, düzeltmelerin gerçekten çok hoş karşılanır. İşte bunları gönderme yolu.",
     "howTitle": "Nasıl katkıda bulunulur",
     "howBody": "İngilizce, doğruluğun kaynağıdır ve diğer her dil ondan çevrilir, dolayısıyla hatalar olabilir. Her dil paketi, etiketli ifadelerden oluşan tek bir metin dosyasıdır. İyileştirmek istediğin paketi indir, yalnızca her etiketten sonraki metni değiştir ve etiketleri ve süslü parantez içindeki her şeyi olduğu gibi bırak. Sonra düzenlenmiş dosyayı e-postayla gönder ve dili belirt. Her gönderim elle incelenir.",
     "downloadHeading": "Dil paketleri",
@@ -1449,7 +1449,7 @@
     "complete": "Makine, tamamlandı",
     "partial": "Makine, sürüyor",
     "explainTitle": "Çeviriler nasıl işaretlenir",
-    "explainBody": "İngilizce ve Brezilya Portekizcesi bir kişi tarafından yazılır ve gözden geçirilir. Diğer dillerin çoğu makine çevirisidir ve ne kadar ilerlediğine göre işaretlenir: bir dil tüm siteyi kapsadığında kehribar, daha yeni içerik hâlâ İngilizceyken ve aradaki farkı kapatırken sarı. Kırmızıyla işaretlenen dillerin henüz çevirisi yoktur ve şimdilik İngilizce gösterilir. Makine çevirisi sayfalarda kısa bir not da bulunur ve bunların herhangi birini iyileştirmeye yardımcı olabilirsiniz.",
+    "explainBody": "İngilizce kaynak dildir: yapay zekâ ile yazılır ve yalnızca bir kişi karar verdiğinde yayımlanır. Brezilya Portekizcesi de yapay zekâ ile yazılır ve zamanla gözden geçirilir; diğer diller makine çevirisidir. Her dil ne kadar ilerlediğine göre işaretlenir: tüm siteyi kapsadığında mavi, daha yeni içerik hâlâ İngilizceyken ve aradaki farkı kapatırken sarı, henüz çevirisi olmadığında ve şimdilik İngilizce gösterildiğinde kırmızı. İngilizce dışındaki her dilde kısa bir not bulunur ve bunların herhangi birini iyileştirmeye yardımcı olabilirsiniz.",
     "stub": "Henüz çevrilmedi"
   },
   "changelog": {

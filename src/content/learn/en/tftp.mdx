@@ -1,0 +1,126 @@
+---
+slug: tftp
+title: "TFTP: the simplest file transfer, and where it still runs"
+summary: "The Trivial File Transfer Protocol moves one file over UDP in 512-byte blocks, one block in flight and one acknowledgement each, with no login and no directory listing. After reading, you can follow a transfer packet by packet from port 69 to the last short block, explain the Sorcerer's Apprentice Syndrome and the options that negotiate block size, timeout, file size and window, and say where the protocol still runs and what to check when a transfer stalls."
+concepts: ["tftp", "udp", "port 69", "transfer identifier", "lock step", "block size", "sorcerer's apprentice syndrome", "option negotiation", "oack", "windowsize", "network boot", "firmware"]
+relatedTools: ["curl-command-builder"]
+relatedArticles: ["pxe-and-network-boot", "bootp-and-dhcp-options", "dhcp-lease-lifecycle"]
+category: networking
+order: 348
+status: reviewed
+updated: "2026-10-13"
+---
+
+A machine that has just powered on, or a router with nothing running but its boot loader, has to fetch one file before it can do anything else, with a protocol small enough to fit in a boot ROM (read-only memory). The Trivial File Transfer Protocol (TFTP) is that protocol: one file, over the User Datagram Protocol (UDP), in 512-byte blocks, one block in flight at a time. Its standard, Request for Comments (RFC) 1350, says so itself: "It is designed to be small and easy to implement.  Therefore, it lacks most of the features of a regular FTP", the File Transfer Protocol ([RFC 1350, section 1](https://www.rfc-editor.org/rfc/rfc1350.txt)). What follows is enough to read a transfer packet by packet, to say why it stalls, and to recognise where TFTP still runs.
+
+## Why "trivial": the RFC's own reasons
+
+The name is the RFC's own explanation: "TFTP is a simple protocol to transfer files, and therefore was named the Trivial File Transfer Protocol or TFTP", and the same section says what was left out: "It cannot list directories, and currently has no provisions for user authentication" ([RFC 1350, section 1](https://www.rfc-editor.org/rfc/rfc1350.txt)). It runs on UDP and supplies its own reliability with one rule: each data packet "must be acknowledged by an acknowledgment packet before the next packet can be sent", and "A data packet of less than 512 bytes signals termination of a transfer" ([RFC 1350, section 2](https://www.rfc-editor.org/rfc/rfc1350.txt)).
+
+This **lock step** is the whole design, and the RFC gives its reasons: "the fixed length blocks make allocation straight forward, and the lock step acknowledgement provides flow control and eliminates the need to reorder incoming data packets" (section 2). The price was named in 1989: TFTP "can provide good performance only over paths that have a small delay*bandwidth product" ([RFC 1123, section 4.2.1](https://www.rfc-editor.org/rfc/rfc1123.txt)). RFC 783 published the protocol in June 1981, already titled "THE TFTP PROTOCOL (REVISION 2)" ([RFC 783](https://www.rfc-editor.org/rfc/rfc783.txt)); RFC 1350, by Karen Sollins of the Massachusetts Institute of Technology (MIT), replaced it in July 1992 as "STD: 33", Internet Standard 33. The 1998 option RFCs cite it as "October 1992"; the RFC Editor's record says July 1992 and is authoritative ([RFC 2347, references](https://www.rfc-editor.org/rfc/rfc2347.txt)).
+
+## The five packet types, and the three modes
+
+Every packet begins with "a 2 byte opcode field which indicates the packet's type" ([RFC 1350, section 3](https://www.rfc-editor.org/rfc/rfc1350.txt)). The five types, read request (RRQ), write request (WRQ), data (DATA), acknowledgment (ACK) and error (ERROR), and the fields that follow the opcode in each ([RFC 1350, section 5](https://www.rfc-editor.org/rfc/rfc1350.txt)):
+
+| Packet (opcode) | Field | Size | Meaning |
+|---|---|---|---|
+| RRQ (1), WRQ (2) | Filename | string | "a sequence of bytes in netascii terminated by a zero byte" |
+| | 0 | 1 byte | terminator |
+| | Mode | string | "netascii", "octet", or "mail", in any mix of case |
+| | 0 | 1 byte | terminator |
+| DATA (3) | Block # | 2 bytes | "block numbers are consecutive and begin with one" |
+| | Data | 0 to 512 bytes | 512 means more follows; "from zero to 511 bytes long, it signals the end of the transfer" |
+| ACK (4) | Block # | 2 bytes | "echoes the block number of the DATA packet being acknowledged"; zero in the ACK to a WRQ |
+| ERROR (5) | ErrorCode | 2 bytes | one of the codes tabled below |
+| | ErrMsg | string | "intended for human consumption, and should be in netascii" |
+| | 0 | 1 byte | terminator |
+
+The transfer ends with "a DATA packet that contains between 0 and 511 bytes of data (i.e., Datagram length < 516)"; the last sender "must retransmit it until the packet is acknowledged or the sending host times out", and the last acknowledger should wait, since "dallying is encouraged" ([RFC 1350, section 6](https://www.rfc-editor.org/rfc/rfc1350.txt)). The 516 is 4 bytes of header plus 512 of data, and two verified errata disagree with it, one (2019) wanting 512, the data alone, the other (2024) wanting 524, the UDP datagram of 8 + 4 + 512 ([RFC 1350 errata](https://www.rfc-editor.org/errata/rfc1350)); RFC 906 used 524 in 1984 ([RFC 906](https://www.rfc-editor.org/rfc/rfc906.txt)).
+
+Of the modes, netascii is "8 bit ascii", and a receiving host "must translate the data to its own format"; octet is "raw 8 bit bytes", returned "identical to the original"; mail is "obsolete and should not be implemented or used" ([RFC 1350, sections 1 and 5](https://www.rfc-editor.org/rfc/rfc1350.txt)), and RFC 1123 says it "SHOULD NOT be supported" ([RFC 1123, section 4.2.2.1](https://www.rfc-editor.org/rfc/rfc1123.txt)).
+
+## Port 69, the transfer identifiers and the error codes
+
+Only the first packet goes to the well-known port: the client "sends its initial request to the known TID 69 decimal (105 octal) on the serving host" ([RFC 1350, section 4](https://www.rfc-editor.org/rfc/rfc1350.txt)). A **transfer identifier** (TID) is a UDP port, "passed to the Datagram layer to be used as ports" (section 3). The server does not reply from 69: the response "uses a TID chosen by the server as its source TID", and "The two chosen TID's are then used for the remainder of the transfer." A read is answered at once with "a "DATA" (with block number= 1)" from that new port; a write with "a "ACK" (with block number= 0)" ([RFC 1350, section 4 and Appendix I](https://www.rfc-editor.org/rfc/rfc1350.txt)). After that, a packet from the wrong source TID "should be discarded as erroneously sent from somewhere else" and answered with an error "while not disturbing the transfer". That fresh port is also why a filter that admits only UDP 69 passes the request and drops the rest; RFC 3617 notes that "More likely firewalls will prohibit transfers" ([RFC 3617, section 5](https://www.rfc-editor.org/rfc/rfc3617.txt)).
+
+An error packet "is not acknowledged, and not retransmitted", so the other side learns of it only by timeout (section 2). The codes ([RFC 1350, Appendix I](https://www.rfc-editor.org/rfc/rfc1350.txt)):
+
+| Code | Meaning |
+|---|---|
+| 0 | Not defined, see error message (if any). |
+| 1 | File not found. |
+| 2 | Access violation. |
+| 3 | Disk full or allocation exceeded. |
+| 4 | Illegal TFTP operation. |
+| 5 | Unknown transfer ID. |
+| 6 | File already exists. |
+| 7 | No such user. |
+
+## The Sorcerer's Apprentice Syndrome and the two words that fixed it
+
+RFC 1123 named the flaw in 1989: "a serious bug, known as the "Sorcerer's Apprentice Syndrome," in the protocol specification", which "may cause excessive retransmission" ([RFC 1123, section 4.2.3.1](https://www.rfc-editor.org/rfc/rfc1123.txt)). The cause was "the protocol rule that either side, on receiving an old duplicate datagram, may resend the current datagram": one ACK delayed past the sender's timeout yields a duplicate DATA, then a duplicate ACK, and from then on "every datagram will be sent in duplicate for the remainder of the transfer". The fix is a MUST: the sender "must never resend the current DATA packet on receipt of a duplicate ACK".
+
+RFC 1350 wrote it into section 5 as two insertions. RFC 783 had "Sending  a  DATA  packet  is  an acknowledgment  for the ACK packet of the previous DATA packet." ([RFC 783, section 5](https://www.rfc-editor.org/rfc/rfc783.txt)); RFC 1350 has "All  packets other than duplicate ACK's and those used for termination are acknowledged unless a timeout occurs [4].  Sending a DATA packet is an acknowledgment for the first ACK packet of the previous DATA packet." ([RFC 1350, section 5](https://www.rfc-editor.org/rfc/rfc1350.txt)). The words "duplicate" and "first" carry the whole repair; RFC 1350 names the bug only in its acknowledgements. RFC 1123 adds a second MUST: "A TFTP implementation MUST use an adaptive timeout" ([RFC 1123, section 4.2.3.2](https://www.rfc-editor.org/rfc/rfc1123.txt)).
+
+## The options, and the 32 MB question
+
+RFC 1350 negotiates nothing but a name and a mode. RFC 2347, of May 1998, appends options to the request, each a zero-terminated name "in case-insensitive ASCII (e.g., blksize)" and a zero-terminated value, and adds a sixth packet: "A new type of TFTP packet, the Option Acknowledgment (OACK), is used to acknowledge a client's option negotiation request", with "A new error code, 8" for a refused negotiation ([RFC 2347, Packet Formats](https://www.rfc-editor.org/rfc/rfc2347.txt)). The OACK carries opcode 6, "for Option Acknowledgment", followed only by the acknowledged option and value pairs. "only the client may initiate option negotiation", unsupported options "should be omitted from the OACK", and one left out "must be ignored by the client and server as if it were never requested" ([RFC 2347, Negotiation Protocol](https://www.rfc-editor.org/rfc/rfc2347.txt)); the client confirms an OACK to a read with an ACK of block 0. Four options are standardised:
+
+| Option | RFC | Value | Server may | Purpose |
+|---|---|---|---|---|
+| blksize | 2348 | "8" to "65464" data octets, header excluded | only lower it | fewer packets on a local area network (LAN) with a 1500-byte maximum transmission unit (MTU) |
+| timeout | 2349 | "1" to "255" seconds | only echo it ("must match") | an agreed retransmission interval |
+| tsize | 2349 | "0" in a read, the file size in a write | return the size in octets | the receiver knows the size before block 1 |
+| windowsize | 7440 | 1 to 65535 blocks | only lower it | several blocks per ACK |
+
+Blocksize came first, because 512 "is not the most efficient for use on a LAN whose MTU may 1500 octets or greater" ([RFC 2348, Abstract](https://www.rfc-editor.org/rfc/rfc2348.txt); the grammar is the RFC's). Windowsize is RFC 7440 (January 2015), whose header carries no Updates line, so it is not recorded as updating RFC 1350. Its motive is big boot images and LAN throughput, not long paths: the lock step "limits throughput when used on a LAN" (Abstract), TFTP "is still massively used in network boot/installation scenarios including EFI (Extensible Firmware Interface)", and blocksize alone "produces insufficient results when transferring big files, for example, the initial ramdisk of Linux distributions or the PE images used in network installations by Microsoft WDS/MDT/SCCM" ([RFC 7440, section 1](https://www.rfc-editor.org/rfc/rfc7440.txt)); windowsize 1 "MUST be equivalent to traffic specified by [RFC1350]" (section 4).
+
+Now the 32 MB question. The block number has 2 bytes and begins at 1, so 65535 blocks can be numbered before the field must return to 0; at 512 bytes that is 65535 × 512 = 33,553,920 bytes, 32 MiB. That arithmetic is the whole origin of the "32 MB limit"; no RFC states it. No TFTP RFC says what happens when the number passes 65535, and RFC 3617 says "the TFTP protocol does not specify length limits to either file names or file sizes" ([RFC 3617, section 2.1](https://www.rfc-editor.org/rfc/rfc3617.txt)). Whether a transfer wraps the counter and carries on is implementation behaviour: a 2009 Cisco Community thread (a secondary source) states the belief, "some TFTP servers have a file size limitation; often 32 MB.", and was resolved by changing the server software ([Cisco Community, loading IOS greater than 33MBs fails](https://community.cisco.com/t5/routing/loading-ios-greater-than-33mbs-fails/m-p/1143654/highlight/true)). A larger block raises the no-wrap ceiling in proportion.
+
+## No authentication, and a recommendation against continued use
+
+TFTP "includes no login or access control mechanisms", so servers are often set up so that "only files that have public read access are available via TFTP and writing files via TFTP is disallowed" ([RFC 1350, Security Considerations](https://www.rfc-editor.org/rfc/rfc1350.txt)). The option RFCs add: "The basic TFTP protocol has no security mechanism.  This is why it has no rename, delete, or file overwrite capabilities" ([RFC 2347, Security Considerations](https://www.rfc-editor.org/rfc/rfc2347.txt)). RFC 3617, written at Cisco in 2003, says it in capitals: "WHILE WE DEFINE THE TFTP URI TYPE, WE STRONGLY RECOMMEND AGAINST THE CONTINUED USE OF TFTP, FOR REASONS LISTED IN SECTION 5 (amongst others)" ([RFC 3617, section 1](https://www.rfc-editor.org/rfc/rfc3617.txt)); section 5 names "no protection from a man in the middle attack" and concludes that use "is strongly discouraged except in the most limited of circumstances where memory and CPU are at the highest premium". Those circumstances are exactly where it survives.
+
+## Where it still runs: PXE, routers and firewalls
+
+Network boot came first. RFC 906 proposed in June 1984 that TFTP "be used as a standard protocol for bootstrap loading" ([RFC 906, Introduction](https://www.rfc-editor.org/rfc/rfc906.txt)). Intel's Preboot Execution Environment (PXE) specification (version 2.1, 20 September 1999) defines the Network Bootstrap Program (NBP) as "The remote boot image downloaded by the PXE client via TFTP or MTFTP", and step 7 of its boot sequence downloads it "using either standard TFTP (port69) or MTFTP", the latter Intel's "proprietary implementation" of multicast TFTP ([PXE Specification v2.1, sections 1.3 and 2.2.1, from a university mirror since Intel no longer publishes the PDF](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)). How the client learns the server and the file name is in [BOOTP and DHCP options](/learn/bootp-and-dhcp-options), and the whole sequence in [PXE and network boot](/learn/pxe-and-network-boot).
+
+The other home is the network device: "Its common uses are to initially configure devices or to load new versions of operating system code" ([RFC 3617, section 1](https://www.rfc-editor.org/rfc/rfc3617.txt)). Cisco IOS loads an image with `copy tftp:[[[//location ]/directory ]/filename ]flash-filesystem:[filename ]`, and the same guide says "The FTP and rcp transport mechanisms provide faster performance and more reliable delivery of data than TFTP" ([Cisco, Loading and Managing System Images, 2011](https://www.cisco.com/en/US/docs/ios-xml/ios/sys-image-mgmt/configuration/15-1s/sysimgmgmt-imgs.html)); configurations go the same way, as `copy {ftp: | rcp: | tftp: }[filename ] system: running-config` ([Cisco IOS command reference, copy](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/cf_command_ref/C_commands.html)). On a FortiGate, TFTP is the recovery path from the boot menu, which offers "[T]: Initiate TFTP firmware transfer." and needs a server "on the same subnet as the internal interface"; the procedure "resets the FortiGate unit to factory default settings" ([Fortinet, Installing firmware from system reboot, FortiOS 6.2.0 Cookbook](https://docs.fortinet.com/document/fortigate/6.2.0/cookbook/556915)).
+
+## What to check when a transfer stalls
+
+- **The reply port.** Everything after the request comes from the server's chosen TID; a filter or network address translation (NAT) that knows only UDP 69 shows a request leaving and nothing returning ([RFC 1350, section 4](https://www.rfc-editor.org/rfc/rfc1350.txt)).
+- **A lost ERROR.** It "is not acknowledged, and not retransmitted"; capture at the client and look for codes 1, 2 or 6 ([RFC 1350, section 2](https://www.rfc-editor.org/rfc/rfc1350.txt)).
+- **Write permission.** Writing is often "disallowed" ([RFC 1350, Security Considerations](https://www.rfc-editor.org/rfc/rfc1350.txt)), and some servers need a "dummy" file created first with "read, write, and execute permissions" ([Cisco, Loading and Managing System Images](https://www.cisco.com/en/US/docs/ios-xml/ios/sys-image-mgmt/configuration/15-1s/sysimgmgmt-imgs.html)).
+- **Every packet twice.** The Sorcerer's Apprentice Syndrome: one side lacks RFC 1123's MUST ([RFC 1123, section 4.2.3.1](https://www.rfc-editor.org/rfc/rfc1123.txt)).
+- **A stop near block 65535.** About 32 MiB at 512 bytes; the wrap is unspecified, so change the server software, negotiate blksize, or follow Cisco to FTP or rcp.
+- **Slow but moving.** One block per round trip is the protocol as specified; DATA instead of OACK means the options were ignored ([RFC 2347](https://www.rfc-editor.org/rfc/rfc2347.txt)).
+
+## What to remember
+
+- One file, over UDP, in 512-byte blocks, each acknowledged before the next; a block shorter than 512 bytes ends the transfer.
+- Five packet types, RRQ, WRQ, DATA, ACK and ERROR (opcodes 1 to 5); RFC 2347 added OACK (opcode 6) and error code 8.
+- The request goes to UDP port 69; the server answers from a fresh port, and both sides discard packets from any other source port.
+- One delayed ACK once doubled every later packet; RFC 1123 made the fix a MUST, written in RFC 1350 as "first ACK" and "other than duplicate ACK's".
+- blksize, timeout, tsize and windowsize are requested by the client only and confirmed in an OACK.
+- The "32 MB limit" is 65535 blocks of 512 bytes; no RFC states a size limit, and the wrap is left to implementations.
+- No login, no access control, a strong recommendation against continued use, and survival in boot ROMs and boot menus, where memory is scarcest.
+
+## Sources
+
+- [RFC 1350, THE TFTP PROTOCOL (REVISION 2), July 1992: header, sections 1 to 6, Appendix I, Acknowledgements and Security Considerations (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1350.txt)
+- [RFC 1350 errata, RFC Editor: errata 4971 and 7167 (read 2026-10-13)](https://www.rfc-editor.org/errata/rfc1350)
+- [RFC 783, THE TFTP PROTOCOL (REVISION 2), June 1981: header and section 5 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc783.txt)
+- [RFC 1123, Requirements for Internet Hosts -- Application and Support, October 1989: section 4.2 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1123.txt)
+- [RFC 2347, TFTP Option Extension, May 1998: Packet Formats, Negotiation Protocol, Security Considerations and References (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2347.txt)
+- [RFC 2348, TFTP Blocksize Option, May 1998: Abstract and Blocksize Option Specification (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2348.txt)
+- [RFC 2349, TFTP Timeout Interval and Transfer Size Options, May 1998: both option specifications (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2349.txt)
+- [RFC 7440, TFTP Windowsize Option, January 2015: header, Abstract and sections 1 and 4 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc7440.txt)
+- [RFC 3617, Uniform Resource Identifier (URI) Scheme and Applicability Statement for the Trivial File Transfer Protocol (TFTP), October 2003: sections 1, 2.1 and 5 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3617.txt)
+- [RFC 906, Bootstrap Loading using TFTP, June 1984: Introduction and Network Protocols used by the Booting System (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc906.txt)
+- [Intel, Preboot Execution Environment (PXE) Specification, Version 2.1, 20 September 1999: sections 1.3 and 2.2.1, from a university mirror of Intel's PDF (read 2026-10-13)](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)
+- [Cisco, Loading and Managing System Images, Cisco IOS 15.1S configuration guide, last updated 30 November 2011: TFTP copy sections (read 2026-10-13)](https://www.cisco.com/en/US/docs/ios-xml/ios/sys-image-mgmt/configuration/15-1s/sysimgmgmt-imgs.html)
+- [Cisco IOS Configuration Fundamentals Command Reference, C commands: copy and configure network entries (read 2026-10-13)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/fundamentals/command/cf_command_ref/C_commands.html)
+- [Fortinet, Installing firmware from system reboot, FortiOS 6.2.0 Cookbook (read 2026-10-13)](https://docs.fortinet.com/document/fortigate/6.2.0/cookbook/556915)
+- [Cisco Community, loading IOS greater than 33MBs fails, April 2009; secondary source, community members only (read 2026-10-13)](https://community.cisco.com/t5/routing/loading-ios-greater-than-33mbs-fails/m-p/1143654/highlight/true)

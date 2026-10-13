@@ -1,0 +1,137 @@
+---
+slug: pxe-and-network-boot
+title: "PXE e boot pela rede: como uma máquina sem disco descobre o que executar"
+summary: "Uma máquina sem sistema operacional, ou sem disco nenhum, ainda consegue dar boot pedindo à rede um endereço e o nome de um programa para baixar e executar. Depois de ler, você vai conseguir acompanhar um boot PXE do primeiro DHCPDISCOVER até a primeira instrução executada, ler as opções que identificam o cliente, explicar por que o Proxy DHCP escuta na porta 4011, escolher o arquivo de boot certo para máquinas BIOS e UEFI e situar os sucessores do projeto de 1999 em IPv6 e HTTP."
+concepts: ["pxe", "network boot", "nbp", "pxeclient", "dhcp option 93", "architecture type", "proxy dhcp", "port 4011", "siaddr", "tftp", "http boot", "chainloading"]
+relatedTools: []
+relatedArticles: ["bootp-and-dhcp-options", "dhcp-relay-agent", "tftp", "dhcp-lease-lifecycle", "the-ethernet-frame-field-by-field"]
+category: networking
+order: 347
+status: reviewed
+updated: "2026-10-13"
+---
+
+Um computador dá boot encontrando um programa pequeno e saltando para ele. Sem disco, o firmware pode perguntar à rede, e o **Preboot Execution Environment (PXE)** é a convenção para essa pergunta, escrita para o cliente que "does not have an OS installed on its hard disk, or the client has no hard disk at all", isto é, sem sistema instalado ou sem disco nenhum ([especificação PXE 2.1, seção 1](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)). Um boot PXE é uma troca DHCP (Dynamic Host Configuration Protocol) com uma convenção por cima, seguida de um download por TFTP (Trivial File Transfer Protocol); saber que opção carrega cada parte da resposta é o que permite ler a captura de um boot que falhou.
+
+## De onde o PXE veio
+
+O documento é da Intel: "Preboot Execution Environment (PXE) Specification", "Version 2.1", "September 20, 1999", com "Copyright © 1998, 1999 Intel Corporation" em cada página ([especificação PXE 2.1, página de rosto](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)). O primeiro documento relacionado que ela lista é o "Wired for Management (WfM) Baseline", "Version 2.0, December 23, 1998", e o kit de desenvolvimento do PXE morava no caminho web Wired for Management da Intel (seção 1.2.1). Isso coloca o PXE dentro do programa Wired for Management da Intel, mas nenhuma frase dos documentos lidos diz isso com todas as letras, e nenhuma data o PXE 2.0. A versão 2.1 acrescentou "Boot Server Discovery", "Protected Remote Boot" e "The ability to split PXE Base Code and UNDI code into separate ROMs", ou seja, a descoberta de boot servers, o boot remoto protegido e a separação do código base e do UNDI em ROMs distintas (seção 1.1).
+
+O PXE é construído sobre "industry-standard Internet protocols and services that are widely deployed in the industry, namely TCP/IP, DHCP, and TFTP" (seção 1.5.1). O **NBP** é o "Network Bootstrap Program. The remote boot image downloaded by the PXE client via TFTP or MTFTP", a imagem de boot que o cliente baixa, sendo MTFTP o "Multicast Trivial File Transfer Protocol", e UNDI é a "Universal Network Device Interface", a interface universal com a placa de rede (seção 1.3). A RFC 4578 (novembro de 2006, Informational) registrou depois as opções do cliente "for completeness within the IETF", o Internet Engineering Task Force ([RFC 4578, seção 1](https://www.rfc-editor.org/rfc/rfc4578#section-1)), e a especificação UEFI (Unified Extensible Firmware Interface) manteve o protocolo de rede, "identical to the remote boot functionality described in detail in the PXE Specification" ([especificação UEFI 2.10, seção 24.3.5](https://uefi.org/specs/UEFI/2.10/24_Network_Protocols_SNP_PXE_BIS.html)).
+
+## A sequência de boot, passo a passo
+
+A seção 2.2.1 da especificação conta nove passos ([especificação PXE 2.1](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)):
+
+| Passo | Mensagem | Porta UDP | Conteúdo |
+|---|---|---|---|
+| 1 | O cliente faz broadcast de um DHCPDISCOVER | 67 | As tags abaixo e "A DHCP option 60, Class ID, set to “PXEClient:Arch:xxxxx:UNDI:yyyzzz”" |
+| 2 | O serviço DHCP ou Proxy DHCP responde com DHCPOFFER | 68 | Vindo de um proxy, o endereço do cliente "is null (0.0.0.0)" |
+| 3 | O cliente registra as ofertas | | Endereço e lista de boot servers |
+| 4 | O cliente completa o DHCP padrão | 67 | Request e acknowledgement |
+| 5 | O cliente envia DHCPREQUEST a um boot server | 67 ou 4011 | "broadcast (port 67), multicast (port 4011), or unicast (port 4011)" |
+| 6 | O boot server responde DHCPACK em unicast | porta de origem do cliente | "Boot file name" |
+| 7 | O cliente baixa o NBP | 69 | "using either standard TFTP" ou MTFTP |
+| 8 | Teste de autenticidade, se exigido | | Um arquivo de credenciais |
+| 9 | Execução | | |
+
+As tags são as opções que a RFC 4578 formalizou depois; cada opção numerada "MUST be present in all DHCP and PXE packets sent by PXE-compliant clients and servers", obrigatória em todo pacote DHCP e PXE ([RFC 4578, seção 2.1](https://www.rfc-editor.org/rfc/rfc4578#section-2.1)):
+
+| Opção | Tamanho | Conteúdo | Definida em |
+|---|---|---|---|
+| 60, Class Identifier | 32 octetos | PXEClient:Arch:xxxxx:UNDI:yyyzzz, o tipo de arquitetura em decimal e a versão do UNDI; "case sensitive", "must not be null terminated" | especificação PXE 2.1, Tabela 2-1 |
+| 93, Client System Architecture | 2 octetos por tipo | "a 16-bit architecture type identifier", possivelmente uma lista | RFC 4578, seção 2.1 |
+| 94, Client Network Interface Identifier | 3 octetos | Tipo (1 = UNDI), versão maior e menor | RFC 4578, seção 2.2 |
+| 97, Client Machine Identifier | 17 octetos | Tipo 0 e "a 16-octet Globally Unique Identifier (GUID)" | RFC 4578, seção 2.3 |
+
+A RFC 4578 nunca menciona a opção 60 nem a string "PXEClient"; isso pertence à especificação PXE e é repetido pela UEFI (especificação UEFI 2.10, Tabela 24.1).
+
+A resposta nomeia um arquivo e um servidor. No header DHCP, descrito no [artigo sobre BOOTP e opções DHCP](/learn/bootp-and-dhcp-options), siaddr (4 octetos) é o "IP address of next server to use in bootstrap", o endereço do próximo servidor do boot; sname (64 octetos) é um "Optional server host name", e file (128 octetos) é o "Boot file name" ([RFC 2131, seção 2, Tabela 1](https://www.rfc-editor.org/rfc/rfc2131#section-2)); a opção 66, TFTP server name, e a opção 67, Bootfile name, carregam os mesmos dois nomes quando sname ou file "has been used for DHCP options", isto é, quando o campo foi ocupado por opções ([RFC 2132, seções 9.4 e 9.5](https://www.rfc-editor.org/rfc/rfc2132#section-9.4)). O cliente lê o nome em "DHCP option 67 (bootfile name), if present. Otherwise, read from DHCP bootfile field", e o servidor em "DHCP option 54 (server identifier), if not found, use the siaddr field" (especificação PXE 2.1, seção 2.4.10). Então a frase de que o PXE usa as opções 66 e 67 está meio certa: o nome vai na 67 ou no campo file, o endereço vai na opção 54 ou no siaddr, e a 66 é um nome de servidor para quando o sname está sobrecarregado. O download é TFTP ([RFC 1350](https://www.rfc-editor.org/rfc/rfc1350); veja o [artigo sobre TFTP](/learn/tftp)), e num PC o NBP cai "starting at location 07C00h", e depois "The PXE ROM code executes a far call to location 0:7C00h", a ROM salta para esse endereço (especificação PXE 2.1, seções 2.4.6 e 2.4.9.1).
+
+## Proxy DHCP e a porta 4011
+
+O lado servidor tem dois papéis, "a Redirection service, and a Boot Service": o primeiro responde aos DISCOVER estendidos na porta 67 com a lista de boot servers, o segundo responde aos REQUEST estendidos com "the file name of an executable appropriate to the client", o nome do executável adequado ao cliente ([especificação PXE 2.1, seção 2.5](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf)). Um servidor Proxy DHCP assume o primeiro papel fora do servidor DHCP e responde "only to PXE-enabled clients", só a clientes PXE (seção 1.5.1.1). É por isso que o **Proxy DHCP** existe: boot pela rede sem mexer no servidor que distribui os leases.
+
+A porta 4011 vem de uma única restrição: "Proxy DHCP uses port (4011) because it cannot share port (67) with the DHCP service. The PXE client knows to interrogate the Proxy DHCP service because the DHCPOFFER from the DHCP service contains an Option #60 “PXEClient” tag without corresponding Option #43 tags or a boot file name", isto é, o proxy não pode dividir a porta 67 com o DHCP no mesmo host, e o cliente sabe que deve procurá-lo porque a oferta traz "PXEClient" na opção 60 sem tags da opção 43 nem nome de arquivo (seção 2.2.3). Em outro host, "the Proxy DHCP service listens to UDP port (67) and responds in parallel with the DHCP service" (mesma seção). Logo, a 4011 não é "a porta do PXE": é a porta do proxy quando ele divide o host com o DHCP, e a porta da descoberta do boot server no passo 5. Para atravessar um roteador, o broadcast do DISCOVER precisa do [relay agent](/learn/dhcp-relay-agent).
+
+## Tipos de arquitetura: qual arquivo servir
+
+A opção 93 existe porque o "Media Access Code (MAC) address" não bastava para escolher o arquivo, já que "Multiple laptops could end up with the same MAC address" por meio de uma docking station compartilhada ([RFC 4578, seção 1](https://www.rfc-editor.org/rfc/rfc4578#section-1)). A RFC 5970 levou a lista de tipos para um registro da IANA (Internet Assigned Numbers Authority), "Processor Architecture Types" ([RFC 5970, seção 6](https://www.rfc-editor.org/rfc/rfc5970#section-6)), que é a fonte aqui:
+
+| Tipo | Nome na IANA | Impresso na RFC 4578 |
+|---|---|---|
+| 0 | x86 BIOS | Intel x86PC |
+| 2 | Itanium | EFI Itanium |
+| 6 | x86 UEFI | EFI IA32 |
+| 7 | x64 UEFI | EFI BC (errado) |
+| 9 | EBC | EFI x86-64 (errado) |
+| 15 (0x0f) | x86 uefi boot from http | ausente |
+| 16 (0x10) | x64 uefi boot from http | ausente |
+
+([IANA, Processor Architecture Types, atualizado em 2026-09-01](https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml); os tipos 1, 3, 4, 5 e 8 estão marcados como deprecated.) O erro é da RFC 4578: ela imprime "7    EFI BC" e "9    EFI x86-64", e a errata 4624, verificada em 2016-03-23, diz que "The values for EFI BC and EFI x86-64 should be swapped", os valores devem ser trocados, e que o registro da IANA é o que "correctly reflects reality" ([errata da RFC 4578, ID 4624](https://www.rfc-editor.org/errata/rfc4578)). A UEFI concorda, ao escrever "64-bit UEFI (type 0x07)" ([especificação UEFI 2.10, seção 24.7.1](https://uefi.org/specs/UEFI/2.10/24_Network_Protocols_SNP_PXE_BIS.html)); um exemplo da sua seção IPv6 que rotula "Arch:00006" como cliente x64 é um deslize (seção 24.3.18.1).
+
+O valor importa porque os dois arquivos de boot são objetos diferentes. Um NBP para BIOS é código bruto que entra em 0:7C00h; um NBP para UEFI "is a UEFI-formatted executable with a machine subsystem type that corresponds to the UEFI firmware on the client machine", um executável no formato UEFI para a arquitetura do firmware (especificação UEFI 2.10, seção 24.7.1). Três configurações publicadas escolhem pela opção 93:
+
+| Documento | Servidor | Teste | Arquivo BIOS | Arquivo UEFI 64 bits |
+|---|---|---|---|---|
+| Documentação do Ubuntu Server | dnsmasq | "option:client-arch,7" | "pxelinux.0" | "bootx64.efi", o shim assinado |
+| Red Hat Enterprise Linux 9 | ISC dhcpd | classe "PXEClient", depois "if option architecture-type = 00:07" | "pxelinux/pxelinux.0" | "redhat/EFI/BOOT/BOOTX64.EFI" |
+| iPXE, Chainloading iPXE | ISC dhcpd | "if option client-arch != 00:00" | "undionly.kpxe" | "ipxe.efi" |
+
+([documentação do Ubuntu Server](https://ubuntu.com/server/docs/how-to/installation/how-to-netboot-the-server-installer-on-amd64/); [RHEL 9, seção 7.2](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/automatically_installing_rhel/preparing-for-a-network-install_rhel-installer); [iPXE, Chainloading iPXE](https://ipxe.org/howto/chainloading).) Red Hat e Ubuntu entregam o arquivo EFI só ao tipo 7; o iPXE entrega a qualquer coisa que não seja tipo 0. Os binários BIOS do iPXE são "Headerless X86 assembly code", "sometimes renamed to .0 to work on older DHCP/TFTP servers", código x86 sem header, às vezes renomeado para .0 ([iPXE, Build targets](https://ipxe.org/appnote/buildtargets)).
+
+## IPv6 e HTTP: os sucessores
+
+A RFC 5970, "DHCPv6 Options for Network Boot" (setembro de 2010, Standards Track), serve "a node that must be booted using the network rather than from local storage", o nó que precisa dar boot pela rede, e põe servidor, protocolo e caminho numa única URL ([RFC 5970, seção 1](https://www.rfc-editor.org/rfc/rfc5970#section-1)):
+
+| Código | Nome, como a RFC 5970 escreve | Conteúdo |
+|---|---|---|
+| 59 | OPT_BOOTFILE_URL | "the URL for the boot file", "not NUL-terminated", com endereço IPv6 entre colchetes; substitui siaddr mais file ou opção 67 |
+| 60 | OPT_BOOTFILE_PARAM | strings UTF-8 "similar to the command line arguments in most modern operating systems" |
+| 61 | OPTION_CLIENT_ARCH_TYPE | tipos de arquitetura "as specified in Section 2.1 of [RFC4578]", o preferido primeiro (equivalente da opção 93) |
+| 62 | OPTION_NII | "option-len 3"; tipo, versão maior e menor "As specified in Section 2.2 of [RFC4578]" (equivalente da opção 94) |
+
+([RFC 5970, seções 3.1 a 3.4](https://www.rfc-editor.org/rfc/rfc5970#section-3.1); a RFC grafa as duas primeiras com "OPT_" e as duas últimas com "OPTION_", e a IANA mantém as duas grafias.) A opção 60 do DHCPv6, portanto, não é vendor class; essa é a opção 16 (especificação UEFI 2.10, seção 24.3.18.1). Sobre o protocolo dentro da URL, a RFC 5970 recomenda fortemente o HTTP: "Please note that for IPv6, this supersedes [RFC906], which recommended using TFTP for downloading", ou seja, para IPv6 isso substitui a RFC 906, que recomendava TFTP ([RFC 5970, seção 5](https://www.rfc-editor.org/rfc/rfc5970#section-5)).
+
+A UEFI seguiu o mesmo caminho no IPv4. O **HTTP Boot** entrou na especificação na versão 2.5, "February, 2015" ([especificação UEFI 2.10, Revision History](https://uefi.org/specs/UEFI/2.10/Frontmatter/Revision_History.html)), e a edição 2.10 (copyright 2022) o chama de "a higher-performance replacement for tftp-based PXE boot methods of network deployment", um substituto de maior desempenho para o boot PXE por TFTP (seção 24.7.2). A troca é a do PXE com duas substituições: a opção 93 leva o tipo 0x0F (x86) ou 0x10 (x64) e a opção 60 vai "set to “HTTPClient:Arch:XXXX:UNDI:YYYZZZ”"; o servidor responde com "HTTPClient" na opção 60, a localização do boot chega como URI "thru ‘file’ field in DHCP Header or option 67", pelo campo file ou pela opção 67 (opção 59 no IPv6), e o cliente a busca com um "HTTP GET message" (seções 24.7.4.1.1, 24.7.8.3 e 24.7.9.1.2). O HTTP Boot é um caminho de boot separado, sinalizado por "HTTPClient", e não uma opção do PXE; a configuração da Red Hat serve o mesmo BOOTX64.EFI a uma classe "PXEClient" por TFTP e a uma classe "HTTPClient" por URL ([RHEL 9, seção 7.2](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/automatically_installing_rhel/preparing-for-a-network-install_rhel-installer)).
+
+## Chainloading, como o iPXE descreve
+
+O NBP não precisa ser o loader do sistema operacional; pode ser um programa de boot pela rede melhor, e "you can chainload into iPXE to obtain the features of iPXE without the hassle of reflashing", dá para encadear o iPXE sem regravar a placa ([página inicial do iPXE](https://ipxe.org/)). **Chainloading** quer dizer que máquinas "which already have a PXE implementation", que já têm PXE, baixam o iPXE como NBP: "place a copy of iPXE on your TFTP server" e, no ISC dhcpd, configure "next-server X.X.X.X;" e "filename "undionly.kpxe";"; máquinas UEFI recebem "ipxe.efi", escolhido pelo teste da opção 93 visto acima ([iPXE, Chainloading iPXE](https://ipxe.org/howto/chainloading)). Aí vem a armadilha: "When the chainloaded iPXE starts up, it will issue a fresh DHCP request and boot whatever the DHCP server hands out. The DHCP server is currently set up to hand out the iPXE image, which means that you will be stuck in an infinite loop", o iPXE faz um DHCP novo, recebe o próprio iPXE outra vez e entra em loop infinito (mesma página). As três saídas são um script chamado "autoexec.ipxe" ao lado do binário no servidor TFTP, um servidor DHCP que entrega "iPXE only for the first DHCP request", só na primeira requisição, ou "an embedded script that directs iPXE to boot from a fixed URL", um script embutido com URL fixa (mesma página).
+
+## Quando a tela diz que não achou boot server
+
+Os temporizadores da especificação (especificação PXE 2.1, Figura 2-2 e seção 2.2.2) dizem onde o boot parou.
+
+1. **Nenhuma oferta trouxe "PXEClient".** "DHCP Discover will be retried four times. The four timeouts are 4, 8, 16 and 32 seconds respectively", quatro tentativas com esses timeouts; depois "The PXE boot ROM must function as a normal DHCP boot ROM", então um endereço sem nenhuma resposta "PXEClient" significa que nenhum servidor casou a vendor class.
+2. **Nada escuta na 4011.** O cliente só vai lá quando a oferta tem "PXEClient" "without corresponding Option #43 tags or a boot file name"; "Bootserver Request will be retried four times. The four timeouts are 1, 2, 3, and 4 seconds respectively".
+3. **O arquivo errado para a arquitetura.** O tipo 7 precisa de um executável UEFI, o tipo 0 de código sem header; as linhas trocadas da RFC 4578 levam a um cliente que pode "attempt to execute, code intended for another platform or client", executar código feito para outra plataforma ([RFC 4578, seção 5](https://www.rfc-editor.org/rfc/rfc4578#section-5)).
+4. **O endereço do servidor no lugar errado.** Opção 54, depois siaddr; o arquivo na opção 67, depois no campo file (seção 2.4.10); a opção 66 é um nome.
+5. **O TFTP não acha o arquivo.** "TFTP Open will retry six times. Each retry uses the same timeout (4 seconds)"; o nome tem de ser "the complete path name of an executable appropriate to the client", o caminho completo (seção 2.5.3).
+
+## Para lembrar
+
+- O PXE é DHCP mais TFTP com uma convenção por cima; a especificação da Intel é a versão 2.1, de 20 de setembro de 1999.
+- O cliente envia a opção 60 "PXEClient:Arch:xxxxx:UNDI:yyyzzz" e as opções 93, 94 e 97; a RFC 4578 documenta as três e nunca menciona a opção 60.
+- O arquivo é nomeado na opção 67 ou no campo file, o servidor na opção 54 ou no siaddr; a opção 66 é um nome de servidor, não um endereço.
+- A porta 4011 é a porta de um Proxy DHCP que divide o host com o servidor DHCP, que "cannot share port (67)"; em host próprio, o proxy responde na 67.
+- O tipo 7 é x86 UEFI de 64 bits, o 6 é x86 UEFI de 32 bits, o 0 é BIOS; a RFC 4578 imprimiu 7 e 9 trocados, e a errata 4624 e a IANA corrigem.
+- A RFC 5970 põe servidor, protocolo e caminho numa única URL (OPT_BOOTFILE_URL, opção 59) e prefere HTTP; a UEFI 2.5 (2015) acrescentou o HTTP Boot, sinalizado por "HTTPClient" e pelos tipos 0x0F e 0x10.
+
+## Fontes
+
+- [Preboot Execution Environment (PXE) Specification, Version 2.1, Intel Corporation, 20 de setembro de 1999: seções 1 a 1.5.1, 2.2 a 2.5.3, Tabela 2-1 e Figura 2-2 (lida em 2026-10-13)](https://wiki.cs.umbc.edu/images/3/3d/Pxespec.pdf). Cópia espelho hospedada por um departamento universitário, lida porque os endereços da Intel e o endereço citado pelas RFCs não servem mais o arquivo; a fidelidade ao original não foi verificada, embora a página de rosto confira com a citação das RFCs.
+- [RFC 4578, DHCP Options for the Intel Preboot eXecution Environment (PXE), novembro de 2006, Informational: seções 1, 2.1 a 2.3 e 5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4578)
+- [Errata da RFC 4578, ID 4624, verificada em 2016-03-23 (lida em 2026-10-13)](https://www.rfc-editor.org/errata/rfc4578)
+- [RFC 5970, DHCPv6 Options for Network Boot, setembro de 2010, Standards Track: seções 1, 3, 5 e 6 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc5970)
+- [RFC 2131, Dynamic Host Configuration Protocol, março de 1997: seção 2 e Tabela 1 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2131)
+- [RFC 2132, DHCP Options and BOOTP Vendor Extensions, março de 1997: seções 9.4 e 9.5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2132)
+- [RFC 1350, The TFTP Protocol (Revision 2), julho de 1992, STD 33 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1350)
+- [Especificação UEFI 2.10 (copyright 2022), capítulo 24, Network Protocols (SNP, PXE, BIS and HTTP Boot): seções 24.3.5, 24.3.18, 24.7.1, 24.7.2, 24.7.4, 24.7.8 e 24.7.9 (lida em 2026-10-13)](https://uefi.org/specs/UEFI/2.10/24_Network_Protocols_SNP_PXE_BIS.html)
+- [Especificação UEFI 2.10, Revision History: a linha 2.5 sobre o HTTP Boot (lida em 2026-10-13)](https://uefi.org/specs/UEFI/2.10/Frontmatter/Revision_History.html)
+- [IANA, DHCPv6 parameters, atualizado em 2026-09-01: Option Codes e Processor Architecture Types (lido em 2026-10-13)](https://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xhtml)
+- Fonte secundária: [iPXE, Chainloading iPXE (lida em 2026-10-13)](https://ipxe.org/howto/chainloading)
+- Fonte secundária: [página inicial do iPXE (lida em 2026-10-13)](https://ipxe.org/)
+- Fonte secundária: [iPXE, Build targets (lida em 2026-10-13)](https://ipxe.org/appnote/buildtargets)
+- Fonte secundária: [Red Hat Enterprise Linux 9, Preparing a PXE installation source: seção 7.2 (lida em 2026-10-13)](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/automatically_installing_rhel/preparing-for-a-network-install_rhel-installer)
+- Fonte secundária: [Documentação do Ubuntu Server, How to netboot the server installer on amd64, atualizada em 2026-06-26 (lida em 2026-10-13)](https://ubuntu.com/server/docs/how-to/installation/how-to-netboot-the-server-installer-on-amd64/)

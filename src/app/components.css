@@ -17423,6 +17423,9 @@ html:not([data-glossary-hints="all"]) .gloss-hint-static[data-gloss-occ="rest"]:
 }
 .item-views-spark polyline { fill: none; stroke: var(--color-accent); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; opacity: 0.8; }
 .stats-panel-total { margin: -0.4rem 0 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+/* A list the Worker cut at its row limit (2026-10-13): said in the panel, under its note and in the warning token,
+ * so a part of the window is never read as the whole of it. */
+.stats-panel-cut { margin: -0.4rem 0 0.8rem; font-size: 0.8rem; line-height: 1.5; color: var(--color-warning); max-width: 62ch; }
 
 /* Stats, the "requests for pages that do not exist" panel (2026-10-07; StatsMissing.tsx). One group per row: its
  * explanation beside its addresses on a wide screen, above them on a narrow one. The addresses are monospaced text

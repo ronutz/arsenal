@@ -149,6 +149,31 @@ const MISSING = `(blob6 = '404' OR (blob6 = '' AND ${LEGACY_NOT_A_PAGE}))`;
 const PEOPLE = `(${HUMAN} AND ${SERVED})`;
 /** The "missing" route lists this many addresses per family, the most requested first (the counts cover all). */
 const PATHS_PER_FAMILY = 8;
+
+// ---------------------------------------------------------------------------
+// LISTS THE PAGE READS AS COMPLETE (2026-10-13)
+// Two routes answer with a list the page then adds up: "paths" (every page
+// people read, behind the Pages, Sections, Long tail and Coverage panels) and
+// "missing" (every address that was not a page). Each carried a row limit
+// once comfortably above the data, 6,000 and 2,000, and the data outgrew
+// both: read live on 13 October, both lists stopped exactly at their limit in
+// the 30- and 90-day windows, so the panels added up a cut list as if it were
+// whole (the paths list held 40,139 of the timeline's 50,478 requests in 30
+// days; the long tail showed no page read once, because the cut drops exactly
+// the least-read pages). The limits now sit far above anything the site can
+// produce (the distinct pages people can be served are bounded by the routes
+// that exist), and each answer says whether its list was cut, so the page can
+// say so instead of presenting a part as the whole. The SQL reference states
+// no default or maximum for LIMIT (read 2026-10-13); the Analytics Engine
+// answer for a few thousand rows is small once compressed (the 6,000-row list
+// travelled as 55 KB of brotli). scripts/check-stats-cut-flags.mts (prebuild)
+// runs both routes against a stand-in for the SQL API and fails the build if
+// the SQL's LIMIT and the reported limit differ or the flag is wrong.
+// ---------------------------------------------------------------------------
+/** The most rows the "paths" route reads: far above the pages the site has; a list that reaches it says so. */
+const PATHS_LIMIT = 50000;
+/** The most rows the "missing" route reads (anyone can ask for any address, so this one is a real bound). */
+const MISSING_LIMIT = 50000;
 /** An address longer than this is cut, with an ellipsis, before it is listed. */
 const PATH_SHOWN_MAX = 96;
 
@@ -382,12 +407,16 @@ export async function handleStats(
       // that has none (/wp-json/ arrives as /en/wp-json/); the page shows them
       // as text, never as links.
       case "missing": {
+        // Every address that was not a page, the most requested first, up to MISSING_LIMIT (2026-10-13: it was
+        // 2,000, and the window's addresses outgrew it).
         const rows = (await query(
           env,
           `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
            WHERE ${since} AND ${MISSING}
-           GROUP BY path ORDER BY views DESC LIMIT 2000`
+           GROUP BY path ORDER BY views DESC LIMIT ${MISSING_LIMIT}`
         )) as Array<{ path?: string; views?: string }>;
+        // Whether the list stopped at its limit: then the counts below cover the addresses read, not every one.
+        const cut = rows.length >= MISSING_LIMIT;
         // One bucket per family, in the order the rows arrive (already most-requested first).
         const groups = new Map<ProbeFamily, { views: number; paths: Array<{ path: string; views: number }> }>();
         for (const r of rows) {
@@ -403,7 +432,8 @@ export async function handleStats(
         const rank = (id: ProbeFamily) => (id === "misses" ? PROBE_FAMILIES.length : PROBE_FAMILIES.findIndex((f) => f.id === id));
         // A list of addresses anyone can add to by asking for one is a public noticeboard, so the response
         // carries only the most-requested few of each family (a one-off request cannot put text on the
-        // page), each cut to a readable length; the counts still cover every address in the family.
+        // page), each cut to a readable length; the counts still cover every address read in the family (all of
+        // them, unless the list reached MISSING_LIMIT).
         const families = [...groups.entries()]
           .map(([id, g]) => ({
             id,
@@ -420,27 +450,40 @@ export async function handleStats(
         return json({
           window: url.searchParams.get("window") ?? "30d",
           sampled: true,
-          // Every request and every distinct address in the window, not only the ones listed.
+          // Every request and every distinct address in the window, not only the ones listed, as long as the list
+          // was not cut; when it was (cut: true), the most requested `limit` addresses and their requests.
           total: families.reduce((n, f) => n + f.views, 0),
           addresses: rows.length,
+          // The bound the list was read with, and whether the window reached it (the page says so when it did).
+          limit: MISSING_LIMIT,
+          cut,
           families,
         });
       }
 
       // ---- Every page people read in the window --------------------------
-      // Path and count, no ranking cut. One response serves three panels on
-      // the page: traffic by section, the long tail, and how many distinct
-      // pages were read at all. Paths are public URLs; there is nothing here
-      // about who read them.
-      case "paths":
+      // Path and count, no ranking cut. One response serves four panels on
+      // the page: the pages by language, traffic by section, the long tail,
+      // and how many distinct pages were read at all. Paths are public URLs;
+      // there is nothing here about who read them. Read up to PATHS_LIMIT
+      // rows (2026-10-13: it was 6,000, which the window outgrew); the answer
+      // says whether the list reached it.
+      case "paths": {
+        // Every page people were served in the window, the most read first.
+        const rows = await query(
+          env,
+          `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
+           WHERE ${since} AND ${PEOPLE}
+           GROUP BY path ORDER BY views DESC LIMIT ${PATHS_LIMIT}`
+        );
         return json({
-          rows: await query(
-            env,
-            `SELECT blob1 AS path, ${VIEWS} FROM ${PAGEVIEWS}
-             WHERE ${since} AND ${PEOPLE}
-             GROUP BY path ORDER BY views DESC LIMIT 6000`
-          ),
+          rows,
+          // The bound the list was read with, and whether the window reached it: then every panel that adds the
+          // list up says it covers the most read pages only.
+          limit: PATHS_LIMIT,
+          cut: rows.length >= PATHS_LIMIT,
         });
+      }
 
       // ---- When the site is read ------------------------------------------
       // Human requests in UTC-hour buckets. The page folds these into hour of

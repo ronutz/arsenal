@@ -1,0 +1,156 @@
+---
+slug: dhcp-relay-agent
+title: "O relay agent de DHCP: um servidor para muitas sub-redes"
+summary: "Um cliente DHCP que ainda não tem endereço faz broadcast da requisição, e o servidor de que ele precisa costuma estar em outra rede. O relay agent recebe esse broadcast, marca nele o endereço da sub-rede de origem, envia uma mensagem nova ao servidor e traz a resposta de volta. Depois da leitura você consegue acompanhar as duas mensagens passo a passo, explicar giaddr, o campo hops, a flag BROADCAST e a opção 82, configurar ip helper-address no Cisco IOS e diagnosticar uma sub-rede remota que não recebe lease."
+concepts: ["dhcp relay agent", "bootp relay agent", "giaddr", "hops field", "broadcast flag", "option 82", "relay agent information option", "circuit id", "remote id", "ip helper-address", "dhcp", "bootp"]
+relatedTools: []
+relatedArticles: ["dhcp-lease-lifecycle", "bootp-and-dhcp-options", "routing-tables-and-default-gateway", "ipv4-addressing"]
+category: networking
+order: 346
+status: reviewed
+updated: "2026-10-13"
+---
+
+Um cliente de Dynamic Host Configuration Protocol (DHCP) que ainda não tem endereço Internet Protocol (IP) manda a requisição para 255.255.255.255, endereço que "means 'broadcast on the local cable, (I don't know my net number)'" (broadcast no cabo local, sem saber nem o número da rede) ([RFC 951, seção 3](https://www.rfc-editor.org/rfc/rfc951#section-3)). O servidor costuma estar em outro lugar: "In many cases, BOOTP clients and their associated BOOTP server(s) do not reside on the same IP network or subnet.  In such cases, some kind of third-party agent is required to transfer BOOTP messages between clients and servers": cliente e servidor muitas vezes não estão na mesma rede, e um terceiro precisa transportar as mensagens ([RFC 1542, seção 4](https://www.rfc-editor.org/rfc/rfc1542#section-4)). Esse terceiro é o **relay agent**, herdado do Bootstrap Protocol (BOOTP) junto com o formato de mensagem da [parte anterior](/learn/bootp-and-dhcp-options). Uma requisição, acompanhada através do roteador e de volta, mostra o que o relay escreve, como o servidor escolhe o pool, o que a opção 82 acrescenta, como o Cisco IOS liga a função e o que conferir quando a sub-rede remota fica sem endereço.
+
+## Por que o relay existe, e por que ele não é um forwarder
+
+Antes de ter endereço, o cliente não consegue nem se identificar: o broadcast que ele envia sai com origem IP 0 ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131#section-4.1)). A RFC 1542 não formula o problema como "routers do not forward broadcasts"; ela o descreve como uma questão de onde estão as duas pontas, na frase citada acima. A RFC 2131 manteve o desenho porque "Using BOOTP relay agents eliminates the necessity of having a DHCP server on each physical network segment" (dispensa um servidor DHCP por segmento físico) ([RFC 2131, seção 1](https://www.rfc-editor.org/rfc/rfc2131#section-1)), e usa "the same relay agent behavior as specified in the BOOTP protocol specification" ([RFC 2131, seção 1.5](https://www.rfc-editor.org/rfc/rfc2131#section-1.5)); a RFC 1542 declara valer também para o DHCP ([RFC 1542, seção 1](https://www.rfc-editor.org/rfc/rfc1542#section-1)).
+
+A RFC 951 chamava a função de "BOOTP forwarding agent" ([RFC 951, seção 8](https://www.rfc-editor.org/rfc/rfc951#section-8)). A RFC 1542 a renomeou para evitar confusão com o IP forwarding do roteador e traçou a linha: "a BOOTP relay agent may more properly be thought to receive BOOTP messages as a final destination and then generate new BOOTP messages as a result.  It is incorrect for a relay agent implementation to simply forward a BOOTP message "straight through like a regular packet."" O relay recebe a mensagem como destino final e gera uma nova; passá-la adiante como um pacote qualquer está errado ([RFC 1542, seção 4](https://www.rfc-editor.org/rfc/rfc1542#section-4)). A entrada é uma porta User Datagram Protocol (UDP): datagramas entregues localmente, broadcast incluído, com destino BOOTPS (67); mensagens para BOOTPC (68) são descartadas em silêncio ([RFC 1542, seção 4.1](https://www.rfc-editor.org/rfc/rfc1542#section-4.1)). E "Relaying MUST be disabled by default" ([RFC 1542, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1542#section-4.1.1)).
+
+## A requisição a caminho do servidor
+
+Três campos do header fazem o trabalho: 'hops' (um octeto), 'giaddr' (quatro octetos, o "Relay agent IP address, used in booting via a relay agent") ([RFC 2131, Tabela 1](https://www.rfc-editor.org/rfc/rfc2131#section-2)) e o campo 'flags', de dois octetos, cujo bit mais significativo é a flag BROADCAST (B) ([RFC 1542, seção 2.2](https://www.rfc-editor.org/rfc/rfc1542#section-2.2)). As regras estão na [RFC 1542, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1542#section-4.1.1), salvo quando outra fonte é citada.
+
+1. **Hops.** "The relay agent MUST silently discard BOOTREQUEST messages whose 'hops' field exceeds the value 16.  A configuration option SHOULD be provided to set this threshold to a smaller value if desired by the network manager.  The default setting for a configurable threshold SHOULD be 4." Acima de 16 hops a requisição é descartada; um limite menor, configurável, deve existir, com default 4. O famoso "limite de 4" é esse default; a regra dura é 16.
+2. **giaddr.** "If this field is zero, the relay agent MUST fill this field with the IP address of the interface on which the request was received.": o relay escreve o endereço IP da interface em que a requisição chegou. Um valor diferente de zero fica como está, e endereço de broadcast é proibido. Depois, "The value of the 'hops' field MUST be incremented." e "All other BOOTP fields MUST be preserved intact."
+3. **Destino.** "This destination MUST be configurable": unicast, multicast, broadcast ou uma mistura, nunca de volta pela interface de chegada, e sempre o mesmo para um dado cliente, porque variar o destino "reacts badly with DHCP". A RFC 1542 nunca diz que o relay faz unicast para o servidor; a RFC 3993 diz ([seção 1](https://www.rfc-editor.org/rfc/rfc3993#section-1)), e a Cisco também: "The helper address must specify the address of the BOOTP or DHCP server." ([Cisco, ip helper-address](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp/command/iap-cr-book/iap-i1.html))
+
+## A resposta no caminho de volta
+
+O servidor responde ao relay, não ao cliente: "If the 'giaddr' field in a DHCP message from a client is non-zero, the server sends any return messages to the 'DHCP server' port on the BOOTP relay agent whose address appears in 'giaddr'": com giaddr preenchido, a resposta vai para a porta de servidor do relay ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131#section-4.1)). Esse unicast para a porta 67 chega a "the BOOTP relay agent closest to the client", que faz a entrega final ([RFC 1542, seção 5.4](https://www.rfc-editor.org/rfc/rfc1542#section-5.4)). A tabela da própria RFC 1542, com X valendo por qualquer valor (mesma seção):
+
+| 'ciaddr' | 'giaddr' | Flag B | Porta UDP de destino | Destino IP | Destino de enlace |
+|---|---|---|---|---|---|
+| diferente de zero | X | X | BOOTPC (68) | 'ciaddr' | normal |
+| 0.0.0.0 | diferente de zero | X | BOOTPS (67) | 'giaddr' | normal |
+| 0.0.0.0 | 0.0.0.0 | 0 | BOOTPC (68) | 'yiaddr' | 'chaddr' |
+| 0.0.0.0 | 0.0.0.0 | 1 | BOOTPC (68) | 255.255.255.255 | broadcast |
+
+O relay descarta resposta cujo 'giaddr' não seja uma de suas interfaces diretamente conectadas. A **flag BROADCAST** decide então o último trecho: ligada, a resposta sai em broadcast para 255.255.255.255 com destino de enlace broadcast; desligada, sai em unicast para 'yiaddr' no endereço 'chaddr'; nos dois casos para BOOTPC (68), e o relay "MUST NOT modify any BOOTP field of the BOOTREPLY message" ([RFC 1542, seção 4.1.2](https://www.rfc-editor.org/rfc/rfc1542#section-4.1.2)). A flag é um workaround para clientes que não recebem unicast "until they know their own IP address", e seu uso "is discouraged" ([RFC 1542, seção 3.1.1](https://www.rfc-editor.org/rfc/rfc1542#section-3.1.1)); o cliente que precisa dela a liga no DHCPDISCOVER e no DHCPREQUEST, e um DHCPNAK enviado via relay sempre a carrega ([RFC 2131, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc2131#section-4.3.2)).
+
+A própria RFC 1542 admite o nome infeliz: "The 'giaddr' field is rather poorly named." E "In no case does it represent a general IP router to be used by the client.": em nenhum caso é um roteador para o cliente usar. O cliente o zera em toda requisição e nunca lê dali um endereço de roteador ([RFC 1542, seção 3.4](https://www.rfc-editor.org/rfc/rfc1542#section-3.4)). O [default gateway](/learn/routing-tables-and-default-gateway) do cliente não está nesse campo; o "gateway" do nome é o roteador que fez o relay.
+
+## Como o servidor escolhe o pool
+
+A RFC 2131 ordena a escolha do servidor: o binding atual do cliente, um binding anterior, a opção 'Requested IP Address' e, por fim, "A new address allocated from the server's pool of available addresses; the address is selected based on the subnet from which the message was received (if 'giaddr' is 0) or on the address of the relay agent that forwarded the message ('giaddr' when not 0)": um endereço novo, escolhido pela sub-rede de origem (giaddr 0) ou pelo endereço do relay (giaddr diferente de 0) ([RFC 2131, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc2131#section-4.3.1)). É o endereço do relay na interface de chegada que permite ao servidor reconhecer a sub-rede do cliente (veja [endereçamento IPv4](/learn/ipv4-addressing)), embora, para segmentos com várias sub-redes, "A server is free to choose some other subnet" (mesma seção).
+
+Nem toda mensagem do [ciclo de vida do lease](/learn/dhcp-lease-lifecycle) passa pelo relay. O DHCPREQUEST que aceita uma oferta é broadcast e passa pelo relay, repetindo o valor de 'secs' e o endereço de broadcast do DHCPDISCOVER para que os relays o encaminhem "to the same set of DHCP servers that received the original DHCPDISCOVER message" ([RFC 2131, seção 3.1](https://www.rfc-editor.org/rfc/rfc2131#section-3.1)). O DHCPREQUEST de renovação "will be unicast, so no relay agents will be involved in its transmission" ([RFC 2131, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc2131#section-4.3.2)).
+
+## Opção 82: o que o relay sabe e o cliente não
+
+A RFC 3046 (janeiro de 2001) dá voz ao relay. Sua opção "is inserted by the DHCP relay agent when forwarding client-originated DHCP packets to a DHCP server", e o servidor "echoes the option back verbatim to the relay agent in server-to-client replies, and the relay agent strips the option before forwarding the reply to the client": inserida pelo relay, devolvida intacta pelo servidor, removida pelo relay antes do cliente ([RFC 3046, Abstract](https://www.rfc-editor.org/rfc/rfc3046)).
+
+A **opção 82** é "a "container" option for specific agent-supplied sub-options" ([RFC 3046, seção 2.0](https://www.rfc-editor.org/rfc/rfc3046#section-2)):
+
+| Campo | Tamanho | Significado |
+|---|---|---|
+| Code | 1 octeto | 82, "Relay Agent Information" ([IANA](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)) |
+| Len | 1 octeto | N, os bytes de todas as sub-opções; o mínimo é "two (2)" |
+| Agent Information Field | N octetos | Sub-opções, cada uma com código, comprimento (os octetos do valor, possivelmente zero) e valor; sem pad, sem terminador 255, em qualquer ordem |
+
+O relay a insere "as the last option (but before 'End Option' 255, if present)", nunca em 'sname' ou 'file'; a inserção deve ser configurável e "disabled by default"; e o pacote não pode ultrapassar a maximum transmission unit (MTU) da interface de saída ([RFC 3046, seção 2.1](https://www.rfc-editor.org/rfc/rfc3046#section-2.1)). O **Circuit ID** (código 1) é "an agent-local identifier of the circuit from which a DHCP client-to-server packet was received" ([RFC 3046, seção 3.1](https://www.rfc-editor.org/rfc/rfc3046#section-3.1)). O **Remote ID** (código 2) identifica "the remote host end of the circuit" e "MUST be globally unique" ([RFC 3046, seção 3.2](https://www.rfc-editor.org/rfc/rfc3046#section-3.2)).
+
+Um servidor que conhece a opção "SHALL echo the entire contents of the Relay Agent Information option in all replies"; um que não conhece a ignora ([RFC 3046, seção 2.2](https://www.rfc-editor.org/rfc/rfc3046#section-2.2)). Na volta, ela "MUST be removed by either the relay agent or the trusted downstream network element which added it" ([RFC 3046, seção 2.1](https://www.rfc-editor.org/rfc/rfc3046#section-2.1)). A confiança decide o resto: um relay de primeiro hop (giaddr zero) que recebe um pacote "from an untrusted circuit" já com opção 82 "SHALL discard the packet and increment an error count", enquanto num circuito confiável um bridge mais perto do cliente pode tê-la inserido e o relay "does NOT add a "second" relay agent option" (mesma seção); um segundo relay, vendo giaddr diferente de zero, encaminha "WITHOUT adding any relay agent options" e deixa giaddr intacto ([RFC 3046, seção 2.1.1](https://www.rfc-editor.org/rfc/rfc3046#section-2.1.1)).
+
+A Internet Assigned Numbers Authority (IANA) atribui os códigos sob "IETF Review" (a RFC 3046 escreveu "IETF Consensus", [seção 6.0](https://www.rfc-editor.org/rfc/rfc3046#section-6)). O registro, atualizado em 2026-02-02, lista ([IANA, DHCP Relay Agent Sub-Option Codes](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)):
+
+| Código | Sub-opção | Referência |
+|---|---|---|
+| 1 | Agent Circuit ID Sub-option | RFC 3046 |
+| 2 | Agent Remote ID Sub-option | RFC 3046 |
+| 3 | Reservado ("proprietary and incompatible usages" já vistos) | Ralph Droms |
+| 4 | DOCSIS Device Class Suboption | RFC 3256 |
+| 5 | Link selection Sub-option | RFC 3527 |
+| 6 | Subscriber-ID Suboption | RFC 3993 |
+| 7 | RADIUS (Remote Authentication Dial-In User Service) Attributes Sub-option | RFC 4014 |
+| 8 | Authentication Suboption | RFC 4030 |
+| 9 | Vendor-Specific Information Suboption | RFC 4243 |
+| 10 | Relay Agent Flags | RFC 5010 |
+| 11 | Server Identifier Override Suboption | RFC 5107 |
+| 12 | Relay Agent Identifier Sub-option | RFC 6925 |
+| 13 a 18 | Access-Technology-Type, Access-Network-Name, Access-Point-Name, Access-Point-BSSID, Operator-Identifier e Operator-Realm Sub-options | RFC 7839 |
+| 19 | DHCPv4 Relay Source Port Sub-Option | RFC 8357 |
+| 20 a 150 | Não atribuídos | |
+| 151 | DHCPv4 Virtual Subnet Selection Sub-Option | RFC 6607 |
+| 152 | DHCPv4 Virtual Subnet Selection Control Sub-Option | RFC 6607 |
+
+A RFC 3046 é Proposed Standard, atualizada pela RFC 6607, origem dos códigos 151 e 152 ([página de informações da RFC 3046](https://www.rfc-editor.org/info/rfc3046)).
+
+## O relay no Cisco IOS
+
+No Cisco IOS a chave é um comando de interface:
+
+```
+Router(config)# interface ethernet 1
+Router(config-if)# ip helper-address 10.24.43.2
+```
+
+Seu default é "UDP broadcasts are not forwarded." "The helper address must specify the address of the BOOTP or DHCP server", e "The service dhcp command must be configured on the router to enable IP helper statements to work with DHCP." ([Cisco, ip helper-address](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp/command/iap-cr-book/iap-i1.html)) O relay, portanto, fica desligado até que uma interface tenha um helper address, como a RFC 1542 exige. "If an IP helper address is defined, UDP forwarding is enabled on default ports", e essas portas default são ([Cisco, ip forward-protocol](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp/command/iap-cr-book/iap-i1.html)):
+
+| Serviço | Porta UDP |
+|---|---|
+| Trivial File Transfer Protocol (TFTP) | 69 |
+| Domain Naming System | 53 |
+| Time service | 37 |
+| NetBIOS Name Server | 137 |
+| NetBIOS Datagram Server | 138 |
+| Boot Protocol (BOOTP) client and server packets | 67 e 68 |
+| TACACS service | 49 |
+| IEN-116 Name Service | 42 |
+
+A linha do BOOTP precisa da nota da mesma entrada: "If UDP port 68 is used as the destination port number, it is not forwarded by default." É o que a RFC 1542 exige.
+
+Para a opção 82, o relay "will automatically add the circuit identifier suboption and the remote ID suboption" e as remove "while forwarding the packet to the client" ([Cisco, Configuring the Cisco IOS DHCP Relay Agent](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipaddr_dhcp/configuration/15-mt/dhcp-15-mt-book/config-dhcp-relay-agent.html)). Os comandos globais, com formas por interface que têm precedência:
+
+| Comando | O que faz | Default |
+|---|---|---|
+| `ip dhcp relay information option` | Insere a opção 82 nas requisições encaminhadas | Desligado |
+| `ip dhcp relay information check` | Valida a opção nas respostas encaminhadas; resposta inválida é descartada | Ligado |
+| `ip dhcp relay information policy` (`drop`, `keep` ou `replace`) | Trata informação de relay já presente numa mensagem vinda de outro relay | Replace |
+| `ip dhcp relay information trust-all` (global) ou `trusted` (interface) | Aceita pacote com giaddr zero que já traz a opção 82 | Descartar |
+
+O default da policy é onde Cisco e RFC 3046 divergem: "By default, the relay information from the previous relay agent is replaced." (Cisco, mesmo guia), enquanto a RFC 3046 encaminha "WITHOUT adding any relay agent options" ([RFC 3046, seção 2.1.1](https://www.rfc-editor.org/rfc/rfc3046#section-2.1.1)); `keep` é o comportamento da RFC, e ambos deixam giaddr intacto. Os comandos de confiança cobrem o bridge downstream da RFC 3046: `trust-all` "is useful if there is a switch placed between the client and the relay agent that may insert option 82" (Cisco, mesmo guia).
+
+## Quando um cliente em uma sub-rede remota não recebe endereço
+
+Percorra o caminho na ordem em que as mensagens viajam.
+
+1. **O relay está ligado, na interface certa?** O relay nasce desligado ([RFC 1542, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1542#section-4.1.1)); no Cisco IOS, `ip helper-address` precisa apontar para o servidor na interface em que o broadcast do cliente chega, com `service dhcp` não removido.
+2. **A requisição sobrevive às checagens do relay?** 'hops' acima do limite (default 4, teto 16) significa descarte silencioso; opção 82 já presente com 'giaddr' zero significa descarte num circuito não confiável ([RFC 3046, seção 2.1](https://www.rfc-editor.org/rfc/rfc3046#section-2.1)), o default da Cisco sem `trust-all` ou `trusted`.
+3. **O servidor tem pool para o 'giaddr'?** O pool segue o endereço do relay ([RFC 2131, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc2131#section-4.3.1)), que é o da interface de chegada.
+4. **A resposta chega ao relay, e passa por ele?** O servidor faz unicast para 'giaddr' na porta UDP 67 ([RFC 1542, seção 5.4](https://www.rfc-editor.org/rfc/rfc1542#section-5.4)); o relay descarta resposta cujo 'giaddr' não seja seu ([RFC 1542, seção 4.1.2](https://www.rfc-editor.org/rfc/rfc1542#section-4.1.2)) ou, com o `ip dhcp relay information check` default, cuja opção 82 seja inválida.
+5. **O cliente consegue receber o último trecho?** Unicast para 'yiaddr' em 'chaddr', a menos que a flag BROADCAST esteja ligada; o cliente que não recebe unicast antes de configurado precisa ligar a flag ele mesmo ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131#section-4.1)).
+
+## Para lembrar
+
+- Um relay agent recebe o BOOTREQUEST "as a final destination" e gera uma mensagem nova; não é IP forwarding, e por isso a RFC 1542 o renomeou.
+- O relay escreve em giaddr o endereço da interface de chegada, incrementa hops e envia a requisição a um destino configurado, na prática o endereço unicast do servidor.
+- O servidor responde ao relay em giaddr na porta UDP 67 e escolhe o pool a partir de giaddr; o relay entrega na porta 68, em broadcast quando a flag BROADCAST está ligada.
+- A requisição é descartada acima de 16 hops (MUST) ou acima de um limite configurável cujo default é 4; "o limite é 4" nomeia o default, não a regra dura.
+- giaddr tem nome infeliz ("rather poorly named"): nunca é o roteador do cliente, e o cliente o zera.
+- A opção 82 é inserida pelo relay, devolvida intacta pelo servidor e removida antes de chegar ao cliente; um relay de primeiro hop descarta requisição que já a traz vinda de circuito não confiável.
+- No Cisco IOS nada é encaminhado até que ip helper-address esteja na interface, a porta 68 não é encaminhada por default, e o default da policy da opção 82 (replace) diverge da RFC 3046.
+
+## Fontes
+
+- [RFC 951, BOOTSTRAP PROTOCOL (BOOTP), setembro de 1985: seções 3 e 8 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc951)
+- [RFC 1542, Clarifications and Extensions for the Bootstrap Protocol, outubro de 1993: seções 1, 2.2, 3.1.1, 3.4, 4, 4.1, 4.1.1, 4.1.2 e 5.4 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1542)
+- [RFC 2131, Dynamic Host Configuration Protocol, março de 1997: seções 1, 1.5, 2 (Tabela 1), 3.1, 4.1, 4.3.1 e 4.3.2 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2131)
+- [RFC 3046, DHCP Relay Agent Information Option, janeiro de 2001: Abstract e seções 2.0, 2.1, 2.1.1, 2.2, 3.1, 3.2 e 6.0 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3046)
+- [Página de informações da RFC 3046 no RFC Editor: status e Updated by (lida em 2026-10-13)](https://www.rfc-editor.org/info/rfc3046)
+- [RFC 3993, Subscriber-ID Suboption for the Dynamic Host Configuration Protocol (DHCP) Relay Agent Option, março de 2005: seção 1 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3993)
+- [IANA, Dynamic Host Configuration Protocol (DHCP) and Bootstrap Protocol (BOOTP) Parameters: linha da opção 82 e sub-registro DHCP Relay Agent Sub-Option Codes, atualizado em 2026-02-02 (lido em 2026-10-13)](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)
+- [Cisco, IP Addressing: DHCP Configuration Guide, Cisco IOS Release 15M&T, capítulo Configuring the Cisco IOS DHCP Relay Agent, atualizado em 3 de dezembro de 2012 (lido em 2026-10-13)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipaddr_dhcp/configuration/15-mt/dhcp-15-mt-book/config-dhcp-relay-agent.html)
+- [Cisco, Cisco IOS IP Application Services Command Reference, entradas ip forward-protocol e ip helper-address, atualizado em 19 de julho de 2011 (lido em 2026-10-13)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp/command/iap-cr-book/iap-i1.html)

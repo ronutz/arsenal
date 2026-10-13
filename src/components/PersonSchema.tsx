@@ -56,7 +56,8 @@ function person() {
     "@id": PERSON_ID,
     name: "Rodolfo Nützmann",
     url: "https://ronutz.com/en/about/",
-    jobTitle: "Technical Instructor",
+    // The title as the footer and About give it (row 70, PRIME 2026-10-07: "Instructor only").
+    jobTitle: "Senior Technical Instructor",
     worksFor: { "@type": "Organization", name: "Red Education" },
     knowsAbout: [
       "Computer networking",

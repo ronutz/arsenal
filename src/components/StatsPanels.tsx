@@ -25,6 +25,13 @@
  * records each request's status; worker/stats.ts filters on it). The requests
  * for addresses the site does not have are StatsMissing's, rendered after the
  * grid with its own fetch, for the same window.
+ *
+ * A CUT LIST SAYS SO (2026-10-13). The "paths" list behind the Pages,
+ * Sections, Long tail and Coverage panels stopped at 6,000 rows, and the
+ * window had outgrown it: the panels added up a part of the window as if it
+ * were all of it (read live on 13 October). The Worker now reads far more
+ * rows and answers with `cut` and `limit`; when a list was cut, every panel
+ * built from it says so under its note (stats_page.listCut).
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -40,7 +47,9 @@ const PANELS: Panel[] = [
   { route: "timeline",  titleKey: "panelTimeline",  noteKey: "timelineNote",  cols: ["day", "views"],     kind: "timeline" },
   // Reads the COMPLETE list (the "paths" route), not a top-100, so its total
   // matches the timeline exactly; the panel then shows 15 per language and
-  // says how many requests and pages the whole set holds.
+  // says how many requests and pages the whole set holds. (Complete up to the
+  // Worker's PATHS_LIMIT; a list that reaches it is marked cut, and the panel
+  // says so: 2026-10-13.)
   { route: "paths",     titleKey: "panelPages",     noteKey: "pagesNote",     cols: ["path", "views"],    kind: "pages" },
   { route: "clients",   titleKey: "panelClients",   noteKey: "clientsNote",   cols: ["client", "views"],  kind: "ranked" },
   { route: "devices",   titleKey: "panelDevices",   noteKey: "devicesNote",   cols: ["device", "views"],  kind: "devices" },
@@ -110,6 +119,8 @@ export default function StatsPanels({
   };
   const [win, setWin] = useState("30d");
   const [data, setData] = useState<Record<string, Row[] | null>>({});
+  // Per route, the row limit its list reached in this window, or 0 when the list is whole (2026-10-13).
+  const [cuts, setCuts] = useState<Record<string, number>>({});
   const [state, setState] = useState<"loading" | "ok" | "unconfigured" | "error">("loading");
 
   useEffect(() => {
@@ -127,10 +138,15 @@ export default function StatsPanels({
       if (results.some((r) => r.status === 503)) return setState("unconfigured");
       if (results.every((r) => r.status !== 200)) return setState("error");
       const next: Record<string, Row[] | null> = {};
+      // The limit each cut list reached (only a 200 whose answer says cut: true counts as cut).
+      const nextCuts: Record<string, number> = {};
       for (const r of results) {
         next[r.route] = r.status === 200 && r.body && Array.isArray(r.body.rows) ? r.body.rows : null;
+        // The limit as the Worker sent it, or the rows' own count if it sent none: either way a positive number.
+        nextCuts[r.route] = r.status === 200 && r.body && r.body.cut === true ? Number(r.body.limit) || (r.body.rows?.length ?? 0) : 0;
       }
       setData(next);
+      setCuts(nextCuts);
       setState("ok");
     });
     return () => { cancelled = true; };
@@ -295,6 +311,8 @@ export default function StatsPanels({
               <section key={key(p)} className={`stats-panel${p.kind === "timeline" ? " stats-panel--wide" : ""}`}>
                 <h3 className="stats-panel-title">{strings[p.titleKey]}</h3>
                 <p className="stats-panel-note">{strings[p.noteKey]}</p>
+                {/* A list the Worker cut at its row limit: the panel says it covers the most-read part only. */}
+                {cuts[p.route] ? <p className="stats-panel-cut">{strings.listCut.replace("{limit}", cuts[p.route].toLocaleString())}</p> : null}
                 {totals[key(p)] ? <p className="stats-panel-total">{totals[key(p)]}</p> : null}
                 {all.length === 0 ? (
                   <p className="stats-empty">{strings.noData}</p>

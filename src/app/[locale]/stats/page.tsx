@@ -75,6 +75,8 @@ export default async function StatsPage({
     col_views: t("col_views"),
     pagesNote: t("pagesNote"),
     pagesTotal: t("pagesTotal"),
+    // Said under a panel whose list the Worker cut at its row limit (2026-10-13); "{limit}" is filled on the client.
+    listCut: t("listCut"),
     clientsNote: t("clientsNote"),
     countriesNote: t("countriesNote"),
     localesNote: t("localesNote"),

@@ -1,0 +1,135 @@
+---
+slug: dns-zone-transfers-and-notify
+title: "Transferências de zona e NOTIFY: como os servidores secundários ficam em dia"
+summary: "Toda zona DNS precisa ser servida por pelo menos dois servidores autoritativos, e as cópias precisam concordar. Depois da leitura, você vai saber ler os timers do registro SOA de uma zona e prever quando o secondary faz polling, reconhecer uma troca AXFR, IXFR ou NOTIFY numa captura de pacotes, explicar por que as transferências são restringidas e cifradas, e conferir com o dig se os servidores de uma zona têm o mesmo serial."
+concepts: ["zone transfer", "axfr", "ixfr", "notify", "soa record", "serial number arithmetic", "primary server", "secondary server", "refresh retry expire", "xfr over tls", "tsig", "allow-transfer"]
+relatedTools: ["dig-command-builder", "dig-output-explainer"]
+relatedArticles: ["dns-family-history", "reading-a-dns-answer", "dns-record-types-in-answers", "dns-message-header-and-flags", "dig-trace-and-delegation", "edns-and-the-opt-pseudosection"]
+category: networking
+order: 349
+status: reviewed
+updated: "2026-10-13"
+---
+
+O Domain Name System (DNS) exige que toda zona exista em mais de um servidor autoritativo, e as cópias precisam concordar. Uma **transferência de zona** é "The act of a client requesting a copy of a zone and an authoritative server sending the needed information" ([RFC 9499, seção 6](https://www.rfc-editor.org/rfc/rfc9499#section-6)): um cliente pede a cópia e um servidor autoritativo a envia, inteira (AXFR, "Authoritative Transfer") ou só a parte que mudou (IXFR, "Incremental Transfer"); o NOTIFY avisa que houve mudança. O objetivo dos três é "to enable a set of DNS name servers to remain coherently authoritative for a given zone" ([RFC 5936, seção 1](https://www.rfc-editor.org/rfc/rfc5936#section-1)), manter os servidores coerentes. Depois da leitura, você vai saber ler os timers do registro SOA (start of zone authority), reconhecer uma transferência ou um NOTIFY numa captura, explicar por que as transferências são restringidas e cifradas, e comparar serials com o dig.
+
+## Por que uma zona é copiada, e como as cópias se chamam
+
+A RFC 1034 é direta: "we require every zone to be available on at least two servers", para que a zona sobreviva a "host or communication link failure" ([RFC 1034, seção 4.1](https://www.rfc-editor.org/rfc/rfc1034#section-4.1)). A RFC 2182, uma Best Current Practice (BCP 16), recomenda "that three servers be provided for most organisation level zones, with at least one which must be well removed from the others" ([RFC 2182, seção 5](https://www.rfc-editor.org/rfc/rfc2182#section-5)): três servidores, um deles bem afastado dos outros.
+
+As cópias não são iguais: "one of the name servers is the master or primary for the zone", e "The other non-master or secondary servers for the zone periodically check for changes" ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034#section-4.3.5)); um servidor é o primary, os outros verificam periodicamente se algo mudou. O **primary** é "the server where the data is entered into the DNS from some source outside the DNS" ([RFC 2182, seção 3](https://www.rfc-editor.org/rfc/rfc2182#section-3)), o servidor onde o dado entra no DNS.
+
+Uma crença comum está errada: a RFC 1034 e a RFC 1035 nunca usam a palavra "slave". A RFC 1035 fala em "a primary name server" e "Designated secondary servers" ([RFC 1035, seção 2.2](https://www.rfc-editor.org/rfc/rfc1035#section-2.2)). Master e Slave foram definidos pela RFC 1996, em 1996 ([RFC 1996, seção 2](https://www.rfc-editor.org/rfc/rfc1996#section-2)); a RFC 2182 já os lista como alternativas, "Sometimes known as a Master server" ([RFC 2182, seção 2](https://www.rfc-editor.org/rfc/rfc2182#section-2)); a RFC 9499 (2024) registra que "the current common usage has shifted to calling it a "secondary"" ([RFC 9499, seção 6](https://www.rfc-editor.org/rfc/rfc9499#section-6)), o uso migrou para secondary; o BIND aceita as duas grafias, "primary (or master), secondary (or slave)" ([BIND 9 Administrator Reference Manual (ARM), Configuration Reference](https://bind9.readthedocs.io/en/latest/reference.html)).
+
+## O registro SOA, campo a campo
+
+O registro SOA da zona guarda a agenda do secondary; a RFC 1035 define seus sete campos de RDATA, o último deles um TTL (time-to-live), e avisa que "All times are in units of seconds" ([RFC 1035, seção 3.3.13](https://www.rfc-editor.org/rfc/rfc1035#section-3.3.13)), todos os tempos em segundos.
+
+| Campo | Tamanho | Significado (RFC 1035, seção 3.3.13) |
+|---|---|---|
+| MNAME | nome de domínio | O servidor que foi "the original or primary source of data for this zone", a fonte original dos dados |
+| RNAME | nome de domínio | "the mailbox of the person responsible for this zone", a caixa postal do responsável |
+| SERIAL | 32 bits, sem sinal | O "version number of the original copy of the zone", o número de versão; "Zone transfers preserve this value" |
+| REFRESH | 32 bits | "time interval before the zone should be refreshed", o intervalo até a próxima verificação |
+| RETRY | 32 bits | Intervalo "before a failed refresh should be retried", até repetir uma verificação falha |
+| EXPIRE | 32 bits | "upper limit on the time interval that can elapse before the zone is no longer authoritative", o limite para a cópia deixar de ser autoritativa |
+| MINIMUM | 32 bits, sem sinal | "minimum TTL field that should be exported with any RR from this zone" (o sentido de 1987) |
+
+O MINIMUM mudou de sentido duas vezes. RFC 1035: "a lower bound on the TTL field for all RRs in a zone" (mesma seção), um piso para os TTLs da zona. RFC 1912 (1996): "servers seem to always implement this as the default value" ([RFC 1912, seção 2.2](https://www.rfc-editor.org/rfc/rfc1912#section-2.2)), os servidores o tratavam como TTL padrão. RFC 2308 (1998): o sentido de piso "is hereby deprecated", o TTL padrão passou para a nova diretiva `$TTL`, e "the TTL to be used for negative responses" virou o "new defined meaning" do campo ([RFC 2308, seção 4](https://www.rfc-editor.org/rfc/rfc2308#section-4)). É esse o sentido em vigor: uma resposta negativa carrega o SOA na seção authority com um TTL "set from the minimum of the MINIMUM field of the SOA record and the TTL of the SOA itself" ([RFC 2308, seção 3](https://www.rfc-editor.org/rfc/rfc2308#section-3)), o menor entre o MINIMUM e o TTL do próprio SOA.
+
+## O ciclo de refresh como o secondary executa
+
+A RFC 1034 define o laço: o secondary "waits REFRESH seconds before checking with the primary for a new serial", com "a simple query to the primary for the SOA RR of the zone", uma consulta simples pelo SOA; serials iguais reiniciam a espera; "If this check cannot be completed, new checks are started every RETRY seconds", se falhar, repete a cada RETRY; e depois de EXPIRE segundos sem conseguir verificar "it must assume that its copy of the zone is obsolete an discard it" (sic) ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034#section-4.3.5)), descarta a cópia. Uma cópia expirada responde "as if it were not supposed to possess the zone" ([RFC 1035, seção 6.3](https://www.rfc-editor.org/rfc/rfc1035#section-6.3)), como se não tivesse a zona.
+
+O serial "is always advanced whenever any change is made to the zone", por "a simple increment" ou a partir de "the write date and time of the master file" ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034#section-4.3.5)); a "recommended syntax is YYYYMMDDnn" da RFC 1912 é convenção, não regra ([RFC 1912, seção 2.2](https://www.rfc-editor.org/rfc/rfc1912#section-2.2)). O "sequence space arithmetic" da RFC 1035 "is not defined in either RFC1034 or RFC1035" ([RFC 1982, seção 1](https://www.rfc-editor.org/rfc/rfc1982#section-1)), e por isso a RFC 1982 definiu a serial number arithmetic: adição, em que "The maximum defined increment is 2147483647 (2^31 - 1)" ([RFC 1982, seção 7](https://www.rfc-editor.org/rfc/rfc1982#section-7)), e comparação, em que s1 é menor que s2 quando `(i1 < i2 and i2 - i1 < 2^(SERIAL_BITS - 1)) or (i1 > i2 and i1 - i2 > 2^(SERIAL_BITS - 1))` ([RFC 1982, seção 3.2](https://www.rfc-editor.org/rfc/rfc1982#section-3.2)). No exemplo de 8 bits, "0 > 255": "Incrementing a serial number can cause it to become "smaller"" ([RFC 1982, seção 5.2](https://www.rfc-editor.org/rfc/rfc1982#section-5.2)), e esse é o único caminho para baixo: "Never simply decrease the serial number. Secondary servers will ignore that change" ([RFC 2182, seção 7](https://www.rfc-editor.org/rfc/rfc2182#section-7)), nunca diminua o serial.
+
+## AXFR: a zona inteira sobre TCP
+
+O AXFR, query type 252, "A request for a transfer of an entire zone", vem da RFC 1035 ([RFC 1035, seção 3.2.3](https://www.rfc-editor.org/rfc/rfc1035#section-3.2.3)); a RFC 5936 (2010) o reespecificou ([RFC 5936, seção 1](https://www.rfc-editor.org/rfc/rfc5936#section-1)). O transporte é TCP (Transmission Control Protocol) "on server port 53" ([RFC 1035, seção 4.2](https://www.rfc-editor.org/rfc/rfc1035#section-4.2)): "Because accuracy is essential, TCP or some other reliable protocol must be used for AXFR requests" ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034#section-4.3.5)).
+
+| Parte | Campos | Query AXFR (RFC 5936, seções 2.1.1, 2.1.2 e 2.1.5) |
+|---|---|---|
+| Header | QR, OPCODE, RCODE | "MUST be 0 (Query)", "MUST be 0 (Standard Query)", "MUST be 0 (No error)" |
+| Header | QDCOUNT, ANCOUNT, NSCOUNT | "MUST be 1", "MUST be 0", "MUST be 0" |
+| Question | QNAME, QTYPE, QCLASS | "the name of the zone requested", "AXFR (= 252), the pseudo-RR type for zone transfer", "the class of the zone requested" |
+| Additional | OPT, TSIG ou SIG(0) | Opcional: "The client MAY include one OPT resource record" e "one transaction integrity and authentication resource record" |
+
+A resposta é "a series (which could be a series of length 1) of DNS messages. In such a series, the first message MUST begin with the SOA resource record of the zone, and the last message MUST conclude with the same SOA resource record. Intermediate messages MUST NOT contain the SOA resource record" ([RFC 5936, seção 2.2](https://www.rfc-editor.org/rfc/rfc5936#section-2.2)): o SOA abre e fecha a transferência e não aparece no meio. As implementações "SHOULD provide means to restrict AXFR sessions to specific clients", por endereço, TSIG ("Secret Key Transaction Authentication for DNS") ou SIG(0), e "SHOULD NOT have a default policy for AXFR requests to be "open to all"" ([RFC 5936, seção 5](https://www.rfc-editor.org/rfc/rfc5936#section-5)), nunca aberto a todos por padrão. A RFC 5936 nunca cita a RFC 1982 para a comparação de serials; a RFC 9103 cita: "If the primary serial is higher than the secondary's serial (using Serial Number Arithmetic [RFC1982]), the secondary makes an AXFR request (over TCP) to the primary" ([RFC 9103, seção 5.1](https://www.rfc-editor.org/rfc/rfc9103#section-5.1)).
+
+## IXFR: só os registros que mudaram
+
+O AXFR "is not an efficient means to propagate changes to a small part of a zone", e por isso a RFC 1995 (1996) definiu o IXFR, query type 251 ([RFC 1995, seção 1](https://www.rfc-editor.org/rfc/rfc1995#section-1)). A query leva "the SOA record of client's version of the zone" na seção authority ([RFC 1995, seção 3](https://www.rfc-editor.org/rfc/rfc1995#section-3)), a versão que o cliente tem; o servidor manda "only the differences required to make that version current" ([RFC 1995, seção 2](https://www.rfc-editor.org/rfc/rfc1995#section-2)), só as diferenças. A resposta é "preceded and followed by a copy of the server's current version of the SOA", e em cada sequência de diferenças "The first RR of the deleted RRs is the older SOA RR and the first RR of the added RRs is the newer SOA RR" ([RFC 1995, seção 4](https://www.rfc-editor.org/rfc/rfc1995#section-4)): o SOA antigo abre as remoções, o SOA novo abre as adições. O exemplo da RFC 1995, cliente no serial 1, servidor no serial 3 ([RFC 1995, seção 7](https://www.rfc-editor.org/rfc/rfc1995#section-7)):
+
+| Seção answer, na ordem | Papel |
+|---|---|
+| JAIN.AD.JP. IN SOA serial=3 | SOA atual, abre |
+| JAIN.AD.JP. IN SOA serial=1 | SOA antigo, primeira mudança |
+| NEZU.JAIN.AD.JP. IN A 133.69.136.5 | removido |
+| JAIN.AD.JP. IN SOA serial=2 | SOA novo, primeira mudança |
+| JAIN-BB.JAIN.AD.JP. IN A 133.69.136.4 | adicionado |
+| JAIN-BB.JAIN.AD.JP. IN A 192.41.197.2 | adicionado |
+| JAIN.AD.JP. IN SOA serial=2 | SOA antigo, segunda mudança |
+| JAIN-BB.JAIN.AD.JP. IN A 133.69.136.4 | removido |
+| JAIN.AD.JP. IN SOA serial=3 | SOA novo, segunda mudança |
+| JAIN-BB.JAIN.AD.JP. IN A 133.69.136.3 | adicionado |
+| JAIN.AD.JP. IN SOA serial=3 | SOA atual, fecha |
+
+Sem o histórico, o servidor deve "attempt to perform a full zone transfer" ([RFC 1995, seção 6](https://www.rfc-editor.org/rfc/rfc1995#section-6)), tentar a transferência completa. A RFC 1995 diz que "a client should first make an IXFR query using UDP" (User Datagram Protocol; seção 2), mas a RFC 9103 registra que "most of the widely used open-source implementations of authoritative name servers (including both [BIND] and [NSD]) do IXFR using TCP by default in their latest releases" ([RFC 9103, seção 5.2](https://www.rfc-editor.org/rfc/rfc9103#section-5.2)): na prática, BIND e NSD fazem IXFR por TCP.
+
+## NOTIFY: um aviso, não uma transferência
+
+A RFC 1996 (1996) trouxe "an interrupt as opposed to poll model" ([RFC 1996, seção 1](https://www.rfc-editor.org/rfc/rfc1996#section-1)), interrupção em vez de polling, com um novo opcode, "NOTIFY (4)". "The only defined NOTIFY event at this time is that the SOA RR has changed" ([RFC 1996, seção 3](https://www.rfc-editor.org/rfc/rfc1996#section-3)): o único evento definido é a mudança do SOA.
+
+| Campo | Requisição (RFC 1996, seção 4.5) | Resposta (RFC 1996, seção 4.7) |
+|---|---|---|
+| query ID | "(new)" | "(same)" |
+| op | "NOTIFY (4)" | "NOTIFY (4)" |
+| resp | "NOERROR" | "NOERROR" |
+| flags | "AA" | "QR AA" |
+| qcount | "1" | "1" |
+| qname, qclass, qtype | "(zone name)", "(zone class)", "T_SOA" | idêntico à requisição |
+
+O **Notify Set** é, por padrão, "all servers named in the NS RRset, except for any server also named in the SOA MNAME" ([RFC 1996, seção 2](https://www.rfc-editor.org/rfc/rfc1996#section-2)): os servidores dos registros NS, menos o do MNAME.
+
+O NOTIFY é um aviso, nunca o dado: "In no case shall the answer section of a NOTIFY request be used to update a slave's local data, or to indicate that a zone transfer needs to be undertaken, or to change the slave's zone refresh timers" ([RFC 1996, seção 3](https://www.rfc-editor.org/rfc/rfc1996#section-3)). Quem recebe "should behave as though the zone given in the QNAME had reached its REFRESH interval", age como se o REFRESH tivesse vencido, e só depois de comparar os serials inicia "a zone transfer (either AXFR or IXFR)" (mesma seção). Sobre a quem perguntar, a RFC e o BIND divergem: a RFC 1996 manda dirigir a consulta SOA "at the known master who was the source of the NOTIFY event" (seção 3), a quem enviou o NOTIFY, enquanto no BIND "named does not first query the sender of the notify. It will continue with the next server in the list that transferred the zone" ([BIND 9 ARM, Configuration Reference, "type secondary"](https://bind9.readthedocs.io/en/latest/reference.html)).
+
+## XoT: por que a transferência em claro vaza a zona
+
+"DNS zone transfers are transmitted in cleartext, which gives attackers the opportunity to collect the content of a zone by eavesdropping on network connections", e o TSIG "does not add confidentiality" ([RFC 9103, Abstract](https://www.rfc-editor.org/rfc/rfc9103)): a transferência vai em claro, e o TSIG autentica mas não cifra. A RFC 9103 (2021) responde com o **XoT**, XFR (transferência de zona) sobre TLS (Transport Layer Security) ([RFC 9103, seção 2](https://www.rfc-editor.org/rfc/rfc9103#section-2)). As implementações "MUST use only TLS 1.3 [RFC8446] or later" ([RFC 9103, seção 7.2](https://www.rfc-editor.org/rfc/rfc9103#section-7.2)); a conexão "SHOULD be established using port 853, as specified in [RFC7858]" ([RFC 9103, seção 7.3](https://www.rfc-editor.org/rfc/rfc9103#section-7.3)). "The client MUST authenticate the server by use of an authentication domain name using a Strict Privacy profile", e "The server MUST validate the client is authorized" por mutual TLS (mTLS) ou por "an IP-based ACL (which can be either per message or per connection) combined with a valid TSIG/SIG(0) signature on the XFR request"; "If only one method is selected, then mTLS is preferred" ([RFC 9103, seção 7.5](https://www.rfc-editor.org/rfc/rfc9103#section-7.5)): os dois lados se autenticam. XoT não é DNS over TLS para servidores autoritativos: responder "all queries received over TLS just because it has enabled XoT would be equivalent to defining a form of authoritative DoT. This specification does not propose that" ([RFC 9103, seção 7.7](https://www.rfc-editor.org/rfc/rfc9103#section-7.7)).
+
+## Como configurar, restringir e conferir transferências
+
+No BIND, os mecanismos viram poucas declarações, aqui a partir do ARM da build de desenvolvimento 9.21.28-dev, lido em 2026-10-13 ([BIND 9 ARM, Configuration Reference](https://bind9.readthedocs.io/en/latest/reference.html)).
+
+| Declaração | O que faz (BIND 9 ARM, Configuration Reference) |
+|---|---|
+| `primaries` | "Defines one or more servers that zone transfer can be requested from", de onde o secondary pede a zona, cada um com `key` TSIG e configuração `tls` opcionais |
+| `allow-transfer` | Hosts "allowed to transfer the zone information from this server"; padrão "none; outgoing zone transfers are disabled", nenhuma transferência de saída; por exemplo `allow-transfer port 853 transport tls { any; };` |
+| `notify`, `also-notify` | "Controls whether NOTIFY(SOA) messages are sent on zone changes"; padrão `yes`, para os servidores dos NS "except the primary server identified in the SOA MNAME field" mais a lista `also-notify` |
+
+O padrão `none` concretiza o "SHOULD NOT have a default policy for AXFR requests to be "open to all"" da RFC 5936. E como "incoming TLS connections are not authenticated at the TLS level by default" (mesma página), TSIG ou mutual TLS continuam necessários.
+
+Para conferir na mão, repita a verificação do secondary: `dig +norecurse SOA` da zona em cada servidor do conjunto NS (veja o [dig command builder](/tools/dig-command-builder) e o [dig output explainer](/tools/dig-output-explainer)) e compare os SERIALs. Iguais: em dia. Menor num secondary: ainda não fez polling nem recebeu NOTIFY, ou a transferência falhou ("The AXFR may cause an error, such as refused", [RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034#section-4.3.5)). "greater" que o do primary: a armadilha da RFC 1982. Numa captura ([header e flags](/learn/dns-message-header-and-flags)), o AXFR é TCP para a porta 53, QTYPE 252, com resposta que vai de um SOA ao mesmo SOA; o IXFR é QTYPE 251, SOA do cliente na seção authority da query, dois SOAs abrindo a resposta; o NOTIFY é opcode 4, QTYPE SOA, flag AA, normalmente UDP ([RFC 1996, seção 3](https://www.rfc-editor.org/rfc/rfc1996#section-3)), respondido com a mesma mensagem com QR ligado e o mesmo ID.
+
+## Para lembrar
+
+- Toda zona precisa estar em pelo menos dois servidores; a RFC 2182 recomenda três, um deles bem afastado dos outros.
+- O primary é onde o dado entra no DNS; os secondaries copiam, e as palavras master e slave vieram da RFC 1996, não da RFC 1034 nem da RFC 1035.
+- O secondary consulta o SOA do primary a cada REFRESH segundos, repete a cada RETRY segundos após uma falha e descarta a zona depois de EXPIRE segundos; os serials seguem a aritmética da RFC 1982 e nunca diminuem.
+- O AXFR roda sobre TCP e sua resposta começa e termina com o SOA da zona; o IXFR manda blocos de remoção e de adição, cada um introduzido por um SOA, e cai para AXFR quando não há histórico.
+- O NOTIFY (opcode 4) só manda o secondary conferir o SOA agora; o XoT envolve a transferência em TLS 1.3 na porta 853, com os dois lados autenticados.
+
+## Fontes
+
+- [RFC 1034, Domain names - concepts and facilities, novembro de 1987: seções 4.1 e 4.3.5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1034)
+- [RFC 1035, Domain names - implementation and specification, novembro de 1987: seções 2.2, 3.2.3, 3.3.13, 4.2 e 6.3 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1035)
+- [RFC 1912, Common DNS Operational and Configuration Errors, fevereiro de 1996, Informational: seção 2.2 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1912)
+- [RFC 1982, Serial Number Arithmetic, agosto de 1996: seções 1, 3.2, 5.2 e 7 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1982)
+- [RFC 1995, Incremental Zone Transfer in DNS, agosto de 1996: seções 1 a 7 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1995)
+- [RFC 1996, A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY), agosto de 1996: seções 1 a 4 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1996)
+- [RFC 2182, Selection and Operation of Secondary DNS Servers, julho de 1997, BCP 16: seções 2, 3, 5 e 7 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2182)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), março de 1998: seções 3 e 4 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2308)
+- [RFC 5936, DNS Zone Transfer Protocol (AXFR), junho de 2010: seções 1, 2.1, 2.2 e 5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc5936)
+- [RFC 9103, DNS Zone Transfer over TLS, agosto de 2021: Abstract e seções 2, 5.1, 5.2 e 7 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9103)
+- [RFC 9499, DNS Terminology, março de 2024, BCP 219: seção 6 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9499)
+- [BIND 9 Administrator Reference Manual, documentação 9.21.28-dev, capítulo 8, Configuration Reference: type, primaries, allow-transfer, notify, also-notify (documentação do fabricante, lida em 2026-10-13)](https://bind9.readthedocs.io/en/latest/reference.html)

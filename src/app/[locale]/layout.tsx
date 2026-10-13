@@ -143,6 +143,9 @@ export default async function LocaleLayout({
   // and any human-reviewed locale never show it). Strings are resolved here, in
   // the page's own language, and handed to the presentational notice component.
   const isMachineDraft = getLocale(locale)?.status === "machine-draft";
+  // Which notice: a locale written with AI in its own language (Brazilian Portuguese) says so in PRIME's words; the
+  // machine-translated ones keep "translated by machine" (row 70, 2026-10-07; the registry's draftKind decides).
+  const noticeKey = getLocale(locale)?.draftKind === "written-with-ai" ? "noticeWrittenWithAi" : "notice";
   const tNotice = isMachineDraft
     ? await getTranslations({ locale, namespace: "machineTranslation" })
     : null;
@@ -241,7 +244,7 @@ export default async function LocaleLayout({
             and any human-reviewed locale. */}
         {isMachineDraft && tNotice && (
           <MachineTranslationNotice
-            message={tNotice("notice")}
+            message={tNotice(noticeKey)}
             ctaLabel={tNotice("cta")}
             ctaHref={`/${locale}/contribute`}
           />

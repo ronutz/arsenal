@@ -889,7 +889,7 @@
     "backHome": "Tillbaka till startsidan"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann är <r>Senior Technical Instructor och rådgivare</r> på <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann är <r>Senior Technical Instructor</r> på <b>Red Education</b>",
     "privacy": "Integritet",
     "builtWith": "Byggt av Rodolfo Nützmann med CONCORD",
     "colophon": "Hur det här byggdes",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instruktören",
-    "role": "Senior Technical Instructor och rådgivare på Red Education",
+    "role": "Senior Technical Instructor på Red Education",
     "lede": "Utbildning inom nätverk och säkerhet, hållen av en yrkesperson som har tillbringat karriären på implementeringssidan, inte bara vid bildspelen. Baserad i São Paulo, undervisar i hela världen, på portugisiska och engelska.",
     "now": {
       "title": "Vad jag gör nu",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron och Enterasys, 1996 till 2000",
       "s1Body": "Den formella karriären började 1996 på Cabletron Systems, då en ledande leverantör av nätverksutrustning med säte i Rochester, New Hampshire. Under fyra och ett halvt år omfattade rollen fältteknik och eftermarknadssupport, systemteknik och förförsäljning, och, från 1997, certifierad utbildning. Ämnet var tidens företags-LAN och -WAN: switchar, routrar, Wi-Fi och WLAN, nätverkshantering, NAC och UAC, och brandväggar med tillståndsinspektion. År 2000 omorganiserade Cabletron sig i fyra företag, och den del som rörde denna karriär blev Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 till 2002",
-      "s2Body": "Nästa kapitel utspelade sig i Kalifornien. Riverstone Networks, en avknoppning från Cabletron som byggde utrustning för storstadsnät, innebar en flytt till Santa Clara med ett H1-B1-arbetsvisum. Rollen var produktsupportingenjör på nivå III och samordnare för kunskapshantering: teknisk eskalering på tredje nivån, återskapande av kundscenarier i labb, regressionstester och felverifiering, och bygget av kunskapsbasen som resten av supporten vilade på. Teknikerna var ryggraden i operatörs- och storstadsvärlden i början av 2000-talet: Gigabit Ethernet, MPLS, storstadsswitchning och -routing, och BGP. Den här perioden gav också en formell milstolpe: som en del av visumprocessen erkände en bedömning i USA 2001 en utbildning likvärdig med en kandidatexamen i datavetenskap och en kandidatexamen i företagsekonomi.",
+      "s2Body": "Nästa kapitel utspelade sig i Kalifornien. Riverstone Networks, en avknoppning från Cabletron som byggde utrustning för storstadsnät, innebar en flytt till Santa Clara, först med en L-1-förflyttning inom företaget och sedan, 2001 och 2002, med ett H-1B-arbetsvisum. Rollen var produktsupportingenjör på nivå III och samordnare för kunskapshantering: teknisk eskalering på tredje nivån, återskapande av kundscenarier i labb, regressionstester och felverifiering, och bygget av kunskapsbasen som resten av supporten vilade på. Teknikerna var ryggraden i operatörs- och storstadsvärlden i början av 2000-talet: Gigabit Ethernet, MPLS, storstadsswitchning och -routing, och BGP. Den här perioden gav också en formell milstolpe: som en del av visumprocessen erkände en bedömning i USA 2001 en utbildning likvärdig med en kandidatexamen i datavetenskap och en kandidatexamen i företagsekonomi.",
       "s3Title": "Cisco Systems, Brasília, 2003 till 2004",
       "s3Body": "Tillbaka i Brasilien, och anlitad genom Cisco Professional Services, förflyttades rollen mot kundrelationen i dess mest krävande form. Som high-touch operations manager och enda kontaktpunkt var arbetet hantering av kundnöjdhet i eftermarknaden för två av Brasiliens största federala myndigheter, SERPRO, statens databehandlingsmyndighet, och ECT-Correios, postväsendet. Den tekniska ytan var Catalyst-switchar och -routrar, PIX-brandväggar, och CSS-, CSM- och ACE-lastbalanserare, men det verkliga arbetet var eskaleringshantering och att hålla en kritisk nationell infrastruktur i drift utan problem.",
       "s4Title": "Enterasys igen, sedan Juniper, 2005 till 2010",
@@ -1038,7 +1038,7 @@
       "subtitle": "Officiell undervisning på heltid, levererad i hela världen, och vid sidan av den rådgivning om de beslut som får konsekvenser.",
       "intro": "År 2020 blev en tråd som löpt genom hela karriären hela väven. Efter två decennier där undervisningen följde varje roll blev utbildningen själva arbetet: heltid, officiell, certifierad undervisning hållen för yrkespersoner och team över hela världen. Det som utmärker den här epoken är inte bara fokus, utan den medvetna, daterade expansionen genom plattformarna, var och en tillagd ovanpå djup fälterfarenhet i stället för i dess ställe.",
       "s1Title": "Heltid, av kallelse",
-      "s1Body": "Sedan 2020 har arbetet bestått i att hålla officiell, instruktörsledd utbildning, på distans och på plats, på portugisiska och engelska, för publik över hela världen. Leveransen når Australien, Singapore, Indien, Centraleuropa, USA och Brasilien. Det brasilianska och tyska medborgarskapet, tillsammans med reseauktorisation för USA och Storbritannien, gör den globala räckvidden praktisk: obegränsad rätt att arbeta i Europeiska unionen och Mercosur, och friheten att åka dit klassrummet finns.",
+      "s1Body": "Sedan 2020 har arbetet bestått i att hålla officiell, instruktörsledd utbildning, på distans och på plats, på portugisiska och engelska, för publik över hela världen. Leveransen når Australien, Singapore, Indien, Centraleuropa, USA och Brasilien. Det brasilianska och tyska medborgarskapet, tillsammans med ett giltigt visum för USA, gör den globala räckvidden praktisk: rätten att resa, bo och arbeta i Europeiska unionen och överallt där ett tyskt eller brasilianskt pass godtas utan visum, och friheten att åka dit klassrummet finns.",
       "s2Title": "F5, från början",
       "s2Body": "F5 har varit ankaret sedan den här epokens början, byggt på arbete med BIG-IP som sträcker sig mer än ett decennium tillbaka. Det auktoriserade kursutbudet täcker hela den instruktörsledda BIG-IP-katalogen: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules-utveckling, automation och felsökning, från endagskurser till fyradagarskurser. Vid sidan av undervisningen löper ett praktiskt komplement: hanterade F5 BIG-IP-labbmiljöer, så att övningen alltid har en riktig plats att äga rum på.",
       "s3Title": "Expansionen, plattform för plattform",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Två år i Santa Clara, i utkanten av operatörs- och storstadsnäten.",
-      "intro": "Det enda kapitlet i den här karriären som utspelade sig helt utanför Brasilien. Riverstone Networks, en tillverkare av utrustning för storstadsnät med säte i Santa Clara, Kalifornien, innebar en flytt till USA med ett H1-B1-arbetsvisum. Riverstone hade en egen ovanlig härstamning: ursprungligen ett företag som hette Yago, förvärvat av Cabletron runt 1998, och återuppstått som ett självständigt företag genom en avknoppning 2001. Det förvärvades senare av Alcatel-Lucent 2006.",
+      "intro": "Det enda kapitlet i den här karriären som utspelade sig helt utanför Brasilien. Riverstone Networks, en tillverkare av utrustning för storstadsnät med säte i Santa Clara, Kalifornien, innebar en flytt till USA, först med en L-1-förflyttning inom företaget och sedan, 2001 och 2002, med ett H-1B-arbetsvisum. Riverstone hade en egen ovanlig härstamning: ursprungligen ett företag som hette Yago, förvärvat av Cabletron runt 1998, och återuppstått som ett självständigt företag genom en avknoppning 2001. Det förvärvades senare av Alcatel-Lucent 2006.",
       "s1Title": "Support på nivå III och kunskapshantering",
       "s1Body": "Rollen bar två titlar under två år: produktsupportingenjör och samordnare för kunskapshantering. Som tekniksupportspecialist på nivå III var arbetet eskalering på tredje nivån, återskapande av kundscenarier i labb, regressionstester och felverifiering. Som samordnare för kunskapshantering handlade det om att bygga och organisera kunskapsbasen som resten av supporten vilade på, vid sidan av stöd till produktmarknadsföring och intern utbildning. Det här var karriärens djupaste tekniksupportarbete, på den nivå där de svåraste problemen eskalerar.",
       "s2Title": "Storstadsnätens värld",
       "s2Body": "Teknikerna var ryggraden i operatörs- och storstadseran i början av 2000-talet: Gigabit Ethernet, MPLS, storstadsswitchning och -routing, och vidsträckt IP-routing inklusive BGP. Att arbeta i leverantörens support på tredje nivån innebar att se hur dessa system betedde sig i ytterkanterna, under förhållanden som bara framträder i produktion i stor skala. Det gav också formell undervisning: utbildning om Riverstones koncept, funktioner och konfiguration, och utbildning om problemidentifiering i kundsupport och eskaleringsförfaranden.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Bedömning av utbildningsekvivalens i USA som erkänner en utbildning likvärdig med en kandidatexamen i datavetenskap och en kandidatexamen i företagsekonomi, slutförd 2001 som en del av H1-B1-visumprocessen.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Bedömning av utbildningsekvivalens i USA som erkänner en utbildning likvärdig med en kandidatexamen i datavetenskap och en kandidatexamen i företagsekonomi, slutförd 2001 som en del av H-1B-visumprocessen.",
       "lineageTitle": "Företagshärstamningen",
       "lineageDesc": "Riverstone Networks började som ett företag som hette Yago, förvärvades av Cabletron Systems runt 1998, återuppstod som ett självständigt företag genom en avknoppning 2001, och förvärvades av Alcatel-Lucent 2006."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Standarder och ramverk",
     "standardsLede": "Varje verktyg här implementerar en publicerad specifikation, inte en gissning. Avkodarna och kalkylatorerna byggs mot de dokument som definierar deras format och fästs vid de testvektorer som dokumenten publicerar, så att varje svar prövas mot sanningskällan i stället för mot sig självt.",
     "specsLabel": "Specifikationerna",
-    "specsBody": "JSON Web Tokens följer RFC 7519, med signaturer och algoritmer i RFC 7515 och 7518; PKCE är RFC 7636; Base64 och dess släktingar är RFC 4648; UUID är RFC 9562 (som ersatte RFC 4122 år 2024 och har egna testvektorer); HMAC är RFC 2104, över SHA-familjen standardiserad i FIPS 180-4 och FIPS 202; X.509-certifikat är RFC 5280; IPv4 och CIDR-notationen är RFC 4632; IPv6-adressering och dess kanoniska textform är RFC 4291 och RFC 5952; och cipher suite-avkodaren drivs av det officiella IANA TLS Cipher Suites-registret, korsvis kontrollerat mot TLS 1.3- och 1.2-specifikationerna (RFC 8446 och 5246), registeruppdateringsreglerna som sätter kolumnen “Recommended” (RFC 8447) och RC4-förbudet (RFC 7465). Där ett register är auktoriteten tas dess data in direkt i stället för att skrivas av.",
+    "specsBody": "JSON Web Tokens följer RFC 7519, med signaturer och algoritmer i RFC 7515 och 7518; PKCE är RFC 7636; Base64 och dess släktingar är RFC 4648; UUID är RFC 9562 (som ersatte RFC 4122 år 2024 och har egna testvektorer); HMAC är RFC 2104, över SHA-familjen standardiserad i FIPS 180-4 och FIPS 202; X.509-certifikat är RFC 5280; IPv4 är RFC 791 och CIDR-notationen är RFC 4632; IPv6-adressering och dess kanoniska textform är RFC 4291 och RFC 5952; och cipher suite-avkodaren drivs av det officiella IANA TLS Cipher Suites-registret, korsvis kontrollerat mot TLS 1.3- och 1.2-specifikationerna (RFC 8446 och 5246), registeruppdateringsreglerna som sätter kolumnen “Recommended” (RFC 8447) och RC4-förbudet (RFC 7465). Där ett register är auktoriteten tas dess data in direkt i stället för att skrivas av.",
     "vectorsLabel": "Referensvektorer",
     "vectorsBody": "Varje verktyg levereras med en uppsättning referensvektorer: kända indata parade med känt korrekta utdata, hämtade från relevanta RFC:er och standardiseringsorgan. De körs vid varje build, så en omstrukturering som tyst ändrar ett svar får builden att misslyckas i stället för att gå ut.",
     "owaspLabel": "OWASP",
@@ -1373,7 +1373,7 @@
   "contribute": {
     "eyebrow": "Översättningar",
     "title": "Hjälp till att förbättra översättningarna",
-    "lede": "Alla språk här utom engelska är ett maskingjort första utkast. Om du talar något av dem och märker något fel eller klumpigt är dina rättelser mycket välkomna. Så här skickar du dem.",
+    "lede": "Brasiliansk portugisiska skrivs här med AI och granskas gradvis; alla andra språk utom engelska är ett maskingjort första utkast. Om du talar något av dem och märker något fel eller klumpigt är dina rättelser mycket välkomna. Så här skickar du dem.",
     "howTitle": "Så bidrar du",
     "howBody": "Engelska är källan till sanning, och alla andra språk översätts från den, så fel kan förekomma. Varje språkpaket är en enda textfil med märkta fraser. Ladda ner det du vill förbättra, ändra bara texten efter varje etikett och lämna etiketterna och allt inom klamrar precis som det är. Mejla sedan den redigerade filen och ange språket. Varje bidrag granskas för hand.",
     "downloadHeading": "Språkpaket",
@@ -1449,7 +1449,7 @@
     "complete": "Maskinell, fullständig",
     "partial": "Maskinell, pågår",
     "explainTitle": "Hur översättningar märks",
-    "explainBody": "Engelska och brasiliansk portugisiska skrivs och granskas av en person. De flesta andra språk är maskinöversatta och märkta efter hur långt de har kommit: bärnstensgul när ett språk täcker hela webbplatsen, gul medan nyare innehåll fortfarande är på engelska och håller på att komma ikapp. Språk markerade med rött har ännu ingen översättning och visas på engelska tills vidare. Maskinöversatta sidor har också en kort notis, och du är välkommen att hjälpa till att förbättra dem.",
+    "explainBody": "Engelska är källan: skriven med AI och publicerad först när en person bestämmer det. Brasiliansk portugisiska skrivs också med AI och granskas gradvis; de andra språken är maskinöversatta. Varje språk är märkt efter hur långt det har kommit: blått när det täcker hela webbplatsen, gult medan nyare innehåll fortfarande är på engelska och håller på att komma ikapp, rött när det ännu inte har någon översättning och visas på engelska tills vidare. Alla språk utom engelska har en kort notis, och du är välkommen att hjälpa till att förbättra dem.",
     "stub": "Inte översatt ännu"
   },
   "changelog": {

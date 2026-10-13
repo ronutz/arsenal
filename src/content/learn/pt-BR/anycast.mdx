@@ -1,0 +1,122 @@
+---
+slug: anycast
+title: "Anycast: um endereço em muitos lugares"
+summary: "O anycast anuncia um mesmo endereço de serviço a partir de muitos lugares independentes e deixa o sistema de roteamento decidir qual deles cada cliente alcança. Depois de ler, você consegue defini-lo nas palavras da RFC 1546 e da BCP 126, explicar por que mais próximo quer dizer mais próximo na tabela de rotas e não no mapa, dizer por que o DNS sobre UDP se encaixa nele e o TCP sofre, ler a lista de servidores raiz do root-servers.org e rodar uma consulta dig que revela qual instância respondeu a você."
+concepts: ["anycast", "service address", "anycast node", "catchment", "global node", "local node", "covering prefix", "no_export", "root servers", "shared unicast address", "nsid", "ipv6 anycast"]
+relatedTools: ["dig-command-builder"]
+relatedArticles: ["what-happens-if-the-dns-root-goes-dark", "dns-family-history", "bgp-primer", "bgp-and-the-routing-chokepoint", "choosing-a-public-dns-resolver", "dig-trace-and-delegation", "icmp-ping-and-traceroute"]
+category: networking
+order: 352
+status: reviewed
+updated: "2026-10-13"
+---
+
+Um resolver recursivo de Domain Name System (DNS) que pergunta a um servidor raiz não se importa com qual máquina responde. A RFC 1546 deu nome a essa necessidade em 1993: um cliente "wishes to locate a host which supports a particular service but, if several servers support the service, does not particularly care which server is used", quer achar um servidor do serviço sem se importar com qual deles ([RFC 1546, "Motivation"](https://www.rfc-editor.org/rfc/rfc1546)). O **anycast** é a resposta da Internet: um mesmo endereço anunciado de muitos lugares, com o roteamento comum entregando cada pacote a um deles. Ao final você consegue defini-lo como as normas definem, ver como o Border Gateway Protocol (BGP) escolhe, dizer por que o [DNS](/learn/dns-family-history) se encaixa nele e o Transmission Control Protocol (TCP) sofre, ler os números dos servidores raiz de 2026-10-13 e rodar uma consulta que mostra qual instância respondeu a você.
+
+## De onde vem a palavra, e os termos que ficaram
+
+A RFC 1546, "Host Anycasting Service", saiu da BBN em novembro de 1993 pela Internet Research Task Force (IRTF), como memorando experimental que não propunha protocolo ([RFC 1546, Abstract](https://www.rfc-editor.org/rfc/rfc1546)). O anycast em Internet Protocol (IP) é "a service which provides a stateless best effort delivery of an anycast datagram to at least one host, and preferably only one host, which serves the anycast address": entrega de melhor esforço, sem estado, a pelo menos um host que serve o endereço, de preferência a um só ([RFC 1546, "Architectural Issues"](https://www.rfc-editor.org/rfc/rfc1546)). Uma premissa não sobreviveu: "this memo assumes that anycast addresses will be a separate class of IP addresses (not yet assigned)", uma classe própria de endereços ([RFC 1546, "Anycast Addresses"](https://www.rfc-editor.org/rfc/rfc1546)). Ela nunca foi atribuída; o anycast implantado usa endereços unicast comuns ([RFC 3258, seção 1](https://www.rfc-editor.org/rfc/rfc3258#section-1)).
+
+O vocabulário vem da RFC 4786, "Operation of Anycast Services", a Best Current Practice (BCP) 126 de dezembro de 2006, ainda listada sem nenhuma entrada "Updated by" ou "Obsoleted by" ([página de informações da RFC 4786](https://www.rfc-editor.org/info/rfc4786)). A seção 2 fixa quatro termos ([RFC 4786, seção 2](https://www.rfc-editor.org/rfc/rfc4786#section-2)):
+
+- **Service Address** (o endereço de serviço): "an IP address associated with a particular service".
+- **Anycast**: "the practice of making a particular Service Address available in multiple, discrete, autonomous locations, such that datagrams sent are routed to one of several available locations", a prática de oferecer o mesmo endereço de serviço em vários lugares autônomos, com os datagramas roteados a um deles.
+- **Anycast Node** (o nó anycast): "an internally-connected collection of hosts and routers that together provide service for an anycast Service Address", os hosts e roteadores que, juntos, servem o endereço em um lugar.
+- **Catchment** (a bacia de captação, por analogia com um rio): "the topological region of a network within which packets directed at an Anycast Address are routed to one particular node", a região da topologia cujos pacotes caem em um mesmo nó.
+
+## Um prefixo em muitos lugares: nós globais, nós locais e NO_EXPORT
+
+O mecanismo é o [BGP](/learn/bgp-primer): "the service is first associated with a stable set of IP addresses, and reachability to those addresses is advertised in a routing system from multiple, independent service nodes", o serviço ganha um conjunto estável de endereços e vários nós independentes anunciam alcance a eles ([RFC 4786, seção 1](https://www.rfc-editor.org/rfc/rfc4786#section-1)). Na Internet uma rota de host não viaja, "a consequence of operational policy, and not a protocol restriction" (política operacional, não limite do protocolo), então cada nó anuncia um **prefixo de cobertura** (covering prefix), "often a 24-bit prefix" no IPv4 ([RFC 4786, seção 4.4.2](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.2)). O K-root faz exatamente isso para 193.0.14.129, a partir de um único sistema autônomo (AS): "Each node announces prefixes from 193.0.14.0/23 in AS25152" ([RIPE NCC, K-root](https://www.ripe.net/analyse/dns/k-root/)).
+
+Qual AS origina o prefixo é um ponto em que os documentos divergem. A BCP 126 diz que os nós "should use the same origin AS for their advertisements, but might have different upstream ASes", mesmo AS de origem, upstreams possivelmente diferentes ([RFC 4786, seção 4.4.4](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.4)); a RFC 7094 relata que a RFC 6382, não lida aqui, recomendou depois "per-node unique origin Autonomous System Numbers (ASNs) for globally anycasted critical infrastructure services", um ASN de origem por nó ([RFC 7094, seção 2.3](https://www.rfc-editor.org/rfc/rfc7094#section-2.3)); o K-root, como citado acima, segue com um só.
+
+Um **Global Node** (nó global) é "capable of providing service to clients anywhere in the network"; um **Local Node** (nó local) serve "a local catchment of autonomous systems" e limita a propagação da rota "using well-known community string attributes such as NO_EXPORT [RFC1997] or NOPEER [RFC3765]", as communities bem conhecidas do BGP ([RFC 4786, seção 4.4.6](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.6)). O fail-over vai "from Local Node to Global Node" ([RFC 4786, seção 4.7](https://www.rfc-editor.org/rfc/rfc4786#section-4.7)), e por isso "All operators provide service to the entire Internet through at least one global instance": todo operador raiz tem ao menos uma instância global ([FAQ do root-servers.org](https://root-servers.org/faq/)).
+
+## O mais próximo na tabela de rotas, não no mapa
+
+As normas definem "mais próximo" pela métrica, não pela distância no mapa. O IPv6 entrega à interface "nearest" "according to the routing protocols' measure of distance" ([RFC 4291, seção 2.6](https://www.rfc-editor.org/rfc/rfc4291#section-2.6)); o Internet Architecture Board (IAB) espera a instância "closest" "as determined by unicast routing topology metric(s)" ([RFC 7094, seção 1](https://www.rfc-editor.org/rfc/rfc7094#section-1)); e a BCP 126 avisa que "Topological nearness within the routing system does not, in general, correlate to round-trip performance across a network; in some cases, response times may see no reduction, and may increase": proximidade topológica não garante latência menor, e às vezes a piora ([RFC 4786, seção 3.2](https://www.rfc-editor.org/rfc/rfc4786#section-3.2)). O catchment também não é uma população fixa: "the population of clients using individual anycast nodes is neither static, nor reliably deterministic" ([RFC 4786, seção 1](https://www.rfc-editor.org/rfc/rfc4786#section-1)), e "load distribution between nodes is generally unbalanced in terms of request and traffic load" ([RFC 4786, seção 3.1](https://www.rfc-editor.org/rfc/rfc4786#section-3.1)): o anycast dá resiliência e uma distribuição grosseira de carga, não balanceamento.
+
+## Por que o DNS se encaixa e onde o TCP sofre
+
+O anycast é stateless (sem estado): uma internet tem "no obligation to deliver two successive packets sent to the same anycast address to the same host", nenhuma obrigação de entregar dois pacotes seguidos ao mesmo host ([RFC 1546, "How UDP and TCP Use Anycasting"](https://www.rfc-editor.org/rfc/rfc1546)). Alguns serviços, o DNS sobre User Datagram Protocol (UDP) à frente, "may even be carried out using a single packet request and a single packet reply (e.g., DNS transactions over UDP transport)", um pacote de pergunta e um de resposta, e a decisão de roteamento "ought to be stable for substantially longer than the expected transaction time", precisa ficar estável por bem mais tempo que a transação ([RFC 4786, seção 4.1](https://www.rfc-editor.org/rfc/rfc4786#section-4.1)). Um pacote em cada sentido é o caso ideal.
+
+O TCP quebra a regra antes de qualquer dado, "due to the TCP setup handshake" ([RFC 4786, seção 4.4.3](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.3)), e transportes stateful (com estado) "will fail probabilistically, but possibly catastrophically, when using anycast addresses in the presence of "normal" routing dynamics": falham de forma probabilística, às vezes catastrófica, com a dinâmica normal do roteamento ([RFC 7094, seção 3.1](https://www.rfc-editor.org/rfc/rfc7094#section-3.1)). TCP para um endereço anycast costuma funcionar mesmo assim porque o BGP "usually selects a single, consistent exit for a single destination regardless of whether multiple candidate paths exist", escolhe uma saída só e consistente por destino. O que quebra é o Per Packet Load Balancing (PPLB, o balanceamento por pacote) dentro de uma rede, "effectively making the anycast service unavailable"; a BCP 126 acha "reasonable to consider networks making such use of PPLB to be pathological" ([RFC 4786, seção 4.4.3](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.3)). A prática corre à frente da teoria: para TCP sobre anycast "there is expanding deployment (e.g., for content distribution networks)", as CDNs, embora "such practice is not "safe" in the traditional and architectural sense" ([RFC 7094, seção 4.5](https://www.rfc-editor.org/rfc/rfc7094#section-4.5)).
+
+## Os servidores raiz hoje
+
+O uso de anycast no DNS foi escrito em abril de 2002 com outro nome: a RFC 3258 fala em **shared unicast address** (endereço unicast compartilhado), anunciado via BGP por um operador que "must have an autonomous system number" ([RFC 3258, seção 2.5](https://www.rfc-editor.org/rfc/rfc3258#section-2.5)). O draft chamava-se draft-ietf-dnsop-hardie-shared-root-server ([IETF Datatracker, RFC 3258](https://datatracker.ietf.org/doc/rfc3258/)), mas o texto não cita nenhuma implantação em servidor raiz, e nenhum documento lido diz qual letra da raiz foi para anycast primeiro; o que se data é a difusão: "By late 2007, at least 10 of the 13 root name servers were already using IP anycast [RSSAC29]" ([RFC 7094, seção 1](https://www.rfc-editor.org/rfc/rfc7094#section-1)).
+
+O root-servers.org mantém o retrato atual: "As of 2026-10-13T12:05:40Z, the root server system consists of 2047 operational instances operated by the 12 independent root server operators" ([root-servers.org](https://root-servers.org/)). O FAQ fecha a conta: "There are 13 Root Server Identifiers (RSI, the letters "A" through "M")" e "(There are 13 RSIs and 12 RSOs because one RSO operates two RSIs.)", 13 identificadores porque um operador cuida de dois ([FAQ do root-servers.org](https://root-servers.org/faq/)). Nenhuma das duas páginas diz anycast; o FAQ explica os muitos sites por instâncias globais e locais e aponta para "RFC 4786 (section 4.4.6 in particular)". O ISC, em página datada de 2019-07-10 nos metadados, diz com todas as letras: o esquema de "anycast" é "used to make the servers collectively behave as one server" ([ISC, F-Root](https://www.isc.org/f-root/)). Os 13 identificadores como listados em 2026-10-13:
+
+| Letra | Operador (como listado) | IPv4 | IPv6 | AS de origem | Sites (operacionais) |
+|---|---|---|---|---|---|
+| A | Verisign, Inc. | 198.41.0.4 | 2001:503:ba3e::2:30 | 7342 | 56 (56) |
+| B | Information Sciences Institute | 170.247.170.2 | 2801:1b8:10::b | 394353 | 6 (6) |
+| C | Cogent Communications | 192.33.4.12 | 2001:500:2::c | 2149 | 13 (13) |
+| D | University of Maryland | 199.7.91.13 | 2001:500:2d::d | 10886 | 231 (231) |
+| E | NASA Office of the Chief Information Officer | 192.203.230.10 | 2001:500:a8::e | 21556 | 328 (328) |
+| F | Internet Systems Consortium, Inc. | 192.5.5.241 | 2001:500:2f::f | 3557 | 389 (389) |
+| G | Defense Information Systems Agency | 192.112.36.4 | 2001:500:12::d0d | 5927 | 6 (6) |
+| H | U.S. Army DEVCOM Army Research Lab | 198.97.190.53 | 2001:500:1::53 | 1508 | 12 (12) |
+| I | Netnod | 192.36.148.17 | 2001:7fe::53 | 29216 | 92 (92) |
+| J | Verisign, Inc. | 192.58.128.30 | 2001:503:c27::2:30 | 26415 | 147 (147) |
+| K | RIPE NCC | 193.0.14.129 | 2001:7fd::1 | 25152 | 159 (143) |
+| L | ICANN | 199.7.83.42 | 2001:500:9f::42 | 20144 | 137 (123) |
+| M | WIDE Project | 202.12.27.33 | 2001:dc3::35 | 7500 | 30 (30) |
+
+Sites não são instâncias: cada site traz sua própria contagem "Instances:" e pode abrigar várias. Os 159 sites do K incluem 16 desativados e os 137 do L incluem 14 suspensos. A falha da própria raiz está em [o que acontece se a raiz do DNS sair do ar](/learn/what-happens-if-the-dns-root-goes-dark).
+
+## Anycast no IPv6
+
+O IPv6 nomeia o anycast como um tipo de endereço, mas não lhe dá faixa própria: "Anycast addresses are allocated from the unicast address space, using any of the defined unicast address formats", e, quando um endereço é atribuído a várias interfaces, os nós "must be explicitly configured to know that it is an anycast address" ([RFC 4291, seção 2.6](https://www.rfc-editor.org/rfc/rfc4291#section-2.6)). Um endereço anycast já vem pronto: o **Subnet-Router anycast address**, o prefixo da sub-rede com o identificador de interface zerado, cujos pacotes "will be delivered to one router on the subnet" e que "All routers are required to support" ([RFC 4291, seção 2.6.1](https://www.rfc-editor.org/rfc/rfc4291#section-2.6.1)). O IPv6 inicial era mais rígido: endereços anycast "must not be used as source addresses and must not be assigned to IPv6 hosts (i.e., only routers). These restrictions were later lifted in 2006 [RFC4291]" ([RFC 7094, seção 2.2](https://www.rfc-editor.org/rfc/rfc7094#section-2.2); o motivo está no [Apêndice B da RFC 4291](https://www.rfc-editor.org/rfc/rfc4291#appendix-B)). Uma regra on-link permanece: "Duplicate Address Detection MUST NOT be performed on anycast addresses" (RFC 4862, citada na [RFC 7094, seção 4.5](https://www.rfc-editor.org/rfc/rfc7094#section-4.5)).
+
+## Na operação: observar de todo lugar, retirar a rota na falha, segurar sob ataque
+
+Um serviço anycast não se observa de um lugar só. A BCP 126 quer serviços "monitored from probes distributed representatively across the routing system", com probes (sondas) espalhadas pelo sistema de roteamento e registro de qual nó respondeu ([RFC 4786, seção 5.1](https://www.rfc-editor.org/rfc/rfc4786#section-5.1)). A identificação do nó dentro do próprio protocolo é "strongly recommended for services to be distributed using anycast" ([RFC 4786, seção 4.9](https://www.rfc-editor.org/rfc/rfc4786#section-4.9)), e para o DNS "the Name Server ID (NSID) option was defined for this purpose [RFC5001]" ([RFC 7094, seção 2.1](https://www.rfc-editor.org/rfc/rfc7094#section-2.1)).
+
+O segundo hábito acopla rota e serviço, de modo que "availability of the service triggers the route advertisement, and non-availability of the service triggers a route withdrawal": serviço no ar anuncia a rota, serviço fora a retira (o withdraw) ([RFC 4786, seção 4.4.1](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.1)). Três documentos, melhor ensinados juntos:
+
+| Documento | Posição |
+|---|---|
+| [RFC 3258, seção 2.3](https://www.rfc-editor.org/rfc/rfc3258#section-2.3) (abril de 2002) | "it advises instead that the DNS process shutdown so that servers on other addresses are queried", parar o processo DNS em vez de retirar a rota, "a choice between performance and operational complexity" |
+| [RFC 4786, seção 4.4.1](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.1) (dezembro de 2006) | "non-availability of the service triggers a route withdrawal" |
+| [RFC 7094, seção 2.3](https://www.rfc-editor.org/rfc/rfc7094#section-2.3) (janeiro de 2014) | "most anycast benefits cannot be realized without route withdrawals" |
+| [RFC 7094, seção 4.4](https://www.rfc-editor.org/rfc/rfc7094#section-4.4) (janeiro de 2014), sob ataque | "care must be taken not to simply withdraw an anycast route in the presence of a sustained DoS attack, since the result would simply move the attack to another service instance" |
+
+Retirar a rota é a prática atual; o conselho da RFC 3258 é a troca antiga que ela mesma nomeou. A última linha é a virada: nó que falhou sai, nó sob negação de serviço (DoS) fica, porque ele "can act as a sink for attack traffic originated within its sphere of influence", funciona como sorvedouro (sink) do ataque na sua região ([RFC 4786, seção 6.1](https://www.rfc-editor.org/rfc/rfc4786#section-6.1)). A retirada também não pode oscilar (o flap): o nó precisa de "a minimum delay following a withdrawal before the service can be re-advertised" ([RFC 4786, seção 4.4.1](https://www.rfc-editor.org/rfc/rfc4786#section-4.4.1)). Uma rota sequestrada, assunto de [BGP: o voto de confiança](/learn/bgp-and-the-routing-chokepoint), é mais difícil de enxergar aqui, porque "A rogue Anycast Node might be difficult to detect" ([RFC 4786, seção 6.3](https://www.rfc-editor.org/rfc/rfc4786#section-6.3)).
+
+## Resolvers públicos, e como ver o anycast da sua mesa
+
+Resolvers públicos funcionam do mesmo jeito. O FAQ do Google diz que "Anycast routing directs your queries to the closest Google Public DNS server", que as consultas "are routed to the nearest location advertising the anycast address used (8.8.8.8, 8.8.4.4, or one of the IPv6 addresses in 2001:4860:4860::)", locais que "change due to network conditions and traffic load" ([FAQ do Google Public DNS](https://developers.google.com/speed/public-dns/faq)). Sobre ping, acrescenta: "If Google Public DNS has a ping time of 300 ms, but resolves many names in 1 ms, the overall average response time is 301 ms" (mesma página). Para a escolha em si, veja [como escolher um resolver DNS público](/learn/choosing-a-public-dns-resolver).
+
+O ISC publica a consulta que mostra qual instância do F-Root atende você:
+
+```
+dig +norec @f.root-servers.net hostname.bind chaos txt
+```
+
+Ela pede ao servidor "to reveal the name of the particular server which answers the query. The hostname will contain an IATA three letter airport code, allowing the location of the server to be identified": o hostname traz um código IATA de aeroporto, de três letras, que identifica onde o servidor está ([ISC, F-Root](https://www.isc.org/f-root/)). O [montador de comandos dig](/tools/dig-command-builder) monta a linha; [como seguir a delegação com dig +trace](/learn/dig-trace-and-delegation) cobre a referência (o referral) que a raiz devolve. Rode do escritório e de um celular na rede móvel, depois compare os códigos de aeroporto: é a versão em miniatura das "probes distributed representatively across the routing system" da RFC 4786.
+
+## Para lembrar
+
+- Anycast é "the practice of making a particular Service Address available in multiple, discrete, autonomous locations"; os endereços são unicast comuns.
+- O sistema de roteamento escolhe o nó; "nearest" quer dizer "according to the routing protocols' measure of distance", não distância no mapa.
+- Na Internet um nó anuncia um prefixo de cobertura, no IPv4 em geral de 24 bits; nós locais limitam a propagação com NO_EXPORT e fazem fail-over para nós globais.
+- DNS sobre UDP se encaixa porque a transação é um pacote em cada sentido; TCP costuma funcionar porque o BGP escolhe uma saída consistente, e o balanceamento por pacote é o que quebra.
+- A raiz são 13 identificadores, 12 operadores e, em 2026-10-13T12:05:40Z, 2047 instâncias operacionais.
+- Monitore de muitos pontos de observação, retire a rota quando o serviço falhar, segure-a sob ataque sustentado e faça os nós se identificarem com NSID ou hostname.bind.
+
+## Fontes
+
+- [RFC 1546, Host Anycasting Service, novembro de 1993: Abstract e as seções Motivation, Architectural Issues, Anycast Addresses e How UDP and TCP Use Anycasting (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1546)
+- [RFC 3258, Distributing Authoritative Name Servers via Shared Unicast Addresses, abril de 2002: seções 1, 2.3 e 2.5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3258)
+- [RFC 4291, IP Version 6 Addressing Architecture, fevereiro de 2006: seções 2.6 e 2.6.1 e Apêndice B (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4291)
+- [RFC 4786, Operation of Anycast Services, BCP 126, dezembro de 2006: seções 1, 2, 3.1, 3.2, 4.1, 4.4.1, 4.4.2, 4.4.3, 4.4.4, 4.4.6, 4.7, 4.9, 5.1, 6.1 e 6.3 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4786)
+- [RFC 7094, Architectural Considerations of IP Anycast, janeiro de 2014: seções 1, 2.1, 2.2, 2.3, 3.1, 4.4 e 4.5 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc7094)
+- [Página de informações da RFC 4786 no RFC Editor: nenhuma entrada Updated by ou Obsoleted by (lida em 2026-10-13)](https://www.rfc-editor.org/info/rfc4786)
+- [IETF Datatracker, RFC 3258: nome do draft (lida em 2026-10-13)](https://datatracker.ietf.org/doc/rfc3258/)
+- [Página inicial do root-servers.org (Root Server Technical Operations Association): contagem de instâncias em 2026-10-13T12:05:40Z e a lista por letra (lida em 2026-10-13)](https://root-servers.org/)
+- [FAQ do root-servers.org: identificadores e operadores, instâncias globais e locais (lida em 2026-10-13)](https://root-servers.org/faq/)
+- [ISC, F-Root, página com metadados datados de 2019-07-10: o esquema anycast e Which F-Root Node Am I Using? (lida em 2026-10-13)](https://www.isc.org/f-root/)
+- [RIPE NCC, K-root, sem data: prefixos e AS de origem (lida em 2026-10-13)](https://www.ripe.net/analyse/dns/k-root/)
+- [Google, FAQ do Public DNS, rodapé "Last updated 2026-10-13 UTC.": Technical, Where are your servers currently located? e a pergunta sobre ping (lida em 2026-10-13)](https://developers.google.com/speed/public-dns/faq)

@@ -1,32 +1,16 @@
 {
   "note": "Row 59 register ratchet: counts may only go down (scripts/check-ptbr-register.mjs).",
   "counts": {
-    "messages:about": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:bossScreens": {
-      "J": 7,
-      "I": 0
-    },
     "messages:certGuides": {
       "J": 1,
-      "I": 0
-    },
-    "messages:colophon_page": {
-      "J": 3,
       "I": 0
     },
     "messages:devFun": {
       "J": 0,
       "I": 1
     },
-    "messages:devOther": {
-      "J": 2,
-      "I": 1
-    },
     "messages:devOut": {
-      "J": 1,
+      "J": 0,
       "I": 1
     },
     "messages:earlierSites": {
@@ -890,10 +874,6 @@
       "I": 0
     },
     "messages:history": {
-      "J": 2,
-      "I": 1
-    },
-    "messages:lineages": {
       "J": 1,
       "I": 0
     },
@@ -913,14 +893,6 @@
       "J": 1,
       "I": 0
     },
-    "messages:privacy_page": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:redEducation": {
-      "J": 2,
-      "I": 0
-    },
     "messages:roles": {
       "J": 3,
       "I": 2
@@ -935,10 +907,6 @@
     },
     "messages:vendors": {
       "J": 6,
-      "I": 0
-    },
-    "messages:vendorsHome": {
-      "J": 1,
       "I": 0
     },
     "src/content/advisory/pt-BR/decision-memorandum.mdx": {

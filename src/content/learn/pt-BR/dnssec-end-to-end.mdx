@@ -1,0 +1,165 @@
+---
+slug: dnssec-end-to-end
+title: "DNSSEC de ponta a ponta: da chave da raiz à resposta validada"
+summary: "Depois de ler, você consegue acompanhar uma validação DNSSEC desde o trust anchor da raiz até a resposta assinada, nomear o registro que carrega cada elo e explicar por que um resolver devolveu SERVFAIL, uma flag ad ou nada de especial. Também vai saber qual chave da raiz está assinando hoje, quais algoritmos o registro da IANA ainda permite e como conferir uma validação com dig e delv."
+concepts: ["dnssec", "chain of trust", "trust anchor", "dnskey", "rrsig", "ds record", "nsec", "nsec3", "key signing key", "ad flag", "root ksk rollover", "dnssec algorithms"]
+relatedTools: ["dig-command-builder", "dig-output-explainer"]
+relatedArticles: ["dnssec-records-in-dig", "dns-family-history", "reading-a-dns-answer", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "the-kaminsky-dns-flaw", "dig-trace-and-delegation"]
+category: networking
+order: 350
+status: reviewed
+updated: "2026-10-13"
+---
+
+Uma resposta do Domain Name System (DNS) não traz prova nenhuma de quem a produziu, e um resolver que aceita uma resposta forjada guarda essa resposta em cache e a entrega a todos os clientes atrás dele; é essa a brecha que o cache poisoning explora (veja [a falha de Kaminsky no DNS](/learn/the-kaminsky-dns-flaw)). As extensões de segurança do DNS (DNSSEC) assinam os próprios dados para, nas palavras da RFC, "add data origin authentication and data integrity to the Domain Name System" ([RFC 4033, Abstract](https://www.rfc-editor.org/rfc/rfc4033)): autenticação de origem e integridade. Cada assinatura é conferida ao longo de uma cadeia que começa numa única chave configurada, a da raiz, e termina no registro que você pediu. Essa cadeia é o assunto: os registros, os testes em cada elo, os quatro veredictos, a chave da raiz de hoje, os algoritmos permitidos e os comandos que mostram o resultado.
+
+## O que o DNSSEC dá, e o que ele não dá
+
+O DNSSEC protege os dados, não a conexão: ele "is concerned with object security of DNS data, not channel security of DNS transactions", e a chave que assina pertence à zona, não aos servidores dela ([RFC 4033, seção 3.1](https://www.rfc-editor.org/rfc/rfc4033#section-3.1)); por isso um conjunto de registros assinado atravessa qualquer cache ou forwarder e continua verificável no destino. Os serviços são autenticação de origem, integridade e negação de existência autenticada ([RFC 4033, seção 3](https://www.rfc-editor.org/rfc/rfc4033#section-3)). O que fica de fora importa tanto quanto: "Due to a deliberate design choice, DNSSEC does not provide confidentiality" ([RFC 4033, seção 12](https://www.rfc-editor.org/rfc/rfc4033#section-12)), ou seja, não há sigilo; não há controle de acesso, nem proteção contra negação de serviço, nem nada para transferência de zona ou dynamic update ([RFC 4033, seção 4](https://www.rfc-editor.org/rfc/rfc4033#section-4)); e um resolver validador "may cause entire legitimate zones to become effectively unreachable due to DNSSEC configuration errors or bugs" ([RFC 4033, seção 12](https://www.rfc-editor.org/rfc/rfc4033#section-12)), isto é, um erro de configuração alheio derruba zonas legítimas. As RFCs 4033, 4034 e 4035, de 2005, são "the third iteration of the DNSSEC specification", a terceira versão, depois das RFCs 2065 e 2535, e a RFC 9364, uma Best Current Practice (BCP 237), declara o DNSSEC "the best current practice for adding origin authentication of DNS data" ([RFC 9364, seções 2](https://www.rfc-editor.org/rfc/rfc9364#section-2) e [1.1](https://www.rfc-editor.org/rfc/rfc9364#section-1.1); veja [a história da família DNS](/learn/dns-family-history)).
+
+## Os quatro records, e o RRset como unidade de assinatura
+
+A assinatura trabalha com conjuntos: "DNSSEC uses public key cryptography to sign and authenticate DNS resource record sets (RRsets)" ([RFC 4034, seção 2](https://www.rfc-editor.org/rfc/rfc4034#section-2)), e um RRset é o conjunto de todos os registros com o mesmo owner name, classe e tipo, o agrupamento que você vê em [uma resposta DNS](/learn/reading-a-dns-answer) para qualquer um dos [tipos de registro](/learn/dns-record-types-in-answers). Os quatro records são "Resource Record Signature (RRSIG), DNS Public Key (DNSKEY), Delegation Signer (DS), and Next Secure (NSEC)" ([RFC 4033, seção 3](https://www.rfc-editor.org/rfc/rfc4033#section-3)): o DNSKEY (tipo 48) guarda a chave pública da zona no ápice (apex), o RRSIG (46) uma assinatura, o NSEC (47) uma prova de ausência, e o DS (43) fica do lado do pai na delegação, como "authoritative data in the parent zone", dado autoritativo da zona pai ([RFC 4034, seção 5](https://www.rfc-editor.org/rfc/rfc4034#section-5)). O RDATA de cada um ([RFC 4034, seções 2.1](https://www.rfc-editor.org/rfc/rfc4034#section-2.1), [3.1](https://www.rfc-editor.org/rfc/rfc4034#section-3.1), [4.1](https://www.rfc-editor.org/rfc/rfc4034#section-4.1) e [5.1](https://www.rfc-editor.org/rfc/rfc4034#section-5.1)):
+
+| Registro | Campo | Tamanho | Significado |
+|---|---|---|---|
+| DNSKEY | Flags | 2 octetos | Bit 7 Zone Key; bit 15 Secure Entry Point (SEP); bit 8 REVOKE (RFC 5011) |
+| DNSKEY | Protocol | 1 octeto | Sempre 3 |
+| DNSKEY | Algorithm | 1 octeto | Número IANA |
+| DNSKEY | Public Key | variável | Material da chave |
+| RRSIG | Type Covered | 2 octetos | Tipo do RRset assinado |
+| RRSIG | Algorithm | 1 octeto | Como no DNSKEY |
+| RRSIG | Labels | 1 octeto | Labels do owner name; detecta wildcards |
+| RRSIG | Original TTL | 4 octetos | Time to live na zona |
+| RRSIG | Signature Expiration | 4 octetos | Segundos desde 1 de janeiro de 1970 UTC |
+| RRSIG | Signature Inception | 4 octetos | Mesmo formato |
+| RRSIG | Key Tag | 2 octetos | Pista para achar o DNSKEY |
+| RRSIG | Signer's Name | variável | A zona que assinou |
+| RRSIG | Signature | variável | Sobre o RDATA do RRSIG mais o RRset em forma canônica |
+| DS | Key Tag | 2 octetos | Do DNSKEY filho |
+| DS | Algorithm | 1 octeto | Do DNSKEY filho |
+| DS | Digest Type | 1 octeto | Número IANA |
+| DS | Digest | variável | Hash do owner name e do RDATA do DNSKEY |
+| NSEC | Next Domain Name | variável | Próximo nome na ordem canônica |
+| NSEC | Type Bit Maps | variável | Tipos presentes neste nome |
+
+As Flags aparecem como um decimal, "0, 256, and 257" ([RFC 4034, seção 2.2](https://www.rfc-editor.org/rfc/rfc4034#section-2.2)): 256 é só o bit Zone Key, 257 soma o SEP. A **key tag** (a etiqueta da chave), uma soma de 16 bits sobre o RDATA do DNSKEY, não é única: "Implementations MUST NOT assume that the key tag uniquely identifies a DNSKEY RR" ([RFC 4034, Apêndice B](https://www.rfc-editor.org/rfc/rfc4034#appendix-B)), e por isso o validador tenta todas as chaves que batem ([RFC 4035, seção 5.3.1](https://www.rfc-editor.org/rfc/rfc4035#section-5.3.1)). A RFC 4033 conta quatro records; o guia do BIND conta oito, somando NSEC3 (50), NSEC3PARAM (51), CDS (59) e CDNSKEY (60) ([BIND 9 DNSSEC Guide, "What Does DNSSEC Add to DNS?"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)); os quatro principais aparecem em [registros DNSSEC na saída do dig](/learn/dnssec-records-in-dig).
+
+## A cadeia de confiança, elo por elo
+
+"The typical authentication chain is therefore DNSKEY->[DS->DNSKEY]\*->RRset, where "\*" denotes zero or more DS->DNSKEY subchains" ([RFC 4033, seção 3.1](https://www.rfc-editor.org/rfc/rfc4033#section-3.1)): um DNSKEY, zero ou mais pares DS->DNSKEY, e o RRset no fim. O primeiro DNSKEY é um **trust anchor** (a âncora de confiança), "A configured DNSKEY RR or DS RR hash of a DNSKEY RR", obtido fora do DNS ([RFC 4033, seção 2](https://www.rfc-editor.org/rfc/rfc4033#section-2)); cada par DS->DNSKEY atravessa uma delegação, os mesmos cortes que o [dig +trace](/learn/dig-trace-and-delegation) percorre; o último DNSKEY assina a resposta. O trust anchor precisa aparecer no RRset DNSKEY do ápice da sua zona e verificar um RRSIG sobre ele ([RFC 4035, seção 5](https://www.rfc-editor.org/rfc/rfc4035#section-5)); depois, em cada delegação, "the child zone's apex DNSKEY RRset can be authenticated if all of the following hold", ou seja, o DNSKEY da zona filha só é autêntico se as três condições valerem ([RFC 4035, seção 5.2](https://www.rfc-editor.org/rfc/rfc4035#section-5.2)):
+
+1. "The DS RR has been authenticated using some DNSKEY RR in the parent's apex DNSKEY RRset" (o DS foi autenticado por uma chave do pai);
+2. "The Algorithm and Key Tag in the DS RR match the Algorithm field and the key tag of a DNSKEY RR in the child zone's apex DNSKEY RRset, and, when the DNSKEY RR's owner name and RDATA are hashed using the digest algorithm specified in the DS RR's Digest Type field, the resulting digest value matches the Digest field of the DS RR" (algoritmo, key tag e digest batem com um DNSKEY do filho);
+3. "The matching DNSKEY RR in the child zone has the Zone Flag bit set, the corresponding private key has signed the child zone's apex DNSKEY RRset, and the resulting RRSIG RR authenticates the child zone's apex DNSKEY RRset" (esse DNSKEY tem o bit Zone Key e assina o próprio RRset DNSKEY do filho).
+
+O RRset DS é assinado; o RRset NS que delega e o glue "MUST NOT be signed", não são assinados ([RFC 4035, seções 2.4](https://www.rfc-editor.org/rfc/rfc4035#section-2.4) e [2.2](https://www.rfc-editor.org/rfc/rfc4035#section-2.2)).
+
+**KSK, ZSK e SEP.** "Designating an authentication key as a key signing key is purely an operational issue: DNSSEC validation does not distinguish between key signing keys and other DNSSEC authentication keys" ([RFC 4033, seção 2](https://www.rfc-editor.org/rfc/rfc4033#section-2)): a distinção é operacional, e a validação não a enxerga. Por convenção, a Key Signing Key (KSK) assina só o RRset DNSKEY do ápice e é a chave para a qual o DS do pai aponta, a Zone Signing Key (ZSK) assina o resto, e uma única chave nos dois papéis é um "Single-Type Signing Scheme" ([RFC 6781, seção 3.1](https://www.rfc-editor.org/rfc/rfc6781#section-3.1)); a separação deixa a KSK offline ([RFC 4033, seção 9](https://www.rfc-editor.org/rfc/rfc4033#section-9)) e permite rolar a ZSK sem falar com o pai ([RFC 6781, seção 3.2](https://www.rfc-editor.org/rfc/rfc6781#section-3.2)). O bit SEP, posto nas KSKs por convenção (daí 257 contra 256), é igualmente uma dica: "validators MUST NOT alter their behavior during the signature validation process in any way based on the setting of this bit" ([RFC 4034, seção 2.1.1](https://www.rfc-editor.org/rfc/rfc4034#section-2.1.1)), e para um validador "zones can be signed by any key", qualquer chave assina ([BIND guide, "Types of Keys"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)).
+
+## Quatro veredictos, um SERVFAIL e três bits
+
+Um resolver validador termina em um de quatro estados ([RFC 4033, seção 5](https://www.rfc-editor.org/rfc/rfc4033#section-5)):
+
+| Estado | RFC 4033, seção 5 | Em resumo |
+|---|---|---|
+| Secure | "The validating resolver has a trust anchor, has a chain of trust, and is able to verify all the signatures in the response." | Há trust anchor, há cadeia, e todas as assinaturas conferem |
+| Insecure | "The validating resolver has a trust anchor, a chain of trust, and, at some delegation point, signed proof of the non-existence of a DS record. This indicates that subsequent branches in the tree are provably insecure." | A cadeia chega a uma delegação que prova, assinada, não ter DS; dali para baixo é inseguro de forma comprovada |
+| Bogus | "The validating resolver has a trust anchor and a secure delegation indicating that subsidiary data is signed, but the response fails to validate for some reason: missing signatures, expired signatures, signatures with unsupported algorithms, data missing that the relevant NSEC RR says should be present, and so forth." | Devia validar e não valida: assinatura faltando, vencida, de algoritmo desconhecido, dado ausente |
+| Indeterminate | "There is no trust anchor that would indicate that a specific portion of the tree is secure. This is the default operation mode." | Não há trust anchor para aquela parte da árvore; é o modo padrão |
+
+A RFC 4035 define Indeterminate de outro jeito: "An RRset for which the resolver is not able to determine whether the RRset should be signed, as the resolver is not able to obtain the necessary DNSSEC RRs" ([RFC 4035, seção 4.3](https://www.rfc-editor.org/rfc/rfc4035#section-4.3)), o resolver não consegue obter os registros DNSSEC necessários; num texto a causa é a falta de trust anchor, no outro é a falta de dados, e os dois são o padrão.
+
+Respostas Secure levam o bit AD (Authenticated Data); Insecure e Indeterminate não levam, e a sinalização não distingue esses dois ([RFC 4033, seção 5](https://www.rfc-editor.org/rfc/rfc4033#section-5)). Bogus é retido: "the name server MUST return RCODE 2 to the originating client. However, it MUST return the full response if and only if the original query had the CD bit set" ([RFC 4035, seção 5.5](https://www.rfc-editor.org/rfc/rfc4035#section-5.5)), isto é, o servidor devolve RCODE 2 e só entrega a resposta completa se a consulta veio com CD. RCODE 2 é SERVFAIL, então uma falha de validação parece servidor quebrado.
+
+Os três bits dividem o trabalho. O DO (DNSSEC OK), no [registro OPT do EDNS](/learn/edns-and-the-opt-pseudosection), diz que o resolver "is able to accept DNSSEC security RRs", aceita os registros DNSSEC ([RFC 3225, seção 3](https://www.rfc-editor.org/rfc/rfc3225#section-3)); um servidor recursivo liga o DO para cima sempre e tira os registros DNSSEC que o cliente não pediu ([RFC 4035, seção 3.2.1](https://www.rfc-editor.org/rfc/rfc4035#section-3.2.1)). O CD (Checking Disabled), ligado pelo resolver, manda o servidor devolver dados que a própria validação dele rejeitaria ([RFC 4035, seção 3.2.2](https://www.rfc-editor.org/rfc/rfc4035#section-3.2.2)). O AD, ligado pelo servidor, só aparece se ele "considers all RRsets in the Answer and Authority sections of the response to be authentic", considera autênticos todos os RRsets de Answer e Authority ([RFC 4035, seção 3.2.3](https://www.rfc-editor.org/rfc/rfc4035#section-3.2.3)), e "A resolver MUST disregard the meaning of the CD and AD bits in a response unless the response was obtained by using a secure channel" ([RFC 4035, seção 4.6](https://www.rfc-editor.org/rfc/rfc4035#section-4.6)): sem canal seguro, o AD não vale nada.
+
+## Como provar que um nome não existe
+
+O NSEC permite ao resolver "authenticate a negative reply for either name or type non-existence with the same mechanisms used to authenticate other DNS replies", autenticar uma resposta negativa com os mesmos mecanismos das positivas ([RFC 4033, seção 3.2](https://www.rfc-editor.org/rfc/rfc4033#section-3.2)). Os nomes da zona formam uma corrente em ordem canônica, cada NSEC apontando o próximo e listando os tipos do próprio nome, e o último aponta de volta para o ápice ([RFC 4034, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc4034#section-4.1.1)). Um nome igual ao owner de um NSEC não tem os tipos que o bit map omite; um nome que cai entre um owner e o seu Next Domain Name não existe, desde que o validador também prove "that no possible wildcard RRset exists", que nenhum wildcard responderia ([RFC 4035, seção 5.4](https://www.rfc-editor.org/rfc/rfc4035#section-5.4)). O preço é a enumeração: "an attacker can query these NSEC RRs in sequence to obtain all the names in a zone" ([RFC 4033, seção 12](https://www.rfc-editor.org/rfc/rfc4033#section-12)), a zona inteira pode ser listada.
+
+O NSEC3 (tipo 50) encadeia hashes SHA-1 dos nomes em vez dos nomes, com flags, iterações e salt no registro, e a sua flag Opt-Out deixa um pai grande omitir registros para as delegações não assinadas ([RFC 5155, seções 3](https://www.rfc-editor.org/rfc/rfc5155#section-3), [3.1.2.1](https://www.rfc-editor.org/rfc/rfc5155#section-3.1.2.1) e [11](https://www.rfc-editor.org/rfc/rfc5155#section-11)). Em 2008 a recomendação era um salt de "at least 64 bits" e até 2500 iterações ([RFC 5155, seções 12.1.1](https://www.rfc-editor.org/rfc/rfc5155#section-12.1.1) e [10.3](https://www.rfc-editor.org/rfc/rfc5155#section-10.3)). A RFC 9276, BCP 236, inverteu isso: "NSEC SHOULD be used in preference to NSEC3", "an iterations count of 0 MUST be used", "Operators SHOULD NOT use a salt", e para toda zona "bcp.example. IN NSEC3PARAM 1 0 0 -" ([RFC 9276, seção 3.1](https://www.rfc-editor.org/rfc/rfc9276#section-3.1)), ou seja, prefira NSEC, e se for NSEC3, zero iterações e sem salt, porque o nome da zona já salga cada hash ([RFC 9276, seção 2.4](https://www.rfc-editor.org/rfc/rfc9276#section-2.4)). O BIND concorda: "Contrary to popular belief, adding salt provides little value", o salt vale pouco ([BIND guide, "NSEC3 Salt"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)).
+
+## O trust anchor da raiz hoje
+
+"The Root Key Signing Key (KSK) acts as the trust anchor for DNSSEC for the Domain Name System" ([IANA, Trust Anchors and Rollovers](https://www.iana.org/dnssec/files)): a KSK da raiz é o trust anchor do DNSSEC. A IANA a publica no arquivo [root-anchors.xml](https://data.iana.org/root-anchors/root-anchors.xml), no formato da RFC 9718, com atributos validFrom e validUntil que delimitam o uso de cada chave ([RFC 9718, seções 2.2](https://www.rfc-editor.org/rfc/rfc9718#section-2.2) e [3.1](https://www.rfc-editor.org/rfc/rfc9718#section-3.1)). Os dois trust anchors válidos em 13 de outubro de 2026:
+
+| Chave | Key tag | Algoritmo | Tipo de digest | Status segundo a IANA |
+|---|---|---|---|---|
+| KSK-2017 | 20326 | 8 | 2 | "Post-Publication"; "Signed between 2018-10-11 and 2026-10-11. Remains a valid trust anchor." |
+| KSK-2024 | 38696 | 8 | 2 | "Active"; "Signing since 2026-10-11." |
+
+O algoritmo 8 é RSA/SHA-256, o tipo de digest 2 é SHA-256, as duas têm Flags 257, e em forma de DS elas são "`. IN DS 20326 8 2 E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D`" e "`. IN DS 38696 8 2 683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16`" ([RFC 9718, seção 2.3](https://www.rfc-editor.org/rfc/rfc9718#section-2.3); [root-anchors.xml](https://data.iana.org/root-anchors/root-anchors.xml)). Ou seja: a KSK-2017 assinou de 2018-10-11 a 2026-10-11 e segue válida como trust anchor; a KSK-2024 assina desde 2026-10-11. O rollover, como a IANA o lista sob o título "Expected Date" (data prevista):
+
+| Evento | Data prevista | Descrição da IANA |
+|---|---|---|
+| Publication of KSK-2024 | 11 January 2025 | "KSK-2024 was introduced in the DNS root zone." |
+| RFC 5011 Trust of KSK-2024 | 10 February 2025 | "KSK-2024 should begin to be trusted by resolvers that follow the mechanisms described in RFC 5011." |
+| Rollover to KSK-2024 | 11 October 2026 | "KSK-2024 is now signing the zone; KSK-2017 is no longer signing the zone. Validating resolvers must have updated trust anchors to continue validating the root zone." |
+| Revocation of KSK-2017 | 11 January 2027 | "KSK-2017 is scheduled to be published in the root zone with the REVOKE bit set, allowing resolvers that follow RFC 5011 to revoke it as a trust anchor." |
+| Removal of KSK-2017 | 22 March 2027 | "KSK-2017 is scheduled to be removed from the root zone following its revocation." |
+
+([IANA, Trust Anchors and Rollovers](https://www.iana.org/dnssec/files).) Em português: publicação da KSK-2024 em 11 de janeiro de 2025, confiança via RFC 5011 em 10 de fevereiro de 2025, rollover em 11 de outubro de 2026, revogação da KSK-2017 em 11 de janeiro de 2027 e remoção em 22 de março de 2027. A linha de 11 de outubro de 2026 caiu dois dias antes da leitura dessas páginas; a IANA a dá como concluída, e é essa declaração, não uma consulta à zona raiz, a fonte aqui. Uma data destoa: o Apêndice B da RFC 9718 diz que o trust anchor da KSK-2017 foi "first published on 2018-11-11", contra o validFrom 2017-02-02 do XML e a assinatura desde 2018-10-11 na página da IANA; as fontes lidas não resolvem isso, e as datas aqui são as da IANA ([RFC 9718, Apêndice B](https://www.rfc-editor.org/rfc/rfc9718#appendix-B)).
+
+Os resolvers se mantêm atualizados por atualização do fornecedor, pela ferramenta da IANA que baixa e verifica o arquivo, ou pela RFC 5011 ([IANA, Trust Anchors and Rollovers](https://www.iana.org/dnssec/files)), que "was used in 2018 to update the DNS root trust anchor", foi usada no rollover de 2018 ([RFC 9364, seção 4](https://www.rfc-editor.org/rfc/rfc9364#section-4)). A RFC 5011, Internet Standard 74, só passa a confiar numa chave SEP nova depois de um hold-down de 30 dias ou do TTL do conjunto de chaves, o que for maior ([RFC 5011, seção 2.4.1](https://www.rfc-editor.org/rfc/rfc5011#section-2.4.1)), daí os 30 dias entre as duas primeiras linhas da IANA, e descarta uma chave em definitivo quando ela aparece autoassinada com o bit REVOKE, o bit 8 das Flags ([RFC 5011, seções 2.1](https://www.rfc-editor.org/rfc/rfc5011#section-2.1) e [3](https://www.rfc-editor.org/rfc/rfc5011#section-3)), que é a linha de janeiro de 2027.
+
+## Algoritmos e rollover de chaves, o lado do operador
+
+Desde novembro de 2025 as regras de algoritmo moram no registro da IANA: a RFC 9904 "moves the canonical source of algorithm implementation requirements and usage guidance for DNSSEC from RFC 8624 to the IANA DNSSEC algorithm registries" ([RFC 9904, Abstract](https://www.rfc-editor.org/rfc/rfc9904)), e a RFC 8624 consta como "(Obsoleted by RFC9904)" ([RFC Editor index](https://www.rfc-editor.org/rfc-index.txt)). As RFCs 9905 (SHA-1) e 9906 (ECC-GOST) mudaram linhas no mesmo mês. O registro em 13 de outubro de 2026 ("Last Updated 2026-08-10"), nas quatro colunas da RFC 9904 ([RFC 9904, seção 2](https://www.rfc-editor.org/rfc/rfc9904#section-2)):
+
+| N.º | Mnemônico | Uso para assinar | Uso para validar | Implementar para assinar | Implementar para validar |
+|---|---|---|---|---|---|
+| 1 | RSAMD5 | MUST NOT | MUST NOT | MUST NOT | MUST NOT |
+| 3 | DSA | MUST NOT | MUST NOT | MUST NOT | MUST NOT |
+| 5 | RSASHA1 | MUST NOT | RECOMMENDED | NOT RECOMMENDED | MUST |
+| 6 | DSA-NSEC3-SHA1 | MUST NOT | MUST NOT | MUST NOT | MUST NOT |
+| 7 | RSASHA1-NSEC3-SHA1 | MUST NOT | RECOMMENDED | NOT RECOMMENDED | MUST |
+| 8 | RSASHA256 | RECOMMENDED | RECOMMENDED | MUST | MUST |
+| 10 | RSASHA512 | NOT RECOMMENDED | RECOMMENDED | NOT RECOMMENDED | MUST |
+| 12 | ECC-GOST | MUST NOT | MUST NOT | MUST NOT | MUST NOT |
+| 13 | ECDSAP256SHA256 | RECOMMENDED | RECOMMENDED | MUST | MUST |
+| 15 | ED25519 | RECOMMENDED | RECOMMENDED | RECOMMENDED | RECOMMENDED |
+
+([IANA, DNS Security Algorithm Numbers](https://www.iana.org/assignments/dns-sec-alg-numbers).) Os demais algoritmos de assinatura de zona (14, 16, 17, 18 e 23) são MAY para assinar. Três são RECOMMENDED para assinar, 8, 13 e 15, e "operators should choose the best algorithm according to local policy", a escolha entre eles é política local ([RFC 9904, seção 3](https://www.rfc-editor.org/rfc/rfc9904#section-3)). O SHA-1 mostra o padrão: o RSASHA1 "MUST NOT be used when creating DNSKEY and RRSIG records", não assina mais nada novo, mas os validadores "MUST continue to support validation using these algorithms", continuam validando ([RFC 9905, seção 2](https://www.rfc-editor.org/rfc/rfc9905#section-2)). O registro de digest do DS ("Last Updated 2026-01-13") segue a mesma lógica: SHA-1 MUST NOT para delegações novas, mas MUST para implementar na validação, SHA-256 RECOMMENDED ([IANA, DS RR Type Digest Algorithms](https://www.iana.org/assignments/ds-rr-types)); e "users MUST upgrade the DS algorithm first before rolling to a new KSK", primeiro o algoritmo do DS, depois a KSK nova ([RFC 9904, seção 6](https://www.rfc-editor.org/rfc/rfc9904#section-6)).
+
+Rollover é delicado porque chaves e assinaturas antigas continuam vivas nos caches ([RFC 6781, seção 4.1](https://www.rfc-editor.org/rfc/rfc6781#section-4.1)). Para a ZSK, o **Pre-Publish** tem quatro estágios ("initial", "new DNSKEY", "new RRSIGs", "DNSKEY removal"), e a chave nova espera pelo menos um TTL do conjunto de chaves mais o tempo de propagação antes de assinar ([RFC 6781, seção 4.1.1.1](https://www.rfc-editor.org/rfc/rfc6781#section-4.1.1.1)); o **Double-Signature** tem três estágios e dobra as assinaturas da zona nesse meio-tempo ([RFC 6781, seção 4.1.1.3](https://www.rfc-editor.org/rfc/rfc6781#section-4.1.1.3)). O rollover da KSK acrescenta um estágio "DS change" e uma espera de pelo menos o TTL do DS antigo ([RFC 6781, seção 4.1.2](https://www.rfc-editor.org/rfc/rfc6781#section-4.1.2)). O CDS (Child DS, tipo 59) e o CDNSKEY (Child DNSKEY, tipo 60), publicados no ápice do filho e assinados com uma chave que já está no DS, dizem ao pai "the desired contents of the zone's DS resource record set", como o DS deve ficar ([RFC 7344, seções 3](https://www.rfc-editor.org/rfc/rfc7344#section-3) e [4.1](https://www.rfc-editor.org/rfc/rfc7344#section-4.1)); a RFC 8078 levou isso para o Standards Track e definiu "CDS 0 0 0 0" ou "CDNSKEY 0 3 0 0" como pedido para remover o RRset DS ([RFC 8078, seção 4](https://www.rfc-editor.org/rfc/rfc8078#section-4)). Até o pai publicar o DS, "your zone still appears to be insecure", a sua zona continua insegura para o mundo ([BIND guide, "Uploading Information to the Parent Zone"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)).
+
+## Como ver a validação com dig e delv
+
+O nslookup "is not DNSSEC-aware", não entende DNSSEC; o dig "fully supports the DNSSEC standard" ([BIND 9 DNSSEC Guide, "Using dig to Verify"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)). O `dig @10.53.0.1 ftp.isc.org. A +dnssec +multiline` do guia liga o DO (a linha de EDNS mostra "flags: do; udp: 4096") e volta com "flags: qr rd ra ad": "The important detail in this output is the presence of the ad flag in the header", e a flag ad significa que a resposta "has passed the validation process", passou pela validação (mesma seção). O RRSIG devolvido, "ftp.isc.org. 300 IN RRSIG A 13 3 300 ( 20200401191851 20200302184340 27566 isc.org. ...)", lê-se como algoritmo 13, 3 labels, Original TTL 300, expiração, início, key tag 27566 e signatário ([BIND guide, "How Are Answers Verified?"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)); com a validação desligada a mesma consulta volta com "flags: qr rd ra" e os mesmos registros, sem conferência. O [dig command builder](/tools/dig-command-builder) monta essa consulta; o [dig output explainer](/tools/dig-output-explainer) nomeia cada campo.
+
+Falha parece servidor morto, e o teste é o CD: "If the query succeeds with dig +cd, but ends in SERVFAIL without it, you know you are dealing with a validation problem", se funciona com +cd e dá SERVFAIL sem ele, é validação, e "Do not be tempted to disable DNSSEC validation just because some names are failing to resolve", não desligue a validação por isso ([BIND guide, "How Do I Know I Have a Validation Problem?"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)); o nome www.dnssec-failed.org existe para falhar nesse teste ([BIND guide, "Verifying Protection From Bad Domain Names"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)). O delv valida por conta própria: `delv @192.168.1.13 -a /tmp/example.key +root=example.com example.com. SOA +multiline` imprime "; fully validated" com um trust anchor que você fornece ([BIND guide, "Verification"](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)). Uma ressalva fecha o circuito: a flag ad é o veredicto do resolver, e um stub resolver "MUST NOT place any reliance on signature validation allegedly performed on its behalf", não deve se apoiar nela, a não ser por canal seguro com um recursivo confiável ([RFC 4035, seção 4.9.3](https://www.rfc-editor.org/rfc/rfc4035#section-4.9.3)).
+
+## Para lembrar
+
+- O DNSSEC dá aos dados do DNS autenticação de origem e integridade, e por projeto nenhum sigilo; a chave é da zona, não do servidor.
+- O RRset é a unidade de assinatura: o RRSIG assina, o DNSKEY verifica, o DS liga pai e filho, o NSEC ou o NSEC3 prova ausência.
+- A cadeia é DNSKEY->[DS->DNSKEY]*->RRset, e um elo DS fecha quando algoritmo, key tag e digest batem com um DNSKEY filho que assina o próprio RRset DNSKEY do ápice.
+- KSK, ZSK e o bit SEP (257 contra 256) são convenções operacionais; o validador as ignora.
+- Um validador termina em Secure, Insecure, Bogus ou Indeterminate; Bogus vira SERVFAIL a menos que a consulta tenha CD, e o AD só significa algo por um caminho confiável.
+- Em 13 de outubro de 2026 os trust anchors da raiz são a KSK-2017 (20326) e a KSK-2024 (38696), algoritmo 8, tipo de digest 2; a KSK-2024 assina desde 2026-10-11, e a KSK-2017 tem revogação prevista para 11 de janeiro de 2027 e remoção para 22 de março de 2027.
+- As regras de algoritmo são as do registro da IANA: assine com 8, 13 ou 15, nada novo em SHA-1 ou ECC-GOST, e NSEC3 só como "1 0 0 -".
+
+## Fontes
+
+- [RFC 4033, DNS Security Introduction and Requirements, março de 2005: Abstract, seções 2, 3, 3.1, 3.2, 4, 5, 9 e 12 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4033)
+- [RFC 4034, Resource Records for the DNS Security Extensions, março de 2005: seções 2, 2.1, 2.1.1, 2.2, 3.1, 4.1, 4.1.1, 5, 5.1 e Apêndice B (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4034)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, março de 2005: seções 2.2, 2.4, 3.2.1, 3.2.2, 3.2.3, 4.3, 4.6, 4.9.3, 5, 5.2, 5.3.1, 5.4 e 5.5 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc4035)
+- [RFC 3225, Indicating Resolver Support of DNSSEC, dezembro de 2001: seção 3 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3225)
+- [RFC 5011, Automated Updates of DNS Security (DNSSEC) Trust Anchors, setembro de 2007, STD 74: seções 2, 2.1, 2.4.1 e 3 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc5011)
+- [RFC 5155, DNS Security (DNSSEC) Hashed Authenticated Denial of Existence, março de 2008: seções 3, 3.1.2.1, 10.3, 11 e 12.1.1 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc5155)
+- [RFC 6781, DNSSEC Operational Practices, Version 2, dezembro de 2012, Informational: seções 3.1, 3.2, 4.1, 4.1.1.1, 4.1.1.3 e 4.1.2 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc6781)
+- [RFC 7344, Automating DNSSEC Delegation Trust Maintenance, setembro de 2014: seções 3 e 4.1 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc7344)
+- [RFC 8078, Managing DS Records from the Parent via CDS/CDNSKEY, março de 2017: Abstract e seção 4 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc8078)
+- [RFC 9276, Guidance for NSEC3 Parameter Settings, agosto de 2022, BCP 236: seções 2.4 e 3.1 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9276)
+- [RFC 9364, DNS Security Extensions (DNSSEC), fevereiro de 2023, BCP 237: seções 1.1, 2 e 4 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9364)
+- [RFC 9718, DNSSEC Trust Anchor Publication for the Root Zone, janeiro de 2025, Informational: seções 2.2, 2.3, 3.1 e Apêndice B (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9718)
+- [RFC 9904, DNSSEC Cryptographic Algorithm Recommendation Update Process, novembro de 2025: Abstract, seções 2, 3 e 6 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9904)
+- [RFC 9905, Deprecating the Use of SHA-1 in DNSSEC Signature Algorithms, novembro de 2025: seção 2 (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9905)
+- [RFC 9906, Deprecate Usage of ECC-GOST within DNSSEC, novembro de 2025: as linhas de abertura e a seção 5, a mudança no registro (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9906)
+- [IANA, registro Domain Name System Security (DNSSEC) Algorithm Numbers, "Last Updated 2026-08-10" (consulta em 2026-10-13)](https://www.iana.org/assignments/dns-sec-alg-numbers)
+- [IANA, registro DNSSEC Delegation Signer (DS) Resource Record (RR) Type Digest Algorithms, "Last Updated 2026-01-13" (consulta em 2026-10-13)](https://www.iana.org/assignments/ds-rr-types)
+- [IANA, página DNSSEC Trust Anchors and Rollovers: tabela de status das chaves, datas do rollover e orientação para validadores (consulta em 2026-10-13)](https://www.iana.org/dnssec/files)
+- [IANA, root-anchors.xml, o arquivo de trust anchors da zona raiz (consulta em 2026-10-13)](https://data.iana.org/root-anchors/root-anchors.xml)
+- [ISC, BIND 9 Administrator Reference Manual, DNSSEC Guide, "BIND 9 9.21.28-dev documentation" (documentação do fornecedor, secundária para fatos de protocolo): "What Does DNSSEC Add to DNS?", "Types of Keys", "NSEC3 Salt", "Using dig to Verify", "How Are Answers Verified?", "Verifying Protection From Bad Domain Names", "How Do I Know I Have a Validation Problem?", "Verification" e "Uploading Information to the Parent Zone" (consulta em 2026-10-13)](https://bind9.readthedocs.io/en/latest/dnssec-guide.html)
+- [RFC Editor, índice de RFCs, "CREATED ON: 10/12/2026" (secundário, usado para o status dos documentos e a relação Obsoleted by) (consulta em 2026-10-13)](https://www.rfc-editor.org/rfc-index.txt)

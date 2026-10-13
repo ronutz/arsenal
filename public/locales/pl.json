@@ -889,7 +889,7 @@
     "backHome": "Powrót do strony głównej"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann jest <r>Senior Technical Instructor i doradcą</r> w <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann jest <r>Senior Technical Instructor</r> w <b>Red Education</b>",
     "privacy": "Prywatność",
     "builtWith": "Stworzone przez Rodolfo Nützmanna z CONCORD",
     "colophon": "Jak to zostało zbudowane",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "Instruktor",
-    "role": "Senior Technical Instructor i doradca w Red Education",
+    "role": "Senior Technical Instructor w Red Education",
     "lede": "Szkolenia z sieci i bezpieczeństwa prowadzone przez praktyka, który spędził karierę po stronie wdrożeń, a nie tylko przy slajdach. Z siedzibą w São Paulo, ucząc na całym świecie, po portugalsku i angielsku.",
     "now": {
       "title": "Czym się teraz zajmuję",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron i Enterasys, od 1996 do 2000",
       "s1Body": "Formalna kariera zaczęła się w 1996 roku w Cabletron Systems, wówczas wiodącym dostawcy sprzętu sieciowego z siedzibą w Rochester w stanie New Hampshire. Przez cztery i pół roku rola obejmowała inżynierię terenową i wsparcie posprzedażowe, inżynierię systemów i przedsprzedaż oraz, od 1997 roku, certyfikowane szkolenia. Tematem była ówczesna korporacyjna sieć LAN i WAN: przełączniki, routery, Wi-Fi i WLAN, zarządzanie siecią, NAC i UAC oraz zapory ze stanową inspekcją. W 2000 roku Cabletron zreorganizował się w cztery firmy, a część dotycząca tej kariery stała się Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, od 2000 do 2002",
-      "s2Body": "Następny rozdział rozegrał się w Kalifornii. Riverstone Networks, wydzielona z Cabletron firma budująca sprzęt do sieci miejskich, oznaczała przeprowadzkę do Santa Clara z wizą pracowniczą H1-B1. Rolą był inżynier wsparcia produktu poziomu III i koordynator zarządzania wiedzą: techniczna eskalacja trzeciego poziomu, odtwarzanie scenariuszy klientów w laboratorium, testy regresji i weryfikacja błędów oraz budowa bazy wiedzy, na której opierało się reszta wsparcia. Technologie były kręgosłupem świata operatorów i sieci miejskich początku lat 2000: Gigabit Ethernet, MPLS, switching i routing miejski oraz BGP. Ten okres przyniósł też formalny kamień milowy: w ramach procedury wizowej ocena w Stanach Zjednoczonych w 2001 roku uznała wykształcenie równoważne z licencjatem z informatyki i licencjatem z zarządzania.",
+      "s2Body": "Następny rozdział rozegrał się w Kalifornii. Riverstone Networks, wydzielona z Cabletron firma budująca sprzęt do sieci miejskich, oznaczała przeprowadzkę do Santa Clara, najpierw w ramach transferu wewnątrz firmy na wizie L-1, a następnie, w latach 2001 i 2002, na wizie pracowniczej H-1B. Rolą był inżynier wsparcia produktu poziomu III i koordynator zarządzania wiedzą: techniczna eskalacja trzeciego poziomu, odtwarzanie scenariuszy klientów w laboratorium, testy regresji i weryfikacja błędów oraz budowa bazy wiedzy, na której opierało się reszta wsparcia. Technologie były kręgosłupem świata operatorów i sieci miejskich początku lat 2000: Gigabit Ethernet, MPLS, switching i routing miejski oraz BGP. Ten okres przyniósł też formalny kamień milowy: w ramach procedury wizowej ocena w Stanach Zjednoczonych w 2001 roku uznała wykształcenie równoważne z licencjatem z informatyki i licencjatem z zarządzania.",
       "s3Title": "Cisco Systems, Brasília, od 2003 do 2004",
       "s3Body": "Po powrocie do Brazylii i zatrudniony przez Cisco Professional Services, rola przesunęła się ku relacji z klientem w jej najbardziej wymagającej formie. Jako high-touch operations manager i pojedynczy punkt kontaktu, praca polegała na zarządzaniu satysfakcją klienta w okresie posprzedażowym dla dwóch z największych podmiotów federalnych Brazylii, SERPRO, rządowej agencji przetwarzania danych, i ECT-Correios, poczty narodowej. Powierzchnię techniczną stanowiły przełączniki i routery Catalyst, zapory PIX oraz równoważniki obciążenia CSS, CSM i ACE, ale prawdziwą pracą było zarządzanie eskalacjami i utrzymywanie krytycznej infrastruktury narodowej w nieprzerwanym działaniu.",
       "s4Title": "Znów Enterasys, potem Juniper, od 2005 do 2010",
@@ -1038,7 +1038,7 @@
       "subtitle": "Oficjalne szkolenia na pełen etat, prowadzone na całym świecie, a obok nich doradztwo przy decyzjach, które niosą konsekwencje.",
       "intro": "W 2020 roku nić obecna przez całą karierę stała się całą tkaniną. Po dwóch dekadach, w których nauczanie towarzyszyło każdej roli, szkolenia stały się samą pracą: na pełen etat, oficjalne, certyfikowane nauczanie prowadzone dla profesjonalistów i zespołów na całym świecie. To, co wyróżnia tę epokę, to nie tylko skupienie, ale świadoma, datowana ekspansja przez platformy, z których każda została dodana na bazie głębokiego doświadczenia w terenie, a nie zamiast niego.",
       "s1Title": "Pełen etat, z powołania",
-      "s1Body": "Od 2020 roku praca polega na prowadzeniu oficjalnych szkoleń z instruktorem, zdalnie i stacjonarnie, po portugalsku i angielsku, dla odbiorców na całym świecie. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii. Obywatelstwo brazylijskie i niemieckie, wraz z autoryzacją podróży do Stanów Zjednoczonych i Wielkiej Brytanii, czynią ten globalny zasięg praktycznym: nieograniczone prawo do pracy w Unii Europejskiej i Mercosur oraz wolność udania się tam, gdzie jest sala wykładowa.",
+      "s1Body": "Od 2020 roku praca polega na prowadzeniu oficjalnych szkoleń z instruktorem, zdalnie i stacjonarnie, po portugalsku i angielsku, dla odbiorców na całym świecie. Świadczenie usług sięga Australii, Singapuru, Indii, Europy Środkowej, Stanów Zjednoczonych i Brazylii. Obywatelstwo brazylijskie i niemieckie, wraz z ważną wizą do Stanów Zjednoczonych, czynią ten globalny zasięg praktycznym: prawo do podróżowania, mieszkania i pracy w Unii Europejskiej i wszędzie tam, gdzie niemiecki lub brazylijski paszport jest przyjmowany bez wizy, oraz wolność udania się tam, gdzie jest sala wykładowa.",
       "s2Title": "F5, od samego początku",
       "s2Body": "F5 jest kotwicą od początku tej epoki, opartą na pracy z BIG-IP sięgającej ponad dekadę wstecz. Autoryzowany program obejmuje cały katalog BIG-IP z instruktorem: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, tworzenie iRules, automatyzację i rozwiązywanie problemów, od kursów jednodniowych po czterodniowe. Obok nauczania biegnie praktyczne uzupełnienie: zarządzane środowiska laboratoryjne F5 BIG-IP, żeby ćwiczenia zawsze miały prawdziwe miejsce, w którym mogą się odbywać.",
       "s3Title": "Ekspansja, platforma po platformie",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Dwa lata w Santa Clara, na obrzeżach sieci operatorskich i miejskich.",
-      "intro": "Jedyny rozdział tej kariery rozgrywający się w całości poza Brazylią. Riverstone Networks, producent sprzętu do sieci miejskich z siedzibą w Santa Clara w Kalifornii, oznaczał przeprowadzkę do Stanów Zjednoczonych z wizą pracowniczą H1-B1. Riverstone miał własną nietypową linię: pierwotnie firma o nazwie Yago, przejęta przez Cabletron około 1998 roku i ponownie pojawiła się jako niezależna firma poprzez wydzielenie w 2001 roku. Później została przejęta przez Alcatel-Lucent w 2006 roku.",
+      "intro": "Jedyny rozdział tej kariery rozgrywający się w całości poza Brazylią. Riverstone Networks, producent sprzętu do sieci miejskich z siedzibą w Santa Clara w Kalifornii, oznaczał przeprowadzkę do Stanów Zjednoczonych, najpierw w ramach transferu wewnątrz firmy na wizie L-1, a następnie, w latach 2001 i 2002, na wizie pracowniczej H-1B. Riverstone miał własną nietypową linię: pierwotnie firma o nazwie Yago, przejęta przez Cabletron około 1998 roku i ponownie pojawiła się jako niezależna firma poprzez wydzielenie w 2001 roku. Później została przejęta przez Alcatel-Lucent w 2006 roku.",
       "s1Title": "Wsparcie poziomu III i zarządzanie wiedzą",
       "s1Body": "Rola nosiła dwa tytuły przez dwa lata: inżynier wsparcia produktu i koordynator zarządzania wiedzą. Jako specjalista wsparcia technicznego poziomu III, praca polegała na eskalacji trzeciego poziomu, odtwarzaniu scenariuszy klientów w laboratorium, testach regresji i weryfikacji błędów. Jako koordynator zarządzania wiedzą polegała na budowaniu i organizowaniu bazy wiedzy, na której opierało się reszta wsparcia, obok wsparcia marketingu produktu i szkoleń wewnętrznych. Była to najgłębsza praca wsparcia technicznego w karierze, na poziomie, na którym eskalują najtrudniejsze problemy.",
       "s2Title": "Świat sieci miejskich",
       "s2Body": "Technologie były kręgosłupem ery operatorów i sieci miejskich początku lat 2000: Gigabit Ethernet, MPLS, switching i routing miejski oraz rozległy routing IP, w tym BGP. Praca w producenckim wsparciu trzeciego poziomu oznaczała obserwowanie, jak te systemy zachowują się na granicach, w warunkach, które ujawniają się dopiero na produkcji w dużej skali. Przyniosła też formalne nauczanie: szkolenia na temat koncepcji, funkcji i konfiguracji Riverstone oraz szkolenia na temat identyfikacji problemów w obsłudze klienta i procedur eskalacji.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Ocena równoważności wykształcenia w Stanach Zjednoczonych uznająca wykształcenie równoważne z licencjatem z informatyki i licencjatem z zarządzania, ukończona w 2001 roku w ramach procedury wizowej H1-B1.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Ocena równoważności wykształcenia w Stanach Zjednoczonych uznająca wykształcenie równoważne z licencjatem z informatyki i licencjatem z zarządzania, ukończona w 2001 roku w ramach procedury wizowej H-1B.",
       "lineageTitle": "Linia korporacyjna",
       "lineageDesc": "Riverstone Networks zaczął jako firma o nazwie Yago, został przejęty przez Cabletron Systems około 1998 roku, ponownie pojawił się jako niezależna firma poprzez wydzielenie w 2001 roku i został przejęty przez Alcatel-Lucent w 2006 roku."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Standardy i frameworki",
     "standardsLede": "Każde narzędzie tutaj implementuje opublikowaną specyfikację, a nie domysł. Dekodery i kalkulatory są budowane na dokumentach, które definiują ich formaty, i przypięte do wektorów testowych, które te dokumenty publikują, tak aby każda odpowiedź była sprawdzana względem źródła prawdy, a nie względem siebie samej.",
     "specsLabel": "Specyfikacje",
-    "specsBody": "JSON Web Tokens są zgodne z RFC 7519, z podpisami i algorytmami w RFC 7515 i 7518; PKCE to RFC 7636; Base64 i jego warianty to RFC 4648; UUID to RFC 9562 (która w 2024 r. zastąpiła RFC 4122 i zawiera własne wektory testowe); HMAC to RFC 2104, nad rodziną SHA wystandaryzowaną w FIPS 180-4 i FIPS 202; certyfikaty X.509 to RFC 5280; IPv4 i notacja CIDR to RFC 4632; adresacja IPv6 i jej kanoniczna postać tekstowa to RFC 4291 i RFC 5952; a dekoder cipher suite opiera się na oficjalnym rejestrze IANA TLS Cipher Suites, zestawionym ze specyfikacjami TLS 1.3 i 1.2 (RFC 8446 i 5246), regułami aktualizacji rejestru ustalającymi kolumnę „Recommended” (RFC 8447) oraz zakazem RC4 (RFC 7465). Tam, gdzie autorytetem jest rejestr, jego dane są wbudowywane bezpośrednio, a nie przepisywane.",
+    "specsBody": "JSON Web Tokens są zgodne z RFC 7519, z podpisami i algorytmami w RFC 7515 i 7518; PKCE to RFC 7636; Base64 i jego warianty to RFC 4648; UUID to RFC 9562 (która w 2024 r. zastąpiła RFC 4122 i zawiera własne wektory testowe); HMAC to RFC 2104, nad rodziną SHA wystandaryzowaną w FIPS 180-4 i FIPS 202; certyfikaty X.509 to RFC 5280; IPv4 to RFC 791, a notacja CIDR to RFC 4632; adresacja IPv6 i jej kanoniczna postać tekstowa to RFC 4291 i RFC 5952; a dekoder cipher suite opiera się na oficjalnym rejestrze IANA TLS Cipher Suites, zestawionym ze specyfikacjami TLS 1.3 i 1.2 (RFC 8446 i 5246), regułami aktualizacji rejestru ustalającymi kolumnę „Recommended” (RFC 8447) oraz zakazem RC4 (RFC 7465). Tam, gdzie autorytetem jest rejestr, jego dane są wbudowywane bezpośrednio, a nie przepisywane.",
     "vectorsLabel": "Wektory referencyjne",
     "vectorsBody": "Każde narzędzie zawiera zestaw wektorów referencyjnych: znane wejścia powiązane ze znanymi poprawnymi wyjściami, zaczerpnięte z odpowiednich RFC i organów normalizacyjnych. Uruchamiają się przy każdym buildzie, więc refaktoryzacja, która po cichu zmienia odpowiedź, powoduje błąd builda zamiast trafić na produkcję.",
     "owaspLabel": "OWASP",
@@ -1373,7 +1373,7 @@
   "contribute": {
     "eyebrow": "Tłumaczenia",
     "title": "Pomóż ulepszyć tłumaczenia",
-    "lede": "Wszystkie języki tutaj poza angielskim to pierwsza wersja robocza wykonana maszynowo. Jeśli mówisz jednym z nich i zauważysz coś błędnego lub niezgrabnego, twoje poprawki są mile widziane. Oto jak je przesłać.",
+    "lede": "Brazylijski portugalski jest tu pisany z pomocą AI i stopniowo sprawdzany; wszystkie pozostałe języki poza angielskim to pierwsza wersja robocza wykonana maszynowo. Jeśli mówisz jednym z nich i zauważysz coś błędnego lub niezgrabnego, twoje poprawki są mile widziane. Oto jak je przesłać.",
     "howTitle": "Jak współtworzyć",
     "howBody": "Angielski jest źródłem prawdy, a wszystkie inne języki są z niego tłumaczone, więc błędy są możliwe. Każdy pakiet językowy to pojedynczy plik tekstowy z oznaczonymi frazami. Pobierz ten, który chcesz ulepszyć, zmieniaj tylko tekst po każdej etykiecie i pozostaw etykiety oraz wszystko w nawiasach klamrowych dokładnie tak, jak jest. Następnie wyślij edytowany plik e-mailem i podaj język. Każde zgłoszenie jest sprawdzane ręcznie.",
     "downloadHeading": "Pakiety językowe",
@@ -1449,7 +1449,7 @@
     "complete": "Maszynowe, kompletne",
     "partial": "Maszynowe, w toku",
     "explainTitle": "Jak oznaczane są tłumaczenia",
-    "explainBody": "Angielski i brazylijski portugalski są pisane i sprawdzane przez człowieka. Większość pozostałych języków jest tłumaczona maszynowo i oznaczana według stopnia zaawansowania: bursztynowy, gdy język obejmuje całą witrynę, żółty, gdy nowsze treści są jeszcze po angielsku i nadrabiają zaległości. Języki oznaczone na czerwono nie mają jeszcze tłumaczenia i na razie są wyświetlane po angielsku. Strony tłumaczone maszynowo zawierają też krótką informację, a Ty możesz pomóc je ulepszyć.",
+    "explainBody": "Angielski jest źródłem: pisany z pomocą AI i publikowany tylko wtedy, gdy zdecyduje o tym człowiek. Brazylijski portugalski również jest pisany z pomocą AI i stopniowo sprawdzany; pozostałe języki są tłumaczone maszynowo. Każdy język jest oznaczony według stopnia zaawansowania: niebieski, gdy obejmuje całą witrynę, żółty, gdy nowsze treści są jeszcze po angielsku i nadrabiają zaległości, czerwony, gdy nie ma jeszcze tłumaczenia i na razie jest wyświetlany po angielsku. Każdy język poza angielskim zawiera krótką informację, a Ty możesz pomóc je ulepszyć.",
     "stub": "Jeszcze nieprzetłumaczone"
   },
   "changelog": {

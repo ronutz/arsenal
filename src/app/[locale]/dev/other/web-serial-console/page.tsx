@@ -41,7 +41,8 @@ export default async function SerialConsolePage({ params }: { params: Promise<{ 
               <p className="envother-notice-title mono">{t("notice.title")}</p>
               <p className="envother-notice-text">{t("webserial.why")}</p>
             </div>
-            <MessageSlice namespaces={["devOther.webserial"]}><DevOtherWebSerialTool /></MessageSlice>
+            {/* toolRequirements: the one line the console shows inside <noscript> (2026-10-13). */}
+            <MessageSlice namespaces={["devOther.webserial", "toolRequirements"]}><DevOtherWebSerialTool /></MessageSlice>
             <div className="devfun-head" style={{ marginTop: "2rem" }}>
               <p className="devfun-intro">{t("webserial.about1")}</p>
               <p className="devfun-intro">{t("webserial.about2")}</p>

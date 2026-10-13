@@ -175,9 +175,11 @@ export default async function SiteFooter() {
         {/* Support row: since 2026-07-15 the line belongs to Red Education
             alone - the Buy Me a Coffee link moved to /contribute/ideas, where
             the support pitch actually lives (PRIME directive). Since
-            2026-10-06 (PRIME 12:02) the copy is the affiliation, "Rodolfo
-            Nützmann is a Senior Technical Instructor and Advisor at Red
-            Education", in all 16 message packs, replacing the booking pitch.
+            2026-10-06 (PRIME 12:02) the copy is the affiliation, in all 16
+            message packs, replacing the booking pitch; since 2026-10-07 (PRIME
+            23:3x, row 70, "Instructor only") it reads "Rodolfo Nützmann is a
+            Senior Technical Instructor at Red Education", the advisory work
+            described on About rather than as a Red Education title.
             Since 2026-10-06 13:01 (PRIME, option B of the footer decision) the
             sentence carries TWO links: the role phrase (the <r> tag in the
             message) goes to the on-site profile page /red-education, and the

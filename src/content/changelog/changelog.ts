@@ -52,6 +52,88 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // Milestone NF-2d of the student level-up (milestone (e), owed since 2026-10-06): NetFun II's four articles on the DNS behind the answer; the series now has every part written.
+    date: "2026-10-13",
+    time: "10:52",
+    kind: "content",
+    title: "Four articles for NetFun II: zone transfers and NOTIFY, DNSSEC, DoT, DoH and DoQ, and anycast",
+    body:
+      "How a secondary name server stays in step: the SOA record's timers and what MINIMUM came to mean, the serial arithmetic of RFC 1982, AXFR over TCP, IXFR's deletion and addition blocks, NOTIFY as a hint and not a transfer, and zone transfer over TLS. DNSSEC from the root's key to a validated answer: the four records, the chain of trust link by link, the four verdicts and the one SERVFAIL, NSEC and NSEC3, the root's trust anchors as IANA lists them on the day the articles were read (KSK-2024 signing since 11 October 2026) and the algorithm rules as the IANA registry now holds them. DoT, DoH and DoQ compared on what each hides and what none hides, with the ports, the framing, the Strict and Opportunistic profiles, discovery of designated resolvers and what Google, Cloudflare, Android and Firefox deploy today. Anycast: one address in many places, nearest by the routing metric and not the map, why DNS fits and TCP strains, the 13 root identifiers and their 2,047 instances on 13 October 2026, withdrawing a route on failure and holding it under attack. Each is read from the RFCs, IANA's pages and the operators' own pages, cited with the date it was read; with these, every part of NetFun II is written.",
+    articles: ["dns-zone-transfers-and-notify", "dnssec-end-to-end", "encrypted-dns-dot-doh-doq", "anycast"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // Milestone NF-2c of the student level-up (milestone (d), owed since 2026-10-06): NetFun II's four articles on getting an address and a boot image.
+    date: "2026-10-13",
+    time: "08:49",
+    kind: "content",
+    title: "Four articles for NetFun II: BOOTP and DHCP options, the relay agent, PXE, and TFTP",
+    body:
+      "The packet BOOTP defined in 1985 and DHCP still sends, option by option, from the magic cookie to the end marker and the IANA registry as it stands today; the relay agent that carries a client's broadcast to a server on another network, giaddr, the hop count, the BROADCAST flag, option 82 and ip helper-address on Cisco IOS; PXE from the first DHCPDISCOVER to the first instruction run, Proxy DHCP and port 4011, the architecture types with the error in RFC 4578 corrected, and the IPv6 and HTTP successors; and TFTP packet by packet, the Sorcerer's Apprentice Syndrome and the two words that fixed it, the options, the 32 MB question answered honestly, and where it still runs. Each is read from the RFCs, the specifications and the vendors' own pages, cited with the date it was read; NetFun II's module on getting an address and a name now has all of milestone (d) written.",
+    articles: ["bootp-and-dhcp-options", "dhcp-relay-agent", "pxe-and-network-boot", "tftp"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // P1b (2026-10-13): the pack's Portuguese, second wave, the register PRIME ruled on 2026-10-07.
+    date: "2026-10-13",
+    time: "06:49",
+    kind: "content",
+    title: "The Portuguese of the remaining pages, second wave",
+    body:
+      "The Brazilian Portuguese of Advisory, About, Speaking, the history pages, the certification guides' and the industry catalogue's interface, the colophon, privacy, the disclaimer, the licence, settings, the statistics page, the experimental rooms and the fun lab: 2,427 strings read beside their English and 856 rewritten the way a Brazilian instructor writes, with jargon in English where Brazilian engineers say it in English, sentence case in titles, no dashes, and the site's own names throughout (Consultoria for Advisory, Fabricantes for vendors). Where the Portuguese had drifted from the English, the English meaning is back: \"six words\" had become \"a few words\", the colophon's etymology had gained a \"medieval\", and the privacy page had lost \"of any kind\".",
+    links: [{ label: "Advisory", href: "/advisory" }, { label: "About", href: "/about" }, { label: "Colophon", href: "/colophon" }],
+  },
+  {
+    // P1b (2026-10-13): English errors the Portuguese writers found, each verified against its source before it changed.
+    date: "2026-10-13",
+    time: "06:49",
+    kind: "content",
+    title: "Corrections in the English, found by the Portuguese writers",
+    body:
+      "The colophon credited RFC 4632 with IPv4 as well as CIDR; IPv4 is RFC 791. The Red Education page's description and one of its figures still said 100,000 learners where the rest of the page, and Red Education's own counters, say 120,000, and the page called Rodolfo a Senior Instructor in two places where his title is Senior Technical Instructor. The Contribute page called every language but English a machine draft; Brazilian Portuguese is written with AI and reviewed gradually, as the colophon says. The first talk's summary in English had lost the biotechnologies its Portuguese original names. In the fun lab, buzzword bingo was named at Silicon Graphics in early 1993, by Tom Davis with Seth Katz, rather than invented there, and Quantum renamed its service America Online in 1989; the capture analyser no longer writes \"1 SYN packets\".",
+    links: [{ label: "Colophon", href: "/colophon" }, { label: "Red Education", href: "/red-education" }, { label: "Help improve ronutz", href: "/contribute" }, { label: "Speaking", href: "/speaking" }],
+  },
+  {
+    // Found reading the live /stats on 2026-10-13 (FINDING-stats-capped-lists-read-as-complete, told to PRIME 05:03).
+    date: "2026-10-13",
+    time: "05:39",
+    kind: "infra",
+    title: "The statistics add up every page read again",
+    body:
+      "Four panels of the statistics page (the pages by language, the sections, the long tail and the coverage) are built from one list of every page people read in the window, and that list stopped at 6,000 pages: the window had outgrown it, so the panels added up a part of it as the whole. Over 30 days the list held 40,139 of the 50,478 requests the day-by-day series counts, the long tail showed no page read only once, because the cut fell on exactly the least-read pages, and the count of distinct pages read was the limit itself. The panel of requests for pages that do not exist had the same fault at 2,000 addresses. Both lists are now read far beyond anything a window holds, and a panel whose list does stop at its limit says so. The day-by-day series' note now gives the day it starts, 7 September, when requests began to be told apart from datacenter traffic; it had given 5 September, when counting began.",
+    links: [{ label: "Statistics", href: "/stats" }],
+  },
+  {
+    // Row 71 (PRIME 2026-10-13 04:23): "WHY are you naming a talk using PORTUGUESE in the ENGLISH LANGUAGE SECTION???"
+    date: "2026-10-13",
+    time: "04:28",
+    kind: "content",
+    title: "The Technology Revolution, in English",
+    body:
+      "The English Speaking page named the first prepared talk by its Portuguese title, with the translation only as a subtitle. It is now The Technology Revolution in English, with an English address for its card, and keeps A Revolução da Tecnologia on the Portuguese page. Hard Work, Hard Party is English in both, as it was named.",
+    links: [{ label: "Speaking", href: "/speaking" }],
+  },
+  {
+    // Row 70 (PRIME 2026-10-07 23:5x): the Portuguese notice in PRIME's words; the authorship sentences said one way; the title "Instructor only".
+    date: "2026-10-13",
+    time: "04:28",
+    kind: "content",
+    title: "Who writes each language, said the same way everywhere",
+    body:
+      "The Portuguese pages' notice now says what is true of them: the site's Portuguese is written with AI and reviewed gradually, where it used to say each page had been translated automatically. The colophon's note on how translations are marked, the user guide and the ideas page now say the same thing in the same words: English is the source, written with AI and published only when a person decides it should be; Brazilian Portuguese is written with AI too; the other languages are machine-translated. In the fourteen machine-translated languages that note also gave the wrong colour for a complete language, amber where the language menu shows blue. The footer and About now give the title as Senior Technical Instructor at Red Education.",
+    links: [{ label: "Colophon", href: "/colophon" }, { label: "Site Guide", href: "/guide" }, { label: "Share an idea", href: "/contribute/ideas" }],
+  },
+  {
+    // Row 70 (PRIME 2026-10-07 23:3x, "Hide it there"): the training box only where the courses are taught; the retired guides that were never mapped.
+    date: "2026-10-13",
+    time: "04:28",
+    kind: "content",
+    title: "The certification guides' training box names only what is taught",
+    body:
+      "The box inviting readers to learn with an instructor said that \"these courses\" are taught live at Red Education on every certification guide, the Check Point, Ping Identity and Zscaler guides included, whose courses are not among those taught. It now appears only on the F5, Fortinet, Extreme Networks and Netskope guides and names the vendor, and the certifications page names the four. The three retired Check Point guides whose objectives were never mapped now say so, as archived exam records, instead of \"Study guide in preparation\".",
+    links: [{ label: "Certifications", href: "/certifications" }, { label: "Training", href: "/training" }],
+  },
+  {
     // PRIME 2026-10-07 21:06: "Can you categorize them, show the url and besides or below explain what attack that is a scan for?"
     date: "2026-10-07",
     time: "21:48",

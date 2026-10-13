@@ -249,7 +249,9 @@ export default async function CertificationsHubPage({
               learn these live with an authorized instructor at Red Education. */}
           <section className="section">
             <div className="container certs-container">
-              <TrainingCta />
+              {/* The four platforms taught, in the order the site names them (row 70: the box names what is
+                  taught instead of "these courses", which on this hub meant every vendor's). */}
+              <TrainingCta vendors={["f5", "fortinet", "extreme", "netskope"]} />
             </div>
           </section>
 

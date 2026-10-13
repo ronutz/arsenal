@@ -1,0 +1,141 @@
+---
+slug: encrypted-dns-dot-doh-doq
+title: "DoT, DoH and DoQ compared: encrypting the question"
+summary: "Classic DNS sends every question in the clear, and the leg between the stub resolver and the recursive resolver is where an eavesdropper learns the most. DoT, DoH and DoQ encrypt that leg in three different ways. After reading you can say what each one hides and what none of them hides, read their ports and framing, tell a Strict profile from an Opportunistic one, explain how a client discovers an encrypted resolver, and choose a transport for a given network with the standards' own reasons."
+concepts: ["dns over tls", "dns over https", "dns over quic", "dot", "doh", "doq", "port 853", "strict privacy profile", "opportunistic privacy profile", "edns padding", "discovery of designated resolvers", "application/dns-message"]
+relatedTools: ["dig-command-builder"]
+relatedArticles: ["choosing-a-public-dns-resolver", "dns-family-history", "reading-a-dns-answer", "dns-message-header-and-flags", "edns-and-the-opt-pseudosection", "dnssec-end-to-end"]
+category: networking
+order: 351
+status: reviewed
+updated: "2026-10-13"
+---
+
+"Almost every activity on the Internet starts with a DNS query (and often several)" ([RFC 9076, section 1](https://www.rfc-editor.org/rfc/rfc9076#section-1)), and the Domain Name System (DNS) of [the family history](/learn/dns-family-history) still sends most of them in the clear: "Classic DNS is not encrypted" ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499#section-6)). Three transports encrypt the leg between the stub resolver and the recursive resolver: DNS over Transport Layer Security (TLS), or DoT (RFC 7858); DNS over HTTPS, or DoH (RFC 8484); and DNS over QUIC, or DoQ (RFC 9250). They carry the same DNS message and differ in port, framing, authentication and visibility. After reading you can say what each hides and what none hides, tell a Strict profile from an Opportunistic one, explain a `_dns.resolver.arpa` query, and choose a transport with the standards' own reasons.
+
+## What the wire shows, and what the resolver sees anyway
+
+Two fields matter: "the QNAME and the source IP address", and between stub and recursive resolver "the source IP address is the address of the user's machine" ([RFC 9076, section 4.2](https://www.rfc-editor.org/rfc/rfc9076#section-4.2)). With classic DNS "the HTTP traffic will be encrypted, but the DNS exchange prior to it will not be", and DNSSEC "explicitly excludes confidentiality from its goals" ([RFC 9076, section 5.1](https://www.rfc-editor.org/rfc/rfc9076#section-5.1)): [DNSSEC](/learn/dnssec-end-to-end) proves the answer authentic, it does not hide the question. "The best place to tap ... is clearly between the stub resolvers and the recursive resolvers, because traffic is not limited by DNS caching." (same section).
+
+Encryption "directly mitigates passive surveillance of the DNS payload; however, some privacy attacks are still possible": the sizes and timing of unpadded messages "can be correlated to unencrypted DNS requests upstream of a recursive resolver" ([RFC 9076, section 5.2](https://www.rfc-editor.org/rfc/rfc9076#section-5.2)). The resolver loses nothing: "your recursive resolver knows a lot about you" ([RFC 9076, section 6.1](https://www.rfc-editor.org/rfc/rfc9076#section-6.1)), and encrypted transports "can actually expose more information about users to operators" ([RFC 9076, section 6.1.4.1](https://www.rfc-editor.org/rfc/rfc9076#section-6.1.4.1)). Without authentication, "an active attacker can impersonate the server" ([RFC 9076, section 6.1.2](https://www.rfc-editor.org/rfc/rfc9076#section-6.1.2)).
+
+One limit sits outside the DNS. RFC 9076 notes work to encrypt "the Server Name Identification (SNI) in the TLS handshake [RFC8744], which is one of the last remaining non-DNS cleartext identifiers of a connection target" ([RFC 9076, section 5.1](https://www.rfc-editor.org/rfc/rfc9076#section-5.1)). It follows, though the RFC does not say so: the connection after the lookup still shows its destination Internet Protocol (IP) address in every packet, and its server name until encrypted SNI is deployed. Encrypted DNS hides the question, not where the device connects next.
+
+## DoT: TLS on a port of its own
+
+RFC 7858 (May 2016) "focuses on securing stub-to-recursive traffic" ([RFC 7858, Abstract](https://www.rfc-editor.org/rfc/rfc7858)). The client "MUST establish a TCP connection to port 853 on the server"; any agreed alternative "MUST NOT be port 53"; and "DNS clients and servers MUST NOT use port 853 to transport cleartext DNS messages." ([RFC 7858, section 3.1](https://www.rfc-editor.org/rfc/rfc7858#section-3.1)). Inside the TLS session the framing is that of DNS over the Transmission Control Protocol (TCP), and since "pipelined responses can arrive out of order", clients match them "using the Message ID" ([RFC 7858, section 3.3](https://www.rfc-editor.org/rfc/rfc7858#section-3.3)):
+
+| Field | Size | Meaning |
+|---|---|---|
+| Length | 2 octets | "the two-octet length field described in Section 4.2.2 of [RFC1035]", on every request and response ([RFC 7858, section 3.3](https://www.rfc-editor.org/rfc/rfc7858#section-3.3)) |
+| DNS message | as Length announces | the query or response in RFC 1035 wire format, [header](/learn/dns-message-header-and-flags) first |
+
+"The client will then authenticate the server, if required." ([RFC 7858, section 3.2](https://www.rfc-editor.org/rfc/rfc7858#section-3.2)). RFC 7858 calls its profiles "(1) opportunistic privacy and (2) out-of-band key-pinned authentication" ([RFC 7858, section 4](https://www.rfc-editor.org/rfc/rfc7858#section-4)); **Strict Privacy** and **Opportunistic Privacy** are RFC 8310's names (March 2018), which maps the key-pinned profile to "a "Strict Privacy profile" that used SPKI pinning for authentication" ([RFC 8310, section 1](https://www.rfc-editor.org/rfc/rfc8310#section-1)). Strict "requires an encrypted connection and successful authentication of the DNS server"; Opportunistic "will attempt, but does not require, encryption and successful authentication" (same section); and a client "MUST NOT fall back from Strict Privacy to Opportunistic Privacy during the resolution of a given query" ([RFC 8310, section 5.1](https://www.rfc-editor.org/rfc/rfc8310#section-5.1)).
+
+Padding answers the size leak. RFC 7830 defines the Extension Mechanisms for DNS ([EDNS(0)](/learn/edns-and-the-opt-pseudosection)) "Padding" option, code 12 ([RFC 7830, section 3](https://www.rfc-editor.org/rfc/rfc7830#section-3)), and "Responders MUST pad DNS responses when the respective DNS query included the "Padding" option" ([RFC 7830, section 4](https://www.rfc-editor.org/rfc/rfc7830#section-4)); the Experimental RFC 8467 pads queries "to the closest multiple of 128 octets" and responses "to a multiple of 468 octets" ([RFC 8467, section 4.1](https://www.rfc-editor.org/rfc/rfc8467#section-4.1)). The dedicated port cuts both ways: it "should avoid such interference" from middleboxes ([RFC 7858, section 8](https://www.rfc-editor.org/rfc/rfc7858#section-8)), yet it "might be blocked by some firewalls" ([RFC 7858, section 1](https://www.rfc-editor.org/rfc/rfc7858#section-1)).
+
+## DoH: a DNS message inside an HTTP exchange
+
+RFC 8484 (October 2018) puts DNS on the Hypertext Transfer Protocol (HTTP) over TLS: "Each DNS query-response pair is mapped into an HTTP exchange." ([RFC 8484, section 1](https://www.rfc-editor.org/rfc/rfc8484#section-1)). The server is a template, not an address: "Configuration, discovery, and updating of the URI Template is done out of band from this protocol." ([RFC 8484, section 3](https://www.rfc-editor.org/rfc/rfc8484#section-3)). The examples "use a DoH service with a URI Template of" `https://dnsserver.example.net/dns-query{?dns}` ([RFC 8484, section 4.1.1](https://www.rfc-editor.org/rfc/rfc8484#section-4.1.1)); `/dns-query` is that example and nothing more, with no MUST behind it. Google and Cloudflare both use it; RFC 9461's `dohpath` key exists because the path is per server.
+
+"DoH servers MUST implement both the POST and GET methods." With GET the "dns" variable carries the request "encoded with base64url"; with POST it is the message body ([RFC 8484, section 4.1](https://www.rfc-editor.org/rfc/rfc8484#section-4.1)). The GET example, field by field ([RFC 8484, section 4.1.1](https://www.rfc-editor.org/rfc/rfc8484#section-4.1.1)):
+
+| Field | Value in the example | Meaning |
+|---|---|---|
+| :method | GET | the query rides in the URL |
+| :scheme | https | "This protocol MUST be used with the https URI scheme" ([RFC 8484, section 5](https://www.rfc-editor.org/rfc/rfc8484#section-5)) |
+| :authority | dnsserver.example.net | the template's host |
+| :path | /dns-query?dns=AAABAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB | the expanded template |
+| accept | application/dns-message | the media type wanted back |
+
+Both sides "MUST support the "application/dns-message" media type" ([RFC 8484, section 5.4](https://www.rfc-editor.org/rfc/rfc8484#section-5.4)): the User Datagram Protocol (UDP) wire format, without the two length bytes of RFC 7858, at most 65535 bytes ([RFC 8484, section 6](https://www.rfc-editor.org/rfc/rfc8484#section-6)). HTTP correlates request and response, so clients "SHOULD use a DNS ID of 0 in every DNS request" ([RFC 8484, section 4.1](https://www.rfc-editor.org/rfc/rfc8484#section-4.1)). The version is advice, not law: "HTTP/2 [RFC7540] is the minimum RECOMMENDED version of HTTP for use with DoH." ([RFC 8484, section 5.2](https://www.rfc-editor.org/rfc/rfc8484#section-5.2)). Caches obey the TTL: freshness "MUST be less than or equal to the smallest TTL in the Answer section", and the Age header counts, so an RRset with a TTL of 600 cached for 250 seconds has 350 seconds left ([RFC 8484, section 5.1](https://www.rfc-editor.org/rfc/rfc8484#section-5.1)).
+
+"DoH encrypts DNS traffic and requires authentication of the server." Its reputation for hiding in web traffic rests on one sentence: "the use of the HTTPS default port 443 and the ability to mix DoH traffic with other HTTPS traffic on the same connection can deter unprivileged on-path devices from interfering with DNS operations and make DNS traffic analysis more difficult" ([RFC 8484, section 8.1](https://www.rfc-editor.org/rfc/rfc8484#section-8.1)). "Indistinguishable" is not the RFC's word; the stronger wording is Cloudflare's: DoH queries "are difficult to distinguish from other HTTPS traffic on the network" ([Cloudflare, DNS over HTTPS](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/)). The price is HTTP's identifiers: DoH "inherits the full privacy properties of the HTTPS stack" ([RFC 9076, section 6.1.4.2](https://www.rfc-editor.org/rfc/rfc9076#section-6.1.4.2)), cookies included ([RFC 8484, section 8.2](https://www.rfc-editor.org/rfc/rfc8484#section-8.2)).
+
+## DoQ: one QUIC stream per query
+
+RFC 9250 (May 2022) claims that "QUIC transport eliminates the head-of-line blocking issues inherent with TCP" ([RFC 9250, Abstract](https://www.rfc-editor.org/rfc/rfc9250)) and "specifies QUIC as a general-purpose transport for DNS", zone transfers included ([RFC 9250, section 1](https://www.rfc-editor.org/rfc/rfc9250#section-1)). The client "MUST establish a QUIC connection to UDP port 853 on the server, unless there is a mutual agreement to use another port", and 443 is the agreed alternative the RFC names, being "less likely to be blocked than other ports" ([RFC 9250, section 4.1.1](https://www.rfc-editor.org/rfc/rfc9250#section-4.1.1)). The Application-Layer Protocol Negotiation (ALPN) token is "doq" ([RFC 9250, section 4.1](https://www.rfc-editor.org/rfc/rfc9250#section-4.1)).
+
+Each query gets its own stream, so that "the content of each QUIC stream is exactly the same as the content of a TCP connection that would manage exactly one query", two-octet length prefix included; "the client's first query occurs on QUIC stream 0, the second on 4, and so on" ([RFC 9250, section 4.2](https://www.rfc-editor.org/rfc/rfc9250#section-4.2)). Hence "the DNS Message ID MUST be set to 0" ([RFC 9250, section 4.2.1](https://www.rfc-editor.org/rfc/rfc9250#section-4.2.1)). The mapping exists "to mitigate head-of-line blocking. This enables servers to respond to queries "out of order"." ([RFC 9250, section 3.2](https://www.rfc-editor.org/rfc/rfc9250#section-3.2)); the phrase is RFC 9250's alone; RFC 7858 and RFC 8484 allow out-of-order responses but never mention head-of-line blocking.
+
+0-RTT has limits: "only transactions that have an OPCODE of QUERY or NOTIFY are considered replayable; therefore, other OPCODES MUST NOT be sent in 0-RTT data" ([RFC 9250, section 4.5](https://www.rfc-editor.org/rfc/rfc9250#section-4.5)). Connection migration is possible, but it trades privacy for latency, so "By default, clients SHOULD be configured to prioritize privacy and start new sessions if their connectivity changes." ([RFC 9250, section 5.5.4](https://www.rfc-editor.org/rfc/rfc9250#section-5.5.4)).
+
+Padding is mandatory: "Implementations MUST protect against the traffic analysis attacks described in Section 7.5 by the judicious injection of padding." ([RFC 9250, section 5.4](https://www.rfc-editor.org/rfc/rfc9250#section-5.4)); section 7.5 as published says SHOULD, and erratum EID 7883 (verified 2024-04-23) corrects it to MUST ([RFC 9250 errata](https://www.rfc-editor.org/errata/rfc9250)). Padding hides records "but not the fact that this is DNS traffic", so "firewalls and other middleboxes might be able to distinguish DoQ from other protocols that use QUIC, like HTTP, and apply different treatment" ([RFC 9250, section 3.3](https://www.rfc-editor.org/rfc/rfc9250#section-3.3)). Authentication follows RFC 8310, and "DoQ stubs SHOULD use a Strict usage profile." ([RFC 9250, section 5.1](https://www.rfc-editor.org/rfc/rfc9250#section-5.1)).
+
+## Side by side
+
+Section numbers refer to the RFC in the column heading; each statement is sourced in the sections above.
+
+| | DoT (RFC 7858) | DoH (RFC 8484) | DoQ (RFC 9250) |
+|---|---|---|---|
+| Transport and port | TLS over TCP, port 853 (3.1) | HTTPS, port 443; HTTP/2 "minimum RECOMMENDED" (5.2, 8.1) | QUIC over UDP, port 853; 443 by agreement (4.1.1) |
+| Server authentication | "if required" (3.2); Strict or Opportunistic per RFC 8310 | "requires authentication of the server" (8.1) | as DoT; stubs "SHOULD use a Strict usage profile" (5.1) |
+| Distinguishable on the wire | own port (3.1) | mixes with HTTPS and "can deter unprivileged on-path devices" (8.1); never called "indistinguishable" | "middleboxes might be able to distinguish DoQ" (3.3); evasion is a non-goal (1) |
+| Blocking | "might be blocked by some firewalls" (1) | cleartext-based filtering "will not function" (10) | 443 "less likely to be blocked" (4.1.1) |
+| Head-of-line blocking | out-of-order responses allowed (3.3); phrase absent | responses "in any order" (4.2); phrase absent | "eliminates the head-of-line blocking issues inherent with TCP" (Abstract) |
+
+## Finding the encrypted resolver: DDR
+
+Provisioning hands out an address, not a name: "common configuration mechanisms only provide the resolver's IP address during configuration" ([RFC 9462, section 1](https://www.rfc-editor.org/rfc/rfc9462#section-1)). Discovery of Designated Resolvers (DDR, RFC 9462, November 2023) starts from that address: the client "issues a query for `_dns.resolver.arpa.` with the SVCB resource record type (64)" before other queries ([RFC 9462, section 4](https://www.rfc-editor.org/rfc/rfc9462#section-4)); the [dig command builder](/tools/dig-command-builder) assembles it. The RFC's three example Service Binding (SVCB) answers (same section):
+
+| Record, as in RFC 9462 | What it designates |
+|---|---|
+| `_dns.resolver.arpa. 7200 IN SVCB 1 doh.example.net ( alpn=h2 dohpath=/dns-query{?dns} )` | DoH, with its path template |
+| `_dns.resolver.arpa. 7200 IN SVCB 1 dot.example.net ( alpn=dot port=8530 )` | DoT on port 8530 |
+| `_dns.resolver.arpa. 7200 IN SVCB 1 doq.example.net ( alpn=doq port=8530 )` | DoQ on port 8530 |
+
+RFC 9461 supplies the mapping: with any HTTP version in alpn "the "dohpath" key MUST be present" ([RFC 9461, section 4.1](https://www.rfc-editor.org/rfc/rfc9461#section-4.1)), and the combined example `alpn=dot,doq,h2,h3 dohpath=/q{?dns}` ([RFC 9461, section 7](https://www.rfc-editor.org/rfc/rfc9461#section-7)) shows the path is whatever the server declares.
+
+The answer arrives in cleartext, so "Clients MUST NOT automatically use a Designated Resolver without some sort of validation" ([RFC 9462, section 4.1](https://www.rfc-editor.org/rfc/rfc9462#section-4.1)). Verified Discovery requires a valid chain and that "the certificate contains the IP address of the designating Unencrypted DNS Resolver in an iPAddress entry of the subjectAltName extension" ([RFC 9462, section 4.2](https://www.rfc-editor.org/rfc/rfc9462#section-4.2)); Opportunistic Discovery needs the same IP address on both sides and is meant for "resolvers using private or local IP addresses" ([RFC 9462, section 4.3](https://www.rfc-editor.org/rfc/rfc9462#section-4.3)). And "on-path attackers can prevent successful discovery by dropping SVCB queries or answers" ([RFC 9462, section 7](https://www.rfc-editor.org/rfc/rfc9462#section-7)).
+
+## What is deployed today
+
+Google and Cloudflare publish these endpoints ([Google, Get Started](https://developers.google.com/speed/public-dns/docs/using); [Google, Secure transports for DNS](https://developers.google.com/speed/public-dns/docs/secure-transports); [Cloudflare, Network operators](https://developers.cloudflare.com/1.1.1.1/infrastructure/network-operators/)):
+
+| Service | IPv4 | IPv6 | DoT (port 853) | DoH (port 443) |
+|---|---|---|---|---|
+| Google Public DNS | 8.8.8.8, 8.8.4.4 | 2001:4860:4860::8888, 2001:4860:4860::8844 | dns.google | `https://dns.google/dns-query{?dns}` |
+| Cloudflare 1.1.1.1 (unfiltered) | 1.1.1.1, 1.0.0.1 | 2606:4700:4700::1111, 2606:4700:4700::1001 | one.one.one.one | `https://cloudflare-dns.com/dns-query` |
+
+Both list DoT and DoH only; neither mentions DoQ, and absence of mention is not evidence either way.
+
+Android's **Private DNS** is DoT, per Google: "Android 9 supports "Private DNS" which uses DNS-over-TLS to provide security and privacy for your DNS queries.", and its default is Opportunistic in RFC 8310's sense: "the default mode for Private DNS is "Automatic" which means it uses the network specified DNS server and it attempts a TLS connection to port 853 before falling back to UDP on port 53" ([Google, Get Started](https://developers.google.com/speed/public-dns/docs/using)). Cloudflare's Android page says Private DNS "uses DNS-over-TLS (DoT), or DNS-over-HTTP/3" ([Cloudflare, Android](https://developers.cloudflare.com/1.1.1.1/setup/android/)); the Android Help article that would settle the difference returned HTTP 404 on 2026-10-13, so the HTTP/3 claim stands unverified.
+
+Firefox offers five DoH protection levels, "Default protection", "Increased Protection", "Max Protection", "Custom protection" and "Off"; for example, "When Increased Protection is on, DoH is constantly active with the provider you select." ([Mozilla, Configure DNS over HTTPS protection levels in Firefox](https://support.mozilla.org/en-US/kb/dns-over-https)). The page serves a script challenge to a plain fetch, so it was read through a fetch tool's extraction, twice on the same day, with the same words both times; it shows no date.
+
+## What to choose, and why
+
+Choose the resolver first: every transport hides the QNAME from the path and none from the resolver ([choosing a public DNS resolver](/learn/choosing-a-public-dns-resolver)), and "a single resolver with a small client population" can "aid tracking of that user as they move across network environments" ([RFC 9076, section 5.1](https://www.rfc-editor.org/rfc/rfc9076#section-5.1)). Then authenticate: Opportunistic privacy "only provides privacy when there are no on-path active attackers" ([RFC 7858, section 4.1](https://www.rfc-editor.org/rfc/rfc7858#section-4.1)); Strict DoT, DoH and Strict DoQ close that hole.
+
+On a network you do not control, the port decides. Blocking 853 "could restrict the resolvers available to the user" ([RFC 9076, section 6.1.3](https://www.rfc-editor.org/rfc/rfc9076#section-6.1.3)); DoH on 443 is harder to single out; and an operator can run "A DoT privacy service on both port 853 and 443", with the "dot" ALPN value when DoH shares the address ([RFC 8932, section 5.1.3.1](https://www.rfc-editor.org/rfc/rfc8932#section-5.1.3.1)). On a network you operate, the same facts read the other way: a dedicated port is visible and manageable, filtering that relies on cleartext DNS "will not function" against DoH ([RFC 8484, section 10](https://www.rfc-editor.org/rfc/rfc8484#section-10)), and a `_dns.resolver.arpa` record lets DDR clients upgrade to your resolver rather than leave for another. Whichever transport, pad: the option exists for all three and is a MUST in DoQ.
+
+## What to remember
+
+- Classic DNS sends the QNAME and the source address in the clear, and the stub-to-resolver leg is where RFC 9076 puts "The best place to tap".
+- Encryption stops passive reading on the wire; it does not reduce what the resolver sees, hide sizes without padding, or stop an active attacker without authentication.
+- DoT is TLS on TCP port 853 with the two-octet length prefix; Strict and Opportunistic are RFC 8310's names.
+- DoH maps each query to an HTTPS exchange on port 443: GET or POST, application/dns-message, Message ID 0, HTTP/2 RECOMMENDED, path by configuration.
+- DoQ is QUIC on UDP port 853 (443 by agreement), ALPN "doq", one stream per query, Message ID 0, padding a MUST, no promise to evade blocking.
+- DDR upgrades a bare resolver address through an SVCB query for `_dns.resolver.arpa`, trusted only after RFC 9462's certificate checks.
+- Google and Cloudflare document DoT and DoH, not DoQ; Android's Private DNS is DoT per Google; Firefox has five DoH protection levels.
+
+## Sources
+
+- [RFC 9076, DNS Privacy Considerations, July 2021: sections 1, 4.2, 5.1, 5.2, 6.1, 6.1.2, 6.1.3, 6.1.4.1 and 6.1.4.2 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9076)
+- [RFC 7858, Specification for DNS over Transport Layer Security (TLS), May 2016: Abstract, sections 1, 3.1 to 3.3, 4, 4.1 and 8 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc7858)
+- [RFC 8310, Usage Profiles for DNS over TLS and DNS over DTLS, March 2018: sections 1 and 5.1 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc8310)
+- [RFC 7830, The EDNS(0) Padding Option, May 2016: sections 3 and 4 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc7830)
+- [RFC 8467, Padding Policies for Extension Mechanisms for DNS (EDNS(0)), October 2018, Experimental: section 4.1 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc8467)
+- [RFC 8484, DNS Queries over HTTPS (DoH), October 2018: sections 1, 3, 4.1, 4.1.1, 4.2, 5, 5.1, 5.2, 5.4, 6, 8.1, 8.2 and 10 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc8484)
+- [RFC 9250, DNS over Dedicated QUIC Connections, May 2022: Abstract, sections 1, 3.2, 3.3, 4.1, 4.1.1, 4.2, 4.2.1, 4.5, 5.1, 5.4 and 5.5.4 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9250)
+- [RFC 9250 errata, EID 7883, verified 2024-04-23, on section 7.5 (read 2026-10-13)](https://www.rfc-editor.org/errata/rfc9250)
+- [RFC 9462, Discovery of Designated Resolvers, November 2023: sections 1, 4, 4.1, 4.2, 4.3 and 7 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9462)
+- [RFC 9461, Service Binding Mapping for DNS Servers, November 2023: sections 4.1 and 7 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9461)
+- [RFC 8932, Recommendations for DNS Privacy Service Operators, BCP 232, October 2020: section 5.1.3.1 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc8932)
+- [RFC 9499, DNS Terminology, BCP 219, March 2024: section 6 (read 2026-10-13)](https://www.rfc-editor.org/rfc/rfc9499)
+- [Google Public DNS, "Secure transports for DNS", vendor page, secondary source: "Endpoints" (read 2026-10-13)](https://developers.google.com/speed/public-dns/docs/secure-transports)
+- [Google Public DNS, "Get Started", vendor page, secondary source, last updated 2024-09-03 (read 2026-10-13)](https://developers.google.com/speed/public-dns/docs/using)
+- [Cloudflare 1.1.1.1 docs, "DNS over HTTPS", vendor page, secondary source, last updated May 5, 2026 (read 2026-10-13)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/)
+- [Cloudflare 1.1.1.1 docs, "Network operators", vendor page, secondary source, last updated Oct 12, 2026 (read 2026-10-13)](https://developers.cloudflare.com/1.1.1.1/infrastructure/network-operators/)
+- [Cloudflare 1.1.1.1 docs, "Android", vendor page, secondary source, last updated Jun 23, 2026 (read 2026-10-13)](https://developers.cloudflare.com/1.1.1.1/setup/android/)
+- [Mozilla Support, "Configure DNS over HTTPS protection levels in Firefox", vendor page, secondary source, no absolute date, read through a fetch tool's extraction (read 2026-10-13)](https://support.mozilla.org/en-US/kb/dns-over-https)

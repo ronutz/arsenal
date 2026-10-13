@@ -141,9 +141,10 @@ export const TRAINING_SERIES: TrainingSeries[] = [
     ],
   },
   {
-    // NetFun II, addressing and routing: layer 3. The curriculum plan's section 3, module by module; eight parts are named
-    // in their places until they are written: four owed by milestone (d), four by (e). The three new routing articles of
-    // NF-2b (2026-10-07) stand where NF-2a named them (PLAN-nf2-netfun-ii-20261007).
+    // NetFun II, addressing and routing: layer 3. The curriculum plan's section 3, module by module, every part written:
+    // the three routing articles of NF-2b (2026-10-07), the four of milestone (d), NF-2c (2026-10-13: BOOTP and DHCP
+    // options, the relay agent, PXE, TFTP), and the four of milestone (e), NF-2d (2026-10-13: zone transfers and NOTIFY,
+    // DNSSEC, DoT/DoH/DoQ, anycast), each where NF-2a named it (PLAN-nf2-netfun-ii-20261007).
     id: "netfun-2",
     curriculum: "netfun",
     level: 2,
@@ -185,11 +186,11 @@ export const TRAINING_SERIES: TrainingSeries[] = [
         id: "m3",
         parts: [
           { slug: "dhcp-lease-lifecycle" },
-          { planned: "bootp-and-dhcp-options" },
+          { slug: "bootp-and-dhcp-options" },
           { slug: "dhcp-option-43-discovery" },
-          { planned: "dhcp-relay-agent" },
-          { planned: "pxe-and-network-boot" },
-          { planned: "tftp" },
+          { slug: "dhcp-relay-agent" },
+          { slug: "pxe-and-network-boot" },
+          { slug: "tftp" },
           { slug: "dns-family-history" },
           { slug: "reading-a-dns-answer" },
           { slug: "dns-message-header-and-flags" },
@@ -198,10 +199,10 @@ export const TRAINING_SERIES: TrainingSeries[] = [
           { slug: "choosing-a-public-dns-resolver" },
           { slug: "reading-dig-output" },
           { slug: "anatomy-of-a-dig-command-line" },
-          { planned: "dns-zone-transfers-and-notify" },
-          { planned: "dnssec-end-to-end" },
-          { planned: "encrypted-dns-dot-doh-doq" },
-          { planned: "anycast" },
+          { slug: "dns-zone-transfers-and-notify" },
+          { slug: "dnssec-end-to-end" },
+          { slug: "encrypted-dns-dot-doh-doq" },
+          { slug: "anycast" },
         ],
         tools: ["dhcp-option-43", "dig-command-builder", "dig-output-explainer", "nslookup-output-explainer"],
       },

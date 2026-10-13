@@ -1,0 +1,149 @@
+---
+slug: bootp-and-dhcp-options
+title: "Opções de BOOTP e DHCP: o que o cliente pede, e o que ele recebe"
+summary: "Nomear cada campo do pacote que o BOOTP definiu em 1985 e que o DHCP envia até hoje, e explicar como o DHCP transformou o último campo numa lista de opções. Decodificar uma opção do magic cookie até o marcador de fim, dizer o que as opções mais comuns carregam e que lado as envia, e usar o registro da IANA para distinguir um código padrão de um código privado quando uma captura ou um log de servidor mostra um número desconhecido."
+concepts: ["bootp", "dhcp", "dhcp options", "magic cookie", "tag length value", "dhcp message type", "parameter request list", "vendor class identifier", "vendor specific information", "option overload", "udp ports 67 and 68", "iana dhcp registry"]
+relatedTools: ["dhcp-option-43"]
+relatedArticles: ["dhcp-lease-lifecycle", "dhcp-option-43-discovery", "ipv4-addressing", "routing-tables-and-default-gateway", "the-ethernet-frame-field-by-field"]
+category: networking
+order: 345
+status: reviewed
+updated: "2026-10-13"
+---
+
+Uma máquina que acabou de ligar tem um endereço de hardware e mais nada: nenhum endereço IP, nenhuma máscara, nenhum roteador, nenhum servidor de nomes, e nenhum jeito de perguntar por unicast. O BOOTP foi escrito em 1985 para que uma máquina assim pudesse mandar um pacote em broadcast e receber uma resposta com tudo isso dentro; o DHCP, especificado na forma atual em 1997, manteve esse pacote e transformou o último campo numa lista de opções. Ao final você consegue nomear cada campo e seu tamanho, decodificar uma opção octeto a octeto, dizer que lado envia as opções mais comuns e distinguir um código padrão de um código privado numa captura ou num log.
+
+## BOOTP em 1985: o que ele supunha e o que carregava
+
+A RFC 951, de Bill Croft e John Gilmore, é de setembro de 1985 ([RFC 951, cabeçalho](https://www.rfc-editor.org/rfc/rfc951.html)). Ela "allows a diskless client machine to discover its own IP address, the address of a server host, and the name of a file to be loaded into memory and executed": uma máquina sem disco descobre o próprio IP, um servidor e o arquivo a carregar ([RFC 951, seção 2](https://www.rfc-editor.org/rfc/rfc951.html#section-2)). O desenho é "A single packet exchange", uma única troca de pacotes: o cliente "broadcasts a 'bootrequest' packet", o servidor "answers with a 'bootreply' packet", e "The same packet field layout is used in both directions", o mesmo layout de campos nos dois sentidos (mesma seção). Um cliente sem endereço envia com IP de origem zero para 255.255.255.255, "broadcast on the local cable", por UDP para a porta chamada 'BOOTP server' (67); as respostas chegam na 'BOOTP client' (68) ([RFC 951, seção 3](https://www.rfc-editor.org/rfc/rfc951.html#section-3)). A mensagem, como a mesma seção a lista (tamanhos em octetos):
+
+| Campo | Octetos | Significado na RFC 951 |
+|---|---|---|
+| op | 1 | "1 = BOOTREQUEST, 2 = BOOTREPLY" |
+| htype | 1 | tipo do endereço de hardware; "'1' = 10mb ethernet" |
+| hlen | 1 | tamanho do endereço de hardware; "'6' for 10mb ethernet" |
+| hops | 1 | "client sets to zero"; os gateways podem usá-lo |
+| xid | 4 | "transaction ID, a random number" |
+| secs | 2 | "seconds elapsed since client started trying to boot" |
+| (sem nome) | 2 | "unused" |
+| ciaddr | 4 | "client IP address", se o cliente o conhece |
+| yiaddr | 4 | "'your' (client) IP address" |
+| siaddr | 4 | "server IP address" |
+| giaddr | 4 | "gateway IP address" |
+| chaddr | 16 | "client hardware address" |
+| sname | 64 | "optional server host name" |
+| file | 128 | "boot file name" |
+| vend | 64 | "optional vendor-specific area" |
+
+Somando os tamanhos, o pacote tem 300 octetos, 236 deles antes de 'vend' (aritmética sobre a tabela, não uma frase da RFC). A área **vend** "can be filled in by the client with vendor-specific strings or structures", e "it is recommended that a 4 byte 'magic number' be the first item within 'vend'": recomenda-se um 'magic number' de 4 bytes como primeiro item ([RFC 951, seção 7.1](https://www.rfc-editor.org/rfc/rfc951.html#section-7.1)).
+
+## DHCP: o mesmo pacote, o último campo renomeado
+
+A RFC 2131 (março de 1997, "Obsoletes: 1541") "is based on the Bootstrap Protocol (BOOTP) [7], adding the capability of automatic allocation of reusable network addresses and additional configuration options [19]": baseia-se no BOOTP e acrescenta o lease e mais opções ([RFC 2131, resumo](https://www.rfc-editor.org/rfc/rfc2131.html)). "DHCP uses the BOOTP message format defined in RFC 951", com BOOTREQUEST em 'op' quando vem do cliente e BOOTREPLY quando vem do servidor ([RFC 2131, seção 3](https://www.rfc-editor.org/rfc/rfc2131.html#section-3)), e as portas mantêm os números como "the 'DHCP server' port (67)" e "the 'DHCP client' port (68)" ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131.html#section-4.1)).
+
+A troca de nome é explícita: "What was the "vendor extensions" field in BOOTP has been re-named the "options" field in DHCP. Similarly, the tagged data items that were used inside the BOOTP "vendor extensions" field, which were formerly referred to as "vendor extensions," are now termed simply "options."" ([RFC 2131, seção 2](https://www.rfc-editor.org/rfc/rfc2131.html#section-2)): campo e itens passam a se chamar "options". O campo "is now variable length": o cliente "must be prepared to receive DHCP messages with an 'options' field of at least length 312 octets", e portanto "a message of up to 576 octets" (RFC 2131, seção 2); os dois números são pisos, não tetos, já que a opção 57 permite ao cliente aceitar mais ([RFC 2132, seção 9.10](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.10)). Então 300 octetos é o tamanho do BOOTP, não do DHCP.
+
+Os dois octetos "unused" ganharam significado, mas não pelo DHCP. A RFC 1542 (outubro de 1993, "Updates: 951") "hereby designates this two-octet field as the 'flags' field" e "defines the most significant bit of the 'flags' field as the BROADCAST (B) flag": nomeia o campo e define a flag B ([RFC 1542, seção 2.2](https://www.rfc-editor.org/rfc/rfc1542.txt)). A RFC 2131 adota isso: um cliente que ainda não consegue receber unicast "SHOULD set the BROADCAST bit", e o servidor ou o relay agent então responde "as an IP broadcast", em vez de unicast para 'yiaddr' e 'chaddr' (seção 4.1); os demais bits "MUST be set to zero" (seção 2).
+
+## O magic cookie e a forma de uma opção
+
+"The first four octets of the 'options' field of the DHCP message contain the (decimal) values 99, 130, 83 and 99, respectively (this is the same magic cookie as is defined in RFC 1497 [17])" (RFC 2131, seção 3), em hexadecimal "63.82.53.63" ([RFC 2132, seção 2](https://www.rfc-editor.org/rfc/rfc2132.html#section-2)). Foi a RFC 1497 (agosto de 1993, "Updates: 951") que atribuiu o valor, "As suggested in [RFC-951]" ([RFC 1497](https://www.rfc-editor.org/rfc/rfc1497.txt)). Depois do cookie vem "a list of tagged parameters that are called "options"" (RFC 2131, seção 3), e todas menos duas têm a mesma forma (RFC 2132, seção 2):
+
+| Octeto | Conteúdo | Texto da RFC 2132 |
+|---|---|---|
+| primeiro | tag, também chamada code | "uniquely identifies the option" |
+| segundo | length (tamanho) | "does not include the two octets specifying the tag and length" |
+| o restante | dados | "followed by "length" octets of data" |
+
+"Only options 0 and 255 are fixed length", um octeto cada: pad (0) alinha os campos seguintes, end (255) "marks the end of valid information in the vendor field" ([RFC 2132, seções 3.1 e 3.2](https://www.rfc-editor.org/rfc/rfc2132.html#section-3.1)), e "The last option must always be the 'end' option" ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131.html#section-4.1)). Um octeto de tamanho limita uma opção a 255 octetos de dados; "Options may appear only once, unless otherwise specified in the options document", e o cliente "concatenates the values of multiple instances of the same option" (mesma seção).
+
+## Opção 53: o tipo da mensagem
+
+"One particular option - the "DHCP message type" option - must be included in every DHCP message" (RFC 2131, seção 3); "The code for this option is 53, and its length is 1" ([RFC 2132, seção 9.6](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.6)). Os papéis são os da [RFC 2131, tabela 2](https://www.rfc-editor.org/rfc/rfc2131.html):
+
+| Valor | Nome | Quem envia, e por quê |
+|---|---|---|
+| 1 | DHCPDISCOVER | cliente, procurando servidores: "Client broadcast to locate available servers." |
+| 2 | DHCPOFFER | servidor, oferecendo parâmetros: "in response to DHCPDISCOVER with offer of configuration parameters" |
+| 3 | DHCPREQUEST | cliente, aceitando uma oferta ("requesting offered parameters from one server"), confirmando um endereço após um reboot, ou estendendo o lease ("extending the lease") |
+| 4 | DHCPDECLINE | cliente, avisando que o endereço já está em uso: "indicating network address is already in use" |
+| 5 | DHCPACK | servidor, confirmando: "with configuration parameters, including committed network address" |
+| 6 | DHCPNAK | servidor, negando: "indicating client's notion of network address is incorrect", ou o lease expirou |
+| 7 | DHCPRELEASE | cliente, devolvendo o endereço: "relinquishing network address and cancelling remaining lease" |
+| 8 | DHCPINFORM | cliente que já tem endereço, "asking only for local configuration parameters" |
+
+O diagrama da própria RFC 2132 diz `|  53 |  1  | 1-9 |`; a errata 486, verificada, corrige para `1-8` ([RFC Editor, errata da RFC 2132](https://www.rfc-editor.org/errata/rfc2132)). A IANA acrescentou depois os valores 9 a 18, de "9 DHCPFORCERENEW" (RFC 3203) a "18 DHCPTLS" (RFC 7724) ([IANA, DHCP Message Type 53 Values](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)). [O ciclo de vida do lease DHCP](/learn/dhcp-lease-lifecycle) percorre os oito primeiros em ordem.
+
+## O que o cliente pede, e o que ele recebe
+
+Doze opções carregam a maioria dos leases; as abaixo de 50 também podem viajar no campo 'vend' do BOOTP, já que "Except for the options in section 9, all options may be used with either DHCP or BOOTP" ([RFC 2132, seção 2](https://www.rfc-editor.org/rfc/rfc2132.html#section-2), que também fornece a última coluna).
+
+| Código | Opção | Tamanho em octetos | O que carrega | Seção |
+|---|---|---|---|---|
+| 1 | subnet mask | 4 | "the client's subnet mask"; "MUST be first", antes dos roteadores | 3.3 |
+| 3 | router | múltiplo de 4 | roteadores, por preferência | 3.5 |
+| 6 | domain name server | múltiplo de 4 | servidores DNS, por preferência | 3.8 |
+| 12 | host name | 1 ou mais | "the name of the client" | 3.14 |
+| 15 | domain name | 1 ou mais | o domínio DNS do cliente | 3.17 |
+| 50 | requested IP address | 4 | o endereço que o cliente pede | 9.1 |
+| 51 | IP address lease time | 4 | segundos, inteiro de 32 bits sem sinal | 9.2 |
+| 54 | server identifier | 4 | "the IP address of the selected server" | 9.7 |
+| 55 | parameter request list | 1 ou mais | um octeto por código de opção pedido | 9.8 |
+| 58 | renewal (T1) time | 4 | segundos até "the RENEWING state" | 9.11 |
+| 59 | rebinding (T2) time | 4 | segundos até "the REBINDING state" | 9.12 |
+| 61 | client identifier | 2 ou mais | um octeto de tipo e um valor; tipo 0 se não for endereço de hardware | 9.14 |
+
+O cliente envia 50, 55 e 61. No DHCPREQUEST que aceita uma oferta, a 50 "MUST be set to the value of 'yiaddr' in the DHCPOFFER" ([RFC 2131, seção 3.1](https://www.rfc-editor.org/rfc/rfc2131.html#section-3.1)); para a 55, o servidor "MUST try to insert the requested options in the order requested by the client" ([RFC 2132, seção 9.8](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.8)); sem a 61, "the server MUST use the contents of the 'chaddr' field to identify the client" ([RFC 2131, seção 4.2](https://www.rfc-editor.org/rfc/rfc2131.html#section-4.2)).
+
+O servidor informa o resto. As opções 1 e 3 são a máscara e o gateway de [endereçamento IPv4](/learn/ipv4-addressing) e de [tabelas de roteamento e default gateway](/learn/routing-tables-and-default-gateway). Na 51, "The time value of 0xffffffff is reserved to represent "infinity"" ([RFC 2131, seção 3.3](https://www.rfc-editor.org/rfc/rfc2131.html#section-3.3)). Sem 58 e 59, "T1 defaults to (0.5 * duration_of_lease).  T2 defaults to (0.875 * duration_of_lease)": metade do lease e 0,875 dele ([RFC 2131, seção 4.4.5](https://www.rfc-editor.org/rfc/rfc2131.html#section-4.4.5)). A opção 54 permite ao cliente "distinguish between lease offers" e é o destino "for any DHCP messages unicast to the DHCP server" ([RFC 2132, seção 9.7](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.7)). As RFCs divergem sobre ela: a RFC 2132 diz que ela "may optionally be included in the DHCPACK and DHCPNAK messages", mas a tabela 3 da RFC 2131 diz "MUST" também ali, e "A DHCP server always returns its own address in the 'server identifier' option" ([RFC 2131, seção 2](https://www.rfc-editor.org/rfc/rfc2131.html#section-2)); a especificação do protocolo é a mais estrita.
+
+## Dados do fabricante e transbordo: opções 60, 43, 52, 66 e 67
+
+A opção 60, o **vendor class identifier** (identificador de classe do fabricante), "is used by DHCP clients to optionally identify the vendor type and configuration of a DHCP client", e "Servers that respond SHOULD only use option 43 to return the vendor-specific information to the client" ([RFC 2132, seção 9.13](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.13)). A opção 43, vendor specific information, é "an opaque object of n octets", e "The definition of this information is vendor specific": conteúdo que cada fabricante define ([RFC 2132, seção 8.4](https://www.rfc-editor.org/rfc/rfc2132.html#section-8.4)). Vários valores entram nela como "Encapsulated vendor-specific options", "a sequence of code/length/value fields of identical syntax to the DHCP options field", mas sem magic cookie (mesma seção). Esses códigos internos pertencem ao fabricante nomeado na 60, não à IANA, e é por isso que o [gerador de DHCP option 43](/tools/dhcp-option-43) pergunta primeiro o fabricante do access point; [Como um access point encontra sua controladora](/learn/dhcp-option-43-discovery) cobre as codificações.
+
+O segundo mecanismo toma emprestados os dois campos de nome quando "The parameters returned to a client may still exceed the space allocated to options in a DHCP message" ([RFC 2131, seção 3.5](https://www.rfc-editor.org/rfc/rfc2131.html#section-3.5)). A opção 52, o **option overload** (sobrecarga de opções), de tamanho 1, diz quais: 1 para "the 'file' field", 2 para "the 'sname' field", 3 para "both fields" ([RFC 2132, seção 9.3](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.3)). O campo de opções é lido primeiro, "The 'file' field MUST be interpreted next", depois 'sname', e cada campo emprestado "MUST be terminated by an 'end' option" (RFC 2131, seção 4.1). Os nomes deslocados vão para as opções 66 (servidor TFTP) e 67 (arquivo de boot), para uso "when the 'sname' field in the DHCP header has been used for DHCP options", e o mesmo para 'file' ([RFC 2132, seções 9.4 e 9.5](https://www.rfc-editor.org/rfc/rfc2132.html#section-9.4)).
+
+## O registro da IANA hoje
+
+Os códigos são atribuídos pela IANA ([RFC 2132, seção 10](https://www.rfc-editor.org/rfc/rfc2132.html#section-10)). O registro é "Dynamic Host Configuration Protocol (DHCP) and Bootstrap Protocol (BOOTP) Parameters", sub-registro "BOOTP Vendor Extensions and DHCP Options", marcado "Last Updated 2026-02-02" quando lido em 2026-10-13 ([IANA, BOOTP Vendor Extensions and DHCP Options](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)).
+
+Uma frase da RFC 2132 está desatualizada: "Option codes 128 to 254 (decimal) are reserved for site-specific options" (RFC 2132, seção 2). A RFC 3942 (novembro de 2004, "Updates: 2132") constatou que "options 1 - 127, is nearly used up" e decidiu: "The site-specific option codes 128 to 223 are hereby reclassified as publicly defined options.  This leaves 31 site-specific options, 224 to 254" ([RFC 3942, seções 1 e 4](https://www.rfc-editor.org/rfc/rfc3942.txt)). O registro hoje lista opções atribuídas ao longo de 128 a 223 e uma única linha "224-254 Reserved (Private Use)". Os códigos 249 e 252 não têm linha própria, então o significado deles vem da documentação de um fabricante, não da IANA. Opções posteriores, como o registro as lista:
+
+| Tag | Nome no registro | Significado no registro | Referência |
+|---|---|---|---|
+| 66 | Server-Name | "TFTP Server Name" | RFC 2132 |
+| 67 | Bootfile-Name | "Boot File Name" | RFC 2132 |
+| 119 | Domain Search | "DNS domain search list" | RFC 3397 |
+| 121 | Classless Static Route Option | "Classless Static Route Option" | RFC 3442 |
+| 150 | TFTP server address | em branco; duas linhas sem referência, "Etherboot" e "GRUB configuration path name", compartilham a tag | RFC 5859 |
+
+Contagem feita sobre o CSV do registro em 2026-10-13 (uma contagem daquela data, não um número que a IANA publique): dos 256 valores de tag, 157 têm alguma entrada nomeada, 65 estão Unassigned, 31 (224 a 254) são Reserved (Private Use) e 3 (175 a 177) estão "Tentatively Assigned - 2005-06-23".
+
+## Como ler uma captura ou um log de servidor
+
+Primeiro o envelope: UDP para a porta 67 no sentido do servidor e para a 68 no sentido do cliente; um cliente sem endereço envia de origem 0 para 255.255.255.255 ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131.html#section-4.1)). A resposta vai para o relay agent em 'giaddr' se estiver preenchido, senão em unicast para 'ciaddr' se estiver preenchido, senão em broadcast se a flag B estiver ligada, senão em unicast para 'chaddr' e 'yiaddr'; e "when 'giaddr' is zero, the server broadcasts any DHCPNAK messages to 0xffffffff" (mesma seção). Um DHCPOFFER em broadcast dentro de [um frame Ethernet](/learn/the-ethernet-frame-field-by-field) é essa regra em ação, não um defeito.
+
+Depois a parte fixa: 'op' é a direção, 'xid' casa a resposta com a requisição, 'chaddr' com htype 1 e hlen 6 é um endereço Ethernet, e 'sname' e 'file' guardam nomes a menos que a opção 52 esteja presente. Depois as opções: 63 82 53 63, e então tag, tamanho e dados, repetidos até o 255. Procure primeiro a 53, depois a 54, depois 50 e 55 numa requisição ou 1, 3, 6, 15, 51, 58 e 59 numa resposta.
+
+Um decodificador pode mostrar os nomes do registro: "Address Request" (50), "Address Time" (51), "DHCP Msg Type" (53), "DHCP Server Id" (54), "Parameter List" (55) (IANA). Um código desconhecido se consulta, não se adivinha: de 1 a 223 pode estar atribuído publicamente, de 224 a 254 significa o que a documentação do fabricante disser, e os códigos dentro da opção 43 pertencem ao fabricante.
+
+## Para lembrar
+
+- O BOOTP (RFC 951, 1985) é uma requisição em broadcast e uma resposta nas portas UDP 67 ('BOOTP server') e 68 ('BOOTP client'), num pacote fixo de 300 octetos que termina em 64 octetos de 'vend'.
+- O DHCP (RFC 2131, 1997) mantém o pacote; 'vend' vira um campo 'options' de tamanho variável, com pelo menos 312 octetos a aceitar, e 'flags' foi batizado pela RFC 1542 em 1993, não pelo DHCP.
+- O campo de opções abre com o cookie 99.130.83.99 e segue em tag, tamanho e dados; só pad (0) e end (255) não têm octeto de tamanho, e end vem por último.
+- A opção 53 está em toda mensagem DHCP, com os valores 1 a 8 da RFC 2132 e 9 a 18 de RFCs posteriores.
+- O cliente pede com 50, 55 e 61; o servidor responde com 1, 3, 6, 15, 51, 54, 58 e 59.
+- A opção 60 nomeia a classe do fabricante e a 43 carrega as sub-opções do próprio fabricante; a 52 toma emprestados 'sname' e 'file', e 66 e 67 carregam os nomes deslocados.
+- Desde a RFC 3942 (2004) só 224 a 254 são privadas; 249 e 252 não têm linha no registro, e um código desconhecido se consulta, não se adivinha.
+
+## Fontes
+
+- [RFC 951, Bootstrap Protocol (BOOTP), setembro de 1985: seções 2, 3 e 7.1 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc951.html)
+- [RFC 1497, BOOTP Vendor Information Extensions, agosto de 1993: a seção do magic cookie (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1497.txt)
+- [RFC 1542, Clarifications and Extensions for the Bootstrap Protocol, outubro de 1993: seção 2.2 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc1542.txt)
+- [RFC 2131, Dynamic Host Configuration Protocol, março de 1997: resumo, seções 2, 3, 3.1, 3.3, 3.5, 4.1, 4.2 e 4.4.5, tabelas 2 e 3 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2131.html)
+- [RFC 2132, DHCP Options and BOOTP Vendor Extensions, março de 1997: seções 2, 3.1, 3.2, 3.3, 3.5, 3.8, 3.14, 3.17, 8.4, 9.1 a 9.8, 9.10 a 9.14 e 10 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc2132.html)
+- [RFC 3942, Reclassifying Dynamic Host Configuration Protocol version 4 (DHCPv4) Options, novembro de 2004: seções 1 e 4 (lida em 2026-10-13)](https://www.rfc-editor.org/rfc/rfc3942.txt)
+- [IANA, Dynamic Host Configuration Protocol (DHCP) and Bootstrap Protocol (BOOTP) Parameters: sub-registros "BOOTP Vendor Extensions and DHCP Options" e "DHCP Message Type 53 Values", página marcada "Last Updated 2026-02-02" (lida em 2026-10-13)](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)
+- [RFC Editor, errata da RFC 2132: errata 486, verificada (lida em 2026-10-13)](https://www.rfc-editor.org/errata/rfc2132)

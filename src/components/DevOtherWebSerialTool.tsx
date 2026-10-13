@@ -160,8 +160,19 @@ const HlLine = memo(function HlLine({ text, os }: { text: string; os: OsKey }) {
 
 export default function DevOtherWebSerialTool() {
   const t = useTranslations("devOther.webserial");
+  // The one line shown when JavaScript is off (the tool pages' own wording, toolRequirements.noscriptHeading).
+  const tReq = useTranslations("toolRequirements");
   const locale = useLocale();
-  const supported = typeof navigator !== "undefined" && !!getSerial();
+  // Whether this browser has Web Serial: read AFTER mount, never while rendering (2026-10-13). The page is a static
+  // export, rendered where there is no navigator, so the server's HTML holds the "unsupported" branch; a browser that
+  // has Web Serial used to compute true on its first render and React reported the mismatch as hydration error #418
+  // on every load (found by check-p1b). Now the first client render matches the HTML (null: not yet known), and the
+  // effect decides; the unsupported notice shows only once the answer is a definite no.
+  const [supported, setSupported] = useState<boolean | null>(null);
+  useEffect(() => {
+    // The browser's answer, once, after hydration.
+    setSupported(!!getSerial());
+  }, []);
 
   // ---- connection ----
   const [status, setStatus] = useState<Status>("idle");
@@ -615,13 +626,25 @@ export default function DevOtherWebSerialTool() {
     }
   }, []);
 
-  if (!supported) {
+  // Not yet known (the server's render and the first client render alike): the same quiet frame the HTML holds, with
+  // nothing asserted either way, so hydration matches; with JavaScript off the frame is all a reader gets, so a
+  // <noscript> says why the console is not there (the static HTML used to show the "unsupported" notice to everyone,
+  // which was the wrong reason). Known unsupported: the notice.
+  if (supported !== true) {
     return (
       <div className="cidr-tool jwt-tool">
-        <p className="cidr-error" role="alert">
-          {t("unsupported")}
-        </p>
-        <p className="cipher-note">{t("unsupportedHint")}</p>
+        {supported === false ? (
+          <>
+            <p className="cidr-error" role="alert">
+              {t("unsupported")}
+            </p>
+            <p className="cipher-note">{t("unsupportedHint")}</p>
+          </>
+        ) : (
+          <noscript>
+            <p className="cipher-note">{tReq("noscriptHeading")}</p>
+          </noscript>
+        )}
       </div>
     );
   }

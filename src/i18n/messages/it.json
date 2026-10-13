@@ -889,7 +889,7 @@
     "backHome": "Torna alla home"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann è <r>Senior Technical Instructor e advisor</r> presso <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann è <r>Senior Technical Instructor</r> presso <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Creato da Rodolfo Nützmann con CONCORD",
     "colophon": "Come è stato costruito",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "L'istruttore",
-    "role": "Senior Technical Instructor e advisor presso Red Education",
+    "role": "Senior Technical Instructor presso Red Education",
     "lede": "Formazione su reti e sicurezza tenuta da chi ha trascorso la carriera sul fronte dell'implementazione, non solo sulle slide. Con base a São Paulo, insegnando in tutto il mondo, in portoghese e inglese.",
     "now": {
       "title": "Cosa faccio adesso",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron ed Enterasys, dal 1996 al 2000",
       "s1Body": "La carriera formale iniziò nel 1996 alla Cabletron Systems, all'epoca un fornitore leader di apparecchiature di rete con sede a Rochester, New Hampshire. Nell'arco di quattro anni e mezzo, il ruolo comprese field engineering e supporto post-vendita, systems engineering e prevendita, e, dal 1997, formazione certificata. L'argomento era la LAN e la WAN aziendale dell'epoca: switch, router, Wi-Fi e WLAN, gestione della rete, NAC e UAC, e firewall a ispezione di stato. Nel 2000, Cabletron si riorganizzò in quattro aziende, e la parte che riguardava questa carriera diventò Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, dal 2000 al 2002",
-      "s2Body": "Il capitolo successivo si svolse in California. Riverstone Networks, uno spin-off di Cabletron che produceva apparecchiature per reti metropolitane, comportò un trasferimento a Santa Clara con un visto di lavoro H1-B1. Il ruolo fu ingegnere di supporto al prodotto di livello III e coordinatore della gestione della conoscenza: escalation tecnica di terzo livello, riproduzione di scenari cliente in laboratorio, test di regressione e verifica dei bug, e la costruzione della knowledge base su cui si appoggiava il resto del supporto. Le tecnologie erano la spina dorsale del mondo degli operatori e del metro dei primi anni 2000: Gigabit Ethernet, MPLS, switching e routing metropolitani, e BGP. Questo periodo produsse anche un traguardo formale: come parte della pratica del visto, una valutazione negli Stati Uniti nel 2001 riconobbe una formazione equivalente a una laurea in informatica e una laurea in economia aziendale.",
+      "s2Body": "Il capitolo successivo si svolse in California. Riverstone Networks, uno spin-off di Cabletron che produceva apparecchiature per reti metropolitane, comportò un trasferimento a Santa Clara, prima con un trasferimento intra-aziendale L-1 e poi, nel 2001 e nel 2002, con un visto di lavoro H-1B. Il ruolo fu ingegnere di supporto al prodotto di livello III e coordinatore della gestione della conoscenza: escalation tecnica di terzo livello, riproduzione di scenari cliente in laboratorio, test di regressione e verifica dei bug, e la costruzione della knowledge base su cui si appoggiava il resto del supporto. Le tecnologie erano la spina dorsale del mondo degli operatori e del metro dei primi anni 2000: Gigabit Ethernet, MPLS, switching e routing metropolitani, e BGP. Questo periodo produsse anche un traguardo formale: come parte della pratica del visto, una valutazione negli Stati Uniti nel 2001 riconobbe una formazione equivalente a una laurea in informatica e una laurea in economia aziendale.",
       "s3Title": "Cisco Systems, Brasília, dal 2003 al 2004",
       "s3Body": "Di ritorno in Brasile, e ingaggiato tramite Cisco Professional Services, il ruolo si spostò verso il rapporto con il cliente nella sua forma più esigente. Come high-touch operations manager e punto di contatto unico, il lavoro fu la gestione della soddisfazione del cliente nel post-vendita per due delle maggiori entità federali del Brasile, SERPRO, l'agenzia di elaborazione dati del governo, ed ECT-Correios, le poste nazionali. La superficie tecnica era fatta di switch e router Catalyst, firewall PIX, e bilanciatori di carico CSS, CSM e ACE, ma il vero lavoro era la gestione delle escalation e tenere in funzione senza intoppi un'infrastruttura nazionale critica.",
       "s4Title": "Di nuovo Enterasys, poi Juniper, dal 2005 al 2010",
@@ -1038,7 +1038,7 @@
       "subtitle": "Formazione ufficiale a tempo pieno, erogata in tutto il mondo, e accanto la consulenza sulle decisioni che hanno conseguenze.",
       "intro": "Nel 2020, un filo presente per tutta la carriera diventò l'intero tessuto. Dopo due decenni in cui l'insegnamento accompagnò ogni ruolo, la formazione diventò il lavoro stesso: a tempo pieno, ufficiale, istruzione certificata offerta a professionisti e team in tutto il mondo. Ciò che distingue questa epoca non è solo il focus, ma l'espansione deliberata e datata attraverso le piattaforme, ciascuna aggiunta sopra una profonda esperienza sul campo, e non al suo posto.",
       "s1Title": "A tempo pieno, per vocazione",
-      "s1Body": "Dal 2020, il lavoro è consistito nel tenere formazione ufficiale condotta da istruttore, da remoto e in presenza, in portoghese e inglese, per platee di tutto il mondo. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile. Le cittadinanze brasiliana e tedesca, insieme all'autorizzazione di viaggio per gli Stati Uniti e il Regno Unito, rendono pratica quella portata globale: idoneità senza restrizioni a lavorare nell'Unione Europea e nel Mercosur, e la libertà di andare dove si trova l'aula.",
+      "s1Body": "Dal 2020, il lavoro è consistito nel tenere formazione ufficiale condotta da istruttore, da remoto e in presenza, in portoghese e inglese, per platee di tutto il mondo. L'erogazione raggiunge Australia, Singapore, India, Europa centrale, Stati Uniti e Brasile. Le cittadinanze brasiliana e tedesca, insieme a un visto valido per gli Stati Uniti, rendono pratica quella portata globale: il diritto di viaggiare, vivere e lavorare nell'Unione Europea e ovunque un passaporto tedesco o brasiliano sia accettato senza visto, e la libertà di andare dove si trova l'aula.",
       "s2Title": "F5, fin dall'inizio",
       "s2Body": "F5 è l'àncora fin dall'inizio di questa epoca, basata su un lavoro con BIG-IP che risale a più di un decennio fa. Il curriculum autorizzato copre l'intero catalogo BIG-IP condotto da istruttore: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, sviluppo di iRules, automazione e troubleshooting, da corsi di un giorno a corsi di quattro giorni. Accanto all'insegnamento corre un complemento pratico: ambienti di laboratorio F5 BIG-IP gestiti, così che la pratica abbia sempre un posto vero in cui svolgersi.",
       "s3Title": "L'espansione, piattaforma dopo piattaforma",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Due anni a Santa Clara, ai confini delle reti degli operatori e metropolitane.",
-      "intro": "L'unico capitolo di questa carriera situato interamente fuori dal Brasile. Riverstone Networks, un produttore di apparecchiature per reti metropolitane con sede a Santa Clara, California, comportò un trasferimento negli Stati Uniti con un visto di lavoro H1-B1. Riverstone aveva una discendenza propria insolita: originariamente un'azienda chiamata Yago, acquisita da Cabletron intorno al 1998, e riapparsa come azienda indipendente tramite uno spin-off nel 2001. Fu in seguito acquisita da Alcatel-Lucent nel 2006.",
+      "intro": "L'unico capitolo di questa carriera situato interamente fuori dal Brasile. Riverstone Networks, un produttore di apparecchiature per reti metropolitane con sede a Santa Clara, California, comportò un trasferimento negli Stati Uniti, prima con un trasferimento intra-aziendale L-1 e poi, nel 2001 e nel 2002, con un visto di lavoro H-1B. Riverstone aveva una discendenza propria insolita: originariamente un'azienda chiamata Yago, acquisita da Cabletron intorno al 1998, e riapparsa come azienda indipendente tramite uno spin-off nel 2001. Fu in seguito acquisita da Alcatel-Lucent nel 2006.",
       "s1Title": "Supporto di livello III e gestione della conoscenza",
       "s1Body": "Il ruolo ebbe due titoli nell'arco di due anni: ingegnere di supporto al prodotto e coordinatore della gestione della conoscenza. Come specialista del supporto tecnico di livello III, il lavoro fu l'escalation di terzo livello, la riproduzione di scenari cliente in laboratorio, i test di regressione e la verifica dei bug. Come coordinatore della gestione della conoscenza, consistette nel costruire e organizzare la knowledge base su cui si appoggiava il resto del supporto, oltre al supporto al marketing di prodotto e alla formazione interna. Questo fu il lavoro di supporto tecnico più profondo della carriera, al livello in cui i problemi più difficili vengono inoltrati.",
       "s2Title": "Il mondo delle reti metropolitane",
       "s2Body": "Le tecnologie erano la spina dorsale dell'era degli operatori e del metro dei primi anni 2000: Gigabit Ethernet, MPLS, switching e routing metropolitani, e routing IP geografico, incluso BGP. Lavorare nel supporto di terzo livello del fornitore significava vedere come questi sistemi si comportavano ai limiti, in condizioni che affiorano solo in produzione su larga scala. Produsse anche istruzione formale: formazione su concetti, funzionalità e configurazione di Riverstone, e formazione sull'identificazione dei problemi nel supporto al cliente e sulle procedure di escalation.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Valutazione di equivalenza formativa negli Stati Uniti che riconosce una formazione equivalente a una laurea in informatica e una laurea in economia aziendale, completata nel 2001 come parte della pratica del visto H1-B1.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Valutazione di equivalenza formativa negli Stati Uniti che riconosce una formazione equivalente a una laurea in informatica e una laurea in economia aziendale, completata nel 2001 come parte della pratica del visto H-1B.",
       "lineageTitle": "La discendenza societaria",
       "lineageDesc": "Riverstone Networks nacque come un'azienda chiamata Yago, fu acquisita da Cabletron Systems intorno al 1998, riapparve come azienda indipendente tramite uno spin-off nel 2001, e fu acquisita da Alcatel-Lucent nel 2006."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Standard e framework",
     "standardsLede": "Ogni strumento qui implementa una specifica pubblicata, non un'ipotesi. I decodificatori e i calcolatori sono costruiti sui documenti che ne definiscono i formati e ancorati ai vettori di test che quei documenti pubblicano, così che ogni risposta è verificata rispetto alla fonte di verità e non rispetto a sé stessa.",
     "specsLabel": "Le specifiche",
-    "specsBody": "I JSON Web Token seguono la RFC 7519, con firme e algoritmi nelle RFC 7515 e 7518; PKCE è la RFC 7636; Base64 e le sue varianti sono la RFC 4648; gli UUID sono la RFC 9562 (che ha reso obsoleta la RFC 4122 nel 2024 e include i propri vettori di test); HMAC è la RFC 2104, sulla famiglia SHA standardizzata in FIPS 180-4 e FIPS 202; i certificati X.509 sono la RFC 5280; IPv4 e la notazione CIDR sono la RFC 4632; l'indirizzamento IPv6 e la sua forma testuale canonica sono le RFC 4291 e RFC 5952; e il decodificatore di cipher suite si basa sul registro ufficiale IANA TLS Cipher Suites, incrociato con le specifiche di TLS 1.3 e 1.2 (RFC 8446 e 5246), le regole di aggiornamento del registro che fissano la colonna “Recommended” (RFC 8447) e il divieto di RC4 (RFC 7465). Dove un registro è l'autorità, i suoi dati sono incorporati direttamente anziché ribattuti.",
+    "specsBody": "I JSON Web Token seguono la RFC 7519, con firme e algoritmi nelle RFC 7515 e 7518; PKCE è la RFC 7636; Base64 e le sue varianti sono la RFC 4648; gli UUID sono la RFC 9562 (che ha reso obsoleta la RFC 4122 nel 2024 e include i propri vettori di test); HMAC è la RFC 2104, sulla famiglia SHA standardizzata in FIPS 180-4 e FIPS 202; i certificati X.509 sono la RFC 5280; IPv4 è la RFC 791 e la notazione CIDR è la RFC 4632; l'indirizzamento IPv6 e la sua forma testuale canonica sono le RFC 4291 e RFC 5952; e il decodificatore di cipher suite si basa sul registro ufficiale IANA TLS Cipher Suites, incrociato con le specifiche di TLS 1.3 e 1.2 (RFC 8446 e 5246), le regole di aggiornamento del registro che fissano la colonna “Recommended” (RFC 8447) e il divieto di RC4 (RFC 7465). Dove un registro è l'autorità, i suoi dati sono incorporati direttamente anziché ribattuti.",
     "vectorsLabel": "Vettori di riferimento",
     "vectorsBody": "Ogni strumento include un insieme di vettori di riferimento: input noti abbinati a output di correttezza nota, presi dalle RFC e dagli enti di standardizzazione pertinenti. Vengono eseguiti a ogni build, così che un refactoring che cambia in sordina una risposta fa fallire la build invece di andare in produzione.",
     "owaspLabel": "OWASP",
@@ -1373,7 +1373,7 @@
   "contribute": {
     "eyebrow": "Traduzioni",
     "title": "Aiuta a migliorare le traduzioni",
-    "lede": "Ogni lingua qui oltre all'inglese è una prima bozza fatta dalla macchina. Se ne parli una e noti qualcosa di sbagliato o goffo, le tue correzioni sono benvenute. Ecco come inviarle.",
+    "lede": "Il portoghese brasiliano qui è scritto con l'IA e revisionato gradualmente; ogni altra lingua oltre all'inglese è una prima bozza fatta dalla macchina. Se ne parli una e noti qualcosa di sbagliato o goffo, le tue correzioni sono benvenute. Ecco come inviarle.",
     "howTitle": "Come contribuire",
     "howBody": "L'inglese è la fonte di verità, e ogni altra lingua è tradotta da esso, quindi gli errori sono possibili. Ogni pacchetto lingua è un singolo file di testo di frasi etichettate. Scarica quello che vuoi migliorare, cambia solo il testo dopo ogni etichetta e lascia le etichette e tutto ciò che è tra parentesi graffe esattamente com'è. Poi invia il file modificato via e-mail e indica la lingua. Ogni invio viene revisionato a mano.",
     "downloadHeading": "Pacchetti lingua",
@@ -1449,7 +1449,7 @@
     "complete": "Automatica, completa",
     "partial": "Automatica, in corso",
     "explainTitle": "Come sono contrassegnate le traduzioni",
-    "explainBody": "L'inglese e il portoghese brasiliano sono scritti e revisionati da una persona. La maggior parte delle altre lingue è tradotta automaticamente e contrassegnata in base al suo avanzamento: ambra quando una lingua copre l'intero sito, giallo finché i contenuti più recenti sono ancora in inglese e in fase di aggiornamento. Le lingue contrassegnate in rosso non hanno ancora una traduzione e per ora sono mostrate in inglese. Le pagine tradotte automaticamente riportano anche un breve avviso e sei invitato a migliorarle.",
+    "explainBody": "L'inglese è la fonte: scritto con l'IA e pubblicato solo quando una persona decide che debba esserlo. Anche il portoghese brasiliano è scritto con l'IA e revisionato gradualmente; le altre lingue sono tradotte automaticamente. Ogni lingua è contrassegnata in base al suo avanzamento: blu quando copre l'intero sito, giallo finché i contenuti più recenti sono ancora in inglese e in fase di aggiornamento, rosso quando non ha ancora una traduzione e per ora è mostrata in inglese. Tutte le lingue tranne l'inglese riportano un breve avviso e sei invitato a migliorarle.",
     "stub": "Non ancora tradotto"
   },
   "changelog": {
@@ -1534,7 +1534,7 @@
     "bingoSub": "La tradizione impone di infilare la parola bingo nella riunione, con nonchalance.",
     "shuffling": "mescolo le buzzword…",
     "creditLinkLabel": "Il buzzword bingo",
-    "creditRest": " è una gloriosa tradizione da ufficio: inventato alla Silicon Graphics nel 1993 da Tom Davis e immortalato da una striscia di Dilbert nel 1994.",
+    "creditRest": " è una gloriosa tradizione da ufficio: battezzato alla Silicon Graphics all'inizio del 1993 da Tom Davis e Seth Katz, e immortalato da una striscia di Dilbert nel 1994.",
     "devFunTitle": "Torna a /dev/fun",
     "types": {
       "videocall": {

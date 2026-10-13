@@ -11981,7 +11981,7 @@
   },
   "footer": {
     "guide": "Site Guide",
-    "redEducation": "Rodolfo Nützmann is a <r>Senior Technical Instructor and Advisor</r> at <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann is a <r>Senior Technical Instructor</r> at <b>Red Education</b>",
     "builtWith": "Built by Rodolfo Nützmann with CONCORD",
     "colophon": "How this was built",
     "api": "API reference",
@@ -12045,7 +12045,7 @@
   },
   "about": {
     "eyebrow": "About me",
-    "role": "Senior Technical Instructor and Advisor at Red Education",
+    "role": "Senior Technical Instructor at Red Education",
     "lede": "Network and security training, delivered by a professional who has spent half of a thirty-year career on the hands-on side - implementation and troubleshooting - and the other half studying, designing, and teaching resilient, secure network communications.",
     "now": {
       "title": "What I do",
@@ -12057,7 +12057,7 @@
       "languagesLabel": "Languages",
       "languagesValue": "Portuguese (native), English (fluent), Spanish (basic), German (basic)",
       "permitsLabel": "Travel permits",
-      "permitsValue": "Valid, current European Union and United States travel permits",
+      "permitsValue": "German and Brazilian citizen: the European Union, and wherever either passport is accepted without a visa; a valid United States visa",
       "citizenshipsLabel": "Citizenships",
       "citizenshipsValue": "Brazilian and German",
       "offersLabel": "Offers",
@@ -12432,7 +12432,7 @@
       "s1Title": "Cabletron and Enterasys, 1996 to 2000",
       "s1Body": "The formal career began in 1996 at Cabletron Systems, then a leading networking equipment vendor based in Rochester, New Hampshire, as a field network engineer intern - the first assignment being to read the company's 1992 guide to local area networking cover to cover. The internship became a four-year full-time position. Over four and a half years in total, the role spanned field engineering and post-sales support, systems engineering and pre-sales, and, from 1997, certified instruction. The subject matter was the enterprise LAN and WAN of the era: switches, routers, Wi-Fi and WLAN, network management, NAC and UAC, and stateful-inspection firewalls. Cabletron was also Cisco's largest reseller at the time, through the OEM line that integrated Cisco IOS and Cisco routing into the MMAC hubs, and I was one of the experts for it: the feature explanations and configuration examples I carried to customers came from the internal documentation CDs Cabletron sent its offices, the ones we called \"Jeopardize\" discs for the warning on them that distributing the CD or its confidential contents would seriously jeopardize one's job. In 2000, Cabletron reorganized into four companies, and the part this career touched became Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 to 2002",
-      "s2Body": "The next chapter was in California. Riverstone Networks, a Cabletron spin-off building metropolitan-area network equipment, brought a move to Santa Clara on an H1-B1 work visa. The role was Tier-III product support engineer and knowledge-management coordinator: third-level technical escalation, recreating customer scenarios in the lab, regression testing and bug verification, and building the knowledge base that the rest of support relied on. The technologies were the backbone of the early-2000s carrier and metro world: Gigabit Ethernet, MPLS, metropolitan-area switching and routing, and BGP. This period also produced a formal milestone: as part of the visa process, a United States evaluation in 2001 recognized an educational background equivalent to a bachelor's degree in computer science and a bachelor's degree in business administration.",
+      "s2Body": "The next chapter was in California. Riverstone Networks, a Cabletron spin-off building metropolitan-area network equipment, brought a move to Santa Clara, first on an L-1 intracompany transfer and then, in 2001 and 2002, on an H-1B work visa. The role was Tier-III product support engineer and knowledge-management coordinator: third-level technical escalation, recreating customer scenarios in the lab, regression testing and bug verification, and building the knowledge base that the rest of support relied on. The technologies were the backbone of the early-2000s carrier and metro world: Gigabit Ethernet, MPLS, metropolitan-area switching and routing, and BGP. This period also produced a formal milestone: as part of the visa process, a United States evaluation in 2001 recognized an educational background equivalent to a bachelor's degree in computer science and a bachelor's degree in business administration.",
       "s3Title": "Cisco Systems, Brasília, 2003 to 2004",
       "s3Body": "Back in Brazil, and contracted through Cisco Professional Services, the role shifted toward the customer relationship at its most demanding. As a high-touch operations manager and single point of contact, the work was post-sales customer-satisfaction management for two of Brazil's largest federal entities, SERPRO, the government's data-processing agency, and ECT-Correios, the national postal service. The technical surface was Catalyst switches and routers, PIX firewalls, and CSS, CSM, and ACE load balancers, but the real work was escalation management and keeping critical national infrastructure running smoothly.",
       "s4Title": "Enterasys again, then Juniper, 2005 to 2010",
@@ -12451,7 +12451,7 @@
       "subtitle": "Full-time official teaching delivered globally, and beside it advisory on the decisions that carry consequences.",
       "intro": "In 2020, a career-long thread became the whole cloth. After two decades where teaching accompanied every role, training became the work itself: full-time, official, certified instruction delivered to professionals and teams across the world. The first year set the pace. Qualifying to teach an official course means attending it as a student, holding its certification, and then passing the instructor qualification; that year it was done six times, covering nine courses, followed by thirteen deliveries in thirty-three days, 264 hours in front of 51 students. What makes this era distinct is not just the focus, but the deliberate, dated expansion across platforms, each one added on top of deep practitioner experience rather than in place of it.",
       "s1Title": "Full-time, by vocation",
-      "s1Body": "Since 2020, the work has been delivering official instructor-led training, remotely and in person, in Portuguese and English, to audiences around the globe. The delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil. Brazilian and German citizenship, together with travel clearance to the United States and the United Kingdom, make that global reach practical: unrestricted eligibility to work across the European Union and Mercosur, and the freedom to go where the classroom is.",
+      "s1Body": "Since 2020, the work has been delivering official instructor-led training, remotely and in person, in Portuguese and English, to audiences around the globe. The delivery reaches Australia, Singapore, India, Central Europe, the United States, and Brazil. Brazilian and German citizenship, together with a valid United States visa, make that global reach practical: the right to travel, live and work across the European Union and wherever a German or a Brazilian passport is accepted without a visa, and the freedom to go where the classroom is.",
       "s2Title": "F5, from the start",
       "s2Body": "F5 has been the anchor since the beginning of this era, building on work with BIG-IP that reaches back over a decade. The authorized curriculum covers the full BIG-IP instructor-led catalog: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules development, automation, and troubleshooting, ranging from one-day to four-day courses. Alongside the teaching runs a practical complement: managed F5 BIG-IP lab environments, so that hands-on practice always has somewhere real to happen.",
       "s3Title": "The expansion, platform by platform",
@@ -12514,12 +12514,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Two years in Santa Clara, at the carrier and metropolitan-network edge.",
-      "intro": "The one chapter of this career set entirely outside Brazil. Riverstone Networks, a metropolitan-area-network equipment vendor based in Santa Clara, California, brought a move to the United States on an H1-B1 work visa. Riverstone had an unusual lineage of its own: originally a company called Yago, acquired by Cabletron around 1998, and re-emerged as an independent company through a spin-off in 2001. It was later acquired by Alcatel-Lucent in 2006.",
+      "intro": "The one chapter of this career set entirely outside Brazil. Riverstone Networks, a metropolitan-area-network equipment vendor based in Santa Clara, California, brought a move to the United States, first on an L-1 intracompany transfer and then, in 2001 and 2002, on an H-1B work visa. Riverstone had an unusual lineage of its own: originally a company called Yago, acquired by Cabletron around 1998, and re-emerged as an independent company through a spin-off in 2001. It was later acquired by Alcatel-Lucent in 2006.",
       "s1Title": "Tier-III support and knowledge management",
       "s1Body": "The role carried two titles across two years: product support engineer and knowledge-management coordinator. As a Tier-III technical-support specialist, the work was third-level escalation, recreating customer scenarios in the lab, regression testing, and bug verification. As knowledge-management coordinator, it was building and organizing the knowledge base the rest of support relied on, alongside product-marketing support and internal training. This was the deepest technical-support work of the career, at the level where the hardest problems escalate.",
       "s2Title": "The metropolitan-network world",
       "s2Body": "The technologies were the backbone of the early-2000s carrier and metro era: Gigabit Ethernet, MPLS, metropolitan-area switching and routing, and wide-area IP routing including BGP. Working at the vendor's third-level support meant seeing how these systems behaved at the edges, under the conditions that only surface in production at scale. It also delivered formal instruction: Riverstone concepts, features, and configuration training, and customer-support issue-identification and escalation-procedure training.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. United States educational-equivalency evaluation recognizing a background equivalent to a bachelor's degree in computer science and a bachelor's degree in business administration, completed in 2001 as part of the H1-B1 visa process.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. United States educational-equivalency evaluation recognizing a background equivalent to a bachelor's degree in computer science and a bachelor's degree in business administration, completed in 2001 as part of the H-1B visa process.",
       "lineageTitle": "The corporate lineage",
       "lineageDesc": "Riverstone Networks began as a company called Yago, was acquired by Cabletron Systems around 1998, re-emerged as an independent company through a spin-off in 2001, and was acquired by Alcatel-Lucent in 2006."
     },
@@ -13213,7 +13213,7 @@
     "standardsTitle": "Standards and frameworks",
     "standardsLede": "Every tool here implements a published specification, not a guess. The decoders and calculators are built against the documents that define their formats, and pinned to the test vectors those documents publish, so each answer is checked against the source of truth rather than against itself.",
     "specsLabel": "The specifications",
-    "specsBody": "JSON Web Tokens follow RFC 7519, with signatures and algorithms in RFC 7515 and 7518; PKCE is RFC 7636; Base64 and its siblings are RFC 4648; UUIDs are RFC 9562 (which obsoleted RFC 4122 in 2024 and ships its own test vectors); HMAC is RFC 2104, over the SHA family standardized in FIPS 180-4 and FIPS 202; X.509 certificates are RFC 5280; IPv4 and CIDR notation are RFC 4632; IPv6 addressing and its canonical text form are RFC 4291 and RFC 5952; and the cipher-suite decoder is driven by the official IANA TLS Cipher Suites registry, cross-referenced with the TLS 1.3 and 1.2 specifications (RFC 8446 and 5246), the registry-update rules that set the \"Recommended\" column (RFC 8447), and the RC4 prohibition (RFC 7465). Where a registry is the authority, its data is vendored directly rather than retyped.",
+    "specsBody": "JSON Web Tokens follow RFC 7519, with signatures and algorithms in RFC 7515 and 7518; PKCE is RFC 7636; Base64 and its siblings are RFC 4648; UUIDs are RFC 9562 (which obsoleted RFC 4122 in 2024 and ships its own test vectors); HMAC is RFC 2104, over the SHA family standardized in FIPS 180-4 and FIPS 202; X.509 certificates are RFC 5280; IPv4 is RFC 791 and CIDR notation is RFC 4632; IPv6 addressing and its canonical text form are RFC 4291 and RFC 5952; and the cipher-suite decoder is driven by the official IANA TLS Cipher Suites registry, cross-referenced with the TLS 1.3 and 1.2 specifications (RFC 8446 and 5246), the registry-update rules that set the \"Recommended\" column (RFC 8447), and the RC4 prohibition (RFC 7465). Where a registry is the authority, its data is vendored directly rather than retyped.",
     "vectorsLabel": "Golden vectors",
     "vectorsBody": "Each tool ships with a set of golden vectors: known inputs paired with known-correct outputs, taken from the relevant RFCs and standards bodies. They run on every build, so a refactor that quietly changes an answer fails the build instead of shipping.",
     "owaspLabel": "OWASP",
@@ -13247,12 +13247,13 @@
   },
   "machineTranslation": {
     "notice": "This page was translated by machine and may contain mistakes.",
+    "noticeWrittenWithAi": "This site's Portuguese is written with AI and reviewed gradually. This page may contain mistakes.",
     "cta": "Help improve it"
   },
   "contribute": {
     "eyebrow": "Translations",
     "title": "Help improve the translations",
-    "lede": "Every language here other than English is a machine-made first draft. If you speak one of them and notice something wrong or clumsy, your corrections are genuinely welcome. Here is how to send them.",
+    "lede": "Brazilian Portuguese here is written with AI and reviewed gradually; every other language but English is a machine-made first draft. If you speak one of them and notice something wrong or clumsy, your corrections are genuinely welcome. Here is how to send them.",
     "howTitle": "How to contribute",
     "howBody": "English is the source of truth, and every other language is translated from it, so mistakes are possible. Each language pack is a single text file of labelled phrases. Download the one you want to improve, change only the text after each label, and leave the labels and anything inside curly braces exactly as they are. Then email the edited file and mention the language. Every submission is reviewed by hand.",
     "downloadHeading": "Language packs",
@@ -13280,7 +13281,7 @@
       },
       "translation": {
         "title": "Improve a translation",
-        "desc": "Every language but English is a machine-made first draft. Download a pack, correct it, send it back.",
+        "desc": "Brazilian Portuguese is written with AI and reviewed gradually; every other language but English is a machine-made first draft. Download a pack, correct it, send it back.",
         "cta": "See how"
       },
       "code": {
@@ -13416,7 +13417,7 @@
     "complete": "Machine, complete",
     "partial": "Machine, in progress",
     "explainTitle": "How translations are marked",
-    "explainBody": "English is written and reviewed by a person. Brazilian Portuguese and the other languages are machine-translated, and marked by how far along they are: blue once a language covers the whole site, yellow while newer content is still in English and catching up. Languages marked red have no translation yet and are shown in English for now. Machine-translated pages also carry a short notice, and you are welcome to help improve any of them.",
+    "explainBody": "English is the source: written with AI, and published only when a person decides it should be. Brazilian Portuguese is written with AI too and reviewed gradually; the other languages are machine-translated. Each language is marked by how far along it is: blue once it covers the whole site, yellow while newer content is still in English and catching up, red when it has no translation yet and is shown in English for now. Every language but English carries a short notice, and you are welcome to help improve any of them.",
     "stub": "Not translated yet"
   },
   "changelog": {
@@ -13652,7 +13653,7 @@
     "bingoSub": "Tradition says you must now work the word bingo into the meeting, casually.",
     "shuffling": "shuffling the buzzwords…",
     "creditLinkLabel": "Buzzword bingo",
-    "creditRest": " is a proud office tradition: invented at Silicon Graphics in 1993 by Tom Davis and immortalized by a Dilbert strip in 1994.",
+    "creditRest": " is a proud office tradition: named at Silicon Graphics in early 1993 by Tom Davis and Seth Katz, and immortalised by a Dilbert strip in 1994.",
     "types": {
       "videocall": {
         "name": "Any video call",
@@ -14392,7 +14393,7 @@
     "blurb": {
       "amiga": "Kickstart's insert-disk screen: the animated hand offering a Workbench floppy, the friendliest boot in computing.",
       "amipro": "Samna's Amí was the first fully functional Windows word processor, a year ahead of Word for Windows. Lotus bought Samna in 1990; the colourful SmartIcons were its signature.",
-      "aol": "For millions the internet WAS the blue screen and the friendly voice: You've Got Mail. Quantum's Q-Link became AOL in 1991 and mailed the world a floppy.",
+      "aol": "For millions the internet WAS the blue screen and the friendly voice: You've Got Mail. Quantum, the company behind Q-Link, renamed its service America Online in 1989, and later mailed the world a floppy.",
       "apple1": "Wozniak's first: no OS, just the 256-byte WozMon. Press Reset and it prints a backslash and a blinking cursor, ready for hex.",
       "appleii": "The enhanced //e that ran a generation of US schools. Its ROM shows Apple //e, then the Applesoft ] prompt.",
       "appleii1977": "The original. No autostart: it comes up in Wozniak's monitor at a * prompt; Ctrl-B enters Integer BASIC and its > prompt.",
@@ -14752,7 +14753,7 @@
       },
       "languages": {
         "h": "Languages",
-        "b": "The interface is available in several languages; switch using the language control in the header. English and Brazilian Portuguese are authored directly. Where a phrase has not yet been translated for a given language, the English text is shown for that phrase so nothing is ever missing."
+        "b": "The interface is available in several languages; switch using the language control in the header. English is the source, written with AI and published only when a person decides it should be; Brazilian Portuguese is written with AI too and reviewed gradually; the other languages are machine-translated. Where a phrase has not yet been translated for a given language, the English text is shown for that phrase so nothing is ever missing."
       },
       "offline": {
         "h": "Offline use",
@@ -15026,9 +15027,9 @@
         "proto": "Protocol"
       },
       "flags": {
-        "synNoSynAck": "{syn} SYN packets with no SYN-ACK in reply - connections that were attempted but never completed a handshake.",
+        "synNoSynAck": "{syn, plural, one {# SYN packet with no SYN-ACK in reply: a connection that was attempted but never completed a handshake.} other {# SYN packets with no SYN-ACK in reply: connections that were attempted but never completed a handshake.}}",
         "synImbalance": "SYN packets ({syn}) far outnumber SYN-ACKs ({synack}) - worth checking whether a host is scanning or a service is unreachable.",
-        "highRst": "{rst} RST packets, a high share of the capture - connections are being reset often.",
+        "highRst": "{rst, plural, one {# RST packet} other {# RST packets}}, a high share of the capture: connections are being reset often.",
         "truncated": "The file ended mid-record; the last packet was incomplete and parsing stopped there.",
         "singleConversation": "The whole capture is a single conversation - a targeted capture, or a filter left applied."
       },
@@ -23172,6 +23173,8 @@
     "articleComing": "Article coming",
     "preparingTitle": "Study guide in preparation",
     "preparingBody": "The official blueprint for this exam is being mapped to the site's articles, tools, and manual pages. In the meantime, the exam's official page is linked above.",
+    "archivedTitle": "Archived exam record: no objective map",
+    "archivedBody": "This exam can no longer be sat, and its objectives were never mapped here; the record stays for reference, with the exam's official page linked above.",
     "factsQuestions": "Format",
     "factsDuration": "Time limit",
     "factsMinutes": "{minutes} minutes",
@@ -23226,12 +23229,12 @@
   },
   "trainingCta": {
     "eyebrow": "Instructor-led training",
-    "body": "Prefer to learn with an instructor? I teach, alongside other authorized instructors, these courses live at <redu>Red Education</redu>, a global Authorized Training Center.",
+    "body": "Prefer to learn with an instructor? I teach official {vendors} courses live at <redu>Red Education</redu>, a global Authorized Training Center, alongside other authorized instructors.",
     "link": "Explore instructor-led training"
   },
   "redEducation": {
     "metaTitle": "Red Education - the Authorized Training Center where Rodolfo Nützmann teaches",
-    "metaDescription": "Red Education is a global Authorized Training Center for the world's leading network and security vendors, with more than 100,000 students trained across 132 countries. Rodolfo Nützmann teaches there as a Senior Instructor.",
+    "metaDescription": "Red Education is a global Authorized Training Center for the world's leading network and security vendors, with more than 120,000 learners trained across 132 countries. Rodolfo Nützmann teaches there as a Senior Technical Instructor.",
     "eyebrow": "Authorized training",
     "title": "Red Education",
     "lede": "A global Authorized Training Center for the world's leading network and security vendors - and the home of Rodolfo Nützmann's classroom since 2021.",
@@ -23258,7 +23261,7 @@
     "awardF5": "Best F5 ATC Award 2020/21, with a 98% customer satisfaction rating on F5 courses.",
     "awardFortinet": "Fortinet Training Institute ATC Partner of the Year for APAC (2026 ATC Awards).",
     "rodolfoTitle": "Rodolfo at Red Education",
-    "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
+    "rodolfoBody": "Rodolfo Nützmann has taught through Red Education since 2021, and full-time as a Senior Technical Instructor since 2023. Through Red Education, he delivers authorized instructor-led training for F5, Fortinet, Netskope, and Extreme Networks to students around the world.",
     "caseStudyNote": "Red Education's own case study on upskilling 43 engineers at a global IT firm names Rodolfo among the instructors who delivered the training.",
     "caseStudyLink": "Read the case study",
     "linkTraining": "See the courses taught by Rodolfo",
@@ -23284,7 +23287,7 @@
     "benchTitle": "The bench",
     "benchIntro": "I am one instructor among a global team. The numbers below are Red Education's own published figures, and the awards are conferred by the vendors rather than claimed.",
     "benchStat1": "Founded 2005, in Sydney",
-    "benchStat2": "100,000+ learners trained",
+    "benchStat2": "120,000+ learners trained",
     "benchStat3": "50+ instructors, many certified across several vendors",
     "benchStat4": "Five regions: Australasia, ASEAN, SAARC, EMEA, Americas",
     "benchStat5": "49% growth in student enrolments",
@@ -24479,9 +24482,9 @@
     "availabilityTitle": "Available for events and internal sessions",
     "availabilityBody": "Conferences, industry events, partner gatherings, and internal sessions for teams that want an outside voice for an hour. Delivered in Portuguese or English. Travel is welcome and expected to be arranged as part of the booking.",
     "talksTitle": "The talks",
-    "talk1Title": "A Revolução da Tecnologia",
-    "talk1Sub": "The technology revolution",
-    "talk1Body": "From punched cards to cognitive prediction, and the question underneath the whole arc: what becomes of us? A wide-angle talk for a mixed audience, built from three decades of watching the industry promise things and then deliver something adjacent.",
+    "talk1Title": "The Technology Revolution",
+    "talk1Sub": "From punched cards to here",
+    "talk1Body": "From punched cards to the biotechnologies of cognitive prediction, and the question underneath the whole arc: what becomes of us? A wide-angle talk for a mixed audience, built from three decades of watching the industry promise things and then deliver something adjacent.",
     "talk2Title": "Hard Work, Hard Party",
     "talk2Sub": "Field stories",
     "talk2Body": "Tales that could have been lived, witnessed or overheard on the road as a field engineer. Any resemblance to real events or persons is entirely coincidental. For audiences who have done the work and will recognise themselves, and for those who have not and should know what it is like.",
@@ -24624,7 +24627,7 @@
   },
   "contributeTools": {
     "translationsTitle": "Improve the translations",
-    "translationsBody": "This site is authored in English and Brazilian Portuguese, and machine-translated into fourteen more languages. The machine versions are serviceable and they are not native. If you read one of those fourteen and something is wrong - a term of art rendered literally, a sentence that technically parses and does not mean anything - telling me is a real contribution, and a short note naming the page and the phrase is enough.",
+    "translationsBody": "English is this site's source. The Brazilian Portuguese is written with AI and reviewed gradually, and fourteen more languages are machine-translated: serviceable, and not native. If you read any of them and something is wrong, such as a term of art rendered literally or a sentence that parses and means nothing, telling me is a real contribution, and a short note naming the page and the phrase is enough.",
     "translationsCta": "Send a correction"
   },
   "roles": {
@@ -27468,7 +27471,7 @@
     "sourceNote": "The same referrals, grouped by the family of the referring site: a search engine, an AI assistant that linked here, a social network, or something else. Every engine still sends its host, so the family is always known.",
     "col_source": "Source",
     "panelTimeline": "Readers per day",
-    "timelineNote": "Counts requests from people, one per page served, grouped by UTC day. People means every request not matched as automation and not arriving from a datacenter network. Counting began on 5 September 2026, so the series starts there.",
+    "timelineNote": "Counts requests from people, one per page served, grouped by UTC day. People means every request not matched as automation and not arriving from a datacenter network. Counting began on 5 September 2026, and requests count as people from 7 September, when the datacenter check began, so the series starts on 7 September.",
     "col_day": "Day",
     "pagesNote": "Counts requests from people, one per page served, for every page read in the window - the same population as the day-by-day series, so the totals agree. Grouped by the language of the page; the fifteen most-read per language are listed.",
     "clientsNote": "Every request for a page that exists, sorted into people and families of automation: search crawlers, AI crawlers, monitors, link previewers, tools, and clients that could not be verified. A browser arriving from a cloud or hosting provider's network counts as unverified, not as a person; so does every request from before that check existed, which is the 'before-classifier' line. Requests for addresses that do not exist are at the end of the page.",
@@ -27517,10 +27520,12 @@
     "wd_5": "Friday",
     "wd_6": "Saturday",
     "pagesTotal": "'{requests}' requests across '{pages}' pages in the window",
+    "listCut": "This list stopped at its limit of '{limit}' pages, the most read in the window, so the figures in this panel cover those pages only.",
     "missing": {
       "title": "Requests for pages that do not exist",
       "note": "Every request for an address that does not exist, from people and automation alike, grouped by what it was looking for. Most come from scanners that try the known flaws of WordPress and other software on every site they reach; each gets the not-found page (a 404) and nothing else, and none is counted in the panels above. Each group lists its eight most requested addresses as recorded, with the language added to an address that has none (/wp-json/ arrives as /en/wp-json/), as text and never as links.",
       "count": "{requests, plural, one {# request} other {# requests}} for {addresses, plural, one {# address} other {# addresses}}",
+      "countCut": "{requests, plural, one {# request} other {# requests}} for the {addresses, plural, one {# most requested address} other {# most requested addresses}}; the list stopped at its limit, so the counts cover those only",
       "legacy": "Requests counted before each answer's status (200, 404) was recorded are recognised by their address instead, so a few may still sit in the panels above until they leave the window.",
       "sourcesRead": "Sources, read {date}:",
       "error": "This panel could not be loaded.",

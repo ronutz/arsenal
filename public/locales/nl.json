@@ -889,7 +889,7 @@
     "backHome": "Terug naar home"
   },
   "footer": {
-    "redEducation": "Rodolfo Nützmann is <r>Senior Technical Instructor en adviseur</r> bij <b>Red Education</b>",
+    "redEducation": "Rodolfo Nützmann is <r>Senior Technical Instructor</r> bij <b>Red Education</b>",
     "privacy": "Privacy",
     "builtWith": "Gebouwd door Rodolfo Nützmann met CONCORD",
     "colophon": "Hoe dit is gebouwd",
@@ -920,7 +920,7 @@
   },
   "about": {
     "eyebrow": "De trainer",
-    "role": "Senior Technical Instructor en adviseur bij Red Education",
+    "role": "Senior Technical Instructor bij Red Education",
     "lede": "Netwerk- en beveiligingstrainingen, gegeven door een vakman die zijn loopbaan aan de implementatiekant heeft doorgebracht, niet alleen bij de slides. Gevestigd in São Paulo, wereldwijd lesgevend, in het Portugees en Engels.",
     "now": {
       "title": "Wat ik nu doe",
@@ -1023,7 +1023,7 @@
       "s1Title": "Cabletron en Enterasys, 1996 tot 2000",
       "s1Body": "De formele loopbaan begon in 1996 bij Cabletron Systems, destijds een toonaangevende leverancier van netwerkapparatuur gevestigd in Rochester, New Hampshire. Gedurende vierenhalf jaar besloeg de rol field engineering en post-sales support, systems engineering en pre-sales, en, vanaf 1997, gecertificeerde training. Het onderwerp was het enterprise-LAN en -WAN van die tijd: switches, routers, Wi-Fi en WLAN, netwerkbeheer, NAC en UAC, en stateful-inspection-firewalls. In 2000 reorganiseerde Cabletron zich in vier bedrijven, en het deel dat deze loopbaan raakte werd Enterasys Networks.",
       "s2Title": "Riverstone Networks, Santa Clara, 2000 tot 2002",
-      "s2Body": "Het volgende hoofdstuk speelde zich af in Californië. Riverstone Networks, een afsplitsing van Cabletron die metropolitan-area-network-apparatuur bouwde, bracht een verhuizing naar Santa Clara met een H1-B1-werkvisum. De rol was Tier-III-productondersteuningsengineer en kennismanagementcoördinator: technische escalatie van het derde niveau, het naspelen van klantscenario's in het lab, regressietests en bugverificatie, en het bouwen van de kennisbank waarop de rest van de support steunde. De technologieën waren de ruggengraat van de carrier- en metrowereld van begin jaren 2000: Gigabit Ethernet, MPLS, metropolitan-area-switching en -routing, en BGP. Deze periode leverde ook een formele mijlpaal op: als onderdeel van het visumproces erkende een evaluatie in de Verenigde Staten in 2001 een opleidingsachtergrond gelijkwaardig aan een bachelor in informatica en een bachelor in bedrijfskunde.",
+      "s2Body": "Het volgende hoofdstuk speelde zich af in Californië. Riverstone Networks, een afsplitsing van Cabletron die metropolitan-area-network-apparatuur bouwde, bracht een verhuizing naar Santa Clara, eerst met een L-1-overplaatsing binnen het bedrijf en daarna, in 2001 en 2002, met een H-1B-werkvisum. De rol was Tier-III-productondersteuningsengineer en kennismanagementcoördinator: technische escalatie van het derde niveau, het naspelen van klantscenario's in het lab, regressietests en bugverificatie, en het bouwen van de kennisbank waarop de rest van de support steunde. De technologieën waren de ruggengraat van de carrier- en metrowereld van begin jaren 2000: Gigabit Ethernet, MPLS, metropolitan-area-switching en -routing, en BGP. Deze periode leverde ook een formele mijlpaal op: als onderdeel van het visumproces erkende een evaluatie in de Verenigde Staten in 2001 een opleidingsachtergrond gelijkwaardig aan een bachelor in informatica en een bachelor in bedrijfskunde.",
       "s3Title": "Cisco Systems, Brasília, 2003 tot 2004",
       "s3Body": "Terug in Brazilië en gecontracteerd via Cisco Professional Services, verschoof de rol naar de klantrelatie in haar meest veeleisende vorm. Als high-touch operations manager en centraal aanspreekpunt was het werk post-sales klanttevredenheidsbeheer voor twee van de grootste federale entiteiten van Brazilië, SERPRO, het gegevensverwerkingsagentschap van de overheid, en ECT-Correios, de nationale post. Het technische oppervlak bestond uit Catalyst-switches en -routers, PIX-firewalls, en CSS-, CSM- en ACE-loadbalancers, maar het echte werk was escalatiebeheer en het soepel draaiende houden van kritieke nationale infrastructuur.",
       "s4Title": "Opnieuw Enterasys, daarna Juniper, 2005 tot 2010",
@@ -1038,7 +1038,7 @@
       "subtitle": "Officiële voltijdse training, wereldwijd gegeven, en daarnaast advies over de beslissingen die gevolgen hebben.",
       "intro": "In 2020 werd een rode draad die de hele loopbaan liep het hele weefsel. Na twee decennia waarin lesgeven elke rol vergezelde, werd training het werk zelf: voltijds, officieel, gecertificeerd onderwijs gegeven aan professionals en teams over de hele wereld. Wat dit tijdperk onderscheidt is niet alleen de focus, maar de bewuste, gedateerde uitbreiding over platforms heen, elk toegevoegd bovenop diepe vakmanervaring in plaats van in plaats daarvan.",
       "s1Title": "Voltijds, uit roeping",
-      "s1Body": "Sinds 2020 bestaat het werk uit het geven van officiële door een trainer geleide training, op afstand en in persoon, in het Portugees en Engels, aan doelgroepen over de hele wereld. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië. De Braziliaanse en Duitse nationaliteit, samen met reistoestemming voor de Verenigde Staten en het Verenigd Koninkrijk, maken die wereldwijde reikwijdte praktisch: onbeperkte gerechtigdheid om te werken in de Europese Unie en de Mercosur, en de vrijheid om te gaan waar het leslokaal is.",
+      "s1Body": "Sinds 2020 bestaat het werk uit het geven van officiële door een trainer geleide training, op afstand en in persoon, in het Portugees en Engels, aan doelgroepen over de hele wereld. De levering bereikt Australië, Singapore, India, Centraal-Europa, de Verenigde Staten en Brazilië. De Braziliaanse en Duitse nationaliteit, samen met een geldig visum voor de Verenigde Staten, maken die wereldwijde reikwijdte praktisch: het recht om te reizen, wonen en werken in de Europese Unie en overal waar een Duits of Braziliaans paspoort zonder visum wordt geaccepteerd, en de vrijheid om te gaan waar het leslokaal is.",
       "s2Title": "F5, vanaf het begin",
       "s2Body": "F5 is het anker sinds het begin van dit tijdperk, voortbouwend op werk met BIG-IP dat meer dan een decennium teruggaat. Het geautoriseerde curriculum dekt de volledige door een trainer geleide BIG-IP-catalogus: Local Traffic Manager, DNS, Advanced WAF, Access Policy Manager, Advanced Firewall Manager, SSL Orchestrator, BIG-IQ, iRules-ontwikkeling, automatisering en troubleshooting, variërend van eendaagse tot vierdaagse cursussen. Naast het lesgeven loopt een praktische aanvulling: beheerde F5 BIG-IP-labomgevingen, zodat praktijkoefening altijd een echte plek heeft om plaats te vinden.",
       "s3Title": "De uitbreiding, platform voor platform",
@@ -1087,12 +1087,12 @@
       "name": "Riverstone Networks",
       "years": "2000 – 2002",
       "tagline": "Twee jaar in Santa Clara, aan de rand van de carrier- en metropolitan-netwerken.",
-      "intro": "Het enige hoofdstuk van deze loopbaan dat volledig buiten Brazilië was gesitueerd. Riverstone Networks, een leverancier van metropolitan-area-network-apparatuur gevestigd in Santa Clara, Californië, bracht een verhuizing naar de Verenigde Staten met een H1-B1-werkvisum. Riverstone had een eigen ongebruikelijke afkomst: oorspronkelijk een bedrijf genaamd Yago, rond 1998 overgenomen door Cabletron, en in 2001 via een afsplitsing opnieuw verschenen als onafhankelijk bedrijf. Het werd later in 2006 overgenomen door Alcatel-Lucent.",
+      "intro": "Het enige hoofdstuk van deze loopbaan dat volledig buiten Brazilië was gesitueerd. Riverstone Networks, een leverancier van metropolitan-area-network-apparatuur gevestigd in Santa Clara, Californië, bracht een verhuizing naar de Verenigde Staten, eerst met een L-1-overplaatsing binnen het bedrijf en daarna, in 2001 en 2002, met een H-1B-werkvisum. Riverstone had een eigen ongebruikelijke afkomst: oorspronkelijk een bedrijf genaamd Yago, rond 1998 overgenomen door Cabletron, en in 2001 via een afsplitsing opnieuw verschenen als onafhankelijk bedrijf. Het werd later in 2006 overgenomen door Alcatel-Lucent.",
       "s1Title": "Tier-III-support en kennismanagement",
       "s1Body": "De rol droeg twee titels over twee jaar: productondersteuningsengineer en kennismanagementcoördinator. Als Tier-III-specialist technische support was het werk escalatie van het derde niveau, het naspelen van klantscenario's in het lab, regressietests en bugverificatie. Als kennismanagementcoördinator ging het om het bouwen en organiseren van de kennisbank waarop de rest van de support steunde, naast ondersteuning bij productmarketing en interne training. Dit was het diepste technische supportwerk van de loopbaan, op het niveau waar de moeilijkste problemen escaleren.",
       "s2Title": "De wereld van de metropolitan-netwerken",
       "s2Body": "De technologieën waren de ruggengraat van het carrier- en metrotijdperk van begin jaren 2000: Gigabit Ethernet, MPLS, metropolitan-area-switching en -routing, en wide-area-IP-routing inclusief BGP. Werken bij de support van het derde niveau van de leverancier betekende zien hoe deze systemen zich aan de randen gedroegen, onder omstandigheden die alleen op schaal in productie aan het licht komen. Het leverde ook formeel onderwijs: training over Riverstone-concepten, -functies en -configuratie, en training over probleemidentificatie bij klantondersteuning en escalatieprocedures.",
-      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Evaluatie van opleidingsequivalentie in de Verenigde Staten die een achtergrond erkent gelijkwaardig aan een bachelor in informatica en een bachelor in bedrijfskunde, voltooid in 2001 als onderdeel van het H1-B1-visumproces.",
+      "certs": "Riverstone Certified Networking Professional (RCNP), 2001. Evaluatie van opleidingsequivalentie in de Verenigde Staten die een achtergrond erkent gelijkwaardig aan een bachelor in informatica en een bachelor in bedrijfskunde, voltooid in 2001 als onderdeel van het H-1B-visumproces.",
       "lineageTitle": "De bedrijfslijn",
       "lineageDesc": "Riverstone Networks begon als een bedrijf genaamd Yago, werd rond 1998 overgenomen door Cabletron Systems, verscheen in 2001 via een afsplitsing opnieuw als onafhankelijk bedrijf, en werd in 2006 overgenomen door Alcatel-Lucent."
     },
@@ -1313,7 +1313,7 @@
     "standardsTitle": "Standaarden en frameworks",
     "standardsLede": "Elk tool hier implementeert een gepubliceerde specificatie, geen gok. De decoders en rekenmachines zijn gebouwd op de documenten die hun formaten definiëren en vastgezet op de testvectoren die die documenten publiceren, zodat elk antwoord wordt getoetst aan de bron van waarheid en niet aan zichzelf.",
     "specsLabel": "De specificaties",
-    "specsBody": "JSON Web Tokens volgen RFC 7519, met handtekeningen en algoritmen in RFC 7515 en 7518; PKCE is RFC 7636; Base64 en zijn varianten zijn RFC 4648; UUID's zijn RFC 9562 (die RFC 4122 in 2024 verving en eigen testvectoren bevat); HMAC is RFC 2104, over de in FIPS 180-4 en FIPS 202 gestandaardiseerde SHA-familie; X.509-certificaten zijn RFC 5280; IPv4 en de CIDR-notatie zijn RFC 4632; IPv6-adressering en de canonieke tekstvorm zijn RFC 4291 en RFC 5952; en de cipher-suite-decoder steunt op de officiële IANA TLS Cipher Suites-registry, vergeleken met de TLS 1.3- en 1.2-specificaties (RFC 8446 en 5246), de registry-updateregels die de kolom “Recommended” vastleggen (RFC 8447) en het RC4-verbod (RFC 7465). Waar een registry de autoriteit is, worden de gegevens rechtstreeks overgenomen in plaats van overgetypt.",
+    "specsBody": "JSON Web Tokens volgen RFC 7519, met handtekeningen en algoritmen in RFC 7515 en 7518; PKCE is RFC 7636; Base64 en zijn varianten zijn RFC 4648; UUID's zijn RFC 9562 (die RFC 4122 in 2024 verving en eigen testvectoren bevat); HMAC is RFC 2104, over de in FIPS 180-4 en FIPS 202 gestandaardiseerde SHA-familie; X.509-certificaten zijn RFC 5280; IPv4 is RFC 791 en de CIDR-notatie is RFC 4632; IPv6-adressering en de canonieke tekstvorm zijn RFC 4291 en RFC 5952; en de cipher-suite-decoder steunt op de officiële IANA TLS Cipher Suites-registry, vergeleken met de TLS 1.3- en 1.2-specificaties (RFC 8446 en 5246), de registry-updateregels die de kolom “Recommended” vastleggen (RFC 8447) en het RC4-verbod (RFC 7465). Waar een registry de autoriteit is, worden de gegevens rechtstreeks overgenomen in plaats van overgetypt.",
     "vectorsLabel": "Referentievectoren",
     "vectorsBody": "Elk tool wordt geleverd met een set referentievectoren: bekende invoer gekoppeld aan bekend-correcte uitvoer, ontleend aan de relevante RFC's en normalisatie-instanties. Ze draaien bij elke build, zodat een refactor die stilletjes een antwoord verandert de build laat mislukken in plaats van uit te brengen.",
     "owaspLabel": "OWASP",
@@ -1373,7 +1373,7 @@
   "contribute": {
     "eyebrow": "Vertalingen",
     "title": "Help de vertalingen verbeteren",
-    "lede": "Elke taal hier behalve Engels is een door een machine gemaakt eerste concept. Als je een ervan spreekt en iets verkeerds of onhandigs opmerkt, zijn je correcties van harte welkom. Zo stuur je ze in.",
+    "lede": "Braziliaans Portugees wordt hier met AI geschreven en geleidelijk nagekeken; elke andere taal behalve Engels is een door een machine gemaakt eerste concept. Als je een ervan spreekt en iets verkeerds of onhandigs opmerkt, zijn je correcties van harte welkom. Zo stuur je ze in.",
     "howTitle": "Hoe je kunt bijdragen",
     "howBody": "Engels is de bron van waarheid, en elke andere taal wordt daaruit vertaald, dus fouten zijn mogelijk. Elk taalpakket is één tekstbestand met gelabelde zinnen. Download het pakket dat je wilt verbeteren, wijzig alleen de tekst na elk label en laat de labels en alles tussen accolades precies zoals het is. Mail daarna het bewerkte bestand en vermeld de taal. Elke inzending wordt met de hand nagekeken.",
     "downloadHeading": "Taalpakketten",
@@ -1449,7 +1449,7 @@
     "complete": "Machinaal, compleet",
     "partial": "Machinaal, in uitvoering",
     "explainTitle": "Hoe vertalingen worden gemarkeerd",
-    "explainBody": "Engels en Braziliaans Portugees worden door een persoon geschreven en gecontroleerd. De meeste andere talen zijn machinaal vertaald en gemarkeerd op basis van hoe ver ze zijn: amber zodra een taal de hele site dekt, geel zolang nieuwere inhoud nog in het Engels is en wordt bijgewerkt. Talen die rood zijn gemarkeerd, hebben nog geen vertaling en worden voorlopig in het Engels getoond. Machinaal vertaalde pagina's bevatten ook een korte melding, en je bent welkom om ze te helpen verbeteren.",
+    "explainBody": "Engels is de bron: geschreven met AI en alleen gepubliceerd als een persoon besluit dat het moet. Braziliaans Portugees wordt ook met AI geschreven en geleidelijk nagekeken; de andere talen zijn machinaal vertaald. Elke taal is gemarkeerd naar hoe ver ze is: blauw zodra ze de hele site dekt, geel zolang nieuwere inhoud nog in het Engels is en wordt bijgewerkt, rood zolang er nog geen vertaling is en de pagina's voorlopig in het Engels worden getoond. Elke taal behalve het Engels draagt een korte melding, en je bent welkom om ze te helpen verbeteren.",
     "stub": "Nog niet vertaald"
   },
   "changelog": {
@@ -1534,7 +1534,7 @@
     "bingoSub": "De traditie wil dat je het woord bingo nu terloops in de vergadering laat vallen.",
     "shuffling": "buzzwords schudden…",
     "creditLinkLabel": "Buzzword bingo",
-    "creditRest": " is een trotse kantoortraditie: in 1993 bedacht bij Silicon Graphics door Tom Davis en in 1994 vereeuwigd in een Dilbert-strip.",
+    "creditRest": " is een trotse kantoortraditie: begin 1993 bij Silicon Graphics zo genoemd door Tom Davis en Seth Katz, en in 1994 vereeuwigd in een Dilbert-strip.",
     "devFunTitle": "Terug naar /dev/fun",
     "types": {
       "videocall": {

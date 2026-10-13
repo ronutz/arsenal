@@ -62,9 +62,10 @@ const RULES = {
 
 // Exceptions, keyed by pack and message key, each with its reason; they may only shrink.
 const DECLARED = new Map([
-  // The settings page: it speaks of the reader's preferences, which are kept in this browser and nowhere else.
+  // The settings page: it speaks of the reader's preferences, which are kept in this browser and nowhere else. (The
+  // Portuguese declaration left on 2026-10-13: P1b's rewrite ends the clause at "neste dispositivo:", so the sentence
+  // no longer reads as one universal claim, and the guard no longer needs an exception for it.)
   ["en:settings_page.lede", "About the settings, stored on the device; true as written."],
-  ["pt-BR:settings_page.lede", "Sobre as preferências, guardadas no dispositivo; verdadeiro como está."],
   // The API page, when local processing is on: it offers the browser tools as the way to keep everything local.
   ["en:api.servedOnBody", "A choice offered to the reader, not a claim about every tool; true as written."],
   ["pt-BR:api.servedOnBody", "Uma escolha oferecida ao leitor, não uma afirmação sobre toda ferramenta; verdadeiro como está."],

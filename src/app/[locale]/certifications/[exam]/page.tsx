@@ -39,7 +39,8 @@ import { getGuideVerification } from "@/content/certifications/verification";
 import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
-import TrainingCta from "@/components/TrainingCta";
+// The training box, and the vendors whose courses are taught (row 70: the box appears only on their guides).
+import TrainingCta, { TAUGHT_VENDORS } from "@/components/TrainingCta";
 import { ogImages } from "@/lib/og";
 import { routing } from "@/i18n/routing";
 import { getAllArticles } from "@/lib/learn";
@@ -102,6 +103,10 @@ export default async function StudyGuidePage({
   const retirementNow = guide.retirement ? retirementState(guide.retirement.untilIso) : null;
   // The guide's status on the build day, in the reader's words (R1-b1).
   const status: GuideStatus = guideStatus(guide);
+  // An exam that can no longer be sat and was never mapped is an archived record, not a guide in preparation
+  // (row 70, SCOUT 2026-10-07: three retired Check Point guides said "Study guide in preparation").
+  const unmapped = guide.status === "preparing" || guide.sections.length === 0;
+  const archived = status === "retired" && unmapped;
   const statusWords: Record<GuideStatus, string> = {
     current: t("statusCurrent"),
     transitioning: t("statusTransitioning"),
@@ -265,12 +270,13 @@ export default async function StudyGuidePage({
               </div>
             </section>
           )}
-          {guide.status === "preparing" || guide.sections.length === 0 ? (
+          {unmapped ? (
             /* -------- Preparing state: honest placeholder -------- */
             <section className="section">
               <div className="container certs-container">
                 <div className="certguide-preparing">
-                  <h2 className="certguide-preparing-title">{t("preparingTitle")}</h2>
+                  {/* Retired and unmapped: an archived record; otherwise the mapping is still to come. */}
+                  <h2 className="certguide-preparing-title">{t(archived ? "archivedTitle" : "preparingTitle")}</h2>
                   {/* Availability is a DIFFERENT fact from transcription status:
                       "we have not mapped it yet" vs "the vendor has not shipped
                       the exam yet". The second changes whether a candidate can
@@ -280,7 +286,7 @@ export default async function StudyGuidePage({
                       <strong>{guide.availabilityNote}</strong>
                     </p>
                   )}
-                  <p className="certguide-preparing-body">{t("preparingBody")}</p>
+                  <p className="certguide-preparing-body">{t(archived ? "archivedBody" : "preparingBody")}</p>
                 </div>
               </div>
             </section>
@@ -351,12 +357,16 @@ export default async function StudyGuidePage({
           </section>
 
           {/* Instructor-led training CTA (subtle): a candidate on this exam is
-              the ideal person to book live training at Red Education. */}
-          <section className="section">
-            <div className="container certs-container">
-              <TrainingCta />
-            </div>
-          </section>
+              the ideal person to book live training at Red Education. Only on
+              the guides of a vendor whose courses are taught (row 70, PRIME
+              2026-10-07: "Hide it there"), naming that vendor. */}
+          {TAUGHT_VENDORS.includes(guide.vendor) && (
+            <section className="section">
+              <div className="container certs-container">
+                <TrainingCta vendors={[guide.vendor]} />
+              </div>
+            </section>
+          )}
         </article>
       </main>
 
