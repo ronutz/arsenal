@@ -506,7 +506,10 @@ print("sha256   ", hashlib.sha256(msg).hexdigest())
   },
   {
     id: "latency-stats",
-    code: `# Latency samples in milliseconds: mean, median, p95 and jitter (mean absolute difference between consecutive samples).
+    // 2026-10-19 (PRIME, "Show both, labelled"): ping's mdev is the POPULATION standard deviation (man7 ping(8); iputils
+    // ping_output.c divides the squared deviations by the count), statistics.stdev is the SAMPLE one; the example prints
+    // both, each labelled, so a reader comparing with ping's summary line reads the number ping would print.
+    code: `# Latency samples in milliseconds: mean, median, p95, two standard deviations and jitter (mean absolute difference between consecutive samples).
 import statistics
 
 samples = [21.4, 22.0, 21.9, 35.2, 22.3, 21.8, 48.9, 22.1, 21.7, 22.0, 21.6, 23.4]
@@ -514,7 +517,9 @@ s = sorted(samples)
 p95 = s[round(0.95 * (len(s) - 1))]
 jitter = statistics.mean(abs(b - a) for a, b in zip(samples, samples[1:]))
 print(f"n={len(samples)} mean={statistics.mean(samples):.2f} median={statistics.median(samples):.2f} p95={p95:.1f} max={max(samples):.1f}")
-print(f"stdev={statistics.stdev(samples):.2f} jitter={jitter:.2f}")
+print(f"pstdev={statistics.pstdev(samples):.2f}  population standard deviation, what ping calls mdev")
+print(f"stdev={statistics.stdev(samples):.2f}  sample standard deviation")
+print(f"jitter={jitter:.2f}")
 `,
   },
   {
@@ -619,7 +624,12 @@ export const SOURCES: readonly Source[] = Object.freeze([
   { id: "python-ipaddress", label: "Python 3.14 documentation: ipaddress", type: "reference", url: "https://docs.python.org/3.14/library/ipaddress.html", access_date: "2026-10-04", scope: "ip_network, subnets, hosts, collapse_addresses, netmask and hostmask used by the examples." },
   { id: "python-struct", label: "Python 3.14 documentation: struct", type: "reference", url: "https://docs.python.org/3.14/library/struct.html", access_date: "2026-10-04", scope: "Big-endian packing of the DNS header example." },
   { id: "python-hmac", label: "Python 3.14 documentation: hmac and hashlib", type: "reference", url: "https://docs.python.org/3.14/library/hmac.html", access_date: "2026-10-04", scope: "HMAC-SHA256 as the examples compute it." },
-  { id: "python-statistics", label: "Python 3.14 documentation: statistics", type: "reference", url: "https://docs.python.org/3.14/library/statistics.html", access_date: "2026-10-04", scope: "mean, median and stdev in the latency example." },
+  // Re-read 2026-10-19 (Python 3.14.8 edition): pstdev returns "the population standard deviation", stdev "the sample standard deviation".
+  { id: "python-statistics", label: "Python 3.14 documentation: statistics", type: "reference", url: "https://docs.python.org/3.14/library/statistics.html", access_date: "2026-10-19", scope: "mean, median, pstdev (the population standard deviation) and stdev (the sample standard deviation) in the latency example." },
+  // The ping manual page names mdev the population standard deviation (read 2026-10-19 on man7.org, iputils page obtained upstream 2026-08-04).
+  { id: "man7-ping", label: "ping(8), iputils manual page on man7.org: \"Population standard deviation (mdev)\"", type: "reference", url: "https://man7.org/linux/man-pages/man8/ping.8.html", access_date: "2026-10-19", scope: "What ping's mdev is: the population standard deviation of the round-trip times, which the latency example prints as pstdev." },
+  // The iputils source that prints the summary line: the variance is the sum of squared deviations divided by the count (read 2026-10-19).
+  { id: "iputils-ping-output", label: "iputils ping/ping_output.c, ping_print_statistics (master branch)", type: "implementation", url: "https://github.com/iputils/iputils/blob/master/ping/ping_output.c", access_date: "2026-10-19", scope: "tmvar = (tsum2 - tsum * tsum / total) / total, then its integer square root printed as the mdev of rtt min/avg/max/mdev: a population (divide by the count) standard deviation." },
   { id: "python-zoneinfo", label: "Python 3.14 documentation: zoneinfo (data sources)", type: "reference", url: "https://docs.python.org/3.14/library/zoneinfo.html#data-sources", access_date: "2026-10-04", scope: "zoneinfo reads the system tz database or the tzdata package; the engine has neither unless the tzdata package is loaded, and raises ZoneInfoNotFoundError saying so (measured 2026-10-04)." },
   { id: "rfc1035", label: "RFC 1035, Domain names: implementation and specification, section 4.1.1 (header section format)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc1035#section-4.1.1", access_date: "2026-10-04", scope: "The 12-byte header the struct example builds." },
   { id: "rfc4291", label: "RFC 4291, IP Version 6 Addressing Architecture, Appendix A (modified EUI-64 interface identifiers)", type: "reference", url: "https://www.rfc-editor.org/rfc/rfc4291#appendix-A", access_date: "2026-10-04", scope: "The universal/local bit flip and the FF FE insertion in the EUI-64 example." },

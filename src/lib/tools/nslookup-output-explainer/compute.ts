@@ -5,7 +5,10 @@
 //
 // nslookup prints DNS answers in a prose-ish layout that is quite different
 // from dig: a Server / Address header for the resolver used, an optional
-// "Non-authoritative answer:" marker, then per-type lines such as
+// "Non-authoritative answer:" marker (printed when the AA bit is clear: the
+// answer came from a resolver, not from a server authoritative for the name;
+// RFC 1035 section 4.1.1 and RFC 2181 section 6 define authority by the name,
+// not by caching), then per-type lines such as
 // "example.com  mail exchanger = 10 mail.example.com." and multi-line SOA
 // blocks, plus "** server can't find NAME: RCODE" for failures.
 //

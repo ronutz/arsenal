@@ -6,8 +6,11 @@
 // src/lib/tools/mtu-mss does all arithmetic; this component only renders.
 //
 // The layout teaches the tool's core lesson visually: encapsulations appear
-// in the breakdown as "inside the MTU" (they shrink the inner MTU/MSS), while
-// L2 shims appear as "on the frame" (they grow the frame, MTU untouched).
+// in the breakdown as "inside the MTU" (they shrink the inner MTU/MSS), MPLS
+// labels as "inside the frame payload" (RFC 3032 section 3.1: they shrink the
+// IP packet unless the link MTU is raised; corrected 2026-10-19), while
+// 802.1Q / QinQ shims appear as "on the frame" (they grow the frame, MTU
+// untouched).
 // Styling reuses the established tool vocabulary (cidr-* input stack,
 // jwt-results panels, cipher-note) - no new CSS classes (D-19 / CSS rule).
 // ============================================================================
@@ -114,6 +117,10 @@ export default function MtuMssTool() {
                 {t("inner.encapNote", { total: result.encapTotal, outer: result.outer })}
               </p>
             )}
+            {/* MPLS labels spend frame payload (RFC 3032 s3.1): say so, with the byte count. */}
+            {result.labelTotal > 0 && (
+              <p className="cipher-note">{t("inner.labelNote", { labels: result.labelTotal })}</p> // added 2026-10-19
+            )}
             {result.innerIsV6Only && <p className="cipher-note">{t("inner.sixInFourNote")}</p>}
             {result.hasVariableLayer && <p className="cipher-note">{t("inner.variableNote")}</p>}
           </section>
@@ -127,7 +134,12 @@ export default function MtuMssTool() {
                   <li key={`${l.id}-${i}`}>
                     <span className="mono">{t(`stack.labels.${l.id}`)}</span>{" "}
                     <span className="mono">+{l.bytes} B</span>{" "}
-                    {l.kind === "encap" ? t("stack.insideMtu") : t("stack.onFrame")}
+                    {/* Three sides of the MTU line: encap and label spend MTU, shim grows the frame. */}
+                    {l.kind === "encap"
+                      ? t("stack.insideMtu") // tunnel / session header inside the link MTU
+                      : l.kind === "label"
+                        ? t("stack.inPayload") // MPLS label stack inside the frame payload (RFC 3032 s3.1)
+                        : t("stack.onFrame") /* 802.1Q / QinQ tag in the frame header */}
                   </li>
                 ))}
               </ul>

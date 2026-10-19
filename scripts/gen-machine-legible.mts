@@ -354,7 +354,7 @@ if (TAGLINE) L.push(`> ${TAGLINE}`, "");
 const SC = getSiteCounts(SOURCE_LOCALE);
 const n = (x: number) => x.toLocaleString("en-US");
 L.push(
-  `The working site of Rodolfo Nützmann, Senior Technical Instructor at Red Education: ${n(SC.tools)} deterministic network, security and identity tools that compute in your browser (nothing you type leaves it), ${n(SC.articles)} Learn articles grounded in vendors' own documentation and the standards, a glossary of ${n(SC.glossary)} entries, the industry's history in ${n(SC.industry)} organisation records, the practice of running and defending networks, open course material free to teach from, and the training and advisory work it supports. Each tool and article below links to a clean Markdown version.`,
+  `The working site of Rodolfo Nützmann, Senior Technical Instructor at Red Education: ${n(SC.tools)} deterministic network, security and identity tools that compute in your browser (in the catalogue, nothing you type leaves it; the two red room lookups that query a registry say so before they ask), ${n(SC.articles)} Learn articles grounded in vendors' own documentation and the standards, a glossary of ${n(SC.glossary)} entries, the industry's history in ${n(SC.industry)} organisation records, the practice of running and defending networks, open course material free to teach from, and the training and advisory work it supports. Each tool and article below links to a clean Markdown version.`,
   "",
 );
 

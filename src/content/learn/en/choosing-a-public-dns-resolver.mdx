@@ -1,40 +1,208 @@
 ---
 slug: choosing-a-public-dns-resolver
 title: "Public DNS resolvers: what you are actually choosing"
-summary: "Cloudflare, Google, Quad9, OpenDNS and the rest differ far less in speed than in policy. What each one does with your queries, which ones block by default, why anycast makes 'nearest' complicated, and the trade nobody states: the resolver that protects you also sees everything you ask for."
-concepts: ["dns", "anycast", "rpz", "dnssec"]
-relatedTools: []
-relatedArticles: ["edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "dns-message-header-and-flags", "dns-blocklists-and-response-policy"]
+summary: "A public resolver is a recursive resolver anyone may use, and switching to one hands the operator every name your device looks up. What separates 1.1.1.1, 8.8.8.8, 9.9.9.9 and 208.67.222.222 is policy, not speed: what is logged and for how long, which addresses filter and how a block answers, whether DNSSEC is validated, whether your subnet is passed to authoritative servers, and which encrypted transports are offered. After reading, you can read an operator's pages against the list RFC 8932 asks it to publish, choose by those criteria, and test each one with dig and curl."
+concepts: ["dns", "anycast", "rpz", "dnssec", "public resolver", "open resolver", "recursive resolver", "edns client subnet", "dot", "doh", "doq", "extended dns errors", "logging", "retention"]
+relatedTools: ["dig-command-builder", "dig-output-explainer", "curl-command-builder", "nslookup-output-explainer", "python-playground"]
+relatedArticles: ["edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "dns-message-header-and-flags", "dns-blocklists-and-response-policy", "reading-a-dns-answer", "encrypted-dns-dot-doh-doq", "dnssec-end-to-end", "anycast", "authoritative-vs-non-authoritative-answers", "reading-dig-output", "anatomy-of-a-dig-command-line"]
 category: networking
 order: 255
 status: reviewed
-updated: "2026-08-11"
+updated: "2026-10-18"
 ---
 
-## The choice is a policy choice wearing a performance argument
+A public DNS resolver is a recursive resolver that anyone on the internet may use; 1.1.1.1, 8.8.8.8, 9.9.9.9 and 208.67.222.222 are the four this part follows. You meet one when a router, an operating system or a browser offers to replace the resolver your network handed out over the Dynamic Host Configuration Protocol (DHCP), usually on a promise of speed. What you are choosing is the party that sees every name you look up: what it logs and for how long, whether it filters, whether it validates the DNS Security Extensions (DNSSEC), whether it tells authoritative servers where you are, and which encrypted transports it offers. After reading, you can read an operator's own pages against the list Request for Comments (RFC) 8932 asks it to publish, choose by those criteria, and test each one with dig and curl.
 
-Public resolvers are compared on latency, and latency is the least interesting difference between them. They all run **anycast**: one address announced from many locations, so packets reach whichever instance the routing puts nearest. Within a well-connected network the differences are small and vary by hour and by path.
+## What a public resolver is, and what you hand it
 
-**What actually differs is policy**, and it is worth naming precisely because the marketing does not.
+RFC 9499 defines an open resolver as "A full-service resolver that accepts and processes queries from any (or nearly any) client", public resolvers being the ones open on purpose ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.txt)). Your operating system's stub resolver (section 6) sends it one query with recursion desired (RD) set and gets the final answer back with recursion available (RA) set, two flags [the DNS header](/learn/dns-message-header-and-flags) explains; [Reading a DNS answer](/learn/reading-a-dns-answer) opens the series.
 
-## The four questions that separate them
+What you hand over is every name your device asks for: "Recursive resolvers see all the traffic since there is typically no caching before them" ([RFC 9076, section 6.1](https://www.rfc-editor.org/rfc/rfc9076.txt)). Switching moves that visibility from the ISP (internet service provider) to an operator whose policies then set your privacy (section 6.1.1). Encryption does not change that: "Use of encrypted transports does not reduce the data available in the recursive resolver" (section 6.1.4.1).
 
-**Does it block?** A resolver can refuse to answer for domains on a threat feed. **Quad9 blocks by default.** Cloudflare's ordinary service does not, and runs separate addresses for filtered variants. Google's public resolver does not filter. **A resolver that does not block is not worse: it is a different product**, and one that blocks silently is one you must trust to be right.
+The list to read a policy against is RFC 8932's: "a DNS recursive operator SHOULD publish a Recursive operator Privacy Statement (RPS)" ([RFC 8932, section 6](https://www.rfc-editor.org/rfc/rfc8932.txt)) saying whether IP addresses count as personal data, what is retained and for how long, what is shared or correlated, whether results are filtered (section 6.1.1), which transports sit on which addresses and what goes upstream (section 6.1.2), and "To our knowledge, there are no specific privacy laws for DNS data in any country" ([RFC 9076, section 9](https://www.rfc-editor.org/rfc/rfc9076.txt)).
 
-**What is logged, and for how long?** Every query you make is visible to whoever answers it. **The privacy posture is a legal position as much as a technical one**: which jurisdiction, which retention period, what is handed over on request. Quad9's Swiss base is a deliberate part of its design rather than an accident of incorporation.
+## Addresses and anycast reach
 
-**Does it validate DNSSEC?** If the resolver validates and you trust the path to it, you inherit the validation. If it does not, the `ad` flag never appears and you are on your own, and if the path to the resolver is untrusted, the flag means nothing anyway.
+| Operator | IPv4 | IPv6 | Source |
+|---|---|---|---|
+| Cloudflare | 1.1.1.1, 1.0.0.1 | 2606:4700:4700::1111, 2606:4700:4700::1001 | [IP addresses](https://developers.cloudflare.com/1.1.1.1/ip-addresses/) |
+| Google | 8.8.8.8, 8.8.4.4 | addresses in 2001:4860:4860:: | [FAQ](https://developers.google.com/speed/public-dns/faq) |
+| Quad9 | 9.9.9.9, 149.112.112.112 | 2620:fe::fe, 2620:fe::9 | [Service Addresses and Features](https://quad9.net/service/service-addresses-and-features/) |
+| Cisco OpenDNS | 208.67.222.222, 208.67.220.220 | 2620:119:35::35, 2620:119:53::53, from the Umbrella table | [Set Up OpenDNS](https://www.opendns.com/setupguide/); [Umbrella, Anycast IP Addresses](https://securitydocs.cisco.com/docs/umbrella-dns/olh/146414.dita) |
 
-**What does it tell the authoritative server about you?** EDNS Client Subnet forwards part of your address so a content network can answer with a nearby server. **It improves routing and it leaks your approximate location to every authoritative server you query.** Some resolvers send it, some refuse on principle, and the choice trades performance for privacy in a way nobody sees.
+Every one is anycast: the same address announced from many autonomous locations, with each packet routed to one of them ([RFC 4786, section 2](https://www.rfc-editor.org/rfc/rfc4786.txt)). Nearest is a routing fact, not a map: "The routing system decides which node is used for each request" (section 3.1), and topological nearness need not mean a shorter round trip (section 3.2). [Anycast](/learn/anycast) explains the mechanism, [BGP](/learn/bgp-primer) the routing system behind it.
 
-## Why the answer differs for a household and a network
+Test it by asking which instance answered: a TXT query in class CHAOS for `id.server.` ([RFC 4892, section 2](https://www.rfc-editor.org/rfc/rfc4892.txt)), or the Name Server Identifier (NSID) option in the EDNS (Extension Mechanisms for DNS) OPT record ([RFC 5001, section 2.2](https://www.rfc-editor.org/rfc/rfc5001.txt)). Cloudflare documents `dig +short CHAOS TXT id.server @1.1.1.1` ([Cloudflare, Troubleshooting](https://developers.cloudflare.com/1.1.1.1/troubleshooting/)), Quad9 `dig +short ch txt id.server. @9.9.9.9` with the rule "If the answer is anything except resXXX.xxx.rrdns.pch.net, then DNS is being transparently redirected" ([Quad9 docs, FAQs](https://docs.quad9.net/FAQs/)); Google answers `dig @dns.google. +nsid` with `gpdns-<airport code>` ([Google, Troubleshooting](https://developers.google.com/speed/public-dns/docs/troubleshooting)).
 
-For one machine the question is mostly privacy and blocking preference. **For a network it is a control decision**, and resolver-level filtering has one property no endpoint agent can match: it applies to every device, including the printer, the camera, the badge reader and the visitor's laptop.
+## Encrypted transports on offer
 
-That is also its ceiling. **A resolver only sees the names asked of it.** A device configured with its own hardcoded resolver, or speaking DNS over HTTPS to a service of its own choosing, is invisible to the network's policy - and modern browsers and operating systems do exactly that by default in some configurations. Enforcing a resolver now means blocking the alternatives, which is a firewall change rather than a DHCP option.
+DNS over TLS (DoT) listens on TCP port 853 ([RFC 7858, section 3.1](https://www.rfc-editor.org/rfc/rfc7858.txt)), DNS over HTTPS (DoH) maps each query to an HTTP exchange ([RFC 8484, section 1](https://www.rfc-editor.org/rfc/rfc8484.txt)), and DNS over QUIC (DoQ) uses UDP port 853 ([RFC 9250, section 4.1.1](https://www.rfc-editor.org/rfc/rfc9250.txt)); Cloudflare and Google also answer DoH in JSON (JavaScript Object Notation). [DoT, DoH and DoQ compared](/learn/encrypted-dns-dot-doh-doq) explains the three; here, what each operator states.
 
-## The trade, stated plainly
+| Operator | DoT | DoH | DoQ | Source |
+|---|---|---|---|---|
+| Cloudflare | one.one.one.one or the addresses, port 853; TLS 1.2 and 1.3 | https://cloudflare-dns.com/dns-query, POST and GET wire format, GET JSON | not documented on the pages read | [DNS over TLS](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-tls/); [Make API requests](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/) |
+| Google | dns.google, port 853; TLS 1.2 and 1.3 | https://dns.google/dns-query (RFC 8484) and https://dns.google/resolve (JSON) | not documented on the pages read | [Secure Transports](https://developers.google.com/speed/public-dns/docs/secure-transports); [DNS-over-TLS](https://developers.google.com/speed/public-dns/docs/dns-over-tls) |
+| Quad9 | dns.quad9.net and the variants dns10, dns11, dns12; port 853 or 8853 | https://dns.quad9.net/dns-query and the variants; HTTP/2 and HTTP/3, HTTP/1.1 retired 15 December 2025 | all variants, port 853, since March 2026 | [Services](https://docs.quad9.net/services/); [FAQs](https://docs.quad9.net/FAQs/); [DoH3 and DoQ](https://quad9.net/news/blog/quad9-enables-dns-over-http-3-and-dns-over-quic/) |
+| OpenDNS | not documented on the pages read | not documented on the pages read | not documented on the pages read | [Set Up OpenDNS](https://www.opendns.com/setupguide/) |
 
-**The resolver that protects you also sees everything you ask for.** Filtering and surveillance are the same capability pointed in different directions, and every option here (a public resolver, an ISP's, a filtering appliance, one you run yourself) is a decision about **who that party is**, not about whether one exists.
+Quad9 alone documents DoQ: "For DoQ, use the hostname for the Quad9 service variant you want on port 853" ([Quad9, DoH3 and DoQ](https://quad9.net/news/blog/quad9-enables-dns-over-http-3-and-dns-over-quic/)). OpenDNS's pages read on 2026-10-18 and 2026-10-19 name no DoT or DoH endpoint; its former DoH support article redirects to the Cisco Community board. In the DoH exchanges captured on 19 October 2026, dns.quad9.net and cloudflare-dns.com answered with `alt-svc: h3=":443"`, advertising HTTP/3; dns.google sent no such header. Quad9's `dig +short txt proto.on.quad9.net.` answers with the transport your query arrived on ([Quad9 docs, FAQs](https://docs.quad9.net/FAQs/)).
 
-Running your own removes the third party and gives you the logs, the maintenance and the blocklist decisions instead. That is a real answer, and it is the one most people should not choose.
+## DNSSEC validation and the ad flag
+
+Cloudflare: "1.1.1.1 is a DNSSEC-validating resolver" ([Cloudflare FAQ](https://developers.cloudflare.com/1.1.1.1/faq/)). Google: "Google Public DNS is a validating, security-aware resolver", though "we may temporarily disable validation on the zone until the problem is fixed" ([Google FAQ](https://developers.google.com/speed/public-dns/faq)). Quad9: "DNSSEC validation is enabled on all resolver addresses" ([Quad9, Service Addresses and Features](https://quad9.net/service/service-addresses-and-features/)); its FAQ still says "two out of three of our services" ([Quad9 FAQ](https://quad9.net/support/faq/)). OpenDNS: no statement on the pages read. In the exchanges captured on 19 October 2026 the other three answered `www.example.com A` with the authentic data (AD) flag set and, with the DNSSEC OK (DO) bit set, added the type 46 signature record.
+
+The AD flag means less than it looks. A validating resolver "MUST NOT set the AD bit in a response unless the name server considers all RRsets in the Answer and Authority sections of the response to be authentic" ([RFC 4035, section 3.2.3](https://www.rfc-editor.org/rfc/rfc4035.txt)). For your stub it is only a hint ([RFC 4033, section 7](https://www.rfc-editor.org/rfc/rfc4033.txt)): a stub "MUST NOT place any reliance on signature validation allegedly performed on its behalf, except when the security-aware stub resolver obtained the data in question from a trusted security-aware recursive name server via a secure channel" ([RFC 4035, section 4.9.3](https://www.rfc-editor.org/rfc/rfc4035.txt)). Encryption proves nothing about validation ([RFC 8932, section 5.1.4](https://www.rfc-editor.org/rfc/rfc8932.txt)), and one non-validating resolver in your list undoes the rest, because a client that gets SERVFAIL asks the next one ([RFC 8914, section 6](https://www.rfc-editor.org/rfc/rfc8914.txt)). Google's own check is a visit to http://www.dnssec-failed.org/ ([Google FAQ](https://developers.google.com/speed/public-dns/faq)). [DNSSEC end to end](/learn/dnssec-end-to-end) builds the chain itself.
+
+## Filtering variants and what they return
+
+A resolver that alters answers is a policy-implementing resolver, which a stub generally cannot detect ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.txt)); some mark a block with an Extended DNS Error (EDE) code ([RFC 8914, section 6](https://www.rfc-editor.org/rfc/rfc8914.txt)). These operators say, by address:
+
+| Operator and address | Filters | How a block answers |
+|---|---|---|
+| Cloudflare 1.1.1.1, 1.0.0.1 | nothing | no block |
+| Cloudflare 1.1.1.2, 1.0.0.2 | malware and phishing | A record 0.0.0.0 |
+| Cloudflare 1.1.1.3, 1.0.0.3 | malware, phishing and adult content | A record 0.0.0.0 |
+| Google 8.8.8.8, 8.8.4.4 | nothing, except rare security cases and court orders in BE, FR, IN, IT and PT | REFUSED, optionally EDE 16 |
+| Quad9 9.9.9.9, 149.112.112.112 | security threats | NXDOMAIN, AUTHORITY 0, EDE 15, 16 or 17 |
+| Quad9 9.9.9.10, 149.112.112.10 | nothing | no block |
+| Quad9 9.9.9.11, 149.112.112.11 | security threats; client subnet sent | as 9.9.9.9 |
+| Quad9 9.9.9.12, 149.112.112.12 | nothing; client subnet sent | no block |
+| OpenDNS 208.67.222.222, 208.67.220.220 | OpenDNS Home or Public Service | not documented on the pages read |
+| OpenDNS 208.67.222.123, 208.67.220.123 | FamilyShield | not documented on the pages read |
+
+Cloudflare: "Cloudflare does not block or filter any content through the 1.1.1.1 Public DNS Resolver" ([Cloudflare, Public DNS Resolver](https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/)); the 1.1.1.1 for Families addresses answer blocks with 0.0.0.0 ([Cloudflare, Set up](https://developers.cloudflare.com/1.1.1.1/setup/)). Google: "it does not perform blocking or filtering of any kind, except for certain domains in rare cases" ([Google FAQ](https://developers.google.com/speed/public-dns/faq)); under court orders in Belgium, France, India, Italy and Portugal "The response returned will have DNS RCODE REFUSED, optionally with an extended DNS error 16 (Censored)" ([Google, Blocking Behavior](https://developers.google.com/speed/public-dns/blocking)). Quad9: security threats only, never content, advertisements or trackers ([Quad9, Threat blocking](https://quad9.net/service/threat-blocking/)); "When you receive an NXDOMAIN with AUTHORITY: 0, that is a block from Quad9" ([Quad9 docs, FAQs](https://docs.quad9.net/FAQs/)), marked with EDE code 15, 16 or 17 ([Quad9, Data and Privacy Policy](https://quad9.net/privacy/policy/)); 9.9.9.12 appears only on the documentation site ([Quad9 docs, Services](https://docs.quad9.net/services/)). OpenDNS: OpenDNS Home offers customisable filtering and FamilyShield is "Preconfigured to block adult content" ([OpenDNS, home or small business](https://www.opendns.com/home-internet-security/)). RFC 8914 defines 15 as the operator's own blocklist, 16 as an external requirement and 17 as one the client asked for ([RFC 8914, sections 4.16 to 4.18](https://www.rfc-editor.org/rfc/rfc8914.txt)).
+
+## EDNS Client Subnet
+
+EDNS Client Subnet (ECS), option code 8 ([RFC 7871, section 6](https://www.rfc-editor.org/rfc/rfc7871.txt)), passes part of your address to authoritative servers so a content delivery network (CDN) can answer with a nearby node. The RFC asks that it "be turned off by default in all nameserver software" (section 2), because it makes your network address visible to every server in the resolution (section 11.1). A client can refuse: "A SOURCE PREFIX-LENGTH value of 0 means that the Recursive Resolver MUST NOT add the client's address information to its queries" (section 7.1.2), which dig sends as `+subnet=0` ([dig manual, Query Options](https://bind9.readthedocs.io/en/stable/manpages.html)).
+
+Cloudflare: "It does not send the EDNS Client Subnet (ECS) header" ([Cloudflare FAQ](https://developers.cloudflare.com/1.1.1.1/faq/)). Google sends "the first 24/56 bits or less for IPv4/IPv6 respectively" ([Google FAQ](https://developers.google.com/speed/public-dns/faq)), and its JSON API withholds it on `edns_client_subnet=0.0.0.0/0` ([Google, JSON API](https://developers.google.com/speed/public-dns/docs/doh/json)), which the capture of 19 October 2026 echoed back. Quad9: "we do not transmit that data in our default service", at the cost of less exact CDN routing ([Quad9 FAQ](https://quad9.net/support/faq/)); 9.9.9.11 and 9.9.9.12 send it. OpenDNS: nothing on its own pages; only Google's guidance to authoritative operators mentions "resolvers that require ECS whitelisting, like OpenDNS" ([Google, ECS Guidelines](https://developers.google.com/speed/public-dns/docs/ecs)), a statement about a third party. Whether a resolver sends ECS upstream is not visible from the client side.
+
+## Logging and retention
+
+| Operator, document and its date | Client IP address | Logs | Sharing |
+|---|---|---|---|
+| Cloudflare, privacy commitment, last updated 27 March 2024 | truncated (last octet of IPv4, last 80 bits of IPv6) and deleted within 25 hours; no untruncated address in non-volatile storage except 0.05 % sampled packets | deleted within 25 hours; aggregated data kept indefinitely | one research partner, without client addresses; practices audited by an accounting firm |
+| Google, Your Privacy, last updated 3 September 2024 | in temporary logs only, deleted within 24 to 48 hours, longer for abuse cases | permanent logs are a sample with city or region location, autonomous system number and transport | legal processes; no ad targeting; no correlation except security |
+| Quad9, Data and Privacy Policy, version 1.1, 24 June 2026 | not recorded; held in volatile memory for microseconds to milliseconds | counters by prefix no finer than /24 or /56, region of at least 10,000 people, protocol, query label; kept permanently | not shared, sold or rented; counts and timestamps per malicious domain to threat partners |
+| OpenDNS, Cisco Online Privacy Statement, 26 September 2023 | no DNS-specific statement | retained "as needed to fulfill the purposes for which it was collected" | refers to the Cisco General Disclosures |
+
+Cloudflare: "Cloudflare will delete the Public Resolver Logs within 25 hours" ([Cloudflare, Public DNS Resolver](https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/)). Google: "These logs are subject to our deletion processes within 24-48 hours" ([Google, Your Privacy](https://developers.google.com/speed/public-dns/privacy)). Quad9: "Quad9 does not collect or record user IP addresses" ([Quad9, Data and Privacy Policy](https://quad9.net/privacy/policy/)); the responsible party is a Swiss foundation under Swiss data protection law ([Quad9, Compliance and Applicable Law](https://quad9.net/privacy/compliance-and-applicable-law/)). OpenDNS: the privacy link serves Cisco's company-wide statement, which names no DNS log field or period ([Cisco Online Privacy Statement](https://www.opendns.com/privacy-policy/)).
+
+## The two alternatives
+
+The resolver your network hands out over DHCP sees the same queries but belongs to a party you already deal with, and a network can now announce an encrypted one through the DHCP options of RFC 9463 ([RFC 9463, abstract](https://www.rfc-editor.org/rfc/rfc9463.txt)). Your own validating resolver moves the exposure rather than removing it: "it may decrease privacy against an observer located on an authoritative name server" ([RFC 9076, section 6.2](https://www.rfc-editor.org/rfc/rfc9076.txt)), since a resolver with very few users exposes them ([RFC 8932, section 5.3.2](https://www.rfc-editor.org/rfc/rfc8932.txt)); the middle path is encrypted forwarding to a larger resolver with a compatible policy (section 5.3.2). BIND's delv validates on your side with the validator logic of named ([delv manual](https://bind9.readthedocs.io/en/stable/manpages.html)).
+
+## What goes wrong
+
+Transparent redirection of port 53. Quad9 documents ISPs that redirect third-party resolver queries to their own forwarders ([Quad9 docs, FAQs](https://docs.quad9.net/FAQs/)); the id.server test exposes it, and so does Google's TXT test below ([Google, Troubleshooting](https://developers.google.com/speed/public-dns/docs/troubleshooting)).
+
+A captive portal. "Current captive portal solutions typically implement some variations of forging DNS or HTTP responses" ([RFC 8952, section 1](https://www.rfc-editor.org/rfc/rfc8952.txt)); RFC 8910's DHCP option tells the client it may be behind a portal instead ([RFC 8910, section 2](https://www.rfc-editor.org/rfc/rfc8910.txt)).
+
+Split-horizon names. Internal zones live only on the network's own servers; Google warns that it may cut off an office's private domains ([Google FAQ](https://developers.google.com/speed/public-dns/faq)). At home the zone is `home.arpa.`, which a host on another resolver may fail to resolve or resolve wrongly ([RFC 8375, section 4](https://www.rfc-editor.org/rfc/rfc8375.txt)).
+
+Geolocation shifts without ECS: a resolver that withholds your subnet is answered for its own location ([RFC 7871, section 5](https://www.rfc-editor.org/rfc/rfc7871.txt)).
+
+The address itself. On 27 June 2024, 1.1.1.1 was unreachable from over 300 networks in 70 countries: "The root cause was a mix of BGP (Border Gateway Protocol) hijacking and a route leak" ([Cloudflare Blog, June 2024 incident](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)). On 14 July 2025 the address was down for 62 minutes from "an internal configuration error and not the result of an attack or a BGP hijack" ([Cloudflare Blog, July 2025 incident](https://blog.cloudflare.com/cloudflare-1-1-1-1-incident-on-july-14-2025/)); DoH clients configured by name stayed up ([BGP: the trust fall](/learn/bgp-and-the-routing-chokepoint) has the wider story).
+
+## How to see it
+
+The commands, in the BIND 9 dig manual's syntax ([dig manual, Query Options](https://bind9.readthedocs.io/en/stable/manpages.html)) and as the operators publish them:
+
+```bash
+# Which instance answered (Cloudflare and Quad9 document the CHAOS form; Google answers NSID)
+dig +short CHAOS TXT id.server @1.1.1.1
+dig +short ch txt id.server. @9.9.9.9
+dig @dns.google. +nsid | grep NSID
+# Which transport your query used (Quad9)
+dig +short txt proto.on.quad9.net.
+# DNSSEC: ask for signatures and read ad in the flags; +cd turns validation off
+dig +dnssec @9.9.9.9 example.com
+# Withhold your subnet
+dig +subnet=0 @8.8.8.8 example.com
+# DoT and DoH with dig itself
+dig +tls @1.1.1.1 example.com
+dig @dns.google +https example.com
+# Google's reachability test: NXDOMAIN means another resolver answered, a timeout means port 53 is blocked
+dig -t TXT test.dns.google.com. '@dns.google.'
+# DoH by hand (Cloudflare's own example)
+curl -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=cloudflare.com&type=AAAA'
+```
+
+A real exchange captured on 19 October 2026 at 03:19:46 Greenwich Mean Time (GMT), Cloudflare's JSON endpoint asked for `www.example.com A`, addresses withheld:
+
+```text
+HTTP/2 200
+"Status":0,"TC":false,"RD":true,"RA":true,"AD":true,"CD":false
+Answer: two A records, TTL 144
+```
+
+The filter shows on a name Quad9 blocks. The same wire-format query, ID 0 as RFC 8484 recommends, for the test name Quad9's own documentation uses, at dns.quad9.net and dns10.quad9.net on 19 October 2026:
+
+```text
+dns.quad9.net    flags=0x8123 QR=1 RD=1 RA=0 AD=1 RCODE=3 (NXDOMAIN)  QD 1 AN 0 NS 0 AR 1
+                 OPT options=[EDE code 17 text '']
+dns10.quad9.net  flags=0x8180 QR=1 RD=1 RA=1 AD=0 RCODE=0 (NOERROR)   QD 1 AN 1 NS 0 AR 1
+```
+
+NXDOMAIN with no authority record and EDE 17 is the block signature Quad9 documents; the unfiltered variant returned the address. In a browser, Cloudflare's check is 1.1.1.1/help ([Cloudflare FAQ](https://developers.cloudflare.com/1.1.1.1/faq/)) and Quad9's is on.quad9.net ([Quad9 docs, FAQs](https://docs.quad9.net/FAQs/)). The [dig command builder](/tools/dig-command-builder) assembles any command above and summarises what it will carry (transport, port, RD, DO, checking disabled (CD), EDNS); the [dig output explainer](/tools/dig-output-explainer) decodes a pasted answer and warns when DO was set but AD is not; the [curl command builder](/tools/curl-command-builder) writes the DoH request; the [nslookup output explainer](/tools/nslookup-output-explainer) reads Cloudflare's Windows-side `nslookup -class=chaos -type=txt id.server 1.1.1.1`; the [Python playground](/tools/python-playground) packs the 12-byte header with `struct`, as the captured queries were built. [Reading dig output](/learn/reading-dig-output) and [Anatomy of a dig command line](/learn/anatomy-of-a-dig-command-line) cover output and syntax.
+
+## What to remember
+
+- A public resolver is an open resolver meant to be open (RFC 9499, section 6); it sees every name you look up, encrypted or not.
+- Compare on RFC 8932's list, from each operator's dated page: IP treatment, retention, sharing, filtering, transports, what goes upstream.
+- Filtering is per address: Cloudflare 1.1.1.2 and 1.1.1.3 block with 0.0.0.0; Google only security cases and court orders in five countries, REFUSED with EDE 16; Quad9 9.9.9.9 NXDOMAIN with AUTHORITY 0 and EDE 15 to 17; OpenDNS 208.67.222.123 and 208.67.220.123 are FamilyShield.
+- Cloudflare, Google and Quad9 state DNSSEC validation; the ad flag is worth nothing without a trusted resolver on a secure path (RFC 4035, section 4.9.3), and one non-validating resolver in the list disables it all.
+- ECS: Google sends up to 24 or 56 bits, Cloudflare none, Quad9 none except on 9.9.9.11 and 9.9.9.12; `+subnet=0` withholds it; OpenDNS's policy is stated only by a third party.
+- Retention as stated: Cloudflare 25 hours; Google 24 to 48 hours plus a sampled permanent log; Quad9 no address at all; OpenDNS's consumer pages give no DNS figure.
+- id.server or NSID says which anycast instance answered, and a wrong answer means port 53 is redirected; internal names, home.arpa and captive portals break when you switch.
+
+## Sources
+
+- [RFC 9499, DNS Terminology, March 2024: section 6 (Resolver, Stub resolver, Recursive mode, Recursive resolver, Forwarder, Policy-implementing resolver, Open resolver, Split DNS, View, Anycast, Privacy-enabling DNS server) and section 10 (Validating resolver) (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 7871, Client Subnet in DNS Queries, May 2016: sections 1, 2, 5, 6, 7.1.1, 7.1.2, 11.1, 11.3 and 12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7871.txt)
+- [RFC 7858, Specification for DNS over Transport Layer Security (TLS), May 2016: sections 1, 3.1, 4.1 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7858.txt)
+- [RFC 8484, DNS Queries over HTTPS (DoH), October 2018: sections 1, 3, 4.1, 8.1, 8.2, 9 and 10 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8484.txt)
+- [RFC 9250, DNS over Dedicated QUIC Connections, May 2022: sections 1, 3.3, 4.1, 4.1.1 and 5.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9250.txt)
+- [RFC 4033, DNS Security Introduction and Requirements, March 2005: sections 3, 4, 5 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, March 2005: sections 3.2.3, 4.9.3 and 5.5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4035.txt)
+- [RFC 8375, Special-Use Domain 'home.arpa.', May 2018: sections 1, 4 and 6.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8375.txt)
+- [RFC 8932, Recommendations for DNS Privacy Service Operators, October 2020: sections 5.1.4, 5.1.6, 5.2.1, 5.3.1, 5.3.2, 6, 6.1.1 and 6.2 and appendix C (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8932.txt)
+- [RFC 9076, DNS Privacy Considerations, July 2021: sections 4.2, 5.1, 6, 6.1, 6.1.1, 6.1.1.2, 6.1.2, 6.1.3, 6.1.4, 6.2 and 9 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9076.txt)
+- [RFC 4786, Operation of Anycast Services, December 2006: sections 2, 3.1, 3.2 and 6.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4786.txt)
+- [RFC 4892, Requirements for a Mechanism Identifying a Name Server Instance, June 2007: sections 1 and 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4892.txt)
+- [RFC 5001, DNS Name Server Identifier (NSID) Option, August 2007: sections 1, 2.1 and 2.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5001.txt)
+- [RFC 8914, Extended DNS Errors, October 2020: sections 4.16 to 4.19 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8914.txt)
+- [RFC 9463, DHCP and Router Advertisement Options for the Discovery of Network-designated Resolvers (DNR), November 2023: abstract and section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9463.txt)
+- [RFC 8952, Captive Portal Architecture, November 2020: section 1 and appendix A (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8952.txt)
+- [RFC 8910, Captive-Portal Identification in DHCP and Router Advertisements (RAs), September 2020: sections 1, 2 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8910.txt)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility and delv - DNS lookup and validation utility, undated page: Synopsis, Simple Usage and Query Options (read 2026-10-19)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [Cloudflare, 1.1.1.1 docs: IP addresses, April 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/ip-addresses/)
+- [Cloudflare, 1.1.1.1 docs: Set up, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/setup/)
+- [Cloudflare, 1.1.1.1 docs: DNS over TLS, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-tls/)
+- [Cloudflare, 1.1.1.1 docs: Make API requests to 1.1.1.1, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/)
+- [Cloudflare, 1.1.1.1 docs: 1.1.1.1 Public DNS Resolver, privacy commitment last updated March 27, 2024 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/privacy/public-dns-resolver/)
+- [Cloudflare, 1.1.1.1 docs: FAQ, April 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/faq/)
+- [Cloudflare, 1.1.1.1 docs: Troubleshooting, May 2026 (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/troubleshooting/)
+- [Cloudflare Blog, Cloudflare 1.1.1.1 incident on June 27, 2024, July 2024: Introduction, Background and Incident timeline and impact (read 2026-10-18)](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)
+- [Cloudflare Blog, Cloudflare 1.1.1.1 incident on July 14, 2025, July 2025: Background, Incident Timeline and Impact (read 2026-10-18)](https://blog.cloudflare.com/cloudflare-1-1-1-1-incident-on-july-14-2025/)
+- [Google, Public DNS: Your Privacy, last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/privacy)
+- [Google, Public DNS: Frequently Asked Questions, last updated October 2026 (read 2026-10-18)](https://developers.google.com/speed/public-dns/faq)
+- [Google, Public DNS: Blocking Behavior, last updated December 2025 (read 2026-10-18)](https://developers.google.com/speed/public-dns/blocking)
+- [Google, Public DNS: Secure Transports, last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/secure-transports)
+- [Google, Public DNS: DNS-over-TLS, last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/dns-over-tls)
+- [Google, Public DNS: JSON API for DNS over HTTPS (DoH), last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/doh/json)
+- [Google, Public DNS: EDNS Client Subnet (ECS) Guidelines, last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/ecs)
+- [Google, Public DNS: Troubleshooting, last updated September 2024 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/troubleshooting)
+- [Quad9, Data and Privacy Policy, version 1.1, June 2026 (read 2026-10-18)](https://quad9.net/privacy/policy/)
+- [Quad9, Compliance and Applicable Law, undated page (read 2026-10-18)](https://quad9.net/privacy/compliance-and-applicable-law/)
+- [Quad9, Service Addresses and Features, undated page (read 2026-10-18)](https://quad9.net/service/service-addresses-and-features/)
+- [Quad9, Threat blocking, undated page (read 2026-10-18)](https://quad9.net/service/threat-blocking/)
+- [Quad9, Frequently Asked Questions, undated page (read 2026-10-18)](https://quad9.net/support/faq/)
+- [Quad9 Documentation, Services, undated page (read 2026-10-18)](https://docs.quad9.net/services/)
+- [Quad9 Documentation, FAQs, undated page (read 2026-10-18)](https://docs.quad9.net/FAQs/)
+- [Quad9, Quad9 Enables DNS Over HTTP/3 and DNS Over QUIC, March 2026 (read 2026-10-18)](https://quad9.net/news/blog/quad9-enables-dns-over-http-3-and-dns-over-quic/)
+- [Cisco OpenDNS, Set Up OpenDNS, undated page (read 2026-10-18)](https://www.opendns.com/setupguide/)
+- [Cisco OpenDNS, DNS services for your home or small business, undated page (read 2026-10-18)](https://www.opendns.com/home-internet-security/)
+- [Cisco, Cisco Online Privacy Statement, September 2023 (read 2026-10-18)](https://www.opendns.com/privacy-policy/)
+- [Cisco, Umbrella DNS documentation: Anycast IP Addresses, undated page (read 2026-10-18)](https://securitydocs.cisco.com/docs/umbrella-dns/olh/146414.dita)

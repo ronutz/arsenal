@@ -242,36 +242,22 @@ function classify(code, hops) {
 // A 404 here has been chased down and is NOT a dead citation. Keyed by URL
 // exactly as cited. The reason is the point: a bare allowlist would let the next
 // real defect in behind a URL nobody remembers checking.
-const DECLARED_SUSPECT = new Map([
-  [
-    "https://en.wikipedia.org/wiki/AlgoSec",
-    "ALIVE. This container's egress answers 404 for specific en.wikipedia.org paths while serving others normally; confirmed served to a second client on 2026-09-27. Environment, not rot.",
-  ],
-  [
-    "https://en.wikipedia.org/wiki/Arkadiy_Dobkin",
-    "ALIVE. Same egress behaviour as the AlgoSec article; confirmed with a second client on 2026-09-27.",
-  ],
-  [
-    "https://en.wikipedia.org/wiki/EPAM_Systems",
-    "ALIVE. Same egress behaviour; confirmed with a second client on 2026-09-27.",
-  ],
-  [
-    "https://en.wikipedia.org/wiki/Recife_Center_for_Advanced_Studies_and_Systems",
-    "ALIVE. Same egress behaviour; confirmed with a second client on 2026-09-27.",
-  ],
-  [
-    "https://commons.apache.org/proper/commons-ognl/language-guide.html",
-    "ALIVE. Confirmed served to a second client on 2026-09-27; the 404 is this environment's, not the project's.",
-  ],
-  [
-    "http://www.gjerull.net/site_media/static/html/masterthesis/masterthesisse12.html",
-    "ALIVE over plain http, which is how it is cited. Confirmed 2026-09-27. Not upgraded to https because the host does not serve it there.",
-  ],
-  [
-    "https://my.f5.com/manage/s/documentation",
-    "UNDETERMINABLE, and that is the finding. my.f5.com is a Salesforce-hosted single-page app behind sign-in: a headless render on 2026-09-27 returned the bare app shell (title \"myF5\", 45 characters of text) rather than a 404 page. The portal answers; whether a signed-in reader reaches this route cannot be established from here. Re-check from a browser with an F5 account, not by re-running this script.",
-  ],
-]);
+//
+// *** A SECOND CLIENT IS A LIVE READER THAT CANNOT ANSWER FROM A CACHE (2026-10-18). *** A real browser (PRIME's,
+// through Claude in Chrome) or a direct download with a cache-busting query string; never a fetch tool's copy,
+// which can be months old. A Wikipedia 404 is settled by the article's deletion log, not by a second fetch. A
+// declaration records the client, the date and what the page said.
+// EMPTIED 2026-10-18. The seven entries declared on 2026-09-27 as "ALIVE ... confirmed with a second client"
+// were all dead when read in PRIME's own browser on 2026-10-18: en.wikipedia.org's AlgoSec (deleted 5 July 2026),
+// Arkadiy_Dobkin (23 June 2026), EPAM_Systems (10 June 2026) and Recife_Center_for_Advanced_Studies_and_Systems
+// (21 September 2026), each in Wikipedia's own deletion log; Apache's OGNL language guide (moved to /dormant/);
+// the gjerull.net thesis page (the server's own 404); and MyF5's documentation route (MyF5's own "404: Page not
+// found"). The "egress" explanation for the Wikipedia 404s was wrong: Wikipedia was answering "does not have an
+// article with this exact name" to every client. The second client had been the web-fetch tool, which serves
+// cached copies: on 2026-10-18 it returned the deleted LevelBlue article and a removed Reed Smith page as if live,
+// and answered not-found as soon as a cache-busting parameter was added. Every citation is repaired or removed
+// (partners.ts, the two OGNL manifests, the Unix article), so nothing is left to declare.
+const DECLARED_SUSPECT = new Map([]);
 
 const results = [];
 /** host origin -> status code of its own root, so the control is fetched once. */
@@ -345,7 +331,7 @@ if (staleDeclarations.length) {
 }
 
 if (undeclared.length) {
-  console.log(`\n  *** ${undeclared.length} UNDECLARED SUSPECT citation(s) - CONFIRM EACH WITH A SECOND CLIENT: ***\n`);
+  console.log(`\n  *** ${undeclared.length} UNDECLARED SUSPECT citation(s) - CONFIRM EACH WITH A LIVE SECOND CLIENT (A REAL BROWSER, NEVER A CACHED FETCH): ***\n`);
   for (const d of undeclared.slice(0, 40)) {
     console.log(`  ${d.code}  ${d.url}`);
     if (d.hops > 0) console.log(`        landed on ${d.landed}  (${d.hops} hop(s) - the host may have rebranded)`);
@@ -364,7 +350,7 @@ if (args.includes("--strict")) {
     console.error(
       `\n[audit-source-liveness] STRICT FAIL: ${undeclared.length} undeclared suspect(s), ` +
         `${staleDeclarations.length} stale declaration(s).\n` +
-        `      Confirm each with a SECOND CLIENT before treating it as dead. If it is dead, ` +
+        `      Confirm each with a LIVE SECOND CLIENT (a real browser, never a cached fetch) before treating it as dead. If it is dead, ` +
         `repair or remove the citation and keep the claim in the copy\n` +
         `      (PRIME 2026-09-27: a fact is not deleted for want of a source). If it is alive, ` +
         `add it to DECLARED_SUSPECT with the finding that settled it.\n`,

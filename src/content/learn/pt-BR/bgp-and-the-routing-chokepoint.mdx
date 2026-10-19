@@ -1,64 +1,192 @@
 ---
 slug: bgp-and-the-routing-chokepoint
 title: "BGP: o voto de confiança que sustenta a internet inteira"
-summary: "O protocolo que decide para onde vai o seu tráfego não tem nenhum mecanismo próprio para saber se um anúncio é verdadeiro. Durante décadas, a defesa foi confiar que os operadores iam perceber, e na maioria das vezes eles perceberam, só que horas depois, quando um país já tinha ficado sem YouTube ou uma rede de pagamentos já tinha sido desviada, sem alarde, por outro continente. O que quebra, com que rapidez, quem conseguiria fazer isso e por que a correção que existe está implantada só pela metade."
-concepts: ["bgp", "routing", "hijacking", "rpki", "resilience"]
-relatedTools: []
-relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare"]
+summary: "O BGP leva a informação de alcance entre cerca de 74.000 redes independentes e não tem nenhum mecanismo próprio para verificar se um anúncio é autorizado ou se um caminho é real. Depois da leitura, você consegue distinguir um hijack de um route leak como as normas os definem, explicar por que a rota mais específica vence e por que a filtragem do upstream decide o tamanho do estrago, ler os incidentes documentados nos registros de quem os viveu e dos reguladores, e dizer qual defesa (filtragem, origens de rota assinadas, papéis de peering, assinatura de caminho) responde a qual falha."
+concepts: ["bgp", "routing", "hijacking", "rpki", "resilience", "route leak", "route origin validation", "manrs", "bgpsec", "aspa"]
+relatedTools: ["cidr", "ipv6"]
+relatedArticles: ["the-chokepoints-of-the-internet", "what-happens-if-the-dns-root-goes-dark", "bgp-primer", "cloudflare", "routing-tables-and-default-gateway", "static-routes-and-longest-match", "dynamic-routing-compared", "supernetting-and-aggregation", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute"]
 category: networking
 order: 121
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-10-19"
 ---
 
-## O que é o protocolo, afinal
+Com o BGP, as redes da internet dizem umas às outras que endereços alcançam. Em 2024, o Office of the National Cyber Director do governo dos EUA contou "approximately 74,000 independently operated but interconnected networks called Autonomous Systems (ASes)", cerca de 74 mil redes ([National Cyber Director, página 3](https://bidenwhitehouse.archives.gov/wp-content/uploads/2024/09/Roadmap-to-Enhancing-Internet-Routing-Security.pdf)), e o BGP acredita no que cada uma delas diz. Depois da leitura, você consegue distinguir um hijack de um route leak, explicar por que a rota mais específica vence, ler os incidentes nos registros de quem os viveu e associar cada falha à sua defesa. O protocolo em si está no [primer de BGP](/learn/bgp-primer), e a série começa em [tabelas de roteamento](/learn/routing-tables-and-default-gateway).
 
-A internet é formada por cerca de setenta e cinco mil redes independentes, os sistemas autônomos (autonomous systems, ou AS), que aceitam transportar o tráfego umas das outras. O **BGP (Border Gateway Protocol)** é o jeito como elas contam umas às outras quais endereços conseguem alcançar. Uma rede anuncia "eu alcanço este bloco de endereços", os vizinhos repassam o anúncio, e cada roteador monta a sua visão do mundo a partir do que ouviu.
+## O que o BGP presume, e por quê
 
-A premissa do projeto aparece com todas as letras na história do protocolo: os participantes se conhecem e não vão mentir. Não existe nenhum mecanismo nativo para verificar se um anúncio é legítimo. Se você disser que um bloco de endereços é seu, sem ser, os seus vizinhos vão acreditar, e os vizinhos deles também; e, como o tráfego segue o anúncio mais específico, um anúncio mais preciso ganha do anúncio do dono verdadeiro.
+O Request for Comments (RFC) que definiu o BGP-4 em março de 1995 tratou de segurança numa frase só: "Security issues are not discussed in this document", a segurança ficou de fora ([RFC 1771, Security Considerations](https://www.rfc-editor.org/rfc/rfc1771.txt)). A análise de 2006 é direta: "There are no mechanisms internal to BGP that protect against attacks that modify, delete, forge, or replay data", nada interno protege os dados ([RFC 4272, Abstract](https://www.rfc-editor.org/rfc/rfc4272.txt)).
 
-É aí que está o ponto de estrangulamento: não num componente que alguém possa desligar, mas num acordo de que alguém pode abusar.
+A premissa por baixo aparece na arquitetura da Resource Public Key Infrastructure (RPKI): "BGP is based on the assumption that the AS that originates routes for a particular prefix is authorized to do so by the holder of that prefix", presume-se a autorização do titular ([RFC 6480, seção 3](https://www.rfc-editor.org/rfc/rfc6480.txt)). Nada num UPDATE prova isso. O roteador escolhe rotas por política local ([RFC 4271, seção 9.1](https://www.rfc-editor.org/rfc/rfc4271.txt)), e a única checagem do protocolo base do lado da origem, a de que o primeiro sistema autônomo (AS) do caminho é o próprio vizinho, é opcional (seção 6.3). A autenticação da sessão protege a conexão, não o conteúdo: não impede informação falsa vinda de um peer legítimo ([RFC 4272, seção 1](https://www.rfc-editor.org/rfc/rfc4272.txt)). A ideia de path vector está em [Roteamento dinâmico comparado](/learn/dynamic-routing-compared).
 
-## O que quebra e com que rapidez
+## Dois jeitos de errar: hijacks e route leaks
 
-**Segundos ou minutos, não dias.** Ao contrário de uma [falha na raiz do DNS](/learn/what-happens-if-the-dns-root-goes-dark), em que o cache garante dois dias de folga, uma rota errada se propaga na velocidade do plano de controle. Um hijack, o sequestro de um prefixo, fica visível no mundo inteiro em minutos.
+Um hijack de prefix, nas palavras do roadmap americano, é "networks originating false or unauthorized announcements of destination addresses to cause misdelivery of Internet traffic", anúncios falsos que desviam tráfego ([National Cyber Director, página 5](https://bidenwhitehouse.archives.gov/wp-content/uploads/2024/09/Roadmap-to-Enhancing-Internet-Routing-Security.pdf)): é uma questão de quem pode originar. Um route leak, uma rota verdadeira no lugar errado, é "the propagation of routing announcement(s) beyond their intended scope", além do escopo pretendido ([RFC 7908, seção 2](https://www.rfc-editor.org/rfc/rfc7908.txt)). A maioria dos route leaks é acidental (seção 2), e o roadmap diz o mesmo dos incidentes de BGP em geral (página 5).
 
-**O tamanho do estrago depende de quem aceita o anúncio.** Se uma rede pequena faz um anúncio falso e o provedor upstream dela filtra, nada acontece. Se o upstream aceita e reanuncia, o estrago cresce na proporção da importância desse provedor. É por isso que o mesmo erro pode passar despercebido num dia e atingir um continente inteiro no outro: o que muda não é o erro, é o rigor de filtragem de quem recebeu o anúncio.
+A RFC 7908 divide os route leaks em seis tipos; ISP é o provedor de acesso (Internet Service Provider):
 
-O histórico mostra três tipos de caso:
+| Tipo | Nome na RFC 7908 | O que vai para onde |
+|---|---|---|
+| 1 | Hairpin Turn with Full Prefix | um AS com dois upstreams repassa a rota de um ISP para o outro |
+| 2 | Lateral ISP-ISP-ISP Leak | o ISP-B repassa ao ISP-C uma rota recebida do ISP-A |
+| 3 | Leak of Transit-Provider Prefixes to Peer | rotas do provedor de trânsito vão para um peer lateral |
+| 4 | Leak of Peer Prefixes to Transit Provider | rotas de um peer lateral vão para o próprio provedor de trânsito |
+| 5 | Prefix Re-origination with Data Path to Legitimate Origin | o AS reorigina a rota; os pacotes ainda chegam ao destino real, passando por ele |
+| 6 | Accidental Leak of Internal Prefixes and More-Specific Prefixes | rotas internas saem para provedores ou peers |
 
-**Route leaks acidentais.** Uma rede reanuncia para um provedor as rotas que aprendeu de outro e, de repente, passa a se apresentar como o melhor caminho para grandes pedaços da internet, com um tráfego que ela não tem a menor condição de transportar. O tráfego chega em massa e é descartado. Os casos mais famosos foram erros de configuração comuns, em operadoras pequenas que, por alguns instantes, viraram o centro da internet.
+Os tipos 1 a 4 violam política e diferem nos papéis dos AS envolvidos (seção 4); o tipo 1 se espalha porque o segundo ISP prefere o anúncio de um cliente ao de um peer (seção 3.1).
 
-**Censura que vaza.** Para bloquear um serviço dentro de um país, alguém anuncia internamente uma rota falsa, e um provedor que não filtra deixa esse anúncio vazar para fora; resultado: o serviço sai do ar para boa parte do mundo, e não só para aquele país.
+## Por que a rota mais específica vence
 
-**Interceptação deliberada.** É a versão perigosa. O tráfego é desviado, passa por quem desviou e é devolvido ao caminho, então o destino continua funcionando e ninguém percebe o continente a mais no trajeto. Esse método já foi usado para capturar tráfego de provedores de pagamento e de serviços de criptomoeda, e o roubo acontece nos minutos que se passam até alguém reagir.
+O encaminhamento segue o [longest match](/learn/static-routes-and-longest-match): entre as rotas que cobrem um destino, vence o prefix mais longo, que o BGP chama de rota mais específica ([RFC 4271, seção 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)). A norma do Classless Inter-domain Routing (CIDR) tira a consequência: "Traffic can be hijacked by advertising a prefix for a given destination that is more specific than the aggregate that is normally advertised for that destination", o mais específico desvia o tráfego ([RFC 4632, seção 12](https://www.rfc-editor.org/rfc/rfc4632.txt)). Um [agregado](/learn/supernetting-and-aggregation) não ganha de uma rota mais longa já aceita.
 
-## Quem conseguiria fazer isso
+A mesma seção põe a defesa na borda: filtros de política e limites de comprimento de prefix tirados das alocações de cada registro regional (RIR, Regional Internet Registry) (seção 12). Por isso o estrago depende da primeira rede que ouve o erro. Sobre 2019, a Cloudflare escreveu que o leak deveria ter parado na Verizon ([Cloudflare, 24 de junho de 2019](https://blog.cloudflare.com/how-verizon-and-a-bgp-optimizer-knocked-large-parts-of-the-internet-offline-today/)); em 2024, as redes que aceitaram e redistribuíram os anúncios ampliaram o impacto ([Cloudflare, 4 de julho de 2024](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)).
 
-Qualquer um que opere um sistema autônomo e tenha um vizinho que não filtra, e esse grupo é bem maior do que a maioria imagina. Ele inclui pequenos provedores regionais, empresas de hospedagem e qualquer entidade que tenha conseguido um número de AS, de forma legítima ou não.
+## O registro, nas palavras de quem viveu os incidentes
 
-Atores estatais têm mais opções: uma operadora nacional pode moldar o que o próprio país enxerga, e uma operadora que seja um grande provedor de trânsito pode afetar o que outros países enxergam. Mas, para ser honesto, não é preciso um Estado para isso. **A maioria dos grandes incidentes registrados foi erro**, e o mesmo mecanismo que permite que um erro de digitação na configuração derrube um serviço permite que uma configuração feita de propósito roube tráfego.
+### Pakistan Telecom e YouTube, 24 de fevereiro de 2008
 
-## A correção que existe
+O Réseaux IP Européens (RIPE) Network Coordination Centre (RIPE NCC) acompanhou o caso pelos coletores do seu Routing Information Service (RIS). O objetivo do Paquistão era bloquear o site do YouTube ([estudo de caso do RIPE NCC](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)). Às 18:47 UTC, a Pakistan Telecom (AS17557) começou um anúncio não autorizado que cobria parte do espaço de endereços do YouTube, e "One of Pakistan Telecom's upstream providers, PCCW Global (AS3491) forwarded this announcement to the rest of the Internet, which resulted in the hijacking of YouTube traffic on a global scale", o upstream espalhou o anúncio pelo mundo. Em dois minutos, a rota "had spread to its largest extent in the RIS routing view", já estava no auge.
 
-O **RPKI (Resource Public Key Infrastructure)** associa a titularidade dos endereços a uma prova criptográfica. O detentor de um bloco de endereços publica um **ROA (Route Origin Authorisation)** assinado, dizendo qual sistema autônomo pode originar aquele bloco, e os roteadores que fazem a validação comparam os anúncios com essas assinaturas e descartam os inválidos.
+A linha do tempo registra o YouTube (AS36561) anunciando ele mesmo o trecho afetado às 20:07 e rotas mais específicas às 20:18, e a PCCW Global retirando, às 21:01, todos os prefixes originados pelo AS17557. O RIPE concluiu que configuração de roteamento adequada impede essa propagação, e citou a discussão sobre certificados para recursos de numeração: a futura RPKI.
 
-Isso funciona: o RPKI já está implantado nas grandes redes de nuvem e de conteúdo e numa parcela crescente dos provedores de trânsito, e reduziu de forma visível o impacto de hijacks que antes teriam se espalhado pelo mundo. O **MANRS** (Mutually Agreed Norms for Routing Security) é o acordo que acompanha o RPKI e define o comportamento mínimo esperado: filtre os seus clientes, não deixe sair tráfego com endereço de origem forjado e mantenha os seus dados de roteamento corretos.
+### China Telecom, 8 de abril de 2010
 
-Os limites do RPKI precisam ser ditos com a mesma clareza que o valor dele. O RPKI valida a **origem** (quem pode anunciar um prefixo), e não o **caminho**. Um atacante que não consegue falsificar a origem real de um prefixo ainda tem margem para agir, anunciando um caminho plausível até esse prefixo. A validação de caminho existe no papel, mas quase não foi implantada. E a validação só protege você se as redes entre você e a origem do anúncio também validarem: um registro assinado não adianta nada se a rede que transporta o seu tráfego o ignora.
+A U.S.-China Economic and Security Review Commission relatou que, por cerca de 18 minutos, a China Telecom anunciou rotas erradas que outras redes adotaram, levando o tráfego de cerca de 15% dos destinos da internet por servidores na China ([relatório da Commission, página 244](https://www.uscc.gov/sites/default/files/annual_reports/2010-Report-to-Congress.pdf)). Sobre a intenção, foi cuidadosa: "Evidence related to this incident does not clearly indicate whether it was perpetrated intentionally and, if so, to what ends", a intenção não ficou clara (página 243). A RFC 7908 classifica o evento como tipo 5 ([RFC 7908, seção 3.5](https://www.rfc-editor.org/rfc/rfc7908.txt)).
 
-## O que dá para fazer na prática
+### 2017 em diante, no registro da FCC
 
-O checklist do operador é curto e sem graça, o que é típico de tudo o que funciona.
+A Federal Communications Commission (FCC) registra que em 2017 "traffic from a number of financial institutions, including MasterCard, Visa, and others was also routed through a Russian government-controlled telecommunications company under 'unexplained' circumstances", um desvio pela Rússia sem explicação ([FCC 22-18, parágrafo 6](https://docs.fcc.gov/public/attachments/FCC-22-18A1.pdf)), sem nomear a empresa. Uma notificação de 2024 acrescenta, sem nome nem data, um hijack contra um serviço de criptomoeda para cometer roubo ([FCC 24-62, parágrafo 11](https://docs.fcc.gov/public/attachments/FCC-24-62A1.pdf)).
 
-- **Publique ROAs para o seu espaço de endereços.** Isso custa uma tarde no seu registro regional e permite que todo mundo descarte anúncios falsificados dos seus prefixos.
-- **Faça a validação nos seus próprios roteadores**, para que anúncios inválidos não afetem o seu tráfego.
-- **Filtre os seus clientes por prefixo**, e não por confiança. Todos os maiores incidentes envolveram alguém que aceitou um anúncio que não tinha por que aceitar.
-- **Monitore os seus próprios prefixos.** Serviços públicos de looking glass e de monitoramento de rotas avisam quando alguém anuncia o seu espaço; descobrir pelo cliente é pior.
-- **Criptografe o tráfego em trânsito e autentique os endpoints.** Interceptar tráfego criptografado, com os certificados sendo verificados, adianta bem menos; é por isso que a certificate transparency e a segurança de transporte moderna também fazem parte da história do roteamento.
+### Verizon e DQE, 24 de junho de 2019
 
-## Onde este artigo entra na série
+A Cloudflare, uma das operadoras afetadas, escreveu no mesmo dia: a DQE Communications (AS33154) usava um BGP optimizer que gerava muitas rotas mais específicas e as anunciou ao cliente Allegheny Technologies (AS396531), que as mandou ao seu outro provedor de trânsito, a Verizon (AS701), e esta as passou para a internet inteira ([Cloudflare, 24 de junho de 2019](https://blog.cloudflare.com/how-verizon-and-a-bgp-optimizer-knocked-large-parts-of-the-internet-offline-today/)). No pior momento, a Cloudflare perdeu cerca de 15% do seu tráfego global.
 
-O ponto de estrangulamento da raiz do DNS diz respeito a **nomes** e é protegido por uma assinatura que você pode verificar offline. O roteamento é diferente, e vale dizer como: não há uma raiz para copiar, nem uma zona para manter localmente, nem uma garantia criptográfica de que um caminho é real. A internet entrega os seus pacotes porque setenta e cinco mil organizações, em geral, dizem a verdade umas às outras e, em geral, filtram os seus vizinhos.
+### Facebook, 4 de outubro de 2021: uma retirada, não um hijack
 
-Esse arranjo se sustenta há três décadas, o que é tranquilizador ou alarmante, dependendo do dia. A resposta da engenharia não é substituí-lo, e sim continuar reduzindo o estrago que uma mentira sem filtro consegue fazer; e a distância entre as redes que já fazem isso e as que ainda não fazem é o retrato real da segurança do roteamento na internet.
+Aqui o próprio dono tirou as suas rotas do ar. A Meta escreveu que "This outage was triggered by the system that manages our global backbone network capacity", o gatilho foi o sistema de capacidade do backbone: um comando de manutenção desconectou os data centers, e os servidores DNS, feitos para retirar os anúncios BGP quando perdem os data centers, os retiraram ([Meta, 5 de outubro de 2021](https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/)). De fora, a Cloudflare viu sumirem as rotas para os prefixes DNS do Facebook às 15:58 UTC ([Cloudflare, 4 de outubro de 2021](https://blog.cloudflare.com/october-2021-facebook-outage/)).
+
+### 1.1.1.1, 27 de junho de 2024: hijack e route leak ao mesmo tempo
+
+A partir das 18:51 UTC, a rede brasileira Eletronet (AS267613) originou uma rota para o endereço do resolver, aceita por várias redes, entre elas pelo menos um provedor Tier 1, embora a Route Origin Authorization (ROA) da Cloudflare só autorizasse o AS13335 como origem, e uma rota que a origin validation teria marcado como Invalid ([Cloudflare, 4 de julho de 2024](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)). No mesmo período, a Nova Rede de Telecomunicações (AS262504) vazou 1.1.1.0/24 para o upstream, e essa rota passava em qualquer checagem de origem: "This BGP announcement is RPKI Valid, because the origin is correctly AS13335, but this is a route leak of 1.1.1.0/24 because the path itself is invalid", a origem estava certa, o caminho não. Mais de 300 redes em 70 países perderam o resolver; o impacto nos usuários está [no artigo sobre resolvers](/learn/choosing-a-public-dns-resolver).
+
+## Defesas em camadas
+
+### Filtragem e higiene das sessões
+
+"The main aspect of securing BGP resides in controlling the prefixes that are received and advertised on the BGP peerings", o essencial é controlar os prefixes ([RFC 7454, seção 6](https://www.rfc-editor.org/rfc/rfc7454.txt)). De clientes, só se aceitam os prefixes e os números de sistema autônomo (ASNs) deles (seções 6.2.2.1 e 9), e um limite de rotas por peer derruba a sessão se ele de repente mandar a tabela inteira (seção 8). As sessões devem preferir o TCP Authentication Option (TCP-AO) e usar a segurança por Time to Live (TTL) (seção 5). Desde 2017, o BGP externo (EBGP) rejeita por padrão: nenhuma rota entra ou sai sem uma política explícita ([RFC 8212, seções 1 e 3](https://www.rfc-editor.org/rfc/rfc8212.txt)). O Mutually Agreed Norms for Routing Security (MANRS) torna obrigatórios a filtragem de prefixes, os contatos atualizados e a publicação da intenção de roteamento num Internet Routing Registry (IRR), e recomenda a validação de endereço de origem e as ROAs ([ações do MANRS, seções 4 e 5](https://manrs.org/netops/actions/)).
+
+### RPKI e validação de origem
+
+A RPKI segue a árvore de alocação, da Internet Assigned Numbers Authority (IANA) aos cinco RIRs, e fornece autorização, não autenticação ([RFC 6480, seções 2 e 2.1](https://www.rfc-editor.org/rfc/rfc6480.txt)). Uma ROA é uma declaração assinada em que o titular de um bloco autoriza um AS a originar rotas para ele; sem maxLength, só o prefix exato fica autorizado ([RFC 9582, Abstract e seção 4.3.2.2](https://www.rfc-editor.org/rfc/rfc9582.txt)).
+
+Roteadores não verificam assinaturas: caches de validação verificam a RPKI e alimentam os roteadores ([RFC 8210, seção 3](https://www.rfc-editor.org/rfc/rfc8210.txt)), e "the router cannot validate the data cryptographically from a well-known trust anchor. The router trusts the cache to provide correct data", o roteador confia no cache ([RFC 7115, seção 3](https://www.rfc-editor.org/rfc/rfc7115.txt)). O roteador compara cada rota com esses Validated ROA Payloads (VRPs) e a marca como Valid, Invalid ou NotFound ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)). Ilustrativo, com valores de documentação ([RFC 5398, seção 4](https://www.rfc-editor.org/rfc/rfc5398.txt)) e um único VRP, 192.0.2.0/24, maxLength 24, AS64496:
+
+| Rota | Origem | Estado | Motivo |
+|---|---|---|---|
+| 192.0.2.0/24 | AS64496 | Valid | coberta, comprimento dentro do maxLength, origem confere |
+| 192.0.2.0/24 | AS64497 | Invalid | coberta, origem diferente |
+| 192.0.2.128/25 | AS64496 | Invalid | coberta, mais longa que o maxLength 24 |
+| 198.51.100.0/24 | AS64497 | NotFound | nenhum VRP a cobre |
+
+Descartar é decisão do operador: "An implementation MUST NOT exclude a route from the Adj-RIB-In or from consideration in the decision process as a side effect of its validation state, unless explicitly configured to do so", excluir exige configuração explícita ([RFC 6811, seção 2](https://www.rfc-editor.org/rfc/rfc6811.txt)), regra que a RFC 8481 reafirmou para as implementações ([RFC 8481, seção 5](https://www.rfc-editor.org/rfc/rfc8481.txt)). A política recomendada é descartar as rotas Invalid ([RFC 7454, seção 6.1.2.2.2](https://www.rfc-editor.org/rfc/rfc7454.txt)), já que aceitá-las com preferência menor muitas vezes equivale a tratá-las como Valid ([RFC 7115, seção 5](https://www.rfc-editor.org/rfc/rfc7115.txt)). Os titulares devem publicar ROAs mínimas, só com os prefixes que de fato originam, e evitar o maxLength ([RFC 9319, seção 5](https://www.rfc-editor.org/rfc/rfc9319.txt)).
+
+### Route leaks: papéis e o atributo OTC
+
+Uma rota vazada tem a origem certa, então a origin validation não a enxerga. A RFC 9234 (maio de 2022) faz cada sessão EBGP combinar um papel na mensagem OPEN (Provider, Customer, Route Server, Route Server Client ou Peer) e cria o atributo Only to Customer (OTC): "If a route already contains the OTC Attribute, it MUST NOT be propagated to Providers, Peers, or RSes", rota marcada não sobe ([RFC 9234, seção 5](https://www.rfc-editor.org/rfc/rfc9234.txt)). Em 2024, a falha foi o AS262504 anunciar a rota ao seu upstream, o AS1031 ([Cloudflare, 4 de julho de 2024](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)); para uma rota com OTC, essa regra proíbe exatamente esse passo.
+
+### Validação de caminho: BGPsec e ASPA
+
+No BGPsec, cada AS do caminho assina o UPDATE ([RFC 8205, Abstract](https://www.rfc-editor.org/rfc/rfc8205.txt)). Virou norma em setembro de 2017; basta um AS sem suporte no caminho para a garantia se perder (seção 7.9), e ele assina o plano de controle, não o trajeto dos pacotes (seção 8.1). Em 2024, o governo americano constatou que "the standard has yet to be implemented by commercial router vendors", nenhum fabricante o implementou ([National Cyber Director, apêndice A](https://bidenwhitehouse.archives.gov/wp-content/uploads/2024/09/Roadmap-to-Enhancing-Internet-Routing-Security.pdf)). A Autonomous System Provider Authorization (ASPA), uma lista assinada dos provedores de trânsito de um AS, continua sendo um Internet-Draft da Internet Engineering Task Force (IETF) em 19 de outubro de 2026 ([draft de verificação ASPA, revisão 29](https://datatracker.ietf.org/doc/draft-ietf-sidrops-aspa-verification/)).
+
+### O que a origin validation não faz
+
+Ela não valida o caminho de AS ([RFC 7115, seção 7](https://www.rfc-editor.org/rfc/rfc7115.txt)), e a própria norma diz que "this system is only able to provide limited protection against a determined attacker", proteção limitada ([RFC 6811, seção 6](https://www.rfc-editor.org/rfc/rfc6811.txt)). Ela só protege onde as redes a aplicam.
+
+## Como ver na prática
+
+O RIPEstat, do RIPE NCC, confere prefix e origem contra a RPKI. A chamada documentada, rodada em 2026-10-19 para o prefix do próprio RIPE NCC, resposta aparada ([documentação do RIPEstat](https://stat.ripe.net/docs/data-api/api-endpoints/rpki-validation)):
+
+```console
+$ curl --location --request GET "https://stat.ripe.net/data/rpki-validation/data.json?resource=3333&prefix=193.0.0.0/21"
+{
+  "time": "2026-10-19T15:08:56.987208",
+  "data": {
+    "resource": "3333",
+    "prefix": "193.0.0.0/21",
+    "validating_roas": [
+      {
+        "origin": "3333",
+        "prefix": "193.0.0.0/21",
+        "validity": "valid",
+        "max_length": 21
+      }
+    ],
+    "status": "valid",
+    "validator": "routinator"
+  }
+}
+```
+
+`resource` é o ASN de origem, `prefix` a rota com o comprimento, `validating_roas` as ROAs encontradas. `status` vale `valid`, `invalid_asn` (uma ROA que cobre o prefix nomeia outro ASN), `invalid_length` (mais longo que o máximo da ROA) ou `unknown` (nenhuma ROA).
+
+Coletores públicos mostram o que os roteadores viram. O post da Cloudflare de 2021 reproduz o Route Views sem o prefix DNS do Facebook, e uma rota que o cobre, com caminho de AS e estado RPKI (aparado):
+
+```text
+route-views>show ip bgp 185.89.218.0/23
+% Network not in table
+route-views>show ip bgp 129.134.30.0
+BGP routing table entry for 129.134.0.0/17, version 1025798334
+3303 6453 32934
+path 7FE1408ED9C8 RPKI State not found
+```
+
+Isso é o plano de controle, e o plano de dados pode não segui-lo ([RFC 7115, seção 7](https://www.rfc-editor.org/rfc/rfc7115.txt)); um [traceroute](/learn/icmp-ping-and-traceroute) mostra o caminho real dos pacotes.
+
+Os dados do National Institute of Standards and Technology (NIST) de 2026-10-19 00:00 mostram 70,86% de 1.262.159 pares prefix-origem IPv4 Valid, 27,67% NotFound e 1,47% Invalid, e 79,42% de 310.354 pares IPv6 Valid ([monitor do NIST](https://rpki-monitor.antd.nist.gov/)); em abril de 2019, a fatia Valid do IPv4 era de 12,5%. Isso mede assinatura, não filtragem: "The monitor does not attempt to measure the extent of deployment of RPKI-ROV in operational networks", o monitor não mede quem filtra ([metodologia do NIST](https://rpki-monitor.antd.nist.gov/Methodology)), sendo ROV a route origin validation. A página de teste da Cloudflare verifica se o seu provedor descarta rotas Invalid; em 2026-10-19, a resposta do título ainda era "No" ([Is BGP safe yet?](https://isbgpsafeyet.com/)).
+
+A [CIDR / Subnet Calculator](/tools/cidr) mostra a relação de "covered", 192.0.2.128/25 dentro de 192.0.2.0/24, e o [IPv6 Toolkit](/tools/ipv6) faz a mesma conta de prefix para IPv6. O [ASN lookup](/dev/out/asn-lookup) e o [RDAP lookup](/dev/out/rdap-lookup), do Registration Data Access Protocol, perguntam ao registro quem detém um número de AS ou um bloco de endereços: registro, não roteamento nem ROAs.
+
+## Para lembrar
+
+- O BGP não tem meio interno de verificar um anúncio; a especificação de 1995 nem discutia segurança.
+- Hijack é uma originação não autorizada; route leak é uma rota verdadeira propagada além do escopo pretendido (seis tipos na RFC 7908); a maioria é acidental.
+- A rota mais específica vence onde quer que seja aceita, então a filtragem do primeiro upstream decide o estrago, como em 2008 e 2019.
+- Roteadores não verificam assinaturas da RPKI, os caches sim; o roteador marca Valid, Invalid ou NotFound, e descartar as Invalid é política explícita do operador.
+- A origin validation não impede route leaks (o leak de 2024 era RPKI Valid); os papéis e o OTC da RFC 9234 tratam disso, o BGPsec não está em roteadores comerciais e a ASPA ainda é draft.
+- Em 2026-10-19, o NIST contou 70,86% dos pares prefix-origem IPv4 e 79,42% dos IPv6 como RPKI Valid: assinatura, não filtragem.
+
+## Fontes
+
+- [RFC 1771, A Border Gateway Protocol 4 (BGP-4), março de 1995: Security Considerations (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1771.txt)
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seções 6.3, 9.1, 9.1.4 e Security Considerations (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 4272, BGP Security Vulnerabilities Analysis, janeiro de 2006: Abstract, seções 1, 2 e 4.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4272.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seção 12 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, dezembro de 2008: seção 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5398.txt)
+- [RFC 6480, An Infrastructure to Support Secure Internet Routing, fevereiro de 2012: seções 1 a 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6480.txt)
+- [RFC 6811, BGP Prefix Origin Validation, janeiro de 2013: seções 1, 2, 5 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6811.txt)
+- [RFC 7115, Origin Validation Operation Based on the Resource Public Key Infrastructure (RPKI), janeiro de 2014: seções 1, 3, 5 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7115.txt)
+- [RFC 7454, BGP Operations and Security, fevereiro de 2015: seções 1, 5, 6, 8 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7454.txt)
+- [RFC 7908, Problem Definition and Classification of BGP Route Leaks, junho de 2016: seções 2 a 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7908.txt)
+- [RFC 8205, BGPsec Protocol Specification, setembro de 2017: Abstract, seções 1, 7.9 e 8.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8205.txt)
+- [RFC 8210, The Resource Public Key Infrastructure (RPKI) to Router Protocol, Version 1, setembro de 2017: Abstract, seções 3 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8210.txt)
+- [RFC 8212, Default External BGP (EBGP) Route Propagation Behavior without Policies, julho de 2017: seções 1 e 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8212.txt)
+- [RFC 8481, Clarifications to BGP Origin Validation Based on Resource Public Key Infrastructure (RPKI), setembro de 2018: seções 1, 4 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8481.txt)
+- [RFC 9234, Route Leak Prevention and Detection Using Roles in UPDATE and OPEN Messages, maio de 2022: seções 1, 3.1, 4, 5 e 8 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9234.txt)
+- [RFC 9319, The Use of maxLength in the Resource Public Key Infrastructure (RPKI), outubro de 2022: seções 1, 4, 5 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9319.txt)
+- [RFC 9582, A Profile for Route Origin Authorizations (ROAs), maio de 2024: Abstract e seção 4.3.2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9582.txt)
+- [IETF, BGP AS_PATH Verification Based on Autonomous System Provider Authorization (ASPA) Objects, draft-ietf-sidrops-aspa-verification-29, 16 de outubro de 2026 (trabalho em andamento): Abstract (lido em 2026-10-19)](https://datatracker.ietf.org/doc/draft-ietf-sidrops-aspa-verification/)
+- [RIPE NCC, YouTube Hijacking: A RIPE NCC RIS case study, 17 de março de 2008: Introduction, Event Timeline, Event Analysis e Summary (lido em 2026-10-19)](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)
+- [U.S.-China Economic and Security Review Commission, 2010 Report to Congress, novembro de 2010: capítulo 5, seção 2, páginas 241 a 244 (lido em 2026-10-19)](https://www.uscc.gov/sites/default/files/annual_reports/2010-Report-to-Congress.pdf)
+- [Federal Communications Commission, Secure Internet Routing, Notice of Inquiry FCC 22-18, fevereiro de 2022: parágrafos 5 a 7 (lida em 2026-10-19)](https://docs.fcc.gov/public/attachments/FCC-22-18A1.pdf)
+- [Federal Communications Commission, Reporting on Border Gateway Protocol Risk Mitigation Progress, Notice of Proposed Rulemaking FCC 24-62, junho de 2024: parágrafos 10 a 13 (lida em 2026-10-19)](https://docs.fcc.gov/public/attachments/FCC-24-62A1.pdf)
+- [Office of the National Cyber Director, Roadmap to Enhancing Internet Routing Security, setembro de 2024: páginas 3 a 7 e apêndice A (lido em 2026-10-19)](https://bidenwhitehouse.archives.gov/wp-content/uploads/2024/09/Roadmap-to-Enhancing-Internet-Routing-Security.pdf)
+- [Cloudflare Blog, How Verizon and a BGP Optimizer Knocked Large Parts of the Internet Offline Today, 24 de junho de 2019 (lido em 2026-10-19)](https://blog.cloudflare.com/how-verizon-and-a-bgp-optimizer-knocked-large-parts-of-the-internet-offline-today/)
+- [Engineering at Meta, More details about the October 4 outage, 5 de outubro de 2021 (lido em 2026-10-19)](https://engineering.fb.com/2021/10/05/networking-traffic/outage-details/)
+- [Cloudflare Blog, Understanding how Facebook disappeared from the Internet, 4 de outubro de 2021 (lido em 2026-10-19)](https://blog.cloudflare.com/october-2021-facebook-outage/)
+- [Cloudflare Blog, Cloudflare 1.1.1.1 incident on June 27, 2024, 4 de julho de 2024 (lido em 2026-10-19)](https://blog.cloudflare.com/cloudflare-1111-incident-on-june-27-2024/)
+- [MANRS, Actions for Network Operators, documento MANRS-003.01, 17 de maio de 2021: seções 2, 4 e 5 (lido em 2026-10-19)](https://manrs.org/netops/actions/)
+- [NIST, RPKI Monitor 2.0, RPKI-ROV Analysis: Global Analysis, IPv4 and IPv6, dados de 2026-10-19 00:00 (lidas em 2026-10-19)](https://rpki-monitor.antd.nist.gov/)
+- [NIST, RPKI Monitor 2.0, Methodology and User's Guide (lida em 2026-10-19)](https://rpki-monitor.antd.nist.gov/Methodology)
+- [RIPE NCC, RIPEstat Data API: RPKI Validation endpoint, versão 0.3 (lida em 2026-10-19)](https://stat.ripe.net/docs/data-api/api-endpoints/rpki-validation)
+- [Cloudflare, Is BGP safe yet? (lida em 2026-10-19)](https://isbgpsafeyet.com/)

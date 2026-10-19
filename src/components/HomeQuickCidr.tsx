@@ -189,8 +189,10 @@ export default function HomeQuickCidr() {
           <p className={`quick-cidr-waiting${hint.key === "quickHintOctet" || hint.key === "quickHintPrefixRange" || hint.key === "quickHintShape" ? " quick-cidr-waiting--wrong" : ""}`}>{hintText(hint)}</p>
         ) : shown ? (
           <dl className="quick-cidr-facts">
-            <div className="quick-cidr-fact"><dt>{t("quickNetwork")}</dt><dd className="mono">{shown.network}</dd></div>
-            <div className="quick-cidr-fact"><dt>{t("quickBroadcast")}</dt><dd className="mono">{shown.broadcast}</dd></div>
+            {/* A /31 or /32 reserves nothing (RFC 3021), so its two ends are the first and last address, not a network
+                address and a broadcast (audit F05, 2026-10-18); the full calculator says the same. */}
+            <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickFirstAddress") : t("quickNetwork")}</dt><dd className="mono">{shown.network}</dd></div>
+            <div className="quick-cidr-fact"><dt>{shown.usableHosts === shown.totalAddresses ? t("quickLastAddress") : t("quickBroadcast")}</dt><dd className="mono">{shown.broadcast}</dd></div>
             <div className="quick-cidr-fact"><dt>{t("quickRange")}</dt><dd className="mono">{shown.firstHost} – {shown.lastHost}</dd></div>
             <div className="quick-cidr-fact"><dt>{t("quickHosts")}</dt><dd className="mono">{new Intl.NumberFormat(locale).format(shown.usableHosts)}</dd></div>
           </dl>

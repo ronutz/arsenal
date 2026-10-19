@@ -28,7 +28,9 @@ import {
 } from "@/lib/tools/dhcp-option-43";
 import { usePrefill } from "@/lib/use-prefill";
 
-const EXAMPLE = "192.168.10.5";
+// D-83: verbatim from a golden vector. Since 2026-10-19 it is Cisco 97066's own single-controller example
+// (192.168.1.10 -> f104c0a8010a), for the profile the picker opens on (cisco-wlc, the first profile).
+const EXAMPLE = "192.168.1.10";
 
 export default function DhcpOption43Tool() {
   const t = useTranslations("tools.dhcp-option-43");

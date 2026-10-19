@@ -1,30 +1,232 @@
 ---
 slug: dhcp-lease-lifecycle
 title: "DHCP: the Lease Lifecycle Behind Automatic Addressing"
-summary: "The Dynamic Host Configuration Protocol hands out addresses, gateways, and resolvers so hosts arrive configured instead of blank. The discover-offer-request-acknowledge exchange, what a lease means and how renewal works, relays that carry requests across subnets, and the failure signatures - including the self-assigned address that says no server ever answered."
-concepts: ["dhcp", "lease", "dora", "fundamentals", "dhcp relay", "addressing", "apipa"]
-relatedTools: []
-relatedArticles: ["routing-tables-and-default-gateway", "ipv4-addressing", "bigip-system-services"]
+summary: "A Dynamic Host Configuration Protocol (DHCP) lease is an IPv4 address lent to a host for a fixed time: granted in four messages, extended at T1 by the same server or at T2 by any server, and given up at expiry. After reading, you can say who sends each message to whom, compute T1, T2 and expiry for a real lease, explain DHCPNAK, DHCPDECLINE, DHCPRELEASE and DHCPINFORM, predict what a client does when its server disappears, and recognise a silent server, a 169.254 address, a rogue server and an exhausted pool."
+concepts: ["dhcp", "lease", "dora", "fundamentals", "dhcp relay", "addressing", "apipa", "dhcpdiscover", "dhcpoffer", "dhcprequest", "dhcpack", "dhcpnak", "dhcpdecline", "dhcprelease", "dhcpinform", "t1 renewal time", "t2 rebinding time", "renewing", "rebinding", "init-reboot", "arp probe", "ipv4 link-local", "rogue dhcp server", "dhcp snooping", "dhcp starvation"]
+relatedTools: ["time-calculator", "epoch", "oui-lookup", "packet-capture-plan-builder"]
+relatedArticles: ["routing-tables-and-default-gateway", "ipv4-addressing", "bigip-system-services", "bootp-and-dhcp-options", "dhcp-relay-agent", "arp-and-mac-addresses", "icmp-ping-and-traceroute", "private-vs-public-ip-ranges", "vlans-and-8021q-trunking", "what-is-an-oui"]
 category: networking
 order: 165
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-18"
 ---
 
-The Dynamic Host Configuration Protocol (DHCP) answers the first question every host asks a network: who am I here? An address, a subnet mask, a [default gateway](/learn/routing-tables-and-default-gateway), and name resolvers arrive in one exchange, which is why the retired fundamentals blueprint paired DHCP with NAT as functions worth explaining - together they are how networks scale past hand-configuration.
+The Dynamic Host Configuration Protocol (DHCP) gives a host that starts with nothing an [IPv4 address](/learn/ipv4-addressing) and its settings, lent for a fixed time: a lease. Its specification, Request for Comments (RFC) 2131, sets a plain goal: "Clients should require no manual configuration" ([RFC 2131, section 1.6](https://www.rfc-editor.org/rfc/rfc2131.txt)). By the end you can say who sends each message to whom, name the client's states, compute T1, T2 and expiry, explain the other four message types, follow a client whose server has gone, and recognise each failure.
 
-## The exchange: discover, offer, request, acknowledge
+## What a lease is
 
-A fresh host broadcasts a discover - it has no address, so broadcast is all it can do. Any listening server answers with an offer: an address and the accompanying settings. The host broadcasts a request naming the offer it accepts - broadcast again, so competing servers learn they lost - and the chosen server confirms with an acknowledgment. Four steps, remembered by their initials as DORA, and at the end the host holds a lease: the address is borrowed, not owned, for a defined time.
+RFC 2131 knows three allocations: automatic, a permanent address; manual, one the administrator chose; and dynamic, one lent for a limited period, the only kind that lets an address be reused ([RFC 2131, section 1](https://www.rfc-editor.org/rfc/rfc2131.txt)). That period is the lease, and the allocation mechanism "guarantees not to reallocate that address within the requested time and attempts to return the same network address each time the client requests an address" (section 2.2). Times are relative seconds on the client's clock, 0xffffffff meaning infinity (section 3.3). Messages travel over UDP, to port 67 at the server and 68 at the client (section 4.1); [the packet's fields and options](/learn/bootp-and-dhcp-options) have their own article.
 
-## Leases, renewal, and what expiry means
+## The first lease: four messages and who hears them
 
-A lease is a promise with a clock. Halfway through, the host quietly asks the same server to renew - unicast now, since it has an address - and normally life continues invisibly. If the server is gone, the host tries harder and broader as expiry approaches; if the lease truly lapses, the address must be surrendered and the host returns to discover. Two operational truths follow. Short leases make address pools agile and outages visible; long leases make networks calm and server outages survivable. And a host that keeps working during a DHCP outage is not proof of health - it is a lease that has not expired yet, a fuse burning quietly.
+RFC 2131 defines four messages ([RFC 2131, sections 3.1, 4.1 and 4.4.1](https://www.rfc-editor.org/rfc/rfc2131.txt)), which Microsoft calls DORA (Discover, Offer, Request, Acknowledgement) ([Microsoft Learn, Troubleshooting guide for DHCP](https://learn.microsoft.com/en-us/windows-server/troubleshoot/troubleshoot-dhcp-issue)):
 
-## Relays: crossing the subnet boundary
+1. **DHCPDISCOVER**: the client, having no address, broadcasts from source 0 to 255.255.255.255, UDP port 67.
+2. **DHCPOFFER**: each willing server offers an address in `yiaddr`, unicast to the client's hardware address and `yiaddr`, or broadcast if the client set the BROADCAST bit, as one that cannot receive unicast before configuration SHOULD. dhclient takes the first offer it sees ([dhclient.conf manual page](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhclientconf)).
+3. **DHCPREQUEST**: "The client broadcasts a DHCPREQUEST message that MUST include the 'server identifier' option to indicate which server it has selected", with the offered address as the requested IP address; the other servers read it as a refusal.
+4. **DHCPACK**: the chosen server commits the binding to persistent storage and answers, delivered like the offer.
 
-Discovery is broadcast, and broadcasts stop at routers - so either every subnet hosts a server, or routers run a DHCP relay: a function that receives the local broadcast and forwards it, unicast, to the real server, marking which subnet it came from so the server picks from the right pool. When a whole subnet fails to get addresses while others succeed, the relay configuration on that subnet's router is the first suspect.
+The client SHOULD then check the address, for example with the Address Resolution Protocol (ARP), and "The client records the lease expiration time as the sum of the time at which the original request was sent and the duration of the lease from the DHCPACK message" ([RFC 2131, section 4.4.1](https://www.rfc-editor.org/rfc/rfc2131.txt)). Illustrative, with documentation addresses and the BROADCAST bit clear:
 
-## Failure signatures
+```text
+message        from         to                        carries
+DHCPDISCOVER   0.0.0.0      255.255.255.255, UDP 67   perhaps a suggested address and lease time
+DHCPOFFER      192.0.2.1    192.0.2.50, UDP 68        yiaddr 192.0.2.50, lease time, server identifier
+DHCPREQUEST    0.0.0.0      255.255.255.255, UDP 67   option 54 = 192.0.2.1, option 50 = 192.0.2.50
+DHCPACK        192.0.2.1    192.0.2.50, UDP 68        yiaddr 192.0.2.50, option 51 = 691200 s
+```
 
-The classics are recognizable at a glance. A self-assigned 169.254 address - Automatic Private IP Addressing - means the host asked and nobody answered: server down, relay missing, or the port blocked. Address conflicts mean two authorities or a static address squatting inside a dynamic pool. And a host with a perfect address but no reach beyond the subnet received a lease with a wrong or absent gateway - a server-side configuration error wearing a client-side costume. On infrastructure devices the moral inverts: a BIG-IP's own addresses are static by design, and DHCP appears in its life mainly as the reason the [system services](/learn/bigip-system-services) it depends on - resolvers above all - must be configured deliberately rather than assumed.
+The limited broadcast is not forwardable in the registry of the Internet Assigned Numbers Authority (IANA) ([IANA registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)), so a server on another subnet needs [a relay agent](/learn/dhcp-relay-agent).
+
+## The client's states
+
+RFC 2131's figure 5 draws the client as a state machine; a BOUND client discards stray messages, and DHCPINFORM stays out of the figure, since the client simply sends it and waits for a DHCPACK ([RFC 2131, section 4.4](https://www.rfc-editor.org/rfc/rfc2131.txt)). Redrawn:
+
+```text
+from          on                                does                                 to
+INIT          start                             sends DHCPDISCOVER                   SELECTING
+SELECTING     offers in, one chosen             sends DHCPREQUEST                    REQUESTING
+REQUESTING    DHCPACK                           records lease, sets T1 and T2        BOUND
+REQUESTING    DHCPNAK, or DHCPACK not usable    discards offer, or sends DHCPDECLINE INIT
+BOUND         T1 expires                        DHCPREQUEST to the leasing server    RENEWING
+RENEWING      DHCPACK                           records lease, sets timers           BOUND
+RENEWING      T2 expires                        broadcasts DHCPREQUEST               REBINDING
+RENEWING      DHCPNAK                           halts network                        INIT
+REBINDING     DHCPACK                           records lease, sets timers           BOUND
+REBINDING     DHCPNAK, or lease expired         halts network                        INIT
+INIT-REBOOT   start, address remembered         sends DHCPREQUEST                    REBOOTING
+REBOOTING     DHCPACK                           records lease, sets timers           BOUND
+REBOOTING     DHCPNAK                           restarts                             INIT
+```
+
+## T1, T2 and one lease, worked
+
+At T1 the client enters RENEWING and contacts the server that issued its address, at T2 REBINDING and any server, and "T1 MUST be earlier than T2, which, in turn, MUST be earlier than the time at which the client's lease will expire" ([RFC 2131, section 4.4.5](https://www.rfc-editor.org/rfc/rfc2131.txt)). Unless the server sets them, "T1 defaults to (0.5 \* duration_of_lease). T2 defaults to (0.875 \* duration_of_lease).", with random fuzz so that clients do not return together (section 4.4.5). Lease and timers travel in seconds as options 51, 58 and 59 ([RFC 2132, sections 9.2, 9.11 and 9.12](https://www.rfc-editor.org/rfc/rfc2132.txt)).
+
+Windows Server's default scope lease is `8.00:00:00`, day.hrs:mins:secs ([Microsoft Learn, Add-DhcpServerv4Scope](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/add-dhcpserverv4scope)). For a request sent at noon on 18 October 2026, before fuzz:
+
+```text
+lease    8 days x 86,400 s   = 691,200 s
+T1       0.5   x 691,200 s   = 345,600 s   (4 days)
+T2       0.875 x 691,200 s   = 604,800 s   (7 days)
+
+DHCPREQUEST sent   2026-10-18T12:00:00Z
+T1, RENEWING       2026-10-22T12:00:00Z   +P4D
+T2, REBINDING      2026-10-25T12:00:00Z   +P7D
+lease expires      2026-10-26T12:00:00Z   +P8D
+```
+
+RENEWING has three days and REBINDING one; the [Time calculator](/tools/time-calculator) does these sums from any instant, with `P4D`, `4d` or `345600s`. A DHCPACK in Microsoft's documentation shows the defaults on a 16-day lease ([Microsoft Learn, DHCP Basics](https://learn.microsoft.com/en-us/windows-server/troubleshoot/dynamic-host-configuration-protocol-basics)):
+
+```text
+DHCP: Renewal Time Value (T1) = 8 Days, 0:00:00
+DHCP: Rebinding Time Value (T2) = 14 Days, 0:00:00
+DHCP: IP Address Lease Time = 16 Days, 0:00:00
+```
+
+## When the server is gone: renew, rebind, expire
+
+At T1 the client unicasts a DHCPREQUEST to the server identifier's address, with `ciaddr` set to its own ([RFC 2131, sections 4.4.5 and 4.1](https://www.rfc-editor.org/rfc/rfc2131.txt)); a DHCPACK restarts the lease from when that request left (section 4.4.5). At T2 it broadcasts to any server, which MAY extend the lease only with local administrative authority (section 4.3.2). Unanswered, it waits half the time left to T2, or in REBINDING half the lease left, never less than 60 seconds, before sending again (section 4.4.5). On the eight-day lease, with no server at all:
+
+```text
+RENEWING,  day 4 to 7:  waits 36 h, 18 h, 9 h, 4.5 h, ... halving to the 60 s floor
+REBINDING, day 7 to 8:  waits 12 h, 6 h, 3 h, 90 min, ... halving to the 60 s floor
+day 8:                  lease expired, back to INIT and DHCPDISCOVER
+```
+
+At expiry the client "MUST immediately stop any other network processing" ([RFC 2131, section 4.4.5](https://www.rfc-editor.org/rfc/rfc2131.txt)). Until then it may keep its address (section 3.7), so the remaining lease is a fuse: a bound client rides out a shorter outage unnoticed, while a newly arrived client gets nothing.
+
+## Coming back: INIT-REBOOT
+
+A client SHOULD verify a remembered address whenever the network may have changed, at boot or after a disconnection ([RFC 2131, section 3.7](https://www.rfc-editor.org/rfc/rfc2131.txt)). In INIT-REBOOT it broadcasts a DHCPREQUEST with that address as the requested IP address, no server identifier and `ciaddr` zero; any server's DHCPACK with a matching `xid` makes it BOUND (sections 4.4.2 and 3.2). A server SHOULD answer DHCPNAK if the address is wrong, but "If the DHCP server has no record of this client, then it MUST remain silent" (section 4.3.2). Unanswered, the client MAY keep the address for the rest of its lease (section 3.2). Table 4 compares the four kinds of request (section 4.3.6):
+
+```text
+   ---------------------------------------------------------------------
+   |              |INIT-REBOOT  |SELECTING    |RENEWING     |REBINDING |
+   ---------------------------------------------------------------------
+   |broad/unicast |broadcast    |broadcast    |unicast      |broadcast |
+   |server-ip     |MUST NOT     |MUST         |MUST NOT     |MUST NOT  |
+   |requested-ip  |MUST         |MUST         |MUST NOT     |MUST NOT  |
+   |ciaddr        |zero         |zero         |IP address   |IP address|
+   ---------------------------------------------------------------------
+              Table 4: Client messages from different states
+```
+
+## DHCPNAK: the server says no
+
+A server that cannot satisfy a DHCPREQUEST, for example because the address has been allocated, SHOULD answer DHCPNAK ([RFC 2131, section 3.1](https://www.rfc-editor.org/rfc/rfc2131.txt)); with no relay it MUST broadcast it, since the client may have a wrong address or mask and may not answer ARP (section 4.3.2). The client restarts from INIT and, after INIT-REBOOT, cannot reuse its remembered address (sections 3.1 and 3.2). A DHCPNAK only answers a DHCPREQUEST (section 4.3.1); nothing refuses a DHCPDISCOVER. Option 56 may carry the reason ([RFC 2132, section 9.9](https://www.rfc-editor.org/rfc/rfc2132.txt)).
+
+## Checking the address: probes and DHCPDECLINE
+
+RFC 2131 asks the server to probe a reused address, for example with an Internet Control Message Protocol (ICMP) Echo Request, as [ping](/learn/icmp-ping-and-traceroute) does, and the client to probe what it receives, for example with ARP ([RFC 2131, section 2.2](https://www.rfc-editor.org/rfc/rfc2131.txt)). The server's probe may be switched off (section 3.1); Windows Server's conflict detection defaults to 0 attempts ([Microsoft Learn, Set-DhcpServerSetting](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/set-dhcpserversetting)).
+
+RFC 5227 defines the client's packet: "In this document, the term 'ARP Probe' is used to refer to an ARP Request packet, broadcast on the local link, with an all-zero 'sender IP address'" ([RFC 5227, section 1.1](https://www.rfc-editor.org/rfc/rfc5227.txt)). A host MUST probe any IPv4 address before using it (section 2.1), with the request described in [how IP finds Ethernet](/learn/arp-and-mac-addresses), on this schedule (sections 1.1, 2.1.1 and 2.3):
+
+```text
+PROBE_WAIT 1 s   PROBE_NUM 3   PROBE_MIN 1 s   PROBE_MAX 2 s   ANNOUNCE_WAIT 2 s
+
+wait 0 to 1 s | probe | 1 to 2 s | probe | 1 to 2 s | probe | 2 s, no conflict heard
+start to safe: 4 to 7 s, then ARP Announcements
+```
+
+On a conflict the client MUST broadcast a DHCPDECLINE naming the address and the server ([RFC 2131, sections 4.4.1 and 4.4.4](https://www.rfc-editor.org/rfc/rfc2131.txt)), then wait at least ten seconds before starting over (section 3.1). The server "MUST mark the network address as not available and SHOULD notify the local system administrator of a possible configuration problem" (section 4.3.3). Kea holds a declined address for 24 hours by default ([Kea manual, section 8.7](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)); Windows Server lists it as BAD_ADDRESS ([Microsoft Learn, DHCP troubleshooting guidance](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-dhcp-guidance)).
+
+## Letting go and asking: DHCPRELEASE and DHCPINFORM
+
+A client that no longer needs its address, at a graceful shutdown for example, unicasts a DHCPRELEASE naming the lease by client identifier or `chaddr` and address ([RFC 2131, sections 4.4.6, 4.4.4 and 3.1](https://www.rfc-editor.org/rfc/rfc2131.txt)). The server marks the address as not allocated (section 4.3.4) and answers nothing, as a client receives only DHCPOFFER, DHCPACK and DHCPNAK (section 4.4). Release is optional: "Note that the correct operation of DHCP does not depend on the transmission of DHCPRELEASE messages" (section 4.4.6).
+
+DHCPINFORM serves a host whose address was set some other way: it carries that address in `ciaddr` and asks for no lease time ([RFC 2131, section 4.4.3](https://www.rfc-editor.org/rfc/rfc2131.txt)), and the server, answering with a DHCPACK straight to `ciaddr`, "MUST NOT send a lease expiration time to the client and SHOULD NOT fill in 'yiaddr'" (section 4.3.5). A server's FORCERENEW makes the client renew, and must be authenticated ([RFC 3203, sections 2.2 and 6](https://www.rfc-editor.org/rfc/rfc3203.txt)).
+
+## How it fails
+
+**No offer.** A client that hears nothing retransmits, doubling its wait to 64 seconds ([RFC 2131, sections 3.1 and 4.1](https://www.rfc-editor.org/rfc/rfc2131.txt)). Silence is legal, "DHCP servers are not required to respond to every DHCPDISCOVER and DHCPREQUEST message they receive" (section 4.2), and a server out of addresses may only tell its administrator (section 4.3.1), so an exhausted scope looks like a dead server. Microsoft's checklist: the server service, a relay agent (IP Helper) for remote subnets, UDP 67 and 68 open on the client, free leases in the scope; a two-sided capture showing only DISCOVER means a drop ([Microsoft Learn, DHCP troubleshooting guidance](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-dhcp-guidance)).
+
+**A 169.254 address.** A Windows client without a valid lease is likely configured to use Automatic Private IP Addressing (APIPA) ([Microsoft Learn, Troubleshooting guide for DHCP](https://learn.microsoft.com/en-us/windows-server/troubleshoot/troubleshoot-dhcp-issue)), and dhcpcd probes for a link-local address without a lease ([dhcpcd(8), Debian trixie manual page](https://manpages.debian.org/trixie/dhcpcd-base/dhcpcd.8.en.html)). RFC 3927 confines such addresses to their own link ([RFC 3927, abstract](https://www.rfc-editor.org/rfc/rfc3927.txt)): one is drawn at random from 169.254.1.0 to 169.254.254.255, 65,024 candidates, never forwarded by a router (sections 2.1 and 2.7), and DHCP carries on unchanged (section 1.9). On a managed network it means no lease came; [Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges) places the block.
+
+**A rogue server.** RFC 2131 is plain: "DHCP in its current form is quite insecure." An unauthorised server can hand out wrong addresses, false routers and false name servers ([RFC 2131, section 7](https://www.rfc-editor.org/rfc/rfc2131.txt)); clients may pick any offer (section 4.2), and a rogue can make itself the default gateway ([Juniper, Overview of Port Security](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html)), a move placed in [traffic diversion and the man in the middle](/learn/traffic-diversion-and-the-man-in-the-middle). Internet Storm Center diaries, a secondary source, describe malware that in 2008 ran a DHCP server on infected computers to race the legitimate one, found by the source media access control (MAC) address of its offers ([Internet Storm Center, 2008](https://isc.sans.edu/diary/5434)), and a 2009 variant that handed out a bad DNS server ([Internet Storm Center, 2009](https://isc.sans.edu/diary/6025)).
+
+The defence is DHCP snooping. Untrusted ports drop server messages, and "By default, all trunk ports are trusted for DHCP and all access ports are untrusted" ([Juniper, Trusted DHCP Servers](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/port-security-trusted-dhcp-server.html)), so an [802.1Q trunk](/learn/vlans-and-8021q-trunking) is trusted; snooping is off until configured ([Juniper, Overview of Port Security](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html)), and its binding table drops each entry when the lease expires ([Juniper, Understanding DHCP Snooping](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/port-security-dhcp-snooping-els.html)). RFC 7513's Source Address Validation Improvement (SAVI) standardises it: server messages from an attachment without the DHCP-Trust or Trust attribute MUST be discarded ([RFC 7513, section 8.2](https://www.rfc-editor.org/rfc/rfc7513.txt)).
+
+**An exhausted pool.** Spoofed MAC addresses can drain a pool, the DHCP starvation Juniper answers with a per-port MAC limit ([Juniper, Overview of Port Security](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html)), and Kea can shorten new leases once a pool passes a set occupancy ([Kea manual, section 8.16.4](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)).
+
+**Wrong settings.** A static address inside a scope collides with leases ([Microsoft Learn, DHCP troubleshooting guidance](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-dhcp-guidance)); a good address with no reach off the subnet points at the router option ([RFC 2132, section 3.5](https://www.rfc-editor.org/rfc/rfc2132.txt)), the [default gateway](/learn/routing-tables-and-default-gateway).
+
+## How to see it
+
+On Windows, `ipconfig /release` sends a DHCPRELEASE, `ipconfig /renew` renews, and `ipconfig` tells DHCP values from APIPA ones ([Microsoft Learn, ipconfig](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig)); PowerShell filters by origin or remaining lifetime ([Microsoft Learn, Get-NetIPAddress](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipaddress)):
+
+```console
+C:\> ipconfig /all
+C:\> ipconfig /release
+C:\> ipconfig /renew
+PS> Get-NetIPAddress -AddressFamily IPv4 -PrefixOrigin Dhcp
+PS> Get-NetIPAddress | Where-Object -FilterScript { $_.ValidLifetime -Lt ([TimeSpan]::FromDays(1)) }
+```
+
+On Linux, dhclient is no longer maintained and should not be used in production ([end-of-maintenance notice](https://www.isc.org/dhcp/)), but its lease file names the three times renew, rebind and expire ([dhclient manual page](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhclient); [dhclient.conf manual page](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhclientconf)), as seconds since the epoch under `db-time-format local`, for the [Unix time converter](/tools/epoch). dhcpcd's `-n` reloads and rebinds, which is not RFC 2131's REBINDING ([dhcpcd(8), Debian trixie manual page](https://manpages.debian.org/trixie/dhcpcd-base/dhcpcd.8.en.html)); `networkctl dhcp-lease` prints the DHCPACK behind a lease ([networkctl(1)](https://man7.org/linux/man-pages/man1/networkctl.1.html)); tcpdump's `-e` adds the link-level header, so broadcast or unicast, and each offer's source MAC, show ([tcpdump(1)](https://man7.org/linux/man-pages/man1/tcpdump.1.html); [pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)):
+
+```bash
+dhclient -r                          # release the lease and stop the client
+dhclient -x                          # stop the client, keep the lease
+dhcpcd -U <interface>                # print the current lease
+dhcpcd -N <interface>                # renew
+dhcpcd -k <interface>                # release the lease, deconfigure the interface
+networkctl dhcp-lease <interface>    # the DHCPACK behind the lease (systemd 261 and later)
+networkctl renew <interface>
+tcpdump -n -e -v -i <interface> udp port 67 or udp port 68
+```
+
+For a client that gets nothing, Microsoft captures at both ends, reproduces with `ipconfig /renew`, filters the client on `dhcp` and the server on `dhcp.id`, and expects all four messages ([Microsoft Learn, DHCP troubleshooting guidance](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-dhcp-guidance)); the [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) places the captures. The lease in Wireshark's fields ([Wireshark, DHCP display filter reference](https://www.wireshark.org/docs/dfref/d/dhcp.html)):
+
+```text
+dhcp.option.ip_address_lease_time    option 51, the lease
+dhcp.option.renewal_time_value       option 58, T1
+dhcp.option.rebinding_time_value     option 59, T2
+dhcp.option.dhcp_server_id           option 54, the server identifier
+dhcp.option.requested_ip_address     option 50, the requested address
+dhcp.flags.bc                        the BROADCAST flag
+dhcp.id                              the transaction identifier
+```
+
+On a Juniper switch, `show dhcp-security binding` lists the snooping table, its Expires column counting down each lease in seconds ([Juniper, show dhcp-security binding](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-dhcp-security-binding.html)). A suspect offer's source MAC carries its maker's Organizationally Unique Identifier ([OUI](/learn/what-is-an-oui)), which the [OUI / MAC vendor lookup](/tools/oui-lookup) names unless the address is locally administered.
+
+## What to remember
+
+- A first lease is four messages: DHCPDISCOVER broadcast from 0.0.0.0 to UDP 67, a DHCPOFFER from each willing server, a broadcast DHCPREQUEST naming one server in option 54, and that server's DHCPACK.
+- A lease counts seconds from when the request was sent; by default T1 is half of it and T2 seven eighths.
+- On an eight-day lease the client renews by unicast at day 4, rebinds by broadcast at day 7 and stops at day 8.
+- A server that knows a requested address is wrong sends DHCPNAK, one with no record stays silent, and nothing refuses a DHCPDISCOVER.
+- An ARP Probe that finds the new address taken ends in DHCPDECLINE, and the server marks that address unavailable.
+- A 169.254 address means no lease arrived; DHCP snooping stops rogue servers by accepting server messages only on trusted ports.
+
+## Sources
+
+- [RFC 2131, Dynamic Host Configuration Protocol, March 1997: sections 1, 1.1, 1.6, 2.2, 3.1 to 3.7, 4.1, 4.2, 4.3.1 to 4.3.6, 4.4.1 to 4.4.6 and 7, tables 2 to 5, figure 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2131.txt)
+- [RFC 2132, DHCP Options and BOOTP Vendor Extensions, March 1997: sections 3.5, 9.1, 9.2, 9.6, 9.9, 9.11 and 9.12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2132.txt)
+- [RFC 3203, DHCP reconfigure extension, December 2001: sections 2.2 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3203.txt)
+- [RFC 3927, Dynamic Configuration of IPv4 Link-Local Addresses, May 2005: abstract, sections 1.6, 1.9, 2.1, 2.2 and 2.7, appendix A (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3927.txt)
+- [RFC 5227, IPv4 Address Conflict Detection, July 2008: sections 1, 1.1, 2.1, 2.1.1, 2.3 and 2.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5227.txt)
+- [RFC 7513, Source Address Validation Improvement (SAVI) Solution for DHCP, May 2015: sections 4.2.2 and 8.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7513.txt)
+- [IANA, IPv4 Special-Purpose Address Registry, CSV export read 18 October 2026: 169.254.0.0/16 and 255.255.255.255/32 (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [Microsoft Learn, Troubleshooting guide for Dynamic Host Configuration Protocol (DHCP), updated 22 September 2025 (read 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/troubleshoot/troubleshoot-dhcp-issue)
+- [Microsoft Learn, DHCP troubleshooting guidance, February 2026: Troubleshooting checklist, Troubleshoot DHCP servers, Troubleshoot DHCP clients and Using network trace to troubleshoot DHCP (read 2026-10-18)](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/troubleshoot-dhcp-guidance)
+- [Microsoft Learn, DHCP (Dynamic Host Configuration Protocol) Basics, updated 22 September 2025: the DHCPACK capture (read 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/troubleshoot/dynamic-host-configuration-protocol-basics)
+- [Microsoft Learn, Add-DhcpServerv4Scope, updated 14 May 2025: -LeaseDuration (read 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/add-dhcpserverv4scope)
+- [Microsoft Learn, Set-DhcpServerSetting, updated 14 May 2025: -ConflictDetectionAttempts (read 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/set-dhcpserversetting)
+- [Microsoft Learn, ipconfig, updated 16 February 2026: Syntax, Parameters and Remarks (read 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig)
+- [Microsoft Learn, Get-NetIPAddress, updated 14 May 2025: Example 5 and -PrefixOrigin (read 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipaddress)
+- [ISC, ISC DHCP product page, read 18 October 2026: end-of-maintenance notice (read 2026-10-18)](https://www.isc.org/dhcp/)
+- [ISC Knowledgebase, ISC DHCP 4.4 Manual Pages, dhclient, December 2021: DESCRIPTION, -r, -x and -lf (read 2026-10-18)](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhclient)
+- [ISC Knowledgebase, ISC DHCP 4.4 Manual Pages, dhclient.conf, December 2021: PROTOCOL TIMING and LEASE DECLARATIONS (read 2026-10-18)](https://kb.isc.org/docs/isc-dhcp-44-manual-pages-dhclientconf)
+- [ISC, Kea 3.2.1 Administrator Reference Manual, The DHCPv4 Server: sections 8.2.1, 8.2.9, 8.7 and 8.16.4 (read 2026-10-18)](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)
+- [dhcpcd(8), Debian trixie manual page (dhcpcd 10.1.0), June 2024: Local Link configuration, -k, -N, -n, -U, -y and FILES (read 2026-10-18)](https://manpages.debian.org/trixie/dhcpcd-base/dhcpcd.8.en.html)
+- [networkctl(1), Linux manual page (systemd), man7.org rendering of 9 September 2026: dhcp-lease, renew and forcerenew (read 2026-10-18)](https://man7.org/linux/man-pages/man1/networkctl.1.html)
+- [tcpdump(1), Linux manual page, man7.org rendering of 9 September 2026: -e, -i, -n and -v (read 2026-10-18)](https://man7.org/linux/man-pages/man1/tcpdump.1.html)
+- [pcap-filter(7), Linux manual page (libpcap), man7.org rendering of 9 September 2026: port (read 2026-10-18)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [Wireshark, Display Filter Reference: Dynamic Host Configuration Protocol, versions 3.0.0 to 4.6.9 (read 2026-10-18)](https://www.wireshark.org/docs/dfref/d/dhcp.html)
+- [Juniper Networks, Junos OS, Overview of Port Security, 24 November 2023: Mitigation of Rogue DHCP Server Attacks and Protection Against DHCP Starvation Attacks (read 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/overview-port-security.html)
+- [Juniper Networks, Junos OS, Understanding and Using Trusted DHCP Servers, 24 November 2023 (read 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/port-security-trusted-dhcp-server.html)
+- [Juniper Networks, Junos OS, Understanding DHCP Snooping (ELS), 6 December 2025: DHCP Snooping Basics (read 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/port-security-dhcp-snooping-els.html)
+- [Juniper Networks, Junos OS CLI Reference, show dhcp-security binding, 19 November 2023 (read 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/command/show-dhcp-security-binding.html)
+- [SANS Internet Storm Center, Rogue DHCP servers, Bojan Zdrnja, 4 December 2008 (secondary source) (read 2026-10-18)](https://isc.sans.edu/diary/5434)
+- [SANS Internet Storm Center, new rogue-DHCP server malware, Johannes Ullrich, 16 March 2009 (secondary source) (read 2026-10-18)](https://isc.sans.edu/diary/6025)

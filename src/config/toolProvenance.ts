@@ -83,9 +83,10 @@ const PROVENANCE: Record<string, ToolProvenance> = {
     sources: [
       { label: "RFC 1035", url: "https://www.rfc-editor.org/rfc/rfc1035", note: "DNS message format, header, and the classic record types" },
       { label: "RFC 6891", url: "https://www.rfc-editor.org/rfc/rfc6891", note: "EDNS(0): the OPT pseudo-section, UDP payload size, and the DO flag" },
-      { label: "RFC 2308", url: "https://www.rfc-editor.org/rfc/rfc2308", note: "Negative caching: how NXDOMAIN and NODATA TTLs come from the SOA" },
+      { label: "RFC 2308", url: "https://www.rfc-editor.org/rfc/rfc2308", note: "Negative caching: the negative TTL is the minimum of the SOA record's TTL and its MINIMUM field (section 5)" }, // corrected 2026-10-19 to RFC 2308 section 5
       { label: "RFC 4034", url: "https://www.rfc-editor.org/rfc/rfc4034", note: "DNSSEC records: RRSIG, DNSKEY, DS, NSEC" },
-      { label: "RFC 8499", url: "https://www.rfc-editor.org/rfc/rfc8499", note: "DNS terminology used throughout the explanations" },
+      { label: "RFC 9499", url: "https://www.rfc-editor.org/rfc/rfc9499", note: "DNS terminology used throughout the explanations (March 2024; obsoletes RFC 8499)" }, // replaces RFC 8499 (2026-10-19)
+      { label: "RFC 8490", url: "https://www.rfc-editor.org/rfc/rfc8490", note: "DNS Stateful Operations: opcode 6 (DSO) and RCODE 11 (DSOTYPENI), which dig 9.20 prints as RESERVED6 and RESERVED11" }, // the opcode and RCODE names the parser recovers (2026-10-19)
     ],
   },
   "nslookup-output-explainer": {
@@ -95,7 +96,8 @@ const PROVENANCE: Record<string, ToolProvenance> = {
       { label: "RFC 1035", url: "https://www.rfc-editor.org/rfc/rfc1035", note: "DNS message format and the classic record types" },
       { label: "RFC 2308", url: "https://www.rfc-editor.org/rfc/rfc2308", note: "Negative caching: NXDOMAIN and NODATA, and the SOA minimum" },
       { label: "RFC 2782", url: "https://www.rfc-editor.org/rfc/rfc2782", note: "SRV records: priority, weight, port, and target" },
-      { label: "RFC 8499", url: "https://www.rfc-editor.org/rfc/rfc8499", note: "DNS terminology, including authoritative vs non-authoritative" },
+      { label: "RFC 2181", url: "https://www.rfc-editor.org/rfc/rfc2181", note: "Zone authority (section 6): which servers are authoritative for a name" }, // backs the non-authoritative wording (2026-10-19)
+      { label: "RFC 9499", url: "https://www.rfc-editor.org/rfc/rfc9499", note: "DNS terminology, including authoritative vs non-authoritative (March 2024; obsoletes RFC 8499)" }, // replaces RFC 8499 (2026-10-19)
     ],
   },
   "xml-decoder": {
@@ -210,7 +212,7 @@ const PROVENANCE: Record<string, ToolProvenance> = {
   },
   "ssrf-url-classifier": {
     basis:
-      "The classifier decides purely from the URL string and never touches the network: it does not resolve DNS and never issues the request (D-53). It extracts the host from the raw input (not from a normalizing URL parser, which would erase the obfuscation), decodes the inet_aton spellings of an IPv4 address (decimal, octal, hex, short-form) and IPv4-mapped IPv6, and classifies the resulting address against the reserved ranges: loopback 127.0.0.0/8, RFC 1918 private space, link-local 169.254.0.0/16, the cloud metadata addresses (169.254.169.254, metadata.google.internal, fd00:ec2::254, 100.100.100.200), CGNAT 100.64.0.0/10, and the documentation ranges. Dangerous non-HTTP schemes (file, gopher, dict, ftp, ldap, and similar) and embedded credentials are flagged. The range definitions and the SSRF guidance are grounded in the source RFCs and the OWASP SSRF prevention cheat sheet; behavior is pinned by 26 golden vectors.",
+      "The classifier decides purely from the URL string and never touches the network: it does not resolve DNS and never issues the request (D-53). It extracts the host from the raw input (not from a normalizing URL parser, which would erase the obfuscation), decodes the inet_aton spellings of an IPv4 address (decimal, octal, hex, short-form) and the IPv4 address carried inside IPv4-mapped (::ffff:0:0/96), NAT64 (64:ff9b::/96 and 64:ff9b:1::/48) and 6to4 (2002::/16) IPv6 addresses, normalises every IPv6 spelling to its RFC 5952 form, and classifies the resulting address against the reserved ranges, naming the IANA special-purpose block it falls in (documentation, discard-only, IETF protocol assignments and the rest): loopback 127.0.0.0/8, RFC 1918 private space, link-local 169.254.0.0/16, the cloud metadata addresses (169.254.169.254, metadata.google.internal, fd00:ec2::254, 100.100.100.200), CGNAT 100.64.0.0/10, and the documentation ranges. Dangerous non-HTTP schemes (file, gopher, dict, ftp, ldap, and similar) and embedded credentials are flagged. The range definitions and the SSRF guidance are grounded in the source RFCs and the OWASP SSRF prevention cheat sheet; behavior is pinned by 56 golden vectors.",
     sources: [
       { label: "RFC 1918: Address Allocation for Private Internets", url: "https://www.rfc-editor.org/rfc/rfc1918", note: "private IPv4 ranges" },
       { label: "RFC 3927: Dynamic Configuration of IPv4 Link-Local Addresses", url: "https://www.rfc-editor.org/rfc/rfc3927", note: "169.254.0.0/16 link-local" },

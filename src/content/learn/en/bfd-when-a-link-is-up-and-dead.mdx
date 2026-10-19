@@ -1,56 +1,200 @@
 ---
 slug: bfd-when-a-link-is-up-and-dead
 title: "BFD: when a link is up and dead at the same time"
-summary: "Routing protocols detect failure with their own timers, measured in tens of seconds. BFD detects it in milliseconds, and exists because the most dangerous link failure is the one where the interface stays up. What it does, what it does not do, and where it goes wrong."
-concepts: ["bfd", "ospf", "bgp", "ecmp"]
-relatedTools: []
-relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp"]
+summary: "Bidirectional Forwarding Detection (BFD) is a small Hello protocol between two forwarding engines that notices a path has stopped carrying packets, including when both interfaces stay up, long before a routing protocol's own timers would. After reading, you can compute a detection time from the two timers and the multiplier, read a session in FRRouting field by field, choose which protocol should be its client, and say where BFD itself can be fooled."
+concepts: ["bfd", "ospf", "bgp", "ecmp", "detection time", "micro-bfd", "gtsm"]
+relatedTools: ["python-playground", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp", "dynamic-routing-compared", "isis-primer", "link-aggregation-and-lacp", "static-routes-and-longest-match", "ethernet-physical-layers", "fibre-basics"]
 category: networking
 order: 252
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
-## The failure that fools everything above it
+An interface that is up reports on its own port, not on whether packets still reach the far router. Bidirectional Forwarding Detection (BFD), defined in Request for Comments (RFC) 5880, fills that gap: two systems exchange small packets at a negotiated rate, and when enough stop arriving the path is declared down and the protocols that asked are told. You meet it wherever OSPF, BGP or a static route must drop a dead neighbour faster than their own timers allow. After reading, you can name the failures BFD exists for, compute a detection time, read a session in FRRouting, choose its client, and recognise where BFD itself is fooled.
 
-An interface reports its own state, and that report is about the local port. It says the transceiver has light, the electrical link is negotiated, the port is enabled. **It does not say the far end can still reach you.**
+## Up and dead: what the port does not report
 
-Between them can sit a media converter, a carrier's transport, a switch fabric, a virtual overlay, or a firewall that has stopped forwarding while remaining perfectly alive. In every one of those cases the interface stays **up** and traffic stops.
+RFC 5880 states the limit of signalling: "there are media that do not provide this kind of signaling (such as Ethernet), and some media may not detect certain kinds of failures in the path, for example, failing interfaces or forwarding engine components" ([RFC 5880, section 1](https://www.rfc-editor.org/rfc/rfc5880.txt)). Three classes follow.
 
-This is the exact condition that defeats fast recovery. A protocol whose failure detection depends on the interface going down never triggers. Routing continues to advertise a path that discards everything sent along it, and the network's own term for this is a **black hole**, and its defining property is that nothing reports an error.
+The one-way fault: packets pass one way only, on a [fibre pair](/learn/fibre-basics) or higher up. BFD's definition of up excludes it: "A path is only declared to be operational when two-way communication has been established between systems" (section 3). A mismatched maximum transmission unit (MTU) can cause it too ([RFC 9764, section 4.3](https://www.rfc-editor.org/rfc/rfc9764.txt)).
 
-## Why a routing protocol's own timers are not the answer
+The far end hidden behind a Layer 2 path: a switch or a carrier's Ethernet service keeps the local port up after the far router has gone, and [Ethernet](/learn/ethernet-physical-layers) signals nothing across it. BFD travels inside the protocol it protects and is marked like the data, so that it shares the data's fate ([RFC 5882, section 6](https://www.rfc-editor.org/rfc/rfc5882.txt)).
 
-Every routing protocol has a hello-and-dead-interval mechanism, and it works. The problem is its timescale.
+The stuck forwarding plane with a live control plane: RFC 5880 gives it a diagnostic, code 4, Forwarding Plane Reset, sent when the far end can no longer rely on the local forwarding state ([RFC 5880, section 6.8.15](https://www.rfc-editor.org/rfc/rfc5880.txt)). In all three, routing keeps sending traffic into a black hole.
 
-OSPF's defaults put dead detection around **40 seconds**. BGP's hold timer commonly sits at **90 seconds** or more. Those numbers were chosen for a reason: a protocol that declares a neighbour dead too eagerly will tear down a stable network under momentary load, and re-converging is expensive.
+## Hellos notice, slowly
 
-So there is a genuine conflict. **Detection must be fast to limit the outage, and slow to avoid false positives**, and the two requirements pull the same knob in opposite directions. Tuning hellos down to sub-second across every protocol on a busy router is how people discover that protocol processing is not free.
+Routing protocols do not wait for the interface to drop; their Hellos catch the silence, late: "Networks use relatively slow 'Hello' mechanisms, usually in routing protocols, to detect failures when there is no hardware signaling to help out" ([RFC 5880, section 1](https://www.rfc-editor.org/rfc/rfc5880.txt)).
 
-## What BFD does instead
+The familiar numbers are not all standard defaults. For [OSPF](/learn/ospf-primer), RFC 2328 gives "Sample value for a local area network: 10 seconds" for the HelloInterval and, for the RouterDeadInterval, "This should be some multiple of the HelloInterval (say 4)" ([RFC 2328, appendix C.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). Ten times four is 40 seconds, which FRRouting (FRR) documents as its own default ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). [BGP](/learn/bgp-primer) has no Hello, only KEEPALIVE messages that keep a hold timer from expiring, and "The suggested default value for the HoldTime is 90 seconds" ([RFC 4271, section 10](https://www.rfc-editor.org/rfc/rfc4271.txt)); one or two seconds must be rejected (section 6.2).
 
-BFD separates **liveness detection** from **routing**. It is a deliberately minimal protocol, a stream of small packets between two systems, with a negotiated interval and a multiplier that says how many may be missed before the session is declared down, and it does nothing else. No topology, no routes, no adjacency semantics.
+Tuning has a floor, for OSPF and for Intermediate System to Intermediate System ([IS-IS](/learn/isis-primer)): "OSPF has a minimum detection time of two seconds, and IS-IS has a minimum detection time of one second" ([RFC 5882, section 10.1](https://www.rfc-editor.org/rfc/rfc5882.txt)). Against BFD at FRR's defaults, 900 ms ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)), a 40-second dead interval is about 44 times slower and a 90-second hold time 100 times. How each protocol reacts is in [dynamic routing compared](/learn/dynamic-routing-compared).
 
-That minimalism is the whole design. **Because it does one thing, it can be implemented close to the hardware and run at intervals a routing process could not sustain**, commonly tens of milliseconds. A routing protocol then registers as a *client* of the BFD session: when BFD declares the path down, it tells OSPF, BGP, or a static route to act immediately rather than waiting for its own timer.
+## What BFD is
 
-The division of labour is worth stating plainly, because it is the thing people get wrong when they configure it: **BFD decides whether the path is alive. The routing protocol decides what to do about it.** BFD never chooses a route.
+"BFD is a simple Hello protocol that, in many respects, is similar to the detection components of well-known routing protocols" ([RFC 5880, section 3](https://www.rfc-editor.org/rfc/rfc5880.txt)). It carries no routes and discovers nothing: an application, such as OSPF after finding a neighbour, asks for a session (section 3.1). It belongs in the forwarding engine; running it in the control engine is allowed but may miss some failures (section 2). There is one session per path and data protocol, so IPv4 and IPv6 need two ([RFC 5881, section 2](https://www.rfc-editor.org/rfc/rfc5881.txt)), and clients of the same neighbour share one ([RFC 5882, section 4.4](https://www.rfc-editor.org/rfc/rfc5882.txt)).
 
-## Where it earns its place
+## The control packet
 
-**Across anything that hides a failure.** A Layer 2 transport between routers, a virtual link, a carrier Ethernet service: anywhere the physical port on your device is not a witness to the far end's health.
+The mandatory section is 24 bytes ([RFC 5880, section 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)); under UDP and IPv4 it makes a 52-byte packet and a 70-byte Ethernet frame. The values below are an Up session at 300 ms, computed from the field definitions:
 
-**On ECMP bundles**, where losing one path silently means a deterministic fraction of flows disappear while the aggregate looks healthy. That is the hardest failure to diagnose from metrics, because the average barely moves.
+| Bytes | Field | Example value |
+|---|---|---|
+| 0 | Version (3 bits), Diagnostic (5 bits) | `0x20`: version 1, diagnostic 0 |
+| 1 | State (2 bits), flags P F C A D M | `0xc0`: Up (`0x40` Down, `0x80` Init, `0xc8` Up with C set) |
+| 2 | Detect Mult | `0x03` |
+| 3 | Length | `0x18` (24) |
+| 4 to 7 | My Discriminator | nonzero, chosen by the sender |
+| 8 to 11 | Your Discriminator | the peer's value, or zero while unknown |
+| 12 to 15 | Desired Min TX Interval | `00 04 93 e0` (300000 µs) |
+| 16 to 19 | Required Min RX Interval | `00 04 93 e0` |
+| 20 to 23 | Required Min Echo RX Interval | `00 00 00 00` (will not loop echo) |
 
-**Under first-hop redundancy**, where a gateway that is present but not forwarding leaves hosts pointing at a router that will never answer.
+The states are 0 AdminDown, 1 Down, 2 Init and 3 Up. The diagnostic says why the last session ended, such as 1, Control Detection Time Expired, or 3, Neighbor Signaled Session Down. Poll and Final carry parameter changes, and the C bit, Control Plane Independent, means the sender's BFD runs in the forwarding plane and survives control-plane disruption ([RFC 5880, section 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)).
 
-## Where it goes wrong
+## Four states and a three-way handshake
 
-**Asymmetric configuration.** BFD is a session between two systems and both ends must agree to it. A session configured on one side only does not fail: **it simply never comes up**, and a router with BFD configured and no session established has exactly the detection it had before, while its configuration says otherwise.
+On a single hop both sides are Active and send first, with Your Discriminator zero ([RFC 5881, section 3](https://www.rfc-editor.org/rfc/rfc5881.txt)). They start slowly: "When bfd.SessionState is not Up, the system MUST set bfd.DesiredMinTxInterval to a value of not less than one second (1,000,000 microseconds)" ([RFC 5880, section 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)). The receive rules then move the session (section 6.8.6):
 
-**Intervals a platform cannot honour.** Many devices implement BFD in software on the control plane, where an aggressive interval competes with everything else the CPU is doing. Under the load of a real incident, the moment detection matters most, a control-plane BFD session can flap because the router is busy, and take a stable routing adjacency down with it. **Hardware-offloaded BFD does not have this failure mode; knowing which one you have is the difference between a feature and a hazard.**
+| Local state | Hears | Becomes |
+|---|---|---|
+| Down | Down | Init |
+| Down | Init | Up |
+| Init | Init or Up | Up |
+| Up | Down | Down, diagnostic 3 |
 
-**Detection without a second path.** BFD makes failure visible in milliseconds. If there is nowhere else to send the traffic, all it has bought is a faster and more accurate description of an outage.
+Going down is a handshake too: a session declared Down cannot come back until the far end has signalled Down itself, which makes the exchange three-way ([RFC 5880, section 6.1](https://www.rfc-editor.org/rfc/rfc5880.txt)). AdminDown holds the peer in Down but says nothing about the forwarding path (section 6.2).
 
-## What to take away
+## Two timers, a multiplier and the arithmetic
 
-**Interface state is a local observation, and the network is not local.** Every mechanism that treats "the port is up" as "the path works" inherits the same blind spot, and BFD exists to give the control plane a second opinion that is cheap enough to ask constantly.
+Each direction is negotiated separately and continuously, and no sender may go faster than its receiver accepts, so the slower side sets the rate ([RFC 5880, sections 6.8.2 and 6.8.7](https://www.rfc-editor.org/rfc/rfc5880.txt)). Each packet leaves up to 25 per cent early, a random jitter, so at 300 ms packets go every 225 to 300 ms.
+
+Detection time is never carried; each receiver computes it: "In Asynchronous mode, the Detection Time calculated in the local system is equal to the value of Detect Mult received from the remote system, multiplied by the agreed transmit interval of the remote system (the greater of bfd.RequiredMinRxInterval and the last received Desired Min TX Interval)" ([RFC 5880, section 6.8.4](https://www.rfc-editor.org/rfc/rfc5880.txt)). When it passes without a packet, the session goes Down with diagnostic 1.
+
+| Remote Desired Min TX | Local Required Min RX | Remote Detect Mult | Agreed interval | Detection time |
+|---|---|---|---|---|
+| 300 ms | 300 ms | 3 | 300 ms | 900 ms |
+| 300 ms | 200 ms | 3 | 300 ms | 900 ms |
+| 300 ms | 1000 ms | 3 | 1000 ms | 3000 ms |
+| 100 ms | 100 ms | 9 | 100 ms | 900 ms |
+| 50 ms | 50 ms | 3 | 50 ms | 150 ms |
+| 16.7 ms | 16.7 ms | 3 | 16.7 ms | 50.1 ms |
+
+The second row is FRR's own worked example ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). RFC 7419 proposes 100 ms by 9 in place of 3 by 300 ms, lists the common intervals hardware should support, from 3.3 ms to 1 s, and calls 50 ms a "widely deployed interval" ([RFC 7419, section 3 and appendix A](https://www.rfc-editor.org/rfc/rfc7419.txt)).
+
+## Asynchronous, demand and echo
+
+Asynchronous mode, the periodic exchange above, is mandatory ([RFC 5882, section 9](https://www.rfc-editor.org/rfc/rfc5882.txt)). Demand mode lets a system that verifies connectivity another way ask its peer to stop sending, leaving detection to the implementation's heuristics ([RFC 5880, section 3.2](https://www.rfc-editor.org/rfc/rfc5880.txt)); on both ends without echo it can leave a failed path undetected ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). The Echo function sends packets the far end loops back through its forwarding path: "The Echo function has the advantage of truly testing only the forwarding path on the remote system" (RFC 5880, section 3.2). Echo uses UDP port 3785 ([RFC 5881, section 4](https://www.rfc-editor.org/rfc/rfc5881.txt)), needs a nonzero Required Min Echo RX Interval from the peer, and "the Echo function MUST NOT be used over multiple hops" ([RFC 5883, section 3](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+## On the wire: one hop, many hops, a bundle
+
+Single-hop, multihop and Link Aggregation Group (LAG) sessions differ in port and protection ([RFC 5881, section 4](https://www.rfc-editor.org/rfc/rfc5881.txt); [RFC 5883, section 5](https://www.rfc-editor.org/rfc/rfc5883.txt); [RFC 7130, section 2.2](https://www.rfc-editor.org/rfc/rfc7130.txt)):
+
+| Case | UDP destination port | Protection |
+|---|---|---|
+| Single hop | 3784 (echo 3785) | Time to Live 255, sent and checked |
+| Multihop | 4784 | authentication |
+| LAG member (micro-BFD) | 6784 | one session per member |
+
+On a single hop the source port is between 49152 and 65535, fixed per session, and without authentication "all BFD Control packets for the session MUST be sent with a Time to Live (TTL) or Hop Limit value of 255" ([RFC 5881, sections 4 and 5](https://www.rfc-editor.org/rfc/rfc5881.txt)); anything else received is discarded. A packet that crossed a router arrives lower, so off-link senders are shut out. That is the Generalized TTL Security Mechanism (GTSM), and "GTSM is not a substitute for authentication mechanisms" ([RFC 5082, section 1](https://www.rfc-editor.org/rfc/rfc5082.txt)). Across several hops the TTL proves nothing, so RFC 5883 says implementations should use cryptographic authentication there ([RFC 5883, section 6](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+On a LAG, "Running a single BFD session over the aggregation without internal knowledge of the member links would make it impossible for BFD to guarantee detection of the physical member link failures" ([RFC 7130, section 1](https://www.rfc-editor.org/rfc/rfc7130.txt)). Micro-BFD therefore runs on every member, to the Media Access Control (MAC) address 01-00-5E-90-00-01; a member carries traffic only once its sessions are Up (sections 2.3 and 3). The bundle itself is in [link aggregation](/learn/link-aggregation-and-lacp).
+
+## What the routing protocol does with the answer
+
+"BFD should be viewed as having an advisory role to the protocol or protocols or other network functions with which it is interacting, which will then use their own mechanisms to effect any state transitions" ([RFC 5882, section 2](https://www.rfc-editor.org/rfc/rfc5882.txt)). On Down, OSPF tears down the neighbour, an External BGP (EBGP) session is torn down unless a graceful restart is under way, and a [static route](/learn/static-routes-and-longest-match) is withdrawn (sections 5, 10.1.2 and 10.2); BGP then sends Cease subcode 10, BFD Down ([RFC 9384, section 3](https://www.rfc-editor.org/rfc/rfc9384.txt)). Clients ignore a move to AdminDown (RFC 5882, section 4.2).
+
+"In general, it is best for the protocol at the lowest point in the hierarchy to interact with BFD" ([RFC 5882, section 4.4](https://www.rfc-editor.org/rfc/rfc5882.txt)): with Internal BGP (IBGP) over OSPF, OSPF listens and heals the path. With the C bit set both ways, a failure means forwarding stopped, so a graceful restart is abandoned to avoid a black hole (section 4.3.1). An adjacency should not form when both sides want BFD but the session cannot come up (section 4.1); FRR's `neighbor ... bfd strict` enforces that for BGP.
+
+## Where it misfires
+
+Aggressive timers on a busy router compete for the central processing unit (CPU): "It is possible for systems with a large number of BFD sessions and/or very short packet intervals to become CPU-bound" ([RFC 5880, section 7](https://www.rfc-editor.org/rfc/rfc5880.txt)), and a starved session flaps a stable adjacency. Policers and shapers harm BFD when their timescale nears the detection time, and a firewall that drops it fails the session (section 7).
+
+Control-plane BFD can pass while forwarding fails: RFC 5882 accepts the risk "since a simultaneous failure or restart of the forwarding plane will not be detected" ([RFC 5882, section 4.3.2](https://www.rfc-editor.org/rfc/rfc5882.txt)).
+
+Equal-cost multipath (ECMP) is a limit, not a strength: "This may result in a BFD session being in the Up state while some traffic may be dropped or otherwise negatively impacted along some component links" ([RFC 9764, section 4.5](https://www.rfc-editor.org/rfc/rfc9764.txt)), and no standard mechanism exercises every member over multiple hops. A LAG running micro-BFD on one side only is likely to lose traffic ([RFC 7130, appendix A](https://www.rfc-editor.org/rfc/rfc7130.txt)).
+
+An attacker controlling the link can "forward only the BFD packets but nothing else (causing the link to be falsely declared up). This attack cannot be prevented by BFD" ([RFC 5880, section 9](https://www.rfc-editor.org/rfc/rfc5880.txt)). TTL checks and authentication stop forgeries from elsewhere, not that.
+
+Configured on one side only, a session sends once a second and never comes Up ([RFC 5880, section 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)), unless the peer accepts unsolicited BFD by policy ([RFC 9468, Abstract](https://www.rfc-editor.org/rfc/rfc9468.txt)). A gateway that stops forwarding with its port up is the same failure seen from a host: see [first-hop redundancy](/learn/first-hop-redundancy-vrrp-and-hsrp).
+
+## How to see it
+
+FRR runs BFD in its bfdd daemon. Illustrative configuration after FRR's examples:
+
+```text
+bfd
+ profile fast
+  receive-interval 150
+  transmit-interval 150
+ !
+ peer 192.0.2.1
+  profile fast
+  no shutdown
+ !
+!
+router bgp 65530
+ neighbor 192.0.2.1 remote-as 65531
+ neighbor 192.0.2.1 bfd
+```
+
+With the default multiplier of 3 the profile detects in 450 ms; FRR's defaults are 300 ms each way. OSPF attaches with `ip ospf bfd`, a static route with `ip route A.B.C.D/M A.B.C.D bfd` ([FRRouting documentation, BFD](https://docs.frrouting.org/en/latest/bfd.html)). `show bfd peers` prints, in FRR's documented sample with addresses changed:
+
+```text
+peer 192.0.2.1 local-address 192.0.2.2 vrf default interface veth1
+ID: 1
+Remote ID: 0
+Active mode
+Status: down
+Downtime: 5 second(s)
+Diagnostics: ok
+Remote diagnostics: ok
+Peer Type: configured
+RTT min/avg/max: 0/0/0 usec
+Profile: myprofile
+Local timers:
+Detect-multiplier: 3
+Receive interval: 300ms
+Transmission interval: 300ms
+Transmission interval (actual with jitter): 970ms
+Detection timeout: 3000ms
+Echo receive interval: 50ms
+Echo transmission interval: disabled
+Remote timers:
+Detect-multiplier: 3
+Receive interval: 1000ms
+Transmission interval: 1000ms
+Echo receive interval: disabled
+```
+
+`ID` is My Discriminator; `Remote ID: 0` means nothing has been heard. `Diagnostics: ok` is diagnostic 0. `Detection timeout: 3000ms` is 3 times the larger of local receive (300 ms) and remote transmit (1000 ms): the session is not Up, so both run the one-second rate, and 970 ms is one second less jitter. For a session stuck Down, check that the far end sends, that nothing drops UDP 3784 or lowers the TTL, and that authentication matches ([RFC 5880, section 6.8.6](https://www.rfc-editor.org/rfc/rfc5880.txt)).
+
+A capture shows the packet table's fields, one second apart until Up, then at the agreed interval. No site tool decodes BFD or computes its timers; the arithmetic fits the [Python playground](/tools/python-playground) (`3 * max(300, 1000)`). The [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) helps choose where to capture UDP 3784 when only one end is Down, and the [Flow Path Reasoner](/tools/flow-path-reasoner) names the boxes between two routers.
+
+## What to remember
+
+- BFD calls a path up only when packets flow both ways, so it catches one-way faults, hidden far ends and stopped forwarding planes.
+- Routing Hellos do detect these failures, slowly: 40 seconds is RFC 2328's 10-second sample times four and FRR's default; 90 seconds is RFC 4271's suggested BGP hold time.
+- Detection time is the remote Detect Mult times the larger of local Required Min RX and remote Desired Min TX: 3 times 300 ms is 900 ms.
+- A session not yet Up sends once a second, and the slower side always sets the pace.
+- BFD only advises; the protocol lowest in the hierarchy should listen, and AdminDown is not a failure.
+- Single hop uses UDP 3784 and TTL 255, multihop UDP 4784 and authentication, a LAG one session per member on 6784.
+- One session over ECMP can stay Up while a member drops traffic, and an attacker who forwards only BFD defeats it.
+
+## Sources
+
+- [RFC 5880, Bidirectional Forwarding Detection (BFD), June 2010: sections 1, 2, 3, 3.1, 3.2, 4.1, 6.1, 6.2, 6.8.2, 6.8.3, 6.8.4, 6.8.6, 6.8.7, 6.8.15, 7 and 9 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5880.txt)
+- [RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), June 2010: sections 2, 3, 4 and 5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5881.txt)
+- [RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), June 2010: sections 2, 4.1, 4.2, 4.3.1, 4.3.2, 4.4, 5, 6, 9, 10.1, 10.1.2 and 10.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5882.txt)
+- [RFC 5883, Bidirectional Forwarding Detection (BFD) for Multihop Paths, June 2010: sections 3, 5 and 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5883.txt)
+- [RFC 7130, Bidirectional Forwarding Detection (BFD) on Link Aggregation Group (LAG) Interfaces, February 2014: sections 1, 2.2, 2.3, 3 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7130.txt)
+- [RFC 7419, Common Interval Support in Bidirectional Forwarding Detection, December 2014: section 3 and Appendix A (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7419.txt)
+- [RFC 9764, Bidirectional Forwarding Detection (BFD) Encapsulated in Large Packets, April 2025: sections 4.3 and 4.5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9764.txt)
+- [RFC 9384, A BGP Cease NOTIFICATION Subcode for Bidirectional Forwarding Detection (BFD), March 2023: section 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9384.txt)
+- [RFC 9468, Unsolicited Bidirectional Forwarding Detection (BFD) for Sessionless Applications, August 2023: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9468.txt)
+- [RFC 5082, The Generalized TTL Security Mechanism (GTSM), October 2007: section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5082.txt)
+- [RFC 2328, OSPF Version 2, April 1998: appendix C.3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), January 2006: sections 6.2 and 10 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [FRRouting documentation, BFD (bfdd), latest: BFDd Commands, Peer / Profile Configuration, BGP, OSPF and static route BFD configuration, Status (read 2026-10-19)](https://docs.frrouting.org/en/latest/bfd.html)
+- [FRRouting documentation, OSPFv2, latest: Interfaces (read 2026-10-19)](https://docs.frrouting.org/en/latest/ospfd.html)

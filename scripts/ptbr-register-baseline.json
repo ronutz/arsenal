@@ -73,10 +73,6 @@
       "J": 2,
       "I": 0
     },
-    "messages:glossary.entries.baby-giant": {
-      "J": 8,
-      "I": 0
-    },
     "messages:glossary.entries.beb": {
       "J": 4,
       "I": 0
@@ -189,23 +185,11 @@
       "J": 2,
       "I": 0
     },
-    "messages:glossary.entries.dhcp-snooping": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.dns": {
-      "J": 3,
-      "I": 0
-    },
     "messages:glossary.entries.dns-filtering": {
       "J": 1,
       "I": 0
     },
     "messages:glossary.entries.dnskey": {
-      "J": 3,
-      "I": 0
-    },
-    "messages:glossary.entries.dnssec": {
       "J": 3,
       "I": 0
     },
@@ -289,10 +273,6 @@
       "J": 1,
       "I": 0
     },
-    "messages:glossary.entries.gateway": {
-      "J": 1,
-      "I": 0
-    },
     "messages:glossary.entries.geneve": {
       "J": 1,
       "I": 0
@@ -339,10 +319,6 @@
     },
     "messages:glossary.entries.hypervisor": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.igmp": {
-      "J": 2,
       "I": 0
     },
     "messages:glossary.entries.imds": {
@@ -419,10 +395,6 @@
     },
     "messages:glossary.entries.ldaps": {
       "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.ldns": {
-      "J": 6,
       "I": 0
     },
     "messages:glossary.entries.line-rate": {
@@ -769,10 +741,6 @@
       "J": 2,
       "I": 0
     },
-    "messages:glossary.entries.ttl": {
-      "J": 6,
-      "I": 0
-    },
     "messages:glossary.entries.udp": {
       "J": 2,
       "I": 0
@@ -806,10 +774,6 @@
       "I": 0
     },
     "messages:glossary.entries.vrf": {
-      "J": 1,
-      "I": 0
-    },
-    "messages:glossary.entries.vrrp": {
       "J": 1,
       "I": 0
     },
@@ -902,7 +866,7 @@
       "I": 0
     },
     "messages:tools": {
-      "J": 195,
+      "J": 186,
       "I": 2
     },
     "messages:vendors": {
@@ -949,10 +913,6 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/authoritative-vs-non-authoritative-answers.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/awaf-client-side-signals-and-challenges.mdx": {
       "J": 4,
       "I": 0
@@ -967,10 +927,6 @@
     },
     "src/content/learn/pt-BR/base64.mdx": {
       "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/bfd-when-a-link-is-up-and-dead.mdx": {
-      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/bigip-21x-access-identity.mdx": {
@@ -1073,12 +1029,8 @@
       "J": 2,
       "I": 0
     },
-    "src/content/learn/pt-BR/choosing-a-password-hash.mdx": {
-      "J": 0,
-      "I": 1
-    },
     "src/content/learn/pt-BR/choosing-a-public-dns-resolver.mdx": {
-      "J": 14,
+      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/clickjacking-and-framing.mdx": {
@@ -1137,19 +1089,11 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/dhcp-lease-lifecycle.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/digital-transformation.mdx": {
       "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/dns-message-header-and-flags.mdx": {
-      "J": 7,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/dns-record-types-in-answers.mdx": {
       "J": 1,
       "I": 0
     },
@@ -1385,10 +1329,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/icmp-ping-and-traceroute.mdx": {
-      "J": 6,
-      "I": 0
-    },
     "src/content/learn/pt-BR/id-token-claims.mdx": {
       "J": 1,
       "I": 0
@@ -1411,18 +1351,6 @@
     },
     "src/content/learn/pt-BR/ipsec-and-ike-fundamentals.mdx": {
       "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ipv6-address-configuration.mdx": {
-      "J": 0,
-      "I": 1
-    },
-    "src/content/learn/pt-BR/ipv6-neighbor-discovery.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/ipv6-transition.mdx": {
-      "J": 1,
       "I": 0
     },
     "src/content/learn/pt-BR/irule-event-order-explained.mdx": {
@@ -1467,10 +1395,6 @@
     },
     "src/content/learn/pt-BR/irules-tcl-number-notation.mdx": {
       "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/isis-primer.mdx": {
-      "J": 4,
       "I": 0
     },
     "src/content/learn/pt-BR/iso-8601-and-rfc-3339.mdx": {
@@ -1531,14 +1455,6 @@
     },
     "src/content/learn/pt-BR/mars-climate-orbiter-and-the-boundary.mdx": {
       "J": 3,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/mpls-primer.mdx": {
-      "J": 4,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/nat-explained.mdx": {
-      "J": 2,
       "I": 0
     },
     "src/content/learn/pt-BR/network-scopes-family-history.mdx": {
@@ -1657,10 +1573,6 @@
       "J": 1,
       "I": 0
     },
-    "src/content/learn/pt-BR/reading-dig-output.mdx": {
-      "J": 4,
-      "I": 0
-    },
     "src/content/learn/pt-BR/reflections-on-trusting-trust.mdx": {
       "J": 1,
       "I": 0
@@ -1671,14 +1583,6 @@
     },
     "src/content/learn/pt-BR/root-cause-is-a-verb-not-a-noun.mdx": {
       "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/route-summarization.mdx": {
-      "J": 1,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/routing-tables-and-default-gateway.mdx": {
-      "J": 15,
       "I": 0
     },
     "src/content/learn/pt-BR/saml-assertions-and-conditions.mdx": {
@@ -1722,10 +1626,6 @@
       "I": 0
     },
     "src/content/learn/pt-BR/ssrf-defenses-allowlists.mdx": {
-      "J": 2,
-      "I": 0
-    },
-    "src/content/learn/pt-BR/subnet-overlap-and-gaps.mdx": {
       "J": 2,
       "I": 0
     },

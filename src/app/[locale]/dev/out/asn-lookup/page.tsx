@@ -60,9 +60,10 @@ export default async function AsnLookupPage({
               <p className="devfun-intro">{t("asn.about1")}</p>
               <p className="devfun-intro">{t("asn.about2")}</p>
               <p className="tools-note">
-                {t("asn.sourcesLabel")}: RFC 6793 · RFC 9082 · RFC 9083 · RFC 9224 (IANA
-                bootstrap) · IANA Special-Purpose AS Numbers registry (2026-07-08) ·
-                data.iana.org/rdap (2026-07-08)
+                {/* RFC 5396 (asplain, asdot, asdot+) added 2026-10-19 with dotted input. */}
+                {t("asn.sourcesLabel")}: RFC 5396 (asplain, asdot, asdot+; 2026-10-19) · RFC 6793 ·
+                RFC 9082 · RFC 9083 · RFC 9224 (IANA bootstrap) · IANA Special-Purpose AS Numbers
+                registry (2026-07-08) · data.iana.org/rdap (2026-07-08)
               </p>
               <p className="tools-note">
                 <Link href="/dev/out" className="devout-door-link">

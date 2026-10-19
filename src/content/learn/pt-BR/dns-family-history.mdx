@@ -1,35 +1,35 @@
 ---
 slug: dns-family-history
 title: "DNS: um arquivo mantido em horário comercial"
-summary: "Antes de 1983, para ter um endereço na rede era preciso ligar para Elizabeth Feinler, no SRI, que incluía você num arquivo que a equipe distribuía para todos os hosts umas duas vezes por semana, em horário comercial, exceto nos feriados. Jon Postel passou o problema para um aluno de pós-graduação, que leu as propostas que já existiam, escreveu a sua própria e assinou sozinho a especificação do sistema que hoje resolve trilhões de consultas por dia. Esta é a história da família do DNS: o arquivo, o projeto, a segurança que ficou de fora e como um sistema de nomes virou o ponto de controle mais conveniente da internet."
+summary: "Antes de 1983, para ter um endereço na rede era preciso ligar para Elizabeth Feinler, no SRI, que incluía você num arquivo que a equipe atualizava umas duas vezes por semana, em horário comercial, exceto nos feriados, e que cada host depois buscava. Jon Postel passou o problema para um aluno de pós-graduação, que leu as propostas que já existiam, escreveu a sua própria e assinou sozinho a especificação do sistema que hoje resolve trilhões de consultas por dia. Esta é a história da família do DNS: o arquivo, o projeto, a segurança que ficou de fora e como um sistema de nomes virou o ponto de controle mais conveniente da internet."
 concepts: ["dns", "hosts.txt", "mockapetris", "bind", "dnssec", "history"]
 relatedTools: []
 relatedArticles: ["identity-family-history", "pki-family-history", "choosing-a-public-dns-resolver"]
 category: networking
 order: 153
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-10-19"
 ---
 
 O sistema de nomes da internet começou como um arquivo de texto, e o que acabou com esse arquivo foi a limitação mais humana de todo este catálogo.
 
 ## Antes: um telefonema e um arquivo de texto
 
-**Elizabeth Feinler** e a equipe dela no Network Information Center (NIC) do SRI mantinham o **HOSTS.TXT**, um arquivo central que associava nomes a endereços. Quem queria entrar na rede falava com o NIC, a equipe fazia a inclusão, e o arquivo atualizado seguia para todos os hosts umas duas vezes por semana.
+**Elizabeth Feinler** e a equipe dela no Network Information Center (NIC) do SRI mantinham o **HOSTS.TXT**, um arquivo central que associava nomes a endereços ([RFC 608](https://www.rfc-editor.org/rfc/rfc608.txt); [RFC 952](https://www.rfc-editor.org/rfc/rfc952.txt)). Quem queria entrar na rede falava com o NIC, a equipe fazia a inclusão e atualizava o arquivo umas duas vezes por semana; cada host então buscava a cópia nova por File Transfer Protocol (FTP) ([RFC 1034, seção 2.1](https://www.rfc-editor.org/rfc/rfc1034.txt)).
 
 O sistema funcionava, mas tinha um limite que nenhuma engenharia conseguia contornar: **Feinler e os colegas trabalhavam em horário comercial e tiravam folga nos feriados.** Uma rede que precisa estar sempre disponível não pode depender de um sistema de nomes que fecha às cinco da tarde. Como equilíbrio entre vida pessoal e trabalho, ótimo; como modelo de operação, impossível. É o exemplo mais claro deste catálogo de uma arquitetura técnica imposta por uma limitação humana, e não computacional.
 
-O outro limite era de aritmética. Cada host novo exigia uma edição manual e uma redistribuição completa do arquivo, então o custo crescia com o quadrado da utilidade da rede.
+O outro limite era de aritmética. Cada host novo exigia uma edição manual e uma redistribuição completa do arquivo, e a banda de rede consumida para distribuir cada nova versão "is proportional to the square of the number of hosts in the network", ou seja, proporcional ao quadrado do número de hosts na rede ([RFC 1034, seção 2.1](https://www.rfc-editor.org/rfc/rfc1034.txt)).
 
 ## 1983: o aluno de pós-graduação e a tarefa
 
-**Paul Mockapetris** entrou no ISI em 1978 como aluno de pós-graduação, numa equipe de umas vinte pessoas sob a supervisão de **Jon Postel**. Segundo o relato do próprio Mockapetris, um dia Postel entrou na sala dele e perguntou se ele queria trabalhar no problema dos nomes de domínio; mais exatamente, conciliar as cinco propostas que já existiam para melhorar o sistema de nomes.
+**Paul Mockapetris** entrou no ISI em 1978 como aluno de pós-graduação, numa equipe de umas vinte pessoas sob a supervisão de **Jon Postel**. Segundo o relato do próprio Mockapetris, um dia Postel entrou na sala dele e perguntou se ele queria trabalhar no problema dos nomes de domínio. Outro relato descreve a tarefa de forma mais estreita: conciliar as cinco propostas que já existiam para melhorar o sistema de nomes.
 
-Ele leu todas e, em vez de conciliá-las, escreveu a sua. Assim nasceram as **RFCs 882 e 883**, publicadas em novembro de 1983 e **assinadas só por ele**, que descrevem o Domain Name System e o seu protocolo de consulta. Em 2019, ao lhe dar o Software System Award, a ACM chamou esse projeto de ousado e de uma simplicidade desconcertante.
+Ele leu todas e, em vez de conciliá-las, escreveu a sua. Assim nasceram as **RFCs 882 e 883**, publicadas em novembro de 1983 e **assinadas só por ele** ([RFC 882](https://www.rfc-editor.org/rfc/rfc882.txt); [RFC 883](https://www.rfc-editor.org/rfc/rfc883.txt)), que descrevem o Domain Name System e o seu protocolo de consulta. Em 2019, ao lhe dar o Software System Award, a ACM chamou esse projeto de ousado e de uma simplicidade desconcertante.
 
 Ele também escreveu a primeira implementação, um servidor chamado **Jeeves**, que rodava em máquinas DEC Tops-20 no ISI e no NIC do SRI e que ofereceu o primeiro serviço estável em produção. O **BIND** veio logo depois, escrito por alunos de pós-graduação de Berkeley com financiamento da DARPA.
 
-A especificação foi revista em 1987, nas RFCs 1034 e 1035, que continuam sendo os documentos de referência. Desde então, mais de duzentas outras RFCs se somaram às cem páginas originais.
+A especificação foi revista em novembro de 1987, nas RFCs 1034 e 1035 ([RFC 1034](https://www.rfc-editor.org/rfc/rfc1034.txt); [RFC 1035](https://www.rfc-editor.org/rfc/rfc1035.txt)), que continuam sendo os documentos de referência. Desde então, mais de duzentas outras RFCs se somaram às cem páginas originais.
 
 ## O que o projeto realmente fez
 
@@ -81,7 +81,7 @@ O trabalho saiu do SRI, do ISI e de Berkeley, e nenhum dos três o transformou e
 
 **O registro DNS está virando um veículo de uso geral.** Service binding, restrições de certificado, os parâmetros do Encrypted Client Hello (ECH) e registros TXT de verificação: cada vez mais, o jeito de um sistema dizer a outro como chegar até ele com segurança é um registro DNS.
 
-**E o princípio fundador continua valendo.** Quarenta anos depois, o sistema faz o que um aluno de pós-graduação especificou em cem páginas: delegar a autoridade, guardar a resposta em cache e deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais da internet de 1983 continua rodando sem modificações, e, se o DNS continua, o motivo tem menos a ver com o protocolo do que com a decisão de ceder a autoridade em vez de guardá-la para si.
+**E o princípio fundador continua valendo.** Mais de quarenta anos depois, o sistema faz o que um aluno de pós-graduação especificou em cem páginas: delegar a autoridade, guardar a resposta em cache e deixar as pessoas usarem nomes para qualquer coisa. Quase nada mais da internet de 1983 continua rodando sem modificações, e, se o DNS continua, o motivo tem menos a ver com o protocolo do que com a decisão de ceder a autoridade em vez de guardá-la para si.
 
 ## Esta série, em ordem
 
@@ -95,7 +95,13 @@ Este artigo abre a série **O DNS como infraestrutura** e conta como o DNS surgi
 ## Fontes
 
 - [ACM Software System Award de 2019 a Paul Mockapetris: a comunidade dependia de um arquivo hosts.txt gerido centralmente, atualizado à mão pelo SRI e distribuído diariamente; ele assinou sozinho as RFCs 882 e 883 em 1983, desenvolveu a primeira implementação de servidor, o Jeeves, e a implantou no ISI e no SRI para os servidores raiz iniciais](https://awards.acm.org/award-recipients/mockapetris_3342151)
-- [O relato do próprio Mockapetris no ISI: entrou em 1978 como aluno de pós num time de cerca de vinte pessoas supervisionado por Jon Postel, foi convidado a trabalhar no problema de nomeação de domínios, e o projeto em que cada organização gere o próprio pedaço do sistema de nomes nos próprios servidores](https://www.isi.edu/news/972810/and-the-dns-was-born/)
-- [Elizabeth Feinler e o Network Information Center mantendo o HOSTS.TXT, atualizado e distribuído umas duas vezes por semana, com a equipe do NIC disponível apenas em horário comercial e de folga nos feriados; Postel pediu a Mockapetris que conciliasse cinco propostas existentes](https://smartermsp.com/tech-time-warp-mockapetris-invents-the-domain-name-system/)
-- [Internet Society sobre os trinta anos do DNS: a publicação das RFCs 882 e 883 em novembro de 1983, e as propostas anteriores nas RFCs 799, 819 e 830](https://www.internetsociety.org/blog/2013/11/celebrating-30-years-of-the-domain-name-system-dns-this-month/)
-- [O primeiro servidor de nomes funcional, o Jeeves, escrito em 1983-84 para máquinas DEC Tops-20 no USC-ISI e no SRI-NIC, com o BIND escrito logo depois por alunos de pós em Berkeley sob financiamento da DARPA](https://stuff.mit.edu/afs/net/project/bind/9.2.0/doc/arm/Bv9ARM.ch09.html)
+- [O relato do próprio Mockapetris no ISI: entrou em 1978 como aluno de pós num time de cerca de vinte pessoas supervisionado por Jon Postel, foi convidado a trabalhar no problema de nomeação de domínios, e o projeto em que cada organização gere o próprio pedaço do sistema de nomes nos próprios servidores (lida em 2026-10-19)](https://www.isi.edu/news/972810/and-the-dns-was-born/)
+- [Elizabeth Feinler e o Network Information Center mantendo o HOSTS.TXT, atualizado e distribuído umas duas vezes por semana, com a equipe do NIC disponível apenas em horário comercial e de folga nos feriados; Postel pediu a Mockapetris que conciliasse cinco propostas existentes (lida em 2026-10-19)](https://smartermsp.com/tech-time-warp-mockapetris-invents-the-domain-name-system/)
+- [Internet Society sobre os trinta anos do DNS: a publicação das RFCs 882 e 883 em novembro de 1983, e as propostas anteriores nas RFCs 799, 819 e 830 (lida em 2026-10-19)](https://www.internetsociety.org/blog/2013/11/celebrating-30-years-of-the-domain-name-system-dns-this-month/)
+- [O primeiro servidor de nomes funcional, o Jeeves, escrito em 1983-84 para máquinas DEC Tops-20 no USC-ISI e no SRI-NIC, com o BIND escrito logo depois por alunos de pós em Berkeley sob financiamento da DARPA (lida em 2026-10-19)](https://stuff.mit.edu/afs/net/project/bind/9.2.0/doc/arm/Bv9ARM.ch09.html)
+- [RFC 608, Host Names On-Line, janeiro de 1974: Jake Feinler, no NIC, projeta e mantém o arquivo-fonte dos nomes de host (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc608.txt)
+- [RFC 952, DoD Internet Host Table Specification, outubro de 1985: autoria que inclui E. Feinler (SRI), o HOSTS.TXT no host SRI-NIC, obtido por FTP (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc952.txt)
+- [RFC 882, Domain Names: Concepts and Facilities, novembro de 1983: primeira página, autor único P. Mockapetris, 31 páginas (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc882.txt)
+- [RFC 883, Domain Names: Implementation and Specification, novembro de 1983: primeira página, autor único P. Mockapetris, 73 páginas (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc883.txt)
+- [RFC 1034, Domain Names: Concepts and Facilities, novembro de 1987: seção 2.1, a história dos nomes de domínio; torna obsoletas as RFCs 882 e 883 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: primeira página; torna obsoletas as RFCs 882 e 883 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1035.txt)

@@ -111,7 +111,7 @@
         "overlap": "Pertindihan / jurang"
       },
       "modeDesc": {
-        "subnet": "Menganalisis satu blok CIDR IPv4: rangkaian, siaran, topeng dan julat hos.",
+        "subnet": "Menganalisis satu blok CIDR IPv4: rangkaian, siaran, topeng, julat hos dan julat tujuan khas yang menempatkan atau bertindih dengannya.",
         "vlsm": "Membahagikan blok induk kepada subnet panjang berubah mengikut senarai bilangan hos.",
         "supernet": "Meringkaskan senarai awalan kepada set blok terkecil yang meliputinya.",
         "overlap": "Mencari pertindihan dan pembendungan antara awalan, serta jurang dalam skop pilihan."
@@ -141,7 +141,13 @@
           "utilization": "Penggunaan"
         },
         "unfit": "Tidak muat",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Beri /31 kepada permintaan 2 hos (pautan titik ke titik, RFC 3021)",
+        "maskedNote": "Blok induk {typed} mempunyai bit hos yang ditetapkan, jadi ia ditopengkan kepada {parent}; pelan dipotong daripada {parent}.",
+        "orderNote": "Permintaan diletakkan daripada blok terbesar ke terkecil, bukan mengikut susunan dimasukkan, supaya setiap blok bermula pada gandaan saiznya sendiri.",
+        "freeBlocks": "Blok bebas",
+        "noFree": "Tiada ruang bebas lagi dalam blok induk.",
+        "noBroadcast": "tiada (/31)"
       },
       "supernet": {
         "label": "Awalan untuk diagregat",
@@ -185,12 +191,36 @@
         "prefix": "Panjang awalan mesti antara 0 dan 32.",
         "tooMany": "Terlalu banyak entri. Pendekkan senarai dan cuba lagi.",
         "noReqs": "Tambah sekurang-kurangnya satu keperluan subnet dengan bilangan hos.",
-        "noPrefixes": "Masukkan sekurang-kurangnya satu awalan, satu setiap baris."
+        "noPrefixes": "Masukkan sekurang-kurangnya satu awalan, satu setiap baris.",
+        "zeroHosts": "Satu keperluan subnet meminta 0 hos. Setiap subnet memerlukan sekurang-kurangnya 1 hos: betulkan bilangan atau buang baris itu."
       },
       "rangeHeading": "Susun atur alamat",
       "usableShort": "boleh guna",
       "rfcNote": "/31 dan /32 tidak menyimpan apa-apa: setiap alamat boleh digunakan (RFC 3021).",
-      "reservedNote": "Alamat pertama ialah rangkaian dan yang terakhir ialah broadcast; kedua-duanya disimpan, jadi boleh guna = jumlah − 2."
+      "reservedNote": "Alamat pertama ialah rangkaian dan yang terakhir ialah broadcast; kedua-duanya disimpan, jadi boleh guna = jumlah − 2.",
+      "classifyHeading": "Julat tujuan khas",
+      "classifySpecial": "Di dalam julat tujuan khas: {range}, {name} ({rfc}).",
+      "classifyPartial": "Sebahagiannya tujuan khas: {special} daripada {total} alamat berada dalam julat di bawah; selebihnya tiada dalam mana-mana julat tujuan khas.",
+      "classifyNone": "Tiada julat tujuan khas (ruang unicast yang boleh dihalakan secara global).",
+      "classifyThRange": "Julat",
+      "classifyThName": "Nama",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Hubungan",
+      "classifyThSource": "Sumber",
+      "classifyThDestination": "Destinasi",
+      "classifyThForwardable": "Boleh dimajukan",
+      "classifyThGlobal": "Boleh dicapai secara global",
+      "classifyRelEqual": "ialah blok ini",
+      "classifyRelInside": "mengandungi blok ini",
+      "classifyRelContains": "di dalam blok ini (pertindihan separa)",
+      "classifyYes": "Ya",
+      "classifyNo": "Tidak",
+      "classifyNotListed": "tidak disenaraikan",
+      "classifyTerminated": "ditamatkan {date}",
+      "classifyNote1": "[1] Nota kaki daftar: beberapa protokol telah diberi pengecualian daripada peraturan ini (contohnya RFC 8029 dan RFC 5884).",
+      "classifyNote2": "[2] Nota kaki daftar: tidak boleh digunakan kecuali menerusi tempahan yang lebih khusus.",
+      "classifyFlagsNote": "Bendera ialah bendera daftar. Sumber dan Destinasi: sama ada alamat daripada julat itu sah sebagai sumber atau destinasi datagram yang melalui dua peranti. Boleh dimajukan: sama ada penghala boleh memajukan datagram sedemikian antara antara muka luaran. Boleh dicapai secara global: sama ada ia boleh dimajukan melepasi domain pentadbiran tertentu.",
+      "classifySource": "Baris daripada daftar IANA IPv4 Special-Purpose Address Space (dikemas kini 2025-10-09) dan, untuk 224.0.0.0/4, daftar IANA IPv4 Multicast Address Space, kedua-duanya dibaca pada 2026-10-19. Daftar itu menyatakan bahawa julat yang disenaraikan tidak dijamin boleh dihalakan dalam mana-mana konteks setempat atau global."
     },
     "title": "Alat",
     "lede": "Utiliti kecil, pantas dan mengutamakan privasi. Katalog mengira dalam pelayar anda dan tidak menghantar apa-apa ke mana-mana; satu-satunya pengecualian ialah bilik merah, tempat sesebuah alat bertanya kepada perkhidmatan rasmi yang dinamakannya, dan hanya apabila anda menekan “Ask”.",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Jika anda berada di Brazil, anda memegang hak yang ditetapkan dalam Perkara 18 LGPD, dan juga boleh menghubungi pihak berkuasa perlindungan data kebangsaan (ANPD).",
     "changesTitle": "Perubahan pada notis ini",
     "changesBody": "Jika notis ini berubah, versi yang disemak akan diterbitkan pada halaman ini dan tarikh di bawah akan dikemas kini. Perubahan material tidak akan dikuatkuasakan secara retroaktif.",
-    "updated": "Kemas kini terakhir: 30 Jun 2026",
+    "updated": "Kemas kini terakhir: {date}",
     "backHome": "Kembali ke laman utama"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Sokongan",
     "title": "Apa yang orang katakan, dalam kata-kata mereka sendiri.",
-    "intro": "{count} cadangan dan testimoni sepenuhnya, daripada dua dekad latihan dan perundingan. Tiada apa di sini yang diparafrasa atau disunting.",
-    "provenance": "Diambil daripada cadangan LinkedIn, ulasan Google dan maklum balas peserta latihan Red Education yang disahkan. Kata-kata dan ejaan asal dikekalkan tepat seperti yang ditulis."
+    "intro": "{count} cadangan dan testimoni, daripada dua dekad latihan dan perundingan. Yang asal dikekalkan seadanya: tiada apa di dalamnya yang diparafrasa atau disunting. Terjemahan mesin pilihan ditandakan sedemikian.",
+    "provenance": "Diambil daripada cadangan LinkedIn, ulasan Google dan maklum balas peserta latihan Red Education yang disahkan. Kata-kata dan ejaan asal dikekalkan tepat seperti yang ditulis; kad yang diterjemah ditandakan sebagai terjemahan mesin, dan yang asal hanya satu klik jauhnya."
   },
   "testimonials": {
     "filterLabel": "Tapis testimoni",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – sekarang",
-      "title": "Jurulatih & Penasihat",
+      "title": "Mengajar, membina dan memahami bidang ini",
       "subtitle": "Pengajaran rasmi sepenuh masa ke seluruh dunia, dan di sampingnya nasihat tentang keputusan yang membawa akibat.",
       "intro": "Pada 2020, benang yang menjalar di seluruh kerjaya menjadi keseluruhan kain. Selepas dua dekad dengan pengajaran mengiringi setiap peranan, latihan menjadi kerja itu sendiri: pengajaran sepenuh masa, rasmi dan diperakui untuk profesional dan pasukan di seluruh dunia. Yang membezakan era ini bukan sahaja tumpuannya, tetapi pengembangan yang disengajakan dan bertarikh merentasi platform, setiap satu ditambah di atas pengalaman lapangan yang mendalam, bukan sebagai gantinya.",
       "s1Title": "Sepenuh masa, atas panggilan",
@@ -1045,7 +1075,7 @@
       "s3Body": "Yang membezakan tahun-tahun kebelakangan ini ialah pergerakan yang jelas dan bertarikh. Latihan Extreme Networks ditambah sejak 2021, merangkumi pensuisan EXOS, SD-WAN dan automasi. Fortinet menyusul sejak 2024, dengan tumpuan pada trek FCP FortiGate Administrator. Netskope ditambah sejak 2025, merangkumi operasi, pentadbiran, penggunaan dan penyepaduan Netskope Security Cloud. Platform, setiap satu ditambah dengan sengaja, setiap satu berdiri di atas dua dekad pelaksanaan rangkaian dan keselamatan yang sama di bawahnya.",
       "s4Title": "Melalui Red Education, ke dunia",
       "s4Body": "Wadah utama penyampaian global ini ialah Red Education, sebuah pusat latihan yang diberi kuasa yang menyalurkan kursus rasmi yang diperakui kepada organisasi merentasi rantau. Perananya ialah jurulatih latihan teknikal global, menyampaikan kepada khalayak antarabangsa yang dimungkinkan oleh pangkalan di São Paulo, dua pasport dan kecintaan tulen terhadap perjalanan. Kerjasama berterusan ini menukar kepakaran individu menjadi sesuatu yang boleh ditempah dan dipercayai oleh organisasi di seluruh dunia.",
-      "closer": "Di sinilah benang yang menjalar di seluruh kisah ini berbaloi. Rasa ingin tahu tahun-tahun awal menjadi kedalaman pelaksanaan melalui tahun-tahun di lapangan, dan kedalaman itu kini menjadi apa yang diterima oleh setiap peserta: bukan penceramah yang membaca slaid, tetapi seseorang yang membina sistem ini dan menerangkan cara ia benar-benar berfungsi, dan mengapa."
+      "closer": "Di sinilah benang yang menjalar di seluruh kisah ini berbaloi. Rasa ingin tahu tahun-tahun awal menjadi kedalaman pelaksanaan melalui tahun-tahun di lapangan, dan kedalaman itu kini menjadi apa yang diterima oleh setiap peserta: seseorang yang membina sistem ini dan menerangkan cara ia benar-benar berfungsi, dan mengapa."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Jurulatih yang membina sistem ini sebelum mengajarnya.",
     "lede": "Kebanyakan latihan teknikal disampaikan oleh mereka yang mempelajari subjek untuk mengajarnya. Di sini sebaliknya: tiga dekad membina, merosakkan dan membaiki sistem rangkaian dan keselamatan sebenar, diperah menjadi latihan yang mengaitkan setiap konsep dengan cara ia benar-benar berkelakuan dalam pengeluaran.",
     "s1Title": "Mengapa ia penting di bilik darjah",
-    "s1Body": "Ada perbezaan antara menjelaskan bagaimana sesuatu ciri sepatutnya berfungsi dan menjelaskan mengapa ia berkelakuan sedemikian pada pukul tiga pagi apabila sesuatu yang kritikal tergendala. Yang pertama datang daripada manual. Yang kedua datang daripada pernah berada di sana. Sejak 1996, kerjanya ialah pelaksanaan: mereka bentuk rangkaian dan menyiapkannya, kemudian menyelesaikan masalahnya di bawah tekanan dan menjadi orang yang dipanggil untuk menangani insiden ketersediaan dan keselamatan kritikal yang melumpuhkan sesebuah perniagaan, bagi vendor dan bagi sebahagian daripada organisasi terbesar di Brazil. Kedalaman itulah yang diterima oleh setiap peserta: bukan penyampai yang membaca slaid, tetapi seorang jurutera yang pernah hidup di dalam sistem-sistem ini dan menjelaskan cara ia benar-benar berfungsi.",
+    "s1Body": "Ada perbezaan antara menjelaskan bagaimana sesuatu ciri sepatutnya berfungsi dan menjelaskan mengapa ia berkelakuan sedemikian pada pukul tiga pagi apabila sesuatu yang kritikal tergendala. Yang pertama datang daripada manual. Yang kedua datang daripada pernah berada di sana. Sejak 1996, kerjanya ialah pelaksanaan: mereka bentuk rangkaian dan menyiapkannya, kemudian menyelesaikan masalahnya di bawah tekanan dan menjadi orang yang dipanggil untuk menangani insiden ketersediaan dan keselamatan kritikal yang melumpuhkan sesebuah perniagaan, bagi vendor dan bagi sebahagian daripada organisasi terbesar di Brazil. Kedalaman itulah yang diterima oleh setiap peserta: seorang jurutera yang pernah hidup di dalam sistem-sistem ini dan menjelaskan cara ia benar-benar berfungsi.",
     "s2Title": "Yang rumit dijadikan jelas",
     "s2Body": "Pengetahuan teknikal yang mendalam perlu, tetapi tidak mencukupi. Kemahiran yang lebih jarang ialah menterjemahkannya: mengambil sesuatu yang benar-benar rumit, tembok api aplikasi web, persekutuan identiti, pengurusan trafik, SD-WAN, dan membuatnya melekat pada seseorang yang menemuinya buat kali pertama. Peserta secara konsisten menyebut contoh dunia sebenar dan kaedah yang jelas dan berstruktur, keupayaan meletakkan setiap konsep dalam konteks kerja yang mereka benar-benar lakukan. Latihan ialah benang sepanjang kerjaya ini, hadir dalam hampir setiap peranan sejak 1997, dan tumpuan sepenuh masa sejak 2020.",
     "s3Title": "Praktikal, bukan kabur",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Perundingan dan rundingan",
     "topicOther": "Sesuatu yang lain",
     "formMessage": "Mesej anda",
-    "formSend": "Hantar mesej",
+    "formSend": "Buka draf e-mel",
     "formSending": "Menghantar…",
     "formRequired": "Sila isi nama, e-mel dan mesej anda.",
     "successTitle": "Terima kasih.",
     "successBody": "Mesej anda dalam perjalanan. Saya akan membalas secepat mungkin.",
     "errorBody": "Ada sesuatu yang tidak kena semasa menghantar. Cuba lagi atau e-mel terus.",
+    "draftedTitle": "Draf e-mel anda sudah dibuka.",
+    "draftedBody": "Aplikasi e-mel anda sepatutnya terbuka dengan mesej yang sudah diisi. Hantar dari sana; belum ada apa-apa yang dihantar. Jika tiada yang terbuka, salin mesej di bawah dan e-melkan ke {email}.",
+    "copyMessage": "Salin mesej",
+    "copied": "Disalin",
+    "copyFailed": "Salinan disekat: pilih teks dan salin",
+    "draftedMessageLabel": "Mesej, seperti yang didrafkan",
     "emailLabel": "E-mel",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Terma",
     "title": "Lesen",
-    "closedHeading": "Sumber tertutup, tapak web ini",
-    "closedBody": "Tapak web itu sendiri ialah sumber tertutup. Reka bentuk, antara muka, kandungan bertulisnya (termasuk setiap artikel Learn), penjenamaan dan cara khusus alat-alat ini disusun serta dipersembahkan di sini adalah hak milik eksklusif, semua hak terpelihara. Tiada kebenaran diberikan untuk menyalin, menghasilkan semula, mengubah suai, mengedar semula atau mencipta karya terbitan daripada tapak atau kandungannya tanpa kebenaran bertulis terlebih dahulu.",
+    "closedHeading": "Sumber terbuka: Apache-2.0 (kod) dan CC BY 4.0 (kandungan)",
+    "closedBody": "Kod aplikasi dilesenkan di bawah Apache License 2.0. Kandungan bertulis, setiap artikel Learn, teks dan prosa penerangan alat, serta dokumentasi, dilesenkan di bawah Creative Commons Attribution 4.0 International (CC BY 4.0). Anda boleh menggunakan, mengubah suai dan mengedarkan semula kedua-duanya, termasuk secara komersial, dengan syarat anda memberikan kredit yang sewajarnya kepada Rodolfo Nützmann (ronutz.com), memaut ke lesen dan menyatakan sebarang perubahan. ronutz.com kekal sebagai sumber kanonik yang dikekalkan.",
     "contact": "Ada soalan tentang lesen? <a>Hubungi kami.</a>",
     "backHome": "Kembali ke alat",
     "thirdHeading": "Komponen sumber terbuka",
-    "lede": "ronutz.com ialah karya proprietari, semua hak terpelihara. Terma ini meliputi laman web dan kandungannya. Laman ini dibina atas perisian sumber terbuka, yang digunakan dan diedarkan semula di bawah terma lesennya sendiri, dikreditkan di bawah.",
+    "lede": "ronutz.com ialah sumber terbuka. Kodnya dilesenkan di bawah Apache License 2.0, dan kandungan bertulisnya di bawah Creative Commons Attribution 4.0 (CC BY 4.0). Kedua-duanya memerlukan atribusi: guna semula, tetapi nyatakan sumbernya. Bahan kursus terbuka ialah satu-satunya pengecualian: setiap satu dikeluarkan di bawah lesen yang dinyatakan oleh helaian datanya sendiri, dan yang di bawah CC0 1.0 tidak memerlukan sebarang atribusi. Laman ini juga dibina atas perisian sumber terbuka lain, dikreditkan di bawah.",
     "thirdBody": "Laman ini berdiri di atas kerja sumber terbuka. Laman itu sendiri dibina dengan Next.js dan React dan dihantar sebagai eksport statik; pengantarabangsaan menggunakan next-intl; kandungan Learn dipaparkan dengan next-mdx-remote, gray-matter, remark-gfm, dan js-yaml; dan carian dikuasakan oleh Pagefind. Komponen ini disediakan di bawah MIT License, kecuali next-mdx-remote (Mozilla Public License 2.0). Rujukan API membenamkan Swagger UI, di bawah Apache License 2.0. Setiap komponen kekal di bawah lesennya sendiri, dan notis penuh dihantar bersama kod sumber."
   },
   "contributeIdeas": {

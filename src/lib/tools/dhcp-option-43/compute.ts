@@ -15,18 +15,28 @@
 //
 //   BINARY TLV   Cisco, UniFi: the IP as four bytes. 192.168.10.5 -> c0a80a05
 //   ASCII TLV    Ruckus: the IP as TEXT, each digit and dot as its ASCII byte.
-//                192.168.0.200 -> 3139322e3136382e302e323030. Ruckus's own KB
-//                warns about this: "if we convert 10 to Hex it will be 0A,
-//                however ASCII to Hex would be 31 30."
+//                192.168.1.120 -> 3139322e3136382e312e313230 (RUCKUS KB
+//                000008703's own example). The KB's words, read 2026-10-19:
+//                "For each number, the ASCII translation is “3” plus the
+//                number in decimal" and "For the “.” character, the ASCII
+//                code is “2e”". (Until 2026-10-19 this comment quoted the KB as
+//                saying 10 is 0A in hex but 31 30 in ASCII; the KB as
+//                downloaded that day contains neither "0A" nor "31 30", so
+//                the quotation was removed. The arithmetic itself stands:
+//                ASCII "1" is 0x31 and "0" is 0x30.)
 //   PLAIN STRING Aruba, ExtremeWireless: no hex at all. The DHCP server sends
 //                the IP as a string, and a hex value is simply wrong.
 //   NOT OPTION 43 FortiAP: uses option 138 (CAPWAP AC). A generator that emits
 //                an option 43 value for a FortiAP is confidently answering the
 //                wrong question.
 //
-// Every vendor profile below cites the VENDOR's own documentation. Community
-// posts were deliberately not used as a source for any byte: an approximately
-// right value pasted into production DHCP is worse than no value.
+// Every vendor profile below cites the VENDOR's own documentation for its
+// encoding rule. Two facts rest on secondary sources and are labelled so in
+// the golden vectors and the manifest (corrected 2026-10-19, when this
+// comment still claimed no community post was used): RUCKUS ZoneDirector's
+// sub-option 3, which KB 000008703 gives only as "03 or 06" and a RUCKUS
+// community post assigns to ZoneDirector, and the cisco43calc worked example,
+// a community repository on Cisco Code Exchange.
 //
 // DELIBERATELY ABSENT: Aerohive. It was acquired by Extreme in 2019 and folded
 // into ExtremeCloud IQ; no vendor documentation for a standalone Aerohive
@@ -49,7 +59,8 @@ export interface VendorProfile {
   /** Sub-option code, where the vendor defines one. */
   subOption?: number;
   /** How the address is represented inside the value. */
-  addressForm?: "binary" | "ascii";
+  // "ascii-list" (applied 2026-10-19 from Extreme's deployment guide as read with HTTP 200 on 2026-10-18; it answered 401 on 2026-10-19): the addresses as one text value, ", " between them.
+  addressForm?: "binary" | "ascii" | "ascii-list";
   /** Accepts more than one controller address in a single value. */
   multiple: boolean;
   /** Option 60 / VCI that MUST accompany option 43, where the vendor requires one. */
@@ -57,7 +68,8 @@ export interface VendorProfile {
   /** The option number to use instead, when encoding is "other-option". */
   useOption?: number;
   /** Vendor documentation this profile was built from. */
-  source: { label: string; url: string };
+  // access_date: the day the page was last read with curl and checked; unreachable: why it could not be re-read (2026-10-19).
+  source: { label: string; url: string; access_date?: string; unreachable?: string };
 }
 
 export const VENDOR_PROFILES: readonly VendorProfile[] = [
@@ -69,8 +81,11 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     addressForm: "binary",
     multiple: true,
     source: {
-      label: "Cisco: Configure DHCP Option 43 for Lightweight Access Points",
+      // Title as the page prints it (document 97066, updated July 22, 2026).
+      label: "Cisco: Configure DHCP OPTION 43 for Lightweight Access Points (document 97066)",
       url: "https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html",
+      // Read with curl and checked against the vectors on this day.
+      access_date: "2026-10-19",
     },
   },
   {
@@ -81,8 +96,11 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     addressForm: "ascii",
     multiple: false,
     source: {
-      label: "Ruckus KB 000008703: Understanding DHCP Option 43 Hexadecimal code",
+      // The KB gives the sub-option only as "03 or 06"; ZoneDirector's 3 is from RUCKUS community discussion 65974 (manifest source "ruckus-community-65974").
+      label: "RUCKUS KB 000008703: Understanding DHCP Option 43 Hexadecimal code (sub-option 03 or 06, address as ASCII text)",
       url: "https://support.ruckuswireless.com/articles/000008703",
+      // Read with curl and checked against the vectors on this day.
+      access_date: "2026-10-19",
     },
   },
   {
@@ -93,8 +111,11 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     addressForm: "ascii",
     multiple: false,
     source: {
-      label: "Ruckus KB 000008703: sub-option 06 is typical for SmartZone (SCG) APs",
+      // The KB's words: "Typically 06 for SmartZone (SCG) APs."
+      label: "RUCKUS KB 000008703: sub-option 06 is typical for SmartZone (SCG) APs",
       url: "https://support.ruckuswireless.com/articles/000008703",
+      // Read with curl and checked against the vectors on this day.
+      access_date: "2026-10-19",
     },
   },
   {
@@ -107,18 +128,27 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     source: {
       label: "Ubiquiti: Layer 3 Adoption for Remote UniFi Controllers",
       url: "https://help.ui.com/hc/en-us/articles/204909754-UniFi-Layer-3-Adoption-for-Remote-UniFi-Controllers",
+      // Not re-read: the house curl got a bot challenge, which is reported, not routed around.
+      unreachable: "2026-10-19: HTTP 403, Cloudflare challenge",
     },
   },
   {
     id: "extreme-wireless",
     label: "ExtremeWireless / ExtremeCloud IQ Controller",
-    encoding: "string",
+    // Sub-option 1 carrying text (Extreme, 2026-10-18 corpus: "option HAP.HWC code 1 = text;"), not a bare string.
+    encoding: "hex",
+    // The sub-option code Extreme documents: "type 1 (0x1)".
     subOption: 0x01,
-    multiple: false,
+    // The address list as text inside the sub-option.
+    addressForm: "ascii-list",
+    // Extreme's own example carries two controllers in one value: "10.100.2.36, 10.100.2.22".
+    multiple: true,
     vendorClass: "HiPath <AP model> on older APs; the bare model (for example AP410) on newer ones",
     source: {
       label: "Extreme Networks: Configuring DHCP Option 43 (ExtremeCloud IQ Controller Deployment Guide)",
       url: "https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-A9F28828-9A51-4923-AE62-A252E4745D73.shtml",
+      // Not re-read: the whole documentation host answered 401 to the house curl, site root included.
+      unreachable: "2026-10-19: HTTP 401 Unauthorized for every documentation.extremenetworks.com URL tried",
     },
   },
   {
@@ -130,6 +160,8 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     source: {
       label: "Extreme Networks: DHCP Option 43, Fabric Engine User Guide (sub-option 226, EXTREME.cloudiq-ip)",
       url: "https://documentation.extremenetworks.com/Fabric%20Engine%20v9.1%20User%20Guide/GUID-96B8F9A4-D7DF-42A4-A398-2A5C6B644DC1.shtml",
+      // Not re-read: same host, same 401.
+      unreachable: "2026-10-19: HTTP 401 Unauthorized",
     },
   },
   {
@@ -141,6 +173,8 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     source: {
       label: "HPE Aruba Networking: standard and vendor-specific DHCP options for access points",
       url: "https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/uap/",
+      // Not re-read: an Access Denied page, reported rather than routed around.
+      unreachable: "2026-10-19: HTTP 403, Access Denied",
     },
   },
   {
@@ -152,6 +186,8 @@ export const VENDOR_PROFILES: readonly VendorProfile[] = [
     source: {
       label: "Fortinet: FortiAP acquires the AC address from DHCP option 138 (factory default)",
       url: "https://docs.fortinet.com/document/fortiap/7.2.5/fortiwifi-and-fortiap-configuration-guide/540137",
+      // Read with curl and checked against the vector on this day.
+      access_date: "2026-10-19",
     },
   },
 ];
@@ -316,6 +352,17 @@ export function run(vendorId: string, input: string): Option43Report {
       meaning: "length: four bytes per address",
     });
     for (const a of addresses) breakdown.push({ bytes: binaryHex(a), meaning: a });
+  } else if (vendor.addressForm === "ascii-list") {
+    // One text value, addresses separated by comma and space as in Extreme's example.
+    const list = addresses.join(", ");
+    // Every character of the list as its ASCII byte (the parser already validated each address).
+    value = Array.from(list).map((c) => hex2(c.charCodeAt(0))).join("");
+    // Sub-option byte first.
+    breakdown.push({ bytes: hex2(sub), meaning: "sub-option" });
+    // Then the length of the text, separators included.
+    breakdown.push({ bytes: hex2(list.length), meaning: `length: ${list.length} characters, dots, commas and spaces included` });
+    // Then the text itself.
+    breakdown.push({ bytes: value, meaning: `${list}, one byte per character` });
   } else {
     const a = addresses[0];
     value = asciiHex(a);
@@ -356,7 +403,8 @@ export function run(vendorId: string, input: string): Option43Report {
     serverSnippets: snippets,
     notes: [
       ...notes,
-      ...(vendor.addressForm === "ascii" ? ["ascii-not-binary"] : []),
+      // Any text form (single address or list) gets the ASCII warning (was "ascii" only before 2026-10-19).
+      ...(vendor.addressForm !== "binary" ? ["ascii-not-binary"] : []),
       ...(addresses.length > 1 ? ["multiple-controllers"] : []),
     ],
   };

@@ -8,7 +8,7 @@ relatedArticles: ["nslookup-vs-dig", "nslookup-record-types", "authoritative-vs-
 category: networking
 order: 45
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
 nslookup is the DNS query tool most people meet first, and its output has a simple, stable shape once you know what the pieces are.
@@ -34,7 +34,7 @@ After a blank line comes the answer. The `Non-authoritative answer:` marker, whe
 
 ## Where to look first
 
-If the lookup failed, nslookup does not print an answer; it prints a line like `** server can't find example.com: NXDOMAIN`. The code at the end is the whole story: `NXDOMAIN` means the name does not exist, `SERVFAIL` means the server could not complete the query, and `REFUSED` means it declined.
+If the lookup failed, nslookup does not print an answer; it prints a line like `** server can't find nonexistent.invalid: NXDOMAIN`. The name is under `.invalid` because [Request for Comments (RFC) 6761, section 6.4](https://www.rfc-editor.org/rfc/rfc6761) lets users assume such names always return NXDOMAIN, while `example.com` now answers NOERROR with no data for names that do not exist ([RFC 9824, section 3](https://www.rfc-editor.org/rfc/rfc9824); [observed 2026-10-19](https://dns.google/resolve?name=nonexistent.example.com&type=A)). The code at the end is the whole story: `NXDOMAIN` means the name does not exist, `SERVFAIL` means the server could not complete the query, and `REFUSED` means it declined.
 
 If it succeeded, the two questions worth asking are which resolver answered (the Server line, in case you are testing a specific one) and whether the answer is authoritative (the marker). The rest of this series covers how nslookup formats each record type, how it compares to dig, what authoritative really means, and how to read its errors.
 
@@ -51,3 +51,6 @@ A resolver changed by DHCP, a VPN (virtual private network) that installed its o
 
 - [RFC 1035, Domain Names: Implementation and Specification, November 1987: section 4.1.1, the AA (authoritative answer) bit (read 2026-10-07)](https://www.rfc-editor.org/rfc/rfc1035)
 - [Google Public DNS, DNS-over-HTTPS JSON API: example.com, type A, 104.20.23.154 and 172.66.147.243 (read 2026-10-07)](https://dns.google/resolve?name=example.com&type=A)
+- [RFC 6761, Special-Use Domain Names, February 2013: section 6.4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6761)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, September 2025: section 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9824)
+- [Google Public DNS, DNS-over-HTTPS JSON API: nonexistent.example.com, type A, Status 0 (NOERROR) with the example.com SOA and no answer (read 2026-10-19)](https://dns.google/resolve?name=nonexistent.example.com&type=A)

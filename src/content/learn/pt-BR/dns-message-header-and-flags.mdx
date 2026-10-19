@@ -1,57 +1,237 @@
 ---
 slug: dns-message-header-and-flags
 title: "O cabeçalho DNS: opcode, status e flags"
-summary: "Duas linhas carregam todo o estado de uma mensagem DNS: que tipo de consulta é, se ela teve sucesso e sete flags de um único bit (qr, aa, tc, rd, ra, ad, cd) que dizem quem respondeu e como. Lê-las corretamente é a diferença entre um diagnóstico de dois minutos e uma hora de adivinhação."
-concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra"]
-relatedTools: ["dig-output-explainer"]
-relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig"]
+summary: "Toda mensagem DNS começa com o mesmo header de 12 bytes: um ID de 16 bits, uma palavra de flags que guarda o opcode, sete flags nomeadas, um bit reservado e o código de resposta, e quatro contadores de seção, que o dig imprime como as linhas de header e de flags. Depois da leitura, você consegue decodificar um header a partir dos bytes em hexadecimal, dizer o que cada flag, opcode e status conta para um diagnóstico, reconhecer uma resposta truncada e testar a repetição por TCP que ela exige, e explicar por que o ID e a porta de origem precisam ser imprevisíveis."
+concepts: ["dns header", "rcode", "status", "flags", "nxdomain", "servfail", "aa", "rd", "ra", "opcode", "tc", "ad", "cd", "transaction id", "nodata", "extended rcode", "truncation", "source port randomisation", "dns cache poisoning"]
+relatedTools: ["dig-output-explainer", "dig-command-builder", "python-playground", "nslookup-output-explainer"]
+relatedArticles: ["reading-dig-output", "dns-record-types-in-answers", "dnssec-records-in-dig", "reading-a-dns-answer", "authoritative-vs-non-authoritative-answers", "anatomy-of-a-dig-command-line", "dns-zone-transfers-and-notify", "dnssec-end-to-end"]
 category: networking
 order: 41
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-Duas linhas carregam todo o estado de uma mensagem DNS: a linha `->>HEADER<<-` e a linha `flags:` logo abaixo.
+A Request for Comments (RFC) 1035 dá a toda mensagem DNS o mesmo header (cabeçalho) de 12 bytes ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), que o dig imprime nas linhas `->>HEADER<<-` e `flags:` que quase todo mundo pula. Esses bytes dizem quem respondeu, se houve oferta de recursão, se a resposta foi cortada, se um resolver a garante sob as Domain Name System Security Extensions (DNSSEC) e como o pedido acabou. Na parte 4 de [DNS, lido a partir da resposta](/learn/reading-a-dns-answer), você decodifica uma troca real em hexadecimal e lê cada campo pelo que ele conta a um diagnóstico.
 
-## A linha do cabeçalho
+## Doze bytes, como a RFC 1035 os desenha
 
+Seis palavras de 16 bits, desenhadas em 1987 ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)):
+
+```text
+                                    1  1  1  1  1  1
+      0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                      ID                       |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    QDCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    ANCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    NSCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+    |                    ARCOUNT                    |
+    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 ```
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
+
+O bit 0 é o mais significativo, e o byte alto viaja primeiro ([RFC 1035, seção 2.3.2](https://www.rfc-editor.org/rfc/rfc1035.txt)). O ID é "A 16 bit identifier assigned by the program that generates any kind of query", um identificador de 16 bits escolhido por quem pergunta, que a resposta copia (seção 4.1.1). As flags são QR (query ou resposta), AA (Authoritative Answer), TC (Truncated Response), RD (Recursion Desired) e RA (Recursion Available), ao lado de um opcode de 4 bits e de um RCODE (código de resposta) de 4 bits; o dig rotula os quatro contadores de seção como QUERY, ANSWER, AUTHORITY e ADDITIONAL ([dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)).
+
+Z, os bits 9 a 11, era "Reserved for future use. Must be zero in all queries and responses" ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), até a RFC 2535 tomar dois desses bits para o DNSSEC em 1999, AD (Authentic Data) e CD (Checking Disabled) ([RFC 2535, seção 6.1](https://www.rfc-editor.org/rfc/rfc2535.txt)). A palavra hoje é lida assim ([RFC 6895, seção 2](https://www.rfc-editor.org/rfc/rfc6895.txt)):
+
+```text
+             |QR|   OpCode  |AA|TC|RD|RA| Z|AD|CD|   RCODE   |
 ```
 
-O **opcode** é quase sempre `QUERY`. Você verá `NOTIFY` (um primário avisando um secundário de que a zona mudou) e `UPDATE` (DNS dinâmico) em cenários específicos, mas uma consulta normal é `QUERY`.
+Resta um bit reservado, que só uma Standards Action pode atribuir ([RFC 6895, seção 2.1](https://www.rfc-editor.org/rfc/rfc6895.txt)). Na numeração do registro da Internet Assigned Numbers Authority (IANA) ([IANA, parâmetros do DNS](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)), o bit n vale 2 elevado a 15 menos n:
 
-O **status** é o RCODE, e é o campo mais útil. `NOERROR` significa que a consulta foi processada normalmente. `NXDOMAIN` significa que o nome não existe. `SERVFAIL` significa que o servidor não conseguiu concluir a consulta, o que na prática aponta para uma delegação quebrada, uma validação DNSSEC (Extensões de Segurança do DNS, do inglês DNS Security Extensions) que falhou ou um upstream que deu timeout. `NOTIMP` significa que o servidor não implementa o tipo ou opcode pedido. `REFUSED` significa que o servidor recusou, geralmente por controle de acesso ou porque a recursão está desabilitada para você.
-
-O **id** é o id de transação de 16 bits que associa uma resposta à sua consulta. Em um `dig` manual isolado, é apenas um identificador; ele importa quando você está correlacionando capturas.
-
-## As flags
-
-```
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+```text
+bit      0     1-4     5     6     7     8     9     10    11    12-15
+campo    QR    Opcode  AA    TC    RD    RA    Z     AD    CD    RCODE
+máscara  8000  7800    0400  0200  0100  0080  0040  0020  0010  000F
 ```
 
-Sete flags podem aparecer, e cada uma é um único bit:
+## Uma consulta real e sua resposta, byte a byte
 
-- **qr** (Query Response): definida em uma resposta. Se estiver ausente, você está olhando uma consulta, não uma resposta.
-- **aa** (Authoritative Answer): o servidor que respondeu é autoritativo para o nome, então o dado vem da própria zona, não de um cache.
-- **tc** (Truncated): a mensagem não coube e foi cortada. O dig normalmente tenta de novo por TCP; uma resposta UDP truncada está incompleta.
-- **rd** (Recursion Desired): o cliente pediu ao servidor para resolver o nome inteiro por ele. É uma cópia do bit da consulta refletido de volta.
-- **ra** (Recursion Available): o servidor está disposto e apto a recursar.
-- **ad** (Authentic Data): o resolvedor validou a resposta com DNSSEC e ela conferiu.
-- **cd** (Checking Disabled): o cliente pediu ao resolvedor para pular a validação DNSSEC.
+Capturado em 18 de outubro de 2026: os registros `NS` (servidor de nomes) de example.com, pedidos a um resolver público por DNS over HTTPS (DoH), que leva a mensagem no formato de fio, header na frente ([RFC 8484, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc8484.txt)). A consulta:
 
-Os quatro números após as flags são as contagens de registros das seções QUESTION, ANSWER, AUTHORITY e ADDITIONAL. Elas devem bater com o que você conta em cada seção; uma divergência é sinal de que a mensagem foi truncada ou corrompida.
+```text
+0000  11 49 01 20 00 01 00 00  00 00 00 01 07 65 78 61
+0010  6d 70 6c 65 03 63 6f 6d  00 00 02 00 01 00 00 29
+0020  04 d0 00 00 00 00 00 00
+```
 
-## O que a combinação revela
+`11 49` é o ID, 0x1149 = 4.425, e `01 20` são as flags; os contadores são 1, 0, 0 e 1. Do byte 12 vêm example.com, o tipo 2 (`NS`) e a classe 1 (`IN`); os 11 últimos bytes são um pseudorregistro `OPT` das Extension Mechanisms for DNS (EDNS), tipo 41, oferecendo um payload UDP de 1.232 bytes ([RFC 6891, seção 6.1.2](https://www.rfc-editor.org/rfc/rfc6891.txt)). A resposta começa:
 
-A combinação conta uma história. `qr aa` com uma resposta é um servidor autoritativo entregando dados de zona diretamente. `qr rd ra` com uma resposta é um resolvedor recursivo retornando um resultado (possivelmente em cache). `qr rd ra` com status `NXDOMAIN` e um SOA em AUTHORITY é um resolvedor dizendo que o nome realmente não existe e por quanto tempo ele vai lembrar disso. `qr rd` sem `ra` significa que você pediu a um servidor para recursar que não vai, o que costuma aparecer como `REFUSED`.
+```text
+0000  11 49 81 a0 00 01 00 02  00 00 00 01 07 65 78 61
+0010  6d 70 6c 65 03 63 6f 6d  00 00 02 00 01
+```
 
+Mesmo ID e mesma pergunta; os contadores são 1, 2, 0 e 1. Os bytes 29 a 83 são os dois registros `NS`, o primeiro abrindo com `c0 0c`, um ponteiro para o deslocamento 12 contado a partir do ID ([RFC 1035, seção 4.1.4](https://www.rfc-editor.org/rfc/rfc1035.txt)); os bytes 84 a 94 são o `OPT` do resolver, porque "If an OPT record is present in a received request, compliant responders MUST include an OPT record in their respective responses", OPT recebido, OPT devolvido ([RFC 6891, seção 6.1.1](https://www.rfc-editor.org/rfc/rfc6891.txt)). As flags, contra as máscaras:
 
-## TC é a flag que transforma um problema de UDP em um problema de TCP
+```text
+           QR    Opcode  AA    TC    RD    RA    Z     AD    CD    RCODE
+consulta   0     0000    0     0     1     0     0     1     0     0000    0x0120
+resposta   1     0000    0     0     1     1     0     1     0     0000    0x81a0
+```
 
-Quando uma resposta não cabe, o servidor liga **TC** — truncada — e envia o que dá. Espera-se que um cliente correto perceba e repita a consulta inteira sobre **TCP na porta 53**.
+RD (256) e AD (32) somam os 288 da consulta, 0x0120; a resposta acrescenta QR (32.768) e RA (128): 32.768 + 256 + 128 + 32 = 33.184, 0x81a0. RD volta como foi, AA é zero porque um resolver respondeu, RCODE 0 é NOERROR (No Error), e AD é um porque example.com é assinado e a consulta pediu ([RFC 6840, seção 5.8](https://www.rfc-editor.org/rfc/rfc6840.txt)). Ilustrativo, pelos formatos do dig 9.20.29, o par como `+qr` o mostraria ([dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)):
 
-Essa retentativa é onde os parques quebram. **TCP/53 é bloqueado com muito mais frequência do que alguém pretende**, normalmente por uma regra de firewall escrita quando "DNS é UDP" era uma simplificação razoável. O resultado é um resolvedor que funciona para consultas comuns e falha só para respostas grandes — o tipo de falha mais difícil de ser relatado com precisão.
+```text
+;; Sending:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4425
+;; flags: rd ad; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1
 
-**Se o DNS funciona até não funcionar, teste TCP/53 explicitamente.** É um comando e elimina a hipótese mais rápido.
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4425
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+```
+
+`ADDITIONAL: 1` sem nenhuma seção adicional impressa é normal: o contador inclui o registro `OPT`, que o dig imprime à parte sob `;; OPT PSEUDOSECTION:` ([message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)), e uma resposta ininteligível aparece só como `;; Got bad packet:` ([dighost.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)). [EDNS e a pseudosseção OPT](/learn/edns-and-the-opt-pseudosection) lê esse bloco.
+
+## O que as flags contam a um diagnóstico
+
+**QR e AA.** Uma saída sem `qr` é uma consulta, já que QR só vale 1 em respostas ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). AA "specifies that the responding name server is an authority for the domain name in question section", quem respondeu é autoridade para o nome (seção 4.1.1), embora atrás de um alias só o registro do alias seja autoritativo com certeza ([RFC 2181, seção 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt)). As respostas de um resolver, até um NXDOMAIN (Non-Existent Domain) legítimo, normalmente vêm sem `aa`; uma resposta autoritativa a uma consulta com RD seria 0x8500, QR AA RD (ilustrativo). Veja [Respostas autoritativas e não autoritativas](/learn/authoritative-vs-non-authoritative-answers).
+
+**RD e RA.** "If RD is set, it directs the name server to pursue the query recursively", RD pede recursão, e a resposta copia o bit ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)); o dig o liga a menos que receba `+norecurse` ([manual do dig](https://bind9.readthedocs.io/en/stable/manpages.html)). RA é a oferta: "That is, RA signals availability rather than use", RA sinaliza disponibilidade, não uso ([RFC 1034, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)). Para `rd` sem `ra`, o dig avisa `recursion requested but not available` ([dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)); um servidor autoritativo ainda responde pelas próprias zonas e costuma devolver REFUSED para as outras ([RFC 9520, seção 2.2](https://www.rfc-editor.org/rfc/rfc9520.txt)).
+
+**AD e CD.** Um resolver validador só liga AD quando considera autênticos os registros de resposta e de autoridade ([RFC 4035, seção 3.2.3](https://www.rfc-editor.org/rfc/rfc4035.txt)) e a consulta trouxe AD ou o bit DNSSEC OK (DO) ([RFC 6840, seção 5.8](https://www.rfc-editor.org/rfc/rfc6840.txt)), como as do dig trazem por padrão ([manual do dig](https://bind9.readthedocs.io/en/stable/manpages.html)). É uma alegação, não uma prova: um resolver "MUST disregard the meaning of the CD and AD bits in a response unless the response was obtained by using a secure channel", fora de um canal seguro CD e AD não valem (RFC 4035, seção 4.6). Confie em `ad` só vindo de um resolver validador confiável, por um canal confiável ([RFC 4033, seção 7](https://www.rfc-editor.org/rfc/rfc4033.txt)).
+
+CD desliga a validação para uma consulta e volta copiado ([RFC 4035, seção 3.2.2](https://www.rfc-editor.org/rfc/rfc4035.txt)); uma validação que falha devolve SERVFAIL (Server Failure), a menos que a consulta tenha ligado CD (seção 5.5). Daí o teste do Internet Systems Consortium (ISC), editor do dig: "If the query succeeds with dig +cd, but ends in SERVFAIL without it, you know you are dealing with a validation problem", sucesso só com +cd é problema de validação ([ISC, DNSSEC Guide](https://bind9.readthedocs.io/en/stable/dnssec-guide.html)). Em 18 de outubro de 2026 um resolver público respondeu assim ao domínio que o guia mantém para falhar (192.0.2.53 representa o seu):
+
+```bash
+dig @192.0.2.53 www.dnssec-failed.org A
+dig @192.0.2.53 www.dnssec-failed.org A +cd
+```
+
+```text
+sem CD  04 6e 81 82 00 01 00 00 00 00 00 01   0x8182: qr rd ra, SERVFAIL, sem resposta
+com CD  84 33 81 90 00 01 00 02 00 00 00 01   0x8190: qr rd ra cd, NOERROR, 2 respostas
+```
+
+[DNSSEC de ponta a ponta](/learn/dnssec-end-to-end) explica a validação.
+
+## TC: quando a resposta não cabe
+
+A RFC 1035 limitou as mensagens UDP a 512 bytes, fora os headers IP e UDP, truncando as maiores com TC ligado ([RFC 1035, seção 4.2.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). A RFC 2181 estreitou a regra a um conjunto de registros (RRSet) que faltou: "The TC bit should be set in responses only when an RRSet is required as a part of the response, but could not be included in its entirety", TC só quando um RRSet necessário não coube inteiro. Quem recebe TC deve ignorar a resposta e perguntar de novo por um transporte que admita respostas maiores, como o TCP ([RFC 2181, seção 9](https://www.rfc-editor.org/rfc/rfc2181.txt)).
+
+O DNSSEC tornou corriqueiro o truncamento nos 512 bytes ([RFC 7766, seção 4](https://www.rfc-editor.org/rfc/rfc7766.txt)), e a RFC 7766 decidiu: "All general-purpose DNS implementations MUST support both UDP and TCP transport", UDP e TCP obrigatórios (seção 5). As redes também: "Likewise, network operators MUST allow DNS service over both UDP and TCP transports", o operador de rede também ([RFC 9210, seção 3](https://www.rfc-editor.org/rfc/rfc9210.txt)). Um bloqueio de TCP falha em silêncio: as pequenas passam por UDP e só as grandes falham ([RFC 7766, seção 1](https://www.rfc-editor.org/rfc/rfc7766.txt)).
+
+O dig repete por TCP por padrão ([manual do dig](https://bind9.readthedocs.io/en/stable/manpages.html)), anotando `Truncated, retrying in TCP mode.` ([dighost.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)); `+ignore` fica com a resposta UDP truncada e `+tcp` testa diretamente a porta TCP 53 do servidor ([RFC 1035, seção 4.2.2](https://www.rfc-editor.org/rfc/rfc1035.txt)):
+
+```bash
+dig +ignore @192.0.2.53 example.com
+dig +tcp @192.0.2.53 example.com
+```
+
+Uma resposta truncada de um resolver seria lida como `flags: qr tc rd ra`, 32.768 + 512 + 256 + 128 = 33.664 = 0x8380 (ilustrativo). O [montador de comandos dig](/tools/dig-command-builder) escreve os dois comandos; [Anatomia de uma linha de comando dig](/learn/anatomy-of-a-dig-command-line) os explica.
+
+## Opcode e status: os códigos que você vai encontrar
+
+O opcode é definido por quem origina a mensagem e copiado na resposta ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), cada unidade somando 2.048 à palavra de flags ([IANA, parâmetros do DNS](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)):
+
+| Opcode | Nome | Palavra de flags | Nota |
+|---|---|---|---|
+| 0 | QUERY | 0x0000 | toda consulta comum |
+| 1 | IQUERY (consulta inversa) | 0x0800 | obsoleto ([RFC 3425, seção 3](https://www.rfc-editor.org/rfc/rfc3425.txt)) |
+| 2 | STATUS | 0x1000 | nunca especificado ([RFC 6895, seção 2.2](https://www.rfc-editor.org/rfc/rfc6895.txt)) |
+| 4 | NOTIFY | 0x2000 | [aviso de zona alterada](/learn/dns-zone-transfers-and-notify); o pedido liga AA, 0x2400 ([RFC 1996, resumo e seção 4.5](https://www.rfc-editor.org/rfc/rfc1996.txt)) |
+| 5 | UPDATE | 0x2800 | atualização dinâmica; QR é sua única flag ([RFC 2136, seção 2.2](https://www.rfc-editor.org/rfc/rfc2136.txt)) |
+| 6 | DSO (DNS Stateful Operations) | 0x3000 | por TCP ou TLS; o dig imprime `RESERVED6` ([RFC 8490, seção 4.2](https://www.rfc-editor.org/rfc/rfc8490.txt); [dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)) |
+
+O status é o RCODE ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)); os códigos que você vai encontrar, com as descrições do registro ([IANA, parâmetros do DNS](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)):
+
+| Código | Status | Descrição no registro | Em geral significa |
+|---|---|---|---|
+| 0 | NOERROR | No Error | processado; resposta vazia é NODATA |
+| 1 | FORMERR | Format Error | não entendido, muitas vezes EDNS ([RFC 9520, seção 2.7](https://www.rfc-editor.org/rfc/rfc9520.txt)) |
+| 2 | SERVFAIL | Server Failure | sem dados válidos, ou validação falhou ([RFC 9520, seções 2.1 e 2.6](https://www.rfc-editor.org/rfc/rfc9520.txt)) |
+| 3 | NXDOMAIN | Non-Existent Domain | o nome não existe |
+| 4 | NOTIMP | Not Implemented | tipo de consulta ou opcode sem suporte ([RFC 2136, seção 2.2](https://www.rfc-editor.org/rfc/rfc2136.txt)) |
+| 5 | REFUSED | Query Refused | política, ou zona que o servidor não serve ([RFC 9520, seção 2.2](https://www.rfc-editor.org/rfc/rfc9520.txt)) |
+| 16 | BADVERS | Bad OPT Version | versão EDNS não implementada |
+
+NODATA não tem código próprio: "NODATA responses have to be algorithmically determined from the response's contents as there is no RCODE value to indicate NODATA", é deduzido do conteúdo da resposta ([RFC 2308, seção 2.2](https://www.rfc-editor.org/rfc/rfc2308.txt)). Resolvers devem guardar um SERVFAIL em cache de 1 segundo a 5 minutos, e uma falha já corrigida pode demorar a sumir ([RFC 9520, seção 3.2](https://www.rfc-editor.org/rfc/rfc9520.txt)).
+
+O EDNS alarga o RCODE para 12 bits: o primeiro byte do campo de RCODE estendido e flags do registro `OPT` fornece os oito de cima ([RFC 6891, seção 6.1.3](https://www.rfc-editor.org/rfc/rfc6891.txt)); o dig imprime a soma, esse byte vezes 16 mais os quatro bits do header ([message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)). Duas capturas do mesmo dia:
+
+```bash
+dig +edns=1 +showbadvers example.com NS
+```
+
+```text
+example.com NS, EDNS versão 1   15 b6 81 80 00 01 00 00 00 00 00 01  qr rd ra; OPT: RCODE estendido 1
+no-such-name.invalid A          e7 26 81 a3 00 01 00 00 00 01 00 01  qr rd ra ad; RCODE 3
+```
+
+O primeiro header diz RCODE 0, mas seu `OPT` acrescenta RCODE estendido 1: 1 × 16 + 0 = 16, BADVERS, obrigatório para uma versão EDNS não implementada ([RFC 6891, seção 6.1.3](https://www.rfc-editor.org/rfc/rfc6891.txt)); o dig tenta de novo com a versão 0, a menos que receba `+showbadvers` ([manual do dig](https://bind9.readthedocs.io/en/stable/manpages.html)). O segundo é um NXDOMAIN repassado por um resolver, AA em zero, com o `SOA` da zona raiz na autoridade, cujo tempo de vida limita o cache negativo ([RFC 2308, seção 3](https://www.rfc-editor.org/rfc/rfc2308.txt)). O nome fica sob `.invalid` porque example.com hoje responde NOERROR sem dados a nomes inexistentes, pela negação compacta de existência ([RFC 9824, seção 1](https://www.rfc-editor.org/rfc/rfc9824.txt)), enquanto a RFC 6761 deixa o usuário assumir que nomes em `.invalid` sempre retornam NXDOMAIN ([RFC 6761, seção 6.4](https://www.rfc-editor.org/rfc/rfc6761.txt)).
+
+## O ID, a porta de origem e as respostas forjadas
+
+A RFC 5452 obriga a conferência completa, endereços, porta, ID, nome, classe e tipo: "A mismatch and the response MUST be considered invalid", qualquer divergência invalida a resposta ([RFC 5452, seção 9.1](https://www.rfc-editor.org/rfc/rfc5452.txt)). O dig sorteia o ID a cada consulta e avisa `ID mismatch` ante uma resposta estranha ([dighost.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)).
+
+Um resolver com cache aceita a primeira resposta que cumpra quatro condições, entre elas o ID igual e a chegada no endereço e na porta de onde a pergunta saiu, e depois serve a seus clientes o que tiver aceitado ([RFC 5452, seção 3](https://www.rfc-editor.org/rfc/rfc5452.txt)). Um ID aleatório de 16 bits, sozinho, "will require on average 32768 attempts to guess", exige em média 32.768 tentativas (seção 4.3); uma porta de origem aleatória acrescenta até 16 bits (seção 4.5), e em largura total a média passa a 32.768 × 65.536 = 2.147.483.648. Por isso a RFC 5452 exige uma porta imprevisível na faixa mais larga praticável e "Use an unpredictable query ID for outgoing queries, utilizing the full range available (0-65535)", um ID imprevisível em toda a faixa (seção 9.2). A nota VU#800113 (julho de 2008) creditou a Dan Kaminsky a demonstração de quão prático era envenenar um cache, e a Daniel J. Bernstein a ideia original das portas aleatórias ([CERT Coordination Center, VU#800113](https://kb.cert.org/vuls/id/800113)), como conta [A falha de Kaminsky](/learn/the-kaminsky-dns-flaw).
+
+Há limites: dispositivos de NAT que serializam ou restringem as portas de origem podem reduzir drasticamente o ganho ([RFC 5452, seção 10](https://www.rfc-editor.org/rfc/rfc5452.txt)), e "protocol users are not protected against third parties with the ability to observe, modify, or inject packets in the traffic of a resolver", nada disso protege de quem injeta pacotes no caminho (seção 1), caso deixado ao DNSSEC.
+
+## Como ver o header na prática
+
+No dig, `+qr` mostra a consulta como foi enviada, e `+qid=valor`, `+opcode=valor` e `+zflag` definem o ID, o opcode e o Z para testes ([manual do dig](https://bind9.readthedocs.io/en/stable/manpages.html)); [Opções de consulta e controle de saída do dig](/learn/dig-query-options) tem o resto. Um script precisa ler o status, pois o dig sai com 0 também em NXDOMAIN (manual do dig, Return Codes). O tcpdump marca RD ligado com `+`, AA ligado com `*`, RA desligado com `-` e TC ligado com `|` ([tcpdump(1)](https://www.tcpdump.org/manpages/tcpdump.1.html)); os campos do Wireshark estão listados abaixo ([Wireshark, campos de DNS](https://www.wireshark.org/docs/dfref/d/dns.html)); e em Python `struct.unpack('!HHHHHH', data[:12])` devolve as seis palavras na ordem de bytes da rede ([Python, struct](https://docs.python.org/3.14/library/struct.html)).
+
+```bash
+tcpdump -n -X 'port 53'
+```
+
+```text
+dns.id  dns.flags  dns.flags.response  dns.flags.opcode  dns.flags.authoritative
+dns.flags.truncated  dns.flags.recdesired  dns.flags.recavail  dns.flags.z
+dns.flags.authenticated  dns.flags.checkdisable  dns.flags.rcode  dns.resp.ext_rcode
+dns.count.queries  dns.count.answers  dns.count.auth_rr  dns.count.add_rr  dns.response_to
+```
+
+O [explicador de saída do dig](/tools/dig-output-explainer) lê as linhas de header e de flags coladas, explica as sete flags e avisa sobre `tc`, falta de `qr` e `do` sem `ad`. O [playground Python](/tools/python-playground) empacota um header DNS com struct; o [explicador de saída do nslookup](/tools/nslookup-output-explainer) diz se uma resposta é autoritativa.
+
+## Para lembrar
+
+- O header tem 12 bytes, seis palavras de 16 bits: o ID, a palavra de flags e quatro contadores de seção.
+- A palavra de flags é uma soma de máscaras: QR 0x8000, RD 0x0100, RA 0x0080 e AD 0x0020 dão 0x81a0, um NOERROR validado de um resolver.
+- RD volta copiado, RA é a oferta do servidor, e AA marca o servidor da própria zona, ausente nas respostas de um resolver.
+- TC quer dizer que um conjunto de registros necessário não coube: repita por TCP, que toda implementação deve suportar e toda rede deve permitir.
+- AD é uma alegação, confiável só vinda de um resolver validador confiável; SERVFAIL sem CD e resposta com CD indicam falha de DNSSEC.
+- O status é um RCODE de 12 bits, quatro bits no header mais oito no registro OPT, que ADDITIONAL conta embora o dig o imprima à parte.
+- O ID e a porta de origem precisam ser imprevisíveis: 16 bits sozinhos caem em 32.768 tentativas, em média.
+
+## Fontes
+
+- [RFC 1035, Domain names - implementation and specification, novembro de 1987: seções 2.3.2, 4.1, 4.1.1, 4.1.4, 4.2.1, 4.2.2 e 7.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 1034, Domain names - concepts and facilities, novembro de 1987: seções 3.7 e 4.3.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 1996, A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY), agosto de 1996: resumo e seções 3.3, 4.5 e 4.7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1996.txt)
+- [RFC 2136, Dynamic Updates in the Domain Name System (DNS UPDATE), abril de 1997: seções 1.3 e 2.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2136.txt)
+- [RFC 2181, Clarifications to the DNS Specification, julho de 1997: seções 4, 4.2, 5.4.1 e 9 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), março de 1998: seções 1, 2.2, 3 e 7.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 2535, Domain Name System Security Extensions, março de 1999: seção 6.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2535.txt)
+- [RFC 3425, Obsoleting IQUERY, novembro de 2002: seções 3 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3425.txt)
+- [RFC 4033, DNS Security Introduction and Requirements, março de 2005: seções 3, 5, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, março de 2005: seções 3.2.2, 3.2.3, 4.6, 4.9.2, 4.9.3 e 5.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4035.txt)
+- [RFC 5452, Measures for Making DNS More Resilient against Forged Answers, janeiro de 2009: seções 1, 3, 4.3, 4.5, 9.1, 9.2 e 10 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5452.txt)
+- [RFC 6761, Special-Use Domain Names, fevereiro de 2013: seção 6.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [RFC 6840, Clarifications and Implementation Notes for DNS Security (DNSSEC), fevereiro de 2013: seções 5.7 a 5.9 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6840.txt)
+- [RFC 6891, Extension Mechanisms for DNS (EDNS(0)), abril de 2013: seções 4.1, 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.2.6, 7 e 9 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6891.txt)
+- [RFC 6895, Domain Name System (DNS) IANA Considerations, abril de 2013: seções 2, 2.1, 2.2 e 2.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6895.txt)
+- [RFC 7766, DNS Transport over TCP - Implementation Requirements, março de 2016: seções 1, 4, 5 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7766.txt)
+- [RFC 8484, DNS Queries over HTTPS (DoH), outubro de 2018: seções 4.1, 4.1.1 e 4.2.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8484.txt)
+- [RFC 8490, DNS Stateful Operations, março de 2019: seções 4.2, 5.4 e 5.4.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8490.txt)
+- [RFC 9210, DNS Transport over TCP - Operational Requirements, março de 2022: seções 1, 2.5, 3, 4.1 e 5.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9210.txt)
+- [RFC 9520, Negative Caching of DNS Resolution Failures, dezembro de 2023: seções 2.1, 2.2, 2.6, 2.7 e 3.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9520.txt)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, setembro de 2025: seções 1, 2 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
+- [IANA, Domain Name System (DNS) Parameters, outubro de 2026: DNS OpCodes, DNS RCODEs, DNS Header Flags e EDNS Header Flags (16 bits) (lida em 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility, página sem data: Query Options e Return Codes (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [ISC, BIND 9 9.20.29 documentation, DNSSEC Guide, página sem data: Verifying Protection From Bad Domain Names; How Do I Know I Have a Validation Problem? (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/dnssec-guide.html)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dig.c: as linhas de header e de flags (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dighost.c: o ID da consulta, as conferências da resposta e as repetições (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)
+- [ISC, BIND 9 source code at tag v9.20.29, lib/dns/message.c: a pseudosseção OPT e o RCODE estendido (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)
+- [Wireshark, Display Filter Reference: Domain Name System, página sem data (versões 1.0.0 a 4.6.9): os campos dns.id, dns.flags e dns.count (lida em 2026-10-18)](https://www.wireshark.org/docs/dfref/d/dns.html)
+- [The Tcpdump Group, tcpdump(1) man page, setembro de 2026: opções -n e -X; TCP or UDP Name Server Requests and Responses (lida em 2026-10-18)](https://www.tcpdump.org/manpages/tcpdump.1.html)
+- [CERT Coordination Center, Vulnerability Note VU#800113, Multiple DNS implementations vulnerable to cache poisoning, julho de 2008 (revisada em abril de 2014): Description, Solution e Acknowledgements (lida em 2026-10-18)](https://kb.cert.org/vuls/id/800113)
+- [Python 3.14 documentation, struct, Interpret bytes as packed binary data, página sem data: Byte Order, Size, and Alignment; Format Characters (lida em 2026-10-18)](https://docs.python.org/3.14/library/struct.html)

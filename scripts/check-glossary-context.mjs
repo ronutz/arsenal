@@ -85,6 +85,21 @@ for (const locale of ["en", "pt-BR"]) {
         );
       }
     }
+
+    // ICU placeholders (added 2026-10-19). Glossary prose is rendered with t() and no values, so a bare {name} parses as
+    // valid ICU (check-icu-messages passes it) and then fails at render time with FORMATTING_ERROR, a log line and not a
+    // build failure: the first NF-2f build rendered "00-00-5E-00-01-{VRID}" and Apache's "%{remote}p" that way. A brace
+    // meant literally is quoted ICU-style ('{' or '{name}') or the text is reworded.
+    for (const field of ["def", "context", "depth"]) {
+      const value = typeof entry[field] === "string" ? entry[field] : "";
+      // Quoted stretches ('...' containing a brace) are literal; strip them, then any brace left is a placeholder.
+      const unquoted = value.replace(/'[^']*[{}][^']*'/g, "");
+      if (/[{}]/.test(unquoted)) {
+        failures.push(
+          `[${locale}] "${slug}": ${field} contains an unquoted ICU brace, which renders as FORMATTING_ERROR (quote it as '{...}' or reword).`,
+        );
+      }
+    }
   }
 }
 

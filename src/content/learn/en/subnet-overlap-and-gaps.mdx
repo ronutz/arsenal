@@ -1,38 +1,186 @@
 ---
 slug: subnet-overlap-and-gaps
 title: "Subnet overlaps and gaps"
-summary: "What it means for two prefixes to overlap or contain one another, why longest-prefix match makes some overlaps intentional, and how to find the unallocated gaps in an address plan."
-concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
-relatedTools: ["cidr"]
-relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+summary: "Two IPv4 prefixes overlap when some address belongs to both, and with classless prefixes that can only mean one lies wholly inside the other, by design or by mistake; gaps are the addresses inside a parent block that no prefix covers. After reading, you can prove the nest-or-disjoint rule in binary, tell a deliberate more-specific route from a fault, list the gaps of an allocation as aligned blocks that account for every address, and explain why tunnels and cloud peering refuse overlapping ranges and how translation works around them."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr", "host-bits", "discard-route", "vpc-peering", "twice-nat", "route-distinguisher"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example", "static-routes-and-longest-match", "route-summarization", "private-address-space", "nat-explained", "bgp-and-the-routing-chokepoint", "mpls-primer"]
 category: networking
 order: 8
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-18"
 ---
 
-## Three things that go wrong in an address plan
+Two IPv4 prefixes overlap when some address belongs to both, and under Classless Inter-domain Routing (CIDR) that means one lies wholly inside the other, as Request for Comments (RFC) 4271 notes for routes ([RFC 4271, section 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)). On purpose, that is a specific route inside a broader one; by accident, one subnet on two interfaces or two sites on one block. Gaps are the mirror image: addresses in a parent block that no prefix covers. By the end you can prove the nesting rule in binary, tell design from fault, account for every address, explain why virtual private network (VPN) tunnels and cloud peering refuse overlaps, and check it all with `ip route`, Python and the CIDR / Subnet Calculator.
 
-As an address plan grows, three problems creep in: two prefixes that **overlap**, one prefix that **contains** another, and **gaps** of address space that nobody allocated. The first two are about prefixes claiming the same addresses; the third is about addresses no prefix claims. A good audit finds all three.
+## Two prefixes either nest or never meet
 
-## Overlap and containment
+CIDR replaced address classes with hierarchical prefixes ([RFC 4632, section 3](https://www.rfc-editor.org/rfc/rfc4632.txt)): an address, a slash and the number of significant bits, 0 to 32, naming a power-of-two block (section 3.1); [CIDR notation explained](/learn/cidr-notation) reads the slash. RFC 1812 defines a network prefix as "a contiguous set of bits at the more significant end of the address" ([RFC 1812, section 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). Membership is a masked comparison, written as pseudo-code in 1985 ([RFC 950, section 2.2](https://www.rfc-editor.org/rfc/rfc950.txt)):
 
-Two prefixes overlap when they share at least one address. There are a few distinct shapes:
+```text
+IF bitwise_and(dg.ip_dest, my_ip_mask)
+                          = bitwise_and(my_ip_addr, my_ip_mask)
+```
 
-- **Identical**: the same block listed twice, often a copy-and-paste mistake.
-- **Containment**: one block sits entirely inside another. `10.0.0.0/24` contains `10.0.0.128/25`, because the /25 is the upper half of the /24.
-- **Partial**: two ranges share some addresses but neither contains the other. Two proper CIDR (Classless Inter-Domain Routing) blocks never overlap this way. Any two aligned power-of-two blocks are either disjoint or fully nested, one wholly inside the other, which is exactly why CIDR addressing forms a clean hierarchy. A partial overlap only appears when an input is not an aligned block.
+Routers apply it as Basic Match, keeping only routes whose most significant route.length bits equal the destination's ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Take P/m and Q/n, m no greater than n, and compare their first m bits: equal, and every address of Q/n starts with them, so Q/n lies inside P/m; different, and no address starts with both, so they are disjoint. There is no third outcome. RFC 4271 makes the point for BGP's Network Layer Reachability Information (NLRI): "Because BGP encodes NLRI using IP prefixes, overlap will always exhibit subset relationships" ([RFC 4271, section 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)). In binary, prefix bits before the bar:
 
-Containment is not always a mistake. Routers forward using **longest-prefix match**: the most specific route that matches a destination wins. A specific `/25` advertised inside a summarized `/24` is a deliberate, common pattern, used to steer a slice of traffic differently. The danger is the *unintended* overlap, where two parts of your network both believe they own the same addresses and traffic lands in the wrong place.
+```text
+198.51.100.0/24    110001100011001101100100|00000000
+198.51.100.128/25  1100011000110011011001001|0000000
+198.51.100.0/25    1100011000110011011001000|0000000
+```
 
-## Gaps
+The /24 and the upper /25 share their first 24 bits, so the /25 is inside the /24; the two /25s differ in bit 25 and share nothing.
 
-A gap is a stretch of a parent block that no subnet covers. Suppose you carved `10.0.0.0/26` and `10.0.0.128/26` out of `10.0.0.0/24`. Between and after them, `10.0.0.64/26` and `10.0.0.192/26` are unallocated. Those two blocks are your gaps: address space you can still assign, reclaim, or simply account for.
+A partial overlap, neither range containing the other, therefore needs a range that is not a prefix: 10.0.0.64 to 10.0.0.191 shares 64 addresses with 10.0.0.0/25, yet as prefixes it is 10.0.0.64/26, inside the /25, and 10.0.0.128/26, outside it. The other source is a discontiguous mask, which can leave two equally specific routes matching one destination; RFC 1812 calls this "the reason the use of discontiguous subnet masks is not permitted" ([RFC 1812, section 10.2.2](https://www.rfc-editor.org/rfc/rfc1812.txt)).
 
-Finding gaps matters for two reasons. It shows you where there is room to grow without renumbering, and it confirms that a block you intend to summarize is actually fully used, since a summary advertised over a gap claims addresses you have not assigned.
+## Longest match: the overlap you build on purpose
 
-## Auditing a plan
+Nesting is what longest match, detailed in [static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match), feeds on. Of the routes that survive Basic Match, RFC 1812 keeps those with the longest prefix and discards the rest; if none survives, the packet is discarded as unreachable ([RFC 1812, section 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)):
 
-To check a plan, list every prefix you have assigned and give the parent block as the scope. An overlap report tells you which prefixes collide and how; a gap report tells you exactly which CIDR blocks inside the parent are still free. The [CIDR calculator](/#cidr) does both in Overlap / gap mode, labeling each overlap as identical, contained, or partial, and expressing every gap as the largest aligned blocks that fill it.
+| Destination | Routes that match | Route used |
+|---|---|---|
+| 198.51.100.130 | 0.0.0.0/0, 198.51.100.0/24, 198.51.100.128/25 | 198.51.100.128/25 |
+| 198.51.100.10 | 0.0.0.0/0, 198.51.100.0/24 | 198.51.100.0/24 |
+| 203.0.113.5 | 0.0.0.0/0 | 0.0.0.0/0 |
 
-Both halves connect back to [supernetting](/learn/supernetting-and-aggregation): an address plan with no unintended overlaps and no gaps inside a block is exactly the plan that summarizes cleanly.
+The internet relies on the rule: a re-homed organisation's new provider announces a specific route for it, and "this advertisement is preferred over provider aggregates because it is a longer match" ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). If a more-specific is withdrawn, its destinations stay reachable through the covering route ([RFC 4271, section 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)).
+
+## Gaps, and accounting for every address
+
+A gap is the part of a parent block that no assigned prefix covers; RFC 4632 calls such space holes ([RFC 4632, section 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Subtract the assignments from the parent, write each free run as the largest aligned blocks that fit, and check that assigned plus free equals the parent, as in [an allocation worked end to end](/learn/vlsm-worked-example). In 198.51.100.0/24:
+
+| Block | Status | Addresses |
+|---|---|---|
+| 198.51.100.0/26 | assigned | 64 |
+| 198.51.100.64/27 | free | 32 |
+| 198.51.100.96/27 | assigned | 32 |
+| 198.51.100.128/26 | free | 64 |
+| 198.51.100.192/29 | free | 8 |
+| 198.51.100.200/29 | assigned | 8 |
+| 198.51.100.208/28 | free | 16 |
+| 198.51.100.224/27 | free | 32 |
+
+Assigned 104 plus free 152 makes the /24's 256. The run from 198.51.100.208 to 198.51.100.255 holds 48 addresses, not a power of two, so it becomes a /28 and a /27.
+
+Holes also come and go. RFC 4632's provider, holding 10.24.0.0/13, connects six sites in order ([RFC 4632, section 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). After 10.24.0.0/21 and 10.24.16.0/20, the hole 10.24.8.0/21 stays open until 10.24.8.0/22 and 10.24.12.0/22 fill it, and the four then aggregate exactly to 10.24.0.0/19. The diagram prints the last as a /20; verified erratum 2955 corrects it to the /22 of the text, the value used above ([RFC 4632 errata](https://www.rfc-editor.org/errata/rfc4632)). After six sites, 9,216 of 524,288 addresses are assigned and eight gaps hold the rest, yet the provider advertises the whole /13 (RFC 4632, section 6.2).
+
+That is safe only with a discard route: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes" ([RFC 4632, section 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt)), or packets for covered but unreachable addresses can loop. In practice that is a discard or null route per advertised aggregate (section 5.2), with the overlapping more-specifics kept internal (section 5.4); [route summarisation](/learn/route-summarization) shows the failure without one, and [supernetting](/learn/supernetting-and-aggregation) the gap-free set that collapses to one block.
+
+## When an overlap is a fault
+
+An overlap is a fault when two parts of a network claim the same addresses. Put one subnet on two interfaces and RFC 1812's connected-network test, comparing the destination with each interface's prefix, matches both and leaves no single answer: "If they are equal to each other, the packet can be transmitted through the corresponding network interface" ([RFC 1812, section 5.2.4.2](https://www.rfc-editor.org/rfc/rfc1812.txt)).
+
+A router may refuse the duplicate outright. In a Cisco Community thread of December 2016, a forum report rather than Cisco documentation, a poster configuring a second interface with `ip address 10.10.10.250 255.255.255.248` reported "% 10.10.10.248 overlaps with GigabitEthernet8" ([Cisco Community thread, December 2016](https://community.cisco.com/t5/switching/891f-dual-wan-configuration-with-same-subnet-overlap-error/m-p/2941542)); with that mask, 10.10.10.250 lies in 10.10.10.248/29, the network the message names.
+
+Between sites, private space invites collisions: "Addresses within this private address space will only be unique within the enterprise" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). Merging two private networks may force renumbering where addresses are no longer unique (section 4), and RFC 1918's defence is to pick sub-blocks at random from the private pool (section 5); [Private IPv4 address space and RFC 1918](/learn/private-address-space) covers the ranges.
+
+Longest match is also how a route is hijacked: "Traffic can be hijacked by advertising a prefix for a given destination that is more specific than the aggregate that is normally advertised for that destination" ([RFC 4632, section 12](https://www.rfc-editor.org/rfc/rfc4632.txt)). On 24 February 2008 Pakistan Telecom, Autonomous System (AS) 17557, announced 208.65.153.0/24 without authorisation, inside YouTube's 208.65.152.0/22, and the /24 won wherever it spread; YouTube answered with the same /24 and then two /25s ([RIPE NCC, YouTube Hijacking case study](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)), a story [BGP: the trust fall the whole internet is standing on](/learn/bgp-and-the-routing-chokepoint) tells in full. RFC 4632's defences are trust between providers, strong border filters and caps on accepted prefix lengths derived from Regional Internet Registry (RIR) guidelines (RFC 4632, section 12).
+
+## Where overlaps bite: VPNs and cloud peering
+
+Across a VPN, overlap keeps traffic at home: a packet for an address inside the local range, as RFC 2663 says of colliding realms, "would be forwarded to the internal node rather than through the NAT device to the external realm" ([RFC 2663, section 4.3](https://www.rfc-editor.org/rfc/rfc2663.txt)). Microsoft's VPN gateway documentation says the address spaces "must not overlap otherwise the communication would fail" ([Microsoft Learn, About NAT on Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)).
+
+Cloud peering refuses overlaps outright. Google Cloud fails a Virtual Private Cloud (VPC) peering if overlapping subnets exist, and one sentence covers every case: "No subnet IP range can exactly match, contain, or fit within another subnet IP range in a peered VPC network" ([Google Cloud, VPC Network Peering](https://docs.cloud.google.com/vpc/docs/vpc-peering)). Identical, containing, contained: no word for partial, because prefixes have none. Amazon Web Services (AWS) agrees: "You cannot create a VPC peering connection between VPCs that have matching or overlapping IPv4 or IPv6 CIDR blocks" ([Amazon VPC Peering Guide](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html)), even if only the non-overlapping blocks would be used (same page). Azure requires non-overlapping address spaces for peered virtual networks ([Microsoft Learn, Create, change, or delete Azure virtual network peering](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering)).
+
+## Translating around an overlap, or keeping networks apart
+
+Ordinary NAT assumes that the private addresses do not overlap the external ones ([RFC 2663, section 4.1](https://www.rfc-editor.org/rfc/rfc2663.txt)). When they do, both addresses must change: "Twice NAT is necessary when private and external realms have address collisions" (section 4.3), with a translator at one end of the tunnel or both (section 6.1); [NAT explained](/learn/nat-explained) covers the basics. Three vendors document worked cases:
+
+| Product | Overlapping networks | Unique ranges used instead |
+|---|---|---|
+| [FortiOS site-to-site VPN](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets) | headquarters and branch, both 192.168.111.0/24 | 10.1.1.0/24 (headquarters), 10.2.2.0/24 (branch) |
+| [Azure VPN Gateway NAT](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview) | a virtual network and two branches, all 10.0.1.0/24 | 192.168.1.0/24, 192.168.2.0/24, 192.168.3.0/24 |
+| [AWS private NAT gateway](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html) | two VPCs, both 10.0.0.0/16 | 100.64.1.0/24 and 100.64.2.0/24 |
+
+Fortinet translates both addresses, and "The virtual subnets must be the same size as the overlapping subnet" ([Fortinet, Site-to-site VPN with overlapping subnets](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets)); Azure's external mappings may overlap neither each other nor networks connected without NAT ([Microsoft Learn, About NAT on Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)); AWS has the IP team decide first which ranges may overlap and which must stay routable ([Amazon VPC User Guide, NAT gateway use cases](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html)); Google's Private NAT reaches only non-overlapping destination subnets, none across VPC Network Peering ([Google Cloud, Private NAT](https://docs.cloud.google.com/nat/docs/private-nat)). The overlapping side is hidden; every destination still needs a unique address.
+
+Providers separate rather than translate. RFC 4364 lets VPNs with no sites in common overlap, typically in RFC 1918 space, as long as each address is unambiguous within its VPN ([RFC 4364, section 1.3](https://www.rfc-editor.org/rfc/rfc4364.txt)). The provider's edge routers (PE routers) turn a prefix shared by several VPNs into unique VPN-IPv4 prefixes, and the Route Distinguisher (RD) exists only for that: "The purpose of the RD is solely to allow one to create distinct routes to a common IPv4 address prefix" (section 4.1).
+
+## Seeing overlaps and gaps
+
+An overlap is a state of routing tables and plans, not a field in a packet, so a capture will not show it. On Linux, with the three routes of the longest-match table installed:
+
+```bash
+ip route show root 198.51.100.0/24
+ip route show match 198.51.100.130/32
+ip route show exact 198.51.100.0/24
+ip route get 198.51.100.130
+ip route get fibmatch 198.51.100.130
+```
+
+In ip-route(8), `root` selects routes with prefixes not shorter than the one given (the /24 and the /25), `match` those not longer, the covering routes (all three), and `exact` that prefix alone ([ip-route(8), Linux manual page](https://man7.org/linux/man-pages/man8/ip-route.8.html)). `ip route get` prints the route the kernel would use, and `fibmatch` the full matched route, the /25. The aggregating router's discard route is a blackhole, whose packets are discarded silently (ip-route(8)):
+
+```bash
+ip route add blackhole 198.51.100.0/24
+```
+
+Python's ipaddress module runs in the [Python playground](/tools/python-playground), real CPython 3.14 in the browser. Its overlaps(), subnet_of(), address_exclude() (for contained networks only), collapse_addresses() and summarize_address_range() cover the audit ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)). The gaps, the balance and the strict default:
+
+```text
+>>> from ipaddress import ip_network, collapse_addresses
+>>> ip_network("198.51.100.0/25").overlaps(ip_network("198.51.100.128/25"))
+False
+>>> ip_network("198.51.100.128/25").subnet_of(ip_network("198.51.100.0/24"))
+True
+>>> parent = ip_network("198.51.100.0/24")
+>>> used = [ip_network(p) for p in
+...         ("198.51.100.0/26", "198.51.100.96/27", "198.51.100.200/29")]
+>>> free = [parent]
+>>> for u in used:
+...     free = [g for f in free
+...             for g in (f.address_exclude(u) if u.subnet_of(f) else [f])]
+...
+>>> for g in sorted(free):
+...     print(g)
+...
+198.51.100.64/27
+198.51.100.128/26
+198.51.100.192/29
+198.51.100.208/28
+198.51.100.224/27
+>>> list(collapse_addresses(free + used))
+[IPv4Network('198.51.100.0/24')]
+>>> ip_network("10.0.0.64/25")
+Traceback (most recent call last):
+  ...
+ValueError: 10.0.0.64/25 has host bits set
+>>> ip_network("10.0.0.64/25", strict=False)
+IPv4Network('10.0.0.0/25')
+```
+
+The [CIDR / Subnet Calculator](/tools/cidr) audits a plan in its **Overlap / gap** mode: up to 1,024 prefixes, separated by newlines, commas or spaces, with the parent in **Scope (optional, enables gap detection)**. It labels each overlapping pair **identical to**, **contains**, **is inside** or **partially overlaps**, with the shared range and its size, and, only when a scope is set, lists the free blocks under **Gaps in scope**, each the largest aligned block that fits. **Supernet** mode shows whether a gap-free set collapses: RFC 4632's first four sites give 10.24.0.0/19.
+
+Unlike Python, the calculator masks host bits silently. 10.0.0.64/25 beside 10.0.0.0/25 is reported as identical; the diagram's uncorrected 10.24.12.0/20 beside 10.24.0.0/21 is read as 10.24.0.0/20, so 10.24.0.0/21 appears inside 10.24.12.0/20, overlapping from 10.24.0.0 to 10.24.7.255, 2,048 addresses. A mistyped prefix can thus pose as an overlap: the sign is an overlap starting below the address you typed. The same masking is why the partial label never appears.
+
+## What to remember
+
+- Two IPv4 prefixes either nest or share nothing: compare their first m bits, m being the shorter length.
+- A partial overlap needs a non-prefix range or a discontiguous mask, which RFC 1812 does not permit.
+- A more-specific route announced on purpose wins by longest match; one subnet on two interfaces, or two sites on one block, is a fault.
+- Gaps are the parent minus the assignments, as the largest aligned blocks; assigned plus free must equal the parent.
+- An aggregate may cover gaps only with a discard route for itself, such as a Linux blackhole route.
+- AWS, Azure and Google Cloud refuse to peer overlapping ranges; across a VPN, a packet for an overlapping address stays local.
+- Translating one or both sides, or separating routing tables with route distinguishers, works around an overlap; private blocks chosen at random are less likely to collide.
+
+## Sources
+
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), January 2006: section 9.1.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, August 2006: sections 3, 3.1, 4.1, 5.1, 5.2, 5.4, 6.1, 6.2, 10 and 12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 4632 errata, RFC Editor errata records, 2008 to 2015: errata 2955 and 1577 (read 2026-10-18)](https://www.rfc-editor.org/errata/rfc4632)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 2.2.5.1, 2.2.5.2, 4.2.2.11, 5.2.4.2, 5.2.4.3 and 10.2.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 950, Internet Standard Subnetting Procedure, August 1985: sections 2.1 and 2.2, Appendix II case 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc950.txt)
+- [RFC 1918, Address Allocation for Private Internets, February 1996: sections 3 to 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 2663, IP Network Address Translator (NAT) Terminology and Considerations, August 1999: sections 4.1, 4.3 and 6.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2663.txt)
+- [RFC 4364, BGP/MPLS IP Virtual Private Networks (VPNs), February 2006: sections 1.3, 4 and 4.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4364.txt)
+- [Cisco Community, 891F Dual WAN configuration with same subnet (overlap error), December 2016 (secondary source) (read 2026-10-18)](https://community.cisco.com/t5/switching/891f-dual-wan-configuration-with-same-subnet-overlap-error/m-p/2941542)
+- [RIPE NCC, YouTube Hijacking: A RIPE NCC RIS case study, 17 March 2008: Event Timeline and Summary (read 2026-10-18)](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)
+- [Microsoft Learn, About NAT on Azure VPN Gateway, October 2024: Overlapping address spaces, NAT mode and NAT example (read 2026-10-18)](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)
+- [Google Cloud documentation, VPC Network Peering, last updated 13 October 2026: Limitations, Ignored routes, Subnet and peering subnet route interactions (read 2026-10-18)](https://docs.cloud.google.com/vpc/docs/vpc-peering)
+- [Amazon VPC Peering Guide, How VPC peering connections work, undated page: VPC peering limitations (Overlapping CIDR blocks) (read 2026-10-18)](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html)
+- [Microsoft Learn, Create, change, or delete Azure virtual network peering, July 2025: Requirements and constraints (read 2026-10-18)](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering)
+- [Fortinet Document Library, FortiOS 8.0.0 Administration Guide, Site-to-site VPN with overlapping subnets, undated page: introduction (read 2026-10-18)](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets)
+- [Amazon VPC User Guide, NAT gateway use cases, undated page: Enable communication between overlapping networks (read 2026-10-18)](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html)
+- [Google Cloud documentation, Private NAT, last updated 13 October 2026: General specifications (read 2026-10-18)](https://docs.cloud.google.com/nat/docs/private-nat)
+- [ip-route(8), Linux manual page (iproute2), man7.org rendering of 9 September 2026: SYNOPSIS, ip route show, ip route get (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [Python 3.14 documentation, ipaddress, IPv4/IPv6 manipulation library, 18 October 2026: IP Network definitions, Network objects, Other Module Level Functions (read 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)

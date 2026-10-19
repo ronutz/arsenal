@@ -23,30 +23,15 @@ import {
   FLAG_MEANINGS_PT,
   RRTYPE_MEANINGS_PT,
   FIELD_LABELS_PT,
+  DIG_VECTORS, // the golden vectors, for the Example button (D-83)
   type DigFlag,
   type DigRecord,
   type DigSection,
 } from "@/lib/tools/dig-output-explainer";
 
-const EXAMPLE = `; <<>> DiG 9.18.1 <<>> example.com A +dnssec
-;; global options: +cmd
-;; Got answer:
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
-;; flags: qr rd ra ad; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
-
-;; OPT PSEUDOSECTION:
-; EDNS: version: 0, flags: do; udp: 1232
-;; QUESTION SECTION:
-;example.com.			IN	A
-
-;; ANSWER SECTION:
-example.com.		3600	IN	A	93.184.216.34
-example.com.		3600	IN	RRSIG	A 13 2 3600 20260701000000 20260629000000 34505 example.com. abcDEF123==
-
-;; Query time: 12 msec
-;; SERVER: 1.1.1.1#53(1.1.1.1) (UDP)
-;; WHEN: Mon Jun 30 12:00:00 UTC 2026
-;; MSG SIZE  rcvd: 120`;
+// The Example button loads a golden vector verbatim (D-83): real dig 9.20.29 output captured on
+// 2026-10-19 (a DNSSEC-validated answer with its RRSIG), so the example can never drift from the tests.
+const EXAMPLE = DIG_VECTORS.find((v) => v.id === "dnssec-rrsig")?.input ?? ""; // the vector's input, byte for byte
 
 /** A small label/value row used throughout the panels. */
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
@@ -66,7 +51,8 @@ function RecordCard({ rec, rrtypeMeanings, fieldLabel }: { rec: DigRecord; rrtyp
       <div className="dig-record-head">
         <span className="dig-type-badge">{rec.type}</span>
         <span className="dig-mono dig-record-name">{rec.name}</span>
-        {rec.ttl !== null && <span className="dig-ttl">TTL {rec.ttl}s</span>}
+        {/* The TTL in seconds; when dig printed units (+ttlunits) both forms are shown, e.g. "1h30m = 5400s". */}
+        {rec.ttl !== null && <span className="dig-ttl">TTL {rec.ttlText ? `${rec.ttlText} = ${rec.ttl}s` : `${rec.ttl}s`}</span>}
         <span className="dig-class">{rec.class}</span>
       </div>
       {!rec.isQuestion && rec.rdata && !fields && (
@@ -150,10 +136,15 @@ export default function DigOutputExplainerTool() {
           {parsed.header && (
             <div className="jwt-panel">
               <div className="jwt-panel-title">{t("header.title")}</div>
-              <Row label={t("header.opcode")} value={parsed.header.opcode} mono />
+              {/* A placeholder dig prints (RESERVED6) is shown with its IANA name (DSO, RFC 8490). */}
+              <Row label={t("header.opcode")} value={parsed.header.opcodeName ? `${parsed.header.opcode} (${parsed.header.opcodeName})` : parsed.header.opcode} mono />
               {opcodeMeanings[parsed.header.opcode] && <p className="dig-meaning">{opcodeMeanings[parsed.header.opcode]}</p>}
-              <Row label={t("header.status")} value={parsed.header.status} mono />
+              {/* Likewise RESERVED11 is shown with its IANA name (DSOTYPENI, RFC 8490). */}
+              <Row label={t("header.status")} value={parsed.header.statusName ? `${parsed.header.status} (${parsed.header.statusName})` : parsed.header.status} mono />
               {rcodeMeanings[parsed.header.status] && <p className="dig-meaning">{rcodeMeanings[parsed.header.status]}</p>}
+              {/* A negative answer with an SOA: the negative-caching TTL, min(SOA TTL, MINIMUM) per RFC 2308 section 5. */}
+              {parsed.negative && <Row label={t("header.negativeTtl")} value={`${parsed.negative.ttl}s`} mono />}
+              {parsed.negative && <p className="dig-meaning">{t("header.negativeTtlHelp", { soaTtl: parsed.negative.soaTtl, minimum: parsed.negative.minimum, ttl: parsed.negative.ttl })}</p>}
               <Row label={t("header.id")} value={parsed.header.id} mono />
               {parsed.digVersion && <Row label={t("header.version")} value={parsed.digVersion} mono />}
               {parsed.queryArgs && <Row label={t("header.query")} value={parsed.queryArgs} mono />}
@@ -169,8 +160,9 @@ export default function DigOutputExplainerTool() {
                   <span key={fl} className="dig-flag-chip" title={flagMeanings[fl]}>{fl}</span>
                 ))}
               </div>
+              {/* Flag, colon, meaning: no em dash in English copy (D-55), changed 2026-10-19. */}
               {parsed.flags.flags.map((fl: DigFlag) => (
-                <p key={fl} className="dig-meaning"><strong className="dig-mono">{fl}</strong> &mdash; {flagMeanings[fl]}</p>
+                <p key={fl} className="dig-meaning"><strong className="dig-mono">{fl}</strong>: {flagMeanings[fl]}</p>
               ))}
               <div className="dig-counts">
                 <Row label={t("flags.question")} value={String(parsed.flags.counts.question)} />

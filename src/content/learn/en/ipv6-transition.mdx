@@ -1,44 +1,264 @@
 ---
 slug: ipv6-transition
 title: "Running IPv6 and IPv4 together: dual-stack and translation"
-summary: "How the internet bridges two incompatible address families: dual-stack, Happy Eyeballs, NAT64, and the IPv4-embedded addresses that make it work."
-concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition"]
-relatedTools: ["ipv6"]
-relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting"]
+summary: "IPv4 and IPv6 cannot exchange packets, so networks run both side by side, carry IPv6 inside IPv4, or translate one protocol into the other. After reading, you can predict which family a dual-stack host tries first, build 6to4, Teredo, 6rd and NAT64 addresses by hand, follow a NAT64 and DNS64 session step by step, explain why 464XLAT translates rather than tunnels, and recognise the failures these mechanisms cause with IPv4 literals, signed DNS answers and packet sizes."
+concepts: ["ipv6", "ipv4", "dual-stack", "nat64", "happy-eyeballs", "transition", "dns64", "464xlat", "6to4", "teredo", "6rd", "siit", "ds-lite", "pref64", "ipv4-mapped", "tunnel", "encapsulation", "mtu", "dnssec"]
+relatedTools: ["ipv6", "mtu-mss", "python-playground", "dig-command-builder", "dig-output-explainer"]
+relatedArticles: ["ipv6-addressing", "ipv4-addressing", "ipv6-subnetting", "ipv6-address-configuration", "ipv6-neighbor-discovery", "anycast", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "dnssec-end-to-end", "choosing-a-public-dns-resolver", "icmp-ping-and-traceroute", "dns-message-header-and-flags"]
 category: networking
 order: 14
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-18"
 ---
 
-## Two internets at once
+IPv4 and IPv6 have different headers, so a host that speaks only one cannot talk to a host that speaks only the other. Request for Comments (RFC) 6144 sorts the bridges into three families: "Besides dual-stack deployment, there are two fundamental approaches one could take to interworking between IPv4 and IPv6: tunneling and translation" ([RFC 6144, section 1.1](https://www.rfc-editor.org/rfc/rfc6144.txt)). Only translation lets an IPv6-only client reach an IPv4-only server, since a tunnel needs dual-stack hosts at its ends (section 1.1), and any network carrying both protocols uses at least one family. By the end you can predict which family a host picks, build each mechanism's addresses, follow a NAT64 session and check it all with real commands.
 
-IPv6 and IPv4 are not compatible on the wire: an IPv6-only host cannot speak directly to an IPv4-only server, because the packets use different address sizes and headers. There was never going to be a flag day where everyone switched at midnight, so the internet has spent years running both protocols side by side and bridging between them. The transition technologies exist to make that coexistence invisible to users while the old protocol is slowly retired.
+## Dual stack, and how a host picks a family
 
-## Dual-stack: just run both
+A dual-stack node, RFC 4213's IPv6/IPv4 node, speaks each protocol natively ([RFC 4213, section 2](https://www.rfc-editor.org/rfc/rfc4213.txt)). Applications mostly try addresses in the order returned (section 2.2), an order RFC 6724 sets with one table, since "IPv4 addresses MUST be represented as IPv4-mapped addresses", the `::ffff:0:0/96` form of [Understanding IPv6 Addressing](/learn/ipv6-addressing) ([RFC 6724, section 3.2](https://www.rfc-editor.org/rfc/rfc6724.txt)). Its default table, in part (section 2.1):
 
-The simplest approach is dual-stack: a host, router, or server runs IPv4 and IPv6 simultaneously, with an address in each. When a name has both an A record (IPv4) and a AAAA record (IPv6) in DNS, a dual-stack client can reach it over either. The standing preference is to use IPv6 when it is available and fall back to IPv4 otherwise. Dual-stack is the path most networks take first, because nothing has to be translated; each protocol simply runs natively.
+```text
+Prefix          Precedence  Label
+::1/128               50      0
+::/0                  40      1
+::ffff:0:0/96         35      4
+2002::/16             30      2
+2001::/32              5      5
+fc00::/7               3     13
+```
 
-## Happy Eyeballs: hide the failures
+Rule 6 prefers higher precedence ([RFC 6724, section 6](https://www.rfc-editor.org/rfc/rfc6724.txt)), so native IPv6 (40) beats IPv4 (35), 6to4 (30) and Teredo (5). Because the scope rule comes first, a host with only a [link-local IPv6 address](/learn/ipv6-address-configuration) uses IPv4 for global destinations (section 10.2).
 
-Preferring IPv6 is only pleasant if a broken IPv6 path does not make the user wait. Happy Eyeballs (RFC 8305) solves this by racing the two: the client starts an IPv6 connection and, after a very short head start, also starts an IPv4 one, then uses whichever completes first and quietly drops the other. The effect is that users get IPv6 when it is healthy and an instant, unnoticed fallback to IPv4 when it is not. This algorithm is a big part of why enabling IPv6 rarely makes anything feel slower.
+Happy Eyeballs version 2 makes a dead IPv6 path cheap ([RFC 8305, section 1](https://www.rfc-editor.org/rfc/rfc8305.txt)). AAAA is queried first and A straight after, and if A answers first the client waits 50 ms for AAAA (section 3). Addresses are sorted by RFC 6724 and the families interleaved (section 4); attempts start 250 ms apart by default, within recommended bounds of 100 ms and 2 s, and the first connection to complete wins (section 5). Illustratively, with IPv6 broken:
 
-## IPv4 addresses embedded in IPv6
+```text
+t =   0 ms   connect to 2001:db8::10   IPv6, first after sorting
+t = 250 ms   connect to 192.0.2.10     IPv4, next in the interleaved list
+t = 280 ms   192.0.2.10 completes      the attempt to 2001:db8::10 is cancelled
+```
 
-Several mechanisms work by carrying an IPv4 address inside an IPv6 address, and the tool recognizes these forms. The IPv4-mapped range `::ffff:0:0/96` represents an IPv4 address to a dual-stack socket, so `::ffff:192.0.2.1` is how the IPv4 host 192.0.2.1 appears in an IPv6 API. Translation systems use the well-known prefix `64:ff9b::/96` (RFC 6052) to embed an IPv4 destination into an IPv6 address that can be routed to a translator. Recognizing an embedded IPv4 address tells you that what looks like an IPv6 destination is really a path to something on the IPv4 internet.
+## Tunnels: IPv6 carried inside IPv4
 
-## NAT64 and DNS64: IPv6-only reaching IPv4
+A configured tunnel, or 6in4, puts each IPv6 packet behind an IPv4 header ([RFC 4213, section 1](https://www.rfc-editor.org/rfc/rfc4213.txt)) with protocol 41 (section 3.5), which the Internet Assigned Numbers Authority (IANA) registers as IPv6 encapsulation ([IANA protocol numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)). To IPv6 the tunnel is a single hop: "The tunnel is opaque to users of the network, and it is not detectable by network diagnostic tools such as traceroute" (RFC 4213, section 3.3).
 
-For networks that have gone IPv6-only, NAT64 (RFC 6146) and DNS64 (RFC 6147) let those clients still reach IPv4-only servers. DNS64 synthesizes a AAAA record for an IPv4-only name by embedding its IPv4 address into the well-known prefix, so the client gets an IPv6 destination to connect to. NAT64 then sits at the boundary and translates those IPv6 packets into IPv4 on the way out, and back on the way in. Together they let a modern IPv6-only network behave as though the whole internet were reachable over IPv6.
+6to4 needs no explicit tunnel setup ([RFC 3056, abstract](https://www.rfc-editor.org/rfc/rfc3056.txt)): the site prefix is 2002::/16 plus the site's IPv4 address, `2002:V4ADDR::/48` (section 2), and each tunnel's far end is read from the next-hop address (section 5.3). Relays, often a different one each way, link 6to4 to native IPv6 ([RFC 7526, section 3](https://www.rfc-editor.org/rfc/rfc7526.txt)); RFC 3068 put them all on the [anycast](/learn/anycast) address 192.88.99.1 ([RFC 3068, section 2.4](https://www.rfc-editor.org/rfc/rfc3068.txt)). Illustratively:
 
-## 464XLAT for stubborn IPv4 apps
+```text
+IPv4 address        192.0.2.33  =  c0.00.02.21
+6to4 site prefix    2002:c000:221::/48
+relay anycast       192.88.99.1  ->  2002:c058:6301::   (RFC 3068, section 2.5)
+```
 
-Some applications still hand around literal IPv4 addresses and break on an IPv6-only network even with NAT64 present. 464XLAT (RFC 6877), widely deployed on mobile carriers, adds a small translation on the client that presents a private IPv4 address locally and tunnels it across the IPv6-only network to a NAT64 gateway. It is the reason IPv6-only mobile networks can still run IPv4-only apps without the user noticing.
+Teredo, for hosts behind a NAT where classic tunnels and 6to4 fail ([RFC 4380, section 1](https://www.rfc-editor.org/rfc/rfc4380.txt)), is an "IPv6 access of last resort" (section 3.2) over UDP port 3544 in 2001::/32 (sections 2.6 and 2.7). Its address holds the server's IPv4 address, flags, and the client's mapped port and address with every bit inverted (section 4). Illustratively:
 
-## Why there is no NAT (network address translation) in native IPv6
+```text
+2001:0000   c000:022d    3c5a    63bf             34ff:8eeb
+prefix      server       flags   port             client address
+            192.0.2.45           9c40 XOR ffff    cb00:7114 XOR ffff:ffff
+                                 (40000)          (203.0.113.20)
+address     2001:0:c000:22d:3c5a:63bf:34ff:8eeb
+```
 
-A frequent question from IPv4 administrators is where the NAT went. Native IPv6 gives every host a globally routable address, so the address-sharing NAT that defined IPv4 home and office networks is simply unnecessary; connectivity is end to end, and a stateful firewall, not address translation, provides the boundary. Where private, non-routed addressing is genuinely wanted, IPv6 offers Unique Local Addresses in `fc00::/7`, the ULA type the tool identifies. The translation seen at IPv6 edges is for reaching the *old* protocol, not for stretching a scarce address space.
+IPv6 Rapid Deployment (6rd) applies the 6to4 arithmetic to a provider's own prefix: "Unlike 6to4, 6rd is for use only in an environment where a service provider closely manages the delivery of IPv6 service" ([RFC 5969, section 1](https://www.rfc-editor.org/rfc/rfc5969.txt)). The Customer Edge (CE) router appends IPv4 bits to the 6rd prefix (section 4), as in the RFC's example (section 7.1.1):
 
-## Scaffolding, not the destination
+```text
+CE address 10.100.100.1, first 8 bits dropped   100.100.1  =  64.64.01
+6rd prefix 2001:db8::/32 + those 24 bits        2001:db8:6464:100::/56
+all 32 bits, illustrative                       2001:db8::/32 + 203.0.113.20 = 2001:db8:cb00:7114::/64
+```
 
-All of this machinery, dual-stack, Happy Eyeballs, NAT64, DNS64, 464XLAT, is transitional scaffolding. The end state is native IPv6 everywhere, with translation needed only to reach whatever IPv4 remains. In the meantime, recognizing the embedded-IPv4 forms and understanding which bridge is in play helps you reason about a path that may quietly cross between the two internets. When the tool flags an address as IPv4-mapped or sitting in the translation prefix, that is your cue that an IPv4 endpoint is hiding inside an IPv6 address.
+## Stateless translation and IPv4-converted addresses
+
+RFC 7915 converts IPv4 headers to IPv6 and back, Internet Control Message Protocol (ICMP) headers included, as the Stateless IP/ICMP Translation Algorithm (SIIT) ([RFC 7915, abstract](https://www.rfc-editor.org/rfc/rfc7915.txt)). "The stateless translator does not keep any dynamic session or binding state, thus there is no requirement that the packets in a single session or flow traverse a single translator" (section 1.3).
+
+IPv6 hosts see IPv4 hosts as IPv4-converted addresses ([RFC 6052, section 1.3](https://www.rfc-editor.org/rfc/rfc6052.txt)) under the Well-Known Prefix 64:ff9b::/96 (section 2.1) or an operator's Network-Specific Prefix: "The prefixes can only have one of the following lengths: 32, 40, 48, 56, 64, or 96" (section 2.2). RFC 8215 adds 64:ff9b:1::/48 for local use ([RFC 8215, abstract](https://www.rfc-editor.org/rfc/rfc8215.txt)). The IPv4 bits follow the prefix, skipping the zero bits 64 to 71 (RFC 6052, sections 2.2 and 2.3), as in its examples (section 2.4):
+
+```text
+Prefix              IPv4         IPv4-converted address
+2001:db8::/32       192.0.2.33   2001:db8:c000:221::
+2001:db8:100::/40   192.0.2.33   2001:db8:1c0:2:21::        0x21 after the zero octet
+64:ff9b::/96        192.0.2.33   64:ff9b::192.0.2.33   =   64:ff9b::c000:221
+```
+
+As 0064 plus ff9b is ffff, zero in one's complement, the prefix is checksum neutral ([RFC 6052, section 4.2](https://www.rfc-editor.org/rfc/rfc6052.txt)). But "Address translators MUST NOT translate packets in which an address is composed of the Well-Known Prefix and a non-global IPv4 address; they MUST drop these packets" (section 3.1), and IANA lists 192.0.2.0/24 as not globally reachable ([IANA IPv4 special-purpose registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.txt)), so these examples are illustrative. 64:ff9b:1::/48 is exempt ([RFC 8215, section 5](https://www.rfc-editor.org/rfc/rfc8215.txt)); [Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges) lists the non-global blocks.
+
+## NAT64 and DNS64, step by step
+
+Stateful NAT64 lets IPv6-only clients reach IPv4 servers through shared public IPv4 addresses ([RFC 6146, abstract](https://www.rfc-editor.org/rfc/rfc6146.txt)). DNS64 feeds it: for a name without AAAA resource records (RRs), normal for an IPv4-only server, it fetches the A record and synthesises an AAAA ([RFC 6147, section 2](https://www.rfc-editor.org/rfc/rfc6147.txt)), and "By default, DNS64 implementations MUST NOT synthesize AAAA RRs when real AAAA RRs exist" (section 5.1.1). RFC 6146's walk-through uses documentation addresses that a real translator would drop ([RFC 6146, section 1.2.2](https://www.rfc-editor.org/rfc/rfc6146.txt)):
+
+```text
+1  H1 asks the DNS64 for the AAAA of h2.example.com
+2  there is none; the DNS64 fetches A 192.0.2.1
+3  it answers AAAA 64:ff9b::192.0.2.1
+4  H1 sends from 2001:db8::1 port 1500 to 64:ff9b::192.0.2.1
+5  the NAT64 picks port 2000 on 203.0.113.1 and creates the mapping
+   (2001:db8::1,1500) <--> (203.0.113.1,2000)
+6  it sends IPv4 from 203.0.113.1 port 2000 to 192.0.2.1,
+   the last 32 bits of the IPv6 destination
+7  the reply to 203.0.113.1 port 2000 returns to 2001:db8::1 port 1500,
+   from 64:ff9b::192.0.2.1
+```
+
+NAT64 thus translates both address and port ([RFC 6146, section 1.2.1](https://www.rfc-editor.org/rfc/rfc6146.txt)), like the NAT of [NAT explained](/learn/nat-explained), and without existing state only IPv6 nodes can open sessions (section 1.1). DNS64 shares with it only the prefix and optional static parameters ([RFC 6147, section 2](https://www.rfc-editor.org/rfc/rfc6147.txt)).
+
+## How a host learns the prefix
+
+A host that synthesises for itself learns the prefix by querying the AAAA records of ipv4only.arpa, whose addresses are 192.0.0.170 and 192.0.0.171 ([RFC 7050, section 2.2](https://www.rfc-editor.org/rfc/rfc7050.txt)), with the Checking Disabled (CD) bit clear, or a DNS64 would not synthesise; the answers show the prefix around those addresses, and a positive A answer marks a resolver that is not a DNS64 (section 3). Router Advertisements (RAs), covered in [Neighbor Discovery](/learn/ipv6-neighbor-discovery), can carry the prefix instead, in the PREF64 option, type 38, coded 0 to 5 for /96, /64, /56, /48, /40 and /32 ([RFC 8781, section 4](https://www.rfc-editor.org/rfc/rfc8781.txt)).
+
+## 464XLAT: two translations, no tunnel
+
+464XLAT carries IPv4-only applications across an IPv6-only network and tunnels nothing: it is "a simple and scalable technique to quickly deploy limited IPv4 access service to IPv6-only edge networks without encapsulation" ([RFC 6877, abstract](https://www.rfc-editor.org/rfc/rfc6877.txt)). The customer-side translator (CLAT) translates statelessly, 1:1, between a private IPv4 and a global IPv6 address, as SIIT does; the provider-side translator (PLAT) is a stateful NAT64, N:1 (section 2). The CLAT acts only for IPv4 literals or IPv4-only sockets (section 5.2), and its private address may come from 192.0.0.0/29, a prefix for systems that send no IPv4 on the wire ([RFC 7335, section 1](https://www.rfc-editor.org/rfc/rfc7335.txt)). In one cellular network, up to the end of 2018, under 1% of traffic needed the CLAT ([RFC 9313, section 4.5.2](https://www.rfc-editor.org/rfc/rfc9313.txt)). Peer-to-peer and inbound IPv4 stay out of reach (RFC 6877, section 1).
+
+## IPv4 as a service
+
+Dual-Stack Lite (DS-Lite) tunnels IPv4 in IPv6 from the customer's Basic Bridging BroadBand (B4) element to an Address Family Transition Router (AFTR), a tunnel endpoint and an IPv4 NAT on one node ([RFC 6333, sections 1 and 6.1](https://www.rfc-editor.org/rfc/rfc6333.txt)), a [shared NAT](/learn/cgnat-address-sharing-and-attribution); "There is no protocol family translation involved in this approach" (section 4.1). Mapping of Address and Port (MAP) shares an address by dividing its ports ([RFC 7597, section 1](https://www.rfc-editor.org/rfc/rfc7597.txt)): MAP with Encapsulation (MAP-E) carries IPv4 in IPv6 (abstract), and MAP using Translation (MAP-T) translates it ([RFC 7599, section 1](https://www.rfc-editor.org/rfc/rfc7599.txt)).
+
+## What breaks
+
+**IPv4 literals.** Behind IPv6-only access, IPv4 literals and older APIs fail unless a CLAT, Happy Eyeballs version 2 or Bump-in-the-Host with DNS64 steps in ([RFC 8683, section 4.6](https://www.rfc-editor.org/rfc/rfc8683.txt)), and protocols that protect IP header information are "essentially incompatible with NAT64" ([RFC 6146, section 5.1](https://www.rfc-editor.org/rfc/rfc6146.txt)).
+
+**Signed answers.** The Domain Name System Security Extensions (DNSSEC) clash with synthesis "because DNSSEC is designed to detect changes to DNS answers, and DNS64 may alter answers coming from an authoritative server" ([RFC 6147, section 3](https://www.rfc-editor.org/rfc/rfc6147.txt)). A validating DNS64 (vDNS64) may synthesise when DNSSEC OK (DO) is set and CD clear, setting the Authentic Data (AD) bit, but "If the CD bit is set and DO is set, then vDNS64 MAY perform validation, but MUST NOT perform synthesis" (section 5.5): a validating host must then do DNS64 itself (section 3). RFC 8683 cites studies putting the breakage at about 1.7% of cases ([RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt)). RFC 8880 reversed RFC 7050's demand that the discovery name be signed ([RFC 7050, section 4](https://www.rfc-editor.org/rfc/rfc7050.txt)): "the 'ipv4only.arpa' zone MUST be an insecure delegation" ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)); see [DNSSEC end to end](/learn/dnssec-end-to-end).
+
+**Resolvers.** A device using a resolver other than the one learned from the network can seriously break DNS64 and NAT64 ([RFC 8880, section 3.1](https://www.rfc-editor.org/rfc/rfc8880.txt)), a cost of [choosing a public resolver](/learn/choosing-a-public-dns-resolver).
+
+**Packet size.** RFC 4213 bounds a 6in4 tunnel's Maximum Transmission Unit (MTU): by default "the MTU MUST be between 1280 and 1480 bytes (inclusive), but it SHOULD be 1280 bytes" ([RFC 4213, section 3.2.1](https://www.rfc-editor.org/rfc/rfc4213.txt)). A 1500-byte path leaves 1480 bytes for a 6rd tunnel ([RFC 5969, section 9.1](https://www.rfc-editor.org/rfc/rfc5969.txt)), and TCP over IPv6 subtracts 60 octets for its Maximum Segment Size (MSS) ([RFC 8200, section 8.3](https://www.rfc-editor.org/rfc/rfc8200.txt)), leaving 1420. DS-Lite's remedy is B4 to AFTR links at least 40 bytes larger, as Path MTU Discovery (PMTUD) is unreliable ([RFC 6333, section 5.3](https://www.rfc-editor.org/rfc/rfc6333.txt)), and dropped ICMPv6 Packet Too Big messages are not unusual ([RFC 7915, section 7](https://www.rfc-editor.org/rfc/rfc7915.txt)). The trap: "a standard 'ping' from the client to the server will succeed, because it generates small packets" ([RFC 6343, section 3](https://www.rfc-editor.org/rfc/rfc6343.txt)), and Happy Eyeballs, watching only the handshake, misses the fault ([RFC 8305, section 9.1](https://www.rfc-editor.org/rfc/rfc8305.txt)); see [ICMP, ping, and traceroute](/learn/icmp-ping-and-traceroute).
+
+**Anycast 6to4.** One experiment saw 9% to 20% of 6to4 connection attempts fail, one likely reason being filters near users that block protocol 41, and IPv4 fallback hid the failures behind delays of 7 to 20 seconds ([RFC 6343, section 3](https://www.rfc-editor.org/rfc/rfc6343.txt)). In May 2015 RFC 7526 deprecated anycast 6to4 and 192.88.99.1 but kept 2002::/16 ([RFC 7526, section 4](https://www.rfc-editor.org/rfc/rfc7526.txt)), and ruled: "In router implementations, 6to4 MUST be disabled by default" (section 5).
+
+**Masking and spoofing.** If IPv6 fails while IPv4 works, Happy Eyeballs can hide it from the operator, so RFC 8305 recommends external monitoring of every address family ([RFC 8305, section 9.3](https://www.rfc-editor.org/rfc/rfc8305.txt)). Decapsulators must check the IPv4 source against the configured endpoint ([RFC 4213, section 5](https://www.rfc-editor.org/rfc/rfc4213.txt)) or, in 6rd, against the embedded IPv4 address ([RFC 5969, section 9.2](https://www.rfc-editor.org/rfc/rfc5969.txt)).
+
+## How to see it
+
+These commands follow [ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html), [ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html), [ip-tunnel(8)](https://man7.org/linux/man-pages/man8/ip-tunnel.8.html), [ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html), [tracepath(8)](https://man7.org/linux/man-pages/man8/tracepath.8.html), [ping(8)](https://man7.org/linux/man-pages/man8/ping.8.html) and [getent(1)](https://man7.org/linux/man-pages/man1/getent.1.html); a DS-Lite B4 is numbered 192.0.0.2 ([RFC 6333, section 5.7](https://www.rfc-editor.org/rfc/rfc6333.txt)):
+
+```bash
+ip -6 route get 64:ff9b::c000:221   # the route a synthesised destination takes
+ip tunnel show                      # sit for 6in4, 6to4 and 6rd; ipip6 for a DS-Lite B4
+ip address show                     # a CLAT or B4 address may sit in 192.0.0.0/29
+tracepath -6 example.com            # path MTU, hop by hop
+ping -6 -M do -s 1432 example.com   # 40 + 8 + 1432 = 1480 bytes; refused if the path is smaller
+getent ahosts example.com           # addresses in the order getaddrinfo returns them
+```
+
+The example in [tracepath(8)](https://man7.org/linux/man-pages/man8/tracepath.8.html) shows a 6in4 hop:
+
+```text
+root@mops:~ # tracepath -6 3ffe:2400:0:109::2
+ 1?: [LOCALHOST]                              pmtu 1500
+ 1:  dust.inr.ac.ru                   0.411ms
+ 2:  dust.inr.ac.ru        asymm  1   0.390ms pmtu 1480
+ 2:  3ffe:2400:0:109::2               463.514ms reached
+     Resume: pmtu 1480 hops 2 back 2
+```
+
+`/etc/gai.conf` reorders addresses, but its manual still shows RFC 3484's table (IPv4-mapped at 10), and one precedence line replaces the default ([gai.conf(5)](https://man7.org/linux/man-pages/man5/gai.conf.5.html)). curl shows which family won, and its manual puts libcurl's IPv6 head start at 200 ms ([curl man page](https://curl.se/docs/manpage.html)):
+
+```bash
+curl -s -o /dev/null -w '%{remote_ip} %{time_connect}\n' https://example.com
+curl -6 https://example.com   # IPv6 only; -4 for IPv4 only
+curl --happy-eyeballs-timeout-ms 250 https://example.com
+```
+
+In dig, `+dns64prefix` prints the DNS64 prefixes found at ipv4only.arpa, `+dnssec` sets DO and `+cd` sets CD ([BIND 9 dig manual](https://bind9.readthedocs.io/en/stable/manpages.html)); Google Public DNS64, 2001:4860:4860::6464, helps only where a NAT64 on 64:ff9b::/96 is reachable ([Google Public DNS64](https://developers.google.com/speed/public-dns/docs/dns64)):
+
+```bash
+dig @2001:4860:4860::6464 ipv4only.arpa AAAA
+dig @2001:4860:4860::6464 +dns64prefix
+dig @2001:4860:4860::6464 +dnssec +cd ipv4only.arpa AAAA   # DO and CD set: no synthesis expected
+```
+
+An illustrative synthesised answer, in the zone form of [RFC 8683, section 4.1](https://www.rfc-editor.org/rfc/rfc8683.txt):
+
+```text
+ipv4only.arpa. AAAA 64:ff9b::192.0.0.170
+ipv4only.arpa. AAAA 64:ff9b::192.0.0.171
+```
+
+A real capture from Google Public DNS, which is not a DNS64, taken at 2026-10-18T21:49:22Z:
+
+```bash
+curl -s 'https://dns.google/resolve?name=ipv4only.arpa&type=AAAA'
+curl -s 'https://dns.google/resolve?name=ipv4only.arpa&type=A'
+```
+
+```text
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"ipv4only.arpa.","type":28}],"Authority":[{"name":"ipv4only.arpa.","type":6,"TTL":287,"data":"sns.dns.icann.org. noc.dns.icann.org. 2026100800 7200 3600 604800 3600"}]}
+{"Status":0,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"ipv4only.arpa.","type":1}],"Answer":[{"name":"ipv4only.arpa.","type":1,"TTL":16109,"data":"192.0.0.170"},{"name":"ipv4only.arpa.","type":1,"TTL":16109,"data":"192.0.0.171"}]}
+```
+
+The AAAA query (type 28) got status 0, no Answer and one Authority record, the negative answer a DNS64 synthesises from ([RFC 8305, section 7.2](https://www.rfc-editor.org/rfc/rfc8305.txt)); the A query (type 1) got 192.0.0.170 and 192.0.0.171, the mark of a resolver that is not a DNS64 ([RFC 7050, section 3](https://www.rfc-editor.org/rfc/rfc7050.txt)); AD is false in both, as an insecure delegation implies ([RFC 8880, section 5](https://www.rfc-editor.org/rfc/rfc8880.txt)). [The DNS header](/learn/dns-message-header-and-flags) explains the flags, the [dig output explainer](/tools/dig-output-explainer) decodes AD and CD, and the [dig command builder](/tools/dig-command-builder) writes `-6`, `+dnssec` and `+cd`, though not `+dns64prefix`.
+
+Python's ipaddress decodes 6to4 (`sixtofour`), Teredo (`teredo`) and mapped addresses (`ipv4_mapped`), but not NAT64 ([Python ipaddress documentation](https://docs.python.org/3/library/ipaddress.html)). A CPython 3.13.16 session; the [Python playground](/tools/python-playground) runs CPython 3.14:
+
+```text
+>>> import ipaddress
+>>> b = ipaddress.ip_address('2002:c000:221::1'); b
+IPv6Address('2002:c000:221::1')
+>>> b.sixtofour
+IPv4Address('192.0.2.33')
+>>> t = ipaddress.ip_address('2001:0:c000:22d:3c5a:63bf:34ff:8eeb'); t
+IPv6Address('2001:0:c000:22d:3c5a:63bf:34ff:8eeb')
+>>> t.teredo
+(IPv4Address('192.0.2.45'), IPv4Address('203.0.113.20'))
+>>> n = ipaddress.ip_address('64:ff9b::192.0.2.33'); n
+IPv6Address('64:ff9b::c000:221')
+>>> ipaddress.IPv4Address(int(n) & 0xffffffff)
+IPv4Address('192.0.2.33')
+>>> n.ipv4_mapped, n.sixtofour, n.teredo
+(None, None, None)
+```
+
+The [IPv6 Toolkit](/tools/ipv6) shows the IPv4 inside an IPv4-mapped address and labels 64:ff9b::/96 and 2002::/16 addresses without extracting it; it does not recognise Teredo addresses or 64:ff9b:1::/48. The [MTU / MSS calculator](/tools/mtu-mss) gives a 1500-byte link with `6in4` an inner MTU of 1480 and an IPv6 MSS of 1420, and with `ipip v6`, as in DS-Lite, 1460 and an IPv4 MSS of 1420.
+
+## What to remember
+
+- RFC 6144's three families are dual stack, tunnelling and translation; only translation joins IPv6-only and IPv4-only hosts.
+- RFC 6724 ranks IPv6 (40) over IPv4 (35), 6to4 (30) and Teredo (5); Happy Eyeballs spaces attempts 250 ms apart.
+- 6to4 builds `2002:V4ADDR::/48`; its anycast relays were deprecated in 2015, and routers must ship it disabled.
+- 64:ff9b::/96 holds a global IPv4 address in its last 32 bits; DNS64 synthesises, NAT64 translates address and port.
+- Hosts learn the prefix from ipv4only.arpa, queried with CD clear, or from PREF64 in Router Advertisements.
+- 464XLAT translates twice and encapsulates nothing; DS-Lite and MAP-E carry IPv4 inside IPv6.
+- On a 1500-byte path a 6in4 tunnel leaves 1480 bytes and a TCP MSS of 1420; a small ping hides the fault.
+
+## Sources
+
+- [RFC 6144, Framework for IPv4/IPv6 Translation, April 2011: sections 1 and 1.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6144.txt)
+- [RFC 4213, Basic Transition Mechanisms for IPv6 Hosts and Routers, October 2005: sections 1 to 3, 5 and 8 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4213.txt)
+- [RFC 6724, Default Address Selection for Internet Protocol Version 6 (IPv6), September 2012: sections 2.1, 3.2, 3.3, 6, 10.2, 10.3, 10.3.1 and appendix B (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6724.txt)
+- [RFC 8305, Happy Eyeballs Version 2: Better Connectivity Using Concurrency, December 2017: sections 1, 3 to 5, 7 and 9 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8305.txt)
+- [IANA, Assigned Internet Protocol Numbers registry (read 2026-10-18)](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)
+- [RFC 3056, Connection of IPv6 Domains via IPv4 Clouds, February 2001: abstract and sections 2 and 5.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3056.txt)
+- [RFC 7526, Deprecating the Anycast Prefix for 6to4 Relay Routers, May 2015: sections 1 to 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7526.txt)
+- [RFC 3068, An Anycast Prefix for 6to4 Relay Routers, June 2001: sections 2.3 to 2.5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3068.txt)
+- [RFC 4380, Teredo: Tunneling IPv6 over UDP through Network Address Translations (NATs), February 2006: sections 1, 2.6, 2.7, 3.2, 4 and 5.1.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4380.txt)
+- [RFC 5969, IPv6 Rapid Deployment on IPv4 Infrastructures (6rd) -- Protocol Specification, August 2010: sections 1, 4, 6, 7 and 9 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5969.txt)
+- [RFC 7915, IP/ICMP Translation Algorithm, June 2016: abstract and sections 1.2, 1.3, 4.1 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7915.txt)
+- [RFC 6052, IPv6 Addressing of IPv4/IPv6 Translators, October 2010: sections 1.3 and 2 to 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6052.txt)
+- [RFC 8215, Local-Use IPv4/IPv6 Translation Prefix, August 2017: abstract and section 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8215.txt)
+- [IANA, IPv4 Special-Purpose Address Space registry, last updated 2025-10-09 (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.txt)
+- [RFC 6146, Stateful NAT64: Network Address and Protocol Translation from IPv6 Clients to IPv4 Servers, April 2011: abstract and sections 1.1 to 1.2.2 and 5.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6146.txt)
+- [RFC 6147, DNS64: DNS Extensions for Network Address Translation from IPv6 Clients to IPv4 Servers, April 2011: sections 2, 3, 5.1, 5.2, 5.5, 6.2 and 6.3.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6147.txt)
+- [RFC 7050, Discovery of the IPv6 Prefix Used for IPv6 Address Synthesis, November 2013: sections 1 to 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7050.txt)
+- [RFC 8781, Discovering PREF64 in Router Advertisements, April 2020: sections 2, 4 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8781.txt)
+- [RFC 6877, 464XLAT: Combination of Stateful and Stateless Translation, April 2013: abstract and sections 1, 2 and 5.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6877.txt)
+- [RFC 7335, IPv4 Service Continuity Prefix, August 2014: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7335.txt)
+- [RFC 9313, Pros and Cons of IPv6 Transition Technologies for IPv4-as-a-Service (IPv4aaS), October 2022: sections 1, 2 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9313.txt)
+- [RFC 6333, Dual-Stack Lite Broadband Deployments Following IPv4 Exhaustion, August 2011: sections 1, 4.1, 5.3, 5.7 and 6.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6333.txt)
+- [RFC 7597, Mapping of Address and Port with Encapsulation (MAP-E), July 2015: abstract and section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7597.txt)
+- [RFC 7599, Mapping of Address and Port using Translation (MAP-T), July 2015: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7599.txt)
+- [RFC 8683, Additional Deployment Guidelines for NAT64/464XLAT in Operator and Enterprise Networks, November 2019: sections 1, 4.1, 4.4, 4.6 and 4.7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8683.txt)
+- [RFC 8880, Special Use Domain Name 'ipv4only.arpa', August 2020: sections 2, 3.1, 5 and 7.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8880.txt)
+- [RFC 8200, Internet Protocol, Version 6 (IPv6) Specification, July 2017: sections 5 and 8.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8200.txt)
+- [RFC 6343, Advisory Guidelines for 6to4 Deployment, August 2011: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6343.txt)
+- [ip(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [ip-route(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [ip-tunnel(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-tunnel.8.html)
+- [ip-address(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [tracepath(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/tracepath.8.html)
+- [ping(8), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ping.8.html)
+- [getent(1), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man1/getent.1.html)
+- [gai.conf(5), Linux manual page, man7.org (read 2026-10-18)](https://man7.org/linux/man-pages/man5/gai.conf.5.html)
+- [curl man page (curl 8.23.0), curl.se: -4, -6, -w and --happy-eyeballs-timeout-ms (read 2026-10-18)](https://curl.se/docs/manpage.html)
+- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [Google Public DNS64, Google for Developers, last updated 2024-09-03 (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/dns64)
+- [Python 3.15.0 documentation, ipaddress module (read 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)

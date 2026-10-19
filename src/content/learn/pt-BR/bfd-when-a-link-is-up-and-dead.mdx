@@ -1,56 +1,200 @@
 ---
 slug: bfd-when-a-link-is-up-and-dead
 title: "BFD: quando um enlace está no ar e morto ao mesmo tempo"
-summary: "Protocolos de roteamento detectam falha com os próprios temporizadores, medidos em dezenas de segundos. O BFD detecta em milissegundos, e existe porque a falha de enlace mais perigosa é aquela em que a interface continua no ar. O que ele faz, o que não faz, e onde dá errado."
-concepts: ["bfd", "ospf", "bgp", "ecmp"]
-relatedTools: []
-relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp"]
+summary: "O Bidirectional Forwarding Detection (BFD) é um pequeno protocolo de hello entre dois planos de encaminhamento que percebe quando um caminho parou de levar pacotes, inclusive quando as duas interfaces continuam no ar, muito antes dos timers do próprio protocolo de roteamento. Depois da leitura, você consegue calcular um tempo de detecção a partir dos dois timers e do multiplicador, ler uma session no FRRouting campo a campo, escolher qual protocolo deve ser o cliente dela e dizer onde o próprio BFD pode ser enganado."
+concepts: ["bfd", "ospf", "bgp", "ecmp", "detection time", "micro-bfd", "gtsm"]
+relatedTools: ["python-playground", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedArticles: ["ospf-primer", "bgp-primer", "routing-tables-and-default-gateway", "first-hop-redundancy-vrrp-and-hsrp", "dynamic-routing-compared", "isis-primer", "link-aggregation-and-lacp", "static-routes-and-longest-match", "ethernet-physical-layers", "fibre-basics"]
 category: networking
 order: 252
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
-## A falha que engana tudo que está acima dela
+Uma interface no ar fala da própria porta, não de os pacotes chegarem ao roteador remoto. O Bidirectional Forwarding Detection (BFD), definido na Request for Comments (RFC) 5880, cobre essa lacuna: dois sistemas trocam pacotes pequenos a uma taxa negociada e, quando faltam pacotes suficientes, o caminho é declarado fora e os protocolos que pediram são avisados. Você o encontra onde OSPF, BGP ou uma rota estática precisam largar um vizinho morto antes do que os próprios timers permitem. Depois da leitura, você consegue nomear as falhas para as quais o BFD existe, calcular um tempo de detecção, ler uma session no FRRouting, escolher o cliente dela e reconhecer onde o próprio BFD é enganado.
 
-Uma interface reporta o próprio estado, e esse relato é sobre a porta local. Diz que o transceptor tem luz, que o enlace elétrico negociou, que a porta está habilitada. **Não diz que a ponta remota ainda consegue alcançar você.**
+## No ar e morto: o que a porta não informa
 
-Entre as duas pode haver um conversor de mídia, o transporte de uma operadora, um fabric de switching, uma sobreposição virtual, ou um firewall que parou de encaminhar continuando perfeitamente vivo. Em todos esses casos a interface permanece **no ar** e o tráfego para.
+A RFC 5880 descreve o limite da sinalização: "there are media that do not provide this kind of signaling (such as Ethernet), and some media may not detect certain kinds of failures in the path, for example, failing interfaces or forwarding engine components", nem todo meio sinaliza falhas ([RFC 5880, seção 1](https://www.rfc-editor.org/rfc/rfc5880.txt)). Daí saem três classes.
 
-É exatamente essa a condição que derrota a recuperação rápida. Um protocolo cuja detecção de falha depende da interface cair nunca dispara. O roteamento continua anunciando um caminho que descarta tudo que segue por ele — o termo da própria rede para isso é **buraco negro**, e sua propriedade definidora é que nada reporta erro.
+A falha unidirecional: os pacotes passam num sentido só, num [par de fibras](/learn/fibre-basics) ou mais acima. A definição de no ar do BFD a exclui: "A path is only declared to be operational when two-way communication has been established between systems", só com tráfego nos dois sentidos (seção 3). Uma maximum transmission unit (MTU) diferente ao longo do caminho também pode causá-la ([RFC 9764, seção 4.3](https://www.rfc-editor.org/rfc/rfc9764.txt)).
 
-## Por que os temporizadores do próprio protocolo não são a resposta
+A ponta remota escondida atrás da camada 2: um switch ou o serviço Ethernet de uma operadora mantém a porta local no ar depois que o roteador remoto sumiu, e a [Ethernet](/learn/ethernet-physical-layers) não sinaliza nada através dele. O BFD viaja dentro do protocolo que protege, marcado como os dados, para ter o destino deles ([RFC 5882, seção 6](https://www.rfc-editor.org/rfc/rfc5882.txt)).
 
-Todo protocolo de roteamento tem um mecanismo de hello e intervalo morto, e funciona. O problema é a escala de tempo.
+O plano de encaminhamento travado com o plano de controle vivo: a RFC 5880 dá a ele um diagnóstico próprio, o código 4, Forwarding Plane Reset, para quando o remoto não pode mais confiar no encaminhamento local ([RFC 5880, seção 6.8.15](https://www.rfc-editor.org/rfc/rfc5880.txt)). Nos três casos o roteamento continua mandando tráfego para um buraco negro (black hole).
 
-Os padrões do OSPF colocam a detecção em torno de **40 segundos**. O hold timer do BGP costuma ficar em **90 segundos** ou mais. Esses números foram escolhidos por um motivo — um protocolo que declara um vizinho morto cedo demais derruba uma rede estável sob carga momentânea, e reconvergir é caro.
+## Os hellos percebem, devagar
 
-Há então um conflito real. **A detecção precisa ser rápida para limitar a indisponibilidade e lenta para evitar falsos positivos**, e as duas exigências puxam o mesmo botão em direções opostas. Baixar os hellos para menos de um segundo em todos os protocolos de um roteador movimentado é como se descobre que processamento de protocolo não é de graça.
+Os protocolos de roteamento não esperam a interface cair; os hellos percebem o silêncio, com atraso: "Networks use relatively slow 'Hello' mechanisms, usually in routing protocols, to detect failures when there is no hardware signaling to help out", hellos lentos fazem esse papel ([RFC 5880, seção 1](https://www.rfc-editor.org/rfc/rfc5880.txt)).
 
-## O que o BFD faz em vez disso
+Os números famosos nem sempre são padrões da norma. Para o [OSPF](/learn/ospf-primer), a RFC 2328 dá "Sample value for a local area network: 10 seconds", exemplo para rede local, e para o RouterDeadInterval "This should be some multiple of the HelloInterval (say 4)", um múltiplo, digamos 4 ([RFC 2328, apêndice C.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). Dez vezes quatro dá 40 segundos, que o FRRouting (FRR) documenta como seu próprio padrão ([documentação do FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). O [BGP](/learn/bgp-primer) não tem hello, só KEEPALIVEs que impedem o hold timer de expirar, e "The suggested default value for the HoldTime is 90 seconds", 90 segundos sugeridos ([RFC 4271, seção 10](https://www.rfc-editor.org/rfc/rfc4271.txt)); um ou dois segundos devem ser rejeitados (seção 6.2).
 
-O BFD separa **detecção de vivacidade** de **roteamento**. É um protocolo deliberadamente mínimo — um fluxo de pacotes pequenos entre dois sistemas, com um intervalo negociado e um multiplicador que diz quantos podem ser perdidos antes de a sessão ser declarada fora — e não faz mais nada. Sem topologia, sem rotas, sem semântica de adjacência.
+O ajuste tem piso, para o OSPF e para o Intermediate System to Intermediate System ([IS-IS](/learn/isis-primer)): "OSPF has a minimum detection time of two seconds, and IS-IS has a minimum detection time of one second", os pisos de cada um ([RFC 5882, seção 10.1](https://www.rfc-editor.org/rfc/rfc5882.txt)). Contra o BFD nos padrões do FRR, 900 ms ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)), um dead interval de 40 segundos é cerca de 44 vezes mais lento, e um hold time de 90 segundos, 100 vezes. Como cada protocolo reage está em [roteamento dinâmico comparado](/learn/dynamic-routing-compared).
 
-Esse minimalismo é o projeto inteiro. **Porque faz uma coisa só, pode ser implementado perto do hardware e rodar em intervalos que um processo de roteamento não sustentaria**, comumente dezenas de milissegundos. Um protocolo de roteamento então se registra como *cliente* da sessão BFD: quando o BFD declara o caminho fora, ele avisa o OSPF, o BGP ou uma rota estática para agir imediatamente em vez de esperar o próprio temporizador.
+## O que é o BFD
 
-A divisão de trabalho vale ser dita sem rodeios, porque é o que as pessoas erram ao configurar: **o BFD decide se o caminho está vivo. O protocolo de roteamento decide o que fazer a respeito.** O BFD nunca escolhe uma rota.
+"BFD is a simple Hello protocol that, in many respects, is similar to the detection components of well-known routing protocols", um hello simples, como o dos protocolos de roteamento ([RFC 5880, seção 3](https://www.rfc-editor.org/rfc/rfc5880.txt)). Não carrega rotas nem descobre vizinhos: uma aplicação, como o OSPF, pede a session (seção 3.1). O lugar dele é o motor de encaminhamento (forwarding engine); rodar no motor de controle é permitido, mas pode deixar passar algumas falhas (seção 2). Há uma session por caminho e por protocolo de dados, então IPv4 e IPv6 precisam de duas ([RFC 5881, seção 2](https://www.rfc-editor.org/rfc/rfc5881.txt)), e clientes do mesmo vizinho compartilham uma ([RFC 5882, seção 4.4](https://www.rfc-editor.org/rfc/rfc5882.txt)).
 
-## Onde ele se justifica
+## O pacote de controle
 
-**Através de qualquer coisa que esconda uma falha.** Um transporte de camada 2 entre roteadores, um enlace virtual, um serviço Ethernet de operadora — onde quer que a porta física do seu equipamento não seja testemunha da saúde da ponta remota.
+A seção obrigatória tem 24 bytes ([RFC 5880, seção 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)); com UDP e IPv4 forma um pacote de 52 bytes e um frame Ethernet de 70. Os valores abaixo são de uma session Up a 300 ms, calculados a partir das definições dos campos:
 
-**Em feixes ECMP**, onde perder um caminho em silêncio significa que uma fração determinística dos fluxos desaparece enquanto o agregado parece saudável. É a falha mais difícil de diagnosticar por métricas, porque a média quase não se move.
+| Bytes | Campo | Valor de exemplo |
+|---|---|---|
+| 0 | Version (3 bits), Diagnostic (5 bits) | `0x20`: versão 1, diagnóstico 0 |
+| 1 | State (2 bits), flags P F C A D M | `0xc0`: Up (`0x40` Down, `0x80` Init, `0xc8` Up com o bit C ligado) |
+| 2 | Detect Mult | `0x03` |
+| 3 | Length | `0x18` (24) |
+| 4 a 7 | My Discriminator | diferente de zero, escolhido por quem envia |
+| 8 a 11 | Your Discriminator | o valor do par, ou zero enquanto desconhecido |
+| 12 a 15 | Desired Min TX Interval | `00 04 93 e0` (300000 µs) |
+| 16 a 19 | Required Min RX Interval | `00 04 93 e0` |
+| 20 a 23 | Required Min Echo RX Interval | `00 00 00 00` (não devolve echo) |
 
-**Sob redundância de primeiro salto**, onde um gateway presente mas sem encaminhar deixa hosts apontando para um roteador que nunca vai responder.
+Os estados são 0 AdminDown, 1 Down, 2 Init e 3 Up. O diagnóstico diz por que a última session terminou, como 1, Control Detection Time Expired, ou 3, Neighbor Signaled Session Down. Poll e Final carregam mudanças de parâmetro, e o bit C, Control Plane Independent, indica que o BFD de quem envia roda no plano de encaminhamento e sobrevive a interrupções do plano de controle ([RFC 5880, seção 4.1](https://www.rfc-editor.org/rfc/rfc5880.txt)).
 
-## Onde dá errado
+## Quatro estados e um three-way handshake
 
-**Configuração assimétrica.** O BFD é uma sessão entre dois sistemas e as duas pontas precisam concordar. Uma sessão configurada só de um lado não falha — **ela simplesmente nunca sobe**, e um roteador com BFD configurado e nenhuma sessão estabelecida tem exatamente a detecção que tinha antes, enquanto sua configuração diz o contrário.
+Num único hop os dois lados são Active e enviam primeiro, com Your Discriminator zero ([RFC 5881, seção 3](https://www.rfc-editor.org/rfc/rfc5881.txt)). Começam devagar: "When bfd.SessionState is not Up, the system MUST set bfd.DesiredMinTxInterval to a value of not less than one second (1,000,000 microseconds)", um segundo fora de Up ([RFC 5880, seção 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)). As regras de recepção então movem a session (seção 6.8.6):
 
-**Intervalos que a plataforma não honra.** Muitos equipamentos implementam BFD em software no plano de controle, onde um intervalo agressivo compete com tudo o mais que a CPU faz. Sob a carga de um incidente real — o momento em que a detecção mais importa — uma sessão BFD de plano de controle pode oscilar porque o roteador está ocupado, e derrubar junto uma adjacência de roteamento estável. **BFD com descarregamento em hardware não tem esse modo de falha; saber qual dos dois você tem é a diferença entre um recurso e um risco.**
+| Estado local | Recebe | Passa a |
+|---|---|---|
+| Down | Down | Init |
+| Down | Init | Up |
+| Init | Init ou Up | Up |
+| Up | Down | Down, diagnóstico 3 |
 
-**Detecção sem um segundo caminho.** O BFD torna a falha visível em milissegundos. Se não há para onde mandar o tráfego, tudo que ele comprou foi uma descrição mais rápida e mais precisa de uma indisponibilidade.
+Cair também é um handshake: uma session declarada Down só volta depois que a ponta remota sinalizou Down ela mesma, o que torna a troca de três vias ([RFC 5880, seção 6.1](https://www.rfc-editor.org/rfc/rfc5880.txt)). AdminDown segura o par em Down, mas não diz nada sobre o caminho de encaminhamento (seção 6.2).
 
-## O que levar daqui
+## Dois timers, um multiplicador e a conta
 
-**Estado de interface é uma observação local, e a rede não é local.** Todo mecanismo que trata "a porta está no ar" como "o caminho funciona" herda o mesmo ponto cego, e o BFD existe para dar ao plano de controle uma segunda opinião barata o bastante para ser pedida o tempo todo.
+Cada sentido é negociado em separado e continuamente, e nenhum emissor pode ir mais rápido do que o receptor aceita, então o lado mais lento dita a taxa ([RFC 5880, seções 6.8.2 e 6.8.7](https://www.rfc-editor.org/rfc/rfc5880.txt)). Cada pacote sai até 25 por cento antes da hora, um jitter aleatório, então a 300 ms os pacotes saem a cada 225 a 300 ms.
+
+O tempo de detecção nunca viaja no pacote; cada receptor calcula o seu: "In Asynchronous mode, the Detection Time calculated in the local system is equal to the value of Detect Mult received from the remote system, multiplied by the agreed transmit interval of the remote system (the greater of bfd.RequiredMinRxInterval and the last received Desired Min TX Interval)", Detect Mult remoto vezes o intervalo combinado ([RFC 5880, seção 6.8.4](https://www.rfc-editor.org/rfc/rfc5880.txt)). Quando ele se esgota sem pacote, a session vai para Down com diagnóstico 1.
+
+| Desired Min TX remoto | Required Min RX local | Detect Mult remoto | Intervalo combinado | Tempo de detecção |
+|---|---|---|---|---|
+| 300 ms | 300 ms | 3 | 300 ms | 900 ms |
+| 300 ms | 200 ms | 3 | 300 ms | 900 ms |
+| 300 ms | 1000 ms | 3 | 1000 ms | 3000 ms |
+| 100 ms | 100 ms | 9 | 100 ms | 900 ms |
+| 50 ms | 50 ms | 3 | 50 ms | 150 ms |
+| 16,7 ms | 16,7 ms | 3 | 16,7 ms | 50,1 ms |
+
+A segunda linha é o exemplo trabalhado na própria documentação do FRR ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). A RFC 7419 propõe 100 ms vezes 9 no lugar de 3 vezes 300 ms, lista os intervalos comuns que o hardware deve suportar, de 3,3 ms a 1 s, e chama 50 ms de "widely deployed interval", o mais difundido ([RFC 7419, seção 3 e apêndice A](https://www.rfc-editor.org/rfc/rfc7419.txt)).
+
+## Assíncrono, demand e echo
+
+O modo assíncrono, a troca periódica descrita acima, é obrigatório ([RFC 5882, seção 9](https://www.rfc-editor.org/rfc/rfc5882.txt)). No modo demand, um sistema que verifica a conectividade de outro jeito pede ao par que pare de enviar, e a detecção fica a cargo da implementação ([RFC 5880, seção 3.2](https://www.rfc-editor.org/rfc/rfc5880.txt)); nos dois lados e sem echo, pode deixar uma falha sem detecção ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). A função Echo envia pacotes que o remoto devolve pelo próprio encaminhamento: "The Echo function has the advantage of truly testing only the forwarding path on the remote system", testa só o encaminhamento remoto (RFC 5880, seção 3.2). O echo usa a porta UDP 3785 ([RFC 5881, seção 4](https://www.rfc-editor.org/rfc/rfc5881.txt)), exige do par um Required Min Echo RX Interval diferente de zero, e "the Echo function MUST NOT be used over multiple hops", nunca através de vários hops ([RFC 5883, seção 3](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+## No fio: um hop, vários hops, um agregado
+
+Sessions de um hop, multihop e de Link Aggregation Group (LAG) diferem em porta e proteção ([RFC 5881, seção 4](https://www.rfc-editor.org/rfc/rfc5881.txt); [RFC 5883, seção 5](https://www.rfc-editor.org/rfc/rfc5883.txt); [RFC 7130, seção 2.2](https://www.rfc-editor.org/rfc/rfc7130.txt)):
+
+| Caso | Porta UDP de destino | Proteção |
+|---|---|---|
+| Um hop | 3784 (echo 3785) | Time to Live 255, enviado e verificado |
+| Multihop | 4784 | autenticação |
+| Membro de LAG (micro-BFD) | 6784 | uma session por membro |
+
+Num único hop a porta de origem fica entre 49152 e 65535, fixa por session, e sem autenticação "all BFD Control packets for the session MUST be sent with a Time to Live (TTL) or Hop Limit value of 255", TTL 255 sempre ([RFC 5881, seções 4 e 5](https://www.rfc-editor.org/rfc/rfc5881.txt)); qualquer outro valor recebido é descartado. Um pacote que atravessou um roteador chega com menos, e quem está fora do enlace é barrado. É o Generalized TTL Security Mechanism (GTSM), e "GTSM is not a substitute for authentication mechanisms", ele não substitui a autenticação ([RFC 5082, seção 1](https://www.rfc-editor.org/rfc/rfc5082.txt)). Através de vários hops o TTL não prova nada, e a RFC 5883 pede autenticação criptográfica ([RFC 5883, seção 6](https://www.rfc-editor.org/rfc/rfc5883.txt)).
+
+Num LAG, "Running a single BFD session over the aggregation without internal knowledge of the member links would make it impossible for BFD to guarantee detection of the physical member link failures", uma session só não enxerga os membros ([RFC 7130, seção 1](https://www.rfc-editor.org/rfc/rfc7130.txt)). Por isso o micro-BFD roda em cada membro, para o endereço Media Access Control (MAC) 01-00-5E-90-00-01; um membro só leva tráfego depois que as sessions dele estão Up (seções 2.3 e 3). O agregado em si está em [agregação de enlaces](/learn/link-aggregation-and-lacp).
+
+## O que o protocolo de roteamento faz com a resposta
+
+"BFD should be viewed as having an advisory role to the protocol or protocols or other network functions with which it is interacting, which will then use their own mechanisms to effect any state transitions", o BFD aconselha, o protocolo age ([RFC 5882, seção 2](https://www.rfc-editor.org/rfc/rfc5882.txt)). Em Down, o OSPF derruba o vizinho, uma session External BGP (EBGP) cai salvo graceful restart em curso, e uma [rota estática](/learn/static-routes-and-longest-match) é retirada (seções 5, 10.1.2 e 10.2); o BGP então envia o Cease subcode 10, BFD Down ([RFC 9384, seção 3](https://www.rfc-editor.org/rfc/rfc9384.txt)). Os clientes ignoram uma passagem para AdminDown (RFC 5882, seção 4.2).
+
+"In general, it is best for the protocol at the lowest point in the hierarchy to interact with BFD", o mais baixo da hierarquia ouve ([RFC 5882, seção 4.4](https://www.rfc-editor.org/rfc/rfc5882.txt)): com Internal BGP (IBGP) sobre OSPF, o OSPF ouve e recompõe o caminho. Com o bit C ligado nos dois sentidos, uma falha significa que o encaminhamento parou, e um graceful restart em curso é abandonado para evitar um buraco negro (seção 4.3.1). Uma adjacência não deve se formar quando os dois lados querem BFD mas a session não sobe (seção 4.1); o `neighbor ... bfd strict` do FRR impõe isso ao BGP.
+
+## Onde ele falha
+
+Timers agressivos num roteador ocupado disputam a central processing unit (CPU): "It is possible for systems with a large number of BFD sessions and/or very short packet intervals to become CPU-bound", a CPU vira o gargalo ([RFC 5880, seção 7](https://www.rfc-editor.org/rfc/rfc5880.txt)), e a session sem CPU faz flap e derruba uma adjacência estável. Policers e shapers atrapalham quando sua escala de tempo se aproxima da detecção, e um firewall que descarta o BFD derruba a session (seção 7).
+
+O BFD no plano de controle pode passar enquanto o encaminhamento falha: a RFC 5882 aceita o risco "since a simultaneous failure or restart of the forwarding plane will not be detected", a falha do encaminhamento passa despercebida ([RFC 5882, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc5882.txt)).
+
+O equal-cost multipath (ECMP) é um limite, não virtude: "This may result in a BFD session being in the Up state while some traffic may be dropped or otherwise negatively impacted along some component links", Up com um membro descartando ([RFC 9764, seção 4.5](https://www.rfc-editor.org/rfc/rfc9764.txt)), e nenhum mecanismo padronizado testa todos os membros em vários hops. Um LAG com micro-BFD em um lado só tende a perder tráfego ([RFC 7130, apêndice A](https://www.rfc-editor.org/rfc/rfc7130.txt)).
+
+Um atacante que controla o enlace pode "forward only the BFD packets but nothing else (causing the link to be falsely declared up). This attack cannot be prevented by BFD", e o BFD não tem defesa ([RFC 5880, seção 9](https://www.rfc-editor.org/rfc/rfc5880.txt)). TTL e autenticação barram falsificações de fora, não essa.
+
+Configurada só de um lado, a session envia uma vez por segundo e nunca fica Up ([RFC 5880, seção 6.8.3](https://www.rfc-editor.org/rfc/rfc5880.txt)), a menos que o par aceite BFD não solicitado por política ([RFC 9468, resumo](https://www.rfc-editor.org/rfc/rfc9468.txt)). Um default gateway que para de encaminhar com a porta no ar é a mesma falha, vista do host: veja [redundância de primeiro hop](/learn/first-hop-redundancy-vrrp-and-hsrp).
+
+## Como ver na prática
+
+O FRR roda o BFD no daemon bfdd. Configuração ilustrativa, a partir dos exemplos do FRR:
+
+```text
+bfd
+ profile fast
+  receive-interval 150
+  transmit-interval 150
+ !
+ peer 192.0.2.1
+  profile fast
+  no shutdown
+ !
+!
+router bgp 65530
+ neighbor 192.0.2.1 remote-as 65531
+ neighbor 192.0.2.1 bfd
+```
+
+Com o multiplicador padrão de 3, o profile detecta em 450 ms; os padrões do FRR são 300 ms em cada sentido. O OSPF se liga com `ip ospf bfd`, uma rota estática com `ip route A.B.C.D/M A.B.C.D bfd` ([documentação do FRRouting, BFD](https://docs.frrouting.org/en/latest/bfd.html)). O `show bfd peers` imprime, na amostra documentada pelo FRR com os endereços trocados:
+
+```text
+peer 192.0.2.1 local-address 192.0.2.2 vrf default interface veth1
+ID: 1
+Remote ID: 0
+Active mode
+Status: down
+Downtime: 5 second(s)
+Diagnostics: ok
+Remote diagnostics: ok
+Peer Type: configured
+RTT min/avg/max: 0/0/0 usec
+Profile: myprofile
+Local timers:
+Detect-multiplier: 3
+Receive interval: 300ms
+Transmission interval: 300ms
+Transmission interval (actual with jitter): 970ms
+Detection timeout: 3000ms
+Echo receive interval: 50ms
+Echo transmission interval: disabled
+Remote timers:
+Detect-multiplier: 3
+Receive interval: 1000ms
+Transmission interval: 1000ms
+Echo receive interval: disabled
+```
+
+`ID` é o My Discriminator; `Remote ID: 0` quer dizer que nada foi ouvido ainda. `Diagnostics: ok` é o diagnóstico 0. `Detection timeout: 3000ms` é 3 vezes o maior entre a recepção local (300 ms) e a transmissão remota (1000 ms): a session não está Up, então os dois lados estão na taxa de um segundo, e 970 ms é um segundo menos o jitter. Com a session presa em Down, confira se o remoto envia, se nada descarta UDP 3784 ou reduz o TTL, e se a autenticação bate ([RFC 5880, seção 6.8.6](https://www.rfc-editor.org/rfc/rfc5880.txt)).
+
+Uma captura mostra os campos da tabela do pacote, a cada segundo até Up e depois no intervalo combinado. Nenhuma ferramenta do site decodifica BFD ou calcula os timers dele; a conta cabe no [Python playground](/tools/python-playground) (`3 * max(300, 1000)`). O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a escolher onde capturar UDP 3784 quando só uma ponta está Down, e o [Flow Path Reasoner](/tools/flow-path-reasoner) nomeia as caixas entre dois roteadores.
+
+## Para lembrar
+
+- O BFD só considera um caminho no ar quando os pacotes passam nos dois sentidos, e pega falhas unidirecionais, pontas remotas escondidas e planos de encaminhamento parados.
+- Os hellos de roteamento detectam essas falhas, devagar: 40 segundos são o exemplo de 10 segundos da RFC 2328 vezes quatro e o padrão do FRR; 90 segundos, o hold time sugerido pela RFC 4271.
+- O tempo de detecção é o Detect Mult remoto vezes o maior entre o Required Min RX local e o Desired Min TX remoto: 3 vezes 300 ms dá 900 ms.
+- Uma session fora de Up envia uma vez por segundo, e o lado mais lento dita o ritmo.
+- O BFD só aconselha; quem deve ouvi-lo é o protocolo mais baixo da hierarquia, e AdminDown não é falha.
+- Um hop usa UDP 3784 e TTL 255, multihop UDP 4784 e autenticação, e um LAG uma session por membro na 6784.
+- Uma session sobre ECMP pode ficar Up enquanto um membro descarta tráfego, e um atacante que repassa só o BFD o derrota.
+
+## Fontes
+
+- [RFC 5880, Bidirectional Forwarding Detection (BFD), junho de 2010: seções 1, 2, 3, 3.1, 3.2, 4.1, 6.1, 6.2, 6.8.2, 6.8.3, 6.8.4, 6.8.6, 6.8.7, 6.8.15, 7 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5880.txt)
+- [RFC 5881, Bidirectional Forwarding Detection (BFD) for IPv4 and IPv6 (Single Hop), junho de 2010: seções 2, 3, 4 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5881.txt)
+- [RFC 5882, Generic Application of Bidirectional Forwarding Detection (BFD), junho de 2010: seções 2, 4.1, 4.2, 4.3.1, 4.3.2, 4.4, 5, 6, 9, 10.1, 10.1.2 e 10.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5882.txt)
+- [RFC 5883, Bidirectional Forwarding Detection (BFD) for Multihop Paths, junho de 2010: seções 3, 5 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5883.txt)
+- [RFC 7130, Bidirectional Forwarding Detection (BFD) on Link Aggregation Group (LAG) Interfaces, fevereiro de 2014: seções 1, 2.2, 2.3, 3 e apêndice A (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7130.txt)
+- [RFC 7419, Common Interval Support in Bidirectional Forwarding Detection, dezembro de 2014: seção 3 e apêndice A (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7419.txt)
+- [RFC 9764, Bidirectional Forwarding Detection (BFD) Encapsulated in Large Packets, abril de 2025: seções 4.3 e 4.5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9764.txt)
+- [RFC 9384, A BGP Cease NOTIFICATION Subcode for Bidirectional Forwarding Detection (BFD), março de 2023: seção 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9384.txt)
+- [RFC 9468, Unsolicited Bidirectional Forwarding Detection (BFD) for Sessionless Applications, agosto de 2023: resumo (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9468.txt)
+- [RFC 5082, The Generalized TTL Security Mechanism (GTSM), outubro de 2007: seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5082.txt)
+- [RFC 2328, OSPF Version 2, abril de 1998: apêndice C.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seções 6.2 e 10 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [FRRouting documentation, BFD (bfdd), latest: BFDd Commands, Peer / Profile Configuration, BGP, OSPF and static route BFD configuration, Status (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/bfd.html)
+- [FRRouting documentation, OSPFv2, latest: Interfaces (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/ospfd.html)

@@ -37,7 +37,9 @@ The stdin box feeds `input()` and `sys.stdin`, one line per read, then end of fi
 
 ## The examples
 
-Twelve programs written for the people this site is for: splitting a /24 into /26s, aggregating prefixes, netmasks and wildcards in binary, a modified EUI-64 from a MAC, a DNS header built with struct, HMAC-SHA256 in hex and base64url, latency statistics with p95 and jitter, transfer times at three line rates, a syslog count by severity from pasted log text, lines read from the stdin box, fields picked from an API response, and the bare last expression. Their exact output is recorded as golden vectors and re-measured through the real engine under Node at every build; an engine upgrade that changes any of them fails the build and is looked at on purpose.
+Twelve programs written for the people this site is for: splitting a /24 into /26s, aggregating prefixes, netmasks and wildcards in binary, a modified EUI-64 from a MAC, a DNS header built with struct, HMAC-SHA256 in hex and base64url, latency statistics with p95, jitter and two standard deviations, transfer times at three line rates, a syslog count by severity from pasted log text, lines read from the stdin box, fields picked from an API response, and the bare last expression. Their exact output is recorded as golden vectors and re-measured through the real engine under Node at every build; an engine upgrade that changes any of them fails the build and is looked at on purpose.
+
+The latency example prints both standard deviations and labels each one. `statistics.pstdev` returns "the population standard deviation", which is what ping prints as mdev: the ping(8) manual page says "Population standard deviation (mdev)", and iputils computes it by dividing the summed squared deviations by the number of replies. `statistics.stdev` returns "the sample standard deviation", which is larger for the same samples (8.34 against 7.99 ms in the example). Compare the pstdev line with ping's `rtt min/avg/max/mdev` summary, not the stdev line.
 
 ## What the API does not do
 
@@ -45,4 +47,4 @@ This tool is not exposed on the HTTP API. Executing arbitrary Python on shared i
 
 ## Sources
 
-The Pyodide documentation (web worker and standard-stream pages, version 314.0.7), the package's own package.json, pyodide-lock.json and typings on the npm registry, the CPython 3.14 documentation for the modules the examples use, RFC 1035 section 4.1.1, RFC 4291 Appendix A and RFC 5424 section 6.2.1 for the examples' arithmetic, and MDN for the module Worker and the Content Security Policy source list. All read on 2026-10-04 and listed on the tool page.
+The Pyodide documentation (web worker and standard-stream pages, version 314.0.7), the package's own package.json, pyodide-lock.json and typings on the npm registry, the CPython 3.14 documentation for the modules the examples use, RFC 1035 section 4.1.1, RFC 4291 Appendix A and RFC 5424 section 6.2.1 for the examples' arithmetic, and MDN for the module Worker and the Content Security Policy source list, read on 2026-10-04. The Python 3.14 statistics page (pstdev and stdev), the ping(8) manual page on man7.org and the iputils source of ping's summary line (ping/ping_output.c) were read on 2026-10-19. All are listed on the tool page.

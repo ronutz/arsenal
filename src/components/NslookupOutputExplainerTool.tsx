@@ -16,17 +16,13 @@ import {
   NS_TYPE_MEANINGS,
   NS_TYPE_MEANINGS_PT,
   FIELD_LABELS_PT,
+  NS_VECTORS, // the golden vectors, for the Example button (D-83)
   type NslookupRecord,
 } from "@/lib/tools/nslookup-output-explainer";
 
-const EXAMPLE = `Server:		1.1.1.1
-Address:	1.1.1.1#53
-
-Non-authoritative answer:
-Name:	example.com
-Address: 93.184.216.34
-Name:	example.com
-Address: 2606:2800:220:1:248:1893:25c8:1946`;
+// The Example button loads a golden vector verbatim (D-83): real nslookup output captured on
+// 2026-10-19, so the example can never drift from the tests.
+const EXAMPLE = NS_VECTORS.find((v) => v.id === "a-aaaa-nonauth")?.input ?? ""; // the vector's input, byte for byte
 
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (

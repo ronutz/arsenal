@@ -1,40 +1,219 @@
 ---
 slug: isis-primer
 title: "IS-IS: the routing protocol hiding under the internet"
-summary: "OSPF's link-state twin from the OSI world runs the carrier backbones your packets cross daily - and most engineers have never typed its name. A practical primer: the layer-2 trick, NET addresses, levels instead of areas, TLV extensibility, and why the big networks never left."
-concepts: ["is-is", "ospf", "igp", "bgp", "mpls"]
-relatedTools: ["cidr"]
-relatedArticles: ["ospf-primer", "mpls-primer", "bgp-primer"]
+summary: "Intermediate System to Intermediate System (IS-IS) is the link-state routing protocol ISO wrote for OSI and RFC 1195 extended to IP: it floods link state as OSPF does, but its packets travel on the link layer, not inside IP. After reading, you can build a NET from a loopback address, tell Level 1 from Level 2 routing, predict which router becomes the DIS on a LAN, read show isis neighbor and show isis database in FRRouting, and say what its authentication protects and what it leaves open."
+concepts: ["is-is", "ospf", "igp", "bgp", "mpls", "nsap", "net", "dis", "lsp", "tlv", "overload bit"]
+relatedTools: ["python-playground", "packet-capture-plan-builder", "oui-lookup"]
+relatedArticles: ["ospf-primer", "mpls-primer", "bgp-primer", "dynamic-routing-compared", "dijkstra-and-the-twenty-minute-algorithm", "routing-tables-and-default-gateway", "route-redistribution", "bfd-when-a-link-is-up-and-dead", "osi-model-in-practice", "the-protocol-wars", "the-ethernet-frame-field-by-field", "what-is-an-oui"]
 category: networking
 order: 236
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-19"
 ---
 
-## The twin with the strange accent
+Intermediate System to Intermediate System (IS-IS) is a link-state interior routing protocol: each router floods a description of its links and computes shortest paths over the shared map. It was written for the Open Systems Interconnection (OSI) protocols of the International Organization for Standardization (ISO), and Request for Comments (RFC) 1195 extended it to IP. After reading, you can say why its packets are not IP, build a network entity title (NET), tell Level 1 from Level 2, predict the Designated Intermediate System (DIS) on a local area network (LAN), read FRRouting (FRR) output, and say what its authentication leaves open.
 
-IS-IS and OSPF are the same idea wearing different clothes: flood a description of your links to everyone, let every router build the identical map, run Dijkstra, agree on shortest paths. Both were born in the late 1980s. OSPF came from the IETF and speaks fluent IP; IS-IS - Intermediate System to Intermediate System, in OSI's charmingly bureaucratic dialect where routers are "intermediate systems" - came from ISO's competing protocol suite (ISO 10589), got taught to carry IP routes in RFC 1195, and quietly won the largest networks on Earth while OSPF won the textbooks.
+## A link-state protocol from the OSI world
 
-If you have never configured IS-IS, your packets do not care: a striking share of tier-1 carrier and large ISP backbones run it, and data-center fabric underlays rediscovered it. Understanding why they chose the twin with the strange accent is the whole primer.
+RFC 1195 names the family: "The integrated IS-IS is a dynamic routing protocol, based on the SPF (Dijkstra) routing algorithm" ([RFC 1195, section 1.1](https://www.rfc-editor.org/rfc/rfc1195.txt)). Shortest path first (SPF) is [Dijkstra's computation](/learn/dijkstra-and-the-twenty-minute-algorithm); [dynamic routing compared](/learn/dynamic-routing-compared) sets IS-IS beside OSPF. An intermediate system is OSI's term for a router (section 2).
 
-## The layer-2 trick
+In February 1990 RFC 1142 republished ISO's draft, DP 10589 (a Draft Proposal), stating "This is not an Internet standard" ([RFC 1142](https://www.rfc-editor.org/rfc/rfc1142.txt)). RFC 1195 followed in December 1990: "This allows a single routing protocol to be used to support pure IP environments, pure OSI environments, and dual environments" ([RFC 1195, Abstract](https://www.rfc-editor.org/rfc/rfc1195.txt)). ISO/IEC 10589 (IEC: International Electrotechnical Commission) appeared in 1992 and 2002; the draft "differed in a considerable number of significant respects" from it, and RFC 1142 is now historic ([RFC 7142, sections 1 and 3.1](https://www.rfc-editor.org/rfc/rfc7142.txt)). Values below come from RFCs that restate the standard, or are marked as the 1990 draft's.
 
-OSPF rides on IP - its packets have IP headers, which means the routing protocol depends on the very layer it is computing routes for, and can be reached (and attacked) by anything that can send an IP packet. IS-IS runs **directly over layer 2**: its PDUs sit in Ethernet frames with no IP header at all. Two consequences carriers love. First, a chicken-and-egg class of failure disappears - the protocol cannot be broken by a corrupted IP configuration because it never touches IP to do its work. Second, you cannot attack an IS-IS adjacency from three hops away, because there is no IP address to aim at; you would need to be on the wire.
+## Not an IP packet
 
-The cost of the OSI pedigree is the addressing: every router needs a **NET** - a Network Entity Title, an OSI-style address that looks like `49.0001.1921.6800.1001.00` and encodes an area and a system ID. Engineers grumble, template it once, and never think about it again; the system ID is commonly minted from a loopback IP, a small ritual every shop performs its own way.
+IS-IS rides on the link layer, not in IP: "all IS-IS routers, including IP-only routers, must be able to receive IS-IS packets using the normal encapsulation for OSI packets" ([RFC 1195, section 4.1](https://www.rfc-editor.org/rfc/rfc1195.txt)). On Ethernet that is an Institute of Electrical and Electronics Engineers (IEEE) 802.3 frame with a Logical Link Control (LLC) header, not an EtherType ([the Ethernet frame, field by field](/learn/the-ethernet-frame-field-by-field)). Every IS-IS frame in a three-router FRR 8.4.4 lab begins so:
 
-## Levels, not areas
+```text
+12:03:37.110430 2e:0f:c2:dd:72:da > 01:80:c2:00:00:14, 802.3, length 1500: LLC, dsap OSI (0xfe) Individual, ssap OSI (0xfe) Command, ctrl 0x03: OSI NLPID IS-IS (0x83): length 1497
+```
 
-Where OSPF carves areas around a mandatory backbone area 0, IS-IS thinks in **levels**. Level 1 routers know their own area intimately; level 2 routers form the backbone that connects areas; a router can be both (L1/L2), acting as its area's door. The elegant difference from OSPF: the backbone is not an area you configure but a *contiguous set of L2-capable routers*, which can thread through anywhere. In practice, many large networks skip the hierarchy debate entirely and run the whole backbone as one flat level-2 domain - a design OSPF's single-area equivalent handles far less gracefully at scale, and one reason the carriers stayed.
+LLC 0xFE means OSI; 0x83, the first octet of the protocol data unit (PDU), is the draft's IS-IS discriminator, and the draft sends to 01-80-C2-00-00-14 for Level 1 and 01-80-C2-00-00-15 for Level 2 ([RFC 1142, constants](https://www.rfc-editor.org/rfc/rfc1142.txt)). With no IP header, an IP capture filter never matches; pcap-filter has `isis` ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)). The PDUs are hellos, which form adjacencies; link state packets (LSPs), each router's self-description; and sequence number packets (SNPs), complete (CSNP) or partial (PSNP), which keep databases in step ([RFC 1195, section 5.1](https://www.rfc-editor.org/rfc/rfc1195.txt)).
 
-On multi-access segments IS-IS elects a DIS - a designated router by another name - with one behavioral difference that catches OSPF natives: the DIS election **is** preemptive, and there is no backup DIS, because the protocol's database synchronization makes losing the DIS cheap.
+## The NET and the system ID
 
-## TLVs: the reason it aged so well
+Even an IP-only router needs an OSI address, used only by IS-IS ([RFC 1195, section 3.3](https://www.rfc-editor.org/rfc/rfc1195.txt)). IS-IS reads that Network Service Access Point (NSAP) as an area address, a system identifier (system ID) and a one-octet NSAP selector (NSEL) ([RFC 1629, section 3](https://www.rfc-editor.org/rfc/rfc1629.txt)); a NET is an NSAP whose selector is 00 ([Juniper Networks, IS-IS Overview](https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/is-is-routing-overview.html)). "An implementation MUST use an ID Length of 6, and MUST check the ID Length defined in the IS-IS PDUs it receives" ([RFC 3719, section 3.1](https://www.rfc-editor.org/rfc/rfc3719.txt)).
 
-Everything IS-IS advertises travels as a **TLV** - type, length, value - inside its link-state PDUs. New capability? Define a new TLV type; old routers skip what they do not understand. This one design choice is why IS-IS absorbed thirty years of change without a version break: IPv6 support was new TLVs (no "IS-ISv3" ever needed, unlike OSPF's separate OSPFv3), wide metrics were a TLV, traffic-engineering attributes were TLVs, and **Segment Routing** - the modern architecture of carrier MPLS (Multiprotocol Label Switching) - rides in, once again, TLVs. Networks that had bet on IS-IS got each revolution as an incremental software update. It is one of protocol design's quietest vindications: extensibility as the feature that outlives every feature.
+For loopback 192.0.2.1 in area 49.0001, Juniper's method pads each octet to three digits, 192.000.002.001, and regroups them in fours:
 
-## Where you will actually meet it
+| Field | Octets | Value |
+|---|---|---|
+| Area address | 3 | 49.0001 |
+| System ID | 6 | 1920.0000.2001 |
+| NSEL | 1 | 00 |
+| NET | 10 | 49.0001.1920.0000.2001.00 |
 
-Three places. Carrier and large-ISP cores, where it has been the incumbent IGP for decades and now underpins Segment Routing deployments. Data-center fabrics, where its layer-2 independence and flat-L2 scaling made it the underlay inside several fabric architectures and vendor NOSes. And certification exams, where the OSPF-versus-IS-IS comparison table is eternal. The honest enterprise guidance: if you are not a carrier and not building a fabric that specifies it, OSPF's tooling and talent pool usually win - but read your fabric vendor's underlay documentation before assuming you are not already running IS-IS somewhere.
+The 49 follows the convention of Juniper's own examples. The often-copied 1921.6800.1001 decodes to the private 192.168.1.1.
 
-The map-and-math fundamentals are shared with OSPF and covered in its primer; where all interior protocols hand off to policy is the BGP primer's territory; and the label-switched services these backbones actually deliver are the subject of the MPLS primer.
+RFC 1195 says to "use the value hex '02 00' prepended to an IP address of the router", giving 0200.c000.0201, which cannot collide with a media access control (MAC) address: 0x02 sets the global/local bit that assigned IEEE 802 addresses leave clear (section 3.3; see [how MAC addresses are assigned](/learn/what-is-an-oui)).
+
+## Levels instead of areas
+
+"Level 1 routers forward all traffic for destinations outside of their area to a level 2 router in their area" ([RFC 1195, section 1.2](https://www.rfc-editor.org/rfc/rfc1195.txt)); Level 2 routers know the Level 2 topology, and a router can be both (FRR's `is-type level-1-2`). A Level 1 router refuses a neighbour from another area; a Level 2 router accepts any Level 2 neighbour (section 1.2).
+
+The backbone is not an area but the set of Level 2 routers, and "IS-IS requires that the set of level 2 routers be connected": Level 1 links cannot repair a partition ([RFC 1195, section 1.2](https://www.rfc-editor.org/rfc/rfc1195.txt)).
+
+A Level 1-2 router that reaches another area sets the attached (ATT) bit in its Level 1 LSP, and Level 1 routers install a default route to the nearest such router ([Juniper Networks, IS-IS Overview](https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/is-is-routing-overview.html)). In the lab, r2's LSP shows `1/0/0` under ATT/P/OL and r1 installs `0.0.0.0/0 10 e12 198.51.100.2` (see [routing tables and the default gateway](/learn/routing-tables-and-default-gateway)). Prefixes leaked down into Level 1 carry the up/down bit and never go back up ([RFC 5305, section 4.1](https://www.rfc-editor.org/rfc/rfc5305.txt)), the loop [route redistribution](/learn/route-redistribution) guards against.
+
+## The LAN and its DIS
+
+On a LAN, IS-IS replaces n-squared links between routers with n links to a pseudonode, whose LSP one elected router originates ([RFC 1195, section 1.2](https://www.rfc-editor.org/rfc/rfc1195.txt)): the DIS, one per level. Cisco states the rules: "On a LAN, one of the routers elects itself the DIS, based on interface priority (the default is 64)"; "If all interface priorities are the same, the router with the highest subnetwork point of attachment (SNPA) is selected"; "There is no backup DIS elected"; and "The DIS election is preemptive (unlike OSPF)" ([Cisco, Understanding IS-IS Pseudonode LSP](https://www.cisco.com/c/en/us/support/docs/ip/integrated-intermediate-system-to-intermediate-system-is-is/49627-DIS-LSP-1.html)); OSPF's election is in the [OSPF primer](/learn/ospf-primer).
+
+In the lab, at equal priority, r1 was DIS: its SNPA, the MAC 8272.129b.cdac, is higher than r2's 2e0f.c2dd.72da. Eight seconds after `isis priority 100 level-1` on r2, r1 reported `LAN Priority: 64, is not DIS` and r2 `LAN Priority: 100, is DIS`; r1's old pseudonode LSP stayed purged beside r2's new one, as the rule allows: "The pseudonode LSPs generated by the previous DIS are no longer required and may be purged by the new DIS" ([RFC 7987, section 2](https://www.rfc-editor.org/rfc/rfc7987.txt)). The DIS also multicasts CSNPs in place of acknowledgements ([Juniper Networks, IS-IS Overview](https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/is-is-routing-overview.html)), every 10 seconds in the lab.
+
+## Hellos and the three-way handshake
+
+A hello carries a holding time, the hello interval times a multiplier, after which a silent neighbour is dropped. ISO sets the multiplier at 10, most implementations used 3 by 2004, and "Values lower than 3 are unstable, and may cause adjacencies to flap" ([RFC 3719, section 2.2](https://www.rfc-editor.org/rfc/rfc3719.txt)). FRR 8.4.4 used 3 seconds times 10: 30 seconds in every lab hello, the DIS's included. Faster detection is the job of [Bidirectional Forwarding Detection (BFD)](/learn/bfd-when-a-link-is-up-and-dead).
+
+Point-to-point links first lacked a three-way handshake, so "if the link fails in only one direction, the failure will only be detected by one of the systems" ([RFC 5303, section 1](https://www.rfc-editor.org/rfc/rfc5303.txt)). RFC 5303's type 240 carries the states Down, Initializing and Up (section 2.1), and the lab's r2 to r3 hellos step through `Down (2)`, `Initializing (1)` and `Up (0)`.
+
+## LSPs and the clock
+
+An LSP ID is system ID, pseudonode and fragment: r1.00-00 is r1's own, r1.02-00 its pseudonode. A higher sequence number is newer; at equal numbers a purged copy wins ([RFC 7987, section 2](https://www.rfc-editor.org/rfc/rfc7987.txt)). ISO fixes MaxAge at 1200 seconds, with a recommended refresh every 900, and RFC 3719 notes: "These times have proven to be too short in some networks, as they result in a steady flow of LSP updates even when nothing is changing" ([RFC 3719, section 2.1](https://www.rfc-editor.org/rfc/rfc3719.txt)). The 16-bit field allows 65535 seconds, 18.2 hours, the "up to 18 hours" of [RFC 5303, section 1](https://www.rfc-editor.org/rfc/rfc5303.txt); the lab's lifetimes counted down from about 1200.
+
+## Metrics, narrow and wide
+
+The original metric had 6 bits, 0 to 63 ([RFC 5305, section 3](https://www.rfc-editor.org/rfc/rfc5305.txt)), and the draft capped a path at 1023 ([RFC 1142, constants](https://www.rfc-editor.org/rfc/rfc1142.txt)): 17 links at 63 make 1071. RFC 5305 added type 22 for neighbours, with 24 bits, and type 135 for prefixes, with 32; a link at 16,777,215 is left out of SPF, and paths stop at 4,261,412,864 ([RFC 5305, sections 3 and 4](https://www.rfc-editor.org/rfc/rfc5305.txt)). "If not all devices in the IS-IS domain support wide metrics, narrow metrics MUST continue to be used" ([RFC 3787, section 5](https://www.rfc-editor.org/rfc/rfc3787.txt)). FRR defaults to `metric-style wide`.
+
+## TLVs: how it learned IPv6 without a new version
+
+A PDU body is a run of type-length-value (TLV) elements, one octet each for type and length ([RFC 1195, section 3.1](https://www.rfc-editor.org/rfc/rfc1195.txt)), and RFC 1195 made them extensible: "Any codes in a received PDU that are not recognised are ignored and passed through unchanged" (section 3.1). RFC 8918 gives the reason: "In order to allow protocol extensions to be deployed in a backwards compatible way, an implementation is required to ignore TLVs that it does not understand" ([RFC 8918, section 1](https://www.rfc-editor.org/rfc/rfc8918.txt)). r1's LSP, decoded by tcpdump:
+
+```text
+L1 LSP, hlen: 27, v: 1, pdu-v: 1, sys-id-len: 6 (0), max-area: 3 (0)
+  lsp-id: 1920.0000.2001.00-00, seq: 0x00000003, lifetime:  1186s
+  chksum: 0x520a (correct), PDU length: 92, Flags: [ L1 IS ]
+    Protocols supported TLV #129, length: 2
+      NLPID(s): IPv4 (0xcc), IPv6 (0x8e)
+    Area address(es) TLV #1, length: 4
+      Area address (length: 3): 49.0001
+    Hostname TLV #137, length: 2
+      Hostname: r1
+    IS-IS Router Capability TLV #242, length: 5
+      Router-ID 192.0.2.1, Flags [none]
+    Traffic Engineering Router ID TLV #134, length: 4
+      Traffic Engineering Router ID: 192.0.2.1
+    Extended IS Reachability TLV #22, length: 11
+      IS Neighbor: 1920.0000.2001.02, Metric: 10, no sub-TLVs present
+    IPv4 Interface address(es) TLV #132, length: 4
+      IPv4 interface address: 192.0.2.1
+    Extended IPv4 Reachability TLV #135, length: 17
+      IPv4 prefix:    198.51.100.0/24, Distribution: up, Metric: 10
+      IPv4 prefix:       192.0.2.1/32, Distribution: up, Metric: 10
+```
+
+IPv6 came as TLVs 232 and 236 and identifier 0x8E, seen above ([RFC 5308, sections 1 to 4](https://www.rfc-editor.org/rfc/rfc5308.txt)), whereas OSPF needed "incrementing the protocol version from version 2 to version 3" ([RFC 5340, Abstract](https://www.rfc-editor.org/rfc/rfc5340.txt)); IS-IS PDUs still say version 1 ([RFC 3719, section 3.3](https://www.rfc-editor.org/rfc/rfc3719.txt)). Traffic engineering added sub-TLVs inside TLVs ([RFC 5305, section 2](https://www.rfc-editor.org/rfc/rfc5305.txt)), and RFC 8667 defines Segment Routing on a Multiprotocol Label Switching (MPLS) data plane ([RFC 8667, Abstract](https://www.rfc-editor.org/rfc/rfc8667.txt)) (see the [MPLS primer](/learn/mpls-primer)).
+
+## The overload bit
+
+A router that cannot store every LSP sets the overload bit, and the others stop using it for transit ([RFC 3719, section 12](https://www.rfc-editor.org/rfc/rfc3719.txt)), though it stays reachable as a destination ([RFC 3787, section 4](https://www.rfc-editor.org/rfc/rfc3787.txt)). After a reboot IS-IS converges before [BGP](/learn/bgp-primer), so "It is convenient to set the Overload Bit until BGP has converged" (section 4); FRR has `set-overload-bit on-startup` ([FRRouting documentation, ISIS](https://docs.frrouting.org/en/latest/isisd.html)). In the lab, `set-overload-bit` on r2 showed at r1 within 2 seconds as `1/0/1`, r2's own prefixes still reachable; removed, it cleared in 30 seconds.
+
+## How it fails, and how it is attacked
+
+Failures follow the rules: an area mismatch blocks Level 1, a split Level 2 stays split, and a link or buffer smaller than the largest LSP means "full propagation of all LSPs may not be possible, resulting in routing loops and black holes" ([RFC 3719, section 5](https://www.rfc-editor.org/rfc/rfc3719.txt)).
+
+The first password was no defence: "The use of a simple password does not provide useful protection against intentional misbehavior" ([RFC 1195, section 6](https://www.rfc-editor.org/rfc/rfc1195.txt)). Type 10 now carries a cleartext password (1), a keyed-hash message authentication code with Message Digest 5, HMAC-MD5 (54) ([RFC 5304, sections 1 and 2](https://www.rfc-editor.org/rfc/rfc5304.txt)), or a generic HMAC with the SHA-1 or SHA-2 Secure Hash Algorithms (3) ([RFC 5310, section 1](https://www.rfc-editor.org/rfc/rfc5310.txt)).
+
+A digest proves possession of a key, not origin: the method "is not being used to authenticate the specific originator of a PDU" ([RFC 5310, section 4](https://www.rfc-editor.org/rfc/rfc5310.txt)). "IS-IS on a broadcast network shares the same key between all neighbors on that network", and with no sequence number a replayed hello can reset adjacencies and a replayed CSNP set off an LSP flood ([RFC 6039, section 4.2](https://www.rfc-editor.org/rfc/rfc6039.txt)). The Remaining Lifetime is zeroed before hashing, "thus this field is not authenticated" (RFC 5310, section 4).
+
+The defences: "ISes implementing HMAC-MD5 authentication MUST NOT accept unauthenticated purges" ([RFC 5304, section 2](https://www.rfc-editor.org/rfc/rfc5304.txt)); RFC 7987 forbids purging another router's LSP before it has been held for MaxAge ([RFC 7987, section 2](https://www.rfc-editor.org/rfc/rfc7987.txt)); RFC 6232 records who sent a purge ([RFC 6232, Abstract](https://www.rfc-editor.org/rfc/rfc6232.txt)); and keys can roll, since implementations "MUST be able to store and use more than one key at the same time" ([RFC 5310, section 4](https://www.rfc-editor.org/rfc/rfc5310.txt)). None of it stops a compromised router ([RFC 5304, section 3.1](https://www.rfc-editor.org/rfc/rfc5304.txt)).
+
+## How to see it
+
+The lab's r1, in FRR syntax ([FRRouting documentation, ISIS](https://docs.frrouting.org/en/latest/isisd.html)):
+
+```text
+interface e12
+ ip router isis LAB
+!
+router isis LAB
+ net 49.0001.1920.0000.2001.00
+ is-type level-1
+ metric-style wide
+ hostname dynamic
+```
+
+```console
+r2# show isis neighbor
+Area LAB:
+  System Id           Interface   L  State        Holdtime SNPA
+ r1                  e21         1  Up            29       8272.129b.cdac
+ r3                  e23         2  Up            27       2020.2020.2020
+```
+
+Columns: neighbour (dynamic hostname), interface, level, state, seconds of holding time left, and SNPA; a point-to-point link has no MAC, so FRR prints 2020.2020.2020.
+
+```console
+r2# show isis database
+Area LAB:
+IS-IS Level-1 link-state database:
+LSP ID                  PduLen  SeqNumber   Chksum  Holdtime  ATT/P/OL
+r1.00-00                   92   0x00000003  0x520a    1126    0/0/0
+r1.02-00                   51   0x00000002  0x803e    1106    0/0/0
+r2.00-00             *    101   0x00000002  0x0cd1    1104    1/0/0
+    3 LSPs
+```
+
+Each row: LSP ID, PDU length, sequence number, checksum, remaining lifetime (in parentheses once purged), and the attached, partition-repair and overload bits; an asterisk marks the router's own. In tcpdump, `-e` prints the link-level header, `-n` keeps addresses numeric, `-v` adds detail and `-w` writes a file ([tcpdump(8)](https://man7.org/linux/man-pages/man8/tcpdump.8.html)):
+
+```bash
+tcpdump -i e12 -e -n -v isis
+tcpdump -i e12 -w isis-lan.pcap isis
+```
+
+The first octets of the LAN hello above:
+
+| Octets | Value | Meaning |
+|---|---|---|
+| 01 80 c2 00 00 14 | destination | all Level 1 intermediate systems |
+| 05 dc | 1500 | 802.3 length |
+| fe fe 03 | LLC | OSI service access points, control 3 |
+| 83 | 131 | IS-IS protocol discriminator |
+| 1b | 27 | header length |
+| 0f | 15 | Level 1 LAN hello, as tcpdump decodes it |
+| 03 | 3 | circuit type, Level 1 and 2 |
+| 19 20 00 00 20 02 | 1920.0000.2002 | source system ID |
+| 00 1e | 30 | holding time, seconds |
+| 05 d9 | 1497 | PDU length |
+| 40 | 64 | priority |
+| 81 02 cc 8e | type 129 | protocols supported: IPv4, IPv6 |
+
+The [Python playground](/tools/python-playground) redoes this arithmetic; the [packet capture plan builder](/tools/packet-capture-plan-builder) helps place a capture, which for IS-IS must sit on the segment; the [MAC vendor lookup](/tools/oui-lookup) reads 01-80-C2-00-00-14 as multicast and the lab's virtual interfaces as locally administered.
+
+## Where it runs
+
+No source read measures it. RFC 6232 says IS-IS "has been widely used in large-scale IP networks because of its strong scalability and fast convergence" ([RFC 6232, section 1](https://www.rfc-editor.org/rfc/rfc6232.txt)); FRR's documentation says "ISIS is widely used in large networks such as ISP and carrier backbone networks", ISP meaning internet service provider ([FRRouting documentation, ISIS](https://docs.frrouting.org/en/latest/isisd.html)).
+
+## What to remember
+
+- IS-IS is ISO's link-state protocol, extended to IP by RFC 1195; its PDUs travel in 802.3 frames, never inside IP.
+- A NET is area address, six-octet system ID and NSEL 00: loopback 192.0.2.1 in area 49.0001 gives 49.0001.1920.0000.2001.00.
+- Level 1 knows its area; Level 2 routers must form one connected backbone; the attached bit gives Level 1 a default route.
+- A LAN elects one DIS per level by priority (64 by default), then highest SNPA, preemptively and with no backup.
+- LSPs live 1200 seconds and are refreshed every 900 by the standard's figures; implementations stretch this up to 65535.
+- Unknown TLVs are ignored and passed on, which brought IPv6 (232, 236) and wide metrics (22, 135) without a new version.
+- Authentication proves possession of a shared key, not origin, and leaves replays and the Remaining Lifetime open.
+
+## Sources
+
+- [RFC 1195, Use of OSI IS-IS for Routing in TCP/IP and Dual Environments, December 1990: Abstract, sections 1.1, 1.2, 1.3, 1.5, 2, 3.1, 3.3, 3.9, 4.1, 4.3, 4.4, 5.1, 5.2, 5.3 and 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1195.txt)
+- [RFC 1142, OSI IS-IS Intra-domain Routing Protocol (ISO DP 10589, historic), February 1990: sections 6.6, 6.6.1, 7.2.8.1, 7.3.19, 7.3.21, 8.4.3, 8.4.4 and the constants and defaults tables (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1142.txt)
+- [RFC 7142, Reclassification of RFC 1142 to Historic, February 2014: sections 1 and 3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7142.txt)
+- [RFC 1629, Guidelines for OSI NSAP Allocation in the Internet, May 1994: sections 3 and 6.2 (Figure 1) (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1629.txt)
+- [RFC 3719, Recommendations for Interoperable Networks using IS-IS, February 2004: sections 2.1, 2.2, 3.1, 3.2, 3.3, 4, 5, 6, 7, 8, 9 and 12 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3719.txt)
+- [RFC 3787, Recommendations for Interoperable IP Networks using IS-IS, May 2004: sections 3, 4, 5, 6, 7, 8 and 10 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3787.txt)
+- [RFC 5303, Three-Way Handshake for IS-IS Point-to-Point Adjacencies, October 2008: Abstract and sections 1 and 2.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5303.txt)
+- [RFC 5304, IS-IS Cryptographic Authentication, October 2008: sections 1, 2, 2.1, 3.1, 3.2 and 3.4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5304.txt)
+- [RFC 5305, IS-IS Extensions for Traffic Engineering, October 2008: sections 1, 2, 3, 4 and 4.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5305.txt)
+- [RFC 5308, Routing IPv6 with IS-IS, October 2008: Abstract and sections 1 to 5 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5308.txt)
+- [RFC 5310, IS-IS Generic Cryptographic Authentication, February 2009: Abstract and sections 1 and 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5310.txt)
+- [RFC 6039, Issues with Existing Cryptographic Protection Methods for Routing Protocols, October 2010: sections 4, 4.1 and 4.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6039.txt)
+- [RFC 6232, Purge Originator Identification TLV for IS-IS, May 2011: Abstract and section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6232.txt)
+- [RFC 7987, IS-IS Minimum Remaining Lifetime, October 2016: Abstract and sections 1, 2 and 3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7987.txt)
+- [RFC 8667, IS-IS Extensions for Segment Routing, December 2019: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8667.txt)
+- [RFC 8918, Invalid TLV Handling in IS-IS, September 2020: section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8918.txt)
+- [RFC 5340, OSPF for IPv6, July 2008: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5340.txt)
+- [FRRouting documentation, ISIS (isisd), latest: ISIS router, ISIS Timer, ISIS region, ISIS interface, Showing ISIS information, ISIS Configuration Examples (read 2026-10-19)](https://docs.frrouting.org/en/latest/isisd.html)
+- [Juniper Networks, Junos OS IS-IS User Guide, IS-IS Overview (release 26.2): IS-IS Terminology, ISO Network Addresses, IS-IS Packets, Installing a Default Route (read 2026-10-19)](https://www.juniper.net/documentation/us/en/software/junos/is-is/topics/concept/is-is-routing-overview.html)
+- [Cisco, Understanding IS-IS Pseudonode LSP, document 49627, updated 10 August 2005: DIS election (read 2026-10-19)](https://www.cisco.com/c/en/us/support/docs/ip/integrated-intermediate-system-to-intermediate-system-is-is/49627-DIS-LSP-1.html)
+- [tcpdump(8) manual page, man7.org: options -e, -i, -n, -r, -v, -w, -XX (read 2026-10-19)](https://man7.org/linux/man-pages/man8/tcpdump.8.html)
+- [pcap-filter(7) manual page, man7.org: iso proto, isis, l1, l2, iih, lsp, snp, csnp, psnp (read 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)

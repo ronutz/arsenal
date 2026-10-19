@@ -1,81 +1,162 @@
 ---
 slug: ipv6-addressing
 title: "Como funciona o endereçamento IPv6"
-summary: "Como é a estrutura de um endereço IPv6 de 128 bits e como ele é escrito, as regras para chegar à forma comprimida canônica, o que significam os tipos e os escopos de endereço e como funcionam o identificador de interface e o DNS reverso."
-concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing"]
-relatedTools: ["ipv6"]
-relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery"]
+summary: "Um endereço IPv6 é um identificador de 128 bits de uma interface, escrito em hexadecimal com uma única grafia canônica, dividido em prefixo e identificador de interface e classificado pelos primeiros bits. Depois da leitura, você consegue escrever qualquer endereço na forma canônica, dizer o tipo e o escopo dele, dar a um endereço link-local a sua zona, recuperar o endereço de hardware contido num identificador derivado dele e dizer qual registro de DNS reverso liga um endereço a um host."
+concepts: ["ipv6", "rfc4291", "rfc5952", "prefix", "eui-64", "multicast", "link-local", "addressing", "ula", "zone-index", "ip6-arpa", "rfc4007", "rfc4193", "rfc7217", "rfc8981", "rfc9637", "privacy-addresses"]
+relatedTools: ["ipv6", "oui-lookup", "python-playground"]
+relatedArticles: ["ipv6-subnetting", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "cidr-notation", "private-address-space", "what-is-an-oui", "dns-record-types-in-answers"]
 category: networking
 order: 10
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
+
+Um endereço IP versão 6 (IPv6) é um identificador de 128 bits, e a Request for Comments (RFC) 4291 diz o que ele identifica: "IPv6 addresses of all types are assigned to interfaces, not nodes", de interfaces, não de nós ([RFC 4291, seção 2.1](https://www.rfc-editor.org/rfc/rfc4291.txt)). O `ip address` costuma mostrar vários deles por interface. Ao final, você consegue escrever qualquer endereço na forma canônica, separar prefixo e identificador de interface, ler tipo e escopo nos primeiros bits, dar zona a um endereço link-local, voltar de um 64-bit Extended Unique Identifier (EUI-64) modificado ao endereço Media Access Control (MAC) de origem e montar o nome dele em ip6.arpa.
 
 ## Por que o IPv6 existe
 
-O IPv4 tem cerca de 4,3 bilhões de endereços (2^32). Nos anos 1980, isso parecia não ter fim; hoje, o estoque livre dos registros de endereços acabou faz tempo. O IPv6, cujo endereçamento é definido na RFC 4291, aumenta o endereço de 32 para **128 bits**, ou seja, 2^128 endereços, um número tão grande que a falta de endereços deixa de ditar o projeto da rede. Na prática, as sub-redes ficam enormes, e truques para economizar endereços, como o NAT (network address translation, a tradução de endereços de rede), deixam de ser necessários para a conectividade básica.
+Endereços IPv4 têm 32 bits ([RFC 791, seção 2.3](https://www.rfc-editor.org/rfc/rfc791.txt)), 4.294.967.296 valores. A Internet Engineering Task Force (IETF) passou a escolher um sucessor no fim de 1990, diante de projeções de escassez de endereços, e a recomendação de janeiro de 1995 registra o nome que a Internet Assigned Numbers Authority (IANA) deu ao IP Next Generation (IPng): "The IANA has assigned version number 6 to IPng. The protocol itself will be called IPv6", número 6, nome IPv6 ([RFC 1752, seções 1 e 11.2](https://www.rfc-editor.org/rfc/rfc1752.txt)). Endereços IPv6 têm 128 bits ([RFC 8200, seção 1](https://www.rfc-editor.org/rfc/rfc8200.txt)), cerca de 3,4 × 10^38.
 
-## A estrutura de 128 bits
+Em 3 de fevereiro de 2011, a Number Resource Organization (NRO) anunciou o esgotamento total do estoque livre de IPv4 da IANA ([NRO, 3 de fevereiro de 2011](https://www.nro.net/ipv4-free-pool-depleted/)). Em 16 de outubro de 2026, 48,65% dos usuários do Google chegavam a ele por IPv6, e 57,13% no Brasil ([Google, IPv6 Statistics](https://www.google.com/intl/en/ipv6/statistics.html)).
 
-Um endereço IPv6 tem 128 bits e é escrito como **oito grupos de quatro dígitos hexadecimais**, separados por dois-pontos. Cada grupo representa 16 bits:
+## O endereço e as formas de escrita
 
+Os endereços são unicast, anycast ou multicast, e "There are no broadcast addresses in IPv6, their function being superseded by multicast addresses", o multicast substitui o broadcast ([RFC 4291, seção 2](https://www.rfc-editor.org/rfc/rfc4291.txt)). Por escrito, "The preferred form is x:x:x:x:x:x:x:x, where the 'x's are one to four hexadecimal digits of the eight 16-bit pieces of the address", oito pedaços hexadecimais de 16 bits (seção 2.2). Zeros à esquerda podem sumir, e uma sequência de pedaços zerados pode virar `::`, uma vez só: `2001:DB8:0:0:8:800:200C:417A` também se escreve `2001:DB8::8:800:200C:417A`, o loopback é `::1` e o endereço não especificado, `::`. Uma forma mista, `x:x:x:x:x:x:d.d.d.d`, termina num endereço IPv4 (seção 2.2).
+
+## A forma canônica, regra por regra
+
+A RFC 5952 fixa uma única grafia para a saída: "The recommendation in this section SHOULD be followed by systems when generating an address to be represented as text, but all implementations MUST accept and be able to handle any legitimate [RFC4291] format", regra na saída, tolerância na entrada ([RFC 5952, seção 4](https://www.rfc-editor.org/rfc/rfc5952.txt)). As regras (seções 4.1 a 5):
+
+| Regra | Seção | Não canônica | Canônica |
+|---|---|---|---|
+| Sem zeros à esquerda | 4.1 | `2001:0db8::0001` | `2001:db8::1` |
+| Comprimir o máximo de pedaços zerados | 4.2.1 | `2001:db8:0:0:0:0:2:1` | `2001:db8::2:1` |
+| Sem `::` para um pedaço só | 4.2.2 | `2001:db8::1:1:1:1:1` | `2001:db8:0:1:1:1:1:1` |
+| A sequência mais longa; no empate, a primeira | 4.2.3 | `2001:db8:0:0:1::1` | `2001:db8::1:0:0:1` |
+| Minúsculas | 4.3 | `2001:DB8::8:800:200C:417A` | `2001:db8::8:800:200c:417a` |
+| Decimal com pontos após prefixo conhecido | 5 | `0:0:0:0:0:ffff:192.0.2.1` | `::ffff:192.0.2.1` |
+
+Com porta, escreva `[2001:db8::1]:80`, não o ambíguo `2001:db8::1:80` ([RFC 5952, seção 6](https://www.rfc-editor.org/rfc/rfc5952.txt)).
+
+## Prefixo e identificador de interface
+
+Um prefixo é `endereço/comprimento`, e o comprimento conta os bits mais à esquerda ([RFC 4291, seção 2.3](https://www.rfc-editor.org/rfc/rfc4291.txt)), como no Classless Inter-Domain Routing (CIDR) do IPv4, visto em [como funciona a notação CIDR](/learn/cidr-notation). Um prefixo escrito "may drop leading zeros, but not trailing zeros, within any 16-bit chunk of the address", zeros à esquerda saem, à direita nunca (seção 2.3): `2001:0DB8:0:CD30::/60` é válido, `2001:0DB8:0:CD3/60` não. O resto é o identificador de interface, ou IID (interface identifier), com 64 bits em todo endereço unicast global fora do binário `000` (seção 2.5.4); a RFC 7136 mantém esse tamanho, com os /127 entre roteadores como caso particular ([RFC 7136, seções 2 e 5](https://www.rfc-editor.org/rfc/rfc7136.txt)). Assim, `2001:db8:abcd:12::1/64` vai de `2001:db8:abcd:12::` a `2001:db8:abcd:12:ffff:ffff:ffff:ffff`, 18.446.744.073.709.551.616 endereços; [sub-redes IPv6](/learn/ipv6-subnetting) mostra como dividir blocos maiores assim.
+
+## Tipos de endereço: o que os primeiros bits dizem
+
+A RFC 4291 classifica o endereço pelos primeiros bits, `::/128` não especificado, `::1/128` loopback, `ff00::/8` multicast, `fe80::/10` link-local, e "implementations must treat all addresses that do not start with any of the above-listed prefixes as Global Unicast addresses", o resto é unicast global ([RFC 4291, seção 2.4](https://www.rfc-editor.org/rfc/rfc4291.txt)). Hoje a IANA só atribui unicast global de `2000::/3` e reserva o resto, cerca de 85% dos endereços ([IANA, IPv6 Address Space](https://www.iana.org/assignments/ipv6-address-space/ipv6-address-space.xhtml)); o registro de uso especial marca a alcançabilidade global ([IANA, IPv6 Special-Purpose Address Space](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml)):
+
+| Bloco | Uso | Alcançável globalmente |
+|---|---|---|
+| `::/128`, `::1/128` | não especificado, loopback | não |
+| `::ffff:0:0/96` | IPv4 mapeado | não |
+| `64:ff9b::/96` | tradução IPv4/IPv6 | sim |
+| `2001:db8::/32`, `3fff::/20` | documentação | não |
+| `fc00::/7` | unique local | não |
+| `fe80::/10` | link-local | não |
+
+O endereço IPv4 mapeado representa nós IPv4; a forma IPv4 compatível e o site-local `fec0::/10` estão descontinuados ([RFC 4291, seções 2.5.5 e 2.5.7](https://www.rfc-editor.org/rfc/rfc4291.txt)); o prefixo de tradução fica para [dual-stack e tradução](/learn/ipv6-transition).
+
+O link-local usa `fe80::/10`, pela definição atual só `fe80::/64` ([errata da RFC 4291](https://www.rfc-editor.org/errata/rfc4291), errata 4406), e "Routers must not forward any packets with Link-Local source or destination addresses to other links", roteador não repassa link-local ([RFC 4291, seção 2.5.6](https://www.rfc-editor.org/rfc/rfc4291.txt)). Os ULAs (unique local addresses) usam `fc00::/7`, na prática `fd00::/8`, a única metade definida, com um Global ID de 40 bits que não pode ser sequencial nem conhecido ([RFC 4193, seções 3.1 e 3.2](https://www.rfc-editor.org/rfc/rfc4193.txt)); ao contrário do [espaço da RFC 1918](/learn/private-address-space), "If accidentally leaked outside of a site via routing or DNS, there is no conflict with any other addresses", um vazamento não colide com nada (seção 1). A documentação tem `2001:db8::/32` ([RFC 3849, seção 2](https://www.rfc-editor.org/rfc/rfc3849.txt)) e, desde agosto de 2024, `3fff::/20`: "The original 2001:db8::/32 reservation is inadequate to describe many realistic, current deployment scenarios", o antigo não basta ([RFC 9637, seção 1](https://www.rfc-editor.org/rfc/rfc9637.txt)). Anycast é, pela sintaxe, indistinguível de unicast ([RFC 4291, seção 2.6](https://www.rfc-editor.org/rfc/rfc4291.txt)).
+
+## Multicast e escopos
+
+Um endereço multicast começa com `ff` e segue com quatro bits de flags (`0RPT`, com T ligado para grupo transitório), um escopo de 4 bits e um identificador de grupo de 112 bits, e nunca é endereço de origem ([RFC 4291, seção 2.7](https://www.rfc-editor.org/rfc/rfc4291.txt)). Os escopos, como a RFC 7346 e a IANA os definem hoje ([RFC 7346, seção 2](https://www.rfc-editor.org/rfc/rfc7346.txt); [IANA, IPv6 Multicast Address Space](https://www.iana.org/assignments/ipv6-multicast-addresses/ipv6-multicast-addresses.xhtml)), com grupos da RFC 4291 (seção 2.7.1):
+
+| Valor | Escopo | Grupos conhecidos |
+|---|---|---|
+| 1 | Interface-Local | `ff01::1`, todos os nós |
+| 2 | Link-Local | `ff02::1`, todos os nós; `ff02::2`, todos os roteadores |
+| 3 | Realm-Local | reservado até a RFC 7346 |
+| 4, 5, 8 | Admin-Local, Site-Local, Organization-Local | `ff05::2`, todos os roteadores no escopo 5 |
+| e | Global | `ff0e::101`, todos os servidores de Network Time Protocol |
+
+Os escopos interface-local, link-local e realm-local têm limites dados pela conectividade física; o global não tem limite ([RFC 7346, seção 2](https://www.rfc-editor.org/rfc/rfc7346.txt)). Todo endereço unicast ou anycast tem ainda um grupo solicited-node, com os 24 bits finais após `FF02:0:0:0:0:1:FF00::/104`: `2001:db8::8:800:200c:417a` dá `ff02::1:ff0c:417a` ([RFC 4291, seção 2.7.1](https://www.rfc-editor.org/rfc/rfc4291.txt)), o grupo do [Neighbor Discovery](/learn/ipv6-neighbor-discovery), a contrapartida IPv6 do Address Resolution Protocol (ARP).
+
+## Zonas: por que fe80::1 precisa de %eth0
+
+Endereços link-local podem se repetir entre links, e "The zone to which a particular non-global address pertains is not encoded in the address itself but determined by context, such as the interface from which it is sent or received", a zona vem do contexto, não do endereço ([RFC 4007, seção 5](https://www.rfc-editor.org/rfc/rfc4007.txt)). A zona vem após um `%`, `<address>%<zone_id>`, como em `fe80::1234%1` (seções 11 e 11.3), e "Hence, the format MUST be used only within a node and MUST NOT be sent on the wire unless every node that interprets the format agrees on the semantics", o formato não sai do nó (seção 11.2).
+
+A RFC 9844 (agosto de 2025) nota que zonas costumam ser nomes de interface, `fe80::1234%eth0` no Linux e `fe80::4321%7` no Windows, e que "a link-local address without a zone index cannot be used in the Linux socket API", no Linux a zona é obrigatória ([RFC 9844, seções 1 e 3](https://www.rfc-editor.org/rfc/rfc9844.txt)). Exige que interfaces de usuário permitam informar a zona (seção 5) e torna obsoleta a RFC 6874, com a sintaxe dela para zonas em Uniform Resource Identifiers (URIs) (seção 3).
+
+## Como se formam os identificadores de interface
+
+O EUI-64 modificado monta o IID a partir de um endereço MAC de 48 bits: insere `ff fe` no meio e inverte o bit universal/local ([RFC 4291, Apêndice A](https://www.rfc-editor.org/rfc/rfc4291.txt)), o segundo bit menos significativo do primeiro octeto ([RFC 2464, seção 4](https://www.rfc-editor.org/rfc/rfc2464.txt)). Para o endereço MAC de documentação `00-00-5E-00-53-01` ([RFC 9542, seção 2.1.4](https://www.rfc-editor.org/rfc/rfc9542.txt)), calculado:
+
+```text
+endereço MAC                      00-00-5E-00-53-01
+ff-fe inserido no meio            00-00-5E-FF-FE-00-53-01
+bit universal/local invertido     02-00-5E-FF-FE-00-53-01
+identificador de interface        0200:5eff:fe00:5301
+endereço link-local               fe80::200:5eff:fe00:5301
+em 2001:db8::/64                  2001:db8::200:5eff:fe00:5301
 ```
-2001:0db8:0000:0000:0008:0800:200c:417a
+
+No caminho inverso, tire o `ff fe` do `fe80::5054:ff:fe70:67bc` do ping(8) e inverta o bit de novo: `52:54:00:70:67:bc` ([ping(8)](https://man7.org/linux/man-pages/man8/ping.8.html)). O padrão é indício, não prova: a RFC 7136 trata o IID inteiro como opaco ([RFC 7136, resumo e seção 3](https://www.rfc-editor.org/rfc/rfc7136.txt)).
+
+A RFC 8064 (2017) diz "By default, nodes SHOULD NOT employ IPv6 address generation schemes that embed a stable link-layer address in the IID", nada de MAC estável no IID ([RFC 8064, seção 3](https://www.rfc-editor.org/rfc/rfc8064.txt)), e recomenda como padrão do Stateless Address Autoconfiguration (SLAAC) os identificadores da RFC 7217, estáveis na sub-rede e diferentes quando o host muda de rede ([RFC 7217, resumo](https://www.rfc-editor.org/rfc/rfc7217.txt)). A RFC 8981 (2021) acrescenta endereços temporários com identificadores aleatórios, por padrão válidos por 2 dias e preferidos por 1, e retira o conselho de desativá-los por padrão ([RFC 8981, resumo e seções 3.8 e 5](https://www.rfc-editor.org/rfc/rfc8981.txt)). O kernel Linux documenta `addr_gen_mode` 0, "generate address based on EUI64 (default)", gerar pelo EUI-64, o padrão, e `use_tempaddr` 0 na maioria dos dispositivos ([documentação do kernel Linux, IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)): padrões documentados do kernel, que nada dizem sobre distribuições. Como o host obtém endereços, por SLAAC ou DHCPv6 (Dynamic Host Configuration Protocol for IPv6), fica para a [próxima parte](/learn/ipv6-address-configuration).
+
+## DNS reverso sob ip6.arpa
+
+Um registro AAAA guarda um endereço IPv6 ([RFC 3596, seção 2.1](https://www.rfc-editor.org/rfc/rfc3596.txt)); o nome reverso escreve os 32 nibbles do menos para o mais significativo, sob ip6.arpa (seção 2.5). Calculado para `2001:db8::200:5eff:fe00:5301`:
+
+```text
+1.0.3.5.0.0.e.f.f.f.e.5.0.0.2.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
 ```
 
-Essa é a forma **expandida**, com tudo escrito por extenso. Como ela é longa e cheia de zeros, a escrita tem regras de compressão.
+Esse nome é o owner name do registro PTR (pointer); o nome do host, digamos `host.example.com`, é o valor. A documentação do Python diz: "This is the name that could be used for performing a PTR lookup, not the resolved hostname itself", o nome da consulta, não o resultado ([documentação do Python 3.15, ipaddress](https://docs.python.org/3/library/ipaddress.html)). [Como ler os registros em uma resposta do dig](/learn/dns-record-types-in-answers) mostra respostas PTR.
 
-## Como escrever um endereço: as regras de compressão
+## Como o endereçamento falha ou é atacado
 
-São duas regras para encurtar o texto, e a RFC 5952 torna o resultado canônico (cada endereço passa a ter uma única forma preferida de escrita):
+O texto é a primeira armadilha: numa planilha com `2001:db8::1:0:0:1`, a busca por `2001:db8:0:0:1::1` não acha nada ([RFC 5952, seção 3.1.2](https://www.rfc-editor.org/rfc/rfc5952.txt)), e comparar strings no controle de acesso pode trazer risco de segurança (seção 8); compare valores interpretados. A RFC 7721 lista quatro ataques: correlação ao longo do tempo, rastreamento de localização, varredura de endereços e exploração de vulnerabilidades do dispositivo ([RFC 7721, seção 3](https://www.rfc-editor.org/rfc/rfc7721.txt)); um IID constante segue o host de link em link (seção 3.2), e o Organizationally Unique Identifier ([OUI](/learn/what-is-an-oui)) de 24 bits do fabricante e o `ff fe` fixo reduzem o espaço de busca: "This erases much of the protection against address scanning that the larger IPv6 address space could provide as compared to IPv4", some boa parte dessa proteção (seção 3.3). Endereços temporários ajudam, mas não contra um observador no próprio link, como o roteador padrão ([RFC 8981, seção 1.2](https://www.rfc-editor.org/rfc/rfc8981.txt)).
 
-- **Tire os zeros à esquerda** de cada grupo: `0db8` vira `db8`, e `0000` vira `0`.
-- **Troque uma sequência de grupos consecutivos só de zeros por `::`**. Esses dois-pontos duplos podem aparecer **no máximo uma vez** e representam um ou mais grupos de 16 bits zerados. Se houver várias sequências com o mesmo tamanho, comprime-se a primeira.
+O escopo é a outra armadilha: o site-local `fec0::1` podia existir em vários sites ao mesmo tempo ([RFC 3879, seção 2](https://www.rfc-editor.org/rfc/rfc3879.txt)); ULAs devem parar na borda do site e ficar fora do DNS global, e não dão segurança nenhuma por si ([RFC 4193, seções 4.3, 4.4 e 7](https://www.rfc-editor.org/rfc/rfc4193.txt)); um endereço link-local sem zona falha num nó com vários links ([RFC 4007, seção 11.4](https://www.rfc-editor.org/rfc/rfc4007.txt)). Prefixos de documentação ficam fora da produção: "they MUST NOT be used for actual traffic, MUST NOT be globally advertised, and SHOULD NOT be used internally for routed production traffic or other connectivity", nada de tráfego real nem anúncio global ([RFC 9637, seção 4](https://www.rfc-editor.org/rfc/rfc9637.txt)).
 
-Com as duas regras aplicadas ao endereço acima, chegamos à forma canônica:
+## Como ver os endereços num host
 
-```
-2001:db8::8:800:200c:417a
-```
+No Linux, `-6` limita o `ip` ao IPv6 ([ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)); o ip-address(8) seleciona por dispositivo, escopo ou flag ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)):
 
-A RFC 5952 acrescenta algumas regras de acabamento para que todas as ferramentas escrevam o endereço do mesmo jeito: os dígitos hexadecimais ficam em minúsculas, e o `::` não é usado para "comprimir" um único grupo de zeros (não economizaria nada que valesse a pena). A ferramenta IPv6 mostra lado a lado a forma canônica comprimida e a forma expandida completa, para você ver exatamente o que o `::` está substituindo.
-
-Um caso especial: os últimos 32 bits de um endereço podem trazer um **IPv4 embutido**, escrito na notação decimal com pontos. O caso mais comum é o endereço **IPv4 mapeado**, para o qual a RFC 5952 recomenda a notação mista `::ffff:192.0.2.128` em vez de hexadecimal puro.
-
-## Prefixos e o cálculo de prefixos
-
-Como no CIDR do IPv4, um prefixo IPv6 é escrito como `endereço/comprimento`, em que o comprimento é a quantidade de bits de rede, contados a partir do início do endereço:
-
-```
-2001:db8::/64
+```bash
+ip -6 address show
+ip -6 address show dev eth0
+ip -6 address show scope link
+ip -6 address show scope global
+ip -6 address show temporary
 ```
 
-Um `/64` quer dizer que os primeiros 64 bits são a rede e os 64 restantes são o identificador de interface (interface ID). O `/64` é o tamanho padrão de uma LAN, e uma única rede desse tamanho já comporta 2^64 endereços, cerca de 18 quintilhões. Para qualquer prefixo que você informar, a ferramenta calcula o endereço de rede (o primeiro), o último endereço e a quantidade de endereços; ela zera os bits de host para achar a rede, mesmo que você tenha digitado um endereço com bits de host diferentes de zero.
+Cada endereço mostra o escopo (`link`, válido só naquele dispositivo, ou `global`), um `valid_lft`, após o qual o kernel o remove, um `preferred_lft`, após o qual conexões novas não o usam, e flags como `tentative` (ainda em detecção de endereço duplicado), `temporary` e `dynamic` ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)). Para um destino link-local, o ping(8) com sockets de datagrama do Internet Control Message Protocol (ICMP) precisa da interface de saída: `ping fe80::5054:ff:fe70:67bc%eth0` ([ping(8)](https://man7.org/linux/man-pages/man8/ping.8.html)).
 
-## Tipos de endereço e escopos
+Esta sessão ilustrativa, feita com Python 3.13.16 ([documentação do Python 3.15, ipaddress](https://docs.python.org/3/library/ipaddress.html)), roda também no [Playground de Python](/tools/python-playground):
 
-Os primeiros bits de um endereço definem a categoria dele. As mais importantes, segundo a RFC 4291 e o registro da IANA:
+```text
+>>> import ipaddress
+>>> a = ipaddress.ip_address('2001:db8:0:0:8:800:200c:417a')
+>>> a.compressed
+'2001:db8::8:800:200c:417a'
+>>> a.exploded
+'2001:0db8:0000:0000:0008:0800:200c:417a'
+>>> a.reverse_pointer
+'a.7.1.4.c.0.0.2.0.0.8.0.8.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'
+>>> b = ipaddress.ip_address('fe80::5054:ff:fe70:67bc%eth0')
+>>> b.scope_id
+'eth0'
+>>> b.is_link_local
+True
+>>> ipaddress.ip_address('::ffff:192.0.2.128').ipv4_mapped
+IPv4Address('192.0.2.128')
+```
 
-- **Global unicast (2000::/3)** é o espaço público roteável, o equivalente IPv6 de um endereço IPv4 público.
-- **Unique local, ou ULA (fc00::/7)**, é o espaço de uso privado (RFC 4193), o equivalente da RFC 1918 no IPv4. Esse espaço não é roteado na internet pública.
-- **Link-local unicast (fe80::/10)** só vale dentro de um único link e é configurado automaticamente em toda interface IPv6. Os roteadores nunca encaminham esse tráfego; o escopo dele é o link local.
-- **Multicast (ff00::/8)** se destina a um grupo, e não a um único host. Um campo de escopo dentro do próprio endereço diz até onde ele chega: interface-local, link-local, admin-local, site-local, organization-local ou global. Por exemplo, `ff02::1` é o grupo all-nodes (todos os nós) de escopo link-local.
-- **Loopback (::1/128)** é o equivalente IPv6 do 127.0.0.1, e o **endereço não especificado (::/128)** significa "nenhum endereço": ele fica no lugar do endereço enquanto a configuração não termina.
-- **Documentação (2001:db8::/32)** é um bloco reservado pela RFC 3849 para exemplos e textos técnicos; é por isso que quase todo exemplo de IPv6 que você encontra, inclusive o exemplo clássico da própria RFC 4291, usa esse bloco.
+O [Kit de ferramentas IPv6](/tools/ipv6) calcula localmente formas canônica e expandida, tipo, escopo, aritmética de prefixo, o MAC de um EUI-64 e o nome em ip6.arpa, e descarta o sufixo `%zona`. Sua tabela de blocos especiais tem onze entradas e não inclui `3fff::/20`, então `3fff::1` aparece como unicast global, e o MAC `10:34:56:78:9a:bc` que ele recupera de `2001:db8::1234:56ff:fe78:9abc` pode nunca ter existido: confira no [registro da IANA](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml) e na [Consulta de fabricante por OUI / MAC](/tools/oui-lookup).
 
-A ferramenta IPv6 informa o tipo do endereço e o prefixo exato em que ele se encaixou, além do escopo, no caso de endereços multicast e link-local.
+## Para lembrar
 
-## O identificador de interface e o EUI-64
-
-Num `/64` típico, os 64 bits finais formam o **identificador de interface**. Uma das formas tradicionais de montá-lo era o **EUI-64 modificado** (RFC 4291, Apêndice A): pegue o endereço MAC de 48 bits, insira os bytes `ff:fe` no meio e inverta o sétimo bit (o bit universal/local). Assim, o interface ID podia ser calculado a partir do endereço de hardware. Quando a ferramenta encontra o `ff:fe` no meio do interface ID, que denuncia esse método, ela faz o caminho inverso e mostra o MAC original. Os sistemas modernos costumam preferir interface IDs aleatórios ou de privacidade, justamente porque derivar o ID do MAC expõe o endereço de hardware.
-
-## DNS reverso: ip6.arpa
-
-No IPv6, as consultas reversas (de endereço para nome) ficam sob o domínio **ip6.arpa**. O endereço é expandido para os seus 32 nibbles, os dígitos hexadecimais; a ordem desses nibbles é invertida, e cada um vira um label (rótulo) do nome. Assim, `2001:db8::1` vira um nome terminado em `...8.b.d.0.1.0.0.2.ip6.arpa`. A ferramenta gera esse nome para qualquer endereço, e ele é exatamente o valor que você colocaria num registro `PTR`.
-
-## O que a ferramenta faz e o que ela não faz
-
-A ferramenta IPv6 é uma calculadora determinística, que roda localmente. Ela interpreta o endereço, coloca na forma canônica, classifica e calcula, tudo no seu navegador, sem fazer nenhuma consulta à rede real. Ela diz o que um endereço **é**, do ponto de vista da estrutura. Ela não diz se o endereço está alcançável, se foi alocado ou se está em uso: essas são outras perguntas, e para respondê-las é preciso consultar a rede ou um registro de endereços.
+- Um endereço IPv6 identifica uma interface, não um nó, em 128 bits; toda interface tem de ter um endereço link-local.
+- Aceite qualquer grafia da RFC 4291 e imprima a da RFC 5952: minúsculas, sem zeros à esquerda, `::` na maior sequência zerada de dois ou mais pedaços, a primeira no empate.
+- Prefixos mantêm os zeros à direita de cada pedaço; endereços unicast globais fora do binário `000` terminam num identificador de interface de 64 bits.
+- `ff00::/8`: multicast, com escopo de 4 bits (3 é realm-local); `fe80::/10`: link-local, nunca encaminhado; `fc00::/7`: unique local; `2001:db8::/32` e `3fff::/20`: documentação.
+- Um endereço link-local precisa da zona, `fe80::1%eth0`, que nunca sai do nó.
+- O EUI-64 modificado expõe o MAC e facilita rastreamento e varredura; a RFC 8064 prefere os identificadores da RFC 7217, mas o kernel Linux documenta o EUI-64 como padrão.
+- O nome de nibbles invertidos em ip6.arpa é o owner name do registro PTR; o nome do host é o valor.
 
 ## Esta série, em ordem
 
@@ -85,3 +166,37 @@ Este artigo abre a série **IPv6** e trata do endereço em si. As partes seguint
 2. **[Como os hosts IPv6 obtêm endereço: SLAAC e DHCPv6](/learn/ipv6-address-configuration)**. Começando pelo link-local: router advertisements (os anúncios do roteador), SLAAC, endereços de privacidade e DHCPv6.
 3. **[Neighbor Discovery: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery)**. ICMPv6 e multicast no lugar do ARP por broadcast: as cinco mensagens do Neighbor Discovery.
 4. **[IPv6 e IPv4 lado a lado: dual-stack e tradução](/learn/ipv6-transition)**. Dual-stack, Happy Eyeballs, NAT64 e os endereços com IPv4 embutido, que ligam as duas famílias.
+
+## Fontes
+
+- [RFC 4291, IP Version 6 Addressing Architecture, fevereiro de 2006: seções 2 a 2.8 e Apêndice A (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 4291 errata, RFC Editor: errata 3480, 4406, 6596 e 6848 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc4291)
+- [RFC 5952, A Recommendation for IPv6 Address Text Representation, agosto de 2010: seções 1 a 8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5952.txt)
+- [RFC 4007, IPv6 Scoped Address Architecture, março de 2005: seções 4 a 6, 11 e 12 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4007.txt)
+- [RFC 9844, Entering IPv6 Zone Identifiers in User Interfaces, agosto de 2025: seções 1, 3, 5 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9844.txt)
+- [RFC 4193, Unique Local IPv6 Unicast Addresses, outubro de 2005: seções 1, 3, 4, 5.2 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4193.txt)
+- [RFC 7136, Significance of IPv6 Interface Identifiers, fevereiro de 2014: seções 1 a 3, 5 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7136.txt)
+- [RFC 8064, Recommendation on Stable IPv6 Interface Identifiers, fevereiro de 2017: seções 1 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8064.txt)
+- [RFC 7217, A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC), abril de 2014: resumo e seção 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7217.txt)
+- [RFC 8981, Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6, fevereiro de 2021: resumo e seções 1.2, 3.8 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8981.txt)
+- [RFC 7721, Security and Privacy Considerations for IPv6 Address Generation Mechanisms, março de 2016: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7721.txt)
+- [RFC 3596, DNS Extensions to Support IP Version 6, outubro de 2003: seções 1, 2.1 e 2.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3596.txt)
+- [RFC 3849, IPv6 Address Prefix Reserved for Documentation, julho de 2004: resumo e seções 1 e 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3849.txt)
+- [RFC 9637, Expanding the IPv6 Documentation Space, agosto de 2024: seções 1, 4 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9637.txt)
+- [RFC 7346, IPv6 Multicast Address Scopes, agosto de 2014: seção 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7346.txt)
+- [RFC 3879, Deprecating Site Local Addresses, setembro de 2004: seções 2 e 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3879.txt)
+- [RFC 1752, The Recommendation for the IP Next Generation Protocol, janeiro de 1995: seções 1, 2, 5.1, 7, 9, 10.2 e 11 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1752.txt)
+- [RFC 8200, Internet Protocol, Version 6 (IPv6) Specification, julho de 2017: seções 1 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8200.txt)
+- [RFC 791, Internet Protocol, setembro de 1981: seção 2.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, dezembro de 1998: seções 4 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2464.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, abril de 2024: seções 2.1.4 e 2.2.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [IANA, IPv6 Special-Purpose Address Space, última atualização em 2025-10-09 (lida em 2026-10-18)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml)
+- [IANA, IPv6 Address Space, última atualização em 2025-10-23 (lida em 2026-10-18)](https://www.iana.org/assignments/ipv6-address-space/ipv6-address-space.xhtml)
+- [IANA, IPv6 Multicast Address Space, última atualização em 2026-04-07 (lida em 2026-10-18)](https://www.iana.org/assignments/ipv6-multicast-addresses/ipv6-multicast-addresses.xhtml)
+- [NRO, Free Pool of IPv4 Address Space Depleted, 3 de fevereiro de 2011 (lida em 2026-10-18)](https://www.nro.net/ipv4-free-pool-depleted/)
+- [Google, IPv6 Statistics, dados até 16 de outubro de 2026 (lida em 2026-10-18)](https://www.google.com/intl/en/ipv6/statistics.html)
+- [ip-address(8), página de manual do Linux, man7.org: SYNOPSIS, DESCRIPTION e EXAMPLES (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip(8), página de manual do Linux, man7.org: OPTIONS (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [ping(8), página de manual do Linux, man7.org: OPTIONS e IPV6 LINK-LOCAL DESTINATIONS (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ping.8.html)
+- [Python 3.15 documentation, ipaddress, IPv4/IPv6 manipulation library: IPv6Address (lida em 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)
+- [The Linux Kernel documentation, IP Sysctl (7.3.0-rc7): addr_gen_mode, use_tempaddr e stable_secret (lida em 2026-10-18)](https://docs.kernel.org/networking/ip-sysctl.html)

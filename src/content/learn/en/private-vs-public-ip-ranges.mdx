@@ -1,39 +1,220 @@
 ---
 slug: private-vs-public-ip-ranges
 title: "Private, Reserved, and Public IP Ranges"
-summary: "An SSRF filter has to know which addresses are internal. This is the map: RFC 1918 private space, loopback, link-local, carrier-grade NAT, the documentation ranges, and everything else that is public and routable. Knowing the ranges is what turns a raw address into a safe-or-not decision."
-concepts: ["rfc 1918", "loopback", "link-local", "cgnat", "public ip"]
-relatedTools: ["ssrf-url-classifier"]
-relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists"]
+summary: "IANA records every special-purpose IPv4 and IPv6 block, from loopback, link-local and private-use space to shared address space, documentation and the translation prefixes, and two columns of its registries, Destination and Globally Reachable, decide whether an address is a public destination. After reading, you can read those columns, classify an address only after turning its spelling into the number a client connects to, explain how a public destination can still lead inside through a second DNS lookup or a redirect, name the cloud metadata addresses, and test an SSRF filter."
+concepts: ["rfc 1918", "loopback", "link-local", "cgnat", "public ip", "special-use", "globally reachable", "shared address space", "unique local", "ipv4-mapped", "nat64", "dns rebinding", "instance metadata"]
+relatedTools: ["ssrf-url-classifier", "ipv6", "cidr", "url-inspector", "python-playground"]
+relatedArticles: ["what-is-ssrf", "ip-address-obfuscation-tricks", "ssrf-defenses-allowlists", "private-address-space", "ipv6-addressing", "ipv6-transition", "cgnat-address-sharing-and-attribution"]
 category: security
 order: 89
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-Not every IP address is reachable from the public internet, and an SSRF check exists to tell the two apart. These are the ranges that matter.
+[Server-side request forgery](/learn/what-is-ssrf) (SSRF) is "an attack vector that abuses an application to interact with the internal/external network or the machine itself" ([SSRF Prevention Cheat Sheet, Context](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)). Every defence against it, like every egress allow-list, must decide whether the address behind a Uniform Resource Locator (URL) is a public destination. The Internet Assigned Numbers Authority (IANA) keeps the map: special-purpose registries whose rows cite Request for Comments (RFC) documents, plus address-space registries for multicast and the space the Internet Engineering Task Force (IETF) reserves. By the end you can read the registries, classify a normalised address, show how public destinations lead inside, list the metadata addresses and test a classifier.
 
-## Private address space (RFC 1918)
+## Two registries, five columns
 
-Three blocks are set aside for private networks and are never routed on the public internet: `10.0.0.0/8`, `172.16.0.0/12`, and `192.168.0.0/16`. Inside a corporate network or a cloud VPC (virtual private cloud), these are where internal services live, so an SSRF that reaches them can talk to databases, caches, and admin panels.
+RFC 6890 sets the scope: "The IPv4 Special-Purpose Address Registry records all IPv4 special-purpose address blocks" ([RFC 6890, section 2.2](https://www.rfc-editor.org/rfc/rfc6890.txt)); an IPv6 registry does the same. Each row has a [Classless Inter-domain Routing](/learn/cidr-notation) (CIDR) block and five Boolean columns (section 2.2.1): Source and Destination, valid at either end of a datagram crossing two devices; Forwardable, whether a router may forward it between external interfaces; Reserved-by-Protocol, handled specially by IP itself; Globally Reachable, whether the datagram "is forwardable beyond a specified administrative domain" ([RFC 8190, section 2.1](https://www.rfc-editor.org/rfc/rfc8190.txt)). IANA warns: "Address prefixes listed in the Special-Purpose Address Registry are not guaranteed routability in any particular local or global context" ([IANA IPv4 registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)).
 
-## Loopback and link-local
+## The IPv4 map
 
-`127.0.0.0/8` is loopback: it always means "this machine," so `http://127.0.0.1/` or `http://localhost/` targets services bound to the server itself. `169.254.0.0/16` is link-local (RFC 3927), assigned automatically on a segment. The single address `169.254.169.254` inside that block is the cloud metadata endpoint, which is why link-local gets special attention.
+The registry's values ([IANA IPv4 registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)); multicast comes from the address-space registry, where 224/8 to 239/8 are RESERVED ([IANA IPv4 Address Space registry](https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.csv)):
 
-## Carrier-grade NAT and documentation ranges
+| Block | Name | Destination | Globally Reachable | RFC |
+|---|---|---|---|---|
+| 0.0.0.0/8 | "This network" | False | False | [RFC 791](https://www.rfc-editor.org/rfc/rfc791.txt) |
+| 0.0.0.0/32 | "This host on this network" | False | False | [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122.txt) |
+| 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 | [Private-Use](/learn/private-address-space) | True | False | [RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.txt) |
+| 100.64.0.0/10 | Shared Address Space | True | False | [RFC 6598](https://www.rfc-editor.org/rfc/rfc6598.txt) |
+| 127.0.0.0/8 | Loopback | False | False | [RFC 1122](https://www.rfc-editor.org/rfc/rfc1122.txt) |
+| 169.254.0.0/16 | Link Local | True | False | [RFC 3927](https://www.rfc-editor.org/rfc/rfc3927.txt) |
+| 192.0.0.0/24 | IETF Protocol Assignments | False | False | [RFC 6890](https://www.rfc-editor.org/rfc/rfc6890.txt) |
+| 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 | Documentation | False | False | [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737.txt) |
+| 198.18.0.0/15 | Benchmarking | True | False | [RFC 2544](https://www.rfc-editor.org/rfc/rfc2544.txt) |
+| 224.0.0.0/4 | [Multicast](/learn/multicast-what-it-costs-to-not-flood) | no row | no row | [RFC 1112](https://www.rfc-editor.org/rfc/rfc1112.txt) |
+| 240.0.0.0/4 | Reserved | False | False | [RFC 1112](https://www.rfc-editor.org/rfc/rfc1112.txt) |
+| 255.255.255.255/32 | Limited Broadcast | True | False | [RFC 919](https://www.rfc-editor.org/rfc/rfc919.txt) |
 
-`100.64.0.0/10` (RFC 6598) is shared address space used by ISPs for carrier-grade NAT (network address translation); it is not public but not classic private space either, so it deserves a cautious middle classification. The TEST-NET blocks `192.0.2.0/24`, `198.51.100.0/24`, and `203.0.113.0/24` (RFC 5737) exist only for documentation and should never appear as a real destination.
+RFC 791 defines the zero network: "A value of zero in the network field means this network" ([RFC 791, section 3.2](https://www.rfc-editor.org/rfc/rfc791.txt)). Erratum 6404 to RFC 6890 split its old entry into the first two rows ([IANA IPv4 registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)). RFC 1122 allows the /32 only as a source, while a host learns its address, and says of loopback: "Addresses of this form MUST NOT appear outside a host" ([RFC 1122, section 3.2.1.3](https://www.rfc-editor.org/rfc/rfc1122.txt)).
 
-## Everything else is public
+Link-local hosts pick from 169.254.1.0 to 169.254.254.255, and "A router MUST NOT forward a packet with an IPv4 Link-Local source or destination address" ([RFC 3927, sections 2.1 and 7](https://www.rfc-editor.org/rfc/rfc3927.txt)); 169.254.169.254 sits there. Shared Address Space serves [carrier-grade network address translation](/learn/cgnat-address-sharing-and-attribution) (NAT), and "packets with Shared Address Space source or destination addresses MUST NOT be forwarded across Service Provider boundaries" ([RFC 6598, sections 1 and 6](https://www.rfc-editor.org/rfc/rfc6598.txt)); a metadata service answers inside it too.
 
-An address that falls in none of the reserved blocks is public and routable. Public destinations still carry some SSRF risk, since an attacker can point the server at a host they control, but they cannot reach your internal network. That is why a classifier reports a level of risk rather than a simple yes or no: the category of the destination decides how much to worry.
+192.0.0.0/24 is usable only through more specific reservations, two of them the globally reachable [anycast](/learn/anycast) addresses 192.0.0.9/32 and 192.0.0.10/32 ([IANA IPv4 registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)). "Addresses within the TEST-NET-1, TEST-NET-2, and TEST-NET-3 blocks SHOULD NOT appear on the public Internet" ([RFC 5737, section 4](https://www.rfc-editor.org/rfc/rfc5737.txt)). Benchmarking starts at 198.18.0.0; RFC 2544 printed 192.18.0.0, which verified erratum 423 corrects ([RFC 2544, erratum 423](https://www.rfc-editor.org/rfc/rfc2544.txt)). A /10 leaves 22 host bits, 2 to the power 22 or 4,194,304 addresses, so 100.64.0.0/10 ends at 100.127.255.255; the [CIDR / Subnet Calculator](/tools/cidr) prints such edges but does not classify.
 
+## The IPv6 map
 
-## The ranges that get forgotten
+The [IPv6](/learn/ipv6-addressing) rows ([IANA IPv6 registry](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)), with multicast and site-local from the address-space registry ([IANA IPv6 Address Space registry](https://www.iana.org/assignments/ipv6-address-space/ipv6-address-space-1.csv)):
 
-RFC 1918 is the part everybody remembers, and a check that stops there has holes in specific, predictable places.
+| Block | Name | Destination | Globally Reachable |
+|---|---|---|---|
+| ::1/128 | Loopback Address | False | False |
+| ::/128 | Unspecified Address | False | False |
+| ::ffff:0:0/96 | IPv4-mapped Address | False | False |
+| 64:ff9b::/96 | IPv4-IPv6 Translat. | True | True |
+| 64:ff9b:1::/48 | IPv4-IPv6 Translat. | True | False |
+| 2001:db8::/32, 3fff::/20 | Documentation | False | False |
+| fc00::/7 | Unique-Local | True | False |
+| fe80::/10 | Link-Local Unicast | True | False |
+| ff00::/8 | Multicast | no row | no row |
+| fec0::/10 | Reserved by IETF | no row | no row |
 
-**Loopback** (`127.0.0.0/8`, the whole /8, not one address) and **link-local** (`169.254.0.0/16`, which is where cloud metadata lives). **Carrier-grade NAT** (`100.64.0.0/10`) is neither private nor safely public. **`0.0.0.0/8`**, which several stacks treat as "this host". And the IPv6 equivalents: `::1`, unique-local `fc00::/7`, link-local `fe80::/10`, plus **IPv4-mapped addresses** like `::ffff:127.0.0.1` that carry a forbidden IPv4 address inside a permitted-looking IPv6 one.
+Packets to ::1 must never leave the node, nor link-local ones the link ([RFC 4291, sections 2.5.3 and 2.5.6](https://www.rfc-editor.org/rfc/rfc4291.txt)). Unique local space serves a site or a few, with locally assigned prefixes in fd00::/8 ([RFC 4193, sections 1 and 3.1](https://www.rfc-editor.org/rfc/rfc4193.txt)). Documentation prefixes "MUST NOT be used for actual traffic, MUST NOT be globally advertised" ([RFC 9637, section 4](https://www.rfc-editor.org/rfc/rfc9637.txt)). The well-known prefix for translation between IPv6 and IPv4 (NAT64), 64:ff9b::/96, may not represent non-global IPv4 addresses ([RFC 6052, section 3.1](https://www.rfc-editor.org/rfc/rfc6052.txt)).
 
-**This is the argument for using the platform's own classification** (`is_private`, `is_loopback`, `is_link_local`) rather than a hand-written list of CIDR blocks. The library maintainers have already met the cases you have not, and their list is updated by people whose job it is.
+RFC 4291's type rule misleads: "implementations must treat all addresses that do not start with any of the above-listed prefixes as Global Unicast addresses" ([RFC 4291, section 2.4](https://www.rfc-editor.org/rfc/rfc4291.txt)). Unique local, documentation and 64:ff9b:1::/48 are Global Unicast by type yet not globally reachable, and new implementations must treat the deprecated fec0::/10 as Global Unicast (section 2.5.7): filter on reachability, not type. The [IPv6 Toolkit](/tools/ipv6) decodes addresses, IPv4-mapped forms included, and labels special use, but lacks rows such as 3fff::/20, 2001::/23, 64:ff9b:1::/48, 5f00::/16 and 100:0:0:1::/64, and labels by type, so 3fff::1 reads as global unicast.
+
+## Special-purpose is not the same as internal
+
+Membership is not the verdict: five IPv4 and nine IPv6 special-purpose blocks are Globally Reachable ([IANA IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) and [IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv) registries). Nor is every other address public: "While the assumption that a non-special-use address is reachable from the global Internet is generally safe, it is not always true" ([RFC 6598, section 5.1](https://www.rfc-editor.org/rfc/rfc6598.txt)). An Amazon Web Services (AWS) virtual private cloud (VPC) may use publicly routable space ([Amazon VPC User Guide](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-cidr-blocks.html)), and many protected networks guard non-private addresses ([Jackson et al., section 5.3](https://crypto.stanford.edu/dns/dns-rebinding.pdf)).
+
+So a public destination can still lead inside: its address is in a network you protect, its name resolves inside at connection time, or its server redirects inside. An [allow-list of intended destinations](/learn/ssrf-defenses-allowlists) answers the first ([SSRF Prevention Cheat Sheet, Case 1](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)); the next sections answer the others.
+
+## Normalise, then classify
+
+The Uniform Resource Identifier (URI) grammar allows only dotted decimal for IPv4, yet routines such as `inet_aton()` accept [far more](/learn/ip-address-obfuscation-tricks) ([RFC 3986, sections 3.2.2 and 7.4](https://www.rfc-editor.org/rfc/rfc3986.txt)): shorter forms such as a.b.c or one 32-bit number, with octal (leading 0) or hexadecimal (leading 0x) parts, so that the manual's own example turns `0x7f.1` into 127.0.0.1 ([inet(3)](https://man7.org/linux/man-pages/man3/inet_aton.3.html)). `getaddrinfo()` reads numeric hosts the same way ([getaddrinfo(3)](https://man7.org/linux/man-pages/man3/getaddrinfo.3.html)), the URL Standard's IPv4 parser reads hexadecimal and octal ([URL Standard, section 3.5](https://url.spec.whatwg.org/)), and IPv6 receivers must accept every legitimate spelling ([RFC 5952, section 4](https://www.rfc-editor.org/rfc/rfc5952.txt)). Python's `ipaddress` parses as strictly as `inet_pton()`, refusing leading zeros since 3.9.5 ([Python ipaddress documentation](https://docs.python.org/3/library/ipaddress.html)); `socket.inet_aton()` does not. Illustrative session, Python 3.13.16 on Linux:
+
+```text
+>>> import ipaddress, socket
+>>> ipaddress.ip_address("0x7f.1")
+Traceback (most recent call last):
+  ...
+ValueError: '0x7f.1' does not appear to be an IPv4 or IPv6 address
+>>> socket.inet_ntoa(socket.inet_aton("0x7f.1"))
+'127.0.0.1'
+>>> socket.inet_ntoa(socket.inet_aton("2130706433"))
+'127.0.0.1'
+```
+
+For illustration, the [URL Inspector](/tools/url-inspector) follows RFC 3986 and reads `http://2130706433/` as a registered name, where Node's `new URL()` returns 127.0.0.1. RFC 3986's defence: "literals should be converted to numeric form and filtered based on the numeric value, and not on a prefix or suffix of the string form" ([RFC 3986, section 7.4](https://www.rfc-editor.org/rfc/rfc3986.txt)); the cheat sheet's: "Treat parser disagreement as a rejection" ([SSRF Prevention Cheat Sheet, Case 1](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)).
+
+[IPv6 can carry the address too](/learn/ipv6-transition): ::ffff:7f00:1 and 64:ff9b::7f00:1 both hold 127.0.0.1. Since that can fool IPv4 firewalls, "administrators should assure that packets that send to or from IPv4-embedded IPv6 addresses are subject to the same filtering as those directly sent to or from the embedded IPv4 addresses" ([RFC 6052, section 5.3](https://www.rfc-editor.org/rfc/rfc6052.txt)). Translators must drop packets that pair the well-known prefix with a non-global IPv4 address (section 3.1), a rule that does not cover 64:ff9b:1::/48 ([RFC 8215, section 5](https://www.rfc-editor.org/rfc/rfc8215.txt)): extract the IPv4 address and classify it as IPv4.
+
+## Resolve once, connect to what you checked
+
+Checking a name is not checking a connection. In DNS rebinding, "the attacker rebinds the host name to the IP address of a target server that is inaccessible from the public Internet" ([Jackson et al., section 1](https://crypto.stanford.edu/dns/dns-rebinding.pdf)), and on a server "A second, unchecked DNS lookup between validation and connection can bypass these checks" ([SSRF Prevention Cheat Sheet, Case 1](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)). Resolve once, check every A and AAAA answer, and connect to a checked address, keeping the hostname for the Host header, TLS Server Name Indication and certificate checks, on retries and fallbacks too (same cheat sheet). curl pins like this:
+
+```bash
+curl --resolve example.com:443:192.0.2.10 https://example.com
+```
+
+`--resolve` makes curl use that address for that host and port ([curl manual page](https://curl.se/docs/manpage.html)). Redirects, a 3xx with a `Location` inside, are the other way in: the cheat sheet connects only to the validated address with redirects disabled ([SSRF Prevention Cheat Sheet, Case 2](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)), and curl follows one only with `-L` or `--location`, `--proto-redir` limiting its protocols (curl manual page). Refuse redirects or check every hop.
+
+## The metadata addresses
+
+In a cloud the prize is the [instance metadata service](/learn/cloud-metadata-endpoints-and-ssrf) ([SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)). AWS's Instance Metadata Service (IMDS) holds the instance role's temporary credentials with no authentication or cryptographic protection ([AWS, Use instance metadata](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)). The attack class is a feature that fetches a user-supplied URL, such as an image download, pointed at the service ([Alibaba Cloud, Instance metadata](https://www.alibabacloud.com/help/en/ecs/user-guide/view-instance-metadata)). The addresses:
+
+| Provider | Addresses | A request must carry | Source |
+|---|---|---|---|
+| AWS | 169.254.169.254, fd00:ec2::254 | a session token, when tokens are required | [addresses](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html), [tokens](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html) |
+| Google Cloud | metadata.google.internal, metadata.goog, 169.254.169.254, fd20:ce::254 for IPv6-only virtual machines | `Metadata-Flavor: Google` | [overview](https://docs.cloud.google.com/compute/docs/metadata/overview), [querying](https://docs.cloud.google.com/compute/docs/metadata/querying-metadata) |
+| Azure | 169.254.169.254 | `Metadata: true` | [service page](https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service) |
+| Alibaba Cloud | 100.100.100.200 | a token in Security Hardening Mode; none by default | [metadata page](https://www.alibabacloud.com/help/en/ecs/user-guide/view-instance-metadata) |
+
+AWS says "These IP addresses are link-local addresses and are valid only from the instance" ([AWS, Access instance metadata](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)), but the registry puts fd00:ec2::254 and fd20:ce::254 in unique local fc00::/7 ([IANA IPv6 registry](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)), and 100.100.100.200 is in 100.64.0.0/10: blocking only 169.254.0.0/16 and fe80::/10 passes three of the four.
+
+With Instance Metadata Service Version 2 (IMDSv2), tokens come from a `PUT` and last one second to six hours; tokenless requests get 401 Unauthorized when tokens are required, a `PUT` with `X-Forwarded-For` is rejected, and the `PUT` response has a hop limit of 1 by default ([AWS, How IMDSv2 works](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html)). Google and Azure reject `X-Forwarded-For` too ([Google Cloud, querying metadata](https://docs.cloud.google.com/compute/docs/metadata/querying-metadata); [Microsoft Learn, Azure IMDS](https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service)). Headers are no wall, since many SSRF flaws let attackers set arbitrary headers ([AWS Security Blog, 2019](https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service/)): Google says to sandbox processes that should not reach the server ([Google Cloud, metadata overview](https://docs.cloud.google.com/compute/docs/metadata/overview)), Azure suggests local firewall rules (Microsoft Learn), and AWS can switch the endpoint off ([AWS, Modify instance metadata options](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-existing-instances.html)):
+
+```bash
+# On an AWS instance: create an IMDSv2 token, then send it with the request
+TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"`
+curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/
+
+# Require tokens, switch the endpoint off, read the settings
+aws ec2 modify-instance-metadata-options --instance-id i-1234567890abcdef0 --http-tokens required --http-endpoint enabled
+aws ec2 modify-instance-metadata-options --instance-id i-1234567890abcdef0 --http-endpoint disabled
+aws ec2 describe-instances --instance-id i-1234567898abcdef0 --query 'Reservations[].Instances[].MetadataOptions'
+```
+
+## Testing a classifier
+
+Python's `ipaddress` defines `is_private` and `is_global` by the IANA registries, with exceptions, and "is_private has value opposite to is_global, except for the shared address space (100.64.0.0/10 range) where they are both False" ([Python ipaddress documentation](https://docs.python.org/3/library/ipaddress.html)).
+Mapped addresses are judged by their IPv4 address, which `ipv4_mapped` extracts; nothing extracts it from 64:ff9b::/96, and `is_reserved` is not Reserved-by-Protocol (same documentation). Illustrative output, Python 3.13.16:
+
+```text
+>>> import ipaddress
+>>> cols = ("is_private", "is_global", "is_reserved", "is_loopback",
+...         "is_link_local", "is_multicast")
+>>> for s in ("192.0.2.10", "100.64.0.1", "169.254.169.254", "224.0.0.1",
+...           "240.0.0.1", "::ffff:7f00:1", "64:ff9b::7f00:1",
+...           "fd00:ec2::254", "ff02::1"):
+...     a = ipaddress.ip_address(s)
+...     print(f"{s:16}", *(f"{getattr(a, c)!s:5}" for c in cols),
+...           getattr(a, "ipv4_mapped", ""))
+...
+192.0.2.10       True  False False False False False
+100.64.0.1       False False False False False False
+169.254.169.254  True  False False False True  False
+224.0.0.1        False True  False False False True
+240.0.0.1        True  False True  False False False
+::ffff:7f00:1    True  False False True  False False 127.0.0.1
+64:ff9b::7f00:1  False True  True  False False False None
+fd00:ec2::254    True  False False False False False None
+ff02::1          False True  False False False True  None
+```
+
+Each line holds an address, its six flags and its mapped IPv4 address. 100.64.0.1 is neither private nor global, so `if ip.is_private: deny` admits Shared Address Space and Alibaba's metadata address; 224.0.0.1, ff02::1 and 64:ff9b::7f00:1 (127.0.0.1 inside) are global, so `if not ip.is_global: deny`, the cheat sheet's sample test ([SSRF Prevention Cheat Sheet, Case 1](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)), admits multicast and NAT64-embedded loopback unless `is_multicast` and the embedded address are checked too.
+
+A library's flag is not the registry. In illustrative runs of Python 3.13.16 and 3.14.2, `is_global` contradicts the 2025-10-09 registries on four rows, three allocated in 2024 and 2025: 5f00::1, 100:0:0:1::1 and 192.88.99.2 come out global though their rows are not, and 2001:1::3 not global though its row is ([IANA IPv4](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv) and [IPv6](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv) registries). The flags have also changed three times for IPv4-mapped addresses alone, in 3.11, 3.13 and 3.14 ([Python changelog](https://docs.python.org/3/whatsnew/changelog.html)): pin the version and test it.
+
+The [Python playground](/tools/python-playground) runs CPython 3.14.2 through Pyodide; in an illustrative run its `ipaddress` matched 3.13.16, but its `getaddrinfo()` failed on `0x7f.1`, so use it for `ipaddress` only. A test plan:
+
+1. Test the first and last address of every row in the four registries; expect a deny wherever Destination or Globally Reachable is False, and for multicast and reserved space.
+2. Repeat each denied address in every spelling the client accepts: dotted, integer, hexadecimal, octal and short IPv4; dotted and hexadecimal IPv4-mapped; uncompressed and upper-case IPv6; a zone identifier; 64:ff9b::/96 and 64:ff9b:1::/48 forms.
+3. Resolve a name with several A and AAAA answers: every answer checked, the connection made to a checked one.
+4. Serve a redirect to a denied address.
+5. Re-run after every library or registry change.
+
+The [SSRF URL classifier](/tools/ssrf-url-classifier) is one quick check on a single URL: it decodes decimal, octal, hexadecimal and short IPv4 hosts and the dotted IPv4-mapped form, and recognises 169.254.169.254, 100.100.100.200, fd00:ec2::254, metadata.google.internal and metadata, but it never resolves names or sends requests, so steps 3 and 4 are beyond it.
+
+## What to remember
+
+- Decide by the columns: deny a destination whose Destination or Globally Reachable value is False; some special-purpose blocks are globally reachable.
+- Multicast (224.0.0.0/4, ff00::/8) and IETF-reserved IPv6 space live in the address-space registries.
+- Treat 100.64.0.0/10 as internal: it is not globally reachable and holds Alibaba Cloud's metadata address, 100.100.100.200.
+- Classify the number the client will connect to, IPv4 inside IPv6 included, and reject a host that parsers read differently.
+- Resolve once, check every answer, connect to the checked address, and refuse redirects or check every hop.
+- The metadata addresses are 169.254.169.254, fd00:ec2::254, fd20:ce::254 and 100.100.100.200, and the two IPv6 ones are unique local.
+- A library's flag is not the registry: Python's flags disagree on 100.64.0.0/10, call multicast global and contradict four rows.
+
+## Sources
+
+- [RFC 6890, Special-Purpose IP Address Registries, April 2013: sections 2.2 and 2.2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6890.txt)
+- [RFC 8190, Updates to the Special-Purpose IP Address Registries, June 2017: sections 1 to 2.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8190.txt)
+- [IANA, IPv4 Special-Purpose Address Space registry, last updated 2025-10-09: all rows, notes and footnotes (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [IANA, IPv6 Special-Purpose Address Space registry, last updated 2025-10-09: all rows, notes and footnotes (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv)
+- [IANA, IPv4 Address Space registry, last updated 2025-10-10: rows 224/8 to 255/8 and notes 1, 14 and 17 (read 2026-10-18)](https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.csv)
+- [IANA, IPv6 Address Space registry, last updated 2025-10-23: all rows (read 2026-10-18)](https://www.iana.org/assignments/ipv6-address-space/ipv6-address-space-1.csv)
+- [RFC 791, Internet Protocol, September 1981: section 3.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1122, Requirements for Internet Hosts - Communication Layers, October 1989: section 3.2.1.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1918, Address Allocation for Private Internets, February 1996: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 3927, Dynamic Configuration of IPv4 Link-Local Addresses, May 2005: sections 1, 1.6, 2.1 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3927.txt)
+- [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space, April 2012: sections 1, 5.1, 6 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6598.txt)
+- [RFC 5737, IPv4 Address Blocks Reserved for Documentation, January 2010: sections 3 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5737.txt)
+- [RFC 2544, Benchmarking Methodology for Network Interconnect Devices, March 1999: Appendix C.2.2 and erratum 423 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2544.txt)
+- [RFC 1112, Host extensions for IP multicasting, August 1989: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1112.txt)
+- [RFC 919, Broadcasting Internet Datagrams, October 1984: section 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc919.txt)
+- [RFC 4291, IP Version 6 Addressing Architecture, February 2006: sections 2.4, 2.5.2, 2.5.3, 2.5.5, 2.5.6, 2.5.7 and 2.7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 4193, Unique Local IPv6 Unicast Addresses, October 2005: sections 1, 3.1, 4.1 and 4.5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4193.txt)
+- [RFC 9637, Expanding the IPv6 Documentation Space, August 2024: sections 4 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9637.txt)
+- [RFC 6052, IPv6 Addressing of IPv4/IPv6 Translators, October 2010: sections 2.1, 2.2, 3.1 and 5.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6052.txt)
+- [RFC 8215, Local-Use IPv4/IPv6 Translation Prefix, August 2017: sections 1 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8215.txt)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005: sections 3.2.2 and 7.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3986.txt)
+- [RFC 5952, A Recommendation for IPv6 Address Text Representation, August 2010: sections 4 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5952.txt)
+- [Linux man-pages 6.19, inet(3), 2026-02-08 (read 2026-10-18)](https://man7.org/linux/man-pages/man3/inet_aton.3.html)
+- [Linux man-pages 6.19, getaddrinfo(3), 2026-02-08 (read 2026-10-18)](https://man7.org/linux/man-pages/man3/getaddrinfo.3.html)
+- [WHATWG URL Standard, Living Standard, last updated 7 October 2026: sections 1.1 and 3.5 (read 2026-10-18)](https://url.spec.whatwg.org/)
+- [OWASP Cheat Sheet Series, Server-Side Request Forgery Prevention Cheat Sheet (undated web page): Cases 1 and 2, IMDSv2 in AWS, Deny-list (Last Resort) (read 2026-10-18)](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
+- [Jackson, Barth, Bortz, Shao and Boneh, Protecting Browsers from DNS Rebinding Attacks, ACM CCS 2007: sections 1, 5.1 and 5.3 (read 2026-10-18)](https://crypto.stanford.edu/dns/dns-rebinding.pdf)
+- [curl 8.23.0 manual page: --resolve, --location and --proto-redir (read 2026-10-18)](https://curl.se/docs/manpage.html)
+- [Amazon VPC User Guide, VPC CIDR blocks (web page): IPv4 VPC CIDR blocks (read 2026-10-18)](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-cidr-blocks.html)
+- [Amazon EC2 User Guide, Use instance metadata to manage your EC2 instance (web page) (read 2026-10-18)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html)
+- [Amazon EC2 User Guide, Access instance metadata for an EC2 instance (web page) (read 2026-10-18)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-data-retrieval.html)
+- [Amazon EC2 User Guide, Use the Instance Metadata Service to access instance metadata (web page): How Instance Metadata Service Version 2 works (read 2026-10-18)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html)
+- [Amazon EC2 User Guide, Modify instance metadata options for existing instances (web page) (read 2026-10-18)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-IMDS-existing-instances.html)
+- [AWS Security Blog, Add defense in depth against open firewalls, reverse proxies, and SSRF vulnerabilities with enhancements to the EC2 Instance Metadata Service, 19 November 2019 (read 2026-10-18)](https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service/)
+- [Google Cloud, Compute Engine documentation, About VM metadata, last updated 2026-10-13 (read 2026-10-18)](https://docs.cloud.google.com/compute/docs/metadata/overview)
+- [Google Cloud, Compute Engine documentation, View and query VM metadata, last updated 2026-10-13 (read 2026-10-18)](https://docs.cloud.google.com/compute/docs/metadata/querying-metadata)
+- [Microsoft Learn, Azure Instance Metadata Service, July 2025: Security and authentication, Proxies (read 2026-10-18)](https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service)
+- [Alibaba Cloud documentation, Elastic Compute Service: Instance metadata, last updated 17 July 2026 (read 2026-10-18)](https://www.alibabacloud.com/help/en/ecs/user-guide/view-instance-metadata)
+- [Python 3.15.0 documentation, ipaddress (IPv4/IPv6 manipulation library) (read 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)
+- [Python documentation, Changelog (3.15.0 and 3.13.16 editions) (read 2026-10-18)](https://docs.python.org/3/whatsnew/changelog.html)

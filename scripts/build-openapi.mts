@@ -28,6 +28,10 @@ import { dirname, join } from "node:path";
 import * as yaml from "js-yaml";
 import { API_TOOLS, API_EXCLUDED } from "../src/lib/tools/registry";
 import { CATALOGUE } from "../src/content/catalogue/catalogue";
+// The processing switch (src/config/apiSurface.ts): when it is off, the Worker answers every /api/* request with
+// 404 api_not_served, and the document must say so (production audit of 2026-10-15, F04: the published contract
+// described a "Production edge" server that answered nothing).
+import { isApiProcessingEnabled } from "../src/config/apiSurface";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
@@ -197,6 +201,31 @@ const baseTags = new Map<string, { name: string; description?: string }>(
   (spec.tags ?? []).map((t: { name: string; description?: string }) => [t.name, t]),
 );
 spec.tags = [...tagSet].sort().map((name) => baseTags.get(name) ?? { name });
+
+// ---- 7b. Availability (audit F04). ---------------------------------------------
+// The contract is published whether or not the edge serves it, so a reader can prepare against it. When the
+// switch is off, the description opens with the fact, the server entry says it, and a vendor extension carries it
+// as data. Nothing else in the document changes: the operations are the contract the edge will honour once on.
+const served = isApiProcessingEnabled();
+// The one-line statement, data and prose, kept identical so the two cannot drift.
+const availability = served
+  ? "served"
+  : "documented, not served: the edge answers every /api/* request with HTTP 404 and the body {\"error\":\"api_not_served\"} until processing is switched on; the in-browser tools compute the same results";
+// The vendor extension (x- prefixed keys are legal anywhere in OpenAPI 3.1).
+spec.info["x-availability"] = availability;
+// The prose, in front of the hand-authored description, only when the edge is not serving.
+if (!served) {
+  spec.info.description =
+    "NOT SERVED AT PRESENT. This document is the contract of an API that is published for reading and not yet " +
+    "switched on: every request to https://ronutz.com/api/* answers HTTP 404 with {\"error\":\"api_not_served\"}. " +
+    "The in-browser tools at https://ronutz.com/en/tools/ compute every result below, locally.\n\n" +
+    spec.info.description;
+  // The server entry says the same, so a client that reads only the servers list is not misled.
+  if (Array.isArray(spec.servers) && spec.servers[0]) {
+    spec.servers[0].description = "Documented, not served: answers 404 api_not_served until processing is switched on";
+    spec.servers[0]["x-availability"] = availability;
+  }
+}
 
 // ---- 8. Write both artifacts. ------------------------------------------------
 writeFileSync(join(root, "public", "openapi.json"), JSON.stringify(spec, null, 2) + "\n", "utf8");

@@ -1,41 +1,208 @@
 ---
 slug: private-address-space
 title: "Private IPv4 address space and RFC 1918"
-summary: "The three private ranges, why they are not routable on the Internet, and the other special blocks the CIDR tool flags."
-concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr"]
-relatedTools: ["cidr"]
-relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm"]
+summary: "RFC 1918, Best Current Practice 5 since February 1996, reserves 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16 for addresses any enterprise may use internally: unique only inside it, and kept out of the internet's routing and its DNS. After reading, you can give each block's exact bounds and size, apply RFC 1918's rules for border routers and DNS, explain why merging two private networks forces renumbering, tell a reverse lookup answered locally from one that leaked to the AS112 sink, and check each point with ip, dig and Python."
+concepts: ["rfc1918", "private-addresses", "nat", "cgnat", "special-use", "cidr", "as112", "reverse-dns", "renumbering", "shared-address-space"]
+relatedTools: ["cidr", "ssrf-url-classifier", "dig-command-builder", "dig-output-explainer", "python-playground", "ipv6"]
+relatedArticles: ["cidr-notation", "ipv4-addressing", "vlsm", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "subnet-overlap-and-gaps", "anycast", "dhcp-lease-lifecycle", "reading-dig-output"]
 category: networking
 order: 9
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-18"
 ---
 
-How a host on one of these ranges actually obtains its address, and for how long, is in **[the DHCP lease lifecycle](/learn/dhcp-lease-lifecycle)**.
+IPv4 addresses are 32 bits long, 2³² = 4,294,967,296 in all, as Request for Comments (RFC) 791 defines them ([RFC 791, section 2.3](https://www.rfc-editor.org/rfc/rfc791.txt)); see [how IPv4 addresses work](/learn/ipv4-addressing). RFC 1918, Best Current Practice (BCP) 5 since February 1996, records that the Internet Assigned Numbers Authority (IANA) has "reserved the following three blocks of the IP address space for private internets" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). You meet them on internal interfaces, in reverse lookups and in network mergers. By the end you can state each block in Classless Inter-Domain Routing (CIDR) notation, apply RFC 1918's rules for routers and DNS, explain why mergers force renumbering, recognise a leaked reverse lookup, and check it all with `ip`, `dig` and Python.
 
-## Addresses you can reuse
+## The three blocks, exactly
 
-There are only about 4.3 billion IPv4 addresses, far too few for every device to have a unique public one. The answer (RFC 1918) is to set aside three ranges that anyone may use inside their own network, with no registration. Because everyone reuses the same private ranges, they cannot be unique on the public Internet, so they are **not routable** there. Reaching the outside requires Network Address Translation (NAT), which swaps a private source address for a shared public one at the network edge.
+Section 3 lists them ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)):
 
-## The three RFC 1918 ranges
+```text
+     10.0.0.0        -   10.255.255.255  (10/8 prefix)
+     172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
+     192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
+```
 
-- **`10.0.0.0/8`**: `10.0.0.0` to `10.255.255.255`, 16,777,216 addresses. A single very large network.
-- **`172.16.0.0/12`**: `172.16.0.0` to `172.31.255.255`, 1,048,576 addresses. Not a whole class-B but the 16 contiguous `/16`s from `172.16` through `172.31`, the range people most often misremember.
-- **`192.168.0.0/16`**: `192.168.0.0` to `192.168.255.255`, 65,536 addresses. The familiar home-router range.
+RFC 1918 calls them the 24-bit, 20-bit and 16-bit blocks (section 3), the bits each leaves for hosts: 2²⁴ = 16,777,216, 2²⁰ = 1,048,576 and 2¹⁶ = 65,536 addresses. In classful terms the first is one class A network, "the second block is a set of 16 contiguous class B network numbers", and the third is 256 class C networks (section 3).
 
-## The other special blocks
+In binary, a /12 fixes the first octet and the top four bits of the second: 16 is 0001 0000, so the second octet ends at 0001 1111 (31), and 172.32.0.0, second octet 0010 0000, falls outside (see the Python capture). [CIDR notation explained](/learn/cidr-notation) covers the slash.
 
-Several more ranges are reserved for specific purposes and are likewise not ordinary public addresses:
+IANA's IPv4 Special-Purpose Address Space registry gives all three the same flags ([IANA, IPv4 Special-Purpose Address Space registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)):
 
-- **`100.64.0.0/10`** (RFC 6598) is carrier-grade NAT (CGNAT) shared space, used by ISPs between the customer and their public pool. It is private-like but distinct from RFC 1918.
-- **`169.254.0.0/16`** (RFC 3927) is link-local, the self-assigned address a host picks when no DHCP server answers (APIPA on Windows). It never leaves the local link.
-- **`127.0.0.0/8`** is loopback; `127.0.0.1` is the host talking to itself.
-- **`0.0.0.0/8`**, the multicast range `224.0.0.0/4`, and the documentation ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) are reserved too.
+```text
+Address Block,Name,RFC,Allocation Date,Termination Date,Source,Destination,Forwardable,Globally Reachable,Reserved-by-Protocol
+10.0.0.0/8,Private-Use,[RFC 1918],1996-02,N/A,True,True,True,False,False
+172.16.0.0/12,Private-Use,[RFC 1918],1996-02,N/A,True,True,True,False,False
+192.168.0.0/16,Private-Use,[RFC 1918],1996-02,N/A,True,True,True,False,False
+```
 
-IPv6 has the same idea in a different shape: **Unique Local Addresses** in `fc00::/7` (in practice `fd00::/8`) are the private-use analog of RFC 1918, again not globally routable.
+`Forwardable` `True`: routers may forward datagrams addressed into the block between external interfaces ([RFC 6890, section 2.2.1](https://www.rfc-editor.org/rfc/rfc6890.txt)). `Globally Reachable` `False`, RFC 8190's name for the ambiguous Global: not forwardable past a given administrative domain ([RFC 8190, section 2.1](https://www.rfc-editor.org/rfc/rfc8190.txt)). The [CIDR / Subnet Calculator](/tools/cidr) computes a block's edges and counts; classifying blocks is the registry's job.
 
-## Why it matters
+## What RFC 1918 argues
 
-Knowing whether an address is private, public, or special tells you immediately whether it can appear on the Internet, whether it needs NAT, and whether a firewall rule or route makes sense. An address from `10/8` in a public DNS record, or a `169.254` address where you expected DHCP, is a signal worth noticing.
+RFC 1918 reasons about an enterprise, the entity that runs a TCP/IP network and decides its addressing plan ([RFC 1918, section 1](https://www.rfc-editor.org/rfc/rfc1918.txt)), and ranks routing overhead outgrowing what Internet service providers (ISPs) can carry above address exhaustion (section 2). Hosts needing no outside access, or only services such as mail through mediating gateways, are private; hosts needing outside IP connectivity are public (section 2).
 
-The [CIDR calculator](/#cidr) classifies any address or block by these special-use ranges and reports whether it is private, reserved, or globally reachable, computed entirely in your browser.
+The space needs no request to IANA or a registry, its addresses "will only be unique within the enterprise, or the set of enterprises which choose to cooperate over this space", and no registry assigns them for external connectivity ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). The price: "The cost of using private internet address space is the potentially costly effort to renumber hosts and networks between public and private" (section 1).
+
+RFC 1918 never names NAT: "private hosts can still have access to external services via mediating gateways (e.g., application layer gateways)" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). Traditional NAT connects a privately numbered realm to registered, globally unique addresses ([RFC 3022, Abstract](https://www.rfc-editor.org/rfc/rfc3022.txt)); only its port-translating form shares one address among many hosts (section 2.2); and it assumes "The addresses used within private network must not overlap with the external addresses" ([RFC 2663, section 4.1](https://www.rfc-editor.org/rfc/rfc2663.txt)). See [NAT explained](/learn/nat-explained).
+
+## The rules for routers and for DNS
+
+The core rule: "Because private addresses have no global meaning, routing information about private networks shall not be propagated on inter-enterprise links, and packets with private source or destination addresses should not be forwarded across such links" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). Routes get a shall, packets a should. ISPs are expected to reject such routes, a rejection being no routing protocol error (section 3), and filters belong at both ends of every external link, inbound routes included (section 5). Today RFC 7454, BCP 194, says prefixes marked False in what is now the `Globally Reachable` column SHOULD be discarded on Internet BGP peerings ([RFC 7454, section 6.1.1.1](https://www.rfc-editor.org/rfc/rfc7454.txt)); see [BGP: how the internet decides where traffic goes](/learn/bgp-primer).
+
+Spoofed traffic uses the same blocks: BCP 38's example attack forges RFC 1918 sources, generally absent from global routing tables and so unreachable ([RFC 2827, section 2](https://www.rfc-editor.org/rfc/rfc2827.txt)), and BCP 84 lists all three among the Martian sources that ingress filtering drops ([RFC 3704, section 1](https://www.rfc-editor.org/rfc/rfc3704.txt)).
+
+DNS records stay inside too ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)): "DNS clients outside of the enterprise should not see addresses in the private address space used by the enterprise, since these addresses would be ambiguous" (section 5).
+
+## Before RFC 1918: RFC 1597 and RFC 1627
+
+RFC 1597, an [Informational](/learn/the-rfc-series) memo of March 1994 by four of RFC 1918's five authors ([RFC 1597, Status of this Memo](https://www.rfc-editor.org/rfc/rfc1597.txt)), already recorded the reservation, and miscounted the third block as 255 class C networks (section 3): 65,536 / 256 = 256.
+
+In July 1994 RFC 1627, *Network 10 Considered Harmful (Some Practices Shouldn't be Codified)*, objected that "RFC 1597 departs from the basic architectural rule that IP addresses must be globally unique", and that RFC 1597 had skipped the usual public review ([RFC 1627, Summary](https://www.rfc-editor.org/rfc/rfc1627.txt)). Two RFC 1597 networks that later connect force one to renumber, at a cost likely linear in hosts, and "The probability of address clashes occurring over time approach 100% with RFC 1597." (Operational Issues). A company that had picked class A network 90 internally was "only now recovering from this error, having renumbered some 5,000 hosts" (Operational Issues).
+
+RFC 1918 obsoletes both, and RFC 1627's first author, E. Lear, is its fifth ([RFC 1918](https://www.rfc-editor.org/rfc/rfc1918.txt)). Against RFC 1597 it adds BCP status, the count of 256, CIDR prefixes and the merger case with random sub-blocks; RFC 1597 had called renumbering only potential ([RFC 1597, section 4](https://www.rfc-editor.org/rfc/rfc1597.txt)).
+
+## When two private networks meet
+
+Private space avoids clashes with numbers assigned to others, since IP routing cannot work correctly with ambiguous addresses, yet merging private internets may still require renumbering ([RFC 1918, section 4](https://www.rfc-editor.org/rfc/rfc1918.txt)).
+
+Say one company used 10.1.0.0/16 and its merger partner 10.1.128.0/17. The /17 is the upper half of the /16 (third octet 128 to 255), so 2¹⁵ = 32,768 addresses exist twice, while 10.2.0.0/16 differs in the second octet and collides with neither. Python's `overlaps()` agrees (capture below), as does the [CIDR / Subnet Calculator](/tools/cidr) in Overlap / gap mode; [Subnet overlaps and gaps](/learn/subnet-overlap-and-gaps) generalises the check.
+
+RFC 1918 strongly recommends that an organisation "choose randomly from the reserved pool of private addresses, when allocating sub-blocks for its internal allocation" ([RFC 1918, section 5](https://www.rfc-editor.org/rfc/rfc1918.txt)). 10.0.0.0/8 holds 2⁸ = 256 blocks of /16, so two random draws collide with probability 1/256, about 0.4%, while two networks that both take 10.0.0.0/16 always do. Tools such as the Dynamic Host Configuration Protocol (DHCP) can lower the cost of renumbering (section 4; see [the DHCP lease lifecycle](/learn/dhcp-lease-lifecycle)), and twice NAT is necessary when realms collide, as with a partner whose space overlaps ([RFC 2663, sections 4.3 and 6.1](https://www.rfc-editor.org/rfc/rfc2663.txt)).
+
+IPv6 unique local addresses (ULAs) are designed to let sites combine without conflicts or renumbering ([RFC 4193, section 1](https://www.rfc-editor.org/rfc/rfc4193.txt)). Their prefix is fc00::/7 and the next bit, L, is 1 for local assignment (section 3.1), so 1111 1100 becomes 1111 1101 and such prefixes start with fd; they are unique with high probability (section 4.2) and not expected to be globally routable (Abstract). The [IPv6 Toolkit](/tools/ipv6) labels them Unique local.
+
+## When private addresses leak into the public DNS
+
+A private address can also leave as a question. Looking up the name of 10.1.2.3 is a `PTR` query for `3.2.1.10.in-addr.arpa`, and such queries commonly enough travel the public delegation path instead of staying inside the site ([RFC 7534, section 1](https://www.rfc-editor.org/rfc/rfc7534.txt)), a leakage RFC 6303 calls significant ([RFC 6303, section 1](https://www.rfc-editor.org/rfc/rfc6303.txt)).
+
+The cure is a local answer with the authoritative answer (AA) flag and response code (RCODE) 3, Non-Existent Domain (NXDOMAIN) ([IANA, DNS Parameters registry: DNS RCODEs](https://www.iana.org/assignments/dns-parameters/dns-parameters-6.csv)): "an iterative resolver will now return authoritatively (AA=1) name errors (RCODE=3) for queries within the zones in Section 4" ([RFC 6303, section 3](https://www.rfc-editor.org/rfc/rfc6303.txt)), commonly from empty zones whose `RNAME` SHOULD default to `nobody.invalid.` (section 3). RFC 6761, which updates RFC 1918, says caching servers SHOULD answer such queries immediately by default ([RFC 6761, section 6.1](https://www.rfc-editor.org/rfc/rfc6761.txt)). The 18 zones, `10.in-addr.arpa`, `16.172.in-addr.arpa` to `31.172.in-addr.arpa` (the /12 ends mid-octet) and `168.192.in-addr.arpa`, are in IANA's Locally-Served DNS Zones registry ([IANA, Locally-Served DNS Zones registry](https://www.iana.org/assignments/locally-served-dns-zones/locally-served-dns-zones.txt)) and among BIND 9's built-in empty zones ([BIND 9 Configuration Reference](https://bind9.readthedocs.io/en/stable/reference.html)).
+
+What still leaks reaches AS112, named after autonomous system (AS) number 112 ([RFC 7534, section 7.1](https://www.rfc-editor.org/rfc/rfc7534.txt)): an [anycast](/learn/anycast) sink, deployed since 2002 (Appendix A), that relieves the `IN-ADDR.ARPA` servers (section 1). RFC 7534 records the RFC 1918 reverse zones as delegated to `BLACKHOLE-1.IANA.ORG` and `BLACKHOLE-2.IANA.ORG`, with `PRISONER.IANA.ORG` in their `SOA` (sections 2.3 and 3.5):
+
+```text
+@ IN SOA prisoner.iana.org. hostmaster.root-servers.org. (
+```
+
+A negative answer's `SOA` thus hints at its source: `nobody.invalid.` for an RFC 6303 local zone, `prisoner.iana.org.` for the sink.
+
+The sink is a backstop. Its operators see no sign that sites are moving towards answering locally ([RFC 7534, section 6](https://www.rfc-editor.org/rfc/rfc7534.txt)), and hosts that query it "may well leak information relating to private infrastructure to the public network, and this could present a security risk" (section 8), and the unexpected replies set off intrusion detection systems ([RFC 6305, Abstract](https://www.rfc-editor.org/rfc/rfc6305.txt)). DNS rebinding reverses the leak: an attacker's domain answers with an address inside the user's own network, which BIND's `deny-answer-addresses` rejects when it matches the configured list ([BIND 9 Configuration Reference](https://bind9.readthedocs.io/en/stable/reference.html)).
+
+## The other non-public blocks, briefly
+
+[Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges) maps the whole registry for server-side request forgery (SSRF) filtering.
+
+Shared address space, 100.64.0.0/10 (RFC 6598, April 2012), numbers links between carrier-grade NAT (CGN) devices and customer premises equipment (CPE), distinct from RFC 1918 space because it is for service provider networks ([RFC 6598, Abstract](https://www.rfc-editor.org/rfc/rfc6598.txt)); RFC 1918 space is unsafe there when subscribers number their own networks (section 3). It holds 2²² = 4,194,304 addresses, 100.64.0.0 to 100.127.255.255, and "Reverse DNS queries for Shared Address Space addresses MUST NOT be forwarded to the global DNS infrastructure" (section 4). See [what breaks when subscribers share one address](/learn/cgnat-address-sharing-and-attribution).
+
+Link-local 169.254.0.0/16 (RFC 3927) is not private either: "A router MUST NOT forward a packet with an IPv4 Link-Local source or destination address" ([RFC 3927, section 7](https://www.rfc-editor.org/rfc/rfc3927.txt)). Assignment follows the interface's state, not DHCP (section 1.9); Windows 98 autoconfigured after four unanswered DHCP packets, 24 seconds (Appendix A.3). Microsoft calls this Automatic Private IP Addressing (APIPA) ([Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-ip_per_adapter_info_w2ksp1)), but IANA lists the block as `Link Local` ([IANA, IPv4 Special-Purpose Address Space registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)).
+
+The [SSRF URL classifier](/tools/ssrf-url-classifier) labels 10.0.0.0/8 private and 100.64.0.0/10 carrier-grade NAT, rates them high and medium risk, never resolves DNS, and does not cover the whole registry.
+
+## Seeing it on a real network
+
+`ip address show to 10.0.0.0/8` lists only the addresses inside the prefix ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)). Illustrative output, trimmed:
+
+```console
+$ ip address show to 10.0.0.0/8
+    inet 10.1.2.3/16 brd 10.1.255.255 scope global eth0
+```
+
+`scope global` is about the host and its links, not the internet, despite the manual's wording, "global - the address is globally valid" ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)).
+
+`ip route get 10.1.2.3` prints the route the kernel would use ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)), which for a private destination should stay internal; see [routing tables and the default gateway](/learn/routing-tables-and-default-gateway).
+
+```console
+$ dig -x 10.1.2.3
+$ dig @prisoner.iana.org hostname.as112.net txt +short +norec
+```
+
+`dig -x 10.1.2.3` builds the reverse name and asks for type `PTR`, class `IN` ([BIND 9 Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html)); a resolver serving the zone locally should answer NXDOMAIN with AA set. `+norec` clears the recursion desired (RD) bit that dig sets by default (same page), and the second command is AS112's own node check ([RFC 7534, section 3.6](https://www.rfc-editor.org/rfc/rfc7534.txt)). The [dig command builder](/tools/dig-command-builder) and the [dig output explainer](/tools/dig-output-explainer) build and decode such queries.
+
+Google's DNS over HTTPS (DoH) interface returns answers as objects whose `Status` is the DNS response code ([Google Public DNS documentation](https://developers.google.com/speed/public-dns/docs/doh/json)). Its answer on 2026-10-18 to a `PTR` query for 10.0.0.1:
+
+```text
+{"Status":3,"TC":false,"RD":true,"RA":true,"AD":false,"CD":false,"Question":[{"name":"1.0.0.10.in-addr.arpa.","type":12}]}
+```
+
+`Status` 3 is NXDOMAIN ([IANA, DNS Parameters registry: DNS RCODEs](https://www.iana.org/assignments/dns-parameters/dns-parameters-6.csv)); `RD` is recursion desired; the question has type 12, `PTR`; no authority section follows. Cloudflare answered alike ([Cloudflare 1.1.1.1 documentation](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/)). For 100.64.0.1 they differed: Cloudflare gave a bare NXDOMAIN, Google the public zone's `SOA`, so Google was not serving that zone locally.
+
+Python's `ipaddress` module checks the rest offline (captured on 2026-10-18 with Python 3.13.16):
+
+```text
+import ipaddress
+for n in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "100.64.0.0/10"):
+    net = ipaddress.ip_network(n)
+    print(n, "first", net.network_address, "last", net.broadcast_address, "num_addresses", net.num_addresses)
+print("2**32 =", 2**32)
+for a in ("10.1.2.3", "172.31.255.255", "192.168.1.1", "100.64.0.1", "169.254.1.1", "127.0.0.1", "192.0.2.1"):
+    ip = ipaddress.ip_address(a)
+    print(a, "is_private", ip.is_private, "is_global", ip.is_global)
+print(ipaddress.ip_address("172.32.0.0") in ipaddress.ip_network("172.16.0.0/12"))
+print(ipaddress.ip_address("172.31.255.255") in ipaddress.ip_network("172.16.0.0/12"))
+print(ipaddress.ip_network("10.1.0.0/16").overlaps(ipaddress.ip_network("10.1.128.0/17")))
+print(ipaddress.ip_network("10.1.0.0/16").overlaps(ipaddress.ip_network("10.2.0.0/16")))
+print(ipaddress.ip_address("10.1.2.3").reverse_pointer)
+```
+
+```text
+10.0.0.0/8 first 10.0.0.0 last 10.255.255.255 num_addresses 16777216
+172.16.0.0/12 first 172.16.0.0 last 172.31.255.255 num_addresses 1048576
+192.168.0.0/16 first 192.168.0.0 last 192.168.255.255 num_addresses 65536
+100.64.0.0/10 first 100.64.0.0 last 100.127.255.255 num_addresses 4194304
+2**32 = 4294967296
+10.1.2.3 is_private True is_global False
+172.31.255.255 is_private True is_global False
+192.168.1.1 is_private True is_global False
+100.64.0.1 is_private False is_global False
+169.254.1.1 is_private True is_global False
+127.0.0.1 is_private True is_global False
+192.0.2.1 is_private True is_global False
+False
+True
+True
+False
+3.2.1.10.in-addr.arpa
+```
+
+So `is_private` is no RFC 1918 test: it is `True` for 127.0.0.1, 169.254.1.1 and 192.0.2.1, and `False` for 100.64.0.1, where `is_global` is `False` too. The documentation defines it as "True if the address is defined as not globally reachable by iana-ipv4-special-registry", with an exception for 100.64.0.0/10 ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)), a behaviour changed in version 3.13 (same page). The [Python playground](/tools/python-playground) runs CPython 3.14 in the browser.
+
+## What to remember
+
+- RFC 1918 (BCP 5, February 1996) reserves 10.0.0.0/8 (16,777,216 addresses), 172.16.0.0/12 (up to 172.31.255.255, 1,048,576) and 192.168.0.0/16 (65,536).
+- The blocks need no registry and are unique only within an enterprise or a cooperating group; their routes shall not cross enterprise borders, and their packets should not.
+- Renumbering is RFC 1918's named cost, mergers included; random sub-blocks make collisions rare, and IPv6 ULAs avoid them.
+- Reverse lookups for private addresses belong inside the site (RFC 6303, RFC 6761); leaks reach the AS112 sink, whose `SOA` names `prisoner.iana.org.`.
+- 100.64.0.0/10 (shared address space for carrier-grade NAT) and 169.254.0.0/16 (link-local) are not RFC 1918 space.
+- Python's `is_private` means not globally reachable in IANA's registry: `True` for 127.0.0.1, `False` for 100.64.0.1.
+
+## Sources
+
+- [RFC 1918, Address Allocation for Private Internets, February 1996: sections 1 to 5 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 791, Internet Protocol, September 1981: section 2.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [IANA, IPv4 Special-Purpose Address Space registry, last updated 2025-10-09 (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [RFC 6890, Special-Purpose IP Address Registries, April 2013: sections 1 and 2.2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6890.txt)
+- [RFC 8190, Updates to the Special-Purpose IP Address Registries, June 2017: section 2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8190.txt)
+- [RFC 3022, Traditional IP Network Address Translator (Traditional NAT), January 2001: Abstract and section 2.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3022.txt)
+- [RFC 2663, IP Network Address Translator (NAT) Terminology and Considerations, August 1999: sections 4.1, 4.3 and 6.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2663.txt)
+- [RFC 7454, BGP Operations and Security, February 2015: section 6.1.1.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7454.txt)
+- [RFC 2827, Network Ingress Filtering: Defeating Denial of Service Attacks which employ IP Source Address Spoofing, May 2000: section 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2827.txt)
+- [RFC 3704, Ingress Filtering for Multihomed Networks, March 2004: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3704.txt)
+- [RFC 1597, Address Allocation for Private Internets, March 1994: sections 3 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1597.txt)
+- [RFC 1627, Network 10 Considered Harmful (Some Practices Shouldn't be Codified), July 1994: Summary, Operational Issues, Security Issues and Policy Issues (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1627.txt)
+- [RFC 4193, Unique Local IPv6 Unicast Addresses, October 2005: Abstract and sections 1, 3.1 and 4.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4193.txt)
+- [RFC 7534, AS112 Nameserver Operations, May 2015: sections 1, 2.3, 3.5, 3.6, 6, 7.1, 8 and Appendix A (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7534.txt)
+- [RFC 6303, Locally Served DNS Zones, July 2011: sections 1 and 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6303.txt)
+- [IANA, DNS Parameters registry: DNS RCODEs (read 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters-6.csv)
+- [RFC 6761, Special-Use Domain Names, February 2013: section 6.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [IANA, Locally-Served DNS Zones registry, last updated 2025-06-16 (read 2026-10-18)](https://www.iana.org/assignments/locally-served-dns-zones/locally-served-dns-zones.txt)
+- [BIND 9 9.20.29 documentation, Configuration Reference: Built-in Empty Zones and deny-answer-addresses (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)
+- [RFC 6305, I'm Being Attacked by PRISONER.IANA.ORG!, July 2011: Abstract and section 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6305.txt)
+- [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space, April 2012: sections 1, 3, 4 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6598.txt)
+- [RFC 3927, Dynamic Configuration of IPv4 Link-Local Addresses, May 2005: sections 1.9 and 7, Appendix A.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3927.txt)
+- [Microsoft Learn, IP_PER_ADAPTER_INFO_W2KSP1 structure: Remarks (read 2026-10-18)](https://learn.microsoft.com/en-us/windows/win32/api/iptypes/ns-iptypes-ip_per_adapter_info_w2ksp1)
+- [ip-address(8), Linux manual page (iproute2, man7.org) (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip-route(8), Linux manual page (iproute2, man7.org) (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [BIND 9 9.20.29 documentation, Manual Pages: dig (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [Google Public DNS, JSON API for DNS over HTTPS (DoH) (read 2026-10-18)](https://developers.google.com/speed/public-dns/docs/doh/json)
+- [Cloudflare 1.1.1.1 documentation, Using JSON (read 2026-10-18)](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/)
+- [Python 3.14 documentation, ipaddress: IPv4/IPv6 manipulation library (read 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)

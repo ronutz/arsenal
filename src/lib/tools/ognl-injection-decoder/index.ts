@@ -58,7 +58,8 @@ export const manifest = Object.freeze({
   sources: [
     { id: "apache-s2-045", label: "Apache Struts security bulletin S2-045 (CVE-2017-5638): remote code execution via the Jakarta multipart parser", url: "https://cwiki.apache.org/confluence/display/WW/S2-045" },
     { id: "apache-s2-057", label: "Apache Struts security bulletin S2-057 (CVE-2018-11776): possible RCE when namespace and result values are evaluated", url: "https://cwiki.apache.org/confluence/display/WW/S2-057" },
-    { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax and static method access", url: "https://commons.apache.org/proper/commons-ognl/language-guide.html" },
+    // 2026-10-18: Apache moved Commons OGNL to its dormant components; the old /proper/ address answers 404.
+    { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax and static method access", url: "https://commons.apache.org/dormant/commons-ognl/language-guide.html" },
   ],
 });
 

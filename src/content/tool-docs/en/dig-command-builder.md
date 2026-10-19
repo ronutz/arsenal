@@ -24,6 +24,7 @@ Each rule points at the sentence in the manual or the RFC that justifies it:
 - `+nssearch` disables recursion too.
 - Type ANY and `ixfr=N` default to TCP; AXFR always uses TCP, and a transfer with no `@server` would go to the resolvers in `/etc/resolv.conf` rather than to a server that holds the zone (RFC 5936). ANY may be answered minimally or with a synthesised HINFO record (RFC 8482).
 - `+bufsize` is 0 to 65535; a value under 512 is treated as 512 by the receiver (RFC 6891, section 6.2.3); above 4096 is more than RFC 6891's suggested starting point; DNS Flag Day 2020 names 1232 as the minimum safe size.
+- `+bufsize=0` is flagged as a check: it advertises a 0-byte EDNS UDP buffer, which the receiver treats as 512. It does not restore the default; the manual gives that job to `+bufsize` with no value. dig's default is 1232 bytes (`DEFAULT_EDNS_BUFSIZE` in the 9.20.29 source). The change from 4096 to 1232 is BIND CHANGES entry 5516, released in 9.17.6 and so in every release from 9.18.0; in the 9.16 branch the same entry reached `named` but not dig, which kept 4096 through 9.16.50.
 - `+dnssec`, `+trace`, `+bufsize`, `+nsid` and `+subnet` live in the OPT record (RFC 6891; the DO bit is RFC 3225), so `+noedns` cannot be combined with them and is not written when they are present.
 - `+subnet=0` (or a prefix length of 0) asks the resolver not to use your address (RFC 7871).
 - `-4` against an IPv6 server literal, or `-6` against an IPv4 one, leaves dig with nowhere to send the query.
@@ -37,7 +38,7 @@ Each rule points at the sentence in the manual or the RFC that justifies it:
 - It does not run dig, resolve anything or check that a server exists. The summary is derived from the manual's statements, not observed.
 - Options not offered (`+aaonly`, `+besteffort`, `+cmd`, `+comments`, `+crypto`, `+domain`, `+ednsopt`, `+expire`, `+header-only`, `+keepopen`, `+ndots`, `+onesoa`, `+opcode`, `+padding`, `+proxy`, `+qid`, `+search`, `+split`, `+stats`, `+tls-ca` and the other TLS files, `+unknownformat`, `+zoneversion`, `-c` as an option, `-f`, `-F`, `-m`, `-t` as an option, `-u`, `-y`) are documented in the manual; the common ones are here.
 - Names are checked for shape (labels of letters, digits, hyphens and underscores, at most 63 characters each, at most 253 in all; a lone asterisk as a wildcard label); the builder does not know whether a name exists.
-- The dig manual read for this page is the BIND 9 "latest" documentation (9.21). Older dig versions lack some query options (`+tls`, `+https`, `+yaml` are recent); dig prints "Invalid option" for a word it does not know.
+- The dig manual read for this page is the BIND 9 "latest" documentation (9.21), and for `+bufsize` the stable 9.20.29 manual (read 2026-10-19). Older dig versions lack some query options (`+tls`, `+https`, `+yaml` are recent); dig prints "Invalid option" for a word it does not know.
 
 ## Sources
 
@@ -53,5 +54,9 @@ Each rule points at the sentence in the manual or the RFC that justifies it:
 - [RFC 7858: DNS over TLS](https://www.rfc-editor.org/rfc/rfc7858) and [RFC 8484: DNS Queries over HTTPS](https://www.rfc-editor.org/rfc/rfc8484) (read 2026-10-04)
 - [RFC 5001: NSID](https://www.rfc-editor.org/rfc/rfc5001), [RFC 7871: Client Subnet in DNS Queries](https://www.rfc-editor.org/rfc/rfc7871), [RFC 7873: DNS Cookies](https://www.rfc-editor.org/rfc/rfc7873) (read 2026-10-04)
 - [IANA: Domain Name System (DNS) Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml) (read 2026-10-04): the RR TYPE registry the type field accepts, and the EDNS option codes
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (read 2026-10-19): `+bufsize[=B]` sets the advertised size to B bytes, 0 to 65535; `+bufsize` with no value restores the default
+- [BIND 9 source at tag v9.20.29, bin/dig/dighost.h](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dighost.h) (read 2026-10-19): `DEFAULT_EDNS_BUFSIZE 1232`
+- [ISC, BIND 9.18.0 CHANGES](https://downloads.isc.org/isc/bind9/9.18.0/CHANGES) (read 2026-10-19): entry 5516 under 9.17.6, the default EDNS buffer size changed from 4096 to 1232 bytes
+- [BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h](https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h) (read 2026-10-19): `DEFAULT_EDNS_BUFSIZE 4096`, dig's default in the 9.16 branch
 - [DNS Flag Day 2020](https://www.dnsflagday.net/2020/) (read 2026-10-04): 1232 bytes as the minimum safe EDNS buffer size
 - [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) and [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849) (read 2026-10-04): the documentation address ranges used in the examples (192.0.2.0/24, 2001:db8::/32)

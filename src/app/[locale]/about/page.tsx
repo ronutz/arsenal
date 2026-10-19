@@ -413,7 +413,11 @@ export default async function AboutPage({
                     need two logos"); the 2020 mark stays in the registry and on the /red-education profile, where
                     the history of the mark is told. */}
                 <span className="mark-row"><VendorMark vendor="rededucation" year={thisYear} eraLabel={era} since={since} compact /></span>
-                <span className="about-era-where">Red Education</span>
+                {/* The where-label of the current era reads like the employer labels above it, which the audit
+                    (2026-10-15, F11) found misleading: the relationship is instruction delivered through Red
+                    Education, and the full-time stretch is a date on the credentials page, not 2020. The label
+                    says both, in the same words as the credentials page. */}
+                <span className="about-era-where">{t("path.rededucationWhere")}</span>
                 <span className="about-era-what">{t("path.rededucation")}</span>
                 {/* CURRENTLY TEACHING (PRIME, 2026-10-04): the four platforms
                     whose authorized courses are delivered today, as marks, under

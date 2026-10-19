@@ -1,100 +1,193 @@
 ---
 slug: first-hop-redundancy-vrrp-and-hsrp
 title: "Redundância de first hop: VRRP, HSRP e o gateway que é uma ficção"
-summary: "Um host conhece um único default gateway e não sabe fazer failover. O VRRP e o HSRP resolvem isso fazendo o endereço do gateway pertencer a um papel, e não a um roteador. Como eles funcionam, por que a escolha do protocolo importa menos do que se pensa e as falhas que tornam um par redundante pior do que um roteador sozinho."
-concepts: ["vrrp", "arp", "bfd", "stp"]
-relatedTools: []
-relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
+summary: "Os protocolos de redundância de first hop, como o VRRP e o HSRP, fazem vários roteadores dividirem um único endereço de default gateway e um único MAC virtual, para que os hosts continuem encaminhando tráfego quando o roteador por trás desse endereço cai. Depois da leitura, você consegue dizer o que um host faz e o que não faz sozinho, calcular o tempo de failover do VRRPv3 a partir da prioridade e do intervalo, comparar os defaults do HSRP, reconhecer as falhas comuns e a superfície de ataque e encontrar os dois protocolos numa captura e na saída dos roteadores."
+concepts: ["vrrp", "arp", "bfd", "stp", "hsrp", "virtual mac", "gratuitous arp", "preemption", "object tracking"]
+relatedTools: ["oui-lookup", "ipv6", "python-playground", "packet-capture-plan-builder"]
+relatedArticles: ["arp-and-mac-addresses", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "what-is-an-oui", "ipv6-neighbor-discovery", "ipv6-address-configuration"]
 category: networking
 order: 253
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
-## A origem: o protocolo que não dava para mudar
+Um host IPv4 manda tudo o que sai da sub-rede a um único endereço, o [default gateway](/learn/routing-tables-and-default-gateway), e o roteador por trás dele vira ponto único de falha. A redundância de first hop resolve isso pelo lado da rede. O Virtual Router Redundancy Protocol (VRRP), padrão da Internet Engineering Task Force (IETF), e o Hot Standby Router Protocol (HSRP), mais antigo e da Cisco, fazem vários roteadores dividirem o IP do gateway e um endereço media access control (MAC), um respondendo de cada vez. Depois da leitura, você consegue dizer o que o host faz sozinho, calcular um failover do VRRP, comparar com o HSRP e reconhecer e capturar os dois.
 
-O problema é antigo e está na estrutura da rede. Um host aprende um único default gateway (o gateway padrão), configurado à mão ou recebido num lease do DHCP, e não tem a menor noção de que poderia existir um segundo. Se esse roteador morre, o host continua mandando tráfego para um endereço que ninguém mais atende. Todas as outras camadas da rede podiam ganhar redundância; o gateway único do host, não, porque corrigir isso exigiria mudar todos os sistemas operacionais do planeta.
+## O que o host consegue fazer sozinho
 
-Duas linhas de solução foram tentadas, e uma delas perdeu:
+Mais do que se costuma dizer. A Request for Comments (RFC) 1122, de 1989, diz que "The IP layer MUST support multiple default gateways", suporte obrigatório a vários default gateways ([RFC 1122, seção 3.3.1.2](https://www.rfc-editor.org/rfc/rfc1122.txt)), e que "The IP layer MUST be able to detect the failure of a 'next-hop' gateway that is listed in its route cache and to choose an alternate gateway", detectar a falha do gateway e escolher outro (seção 3.3.1.4), trocando de default quando conhece mais de um (seção 3.3.1.5). E admite que "Experience to date has not produced a complete algorithm which is totally satisfactory", falta um algoritmo satisfatório (seção 3.3.1.4).
 
-**Deixar o host mais esperto.** O ICMP Router Discovery e, mais tarde, os Router Advertisements do IPv6 permitem que os hosts descubram os roteadores dinamicamente. Funciona, mas no IPv4 nunca chegou a tempo: a base instalada já partia do princípio de que havia um único gateway estático. Vale notar que **o IPv6 resolveu boa parte disso no próprio host**, com os roteadores se anunciando e os hosts guardando vários default gateways, e é por isso que a redundância de first hop é principalmente um problema do mundo IPv4.
+A detecção fica com cada implementação, e um host com um único gateway, configurado à mão ou pelo Dynamic Host Configuration Protocol (DHCP), não tem para onde ir. O Router Discovery do Internet Control Message Protocol (ICMP) anuncia a cada 7 a 10 minutos por padrão, pouco para detectar um first hop morto, diz a própria RFC ([RFC 1256, seção 2](https://www.rfc-editor.org/rfc/rfc1256.txt)). A RFC 9568, o padrão atual do VRRP, tira a conclusão: "Loss of the default router results in a catastrophic event, isolating all end-hosts that are unable to detect an available alternate path", o host sem caminho alternativo fica isolado ([RFC 9568, seção 1.3](https://www.rfc-editor.org/rfc/rfc9568.txt)). A redundância de first hop resolve sem mexer em host nenhum.
 
-**Mentir para o host.** Entregar o endereço do gateway ao roteador que estiver vivo no momento. O host nunca fica sabendo de nada; o endereço simplesmente continua respondendo.
+## O roteador virtual
 
-A segunda abordagem venceu e deu origem a três protocolos:
+Numa local area network (LAN), a RFC 9568 define o Virtual Router como "An abstract object managed by VRRP that acts as a default router for hosts on a shared LAN", um objeto abstrato que serve de default router ([RFC 9568, seção 1.7](https://www.rfc-editor.org/rfc/rfc9568.txt)). Ele tem um Virtual Router Identifier (VRID) de 1 a 255 e um conjunto de endereços; o Active Router encaminha, os Backup Routers esperam. Quem tem o endereço virtual como endereço real de interface é o address owner, sempre ativo quando disponível (seção 1.7). O HSRP proíbe isso: o endereço do grupo tem de diferir de todo endereço real da LAN ([RFC 2281, seção 1](https://www.rfc-editor.org/rfc/rfc2281.txt)).
 
-- **HSRP (Cisco, patenteado em 1995, RFC 2281 em 1998)**: o primeiro a ser amplamente adotado, e proprietário; a RFC é informational (informativa), publicada para descrever o protocolo, e não para padronizá-lo.
-- **VRRP (RFC 2338 em 1998, hoje RFC 5798, que cobre IPv4 e IPv6)**: o padrão do IETF, multivendor e tão parecido com o HSRP que a posição da Cisco sobre a patente foi um assunto quente durante a padronização.
-- **GLBP (Cisco)**, que acrescenta load sharing (divisão de carga) respondendo às requisições ARP com MACs virtuais diferentes, de modo que os hosts da mesma sub-rede se distribuem entre os gateways, em vez de usarem todos o mesmo.
+A RFC 9568 (abril de 2024) substitui a RFC 5798 (março de 2010), que substituiu a RFC 3768 (abril de 2004) ([RFC 9568, Abstract](https://www.rfc-editor.org/rfc/rfc9568.txt)), sucessora da RFC 2338 (abril de 1998) ([RFC 3768, seção 13](https://www.rfc-editor.org/rfc/rfc3768.txt)). Ela também renomeou o roteador que encaminha: "The term for the VRRP Router assuming forwarding responsibility has been changed to 'Active Router' to be consistent with IETF inclusive terminology", troca feita por linguagem inclusiva (seção 1.1). As RFCs antigas e as implementações atuais dizem Master.
 
-A terminologia muda, mas o mecanismo é o mesmo: o HSRP tem roteadores active e standby (ativo e reserva), o VRRP tem um master e backups, e o GLBP tem um active virtual gateway com forwarders. **Quem entende o desenho de um entende os três.**
+A RFC 2281 (março de 1998), do HSRP, é Informational e não define padrão nenhum ([RFC 2281, Status of this Memo](https://www.rfc-editor.org/rfc/rfc2281.txt)). Sua seção 2 citava a patente americana 5.473.599, de 5 de dezembro de 1995, mas a errata verificada 464 diz que ela "was mistakenly included in the document and is incorrect", entrou por engano ([errata da RFC 2281](https://www.rfc-editor.org/errata/rfc2281)).
 
-## O host é a parte que não tem conserto
+## Os dois endereços mudam de lugar, e o MAC é o que importa
 
-Todo equipamento de uma sub-rede é configurado com um único endereço de default gateway, e **não tem nenhum mecanismo para mudar de ideia.** Se esse endereço para de responder, o host não procura outro. Ele continua mandando tráfego para um endereço que não está mais lá, até alguém reconfigurá-lo ou reiniciá-lo.
+| Protocolo | MAC virtual | Onde está definido |
+|---|---|---|
+| VRRP para IPv4 | `00-00-5E-00-01-{VRID}` | RFC 9568, seção 7.3 |
+| VRRP para IPv6 | `00-00-5E-00-02-{VRID}` | RFC 9568, seção 7.3 |
+| HSRP versão 1 | `00-00-0C-07-AC-XX`, XX é o número do grupo | RFC 2281, seção 6.1 |
+| HSRP versão 2 | `0000.0C9F.F000` a `0000.0C9F.FFFF` | Cisco, Configuring HSRP |
 
-Não é um defeito que alguém vá corrigir, porque ele está em um bilhão de equipamentos, e a maioria deles nunca vai ser atualizada. **Então a redundância tem de acontecer do lado da rede, de forma invisível, sem que o host seja avisado de nada.**
+00-00-5E é o [Organizationally Unique Identifier (OUI)](/learn/what-is-an-oui) da Internet Assigned Numbers Authority (IANA), e a RFC 9542 dá os blocos 00-01 e 00-02 dele ao VRRP para IPv4 e IPv6 ([RFC 9542, seções 1.3 e 2.1.3](https://www.rfc-editor.org/rfc/rfc9542.txt); [IANA, IANA OUI Ethernet Numbers](https://www.iana.org/assignments/ethernet-numbers/ethernet-numbers.xhtml)). O último octeto é o VRID ou o grupo em hexadecimal: o VRID 5 dá 00-00-5E-00-01-05, e o grupo 10 do HSRP dá 00-00-0C-07-AC-0A.
 
-Os protocolos de redundância de first hop fazem exatamente isso: transformam o endereço do gateway num **papel**, que um roteador de cada vez assume, e o que muda de lugar é o papel, não o endereço.
+Os hosts resolvem o gateway pelo Address Resolution Protocol (ARP), e a resposta é o MAC virtual: "The Active Router MUST NOT respond with its physical MAC address in the ARP response. This allows the host to always use the same MAC address, regardless of the current Active Router", o host usa sempre o mesmo MAC, seja quem for o ativo ([RFC 9568, seção 8.1.2](https://www.rfc-editor.org/rfc/rfc9568.txt)). Depois do failover, nada mudou no cache do host.
 
-## Os dois endereços mudam de lugar, e o segundo é o que importa
+O que muda é a porta do switch atrás do MAC. O Active Router usa o MAC virtual como origem dos advertisements, porque, sem isso, "the MAC address location is never learned, resulting in flooding of all packets sent to the Virtual Router", o switch inunda tudo o que vai para o roteador virtual (seção 2.4). Ao assumir, ele manda um gratuitous ARP para cada IPv4 virtual ou, no IPv6, um Neighbor Advertisement não solicitado com a flag Override (seção 6.4.2, com a correção da [errata verificada 7949](https://www.rfc-editor.org/errata/rfc9568)). Os vizinhos atualizam a entrada pela [regra de merge do ARP](/learn/arp-and-mac-addresses) e os switches reaprendem a porta. No HSRP, o anúncio é uma resposta ARP ([RFC 2281, seção 5.6](https://www.rfc-editor.org/rfc/rfc2281.txt)).
 
-O virtual IP (o IP virtual) é a metade óbvia. A metade que faz tudo funcionar é o **virtual MAC**, o endereço MAC virtual.
+## VRRPv3: o advertisement e a eleição
 
-Um host que já vinha conversando com o gateway tem no cache ARP uma entrada que associa o IP do gateway a um MAC. Se o failover (a troca para o roteador reserva) só mudasse o dono do IP, todos os hosts do segmento continuariam mandando frames para o MAC do roteador antigo até a entrada ARP expirar: **normalmente, minutos, o que é uma eternidade durante uma queda e é justamente a janela que ninguém leva em conta.**
+O VRRP versão 3 tem uma só mensagem, o ADVERTISEMENT, enviada pelo Active Router com o VRID, a prioridade, um intervalo de 12 bits em centissegundos e os endereços virtuais ([RFC 9568, seções 5.1 e 5.2](https://www.rfc-editor.org/rfc/rfc9568.txt)). As regras que decidem quem fica ativo:
 
-Então o roteador standby assume o mesmo virtual MAC e o anuncia, para que os switches reaprendam em que porta ele está. **O cache ARP do host continua certo porque nada do que ele sabe mudou.** É por isso que, para um host que nunca foi avisado de nada, o failover pode levar menos de um segundo.
+| Regra | Valor | Onde está na RFC 9568 |
+|---|---|---|
+| Prioridade do owner | 255 | seção 5.2.4 |
+| Prioridade de um Backup | 1 a 254, default 100 | seção 5.2.4 |
+| Prioridade 0 | o Active Router sai; os Backups assumem depois do Skew_Time | seção 5.2.4 |
+| Empate | vence o maior endereço primário, comparado como inteiro sem sinal | seção 6.4.3 |
+| Preempt_Mode | default True; o owner sempre faz preemption | seção 6.1 |
+| Accept_Mode | default False: quem não é owner não aceita pacotes para o endereço virtual, então um ping para ele pode falhar | seção 6.1 |
 
-## A escolha entre VRRP e HSRP importa menos do que a terceira pergunta
+## Os timers, calculados
 
-O HSRP é da Cisco, o VRRP é o padrão do IETF, e existe um motivo real para preferir o VRRP num ambiente com vários fabricantes. Fora isso, **as diferenças operacionais são menores do que a quantidade de discussão que elas geram**: os dois elegem um roteador ativo por prioridade, os dois usam um par de endereços virtuais e os dois fazem preempt (o roteador de maior prioridade toma o papel de volta), se estiverem configurados para isso.
+O intervalo tem default de 100 centissegundos, um segundo ([RFC 9568, seção 5.2.7](https://www.rfc-editor.org/rfc/rfc9568.txt)), configurável de 1 a 4095 pela [errata verificada 8301](https://www.rfc-editor.org/errata/rfc9568). Um Backup declara o Active Router morto pelas fórmulas da seção 6.1:
 
-**A pergunta que decide de verdade se o par funciona não tem a ver com nenhum dos dois protocolos: o que o roteador considera uma falha?**
+```text
+Skew_Time            = ((256 - Priority) * Active_Adver_Interval) / 256
+Active_Down_Interval = (3 * Active_Adver_Interval) + Skew_Time
+```
 
-Um roteador que perdeu o uplink, ou a adjacência de roteamento, ou a capacidade de alcançar qualquer coisa além do segmento, continua perfeitamente capaz de ganhar uma eleição e de responder ARP. **Ele está presente, está saudável pelos próprios critérios e é um buraco negro para todo host que confia nele.**
+Nos defaults, `(256 - 100) x 100 / 256` dá 15.600 dividido por 256, um skew de 60,9375 centissegundos, e o Backup espera 360,9375 centissegundos, 3,6094 segundos:
 
-É para isso que existe o tracking (monitoramento) de interfaces e de objetos: baixar a prioridade quando fica inalcançável aquilo que está *do outro lado* do gateway. **Um par de redundância de first hop sem tracking são só dois roteadores combinando qual dos dois vai engolir o seu tráfego**, e ele falha justamente na situação para a qual foi instalado.
+| Prioridade do Backup | Skew_Time | Active_Down_Interval |
+|---|---|---|
+| 254 | 0,7812 cs | 300,7812 cs (3,0078 s) |
+| 200 | 21,8750 cs | 321,8750 cs (3,2188 s) |
+| 100 (default) | 60,9375 cs | 360,9375 cs (3,6094 s) |
+| 1 | 99,6094 cs | 399,6094 cs (3,9961 s) |
 
-## As falhas que vale a pena conhecer
+O skew faz o melhor Backup agir primeiro, e "faster convergence can be obtained by using a higher priority for the preferred Backup Router", prioridade maior para o Backup preferido ([RFC 9568, seção 8.3.2](https://www.rfc-editor.org/rfc/rfc9568.txt)). A seção 3 promete menos de 4 segundos no default e menos de 1/25 de segundo se configurado; o Backup mais lento da tabela espera 3,9961 segundos, e com intervalo de 1 centissegundo a prioridade 254 espera 3,0078 centissegundos, uns 30 milissegundos. A RFC não define arredondamento; o FRRouting (FRR) usa centissegundos inteiros e mostra 210 ms de skew na prioridade 200, contra os 21,875 centissegundos exatos ([documentação do FRRouting, VRRP](https://docs.frrouting.org/en/latest/vrrp.html)). O [Python playground](/tools/python-playground) refaz a conta.
 
-**Os dois roteadores ativos.** Se os roteadores não se escutam, mas os dois alcançam os hosts, cada um conclui que deve ser o ativo. Agora há dois equipamentos respondendo pelo mesmo IP e pelo mesmo MAC no mesmo segmento, e os switches veem o virtual MAC pulando de uma porta para outra o tempo todo. **O sintoma não é uma queda. É um problema intermitente, que depende do sentido do tráfego e parece problema de switching**, e é para lá que a investigação vai primeiro.
+## HSRP: a mesma ideia, outros números
 
-**Preempt com um link em flapping (caindo e voltando).** Um roteador que se recupera e retoma na hora o papel de ativo vai jogar o tráfego de um lado para o outro enquanto o link não se estabiliza. Cada troca é rápida, mas o conjunto é um serviço que ninguém consegue usar. **O delay de preempt não é um detalhe de ajuste fino.**
+| | VRRPv3 | HSRP versão 1 |
+|---|---|---|
+| Transporte | protocolo IP 112 para 224.0.0.18 ou ff02::12, Time to Live (TTL) 255 | UDP 1985 para 224.0.0.2, TTL 1 |
+| Timers | advertisement a cada 1 s, Active dado como morto em 3,6094 s na prioridade 100 | hello de 3 s, hold time de 10 s |
+| Estados | Initialize, Backup, Active | Initial, Learn, Listen, Speak, Standby, Active |
+| Preemption | ligada por default | só se configurada |
+| ICMP redirects | podem ser usados | MUST NOT, proibidos |
+| Status | Proposed Standard | Informational |
 
-**Caminhos assimétricos passando por um firewall.** Com o gateway ativo num roteador e o tráfego de volta roteado pelo outro, um equipamento stateful (que guarda o estado das conexões) no caminho vê só metade da conversa e a descarta. Esse é o jeito mais comum de uma mudança no first hop virar um incidente de aplicação sem nenhuma relação aparente com roteamento.
+A coluna do HSRP vem da RFC 2281 ([RFC 2281, seções 5.1, 5.3 e 6.3](https://www.rfc-editor.org/rfc/rfc2281.txt)), a do VRRP da [RFC 9568, seções 5.1, 6.3 e 8.1.1](https://www.rfc-editor.org/rfc/rfc9568.txt). Como no VRRP, o maior endereço desempata (RFC 2281, seção 5.1). A Cisco usa os mesmos defaults: "The default hello interval is 3 seconds. The default hold time is 10 seconds", 3 e 10 segundos ([Cisco, command reference](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/command/fhp-cr-book/fhp-s2.html)). O standby age 10 segundos após o último hello, 2,77 vezes os 3,61 segundos do VRRPv3. Sem o comando `standby preempt`, diz a Cisco, um roteador "will not become the active router, even if its priority is higher than all other routers", nem com a maior prioridade ([Cisco, Configuring HSRP](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-hsrp.html)). A versão 2 traz grupos de 0 a 4095, o multicast 224.0.0.102 e timers em milissegundos, e não fala com a versão 1 (Cisco, Configuring HSRP).
 
-## A mecânica que vale conhecer a fundo
+## IPv6: o gateway é link-local
 
-**Os dois endereços se movem juntos.** O grupo é dono de um virtual IP e de um virtual MAC: o VRRP usa `00:00:5E:00:01:{grupo}`, e o HSRP, `00:00:0C:07:AC:{grupo}`. O failover leva os dois, então o cache ARP do host continua válido e nada precisa ser reaprendido. O truque é só esse, e é por isso que um failover pode passar despercebido por um host que nunca nota nada.
+No IPv6, o primeiro endereço do roteador virtual tem de ser link-local, só o Active Router manda Router Advertisements por ele e os Backups anunciam as mesmas opções ([RFC 9568, seções 5.2.9, 6.4.3 e 8.2.3](https://www.rfc-editor.org/rfc/rfc9568.txt)); os hosts o aprendem [do jeito de sempre](/learn/ipv6-address-configuration). O host poderia usar o [Neighbor Unreachability Detection](/learn/ipv6-neighbor-discovery), mas com os defaults do Neighbor Discovery (ND) "it can take a host more than 10 seconds to learn that a router is unreachable before it will switch to another default router", mais de 10 segundos, contra uns três com o VRRP (seção 1.4). Uma armadilha: se dois roteadores tiverem o mesmo link-local, o FRR avisa que "this can cause both routers to assume the Master role (very bad)", os dois viram Master ([documentação do FRRouting, VRRP](https://docs.frrouting.org/en/latest/vrrp.html)).
 
-**Eleição e preempt.** Vence a maior prioridade; em caso de empate, decide o endereço. O **preempt** define se um roteador que volta retoma o papel, e é aí que mora a maior parte das surpresas na operação: ele vem ligado por padrão no VRRP e desligado por padrão no HSRP. Um roteador que volta da manutenção, toma o papel e depois reinicia de novo provoca duas quedas em vez de uma. É por isso que existe o delay de preempt, e também por isso ele deve ser maior do que o tempo que o protocolo de roteamento leva para convergir.
+## Tracking: a falha que o protocolo não enxerga
 
-**Os timers de hello e de hold** determinam a velocidade do failover. Valores padrão na casa dos segundos significam segundos de buraco negro; timers abaixo de um segundo detectam mais rápido, mas deixam o par sujeito a failovers falsos sempre que o control plane (plano de controle) fica ocupado por um instante. A resposta madura não são timers agressivos, e sim deixar que o **BFD**, um protocolo leve, criado especificamente para verificar se o outro lado está vivo, comande o failover.
+Nenhum dos padrões olha além da LAN. A RFC 2281 supõe que todos os roteadores têm rotas consistentes ([RFC 2281, seção 1](https://www.rfc-editor.org/rfc/rfc2281.txt)), e a eleição do VRRP só lê prioridades e advertisements. Um roteador sem uplink continua ganhando e encaminha para o que sobrou da tabela.
 
-**O tracking de interface e de objeto** é o recurso que decide se o projeto é de verdade. Um roteador cujo uplink caiu continua respondendo na LAN e segue tranquilamente como master, fazendo forwarding de tráfego para lugar nenhum. O tracking baixa a prioridade dele quando o uplink ou a rota monitorada desaparece, e o papel passa para um roteador que ainda tem caminho. **Redundância sem tracking é um grupo que faz failover no evento que ele tinha menos chance de enfrentar, a morte do roteador, e não no evento que ele vai encontrar de fato.**
+A resposta é o tracking, recurso dos fabricantes que nenhuma RFC define. A Cisco monitora o line protocol de uma interface ou a alcançabilidade de uma rota, e "By default, the priority of the device is decreased by 10 if a tracked object goes down", a prioridade cai 10 quando o objeto cai ([Cisco, Configuring HSRP](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-hsrp.html)); sem `standby track`, não há tracking nenhum. No keepalived, o `track_interface` baixa a prioridade por um peso negativo configurado ([keepalived.conf(5)](https://raw.githubusercontent.com/acassen/keepalived/master/doc/man/man5/keepalived.conf.5.in)). Faça a conta: um ativo com 110 que perde 10 empata com um standby de 100, o maior endereço desempata, e pode ser o roteador quebrado; no HSRP, o standby ainda precisa de preemption. Detectar rápido um caminho morto é trabalho do [Bidirectional Forwarding Detection (BFD)](/learn/bfd-when-a-link-is-up-and-dead).
 
-**A autenticação** existia nas primeiras versões do VRRP, mas se concluiu que ela não trazia segurança real contra um atacante dentro do segmento, e ela foi removida na RFC 3768. O controle que funciona de verdade é o acesso ao segmento, e não um segredo compartilhado.
+## Como falha
 
-## As falhas e como elas aparecem
+- **Dois Active Routers.** Se os advertisements deixam de passar entre os roteadores, cada Backup estoura o timeout e vira ativo, e "having multiple Active Routers can cause as much disruption as no routers", vários ativos fazem tanto estrago quanto nenhum ([RFC 9568, seção 9](https://www.rfc-editor.org/rfc/rfc9568.txt)). Dois roteadores configurados como owner ficam ativos juntos ([errata verificada 8298](https://www.rfc-editor.org/errata/rfc9568)). Os dois usam o mesmo MAC virtual, que os switches veem pular de porta.
+- **Intervalos diferentes.** Um Active Router mais lento que os seus Backups é instável ([RFC 9568, seção 5.2.7](https://www.rfc-editor.org/rfc/rfc9568.txt)). Com intervalo zero, todos os Backups estouram o timeout juntos, e o autor da [errata verificada 8301](https://www.rfc-editor.org/errata/rfc9568) relata "It causes mayhem (I have tried it)!", vira um caos, e ele testou. A Cisco pede os mesmos timers em todo o grupo HSRP ([Cisco, command reference](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/command/fhp-cr-book/fhp-s2.html)).
+- **Timers abaixo de um segundo com carga.** Um atraso de fila maior que o intervalo promove um Backup até o advertisement atrasado rebaixá-lo, e "this process can repeat many times per second, causing a significant disruption of traffic", o vaivém se repete várias vezes por segundo ([RFC 9568, seção 2.5](https://www.rfc-editor.org/rfc/rfc9568.txt)); o remédio é dar prioridade ao VRRP nas filas de saída.
+- **Preemption em flapping.** Um roteador de prioridade maior que vive reiniciando retoma o gateway a cada volta. Nenhuma RFC descreve esse ciclo; os fabricantes oferecem um delay, de 0 segundos por default na Cisco ([Cisco, command reference](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/command/fhp-cr-book/fhp-s2.html)).
+- **O MAC que não muda de lugar.** O `standby use-bia` faz o HSRP usar o burned-in address (BIA) do roteador, e a RFC 2281 diz que "This method of operation is strongly discouraged", fortemente desaconselhado ([RFC 2281, seção 6.1](https://www.rfc-editor.org/rfc/rfc2281.txt)): o MAC do gateway muda a cada failover, e os hosts dependem do gratuitous ARP ou de um timeout de cache que a RFC 1122 põe em torno de um minuto ([RFC 1122, seção 2.3.2.1](https://www.rfc-editor.org/rfc/rfc1122.txt)).
+- **Caminhos assimétricos.** O VRRP pode mandar redirects onde a topologia não é simétrica ([RFC 9568, seção 8.1.1](https://www.rfc-editor.org/rfc/rfc9568.txt)); a RFC 2281 proíbe isso no HSRP, porque o redirect revelaria o endereço próprio do roteador ([RFC 2281, seção 6.3](https://www.rfc-editor.org/rfc/rfc2281.txt)). Quando as respostas voltam pelo outro roteador, um equipamento stateful num só caminho vê metade de cada conversa.
 
-- **Os dois roteadores ativos.** O caminho dos hellos quebrou com os dois roteadores vivos: uma VLAN bloqueada, um multicast filtrado, um problema de MTU no link entre os dois. Os dois se consideram donos do endereço virtual, o ARP fica alternando entre dois MACs, e o tráfego falha de forma intermitente, de um jeito que parece defeito físico.
-- **Failover que não faz o failback direito**, porque a configuração de preempt é diferente nos dois roteadores do par.
-- **Assimetria silenciosa**: o standby tem uma configuração de filtros ou de políticas diferente, e tudo funciona até o dia em que ele assume. Manter a configuração igual em todos os membros faz parte do projeto, e não é um detalhe para depois.
-- **Serviços stateful atrás de um failover stateless.** O VRRP move um endereço; ele não move o estado das conexões do firewall. Um par de firewalls precisa da própria sincronização de estado, e misturar as duas ideias gera um failover que faz todas as conexões serem refeitas ao mesmo tempo.
+## A superfície de ataque e a defesa
 
-## Como isso se compara às alternativas
+O VRRP antigo oferecia senha em texto ou o IP Authentication Header ([RFC 2338, seção 5.3.6](https://www.rfc-editor.org/rfc/rfc2338.txt)), e a RFC 3768 removeu os dois ([RFC 3768, seção 13](https://www.rfc-editor.org/rfc/rfc3768.txt)). A RFC 9568 explica: "Operational experience and further analysis determined that these did not provide sufficient security to overcome the vulnerability of misconfigured secrets, causing multiple Active Routers to be elected", a autenticação não compensava os segredos mal configurados, que elegiam vários ativos ([RFC 9568, seção 9](https://www.rfc-editor.org/rfc/rfc9568.txt)). Um nó da LAN que anuncia prioridade maior manda os roteadores reais para Backup, e assinatura nenhuma impede um nó de agir como Active Router. Do HSRP, a RFC diz que "The protocol is easily subverted by an active intruder on the LAN", o protocolo é fácil de subverter ([RFC 2281, seção 7](https://www.rfc-editor.org/rfc/rfc2281.txt)).
 
-- **Clustering de chassi e de stack** (virtual chassis, stacking, MLAG), em que dois equipamentos se apresentam como um só, e o gateway nem precisa mudar de lugar. É mais capaz e mais acoplado: um control plane compartilhado também é uma falha compartilhada.
-- **Anycast gateway em fabrics**: EVPN e desenhos parecidos, em que todo leaf é dono do mesmo endereço de gateway, e a ideia de standby deixa de existir.
-- **Ambientes de nuvem**, em que o gateway é da própria plataforma e nada disso fica exposto. Lá, a pergunta equivalente é se uma entrada da tabela de rotas ou um endereço flutuante muda de lugar, e com que rapidez.
+A [RFC 9568](https://www.rfc-editor.org/rfc/rfc9568.txt) relativiza: é um subconjunto do que qualquer nó da LAN já faz (seção 9). A proteção embutida é o TTL 255, que barra injeção vinda de outras redes; o HSRP depende de os roteadores não encaminharem o 224.0.0.2 ([RFC 2281, seção 7](https://www.rfc-editor.org/rfc/rfc2281.txt)). A defesa que a RFC 9568 aponta é a porta de acesso: switches que filtram ARP ou ND de portas de host poderiam filtrar o VRRP também (RFC 9568, seção 9).
 
-**Fabricantes, por categoria.** O VRRP está disponível em Cisco, Juniper, Arista, Nokia, Fortinet e MikroTik, e em implementações para Linux como o Keepalived, que é o que coloca esse mesmo mecanismo por baixo de um grande número de load balancers e firewalls. HSRP e GLBP continuam sendo da Cisco. A regra prática num parque com vários fabricantes: **padronize no VRRP, a menos que um recurso exclusivo de um fabricante compense o lock-in (a dependência de um único fornecedor)**, e confirme que as faixas de virtual MAC não estão colidindo com mais nada.
+## Como ver
 
-## O que levar daqui
+Filtros de captura ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)):
 
-**Redundância que nunca foi testada com uma falha provocada de propósito é só uma configuração, não uma capacidade.** O teste que vale a pena não é desligar um roteador, porque esse é o caso fácil e normalmente funciona. **É derrubar o uplink e deixar o roteador ligado**, porque é para esse cenário que o tracking existe, e é nele que um par nunca testado descobre que não tem tracking nenhum.
+```text
+vrrp                           abbreviation for: ip proto 112
+ip6 proto 112                  VRRP over IPv6
+udp port 1985                  HSRP
+ether host 00:00:5e:00:01:05   frames to or from the virtual MAC of VRID 5
+```
+
+No Wireshark, os filtros de exibição são `vrrp` e `hsrp` ([Wireshark, campos do vrrp](https://www.wireshark.org/docs/dfref/v/vrrp.html)). Um advertisement ilustrativo, com endereços de documentação, gateway 192.0.2.1 e Active Router 192.0.2.2:
+
+| Campo | Valor | O que ele diz |
+|---|---|---|
+| Origem Ethernet | 00:00:5e:00:01:05 | o MAC virtual do VRID 5 |
+| Origem IPv4 | 192.0.2.2 | o endereço próprio do Active Router |
+| Destino, TTL, protocolo | 224.0.0.18, 255, 112 | VRRP, nunca encaminhado |
+| `vrrp.version`, `vrrp.type` | 3, 1 | um ADVERTISEMENT do VRRPv3 |
+| `vrrp.virt_rtr_id` | 5 | o VRID |
+| `vrrp.prio` | 100 | prioridade default; 255 é o owner, 0 é uma saída |
+| `vrrp.short_adver_int` | 100 | centissegundos: um por segundo |
+| `vrrp.ip_addr` | 192.0.2.1 | o endereço virtual |
+
+Um failover aparece como novo remetente atrás do mesmo MAC, seguido de um gratuitous ARP. No HSRP, chegam hellos do ativo e do standby; leia `hsrp.state`, `hsrp.priority`, `hsrp.hellotime`, `hsrp.holdtime` e `hsrp.virt_ip`, ou `hsrp2.*` na versão 2 ([Wireshark, campos do hsrp](https://www.wireshark.org/docs/dfref/h/hsrp.html)).
+
+O `show vrrp` do FRR, num trecho do exemplo da própria documentação, com o alinhamento simplificado ([documentação do FRRouting, VRRP](https://docs.frrouting.org/en/latest/vrrp.html)):
+
+```text
+Virtual MAC (v4)                    00:00:5e:00:01:05
+Status (v4)                         Master
+Priority                            200
+Preempt Mode                        Yes
+Master Advertisement Interval (v4)  1000 ms
+Skew Time (v4)                      210 ms
+Master Down Interval (v4)           3210 ms
+```
+
+No keepalived, as palavras-chave equivalentes são `virtual_router_id`, `priority`, `advert_int` (em segundos), `nopreempt` e `preempt_delay` ([keepalived.conf(5)](https://raw.githubusercontent.com/acassen/keepalived/master/doc/man/man5/keepalived.conf.5.in)). Na Cisco, os comandos, como a command reference os imprime ([Cisco, command reference](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/command/fhp-cr-book/fhp-s2.html)):
+
+```text
+standby version {1 | 2}
+standby [group-number] preempt [delay {minimum | reload | sync} seconds]
+standby track {object-number | interface-type interface-number [decrement priority-decrement]} [shutdown]
+standby use-bia [scope interface]
+```
+
+O [OUI lookup](/tools/oui-lookup) resolve 00:00:5E:00:01:05 para "ICANN, IANA Department", um endereço unicast administrado universalmente; ele não diz VRRP, porque o bloco do VRRP é uma subatribuição dentro do OUI da IANA. O [IPv6 Toolkit](/tools/ipv6) mostra ff02::12 como multicast de escopo link-local, também sem citar o VRRP. Se dois roteadores discordam, o [packet capture plan builder](/tools/packet-capture-plan-builder) ajuda a posicionar as capturas.
+
+## Para lembrar
+
+- O gateway é um papel: um VRID, seus endereços e um MAC virtual conhecido, com quem estiver ativo; o owner (prioridade 255) sempre vence.
+- O host tem de detectar um gateway morto, mas só troca para outro que conheça, e nenhum algoritmo de detecção foi padronizado.
+- O MAC virtual mantém válido o cache dos hosts; o Active Router o usa como origem dos advertisements para os switches aprenderem a porta.
+- O VRRPv3 dá o Active Router como morto após três intervalos mais um skew: 3,6094 segundos na prioridade 100 com o intervalo default, menos de 4 para qualquer Backup; os 3 e 10 segundos do HSRP são 2,77 vezes mais lentos.
+- A preemption vem ligada no VRRP e desligada no HSRP; nenhum percebe a queda de um uplink sem o tracking do fabricante baixar a prioridade o bastante.
+- O VRRP largou a autenticação porque ela não impede um segundo Active Router; o TTL 255 prende os ataques à LAN, e o filtro nas portas de host os tira das portas não confiáveis.
+- O padrão atual é a RFC 9568 (abril de 2024), que diz Active Router onde os textos antigos dizem Master; a RFC 2281 é Informational.
 
 ## Fontes
 
-- [RFC 3768, Virtual Router Redundancy Protocol (VRRP), abril de 2004: a seção 13, as mudanças em relação à RFC 2338, entre elas "Removed authentication methods from VRRP" (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc3768)
-- [RFC 2281, Cisco Hot Standby Router Protocol (HSRP), março de 1998: um protocolo já implantado, e a patente americana 5.473.599, de 5 de dezembro de 1995 (lida em 07/10/2026)](https://www.rfc-editor.org/rfc/rfc2281)
+- [RFC 9568, Virtual Router Redundancy Protocol (VRRP) Version 3 for IPv4 and IPv6, abril de 2024: Abstract, seções 1.1, 1.3, 1.4, 1.7, 2.4, 2.5, 3, 5.1, 5.2, 6.1, 6.3, 6.4, 7.3, 8.1, 8.2, 8.3.2 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9568.txt)
+- [RFC Editor, errata da RFC 9568: erratas verificadas 7949, 8298 e 8301 (lidas em 2026-10-19)](https://www.rfc-editor.org/errata/rfc9568)
+- [RFC 2281, Cisco Hot Standby Router Protocol (HSRP), março de 1998: Status of this Memo, seções 1, 5.1, 5.3, 5.6, 6.1, 6.3 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2281.txt)
+- [RFC Editor, errata da RFC 2281: errata verificada 464, sobre a seção 2 (lidas em 2026-10-19)](https://www.rfc-editor.org/errata/rfc2281)
+- [RFC 1122, Requirements for Internet Hosts - Communication Layers, outubro de 1989: seções 2.3.2.1, 3.3.1.2, 3.3.1.4 e 3.3.1.5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1256, ICMP Router Discovery Messages, setembro de 1991: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1256.txt)
+- [RFC 2338, Virtual Router Redundancy Protocol, abril de 1998: seção 5.3.6 (tornada obsoleta pela RFC 3768) (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2338.txt)
+- [RFC 3768, Virtual Router Redundancy Protocol (VRRP), abril de 2004: seção 13 (tornada obsoleta pela RFC 5798) (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3768.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, abril de 2024: seções 1.3 e 2.1.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [IANA, IANA OUI Ethernet Numbers, IANA Unicast 48-bit MAC Addresses, atualizado em 2026-10-13 (lida em 2026-10-19)](https://www.iana.org/assignments/ethernet-numbers/ethernet-numbers.xhtml)
+- [Cisco, First Hop Redundancy Protocols Configuration Guide, Configuring HSRP (Cisco IOS XE 16), atualizado em 3 de junho de 2026 (lida em 2026-10-19)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/configuration/xe-16/fhp-xe-16-book/fhp-hsrp.html)
+- [Cisco IOS First Hop Redundancy Protocols Command Reference, standby arp gratuitous through track vrrp, atualizada em 18 de agosto de 2014: standby timers, standby preempt, standby track, standby use-bia, standby version (lida em 2026-10-19)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/ipapp_fhrp/command/fhp-cr-book/fhp-s2.html)
+- [Documentação do FRRouting, VRRP (vrrpd), latest: System Configuration, Interface Configuration e show vrrp (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/vrrp.html)
+- [keepalived.conf(5), Keepalived Configuration's Manual, branch master: vrrp_instance (lida em 2026-10-19)](https://raw.githubusercontent.com/acassen/keepalived/master/doc/man/man5/keepalived.conf.5.in)
+- [pcap-filter(7), libpcap, cópia do man7.org de 2026-08-04: PRIMITIVES, ip proto e a abreviação vrrp (lida em 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [Wireshark Display Filter Reference, Virtual Router Redundancy Protocol (vrrp), versões 1.0.0 a 4.6.9 (lida em 2026-10-19)](https://www.wireshark.org/docs/dfref/v/vrrp.html)
+- [Wireshark Display Filter Reference, Cisco Hot Standby Router Protocol (hsrp), versões 1.0.0 a 4.6.9 (lida em 2026-10-19)](https://www.wireshark.org/docs/dfref/h/hsrp.html)

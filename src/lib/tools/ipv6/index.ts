@@ -33,6 +33,7 @@ export type {
   DecodedIpv6,
   Ipv6Classification,
   Ipv6PrefixMath,
+  Ipv6Teredo, // the Teredo decode shape, exported 2026-10-19 with the decoder
   Ipv6DecodeErrorCode,
 } from "./compute";
 export { Ipv6DecodeError } from "./compute";
@@ -72,9 +73,118 @@ export const manifest = Object.freeze({
       label: "RFC 4291 - IP Version 6 Addressing Architecture",
       type: "rfc",
       url: "https://www.rfc-editor.org/rfc/rfc4291",
-      access_date: "2026-06-27",
-      scope: "text representation, address types/scopes, EUI-64 (Appendix A)",
+      access_date: "2026-10-19", // re-read 2026-10-19 for the s2.7 flag and scope tables (was 2026-06-27)
+      scope: "text representation, address types, s2.7 multicast flags and scope values (0 and F reserved), EUI-64 (Appendix A)", // widened 2026-10-19
       status: "active",
+    },
+    // -- Sources added 2026-10-19 (PRIME's decisions A1 to A3), each downloaded that day --
+    {
+      id: "iana-ipv6-special-registry", // the authority for every special-use row
+      label: "IANA IPv6 Special-Purpose Address Registry (CSV; registry last updated 2025-10-09)", // registry date as printed by IANA
+      type: "registry", // an IANA registry, not an RFC
+      url: "https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry-1.csv", // the CSV read on the day
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the 3fff::/20, 5f00::/16, 64:ff9b:1::/48 and 2001::/32 rows and their names", // what this tool takes from it
+      status: "active", // live registry
+    },
+    {
+      id: "iana-ipv6-multicast-addresses", // scope values and the SSM group-ID ranges
+      label: "IANA IPv6 Multicast Address Space Registry (last updated 2026-04-07)", // registry date as printed by IANA
+      type: "registry", // an IANA registry
+      url: "https://www.iana.org/assignments/ipv6-multicast-addresses/ipv6-multicast-addresses.txt", // text form read on the day
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "IPv6 Multicast Address Scopes table (0 and F reserved, 6-7 and 9-D unassigned); Unicast-based (Including SSM) Multicast Group IDs ranges", // sub-registries used
+      status: "active", // live registry
+    },
+    {
+      id: "rfc7346", // Realm-Local scope and the scope registry
+      label: "RFC 7346 - IPv6 Multicast Address Scopes", // August 2014
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc7346", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "scope 3 named Realm-Local; creation of the IANA scope registry", // what it changes
+      status: "active", // current
+    },
+    {
+      id: "rfc7371", // flag-bit naming
+      label: "RFC 7371 - Updates to the IPv6 Multicast Addressing Architecture", // September 2014
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc7371", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the ff1 flag field |X|Y|P|T| and the rule to treat flag bits as separate bits", // section 4 and section 3
+      status: "active", // current
+    },
+    {
+      id: "rfc3306", // P flag and the SSM range
+      label: "RFC 3306 - Unicast-Prefix-based IPv6 Multicast Addresses", // August 2002
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc3306", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the P flag; section 6, SSM addresses form FF3x::/32", // what this tool reads
+      status: "active", // current
+    },
+    {
+      id: "rfc3956", // R flag
+      label: "RFC 3956 - Embedding the Rendezvous Point (RP) Address in an IPv6 Multicast Address", // November 2004
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc3956", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the R flag (embedded-RP addresses, FF70::/12)", // read out, not decoded
+      status: "active", // current
+    },
+    {
+      id: "rfc4607", // SSM
+      label: "RFC 4607 - Source-Specific Multicast for IP", // August 2006
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc4607", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "section 1: FF3x::/32 reserved for SSM, P=1 T=1 plen=0, the invalid / IANA / dynamic group-ID ranges", // what this tool applies
+      status: "active", // current
+    },
+    {
+      id: "rfc9637", // 3fff::/20
+      label: "RFC 9637 - Expanding the IPv6 Documentation Space", // August 2024
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc9637", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the 3fff::/20 documentation prefix", // one classification row
+      status: "active", // current
+    },
+    {
+      id: "rfc9602", // 5f00::/16
+      label: "RFC 9602 - Segment Routing over IPv6 (SRv6) Segment Identifiers in the IPv6 Addressing Architecture", // October 2024
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc9602", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the 5f00::/16 SRv6 SID block", // one classification row
+      status: "active", // current
+    },
+    {
+      id: "rfc8215", // 64:ff9b:1::/48
+      label: "RFC 8215 - Local-Use IPv4/IPv6 Translation Prefix", // August 2017
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc8215", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "the 64:ff9b:1::/48 local-use translation prefix", // one classification row
+      status: "active", // current
+    },
+    {
+      id: "rfc4380", // Teredo
+      label: "RFC 4380 - Teredo: Tunneling IPv6 over UDP through Network Address Translations (NATs)", // February 2006
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc4380", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "section 4: Teredo address layout and the XOR obfuscation of the client port and IPv4 address", // the decoder's specification
+      status: "active", // current, updated by RFC 5991
+    },
+    {
+      id: "rfc5991", // Teredo flags update
+      label: "RFC 5991 - Teredo Security Updates", // September 2010
+      type: "rfc", // IETF RFC
+      url: "https://www.rfc-editor.org/rfc/rfc5991", // canonical RFC URL
+      access_date: "2026-10-19", // downloaded 2026-10-19
+      scope: "section 3.1: the Flags field |C|z|Random1|U|G|Random2|; section 3.2: cone bit deprecated", // how the flags are read
+      status: "active", // current
     },
     {
       id: "rfc5952",

@@ -1,46 +1,179 @@
 ---
 slug: dns-record-types-in-answers
 title: "Como ler os registros em uma resposta do dig"
-summary: "Todo registro em uma seção do dig são cinco colunas: nome, TTL, classe, tipo e rdata. Este artigo percorre as colunas e depois o rdata dos tipos de registro que você realmente encontra, de A e CNAME a MX, SOA, SRV e CAA, para que uma parede de registros se leia como fatos simples."
-concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata"]
-relatedTools: ["dig-output-explainer"]
-relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig", "gslb-two-tier-pool-then-member"]
+summary: "Cada registro que o dig imprime é um resource record em cinco colunas: nome do owner, TTL, classe, tipo e os dados específicos do tipo, sem o campo de comprimento que viaja na mensagem. Depois da leitura, você consegue nomear cada coluna, decodificar os dados de registros A, AAAA, CNAME, NS, SOA, MX, TXT, PTR, SRV e CAA, distinguir o TTL decrescente de um cache do TTL da zona, seguir uma cadeia de CNAME até o nome que define o código de status e reconhecer os aliases, timers e erros de aspas que fazem uma resposta aparentemente correta falhar."
+concepts: ["a record", "aaaa", "cname", "mx", "soa", "txt", "srv", "caa", "ttl", "rdata", "ptr", "ns", "class", "negative caching"]
+relatedTools: ["dig-output-explainer", "dig-command-builder", "nslookup-output-explainer", "ipv6", "acme-dns01"]
+relatedArticles: ["reading-dig-output", "dns-message-header-and-flags", "dnssec-records-in-dig", "gslb-two-tier-pool-then-member", "reading-a-dns-answer", "authoritative-vs-non-authoritative-answers", "choosing-a-public-dns-resolver", "dns-zone-transfers-and-notify", "anatomy-of-a-dig-command-line"]
 category: networking
 order: 42
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-Dentro das seções ANSWER, AUTHORITY e ADDITIONAL, cada linha é um resource record com as mesmas cinco colunas:
+Abaixo do header e da pergunta, cada linha que o dig imprime nas seções answer, authority e additional é um resource record (RR) em cinco colunas: nome do owner, time to live (TTL), classe, tipo e dados, o formato de master file da Request for Comments (RFC) 1035. Este artigo lê as colunas e depois os dados dos tipos que você encontra; [a resposta como um todo](/learn/reading-a-dns-answer), [seus blocos](/learn/reading-dig-output) e [seu header](/learn/dns-message-header-and-flags) têm artigos próprios. Depois disso você consegue decodificar cada registro, distinguir a contagem regressiva de um cache da constante de uma zona e seguir uma cadeia de CNAME até o nome que mereceu o código de status.
 
+## Cinco colunas, seis campos na mensagem
+
+Na mensagem, um registro tem seis campos ([RFC 1035, seção 3.2.1](https://www.rfc-editor.org/rfc/rfc1035.txt)): NAME, "an owner name, i.e., the name of the node to which this resource record pertains", o nome do nó a que o registro pertence; TYPE e CLASS, dois octetos cada; TTL; RDLENGTH; e RDATA, uma sequência de octetos de comprimento variável que descreve o recurso. O dig imprime cinco, porque os dados impressos já implicam o comprimento, na ordem do master file, em que "Since type and class mnemonics are disjoint, the parse is unique" (seção 5.1), a leitura é única porque tipo e classe não se confundem: o tipo é sempre a última palavra antes dos dados. A linha da pergunta tem três colunas e nenhum TTL (seção 4.1.2) e começa com ponto e vírgula porque o dig a imprime como comentário por padrão ([manual do dig, +question](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)).
+
+Ilustrativo, composto no formato do dig ([BIND 9.20.29 masterdump.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/masterdump.c)) com um endereço e o TTL que example.com respondeu em 2026-10-18:
+
+```text
+;; ANSWER SECTION:
+example.com.		300	IN	A	104.20.23.154
 ```
-example.com.		3600	IN	A	104.20.23.154
+
+Na prática a classe de quase toda consulta é IN, a Internet ([RFC 9499, seção 4](https://www.rfc-editor.org/rfc/rfc9499.txt)); a Internet Assigned Numbers Authority (IANA) registra IN como 1 e Chaos (CH) como 3 ([IANA DNS Parameters, DNS CLASSes](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)), e CH sobrevive para perguntas sobre o próprio servidor, como `id.server` do tipo TXT ([RFC 4892, seção 2](https://www.rfc-editor.org/rfc/rfc4892.txt)).
+
+## O TTL: contagem regressiva no cache, constante na zona
+
+O TTL é "a 32 bit unsigned integer that specifies the time interval (in seconds) that the resource record may be cached before it should be discarded" ([RFC 1035, seção 4.1.3](https://www.rfc-editor.org/rfc/rfc1035.txt)), o intervalo em segundos durante o qual o registro pode ficar em cache; a seção 3.2.1 dizia com sinal, o que a errata 2130 corrige ([RFC 1035, errata 2130](https://www.rfc-editor.org/errata/rfc1035)). Vai de 0 a 2147483647 como máximo, não como obrigação ([RFC 2181, seção 8](https://www.rfc-editor.org/rfc/rfc2181.txt)), com teto recomendado de 604.800 segundos, sete dias ([RFC 8767, seção 4](https://www.rfc-editor.org/rfc/rfc8767.txt)).
+
+Quem respondeu decide o que você vê: "refresh timers and TTLs for cached data conceptually 'count down', while data in the zone stays with constant TTLs" ([RFC 1035, seção 6.1.3](https://www.rfc-editor.org/rfc/rfc1035.txt)), em cache o TTL conta para trás, na zona fica constante. Lido por um resolver público em 2026-10-18, o CNAME de `www.iana.org` mostrou TTL 2971 e, 305 segundos depois, 2666. Os registros A da mesma resposta foram de 216 a 300: expiraram, foram buscados de novo e recomeçaram nos 300 da zona. Perguntado [ao servidor autoritativo](/learn/authoritative-vs-non-authoritative-answers), o número não se move. Um [resolver público anycast](/learn/choosing-a-public-dns-resolver) é muitos caches ([RFC 4892, seção 1](https://www.rfc-editor.org/rfc/rfc4892.txt)).
+
+## Endereços e nomes: A, AAAA, NS e PTR
+
+Os dados de um registro A são um endereço de 32 bits em decimal pontuado, e um host com vários endereços tem vários registros A ([RFC 1035, seção 3.4.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). Um registro AAAA guarda um endereço IPv6 de 128 bits na ordem de bytes da rede ([RFC 3596, seção 2.2](https://www.rfc-editor.org/rfc/rfc3596.txt)).
+
+Os dados de um registro NS (name server) nomeiam um host que deve ser autoritativo para a classe e o domínio ([RFC 1035, seção 3.3.11](https://www.rfc-editor.org/rfc/rfc1035.txt)); os registros NS ficam no topo da zona, ao lado do SOA ([RFC 1034, seção 4.2.1](https://www.rfc-editor.org/rfc/rfc1034.txt)).
+
+Os dados de um registro PTR (domain name pointer) são um nome ([RFC 1035, seção 3.3.12](https://www.rfc-editor.org/rfc/rfc1035.txt)). Sob in-addr.arpa, cada label é um octeto do endereço, em ordem inversa (seção 3.5): 192.0.2.1 é consultado como `1.2.0.192.in-addr.arpa`. O IPv6 inverte seus 32 dígitos hexadecimais, um label cada, sob ip6.arpa ([RFC 3596, seção 2.5](https://www.rfc-editor.org/rfc/rfc3596.txt)), então 2001:db8::1 vira `1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa`, nome que o [IPv6 Toolkit](/tools/ipv6) calcula.
+
+## CNAME: a cadeia que o servidor segue
+
+Os dados de um registro CNAME (canonical name) "specifies the canonical or primary name for the owner. The owner name is an alias" ([RFC 1035, seção 3.3.1](https://www.rfc-editor.org/rfc/rfc1035.txt)), o owner é um alias do nome canônico. "If a CNAME RR is present at a node, no other data should be present" ([RFC 1034, seção 3.6.2](https://www.rfc-editor.org/rfc/rfc1034.txt)), nada mais onde há CNAME, exceto os registros `RRSIG` e `NSEC` de uma zona assinada ([RFC 4035, seção 2.5](https://www.rfc-editor.org/rfc/rfc4035.txt)). Perguntado por um registro A de um alias, o servidor copia o CNAME para a resposta e recomeça no nome canônico ([RFC 1034, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc1034.txt)), de modo que a resposta carrega a cadeia em ordem, cada registro tendo como owner os dados do anterior ([RFC 2308, seção 1](https://www.rfc-editor.org/rfc/rfc2308.txt)). Ilustrativo, com endereços de documentação:
+
+```text
+;; ANSWER SECTION:
+www.example.com.		3600	IN	CNAME	www.example.com.cdn.example.net.
+www.example.com.cdn.example.net. 300	IN	A	192.0.2.10
+www.example.com.cdn.example.net. 300	IN	A	192.0.2.11
 ```
 
-Isto é **nome** (`example.com.`), **TTL** em segundos (`3600`, por quanto tempo pode ficar em cache), **classe** (`IN` para Internet, essencialmente sempre), **tipo** (`A`) e **rdata** (`104.20.23.154`, o payload específico do tipo). Os registros de pergunta são a exceção: começam com `;`, não carregam TTL e não têm rdata, porque uma pergunta apenas nomeia o que você pediu.
+Quem respondeu decide se você vê a cadeia inteira. Um resolver recursivo a segue, guardando o CNAME em cache e recomeçando no nome canônico ([RFC 1034, seção 5.3.3](https://www.rfc-editor.org/rfc/rfc1034.txt)). Um servidor autoritativo cujo alvo está em outra zona devolve o CNAME e um referral na seção authority ([RFC 2308, seção 2.1](https://www.rfc-editor.org/rfc/rfc2308.txt)); a segunda consulta é sua.
 
-## Os tipos que você encontra, e seu rdata
+O código de resposta (RCODE) pertence ao fim da cadeia: "The RCODE in the ultimate DNS response MUST BE set based on the final query cycle leading to that response" ([RFC 6604, seção 3](https://www.rfc-editor.org/rfc/rfc6604.txt)), o do último ciclo de consulta. Uma cadeia que termina em nome inexistente dá NXDOMAIN com os CNAMEs ainda na resposta ([RFC 2308, seção 2.1](https://www.rfc-editor.org/rfc/rfc2308.txt)); uma que termina em nome sem o tipo pedido dá NOERROR, só CNAMEs na resposta e um SOA na seção authority (seção 2.2).
 
-- **A** e **AAAA** (os registros de endereço IPv4 e endereço IPv6): um endereço IPv4 ou IPv6. O rdata é apenas o endereço.
-- **CNAME** (Nome Canônico, do inglês Canonical Name): um alias. O rdata é outro nome, e os registros reais ficam sob esse alvo. Um CNAME em uma resposta é o motivo de você às vezes ver dois registros: o alias e, em seguida, o endereço para o qual ele aponta.
-- **NS**: um servidor de nomes autoritativo para a zona. O rdata é o nome do servidor.
-- **MX** (Troca de Correio, do inglês Mail Exchange): um mail exchanger. O rdata são dois campos, um número de preferência e um hostname; a menor preferência vence.
-- **SOA** (Início de Autoridade, do inglês Start of Authority): o registro do ápice da zona, e o rdata mais denso que você vai ler. Seus sete campos são o servidor primário, a caixa postal do administrador (com o primeiro ponto substituindo o `@`), o serial e os timers de refresh, retry, expire e minimum. O minimum também serve como TTL de cache negativo, então ele governa por quanto tempo um NXDOMAIN dessa zona é lembrado.
-- **TXT** (Texto, do inglês Text): texto livre, entre aspas. Carrega políticas SPF (Estrutura de Política do Remetente, do inglês Sender Policy Framework), chaves DKIM (Correio Identificado por DomainKeys, do inglês DomainKeys Identified Mail) e tokens de verificação de domínio.
-- **PTR** (Ponteiro, do inglês Pointer): o registro reverso, mapeando um endereço de volta para um nome. Você o vê ao consultar um endereço sob `in-addr.arpa` ou `ip6.arpa`.
-- **SRV** (Serviço, do inglês Service): um localizador de serviço. O rdata são quatro campos: prioridade, peso, porta e host alvo.
-- **CAA** (Autorização de Autoridade Certificadora, do inglês Certification Authority Authorization): quais autoridades certificadoras podem emitir para o domínio. O rdata é um byte de flags, uma tag (`issue`, `issuewild`, `iodef`) e um valor.
-- **HTTPS** e **SVCB**: registros de service binding mais novos que carregam dicas de conexão (ALPN, porta, dicas de endereço) para uma origem.
+## SOA: sete campos, e o que MINIMUM significa hoje
 
-## O TTL é um relógio, não uma constante
+Os dados do registro SOA (start of a zone of authority) são dois nomes e cinco números ([RFC 1035, seção 3.3.13](https://www.rfc-editor.org/rfc/rfc1035.txt)): MNAME, o servidor primário; RNAME, a caixa postal responsável escrita como nome, cujo primeiro label é a parte local ([RFC 1912, seção 2.2](https://www.rfc-editor.org/rfc/rfc1912.txt)); SERIAL, a versão da zona; REFRESH, RETRY e EXPIRE, os timers das [transferências de zona](/learn/dns-zone-transfers-and-notify); e MINIMUM. Ilustrativo, composto do SOA de example.com em 2026-10-18, no formato padrão e com `+multiline +ttlunits` ([BIND 9.20.29 soa_6.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/ttl.c)):
 
-O TTL que você vê de um resolvedor recursivo decrementa conforme o registro envelhece no cache dele, então a mesma consulta um minuto depois pode mostrar um número menor. Consulte o servidor autoritativo diretamente (aquele em um registro NS, com `@`) e você verá o TTL configurado na zona. Essa diferença costuma ser a forma mais rápida de distinguir um problema de cache de um problema de zona.
+```text
+example.com.		1800	IN	SOA	elliott.ns.cloudflare.com. dns.cloudflare.com. 2416374680 10000 2400 604800 1800
 
+example.com.		30m IN SOA	elliott.ns.cloudflare.com. dns.cloudflare.com. (
+				2416374680 ; serial
+				10000      ; refresh (2 hours 46 minutes 40 seconds)
+				2400       ; retry (40 minutes)
+				604800     ; expire (1 week)
+				1800       ; minimum (30 minutes)
+				)
+```
 
-## Uma resposta CNAME são duas respostas, e a segunda pode ser o problema
+A RFC 2308 redefiniu MINIMUM: "The remaining of the current meanings, of being the TTL to be used for negative responses, is the new defined meaning of the SOA minimum field" ([RFC 2308, seção 4](https://www.rfc-editor.org/rfc/rfc2308.txt)), o TTL das respostas negativas. Um servidor que reporta NXDOMAIN, ou um nome sem dados do tipo pedido, põe o SOA da zona na seção authority, e "The TTL of this record is set from the minimum of the MINIMUM field of the SOA record and the TTL of the SOA itself" (seção 3), o menor entre MINIMUM e o TTL do próprio SOA. Em example.com ambos valem 1800, então uma resposta negativa vive no máximo 30 minutos em cache, NODATA e NXDOMAIN igualmente (seção 5).
 
-Peça um registro A num nome que é CNAME e um servidor bem comportado retorna **os dois**: o CNAME e o registro A para o qual ele resolve. A seção de resposta carrega a cadeia.
+Em 2026-10-18, um nome inexistente sob example.com voltou NOERROR com o SOA acima na seção authority: a negação compacta de existência responde NODATA em vez de NXDOMAIN ([RFC 9824, seção 1](https://www.rfc-editor.org/rfc/rfc9824.txt)); um nome inexistente sob `.invalid` voltou NXDOMAIN com o SOA da raiz, porque "Users MAY assume that queries for 'invalid' names will always return NXDOMAIN responses" ([RFC 6761, seção 6.4](https://www.rfc-editor.org/rfc/rfc6761.txt)), nomes sob invalid sempre devolvem NXDOMAIN.
 
-É nessa cadeia que moram duas falhas silenciosas. **Um CNAME apontando para um nome sem registro do tipo pedido** retorna NOERROR com a cadeia incompleta — o alias resolveu e o alvo não tinha nada. E **um CNAME que cruza para uma zona da qual o servidor não é autoritativo** pode retornar só o alias, deixando o cliente iniciar uma segunda consulta que ele talvez não esteja configurado para fazer.
+## MX e SRV: preferência, prioridade, peso e o ponto que significa nenhum
 
-**Leia a seção de resposta inteira, não a última linha.** O registro que você pediu pode não estar lá mesmo quando o status diz que nada deu errado.
+Os dados de um registro MX (mail exchange) são um PREFERENCE de 16 bits e um host EXCHANGE ([RFC 1035, seção 3.3.9](https://www.rfc-editor.org/rfc/rfc1035.txt)). O servidor de e-mail remetente ordena por preferência, menor primeiro, e sorteia entre iguais ([RFC 5321, seção 5.1](https://www.rfc-editor.org/rfc/rfc5321.txt)). Um único registro `0 .` é o null MX, nenhum e-mail aceito, e "A domain that advertises a null MX MUST NOT advertise any other MX RR" ([RFC 7505, seção 3](https://www.rfc-editor.org/rfc/rfc7505.txt)), e nenhum outro MX.
+
+Um registro SRV (Server Selection), tipo 33, tem como owner um nome da forma `_Service._Proto.Name` e guarda Priority, Weight, Port e Target ([RFC 2782, The format of the SRV RR](https://www.rfc-editor.org/rfc/rfc2782.txt)). "A client MUST attempt to contact the target host with the lowest-numbered priority it can reach" (Usage rules), a menor prioridade alcançável primeiro, e entre prioridades iguais "Larger weights SHOULD be given a proportionately higher probability of being selected" (Usage rules), pesos maiores recebem probabilidade proporcionalmente maior. Um Target `.` significa que o serviço decididamente não está disponível (The format of the SRV RR). O exemplo da própria RFC:
+
+```text
+_foobar._tcp    SRV 0 1 9 old-slow-box.example.com.
+                SRV 0 3 9 new-fast-box.example.com.
+                SRV 1 0 9 sysadmins-box.example.com.
+```
+
+A terceira máquina só é tentada quando as duas de prioridade 0 falham, e os pesos 1 e 3 não dividem o tráfego 1 para 3: o sorteio é um número aleatório uniforme de 0 à soma, inclusive, então a máquina de peso 3 é escolhida 3 vezes em 5 nesta ordem e 4 vezes em 5 se listada primeiro ([RFC 2782, errata 8120](https://www.rfc-editor.org/errata/rfc2782)).
+
+## TXT: strings de no máximo 255 octetos
+
+Os dados de um registro TXT (text) são uma ou mais character-strings, cada uma um octeto de comprimento seguido de tantos octetos, logo no máximo 255 octetos cada ([RFC 1035, seções 3.3 e 3.3.14](https://www.rfc-editor.org/rfc/rfc1035.txt)). O dig imprime cada string entre aspas duplas, separadas por um espaço, escapando aspas, barras invertidas e bytes não imprimíveis ([BIND 9.20.29 rdata.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/rdata.c)); as aspas são apresentação, não dados. Um valor longo chega como várias strings em um registro, e para o Sender Policy Framework (SPF) "the record MUST be treated as if those strings are concatenated together without adding spaces" ([RFC 7208, seção 3.3](https://www.rfc-editor.org/rfc/rfc7208.txt)), as strings são concatenadas sem espaço. A validação do Automatic Certificate Management Environment (ACME) põe seu token em um TXT sob `_acme-challenge` ([RFC 8555, seção 8.4](https://www.rfc-editor.org/rfc/rfc8555.txt)), o valor que o [ACME dns-01 TXT computer](/tools/acme-dns01) calcula.
+
+## CAA: flags, tag, valor
+
+Um registro CAA (Certification Authority Authorization) é impresso como `flags tag "value"`: um número de 0 a 255, letras minúsculas e dígitos, e um valor entre aspas ([RFC 8659, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc8659.txt); [BIND 9.20.29 caa_257.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/rdata.c)). Pela convenção de numeração, "the Flags value 1 means that bit 7 is set, while a value of 128 means that bit 0 is set" (seção 4.1), o valor 128 liga o bit 0: `128` marca uma propriedade que a certification authority (CA) precisa entender, ou não emite. As tags são `issue`, `issuewild` para nomes curinga, que tem precedência, e `iodef`, um endereço mailto, http ou https para relatórios (seções 4.2 a 4.4). A busca "climbs the DNS name tree from the specified label up to, but not including, the DNS root" (seção 3), sobe a árvore de nomes até a raiz, sem incluí-la. Nos exemplos da RFC, o segundo proíbe qualquer emissor (seção 4.2) e o terceiro barra toda CA que não implementou `tbs` (seção 4.5):
+
+```text
+certs.example.com         CAA 0 issue "ca1.example.net"
+nocerts.example.com       CAA 0 issue ";"
+new.example.com           CAA 128 tbs "Unknown"
+```
+
+Os tipos das DNS Security Extensions (DNSSEC), `RRSIG`, `DNSKEY`, `DS`, `NSEC` e parentes, aparecem nas mesmas cinco colunas quando você pergunta com `+dnssec`; [os registros DNSSEC na saída do dig](/learn/dnssec-records-in-dig) os lê.
+
+## Quando uma resposta aparentemente correta falha
+
+CNAME no ápice. O ápice guarda o SOA e os NS ([RFC 9499, seção 7](https://www.rfc-editor.org/rfc/rfc9499.txt)), e "A CNAME record is not allowed to coexist with any other data" ([RFC 1912, seção 2.4](https://www.rfc-editor.org/rfc/rfc1912.txt)), nada coexiste com um CNAME. As saídas são registros de endereço no ápice ou um registro HTTPS com SvcPriority 0, cujo "primary purpose of AliasMode is to allow aliasing at the zone apex, where CNAME is not allowed" ([RFC 9460, seção 2.4.2](https://www.rfc-editor.org/rfc/rfc9460.txt)), permitir alias no ápice, onde CNAME não é permitido.
+
+Alias onde se exige um host. "The domain name used as the value of a NS resource record, or part of the value of a MX resource record must not be an alias" ([RFC 2181, seção 10.3](https://www.rfc-editor.org/rfc/rfc2181.txt)), NS e MX não apontam para alias: nenhum endereço vem então na seção additional (seção 10.3), e NS apontando para CNAME conflita com servidores BIND ([RFC 1912, seção 2.4](https://www.rfc-editor.org/rfc/rfc1912.txt)).
+
+Registros velhos depois de uma mudança. Um cache guarda o registro antigo até o fim da contagem, então baixar o TTL depois não ajuda ninguém: "If a change can be anticipated, the TTL can be reduced prior to the change to minimize inconsistency during the change, and then increased back to its former value following the change" ([RFC 1034, seção 3.6](https://www.rfc-editor.org/rfc/rfc1034.txt)), reduza o TTL antes da mudança e restaure depois. Uma resposta negativa fica em cache do mesmo modo, por até min(MINIMUM, TTL do SOA).
+
+TXT e SRV mal lidos. Um TXT de várias strings unido com espaços, ou pesos de SRV lidos entre prioridades diferentes, são erros de leitura, não de zona.
+
+## Como ver isso
+
+```bash
+# TTLs da zona em um servidor autoritativo (endereço ilustrativo), contagem do cache no seu resolver
+dig @192.0.2.53 example.com A
+dig example.com A
+# Um tipo por vez; o SOA na forma verbosa com unidades
+dig example.com MX
+dig -t TXT example.com
+dig +multiline +ttlunits example.com SOA
+# Só as linhas de registro: nome, TTL, classe, tipo, dados
+dig +noall +answer example.com NS
+# Reverso: o dig monta 1.2.0.192.in-addr.arpa e pede PTR
+dig -x 192.0.2.1
+# Um NXDOMAIN de verdade, e a identidade de um servidor na classe CH
+dig nonexistent.invalid A
+dig @192.0.2.53 -c CH -t TXT id.server
+```
+
+`dig @server name type` é a invocação típica; sem tipo o dig pede A, sem servidor lê /etc/resolv.conf ([manual do dig, Simple Usage](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). `-x` monta o nome reverso e define o tipo PTR (Options, -x); `+noall +answer` deixa só as linhas de registro (Examples); [como o dig interpreta a linha de comando](/learn/anatomy-of-a-dig-command-line) tem artigo próprio.
+
+Cole a saída padrão de uma linha por registro no [dig output explainer](/tools/dig-output-explainer): ele separa cada registro em cinco colunas, nomeia os campos de dados de SOA, MX, SRV e CAA e sinaliza como NODATA uma resposta NOERROR sem registros. O [dig command builder](/tools/dig-command-builder) monta os comandos acima, classe CH e `-x` incluídos; o [nslookup output explainer](/tools/nslookup-output-explainer) lê a forma rotulada do nslookup.
+
+## Para lembrar
+
+- Uma linha de registro são cinco colunas, nome do owner, TTL, classe, tipo e dados; o RDLENGTH da mensagem fica implícito, e o tipo é sempre a última palavra antes dos dados.
+- O TTL é uma contagem de segundos sem sinal, no máximo 2147483647; decresce no cache e fica constante na zona.
+- O owner de um CNAME não guarda outro dado; o servidor copia o CNAME para a resposta e recomeça no alvo, e o RCODE pertence ao último nome da cadeia.
+- O MINIMUM do SOA é o TTL de cache negativo, limitado pelo TTL do próprio SOA, para NXDOMAIN e NODATA igualmente.
+- Preferência MX e prioridade SRV: menor primeiro; o peso do SRV só se divide entre prioridades iguais, e um target `.` significa serviço nenhum.
+- Uma string TXT tem no máximo 255 octetos; várias strings em um registro se unem sem espaço, e as aspas são do dig, não dos dados.
+- Flags 128 em CAA significa crítico; as tags são `issue`, `issuewild` e `iodef`, e a busca sobe em direção à raiz.
+
+## Fontes
+
+- [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: seções 3.2.1 a 3.2.4, 3.3, 3.3.1, 3.3.9, 3.3.11 a 3.3.14, 3.4.1, 3.5, 4.1.2, 4.1.3, 5.1 e 6.1.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 1035 errata, registros de errata do RFC Editor, 2003 a 2024: erratas 2130, 563, 5463, 5626 e 5975 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc1035)
+- [RFC 1034, Domain Names: Concepts and Facilities, novembro de 1987: seções 3.3, 3.6, 3.6.1, 3.6.2, 4.2.1, 4.3.2, 5.2.2 e 5.3.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 2181, Clarifications to the DNS Specification, julho de 1997: seções 5, 5.1, 5.2, 7.2, 8, 10.1, 10.1.1, 10.2 e 10.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), março de 1998: seções 1, 2.1, 2.2, 3, 4 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 6604, xNAME RCODE and Status Bits Clarification, abril de 2012: seções 1, 2.1 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6604.txt)
+- [RFC 3596, DNS Extensions to Support IP Version 6, outubro de 2003: seções 2.1 a 2.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3596.txt)
+- [RFC 2782, A DNS RR for specifying the location of services (DNS SRV), fevereiro de 2000: seções The format of the SRV RR, Usage rules e Fictional example (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2782.txt)
+- [RFC 2782 errata, registros de errata do RFC Editor, 2011 a 2025: errata 8120 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc2782)
+- [RFC 8659, DNS Certification Authority Authorization (CAA) Resource Record, novembro de 2019: seções 3, 4.1, 4.1.1, 4.2, 4.3, 4.4 e 4.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8659.txt)
+- [RFC 9460, Service Binding and Parameter Specification via the DNS (SVCB and HTTPS Resource Records), novembro de 2023: seções 1, 1.2, 2, 2.1, 2.4.1, 2.4.2, 2.4.3, 2.5.1, 7.2, 7.3, 9, 9.1 e 10.4.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9460.txt)
+- [RFC 7208, Sender Policy Framework (SPF) for Authorizing Use of Domains in Email, Version 1, abril de 2014: seções 3, 3.1, 3.3 e 3.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7208.txt)
+- [RFC 8555, Automatic Certificate Management Environment (ACME), março de 2019: seção 8.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8555.txt)
+- [RFC 7505, A Null MX No Service Resource Record for Domains That Accept No Mail, junho de 2015: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7505.txt)
+- [RFC 5321, Simple Mail Transfer Protocol, outubro de 2008: seção 5.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5321.txt)
+- [RFC 1912, Common DNS Operational and Configuration Errors, fevereiro de 1996: seções 2.2, 2.4 e 2.8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1912.txt)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, março de 2005: seção 2.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4035.txt)
+- [RFC 4892, Requirements for a Mechanism Identifying a Name Server Instance, junho de 2007: seções 1, 2 e 2.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4892.txt)
+- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, março de 2020: seções 1, 3 e 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8767.txt)
+- [RFC 6761, Special-Use Domain Names, fevereiro de 2013: seções 6.4 e 6.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, setembro de 2025: Abstract, seções 1, 2, 3.1, 5.1 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
+- [RFC 9499, DNS Terminology, março de 2024: seções 2, 3, 4, 5, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [IANA, Domain Name System (DNS) Parameters, atualizado em 16 de outubro de 2026: DNS CLASSes, Resource Record (RR) TYPEs e Underscored and Globally Scoped DNS Node Names (lido em 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [BIND 9.20.29 documentation, Manual Pages: dig - DNS lookup utility, Internet Systems Consortium, página sem data: Description, Simple Usage, Options, Query Options e Examples (lidas em 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
+- [BIND 9.20.29 source code, lib/dns/message.c e lib/dns/masterdump.c, Internet Systems Consortium: saída de seções e registros (lidos em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/masterdump.c)
+- [BIND 9.20.29 source code, lib/dns/ttl.c e lib/dns/rdata/generic/soa_6.c, Internet Systems Consortium: unidades de TTL e saída do SOA (lidos em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/ttl.c)
+- [BIND 9.20.29 source code, lib/dns/rdata.c e lib/dns/rdata/generic/caa_257.c, Internet Systems Consortium: saída de character-string e CAA (lidos em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/rdata.c)

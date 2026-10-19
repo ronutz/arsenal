@@ -1,54 +1,183 @@
 ---
 slug: multicast-what-it-costs-to-not-flood
 title: "Multicast: o preço de não inundar"
-summary: "Multicast envia uma cópia onde unicast enviaria milhares, e a economia é real. O que ele ganha em banda, paga em estado — e os modos de falha não são os esperados: uma rede que inunda multicast por toda parte normalmente está funcionando exatamente como foi configurada."
-concepts: ["multicast", "igmp", "pim", "spbm"]
-relatedTools: []
-relatedArticles: ["spbm-multicast-addresses-are-computed-not-learned", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead"]
+summary: "O multicast IP envia um datagrama a um endereço de grupo e deixa a rede fazer as cópias, e o preço é estado em cada switch e roteador que precisa saber onde estão os membros. Depois da leitura, você consegue mapear um endereço de grupo para o endereço MAC (media access control), calcular os timeouts do Internet Group Management Protocol (IGMP), explicar por que um switch inunda multicast e o que a falta de um querier provoca, ler o estado do Protocol Independent Multicast (PIM) no FRRouting e dizer o que o Source-Specific Multicast elimina."
+concepts: ["multicast", "igmp", "pim", "spbm", "mld", "igmp snooping", "querier", "rendezvous point", "rpf", "ssm"]
+relatedTools: ["ipv6", "python-playground"]
+relatedArticles: ["spbm-multicast-addresses-are-computed-not-learned", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "ipv4-addressing", "ipv6-addressing", "ipv6-neighbor-discovery", "what-is-an-oui", "the-ethernet-frame-field-by-field", "network-devices-switch-router-firewall", "vlans-and-8021q-trunking", "dynamic-routing-compared", "anycast"]
 category: networking
 order: 254
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
-## A aritmética que justifica o trabalho
+O multicast envia um datagrama a um endereço de grupo, e a rede faz as cópias onde os caminhos até os membros se separam: um fluxo de 5 Mb/s para 1.000 receptores custa ao emissor 5 Mb/s em vez de 5.000 (conta ilustrativa). O preço é estado. Os hosts anunciam a adesão pelo Internet Group Management Protocol (IGMP), ou pelo Multicast Listener Discovery (MLD) no IPv6; os switches escutam essas mensagens; os roteadores com Protocol Independent Multicast - Sparse Mode (PIM-SM) mantêm uma árvore por grupo. Depois da leitura, você consegue mapear um grupo para o endereço MAC (media access control), calcular os timeouts do IGMP, explicar por que o switch inunda multicast e o que a falta de querier provoca, ler o estado do PIM e dizer o que o Source-Specific Multicast (SSM) elimina.
 
-Um fluxo de vídeo para mil receptores são mil cópias no uplink do emissor, se for unicast. Como multicast é **uma cópia**, replicada pela rede no último ponto em que os caminhos divergem.
+## Um endereço, muitos receptores
 
-É esse o argumento inteiro, e é forte para o tráfego que se encaixa: dados de mercado, IPTV, sistemas de imagem e de boot, protocolos de descoberta, e tudo em que muitos receptores querem os mesmos bytes no mesmo instante. **Unicast escala com receptores; multicast escala com topologia**, e topologia cresce muito mais devagar.
+A Request for Comments (RFC) 1112, de agosto de 1989, define o modelo: "IP multicasting is the transmission of an IP datagram to a 'host group', a set of zero or more hosts identified by a single IP destination address", um grupo identificado por um único endereço de destino ([RFC 1112, seção 2](https://www.rfc-editor.org/rfc/rfc1112.txt)). Os grupos vão de 224.0.0.0 a 239.255.255.255, a antiga classe D de [como funcionam os endereços IPv4](/learn/ipv4-addressing), e o time to live (TTL) do multicast vale 1 por padrão: sair da rede local exige escolha explícita (seção 6.1).
 
-## Com o que você paga
+A Internet Assigned Numbers Authority (IANA) mantém 224.0.0.0/24 dentro do enlace: "Multicast routers should not forward any multicast datagram with destination addresses in this range, regardless of its TTL", essa faixa não se encaminha, qualquer que seja o TTL ([IANA, IPv4 Multicast Address Space registry](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml)). 232.0.0.0/8 fica reservada ao SSM e 239.0.0.0/8 ao uso dentro de um domínio ([RFC 5771, seções 8.1 e 10](https://www.rfc-editor.org/rfc/rfc5771.txt)); os exemplos usam 233.252.0.0/24, separada para documentação ([RFC 6676, seção 2](https://www.rfc-editor.org/rfc/rfc6676.txt)). No IPv6 o multicast é ff00::/8, com um campo de escopo de 4 bits além do qual os roteadores não podem encaminhar ([RFC 4291, seção 2.7](https://www.rfc-editor.org/rfc/rfc4291.txt)); os escopos estão em [como funciona o endereçamento IPv6](/learn/ipv6-addressing).
 
-**Estado, em cada equipamento do caminho.** Uma rede unicast encaminha um pacote sabendo apenas o destino. Uma rede multicast precisa saber, para cada grupo, **quais das suas portas têm ouvintes abaixo** — e esse conhecimento precisa ser construído, renovado e desmontado conforme receptores entram e saem.
+## Do endereço de grupo ao endereço MAC
 
-É essa a troca que raramente se enuncia com clareza. **Multicast move custo de banda para plano de controle**, e estado de plano de controle é o recurso que acaba de formas mais difíceis de enxergar: tamanhos de tabela, temporizadores de renovação, e a CPU gasta mantendo entradas de grupos que ninguém mais assiste.
+A RFC 1112 coloca "the low-order 23-bits of the IP address into the low-order 23 bits of the Ethernet multicast address 01-00-5E-00-00-00 (hex)", os 23 bits baixos do IP no MAC, e por isso "more than one host group address may map to the same Ethernet multicast address", mais de um grupo pode cair no mesmo MAC ([RFC 1112, seção 6.4](https://www.rfc-editor.org/rfc/rfc1112.txt)). Tome 233.252.0.1, em binário 11101001111111000000000000000001: os quatro primeiros bits, 1110, indicam grupo; os cinco seguintes, 10011, são descartados; os 23 de baixo, 0x7C0001, vêm depois de 01-00-5E, o que dá 01-00-5E-7C-00-01. Cinco bits descartados fazem 32 grupos por MAC, e 224.0.0.1 divide 01-00-5E-00-00-01 com 239.128.0.1. Rodando em CPython 3.13:
 
-## Dois mecanismos, e não são o mesmo
+```console
+$ python3 -q
+>>> import ipaddress
+>>> g = int(ipaddress.IPv4Address("233.252.0.1"))
+>>> f"{0x01005E000000 | (g & 0x7FFFFF):012X}"
+'01005E7C0001'
+>>> 2**28 // 2**23
+32
+>>> [str(ipaddress.IPv4Address(o << 24 | b << 23 | g & 0x7FFFFF)) for o in (224, 239) for b in (0, 1)]
+['224.124.0.1', '224.252.0.1', '239.124.0.1', '239.252.0.1']
+```
 
-São confundidos o tempo todo e fazem trabalhos diferentes em camadas diferentes.
+Num laboratório de 19 de outubro de 2026 (Linux 6.18), um host que entrou no grupo mostra as duas formas:
 
-**O IGMP é como um host diz que quer um grupo.** É a conversa entre um receptor e seu roteador local — entrar, sair, e consultas periódicas que verificam se alguém ainda escuta.
+```console
+$ ip maddr show dev eth0
+2:	eth0
+	link  01:00:5e:00:00:01
+	link  01:00:5e:7c:00:01
+	inet  233.252.0.1
+	inet  224.0.0.1
+```
 
-**O PIM é como os roteadores constroem a árvore de distribuição entre si.** Ele decide qual roteador encaminha qual grupo para qual vizinho, e é onde moram as decisões de projeto: árvore compartilhada ou caminho mais curto, onde fica o ponto de encontro, como se faz a transição entre as duas.
+O bit mais baixo do primeiro octeto é o bit de grupo ([RFC 9542, seção 2.1.1](https://www.rfc-editor.org/rfc/rfc9542.txt)), explicado em [o frame Ethernet campo a campo](/learn/the-ethernet-frame-field-by-field). O IPv6 põe os quatro últimos octetos do grupo após 33-33 ([RFC 2464, seção 7](https://www.rfc-editor.org/rfc/rfc2464.txt)), e assim ff02::101 e ff05::101 dividem 33-33-00-00-01-01. Com essa sobreposição, um host pode receber frames de grupos em que não entrou, e o IP os descarta em silêncio ([RFC 1112, seção 7.2](https://www.rfc-editor.org/rfc/rfc1112.txt)); a RFC 4541 prefere tabelas de encaminhamento por endereço IP "because the mapping between IP multicast addresses and link-layer multicast addresses is ambiguous", porque o mapeamento entre IP e MAC é ambíguo ([RFC 4541, seção 2.1.2](https://www.rfc-editor.org/rfc/rfc4541.txt)).
 
-**Uma rede pode ter IGMP funcionando perfeitamente e nenhum roteamento multicast** — receptores pedem, o switch local honra, e nada cruza uma fronteira de roteador. É um dos relatos mais comuns de "o multicast está quebrado", e nada está quebrado.
+## Por que o switch inunda
 
-## A falha que parece uma rede funcionando
+O switch aprende endereços MAC pela origem dos frames, e um endereço de grupo nunca aparece como origem ([RFC 1112, seção 6.2](https://www.rfc-editor.org/rfc/rfc1112.txt)). Diante de um destino multicast, ele "will forward a copy of the packet into each of the remaining network interfaces that are in the forwarding state", uma cópia por porta ativa ([RFC 4541, seção 1](https://www.rfc-editor.org/rfc/rfc4541.txt)), em toda a [VLAN](/learn/vlans-and-8021q-trunking). Os hosts filtram com pouco custo, mas numa LAN (local area network, rede local) compartilhada ninguém transmite enquanto um pacote inundado ocupa o meio, e fluxos pesados podem sufocar hosts até perderem queries (seções 1 e 2.1.2). A inundação de unicast desconhecido, a outra espécie, está em [switch, roteador e firewall](/learn/network-devices-switch-router-firewall).
 
-**Um switch sem IGMP snooping inunda multicast para todas as portas da VLAN**, porque um endereço MAC multicast não é unicast e o switch não tem o que aprender. Todo dispositivo do segmento recebe todo pacote de todo grupo e descarta o que não pediu.
+## IGMP e MLD: os hosts avisam o roteador
 
-Esse é o modo de falha que vale interiorizar, porque **ele é invisível exatamente onde as pessoas olham.** A aplicação funciona — os receptores recebem o tráfego. O switch não reporta erro, porque está fazendo precisamente o que foi projetado para fazer sem snooping. Quem sofre é todo o resto daquela VLAN, e o sintoma chega como lentidão sem relação em hosts que nada têm a ver com a aplicação multicast.
+O IGMP "is the protocol used by IPv4 systems to report their IP multicast group memberships to neighboring multicast routers", o IPv4 informa seus grupos aos roteadores vizinhos ([RFC 9776, Abstract](https://www.rfc-editor.org/rfc/rfc9776.txt)). A versão 2 trouxe a saída rápida e a versão 3 o filtro por origem (seção 1); a RFC 9776, Internet Standard de março de 2025, torna obsoleta a RFC 3376. Em cada enlace, um roteador é o querier: "If a multicast router hears a Query message from a router with a lower IP address, it MUST become a Non-Querier on that network", quem ouve uma query de endereço menor deixa de ser querier ([RFC 2236, seção 3](https://www.rfc-editor.org/rfc/rfc2236.txt)). Ele envia General Queries para 224.0.0.1, os membros respondem com reports, e cada report reinicia o temporizador do grupo (seção 3).
 
-**O snooping é o que torna o multicast uma economia em vez de um broadcast com passos extras.** Sem ele, a aritmética do começo deste artigo se inverte: o emissor transmite uma cópia e a rede entrega a todo mundo.
+Os padrões são Robustness Variable 2, Query Interval de 125 segundos e Query Response Interval de 10 ([RFC 9776, seções 8.1 a 8.3](https://www.rfc-editor.org/rfc/rfc9776.txt)). Um grupo sem reports expira depois do Group Membership Interval: 2 × 125 + 2 × 10 = 270 segundos na RFC 9776 (seção 8.4), e 2 × 125 + 10 = 260 segundos na fórmula antiga da [RFC 2236, seção 8.4](https://www.rfc-editor.org/rfc/rfc2236.txt). Os cinco minutos culpados quando um fluxo morre após uma mudança são esses 260 ou 270 segundos, arredondados. Um querier calado é substituído depois de 2 × 125 + 0,5 × 10 = 255 segundos (RFC 9776, seção 8.5).
 
-## A outra silenciosa: o querier
+Os reports do IGMPv3 vão para 224.0.0.22, onde escutam os roteadores IGMPv3 ([RFC 9776, seção 4.2.15](https://www.rfc-editor.org/rfc/rfc9776.txt)). O join do laboratório, capturado com `tcpdump -i eth0 -n -e -v -tttt 'igmp or udp'`:
 
-O IGMP snooping precisa de alguém enviando consultas periódicas, para que os switches saibam quais portas ainda têm ouvintes. Numa rede roteada, o roteador faz isso. **Num segmento sem roteador multicast — uma VLAN de servidores, um laboratório, uma rede de armazenamento — pode não haver querier nenhum**, e as entradas de snooping envelhecem.
+```text
+2026-10-19 15:42:43.355622 b2:be:d3:47:9b:c3 > 01:00:5e:00:00:16, ethertype IPv4 (0x0800), length 54: (tos 0xc0, ttl 1, id 0, offset 0, flags [DF], proto IGMP (2), length 40, options (RA))
+    198.51.100.131 > 224.0.0.22: igmp v3 report, 1 group record(s) [gaddr 233.252.0.1 to_ex, 0 source(s)]
+```
 
-O que acontece em seguida depende do switch, e nenhum dos desfechos é bom: ou ele **inunda** (de volta à falha anterior) ou **para de encaminhar o grupo**, e um fluxo que funcionou por cinco minutos depois de cada mudança para sem ninguém encostar nele.
+O MAC de destino é 224.0.0.22 mapeado; o TTL 1 o prende ao enlace; o protocolo 2 é o IGMP; `options (RA)` é o Router Alert; `to_ex, 0 source(s)`, excluir ninguém, é o join para qualquer origem do IGMPv3. Uma repetição veio 0,96 segundo depois, o padrão Linux de 1000 ms para `igmpv3_unsolicited_report_interval` ([Linux kernel documentation, IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)).
 
-**Se uma aplicação multicast funciona logo após um restart e morre minutos depois, procure o querier antes de olhar a aplicação.**
+No IPv6, o Multicast Listener Discovery Version 2 (MLDv2) é o IGMPv3 traduzido, e seus reports vão para ff02::16, que mapeia em 33-33-00-00-00-16 ([RFC 9777, seções 1 e 5.2.15](https://www.rfc-editor.org/rfc/rfc9777.txt)). Sem IPv6 no laboratório, não há captura de MLD.
 
-## O que levar daqui
+## O snooping e o querier de que ele depende
 
-**Multicast não falha alto.** Ele inunda, o que parece um problema de desempenho em outro lugar, ou para depois de um temporizador, o que parece problema de aplicação. Os dois diagnósticos mandam a investigação para o time errado, e em cada caso a rede está fazendo exatamente o que foi configurada para fazer.
+O switch com snooping lê essas mensagens e manda o tráfego do grupo "only to ports which have subscribed the respective destination multicast group", só às portas que se inscreveram no grupo ([Linux kernel documentation, Ethernet Bridging](https://docs.kernel.org/networking/bridge.html)). A referência, a RFC 4541 de maio de 2006, é apenas Informational ([RFC 4541, seção 1](https://www.rfc-editor.org/rfc/rfc4541.txt)). Duas coisas continuam inundadas: "Packets with a destination IP (DIP) address in the 224.0.0.X range which are not IGMP must be forwarded on all ports", esses saem por todas as portas (seção 2.1.2), e ff02::1 no IPv6 (seção 3). Para grupos que ninguém anunciou, "A switch may default to forwarding unregistered packets on all ports", pode mandá-los por todas as portas (seção 2.1.2).
+
+O snooping vive de reports, e os hosts só os enviam quando perguntados. Uma bridge Linux nova faz snooping (`mcast_snooping 1`) mas não pergunta (`mcast_querier 0`), e guarda as entradas por 26000 centissegundos, 260 segundos, o valor da RFC 2236 ([Linux kernel documentation, Ethernet Bridging](https://docs.kernel.org/networking/bridge.html)). O laboratório pôs um emissor, um membro H3 e um não membro H4 na mesma bridge, com membership interval de 20 segundos.
+
+Com o querier desligado, `bridge mdb show` listava `dev br1 port pH3 grp 233.252.0.1 temp`, mas H4 capturou os três datagramas de teste: sem querier, a bridge inundou. Com `mcast_querier 1`, ela enviou `0.0.0.0 > 224.0.0.1: igmp query v2`, e H4 não recebeu nenhum dos três seguintes. Com o querier de novo desligado, H4 recebeu tudo; a entrada expirou uns 20 segundos após o último report de H3, que seguiu recebendo por inundação.
+
+Uma segunda rodada pôs `mcast_flood off` nas portas dos hosts, flag ligada ao multicast database (MDB) que o `bridge mdb` mostra: ela "Controls whether multicast traffic for which there is no MDB entry will be flooded towards this given port", inunda ou não o que não tem entrada ([bridge(8)](https://man7.org/linux/man-pages/man8/bridge.8.html)). H3 recebeu enquanto havia querier e nada depois, embora sua entrada tenha durado mais 15 segundos. Um querier ausente, dois resultados, ambos permitidos pela RFC 4541: um segmento sem roteador multicast precisa de um querier configurado.
+
+As versões também pesam: se um switch com snooping IGMPv2 pode ler mal as queries IGMPv3, "it is recommended that in such a network, the multicast router be configured to use IGMPv2", recomenda-se configurar o roteador em IGMPv2 ([RFC 4541, seção 2.2](https://www.rfc-editor.org/rfc/rfc4541.txt)).
+
+## Entre roteadores: o PIM-SM e o estado que ele guarda
+
+A RFC 7761, Internet Standard de março de 2016, resume o PIM-SM: "It builds unidirectional shared trees rooted at a Rendezvous Point (RP) per group, and it optionally creates shortest-path trees per source", árvores compartilhadas com raiz no RP e, se preciso, árvores por origem ([RFC 7761, Abstract](https://www.rfc-editor.org/rfc/rfc7761.txt)). A informação de caminho reverso vem do roteamento unicast (seção 1), o assunto de [roteamento dinâmico comparado](/learn/dynamic-routing-compared).
+
+O Designated Router (DR) do receptor envia um Join (\*,G) rumo ao RP, e os dados descem por essa árvore, copiados em cada ramificação (seção 3.1). O DR do emissor encapsula os dados para o RP em mensagens Register, até o RP fazer join rumo à origem (seções 3.1 e 3.2). Depois, o DR do receptor pode passar à shortest-path tree (SPT) com um Join (S,G), por política local, de nunca até o primeiro pacote (seção 4.2.1). Os joins se repetem a cada 60 segundos e valem por 3,5 × 60 = 210 segundos (seção 4.11). Cada pacote precisa chegar pela interface de Reverse Path Forwarding (RPF), a que leva de volta à origem ou ao RP segundo a [tabela de rotas](/learn/routing-tables-and-default-gateway), senão não é encaminhado (seções 2.1 e 4.2).
+
+O laboratório roteado usou FRRouting 8.4.4: emissor 192.0.2.10, roteador mcR1 como primeiro hop e RP (203.0.113.1), roteador mcR2 como último hop e querier, e uma bridge com snooping com o membro H1 e o não membro H2. A configuração do mcR2 na sintaxe da 8.4.4 (a documentação mais nova põe o RP dentro de `router pim`):
+
+```text
+hostname mcR2
+ip pim rp 203.0.113.1 224.0.0.0/4
+interface p21
+ ip pim
+interface l0
+ ip pim
+ ip igmp
+```
+
+Depois que H1 entrou em 233.252.0.1 e o emissor mandou dez datagramas (trechos):
+
+```console
+mcR2# show ip igmp groups
+Interface        Group           Mode Timer    Srcs V Uptime
+l0               233.252.0.1     EXCL 00:04:15    1 3 00:00:05
+mcR1# show ip pim join
+ Interface  Address       Source  Group        State  Uptime    Expire  Prune
+ p12        198.51.100.1  *       233.252.0.1  JOIN   00:00:06  03:24   --:--
+mcR2# show ip mroute
+ Source      Group        Flags  Proto  Input  Output  TTL  Uptime
+ *           233.252.0.1  SC     IGMP   p21    pimreg  1    00:00:13
+                                 IGMP          l0      1
+ 192.0.2.10  233.252.0.1  S      STAR   p21    l0      1    00:00:07
+mcR2# show ip pim rpf
+ Source      Group        RpfIface  RpfAddress    RibNextHop    Metric  Pref
+ *           233.252.0.1  p21       198.51.100.1  198.51.100.1  0       0
+ 192.0.2.10  233.252.0.1  p21       198.51.100.1  198.51.100.1  0       0
+```
+
+O temporizador do grupo, 4:15 depois de 5 segundos, soma 260 segundos; a expiração do join, 3:24 depois de 6 segundos, soma 210, o `holdtime: 3m30s` capturado na rede. O join (\*,G) apontava o RP, `joined source #1: 203.0.113.1(SWR)`; meio segundo depois do primeiro datagrama, o mcR2 fez join na origem, `joined source #1: 192.0.2.10(S)`, e cada roteador ficou com duas entradas para um grupo. H1 recebeu os datagramas de 1 a 9: o primeiro nunca saiu do mcR1 enquanto a entrada (S,G) era criada, algo visto neste laboratório e nesta implementação, não documentado no protocolo. H2 não recebeu nada.
+
+## O RP como dependência, e o SSM como saída
+
+O RP é uma dependência: para um RP estático, "All routers in the PIM network must agree on these values", todos precisam concordar ([FRRouting documentation, PIM](https://docs.frrouting.org/en/latest/pim.html)); o mecanismo de Bootstrap Router (BSR) e os endereços de RP embutidos em grupos IPv6 automatizam a escolha ([RFC 7761, seção 3.7](https://www.rfc-editor.org/rfc/rfc7761.txt)), e o Anycast-RP dá convergência rápida quando um RP cai ([RFC 4610, seção 1](https://www.rfc-editor.org/rfc/rfc4610.txt)), o [anycast](/learn/anycast) aplicado a RPs.
+
+O SSM elimina essa dependência. O receptor assina um canal (S,G), uma origem e um grupo, em 232.0.0.0/8 ou ff3x::/32 ([RFC 4607, seção 1](https://www.rfc-editor.org/rfc/rfc4607.txt)), e nessas faixas "A router MUST NOT send a (\*,G) Join/Prune message for any reason", nenhum roteador envia Join/Prune (\*,G) ([RFC 7761, seção 4.8.1](https://www.rfc-editor.org/rfc/rfc7761.txt)). No laboratório, H1 assinou (192.0.2.10, 232.1.1.1): seu report dizia `[gaddr 232.1.1.1 allow, 1 source(s)]`, o mcR2 fez join direto na origem, sem linha (\*,G), `show ip pim group-type 232.1.1.1` respondeu `Group type : SSM`, e H1 recebeu os cinco datagramas. Um host que volta ao IGMPv2 provavelmente não recebe o canal ([RFC 4604, seção 2.2.1](https://www.rfc-editor.org/rfc/rfc4604.txt)).
+
+## Como falha e como é atacado
+
+O estado é a superfície de ataque. "A host can mount a denial-of-service attack by requesting a large number of subscriptions", um host nega serviço pedindo assinaturas em massa ([RFC 4607, seção 7.3](https://www.rfc-editor.org/rfc/rfc4607.txt)), e os roteadores devem limitar assinaturas por interface ou host (seção 7.3), como o `ip igmp max-groups` do FRRouting. No PIM, joins forjados consomem recursos do roteador ([RFC 7761, seção 6.4](https://www.rfc-editor.org/rfc/rfc7761.txt)), e mensagens Hello, Assert ou Register forjadas podem tomar o papel de DR, calar um encaminhador legítimo ou injetar tráfego na árvore compartilhada (seção 6.1). A defesa é aceitar PIM apenas de vizinhos conhecidos que já enviaram um Hello válido (seção 6.2), no FRRouting com `ip pim allowed-neighbors`.
+
+No IGMP, "A forged Query Message from a machine with a lower IP address than the current Querier will cause Querier duties to be assigned to the forger", a query forjada transfere o papel de querier ([RFC 9776, seção 9.1](https://www.rfc-editor.org/rfc/rfc9776.txt)), e o tráfego pode seguir para grupos vazios por um Group Membership Interval. Os roteadores não devem encaminhar queries, e "Hosts SHOULD ignore v2 or v3 Queries without the Router Alert option", sem Router Alert a query é ignorada (seção 9.1); todo pacote IGMP do laboratório trazia essa opção. Uma query forjada também pode enganar switches com snooping, mas o pior caso equivale a não ter snooping ([RFC 4541, seção 6](https://www.rfc-editor.org/rfc/rfc4541.txt)).
+
+## Como ver
+
+Num host, `ip maddress show` lista os grupos e seus MACs ([ip-maddress(8)](https://man7.org/linux/man-pages/man8/ip-maddress.8.html)). Numa bridge, `bridge mdb show` mostra a tabela do snooping ([bridge(8)](https://man7.org/linux/man-pages/man8/bridge.8.html)) e `ip -d link show` as configurações do querier ([ip-link(8)](https://man7.org/linux/man-pages/man8/ip-link.8.html)). Num roteador Linux, `ip mroute show` mostra o cache que o daemon de roteamento preenche ([ip-mroute(8)](https://man7.org/linux/man-pages/man8/ip-mroute.8.html)); no mcR2:
+
+```console
+$ ip mroute show
+(0.0.0.0,233.252.0.1)            Iif: p21        Oifs: pimreg l0 p21  State: resolved
+(192.0.2.10,233.252.0.1)         Iif: p21        Oifs: l0  State: resolved
+```
+
+O FRRouting acrescenta `show ip igmp interface`, que aponta o querier, `show ip pim neighbor`, `show ip pim rp-info` e `show ip pim upstream` ([FRRouting documentation, PIM](https://docs.frrouting.org/en/latest/pim.html)). Na rede, os filtros `igmp` e `pim` selecionam os protocolos de controle e `ip multicast` os dados ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)); a opção `-e` do tcpdump imprime o header MAC, onde o mapeamento aparece ([tcpdump(8)](https://man7.org/linux/man-pages/man8/tcpdump.8.html)). O [IPv6 Toolkit](/tools/ipv6) classifica ff02::1 como multicast de escopo link-local, e o [Python playground](/tools/python-playground) roda a conta acima.
+
+## Para lembrar
+
+- O emissor manda uma cópia ao grupo, e a rede a copia onde a árvore se ramifica.
+- Grupos IPv4 caem em 01-00-5E pelos 23 bits baixos, e 32 grupos dividem cada MAC; grupos IPv6 caem em 33-33 pelos 32 bits baixos.
+- Sem snooping de IGMP ou MLD, o switch inunda multicast na VLAN inteira; com ele, ainda inunda 224.0.0.0/24 e ff02::1.
+- O snooping precisa de um querier: sem ele, a bridge do laboratório inundou, e com a inundação desligada o fluxo parou.
+- Com os padrões, a associação expira em 260 segundos (RFC 2236) ou 270 segundos (RFC 9776), não em cinco minutos.
+- O PIM-SM guarda estado (\*,G) e (S,G) em cada roteador da árvore, renovado a cada 60 segundos e válido por 210, sob um RP comum.
+- O SSM (232/8, ff3x::/32) assina um canal (S,G) diretamente: sem RP, sem árvore compartilhada, sem estado (\*,G).
+
+## Fontes
+
+- [RFC 1112, Host Extensions for IP Multicasting, agosto de 1989: seções 2, 3, 4, 6.1, 6.2, 6.4, 7.2, 7.4 e apêndice I (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1112.txt)
+- [IANA, IPv4 Multicast Address Space registry, atualizado em 20 de agosto de 2026: Note, Local Network Control Block, Source-Specific Multicast Block, Scoped Multicast Ranges (lida em 2026-10-19)](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml)
+- [RFC 5771, IANA Guidelines for IPv4 Multicast Address Assignments, março de 2010: seções 3, 4, 5, 8, 9 e 10 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5771.txt)
+- [RFC 6676, Multicast Addresses for Documentation, agosto de 2012: seções 2 e 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6676.txt)
+- [RFC 4291, IP Version 6 Addressing Architecture, fevereiro de 2006: seções 2.7 e 2.7.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, abril de 2024: seções 2.1.1, 2.1.3 e 2.3.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, dezembro de 1998: seção 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2464.txt)
+- [RFC 4541, Considerations for IGMP and MLD Snooping Switches, maio de 2006: seções 1, 2.1.1, 2.1.2, 2.2, 3 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4541.txt)
+- [RFC 9776, Internet Group Management Protocol, Version 3, março de 2025: Abstract, seções 1, 4.2.15, 6, 6.1, 6.6.2, 8.1 a 8.5, 8.11, 9.1, 9.2 e apêndices A.2 e C (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9776.txt)
+- [RFC 2236, Internet Group Management Protocol, Version 2, novembro de 1997: seções 3, 8.4 e 8.5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2236.txt)
+- [RFC 9777, Multicast Listener Discovery Version 2 (MLDv2) for IPv6, março de 2025: Abstract, seções 1, 2, 5.2.15, 9.4 e 11, apêndice B.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9777.txt)
+- [RFC 7761, Protocol Independent Multicast - Sparse Mode (PIM-SM): Protocol Specification (Revised), março de 2016: Abstract, seções 2.1, 3, 3.1 a 3.4, 3.7, 4.1, 4.2, 4.2.1, 4.8, 4.8.1, 4.11, 6.1.1, 6.1.2, 6.2 e 6.4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7761.txt)
+- [RFC 4610, Anycast-RP Using Protocol Independent Multicast (PIM), agosto de 2006: Abstract e seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4610.txt)
+- [RFC 4607, Source-Specific Multicast for IP, agosto de 2006: seções 1, 2, 6 e 7.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4607.txt)
+- [RFC 4604, Using IGMPv3 and MLDv2 for Source-Specific Multicast, agosto de 2006: Abstract e seções 2, 2.2.1, 3.5 e 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4604.txt)
+- [Linux kernel documentation, IP Sysctl: igmp_max_memberships, igmp_qrv, force_igmp_version, igmpv2_unsolicited_report_interval, igmpv3_unsolicited_report_interval, mc_forwarding (lida em 2026-10-19)](https://docs.kernel.org/networking/ip-sysctl.html)
+- [Linux kernel documentation, Ethernet Bridging: Multicast, Multicast snooping, IFLA_BR_MCAST_QUERIER, IFLA_BR_MCAST_QUERIER_INTVL, IFLA_BR_MCAST_MEMBERSHIP_INTVL, IFLA_BRPORT_MCAST_FLOOD (lida em 2026-10-19)](https://docs.kernel.org/networking/bridge.html)
+- [bridge(8), Linux manual page, iproute2, cópia do man7.org: bridge link (mcast_flood) e bridge mdb (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/bridge.8.html)
+- [ip-link(8), Linux manual page, iproute2, cópia do man7.org: opções do tipo bridge mcast_snooping, mcast_querier, mcast_querier_interval, mcast_membership_interval (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-link.8.html)
+- [ip-maddress(8), Linux manual page, iproute2, cópia do man7.org de 4 de agosto de 2026: SYNOPSIS e DESCRIPTION (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-maddress.8.html)
+- [ip-mroute(8), Linux manual page, iproute2, cópia do man7.org de 4 de agosto de 2026: SYNOPSIS e DESCRIPTION (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-mroute.8.html)
+- [pcap-filter(7), Linux manual page, libpcap: ip proto, igmp, ip multicast, ether multicast (lida em 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [tcpdump(8), Linux manual page: opções -e e -tttt (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/tcpdump.8.html)
+- [FRRouting documentation, PIM, latest: PIM Routers, PIM Interface Configuration, Show PIM Information (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/pim.html)

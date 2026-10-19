@@ -23,15 +23,29 @@
 //     therefore the TCP MSS. This is why a GRE tunnel interface on a
 //     1500-byte link shows MTU 1476.
 //
-//   * L2 SHIMS (802.1Q vlan, QinQ, MPLS labels) live in the FRAME HEADER,
-//     outside the IP payload, so they DO NOT change the IP MTU - they grow
-//     the Ethernet frame instead (1522-byte "baby giants" with one VLAN tag),
+//   * MPLS LABELS (mpls, mpls2..mpls8) are ALSO inside the link MTU. RFC 3032
+//     section 3.1 (read 2026-10-19) defines the Frame Payload as excluding
+//     the data link headers, 802.1Q included, and says that for a labelled
+//     IP datagram "the Frame Payload consists of the label stack entries and
+//     the IP datagram". Each label stack entry is 4 octets (section 2.1), so
+//     on a link left at Ethernet's conventional 1500-byte payload the IP
+//     datagram gets 1496 with one label, 1492 with two (section 3.2's own
+//     example: 1488 leaves room for three). The labels do not grow the
+//     Ethernet frame; to carry a full 1500-byte IP packet the link's MPLS
+//     MTU must be raised (section 3: "one needs to forward it as frame with
+//     a 1504-byte payload"). Corrected 2026-10-19: until then this engine
+//     wrongly classed MPLS labels with the 802.1Q tags below.
+//
+//   * L2 SHIMS (802.1Q vlan, QinQ) live in the FRAME HEADER, outside the
+//     frame payload, so they DO NOT change the IP MTU - they grow the
+//     Ethernet frame instead (1522-byte "baby giants" with one VLAN tag),
 //     which is why switches need frame headroom (system MTU 9216 and the
 //     like), not a smaller IP MTU.
 //
 // All header sizes below are protocol constants from the relevant RFCs,
-// cross-verified against multiple independent write-ups on 2026-07-20 (see
-// the manifest sources in ./index.ts).
+// cross-verified against multiple independent write-ups on 2026-07-20, and
+// the MPLS rule re-read from RFC 3032 on 2026-10-19 (see the manifest
+// sources in ./index.ts).
 // ============================================================================
 
 /** Stable error codes (the UI maps them to localized messages). */
@@ -53,8 +67,11 @@ export class MtuCalcError extends Error {
   }
 }
 
-/** Which side of the MTU line a layer sits on (the tool's core lesson). */
-export type LayerKind = "encap" | "shim";
+/** Which side of the MTU line a layer sits on (the tool's core lesson).
+ *  "encap": a tunnel or session header inside the link MTU;
+ *  "label": MPLS label stack entries, inside the frame payload (RFC 3032 s3.1);
+ *  "shim": an 802.1Q / QinQ tag in the frame header, outside the payload. */
+export type LayerKind = "encap" | "label" | "shim"; // "label" added 2026-10-19 (RFC 3032 s3.1)
 
 /** One resolved overhead layer in the requested stack. */
 export interface StackLayer {
@@ -62,8 +79,8 @@ export interface StackLayer {
   id: string;
   /** Bytes this layer costs (already resolved for the outer IP version). */
   bytes: number;
-  /** "encap" shrinks the inner IP MTU; "shim" grows the frame. */
-  kind: LayerKind;
+  /** "encap" and "label" shrink the inner IP MTU; "shim" grows the frame. */
+  kind: LayerKind; // see LayerKind for which side of the MTU line each kind sits on
   /** Set when the size is a documented minimum/base (options can add more). */
   variable?: boolean;
 }
@@ -72,8 +89,9 @@ export interface StackLayer {
 export interface FrameNumbers {
   /** Untagged Ethernet header: dst(6)+src(6)+EtherType(2). */
   l2Header: 14;
-  /** Total shim bytes (VLAN/QinQ/MPLS) carried in the header. */
-  shimBytes: number;
+  /** Total shim bytes (802.1Q VLAN / QinQ) carried in the header; MPLS
+   *  labels are not here: they sit inside the frame payload (RFC 3032 s3.1). */
+  shimBytes: number; // VLAN and QinQ tags only, since 2026-10-19
   /** Frame check sequence. */
   fcs: 4;
   /** Largest frame the link must accept: MTU + 14 + shims + 4. */
@@ -89,12 +107,14 @@ export interface EfficiencyRow {
   percent: number;
 }
 
-/** The underlay a full 1500-byte inner packet needs through this overlay. */
+/** The underlay (or, for MPLS, the link payload) a full 1500-byte inner
+ *  packet needs through this stack. */
 export interface UnderlayNumbers {
   /** The classic design target: carry a full standard inner packet. */
   innerTarget: 1500;
-  /** 1500 + total encapsulation bytes. */
-  requiredMtu: number;
+  /** 1500 + encapsulation bytes + MPLS label bytes (RFC 3032 s3: one label
+   *  on a 1500-byte payload needs "a 1504-byte payload"). */
+  requiredMtu: number; // includes labelTotal since 2026-10-19
   /** The frame that underlay MTU implies (with this stack's shims). */
   requiredFrame: number;
 }
@@ -109,10 +129,13 @@ export interface MtuCalcResult {
   layers: StackLayer[];
   /** Sum of encapsulation bytes (shrinks the inner MTU). */
   encapTotal: number;
-  /** Sum of shim bytes (grows the frame). */
-  shimTotal: number;
-  /** MTU - encapTotal: what an inner IP packet may occupy. */
-  innerMtu: number;
+  /** Sum of MPLS label stack bytes, 4 per entry (RFC 3032 s2.1); inside the
+   *  frame payload, so it shrinks the inner MTU too (RFC 3032 s3.1). */
+  labelTotal: number; // added 2026-10-19; 0 when no mpls token is given
+  /** Sum of 802.1Q / QinQ shim bytes (grows the frame, not the payload). */
+  shimTotal: number; // excludes MPLS labels since 2026-10-19
+  /** MTU - encapTotal - labelTotal: what an inner IP packet may occupy. */
+  innerMtu: number; // labels subtracted since 2026-10-19 (RFC 3032 s3.1, s3.2)
   /** innerMtu - 20 (IPv4) - 20 (TCP, no options). */
   mssV4: number;
   /** innerMtu - 40 (IPv6) - 20 (TCP, no options). */
@@ -121,8 +144,9 @@ export interface MtuCalcResult {
   frame: FrameNumbers;
   /** Efficiency at this MTU plus the two canonical reference points. */
   efficiency: { atMtu: EfficiencyRow; ref1500: EfficiencyRow; ref9000: EfficiencyRow };
-  /** Present only when the stack contains at least one encapsulation. */
-  underlay?: UnderlayNumbers;
+  /** Present only when the stack contains at least one encapsulation or
+   *  MPLS label (anything that spends bytes inside the link MTU). */
+  underlay?: UnderlayNumbers; // also present for MPLS-only stacks since 2026-10-19
   /** True when the stack includes 6in4 (the inner protocol is IPv6). */
   innerIsV6Only: boolean;
   /** True when a layer's size is a documented base that options can exceed. */
@@ -134,7 +158,9 @@ export interface MtuCalcResult {
 //   IPv4 header 20 (RFC 791, no options) - IPv6 header 40 (RFC 8200)
 //   TCP header 20 (RFC 9293, no options) - UDP header 8 (RFC 768)
 //   Ethernet II header 14 + FCS 4; preamble+SFD 8 + inter-frame gap 12
-//   802.1Q tag 4 (IEEE 802.1Q); QinQ two tags 8; MPLS label 4 (RFC 3032)
+//   802.1Q tag 4 (IEEE 802.1Q); QinQ two tags 8 (both in the frame header)
+//   MPLS label stack entry 4 (RFC 3032 s2.1), counted INSIDE the frame
+//     payload with the IP datagram (RFC 3032 s3.1, read 2026-10-19)
 //   PPPoE 6 + PPP 2 = 8 (RFC 2516) -> the classic 1492
 //   GRE base header 4 (RFC 2784); + outer IP
 //   IPIP / 6in4: outer IP only (RFC 2003 / RFC 4213)
@@ -279,7 +305,9 @@ export function run(raw: string): MtuCalcResult {
       if (mplsLabels < 1 || mplsLabels > 8) {
         throw new MtuCalcError("mpls-range", "mpls label count must be 1..8");
       }
-      layers.push({ id: "mpls", bytes: mplsLabels * MPLS_LABEL, kind: "shim" });
+      // RFC 3032 s3.1: the label stack is part of the Frame Payload, so it
+      // spends link MTU like an encapsulation (was "shim" until 2026-10-19).
+      layers.push({ id: "mpls", bytes: mplsLabels * MPLS_LABEL, kind: "label" });
       continue;
     }
     throw new MtuCalcError("format", `unrecognized token "${t}"`);
@@ -287,9 +315,13 @@ export function run(raw: string): MtuCalcResult {
 
   // -- Arithmetic (the whole tool is these few lines) ------------------------
   const encapTotal = layers.filter((l) => l.kind === "encap").reduce((s, l) => s + l.bytes, 0);
+  // MPLS label bytes: inside the frame payload (RFC 3032 s3.1), 4 per entry.
+  const labelTotal = layers.filter((l) => l.kind === "label").reduce((s, l) => s + l.bytes, 0);
   const shimTotal = layers.filter((l) => l.kind === "shim").reduce((s, l) => s + l.bytes, 0);
 
-  const innerMtu = mtu - encapTotal;
+  // Everything inside the link MTU comes out of the inner IP packet: on a
+  // 1500-byte link one label leaves 1496, two 1492 (RFC 3032 s3.2).
+  const innerMtu = mtu - encapTotal - labelTotal;
   if (innerMtu < MTU_MIN) {
     throw new MtuCalcError("too-small", `encapsulation leaves ${innerMtu} bytes (< ${MTU_MIN})`);
   }
@@ -300,6 +332,7 @@ export function run(raw: string): MtuCalcResult {
     outer,
     layers,
     encapTotal,
+    labelTotal, // MPLS label stack bytes (0 when none), reported separately from encapTotal
     shimTotal,
     innerMtu,
     mssV4: innerMtu - IPV4 - TCP,
@@ -322,9 +355,11 @@ export function run(raw: string): MtuCalcResult {
 
   // The classic overlay design question: what underlay MTU carries a full
   // standard 1500-byte inner packet without fragmentation? Only meaningful
-  // when at least one encapsulation is in play.
-  if (encapTotal > 0) {
-    const requiredMtu = 1500 + encapTotal;
+  // when something spends bytes inside the link MTU: an encapsulation, or an
+  // MPLS label stack (RFC 3032 s3: one more label on a 1500-byte payload
+  // "needs to forward it as frame with a 1504-byte payload").
+  if (encapTotal + labelTotal > 0) { // labels count since 2026-10-19
+    const requiredMtu = 1500 + encapTotal + labelTotal; // payload the link must carry
     result.underlay = {
       innerTarget: 1500,
       requiredMtu,

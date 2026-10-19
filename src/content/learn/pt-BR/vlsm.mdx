@@ -1,82 +1,131 @@
 ---
 slug: vlsm
 title: "VLSM: como dividir um bloco em sub-redes de tamanhos diferentes"
-summary: "Como recortar um bloco de endereços em sub-redes de tamanhos diferentes sem desperdiçar espaço, e a regra de alocar do maior para o menor, que mantém tudo organizado: por que o primeiro padrão de subnetting proibia isso, que protocolos de roteamento tornaram isso possível, como dimensionar cada sub-rede, por que alocar primeiro os blocos maiores mantém cada um alinhado ao seu limite e como deixar espaço para crescer e para sumarizar."
-concepts: ["vlsm", "variable-length subnet masking", "subnetting", "prefix length", "largest first", "address planning", "classless routing", "rip-2", "ospf", "route summarisation", "/31"]
-relatedTools: ["cidr"]
-relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example"]
+summary: "Máscaras de tamanho variável (VLSM) permitem que as subnets recortadas de um mesmo bloco pai tenham prefixos de comprimentos diferentes, cada uma dimensionada para os hosts que precisa abrigar, em vez de uma única máscara para a rede inteira. Depois da leitura, você consegue dimensionar cada subnet pela quantidade de hosts, alocar os blocos do maior para o menor sem que nenhum pule para a frente, dizer quais protocolos de roteamento conseguem carregar o plano e por que o longest match torna as máscaras mistas seguras, contabilizar o espaço livre em blocos alinhados e conferir a alocação no modo VLSM da calculadora CIDR."
+concepts: ["vlsm", "variable-length subnet masking", "subnetting", "prefix length", "largest first", "address planning", "classless routing", "rip-2", "ospf", "route summarisation", "/31", "rfc 1812", "rfc 4632", "longest match", "rip-1"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "private-address-space", "route-summarization", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "vlsm-worked-example", "static-routes-and-longest-match", "ospf-primer", "dynamic-routing-compared", "routing-tables-and-default-gateway"]
 category: networking
 order: 4
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-19"
 ---
 
-## O problema das sub-redes do mesmo tamanho
+Máscaras de tamanho variável, o VLSM (variable-length subnet masks), permitem que as subnets recortadas de um mesmo bloco pai tenham prefixos de comprimentos diferentes, cada uma dimensionada para os hosts que precisa abrigar. A Request for Comments (RFC) dos requisitos para roteadores IPv4 descreve o arranjo: "an address block associated with a given network prefix could be subdivided into subblocks of different sizes, so that the network prefixes associated with the subblocks would have different length", um bloco dividido em sub-blocos de tamanhos diferentes, cada um com seu prefix length (comprimento do prefixo) ([RFC 1812, seção 4.2.3.4](https://www.rfc-editor.org/rfc/rfc1812.txt)). Você encontra isso onde um segmento de cem hosts fica ao lado de um link entre dois roteadores, porque nenhuma máscara única atende aos dois sem desperdício. A aritmética da máscara fica por conta de [Fundamentos de subnetting](/learn/subnetting-basics), e a notação com barra do Classless Inter-domain Routing (CIDR), de [Notação CIDR explicada](/learn/cidr-notation). Depois da leitura, você consegue dimensionar cada subnet, alocar os blocos sem abrir buracos, dizer quais protocolos carregam o plano, explicar por que o longest match torna as máscaras mistas seguras e conferir o resultado na calculadora do site.
 
-O subnetting clássico divide um bloco em pedaços de um tamanho só. É simples, mas desperdiça endereços quando as necessidades são diferentes. Se um segmento tem 100 hosts e outro é um link entre dois roteadores, com 2 hosts, dar um `/26` (62 utilizáveis) para cada um não atende o primeiro e joga fora 60 endereços no segundo. O **VLSM**, variable-length subnet masking (máscara de tamanho variável), resolve isso: cada sub-rede usa o tamanho de prefixo que atende à sua própria necessidade, e todas saem do mesmo bloco pai.
+## Uma máscara por rede, depois mais de uma
 
-A única coisa que deixa o VLSM mais trabalhoso do que o subnetting de tamanho fixo é a ordem: você tem de alocar **as maiores sub-redes primeiro**; senão, vai deixar endereços ilhados e criar sobreposições.
+A RFC 950, o padrão de subnetting de agosto de 1985, criou a máscara de endereço, mas a divisão era decidida uma vez por rede: "the width of the &lt;subnet-number&gt; field is constant for a given network", largura constante numa mesma rede ([RFC 950, seção 2.1](https://www.rfc-editor.org/rfc/rfc950.txt)), e uma só máscara, a "my_ip_mask" (seção 2.2), servia a todos os endereços da rede. A largura constante durou dois anos. Os requisitos para gateways de junho de 1987 disseram "we allow a particular subnetted network to use more than one subnet mask", mais de uma máscara por rede ([RFC 1009, seção 1.1.4](https://www.rfc-editor.org/rfc/rfc1009.txt)), e concluíram, para a tabela de roteamento: "for full generality the mask needs to be given explicitly for each entry", máscara explícita em cada entrada (seção 4.2). A RFC 1009 hoje é Historic, mas a permissão começa ali.
 
-## Por que isso nem sempre foi permitido
+Em junho de 1995 a permissão virou obrigação: "Routers MUST support variable length network prefixes in both their interface configurations and their routing databases", prefixos de comprimento variável nas interfaces e nas bases de roteamento (RFC 1812, seção 4.2.3.4). A RFC 1878, hoje Historic, tabulou cada comprimento de prefixo com máscara e quantidade de endereços ([RFC 1878, Table](https://www.rfc-editor.org/rfc/rfc1878.txt)); a RFC 4632 absorveu a tabela na regra de que "prefixes may be defined to describe any power of two-sized block of between one and 2^32 end system addresses", qualquer bloco de tamanho potência de dois ([RFC 4632, seção 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Nenhum desses documentos usa a sigla: a RFC 1812 escreve "variable length subnet masks (variable length network prefixes)" (Apêndice E) e a especificação do OSPF diz "variable length subnetting" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). VLSM é o nome que o mercado deu ao que eles descrevem.
 
-O primeiro padrão de subnetting partia do princípio de que cada rede teria um só tamanho de sub-rede. Na RFC 950 (1985), "the width of the &lt;subnet-number&gt; field is constant for a given network" ([RFC 950, seção 2.1](https://www.rfc-editor.org/rfc/rfc950)): todas as sub-redes de uma rede tinham a mesma máscara, e o roteador podia aplicar uma única máscara à rede inteira.
+## Com o que a máscara precisa viajar
 
-Tamanhos variáveis exigem algo que os primeiros protocolos não tinham: a máscara indo junto com cada rota. A versão 1 do RIP (Routing Information Protocol) mandava os endereços sem máscara, e a especificação da versão seguinte chama isso de "a particularly serious problem for routers since they need a subnet mask to know how to determine a route" ([RFC 2453, seção 2](https://www.rfc-editor.org/rfc/rfc2453)); o RIP versão 2 incluiu um campo Subnet Mask em cada entrada de rota (seção 4.3). O OSPF (Open Shortest Path First) leva a máscara desde o início: "Each route distributed by OSPF has a destination and mask. Two different subnets of the same IP network number may have different sizes (i.e., different masks). This is commonly referred to as variable length subnetting" ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328)). Daí sai a regra: o VLSM só funciona quando todos os roteadores aprendem as rotas por um protocolo que leva a máscara, ou por rotas estáticas que informam a máscara.
+Um plano com várias máscaras só roda em roteadores que aprendem a máscara com cada rota. "Network masks or prefix lengths must be explicitly carried in routing protocols", máscaras ou comprimentos de prefixo carregados explicitamente pelos protocolos ([RFC 4632, seção 5](https://www.rfc-editor.org/rfc/rfc4632.txt)): OSPF, Intermediate System to Intermediate System (IS-IS), a versão 2 do Routing Information Protocol (RIP), o Enhanced Interior Gateway Routing Protocol (EIGRP) e o BGP carregam; o RIP versão 1, o HELLO e o antigo Interior Gateway Routing Protocol (IGRP) não (seção 5). As famílias estão comparadas em [Roteamento dinâmico em comparação](/learn/dynamic-routing-compared).
 
-## Como dimensionar cada sub-rede
+O RIP mostra a diferença no formato do pacote. Uma entrada de rota da versão 1 traz um "IP address (4)" seguido de dois campos marcados "must be zero (4)" ([RFC 1058, seção 3.1](https://www.rfc-editor.org/rfc/rfc1058.txt)). A versão 2 colocou "Subnet Mask (4)" num desses campos ([RFC 2453, seção 4](https://www.rfc-editor.org/rfc/rfc2453.txt)), porque a ausência era "a particularly serious problem for routers since they need a subnet mask to know how to determine a route", problema sério para roteadores, que precisam da máscara para a rota (seção 2). O OSPF versão 2 leva a máscara em cada Hello e em cada rota: "Each route distributed by OSPF has a destination and mask. Two different subnets of the same IP network number may have different sizes (i.e., different masks)", cada rota com destino e máscara, subnets da mesma rede com tamanhos diferentes ([RFC 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328.txt)), como mostra [OSPF: o mapa, a matemática e a área 0](/learn/ospf-primer). Uma rota estática também declara o destino como prefixo ([RFC 1812, seção 7.4](https://www.rfc-editor.org/rfc/rfc1812.txt)).
 
-Comece pelo número de hosts de que cada segmento precisa e ache o menor bloco que comporta esse número, sem esquecer que, em todo bloco comum, dois endereços são reservados (o de rede e o de broadcast):
+Quando as máscaras diferem, um destino pode coincidir com várias rotas, e a regra de encaminhamento torna isso seguro: "Routers must use the most specific matching route (the longest matching network prefix) when forwarding traffic", a rota mais específica, de prefixo mais longo ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). O OSPF faz disso dever de quem planeja: "Subnet masks must be assigned so that the best match for any IP destination is unambiguous", o best match de qualquer destino tem de ser inequívoco ([RFC 2328, seção 3.5](https://www.rfc-editor.org/rfc/rfc2328.txt)). A consulta em si está em [Rotas estáticas, longest prefix match e distância administrativa](/learn/static-routes-and-longest-match).
 
-- 100 hosts pedem 7 bits de host (2⁷ − 2 = 126 utilizáveis): um `/25`.
-- 50 hosts pedem 6 bits de host (62 utilizáveis): um `/26`.
-- 25 hosts pedem 5 bits de host (30 utilizáveis): um `/27`.
-- 10 hosts pedem 4 bits de host (14 utilizáveis): um `/28`.
-- Um link ponto a ponto, com 2 hosts, é um `/30` (2 utilizáveis) ou um `/31`, que a RFC 3021 permite em links ponto a ponto, onde "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)).
+## Como dimensionar cada subnet
 
-Arredonde sempre para cima, até a próxima potência de dois. Um segmento de 100 hosts não cabe num `/26` (62), então fica com o tamanho seguinte, um `/25`. Leve em conta também o crescimento que você espera: um segmento que hoje tem 60 hosts cabe num `/26` com dois endereços de sobra, mas sem espaço para crescer.
+Toda subnet comum perde os hosts todos zeros e todos uns; por isso, como nota a RFC 1812, "each of these fields will be at least two bits long", cada um desses campos terá pelo menos dois bits ([RFC 1812, seção 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)); o bloco para h hosts é a menor potência de dois não menor que h mais 2. A tabela lista os tamanhos do plano e as bordas em que um host a mais muda a resposta:
 
-## Como recortar o bloco, do maior para o menor
+| Hosts necessários | Hosts mais 2 | Bloco (endereços) | Prefixo | Hosts utilizáveis | Máscara |
+|---|---|---|---|---|---|
+| 2 | 4 | 4 | /30 | 2 | 255.255.255.252 |
+| 10 | 12 | 16 | /28 | 14 | 255.255.255.240 |
+| 25 | 27 | 32 | /27 | 30 | 255.255.255.224 |
+| 50 | 52 | 64 | /26 | 62 | 255.255.255.192 |
+| 62 | 64 | 64 | /26 | 62 | 255.255.255.192 |
+| 63 | 65 | 128 | /25 | 126 | 255.255.255.128 |
+| 100 | 102 | 128 | /25 | 126 | 255.255.255.128 |
+| 127 | 129 | 256 | /24 | 254 | 255.255.255.0 |
 
-Suponha que você tenha o bloco `192.168.10.0/24` e precise das cinco sub-redes acima. Aloque em ordem decrescente de tamanho, com cada uma começando no seu limite natural:
+Um segmento de 60 hosts cabe num /26 com 2 de sobra, e o 63º host força um /25: dimensionar pela contagem de hoje é como um plano acaba renumerado depois. Um link entre dois roteadores pode usar um /31, já que "In a point-to-point link with a 31-bit subnet mask, the two addresses above MUST be interpreted as host addresses", os dois endereços de um link /31 são de host ([RFC 3021, seção 2.1](https://www.rfc-editor.org/rfc/rfc3021.txt)), mas um link "in which only one end supports the use of 31-bit prefixes may not operate correctly", só uma ponta aceitando /31, pode não funcionar (seção 5). Os casos /31 e /32 estão em [Fundamentos de subnetting](/learn/subnetting-basics); o plano abaixo fica com o /30.
 
+## Alinhamento, e por que o maior vem primeiro
+
+Um bloco de 2^k endereços só pode começar onde os k bits baixos são zero, e por isso a RFC 4632 diz que as alocações são "made in contiguous bit-aligned blocks", blocos contíguos alinhados ao bit ([RFC 4632, seção 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). No último octeto, .0 é 00000000, .128 é 10000000, .192 é 11000000, .224 é 11100000 e .240 é 11110000: cada deslocamento é múltiplo do bloco que inicia (128, 64, 32, 16 e 4).
+
+Tome 192.0.2.0/24, que o registro da Internet Assigned Numbers Authority (IANA) lista como "Documentation (TEST-NET-1)" ([IANA, IPv4 Special-Purpose Address Space](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml)), e cinco requisitos: 100, 50, 25 e 10 hosts, mais um link entre dois roteadores. Do maior para o menor, um atrás do outro:
+
+| Requisito | Subnet | Máscara | Faixa utilizável | Broadcast | Hosts utilizáveis |
+|---|---|---|---|---|---|
+| 100 hosts | 192.0.2.0/25 | 255.255.255.128 | 192.0.2.1 a 192.0.2.126 | 192.0.2.127 | 126 |
+| 50 hosts | 192.0.2.128/26 | 255.255.255.192 | 192.0.2.129 a 192.0.2.190 | 192.0.2.191 | 62 |
+| 25 hosts | 192.0.2.192/27 | 255.255.255.224 | 192.0.2.193 a 192.0.2.222 | 192.0.2.223 | 30 |
+| 10 hosts | 192.0.2.224/28 | 255.255.255.240 | 192.0.2.225 a 192.0.2.238 | 192.0.2.239 | 14 |
+| Link | 192.0.2.240/30 | 255.255.255.252 | 192.0.2.241 a 192.0.2.242 | 192.0.2.243 | 2 |
+
+Usados 244 de 256 endereços, 12 livres, 95,3%. Cada bloco começa onde o anterior terminou, por aritmética: todo bloco já colocado é uma potência de dois pelo menos tão grande quanto o próximo, e a soma dos tamanhos é múltiplo do seguinte (128 é múltiplo de 64, 192 de 32, 224 de 16, 240 de 4), e nenhum bloco precisa pular para a frente. Uma alocação num /22, com a rota de descarte do resumo, está recortada em [Uma alocação VLSM resolvida de ponta a ponta](/learn/vlsm-worked-example).
+
+## Como um plano dá errado
+
+**A ordem errada deixa buracos.** Coloque os mesmos cinco blocos do menor para o maior, cada um no próximo endereço alinhado. O link fica com 192.0.2.0/30; um /28 não pode começar em .4, pois 4 não é múltiplo de 16, e pula para 192.0.2.16/28; seguem 192.0.2.32/27, 192.0.2.64/26 e 192.0.2.128/25. Tudo cabe, 244 usados e 12 livres, mas o espaço livre agora é 192.0.2.4/30 e 192.0.2.8/29, dois bolsões no meio do plano em vez de uma cauda. Buraco é espaço não alocado, não conflito: blocos alinhados ficam disjuntos em qualquer ordem; sobreposição vem de um bloco fora do limite ou de um endereço usado duas vezes ([Sobreposições e lacunas entre subnets](/learn/subnet-overlap-and-gaps)).
+
+**Num pai exatamente cheio, a ordem errada perde uma subnet.** Requisitos de 62, 126 e 62 hosts pedem um /26, um /25 e um /26: 64 mais 128 mais 64 dá 256, o /24 inteiro. Do maior para o menor saem 192.0.2.0/25, 192.0.2.128/26 e 192.0.2.192/26, 100% usados. Do menor para o maior sai 192.0.2.0/26, o /25 pula para 192.0.2.128/25 e o último /26 não tem lugar: os 64 endereços livres, 192.0.2.64 a 192.0.2.127, ficaram atrás do cursor. Usados 192, livres 64, 75,0%, um requisito sem lugar embora a soma feche.
+
+A RFC 4632 mostra o efeito na escala de um provedor: seis sites entram num 10.24.0.0/13 "in the following order (significant because it demonstrates how temporary 'holes' may form in the service provider's address space)", ordem que mostra como buracos temporários se formam ([RFC 4632, seção 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). C1 fica com 10.24.0.0/21; C2 precisa de um /20 e, como 2048 não é múltiplo de 4096, vai para 10.24.16.0/20, deixando 10.24.8.0 a 10.24.15.255 como buraco que os /22 de C3 e C4 preenchem depois (seção 6.1). A errata verificada 2955 corrige o diagrama da seção, que imprime C4 como /20.
+
+**Misturar versões do RIP toma a liberdade de volta.** Onde roteadores da versão 1 escutam, "a single subnet mask should be used throughout the network", uma só máscara na rede inteira ([RFC 2453, seção 6](https://www.rfc-editor.org/rfc/rfc2453.txt)), ou podem surgir rotas blackhole.
+
+**Máscara divergente num segmento compartilhado para o OSPF antes do roteamento.** A Network Mask do Hello recebido é conferida contra a da interface, e "Any mismatch causes processing to stop and the packet to be dropped", qualquer divergência descarta o pacote ([RFC 2328, seção 10.5](https://www.rfc-editor.org/rfc/rfc2328.txt)): dois roteadores no mesmo segmento com /25 e /24 nunca viram vizinhos, e o sintoma é uma adjacência que não aparece, não uma rota errada.
+
+**Espalhar um site pelo plano joga fora o seu resumo.** As rotas de um site só viram um prefixo "by allocating a contiguous power-of-two block address space to the site", um bloco contíguo de tamanho potência de dois para o site ([RFC 4632, seção 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); veja [Sumarização de rotas](/learn/route-summarization) e [Supernetting e agregação de rotas](/learn/supernetting-and-aggregation).
+
+## Como deixar espaço para crescer
+
+A cauda do plano acima, 192.0.2.244 a 192.0.2.255, tem 12 endereços, mas em blocos alinhados é um /30 em 192.0.2.244 e um /29 em 192.0.2.248: nenhuma subnet com mais de 6 hosts cabe ali. Conte o espaço livre em blocos alinhados, não em endereços, e reserve o /27 do ano que vem enquanto há um /27 alinhado livre. O provedor da RFC 4632 fez o mesmo, já que "the number of IPv4 addresses 'required' by each site is assumed to allow for significant growth", cada site dimensionado já prevendo crescimento ([RFC 4632, seção 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)).
+
+A contagem em espelho da RFC 1219 permite trocar a máscara sem renumerar: "host bits (mask = 0) are assigned from the least significant bit working towards the most, and subnet bits (mask = 1) are assigned from the most significant bit working towards the least", bits de host do menos significativo para o mais, bits de subnet do mais para o menos ([RFC 1219, Overview](https://www.rfc-editor.org/rfc/rfc1219.txt)), e assim, quando uma subnet cresce, "no host ever need change addresses", nenhum host precisa mudar de endereço (Overview).
+
+## Como ver
+
+Num roteador Linux o plano aparece como vários comprimentos de prefixo sob um pai. Como "root PREFIX selects routes with prefixes not shorter than PREFIX", rotas com prefixo não mais curto que o informado ([ip-route(8), ip route show](https://man7.org/linux/man-pages/man8/ip-route.8.html)), `ip route show root 192.0.2.0/24` lista as subnets recortadas do pai, enquanto `ip route get 192.0.2.130` imprime a única rota que o kernel usaria, o longest match tornado visível. As máscaras das interfaces se veem com `ip address show` e se definem com `ip address add 192.0.2.129/26 dev eth0`, em que "The ADDRESS may be followed by a slash and a decimal number which encodes the network prefix length", barra e comprimento do prefixo depois do endereço ([ip-address(8), ip address add](https://man7.org/linux/man-pages/man8/ip-address.8.html)). A tabela em si está em [Tabelas de roteamento e o default gateway](/learn/routing-tables-and-default-gateway).
+
+O módulo `ipaddress` do Python confere o plano em poucas linhas, que o [Python playground](/tools/python-playground) roda no navegador:
+
+```text
+>>> from ipaddress import ip_network, collapse_addresses
+>>> plan = [ip_network(p) for p in ('192.0.2.0/25', '192.0.2.128/26',
+...         '192.0.2.192/27', '192.0.2.224/28', '192.0.2.240/30')]
+>>> free = [ip_network('192.0.2.244/30'), ip_network('192.0.2.248/29')]
+>>> list(collapse_addresses(plan + free))
+[IPv4Network('192.0.2.0/24')]
+>>> list(ip_network('192.0.2.0/24').address_exclude(ip_network('192.0.2.0/25')))
+[IPv4Network('192.0.2.128/25')]
+>>> ip_network('192.0.2.128/26').supernet_of(ip_network('192.0.2.192/27'))
+False
 ```
-/25  192.168.10.0   a .127   (126 utilizáveis)  segmento de 100 hosts
-/26  192.168.10.128 a .191   (62 utilizáveis)   segmento de 50 hosts
-/27  192.168.10.192 a .223   (30 utilizáveis)   segmento de 25 hosts
-/28  192.168.10.224 a .239   (14 utilizáveis)   segmento de 10 hosts
-/30  192.168.10.240 a .243   (2 utilizáveis)    enlace entre roteadores
-```
 
-Cada bloco começa exatamente onde o anterior termina, e tudo a partir de `192.168.10.244` continua livre para crescer depois.
+`collapse_addresses` devolver o pai prova que as cinco subnets e os dois blocos livres cobrem cada endereço exatamente uma vez; `address_exclude` lista o que sobra de um bloco em pedaços alinhados; `supernet_of` dá False porque o /26 e o /27 são irmãos, não aninhados ([documentação do Python 3.14, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)).
 
-A alocação do maior para o menor funciona por causa da aritmética, não por convenção. Todo bloco precisa começar num múltiplo do próprio tamanho. Quando os blocos vão em ordem decrescente, tudo o que veio antes de um bloco é feito de potências de dois maiores (ou iguais), e por isso o endereço em que o bloco anterior terminou é sempre múltiplo do tamanho do bloco seguinte: 128 é múltiplo de 64; 128 + 64 = 192 é múltiplo de 32; 224, de 16; e 240, de 4. Nenhum bloco precisa pular para a frente.
-
-Inverta a ordem e os pulos começam. Coloque primeiro o `/30` em `192.168.10.0`: o `/25` não pode começar em `.4`, porque 4 não é múltiplo de 128, e tem de pular para `.128`. Os endereços de `.4` a `.127` viram um buraco que só blocos menores conseguem preencher, e o `/26`, o `/27` e o `/28` têm de ser encaixados de volta nesse buraco, à mão. Se o bloco pai estiver exatamente cheio, a ordem errada pode não deixar lugar nenhum para a última sub-rede, mesmo que a soma dos tamanhos feche.
-
-## Como deixar espaço para crescer e para sumarizar
-
-Dois hábitos fazem um plano de VLSM durar:
-
-- **Mantenha o espaço livre em blocos alinhados.** A sobra de `192.168.10.244` a `.255`, no exemplo acima, tem 12 endereços, mas, em blocos, ela é um `/30` (`.244`) e um `/29` (`.248`): nenhuma sub-rede maior cabe ali. Se você espera precisar de um /27 mais tarde, reserve esse bloco agora, em vez de torcer para que apareça um espaço.
-- **Mantenha sub-redes relacionadas dentro de um bloco que possa ser sumarizado.** Se todas as sub-redes de um site saem de um mesmo prefixo pai, o resto da rede precisa de uma única rota para o site inteiro. Espalhar as sub-redes de um site pelo plano de endereçamento joga essa vantagem fora. O artigo sobre [sumarização de rotas](/learn/route-summarization) mostra a conta, e o artigo sobre [sobreposição e buracos entre sub-redes](/learn/subnet-overlap-and-gaps), como achar os erros.
-
-## Por que isso importa
-
-É com VLSM que as redes de verdade economizam espaço de endereços e mantêm as alocações alinhadas, para que as rotas possam ser sumarizadas de forma limpa. A conta é a mesma do tamanho de prefixo de uma única sub-rede, repetida várias vezes: fixe mais bits para ter um bloco menor e mantenha cada bloco alinhado a um limite de potência de dois. [Um exemplo resolvido](/learn/vlsm-worked-example) percorre um plano completo, dos requisitos até o último endereço livre.
-
-Dá para conferir qualquer alocação na [calculadora CIDR](/tools/cidr), que mostra na hora, para cada bloco, o endereço de rede, o de broadcast, a máscara e o número de hosts utilizáveis, tudo dentro do seu navegador.
+A [Calculadora CIDR / Subnet](/tools/cidr) tem um modo VLSM ao lado dos modos Sub-rede, Super-rede e Sobreposição / lacuna. Ele recebe um bloco pai e uma lista de requisitos, cada um com nome e quantidade de hosts, e em Alocar imprime endereços usados e livres, utilização e, por subnet, rede, prefixo, máscara, faixa utilizável, broadcast e hosts utilizáveis; os requisitos que não cabem aparecem em "Não couberam". O motor ordena os requisitos do maior para o menor sozinho, então os cinco acima dão a mesma tabela em qualquer ordem, e a falha do menor-primeiro só se reproduz à mão ou em Python. Ele dimensiona todo requisito como hosts mais dois, então um link de 2 hosts sempre recebe /30, nunca /31; links RFC 3021 se conferem um a um no modo Sub-rede, que conta o /31 como a RFC 3021 manda. E ele mascara em silêncio os bits de host do pai: 192.0.2.77/24 vira 192.0.2.0/24; leia o endereço de rede devolvido. Em 192.0.2.0/25 com requisitos de 200, 50 e 10 hosts, ele coloca os 50 em 192.0.2.0/26 e os 10 em 192.0.2.64/28 e lista os 200 em Não couberam, com 62,5%.
 
 ## Para lembrar
 
-- O VLSM dá a cada sub-rede o prefixo de que o seu número de hosts precisa, e todas saem de um mesmo bloco pai.
-- Ele exige rotas que levem a máscara junto: RIP versão 2, OSPF e os protocolos que vieram depois, ou rotas estáticas; o RIP versão 1 não serve.
-- Para dimensionar cada sub-rede, some dois ao número de hosts e arredonde para cima, até uma potência de dois; e planeje o crescimento.
-- Aloque primeiro os blocos maiores: assim, cada bloco começa exatamente onde o anterior terminou, alinhado ao seu próprio limite.
-- Mantenha as sub-redes de um site dentro de um prefixo que possa ser sumarizado, e o espaço livre em blocos alinhados.
+- VLSM quer dizer subnets de um mesmo pai com prefixos de comprimentos diferentes: a RFC 950 fixou uma largura por rede em 1985, a RFC 1009 permitiu várias máscaras em 1987, a RFC 1812 fez disso um MUST em 1995.
+- Dimensione cada subnet como hosts mais 2 arredondado à potência de dois seguinte: 100 hosts pedem /25, 50 um /26, 25 um /27, 10 um /28, um link um /30 (ou /31 se as duas pontas aceitam a RFC 3021).
+- Um bloco de 2^k endereços só começa onde seus k bits baixos são zero; do maior para o menor, cada bloco começa onde o anterior terminou.
+- A ordem errada deixa buracos, não sobreposições, e num pai exatamente cheio pode deixar um bloco sem lugar embora a soma dos tamanhos feche.
+- O plano só roda onde todo roteador aprende a máscara com a rota (RIP versão 2, OSPF, IS-IS, EIGRP, BGP, rotas estáticas); o RIP versão 1 não carrega nenhuma.
+- O encaminhamento é longest match, então cada destino precisa de uma só rota mais específica; máscara divergente nos Hellos do OSPF derruba a adjacência.
+- Conte o espaço livre em blocos alinhados, reserve o crescimento enquanto há bloco alinhado livre e mantenha cada site num só bloco potência de dois, para que se resuma a uma rota.
 
 ## Fontes
 
-- [RFC 950, Internet Standard Subnetting Procedure, agosto de 1985: um único tamanho de sub-rede por rede (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc950)
-- [RFC 2453, RIP Version 2, novembro de 1998: por que o RIP-1 não conseguia levar sub-redes, o campo Subnet Mask (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2453)
-- [RFC 2328, OSPF Version 2, abril de 1998: uma máscara em cada rota, sub-redes de comprimento variável (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc2328)
-- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
+- [RFC 950, Internet Standard Subnetting Procedure, agosto de 1985: seções 2.1 e 2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc950.txt)
+- [RFC 1009, Requirements for Internet Gateways, junho de 1987: seções 1.1.4 e 4.2 (Historic, tornada obsoleta pela RFC 1812) (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1009.txt)
+- [RFC 1219, On the Assignment of Subnet Numbers, abril de 1991: Overview (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1219.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 2.2.5.2, 4.2.2.11, 4.2.3.4, 7.4 e Apêndice E (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 1878, Variable Length Subnet Table For IPv4, dezembro de 1995: a Table (Historic) (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1878.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seções 3.1, 4.1, 5 e 6.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 2328, OSPF Version 2, abril de 1998: seções 1.1, 3.5 e 10.5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 1058, Routing Information Protocol, junho de 1988: seção 3.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1058.txt)
+- [RFC 2453, RIP Version 2, novembro de 1998: seções 2, 4 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2453.txt)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000: seções 2.1 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3021.txt)
+- [IANA, registro IPv4 Special-Purpose Address Space, atualizado em 2025-10-09: as linhas de documentação (lido em 2026-10-19)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml)
+- [ip-route(8), página de manual do iproute2, man7.org: ip route show, ip route get (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [ip-address(8), página de manual do iproute2, man7.org: ip address add, ip address show (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [Documentação do Python 3.14, ipaddress: IPv4Network, strict, address_exclude, supernet_of, collapse_addresses (lida em 2026-10-19)](https://docs.python.org/3.14/library/ipaddress.html)

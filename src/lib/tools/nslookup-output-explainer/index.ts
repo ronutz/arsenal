@@ -57,7 +57,7 @@ export const manifest = Object.freeze({
       kind: "regex",
       pattern: "server can'?t find .+:",
       priority: 6,
-      example: "** server can't find example.com: NXDOMAIN",
+      example: "** server can't find nonexistent.invalid: NXDOMAIN", // a .invalid name (RFC 6761 section 6.4), as in the golden vector
     },
   ],
 
@@ -81,11 +81,17 @@ export const manifest = Object.freeze({
     "learn/reverse-dns-lookups-with-nslookup",
     "learn/nslookup-interactive-mode",
   ],
+  // Each source was downloaded and read on its access_date. AA and authority: RFC 1035 section
+  // 4.1.1 and RFC 2181 section 6 define it by authority for the name, not by caching.
   sources: [
-    { id: "rfc1035", label: "RFC 1035 - Domain Names (Implementation and Specification)", url: "https://www.rfc-editor.org/rfc/rfc1035" },
-    { id: "rfc2308", label: "RFC 2308 - Negative Caching of DNS Queries", url: "https://www.rfc-editor.org/rfc/rfc2308" },
-    { id: "rfc2782", label: "RFC 2782 - A DNS RR for specifying the location of services (SRV)", url: "https://www.rfc-editor.org/rfc/rfc2782" },
-    { id: "rfc8499", label: "RFC 8499 - DNS Terminology", url: "https://www.rfc-editor.org/rfc/rfc8499" },
+    { id: "rfc1035", label: "RFC 1035 - Domain Names (Implementation and Specification)", url: "https://www.rfc-editor.org/rfc/rfc1035", access_date: "2026-10-19" }, // message format; AA in section 4.1.1
+    { id: "rfc2181", label: "RFC 2181 - Clarifications to the DNS Specification (section 6, zone authority)", url: "https://www.rfc-editor.org/rfc/rfc2181", access_date: "2026-10-19" }, // which servers are authoritative for a name
+    { id: "rfc2308", label: "RFC 2308 - Negative Caching of DNS Queries", url: "https://www.rfc-editor.org/rfc/rfc2308", access_date: "2026-10-19" }, // NXDOMAIN, NODATA, the SOA minimum
+    { id: "rfc2782", label: "RFC 2782 - A DNS RR for specifying the location of services (SRV)", url: "https://www.rfc-editor.org/rfc/rfc2782", access_date: "2026-10-19" }, // SRV fields
+    { id: "rfc9499", label: "RFC 9499 - DNS Terminology (March 2024; obsoletes RFC 8499)", url: "https://www.rfc-editor.org/rfc/rfc9499", access_date: "2026-10-19" }, // authoritative server, resolver
+    { id: "rfc6761", label: "RFC 6761 - Special-Use Domain Names (section 6.4, \"invalid.\")", url: "https://www.rfc-editor.org/rfc/rfc6761", access_date: "2026-10-19" }, // NXDOMAIN examples under .invalid
+    { id: "rfc9824", label: "RFC 9824 - Compact Denial of Existence in DNSSEC", url: "https://www.rfc-editor.org/rfc/rfc9824", access_date: "2026-10-19" }, // why example.com answers NOERROR/NODATA
+    { id: "rfc7505", label: "RFC 7505 - A \"Null MX\" No Service Resource Record for Domains That Accept No Mail", url: "https://www.rfc-editor.org/rfc/rfc7505", access_date: "2026-10-19" }, // the MX vector's "0 ."
   ],
 });
 

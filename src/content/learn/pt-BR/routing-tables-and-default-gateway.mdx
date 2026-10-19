@@ -1,31 +1,137 @@
 ---
 slug: routing-tables-and-default-gateway
-title: "Tabelas de roteamento e o gateway padrão: como um pacote escolhe o próximo salto"
-summary: "Por que uma rota é necessária, o que é um salto, e a regra do longest prefix match que decide qual entrada da tabela vence - trabalhada como a prova aposentada de fundamentos pedia: dado um destino e uma tabela de roteamento, identifique a rota a ser usada. Mais a rota padrão, a entrada que responde quando nenhuma outra responde."
-concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop"]
-relatedTools: ["cidr"]
-relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization"]
+title: "Tabelas de roteamento e o default gateway: como um pacote escolhe o próximo hop"
+summary: "Uma tabela de rotas responde à única pergunta que todo host e todo roteador fazem a um pacote: para onde ele vai agora. O host decide entre local e remoto pela máscara e entrega o resto a um default gateway; o roteador poda a tabela até sobrar uma entrada, por basic match e longest match, com a rota default de prefixo zero como entrada de último recurso. Depois da leitura, você consegue executar a decisão de longest match à mão, ler uma tabela Linux ou Windows linha a linha, dizer como um host aprendeu seu default (à mão, por DHCP, por Router Discovery ou por um Router Advertisement IPv6) e reconhecer um default ausente, morto ou falso pelos sintomas."
+concepts: ["routing", "routing table", "default gateway", "longest prefix match", "hops", "fundamentals", "next hop", "default route", "route cache", "dead gateway detection", "icmp redirect", "router advertisement", "dhcp option 3", "ip route get"]
+relatedTools: ["cidr", "ipv6", "python-playground"]
+relatedArticles: ["network-devices-switch-router-firewall", "arp-and-mac-addresses", "route-summarization", "static-routes-and-longest-match", "dhcp-lease-lifecycle", "ipv6-neighbor-discovery", "first-hop-redundancy-vrrp-and-hsrp", "icmp-ping-and-traceroute"]
 category: networking
 order: 163
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-19"
 ---
 
-Um host entrega diretamente só na própria sub-rede; todo o resto precisa de uma rota - uma instrução dizendo que o tráfego para aquele destino vai para este próximo salto. A prova aposentada de fundamentos da F5 mantinha o assunto honesto e prático: explicar por que uma rota é necessária, explicar saltos e, dado um endereço de destino e uma tabela de roteamento, identificar a rota que será usada. A terceira habilidade é a que importa, e ela tem exatamente uma regra.
+Todo dispositivo que segura um pacote Internet Protocol (IP) faz uma pergunta antes de qualquer outra: para onde isto vai agora? Uma tabela de rotas responde. A de um laptop tem duas ou três linhas, e a resposta é quase sempre o default gateway, o roteador que recebe o que o host não entrega sozinho; a de um roteador tem uma linha por prefixo alcançável, e uma consulta as poda até sobrar uma. A série Request for Comments (RFC) escreve as duas decisões: a RFC 1122 para o host e a RFC 1812 para o roteador. Depois da leitura, você consegue executar a decisão de longest match à mão, ler uma tabela Linux ou Windows, dizer como um host aprendeu seu default (à mão, por Dynamic Host Configuration Protocol (DHCP), por Router Discovery do Internet Control Message Protocol (ICMP) ou por um Router Advertisement (RA) IPv6) e reconhecer um default ausente, morto ou falso pelos sintomas.
 
-## Por que uma rota, e o que é um salto
+## Gateway, roteador, next hop
 
-A entrega Internet Protocol (IP) é local à sub-rede: se o destino compartilha minha rede, eu o resolvo com [ARP](/learn/arp-and-mac-addresses) e entrego o quadro eu mesmo. Se não compartilha, preciso de um roteador disposto a levar o pacote para mais perto - e o roteador precisa da mesma decisão para o próprio passo seguinte. Cada entrega roteador-a-roteador é um salto; um caminho é uma corrente de saltos, cada um uma decisão nova, tomada da tabela daquele roteador. O time to live existe precisamente porque saltos podem entrar em loop quando tabelas discordam; o [artigo de ICMP](/learn/icmp-ping-and-traceroute) mostra como o traceroute transforma esse contador num mapa do caminho.
+O dispositivo que encaminha entre redes ([Switch, roteador, firewall](/learn/network-devices-switch-router-firewall)) teve dois nomes: a RFC 1122 diz gateway, e a RFC 1812 observa que "Many older Internet documents refer to routers as gateways", os documentos antigos diziam gateway ([RFC 1812, seção 2.2.3](https://www.rfc-editor.org/rfc/rfc1812.txt)), daí o nome que o host usa até hoje, default gateway ([O roteador: de gateway a commodity](/learn/router-family-history)). A RFC 1812 chama a base de rotas de routing table ou forwarding table (seção 2.2.3), dá à cópia operacional o nome Forwarding Information Base (FIB) (Apêndice B) e define o next hop (próximo salto) como "the IP address of the adjacent host or router to which the packet should be sent next", o endereço do host ou roteador adjacente, isto é, alcançável sem atravessar outro roteador (seção 5.2.4). Cada passagem de roteador a roteador é um hop (salto) e uma consulta nova, a corrente que [ICMP, ping e traceroute](/learn/icmp-ping-and-traceroute) desenha.
 
-## Como ler a tabela: o prefixo mais longo vence
+## A decisão do host, como a RFC 1122 a escreve
 
-Uma tabela de roteamento é uma lista de destinos - redes com comprimentos de prefixo - cada um pareado com um próximo salto ou uma interface de saída. Dado um pacote, o roteador seleciona a entrada mais específica que casa: o prefixo mais longo que contém o destino. Essa única regra resolve todo cenário de prova e todo cenário real. Destino 10.1.2.7 contra uma tabela com 10.0.0.0/8, 10.1.0.0/16 e 10.1.2.0/24: as três contêm o endereço; /24 é o mais longo; essa rota vence. A [ferramenta CIDR](/tools/cidr) torna instantâneas as checagens de contenção enquanto o instinto se forma, e a [sumarização de rotas](/learn/route-summarization) é a mesma lógica rodando ao contrário - anunciar deliberadamente prefixos mais curtos para manter tabelas pequenas.
+O dever do host cabe numa frase: "If the destination is on a connected network, the datagram is sent directly to the destination host; otherwise, it has to be routed to a gateway on a connected network", direto se o destino está numa rede conectada, senão via um gateway ([RFC 1122, seção 3.3.1](https://www.rfc-editor.org/rfc/rfc1122.txt)). Quem decide é a máscara, por um teste obrigatório: bits do destino sob a máscara iguais aos do host, destino on-link (no mesmo enlace), entrega direta (seção 3.3.1.1); a aritmética está em [Como funcionam os endereços IPv4](/learn/ipv4-addressing), o endereço de hardware em [ARP e endereços MAC](/learn/arp-and-mac-addresses). Para o caso remoto, a norma descreve um route cache, uma lista de defaults ("The IP layer MUST support multiple default gateways", vários, seção 3.3.1.2, cada um com nível de preferência, seção 3.3.1.6) e rotas estáticas opcionais, "a potential source of failure as configurations change or equipment fails", fonte potencial de falha (seção 3.3.1.2). Um único gateway configurado é a implantação comum, mas a arquitetura é uma lista, e o host deve mudar de ideia quando seu gateway morre.
 
-Dois detalhes de apoio completam a leitura. Métricas desempatam prefixos de mesmo comprimento aprendidos de fontes diferentes. E o próximo salto de uma rota precisa ser alcançável numa sub-rede conectada - uma entrada apontando para um gateway que o dispositivo não consegue resolver por ARP é rota só no nome.
+## A consulta do roteador: basic match, depois longest match
 
-## O gateway padrão: a entrada de último recurso
+A RFC 1812 escreve a consulta como poda: os candidatos começam sendo a FIB inteira e cada regra descarta alguns; "If the set ever becomes empty, the packet is discarded because the destination is unreachable", conjunto vazio, pacote descartado ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). A regra 1, Basic Match, mantém as rotas cujo prefixo contém o destino. A regra 2, Longest Match: "the algorithm examines the remaining routes to determine which among them have the largest route.length values. All except these are discarded", ficam só as de prefixo mais longo (seção 5.2.4.3). Vence primeiro uma rota de host, depois prefixos de rede por comprimento decrescente, e por último a rota default, que "is by definition the route whose prefix length is zero", a de prefixo zero por definição (seção 5.2.4.3).
 
-A rota padrão - destino 0.0.0.0/0 - casa com tudo e, pela regra do prefixo mais longo, perde para tudo que seja mais específico, que é exatamente o desenho: ela responde só quando nenhuma outra responde. Num host final, a configuração de gateway padrão é essa rota; o host manda todo tráfego fora da sub-rede para um roteador e deixa o mundo roteado assumir dali. O propósito, como o blueprint aposentado formulava, é simples de dizer e fácil de subestimar: é o único endereço que fica entre um host e toda rede de que ele nunca ouviu falar. Quando está errado, o sintoma é preciso - tráfego na sub-rede funciona perfeitamente, todo o resto morre no primeiro salto - e reconhecer essa assinatura economiza uma hora culpando a camada errada.
+Um exemplo em faixas de documentação, roteador com cinco rotas, cada linha calculada com o módulo `ipaddress` do Python (contenção para o basic match, maior prefixo para o longest match):
+
+```text
+0.0.0.0/0          via 192.0.2.1
+203.0.113.0/24     via 192.0.2.254
+203.0.113.64/26    via 192.0.2.253
+203.0.113.70/32    via 192.0.2.252
+192.0.2.0/24       dev eth0 (diretamente conectada)
+```
+
+| Destino | Basic match mantém | Longest match mantém | Next hop |
+|---|---|---|---|
+| 203.0.113.70 | /0, /24, /26, /32 | 203.0.113.70/32 | via 192.0.2.252 |
+| 203.0.113.65 | /0, /24, /26 | 203.0.113.64/26 | via 192.0.2.253 |
+| 203.0.113.200 | /0, /24 | 203.0.113.0/24 | via 192.0.2.254 |
+| 192.0.2.77 | /0, 192.0.2.0/24 | 192.0.2.0/24 | direto, eth0 |
+| 198.51.100.9 | só /0 | 0.0.0.0/0 | via 192.0.2.1 |
+
+As regras param no comprimento do prefixo. Entre sobreviventes de mesmo comprimento decide a métrica, só dentro de uma mesma origem: "If route.domain is equal for the two routes and route.metric is strictly inferior for one when compared with the other, then the one with the inferior metric is discarded from the set", a métrica só se compara dentro de um mesmo domínio ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Entre origens decide a distância administrativa, em [Rotas estáticas, longest prefix match e distância administrativa](/learn/static-routes-and-longest-match); as entradas em si vêm de [Roteamento dinâmico em comparação](/learn/dynamic-routing-compared) e de [Sumarização de rotas](/learn/route-summarization).
+
+## A rota default: 0.0.0.0/0 e ::/0
+
+A rota default tem prefixo de comprimento zero: 0.0.0.0/0 contém todos os 4.294.967.296 endereços IPv4 (2^32), e ::/0 todos os 2^128 endereços IPv6. Ela "MUST be accepted by all implementations", aceita por toda implementação, e só vai a outro domínio de roteamento por configuração explícita ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt); veja [Supernetting e agregação de rotas](/learn/supernetting-and-aggregation)). O Linux a escreve `default` ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)); a documentação do PowerShell declara a equivalência: "The next hop gateway for the default route is also known as the default gateway", o next hop da default é o default gateway ([Microsoft Learn, Get-NetRoute, exemplo 4](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netroute)). Na tabela do exemplo, o próprio next hop da default, 192.0.2.1, é alcançado por 192.0.2.0/24, o match mais longo, não pela default: um next hop que não é adjacente é uma linha sem saída.
+
+## Como um host aprende seu default
+
+À mão, método que a RFC 1122 obriga todo host a oferecer ([RFC 1122, seção 3.3.1.6](https://www.rfc-editor.org/rfc/rfc1122.txt)).
+
+Por DHCP, dentro do lease ([DHCP: o ciclo de vida do lease](/learn/dhcp-lease-lifecycle)): a opção Router, código 3, "specifies a list of IP addresses for routers on the client's subnet. Routers SHOULD be listed in order of preference", roteadores da subnet em ordem de preferência ([RFC 2132, seção 3.5](https://www.rfc-editor.org/rfc/rfc2132.txt)). A opção 121, rotas estáticas classless, também carrega uma default e prevalece: "If the DHCP server returns both a Classless Static Routes option and a Router option, the DHCP client MUST ignore the Router option", se as duas vêm, a opção Router é ignorada ([RFC 3442, DHCP Client Behavior](https://www.rfc-editor.org/rfc/rfc3442.txt)).
+
+Por ICMP Router Discovery, de 1991: anúncios de endereços de roteador com lifetime e preferência, mensagens que "do not constitute a routing protocol: they enable hosts to discover the existence of neighboring routers, but not which router is best to reach a particular destination", não são protocolo de roteamento nem dizem qual roteador é melhor ([RFC 1256, seção 2](https://www.rfc-editor.org/rfc/rfc1256.txt)). A opção 31 do DHCP diz ao cliente se deve usá-lo ([RFC 2132, seção 5.6](https://www.rfc-editor.org/rfc/rfc2132.txt)); o IPv6 absorveu a ideia.
+
+Por RA IPv6, o caso normal. O host faz um longest prefix match contra sua Prefix List para decidir entre on-link e off-link e, se off-link, "the sender selects a router from the Default Router List", escolhe um da Default Router List ([RFC 4861, seção 5.2](https://www.rfc-editor.org/rfc/rfc4861.txt)). O campo Router Lifetime põe um roteador nessa lista: "A Lifetime of 0 indicates that the router is not a default router and SHOULD NOT appear on the default router list", lifetime zero, não é default (seção 4.2). Cada anúncio reinicia o timer da entrada, "a host MUST retain at least two router addresses and SHOULD retain more", pelo menos dois roteadores guardados (seção 6.3.4), e uma entrada expirada devolve seus destinos à determinação de next hop (seção 6.3.5). O mesmo anúncio carrega o prefixo ([Como hosts IPv6 obtêm endereços](/learn/ipv6-address-configuration)); o Neighbor Cache por trás da lista está em [Neighbor Discovery: como o IPv6 substitui o ARP](/learn/ipv6-neighbor-discovery).
+
+## Como falha ou é atacado
+
+O gateway morto. "The IP layer MUST be able to detect the failure of a 'next-hop' gateway that is listed in its route cache and to choose an alternate gateway", detectar a falha do gateway e escolher outro ([RFC 1122, seção 3.3.1.4](https://www.rfc-editor.org/rfc/rfc1122.txt)); sem isso, os datagramas "apparently vanish into a 'black hole'", somem num black hole (seção 3.3.1.4). Detectar não é pingar: "hosts MUST NOT actively check the status of a first-hop gateway by simply pinging the gateway continuously", nada de ping contínuo (seção 3.3.1.4). Então "the IP layer MUST select a different default gateway (assuming more than one default is known)", outro default gateway, se há mais de um (seção 3.3.1.5). Com um único gateway configurado não há para onde trocar; [Redundância de first hop](/learn/first-hop-redundancy-vrrp-and-hsrp) transforma o endereço do gateway num papel.
+
+Nenhum default, dois, ou um next hop fora de alcance. Um roteador sem rota que combine descarta o pacote e envia ICMP unreachable ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Com dois defaults o host escolhe por preferência, e o pacote dá um hop a mais até o ICMP Redirect do roteador corrigir a entrada do cache ([RFC 1122, seção 3.3.1.2](https://www.rfc-editor.org/rfc/rfc1122.txt)). E "The specified gateway must be reachable first", o gateway precisa ser alcançável antes ([route(8)](https://man7.org/linux/man-pages/man8/route.8.html)).
+
+A máscara errada, e a assinatura. Uma máscara curta demais faz um host remoto passar no teste da [RFC 1122, seção 3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122.txt): o host tenta entrega direta e nunca usa o gateway. No sentido inverso, tráfego on-link nunca toca o gateway, então um default errado, ausente ou morto deixa o prefixo local funcionando e tudo além dele em silêncio. E a consulta decide só a ida: a volta é roteada pela tabela da outra ponta, hop a hop, e os dois sentidos de uma conversa podem seguir caminhos diferentes.
+
+O default falso. Servidores DHCP não autorizados podem enviar "incorrect routing information (including spoof routers, etc.)", roteadores falsos inclusive ([RFC 2131, seção 7](https://www.rfc-editor.org/rfc/rfc2131.txt)), e anúncios falsos costumam ser acidentes, um laptop compartilhando conexão ([RFC 6104, seção 2.2](https://www.rfc-editor.org/rfc/rfc6104.txt)); um deliberado é pior, porque o roteador falso "can then selectively examine, modify, or drop all packets sent on the link", examina, altera ou descarta todo pacote do enlace ([RFC 4861, seção 11.1](https://www.rfc-editor.org/rfc/rfc4861.txt)). As defesas ficam na porta do switch: o DHCP snooping, em que "By default, all trunk ports on the switch are trusted and all access ports are untrusted for DHCP snooping", trunk confiável, acesso não ([Juniper, Understanding DHCP Snooping](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/port-security-dhcp-snooping-els.html)); e o RA-Guard, que filtra anúncios no switch por remetente, porta, prefixos e prioridade ([RFC 6105, seção 3](https://www.rfc-editor.org/rfc/rfc6105.txt)), embora não onde "IPv6 traffic is tunneled", IPv6 em túnel (seção 5).
+
+## Como ver
+
+Linux, ao vivo neste sandbox em 19 de outubro de 2026 às 01:02 (GMT-3): um host em 192.0.2.2 na 192.0.2.0/24, gateway 192.0.2.1, iproute2 6.1.0.
+
+```console
+$ ip route show
+default via 192.0.2.1 dev eth0
+192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2
+
+$ ip -d route show
+unicast default via 192.0.2.1 dev eth0 proto boot scope global
+unicast 192.0.2.0/24 dev eth0 proto kernel scope link src 192.0.2.2
+```
+
+O prefixo conectado veio do endereço da interface (`proto kernel`), alcança vizinhos diretamente (`scope link`) e indica a origem (`src`); a default é `scope global` e, com `-d`, `proto boot`, etiqueta de rota instalada na inicialização ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)); as outras etiquetas são `static`, `ra` e `redirect`, e vence a `metric` menor (mesma página). Depois, pergunte ao kernel:
+
+```console
+$ ip route get 198.51.100.7
+198.51.100.7 via 192.0.2.1 dev eth0 src 192.0.2.2 uid 0
+    cache
+
+$ ip route get 192.0.2.77
+192.0.2.77 dev eth0 src 192.0.2.2 uid 0
+    cache
+
+$ ip route get 127.0.0.1
+local 127.0.0.1 dev lo src 127.0.0.1 uid 0
+    cache <local>
+```
+
+Pelo gateway, on-link (sem `via`), local: "Essentially, get is equivalent to sending a packet along this path", o get equivale a enviar um pacote ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)); a resposta local vem da tabela `local`, que `ip route show table all` também imprime. Este sandbox não tem IPv6; uma default aprendida por anúncio ficaria como abaixo, linha ilustrativa só com tokens que a página de manual e a documentação do kernel definem (`proto ra`, o padrão 1024 de `ra_defrtr_metric`):
+
+```text
+default via fe80::1 dev eth0 proto ra metric 1024 pref medium   (ilustrativa)
+```
+
+Windows. `route print` mostra a tabela, e `route add 0.0.0.0 mask 0.0.0.0 192.0.2.1` adiciona uma default, o exemplo da página com endereço de documentação ([Microsoft Learn, route](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/route_ws2008)). No PowerShell, `Get-NetRoute -DestinationPrefix "0.0.0.0/0"` devolve a default, etiquetada `Dhcp` quando veio do DHCP ([Microsoft Learn, Get-NetRoute](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netroute)).
+
+Um roteador. O `show ip route` do FRRouting abre com uma legenda, aqui abreviada:
+
+```console
+Router# show ip route
+Codes: K - kernel route, C - connected, L - local, S - static,
+       R - RIP, O - OSPF, I - IS-IS, B - BGP, ...
+       > - selected route, * - FIB route, ...
+K>* 0.0.0.0/0 [0/100] via 192.168.119.1, enp13s0, 00:30:22
+S> 4.5.6.7/32 [1/0] via 192.168.119.1 (recursive), weight 1, 00:30:22
+L>* 192.168.119.205/32 is directly connected, enp13s0, 00:30:22
+```
+
+O colchete é distância sobre métrica, `>` a rota selecionada, `*` a instalada no kernel, `(recursive)` um next hop que exigiu consulta própria ([FRRouting, Zebra](https://docs.frrouting.org/en/latest/zebra.html)).
+
+Nenhuma ferramenta do site interpreta a saída de `ip route` ou `route print`, mas a [Calculadora CIDR](/tools/cidr) (Classless Inter-domain Routing) responde ao basic match de uma linha (203.0.113.70 está em 203.0.113.64/26?), o [IPv6 Toolkit](/tools/ipv6) faz o mesmo para ::/0 e 2001:db8::/32, e o [Python playground](/tools/python-playground) executa a decisão inteira: `ipaddress.ip_address(d) in ipaddress.ip_network(n)`, depois o maior `prefixlen`.
+
+## Para lembrar
+
+- Um host entrega direto quando o destino coincide com seu prefixo sob a máscara; senão, entrega a um gateway numa rede conectada.
+- A consulta do roteador é poda: o basic match mantém as rotas que contêm o destino, o longest match a mais longa, conjunto vazio é descarte; métricas só se comparam dentro de uma origem.
+- A rota default tem prefixo zero, 0.0.0.0/0 ou ::/0: combina com todo endereço, perde para todo prefixo mais longo, e toda implementação deve aceitá-la.
+- Um host aprende seu default à mão, pela opção 3 do DHCP (que a 121 sobrepõe), por Router Discovery ICMP ou por um RA IPv6 com Router Lifetime diferente de zero.
+- A RFC 1122 exige vários default gateways e detecção de gateway morto; a RFC 4861 exige uma Default Router List com pelo menos dois. Um gateway único é escolha de implantação, não arquitetura.
+- Um default errado, ausente ou morto deixa o prefixo local funcionando e tudo além dele em silêncio; um next hop que não é adjacente é rota só no nome.
+- Defaults falsos chegam por DHCP ou RA, quase sempre por acidente; as defesas são DHCP snooping e RA-Guard na porta do switch.
 
 ## Esta série, em ordem
 
@@ -35,7 +141,26 @@ Este artigo abre a série **Roteamento**. O casamento do prefixo mais longo deci
 2. **[IS-IS: o protocolo de roteamento escondido sob a internet](/learn/isis-primer)**. O gêmeo link-state do OSPF vindo do mundo OSI, que roda os backbones das operadoras que a maioria dos engenheiros nunca nomeia.
 3. **[BGP: como a internet decide para onde o tráfego vai](/learn/bgp-primer)**. Sistemas autônomos, a ideia de path-vector e os atributos: como a internet decide para onde o tráfego vai.
 4. **[BGP: o voto de confiança que sustenta a internet inteira](/learn/bgp-and-the-routing-chokepoint)**. Um protocolo sem forma embutida de distinguir um anúncio verdadeiro de um falso, e os sequestros que vieram disso.
-5. **[MPLS: rótulos, pilhas e o núcleo livre de BGP](/learn/mpls-primer)**. O Multiprotocol Label Switching em três movimentos (empurrar, trocar, retirar): como os rótulos livram o núcleo das tabelas de roteamento e isolam milhares de clientes de rede privada virtual.
+5. **[MPLS: rótulos, pilhas e o núcleo livre de BGP](/learn/mpls-primer)**. O Multiprotocol Label Switching em três movimentos (push, swap, pop): como os labels deixam o núcleo encaminhar só com as rotas internas, sem rotas de clientes nem de BGP, e isolam milhares de clientes de rede privada virtual.
 6. **[BFD: quando um enlace está no ar e morto ao mesmo tempo](/learn/bfd-when-a-link-is-up-and-dead)**. Detecção em milissegundos em vez de dezenas de segundos, para a falha em que a interface continua no ar.
 7. **[Redundância de first hop: VRRP, HSRP e o gateway que é uma ficção](/learn/first-hop-redundancy-vrrp-and-hsrp)**. Um host conhece um gateway e não consegue trocar: VRRP e HSRP fazem do gateway um papel, não um roteador.
 8. **[Multicast: o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood)**. Uma cópia em vez de milhares, paga em estado, e modos de falha que não são os esperados.
+
+## Fontes
+
+- [RFC 1122, Requirements for Internet Hosts - Communication Layers, outubro de 1989: seções 3.3.1 e 3.3.1.1 a 3.3.1.6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1256, ICMP Router Discovery Messages, setembro de 1991: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1256.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 2.2.3, 5.2.4 e 5.2.4.3 e Apêndice B (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 2131, Dynamic Host Configuration Protocol, março de 1997: seção 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2131.txt)
+- [RFC 2132, DHCP Options and BOOTP Vendor Extensions, março de 1997: seções 3.5 e 5.6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2132.txt)
+- [RFC 3442, The Classless Static Route Option for Dynamic Host Configuration Protocol (DHCP) version 4, dezembro de 2002: DHCP Client Behavior (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3442.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seção 5.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), setembro de 2007: seções 4.2, 5.2, 6.3.4, 6.3.5 e 11.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4861.txt)
+- [RFC 6104, Rogue IPv6 Router Advertisement Problem Statement, fevereiro de 2011: seção 2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6104.txt)
+- [RFC 6105, IPv6 Router Advertisement Guard, fevereiro de 2011: seções 3 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6105.txt)
+- [ip-route(8), página de manual do Linux, iproute2, cópia do man7.org de 4 de agosto de 2026: SYNOPSIS, DESCRIPTION, NOTES e EXAMPLES (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [route(8), página de manual do Linux, net-tools: OPTIONS (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/route.8.html)
+- [Microsoft Learn, comandos do Windows, route, atualizada em 16 de fevereiro de 2026: Syntax, Parameters e Examples (lida em 2026-10-19)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/route_ws2008)
+- [Microsoft Learn, módulo PowerShell NetTCPIP, Get-NetRoute, atualizada em 14 de maio de 2025: exemplo 4 e -Protocol (lida em 2026-10-19)](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netroute)
+- [Documentação do FRRouting, Zebra, latest: zebra Terminal Mode Commands (show ip route) (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/zebra.html)
+- [Juniper Networks, Junos OS, Understanding DHCP Snooping (ELS), 6 de dezembro de 2025: DHCP Snooping Basics (lida em 2026-10-19)](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/concept/port-security-dhcp-snooping-els.html)

@@ -111,7 +111,7 @@
         "overlap": "Overlap / gap"
       },
       "modeDesc": {
-        "subnet": "Sinusuri ang isang IPv4 CIDR block: network, broadcast, mask, at host range.",
+        "subnet": "Sinusuri ang isang IPv4 CIDR block: network, broadcast, mask, host range, at ang mga special-purpose range na kinabibilangan o pinagsasapawan nito.",
         "vlsm": "Hinahati ang parent block sa mga subnet na iba't ibang laki ayon sa listahan ng bilang ng host.",
         "supernet": "Binubuod ang listahan ng mga prefix sa pinakamaliit na set ng mga covering block.",
         "overlap": "Naghahanap ng overlap at containment sa pagitan ng mga prefix, at mga gap sa loob ng opsyonal na scope."
@@ -141,7 +141,13 @@
           "utilization": "Paggamit"
         },
         "unfit": "Hindi kasya",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Bigyan ng /31 ang mga request na 2 host (point-to-point link, RFC 3021)",
+        "maskedNote": "May nakatakdang host bits ang parent na {typed}, kaya na-mask ito sa {parent}; mula sa {parent} hinahati ang plano.",
+        "orderNote": "Inilalagay ang mga request mula sa pinakamalaking block pababa, hindi ayon sa pagkakasunod ng pagpasok, para magsimula ang bawat block sa multiple ng sarili nitong laki.",
+        "freeBlocks": "Mga bakanteng block",
+        "noFree": "Wala nang bakanteng espasyo sa parent.",
+        "noBroadcast": "wala (/31)"
       },
       "supernet": {
         "label": "Mga prefix na i-aggregate",
@@ -185,12 +191,36 @@
         "prefix": "Ang haba ng prefix ay dapat nasa pagitan ng 0 at 32.",
         "tooMany": "Masyadong maraming entry. Paikliin ang listahan at subukan ulit.",
         "noReqs": "Magdagdag ng kahit isang subnet requirement na may bilang ng host.",
-        "noPrefixes": "Maglagay ng kahit isang prefix, isa kada linya."
+        "noPrefixes": "Maglagay ng kahit isang prefix, isa kada linya.",
+        "zeroHosts": "May subnet requirement na humihingi ng 0 host. Bawat subnet ay nangangailangan ng hindi bababa sa 1 host: itama ang bilang o alisin ang row."
       },
       "rangeHeading": "Layout ng address",
       "usableShort": "magagamit",
       "rfcNote": "Walang inilalaan ang /31 at /32: bawat address ay magagamit (RFC 3021).",
-      "reservedNote": "Ang unang address ay ang network at ang huli ay ang broadcast; pareho silang nakalaan, kaya magagamit = kabuuan − 2."
+      "reservedNote": "Ang unang address ay ang network at ang huli ay ang broadcast; pareho silang nakalaan, kaya magagamit = kabuuan − 2.",
+      "classifyHeading": "Mga special-purpose range",
+      "classifySpecial": "Nasa loob ng isang special-purpose range: {range}, {name} ({rfc}).",
+      "classifyPartial": "Bahagyang special-purpose: {special} sa {total} address ang nasa mga range sa ibaba; ang natitira ay wala sa anumang special-purpose range.",
+      "classifyNone": "Walang special-purpose range (globally routable na unicast space).",
+      "classifyThRange": "Range",
+      "classifyThName": "Pangalan",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Relasyon",
+      "classifyThSource": "Source",
+      "classifyThDestination": "Destination",
+      "classifyThForwardable": "Forwardable",
+      "classifyThGlobal": "Globally reachable",
+      "classifyRelEqual": "ito mismo ang block",
+      "classifyRelInside": "naglalaman ng block na ito",
+      "classifyRelContains": "nasa loob ng block na ito (bahagyang pagsasapaw)",
+      "classifyYes": "Oo",
+      "classifyNo": "Hindi",
+      "classifyNotListed": "hindi nakalista",
+      "classifyTerminated": "tinapos noong {date}",
+      "classifyNote1": "[1] Footnote ng registry: ilang protocol ang binigyan ng exception sa patakarang ito (halimbawa, RFC 8029 at RFC 5884).",
+      "classifyNote2": "[2] Footnote ng registry: hindi magagamit maliban kung may mas tiyak na reservation.",
+      "classifyFlagsNote": "Ang mga flag ay mula sa registry. Source at Destination: kung balido ang isang address mula sa range bilang source o destination ng datagram na dumaraan sa dalawang device. Forwardable: kung maaaring i-forward ng router ang ganoong datagram sa pagitan ng mga external interface. Globally reachable: kung maaari itong i-forward lampas sa isang tiyak na administrative domain.",
+      "classifySource": "Mga row mula sa IANA IPv4 Special-Purpose Address Space registry (na-update noong 2025-10-09) at, para sa 224.0.0.0/4, mula sa IANA IPv4 Multicast Address Space registry, parehong binasa noong 2026-10-19. Ayon sa registry, walang garantiyang routable ang isang nakalistang range sa anumang lokal o global na konteksto."
     },
     "title": "Mga Tool",
     "lede": "Maliliit, mabilis, at nauunang-privacy na mga kagamitan. Kumukuwenta ang katalogo sa iyong browser at walang ipinapadala kahit saan; ang tanging eksepsiyon ay ang pulang silid, kung saan nagtatanong ang isang tool sa opisyal na serbisyong pinangangalanan nito, at kapag pinindot mo lang ang “Ask”.",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Kung ikaw ay nasa Brazil, taglay mo ang mga karapatang nakasaad sa Article 18 ng LGPD, at maaari ka ring makipag-ugnayan sa pambansang awtoridad sa proteksyon ng data (ang ANPD).",
     "changesTitle": "Mga pagbabago sa abisong ito",
     "changesBody": "Kung magbago ang abisong ito, ang binagong bersyon ay ilalathala sa page na ito at ia-update ang petsa sa ibaba. Ang mahahalagang pagbabago ay hindi ilalapat nang paatras.",
-    "updated": "Huling na-update: 30 Hunyo 2026",
+    "updated": "Huling na-update: {date}",
     "backHome": "Bumalik sa home"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Mga Rekomendasyon",
     "title": "Ang sinasabi ng mga tao, sa sarili nilang mga salita.",
-    "intro": "{count} kumpletong testimonial at review, mula sa dalawang dekada ng pagsasanay at konsultasyon. Walang anuman dito ang muling isinulat o ineditahan.",
-    "provenance": "Mula sa mga LinkedIn recommendation, Google review, at na-verify na feedback ng mga kalahok ng Red Education. Ang orihinal na pananalita at pagbabaybay ay pinanatili nang eksakto kung paano ito isinulat."
+    "intro": "{count} testimonial at review, mula sa dalawang dekada ng pagsasanay at konsultasyon. Ang mga orihinal ay pinanatili nang buo: walang anuman sa mga ito ang muling isinulat o ineditahan. Ang mga opsyonal na machine translation ay may ganoong tatak.",
+    "provenance": "Mula sa mga LinkedIn recommendation, Google review, at na-verify na feedback ng mga kalahok ng Red Education. Ang orihinal na pananalita at pagbabaybay ay pinanatili nang eksakto kung paano ito isinulat; ang isinaling card ay may tatak na machine translation, at isang pindot lang ang orihinal."
   },
   "testimonials": {
     "filterLabel": "I-filter ang mga review",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – ngayon",
-      "title": "Ang Instructor & Advisor",
+      "title": "Pagtuturo, pagbubuo at pag-unawa sa larangan",
       "subtitle": "Full-time na opisyal na pagtuturo sa buong mundo, at kasabay nito ang advisory sa mga desisyong may mabigat na kahihinatnan.",
       "intro": "Noong 2020, ang sinulid na umaabot sa buong karera ay naging buong tela. Pagkatapos ng dalawampung taon na ang pagtuturo ay kasama sa bawat papel, ang pagsasanay mismo ang naging trabaho: full-time, opisyal, certified na pagtuturo para sa mga propesyonal at koponan sa buong mundo. Ang nagbubukod sa panahong ito ay hindi lamang ang pokus nito kundi ang sinadya at may petsang paglawak sa mga platform, bawat isa ay idinagdag sa ibabaw ng malalim na karanasan sa field, hindi bilang kapalit nito.",
       "s1Title": "Full-time, handa sa deployment",
@@ -1045,7 +1075,7 @@
       "s3Body": "Ang nagbubukod sa mga nakaraang taon ay isang malinaw at may petsang pag-usad. Idinagdag ang Extreme Networks training mula 2021, sumasaklaw sa EXOS switching, SD-WAN, at automation. Sumunod ang Fortinet mula 2024, nakatuon sa FCP FortiGate Administrator track. Idinagdag ang Netskope mula 2025, sumasaklaw sa operations, administration, deployment, at integration ng Netskope Security Cloud. Mga platform, bawat isa ay sinadyang idinagdag, bawat isa ay nakatindig sa ibabaw ng parehong dalawampung taon ng network at security implementation sa ilalim nito.",
       "s4Title": "Sa pamamagitan ng Red Education, sa mundo",
       "s4Body": "Ang pangunahing daluyan ng pandaigdigang paghahatid na ito ay ang Red Education, isang awtorisadong training center na naghahatid ng opisyal na certified na mga kurso sa mga organisasyon sa iba't ibang rehiyon. Ang papel ay global technical training instructor, naghahatid sa isang internasyonal na hanay ng mga kalahok na ginagawang posible ng baseng São Paulo, dalawang pasaporte, at tunay na pagmamahal sa paglalakbay. Ang tuloy-tuloy na kolaborasyong ito ay nagbabago sa indibidwal na kadalubhasaan tungo sa isang bagay na maaaring i-book at pagkatiwalaan ng mga organisasyon sa buong mundo.",
-      "closer": "Dito napatunayan ang halaga ng sinulid na umaabot sa buong kuwentong ito. Ang kuryosidad ng mga unang taon ay naging lalim ng implementasyon sa pamamagitan ng mga taon sa field, at ang lalim na iyon ang ngayon ay natatanggap ng bawat kalahok: hindi isang taga-pagsalita na nagbabasa ng slide, kundi isang taong nagtayo ng mga sistemang ito at kayang ipaliwanag kung paano at bakit talaga ang mga ito gumagana."
+      "closer": "Dito napatunayan ang halaga ng sinulid na umaabot sa buong kuwentong ito. Ang kuryosidad ng mga unang taon ay naging lalim ng implementasyon sa pamamagitan ng mga taon sa field, at ang lalim na iyon ang ngayon ay natatanggap ng bawat kalahok: isang taong nagtayo ng mga sistemang ito at kayang ipaliwanag kung paano at bakit talaga ang mga ito gumagana."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Ang instructor na nagtayo ng mga sistemang ito bago ituro ang mga ito.",
     "lede": "Karamihan ng technical training ay inihahatid ng mga taong nag-aral ng paksa para ituro ito. Dito ay kabaligtaran: tatlumpung taon ng pagbuo, pagsira, at pag-ayos ng tunay na network at security system, na dinistilo sa isang pagsasanay na nag-uugnay sa bawat konsepto sa kung paano talaga ito umaasal sa production.",
     "s1Title": "Bakit mahalaga ito sa silid-aralan",
-    "s1Body": "May pagkakaiba sa pagitan ng pagpapaliwanag kung paano dapat gumana ang isang feature at pagpapaliwanag kung bakit ito kumikilos nang ganoon nang alas-tres ng umaga kapag may kritikal na bumagsak. Ang una ay galing sa manwal. Ang pangalawa ay galing sa karanasang naroon talaga. Mula 1996, ang trabaho ay implementasyon: magdisenyo ng mga network at patakbuhin ang mga ito, pagkatapos ay i-troubleshoot ang mga ito sa ilalim ng pressure at maging ang taong tinatawagan para lutasin ang mga kritikal na insidente ng availability at seguridad na nagpapatigil sa isang negosyo, para sa mga vendor at para sa ilan sa pinakamalalaking organisasyon sa Brazil. Ang lalim na iyon ang natatanggap ng bawat estudyante: hindi isang tagapagsalita na binabasa lang ang mga slide, kundi isang inhinyero na namuhay sa loob ng mga sistemang ito at nagpapaliwanag kung paano talaga gumagana ang mga ito.",
+    "s1Body": "May pagkakaiba sa pagitan ng pagpapaliwanag kung paano dapat gumana ang isang feature at pagpapaliwanag kung bakit ito kumikilos nang ganoon nang alas-tres ng umaga kapag may kritikal na bumagsak. Ang una ay galing sa manwal. Ang pangalawa ay galing sa karanasang naroon talaga. Mula 1996, ang trabaho ay implementasyon: magdisenyo ng mga network at patakbuhin ang mga ito, pagkatapos ay i-troubleshoot ang mga ito sa ilalim ng pressure at maging ang taong tinatawagan para lutasin ang mga kritikal na insidente ng availability at seguridad na nagpapatigil sa isang negosyo, para sa mga vendor at para sa ilan sa pinakamalalaking organisasyon sa Brazil. Ang lalim na iyon ang natatanggap ng bawat estudyante: isang inhinyero na namuhay sa loob ng mga sistemang ito at nagpapaliwanag kung paano talaga gumagana ang mga ito.",
     "s2Title": "Paggawang malinaw ang masalimuot",
     "s2Body": "Kailangan ang malalim na teknikal na kaalaman ngunit hindi sapat. Ang mas bihirang kasanayan ay isalin ito: kunin ang isang bagay na talagang masalimuot, web application firewall, identity federation, traffic management, SD-WAN, at gawing kapit-kapit sa isang taong unang nakaharap nito. Patuloy na binabanggit ng mga kalahok ang mga halimbawa mula sa totoong mundo at ang malinaw, nakabalangkas na paraan, ang kakayahang ilagay ang bawat konsepto sa konteksto ng trabahong talagang ginagawa nila. Ang pagsasanay ay isang sinulid na umaabot sa buong karerang ito, naroon sa halos bawat papel mula 1997, at full-time na pokus mula 2020.",
     "s3Title": "Hands-on, hindi malabo",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Konsultasyon at pagpupulong",
     "topicOther": "Iba pa",
     "formMessage": "Iyong mensahe",
-    "formSend": "Magpadala ng mensahe",
+    "formSend": "Buksan ang draft ng email",
     "formSending": "Ipinapadala…",
     "formRequired": "Pakipunan ang iyong pangalan, email, at mensahe.",
     "successTitle": "Salamat.",
     "successBody": "Nasa daan na ang iyong mensahe. Babalikan kita sa lalong madaling panahon.",
     "errorBody": "May nangyaring mali sa pagpapadala. Subukan muli o direktang mag-email.",
+    "draftedTitle": "Bukas na ang draft ng iyong email.",
+    "draftedBody": "Dapat bumukas ang iyong email app na may nakalagay nang mensahe. Ipadala ito mula roon; wala pang naipadala. Kung walang bumukas, kopyahin ang mensahe sa ibaba at i-email sa {email}.",
+    "copyMessage": "Kopyahin ang mensahe",
+    "copied": "Nakopya",
+    "copyFailed": "Na-block ang pagkopya: piliin ang teksto at kopyahin",
+    "draftedMessageLabel": "Ang mensahe, gaya ng na-draft",
     "emailLabel": "Email",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Mga tuntunin",
     "title": "Lisensya",
-    "closedHeading": "Closed source, ang website na ito",
-    "closedBody": "Ang website mismo ay closed source. Ang disenyo, interface, nakasulat na nilalaman nito (kasama ang bawat artikulo ng Learn), branding, at ang partikular na paraan ng pagkakabuo at pagkakapakita ng mga tool dito ay pag-aaring eksklusibo, nakalaan ang lahat ng karapatan. Walang ipinagkakaloob na pahintulot na kopyahin, kopyahing muli, baguhin, muling ipamahagi, o lumikha ng mga akdang hango mula sa site o nilalaman nito nang walang naunang nakasulat na pahintulot.",
+    "closedHeading": "Open source: Apache-2.0 (code) at CC BY 4.0 (nilalaman)",
+    "closedBody": "Ang code ng application ay nakalisensya sa ilalim ng Apache License 2.0. Ang nakasulat na nilalaman, bawat artikulo ng Learn, ang teksto at paliwanag ng mga tool, at ang dokumentasyon, ay nakalisensya sa ilalim ng Creative Commons Attribution 4.0 International (CC BY 4.0). Maaari mong gamitin, baguhin at muling ipamahagi ang pareho, kabilang ang para sa komersyal na layunin, basta magbigay ka ng angkop na pagkilala kay Rodolfo Nützmann (ronutz.com), mag-link sa lisensya, at ipahiwatig ang anumang pagbabago. Nananatiling kanonikal at pinapanatiling pinagmulan ang ronutz.com.",
     "contact": "May tanong tungkol sa lisensya? <a>Makipag-ugnayan.</a>",
     "backHome": "Bumalik sa mga tool",
     "thirdHeading": "Mga open-source na bahagi",
-    "lede": "Ang ronutz.com ay isang proprietary na akda, nakalaan ang lahat ng karapatan. Saklaw ng mga tuntuning ito ang website at ang nilalaman nito. Ang site ay binuo sa open-source na software, na ginagamit at muling ipinamamahagi sa ilalim ng sarili nitong mga tuntunin ng lisensya, na nakalista sa ibaba.",
+    "lede": "Open source ang ronutz.com. Ang code nito ay nakalisensya sa ilalim ng Apache License 2.0, at ang nakasulat na nilalaman sa ilalim ng Creative Commons Attribution 4.0 (CC BY 4.0). Pareho silang nangangailangan ng pagkilala: gamitin muli, pero banggitin ang pinagmulan. Ang mga bukas na materyales ng kurso ang tanging eksepsiyon: bawat isa ay inilalabas sa ilalim ng lisensyang nakasaad sa sarili nitong datasheet, at ang mga nasa ilalim ng CC0 1.0 ay hindi nangangailangan ng anumang pagkilala. Ang site ay binuo rin sa iba pang open-source na software, na nakalista sa ibaba.",
     "thirdBody": "Nakatayo ang site na ito sa open-source na gawa. Ang site mismo ay binuo gamit ang Next.js at React at inihahatid bilang isang static export; ang internationalization ay gumagamit ng next-intl; ang nilalaman ng Learn ay nire-render gamit ang next-mdx-remote, gray-matter, remark-gfm, at js-yaml; at ang paghahanap ay pinapagana ng Pagefind. Ang mga ito ay ibinibigay sa ilalim ng MIT License, maliban sa next-mdx-remote (Mozilla Public License 2.0). Ang sanggunian ng API ay naglalaman ng Swagger UI, sa ilalim ng Apache License 2.0. Ang bawat component ay nananatili sa ilalim ng sarili nitong lisensya, at ang buong mga abiso ay inihahatid kasama ng source code."
   },
   "contributeIdeas": {

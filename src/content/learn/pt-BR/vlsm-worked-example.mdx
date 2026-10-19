@@ -1,122 +1,196 @@
 ---
 slug: vlsm-worked-example
 title: "Uma alocação com VLSM, resolvida do começo ao fim"
-summary: "Uma alocação completa de sub-redes de tamanho variável para uma rede realista: dimensionar cada segmento, ordenar do maior para o menor, atribuir os endereços de fato, conferir se cada bloco está alinhado ao seu limite, contar a sobra como blocos que ainda podem ser usados, o mesmo plano com links /31, o que acontece na ordem errada, a única rota que alcança tudo e a discard route que impede que os endereços não usados fiquem em loop."
-concepts: ["vlsm", "subnetting", "address planning", "largest first", "subnet mask", "utilisation", "/31", "route summarisation", "discard route", "cidr"]
-relatedTools: ["cidr"]
-relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation"]
+summary: "Um bloco de documentação, 203.0.113.0/24, dividido em cinco subnets de tamanhos diferentes para um site pequeno, com cada endereço de rede, máscara, faixa de hosts e endereço de broadcast escrito e conferido, a sobra contabilizada, os mesmos dois links entre roteadores como prefixos /31, a falha que a ordem de chegada produz e a única rota que alcança o plano inteiro. Depois da leitura, você consegue repetir o procedimento num bloco seu, à mão, com a Calculadora CIDR / de sub-redes e com algumas linhas de Python."
+concepts: ["vlsm", "subnetting", "address planning", "largest first", "subnet mask", "utilisation", "/31", "route summarisation", "discard route", "cidr", "alignment", "documentation addresses", "longest match"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["vlsm", "subnetting-basics", "cidr-notation", "subnet-overlap-and-gaps", "supernetting-and-aggregation", "route-summarization", "static-routes-and-longest-match", "ipv4-addressing"]
 category: networking
 order: 5
 status: reviewed
-updated: "2026-10-07"
+updated: "2026-10-19"
 ---
 
-## O cenário
+Um plano de endereçamento com máscaras de tamanho variável (VLSM, variable-length subnet masks) dá a cada segmento de um site um bloco do seu próprio tamanho, em vez de cortar o bloco pai em pedaços iguais. [VLSM: dividir um bloco em subnets desiguais](/learn/vlsm) explica o princípio; este artigo o aplica até o último endereço de um bloco, 203.0.113.0/24, para a rede local (LAN) de um escritório, um Wi-Fi de visitantes, um segmento de gerência e dois links entre roteadores, sob as regras do Classless Inter-domain Routing (CIDR) da Request for Comments (RFC) 4632. Depois da leitura, você consegue dimensionar e posicionar os segmentos, preencher a tabela inteira, contabilizar a sobra, numerar os links como /31 ou /30, reconhecer a ordem que faz um plano falhar e anunciar o site como uma única rota.
 
-Você recebeu o bloco `172.16.0.0/22` e precisa encaixar quatro segmentos dentro dele:
+## O bloco e os pedidos
 
-- **Vendas**: 500 hosts
-- **Engenharia**: 200 hosts
-- **Link A**: um link ponto a ponto entre roteadores, 2 hosts
-- **Link B**: um segundo link ponto a ponto, 2 hosts
+O bloco pai é o terceiro dos três que a RFC 5737 reserva para exemplos: "The blocks 192.0.2.0/24 (TEST-NET-1), 198.51.100.0/24 (TEST-NET-2), and 203.0.113.0/24 (TEST-NET-3) are provided for use in documentation", blocos oferecidos para documentação ([RFC 5737, seção 3](https://www.rfc-editor.org/rfc/rfc5737.txt)). A Internet Assigned Numbers Authority (IANA) o lista como Documentation (TEST-NET-3), com todos os indicadores de alcance em false ([IANA, IPv4 Special-Purpose Address Space](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml)); esses endereços não devem aparecer na internet pública e os operadores devem filtrá-los ([RFC 5737, seção 4](https://www.rfc-editor.org/rfc/rfc5737.txt)), então o plano não roteia se for copiado para um roteador de verdade.
 
-Um `/22` tem 1.024 endereços (de `172.16.0.0` a `172.16.3.255`). A teoria está no artigo sobre [VLSM](/learn/vlsm); aqui, as regras são aplicadas do começo ao fim.
+Um /24 tem 256 endereços, de 203.0.113.0 a 203.0.113.255, sob a máscara 255.255.255.0: "the most significant 24 bits are ones and the least significant 8 bits are zeros", 24 bits em um e 8 bits em zero ([RFC 4632, seção 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); [a notação CIDR](/learn/cidr-notation) detalha a barra. Os pedidos, na ordem em que chegaram:
+
+| Pedido | Hosts |
+|---|---|
+| Link A, entre roteadores | 2 |
+| Link B, entre roteadores | 2 |
+| Gerência | 10 |
+| Escritório | 100 |
+| Wi-Fi de visitantes | 25 |
 
 ## Passo 1: dimensionar cada segmento
 
-Ache o menor bloco que comporta cada número de hosts, sem esquecer os dois endereços reservados (o de rede e o de broadcast) que existem em todo bloco comum:
+No CIDR, "prefixes may be defined to describe any power of two-sized block of between one and 2^32 end system addresses", qualquer bloco de tamanho potência de dois ([RFC 4632, seção 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)), então cada segmento recebe a menor potência de dois que comporta seus hosts mais dois: o número de host todo em zeros, que nomeia a rede, e o todo em uns, o directed broadcast, que nenhum host pode receber ([RFC 1812, seção 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt); [RFC 1122, seção 3.2.1.3](https://www.rfc-editor.org/rfc/rfc1122.txt)). Os tamanhos saem da tabela da RFC 1878 para um /24 ([RFC 1878, Tabela 1-2](https://www.rfc-editor.org/rfc/rfc1878.txt)):
 
-- 500 hosts pedem 9 bits de host (2⁹ − 2 = 510 utilizáveis): um `/23`.
-- 200 hosts pedem 8 bits de host (254 utilizáveis): um `/24`.
-- 2 hosts pedem 2 bits de host (2 utilizáveis): um `/30`.
-- Os outros 2 hosts pedem mais um `/30`.
+| Hosts | Necessários | Prefixo | Máscara | Endereços | Utilizáveis |
+|---|---|---|---|---|---|
+| 100 | 102 | /25 | 255.255.255.128 | 128 | 126 |
+| 25 | 27 | /27 | 255.255.255.224 | 32 | 30 |
+| 10 | 12 | /28 | 255.255.255.240 | 16 | 14 |
+| 2 | 4 | /30 | 255.255.255.252 | 4 | 2 |
 
-Arredonde para cima, até a próxima potência de dois: 500 hosts não cabem num `/24` (254 utilizáveis), então o segmento fica com um `/23`. Antes de seguir, confira se o total cabe: 512 + 256 + 4 + 4 = 776 endereços, contra 1.024 no bloco pai.
+Um /26 comporta só 62 hosts, daí o /25 para 100. Agora some os blocos, não os hosts: 128 + 32 + 16 + 4 + 4 = 184 de 256. Os hosts somam 139, e um plano que compara 139 com 256 passa numa conferência em que devia falhar. O velho hábito de descartar também a primeira e a última subnet de um bloco acabou: a RFC 1878 o chama de obsoleto e a RFC 1812 diz que a restrição "may be safely ignored", pode ser ignorada ([RFC 1812, seção 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)), como [subnetting: o básico](/learn/subnetting-basics) conta; o primeiro bloco pode começar em 203.0.113.0.
 
-## Passo 2: ordenar do maior para o menor
+## Passo 2: do maior para o menor, e por quê
 
-Ordene os segmentos pelo tamanho do bloco, do maior para o menor, para que cada um fique alinhado ao seu limite:
+O endereço de rede de um prefixo tem todos os bits de host em zero, então um /27 só pode começar num endereço cujos últimos cinco bits sejam zero, um múltiplo de 32, e um /28 num múltiplo de 16. Alocados do maior para o menor, cada bloco começa exatamente onde o anterior terminou, porque tudo o que veio antes é uma potência de dois pelo menos tão grande e o total acumulado é múltiplo do tamanho seguinte. Nenhuma RFC enuncia essa regra; ela decorre da definição de prefixo da RFC 1812, "a contiguous set of bits at the more significant end of the address", bits contíguos na ponta mais significativa do endereço ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). O exemplo da própria RFC 4632 mostra o pulo do caso contrário: um /20 que não podia começar em 10.24.8.0 pulou para 10.24.16.0 e deixou um buraco ([RFC 4632, seção 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). A ordem aqui é Escritório (/25), Wi-Fi de visitantes (/27), Gerência (/28), Link A (/30), Link B (/30).
 
-1. Vendas, `/23` (512 endereços)
-2. Engenharia, `/24` (256)
-3. Link A, `/30` (4)
-4. Link B, `/30` (4)
+## Passo 3: a tabela
 
-## Passo 3: atribuir os endereços
+Cada bloco começa no primeiro múltiplo do próprio tamanho a partir do fim do anterior; o primeiro host é o endereço de rede mais um, o broadcast é o último endereço do bloco, e o último host vem logo antes dele:
 
-Aloque nessa ordem, com cada bloco começando onde o anterior terminou:
+| Segmento | Hosts | Bloco | Máscara | Primeiro host | Último host | Broadcast | Utilizáveis |
+|---|---|---|---|---|---|---|---|
+| Escritório | 100 | 203.0.113.0/25 | 255.255.255.128 | 203.0.113.1 | 203.0.113.126 | 203.0.113.127 | 126 |
+| Wi-Fi de visitantes | 25 | 203.0.113.128/27 | 255.255.255.224 | 203.0.113.129 | 203.0.113.158 | 203.0.113.159 | 30 |
+| Gerência | 10 | 203.0.113.160/28 | 255.255.255.240 | 203.0.113.161 | 203.0.113.174 | 203.0.113.175 | 14 |
+| Link A | 2 | 203.0.113.176/30 | 255.255.255.252 | 203.0.113.177 | 203.0.113.178 | 203.0.113.179 | 2 |
+| Link B | 2 | 203.0.113.180/30 | 255.255.255.252 | 203.0.113.181 | 203.0.113.182 | 203.0.113.183 | 2 |
 
-| Segmento | Bloco | Máscara | Primeiro host | Último host | Broadcast | Utilizáveis |
-|---|---|---|---|---|---|---|
-| Vendas | 172.16.0.0/23 | 255.255.254.0 | 172.16.0.1 | 172.16.1.254 | 172.16.1.255 | 510 |
-| Engenharia | 172.16.2.0/24 | 255.255.255.0 | 172.16.2.1 | 172.16.2.254 | 172.16.2.255 | 254 |
-| Link A | 172.16.3.0/30 | 255.255.255.252 | 172.16.3.1 | 172.16.3.2 | 172.16.3.3 | 2 |
-| Link B | 172.16.3.4/30 | 255.255.255.252 | 172.16.3.5 | 172.16.3.6 | 172.16.3.7 | 2 |
+Usados 184, livres 72, utilização de 71,9% (184 dividido por 256 dá 0,71875).
 
-Vendas ocupa a primeira metade do bloco. Engenharia fica com o `/24` seguinte. Os dois links entre roteadores usam quatro endereços cada um, no começo do último `/24`.
+## Passo 4: conferir cada limite
 
-## Passo 4: conferir os limites de cada bloco
+Conte o início de cada bloco como um offset a partir de 203.0.113.0 e divida pelo tamanho do bloco; depois escreva o último octeto em binário, onde os bits de host são os zeros finais:
 
-Um bloco só é válido se começa num múltiplo do próprio tamanho. Conte o início de cada bloco como um offset, a distância a partir do primeiro endereço do bloco pai:
+| Segmento | Offset | Como múltiplo | Último octeto em binário |
+|---|---|---|---|
+| Escritório, /25 | 0 | 0 × 128 | 00000000 |
+| Wi-Fi de visitantes, /27 | 128 | 4 × 32 | 10000000 |
+| Gerência, /28 | 160 | 10 × 16 | 10100000 |
+| Link A, /30 | 176 | 44 × 4 | 10110000 |
+| Link B, /30 | 180 | 45 × 4 | 10110100 |
 
-- Vendas começa no offset 0, que é múltiplo de 512.
-- Engenharia começa no offset 512 (`172.16.2.0`), múltiplo de 256.
-- O Link A começa no offset 768 (`172.16.3.0`), múltiplo de 4; o Link B, no 772, também múltiplo de 4.
+Todo início de /27 termina em cinco zeros, todo início de /28 em quatro, todo início de /30 em dois, e é isso que o próprio host confere em cada pacote, em pseudocódigo desde 1985 ([RFC 950, seção 2.2](https://www.rfc-editor.org/rfc/rfc950.txt)):
 
-Nenhum bloco se sobrepõe a outro, porque cada um começa onde o anterior terminou. É isso que a alocação do maior para o menor garante: tudo o que veio antes de um bloco é uma potência de dois maior (ou igual), então o total acumulado é sempre múltiplo do tamanho seguinte.
+```text
+IF bitwise_and(dg.ip_dest, my_ip_mask) = bitwise_and(my_ip_addr, my_ip_mask)
+    THEN send_dg_locally(dg, dg.ip_dest)
+    ELSE send_dg_locally(dg, gateway_to(bitwise_and(dg.ip_dest, my_ip_mask)))
+```
 
-## Passo 5: contabilizar a sobra
+O roteador faz a mesma comparação por interface ([RFC 1812, seção 5.2.4.2](https://www.rfc-editor.org/rfc/rfc1812.txt)); um host do Escritório com a máscara 255.255.255.128 trata de 203.0.113.1 a 203.0.113.126 como vizinhos e manda o resto ao gateway.
 
-Os quatro segmentos usam 776 endereços e deixam 248 livres, de `172.16.3.8` a `172.16.3.255`: uma utilização de 75,8%. Uma faixa livre só tem utilidade se for dividida em blocos que começam nos seus próprios limites, então escreva a sobra desse jeito:
+## Passo 5: o que sobrou
+
+A faixa livre vai de 203.0.113.184 a 203.0.113.255: 72 endereços. Como 72 não é potência de dois, a sobra nunca é um bloco só, e sim dois blocos alinhados:
 
 | Bloco livre | Endereços | Comporta |
 |---|---|---|
-| 172.16.3.8/29 | 8 | até 6 hosts |
-| 172.16.3.16/28 | 16 | até 14 hosts |
-| 172.16.3.32/27 | 32 | até 30 hosts |
-| 172.16.3.64/26 | 64 | até 62 hosts |
-| 172.16.3.128/25 | 128 | até 126 hosts |
+| 203.0.113.184/29 | 8 | até 6 hosts |
+| 203.0.113.192/26 | 64 | até 62 hosts |
 
-8 + 16 + 32 + 64 + 128 = 248, então a sobra está toda contabilizada. O próximo segmento de até 126 hosts vai no `/25`; já um segmento de 200 hosts não cabe mais em lugar nenhum do bloco pai, por mais endereços livres que o total mostre.
+8 + 64 = 72, e o bloco pai inteiro está contabilizado: 184 usados mais 72 livres. Um pedido futuro de até 62 hosts vai no /26; um segundo segmento de 100 hosts não cabe em lugar nenhum, embora 72 endereços estejam livres, porque um /25 precisa de 128 endereços contíguos e alinhados. Blocos alinhados, e não uma contagem, mostram isso de antemão; [sobreposições e lacunas de sub-redes](/learn/subnet-overlap-and-gaps) mostra como fechar a conta de cada endereço de qualquer alocação.
 
-## O mesmo plano com links /31
+## Os mesmos dois links como /31
 
-Em links ponto a ponto entre roteadores, um `/31` comporta as duas pontas: a RFC 3021 permite "the use of 31-bit subnet masks" nesses links, onde "the two addresses above MUST be interpreted as host addresses" ([RFC 3021](https://www.rfc-editor.org/rfc/rfc3021)). Com o Link A em `172.16.3.0/31` e o Link B em `172.16.3.2/31`, o plano usa 772 endereços em vez de 776, e a sobra passa a ser `172.16.3.4/30`, `.8/29`, `.16/28`, `.32/27`, `.64/26` e `.128/25`: 252 endereços. As duas pontas de cada link precisam suportar isso, então confira o equipamento dos dois lados antes de endereçar um link desse jeito.
+Um /30 entre dois roteadores desperdiça metade dos endereços: quatro por link, dois deles a rede e o broadcast, num meio de exatamente duas pontas e sem broadcast digno do nome ([RFC 3021, seção 1](https://www.rfc-editor.org/rfc/rfc3021.txt)). A RFC 3021 transforma os dois endereços reservados em hosts: "In a point-to-point link with a 31-bit subnet mask, the two addresses above MUST be interpreted as host addresses", os dois endereços são hosts (seção 2.1); a RFC 950 já admitia um campo de host com um único bit ([RFC 950, seção 2.1](https://www.rfc-editor.org/rfc/rfc950.txt)).
 
-## O que acontece na ordem errada
+O Link A vira 203.0.113.176/31, hosts 203.0.113.176 e 203.0.113.177, e o Link B vira 203.0.113.178/31, hosts 203.0.113.178 e 203.0.113.179, ambos sob a máscara 255.255.255.254 e sem endereço de broadcast. Os usados caem de 184 para 180, os livres sobem de 72 para 76, agora 203.0.113.180/30, 203.0.113.184/29 e 203.0.113.192/26, e a utilização fica em 70,3%: "each point-to-point link in a large network would consume two addresses instead of four", dois endereços por link em vez de quatro ([RFC 3021, seção 1](https://www.rfc-editor.org/rfc/rfc3021.txt)).
 
-Aloque os mesmos quatro segmentos do menor para o maior, cada um começando onde o anterior terminou, e o método desanda assim que chega o primeiro bloco grande:
+Três consequências vêm junto. Não há directed broadcast para um /31, então "The limited broadcast MUST be used for all broadcast traffic on a point-to-point link with a 31-bit subnet mask assigned to it", só o limited broadcast ([RFC 3021, seção 2.2](https://www.rfc-editor.org/rfc/rfc3021.txt)), o que a RFC também conta como um pequeno ganho contra a negação de serviço (DoS) por amplificação via directed broadcast (seção 2.2.1). Os protocolos de roteamento são indiferentes, OSPF e BGP entre os testados (seções 2.3 e 4). E as duas pontas precisam concordar: "a point-to-point link in which only one end supports the use of 31-bit prefixes may not operate correctly", pode não funcionar com suporte numa ponta só (seção 5), e a regra vale só para links de duas pontas, nunca para um segmento de LAN (mesma seção).
 
-1. O Link A fica em `172.16.0.0/30`, e o Link B, em `172.16.0.4/30`.
-2. Vendas, um `/23`, não pode começar em `172.16.0.8`: o início dele precisa ser múltiplo de 512, então o bloco pula para `172.16.2.0` e deixa para trás o trecho de `172.16.0.8` a `172.16.1.255`.
-3. Engenharia começaria onde Vendas termina, em `172.16.4.0`, que já está fora do bloco pai.
+## Na ordem em que os pedidos chegaram
 
-O espaço para Engenharia existe, em `172.16.1.0/24`, dentro do trecho que ficou para trás, mas só voltando para procurá-lo; e, num plano maior, é desse vaivém que surgem as sobreposições e os pedaços ilhados. Na alocação do maior para o menor, esse vaivém nunca é necessário.
+Aloque os mesmos cinco blocos na ordem de chegada, cada um no primeiro endereço alinhado depois do anterior, e o plano quebra no último pedido:
 
-## Uma única rota para tudo
+| Segmento | Bloco | Offset | Pulado antes dele |
+|---|---|---|---|
+| Link A | 203.0.113.0/30 | 0 | nada |
+| Link B | 203.0.113.4/30 | 4 | nada |
+| Gerência | 203.0.113.16/28 | 16 | de 203.0.113.8 a 203.0.113.15 (8 não é múltiplo de 16) |
+| Escritório | 203.0.113.128/25 | 128 | de 203.0.113.32 a 203.0.113.127 (32 não é múltiplo de 128) |
+| Wi-Fi de visitantes | não coube | 256 | um /27 começaria em 203.0.114.0, fora do bloco pai |
 
-Como todos os segmentos saíram de um mesmo bloco pai, o resto da rede alcança os quatro com uma única rota, `172.16.0.0/22`. Essa é a recompensa por manter um site dentro de um só bloco, e ela só vale enquanto todas as sub-redes continuarem dentro dele. Os artigos sobre [sumarização de rotas](/learn/route-summarization) e sobre [supernetting e agregação](/learn/supernetting-and-aggregation) levam a ideia adiante.
+Usados 152, livres 104, utilização de 59,4%, e o espaço livre é 203.0.113.8/29, 203.0.113.32/27 e 203.0.113.64/26. Lugar para o Wi-Fi de visitantes existe duas vezes, no /27 em .32 ou no /26 em .64, mas só voltando atrás, e desse vaivém nascem as sobreposições. Encaixe o /27 no primeiro endereço livre, 203.0.113.8, e seu endereço de rede real é 203.0.113.0, porque 8 AND 224 dá 0: 203.0.113.0/27 cobre de 203.0.113.0 a 203.0.113.31 e engole os dois links e a gerência. O Python recusa a tentativa: "A ValueError is raised if address does not represent a valid IPv4 or IPv6 address, or if the network has host bits set", erro se há bits de host ligados ([documentação do Python 3.14, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)).
 
-## O que o roteador do site faz com a rota sumarizada
+A falha costuma receber o nome errado: isto não é alocar do menor para o maior. Uma ordem de fato crescente (os links, Gerência, Wi-Fi de visitantes, Escritório) também encaixa os cinco, porque cada pulo cai num limite que o bloco seguinte aproveita. O que falha é a ordem sem critério, em que um bloco maior vem depois de um menor e precisa pular adiante. Do maior para o menor nunca há pulo.
 
-No roteador do próprio site, o plano vira rotas. Os quatro segmentos são redes diretamente conectadas, `172.16.0.0/23`, `172.16.2.0/24`, `172.16.3.0/30` e `172.16.3.4/30`, e o roteador anuncia ao resto da rede a rota sumarizada (o summary), `172.16.0.0/22`. Essa rota também precisa existir no próprio roteador que a anuncia, e ela não leva a lugar nenhum: é a discard route (rota de descarte). A especificação do CIDR transforma isso em regra: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes" ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632)).
+## Uma rota para tudo
 
-Um pacote para `172.16.3.200`, um endereço da sobra livre, mostra o porquê. O resto da rede manda esse pacote para o site, porque o /22 cobre esse endereço. No roteador do site, nenhum segmento corresponde ao destino; sem a discard route, o melhor match que sobra é a rota padrão (default route) do site, que aponta de volta para o resto da rede, onde o /22 devolve o pacote na mesma hora. O pacote fica em loop entre os dois roteadores até o TTL (time to live) zerar. A regra existe exatamente para esse caso: a discard route "is necessary to prevent forwarding loops when some addresses covered by the aggregate are not reachable" (mesma fonte), e a especificação observa que, na prática, isso costuma ser feito com uma rota do tipo discard, ou null, para a rota sumarizada (RFC 4632, seção 5.2). Os endereços alocados não são afetados: um pacote para `172.16.2.10` continua chegando à Engenharia, porque o /24 é um prefixo mais longo que o /22 e vence pelo longest match (a regra do prefixo mais longo). Como o roteador escolhe entre rotas que se sobrepõem é o assunto do artigo sobre [rotas estáticas e longest prefix match](/learn/static-routes-and-longest-match).
+Como todos os blocos saíram do mesmo bloco pai, o resto da rede alcança o site com uma única rota, 203.0.113.0/24, a recompensa do CIDR a um bloco contíguo: "the site's routing information may be aggregated into a single prefix", um único prefixo para o site inteiro ([RFC 4632, seção 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Os blocos alocados, sozinhos, não colapsam tanto: os dois /30 se fundem em 203.0.113.176/29, mas o /25, o /27, o /28 e o /29 continuam quatro prefixos, e só o /24, que cobre também os 72 endereços livres, é uma rota só. [Sumarização de rotas](/learn/route-summarization) e [supernetting e agregação de rotas](/learn/supernetting-and-aggregation) levam a ideia além de um site.
 
-## Como conferir o resultado
+Dentro do site, as subnets vencem o summary pelo comprimento: "Routers must use the most specific matching route (the longest matching network prefix) when forwarding traffic", a rota mais específica, de prefixo mais longo ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)), e o algoritmo de encaminhamento guarda, entre as rotas que casam, as de maior comprimento (seção 5.2.4.3). Um pacote para 203.0.113.10 casa com o /24 e o /25, e o /25 o leva ao Escritório; [rotas estáticas, longest prefix match e distância administrativa](/learn/static-routes-and-longest-match) mostra a escolha numa tabela de rotas.
 
-Essa é exatamente a alocação que a [calculadora CIDR](/tools/cidr) gera no modo VLSM: informe `172.16.0.0/22` como bloco pai e os quatro números de hosts, e ela devolve as mesmas redes, máscaras e faixas e a mesma utilização de 75,8%, tudo calculado dentro do seu navegador. Se um segmento não couber, ele aparece numa lista à parte, em vez de sumir sem aviso.
+## A rota que não leva a lugar nenhum
+
+O roteador que anuncia o /24 também precisa de uma rota para ele, que descarte pacotes: um roteador "must discard packets that match the aggregate route, but not any of the more-specific routes", descartar o que casa só com o agregado, e por isso "the 'next hop' for the aggregate route should be the null destination", next hop nulo ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt)), o que "is necessary to prevent forwarding loops when some addresses covered by the aggregate are not reachable", contra loops quando parte do agregado não é alcançável (mesma seção). Um pacote para 203.0.113.200, no /26 livre, mostra o porquê: o /24 o traz ao site, nenhuma subnet conectada casa com ele, e sem a discard route (rota de descarte) o melhor match que resta é a rota default do site, que aponta de volta para a rede que o manda entrar de novo, até o time to live (TTL) zerar e o pacote ser descartado ([RFC 1812, seção 5.3.1](https://www.rfc-editor.org/rfc/rfc1812.txt)). Na prática, "this is implemented by installing a 'discard' or 'null' route for all aggregated prefixes that one network advertises to another", uma rota discard ou null por prefixo agregado anunciado ([RFC 4632, seção 5.2](https://www.rfc-editor.org/rfc/rfc4632.txt)). O loop por inteiro, com as formas do OSPF e dos fabricantes, está em [sumarização de rotas](/learn/route-summarization); aqui ele cabe numa linha de configuração.
+
+## Como ver
+
+A [Calculadora CIDR / de sub-redes](/tools/cidr) tem quatro modos, todos calculados no navegador. No modo **VLSM**, informe 203.0.113.0/24 como bloco pai e os cinco requisitos com seus hosts: ela mesma ordena do maior para o menor, então qualquer ordem de entrada devolve a tabela do Passo 3 e 71,9% de utilização, mais uma lista **Did not fit**. Dois limites: um requisito de 2 hosts sempre recebe um /30, então cada /31 é conferido à parte no modo **Subnet**, em que 203.0.113.176/31 devolve dois endereços utilizáveis e o rótulo do último endereço avisa que não há directed broadcast; e, como o modo sempre ordena, ele não mostra a falha da ordem de chegada. O modo **Overlap**, com os cinco blocos e 203.0.113.0/24 como escopo, não acha sobreposições e lista as lacunas 203.0.113.184/29 e 203.0.113.192/26; o modo **Supernet** colapsa os cinco em quatro prefixos e aponta 203.0.113.0/24 como o bloco que os cobre, 72 endereços maior.
+
+O [Python playground](/tools/python-playground) roda o CPython 3.14 no navegador, e o módulo ipaddress resolve o plano inteiro: `hosts()` lista os endereços utilizáveis, os dois no caso de um /31, `address_exclude()` devolve os blocos livres, `subnet_of()` testa a contenção e `collapse_addresses()` funde o que se funde ([documentação do Python 3.14, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)). Executado nesta sessão, saída abaixo do código:
+
+```text
+from ipaddress import ip_network, collapse_addresses
+parent = ip_network("203.0.113.0/24")
+plan = [ip_network(p) for p in ("203.0.113.0/25", "203.0.113.128/27",
+        "203.0.113.160/28", "203.0.113.176/30", "203.0.113.180/30")]
+for n in plan:
+    h = list(n.hosts())
+    print(n, n.netmask, h[0], h[-1], n.broadcast_address, len(h))
+free = [parent]
+for n in plan:
+    free = [g for f in free for g in (f.address_exclude(n) if n.subnet_of(f) else [f])]
+print(sorted(free), sum(f.num_addresses for f in free))
+print(list(collapse_addresses(plan)))
+print(list(ip_network("203.0.113.176/31").hosts()))
+```
+
+```text
+203.0.113.0/25 255.255.255.128 203.0.113.1 203.0.113.126 203.0.113.127 126
+203.0.113.128/27 255.255.255.224 203.0.113.129 203.0.113.158 203.0.113.159 30
+203.0.113.160/28 255.255.255.240 203.0.113.161 203.0.113.174 203.0.113.175 14
+203.0.113.176/30 255.255.255.252 203.0.113.177 203.0.113.178 203.0.113.179 2
+203.0.113.180/30 255.255.255.252 203.0.113.181 203.0.113.182 203.0.113.183 2
+[IPv4Network('203.0.113.184/29'), IPv4Network('203.0.113.192/26')] 72
+[IPv4Network('203.0.113.0/25'), IPv4Network('203.0.113.128/27'), IPv4Network('203.0.113.160/28'), IPv4Network('203.0.113.176/29')]
+[IPv4Address('203.0.113.176'), IPv4Address('203.0.113.177')]
+```
+
+No Linux, o plano vira endereços com prefixo e uma rota de descarte: o ip-address(8) aceita o endereço seguido de barra e tamanho do prefixo ([ip-address(8), página de manual do Linux](https://man7.org/linux/man-pages/man8/ip-address.8.html)); no ip-route(8), uma rota `blackhole` descarta em silêncio e `ip route get` imprime a rota que o kernel usaria ([ip-route(8), página de manual do Linux](https://man7.org/linux/man-pages/man8/ip-route.8.html)). Ilustrativo, no roteador do site:
+
+```bash
+ip address add 203.0.113.1/25 dev eth0
+ip address add 203.0.113.177/30 dev eth1
+ip route add blackhole 203.0.113.0/24
+ip route get 203.0.113.200
+```
+
+No FRRouting, `ip address ADDRESS/PREFIX` numa interface define endereço e prefixo ([documentação do FRRouting, Zebra](https://docs.frrouting.org/en/latest/zebra.html)), e `ip route NETWORK (Null0|blackhole|reject)` instala o descarte; o exemplo documentado, um blackhole de distância alta, serve "to prevent traffic destined for a prefix to match less-specific routes (e.g. default) should the specified gateways not be reachable", para que o tráfego do prefixo não case com rotas menos específicas, como a default ([documentação do FRRouting, STATIC](https://docs.frrouting.org/en/latest/static.html)). Para o plano: `ip route 203.0.113.0/24 Null0`.
 
 ## Para lembrar
 
-- Confira o total primeiro: o que precisa caber no bloco pai é a soma dos tamanhos dos blocos, e não a dos números de hosts.
-- Alocar do maior para o menor, com cada bloco começando onde o anterior terminou, mantém todos os blocos alinhados, sem precisar voltar atrás.
-- O espaço livre só vale pelos blocos alinhados em que ele se divide; mesmo um total grande pode não ter lugar para uma única sub-rede grande.
-- Links ponto a ponto com /31 economizam dois endereços cada um, onde as duas pontas suportam isso.
-- Tudo o que está dentro de um bloco pai é alcançável por uma única rota.
-- O roteador que anuncia a rota sumarizada descarta o que só bate com ela; assim, os endereços não usados dentro do bloco param ali, em vez de ficar em loop.
+- Dimensione por blocos, não por hosts: hosts mais dois, arredondados para a potência de dois seguinte; aqui os blocos somam 184 e os hosts, 139.
+- Do maior para o menor, cada bloco começa onde o anterior terminou, num múltiplo do próprio tamanho, e nada se sobrepõe nem fica pulado; a regra é aritmética, não exigência de RFC.
+- Escreva a sobra como blocos alinhados: 72 endereços livres são um /29 e um /26, e um segmento de 100 hosts não cabe em nenhum dos dois.
+- Um /31 num link de duas pontas faz dos dois endereços hosts, elimina o directed broadcast e economiza dois endereços por link; as duas pontas precisam suportá-lo (RFC 3021).
+- A ordem de chegada pula espaço e pode deixar um pedido sem lugar mesmo com sobra; um /27 forçado em 203.0.113.8 começa de fato em 203.0.113.0 e se sobrepõe a três blocos.
+- Um bloco pai, uma rota: 203.0.113.0/24 alcança o plano inteiro, e o longest match deixa as subnets vencerem dentro dele.
+- O roteador que anuncia a rota sumarizada mantém uma discard route para ela: um pacote para um endereço livre termina ali em vez de ficar em loop.
 
 ## Fontes
 
-- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000 (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc3021)
-- [RFC 4632, Classless Inter-domain Routing (CIDR), agosto de 2006: prefixos como blocos de potência de dois, agregação (lida em 2026-10-07)](https://www.rfc-editor.org/rfc/rfc4632)
+- [RFC 5737, IPv4 Address Blocks Reserved for Documentation, janeiro de 2010: seções 3 e 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5737.txt)
+- [IANA, registro IPv4 Special-Purpose Address Space, atualizado pela última vez em 9 de outubro de 2025: as linhas 192.0.2.0/24, 198.51.100.0/24 e 203.0.113.0/24 (lido em 2026-10-19)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seções 3.1, 4.1, 5.1, 5.2 e 6.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 2.2.5.2, 4.2.2.11, 5.2.4.2, 5.2.4.3 e 5.3.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 1122, Requirements for Internet Hosts, Communication Layers, outubro de 1989: seção 3.2.1.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1878, Variable Length Subnet Table For IPv4, dezembro de 1995: a tabela de máscaras e as Tabelas 1-2 e 2-2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1878.txt)
+- [RFC 950, Internet Standard Subnetting Procedure, agosto de 1985: seções 2.1 e 2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc950.txt)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, dezembro de 2000: seções 1, 2.1, 2.2, 2.2.1, 2.3, 4, 5 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3021.txt)
+- [Documentação do Python 3.14, ipaddress, IPv4/IPv6 manipulation library, 18 de outubro de 2026: ip_network, atributos e métodos de IPv4Network, collapse_addresses (lida em 2026-10-19)](https://docs.python.org/3.14/library/ipaddress.html)
+- [ip-address(8), página de manual do Linux (iproute2), renderização do man7.org de 9 de setembro de 2026: SYNOPSIS, ip address add, EXAMPLES (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip-route(8), página de manual do Linux (iproute2), renderização do man7.org de 9 de setembro de 2026: tipos de rota, ip route add, ip route get (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [Documentação do FRRouting, Zebra, edição latest lida em 19 de outubro de 2026: Interface Commands, Standard Commands (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/zebra.html)
+- [Documentação do FRRouting, STATIC, edição latest lida em 19 de outubro de 2026: Static Route Commands (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/static.html)

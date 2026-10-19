@@ -20,7 +20,7 @@ export const RCODE_MEANINGS_PT: Record<string, string> = {
   NOERROR: "Sem erro. A consulta foi respondida normalmente.",
   FORMERR: "Erro de formato. O servidor não conseguiu interpretar a consulta.",
   SERVFAIL: "Falha do servidor. O servidor não conseguiu processar a consulta (frequentemente uma delegação quebrada, uma falha de validação DNSSEC ou um timeout upstream).",
-  NXDOMAIN: "Domínio inexistente. O nome consultado não existe. A resposta negativa é autoritativa quando a flag aa está definida, e seu TTL vem do minimum do SOA (RFC 2308).",
+  NXDOMAIN: "Domínio inexistente. O nome consultado não existe. A resposta negativa é autoritativa quando a flag aa está definida. Um resolver pode guardá-la em cache pelo TTL do registro SOA da seção AUTHORITY, que o servidor autoritativo define como o menor valor entre o TTL do próprio SOA e o seu campo MINIMUM (RFC 2308, seção 5).", // RCODE 3, TTL conforme a RFC 2308, seção 5
   NOTIMP: "Não implementado. O servidor não suporta o tipo de consulta ou o opcode solicitado.",
   REFUSED: "Recusado. O servidor recusou-se a responder, normalmente por política (controle de acesso, recursão desabilitada).",
   YXDOMAIN: "O nome existe quando não deveria (usado pelo UPDATE dinâmico).",
@@ -28,6 +28,7 @@ export const RCODE_MEANINGS_PT: Record<string, string> = {
   NXRRSET: "Um RRset que deveria existir não existe (UPDATE dinâmico).",
   NOTAUTH: "Servidor não autoritativo para a zona, ou requisição não autorizada.",
   NOTZONE: "Nome não contido na zona (UPDATE dinâmico).",
+  RESERVED11: "RCODE 11, DSOTYPENI (DSO-TYPE Not Implemented, RFC 8490): quem recebeu implementa DNS Stateful Operations, mas não o DSO-TYPE do Primary TLV da requisição. O dig 9.20 não tem nome para o RCODE 11 e imprime RESERVED11.", // RCODE 11, RFC 8490, seção 10.2
 };
 
 export const OPCODE_MEANINGS_PT: Record<string, string> = {
@@ -36,6 +37,7 @@ export const OPCODE_MEANINGS_PT: Record<string, string> = {
   STATUS: "Requisição de status do servidor.",
   NOTIFY: "Notificação de mudança de zona de um primário para seus secundários.",
   UPDATE: "Atualização dinâmica de DNS (RFC 2136).",
+  RESERVED6: "Opcode 6, DNS Stateful Operations (DSO, RFC 8490): mensagens de sessões de longa duração sobre TCP ou TLS. O dig 9.20 não tem nome para o opcode 6 e imprime RESERVED6; um servidor que não implementa DSO responde NOTIMP.", // opcode 6, RFC 8490, seção 10.1
 };
 
 export const FLAG_MEANINGS_PT: Record<DigFlag, string> = {
@@ -44,8 +46,8 @@ export const FLAG_MEANINGS_PT: Record<DigFlag, string> = {
   tc: "TrunCated. A mensagem não coube e foi cortada. O dig normalmente tenta de novo por TCP; se você a vê, a resposta UDP está incompleta.",
   rd: "Recursion Desired. O cliente pediu ao servidor para resolver o nome inteiro por ele.",
   ra: "Recursion Available. O servidor está disposto e apto a recursar.",
-  ad: "Authentic Data. O resolvedor validou a resposta com DNSSEC e ela conferiu.",
-  cd: "Checking Disabled. O cliente pediu ao resolvedor para pular a validação DNSSEC.",
+  ad: "Authentic Data. O resolver validou a resposta com DNSSEC e ela conferiu.", // AD; "resolver" fica em inglês (WRITING-BRIEF)
+  cd: "Checking Disabled. O cliente pediu ao resolver para pular a validação DNSSEC.", // CD; "resolver" fica em inglês
 };
 
 export const RRTYPE_MEANINGS_PT: Record<string, string> = {

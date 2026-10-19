@@ -6,8 +6,12 @@
 // THE CIDR / SUBNETTING TOOLKIT — four modes over one address-math core.
 //
 //   • Subnet   — single CIDR analysis via cidrAnalyze (arsenal-local, pure;
-//                identical math to the engine it replaced, RFC 3021 for /31).
-//   • VLSM     — variable-length subnets carved from a parent block.
+//                identical math to the engine it replaced, RFC 3021 for /31),
+//                plus, since 2026-10-19, classifySpecialPurpose: the IANA
+//                special-purpose (or multicast) ranges the block falls in or overlaps.
+//   • VLSM     — variable-length subnets carved from a parent block (since 2026-10-19:
+//                an optional /31 for 2-host links, 0-host rows refused, a masked
+//                parent stated, the free space listed as blocks, the order stated).
 //   • Supernet — summarize a prefix list into the minimal covering set.
 //   • Overlap  — overlaps / containment between prefixes, gaps within a scope.
 //
@@ -19,7 +23,7 @@
 // i18n: every visible string comes from the message pack via useTranslations.
 // ============================================================================
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react"; // useMemo derives the classification from the result (2026-10-19)
 import { useTranslations } from "next-intl";
 import { cidrAnalyze } from "@/lib/tools/cidr";
 // Arsenal-local extended compute (pure; structured so it could be lifted into an open library later).
@@ -29,6 +33,8 @@ import {
   analyzeOverlapGap,
   parseCidrList,
   CidrInputError,
+  classifySpecialPurpose, // special-purpose classification (2026-10-19)
+  type SpecialPurposeMatch, // one classified row (2026-10-19)
   type VlsmResult,
   type AggregateResult,
   type OverlapGapResult,
@@ -40,6 +46,7 @@ const MODES: Mode[] = ["subnet", "vlsm", "supernet", "overlap"];
 
 /** The shape cidrAnalyze returns (single-subnet). */
 interface SubnetResult {
+  input: string; // the block as analysed (cidrAnalyze returns it), classified below (2026-10-19)
   network: string;
   broadcast: string;
   netmask: string;
@@ -56,7 +63,12 @@ interface ReqRow {
 }
 
 // Error codes the extended compute throws that have their own localized hint.
-const KNOWN_ERR = new Set(["ipv4", "octet", "format", "prefix", "tooMany"]);
+const KNOWN_ERR = new Set(["ipv4", "octet", "format", "prefix", "tooMany", "zeroHosts"]); // zeroHosts: a 0-host VLSM row (2026-10-19)
+
+/** The registry's RFC column without its brackets, for reading ("[RFC 8880]; [RFC 7050, Section 2.2]" -> "RFC 8880; RFC 7050, Section 2.2"). */
+function rfcText(rfc: string): string {
+  return rfc.replace(/[[\]]/g, ""); // a single character class, linear time
+}
 
 function Stat({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
@@ -207,6 +219,8 @@ export default function CidrTool() {
   const [parent, setParent] = useState("");
   const [reqs, setReqs] = useState<ReqRow[]>([{ label: "", hosts: "" }]);
   const [vlsm, setVlsm] = useState<VlsmResult | null>(null);
+  // RFC 3021 option (2026-10-19): give a 2-host request a /31 instead of a /30. Off by default, as before.
+  const [p2p31, setP2p31] = useState(false);
   const setReq = (i: number, patch: Partial<ReqRow>) =>
     setReqs((rs) => rs.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   const addReq = () => setReqs((rs) => [...rs, { label: "", hosts: "" }]);
@@ -226,13 +240,13 @@ export default function CidrTool() {
       return;
     }
     try {
-      setVlsm(allocateVlsm(parent.trim(), requirements));
+      setVlsm(allocateVlsm(parent.trim(), requirements, { pointToPoint31: p2p31 })); // the option goes to the engine
       setError(null);
     } catch (e) {
       setError(mapError(e));
       setVlsm(null);
     }
-  }, [parent, reqs, t, mapError]);
+  }, [parent, reqs, p2p31, t, mapError]); // p2p31 joins the dependencies (2026-10-19)
 
   // ---- supernet mode ----
   const [aggInput, setAggInput] = useState("");
@@ -278,10 +292,16 @@ export default function CidrTool() {
     setError(null);
   };
 
+  // A /31 or /32 has no reserved addresses (RFC 3021): the first address is the network identifier AND a host,
+  // and the last address is a host, not a directed broadcast. The labels say so (production audit of 2026-10-15,
+  // F05: 192.0.2.1 in 192.0.2.0/31 was labelled "Broadcast address" while the note below said nothing is reserved).
+  const allUsable = subnet ? subnet.usableHosts === subnet.totalAddresses : false;
+  const firstLabel = allUsable ? t("results.networkAlsoHost") : t("results.network");
+  const lastLabel = allUsable ? t("results.lastAddressNoBroadcast") : t("results.broadcast");
   const subnetRows = subnet
     ? [
-        { label: t("results.network"), value: subnet.network },
-        { label: t("results.broadcast"), value: subnet.broadcast },
+        { label: firstLabel, value: subnet.network },
+        { label: lastLabel, value: subnet.broadcast },
         { label: t("results.netmask"), value: subnet.netmask },
         { label: t("results.wildcard"), value: subnet.wildcard },
         { label: t("results.firstHost"), value: subnet.firstHost },
@@ -290,6 +310,20 @@ export default function CidrTool() {
         { label: t("results.usableHosts"), value: subnet.usableHosts.toLocaleString() },
       ]
     : [];
+
+  // The special-purpose classification of the analysed block (2026-10-19), derived from the result so the
+  // Calculate button, the slider, the Example and a prefill all show it; null when there is no result.
+  const classification = useMemo(() => {
+    if (!subnet) return null; // nothing analysed
+    try {
+      return classifySpecialPurpose(subnet.input); // same parser as cidrAnalyze, so it cannot fail where that passed
+    } catch {
+      return null; // defensive: no classification rather than a crash
+    } // end of the guard
+  }, [subnet]); // recomputed only when the result changes
+  // The flag cell: Yes / No / not listed, with the registry footnote marker where the row carries footnote 1.
+  const flagText = (m: SpecialPurposeMatch, v: boolean | null) =>
+    (v === null ? t("classifyNotListed") : v ? t("classifyYes") : t("classifyNo")) + (m.footnote === "1" && v !== null ? " [1]" : ""); // footnote 1 sits on the flags
 
   // Current prefix the slider reflects: from the input, else the result mask, else /24.
   const sliderPrefix = parsePrefix(value) ?? (subnet ? maskToPrefix(subnet.netmask) : null) ?? 24;
@@ -433,6 +467,11 @@ export default function CidrTool() {
               </div>
             ))}
           </div>
+          {/* The RFC 3021 option (2026-10-19): a checkbox, off by default so a plan is unchanged unless asked. */}
+          <label className="curlb-check">
+            <input type="checkbox" checked={p2p31} onChange={(e) => setP2p31(e.target.checked)} />
+            {t("vlsm.p2p31")}
+          </label>
           <div className="cidr-controls cidr-vlsm-actions">
             <button type="button" className="cidr-button--ghost cidr-add" onClick={addReq}>
               + {t("vlsm.addRow")}
@@ -597,9 +636,9 @@ export default function CidrTool() {
                 <text x={usC} y={barY + 36} textAnchor="middle" className="cidr-range-span">
                   {rangeStr}
                 </text>
-                <text x={netC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{t("results.network")}</text>
+                <text x={netC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{allUsable ? t("results.firstAddress") : t("results.network")}</text>
                 <text x={netC} y={barY + barH + 35} textAnchor="middle" className="cidr-range-addr">{subnet.network}</text>
-                <text x={bcC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{t("results.broadcast")}</text>
+                <text x={bcC} y={barY + barH + 20} textAnchor="middle" className="cidr-range-name">{allUsable ? t("results.lastAddress") : t("results.broadcast")}</text>
                 <text x={bcC} y={barY + barH + 35} textAnchor="middle" className="cidr-range-addr">{subnet.broadcast}</text>
               </svg>
             );
@@ -610,9 +649,67 @@ export default function CidrTool() {
         </div>
       )}
 
+      {/* ---------- RESULTS: subnet, special-purpose classification (2026-10-19) ---------- */}
+      {mode === "subnet" && subnet && classification && (
+        <div className="cidr-output">
+          <span className="cidr-section-title">{t("classifyHeading")}</span>
+          {/* The verdict in one sentence: inside a listed range, partly in some, or in none. */}
+          <p className="cidr-note">
+            {classification.status === "special"
+              ? t("classifySpecial", { range: classification.matches[0].block, name: classification.matches[0].name, rfc: rfcText(classification.matches[0].rfc) })
+              : classification.status === "partial"
+                ? t("classifyPartial", { special: classification.specialAddresses.toLocaleString(), total: classification.totalAddresses.toLocaleString() })
+                : t("classifyNone")}
+          </p>
+          {/* Every listed range the block falls in or overlaps, with the registry's flags. */}
+          {classification.matches.length > 0 && (
+            <div className="cidr-table-wrap">
+              <table className="cidr-table">
+                <thead>
+                  <tr>
+                    <th>{t("classifyThRange")}</th>
+                    <th>{t("classifyThName")}</th>
+                    <th>{t("classifyThRfc")}</th>
+                    <th>{t("classifyThRelation")}</th>
+                    <th>{t("classifyThSource")}</th>
+                    <th>{t("classifyThDestination")}</th>
+                    <th>{t("classifyThForwardable")}</th>
+                    <th>{t("classifyThGlobal")}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {classification.matches.map((m) => (
+                    <tr key={m.block}>
+                      <td className="mono">{m.block}{m.footnote === "2" ? " [2]" : ""}</td>
+                      <td>{m.name}{m.terminated ? " (" + t("classifyTerminated", { date: m.terminated }) + ")" : ""}</td>
+                      <td>{rfcText(m.rfc)}</td>
+                      <td>{t(m.relation === "equal" ? "classifyRelEqual" : m.relation === "inside" ? "classifyRelInside" : "classifyRelContains")}</td>
+                      <td>{flagText(m, m.source)}</td>
+                      <td>{flagText(m, m.destination)}</td>
+                      <td>{flagText(m, m.forwardable)}</td>
+                      <td>{flagText(m, m.globallyReachable)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {/* The registry footnotes, only when a shown row carries one. */}
+          {classification.matches.some((m) => m.footnote === "1") && <p className="cidr-bits-note">{t("classifyNote1")}</p>}
+          {classification.matches.some((m) => m.footnote === "2") && <p className="cidr-bits-note">{t("classifyNote2")}</p>}
+          {/* What the flags mean and where the rows come from. */}
+          {classification.matches.length > 0 && <p className="cidr-bits-note">{t("classifyFlagsNote")}</p>}
+          <p className="cidr-bits-note">{t("classifySource")}</p>
+        </div>
+      )}
+
       {/* ---------- RESULTS: vlsm ---------- */}
       {mode === "vlsm" && vlsm && (
         <div className="cidr-output">
+          {/* A parent typed with host bits set is masked, and now says so (2026-10-19). */}
+          {vlsm.parentMasked && <p className="cidr-note">{t("vlsm.maskedNote", { typed: vlsm.parentInput, parent: vlsm.parent })}</p>}
+          {/* The placement order, stated (2026-10-19): largest block first, not the order entered. */}
+          <p className="cidr-note">{t("vlsm.orderNote")}</p>
           <div className="cidr-stats">
             <Stat label={t("vlsm.stat.parent")} value={vlsm.parent} mono />
             <Stat label={t("vlsm.stat.used")} value={vlsm.usedAddresses.toLocaleString()} />
@@ -644,13 +741,27 @@ export default function CidrTool() {
                     <td className="mono">
                       {s.firstHost} – {s.lastHost}
                     </td>
-                    <td className="mono">{s.broadcast}</td>
+                    {/* A /31 has no broadcast (RFC 3021), so its row says so instead of naming its last host as one. */}
+                    <td className="mono">{s.pointToPoint31 ? t("vlsm.noBroadcast") : s.broadcast}</td>
                     <td>{s.usableHosts.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          {/* The free space as CIDR blocks (2026-10-19), not only the count in the stats above. */}
+          <span className="cidr-section-title">{t("vlsm.freeBlocks")}</span>
+          {vlsm.freeBlocks.length === 0 ? (
+            <p className="cidr-empty">{t("vlsm.noFree")}</p>
+          ) : (
+            <ul className="cidr-block-list">
+              {vlsm.freeBlocks.map((b) => (
+                <li className="cidr-block mono" key={b.cidr}>
+                  {b.cidr}
+                </li>
+              ))}
+            </ul>
+          )}
           {vlsm.unallocated.length > 0 && (
             <div className="cidr-unfit">
               <span className="cidr-section-title">{t("vlsm.unfit")}</span>

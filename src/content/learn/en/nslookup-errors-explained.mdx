@@ -8,14 +8,16 @@ relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-hea
 category: networking
 order: 49
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-19"
 ---
 
 A failed nslookup does not print an answer. It prints a single line, and the code at the end tells you what went wrong:
 
 ```
-** server can't find example.com: NXDOMAIN
+** server can't find nonexistent.invalid: NXDOMAIN
 ```
+
+The example asks for a name under `.invalid` on purpose: Request for Comments (RFC) 6761, section 6.4, lets users assume that queries for such names always return NXDOMAIN, while `example.com` now answers NOERROR with no data for names that do not exist (the compact denial of RFC 9824).
 
 ## The codes
 

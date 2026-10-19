@@ -179,6 +179,13 @@ export default async function CertificationsHubPage({
     })),
   }));
 
+  // The readiness counts (production audit of 2026-10-15, F10): a reader took the total of guides for a count
+  // of finished study products, while the collection mixes mapped guides, guides in preparation and retired
+  // records. Counted from the same tree the page renders, status by status, so the line can never disagree with
+  // the cards below it.
+  const readiness = { current: 0, transitioning: 0, preparing: 0, retired: 0 };
+  for (const g of groups) for (const c of g.certs) for (const guide of c.guides) readiness[guide.status] += 1;
+
   return (
     <>
       <a href="#main" className="skip-link" data-pagefind-ignore>
@@ -193,6 +200,8 @@ export default async function CertificationsHubPage({
             <div className="container certs-container">
               <h1 className="page-hero-title">{t("title")}</h1>
               <p className="page-hero-lede">{t("lede")}</p>
+              {/* The counts by status, so a placeholder cannot be mistaken for a mapped guide before it is opened. */}
+              <p className="page-hero-lede certs-readiness">{t("readiness", readiness)}</p>
               {/* Before a vendor's exam, the fundamentals (m2): the open course, one sentence and the presenter. */}
               <MaterialsDoor locale={locale} context="certifications" variant="line" />
             </div>

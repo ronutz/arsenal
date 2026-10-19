@@ -11,11 +11,18 @@
 // Routing expectations were DERIVED by running the vendored-bootstrap walk
 // (rdap/bootstrap/asn.json, IANA publication 2026-06-01) and then hard-coded;
 // the fixture is a live ARIN capture for AS15169 trimmed on 2026-07-08.
+//
+// 2026-10-19 (PRIME, "Accept asdot"): dotted vectors from RFC 5396 section 2
+// (read 2026-10-19), whose own example is "1.10" for 65546 in both asdot and
+// asdot+. Each expectation is the arithmetic high x 65536 + low, worked by hand
+// below, and the three notations RFC 5396 defines. Two malformed dotted inputs
+// (a half above 65535, an empty half) must be refused with their own codes.
 // ============================================================================
 
 import { classifyAsn, planAsn, summarizeAutnum, AsnError } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "dev-out-asn/2026-07-08";
+// Bumped 2026-10-19: dotted (asdot / asdot+) vectors added and the "decimal" reject vector changed.
+export const GOLDEN_VECTOR_SET_ID = "dev-out-asn/2026-10-19";
 
 // ---- classification --------------------------------------------------------
 
@@ -25,6 +32,34 @@ const CLASSIFY_VECTORS: { id: string; input: string; asn: number; normalized: st
   { id: "bare", input: "15169", asn: 15169, normalized: "AS15169" },
   { id: "max", input: "4294967295", asn: 4294967295, normalized: "AS4294967295" },
 ];
+
+// ---- dotted notation, RFC 5396 section 2 (read 2026-10-19) ------------------
+
+// Each row: the input, the asplain number it must become, and its asdot and asdot+ forms.
+const DOTTED_VECTORS: {
+  id: string;
+  input: string;
+  asn: number;
+  asdot: string;
+  asdotPlus: string;
+  notation: "asplain" | "dotted";
+}[] = [
+  // RFC 5396's own example: "1.10" is 65546 in asdot and in asdot+ (1 x 65536 + 10).
+  { id: "rfc5396-1.10", input: "1.10", asn: 65546, asdot: "1.10", asdotPlus: "1.10", notation: "dotted" },
+  // asdot+ only: 0 x 65536 + 65535 = 65535, which asdot writes as plain "65535".
+  { id: "asdotplus-0.65535", input: "0.65535", asn: 65535, asdot: "65535", asdotPlus: "0.65535", notation: "dotted" },
+  // Both halves at their maximum: 65535 x 65536 + 65535 = 4294967295, the top of the 32-bit space.
+  { id: "max-65535.65535", input: "65535.65535", asn: 4294967295, asdot: "65535.65535", asdotPlus: "65535.65535", notation: "dotted" },
+  // The first four-octet number: 1 x 65536 + 0 = 65536.
+  { id: "first-4octet-1.0", input: "1.0", asn: 65536, asdot: "1.0", asdotPlus: "1.0", notation: "dotted" },
+  // The "AS" prefix is accepted on dotted input as on asplain input.
+  { id: "prefixed-AS1.10", input: "AS1.10", asn: 65546, asdot: "1.10", asdotPlus: "1.10", notation: "dotted" },
+  // asplain input still yields the dotted forms for display: 65546 is 1.10.
+  { id: "asplain-65546-forms", input: "65546", asn: 65546, asdot: "1.10", asdotPlus: "1.10", notation: "asplain" },
+];
+
+// A converted dotted number reaches the special-purpose table like its asplain twin: 65546 is documentation (RFC 5398).
+const DOTTED_PLAN_VECTOR = { id: "plan-1.10-documentation", input: "1.10", normalized: "AS65546", reasonKey: "documentation", rfc: "RFC 5398" };
 
 // ---- the special-purpose table (IANA registry, accessed 2026-07-08) --------
 
@@ -56,10 +91,20 @@ const UNALLOCATED_VECTOR = { id: "unallocated-gap", input: "4000000000" };
 
 // ---- rejects ----------------------------------------------------------------
 
-const REJECT_VECTORS: { id: string; input: string; code: "empty" | "format" | "range" }[] = [
+// The code union widened 2026-10-19 with the two dotted-notation refusals.
+const REJECT_VECTORS: { id: string; input: string; code: "empty" | "format" | "range" | "dotRange" | "dotEmpty" }[] = [
   { id: "empty", input: "   ", code: "empty" },
   { id: "prefix-only", input: "AS", code: "format" },
-  { id: "decimal", input: "AS15169.1", code: "format" },
+  // Was "AS15169.1" until 2026-10-19; that is now valid asdot (15169 x 65536 + 1), so two dots stand in for "not a number".
+  { id: "two-dots", input: "AS1.2.3", code: "format" },
+  // Malformed dotted: the low half 65536 does not fit 16 bits.
+  { id: "dot-low-above-65535", input: "1.65536", code: "dotRange" },
+  // Malformed dotted: the high half 65536 does not fit 16 bits.
+  { id: "dot-high-above-65535", input: "65536.0", code: "dotRange" },
+  // Malformed dotted: nothing after the dot.
+  { id: "dot-empty-low", input: "1.", code: "dotEmpty" },
+  // Malformed dotted: nothing before the dot.
+  { id: "dot-empty-high", input: ".10", code: "dotEmpty" },
   { id: "negative", input: "-5", code: "format" },
   { id: "beyond-32bit", input: "4294967296", code: "range" },
   { id: "absurd-digits", input: "99999999999999", code: "range" },
@@ -104,6 +149,42 @@ export function verifyVectors(): VectorReport {
         failures.push(`${v.id}: got ${c.normalized}/${c.asn}`);
       }
     } catch (e) {
+      failures.push(`${v.id}: threw ${(e as Error).message}`);
+    }
+  }
+
+  // Dotted notation: the number and all three forms, field by field.
+  for (const v of DOTTED_VECTORS) {
+    // Each vector is independent; a throw is a failure of that vector only.
+    try {
+      // Classify the input.
+      const c = classifyAsn(v.input);
+      // Compare every field the vector pins.
+      if (c.asn !== v.asn || c.asplain !== String(v.asn) || c.asdot !== v.asdot || c.asdotPlus !== v.asdotPlus || c.notation !== v.notation || c.normalized !== `AS${v.asn}`) {
+        // Name what came back.
+        failures.push(`${v.id}: got ${JSON.stringify(c)}`);
+      }
+    } catch (e) {
+      // A dotted vector must never throw.
+      failures.push(`${v.id}: threw ${(e as Error).message}`);
+    }
+  }
+
+  // A dotted input planned end to end.
+  {
+    // The one plan vector.
+    const v = DOTTED_PLAN_VECTOR;
+    // Plan it.
+    try {
+      // The plan for 1.10.
+      const p = planAsn(v.input);
+      // It must be the documentation block, with the asplain display form and the dotted halves kept.
+      if (p.kind !== "special" || p.normalized !== v.normalized || p.special.reasonKey !== v.reasonKey || p.special.rfc !== v.rfc || p.classified.dotted?.high !== 1 || p.classified.dotted?.low !== 10) {
+        // Name what came back.
+        failures.push(`${v.id}: got ${JSON.stringify(p)}`);
+      }
+    } catch (e) {
+      // It must not throw.
       failures.push(`${v.id}: threw ${(e as Error).message}`);
     }
   }
@@ -168,6 +249,8 @@ export function verifyVectors(): VectorReport {
 
   const total =
     CLASSIFY_VECTORS.length +
+    DOTTED_VECTORS.length + // dotted notation (2026-10-19)
+    1 + // the dotted plan vector (2026-10-19)
     SPECIAL_VECTORS.length +
     ROUTING_VECTORS.length +
     1 + // unallocated

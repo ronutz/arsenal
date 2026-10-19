@@ -15,7 +15,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { normalizeMac, analyzeMac, type OuiResult } from "@/lib/tools/oui-lookup/compute";
+import { normalizeMac, analyzeMac, type OuiResult, type WellKnownMac } from "@/lib/tools/oui-lookup/compute"; // WellKnownMac added 2026-10-19
 import { usePrefill } from "@/lib/use-prefill";
 
 // D-83 Example - a Cisco OUI, from the same assignment family as the golden
@@ -76,6 +76,22 @@ export default function OuiLookupTool() {
 
   usePrefill(onChange);
 
+  /**
+   * Localised display name for a standard-defined address (added 2026-10-19). The four mapping families have
+   * message-pack names; registry and IEEE rows keep the source's own English name, like vendor names do.
+   * @param wk the engine's well-known meaning
+   * @returns the name to show
+   */
+  const wellKnownName = (wk: WellKnownMac): string => {
+    if (wk.kind === "ipv4-multicast") return t("wkIpv4Multicast"); // RFC 1112 mapping
+    if (wk.kind === "ipv6-multicast") return t("wkIpv6Multicast"); // RFC 2464 mapping
+    if (wk.kind === "vrrp-ipv4") return t("wkVrrpIpv4", { vrid: wk.vrid ?? 0 }); // RFC 9568 s7.3, IPv4 block
+    if (wk.kind === "vrrp-ipv6") return t("wkVrrpIpv6", { vrid: wk.vrid ?? 0 }); // RFC 9568 s7.3, IPv6 block
+    return wk.name; // IANA and IEEE rows: the registry's own name
+  };
+
+  const wk = result?.ok ? result.wellKnown : undefined; // the standard-defined meaning of the current result, if any
+
   return (
     <div className="cidr-tool jwt-tool oui-tool">
       <div className="cidr-input-row">
@@ -111,7 +127,7 @@ export default function OuiLookupTool() {
       {result && result.ok && (
         <div className="ja4-result">
           <div className="oui-headline">
-            <span className="oui-vendor">{result.vendor ?? t("noVendor")}</span>
+            <span className="oui-vendor">{result.vendor ?? (wk ? wellKnownName(wk) : t("noVendor"))}</span>{/* vendor, else the standard meaning (2026-10-19), else "no vendor" */}
             <span className="oui-address mono">{result.formatted}</span>
           </div>
           <div className="ja4-parts">
@@ -130,12 +146,26 @@ export default function OuiLookupTool() {
               code={result.local ? t("local") : t("universal")}
               desc={result.local ? t("localDesc") : t("universalDesc")}
             />
+            {/* Standard-defined meaning (multicast mapping, VRRP, IANA row, IEEE group address); added 2026-10-19. */}
+            {wk && <Field head={t("wellKnownLabel")} code={wellKnownName(wk)} desc={wk.standard} />}
+            {/* IPv6 multicast: the low 32 bits of the group address the MAC carries (RFC 2464 s7); added 2026-10-19. */}
+            {wk?.ipv6Low32 && <Field head={t("ipv6Low32Label")} code={wk.ipv6Low32} desc={t("ipv6Low32Desc")} />}
           </div>
-          {result.notes && result.notes.length > 0 && (
-            <ul className="ja4-notes">
+          {/* IPv4 multicast: the 32 groups that share this MAC (RFC 1112 s6.4); added 2026-10-19. */}
+          {wk?.ipv4Groups && (
+            <section className="jwt-panel">{/* existing panel markup */}
+              <h4 className="jwt-panel-title">{t("ipv4GroupsLabel")}</h4>{/* heading */}
+              <p className="ipv6-struct-note">{t("ipv4GroupsDesc")}</p>{/* why 32: 28 significant bits, 23 copied */}
+              <p className="mono ipv6-wrap">{wk.ipv4Groups.join(", ")}</p>{/* the 32 groups, wrapping */}
+            </section>
+          )}
+          {result.notes && (result.notes.length > 0 || wk?.bridgeFiltered || wk?.vrid === 0) && (
+            <ul className="ja4-notes">{/* engine notes plus the localised well-known notes (2026-10-19) */}
               {result.notes.map((n, i) => (
                 <li key={i}>{n}</li>
               ))}
+              {wk?.bridgeFiltered && <li>{t("bridgeFilteredNote")}</li>}{/* 01-80-C2-00-00-00 to 0F are not relayed by 802.1D bridges */}
+              {wk?.vrid === 0 && <li>{t("vridOutOfRange")}</li>}{/* VRID 0 is outside 1 to 255 (RFC 9568) */}
             </ul>
           )}
         </div>

@@ -111,7 +111,7 @@
         "overlap": "Overlapp / hull"
       },
       "modeDesc": {
-        "subnet": "Analyserer en enkelt IPv4-CIDR-blokk: nett, kringkasting, maske og vertsområde.",
+        "subnet": "Analyserer en enkelt IPv4-CIDR-blokk: nett, kringkasting, maske, vertsområde og områdene for spesielle formål som blokken ligger i eller overlapper.",
         "vlsm": "Deler en overordnet blokk i subnett av variabel lengde etter en liste over antall verter.",
         "supernet": "Oppsummerer en liste med prefikser til det minste settet med dekkende blokker.",
         "overlap": "Finner overlapp og innkapsling mellom prefikser, samt hull innenfor et valgfritt område."
@@ -141,7 +141,13 @@
           "utilization": "Utnyttelse"
         },
         "unfit": "Fikk ikke plass",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Gi krav om 2 verter et /31 (punkt-til-punkt-forbindelser, RFC 3021)",
+        "maskedNote": "Den overordnede blokken {typed} har vertsbit satt og ble derfor maskert til {parent}; planen deles ut fra {parent}.",
+        "orderNote": "Kravene plasseres fra største til minste blokk, ikke i den innskrevne rekkefølgen, slik at hver blokk starter på et multiplum av sin egen størrelse.",
+        "freeBlocks": "Ledige blokker",
+        "noFree": "Det er ingen ledig plass igjen i den overordnede blokken.",
+        "noBroadcast": "ingen (/31)"
       },
       "supernet": {
         "label": "Prefikser som skal aggregeres",
@@ -185,12 +191,36 @@
         "prefix": "Prefikslengden må være mellom 0 og 32.",
         "tooMany": "For mange oppføringer. Forkort listen og prøv igjen.",
         "noReqs": "Legg til minst ett subnettkrav med et antall verter.",
-        "noPrefixes": "Skriv inn minst ett prefiks, ett per linje."
+        "noPrefixes": "Skriv inn minst ett prefiks, ett per linje.",
+        "zeroHosts": "Et subnettkrav ber om 0 verter. Hvert subnett trenger minst 1 vert: rett antallet, eller fjern raden."
       },
       "rangeHeading": "Adresseoppsett",
       "usableShort": "brukbare",
       "rfcNote": "/31 og /32 reserverer ingenting: hver adresse er brukbar (RFC 3021).",
-      "reservedNote": "Den første adressen er nettverket og den siste er broadcast; begge er reservert, så brukbare = totalt − 2."
+      "reservedNote": "Den første adressen er nettverket og den siste er broadcast; begge er reservert, så brukbare = totalt − 2.",
+      "classifyHeading": "Områder for spesielle formål",
+      "classifySpecial": "Innenfor et område for spesielle formål: {range}, {name} ({rfc}).",
+      "classifyPartial": "Delvis for spesielle formål: {special} av {total} adresser ligger i områdene nedenfor; resten ligger ikke i noe slikt område.",
+      "classifyNone": "Ingen område for spesielle formål (globalt rutbart unicast-adresserom).",
+      "classifyThRange": "Område",
+      "classifyThName": "Navn",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Relasjon",
+      "classifyThSource": "Kilde",
+      "classifyThDestination": "Mål",
+      "classifyThForwardable": "Kan videresendes",
+      "classifyThGlobal": "Globalt nåbar",
+      "classifyRelEqual": "er denne blokken",
+      "classifyRelInside": "inneholder denne blokken",
+      "classifyRelContains": "inne i denne blokken (delvis overlapp)",
+      "classifyYes": "Ja",
+      "classifyNo": "Nei",
+      "classifyNotListed": "ikke oppgitt",
+      "classifyTerminated": "avsluttet {date}",
+      "classifyNote1": "[1] Registerets fotnote: flere protokoller har fått unntak fra denne regelen (se for eksempel RFC 8029 og RFC 5884).",
+      "classifyNote2": "[2] Registerets fotnote: kan ikke brukes med mindre en mer spesifikk reservasjon tillater det.",
+      "classifyFlagsNote": "Flaggene er registerets. Kilde og Mål: om en adresse fra området er gyldig som kilde eller mål for et datagram som passerer to enheter. Kan videresendes: om en ruter kan videresende et slikt datagram mellom eksterne grensesnitt. Globalt nåbar: om det kan videresendes utover et bestemt administrativt domene.",
+      "classifySource": "Rader fra IANA-registeret IPv4 Special-Purpose Address Space (oppdatert 2025-10-09) og, for 224.0.0.0/4, IANA-registeret IPv4 Multicast Address Space, begge lest 2026-10-19. Registeret merker at et oppført område ikke er garantert rutbart i noen bestemt lokal eller global sammenheng."
     },
     "title": "Verktøy",
     "lede": "Små, raske, personvernfokuserte verktøy. Katalogen regner i nettleseren din og sender ingenting noe sted; det eneste unntaket er det røde rommet, der et verktøy spør den offisielle tjenesten det navngir, og bare når du trykker på «Ask».",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Hvis du befinner deg i Brasil, har du rettighetene som er fastsatt i Artikkel 18 i LGPD, og du kan også kontakte den nasjonale datatilsynsmyndigheten (ANPD).",
     "changesTitle": "Endringer i denne erklæringen",
     "changesBody": "Hvis denne erklæringen endres, vil den reviderte versjonen bli publisert på denne siden, og datoen nedenfor vil bli oppdatert. Vesentlige endringer anvendes ikke med tilbakevirkende kraft.",
-    "updated": "Sist oppdatert: 30. juni 2026",
+    "updated": "Sist oppdatert: {date}",
     "backHome": "Tilbake til startsiden"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Anbefalinger",
     "title": "Hva folk sier, med egne ord.",
-    "intro": "{count} anbefalinger og vurderinger i sin helhet, over to tiår med opplæring og rådgivning. Ingenting her er omskrevet eller redigert.",
-    "provenance": "Hentet fra LinkedIn-anbefalinger, Google-vurderinger og verifiserte deltakeruttalelser fra Red Education. Den opprinnelige ordlyden og stavemåten er bevart nøyaktig slik den ble skrevet."
+    "intro": "{count} anbefalinger og vurderinger over to tiår med opplæring og rådgivning. Originalene er bevart ordrett: ingenting i dem er omskrevet eller redigert. De valgfrie maskinoversettelsene er merket som det.",
+    "provenance": "Hentet fra LinkedIn-anbefalinger, Google-vurderinger og verifiserte deltakeruttalelser fra Red Education. Den opprinnelige ordlyden og stavemåten er bevart nøyaktig slik den ble skrevet; et oversatt kort er merket som maskinoversettelse, og originalen er ett klikk unna."
   },
   "testimonials": {
     "filterLabel": "Filtrer anbefalinger",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – i dag",
-      "title": "Instruktøren & rådgiveren",
+      "title": "Undervise, bygge og gi mening til faget",
       "subtitle": "Offisiell undervisning på fulltid, levert over hele verden, og ved siden av rådgivning om beslutningene som får konsekvenser.",
       "intro": "I 2020 ble en tråd som hadde løpt gjennom hele karrieren, til hele veven. Etter to tiår der opplæringen fulgte hver rolle, ble opplæringen selve arbeidet: fulltids, offisiell, sertifisert opplæring levert til fagfolk og team over hele verden. Det som kjennetegner denne epoken, er ikke bare fokus, men den bevisste, daterte utvidelsen gjennom plattformene, hver lagt til oppå dyp felterfaring i stedet for i stedet for den.",
       "s1Title": "Fulltid, av kall",
@@ -1045,7 +1075,7 @@
       "s3Body": "Det som kjennetegner de siste årene, er en tydelig, datert progresjon. Extreme Networks-opplæring ble lagt til fra 2021, med EXOS-svitsjing, SD-WAN og automatisering. Fortinet fulgte fra 2024, med fokus på FCP FortiGate Administrator-sporet. Netskope kom til fra 2025, med drift, administrasjon, implementering og integrasjon av Netskope Security Cloud. Plattformene, hver bevisst lagt til, hver hvilende på de samme to tiårene med nettverks- og sikkerhetsimplementering under.",
       "s4Title": "Gjennom Red Education, ut i verden",
       "s4Body": "Det primære redskapet for denne globale leveringen er Red Education, et autorisert opplæringssenter som offisielle, sertifiserte kurs når organisasjoner i ulike regioner gjennom. Rollen er global technical training instructor, med levering til den typen internasjonalt publikum som en base i São Paulo, to pass og en ekte reiselyst gjør mulig. Det varige samarbeidet gjør individuell ekspertise om til noe organisasjoner verden over kan bestille og stole på.",
-      "closer": "Det er her hele historiens røde tråd lønner seg. De første årenes nysgjerrighet ble felterårenes implementeringsdybde, og den dybden er nå det hver deltaker får: ikke en foredragsholder som leser lysbilder, men en som har bygd disse systemene og forklarer hvordan de virkelig fungerer, og hvorfor."
+      "closer": "Det er her hele historiens røde tråd lønner seg. De første årenes nysgjerrighet ble felterårenes implementeringsdybde, og den dybden er nå det hver deltaker får: en som har bygd disse systemene og forklarer hvordan de virkelig fungerer, og hvorfor."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "En instruktør som bygde disse systemene før han underviste i dem.",
     "lede": "Det meste av teknisk opplæring leveres av folk som lærte emnet for å undervise i det. Dette er omvendt: tre tiår med å bygge, ødelegge og reparere ekte nettverks- og sikkerhetssystemer, destillert til en opplæring som knytter hvert begrep til hvordan det virkelig oppfører seg i produksjon.",
     "s1Title": "Hvorfor dette betyr noe i et klasserom",
-    "s1Body": "Det er forskjell på å forklare hvordan en funksjon skal fungere og å forklare hvorfor den oppfører seg som den gjør klokka tre om natta når noe kritisk er nede. Det første kommer fra en manual. Det andre kommer av å ha vært der. Siden 1996 har arbeidet vært implementering: å utforme nettverk og sette dem i drift, deretter feilsøke dem under press og være den som ringes inn for å løse de kritiske tilgjengelighets- og sikkerhetshendelsene som stopper en virksomhet, for leverandører og for noen av de største organisasjonene i Brasil. Den dybden er det hver deltaker får: ikke en foredragsholder som leser fra lysbilder, men en ingeniør som har levd inne i disse systemene og forklarer hvordan de virkelig fungerer.",
+    "s1Body": "Det er forskjell på å forklare hvordan en funksjon skal fungere og å forklare hvorfor den oppfører seg som den gjør klokka tre om natta når noe kritisk er nede. Det første kommer fra en manual. Det andre kommer av å ha vært der. Siden 1996 har arbeidet vært implementering: å utforme nettverk og sette dem i drift, deretter feilsøke dem under press og være den som ringes inn for å løse de kritiske tilgjengelighets- og sikkerhetshendelsene som stopper en virksomhet, for leverandører og for noen av de største organisasjonene i Brasil. Den dybden er det hver deltaker får: en ingeniør som har levd inne i disse systemene og forklarer hvordan de virkelig fungerer.",
     "s2Title": "Det komplekse gjort klart",
     "s2Body": "Dyp teknisk kunnskap er nødvendig, men ikke tilstrekkelig. Den sjeldnere evnen er å oversette den: å ta noe virkelig komplekst, brannmurer for webapplikasjoner, identitetsføderasjon, trafikkstyring, SD-WAN, og få det til å falle på plass for en som møter det for første gang. Deltakere fremhever konsekvent eksemplene fra den virkelige verden og den klare, strukturerte didaktikken, evnen til å sette hvert begrep i sammenheng med arbeidet de faktisk utfører. Opplæringen har vært en tråd gjennom hele denne karrieren, til stede i nesten hver rolle siden 1997, og fulltidsfokus siden 2020.",
     "s3Title": "Praktisk, ikke svevende",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Rådgivning og konsultasjon",
     "topicOther": "Noe annet",
     "formMessage": "Meldingen din",
-    "formSend": "Send melding",
+    "formSend": "Åpne e-postutkast",
     "formSending": "Sender…",
     "formRequired": "Fyll ut navnet ditt, e-posten din og en melding.",
     "successTitle": "Takk.",
     "successBody": "Meldingen din er på vei. Jeg svarer så snart jeg kan.",
     "errorBody": "Noe gikk galt under sendingen. Prøv igjen, eller send en e-post direkte.",
+    "draftedTitle": "E-postutkastet ditt er åpent.",
+    "draftedBody": "E-postprogrammet ditt skal ha åpnet seg med meldingen ferdig utfylt. Send den derfra; ingenting er sendt ennå. Hvis ingenting åpnet seg, kopier meldingen nedenfor og send den på e-post til {email}.",
+    "copyMessage": "Kopier meldingen",
+    "copied": "Kopiert",
+    "copyFailed": "Kopiering ble blokkert: marker teksten og kopier den",
+    "draftedMessageLabel": "Meldingen, slik den ble skrevet",
     "emailLabel": "E-post",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Vilkår",
     "title": "Lisens",
-    "closedHeading": "Lukket kildekode – dette nettstedet",
-    "closedBody": "Selve nettstedet er lukket kildekode. Designet, grensesnittet, det skrevne innholdet (inkludert hver Learn-artikkel), merkevaren og den særegne måten disse verktøyene er satt sammen og presentert på her, er beskyttet, med enerett. Det gis ingen tillatelse til å kopiere, gjengi, endre, videredistribuere eller lage avledede verk av nettstedet eller innholdet uten skriftlig forhåndssamtykke.",
+    "closedHeading": "Åpen kildekode: Apache-2.0 (kode) og CC BY 4.0 (innhold)",
+    "closedBody": "Applikasjonskoden er lisensiert under Apache License 2.0. Det skrevne innholdet, hver Learn-artikkel, verktøyenes tekster og forklaringer og dokumentasjonen, er lisensiert under Creative Commons Navngivelse 4.0 Internasjonal (CC BY 4.0). Du kan bruke, endre og videredistribuere begge, også kommersielt, forutsatt at du krediterer Rodolfo Nützmann (ronutz.com) på passende måte, lenker til lisensen og oppgir eventuelle endringer. ronutz.com forblir den kanoniske, vedlikeholdte kilden.",
     "contact": "Spørsmål om lisensen? <a>Ta kontakt.</a>",
     "backHome": "Tilbake til verktøyene",
     "thirdHeading": "Åpen kildekode-komponenter",
-    "lede": "ronutz.com er et proprietært verk, med enerett. Disse vilkårene dekker nettstedet og innholdet. Nettstedet er bygd på åpen kildekode-programvare, som brukes og videredistribueres under sine egne lisensvilkår, kreditert nedenfor.",
+    "lede": "ronutz.com er åpen kildekode. Koden er lisensiert under Apache License 2.0 og det skrevne innholdet under Creative Commons Navngivelse 4.0 (CC BY 4.0). Begge krever navngivelse: bruk det videre, men oppgi kilden. Det åpne kursmaterialet er det ene unntaket: hvert materiale utgis under lisensen dets eget datablad oppgir, og det som ligger under CC0 1.0 krever ingen navngivelse i det hele tatt. Nettstedet er også bygd på annen programvare med åpen kildekode, kreditert nedenfor.",
     "thirdBody": "Dette nettstedet hviler på åpen kildekode-arbeid. Selve nettstedet er bygd med Next.js og React og leveres som en statisk eksport; internasjonaliseringen bruker next-intl; Learn-innholdet gjengis med next-mdx-remote, gray-matter, remark-gfm og js-yaml; og søk leveres av Pagefind. Disse komponentene tilbys under MIT License, bortsett fra next-mdx-remote (Mozilla Public License 2.0). API-referansen bygger inn Swagger UI under Apache License 2.0. Hver komponent forblir under sin egen lisens, og de fullstendige merknadene leveres sammen med kildekoden."
   },
   "contributeIdeas": {

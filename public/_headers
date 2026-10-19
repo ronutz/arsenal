@@ -150,3 +150,49 @@
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; frame-src 'self'; frame-ancestors 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests
   X-Frame-Options: SAMEORIGIN
   X-Robots-Tag: noindex
+
+# ---------------------------------------------------------------------------
+# The red room's two egress tools (production audit of 2026-10-15, finding
+# F02; applied 2026-10-18). /dev/out/rdap-lookup and /dev/out/asn-lookup are
+# the only pages on the site that call out of the browser by design: the
+# reader presses a button and the browser itself queries the registry the
+# vendored IANA bootstrap selects (384 distinct hosts across the two files,
+# with national registries answering redirects on an RIR's behalf). The global
+# policy above says `connect-src 'self'`, which the audit found blocks every
+# one of those queries before the network is reached: the tools reported "the
+# browser could not complete the request" on every input, which is the message
+# written for a missing CORS header, not for the site's own policy.
+#
+# For these two paths only, the global policy is detached and the same policy
+# is set again with one difference: connect-src adds `https:`, so the browser
+# may reach any registry over TLS and nothing else changes (scripts, styles,
+# images, fonts, framing and form-action are as above). A host list was
+# considered and rejected: 384 hosts do not fit a 2,000-character line, and
+# the list would drift every time the bootstrap files are re-vendored. The
+# page path is the scope, and the two pages are the only ones that fetch. The
+# bare and trailing-slash forms are both listed because the site exports with
+# trailingSlash and the host matches paths exactly; `:locale` is one path
+# segment, so every locale is covered by one rule.
+#
+# Verifiable only after deploy: the policy a browser enforces is the one the
+# edge sends. scripts/check-headers-csp.mjs asserts in prebuild that these
+# rules exist, that the global policy still says `connect-src 'self'`, and
+# that the file stays within the host's limits (100 rules, 2,000 characters
+# per header line).
+# ---------------------------------------------------------------------------
+
+/:locale/dev/out/rdap-lookup
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/rdap-lookup/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/asn-lookup
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests
+
+/:locale/dev/out/asn-lookup/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests

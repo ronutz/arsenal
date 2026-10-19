@@ -1,118 +1,225 @@
 ---
 slug: cgnat-address-sharing-and-attribution
 title: "CGNAT: o que quebra quando mil assinantes dividem o mesmo endereço"
-summary: "O carrier-grade NAT, o NAT feito em escala pela operadora, nasceu como ponte para o IPv6 e virou infraestrutura permanente. Sem alarde, ele muda três coisas que importam para quem opera rede: o que o cliente consegue rodar, quem leva a culpa quando um endereço se comporta mal e se um ano de logs de conexão consegue, de fato, responder a uma ordem judicial. A engenharia, o problema da atribuição e por que a alocação por port block (bloco de portas) é a correção que vale a pena exigir."
-concepts: ["cgnat", "ipv4", "attribution", "logging", "ipv6"]
-relatedTools: []
-relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet"]
+summary: "O carrier-grade NAT (CGN) é um NAT na rede da operadora que divide um endereço IPv4 público entre muitos assinantes, com o shared address space 100.64.0.0/10 numerando o link atrás dele. Depois da leitura, você consegue dizer o que a RFC 6888 exige de um CGN, nomear o que os testes publicados viram quebrar, explicar por que um endereço sozinho já não identifica um assinante, calcular o volume de logging e um port block determinístico, situar o NAT444 entre o DS-Lite e os desenhos A+P e verificar se a sua própria conexão está atrás de um."
+concepts: ["cgnat", "ipv4", "attribution", "logging", "ipv6", "shared address space", "nat444", "port block allocation", "deterministic nat", "source port logging", "a+p", "rfc6888"]
+relatedTools: ["ssrf-url-classifier", "cidr", "python-playground", "packet-capture-plan-builder"]
+relatedArticles: ["email-authentication-spf-dkim-dmarc", "bgp-and-the-routing-chokepoint", "the-chokepoints-of-the-internet", "nat-explained", "private-address-space", "private-vs-public-ip-ranges", "ipv4-addressing", "ipv6-transition", "dhcp-lease-lifecycle", "icmp-ping-and-traceroute"]
 category: networking
 order: 128
 status: reviewed
-updated: "2026-08-30"
+updated: "2026-10-19"
 ---
 
-## Por que o CGNAT existe
+A Request for Comments (RFC) 6888 define o carrier-grade NAT (CGN, muitas vezes escrito CGNAT) como uma função baseada em NAT que divide um endereço IPv4 entre vários assinantes, e acrescenta: "A CGN is not managed by the subscribers", o assinante não o administra ([RFC 6888, seção 2](https://www.rfc-editor.org/rfc/rfc6888.txt)). O nome indica um lugar, não uma qualidade: "the term 'carrier-grade' has nothing to do with the quality of the NAT", não indica qualidade (seção 2). Você esbarra nele quando o endereço de wide area network (WAN) do roteador começa com 100.64, quando duas casas não jogam a mesma partida ou quando endereço e horário já não apontam uma pessoa. Depois da leitura, você consegue dizer o que a RFC 6888 exige, nomear o que quebrou nos testes, listar o que um pedido de atribuição respondível traz, calcular volumes de logging e um port block, comparar o NAT444 com as alternativas e verificar a sua própria conexão.
 
-Os endereços IPv4 acabaram. Em vez de esperar o IPv6 chegar a todo lugar, os provedores colocaram uma segunda camada de tradução na rede: o roteador do assinante já faz NAT (Network Address Translation, a tradução de endereços de rede) dentro de casa, e o provedor faz NAT de novo na borda da rede dele. Assim, muitos clientes passam a dividir um mesmo endereço público. É por causa dessas duas camadas de tradução que esse arranjo costuma ser chamado de NAT444.
+## Duas camadas de NAT e o espaço entre elas
 
-Os endereços que o assinante recebe nessa camada do meio saem de uma faixa reservada justamente para isso, o **shared address space** (espaço de endereços compartilhado), `100.64.0.0/10`. Essa faixa foi padronizada para que os provedores parassem de pegar emprestadas faixas privadas que os clientes já usavam, o que criava conflitos de endereço.
+Cada assinante recebe um endereço privado, um NAT na rede do Internet service provider (ISP) o traduz, e um segundo NAT na borda do cliente forma duas camadas ([RFC 6888, seção 1](https://www.rfc-editor.org/rfc/rfc6888.txt)). A camada de dentro é o roteador de casa fazendo o que o [NAT explicado](/learn/nat-explained) descreve; a de fora é o CGN, "also called NAT444 CGN or Large Scale NAT", nomes alternativos ([RFC 6264, seção 1](https://www.rfc-editor.org/rfc/rfc6264.txt)).
 
-O CGNAT foi apresentado como medida de transição. Hoje, para uma parcela muito grande da banda larga do mundo e para praticamente todo o acesso móvel, ele é o arranjo permanente.
+O link entre o CGN e o customer premises equipment (CPE) precisa de endereços próprios: "The Shared Address Space address range is 100.64.0.0/10", a faixa reservada ([RFC 6598, seção 7](https://www.rfc-editor.org/rfc/rfc6598.txt)), com 4.194.304 endereços, de 100.64.0.0 a 100.127.255.255. Ela é distinta do [espaço privado da RFC 1918](/learn/private-address-space), que se torna inseguro ali quando "subscribers provide their own CPE and number their own internal network", CPE e rede do próprio assinante (seção 3). Endereços compartilhados não podem cruzar a fronteira entre provedores nem aparecer no DNS externo (seções 4 e 6), e a Internet Assigned Numbers Authority (IANA) marca o bloco como não alcançável globalmente ([IANA, IPv4 Special-Purpose Address Registry](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)), a coluna que o [artigo das faixas](/learn/private-vs-public-ip-ranges) explica.
 
-## Como o espaço de endereços se esgotou
+## Por que os endereços acabaram
 
-A decisão de projeto foi tomada em 1981: um campo de endereço de 32 bits, cerca de 4,3 bilhões de endereços, numa época em que a rede ligava algumas centenas de hosts e ninguém imaginava que cada casa fosse ter uma dúzia deles.
+O pool central se esgotou em 2011, e os regional Internet registries (RIRs) vieram depois, cada um na sua data:
 
-O esgotamento já era visível muito antes de acontecer, e as respostas vieram uma depois da outra.
+| Registro | Evento | Data |
+|---|---|---|
+| Number Resource Organization (NRO), pelo pool central | free pool "now fully depleted", totalmente esgotado ([NRO](https://www.nro.net/ipv4-free-pool-depleted)) | 3 de fevereiro de 2011 |
+| Asia Pacific Network Information Centre (APNIC) | entra em vigor a política do último /8 ([APNIC](https://conference.apnic.net/news-archives/2011/final-8/)) | 15 de abril de 2011 |
+| Latin American and Caribbean Internet Address Registry (LACNIC) | resta um /10 ([NRO](https://www.nro.net/lacnic-enters-ipv4-exhaustion-phase)); último bloco reservado ([LACNIC](https://blog.lacnic.net/en/ipv4-exhaustion-lacnic-has-assigned-the-last-remaining-address-block/)) | 10 de junho de 2014; 28 de agosto de 2020 |
+| American Registry for Internet Numbers (ARIN) | entrega os últimos endereços do free pool ([ARIN](https://www.arin.net/vault/announcements/20150924/)) | 24 de setembro de 2015 |
+| RIPE Network Coordination Centre (RIPE NCC) | último /8 em 2012; estoque esgotado ([RIPE NCC](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)) | 25 de novembro de 2019 |
+| African Network Information Centre (AFRINIC) | fase 2 do esgotamento, ainda vigente na leitura ([AFRINIC](https://afrinic.net/exhaustion)) | desde 13 de janeiro de 2020 |
 
-**Do endereçamento por classes ao CIDR (1993).** O esquema original distribuía blocos fixos de cerca de 16 milhões, 65 mil ou 254 endereços, o que desperdiçava faixas enormes com organizações que precisavam de um tamanho intermediário. O **Classless Inter-Domain Routing** (roteamento entre domínios sem classes) trocou as classes pelo comprimento de prefixo: cada alocação passou a ter o tamanho da necessidade, e as rotas puderam ser agregadas. Isso garantiu anos de sobrevida, e é por isso que hoje um endereço se escreve com uma barra.
+O RIPE NCC pôs lado a lado o mercado de transferências e o CGNAT e concluiu que "neither one solves the underlying problem, which is that there are not enough IPv4 addresses for everyone", nenhum resolve a falta ([RIPE NCC, 25 de novembro de 2019](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)). A história completa está em [Como funcionam os endereços IPv4](/learn/ipv4-addressing).
 
-**Endereçamento privado e NAT (1996).** Com faixas reservadas para uso interno e traduzidas na borda, uma organização só precisava de endereços públicos para aquilo que publicava. Esse é, sozinho, o maior motivo de o IPv4 ter durado até os anos 2020, e foi também aí que a internet deixou de ser end-to-end (fim a fim) sem que quase ninguém percebesse: um host atrás de NAT consegue iniciar conversas, mas não consegue recebê-las.
+## O que a RFC 6888 exige de um carrier-grade NAT
 
-**IPv6 (de 1998 em diante).** A solução de verdade, com um campo de endereço de 128 bits. Ele está disponível há um quarto de século, e a curva de adoção ensina mais sobre incentivos do que sobre engenharia: o custo fica com a operadora, e o benefício é invisível para o assinante.
+A RFC 6888 se apoia nos documentos genéricos de NAT: o REQ-1 obriga o CGN a cumprir os requisitos de comportamento da RFC 4787 para UDP e da RFC 5382 para TCP ([RFC 6888, seção 3](https://www.rfc-editor.org/rfc/rfc6888.txt)). O endpoint-independent mapping vem, portanto, da RFC 4787: "A NAT MUST have an 'Endpoint-Independent Mapping' behavior", mapping independente do destino ([RFC 4787, seção 4.1](https://www.rfc-editor.org/rfc/rfc4787.txt)). O que a RFC 6888 acrescenta é isto:
 
-**Esgotamento nos registros (de 2011 em diante).** Primeiro acabou o pool central, depois os pools dos registros regionais, numa sequência que se estendeu por vários anos. Em seguida veio um mercado de transferências: os endereços passaram a ter preço, e o IPv4 virou um ativo no balanço das empresas. É esse preço que faz do carrier-grade NAT (CGNAT), o NAT feito em escala pela operadora, uma decisão econômica, e não uma preferência técnica: o provedor escolhe entre comprar endereços e comprar capacidade de tradução.
+| Requisito | Força | O que pede | Seção |
+|---|---|---|---|
+| REQ-2 | MUST | address pooling "Paired": um só endereço externo para todas as sessões do assinante (a RFC 4787 apenas recomenda) | 3 |
+| REQ-4 | MUST | um limite configurável de portas externas por assinante, por equidade | 3 |
+| REQ-7 | RECOMMENDED | endpoint-independent filtering, do qual alguns jogos e aplicações peer-to-peer dependem | 3 |
+| REQ-8 | SHOULD | não reutilizar uma porta liberada antes de 120 segundos, inclusive depois de queda ou failover | 3 |
+| REQ-9 | MUST | um protocolo que dê ao assinante controle sobre os seus mappings, de preferência o Port Control Protocol (PCP) | 3 |
+| REQ-11 | MUST e SHOULD | na cota: descartar o pacote, enviar Internet Control Message Protocol (ICMP) Host Unreachable, nunca apagar mappings existentes | 3 |
+| REQ-12 | SHOULD NOT | registrar endereços ou portas de destino, porque "Destination logging at the CGN creates privacy issues", risco à privacidade | 4 |
+| REQ-13 a REQ-15 | SHOULD | maximizar o uso de portas, minimizar o volume de log, tornar as portas difíceis de adivinhar | 5 |
 
-## O que os padrões dizem de fato
+Os três últimos entram em conflito: "A CGN implementation's choice of port allocation scheme optimizes to satisfy one requirement at the expense of another", um ganho custa outro ([RFC 6888, seção 5](https://www.rfc-editor.org/rfc/rfc6888.txt)). Acima das 1.024 portas de sistema, um endereço tem 64.512; uma divisão estática dá 1.008 portas para cada um de 64 assinantes e 64 para cada um de 1.000. Um worm num único aparelho poderia esgotar o endereço de todos, o que o limite do REQ-4 impede ([RFC 6269, seção 5.1](https://www.rfc-editor.org/rfc/rfc6269.txt)).
 
-A **RFC 6598** reservou o `100.64.0.0/10` como shared address space justamente porque os provedores vinham pegando emprestado o `10.0.0.0/8` para a camada do meio, e isso entrava em conflito com os clientes que usavam essa faixa em casa.
+## O que quebra para o assinante
 
-A **RFC 6888** define requisitos comuns para o carrier-grade NAT, e dois deles afetam diretamente a experiência do usuário. O **endpoint-independent mapping** (mapeamento independente do destino) faz com que o endereço e a porta internos do assinante sejam sempre mapeados para o mesmo endereço e a mesma porta externos, seja qual for o destino, e é isso que torna possível o NAT traversal (a travessia do NAT) das aplicações peer-to-peer. O **paired address assignment** (atribuição pareada de endereço) faz com que o assinante mantenha o mesmo endereço externo em todas as suas sessões, o que importa para serviços que comparam o endereço de uma requisição com o de outra.
+A RFC 7021 relata testes de NAT444 em 2010 e de NAT444 e Dual-Stack Lite (DS-Lite) em 2011 ([RFC 7021, seção 1](https://www.rfc-editor.org/rfc/rfc7021.txt)). O básico funcionou: "basic services such as email and web browsing worked normally and as expected", o básico funcionou (seção 3). Jogo peer-to-peer entre duas casas atrás do mesmo CGN falhou: os dois consoles tentaram a mesma porta no mesmo endereço (seção 3.1). Chamadas Session Initiation Protocol (SIP) sem proxy falharam, o seeding de BitTorrent falhou, e o mesmo aconteceu com um servidor File Transfer Protocol (FTP) em casa: "FTP sessions to servers located inside the home (e.g., behind two layers of NAT) failed", servidor em casa falhou (seção 3.1). Em 2010, os túneis IPv6 6to4 e Teredo falharam ou degradaram muito (seção 3). Remote desktop, virtual private network (VPN), ping e traceroute passaram; uma webcam falhou (seção 5.1). Um console avisou "Your NAT type is moderate", palavras dele, não um termo das normas.
 
-A **RFC 6302** é a recomendação sobre logging: serviços que registram o endereço remoto para tratar abuso deveriam registrar também a **porta de origem e um timestamp preciso**, isto é, a data e a hora exatas. É uma RFC curta e antiga, e a maioria dos serviços expostos à internet ainda não a segue. É por isso que tantas denúncias de abuso contra endereços compartilhados ficam sem resposta.
+Uma sessão de remote desktop aberta de casa funciona; um servidor em casa não, já que "inbound connections to well-known port numbers will not work in the general case", sem entrada em portas conhecidas ([RFC 6269, seção 5.2.2](https://www.rfc-editor.org/rfc/rfc6269.txt)), e um port forwarding também precisa ser aberto no CGN (seção 5.2.1). Os vizinhos pagam junto: "penalty box solutions to service abuse simply will not work", bloqueio por endereço falha (seção 13.1), pôr o endereço de um spammer numa blacklist restringe quem o divide (seção 13.3), e a geolocalização encontra o CGN, não a casa (seção 7). Um ICMP Packet Too Big forjado pode reduzir a maximum transmission unit (MTU) que um servidor guarda para todos no endereço (seção 10). A RFC 6888 se defende com limite de portas, ingress filtering contra CPEs falsificados e portas difíceis de adivinhar ([RFC 6888, seções 3, 5 e 7](https://www.rfc-editor.org/rfc/rfc6888.txt)).
 
-## O que quebra para o cliente
+## Atribuição: o endereço virou uma tupla
 
-**Conexões de entrada.** Não existe um endereço público estável para alcançar, então port forwarding (redirecionamento de portas), serviços hospedados em casa, câmeras de segurança e área de trabalho remota deixam de funcionar como antes. É essa a reclamação que chega ao suporte.
+Quando o endereço é compartilhado, "the IPv4 address no longer uniquely identifies a subscriber", não identifica mais um único assinante ([RFC 6269, seção 12](https://www.rfc-editor.org/rfc/rfc6269.txt)). O pedido precisa disto: "The legal request should include the information: \[Source IP address, Source Port, Timestamp\]", endereço, source port e timestamp. Sem a porta registrada no servidor nem os destinos registrados no NAT, o provedor "would need to disclose the identity of all subscribers who had active sessions on the NAT during the time period in question", entregaria todos os assinantes ativos. Os relógios precisam concordar, porque um pequeno desvio entre servidor e CGN gera dúvida sobre quem usava a porta; os mappings ficam guardados de 6 a 12 meses, conforme a jurisdição (seção 12).
 
-**Peer-to-peer e jogos.** As técnicas de NAT traversal ainda funcionam em muitos casos, mas a qualidade da conexão piora, alguns jogos acusam NAT do tipo estrito ou moderado, e uma parte simplesmente não funciona.
+A metade do servidor é a RFC 6302: registrar a source port e, em Coordinated Universal Time (UTC), "A timestamp, RECOMMENDED in UTC, accurate to the second, from a traceable time source", ao segundo ([RFC 6302, seção 2](https://www.rfc-editor.org/rfc/rfc6302.txt)). Com servidores assim, o CGN não precisa registrar destinos ([RFC 6888, seção 4](https://www.rfc-editor.org/rfc/rfc6888.txt)).
 
-**Tudo o que parte do princípio de que um endereço identifica uma casa.** A geolocalização fica menos precisa. Serviços que fazem rate limiting (limite de requisições) ou bloqueio por endereço tratam o pool compartilhado inteiro como um único cliente. Com isso, um único assinante abusivo pode fazer com que milhares de vizinhos recebam um CAPTCHA, um bloqueio ou uma nota de reputação ruim que eles não têm como contestar, porque nem conseguem vê-la.
+Em 17 de outubro de 2017, a Europol escreveu que "it has become technically impossible for internet service providers to comply with legal orders to identify individual subscribers", ordens de identificação impossíveis de cumprir, o que "may lead to innocent individuals being wrongly investigated by law enforcement", inocentes investigados ([Europol, 17 de outubro de 2017](https://www.europol.europa.eu/media-press/newsroom/news/are-you-sharing-same-ip-address-criminal-law-enforcement-call-for-end-of-carrier-grade-nat-cgn-to-increase-accountability-online)); o comunicado fala em CGN em 90% do acesso móvel e 50% do fixo, enquanto o Internet Organised Crime Threat Assessment (IOCTA) 2017 dá 90% das operadoras móveis e 38% dos provedores fixos em 2016. O IOCTA recomenda examinar "source port number logging or limiting either the use of CGN or the number of subscribers behind each IPv4 address", registrar a porta ou limitar o CGN ([Europol, IOCTA 2017, páginas 62 a 64](https://www.europol.europa.eu/cms/sites/default/files/documents/iocta2017.pdf)).
 
-Vale insistir nesse último efeito. Ele transfere as consequências do comportamento de uma pessoa para todo mundo que divide a mesma tradução com ela, e nenhum dos lados consegue ver o motivo.
+No Brasil, o artigo 13 da Lei 12.965/2014, o Marco Civil da Internet, diz que "cabe ao administrador de sistema autônomo respectivo o dever de manter os registros de conexão, sob sigilo, em ambiente controlado e de segurança, pelo prazo de 1 (um) ano" ([Lei nº 12.965/2014, art. 13](https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm)). O artigo 5º, inciso VI, define o registro pela "data e hora de início e término de uma conexão à internet, sua duração e o endereço IP utilizado pelo terminal": horários, duração e endereço IP, sem source port. A entrega "deverá ser precedida de autorização judicial" (art. 13, § 5º).
 
-## O problema de quem opera a rede: a atribuição
+## A aritmética do logging
 
-É aqui que um trade-off de engenharia vira uma questão jurídica.
+A RFC 7422 mediu linhas de log de cerca de 150 bytes no NAT444 e 175 no DS-Lite, e relata cerca de 33.000 conexões por domicílio por dia ([RFC 7422, seção 1](https://www.rfc-editor.org/rfc/rfc7422.txt)). Registrar cada conexão custa então, recalculado:
 
-**Um endereço não identifica mais um assinante.** Para responder "quem estava usando este endereço neste horário?", agora é preciso ter **endereço, porta de origem e timestamp**, porque o endereço sozinho é dividido por centenas ou milhares de pessoas ao mesmo tempo. Um pedido que chega só com o endereço e a data não tem como ser respondido com honestidade, e respondê-lo de forma desonesta significa apontar o cliente errado.
+| Escopo | Conta | Resultado |
+|---|---|---|
+| um assinante, um dia | 33.000 x 150 B | 4,95 MB |
+| um assinante, 30 dias | 4,95 MB x 30 | 148,5 MB |
+| um milhão de assinantes, 30 dias | 148,5 MB x 1.000.000 | 148,5 TB |
+| um milhão de assinantes, um ano | 148,5 TB x 12 | 1,78 PB |
+| fluxo de log para 50.000 assinantes | 50.000 x 4,95 MB x 8 / 86.400 s | 22,9 Mbit/s |
+| um assinante DS-Lite, um dia | 33.000 x 175 B | 5,775 MB |
 
-Isso é uma recomendação documentada, não uma opinião: serviços que registram endereços remotos para tratar abuso são orientados a registrar também a **porta de origem**, justamente para que, em ambientes com endereço compartilhado, continue sendo possível fazer a atribuição. A maioria dos serviços ainda não faz isso.
+A RFC 7422 arredonda para "approximately 150 terabytes of log data per month, or 1.8 petabytes per year", 150 TB por mês e 1,8 PB por ano (seção 1). Os port blocks mudam a unidade: "Logs are generated only when blocks are allocated or deallocated", log só por bloco, o que divide a geração de log pelo tamanho do bloco ([RFC 7768, seção 2](https://www.rfc-editor.org/rfc/rfc7768.txt)). Para 20.000 assinantes em 60 dias, a RFC 7768 relata 42,5 TB por sessão contra 40,6 GB por bloco (seção 1), 1.047 para 1. Com 33.000 conexões por dia, blocos de 256 portas pedem no máximo 128,9 linhas, e blocos de 2.048 portas, 16,1. O preço é eficiência: o bloco fica reservado mesmo que as portas não sejam usadas ([RFC 9313, seção 4.7](https://www.rfc-editor.org/rfc/rfc9313.txt)).
 
-**O problema do volume de logs.** Registrar cada tradução no momento em que ela acontece gera volumes enormes: cada fluxo, de cada assinante, guardado pelo tempo que a lei exigir. No Brasil, onde o [Marco Civil](/glossary/marco-civil-da-internet) obriga os provedores de conexão a guardar os registros de conexão por um ano, esse custo não tem nada de teórico.
+## Mapping determinístico: uma função no lugar do log
 
-## Por que a alocação por port block é a resposta
+A RFC 7422 transforma o bloco numa função do endereço interno, com inversa: "Internal IP Address = function 2 (External IP Address, Port Number)", a inversa ([RFC 7422, seção 2](https://www.rfc-editor.org/rfc/rfc7422.txt)). O CGN tira as portas reservadas, divide o resto pela compression ratio C mais um fator de pool dinâmico D e registra só os blocos de excesso. No exemplo da seção 2.3, recalculado, 14 endereços internos dividem 192.0.2.1 com D = 2; então C + D = 16 e cada um recebe (65.536 - 1.024) / 16 = 4.032 portas:
 
-Em vez de atribuir as portas fluxo a fluxo, dê a cada assinante um **bloco determinístico de portas**, o port block, válido durante toda a sessão, e registre essa atribuição. O resultado é um registro por assinante por sessão, e não um por conexão.
+```text
+inside address    outside address and ports
+198.51.100.1      192.0.2.1:1024-5055
+198.51.100.2      192.0.2.1:5056-9087
+198.51.100.14     192.0.2.1:53440-57471
+dynamic pool      192.0.2.1:57472-65535   (8,064 ports = 2 x 4,032)
+```
 
-As consequências são todas boas:
+Com máximo de 5.040, cada assinante pode tomar 1.008 portas de excesso. Uma denúncia contra 192.0.2.1, porta 2001, cai em 1024-5055: é o assinante 1, achado sem log do CGN, cruzando o endereço interno com os registros de lease do Dynamic Host Configuration Protocol (DHCP) ou do Point-to-Point Protocol (PPP) (seção 2.3; veja o [ciclo de vida do lease DHCP](/learn/dhcp-lease-lifecycle)). A porta 58204 está no pool dinâmico, então o log de blocos aponta o assinante 2, "assuming that the public safety timestamp matches the operator timestamp", se os timestamps batem (seção 2.3). Mudanças nas variáveis precisam ser registradas (seção 3), e as portas são sorteadas dentro de cada faixa (seção 5).
 
-- **O volume de logs despenca**: passa de um registro por fluxo para um por atribuição, e guardar um ano de logs deixa de ser um castigo e passa a ser viável.
-- **A atribuição vira aritmética**: com o endereço, a porta e o horário, chega-se ao assinante pela atribuição do bloco, sem precisar vasculhar uma base de fluxos.
-- **As respostas passam a ser defensáveis**, o que faz toda a diferença quando o resultado desse sistema é um nome entregue à Justiça.
+## NAT444 diante das alternativas
 
-O preço é que o assinante fica limitado às portas do bloco dele. Por isso, o bloco precisa ser dimensionado pelo uso real: as aplicações modernas abrem muito mais conexões simultâneas do que se imagina, e um bloco pequeno demais gera falhas que parecem defeitos aleatórios de rede.
+Todo desenho de IPv4-as-a-service traduz com estado em algum ponto: "The major differentiator is where in the architecture this function is located", onde fica a função ([RFC 9313, seção 3.3](https://www.rfc-editor.org/rfc/rfc9313.txt)). Na família baseada em CGN, o provedor guarda estado por sessão. Na família Address plus Port (A+P), que trata "some of the port number bits as part of an extended IPv4 address", bits da porta no endereço ([RFC 6346, resumo](https://www.rfc-editor.org/rfc/rfc6346.txt)), o CPE traduz a própria casa e a função central não guarda estado: Lightweight 4over6 (lw4o6) ([RFC 7596, resumo](https://www.rfc-editor.org/rfc/rfc7596.txt)), Mapping of Address and Port with Encapsulation (MAP-E) ([RFC 7597, seção 1](https://www.rfc-editor.org/rfc/rfc7597.txt)) e MAP using Translation (MAP-T) ([RFC 7599, seção 1](https://www.rfc-editor.org/rfc/rfc7599.txt)).
 
-O trabalho de padronização dos requisitos do carrier-grade NAT também pede endpoint-independent mapping e outros comportamentos que mantêm o NAT traversal funcionando, e é isso que separa uma implantação que os usuários toleram de outra que gera chamados sem parar.
+| Desenho | NAT com estado | IPv4 na rede de acesso | O que o provedor guarda para atribuição |
+|---|---|---|---|
+| NAT444 | CGN no provedor | IPv4 nativo | mappings ou port blocks |
+| DS-Lite | no provedor, na ponta do túnel | em túnel sobre IPv6 | mappings ou port blocks |
+| 464XLAT | NAT64 no provedor | traduzido para IPv6 | mappings ou port blocks |
+| lw4o6 | no CPE | em túnel sobre IPv6 | a binding table com timestamps |
+| MAP-E | no CPE | em túnel sobre IPv6 | as regras MAP com timestamps |
+| MAP-T | no CPE | traduzido para IPv6 | as regras MAP com timestamps |
 
-## O que resolve de verdade
+O preço do A+P é que "the number of ports provided to each user (and hence the effective IPv4 address-sharing ratio) must be pre-provisioned to the client", portas fixadas de antemão ([RFC 9313, seção 4.2](https://www.rfc-editor.org/rfc/rfc9313.txt)); os desenhos com estado aproveitam melhor as portas, e logs por sessão podem exigir um tradutor central (seção 4.7). No MAP, um Port Set ID (PSID) de 6 bits depois do offset padrão de 6 bits dá 64 CPEs por endereço, cada um com 1.024 - 16 = 1.008 portas em sequências de 16 a cada 1.024 ([RFC 7597, seção 5.1](https://www.rfc-editor.org/rfc/rfc7597.txt)). Os túneis em si estão em [IPv6 e IPv4 lado a lado](/learn/ipv6-transition).
 
-O IPv6. Não como slogan, mas por uma constatação objetiva: todos os problemas acima vêm do compartilhamento de endereços, e o IPv6 acaba com o compartilhamento. O dual-stack (pilha dupla), ou o 464XLAT nas redes móveis, tira a maior parte do tráfego do tradutor, e isso reduz ao mesmo tempo a pressão sobre as portas, o volume de logs e a dificuldade de atribuição.
+## A correção que acaba com o compartilhamento
 
-Para o planejamento, a forma honesta de ver a questão é esta: **o CGNAT não é uma solução que concorre com o IPv6; é o custo de não tê-lo implantado.** Cada ano de adiamento é mais um ano pagando por capacidade de tradução, armazenamento de logs, chamados de suporte e exposição jurídica que o IPv6 teria eliminado.
+"Deploying IPv6 is the only perennial way to ease pressure on the public IPv4 address pool without the need for address sharing mechanisms", só o IPv6 resolve ([RFC 6269, seção 1](https://www.rfc-editor.org/rfc/rfc6269.txt)). Até o método que mais reduz o log recusa esse papel: "Deterministic CGN should in no way be understood as making CGN a replacement for IPv6 service", não substitui o IPv6 ([RFC 7422, seção 4](https://www.rfc-editor.org/rfc/rfc7422.txt)).
 
-## As arquiteturas de implantação e do que elas dependem
+## Como ver na prática
 
-O **NAT444** é o arranjo mais comum: a tradução do próprio assinante em casa, o shared address space no meio e os endereços públicos na borda do provedor. São duas traduções, e todo diagnóstico precisa levar as duas em conta.
+No roteador de casa, ou num host Linux que faça esse papel, liste os endereços dentro do shared space; `to` filtra por prefixo ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)) e `-4` seleciona IPv4 ([ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)):
 
-O **dual-stack** roda o IPv6 em paralelo, e tudo o que fala IPv6 passa sem nem chegar ao tradutor. É o arranjo que reduz o problema de verdade, porque a pressão sobre portas, logs e capacidade cai a cada serviço que passa a ser nativo.
+```console
+$ ip -4 address show to 100.64.0.0/10
+```
 
-O **464XLAT** é a resposta das redes móveis: uma rede de acesso só IPv6, com tradução para as aplicações que ainda contam com o IPv4. É por isso que muitas redes móveis já são IPv6 nativas sem que os assinantes jamais tenham percebido.
+Qualquer saída significa que o lado WAN está no shared space. Se ele difere do endereço que um servidor seu registra para a mesma conexão, algo traduz no meio; um endereço WAN em espaço RFC 1918 ou em espaço público não anunciado pode significar o mesmo ([RFC 6598, seção 5.1](https://www.rfc-editor.org/rfc/rfc6598.txt)). Um traceroute sem resolução de nomes (`-n`, [traceroute(8)](https://man7.org/linux/man-pages/man8/traceroute.8.html)) mostra as duas camadas:
 
-O **DS-Lite** e o **MAP-E** são as variantes da banda larga fixa: o IPv4 passa num túnel sobre uma rede de acesso IPv6, e a tradução fica centralizada ou distribuída até o equipamento do cliente.
+```console
+$ traceroute -n example.com
+```
 
-O que decide se tudo isso funciona na prática são as dependências: **logging e armazenamento** dimensionados para a obrigação de guarda; **precisão de relógio** no tradutor e no sistema de logs, já que a atribuição é indexada pelo tempo; um **processo de atendimento a requisições legais** que saiba pedir endereço, porta e timestamp juntos; e **ferramentas de suporte** que mostrem ao atendente se uma reclamação é sintoma da tradução, e não um defeito.
+```text
+saída ilustrativa, tempos omitidos
+ 1  192.168.1.1     o roteador de casa, espaço RFC 1918
+ 2  100.64.0.1      o lado da operadora no link do CGN, shared space
+ 3  203.0.113.1     hops públicos daqui em diante
+```
 
-## Onde a tradução roda, por categoria
+O artigo [ICMP, ping e traceroute](/learn/icmp-ping-and-traceroute) explica as mensagens. Quem opera o CGN captura dos dois lados, com a primitiva `net` do [pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html) e o `-n` do [tcpdump(1)](https://man7.org/linux/man-pages/man1/tcpdump.1.html), e casa as capturas por protocolo, portas e horário: a origem vira um endereço do pool e uma porta, o destino não muda. O [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) ajuda a escolher os dois pontos.
 
-- **Plataformas de roteamento e de borda**: Cisco, Juniper, Nokia e similares implementam o carrier-grade NAT em line cards (placas de linha) ou em módulos de serviço, em equipamentos que já estão no caminho do tráfego. É a opção de maior throughput, e o comportamento de logging e de alocação de portas é um recurso licenciado, que vale conferir antes da compra, e não depois.
-- **Appliances dedicados e funções virtualizadas**: entre elas as ofertas da A10, da F5 e de outros fabricantes, rodando sozinhas ou como funções de rede. Logging e controle de port blocks mais flexíveis; em compensação, mais uma caixa no caminho.
-- **Broadband network gateways (BNGs).** Muitas vezes é a própria plataforma de gerência de assinantes que faz a tradução, já que ela já guarda o estado da sessão e a identidade do assinante, e esse é o lugar mais limpo para associar uma tradução a um cliente real.
-- **Soluções open source.** A tradução feita em Linux, com faixas determinísticas de portas, é perfeitamente viável na escala de um provedor regional e é comum em redes menores, onde a restrição real do operador é o volume de logs, e não a taxa de pacotes.
+```console
+# tcpdump -n src net 100.64.0.0/10
+```
 
-Na hora da compra, a pergunta não é o throughput, que qualquer plataforma moderna atende. A pergunta é **o que a plataforma faz pela atribuição**: alocação determinística de port blocks, o formato de log que ela gera e se esse log consegue responder a uma ordem judicial sem uma busca em registros por fluxo.
+Um servidor guarda a sua metade da tupla com um único ajuste: `%a` e `%{remote}p` no formato de log do Apache ([Apache mod_log_config](https://httpd.apache.org/docs/2.4/mod/mod_log_config.html)), `smtpd_client_port_logging` no Postfix ([Postfix postconf(5)](https://www.postfix.org/postconf.5.html)) e `LogLevel VERBOSE` no sshd ([RFC 7768, apêndice A](https://www.rfc-editor.org/rfc/rfc7768.txt); [sshd_config(5)](https://man.openbsd.org/sshd_config.5)), com os relógios no Network Time Protocol (NTP) e os logs em UTC.
 
-## Recomendações práticas
+```text
+# Apache httpd
+LogFormat "%a %{remote}p %t" withport
+CustomLog "logs/access_log" withport
 
-**Se você opera uma rede:**
-- Implante a alocação determinística de port blocks, e não o logging por fluxo, antes que a exigência de guarda dos registros force a decisão.
-- Dimensione os blocos com base em medições reais de conexões simultâneas, e não no chute.
-- Publique como fazer uma requisição legal referente ao seu serviço (endereço, porta e timestamp), para que os pedidos já cheguem em condições de ser respondidos.
-- Implante o IPv6 em paralelo e meça a fatia do tráfego que deixa de passar pelo tradutor. Esse número é o retorno do projeto.
+# Postfix
+smtpd_client_port_logging = yes
 
-**Se você opera um serviço:**
-- **Registre a porta de origem** junto com o endereço. Sem ela, nenhum provedor que use CGNAT consegue agir a partir das suas denúncias de abuso.
-- Não bloqueie, não aplique rate limiting e não bana com base só no endereço. Você estaria punindo um bairro inteiro por causa de uma única casa.
-- Trate a geolocalização por endereço como aproximada, e nunca como identidade.
+# OpenSSH sshd_config
+LogLevel VERBOSE
+```
 
-A lição vale para além do IPv4: **quando um recurso escasso passa a ser compartilhado, a identidade deixa de ser um valor e vira uma tupla**, e todo sistema que guardava o antigo valor único passa a dar respostas erradas, sem que ninguém perceba.
+No CGN, os registros têm três formatos: uma linha por mapping com os cinco campos da RFC 6888, uma linha por bloco como na RFC 7768 e o registro de configuração da RFC 7422: timestamp, prefixo e máscara internos, prefixo e máscara externos, D, M, A e portas reservadas ([RFC 7422, seção 3](https://www.rfc-editor.org/rfc/rfc7422.txt)).
+
+```text
+ilustrativo, por mapping:   2026-10-19T14:02:11Z TCP 100.64.1.2:40000 -> 203.0.113.5:51234
+ilustrativo, por bloco:     2026-10-19T14:02:11Z 100.64.1.2 -> 203.0.113.5 ports 2001-2300
+RFC 7422, configuração:     [Wed Oct 11 14:32:52 2000]:198.51.100.0:28:192.0.2.0:32:2:5040:0:1-1023,5004,5060.
+```
+
+O [SSRF URL classifier](/tools/ssrf-url-classifier), um verificador de server-side request forgery (SSRF), classifica `http://100.72.0.1/` como espaço de carrier-grade NAT, com risco médio. A [CIDR / Subnet Calculator](/tools/cidr), para blocos Classless Inter-Domain Routing (CIDR), mostra 100.64.0.0/10 como 4.194.304 endereços terminando em 100.127.255.255, mas não classifica a faixa. Nenhuma ferramenta calcula um port block ou um PSID do MAP; o [Python playground](/tools/python-playground) roda a aritmética:
+
+```text
+>>> (65536 - 1024) // 16
+4032
+>>> 1024 + 4032*1, 1024 + 4032*2 - 1
+(5056, 9087)
+>>> 33000 * 150 * 30 * 1_000_000 / 1e12
+148.5
+>>> 42.5e12 / 40.6e9
+1046.7980295566501
+>>> 2**(16 - 6) - 2**4
+1008
+```
+
+## Para lembrar
+
+- Um CGN é um NAT da operadora que divide um endereço IPv4 público entre assinantes que não o controlam; somado ao NAT de casa, forma o NAT444, e 100.64.0.0/10 numera o link entre os dois.
+- A RFC 6888 exige paired pooling, limite de portas por assinante e um protocolo de controle de mappings, recomenda endpoint-independent filtering e herda da RFC 4787 o endpoint-independent mapping.
+- A RFC 7021 viu funcionar navegação, e-mail e remote desktop, e falhar o jogo entre duas casas, o seeding de BitTorrent, o SIP sem proxy, o servidor FTP em casa, o 6to4 e o Teredo.
+- Um pedido respondível traz endereço de origem, source port e timestamp de relógios sincronizados; sem a porta, a resposta é todo mundo no endereço.
+- Registrar cada conexão custa cerca de 4,95 MB por assinante por dia; port blocks dividem isso pelo tamanho do bloco, e o mapping determinístico troca a maior parte das consultas por aritmética.
+- Desenhos baseados em CGN guardam estado por sessão no provedor; desenhos A+P provisionam conjuntos de portas de antemão e guardam só regras ou bindings com timestamps.
+
+## Fontes
+
+- [RFC 6888, Common Requirements for Carrier-Grade NATs (CGNs), abril de 2013: seções 1 a 5 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6888.txt)
+- [RFC 6264, An Incremental Carrier-Grade NAT (CGN) for IPv6 Transition, junho de 2011: seções 1, 2.1, 2.7 e 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6264.txt)
+- [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space, abril de 2012: seções 1, 3, 4, 5.2, 6 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6598.txt)
+- [IANA, IPv4 Special-Purpose Address Registry (CSV): a linha de 100.64.0.0/10 (lida em 2026-10-19)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry-1.csv)
+- [NRO, Free Pool of IPv4 Address Space Depleted, 3 de fevereiro de 2011 (lida em 2026-10-19)](https://www.nro.net/ipv4-free-pool-depleted)
+- [APNIC, APNIC IPv4 Address Pool Reaches Final /8, 15 de abril de 2011 (lida em 2026-10-19)](https://conference.apnic.net/news-archives/2011/final-8/)
+- [NRO, LACNIC Enters IPv4 Exhaustion Phase, 10 de junho de 2014 (lida em 2026-10-19)](https://www.nro.net/lacnic-enters-ipv4-exhaustion-phase)
+- [LACNIC, IPv4 Exhaustion: LACNIC Has Assigned the Last Remaining Address Block, 28 de agosto de 2020 (lida em 2026-10-19)](https://blog.lacnic.net/en/ipv4-exhaustion-lacnic-has-assigned-the-last-remaining-address-block/)
+- [ARIN, ARIN IPv4 Free Pool Reaches Zero, 24 de setembro de 2015 (lida em 2026-10-19)](https://www.arin.net/vault/announcements/20150924/)
+- [RIPE NCC, The RIPE NCC has run out of IPv4 Addresses, 25 de novembro de 2019 (lida em 2026-10-19)](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)
+- [AFRINIC, IPv4 Exhaustion (lida em 2026-10-19)](https://afrinic.net/exhaustion)
+- [RFC 4787, Network Address Translation (NAT) Behavioral Requirements for Unicast UDP, janeiro de 2007: seções 4.1 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4787.txt)
+- [RFC 6269, Issues with IP Address Sharing, junho de 2011: seções 1 a 3, 5, 6, 7, 12, 13, 18 e apêndices A e B (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6269.txt)
+- [RFC 7021, Assessing the Impact of Carrier-Grade NAT on Network Applications, setembro de 2013: seções 1, 2.2, 2.3, 2.5, 3, 4, 5.1 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7021.txt)
+- [RFC 6302, Logging Recommendations for Internet-Facing Servers, junho de 2011: seções 1 a 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6302.txt)
+- [Europol, Are you sharing the same IP address as a criminal? Law enforcement call for the end of Carrier Grade NAT (CGN) to increase accountability online, 17 de outubro de 2017 (lida em 2026-10-19)](https://www.europol.europa.eu/media-press/newsroom/news/are-you-sharing-same-ip-address-criminal-law-enforcement-call-for-end-of-carrier-grade-nat-cgn-to-increase-accountability-online)
+- [Europol, Internet Organised Crime Threat Assessment (IOCTA) 2017: páginas 62 a 64 (lidas em 2026-10-19)](https://www.europol.europa.eu/cms/sites/default/files/documents/iocta2017.pdf)
+- [Lei nº 12.965, de 23 de abril de 2014 (Marco Civil da Internet), planalto.gov.br: artigos 5º, 10, 13 e 22 (lida em 2026-10-19)](https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2014/lei/l12965.htm)
+- [RFC 7422, Deterministic Address Mapping to Reduce Logging in Carrier-Grade NAT Deployments, dezembro de 2014: seções 1, 2, 2.3, 3, 4 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7422.txt)
+- [RFC 7768, Port Management to Reduce Logging in Large-Scale NATs, janeiro de 2016: seções 1 a 3, 5 e apêndice A (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7768.txt)
+- [RFC 9313, Pros and Cons of IPv6 Transition Technologies for IPv4-as-a-Service (IPv4aaS), outubro de 2022: seções 3.3, 3.4, 4.1.1, 4.2 e 4.7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9313.txt)
+- [RFC 6346, The Address plus Port (A+P) Approach to the IPv4 Address Shortage, agosto de 2011: resumo e seções 1, 1.1, 3.1 e 3.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6346.txt)
+- [RFC 7596, Lightweight 4over6: An Extension to the Dual-Stack Lite Architecture, julho de 2015: resumo e seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7596.txt)
+- [RFC 7597, Mapping of Address and Port with Encapsulation (MAP-E), julho de 2015: seções 1, 5 e 5.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7597.txt)
+- [RFC 7599, Mapping of Address and Port using Translation (MAP-T), julho de 2015: resumo e seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7599.txt)
+- [ip-address(8), página de manual, man7.org (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip(8), página de manual, man7.org (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [traceroute(8), página de manual, man7.org (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/traceroute.8.html)
+- [pcap-filter(7), página de manual, man7.org (lida em 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [tcpdump(1), página de manual, man7.org (lida em 2026-10-19)](https://man7.org/linux/man-pages/man1/tcpdump.1.html)
+- [Apache HTTP Server 2.4 documentation, mod_log_config (lida em 2026-10-19)](https://httpd.apache.org/docs/2.4/mod/mod_log_config.html)
+- [Postfix postconf(5), smtpd_client_port_logging (lida em 2026-10-19)](https://www.postfix.org/postconf.5.html)
+- [sshd_config(5), página de manual, OpenBSD (lida em 2026-10-19)](https://man.openbsd.org/sshd_config.5)

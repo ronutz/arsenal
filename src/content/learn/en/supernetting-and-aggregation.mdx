@@ -1,40 +1,195 @@
 ---
 slug: supernetting-and-aggregation
 title: "Supernetting and route aggregation"
-summary: "How contiguous prefixes combine into a shorter one, the alignment rule that decides whether two blocks can merge, and the difference between exact aggregation and a single covering supernet."
-concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4"]
-relatedTools: ["cidr"]
-relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example"]
+summary: "Supernetting shortens a prefix so that one route covers several aligned IPv4 blocks, and route aggregation announces that route in place of the longer ones. After reading, you can test in binary whether blocks merge, tell an exact aggregate from a covering supernet and say when the covering one is legitimate, read how BGP marks an aggregate and why AS_SET was deprecated in May 2025, recognise how aggregation fails, and check it with the CIDR calculator, Python, FRRouting, Junos and Cisco."
+concepts: ["supernetting", "aggregation", "cidr", "route-summarization", "ipv4", "longest-match", "atomic-aggregate", "aggregator", "as-set", "discard-route", "proxy-aggregation", "route-leak"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["route-summarization", "subnetting-basics", "cidr-notation", "vlsm", "subnet-overlap-and-gaps", "vlsm-worked-example", "ipv4-addressing", "the-rfc-series", "static-routes-and-longest-match", "bgp-primer", "bgp-and-the-routing-chokepoint"]
 category: networking
 order: 6
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-18"
 ---
 
-## Supernetting is subnetting in reverse
+Supernetting is subnetting run backwards: it shortens a prefix so that one route covers several blocks. Announcing that shorter prefix in place of the longer ones is route aggregation, and Request for Comments (RFC) 4271 defines it for BGP: "Aggregation is the process of combining the characteristics of several different routes in such a way that a single route can be advertised" ([RFC 4271, section 9.2.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). Its other name is summarisation ([RFC 1518, section 4](https://www.rfc-editor.org/rfc/rfc1518.txt)). You meet it wherever one autonomous system (AS) passes routes to another. By the end you can test whether blocks merge, tell exact from covering aggregates, read BGP's aggregate attributes and recognise how aggregation fails.
 
-Subnetting fixes more bits to make a block smaller. Supernetting does the opposite: it fixes fewer bits so a single prefix covers several smaller ones. Take two adjacent blocks, `192.168.0.0/24` and `192.168.1.0/24`. Together they span `192.168.0.0` through `192.168.1.255`, which is exactly the range of `192.168.0.0/23`. Drop one bit of prefix, from /24 to /23, and one route now describes both blocks.
+## Where the word came from
 
-This is the engine behind **route aggregation**, also called summarization: replacing a list of specific prefixes with one shorter prefix that covers them all.
+In November 1991 the Internet Engineering Task Force (IETF) created the ROAD (Routing and Addressing) group to study the growth of routing ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632.txt)). The Internet Engineering Steering Group (IESG) later recorded the approach the BGP working groups took that month: "The principal approach was to perform route aggregation by using address masks in BGP to do 'supernetting' (rather than 'subnetting')" ([RFC 1380, section 3.2](https://www.rfc-editor.org/rfc/rfc1380.txt)).
 
-## The rule for combining two blocks
+RFC 1338 of June 1992, *Supernetting: an Address Assignment and Aggregation Strategy*, gave each provider blocks of Class C network numbers ([RFC 1338, section 2.2](https://www.rfc-editor.org/rfc/rfc1338.txt)), aligned from the start: "Each block must fall on bit boundaries" (section 8). RFC 1519 put the name Classless Inter-Domain Routing (CIDR) on the same strategy in September 1993 ([RFC 1519, section 1](https://www.rfc-editor.org/rfc/rfc1519.txt)), and RFC 4632, Best Current Practice (BCP) 122, replaced it in August 2006. In its words, prefixes "may be defined to describe any power of two-sized block of between one and 2^32 end system addresses" ([RFC 4632, section 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). The classes are in [How IPv4 addresses work](/learn/ipv4-addressing), and how one RFC replaces another in [The RFC series](/learn/the-rfc-series).
 
-Two blocks merge into one only when they form a *sibling pair*: same size, adjacent, and with the lower block sitting on the boundary of the combined block. `192.168.0.0/24` and `192.168.1.0/24` qualify, because `192.168.0.0` is a valid `/23` network. But `192.168.1.0/24` and `192.168.2.0/24` do **not** combine, even though they look adjacent. `192.168.1.0` is not a `/23` boundary (the /23 containing it starts at `192.168.0.0`), so there is no single /23 that holds exactly those two blocks and nothing else.
+## The alignment rule, in binary
 
-Alignment, not mere adjacency, is what makes aggregation work. It is the same power-of-two boundary rule that governs subnetting, read from the other direction.
+A prefix is the leftmost bits that a bitwise AND of address and mask leaves ([RFC 1518, section 4](https://www.rfc-editor.org/rfc/rfc1518.txt)), and in the address that names a prefix every bit after it is zero ([RFC 4632, section 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Hence the rule: blocks equal one prefix exactly when their union is one unbroken run of `2^k` addresses whose first address ends in `k` zero bits, and the prefix length is then `32 - k`. Two equal blocks of `2^m` addresses merge when they are adjacent and the lower one starts on a multiple of `2^(m+1)`. Three equal blocks never do, because three times a power of two is not a power of two. The notation itself is in [CIDR notation explained](/learn/cidr-notation).
 
-## Exact aggregation versus a single supernet
+Two pairs of /26 blocks, in binary as computed with Python's ipaddress module on 2026-10-18:
 
-When your prefixes are not all contiguous, there are two different answers, and they are not the same thing.
+```text
+192.0.2.0/26       11000000.00000000.00000010.00000000
+192.0.2.64/26      11000000.00000000.00000010.01000000
+192.0.2.0/25       11000000.00000000.00000010.00000000
 
-The **minimal covering set** is the shortest list of prefixes that covers exactly your inputs and nothing more. Given `10.0.0.0/24` and `10.0.2.0/24`, there is a gap at `10.0.1.0/24`, so they cannot be merged: the minimal set is still the two `/24` blocks.
+192.0.2.64/26      11000000.00000000.00000010.01000000
+192.0.2.128/26     11000000.00000000.00000010.10000000
+```
 
-The **single supernet** is the one smallest prefix that contains every input, even if it pulls in addresses you did not list. For the same two blocks that is `10.0.0.0/22`, which spans `10.0.0.0` to `10.0.3.255`. It covers both inputs but also adds `10.0.1.0/24` and `10.0.3.0/24`, 512 extra addresses you may not own.
+The first pair shares 25 bits and differs only in bit 26, so together it is exactly `192.0.2.0/25`. The second pair touches, yet differs already in bit 25: a /25 starts only at `.0` or `.128`, so the smallest block holding both is `192.0.2.0/24`, which also takes in `.0/26` and `.192/26`. Adjacency is not enough; alignment decides. The same boundaries cut blocks in [Subnetting basics](/learn/subnetting-basics) and in [splitting a block into unequal subnets](/learn/vlsm), and a site given one contiguous power-of-two block can be aggregated into a single prefix ([RFC 4632, section 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)).
 
-Advertise the single supernet only when you actually control the whole range. Otherwise you summarize across address space that belongs to someone else.
+## Exact aggregation or a covering supernet
 
-## Why it matters
+For `192.0.2.0/26` and `192.0.2.128/26` there are two answers. The exact aggregate, the fewest prefixes covering exactly the inputs, is the two blocks, since the gap stops any merge. The covering supernet, the smallest single block holding both, is `192.0.2.0/24`, and it claims 128 addresses nobody listed, `.64/26` and `.192/26`. Gaps like these are in [Subnet overlaps and gaps](/learn/subnet-overlap-and-gaps).
 
-Aggregation is what keeps routing tables small. One summary route in place of dozens of specifics means less memory on every router that hears it, and far less churn when a single component link flaps. The catch is that it only works if addresses were allocated contiguously and on aligned boundaries in the first place, which is why disciplined subnetting and [VLSM](/learn/vlsm) pay off later as clean [route summarization](/learn/route-summarization).
+A covering aggregate is normal when the space is yours. In RFC 4632's example a provider called PA holds the 524,288 addresses of `10.24.0.0/13`, connects six sites using 36 /24s between them, and announces the whole block ([RFC 4632, sections 6.1 and 6.2](https://www.rfc-editor.org/rfc/rfc4632.txt)). That is its right: a routing domain holding prefixes "has sole responsibility for aggregation of those prefixes" (section 5.4). Rule #2 is the price: the aggregating router "must discard packets that match the aggregate route, but not any of the more-specific routes", so that unreachable parts cannot loop (section 5.1), usually through a discard or null route (section 5.2). Aggregates are also steadier: a dynamic one is withdrawn only when all its components are unreachable (section 5.4). The saving is downstream: aggregation does not shrink the aggregating router's own table ([Juniper Networks, Configuring Route Aggregation](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)). Summarising inside one network is in [Route summarization](/learn/route-summarization).
 
-You can try both answers in the [CIDR calculator](/#cidr). Its Supernet mode shows the minimal covering set and the single enclosing supernet, with the exact count of extra addresses the supernet would add.
+## How BGP marks an aggregate
+
+BGP sends each prefix as Network Layer Reachability Information (NLRI), a `<length, prefix>` pair ([RFC 4271, section 4.3](https://www.rfc-editor.org/rfc/rfc4271.txt)), so an aggregate is a shorter prefix with new attributes. A speaker that accepts a less and a more specific route installs both, or aggregates them if they share a NEXT_HOP, and if it aggregates it "SHOULD either include all ASes used to form the aggregate in an AS_SET, or add the ATOMIC_AGGREGATE attribute to the route" (section 9.1.4). The attributes:
+
+- **AS_SET** lists, unordered, the ASes the components crossed ([RFC 4271, section 9.2.2.1](https://www.rfc-editor.org/rfc/rfc4271.txt)).
+- **ATOMIC_AGGREGATE** is well-known discretionary, of length 0, and "now primarily informational", but a receiver "MUST NOT make any NLRI of that route more specific" ([RFC 4271, sections 4.3, 9.1.4 and 5.1.6](https://www.rfc-editor.org/rfc/rfc4271.txt)).
+- **AGGREGATOR** is optional transitive: the last AS number that formed the aggregate and the IP address of the speaker that did ([RFC 4271, section 4.3](https://www.rfc-editor.org/rfc/rfc4271.txt)); AS4_AGGREGATOR carries four-octet AS numbers ([RFC 6793, section 3](https://www.rfc-editor.org/rfc/rfc6793.txt)).
+
+Routes with different Multi-Exit Discriminator (MED) values must not be aggregated ([RFC 4271, section 9.2.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). What the aggregate loses is precision: packets may cross ASes its AS_PATH does not list (section 9.1.4). More on the protocol is in [BGP: how the internet decides where traffic goes](/learn/bgp-primer).
+
+### AS_SET, deprecated in May 2025
+
+RFC 9774 (May 2025) updates RFC 4271: unless an operator configures otherwise, speakers "MUST NOT advertise BGP UPDATE messages containing AS_SETs or AS_CONFED_SETs" and must treat a received one as a withdrawal ([RFC 9774, section 3](https://www.rfc-editor.org/rfc/rfc9774.txt)) of every route it carries ([RFC 7606, section 2](https://www.rfc-editor.org/rfc/rfc7606.txt)). AS_SETs were often used wrongly, most often holding a single AS, and Route Origin Validation over the Resource Public Key Infrastructure (RPKI-ROV) never treats them as Valid (RFC 9774, sections 1 and 4). BCP 172 had already recommended, in 2011, that operators not generate new announcements with AS_SETs ([RFC 6472, section 3](https://www.rfc-editor.org/rfc/rfc6472.txt)). The replacement keeps the markers and drops the set: "In consistent brief aggregation, the AGGREGATOR and ATOMIC_AGGREGATE Path Attributes are included, but the AS_PATH does not have AS_SET or AS_CONFED_SET path segment types" (section 6.1). Loops are avoided by policy instead: "An aggregate prefix SHOULD NOT be announced to the contributing ASes" (section 6.2). In the RFC's example AS 64505 aggregates four /24s, from AS 64501 to 64504, into a /22 and holds this entry (appendix A):
+
+```text
+p/22 AS_PATH "" AGGREGATOR 64505 ATOMIC_AGGREGATE
+```
+
+## How aggregation fails
+
+Every failure here turns on one rule: "Routers must use the most specific matching route (the longest matching network prefix) when forwarding traffic" ([RFC 1812, section 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). One router's side of it is in [Static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match).
+
+**Holes and loops.** A multihomed destination cannot be summarised, and a customer that changes provider without renumbering punches a hole in the old aggregate, which the new provider's longer announcement fills ([RFC 4632, sections 4.1 and 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). If that more-specific disappears, traffic follows the aggregate, is discarded by its advertiser, and traceroute blames that network instead (section 5.1). Without a discard route, a network that loses part of its own aggregate follows its provider's less specific route back up and the packet loops (section 5.2); the BGP specification does not discuss installing that route ([RFC 9774, appendix C](https://www.rfc-editor.org/rfc/rfc9774.txt)).
+
+**Leaks.** "The leaked internal prefixes are often more-specific prefixes subsumed by an already announced, less-specific prefix" ([RFC 7908, section 3.6](https://www.rfc-editor.org/rfc/rfc7908.txt)). On 12 August 2014 AS701 and AS705 leaked more than 20,000 of them (section 3.6). Seen from AS 131072 the table went well past 512,000 entries, and 512K is a default number of IPv4 entries for a high-speed lookup cache in some equipment's fine print ([Geoff Huston, What's So Special about 512?](https://ispcol.potaroo.net/2014-09/512.html)).
+
+**Hijacks.** "Traffic can be hijacked by advertising a prefix for a given destination that is more specific than the aggregate that is normally advertised for that destination" ([RFC 4632, section 12](https://www.rfc-editor.org/rfc/rfc4632.txt)). On 24 February 2008 Pakistan Telecom (AS17557) made an unauthorised announcement of `208.65.153.0/24`, inside YouTube's `208.65.152.0/22`, and the longer prefix won wherever it spread ([RIPE Network Coordination Centre case study](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)). The wider weakness is in [BGP: the trust fall the whole internet is standing on](/learn/bgp-and-the-routing-chokepoint).
+
+**Proxy aggregation.** A provider may aggregate the routes it receives from another without explicit agreement; other networks then see an inconsistent view of the original routes, which is why RFC 4632 asks for extreme caution ([RFC 4632, section 5.4](https://www.rfc-editor.org/rfc/rfc4632.txt)).
+
+**Defences.** Prefix length is the first filter: "IPv4 prefixes longer than /24 and IPv6 prefixes longer than /48 are generally neither announced nor accepted in the Internet" ([RFC 7454, section 6.1.3](https://www.rfc-editor.org/rfc/rfc7454.txt)), and a limit on the routes accepted from each peer is recommended (section 8). A Route Origin Authorization (ROA) should be minimal, listing only prefixes the AS actually originates ([RFC 9319, section 5](https://www.rfc-editor.org/rfc/rfc9319.txt)).
+
+## What it did to the routing table
+
+Aggregation slowed the growth of the global table; it never made the table small. RFC 4632 calls it essential all the same: "aggregation is the only tool available for making routing scale in the global Internet" ([RFC 4632, section 10](https://www.rfc-editor.org/rfc/rfc4632.txt)). The counts measure different things, so each is labelled:
+
+| When | Measure | Count |
+|---|---|---|
+| 1992 | Default-free table ([RFC 1338, section 3.3.2](https://www.rfc-editor.org/rfc/rfc1338.txt)) | about 4,700 |
+| March 1994 | Table as CIDR arrived ([Huston, CIDR Report](https://ispcol.potaroo.net/2026-03/cidr-report.html)) | 20,000 down to 18,000 in a couple of weeks |
+| January 2026 | Prefixes, and more-specifics among them, seen from AS 131072 ([Huston, BGP in 2025](https://ispcol.potaroo.net/2026-01/bgp2025.html)) | 1,050,000; 544,000 |
+| 18 October 2026 | Prefixes, and the count if aggregated ([The CIDR Report](https://www.cidr-report.org/as2.0/)) | 1,085,532; 602,076 |
+
+"The routing table has continued to grow, largely as a result of the advertisement of more specifics" ([Geoff Huston, BGP in 2025](https://ispcol.potaroo.net/2026-01/bgp2025.html)). The CIDR Report's aggregated figure also aggregates across holes, address space nobody advertises, which is exactly a covering supernet ([The CIDR Report](https://www.cidr-report.org/as2.0/)). The report is produced daily ([Geoff Huston, The Why and What of the CIDR Report](https://ispcol.potaroo.net/2026-03/cidr-report.html)).
+
+## How to see it
+
+The [CIDR / Subnet Calculator](/tools/cidr) has a Supernet mode that shows both answers, the Minimal covering set and the Single supernet, and the extra addresses the supernet adds when there are any. Its results for three inputs, summarised, as computed with its own code on 2026-10-18:
+
+```text
+192.0.2.0/26, 192.0.2.64/26
+  Minimal covering set: 192.0.2.0/25    Single supernet: 192.0.2.0/25    (no note)
+192.0.2.64/26, 192.0.2.128/26
+  Minimal covering set: 192.0.2.64/26, 192.0.2.128/26    Single supernet: 192.0.2.0/24    128 extra
+198.51.100.0/26, 198.51.100.64/26, 198.51.100.128/26
+  Minimal covering set: 198.51.100.0/25, 198.51.100.128/26    Single supernet: 198.51.100.0/24    64 extra
+```
+
+It masks host bits silently; its Overlap / gap mode lists the holes inside a scope. The [Python playground](/tools/python-playground) has the standard ipaddress module ([Python documentation, ipaddress](https://docs.python.org/3/library/ipaddress.html)): `collapse_addresses()` gives the exact aggregate, `summarize_address_range()` the prefixes for a range, and `supernet()` the parent block, which says which block contains a network, not whether two merge. Unlike the calculator, it refuses host bits. Output as recorded (abridged):
+
+```text
+>>> from ipaddress import ip_network, ip_address, collapse_addresses, summarize_address_range
+>>> list(collapse_addresses([ip_network('192.0.2.0/26'), ip_network('192.0.2.64/26')]))
+[IPv4Network('192.0.2.0/25')]
+>>> list(collapse_addresses([ip_network('192.0.2.64/26'), ip_network('192.0.2.128/26')]))
+[IPv4Network('192.0.2.64/26'), IPv4Network('192.0.2.128/26')]
+>>> ip_network('192.0.2.64/26').supernet()
+IPv4Network('192.0.2.0/25')
+>>> ip_network('192.0.2.128/26').supernet()
+IPv4Network('192.0.2.128/25')
+>>> list(ip_network('192.0.2.0/24').address_exclude(ip_network('192.0.2.0/26')))
+[IPv4Network('192.0.2.128/25'), IPv4Network('192.0.2.64/26')]
+>>> list(summarize_address_range(ip_address('203.0.113.0'), ip_address('203.0.113.191')))
+[IPv4Network('203.0.113.0/25'), IPv4Network('203.0.113.128/26')]
+>>> ip_network('192.0.2.64/25')
+ValueError: 192.0.2.64/25 has host bits set
+```
+
+In FRRouting, "In order to advertise an aggregated prefix, a more specific (longer) prefix MUST exist in the BGP table" ([FRRouting documentation, BGP](https://docs.frrouting.org/en/latest/bgp.html)). `summary-only` suppresses the more-specifics to all neighbours and `as-set` survives as a legacy option; the latest (development) documentation says `bgp reject-as-sets`, defined under RFC 9774, is enabled by default. Illustrative, with documentation prefixes and AS numbers:
+
+```text
+router bgp 64500
+ address-family ipv4 unicast
+  aggregate-address 198.51.100.0/24 summary-only
+ exit-address-family
+```
+
+```text
+show bgp ipv4 unicast aggregate-address 198.51.100.0/24
+```
+
+In Junos an aggregate becomes active with one contributing route. By default its next hop rejects packets with an Internet Control Message Protocol (ICMP) unreachable, `discard` drops them silently, and `brief` keeps only the longest common leading sequences of the contributing AS paths ([Juniper Networks, Configuring Route Aggregation](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)). The options, as documented:
+
+```text
+as-path <as-path> <origin (egp | igp | incomplete)> <atomic-aggregate> <aggregator as-number in-address>;
+discard;
+(brief | full);
+```
+
+Cisco's command reference gives this syntax:
+
+```text
+aggregate-address address mask [as-set] [as-confed-set] [summary-only] [suppress-map map-name] [advertise-map map-name] [attribute-map map-name]
+```
+
+There `summary-only` filters the more-specific routes from updates, and "The atomic aggregate attribute is set automatically when an aggregate route is created with this command unless the as-set keyword is specified" ([Cisco, BGP Command Reference: aggregate-address](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_bgp/command/irg-cr-book/bgp-a1.html)). A route towards Null0 goes into the routing table automatically, to help prevent loops, and the reference warns, for BGP and Multiprotocol BGP (mBGP) alike: "If a more-specific route leaks out, all BGP or mBGP routers will prefer that route over the less-specific aggregate you are generating (using longest-match routing)." On a receiving router, `show ip bgp` ends the AS path line with `aggregated by`, the aggregating AS and its router ID, and lists `atomic-aggregate` among the attributes ([Cisco, Understand Route Aggregation in BGP](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/5441-aggregation.html)). An illustrative copy, rebuilt with documentation addresses and AS numbers:
+
+```text
+RouterA# show ip bgp 198.51.100.0
+Paths: (1 available, best #1, table Default-IP-Routing-Table)
+  Not advertised to any peer
+  64501 64502, (aggregated by 64501 192.0.2.1)
+    192.0.2.1 from 192.0.2.1 (192.0.2.1)
+      Origin IGP, localpref 100, valid, external, atomic-aggregate, best
+```
+
+## What to remember
+
+- Blocks make one prefix only when their union is one unbroken power-of-two run whose first address has every bit after the new prefix at zero.
+- Adjacency is not enough: two touching /26s merge only when the lower one starts on a multiple of 128.
+- An exact aggregate covers only the inputs; a covering supernet claims more, and is legitimate only for space you hold, with a discard route for the unused parts.
+- Longest match beats any aggregate, so a leaked or hijacked more-specific wins wherever it spreads; filters on prefix length and minimal ROAs are the defences.
+- A BGP aggregate is a shorter prefix marked by ATOMIC_AGGREGATE and AGGREGATOR, and since RFC 9774 (May 2025) it carries no AS_SET.
+- Aggregation slowed the table's growth without stopping it: about 4,700 entries in 1992, 1,085,532 prefixes on 18 October 2026.
+
+## Sources
+
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), January 2006: sections 1, 4.3, 5.1.6, 9.1.4, 9.2.2.1, 9.2.2.2 and appendix B (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 1518, An Architecture for IP Address Allocation with CIDR, September 1993: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1518.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, August 2006: sections 2 to 6, 9, 10 and 12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 1380, IESG Deliberations on Routing and Addressing, November 1992: sections 3.2 and 3.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1380.txt)
+- [RFC 1338, Supernetting: an Address Assignment and Aggregation Strategy, June 1992: sections 2.2, 3.3.2, 4.2, 5.1 and 8 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1338.txt)
+- [RFC 1519, Classless Inter-Domain Routing (CIDR): an Address Assignment and Aggregation Strategy, September 1993: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1519.txt)
+- [RFC 6793, BGP Support for Four-Octet Autonomous System (AS) Number Space, December 2012: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6793.txt)
+- [RFC 9774, Deprecation of AS_SET and AS_CONFED_SET in BGP, May 2025: sections 1, 3 to 6 and appendices A and C (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9774.txt)
+- [RFC 7606, Revised Error Handling for BGP UPDATE Messages, August 2015: section 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7606.txt)
+- [RFC 6472, Recommendation for Not Using AS_SET and AS_CONFED_SET in BGP, December 2011: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6472.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: section 2.2.5.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 7908, Problem Definition and Classification of BGP Route Leaks, June 2016: section 3.6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7908.txt)
+- [RFC 7454, BGP Operations and Security, February 2015: sections 6.1.3 and 8 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7454.txt)
+- [RFC 9319, The Use of maxLength in the Resource Public Key Infrastructure (RPKI), October 2022: section 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9319.txt)
+- [Geoff Huston, What's So Special about 512?, The ISP Column, September 2014 (read 2026-10-18)](https://ispcol.potaroo.net/2014-09/512.html)
+- [RIPE NCC, YouTube Hijacking: A RIPE NCC RIS case study, 17 March 2008 (read 2026-10-18)](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)
+- [Geoff Huston, The Why and What of the CIDR Report, The ISP Column, March 2026 (read 2026-10-18)](https://ispcol.potaroo.net/2026-03/cidr-report.html)
+- [Geoff Huston, BGP in 2025, The ISP Column, January 2026: "The IPv4 Routing Table" and Table 1 (read 2026-10-18)](https://ispcol.potaroo.net/2026-01/bgp2025.html)
+- [The CIDR Report, report for 18 October 2026: Status Summary and Aggregation Summary (read 2026-10-18)](https://www.cidr-report.org/as2.0/)
+- [Python documentation, ipaddress: supernet(), collapse_addresses() and summarize_address_range() (read 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)
+- [FRRouting documentation, BGP: Route Aggregation and bgp reject-as-sets (read 2026-10-18)](https://docs.frrouting.org/en/latest/bgp.html)
+- [Juniper Networks, Configuring Route Aggregation, Junos OS documentation, December 2025 (read 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)
+- [Cisco, Cisco IOS IP Routing: BGP Command Reference: aggregate-address (read 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_bgp/command/irg-cr-book/bgp-a1.html)
+- [Cisco, Understand Route Aggregation in BGP, August 2024 (read 2026-10-18)](https://www.cisco.com/c/en/us/support/docs/ip/border-gateway-protocol-bgp/5441-aggregation.html)

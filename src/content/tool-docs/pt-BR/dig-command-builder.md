@@ -12,7 +12,7 @@ Três coisas voltam: o comando, numa ordem canônica, com um botão Copiar; os a
 
 ## A ordem do comando
 
-O dig lê a linha inteira e não se importa muito com a ordem, com duas exceções que o manual declara: as opções de consulta (as palavras com `+`) são sensíveis à ordem, e `+short` e `+cmd` são globais. O montador escreve uma ordem fixa para que a mesma intenção dê sempre os mesmos bytes: `dig`, `@servidor`, as opções (`-r`, `-4`/`-6`, `-b`, `-p`, `-k`), a pergunta (`-x endereço`, ou o nome, depois o tipo, depois a classe), e então as opções de consulta agrupadas em transporte, modo, bits do cabeçalho, EDNS, tempos, saída. `+noall` é sempre escrito antes de `+answer`, porque eles se aplicam em sequência.
+O dig lê a linha inteira e não se importa muito com a ordem, com duas exceções que o manual declara: as opções de consulta (as palavras com `+`) são sensíveis à ordem, e `+short` e `+cmd` são globais. O montador escreve uma ordem fixa para que a mesma intenção dê sempre os mesmos bytes: `dig`, `@servidor`, as opções (`-r`, `-4`/`-6`, `-b`, `-p`, `-k`), a pergunta (`-x endereço`, ou o nome, depois o tipo, depois a classe), e então as opções de consulta agrupadas em transporte, modo, bits do header, EDNS, tempos, saída. `+noall` é sempre escrito antes de `+answer`, porque eles se aplicam em sequência.
 
 Os padrões não são escritos: tipo A, classe IN, porta 53 (853 para TLS, 443 para HTTPS), UDP. Um nome que também é mnemônico de tipo ou de classe (o domínio de topo `ch`, um host chamado literalmente `mx`) é escrito com `-q`, porque o dig lê as palavras soltas como tipos e classes antes de nomes; a nota do próprio manual sobre os domínios de topo IN e CH é a razão de a opção existir.
 
@@ -22,10 +22,11 @@ Cada regra aponta para a frase do manual ou da RFC que a justifica:
 
 - `+trace` liga `+dnssec` e `+cookie` e desliga a recursão; `@servidor` então afeta só a consulta inicial pelos servidores da raiz. Pedir `+dnssec` ou `+norecurse` junto é sinalizado como redundante, e a nota sobre o servidor é mostrada.
 - `+nssearch` também desliga a recursão.
-- O tipo ANY e `ixfr=N` usam TCP por padrão; AXFR sempre usa TCP, e uma transferência sem `@servidor` iria para os resolvedores do `/etc/resolv.conf` em vez de para um servidor que tem a zona (RFC 5936). ANY pode ter resposta mínima ou um registro HINFO sintetizado (RFC 8482).
+- O tipo ANY e `ixfr=N` usam TCP por padrão; AXFR sempre usa TCP, e uma transferência sem `@servidor` iria para os resolvers do `/etc/resolv.conf` em vez de para um servidor que tem a zona (RFC 5936). ANY pode ter resposta mínima ou um registro HINFO sintetizado (RFC 8482).
 - `+bufsize` vai de 0 a 65535; um valor abaixo de 512 é tratado como 512 por quem recebe (RFC 6891, seção 6.2.3); acima de 4096 passa do ponto de partida sugerido pela RFC 6891; o DNS Flag Day 2020 nomeia 1232 como o tamanho mínimo seguro.
+- `+bufsize=0` aparece como verificação: ele anuncia um buffer UDP de EDNS de 0 bytes, que quem recebe trata como 512. Ele não restaura o padrão; o manual dá essa função ao `+bufsize` sem valor. O padrão do dig é 1232 bytes (`DEFAULT_EDNS_BUFSIZE` no código-fonte da 9.20.29). A troca de 4096 para 1232 é a entrada 5516 do CHANGES do BIND, lançada na 9.17.6 e, portanto, presente em toda versão a partir da 9.18.0; no ramo 9.16 a mesma entrada chegou ao `named`, mas não ao dig, que manteve 4096 até a 9.16.50.
 - `+dnssec`, `+trace`, `+bufsize`, `+nsid` e `+subnet` vivem no registro OPT (RFC 6891; o bit DO é a RFC 3225), então `+noedns` não pode ser combinado com eles e não é escrito quando estão presentes.
-- `+subnet=0` (ou um comprimento de prefixo 0) pede ao resolvedor que não use o seu endereço (RFC 7871).
+- `+subnet=0` (ou um comprimento de prefixo 0) pede ao resolver que não use o seu endereço (RFC 7871).
 - `-4` contra um literal IPv6 de servidor, ou `-6` contra um IPv4, deixa o dig sem ter para onde mandar a consulta.
 - `+timeout` abaixo de 1 e `+tries` igual a 0 são silenciosamente elevados a 1 pelo dig.
 - `+identify` não faz nada sem `+short`; `+ignore` não faz nada sem UDP.
@@ -37,7 +38,7 @@ Cada regra aponta para a frase do manual ou da RFC que a justifica:
 - Ele não roda o dig, não resolve nada e não verifica se um servidor existe. O resumo é derivado das declarações do manual, não observado.
 - As opções não oferecidas (`+aaonly`, `+besteffort`, `+cmd`, `+comments`, `+crypto`, `+domain`, `+ednsopt`, `+expire`, `+header-only`, `+keepopen`, `+ndots`, `+onesoa`, `+opcode`, `+padding`, `+proxy`, `+qid`, `+search`, `+split`, `+stats`, `+tls-ca` e os demais arquivos de TLS, `+unknownformat`, `+zoneversion`, `-c` como opção, `-f`, `-F`, `-m`, `-t` como opção, `-u`, `-y`) estão documentadas no manual; as comuns estão aqui.
 - Os nomes são verificados pela forma (rótulos de letras, dígitos, hifens e sublinhados, de até 63 caracteres cada, até 253 no total; um asterisco sozinho como rótulo curinga); o montador não sabe se um nome existe.
-- O manual do dig lido para esta página é a documentação "latest" do BIND 9 (9.21). Versões mais antigas do dig não têm algumas opções de consulta (`+tls`, `+https`, `+yaml` são recentes); o dig imprime "Invalid option" para uma palavra que não conhece.
+- O manual do dig lido para esta página é a documentação "latest" do BIND 9 (9.21) e, para o `+bufsize`, o manual estável da 9.20.29 (lido em 2026-10-19). Versões mais antigas do dig não têm algumas opções de consulta (`+tls`, `+https`, `+yaml` são recentes); o dig imprime "Invalid option" para uma palavra que não conhece.
 
 ## Fontes
 
@@ -53,5 +54,9 @@ Cada regra aponta para a frase do manual ou da RFC que a justifica:
 - [RFC 7858: DNS over TLS](https://www.rfc-editor.org/rfc/rfc7858) e [RFC 8484: DNS Queries over HTTPS](https://www.rfc-editor.org/rfc/rfc8484) (lidas em 2026-10-04)
 - [RFC 5001: NSID](https://www.rfc-editor.org/rfc/rfc5001), [RFC 7871: Client Subnet in DNS Queries](https://www.rfc-editor.org/rfc/rfc7871), [RFC 7873: DNS Cookies](https://www.rfc-editor.org/rfc/rfc7873) (lidas em 2026-10-04)
 - [IANA: Domain Name System (DNS) Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml) (lido em 2026-10-04): o registro de RR TYPEs que o campo de tipo aceita, e os códigos de opção do EDNS
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig](https://bind9.readthedocs.io/en/stable/manpages.html) (lido em 2026-10-19): `+bufsize[=B]` define o tamanho anunciado em B bytes, de 0 a 65535; `+bufsize` sem valor restaura o padrão
+- [BIND 9 source at tag v9.20.29, bin/dig/dighost.h](https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dighost.h) (lido em 2026-10-19): `DEFAULT_EDNS_BUFSIZE 1232`
+- [ISC, BIND 9.18.0 CHANGES](https://downloads.isc.org/isc/bind9/9.18.0/CHANGES) (lido em 2026-10-19): a entrada 5516, sob a 9.17.6, muda o tamanho padrão do buffer EDNS de 4096 para 1232 bytes
+- [BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h](https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h) (lido em 2026-10-19): `DEFAULT_EDNS_BUFSIZE 4096`, o padrão do dig no ramo 9.16
 - [DNS Flag Day 2020](https://www.dnsflagday.net/2020/) (lido em 2026-10-04): 1232 bytes como o tamanho mínimo seguro de buffer EDNS
 - [RFC 5737](https://www.rfc-editor.org/rfc/rfc5737) e [RFC 3849](https://www.rfc-editor.org/rfc/rfc3849) (lidas em 2026-10-04): as faixas de endereços de documentação usadas nos exemplos (192.0.2.0/24, 2001:db8::/32)

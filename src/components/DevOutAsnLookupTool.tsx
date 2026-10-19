@@ -13,6 +13,11 @@
 // an error. One honest extra: some RIRs redirect NIR-delegated numbers
 // (LACNIC hands Brazilian ASNs to rdap.registro.br, verified 2026-07-08);
 // fetch follows the redirect and the result names who actually answered.
+//
+// 2026-10-19 (PRIME, "Accept asdot"): dotted input (asdot and asdot+, RFC
+// 5396) is accepted and converted to asplain for the lookup; the page shows
+// the asplain, asdot and asdot+ forms of every valid number, and for dotted
+// input the high x 65536 + low arithmetic.
 // ============================================================================
 "use client";
 
@@ -145,12 +150,45 @@ export default function DevOutAsnLookupTool() {
         </p>
       )}
 
+      {/* RFC 5396 notations (2026-10-19): the asplain number the lookup uses, its asdot and asdot+ forms, */}
+      {/* and for dotted input the arithmetic that turned it into asplain. Computed locally, zero egress. */}
+      {plan.kind === "ok" && (
+        <div>
+          {/* Dotted input: show high x 65536 + low = asplain before anything else. */}
+          {plan.plan.classified.dotted && (
+            <p className="cipher-note mono">
+              {t("dotted", {
+                // What the person typed, trimmed.
+                input: value.trim(),
+                // The high 16-bit half as a string (no locale grouping).
+                high: String(plan.plan.classified.dotted.high),
+                // The low 16-bit half as a string.
+                low: String(plan.plan.classified.dotted.low),
+                // The resulting asplain number.
+                asplain: plan.plan.classified.asplain,
+              })}
+            </p>
+          )}
+          {/* All three notations, always, labelled by their RFC 5396 names. */}
+          <p className="cipher-note mono">
+            {t("forms", {
+              // Decimal value: what registries and the lookup use.
+              asplain: plan.plan.classified.asplain,
+              // asdot: plain below 65536, dotted from 65536 up.
+              asdot: plan.plan.classified.asdot,
+              // asdot+: always dotted.
+              asdotPlus: plan.plan.classified.asdotPlus,
+            })}
+          </p>
+        </div>
+      )}
+
       {/* Special-purpose ASN: a complete answer with zero egress. */}
       {plan.kind === "ok" && plan.plan.kind === "special" && (
         <div className="jwt-results">
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">
-              {plan.plan.normalized} — {t(`special.${plan.plan.special.reasonKey}`)}
+              {plan.plan.normalized}: {t(`special.${plan.plan.special.reasonKey}`)} {/* colon, not an em dash (D-55, 2026-10-19) */}
             </h4>
             <p className="cipher-note">
               {t("special.body", { rfc: plan.plan.special.rfc })}{" "}
@@ -171,7 +209,7 @@ export default function DevOutAsnLookupTool() {
         <div className="jwt-results">
           <section className="jwt-panel">
             <h4 className="jwt-panel-title">
-              {plan.plan.normalized} — {t("unallocated.title")}
+              {plan.plan.normalized}: {t("unallocated.title")} {/* colon, not an em dash (D-55, 2026-10-19) */}
             </h4>
             <p className="cipher-note">{t("unallocated.body")}</p>
           </section>

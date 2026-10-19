@@ -106,7 +106,10 @@ const IDIOMS = [
   [/\bno final do dia\b/g, "at the end of the day"],
   [/\bfora da caixa\b/g, "out of the box"],
   [/\bblocos? de construção\b/g, "building block"],
-  [/\bem ordem (?:a|de) \w+r\b/g, "in order to"],
+  // The calque is "em ordem a/de" + an infinitive. Letters are matched with \p{L} and the u flag (2026-10-19): with the
+  // ASCII \w and \b, "em ordem de preferência" (an order of preference, natural Portuguese) read as "prefer" + a word
+  // boundary before "ê", and counted as the idiom.
+  [/(?<!\p{L})em ordem (?:a|de) \p{L}+r(?!\p{L})/gu, "in order to"],
   [/\bendereçar (?:o|um|esse|este|a|uma) (?:problema|questão|risco)/g, "address a problem"],
   [/\bmandatóri[oa]s?\b/g, "mandatory"],
   [/\brandômic[oa]s?\b/g, "random"],

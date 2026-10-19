@@ -111,7 +111,7 @@
         "overlap": "Overlap / gat"
       },
       "modeDesc": {
-        "subnet": "Analyseert één IPv4-CIDR-blok: netwerk, broadcast, masker en hostbereik.",
+        "subnet": "Analyseert één IPv4-CIDR-blok: netwerk, broadcast, masker, hostbereik en de bereiken voor speciale doeleinden waarin het valt of die het overlapt.",
         "vlsm": "Verdeelt een bovenliggend blok in subnetten van variabele lengte op basis van een lijst met hostaantallen.",
         "supernet": "Vat een lijst met prefixes samen tot de kleinste set dekkende blokken.",
         "overlap": "Vindt overlappingen en insluiting tussen prefixes, plus gaten binnen een optioneel bereik."
@@ -141,7 +141,13 @@
           "utilization": "Benutting"
         },
         "unfit": "Pasten niet",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Geef aanvragen van 2 hosts een /31 (punt-tot-puntverbindingen, RFC 3021)",
+        "maskedNote": "Het bovenliggende blok {typed} heeft hostbits gezet en is daarom gemaskeerd tot {parent}; het plan wordt uit {parent} gesneden.",
+        "orderNote": "Aanvragen worden van het grootste naar het kleinste blok geplaatst, niet in de ingevoerde volgorde, zodat elk blok begint op een veelvoud van zijn eigen grootte.",
+        "freeBlocks": "Vrije blokken",
+        "noFree": "Er is geen vrije ruimte meer in het bovenliggende blok.",
+        "noBroadcast": "geen (/31)"
       },
       "supernet": {
         "label": "Te aggregeren prefixes",
@@ -185,12 +191,36 @@
         "prefix": "De prefixlengte moet tussen 0 en 32 liggen.",
         "tooMany": "Te veel items. Kort de lijst in en probeer opnieuw.",
         "noReqs": "Voeg ten minste één subneteis met een aantal hosts toe.",
-        "noPrefixes": "Voer ten minste één prefix in, één per regel."
+        "noPrefixes": "Voer ten minste één prefix in, één per regel.",
+        "zeroHosts": "Een subnetvereiste vraagt om 0 hosts. Elk subnet heeft minstens 1 host nodig: corrigeer het aantal of verwijder de rij."
       },
       "rangeHeading": "Adresindeling",
       "usableShort": "bruikbaar",
       "rfcNote": "/31 en /32 reserveren niets: elk adres is bruikbaar (RFC 3021).",
-      "reservedNote": "Het eerste adres is het netwerk en het laatste is de broadcast; beide zijn gereserveerd, dus bruikbaar = totaal − 2."
+      "reservedNote": "Het eerste adres is het netwerk en het laatste is de broadcast; beide zijn gereserveerd, dus bruikbaar = totaal − 2.",
+      "classifyHeading": "Bereiken voor speciale doeleinden",
+      "classifySpecial": "Binnen een bereik voor speciale doeleinden: {range}, {name} ({rfc}).",
+      "classifyPartial": "Gedeeltelijk voor speciale doeleinden: {special} van {total} adressen vallen in de bereiken hieronder; de rest valt in geen enkel zulk bereik.",
+      "classifyNone": "Geen bereik voor speciale doeleinden (globaal routeerbare unicastruimte).",
+      "classifyThRange": "Bereik",
+      "classifyThName": "Naam",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Relatie",
+      "classifyThSource": "Bron",
+      "classifyThDestination": "Bestemming",
+      "classifyThForwardable": "Doorstuurbaar",
+      "classifyThGlobal": "Globaal bereikbaar",
+      "classifyRelEqual": "is dit blok",
+      "classifyRelInside": "bevat dit blok",
+      "classifyRelContains": "binnen dit blok (gedeeltelijke overlap)",
+      "classifyYes": "Ja",
+      "classifyNo": "Nee",
+      "classifyNotListed": "niet vermeld",
+      "classifyTerminated": "beëindigd {date}",
+      "classifyNote1": "[1] Voetnoot van het register: verschillende protocollen hebben uitzonderingen op deze regel gekregen (zie bijvoorbeeld RFC 8029 en RFC 5884).",
+      "classifyNote2": "[2] Voetnoot van het register: niet bruikbaar tenzij op grond van een specifiekere reservering.",
+      "classifyFlagsNote": "De vlaggen zijn die van het register. Bron en Bestemming: of een adres uit het bereik geldig is als bron of bestemming van een datagram dat twee apparaten passeert. Doorstuurbaar: of een router zo'n datagram tussen externe interfaces mag doorsturen. Globaal bereikbaar: of het voorbij een bepaald administratief domein kan worden doorgestuurd.",
+      "classifySource": "Rijen uit het IANA-register IPv4 Special-Purpose Address Space (bijgewerkt 2025-10-09) en, voor 224.0.0.0/4, het IANA-register IPv4 Multicast Address Space, beide gelezen op 2026-10-19. Volgens het register is voor een vermeld bereik geen routeerbaarheid gegarandeerd in welke lokale of globale context dan ook."
     },
     "title": "Tools",
     "lede": "Kleine, snelle, privacygerichte hulpmiddelen. De catalogus rekent in je browser en stuurt niets ergens naartoe; de enige uitzondering is de rode kamer, waar een tool de officiële dienst bevraagt die hij noemt, en alleen als je op „Ask” drukt.",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Als je je in Brazilië bevindt, heb je de rechten uiteengezet in Artikel 18 van de LGPD, en kun je ook contact opnemen met de nationale autoriteit voor gegevensbescherming (de ANPD).",
     "changesTitle": "Wijzigingen in deze kennisgeving",
     "changesBody": "Als deze kennisgeving verandert, wordt de herziene versie op deze pagina gepubliceerd en wordt de datum hieronder bijgewerkt. Wezenlijke wijzigingen worden niet met terugwerkende kracht toegepast.",
-    "updated": "Laatst bijgewerkt: 30 juni 2026",
+    "updated": "Laatst bijgewerkt: {date}",
     "backHome": "Terug naar home"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Aanbevelingen",
     "title": "Wat mensen zeggen, in hun eigen woorden.",
-    "intro": "{count} letterlijke aanbevelingen en beoordelingen, over twee decennia lesgeven en adviseren. Niets hier is geparafraseerd of bewerkt.",
-    "provenance": "Afkomstig van LinkedIn-aanbevelingen, Google-reviews en geverifieerde Red Education-cursistreviews. De oorspronkelijke formulering en spelling zijn exact behouden zoals geschreven."
+    "intro": "{count} aanbevelingen en beoordelingen, over twee decennia lesgeven en adviseren. De originelen zijn letterlijk bewaard: niets erin is geparafraseerd of bewerkt. De optionele machinevertalingen zijn als zodanig gemarkeerd.",
+    "provenance": "Afkomstig van LinkedIn-aanbevelingen, Google-reviews en geverifieerde Red Education-cursistreviews. De oorspronkelijke formulering en spelling zijn exact behouden zoals geschreven; een vertaalde kaart is gemarkeerd als machinevertaling, en het origineel is één klik verwijderd."
   },
   "testimonials": {
     "filterLabel": "Testimonials filteren",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – heden",
-      "title": "De trainer & adviseur",
+      "title": "Lesgeven, bouwen en het vakgebied begrijpelijk maken",
       "subtitle": "Officiële voltijdse training, wereldwijd gegeven, en daarnaast advies over de beslissingen die gevolgen hebben.",
       "intro": "In 2020 werd een rode draad die de hele loopbaan liep het hele weefsel. Na twee decennia waarin lesgeven elke rol vergezelde, werd training het werk zelf: voltijds, officieel, gecertificeerd onderwijs gegeven aan professionals en teams over de hele wereld. Wat dit tijdperk onderscheidt is niet alleen de focus, maar de bewuste, gedateerde uitbreiding over platforms heen, elk toegevoegd bovenop diepe vakmanervaring in plaats van in plaats daarvan.",
       "s1Title": "Voltijds, uit roeping",
@@ -1045,7 +1075,7 @@
       "s3Body": "Wat de recente jaren onderscheidt is een duidelijke, gedateerde progressie. Extreme Networks-training werd toegevoegd vanaf 2021, met EXOS-switching, SD-WAN en automatisering. Fortinet volgde vanaf 2024, gericht op het FCP FortiGate Administrator-traject. Netskope kwam erbij vanaf 2025, met de werking, het beheer, de implementatie en de integratie van de Netskope Security Cloud. De platforms, elk bewust toegevoegd, elk rustend op dezelfde twee decennia netwerk- en beveiligingsimplementatie eronder.",
       "s4Title": "Via Red Education, naar de wereld",
       "s4Body": "Het belangrijkste voertuig voor deze wereldwijde levering is Red Education, een geautoriseerd trainingscentrum waarlangs officiële gecertificeerde cursussen organisaties in verschillende regio's bereiken. De rol is global technical training instructor, met levering aan het soort internationale doelgroepen dat een basis in São Paulo, twee paspoorten en een oprechte reislust mogelijk maken. De duurzame relatie zet individuele expertise om in iets dat organisaties wereldwijd kunnen boeken en waarop ze kunnen vertrouwen.",
-      "closer": "Hier betaalt de rode draad van de hele geschiedenis zich uit. De nieuwsgierigheid van de vroege jaren werd de implementatiediepte van de vakmanjaren, en die diepte is nu wat elke deelnemer ontvangt: geen presentator die slides voorleest, maar iemand die deze systemen heeft gebouwd en uitlegt hoe ze werkelijk werken, en waarom."
+      "closer": "Hier betaalt de rode draad van de hele geschiedenis zich uit. De nieuwsgierigheid van de vroege jaren werd de implementatiediepte van de vakmanjaren, en die diepte is nu wat elke deelnemer ontvangt: iemand die deze systemen heeft gebouwd en uitlegt hoe ze werkelijk werken, en waarom."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Een trainer die deze systemen bouwde voordat hij ze onderwees.",
     "lede": "De meeste technische training wordt gegeven door mensen die de stof hebben geleerd om die te onderwijzen. Dit is het tegenovergestelde: drie decennia van het bouwen, kapotmaken en repareren van echte netwerken en beveiligingssystemen, gedistilleerd tot training die elk concept verbindt met hoe het zich werkelijk gedraagt in productie.",
     "s1Title": "Waarom dit telt in een leslokaal",
-    "s1Body": "Er is een verschil tussen uitleggen hoe een functie hoort te werken en uitleggen waarom ze zich gedraagt zoals ze doet om drie uur 's nachts, wanneer er iets kritieks plat ligt. Het eerste komt uit een handleiding. Het tweede komt van erbij te zijn geweest. Sinds 1996 was het werk implementatie: netwerken ontwerpen en opzetten, ze vervolgens onder druk oplossen en de persoon zijn die wordt gebeld om de kritieke beschikbaarheids- en beveiligingsincidenten op te lossen die een bedrijf lamleggen, voor leveranciers en voor enkele van de grootste organisaties in Brazilië. Die diepgang krijgt elke cursist: geen presentator die dia's voorleest, maar een ingenieur die binnen deze systemen heeft geleefd en uitlegt hoe ze echt werken.",
+    "s1Body": "Er is een verschil tussen uitleggen hoe een functie hoort te werken en uitleggen waarom ze zich gedraagt zoals ze doet om drie uur 's nachts, wanneer er iets kritieks plat ligt. Het eerste komt uit een handleiding. Het tweede komt van erbij te zijn geweest. Sinds 1996 was het werk implementatie: netwerken ontwerpen en opzetten, ze vervolgens onder druk oplossen en de persoon zijn die wordt gebeld om de kritieke beschikbaarheids- en beveiligingsincidenten op te lossen die een bedrijf lamleggen, voor leveranciers en voor enkele van de grootste organisaties in Brazilië. Die diepgang krijgt elke cursist: een ingenieur die binnen deze systemen heeft geleefd en uitlegt hoe ze echt werken.",
     "s2Title": "Het complexe helder gemaakt",
     "s2Body": "Diepgaande technische kennis is noodzakelijk maar niet voldoende. De zeldzamere vaardigheid is het vertalen ervan: iets werkelijk complex nemen, web application firewalls, identiteitsfederatie, traffic management, SD-WAN, en het laten klikken voor iemand die het voor het eerst tegenkomt. Deelnemers benoemen consequent de praktijkvoorbeelden en de heldere, gestructureerde didactiek, het vermogen om elk concept in de context te plaatsen van het werk dat ze daadwerkelijk doen. Lesgeven is een rode draad geweest door deze hele loopbaan, aanwezig in vrijwel elke rol sinds 1997, en de voltijdse focus sinds 2020.",
     "s3Title": "Hands-on, niet vaag",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Advies en consulting",
     "topicOther": "Iets anders",
     "formMessage": "Je bericht",
-    "formSend": "Bericht verzenden",
+    "formSend": "E-mailconcept openen",
     "formSending": "Bezig met verzenden…",
     "formRequired": "Vul je naam, je e-mail en een bericht in.",
     "successTitle": "Bedankt.",
     "successBody": "Je bericht is onderweg. Ik kom zo snel mogelijk bij je terug.",
     "errorBody": "Er is iets misgegaan bij het verzenden. Probeer het opnieuw, of stuur rechtstreeks een e-mail.",
+    "draftedTitle": "Je e-mailconcept is geopend.",
+    "draftedBody": "Je e-mailprogramma zou geopend moeten zijn met het bericht al ingevuld. Verstuur het van daaruit; er is nog niets verzonden. Als er niets is geopend, kopieer dan het bericht hieronder en e-mail het naar {email}.",
+    "copyMessage": "Bericht kopiëren",
+    "copied": "Gekopieerd",
+    "copyFailed": "Kopiëren werd geblokkeerd: selecteer de tekst en kopieer die",
+    "draftedMessageLabel": "Het bericht, zoals opgesteld",
     "emailLabel": "E-mail",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Voorwaarden",
     "title": "Licentie",
-    "closedHeading": "Closed source – deze website",
-    "closedBody": "De website zelf is closed source. Het ontwerp, de interface, de geschreven inhoud (waaronder elk Learn-artikel), de merkidentiteit en de specifieke manier waarop deze tools hier zijn samengesteld en gepresenteerd zijn eigendom, alle rechten voorbehouden. Er wordt geen toestemming verleend om de site of de inhoud ervan te kopiëren, te verveelvoudigen, te wijzigen, te herdistribueren of er afgeleide werken van te maken zonder voorafgaande schriftelijke toestemming.",
+    "closedHeading": "Open source: Apache-2.0 (code) en CC BY 4.0 (inhoud)",
+    "closedBody": "De applicatiecode valt onder de Apache License 2.0. De geschreven inhoud, elk Learn-artikel, de teksten en toelichtingen van de tools en de documentatie, valt onder Creative Commons Naamsvermelding 4.0 Internationaal (CC BY 4.0). Je mag beide gebruiken, wijzigen en herverdelen, ook commercieel, mits je Rodolfo Nützmann (ronutz.com) passend vermeldt, naar de licentie linkt en wijzigingen aangeeft. ronutz.com blijft de canonieke, onderhouden bron.",
     "contact": "Vragen over de licentie? <a>Neem contact op.</a>",
     "backHome": "Terug naar de tools",
     "thirdHeading": "Opensource-componenten",
-    "lede": "ronutz.com is een propriëtair werk, alle rechten voorbehouden. Deze voorwaarden gelden voor de website en de inhoud ervan. De site is gebouwd op opensourcesoftware, die wordt gebruikt en herverdeeld onder haar eigen licentievoorwaarden, hieronder vermeld.",
+    "lede": "ronutz.com is open source. De code valt onder de Apache License 2.0 en de geschreven inhoud onder Creative Commons Naamsvermelding 4.0 (CC BY 4.0). Beide vereisen naamsvermelding: hergebruik het, maar vermeld de bron. Het open cursusmateriaal is de enige uitzondering: elk onderdeel verschijnt onder de licentie die zijn eigen datasheet noemt, en wat onder CC0 1.0 valt vraagt helemaal geen naamsvermelding. De site is ook gebouwd op andere opensourcesoftware, hieronder vermeld.",
     "thirdBody": "Deze site steunt op opensourcewerk. De site zelf is gebouwd met Next.js en React en wordt geleverd als een statische export; de internationalisatie gebruikt next-intl; de Learn-inhoud wordt gerenderd met next-mdx-remote, gray-matter, remark-gfm en js-yaml; en het zoeken wordt verzorgd door Pagefind. Deze componenten worden geleverd onder de MIT License, behalve next-mdx-remote (Mozilla Public License 2.0). De API-referentie bevat Swagger UI, onder de Apache License 2.0. Elke component blijft onder zijn eigen licentie, en de volledige kennisgevingen worden samen met de broncode geleverd."
   },
   "contributeIdeas": {

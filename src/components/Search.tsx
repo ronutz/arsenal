@@ -140,6 +140,8 @@ type ResultKind = "tool" | "article" | "guide" | "page";
  *  downloads on first use (PROPOSTA-wasm-tools, 2026-10-04). Derived from the registry's
  *  runtime flag, so a new WebAssembly tool is marked here without touching this file. */
 const WASM_SLUGS: ReadonlySet<string> = new Set(tools.filter((t) => t.runtime === "wasm").map((t) => t.id));
+/** Every tool id in the registry, for the exact-match pin (audit F13, 2026-10-18). */
+const TOOL_IDS: ReadonlySet<string> = new Set(tools.map((t) => t.id));
 /** Is this result URL a WebAssembly tool page? (/tools/<slug>/ with or without the trailing slash.) */
 function isWasmTool(url: string): boolean {
   const m = /\/tools\/([a-z0-9-]+)\/?(?:[#?]|$)/.exec(url);
@@ -267,10 +269,25 @@ export default function Search() {
   // Pagefind ranked it — most relevant first, regardless of type — because the
   // badge already conveys the type, and grouping would risk burying a more
   // relevant result beneath a less relevant one of a "preferred" type.
-  const ordered = useMemo(
-    () => results.map((r) => ({ ...r, kind: classifyKind(r.url) })),
-    [results],
-  );
+  //
+  // ONE EXCEPTION (production audit of 2026-10-15, F13): when the query IS a tool's id, written with hyphens or
+  // with spaces ("cidr", "oui lookup", "jwt-decoder"), the reader wants the tool, and Pagefind ranked the tool's
+  // documentation page first because it carries the word more often. The tool page itself, when it is among the
+  // loaded hits, is pinned to the top; everything else keeps Pagefind's order, the docs page included.
+  const ordered = useMemo(() => {
+    // The classified rows, in Pagefind's order.
+    const rows = results.map((r) => ({ ...r, kind: classifyKind(r.url) }));
+    // The query as a tool id would be written: lower case, spaces to hyphens, no stray punctuation.
+    const asId = query.trim().toLowerCase().replace(/\s+/g, "-");
+    // No pin unless that is the id of a tool in the registry.
+    if (!TOOL_IDS.has(asId)) return rows;
+    // The tool's own page: /tools/<id>/ exactly (its /docs page is a different URL and stays where it ranked).
+    const idx = rows.findIndex((r) => /\/tools\/([a-z0-9-]+)\/?(?:[#?]|$)/.exec(r.url)?.[1] === asId && !/\/docs\/?(?:[#?]|$)/.test(r.url));
+    // Not loaded (or already first): nothing to move.
+    if (idx <= 0) return rows;
+    // Pinned.
+    return [rows[idx], ...rows.slice(0, idx), ...rows.slice(idx + 1)];
+  }, [results, query]);
 
   // Per-kind counts for the pills: the index's own facet counts over every hit of the query when the index
   // carries the kind facet; the loaded hits, classified by URL, on an index that does not (the pre-facet

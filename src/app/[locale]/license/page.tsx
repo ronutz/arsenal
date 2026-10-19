@@ -7,7 +7,8 @@
 // License 2.0 and its written content under CC BY 4.0, both requiring
 // attribution — and a third-party section credits the open-source software the
 // site is built on, under each component's own license (the required
-// attribution; the full notices live in the repo's NOTICE file). Linked from
+// attribution; the full notices live in the repo's NOTICE file), with the open
+// course materials' CC0 exception stated between them (2026-10-18). Linked from
 // the footer's "License". Reuses the colophon's layout classes. Statically
 // generated; localized across all live locales.
 // ============================================================================
@@ -82,6 +83,26 @@ export default async function LicensePage({
             </div>
           </section>
 
+          {/* The open course materials: the CC0 exception (production audit of 2026-10-15, F09). The global page
+              used to describe every piece of content as CC BY 4.0 while the course datasheets say CC0 1.0 with
+              credit appreciated, never required; a teacher following the footer's "License" got a different reuse
+              summary from the course. The section states the exception, links the materials hub, and says the
+              datasheet governs its own files. */}
+          <section className="section">
+            <div className="container colophon-container">
+              <h2 className="colophon-h2">{t("materialsHeading")}</h2>
+              <p className="colophon-body">
+                {t.rich("materialsBody", {
+                  a: (chunks) => (
+                    <Link href="/materials" className="license-contact-link">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
+              </p>
+            </div>
+          </section>
+
           {/* Third-party software — required attribution */}
           <section className="section">
             <div className="container colophon-container">
@@ -120,7 +141,9 @@ export default async function LicensePage({
                   ),
                 })}
               </p>
-              <Link href="/" className="btn btn-secondary colophon-back">
+              {/* The label says "Back to the tools", so the link goes to the tools hub (audit F16; it went to the
+                  home page before 2026-10-18). */}
+              <Link href="/tools" className="btn btn-secondary colophon-back">
                 {t("backHome")} →
               </Link>
             </div>

@@ -1,45 +1,183 @@
 ---
 slug: ipv4-addressing
 title: "How IPv4 addresses work"
-summary: "The 32 bits behind every dotted-quad address, and what private, loopback, and special ranges mean."
-concepts: ["ipv4", "addressing", "private-addresses", "rfc1918"]
-relatedTools: ["cidr"]
-relatedArticles: ["cidr-notation", "subnetting-basics", "ipv6-transition", "private-address-space", "route-summarization"]
+summary: "Every IPv4 header carries two addresses, source and destination, each one 32-bit number written as four decimal octets, with a prefix length that splits it into network and host. After reading, you can convert an address to binary and to an integer by hand, apply a mask the way a host does to decide whether a destination is on its link, recognise the special-purpose blocks and their rules, and say who hands addresses out and when the free pool ran out."
+concepts: ["ipv4", "addressing", "private-addresses", "rfc1918", "dotted decimal", "prefix length", "subnet mask", "network address", "broadcast address", "classful addressing", "cidr", "special-purpose addresses", "loopback", "link-local", "/31", "iana", "regional internet registries", "ipv4 exhaustion"]
+relatedTools: ["cidr", "ssrf-url-classifier", "python-playground"]
+relatedArticles: ["cidr-notation", "subnetting-basics", "ipv6-transition", "private-address-space", "route-summarization", "private-vs-public-ip-ranges", "nat-explained", "cgnat-address-sharing-and-attribution", "routing-tables-and-default-gateway", "ipv6-addressing", "dhcp-lease-lifecycle", "multicast-what-it-costs-to-not-flood"]
 category: networking
 order: 1
 status: reviewed
-updated: "2026-06-23"
+updated: "2026-10-18"
 ---
 
-## Thirty-two bits in disguise
+An IPv4 address is one 32-bit number, and every IPv4 header carries two, the Source Address and the Destination Address, as Request for Comments (RFC) 791 defines them ([RFC 791, sections 2.3 and 3.1](https://www.rfc-editor.org/rfc/rfc791.txt)). Dots, classes and the slash of Classless Inter-domain Routing (CIDR) are ways of reading that number, met in every interface, route and log. By the end you can convert an address to binary and to an integer, apply a mask as a host does, read the special-purpose blocks of the Internet Assigned Numbers Authority (IANA), follow addresses through the Regional Internet Registries (RIRs), date the end of the free pool and see it all on a host.
 
-An IPv4 address is a single 32-bit number. We almost never write it that way because 32 ones and zeros are hard to read, so it is split into four 8-bit groups called **octets**, each shown in decimal from 0 to 255 and joined by dots. `192.168.1.10` is just a friendlier way of writing one specific 32-bit value.
+## Thirty-two bits, written as four numbers
 
-Because each octet is 8 bits, the whole space is 2³² addresses, about 4.3 billion. That sounded enormous in the 1980s and is the reason IPv4 address exhaustion became a real problem decades later, and why private addressing and IPv6 exist.
+RFC 791 is plain: "Addresses are fixed length of four octets (32 bits)" ([RFC 791, section 2.3](https://www.rfc-editor.org/rfc/rfc791.txt)). Bit 0, the leftmost, is the most significant, and the most significant octet is sent first (appendix B). Dotted decimal writes each octet, one [byte](/learn/bits-bytes-and-the-two-kinds-of-kilo), as a number from 0 to 255, with dots between ([RFC 3986, section 3.2.2](https://www.rfc-editor.org/rfc/rfc3986.txt)), and the address is the integer the four bytes make:
 
-## Network part and host part
+```text
+192.0.2.10 = 11000000.00000000.00000010.00001010
+           = 192*2^24 + 0*2^16 + 2*2^8 + 10
+           = 3221225472 + 0 + 512 + 10
+           = 3221225994 = 0xc000020a
+```
 
-No address stands alone, it belongs to a block, and within that block the bits divide into a **network part** (which block this is) and a **host part** (which machine within the block). The prefix length, written CIDR-style as `/24`, marks where that division falls. Everything to the left of the line is network; everything to the right identifies a host. This is the same idea explored in CIDR notation, viewed from the address side.
+A capture shows the same bytes in [hexadecimal](/learn/hex-encoding). The space holds 2³² = 4,294,967,296 addresses ([RFC 4632, section 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); the examples use the documentation blocks 192.0.2.0/24, 198.51.100.0/24 and 203.0.113.0/24 ([RFC 5737, section 3](https://www.rfc-editor.org/rfc/rfc5737.txt)).
 
-## Ranges with special meaning
+## Network part, host part, and the mask
 
-Not every address is an ordinary host address. Several ranges are reserved for specific purposes, and recognizing them is part of reading any network configuration:
+CIDR writes the split after a slash: the address, then "a decimal value between 0 and 32 that describes the number of significant bits" ([RFC 4632, section 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Those bits are the network prefix, "a contiguous set of bits at the more significant end of the address that defines a set of systems; host numbers select among those systems" ([RFC 1812, section 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). A host uses the mask for one decision, which RFC 1122 makes mandatory: "If the IP destination address bits extracted by the address mask match the IP source address bits extracted by the same mask, then the destination is on the corresponding connected network, and the datagram is to be transmitted directly to the destination host." Otherwise, "If not, then the destination is accessible only through a gateway" ([RFC 1122, section 3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122.txt)). Masking is a binary AND ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)), worked here for a host at 198.51.100.77/26:
 
-- **Private ranges (RFC 1918)** are reserved for use inside private networks and are never routed on the public internet:
-  - `10.0.0.0/8`
-  - `172.16.0.0/12`
-  - `192.168.0.0/16`
-  
-  This is why home and office networks so often use `192.168.x.x` or `10.x.x.x`, those addresses are free to reuse everywhere because they never appear on the open internet.
-- **Loopback (`127.0.0.0/8`)** always refers to the local machine itself. `127.0.0.1` is the address a computer uses to talk to itself.
-- **Link-local (`169.254.0.0/16`)** addresses are self-assigned when a device cannot reach a DHCP server. Seeing one usually means "no address was handed out."
-- **The unspecified address (`0.0.0.0`)** and the default route (`0.0.0.0/0`) are special: the latter is the catch-all route that matches any destination not covered by a more specific route.
+```text
+address  198.51.100.77    11000110.00110011.01100100.01001101
+mask     255.255.255.192  11111111.11111111.11111111.11000000   /26, host mask 0.0.0.63
+AND      198.51.100.64    11000110.00110011.01100100.01000000   network address
+host bits all ones        198.51.100.127                        broadcast address
+2^6 = 64 addresses, 62 usable hosts: 198.51.100.65 to 198.51.100.126
 
-## Why the special ranges matter for security
+to 198.51.100.100   01100100 AND 11000000 = 01000000 = 64    same network: send directly
+to 198.51.100.130   10000010 AND 11000000 = 10000000 = 128   other network: use the gateway
+```
 
-These reserved ranges are not just trivia. A tool that fetches a user-supplied address must refuse to reach private, loopback, and link-local ranges, or it can be tricked into making requests against internal systems it should never touch, a class of attack called server-side request forgery. Knowing which ranges are internal is the first step in defending against it. This is exactly why the network-touching tools on this site check a resolved address against these ranges before ever connecting.
+Off-link traffic goes to the [default gateway](/learn/routing-tables-and-default-gateway); [CIDR notation explained](/learn/cidr-notation) and [Subnetting basics](/learn/subnetting-basics) build on this.
 
-To see how any address sits inside its block, its network address, broadcast address, and the usable range around it, try the [CIDR calculator](/learn), which computes all of it locally in your browser.
+## Classes, and why they ended
+
+Before CIDR, the leading bits fixed the split; RFC 791 defined three classes in September 1981: "in class a, the high order bit is zero", class b starts with 10 and class c with 110 ([RFC 791, section 2.3](https://www.rfc-editor.org/rfc/rfc791.txt)). RFC 1112 gave 1110 to class D, the multicast groups from 224.0.0.0 to 239.255.255.255, and reserved 1111 as class E ([RFC 1112, section 4](https://www.rfc-editor.org/rfc/rfc1112.txt)); class D lives on as [multicast](/learn/multicast-what-it-costs-to-not-flood). Sizes follow RFC 4632, whose class A pattern erratum 3485 corrects to one leading 0 ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632.txt); [RFC 4632 errata](https://www.rfc-editor.org/errata/rfc4632)):
+
+```text
+leading bits  first octet  class  size
+0             0 to 127     A      128 networks, 16,777,216 end systems each
+10            128 to 191   B      16,384 networks, 65,536 end systems each (less reserved values)
+110           192 to 223   C      2,097,152 networks, 254 end systems each
+1110          224 to 239   D      multicast host groups
+1111          240 to 255   E      reserved
+```
+
+In January 1992 an Internet Engineering Task Force (IETF) group named three problems: class B space running out, since no class suited a mid-sized organisation; routing tables outgrowing routers; and the 32-bit space heading for exhaustion ([RFC 4632, section 2](https://www.rfc-editor.org/rfc/rfc4632.txt)). CIDR, specified in RFC 1519 in September 1993 ([RFC 1519, section 1](https://www.rfc-editor.org/rfc/rfc1519.txt)), replaced the classes with prefixes of any power-of-two size (RFC 4632, sections 3 and 3.1), and now "they are used as generalized unicast network prefixes with only historical interest in their class" ([RFC 1812, section 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)).
+
+## Addresses with fixed meanings
+
+RFC 1122 writes addresses as network and host fields, -1 meaning all ones ([RFC 1122, section 3.2.1.3](https://www.rfc-editor.org/rfc/rfc1122.txt)):
+
+- `{ 0, 0 }`, 0.0.0.0, is this host on this network, and it "MUST NOT be sent, except as a source address as part of an initialization procedure by which the host learns its own IP address."
+- `{ -1, -1 }`, 255.255.255.255, is the limited broadcast: never a source, never forwarded off the link.
+- `{ network, -1 }` is the directed broadcast to a network, never a source either.
+- `{ 127, <any> }`, all of 127.0.0.0/8, is loopback: "Addresses of this form MUST NOT appear outside a host."
+
+All-zeros and all-ones host fields are therefore taken, so a /24 has 254 hosts ([RFC 1812, section 4.2.2.11](https://www.rfc-editor.org/rfc/rfc1812.txt)), except that "In a point-to-point link with a 31-bit subnet mask, the two addresses above MUST be interpreted as host addresses" ([RFC 3021, section 2.1](https://www.rfc-editor.org/rfc/rfc3021.txt)).
+
+IANA's registry records every special-purpose block ([RFC 6890, section 1](https://www.rfc-editor.org/rfc/rfc6890.txt)) in yes-or-no columns (source, destination, forwardable, globally reachable, reserved by protocol) and warns: "Address prefixes listed in the Special-Purpose Address Registry are not guaranteed routability in any particular local or global context" ([IANA, IPv4 Special-Purpose Address Space](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.txt)). The main rows:
+
+| Block | Registry name | Defined in |
+|---|---|---|
+| 0.0.0.0/8 | This network | RFC 791 |
+| 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 | Private-Use | RFC 1918 |
+| 100.64.0.0/10 | Shared Address Space | RFC 6598 |
+| 127.0.0.0/8 | Loopback | RFC 1122 |
+| 169.254.0.0/16 | Link Local | RFC 3927 |
+| 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 | TEST-NET-1 to TEST-NET-3 | RFC 5737 |
+| 240.0.0.0/4 | Reserved | RFC 1112 |
+| 255.255.255.255/32 | Limited Broadcast | RFC 919 |
+
+Between enterprises, "packets with private source or destination addresses should not be forwarded across such links" ([RFC 1918, section 3](https://www.rfc-editor.org/rfc/rfc1918.txt)), and a link-local packet "MUST NOT be sent to any router for forwarding" ([RFC 3927, section 2.7](https://www.rfc-editor.org/rfc/rfc3927.txt)). [Private IPv4 address space and RFC 1918](/learn/private-address-space) and [Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges) go deeper.
+
+## Who hands addresses out
+
+At the root, "The Internet Assigned Numbers Authority (IANA) is a role, not an organization" ([RFC 7020, section 3](https://www.rfc-editor.org/rfc/rfc7020.txt)). IANA allocates to RIRs in /8 blocks of 2²⁴ addresses; RIRs allocate or assign smaller blocks to Local Internet Registries (LIRs) or Internet Service Providers (ISPs), allocating meaning space for further delegation and assigning meaning space for a site that numbers its own hosts ([RFC 4632, section 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). RFC 7020 names five RIRs (section 3); IANA's registry shows their /8s and no unallocated row among its 256 ([IANA, IPv4 Address Space](https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.txt)):
+
+| RIR | Region | /8s from IANA |
+|---|---|---|
+| AFRINIC | Africa | 4 |
+| APNIC | parts of Asia and the Pacific region | 45 |
+| ARIN | North America and parts of the Caribbean | 36 |
+| LACNIC (Latin American and Caribbean Internet Address Registry) | Latin America and parts of the Caribbean | 9 |
+| RIPE NCC | Europe, parts of Asia and the Middle East | 35 |
+
+## The day the free pool ran out
+
+A global policy ratified on 6 March 2009 ([ratification notice](https://aso.icann.org/global-policy-for-the-allocation-of-the-remaining-ipv4-address-space-ratified-by-icann-board/)) promised each RIR one last /8 once IANA's pool reached a minimum ([the policy](https://www.icann.org/resources/pages/remaining-ipv4-2012-02-25-en)). On 31 January 2011 IANA allocated 39/8 and 106/8 to APNIC, which triggered it; on 3 February 2011 the last five /8s went out, one per RIR, and IANA had no IPv4 addresses left to allocate ([depletion announcement](https://www.nro.net/ipv4-free-pool-depleted); [ARIN, 3 February 2011](https://www.arin.net/vault/announcements/20110203/); [IANA, IPv4 Address Space](https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.txt)). The RIRs followed:
+
+- **15 April 2011**: APNIC reached its final /8 ([APNIC](https://conference.apnic.net/news-archives/2011/final-8/)).
+- **14 September 2012**: the RIPE NCC began allocating from its last /8 ([RIPE NCC](https://www.ripe.net/ripe/mail/archives/ncc-announce/2012-September/000615.html)).
+- **10 June 2014**: LACNIC, down to one /10, considered IPv4 exhausted in its region ([exhaustion notice](https://www.nro.net/lacnic-enters-ipv4-exhaustion-phase)).
+- **24 September 2015**: ARIN issued the last addresses in its free pool ([ARIN](https://www.arin.net/vault/announcements/20150924/)).
+- **25 November 2019**: the RIPE NCC announced "The RIPE NCC has run out of IPv4 Addresses" ([RIPE NCC](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)).
+- **28 August 2020**: LACNIC reported its last block reserved ([LACNIC](https://blog.lacnic.net/en/ipv4-exhaustion-lacnic-has-assigned-the-last-remaining-address-block/)).
+- **AFRINIC**: soft-landing phase 2 since 13 January 2020, still current on 18 October 2026 ([AFRINIC](https://afrinic.net/exhaustion)).
+
+The RIPE NCC adds that neither a transfer market nor wider use of carrier-grade network address translation (CGNAT) solves the shortage ([RIPE NCC, 25 November 2019](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)). [NAT](/learn/nat-explained) and [CGNAT](/learn/cgnat-address-sharing-and-attribution) stretch the space; [Understanding IPv6 Addressing](/learn/ipv6-addressing) and [Running IPv6 and IPv4 together](/learn/ipv6-transition) cover the way past it.
+
+## How addressing goes wrong
+
+A wrong mask feeds the host's test bad input ([RFC 1122, section 3.3.1.1](https://www.rfc-editor.org/rfc/rfc1122.txt)):
+
+```text
+198.51.100.77/24 to 198.51.100.130   both mask to 198.51.100.0     sent directly, but it is not on the link
+198.51.100.77/27 to 198.51.100.100   .64 against .96, no match     a real neighbour is sent via the gateway
+```
+
+Two hosts sharing one address on a link cause problems for one or both, the case conflict detection exists for ([RFC 5227, abstract](https://www.rfc-editor.org/rfc/rfc5227.txt)). A 169.254 address is a symptom: link-local addressing serves links without stable, routable addresses ([RFC 3927, abstract](https://www.rfc-editor.org/rfc/rfc3927.txt)), so on a managed network the interface was never configured; `ipconfig` shows whether a value came from the Dynamic Host Configuration Protocol (DHCP) or from Automatic Private IP Addressing (APIPA) ([Microsoft Learn, ipconfig](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig)), and the [lease lifecycle](/learn/dhcp-lease-lifecycle) is next to check.
+
+No header field proves a source address. "A router SHOULD NOT forward, except over a loopback interface, any packet that has a source address on network 127" ([RFC 1812, section 5.3.7](https://www.rfc-editor.org/rfc/rfc1812.txt)), and ingress filtering at network edges blunts denial-of-service attacks that spoof sources ([RFC 2827, section 6](https://www.rfc-editor.org/rfc/rfc2827.txt)). The Smurf attack joined forged [echo requests](/learn/icmp-ping-and-traceroute) to directed broadcasts, and the advisory of 5 January 1998 said to disable IP-directed broadcasts on all routers ([CA-1998-01](https://www.sei.cmu.edu/documents/505/1998_019_001_496180.pdf)). In August 1999 RFC 2644 made blocking the default: "These options MUST default to blocking receipt and blocking forwarding of network-prefix-directed broadcasts" ([RFC 2644, section 3](https://www.rfc-editor.org/rfc/rfc2644.txt)).
+
+Addresses also fail as text. `10.0.258`, `0xA000102` and `012.0x102` are one address ([RFC 6943, section 3.1.1](https://www.rfc-editor.org/rfc/rfc6943.txt)), because `inet_aton()` accepts decimal, octal and hexadecimal parts ([inet(3)](https://man7.org/linux/man-pages/man3/inet_aton.3.html)) and `inet_pton()` only dotted decimal ([inet_pton(3)](https://man7.org/linux/man-pages/man3/inet_pton.3.html)). Hence: "literals should be converted to numeric form and filtered based on the numeric value, and not on a prefix or suffix of the string form" ([RFC 3986, section 7.4](https://www.rfc-editor.org/rfc/rfc3986.txt)). Python's `ipaddress` mishandled leading zeros before 3.9.5, which in some situations let attackers bypass address-based access control ([CVE-2021-29921](https://cveawg.mitre.org/api/cve/CVE-2021-29921)); they are now an error ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)). Such tricks feed server-side request forgery (SSRF), a fetch not checked against its expected destination ([CWE-918](https://cwe.mitre.org/data/definitions/918.html)); see [what SSRF is](/learn/what-is-ssrf) and [address obfuscation tricks](/learn/ip-address-obfuscation-tricks).
+
+## How to see it
+
+On Linux, `ip address show` lists each interface's addresses with their prefix lengths and scopes, host meaning valid only inside this host; `-4` keeps IPv4 and `-br` prints a table ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html); [ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)). Illustrative output:
+
+```console
+$ ip -br address show
+lo               UNKNOWN        127.0.0.1/8 ::1/128
+eth0             UP             192.0.2.10/24 2001:db8::10/64
+$ ip -4 address show dev lo
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+```
+
+On Windows, `ipconfig` shows each adapter's addresses, subnet mask and default gateway, and `ipconfig /all` the full configuration ([Microsoft Learn, ipconfig](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig)). Python's `ipaddress` does the same arithmetic, counting both addresses of a /31 as hosts ([Python 3.14 documentation, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)); the [Python playground](/tools/python-playground) runs it in the browser on CPython 3.14.2, after a one-time download you approve, and [Python as a calculator](/learn/python-as-a-network-engineers-calculator) goes further. A trimmed session:
+
+```text
+>>> import ipaddress
+>>> a = ipaddress.IPv4Address('192.0.2.10')
+>>> int(a), '{:#b}'.format(a)
+(3221225994, '0b11000000000000000000001000001010')
+>>> net = ipaddress.IPv4Interface('198.51.100.77/26').network
+>>> net, net.broadcast_address, net.num_addresses
+(IPv4Network('198.51.100.64/26'), IPv4Address('198.51.100.127'), 64)
+>>> list(ipaddress.IPv4Network('203.0.113.200/31').hosts())
+[IPv4Address('203.0.113.200'), IPv4Address('203.0.113.201')]
+>>> ipaddress.IPv4Address('192.0.2.010')
+Traceback (most recent call last):
+  ...
+ipaddress.AddressValueError: Leading zeros are not permitted in '010' in '192.0.2.010'
+```
+
+On the wire, `tcpdump -n -x net 192.0.2.0/24` prints matching packets in hex, with numeric addresses and without the link-level header ([tcpdump(1)](https://man7.org/linux/man-pages/man1/tcpdump.1.html); [pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)). The source and destination follow the first 12 header bytes, four bytes each ([RFC 791, section 3.1](https://www.rfc-editor.org/rfc/rfc791.txt)), as decoded below this illustrative dump:
+
+```text
+12:00:00.000000 IP 192.0.2.10 > 198.51.100.77: ICMP echo request, id 7, seq 1, length 64
+	0x0000:  4500 0054 1c46 4000 4001 31d8 c000 020a
+	0x0010:  c633 644d ...
+
+bytes 13 to 16   c0 00 02 0a   192.0.2.10      Source Address
+bytes 17 to 20   c6 33 64 4d   198.51.100.77   Destination Address
+```
+
+The [CIDR / Subnet Calculator](/tools/cidr) turns A.B.C.D/prefix into the network and broadcast addresses, netmask, wildcard mask, usable range and counts; 198.51.100.77/26 gives the figures above. It does not say whether a block is private or special-use. The [SSRF URL classifier](/tools/ssrf-url-classifier) classifies the host of a web link, decoding decimal, octal and hexadecimal forms without resolving or sending anything: `http://3221225994/` is 192.0.2.10, a documentation range.
+
+## What to remember
+
+- An IPv4 address is one 32-bit number, written as four decimal octets, most significant first.
+- A host masks the destination and its own address: equal means send directly, different means use a gateway.
+- 0.0.0.0 is a source only while a host learns its address, 127.0.0.0/8 never leaves the host, 169.254.0.0/16 is never forwarded.
+- IANA, a role, allocates /8s to five RIRs, which allocate to LIRs and ISPs or assign to end sites.
+- IANA's free pool ended on 3 February 2011; the RIPE NCC ran out in 2019.
+- Compare addresses as numbers, never strings, and trust no source address without ingress filtering.
 
 ## This series, in order
 
@@ -56,3 +194,48 @@ This article opens the series **IPv4 addressing and subnetting**. With the 32 bi
 9. **[Private, Reserved, and Public IP Ranges](/learn/private-vs-public-ip-ranges)**. The full map an SSRF filter needs: private, loopback, link-local, carrier-grade NAT, documentation, and public.
 10. **[NAT Explained: Source, Destination, and Why the Internet Still Works](/learn/nat-explained)**. Source NAT lets thousands of hosts share one address, destination NAT publishes a service: how both rewrite packets in flight.
 11. **[CGNAT: what breaks when a thousand subscribers share one address](/learn/cgnat-address-sharing-and-attribution)**. The bridge to IPv6 that became permanent: what CGNAT changes for what customers can run and for who gets blamed.
+
+## Sources
+
+- [RFC 791, Internet Protocol, September 1981: sections 2.3, 3.1, 3.2 and appendix B (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1112, Host extensions for IP multicasting, August 1989: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1112.txt)
+- [RFC 1122, Requirements for Internet Hosts - Communication Layers, October 1989: sections 3.2.1.3 and 3.3.1.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1519, Classless Inter-Domain Routing (CIDR): an Address Assignment and Aggregation Strategy, September 1993: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1519.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 2.2.5.2, 4.2.2.11 and 5.3.7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 1918, Address Allocation for Private Internets, February 1996: sections 2 to 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 2644, Changing the Default for Directed Broadcasts in Routers, August 1999: sections 1 to 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2644.txt)
+- [RFC 2827, Network Ingress Filtering: Defeating Denial of Service Attacks which employ IP Source Address Spoofing, May 2000: section 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2827.txt)
+- [RFC 3021, Using 31-Bit Prefixes on IPv4 Point-to-Point Links, December 2000: section 2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3021.txt)
+- [RFC 3927, Dynamic Configuration of IPv4 Link-Local Addresses, May 2005: abstract and sections 1.9, 2.1 and 2.7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3927.txt)
+- [RFC 3986, Uniform Resource Identifier (URI): Generic Syntax, January 2005: sections 3.2.2 and 7.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3986.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, August 2006: sections 2, 3, 3.1, 4.2 and 12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 4632 errata: erratum 3485 (read 2026-10-18)](https://www.rfc-editor.org/errata/rfc4632)
+- [RFC 5227, IPv4 Address Conflict Detection, July 2008: abstract (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5227.txt)
+- [RFC 5737, IPv4 Address Blocks Reserved for Documentation, January 2010: sections 3 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5737.txt)
+- [RFC 6890, Special-Purpose IP Address Registries, April 2013: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6890.txt)
+- [RFC 6943, Issues in Identifier Comparison for Security Purposes, May 2013: section 3.1.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6943.txt)
+- [RFC 7020, The Internet Numbers Registry System, August 2013: sections 2 and 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7020.txt)
+- [IANA, IPv4 Special-Purpose Address Space registry, last updated 2025-10-09 (read 2026-10-18)](https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.txt)
+- [IANA, IPv4 Address Space registry, last updated 2025-10-10 (read 2026-10-18)](https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.txt)
+- [ICANN, Global Policy for the Allocation of the Remaining IPv4 Address Space, ratified 6 March 2009 (read 2026-10-18)](https://www.icann.org/resources/pages/remaining-ipv4-2012-02-25-en)
+- [ICANN ASO, Global Policy for the Allocation of the Remaining IPv4 Address Space Ratified by ICANN Board, 16 March 2009 (read 2026-10-18)](https://aso.icann.org/global-policy-for-the-allocation-of-the-remaining-ipv4-address-space-ratified-by-icann-board/)
+- [NRO, Free Pool of IPv4 Address Space Depleted, 3 February 2011 (read 2026-10-18)](https://www.nro.net/ipv4-free-pool-depleted)
+- [ARIN, The IANA IPv4 Address Free Pool is now Depleted, 3 February 2011 (read 2026-10-18)](https://www.arin.net/vault/announcements/20110203/)
+- [APNIC, APNIC IPv4 Address Pool Reaches Final /8, 15 April 2011 (read 2026-10-18)](https://conference.apnic.net/news-archives/2011/final-8/)
+- [RIPE NCC, RIPE NCC Begins to Allocate IPv4 Address Space From the Last /8, 14 September 2012 (read 2026-10-18)](https://www.ripe.net/ripe/mail/archives/ncc-announce/2012-September/000615.html)
+- [NRO, LACNIC Enters IPv4 Exhaustion Phase, 11 June 2014 (read 2026-10-18)](https://www.nro.net/lacnic-enters-ipv4-exhaustion-phase)
+- [ARIN, ARIN IPv4 Free Pool Reaches Zero, 24 September 2015 (read 2026-10-18)](https://www.arin.net/vault/announcements/20150924/)
+- [RIPE NCC, The RIPE NCC has run out of IPv4 Addresses, 25 November 2019 (read 2026-10-18)](https://www.ripe.net/about-us/news/the-ripe-ncc-has-run-out-of-ipv4-addresses/)
+- [LACNIC, IPv4 Exhaustion: LACNIC Has Assigned the Last Remaining Address Block, 28 August 2020 (read 2026-10-18)](https://blog.lacnic.net/en/ipv4-exhaustion-lacnic-has-assigned-the-last-remaining-address-block/)
+- [AFRINIC, IPv4 Exhaustion (read 2026-10-18)](https://afrinic.net/exhaustion)
+- [ip-address(8), Linux manual page (iproute2), man7.org: DESCRIPTION and EXAMPLES (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip(8), Linux manual page (iproute2), man7.org: OPTIONS (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [inet(3), Linux manual page (man-pages 6.19), man7.org: DESCRIPTION (read 2026-10-18)](https://man7.org/linux/man-pages/man3/inet_aton.3.html)
+- [inet_pton(3), Linux manual page (man-pages 6.19), man7.org: DESCRIPTION and VERSIONS (read 2026-10-18)](https://man7.org/linux/man-pages/man3/inet_pton.3.html)
+- [tcpdump(1), Linux manual page (tcpdump), man7.org: options -n and -x (read 2026-10-18)](https://man7.org/linux/man-pages/man1/tcpdump.1.html)
+- [pcap-filter(7), Linux manual page (libpcap), man7.org: net primitives (read 2026-10-18)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [Microsoft Learn, ipconfig, Windows Commands reference, updated 2026-02-16 (read 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/ipconfig)
+- [Python 3.14 documentation, ipaddress: IPv4/IPv6 manipulation library (read 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)
+- [MITRE, CWE-918: Server-Side Request Forgery (SSRF), CWE 4.20 (read 2026-10-18)](https://cwe.mitre.org/data/definitions/918.html)
+- [CVE-2021-29921, CVE record, 6 May 2021 (read 2026-10-18)](https://cveawg.mitre.org/api/cve/CVE-2021-29921)
+- [CERT/CC, CA-1998-01: Smurf IP Denial-of-Service Attacks, 5 January 1998 (read 2026-10-18)](https://www.sei.cmu.edu/documents/505/1998_019_001_496180.pdf)

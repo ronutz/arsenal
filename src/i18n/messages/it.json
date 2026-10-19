@@ -111,7 +111,7 @@
         "overlap": "Sovrapposizione / vuoto"
       },
       "modeDesc": {
-        "subnet": "Analizza un singolo blocco CIDR IPv4: rete, broadcast, maschera e intervallo di host.",
+        "subnet": "Analizza un singolo blocco CIDR IPv4: rete, broadcast, maschera, intervallo di host e gli intervalli a uso speciale in cui ricade o con cui si sovrappone.",
         "vlsm": "Suddivide un blocco padre in sottoreti di lunghezza variabile in base a un elenco di conteggi di host.",
         "supernet": "Riassume un elenco di prefissi nel più piccolo insieme di blocchi che li copre.",
         "overlap": "Rileva sovrapposizioni e inclusioni tra prefissi, oltre ai vuoti all'interno di un ambito facoltativo."
@@ -141,7 +141,13 @@
           "utilization": "Utilizzo"
         },
         "unfit": "Non hanno trovato spazio",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Assegna un /31 alle richieste di 2 host (collegamenti punto-punto, RFC 3021)",
+        "maskedNote": "Il blocco padre {typed} ha bit di host impostati, quindi è stato mascherato in {parent}; il piano è ricavato da {parent}.",
+        "orderNote": "Le richieste sono collocate dal blocco più grande al più piccolo, non nell'ordine inserito, così ogni blocco inizia su un multiplo della propria dimensione.",
+        "freeBlocks": "Blocchi liberi",
+        "noFree": "Non resta spazio libero nel blocco padre.",
+        "noBroadcast": "nessuno (/31)"
       },
       "supernet": {
         "label": "Prefissi da aggregare",
@@ -185,12 +191,36 @@
         "prefix": "La lunghezza del prefisso deve essere compresa tra 0 e 32.",
         "tooMany": "Troppe voci. Riduci l'elenco e riprova.",
         "noReqs": "Aggiungi almeno un requisito di sottorete con un numero di host.",
-        "noPrefixes": "Inserisci almeno un prefisso, uno per riga."
+        "noPrefixes": "Inserisci almeno un prefisso, uno per riga.",
+        "zeroHosts": "Un requisito di sottorete chiede 0 host. Ogni sottorete ha bisogno di almeno 1 host: correggi il numero o rimuovi la riga."
       },
       "rangeHeading": "Distribuzione degli indirizzi",
       "usableShort": "utilizzabili",
       "rfcNote": "/31 e /32 non riservano nulla: ogni indirizzo è utilizzabile (RFC 3021).",
-      "reservedNote": "Il primo indirizzo è la rete e l'ultimo è il broadcast; entrambi sono riservati, quindi utilizzabili = totale − 2."
+      "reservedNote": "Il primo indirizzo è la rete e l'ultimo è il broadcast; entrambi sono riservati, quindi utilizzabili = totale − 2.",
+      "classifyHeading": "Intervalli a uso speciale",
+      "classifySpecial": "Dentro un intervallo a uso speciale: {range}, {name} ({rfc}).",
+      "classifyPartial": "In parte a uso speciale: {special} di {total} indirizzi ricadono negli intervalli elencati sotto; il resto non è in alcun intervallo a uso speciale.",
+      "classifyNone": "Nessun intervallo a uso speciale (spazio unicast instradabile globalmente).",
+      "classifyThRange": "Intervallo",
+      "classifyThName": "Nome",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Relazione",
+      "classifyThSource": "Origine",
+      "classifyThDestination": "Destinazione",
+      "classifyThForwardable": "Inoltrabile",
+      "classifyThGlobal": "Raggiungibile globalmente",
+      "classifyRelEqual": "è questo blocco",
+      "classifyRelInside": "contiene questo blocco",
+      "classifyRelContains": "dentro questo blocco (sovrapposizione parziale)",
+      "classifyYes": "Sì",
+      "classifyNo": "No",
+      "classifyNotListed": "non indicato",
+      "classifyTerminated": "terminato il {date}",
+      "classifyNote1": "[1] Nota del registro: diversi protocolli hanno ottenuto eccezioni a questa regola (per esempio RFC 8029 e RFC 5884).",
+      "classifyNote2": "[2] Nota del registro: non utilizzabile se non in virtù di una riserva più specifica.",
+      "classifyFlagsNote": "I flag sono quelli del registro. Origine e Destinazione: se un indirizzo dell'intervallo è valido come origine o destinazione di un datagramma che attraversa due dispositivi. Inoltrabile: se un router può inoltrare tale datagramma tra interfacce esterne. Raggiungibile globalmente: se può essere inoltrato oltre un determinato dominio amministrativo.",
+      "classifySource": "Righe del registro IANA IPv4 Special-Purpose Address Space (aggiornato il 2025-10-09) e, per 224.0.0.0/4, del registro IANA IPv4 Multicast Address Space, entrambi letti il 2026-10-19. Il registro avverte che un intervallo elencato non ha instradabilità garantita in alcun contesto locale o globale."
     },
     "title": "Strumenti",
     "lede": "Utilità piccole, veloci e attente alla privacy. Il catalogo calcola nel tuo browser e non invia nulla da nessuna parte; l'unica eccezione è la stanza rossa, dove uno strumento interroga il servizio ufficiale che indica, e solo quando premi «Ask».",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Se ti trovi in Brasile, possiedi i diritti previsti dall'Articolo 18 della LGPD, e puoi anche contattare l'autorità nazionale per la protezione dei dati (l'ANPD).",
     "changesTitle": "Modifiche a questo avviso",
     "changesBody": "Se questo avviso cambia, la versione rivista sarà pubblicata su questa pagina e la data sotto sarà aggiornata. Le modifiche sostanziali non saranno applicate retroattivamente.",
-    "updated": "Ultimo aggiornamento: 30 giugno 2026",
+    "updated": "Ultimo aggiornamento: {date}",
     "backHome": "Torna alla home"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Testimonianze",
     "title": "Cosa dicono le persone, con parole loro.",
-    "intro": "{count} raccomandazioni e recensioni integrali, lungo due decenni di insegnamento e consulenza. Niente qui è parafrasato o modificato.",
-    "provenance": "Provenienti da raccomandazioni su LinkedIn, recensioni Google e recensioni verificate di studenti di Red Education. La formulazione e l'ortografia originali sono conservate esattamente come scritte."
+    "intro": "{count} raccomandazioni e recensioni, lungo due decenni di insegnamento e consulenza. Gli originali sono conservati integralmente: niente in essi è parafrasato o modificato. Le traduzioni automatiche, facoltative, sono contrassegnate come tali.",
+    "provenance": "Provenienti da raccomandazioni su LinkedIn, recensioni Google e recensioni verificate di studenti di Red Education. La formulazione e l'ortografia originali sono conservate esattamente come scritte; una scheda tradotta è contrassegnata come traduzione automatica, e l'originale è a un clic."
   },
   "testimonials": {
     "filterLabel": "Filtra le testimonianze",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – oggi",
-      "title": "L'istruttore & consulente",
+      "title": "Insegnare, costruire e dare un senso al settore",
       "subtitle": "Formazione ufficiale a tempo pieno, erogata in tutto il mondo, e accanto la consulenza sulle decisioni che hanno conseguenze.",
       "intro": "Nel 2020, un filo presente per tutta la carriera diventò l'intero tessuto. Dopo due decenni in cui l'insegnamento accompagnò ogni ruolo, la formazione diventò il lavoro stesso: a tempo pieno, ufficiale, istruzione certificata offerta a professionisti e team in tutto il mondo. Ciò che distingue questa epoca non è solo il focus, ma l'espansione deliberata e datata attraverso le piattaforme, ciascuna aggiunta sopra una profonda esperienza sul campo, e non al suo posto.",
       "s1Title": "A tempo pieno, per vocazione",
@@ -1045,7 +1075,7 @@
       "s3Body": "Ciò che distingue gli anni recenti è una progressione chiara e datata. La formazione su Extreme Networks fu aggiunta dal 2021, coprendo switching EXOS, SD-WAN e automazione. Fortinet seguì dal 2024, con focus sul percorso FCP FortiGate Administrator. Netskope si aggiunse dal 2025, coprendo il funzionamento, l'amministrazione, l'implementazione e l'integrazione della Netskope Security Cloud. Le piattaforme, ciascuna aggiunta in modo deliberato, ciascuna poggiata sugli stessi due decenni di implementazione di reti e sicurezza sottostanti.",
       "s4Title": "Attraverso Red Education, verso il mondo",
       "s4Body": "Il veicolo principale di questa erogazione globale è Red Education, un centro di formazione autorizzato attraverso cui corsi ufficiali e certificati raggiungono organizzazioni in diverse regioni. Il ruolo è global technical training instructor, con erogazione al tipo di platee internazionali che una base a São Paulo, due passaporti e un amore genuino per i viaggi rendono possibile. Il rapporto duraturo trasforma la competenza individuale in qualcosa che organizzazioni di tutto il mondo possono ingaggiare e su cui possono contare.",
-      "closer": "È qui che il filo conduttore di tutta la storia dà i suoi frutti. La curiosità dei primi anni diventò la profondità di implementazione degli anni sul campo, e quella profondità è ora ciò che ogni partecipante riceve: non un presentatore che legge le slide, ma qualcuno che ha costruito questi sistemi e spiega come funzionano davvero, e perché."
+      "closer": "È qui che il filo conduttore di tutta la storia dà i suoi frutti. La curiosità dei primi anni diventò la profondità di implementazione degli anni sul campo, e quella profondità è ora ciò che ogni partecipante riceve: qualcuno che ha costruito questi sistemi e spiega come funzionano davvero, e perché."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Un istruttore che ha costruito questi sistemi prima di insegnarli.",
     "lede": "La maggior parte della formazione tecnica è tenuta da persone che hanno imparato la materia per insegnarla. Qui è il contrario: tre decenni a costruire, rompere e riparare reti e sistemi di sicurezza veri, distillati in una formazione che collega ogni concetto a come si comporta davvero in produzione.",
     "s1Title": "Perché questo conta in un'aula",
-    "s1Body": "C'è una differenza tra spiegare come una funzione dovrebbe funzionare e spiegare perché si comporta così alle tre del mattino, quando qualcosa di critico è fuori uso. La prima viene da un manuale. La seconda viene dall'esserci stati. Dal 1996 il lavoro è stato implementazione: progettare reti e metterle in funzione, poi risolverne i problemi sotto pressione ed essere la persona chiamata a risolvere gli incidenti critici di disponibilità e sicurezza che paralizzano un'azienda, per i vendor e per alcune delle più grandi organizzazioni del Brasile. Questa profondità è ciò che riceve ogni studente: non un relatore che legge slide, ma un ingegnere che ha vissuto dentro questi sistemi e spiega come funzionano davvero.",
+    "s1Body": "C'è una differenza tra spiegare come una funzione dovrebbe funzionare e spiegare perché si comporta così alle tre del mattino, quando qualcosa di critico è fuori uso. La prima viene da un manuale. La seconda viene dall'esserci stati. Dal 1996 il lavoro è stato implementazione: progettare reti e metterle in funzione, poi risolverne i problemi sotto pressione ed essere la persona chiamata a risolvere gli incidenti critici di disponibilità e sicurezza che paralizzano un'azienda, per i vendor e per alcune delle più grandi organizzazioni del Brasile. Questa profondità è ciò che riceve ogni studente: un ingegnere che ha vissuto dentro questi sistemi e spiega come funzionano davvero.",
     "s2Title": "Il complesso reso chiaro",
     "s2Body": "Una conoscenza tecnica profonda è necessaria, ma non sufficiente. L'abilità più rara è tradurla: prendere qualcosa di davvero complesso, web application firewall, federazione delle identità, gestione del traffico, SD-WAN, e farlo quadrare per chi ci si imbatte per la prima volta. I partecipanti citano costantemente gli esempi del mondo reale e la didattica chiara e strutturata, la capacità di mettere ogni concetto nel contesto del lavoro che svolgono davvero. L'insegnamento è stato un filo lungo tutta questa carriera, presente in quasi ogni ruolo dal 1997, e il focus a tempo pieno dal 2020.",
     "s3Title": "Mani in pasta, non vago",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Consulenza e advisory",
     "topicOther": "Altro",
     "formMessage": "Il tuo messaggio",
-    "formSend": "Invia messaggio",
+    "formSend": "Apri la bozza dell'e-mail",
     "formSending": "Invio in corso…",
     "formRequired": "Compila il tuo nome, la tua e-mail e un messaggio.",
     "successTitle": "Grazie.",
     "successBody": "Il tuo messaggio è in viaggio. Ti risponderò il prima possibile.",
     "errorBody": "Qualcosa è andato storto nell'invio. Riprova, oppure scrivi direttamente un'e-mail.",
+    "draftedTitle": "La bozza dell'e-mail è aperta.",
+    "draftedBody": "La tua app di posta dovrebbe essersi aperta con il messaggio già compilato. Invialo da lì; finora non è stato inviato nulla. Se non si è aperto nulla, copia il messaggio qui sotto e invialo per e-mail a {email}.",
+    "copyMessage": "Copia il messaggio",
+    "copied": "Copiato",
+    "copyFailed": "La copia è stata bloccata: seleziona il testo e copialo",
+    "draftedMessageLabel": "Il messaggio, come redatto",
     "emailLabel": "E-mail",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Termini",
     "title": "Licenza",
-    "closedHeading": "Codice chiuso — questo sito web",
-    "closedBody": "Il sito web in sé è a codice chiuso. Il suo design, la sua interfaccia, i suoi contenuti scritti (compreso ogni articolo di Learn), il suo marchio e il modo particolare in cui questi strumenti sono assemblati e presentati qui sono di proprietà esclusiva, tutti i diritti riservati. Non viene concessa alcuna autorizzazione a copiare, riprodurre, modificare, ridistribuire o creare opere derivate dal sito o dai suoi contenuti senza previo consenso scritto.",
+    "closedHeading": "Open source: Apache-2.0 (codice) e CC BY 4.0 (contenuti)",
+    "closedBody": "Il codice dell'applicazione è concesso in licenza Apache License 2.0. I contenuti scritti, ogni articolo Learn, i testi e la prosa esplicativa degli strumenti e la documentazione, sono concessi in licenza Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0). Puoi usare, modificare e ridistribuire entrambi, anche a fini commerciali, a condizione di attribuire il giusto credito a Rodolfo Nützmann (ronutz.com), di linkare la licenza e di indicare le modifiche apportate. ronutz.com resta la fonte canonica e mantenuta.",
     "contact": "Domande sulla licenza? <a>Mettiti in contatto.</a>",
     "backHome": "Torna agli strumenti",
     "thirdHeading": "Componenti open source",
-    "lede": "ronutz.com è un'opera proprietaria, tutti i diritti riservati. Questi termini riguardano il sito web e i suoi contenuti. Il sito è costruito su software open source, usato e ridistribuito secondo i propri termini di licenza, accreditati di seguito.",
+    "lede": "ronutz.com è open source. Il codice è concesso in licenza Apache License 2.0 e i contenuti scritti in Creative Commons Attribuzione 4.0 (CC BY 4.0). Entrambe richiedono l'attribuzione: riutilizzalo, ma cita la fonte. I materiali didattici aperti sono l'unica eccezione: ciascuno è pubblicato con la licenza indicata dalla propria scheda, e quelli sotto CC0 1.0 non richiedono alcuna attribuzione. Il sito è inoltre costruito su altro software open source, accreditato di seguito.",
     "thirdBody": "Questo sito si basa su lavoro open source. Il sito stesso è costruito con Next.js e React e distribuito come esportazione statica; l'internazionalizzazione usa next-intl; i contenuti di Learn sono renderizzati con next-mdx-remote, gray-matter, remark-gfm e js-yaml; e la ricerca è fornita da Pagefind. Questi componenti sono forniti sotto la MIT License, tranne next-mdx-remote (Mozilla Public License 2.0). Il riferimento dell'API incorpora Swagger UI, sotto la Apache License 2.0. Ogni componente resta sotto la propria licenza, e gli avvisi completi vengono distribuiti insieme al codice sorgente."
   },
   "contributeIdeas": {

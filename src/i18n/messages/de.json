@@ -111,7 +111,7 @@
         "overlap": "Überschneidung / Lücke"
       },
       "modeDesc": {
-        "subnet": "Analysiert einen einzelnen IPv4-CIDR-Block: Netz, Broadcast, Maske und Host-Bereich.",
+        "subnet": "Analysiert einen einzelnen IPv4-CIDR-Block: Netz, Broadcast, Maske, Host-Bereich und die Bereiche für besondere Zwecke, in denen er liegt oder die er überlappt.",
         "vlsm": "Teilt einen übergeordneten Block in Subnetze variabler Länge passend zu einer Liste von Host-Zahlen.",
         "supernet": "Fasst eine Liste von Präfixen zur kleinsten Menge abdeckender Blöcke zusammen.",
         "overlap": "Findet Überschneidungen und Verschachtelungen zwischen Präfixen sowie Lücken innerhalb eines optionalen Bereichs."
@@ -141,7 +141,13 @@
           "utilization": "Auslastung"
         },
         "unfit": "Nicht passend",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "Anforderungen mit 2 Hosts ein /31 geben (Punkt-zu-Punkt-Verbindungen, RFC 3021)",
+        "maskedNote": "Der übergeordnete Block {typed} hat gesetzte Host-Bits und wurde deshalb auf {parent} maskiert; der Plan wird aus {parent} geschnitten.",
+        "orderNote": "Anforderungen werden vom größten Block zum kleinsten platziert, nicht in der eingegebenen Reihenfolge, damit jeder Block auf einem Vielfachen seiner eigenen Größe beginnt.",
+        "freeBlocks": "Freie Blöcke",
+        "noFree": "Im übergeordneten Block ist kein Platz mehr frei.",
+        "noBroadcast": "keine (/31)"
       },
       "supernet": {
         "label": "Zu aggregierende Präfixe",
@@ -185,12 +191,36 @@
         "prefix": "Die Präfixlänge muss zwischen 0 und 32 liegen.",
         "tooMany": "Zu viele Einträge. Kürze die Liste und versuche es erneut.",
         "noReqs": "Füge mindestens eine Subnetz-Anforderung mit einer Host-Zahl hinzu.",
-        "noPrefixes": "Gib mindestens ein Präfix ein, eines pro Zeile."
+        "noPrefixes": "Gib mindestens ein Präfix ein, eines pro Zeile.",
+        "zeroHosts": "Eine Subnetz-Anforderung verlangt 0 Hosts. Jedes Subnetz braucht mindestens 1 Host: Korrigiere die Zahl oder entferne die Zeile."
       },
       "rangeHeading": "Adressaufteilung",
       "usableShort": "nutzbar",
       "rfcNote": "/31 und /32 reservieren nichts: jede Adresse ist nutzbar (RFC 3021).",
-      "reservedNote": "Die erste Adresse ist das Netz, die letzte der Broadcast; beide sind reserviert, also nutzbar = gesamt − 2."
+      "reservedNote": "Die erste Adresse ist das Netz, die letzte der Broadcast; beide sind reserviert, also nutzbar = gesamt − 2.",
+      "classifyHeading": "Bereiche für besondere Zwecke",
+      "classifySpecial": "In einem Bereich für besondere Zwecke: {range}, {name} ({rfc}).",
+      "classifyPartial": "Teilweise für besondere Zwecke: {special} von {total} Adressen liegen in den unten aufgeführten Bereichen; der Rest liegt in keinem solchen Bereich.",
+      "classifyNone": "Kein Bereich für besondere Zwecke (global routbarer Unicast-Adressraum).",
+      "classifyThRange": "Bereich",
+      "classifyThName": "Name",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "Beziehung",
+      "classifyThSource": "Quelle",
+      "classifyThDestination": "Ziel",
+      "classifyThForwardable": "Weiterleitbar",
+      "classifyThGlobal": "Global erreichbar",
+      "classifyRelEqual": "ist dieser Block",
+      "classifyRelInside": "enthält diesen Block",
+      "classifyRelContains": "in diesem Block (teilweise Überlappung)",
+      "classifyYes": "Ja",
+      "classifyNo": "Nein",
+      "classifyNotListed": "nicht angegeben",
+      "classifyTerminated": "beendet {date}",
+      "classifyNote1": "[1] Fußnote des Registers: Mehrere Protokolle haben Ausnahmen von dieser Regel erhalten (Beispiele: RFC 8029 und RFC 5884).",
+      "classifyNote2": "[2] Fußnote des Registers: nur nutzbar kraft einer spezifischeren Reservierung.",
+      "classifyFlagsNote": "Die Flags stammen aus dem Register. Quelle und Ziel: ob eine Adresse aus dem Bereich als Quelle oder Ziel eines Datagramms gültig ist, das zwei Geräte durchläuft. Weiterleitbar: ob ein Router ein solches Datagramm zwischen externen Schnittstellen weiterleiten darf. Global erreichbar: ob es über eine bestimmte administrative Domäne hinaus weitergeleitet werden kann.",
+      "classifySource": "Zeilen aus dem IANA-Register IPv4 Special-Purpose Address Space (aktualisiert 2025-10-09) und, für 224.0.0.0/4, aus dem IANA-Register IPv4 Multicast Address Space, beide gelesen am 2026-10-19. Laut Register ist für einen gelisteten Bereich keine Routbarkeit in irgendeinem lokalen oder globalen Kontext garantiert."
     },
     "title": "Werkzeuge",
     "lede": "Kleine, schnelle, datenschutzorientierte Werkzeuge. Der Katalog rechnet in Ihrem Browser und sendet nichts irgendwohin; die einzige Ausnahme ist der rote Raum, in dem ein Werkzeug den offiziellen Dienst abfragt, den es nennt, und nur, wenn Sie auf „Ask“ drücken.",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Wenn Sie sich in Brasilien befinden, stehen Ihnen die in Artikel 18 der LGPD genannten Rechte zu, und Sie können sich auch an die nationale Datenschutzbehörde (die ANPD) wenden.",
     "changesTitle": "Änderungen an diesem Hinweis",
     "changesBody": "Wenn sich dieser Hinweis ändert, wird die überarbeitete Fassung auf dieser Seite veröffentlicht und das Datum unten aktualisiert. Wesentliche Änderungen werden nicht rückwirkend angewendet.",
-    "updated": "Zuletzt aktualisiert: 30. Juni 2026",
+    "updated": "Zuletzt aktualisiert: {date}",
     "backHome": "Zurück zur Startseite"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Empfehlungen",
     "title": "Was Menschen sagen, in ihren eigenen Worten.",
-    "intro": "{count} wortgetreue Empfehlungen und Bewertungen aus zwei Jahrzehnten Schulung und Beratung. Nichts hier ist umformuliert oder bearbeitet.",
-    "provenance": "Stammt aus LinkedIn-Empfehlungen, Google-Bewertungen und verifizierten Red-Education-Teilnehmerbewertungen. Originalwortlaut und Schreibweise sind exakt wie verfasst erhalten."
+    "intro": "{count} Empfehlungen und Bewertungen aus zwei Jahrzehnten Schulung und Beratung. Die Originale sind wortgetreu erhalten: nichts darin ist umformuliert oder bearbeitet. Die optionalen maschinellen Übersetzungen sind als solche gekennzeichnet.",
+    "provenance": "Stammt aus LinkedIn-Empfehlungen, Google-Bewertungen und verifizierten Red-Education-Teilnehmerbewertungen. Originalwortlaut und Schreibweise sind exakt wie verfasst erhalten; eine übersetzte Karte ist als maschinelle Übersetzung gekennzeichnet, und das Original ist einen Klick entfernt."
   },
   "testimonials": {
     "filterLabel": "Erfahrungsberichte filtern",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – heute",
-      "title": "Der Trainer & Berater",
+      "title": "Lehren, bauen und das Fachgebiet verständlich machen",
       "subtitle": "Offizielle Vollzeitschulung, weltweit gehalten, und daneben Beratung bei den Entscheidungen, die Folgen haben.",
       "intro": "2020 wurde aus einem die ganze Laufbahn durchziehenden Faden das ganze Gewebe. Nach zwei Jahrzehnten, in denen Schulung jede Rolle begleitete, wurde Schulung zur Arbeit selbst: Vollzeit, offiziell, zertifizierte Unterweisung für Fachleute und Teams auf der ganzen Welt. Was diese Epoche besonders macht, ist nicht nur der Fokus, sondern die bewusste, datierte Erweiterung über Plattformen hinweg, jede auf tiefer Praktikererfahrung aufbauend statt an ihrer Stelle.",
       "s1Title": "Vollzeit, aus Berufung",
@@ -1045,7 +1075,7 @@
       "s3Body": "Was die jüngsten Jahre auszeichnet, ist ein klarer, datierter Fortschritt. Extreme-Networks-Schulungen kamen ab 2021 hinzu und deckten EXOS-Switching, SD-WAN und Automatisierung ab. Fortinet folgte ab 2024, zentriert auf den FCP-FortiGate-Administrator-Track. Netskope kam ab 2025 hinzu und deckte Betrieb, Administration, Implementierung und Integration der Netskope Security Cloud ab. Die Plattformen, jede bewusst hinzugefügt, jede auf denselben zwei Jahrzehnten Netzwerk- und Sicherheitsumsetzung darunter ruhend.",
       "s4Title": "Über Red Education, in die Welt",
       "s4Body": "Das primäre Vehikel für diese globale Lieferung ist Red Education, ein autorisiertes Schulungszentrum, über das offizielle zertifizierte Kurse Organisationen über Regionen hinweg erreichen. Die Rolle ist Global Technical Training Instructor, mit Lieferung an die Art von internationalem Publikum, die ein Standort in São Paulo, zwei Pässe und eine echte Reiselust möglich machen. Die dauerhafte Beziehung verwandelt individuelle Expertise in etwas, das Organisationen weltweit buchen und sich darauf verlassen können.",
-      "closer": "Hier zahlt sich der rote Faden der ganzen Geschichte aus. Die Neugier der frühen Jahre wurde zur Umsetzungstiefe der Praktikerjahre, und diese Tiefe ist nun das, was jeder Teilnehmer erhält: kein Vortragender, der Folien abliest, sondern jemand, der diese Systeme gebaut hat und erklärt, wie sie tatsächlich funktionieren, und warum."
+      "closer": "Hier zahlt sich der rote Faden der ganzen Geschichte aus. Die Neugier der frühen Jahre wurde zur Umsetzungstiefe der Praktikerjahre, und diese Tiefe ist nun das, was jeder Teilnehmer erhält: jemand, der diese Systeme gebaut hat und erklärt, wie sie tatsächlich funktionieren, und warum."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Ein Trainer, der diese Systeme gebaut hat, bevor er sie unterrichtete.",
     "lede": "Die meisten technischen Schulungen werden von Menschen gehalten, die den Stoff gelernt haben, um ihn zu unterrichten. Dies ist das Gegenteil: drei Jahrzehnte Bauen, Kaputtmachen und Reparieren echter Netzwerke und Sicherheitssysteme, destilliert zu Schulungen, die jedes Konzept damit verbinden, wie es sich im Produktivbetrieb tatsächlich verhält.",
     "s1Title": "Warum das im Klassenzimmer zählt",
-    "s1Body": "Es gibt einen Unterschied zwischen der Erklärung, wie eine Funktion arbeiten soll, und der Erklärung, warum sie sich um drei Uhr morgens so verhält, wie sie es tut, wenn etwas Kritisches ausgefallen ist. Das Erste stammt aus einem Handbuch. Das Zweite stammt daher, dass man dabei war. Seit 1996 war die Arbeit Implementierung: Netzwerke entwerfen und in Betrieb nehmen, sie dann unter Druck beheben und die Person sein, die gerufen wird, um die kritischen Verfügbarkeits- und Sicherheitsvorfälle zu lösen, die ein Unternehmen lahmlegen, für Hersteller und für einige der größten Organisationen Brasiliens. Diese Tiefe erhält jeder Teilnehmer: kein Vortragender, der Folien vorliest, sondern ein Ingenieur, der in diesen Systemen gelebt hat und erklärt, wie sie wirklich funktionieren.",
+    "s1Body": "Es gibt einen Unterschied zwischen der Erklärung, wie eine Funktion arbeiten soll, und der Erklärung, warum sie sich um drei Uhr morgens so verhält, wie sie es tut, wenn etwas Kritisches ausgefallen ist. Das Erste stammt aus einem Handbuch. Das Zweite stammt daher, dass man dabei war. Seit 1996 war die Arbeit Implementierung: Netzwerke entwerfen und in Betrieb nehmen, sie dann unter Druck beheben und die Person sein, die gerufen wird, um die kritischen Verfügbarkeits- und Sicherheitsvorfälle zu lösen, die ein Unternehmen lahmlegen, für Hersteller und für einige der größten Organisationen Brasiliens. Diese Tiefe erhält jeder Teilnehmer: ein Ingenieur, der in diesen Systemen gelebt hat und erklärt, wie sie wirklich funktionieren.",
     "s2Title": "Komplexes klar gemacht",
     "s2Body": "Tiefes technisches Wissen ist notwendig, aber nicht hinreichend. Die seltenere Fähigkeit ist, es zu übersetzen: etwas wirklich Komplexes zu nehmen, Web Application Firewalls, Identitätsföderation, Traffic Management, SD-WAN, und es für jemanden zum Klicken zu bringen, der ihm zum ersten Mal begegnet. Teilnehmer heben durchweg die Beispiele aus der Praxis und die klare, strukturierte Didaktik hervor, die Fähigkeit, jedes Konzept in den Kontext der Arbeit zu stellen, die sie tatsächlich tun. Unterrichten war ein roter Faden durch diese gesamte Laufbahn, präsent in nahezu jeder Rolle seit 1997, und der Vollzeitfokus seit 2020.",
     "s3Title": "Praxisnah, nicht vage",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Beratung und Consulting",
     "topicOther": "Etwas anderes",
     "formMessage": "Ihre Nachricht",
-    "formSend": "Nachricht senden",
+    "formSend": "E-Mail-Entwurf öffnen",
     "formSending": "Wird gesendet…",
     "formRequired": "Bitte geben Sie Ihren Namen, Ihre E-Mail und eine Nachricht ein.",
     "successTitle": "Vielen Dank.",
     "successBody": "Ihre Nachricht ist unterwegs. Ich melde mich, sobald ich kann.",
     "errorBody": "Beim Senden ist etwas schiefgegangen. Bitte versuchen Sie es erneut oder schreiben Sie direkt eine E-Mail.",
+    "draftedTitle": "Ihr E-Mail-Entwurf ist geöffnet.",
+    "draftedBody": "Ihr E-Mail-Programm sollte sich mit der ausgefüllten Nachricht geöffnet haben. Senden Sie sie von dort; bisher wurde nichts gesendet. Falls sich nichts geöffnet hat, kopieren Sie die Nachricht unten und schicken Sie sie per E-Mail an {email}.",
+    "copyMessage": "Nachricht kopieren",
+    "copied": "Kopiert",
+    "copyFailed": "Kopieren wurde blockiert: Text markieren und kopieren",
+    "draftedMessageLabel": "Die Nachricht, wie entworfen",
     "emailLabel": "E-Mail",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Bedingungen",
     "title": "Lizenz",
-    "closedHeading": "Closed Source – diese Website",
-    "closedBody": "Die Website selbst ist Closed Source. Ihr Design, ihre Oberfläche, ihre Inhalte (einschließlich jedes Learn-Artikels), ihre Marke und die besondere Art, wie diese Tools hier zusammengestellt und dargestellt werden, sind geschützt, alle Rechte vorbehalten. Es wird keine Erlaubnis erteilt, die Website oder ihre Inhalte ohne vorherige schriftliche Zustimmung zu kopieren, zu vervielfältigen, zu verändern, weiterzuverbreiten oder daraus abgeleitete Werke zu erstellen.",
+    "closedHeading": "Open Source: Apache-2.0 (Code) und CC BY 4.0 (Inhalte)",
+    "closedBody": "Der Anwendungscode steht unter der Apache License 2.0. Die geschriebenen Inhalte, jeder Learn-Artikel, die Texte und Erläuterungen der Tools sowie die Dokumentation, stehen unter Creative Commons Namensnennung 4.0 International (CC BY 4.0). Sie dürfen beides verwenden, verändern und weiterverbreiten, auch kommerziell, sofern Sie Rodolfo Nützmann (ronutz.com) angemessen nennen, auf die Lizenz verlinken und Änderungen kenntlich machen. ronutz.com bleibt die kanonische, gepflegte Quelle.",
     "contact": "Fragen zur Lizenz? <a>Nehmen Sie Kontakt auf.</a>",
     "backHome": "Zurück zu den Tools",
     "thirdHeading": "Open-Source-Komponenten",
-    "lede": "ronutz.com ist ein proprietäres Werk, alle Rechte vorbehalten. Diese Bedingungen gelten für die Website und ihre Inhalte. Die Website baut auf Open-Source-Software auf, die unter ihren eigenen Lizenzbedingungen verwendet und weiterverbreitet wird, nachstehend genannt.",
+    "lede": "ronutz.com ist Open Source. Der Code steht unter der Apache License 2.0, die geschriebenen Inhalte unter Creative Commons Namensnennung 4.0 (CC BY 4.0). Beide verlangen eine Namensnennung: verwenden Sie es weiter, aber nennen Sie die Quelle. Die offenen Kursmaterialien sind die eine Ausnahme: jedes erscheint unter der Lizenz, die sein eigenes Datenblatt nennt, und die unter CC0 1.0 verlangen gar keine Namensnennung. Die Website baut außerdem auf anderer Open-Source-Software auf, nachstehend genannt.",
     "thirdBody": "Diese Website fußt auf Open-Source-Arbeit. Die Website selbst ist mit Next.js und React gebaut und wird als statischer Export ausgeliefert; die Internationalisierung nutzt next-intl; die Learn-Inhalte werden mit next-mdx-remote, gray-matter, remark-gfm und js-yaml gerendert; und die Suche wird von Pagefind bereitgestellt. Diese stehen unter der MIT License, außer next-mdx-remote (Mozilla Public License 2.0). Die API-Referenz bindet Swagger UI ein, unter der Apache License 2.0. Jede Komponente bleibt unter ihrer eigenen Lizenz, und die vollständigen Hinweise werden zusammen mit dem Quellcode ausgeliefert."
   },
   "contributeIdeas": {

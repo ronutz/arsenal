@@ -1,71 +1,207 @@
 ---
 slug: dijkstra-and-the-twenty-minute-algorithm
 title: "Dijkstra: o algoritmo de vinte minutos que os seus roteadores rodam todo dia"
-summary: "Em 1956, um físico de 26 anos sentou com a noiva no terraço de um café em Amsterdã, sem caneta e sem papel, e em uns vinte minutos chegou ao algoritmo de shortest path, o caminho mais curto. Ele fez isso porque precisava de uma demonstração que pessoas que não entendiam nada de computadores conseguissem acompanhar. Setenta anos depois, esse algoritmo roda dentro de todos os roteadores OSPF (Open Shortest Path First) e IS-IS do planeta."
-concepts: ["dijkstra", "shortest path", "spf", "ospf", "is-is", "graph", "structured programming", "armac"]
-relatedTools: []
-relatedArticles: ["ospf-primer", "isis-primer", "the-rfc-series", "reflections-on-trusting-trust"]
-category: security
+summary: "Em 1956, Edsger W. Dijkstra criou um algoritmo de caminho mais curto no terraço de um café em Amsterdã, sem lápis e sem papel, para demonstrar um computador novo; todo roteador que roda Open Shortest Path First (OSPF) ou Intermediate System to Intermediate System (IS-IS) calcula a árvore que esse algoritmo produz. Depois da leitura, você consegue contar a história com as palavras dele, executar o algoritmo à mão em seis roteadores, explicar por que o custo de um link precisa ser positivo e por que custos iguais dão vários next hops, e encontrar o resultado e o throttle de SPF num roteador."
+concepts: ["dijkstra", "shortest path", "spf", "ospf", "is-is", "graph", "structured programming", "armac", "shortest-path tree", "equal-cost multipath", "spf throttling"]
+relatedTools: ["python-playground"]
+relatedArticles: ["ospf-primer", "isis-primer", "the-rfc-series", "reflections-on-trusting-trust", "dynamic-routing-compared", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "there-is-no-perfect-code"]
+category: networking
 order: 128
 status: reviewed
-updated: "2026-09-08"
+updated: "2026-10-19"
 ---
 
-## Por que Dijkstra merece um artigo num site de redes
+Todo roteador que roda Open Shortest Path First (OSPF) ou Intermediate System to Intermediate System (IS-IS) guarda o mesmo mapa da sua área e calcula, a partir dele, uma árvore de caminhos mais curtos com ele mesmo na raiz ([Request for Comments (RFC) 2328, seção 1.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). Esse cálculo se chama shortest path first (SPF), e as normas dão nome ao autor: Edsger W. Dijkstra, que o criou em 1956 e o publicou em 1959. Depois da leitura, você consegue contar a origem dele nas palavras de Dijkstra, segui-lo à mão, explicar por que os custos precisam ser positivos e por que custos iguais dão vários next hops, e achar o resultado num roteador.
 
-Abra a tabela de roteamento de quase qualquer rede corporativa e alguma parte do caminho terá sido decidida por um algoritmo publicado em 1959, num artigo de três páginas, por um holandês que ainda não tinha terminado o doutorado.
+## Uma demonstração para o ARMAC
 
-Os protocolos de roteamento link state (estado de enlace) funcionam dando a todos os roteadores o mesmo mapa: cada roteador faz o flooding (a inundação) de uma descrição dos próprios links, todos montam o mesmo retrato da rede e, depois, cada um calcula sozinho o melhor caminho dele até todos os outros destinos. Esse último passo, o cálculo, é o algoritmo de shortest path (caminho mais curto) de Dijkstra. É por isso que o processo se chama SPF, shortest path first, nome que sobrevive no OSPF, Open Shortest Path First, e é também por isso que o [guia de OSPF](/learn/ospf-primer) e o [guia de IS-IS](/learn/isis-primer) citam o nome dele de passagem. Este artigo conta a parte que os dois deixam de fora.
+Dijkstra entrou no Mathematisch Centrum de Amsterdã em março de 1952 como o primeiro holandês contratado como programador, e foi para lá em tempo integral ao se formar em física em Leiden, na primavera de 1956 ([EWD1166](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)). O algoritmo tinha um propósito público: "The algorithm for The Shortest Path was designed for the purpose of demonstrating the power of the ARMAC at its official inauguration in 1956", feito para a inauguração oficial do ARMAC (EWD1166).
 
-## O café
+Ele contou os detalhes em agosto de 2001, em casa, em Austin, ao pesquisador Philip L. Frana; a Association for Computing Machinery (ACM) publicou a entrevista, condensada, na Communications of the ACM em 2010 ([Frana e Misa](https://cacm.acm.org/news/an-interview-with-edsger-w-dijkstra/)). O programa da demonstração usava um mapa "on which I had selected 64 cities (so that in the coding six bits would suffice to identify a city)", 64 cidades para que seis bits bastassem: 2 elevado a 6 dá 64.
 
-Edsger Wybe Dijkstra nasceu em Roterdã, em 1930, e estudou física teórica em Leiden, onde se formou em 1956. Ele trabalhava no Centro Matemático de Amsterdã, que tinha acabado de construir um computador novo, o ARMAC, e queria apresentá-lo ao público numa demonstração.
+Ele contou: "One morning I was shopping in Amsterdam with my young fiancée", às compras com a noiva; quando "we sat down on the café terrace to drink a cup of coffee", no terraço de um café, ele chegou ao algoritmo, "which I designed in about 20 minutes", em uns vinte minutos. E explicou a elegância: "One of the reasons that it is so nice was that I designed it without pencil and paper", feito sem lápis e sem papel.
 
-Foi daí que nasceu o algoritmo, e vale insistir nesse ponto, porque isso vira do avesso a história de sempre sobre matemática difícil. Dijkstra não estava resolvendo um problema de roteamento. **Ele precisava de uma demonstração que leigos conseguissem acompanhar.** Nas palavras dele, numa demonstração para quem não é da área de computação, o problema tem de ser enunciado de um jeito que quem não é matemático entenda, e essas pessoas também têm de conseguir entender a resposta. Por isso ele escolheu a rota mais curta entre duas cidades holandesas, num mapa simplificado com sessenta e quatro cidades; o número sessenta e quatro foi escolhido porque seis bits bastam para identificar cada uma.
+Ele já tinha registrado a cena em 1993: "it is a strange thought that it was designed without pencil and paper, while I had a cup of coffee with my wife on a sunny cafe terrace in Amsterdam, only designed for a demo", sem lápis e sem papel, num café, só para uma demo ([EWD1166](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)). *Wife* (esposa) é a palavra de 1993: ele se casou com Maria (Ria) C. Debets em 1957 ([Memorial Resolution, seção 0](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)), então em 1956 ela ainda era a noiva.
 
-A solução apareceu em outro lugar. O relato dele, dado numa entrevista décadas depois, é um dos trechos mais citados da computação:
+## Três páginas na Numerische Mathematik
 
-> Numa manhã eu estava fazendo compras em Amsterdã com minha jovem noiva e, cansados, sentamos no terraço de um café para tomar um café, e eu estava justamente pensando se conseguiria fazer isso, e então projetei o algoritmo do caminho mais curto. Como eu disse, foi uma invenção de vinte minutos.
+*A Note on Two Problems in Connexion with Graphs* chegou à Numerische Mathematik em 11 de junho de 1959 e saiu no volume 1, páginas 269 a 271 ([Dijkstra 1959, digitalização do Centrum Wiskunde & Informatica (CWI)](https://ir.cwi.nl/pub/9256/9256D.pdf); [Springer](https://link.springer.com/article/10.1007/BF01386390)). Trata de nós ligados por ramos de comprimento conhecido. "Problem 1. Construct the tree of minimum total length between the n nodes", a árvore geradora mínima, nasceu para economizar cobre na fiação do backplane do X1 ([EWD1166](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)). "Problem 2. Find the path of minimum total length between two given nodes P and Q", o caminho mínimo entre dois nós ([Dijkstra 1959, página 270](https://ir.cwi.nl/pub/9256/9256D.pdf)).
 
-Sem caneta. Sem papel. Mais tarde, ele comentou que projetar sem os dois tinha sido uma vantagem, justamente pelo que essa falta o obrigou a fazer.
+Por que três anos? Nas palavras dele, "at that time, discrete algorithms had not yet acquired mathematical respectability, and there were no suitable journals", faltavam prestígio matemático e revistas adequadas; ofereceu os dois à revista nova, para ajudá-la a se firmar ([EWD1166](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)).
 
-Essa história costuma ser contada como a de um homem que ignora a noiva para pensar em matemática, versão que é injusta e menos interessante do que a verdade. Ria Debets era programadora. Ela era uma das cerca de doze mulheres que tinham saído da escola com notas excepcionais em matemática e foram contratadas para o novo departamento de computação do Centro Matemático, e tinha sido o próprio Dijkstra quem ensinou programação a ela e às colegas. Os dois se casaram cerca de um ano depois e ficaram juntos até a morte dele, em 2002.
+A fama demorou: em 1962, Ford e Fulkerson ainda citavam algoritmos piores para o mesmo problema ([Memorial Resolution, seção 1](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)). Depois, "I found it in the early 1960s in a German book on management science", num livro alemão de administração, e "Suddenly, there was a method named after me", havia um método com o nome dele ([Frana e Misa](https://cacm.acm.org/news/an-interview-with-edsger-w-dijkstra/)).
 
-Ele nem se deu ao trabalho de publicar durante três anos, e só publicou porque alguém disse que ele devia. *A Note on Two Problems in Connexion with Graphs* saiu na **Numerische Mathematik** em 1959 e tem três páginas. O algoritmo de shortest path está na segunda metade; a primeira traz um algoritmo à parte, igualmente duradouro, para a minimum spanning tree (árvore geradora mínima). Ele só descobriu que a coisa tinha nome quando a viu num livro alemão de ciência da administração, em 1960, como *Das Dijkstra'sche Verfahren*.
+## O algoritmo, em 1959 e na RFC 2328
 
-## O que o algoritmo faz de fato
+A ideia cabe numa frase: "In the solution presented, the minimal paths from P to the other nodes are constructed in order of increasing length until Q is reached", caminhos mínimos em ordem crescente de comprimento ([Dijkstra 1959, página 270](https://ir.cwi.nl/pub/9256/9256D.pdf)). O conjunto A guarda os nós cujo caminho mais curto desde P já se conhece; B, os nós ligados a A fora dele; C, o resto. A cada rodada, verifica se o último nó de A encurta o caminho até algum nó de B e passa para A o nó de B mais próximo de P.
 
-Vale explicar sem rodeios, porque ele é mais simples do que a fama que tem.
+A RFC 2328 diz o mesmo em linguagem de roteador: "the paths to the candidate vertex that is closest to the root are guaranteed to be shortest; this vertex is added to the shortest-path tree, removed from the candidate list, and its adjacent vertices are examined", o candidato mais próximo da raiz está garantido e entra na árvore; o cálculo para quando a lista esvazia ([RFC 2328, seção 16.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). O custo D até um vizinho W é o custo até V mais o custo anunciado do link de V para W. Se D empata com o custo de W na lista, os next hops novos se somam aos antigos, e no empate "network vertices must be chosen before router vertices in order to necessarily find all equal-cost paths", redes antes de roteadores, para achar todos os caminhos de custo igual (seção 16.1). Daí a nota 22: "Strictly speaking, because of equal-cost multipath, the algorithm does not create a tree", a rigor, não sai uma árvore.
 
-Você quer a rota mais barata de onde você está até todos os outros lugares, num mapa em que cada estrada tem um custo. Vá anotando o melhor custo conhecido até cada lugar, começando com zero para o ponto onde você está e desconhecido para todos os outros. Depois, repita um único passo: **pegue o lugar ainda não visitado com o menor custo conhecido, marque esse lugar como visitado e, para cada vizinho dele, veja se passar por ali sai mais barato do que o melhor custo que você tinha.** Se sair, anote o valor melhor. Pare quando não sobrar nada para visitar.
+O IS-IS usa duas listas, PATHS (definitiva) e TENT (provisória): "paths through systems in TENT still have to be greater than x because x is minimal in TENT", nada que passe pela TENT custa menos que x ([RFC 1195, anexo C.1.3](https://www.rfc-editor.org/rfc/rfc1195.txt)).
 
-É só isso. A grande sacada, a parte que levou vinte minutos e que não é óbvia, é que, quando você pega o lugar não visitado mais barato, o custo dele já é *definitivo*. Nada que você descobrir depois consegue melhorar esse custo, porque qualquer outra rota até ele teria de passar antes por algum lugar mais caro. É essa garantia que faz o procedimento terminar com as respostas certas, sem precisar reavaliar tudo, e é por causa dela que um roteador calcula uma topologia inteira em milissegundos, em vez de testar todos os caminhos possíveis.
+## Seis roteadores, à mão
 
-Isso também explica uma restrição prática que pega muita gente de surpresa: **a garantia depende de os custos nunca serem negativos.** Um link não pode ter métrica negativa, e isso não é uma limitação arbitrária do fabricante.
+Seis roteadores, de R1 a R6, com router IDs de 192.0.2.1 a 192.0.2.6, ligados por oito links ponto a ponto numerados a partir de 198.51.100.0/24, com o mesmo custo nos dois sentidos:
+
+| Link | Custo | Link | Custo |
+|---|---|---|---|
+| R1 a R2 | 8 | R3 a R5 | 9 |
+| R1 a R3 | 5 | R4 a R5 | 4 |
+| R3 a R2 | 3 | R4 a R6 | 6 |
+| R2 a R4 | 1 | R5 a R6 | 2 |
+
+O trace do exemplo a partir de R1, calculado em 2026-10-19 com CPython 3.13.16, sem as linhas de links de volta para roteadores já na árvore nem as da lista de candidatos:
+
+```text
+step 1: examine links of R1
+  link R1-R2 cost 8: D = 0 + 8 = 8 (new candidate); first hop R2
+  link R1-R3 cost 5: D = 0 + 5 = 5 (new candidate); first hop R3
+  closest candidate R3 at 5 is added to the tree (its distance is now final)
+step 2: examine links of R3
+  link R3-R2 cost 3: D = 5 + 3 = 8 (equal to 8, add first hop; now R2/R3)
+  link R3-R5 cost 9: D = 5 + 9 = 14 (new candidate); first hop R3
+  closest candidate R2 at 8 is added to the tree (its distance is now final)
+step 3: examine links of R2
+  link R2-R4 cost 1: D = 8 + 1 = 9 (new candidate); first hop R2/R3
+  closest candidate R4 at 9 is added to the tree (its distance is now final)
+step 4: examine links of R4
+  link R4-R5 cost 4: D = 9 + 4 = 13 (better than 14, replace); first hop R2/R3
+  link R4-R6 cost 6: D = 9 + 6 = 15 (new candidate); first hop R2/R3
+  closest candidate R5 at 13 is added to the tree (its distance is now final)
+step 5: examine links of R5
+  link R5-R6 cost 2: D = 13 + 2 = 15 (equal to 15, add first hop; now R2/R3)
+  closest candidate R6 at 15 is added to the tree (its distance is now final)
+```
+
+No passo 2, R2 custa 8 direto e 8 via R3, então os dois first hops ficam, e tudo atrás de R2 herda o par. No passo 4, R5 cai de 14 para 13: o custo de um candidato ainda pode baixar, o de um roteador já escolhido não. O forwarding usa só o next hop: "only the next hop to the destination is used in the forwarding process", só ele conta para encaminhar ([RFC 2328, seção 2.2](https://www.rfc-editor.org/rfc/rfc2328.txt)); como essa entrada disputa a tabela está em [tabelas de roteamento e default gateway](/learn/routing-tables-and-default-gateway).
+
+O mesmo cálculo em Python, só com a biblioteca padrão, roda sem mudança no [Python playground](/tools/python-playground):
+
+```text
+import heapq
+
+links = {("R1", "R2"): 8, ("R1", "R3"): 5, ("R3", "R2"): 3, ("R2", "R4"): 1,
+         ("R3", "R5"): 9, ("R4", "R5"): 4, ("R4", "R6"): 6, ("R5", "R6"): 2}
+
+def spf(links, root):
+    nbrs = {}
+    for (a, b), cost in links.items():
+        nbrs.setdefault(a, []).append((b, cost))
+        nbrs.setdefault(b, []).append((a, cost))
+    dist, hops, done = {root: 0}, {root: set()}, []
+    heap = [(0, root)]
+    while heap:
+        d, v = heapq.heappop(heap)
+        if v in done or d > dist[v]:
+            continue
+        done.append(v)                      # closest candidate: its cost is final
+        for w, cost in nbrs[v]:
+            if w in done:
+                continue
+            nd = d + cost
+            first = hops[v] if v != root else {w}
+            if w not in dist or nd < dist[w]:
+                dist[w], hops[w] = nd, set(first)
+                heapq.heappush(heap, (nd, w))
+            elif nd == dist[w]:
+                hops[w] |= first            # equal cost: keep both first hops
+    return dist, hops, done
+
+dist, hops, order = spf(links, "R1")
+for v in order[1:]:
+    print(f"{v}  cost {dist[v]:2}  first hop(s) {'/'.join(sorted(hops[v]))}")
+print("order added:", " ".join(order))
+```
+
+```text
+R3  cost  5  first hop(s) R3
+R2  cost  8  first hop(s) R2/R3
+R4  cost  9  first hop(s) R2/R3
+R5  cost 13  first hop(s) R2/R3
+R6  cost 15  first hop(s) R2/R3
+order added: R1 R3 R2 R4 R5 R6
+```
+
+Suba o custo de R2 a R4 de 1 para 20 e rode de novo:
+
+```text
+R3  cost  5  first hop(s) R3
+R2  cost  8  first hop(s) R2/R3
+R5  cost 14  first hop(s) R3
+R6  cost 16  first hop(s) R3
+R4  cost 18  first hop(s) R3
+order added: R1 R3 R2 R5 R6 R4
+```
+
+Uma mudança tirou R4, R5 e R6 do first hop R2 e acabou com a divisão por custo igual, e todos os roteadores da área recalculam com o mapa novo.
+
+## Por que os custos precisam ser positivos
+
+A regra de que o candidato mais próximo é definitivo só vale se nenhum link puder encurtar um caminho. A Memorial Resolution enuncia o problema com "non-negative length", comprimento não negativo ([seção 1](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)). Os protocolos proíbem também o zero: "The cost of an interface must be greater than zero", custo maior que zero ([RFC 2328, seção 9](https://www.rfc-editor.org/rfc/rfc2328.txt)), e o rascunho de 1990 da norma do IS-IS diz "The path computation algorithm utilised in this International Standard requires that all circuits be assigned a positive value for a metric", métrica positiva em todo circuito ([RFC 1142, seção 7.2.2](https://www.rfc-editor.org/rfc/rfc1142.txt)).
+
+A terceira execução do exemplo mostra o motivo. Com links direcionais S para A custo 2, S para B custo 5 e B para A custo menos 4, o Dijkstra fixa A em 2 na primeira rodada; o relaxamento exaustivo acha S, B, A com custo 1. O nó virou definitivo antes que o link negativo pudesse baixar o custo.
+
+O custo viaja na link-state advertisement (LSA) do roteador. O FRRouting (FRR) define esse valor com `ip ospf cost (1-65535)`, que grava a métrica da router-LSA usada pelo SPF ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). Com custo derivado da banda, a referência padrão do FRR, 100 Mbit/s, dá custo 1 a todo link dessa velocidade ou mais; o [guia de OSPF](/learn/ospf-primer) trata das consequências.
+
+## O que as normas exigem e o que deixam em aberto
+
+O OSPF calcula em duas etapas: "Using the Dijkstra algorithm, a tree is formed from this subset of the link state database", a árvore dos links entre roteadores e redes de trânsito; as redes stub entram depois como folhas ([RFC 2328, seção 16.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). O método não é obrigatório: "if another algorithm is used, an identical tree must be produced", outro algoritmo tem de dar a mesma árvore, e a RFC aponta um SPF incremental de um relatório de 1978 de McQuillan, Richer e Rosen (seção 16.1). O OSPF para IPv6 faz o cálculo sobre o mesmo grafo para IPv4 e IPv6 ([RFC 5340, seção 4.8.1](https://www.rfc-editor.org/rfc/rfc5340.txt)).
+
+O [IS-IS](/learn/isis-primer) para IP é "a dynamic routing protocol, based on the SPF (Dijkstra) routing algorithm", baseado no SPF ([RFC 1195, seção 1.1](https://www.rfc-editor.org/rfc/rfc1195.txt)), e o anexo dá o custo em palavras: "It has a computational complexity of the square of the number of nodes, which can be decreased to the number of links in the domain times the log of the number of nodes for sparse networks", quadrado do número de nós, ou links vezes o log dos nós em redes esparsas (anexo C.1). A Memorial Resolution mede o ganho de 1959 do mesmo jeito: os algoritmos anteriores levavam tempo cúbico no tamanho da rede, o de Dijkstra, quadrático ([seção 1](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)). A RFC 1142 aparece aqui só como esse rascunho, que a RFC 7142 declara de interesse apenas histórico ([RFC 7142, seção 1](https://www.rfc-editor.org/rfc/rfc7142.txt)). A diferença entre link-state e as outras famílias está em [roteamento dinâmico comparado](/learn/dynamic-routing-compared).
+
+## Quando o mapa está errado ou não para de mudar
+
+Rotas consistentes exigem bancos de dados idênticos em todos os roteadores ([RFC 1142, seção 7.2.6](https://www.rfc-editor.org/rfc/rfc1142.txt)), e o OSPF exige que qualquer algoritmo produza a mesma árvore ([RFC 2328, seção 16.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). Entradas velhas ou de mão única ficam de fora: "If the LSA does not exist, or its LS age is equal to MaxAge, or it does not have a link back to vertex V, examine the next link in V's LSA", LSA ausente, vencida ou sem link de volta é pulada (seção 16.1). Uma LSA forjada ataca o mapa, não o algoritmo; autenticação é assunto do [guia de OSPF](/learn/ospf-primer). Nem todos os caminhos de custo igual são garantidos: "There is no requirement that a router running OSPF keep track of all possible equal-cost routes to a destination", o roteador não precisa guardar todas (seção 16.8).
+
+Numa rede instável, com falhas múltiplas, convém rodar menos SPF, mas "it's not possible to ensure that all routers trigger their SPF computation after the same delay", não há como igualar a espera de todos, e atrasos desiguais deixam os micro-loops mais prováveis e mais longos ([RFC 8405, seção 1](https://www.rfc-editor.org/rfc/rfc8405.txt)). O back-off padronizado passa por três estados, QUIET, SHORT_WAIT e LONG_WAIT (seção 5.2), com valores padrão sugeridos de 50 ms de atraso inicial, 200 ms de atraso curto, 5000 ms de atraso longo, 500 ms de tempo para aprender e 10000 ms de hold-down (seção 6).
+
+O OSPF do FRR tem um hold time adaptativo próprio, e as páginas do projeto não dizem que ele implementa a RFC 8405. `timers throttle spf 200 400 10000` define um atraso de 200 ms, um hold time inicial de 400 ms e um máximo de 10 s, e cada evento dentro do hold time atual o aumenta no valor do hold time inicial, até o máximo ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). O IS-IS do FRR define um intervalo mínimo, em segundos, com `spf-interval [level-1 | level-2] (1-120)` ([FRRouting, IS-IS](https://docs.frrouting.org/en/latest/isisd.html)). Para o FRR, o cálculo em si pesa pouco nos processadores embarcados modernos, mesmo com milhares de nós (OSPFv2). A detecção rápida de falhas, que dispara essas execuções, é o tema de [Bidirectional Forwarding Detection (BFD)](/learn/bfd-when-a-link-is-up-and-dead).
+
+## Como ver
+
+No FRR, com a sintaxe que a documentação dá:
+
+```text
+show ip ospf route [detail] [json]
+show ipv6 ospf6 [vrf <NAME|all>] spf tree [json]
+show isis [vrf <NAME|all>] route [level-1|level-2] [prefix-sid] [backup] [algorithm [(128-255)]]
+show ip ospf
+```
+
+O primeiro mostra a tabela do OSPF segundo o último SPF ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)); o segundo imprime "the spf tree from the recent spf calculation with the calling router as the root", a árvore com o próprio roteador na raiz ([FRRouting, OSPFv3](https://docs.frrouting.org/en/latest/ospf6d.html)); o terceiro é a tabela do IS-IS da última execução ([FRRouting, IS-IS](https://docs.frrouting.org/en/latest/isisd.html)); o último mostra o hold time atual como múltiplo do inicial (OSPFv2). Num laboratório, compare a saída deles com a do script na mesma topologia.
 
 ## O outro Dijkstra
 
-O algoritmo é a contribuição mais usada de Dijkstra, mas provavelmente não é a mais importante. Ele passou o resto de uma longa carreira (em Eindhoven a partir de 1963, depois como pesquisador na Burroughs e, por fim, na Universidade do Texas em Austin, até 2000) defendendo, longamente e num estilo de enorme autoconfiança, que programar deveria ser uma disciplina matemática, e não um ofício de tentativa e erro.
+"When I came back from Munich, it was September, and I was Professor of Mathematics at the Eindhoven University of Technology", em setembro de 1962 ele era professor em Eindhoven; virou Burroughs Research Fellow em 1º de agosto de 1973 e se mudou para Austin, no Texas, no verão de 1984 ([EWD1166](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)). O mesmo texto lembra que ele "thought about synchronizing primitives and designed 'semaphores' for that purpose", os semáforos, e que "for therapeutic reasons I wrote 'Notes on Structured Programming'", escritas por razões terapêuticas. Deixou de dar aulas em novembro de 1999 ([Memorial Resolution, seção 4](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)) e morreu em casa, em Nuenen, em 6 de agosto de 2002 ([obituário do departamento de Computer Sciences](https://www.cs.utexas.edu/~EWD/CSobit.html)).
 
-Foi ele quem deu à área a programação estruturada. Deu também os semáforos e o vocabulário dos processos concorrentes. E deu o hábito, hoje em grande parte perdido, de raciocinar para saber se um programa está correto, em vez de rodá-lo para ver no que dá. A frase mais citada dele sobre o assunto merece aparecer em qualquer discussão sobre testes: **o teste de programas pode ser usado para mostrar a presença de bugs, mas nunca para mostrar a ausência deles.** Não é um floreio retórico: é uma afirmação sobre o tipo de evidência que um teste oferece, e o [argumento de que não existe código perfeito](/learn/there-is-no-perfect-code), aqui do site, é a mesma ideia dita de novo cinquenta anos depois.
+O Prêmio Turing de 1972 veio "For fundamental contributions to programming as a high, intellectual challenge", a programação como desafio intelectual, e pela "eloquent insistence and practical demonstration that programs should be composed correctly, not just debugged into correctness", programas escritos corretos, não depurados até acertar ([ACM](https://amturing.acm.org/award_winners/dijkstra_1053701.cfm)). A frase dele sobre testes é de 1970: "Program testing can be used to show the presence of bugs, but never to show their absence", teste mostra bugs, nunca a ausência deles ([EWD249, página EWD249-7](https://www.cs.utexas.edu/~EWD/ewd02xx/EWD249.PDF)); [não existe código perfeito](/learn/there-is-no-perfect-code) leva o argumento para a segurança. Suas notas numeradas, os EWDs, chegaram ao número 1318 até a morte dele ([Memorial Resolution, seção 6](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)).
 
-Ele escreveu à mão, com caneta-tinteiro, mais de mil manuscritos numerados, a série EWD, e mandava fotocópias para colegas, que as repassavam adiante. Funcionava como um samizdat particular de opinião técnica (samizdat era o nome das cópias clandestinas que circulavam na União Soviética), e isso fez dele a pessoa mais citada e mais contestada da área.
+## Para lembrar
 
-## O que um profissional pode tirar disso
-
-**O algoritmo mais usado em redes foi criado como material didático.** Ele existe porque alguém precisava explicar uma máquina para pessoas que não entendiam de máquinas e concluiu que o caminho era escolher um problema e uma resposta que elas conseguissem entender. Quem ensina assuntos técnicos deveria parar um pouco para pensar nisso. A obrigação de ser compreensível não enfraqueceu o resultado; foi ela que o produziu.
-
-**Pensar sob restrições pode ser produtivo.** Sem caneta, sem papel, vinte minutos, e o resultado ficou pequeno o bastante para estar correto e continuar rodando setenta anos depois. O próprio Dijkstra achava que a falta de material para escrever era parte do motivo de o algoritmo ter saído tão limpo.
-
-**E o algoritmo é simples o bastante para guardar de cabeça.** Pegue o lugar não visitado mais próximo; o custo dele agora é definitivo; atualize os vizinhos; repita. Quando uma adjacência OSPF sobe e a topologia é recalculada, é isso que está acontecendo, e o profissional que sabe disso consegue explicar por que uma mudança de métrica teve o efeito que teve, em vez de tratar a tabela de roteamento como um oráculo.
+- Dijkstra criou o algoritmo em 1956 para demonstrar o ARMAC, no terraço de um café em Amsterdã, em uns vinte minutos e sem lápis e sem papel.
+- O artigo de 1959, três páginas na Numerische Mathematik, resolve dois problemas: a árvore geradora mínima e o caminho mais curto.
+- Tudo se apoia numa garantia: o candidato mais próximo da raiz já tem custo definitivo.
+- A RFC 2328 cita o algoritmo de Dijkstra pelo nome, mas exige só uma árvore idêntica; um SPF incremental é permitido.
+- A garantia exige custos não negativos, e OSPF e IS-IS exigem custos maiores que zero.
+- Custos iguais mantêm vários first hops, e uma única mudança de métrica pode mover muitos destinos de uma vez.
+- Em redes instáveis os roteadores atrasam o SPF de propósito: a RFC 8405 padroniza um back-off, e o OSPF do FRR usa um hold time adaptativo próprio.
 
 ## Fontes
 
-- [Britannica: Edsger Dijkstra, nascido em 11 de maio de 1930 em Roterdã, morto em 6 de agosto de 2002 em Nuenen, desenvolveu o paradigma da programação estruturada; doutorado pela Universidade de Amsterdã em 1959 enquanto trabalhava no Centro Matemático de Amsterdã (1952-62); lecionou na Universidade Técnica de Eindhoven de 1963 a 1973, foi pesquisador na Burroughs de 1973 a 1984 e professor na Universidade do Texas em Austin de 1984 a 2000; concebeu a solução do caminho mais curto em 20 minutos num café com a noiva, Maria Debets, e o algoritmo segue em uso no roteamento de redes de comunicação e no planejamento de voos](https://www.britannica.com/biography/Edsger-Dijkstra)
-- [CWI, a página de história da própria instituição: foi uma invenção de vinte minutos concebida tomando café num terraço com a noiva Ria, que conhecera no Mathematisch Centrum; ele a usou em 1956 para mostrar o potencial do novo computador ARMAC, entendendo que uma demonstração para leigos precisava ter um problema e uma resposta que eles entendessem, então projetou um algoritmo para achar a rota mais curta entre duas cidades dos Países Baixos num mapa simplificado; só foi publicado em 1959](https://www.cwi.nl/en/about/history/e-w-dijkstra-brilliant-colourful-and-opinionated/)
-- [MacTutor, Universidade de St Andrews: para uma demonstração a pessoas de fora da computação é preciso um enunciado que não matemáticos entendam, e eles têm de entender a resposta; ele usou um mapa rodoviário reduzido dos Países Baixos com 64 cidades selecionadas para que 6 bits bastassem para identificar uma; o algoritmo de menor distância e o de árvore geradora mínima foram publicados juntos no artigo "A Note on Two Problems in Connexion with Graphs" (1959)](https://mathshistory.st-andrews.ac.uk/Biographies/Dijkstra/)
-- [Wikipedia, algoritmo de Dijkstra, citando a entrevista: "One morning I was shopping in Amsterdam with my young fiancée, and tired, we sat down on the café terrace to drink a cup of coffee and I was just thinking about whether I could do this, and I then designed the algorithm for the shortest path. As I said, it was a twenty-minute invention. In fact, it was published in '59, three years later. The publication is still readable... One of the reasons that it is so nice was that I designed it without pencil and paper"](https://en.wikipedia.org/wiki/Dijkstra's_algorithm)
-- [David Gries, Cornell: ele o desenvolveu de cabeça em vinte minutos, sem papel e lápis; não se deu ao trabalho de publicar até alguém dizer que devia, dois a três anos depois; a noiva Ria Debets era ela própria programadora, uma de cerca de doze mulheres que tinham concluído a escola com notas excepcionalmente altas em matemática e foram contratadas para o novo departamento de computação do Centro Matemático, e Dijkstra ensinara Ria e as outras a programar; casaram-se cerca de um ano depois e foram companheiros próximos até a morte dele em 2002](https://www.cs.cornell.edu/courses/JavaAndDS/shortestPath/01shortestPathHistory.pdf)
-- [Notas de aula de CS2110 em Cornell, citando a entrevista da CACM e a publicação: E.W. Dijkstra, "A note on two problems in connexion with graphs", Numerische Mathematik 1, 269-271 (1959); a invenção ocorreu em 1956, quando ele tinha 26 anos](https://www.cs.cornell.edu/courses/cs2110/2018sp/L19-GraphsIII/cs2110ShortestPathPresentation.pdf)
-- [Sobre a demonstração do ARMAC e o batismo: com a técnica, o ARMAC conseguia achar o caminho mais curto entre 64 cidades dos Países Baixos; o procedimento foi publicado depois de três anos num artigo de três páginas com o caminho mais curto na segunda metade; em 1960 Dijkstra o encontrou num livro alemão de ciência da administração com o nome dele, "Das Dijkstra'sche Verfahren"](https://medium.com/@balajeraam/dijkstra-the-person-algorithm-5016ebe9468)
-- [Springer, E. W. Dijkstra, A note on two problems in connexion with graphs, Numerische Mathematik volume 1, páginas 269 a 271, 1959 (lida em 07/10/2026)](https://link.springer.com/article/10.1007/BF01386390)
+- [E. W. Dijkstra, A Note on Two Problems in Connexion with Graphs, Numerische Mathematik 1, páginas 269 a 271, 1959 (digitalização no repositório do CWI) (lida em 2026-10-19)](https://ir.cwi.nl/pub/9256/9256D.pdf)
+- [Springer, A note on two problems in connexion with graphs, Numerische Mathematik volume 1, páginas 269 a 271, 1959 (lida em 2026-10-19)](https://link.springer.com/article/10.1007/BF01386390)
+- [E. W. Dijkstra, From my Life (EWD1166), 29 de novembro de 1993, E.W. Dijkstra Archive, University of Texas at Austin (lida em 2026-10-19)](https://www.cs.utexas.edu/~EWD/transcriptions/EWD11xx/EWD1166.html)
+- [Philip L. Frana e Thomas J. Misa, An Interview With Edsger W. Dijkstra, Communications of the ACM, publicada em 1º de agosto de 2010 (lida em 2026-10-19)](https://cacm.acm.org/news/an-interview-with-edsger-w-dijkstra/)
+- [J. Misra e H. Richards, In Memoriam Edsger Wybe Dijkstra (1930–2002), Memorial Resolution, The University of Texas at Austin, 2003: seções 0, 1, 4 e 6 (lida em 2026-10-19)](https://www.cs.utexas.edu/~EWD/MemRes%28A4%29.pdf)
+- [The University of Texas at Austin, Department of Computer Sciences, obituário de Edsger Wybe Dijkstra, E.W. Dijkstra Archive (lido em 2026-10-19)](https://www.cs.utexas.edu/~EWD/CSobit.html)
+- [E. W. Dijkstra, Notes on Structured Programming (EWD249), segunda edição, abril de 1970: página EWD249-7 (lida em 2026-10-19)](https://www.cs.utexas.edu/~EWD/ewd02xx/EWD249.PDF)
+- [ACM, A.M. Turing Award, Edsger Wybe Dijkstra, 1972 (lida em 2026-10-19)](https://amturing.acm.org/award_winners/dijkstra_1053701.cfm)
+- [RFC 2328, OSPF Version 2, abril de 1998: seções 1.1, 2.2, 9, 16.1 e 16.8, nota 22 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 5340, OSPF for IPv6, julho de 2008: seção 4.8.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5340.txt)
+- [RFC 1195, Use of OSI IS-IS for Routing in TCP/IP and Dual Environments, dezembro de 1990: seção 1.1 e anexos C.1 e C.1.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1195.txt)
+- [RFC 1142, OSI IS-IS Intra-domain Routing Protocol (republication of ISO DP 10589), fevereiro de 1990, Historic: seções 7.2.2 e 7.2.6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1142.txt)
+- [RFC 7142, Reclassification of RFC 1142 to Historic, fevereiro de 2014: seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7142.txt)
+- [RFC 8405, Shortest Path First (SPF) Back-Off Delay Algorithm for Link-State IGPs, junho de 2018: seções 1, 5.2 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8405.txt)
+- [FRRouting documentation, OSPFv2 (latest): OSPF Fundamentals; timers throttle spf; ip ospf cost; show ip ospf route (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/ospfd.html)
+- [FRRouting documentation, OSPFv3 (latest): timers throttle spf; show ipv6 ospf6 spf tree (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/ospf6d.html)
+- [FRRouting documentation, IS-IS (latest): spf-interval; show isis route (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/isisd.html)

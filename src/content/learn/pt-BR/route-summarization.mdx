@@ -1,34 +1,189 @@
 ---
 slug: route-summarization
 title: "Sumarização de rotas"
-summary: "Por que uma única rota resumo pode substituir muitas específicas, a atribuição contígua e alinhada da qual ela depende, e o risco de buraco negro ao sumarizar uma faixa que você não possui por completo."
-concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr"]
-relatedTools: ["cidr"]
-relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm"]
+summary: "A sumarização de rotas anuncia um único prefixo através de uma fronteira de roteamento no lugar dos muitos que ele cobre, e assim os roteadores do outro lado guardam uma só entrada e não veem os componentes caírem e voltarem. Depois da leitura, você consegue calcular um resumo exato em binário, configurar e conferir faixas de área do OSPF, sumarização externa, sumarização do EIGRP por interface e rotas estáticas sumarizadas, explicar a rota de descarte que impede o loop e reconhecer como uma rota sumarizada esconde falhas e desvia caminhos."
+concepts: ["route-summarization", "supernetting", "aggregation", "ospf", "bgp", "cidr", "eigrp", "discard-route", "longest-prefix-match"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["supernetting-and-aggregation", "cidr-notation", "subnetting-basics", "ipv4-addressing", "vlsm", "vlsm-worked-example", "static-routes-and-longest-match", "ospf-primer", "route-redistribution", "dynamic-routing-compared", "routing-tables-and-default-gateway", "subnet-overlap-and-gaps", "icmp-ping-and-traceroute", "ipv6-subnetting"]
 category: networking
 order: 7
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
+
+A sumarização de rotas anuncia, através de uma fronteira, um único prefixo no lugar dos muitos que ele cobre: do outro lado fica uma entrada só, sem o detalhe. A Request for Comments (RFC) 1812 descreve o arranjo como domínios de endereçamento: "Within such a domain, detailed information is available about constituent networks; outside it, only the common network prefix is advertised", dentro o detalhe, fora só o prefixo comum ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). Ela aparece nos roteadores de borda de área (ABRs, area border routers) e de sistema autônomo (AS) de uma rede OSPF, os ASBRs (AS boundary routers), nas interfaces que rodam o Enhanced Interior Gateway Routing Protocol (EIGRP) e em rotas estáticas. Ao final, você consegue calcular um resumo em binário, configurá-lo e conferi-lo em cada lugar, explicar a rota de descarte que impede o loop e reconhecer como ele esconde falhas e desvia caminhos. O lado do BGP, entre sistemas autônomos, está em [Supernetting e agregação de rotas](/learn/supernetting-and-aggregation).
 
 ## Uma rota no lugar de muitas
 
-Um roteador que alcança `10.1.0.0/24`, `10.1.1.0/24`, `10.1.2.0/24` e `10.1.3.0/24` pelo mesmo próximo salto não precisa anunciar quatro rotas. Ele pode anunciar um único resumo, `10.1.0.0/22`, que cobre as quatro. Cada vizinho carrega então uma única entrada em vez de quatro. A **sumarização de rotas** é esta prática aplicada nos limites de uma rede: agregar o que você conhece no prefixo mais curto que ainda o descreva com precisão.
+No OSPF, "Area border routers then summarize the area contents (for distribution to the backbone) by advertising a single route for each address range", uma rota por faixa de endereços ([RFC 2328, seção 3.5](https://www.rfc-editor.org/rfc/rfc2328.txt)); cada faixa sai da área como um único link-state advertisement (LSA), o que reduz o tráfego de roteamento (seção 3). O ganho maior é a contenção: nos termos do EIGRP, esconder o detalhe "provides the ability to create effective failure domains within a single AS", cria domínios de falha num AS ([RFC 7868, seção 3.1](https://www.rfc-editor.org/rfc/rfc7868.txt)), porque o resumo surge com o primeiro componente alcançável e "it is withdrawn only when all components become unreachable", só sai quando todos caem ([RFC 4632, seção 5.4](https://www.rfc-editor.org/rfc/rfc4632.txt)).
 
-O benefício se acumula. Menos rotas significam menos memória em cada dispositivo a jusante, atualizações menores e mais rápidas e, o mais importante, *estabilidade*. Se uma das quatro redes componentes cai, o resumo não muda, então a falha não se propaga para o resto da rede.
+A tabela do roteador que sumariza não encolhe, pois ele segue encaminhando para cada componente ([Junos, agregação de rotas](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)), e o longest match continua valendo ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)): o resumo só atende destinos sem rota mais específica ([longest prefix match](/learn/static-routes-and-longest-match)). É o prefixo mais longo comum a todos os componentes: um bit a mais perde um deles, um a menos reivindica endereços que nenhum deles tem.
 
-## O pré-requisito: contígua e alinhada
+## A aritmética: contíguo, alinhado, potência de dois
 
-A sumarização só é limpa quando os prefixos subjacentes foram atribuídos como um bloco contíguo e alinhado. Os quatro `/24` acima sumarizam com elegância porque juntos são exatamente `10.1.0.0/22`. Se as mesmas quatro redes estivessem espalhadas como `10.1.0.0/24`, `10.1.5.0/24`, `10.3.0.0/24` e `10.7.0.0/24`, nenhum prefixo curto descreveria apenas elas, e qualquer resumo que você anunciasse reivindicaria também espaço de endereços que você não roteia.
+No Classless Inter-domain Routing (CIDR), um prefixo é uma sequência contígua de bits de ordem mais alta ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)) que nomeia um bloco de tamanho potência de dois ([RFC 4632, seção 3.1](https://www.rfc-editor.org/rfc/rfc4632.txt)), com início onde os bits restantes são zero. Prefixos só se sumarizam com exatidão quando preenchem um desses blocos, e por isso a RFC 4632 liga a agregação de um site a um bloco contíguo de potência de dois, não a prefixos independentes (seção 4.1). O teste: escreva os bits, ache a maior sequência inicial comum e confira se os bits seguintes assumem todos os valores. Quatro /26 do bloco de documentação 198.51.100.0/24:
 
-É por isso que o planejamento de endereços importa antes de configurar o primeiro dispositivo. Atribuir sites e departamentos a partir de blocos alinhados, a mesma disciplina que [VLSM](/learn/vlsm) impõe dentro de um único bloco, é o que torna a sumarização possível depois. A sumarização é a recompensa por uma atribuição apta ao [supernetting](/learn/supernetting-and-aggregation).
+```text
+198.51.100.0/26    11000110.00110011.01100100.00000000
+198.51.100.64/26   11000110.00110011.01100100.01000000
+198.51.100.128/26  11000110.00110011.01100100.10000000
+198.51.100.192/26  11000110.00110011.01100100.11000000
+```
 
-## Onde ela ocorre
+Os primeiros 24 bits coincidem e os dois seguintes assumem os quatro valores: o conjunto é exatamente 198.51.100.0/24, 256 endereços, nenhum sobrando. Já 198.51.100.64/26 e 198.51.100.128/26 são adjacentes, mas diferem no primeiro bit do último octeto, e um /25 só começa em .0 ou .128; a menor cobertura única dos dois é o /24, com 128 endereços que nunca tiveram. Sem o 198.51.100.128/26, os outros três precisam de 198.51.100.0/25 e 198.51.100.192/26, pois um /24 cobriria um [buraco](/learn/subnet-overlap-and-gaps) de 64 endereços. O IPv6 segue a mesma conta: de 2001:db8::/64 a 2001:db8:0:3::/64, o resumo é 2001:db8::/62 ([sub-redes IPv6](/learn/ipv6-subnetting)). Planeje os blocos antes ([sub-redes de tamanhos diferentes](/learn/vlsm), [uma alocação resolvida](/learn/vlsm-worked-example)).
 
-A sumarização vive nos limites. No OSPF, ela é configurada nos roteadores de borda de área e nos roteadores de borda de sistema autônomo, já que dentro de uma área a topologia de estado de enlace completa é inundada e não pode ser sumarizada. O EIGRP (Protocolo Aprimorado de Roteamento de Gateway Interior, do inglês Enhanced Interior Gateway Routing Protocol) pode sumarizar em quase qualquer interface. No BGP, a agregação combina prefixos específicos em uma rota envolvente antes de anunciá-los a outros sistemas autônomos, o que é boa parte do motivo pelo qual a tabela de roteamento global é muito menor que o número de redes atribuídas.
+## Onde a sumarização acontece
 
-## A armadilha do buraco negro
+Numa área OSPF, os roteadores têm bases de dados idênticas ([RFC 2328, seção 3](https://www.rfc-editor.org/rfc/rfc2328.txt)), então a sumarização mora nas fronteiras ([OSPF: o mapa, a matemática e a área 0](/learn/ospf-primer)).
 
-Sumarizar uma faixa que você não controla por completo é perigoso. Se você anuncia `10.0.0.0/16` mas só roteia de fato `10.0.1.0/24`, o tráfego de qualquer outro endereço desse /16 é atraído até você e então descartado, porque você disse à rede que pode alcançar endereços que não pode. A falha inversa também existe: um resumo estreito demais deixa algumas das suas redes reais inalcançáveis.
+### Faixas de área do OSPF, no ABR
 
-Audite um resumo antes de anunciá-lo. Confirme que os prefixos que você possui são contíguos, que se alinham ao limite do resumo e que o resumo não se estende além deles. A [calculadora CIDR](/#cidr) ajuda com ambas as metades: agregue uma lista de prefixos no modo Super-rede e exponha sobreposições ou lacunas não preenchidas no modo Sobreposição / lacuna.
+Uma faixa é um endereço, uma máscara e um status, Advertise ou DoNotAdvertise. Cada faixa manda no máximo um Type 3 summary-LSA para fora da área, com o endereço da faixa e um "cost equal to the largest cost of any of the component networks", o maior custo entre os componentes; DoNotAdvertise suprime o LSA e esconde os componentes ([RFC 2328, seção 12.4.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). A faixa fica ativa enquanto a área tiver uma rede intra-área dentro dela (seção 11.1), e só então é anunciada ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). A RFC 1583 usava o menor custo ([RFC 1583, seção 3.5](https://www.rfc-editor.org/rfc/rfc1583.txt)), e a RFC 2178 constatou que ele podia causar um routing loop com um forwarding address agregado ([RFC 2178, apêndice G.7](https://www.rfc-editor.org/rfc/rfc2178.txt)).
+
+A referência da Cisco dá ao `area range` a finalidade "To consolidate and summarize routes at an area boundary", sumarizar na fronteira da área, só em ABRs, mas imprime apenas a forma IPv6 ([Cisco, area range](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/command/iro-cr-book/ospf-a1.html)). Abaixo estão a sintaxe IPv4 e IPv6 do FRRouting ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html), [OSPFv3](https://docs.frrouting.org/en/latest/ospf6d.html)), a forma IPv6 da Cisco, o comando do Junos, cujo `restrict` esconde a faixa ([Junos, area-range](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/area-range-edit-protocols-ospf.html)), e uma linha do FRRouting que faz dos quatro /26 da área 0.0.0.1 uma só faixa:
+
+```text
+area A.B.C.D range A.B.C.D/M [advertise [cost (0-16777215)]]
+area A.B.C.D range X:X::X:X/M [<advertise|not-advertise|cost (0-16777215)>]
+area area-id range ipv6-prefix / prefix-length [ advertise | not-advertise ] [ cost cost ]
+area-range network/mask-length <exact> <override-metric metric> <restrict>;
+area 0.0.0.1 range 198.51.100.0/24
+```
+
+### Sumarização externa, no ASBR
+
+As rotas trazidas por [redistribuição](/learn/route-redistribution) viram AS-external-LSAs, um por rota, os únicos LSAs inundados pelo AS inteiro ([RFC 2328, seção 12.4.4](https://www.rfc-editor.org/rfc/rfc2328.txt)). Quem as sumariza é o ASBR ([FRRouting, OSPFv3](https://docs.frrouting.org/en/latest/ospf6d.html)), com o `summary-address`, que no FRRouting origina um único LSA externo por todos os que caem na faixa ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)) e na Cisco cobre as rotas redistribuídas ([Cisco, Configuring OSPF](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book/iro-cfg.html)). Numa not-so-stubby area (NSSA), o roteador de borda pode transformar cada faixa Type-7 em um único LSA Type-5 ([RFC 3101, seção 2.2](https://www.rfc-editor.org/rfc/rfc3101.txt)).
+
+```text
+summary-address A.B.C.D/M [tag (1-4294967295)]
+summary-address X:X::X:X/M [tag (1-4294967295)] [{metric (0-16777215) | metric-type (1-2)}]
+```
+
+### EIGRP, por interface
+
+O [EIGRP](/learn/dynamic-routing-compared) sumariza por interface ([Cisco, ip summary-address eigrp](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-i1.html)) e difere do OSPF em dois pontos: "EIGRP summary routes are given an administrative-distance value of 5", distância administrativa 5 (mesma página), e o resumo leva "the minimum metric of the specific routes", a menor métrica das específicas ([Cisco, guia de configuração do EIGRP](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/configuration/xe-16/ire-xe-16-book/ire-enhanced-igrp.html)). Distância 255 impede o anúncio (referência de comandos). O padrão do `auto-summary`, que sumariza sub-redes até a rede, depende da versão: passou a desabilitado em 15.0(1)M e 12.2(33)SRE ([Cisco, auto-summary](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-a1.html)).
+
+```text
+ip summary-address eigrp as-number ip-address mask [admin-distance] [leak-map name]
+```
+
+### Sumarização estática
+
+Qualquer roteador sumariza com rota estática, já que um roteador deve permitir definir uma rota estática para um prefixo de rede ([RFC 1812, seção 7.4](https://www.rfc-editor.org/rfc/rfc1812.txt)). A rota aponta para `Null0`, `blackhole` ou `reject` no FRRouting e, com distância alta, espera atrás das rotas reais como reserva delas ([FRRouting, STATIC](https://docs.frrouting.org/en/latest/static.html)).
+
+```text
+ip route NETWORK (Null0|blackhole|reject) [tag TAG] [DISTANCE] [metric METRIC] [table TABLENO] [nexthop-vrf VRFNAME] [vrf VRFNAME]
+ip route 198.51.100.0/24 Null0 255
+```
+
+## A rota de descarte e o loop que ela evita
+
+A RFC 4632 decide o destino do que o resumo cobre e o roteador não alcança: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes", descartar o que cai no agregado e em nenhuma rota mais específica ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt)), senão surgem loops (mesma seção). Num caso ilustrativo, o roteador R anuncia 198.51.100.0/24, tem uma rota default para o vizinho upstream e perde 198.51.100.128/26:
+
+1. No vizinho, um pacote para 198.51.100.130 cai no /24 de R e vai para R.
+2. O longest match de R agora é a rota default, de volta ao vizinho.
+3. O pacote vai e volta até o time to live (TTL) se esgotar.
+
+Com uma rota de descarte para o /24, que vence a default, R descarta o pacote, e os /26 que ainda alcança, mais específicos, seguem funcionando. Daí a regra "a network must not follow the default to destinations that are part of one of its aggregated advertisements", não seguir a default rumo aos próprios agregados ([RFC 4632, seção 5.2](https://www.rfc-editor.org/rfc/rfc4632.txt)); veja [tabelas de roteamento e default gateway](/learn/routing-tables-and-default-gateway).
+
+O OSPF insere uma entrada de descarte para cada faixa ativa, porque essas entradas "are necessary to ensure that route summarization at area boundaries will not cause packet looping", evitam pacotes em loop ([RFC 2328, seção 11.1](https://www.rfc-editor.org/rfc/rfc2328.txt)), e responde ao que termina nela com um Internet Control Message Protocol (ICMP) destination unreachable para a origem (seção 11.1). "By default, OSPF installs discard routes to null0 for any area range (internal) or summary-address (external) prefixes that it advertises to other routers", um descarte por faixa ou resumo anunciado ([Cisco, rotas de descarte do OSPF](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book/iro-local-rib.html)), com distâncias 110 e 254 (mesma página). Rotas unreachable e reject mandam ICMP unreachable; rotas blackhole e o next hop `discard` do Junos se calam ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html), [FRRouting, STATIC](https://docs.frrouting.org/en/latest/static.html), [Junos, agregação de rotas](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)).
+
+## Como a sumarização falha
+
+### Faixa estreita demais, ou larga demais
+
+Uma faixa estreita demais não abandona ninguém: "By default, if a network is not contained in any explicitly configured address range, a Type 3 summary-LSA is generated with Link State ID equal to the network's address", a rede fora das faixas sai sozinha ([RFC 2328, seção 12.4.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). O Junos anuncia uma a uma as rotas externas de NSSA fora dos prefixos ([Junos, area-range](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/area-range-edit-protocols-ospf.html)), e o EIGRP suprime só os componentes do próprio resumo ([Cisco, ip summary-address eigrp](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-i1.html)). O preço é agregação, não alcançabilidade.
+
+Uma faixa larga demais reivindica mais que seus componentes. Espaço próprio sem uso é tolerável atrás de uma rota de descarte: o exemplo da Juniper sumariza três /30 num /28 que cobre um quarto, sem uso ([Junos, OSPF route control](https://www.juniper.net/documentation/us/en/software/junos/ospf/topics/topic-map/configuring-ospf-route-control.html)). Espaço roteado por outros não é seu, porque quem o recebeu "has sole responsibility for aggregation of those prefixes", só ele agrega ([RFC 4632, seção 5.4](https://www.rfc-editor.org/rfc/rfc4632.txt)). Se o dono anuncia uma rota mais específica, o longest match leva o tráfego para lá, "punching a hole", um buraco no seu agregado (seção 4.1); se não anuncia, o tráfego morre na sua rota de descarte, e o [traceroute](/learn/icmp-ping-and-traceroute) "will suggest that a problem exists within that network rather than in the network that is no longer advertising the more-specific prefix", acusa a sua rede, não a que parou de anunciar (seção 5.1). Entre sistemas autônomos, a mesma regra permite sequestrar tráfego com um prefixo mais específico, o que os provedores combatem com confiança mútua e filtros nas bordas (seção 12).
+
+### Uma rota sumarizada que esconde falhas
+
+O resumo vive enquanto qualquer componente viver ([RFC 4632, seção 5.4](https://www.rfc-editor.org/rfc/rfc4632.txt)), então o tráfego de um componente morto ainda chega ao roteador que sumariza e morre lá. O guia de EIGRP da Cisco mostra a armadilha com um resumo default: o Device-B anuncia 0.0.0.0/0 para um Device-C downstream, e a rota de descarte do resumo se sobrepõe à default que B aprendeu de um Device-A upstream; B perde a própria saída ([Cisco, guia de configuração do EIGRP](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/configuration/xe-16/ire-xe-16-book/ire-enhanced-igrp.html)). Um floating summary (resumo flutuante), com distância administrativa na interface (mesma página), é anunciado sem ser instalado ([Cisco, ip summary-address eigrp](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-i1.html)). Mas, se o enlace entre A e B cai, B continua anunciando a default, e "In this scenario, Device-C still forwards traffic to Device-B, but Device-B drops the traffic", C manda e B descarta (guia de configuração). Por isso a Cisco restringe o floating summary a dispositivos single-homed e a áreas com uma única saída, já que duas ou mais saídas podem formar uma rota black hole (mesma página).
+
+### Dois ABRs, uma faixa
+
+Dois casos decorrem das regras do OSPF, e não de uma frase isolada. Um ABR com a faixa ativa ignora o summary-LSA de outro ABR para a mesma faixa ([RFC 2328, seção 16.2](https://www.rfc-editor.org/rfc/rfc2328.txt)) e mantém sua entrada de descarte (seção 11.1). Se a área se partir e cada um de dois ABRs alcançar só parte da faixa, segue-se que os dois continuam anunciando o resumo e cada um descarta o tráfego das redes que só o outro alcança; daí a regra "an address range must not be split across multiple components of the area partition", a faixa não pode ficar dividida entre pedaços da área (seção 3.7). Os caminhos também sofrem. Cada ABR anuncia a faixa pelo maior custo de componente (seção 12.4.3); se um alcança dois componentes a 10 e 40 e o outro a 40 e 10, os dois anunciam 40, o que significa que os roteadores remotos mandam a faixa inteira para um deles, até o componente vizinho do outro.
+
+## Como ver a sumarização no roteador
+
+A sumarização não tem header próprio. Numa captura, uma faixa OSPFv2 é um Type 3 summary-LSA com o endereço da faixa como Link State ID e o maior custo de componente como métrica ([RFC 2328, seção 12.4.3](https://www.rfc-editor.org/rfc/rfc2328.txt)); uma faixa OSPFv3 é um inter-area-prefix-LSA de LS (link state) type 0x2003, com PrefixLength, PrefixOptions e Address Prefix e, como métrica, o maior custo até um componente alcançável ([RFC 5340, seções 4.4.3.4 e A.4.5](https://www.rfc-editor.org/rfc/rfc5340.txt)). O FRRouting mostra os summary-LSAs, as rotas OSPF, os resumos externos de OSPFv2 e OSPFv3 e a rota da própria sumarização ([FRRouting, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html), [OSPFv3](https://docs.frrouting.org/en/latest/ospf6d.html), [Zebra](https://docs.frrouting.org/en/latest/zebra.html)):
+
+```console
+show ip ospf database summary
+show ip ospf route
+show ip ospf summary-address
+show ipv6 ospf6 summary-address
+show ip route 198.51.100.0/24
+```
+
+O `show ip ospf database` da Cisco aceita a mesma palavra-chave `summary` ([Cisco, show ip ospf database](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/command/iro-cr-book/ospf-s1.html)). O exemplo da Cisco imprime uma rota de descarte do OSPF como `Known via "ospf 1", distance 110, metric 0, type intra area`, com o next hop `* directly connected, via Null0` ([Cisco, rotas de descarte do OSPF](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book/iro-local-rib.html)). Uma rota estática de descarte no FRRouting, em saída ilustrativa no formato do exemplo da documentação:
+
+```text
+router> show ip route 198.51.100.0/24
+Routing entry for 198.51.100.0/24
+  Known via "static", distance 255, metric 0
+    directly connected, Null0
+```
+
+No Linux, três comandos montados a partir da gramática do ip-route(8) dão um descarte silencioso para a rota sumarizada, a listagem dessas rotas e a entrada em que um endereço cai ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)):
+
+```bash
+ip route add blackhole 198.51.100.0/24
+ip route show type blackhole
+ip route get fibmatch 198.51.100.130
+```
+
+O módulo ipaddress do Python agrega prefixos, recusa prefixos com bits de host ligados e encontra buracos com address_exclude() ([Python, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)), como mostra esta sessão no [Playground de Python](/tools/python-playground):
+
+```text
+>>> from ipaddress import ip_network, collapse_addresses
+>>> four = [ip_network(f"198.51.100.{n}/26") for n in (0, 64, 128, 192)]
+>>> list(collapse_addresses(four))
+[IPv4Network('198.51.100.0/24')]
+>>> list(collapse_addresses(four[1:3]))
+[IPv4Network('198.51.100.64/26'), IPv4Network('198.51.100.128/26')]
+>>> list(ip_network("198.51.100.0/24").address_exclude(four[2]))
+[IPv4Network('198.51.100.0/25'), IPv4Network('198.51.100.192/26')]
+>>> ip_network("198.51.100.64/25")
+Traceback (most recent call last):
+  ...
+ValueError: 198.51.100.64/25 has host bits set
+```
+
+A [Calculadora CIDR / de sub-redes](/tools/cidr) dispensa código: o modo **Super-rede** mostra um **Conjunto mínimo de cobertura** e uma **Super-rede única** com seus endereços extras (nenhum, 128 e 64 para os três conjuntos acima), e o modo **Sobreposição / lacuna**, com **Escopo (opcional, habilita a detecção de lacunas)** preenchido com o resumo planejado, lista as **Lacunas no escopo**, aqui 198.51.100.128/26.
+
+## Para lembrar
+
+- Um resumo substitui seus componentes além da fronteira: lá se guarda uma entrada e nada muda enquanto algum componente viver, mas o roteador que sumariza continua com todos.
+- Prefixos só se sumarizam com exatidão quando preenchem um bloco alinhado de potência de dois: escreva os bits, tome o prefixo comum mais longo e confira se o restante assume todos os valores.
+- O OSPF sumariza nas fronteiras, com faixas de área nos ABRs pelo maior custo de componente e resumos externos nos ASBRs e nos roteadores de borda de NSSA; o EIGRP sumariza por interface, com distância administrativa 5 e a menor métrica.
+- Uma rede fora de qualquer faixa continua anunciada sozinha, então uma faixa estreita demais custa agregação, não alcançabilidade.
+- Quem sumariza precisa descartar o que cai no resumo e em nenhum componente, ou uma rota default devolve o tráfego em loop até o TTL se esgotar.
+- A sumarização esconde falhas: o tráfego de um componente morto, ou de espaço roteado por outros, morre no roteador que sumariza, e o traceroute culpa a rede errada.
+
+## Fontes
+
+- [RFC 2328, OSPF Version 2, abril de 1998: seções 3, 3.5, 3.7, 11.1, 12.4.3, 12.4.4 e 16.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 5340, OSPF for IPv6, julho de 2008: seções 4.4.3.4 e A.4.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5340.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seções 3.1, 4.1, 5.1, 5.2, 5.4 e 12 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 2.2.5.2 e 7.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 7868, Cisco's Enhanced Interior Gateway Routing Protocol (EIGRP), maio de 2016: seção 3.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7868.txt)
+- [RFC 3101, The OSPF Not-So-Stubby Area (NSSA) Option, janeiro de 2003: seção 2.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3101.txt)
+- [RFC 2178, OSPF Version 2, julho de 1997: apêndice G.7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2178.txt)
+- [RFC 1583, OSPF Version 2, março de 1994: seção 3.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1583.txt)
+- [FRRouting documentation, OSPFv2: Areas, Showing Information e External Route Summarisation (lida em 2026-10-18)](https://docs.frrouting.org/en/latest/ospfd.html)
+- [FRRouting documentation, OSPFv3: ASBR Summarisation Support in OSPFv3 e OSPF6 area (lida em 2026-10-18)](https://docs.frrouting.org/en/latest/ospf6d.html)
+- [FRRouting documentation, STATIC: Static Route Commands (lida em 2026-10-18)](https://docs.frrouting.org/en/latest/static.html)
+- [FRRouting documentation, Zebra: zebra Terminal Mode Commands (lida em 2026-10-18)](https://docs.frrouting.org/en/latest/zebra.html)
+- [ip-route(8), Linux manual page, iproute2: SYNOPSIS, DESCRIPTION, ip route show e ip route get (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [Python 3.14 documentation, ipaddress: IPv4/IPv6 manipulation library: Network objects e Other Module Level Functions (lida em 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)
+- [Juniper Networks, Junos OS, Configuring OSPF Route Control, setembro de 2025: Example: Summarizing Ranges of Routes in OSPF Link-State Advertisements Sent into the Backbone Area (lida em 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/ospf/topics/topic-map/configuring-ospf-route-control.html)
+- [Juniper Networks, Junos OS CLI reference, area-range, dezembro de 2025 (lida em 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/area-range-edit-protocols-ospf.html)
+- [Juniper Networks, Junos OS, Configuring Route Aggregation, dezembro de 2025: Understanding Route Aggregation e Configuring the Next Hop for Aggregate Routes (lida em 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/static-routing/topics/topic-map/config-route-aggregation.html)
+- [Cisco IOS IP Routing: OSPF Command Reference, OSPF Commands: A through ip ospf demand-circuit: area range (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/command/iro-cr-book/ospf-a1.html)
+- [Cisco IOS IP Routing: OSPF Command Reference, OSPF Commands: show ip ospf through T: show ip ospf database (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/command/iro-cr-book/ospf-s1.html)
+- [Cisco, IP Routing: OSPF Configuration Guide, Configuring OSPF: route summarization when redistributing routes into OSPF (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book/iro-cfg.html)
+- [Cisco, IP Routing: OSPF Configuration Guide, OSPFv2 Local RIB, outubro de 2026: rotas de descarte (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_ospf/configuration/xe-16/iro-xe-16-book/iro-local-rib.html)
+- [Cisco IOS IP Routing: EIGRP Command Reference, I through R: ip summary-address eigrp (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-i1.html)
+- [Cisco IOS IP Routing: EIGRP Command Reference, A through H: auto-summary (EIGRP) (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/command/ire-cr-book/ire-a1.html)
+- [Cisco, IP Routing: EIGRP Configuration Guide, EIGRP, março de 2016: route summarization e floating summary routes (lida em 2026-10-18)](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/iproute_eigrp/configuration/xe-16/ire-xe-16-book/ire-enhanced-igrp.html)

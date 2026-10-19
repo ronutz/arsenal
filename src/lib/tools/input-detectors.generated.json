@@ -188,7 +188,7 @@
       "family": "Networking & addressing",
       "priority": 7,
       "pattern": "<<>>\\s*DiG",
-      "example": "; <<>> DiG 9.18.1 <<>> example.com A"
+      "example": "; <<>> DiG 9.20.29 <<>> example.com A"
     },
     {
       "slug": "dig-output-explainer",
@@ -1021,7 +1021,7 @@
       "family": "Networking & addressing",
       "priority": 6,
       "pattern": "server can'?t find .+:",
-      "example": "** server can't find example.com: NXDOMAIN"
+      "example": "** server can't find nonexistent.invalid: NXDOMAIN"
     },
     {
       "slug": "nslookup-output-explainer",

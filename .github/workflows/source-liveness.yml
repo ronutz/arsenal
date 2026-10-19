@@ -118,6 +118,7 @@ jobs:
         run: |
           echo "::error title=Citation rot::The sweep found an undeclared suspect or a stale declaration. Read the job summary."
           echo "A 404 is a CANDIDATE, never a verdict: confirm each with a second client."
+          echo "A second client is a live reader that cannot answer from a cache (a real browser), never a fetch tool's copy."
           echo "If it is dead, repair or remove the citation and KEEP the claim in the copy"
           echo "(PRIME ruling 2026-09-27: a fact is not deleted for want of a source)."
           echo "If it is alive, add it to DECLARED_SUSPECT with the finding that settled it."

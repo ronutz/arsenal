@@ -60,7 +60,8 @@ export const manifest = Object.freeze({
     "glossary/ognl",
   ],
   sources: [
-    { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax, projections and static method access", url: "https://commons.apache.org/proper/commons-ognl/language-guide.html" },
+    // 2026-10-18: Apache moved Commons OGNL to its dormant components; the old /proper/ address answers 404.
+    { id: "ognl-language-guide", label: "Apache Commons OGNL language guide: expression syntax, projections and static method access", url: "https://commons.apache.org/dormant/commons-ognl/language-guide.html" },
     { id: "ping-expressions", label: "Ping Identity PingFederate documentation: attribute mapping expressions and the Expression Administrator role", url: "https://docs.pingidentity.com/pingfederate/latest/administrators_reference_guide/pf_attribute_mapping_expressions.html" },
   ],
 });

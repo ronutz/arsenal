@@ -10,12 +10,19 @@
 // efficiency pair is the canonical 94.93% (1500) vs 99.14% (9000). Constants
 // cross-verified against multiple independent sources on 2026-07-20 (see the
 // manifest in ./index.ts). Reject vectors pin stable error codes.
+//
+// 2026-10-19 (set 2026-10-19a): MPLS labels moved from the frame header to
+// the frame payload, per RFC 3032 section 3.1 ("the Frame Payload consists
+// of the label stack entries and the IP datagram", read 2026-10-19). The
+// MPLS vectors now pin RFC 3032's own numbers: one label on a 1500-byte
+// payload needs a 1504-byte payload (section 3), and 1488 is the datagram
+// that still fits a 1500-byte link with three labels (section 3.2).
 // verifyVectors() runs the whole set and throws on the first drift.
 // ============================================================================
 
 import { run, MtuCalcError, type MtuCalcErrorCode } from "./compute";
 
-export const GOLDEN_VECTOR_SET_ID = "mtu-mss/2026-07-20a";
+export const GOLDEN_VECTOR_SET_ID = "mtu-mss/2026-10-19a"; // bumped 2026-10-19: MPLS labels now inside the MTU (RFC 3032 s3.1)
 
 interface AcceptVector {
   id: string;
@@ -26,6 +33,7 @@ interface AcceptVector {
     mssV4?: number;
     mssV6?: number;
     encapTotal?: number;
+    labelTotal?: number; // MPLS label stack bytes, pinned since set 2026-10-19a
     shimTotal?: number;
     maxFrame?: number;
     onWire?: number;
@@ -58,9 +66,14 @@ export const MTU_MSS_GOLDEN_VECTORS: readonly AcceptVector[] = Object.freeze([
   { id: "wireguard-pppoe-1492", input: "1492 wireguard", expect: { encapTotal: 60, innerMtu: 1432 } },
   // Jumbo underlay under an overlay: the datacenter case.
   { id: "vxlan-9000", input: "9000 vxlan", expect: { encapTotal: 50, innerMtu: 8950 } },
-  // Shims: frame grows, IP MTU does not move (the tool's core lesson).
+  // 802.1Q shims: frame grows, IP MTU does not move (the tool's core lesson).
   { id: "vlan-1500", input: "1500 vlan", expect: { innerMtu: 1500, shimTotal: 4, maxFrame: 1522, onWire: 1542 } },
-  { id: "vlan-mpls2-1500", input: "1500 vlan mpls2", expect: { innerMtu: 1500, shimTotal: 12, maxFrame: 1530 } },
+  // MPLS labels sit inside the frame payload (RFC 3032 s3.1): the IP packet
+  // shrinks 4 bytes per label, the frame does not grow, and a full 1500-byte
+  // IP packet needs the link payload raised (RFC 3032 s3: 1504 for one label).
+  { id: "mpls-1500", input: "1500 mpls", expect: { labelTotal: 4, shimTotal: 0, innerMtu: 1496, mssV4: 1456, maxFrame: 1518, requiredMtu: 1504 } }, // RFC 3032 s3 "1504-byte payload"
+  { id: "mpls3-1500", input: "1500 mpls3", expect: { labelTotal: 12, innerMtu: 1488 } }, // RFC 3032 s3.2: 1488 fits a 1500-byte link with three labels
+  { id: "vlan-mpls2-1500", input: "1500 vlan mpls2", expect: { innerMtu: 1492, labelTotal: 8, shimTotal: 4, maxFrame: 1522, requiredMtu: 1508, requiredFrame: 1530 } }, // was innerMtu 1500 / shimTotal 12 / maxFrame 1530 until 2026-10-19
   // Custom overhead: a measured IPsec ESP (AES-GCM tunnel-mode example, 57 B).
   { id: "custom-57", input: "1500 +57", expect: { encapTotal: 57, innerMtu: 1443 } },
 ]);
@@ -72,6 +85,7 @@ export const MTU_MSS_REJECT_VECTORS: readonly RejectVector[] = Object.freeze([
   { id: "unknown-token", input: "1500 turbo", code: "format" },
   { id: "custom-zero", input: "1500 +0", code: "custom-range" },
   { id: "eats-everything", input: "100 vxlan", code: "too-small" },
+  { id: "mpls-nine-labels", input: "1500 mpls9", code: "mpls-range" }, // added 2026-10-19: pins the 1..8 label bound
 ]);
 
 /** Run every vector; throw with a precise message on the first mismatch. */
@@ -83,6 +97,7 @@ export function verifyVectors(): { accepted: number; rejected: number } {
       mssV4: r.mssV4,
       mssV6: r.mssV6,
       encapTotal: r.encapTotal,
+      labelTotal: r.labelTotal, // added with set 2026-10-19a
       shimTotal: r.shimTotal,
       maxFrame: r.frame.maxFrame,
       onWire: r.frame.onWire,

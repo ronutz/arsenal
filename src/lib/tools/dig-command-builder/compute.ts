@@ -49,6 +49,14 @@
 //   IANA DNS Parameters: the RR TYPE registry (the mnemonics the type field
 //   accepts) and the EDNS option codes.
 //   DNS Flag Day 2020: 1232 bytes as the minimum safe EDNS buffer size.
+//   Read 2026-10-19 (SOURCES with that access date): the BIND 9.20.29 dig
+//   manual, "+bufsize[=B] ... sets the UDP message buffer size advertised
+//   using EDNS0 to B bytes ... +bufsize restores the default buffer size", so
+//   +bufsize=0 advertises 0 bytes; dig's default is DEFAULT_EDNS_BUFSIZE 1232
+//   (bin/dig/dighost.h at v9.20.29). The change from 4096 to 1232 is CHANGES
+//   entry 5516, released in 9.17.6 and therefore in every release from 9.18.0;
+//   in the 9.16 branch the same entry changed named only, and dig kept 4096
+//   through 9.16.50 (bin/dig/include/dig/dig.h at v9.16.50).
 //   RFC 5737 and 3849: the documentation addresses used in the examples.
 // ============================================================================
 
@@ -68,11 +76,14 @@ export interface Source {
   scope: string;
 }
 
-/** The day every source below was read. */
+/** The day most sources below were read. */
 const READ = "2026-10-04";
 
-/** Build a source record. */
-const src = (id: string, label: string, type: Source["type"], url: string, scope: string): Source => ({ id, label, type, url, access_date: READ, scope });
+/** The day the +bufsize sources were read (the 2026-10-19 correction). */
+const READ_BUFSIZE = "2026-10-19";
+
+/** Build a source record; the access date defaults to READ. */
+const src = (id: string, label: string, type: Source["type"], url: string, scope: string, accessDate: string = READ): Source => ({ id, label, type, url, access_date: accessDate, scope });
 
 /** Every source, in the order the manifest lists them. */
 export const SOURCES: Source[] = [
@@ -93,6 +104,10 @@ export const SOURCES: Source[] = [
   src("rfc7871", "RFC 7871: Client Subnet in DNS Queries", "reference", "https://www.rfc-editor.org/rfc/rfc7871", "EDNS option code 8; a SOURCE PREFIX-LENGTH of 0 tells the resolver not to use the client's address information"),
   src("rfc7873", "RFC 7873: Domain Name System (DNS) Cookies", "reference", "https://www.rfc-editor.org/rfc/rfc7873", "EDNS option code 10; a lightweight transaction security mechanism against off-path attackers"),
   src("iana-dns-parameters", "IANA: Domain Name System (DNS) Parameters, Resource Record (RR) TYPEs and DNS EDNS0 Option Codes", "reference", "https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml", "the registry of RR TYPE mnemonics and numbers the type field accepts (A 1 to DLV 32769, with * 255 written ANY), and the EDNS option codes NSID 3, edns-client-subnet 8, COOKIE 10"),
+  src("bind9-dig-920", "ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility (stable)", "vendor-docs", "https://bind9.readthedocs.io/en/stable/manpages.html", "+bufsize[=B]: sets the UDP message buffer size advertised using EDNS0 to B bytes, 0 to 65535; +bufsize with no value restores the default buffer size (so +bufsize=0 advertises 0)", READ_BUFSIZE), // the bufsize correction
+  src("bind9-dighost-h-920", "BIND 9 source at tag v9.20.29, bin/dig/dighost.h", "implementation", "https://github.com/isc-projects/bind9/blob/v9.20.29/bin/dig/dighost.h", "#define DEFAULT_EDNS_BUFSIZE 1232: the size dig advertises when nothing sets it (and what a bare +bufsize restores, bin/dig/dig.c)", READ_BUFSIZE), // the default's value
+  src("bind9-changes-918", "ISC, BIND 9.18.0 CHANGES", "vendor-docs", "https://downloads.isc.org/isc/bind9/9.18.0/CHANGES", "entry 5516, under 9.17.6: the default EDNS buffer size has been changed from 4096 to 1232 bytes [GL #2183]; dig's DEFAULT_EDNS_BUFSIZE is 1232 from v9.17.6 and in every release from 9.18.0", READ_BUFSIZE), // when the default changed
+  src("bind9-dig-h-916", "BIND 9 source at tag v9.16.50, bin/dig/include/dig/dig.h", "implementation", "https://github.com/isc-projects/bind9/blob/v9.16.50/bin/dig/include/dig/dig.h", "#define DEFAULT_EDNS_BUFSIZE 4096: in the 9.16 branch the 1232 change (9.16.8, entry 5516) reached named, not dig", READ_BUFSIZE), // why 9.16 is not the start for dig
   src("dns-flag-day-2020", "DNS Flag Day 2020", "reference", "https://www.dnsflagday.net/2020/", "defaults in DNS software should reflect the minimum safe EDNS buffer size, which is 1232 bytes, to avoid IP fragmentation"),
   src("rfc5737", "RFC 5737: IPv4 Address Blocks Reserved for Documentation", "reference", "https://www.rfc-editor.org/rfc/rfc5737", "192.0.2.0/24 (TEST-NET-1) is reserved for documentation: the resolver address in the examples here is not a real resolver"),
   src("rfc3849", "RFC 3849: IPv6 Address Prefix Reserved for Documentation", "reference", "https://www.rfc-editor.org/rfc/rfc3849", "2001:DB8::/32 is reserved for documentation: the IPv6 addresses in the examples here are not real hosts"),
@@ -547,7 +562,10 @@ export function run(raw: DigInput): DigResult {
     if (bufsizeNumber === null) err("bad-bufsize", { value: bufsize });
     else if (bufsizeNumber > 0 && bufsizeNumber < 512) warn("bufsize-under-512", { value: bufsize });
     else if (bufsizeNumber > 4096) info("bufsize-large", { value: bufsize });
-    else if (bufsizeNumber === 0) info("bufsize-default");
+    // +bufsize=0 advertises a 0-byte buffer; only a bare +bufsize restores the default (manual, read 2026-10-19;
+    // dig.c 9.20.29 and the 2026-10-18 capture showing "udp: 0"). A warning since 2026-10-19: it was an info that
+    // wrongly said 0 restores the default. The code keeps its old name so the message keys stay stable.
+    else if (bufsizeNumber === 0) warn("bufsize-default");
   }
 
   // Client Subnet: 0, or an address with an optional prefix length.

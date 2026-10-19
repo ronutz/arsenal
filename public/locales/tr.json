@@ -111,7 +111,7 @@
         "overlap": "Çakışma / boşluk"
       },
       "modeDesc": {
-        "subnet": "Tek bir IPv4 CIDR bloğunu analiz eder: ağ, yayın, maske ve ana bilgisayar aralığı.",
+        "subnet": "Tek bir IPv4 CIDR bloğunu analiz eder: ağ, yayın, maske, ana bilgisayar aralığı ve bloğun içine düştüğü ya da çakıştığı özel amaçlı aralıklar.",
         "vlsm": "Bir üst bloğu, ana bilgisayar sayıları listesine göre değişken uzunlukta alt ağlara böler.",
         "supernet": "Bir önek listesini, onları kapsayan en küçük blok kümesinde özetler.",
         "overlap": "Önekler arasındaki çakışmaları ve iç içe geçmeleri, ayrıca isteğe bağlı bir kapsam içindeki boşlukları bulur."
@@ -141,7 +141,13 @@
           "utilization": "Kullanım"
         },
         "unfit": "Sığmadı",
-        "parentPlaceholder": "10.0.0.0/24"
+        "parentPlaceholder": "10.0.0.0/24",
+        "p2p31": "2 ana bilgisayarlık isteklere /31 ver (noktadan noktaya bağlantılar, RFC 3021)",
+        "maskedNote": "Üst blok {typed} ana bilgisayar bitleri ayarlanmış olduğu için {parent} olarak maskelendi; plan {parent} içinden bölünür.",
+        "orderNote": "İstekler girildiği sırayla değil, en büyük bloktan en küçüğe doğru yerleştirilir; böylece her blok kendi boyutunun bir katında başlar.",
+        "freeBlocks": "Boş bloklar",
+        "noFree": "Üst blokta boş alan kalmadı.",
+        "noBroadcast": "yok (/31)"
       },
       "supernet": {
         "label": "Toplanacak önekler",
@@ -185,12 +191,36 @@
         "prefix": "Önek uzunluğu 0 ile 32 arasında olmalı.",
         "tooMany": "Çok fazla giriş. Listeyi kısaltıp tekrar deneyin.",
         "noReqs": "Ana bilgisayar sayısı olan en az bir alt ağ gereksinimi ekleyin.",
-        "noPrefixes": "En az bir önek girin, her satıra bir tane."
+        "noPrefixes": "En az bir önek girin, her satıra bir tane.",
+        "zeroHosts": "Bir alt ağ gereksinimi 0 ana bilgisayar istiyor. Her alt ağın en az 1 ana bilgisayara ihtiyacı vardır: sayıyı düzeltin veya satırı kaldırın."
       },
       "rangeHeading": "Adres düzeni",
       "usableShort": "kullanılabilir",
       "rfcNote": "/31 ve /32 hiçbir şey ayırmaz: her adres kullanılabilir (RFC 3021).",
-      "reservedNote": "İlk adres ağ, sonuncusu yayın adresidir; ikisi de ayrılmıştır, yani kullanılabilir = toplam − 2."
+      "reservedNote": "İlk adres ağ, sonuncusu yayın adresidir; ikisi de ayrılmıştır, yani kullanılabilir = toplam − 2.",
+      "classifyHeading": "Özel amaçlı aralıklar",
+      "classifySpecial": "Özel amaçlı bir aralığın içinde: {range}, {name} ({rfc}).",
+      "classifyPartial": "Kısmen özel amaçlı: {total} adresin {special} tanesi aşağıdaki aralıklarda; geri kalanı hiçbir özel amaçlı aralıkta değil.",
+      "classifyNone": "Özel amaçlı aralık yok (küresel olarak yönlendirilebilir unicast alanı).",
+      "classifyThRange": "Aralık",
+      "classifyThName": "Ad",
+      "classifyThRfc": "RFC",
+      "classifyThRelation": "İlişki",
+      "classifyThSource": "Kaynak",
+      "classifyThDestination": "Hedef",
+      "classifyThForwardable": "İletilebilir",
+      "classifyThGlobal": "Küresel olarak erişilebilir",
+      "classifyRelEqual": "bu bloğun kendisi",
+      "classifyRelInside": "bu bloğu içerir",
+      "classifyRelContains": "bu bloğun içinde (kısmi çakışma)",
+      "classifyYes": "Evet",
+      "classifyNo": "Hayır",
+      "classifyNotListed": "belirtilmemiş",
+      "classifyTerminated": "{date} tarihinde sona erdi",
+      "classifyNote1": "[1] Kayıt dipnotu: birçok protokole bu kuraldan istisna tanınmıştır (örnekler için RFC 8029 ve RFC 5884).",
+      "classifyNote2": "[2] Kayıt dipnotu: daha özel bir ayırma olmadıkça kullanılamaz.",
+      "classifyFlagsNote": "Bayraklar kayda aittir. Kaynak ve Hedef: aralıktaki bir adresin iki cihazdan geçen bir datagramın kaynağı ya da hedefi olarak geçerli olup olmadığı. İletilebilir: bir yönlendiricinin böyle bir datagramı dış arayüzler arasında iletip iletemeyeceği. Küresel olarak erişilebilir: belirli bir yönetim alanının ötesine iletilip iletilemeyeceği.",
+      "classifySource": "Satırlar IANA IPv4 Special-Purpose Address Space kaydından (2025-10-09 tarihinde güncellendi) ve 224.0.0.0/4 için IANA IPv4 Multicast Address Space kaydından alınmıştır; ikisi de 2026-10-19 tarihinde okundu. Kayıt, listelenen bir aralığın hiçbir yerel veya küresel bağlamda yönlendirilebilirliğinin garanti edilmediğini belirtir."
     },
     "title": "Araçlar",
     "lede": "Küçük, hızlı ve gizliliği önceleyen araçlar. Katalog tarayıcınızda hesaplar ve hiçbir yere hiçbir şey göndermez; tek istisna kırmızı odadır: orada bir araç, adını belirttiği resmi hizmeti sorgular ve bunu yalnızca “Ask” düğmesine bastığınızda yapar.",
@@ -885,7 +915,7 @@
     "rightsLgpd": "Brezilya'da iseniz, LGPD'nin 18. Maddesinde belirtilen haklara sahipsiniz ve ulusal veri koruma makamına (ANPD) da başvurabilirsiniz.",
     "changesTitle": "Bu bildirimde değişiklikler",
     "changesBody": "Bu bildirim değişirse, gözden geçirilmiş sürüm bu sayfada yayınlanacak ve aşağıdaki tarih güncellenecektir. Esaslı değişiklikler geriye dönük olarak uygulanmayacaktır.",
-    "updated": "Son güncelleme: 30 Haziran 2026",
+    "updated": "Son güncelleme: {date}",
     "backHome": "Ana sayfaya dön"
   },
   "footer": {
@@ -976,8 +1006,8 @@
   "endorsements": {
     "eyebrow": "Referanslar",
     "title": "İnsanlar ne diyor, kendi sözleriyle.",
-    "intro": "İki on yıllık eğitim ve danışmanlıktan, {count} eksiksiz tavsiye ve görüş. Buradaki hiçbir şey başka sözcüklerle ifade edilmedi ya da düzenlenmedi.",
-    "provenance": "LinkedIn tavsiyelerinden, Google yorumlarından ve doğrulanmış Red Education katılımcı geri bildirimlerinden alınmıştır. Özgün ifadeler ve yazım, yazıldığı gibi aynen korunmuştur."
+    "intro": "İki on yıllık eğitim ve danışmanlıktan {count} tavsiye ve görüş. Özgün metinler aynen korunmuştur: içlerinde hiçbir şey başka sözcüklerle ifade edilmedi ya da düzenlenmedi. İsteğe bağlı makine çevirileri bu şekilde etiketlenmiştir.",
+    "provenance": "LinkedIn tavsiyelerinden, Google yorumlarından ve doğrulanmış Red Education katılımcı geri bildirimlerinden alınmıştır. Özgün ifadeler ve yazım, yazıldığı gibi aynen korunmuştur; çevrilmiş bir kart makine çevirisi olarak işaretlenir ve özgün metin bir tıklama uzaklıktadır."
   },
   "testimonials": {
     "filterLabel": "Görüşleri filtrele",
@@ -1034,7 +1064,7 @@
     },
     "era2020present": {
       "years": "2020 – şimdi",
-      "title": "Eğitmen & Danışman",
+      "title": "Öğretmek, kurmak ve alanı anlamlandırmak",
       "subtitle": "Dünya genelinde verilen tam zamanlı resmi eğitim ve yanında sonuç doğuran kararlar üzerine danışmanlık.",
       "intro": "2020'de, tüm kariyer boyunca uzanan çizgi, kumaşın tamamı oldu. Öğretimin yirmi yıl boyunca her role eşlik etmesinin ardından, eğitim işin kendisi oldu: dünya genelindeki profesyoneller ve ekipler için tam zamanlı, resmi, sertifikalı öğretim. Bu dönemi ayıran sadece odağı değil, aynı zamanda platformlar arasında kasıtlı ve tarihli genişlemesidir; her biri derin saha deneyiminin yerine değil, üzerine eklenmiştir.",
       "s1Title": "Tam zamanlı, göreve hazır",
@@ -1045,7 +1075,7 @@
       "s3Body": "Son yılları ayıran şey, açık ve tarihli bir ilerlemedir. Extreme Networks eğitimi 2021'den itibaren eklendi; EXOS anahtarlama, SD-WAN ve otomasyonu kapsıyor. Fortinet 2024'ten itibaren, FCP FortiGate Administrator yoluna odaklanarak izledi. Netskope 2025'ten itibaren eklendi; Netskope Security Cloud'un operasyonunu, yönetimini, dağıtımını ve entegrasyonunu kapsıyor. Platformlar, her biri kasıtlı olarak eklendi, her biri altındaki aynı yirmi yıllık ağ ve güvenlik uygulamasının üzerinde duruyor.",
       "s4Title": "Red Education aracılığıyla, dünyaya",
       "s4Body": "Bu küresel sunumun ana aracı, bölgelerdeki kuruluşlara resmi sertifikalı kurslar ileten yetkili bir eğitim merkezi olan Red Education'dır. Rol, küresel teknik eğitim eğitmenidir; São Paulo merkezi, iki pasaport ve seyahate duyulan içten sevgiyle mümkün olan uluslararası bir katılımcı kitlesine sunum yapar. Bu süregelen iş birliği, bireysel uzmanlığı, dünya genelindeki kuruluşların rezerve edip güvenebileceği bir şeye dönüştürür.",
-      "closer": "İşte bu hikâyenin tamamı boyunca uzanan çizginin karşılığını verdiği yer burası. Erken yılların merakı, sahadaki yıllar boyunca uygulama derinliğine dönüştü ve o derinlik şimdi her katılımcının aldığı şey oldu: slayt okuyan bir konuşmacı değil, bu sistemleri kuran ve onların gerçekte nasıl, neden çalıştığını anlatan biri."
+      "closer": "İşte bu hikâyenin tamamı boyunca uzanan çizginin karşılığını verdiği yer burası. Erken yılların merakı, sahadaki yıllar boyunca uygulama derinliğine dönüştü ve o derinlik şimdi her katılımcının aldığı şey oldu: bu sistemleri kuran ve onların gerçekte nasıl, neden çalıştığını anlatan biri."
     }
   },
   "vendors": {
@@ -1153,7 +1183,7 @@
     "title": "Bu sistemleri öğretmeden önce kuran eğitmen.",
     "lede": "Çoğu teknik eğitim, bir konuyu öğretmek için onu öğrenen kişiler tarafından sunulur. Burada tam tersi: gerçek ağ ve güvenlik sistemlerini kurmak, bozmak ve onarmakla geçen otuz yıl, her kavramı üretimde gerçekte nasıl davrandığına bağlayan bir eğitime damıtılmış.",
     "s1Title": "Sınıfta neden önemli",
-    "s1Body": "Bir özelliğin nasıl çalışması gerektiğini açıklamakla, kritik bir şeyin çöktüğü gece üçünde neden öyle davrandığını açıklamak arasında fark vardır. İlki bir kılavuzdan gelir. İkincisi ise orada bulunmuş olmaktan gelir. 1996'dan bu yana iş, uygulamaydı: ağları tasarlamak ve devreye almak, ardından baskı altında sorunlarını gidermek ve bir işi durma noktasına getiren kritik erişilebilirlik ve güvenlik olaylarını çözmek için çağrılan kişi olmak; hem üreticiler hem de Brezilya'nın en büyük kuruluşlarından bazıları için. Her katılımcının aldığı şey bu derinliktir: slaytları okuyan bir sunucu değil, bu sistemlerin içinde yaşamış ve gerçekte nasıl çalıştıklarını anlatan bir mühendis.",
+    "s1Body": "Bir özelliğin nasıl çalışması gerektiğini açıklamakla, kritik bir şeyin çöktüğü gece üçünde neden öyle davrandığını açıklamak arasında fark vardır. İlki bir kılavuzdan gelir. İkincisi ise orada bulunmuş olmaktan gelir. 1996'dan bu yana iş, uygulamaydı: ağları tasarlamak ve devreye almak, ardından baskı altında sorunlarını gidermek ve bir işi durma noktasına getiren kritik erişilebilirlik ve güvenlik olaylarını çözmek için çağrılan kişi olmak; hem üreticiler hem de Brezilya'nın en büyük kuruluşlarından bazıları için. Her katılımcının aldığı şey bu derinliktir: bu sistemlerin içinde yaşamış ve gerçekte nasıl çalıştıklarını anlatan bir mühendis.",
     "s2Title": "Karmaşığı anlaşılır kılmak",
     "s2Body": "Derin teknik bilgi gereklidir ama yeterli değildir. Daha nadir olan beceri onu çevirmektir: gerçekten karmaşık bir şeyi, Web uygulama güvenlik duvarı, kimlik federasyonu, trafik yönetimi, SD-WAN, alıp onunla ilk kez karşılaşan birinde tutunur hale getirmek. Katılımcılar tutarlı biçimde gerçek dünyadan örneklerden ve net, yapılandırılmış yöntemden söz eder; her kavramı gerçekten yaptıkları işin bağlamına yerleştirme yeteneğinden. Eğitim, bu kariyer boyunca uzanan bir çizgidir; 1997'den beri neredeyse her rolde vardır ve 2020'den beri tam zamanlı odaktır.",
     "s3Title": "Uygulamalı, muğlak değil",
@@ -1191,12 +1221,18 @@
     "topicAdvisory": "Danışmanlık ve görüşme",
     "topicOther": "Başka bir şey",
     "formMessage": "Mesajın",
-    "formSend": "Mesaj gönder",
+    "formSend": "E-posta taslağını aç",
     "formSending": "Gönderiliyor…",
     "formRequired": "Lütfen adını, e-postanı ve mesajını doldur.",
     "successTitle": "Teşekkürler.",
     "successBody": "Mesajın yola çıktı. Sana en kısa sürede döneceğim.",
     "errorBody": "Gönderirken bir şeyler ters gitti. Tekrar dene ya da doğrudan e-posta gönder.",
+    "draftedTitle": "E-posta taslağınız açık.",
+    "draftedBody": "E-posta uygulamanız mesaj doldurulmuş halde açılmış olmalı. Oradan gönderin; henüz hiçbir şey gönderilmedi. Hiçbir şey açılmadıysa aşağıdaki mesajı kopyalayıp {email} adresine e-posta ile gönderin.",
+    "copyMessage": "Mesajı kopyala",
+    "copied": "Kopyalandı",
+    "copyFailed": "Kopyalama engellendi: metni seçip kopyalayın",
+    "draftedMessageLabel": "Mesaj, taslak haliyle",
     "emailLabel": "E-posta",
     "channels": {
       "linkedin": {
@@ -1416,12 +1452,12 @@
   "license_page": {
     "eyebrow": "Koşullar",
     "title": "Lisans",
-    "closedHeading": "Kapalı kaynak, bu web sitesi",
-    "closedBody": "Web sitesinin kendisi kapalı kaynaktır. Tasarımı, arayüzü, yazılı içeriği (her Learn makalesi dahil), markası ve bu araçların burada bir araya getirilip sunulma biçimi özel mülktür, tüm hakları saklıdır. Önceden yazılı izin olmadan sitenin veya içeriğinin kopyalanmasına, çoğaltılmasına, değiştirilmesine, yeniden dağıtılmasına ya da bunlardan türev çalışmalar oluşturulmasına izin verilmez.",
+    "closedHeading": "Açık kaynak: Apache-2.0 (kod) ve CC BY 4.0 (içerik)",
+    "closedBody": "Uygulama kodu Apache License 2.0 lisansı altındadır. Yazılı içerik, her Learn makalesi, araçların metinleri ve açıklamaları ile belgeler, Creative Commons Atıf 4.0 Uluslararası (CC BY 4.0) lisansı altındadır. Her ikisini de, ticari amaçlarla dahil, kullanabilir, değiştirebilir ve yeniden dağıtabilirsiniz; yeter ki Rodolfo Nützmann'a (ronutz.com) uygun şekilde atıf yapın, lisansa bağlantı verin ve yaptığınız değişiklikleri belirtin. ronutz.com kanonik, bakımı yapılan kaynak olmaya devam eder.",
     "contact": "Lisansla ilgili sorularınız mı var? <a>İletişime geçin.</a>",
     "backHome": "Araçlara dön",
     "thirdHeading": "Açık kaynak bileşenler",
-    "lede": "ronutz.com tescilli bir çalışmadır, tüm hakları saklıdır. Bu koşullar web sitesini ve içeriğini kapsar. Site, kendi lisans koşulları altında kullanılan ve yeniden dağıtılan açık kaynaklı yazılımlar üzerine kuruludur; aşağıda anılmıştır.",
+    "lede": "ronutz.com açık kaynaklıdır. Kodu Apache License 2.0, yazılı içeriği ise Creative Commons Atıf 4.0 (CC BY 4.0) lisansı altındadır. Her ikisi de atıf gerektirir: yeniden kullanın, ancak kaynağı belirtin. Açık ders materyalleri tek istisnadır: her biri kendi bilgi sayfasında belirtilen lisansla yayımlanır ve CC0 1.0 altındakiler hiçbir atıf gerektirmez. Site ayrıca aşağıda anılan başka açık kaynaklı yazılımlar üzerine kuruludur.",
     "thirdBody": "Bu site açık kaynaklı çalışmaya dayanır. Sitenin kendisi Next.js ve React ile oluşturulmuş ve statik dışa aktarma olarak yayımlanmıştır; uluslararasılaştırma next-intl kullanır; Learn içeriği next-mdx-remote, gray-matter, remark-gfm ve js-yaml ile işlenir; ve arama Pagefind tarafından sağlanır. Bu bileşenler, next-mdx-remote (Mozilla Public License 2.0) dışında MIT License altında sunulur. API referansı, Apache License 2.0 altında Swagger UI'yi gömer. Her bileşen kendi lisansı altında kalır ve tüm bildirimler kaynak kodla birlikte gelir."
   },
   "contributeIdeas": {

@@ -8,7 +8,7 @@ relatedArticles: ["dns-record-types-in-answers", "the-certificate-authority-chok
 category: security
 order: 126
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-10-19"
 ---
 
 Como o sistema de correio chegou a precisar destes três é o assunto da **[linhagem do e-mail](/learn/email-family-history)**.
@@ -41,11 +41,13 @@ Duas observações operacionais: chaves precisam de rotação como qualquer mate
 
 O **DMARC (Domain-based Message Authentication, Reporting and Conformance)** acrescenta a peça que faltava: **alinhamento**. Ele exige que um resultado aprovado de SPF ou DKIM pertença ao *mesmo domínio que o leitor vê no campo From*. Essa é a proteção de verdade, e nem SPF nem DKIM a fornecem sozinhos.
 
+O DMARC apareceu primeiro em março de 2015 como Request for Comments (RFC) 7489, um documento informativo publicado pelo Independent Submissions Editor, fora de qualquer frente de trabalho da Internet Engineering Task Force. Desde maio de 2026 ele é um protocolo Standards Track, a RFC 9989, com os relatórios agregados na RFC 9990 e os de falha na RFC 9991, e as três tornam obsoleta a RFC 7489 ([RFC 9989, apêndice C.1](https://www.rfc-editor.org/rfc/rfc9989.txt); [RFC Editor, RFC 7489](https://www.rfc-editor.org/info/rfc7489)). Guias escritos antes disso descrevem o texto de 2015.
+
 Ele também faz duas coisas subestimadas:
 
 **Publica uma política** — `none`, `quarantine` ou `reject` — dizendo aos receptores o que fazer com mensagens não alinhadas que reivindicam o seu domínio.
 
-**Pede relatórios.** Relatórios agregados chegam dos receptores descrevendo o que passou e o que falhou pelo seu domínio, e de quais endereços. Essa é a parte que torna a implantação possível, e é inteligência gratuita sobre quem envia como você — inclusive seus próprios sistemas esquecidos e quem estiver forjando o seu nome.
+**Pede relatórios.** Relatórios agregados chegam dos receptores descrevendo o que passou e o que falhou pelo seu domínio, e de quais endereços. O formato deles é o que a RFC 9990 define, e o receptor só os envia quando o registro indica um endereço na tag `rua` ([RFC 9989, seção 4.7](https://www.rfc-editor.org/rfc/rfc9989.txt)). Essa é a parte que torna a implantação possível, e é inteligência gratuita sobre quem envia como você — inclusive seus próprios sistemas esquecidos e quem estiver forjando o seu nome.
 
 ## Por que quase todo mundo empaca no p=none
 
@@ -54,7 +56,9 @@ O caminho honesto de implantação não é o que se recomenda numa frase só.
 1. **Publique SPF e DKIM direito**, e então o DMARC em `p=none`. Nada é bloqueado ainda.
 2. **Leia os relatórios por semanas.** Você vai encontrar remetentes legítimos que ninguém te contou: o sistema de faturamento, a plataforma de marketing, a ferramenta de chamados, o relay de uma filial.
 3. **Corrija ou autorize cada um.** Este é o trabalho real, é organizacional e não técnico, e é onde os projetos morrem.
-4. **Vá para `quarantine`, depois `reject`,** de preferência com implantação percentual.
+4. **Vá para `quarantine`, depois `reject`,** um passo de cada vez, comparando os relatórios a cada passo.
+
+A RFC 9989 põe números nessa paciência para todo domínio cujos usuários escrevem em listas de discussão: publicar `p=none` "for at least a month", por pelo menos um mês, depois `p=quarantine` por um período igual, e comparar os resultados antes de pensar em `p=reject`, que ela recomenda que esses domínios nem publiquem ([RFC 9989, seção 7.4](https://www.rfc-editor.org/rfc/rfc9989.txt)). Um domínio que publica `p=reject` "MUST apply valid DKIM signatures to their messages", precisa assinar as mensagens com DKIM válido, porque o encaminhamento quebra o SPF (seção 7.4). A implantação percentual que guias antigos recomendam acabou: a RFC 9989 removeu a tag `pct`, porque os receptores em geral só a aplicavam com precisão em 0 e 100, e guardou a metade útil dela na tag `t`, de testing, em que `t=y` pede ao receptor que aplique um nível abaixo da política publicada, `none` no lugar de `quarantine` e `quarantine` no lugar de `reject` (apêndices A.6 e C.5.2, seção 4.7).
 
 Organizações ficam anos em `p=none` porque o passo 3 exige achar todo sistema que envia e-mail em nome da empresa, numa empresa em que ninguém tem essa lista. Publicar `p=reject` antes de terminar significa bloquear as próprias faturas.
 
@@ -62,7 +66,7 @@ Organizações ficam anos em `p=none` porque o passo 3 exige achar todo sistema 
 
 **Encaminhamento** quebra o SPF, como descrito. **Listas de discussão** com frequência quebram o DKIM também, porque alteram assuntos ou acrescentam rodapés, invalidando a assinatura.
 
-O **ARC (Authenticated Received Chain)** existe para isso: um intermediário registra os resultados de autenticação que viu e assina esse registro, para que um receptor posterior consiga ver que a mensagem só falhou porque passou por um encaminhador confiável. A adoção é parcial, e exige confiar na afirmação do intermediário.
+O **ARC (Authenticated Received Chain)**, descrito na RFC 8617, foi criado para isso: um intermediário registra os resultados de autenticação que viu e assina esse registro, para que um receptor posterior consiga ver que a mensagem só falhou porque passou por um encaminhador confiável. Ele não vingou. A RFC 9989 registra que, depois de uma década de tentativas de fazer as listas funcionarem sem mexer na linha From, com o ARC como exemplo de destaque, "none of the methods have become widely used", nenhum dos métodos ganhou uso amplo ([RFC 9989, seção 7.4](https://www.rfc-editor.org/rfc/rfc9989.txt)), e o ARC ainda exige confiar na afirmação do intermediário. O que funciona na prática é o contorno: o software da lista reescreve a linha From, com o endereço da própria lista ou com uma forma reversível do endereço do autor, para que ela fique alinhada, e a RFC 9989 chama esses contornos de "firmly established", consolidados (seção 7.4).
 
 ## Contra o que isso não protege
 
@@ -86,3 +90,8 @@ O **MTA-STS** e o **DANE** protegem o *transporte* — garantem que o e-mail par
 - Um dono nomeado para os relatórios, porque relatório não lido é igual a relatório nenhum.
 - Um inventário escrito de tudo que envia e-mail como você — o artefato de que o projeto inteiro realmente trata.
 - Aplicação quando, e somente quando, esse inventário estiver completo.
+
+## Fontes
+
+- [RFC 9989, Domain-Based Message Authentication, Reporting, and Conformance (DMARC), maio de 2026: seções 4.7 e 7.4, apêndices A.6, C.1 e C.5.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9989.txt)
+- [RFC Editor, página de informações da RFC 7489, Domain-based Message Authentication, Reporting, and Conformance (DMARC): Informational, publicada em março de 2015, tornada obsoleta pelas RFCs 9989, 9990 e 9991 (lida em 2026-10-19)](https://www.rfc-editor.org/info/rfc7489)

@@ -1,37 +1,163 @@
 ---
 slug: authoritative-vs-non-authoritative-answers
 title: "Respostas autoritativas vs não autoritativas"
-summary: "O marcador Non-authoritative answer no nslookup significa que o resultado veio de um resolver, quase sempre do cache dele, não de um servidor que de fato mantém a zona. Este artigo explica a diferença, por que ela normalmente não é problema, e como obter uma resposta autoritativa quando você precisa."
-concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup"]
-relatedTools: ["nslookup-output-explainer"]
-relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
+summary: "Uma resposta é autoritativa quando o servidor que a enviou mantém a zona do nome perguntado, e ele diz isso com um único bit do header de DNS, o bit AA, que o nslookup mostra como o marcador Non-authoritative answer e o dig como a flag aa. Depois da leitura, você consegue distinguir uma resposta de cache de um referral, explicar por que uma consulta recursiva é não autoritativa por desenho, perguntar ao servidor da própria zona com a recursão desligada e ler aa na resposta, e dizer o que o bit ainda assim não prova."
+concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup", "aa flag", "referral", "lame delegation", "negative caching"]
+relatedTools: ["nslookup-output-explainer", "dig-output-explainer", "dig-command-builder"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags", "reading-a-dns-answer", "dns-record-types-in-answers", "dnssec-end-to-end", "dns-zone-transfers-and-notify", "choosing-a-public-dns-resolver", "reading-dig-output"]
 category: networking
 order: 48
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-Quando o nslookup imprime `Non-authoritative answer:` antes de um resultado, ele está lhe dizendo algo específico sobre de onde essa resposta veio.
+O nslookup imprime `Non-authoritative answer:` acima de quase tudo o que encontra, e a linha de flags do dig quase nunca traz `aa`. Os dois mostram um bit do header da resposta, o bit authoritative answer (AA). Esta parte explica o que esse bit afirma, nas palavras da Request for Comments (RFC) 1035 e da RFC 2181, de onde vem uma resposta não autoritativa, por que ela é o resultado esperado de uma consulta recursiva e quando ela não basta. Depois da leitura, você consegue distinguir uma resposta de cache de um referral (a indicação de outro servidor), perguntar ao servidor da zona com a recursão desligada e ler `aa`, e dizer o que o bit não prova. A abertura da série, [Como ler uma resposta de DNS](/learn/reading-a-dns-answer), percorre a resposta inteira; esta parte fica num bit só.
+
+## O que autoritativo quer dizer
+
+A palavra vem da zona: "a name server is said to be an AUTHORITY for these parts of the name space", é autoridade para as partes da árvore que conhece por completo ([RFC 1034, seção 2.4](https://www.rfc-editor.org/rfc/rfc1034.txt)), e marca cada resposta de acordo (seção 4.1). A marca é o bit AA, que "specifies that the responding name server is an authority for the domain name in question section", quem respondeu é autoridade para o nome perguntado ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). Leia com atenção: autoridade para o nome perguntado, não para cada registro; depois de um CNAME, "only the record describing that alias is necessarily authoritative", só o registro do alias é necessariamente autoritativo ([RFC 2181, seção 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt)). A RFC 2181 também fixa a definição de trabalho: "throughout this document, 'authoritative' means a reply with the AA bit set", autoritativa é a resposta com o bit AA ligado (seção 5.4.1). Ligar o bit é questão de zonas. "The authoritative servers for a zone are enumerated in the NS records for the origin of the zone, which, along with a Start of Authority (SOA) record are the mandatory records in every zone", os servidores autoritativos são os dos registros NS da origem, que com o SOA são obrigatórios em toda zona (seção 6.1). Primário, secundário ou stealth, o que não aparece no conjunto de name servers (NS) da zona, tanto faz: cada um mantém a zona e liga o AA ([RFC 1996, seção 2.1](https://www.rfc-editor.org/rfc/rfc1996.txt)).
 
 ## Dois tipos de servidor
 
-O DNS tem servidores autoritativos e resolvedores recursivos. Um servidor **autoritativo** mantém os dados reais da zona de um domínio; ele é a fonte da verdade. Um **resolvedor recursivo** (como 1.1.1.1 ou 8.8.8.8, ou o do seu provedor) não é dono de nenhuma zona. Ele responde por você perguntando aos servidores autoritativos e depois guardando o resultado em **cache** pelo tempo do TTL (tempo de vida, do inglês time to live).
+No vocabulário da RFC 9499, um servidor autoritativo é "A server that knows the content of a DNS zone from local knowledge, and thus can answer queries about that zone without needing to query other servers", um servidor que conhece a zona localmente e responde sem consultar ninguém ([RFC 9499, seção 6](https://www.rfc-editor.org/rfc/rfc9499.txt)); ele responde pelas suas zonas com AA ligado e indica outro servidor para as zonas filhas, e "these referrals have the AA bit set to 0", esses referrals saem com AA zerado (seção 6). Um resolver recursivo opera em modo recursivo e guarda em cache o que recebe; o stub resolver do seu sistema depende de um deles (seção 6). Os resolvers públicos 8.8.8.8 e 1.1.1.1 são desse tipo ([Resolvers públicos de DNS](/learn/choosing-a-public-dns-resolver) os compara). Recursion desired (RD) e recursion available (RA) ligados juntos na resposta significam que houve recursão ([RFC 1034, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)); [O header de DNS](/learn/dns-message-header-and-flags) cobre as sete flags.
 
-Quando você consulta um resolvedor recursivo e ele responde a partir desse cache, a resposta é **não autoritativa**: correta, mas uma cópia, possivelmente com alguns segundos ou minutos de idade. É isso que o marcador significa. Quando o marcador está **ausente**, você alcançou um servidor autoritativo para o nome, e o dado veio diretamente da zona.
+## De onde vem uma resposta não autoritativa
 
-## Por que não autoritativa normalmente está ótimo
+O algoritmo de servidor da RFC 1034 procura primeiro nas zonas e depois no cache, copiando para a seção de resposta o que achar lá ([RFC 1034, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc1034.txt)). Um acerto de cache é a origem mais comum de uma resposta com AA desligado, mas não a única. O referral é outra: seção de resposta vazia, o conjunto NS da zona indicada na seção de autoridade e "The AA bit is clear", o bit AA desligado ([RFC 9499, seção 4](https://www.rfc-editor.org/rfc/rfc9499.txt)). A terceira é a resposta que um resolver acabou de buscar por você: sai do lado resolver dele, não de uma zona, e o AA continua desligado por mais fresco que o registro esteja. Uma consulta e resposta reais, capturadas em 18 de outubro de 2026, mostram a primeira e a terceira: `example.com IN A`, enviada duas vezes a um resolver público por DNS over HTTPS (DoH), doze segundos entre uma e outra.
 
-Para consultas do dia a dia, uma resposta não autoritativa é exatamente o que você quer: é rápida, e o TTL a mantém fresca o suficiente. O cache é a razão inteira de o DNS escalar. Você só se importa com a distinção quando o cache pode estar desatualizado, que é precisamente quando você acabou de mudar um registro e está esperando o mundo se atualizar.
+```text
+flags 0x8180 = [qr rd ra], opcode 0, rcode 0 (NOERROR), AA bit = 0, counts QD 1 AN 2 NS 0 AR 1
+ANSWER     example.com. 11 IN A    (endereço omitido)
+ANSWER     example.com. 11 IN A    (endereço omitido)
+
+flags 0x8180 = [qr rd ra], opcode 0, rcode 0 (NOERROR), AA bit = 0, counts QD 1 AN 2 NS 0 AR 1
+ANSWER     example.com. 300 IN A   (endereço omitido)
+ANSWER     example.com. 300 IN A   (endereço omitido)
+```
+
+A primeira era uma entrada de cache a onze segundos de expirar; a segunda, com o time to live (TTL) cheio da zona, 300 segundos, acabara de ser buscada. Mesmas flags, AA desligado nas duas; só o TTL caindo denuncia o cache, como no exemplo da própria especificação de 1987 ([RFC 1034, seção 6.2.1](https://www.rfc-editor.org/rfc/rfc1034.txt)). A RFC 2181 transforma o bit na ordem de confiança que um resolver aplica quando duas respostas discordam: "Trustworthiness shall be, in order from most to least:", da mais confiável para a menos ([RFC 2181, seção 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt))
+
+```text
+     + Data from a primary zone file, other than glue data,
+     + Data from a zone transfer, other than glue,
+     + The authoritative data included in the answer section of an
+       authoritative reply.
+     + Data from the authority section of an authoritative answer,
+     + Glue from a primary zone, or glue from a zone transfer,
+     + Data from the answer section of a non-authoritative answer, and
+       non-authoritative data from the answer section of authoritative
+       answers,
+     + Additional information from an authoritative answer,
+       Data from the authority section of a non-authoritative answer,
+       Additional information from non-authoritative answers.
+```
+
+## Por que normalmente não é problema
+
+Uma resposta não autoritativa é o que uma consulta recursiva existe para devolver. O resolver começa pelo cache, e "If the data is in the cache, it is assumed to be good enough for normal use", o que está no cache serve para o uso normal ([RFC 1034, seção 5.3.3](https://www.rfc-editor.org/rfc/rfc1034.txt)). A idade do que você recebe é limitada pelo TTL escolhido pelo operador da zona, que "specifies a maximum time to live, not a mandatory time to live", é um máximo, não uma obrigação ([RFC 2181, seção 8](https://www.rfc-editor.org/rfc/rfc2181.txt)), então um cache pode encurtá-lo. E nada no nslookup olha o TTL ou sabe se a resposta estava em cache: o marcador é o bit AA e mais nada ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)).
+
+## Quando importa
+
+Depois de uma mudança. Cada cache do caminho guarda o registro antigo até o TTL acabar, e os secundários também atrasam: "Whenever a new zone is loaded in a secondary, the secondary waits REFRESH seconds before checking with the primary for a new serial", o secundário espera REFRESH segundos antes de conferir o serial com o primário ([RFC 1034, seção 4.3.5](https://www.rfc-editor.org/rfc/rfc1034.txt)), a menos que o [NOTIFY](/learn/dns-zone-transfers-and-notify) chegue antes. Um resolver pode até passar do TTL: com serve-stale, "If the data is unable to be authoritatively refreshed when the TTL expires, the record MAY be used as though it is unexpired", o registro vencido pode ser usado como válido quando não dá para renová-lo na autoridade ([RFC 8767, seção 4](https://www.rfc-editor.org/rfc/rfc8767.txt)), e só uma resposta com AA ligado conta como renovação (seção 4).
+
+Quando a resposta foi alterada no caminho. Em 2008, o Security and Stability Advisory Committee (SSAC) da Internet Corporation for Assigned Names and Numbers (ICANN) escreveu que "any third party who provides an iterative resolver that participates in the resolution process is a potential man in the middle", todo resolver no caminho é um man-in-the-middle em potencial ([ICANN SSAC, SAC 032](https://www.icann.org/en/system/files/files/sac-032-en.pdf)), documentando resolvers que reescreviam NXDOMAIN em endereços próprios. Dado forjado em cache, plantado por um atacante ou inserido por política, aparece igual a uma resposta de cache legítima; perguntar à autoridade contorna o resolver, e só a validação com as DNS Security Extensions (DNSSEC) prova algo.
+
+Em split DNS, quando os mesmos servidores respondem diferente conforme a origem da consulta, de modo que "a domain name that is notionally globally unique has different meanings for different network users", um nome em tese globalmente único passa a ter significados diferentes ([RFC 9499, seção 6](https://www.rfc-editor.org/rfc/rfc9499.txt)). As duas visões respondem com AA ligado, cada uma pelos próprios dados.
+
+E a surpresa inversa: um resolver respondendo com AA ligado pelas zonas que serve localmente, como as reversas dos endereços privados ([RFC 6303, seção 3](https://www.rfc-editor.org/rfc/rfc6303.txt)) e `resolver.arpa` ([RFC 9462, seção 6.4](https://www.rfc-editor.org/rfc/rfc9462.txt)). A única resposta com AA ligado da sessão capturada veio de um resolver público respondendo `_dns.resolver.arpa`, com flags `qr aa rd ra`.
 
 ## Como obter uma resposta autoritativa
 
-Se você precisa da verdade atual, contorne o cache e pergunte a um servidor autoritativo diretamente. Encontre os servidores de nomes da zona (uma consulta NS), depois consulte um deles: no nslookup, execute `server ns1.example.com.` e então o nome; no dig, use `dig @ns1.example.com example.com`. A resposta virá sem o marcador não autoritativo (e no dig, com a flag `aa` definida), dizendo que você está olhando para a própria zona, e não para a cópia em cache de alguém.
+A receita tem três passos; o do meio costuma ser pulado.
 
+```bash
+# 1. Encontre os name servers da zona. Esta resposta é, ela mesma, não autoritativa.
+dig example.com NS
+# 2. Pergunte a um deles com a recursão desligada e procure aa na linha de flags.
+dig @ns.example.com example.com A +norecurse
+# 3. Compare o SOA que cada servidor autoritativo guarda, pelo serial.
+dig example.com SOA +nssearch
+# Ou siga a delegação a partir da raiz, servidor por servidor.
+dig example.com A +trace
+```
 
-## Autoritativo é sobre procedência, não sobre acerto
+O passo 1 é uma consulta comum, não autoritativa: na sessão capturada, o conjunto NS de example.com voltou com AA desligado. O passo 2 nomeia um deles depois de `@`, e `+norecurse` desliga o RD, que "is set by default, which means dig normally sends recursive queries", vem ligado por padrão ([manual do dig, +recurse](https://bind9.readthedocs.io/en/stable/manpages.html)). Desligá-lo importa porque o padrão do BIND é `recursion yes`: um servidor autoritativo e recursivo ao mesmo tempo buscaria um nome fora das suas zonas e devolveria uma resposta não autoritativa com cara de sucesso, enquanto "If recursion is off and the server does not already know the answer, it returns a referral response", sem recursão ele devolve um referral quando não sabe a resposta ([BIND 9.20.29 Configuration Reference, recursion](https://bind9.readthedocs.io/en/stable/reference.html)), o resultado honesto, e o que a RFC 1034 pedia ([RFC 1034, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)).
 
-Uma resposta autoritativa vem de um servidor que guarda a zona; uma não autoritativa vem de um resolver, quase sempre do cache dele. **Nenhum dos rótulos diz que a resposta está certa.**
+O passo 3 confere uma mudança no conjunto NS inteiro: `+nssearch` mostra "the SOA record that each name server has for the zone", o SOA que cada servidor guarda para a zona ([manual do dig, +nssearch](https://bind9.readthedocs.io/en/stable/manpages.html)), e os seriais precisam bater. `+trace` segue os referrals desde a raiz, mostrando a resposta de cada servidor; as duas opções desligam a recursão sozinhas (+recurse). No nslookup, do BIND ou do Windows, o caminho é `server ns.example.com.`, `set norecurse` e o nome ([manual do nslookup, Interactive Commands](https://bind9.readthedocs.io/en/stable/manpages.html); [Microsoft Learn, nslookup set recurse](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup-set-recurse)). O [montador de comandos dig](/tools/dig-command-builder) monta esses comandos; [Anatomia de uma linha de comando do dig](/learn/anatomy-of-a-dig-command-line) explica como o dig os lê.
 
-Um servidor autoritativo pode servir uma zona editada errado há uma hora e responder com total confiança. Uma resposta em cache pode estar perfeitamente correta e apenas velha. As palavras descrevem **de onde o dado veio**, e correção é outra pergunta, que o protocolo não responde.
+## O que aa não prova
 
-Onde isso importa é no tempo. **Depois de uma mudança, só o servidor autoritativo diz se a mudança está no ar**; todo resolvedor do caminho continuará servindo o que guarda até o TTL expirar — e isso não é falha para escalar, é o desenho funcionando.
+Não prova que o servidor deveria responder. Em 1996 a queixa era a lame delegation, um servidor "delegated responsibility for providing nameservice for a zone (via NS records) but is not performing nameservice for that zone", delegado nos NS mas sem servir a zona ([RFC 1912, seção 2.8](https://www.rfc-editor.org/rfc/rfc1912.txt)); a RFC 9499 lista hoje sob esse nome "a nameserver that responds to a query for a specific name with an error or without the authoritative bit set", o que responde com erro ou sem o bit de autoridade, e pede que o termo seja aposentado ([RFC 9499, seção 7](https://www.rfc-editor.org/rfc/rfc9499.txt)).
+
+Não prova que a zona está certa: após um erro de serial, "the secondary will not perform updates to its copy of the zone", o secundário deixa de atualizar a sua cópia ([BIND 9.20.29 Administrator Reference Manual, seção 9.2](https://bind9.readthedocs.io/en/stable/chapter9.html)), e dois servidores respondem com AA a partir de zonas diferentes. E não prova que o dado não foi tocado no caminho; esse é o trabalho do DNSSEC, cujas extensões "provide origin authentication and integrity protection for DNS data", autenticam a origem e a integridade dos dados ([RFC 4033, seção 1](https://www.rfc-editor.org/rfc/rfc4033.txt)); diante de uma cadeia de assinaturas validada, "the AA bit is almost irrelevant", o bit AA é quase irrelevante ([RFC 2181, seção 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt)). Confiança pela origem é heurística; [DNSSEC de ponta a ponta](/learn/dnssec-end-to-end) é prova.
+
+## Respostas negativas também carregam autoridade
+
+Um nome inexistente é negado com autoridade também. "Name servers authoritative for a zone MUST include the SOA record of the zone in the authority section of the response when reporting an NXDOMAIN or indicating that no data of the requested type exists", o SOA da zona vai na seção de autoridade ao negar um nome ou um tipo ([RFC 2308, seção 3](https://www.rfc-editor.org/rfc/rfc2308.txt)); o TTL desse SOA, o menor entre o seu próprio e o campo MINIMUM, é o TTL negativo (seção 3), e um cache que repassa a negação o decrementa (seção 6). O exemplo da própria RFC, cortado ao início de cada resposta, mostra os dois casos:
+
+```text
+        Initial Response:
+
+        Header:
+            RDCODE=NXDOMAIN, AA=1, QR=1, TC=0
+        Query:
+            WWW.XX.EXAMPLE. IN A
+        Answer:
+            <empty>
+        Authority:
+            XX.EXAMPLE.      1200 IN SOA NS1.XX.EXAMPLE. ...
+
+         After 10 Minutes:
+
+         Header:
+             RDCODE=NXDOMAIN, AA=0, QR=1, TC=0
+         Query:
+             WWW.XX.EXAMPLE. IN A
+         Answer:
+             <empty>
+         Authority:
+             XX.EXAMPLE.       600 IN SOA NS1.XX.EXAMPLE. ...
+```
+
+Dez minutos depois, metade do TTL se foi e o AA está desligado: a mesma negação, agora de um cache (seção 10; RDCODE é a grafia da própria RFC). A sessão capturada tem a versão ao vivo: `nf2e-authority-check-20261018.invalid` voltou NXDOMAIN com AA desligado e o SOA da zona raiz, com TTL 86400 em um resolver público e 86316 em outro. O nslookup não mostra marcador nessas respostas, porque sai cedo com `** server can't find` sempre que o código de resposta não é zero ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)): um NXDOMAIN em cache é não autoritativo sem dizer.
+
+O exemplo usa `.invalid` por um motivo: "Users MAY assume that queries for 'invalid' names will always return NXDOMAIN responses", nomes sob invalid sempre voltam NXDOMAIN ([RFC 6761, seção 6.4](https://www.rfc-editor.org/rfc/rfc6761.txt)), enquanto os servidores de example.com hoje usam compact denial of existence, que responde um nome inexistente com NODATA em vez de NXDOMAIN ([RFC 9824, seção 1](https://www.rfc-editor.org/rfc/rfc9824.txt)); na sessão capturada, um nome inventado sob example.com voltou NOERROR sem resposta. [Como ler os registros](/learn/dns-record-types-in-answers) decodifica os campos do SOA.
+
+## Como ver
+
+No dig, o bit é uma palavra na linha de flags. O programa imprime ` aa` só com o bit ligado ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)), então `qr rd ra` com registros de resposta é um resolver, do cache ou recém-buscada; `qr aa rd ra` é um servidor autoritativo que também oferece recursão; `qr aa` sozinho é um servidor só autoritativo; e `qr` com a seção de resposta vazia e registros NS na seção de autoridade é um referral. O [explicador de saída do dig](/tools/dig-output-explainer) abre as flags; [Como ler a saída do dig](/learn/reading-dig-output) cobre cada bloco.
+
+No nslookup, o bit é o marcador. O nslookup do BIND imprime primeiro `Server:` e `Address:`, o resolver consultado, depois `Non-authoritative answer:` quando o AA está desligado, depois os registros; para tipos que não são endereço, acrescenta `Authoritative answers can be found from:` e as seções de autoridade e adicional ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)). `set debug` mostra as seções, mas nunca as flags do header, porque a chamada que as imprimiria está comentada (nslookup.c): o bit AA só aparece pelo marcador. O [explicador de saída do nslookup](/tools/nslookup-output-explainer) lê o marcador e os servidores listados depois dele.
+
+## Para lembrar
+
+- Autoritativo quer dizer que o servidor que respondeu é autoridade para o nome da pergunta (RFC 1035, seção 4.1.1): ele mantém a zona; a RFC 2181 define "authoritative" como resposta com AA ligado.
+- O `Non-authoritative answer:` do nslookup e o `aa` ausente do dig são o mesmo bit, desligado: um acerto de cache, uma resposta recursiva recém-buscada ou um referral. Ele diz de onde a resposta veio, não se ela está certa.
+- Uma resposta não autoritativa é o resultado normal de uma consulta recursiva; sua idade é limitada pelo TTL, um máximo que um cache pode encurtar e, com serve-stale, ultrapassar.
+- Importa depois de uma mudança, quando caches e secundários atrasados guardam o registro antigo; quando um resolver reescreve respostas; e em split DNS, onde cada visão responde com AA.
+- Para obter uma resposta autoritativa, encontre o conjunto NS, depois `dig @servidor nome tipo +norecurse` e leia `aa`; `+nssearch` compara o serial do SOA de cada servidor e `+trace` desce desde a raiz.
+- O AA não prova que o servidor deveria responder (lame delegation), que a zona está certa ou que nada mudou no caminho: só a validação DNSSEC autentica os dados.
+- Respostas negativas também carregam autoridade, como o SOA da zona na seção de autoridade com um TTL que cai nos caches; use um nome `.invalid` para um NXDOMAIN de verdade, porque example.com responde NODATA por compact denial.
+
+## Fontes
+
+- [RFC 1034, Domain names - concepts and facilities, novembro de 1987: seções 2.4, 4.1, 4.3.1, 4.3.2, 4.3.5, 5.3.3 e 6.2.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 1035, Domain names - implementation and specification, novembro de 1987: seção 4.1.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 1912, Common DNS Operational and Configuration Errors, fevereiro de 1996: seção 2.8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1912.txt)
+- [RFC 1996, A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY), agosto de 1996: seção 2.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1996.txt)
+- [RFC 2181, Clarifications to the DNS Specification, julho de 1997: seções 5.4.1, 6.1 e 8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), março de 1998: seções 3, 6 e 10 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 4033, DNS Security Introduction and Requirements, março de 2005: seção 1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
+- [RFC 6303, Locally Served DNS Zones, julho de 2011: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6303.txt)
+- [RFC 6761, Special-Use Domain Names, fevereiro de 2013: seção 6.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, março de 2020: seção 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8767.txt)
+- [RFC 9462, Discovery of Designated Resolvers, novembro de 2023: seção 6.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9462.txt)
+- [RFC 9499, DNS Terminology, março de 2024: seções 4, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, setembro de 2025: seções 1 e 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility e nslookup - query Internet name servers interactively, página sem data: Query Options; Interactive Commands (lidas em 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [ISC, BIND 9 9.20.29 documentation, Configuration Reference, página sem data: recursion (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)
+- [ISC, BIND 9 9.20.29 Administrator Reference Manual, página sem data: 9.2 Incrementing and Changing the Serial Number (lida em 2026-10-18)](https://bind9.readthedocs.io/en/stable/chapter9.html)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/nslookup.c: a função printmessage (lido em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dig.c: a linha de flags (lido em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
+- [Microsoft Learn, nslookup set recurse, última atualização em 3 de fevereiro de 2023 (lida em 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup-set-recurse)
+- [ICANN SSAC, SAC 032, Preliminary Report on DNS Response Modification, junho de 2008: Introduction, What is DNS response modification?, Who can modify DNS response messages?, Preliminary Findings e Preliminary recommendations (lida em 2026-10-18)](https://www.icann.org/en/system/files/files/sac-032-en.pdf)

@@ -1,40 +1,234 @@
 ---
 slug: mpls-primer
 title: "MPLS: rótulos, pilhas e o núcleo livre de BGP"
-summary: "Empurre um rótulo na borda, troque-o salto a salto, remova-o antes da saída - e de repente o núcleo não precisa de tabela de rotas, VPNs isolam milhares de clientes, e o tráfego vai para onde a engenharia manda. Um primer prático de comutação por rótulos, L3VPNs e o presente em Segment Routing."
-concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf"]
-relatedTools: ["cidr"]
-relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer"]
+summary: "O Multiprotocol Label Switching (MPLS) classifica o pacote uma única vez, na borda da rede, e dali em diante os roteadores o encaminham por um label curto, com swap, pop ou push, sem ler de novo o header IP. Depois da leitura, você consegue decodificar em hexadecimal uma entrada da pilha de labels, nomear os labels de uso especial, seguir um label-switched path numa tabela de bindings real do Label Distribution Protocol (LDP), dizer exatamente o que um núcleo livre de BGP mantém e descarta, e explicar os dois labels de um pacote de rede privada virtual (VPN) de camada 3."
+concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf", "label stack", "fec", "lsr", "lsp", "penultimate hop popping", "ldp", "rsvp-te", "segment routing", "route distinguisher", "route target", "l3vpn"]
+relatedTools: ["mtu-mss", "python-playground"]
+relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer", "routing-tables-and-default-gateway", "dynamic-routing-compared", "bgp-and-the-routing-chokepoint", "private-address-space", "the-ethernet-frame-field-by-field", "icmp-ping-and-traceroute"]
 category: networking
 order: 237
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-19"
 ---
 
-## Uma consulta, depois rótulos
+O Multiprotocol Label Switching (MPLS) encaminha pacotes por um label (rótulo) curto em vez do endereço de destino. No encaminhamento IP comum, cada roteador refaz o longest match na própria [tabela de rotas](/learn/routing-tables-and-default-gateway); o MPLS classifica o pacote uma vez, onde ele entra, e todo roteador seguinte lê só o label. Ele sustenta backbones de operadoras e as redes privadas virtuais (VPNs) de camada 3 sobre eles. Depois da leitura, você consegue decodificar em hexadecimal uma entrada da pilha de labels, ler uma tabela de bindings real do Label Distribution Protocol (LDP), dizer o que um "BGP-free core" mantém e explicar os dois labels de um pacote de VPN.
 
-O encaminhamento IP clássico faz cada roteador fazer o trabalho inteiro: casar o destino por prefixo mais longo contra uma tabela de rotas, salto após salto, como se cada roteador visse o pacote pela primeira vez. O MPLS (Multiprotocol Label Switching) toma a decisão **uma vez**. O roteador de borda - o LER, label edge router - classifica o pacote numa classe de encaminhamento, empurra um **rótulo** curto nele, e dali em diante os roteadores de núcleo - LSRs, label switch routers - fazem a operação mais barata das redes: consultam o rótulo de entrada numa tabela pequena, **trocam** pelo de saída, encaminham. Na borda oposta o rótulo é **removido** e o IP normal recomeça. Empurrar, trocar, remover: o mecanismo inteiro cabe em três verbos.
+## Uma decisão na borda, labels depois dela
 
-A linhagem é furto honesto de engenharia: o MPLS levou o insight de circuito virtual do ATM - decida o caminho uma vez, depois comute por identificadores pequenos - e deixou para trás as células de 53 bytes, as camadas de adaptação e o imposto de célula. O label-switched path (LSP) é um circuito virtual que carrega pacotes inteiros.
+A Request for Comments (RFC) 3031, de janeiro de 2001, resume: "In MPLS, the assignment of a particular packet to a particular FEC is done just once, as the packet enters the network", a FEC é escolhida uma só vez, na entrada ([RFC 3031, seção 2.1](https://www.rfc-editor.org/rfc/rfc3031.txt)). Uma forwarding equivalence class (FEC) é um grupo de pacotes encaminhados do mesmo jeito, pelo mesmo caminho e com o mesmo tratamento (seção 2.2). Depois, ninguém mais lê o header de rede: o label indexa uma tabela que dá o próximo hop e um label novo. Um roteador assim é um label switching router (LSR), e o método serve a qualquer protocolo de camada de rede, daí o "multiprotocol" (seção 2.1).
 
-## A pilha é o truque inteiro
+Um label é "a short, fixed length, locally significant identifier which is used to identify a FEC", curto, de tamanho fixo e de significado local ([RFC 3031, seção 3.1](https://www.rfc-editor.org/rfc/rfc3031.txt)). Um label-switched path (LSP) vai do LSP ingress, que faz o push do label, até o LSP egress (seção 3.15). A consulta pelo label do topo devolve um próximo hop e uma operação: swap, pop, ou swap seguido de push (seção 3.10), e "THE NEXT HOP IS ALWAYS TAKEN FROM THE NHLFE", o próximo hop vem sempre da Next Hop Label Forwarding Entry (seção 3.13). O MPLS não calcula caminhos; isso cabe ao [roteamento dinâmico](/learn/dynamic-routing-compared).
 
-Um pacote pode carregar **mais de um rótulo**, e essa pilha é onde o MPLS deixa de ser otimização e vira arquitetura. O rótulo externo significa *como cruzar o backbone*; um rótulo interno pode significar *o que este pacote é* - a VPN (rede privada virtual) deste cliente, este pseudowire, este serviço. Roteadores de núcleo leem só o rótulo externo; não sabem nem se importam com o que viaja por baixo.
+## Trinta e dois bits: a entrada da pilha de labels
 
-Duas consequências construíram a indústria de operadoras como ela existe:
+Cada entrada da pilha ocupa 4 octetos ([RFC 3032, seção 2.1](https://www.rfc-editor.org/rfc/rfc3032.txt)), entre o header de enlace e o de rede, topo primeiro. A RFC 3032 chamava o campo de 3 bits de EXP (uso experimental); a RFC 5462 o rebatizou de Traffic Class (TC): "This three-bit field is used to carry traffic class information", o campo carrega a classe de tráfego ([RFC 5462, seção 2.1](https://www.rfc-editor.org/rfc/rfc5462.txt)).
 
-**O núcleo livre de BGP.** Só roteadores de borda precisam da tabela completa da internet e das rotas de clientes; o núcleo encaminha por rótulos apenas. No início dos anos 2000 isso era sobrevivência - o silício de núcleo não segurava a tabela global crescente - e permanece como a separação limpa: inteligência na borda, velocidade no meio.
+| Campo | Bits | O que carrega |
+|---|---|---|
+| Label | 20 | O valor do label, de 0 a 1048575 |
+| Traffic Class, antes EXP | 3 | Classe de tráfego |
+| S, bottom of stack | 1 | 1 na última entrada, 0 nas demais |
+| Time to Live | 8 | Decrementado a cada hop |
 
-**O L3VPN** (RFC 4364), o produto que pagou por tudo. Cada cliente se conecta a um **VRF (virtual routing and forwarding)** - uma tabela de rotas privada na borda do provedor - e as rotas de clientes viajam entre bordas dentro do BGP, desambiguadas por route distinguishers e dirigidas por route targets, com o rótulo interno selecionando o VRF certo na saída. Mil clientes, todos usando 10.0.0.0/8, num backbone compartilhado, sem nunca se verem: é a pilha de rótulos trabalhando, e é o que "um circuito MPLS" significa para empresas há vinte anos.
+Nenhum campo diz o protocolo de baixo; o egress o deduz pelo label do fundo (RFC 3032, seção 2.2). Na Ethernet, o ethertype 0x8847 marca MPLS unicast (seção 5), como em [o frame Ethernet campo a campo](/learn/the-ethernet-frame-field-by-field).
 
-## Quem distribui os rótulos
+Um exemplo resolvido: label 17, TC 0, S 0, Time to Live (TTL) 64, por cima do label 100048, TC 5, S 1, TTL 64. Cada entrada vale label × 4096 + TC × 512 + S × 256 + TTL. A do topo dá 17 × 4096 + 64 = 69696, ou 0x00011040; a do fundo dá 409796608 + 2560 + 256 + 64 = 409799488, ou 0x186D0B40. Calculado por script e conferido pelo tcpdump num frame montado com a pilha:
 
-Rótulos precisam ser acordados entre vizinhos, e a história do MPLS é a história dessa sinalização. O **LDP** foi o cavalo de batalha: simples, segue os caminhos mais curtos do IGP, sem engenharia de tráfego. O **RSVP-TE** foi o peso-pesado: caminhos explícitos, reserva de banda, fast reroute - a ferramenta para desviar tráfego de enlaces congestionados, ao preço de estado por caminho em todo lugar. A resposta moderna, o **Segment Routing**, apaga a sinalização por completo: o caminho é codificado no próprio pacote como uma pilha de rótulos de segmento, distribuídos como extensões do IGP - e é por isso que a história dos TLVs no primer de IS-IS importa aqui. Mesmo plano de encaminhamento, radicalmente menos maquinaria de protocolo; é para onde o MPLS de operadora caminha há uma década.
+```text
+Entry 1 (top, transport label): label=17 tc=0 s=0 ttl=64
+  bits  (label|TC|S|TTL): 00000000000000010001 000 0 01000000
+  hex   : 00 01 10 40   (0x00011040)
+Entry 2 (bottom, VPN label): label=100048 tc=5 s=1 ttl=64
+  bits  (label|TC|S|TTL): 00011000011011010000 101 1 01000000
+  hex   : 18 6D 0B 40   (0x186D0B40)
+Stack bytes (8 octets = 4 x 2 entries): 00 01 10 40 18 6D 0B 40
+  network layer header starts at offset 8 of the label stack
+```
 
-Dois detalhes práticos que todo operador de MPLS carrega: o **penultimate hop popping** - o penúltimo roteador remove o rótulo externo para o roteador de saída fazer uma consulta em vez de duas, uma pequena cortesia que confunde toda primeira captura de pacotes; e o imposto de MTU - cada rótulo tem quatro bytes, e um ajuste de MTU esquecido num enlace de núcleo é o clássico chamado de "a VPN funciona para ping, morre para tráfego de verdade".
+```console
+$ tcpdump -nn -e -v -x -r lse-check.pcap
+12:31:53.000000 02:00:00:00:00:01 > 02:00:00:00:00:02, ethertype MPLS unicast (0x8847), length 54: MPLS (label 17, tc 0, ttl 64)
+	(label 100048, tc 5, [S], ttl 64)
+	(tos 0x0, ttl 64, id 1, offset 0, flags [none], proto ICMP (1), length 32)
+    192.0.2.1 > 192.0.2.3: ICMP echo request, id 1, seq 1, length 12
+	0x0000:  0001 1040 186d 0b40 4500 0020 0001 0000
+```
 
-## O MPLS morreu?
+Os oito primeiros octetos do dump são a pilha, e o `4500` abre o header IPv4. Vinte bits dão 1048576 valores, 1048560 deles de 16 para cima. Dá para empacotar com `struct` no [Python playground](/tools/python-playground).
 
-A pergunta chega com todo pitch de SD-WAN (software-defined WAN), e a resposta honesta tem duas metades. Na **borda WAN empresarial**, o circuito L3VPN gerenciado premium genuinamente perdeu terreno: transporte internet mais overlays de SD-WAN levaram o crescimento do mercado de conectividade de filiais. No **núcleo de operadora**, os rótulos nunca foram a lugar algum - os backbones que carregam esses mesmos túneis de SD-WAN, as redes móveis e os serviços de atacado rodam comutados por rótulo, cada vez mais via Segment Routing. O MPLS não morreu; recuou do nome do produto para o encanamento, que é onde infraestrutura vencedora costuma terminar.
+## Labels de 0 a 15
 
-Como os caminhos mais curtos subjacentes são computados é território dos primers de OSPF e IS-IS; como a borda troca essas rotas de VPN é do BGP - os três primers e este descrevem uma única máquina.
+A RFC 7274 rebatizou os valores baixos de "special-purpose labels", labels de uso especial ([RFC 7274, Abstract](https://www.rfc-editor.org/rfc/rfc7274.txt)). O registro da Internet Assigned Numbers Authority (IANA), atualizado em 30 de junho de 2026 ([IANA, Special-Purpose MPLS Label Values](https://www.iana.org/assignments/mpls-label-values/mpls-label-values.xhtml)):
+
+| Valor | Nome | Definido em |
+|---|---|---|
+| 0 | IPv4 Explicit NULL Label | RFC 3032 |
+| 1 | Router Alert Label | RFC 3032 |
+| 2 | IPv6 Explicit NULL Label | RFC 3032 |
+| 3 | Implicit NULL Label | RFC 3032 |
+| 4 | MPLS Network Actions | RFC 9994 |
+| 5 a 6 | Unassigned | |
+| 7 | Entropy Label Indicator (ELI) | RFC 6790 |
+| 8 a 12 | Unassigned | |
+| 13 | Generic Associated Channel Label | RFC 5586 |
+| 14 | OAM Alert Label (operação, administração e manutenção) | RFC 3429 |
+| 15 | Extension Label (XL) | RFC 7274, RFC 9017 |
+
+O Implicit NULL "never actually appears in the encapsulation", nunca vai no pacote: quem faria swap para ele faz pop ([RFC 3032, seção 2.1](https://www.rfc-editor.org/rfc/rfc3032.txt)). O Explicit NULL, antes restrito ao fundo da pilha, vale em qualquer posição desde a RFC 4182 ([RFC 4182, Abstract](https://www.rfc-editor.org/rfc/rfc4182.txt)).
+
+## Penultimate hop popping, visto em laboratório
+
+O penúltimo roteador faz pop do label do topo "only if this is specifically requested by the egress node, OR if the next node in the LSP does not support MPLS", só a pedido do egress ou se o próximo nó não tiver MPLS, e assim o egress faz uma única consulta ([RFC 3031, seção 3.16](https://www.rfc-editor.org/rfc/rfc3031.txt)). O egress pede esse penultimate hop popping (PHP) anunciando o Implicit NULL (seção 4.1.5).
+
+Um laboratório de 19 de outubro de 2026 mostra a sinalização: pe1, p e pe2 em network namespaces do Linux, FRRouting 8.4.4 com OSPF e LDP, loopbacks 192.0.2.1, 192.0.2.2 e 192.0.2.3. O kernel não tinha MPLS (o zebra registrou `Disabling MPLS support (no kernel support)`), então os labels foram anunciados, nunca instalados.
+
+```console
+mplsPE1# show mpls ldp binding
+AF   Destination          Nexthop         Local Label Remote Label  In Use
+ipv4 192.0.2.1/32         192.0.2.2       imp-null    16                no
+ipv4 192.0.2.2/32         192.0.2.2       16          imp-null         yes
+ipv4 192.0.2.3/32         192.0.2.2       18          17               yes
+ipv4 198.51.100.0/31      192.0.2.2       imp-null    imp-null          no
+ipv4 198.51.100.2/31      192.0.2.2       17          imp-null         yes
+
+mplsP# show mpls ldp binding
+AF   Destination          Nexthop         Local Label Remote Label  In Use
+ipv4 192.0.2.1/32         192.0.2.1       16          imp-null         yes
+ipv4 192.0.2.1/32         192.0.2.3       16          16                no
+ipv4 192.0.2.2/32         192.0.2.1       imp-null    16                no
+ipv4 192.0.2.2/32         192.0.2.3       imp-null    17                no
+ipv4 192.0.2.3/32         192.0.2.1       17          18                no
+ipv4 192.0.2.3/32         192.0.2.3       17          imp-null         yes
+```
+
+Siga 192.0.2.3/32, a loopback do pe2. O label local do pe1 é 18, o do p é 17: labels são locais. O pe1 usa o 17 que o p enviou, então o tráfego para o pe2 sai do pe1 com push do 17. O pe2 mandou `imp-null` para o p, então o p faz pop em vez de swap. No p, as linhas `no` de 192.0.2.1/32 e 192.0.2.3/32 são labels guardados do vizinho que não é o próximo hop.
+
+## O núcleo livre de BGP, dito com precisão
+
+A RFC 3031 enuncia a ideia: "it is desirable to avoid distributing the BGP routes to routers which are not BGP Border Routers", poupar das rotas BGP quem não é roteador de borda ([RFC 3031, seção 4.6](https://www.rfc-editor.org/rfc/rfc3031.txt)). A borda de entrada faz push de L1, que a borda remota associou ao prefixo [BGP](/learn/bgp-primer), e depois de L2, que o próximo hop interno associou ao endereço dessa borda (seção 4.6). Os roteadores internos comutam por L2, que pertence a um endereço levado pelo interior gateway protocol (IGP); por raciocínio a partir da RFC, só o ingress precisa da rota BGP.
+
+Nas VPNs, em que os provider edge (PE) routers atendem os clientes e os provider (P) routers formam o núcleo, a RFC 4364 diz que "the P routers need only maintain routes to the PE routers and the ASBRs", só rotas para os PEs e os autonomous system border routers ([RFC 4364, seção 15](https://www.rfc-editor.org/rfc/rfc4364.txt)), e cada PE precisa pôr uma rota /32 para si mesmo no IGP do backbone (seção 5), [OSPF](/learn/ospf-primer) ou [Intermediate System to Intermediate System (IS-IS)](/learn/isis-primer). No laboratório, o p tem `O>* 192.0.2.3/32 [110/10] via 198.51.100.3, ep2`.
+
+A RFC 5565 batiza a ideia e corrige o nome: "That is something of a misnomer, though, since the crucial aspect of this scenario is not that the interior nodes don't run BGP, but that they don't maintain the external routing information", o nome engana: o essencial é não guardar rotas externas ([RFC 5565, seção 1](https://www.rfc-editor.org/rfc/rfc5565.txt)). O núcleo não fica sem tabela de rotas: mantém as rotas internas até cada borda e descarta as externas e as de VPN.
+
+## VPNs de camada 3 e seus dois labels
+
+A RFC 4364 (fevereiro de 2006) define as BGP/MPLS IP VPNs: "Data packets are tunneled through the backbone, so that the core routers do not need to know the VPN routes", o túnel poupa o núcleo das rotas de VPN ([RFC 4364, Abstract](https://www.rfc-editor.org/rfc/rfc4364.txt)). Os Customer Edge (CE) se ligam aos PE routers (seção 1.2), e cada PE mantém "VPN Routing and Forwarding tables" (VRFs) (seção 3).
+
+Duas VPNs sem site em comum podem se sobrepor, por exemplo se ambas usam 10.0.0.0/8, do [espaço de endereços privados](/learn/private-address-space) (seção 1.3). O route distinguisher (RD) separa as duas: 8 bytes na frente do endereço IPv4 de 4 bytes formam um endereço VPN-IPv4 de 12 bytes, e "An RD is simply a number, and it does not contain any inherent information", só um número, sem informação embutida (seção 4.1). Os route targets (RTs), levados como extended communities do BGP, decidem em que VRFs a rota entra; ela tem um só RD, mas pode ter vários route targets (seção 4.3.1).
+
+O PE de entrada faz push do label de rota VPN que veio com a rota no BGP e, por cima, de um label de túnel até o PE de saída (seções 1 e 5): a pilha calculada acima tem esse formato, o 17 do laboratório sobre um 100048 ilustrativo. Com PHP, o pacote chega ao PE de saída só com o label de rota VPN (seção 5), que escolhe o circuito do cliente ou a tabela de virtual routing and forwarding (VRF) a consultar.
+
+## Quem distribui os labels
+
+O LDP (RFC 5036, outubro de 2007) distribui labels "to support MPLS forwarding along normally routed paths", os caminhos do roteamento comum ([RFC 5036, Abstract](https://www.rfc-editor.org/rfc/rfc5036.txt)). Os hellos vão por UDP 646 ao grupo all-routers; as sessões, por TCP 646 (seções 1.2 e 3.10.1). O identificador LDP, de seis octetos, é o router ID mais dois octetos zerados (seção 2.2.2): `192.0.2.2:0`. Quem tem o endereço maior abre a sessão (seção 2.5.2): o p (192.0.2.2) conectou no pe1 (192.0.2.1). O FRRouting usa downstream unsolicited com liberal retention ([documentação do FRRouting, LDP](https://docs.frrouting.org/en/latest/ldpd.html)), daí as linhas não usadas do p acima. Um hello capturado:
+
+```console
+$ tcpdump -nn -v -c 1 -r lab-ldp-pe1-p-20261019.pcap
+12:30:09.746900 IP (tos 0xc0, ttl 1, id 41112, offset 0, flags [DF], proto UDP (17), length 70)
+    198.51.100.0.646 > 224.0.0.2.646:
+	LDP, Label-Space-ID: 192.0.2.1:0, pdu-length: 38
+	  Hello Message (0x0100), length: 28, Message ID: 0x00000001, Flags: [ignore if unknown]
+	    Common Hello Parameters TLV (0x0400), length: 4, Flags: [ignore and don't forward if unknown]
+	      Hold Time: 15s, Flags: [Link Hello]
+	    IPv4 Transport Address TLV (0x0401), length: 4, Flags: [ignore and don't forward if unknown]
+	      IPv4 Transport Address: 192.0.2.1
+```
+
+Note o TTL IP 1, o hold time de 15 segundos e a loopback como endereço de transporte.
+
+O RSVP-TE (RFC 3209, dezembro de 2001), as extensões de engenharia de tráfego do Resource Reservation Protocol, monta rotas explícitas com labels downstream-on-demand, e cada nó guarda estado por LSP ([RFC 3209, seções 1.1 e 2.2](https://www.rfc-editor.org/rfc/rfc3209.txt)).
+
+## Segment Routing: o caminho dentro da pilha
+
+O Segment Routing (SR), da RFC 8402 de julho de 2018, muda quem escreve a pilha, não como ela é encaminhada: "A segment is encoded as an MPLS label. An ordered list of segments is encoded as a stack of labels", cada segmento é um label e a lista é a pilha, sem mudança no plano de encaminhamento ([RFC 8402, Abstract](https://www.rfc-editor.org/rfc/rfc8402.txt)). Os segmentos ainda são anunciados, por IS-IS, OSPF ou BGP no caso distribuído (seção 1). Um índice no SR Global Block (SRGB), que não pode cobrir os labels de uso especial, dá o label ([RFC 8660, seções 2.3 e 2.4](https://www.rfc-editor.org/rfc/rfc8660.txt)): num SRGB ilustrativo de 16000 a 23999, o índice 3 é o label 16003. A RFC 9994, de junho de 2026, leva network actions dentro da pilha e ocupa o label 4 ([RFC 9994, Abstract](https://www.rfc-editor.org/rfc/rfc9994.txt)).
+
+## TTL e traceroute
+
+No primeiro push, "the TTL field of the label stack entry MUST BE set to the value of the IP TTL field", o label copia o TTL do IP ([RFC 3032, seção 2.4.3](https://www.rfc-editor.org/rfc/rfc3032.txt)). A RFC 3443 define dois modelos: o Uniform mostra cada LSR a quem está fora do túnel, e o Pipe faz a rede agir como um circuito, mostrando só ingress e egress ([RFC 3443, seção 2.2](https://www.rfc-editor.org/rfc/rfc3443.txt)). No Linux, o `ip_ttl_propagate` vem em 1, o Uniform ([The Linux Kernel documentation, MPLS Sysfs variables](https://docs.kernel.org/networking/mpls-sysctl.html)).
+
+A RFC 4950 permite ao roteador anexar a pilha de labels recebida a uma mensagem Time Exceeded ou Destination Unreachable do Internet Control Message Protocol (ICMP) ([RFC 4950, seções 3 e 5](https://www.rfc-editor.org/rfc/rfc4950.txt)); as sondas em si estão em [ICMP, ping e traceroute](/learn/icmp-ping-and-traceroute). O exemplo da própria RFC:
+
+```text
+      2  192.0.2.9 (192.0.2.9)  0.861 ms  0.718 ms  0.679 ms
+
+        MPLS Label=100048 Exp=0 TTL=1 S=1
+```
+
+Essa entrada codificada dá 0x186D0101. O traceroute do Linux a imprime com `-e`, no formato `MPLS:L=label,E=exp_use,S=stack_bottom,T=TTL` ([traceroute(8)](https://man7.org/linux/man-pages/man8/traceroute.8.html)).
+
+## O que os labels custam ao pacote IP
+
+Os labels não são uma tag de enlace: "the Frame Payload consists of the label stack entries and the IP datagram", a pilha conta dentro do payload, e o header 802.1Q fica fora ([RFC 3032, seção 3.1](https://www.rfc-editor.org/rfc/rfc3032.txt)). Num link mantido no payload Ethernet de 1500 bytes, o maior datagrama IP é 1496 com um label, 1492 com dois e 1488 com três (seção 3.2). Um pacote IPv4 grande demais com Don't Fragment ligado "MUST NOT be forwarded", não pode ser encaminhado (seção 3.4), e o Path Maximum Transmission Unit (MTU) Discovery só funciona se a resposta ICMP chegar à origem (seção 3.6). A [calculadora de MTU / MSS](/tools/mtu-mss), que também dá o maximum segment size (MSS) do TCP, conta 4 octetos por entrada `mpls`; se o payload do link não foi aumentado, esses octetos saem do datagrama IP.
+
+## Como falha ou é atacado
+
+Um label não prova quem o escreveu: "If labeled packets are accepted from untrusted sources, the result may be that packets are routed in an illegitimate manner", o tráfego pode ser roteado de forma ilegítima ([RFC 3032, seção 7](https://www.rfc-editor.org/rfc/rfc3032.txt)). A defesa fica na borda: o backbone deve recusar pacotes com label vindos de fora ([RFC 4364, seção 6](https://www.rfc-editor.org/rfc/rfc4364.txt)). Separação de VPN não é criptografia (seção 13.1), e "Deliberate or inadvertent misconfiguration may result in severe security leaks", erros de configuração causam vazamentos graves ([RFC 4381, seção 5.1](https://www.rfc-editor.org/rfc/rfc4381.txt)).
+
+Um equipamento não autorizado pode abrir sessão LDP e consumir estado, e floods de hellos ou SYNs podem esgotar o roteador ([RFC 5920, seção 4.1.4](https://www.rfc-editor.org/rfc/rfc5920.txt)). A RFC 4364 pede que BGP e LDP nunca façam peering com roteadores não confiáveis e que usem autenticação TCP com o MD5 Message-Digest Algorithm (seção 13.2), o problema de confiança que [o voto de confiança do BGP](/learn/bgp-and-the-routing-chokepoint) discute. O Generalized TTL Security Mechanism (GTSM) confere se os pacotes LDP vieram de um link diretamente conectado ([RFC 6720, Abstract](https://www.rfc-editor.org/rfc/rfc6720.txt)).
+
+Um pacote com label de entrada inválido "MUST be discarded", deve ser descartado, salvo quando encaminhá-lo sem label for comprovadamente inofensivo ([RFC 3031, seção 3.18](https://www.rfc-editor.org/rfc/rfc3031.txt)); por raciocínio, um binding perdido num núcleo sem rotas BGP vira buraco negro, não desvio. O MPLS echo request da RFC 8029 confronta o plano de dados com o plano de controle ([RFC 8029, Abstract](https://www.rfc-editor.org/rfc/rfc8029.txt)), e o modelo Pipe impede que o traceroute revele o núcleo ([RFC 4950, seção 6](https://www.rfc-editor.org/rfc/rfc4950.txt)).
+
+## Como ver
+
+O FRRouting mostra o plano de controle com `show mpls ldp neighbor`, `show mpls ldp discovery` e `show mpls ldp binding`, e os labels instalados com `show mpls table` ([documentação do FRRouting, Zebra](https://docs.frrouting.org/en/latest/zebra.html)), que fica vazio sem suporte no kernel, como no laboratório. A configuração LDP do p no laboratório:
+
+```text
+mpls ldp
+ router-id 192.0.2.2
+ address-family ipv4
+  discovery transport-address 192.0.2.2
+  interface ep1
+  exit
+  interface ep2
+  exit
+ exit-address-family
+ exit
+```
+
+```console
+mplsPE1# show mpls ldp neighbor
+AF   ID              State       Remote Address    Uptime
+ipv4 192.0.2.2       OPERATIONAL 192.0.2.2       00:00:16
+```
+
+O Linux não reconhece labels enquanto `net.mpls.platform_labels` estiver no padrão 0 (MPLS Sysfs variables). O `ip -f mpls route show` lista as rotas de label ([ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)); `ip route add 198.51.100.0/30 encap mpls 200/300 via 192.0.2.1 dev eth0` faz push de dois labels numa rota IP, adaptado do exemplo do manual com endereços de documentação e não executado ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)). No tcpdump, cada primitiva `mpls` avança o filtro 4 octetos ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)): `mpls 17 and mpls 100048` reconheceu o frame calculado, e `port 646` captura o LDP.
+
+## Para lembrar
+
+- O MPLS atribui o pacote a uma FEC uma vez, no ingress; depois, os LSRs encaminham por um label que só vale entre dois vizinhos.
+- Uma entrada da pilha tem 32 bits: label 20, Traffic Class 3 (antes EXP), bottom of stack 1, TTL 8.
+- Os labels de 0 a 15 são de uso especial; o Implicit NULL (3) nunca aparece no pacote, e anunciá-lo pede pop ao hop anterior.
+- O "BGP-free core" mantém rotas IGP até cada PE e descarta as externas e as de VPN; a RFC 5565 chama o nome de impróprio.
+- Um pacote de VPN de camada 3 leva um label de túnel sobre um label de rota VPN; o RD separa prefixos sobrepostos, os route targets escolhem as VRFs.
+- O LDP segue o IGP, o RSVP-TE guarda estado por LSP, e o Segment Routing escreve o caminho na pilha sem mudar o encaminhamento MPLS.
+- Cada label ocupa 4 octetos do payload do frame; aceite pacotes com label só de vizinhos confiáveis.
+
+## Fontes
+
+- [RFC 3031, Multiprotocol Label Switching Architecture, janeiro de 2001: seções 2.1, 2.2, 3.1, 3.9 a 3.13, 3.15, 3.16, 3.18, 3.22, 3.23, 3.25.2, 4.1.5 e 4.6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3031.txt)
+- [RFC 3032, MPLS Label Stack Encoding, janeiro de 2001: seções 2.1 a 2.4, 3 a 3.6, 5 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3032.txt)
+- [RFC 5462, Multiprotocol Label Switching (MPLS) Label Stack Entry: "EXP" Field Renamed to "Traffic Class" Field, fevereiro de 2009: Abstract e seção 2.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5462.txt)
+- [IANA, Special-Purpose Multiprotocol Label Switching (MPLS) Label Values, atualizado em 30 de junho de 2026: Base and Extended Special-Purpose MPLS Label Values (lida em 2026-10-19)](https://www.iana.org/assignments/mpls-label-values/mpls-label-values.xhtml)
+- [RFC 7274, Allocating and Retiring Special-Purpose MPLS Labels, junho de 2014: Abstract e seção 3.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7274.txt)
+- [RFC 4182, Removing a Restriction on the use of MPLS Explicit NULL, setembro de 2005: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4182.txt)
+- [RFC 4364, BGP/MPLS IP Virtual Private Networks (VPNs), fevereiro de 2006: Abstract e seções 1, 1.2, 1.3, 1.5, 1.6, 3, 3.1, 4, 4.1, 4.2, 4.3, 4.3.1, 5, 6, 13.1, 13.2 e 15 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4364.txt)
+- [RFC 5565, Softwire Mesh Framework, junho de 2009: seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5565.txt)
+- [RFC 5036, LDP Specification, outubro de 2007: Abstract e seções 1, 1.1, 1.2, 2.2.2, 2.4.1, 2.5.2, 2.6, 2.6.1, 2.6.2, 3.10.1 e 5.1 a 5.3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5036.txt)
+- [RFC 3209, RSVP-TE: Extensions to RSVP for LSP Tunnels, dezembro de 2001: Abstract e seções 1.1 e 2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3209.txt)
+- [RFC 8402, Segment Routing Architecture, julho de 2018: Abstract e seções 1, 3.1.2 e 8.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8402.txt)
+- [RFC 8660, Segment Routing with the MPLS Data Plane, dezembro de 2019: Abstract e seções 1, 2.3 e 2.4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8660.txt)
+- [RFC 9994, MPLS Network Action (MNA) Sub-Stack Specification Including In-Stack Network Actions and Data, junho de 2026: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9994.txt)
+- [RFC 3443, Time To Live (TTL) Processing in Multi-Protocol Label Switching (MPLS) Networks, janeiro de 2003: Abstract e seções 1, 2.2, 2.3, 3.1 e 3.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3443.txt)
+- [RFC 4950, ICMP Extensions for Multiprotocol Label Switching, agosto de 2007: seções 1, 3, 5 e 6 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4950.txt)
+- [RFC 4381, Analysis of the Security of BGP/MPLS IP Virtual Private Networks (VPNs), fevereiro de 2006: Abstract e seções 3.4 e 5.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4381.txt)
+- [RFC 5920, Security Framework for MPLS and GMPLS Networks, julho de 2010: seções 4.1.4, 4.2.3 e 4.2.7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5920.txt)
+- [RFC 6720, The Generalized TTL Security Mechanism (GTSM) for the Label Distribution Protocol (LDP), agosto de 2012: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6720.txt)
+- [RFC 8029, Detecting Multiprotocol Label Switched (MPLS) Data-Plane Failures, março de 2017: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8029.txt)
+- [Documentação do FRRouting, LDP (latest): Understanding LDP principles, LDP Configuration e Show LDP Information (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/ldpd.html)
+- [Documentação do FRRouting, Zebra (latest): MPLS Commands e o comando mpls interface (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/zebra.html)
+- [The Linux Kernel documentation, MPLS Sysfs variables (7.3.0): /proc/sys/net/mpls/\* (lida em 2026-10-19)](https://docs.kernel.org/networking/mpls-sysctl.html)
+- [ip(8), Linux manual page, iproute2: OPTIONS (-family, -M) (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [ip-route(8), Linux manual page, iproute2: SYNOPSIS (ENCAP_MPLS, FAMILY, ttl-propagate) e EXAMPLES (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [traceroute(8), Linux manual page, traceroute 2.1.6: opção -e (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/traceroute.8.html)
+- [pcap-filter(7), Linux manual page, libpcap: a primitiva mpls (lida em 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)

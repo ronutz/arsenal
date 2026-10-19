@@ -1,60 +1,173 @@
 ---
 slug: reading-dig-output
 title: "Reading dig Output From Top to Bottom"
-summary: "A dig answer has a fixed shape: a version line, the header, the flags line, the OPT pseudo-section, the four sections, and the query stats. Once you know what each block is, you can read any response at a glance and spot the one line that explains a resolution problem."
-concepts: ["dig", "dns", "resolver", "troubleshooting", "query", "sections"]
-relatedTools: ["dig-output-explainer"]
-relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig"]
+summary: "dig prints every DNS answer in the same fixed shape: the version and options lines, the header line, the flags and counts line, the OPT pseudosection, the sections that have records, and four statistics lines. After reading, you can walk any dig answer block by block, name what each line reports, recognise NODATA, NXDOMAIN, SERVFAIL and a truncated answer from the shape alone, and choose the shorter forms a script needs."
+concepts: ["dig", "dns", "resolver", "troubleshooting", "query", "sections", "edns", "nodata", "nxdomain", "servfail", "truncation", "query statistics"]
+relatedTools: ["dig-output-explainer", "dig-command-builder"]
+relatedArticles: ["dns-message-header-and-flags", "dns-record-types-in-answers", "edns-and-the-opt-pseudosection", "dnssec-records-in-dig", "reading-a-dns-answer", "anatomy-of-a-dig-command-line", "authoritative-vs-non-authoritative-answers", "choosing-a-public-dns-resolver", "dnssec-end-to-end"]
 category: networking
 order: 40
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-`dig` prints a DNS message in a stable, top-to-bottom layout. Learning that layout is most of the skill: every answer, whether a clean lookup or a puzzling failure, uses the same blocks in the same order.
+dig is the lookup tool of BIND 9, the name server software of the Internet Systems Consortium (ISC): "dig is a flexible tool for interrogating DNS name servers. It performs DNS lookups and displays the answers that are returned from the name server(s) that were queried" ([dig manual, Description](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). It prints one DNS message, in the layout Request for Comments (RFC) 1035 fixed in 1987, in an order its source never varies, and a failed lookup's diagnosis is usually on one line of it. This part walks the default output of dig 9.20.29, ISC's stable release on 2026-10-18 ([ISC, Download BIND 9](https://www.isc.org/download/)), block by block, with captures from that day; [the series opener](/learn/reading-a-dns-answer) reads one answer end to end and [the header part](/learn/dns-message-header-and-flags) explains the header bits. Afterwards you can say what every line reports, tell the negative shapes apart at a glance, and pick a shorter form when a script needs less.
 
-## The blocks, in order
+## The whole answer at a glance
 
-A typical answer looks like this:
+Captured on 2026-10-18 with dig 9.20.29 against a lab name server (BIND 9.20.29 too, authoritative for a lab copy of example.com, recursion off):
 
+```text
+; <<>> DiG 9.20.29 <<>> @127.0.0.1 -p 5399 www.example.com A
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 59760
+;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: c000798258af3aee010000006ad55662b59cbd982f5513ad (good)
+;; QUESTION SECTION:
+;www.example.com.		IN	A
+
+;; ANSWER SECTION:
+www.example.com.	3600	IN	A	192.0.2.10
+
+;; Query time: 0 msec
+;; SERVER: 127.0.0.1#5399(127.0.0.1) (UDP)
+;; WHEN: Sun Oct 18 20:29:38 -03 2026
+;; MSG SIZE  rcvd: 88
 ```
-; <<>> DiG 9.18.1 <<>> example.com A
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4321
-;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+Five blocks, always in this order: the command echo, the header block, the OPT pseudosection, the sections that have records, and the statistics; every line but the record line starts with a semicolon, the master-file comment mark. The order is written into dig's source ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)); the message is RFC 1035's, where "The top level format of message is divided into 5 sections (some of which are empty in certain cases)" ([RFC 1035, section 4.1](https://www.rfc-editor.org/rfc/rfc1035.txt)).
+
+## The first three lines
+
+The first line echoes dig's version and every argument you typed; `; (1 server found)` appears only when the `@server` you named resolved to addresses; `;; global options: +cmd` lists the global options. The manual calls the three the initial comment, "identifying the version of dig and the query options that have been applied" ([dig manual, +cmd](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)); `+nocmd` removes them, so an answer that begins at `;; Got answer:` was asked for that way. How dig parses the command line is [its own part](/learn/anatomy-of-a-dig-command-line).
+
+## The header line: opcode, status, id
+
+`;; Got answer:` heads every response. The header line carries three header fields. The opcode is "A four bit field that specifies kind of query in this message" ([RFC 1035, section 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). The status is the response code (RCODE) in the upper-case names of BIND's table, `NOERROR`, `FORMERR`, `SERVFAIL`, `NXDOMAIN`, `NOTIMP`, `REFUSED` ([BIND 9.20.29 rcode.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/rcode.c)), where the Internet Assigned Numbers Authority (IANA) registry writes NoError, ServFail and NXDomain ([IANA, DNS RCODEs](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)). The id is the 16-bit identifier the client chose and the server copied back. The status already includes the OPT record's EXTENDED-RCODE, which "Forms the upper 8 bits of extended 12-bit RCODE" ([RFC 6891, section 6.1.3](https://www.rfc-editor.org/rfc/rfc6891.txt)): `status: BADVERS` is a 12-bit value, printed here only.
+
+The line is never shorter: dig always prints `, id: N` here and `, ADDITIONAL: N` on the line below, so a sample that stops at `status: NOERROR` or at `AUTHORITY: 1` was edited by a hand.
+
+## The flags line and the four counts
+
+The flags set are listed in the fixed order `qr aa tc rd ra ad cd`. AA (Authoritative Answer) says the server is an authority for the name in the question, TC (TrunCation) "specifies that this message was truncated due to length greater than that permitted on the transmission channel", RD (Recursion Desired) is copied from the query, RA (Recursion Available) says whether the server offers recursion ([RFC 1035, section 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)); AD and CD, Authentic Data and Checking Disabled, are the DNS Security Extensions (DNSSEC) bits ([IANA, DNS Header Flags](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)); dig sets AD by default, hence the `ad` in a validating resolver's answers. After a semicolon come the four counts, QDCOUNT (dig's `QUERY`), ANCOUNT, NSCOUNT and ARCOUNT (RFC 1035, section 4.1.1).
+
+Read the counts as a shape before any record: `NOERROR` with `ANSWER: 1` or more is a positive answer; `NOERROR` with `ANSWER: 0` and a start of authority (SOA) record in AUTHORITY is a negative answer; `ANSWER: 0` with NS records and no SOA there is a referral; `ADDITIONAL: 1` with no ADDITIONAL section printed is the OPT record alone. The `;; WARNING: recursion requested but not available` line is dig's, printed whenever a response has `rd` set and `ra` clear; with `+norecurse` it disappears.
+
+## The OPT pseudosection
+
+Extension Mechanisms for DNS (EDNS) let a message exceed 512 bytes over UDP and carry options; their carrier is the OPT pseudo-RR (resource record), type 41, in the additional section: "An OPT record does not carry any DNS data.  It is used only to contain control information pertaining to the question-and-answer sequence of a specific transaction" ([RFC 6891, section 6.1.1](https://www.rfc-editor.org/rfc/rfc6891.txt)). BIND's parser pulls it out of the additional section while reading, which is why dig prints it in its own block while the flags line still says `ADDITIONAL: 1` ([BIND 9.20.29 message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)).
+
+`; EDNS: version: 0, flags:; udp: 1232` reads three fields: the version, 0 being the only one defined; the extended flags, `do` for DNSSEC OK and `co` for Compact Answers OK; and the UDP payload size the sender of this message can receive (RFC 6891, section 6.1.2). In a response it is the server's figure (Cloudflare's resolver: 1232, Google's: 512, on 2026-10-18); dig's own default is `#define DEFAULT_EDNS_BUFSIZE 1232` ([BIND 9.20.29 dighost.h](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.h)). The COOKIE line in the capture is 24 bytes in one hexadecimal run: the 8-byte client cookie dig sent ([RFC 7873, section 4](https://www.rfc-editor.org/rfc/rfc7873.txt)), then a 16-byte server cookie whose first octet is a version, `01`, followed by three reserved octets, a four-octet timestamp, `6ad55662`, and an eight-octet hash ([RFC 9018, section 4](https://www.rfc-editor.org/rfc/rfc9018.txt)); `(good)` is dig's verdict.
+
+## The four sections
+
+A section is printed only when it has records; an empty one prints nothing, not even its heading ([BIND 9.20.29 message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)). QUESTION holds the query, as a comment because a question has no time to live (TTL) and no data. The other three are what RFC 1035 says: "The answer section contains RRs that answer the question; the authority section contains RRs that point toward an authoritative name server; the additional records section contains RRs which relate to the query, but are not strictly answers for the question" ([RFC 1035, section 4.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). A record line has five columns, owner name, TTL, class, type and data ([reading the records](/learn/dns-record-types-in-answers)). Who answered decides what fills AUTHORITY and ADDITIONAL: the lab server, asked with `+norecurse`, returned `AUTHORITY: 1, ADDITIONAL: 2`, the zone's NS record and its address; every public resolver's positive answer had `AUTHORITY: 0, ADDITIONAL: 1` ([authoritative and non-authoritative answers](/learn/authoritative-vs-non-authoritative-answers)).
+
+## The four closing lines
+
+"The default behavior is to print the query statistics as a comment after each lookup" ([dig manual, +stats](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)); they are never printed in `+short` or `+yaml` form. `;; Query time: 0 msec` is the interval between sending and receiving, truncated to milliseconds, so zero is normal on a loopback; `-u` gives microseconds. `;; SERVER: 127.0.0.1#5399(127.0.0.1) (UDP)` names the socket that answered as `address#port`, then what you typed after `@` (or the resolv.conf address), then the transport, `(UDP)`, `(TCP)`, `(TLS)` or `(HTTPS)` ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)). `;; WHEN: Sun Oct 18 20:29:38 -03 2026` is the local clock of the machine running dig, with its zone. `;; MSG SIZE  rcvd: 88` is the DNS message length in bytes without the UDP and IP headers; above 512 in a `(UDP)` answer, it says EDNS did its work. The exit status is 0 for any answer received, NXDOMAIN and SERVFAIL included, and 9 when no server replied (dig manual, Return Codes).
+
+## Where to look first
+
+Start at the status, then `ANSWER:`, then the flags. Four shapes cover most failures.
+
+NODATA: "NODATA is indicated by an answer with the RCODE set to NOERROR and no relevant answers in the answer section" ([RFC 2308, section 2.2](https://www.rfc-editor.org/rfc/rfc2308.txt)). The lab server, asked for an AAAA the zone does not have, answered on 2026-10-18:
+
+```text
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 49796
+;; flags: qr aa rd; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+;; WARNING: recursion requested but not available
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: f2bf2d830c26e2f5010000006ad55662444aeda9ad6c89b6 (good)
+;; QUESTION SECTION:
+;www.example.com.		IN	AAAA
+
+;; AUTHORITY SECTION:
+example.com.		300	IN	SOA	ns1.example.com. hostmaster.example.com. 2026101801 7200 3600 1209600 300
+```
+
+The name exists, the type does not. The SOA record is there because authoritative servers "MUST include the SOA record of the zone in the authority section of the response when reporting an NXDOMAIN or indicating that no data of the requested type exists" (RFC 2308, section 3), and its TTL is the negative cache time: "its TTL is taken from the minimum of the SOA.MINIMUM field and SOA's TTL" (section 5). The zone's default TTL is 3600 and its MINIMUM, the last number on the line, is 300, so 300 was printed; a cache serves the same line "with the TTL decremented by the amount of time it was stored in the cache" (section 6).
+
+NXDOMAIN: the status says it, the AUTHORITY SOA says which zone said it. Through a public resolver on 2026-10-18:
+
+```text
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 60089
+;; flags: qr rd ra ad; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
 
 ;; OPT PSEUDOSECTION:
 ; EDNS: version: 0, flags:; udp: 1232
 ;; QUESTION SECTION:
-;example.com.			IN	A
+;nf2e-check-20261018.invalid.	IN	A
 
-;; ANSWER SECTION:
-example.com.		3600	IN	A	104.20.23.154
-
-;; Query time: 12 msec
-;; SERVER: 1.1.1.1#53(1.1.1.1) (UDP)
-;; MSG SIZE  rcvd: 56
+;; AUTHORITY SECTION:
+.			86400	IN	SOA	a.root-servers.net. nstld.verisign-grs.com. 2026101801 1800 900 604800 86400
 ```
 
-Reading down: the first line echoes the dig version and the query you ran. The `->>HEADER<<-` line carries the opcode, the status (the RCODE), and the message id. The flags line lists which header bits are set and gives the record count in each of the four sections. The OPT (Option) pseudo-section is EDNS (Extension Mechanisms for DNS) metadata, not a real record. Then come the sections themselves: QUESTION (what you asked), ANSWER (the records that answer it), AUTHORITY (which servers are authoritative, or the SOA for a negative answer), and ADDITIONAL (helper records). The `;;` lines at the bottom are the query statistics.
+The name is under `.invalid` on purpose: "Users MAY assume that queries for 'invalid' names will always return NXDOMAIN responses" ([RFC 6761, section 6.4](https://www.rfc-editor.org/rfc/rfc6761.txt)). A nonexistent name under example.com no longer serves: that zone uses compact denial of existence, which "returns a NODATA response rather than an NXDOMAIN response" ([RFC 9824, section 1](https://www.rfc-editor.org/rfc/rfc9824.txt)): on 2026-10-18 both resolvers gave `NOERROR`, `ANSWER: 0` and the example.com SOA. A second resolver returned the same root SOA with TTL 86383, a cached copy seventeen seconds into its countdown: a TTL that moves between queries is a cache, not the zone.
 
-## Where to look first
+SERVFAIL: "Server failure - The name server was unable to process this query due to a problem with the name server" ([RFC 1035, section 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). The lab server, secondary for a zone it has never transferred, answered `status: SERVFAIL`, `flags: qr rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1`, an OPT block, the question and nothing else. The status does not say why: "Is a SERVFAIL a DNSSEC validation issue, or is the nameserver experiencing some other failure?" ([RFC 8914, section 1](https://www.rfc-editor.org/rfc/rfc8914.txt)). The Extended DNS Error (EDE) option answers inside the OPT block: on 2026-10-18 a public resolver answered `dnssec-failed.org A` with `status: SERVFAIL`, `flags: qr rd ra` and `; EDE: 9 (DNSKEY Missing): (no SEP matching the DS found for dnssec-failed.org.)`, the validation failure for which "the name server MUST return RCODE 2 to the originating client" ([RFC 4035, section 5.5](https://www.rfc-editor.org/rfc/rfc4035.txt)); with `+cd` the same query gave `NOERROR`, `flags: qr rd ra cd`, one A record and the same EDE line. How validation reaches its verdict is [the DNSSEC part](/learn/dnssec-end-to-end).
 
-For a failure, start at the status. `NOERROR` with an answer record is the happy path. `NXDOMAIN` means the name does not exist. `SERVFAIL` usually means a broken delegation, a DNSSEC validation failure, or an upstream timeout. `REFUSED` is almost always policy. If the status is `NOERROR` but the ANSWER count is zero, the name exists but not for the type you asked (this is NODATA), and the SOA in the AUTHORITY section tells you how long that negative result will be cached.
+REFUSED and the missing `aa`: "Authoritative servers generally return REFUSED when processing a query for which they are not authoritative" ([RFC 9520, section 2.2](https://www.rfc-editor.org/rfc/rfc9520.txt)); the lab server, asked for `www.example.org`, answered `status: REFUSED`, `flags: qr rd` and `; EDE: 20 (Not Authoritative): (recursion disabled)`. `aa` comes only from a server holding the zone, so a resolver's answer never has it; a missing `aa` from a server you expected to be authoritative says it does not hold the zone.
 
-The other early tell is the flags line. `aa` means the answering server is authoritative. `ra` tells you the server offers recursion. `tc` means the UDP answer was truncated and dig will normally retry over TCP; if you see it, the UDP result you are reading is incomplete.
+## Truncation and the retry over TCP
 
-The rest of this series takes each block in turn: the header and flags, the record types you see in answers, the EDNS OPT pseudo-section, and the DNSSEC records.
+"When a DNS client receives a reply with TC set, it should ignore that response, and query again, using a mechanism, such as a TCP connection, that will permit larger replies" ([RFC 2181, section 9](https://www.rfc-editor.org/rfc/rfc2181.txt)). dig does it by itself: "By default, TCP retries are performed" ([dig manual, +ignore](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). Asked for a lab name with twenty-four 90-character TXT records, dig printed, before the version line, `;; Truncated, retrying in TCP mode.`, then a normal answer with `ANSWER: 24`, `;; SERVER: 127.0.0.1#5399(127.0.0.1) (TCP)` and `;; MSG SIZE  rcvd: 2544`; the truncated UDP answer itself is not printed. With `+ignore` you see what the retry hid: `;; flags: qr aa tc rd; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 1`, no ANSWER section, `(UDP)`, 72 bytes. So `tc` means the answer you are reading is not the answer, and `(TCP)` on the SERVER line proves that dig fetched the real one.
 
+## The shape's other faces
 
-## NOERROR with zero answers is the one people misread
+"Query options are order sensitive" ([dig manual, Query Options](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). `+short` "toggles whether a terse answer is provided. The default is to print the answer in a verbose form" (dig manual, +short): it prints only the data column of the ANSWER section, and for the `.invalid` name it printed nothing, exit status 0, so `+short` hides NXDOMAIN, NODATA and SERVFAIL alike. `+noall +answer` clears every display flag and turns the answer section back on, the manual's recipe to "Display a much shorter output with just the name, record type, TTL, and value for each answer:" (dig manual, Examples); add `+stats` and the four closing lines follow the records. `+multiline` prints "records, like the SOA records, in a verbose multi-line format with human-readable comments" (dig manual, +multiline); the example.com SOA, from a public resolver on 2026-10-18, became:
 
-The header can say `status: NOERROR` while the answer section is empty:
-
+```text
+example.com.		998 IN SOA elliott.ns.cloudflare.com. dns.cloudflare.com. (
+				2416374680 ; serial
+				10000      ; refresh (2 hours 46 minutes 40 seconds)
+				2400       ; retry (40 minutes)
+				604800     ; expire (1 week)
+				1800       ; minimum (30 minutes)
+				)
 ```
-;; ->>HEADER<<- opcode: QUERY, status: NOERROR
-;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1
-```
 
-**That is not success and it is not NXDOMAIN.** It is **NODATA**: the name exists, and it has no record of the type you asked for. A host with an A record but no AAAA answers exactly like this to an AAAA query.
+The 998 is a cache TTL counting down. `+nocmd`, `+nostats` and `+nocomments` remove one block each, and `+yaml` replaces the whole shape with a document whose timestamps are in Coordinated Universal Time (UTC), unlike `;; WHEN:`.
 
-The practical consequence is that *"DNS returned NOERROR"* is not evidence a lookup worked. **Read the `ANSWER:` count, not the status**, and check the AUTHORITY section, where an SOA is the server telling you which zone denied you the record.
+## Seeing it with the site's tools
+
+Paste a default, full answer into the [dig output explainer](/tools/dig-output-explainer): it names the header fields, the flags and counts, the EDNS line, every record and the statistics, and flags a non-zero status, `tc`, and NOERROR with `ANSWER: 0`. Give it the default shape: `+short`, `+noall +answer`, `+nocomments` and `+yaml` output has no header line and is refused, and a `+multiline` SOA is cut at its opening parenthesis. The [dig command builder](/tools/dig-command-builder) works the other way: choose the short, answer-only, `+yaml` or multi-line form, and it writes the command and explains each token.
+
+## What to remember
+
+- Default dig output is five blocks in a fixed order: the command echo, the header block, the OPT pseudosection, the sections that have records, and four statistics lines; a header line without `id:` or a counts line without `ADDITIONAL:` was edited by a hand.
+- Read status, then `ANSWER:`, then the flags: `NOERROR` with `ANSWER: 0` is NODATA, not success; the SOA in AUTHORITY carries the negative TTL, the smaller of its MINIMUM field and its own TTL, counted down by caches.
+- Show NXDOMAIN with a name under `.invalid`; example.com uses compact denial of existence and answers a nonexistent name with NOERROR.
+- SERVFAIL prints no sections but the question; the `; EDE:` line in the OPT block says why, and `+cd` releases the unvalidated data when the cause is DNSSEC.
+- An empty section prints nothing, and `ADDITIONAL: 1` with no ADDITIONAL section is the OPT record; the `udp:` figure is the sender's own buffer size, 1232 from dig by default.
+- `tc` means the UDP answer you see is not the answer; dig retries over TCP, says so before the version line, and the SERVER line then reads `(TCP)`.
+- `+short` prints data only and nothing at all for every negative answer; `+noall +answer` keeps the record lines; the statistics never appear in `+short` or `+yaml` form.
+
+## Sources
+
+- [RFC 1035, Domain names - implementation and specification, November 1987: sections 4.1, 4.1.1, 4.1.3, 4.2.1 and 4.2.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 2181, Clarifications to the DNS Specification, July 1997: section 9 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), March 1998: sections 1, 2.1, 2.2, 3, 5, 6 and 7.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, March 2005: sections 3.1.6, 3.2.3 and 5.5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4035.txt)
+- [RFC 6761, Special-Use Domain Names, February 2013: section 6.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [RFC 6891, Extension Mechanisms for DNS (EDNS(0)), April 2013: sections 4.1, 4.3, 6.1.1, 6.1.2, 6.1.3, 6.2.3, 6.2.5 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6891.txt)
+- [RFC 7873, Domain Name System (DNS) Cookies, May 2016: sections 1, 4, 5.1, 5.2.3 and 5.3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7873.txt)
+- [RFC 8914, Extended DNS Errors, October 2020: sections 1, 2, 3, 4.10, 4.14, 4.21 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8914.txt)
+- [RFC 9018, Interoperable Domain Name System (DNS) Server Cookies, April 2021: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9018.txt)
+- [RFC 9520, Negative Caching of DNS Resolution Failures, December 2023: sections 2, 2.1, 2.2, 2.3, 2.7 and 3.2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9520.txt)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, September 2025: sections 1, 2, 3.1, 5, 5.1 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
+- [IANA, Domain Name System (DNS) Parameters, last updated 2026-10-16: DNS OpCodes, DNS RCODEs, DNS Header Flags, EDNS Header Flags, DNS EDNS0 Option Codes and Extended DNS Error Codes (read 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility, undated page: Description, Simple Usage, Options, Query Options and Return Codes (read 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
+- [ISC, Download BIND 9, undated page: the BIND 9 version table (read 2026-10-18)](https://www.isc.org/download/)
+- [BIND 9.20.29 source, bin/dig/dig.c (ISC GitLab, tag v9.20.29): printmessage(), received() and printgreeting() (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
+- [BIND 9.20.29 source, bin/dig/dighost.h (ISC GitLab, tag v9.20.29): DEFAULT_EDNS_BUFSIZE (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.h)
+- [BIND 9.20.29 source, lib/dns/message.c (ISC GitLab, tag v9.20.29): dns_message_sectiontotext(), dns_message_pseudosectiontotext() and dns_message_parse() (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)
+- [BIND 9.20.29 source, lib/dns/rcode.c (ISC GitLab, tag v9.20.29): RCODENAMES (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/rcode.c)

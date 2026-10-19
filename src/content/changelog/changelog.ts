@@ -52,6 +52,81 @@ export const KIND_LABEL: Record<ChangelogKind, string> = {
 // Newest first.
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    // The follow-up pass of 2026-10-19 (PRIME 14:16 and his decisions of 14:2x): ten tools corrected or extended.
+    date: "2026-10-19",
+    time: "15:03",
+    kind: "feature",
+    title: "Ten tools corrected against the standards read today, from the SSRF classifier to the CIDR calculator",
+    body:
+      "The SSRF URL classifier now rates an IPv6 address by the IPv4 address it carries (IPv4-mapped, NAT64 and 6to4), so a disguised loopback or metadata address is no longer called public, and names the documentation, discard-only and IETF blocks from the IANA registries. The CIDR calculator classifies a block against the IANA special-purpose registry, and its VLSM mode offers a /31 for point-to-point links, refuses 0-host requests, reports a masked parent and lists the free blocks. The IPv6 Toolkit knows 3fff::/20, 5f00::/16, 64:ff9b:1::/48 and Teredo, which it now decodes, flags reserved multicast scopes and recognises source-specific multicast; the OUI lookup names multicast, VRRP and IEEE group addresses instead of calling them unknown. The MTU and MSS calculator counts MPLS labels inside the payload, as RFC 3032 does, and explains Path MTU Discovery. The dig and nslookup explainers follow RFC 9499 and RFC 2308, read TTL units and multiline records, and use real captures as examples; the dig command builder corrects +bufsize=0. The DHCP option 43 generator writes ExtremeWireless as text inside sub-option 1 with several controllers, and every example now quotes a document that prints its bytes. The ASN lookup accepts asdot, and the Python playground shows both standard deviations, labelled.",
+    tools: ["ssrf-url-classifier", "cidr", "ipv6", "oui-lookup", "mtu-mss", "dig-output-explainer", "nslookup-output-explainer", "dig-command-builder", "dhcp-option-43", "python-playground"],
+    links: [{ label: "ASN lookup", href: "/dev/out/asn-lookup" }],
+  },
+  {
+    // The follow-up pass of 2026-10-19: the glossary entries and articles logged during NF-2e and NF-2f.
+    date: "2026-10-19",
+    time: "15:02",
+    kind: "content",
+    title: "Follow-up corrections: twelve glossary entries, DMARC brought up to RFC 9989, and the MPLS error removed everywhere",
+    body:
+      "The DMARC and ARC entries and the email-authentication article now follow RFC 9989, which replaced RFC 7489 in May 2026: the pct tag is gone, the new t tag takes its useful part, and none of the attempts to keep mailing lists working has become widely used. The idea that MPLS labels leave the IP MTU untouched is corrected in the jumbo-frames article, the baby giant entry and the MTU tool: RFC 3032 counts each label inside the payload. LDNS, DNS, DNSSEC, TTL, ICMP, DHCP, firmware, multicast and TFTP were corrected and given dated sources; the DNS history article quotes RFC 1034 on why HOSTS.TXT could not last; old citations of RFC 8415, 8499 and 7489 were moved to their successors; and the Dijkstra article now sits with the other routing articles.",
+    articles: ["jumbo-frames", "dns-family-history", "email-authentication-spf-dkim-dmarc", "email-family-history", "nslookup-errors-explained", "reading-nslookup-output", "dijkstra-and-the-twenty-minute-algorithm", "routing-tables-and-default-gateway"],
+    links: [{ label: "Glossary", href: "/glossary" }],
+  },
+  {
+    // Milestone NF-2e, batches e3 to e8, of the student level-up: the rest of NetFun II rewritten to the part standard (PRIME's GO of 2026-10-13 12:49 and 12:56).
+    date: "2026-10-19",
+    time: "13:17",
+    kind: "content",
+    title: "NetFun II rewritten to the end: twenty-eight more parts, from IPv6 subnetting to multicast",
+    body:
+      "Every part of NetFun II now stands at the length and depth of the newest ones, sourced to the standards and read on the day, in English and Portuguese. IPv6 runs from the address and its subnetting to Neighbor Discovery, SLAAC, DHCPv6 and the transition mechanisms. DNS and DHCP cover reading an answer and the output of dig, the header and its flags, the record types, authoritative and cached answers, choosing a public resolver, the lease from discover to expiry and option 43. Addressing and forwarding add VLSM worked by hand, NAT with its translation table, ping and traceroute read line by line, and the routing table with its default route. The routing module covers BFD, first-hop redundancy with VRRP and HSRP, carrier-grade NAT and the attribution problem it creates, Dijkstra's algorithm, OSPF, IS-IS, BGP and the routing chokepoint, MPLS and its label stack, and multicast with what IGMP snooping does when no querier answers.",
+    articles: ["ipv6-subnetting", "ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-transition", "ipv6-address-configuration", "reading-a-dns-answer", "dhcp-lease-lifecycle", "dhcp-option-43-discovery", "dns-message-header-and-flags", "dns-record-types-in-answers", "authoritative-vs-non-authoritative-answers", "reading-dig-output", "choosing-a-public-dns-resolver", "vlsm-worked-example", "vlsm", "nat-explained", "icmp-ping-and-traceroute", "routing-tables-and-default-gateway", "bfd-when-a-link-is-up-and-dead", "first-hop-redundancy-vrrp-and-hsrp", "cgnat-address-sharing-and-attribution", "dijkstra-and-the-twenty-minute-algorithm", "ospf-primer", "bgp-primer", "bgp-and-the-routing-chokepoint", "isis-primer", "mpls-primer", "multicast-what-it-costs-to-not-flood"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // Milestone NF-2f of the student level-up (PRIME's GO of 2026-10-13 12:49; vrrp, nat and spf named for correction 2026-10-19 12:48; six more terms 2026-10-19 13:15): the NetFun II terms in the glossary.
+    date: "2026-10-19",
+    time: "13:27",
+    kind: "content",
+    title: "The NetFun II terms in the glossary: forty-six new entries, and VRRP, NAT and SPF brought up to date",
+    body:
+      "The glossary now has the words NetFun II teaches. New entries cover routing (link-state routing, the LSA, the OSPF area and the designated router, Dijkstra's algorithm, the IS-IS NET and overload bit, the discard route and GTSM), BGP (path-vector routing, eBGP and iBGP, route reflectors, local preference, the MED, communities, BGPsec, ASPA and the hold time), IPv6 and NAT (Neighbor Discovery, ICMPv6, router advertisements and RA-Guard, the solicited-node address, unique local addresses, DHCPv6, NAT64, DS-Lite, 464XLAT, 6to4, Teredo, STUN and the ALG) DNS, DHCP and ICMP (the recursive resolver, the RCODE, NODATA, referrals, the header flags and the AA bit, DORA, the relay agent, option 43, gratuitous ARP, ICMP Time Exceeded, ping and traceroute) and PXE. Fourteen entries that had only a definition gained the long explanation, from administrative distance and ECMP to route leaks, MANRS, TFTP and the EUI-64 interface identifier. Seven were corrected: VRRP now follows RFC 9568 and its Active Router, NAT keeps mapping apart from filtering and no longer passes for a firewall, SPF names both the routing algorithm and the email standard, IGMP cites RFC 9776, which replaced RFC 3376 in 2025, the hosts file is no longer said to be read before DNS everywhere, and the gateway and DHCP snooping entries lost two overstatements. Each points to the NetFun II articles that teach it, and eighty-five existing entries now do too.",
+    links: [{ label: "Glossary", href: "/glossary" }, { label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
+    // The production audit of 2026-10-15 (23 findings, read in full on 2026-10-18): the seventeen accepted findings
+    // implemented in one batch, each named here by what the reader sees.
+    date: "2026-10-19",
+    time: "00:03",
+    kind: "feature",
+    title: "After an independent audit of the live site: seventeen corrections, from the contact form to the licence page",
+    body:
+      "An independent audit of the production site on 15 October found twenty-three things worth a look; seventeen are corrected here and the rest were judged right as they stand. The contact form no longer says a message was sent when it only opened your email app: the button says Open email draft, the page then says the draft is open and nothing has been sent, and offers the message to copy with the address. The red room's two registry lookups were blocked by the site's own security policy on every query while the page blamed a missing CORS header; the policy now allows those two pages, and only those, to reach a registry, and the error text names the third cause. The third era of the history is Teaching, building and making sense of the field, and the sentences that set the teaching against other presenters, or the advisory against other kinds of consulting, now describe the work instead. The licence page states the open course materials' CC0 exception and links the materials, and its fourteen other languages, which still called the site closed source, now say what the English says. The CIDR calculator and the home page widget label the two ends of a /31 or /32 as first and last address, with no broadcast, instead of network and broadcast. The changelog's two links to the origin chapter's old address, which answered 404 for a year because the redirect matched only the form without the closing slash, point at the chapter, and both forms of every history address now redirect. The About page's privacy promise and the machine-readable introduction scope the local-only claim to the catalogue and name the red room's declared exception. The certification hub says where every objective is mapped and counts the guides by status. The timeline's current entry says the training is delivered through Red Education and since when; the contribute page's title names the page rather than its translations section; the Back to tools buttons go to the tools; the privacy notice carries its own revision record with a date formatted in your language; the endorsements page says that the originals are verbatim and the optional translations are labelled; and the API contract says plainly that the API is documented and not served. Four build checks hold the new ground: the security policy's shape, the comparative phrases, the exactness of redirect matching and a weight ceiling per page template.",
+    links: [
+      { label: "Contact", href: "/contact" },
+      { label: "RDAP lookup", href: "/dev/out/rdap-lookup" },
+      { label: "ASN lookup", href: "/dev/out/asn-lookup" },
+      { label: "About", href: "/about" },
+      { label: "Licence", href: "/license" },
+      { label: "Certification study guides", href: "/certifications" },
+      { label: "Privacy", href: "/privacy" },
+      { label: "Endorsements", href: "/endorsements" },
+    ],
+    tools: ["cidr"],
+  },
+  {
+    // Milestone NF-2e, batch e2, of the student level-up: NetFun II's IPv4 module rewritten to the part standard (PRIME's GO of 2026-10-13 12:49).
+    date: "2026-10-18",
+    time: "20:20",
+    kind: "content",
+    title: "NetFun II's IPv4 module, rewritten: six parts from the 32 bits to the SSRF map",
+    body:
+      "How IPv4 addresses work now runs from RFC 791 to the end of the free pool: the 32 bits converted by hand, the mask applied the way a host applies it, the classes and why CIDR ended them, the special-purpose blocks, the registries that hand addresses out and the dates each one ran dry. Supernetting and route aggregation, route summarisation, subnet overlaps and gaps, private address space and RFC 1918, and the full map of private, reserved and public ranges for SSRF filtering are rebuilt the same way, each with its standards quoted section by section, worked examples on the documentation blocks and a sources list read on 18 October 2026.",
+    articles: ["ipv4-addressing", "supernetting-and-aggregation", "route-summarization", "subnet-overlap-and-gaps", "private-address-space", "private-vs-public-ip-ranges"],
+    links: [{ label: "NetFun II", href: "/study-guides#netfun-2" }],
+  },
+  {
     // Milestone NF-2d of the student level-up (milestone (e), owed since 2026-10-06): NetFun II's four articles on the DNS behind the answer; the series now has every part written.
     date: "2026-10-13",
     time: "10:52",
@@ -3515,7 +3590,10 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "content",
     title: "Pre-1996: the record corrected, and a dream kept",
     body: "Three refinements from the source. The academic internet moves to 1991, where it actually happened - the university shell account over a modem - and 1993 earns its own beat: a program compiled on that shell account turned the dial-up session itself into a SLIP/PPP tunnel, and through it NCSA Mosaic opened the first glimpse of the World Wide Web. The phreaking movement gains its flash-forward: the payphone-modem dream of 1990, recognized seventeen years later in a jailbroken first-generation iPhone running community-made apps. And the Brazilian Portuguese telling of the father thread now carries the author's own ratified wording.",
-    links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
+    // The href points at the chapter's present address (audit F06, 2026-10-18): Next renders the link with a trailing
+    // slash, and the bare 301 in public/_redirects never matched it, so the button answered 404 for a year. The entry's
+    // text still names the address of the day; a link is navigation, not the record.
+    links: [{ label: "Read the chapter", href: "/about/pre-1996" }],
   },
   {
     date: "2026-07-17",
@@ -3523,7 +3601,10 @@ export const CHANGELOG: ChangelogEntry[] = [
     kind: "content",
     title: "Pre-1996: the father at the root",
     body: "The origin story now starts where it truly did. The ham-radio movement is reframed around Rodolfo's father - an engineer and avid amateur operator whose call sign and QSL cards were the first proof that a signal could cross the world - and the national-micros movement opens a scene earlier, with a nine-year-old watching him load a cassette program onto the family television before the watching turned into doing. The timeline beats for the 1984 TK-82C and the amateur-radio years follow suit. Authored natively in English and Brazilian Portuguese.",
-    links: [{ label: "Read the chapter", href: "/industry/history/pre-1996" }],
+    // The href points at the chapter's present address (audit F06, 2026-10-18): Next renders the link with a trailing
+    // slash, and the bare 301 in public/_redirects never matched it, so the button answered 404 for a year. The entry's
+    // text still names the address of the day; a link is navigation, not the record.
+    links: [{ label: "Read the chapter", href: "/about/pre-1996" }],
   },
   {
     date: "2026-07-17",

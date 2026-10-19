@@ -1,40 +1,235 @@
 ---
 slug: mpls-primer
 title: "MPLS: labels, stacks, and the BGP-free core"
-summary: "Push a label at the edge, swap it hop by hop, pop it before the exit - and suddenly the core needs no routing table, VPNs isolate thousands of customers, and traffic goes where engineering says. A practical primer on label switching, L3VPNs, and the Segment Routing present."
-concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf"]
-relatedTools: ["cidr"]
-relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer"]
+summary: "Multiprotocol Label Switching (MPLS) classifies a packet once, at the edge of a network, and from then on routers forward it on a short label they swap, pop or push, without reading the IP header again. After reading, you can decode a label stack entry in hex, name the special-purpose labels, follow one label-switched path through a real Label Distribution Protocol (LDP) binding table, say exactly what a BGP-free core keeps and drops, and explain the two labels of a layer 3 virtual private network (VPN) packet."
+concepts: ["mpls", "bgp", "igp", "is-is", "atm", "vrf", "label stack", "fec", "lsr", "lsp", "penultimate hop popping", "ldp", "rsvp-te", "segment routing", "route distinguisher", "route target", "l3vpn"]
+relatedTools: ["mtu-mss", "python-playground"]
+relatedArticles: ["bgp-primer", "isis-primer", "ospf-primer", "routing-tables-and-default-gateway", "dynamic-routing-compared", "bgp-and-the-routing-chokepoint", "private-address-space", "the-ethernet-frame-field-by-field", "icmp-ping-and-traceroute"]
 category: networking
 order: 237
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-19"
 ---
 
-## One lookup, then labels
 
-Classic IP forwarding makes every router do the full job: longest-prefix-match the destination against a routing table, hop after hop, as if each router were seeing the packet for the first time. MPLS (Multiprotocol Label Switching) makes the decision **once**. The edge router - the LER, label edge router - classifies the packet into a forwarding class, pushes a short **label** onto it, and from there the core routers - LSRs, label switch routers - do the cheapest operation in networking: look up the incoming label in a small table, **swap** it for the outgoing one, forward. At the far edge the label is **popped** and normal IP resumes. Push, swap, pop: the entire mechanism fits in three verbs.
+Multiprotocol Label Switching (MPLS) forwards packets on a short label instead of the destination address. In plain IP forwarding each router repeats the longest-match lookup in its own [routing table](/learn/routing-tables-and-default-gateway); MPLS classifies a packet once, where it enters, and every later router reads only the label. It carries provider backbones and the layer 3 virtual private networks (VPNs) built on them. After reading, you can decode a label stack entry in hex, read a real Label Distribution Protocol (LDP) binding table, say what a "BGP-free core" keeps, and explain the two labels of a VPN packet.
 
-The lineage is honest engineering theft: MPLS took ATM's virtual-circuit insight - decide the path once, then switch on small identifiers - and left behind the 53-byte cells, the adaptation layers, and the cell tax. The label-switched path (LSP) is a virtual circuit that carries whole packets.
+## One decision at the edge, labels after it
 
-## The stack is the whole trick
+Request for Comments (RFC) 3031, of January 2001, says it in one sentence: "In MPLS, the assignment of a particular packet to a particular FEC is done just once, as the packet enters the network" ([RFC 3031, section 2.1](https://www.rfc-editor.org/rfc/rfc3031.txt)). A forwarding equivalence class (FEC) is a group of packets forwarded the same way, over the same path with the same treatment (section 2.2). Later hops never read the network layer header; the label indexes a table giving the next hop and a new label. Such a router is a label switching router (LSR), and the method suits any network layer protocol, hence "multiprotocol" (section 2.1).
 
-A packet can carry **more than one label**, and this stack is where MPLS stops being an optimization and becomes an architecture. The outer label means *how to cross the backbone*; an inner label can mean *what this packet is* - this customer's VPN (virtual private network), this pseudowire, this service. Core routers read only the outer label; they neither know nor care what rides beneath.
+A label is "a short, fixed length, locally significant identifier which is used to identify a FEC" ([RFC 3031, section 3.1](https://www.rfc-editor.org/rfc/rfc3031.txt)). A label-switched path (LSP) runs from the LSP ingress, which pushes the label, to the LSP egress (section 3.15). The lookup on the top label yields a next hop and one operation: swap the top label, pop it, or swap it and push more (section 3.10), and "THE NEXT HOP IS ALWAYS TAKEN FROM THE NHLFE" (section 3.13), the Next Hop Label Forwarding Entry. MPLS computes no paths: the protocols in [dynamic routing compared](/learn/dynamic-routing-compared) still do.
 
-Two consequences built the carrier industry as it exists:
+## Thirty-two bits: the label stack entry
 
-**The BGP-free core.** Only edge routers need the internet's full routing table and the customer routes; the core forwards on labels alone. In the early 2000s this was survival - core silicon could not hold the growing global table - and it remains the clean separation: intelligence at the edge, speed in the middle.
+Each label stack entry is 4 octets ([RFC 3032, section 2.1](https://www.rfc-editor.org/rfc/rfc3032.txt)), placed after the link layer header and before the network layer header, top of stack first. RFC 3032 called the 3-bit field EXP (experimental use); RFC 5462 renamed it Traffic Class (TC): "This three-bit field is used to carry traffic class information" ([RFC 5462, section 2.1](https://www.rfc-editor.org/rfc/rfc5462.txt)).
 
-**L3VPN** (RFC 4364), the product that paid for everything. Each customer attaches to a **VRF (virtual routing and forwarding)** - a private routing table on the provider's edge - and customer routes travel between edges inside BGP, disambiguated by route distinguishers and steered by route targets, with the inner label selecting the right VRF on exit. A thousand customers, all using 10.0.0.0/8, on one shared backbone, never seeing each other: that is the label stack at work, and it is what "an MPLS circuit" has meant to enterprises for twenty years.
+| Field | Bits | What it carries |
+|---|---|---|
+| Label | 20 | The label value, 0 to 1048575 |
+| Traffic Class, formerly EXP | 3 | Traffic class |
+| S, bottom of stack | 1 | 1 on the last entry, 0 on the others |
+| Time to Live | 8 | Decremented at each hop |
+
+No field names the protocol underneath; the egress infers it from the bottom label (RFC 3032, section 2.2). On Ethernet, ethertype 0x8847 marks MPLS unicast (section 5), as in [the Ethernet frame, field by field](/learn/the-ethernet-frame-field-by-field).
+
+A worked example: label 17, TC 0, S 0, Time to Live (TTL) 64, on top of label 100048, TC 5, S 1, TTL 64. Each entry equals label × 4096 + TC × 512 + S × 256 + TTL. The top is 17 × 4096 + 64 = 69696, or 0x00011040; the bottom is 409796608 + 2560 + 256 + 64 = 409799488, or 0x186D0B40. Computed, then checked by tcpdump on a frame built around the stack:
+
+```text
+Entry 1 (top, transport label): label=17 tc=0 s=0 ttl=64
+  bits  (label|TC|S|TTL): 00000000000000010001 000 0 01000000
+  hex   : 00 01 10 40   (0x00011040)
+Entry 2 (bottom, VPN label): label=100048 tc=5 s=1 ttl=64
+  bits  (label|TC|S|TTL): 00011000011011010000 101 1 01000000
+  hex   : 18 6D 0B 40   (0x186D0B40)
+Stack bytes (8 octets = 4 x 2 entries): 00 01 10 40 18 6D 0B 40
+  network layer header starts at offset 8 of the label stack
+```
+
+```console
+$ tcpdump -nn -e -v -x -r lse-check.pcap
+12:31:53.000000 02:00:00:00:00:01 > 02:00:00:00:00:02, ethertype MPLS unicast (0x8847), length 54: MPLS (label 17, tc 0, ttl 64)
+	(label 100048, tc 5, [S], ttl 64)
+	(tos 0x0, ttl 64, id 1, offset 0, flags [none], proto ICMP (1), length 32)
+    192.0.2.1 > 192.0.2.3: ICMP echo request, id 1, seq 1, length 12
+	0x0000:  0001 1040 186d 0b40 4500 0020 0001 0000
+```
+
+The dump's first eight octets are the stack, and `4500` starts the IPv4 header. Twenty bits give 1048576 values, 1048560 of them from 16 up. The packing is a few lines of `struct` in the [Python playground](/tools/python-playground).
+
+## Labels 0 to 15
+
+RFC 7274 renamed the low values "special-purpose labels" ([RFC 7274, Abstract](https://www.rfc-editor.org/rfc/rfc7274.txt)). The Internet Assigned Numbers Authority (IANA) registry, last updated 30 June 2026 ([IANA, Special-Purpose MPLS Label Values](https://www.iana.org/assignments/mpls-label-values/mpls-label-values.xhtml)):
+
+| Value | Name | Defined in |
+|---|---|---|
+| 0 | IPv4 Explicit NULL Label | RFC 3032 |
+| 1 | Router Alert Label | RFC 3032 |
+| 2 | IPv6 Explicit NULL Label | RFC 3032 |
+| 3 | Implicit NULL Label | RFC 3032 |
+| 4 | MPLS Network Actions | RFC 9994 |
+| 5 to 6 | Unassigned | |
+| 7 | Entropy Label Indicator (ELI) | RFC 6790 |
+| 8 to 12 | Unassigned | |
+| 13 | Generic Associated Channel Label | RFC 5586 |
+| 14 | OAM Alert Label (operations, administration and maintenance) | RFC 3429 |
+| 15 | Extension Label (XL) | RFC 7274, RFC 9017 |
+
+Implicit NULL "never actually appears in the encapsulation": a router that would swap to it pops instead ([RFC 3032, section 2.1](https://www.rfc-editor.org/rfc/rfc3032.txt)). Explicit NULL, once legal only at the bottom, may occur anywhere in the stack since RFC 4182 ([RFC 4182, Abstract](https://www.rfc-editor.org/rfc/rfc4182.txt)).
+
+## Penultimate hop popping, seen in a lab
+
+The next-to-last router pops the top label "only if this is specifically requested by the egress node, OR if the next node in the LSP does not support MPLS", so that the egress does a single lookup ([RFC 3031, section 3.16](https://www.rfc-editor.org/rfc/rfc3031.txt)). The egress asks for this penultimate hop popping (PHP) by advertising Implicit NULL (section 4.1.5).
+
+A lab on 19 October 2026 shows the signalling: routers pe1, p and pe2 in Linux network namespaces, FRRouting 8.4.4 with OSPF and LDP, loopbacks 192.0.2.1, 192.0.2.2 and 192.0.2.3. The kernel had no MPLS (zebra logged `Disabling MPLS support (no kernel support)`), so labels were exchanged but never installed or used.
+
+```console
+mplsPE1# show mpls ldp binding
+AF   Destination          Nexthop         Local Label Remote Label  In Use
+ipv4 192.0.2.1/32         192.0.2.2       imp-null    16                no
+ipv4 192.0.2.2/32         192.0.2.2       16          imp-null         yes
+ipv4 192.0.2.3/32         192.0.2.2       18          17               yes
+ipv4 198.51.100.0/31      192.0.2.2       imp-null    imp-null          no
+ipv4 198.51.100.2/31      192.0.2.2       17          imp-null         yes
+
+mplsP# show mpls ldp binding
+AF   Destination          Nexthop         Local Label Remote Label  In Use
+ipv4 192.0.2.1/32         192.0.2.1       16          imp-null         yes
+ipv4 192.0.2.1/32         192.0.2.3       16          16                no
+ipv4 192.0.2.2/32         192.0.2.1       imp-null    16                no
+ipv4 192.0.2.2/32         192.0.2.3       imp-null    17                no
+ipv4 192.0.2.3/32         192.0.2.1       17          18                no
+ipv4 192.0.2.3/32         192.0.2.3       17          imp-null         yes
+```
+
+Follow 192.0.2.3/32, pe2's loopback. pe1's local label is 18, p's is 17: labels are local. pe1 uses the 17 that p sent, so traffic for pe2 leaves pe1 with 17 pushed. pe2 sent p `imp-null`, so p pops instead of swapping. On p, the `no` lines for 192.0.2.1/32 and 192.0.2.3/32 are labels kept from the neighbour that is not the next hop.
+
+## The BGP-free core, stated exactly
+
+RFC 3031 states the idea: "it is desirable to avoid distributing the BGP routes to routers which are not BGP Border Routers" ([RFC 3031, section 4.6](https://www.rfc-editor.org/rfc/rfc3031.txt)). The ingress border router pushes L1, bound by the far border router to the [BGP](/learn/bgp-primer) prefix, then L2, bound by the interior next hop to that border router's address (section 4.6). Interior routers switch on L2, which belongs to an address the interior gateway protocol (IGP) carries, so, by reasoning from the RFC, only the ingress needs the BGP route.
+
+For VPNs, where provider edge (PE) routers face customers and provider (P) routers form the core, RFC 4364 says "the P routers need only maintain routes to the PE routers and the ASBRs", the autonomous system border routers ([RFC 4364, section 15](https://www.rfc-editor.org/rfc/rfc4364.txt)), and each PE must put a /32 route for itself into the backbone's IGP (section 5), [OSPF](/learn/ospf-primer) or [Intermediate System to Intermediate System (IS-IS)](/learn/isis-primer). In the lab, p holds `O>* 192.0.2.3/32 [110/10] via 198.51.100.3, ep2`.
+
+RFC 5565 names the idea and corrects the name: "That is something of a misnomer, though, since the crucial aspect of this scenario is not that the interior nodes don't run BGP, but that they don't maintain the external routing information" ([RFC 5565, section 1](https://www.rfc-editor.org/rfc/rfc5565.txt)). So the core does not go without a routing table: it keeps interior routes to every edge and drops external and VPN routes.
+
+## Layer 3 VPNs and their two labels
+
+RFC 4364 (February 2006) defines BGP/MPLS IP VPNs: "Data packets are tunneled through the backbone, so that the core routers do not need to know the VPN routes" ([RFC 4364, Abstract](https://www.rfc-editor.org/rfc/rfc4364.txt)). Customer Edge (CE) devices attach to PE routers (section 1.2), and each PE keeps "VPN Routing and Forwarding tables" (VRFs) (section 3).
+
+Two VPNs with no site in common may overlap, for instance when both number from 10.0.0.0/8 out of [private address space](/learn/private-address-space) (section 1.3). The route distinguisher (RD) separates them: 8 bytes in front of the 4-byte IPv4 address make a 12-byte VPN-IPv4 address, and "An RD is simply a number, and it does not contain any inherent information" (section 4.1). Route targets (RTs), carried as BGP extended communities, decide which VRFs import a route, and a route has one RD but may have several route targets (section 4.3.1).
+
+The ingress PE pushes the VPN route label that BGP sent with the route, then a tunnel label to the egress PE (sections 1 and 5): the computed stack above has that shape, 17 from the lab over an illustrative 100048. With PHP the packet reaches the egress PE with the VPN route label alone (section 5), which picks the customer circuit or the virtual routing and forwarding (VRF) table to search.
 
 ## Who hands out the labels
 
-Labels must be agreed between neighbors, and the history of MPLS is the history of that signaling. **LDP** was the workhorse: simple, follows the IGP's shortest paths, no traffic engineering. **RSVP-TE** was the heavyweight: explicit paths, bandwidth reservation, fast reroute - the tool for engineering traffic away from congested links, at the price of per-path state everywhere. The modern answer, **Segment Routing**, deletes the signaling entirely: the path is encoded in the packet itself as a stack of segment labels, distributed as extensions of the IGP - which is why the IS-IS primer's TLV story matters here. Same forwarding plane, radically less protocol machinery; it is where carrier MPLS has been heading for a decade.
+LDP (RFC 5036, October 2007) distributes labels "to support MPLS forwarding along normally routed paths" ([RFC 5036, Abstract](https://www.rfc-editor.org/rfc/rfc5036.txt)). Hellos go over UDP port 646 to the all-routers group; sessions use TCP port 646 (sections 1.2 and 3.10.1). The six-octet LDP identifier is the router ID plus two zero octets (section 2.2.2), printed `192.0.2.2:0`. The higher address opens the session (section 2.5.2): p (192.0.2.2) connected to pe1 (192.0.2.1). FRRouting uses downstream unsolicited distribution with liberal retention ([FRRouting documentation, LDP](https://docs.frrouting.org/en/latest/ldpd.html)), hence p's unused lines above. A captured hello:
 
-Two practical details every MPLS operator carries: **penultimate hop popping** - the second-to-last router removes the outer label so the exit router does one lookup instead of two, a tiny courtesy that confuses every first packet capture; and the MTU tax - each label is four bytes, and a forgotten MTU adjustment on one core link is the classic "VPN works for pings, dies for real traffic" ticket.
+```console
+$ tcpdump -nn -v -c 1 -r lab-ldp-pe1-p-20261019.pcap
+12:30:09.746900 IP (tos 0xc0, ttl 1, id 41112, offset 0, flags [DF], proto UDP (17), length 70)
+    198.51.100.0.646 > 224.0.0.2.646:
+	LDP, Label-Space-ID: 192.0.2.1:0, pdu-length: 38
+	  Hello Message (0x0100), length: 28, Message ID: 0x00000001, Flags: [ignore if unknown]
+	    Common Hello Parameters TLV (0x0400), length: 4, Flags: [ignore and don't forward if unknown]
+	      Hold Time: 15s, Flags: [Link Hello]
+	    IPv4 Transport Address TLV (0x0401), length: 4, Flags: [ignore and don't forward if unknown]
+	      IPv4 Transport Address: 192.0.2.1
+```
 
-## Is MPLS dead?
+Note the IP TTL of 1, the 15-second hold time and the loopback as transport address.
 
-The question arrives with every SD-WAN (software-defined WAN) pitch, and the honest answer has two halves. At the **enterprise WAN edge**, the premium managed L3VPN circuit has genuinely lost ground: internet transport plus SD-WAN overlays took the branch-connectivity market's growth. In the **carrier core**, labels never went anywhere - the backbones carrying those very SD-WAN tunnels, the mobile networks, and the wholesale services run label-switched, increasingly via Segment Routing. MPLS did not die; it receded from the product name into the plumbing, which is where infrastructure that wins tends to end up.
+RSVP-TE (RFC 3209, December 2001), the traffic engineering extensions to the Resource Reservation Protocol, sets up explicit routes with downstream-on-demand labels, and every node keeps state per LSP ([RFC 3209, sections 1.1 and 2.2](https://www.rfc-editor.org/rfc/rfc3209.txt)).
 
-How the underlying shortest paths get computed is the OSPF and IS-IS primers' territory; how the edge exchanges those VPN routes is BGP's - the three primers and this one describe a single machine.
+## Segment Routing: the path in the stack
+
+Segment Routing (SR), RFC 8402 of July 2018, changes who writes the stack, not how it is forwarded: "A segment is encoded as an MPLS label. An ordered list of segments is encoded as a stack of labels", with no change to the forwarding plane ([RFC 8402, Abstract](https://www.rfc-editor.org/rfc/rfc8402.txt)). Segments are still signalled, by IS-IS, OSPF or BGP in the distributed case (section 1). An index into the SR Global Block (SRGB), which must not overlap the special-purpose labels, gives the label ([RFC 8660, sections 2.3 and 2.4](https://www.rfc-editor.org/rfc/rfc8660.txt)): in an illustrative SRGB of 16000 to 23999, index 3 is label 16003. RFC 9994, June 2026, carries network actions in the stack and holds label 4 ([RFC 9994, Abstract](https://www.rfc-editor.org/rfc/rfc9994.txt)).
+
+## TTL and traceroute
+
+At the first push, "the TTL field of the label stack entry MUST BE set to the value of the IP TTL field" ([RFC 3032, section 2.4.3](https://www.rfc-editor.org/rfc/rfc3032.txt)). RFC 3443 names two models: Uniform shows every LSR to nodes outside the tunnel, and the Pipe Model makes the network act like a circuit, showing only ingress and egress ([RFC 3443, section 2.2](https://www.rfc-editor.org/rfc/rfc3443.txt)). Linux's `ip_ttl_propagate` defaults to 1, Uniform ([The Linux Kernel documentation, MPLS Sysfs variables](https://docs.kernel.org/networking/mpls-sysctl.html)).
+
+RFC 4950 lets a router append the incoming label stack to an Internet Control Message Protocol (ICMP) Time Exceeded or Destination Unreachable ([RFC 4950, sections 3 and 5](https://www.rfc-editor.org/rfc/rfc4950.txt)); the probes themselves are in [ICMP, ping and traceroute](/learn/icmp-ping-and-traceroute). The RFC's sample:
+
+```text
+      2  192.0.2.9 (192.0.2.9)  0.861 ms  0.718 ms  0.679 ms
+
+        MPLS Label=100048 Exp=0 TTL=1 S=1
+```
+
+That entry encodes as 0x186D0101. Linux traceroute prints it with `-e` as `MPLS:L=label,E=exp_use,S=stack_bottom,T=TTL` ([traceroute(8)](https://man7.org/linux/man-pages/man8/traceroute.8.html)).
+
+## What labels cost the IP packet
+
+The labels are not a link layer tag: "the Frame Payload consists of the label stack entries and the IP datagram", while 802.1Q headers stay outside it ([RFC 3032, section 3.1](https://www.rfc-editor.org/rfc/rfc3032.txt)). On a link left at Ethernet's 1500-byte payload, the largest IP datagram is 1496 with one label, 1492 with two, 1488 with three (section 3.2). A too-big IPv4 packet with Don't Fragment set "MUST NOT be forwarded" (section 3.4), and Path Maximum Transmission Unit (MTU) Discovery then needs the ICMP reply to reach the source (section 3.6). The [MTU / MSS calculator](/tools/mtu-mss) counts 4 octets per `mpls` entry; unless the link payload was raised, those octets come out of the IP datagram.
+
+## How it fails or is attacked
+
+A label carries no proof of its writer: "If labeled packets are accepted from untrusted sources, the result may be that packets are routed in an illegitimate manner" ([RFC 3032, section 7](https://www.rfc-editor.org/rfc/rfc3032.txt)). The defence is at the edge: backbone devices should refuse labelled packets from devices outside the backbone ([RFC 4364, section 6](https://www.rfc-editor.org/rfc/rfc4364.txt)). VPN separation is not encryption (section 13.1), and "Deliberate or inadvertent misconfiguration may result in severe security leaks" ([RFC 4381, section 5.1](https://www.rfc-editor.org/rfc/rfc4381.txt)).
+
+An unauthorised LDP speaker can open a session and consume state, and hello or SYN floods can exhaust a router ([RFC 5920, section 4.1.4](https://www.rfc-editor.org/rfc/rfc5920.txt)). RFC 4364 asks that BGP and LDP never peer with untrusted routers and use TCP authentication with the MD5 Message-Digest Algorithm (section 13.2), the trust problem [BGP and the routing chokepoint](/learn/bgp-and-the-routing-chokepoint) covers for BGP. The Generalized TTL Security Mechanism (GTSM) checks that LDP packets came from a connected link ([RFC 6720, Abstract](https://www.rfc-editor.org/rfc/rfc6720.txt)).
+
+A packet with an invalid incoming label "MUST be discarded" unless forwarding it unlabelled is known to be harmless ([RFC 3031, section 3.18](https://www.rfc-editor.org/rfc/rfc3031.txt)), so, by reasoning, a lost binding in a core without BGP routes is a black hole, not a reroute. RFC 8029's MPLS echo request checks the data plane against the control plane ([RFC 8029, Abstract](https://www.rfc-editor.org/rfc/rfc8029.txt)), and the Pipe Model keeps traceroute from revealing the core ([RFC 4950, section 6](https://www.rfc-editor.org/rfc/rfc4950.txt)).
+
+## How to see it
+
+FRRouting shows the control plane with `show mpls ldp neighbor`, `show mpls ldp discovery` and `show mpls ldp binding`, and installed labels with `show mpls table` ([FRRouting documentation, Zebra](https://docs.frrouting.org/en/latest/zebra.html)), which stays empty without kernel support, as in the lab. The lab's LDP configuration on p:
+
+```text
+mpls ldp
+ router-id 192.0.2.2
+ address-family ipv4
+  discovery transport-address 192.0.2.2
+  interface ep1
+  exit
+  interface ep2
+  exit
+ exit-address-family
+ exit
+```
+
+```console
+mplsPE1# show mpls ldp neighbor
+AF   ID              State       Remote Address    Uptime
+ipv4 192.0.2.2       OPERATIONAL 192.0.2.2       00:00:16
+```
+
+Linux recognises no label until `net.mpls.platform_labels` is above its default of 0 (MPLS Sysfs variables). `ip -f mpls route show` lists label routes ([ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)); `ip route add 198.51.100.0/30 encap mpls 200/300 via 192.0.2.1 dev eth0` pushes two labels on an IP route, after the manual's example with documentation addresses, not run here ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)). In tcpdump each `mpls` primitive moves the filter 4 octets deeper ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)): `mpls 17 and mpls 100048` matched the computed frame, and `port 646` captures LDP.
+
+## What to remember
+
+- MPLS assigns a packet to a FEC once, at the ingress; later LSRs forward on a label that means something only between two neighbours.
+- A label stack entry is 32 bits: label 20, Traffic Class 3 (once EXP), bottom of stack 1, TTL 8.
+- Labels 0 to 15 are special-purpose; Implicit NULL (3) never appears on the wire, and advertising it asks the previous hop to pop.
+- A "BGP-free core" keeps IGP routes to every PE and drops external and VPN routes; RFC 5565 calls the name a misnomer.
+- A layer 3 VPN packet carries a tunnel label over a VPN route label; RDs separate overlapping prefixes, route targets choose VRFs.
+- LDP follows the IGP, RSVP-TE keeps per-LSP state, and Segment Routing writes the path into the stack without changing MPLS forwarding.
+- Each label takes 4 octets of the frame payload; accept labelled packets only from trusted neighbours.
+
+## Sources
+
+- [RFC 3031, Multiprotocol Label Switching Architecture, January 2001: sections 2.1, 2.2, 3.1, 3.9 to 3.13, 3.15, 3.16, 3.18, 3.22, 3.23, 3.25.2, 4.1.5 and 4.6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3031.txt)
+- [RFC 3032, MPLS Label Stack Encoding, January 2001: sections 2.1 to 2.4, 3 to 3.6, 5 and 7 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3032.txt)
+- [RFC 5462, Multiprotocol Label Switching (MPLS) Label Stack Entry: "EXP" Field Renamed to "Traffic Class" Field, February 2009: Abstract and section 2.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5462.txt)
+- [IANA, Special-Purpose Multiprotocol Label Switching (MPLS) Label Values, last updated 30 June 2026: Base and Extended Special-Purpose MPLS Label Values (read 2026-10-19)](https://www.iana.org/assignments/mpls-label-values/mpls-label-values.xhtml)
+- [RFC 7274, Allocating and Retiring Special-Purpose MPLS Labels, June 2014: Abstract and section 3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7274.txt)
+- [RFC 4182, Removing a Restriction on the use of MPLS Explicit NULL, September 2005: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4182.txt)
+- [RFC 4364, BGP/MPLS IP Virtual Private Networks (VPNs), February 2006: Abstract and sections 1, 1.2, 1.3, 1.5, 1.6, 3, 3.1, 4, 4.1, 4.2, 4.3, 4.3.1, 5, 6, 13.1, 13.2 and 15 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4364.txt)
+- [RFC 5565, Softwire Mesh Framework, June 2009: section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5565.txt)
+- [RFC 5036, LDP Specification, October 2007: Abstract and sections 1, 1.1, 1.2, 2.2.2, 2.4.1, 2.5.2, 2.6, 2.6.1, 2.6.2, 3.10.1 and 5.1 to 5.3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5036.txt)
+- [RFC 3209, RSVP-TE: Extensions to RSVP for LSP Tunnels, December 2001: Abstract and sections 1.1 and 2.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3209.txt)
+- [RFC 8402, Segment Routing Architecture, July 2018: Abstract and sections 1, 3.1.2 and 8.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8402.txt)
+- [RFC 8660, Segment Routing with the MPLS Data Plane, December 2019: Abstract and sections 1, 2.3 and 2.4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8660.txt)
+- [RFC 9994, MPLS Network Action (MNA) Sub-Stack Specification Including In-Stack Network Actions and Data, June 2026: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9994.txt)
+- [RFC 3443, Time To Live (TTL) Processing in Multi-Protocol Label Switching (MPLS) Networks, January 2003: Abstract and sections 1, 2.2, 2.3, 3.1 and 3.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3443.txt)
+- [RFC 4950, ICMP Extensions for Multiprotocol Label Switching, August 2007: sections 1, 3, 5 and 6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4950.txt)
+- [RFC 4381, Analysis of the Security of BGP/MPLS IP Virtual Private Networks (VPNs), February 2006: Abstract and sections 3.4 and 5.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4381.txt)
+- [RFC 5920, Security Framework for MPLS and GMPLS Networks, July 2010: sections 4.1.4, 4.2.3 and 4.2.7 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5920.txt)
+- [RFC 6720, The Generalized TTL Security Mechanism (GTSM) for the Label Distribution Protocol (LDP), August 2012: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6720.txt)
+- [RFC 8029, Detecting Multiprotocol Label Switched (MPLS) Data-Plane Failures, March 2017: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8029.txt)
+- [FRRouting documentation, LDP (latest): Understanding LDP principles, LDP Configuration and Show LDP Information (read 2026-10-19)](https://docs.frrouting.org/en/latest/ldpd.html)
+- [FRRouting documentation, Zebra (latest): MPLS Commands and the mpls interface command (read 2026-10-19)](https://docs.frrouting.org/en/latest/zebra.html)
+- [The Linux Kernel documentation, MPLS Sysfs variables (7.3.0): /proc/sys/net/mpls/\* (read 2026-10-19)](https://docs.kernel.org/networking/mpls-sysctl.html)
+- [ip(8), Linux manual page, iproute2: OPTIONS (-family, -M) (read 2026-10-19)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [ip-route(8), Linux manual page, iproute2: SYNOPSIS (ENCAP_MPLS, FAMILY, ttl-propagate) and EXAMPLES (read 2026-10-19)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [traceroute(8), Linux manual page, traceroute 2.1.6: option -e (read 2026-10-19)](https://man7.org/linux/man-pages/man8/traceroute.8.html)
+- [pcap-filter(7), Linux manual page, libpcap: the mpls primitive (read 2026-10-19)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)

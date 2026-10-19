@@ -1,56 +1,220 @@
 ---
 slug: dhcp-option-43-discovery
 title: "Como um ponto de acesso encontra sua controladora"
-summary: "A DHCP option 43 é um número de opção escondendo quatro codificações incompatíveis, porque a RFC 2132 define o recipiente e deixa o conteúdo a cargo de cada fabricante. A falha é silenciosa: o AP inicia, recebe endereço e nunca se registra."
-concepts: ["dhcp", "option 43", "option 60", "vendor class identifier", "capwap", "lwapp", "controladora sem fio", "tlv", "option 138"]
-relatedTools: ["dhcp-option-43"]
-relatedArticles: ["dhcp-handshake", "tlv-encoding"]
+summary: "A option 43 do Dynamic Host Configuration Protocol (DHCP) carrega informação específica de fabricante, cujo significado é definido pelo fabricante indicado na option 60; por isso a mesma opção leva endereços binários para um ponto de acesso e texto para outro, enquanto um terceiro lê a controladora na option 138. Depois da leitura, você consegue montar e decodificar byte a byte o valor que cada fabricante documentado espera, fazer o servidor devolvê-lo à classe de fabricante certa, reconhecer a falha silenciosa e o risco do servidor intruso, e ler o valor de volta numa captura ou no servidor DHCP."
+concepts: ["dhcp", "option 43", "option 60", "vendor class identifier", "capwap", "lwapp", "controladora sem fio", "tlv", "option 138", "option 55", "option 124", "option 125", "dtls"]
+relatedTools: ["dhcp-option-43", "ascii-table", "base64", "python-playground"]
+relatedArticles: ["dhcp-lease-lifecycle", "bootp-and-dhcp-options", "pxe-and-network-boot", "the-rfc-series", "multicast-what-it-costs-to-not-flood", "dhcp-relay-agent", "vlans-and-8021q-trunking"]
 category: networking
 order: 1
 status: reviewed
-updated: "2026-09-16"
+updated: "2026-10-18"
 ---
 
-Um ponto de acesso recém-tirado da caixa não sabe nada. Não tem configuração, não faz ideia de qual controladora pertence e muitas vezes não tem rota para nada além do próprio segmento. Antes de fazer qualquer coisa para a qual foi comprado, precisa responder a uma pergunta: onde está minha controladora?
+Um ponto de acesso (AP) novo precisa achar sua controladora antes de atender alguém, e a resposta do Dynamic Host Configuration Protocol (DHCP) que lhe dá um endereço ([o ciclo de vida do lease](/learn/dhcp-lease-lifecycle)) pode apontar também a controladora, na option 43. A Request for Comments (RFC) 2132 deixa o conteúdo dessa opção ao fabricante ([RFC 2132, seção 8.4](https://www.rfc-editor.org/rfc/rfc2132.txt)), e os bytes que um AP lê como dois endereços de controladora não dizem nada a outro. Ao final você consegue montar e decodificar o valor de cada fabricante, de um bloco type-length-value (TLV) binário a uma string pura; casar o vendor class identifier (VCI); nomear os outros caminhos; explicar a falha silenciosa e o servidor intruso; e ler um valor de volta.
 
-Existem várias formas de contar isso a ele. O DNS resolve, se alguém registrar o nome certo. Um endereço estático resolve, se alguém estiver disposto a conectar console em cada unidade de cada forro. Broadcast e multicast resolvem, se a controladora estiver no mesmo segmento, o que em qualquer implantação real ela não está.
+## Um recipiente que o fabricante preenche
 
-A DHCP option 43 é o método que escala, e também é o que mais dá errado.
+A RFC 2132 define a option 43, Vendor Specific Information, como um objeto opaco de n octetos, comprimento mínimo 1, e sobre o significado só aponta ([RFC 2132, seção 8.4](https://www.rfc-editor.org/rfc/rfc2132.txt)): "The definition of this information is vendor specific. The vendor is indicated in the vendor class identifier option", e o fabricante é quem a option 60 nomeia (seção 9.13). Vários itens SHOULD viajar como opções encapsuladas no formato de tag e comprimento do próprio DHCP (seções 8.4 e 2), que [o artigo sobre opções DHCP](/learn/bootp-and-dhcp-options) decodifica, e nelas "Codes other than 0 or 255 MAY be redefined by the vendor", os códigos são do fabricante (seção 8.4). Um valor único pode viajar sem envelope.
 
-## Um número de opção, quatro respostas
+A RFC 3925 diz a consequência: "The vendor identified by option 60 defines the interpretation of option 43, which itself carries no vendor identifier", a option 43 não carrega identificação de fabricante ([RFC 3925, seção 1](https://www.rfc-editor.org/rfc/rfc3925.txt)). O manual do Kea mostra, numa configuração real, duas classes de fabricante dando à option 43 significados incompatíveis ([manual do Kea 3.2.1, seção 8.2.13](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)), e [o boot pela rede](/learn/pxe-and-network-boot) depende do mesmo par de opções. O registro da Internet Assigned Numbers Authority (IANA) tem os códigos ([registro da IANA](https://www.iana.org/assignments/bootp-dhcp-parameters)):
 
-A RFC 2132, seção 8.4, define a option 43 como *Vendor Specific Information*. Ela especifica o recipiente e depois diz, na prática, que o conteúdo é assunto do fabricante. Essa única decisão é a origem de tudo que há de difícil nesta opção.
+```text
+43,Vendor Specific,N,Vendor Specific Information,[RFC 2132]
+55,Parameter List,N,Parameter Request List,[RFC 2132]
+60,Class Id,N,Class Identifier,[RFC 2132]
+124,V-I Vendor Class,,Vendor-Identifying Vendor Class,[RFC 3925]
+125,V-I Vendor-Specific Information,,Vendor-Identifying Vendor-Specific Information,[RFC 3925]
+138,OPTION_CAPWAP_AC_V4,N,CAPWAP Access Controller addresses,[RFC 5417]
+224-254,Reserved (Private Use),,,
+```
 
-As codificações que surgiram não são variações de um mesmo tema. São esquemas genuinamente diferentes que por acaso compartilham um número.
+## Como o ponto de acesso pede
 
-**A Cisco** usa um bloco type-length-value em que o endereço são quatro bytes crus. O tipo é `0xf1`, o comprimento é o número de controladoras vezes quatro, e o valor são os endereços em binário. Duas controladoras em 192.168.10.5 e 192.168.10.20 produzem `f108c0a80a05c0a80a14`.
+O cliente pede opções na option 55, a parameter request list ([RFC 2131, seção 3.5](https://www.rfc-editor.org/rfc/rfc2131.txt)). O Control And Provisioning of Wireless Access Points (CAPWAP), em que o Wireless Termination Point (WTP) é o AP e o Access Controller (AC) a controladora, exige que o WTP peça ali a option 138 ([RFC 5417, seções 1 e 2](https://www.rfc-editor.org/rfc/rfc5417.txt)). A option 60 nomeia a classe do cliente: "the parameters MUST be identified by an exact match between the client's vendor class identifiers and the client's classes identified in the server", só a correspondência exata vale ([RFC 2131, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc2131.txt)), e o servidor "MUST omit any parameters it cannot provide", omite o que não tem (seção 4.3.1). Uma string com um caractere errado ainda recebe o lease, sem a option 43.
 
-**A Ruckus** também usa TLV, mas o endereço dentro dele é *texto*. Subopção `03` para ZoneDirector, `06` para SmartZone, depois o comprimento contado em caracteres incluindo os pontos, depois cada caractere como seu byte ASCII. 192.168.0.200 vira `060d3139322e3136382e302e323030`.
+Os VCIs são por modelo: a Cisco dá `Cisco AP c1530` para a série Aironet 1530 ([documento 97066 da Cisco](https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html)). A Extreme dá `HiPath AP3965` para um AP3965e e `WingAP.AP410` para um AP410i ([Extreme, vendor class no Windows](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-FC2F36AB-C33A-47B3-A1CA-9305D5151664.shtml)), e `AP410` para o mesmo AP ([Extreme, option 43 no Windows](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-8BE08633-CBA8-499A-B623-F36E58EA3932.shtml)); só uma casa, e uma captura mostra qual.
 
-Releia os dois exemplos. No valor da Cisco, o número 10 aparece como `0a`. No valor da Ruckus, o número 10 aparece como `31 30`, que é o ASCII do dígito um seguido do dígito zero. A própria base de conhecimento da Ruckus destaca isso, porque é o erro que todo mundo comete.
+A Aruba confere também a resposta. APs campus enviam `ArubaAP` ([Aruba, AOS-8 campus](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/cap/)); APs unified enviam `ArubaInstantAP`, e o servidor pode passá-los ao modo campus devolvendo a option 60 como `ArubaAP` com a option 43 ([Aruba, AOS-8 unified](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/uap/)). Nos dois casos ([Aruba, Option implementation](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/)): "If the correct option 60 value is not present in the DHCP offer and acknowledgement with the vendor-specific option, the AP will ignore it", sem a option 60 na resposta, o AP ignora a option 43.
 
-**A Aruba** não usa hexadecimal de forma alguma. O servidor DHCP envia o endereço da controladora como texto puro. Um valor hex aqui não é outro formato, está errado.
+## O que cada fabricante coloca dentro
 
-**A Fortinet** não usa a option 43 para isso. Um FortiAP lê o endereço da controladora na option 138, a opção de access controller do CAPWAP, por padrão de fábrica. A option 43 num FortiGate existe para atender pontos de acesso de outros fabricantes.
+O endereço entra como quatro bytes binários ou como texto ASCII (USA Standard Code for Information Interchange):
 
-## A metade do problema que não é a option 43
+| Fabricante | Opção, subopção | Endereço como | Várias |
+|---|---|---|---|
+| Cisco | 43, `f1` (241) | 4 bytes binários | sim |
+| Ruckus | 43, `06` SmartZone, `03` ZoneDirector | texto ASCII | uma no exemplo |
+| Ubiquiti UniFi | 43, `01`, ou `02` (endereço de inform) | 4 bytes binários, ou texto | as duas juntas |
+| Extreme | 43, `01`, tipo texto | texto ASCII | lista com vírgulas |
+| Aruba | 43, sem subopção | texto ASCII | uma no exemplo |
+| Lightweight Access Point Protocol (LWAPP), histórico | 43, sem subopção | texto ASCII | lista com vírgulas |
+| Fortinet FortiAP | 138 por padrão | 4 bytes binários | sim, em ordem |
 
-Um ponto de acesso não recebe informação específica de fabricante só porque o servidor DHCP tem alguma. Ele precisa pedir, e pede enviando a option 60, o vendor class identifier. O servidor compara essa string e só então devolve a option 43 correspondente.
+A regra da Cisco ([documento 97066 da Cisco](https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html)): "Type is always the suboption code 0xf1. Length is the number of controller management IP addresses times 4 in hex", quatro bytes de comprimento por controladora. Os endereços vêm em hex, e o IOS aceita `option 43 hex <hexadecimal string>`, com pontos permitidos (`f104.c0a8.010a`). A Cisco documenta ainda o `f2`, que converte APs ao modo CAPWAP (tamanho 4 por endereço mais 1), e o `f3` (243), cujo último byte escolhe Meraki (`01`) ou Catalyst (`02`); APs com Cisco IOS-XE 17.15.2 ou posterior também leem o endereço no `f3`.
 
-É por isso que uma implantação Aruba com uma option 43 perfeitamente correta e sem a option 60 valendo `ArubaAP` não faz absolutamente nada. O valor está no servidor, formatado corretamente, e ninguém nunca o solicita.
+A Ruckus escreve `option 43 hex aabb[variable code]`, `aa` valendo 03 ou 06, em geral 06 para SmartZone, e "bb = length of the IP address including the “.” characters in Hex", pontos contados ([Ruckus, artigo 000008703](https://support.ruckuswireless.com/articles/000008703)); o 03 é do ZoneDirector segundo um post da equipe Ruckus ([fórum da Ruckus, fonte secundária](https://community.ruckuswireless.com/discussion/65974/how-the-aps-discover-the-ip-address-of-the-controller)). A regra do UniFi é "Start with 0104, then add your static IP (encoded in hex)", 0104 mais o endereço; o método por fully qualified domain name (FQDN), subopção `02`, leva um comprimento e o endereço de inform em texto, e os dois cabem na mesma opção ([Ubiquiti, Remote Adoption (Layer 3)](https://help.ui.com/hc/en-us/articles/204909754-Remote-Adoption-Layer-3)).
 
-O ExtremeWireless também exige VCI, e a forma depende da geração do AP: modelos mais antigos se identificam como `HiPath` seguido do nome do modelo, os mais novos apenas pelo modelo. Erre a string e o resultado é idêntico a não ter opção nenhuma.
+Extreme: "The option 43 sub-option code for the ExtremeWireless APs is type 1 (0x1)", subopção 1. Seu exemplo de dhcpd a declara como texto e lista duas controladoras numa só string ([Extreme, option 43 no Linux](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-A9F28828-9A51-4923-AE62-A252E4745D73.shtml)):
 
-## Por que a falha é silenciosa
+```text
+option space HAP;
+option HAP.HWC code 1 = text;
+class "HAP" { match option vendor-class-identifier; }
+subclass "HAP" "AP3935" { vendor-option-space HAP; option HAP.HWC "10.100.2.36, 10.100.2.22"; }
+```
 
-Uma option 43 mal configurada não produz erro. A troca DHCP se completa normalmente. O ponto de acesso recebe endereço, gateway, DNS. Ele lê a opção específica de fabricante, não consegue extrair nada que reconheça como endereço de controladora e cai no próximo método de descoberta da lista, que normalmente também não acha nada.
+A option 43 da Aruba é uma String com o endereço da mobility controller ([Aruba, AOS-8 campus](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/cap/)). O LWAPP mandava "A comma-delimited, ASCII-encoded list of AC IP addresses", lista ASCII com vírgulas ([RFC 5412, seção 3.3.2](https://www.rfc-editor.org/rfc/rfc5412.txt)), mas a RFC 5412 é Historic, com os mecanismos obsoletos pelo CAPWAP, status que [a série RFC](/learn/the-rfc-series) explica. Um FortiAP lê a option 138 por padrão de fábrica ([Fortinet, autorização de FortiAPs](https://docs.fortinet.com/document/fortiap/7.2.5/fortiwifi-and-fortiap-configuration-guide/540137)), endereços em hex concatenados por prioridade, e "you can use a different option number if you configure the AP units to match", outro número serve, como em `cfg -a AC_DISCOVERY_DHCP_OPTION_CODE=139` ([Fortinet, descoberta da controladora](https://docs.fortinet.com/document/fortiap/8.0.1/fortiwifi-and-fortiap-configuration-guide/570170)).
 
-O que se vê é um AP no ar, respondendo a ping, endereçado corretamente e ausente da controladora. A tentação é olhar roteamento, firewall, a própria controladora. A falha de verdade são alguns bytes montados com a convenção de outro fabricante.
+Os exemplos dos fabricantes, com os números deles:
 
-É esse o argumento para gerar o valor em vez de digitá-lo: não que a aritmética seja difícil, mas que o resultado de errar se parece exatamente com um problema de rede.
+```text
+Cisco     192.168.10.5 e 192.168.10.20     f108c0a80a05c0a80a14
+Ruckus    192.168.1.120                    060d3139322e3136382e312e313230
+UniFi     192.168.3.10                     0104c0a8030a
+UniFi     http://192.168.3.10:8080/inform  02 1f, depois 31 bytes de texto
+Aruba     10.0.2.15                        a própria string
+Fortinet  192.168.0.1                      C0A80001, na option 138
+```
 
-## Como decodificar um valor a olho
+## Duas controladoras, byte a byte
 
-A estrutura é regular o bastante para decodificar a olho. Tome o primeiro byte como subopção, o segundo como comprimento, e confira se os bytes restantes batem com esse comprimento. Depois olhe o valor. Se os bytes estiverem todos nas faixas `30`–`39` e `2e`, você está vendo dígitos e pontos em ASCII, o que indica codificação no estilo Ruckus. Se forem bytes arbitrários e houver exatamente quatro por endereço, é binário, o que indica Cisco ou UniFi.
+Os exemplos usam 192.0.2.10 e 198.51.100.20. Binário são quatro bytes em network byte order ([RFC 2132, seção 2](https://www.rfc-editor.org/rfc/rfc2132.txt)). Em texto é um byte de 8 bits por caractere ASCII de 7 bits; a RFC 20 põe os dígitos na coluna 3, linhas 0 a 9, daí `30` a `39`, o ponto em 2/14 (`2e`), a vírgula em 2/12 (`2c`) e o espaço em 2/0 (`20`) ([RFC 20, nota de abertura e seções 2 a 4](https://www.rfc-editor.org/rfc/rfc20.txt)). Dez é `0a` em binário e `31 30` em texto; o [Explorador da tabela ASCII](/tools/ascii-table) lista os códigos.
 
-Essa conferência leva dez segundos e resolve a dúvida de se o valor no seu escopo DHCP foi montado para os pontos de acesso que você realmente tem.
+```text
+                 binário         texto
+192.0.2.10       c0 00 02 0a     31 39 32 2e 30 2e 32 2e 31 30            (10 caracteres)
+198.51.100.20    c6 33 64 14     31 39 38 2e 35 31 2e 31 30 30 2e 32 30   (13 caracteres)
+```
+
+Cada opção é a tag e um comprimento que conta o que segue:
+
+```text
+Cisco, uma           2b 06 f1 04 c0 00 02 0a
+Cisco, duas          2b 0a f1 08 c0 00 02 0a c6 33 64 14
+UniFi                2b 06 01 04 c0 00 02 0a
+Ruckus SmartZone     2b 0c 06 0a 31 39 32 2e 30 2e 32 2e 31 30
+Ruckus ZoneDirector  2b 0c 03 0a 31 39 32 2e 30 2e 32 2e 31 30
+Extreme, duas        2b 1b 01 19 31 39 32 2e 30 2e 32 2e 31 30 2c 20
+                                 31 39 38 2e 35 31 2e 31 30 30 2e 32 30
+Aruba                2b 0a 31 39 32 2e 30 2e 32 2e 31 30
+LWAPP, duas          2b 19 31 39 32 2e 30 2e 32 2e 31 30 2c 20
+                           31 39 38 2e 35 31 2e 31 30 30 2e 32 30
+Option 138, duas     8a 08 c0 00 02 0a c6 33 64 14
+```
+
+Duas controladoras Cisco dão subopção de comprimento 2 × 4 = 8 e opção de comprimento 10; a Ruckus conta os pontos, 10 caracteres; a string da Extreme, `192.0.2.10, 198.51.100.20`, tem 25 caracteres, `19`. O comprimento da option 138 "MUST be a multiple of four (4)", múltiplo de quatro ([RFC 5417, seção 2](https://www.rfc-editor.org/rfc/rfc5417.txt)). No Cisco IOS o par é `option 43 hex f108c000020ac6336414`; no dhcpd, a option 138 é `option capwap-ac-v4 192.0.2.10, 198.51.100.20;` ([dhcp-options(5)](https://kb.isc.org/docs/en/isc-dhcp-44-manual-pages-dhcp-options)).
+
+## Quando não há option 43: os outros caminhos
+
+O CAPWAP espera WTP e AC com frequência em sub-redes diferentes, e exige descoberta que não dependa de multicast ([RFC 5415, seção 3.3](https://www.rfc-editor.org/rfc/rfc5415.txt)). O Discovery Request vai para 255.255.255.255, 224.0.1.140 ou o endereço unicast de um AC, e os ACs MUST aceitar os três; um AC pré-configurado dispensa a descoberta, e registros DNS (SRV) como `_capwap-control._udp.example.com` são opcionais (seção 3.3). As options 124 e 125 eliminam a ambiguidade: cada uma começa pelo enterprise number da IANA do fabricante ([RFC 3925, seções 1 e 2](https://www.rfc-editor.org/rfc/rfc3925.txt)).
+
+Um FortiAP percorre estático, DHCP, DNS (`fortinet-capwap-controller` mais o domínio da option 15), FortiManagement Cloud (`apctrl1.forticloud.com`, via HTTPS), multicast e broadcast; o multicast para 224.0.1.140 cruza domínios de broadcast com roteamento multicast, o broadcast não ([Fortinet, descoberta da controladora](https://docs.fortinet.com/document/fortiap/8.0.1/fortiwifi-and-fortiap-configuration-guide/570170)); veja [multicast](/learn/multicast-what-it-costs-to-not-flood) e [implantação de FortiAP](/learn/fortiap-wireless-fundamentals-and-deployment). Um AP da Extreme reutiliza a última controladora, depois tenta options 60 e 43, o DNS em `Controller.domain-name` e o Service Location Protocol (SLP) ([Extreme, descoberta de APs](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-CB780400-C7F1-46B5-B75E-C94BBB203509.shtml)). O UniFi pode usar o nome DNS `unifi` ([Ubiquiti, Remote Adoption (Layer 3)](https://help.ui.com/hc/en-us/articles/204909754-Remote-Adoption-Layer-3)); um AP Juniper Mist só pega o endereço no DHCP, acha a nuvem Mist por DNS e conecta por HTTPS ([Juniper, onboarding do AP45](https://www.juniper.net/documentation/us/en/hardware/ap45/topics/task/ap45-connecting-to-network.html)). Servidor em outra sub-rede: veja [o DHCP relay agent](/learn/dhcp-relay-agent).
+
+## Por que nada acusa a falha
+
+O servidor ignora a informação de fabricante que não entende, e "Clients which do not receive desired vendor-specific information SHOULD make an attempt to operate without it", o cliente segue sem ela ([RFC 2132, seção 8.4](https://www.rfc-editor.org/rfc/rfc2132.txt)); a classe que não casa perde suas opções em silêncio ([RFC 2131, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc2131.txt)). O lease se completa, e nada denuncia o defeito. Os bytes também não são conferidos: "Kea's ability to validate data correctness in hexadecimal is limited", pouca validação do hex ([manual do Kea 3.2.1, seção 8.2.10](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)). Binário onde se espera texto, ou o contrário, é DHCP válido; na notação da MikroTik, `'10.10.10.10'` é `0x0a0a0a0a` e `s'10.10.10.10'` é `0x31302e31302e31302e3130` ([MikroTik, DHCP](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP)).
+
+O AP segue adiante: um FortiAP sem controladora troca de tipo de descoberta após 3 a 15 segundos, até o broadcast falhar e ele entrar em sulking ([Fortinet, descoberta da controladora](https://docs.fortinet.com/document/fortiap/8.0.1/fortiwifi-and-fortiap-configuration-guide/570170)). No CAPWAP, após `MaxDiscoveries` pedidos (10 por padrão) espaçados por menos de `MaxDiscoveryInterval` (20 segundos por padrão) ([RFC 5415, seções 4.8.5 e 4.7.10](https://www.rfc-editor.org/rfc/rfc5415.txt)), "the WTP enters the Sulking state and MUST wait for an interval equal to SilentInterval before sending further Discovery Request messages", o WTP se cala (seção 5.1) por um SilentInterval de 30 segundos por padrão (seção 4.7.13).
+
+O tamanho é o último limite: uma opção guarda 255 octetos, e valores maiores são divididos e concatenados ([RFC 3396, Abstract](https://www.rfc-editor.org/rfc/rfc3396.txt)); uma opção no estilo Cisco cabe 63 controladoras em 254 octetos.
+
+## Um servidor intruso e as defesas
+
+A seção de segurança da RFC 2132 diz "Security issues are not discussed in this memo", nada sobre segurança ([RFC 2132, seção 13](https://www.rfc-editor.org/rfc/rfc2132.txt)). A RFC 5417 descreve o ataque: se um adversário altera ou insere a resposta DHCP, "a WTP could be led to contact a rogue CAPWAP AC, possibly one that then intercepts call requests or denies service", um AC intruso que intercepta ou nega serviço ([RFC 5417, seção 5](https://www.rfc-editor.org/rfc/rfc5417.txt)). Na maioria das redes a troca não tem integridade protegida nem origem autenticada; o CAPWAP MUST autenticar seus pares com Datagram Transport Layer Security (DTLS), e em redes sensíveis "the options defined in this document SHOULD NOT be the only methods used to determine to which AC a WTP should connect", não podem ser o único método (seção 5).
+
+O switch pode barrar o servidor intruso: no Junos, "Untrusted ports drop traffic from DHCP servers to prevent unauthorized servers from providing any configuration information to clients", a porta untrusted descarta ofertas, e as portas de acesso são untrusted por padrão, os trunks trusted ([Juniper, servidores DHCP confiáveis](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/port-security-trusted-dhcp-server.html)), os dois papéis de [VLANs e trunking 802.1Q](/learn/vlans-and-8021q-trunking). Na controladora, um FortiGate só gerencia um FortiAP autorizado por um administrador; a autorização automática vem desligada ([Fortinet, autorização de FortiAPs](https://docs.fortinet.com/document/fortiap/7.2.5/fortiwifi-and-fortiap-configuration-guide/540137)).
+
+## Como ler um valor de volta
+
+O DHCP usa UDP 67 e 68 ([RFC 2131, seção 4.1](https://www.rfc-editor.org/rfc/rfc2131.txt)). O `-X` do tcpdump imprime hex e ASCII, e uma codificação em texto mostra o endereço na coluna ASCII ([tcpdump(1)](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html)); `port` casa nos dois sentidos ([pcap-filter(7)](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html)):
+
+```bash
+tcpdump -n -v -X -i eth0 udp port 67 or udp port 68
+```
+
+Os campos DHCP do Wireshark ([campos DHCP do Wireshark](https://www.wireshark.org/docs/dfref/d/dhcp.html)) e o operador `contains` ([wireshark-filter(4)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)) dão estes filtros, que o tshark aplica a um arquivo com `-Y` ([tshark(1)](https://www.wireshark.org/docs/man-pages/tshark.html)); o nome do arquivo é ilustrativo:
+
+```text
+dhcp.option.type == 43
+dhcp.option.type == 138
+dhcp.option.request_list_item == 43
+dhcp.option.vendor_class_id contains "HiPath"
+```
+
+```bash
+tshark -r ap-boot.pcapng -Y "dhcp.option.type == 43" -O dhcp
+tshark -r ap-boot.pcapng -Y "dhcp.option.vendor_class_id" -T fields -e dhcp.option.vendor_class_id
+```
+
+O DHCPDISCOVER ou DHCPREQUEST do AP deve trazer a option 60 (`3c`) e listar `2b` ou `8a` na option 55 (`37`); o DHCPOFFER ou DHCPACK traz `2b`, o comprimento e o valor. Ilustrativo, o par Cisco num offer:
+
+```text
+2b              option 43, Vendor Specific Information
+0a              comprimento da opção: seguem 10 octetos
+f1              tipo da subopção 0xf1 (241)
+08              comprimento da subopção: 2 controladoras x 4
+c0 00 02 0a     192.0.2.10
+c6 33 64 14     198.51.100.20
+```
+
+Para decodificar, retire `2b` e seu comprimento. Subopção documentada seguida de comprimento igual aos bytes restantes é TLV; `30` a `39` com `2e`, e `2c 20` nas listas, é texto; quatro bytes arbitrários por endereço é binário. O `31 39 32 2e ...` da Aruba lido como TLV dá subopção `31` e comprimento `39`, 57, com 8 bytes sobrando: errado como TLV, certo como texto.
+
+O dhcpd pode guardar o VCI de cada cliente com o lease, revelando a string exata ([dhcp-options(5)](https://kb.isc.org/docs/en/isc-dhcp-44-manual-pages-dhcp-options)); o Windows Server guarda o VCI como dado da vendor class e lê os valores por classe ([Microsoft Learn, Add-DhcpServerv4Class](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/add-dhcpserverv4class); [Microsoft Learn, Get-DhcpServerv4OptionValue](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/get-dhcpserverv4optionvalue)). Exemplos dos fabricantes:
+
+```text
+set vendor-string = option vendor-class-identifier;
+```
+
+```text
+Add-DhcpServerv4Class -Name "MSUCClient" -Type Vendor -Data "MS-UC-Client"
+Get-DhcpServerv4OptionValue -ComputerName "dhcpserver.contoso.com" -ScopeId 10.10.10.0 -VendorClass MSUCClient
+```
+
+O [Gerador de DHCP option 43](/tools/dhcp-option-43) monta o valor de cada fabricante com a decomposição em bytes e linhas para dhcpd, Cisco IOS, Windows Server e MikroTik, avisando sobre option 60, strings e option 138; seu par Cisco bate com o `f108c0a80a05c0a80a14` da Cisco, e sua saída para FortiAP é a option 138. Confira a saída para Ruckus e Extreme contra as regras acima, e inclua a option 60 `ArubaAP` na resposta para a Aruba. O [Códec Base64, Base32, Hex e Porcentual](/tools/base64) volta o hex a caracteres; o [Playground de Python](/tools/python-playground) reproduz esses bytes.
+
+## Para lembrar
+
+- O significado da option 43 pertence ao fabricante nomeado na option 60, e a opção não carrega identificação de fabricante: um só número guarda formatos incompatíveis.
+- Cisco `f1` e UniFi `01 04` levam endereços binários, Ruckus `06` ou `03` e a subopção 1 da Extreme levam texto, a Aruba manda uma string pura, e o FortiAP lê a option 138 por padrão, em código que pode mudar.
+- O AP pede na option 55 e nomeia sua classe na option 60; as opções da classe só voltam com correspondência exata, as da Aruba só junto da option 60 `ArubaAP`.
+- Um valor errado falha em silêncio: o cliente SHOULD seguir sem ele, e o AP tenta outros métodos até entrar em sulking.
+- Para decodificar, retire `2b` e seu comprimento: subopção cujo comprimento bate com os bytes restantes é TLV, `30` a `39` com `2e` é texto, quatro bytes arbitrários por endereço é binário.
+- O DHCP não é autenticado nem protegido em integridade, e um servidor intruso pode desviar um AP; a autenticação de pares por DTLS e as portas de acesso untrusted são as defesas.
+
+## Fontes
+
+- [RFC 2132, DHCP Options and BOOTP Vendor Extensions, março de 1997: seções 2, 8.4, 9.8, 9.13 e 13 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2132.txt)
+- [RFC 2131, Dynamic Host Configuration Protocol, março de 1997: seções 1.1, 3.5, 4.1, 4.2 e 4.3.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2131.txt)
+- [RFC 3925, Vendor-Identifying Vendor Options for Dynamic Host Configuration Protocol version 4 (DHCPv4), outubro de 2004: seções 1 a 4 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3925.txt)
+- [RFC 5417, Control And Provisioning of Wireless Access Points (CAPWAP) Access Controller DHCP Option, março de 2009: seções 1, 2 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5417.txt)
+- [RFC 5415, Control And Provisioning of Wireless Access Points (CAPWAP) Protocol Specification, março de 2009: seções 2.3.1, 3.1, 3.3, 4.6.21, 4.7.10, 4.7.13, 4.8.5 e 5.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5415.txt)
+- [RFC 5412, Lightweight Access Point Protocol, fevereiro de 2010 (Historic): seção 3.3.2 e a IESG Note (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5412.txt)
+- [RFC 3396, Encoding Long Options in the Dynamic Host Configuration Protocol (DHCPv4), novembro de 2002: Abstract (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3396.txt)
+- [RFC 20, ASCII format for network interchange, outubro de 1969: seções 2 a 4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc20.txt)
+- [IANA, BOOTP Vendor Extensions and DHCP Options registry, atualizado em 2 de fevereiro de 2026: códigos 43, 55, 60, 124, 125, 138 e 224 a 254 (lido em 2026-10-18)](https://www.iana.org/assignments/bootp-dhcp-parameters)
+- [Cisco, Configure DHCP OPTION 43 for Lightweight Access Points, Document ID 97066, atualizado em 22 de julho de 2026: Background Information, DHCP Offer Option 43 Format explained, Cisco IOS DHCP Server (lido em 2026-10-18)](https://www.cisco.com/c/en/us/support/docs/wireless-mobility/wireless-lan-wlan/97066-dhcp-option-43-00.html)
+- [HPE Aruba Networking TechDocs, Option implementation, última modificação em 14 de fevereiro de 2025 (lida em 2026-10-18)](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/)
+- [HPE Aruba Networking TechDocs, AOS-8 campus, última modificação em 14 de fevereiro de 2025 (lida em 2026-10-18)](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/cap/)
+- [HPE Aruba Networking TechDocs, AOS-8 unified, última modificação em 14 de fevereiro de 2025 (lida em 2026-10-18)](https://arubanetworking.hpe.com/techdocs/aos/wifi-design-deploy/network-operations/dhcp-for-aps/option-implementation/uap/)
+- [Ubiquiti Help Center, Remote Adoption (Layer 3), página sem data (lida em 2026-10-18)](https://help.ui.com/hc/en-us/articles/204909754-Remote-Adoption-Layer-3)
+- [RUCKUS Support, Understanding DHCP Option 43 Hexadecimal code in Ruckus (artigo 000008703), maio de 2020 (lido em 2026-10-18)](https://support.ruckuswireless.com/articles/000008703)
+- [RUCKUS Networks Community, How the APs discover the IP address of the controller, agosto de 2023 (fonte secundária) (lida em 2026-10-18)](https://community.ruckuswireless.com/discussion/65974/how-the-aps-discover-the-ip-address-of-the-controller)
+- [Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, agosto de 2023: Configuring DHCP Option 43 on a Linux Server (lida em 2026-10-18)](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-A9F28828-9A51-4923-AE62-A252E4745D73.shtml)
+- [Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, agosto de 2023: Configuring Vendor Class on Windows Server 2012 R2 (lida em 2026-10-18)](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-FC2F36AB-C33A-47B3-A1CA-9305D5151664.shtml)
+- [Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, agosto de 2023: Configuring Option 43 (lida em 2026-10-18)](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-8BE08633-CBA8-499A-B623-F36E58EA3932.shtml)
+- [Extreme Networks, ExtremeCloud IQ Controller Deployment Guide 10.06.02, agosto de 2023: Discovering Centralized Site APs and Adapters (lida em 2026-10-18)](https://documentation.extremenetworks.com/XIQC/10.06/DG/GUID-CB780400-C7F1-46B5-B75E-C94BBB203509.shtml)
+- [Fortinet Document Library, FortiAP / FortiWiFi 8.0.1, Advanced WiFi controller discovery, página sem data (lida em 2026-10-18)](https://docs.fortinet.com/document/fortiap/8.0.1/fortiwifi-and-fortiap-configuration-guide/570170)
+- [Fortinet Document Library, FortiAP / FortiWiFi 7.2.5, Discovering, authorizing, and deauthorizing FortiAP units, página sem data (lida em 2026-10-18)](https://docs.fortinet.com/document/fortiap/7.2.5/fortiwifi-and-fortiap-configuration-guide/540137)
+- [Juniper Networks, Connect an AP45 to the Network and Power It On, página sem data (lida em 2026-10-18)](https://www.juniper.net/documentation/us/en/hardware/ap45/topics/task/ap45-connecting-to-network.html)
+- [Juniper Networks, Junos OS, Understanding and Using Trusted DHCP Servers, página sem data (lida em 2026-10-18)](https://www.juniper.net/documentation/us/en/software/junos/security-services/topics/topic-map/port-security-trusted-dhcp-server.html)
+- [ISC, Kea 3.2.1 Administrator Reference Manual, The DHCPv4 Server: seções 8.2.10, 8.2.13, 8.2.14 e 8.2.20.2 (lido em 2026-10-18)](https://kea.readthedocs.io/en/stable/arm/dhcp4-srv.html)
+- [ISC, ISC DHCP 4.4 manual pages, dhcp-options(5), junho de 2023 (lida em 2026-10-18)](https://kb.isc.org/docs/en/isc-dhcp-44-manual-pages-dhcp-options)
+- [Microsoft Learn, Add-DhcpServerv4Class (DhcpServer), maio de 2025 (lida em 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/add-dhcpserverv4class)
+- [Microsoft Learn, Get-DhcpServerv4OptionValue (DhcpServer), maio de 2025 (lida em 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/dhcpserver/get-dhcpserverv4optionvalue)
+- [MikroTik RouterOS documentation, DHCP, março de 2026: DHCP Options (lida em 2026-10-18)](https://help.mikrotik.com/docs/spaces/ROS/pages/24805500/DHCP)
+- [tcpdump(1), página de manual do tcpdump 4.99.7, fevereiro de 2026: opções -i, -n, -r, -v, -w e -X (lida em 2026-10-18)](https://www.tcpdump.org/manpages/tcpdump.1-4.99.7.html)
+- [pcap-filter(7), página de manual da libpcap 1.11.0, setembro de 2026: primitiva port e operadores (lida em 2026-10-18)](https://www.tcpdump.org/manpages/libpcap-1.11.0/pcap-filter.7.html)
+- [Wireshark, Display Filter Reference: Dynamic Host Configuration Protocol, versões 3.0.0 a 4.6.9 (lida em 2026-10-18)](https://www.wireshark.org/docs/dfref/d/dhcp.html)
+- [wireshark-filter(4), página de manual do Wireshark (lida em 2026-10-18)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
+- [tshark(1), página de manual do TShark 4.6.9: opções -e, -O, -r, -T, -x e -Y (lida em 2026-10-18)](https://www.wireshark.org/docs/man-pages/tshark.html)

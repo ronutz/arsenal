@@ -10,7 +10,9 @@
 // cross-link. Nothing is executed and nothing leaves the browser.
 //
 // Facts come from the BIND 9 dig manual, the DNS RFCs and the IANA registry,
-// all read 2026-10-04 (SOURCES in compute.ts).
+// read 2026-10-04, and the +bufsize correction's sources (the 9.20.29 manual and
+// source, the 9.18.0 CHANGES, the 9.16.50 source), read 2026-10-19 (SOURCES in
+// compute.ts).
 // ============================================================================
 
 import { run as compute, SOURCES, type DigInput, type DigResult } from "./compute";

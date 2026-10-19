@@ -4,7 +4,7 @@
     "title": "ronutz tools API",
     "version": "1.1.0",
     "summary": "Deterministic network and security computations over HTTP.",
-    "description": "The programmatic counterpart to the in-browser tools at ronutz.com.\n\nEvery operation here is a pure function: the same input always yields the\nsame output, nothing is stored, and no request bodies or query values are\nlogged. The browser tools remain the zero-egress default for sensitive work;\nthis API exists for automation (scripts, pipelines, integrations).\n\nThe surface grows with the toolbox: every shipped tool is exposed here and\ndocumented from the same registry, so the served endpoints and this document\ncannot drift apart. Only shipped tools are listed (no vaporware). Each\noperation accepts its input via GET (?input=) or POST (the request body) and\nreturns a JSON result.\n",
+    "description": "NOT SERVED AT PRESENT. This document is the contract of an API that is published for reading and not yet switched on: every request to https://ronutz.com/api/* answers HTTP 404 with {\"error\":\"api_not_served\"}. The in-browser tools at https://ronutz.com/en/tools/ compute every result below, locally.\n\nThe programmatic counterpart to the in-browser tools at ronutz.com.\n\nEvery operation here is a pure function: the same input always yields the\nsame output, nothing is stored, and no request bodies or query values are\nlogged. The browser tools remain the zero-egress default for sensitive work;\nthis API exists for automation (scripts, pipelines, integrations).\n\nThe surface grows with the toolbox: every shipped tool is exposed here and\ndocumented from the same registry, so the served endpoints and this document\ncannot drift apart. Only shipped tools are listed (no vaporware). Each\noperation accepts its input via GET (?input=) or POST (the request body) and\nreturns a JSON result.\n",
     "contact": {
       "name": "ronutz",
       "url": "https://ronutz.com/contact"
@@ -12,12 +12,14 @@
     "license": {
       "name": "Apache-2.0 (code), CC-BY-4.0 (content)",
       "url": "https://ronutz.com/colophon"
-    }
+    },
+    "x-availability": "documented, not served: the edge answers every /api/* request with HTTP 404 and the body {\"error\":\"api_not_served\"} until processing is switched on; the in-browser tools compute the same results"
   },
   "servers": [
     {
       "url": "https://ronutz.com/api/v1",
-      "description": "Production edge (Cloudflare Worker, stateless, no request logging)"
+      "description": "Documented, not served: answers 404 api_not_served until processing is switched on",
+      "x-availability": "documented, not served: the edge answers every /api/* request with HTTP 404 and the body {\"error\":\"api_not_served\"} until processing is switched on; the in-browser tools compute the same results"
     }
   ],
   "tags": [
@@ -2569,7 +2571,7 @@
         ],
         "operationId": "run_dig_output_explainer",
         "summary": "dig output explainer",
-        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 9499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -2613,7 +2615,7 @@
         ],
         "operationId": "run_dig_output_explainer_post",
         "summary": "dig output explainer (POST)",
-        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste real dig output and get a decoded, explained breakdown: the header and flags, the EDNS OPT pseudo-section, every record in each section, and the query stats. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 6891, RFC 2308, RFC 9499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",
@@ -11678,7 +11680,7 @@
         ],
         "operationId": "run_nslookup_output_explainer",
         "summary": "nslookup output explainer",
-        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 9499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "parameters": [
           {
             "name": "input",
@@ -11722,7 +11724,7 @@
         ],
         "operationId": "run_nslookup_output_explainer_post",
         "summary": "nslookup output explainer (POST)",
-        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 8499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
+        "description": "Paste real nslookup output and get a decoded, explained breakdown: the resolver it used, whether the answer is authoritative, every record (with MX / SRV / SOA field breakdowns), and any failures. Parsed entirely in your browser, nothing is resolved or sent anywhere. Standards: RFC 1035, RFC 2308, RFC 2782, RFC 9499. Stateless and side-effect-free: the same input always yields the same result, and nothing is stored or logged.",
         "requestBody": {
           "required": true,
           "description": "The tool input as text.",

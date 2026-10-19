@@ -1,28 +1,182 @@
 ---
 slug: icmp-ping-and-traceroute
 title: "ICMP, ping, and traceroute: the Control Messages That Explain Your Network"
-summary: "The Internet Control Message Protocol is how the network talks about itself: echo request and reply give us ping, time-to-live exceeded gives us traceroute, and destination unreachable names exactly what failed. The purpose of TTL, the common uses of ICMP, and how to read the unreachable family instead of just noticing it."
-concepts: ["icmp", "ping", "traceroute", "ttl", "unreachable", "fundamentals", "troubleshooting"]
-relatedTools: []
-relatedArticles: ["routing-tables-and-default-gateway", "osi-model-in-practice", "tcp-connection-lifecycle"]
+summary: "The Internet Control Message Protocol (ICMP) is the part of IP that reports on delivery instead of carrying data: Echo and Echo Reply are ping, Time Exceeded is traceroute, and Destination Unreachable names what failed. After reading, you can read a ping line and its summary field by field, follow a traceroute probe by probe from TTL 1 to the final Port Unreachable, tell a filtered path from a dead one, say whose address a hop line prints, and decode the Unreachable codes in IPv4 and ICMPv6."
+concepts: ["icmp", "ping", "traceroute", "ttl", "unreachable", "fundamentals", "troubleshooting", "icmpv6", "hop-limit", "time-exceeded", "destination-unreachable", "echo-request", "rate-limiting", "path-mtu-discovery", "checksum"]
+relatedTools: ["mtu-mss", "python-playground", "packet-capture-plan-builder", "flow-path-reasoner"]
+relatedArticles: ["routing-tables-and-default-gateway", "osi-model-in-practice", "tcp-connection-lifecycle", "nat-explained", "ipv6-neighbor-discovery", "arp-and-mac-addresses", "ipv6-addressing", "jumbo-frames"]
 category: networking
 order: 166
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-19"
 ---
 
-The Internet Control Message Protocol (ICMP) is the network's own voice: not user data, but messages about delivery itself. The retired fundamentals blueprint asked for its common uses, the purpose of an IP time to live, and the reasons for unreachable messages - three questions that together cover most of what ping and traceroute ever tell you.
+The Internet Control Message Protocol (ICMP) is the part of the Internet Protocol (IP) that talks about delivery instead of carrying data: no route, time run out, nothing listening, each comes back as an ICMP message. You meet it whenever you type `ping` or `traceroute`, and whenever a firewall swallows it. After reading, you can read a ping line field by field, follow a traceroute probe by probe, tell a filtered path from a dead one, say whose address a hop line prints, and read the Destination Unreachable codes in IPv4 and in ICMPv6 (ICMP for IP version 6).
 
-## Echo request and reply: ping
+## What ICMP is
 
-The simplest ICMP conversation is a question and its mirror: echo request out, echo reply back. That round trip proves Layer 3 reachability in both directions and measures its latency - which is all ping is, and precisely why it is the first command typed in any investigation. The nuances are in the negatives: no reply means the request never arrived, the reply never returned, or a policy device ate one of them silently - firewalls filtering ICMP make hosts look dead that are perfectly alive, so an unanswered ping is evidence, not a verdict.
+Request for Comments (RFC) 792, of September 1981, makes it part of IP, not a layer above: "ICMP is actually an integral part of IP, and must be implemented by every IP module" ([RFC 792, Introduction](https://www.rfc-editor.org/rfc/rfc792.txt)). It travels inside an IP datagram as protocol number 1 ([Internet Assigned Numbers Authority (IANA), Assigned Internet Protocol Numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)), at Layer 3 beside IP in the [Open Systems Interconnection (OSI) model](/learn/osi-model-in-practice), and its purpose is feedback about problems, "not to make IP reliable" (RFC 792, Introduction).
 
-## Time to live: the loop breaker that draws maps
+Every message starts with an 8-bit Type, an 8-bit Code and a 16-bit Checksum, and the type decides the rest (RFC 792, Message Formats). The checksum is the one's complement of the one's complement sum of the message, field zeroed ([RFC 1071, section 1](https://www.rfc-editor.org/rfc/rfc1071.txt)). The captured Echo Request below begins `0800 16ca`, type 8, code 0, checksum 0x16ca, and the sum recomputed over its 64 octets gives 0x16ca; the reply's `0000 1eca` recomputes to 0x1eca.
 
-Every IP packet carries a time to live (TTL): a hop counter decremented by each router, with the packet discarded when it reaches zero. Its purpose is protection - a routing loop would otherwise circulate packets forever - and the discard is announced with an ICMP time-exceeded message back to the sender.
+There are two classes, errors (Destination Unreachable, Redirect, Time Exceeded, Parameter Problem) and queries (Echo and the rest) ([RFC 1812, section 4.3.1](https://www.rfc-editor.org/rfc/rfc1812.txt)). ICMPv6 keeps the header, travels as [IPv6](/learn/ipv6-addressing) Next Header 58, adds an IPv6 pseudo-header to the checksum and puts the class in the number: "Error messages are identified as such by a zero in the high-order bit of their message Type field values" ([RFC 4443, sections 2.1 and 2.3](https://www.rfc-editor.org/rfc/rfc4443.txt)), so 1 to 4 are errors and 128 upward informational. Numbers from the registries ([IANA, ICMP Parameters](https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml); [IANA, ICMPv6 Parameters](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml)).
 
-Traceroute weaponizes that courtesy. Send probes with TTL 1, 2, 3, and so on; each dies one hop farther along, and each time-exceeded message arrives signed by the router that killed it. The result is the path, hop by hop, with per-hop timing - a map drawn entirely from expiry notices. Read it with the usual cautions: routers may deprioritize or suppress their own ICMP responses, so a silent or slow middle hop is often cosmetic, while a path that stops progressing entirely marks where forwarding - or the return path - actually ends.
+| Message | ICMP (IPv4) type/code | ICMPv6 type/code |
+|---|---|---|
+| Echo Request | 8/0 | 128/0 |
+| Echo Reply | 0/0 | 129/0 |
+| Time Exceeded, Time to Live (TTL) or Hop Limit exceeded in transit | 11/0 | 3/0 |
+| Destination Unreachable | 3/0 to 3/15 | 1/0 to 1/9 |
+| Fragmentation needed, Packet Too Big | 3/4 | 2/0 |
 
-## The unreachable family: failure with a name
+## Echo and Echo Reply: what ping proves
 
-Destination unreachable is not one message but a family, and the code names the culprit. Network unreachable: a router had no route - a [routing table](/learn/routing-tables-and-default-gateway) gap. Host unreachable: the final router had the route but could not resolve the host - typically a failed ARP on the last subnet. Port unreachable: the host is alive and reached, but nothing listens on that port - which is not a network problem at all, and is also how classic traceroute detects arrival at the destination. Administratively prohibited: a policy device declined, on purpose. Treating these codes as distinct answers - route missing, host missing, service missing, policy said no - converts a generic failure into a directed next step, and pairs naturally with the [TCP-level signatures](/learn/tcp-connection-lifecycle) of the same failures one layer up.
+An Echo carries an Identifier, a Sequence Number and data, and the rule is a mirror: "The data received in the echo message must be returned in the echo reply message" (RFC 792, Echo or Echo Reply Message); the responder swaps the addresses, sets the type to 0 and recomputes the checksum. Answering is required of every host, "Every host MUST implement an ICMP Echo server function that receives Echo Requests and sends corresponding Echo Replies" ([RFC 1122, section 3.2.2.6](https://www.rfc-editor.org/rfc/rfc1122.txt)), and of every IPv6 node (RFC 4443, section 4.1). Captured on Linux:
+
+```console
+$ ping -c 3 127.0.0.1
+PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.
+64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.031 ms
+64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.043 ms
+64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.053 ms
+
+--- 127.0.0.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2046ms
+rtt min/avg/max/mdev = 0.031/0.042/0.053/0.009 ms
+```
+
+The 56 data octets plus the 8-octet ICMP header are the 64-octet message that comes back; with a 20-octet IPv4 header, an 84-octet datagram ([ping(8), OPTIONS and ICMP PACKET DETAILS](https://man7.org/linux/man-pages/man8/ping.8.html)). `ttl` is what is left of the reply's Time to Live: 64 because the responder started at the Linux default of 64 ([IP Sysctl, ip_default_ttl](https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html)) and no router stood in the way. The last figure is "Population standard deviation (mdev), essentially an average of how far each ping RTT is from the mean RTT" (ping(8)): from the three samples the mean is 0.042 ms and the population standard deviation 0.009 ms, as printed.
+
+One reply proves the request arrived, the reply returned and the responder's stack is alive, and nothing about its services. No reply proves nothing: something may have chosen silence, which is allowed. "A router SHOULD have a configuration option that, if enabled, causes the router to silently ignore all ICMP echo requests" (RFC 1812, section 4.3.3.6), and firewalls drop requests by habit: "It has been common practice in IPv4 networks to drop Echo Request messages in firewalls to minimize the risk of scanning attacks on the protected network" ([RFC 4890, section 4.3.1](https://www.rfc-editor.org/rfc/rfc4890.txt)). Through [NAT](/learn/nat-explained) the query passes rewritten: the translator must permit Echo and its reply, and changes the Identifier ([RFC 5508, section 3.1](https://www.rfc-editor.org/rfc/rfc5508.txt)).
+
+## TTL, Hop Limit and the router rule
+
+The IPv4 Time to Live is written as seconds, admitting that "the TTL must be thought of only as an upper bound on the time a datagram may exist" ([RFC 791, section 3.1](https://www.rfc-editor.org/rfc/rfc791.txt)). Its job is to end [routing loops](/learn/routing-tables-and-default-gateway) (RFC 1122, section 3.2.1.7), and the router rule makes it a hop count: "If the TTL is reduced to zero (or less), the packet MUST be discarded, and if the destination is not a multicast address the router MUST send an ICMP Time Exceeded message, Code 0 (TTL Exceeded in Transit) message to the source" (RFC 1812, section 5.3.1). Only routers expire packets: a destination accepts TTL 1 (RFC 1122, section 3.2.1.7), so `ping -c 3 -t 1 127.0.0.1` was answered. IPv6 dropped the pretence, "the IPv4 'Time-to-Live' field was renamed 'Hop Limit' in IPv6" ([RFC 8200, section 8.2](https://www.rfc-editor.org/rfc/rfc8200.txt)), with the same discard rule (RFC 4443, section 3.3).
+
+For a destination D four routers away, each router subtracting one:
+
+| Probe TTL | Leaves the sender | At R1 | At R2 | At R3 | At R4 | Who answers, and with what |
+|---|---|---|---|---|---|---|
+| 1 | 1 | 1, becomes 0 | | | | R1: Time Exceeded, type 11 code 0 |
+| 2 | 2 | 1 | 1, becomes 0 | | | R2: Time Exceeded |
+| 3 | 3 | 2 | 1 | 1, becomes 0 | | R3: Time Exceeded |
+| 4 | 4 | 3 | 2 | 1 | 1, becomes 0 | R4: Time Exceeded |
+| 5 | 5 | 4 | 3 | 2 | 1 | D, at TTL 1: Port Unreachable, Echo Reply, or SYN/ACK or RST |
+
+Ping runs the ladder by hand: `ping -c 2 -W 2 -t 1 9.9.9.9` printed `From 192.0.2.1 icmp_seq=1 Time to live exceeded`, and `-t 2` the same line from the second router.
+
+## Traceroute: the rule used on purpose
+
+The Linux manual states it: "We start our probes with a ttl of one and increase by one until we get an ICMP 'port unreachable' (or TCP reset), which means we got to the 'host', or hit a max (which defaults to 30 hops)" ([traceroute(8), DESCRIPTION](https://man7.org/linux/man-pages/man8/traceroute.8.html)). Three probes per hop (`-q`), a 5.0-second wait (`-w`). The default probe is UDP: "The 'unlikely' port of the first probe is 33434, then for each next probe it is incremented by one" (traceroute(8), LIST OF AVAILABLE METHODS), so the destination returns Port Unreachable and the trace ends. `-I` sends ICMP Echo and ends on an Echo Reply; `-T` sends a TCP SYN to one constant port, 80 unless `-p` says otherwise, and ends on a SYN/ACK or RST without completing a connection (same section). Windows `tracert` is ICMP Echo only ([Microsoft Learn, tracert](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/tracert)).
+
+Every ICMP error quotes the packet that caused it, "The internet header plus the first 64 bits of the original datagram's data" (RFC 792, Destination Unreachable Message); the quoted UDP ports are traceroute's bookkeeping, the Identifier and Sequence Number ping's. In the capture, the second router's real address is replaced by the documentation address 198.51.100.1:
+
+```console
+$ tcpdump -i eth0 -nn -v -c 4 'udp or icmp'
+IP (tos 0x0, ttl 1, id 5052, offset 0, flags [none], proto UDP (17), length 60)
+    192.0.2.2.44868 > 9.9.9.9.33434: UDP, length 32
+IP (tos 0x0, ttl 2, id 11051, offset 0, flags [none], proto UDP (17), length 60)
+    192.0.2.2.46311 > 9.9.9.9.33435: UDP, length 32
+IP (tos 0xc0, ttl 64, id 40382, offset 0, flags [none], proto ICMP (1), length 88)
+    192.0.2.1 > 192.0.2.2: ICMP time exceeded in-transit, length 68
+	IP (tos 0x0, ttl 1, id 5052, offset 0, flags [none], proto UDP (17), length 60)
+    192.0.2.2.44868 > 9.9.9.9.33434: UDP, length 32
+IP (tos 0xc0, ttl 63, id 62275, offset 0, flags [none], proto ICMP (1), length 88)
+    198.51.100.1 > 192.0.2.2: ICMP time exceeded in-transit, length 68
+	IP (tos 0x0, ttl 1, id 11051, offset 0, flags [none], proto UDP (17), length 60)
+    192.0.2.2.46311 > 9.9.9.9.33435: UDP, length 32
+```
+
+Two 60-octet probes, TTL 1 and 2; two 88-octet Time Exceeded messages from two routers, each quoting the probe's header, TTL already 1, port intact. In bytes the gateway's error reads `0b00 f4ff 0000 0000`: type 11, code 0, checksum 0xf4ff, which recomputes to 0xf4ff.
+
+## Reading a trace: asterisks, addresses, early arrivals
+
+Three traces to one resolver within three seconds, hop 2 anonymised as above:
+
+```console
+$ traceroute -n -q 1 -w 1 -m 5 9.9.9.9
+ 1  192.0.2.1  0.434 ms
+ 2  198.51.100.1  0.359 ms
+ 3  *
+ 4  *
+ 5  *
+$ traceroute -n -I -q 1 -w 1 -m 5 9.9.9.9
+ 1  192.0.2.1  0.308 ms
+ 2  198.51.100.1  0.255 ms
+ 3  *
+ 4  *
+ 5  *
+$ traceroute -n -T -p 443 -q 1 -w 1 -m 5 9.9.9.9
+ 1  192.0.2.1  0.372 ms
+ 2  9.9.9.9  0.306 ms
+```
+
+The asterisk has one definition, "If there is no response within a certain timeout, an '\*' (asterisk) is printed for that probe" (traceroute(8), DESCRIPTION), and three causes the output cannot tell apart: a router configured not to originate Time Exceeded (RFC 1812, section 5.2.7.3), a router throttling its ICMP responses so that some are lost (traceroute(8), NOTES), or a filter: "Such firewalls filter the 'unlikely' UDP ports, or even ICMP echoes" (traceroute(8), DESCRIPTION). Above, UDP and ICMP look like a path dying after hop 2; TCP proves it alive and filtered. A trace that stops marks the last router that answered, nothing more.
+
+The TCP trace has its own trap: `9.9.9.9` at hop 2 in 0.306 ms is a round trip no packet to a distant resolver can make, so a device at hop 2 answered the SYN itself; impossibly early arrival means an interceptor.
+
+The address on a hop line is the error's source address, and "the IP source address in an ICMP message originated by the router MUST be one of the IP addresses associated with the physical interface over which the ICMP message is transmitted" (RFC 1812, section 4.3.2.4). That is the interface the probe entered only when the error leaves the same way, and "the incoming and outgoing interfaces may be different due to an asymmetric return path, which can occur due to asymmetric link costs, parallel links, or Equal Cost Multipath (ECMP)" ([RFC 5837, section 1](https://www.rfc-editor.org/rfc/rfc5837.txt)). On a load-balanced path one hop's probes may be answered by different routers, each printed (traceroute(8), DESCRIPTION).
+
+## Destination Unreachable: the codes
+
+One type, many diagnoses; the code is the diagnosis ([RFC 1812, section 5.2.7.1](https://www.rfc-editor.org/rfc/rfc1812.txt); for ICMPv6, RFC 4443, section 3.1).
+
+| Code (IPv4 type 3) | Meaning | Who sends it | ICMPv6 |
+|---|---|---|---|
+| 0 Net Unreachable | no route to the destination network | a router | 1/0 no route to destination |
+| 1 Host Unreachable | the last router has the route but the host does not answer [Address Resolution Protocol (ARP)](/learn/arp-and-mac-addresses) | the last router | 1/3 address unreachable |
+| 3 Port Unreachable | the host is up; nothing listens on that UDP port | the destination host | 1/4 port unreachable |
+| 4 Fragmentation Needed and Don't Fragment (DF) set | the packet does not fit the next link | a router, with the Next-Hop Maximum Transmission Unit (MTU) | 2/0 Packet Too Big, with the MTU |
+| 13 Communication Administratively Prohibited | a filter refused, and said so | a router or firewall | 1/1 administratively prohibited |
+
+Codes 0 and 1 "MUST therefore be interpreted as only a hint, not proof, that the specified destination is unreachable" (RFC 1122, section 3.2.2.1). Code 13 is optional: a router may be configured not to generate it (RFC 1812, section 5.2.7.1), so filters are usually silent. Host Unreachable, captured: `ping -c 4 192.0.2.77`, an unused address on the sender's subnet, printed `From 192.0.2.2 icmp_seq=1 Destination Host Unreachable` from the sender's own stack; in IPv6 the same failure is [Neighbor Discovery](/learn/ipv6-neighbor-discovery) not resolving the address.
+
+Code 4 and Packet Too Big are Path MTU Discovery. RFC 1191 put the next link's MTU in the low 16 bits of the second word ([RFC 1191, section 4](https://www.rfc-editor.org/rfc/rfc1191.txt)); an IPv6 router must send Packet Too Big, carrying the outgoing link's MTU, for a packet it cannot forward (RFC 4443, section 3.2). Block these and you get "connections that complete the TCP three-way handshake correctly but then hang when data is transferred" ([RFC 8201, section 1](https://www.rfc-editor.org/rfc/rfc8201.txt)), the black hole. What an encapsulation leaves of a link's MTU is the [MTU / MSS calculator](/tools/mtu-mss)'s job, and the sizes themselves [Jumbo frames](/learn/jumbo-frames)'.
+
+## Where ICMP fails and how it is abused
+
+By rule, no error is sent about an ICMP error, about a packet to a broadcast or multicast address, or about any fragment but the first (RFC 1812, section 4.3.2.7). By rule, errors are rationed: a router should be able to limit the rate of its errors (RFC 1812, section 4.3.2.8), and "an IPv6 node MUST limit the rate of ICMPv6 error messages it originates" (RFC 4443, section 2.4). Linux spaces its errors by `icmp_ratelimit`, 1000 ms by default, and leaves Echo out of the default `icmp_ratemask` ([icmp(7)](https://man7.org/linux/man-pages/man7/icmp.7.html)).
+
+Dropping all ICMP breaks Path MTU Discovery and traceroute together; RFC 4890 lists what an IPv6 firewall must pass: Destination Unreachable, Packet Too Big, Time Exceeded code 0, Parameter Problem codes 1 and 2, and both Echo types (section 4.3.1).
+
+Reconnaissance: crafted or malformed messages provoke responses that reveal which hosts exist (RFC 4890, section 3.2); the answers are filters by type and address scope, state that accepts a reply only after a request, and rate limits (section 4.1). Amplification: RFC 2644 names the Smurf attack, in which networks accepting [directed broadcasts](/learn/ipv4-addressing) from outside become "Smurf Amplifiers" ([RFC 2644, section 2](https://www.rfc-editor.org/rfc/rfc2644.txt)); the fix is a default, a router may accept directed broadcasts but "this option MUST be disabled by default" (section 3). Covert channels: because errors must pass a firewall both ways and Echo data is arbitrary, RFC 4890 warns that a payload can carry a conversation or a tunnel, and names deep inspection of error payloads as the countermeasure (section 3.5).
+
+## How to see it
+
+On Linux, `ping -c 3 -W 2 host` bounds the run, `-t 1` and `-t 2` pick the router that answers (ping(8)). `traceroute -n -q 1 -w 1 -m 5 host` is a quick path, `-I` and `-T -p 443` the alternative probes, `-z 0.1` the spacing for a rate-limiting router (traceroute(8)). The captures came from `tcpdump -i eth0 -nn -v -X -c 2 icmp`, `tcpdump -i eth0 -nn -v -c 4 'udp or icmp'` and, for the Port Unreachable, `tcpdump -i lo -nn -v -X -c 2 'udp port 33434 or icmp'`. No IPv6 output appears because the capture host had no IPv6; RFC 4443 says what you will see.
+
+The [Python playground](/tools/python-playground) runs the arithmetic: a ten-line one's complement sum over an ICMP message's hex reproduces 0x16ca and 0xf4ff, `statistics.pstdev` reproduces mdev, and a loop over TTL 1 to 5 reproduces the ladder. The [Flow Path Reasoner](/tools/flow-path-reasoner) builds the hop map a trace is checked against, and the [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) decides on which side of a suspected filter to capture.
+
+## What to remember
+
+- ICMP is IP talking about itself: protocol 1 (IPv6 Next Header 58), a header of type, code and checksum, errors and queries, no guarantee of delivery.
+- Ping is Echo (type 8, ICMPv6 128) and Echo Reply (0, 129): one reply proves both directions and a live stack; no reply proves nothing, since filters, rate limits and ignore-echo switches all look like silence.
+- TTL is written as seconds and used as hops: each router subtracts at least one, and the one reaching zero discards the packet and sends Time Exceeded code 0; IPv6 calls it Hop Limit.
+- Traceroute uses that rule on purpose: TTL 1, 2, 3, three probes per hop, UDP to port 33434 upward by default on Linux, ICMP Echo with `-I` and always on Windows, TCP SYN with `-T`.
+- An asterisk means no answer in time: a silenced router, a rate limiter and a filter look alike, and a trace that stops marks the last router that answered; a TCP trace completing impossibly early is an interceptor.
+- The address on a hop line is the interface the error left by, not necessarily the one the probe entered.
+- Destination Unreachable is read by code: 0 no route, 1 no answer on the last link, 3 nothing listening, 4 fragmentation needed with the Next-Hop MTU, 13 a filter that said so.
+
+## Sources
+
+- [RFC 792, Internet Control Message Protocol, September 1981: Introduction, Message Formats, Destination Unreachable, Time Exceeded, Echo or Echo Reply, Summary of Message Types (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc792.txt)
+- [RFC 791, Internet Protocol, September 1981: section 3.1, Time to Live (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc791.txt)
+- [RFC 1071, Computing the Internet checksum, September 1988: section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1071.txt)
+- [RFC 1122, Requirements for Internet Hosts - Communication Layers, October 1989: sections 3.2.1.7, 3.2.2, 3.2.2.1, 3.2.2.4 and 3.2.2.6 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1122.txt)
+- [RFC 1191, Path MTU Discovery, November 1990: sections 2 and 4 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1191.txt)
+- [RFC 1812, Requirements for IP Version 4 Routers, June 1995: sections 4.2.2.9, 4.3.2.3, 4.3.2.4, 4.3.2.7, 4.3.2.8, 4.3.3.1, 4.3.3.6, 5.2.7.1, 5.2.7.3 and 5.3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 2644, Changing the Default for Directed Broadcasts in Routers, August 1999: sections 2 and 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2644.txt)
+- [RFC 4443, Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification, March 2006: sections 2.1 to 2.4, 3.1 to 3.3, 4.1, 4.2 and 5.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4443.txt)
+- [RFC 4890, Recommendations for Filtering ICMPv6 Messages in Firewalls, May 2007: sections 1, 3.1, 3.2, 3.5, 4.1 and 4.3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4890.txt)
+- [RFC 5508, NAT Behavioral Requirements for ICMP, April 2009: sections 3.1, 4.1 and 7.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5508.txt)
+- [RFC 5837, Extending ICMP for Interface and Next-Hop Identification, April 2010: sections 1 and 3.1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5837.txt)
+- [RFC 8200, Internet Protocol, Version 6 (IPv6) Specification, July 2017: section 3 (Hop Limit), section 5 and section 8.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8200.txt)
+- [RFC 8201, Path MTU Discovery for IP version 6, July 2017: section 1 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8201.txt)
+- [IANA, Internet Control Message Protocol (ICMP) Parameters, last updated 5 January 2026: ICMP Type Numbers and the code tables of types 0, 3, 8, 11 and 12 (read 2026-10-19)](https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml)
+- [IANA, Internet Control Message Protocol version 6 (ICMPv6) Parameters, last updated 9 June 2026: ICMPv6 type Numbers and the code tables of types 1 to 4 (read 2026-10-19)](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.xhtml)
+- [IANA, Assigned Internet Protocol Numbers: entries 1 and 58 (read 2026-10-19)](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)
+- [ping(8), Linux manual page (iputils 20250605), man7.org rendering of 9 September 2026: SYNOPSIS, DESCRIPTION, OPTIONS, EXIT STATUS, ICMP PACKET DETAILS, ID COLLISIONS, TTL DETAILS (read 2026-10-19)](https://man7.org/linux/man-pages/man8/ping.8.html)
+- [traceroute(8), Linux manual page (Traceroute for Linux 2.1.6), man7.org rendering of 9 September 2026: DESCRIPTION, OPTIONS, LIST OF AVAILABLE METHODS, NOTES (read 2026-10-19)](https://man7.org/linux/man-pages/man8/traceroute.8.html)
+- [icmp(7), Linux manual page, man7.org rendering of 9 September 2026: DESCRIPTION and /proc interfaces (read 2026-10-19)](https://man7.org/linux/man-pages/man7/icmp.7.html)
+- [The Linux Kernel documentation, IP Sysctl, latest edition read 19 October 2026: ip_default_ttl, icmp_echo_ignore_all, icmp_echo_ignore_broadcasts, icmp_ratelimit, icmp_msgs_per_sec, icmp_ratemask, icmp_errors_use_inbound_ifaddr, and the icmp/* entries of conf/* (read 2026-10-19)](https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html)
+- [Microsoft Learn, Windows Commands: tracert, page dated 27 September 2023 (updated 16 February 2026) (read 2026-10-19)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/tracert)

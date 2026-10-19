@@ -1,48 +1,192 @@
 ---
 slug: ipv6-neighbor-discovery
 title: "Descoberta de Vizinhos: como o IPv6 substitui o ARP"
-summary: "Como o IPv6 encontra vizinhos em um enlace usando ICMPv6 e multicast em vez do ARP por broadcast, as cinco mensagens de Descoberta de Vizinhos, e por que o broadcast se foi."
-concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing"]
-relatedTools: ["ipv6"]
-relatedArticles: ["ipv6-addressing", "ipv6-address-configuration"]
+summary: "O Neighbor Discovery é o protocolo ICMPv6 que todo nó IPv6 executa no seu enlace: cinco mensagens que assumem o papel do ARP, da descoberta de roteadores e dos redirects do ICMP, e cuidam também da detecção de vizinho inalcançável e de endereço duplicado. Depois da leitura, você consegue decifrar as cinco mensagens, calcular à mão um grupo solicited-node e seu endereço Ethernet, acompanhar uma resolução pelo cache de vizinhos, reconhecer anúncios de roteador falsos e o esgotamento de cache com suas defesas e observar tudo com ip, ndisc6, tcpdump e Wireshark."
+concepts: ["ipv6", "ndp", "icmpv6", "arp", "solicited-node-multicast", "addressing", "neighbor-cache", "neighbor-unreachability-detection", "duplicate-address-detection", "router-advertisement", "redirect", "hop-limit", "ra-guard", "send", "neighbor-cache-exhaustion"]
+relatedTools: ["ipv6", "oui-lookup", "python-playground"]
+relatedArticles: ["ipv6-addressing", "ipv6-address-configuration", "arp-and-mac-addresses", "ipv6-subnetting", "multicast-what-it-costs-to-not-flood", "icmp-ping-and-traceroute", "the-ethernet-frame-field-by-field", "routing-tables-and-default-gateway"]
 category: networking
 order: 13
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-## O ICMPv6 não é opcional
+O Neighbor Discovery (ND), ou Descoberta de Vizinhos, é o protocolo que a Request for Comments (RFC) 4861 resume numa frase: "IPv6 nodes on the same link use Neighbor Discovery to discover each other's presence, to determine each other's link-layer addresses, to find routers, and to maintain reachability information about the paths to active neighbors", como os nós de um enlace se acham ([RFC 4861, resumo](https://www.rfc-editor.org/rfc/rfc4861.txt)). Ele substitui o [Address Resolution Protocol (ARP)](/learn/arp-and-mac-addresses) e o Router Discovery e o Redirect do Internet Control Message Protocol (ICMP) do IPv4, e cuida ainda da Neighbor Unreachability Detection (NUD) e da Duplicate Address Detection (DAD) (seções 3 e 3.1), por isso todo host IPv6 depende dele antes do primeiro pacote. Ao final, você consegue decifrar as cinco mensagens ICMP version 6 (ICMPv6), calcular à mão um grupo solicited-node, seguir uma resolução pelo cache de vizinhos, reconhecer anúncios falsos e o esgotamento de cache com suas defesas e ver tudo com `ip`, `ndisc6`, `tcpdump` e Wireshark.
 
-No IPv4, o ICMP é um adendo diagnóstico que você pode bloquear sem quebrar a conectividade básica. No IPv6, o ICMPv6 (RFC 4443) é estrutural: o protocolo depende dele para a operação central do enlace, então filtrá-lo indiscriminadamente quebra a rede. A razão é que o IPv6 moveu vários trabalhos que o IPv4 espalhava através do ARP, da descoberta de roteador por ICMP, e dos redirecionamentos por ICMP, para um único protocolo baseado em ICMPv6 chamado Descoberta de Vizinhos (Neighbor Discovery, RFC 4861). Entender a Descoberta de Vizinhos é entender como um enlace IPv6 realmente funciona.
+## O ICMPv6 sustenta o enlace
 
-## Cinco mensagens fazem o trabalho
+O ICMP nunca foi opcional: a RFC 792 o torna parte integrante do IP, que todo módulo IP deve implementar ([RFC 792, introdução](https://www.rfc-editor.org/rfc/rfc792.txt)). O ICMPv6, Next Header 58, carrega mais, com o header de Type, Code e Checksum visto em [ICMP, ping e traceroute](/learn/icmp-ping-and-traceroute), e "ICMPv6 is an integral part of IPv6, and the base protocol (all the messages and behavior required by this specification) MUST be fully implemented by every IPv6 node", obrigatório em todo nó ([RFC 4443, seções 1 e 2](https://www.rfc-editor.org/rfc/rfc4443.txt)). O ND usa os tipos informativos 133 a 137 (seção 2.1). As regras de filtragem do IPv4 não servem ([RFC 4890, resumo](https://www.rfc-editor.org/rfc/rfc4890.txt)): solicitações e anúncios de roteador e de vizinho, com as mensagens Multicast Listener Discovery (MLD) e SEcure Neighbor Discovery (SEND), "must not be dropped if the node is to successfully participate in an IPv6 network", sem elas o nó não participa da rede (seção 4.4.1).
 
-A Descoberta de Vizinhos define cinco tipos de mensagem ICMPv6, e quase tudo em um enlace é alguma combinação delas:
+## Cinco mensagens, cinco tipos
 
-- **Solicitação de Roteador (RS)**: um host pede aos roteadores que se anunciem.
-- **Anúncio de Roteador (RA)**: um roteador anuncia o prefixo e as flags de configuração (a entrada para a autoconfiguração no artigo de [configuração de endereço](/learn/ipv6-address-configuration)).
-- **Solicitação de Vizinho (NS)**: um host pergunta "quem tem este endereço, e qual é o seu endereço de camada de enlace?"
-- **Anúncio de Vizinho (NA)**: a resposta dando aquele endereço de camada de enlace.
-- **Redirecionamento (Redirect)**: um roteador diz a um host sobre um melhor próximo salto para um destino.
+A RFC 4861 define as cinco, todas com code 0 ([RFC 4861, seções 2.3 e 4](https://www.rfc-editor.org/rfc/rfc4861.txt)):
 
-A solicitação e o anúncio de roteador tratam de "como me configuro"; a solicitação e o anúncio de vizinho tratam de "como alcanço este vizinho"; o redirecionamento trata de "há um caminho melhor". Isso cobre a vida cotidiana de um enlace.
+| Tipo | Mensagem | De quem, para quem | Leva |
+|---|---|---|---|
+| 133 | Router Solicitation (RS) | host, para all-routers `ff02::2` | um pedido de anúncio imediato |
+| 134 | Router Advertisement (RA) | roteador (link-local), para quem pediu ou para all-nodes `ff02::1` | flags M e O, Router Lifetime, timers; opções de prefixo, MTU (maximum transmission unit) e endereço de enlace |
+| 135 | Neighbor Solicitation (NS) | qualquer nó; multicast para resolver, unicast para checar alcançabilidade | Target Address, endereço de enlace da origem |
+| 136 | Neighbor Advertisement (NA) | qualquer nó; resposta unicast, ou para all-nodes | flags R (router), S (solicited) e O (override), Target Address, endereço de enlace do alvo |
+| 137 | Redirect | roteador, para um host | Target Address e Destination Address |
 
-## Resolução de endereço sem broadcast
+Cada uma sai com Hop Limit 255 e só vale se chegar com 255 ([RFC 4861, seções 4.1 a 4.5, 6.1, 7.1 e 8.1](https://www.rfc-editor.org/rfc/rfc4861.txt)): "Because routers decrement the Hop Limit on all packets they forward, received packets containing a Hop Limit of 255 must have originated from a neighbor", com 255, só pode ser vizinho (seção 11.2). As opções são Type, Length em unidades de 8 octetos (zero faz descartar o pacote) e dados; a de tipo 3, Prefix Information, leva as flags L (on-link) e A (configuração autônoma) (seções 4.6 e 4.6.2). As flags M e O do RA apontam para o Dynamic Host Configuration Protocol for IPv6 (DHCPv6), para endereços e para outras configurações (seção 4.2), como explica [Como hosts IPv6 obtêm endereços](/learn/ipv6-address-configuration). O IPv6 também proíbe ND fragmentado ([RFC 6980, seção 5](https://www.rfc-editor.org/rfc/rfc6980.txt)).
 
-O trabalho que o ARP faz no IPv4, mapear um endereço IP para um endereço de hardware, é feito no IPv6 pelo par de Solicitação e Anúncio de Vizinho. A diferença importante é *como* a pergunta é feita. O ARP grita para o endereço de broadcast, interrompendo todo dispositivo no segmento. O IPv6 em vez disso envia a Solicitação de Vizinho ao **endereço multicast de nó solicitado** (solicited-node multicast address) do alvo, um grupo no qual apenas o pequeno conjunto de hosts que compartilham o mesmo sufixo de endereço estará escutando. O alvo responde com um Anúncio de Vizinho carregando seu endereço de camada de enlace. O consultante coloca o resultado em cache, exatamente como funciona um cache ARP, e o revalida através da Detecção de Inalcançabilidade de Vizinho (Neighbor Unreachability Detection) quando o tráfego sugere que um vizinho pode ter ido embora.
+## O grupo solicited-node, calculado à mão
 
-## O endereço multicast de nó solicitado
+O IPv6 não tem endereço de broadcast; o multicast faz esse papel ([RFC 4291, seção 2](https://www.rfc-editor.org/rfc/rfc4291.txt)). Onde o ARP faz broadcast para todas as estações ([RFC 826, An Example](https://www.rfc-editor.org/rfc/rfc826.txt)), o NS vai para o grupo solicited-node do alvo, "formed by taking the low-order 24 bits of an address (unicast or anycast) and appending those bits to the prefix FF02:0:0:0:0:1:FF00::/104", 24 bits de baixo após o prefixo (RFC 4291, seção 2.7.1). Todo nó, roteadores inclusive, entra no grupo de cada endereço unicast e anycast que configurou, e endereços que só diferem acima desses 24 bits dividem o grupo (seção 2.7.1). Eis a conta, a partir de um endereço Media Access Control (MAC) da faixa de documentação ([RFC 9542, seção 2.1.4](https://www.rfc-editor.org/rfc/rfc9542.txt)), na notação do [artigo de endereçamento](/learn/ipv6-addressing):
 
-O endereço multicast de nó solicitado é construído a partir do endereço alvo: tome o prefixo `ff02::1:ff00:0/104` e anexe os últimos 24 bits do endereço do alvo. Como a resolução visa apenas o punhado de hosts que compartilham aqueles 24 bits baixos em vez do enlace inteiro, a requisição alcança muito menos máquinas do que um broadcast ARP alcançaria. Esta construção é por que o artigo de [endereçamento](/learn/ipv6-addressing) trata o multicast de nó solicitado como parte do plano de endereços em vez de um adendo: todo host que configura um endereço automaticamente se junta ao grupo de nó solicitado correspondente para que outros possam encontrá-lo.
+```text
+endereço MAC                       00-00-5e-00-53-01
+ff-fe inserido no meio             00-00-5e-ff-fe-00-53-01
+bit universal/local invertido      primeiro octeto 0x00 = 00000000 -> 00000010 = 0x02
+identificador de interface         0200:5eff:fe00:5301
+endereço link-local                fe80::200:5eff:fe00:5301
+endereço global                    2001:db8::200:5eff:fe00:5301
+24 bits de baixo (nos dois)        00 53 01
+ff02::1:ff00:0/104 + esses bits    ff02:0000:0000:0000:0000:0001:ff00:5301
+grupo solicited-node               ff02::1:ff00:5301
+destino Ethernet                   33-33 + ff-00-53-01 = 33:33:ff:00:53:01
+```
 
-## Nenhum broadcast de modo algum
+O identificador está no formato Modified 64-bit Extended Unique Identifier (EUI-64): 0xFF e 0xFE no meio e o bit universal/local invertido ([RFC 4291, apêndice A](https://www.rfc-editor.org/rfc/rfc4291.txt)). O endereço link-local é fe80::/64 mais esse identificador ([RFC 2464, seção 5](https://www.rfc-editor.org/rfc/rfc2464.txt)), e divide esses 24 bits, e portanto o grupo, com o global. Na Ethernet o pacote é "transmitted to the Ethernet multicast address whose first two octets are the value 3333 hexadecimal and whose last four octets are the last four octets of DST", 33-33 seguido do fim do destino (RFC 2464, seção 7); 0x33 é 00110011 em binário, e o bit de baixo ligado é o bit de grupo ([RFC 9542, seção 2.3.1](https://www.rfc-editor.org/rfc/rfc9542.txt)). Com 2^24 = 16.777.216 grupos, poucos nós além do alvo são interrompidos ([RFC 4861, seção 3.1](https://www.rfc-editor.org/rfc/rfc4861.txt)). Um switch sem MLD snooping faz flooding do frame de qualquer jeito, e um com snooping precisa do MLD report que o DAD envia antes ([RFC 4862, seção 5.4.2](https://www.rfc-editor.org/rfc/rfc4862.txt)); veja [Multicast: o preço de não inundar](/learn/multicast-what-it-costs-to-not-flood).
 
-O IPv6 não tem endereço de broadcast. Tudo para o qual o IPv4 usava broadcast, incluindo resolução de endereço e descoberta de roteador, é tratado por multicast para grupos específicos e bem delimitados. Há um grupo multicast de todos-os-nós (`ff02::1`) e um grupo de todos-os-roteadores (`ff02::2`), mas a resolução rotineira visa em vez disso os estreitos grupos de nó solicitado. Substituir "interromper todos" por "notificar exatamente os ouvintes relevantes" é mais eficiente em enlaces ocupados e é uma das melhorias mais silenciosas que o IPv6 faz sobre o IPv4.
+## A resolução de endereço, pacote a pacote
 
-## Confiar no enlace
+Multicast nunca é resolvido; para um vizinho unicast on-link sem entrada no cache ([RFC 4861, seções 5.2 e 7.2](https://www.rfc-editor.org/rfc/rfc4861.txt)):
 
-Como a Descoberta de Vizinhos é não autenticada por padrão, um host malicioso no mesmo enlace pode enviar Anúncios de Roteador ou Anúncios de Vizinho forjados para redirecionar ou interceptar tráfego, o análogo IPv6 do spoofing de ARP. As defesas vivem na borda da rede: o RA Guard nos switches descarta anúncios de roteador de portas que não deveriam ter roteadores, e a Descoberta de Vizinhos Segura (SEcure Neighbor Discovery, SEND) adiciona proteção criptográfica onde é implantada. Como no IPv4, o enlace local é uma fronteira de confiança que vale a pena defender.
+1. O remetente cria uma entrada INCOMPLETE e enfileira o pacote ([RFC 4861, seção 5.2](https://www.rfc-editor.org/rfc/rfc4861.txt)).
+2. Envia um NS em multicast ao grupo do alvo, com o próprio endereço de enlace (seção 7.2.2).
+3. O alvo, sem entrada para o remetente, deve criar uma em STALE com esse endereço (seção 7.2.3).
+4. O alvo responde com um NA unicast, S ligado, levando o seu endereço de enlace (seção 7.2.4).
+5. O remetente registra o endereço, marca a entrada REACHABLE e envia o pacote da fila (seção 7.2.5).
 
-## O sistema nervoso do enlace
+Uma troca deixa os dois lados com entrada ([RFC 4861, seção 3](https://www.rfc-editor.org/rfc/rfc4861.txt)). Depois de três solicitações sem resposta, uma por segundo, "The sender MUST return ICMP destination unreachable indications with code 3 (Address Unreachable) for each packet queued awaiting address resolution", um ICMP código 3 por pacote retido (seções 7.2.2 e 10). Nesta captura ilustrativa, com valores de documentação, 2001:db8::1 (MAC 00:00:5e:00:53:02) resolve o endereço acima; o tipo Ethernet 86DD marca IPv6 no [frame Ethernet](/learn/the-ethernet-frame-field-by-field) ([RFC 2464, seção 3](https://www.rfc-editor.org/rfc/rfc2464.txt)):
 
-O resumo é que o IPv6 dobrou a resolução de endereço, a descoberta de roteador, e o redirecionamento em um único protocolo baseado em ICMPv6, trocou o grito por broadcast por multicast direcionado, e tornou a coisa toda essencial em vez de opcional. Quando você vê um endereço na ferramenta e nota seu grupo de nó solicitado ou sua forma link-local, você está olhando para as peças que a Descoberta de Vizinhos usa para deixar hosts encontrarem uns aos outros em um enlace sem nunca perturbar os vizinhos que não estão envolvidos.
+```text
+Captura ilustrativa (endereços de documentação)
+
+1  Neighbor Solicitation
+   Ethernet  dst 33:33:ff:00:53:01  src 00:00:5e:00:53:02  type 86dd
+   IPv6      src 2001:db8::1  dst ff02::1:ff00:5301  next header 58  hop limit 255
+   ICMPv6    type 135  code 0  target 2001:db8::200:5eff:fe00:5301
+   option    type 1 (source link-layer address)  length 1  00:00:5e:00:53:02
+
+2  Neighbor Advertisement
+   Ethernet  dst 00:00:5e:00:53:02  src 00:00:5e:00:53:01  type 86dd
+   IPv6      src 2001:db8::200:5eff:fe00:5301  dst 2001:db8::1  next header 58  hop limit 255
+   ICMPv6    type 136  code 0  R=0 S=1 O=1  target 2001:db8::200:5eff:fe00:5301
+   option    type 2 (target link-layer address)  length 1  00:00:5e:00:53:01
+```
+
+O NS leva o MAC de quem pergunta na opção 1, uma unidade de 8 octetos; o NA volta em unicast com S=1 (é resposta), O=1 (sobrescreve o cache), R=0 (não é roteador) e o MAC do alvo na opção 2.
+
+## O cache de vizinhos e a detecção de inalcançabilidade
+
+Os endereços resolvidos ficam no Neighbor Cache, ao lado do Destination Cache dos next hops, da Prefix List e da Default Router List, origem do [default gateway](/learn/routing-tables-and-default-gateway) do host ([RFC 4861, seção 5.1](https://www.rfc-editor.org/rfc/rfc4861.txt)). Uma entrada tem cinco estados (seção 7.3.2):
+
+| Estado | Significado | Próximo |
+|---|---|---|
+| INCOMPLETE | resolvendo | REACHABLE com um NA solicitado |
+| REACHABLE | confirmado dentro do ReachableTime | STALE quando ele expira |
+| STALE | sem confirmação; parado até sair um pacote | DELAY no próximo pacote |
+| DELAY | 5 segundos à espera da camada superior | REACHABLE, ou PROBE |
+| PROBE | NS unicast a cada RetransTimer | REACHABLE, ou apagado após três |
+
+"Unlike ARP, Neighbor Discovery detects half-link failures (using Neighbor Unreachability Detection) and avoids sending traffic to neighbors with which two-way connectivity is absent", o ND vê a falha de meio enlace ([RFC 4861, seção 3.1](https://www.rfc-editor.org/rfc/rfc4861.txt)). Só um NA solicitado ou o avanço da camada superior, como um novo acknowledgment do TCP, confirma a alcançabilidade, e só se sondam vizinhos que recebem tráfego do nó (seções 7.3.1 e 7.3.3). O ReachableTime é aleatório entre 0,5 e 1,5 vez 30.000 milissegundos, então REACHABLE dura de 15 a 45 segundos; um vizinho silencioso é apagado uns 8 segundos após o próximo pacote: 5 em DELAY e três probes, um por segundo (seções 6.3.2, 7.3.3 e 10). A RFC 7048 acha isso "operationally more brittle than the IPv4 Address Resolution Protocol (ARP)", mais frágil que o ARP, e acrescenta um estado UNREACHABLE que segue sondando com backoff exponencial ([RFC 7048, seções 1 e 3](https://www.rfc-editor.org/rfc/rfc7048.txt)).
+
+## Detecção de endereço duplicado
+
+"Duplicate Address Detection MUST be performed on all unicast addresses prior to assigning them to an interface, regardless of whether they are obtained through stateless autoconfiguration, DHCPv6, or manual configuration", todo unicast, venha de onde vier ([RFC 4862, seção 5.4](https://www.rfc-editor.org/rfc/rfc4862.txt)), e o anycast está entre as exceções. A interface entra em all-nodes e no grupo do endereço provisório, envia um NS para ele com origem no endereço não especificado e destino nesse grupo, e espera um segundo (seções 5.1, 5.4 e 5.4.2). O dono responde com um NA para all-nodes ([RFC 4861, seção 7.2.4](https://www.rfc-editor.org/rfc/rfc4861.txt)), e qualquer resposta torna o endereço um duplicado, que não pode ser atribuído (RFC 4862, seções 5.4.4 e 5.4.5); [Como hosts IPv6 obtêm endereços](/learn/ipv6-address-configuration) situa esse teste na autoconfiguração.
+
+## Roteadores: anúncios, timers e redirecionamentos
+
+Os roteadores anunciam quando alguém pede e, por padrão, pelo menos a cada 600 segundos; um host envia até três RSs, com pelo menos quatro segundos entre eles ([RFC 4861, seções 6.2.1 e 6.3.7](https://www.rfc-editor.org/rfc/rfc4861.txt)). Como um host que perdeu todos os RSs poderia esperar 30 minutos, a RFC 7559 o faz continuar pedindo, com backoff até 3.600 segundos ([RFC 7559, seções 1 e 2](https://www.rfc-editor.org/rfc/rfc7559.txt)). Um roteador envia um Redirect, com limite de taxa, quando um primeiro hop melhor, ou o próprio destino, está no mesmo enlace; os hosts só o aceitam do seu primeiro hop atual, nunca enviam um e tratam o novo next hop como on-link (RFC 4861, seções 3.1 e 8.1 a 8.3).
+
+## Como o ND falha ou é atacado
+
+O ND confia em quem estiver no enlace: qualquer vizinho pode enviar RAs, e "The protocol does not allow hosts to verify whether the sender of a Neighbor Advertisement is the true owner of the IP address included in the message", ninguém confere o dono do endereço ([RFC 4861, seção 11.1](https://www.rfc-editor.org/rfc/rfc4861.txt)). O abuso desvia pacotes, para negação de serviço (denial of service, DoS) ou interceptação (seção 11).
+
+Os rogue RAs costumam ser acidentes: o Internet Connection Sharing (ICS) do Windows fazendo de um notebook um gateway 6to4, cabeamento que une duas sub-redes, erro de VLAN. Em 2011, "reports of accidental rogue RAs are very commonplace", os acidentais eram comuns, e os maliciosos, raros ([RFC 6104, seções 2.1 a 2.3](https://www.rfc-editor.org/rfc/rfc6104.txt)). De todo modo, o host adota a origem do RA como roteador default (seção 1), e o NUD não vê o black hole enquanto o rogue responde às sondagens com o bit R ligado ([RFC 4861, seção 11.1](https://www.rfc-editor.org/rfc/rfc4861.txt)).
+
+Um NA forjado, com o IP de uma vítima e outro endereço de enlace, pode "overwrite an existing entry in the sender's neighbor cache", sobrescrever a entrada de quem perguntou ([RFC 4861 errata, Errata ID 6983](https://www.rfc-editor.org/errata/rfc4861)); a redação é a da errata verificada, e o texto publicado fala em destination cache. O NUD a descarta em 30 a 50 segundos, salvo se o atacante seguir respondendo ([RFC 3756, seções 4.1.1 e 4.1.2](https://www.rfc-editor.org/rfc/rfc3756.txt)). Responder a toda sondagem de DAD deixa um host sem endereço, e um Redirect forjado com a origem link-local do roteador de primeiro hop é aceito (seções 4.1.3 e 4.2.4).
+
+O esgotamento de cache pode vir de fora do enlace ([RFC 3756, seção 4.3.2](https://www.rfc-editor.org/rfc/rfc3756.txt)): tráfego para endereços sem uso faz o roteador, ou um host, resolver um a um, e um /64 tem 2^64 = 18.446.744.073.709.551.616 endereços contra 4.096 num /20 do IPv4, então entradas incompletas esgotam a memória e expulsam as ativas ([RFC 6583, seção 2](https://www.rfc-editor.org/rfc/rfc6583.txt)). Nos testes, "four simultaneous nmap sessions from a low-end computer were sufficient to make a router's Neighbor Discovery process unusable", bastaram quatro sessões de nmap (RFC 6583, seção 4); [Sub-redes IPv6 e a fronteira /64](/learn/ipv6-subnetting) explica o /64.
+
+## As defesas e o que cada uma cobre
+
+Com o Hop Limit 255, só o esgotamento de cache pode vir de fora do enlace. O Router Advertisement Guard (RA-Guard) filtra no switch, na forma mais simples aceitando RAs só da porta do roteador ([RFC 6105, resumo e seção 3](https://www.rfc-editor.org/rfc/rfc6105.txt)), e só protege o tráfego que passa por esses switches (seção 5). Extension headers driblaram algumas implementações, e a fragmentação, todas, em 2014; por isso a RFC 7113 exige analisar a cadeia inteira de headers, descartar primeiros fragmentos sem ela e registrar os descartes ([RFC 7113, resumo e seções 2 e 3](https://www.rfc-editor.org/rfc/rfc7113.txt)). A RFC 9099 ainda recomenda o RA-Guard como primeira linha de defesa ([RFC 9099, seção 2.3.2.4](https://www.rfc-editor.org/rfc/rfc9099.txt)).
+
+O SEND traz criptografia: roteadores certificados por uma trust anchor que cada host precisa ter, Cryptographically Generated Addresses (CGA), uma opção de assinatura e opções Timestamp e Nonce contra replay ([RFC 3971, seção 4](https://www.rfc-editor.org/rfc/rfc3971.txt)). Quanto ao esgotamento, "SEND does not address this threat", isso fica de fora (seção 9.2.6); a RFC 9099, documento operacional posterior, lê de outra forma e lista os ataques de DoS ao Neighbor Discovery entre os que o SEND evita ([RFC 9099, seção 2.3.6](https://www.rfc-editor.org/rfc/rfc9099.txt)). Ele também é raro: "CGA and SEND do not have support from widely deployed IPv6 devices; hence, their usefulness is limited and should not be relied upon", não conte com eles (seção 2.3.6).
+
+Contra o esgotamento, a RFC 9099 sugere rate limiting de NSs, teto de entradas incompletas (por exemplo, 256 por interface) e /127 em enlaces ponto a ponto ([RFC 9099, seção 2.3.1](https://www.rfc-editor.org/rfc/rfc9099.txt)); dimensionar as sub-redes pelos endereços em uso também resolve, mas só com hosts configurados à mão, porque prefixos mais longos que /64 impedem a autoconfiguração sem estado ([RFC 6583, seção 6.2](https://www.rfc-editor.org/rfc/rfc6583.txt)).
+
+## Como observar
+
+```bash
+ip -6 neigh show dev eth0
+ip -6 neigh show nud stale
+ip -6 neigh get 2001:db8::1 dev eth0
+ip -6 maddress show dev eth0
+sysctl net.ipv6.conf.eth0.accept_ra
+ndisc6 -m 2001:db8::200:5eff:fe00:5301 eth0
+rdisc6 eth0
+tcpdump -i eth0 -n -e 'icmp6[icmp6type] == icmp6-neighborsolicit or icmp6[icmp6type] == icmp6-neighboradvert'
+```
+
+O `ip -6 neigh` mostra os cinco estados da RFC em minúsculas, mais os do Linux: `failed` (sondagens esgotadas), `permanent`, `noarp` e `none` ([ip-neighbour(8)](https://man7.org/linux/man-pages/man8/ip-neighbour.8.html)); o `ip -6 maddress` lista os grupos multicast da interface, onde devem estar o ff02::1 e o solicited-node de cada endereço ([ip-maddress(8)](https://man7.org/linux/man-pages/man8/ip-maddress.8.html)). Os sysctls `accept_ra`, `accept_redirects`, `dad_transmits` (padrão 1) e `router_solicitations` (padrão 3) ajustam o lado do host ([kernel IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html); [sysctl(8)](https://man7.org/linux/man-pages/man8/sysctl.8.html)). O `ndisc6 -m` imprime todas as respostas, e uma segunda indica endereço duplicado ou NA forjado ([ndisc6(8)](https://manpages.debian.org/testing/ndisc6/ndisc6.8.en.html)); o `rdisc6` lista roteadores e prefixos ([rdisc6(8)](https://manpages.debian.org/testing/ndisc6/rdisc6.8.en.html)), útil para achar roteadores rogue ([NDisc6](https://www.remlab.net/ndisc6/)). O `tcpdump -e` mostra o header Ethernet ([tcpdump(1)](https://man7.org/linux/man-pages/man1/tcpdump.1.html)), mas o acessor `icmp6[...]` supõe ausência de extension headers, e uma mensagem ND atrás de um deles escapa do filtro ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)). No Windows, `Get-NetNeighbor -AddressFamily IPv6` lê o cache ([Get-NetNeighbor](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netneighbor)). No Wireshark, `icmpv6.type in {133..137}` isola o ND e `icmpv6.type == 134` os RAs, cujas origens denunciam um roteador inesperado ([referência ICMPv6 do Wireshark](https://www.wireshark.org/docs/dfref/i/icmpv6.html); [wireshark-filter(4)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)).
+
+O [Kit de ferramentas IPv6](/tools/ipv6) classifica ff02::1:ff00:5301 como multicast de escopo link-local e extrai o MAC de fe80::200:5eff:fe00:5301, mas não calcula grupo solicited-node nem envia nada. A [Consulta de fabricante por OUI / MAC](/tools/oui-lookup), que leva o nome do Organizationally Unique Identifier (OUI), mostra 33:33:ff:00:53:01 como multicast, e o [Playground de Python](/tools/python-playground) faz a conta ([Python ipaddress](https://docs.python.org/3/library/ipaddress.html)):
+
+```text
+import ipaddress
+a = ipaddress.IPv6Address("2001:db8::200:5eff:fe00:5301")
+g = ipaddress.IPv6Address(int(ipaddress.IPv6Address("ff02::1:ff00:0")) | (int(a) & 0xFFFFFF))
+print(g.compressed)                                            # ff02::1:ff00:5301
+print("33:33:" + ":".join(f"{b:02x}" for b in g.packed[12:]))  # 33:33:ff:00:53:01
+```
+
+## Para lembrar
+
+- As cinco mensagens ICMPv6 do ND, tipos 133 a 137, levam Hop Limit 255: o que passou por roteador é rejeitado.
+- O grupo solicited-node é ff02::1:ff00:0/104 mais os 24 bits de baixo, então 2001:db8::200:5eff:fe00:5301 é resolvido por ff02::1:ff00:5301 e 33:33:ff:00:53:01.
+- Um NS multicast e um NA unicast deixam os dois lados com entrada; três NSs sem resposta dão Address Unreachable.
+- As entradas passam por INCOMPLETE, REACHABLE (15 a 45 segundos por padrão), STALE, DELAY e PROBE.
+- O DAD é um NS com origem no endereço não especificado, e qualquer resposta proíbe o endereço.
+- Rogue RAs, quase sempre acidentais, e NAs forjados exigem presença no enlace; o esgotamento de cache funciona de qualquer lugar que alcance o /64.
+- RA-Guard nos moldes da RFC 7113, rate limiting de NS e sub-redes do tamanho certo são as defesas reais; o SEND é raro.
+
+## Fontes
+
+- [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), setembro de 2007: seções 3, 4, 7, 8, 10 e 11 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4861.txt)
+- [RFC 4861 errata, Errata ID 6983 (verificada em 2023-08-03) (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc4861)
+- [RFC 792, Internet Control Message Protocol, setembro de 1981: introdução (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc792.txt)
+- [RFC 4443, Internet Control Message Protocol (ICMPv6) for the Internet Protocol Version 6 (IPv6) Specification, março de 2006: seções 1, 2 e 2.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4443.txt)
+- [RFC 4890, Recommendations for Filtering ICMPv6 Messages in Firewalls, maio de 2007: resumo e seções 1, 4.4.1 e 4.4.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4890.txt)
+- [RFC 6980, Security Implications of IPv6 Fragmentation with IPv6 Neighbor Discovery, agosto de 2013: seção 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6980.txt)
+- [RFC 4291, IP Version 6 Addressing Architecture, fevereiro de 2006: seções 2, 2.7.1 e 2.8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 826, An Ethernet Address Resolution Protocol, novembro de 1982: An Example (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc826.txt)
+- [RFC 9542, IANA Considerations and IETF Protocol and Documentation Usage for IEEE 802 Parameters, abril de 2024: seções 2.1.4 e 2.3.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9542.txt)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, dezembro de 1998: seções 3, 5, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2464.txt)
+- [RFC 4862, IPv6 Stateless Address Autoconfiguration, setembro de 2007: seções 5.1, 5.4 a 5.4.5 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4862.txt)
+- [RFC 7048, Neighbor Unreachability Detection Is Too Impatient, janeiro de 2014: resumo e seções 1 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7048.txt)
+- [RFC 7559, Packet-Loss Resiliency for Router Solicitations, maio de 2015: seções 1 e 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7559.txt)
+- [RFC 6104, Rogue IPv6 Router Advertisement Problem Statement, fevereiro de 2011: seções 1, 2, 3 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6104.txt)
+- [RFC 3756, IPv6 Neighbor Discovery (ND) Trust Models and Threats, maio de 2004: seções 4.1.1 a 4.1.3, 4.2.1 a 4.2.5 e 4.3.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3756.txt)
+- [RFC 6583, Operational Neighbor Discovery Problems, março de 2012: seções 2, 4, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6583.txt)
+- [RFC 6105, IPv6 Router Advertisement Guard, fevereiro de 2011: resumo e seções 2, 3 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6105.txt)
+- [RFC 7113, Implementation Advice for IPv6 Router Advertisement Guard (RA-Guard), fevereiro de 2014: resumo e seções 2 e 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7113.txt)
+- [RFC 9099, Operational Security Considerations for IPv6 Networks, agosto de 2021: seções 2.3.1, 2.3.2 e 2.3.6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9099.txt)
+- [RFC 3971, SEcure Neighbor Discovery (SEND), março de 2005: seções 4, 6.2, 9.1 e 9.2.6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3971.txt)
+- [man7.org, ip-neighbour(8) (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-neighbour.8.html)
+- [man7.org, ip-maddress(8) (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-maddress.8.html)
+- [The Linux Kernel documentation, IP Sysctl (lida em 2026-10-18)](https://docs.kernel.org/networking/ip-sysctl.html)
+- [man7.org, sysctl(8) (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/sysctl.8.html)
+- [Debian Manpages, ndisc6(8), ndisc6 1.0.8-1 (lida em 2026-10-18)](https://manpages.debian.org/testing/ndisc6/ndisc6.8.en.html)
+- [Debian Manpages, rdisc6(8), ndisc6 1.0.8-1 (lida em 2026-10-18)](https://manpages.debian.org/testing/ndisc6/rdisc6.8.en.html)
+- [Rémi Denis-Courmont, NDisc6: IPv6 diagnostic tools for Linux and BSD (lida em 2026-10-18)](https://www.remlab.net/ndisc6/)
+- [man7.org, tcpdump(1) (lida em 2026-10-18)](https://man7.org/linux/man-pages/man1/tcpdump.1.html)
+- [man7.org, pcap-filter(7) (lida em 2026-10-18)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [Microsoft Learn, Get-NetNeighbor (NetTCPIP module) (lida em 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netneighbor)
+- [Wireshark, Display Filter Reference: Internet Control Message Protocol v6 (lida em 2026-10-18)](https://www.wireshark.org/docs/dfref/i/icmpv6.html)
+- [Wireshark, wireshark-filter(4) (lida em 2026-10-18)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
+- [Python documentation, ipaddress: IPv4/IPv6 manipulation library (lida em 2026-10-18)](https://docs.python.org/3/library/ipaddress.html)

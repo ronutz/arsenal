@@ -192,8 +192,48 @@ export default function Ipv6Tool() {
                   <dd className="jwt-claim-value mono">{c.embeddedIpv4}</dd>
                 </div>
               )}
+              {/* Multicast flag field read bit by bit (RFC 4291 s2.7, RFC 7371 s4); added 2026-10-19. */}
+              {c.flags && (
+                <div className="jwt-claim-row">{/* one definition row, same markup as the rows above */}
+                  <dt className="jwt-claim-label">{t("fields.flags")}</dt>{/* label from the message pack */}
+                  <dd className="jwt-claim-value mono">{c.flags}</dd>{/* e.g. 0011 (X=0, R=0, P=1, T=1) */}
+                </div>
+              )}
+              {/* Source-specific multicast group-ID range (RFC 4607 s1, IANA registry); added 2026-10-19. */}
+              {c.ssmRange && (
+                <div className="jwt-claim-row">{/* shown only for ff3x::/32 */}
+                  <dt className="jwt-claim-label">{t("fields.ssmRange")}</dt>{/* label from the message pack */}
+                  <dd className="jwt-claim-value mono">{c.ssmRange}</dd>{/* the range text computed by the engine */}
+                </div>
+              )}
             </dl>
           </section>
+
+          {/* Teredo decode (RFC 4380 s4), only for one address in 2001::/32; added 2026-10-19. */}
+          {decoded.teredo && (
+            <section className="jwt-panel">{/* same panel markup as the other result panels */}
+              <h4 className="jwt-panel-title">{t("panels.teredo")}</h4>{/* panel heading */}
+              <dl className="jwt-claims">{/* four decoded fields */}
+                <div className="jwt-claim-row">{/* the Teredo server, stored in clear */}
+                  <dt className="jwt-claim-label">{t("fields.teredoServer")}</dt>{/* label */}
+                  <dd className="jwt-claim-value mono">{decoded.teredo.server}</dd>{/* dotted IPv4 */}
+                </div>
+                <div className="jwt-claim-row">{/* the client's external IPv4, de-obfuscated */}
+                  <dt className="jwt-claim-label">{t("fields.teredoClient")}</dt>{/* label */}
+                  <dd className="jwt-claim-value mono">{decoded.teredo.client}</dd>{/* dotted IPv4 */}
+                </div>
+                <div className="jwt-claim-row">{/* the client's external UDP port, de-obfuscated */}
+                  <dt className="jwt-claim-label">{t("fields.teredoPort")}</dt>{/* label */}
+                  <dd className="jwt-claim-value mono">{decoded.teredo.port}</dd>{/* decimal port */}
+                </div>
+                <div className="jwt-claim-row">{/* the 16-bit Flags field */}
+                  <dt className="jwt-claim-label">{t("fields.teredoFlags")}</dt>{/* label */}
+                  <dd className="jwt-claim-value mono">{decoded.teredo.flags}</dd>{/* hex plus C, U, G */}
+                </div>
+              </dl>
+              <p className="ipv6-struct-note">{t("teredoNote")}</p>{/* how the XOR obfuscation works, existing note class */}
+            </section>
+          )}
 
           {/* Prefix math */}
           {decoded.prefix && (

@@ -1,77 +1,155 @@
 ---
 slug: reading-a-dns-answer
 title: "Como ler uma resposta de DNS: o diagnóstico está na linha que você pulou"
-summary: "Quinze artigos sobre dig e nslookup, organizados como uma única resposta lida de cima para baixo: quem de fato respondeu, se a resposta veio da autoridade ou de um cache, o que as flags revelam, o que a linha OPT está fazendo ali, o que dizem os registros, o que significa um código de falha e como seguir a delegação por conta própria quando não dá para confiar na resposta do resolver. A maioria dos diagnósticos errados de DNS não vem de não entender o DNS. Vem de uma linha que ninguém leu."
-concepts: ["dns", "dig", "nslookup", "authoritative", "delegation", "edns", "dnssec", "troubleshooting", "index"]
-relatedTools: []
-relatedArticles: ["reading-dig-output", "authoritative-vs-non-authoritative-answers", "dig-trace-and-delegation", "the-kaminsky-dns-flaw"]
+summary: "Uma resposta de DNS mostrada pelo dig ou pelo nslookup é a mensagem de resposta inteira: um header com flags e um código de resposta, a pergunta, um pseudorregistro OPT e até três seções de registros, nas quais o endereço é uma linha só. Depois da leitura, você consegue dizer quem respondeu e com que autoridade, ler as flags, a linha OPT, os TTLs e os códigos de falha, perguntar direto ao servidor autoritativo, seguir uma delegação com +trace e achar a parte desta série que aprofunda cada linha."
+concepts: ["dns", "dig", "nslookup", "authoritative", "delegation", "edns", "dnssec", "troubleshooting", "index", "ttl", "resolver", "flags", "rcode", "opt", "nxdomain", "servfail", "reverse dns"]
+relatedTools: ["dig-output-explainer", "dig-command-builder", "nslookup-output-explainer", "ipv6"]
+relatedArticles: ["reading-dig-output", "authoritative-vs-non-authoritative-answers", "dig-trace-and-delegation", "the-kaminsky-dns-flaw", "dns-message-header-and-flags", "dns-record-types-in-answers", "anatomy-of-a-dig-command-line", "dnssec-end-to-end", "choosing-a-public-dns-resolver", "encrypted-dns-dot-doh-doq"]
 category: networking
 order: 146
 status: reviewed
-updated: "2026-09-09"
+updated: "2026-10-18"
 ---
 
-Quando o resolver cuja resposta você está lendo é um firewall, e não um servidor, o artigo **[modos de servidor DNS e filtragem no FortiGate](/learn/fortigate-dns-server-modes-and-filtering)** explica o que ele responde e o que ele não responde.
+Quando o dig ou o nslookup mostra uma resposta de DNS, o endereço que você queria é uma linha só. O resto é a mensagem devolvida, "divided into 5 sections (some of which are empty in certain cases)", cinco seções, algumas às vezes vazias, segundo a Request for Comments (RFC) 1035 ([RFC 1035, seção 4.1](https://www.rfc-editor.org/rfc/rfc1035.txt)): header, pergunta, resposta, autoridade e adicional. Juntas, dizem quem respondeu, com que autoridade e por que a consulta falhou; cada parte abaixo leva ao artigo da série que se aprofunda nela. Depois da leitura, você consegue dizer quem respondeu, ler as flags, a linha OPT e o time to live (TTL) de cada registro, separar as falhas e perguntar direto à autoridade.
 
-## A tese
+## Uma resposta, de cima para baixo
 
-O DNS não é difícil de entender. É difícil de *ler*, porque as duas ferramentas usadas para consultá-lo mostram uma resposta que é quase só metadados, e é nos metadados que está o diagnóstico. O nome resolveu? Ótimo, mas quem disse isso? Para qual servidor a pergunta foi de verdade? A resposta veio da zona ou de um cache que pode estar horas desatualizado? O resolver truncou a resposta, recusou a consulta ou não conseguiu falar com ninguém? Tudo isso aparece na tela, e tudo isso passa batido por quem só está procurando um endereço.
+Ilustrativa: montada no formato de saída do dig do BIND 9.20.29, com endereços de documentação; nenhum servidor real a produziu.
 
-Por isso, esta página organiza os artigos sobre as ferramentas como se fossem uma única resposta, lida da primeira à última linha, na ordem em que as perguntas aparecem.
+```text
+; <<>> DiG 9.20.29 <<>> @192.0.2.53 www.example.com A
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 4242
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
 
-## Primeira linha: quem respondeu
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+; COOKIE: 00112233445566770102030405060708090a0b0c0d0e0f10 (good)
+;; QUESTION SECTION:
+;www.example.com.		IN	A
 
-**[Como ler a saída do nslookup](/learn/reading-nslookup-output)**: antes de qualquer outra coisa, o nslookup mostra um header com *Server* e *Address*. Esse é o resolver consultado, que quase nunca é o servidor que hospeda a zona. Boa parte das reclamações de "o DNS está errado" é, na verdade, sobre a opinião desse resolver, e a primeira coisa a descobrir é de quem é a opinião que você está vendo.
+;; ANSWER SECTION:
+www.example.com.	3600	IN	A	203.0.113.10
 
-**[Como ler a saída do dig](/learn/reading-dig-output)**: é a mesma resposta no formato fixo do dig, com a linha de versão, o header, as flags, a pseudosseção OPT, as quatro seções e, no fim, as estatísticas da consulta, que dizem qual servidor respondeu e quanto tempo levou.
+;; Query time: 12 msec
+;; SERVER: 192.0.2.53#53(192.0.2.53) (UDP)
+;; WHEN: Sun Oct 18 19:00:00 -03 2026
+;; MSG SIZE  rcvd: 88
+```
 
-## Segunda linha: a resposta é autoritativa?
+As linhas `->>HEADER<<-` e `flags:` são o header; depois vêm a pseudosseção OPT, um bloco por seção com registros ([BIND 9.20.29 message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)) e quatro linhas de estatística ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)). O [explicador de saída do dig](/tools/dig-output-explainer) decodifica uma saída assim; [a leitura bloco a bloco](/learn/reading-dig-output) abre a série.
 
-**[Respostas autoritativas e não autoritativas](/learn/authoritative-vs-non-authoritative-answers)**: o aviso que o nslookup imprime e o que o dig mostra nas flags indicam que a resposta veio de um resolver, quase sempre do cache dele, e não de um servidor que hospeda a zona. Uma resposta assim pode estar certa e desatualizada ao mesmo tempo. Quando uma mudança "ainda não propagou", esta é a primeira linha a olhar, e o artigo explica por que a solução, em geral, é perguntar direto à autoridade em vez de esperar.
+## Quem respondeu
 
-A [falha de Kaminsky](/learn/the-kaminsky-dns-flaw) é o que acontece quando uma resposta não autoritativa, tirada do cache, é a resposta *errada* e nada no resolver consegue perceber isso; a linha que diz "Non-authoritative" é o motivo de essa distinção ter justificado um patch de emergência na indústria inteira.
+Embaixo, `;; SERVER:` traz o endereço e a porta de onde veio a resposta, o servidor como digitado e o transporte ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)). Sem indicação, o dig consulta os servidores de /etc/resolv.conf ([manual do dig, Description](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)), então costuma ser o seu resolver, não o servidor da zona; o nslookup mostra isso primeiro, em `Server:` e `Address:` ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)). Com recursion desired (RD), copiada da sua consulta, e recursion available (RA) ligadas na resposta, o servidor fez a recursão ([RFC 1034, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)). Mais sobre [o layout do nslookup](/learn/reading-nslookup-output) e [a escolha do resolver](/learn/choosing-a-public-dns-resolver).
+
+## Autoridade, cache ou referral
+
+O bit authoritative answer (AA) "specifies that the responding name server is an authority for the domain name in question section", quem respondeu é autoridade para o nome ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). O nslookup do BIND imprime `Non-authoritative answer:` quando o bit está desligado ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)). Desligado, o bit diz só que quem respondeu não é autoridade: um resolver respondendo do cache ou com dado recém-buscado, ou um servidor dando um referral (indicação de outro servidor), já que "these referrals have the AA bit set to 0", com AA zerado ([RFC 9499, seção 6](https://www.rfc-editor.org/rfc/rfc9499.txt)). Os dados da zona mantêm TTLs constantes, e os TTLs em cache diminuem ([RFC 1035, seção 6.1.3](https://www.rfc-editor.org/rfc/rfc1035.txt)), então um TTL que cai a cada consulta denuncia um cache. [Mais sobre autoridade](/learn/authoritative-vs-non-authoritative-answers).
 
 ## O header e as flags
 
-**[O header da mensagem DNS e as flags](/learn/dns-message-header-and-flags)**: que tipo de consulta foi feita, se ela deu certo e as sete flags de um bit, como recursion desired e recursion available (recursão pedida e recursão disponível), authoritative, truncated e as demais. O truncamento, em especial, explica toda uma família de reclamações do tipo "funciona numa ferramenta e na outra não": é ali que uma resposta que não coube em UDP é cortada, e o cliente deve repetir a consulta por TCP.
+A linha `->>HEADER<<-` traz o operation code (opcode), o response code (RCODE) como `status` e o identificador (ID). A Internet Assigned Numbers Authority (IANA) registra o opcode 0 como Query e os RCODEs 0 NoError, 1 FormErr, 2 ServFail, 3 NXDomain, 4 NotImp e 5 Refused ([IANA, DNS Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)). O ID é um número de 16 bits que quem pergunta define e a resposta copia ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt); [RFC 1035, errata 7587](https://www.rfc-editor.org/errata/rfc1035)). A linha de flags lista os bits ligados (seção 4.1.1; [RFC 4035, seções 3.2.2 e 3.2.3](https://www.rfc-editor.org/rfc/rfc4035.txt)):
 
-## A linha que não é um registro
+| Flag | Ligada numa resposta |
+|---|---|
+| `qr` | QR: é resposta, não consulta |
+| `aa` | Authoritative Answer: vem de uma autoridade para o nome |
+| `tc` | TrunCation: cortada para caber no canal |
+| `rd` | Recursion Desired: a recursão foi pedida |
+| `ra` | Recursion Available: o servidor oferece recursão |
+| `ad` | Authentic Data: seções answer e authority julgadas autênticas |
+| `cd` | Checking Disabled: a consulta dispensou a validação |
 
-**[O EDNS e a pseudosseção OPT](/learn/edns-and-the-opt-pseudosection)**: perto do topo de uma resposta do dig existe uma linha que não é um registro e não é nada que você pediu. São metadados do EDNS(0): o tamanho de buffer que o cliente ofereceu, o bit DNSSEC-OK e, às vezes, um código de erro estendido. Quem não sabe o que é essa linha ou a ignora ou se preocupa com ela; o artigo explica o que ela traz e quando ela importa.
+Sem as Extension Mechanisms for DNS (EDNS(0)), mensagens UDP param em 512 bytes, e "Longer messages are truncated and the TC bit is set in the header", com truncamento e TC ligada ([RFC 1035, seção 4.2.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). O cliente então repete por TCP ([RFC 2181, seção 9](https://www.rfc-editor.org/rfc/rfc2181.txt)), que toda implementação de uso geral é obrigada (MUST) a suportar ([RFC 7766, seção 5](https://www.rfc-editor.org/rfc/rfc7766.txt)); com a porta TCP 53 bloqueada, a nova tentativa falha. [Mais sobre o header](/learn/dns-message-header-and-flags).
 
-## Os registros em si
+## A linha OPT
 
-**[Tipos de registro nas respostas do dig](/learn/dns-record-types-in-answers)**: cada registro tem cinco colunas (nome, TTL, classe, tipo e dados). A coluna do TTL é a que as pessoas esquecem de ler, e é justamente ela que diz por quanto tempo a resposta errada vai continuar valendo.
+O EDNS(0) permite mensagens acima de 512 octetos, amplia o response code e transporta opções ([RFC 9499, seção 5](https://www.rfc-editor.org/rfc/rfc9499.txt)). Ele viaja na seção adicional como um pseudorregistro OPT, um resource record (RR) do tipo 41, e "OPT RRs MUST NOT be cached, forwarded, or stored in or loaded from master files", nunca vai para cache nem para arquivos de zona ([RFC 6891, seção 6.1.1](https://www.rfc-editor.org/rfc/rfc6891.txt)). O dig o imprime à parte, por isso `ADDITIONAL: 1` sem seção adicional na tela é o OPT ([BIND 9.20.29 message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)).
 
-**[Tipos de registro no nslookup](/learn/nslookup-record-types)**: os mesmos registros, identificados por rótulos em texto corrido em vez de colunas, como mail exchanger, canonical name e nameserver, além do bloco de várias linhas do registro SOA (start of authority).
+Você pediu: no dig, "EDNS is set to 0 by default", o EDNS vem ligado ([manual do dig, +edns](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)), e quem responde só inclui OPT quando a consulta trouxe um ([RFC 6891, seções 6.1.1 e 7](https://www.rfc-editor.org/rfc/rfc6891.txt)). Sua oferta, 1232 octetos no dig 9.20.29 ([BIND 9.20.29 dighost.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)), aparece com `+qr`, e a flag `do` diz que você aceita registros das DNS Security Extensions (DNSSEC), daí o nome DNSSEC OK (DO) ([RFC 3225, seção 3](https://www.rfc-editor.org/rfc/rfc3225.txt)). Numa resposta, `udp:` é o tamanho de payload do servidor que respondeu: o dig imprime o campo CLASS da mensagem recebida ([BIND 9.20.29 message.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)), que a errata 8348, com status held for document update, descreve como o tamanho de quem envia, porque "The requestor is not the same as the sender", quem pergunta não é quem envia ([RFC 6891, errata 8348](https://www.rfc-editor.org/errata/rfc6891)). Seguem opções como COOKIE e Extended DNS Error (EDE) ([IANA, DNS Parameters](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)). [Mais sobre o EDNS](/learn/edns-and-the-opt-pseudosection).
 
-## Se não houver resposta
+## A linha de um registro
 
-**[Os erros do nslookup, explicados](/learn/nslookup-errors-explained)**: uma consulta que falha mostra uma única linha com um código, e o código é o diagnóstico inteiro. NXDOMAIN, SERVFAIL, REFUSED e timeout são quatro falhas diferentes, com quatro donos diferentes, e tratar todas como um "o DNS caiu" genérico é o jeito mais comum de um problema de resolução ser escalado para o time errado.
+Cada registro aparece como nome, TTL, classe, tipo e dados; o comprimento dos dados viaja sem ser impresso ([RFC 1035, seção 3.2.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). Um TTL vai de 0 a 2147483647, e "The TTL specifies a maximum time to live, not a mandatory time to live", é um teto, não uma obrigação ([RFC 2181, seção 8](https://www.rfc-editor.org/rfc/rfc2181.txt)). Os 88 octetos do exemplo fecham exatamente (RFC 1035, seção 4.1):
+
+```text
+header     parte fixa                     12   seis palavras de 16 bits
+question   www.example.com. IN A          21   nome 1+3 + 1+7 + 1+3 + 1 = 17, QTYPE 2, QCLASS 2
+answer     A 203.0.113.10                 16   ponteiro para o nome 2, TYPE 2, CLASS 2, TTL 4, RDLENGTH 2, endereço 4
+OPT        parte fixa, nome raiz          11   nome 1, TYPE 2, CLASS 2, TTL 4, RDLEN 2
+COOKIE     opção nos dados do OPT         28   código 2, tamanho 2, cliente 8 + servidor 16
+total                                     88   60 sem o cookie
+```
+
+Mais sobre [os dados dos registros](/learn/dns-record-types-in-answers) e [os rótulos do nslookup](/learn/nslookup-record-types).
+
+## Quando a resposta é uma falha
+
+NODATA não tem código próprio; é "an answer with the RCODE set to NOERROR and no relevant answers in the answer section", um NOERROR sem respostas relevantes ([RFC 2308, seção 2.2](https://www.rfc-editor.org/rfc/rfc2308.txt)). NXDOMAIN, de um servidor autoritativo, diz que "the domain name referenced in the query does not exist", o nome não existe ([RFC 1035, seção 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). SERVFAIL diz que o servidor não conseguiu processar a consulta: um autoritativo sem dados válidos da zona ou um resolver, por vários motivos ([RFC 9520, seção 2.1](https://www.rfc-editor.org/rfc/rfc9520.txt)). REFUSED é política: uma zona que o servidor não atende, ou um cliente fora das listas de controle de acesso de um resolver (seção 2.2). Silêncio não é código de resposta: o dig imprime `timed out` e `no servers could be reached` ([BIND 9.20.29 dighost.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)) e sai com status 9 ([manual do dig, Return Codes](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)).
+
+Negativas também ficam em cache. O servidor autoritativo inclui o registro SOA (start of a zone of authority) da zona, cujo TTL, o menor entre o campo MINIMUM do SOA e o TTL do próprio SOA, "indicates how long a resolver may cache the negative answer", o prazo da negativa no cache ([RFC 2308, seção 3](https://www.rfc-editor.org/rfc/rfc2308.txt)). Com MINIMUM 300 e TTL do SOA 3600 (valores ilustrativos), um NXDOMAIN em cache dura 300 segundos, mesmo se o nome surgir um minuto depois. Isso, mais os registros positivos cumprindo seus TTLs, explica quase toda mudança lenta; perguntar à autoridade mostra o dado novo, mas não esvazia cache nenhum. [Como o nslookup descreve cada falha](/learn/nslookup-errors-explained) tem uma parte própria.
 
 ## Como perguntar com precisão
 
-**[Opções de consulta do dig](/learn/dig-query-options)**: como escolher o servidor, o tipo de registro e quanto da resposta mostrar. O hábito que vale a pena criar é o `@servidor`: perguntar a um servidor específico, principalmente ao autoritativo, é o jeito de tirar o cache do resolver da jogada.
+```bash
+# Pergunte a um servidor escolhido, e não ao de /etc/resolv.conf (endereços ilustrativos)
+dig @192.0.2.53 www.example.com A
+# Pergunte ao servidor autoritativo da zona sem recursão e procure aa
+dig @198.51.100.53 +norecurse www.example.com A
+# Mostre também a sua consulta: o bit RD, o registro OPT e o tamanho udp: oferecido
+dig +qr www.example.com
+# Só a seção answer, ou só os dados
+dig +noall +answer www.example.com
+dig +short www.example.com
+```
 
-**[O modo interativo do nslookup](/learn/nslookup-interactive-mode)**: o mesmo controle, a partir do prompt interativo, para trocar de resolver, mudar o tipo de registro ou ligar a saída de debug.
+`@server` escolhe o servidor, e `+norecurse` desliga o RD, que o dig liga por padrão ([manual do dig, +recurse](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). Feita ao autoritativo da zona, a consulta recebe a resposta da própria zona, com `aa`.
 
-## Como seguir a delegação por conta própria
+Perguntar assim a cada servidor dos registros NS (name server) da zona também revela uma lame delegation (delegação manca), um servidor que recebeu a zona "but is not performing nameservice for that zone", que não a atende ([RFC 1912, seção 2.8](https://www.rfc-editor.org/rfc/rfc1912.txt)): a resposta dele vem sem `aa`.
 
-**[O dig +trace e a delegação](/learn/dig-trace-and-delegation)**: a resposta para "mas qual servidor *deveria* guardar isto?". O trace resolve o nome do jeito que a internet resolve de verdade: da raiz para o domínio de topo e dele para os servidores da própria zona, mostrando cada referral (a indicação do próximo servidor a consultar). Quando a resposta do resolver e a da autoridade não batem, é assim que se descobre onde está a diferença. Para entender do que depende o topo dessa cadeia, veja [o que acontece se a raiz do DNS sair do ar](/learn/what-happens-if-the-dns-root-goes-dark).
+O [montador de comandos dig](/tools/dig-command-builder) gera comandos assim e explica cada token; o prompt do nslookup tem `server`, `set type=` e `set debug` ([manual do nslookup](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). Mais sobre [como o dig lê um comando](/learn/anatomy-of-a-dig-command-line), [as opções](/learn/dig-query-options) e [o prompt do nslookup](/learn/nslookup-interactive-mode).
 
-## DNS reverso e DNS assinado
+## Como seguir a delegação
 
-**[Consultas reversas com o nslookup](/learn/reverse-dns-lookups-with-nslookup)**: como chegar de um endereço a um nome pelas árvores reversas. Quem mantém os registros reversos é quem detém o bloco de endereços, e não quem detém o nome; é por isso que eles tantas vezes faltam ou estão errados, e é por isso que os sistemas de e-mail se importam com eles.
+Com `+trace`, o dig faz consultas iterativas, seguindo os referrals desde os servidores raiz ([manual do dig, +trace](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)). `@server` só escolhe a quem pedir os servidores da raiz, e o `+dnssec` liga junto (+trace). Um resolver, ao contrário, parte dos registros NS mais próximos que já tem, e "If the data is in the cache, it is assumed to be good enough for normal use", o que está no cache vale ([RFC 1034, seção 5.3.3](https://www.rfc-editor.org/rfc/rfc1034.txt)). Um trace pode, então, mostrar uma delegação que o cache do resolver ainda não acompanhou. Mais sobre [o trace](/learn/dig-trace-and-delegation) e [a própria raiz](/learn/what-happens-if-the-dns-root-goes-dark).
 
-**[Registros DNSSEC no dig](/learn/dnssec-records-in-dig)**: basta acrescentar a flag, e a resposta ganha uma família inteira de registros (assinaturas, chaves, delegation signers e os registros de negação de existência). O artigo mostra para que serve cada um e como distinguir uma falha de validação de uma falha comum.
+## Nomes reversos e respostas assinadas
 
-## Duas ferramentas, uma resposta
+`dig -x 192.0.2.1` pede o registro PTR (domain name pointer) de `1.2.0.192.in-addr.arpa`, com os octetos invertidos ([manual do dig, -x](https://bind9.readthedocs.io/en/v9.20.29/manpages.html); [RFC 1035, seção 3.5](https://www.rfc-editor.org/rfc/rfc1035.txt)); o IPv6 escreve seus 32 dígitos hexadecimais ao contrário, um rótulo cada, sob ip6.arpa ([RFC 3596, seção 2.5](https://www.rfc-editor.org/rfc/rfc3596.txt)), como mostra o [Kit de ferramentas IPv6](/tools/ipv6). Os dados reversos e os diretos ficam em zonas diferentes e podem divergir (RFC 1035, seção 3.5).
 
-**[nslookup ou dig](/learn/nslookup-vs-dig)**: os dois consultam a mesma coisa; o nslookup é mais enxuto e esconde as flags e os TTLs que o dig mostra por inteiro. O artigo faz a correspondência entre uma saída e a outra, e esse é o jeito mais rápido de ficar fluente na ferramenta que a máquina à sua frente tiver.
+`+dnssec` liga o DO ([manual do dig, +dnssec](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)), e o servidor de uma zona assinada junta registros Resource Record Signature (RRSIG) aos dados, Next Secure (NSEC) às negativas e Delegation Signer (DS) aos referrals; os DNS Public Key (DNSKEY) vêm quando pedidos ([RFC 4034, seção 1](https://www.rfc-editor.org/rfc/rfc4034.txt); [RFC 4035, seção 3.1](https://www.rfc-editor.org/rfc/rfc4035.txt)).
 
-## O hábito
+Um resolver que valida responde SERVFAIL para dados bogus (inválidos), mas "it MUST return the full response if and only if the original query had the CD bit set", completa só se a consulta tiver CD ([RFC 4035, seção 5.5](https://www.rfc-editor.org/rfc/rfc4035.txt)): se o `+cd` transforma um SERVFAIL em dados, desconfie da validação. Mais sobre [consultas reversas](/learn/reverse-dns-lookups-with-nslookup), [registros DNSSEC](/learn/dnssec-records-in-dig) e [a cadeia de confiança](/learn/dnssec-end-to-end).
 
-Leia a resposta inteira, de cima a baixo, uma vez, antes de montar qualquer teoria: quem respondeu, se a resposta é autoritativa, o que as flags dizem, depois os registros e, por fim, os TTLs. O caso do [e-mail de 500 milhas](/learn/the-500-mile-email) foi resolvido por alguém que olhou para uma camada que não aparecia em nenhum relato; um problema de DNS costuma ser resolvido por alguém que olha uma *linha* que ninguém estava lendo. Para a história mais longa de como o sistema chegou a funcionar assim, veja a [história da família do DNS](/learn/dns-family-history).
+## A mesma resposta no nslookup
+
+```text
+Server:		192.0.2.53
+Address:	192.0.2.53#53
+
+Non-authoritative answer:
+Name:	www.example.com
+Address: 203.0.113.10
+```
+
+Ilustrativa, no formato do nslookup do BIND 9.20.29; o Windows tem o próprio nslookup, cuja saída exata não aparece aqui. O do BIND mostra o servidor, `Non-authoritative answer:` quando o AA está desligado e depois os registros com rótulos; TTLs só aparecem no debug, flags nunca, e uma falha sai como `** server can't find` seguido do nome e do código ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)). A documentação da Microsoft chama as mensagens de erro de Nonexistent domain, Server failure, Refused, No records e timed out ([Microsoft Learn, nslookup](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup)). O [explicador de saída do nslookup](/tools/nslookup-output-explainer) decodifica essa saída, e [qual ferramenta usar](/learn/nslookup-vs-dig) tem uma parte própria.
+
+## Respostas forjadas e a correção de 2008
+
+O envenenamento de cache (cache poisoning) planta dados de DNS forjados no cache de um resolver ([VU#800113, Description](https://www.kb.cert.org/vuls/id/800113)). O resolver aceita a primeira resposta cuja pergunta, ID, endereço e porta batem com a consulta ([RFC 5452, seção 3](https://www.rfc-editor.org/rfc/rfc5452.txt)), e em 2008 forjar uma era viável: o ID tem 16 bits, e algumas implementações usavam a mesma porta de origem em todas as consultas (VU#800113, Description). A correção mudou como as consultas saem do resolver, não o que as respostas mostram: "A number of vendors have released patches to implement source port randomization in the nameserver", patches que sorteiam a porta de origem (VU#800113, Solution). Sem mudanças no protocolo como as do DNSSEC, "these mitigations cannot completely prevent cache poisoning", não eliminam o envenenamento (VU#800113, Description). Em cache, respostas forjadas e legítimas são igualmente não autoritativas; só a validação DNSSEC as distingue. Mais sobre [a falha de Kaminsky](/learn/the-kaminsky-dns-flaw) e [a pergunta criptografada](/learn/encrypted-dns-dot-doh-doq).
+
+## Para lembrar
+
+- As primeiras linhas do nslookup e a `;; SERVER:` do dig dizem quem respondeu: por padrão, o seu resolver, não o da zona.
+- `aa` marca uma autoridade para o nome; sem ele, a resposta pode ser de cache, de busca recente ou um referral.
+- Numa resposta, o `udp:` da linha OPT é o tamanho de payload do servidor que respondeu; o dig 9.20.29 oferece 1232 octetos, visíveis com `+qr`.
+- NODATA é NOERROR sem respostas; NXDOMAIN, nome inexistente; SERVFAIL, servidor incapaz de processar a consulta; REFUSED, política; timeout, nenhuma resposta.
+- Negativas ficam em cache pelo menor entre o MINIMUM e o TTL do SOA, e TTLs em cache diminuem: mudança lenta quase sempre é cache.
+- Os patches de 2008 sortearam a porta de origem; só a validação DNSSEC, nunca uma linha da saída, separa resposta forjada de legítima no cache.
 
 ## Esta série, em ordem
 
@@ -92,3 +170,30 @@ Este artigo abre a série **DNS, lido a partir da resposta**. Ele lê uma respos
 13. **[Consultas DNS reversas com o nslookup](/learn/reverse-dns-lookups-with-nslookup)**. Registros PTR sob in-addr.arpa e ip6.arpa, e como o nslookup monta o nome reverso para você.
 14. **[Registros DNSSEC na saída do dig](/learn/dnssec-records-in-dig)**. RRSIG, DNSKEY, DS e NSEC: como eles se encadeiam da raiz até uma zona e o que a flag ad atesta.
 15. **[nslookup ou dig: qual usar](/learn/nslookup-vs-dig)**. A mesma resposta nas duas ferramentas e uma regra simples para escolher entre elas.
+
+## Fontes
+
+- [RFC 1035, Domain Names: Implementation and Specification, novembro de 1987: seções 3.2.1, 3.5, 4.1, 4.1.1, 4.2.1 e 6.1.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 1035 errata, RFC Editor errata records, 2010 a 2023: errata 2130 e 7587 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc1035)
+- [RFC 1034, Domain Names: Concepts and Facilities, novembro de 1987: seções 4.1, 4.3.1 e 5.3.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 9499, DNS Terminology, março de 2024: seções 4, 5, 6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), março de 1998: seções 1, 2.1, 2.2, 3, 5, 6 e 7.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 9520, Negative Caching of DNS Resolution Failures, dezembro de 2023: seções 2.1, 2.2, 2.3 e 3.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9520.txt)
+- [RFC 6891, Extension Mechanisms for DNS (EDNS(0)), abril de 2013: seções 4.3, 6.1.1, 6.1.2, 6.1.3, 6.1.4, 6.2.3, 6.2.4, 6.2.6 e 7 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6891.txt)
+- [RFC 6891 errata, RFC Editor errata records, 2013 a 2025: errata 3604 e 8348 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc6891)
+- [RFC 3225, Indicating Resolver Support of DNSSEC, dezembro de 2001: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3225.txt)
+- [RFC 2181, Clarifications to the DNS Specification, julho de 1997: seções 8, 9 e 10.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 7766, DNS Transport over TCP: Implementation Requirements, março de 2016: seções 4 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7766.txt)
+- [RFC 1912, Common DNS Operational and Configuration Errors, fevereiro de 1996: seções 2.1 e 2.8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1912.txt)
+- [RFC 3596, DNS Extensions to Support IP Version 6, outubro de 2003: seção 2.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3596.txt)
+- [RFC 4034, Resource Records for the DNS Security Extensions, março de 2005: seções 1 a 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4034.txt)
+- [RFC 4035, Protocol Modifications for the DNS Security Extensions, março de 2005: seções 3.1, 3.1.1, 3.1.4, 3.2.1, 3.2.2, 3.2.3, 4.6 e 5.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4035.txt)
+- [RFC 5452, Measures for Making DNS More Resilient against Forged Answers, janeiro de 2009: seções 3, 9.2 e 10 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5452.txt)
+- [IANA, Domain Name System (DNS) Parameters, última atualização em 16 de outubro de 2026: DNS OpCodes, DNS RCODEs, DNS Header Flags, EDNS Header Flags, DNS EDNS0 Option Codes (OPT) e Extended DNS Error Codes (lida em 2026-10-18)](https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml)
+- [BIND 9.20.29 documentation, Manual Pages: dig e nslookup, Internet Systems Consortium, página sem data: dig Description, Simple Usage, Options, Query Options, Return Codes e Examples; nslookup Arguments, Interactive Commands e Return Values (lidas em 2026-10-18)](https://bind9.readthedocs.io/en/v9.20.29/manpages.html)
+- [BIND 9.20.29 source code, bin/dig/dig.c, Internet Systems Consortium: printmessage() e received() (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
+- [BIND 9.20.29 source code, bin/dig/nslookup.c, Internet Systems Consortium: printmessage() e printsoa() (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)
+- [BIND 9.20.29 source code, lib/dns/message.c, Internet Systems Consortium: pseudosseção OPT e saída das seções (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/lib/dns/message.c)
+- [BIND 9.20.29 source code, bin/dig/dighost.c e dighost.h, Internet Systems Consortium: nova tentativa após truncamento, timeouts e buffer EDNS padrão (lida em 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dighost.c)
+- [Microsoft Learn, nslookup, última atualização em 1º de novembro de 2024: Parameters e Remarks (mensagens de erro) (lida em 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup)
+- [CERT Coordination Center, Vulnerability Note VU#800113: Multiple DNS implementations vulnerable to cache poisoning, 8 de julho de 2008 (revisada em 14 de abril de 2014): Description, Solution e Acknowledgements (lida em 2026-10-18)](https://www.kb.cert.org/vuls/id/800113)

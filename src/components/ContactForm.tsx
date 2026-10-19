@@ -11,15 +11,28 @@
 //     visitor's own mail client (their email app opens pre-filled). Nothing is
 //     sent to any third party; the visitor sends it themselves. Privacy-first.
 //
+// THE HANDOFF IS NAMED FOR WHAT IT IS (production audit of 2026-10-15, F01,
+// implemented 2026-10-18). Until then the mailto path set the state to "sent"
+// and showed "Your message is on its way", so a visitor whose mail client never
+// opened, or who closed the draft, believed an enquiry had been delivered. Now:
+//   - the button says "Open email draft", not "Send message";
+//   - after the click the form STAYS, filled in, under a "drafted" notice that
+//     says the draft opened in the visitor's email app and has to be sent from
+//     there, shows the address, and offers the whole message to copy, so the
+//     text is recoverable with or without a mail handler;
+//   - "sent" is reached ONLY on the POST path, where a 2xx is a real
+//     acknowledgement of delivery. Nothing claims delivery without one.
+//
 // This keeps the form working today AND ready for the service layer later: when
 // an endpoint is configured (e.g. from the admin panel), the same form starts
 // POSTing with no code change here.
 //
-// Fields: name, email, topic (select), message. Light client-side validation
-// and a success state. No external form library, no tracking.
+// Fields: name, email, topic (select), message. Light client-side validation,
+// a drafted state (mailto) and a success state (POST). No external form
+// library, no tracking.
 // ============================================================================
 
-import { useState, useEffect, type FormEvent } from "react";
+import { useState, useEffect, useRef, type FormEvent } from "react";
 import { contactEmail, contactFormEndpoint } from "@/config/contact";
 
 interface ContactFormCopy {
@@ -39,6 +52,14 @@ interface ContactFormCopy {
   successBody: string;
   errorBody: string;
   required: string;
+  /** The drafted notice (F01, 2026-10-18): title, body with the address in {email}, the copy button's three states and the
+   *  label of the message box that holds the recoverable text. */
+  draftedTitle: string;
+  draftedBody: string;
+  copyMessage: string;
+  copied: string;
+  copyFailed: string;
+  draftedMessageLabel: string;
   /** The message template prefilled when a reader arrives from the speaking route (G8, 2026-10-05):
    *  event, audience, date, outcome, each on its own line, for the reader to fill in. */
   speakingTemplate?: string;
@@ -49,7 +70,10 @@ interface ContactFormCopy {
   courseTemplate?: string;
 }
 
-type Status = "idle" | "sending" | "sent" | "error";
+// "drafted" is the mailto path's end state: the draft was handed to the visitor's mail client, nothing was delivered yet.
+type Status = "idle" | "sending" | "sent" | "drafted" | "error";
+// The copy button's own state: idle, copied, or the clipboard refused (then the box is selected for a manual copy).
+type CopyState = "idle" | "copied" | "failed";
 
 export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
   const [name, setName] = useState("");
@@ -58,6 +82,9 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [touched, setTouched] = useState(false);
+  const [copyState, setCopyState] = useState<CopyState>("idle");
+  // The message box in the drafted notice, for the manual-select fallback when the clipboard API is unavailable.
+  const draftRef = useRef<HTMLTextAreaElement>(null);
 
   const valid = name.trim() && email.trim() && message.trim();
 
@@ -114,15 +141,33 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
     }
 
     // Path 2: no backend (static site) -> compose a mailto in the user's client.
+    // The visitor's mail app opens with the draft; whether it is sent is their act, so the state is "drafted", never
+    // "sent", and the form stays filled in under the notice (F01, 2026-10-18).
     const subject = encodeURIComponent(`[${topic}] ${name}`);
-    const body = encodeURIComponent(
-      `${message}\n\n---\nFrom: ${name}\nReply to: ${email}\nTopic: ${topic}`
-    );
+    const body = encodeURIComponent(draftText());
     window.location.href = `mailto:${contactEmail()}?subject=${subject}&body=${body}`;
-    setStatus("sent");
+    setCopyState("idle");
+    setStatus("drafted");
   }
 
-  // Success state replaces the form.
+  /** The plain text of the draft, as the mail client receives it: the message, then who it is from and about. */
+  function draftText(): string {
+    return `${message}\n\n---\nFrom: ${name}\nReply to: ${email}\nTopic: ${topic}`;
+  }
+
+  /** Copy the draft to the clipboard; when the API is unavailable or refuses, select the box so the visitor can copy. */
+  async function copyDraft() {
+    try {
+      await navigator.clipboard.writeText(draftText());
+      setCopyState("copied");
+    } catch {
+      draftRef.current?.focus();
+      draftRef.current?.select();
+      setCopyState("failed");
+    }
+  }
+
+  // Success state replaces the form: reached only when a configured endpoint acknowledged the message (2xx).
   if (status === "sent") {
     return (
       <div className="contact-success" role="status">
@@ -196,6 +241,23 @@ export default function ContactForm({ copy }: { copy: ContactFormCopy }) {
 
       {touched && !valid && <p className="contact-error">{copy.required}</p>}
       {status === "error" && <p className="contact-error">{copy.errorBody}</p>}
+
+      {/* The drafted notice (F01): the draft opened in the visitor's email app and must be sent from there; the text is
+          here to copy, and the address is named, so a visitor with no mail handler loses nothing. role="status" so a
+          screen reader announces it; the form below keeps every field. */}
+      {status === "drafted" && (
+        <div className="contact-success contact-drafted" role="status">
+          <p className="contact-success-title">{copy.draftedTitle}</p>
+          <p className="contact-success-body">{copy.draftedBody.replace("{email}", contactEmail())}</p>
+          <label htmlFor="cf-draft" className="contact-label">
+            {copy.draftedMessageLabel}
+          </label>
+          <textarea id="cf-draft" ref={draftRef} className="contact-input contact-textarea" value={draftText()} readOnly rows={6} />
+          <button type="button" className="btn btn-secondary contact-copy" onClick={copyDraft}>
+            {copyState === "copied" ? copy.copied : copyState === "failed" ? copy.copyFailed : copy.copyMessage}
+          </button>
+        </div>
+      )}
 
       <button type="submit" className="btn btn-primary contact-submit" disabled={status === "sending"}>
         {status === "sending" ? copy.sending : copy.send}

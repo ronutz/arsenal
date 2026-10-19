@@ -8,7 +8,7 @@ relatedArticles: ["dns-record-types-in-answers", "the-certificate-authority-chok
 category: security
 order: 126
 status: reviewed
-updated: "2026-08-29"
+updated: "2026-10-19"
 ---
 
 How the mail system arrived at needing these three at all is the subject of the **[email lineage](/learn/email-family-history)**.
@@ -41,11 +41,13 @@ Two operational notes: keys need rotation like any other key material, and the o
 
 **DMARC (Domain-based Message Authentication, Reporting and Conformance)** adds the missing piece: **alignment**. It requires that a passing SPF or DKIM result belong to the *same domain the reader sees in the From field*. That is the actual protection, and neither SPF nor DKIM provides it alone.
 
+DMARC first appeared in March 2015 as Request for Comments (RFC) 7489, an Informational document published through the Independent Submissions Editor rather than any Internet Engineering Task Force work stream. Since May 2026 it is a Standards Track protocol, RFC 9989, with aggregate reporting in RFC 9990 and failure reporting in RFC 9991, and the three obsolete RFC 7489 ([RFC 9989, Appendix C.1](https://www.rfc-editor.org/rfc/rfc9989.txt); [RFC Editor, RFC 7489](https://www.rfc-editor.org/info/rfc7489)). Guides written before then describe the 2015 text.
+
 It also does two things people underrate:
 
 **It publishes a policy** (`none`, `quarantine` or `reject`) telling receivers what to do with unaligned mail claiming your domain.
 
-**It asks for reports.** Aggregate reports arrive from receivers describing what passed and failed for your domain, from which addresses. This is the part that makes deployment possible, and it is free intelligence about who is sending as you, including your own forgotten systems and anyone forging you.
+**It asks for reports.** Aggregate reports arrive from receivers describing what passed and failed for your domain, from which addresses. Their format is the one RFC 9990 defines, and a receiver sends them only when the record names an address in its `rua` tag ([RFC 9989, section 4.7](https://www.rfc-editor.org/rfc/rfc9989.txt)). This is the part that makes deployment possible, and it is free intelligence about who is sending as you, including your own forgotten systems and anyone forging you.
 
 ## Why almost everyone stalls at p=none
 
@@ -54,7 +56,9 @@ The honest deployment path is not the one that gets recommended in a single sent
 1. **Publish SPF and DKIM properly**, then DMARC at `p=none`. Nothing is blocked yet.
 2. **Read the reports for weeks.** You will find legitimate senders nobody told you about: the invoicing system, the marketing platform, the ticketing tool, a branch office relay.
 3. **Fix or authorise each one.** This is the real work, it is organisational rather than technical, and it is where projects die.
-4. **Move to `quarantine`, then `reject`,** ideally with percentage rollout.
+4. **Move to `quarantine`, then `reject`,** one step at a time, comparing the reports at each.
+
+RFC 9989 puts numbers on that patience for any domain whose users post to mailing lists: publish `p=none` "for at least a month", then `p=quarantine` for an equally long period, and compare the results before thinking of `p=reject`, which it advises such domains not to publish at all ([RFC 9989, section 7.4](https://www.rfc-editor.org/rfc/rfc9989.txt)). A domain that does publish `p=reject` "MUST apply valid DKIM signatures to their messages", because forwarding breaks SPF (section 7.4). The percentage rollout that older guides recommend is gone: RFC 9989 removed the `pct` tag, because receivers usually applied it accurately only at 0 and 100, and kept its useful half as the `t` tag, for testing, where `t=y` asks receivers to apply one level below the published policy, `none` instead of `quarantine` and `quarantine` instead of `reject` (Appendices A.6 and C.5.2, section 4.7).
 
 Organisations sit at `p=none` for years because step 3 requires finding every system that sends mail as the company, in a company where nobody has that list. Publishing `p=reject` before finishing it means blocking your own invoices.
 
@@ -62,7 +66,7 @@ Organisations sit at `p=none` for years because step 3 requires finding every sy
 
 **Forwarding** breaks SPF, as described. **Mailing lists** often break DKIM too, because they modify subject lines or append footers, invalidating the signature.
 
-**ARC (Authenticated Received Chain)** exists for this: an intermediary records the authentication results it saw and signs that record, so a later receiver can see that mail failed only because a trusted forwarder handled it. Adoption is partial, and it requires trusting the intermediary's assertion.
+**ARC (Authenticated Received Chain)**, described in RFC 8617, was built for this: an intermediary records the authentication results it saw and signs that record, so a later receiver can see that mail failed only because a trusted forwarder handled it. It has not taken hold. RFC 9989 records that after a decade of attempts to let mailing lists work without touching the From line, with ARC as the prominent example, "none of the methods have become widely used" ([RFC 9989, section 7.4](https://www.rfc-editor.org/rfc/rfc9989.txt)), and ARC also requires trusting the intermediary's assertion. What works in practice is the workaround: list software rewrites the From line, to the list's own address or to a reversible form of the author's, so that it aligns, and RFC 9989 calls these workarounds "firmly established" (section 7.4).
 
 ## What it does not protect against
 
@@ -86,3 +90,8 @@ The accurate summary: **these standards stop others from sending as your domain.
 - A named owner for the reports, because unread reports are the same as no reports.
 - A written inventory of everything that sends mail as you, the artefact the whole project is really about.
 - Enforcement when, and only when, that inventory is complete.
+
+## Sources
+
+- [RFC 9989, Domain-Based Message Authentication, Reporting, and Conformance (DMARC), May 2026: sections 4.7 and 7.4, Appendices A.6, C.1 and C.5.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9989.txt)
+- [RFC Editor, information page for RFC 7489, Domain-based Message Authentication, Reporting, and Conformance (DMARC): Informational, published March 2015, obsoleted by RFC 9989, RFC 9990 and RFC 9991 (read 2026-10-19)](https://www.rfc-editor.org/info/rfc7489)

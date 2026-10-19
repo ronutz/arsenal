@@ -84,6 +84,14 @@ export default async function ContactPage({
     successBody: t("successBody"),
     errorBody: t("errorBody"),
     required: t("formRequired"),
+    // The drafted notice (F01, 2026-10-18): the mailto path hands a draft to the visitor's mail app and says so;
+    // draftedBody carries a literal "{email}" the form fills at runtime (the address never sits in the static HTML).
+    draftedTitle: t("draftedTitle"),
+    draftedBody: t.raw("draftedBody") as string,
+    copyMessage: t("copyMessage"),
+    copied: t("copied"),
+    copyFailed: t("copyFailed"),
+    draftedMessageLabel: t("draftedMessageLabel"),
     // G8: the prefilled questions for the advisory and speaking routes.
     advisoryTemplate: t("intents.advisory.template"),
     speakingTemplate: t("intents.speaking.template"),

@@ -1,38 +1,186 @@
 ---
 slug: subnet-overlap-and-gaps
 title: "Sobreposições e lacunas de sub-redes"
-summary: "O que significa dois prefixos se sobreporem ou um conter o outro, por que a correspondência de prefixo mais longo torna algumas sobreposições intencionais, e como encontrar as lacunas não atribuídas de um plano de endereços."
-concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr"]
-relatedTools: ["cidr"]
-relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example"]
+summary: "Dois prefixos IPv4 se sobrepõem quando algum endereço pertence aos dois, e com prefixos sem classe isso só pode significar que um está inteiro dentro do outro, de propósito ou por engano; lacunas são os endereços de um bloco pai que nenhum prefixo cobre. Depois da leitura, você consegue provar em binário que dois prefixos se aninham ou nunca se tocam, distinguir uma rota mais específica deliberada de um defeito, listar as lacunas de uma alocação como blocos alinhados que fecham a conta de cada endereço e explicar por que túneis e peering na nuvem recusam faixas sobrepostas e como a tradução contorna isso."
+concepts: ["overlap", "containment", "gaps", "subnetting", "longest-prefix-match", "cidr", "host-bits", "discard-route", "vpc-peering", "twice-nat", "route-distinguisher"]
+relatedTools: ["cidr", "python-playground"]
+relatedArticles: ["subnetting-basics", "cidr-notation", "vlsm", "supernetting-and-aggregation", "vlsm-worked-example", "static-routes-and-longest-match", "route-summarization", "private-address-space", "nat-explained", "bgp-and-the-routing-chokepoint", "mpls-primer"]
 category: networking
 order: 8
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-## Três coisas que dão errado em um plano de endereços
+Dois prefixos IPv4 se sobrepõem quando algum endereço pertence aos dois, e no Classless Inter-domain Routing (CIDR) isso quer dizer que um está inteiro dentro do outro, como a Request for Comments (RFC) 4271 observa para rotas ([RFC 4271, seção 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)). De propósito, é uma rota específica dentro de outra mais ampla; por acidente, a mesma sub-rede em duas interfaces ou dois sites num bloco só. As lacunas são o avesso: endereços de um bloco pai que nenhum prefixo cobre. Ao final você consegue provar a regra do aninhamento em binário, separar projeto de defeito, fechar a conta de cada endereço, explicar por que túneis de rede privada virtual (VPN) e o peering na nuvem recusam sobreposições, e conferir tudo com `ip route`, Python e a Calculadora CIDR / de sub-redes.
 
-À medida que um plano de endereços cresce, três problemas se infiltram: dois prefixos que **se sobrepõem**, um prefixo que **contém** outro, e **lacunas** de espaço de endereços que ninguém atribuiu. Os dois primeiros tratam de prefixos que reivindicam os mesmos endereços; o terceiro, de endereços que nenhum prefixo reivindica. Uma boa auditoria encontra os três.
+## Dois prefixos se aninham ou nunca se tocam
 
-## Sobreposição e contenção
+O CIDR trocou as classes de endereço por prefixos hierárquicos ([RFC 4632, seção 3](https://www.rfc-editor.org/rfc/rfc4632.txt)): endereço, barra e número de bits significativos, de 0 a 32, nomeando um bloco cujo tamanho é potência de dois (seção 3.1); [a notação CIDR](/learn/cidr-notation) detalha a barra. A RFC 1812 define o prefixo de rede como "a contiguous set of bits at the more significant end of the address", bits contínuos no topo do endereço ([RFC 1812, seção 2.2.5.2](https://www.rfc-editor.org/rfc/rfc1812.txt)). Pertencer a um prefixo é uma comparação com máscara, que em 1985 virou pseudocódigo ([RFC 950, seção 2.2](https://www.rfc-editor.org/rfc/rfc950.txt)):
 
-Dois prefixos se sobrepõem quando compartilham ao menos um endereço. Há algumas formas distintas:
+```text
+IF bitwise_and(dg.ip_dest, my_ip_mask)
+                          = bitwise_and(my_ip_addr, my_ip_mask)
+```
 
-- **Idêntico**: o mesmo bloco listado duas vezes, muitas vezes um erro de copiar e colar.
-- **Contenção**: um bloco está inteiramente dentro de outro. `10.0.0.0/24` contém `10.0.0.128/25`, porque o /25 é a metade superior do /24.
-- **Parcial**: dois intervalos compartilham alguns endereços mas nenhum contém o outro. Dois blocos CIDR (Roteamento entre Domínios sem Classe, do inglês Classless Inter-Domain Routing) corretos nunca se sobrepõem assim. Dois blocos alinhados de potência de dois quaisquer são disjuntos ou totalmente aninhados, um inteiramente dentro do outro, que é exatamente por que o endereçamento CIDR forma uma hierarquia limpa. Uma sobreposição parcial só aparece quando uma entrada não é um bloco alinhado.
+O roteador aplica isso no Basic Match, que só mantém as rotas cujos route.length bits mais significativos batem com os do destino ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)). Pegue P/m e Q/n, com m menor ou igual a n, e compare os primeiros m bits: se iguais, todo endereço de Q/n começa por eles e Q/n está dentro de P/m; se diferentes, nenhum endereço começa pelos dois e eles são disjuntos. Não há terceira saída. A RFC 4271 diz o mesmo da Network Layer Reachability Information (NLRI) do BGP: "Because BGP encodes NLRI using IP prefixes, overlap will always exhibit subset relationships", sobreposição é sempre relação de subconjunto ([RFC 4271, seção 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)). Em binário, bits de prefixo antes da barra:
 
-A contenção nem sempre é um erro. Os roteadores encaminham usando a **correspondência de prefixo mais longo**: vence a rota mais específica que corresponde a um destino. Um `/25` específico anunciado dentro de um `/24` sumarizado é um padrão deliberado e comum, usado para direcionar uma parte do tráfego de forma diferente. O perigo é a sobreposição *não intencional*, em que duas partes da sua rede acreditam ambas possuir os mesmos endereços e o tráfego aterrissa no lugar errado.
+```text
+198.51.100.0/24    110001100011001101100100|00000000
+198.51.100.128/25  1100011000110011011001001|0000000
+198.51.100.0/25    1100011000110011011001000|0000000
+```
 
-## Lacunas
+O /24 e o /25 de cima compartilham os primeiros 24 bits, então o /25 está dentro do /24; os dois /25 diferem no bit 25 e não compartilham nada.
 
-Uma lacuna é um trecho de um bloco pai que nenhuma sub-rede cobre. Suponha que você recortou `10.0.0.0/26` e `10.0.0.128/26` de `10.0.0.0/24`. Entre eles e depois, `10.0.0.64/26` e `10.0.0.192/26` ficam não atribuídos. Esses dois blocos são suas lacunas: espaço de endereços que você ainda pode atribuir, reivindicar ou simplesmente contabilizar.
+Sobreposição parcial, sem que uma faixa contenha a outra, exige portanto uma faixa que não seja prefixo: 10.0.0.64 a 10.0.0.191 compartilha 64 endereços com 10.0.0.0/25, mas em prefixos vira 10.0.0.64/26, dentro do /25, e 10.0.0.128/26, fora dele. A outra origem é a máscara descontínua, que pode deixar duas rotas igualmente específicas batendo com o mesmo destino; a RFC 1812 chama isso de "the reason the use of discontiguous subnet masks is not permitted", a razão da proibição ([RFC 1812, seção 10.2.2](https://www.rfc-editor.org/rfc/rfc1812.txt)).
 
-Encontrar lacunas importa por dois motivos. Mostra onde há espaço para crescer sem renumerar, e confirma que um bloco que você pretende sumarizar está de fato em uso por completo, já que um resumo anunciado sobre uma lacuna reivindica endereços que você não atribuiu.
+## Longest match: a sobreposição feita de propósito
 
-## Auditar um plano
+O longest match, explicado em [rotas estáticas e longest prefix match](/learn/static-routes-and-longest-match), vive do aninhamento. Das rotas que passam pelo Basic Match, a RFC 1812 fica com as de prefixo mais comprido e descarta o resto; se nenhuma sobrar, o pacote é descartado como inalcançável ([RFC 1812, seção 5.2.4.3](https://www.rfc-editor.org/rfc/rfc1812.txt)):
 
-Para revisar um plano, liste cada prefixo que você atribuiu e dê o bloco pai como escopo. Um relatório de sobreposições diz quais prefixos colidem e como; um relatório de lacunas diz exatamente quais blocos CIDR dentro do pai continuam livres. A [calculadora CIDR](/#cidr) faz ambos no modo Sobreposição / lacuna, rotulando cada sobreposição como idêntica, contida ou parcial, e expressando cada lacuna como os maiores blocos alinhados que a preenchem.
+| Destino | Rotas que batem | Rota usada |
+|---|---|---|
+| 198.51.100.130 | 0.0.0.0/0, 198.51.100.0/24, 198.51.100.128/25 | 198.51.100.128/25 |
+| 198.51.100.10 | 0.0.0.0/0, 198.51.100.0/24 | 198.51.100.0/24 |
+| 203.0.113.5 | 0.0.0.0/0 | 0.0.0.0/0 |
 
-Ambas as metades se conectam de volta ao [supernetting](/learn/supernetting-and-aggregation): um plano de endereços sem sobreposições não intencionais e sem lacunas dentro de um bloco é exatamente o plano que sumariza de forma limpa.
+A internet usa a regra: a organização que muda de provedor ganha do novo um anúncio específico, e "this advertisement is preferred over provider aggregates because it is a longer match", ele vence os agregados por ser mais longo ([RFC 4632, seção 4.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Retirada a rota específica, os destinos seguem alcançáveis pela rota que a cobre ([RFC 4271, seção 9.1.4](https://www.rfc-editor.org/rfc/rfc4271.txt)).
+
+## Lacunas, e a conta de cada endereço
+
+Lacuna é a parte de um bloco pai que nenhum prefixo atribuído cobre; a RFC 4632 chama esse espaço de holes (buracos) ([RFC 4632, seção 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Subtraia as atribuições do pai, escreva cada trecho livre como os maiores blocos alinhados que couberem e confira se atribuído mais livre dá o tamanho do pai, como em [uma alocação resolvida do começo ao fim](/learn/vlsm-worked-example). Em 198.51.100.0/24:
+
+| Bloco | Situação | Endereços |
+|---|---|---|
+| 198.51.100.0/26 | atribuído | 64 |
+| 198.51.100.64/27 | livre | 32 |
+| 198.51.100.96/27 | atribuído | 32 |
+| 198.51.100.128/26 | livre | 64 |
+| 198.51.100.192/29 | livre | 8 |
+| 198.51.100.200/29 | atribuído | 8 |
+| 198.51.100.208/28 | livre | 16 |
+| 198.51.100.224/27 | livre | 32 |
+
+Os 104 atribuídos e os 152 livres somam os 256 do /24. O trecho de 198.51.100.208 a 198.51.100.255 tem 48 endereços, número que não é potência de dois, e vira um /28 e um /27.
+
+As lacunas também abrem e fecham. O provedor da RFC 4632, dono de 10.24.0.0/13, conecta seis sites em ordem ([RFC 4632, seção 6.1](https://www.rfc-editor.org/rfc/rfc4632.txt)). Depois de 10.24.0.0/21 e 10.24.16.0/20, a lacuna 10.24.8.0/21 fica aberta até 10.24.8.0/22 e 10.24.12.0/22 a preencherem, e os quatro se agregam exatamente em 10.24.0.0/19. O diagrama imprime o último como /20; a errata 2955, verificada, corrige para o /22 do texto, o valor usado acima ([errata da RFC 4632](https://www.rfc-editor.org/errata/rfc4632)). Com os seis sites, 9.216 dos 524.288 endereços estão atribuídos e oito lacunas guardam o resto, mas o provedor anuncia o /13 inteiro (RFC 4632, seção 6.2).
+
+Isso só é seguro com uma rota de descarte: "A router that generates an aggregate route for multiple, more-specific routes must discard packets that match the aggregate route, but not any of the more-specific routes", quem agrega descarta o que só bate no agregado ([RFC 4632, seção 5.1](https://www.rfc-editor.org/rfc/rfc4632.txt)); senão, o tráfego para endereços cobertos e inalcançáveis pode entrar em loop. Na prática, isso é uma rota discard ou null por agregado anunciado (seção 5.2), e as mais específicas sobrepostas ficam internas (seção 5.4); [sumarização de rotas](/learn/route-summarization) mostra a falha sem ela, e [supernetting](/learn/supernetting-and-aggregation), o conjunto sem lacunas que se reduz a um bloco.
+
+## Quando a sobreposição é defeito
+
+A sobreposição vira defeito quando duas partes da rede disputam os mesmos endereços. Ponha a mesma sub-rede em duas interfaces e o teste da RFC 1812 para rede conectada, que compara o destino com o prefixo de cada interface, bate nas duas, sem resposta única: "If they are equal to each other, the packet can be transmitted through the corresponding network interface", se forem iguais, o pacote pode sair por ela ([RFC 1812, seção 5.2.4.2](https://www.rfc-editor.org/rfc/rfc1812.txt)).
+
+Um roteador pode recusar a duplicata de cara. Num tópico do Cisco Community de dezembro de 2016, relato de fórum e não documentação da Cisco, quem configurava uma segunda interface com `ip address 10.10.10.250 255.255.255.248` relatou "% 10.10.10.248 overlaps with GigabitEthernet8", colisão com a GigabitEthernet8 ([tópico do Cisco Community, dezembro de 2016](https://community.cisco.com/t5/switching/891f-dual-wan-configuration-with-same-subnet-overlap-error/m-p/2941542)); com essa máscara, 10.10.10.250 fica em 10.10.10.248/29, a rede que a mensagem cita.
+
+Entre sites, o espaço privado convida a colisões: "Addresses within this private address space will only be unique within the enterprise", únicos só dentro da empresa ([RFC 1918, seção 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). Juntar duas redes privadas pode obrigar a renumerar o que deixou de ser único (seção 4), e a defesa da RFC 1918 é escolher os sub-blocos ao acaso no espaço privado (seção 5); [espaço de endereços IPv4 privados e a RFC 1918](/learn/private-address-space) cobre as faixas.
+
+O longest match também é o mecanismo do sequestro de rota: "Traffic can be hijacked by advertising a prefix for a given destination that is more specific than the aggregate that is normally advertised for that destination", basta um prefixo mais específico que o agregado ([RFC 4632, seção 12](https://www.rfc-editor.org/rfc/rfc4632.txt)). Em 24 de fevereiro de 2008, a Pakistan Telecom, Autonomous System (AS) 17557, anunciou sem autorização 208.65.153.0/24, dentro do 208.65.152.0/22 do YouTube, e o /24 venceu onde se espalhou; o YouTube respondeu com o mesmo /24 e depois com dois /25 ([RIPE NCC, estudo de caso YouTube Hijacking](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)), história que [BGP: o voto de confiança](/learn/bgp-and-the-routing-chokepoint) conta inteira. As defesas da RFC 4632: confiança entre provedores, filtros fortes nas fronteiras e limite no comprimento de prefixo aceito, conforme diretrizes de Regional Internet Registry (RIR) (RFC 4632, seção 12).
+
+## Onde a sobreposição dói: VPNs e peering na nuvem
+
+Numa VPN, a sobreposição prende o tráfego em casa: um pacote para endereço da faixa local, como a RFC 2663 diz de realms que colidem, "would be forwarded to the internal node rather than through the NAT device to the external realm", fica no nó interno ([RFC 2663, seção 4.3](https://www.rfc-editor.org/rfc/rfc2663.txt)). No VPN gateway da Microsoft, os espaços de endereços "must not overlap otherwise the communication would fail", não podem se sobrepor, senão a comunicação falha ([Microsoft Learn, About NAT on Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)).
+
+O peering na nuvem recusa a sobreposição de saída. O Google Cloud derruba o peering de Virtual Private Cloud (VPC) se houver sub-redes sobrepostas, e uma frase cobre todos os casos: "No subnet IP range can exactly match, contain, or fit within another subnet IP range in a peered VPC network", nem igual, nem contendo, nem contida ([Google Cloud, VPC Network Peering](https://docs.cloud.google.com/vpc/docs/vpc-peering)). Parcial não aparece, porque entre prefixos esse caso não existe. A Amazon Web Services (AWS) concorda: "You cannot create a VPC peering connection between VPCs that have matching or overlapping IPv4 or IPv6 CIDR blocks", nem com blocos iguais, nem sobrepostos ([Amazon VPC Peering Guide](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html)), mesmo que se usem só os outros blocos (mesma página). O Azure exige espaços de endereços sem sobreposição nas redes virtuais pareadas ([Microsoft Learn, Create, change, or delete Azure virtual network peering](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering)).
+
+## Contornar a sobreposição com tradução, ou manter as redes separadas
+
+O NAT comum supõe que os endereços privados não se sobrepõem aos externos ([RFC 2663, seção 4.1](https://www.rfc-editor.org/rfc/rfc2663.txt)). Quando se sobrepõem, os dois endereços do pacote precisam mudar: "Twice NAT is necessary when private and external realms have address collisions", obrigatório quando os realms colidem (seção 4.3), com tradutor numa ponta do túnel ou nas duas (seção 6.1); [NAT explicado](/learn/nat-explained) cobre o básico. Três fabricantes documentam casos resolvidos:
+
+| Produto | Redes sobrepostas | Faixas únicas usadas no lugar |
+|---|---|---|
+| [VPN site a site do FortiOS](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets) | matriz e filial, ambas 192.168.111.0/24 | 10.1.1.0/24 (matriz), 10.2.2.0/24 (filial) |
+| [NAT do Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview) | uma rede virtual e duas filiais, todas 10.0.1.0/24 | 192.168.1.0/24, 192.168.2.0/24, 192.168.3.0/24 |
+| [NAT gateway privado da AWS](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html) | duas VPCs, ambas 10.0.0.0/16 | 100.64.1.0/24 e 100.64.2.0/24 |
+
+A Fortinet traduz os dois endereços, e "The virtual subnets must be the same size as the overlapping subnet", do mesmo tamanho da sobreposta ([Fortinet, Site-to-site VPN with overlapping subnets](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets)); os external mappings do Azure não podem se sobrepor entre si nem às redes conectadas sem NAT ([Microsoft Learn, About NAT on Azure VPN Gateway](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)); a AWS faz o time de IP decidir antes quais faixas podem se sobrepor e quais têm de ser roteáveis ([Amazon VPC User Guide, NAT gateway use cases](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html)); o Private NAT do Google só alcança destinos em sub-redes sem sobreposição, nenhum via VPC Network Peering ([Google Cloud, Private NAT](https://docs.cloud.google.com/nat/docs/private-nat)). O lado sobreposto fica escondido; todo destino ainda precisa de endereço único.
+
+Os provedores separam em vez de traduzir. A RFC 4364 deixa VPNs sem sites em comum se sobreporem, tipicamente em espaço da RFC 1918, desde que cada endereço seja inequívoco na sua VPN ([RFC 4364, seção 1.3](https://www.rfc-editor.org/rfc/rfc4364.txt)). Os roteadores de borda do provedor (PE routers) transformam um prefixo usado por várias VPNs em prefixos VPN-IPv4 únicos, e o Route Distinguisher (RD) existe só para isso: "The purpose of the RD is solely to allow one to create distinct routes to a common IPv4 address prefix", nada além de distinguir rotas (seção 4.1).
+
+## Como ver sobreposições e lacunas
+
+A sobreposição é um estado das tabelas de rotas e dos planos, não um campo do pacote, então uma captura não a mostra. No Linux, com as três rotas da tabela de longest match instaladas:
+
+```bash
+ip route show root 198.51.100.0/24
+ip route show match 198.51.100.130/32
+ip route show exact 198.51.100.0/24
+ip route get 198.51.100.130
+ip route get fibmatch 198.51.100.130
+```
+
+No ip-route(8), `root` seleciona rotas de prefixo não mais curto que o dado (o /24 e o /25), `match` as de prefixo não mais longo, que cobrem o destino (as três), e `exact` só aquele prefixo ([ip-route(8), página de manual do Linux](https://man7.org/linux/man-pages/man8/ip-route.8.html)). `ip route get` imprime a rota que o kernel usaria, e `fibmatch`, a rota completa encontrada, o /25. A rota de descarte do roteador que agrega é um blackhole, cujos pacotes somem em silêncio (ip-route(8)):
+
+```bash
+ip route add blackhole 198.51.100.0/24
+```
+
+O módulo ipaddress do Python roda no [Playground de Python](/tools/python-playground), CPython 3.14 de verdade no navegador. Seus overlaps(), subnet_of(), address_exclude() (só para redes contidas), collapse_addresses() e summarize_address_range() cobrem a auditoria ([documentação do Python 3.14, ipaddress](https://docs.python.org/3.14/library/ipaddress.html)). As lacunas, a conta fechada e o padrão strict:
+
+```text
+>>> from ipaddress import ip_network, collapse_addresses
+>>> ip_network("198.51.100.0/25").overlaps(ip_network("198.51.100.128/25"))
+False
+>>> ip_network("198.51.100.128/25").subnet_of(ip_network("198.51.100.0/24"))
+True
+>>> parent = ip_network("198.51.100.0/24")
+>>> used = [ip_network(p) for p in
+...         ("198.51.100.0/26", "198.51.100.96/27", "198.51.100.200/29")]
+>>> free = [parent]
+>>> for u in used:
+...     free = [g for f in free
+...             for g in (f.address_exclude(u) if u.subnet_of(f) else [f])]
+...
+>>> for g in sorted(free):
+...     print(g)
+...
+198.51.100.64/27
+198.51.100.128/26
+198.51.100.192/29
+198.51.100.208/28
+198.51.100.224/27
+>>> list(collapse_addresses(free + used))
+[IPv4Network('198.51.100.0/24')]
+>>> ip_network("10.0.0.64/25")
+Traceback (most recent call last):
+  ...
+ValueError: 10.0.0.64/25 has host bits set
+>>> ip_network("10.0.0.64/25", strict=False)
+IPv4Network('10.0.0.0/25')
+```
+
+A [Calculadora CIDR / de sub-redes](/tools/cidr) audita um plano no modo **Sobreposição / lacuna**: até 1.024 prefixos, separados por quebras de linha, vírgulas ou espaços, com o bloco pai em **Escopo (opcional, habilita a detecção de lacunas)**. Ela rotula cada par sobreposto como **idêntico a**, **contém**, **está dentro de** ou **sobrepõe parcialmente**, com a faixa compartilhada e o tamanho, e, só quando há escopo, lista os blocos livres em **Lacunas no escopo**, cada um o maior bloco alinhado que cabe. O modo **Super-rede** mostra se um conjunto sem lacunas se reduz a um bloco: os quatro primeiros sites da RFC 4632 dão 10.24.0.0/19.
+
+Diferente do Python, a calculadora mascara os bits de host sem avisar. 10.0.0.64/25 ao lado de 10.0.0.0/25 aparece como **idêntico a**; o 10.24.12.0/20 original do diagrama, ao lado de 10.24.0.0/21, é lido como 10.24.0.0/20, e 10.24.0.0/21 aparece dentro de 10.24.12.0/20, com sobreposição de 10.24.0.0 a 10.24.7.255, 2.048 endereços. Assim, um prefixo digitado errado pode posar de sobreposição: o sinal é uma sobreposição começando abaixo do endereço digitado. E é pelo mascaramento que o rótulo parcial nunca aparece.
+
+## Para lembrar
+
+- Dois prefixos IPv4 se aninham ou não têm nada em comum: compare os primeiros m bits, sendo m o comprimento menor.
+- Sobreposição parcial exige uma faixa que não é prefixo ou uma máscara descontínua, que a RFC 1812 não permite.
+- Uma rota mais específica anunciada de propósito vence por longest match; a mesma sub-rede em duas interfaces, ou dois sites no mesmo bloco, é defeito.
+- Lacunas são o bloco pai menos as atribuições, escritas como os maiores blocos alinhados; atribuído mais livre dá o tamanho do pai.
+- Um agregado só pode cobrir lacunas com uma rota de descarte para ele mesmo, como uma rota blackhole no Linux.
+- AWS, Azure e Google Cloud recusam peering entre faixas sobrepostas; numa VPN, o pacote para um endereço sobreposto fica na rede local.
+- Traduzir um lado ou os dois, ou separar tabelas de rotas com route distinguishers, contorna a sobreposição; blocos privados sorteados colidem menos.
+
+## Fontes
+
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seção 9.1.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 4632, Classless Inter-domain Routing (CIDR): The Internet Address Assignment and Aggregation Plan, agosto de 2006: seções 3, 3.1, 4.1, 5.1, 5.2, 5.4, 6.1, 6.2, 10 e 12 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4632.txt)
+- [RFC 4632 errata, RFC Editor errata records, 2008 a 2015: errata 2955 e 1577 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc4632)
+- [RFC 1812, Requirements for IP Version 4 Routers, junho de 1995: seções 2.2.5.1, 2.2.5.2, 4.2.2.11, 5.2.4.2, 5.2.4.3 e 10.2.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1812.txt)
+- [RFC 950, Internet Standard Subnetting Procedure, agosto de 1985: seções 2.1 e 2.2, Apêndice II caso 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc950.txt)
+- [RFC 1918, Address Allocation for Private Internets, fevereiro de 1996: seções 3 a 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 2663, IP Network Address Translator (NAT) Terminology and Considerations, agosto de 1999: seções 4.1, 4.3 e 6.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2663.txt)
+- [RFC 4364, BGP/MPLS IP Virtual Private Networks (VPNs), fevereiro de 2006: seções 1.3, 4 e 4.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4364.txt)
+- [Cisco Community, 891F Dual WAN configuration with same subnet (overlap error), dezembro de 2016 (fonte secundária) (lida em 2026-10-18)](https://community.cisco.com/t5/switching/891f-dual-wan-configuration-with-same-subnet-overlap-error/m-p/2941542)
+- [RIPE NCC, YouTube Hijacking: A RIPE NCC RIS case study, 17 de março de 2008: Event Timeline e Summary (lida em 2026-10-18)](https://www.ripe.net/about-us/news/youtube-hijacking-a-ripe-ncc-ris-case-study/)
+- [Microsoft Learn, About NAT on Azure VPN Gateway, outubro de 2024: Overlapping address spaces, NAT mode e NAT example (lida em 2026-10-18)](https://learn.microsoft.com/en-us/azure/vpn-gateway/nat-overview)
+- [Google Cloud documentation, VPC Network Peering, última atualização em 13 de outubro de 2026: Limitations, Ignored routes, Subnet and peering subnet route interactions (lida em 2026-10-18)](https://docs.cloud.google.com/vpc/docs/vpc-peering)
+- [Amazon VPC Peering Guide, How VPC peering connections work, página sem data: VPC peering limitations (Overlapping CIDR blocks) (lida em 2026-10-18)](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html)
+- [Microsoft Learn, Create, change, or delete Azure virtual network peering, julho de 2025: Requirements and constraints (lida em 2026-10-18)](https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-manage-peering)
+- [Fortinet Document Library, FortiOS 8.0.0 Administration Guide, Site-to-site VPN with overlapping subnets, página sem data: introdução (lida em 2026-10-18)](https://docs.fortinet.com/document/fortigate/8.0.0/administration-guide/426761/site-to-site-vpn-with-overlapping-subnets)
+- [Amazon VPC User Guide, NAT gateway use cases, página sem data: Enable communication between overlapping networks (lida em 2026-10-18)](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html)
+- [Google Cloud documentation, Private NAT, última atualização em 13 de outubro de 2026: General specifications (lida em 2026-10-18)](https://docs.cloud.google.com/nat/docs/private-nat)
+- [ip-route(8), página de manual do Linux (iproute2), versão do man7.org de 9 de setembro de 2026: SYNOPSIS, ip route show, ip route get (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [Python 3.14 documentation, ipaddress, IPv4/IPv6 manipulation library, 18 de outubro de 2026: IP Network definitions, Network objects, Other Module Level Functions (lida em 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)

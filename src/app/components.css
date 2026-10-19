@@ -2887,6 +2887,13 @@
   padding-block: clamp(2.5rem, 7vw, 4.5rem);
   border-bottom: 1px solid var(--border-subtle);
 }
+/* The readiness line under the hub's lede (audit F10, 2026-10-18): the guide counts by status, smaller than the
+   lede and set a little apart from it, so the numbers read as a note on the promise above them. */
+.certs-readiness {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
 .certs-title {
   font-size: clamp(2.25rem, 6vw, 3.5rem);
   line-height: 1.05;
@@ -3227,6 +3234,16 @@
   color: var(--text-secondary);
   max-width: 64ch;
   margin-bottom: 1.1rem;
+}
+/* The privacy notice's revision record (audit F14, 2026-10-18): one line per revision, the date in the
+   monospace face, read as a list under the "last updated" line. */
+.privacy-revisions {
+  list-style: none;
+  padding-left: 0;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 /* CONCORD narrative — a lead, a pull-quote for the principal/agent line, and a
@@ -4071,6 +4088,16 @@
 }
 .contact-success-body {
   color: var(--text-secondary);
+}
+/* The drafted notice (F01, 2026-10-18): the same panel as the success state, laid out as a column so the message box
+   and the copy button sit under the explanation; the panel sits above the submit button inside the form. */
+.contact-drafted {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.contact-copy {
+  align-self: flex-start;
 }
 
 /* ============================================================================

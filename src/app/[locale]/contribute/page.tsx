@@ -39,7 +39,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contribute" });
-  return { title: t("title") };
+  // The document title names the hub, not its translations section (audit F12, 2026-10-18): "title" is the
+  // heading of the translations section further down the page, and the browser tab, history and social cards
+  // were calling the whole page "Help improve the translations". The description is the hub's lede.
+  return { title: t("hubTitle"), description: t("hubLede") };
 }
 
 export default async function ContributePage({
@@ -145,7 +148,9 @@ export default async function ContributePage({
               </div>
             </div>
 
-            <a href={`/${locale}`} className="btn btn-secondary contribute-back">
+            {/* The label says "Back to tools", so the link goes to the tools hub (audit F16; it went to the home
+                page before 2026-10-18). */}
+            <a href={`/${locale}/tools`} className="btn btn-secondary contribute-back">
               {t("backHome")} →
             </a>
           </div>

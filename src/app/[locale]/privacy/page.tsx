@@ -23,6 +23,8 @@ import { Link } from "@/i18n/navigation";
 import Header from "@/components/Header";
 import SiteFooter from "@/components/SiteFooter";
 import { contactEmail } from "@/config/contact";
+// The notice's own revision record (audit F14, 2026-10-18): the date printed below is data, not a string per pack.
+import { PRIVACY_REVISIONS, latestPrivacyRevision, formatRevisionDate } from "@/config/privacyRevisions";
 
 /**
  * PAGE TITLE (2026-09-26). Shipped with no generateMetadata export, so it
@@ -133,7 +135,17 @@ export default async function PrivacyPage({
             <div className="container colophon-container">
               <h2 className="colophon-h2">{t("changesTitle")}</h2>
               <p className="colophon-body">{t("changesBody")}</p>
-              <p className="colophon-body mono">{t("updated")}</p>
+              {/* The date of the newest revision, formatted in the reader's language, followed by the record of
+                  what changed and when: a reader can tell the notice's own revisions from the site's content date
+                  in the footer. */}
+              <p className="colophon-body mono">{t("updated", { date: formatRevisionDate(latestPrivacyRevision().date, locale) })}</p>
+              <ul className="colophon-body privacy-revisions">
+                {PRIVACY_REVISIONS.map((r) => (
+                  <li key={r.date}>
+                    <span className="mono">{formatRevisionDate(r.date, locale)}</span>: {t(`revisions.${r.key}`)}
+                  </li>
+                ))}
+              </ul>
               <Link href="/" className="btn btn-secondary colophon-back">
                 {t("backHome")} →
               </Link>

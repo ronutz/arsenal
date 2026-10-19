@@ -107,13 +107,22 @@ export default function SsrfUrlClassifierTool() {
                 <Field label={t("facts.canonicalIp")} value={result.canonicalIp} />
               )}
               {result.ipVersion && <Field label={t("facts.ipVersion")} value={"IPv" + result.ipVersion} />}
+              {/* 2026-10-19: the IPv4 address an IPv6 host carries (IPv4-mapped, NAT64, 6to4); the rating comes from it. */}
+              {result.embeddedIpv4 && <Field label={t("facts.embeddedIpv4")} value={result.embeddedIpv4} /> /* the carried IPv4 address */}
+              {/* 2026-10-19: the IANA special-purpose registry row, written as the registry names it (language-neutral). */}
+              {result.specialBlock && ( // only when the engine names a registry row
+                <Field // one more fact row
+                  label={t("facts.specialBlock")} // "Special-purpose block"
+                  value={`${result.specialBlock.prefix} ${result.specialBlock.name} (${result.specialBlock.rfc})`} // prefix, IANA name, RFC
+                /> // end registry-row Field
+              ) /* end specialBlock */}
               {result.port && <Field label={t("facts.port")} value={result.port} />}
               {result.path && result.path !== "/" && <Field label={t("facts.path")} value={result.path} />}
             </div>
           </div>
 
           {/* Flags: obfuscation, dangerous scheme, embedded credentials. */}
-          {(result.obfuscated || result.schemeFlag || result.hasUserinfo) && (
+          {(result.obfuscated || result.schemeFlag || result.hasUserinfo || result.embedding) && ( // embedding added 2026-10-19
             <div className="jwt-panel ssrf-flags">
               <div className="jwt-panel-title">{t("flags.title")}</div>
               <ul className="ssrf-flag-list">
@@ -125,6 +134,16 @@ export default function SsrfUrlClassifierTool() {
                     })}
                   </li>
                 )}
+                {/* 2026-10-19: which IPv4-in-IPv6 embedding was decoded, and the address it carries. */}
+                {result.embedding && result.embeddedIpv4 && ( // only for an IPv6 host that carries an IPv4 address
+                  <li className="ssrf-flag ssrf-flag-warn">{/* same warning style as the other flags */}
+                    {t("flags.embedded", { embedding: t("embedding." + result.embedding), ip: result.embeddedIpv4 }) /* embedding name + carried address */}
+                  </li> // end embedding flag
+                ) /* end embedding branch */}
+                {/* 2026-10-19: 64:ff9b:1::/48 leaves the prefix length to the operator, so say which RFC 6052 layout was read. */}
+                {result.embedding === "nat64-local" && result.embeddingLayout !== null && ( // local-use prefix only
+                  <li className="ssrf-flag ssrf-flag-warn">{t("flags.embeddedLayout", { length: result.embeddingLayout }) /* the /n layout used */}</li>
+                ) /* end layout flag */}
                 {result.schemeFlag && (
                   <li className="ssrf-flag ssrf-flag-warn">{t("flags.scheme", { scheme: result.schemeFlag })}</li>
                 )}

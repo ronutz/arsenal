@@ -8,7 +8,7 @@ relatedArticles: ["dns-family-history", "identity-family-history", "ddos-family-
 category: security
 order: 160
 status: reviewed
-updated: "2026-09-03"
+updated: "2026-10-19"
 ---
 
 O correio eletrônico é a coisa mais antiga deste catálogo ainda fazendo o trabalho original dela, e a única que virou em silêncio a credencial de referência da internet inteira sem ninguém ter decidido que deveria.
@@ -39,7 +39,7 @@ O **SPF** foi concebido em 1997 e liberado como rascunho por **Meng Weng Wong** 
 
 O **DomainKeys** veio do Yahoo em 2004 e virou **DKIM**, assinando a mensagem de forma criptográfica para que o receptor verifique que ela foi autorizada pelo domínio e não foi alterada no caminho.
 
-O **DMARC** veio em 2012, e a contribuição dele é a peça que faltava, e não uma terceira assinatura: ele amarra o endereço De visível aos resultados de SPF e DKIM, diz aos receptores o que fazer quando falha, e - decisivo - manda **relatórios de volta ao dono do domínio**, para que ele descubra quem envia em nome dele.
+O **DMARC** veio em 2012, e a contribuição dele é a peça que faltava, e não uma terceira assinatura: ele amarra o endereço De visível aos resultados de SPF e DKIM, diz aos receptores o que fazer quando falha e, o que é decisivo, manda **relatórios de volta ao dono do domínio**, para que ele descubra quem envia em nome dele. A especificação entrou na série de RFCs em março de 2015 como RFC 7489, um documento informativo; desde maio de 2026 o DMARC é um Proposed Standard, a RFC 9989, com os relatórios agregados e de falha especificados nas RFCs 9990 e 9991, e as três juntas tornam obsoleta a RFC 7489 ([RFC Editor, RFC 7489](https://www.rfc-editor.org/info/rfc7489); [RFC 9989, apêndice C.1](https://www.rfc-editor.org/rfc/rfc9989.txt)).
 
 Cada um resolve um fragmento. Nenhum substituiu o SMTP. Trinta anos de trabalho de segurança, nada disso tocando no protocolo, porque tocar no protocolo exigiria que todo servidor de correio do planeta mudasse ao mesmo tempo.
 
@@ -87,5 +87,7 @@ E a prática que configuração nenhuma substitui: **treinar as pessoas de que o
 - [InfoSec Insights sobre a história do correio e do SMTP: o projeto de 1982 em que o campo De no corpo da mensagem não precisava coincidir com o endereço Mail From, abrindo caminho para uma série de problemas, e a afirmação da RFC 5321 de que o correio SMTP é inerentemente inseguro porque usuários casuais conseguem criar mensagens que enganam um destinatário ingênuo](https://sectigostore.com/blog/a-history-of-email-and-smpt-the-evolution-of-email-security/)
 - [Postel coescrevendo a RFC 772 com Suzanne Sluizer em 1980, e o relato de Sluizer em 2004 de que na época falava-se de centenas ou talvez milhares de sítios no que então se chamava ARPANET](https://www.emailonacid.com/blog/article/email-marketing/history-of-email/)
 - [O conceito do Sender Policy Framework proposto em dezembro de 1997 e primeiro liberado como rascunho por Meng Weng Wong em junho de 2003, com o DomainKeys surgindo no Yahoo em 2004](https://www.getmailbird.com/evolution-email-privacy-encryption/)
-- [SPF, DKIM e DMARC como RFC 7208, RFC 6376 e RFC 7489, com Google e Yahoo exigindo os três de remetentes em massa desde fevereiro de 2024, e os relatórios agregados do DMARC mostrando aos donos de domínio quem envia em nome deles](https://dmarcreport.com/blog/the-history-of-email-from-arpanet-to-modern-secure-communication/)
+- [SPF e DKIM como RFC 7208 e RFC 6376, com Google e Yahoo exigindo SPF, DKIM e DMARC de remetentes em massa desde fevereiro de 2024, e os relatórios agregados do DMARC mostrando aos donos de domínio quem envia em nome deles](https://dmarcreport.com/blog/the-history-of-email-from-arpanet-to-modern-secure-communication/)
 - [A entrada de Tomlinson no Internet Hall of Fame em 2012 e a morte dele em 2016, aos 74 anos, com um porta-voz da Raytheon observando que desenvolver o correio não era tarefa nenhuma - ele estava só brincando, procurando o que fazer com a ARPANET](https://www.mail.com/blog/posts/fiftieth-anniversary-of-email/20/)
+- [RFC Editor, página de informações da RFC 7489, Domain-based Message Authentication, Reporting, and Conformance (DMARC): Informational, publicada em março de 2015, tornada obsoleta pelas RFCs 9989, 9990 e 9991 (lida em 2026-10-19)](https://www.rfc-editor.org/info/rfc7489)
+- [RFC 9989, Domain-Based Message Authentication, Reporting, and Conformance (DMARC), maio de 2026: primeira página (Standards Track, torna obsoletas as RFCs 7489 e 9091) e apêndice C.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9989.txt)

@@ -9,6 +9,11 @@
 //                      validate as an integer in 0..4294967295 (32-bit ASN
 //                      space, RFC 6793). Out-of-vocabulary input is a format
 //                      error, never a guess.
+//                      Since 2026-10-19 it also accepts the dotted notations
+//                      of RFC 5396 (asdot and asdot+: "1.10" is 1 x 65536 +
+//                      10 = 65546), converts them to asplain for the lookup,
+//                      and returns all three forms for display; a half above
+//                      65535 or an empty half is refused with its own code.
 //   2. SPECIAL_ASNS  - the IANA special-purpose AS numbers registry, vendored
 //                      from the live CSV on 2026-07-08. A special ASN has no
 //                      registry to ask: the tool says WHY (with the RFC) and
@@ -51,7 +56,9 @@ export { curlCommand, BOOTSTRAP_SNAPSHOT };
 // Errors
 // ----------------------------------------------------------------------------
 
-export type AsnErrorCode = "empty" | "format" | "range";
+// "dotRange": a dotted (asdot / asdot+, RFC 5396) part above 65535; "dotEmpty": a dotted input with an empty part
+// (added 2026-10-19 with asdot input, PRIME "Accept asdot").
+export type AsnErrorCode = "empty" | "format" | "range" | "dotRange" | "dotEmpty";
 
 export class AsnError extends Error {
   code: AsnErrorCode;
@@ -73,23 +80,92 @@ export const ASN_MAX = 4294967295;
 // after the optional prefix; anything else (dots, signs, letters) is format.
 const ASN_INPUT_RE = /^(?:as\s*)?(\d+)$/i;
 
+// Dotted forms (RFC 5396 section 2, read 2026-10-19): asdot+ writes every AS number as
+// "<high order 16-bit value in decimal>.<low order 16-bit value in decimal>" ("1.10" is 65546),
+// and asdot does the same for values of 65536 and above. The optional "AS" prefix is accepted
+// as for asplain. Both parts are captured as possibly-empty digit runs so that an empty part
+// gets its own message instead of a generic format error. Anchored, no nested quantifier, and
+// "\s*" and "\d*" cannot match the same character: linear time, ReDoS-safe.
+const ASN_DOT_RE = /^(?:as\s*)?(\d*)\.(\d*)$/i;
+
+/** The largest value of one 16-bit half in dotted notation. */
+export const ASN_DOT_PART_MAX = 65535;
+
+/** Notation the input was written in. */
+export type AsnNotation = "asplain" | "dotted";
+
 export interface ClassifiedAsn {
   /** The number itself (fits Number: max is 2^32-1). */
   asn: number;
-  /** Canonical display form, "AS15169". */
+  /** Canonical display form, "AS15169" (asplain, the form RFC 5396 section 3 proposes). */
   normalized: string;
+  /** asplain form, the decimal value: "65546". */
+  asplain: string;
+  /** asdot form: asplain below 65536, "<high>.<low>" from 65536 up ("1.10"). */
+  asdot: string;
+  /** asdot+ form: always "<high>.<low>" ("0.65535", "1.10"). */
+  asdotPlus: string;
+  /** How the input was written: plain decimal, or dotted (asdot or asdot+). */
+  notation: AsnNotation;
+  /** For dotted input, the two 16-bit halves as typed (leading zeros removed); null for asplain input. */
+  dotted: { high: number; low: number } | null;
+}
+
+/** asdot and asdot+ for a number, per RFC 5396 section 2. */
+export function asnForms(asn: number): { asplain: string; asdot: string; asdotPlus: string } {
+  // High and low 16-bit halves; Math.floor keeps it exact for every 32-bit value.
+  const high = Math.floor(asn / 65536);
+  // The remainder is the low half.
+  const low = asn % 65536;
+  // asdot+ always dots.
+  const asdotPlus = `${high}.${low}`;
+  // asdot dots only from 65536 up, otherwise it is the asplain string.
+  const asdot = asn >= 65536 ? asdotPlus : String(asn);
+  // asplain is the decimal value.
+  return { asplain: String(asn), asdot, asdotPlus };
+}
+
+/** Parse one dotted half: digits only (the regex guarantees it), at most 65535. */
+function dotPart(digits: string): number {
+  // An empty half ("1.", ".10", ".") is its own error.
+  if (digits === "") throw new AsnError("dotEmpty", "a dotted AS number needs both parts");
+  // Leading zeros carry no value; strip them so the length check below is about magnitude (linear regex).
+  const trimmed = digits.replace(/^0+(?=\d)/, "");
+  // More than five significant digits is above 65535 without converting (no precision question).
+  if (trimmed.length > 5) throw new AsnError("dotRange", "a dotted part is above 65535");
+  // Five digits or fewer is exact as a Number.
+  const n = Number(trimmed);
+  // Each half is a 16-bit value.
+  if (n > ASN_DOT_PART_MAX) throw new AsnError("dotRange", "a dotted part is above 65535");
+  // A valid half.
+  return n;
 }
 
 export function classifyAsn(raw: string): ClassifiedAsn {
   const s = raw.trim();
   if (s === "") throw new AsnError("empty");
+  // Dotted input first (asdot or asdot+): it contains exactly one "." and digits around it.
+  const d = ASN_DOT_RE.exec(s);
+  if (d) {
+    // Each half validated on its own, so the message names what is wrong.
+    const high = dotPart(d[1]);
+    // The low half.
+    const low = dotPart(d[2]);
+    // RFC 5396: high-order 16 bits times 65536 plus the low-order 16 bits; at most 4294967295.
+    const n = high * 65536 + low;
+    // The three notations of the same number.
+    const forms = asnForms(n);
+    // asplain is the lookup form; the dotted halves are kept to show the arithmetic.
+    return { asn: n, normalized: `AS${n}`, ...forms, notation: "dotted", dotted: { high, low } };
+  }
   const m = ASN_INPUT_RE.exec(s);
   if (!m) throw new AsnError("format", "not an AS number");
   // Reject absurd digit runs before Number() to avoid precision lies.
   if (m[1].length > 10) throw new AsnError("range", "beyond 32-bit ASN space");
   const n = Number(m[1]);
   if (n > ASN_MAX) throw new AsnError("range", "beyond 32-bit ASN space");
-  return { asn: n, normalized: `AS${n}` };
+  // asplain input: the same three notations, no dotted halves to show.
+  return { asn: n, normalized: `AS${n}`, ...asnForms(n), notation: "asplain", dotted: null };
 }
 
 // ----------------------------------------------------------------------------
@@ -141,23 +217,31 @@ export function specialFor(asn: number): SpecialAsnEntry | null {
 // 3. The plan: special (no egress) | query (one URL, on Ask) | unallocated
 // ----------------------------------------------------------------------------
 
+// Every plan carries `classified` (added 2026-10-19) so the page can show the asplain, asdot and asdot+ forms.
 export type AsnPlan =
-  | { kind: "special"; asn: number; normalized: string; special: SpecialAsnEntry }
+  | { kind: "special"; asn: number; normalized: string; classified: ClassifiedAsn; special: SpecialAsnEntry }
   | {
       kind: "query";
       asn: number;
       normalized: string;
+      // The three RFC 5396 notations and how the input was written.
+      classified: ClassifiedAsn;
       registryHost: string;
       url: string;
       curl: string;
     }
-  | { kind: "unallocated"; asn: number; normalized: string };
+  // Unallocated also carries the notations.
+  | { kind: "unallocated"; asn: number; normalized: string; classified: ClassifiedAsn };
 
 export function planAsn(raw: string): AsnPlan {
-  const { asn, normalized } = classifyAsn(raw);
+  // Classify once; dotted input is already converted to its asplain number here.
+  const classified = classifyAsn(raw);
+  // The asplain number and its display form drive everything below.
+  const { asn, normalized } = classified;
 
   const special = specialFor(asn);
-  if (special) return { kind: "special", asn, normalized, special };
+  // A special-purpose number: answered locally, with its notations.
+  if (special) return { kind: "special", asn, normalized, classified, special };
 
   const input: ClassifiedInput = { kind: "asn", value: String(asn) };
   try {
@@ -167,6 +251,8 @@ export function planAsn(raw: string): AsnPlan {
       kind: "query",
       asn,
       normalized,
+      // The notations travel with the plan.
+      classified,
       registryHost: new URL(url).hostname,
       url,
       curl: curlCommand(url),
@@ -175,7 +261,8 @@ export function planAsn(raw: string): AsnPlan {
     // The vendored bootstrap has genuine gaps (unallocated / not yet
     // delegated blocks). That is an answer, not a failure.
     if (e instanceof RdapError && e.code === "noEndpoint") {
-      return { kind: "unallocated", asn, normalized };
+      // An unallocated number still shows its notations.
+      return { kind: "unallocated", asn, normalized, classified };
     }
     throw e;
   }

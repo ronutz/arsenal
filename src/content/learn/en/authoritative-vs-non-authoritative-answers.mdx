@@ -1,37 +1,163 @@
 ---
 slug: authoritative-vs-non-authoritative-answers
 title: "Authoritative vs Non-Authoritative Answers"
-summary: "The Non-authoritative answer marker in nslookup means the result came from a resolver, usually out of its cache, not from a server that actually holds the zone. This explains the difference, why it is usually fine, and how to get an authoritative answer when you need one."
-concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup"]
-relatedTools: ["nslookup-output-explainer"]
-relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags"]
+summary: "An answer is authoritative when the server that sent it holds the zone for the name you asked about, and it says so with one bit of the DNS header, the AA bit, which nslookup reports as the Non-authoritative answer marker and dig as the aa flag. After reading, you can tell a cached answer from a referral, explain why a recursive lookup is non-authoritative by design, ask a zone's own server with recursion turned off and read aa in the reply, and say what the bit still does not prove."
+concepts: ["authoritative", "non-authoritative", "dns cache", "resolver", "nslookup", "aa flag", "referral", "lame delegation", "negative caching"]
+relatedTools: ["nslookup-output-explainer", "dig-output-explainer", "dig-command-builder"]
+relatedArticles: ["reading-nslookup-output", "nslookup-vs-dig", "dns-message-header-and-flags", "reading-a-dns-answer", "dns-record-types-in-answers", "dnssec-end-to-end", "dns-zone-transfers-and-notify", "choosing-a-public-dns-resolver", "reading-dig-output"]
 category: networking
 order: 48
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-When nslookup prints `Non-authoritative answer:` before a result, it is telling you something specific about where that answer came from.
+nslookup prints `Non-authoritative answer:` above most of what it finds, and the flags line of dig usually has no `aa` in it. Both report one bit of the reply header, the authoritative answer (AA) bit. This part explains what the bit asserts in the words of Request for Comments (RFC) 1035 and RFC 2181, where a non-authoritative answer comes from, why that is the intended result of a recursive lookup, and when it is not enough. Afterwards you can tell a cached answer from a referral, ask a zone's own server with recursion turned off and read `aa` in the reply, and say what the bit still does not prove. The series opener, [Reading a DNS answer](/learn/reading-a-dns-answer), reads the whole reply; this part stays on one bit.
+
+## What authoritative means
+
+The word comes from the zone: "a name server is said to be an AUTHORITY for these parts of the name space" for which it has complete information ([RFC 1034, section 2.4](https://www.rfc-editor.org/rfc/rfc1034.txt)), and it marks each response accordingly (section 4.1). The mark is the AA bit, which "specifies that the responding name server is an authority for the domain name in question section" ([RFC 1035, section 4.1.1](https://www.rfc-editor.org/rfc/rfc1035.txt)). Read that closely: authority for the name in the question, not for every record in the reply; past a CNAME, "only the record describing that alias is necessarily authoritative" ([RFC 2181, section 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt)). RFC 2181 also fixes the working definition: "throughout this document, 'authoritative' means a reply with the AA bit set" (section 5.4.1). Who may set the bit is a question of zones. "The authoritative servers for a zone are enumerated in the NS records for the origin of the zone, which, along with a Start of Authority (SOA) record are the mandatory records in every zone" (section 6.1). Primary, secondary or stealth server, one not listed in the zone's name server (NS) set, makes no difference: each holds the zone and sets AA ([RFC 1996, section 2.1](https://www.rfc-editor.org/rfc/rfc1996.txt)).
 
 ## Two kinds of server
 
-DNS has authoritative servers and recursive resolvers. An **authoritative** server holds the actual zone data for a domain; it is the source of truth. A **recursive resolver** (like 1.1.1.1 or 8.8.8.8, or your ISP's) does not own any zones. It answers on your behalf by asking the authoritative servers and then **caching** the result for its TTL (time to live).
+In RFC 9499's vocabulary, an authoritative server is "A server that knows the content of a DNS zone from local knowledge, and thus can answer queries about that zone without needing to query other servers" ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.txt)); it answers for its zones with AA set and refers queries for child zones elsewhere, and "these referrals have the AA bit set to 0" (section 6). A recursive resolver acts in recursive mode and caches what it receives; the stub resolver in your operating system depends on one (section 6). The public resolvers at 8.8.8.8 and 1.1.1.1 are of this kind ([Public DNS resolvers](/learn/choosing-a-public-dns-resolver) compares them). Recursion desired (RD) and recursion available (RA) both set in the reply means recursion was used ([RFC 1034, section 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)); [The DNS header](/learn/dns-message-header-and-flags) covers all seven flags.
 
-When you query a recursive resolver and it answers from that cache, the answer is **non-authoritative**: correct, but a copy, possibly a few seconds or minutes old. That is what the marker means. When the marker is **absent**, you reached a server that is authoritative for the name, and the data came straight from the zone.
+## Where a non-authoritative answer comes from
 
-## Why non-authoritative is usually fine
+RFC 1034's server algorithm searches the zones first and the cache second, copying matching cached records into the answer section ([RFC 1034, section 4.3.2](https://www.rfc-editor.org/rfc/rfc1034.txt)). A cache hit is the common source of an answer with AA clear, but not the only one. A referral is another: an empty answer section, the NS set of the referred-to zone in the authority section, and "The AA bit is clear" ([RFC 9499, section 4](https://www.rfc-editor.org/rfc/rfc9499.txt)). The third is an answer a resolver has just fetched for you: it comes from the resolver side, not from a zone, so AA stays clear however fresh the record. A real query and response captured on 18 October 2026 shows the first and the third side by side: `example.com IN A`, sent to a public resolver over DNS over HTTPS (DoH) twice, twelve seconds apart.
 
-For everyday lookups, a non-authoritative answer is exactly what you want: it is fast, and the TTL keeps it fresh enough. Caching is the whole reason DNS scales. You only care about the distinction when the cache might be stale, which is precisely when you have just changed a record and are waiting for the world to catch up.
+```text
+flags 0x8180 = [qr rd ra], opcode 0, rcode 0 (NOERROR), AA bit = 0, counts QD 1 AN 2 NS 0 AR 1
+ANSWER     example.com. 11 IN A    (address withheld)
+ANSWER     example.com. 11 IN A    (address withheld)
+
+flags 0x8180 = [qr rd ra], opcode 0, rcode 0 (NOERROR), AA bit = 0, counts QD 1 AN 2 NS 0 AR 1
+ANSWER     example.com. 300 IN A   (address withheld)
+ANSWER     example.com. 300 IN A   (address withheld)
+```
+
+The first reply was a cache entry eleven seconds from expiry; the second, with the zone's full time to live (TTL) of 300 seconds, had just been fetched. Same flags, AA clear both times; only the falling TTL betrays the cache, as in the 1987 specification's own side-by-side example ([RFC 1034, section 6.2.1](https://www.rfc-editor.org/rfc/rfc1034.txt)). RFC 2181 turns the bit into the ranking a resolver applies when two answers disagree: "Trustworthiness shall be, in order from most to least:" ([RFC 2181, section 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt))
+
+```text
+     + Data from a primary zone file, other than glue data,
+     + Data from a zone transfer, other than glue,
+     + The authoritative data included in the answer section of an
+       authoritative reply.
+     + Data from the authority section of an authoritative answer,
+     + Glue from a primary zone, or glue from a zone transfer,
+     + Data from the answer section of a non-authoritative answer, and
+       non-authoritative data from the answer section of authoritative
+       answers,
+     + Additional information from an authoritative answer,
+       Data from the authority section of a non-authoritative answer,
+       Additional information from non-authoritative answers.
+```
+
+## Why it is usually fine
+
+A non-authoritative answer is what a recursive lookup is meant to return. The resolver algorithm starts at its cache, and "If the data is in the cache, it is assumed to be good enough for normal use" ([RFC 1034, section 5.3.3](https://www.rfc-editor.org/rfc/rfc1034.txt)). The age of what you get is bounded by the TTL the zone's operator chose, which "specifies a maximum time to live, not a mandatory time to live" ([RFC 2181, section 8](https://www.rfc-editor.org/rfc/rfc2181.txt)), so a cache may shorten it. And nothing in nslookup inspects the TTL or knows whether the answer was cached: the marker is the AA bit and nothing else ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)).
+
+## When it matters
+
+After a change. Every cache on the path keeps the old record until its TTL runs out, and the zone's secondaries lag too: "Whenever a new zone is loaded in a secondary, the secondary waits REFRESH seconds before checking with the primary for a new serial" ([RFC 1034, section 4.3.5](https://www.rfc-editor.org/rfc/rfc1034.txt)), unless [NOTIFY](/learn/dns-zone-transfers-and-notify) reaches them first. A resolver may even go past the TTL: with serve-stale, "If the data is unable to be authoritatively refreshed when the TTL expires, the record MAY be used as though it is unexpired" ([RFC 8767, section 4](https://www.rfc-editor.org/rfc/rfc8767.txt)), and only an answer with AA set counts as a refresh (section 4).
+
+When the answer was changed on the way. In 2008 the Security and Stability Advisory Committee (SSAC) of the Internet Corporation for Assigned Names and Numbers (ICANN) wrote that "any third party who provides an iterative resolver that participates in the resolution process is a potential man in the middle" ([ICANN SSAC, SAC 032](https://www.icann.org/en/system/files/files/sac-032-en.pdf)), documenting resolvers that rewrote NXDOMAIN into addresses of their own. Forged data in a cache, planted by an attacker or inserted by policy, prints exactly like a genuine cached answer; asking the authority yourself goes round the resolver, and only validation with the DNS Security Extensions (DNSSEC) proves anything.
+
+Under split DNS, where the same servers answer differently by the source of the query, so that "a domain name that is notionally globally unique has different meanings for different network users" ([RFC 9499, section 6](https://www.rfc-editor.org/rfc/rfc9499.txt)). Both views answer with AA set, each for its own data.
+
+And the opposite surprise: a resolver answering with AA set for zones it serves locally, such as the reverse zones of private addresses ([RFC 6303, section 3](https://www.rfc-editor.org/rfc/rfc6303.txt)) and `resolver.arpa` ([RFC 9462, section 6.4](https://www.rfc-editor.org/rfc/rfc9462.txt)). The one reply with AA set in the captured session came from a public resolver answering `_dns.resolver.arpa`, with flags `qr aa rd ra`.
 
 ## Getting an authoritative answer
 
-If you need the current truth, bypass the cache and ask an authoritative server directly. Find the zone's name servers (an NS lookup), then query one of them: in nslookup, run `server ns1.example.com.` and then the name; in dig, use `dig @ns1.example.com example.com`. The answer will come back without the non-authoritative marker (and in dig, with the `aa` flag set), telling you that you are looking at the zone itself rather than someone's cached copy of it.
+The recipe has three steps; the middle one is usually skipped.
 
+```bash
+# 1. Find the zone's name servers. This answer is itself non-authoritative.
+dig example.com NS
+# 2. Ask one of them with recursion turned off, and look for aa in the flags line.
+dig @ns.example.com example.com A +norecurse
+# 3. Compare the SOA every authoritative server holds, by its serial.
+dig example.com SOA +nssearch
+# Or follow the delegation from the root, server by server.
+dig example.com A +trace
+```
 
-## Authoritative is about provenance, not accuracy
+Step 1 is an ordinary, non-authoritative lookup: in the captured session example.com's NS set came back with AA clear. Step 2 names one of them after `@`, and `+norecurse` clears RD, which "is set by default, which means dig normally sends recursive queries" ([dig manual, +recurse](https://bind9.readthedocs.io/en/stable/manpages.html)). Clearing it matters because BIND's default is `recursion yes`: a server that is both authoritative and recursive would fetch a name outside its zones and return a non-authoritative answer that looks like success, whereas "If recursion is off and the server does not already know the answer, it returns a referral response" ([BIND 9.20.29 Configuration Reference, recursion](https://bind9.readthedocs.io/en/stable/reference.html)), the honest result, and the one RFC 1034 asked for ([RFC 1034, section 4.3.1](https://www.rfc-editor.org/rfc/rfc1034.txt)).
 
-An authoritative answer comes from a server holding the zone; a non-authoritative one comes from a resolver, usually out of its cache. **Neither label says the answer is right.**
+Step 3 checks a change across the whole NS set: `+nssearch` shows "the SOA record that each name server has for the zone" ([dig manual, +nssearch](https://bind9.readthedocs.io/en/stable/manpages.html)), whose serials must agree. `+trace` instead follows referrals from the root, showing each server's answer; both options turn recursion off by themselves (+recurse). In nslookup, BIND's or Windows', the path is `server ns.example.com.`, then `set norecurse`, then the name ([nslookup manual, Interactive Commands](https://bind9.readthedocs.io/en/stable/manpages.html); [Microsoft Learn, nslookup set recurse](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup-set-recurse)). The [dig command builder](/tools/dig-command-builder) assembles these commands; [Anatomy of a dig command line](/learn/anatomy-of-a-dig-command-line) explains how dig reads them.
 
-An authoritative server can serve a zone that was edited wrongly an hour ago and answer with complete confidence. A cached answer can be perfectly correct and merely old. The words describe **where the data came from**, and correctness is a separate question the protocol does not answer.
+## What aa does not prove
 
-The place it matters is timing. **After a change, only the authoritative server can tell you whether the change is live**; every resolver in the path will keep serving what it holds until the TTL expires, and that is not a fault to escalate; it is the design working.
+It does not prove the server should be answering. In 1996 the complaint was the lame delegation, a server "delegated responsibility for providing nameservice for a zone (via NS records) but is not performing nameservice for that zone" ([RFC 1912, section 2.8](https://www.rfc-editor.org/rfc/rfc1912.txt)); RFC 9499 now lists under that name "a nameserver that responds to a query for a specific name with an error or without the authoritative bit set" and asks that the term be retired ([RFC 9499, section 7](https://www.rfc-editor.org/rfc/rfc9499.txt)).
+
+It does not prove the zone is right: after a serial number mistake "the secondary will not perform updates to its copy of the zone" ([BIND 9.20.29 Administrator Reference Manual, section 9.2](https://bind9.readthedocs.io/en/stable/chapter9.html)), and two servers answer with AA from two different zones. And it does not prove the data was untouched in transit. That is the job of DNSSEC, whose extensions "provide origin authentication and integrity protection for DNS data" ([RFC 4033, section 1](https://www.rfc-editor.org/rfc/rfc4033.txt)); beside a validated chain of signatures "the AA bit is almost irrelevant" ([RFC 2181, section 5.4.1](https://www.rfc-editor.org/rfc/rfc2181.txt)). Trustworthiness by source is a heuristic; [DNSSEC end to end](/learn/dnssec-end-to-end) is the proof.
+
+## Negative answers carry authority too
+
+A nonexistent name is denied with authority too. "Name servers authoritative for a zone MUST include the SOA record of the zone in the authority section of the response when reporting an NXDOMAIN or indicating that no data of the requested type exists" ([RFC 2308, section 3](https://www.rfc-editor.org/rfc/rfc2308.txt)); that SOA's TTL, the lesser of its own TTL and its MINIMUM field, is the negative TTL (section 3), and a cache relaying the denial decrements it (section 6). The RFC's own example, cut here to the start of each reply, shows both:
+
+```text
+        Initial Response:
+
+        Header:
+            RDCODE=NXDOMAIN, AA=1, QR=1, TC=0
+        Query:
+            WWW.XX.EXAMPLE. IN A
+        Answer:
+            <empty>
+        Authority:
+            XX.EXAMPLE.      1200 IN SOA NS1.XX.EXAMPLE. ...
+
+         After 10 Minutes:
+
+         Header:
+             RDCODE=NXDOMAIN, AA=0, QR=1, TC=0
+         Query:
+             WWW.XX.EXAMPLE. IN A
+         Answer:
+             <empty>
+         Authority:
+             XX.EXAMPLE.       600 IN SOA NS1.XX.EXAMPLE. ...
+```
+
+Ten minutes on, half the TTL is gone and AA is clear: the same denial, now from a cache (section 10; RDCODE is the RFC's own spelling). The captured session has the live version: `nf2e-authority-check-20261018.invalid` returned NXDOMAIN with AA clear and the root zone's SOA, at a TTL of 86400 from one public resolver and 86316 from another. nslookup shows no marker for such answers, because it returns early with `** server can't find` whenever the response code is not zero ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)): a cached NXDOMAIN is non-authoritative without saying so.
+
+The example uses `.invalid` for a reason: "Users MAY assume that queries for 'invalid' names will always return NXDOMAIN responses" ([RFC 6761, section 6.4](https://www.rfc-editor.org/rfc/rfc6761.txt)), whereas example.com's servers now use compact denial of existence, which answers a nonexistent name with NODATA rather than NXDOMAIN ([RFC 9824, section 1](https://www.rfc-editor.org/rfc/rfc9824.txt)); in the captured session a made-up name under example.com came back NOERROR with no answer records. [Reading the records](/learn/dns-record-types-in-answers) decodes the SOA fields.
+
+## Seeing it
+
+In dig, the bit is one word on the flags line. The program prints ` aa` only when the bit is set ([BIND 9.20.29 dig.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)), so `qr rd ra` with answer records is a resolver's reply, cached or just fetched; `qr aa rd ra` is an authoritative server that also offers recursion; `qr aa` alone is an authoritative-only server; and `qr` with an empty answer section and NS records in the authority section is a referral. The [dig output explainer](/tools/dig-output-explainer) spells the flags out; [Reading dig output](/learn/reading-dig-output) covers every block.
+
+In nslookup, the bit is the marker. BIND's nslookup prints `Server:` and `Address:` first, the resolver it asked, then `Non-authoritative answer:` when AA is clear, then the records; for types other than addresses it adds `Authoritative answers can be found from:` and the authority and additional sections ([BIND 9.20.29 nslookup.c](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)). `set debug` shows the sections but never the header flags, since the call that would print them is commented out (nslookup.c), so the AA bit is visible only through the marker. The [nslookup output explainer](/tools/nslookup-output-explainer) reads the marker and the servers listed after it.
+
+## What to remember
+
+- Authoritative means the responding server is an authority for the name in the question (RFC 1035, section 4.1.1): it holds the zone; RFC 2181 defines "authoritative" as a reply with AA set.
+- nslookup's `Non-authoritative answer:` and dig's missing `aa` are the same bit, clear: a cache hit, a freshly fetched recursive answer or a referral. It says where the answer came from, not whether it is right.
+- A non-authoritative answer is the normal result of a recursive lookup; its age is bounded by the TTL, a maximum a cache may shorten and, with serve-stale, exceed.
+- It matters after a change, when caches and lagging secondaries keep the old record; when a resolver rewrites answers; and under split DNS, where each view answers with AA.
+- To get an authoritative answer, find the NS set, then `dig @server name type +norecurse` and read `aa`; `+nssearch` compares every server's SOA serial and `+trace` walks from the root.
+- AA does not prove the server should be answering (lame delegation), that the zone is right, or that nothing changed in transit: only DNSSEC validation authenticates data.
+- Negative answers carry authority too, as the zone's SOA in the authority section with a TTL that counts down in caches; use a `.invalid` name for a real NXDOMAIN, since example.com answers NODATA by compact denial.
+
+## Sources
+
+- [RFC 1034, Domain names - concepts and facilities, November 1987: sections 2.4, 4.1, 4.3.1, 4.3.2, 4.3.5, 5.3.3 and 6.2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1034.txt)
+- [RFC 1035, Domain names - implementation and specification, November 1987: section 4.1.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1035.txt)
+- [RFC 1912, Common DNS Operational and Configuration Errors, February 1996: section 2.8 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1912.txt)
+- [RFC 1996, A Mechanism for Prompt Notification of Zone Changes (DNS NOTIFY), August 1996: section 2.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc1996.txt)
+- [RFC 2181, Clarifications to the DNS Specification, July 1997: sections 5.4.1, 6.1 and 8 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2181.txt)
+- [RFC 2308, Negative Caching of DNS Queries (DNS NCACHE), March 1998: sections 3, 6 and 10 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2308.txt)
+- [RFC 4033, DNS Security Introduction and Requirements, March 2005: section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4033.txt)
+- [RFC 6303, Locally Served DNS Zones, July 2011: section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6303.txt)
+- [RFC 6761, Special-Use Domain Names, February 2013: section 6.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6761.txt)
+- [RFC 8767, Serving Stale Data to Improve DNS Resiliency, March 2020: section 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8767.txt)
+- [RFC 9462, Discovery of Designated Resolvers, November 2023: section 6.4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9462.txt)
+- [RFC 9499, DNS Terminology, March 2024: sections 4, 6 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9499.txt)
+- [RFC 9824, Compact Denial of Existence in DNSSEC, September 2025: sections 1 and 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9824.txt)
+- [ISC, BIND 9 9.20.29 documentation, Manual Pages: dig - DNS lookup utility and nslookup - query Internet name servers interactively, undated page: Query Options; Interactive Commands (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/manpages.html)
+- [ISC, BIND 9 9.20.29 documentation, Configuration Reference, undated page: recursion (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/reference.html)
+- [ISC, BIND 9 9.20.29 Administrator Reference Manual, undated page: 9.2 Incrementing and Changing the Serial Number (read 2026-10-18)](https://bind9.readthedocs.io/en/stable/chapter9.html)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/nslookup.c: the printmessage function (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/nslookup.c)
+- [ISC, BIND 9 source code at tag v9.20.29, bin/dig/dig.c: the flags line (read 2026-10-18)](https://gitlab.isc.org/isc-projects/bind9/-/blob/v9.20.29/bin/dig/dig.c)
+- [Microsoft Learn, nslookup set recurse, last updated 3 February 2023 (read 2026-10-18)](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/nslookup-set-recurse)
+- [ICANN SSAC, SAC 032, Preliminary Report on DNS Response Modification, June 2008: Introduction, What is DNS response modification?, Who can modify DNS response messages?, Preliminary Findings and Preliminary recommendations (read 2026-10-18)](https://www.icann.org/en/system/files/files/sac-032-en.pdf)

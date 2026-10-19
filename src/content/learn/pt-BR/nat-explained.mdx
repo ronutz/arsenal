@@ -1,28 +1,129 @@
 ---
 slug: nat-explained
 title: "NAT explicado: origem, destino, e por que a internet ainda funciona"
-summary: "O Network Address Translation reescreve endereços em pleno voo - o NAT de origem deixa mil hosts privados compartilharem um endereço público, o NAT de destino publica um serviço interno num endereço externo, e a tabela de tradução é o que faz o tráfego de retorno achar o caminho de casa. A função e o propósito, os sabores, e as consequências de troubleshooting de cada um."
-concepts: ["nat", "source nat", "destination nat", "pat", "private addresses", "fundamentals", "translation"]
-relatedTools: ["cidr"]
-relatedArticles: ["private-address-space", "bigip-snat-and-return-traffic", "tcp-connection-lifecycle"]
+summary: "O Network Address Translation mapeia endereços de um address realm para outro e mantém uma tabela para que as respostas encontrem o caminho de volta; o NAPT, a forma que um roteador doméstico executa, mapeia também a porta. Depois da leitura, você consegue ler uma tabela de tradução e uma listagem do conntrack campo a campo, acompanhar o ajuste do checksum, prever quanto tempo um mapping vive e quais pacotes ele deixa entrar, nomear o que o NAT quebra e dizer com precisão por que NAT não é firewall."
+concepts: ["nat", "source nat", "destination nat", "pat", "private addresses", "fundamentals", "translation", "napt", "conntrack", "hairpinning", "stun", "alg", "rfc4787"]
+relatedTools: ["packet-capture-plan-builder", "checkpoint-nat-proxy-arp", "ssrf-url-classifier", "python-playground"]
+relatedArticles: ["private-address-space", "bigip-snat-and-return-traffic", "tcp-connection-lifecycle", "private-vs-public-ip-ranges", "cgnat-address-sharing-and-attribution", "ipv6-transition", "icmp-ping-and-traceroute", "routing-tables-and-default-gateway", "arp-and-mac-addresses", "network-devices-switch-router-firewall"]
 category: networking
 order: 164
 status: reviewed
-updated: "2026-07-21"
+updated: "2026-10-19"
 ---
 
-Network Address Translation (NAT) é a prática de reescrever os endereços dos pacotes conforme cruzam um dispositivo. Existe porque o [espaço de endereços privados](/learn/private-address-space) não é roteável na internet, e porque publicar um serviço raramente significa expor o endereço real da máquina. A prova aposentada de fundamentos da F5 pedia a função e o propósito do NAT - e o propósito se divide limpo conforme qual endereço é reescrito.
+A Request for Comments (RFC) 2663 define o assunto: "Network Address Translation is a method by which IP addresses are mapped from one address realm to another, providing transparent routing to end hosts", endereços mapeados de um address realm (domínio de endereçamento) para outro ([RFC 2663, seção 3](https://www.rfc-editor.org/rfc/rfc2663.txt)). Você encontra NAT porque o [espaço de endereços IPv4 privados](/learn/private-address-space) da RFC 1918 não significa nada fora da rede que o usa. A forma comum, Network Address Port Translation (NAPT), reescreve também a porta TCP ou UDP. Depois da leitura, você consegue ler uma tabela de tradução e uma listagem do conntrack no Linux, acompanhar a aritmética do checksum, prever a vida e o comportamento de um mapping a partir dos documentos Best Current Practice (BCP), nomear o que o NAT quebra e explicar por que NAT não é firewall.
 
-## NAT de origem: muitos dentro, um fora
+## Dois realms, uma tabela
 
-O NAT de origem reescreve o endereço de origem do tráfego de saída. Na forma esmagadoramente comum - a tradução de endereço por porta, a variante muitos-para-um que todo roteador doméstico executa - centenas de hosts privados compartilham um endereço público, distinguidos pelas portas de origem traduzidas. O dispositivo mantém uma tabela de tradução: este endereço e porta internos viraram aquele endereço e porta externos. O tráfego de retorno é casado contra a tabela e destraduzido de volta ao host certo. O propósito é conservação de endereços mais um efeito colateral de cegueira a entradas não solicitadas: ninguém de fora consegue iniciar para um host cujo endereço só existe na tabela.
+A RFC 1918 é a razão de a tabela existir: "packets with private source or destination addresses should not be forwarded across such links", pacotes privados não cruzam a borda ([RFC 1918, seção 3](https://www.rfc-editor.org/rfc/rfc1918.txt)). Um host em 10.0.0.0/8, 172.16.0.0/12 ou 192.168.0.0/16 não pode ser alcançado de fora, e o [artigo das faixas](/learn/private-vs-public-ip-ranges) mostra o registro marcando-os como não alcançáveis globalmente. O NAT fica onde o realm privado encontra o público, em geral no roteador de borda ou no [firewall](/learn/network-devices-switch-router-firewall). A RFC 3022 o chama de NAT tradicional e fixa a direção: "In a traditional NAT, sessions are uni-directional, outbound from the private network", sessões só nascem de dentro para fora ([RFC 3022, seção 2](https://www.rfc-editor.org/rfc/rfc3022.txt)). A RFC 2993 nomeia o preço: "NAT breaks a fundamental assumption of the Internet design; the endpoints are in control", as pontas deixam de estar no controle ([RFC 2993, seção 11](https://www.rfc-editor.org/rfc/rfc2993.txt)).
 
-As consequências de troubleshooting seguem direto. Atrás de um NAT de origem, todo host interno parece o mesmo cliente para o servidor - o que quebra logging por endereço, rate limiting e persistência ingênuos, exatamente o problema que o [artigo de SNAT e tráfego de retorno](/learn/bigip-snat-and-return-traffic) trabalha num BIG-IP, onde o NAT de origem também é a cura padrão para caminhos de retorno assimétricos. E uma tabela de tradução cheia ou expirando aparece como conexões que se estabelecem e depois morrem misteriosamente: o mapeamento expirou no meio da conversa.
+## Basic NAT, NAPT e NAT de destino
 
-## NAT de destino: como publicar um serviço
+A RFC 3022 separa as duas formas tradicionais: o Basic NAT traduz apenas endereços; o NAPT traduz também o identificador de transporte, a porta TCP ou UDP ou o query identifier do ICMP (Internet Control Message Protocol) ([RFC 3022, seção 2](https://www.rfc-editor.org/rfc/rfc3022.txt)). O NAPT multiplexa muitos hosts nas portas de um só endereço, e "NAPT is by far the most commonly deployed NAT device", o mais implantado ([RFC 4787, seção 3](https://www.rfc-editor.org/rfc/rfc4787.txt)). O inverso, o port forwarding, também está lá: uma porta conhecida do endereço público pode ser dirigida estaticamente a um host interno (seção 2.2).
 
-O NAT de destino reescreve o endereço de destino do tráfego de entrada: conexões chegando a um endereço público são redirecionadas a um host interno privado - port forwarding em termos domésticos, virtual servers em termos de balanceador. O propósito é publicação com indireção: o endereço que os clientes conhecem se desacopla da máquina que responde, o que permite à máquina mudar, multiplicar-se ou se esconder. O virtual server de um balanceador é o NAT de destino elevado a proxy completo - e com frequência executa NAT de origem na mesma conexão, para que as respostas do servidor voltem através do dispositivo em vez de por fora dele.
+O Linux nomeia as operações como statements do nft: snat e masquerade modificam endereço e porta de origem, dnat e redirect modificam o destino, e masquerade é o snat que sempre usa o endereço da interface de saída ([nft(8), NAT STATEMENTS](https://www.netfilter.org/projects/nftables/manpage.html)). O NAT64, entre IPv6 e IPv4, é outro dispositivo com a mesma ideia de tabela e pertence a [dual-stack e tradução](/learn/ipv6-transition); as RFCs de comportamento citadas aqui cobrem só NAT44 ([RFC 7857, seção 1.1](https://www.rfc-editor.org/rfc/rfc7857.txt)).
 
-## Como ler o NAT numa captura
+## A tabela de tradução, pacote a pacote
 
-Como o NAT reescreve endereços no meio do caminho, uma captura de um lado nunca casa com a do outro só por endereço. O lado do cliente mostra cliente-para-público; o lado do servidor mostra dispositivo-para-privado. Correlacione por tempo, portas e payload - e espere que a [conversa TCP](/learn/tcp-connection-lifecycle) seja uma conexão através de um NAT estilo roteador, mas duas conexões distintas através de um dispositivo que faz proxy. Saber qual das duas você está olhando é metade de toda sessão de troubleshooting de NAT; a outra metade é lembrar que, em algum lugar, uma entrada da tabela de tradução ou existe e explica tudo, ou não existe e explica tudo.
+A unidade que a tabela acompanha é a sessão: para TCP e UDP, a tupla de endereço de origem, porta de origem, endereço de destino e porta de destino; para consultas ICMP, o query identifier no lugar das portas ([RFC 2663, seção 2.3](https://www.rfc-editor.org/rfc/rfc2663.txt)). O primeiro pacote da sessão cria a entrada, o mapping. No Linux, "The first packet of a flow is used to look up for a matching rule which sets up the NAT binding for this flow", o primeiro pacote cria o binding ([nftables wiki, Performing NAT](https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29)); os pacotes seguintes nunca mais consultam as regras, só a entrada.
+
+Tome a topologia da RFC 3022 com o realm interno em 10.0.0.0/8, o endereço externo do NAT 203.0.113.1 e um servidor em 198.51.100.80:443 (faixas de documentação; valores computados, não capturados). O host 10.0.0.10 envia ao seu [default gateway](/learn/routing-tables-and-default-gateway); o NAT aloca uma porta externa e registra também o destino, porque a RFC 7857 permite que uma porta externa sirva a várias sessões quando a tabela guarda a 5-tupla completa ([RFC 7857, seção 3](https://www.rfc-editor.org/rfc/rfc7857.txt)).
+
+| Protocolo | Endereço:porta interno | Endereço:porta externo | Destino |
+|---|---|---|---|
+| tcp | 10.0.0.10:51234 | 203.0.113.1:51234 | 198.51.100.80:443 |
+| tcp | 10.0.0.2:51234 | 203.0.113.1:51235 | 198.51.100.80:443 |
+| tcp | 10.0.0.10:51235 | 203.0.113.1:51236 | 198.51.100.80:443 |
+
+A primeira linha preserva a porta interna. O segundo host também escolheu 51234, então o NAT aloca 51235; a sessão seguinte do primeiro host recebe 51236. Uma resposta que chega como `198.51.100.80:443 -> 203.0.113.1:51235` é procurada por endereço externo, porta e protocolo e sai como `198.51.100.80:443 -> 10.0.0.2:51234`.
+
+Dois checksums mudam junto com o campo de endereço do [header IPv4](/learn/ipv4-addressing): o do próprio header e o do TCP: "This is because TCP/UDP checksum also covers a pseudo header which contains the source and destination IP addresses", o pseudo header contém os dois endereços ([RFC 3022, seção 4.1](https://www.rfc-editor.org/rfc/rfc3022.txt)). Nenhum é recalculado: como ambos são somas em complemento de um, a diferença entre as palavras antiga e nova é somada ao checksum (seção 4.2). A regra geral é a equação 3 da RFC 1624, `HC' = ~(~HC + ~m + m')`, com HC o checksum antigo, m a palavra de 16 bits antiga e m' a nova ([RFC 1624, seções 2 e 3](https://www.rfc-editor.org/rfc/rfc1624.txt)). Para a primeira linha, o header IPv4 de saída antes e depois:
+
+```text
+antes:  4500 0028 1c46 4000 4006 e9fc 0a00 000a c633 6450
+depois: 4500 0028 1c46 4000 4006 b804 cb00 7101 c633 6450
+```
+
+Só o endereço de origem (`0a00 000a` para `cb00 7101`) e o checksum (`e9fc` para `b804`) diferem; o checksum TCP vai de `0xA177` a `0x6F7F`. A aritmética roda sem alteração no [Python playground](/tools/python-playground).
+
+## Portas: alocação, colisões e limites
+
+A segunda linha mostra a preservação de porta falhando bem. Manter a porta interna mesmo em colisão é proibido, "REQ-3: A NAT MUST NOT have a 'Port assignment' behavior of 'Port overloading'", nada de port overloading ([RFC 4787, seção 12](https://www.rfc-editor.org/rfc/rfc4787.txt)), porque a maioria das aplicações falha com ele (seção 4.2.1); o mesmo requisito recomenda ficar na faixa do host, 0 a 1023 ou 1024 a 65535. O Linux é mais fino: sem faixa configurada, portas de origem abaixo de 512 ficam abaixo de 512, as de 512 a 1023 ficam abaixo de 1024, e as demais vão para 1024 ou acima ([iptables-extensions(8), SNAT](https://man7.org/linux/man-pages/man8/iptables-extensions.8.html)). O teto é aritmético: com as portas 1024 a 65535, um endereço externo carrega no máximo 64.512 mappings simultâneos por protocolo para um destino, e um NAT confinado à faixa dinâmica 49152 a 65535 tem 16.384. Limites de porta por assinante são a continuação carrier-grade NAT, o [CGNAT](/learn/cgnat-address-sharing-and-attribution).
+
+## Comportamento de mapping, comportamento de filtragem e a diferença
+
+A RFC 4787 aposentou os rótulos antigos "full cone" e "symmetric" em favor de duas propriedades separadas (seção 3). O comportamento de mapping pergunta: quando o mesmo socket interno X:x fala com um segundo destino, recebe o mesmo endereço e porta externos? "Endpoint-Independent Mapping: The NAT reuses the port mapping for subsequent packets sent from the same internal IP address and port (X:x) to any external IP address and port", reutilizado para qualquer destino ([RFC 4787, seção 4.1](https://www.rfc-editor.org/rfc/rfc4787.txt)); as duas variantes dependentes só o reutilizam para o mesmo endereço de destino, ou mesmo endereço e porta. A regra é "REQ-1: A NAT MUST have an 'Endpoint-Independent Mapping' behavior", obrigatório (seção 4.1), repetida para TCP pela RFC 5382 ([RFC 5382, seção 8](https://www.rfc-editor.org/rfc/rfc5382.txt)).
+
+O comportamento de filtragem é outra pergunta: existindo o mapping, pacotes de quem podem entrar por ele? A filtragem independente de endpoint deixa qualquer origem externa alcançar o mapping assim que o host interno enviou algo para qualquer lugar; a dependente de endereço só admite endereços para os quais o host interno já enviou; a dependente de endereço e porta confere também a porta (seção 5). A frase para guardar: "The security properties are fully determined by which packets the NAT allows in and which it does not", a segurança é o que o NAT deixa entrar (seção 4.1). Mapping é conveniência para as aplicações; filtragem é a única parte que é segurança.
+
+## Timers e hairpinning
+
+Um mapping que ninguém renova morre, e as BCPs fixam pisos. UDP: "REQ-5: A NAT UDP mapping timer MUST NOT expire in less than two minutes, unless REQ-5a applies", nunca menos de dois minutos ([RFC 4787, seção 12](https://www.rfc-editor.org/rfc/rfc4787.txt)), com cinco minutos ou mais recomendados: 120 e 300 segundos. TCP: "the value of the 'established connection idle-timeout' MUST NOT be less than 2 hours 4 minutes", nunca menos de 2 horas e 4 minutos ([RFC 5382, seção 8](https://www.rfc-editor.org/rfc/rfc5382.txt)), 7.440 segundos; o piso transitório é 4 minutos. ICMP: "REQ-2: An ICMP Query session timer MUST NOT expire in less than 60 seconds", nunca menos de 60 segundos ([RFC 5508, seção 3.2](https://www.rfc-editor.org/rfc/rfc5508.txt)). O padrão do Linux para TCP estabelecido é 5 dias, 432.000 segundos ([nftables wiki, conntrack metainformation](https://wiki.nftables.org/wiki-nftables/index.php/Matching_connection_tracking_stateful_metainformation)).
+
+Hairpinning é dois hosts internos conversando pelos seus mappings externos: "REQ-9: A NAT MUST support 'Hairpinning'", com o pacote retransmitido carregando origem externa ([RFC 4787, seção 12](https://www.rfc-editor.org/rfc/rfc4787.txt)). Na tabela do exemplo, `10.0.0.2:40000 -> 203.0.113.1:51234` é entregue a `10.0.0.10:51234` com origem `203.0.113.1:40000`.
+
+## Como um host descobre seu mapping
+
+Nada no NAT informa ao host interno qual endereço e porta externos ele recebeu. O Session Traversal Utilities for NAT (STUN) existe para isso: um servidor na porta 3478 devolve a origem que viu no Binding request do cliente; "This is called a 'reflexive transport address'", o endereço de transporte reflexivo ([RFC 8489, seção 2](https://www.rfc-editor.org/rfc/rfc8489.txt)). A resposta é disfarçada de propósito: "The Magic Cookie field MUST contain the fixed value 0x2112A442 in network byte order", o magic cookie é fixo (seção 5), e o XOR-MAPPED-ADDRESS carrega a porta em XOR com os 16 bits superiores do cookie e o endereço em XOR com o cookie inteiro (seção 14.2). Para 203.0.113.1:51234, a porta 0xC822 vira 0xE930 e o endereço 0xCB007101 vira 0xEA12D543. O disfarce existe porque alguns NATs, agindo como um Application Level Gateway (ALG) improvisado, reescreviam o MAPPED-ADDRESS puro e quebravam a verificação de integridade do STUN (seção 14.2).
+
+## O que quebra, e o ALG que remenda
+
+O NAT lê headers IP, TCP, UDP e ICMP e nada mais, então um protocolo que escreve um endereço no payload envia o endereço errado: o Session Initiation Protocol (SIP), o H.323 e os jogos online ([RFC 4787, seção 2](https://www.rfc-editor.org/rfc/rfc4787.txt)). O remendo é o ALG, que entende um protocolo e edita seu payload. O File Transfer Protocol (FTP) é o modelo, "FTP is the most popular ALG resident on NAT devices", o mais popular ([RFC 3022, seção 1](https://www.rfc-editor.org/rfc/rfc3022.txt)): seu comando PORT e sua resposta PASV carregam endereço e porta como texto. ALGs também fazem mal, como o cookie do STUN mostrou: "NAT ALGs for UDP-based protocols SHOULD be turned off", desligados ([RFC 4787, seção 7](https://www.rfc-editor.org/rfc/rfc4787.txt)).
+
+Tudo o que assina o header também quebra, a começar pelo Authentication Header (AH) do IPsec: "Use of AH is not possible via NAT as the hash protects the IP address in the header", o hash cobre o endereço ([RFC 2993, seção 9](https://www.rfc-editor.org/rfc/rfc2993.txt)). Os caminhos têm de ser simétricos, "It is mandatory that all requests and responses pertaining to a session be routed via the same NAT router", tudo pelo mesmo NAT ([RFC 3022, seção 1](https://www.rfc-editor.org/rfc/rfc3022.txt)), então uma resposta que entra por um segundo roteador não encontra mapping, e o NAT é um ponto único de falha (RFC 2993, seção 4). O ICMP tem de passar: um NAT que descarta um pacote por Time to Live (TTL) expirado tem de gerar o erro Time Exceeded ([RFC 5508, seção 7.2](https://www.rfc-editor.org/rfc/rfc5508.txt)), o que deixa o traceroute atravessá-lo; os códigos estão em [ICMP, ping e traceroute](/learn/icmp-ping-and-traceroute). Uma falha não deixa log nenhum: se o endereço público traduzido está na sub-rede da interface externa, o NAT tem de responder às requisições Address Resolution Protocol ([ARP](/learn/arp-and-mac-addresses)) por ele, porque nenhum outro nó é dono daquele endereço ([RFC 3022, seção 6.2](https://www.rfc-editor.org/rfc/rfc3022.txt)). Sem esse proxy ARP nada chega para ser descartado; o [Check Point NAT reachability checker](/tools/checkpoint-nat-proxy-arp) deduz isso só do endereçamento.
+
+## Por que NAT não é firewall
+
+A lenda diz que o NAT protege o lado de dentro porque ninguém consegue iniciar de fora. A RFC 4864 responde: "The act of translating address bits within the header does not provide security in itself", traduzir bits não é segurança ([RFC 4864, seção 2.2](https://www.rfc-editor.org/rfc/rfc4864.txt)); um mapping estático de todas as portas para uma máquina a deixa exatamente tão exposta quanto sem NAT (mesma seção). A RFC 2993 vai além: "NAT (particularly NAPT) actually has the potential to lower overall security because it creates the illusion of a security barrier, but does so without the managed intent of a firewall", ilusão de barreira sem a intenção gerida de um firewall ([RFC 2993, seção 9](https://www.rfc-editor.org/rfc/rfc2993.txt)). O que protege é o comportamento de filtragem, e sob filtragem independente de endpoint um estranho que adivinhe uma porta externa ativa entra ([RFC 4787, seção 5](https://www.rfc-editor.org/rfc/rfc4787.txt)). Um firewall declara uma política; um NAT declara uma tabela.
+
+## Como ver na prática
+
+No Linux a tabela é a de connection tracking. `conntrack -L` a lista e `conntrack -L -p tcp --dport 443` a filtra ([manual do conntrack-tools, capítulo 5](https://conntrack-tools.netfilter.org/manual.html)). A primeira linha do exemplo, ilustrativa, com os contadores do manual:
+
+```console
+# conntrack -L
+tcp      6 431982 ESTABLISHED src=10.0.0.10 dst=198.51.100.80 sport=51234 dport=443 packets=169 bytes=14322 src=198.51.100.80 dst=203.0.113.1 sport=443 dport=51234 packets=113 bytes=34787 [ASSURED] mark=0 use=1
+```
+
+Os campos, em ordem: nome e número do protocolo de camada 4; o timeout, "Seconds until conntrack entry is invalidated; reset to initial value when connection sees a new packet", segundos até expirar ([nftables wiki, conntrack metainformation](https://wiki.nftables.org/wiki-nftables/index.php/Matching_connection_tracking_stateful_metainformation)); o estado; os dois endereços e as duas portas da direção original; os quatro da direção de resposta; os flags de status; a mark; a contagem de referências. A tradução aparece na tupla de resposta: seu `dst` é o endereço do NAT, não o host interno. As regras que criam essas entradas seguem o nft(8), aqui com os mesmos endereços:
+
+```bash
+nft add table nat
+nft 'add chain nat postrouting { type nat hook postrouting priority srcnat; }'
+nft 'add chain nat prerouting { type nat hook prerouting priority dstnat; }'
+nft add rule nat postrouting ip saddr 10.0.0.0/8 oif eth0 snat to 203.0.113.1
+nft add rule nat postrouting oif eth0 masquerade
+nft 'add rule nat prerouting iif eth0 tcp dport { 80, 443 } dnat to 10.0.0.10'
+```
+
+Uma captura mostra os dois realms: dentro, 10.0.0.10:51234 para 198.51.100.80:443; fora, 203.0.113.1:51234 para o mesmo servidor, e na segunda linha até a porta de origem difere. Pareie as capturas por porta de destino, números de sequência TCP e tempo, nunca por endereço; o [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) coloca um ponto de cada lado da tradução. Mais uma faixa: entre o NAT doméstico e o do provedor fica o shared address space da RFC 6598, "The Shared Address Space address range is 100.64.0.0/10", o bloco 100.64.0.0/10 ([RFC 6598, seção 7](https://www.rfc-editor.org/rfc/rfc6598.txt)), que o [SSRF URL classifier](/tools/ssrf-url-classifier) (server-side request forgery) rotula como espaço de carrier-grade NAT.
+
+## Para lembrar
+
+- NAT mapeia endereços entre dois address realms com roteamento transparente ([RFC 2663, seção 3](https://www.rfc-editor.org/rfc/rfc2663.txt)); o NAPT mapeia também a porta ou o query identifier do ICMP.
+- O primeiro pacote cria o mapping; cada pacote seguinte é uma consulta, e a resposta é casada por endereço externo, porta e protocolo.
+- Checksums são ajustados pela diferença em complemento de um, não recalculados; os de TCP e UDP mudam porque o pseudo header contém os dois endereços.
+- Comportamento de mapping (obrigatoriamente independente de endpoint) e comportamento de filtragem (a única parte que é segurança) são propriedades separadas.
+- Pisos para um mapping ocioso: UDP 2 minutos, TCP estabelecido 2 horas e 4 minutos, TCP transitório 4 minutos, ICMP 60 segundos; hairpinning e ausência de port overloading são obrigatórios.
+- NAT quebra protocolos que carregam endereços no payload (FTP, SIP, H.323), o AH do IPsec e caminhos assimétricos; um ALG remenda o primeiro caso e quebrou o STUN.
+- NAT não é firewall: tradução não dá segurança, filtragem dá; veja a tabela com `conntrack -L` e pareie capturas através dela por portas e números de sequência.
+
+## Fontes
+
+- [RFC 2663, IP Network Address Translator (NAT) Terminology and Considerations, agosto de 1999: seções 2.1 a 2.9, 3 a 3.3, 4.1 a 4.4, 7, 7.1, 8.1 a 8.5 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2663.txt)
+- [RFC 3022, Traditional IP Network Address Translator (Traditional NAT), janeiro de 2001: resumo e seções 1, 2, 2.1, 2.2, 3.1, 3.3, 4.1, 4.2, 4.3, 4.4, 5.1, 5.3, 6.1, 6.2, 6.3 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3022.txt)
+- [RFC 1918, Address Allocation for Private Internets, fevereiro de 1996: seção 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1918.txt)
+- [RFC 2993, Architectural Implications of NAT, novembro de 2000: seções 1, 4, 6, 7.1, 9 e 11 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2993.txt)
+- [RFC 4787, Network Address Translation (NAT) Behavioral Requirements for Unicast UDP, janeiro de 2007: seções 1 a 9, 12 e 13 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4787.txt)
+- [RFC 5382, NAT Behavioral Requirements for TCP, outubro de 2008: seções 3, 4.2, 4.3, 5, 7.1, 7.2, 8 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5382.txt)
+- [RFC 5508, NAT Behavioral Requirements for ICMP, abril de 2009: seções 3.1, 3.2, 4.2.1, 5, 6 e 7.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5508.txt)
+- [RFC 7857, Updates to Network Address Translation (NAT) Behavioral Requirements, abril de 2016: seções 1.1, 2 a 7, 9 e 13 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7857.txt)
+- [RFC 1624, Computation of the Internet Checksum via Incremental Update, maio de 1994: seções 2, 3 e 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1624.txt)
+- [RFC 8489, Session Traversal Utilities for NAT (STUN), fevereiro de 2020: resumo e seções 2, 5, 8.1 e 14.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8489.txt)
+- [RFC 4864, Local Network Protection for IPv6, maio de 2007: seção 2.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4864.txt)
+- [RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space, abril de 2012: resumo e seções 1, 6 e 7 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6598.txt)
+- [nft(8), nftables manual page, renderização do netfilter.org de 9 de julho de 2026: CHAINS (nat type) e NAT STATEMENTS (lida em 2026-10-19)](https://www.netfilter.org/projects/nftables/manpage.html)
+- [nftables wiki, Performing Network Address Translation (NAT), última edição em 7 de fevereiro de 2024: Stateful NAT (lida em 2026-10-19)](https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29)
+- [nftables wiki, Matching connection tracking stateful metainformation, última edição em 15 de abril de 2021: Conntrack-assigned metadata, ct state, ct status (lida em 2026-10-19)](https://wiki.nftables.org/wiki-nftables/index.php/Matching_connection_tracking_stateful_metainformation)
+- [The conntrack-tools user manual (netfilter.org), capítulo 5, Using conntrack: the command line interface (lido em 2026-10-19)](https://conntrack-tools.netfilter.org/manual.html)
+- [iptables-extensions(8), Linux manual page (iptables 1.8.13), renderização do man7.org de 9 de setembro de 2026: conntrack, DNAT, MASQUERADE, SNAT (lida em 2026-10-19)](https://man7.org/linux/man-pages/man8/iptables-extensions.8.html)

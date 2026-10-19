@@ -1,44 +1,167 @@
 ---
 slug: ipv6-subnetting
 title: "Sub-redes IPv6 e a fronteira /64"
-summary: "Por que as sub-redes IPv6 são sobre estrutura em vez de escassez, por que uma única sub-rede é quase sempre um /64, e como a delegação de prefixo distribui espaço de endereços."
-concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing"]
-relatedTools: ["ipv6"]
-relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation", "ipv6-address-configuration", "ipv6-transition"]
+summary: "Dividir o espaço IPv6 em sub-redes é repartir os 64 bits de cima do endereço entre registro, provedor, site e enlace, porque em quase todo enlace os 64 bits de baixo pertencem ao identificador de interface. Depois da leitura, você consegue explicar por que um enlace é um /64 e o que a autoconfiguração sem estado tem a ver com isso, dimensionar o prefixo de um site e acompanhar a delegação dele, contar e numerar sub-redes em fronteiras de nibble, numerar enlaces entre roteadores e loopbacks com /127 e /128, montar um prefixo local único e evitar os erros que quebram um plano de endereçamento."
+concepts: ["ipv6", "subnetting", "prefix", "slash-64", "prefix-delegation", "addressing", "nibble-boundary", "unique-local-address", "slash-127", "dhcpv6-prefix-delegation", "slaac", "ip6.arpa"]
+relatedTools: ["ipv6", "python-playground"]
+relatedArticles: ["ipv6-addressing", "subnetting-basics", "cidr-notation", "ipv6-address-configuration", "ipv6-transition", "ipv6-neighbor-discovery", "route-summarization", "private-address-space", "vlsm", "supernetting-and-aggregation", "anycast", "bgp-primer", "nat-explained"]
 category: networking
 order: 12
 status: reviewed
-updated: "2026-08-10"
+updated: "2026-10-18"
 ---
 
-## Uma razão diferente para criar sub-redes
+A Request for Comments (RFC) 4291 divide o endereço IPv6 global unicast em três partes: o prefixo de roteamento global do site, o identificador (ID) de sub-rede, que nomeia um enlace, e o ID de interface; fora do bloco binário 000, as duas primeiras somam 64 bits ([RFC 4291, seção 2.5.4](https://www.rfc-editor.org/rfc/rfc4291.txt)). Com a metade de baixo ocupada, fazer sub-redes no IPv6 é repartir a de cima: a Internet Assigned Numbers Authority (IANA) abastece os Regional Internet Registries (RIRs), que alocam para os Local Internet Registries (LIRs) e os Internet Service Providers (ISPs), os provedores atribuem prefixos aos sites, e cada site dá um /64 a cada enlace. [Como funciona o endereçamento IPv6](/learn/ipv6-addressing) cobre o formato. Ao final, você consegue dimensionar cada nível, explicar por que a Stateless Address Autoconfiguration (SLAAC) prende o enlace em /64 e conferir um plano em Python, no iproute2 e numa captura.
 
-No IPv4, criar sub-redes é principalmente sobre conservação: os endereços são escassos, então você talha um bloco nas menores peças que ainda cabem em cada rede (a lógica no artigo de [fundamentos de sub-redes](/learn/subnetting-basics)). O IPv6 remove essa pressão inteiramente. Uma única sub-rede /64 contém 2^64 endereços, mais do que toda a internet IPv4 ao quadrado, então você nunca cria sub-redes em uma rede IPv6 para economizar espaço. Você cria sub-redes para dar estrutura: um prefixo por VLAN (LAN virtual, do inglês virtual LAN), por site, por cliente. A matemática é a mesma aritmética de prefixo do IPv4 (a ferramenta a computa com inteiros de precisão arbitrária), mas a mentalidade é a oposta.
+## Do registro ao enlace
 
-## Por que uma sub-rede é um /64
+A RFC 3587 deixa o prefixo de roteamento com os RIRs e os ISPs, e "The subnet field is designed to be structured hierarchically by site administrators", a sub-rede é do administrador ([RFC 3587, seção 3](https://www.rfc-editor.org/rfc/rfc3587.txt)). A IANA pode alocar o 2000::/3 aos RIRs ([ripe-738, seção 1.1](https://www.ripe.net/publications/docs/ripe-738/)); em 3 de outubro de 2006 cada um dos cinco recebeu um /12, e o 2800::/12 coube ao Latin American and Caribbean Internet Address Registry (LACNIC), que atende o Brasil ([registro unicast da IANA](https://www.iana.org/assignments/ipv6-unicast-address-assignments/ipv6-unicast-address-assignments.csv)); um /12 contém 2^20 = 1.048.576 prefixos /32. O RIPE Network Coordination Centre (RIPE NCC) dá a um LIR habilitado de um /32 a um /29 sem outra justificativa (ripe-738, seções 4.3 e 5.1.2) e deixa o tamanho do site com o LIR ou o ISP (seção 5.4.1); o LACNIC recomenda um /48 por site ([LACNIC Policy Manual, seção 4.4.3.1](https://www.lacnic.net/innovaportal/file/680/1/manual-politicas-en-2-21.pdf)). Daí para baixo, vale a aritmética Classless Inter-Domain Routing (CIDR) do IPv4 ([RFC 4291, seção 2.5](https://www.rfc-editor.org/rfc/rfc4291.txt)), como em [Como funciona a notação CIDR](/learn/cidr-notation).
 
-A regra isolada mais importante no endereçamento IPv6 é que uma sub-rede normal é um /64, deixando 64 bits para o identificador de interface. Isto não é uma sugestão; grandes partes do protocolo o presumem. A autoconfiguração de endereço sem estado (coberta no artigo de [configuração de endereço](/learn/ipv6-address-configuration)) constrói o endereço de um host anexando um identificador de interface de 64 bits ao prefixo anunciado, e a derivação EUI-64 modificada que a ferramenta pode realizar produz exatamente 64 bits. Use um prefixo mais longo como um /80 ou /112 em um enlace e a autoconfiguração simplesmente para de funcionar. A arquitetura de endereçamento (RFC 4291) é construída em torno desta fronteira, então o conselho prático é direto: faça toda sub-rede de usuário final um /64 e não tente ser frugal dentro dela.
+## Por que o enlace é um /64
 
-## A hierarquia de alocação
+O 64 é do ID de interface: "For all unicast addresses, except those that start with the binary value 000, Interface IDs are required to be 64 bits long", 64 bits fora do bloco 000 ([RFC 7136, seção 5](https://www.rfc-editor.org/rfc/rfc7136.txt)). A SLAAC deixa esse tamanho para o documento de cada tipo de enlace ([RFC 4862, seção 2](https://www.rfc-editor.org/rfc/rfc4862.txt)), e o da Ethernet diz: "An IPv6 address prefix used for stateless autoconfiguration [ACONF] of an Ethernet interface must have a length of 64 bits", prefixo de 64 bits ([RFC 2464, seção 4](https://www.rfc-editor.org/rfc/rfc2464.txt)). Uma soma decide: "If the sum of the prefix length and interface identifier length does not equal 128 bits, the Prefix Information option MUST be ignored", sem somar 128, é ignorada (RFC 4862, seção 5.5.3). Um /80 mais 64 dá 144, e nenhum endereço sai dali; [como um host monta o endereço](/learn/ipv6-address-configuration) mostra o resto.
 
-Se toda sub-rede é um /64, sites e provedores trabalham em blocos maiores acima disso:
+O Neighbor Discovery não precisa do /64. A RFC 7421 viu que a flag A, que permite a configuração sem estado, só vale com tamanho 64, enquanto a flag L, que marca o prefixo como on-link, "is honored for any arbitrary prefix length (whether shorter or longer than /64)", vale com qualquer tamanho ([RFC 7421, seção 4.3.1](https://www.rfc-editor.org/rfc/rfc7421.txt)). O /64 também não é regra de encaminhamento: "In particular, forwarding processes MUST be designed to process prefixes of any length up to /128, by increments of 1", qualquer tamanho até /128 ([RFC 7608, seção 2](https://www.rfc-editor.org/rfc/rfc7608.txt)). Ele substituiu o /80 previsto em dezembro de 1998, em parte por se esperar que endereços Media Access Control (MAC) de 64 bits, os Extended Unique Identifier (EUI-64), se espalhassem ([RFC 7421, seção 1](https://www.rfc-editor.org/rfc/rfc7421.txt); [RFC 2464, seção 8](https://www.rfc-editor.org/rfc/rfc2464.txt)), e encerra o hábito do [variable-length subnet masking (VLSM)](/learn/vlsm) de dimensionar sub-redes pelos hosts (RFC 7421, seção 2).
 
+## O tamanho do prefixo de um site
+
+Em 2001, a RFC 3177 recomendava /48 no caso geral, /64 para uma única sub-rede e /128 para um único dispositivo ([RFC 3177, resumo](https://www.rfc-editor.org/rfc/rfc3177.txt)). Em 2011, a RFC 6177 disse que o /48 igual para todos "is no longer recommended as a single default", deixou de ser o padrão único ([RFC 6177, resumo](https://www.rfc-editor.org/rfc/rfc6177.txt)), sem fixar tamanho, mas pedindo para residências bem mais que um /64, como um /56 (seções 1 e 2). Em 2017, o ripe-690 desaconselhou com força prefixos mais longos que /56 e propôs um /48 por usuário final ou a divisão "by offering /48 for business customers and /56 for residential customers", empresas com /48, residências com /56 ([ripe-690, seção 1](https://www.ripe.net/publications/docs/ripe-690/)). Um /32 contém 16.777.216 prefixos /56 (seção 4.2.3), e a RFC 7421 não vê risco objetivo de esgotamento nem para os menores sites ([RFC 7421, seção 3.1](https://www.rfc-editor.org/rfc/rfc7421.txt)).
+
+A entrega pode ser a delegação de prefixo do Dynamic Host Configuration Protocol for IPv6 (DHCPv6), especificada desde janeiro de 2026 pela RFC 9915, o Internet Standard 102, que torna obsoleta a RFC 8415, e é "appropriate for use by an ISP to delegate a prefix to a subscriber", do provedor para o assinante ([RFC 9915, seção 6.3](https://www.rfc-editor.org/rfc/rfc9915.txt)), cujo roteador pode então atribuir sub-redes do prefixo aos enlaces (seção 6.3). A RFC 7084 manda o roteador de borda do cliente pedir o bastante para um /64 por interface, arredondado ao nibble, e ele "MUST assign a separate /64 from its delegated prefix(es)", um /64 próprio, a cada interface de rede local (LAN) ([RFC 7084, seções 4.2 e 4.3](https://www.rfc-editor.org/rfc/rfc7084.txt)).
+
+## A conta do ID de sub-rede
+
+Um /n contém 2^(m-n) prefixos de tamanho /m, e o ID de sub-rede fica entre o prefixo do site e o /64:
+
+| Prefixo do site | Bits do ID | Dígitos hexadecimais | Sub-redes /64 |
+|---|---|---|---|
+| /48 | 16 | 4 | 65.536 |
+| /52 | 12 | 3 | 4.096 |
+| /56 | 8 | 2 | 256 |
+| /60 | 4 | 1 | 16 |
+
+Um /64 contém 2^64 = 18.446.744.073.709.551.616 endereços, exatamente o total do IPv4 ao quadrado, não mais: um endereço IPv4 tem 32 bits, que ocupam os 32 bits de baixo quando o IPv6 embute um ([RFC 4291, seção 2.5.5](https://www.rfc-editor.org/rfc/rfc4291.txt)), e 4.294.967.296 × 4.294.967.296 = 2^32 × 2^32 = 2^64. No prefixo de documentação 2001:db8::/32 ([RFC 3849, resumo](https://www.rfc-editor.org/rfc/rfc3849.txt)), o 2001:db8:abcd::/48 numera seus /64 no quarto grupo, de 2001:db8:abcd::/64 a 2001:db8:abcd:ffff::/64. O /56 2001:db8:abcd:1a00::/56 fixa dois desses dígitos (1a00 a 1aff), o /60 2001:db8:abcd:1a30::/60, três (1a30 a 1a3f), e um /62 como 2001:db8:abcd:1a34::/62 (1a34 a 1a37) termina no meio de um dígito.
+
+## Fronteiras de nibble e DNS reverso
+
+Os planos andam um nibble, um dígito hexadecimal, por vez: "The length of a delegated prefix should therefore always be a multiple of 4", múltiplo de 4 ([ripe-690, seção 4.2](https://www.ripe.net/publications/docs/ripe-690/)), e o American Registry for Internet Numbers (ARIN) faz todas as alocações em fronteiras de nibble ([política do ARIN, seção 6.5.2.1](https://www.arin.net/participate/policy/nrpm/)). O DNS reverso é a segunda razão. Um nome ip6.arpa lista os nibbles do endereço em ordem inversa, um por rótulo ([RFC 3596, seção 2.5](https://www.rfc-editor.org/rfc/rfc3596.txt)), então um /n alinhado em nibble é uma zona de n/4 rótulos: 2001:db8:abcd::/48 é `d.c.b.a.8.b.d.0.1.0.0.2.ip6.arpa`. Um /50 como 2001:db8:abcd:4000::/50 são quatro zonas, de `4.d.c.b.a.8.b.d.0.1.0.0.2.ip6.arpa` a `7.d.c.b.a.8.b.d.0.1.0.0.2.ip6.arpa`, e o LIR tem de delegar todas quando pedido ([ripe-738, seção 5.6](https://www.ripe.net/publications/docs/ripe-738/)); [Consultas DNS reversas com o nslookup](/learn/reverse-dns-lookups-with-nslookup) trata das consultas. Dentro do site, numere as sub-redes de forma compacta, pelos bits de baixo, como se só houvesse um /56 mesmo num /48 ([RFC 5375, seção 2.4](https://www.rfc-editor.org/rfc/rfc5375.txt)).
+
+## Enlaces entre roteadores e loopbacks: /127 e /128
+
+Entre roteadores, a RFC 6164 considera úteis os prefixos de 127 bits, e "Such a practice parallels the use of 31-bit prefixes in IPv4", como o /31 do IPv4 ([RFC 6164, resumo](https://www.rfc-editor.org/rfc/rfc6164.txt)). Ali, um prefixo mais curto pode criar um loop de encaminhamento, e um ataque ao cache de vizinhos de um /64 pode impedir que sessões BGP se restabeleçam, pois os roteadores deixam de resolver os endereços um do outro; o /127 elimina isso (seções 5.1 e 5.2). A seção 6 determina: "Routers MUST support the assignment of /127 prefixes on point-to-point inter-router links.  Routers MUST disable Subnet-Router anycast for the prefix when /127 prefixes are used", suportar /127, sem anycast. O Subnet-Router é o endereço [anycast](/learn/anycast) com o ID de interface todo em zeros ([RFC 4291, seção 2.6.1](https://www.rfc-editor.org/rfc/rfc4291.txt)).
+
+A RFC 6164 também tira desses enlaces os IDs de interface todos em zero e os 128 valores mais altos, reservados ao anycast de sub-rede ([RFC 6164, seção 6](https://www.rfc-editor.org/rfc/rfc6164.txt)). Ela imprime a faixa a partir de ff7f, e a errata 3422 corrige: "The highest 128 values start at ffff:ffff:ffff:ff80, not ffff:ffff:ffff:ff7f", começam em ff80 ([RFC 6164, errata 3422](https://www.rfc-editor.org/errata/rfc6164)); este texto segue a errata. Então reserve um /64 por enlace e use um /127 dele que evite as duas faixas ([ripe-690, seção 1](https://www.ripe.net/publications/docs/ripe-690/)): não o primeiro /127 de 2001:db8:0:ff::/64, que contém o 2001:db8:0:ff:: todo em zeros.
+
+O apêndice B.2.2 da RFC 5375 chamava o /127 de inválido até a errata 3309, verificada em 2012, fazê-lo dizer que o /127 "is valid as stated in RFC 6164 [RFC 6164]", é válido ([RFC 5375, errata 3309](https://www.rfc-editor.org/errata/rfc5375)); este texto segue a errata. Loopbacks usam um /128, para quando um endereço basta ([RFC 5375, apêndice B.2.3](https://www.rfc-editor.org/rfc/rfc5375.txt)), como 2001:db8:0:ffff::1/128.
+
+## Prefixos locais únicos
+
+Os Unique Local Addresses (ULAs) fazem o papel do [espaço de endereços IPv4 privados](/learn/private-address-space), mas são feitos para ser únicos: fc00::/7, um bit L em 1 para atribuição local, o que torna fd o primeiro byte, um ID global de 40 bits, um ID de sub-rede de 16 bits e o ID de interface ([RFC 4193, seção 3.1](https://www.rfc-editor.org/rfc/rfc4193.txt)). O ID global tem de ser aleatório: "They MUST NOT be assigned sequentially or with well-known numbers", nem sequenciais nem conhecidos (seção 3.2), o que descarta o fd00::/48. O hash da hora 2026-10-18T00:00:00Z com o EUI-64 34-56-78-FF-FE-9A-BC-DE, tirado do MAC de exemplo da RFC 2464, reduzido aos 40 bits menos significativos (seção 3.2.2), dá o prefixo ilustrativo fd6c:f4fb:acc3::/48. Reaproveite os IDs de sub-rede do plano global, filtre os ULAs nos dois sentidos, por padrão, numa borda [BGP](/learn/bgp-primer) (seção 4.1) e deixe os registros deles fora do DNS global (seção 4.4). ULA não implica NAT ([RFC 5375, seção 2.2](https://www.rfc-editor.org/rfc/rfc5375.txt)).
+
+## Erros que quebram um plano
+
+Primeiro, um prefixo mais longo que /64 onde há hosts. A RFC 5375 diz que usá-lo "for links containing end hosts would be an especially bad idea", uma ideia especialmente ruim ([RFC 5375, seção 3](https://www.rfc-editor.org/rfc/rfc5375.txt)). Esses enlaces perdem a SLAAC, e um /120 deixa um identificador de 8 bits, com colisões altamente prováveis ([RFC 7421, seções 4.4 e 4.2](https://www.rfc-editor.org/rfc/rfc7421.txt)).
+
+Segundo, economizar como no IPv4: "Assigning a /64 or longer prefix does not conform to IPv6 standards and will break functionality in customer LANs", quebra a rede do cliente ([ripe-690, seção 4.2.3](https://www.ripe.net/publications/docs/ripe-690/)). Uma casa que recebe um /60 e dá um /64 a cada dispositivo fica sem prefixos depois de 15 deles ([RFC 9762, seção 1](https://www.rfc-editor.org/rfc/rfc9762.txt)).
+
+Terceiro, um plano que não sumariza; decide o alinhamento, não a contagem. Dezesseis /48 de 2001:db8:a0::/48 a 2001:db8:af::/48 viram 2001:db8:a0::/44, mas dezesseis de 2001:db8:a8::/48 a 2001:db8:b7::/48 exigem 2001:db8:a8::/45 e 2001:db8:b0::/45, e /48 ULA aleatórios nunca se agregam ([RFC 5375, seção 2.4](https://www.rfc-editor.org/rfc/rfc5375.txt)); veja [Sumarização de rotas](/learn/route-summarization) e [supernetting](/learn/supernetting-and-aggregation).
+
+Quarto, o /64 esparso, "a number so large it covers literally billions of billions of addresses, the overwhelming majority of which will be unassigned", quase todos sem uso ([RFC 6583, seção 2](https://www.rfc-editor.org/rfc/rfc6583.txt)), que um ataque ao [cache de vizinhos](/learn/ipv6-neighbor-discovery) do roteador explora. Dimensionar a sub-rede pelos endereços em uso evita o problema, mas exclui a SLAAC e só serve a hosts configurados estaticamente (seção 6.2); limitar o tamanho do cache e as entradas incompletas também derrota o ataque ([RFC 7421, seção 3.4](https://www.rfc-editor.org/rfc/rfc7421.txt)).
+
+## Como ver na prática
+
+O [Kit de ferramentas IPv6](/tools/ipv6) lê um prefixo por vez: para 2001:db8:abcd:1a00::/56, mostra a rede, o primeiro e o último endereço, a contagem (2^72, com o decimal exato) e os bits de host. Não lista sub-redes; sua linha ip6.arpa é o nome do endereço digitado, então use os últimos n/4 rótulos como zona; sua tabela de usos especiais não tem o 3fff::/20, o segundo bloco de documentação ([RFC 9637, seção 6](https://www.rfc-editor.org/rfc/rfc9637.txt)), e mostra 3fff:: como global unicast; e sua linha EUI-64 recupera o MAC de um ID de interface EUI-64 modificado, sem montar um. O [Playground de Python](/tools/python-playground) roda o ipaddress do CPython 3.14 para o resto, e o exemplo ipv6-eui64 monta 21a:2bff:fe3c:4d5e do MAC 00:1A:2B:3C:4D:5E.
+
+Uma sessão ilustrativa, em Python 3.13 com chamadas documentadas para o 3.14 ([documentação do ipaddress](https://docs.python.org/3.14/library/ipaddress.html)):
+
+```text
+>>> import ipaddress
+>>> site = ipaddress.ip_network("2001:db8:abcd::/48")
+>>> site.num_addresses
+1208925819614629174706176
+>>> 2 ** (64 - site.prefixlen)
+65536
+>>> list(site.subnets(new_prefix=52))[:3]
+[IPv6Network('2001:db8:abcd::/52'), IPv6Network('2001:db8:abcd:1000::/52'), IPv6Network('2001:db8:abcd:2000::/52')]
+>>> home = ipaddress.ip_network("2001:db8:abcd:1a00::/56")
+>>> lans = list(home.subnets(new_prefix=64))
+>>> len(lans)
+256
+>>> lans[0], lans[1], lans[-1]
+(IPv6Network('2001:db8:abcd:1a00::/64'), IPv6Network('2001:db8:abcd:1a01::/64'), IPv6Network('2001:db8:abcd:1aff::/64'))
+>>> home.network_address.reverse_pointer
+'0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.d.c.b.a.8.b.d.0.1.0.0.2.ip6.arpa'
+>>> list(ipaddress.ip_network("2001:db8:0:ff::/127").hosts())
+[IPv6Address('2001:db8:0:ff::'), IPv6Address('2001:db8:0:ff::1')]
+>>> ipaddress.ip_network("2001:db8:abcd:12::1/64")
+Traceback (most recent call last):
+  ...
+ValueError: 2001:db8:abcd:12::1/64 has host bits set
 ```
-/48   a site            65,536 subnets (/64s)
-/56   a small site         256 subnets (/64s)
-/64   one subnet         the link itself
+
+`hosts()` omite o anycast Subnet-Router, exceto em /127, daí os dois endereços acima, embora a RFC 6164 tire o primeiro de um enlace entre roteadores; a zona do /56 são os últimos 14 rótulos de `reverse_pointer`; e o modo estrito recusa bits de host (mesma documentação).
+
+No Linux, com a sintaxe dos manuais do iproute2:
+
+```bash
+ip -6 address show dev eth0
+ip address add 2001:0db8:85a3::0370:7334/64 dev eth1
+ip -6 route show
 ```
 
-Um ISP tipicamente delega um /48 ou /56 a um cliente, que então atribui /64s a partir dele a enlaces individuais. A RFC 6177 recua da orientação original de "/48 para todos" em direção a dar a cada site espaço suficiente para criar sub-redes confortavelmente, que na prática significa um /48 ou /56. O ponto é que você tem espaço de sobra: até um /56 dá a uma casa ou pequeno escritório 256 redes separadas, muito mais do que ele jamais usará.
+`-6` é atalho para `-family inet6` ([ip(8)](https://man7.org/linux/man-pages/man8/ip.8.html)); /127 e /128 se escrevem como o /64, mas o `mngtmpaddr`, usado pelos endereços de privacidade, exige tamanho 64 ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)); e rotas com protocolo `ra` vieram do Router Discovery ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)).
 
-## Crie sub-redes em fronteiras de nibble
+Um Router Advertisement é o tipo 134 do Internet Control Message Protocol for IPv6 (ICMPv6) ([RFC 4861, seção 4.2](https://www.rfc-editor.org/rfc/rfc4861.txt)). Sua opção Prefix Information traz Type 3, Length 4 (unidades de 8 octetos), Prefix Length (0 a 128), as flags L, A, R e P, dois tempos de vida, um campo reservado e o prefixo de 128 bits (seção 4.6.2; [RFC 9762, seção 5](https://www.rfc-editor.org/rfc/rfc9762.txt)), e a P indica que a rede prefere delegação de prefixo a endereços por SLAAC ou DHCPv6 (RFC 9762, seção 5). Uma delegação é uma `OPTION_IA_PD` (25) com opções `OPTION_IAPREFIX` (26), cada uma com dois tempos de vida, um tamanho de prefixo de 1 octeto e o prefixo de 16 octetos ([RFC 9915, seções 21.21 e 21.22](https://www.rfc-editor.org/rfc/rfc9915.txt)). Filtros de exibição do Wireshark para os dois:
 
-Como o IPv6 é escrito em hex e cada dígito hex tem 4 bits (um nibble), prefixos que caem em uma fronteira de 4 bits são muito mais fáceis de ler e gerenciar. Um /48, /52, /56, /60, e /64 todos terminam limpamente entre dígitos hex, então a porção de sub-rede se alinha com caracteres inteiros no endereço. Criar sub-redes de um /48 em /52s lhe dá 16 blocos distinguidos por um único dígito hex; indo para /56 dá 256 blocos através de dois dígitos. Permanecer em fronteiras de nibble mantém seu plano de endereçamento legível, que importa mais no IPv6 do que espremer o último bit jamais poderia.
+```text
+icmpv6.type == 134 && icmpv6.opt.prefix.length != 64
+dhcpv6.iaprefix.pref_len
+```
 
-## Como contar sub-redes e endereços
+O primeiro pega anúncios sem nenhum /64, porque `!=` num campo repetido exige todas as ocorrências diferentes ([wireshark-filter(4)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)); o segundo lista os tamanhos delegados ([referência DHCPv6 do Wireshark](https://www.wireshark.org/docs/dfref/d/dhcpv6.html)). As flags são `icmpv6.opt.prefix.flag.l`, `.flag.a` e, a partir do Wireshark 4.6.0, `.flag.p` ([referência ICMPv6 do Wireshark](https://www.wireshark.org/docs/dfref/i/icmpv6.html)).
 
-A aritmética é direta. O número de sub-redes /64 dentro de um prefixo mais curto é 2 elevado à diferença nos comprimentos de prefixo: um /48 contém 2^(64-48) = 2^16 = 65.536 sub-redes. O número de endereços dentro de qualquer /64 é 2^(128-64) = 2^64. A ferramenta relata tanto a contagem de endereços para um prefixo quanto a faixa utilizável, e os números ficam grandes rapidamente, que é exatamente o ponto: a escassez não é mais uma restrição em torno da qual você projeta.
+## Para lembrar
 
-## A lição
+- A SLAAC ignora o prefixo que, com o ID de interface de 64 bits, não soma 128, então enlaces com hosts são /64; Neighbor Discovery e encaminhamento aceitam qualquer tamanho.
+- Um RIR tem /12, um LIR pelo menos um /32, um site um /48 ou /56, que o DHCPv6 pode delegar, e cada enlace um /64.
+- Um /n contém 2^(m-n) prefixos de tamanho /m, 65.536 /64 num /48, e os 2^64 endereços de um /64 são exatamente o total do IPv4 ao quadrado.
+- Passos de nibble põem cada fronteira num dígito hexadecimal e num rótulo ip6.arpa; um /50 exige quatro zonas reversas.
+- Enlaces entre roteadores usam um /127 de um /64 reservado, sem o ID de interface todo em zeros nem os 128 valores do topo, a partir de ffff:ffff:ffff:ff80 (errata 3422); loopbacks usam um /128.
+- Prefixos locais únicos começam com fd e um ID global aleatório de 40 bits, reusam os IDs de sub-rede do plano global e ficam fora do BGP e do DNS global.
 
-As sub-redes IPv6 viram o hábito do IPv4 de cabeça para baixo. Você não está dividindo um recurso escasso; você está impondo estrutura sobre um efetivamente ilimitado. Dê a toda sub-rede um /64 para que a autoconfiguração e a descoberta de vizinhos funcionem como projetadas, requisite um /48 ou /56 para que você tenha espaço para organizar, e crie sub-redes em fronteiras de nibble para que seu plano permaneça legível. Quando você cola um prefixo na ferramenta e vê a contagem de endereços, trate aquela abundância como permissão para projetar para a clareza em vez de para a conservação.
+## Fontes
+
+- [RFC 4291, IP Version 6 Addressing Architecture, fevereiro de 2006: seções 2, 2.1, 2.5, 2.5.1, 2.5.4, 2.5.5 e 2.6.1 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 3587, IPv6 Global Unicast Address Format, agosto de 2003: seção 3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3587.txt)
+- [RIPE NCC, ripe-738, IPv6 Address Allocation and Assignment Policy, março de 2020: seções 1.1, 3.5, 3.8, 4.3, 5.1.2, 5.4, 5.6 e 11.3 (lida em 2026-10-18)](https://www.ripe.net/publications/docs/ripe-738/)
+- [IANA, IPv6 Global Unicast Address Space registry, atualizado em outubro de 2025: as linhas /12 dos RIRs (lida em 2026-10-18)](https://www.iana.org/assignments/ipv6-unicast-address-assignments/ipv6-unicast-address-assignments.csv)
+- [LACNIC, LACNIC Policy Manual, versão 2.21 (julho de 2025): seções 4.3.2, 4.4.1.1 e 4.4.3.1 (lida em 2026-10-18)](https://www.lacnic.net/innovaportal/file/680/1/manual-politicas-en-2-21.pdf)
+- [RFC 7136, Significance of IPv6 Interface Identifiers, fevereiro de 2014: seções 2 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7136.txt)
+- [RFC 4862, IPv6 Stateless Address Autoconfiguration, setembro de 2007: seções 2 e 5.5.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4862.txt)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, dezembro de 1998: seções 4 e 8 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2464.txt)
+- [RFC 7421, Analysis of the 64-bit Boundary in IPv6 Addressing, janeiro de 2015: seções 1 a 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7421.txt)
+- [RFC 7608, IPv6 Prefix Length Recommendation for Forwarding, julho de 2015: seção 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7608.txt)
+- [RFC 3177, IAB/IESG Recommendations on IPv6 Address Allocations to Sites, setembro de 2001: resumo e seção 2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3177.txt)
+- [RFC 6177, IPv6 Address Assignment to End Sites, março de 2011: resumo e seções 1, 2 e 5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6177.txt)
+- [RIPE NCC, ripe-690, Best Current Operational Practice for Operators: IPv6 prefix assignment for end-users - persistent vs non-persistent, and what size to choose, outubro de 2017: seções 1, 4.1.3 e 4.2 (lida em 2026-10-18)](https://www.ripe.net/publications/docs/ripe-690/)
+- [RFC 9915, Dynamic Host Configuration Protocol for IPv6 (DHCPv6), janeiro de 2026: seções 6.3, 21.21 e 21.22 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9915.txt)
+- [RFC 7084, Basic Requirements for IPv6 Customer Edge Routers, novembro de 2013: seções 4.2 e 4.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7084.txt)
+- [RFC 3849, IPv6 Address Prefix Reserved for Documentation, julho de 2004: resumo (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3849.txt)
+- [ARIN, Number Resource Policy Manual, versão 2025.1, março de 2026: seções 6.5.2.1 e 6.5.8.2 (lida em 2026-10-18)](https://www.arin.net/participate/policy/nrpm/)
+- [RFC 3596, DNS Extensions to Support IP Version 6, outubro de 2003: seção 2.5 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3596.txt)
+- [RFC 5375, IPv6 Unicast Address Assignment Considerations, dezembro de 2008: seções 2.2, 2.4 e 3 e apêndices A.1.2, A.2.2 e B.2.3 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc5375.txt)
+- [RFC 6164, Using 127-Bit IPv6 Prefixes on Inter-Router Links, abril de 2011: resumo e seções 2, 5 e 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6164.txt)
+- [RFC Editor errata for RFC 6164, Using 127-Bit IPv6 Prefixes on Inter-Router Links: errata 3422 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc6164)
+- [RFC Editor errata for RFC 5375, IPv6 Unicast Address Assignment Considerations: errata 3309 (lidas em 2026-10-18)](https://www.rfc-editor.org/errata/rfc5375)
+- [RFC 4193, Unique Local IPv6 Unicast Addresses, outubro de 2005: seções 3.1 a 3.2.2, 4.1 e 4.4 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4193.txt)
+- [RFC 9762, Using Router Advertisements to Signal the Availability of DHCPv6 Prefix Delegation to Clients, junho de 2025: seções 1, 5 e 9.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9762.txt)
+- [RFC 6583, Operational Neighbor Discovery Problems, março de 2012: seções 2 e 6.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6583.txt)
+- [RFC 9637, Expanding the IPv6 Documentation Space, agosto de 2024: seção 6 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9637.txt)
+- [Python 3.14 documentation, ipaddress, IPv4/IPv6 manipulation library: IPv6Network, subnets(), num_addresses, hosts(), reverse_pointer e collapse_addresses() (lida em 2026-10-18)](https://docs.python.org/3.14/library/ipaddress.html)
+- [ip(8), Linux manual page (iproute2): OPTIONS, -6 (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip.8.html)
+- [ip-address(8), Linux manual page (iproute2): SYNOPSIS, ip address add, mngtmpaddr e EXAMPLES (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip-route(8), Linux manual page (iproute2): ip route show e protocol RTPROTO (lida em 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), setembro de 2007: seções 4.2 e 4.6.2 (lida em 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4861.txt)
+- [wireshark-filter(4), Wireshark display filter syntax and reference: operadores de comparação e lógicos (lida em 2026-10-18)](https://www.wireshark.org/docs/man-pages/wireshark-filter.html)
+- [Wireshark, Display Filter Reference: DHCPv6: os campos dhcpv6.iaprefix (lida em 2026-10-18)](https://www.wireshark.org/docs/dfref/d/dhcpv6.html)
+- [Wireshark, Display Filter Reference: Internet Control Message Protocol v6: icmpv6.type e os campos icmpv6.opt.prefix (lida em 2026-10-18)](https://www.wireshark.org/docs/dfref/i/icmpv6.html)

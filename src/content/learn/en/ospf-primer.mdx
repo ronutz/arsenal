@@ -1,40 +1,243 @@
 ---
 slug: ospf-primer
 title: "OSPF: the map, the math, and area 0"
-summary: "Open Shortest Path First is the standard interior routing protocol: every router gets the whole map and runs Dijkstra on it. A practical primer: link-state flooding, areas and the backbone rule, cost and the reference-bandwidth trap, DR elections, and the design habits that keep OSPF boring."
-concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp"]
-relatedTools: ["cidr"]
-relatedArticles: ["bgp-primer", "structured-cabling"]
+summary: "OSPF is the Internet Standard link-state interior gateway protocol: each router floods a description of its own links, every router in an area holds the same database, and each one computes its own shortest-path tree from it. After reading, you can work out a route by hand from link costs, say why two routers will not become neighbours, explain the designated router election and the rules for areas, set costs without the reference-bandwidth trap, and read FRRouting's neighbour, database, route and interface output."
+concepts: ["ospf", "igp", "is-is", "rip", "eigrp", "bgp", "link state", "lsa", "spf", "dijkstra", "designated router", "area 0", "stub area", "nssa", "reference bandwidth", "ospfv3"]
+relatedTools: ["python-playground", "mtu-mss", "packet-capture-plan-builder"]
+relatedArticles: ["bgp-primer", "structured-cabling", "routing-tables-and-default-gateway", "dynamic-routing-compared", "dijkstra-and-the-twenty-minute-algorithm", "isis-primer", "static-routes-and-longest-match", "route-redistribution", "bfd-when-a-link-is-up-and-dead", "route-summarization"]
 category: networking
 order: 235
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-19"
 ---
+
+OSPF is the link-state member of the families in [Dynamic routing compared](/learn/dynamic-routing-compared): each router describes only its own links, floods that description, and computes its routes for itself. Version 2 is Request for Comments (RFC) 2328 of April 1998, an Internet Standard (STD 54): "OSPF is classified as an Interior Gateway Protocol (IGP). This means that it distributes routing information between routers belonging to a single Autonomous System" ([RFC 2328, section 1](https://www.rfc-editor.org/rfc/rfc2328.txt)). Version 3 carries it to IPv6; the other link-state interior protocol, [Intermediate System to Intermediate System (IS-IS)](/learn/isis-primer), has its own part. Checked against six routers running FRRouting (FRR) 8.4.4 in a lab on 2026-10-19, this part lets you compute a route by hand, find why an adjacency is stuck, and read the router's own account of both.
 
 ## Everyone gets the map
 
-The old distance-vector protocols routed by rumor: each router told its neighbors what it believed, and belief propagated - slowly, and sometimes wrongly, as RIP's count-to-infinity pathology proved. Link-state routing inverts the idea. Every OSPF router describes its own links in small advertisements (LSAs), those advertisements are **flooded** unchanged to every router in the area, and each router assembles the identical database - the map. Then each one independently runs the same shortest-path-first algorithm, Dijkstra's, over the map. Same map plus same math equals loop-free agreement, without anyone trusting anyone's arithmetic but their own.
+Each piece of the link-state database "is a particular router's local state (e.g., the router's usable interfaces and reachable neighbors)" ([RFC 2328, section 1.1](https://www.rfc-editor.org/rfc/rfc2328.txt)), carried in a link state advertisement (LSA). Type, Link State ID and Advertising Router identify an LSA; sequence number, checksum and age decide which copy is newer (section 12.1). Flooding passes an LSA on unchanged except its age.
 
-That is OSPF - Open Shortest Path First, RFC 2328 for the IPv4 version everyone learns, OSPFv3 carrying the idea to IPv6. The "open" was the point at birth: a standard anyone could implement, against the proprietary alternatives of the day.
+Some LSAs stay in one area, others cross the whole Autonomous System (AS), and type 7 lives in a not-so-stubby area (NSSA) ([RFC 2328, section 4.3](https://www.rfc-editor.org/rfc/rfc2328.txt); [RFC 3101, section 1.3](https://www.rfc-editor.org/rfc/rfc3101.txt)):
 
-## Cost, and the trap inside it
+| Type | Name | Originated by | Flooded through |
+|---|---|---|---|
+| 1 | Router-LSA | every router | one area |
+| 2 | Network-LSA | the designated router of a broadcast network | one area |
+| 3 | Summary-LSA, to a network | area border routers | the area it is sent into |
+| 4 | Summary-LSA, to an AS boundary router | area border routers | the area it is sent into |
+| 5 | AS-external-LSA | AS boundary routers | the whole AS |
+| 7 | NSSA AS-external LSA (RFC 3101) | routers importing external routes into an NSSA | that one NSSA |
 
-OSPF picks paths by **cost**, summed per link, and by default cost is derived from bandwidth: a reference bandwidth divided by the link's speed. The trap generations of engineers have met: the classic default reference is 100 Mb/s - which made sense when Fast Ethernet was fast - so a 1 Gb/s link, a 10 Gb/s link, and a 100 Gb/s link all compute to the same cost of 1, and OSPF happily load-balances your data-center uplink with a legacy gigabit path. Raising the reference bandwidth consistently on every router is one of the first grown-up settings in any OSPF design; setting costs explicitly on the links you care about is the other.
+OSPF runs directly over IP as protocol 89 ([Internet Assigned Numbers Authority (IANA), Protocol Numbers](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)). Hellos go to 224.0.0.5, and the designated routers also listen on 224.0.0.6; such packets "are meant to travel a single hop only", so their time to live (TTL) is 1 ([RFC 2328, appendix A.1](https://www.rfc-editor.org/rfc/rfc2328.txt)).
 
-## Areas, and the one rule that is really a law
+The database cleans itself: "The value of LSRefreshTime is set to 30 minutes" and "The value of MaxAge is set to 1 hour" ([RFC 2328, appendix B](https://www.rfc-editor.org/rfc/rfc2328.txt)). Each router re-originates its own LSAs every half hour; an LSA that reaches MaxAge is flushed. Sequence numbers start at 0x80000001; at one refresh every 30 minutes, the space lasts 244,979 years.
 
-A single flooded map scales only so far: every link flap makes every router in the area recompute. OSPF's answer is **areas**: the network is carved into regions that keep their detailed maps to themselves and exchange summaries. The structure has one law: **area 0 is the backbone, and every other area must attach to it**. Inter-area traffic goes through the backbone; area border routers (ABRs) sit on the seam and do the summarizing. Special area types - stub, totally stubby, NSSA - exist to shrink what small sites must carry, and their names are the exam's favorite trivia. The practical design habit is older than all of them: keep area 0 contiguous, keep it stable, and summarize at the borders so a flapping link in a branch never makes the core think.
+## The math: one tree per router
 
-## LANs, and the meeting-chair election
+Each router runs Dijkstra's algorithm over the database with itself as root. At each step "the paths to the candidate vertex that is closest to the root are guaranteed to be shortest", so that vertex joins the tree ([RFC 2328, section 16.1](https://www.rfc-editor.org/rfc/rfc2328.txt)). A link counts only if the far end lists a link back; stub networks are hung on as leaves at the end; and "only the next hop to the destination is used in the forwarding process" (section 2.2). The algorithm's own story is in [Dijkstra: the twenty-minute algorithm](/learn/dijkstra-and-the-twenty-minute-algorithm).
 
-On a point-to-point link, two routers simply become neighbors. On a shared Ethernet segment with five routers, full-mesh adjacencies would mean ten relationships all flooding at each other - so OSPF elects a **designated router** (and a backup, the BDR) to act as the segment's meeting chair: everyone synchronizes with the DR, the DR redistributes. The election is won by priority, tie-broken by router ID, and famously **non-preemptive**: a returning ex-chair does not take the job back, which surprises everyone exactly once. On modern routed designs, the cleaner habit is declaring inter-router links point-to-point and skipping the election entirely.
+Six routers in area 0:
 
-Neighbors, adjacency states (the walk from Down through ExStart to Full), hello and dead timers that must match, MTU mismatches that stall ExStart - these are the mechanics of nearly every OSPF troubleshooting session ever run. The checklist is short and universal: same subnet, same area, same timers, same MTU, same authentication.
+```text
+R1 - R2   point-to-point 198.51.100.0/30    cost 8
+R1 - R3   point-to-point 198.51.100.4/30    cost 5
+R2 - R3   point-to-point 198.51.100.8/30    cost 3
+R2 - R4   point-to-point 198.51.100.12/30   cost 2
+R3 - R5   point-to-point 198.51.100.16/30   cost 9
+R4, R5, R6 on Ethernet LAN 203.0.113.0/29, cost 1 each (R6 is the DR)
+R6 also has a stub LAN 203.0.113.64/26, cost 1
+Router IDs and /32 loopbacks: 192.0.2.1 to 192.0.2.6
+```
 
-## Where OSPF sits
+R1's tree, in the order the algorithm fixes each vertex (computed):
 
-OSPF is an interior gateway protocol - the map-and-math approach for the network you administer, where the goal is truth and speed, not policy. Its link-state sibling IS-IS plays the same game with a different pedigree and a strong carrier following; EIGRP is the advanced distance-vector counterpoint from the Cisco world; and at the border of your autonomous system, all of them hand off to BGP, where policy outranks shortest paths - the subject of the BGP primer. The division of labor is the design: OSPF finds the fastest way across the territory you own; BGP negotiates the territory you do not.
+```text
+step 1: add R1                     distance   0  next hops ['(self)']
+step 2: add R3                     distance   5  next hops ['R3']
+step 3: add R2                     distance   8  next hops ['R2', 'R3']
+step 4: add R4                     distance  10  next hops ['R2', 'R3']
+step 5: add N-LAN 203.0.113.0/29   distance  11  next hops ['R2', 'R3']
+step 6: add R5                     distance  11  next hops ['R2', 'R3']
+step 7: add R6                     distance  11  next hops ['R2', 'R3']
+```
 
-## The habits that keep it boring
+R2 is reachable at 8 directly and at 5 + 3 = 8 through R3. On a tie, "This set of hops should be added to the next hop values that appear for W on the candidate list" ([RFC 2328, section 16.1](https://www.rfc-editor.org/rfc/rfc2328.txt)), so both stay, and everything beyond R2 inherits the pair. The lab's table on R1 matched line for line (excerpt):
 
-Working OSPF is boring OSPF, and the habits are known: one contiguous area 0; summarization at the ABRs; passive-interface as the default so user LANs hear no hellos; explicit router IDs so nothing changes identity on a reload; reference bandwidth raised before the first 10 Gb/s link, not after; and authentication on, because a rogue hello is a rogue map. Do those, and OSPF disappears into the infrastructure - which is the highest compliment an interior protocol can earn.
+```console
+ospfR1# show ip route ospf
+O>* 192.0.2.2/32 [110/8] via 198.51.100.2, e12, weight 1, 00:00:33
+  *                      via 198.51.100.6, e13, weight 1, 00:00:33
+O>* 192.0.2.3/32 [110/5] via 198.51.100.6, e13, weight 1, 00:00:43
+O>* 203.0.113.64/26 [110/12] via 198.51.100.2, e12, weight 1, 00:00:07
+  *                          via 198.51.100.6, e13, weight 1, 00:00:07
+```
+
+In `[110/12]`, 12 is the cost and 110 the administrative distance of [Static routes, longest prefix match and administrative distance](/learn/static-routes-and-longest-match). With the R1 to R3 link taken down, R1 reached 192.0.2.3/32 at 11 and 198.51.100.16/30 at 20 eight seconds later, all through R2, as computed.
+
+## Cost, and the reference-bandwidth trap
+
+RFC 2328 makes cost a configured number per interface, with one rule: "The interface output cost must always be greater than 0" ([RFC 2328, appendix C.3](https://www.rfc-editor.org/rfc/rfc2328.txt)); the field holds at most 0xffff (section 15). No OSPF RFC, from 1247 to 2328 and 5340, ties cost to bandwidth. The formula is an implementation convention: Juniper documents "cost = ref-bandwidth/bandwidth" and "Default: 100 Mbps (100,000,000 bits)" ([Juniper Networks, reference-bandwidth](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/reference-bandwidth-edit-protocols-ospf.html)), and FRR's current documentation says "The default is 100Mbit/s" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)).
+
+FRR 8.4.4, the build run in the lab, behaved differently: with nothing configured, interfaces of 1, 10 and 100 Gbit/s cost 100, 10 and 1, as if the reference were 100 Gbit/s; with `auto-cost reference-bandwidth 100` all three cost 1. The documentation read is the latest edition and the lab ran one build, so configure the value and confirm it in `show ip ospf interface`.
+
+Computed costs:
+
+| Link | Reference 100 Mbit/s | Reference 100,000 Mbit/s |
+|---|---|---|
+| 10 Mbit/s | 10 | 10,000 |
+| 100 Mbit/s | 1 | 1,000 |
+| 1 Gbit/s | 1 | 100 |
+| 10 Gbit/s | 1 | 10 |
+| 100 Gbit/s | 1 | 1 |
+| 400 Gbit/s | 1 | 1 |
+
+At 100 Mbit/s every link from 100 Mbit/s up costs 1, so cost becomes hop count: three 100 Gbit/s hops cost 3, one 1 Gbit/s hop costs 1, and OSPF takes the 1 Gbit/s hop. The tie begins with the first link faster than the reference, so raise the reference before that link arrives, above your fastest speed (400 Gbit/s needs at least 400,000 Mbit/s), and everywhere at once, since "This configuration setting MUST be consistent across all routers within the OSPF domain" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). FRR rounds rather than truncates: 1,000,000 over 400,000 gives 3, not 2. An explicit `ip ospf cost` overrides the formula.
+
+## Becoming neighbours: Hellos and adjacency states
+
+On receipt of a Hello, "the values of the Network Mask, HelloInterval, and RouterDeadInterval fields in the received Hello packet must be checked against the values configured for the receiving interface. Any mismatch causes processing to stop and the packet to be dropped" ([RFC 2328, section 10.5](https://www.rfc-editor.org/rfc/rfc2328.txt)). The mask is ignored on point-to-point links; area ID, authentication type (per interface, as verified erratum 3734 corrects) and the stub flag, the E-bit, must match too (sections 8.2 and 10.5; [RFC 2328 errata](https://www.rfc-editor.org/errata/rfc2328)). FRR's defaults are 10 and 40 seconds ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). In the lab, a 5-second Hello on one side of the R3 to R5 link made R3 expect a dead interval of 20:
+
+```text
+RouterDeadInterval mismatch on e35:198.51.100.17 (expected 20, but received 40).
+AdjChg: Nbr 192.0.2.5, NbrIP 198.51.100.18 (default) on e35:198.51.100.17: Full -> Deleted (InactivityTimer)
+```
+
+A neighbour that falls silent with its link up costs the full 40 seconds; [Bidirectional Forwarding Detection (BFD)](/learn/bfd-when-a-link-is-up-and-dead) exists for that.
+
+A Hello from the lab's local area network (LAN), captured with `tcpdump -i br0 -n -v -c 3 ip proto 89` (numeric addresses, verbose decode, three packets; [tcpdump(1)](https://www.tcpdump.org/manpages/tcpdump.1.html)):
+
+```text
+IP (tos 0xc0, ttl 1, id 12739, offset 0, flags [none], proto OSPF (89), length 72)
+    203.0.113.3 > 224.0.0.5: OSPFv2, Hello, length 52
+	Router-ID 192.0.2.6, Backbone Area, Authentication Type: none (0)
+	Options [External]
+	  Hello Timer 10s, Dead Timer 40s, Mask 255.255.255.248, Priority 10
+	  Designated Router 203.0.113.3, Backup Designated Router 203.0.113.2
+	  Neighbor List:
+	    192.0.2.4
+	    192.0.2.5
+```
+
+TTL 1 and type of service 0xc0, the Internetwork Control precedence ([RFC 2328, appendix A.1](https://www.rfc-editor.org/rfc/rfc2328.txt)); router ID, area and authentication; `Options [External]`, the E-bit; the timers and mask that must match; the designated routers by interface address; the neighbours heard. A router that finds its own ID in that list moves from Init to 2-Way.
+
+| State | What has happened |
+|---|---|
+| Down | nothing heard yet |
+| Attempt | non-broadcast multi-access (NBMA) networks only: actively trying |
+| Init | a Hello seen, not yet listing this router |
+| 2-Way | each lists the other |
+| ExStart | choosing who leads the exchange, and the first sequence number |
+| Exchange | Database Description (DD) packets summarise each database |
+| Loading | missing LSAs requested |
+| Full | databases synchronised; the adjacency appears in LSAs |
+
+RFC 9454 renamed master and slave to Leader and Follower: "the 'master (MS) bit' is renamed the 'Leader (L) bit'" ([RFC 9454, section 2](https://www.rfc-editor.org/rfc/rfc9454.txt)). ExStart is where a maximum transmission unit (MTU) mismatch bites, because "If the Interface MTU field in the Database Description packet indicates an IP datagram size that is larger than the router can accept on the receiving interface without fragmentation, the Database Description packet is rejected" ([RFC 2328, section 10.6](https://www.rfc-editor.org/rfc/rfc2328.txt)). With 1400 bytes on R2's side of the R2 to R4 link and 1500 on R4's, both ends were still in `ExStart/-` 45 seconds later, and R2 logged `Neighbor 192.0.2.4 MTU 1500 is larger than [e24:198.51.100.13]'s MTU 1400` every five seconds.
+
+## LANs and the designated router
+
+"The Designated Router concept enables a reduction in the number of adjacencies required on a broadcast or NBMA network" ([RFC 2328, section 1.2](https://www.rfc-editor.org/rfc/rfc2328.txt)). Five routers in a full mesh need 10 adjacencies; with a designated router (DR) and a backup designated router (BDR), 7, because "all routers become adjacent to both the Designated Router and the Backup Designated Router" (section 10.4), and two DROther routers rightly stop at 2-Way. The DR originates the segment's network-LSA.
+
+The highest priority wins, then the highest router ID; priority 0 is ineligible ([RFC 2328, appendix C.3](https://www.rfc-editor.org/rfc/rfc2328.txt)). The election is not pre-emptive: a newcomer "accepts that Designated Router, regardless of its Router Priority", which "ensures that the Designated Router changes less often" (section 7.3), because each change costs a moment of reachability. The lab confirmed it: R6, priority 10, was DR; its process was stopped and R5, priority 1, took over; eleven seconds after R6 restarted, its interface read `State Backup, Priority 10`.
+
+On a link with two routers, `ip ospf network point-to-point` skips the election: no DR, no network-LSA, and the neighbour shows `Full/-`.
+
+## Areas and area 0
+
+An area runs its own copy of the algorithm, and "The topology of an area is invisible from the outside of the area" ([RFC 2328, section 3](https://www.rfc-editor.org/rfc/rfc2328.txt)). Routers attached to several areas are area border routers (ABRs). The rule is on the backbone, area 0: "The OSPF backbone always contains all area border routers" and "The backbone must be contiguous. However, it need not be physically contiguous; backbone connectivity can be established/maintained through the configuration of virtual links" (section 3.1). The result is a star, "with the backbone as hub and each of the non-backbone areas as spokes" (section 3.2).
+
+ABRs advertise summaries, paths with costs, so "routing between areas hence is by distance-vector, not link-state" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)). An ABR can condense an area into address ranges, which is [route summarisation](/learn/route-summarization). A split backbone strands parts of the AS until a virtual link repairs it ([RFC 2328, section 3.7](https://www.rfc-editor.org/rfc/rfc2328.txt)).
+
+## Stub areas and NSSAs
+
+A stub area receives no type 5 LSAs, and "routing to AS external destinations in these areas is based on a (per-area) default only" ([RFC 2328, section 3.6](https://www.rfc-editor.org/rfc/rfc2328.txt)). It cannot carry virtual links or contain an AS boundary router, and the backbone cannot be one. An ABR may also send in "only a subset of the summary-LSAs" (section 12.4.3.1); the industry calls the extreme a totally stubby area, configured in FRR as `area A.B.C.D stub no-summary`.
+
+RFC 3101's NSSA may import external routes as type 7 LSAs that stay inside it, and "NSSA border routers will translate selected Type-7 LSAs received from the NSSA into Type-5 LSAs" ([RFC 3101, section 1.3](https://www.rfc-editor.org/rfc/rfc3101.txt)). Its N-bit must agree between neighbours, like the E-bit. External metric types belong to [Route redistribution and the loops it invites](/learn/route-redistribution).
+
+## OSPFv3: the same protocol for IPv6
+
+RFC 5340 keeps the algorithms and changes the packaging ([RFC 5340, section 2](https://www.rfc-editor.org/rfc/rfc5340.txt)):
+
+| Change | Section |
+|---|---|
+| Runs per link, not per IP subnet | 2.1 |
+| Router-LSAs and network-LSAs carry topology only; IDs stay 32 bits and are no longer addresses | 2.2 |
+| Three flooding scopes: link-local, area, AS; a new link-LSA never leaves its link | 2.3, 2.8 |
+| Link-local source addresses, used as next hops; an Instance ID per packet | 2.4, 2.5 |
+| Version number 3 | 2.7 |
+
+"In OSPF for IPv6, authentication has been removed from the OSPF protocol" ([RFC 5340, section 2.6](https://www.rfc-editor.org/rfc/rfc5340.txt)), leaving IP Security (IPsec), and RFC 7166 later added an Authentication Trailer for networks where IPsec is impractical ([RFC 7166, Abstract](https://www.rfc-editor.org/rfc/rfc7166.txt)).
+
+## How OSPF fails, and how it is attacked
+
+Most failures are those shown above. Router IDs must also be unique: "bad things will happen if multiple OSPF speakers are configured with the same router-ID!" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)).
+
+Anything that can put a protocol 89 packet on a link can talk to OSPF, and "if an OSPF router sends LSAs with the wrong Advertising Router, the receivers will compute a Shortest Path First (SPF) tree that is incorrect and might not forward the traffic" ([RFC 4593, section 3](https://www.rfc-editor.org/rfc/rfc4593.txt)); an insider can instead be "advertising inappropriate link costs in an OSPF LSA" (section 4.5.1.2). A router that sees a newer copy of its own LSA re-originates it with a higher sequence number ([RFC 2328, section 13.4](https://www.rfc-editor.org/rfc/rfc2328.txt)), which, by inference, shortens the life of a forgery in its name, but not an insider's.
+
+The defences, as mechanisms:
+
+| Defence | What it does, and its limit |
+|---|---|
+| Cryptographic authentication | The simple password fails because "Anyone with physical access to the network can learn the password" ([RFC 2328, appendix D.2](https://www.rfc-editor.org/rfc/rfc2328.txt)). [RFC 5709](https://www.rfc-editor.org/rfc/rfc5709.txt) adds keyed-hash message authentication code (HMAC) with the Secure Hash Algorithm (SHA) family; [RFC 7474](https://www.rfc-editor.org/rfc/rfc7474.txt) fixes replay. No type gives confidentiality. |
+| Passive interfaces | No Hellos sent, no neighbour possible, subnet still advertised |
+| TTL | TTL 1 by specification; the Generalized TTL Security Mechanism (GTSM) is generic, and RFC 5082 does not name OSPF |
+
+The earlier scheme "is vulnerable to both inter-session and intra-session replay attacks when using manual keying" ([RFC 7474, Abstract](https://www.rfc-editor.org/rfc/rfc7474.txt)), yet replays cannot install stale routes: "Even if a packet is replayed, the per-LSA sequence number will prevent an old LSA from being installed" ([RFC 6863, section 3](https://www.rfc-editor.org/rfc/rfc6863.txt)); the harm is broken adjacencies. FRR's passive mode is "Do not speak OSPF on the interface, but do advertise the interface as a stub link in the router-LSA for this router" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)), and "GTSM is not a substitute for authentication mechanisms" ([RFC 5082, section 1](https://www.rfc-editor.org/rfc/rfc5082.txt)).
+
+## Seeing it on a router
+
+Who are my neighbours, and how far has each got?
+
+```console
+ospfR4# show ip ospf neighbor
+Neighbor ID     Pri State           Up Time         Dead Time Address         Interface                        RXmtL RqstL DBsmL
+192.0.2.2         1 Full/-          47.225s           32.774s 198.51.100.13   e42:198.51.100.14                    0     0     0
+192.0.2.5         1 Full/Backup     12.106s           32.873s 203.0.113.2     lan4:203.0.113.1                     0     0     0
+192.0.2.6        10 Full/DR         17.108s           32.892s 203.0.113.3     lan4:203.0.113.1                     0     0     0
+```
+
+Router ID, priority, state and role (`-` on point-to-point), a dead timer counting down from 40, the address, and three list lengths, probably the retransmission, request and summary lists that [RFC 2328, section 10](https://www.rfc-editor.org/rfc/rfc2328.txt) names; FRR does not document them.
+
+What is in the map? (Four router rows left out.)
+
+```console
+ospfR1# show ip ospf database
+                Router Link States (Area 0.0.0.0)
+Link ID         ADV Router      Age  Seq#       CkSum  Link count
+192.0.2.1      192.0.2.1         17 0x8000000b 0xa35f 8
+192.0.2.6      192.0.2.6         19 0x80000007 0x27eb 3
+                Net Link States (Area 0.0.0.0)
+Link ID         ADV Router      Age  Seq#       CkSum
+203.0.113.3    192.0.2.6         19 0x80000002 0x0fec
+```
+
+One network-LSA, from the DR, named by its interface address. `show ip ospf route` will "Show the OSPF routing table, as determined by the most recent SPF calculation" ([FRRouting documentation, OSPFv2](https://docs.frrouting.org/en/latest/ospfd.html)); `show ip route` shows what was installed, read as in [Routing tables and the default gateway](/learn/routing-tables-and-default-gateway). `show ip ospf interface lan4` gave `MTU mismatch detection: enabled`, `Cost: 1`, `State DROther, Priority 1` and `Hello 10s, Dead 40s`.
+
+No tool here computes an OSPF cost or an SPF tree. The [Python playground](/tools/python-playground) runs the cost arithmetic or a small Dijkstra, the [MTU / MSS calculator](/tools/mtu-mss) shows how a tunnel lowers an MTU, a common cause of a one-sided ExStart, and the [Packet Capture Plan Builder](/tools/packet-capture-plan-builder) plans where to capture protocol 89.
+
+## What to remember
+
+- Each router floods LSAs about its own links, every router in an area holds the same database, and each runs Dijkstra from itself, keeping every equal-cost next hop.
+- Neighbours must agree on mask, timers, area, authentication and the stub flag, or Hellos are dropped; an MTU mismatch shows later, as an endless ExStart.
+- On a LAN routers become adjacent only to the DR and BDR; a returning higher-priority router does not take the DR role back.
+- Area 0 contains every ABR and must stay contiguous, repaired by virtual links; between areas OSPF behaves like distance vector.
+- Cost is configured and the bandwidth formula is the vendor's; at a 100 Mbit/s reference every link from 100 Mbit/s up costs 1, so set one reference everywhere, above your fastest link, and check it.
+- LSAs are refreshed every 30 minutes and flushed at one hour of age.
+- Authenticate with HMAC-SHA and keep interfaces passive where no router belongs; neither stops an insider's false LSAs.
+
+## Sources
+
+- [RFC 2328, OSPF Version 2, April 1998: sections 1, 1.1, 1.2, 2.1, 2.2, 3, 3.1 to 3.3, 3.5 to 3.7, 4.3, 7.1 to 7.4, 8.2, 9.4, 10.1, 10.4 to 10.6, 12.1, 12.4, 13, 14, 15, 16.1, appendices A.1, A.3.2, B, C and D (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2328.txt)
+- [RFC 2328 errata, erratum 3734 (read 2026-10-19)](https://www.rfc-editor.org/errata/rfc2328)
+- [RFC 3101, The OSPF Not-So-Stubby Area (NSSA) Option, January 2003: section 1.3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc3101.txt)
+- [RFC 5340, OSPF for IPv6, July 2008: sections 2.1 to 2.8 and 2.11 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5340.txt)
+- [RFC 9454, Update to OSPF Terminology, August 2023: sections 1 and 2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9454.txt)
+- [RFC 5709, OSPFv2 HMAC-SHA Cryptographic Authentication, October 2009: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5709.txt)
+- [RFC 7474, Security Extension for OSPFv2 When Using Manual Key Management, April 2015: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7474.txt)
+- [RFC 7166, Supporting Authentication Trailer for OSPFv3, March 2014: Abstract (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7166.txt)
+- [RFC 6863, Analysis of OSPF Security According to the KARP Design Guide, March 2013: sections 2.1 and 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6863.txt)
+- [RFC 4593, Generic Threats to Routing Protocols, October 2006: sections 3, 4.5.1.2 and 4.5.2 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4593.txt)
+- [RFC 5082, The Generalized TTL Security Mechanism (GTSM), October 2007: sections 1 and 3 (read 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5082.txt)
+- [IANA, Protocol Numbers: 89 (read 2026-10-19)](https://www.iana.org/assignments/protocol-numbers/protocol-numbers-1.csv)
+- [FRRouting documentation, OSPFv2 (ospfd), latest: OSPF Fundamentals, OSPF LSAs, Routers, Areas, Interfaces, Showing Information (read 2026-10-19)](https://docs.frrouting.org/en/latest/ospfd.html)
+- [Juniper Networks, Junos OS CLI reference, reference-bandwidth (Protocols OSPF): Description and Options (read 2026-10-19)](https://www.juniper.net/documentation/us/en/software/junos/cli-reference/topics/ref/statement/reference-bandwidth-edit-protocols-ospf.html)
+- [tcpdump(1) man page, tcpdump.org: options -c, -i, -n, -v (read 2026-10-19)](https://www.tcpdump.org/manpages/tcpdump.1.html)

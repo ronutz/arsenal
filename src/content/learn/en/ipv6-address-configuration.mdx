@@ -1,53 +1,173 @@
 ---
 slug: ipv6-address-configuration
 title: "How IPv6 hosts get addresses: SLAAC and DHCPv6"
-summary: "How an IPv6 host configures itself from link-local up, what router advertisements decide, and the difference between SLAAC, privacy addresses, and DHCPv6."
-concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad"]
-relatedTools: ["ipv6"]
-relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting"]
+summary: "An IPv6 host configures itself from what routers advertise: a link-local address it checks for duplicates, global addresses it builds by stateless autoconfiguration from each prefix marked for it, and, where the network offers them, addresses, prefixes and DNS servers leased by DHCPv6. After reading, you can read the flags and lifetimes of a router advertisement, derive EUI-64, stable and temporary interface identifiers, tell stateful, stateless and prefix-delegation DHCPv6 apart, predict which source address a host uses, recognise rogue advertisements, duplicate addresses and stale prefixes, and watch each step with ip, rdisc6, tcpdump and Wireshark."
+concepts: ["ipv6", "slaac", "dhcpv6", "router-advertisement", "privacy-addresses", "dad", "link-local", "eui-64", "prefix-delegation", "rdnss", "ra-guard", "source-address-selection"]
+relatedTools: ["ipv6", "python-playground", "oui-lookup"]
+relatedArticles: ["ipv6-addressing", "ipv6-neighbor-discovery", "ipv6-subnetting", "routing-tables-and-default-gateway", "icmp-ping-and-traceroute", "what-is-an-oui", "dhcp-relay-agent", "dhcp-lease-lifecycle", "choosing-a-public-dns-resolver", "ipv6-transition"]
 category: networking
 order: 11
 status: reviewed
-updated: "2026-06-27"
+updated: "2026-10-18"
 ---
 
-## Self-configuration by default
+An IPv6 interface seldom holds one address. Request for Comments (RFC) 7934 counts three or more per interface on many hosts, among them link-local, stable, privacy and Dynamic Host Configuration Protocol for IPv6 (DHCPv6) addresses ([RFC 7934, section 2](https://www.rfc-editor.org/rfc/rfc7934.txt)). The host builds most of them itself by stateless address autoconfiguration (SLAAC): "The IPv6 stateless autoconfiguration mechanism requires no manual configuration of hosts, minimal (if any) configuration of routers, and no additional servers" ([RFC 4862, section 1](https://www.rfc-editor.org/rfc/rfc4862.txt)). Routers steer it, and DHCPv6 beside it (section 1), with Router Advertisements (RAs) and their Prefix Information options (PIOs). After reading, you can follow Duplicate Address Detection (DAD), decode an RA, derive an interface identifier (IID), tell the DHCPv6 modes apart, predict a host's source address, recognise the usual failures and watch each step with `ip`, `rdisc6`, tcpdump and Wireshark.
 
-One of IPv6's defining features is that a host can configure a working address with no server and no manual setup. Where IPv4 leans on DHCP to hand out addresses, IPv6 can build them locally from information the router broadcasts. The result is that a single interface usually ends up with several addresses at once, each for a different purpose, which surprises people coming from IPv4.
+## A link-local address that must prove it is unique
 
-## Link-local comes first
+A node forms a link-local address whenever an interface becomes enabled ([RFC 4862, section 5.3](https://www.rfc-editor.org/rfc/rfc4862.txt)): on Ethernet, the IID appended to fe80::/64 ([RFC 2464, section 5](https://www.rfc-editor.org/rfc/rfc2464.txt)), inside the fe80::/10 [link-local type](/learn/ipv6-addressing) ([RFC 4291, section 2.4](https://www.rfc-editor.org/rfc/rfc4291.txt)). Routers must not forward it to other links (RFC 4291, section 2.5.6), and it never expires (RFC 4862, section 5.3).
 
-Before anything else, every IPv6 interface configures a link-local address in `fe80::/10` (the type the tool labels link-local). It is generated locally, never routed beyond the local link, and exists so the host can talk to neighbors and routers immediately, including to ask how to configure the rest of its addresses. Link-local is the bootstrap: it is always present, and the neighbor discovery machinery in the [neighbor discovery](/learn/ipv6-neighbor-discovery) article runs over it.
+Until checked, it is tentative: "Duplicate Address Detection MUST be performed on all unicast addresses prior to assigning them to an interface" ([RFC 4862, section 5.4](https://www.rfc-editor.org/rfc/rfc4862.txt)). The probe is a [Neighbor Solicitation](/learn/ipv6-neighbor-discovery) (NS) for the tentative address, from the unspecified address to the solicited-node group built from its low-order 24 bits (section 5.4.2; [RFC 4291, section 2.7.1](https://www.rfc-editor.org/rfc/rfc4291.txt)), one by default (RFC 4862, section 5.1), with RetransTimer at 1,000 milliseconds ([RFC 4861, section 10](https://www.rfc-editor.org/rfc/rfc4861.txt)). A reply, or another node probing for the same address, makes it a duplicate, which must not be assigned (RFC 4862, sections 5.4.3 and 5.4.5).
 
-## The router advertisement decides the method
+Modified EUI-64 (64-bit Extended Unique Identifier) inserts FFFE into the Media Access Control (MAC) address and complements its universal/local (U/L) bit, so 34-56-78-9A-BC-DE becomes 36-56-78-FF-FE-9A-BC-DE ([RFC 2464, section 4](https://www.rfc-editor.org/rfc/rfc2464.txt)):
 
-To get a globally routable address, the host listens for Router Advertisements, periodic messages a router sends (and that a host can request with a Router Solicitation). The advertisement carries the on-link prefix, almost always a /64, and two flags that tell the host how to configure itself:
+```text
+MAC address                       34-56-78-9a-bc-de
+complement U/L (0x34 XOR 0x02)    36-56-78-9a-bc-de
+insert ff-fe after octet 3        36-56-78-ff-fe-9a-bc-de
+interface identifier              3656:78ff:fe9a:bcde
+link-local address                fe80::3656:78ff:fe9a:bcde
+DAD probe to (low 24 bits)        ff02::1:ff9a:bcde
+```
 
-- The **M (Managed) flag** says "use DHCPv6 to get an address".
-- The **O (Other) flag** says "configure your address yourself, but get other settings like DNS from DHCPv6".
+## Reading a router advertisement
 
-With both flags off, the host uses pure stateless autoconfiguration. This is why IPv6 address assignment is a negotiation between what the router advertises and what the host chooses, rather than a single server handing out leases.
+Routers multicast RAs periodically, and a host can prompt one with a Router Solicitation (RS) ([RFC 4861, sections 3 and 4.1](https://www.rfc-editor.org/rfc/rfc4861.txt)); they are [Internet Control Message Protocol](/learn/icmp-ping-and-traceroute) version 6 (ICMPv6) types 134 and 133 ([Internet Assigned Numbers Authority (IANA), ICMPv6 Parameters](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.txt)). Hosts accept RAs only from a link-local source with Hop Limit 255 (RFC 4861, sections 4.2 and 6.1.2), and a Router Lifetime of 0 means the sender is not a [default router](/learn/routing-tables-and-default-gateway) (section 4.2). The defaults, worked out (sections 6.2.1, 6.3.7 and 10):
 
-## SLAAC: building your own address
+```text
+MaxRtrAdvInterval          600 s
+MinRtrAdvInterval          0.33 × 600 = 198 s
+Router Lifetime            3 × 600 = 1,800 s
+PIO Valid Lifetime         2,592,000 s = 30 days
+PIO Preferred Lifetime     604,800 s = 7 days
+host hearing no RA         first RS within 1 s, 3 RSs 4 s apart, 1 s more: 9 to 10 s
+```
 
-Stateless Address Autoconfiguration (RFC 4862) is the mechanism a host uses to form its own address: take the /64 prefix from the advertisement and append a 64-bit interface identifier. This is the whole reason a subnet must be a /64 (see the [subnetting](/learn/ipv6-subnetting) article). No server tracks the assignment, which is what "stateless" means.
+The flags sit in the RA header and each PIO, RFC 9762 adding P for DHCPv6 prefix delegation (DHCPv6-PD) ([RFC 4861, sections 4.2, 4.6.2 and 6.2.1](https://www.rfc-editor.org/rfc/rfc4861.txt); [RFC 9762, section 5](https://www.rfc-editor.org/rfc/rfc9762.txt)):
 
-The interface identifier can be formed several ways, and this has real privacy consequences:
+| Flag | Where | When set | Default |
+|---|---|---|---|
+| M, managed | RA header | addresses are available via DHCPv6 | off |
+| O, other | RA header | other configuration, such as DNS, is available via DHCPv6 | off |
+| L, on-link | PIO | the prefix can be used for on-link determination | on |
+| A, autonomous | PIO | the prefix can be used for SLAAC | on |
+| P, DHCPv6-PD Preferred | PIO | the network prefers prefix delegation to individual addresses | none in RFC 4861 |
 
-- **Modified EUI-64** derives the identifier from the interface's MAC (media access control) address, which the tool can demonstrate. It is stable and convenient, but it embeds the hardware address into every IPv6 address the host uses, letting a remote server track the device across networks.
-- **Stable, opaque identifiers** (RFC 7217) produce an identifier that is stable per network but reveals no hardware address, fixing the cross-network tracking problem while keeping a consistent address on a given link.
-- **Temporary (privacy) addresses** (RFC 8981, which obsoletes the earlier RFC 4941) generate random identifiers that rotate over time, so outbound connections do not present a long-lived address at all.
+M and O only signal: M that "addresses are available via Dynamic Host Configuration Protocol [DHCPv6]", O that "other configuration information is available via DHCPv6" ([RFC 4861, section 4.2](https://www.rfc-editor.org/rfc/rfc4861.txt)). RFC 4862 dropped its host rules for them without deprecating them ([RFC 4862, Appendix C](https://www.rfc-editor.org/rfc/rfc4862.txt)), and "M=0 does not prevent a node from attempting DHCPv6" ([RFC 4861 errata, erratum 8055](https://www.rfc-editor.org/errata/rfc4861)). SLAAC is decided per prefix, by A.
 
-Modern operating systems typically use a stable address for incoming connections and a rotating temporary address for outgoing ones, which is why a single interface shows multiple global addresses.
+P asks hosts to take a delegated prefix instead of individual addresses, and "The P flag is independent of the value of the M and O flags in the RA" ([RFC 9762, section 5](https://www.rfc-editor.org/rfc/rfc9762.txt)); a client honouring it should not use SLAAC on a PIO with P and A set (section 7.1). If each device takes a /64, a /60 from an Internet service provider (ISP), 2^4 = 16 /64s, runs out after 15 devices (section 1).
 
-## Duplicate Address Detection
+## SLAAC: from prefix to address, and how lifetimes age it
 
-Before a host actually uses any address it has formed, it runs Duplicate Address Detection: it sends a Neighbor Solicitation for its own tentative address and waits. If anyone answers, the address is already in use and must not be claimed. DAD (Duplicate Address Detection) is cheap insurance that self-configuration does not produce collisions, and it relies on the same neighbor discovery messages described in the companion article.
+RFC 4862 tests each PIO ([RFC 4862, section 5.5.3](https://www.rfc-editor.org/rfc/rfc4862.txt)): "If the Autonomous flag is not set, silently ignore the Prefix Information option"; a link-local prefix, or a preferred lifetime above the valid one, is ignored too; and "If the sum of the prefix length and interface identifier length does not equal 128 bits, the Prefix Information option MUST be ignored". Ethernet IIDs are 64 bits, so SLAAC needs a /64 ([RFC 2464, section 4](https://www.rfc-editor.org/rfc/rfc2464.txt)), as [IPv6 subnetting and the /64 boundary](/learn/ipv6-subnetting) explains. The IID is then appended (RFC 4862, section 5.5).
 
-## DHCPv6 for stateful control
+Past its preferred lifetime the address is deprecated, still reachable but not used for new communications; past its valid lifetime it is invalid ([RFC 4862, sections 2 and 5.5.4](https://www.rfc-editor.org/rfc/rfc4862.txt)). Each RA resets the preferred lifetime, but an unauthenticated RA cannot cut the valid lifetime below 2 hours, so one bogus RA cannot expire all of a node's addresses (section 5.5.3). An address with 30 days left that hears both lifetimes at zero is deprecated at once but valid for 2 more hours.
 
-When an administrator wants to track and assign addresses centrally, DHCPv6 (RFC 8415) provides stateful assignment, much like IPv4 DHCP: a server leases specific addresses and records who has what. There is also a stateless DHCPv6 mode that hands out only configuration like DNS servers while the host still forms its own address by SLAAC, which is what the O flag selects. DHCPv6 is also where prefix delegation lives, the mechanism by which a home router receives a whole prefix to subnet behind it.
+## Choosing the interface identifier
 
-## Many addresses, by design
+An EUI-64 IID copies the MAC address into every address built from it, exposing the host to tracking across networks, address scanning and device-specific attacks ([RFC 7217, section 1](https://www.rfc-editor.org/rfc/rfc7217.txt); [RFC 8064, section 1](https://www.rfc-editor.org/rfc/rfc8064.txt)). Hence: "By default, nodes SHOULD NOT employ IPv6 address generation schemes that embed a stable link-layer address in the IID" ([RFC 8064, section 3](https://www.rfc-editor.org/rfc/rfc8064.txt)). Its preferred default, RFC 7217, computes `F(Prefix, Net_Iface, Network_ID, DAD_Counter, secret_key)` into an IID stable within a subnet and different on every network ([RFC 7217, Abstract and section 5](https://www.rfc-editor.org/rfc/rfc7217.txt)).
 
-The mental model to carry away is that an IPv6 host is largely self-driving. It always has a link-local address, it learns the prefix and the configuration method from router advertisements, and depending on the flags it either builds its own global addresses with SLAAC or leases them from DHCPv6, often ending up with a stable address and a rotating temporary one side by side. When the tool shows you an address and identifies its type, that type tells you which of these paths produced it.
+Temporary addresses (RFC 8981, which obsoletes RFC 4941) add a randomised IID per prefix for communication the host starts, while the stable address takes incoming connections ([RFC 8981, Abstract and section 2.2](https://www.rfc-editor.org/rfc/rfc8981.txt)). They default to 2 days valid and 1 day preferred, minus a `DESYNC_FACTOR` of up to 0.4 × 86,400 = 34,560 seconds (sections 3.4 and 3.8), and an on-link observer such as the default router can still track them all (section 1.2). Linux defaults to EUI-64 (`addr_gen_mode` 0) and, on most devices, to no temporary addresses (`use_tempaddr` 0) ([IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)).
+
+The [IPv6 Toolkit](/tools/ipv6) recovers the MAC from an EUI-64 address, fe80::211:22ff:fe33:4455 giving 00:11:22:33:44:55, whose [Organizationally Unique Identifier (OUI)](/learn/what-is-an-oui) the [OUI / MAC vendor lookup](/tools/oui-lookup) can trace to a manufacturer; the [Python playground](/tools/python-playground) goes forward, from 00:1A:2B:3C:4D:5E to 2001:db8:cafe:1:21a:2bff:fe3c:4d5e.
+
+## DHCPv6: stateful, stateless and prefix delegation
+
+DHCPv6 is now RFC 9915, published in January 2026 as Internet Standard 102 (STD 102); it obsoletes RFC 8415 ([RFC 9915, Abstract](https://www.rfc-editor.org/rfc/rfc9915.txt)). Clients send to ff02::1:2, the link-scoped `All_DHCP_Relay_Agents_and_Servers` group, and listen on UDP port 546, servers and [relay agents](/learn/dhcp-relay-agent) on 547 (sections 5 and 7.2). Three modes:
+
+- **Stateful**: Solicit, Advertise, Request and Reply (section 5.2). An identity association for non-temporary addresses (IA_NA) holds the addresses, renewed at T1 with their server or rebound at T2 with any (section 4.2).
+- **Stateless**: an Information-request for options such as DNS while SLAAC builds the address (section 5.1), as the O flag advertises.
+- **Prefix delegation**: an identity association for prefix delegation (IA_PD) holds prefixes (section 4.2); a delegated /48 gives a subscriber's router 2^16 = 65,536 /64s to assign one per link, never beyond the delegation's remaining lifetime (section 6.3).
+
+DHCPv6 leaves gaps: "Addresses obtained from an IA Address option MUST NOT be used to form an implicit prefix with a length other than 128" ([RFC 9915, section 18.2.10.1](https://www.rfc-editor.org/rfc/rfc9915.txt)), and "the only mechanism to configure the default router's address automatically is the one using Router Advertisements" ([RFC 4862, section 5.5.2](https://www.rfc-editor.org/rfc/rfc4862.txt)), so managed networks still need RAs; compare [the IPv4 lease lifecycle](/learn/dhcp-lease-lifecycle).
+
+## Where DNS servers come from
+
+SLAAC cannot stand alone in any practical network without DNS configuration ([RFC 8106, section 1](https://www.rfc-editor.org/rfc/rfc8106.txt)). DHCPv6 carries `OPTION_DNS_SERVERS` (23) and `OPTION_DOMAIN_LIST` (24) ([RFC 3646, sections 3 and 4](https://www.rfc-editor.org/rfc/rfc3646.txt)); an RA carries the Recursive DNS Server (RDNSS) option, type 25, with a default lifetime of at least 3 × 600 = 1,800 seconds, zero withdrawing it (RFC 8106, section 5.1). Hosts must use it unless DNS is configured statically, and "the DNS information from DHCP takes precedence over that from RAs for DNS queries" (sections 1.2 and 5.3.1). [Public DNS resolvers](/learn/choosing-a-public-dns-resolver) covers which ones to announce.
+
+## Picking a source address
+
+RFC 6724 ranks candidate sources by rules including an appropriate scope (Rule 2), no deprecated addresses (Rule 3), temporary addresses (Rule 7) and the longest matching prefix (Rule 8) ([RFC 6724, section 5](https://www.rfc-editor.org/rfc/rfc6724.txt)). Rule 7 became the default with RFC 6724 (Appendix B), but implementations may reverse it, as `use_tempaddr` 1 does on Linux ([IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)), and must let applications reverse it (RFC 6724, section 5). Its example picks the temporary 2001:db8:1::d5e3:7953:13eb:22e8 over the public 2001:db8:1::2 towards 2001:db8:1::d5e3:0:0:1 (section 10.1); `ip addrlabel list` prints the labels the rules use ([ip-addrlabel(8)](https://man7.org/linux/man-pages/man8/ip-addrlabel.8.html)).
+
+## What goes wrong
+
+Without RAs, a host has link-local addresses and no default route ([RFC 4862, sections 1 and 5.5.2](https://www.rfc-editor.org/rfc/rfc4862.txt)). If its three RSs are lost, RFC 7559 counts up to 30 minutes offline in the worst case and keeps hosts soliciting, backing off from 4 to 3,600 seconds ([RFC 7559, sections 1 and 2](https://www.rfc-editor.org/rfc/rfc7559.txt)); a forwarding Linux interface ignores RAs unless `accept_ra` is 2 ([IP Sysctl](https://docs.kernel.org/networking/ip-sysctl.html)). Contradictions are not fatal errors (RFC 4862, section 5.6): set M and clear A, and hosts without a DHCPv6 client stay link-local ([RFC 8106, section 1.1](https://www.rfc-editor.org/rfc/rfc8106.txt)); clear M and O, and some Customer Edge (CE) routers might not start DHCPv6-PD ([RFC 9762, section 5](https://www.rfc-editor.org/rfc/rfc9762.txt)).
+
+Rogue RAs exploit trust: nothing in Neighbor Discovery says which neighbours may send RAs ([RFC 4861, section 11.1](https://www.rfc-editor.org/rfc/rfc4861.txt)), and "the default router address is drawn directly from the source address of the RA message" ([RFC 6104, section 1](https://www.rfc-editor.org/rfc/rfc6104.txt)). Most reported cases are accidents, such as Windows Internet Connection Sharing (ICS) turning a laptop into a 6to4 gateway (sections 2.2 and 2.3; [dual-stack and translation](/learn/ipv6-transition)). A rogue RA can also carry a fraudulent RDNSS address ([RFC 8106, section 7.1](https://www.rfc-editor.org/rfc/rfc8106.txt)) or the network's PIO with P set so that hosts ignore A ([RFC 9762, section 10](https://www.rfc-editor.org/rfc/rfc9762.txt)), and a rogue DHCPv6 server can hand out incorrect configuration ([RFC 9915, section 22.1](https://www.rfc-editor.org/rfc/rfc9915.txt)).
+
+On the switches, Router Advertisement Guard (RA-Guard) passes RAs only from the router's port, provided all traffic crosses them ([RFC 6105, sections 2 to 4](https://www.rfc-editor.org/rfc/rfc6105.txt)), and must parse the whole IPv6 header chain, since extension headers have slipped past some implementations ([RFC 7113, Abstract and section 3](https://www.rfc-editor.org/rfc/rfc7113.txt)); DHCPv6-Shield likewise discards DHCPv6 server messages except on designated switch ports ([RFC 7610, section 1](https://www.rfc-editor.org/rfc/rfc7610.txt)).
+
+DAD is not completely reliable, and any node can answer for a tentative address to deny it ([RFC 4862, sections 5.4 and 6](https://www.rfc-editor.org/rfc/rfc4862.txt)). RFC 7527 documents a looped circuit that reflected a router's own probe, leaving DAD-failed an interface that typically serves thousands of broadband modems; its fix puts a random nonce in the probe ([RFC 7527, sections 2 and 4](https://www.rfc-editor.org/rfc/rfc7527.txt)).
+
+Renumbering leaves stale prefixes. A CE router that reboots may obtain a new prefix by DHCPv6-PD ([RFC 8978, section 1](https://www.rfc-editor.org/rfc/rfc8978.txt)), while with default lifetimes hosts take up to 7 days to deprecate the old addresses and 30 days to remove them (section 2). RFC 9096 asks CE routers not to release the prefix on restart and caps advertised lifetimes at 2,700 seconds (45 minutes) preferred and 5,400 seconds (90 minutes) valid ([RFC 9096, sections 3 and 4](https://www.rfc-editor.org/rfc/rfc9096.txt)).
+
+## Seeing it on a real network
+
+On Linux, `ip address show` filters by flag ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)) and `rdisc6` solicits RAs ([rdisc6(8)](https://manpages.debian.org/testing/ndisc6/rdisc6.8.en.html)):
+
+```bash
+ip -6 address show dev eth0
+ip -6 address show dev eth0 tentative
+ip -6 address show proto kernel_ra
+ip -6 route
+rdisc6 eth0
+tcpdump 'icmp6 and icmp6[icmp6type] == icmp6-routeradvert'
+```
+
+The flags `dynamic`, `tentative`, `dadfailed` and `temporary` select SLAAC addresses, those in DAD, those that failed it and RFC 8981 ones, `proto kernel_ra` those installed from RAs, and each address shows `valid_lft` and `preferred_lft` ([ip-address(8)](https://man7.org/linux/man-pages/man8/ip-address.8.html)); `proto ra` and `expires` mark routes from RAs ([ip-route(8)](https://man7.org/linux/man-pages/man8/ip-route.8.html)). Illustrative, simplified output of the first command, for an EUI-64 host using temporary addresses:
+
+```text
+fe80::3656:78ff:fe9a:bcde/64                                    (never expires)
+2001:db8:cafe:1:3656:78ff:fe9a:bcde/64   dynamic            valid_lft 2591990  preferred_lft 604790
+2001:db8:cafe:1:d5e3:7953:13eb:22e8/64   temporary dynamic  valid_lft 172790   preferred_lft 85790
+```
+
+`rdisc6` prints M as `Stateful address conf.`, O as `Stateful other conf.`, each PIO's flags and times, the router lifetime and any RDNSS server, but not the PIO's P bit ([ndisc6 source](https://git.remlab.net/git/ndisc6.git/)). This pcap-filter expression misses RAs behind extension headers, since `icmp6` assumes none ([pcap-filter(7)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)). In Wireshark, `icmpv6.nd.ra.flag.m`, `icmpv6.nd.ra.flag.o`, `icmpv6.opt.prefix.flag.a` and `icmpv6.opt.prefix.valid_lifetime` hold an RA's fields, `icmpv6.opt.prefix.flag.p` only in versions 4.6.0 to 4.6.9 ([Wireshark, ICMPv6 fields](https://www.wireshark.org/docs/dfref/i/icmpv6.html)), and `dhcpv6.msgtype` and `dhcpv6.iaaddr.ip` decode DHCPv6 ([Wireshark, DHCPv6 fields](https://www.wireshark.org/docs/dfref/d/dhcpv6.html)). On Windows, `Get-NetIPAddress -AddressFamily IPv6` reports PrefixOrigin (RouterAdvertisement, Dhcp) and SuffixOrigin (Link, Random) ([Get-NetIPAddress](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipaddress)).
+
+The [IPv6 Toolkit](/tools/ipv6) classifies addresses by prefix alone, so SLAAC, DHCPv6, RFC 7217 and temporary addresses under one prefix all read as global unicast; only the host, through `proto kernel_ra` or PrefixOrigin and SuffixOrigin, shows which path made each.
+
+## What to remember
+
+- Every interface first forms a link-local address in fe80::/64 and checks it with DAD: an NS from the unspecified address to its solicited-node group, here ff02::1:ff9a:bcde.
+- M and O only say what DHCPv6 offers; a PIO's A flag decides SLAAC, L on-link determination, and P (RFC 9762) asks for prefix delegation.
+- SLAAC ignores a PIO unless prefix length plus IID length is 128 bits, so on Ethernet only a /64 yields addresses.
+- Stable IIDs should follow RFC 7217, not the MAC address; RFC 8981 temporary addresses default to 2 days valid and 1 day preferred.
+- DHCPv6 (RFC 9915) leases addresses and prefixes, but the default router and the prefix length still come from RAs.
+- DNS servers arrive in the RA's RDNSS option (type 25) or DHCPv6 option 23, and DHCPv6 wins when both do.
+- An unauthenticated RA cannot cut a valid lifetime below 2 hours, so 7-day and 30-day defaults keep stale prefixes alive; RFC 9096 recommends 45 and 90 minutes.
+
+## Sources
+
+- [RFC 4862, IPv6 Stateless Address Autoconfiguration, September 2007: sections 1 to 6 and Appendix C (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4862.txt)
+- [RFC 4861, Neighbor Discovery for IP version 6 (IPv6), September 2007: sections 3, 4.1, 4.2, 4.6.2, 6.1.2, 6.2.1, 6.2.4, 6.3.7 and 10 to 12 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4861.txt)
+- [RFC 4861 errata, RFC Editor errata records: erratum 8055 (read 2026-10-18)](https://www.rfc-editor.org/errata/rfc4861)
+- [RFC 4291, IP Version 6 Addressing Architecture, February 2006: sections 2, 2.1, 2.4, 2.5.1, 2.5.6 and 2.7.1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc4291.txt)
+- [RFC 2464, Transmission of IPv6 Packets over Ethernet Networks, December 1998: sections 4 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc2464.txt)
+- [RFC 7527, Enhanced Duplicate Address Detection, April 2015: sections 2 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7527.txt)
+- [RFC 9915, Dynamic Host Configuration Protocol for IPv6 (DHCPv6), January 2026: Abstract and sections 1, 4.2, 5 to 7, 11, 18 and 22 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9915.txt)
+- [RFC 3646, DNS Configuration options for Dynamic Host Configuration Protocol for IPv6 (DHCPv6), December 2003: sections 3 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc3646.txt)
+- [RFC 8106, IPv6 Router Advertisement Options for DNS Configuration, March 2017: sections 1, 5 and 7 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8106.txt)
+- [RFC 7217, A Method for Generating Semantically Opaque Interface Identifiers with IPv6 Stateless Address Autoconfiguration (SLAAC), April 2014: Abstract and sections 1 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7217.txt)
+- [RFC 8981, Temporary Address Extensions for Stateless Address Autoconfiguration in IPv6, February 2021: Abstract and sections 1.2, 2.2, 3 and 5 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8981.txt)
+- [RFC 8064, Recommendation on Stable IPv6 Interface Identifiers, February 2017: Abstract and sections 1 and 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8064.txt)
+- [RFC 6724, Default Address Selection for Internet Protocol Version 6 (IPv6), September 2012: sections 2.1, 5, 10.1 and Appendix B (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6724.txt)
+- [RFC 6104, Rogue IPv6 Router Advertisement Problem Statement, February 2011: sections 1, 2, 3 and 6 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6104.txt)
+- [RFC 6105, IPv6 Router Advertisement Guard, February 2011: sections 2 to 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc6105.txt)
+- [RFC 7113, Implementation Advice for IPv6 Router Advertisement Guard (RA-Guard), February 2014: Abstract and section 3 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7113.txt)
+- [RFC 7610, DHCPv6-Shield: Protecting against Rogue DHCPv6 Servers, August 2015: Abstract and section 1 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7610.txt)
+- [RFC 8978, Reaction of IPv6 Stateless Address Autoconfiguration (SLAAC) to Flash-Renumbering Events, March 2021: Abstract and sections 1 and 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc8978.txt)
+- [RFC 9096, Improving the Reaction of Customer Edge Routers to IPv6 Renumbering Events, August 2021: sections 3 and 4 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9096.txt)
+- [RFC 7559, Packet-Loss Resiliency for Router Solicitations, May 2015: sections 1 and 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7559.txt)
+- [RFC 7934, Host Address Availability Recommendations, July 2016: section 2 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc7934.txt)
+- [RFC 9762, Using Router Advertisements to Signal the Availability of DHCPv6 Prefix Delegation to Clients, June 2025: sections 1, 5, 7, 9.1 and 10 (read 2026-10-18)](https://www.rfc-editor.org/rfc/rfc9762.txt)
+- [IANA, Internet Control Message Protocol version 6 (ICMPv6) Parameters, last updated 2026-06-09: type numbers, RA and PIO flags (read 2026-10-18)](https://www.iana.org/assignments/icmpv6-parameters/icmpv6-parameters.txt)
+- [ip-address(8), Linux manual page (iproute2), man7.org, obtained 2026-08-04: ip address show (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-address.8.html)
+- [ip-route(8), Linux manual page (iproute2), man7.org, obtained 2026-08-04: route protocols and expires (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+- [ip-addrlabel(8), Linux manual page (iproute2), man7.org, obtained 2026-08-04: ip addrlabel list (read 2026-10-18)](https://man7.org/linux/man-pages/man8/ip-addrlabel.8.html)
+- [IP Sysctl, The Linux Kernel documentation (7.3.0-rc7): conf/interface/\* (read 2026-10-18)](https://docs.kernel.org/networking/ip-sysctl.html)
+- [pcap-filter(7), libpcap manual page, man7.org, 19 March 2026: icmp6 and NAMED VALUES (read 2026-10-18)](https://man7.org/linux/man-pages/man7/pcap-filter.7.html)
+- [rdisc6(8), ndisc6 1.0.8, Debian manpages: SYNOPSIS and OPTIONS (read 2026-10-18)](https://manpages.debian.org/testing/ndisc6/rdisc6.8.en.html)
+- [ndisc6 source code, src/ndisc.c, git.remlab.net, commit 329ed97, 4 October 2026 (read 2026-10-18)](https://git.remlab.net/git/ndisc6.git/)
+- [Wireshark Display Filter Reference: Internet Control Message Protocol v6 (1.0.0 to 4.6.9) (read 2026-10-18)](https://www.wireshark.org/docs/dfref/i/icmpv6.html)
+- [Wireshark Display Filter Reference: DHCPv6 (1.0.0 to 4.6.9) (read 2026-10-18)](https://www.wireshark.org/docs/dfref/d/dhcpv6.html)
+- [Get-NetIPAddress (NetTCPIP), Microsoft Learn, updated May 2025: PrefixOrigin, SuffixOrigin (read 2026-10-18)](https://learn.microsoft.com/en-us/powershell/module/nettcpip/get-netipaddress)

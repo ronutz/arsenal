@@ -1,44 +1,262 @@
 ---
 slug: bgp-primer
 title: "BGP: como a internet decide para onde o tráfego vai"
-summary: "O Border Gateway Protocol é o cérebro de roteamento da internet - e não funciona nada como o roteamento dentro da sua rede. Um primer prático: sistemas autônomos, a ideia de path vector, os atributos que codificam política comercial, por que a convergência é lenta de propósito, e o que o RPKI conserta."
-concepts: ["bgp", "egp", "igp", "peering", "rpki", "anycast"]
+summary: "O Border Gateway Protocol é o protocolo de roteamento entre sistemas autônomos: cada rede conta aos vizinhos quais prefixes alcança e por quais redes, e cada roteador guarda um best path por prefix, escolhido primeiro pela política local e depois por uma ordem fixa de desempate. Depois da leitura, você consegue situar um número de AS no seu registro, acompanhar uma session do TCP até Established, ler os path attributes, percorrer a escolha do best path numa saída real de roteador e dizer o que um AS path prova e o que não prova."
+concepts: ["bgp", "egp", "igp", "peering", "rpki", "anycast", "autonomous system", "as_path", "local_pref", "med", "route reflector", "communities"]
 relatedTools: ["cidr"]
-relatedArticles: ["ospf-primer", "ieee-802-working-groups"]
+relatedArticles: ["ospf-primer", "ieee-802-working-groups", "dynamic-routing-compared", "bgp-and-the-routing-chokepoint", "isis-primer", "route-redistribution", "anycast", "bfd-when-a-link-is-up-and-dead", "routing-tables-and-default-gateway", "supernetting-and-aggregation", "static-routes-and-longest-match", "ipv6-addressing"]
 category: networking
 order: 234
 status: reviewed
-updated: "2026-07-22"
+updated: "2026-10-19"
 ---
 
-## O problema que o BGP realmente resolve
+O Border Gateway Protocol (BGP) é a forma como redes administradas separadamente contam umas às outras o que conseguem alcançar. A Request for Comments (RFC) 4271 o define numa linha: "The Border Gateway Protocol (BGP) is an inter-Autonomous System routing protocol", um protocolo de roteamento entre sistemas autônomos ([RFC 4271, seção 3](https://www.rfc-editor.org/rfc/rfc4271.txt)). Com cada destino ele leva a lista dos sistemas autônomos que o anúncio atravessou (seção 3), o que o torna o membro path vector da família de [roteamento dinâmico comparado](/learn/dynamic-routing-compared). Depois da leitura, você consegue situar um número de AS no registro, acompanhar uma session até Established, ler os path attributes, seguir a escolha do best path numa saída real de roteador e dizer o que um AS path não prova.
 
-Dentro de uma rede, roteamento é um problema de matemática: ache o caminho mais curto, todos concordam com o mapa, pronto. Entre redes, roteamento é um problema de **negócio**. Seu provedor não vai carregar o tráfego de um concorrente de graça só porque o caminho é mais curto, e um banco não vai mandar seus pacotes por uma rede em que não confia só porque a métrica mandou. A internet precisava de um protocolo em que cada rede pudesse aplicar sua própria política e, ainda assim, de algum jeito, produzir uma tabela de roteamento global que funciona.
+## Sistemas autônomos e seus números
 
-Esse protocolo é o Border Gateway Protocol - o BGP-4, padronizado na RFC 4271, notoriamente rascunhado pela primeira vez em guardanapos, durante um almoço numa reunião do IETF em 1989, por engenheiros da Cisco e da IBM. O protocolo do guardanapo hoje move essencialmente todo o tráfego entre redes da Terra.
+Para os vizinhos, um sistema autônomo (AS) é uma única política de roteamento: "the administration of an AS appears to other ASes to have a single coherent interior routing plan, and presents a consistent picture of the destinations that are reachable through it", um plano interno único e coerente visto de fora ([RFC 4271, seção 1.1](https://www.rfc-editor.org/rfc/rfc4271.txt)). Por dentro, ele roda um IGP (Interior Gateway Protocol). Entre ASes roda o BGP externo (eBGP); dentro de um AS, o BGP interno (iBGP) (seção 3). A primeira versão, a RFC 1105, saiu em junho de 1989, escrita por Kirk Lougheed, da cisco Systems, e Yakov Rekhter, da IBM, a partir da experiência com o Exterior Gateway Protocol (EGP) ([RFC 1105, seção 1](https://www.rfc-editor.org/rfc/rfc1105.txt)).
 
-## Sistemas autônomos: a unidade da internet
+Cada AS tem um número de AS (ASN). A Internet Assigned Numbers Authority (IANA) registra que "IANA allocates AS Numbers to Regional Internet Registries (RIRs)", os registros regionais, que os repassam às operadoras ([IANA, Autonomous System (AS) Numbers registry](https://www.iana.org/assignments/as-numbers/as-numbers.xhtml)). A RFC 6793 ampliou o número de dois para quatro octetos, de 0 a 4294967295; diante de um speaker sem essa capacidade, um número grande viaja como AS_TRANS, 23456, e o caminho real segue no AS4_PATH ([RFC 6793, seções 1, 3 e 9](https://www.rfc-editor.org/rfc/rfc6793.txt)). Alguns números são reservados ([IANA, Special-Purpose Autonomous System (AS) Numbers registry](https://www.iana.org/assignments/iana-as-numbers-special-registry/iana-as-numbers-special-registry.xhtml)):
 
-O mundo do BGP é feito de **sistemas autônomos** (AS): redes sob um controle administrativo, cada uma com um número - AS 15169 é o Google, AS 26599 é a Telefônica Brasil. Sua empresa pode ter um; todo provedor tem pelo menos um. A internet, na altitude do BGP, é algo como 75.000+ dessas bolhas numeradas e as relações entre elas - cliente paga provedor, peers trocam tráfego sem acerto financeiro - e o BGP é como as bolhas contam umas às outras quais prefixos IP conseguem alcançar.
+| Números | Finalidade | Reservado pela |
+|---|---|---|
+| 0 | Nunca num caminho, nunca numa session | RFC 7607 |
+| 23456 | AS_TRANS, o substituto de um número de quatro octetos | RFC 6793 |
+| 64496 a 64511, 65536 a 65551 | Documentação e código de exemplo | RFC 5398 |
+| 64512 a 65534 | Uso privado (1023 números) | RFC 6996 |
+| 4200000000 a 4294967294 | Uso privado (94.967.295 números) | RFC 6996 |
+| 65535, 4294967295 | Últimos números de cada faixa | RFC 7300 |
 
-Dois sabores, um protocolo: o **eBGP** fala entre sistemas autônomos diferentes (o border do nome), enquanto o **iBGP** distribui essas rotas externas entre os roteadores dentro de um AS. A pegadinha clássica que todo engenheiro encontra: o iBGP não re-anuncia rotas aprendidas por iBGP a outros peers iBGP - essa regra de prevenção de loop é o motivo de existirem full meshes, route reflectors e confederações.
+Os exemplos aqui usam a faixa de documentação, porque "BGP operational configurations should not peer with neighboring ASes that are numbered from this reserved AS number set", nenhum peering real deve usar essa faixa ([RFC 5398, seção 3](https://www.rfc-editor.org/rfc/rfc5398.txt)). Números privados precisam ser retirados dos caminhos antes de chegar à internet ([RFC 6996, seção 4](https://www.rfc-editor.org/rfc/rfc6996.txt)).
 
-## Path vector: a viagem inteira, não só a distância
+As saídas de roteador abaixo vêm de um laboratório com roteadores FRRouting (FRR) 8.4.4. O OBS, AS 64496, tem sessions eBGP com A1 (AS 64497, 192.0.2.2), A2 (AS 64497, 192.0.2.6) e B1 (AS 64498, 192.0.2.10), tudo em espaço de documentação ([RFC 5737, seção 3](https://www.rfc-editor.org/rfc/rfc5737.txt)). Todo AS depois do primeiro num caminho veio da configuração de quem anuncia, não da internet.
 
-Um protocolo interior anuncia "alcanço X com custo 20". O BGP anuncia o **caminho inteiro**: "alcanço X via AS 3356, depois AS 15169". Esse AS-path é a prevenção de loop (viu seu próprio número de AS no caminho, descarta a rota) e o registro de confiança (você lê exatamente por quais redes seus pacotes vão cruzar).
+## Uma session: TCP porta 179, quatro mensagens, seis estados
 
-A política anda em **atributos** anexados a cada rota, avaliados numa ordem estrita que todo engenheiro de BGP um dia recita dormindo. Os três que decidem a maioria das discussões do mundo real: **local preference** (o quanto a *minha* rede prefere esta saída - o botão de "manda o tráfego pelo link barato"), **comprimento do AS-path** (o desempate que age como distância) e **MED** (uma sugestão educada ao vizinho sobre qual entrada usar, honrada exatamente na medida em que educação costuma ser). Communities - pequenas etiquetas numéricas nas rotas - são a fita adesiva da política interdomínio: "rota de cliente", "não exporte para a Europa", "faça prepend três vezes nesta saída", tudo codificado em tags que seus vizinhos concordam em obedecer.
+"BGP listens on TCP port 179", o BGP escuta na porta TCP 179 ([RFC 4271, seção 3](https://www.rfc-editor.org/rfc/rfc4271.txt)). Como o TCP cuida da retransmissão e da ordem, o BGP manda só atualizações incrementais, nunca um refresh periódico (seção 3). Toda mensagem tem um header de 19 octetos, com um Marker de 16 octetos todo em uns, um comprimento e um tipo (seção 4.1); o máximo de 4096 octetos passou a 65.535 para todas as mensagens, menos OPEN e KEEPALIVE ([RFC 8654, Abstract](https://www.rfc-editor.org/rfc/rfc8654.txt)).
 
-## Lento de propósito
+| Tipo | Mensagem | O que faz |
+|---|---|---|
+| 1 | OPEN | Primeira mensagem: versão 4, AS próprio, hold time proposto, BGP Identifier (um dos endereços IP do speaker), capacidades |
+| 2 | UPDATE | Anuncia rotas com seus atributos e retira outras, só em Established |
+| 3 | NOTIFICATION | Informa um erro; a conexão fecha logo depois |
+| 4 | KEEPALIVE | Só o header de 19 octetos: confirma um OPEN e mantém a session viva |
+| 5 | ROUTE-REFRESH | Pede ao peer que mande suas rotas de novo (RFC 2918) |
 
-A convergência do BGP se mede em segundos a minutos, e isso horroriza quem cresceu em protocolos interiores. É uma característica. Um protocolo que carrega perto de um milhão de prefixos, através de redes que não confiam umas nas outras, amortece e cadencia suas atualizações porque a alternativa - a internet inteira recomputando em velocidade de LAN toda vez que um enlace em algum país oscila - é o próprio apagão. Quando você precisa de failover rápido *e* de BGP, você engenheira: timers mais apertados onde os dois lados consentem, BFD para detecção de falha subsegundo, e anycast para serviços que precisam sobreviver a qualquer coisa.
+| Estado | O roteador está |
+|---|---|
+| Idle | Recusando conexões deste peer; o estado inicial |
+| Connect | Esperando a própria conexão TCP se completar |
+| Active | Escutando e aceitando a conexão do peer |
+| OpenSent | Esperando o OPEN do peer |
+| OpenConfirm | Esperando um KEEPALIVE ou um NOTIFICATION |
+| Established | Trocando mensagens UPDATE, NOTIFICATION e KEEPALIVE |
 
-## A insegurança com que todo mundo convive
+Os códigos de tipo e os estados vêm da [RFC 4271, seções 4.1 e 8.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt), e do registro ([IANA, Border Gateway Protocol (BGP) Parameters registry](https://www.iana.org/assignments/bgp-parameters/bgp-parameters.xhtml)). Cada lado responde a um OPEN aceitável com um KEEPALIVE, que leva a session de OpenConfirm a Established (RFC 4271, seções 4.2 e 8.2.2). O OBS abrindo a session com o A1 (trecho do tcpdump):
 
-O BGP clássico acredita no que lhe contam. Se uma rede anuncia um prefixo que não é dela - por engano (um route leak de digitação) ou por desígnio (um hijack) - os vizinhos que aceitarem o anúncio mandarão tráfego para lá. Os incidentes famosos - um provedor paquistanês derrubando o YouTube do mundo inteiro por acidente em 2008, roubos de criptomoeda via prefixos de DNS sequestrados - são todos essa única falha. A resposta moderna é o **RPKI**: declarações criptográficas de qual AS pode originar qual prefixo, permitindo aos roteadores descartar anúncios inválidos. A validação de origem já é corrente entre operadoras sérias; a validação de caminho segue sendo a fronteira mais difícil e lenta. Ao avaliar um provedor, "vocês descartam RPKI-inválidos?" é uma pergunta que separa rápido o joio do trigo.
+```text
+192.0.2.1.50150 > 192.0.2.2.179: Flags [S], cksum 0x8432 (incorrect -> 0xbb46), seq 375515180, win 64240, options [mss 1460,sackOK,TS val 1045564488 ecr 0,nop,wscale 10], length 0
+	Open Message (1), length: 95
+	  Version 4, my AS 64496, Holdtime 180s, ID 192.0.2.254
+	      Multiprotocol Extensions (1), length: 4
+		AFI IPv4 (1), SAFI Unicast (1)
+	      32-Bit AS Number (65), length: 4
+		 4 Byte AS 64496
+	Keepalive Message (4), length: 19
+```
 
-## Como um praticante lê o BGP
+Um pedido de conexão TCP para a porta 179; um OPEN de 95 octetos com versão 4, AS 64496, hold time proposto de 180 segundos e BGP Identifier 192.0.2.254, oferecendo IPv4 unicast e números de AS de quatro octetos; depois um KEEPALIVE de 19 octetos, só o header.
 
-O modelo mental prático: uma rota BGP é uma promessa com rastro documental. Ao olhar uma rota, leia-a como uma frase - *este prefixo, aprendido daquele vizinho, cruzando estes sistemas autônomos, preferido por causa deste atributo*. Agregação é o motivo de a tabela ter só cerca de um milhão de rotas em vez de bilhões: as redes anunciam blocos CIDR sumarizados, não cada sub-rede (a aritmética de prefixos por trás disso é exatamente o que a ferramenta de CIDR deste site computa). E quando algo quebra do lado internet da sua borda, as três primeiras perguntas são sempre as mesmas: o prefixo ainda está anunciado, o AS-path está são, e a política de alguém mudou hoje de manhã.
+## Hold time e keepalive
 
-A contraparte interior de tudo isso - como o roteamento funciona onde você *controla* as duas pontas - é o assunto do primer de OSPF.
+Nenhum lado precisa concordar com o hold time do outro; vence o menor: "Upon receipt of an OPEN message, a BGP speaker MUST calculate the value of the Hold Timer by using the smaller of its configured Hold Time and the Hold Time received in the OPEN message", vale o menor dos dois ([RFC 4271, seção 4.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). É zero ou pelo menos três segundos, e quem discorda só pode recusar: "An implementation MAY reject connections on the basis of the Hold Time", pode recusar a conexão (seção 4.2). O padrão sugerido é 90 segundos, com um keepalive a cada terço disso (seção 10); os padrões tradicionais do FRR são 180 e 60.
+
+No laboratório, só o OBS recebeu `neighbor 192.0.2.10 timers 3 9`; o B1 manteve 180 e 60, e mesmo assim mostra:
+
+```text
+  Hold time is 9 seconds, keepalive interval is 3 seconds
+  Configured hold time is 180 seconds, keepalive interval is 60 seconds
+```
+
+Se nada chega dentro do hold time, o roteador manda um NOTIFICATION com o código Hold Timer Expired e fecha a conexão ([RFC 4271, seção 6.5](https://www.rfc-editor.org/rfc/rfc4271.txt)). Às 12:02:30 o B1 passou a descartar os pacotes do OBS; às 12:02:43 o OBS mostrava Connect, com `Last reset 00:00:04,  Notification sent (Hold Timer Expired)`, nove segundos após o início do silêncio, e já usava o caminho via A1 para 203.0.113.0/24. Com os 90 segundos sugeridos, o silêncio duraria até 90 segundos; detecção rápida é trabalho de [um detector dedicado](/learn/bfd-when-a-link-is-up-and-dead). Os anúncios também são espaçados: o intervalo mínimo sugerido é de 30 segundos no eBGP e 5 no iBGP (seção 10), mas o FRR 8.4.4 informou `Minimum time between advertisement runs is 0 seconds`.
+
+## O que uma rota carrega: os path attributes
+
+Uma rota junta destinos e os atributos de um caminho até eles ([RFC 4271, seção 1.1](https://www.rfc-editor.org/rfc/rfc4271.txt)). Os path attributes que decidem rotas (seções 4.3, 5 e 5.1.1 a 5.1.5; códigos de tipo do registro da IANA):
+
+| Atributo | Tipo | Categoria | O que diz |
+|---|---|---|---|
+| ORIGIN | 1 | Well-known obrigatório | Como o AS de origem aprendeu o prefix: 0 IGP, 1 EGP, 2 INCOMPLETE |
+| AS_PATH | 2 | Well-known obrigatório | ASes que o anúncio atravessou; cada speaker eBGP acrescenta o seu à frente, o iBGP não mexe, a configuração pode repetir o próprio AS |
+| NEXT_HOP | 3 | Well-known obrigatório | Endereço para onde encaminhar, resolvido recursivamente pela tabela de roteamento |
+| MULTI_EXIT_DISC (MED) | 4 | Opcional não transitivo | Dica de um AS vizinho entre vários links de entrada; o menor é preferido; nunca passa a um terceiro AS |
+| LOCAL_PREF | 5 | Well-known | Grau de preferência local, enviado só a peers internos |
+| COMMUNITIES | 8 | Opcional transitivo | Etiquetas de política (RFC 1997) |
+
+Um UPDATE do A1 (linhas hexadecimais omitidas):
+
+```text
+	Update Message (2), length: 60
+	  Origin (1), length: 1, Flags [T]: IGP
+	  AS Path (2), length: 10, Flags [TE]: 64497 64499
+	  Next Hop (3), length: 4, Flags [T]: 192.0.2.2
+	  Multi Exit Discriminator (4), length: 4, Flags [O]: 50
+	  Updated routes:
+	    192.0.2.128/25
+```
+
+Na notação do tcpdump, T é transitivo, O opcional e E extended length. O ORIGIN é IGP, o caminho começa pelo AS 64497 do A1, o NEXT_HOP é o próprio endereço do A1, e o A1 pede um multi-exit discriminator (MED) de 50 neste link.
+
+## Como o roteador escolhe o best path
+
+A fase 1 dá a cada rota um grau de preferência, a fase 2 instala uma rota por destino e a fase 3 anuncia conforme a política ([RFC 4271, seção 9.1](https://www.rfc-editor.org/rfc/rfc4271.txt)). Para rotas externas, a preferência é política local (seção 9.1.1). Rotas com NEXT_HOP sem resolução ou com o próprio AS no caminho saem antes (seção 9.1.2), e então "The criteria MUST be applied in the order specified", os critérios valem na ordem dada (seção 9.1.2.2):
+
+| Passo | Ficam as rotas com |
+|---|---|
+| Fase 1 | O maior grau de preferência (LOCAL_PREF dentro do AS) |
+| a | Menos números de AS no AS_PATH (um AS_SET conta como 1) |
+| b | O menor ORIGIN (IGP, depois EGP, depois INCOMPLETE) |
+| c | O menor MED entre rotas do mesmo AS vizinho; sem MED conta como o menor |
+| d | Aprendidas por eBGP, se houver alguma |
+| e | O menor custo interior até o NEXT_HOP |
+| f | O menor BGP Identifier |
+| g | O menor endereço de peer |
+
+O passo c é estreito: "MULTI_EXIT_DISC is only comparable between routes learned from the same neighboring AS", o MED só se compara entre rotas do mesmo AS vizinho (seção 9.1.2.2). O passo e tira o custo do [OSPF](/learn/ospf-primer) ou do [IS-IS](/learn/isis-primer). No laboratório, o FRR mostra entre parênteses o passo que decidiu:
+
+| Prefix | Candidatas no OBS | Decidido por | O FRR mostra |
+|---|---|---|---|
+| 198.51.100.0/24 | 64497 64499 via 192.0.2.2; 64498 64500 64499 via 192.0.2.10 | Passo a | `best (AS Path)` |
+| 203.0.113.0/24 | As mesmas duas; a política de entrada do OBS põe LOCAL_PREF 200 na do B1 | Fase 1: vence o caminho mais longo | `best (Local Pref)` |
+| 192.0.2.128/25 | 64497 64499 via 192.0.2.2 com MED 50, via 192.0.2.6 com MED 10 | Passo c | `best (MED)` |
+| 192.0.2.64/26 | 64498 64496 64499 via 192.0.2.10 | Descartada: o próprio AS do OBS | `% Network not in table` |
+| 198.51.100.0/24, segunda rodada | Caminhos idênticos do A1 e do A2, ambos com BGP Identifier 192.0.2.77 | Passo g | `best (Neighbor IP)` |
+
+```text
+BGP routing table entry for 203.0.113.0/24, version 3
+Paths: (2 available, best #1, table default)
+  Not advertised to any peer
+  64498 64500 64499
+    192.0.2.10 from 192.0.2.10 (192.0.2.10)
+      Origin IGP, metric 0, localpref 200, valid, external, best (Local Pref)
+      Last update: Mon Oct 19 12:02:13 2026
+  64497 64499
+    192.0.2.2 from 192.0.2.2 (192.0.2.2)
+      Origin IGP, metric 0, valid, external
+      Last update: Mon Oct 19 12:02:12 2026
+```
+
+O processo da RFC é conceitual; uma implementação só precisa se comportar igual vista de fora ([RFC 4271, seção 9.1](https://www.rfc-editor.org/rfc/rfc4271.txt)). O FRR documenta passos a mais, entre eles um weight local logo no início e a preferência pelo caminho externo já escolhido ([documentação do FRRouting, BGP](https://docs.frrouting.org/en/latest/bgp.html)). No último passo, documentação e comportamento discordam. A página diz "Prefer the route received from the peer with the higher transport layer address, as a last-resort tie-breaker", preferir o peer de endereço mais alto; a RFC 4271 diz "Prefer the route received from the lowest peer address", preferir o mais baixo ([RFC 4271, seção 9.1.2.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). O FRR 8.4.4 escolheu 192.0.2.2 em vez de 192.0.2.6 nas duas ordens de chegada: a regra da RFC.
+
+## Dentro de um AS: iBGP, route reflectors e confederações
+
+O iBGP tem uma restrição: "When a BGP speaker receives an UPDATE message from an internal peer, the receiving BGP speaker SHALL NOT re-distribute the routing information contained in that UPDATE message to other internal peers (unless the speaker acts as a BGP Route Reflector \[RFC2796\])", rota de peer interno não vai a outro peer interno ([RFC 4271, seção 9.2](https://www.rfc-editor.org/rfc/rfc4271.txt)). Então todo speaker precisa de peering com todos os outros: "For n BGP speakers within an AS that requires to maintain n\*(n-1)/2 unique Internal BGP (IBGP) sessions", ou n(n-1)/2 sessions ([RFC 4456, seção 1](https://www.rfc-editor.org/rfc/rfc4456.txt)). Dez speakers precisam de 45, cem de 4.950.
+
+Um route reflector reflete rotas de não clientes para seus clientes, e as de um cliente para todos os demais; só os não clientes ficam em malha completa ([RFC 4456, seções 5 e 6](https://www.rfc-editor.org/rfc/rfc4456.txt)). ORIGINATOR_ID e CLUSTER_LIST impedem que rotas refletidas entrem em loop (seção 8). Uma confederação, em vez disso, divide o AS em ASes membros "represented and advertised as a single AS number to BGP speakers that are not members of the local BGP confederation", um só AS para quem está fora ([RFC 5065, seção 1.2](https://www.rfc-editor.org/rfc/rfc5065.txt)). Onde o BGP encontra as rotas do próprio IGP, veja [redistribuição de rotas](/learn/route-redistribution).
+
+## Communities: etiquetas que carregam política
+
+Uma community marca um grupo de destinos com uma propriedade comum ([RFC 1997, Terms and Definitions](https://www.rfc-editor.org/rfc/rfc1997.txt)): quatro octetos, por convenção um número de AS e um valor que esse AS define. NO_EXPORT (0xFFFFFF01) mantém a rota dentro do AS ou da confederação, e NO_ADVERTISE (0xFFFFFF02) a esconde de todos os peers (Well-known Communities); o registro acrescenta BLACKHOLE e GRACEFUL_SHUTDOWN, entre outras ([IANA, Border Gateway Protocol (BGP) Well-known Communities registry](https://www.iana.org/assignments/bgp-well-known-communities/bgp-well-known-communities.xhtml)).
+
+Com ASNs de quatro octetos, "the BGP Communities attribute can no longer accommodate the above encoding, as a two-octet word cannot fit a four-octet ASN", dois octetos não comportam um ASN de quatro ([RFC 8092, seção 1](https://www.rfc-editor.org/rfc/rfc8092.txt)). As large communities, tipo 32, usam doze octetos: um administrador global de quatro octetos e dois campos da operadora, escritos `64496:4294967295:2` (seções 5 e 8). Valem o que o AS que recebe publica e respeita: "Action Communities are added as labels to request that a route be treated in a particular way within an AS", pedidos de tratamento dentro do AS ([RFC 8195, seção 2.2](https://www.rfc-editor.org/rfc/rfc8195.txt)).
+
+| Large community | Significado (RFC 8195, seções 3.2, 4.1.1, 4.2.1) |
+|---|---|
+| `64497:3:2` | Rota aprendida de um cliente |
+| `64497:4:64498` | Não exportar a rota para o AS 64498 |
+| `64497:6:64498` | Repetir 64497 uma vez ao exportar para o AS 64498 |
+
+## IPv6 e as outras famílias de endereços
+
+Só o NEXT_HOP, o atributo AGGREGATOR e a Network Layer Reachability Information (NLRI), os próprios prefixes, prendem o BGP-4 ao IPv4 ([RFC 4760, seção 1](https://www.rfc-editor.org/rfc/rfc4760.txt)). A RFC 4760 leva outras famílias em "Multiprotocol Reachable NLRI (MP_REACH_NLRI) and Multiprotocol Unreachable NLRI (MP_UNREACH_NLRI)", dois atributos novos (seção 1), com códigos de tipo 14 e 15, cada família oferecida como capacidade (seção 8), como no OPEN acima. No [IPv6](/learn/ipv6-addressing), o next hop pode precisar de um endereço global e de um link-local ([RFC 2545, seção 2](https://www.rfc-editor.org/rfc/rfc2545.txt)).
+
+## O que o AS path prova, e o que não prova
+
+O AS_PATH registra o anúncio, não os pacotes. O prepend repete um AS, e a agregação pode esconder ASes: "the actual path to destinations, as specified in the NLRI of the route, while having the loop-free property, may not be the path specified in the AS_PATH attribute of the route", o caminho real pode não ser o do AS_PATH ([RFC 4271, seção 5.1.6](https://www.rfc-editor.org/rfc/rfc4271.txt)). O encaminhamento é só pelo destino (seção 3); cada roteador decide por si, e sua rota ainda disputa pelo [longest match](/learn/static-routes-and-longest-match).
+
+O segmento AS_SET dessas agregações está obsoleto: salvo configuração explícita da operadora, os speakers "MUST NOT advertise BGP UPDATE messages containing AS_SETs or AS_CONFED_SETs", não podem anunciar UPDATEs com AS_SETs, e tratam um recebido como retirada ([RFC 9774, maio de 2025, seção 3](https://www.rfc-editor.org/rfc/rfc9774.txt)). Os AS_SETs tornavam a origem ambígua para a validação de origem e quase não eram usados (seção 1).
+
+## Quando o BGP erra ou é atacado
+
+"BGP does not directly include mechanisms that control whether the routes exchanged conform to the various guidelines defined by the Internet community", o BGP não confere as rotas que troca ([RFC 7454, seção 1](https://www.rfc-editor.org/rfc/rfc7454.txt)). As falhas e suas defesas nomeadas:
+
+| Problema | Mecanismo | Defesa | Fonte |
+|---|---|---|---|
+| Ataque à session | Resets TCP forjados derrubam o peering | TCP Authentication Option (TCP-AO); Generalized TTL Security Mechanism (GTSM), que envia com time to live (TTL) 255 e só aceita 255 | RFC 7454, seções 5.1 e 5.2 |
+| Origem falsa | Uma rede anuncia um prefix que não é seu | Validação de origem da Resource Public Key Infrastructure (RPKI): Valid, Invalid ou NotFound | RFC 6811, seção 2 |
+| Route leak | Rotas repassadas contra as relações entre as redes | Roles do BGP e o atributo Only to Customer (OTC) | RFC 9234, Abstract e seção 3.1 |
+| Política ausente | Tudo aceito e reanunciado | Limites de prefixes, filtros de caminho; o padrão da RFC 8212 | RFC 7454, seções 8 e 9; RFC 8212 |
+
+Os pacotes eBGP do OBS saíram com TTL 1, e o FRR mostra os códigos de validação RPKI em toda tabela e `Local Role: undefined` em toda session. A RFC 8212 inverte o velho padrão de aceitar tudo no eBGP: sem política de entrada, nenhuma rota é elegível; sem política de saída, nada é anunciado ([RFC 8212, seções 1 e 3](https://www.rfc-editor.org/rfc/rfc8212.txt)). Como hijacks e leaks acontecem e como se implantam as defesas é assunto de [BGP: o voto de confiança que sustenta a internet inteira](/learn/bgp-and-the-routing-chokepoint).
+
+## Como ver no roteador
+
+No FRR, `router bgp 64496` inicia o processo, `neighbor 192.0.2.2 remote-as 64497` define um peer e `network` anuncia um prefix ([documentação do FRRouting, BGP](https://docs.frrouting.org/en/latest/bgp.html)). Depois, `show bgp summary`:
+
+```text
+Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
+192.0.2.2       4      64497        12         5        0    0    0 00:00:09            3 (Policy) N/A
+192.0.2.6       4      64497         9         5        0    0    0 00:00:09            1 (Policy) N/A
+192.0.2.10      4      64498        10         5        0    0    0 00:00:09            2 (Policy) N/A
+```
+
+V é a versão do BGP, Up/Down o tempo no estado atual, e State/PfxRcd o número de prefixes quando Established ou o estado nos outros casos (a linha do B1 mostrou `Connect` depois da expiração). `(Policy)` é a RFC 8212 em ação: o OBS não tem política de saída. Depois, `show bgp ipv4 unicast`:
+
+```text
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 192.0.2.128/25   192.0.2.6               10             0 64497 64499 i
+*                   192.0.2.2               50             0 64497 64499 i
+*  198.51.100.0/24  192.0.2.10               0             0 64498 64500 64499 i
+*>                  192.0.2.2                0             0 64497 64499 i
+*> 203.0.113.0/24   192.0.2.10               0    200      0 64498 64500 64499 i
+*                   192.0.2.2                0             0 64497 64499 i
+```
+
+O asterisco marca um caminho válido e o `>` o melhor; um prefix impresso uma vez vale para as linhas seguintes. Metric é o MED, LocPrf em branco significa o padrão 100, Weight é local do FRR, e o `i` final é ORIGIN IGP. Acrescentar um prefix dá a visão por caminho; `show bgp neighbors 192.0.2.2` mostra estado, timers e capacidades.
+
+Fora dos seus roteadores, o [ASN lookup](/dev/out/asn-lookup) responde localmente aos números de uso especial como 64496, com a sua RFC, e para um número real diz qual RIR vai consultar antes de o navegador perguntar. O [RDAP lookup](/dev/out/rdap-lookup) consulta os registros pelo Registration Data Access Protocol (RDAP) sobre um número de AS, endereço ou domínio, também só quando você pede.
+
+## Qual o tamanho da tabela
+
+O Classless Inter-Domain Routing (CIDR) e a agregação fazem parte do BGP desde a versão 4 ([RFC 4271, seção 3](https://www.rfc-editor.org/rfc/rfc4271.txt)). O CIDR Report de 19 de outubro de 2026 contou 1.085.700 prefixes IPv4, 602.419 se agregados, e 79.706 ASes ([CIDR Report (Geoff Huston), IPv4 CIDR Report for 19 October 2026](https://www.cidr-report.org/as2.0/)), além de 258.973 prefixes IPv6 ([CIDR Report (Geoff Huston), IPv6 CIDR Report for 19 October 2026](https://www.cidr-report.org/v6/as2.0/)). É um único ponto de observação; outros coletores diferem um pouco. A aritmética de juntar prefixes está em [supernetting e agregação de rotas](/learn/supernetting-and-aggregation) e na [CIDR / Subnet Calculator](/tools/cidr).
+
+## Para lembrar
+
+- O BGP-4 (RFC 4271) roda sobre a porta TCP 179, eBGP entre sistemas autônomos e iBGP dentro de um, com as sessions indo de Idle a Established.
+- O hold time é o menor dos dois oferecidos, sem acordo; a RFC 4271 sugere 90 segundos, o padrão tradicional do FRR é 180.
+- Números de AS têm quatro octetos; 64496 a 64511 são de documentação, 64512 a 65534 e 4200000000 a 4294967294 são privados, 23456 é o AS_TRANS.
+- Best path: maior LOCAL_PREF, AS_PATH mais curto, menor ORIGIN, menor MED do mesmo AS vizinho, eBGP antes de iBGP, menor custo de IGP, menor BGP Identifier, menor endereço de peer.
+- O iBGP não repassa rotas de iBGP: n speakers precisam de n(n-1)/2 sessions, salvo com route reflectors ou confederações.
+- O AS_PATH registra anúncios, não pacotes, e nada no BGP-4 o confere; validação de origem RPKI (RFC 6811) e roles do BGP (RFC 9234) são as defesas nomeadas; a RFC 9774 aposentou o AS_SET.
+- Em 19 de outubro de 2026 o CIDR Report contou 1.085.700 prefixes IPv4 e 258.973 IPv6.
+
+## Fontes
+
+- [RFC 4271, A Border Gateway Protocol 4 (BGP-4), janeiro de 2006: seções 1.1, 3, 4.1, 4.2, 4.3, 5, 5.1.1 a 5.1.6, 6.5, 8.2.2, 9.1, 9.1.1, 9.1.2, 9.1.2.2, 9.2 e 10 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4271.txt)
+- [RFC 1105, Border Gateway Protocol (BGP), junho de 1989: Status of this Memo e seção 1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1105.txt)
+- [IANA, Autonomous System (AS) Numbers registry, atualizado em 2026-06-01: tabelas de 16 e 32 bits (lida em 2026-10-19)](https://www.iana.org/assignments/as-numbers/as-numbers.xhtml)
+- [RFC 6793, BGP Support for Four-Octet Autonomous System (AS) Number Space, dezembro de 2012: seções 1, 3 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6793.txt)
+- [IANA, Special-Purpose Autonomous System (AS) Numbers registry, atualizado em 2015-08-07 (lida em 2026-10-19)](https://www.iana.org/assignments/iana-as-numbers-special-registry/iana-as-numbers-special-registry.xhtml)
+- [RFC 5398, Autonomous System (AS) Number Reservation for Documentation Use, dezembro de 2008: seções 3 e 4 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5398.txt)
+- [RFC 6996 (BCP 6), Autonomous System (AS) Reservation for Private Use, julho de 2013: seções 4 e 5 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6996.txt)
+- [RFC 7607, Codification of AS 0 Processing, agosto de 2015: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7607.txt)
+- [RFC 5737, IPv4 Address Blocks Reserved for Documentation, janeiro de 2010: seção 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5737.txt)
+- [RFC 8654, Extended Message Support for BGP, outubro de 2019: Abstract (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8654.txt)
+- [IANA, Border Gateway Protocol (BGP) Parameters registry, atualizado em 2026-09-09: BGP Message Types e BGP Path Attributes (lida em 2026-10-19)](https://www.iana.org/assignments/bgp-parameters/bgp-parameters.xhtml)
+- [Documentação do FRRouting, BGP (latest): Route Selection, Require policy on EBGP, Defining Peers, Displaying BGP Information (lida em 2026-10-19)](https://docs.frrouting.org/en/latest/bgp.html)
+- [RFC 4456, BGP Route Reflection: An Alternative to Full Mesh Internal BGP (IBGP), abril de 2006: seções 1, 5, 6 e 8 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4456.txt)
+- [RFC 5065, Autonomous System Confederations for BGP, agosto de 2007: seção 1.2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc5065.txt)
+- [RFC 1997, BGP Communities Attribute, agosto de 1996: COMMUNITIES attribute, Well-known Communities e Operation (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc1997.txt)
+- [IANA, Border Gateway Protocol (BGP) Well-known Communities registry, atualizado em 2026-09-22 (lida em 2026-10-19)](https://www.iana.org/assignments/bgp-well-known-communities/bgp-well-known-communities.xhtml)
+- [RFC 8092, BGP Large Communities Attribute, fevereiro de 2017: seções 1, 5 e 8 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8092.txt)
+- [RFC 8195, Use of BGP Large Communities, junho de 2017: seções 2.2, 3.2, 4.1.1 e 4.2.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8195.txt)
+- [RFC 4760, Multiprotocol Extensions for BGP-4, janeiro de 2007: seções 1 e 8 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc4760.txt)
+- [RFC 2545, Use of BGP-4 Multiprotocol Extensions for IPv6 Inter-Domain Routing, março de 1999: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc2545.txt)
+- [RFC 9774, Deprecation of AS_SET and AS_CONFED_SET in BGP, maio de 2025: seções 1 e 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9774.txt)
+- [RFC 7454 (BCP 194), BGP Operations and Security, fevereiro de 2015: seções 1, 5.1, 5.2, 8 e 9 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc7454.txt)
+- [RFC 9234, Route Leak Prevention and Detection Using Roles in UPDATE and OPEN Messages, maio de 2022: Abstract e seção 3.1 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc9234.txt)
+- [RFC 6811, BGP Prefix Origin Validation, janeiro de 2013: seção 2 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc6811.txt)
+- [RFC 8212, Default External BGP (EBGP) Route Propagation Behavior without Policies, julho de 2017: seções 1 e 3 (lida em 2026-10-19)](https://www.rfc-editor.org/rfc/rfc8212.txt)
+- [CIDR Report (Geoff Huston), IPv4 CIDR Report for 19 October 2026: Status Summary (lida em 2026-10-19)](https://www.cidr-report.org/as2.0/)
+- [CIDR Report (Geoff Huston), IPv6 CIDR Report for 19 October 2026: Status Summary (lida em 2026-10-19)](https://www.cidr-report.org/v6/as2.0/)

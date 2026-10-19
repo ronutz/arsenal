@@ -144,8 +144,6 @@ for (const { dir, ext } of TARGETS) {
 const DECLARED_EN = new Map([
   ["src/content/learn/en/amateur-radio.mdx", [1,
     "ITU callsign block ranges, PPA-PYZ and ZV-ZZ. NOTE THE COUNT: the guard reports one offence per LINE, not per dash, and both ranges sit on the same line. Declaring 2 here was the first thing this per-file check caught, on the day it was written."]],
-  ["src/content/learn/en/dhcp-option-43-discovery.mdx", [1,
-    "A hex byte range, 30-39, inside a sentence about reading option payloads."]],
   ["src/content/learn/en/radio-spectrum.mdx", [2,
     "Frequency band ranges: 300 kHz-3 MHz and 300 MHz-3 GHz."]],
   ["src/content/learn/en/the-brazilian-hacker-scene.mdx", [1,

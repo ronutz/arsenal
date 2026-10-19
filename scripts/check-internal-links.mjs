@@ -23,9 +23,11 @@
 // history card pointing at a profile slug that had been DISSOLVED and replaced.
 // Neither was a judgement call in the end; both were simply wrong.
 //
-// ONE REMAINS, AND IT SHOULD: the changelog's link to the pre-1996 page's old
-// address. A changelog entry is a dated record of what happened, and repointing
-// it would be editing history to tidy a report.
+// THE LAST ONE WAS REPAIRED ON 2026-10-18 (production audit of 2026-10-15,
+// F06): the changelog's two links to the pre-1996 page's old address now point
+// at the page itself, the entry's text still naming the address of the day, and
+// public/_redirects carries the trailing-slash forms of the history rules that
+// the bare rules never matched. Baseline: zero.
 // ============================================================================
 
 import fs from "node:fs";
@@ -139,7 +141,9 @@ function followRedirect(fullPath) {
       if (fullPath.startsWith(stem)) {
         return to.replace(":splat", fullPath.slice(stem.length));
       }
-    } else if (from === fullPath || `${from}/` === fullPath || from === `${fullPath}/`) {
+    } else if (from === fullPath) {
+      // EXACT, as Cloudflare matches (audit F06, 2026-10-18). Until then a bare rule was accepted for a trailing-slash
+      // link, which is how /industry/history/pre-1996/ passed this guard for a year while production answered 404.
       return to;
     }
   }
